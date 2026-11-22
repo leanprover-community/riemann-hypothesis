@@ -37,16 +37,6 @@ theorem isFreeRingAction_iff_inertia_eq_bot :
     rw [h P hP] at this
     exact hg this
 
-theorem isFreeRingAction_of_field (K : Type*) [Field K] [MulSemiringAction G K]
-    [FaithfulSMul G K] : IsFreeRingAction G K := by
-  intro g hg
-  rcases Ideal.eq_bot_or_top (Ideal.span (Set.range fun a : K ↦ g • a - a)) with h | h
-  · refine absurd (eq_of_smul_eq_smul (α := K) fun a ↦ ?_) hg
-    have : g • a - a ∈ Ideal.span (Set.range fun a : K ↦ g • a - a) := Ideal.subset_span ⟨a, rfl⟩
-    rw [h, Ideal.mem_bot, sub_eq_zero] at this
-    rw [this, one_smul]
-  · exact h
-
 variable (B : Type*) [CommRing B] [Algebra B A] [SMulCommClass G B A]
 
 noncomputable def galoisMap : A ⊗[B] A →ₐ[A] (G → A) :=
@@ -55,7 +45,6 @@ noncomputable def galoisMap : A ⊗[B] A →ₐ[A] (G → A) :=
 
 @[simp] theorem galoisMap_tmul (a b : A) (g : G) :
     galoisMap G A B (a ⊗ₜ b) g = a * g • b := rfl
-
 
 variable {G A} in
 theorem exists_galoisMap_separating [Finite G] (P : Ideal A) (H : Set G)
@@ -113,7 +102,6 @@ theorem exists_galoisMap_separating [Finite G] (P : Ideal A) (H : Set G)
     rw [← map_one (Ideal.Quotient.mk P), Ideal.Quotient.eq]
     exact he' g (by simpa using hg) h hh
 
-
 variable {G A} in
 theorem exists_finset_separating [Finite G] (P : Ideal A) (H : Set G)
     (hH : ∀ h ∈ H, ∀ a : A, h • a - a ∈ P)
@@ -126,7 +114,6 @@ theorem exists_finset_separating [Finite G] (P : Ideal A) (H : Set G)
   · simpa [Finset.sum_apply] using he g hg
   · simpa [Finset.sum_apply] using he' h hh
 
-
 variable {G A} in
 theorem exists_galois_coordinates [Finite G] (h : IsFreeRingAction G A) :
     ∃ s : Finset (A × A), (∀ g : G, g ≠ 1 → ∑ p ∈ s, p.1 * g • p.2 = 0) ∧
@@ -134,7 +121,6 @@ theorem exists_galois_coordinates [Finite G] (h : IsFreeRingAction G A) :
   obtain ⟨s, hs, hs'⟩ := exists_finset_separating (G := G) (A := A) (⊥ : Ideal A) {1}
     (by rintro _ rfl a; simp) (fun g hg ↦ by rw [h g hg, sup_top_eq])
   exact ⟨s, hs, by simpa [sub_eq_zero] using hs' 1 rfl⟩
-
 
 end Basic
 
@@ -194,7 +180,6 @@ theorem sum_smul_sum_smul (s : Finset (A × A)) (m : M) :
   simp only [Finset.smul_sum, Finset.sum_smul, smul_distrib_smul, mul_smul]
   exact Finset.sum_comm
 
-
 end Tame
 
 section DualBasis
@@ -203,11 +188,9 @@ variable {G : Type*} [Group G] [Fintype G] {A : Type*} [CommRing A] [MulSemiring
   {M : Type*} [AddCommGroup M] [Module A M] [DistribMulAction G M] [SMulDistribClass G A M]
   {N : Type*} [AddCommGroup N] [Module A N] [DistribMulAction G N] [SMulDistribClass G A N]
 
-
 variable (B : Type*) [CommRing B] [Algebra B A] [SMulCommClass G B A]
   [FaithfulSMul B A] [Algebra.IsInvariant B A G]
   [Module B M] [IsScalarTower B A M] [SMulCommClass G B M]
-
 
 end DualBasis
 
@@ -294,18 +277,6 @@ theorem etale (h : IsFreeRingAction G A) : Algebra.Etale B A :=
   haveI : Algebra.Etale A (A ⊗[B] A) := .of_equiv (galoisEquiv B h).symm
   Algebra.Etale.of_etale_tensorProduct_of_faithfullyFlat A
 
-theorem rankAtStalk_eq_card (h : IsFreeRingAction G A) (p : PrimeSpectrum B) :
-    Module.rankAtStalk A p = Nat.card G := by
-  cases nonempty_fintype G
-  haveI := (finite_and_projective B h).1
-  haveI := (finite_and_projective B h).2
-  obtain ⟨q, rfl⟩ := Algebra.IsIntegral.comap_surjective B A p
-  haveI : Nontrivial A := q.nontrivial
-  rw [← Module.rankAtStalk_baseChange,
-    Module.rankAtStalk_eq_of_equiv (galoisEquiv B h).toLinearEquiv,
-    Module.rankAtStalk_eq_finrank_of_free]
-  simp
-
 variable (M : Type*) [AddCommGroup M] [Module A M] [DistribMulAction G M] [SMulDistribClass G A M]
   [Module B M] [IsScalarTower B A M] [SMulCommClass G B M]
 
@@ -332,8 +303,6 @@ variable [SMulCommClass G B A]
 
 variable [FaithfulSMul B A] [Algebra.IsInvariant B A G]
 
-
-
 end BaseChange
 
 end FreeQuotient
@@ -341,15 +310,6 @@ end FreeQuotient
 universe w v u
 
 open CategoryTheory
-
-structure SemilinearModule (G : Type v) [Group G] (A : Type u) [CommRing A]
-    [MulSemiringAction G A] where
-
-  carrier : Type w
-  [addCommGroup : AddCommGroup carrier]
-  [module : Module A carrier]
-  [action : DistribMulAction G carrier]
-  [semilinear : SMulDistribClass G A carrier]
 
 namespace SemilinearModule
 

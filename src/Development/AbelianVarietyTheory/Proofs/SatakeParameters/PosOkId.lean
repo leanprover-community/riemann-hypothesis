@@ -1,7 +1,9 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.GlobSpecOfExists
+public import Formalism.SharpRestriction.GrowthBounds.DataGChain
+public import Formalism.LocalToGlobal.Columns.HeckeSp
+public import Formalism.LocalToGlobal.Columns.ColFormsLemmas
 public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 
@@ -33,10 +35,6 @@ def stdD (O Kf : Type) [CommRing O] [Field Kf] [Algebra O Kf] (n : ℕ) (ν : Fi
 
 def rnd (Kf : Type) [Field Kf] {n : ℕ} (e : ℤ) (g : Matrix (Fin n) (Fin n) Kf) : MP Kf n →ₗ[Kf] MP Kf n :=
   g.det ^ (-e) • (rowAct Kf g⁻¹).toLinearMap
-
-def twLat {O Kf : Type} [CommRing O] [Field Kf] [Algebra O Kf] {n : ℕ} (e : ℤ) (S : Submodule O (MP Kf n))
-    (g : Matrix (Fin n) (Fin n) Kf) : Submodule O (MP Kf n) :=
-  S.map ((rnd Kf e g).restrictScalars O)
 
 def PosOk (O Kf : Type) [CommRing O] [Field Kf] [Algebra O Kf] (n : ℕ) (ν ν' : Fin n → ℕ) (e e' c : ℤ)
     (tw : Matrix (Fin n) (Fin n) Kf → Matrix (Fin n) (Fin n) Kf) (Ψ : MP Kf n →ₗ[Kf] MP Kf n) : Prop :=

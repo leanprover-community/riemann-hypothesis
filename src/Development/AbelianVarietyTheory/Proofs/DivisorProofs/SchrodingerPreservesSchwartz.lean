@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSelfDualFor
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SecondConfigurationTripleCompatible
 
 @[expose] public section

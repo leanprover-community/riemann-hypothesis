@@ -125,11 +125,6 @@ noncomputable def thetaForm (hW : IsWeilDatumO ψ S T χS χT om) (hC : IsCovolO
       funext z
       ring)
 
-theorem thetaForm_apply (hW : IsWeilDatumO ψ S T χS χT om) (hC : IsCovolOne (ratL T S) μ 𝓧)
-    {E : Type*} [AddCommGroup E] [Module ℂ E] (a b : E →ₗ[ℂ] (WO S T → ℂ))
-    (ha : ∀ x, IsThetaFunO ψ S T (a x)) (hb : ∀ y, IsThetaFunO ψ S T (b y)) (x y : E) :
-    thetaForm hW hC a b ha hb x y = l2 μ 𝓧 (a x) (b y) := rfl
-
 end
 
 end GlobalTheory.CoefSchur

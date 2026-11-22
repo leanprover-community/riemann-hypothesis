@@ -49,9 +49,6 @@ def cH : H1 ρ' →ₗ[R] H1 ρ :=
       rw [e, map_sub, he]) ∘ₗ
     (Submodule.Quotient.restrictScalarsEquiv R ((B1 ρ').comap (Z1 ρ').subtype)).symm.toLinearMap
 
-theorem cH_mk (z : Z1 ρ') :
-    cH ρ ρ' u hu he (Submodule.Quotient.mk z) = Submodule.Quotient.mk (cZ ρ ρ' u hu he z) := rfl
-
 theorem res_cH {H : Type} [Group H] [TopologicalSpace H] (φ : H →* G) (hφ : Continuous φ)
     (x : H1 ρ') :
     resH1 ρ φ hφ (cH ρ ρ' u hu he x) =
@@ -99,27 +96,9 @@ open Formalism.MainNotions.BlochKatoReduction.Gen
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
   (bkP : BKPh X) (i : X.Tw) (s : X.Sig i) (k k' : ℕ)
 
-theorem trep_one_apply (g : Gen.GE N) (m : Fin D.R.r → KmodO (X.Ok i k)) (a : Fin D.R.r) :
-    Trep i s k 1 g m a = ∑ j, phiK X i k (Tmat i s g a j) • m j := by
-  simp [Trep, twRep, matAct, Tmat, Finset.smul_sum, smul_smul]
-
 variable [Algebra (X.Ok i k) (X.Ok i k')] [IsScalarTower (X.O i) (X.Ok i k) (X.Ok i k')]
 
-theorem phiK_eq (a : X.O0 i) :
-    phiK X i k' a = algebraMap (X.Ok i k) (X.Ok i k') (phiK X i k a) :=
-  IsScalarTower.algebraMap_apply (X.O i) (X.Ok i k) (X.Ok i k') _
-
 variable (p : KmodO (X.Ok i k') →ₗ[X.Ok i k] KmodO (X.Ok i k))
-
-theorem equivariant (g : Gen.GE N) (m : Fin D.R.r → KmodO (X.Ok i k')) :
-    p.compLeft (Fin D.R.r) (Trep i s k' 1 g m) = Trep i s k 1 g (p.compLeft (Fin D.R.r) m) := by
-  funext a
-  show p (Trep i s k' 1 g m a) = _
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [trep_one_apply, trep_one_apply, map_sum]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [phiK_eq i k k', algebraMap_smul, map_smul]
-  rfl
 
 end Main
 

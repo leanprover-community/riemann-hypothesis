@@ -15,8 +15,6 @@ namespace GlobalTheory.CompanionTheory.LefPair
 
 variable {n : ℕ}
 
-local notation "θ" => thetaR (starRingEnd ℂ)
-
 theorem tw_eq (x d : GL (Fin n) ℂ) : PositivityTheory.RgTw.tw x d = twConj (θ n) x d := by
   have h : PositivityTheory.RgTw.th x = θ n x := by
     apply Units.ext
@@ -98,7 +96,6 @@ theorem lefOne_eval (hD : EllDiag) (hW : WeylAt) [MeasurableSpace (GL (Fin n) �
   exact this
 
 end GlobalTheory.CompanionTheory.LefPair
-
 
 open GlobalTheory.CompanionTheory.LefPair in
 theorem GlobalTheory.CompanionTheory.LefPair.lefPairOf : LefPairOf := by

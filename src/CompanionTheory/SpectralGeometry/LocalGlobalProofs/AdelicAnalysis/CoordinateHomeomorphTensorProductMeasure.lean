@@ -56,9 +56,6 @@ def splitE (R K : Type) (n : ℕ) : Coords R K (n + 1) ≃ R × (Fin n → K) ×
     obtain ⟨s, r, d, u⟩ := q
     simp
 
-theorem splitE_symm_fst_zero {R K : Type} {n : ℕ} (q : R × (Fin n → K) × Coords R K n) :
-    ((splitE R K n).symm q).1 0 = q.1 := rfl
-
 theorem splitE_symm_fst_succ {R K : Type} {n : ℕ} (q : R × (Fin n → K) × Coords R K n) (i : Fin n) :
     ((splitE R K n).symm q).1 i.succ = q.2.2.1 i := rfl
 

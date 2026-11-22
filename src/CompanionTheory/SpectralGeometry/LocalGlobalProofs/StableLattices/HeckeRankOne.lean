@@ -192,10 +192,6 @@ theorem cminor_tensE_apply (X : GMod n) (q : ℕ) : ∀ (R C : Fin (q + 1) → F
 abbrev minorOp {m : ℕ} (X : GMod (m + 1)) (y : ℂ) : Module.End ℂ (Fin (m + 1) → X.V) :=
   Hk.minorOp X y
 
-theorem minorOp_apply {m : ℕ} (X : GMod (m + 1)) (y : ℂ) (f : Fin (m + 1) → X.V) (a : Fin (m + 1)) :
-    minorOp X y f a = ∑ c : Fin (m + 1), ((-1 : ℂ) ^ ((a : ℕ) + (c : ℕ))) • cminor X.E a.succAbove c.succAbove y (f c) :=
-  rfl
-
 theorem rankOneTens : ∀ (m : ℕ) (X : GMod (m + 1)) (u : ℂ),
     qdet (tensE X) u = (qdet X.E u).compLeft (Fin (m + 1)) + minorOp X (u - 1) := by
   intro m X u

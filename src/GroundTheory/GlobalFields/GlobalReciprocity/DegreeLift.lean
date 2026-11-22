@@ -74,8 +74,6 @@ end FiniteLevel
 
 section Lift
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable (P : Ideal (𝓞 ℚ̄))
 
 def decompositionDegreeImageIn (L : IntermediateField ℚ ℚ̄) : AddSubgroup ℤ̂ where

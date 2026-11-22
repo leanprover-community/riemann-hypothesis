@@ -15,23 +15,7 @@ noncomputable section
 
 universe u
 
-theorem relDim_bot {K : Type*} [Fintype K] [DecidableEq K] {ι : K → Type*} [∀ k, Fintype (ι k)]
-    {F : Type*} [Field F] :
-    relDim (⊥ : Ideal (MRing ι F)) =
-      (((Fintype.card (Σ k, ι k) : ℤ) - Fintype.card K : ℤ) : WithTop ℤ) := by
-  unfold relDim
-  rw [ringKrullDim_eq_of_ringEquiv (RingEquiv.quotientBot _),
-    MvPolynomial.ringKrullDim_of_isNoetherianRing_of_finite, ringKrullDim_eq_zero_of_field, zero_add,
-    Nat.card_eq_fintype_card]
-  rfl
-
 abbrev ProjIdx (N : ℕ) : Unit → Type := fun _ => Fin (N + 1)
-
-theorem relDim_projectiveSpace {F : Type*} [Field F] (N : ℕ) :
-    relDim (⊥ : Ideal (MRing (ProjIdx N) F)) = (N : WithBot (WithTop ℤ)) := by
-  rw [relDim_bot]
-  simp [Fintype.card_sigma]
-  rfl
 
 def binomFn (N : ℕ) (t : ℤ) : ℤ := if 0 ≤ t then ((t.toNat + N).choose N : ℤ) else 0
 

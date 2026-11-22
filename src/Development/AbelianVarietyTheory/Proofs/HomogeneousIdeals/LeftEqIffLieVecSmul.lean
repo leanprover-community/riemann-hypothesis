@@ -129,7 +129,6 @@ theorem left_eq_iff {A' : Type} [CommRing A'] {g' : Sp A' ⟶ S} (φ : A →+* A
       change w'.left ≫ (splitTorus S X).hom = (spMap φ ≫ w.left) ≫ (splitTorus S X).hom
       rw [e1, Category.assoc, e2, hg]
 
-
 variable (g) in
 def ofVal (f : Multiplicative X →* A) : Over.mk g ⟶ splitTorus S X :=
   ofChar _ ((Scheme.ΓSpecIso (CommRingCat.of A)).inv.hom.toMonoidHom.comp f)
@@ -145,7 +144,6 @@ section Eps
 
 variable {S : Scheme.{0}} {R : Type} [CommRing R] {g : Sp (DualNumber R) ⟶ S}
   {X Y : Type} [AddCommGroup X] [AddCommGroup Y]
-
 
 variable (g) in
 def epsVec (c : X →+ R) : Over.mk g ⟶ splitTorus S X :=
@@ -263,8 +261,6 @@ variable {R : Type} [CommRing R] {X Y : Type} [AddCommGroup X] [AddCommGroup Y]
 
 def lieVec (c : X →+ R) : epsR R ⟶ splitTorus (Sp R) X := epsVec _ c
 
-theorem charVal_lieVec (c : X →+ R) (x : X) : charVal (lieVec c) x = 1 + inr (c x) := charVal_epsVec c x
-
 theorem isTangent_iff_charVal (w : epsR R ⟶ splitTorus (Sp R) X) :
     IsTangent w ↔ ∀ x, (charVal w x).fst = 1 := by
   unfold IsTangent
@@ -282,18 +278,11 @@ theorem isTangent_lieVec (c : X →+ R) : IsTangent (lieVec c) := (isTangent_iff
 
 theorem lieVec_injective : Function.Injective (lieVec : (X →+ R) → _) := epsVec_injective
 
-theorem lieVec_add (c d : X →+ R) : lieVec (c + d) = lieVec c * lieVec d := epsVec_add c d
-
 theorem left_eq_iff_lieVec_smul (a : R) (c : X →+ R) (u : epsR R ⟶ splitTorus (Sp R) X) :
     u.left = spMap (epsScaleR a) ≫ (lieVec c).left ↔ u = lieVec (a • c) := left_eq_epsScaleR_iff a (epsScaleR_base a) c u
 
 theorem lieVec_smul_left (a : R) (c : X →+ R) :
     (lieVec (a • c)).left = spMap (epsScaleR a) ≫ (lieVec c).left := (left_eq_iff_lieVec_smul a c _).2 rfl
-
-theorem lieVec_smul (a : R) (c : X →+ R) : lieVec (a • c) = GrpTangent.epsScale a ≫ lieVec c := by
-  apply Over.OverMorphism.ext
-  rw [lieVec_smul_left, Over.comp_left]
-  rfl
 
 theorem lieVec_comp_diagMap (c : X →+ R) (u : Y →+ X) :
     lieVec c ≫ diagMap (Sp R) u = lieVec (c.comp u) := epsVec_comp_diagMap c u
@@ -303,7 +292,6 @@ theorem isLieComb_iff {n : ℕ} (a : Fin n → R) (c : Fin n → (X →+ R))
     IsLieComb a (fun i => lieVec (c i)) w ↔ w = lieVec (∑ i, a i • c i) := by
   unfold IsLieComb
   exact exists_prod_iff (fun b => epsScaleR_base b) a c w
-
 
 theorem isLieBasis_iff {n : ℕ} (c : Fin n → (X →+ R)) :
     IsLieBasis (fun i => lieVec (c i)) ↔
@@ -359,7 +347,6 @@ theorem transpose_apply (u : Y →+ X) (c : X →+ R) : transpose R u c = c.comp
 section Basis
 
 variable {I J : Type} [Fintype I] [Fintype J]
-
 
 variable (R) in
 def dualBasis (b : Module.Basis I ℤ X) : Module.Basis I R (X →+ R) :=
@@ -455,7 +442,6 @@ theorem isLieEigen_iff (v : epsPt t ⟶ splitTorus S X) :
     congr 1
     ext x
     simpa using hc a x
-
 
 variable (X) in
 def eigenHom {k : Type} [CommRing k] (τ : O →+* k) : Submodule k (X →+ k) where

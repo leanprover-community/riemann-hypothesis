@@ -3,7 +3,6 @@ module
 public import ReciprocityTheory.DualLattices.IsPairingValueAddRight
 public import ReciprocityTheory.DualLattices.HeightFunctionalStatementOfPairingProperties
 public import ReciprocityTheory.DualLattices.TangentPairingStatementOfHeightFunctional
-public import ReciprocityTheory.DualLattices.ThmAFull
 public import ReciprocityTheory.DualLattices.AinfTower
 
 @[expose] public section

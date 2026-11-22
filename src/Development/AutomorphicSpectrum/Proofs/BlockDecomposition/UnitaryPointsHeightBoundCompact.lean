@@ -77,8 +77,6 @@ section Unitary
 variable {K E : Type*} [Field K] [CommRing E] [Algebra K E] [Algebra.IsQuadraticExtension K E]
 variable {ι : Type*} [Fintype ι] [DecidableEq ι] (H : Matrix ι ι E)
 
-local notation "𝒩'" => Fintype.card (ι × Fin (Module.finrank K E))
-
 variable [NumberField K]
 
 theorem exists_isCompact_trHom_set {d : ℕ} (b : Module.Basis (Fin d) K E) (hH : IsUnit H.det)

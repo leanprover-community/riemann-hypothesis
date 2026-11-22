@@ -31,10 +31,6 @@ theorem csDual_hform_smul_left {A : Type} [CommRing A] {n : Type} [Fintype n] (�
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-local notation "ι" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 theorem csDual_sig_incl (σ : E →ₐ[F] E) (a : E) :
     sigR σ (FiniteAdeleRing (𝓞 F) F) (ι a) = ι (σ a) := by
   simp [sigR, inclE]

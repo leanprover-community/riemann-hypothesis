@@ -18,7 +18,6 @@ section Ring
 
 variable {R S : Type} [CommRing R] [CommRing S] {a b : ℕ}
 
-
 variable (R) in
 def incl (f : Fin b ↪ Fin a) : Matrix (Fin a) (Fin b) R := Matrix.of fun i p => if f p = i then 1 else 0
 
@@ -30,7 +29,6 @@ theorem transpose_mul_incl (f : Fin b ↪ Fin a) : (incl R f)ᵀ * incl R f = 1 
   · intro i _ hi
     rw [if_neg (Ne.symm hi), zero_mul]
   · simp
-
 
 variable (R) in
 def extN (f : Fin b ↪ Fin a) : Matrix (Fin b) (Fin b) R →ₙ+* Matrix (Fin a) (Fin a) R where
@@ -104,10 +102,6 @@ open GlobalTheory.LeviGA
 def fstIx {r : ℕ} (h : r ≤ a) : Fin r ↪ Fin a := Function.Embedding.inl.trans (blkEquiv h).toEmbedding
 
 def sndIx {r : ℕ} (h : r ≤ a) : Fin (a - r) ↪ Fin a := Function.Embedding.inr.trans (blkEquiv h).toEmbedding
-
-theorem fstIx_apply {r : ℕ} (h : r ≤ a) (p : Fin r) : fstIx h p = blkEquiv h (Sum.inl p) := rfl
-
-theorem sndIx_apply {r : ℕ} (h : r ≤ a) (p : Fin (a - r)) : sndIx h p = blkEquiv h (Sum.inr p) := rfl
 
 theorem blkGL_fst {r : ℕ} (h : r ≤ a) (m : GL (Fin r) R) : blkGL h (m, 1) = embGL (fstIx h) m := by
   apply Units.ext
@@ -209,7 +203,6 @@ theorem embGL_infGL (y : GL (Fin b) (Cinf E)) : embGL f (infGL E b y) = infGL E 
 theorem embGL_finGL (k : GL (Fin b) (Af E)) : embGL f (finGL E b k) = finGL E a (embGL f k) :=
   ga_ext (by simp [map_embGL]) (by simp [map_embGL])
 
-
 omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
 def embK (k : Kinf E b) : Kinf E a :=
   ⟨(embGL f (Unitary.toUnits k)).val, Matrix.mem_unitaryGroup_iff.2 (by
@@ -219,7 +212,6 @@ def embK (k : Kinf E b) : Kinf E a :=
 
 omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
 theorem toUnits_embK (k : Kinf E b) : Unitary.toUnits (embK f k) = embGL f (Unitary.toUnits k) := Units.ext rfl
-
 
 omit [_root_.NumberField.IsTotallyComplex E] in
 variable (E) in

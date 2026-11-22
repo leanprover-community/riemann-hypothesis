@@ -21,16 +21,6 @@ def WcapOneLetter (s : ZMod d) : ℕ :=
   sSup ((fun i : ℕ => capL d TT nu1 nu2 (s - (i : ZMod d))) ''
     {i : ℕ | Odd i ∧ l ^ i ≤ Dl d TT nu1 size (s - (i : ZMod d))})
 
-def IsLabOneLetter (s s0 : ZMod d) (j : ℤ) : Prop :=
-  s0 ∈ TT ∧ Odd j ∧ s = s0 + (j : ZMod d) ∧ (0 < j → l ^ j.toNat ≤ nu1 s0) ∧
-    (j < 0 → l ^ (-j).toNat ≤ Dl d TT nu1 size s)
-
-def JnumOneLetter (s : ZMod d) : ℕ :=
-  Set.ncard {q : ZMod d × ℤ | IsLabOneLetter l d TT nu1 size s q.1 q.2}
-
-def kaMaxOneLetter : ℕ := max (TT.sup nu1) (Finset.univ.sup (capL d TT nu1 nu2))
-
-
 open Classical in
 def oddLevelGainSum (s : ZMod d) : ℝ :=
   ∑' e : ℕ,

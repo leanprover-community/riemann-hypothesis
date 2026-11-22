@@ -25,14 +25,6 @@ section Torus
 
 variable (C : Type) [Field C] {O : Type} [CommRing O] [Algebra O C] {X : Type} [AddCommGroup X]
 
-def evalChar (χ : X) : (specO O O ⟶ splitTorus (Sp O) X) →* Cˣ :=
-  (Units.map ((algebraMap O C).comp (Scheme.ΓSpecIso (CommRingCat.of O)).hom.hom).toMonoidHom).comp
-    ((MonoidHom.eval (Multiplicative.ofAdd χ)).comp
-      (splitTorusPointsEquiv (Sp O) X (specO O O)).toMonoidHom)
-
-def lieMap {G G' : Over (Sp O)} [GrpObj G] [GrpObj G'] (φ : G ⟶ G') [IsMonHom φ] (x : LieG G) : LieG G' :=
-  ⟨x.1 ≫ φ, by rw [← Category.assoc, x.2, Category.assoc, IsMonHom.one_hom]⟩
-
 variable {C} {p : ℕ} [Fact p.Prime]
 
 end Torus

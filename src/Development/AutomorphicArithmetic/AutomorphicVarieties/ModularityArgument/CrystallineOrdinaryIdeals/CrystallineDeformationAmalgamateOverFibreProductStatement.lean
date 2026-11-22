@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.CrystallineDeformationAmalgamateOverFibreProduct
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.CrLift
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.Imports
 
 @[expose] public section

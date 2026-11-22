@@ -208,8 +208,6 @@ theorem exists_equiv_fixT [IsDomain O] [IsDiscreteValuationRing O] [IsFractionRi
   rw [hn]
   exact ⟨b.equivFun⟩
 
-theorem cob_apply (v : A.V) (g : G) : cob A.ρ v g = A.ρ g v - v := rfl
-
 def coW : Submodule O A.V where
   carrier := {v | ∀ g, A.ρ g v - v ∈ LA.T}
   zero_mem' := fun g => by simp

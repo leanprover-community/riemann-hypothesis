@@ -58,19 +58,10 @@ variable (M : h.GKModule K V) (U : Subrepresentation M.rep) (U₀ : Submodule �
 abbrev quotRep : Representation ℂ (FreeMonoid (h.lieSubalgebra ⊕ K)) (U.toSubmodule ⧸ U₀) :=
   U.toRepresentation.quotient U₀ hU₀
 
-theorem quotRep_mk (a : FreeMonoid (h.lieSubalgebra ⊕ K)) (u : U.toSubmodule) :
-    quotRep M U U₀ hU₀ a (Submodule.Quotient.mk u) =
-      Submodule.Quotient.mk (U.toRepresentation a u) :=
-  rfl
-
 theorem exists_form_extend (φ : Dual ℂ (U.toSubmodule ⧸ U₀)) :
     ∃ ψ : Dual ℂ V, ∀ u : U.toSubmodule, φ (Submodule.Quotient.mk u) = ψ u := by
   obtain ⟨ψ, hψ⟩ := LinearMap.exists_extend (φ ∘ₗ U₀.mkQ)
   exact ⟨ψ, fun u => (LinearMap.congr_fun hψ u).symm⟩
-
-theorem coe_toRepresentation_apply (a : FreeMonoid (h.lieSubalgebra ⊕ K)) (u : U.toSubmodule) :
-    ((U.toRepresentation a u : U.toSubmodule) : V) = M.rep a u :=
-  rfl
 
 def subQuotρ : h.lieSubalgebra →ₗ⁅ℝ⁆ Module.End ℂ (U.toSubmodule ⧸ U₀) where
   toFun X := quotRep M U U₀ hU₀ (FreeMonoid.of (Sum.inl X))

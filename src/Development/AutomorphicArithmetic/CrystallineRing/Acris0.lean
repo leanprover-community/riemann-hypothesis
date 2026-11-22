@@ -16,8 +16,6 @@ namespace UpperTheory.Ring.Comp
 
 open Reformulated.AutPerF
 
-abbrev Fl (l : ℕ) [Fact (Nat.Prime l)] : Type := Tilt l (PadicComplexInt l)
-
 abbrev Ainf (l : ℕ) [Fact (Nat.Prime l)] : Type := Reformulated.AutPerF.Ainf l (PadicComplexInt l)
 
 abbrev AinfP (l : ℕ) [Fact (Nat.Prime l)] : Type := AinfInv l (PadicComplexInt l)

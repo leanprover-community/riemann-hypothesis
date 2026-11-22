@@ -118,9 +118,6 @@ def coefTr (A : Module.End ℂ (Fin n → D)) : Module.End ℂ (WithLp 2 (Fin n 
   (WithLp.linearEquiv 2 ℂ (Fin n → D)).symm.toLinearMap ∘ₗ A ∘ₗ
     (WithLp.linearEquiv 2 ℂ (Fin n → D)).toLinearMap
 
-theorem coefTr_apply (A : Module.End ℂ (Fin n → D)) (u : WithLp 2 (Fin n → D)) :
-    coefTr A u = WithLp.toLp 2 (A (WithLp.ofLp u)) := rfl
-
 theorem coefTr_casimirK (ε : Fin n → Bool) (A : Fin n → Fin n → Module.End ℂ (Fin n → D)) :
     casimirK ε (fun a b => coefTr (A a b)) = coefTr (casimirK ε A) := by
   refine LinearMap.ext fun u => ?_

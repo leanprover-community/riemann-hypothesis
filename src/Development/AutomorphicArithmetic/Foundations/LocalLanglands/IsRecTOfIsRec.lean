@@ -34,7 +34,6 @@ end Classes
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
 
-
 variable (h) in
 def TypeLaw (rc : IrrGL (k := w.adicCompletion E) → WD h) : Prop :=
   ∀ (E' : Type) [Field E'] [NumberField E'] [Algebra E E'] [Algebra E' Ω] [IsScalarTower E E' Ω] [IsAlgClosure E' Ω]
@@ -75,7 +74,6 @@ structure LawsT (a : Weil h →* (w.adicCompletion E)ˣ) (ha : IsLocalArtin h a)
   depth : ∀ x, Good x → GlobalTheory.PRep.fixed x.rep (GlobalTheory.SplitWeil.KOne (w.adicCompletion E) (Fin x.1)) ≠ ⊥ → IsTameWD (rc x)
   type : TypeLaw h rc
 
-
 variable (h) in
 def IsRecT (rc : IrrGL (k := w.adicCompletion E) → WD h) : Prop := ∃ a ha, LawsT (h := h) a ha rc
 
@@ -91,29 +89,6 @@ def RecTUnique : Prop :=
 def AbConverse (y : WD h) (x : IrrGL (k := w.adicCompletion E)) : Prop :=
   ∀ ξ : Fin x.1 → (Weil h →* ℂˣ), (∀ t : Ine (F := E) A, y.charPol (ineIncl h t) = ∏ j, (X - C ((ξ j (ineIncl h t) : ℂˣ) : ℂ))) →
     Toral x
-
-theorem lawsT_of_laws {a : Weil h →* (w.adicCompletion E)ˣ} {ha : IsLocalArtin h a} {ε : EpsFamily A}
-    {rc : IrrGL (k := w.adicCompletion E) → WD h} (H : Laws a ha ε rc) (hT : TypeLaw h rc) : LawsT a ha rc :=
-  { dim := H.dim
-    one := H.one
-    langlands := H.langlands
-    cusp x := (H.cusp x).1
-    nu := H.nu_eq
-    absCentral x ω hω σ := by rw [H.central x ω hω σ]
-    twist x χ hχ _ := H.twist x χ hχ
-    central x ω _ := H.central x ω
-    dual n π π' _ := H.dual n π π'
-    inj _ _ _ e := H.bij.1 e
-    depth x _ := (H.depth x).1
-    type := hT }
-
-theorem isRecT_of_isRec (hD : GlobalTheory.Published.DepthZeroTypeInertia) {rc : IrrGL (k := w.adicCompletion E) → WD h}
-    (H : IsRec h rc) : IsRecT h rc := by
-  have hT : TypeLaw h rc := by
-    intro E' _ _ _ _ _ _ g _ w' h'
-    exact hD E E' Ω g A w h w' h' rc H
-  obtain ⟨a, ha, ε, -, H⟩ := H
-  exact ⟨a, ha, lawsT_of_laws H hT⟩
 
 end UpperTheory.Zero.LLC
 

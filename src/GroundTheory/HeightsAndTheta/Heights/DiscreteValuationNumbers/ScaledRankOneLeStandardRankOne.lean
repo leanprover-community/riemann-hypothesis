@@ -55,9 +55,6 @@ theorem isMultiHomog_C (c : O) : IsMultiHomog (C c : MRingOver O ι) 0 := by
     simp
   · exact absurd rfl hm
 
-def unif : O :=
-  Classical.choose (IsDiscreteValuationRing.exists_irreducible O)
-
 end ModelInhabitants
 
 section Flags

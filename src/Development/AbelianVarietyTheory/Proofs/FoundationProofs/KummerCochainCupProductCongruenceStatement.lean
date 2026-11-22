@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerCochainCupProductCongruence
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NotCoboundaryConstantOne
 
 @[expose] public section

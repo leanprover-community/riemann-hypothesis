@@ -23,9 +23,6 @@ section Disc
 
 variable {n : ℕ}
 
-def weylDisc (x : Matrix (Fin n) (Fin n) ℂ) : ℂ :=
-  resultant x.charpoly (derivative x.charpoly) n (n - 1) / x.det ^ (n - 1)
-
 end Disc
 
 section Cartan
@@ -34,25 +31,11 @@ variable {n : ℕ} {ε : Fin n → Bool}
 
 theorem continuous_ujMat : Continuous (ujMat ε) := Units.continuous_val.comp continuous_subtype_val
 
-def IsCartanSub (T : Subgroup (UJ ε)) : Prop := ∃ s, IsRegSS (ujMat ε s) ∧ T = cent s
-
-def IsCartanSystem (𝒯 : Finset (Subgroup (UJ ε))) : Prop :=
-  (∀ T ∈ 𝒯, IsCartanSub T) ∧
-    ∀ T : Subgroup (UJ ε), IsCartanSub T → ∃! T', T' ∈ 𝒯 ∧ ∃ x, T.map (MulAut.conj x).toMonoidHom = T'
-
-def weylOrder {H : Type} [Group H] (T : Subgroup H) : ℕ := T.relIndex (Subgroup.normalizer (T : Set H))
-
 end Cartan
 
 section Char
 
 variable {n : ℕ} {ε : Fin n → Bool} {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [CompleteSpace V]
-
-def IsAnalyticAt (Θ : UJ ε → ℂ) (s : UJ ε) : Prop :=
-  ∃ Φ : (Fin n → Fin n → ℂ) → ℂ, AnalyticAt ℝ Φ (matCoord (ujMat ε) s) ∧ ∀ᶠ g in 𝓝 s, Θ g = Φ (matCoord (ujMat ε) g)
-
-def IsGlobalChar (μ : Measure (UJ ε)) (π : UJ ε →* (V →L[ℂ] V)) (Θ : UJ ε → ℂ) : Prop :=
-  IsCharFn (ujMat ε) μ π Θ ∧ ∀ s, IsRegSS (ujMat ε s) → IsAnalyticAt Θ s ∧ ∀ x, Θ (x⁻¹ * s * x) = Θ s
 
 end Char
 
@@ -69,9 +52,6 @@ def torusPt (ε : Fin n → Bool) (θ : Fin n → ℝ) : UJ ε :=
       funext a
       rw [mul_right_comm, Pi.star_apply, Complex.star_def, ← Complex.exp_conj, ← Complex.exp_add]
       simp⟩
-
-theorem ujMat_torusPt (ε : Fin n → Bool) (θ : Fin n → ℝ) :
-    ujMat ε (torusPt ε θ) = diagonal fun a => Complex.exp (θ a * Complex.I) := rfl
 
 def wtVal (μ θ : Fin n → ℝ) : ℂ := Complex.exp ((∑ a, μ a * θ a : ℝ) * Complex.I)
 
@@ -119,21 +99,6 @@ theorem dsChar_eq (ε : Fin n → Bool) {lam : Fin n → ℝ} {m : Fin n → ℤ
     Finset.sum_mul]
   simp [mul_assoc]
 
-theorem exists_isRegSS_torusPt (ε : Fin n → Bool) : ∃ θ, IsRegSS (ujMat ε (torusPt ε θ)) := by
-  refine ⟨fun a => 1 / ((a : ℕ) + 1), ?_⟩
-  rw [IsRegSS, ujMat_torusPt, charpoly_diagonal, separable_prod_X_sub_C_iff]
-  have hb : ∀ a : Fin n, -Real.pi < (((1 / ((a : ℕ) + 1) : ℝ) : ℂ) * Complex.I).im ∧
-      (((1 / ((a : ℕ) + 1) : ℝ) : ℂ) * Complex.I).im ≤ Real.pi := fun a => by
-    have h1 : (0 : ℝ) < 1 / ((a : ℕ) + 1) := by positivity
-    have h2 : (1 : ℝ) / ((a : ℕ) + 1) ≤ 1 := by rw [div_le_one (by positivity)]; simp
-    rw [Complex.mul_I_im, Complex.ofReal_re]
-    constructor <;> linarith [Real.pi_gt_three]
-  intro a b h
-  have := Complex.exp_inj_of_neg_pi_lt_of_le_pi (hb a).1 (hb a).2 (hb b).1 (hb b).2 h
-  rw [mul_left_inj' Complex.I_ne_zero, Complex.ofReal_inj, one_div, one_div, _root_.inv_inj, add_left_inj,
-    Nat.cast_inj] at this
-  exact Fin.ext this
-
 end Torus
 
 end GlobalTheory.HCChar
@@ -141,38 +106,5 @@ end GlobalTheory.HCChar
 namespace GlobalTheory.Published
 
 open GlobalTheory.HCChar
-
-def CharacterRegularity : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (μ : Measure (UJ ε)) [μ.IsHaarMeasure] (V : Type) [NormedAddCommGroup V]
-    [InnerProductSpace ℂ V] [CompleteSpace V] (π : Matrix (Fin n) (Fin n) ℂ → (V →L[ℂ] V)) (h : IsIrrAdm ε π),
-    ∃ Θ, IsGlobalChar μ (groupRep ε h.2.1.1) Θ
-
-def DiscreteSeriesCharacter : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (μ : Measure (UJ ε)) [μ.IsHaarMeasure] (V : Type) [NormedAddCommGroup V]
-    [InnerProductSpace ℂ V] [CompleteSpace V] (lam : Fin n → ℝ) (σ : Matrix (Fin n) (Fin n) ℂ → (V →L[ℂ] V)),
-    IsHCParam lam → IsDS ε lam σ → ∀ h : IsURepOn (UJset ε) σ, ∃ Θ, IsGlobalChar μ (ujRep h) Θ ∧
-      ∀ θ : Fin n → ℝ, IsRegSS (ujMat ε (torusPt ε θ)) → Θ (torusPt ε θ) = dsChar ε lam θ
-
-def WeylIntegrationFormula : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool), (∃ 𝒯 : Finset (Subgroup (UJ ε)), IsCartanSystem 𝒯) ∧
-    (∀ T : Subgroup (UJ ε), IsCartanSub T → weylOrder T ≠ 0) ∧
-    ∀ (μ : Measure (UJ ε)) [μ.IsHaarMeasure] (𝒯 : Finset (Subgroup (UJ ε))), IsCartanSystem 𝒯 →
-      ∀ dt : ∀ T : Subgroup (UJ ε), Measure T, (∀ T ∈ 𝒯, (dt T).IsHaarMeasure) →
-        ∀ F : UJ ε → ℝ≥0∞, Measurable F →
-          ∫⁻ g, F g ∂μ = ∑ T ∈ 𝒯, (weylOrder T : ℝ≥0∞)⁻¹ *
-            ∫⁻ t : T, ‖weylDisc (ujMat ε t)‖ₑ * ∫⁻ q, F (q.out⁻¹ * t * q.out) ∂quotMeas T (dt T) μ ∂dt T
-
-def InducedCharacterSupport : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (μ : Measure (UJ ε)) [μ.IsHaarMeasure] (a : ℕ) (j : Fin a → ℕ) (W : Flag n a),
-    IsIsoFlag ε j W → (∀ i, 1 ≤ j i) → a ≠ 0 →
-    ∀ (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] [CompleteSpace V] [Nontrivial V]
-      (σ : Matrix (Fin n) (Fin n) ℂ → (V →L[ℂ] V)), IsURepOn (mats (leviOne ε W)) σ → IsIrredOn (mats (leviOne ε W)) σ →
-      ∀ (s : Fin a → ℂ) (X : Type) [NormedAddCommGroup X] [InnerProductSpace ℂ X] [CompleteSpace X]
-        (ρ : Matrix (Fin n) (Fin n) ℂ → (X →L[ℂ] X)) (ι : indFun (ε := ε) ⊤ j W σ s →ₗ[ℂ] X),
-        IsIndModel ⊤ (KG ε) (muK ε) _ ρ ι → ∀ h : IsCRepOn (UJset ε) ρ, ∃ Θ, IsGlobalChar μ (groupRep ε h) Θ ∧
-          ∀ g, IsRegSS (ujMat ε g) → (∀ x, x * g * x⁻¹ ∉ flagM ε W) → Θ g = 0
-
-def HarishChandraCharacters : Prop :=
-  CharacterRegularity ∧ DiscreteSeriesCharacter ∧ WeylIntegrationFormula ∧ InducedCharacterSupport
 
 end GlobalTheory.Published

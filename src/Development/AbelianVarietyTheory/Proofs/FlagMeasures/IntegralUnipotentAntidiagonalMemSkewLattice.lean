@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsVolData
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MemConfTOfDetNeZero
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.PadicValNatAbsNormEqZero
 
 @[expose] public section

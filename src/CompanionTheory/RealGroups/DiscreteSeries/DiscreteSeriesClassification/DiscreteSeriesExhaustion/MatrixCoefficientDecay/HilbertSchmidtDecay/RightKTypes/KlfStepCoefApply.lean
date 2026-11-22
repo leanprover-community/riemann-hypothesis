@@ -15,10 +15,6 @@ open CompanionTheory.RgExh CompanionTheory.RgExh.Dec ReciprocityTheory.ChartRest
 
 variable {n : ℕ}
 
-theorem klf_stepCoef_apply (X : GMod n) (z : ℂ) (c : X.V →ₗ[ℂ] (Matrix (Fin n) (Fin n) ℂ → ℂ)) (j : Fin n)
-    (u : (step X z).V) (g : Matrix (Fin n) (Fin n) ℂ) :
-    stepCoef X z c j u g = ∑ i, g j i * c ((Subtype.val u : Fin n → X.V) i) g := rfl
-
 theorem klf_contFam_step {ε : Fin n → Bool} {X : GMod n} {I : Type} {c : CoefFam X I} (h : ContFam ε c) (z : ℂ) :
     ContFam ε (X := step X z) (fun p : I × Fin n => stepCoef X z (c p.1) p.2) := by
   rintro ⟨i, j⟩ v

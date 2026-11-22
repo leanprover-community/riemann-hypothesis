@@ -24,8 +24,6 @@ open GlobalTheory.FockCompare GlobalTheory.OrientedHeis
 
 variable {D : D7} {S T : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D}
 
-local notation "dR" => Formalism.IndefR.Datum.dRho (heisO ψ S T) θ
-
 theorem dRho_laws (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f)
     (τ : D.what₂.Tau) (z : Matrix (Fin T.rank) (Fin S.rank) ℂ) :
     (∀ f', IsThetaFunO ψ S T f' → dR τ z (f + f') = dR τ z f + dR τ z f') ∧

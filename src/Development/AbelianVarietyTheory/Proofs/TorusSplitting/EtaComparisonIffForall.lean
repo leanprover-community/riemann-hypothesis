@@ -1,10 +1,10 @@
 module
 
 public import Mathlib
-public import Formalism.LocalToGlobal.ProjectiveLattices.IsBlockProd
+public import Formalism.LocalToGlobal.ProjectiveLattices.SupNDataOfNonneg
+public import Formalism.LocalToGlobal.ProjectiveLattices.ContDiffAtOfDiff
 public import Formalism.LocalToGlobal.ProjectiveLattices.EtArchPf
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ThetaValCAlpha
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.TorusPin
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.DifferentiableConjConj
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.SemicharUnitFrame
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.AppellHumbertSectionEntireWithFactor

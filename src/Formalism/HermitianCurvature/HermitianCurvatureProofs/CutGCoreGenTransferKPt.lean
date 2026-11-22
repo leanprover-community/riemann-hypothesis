@@ -258,8 +258,6 @@ variable {Wq : Type} [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteD
 
 def rk1 (u : Wq) : Wq →L[ℂ] Wq := (innerSL ℂ u).smulRight u
 
-theorem rankOneInnerOperator_apply (u v : Wq) : rk1 u v = ⟪u, v⟫_ℂ • u := rfl
-
 end main
 
 end Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.KPt

@@ -21,9 +21,6 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {n : ℕ}
 
-local notation "𝕄" => Matrix (Fin n) (Fin n) ℂ
-local notation "𝕋" => 𝕄 × 𝕄 × 𝕄
-
 namespace CapPs
 
 open ReciprocityTheory.ChartRestriction.DS.Lap.Capelli

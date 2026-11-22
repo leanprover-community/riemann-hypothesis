@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.QuotRepMk
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.KatoBkMap
 
 @[expose] public section

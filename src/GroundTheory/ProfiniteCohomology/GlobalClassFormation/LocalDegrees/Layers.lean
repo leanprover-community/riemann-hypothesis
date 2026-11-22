@@ -18,8 +18,6 @@ noncomputable section
 
 namespace CyclotomicLayer
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 def degreeMod (r : ℕ+) : Gal(ℚ̄/ℚ) →* Multiplicative (ZMod r) :=
   (AddMonoidHom.toMultiplicative (ProfiniteInteger.proj r).toAddMonoidHom).comp degree
 

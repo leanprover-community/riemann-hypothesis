@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Lemmata.GeneralBFactMore.Imports
 public import Lemmata.FirstBlockLemmaA.Imports
 
 @[expose] public section

@@ -237,10 +237,6 @@ private noncomputable def chi (ρ : G →* R ≃+* R) (p : ℕ) [Fact (Nat.Prime
     (q : G ⧸ Nm ρ p m) : Km p R m →+* R := (ρ q.out).toRingHom.comp (Km p R m).subtype
 
 omit [IsDomain R] in
-private lemma chi_apply (ρ : G →* R ≃+* R) (m : ℕ) (q : G ⧸ Nm ρ p m) (a : Km p R m) :
-    chi ρ p m q a = ρ q.out a := rfl
-
-omit [IsDomain R] in
 private lemma chi_inj (ρ : G →* R ≃+* R) (m : ℕ) : Function.Injective (chi ρ p m) := by
   intro a b hab
   rw [← QuotientGroup.out_eq' a, ← QuotientGroup.out_eq' b, QuotientGroup.eq]

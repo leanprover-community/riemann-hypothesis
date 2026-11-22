@@ -259,7 +259,6 @@ section Exists
 variable {X : Type*} [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
   {Q : QuadraticMap ℤ X ℝ}
 
-
 omit [Module.Free ℤ X] [Module.Finite ℤ X] in
 theorem exists_mul_sum_sq_le {ι : Type*} [Fintype ι] (hQ : (realExtension Q).PosDef)
     (e : Module.Basis ι ℤ X) : ∃ c > 0, ∀ a, c * ∑ i, (e.repr a i : ℝ) ^ 2 ≤ Q a := by
@@ -333,39 +332,10 @@ open ReciprocityTheory.ReducedBases (toReal SameClass IsMinInClass IsUniqueMinIn
 
 variable {d : ℕ} {A : Matrix (Fin d) (Fin d) ℝ}
 
-def ofMatrix (A : Matrix (Fin d) (Fin d) ℝ) : QuadraticMap ℤ (Fin d → ℤ) ℝ :=
-  (1 / 2 : ℝ) • LinearMap.BilinMap.toQuadraticMap (LinearMap.mk₂ ℤ (ReciprocityTheory.ReducedBases.polar A)
-    (fun x y z => by simp [ReciprocityTheory.ReducedBases.polar, toReal, dotProduct, add_mul, Finset.sum_add_distrib])
-    (fun n x y => by
-      simp [ReciprocityTheory.ReducedBases.polar, toReal, dotProduct, Finset.mul_sum, mul_assoc])
-    (fun x y z => by
-      simp [ReciprocityTheory.ReducedBases.polar, toReal, dotProduct, mulVec, mul_add, Finset.sum_add_distrib])
-    (fun n x y => by
-      simp [ReciprocityTheory.ReducedBases.polar, toReal, dotProduct, mulVec, Finset.mul_sum, mul_left_comm]))
-
 @[simp] theorem ofMatrix_apply (A : Matrix (Fin d) (Fin d) ℝ) (x : Fin d → ℤ) :
     ofMatrix A x = ReciprocityTheory.ReducedBases.Q A x := by
   change (1 / 2 : ℝ) * ReciprocityTheory.ReducedBases.polar A x x = ReciprocityTheory.ReducedBases.polar A x x / 2
   ring
-
-theorem polar_ofMatrix (hA : A.IsHermitian) (x y : Fin d → ℤ) :
-    polar (ofMatrix A) x y = ReciprocityTheory.ReducedBases.polar A x y := by
-  have hs : ReciprocityTheory.ReducedBases.polar A y x = ReciprocityTheory.ReducedBases.polar A x y := by
-    have hT : Aᵀ = A := by simpa using hA.eq
-    rw [ReciprocityTheory.ReducedBases.polar, ReciprocityTheory.ReducedBases.polar, dotProduct_mulVec, ← mulVec_transpose, hT,
-      dotProduct_comm]
-  have ha : toReal (x + y) = toReal x + toReal y := by funext i; simp [toReal]
-  simp only [polar, ofMatrix_apply, ReciprocityTheory.ReducedBases.Q]
-  simp only [ReciprocityTheory.ReducedBases.polar, ha, mulVec_add, dotProduct_add, add_dotProduct] at hs ⊢
-  linarith
-
-theorem gram_ofMatrix (hA : A.IsHermitian) : gram (ofMatrix A) (Pi.basisFun ℤ (Fin d)) = A := by
-  ext i j
-  rw [gram_apply, polar_ofMatrix hA]
-  simp [ReciprocityTheory.ReducedBases.polar, toReal, dotProduct, mulVec, Pi.single_apply]
-
-theorem realExtension_ofMatrix_posDef (hA : A.PosDef) : (realExtension (ofMatrix A)).PosDef := by
-  rwa [realExtension_posDef_iff _ (Pi.basisFun ℤ (Fin d)), gram_ofMatrix hA.isHermitian]
 
 end Matrix
 

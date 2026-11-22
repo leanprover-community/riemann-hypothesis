@@ -5,7 +5,6 @@ public import Formalism.LandauZeroFreeBounds.SiegelWalfiszAPOfSiegelLower
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.SmoothedRemainderRealIntegralFormula
 public import Mathlib
 public import Formalism.GL3MeanSquares.SmoothedRemainderRealIntegralFormula
-public import Formalism.GL3MeanSquares.HookFormulaTorsion.PrimesInProgressionCountLowerBound
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.PsiZeroIntegral
 public import Formalism.GL3MeanSquares.PrimeCountAsymptoticInProgressions
 

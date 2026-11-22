@@ -118,8 +118,6 @@ theorem tower_pi_surj (hT : IsTowerLim A τ L π) (m n : ℕ) : Surjective ((π 
 
 def smulHom (L : Cx R) (t : R) : Hom L L := ⟨fun _ => t • LinearMap.id, fun n x => by simp⟩
 
-theorem smulHom_f (L : Cx R) (t : R) (n : ℕ) (x : L.X n) : (smulHom L t).f n x = t • x := rfl
-
 theorem pow_torsionfree (htf : ∀ n (x : L.X n), t • x = 0 → x = 0) (n : ℕ) :
     ∀ k (x : L.X n), t ^ k • x = 0 → x = 0 := by
   intro k

@@ -21,8 +21,6 @@ def dprod (L : List (ℂ × A)) : ℂ := (L.map Prod.fst).prod
 
 def sub1 (L : List (ℂ × A)) : A := List.rec 0 (fun p L s => dprod L • p.2 + p.1 • s) L
 
-theorem sub1_nil : sub1 ([] : List (ℂ × A)) = 0 := rfl
-
 theorem sub1_cons (p : ℂ × A) (L : List (ℂ × A)) : sub1 (p :: L) = dprod L • p.2 + p.1 • sub1 L := rfl
 
 theorem prod_affine (L : List (ℂ × A)) : ∃ c : ℕ → A, (∀ k, L.length < k → c k = 0) ∧

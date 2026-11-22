@@ -587,9 +587,6 @@ theorem d_continuous_M (m : ℕ) (t : ℂ) (x : Fin (m + 1) → ℂ) : Continuou
   exact G7.continuous_blk (continuous_const.matrix_mul (continuous_const.add hX))
     (Continuous.matrix_mulVec continuous_const hB) hρ (continuous_fst.comp hred)
 
-theorem d_MXY_eq (m : ℕ) (D t : ℂ) (x : Fin (m + 1) → ℂ) (y : UT (m + 2) → ℂ) :
-    MXY m D t (x, y) = d_M m t x (rhoXY m D t (x, y), y) := rfl
-
 theorem d_continuous_cutM {s : ℕ} (τ : ℝ) : Continuous (cutM (s := s) τ) := by
   unfold cutM chi0
   refine continuous_finsetProd _ fun i _ => continuous_finsetProd _ fun j _ => ?_

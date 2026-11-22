@@ -30,12 +30,6 @@ namespace ACris
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝒪" => normInteger K
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "θ" => fontaineTheta 𝒪 p
-local notation "φ" => WittVector.frobeniusEquiv p 𝒪♭
-
 theorem exists_p_mul_eq_frobenius_sub {ξ : AInf K p} (hξ : ξ ∈ RingHom.ker θ) :
     ∃ X : ACrisZero K p, (p : 𝔸) * (X : 𝔸) = algebraMap (AInf K p) 𝔸 (φ ξ) - p := by
   obtain ⟨c, hc⟩ := exists_frobenius_eq ξ
@@ -94,7 +88,6 @@ theorem exists_phiAway_eq_add_mul {ξ : AInf K p} (hξ : RingHom.ker θ = Ideal.
       (Subalgebra.mul_mem _ hz₁ (Subalgebra.algebraMap_mem _ _)))
       (Subalgebra.mul_mem _ (Subalgebra.mul_mem _ X.2 hz₁) hz₂)
 
-
 set_option maxHeartbeats 1600000 in
 theorem exists_phi_eq_add_mul [CharZero K] {ξ : AInf K p} (hξ : RingHom.ker θ = Ideal.span {ξ})
     {X : ACrisZero K p} (hX : (p : 𝔸) * (X : 𝔸) = algebraMap (AInf K p) 𝔸 (φ ξ) - p)
@@ -138,7 +131,6 @@ theorem theta_phi_iterate_algebraMap (n : ℕ) (w : AInf K p) :
     | succ n ih =>
       rw [Function.iterate_succ_apply', ih, phi_algebraMap, pow_succ', RingAut.mul_apply]
   rw [h, theta_algebraMap]
-
 
 set_option maxHeartbeats 1600000 in
 theorem p_mul_phi_mem_span_mu {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1)

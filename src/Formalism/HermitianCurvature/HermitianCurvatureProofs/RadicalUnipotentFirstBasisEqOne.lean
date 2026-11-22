@@ -157,10 +157,6 @@ theorem star_uu' (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) (a : Fin j) : star (u
   rw [Matrix.conjTranspose_apply] at this
   rw [← this]; simp; ring
 
-theorem CX_zero (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) (v : Fin (2 * ρ + k + 1)) : CX x y v 0 = cy y v := rfl
-theorem CX_succ (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) (v : Fin (2 * ρ + k + 1)) (b : Fin j) :
-    CX x y v b.succ = cm x v b + cy y v * cb x b := rfl
-
 theorem cXH_zero (x : U.RC k j (1 + ρ)) (y : U.RC k 1 ρ) (v : Fin (2 * ρ + k + 1)) :
     ((Matrix.of (XC x y).1)ᴴ * Hpk k ρ) 0 v = Matrix.vecMul (star (cy y)) (Hpk k ρ) v := by
   simp [Matrix.mul_apply, Matrix.vecMul, dotProduct, XC, CX_zero, Matrix.conjTranspose_apply]

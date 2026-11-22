@@ -5,15 +5,9 @@ public import Development.WeilBound.RepresentationTheoryGL.TubeMeasures.Disjoint
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightedFrameSumPositive
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspFormsFiniteDimensional
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KroneckerCharacterFrameFirst
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KroneckerCharacterFrameSecond
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightedFrameSumSecond
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KroneckerCharacterFrameThird
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelGeometryWeightBound
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SupConstantLogBound
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntitoneWeightLogBound
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SlopeMaxSquaredBound
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntitoneWeightLogBoundStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SlopeMaxSquaredBoundStatement
 
 @[expose] public section
 
@@ -41,7 +35,6 @@ open Classical
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 end GlobalTheory.SupModel
-
 
 open GlobalTheory.SupModel in
 theorem _root_.UpperTheory.Lit.Tam.tamagawa_local_volume_factor : True → GlobalTheory.UCls.TorusBound → ∀ (D : D7) (j : ℕ) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H) (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (dict : ∀ σ : c.F →+* ℂ, GA D (D.sp.W j) → Σ k, Frame ((U σ).X k).Ψ D.R.r), Laws D j Xo c U dict → ∀ σ, GoodEmb c σ → ∀ (la : ∀ k, Wt ((U σ).X k).Ψ D.R.r) (w : ℝ), 0 < w → (∀ k, (∑ τ, ((U σ).X k).spread (la k) τ) ≤ w) → (∀ k, ∀ γ ∈ ((U σ).X k).Γ, ((U σ).X k).χ (la k) γ = 1) → ∀ P ∈ holSub (U σ).X la, supE (U σ).X la P ^ 2 ≤ ENNReal.ofReal (MainStatements.Tam.Plug.supConst2 D.host.E D.R.r D.host.d l.M w) * petE (D.sp.W j) (dict σ) (muQ1 (D.sp.W j)) la P ^ 2 := by
@@ -142,7 +135,6 @@ open scoped TensorProduct
 variable {D : D7} {r : ℕ} {Comp : Type} [Fintype Comp] {X : Comp → Data D.host.E r}
 
 open Module
-
 
 set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 400000 in
@@ -537,58 +529,6 @@ end GlobalTheory.BergRank
 
 namespace GlobalTheory.BergRank
 
-theorem _root_.UpperTheory.Lit.Tam.tamagawa_weight_bound : Hypotheses2 → ∃ C : ℝ, 0 ≤ C ∧ ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → 2 < Module.finrank ℚ D.host.E / 2 → InR D j → ∀ (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o → ∀ Lb : ℝ, 1 ≤ Lb → Real.log Y.d.l₂.M ≤ 30 * Lb → fieldSz D.host.E ≤ 3 * Lb → Real.log (D.R.f * D.R.r) ≤ Lb → o ≤ 391 * (D.R.f * D.R.r * Lb) ^ 2 → ∀ la : AllWt.Weight (T.Q.Dw j), (∀ τ, Antitone (la τ)) → Real.log (∑ τ, ∑ k, |(la τ k : ℝ)|) ≤ 20 * Lb → ∀ Z, BergLe Z Y.U (fun _ => D.sp.W j) Y.dict la (Real.exp (C * ((D.R.f : ℝ) * D.R.r * Lb) ^ 3)) ∧ SupBdWt Y.U (xiR D) (fun _ => D.sp.W j) Y.dict Z la (Real.exp (C * ((D.R.f : ℝ) * D.R.r * Lb) ^ 3)) ∧ Real.log (Y.rkC la Z) ≤ C * ((D.R.f : ℝ) * D.R.r * Lb) ^ 3 := by
-  intro hP
-  refine ⟨4000, by norm_num, ?_⟩
-  intro D T hT j hp hq hE hj Y e o hY Lb hLb hM hsz hfr ho la hla hS Z
-  have hL := (GlobalTheory.T.deepLevelCover_principalLevel_laws_galois D T j Y e o hT hj hY hY.unit hY.modelW).1
-  set S : ℝ := ∑ τ, ∑ k, |(la τ k : ℝ)| with hSdef
-  have hS0 : 0 ≤ S := Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => abs_nonneg _
-  set n : ℝ := (Module.finrank ℚ D.host.E : ℝ) with hn
-  have hn1 : 1 ≤ n := by
-    have : 0 < Module.finrank ℚ D.host.E := Module.finrank_pos
-    rw [hn]; exact_mod_cast this
-  have hnlog : Real.log n ≤ 3 * Lb := (log_finrank_le_fieldSz _).trans hsz
-  set w : ℝ := 2 * n * S + 1 with hw
-  have hnS : 0 ≤ n * S := mul_nonneg (by linarith) hS0
-  have hw1 : 1 ≤ w := by rw [hw]; nlinarith
-  have hlogw : Real.log w ≤ 25 * Lb := by
-    have hint : S = (((∑ τ, ∑ k, |la τ k|) : ℤ) : ℝ) := by rw [hSdef]; push_cast; rfl
-    have hz : (0 : ℤ) ≤ ∑ τ, ∑ k, |la τ k| := Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => abs_nonneg _
-    rcases hz.eq_or_lt with h0 | h1
-    · have : S = 0 := by rw [hint, ← h0]; simp
-      rw [hw, this]; simp; linarith
-    · have hS1 : 1 ≤ S := by rw [hint]; exact_mod_cast h1
-      have hwle : w ≤ 3 * (n * S) := by rw [hw]; nlinarith
-      have hlS : Real.log S ≤ 20 * Lb := hS
-      have e1 : Real.log w ≤ Real.log (3 * (n * S)) := Real.log_le_log (by linarith) hwle
-      rw [Real.log_mul (by norm_num) (by positivity), Real.log_mul (by positivity) (by positivity)] at e1
-      have h3 : Real.log 3 < 2 := by
-        have := Real.log_two_lt_d9; have h4 : Real.log 3 < Real.log 4 := Real.log_lt_log (by norm_num) (by norm_num)
-        have : Real.log 4 = 2 * Real.log 2 := by rw [show (4:ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; norm_num
-        linarith
-      linarith
-  obtain ⟨hβ1, hβ⟩ := UpperTheory.Lit.Tam.supConst2Bounds D Y.d.l₂.M Lb w (by have := Y.d.l₂.three_le; omega) hLb hM hsz hfr hw1 hlogw
-  set β := MainStatements.Tam.Plug.supConst2 D.host.E D.R.r D.host.d Y.d.l₂.M w with hβdef
-  have hβexp : β ≤ Real.exp (4000 * ((D.R.f : ℝ) * D.R.r * Lb) ^ 3) := by
-    rw [← Real.exp_log (by linarith : 0 < β)]; exact Real.exp_le_exp.2 hβ
-  have hsp : ∀ σ k, ∑ τ, ((Y.U σ).X k).spread (AllWt.modelWt (Y.U σ) (wtOf _ la 0) k) τ ≤ w := fun σ k =>
-    (sum_spread_modelWt_le _ la k).trans (by rw [hw]; linarith)
-  have hB : BergLe Z Y.U (fun _ => D.sp.W j) Y.dict la β := fun σ hσ y hy =>
-    UpperTheory.Lit.Tam.tamagawaPeterssonLambdaSq_nonneg trivial D j _ _ _ _ _ Y.U Y.dict hL σ hσ (wtOf _ la 0) (AllWt.even_wtOf la 0) w (by linarith) (hsp σ) Z y hy
-  have hBexp : BergLe Z Y.U (fun _ => D.sp.W j) Y.dict la (Real.exp (4000 * ((D.R.f : ℝ) * D.R.r * Lb) ^ 3)) :=
-    fun σ hσ y hy => (hB σ hσ y hy).trans (ENNReal.ofReal_le_ofReal hβexp)
-  refine ⟨hBexp, ?_, ?_⟩
-  · refine SupBdWt.of_bergOn (Real.exp_pos _).le ?_ hBexp
-    intro σ hσ g
-    obtain ⟨th, hr, -, hd⟩ := hY.dictU σ hσ
-    exact Formalism.L2.Pj.dict_dom_of hd g
-  · have hrk := GlobalTheory.T.cuspFormRank_le_bergmanBound_goodCover D T.toCore j Y e o hY la Z β (by linarith) hB
-    have hpos : 0 ≤ 4000 * ((D.R.f : ℝ) * D.R.r * Lb) ^ 3 := by positivity
-    rcases (show (0 : ℝ) ≤ Y.rkC la Z by unfold Deep.rkC; positivity).eq_or_lt with h0 | h0
-    · rw [← h0, Real.log_zero]; exact hpos
-    · exact (Real.log_le_log h0 hrk).trans hβ
-
 end GlobalTheory.BergRank
 end
 
@@ -603,7 +543,6 @@ namespace GlobalTheory.CovTop.LamCore
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
-
 
 set_option maxHeartbeats 1000000 in
 theorem _root_.UpperTheory.Lit.Tam.slopeMax_sq_latW_le_pow_mul (h6 : True) {PP A : ℝ} (hR : RecTied D L) (hG : GramAt p i)
@@ -681,16 +620,6 @@ theorem _root_.UpperTheory.Lit.Tam.slopeMax_sq_latW_le_pow_mul (h6 : True) {PP A
     norm_cast
   rw [e]
   exact collect hf hr (Nat.cast_nonneg _) hq hL hLx hb hZ hW.om (add_nonneg hs0 ht0) (by linarith) n2 n1 n3
-
-theorem _root_.UpperTheory.Lit.Tam.integral_cusp_slope_power_bound : Hypotheses2 → Gram → Lifts fun Fm x _ ι p i _ A =>
-    slopeMax_sq (nrmK p.fw i) (latW (p.T.U ((i : ℕ) + 1)) (Gk p i)) ≤ (Fm.L x ι).sc.x ^ A * (Fm.L x ι).sc.b := by
-  intro hP hG
-  refine Closed.imp (Closed.and hG (Closed.and (GlobalTheory.CovTop.Sizes.hostN 1) GlobalTheory.T.weight_bound_holds)) ?_
-  rintro eps Fm CH - ⟨⟨_, -, h1⟩, ⟨A, hA, h2⟩, ⟨_, -, h3⟩⟩
-  obtain ⟨x0, h⟩ := h1.and (h2.and h3)
-  refine ⟨2 * A + 4, by linarith, x0, fun x hx hle ι p hp i => ?_⟩
-  obtain ⟨a, b, c⟩ := h x hx hle ι p hp
-  exact UpperTheory.Lit.Tam.slopeMax_sq_latW_le_pow_mul p i trivial hp.2 (a i) (b i) (c i)
 
 end GlobalTheory.CovTop.LamCore
 

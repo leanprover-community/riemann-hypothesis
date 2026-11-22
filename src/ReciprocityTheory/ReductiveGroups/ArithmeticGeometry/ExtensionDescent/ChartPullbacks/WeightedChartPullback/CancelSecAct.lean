@@ -125,10 +125,6 @@ lemma rres {X : Scheme.{0}} {U V W : X.Opens} (h1 : V ≤ U) (h2 : W ≤ V) (x :
   rw [← Functor.map_comp]
   rfl
 
-private lemma sres_val_lemma_2 {X : Scheme.{0}} {U V : X.Opens} (h : V ≤ U) (u : Γ(X, U)ˣ) :
-    ((ReciprocityTheory.ChartRestriction.G.Semi.res h u : Γ(X, V)ˣ) : Γ(X, V)) =
-      (X.presheaf.map (homOfLE h).op).hom (u : Γ(X, U)) := rfl
-
 private lemma corr_val_lemma_3 {Y : Scheme.{0}} {OA OC OS A B C PS W : Y.Opens}
     {pA : A ≤ OA} {c1 : C ≤ OC} {m1 : B ≤ C} {pS : PS ≤ OS} {m2 : B ≤ PS}
     (xa : Γ(Y, OA)ˣ) (xc : Γ(Y, OC)ˣ) (xs : Γ(Y, OS)ˣ) (hW : W ≤ A ⊓ B)

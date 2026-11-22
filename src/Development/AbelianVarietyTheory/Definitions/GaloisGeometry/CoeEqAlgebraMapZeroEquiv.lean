@@ -64,7 +64,6 @@ section Pull
 
 variable {X' : Scheme.{0}} {s : X ⟶ Sp k} {s' : X' ⟶ Sp k} {f : X' ⟶ X}
 
-
 variable (s s' f) in
 def appSec (U : X.Opens) : Sec s U →+* Sec s' (f ⁻¹ᵁ U) := (f.app U).hom
 
@@ -120,7 +119,6 @@ end Pull2
 section Pull3
 
 variable {X' : Scheme.{0}} {s : X ⟶ Sp k} {s' : X' ⟶ Sp k} {f : X' ⟶ X}
-
 
 variable (s) in
 def toOmega (j : ℕ) : formsPre s j ⟶
@@ -187,49 +185,11 @@ section Zero
 
 variable {B : Type} [CommRing B] [Algebra k B]
 
-theorem coe_eq_algebraMap_zeroEquiv (x : Om k B 0) :
-    (x : DR k B) = algebraMap B (DR k B) (exteriorPower.zeroEquiv B Ω[B⁄k] x) := by
-  conv_lhs => rw [← (exteriorPower.zeroEquiv B Ω[B⁄k]).symm_apply_apply x]
-  generalize exteriorPower.zeroEquiv B Ω[B⁄k] x = b
-  rw [exteriorPower.zeroEquiv_symm_apply, Submodule.coe_smul, exteriorPower.ιMulti_apply_coe,
-    ExteriorAlgebra.ιMulti_zero_apply, Algebra.algebraMap_eq_smul_one]
-
-theorem zeroEquiv_mOm {k' B' : Type} [CommRing k'] [CommRing B'] [Algebra k' B'] {σ : k →+* k'}
-    {α : B →+* B'} (h : SemiHom σ α) (x : Om k B 0) :
-    exteriorPower.zeroEquiv B' Ω[B'⁄k'] (h.mOm 0 x) = α (exteriorPower.zeroEquiv B Ω[B⁄k] x) := by
-  rw [← LinearEquiv.eq_symm_apply]
-  apply Subtype.ext
-  rw [SemiHom.coe_mOm, coe_eq_algebraMap_zeroEquiv x, SemiHom.mDR_algebraMap,
-    coe_eq_algebraMap_zeroEquiv (k := k') ((exteriorPower.zeroEquiv B' Ω[B'⁄k']).symm _),
-    LinearEquiv.apply_symm_apply]
-
 end Zero
 
 section Zero2
 
 variable (s : X ⟶ Sp k)
-
-def formsZeroEquiv (U : X.Opensᵒᵖ) : (formsPre s 0).obj U ≃ₗ[X.ringCatSheaf.obj.obj U]
-    ((SheafOfModules.forget _ ⋙ PresheafOfModules.restrictScalars (𝟙 X.ringCatSheaf.obj)).obj
-      (structureModule X)).obj U :=
-  exteriorPower.zeroEquiv (Sec s U.unop) Ω[Sec s U.unop⁄k]
-
-def formsPreZeroIso : formsPre s 0 ≅
-    (SheafOfModules.forget _ ⋙ PresheafOfModules.restrictScalars (𝟙 X.ringCatSheaf.obj)).obj
-      (structureModule X) :=
-  PresheafOfModules.isoMk (fun U ↦ (formsZeroEquiv s U).toModuleIso)
-    (fun U V i ↦ by
-      ext x
-      exact zeroEquiv_mOm (SemiHom.of_algHom (Sec.res s (leOfHom i.unop))) x)
-
-def omegaZeroIso : Omega s 0 ≅ structureModule X :=
-  (PresheafOfModules.sheafification (𝟙 X.ringCatSheaf.obj)).mapIso (formsPreZeroIso s) ≪≫
-    (asIso (PresheafOfModules.sheafificationAdjunction (𝟙 X.ringCatSheaf.obj)).counit).app
-      (structureModule X)
-
-def hodgeZeroZeroEquiv : letI := algΓ s; hodgeH s 0 0 ≃ₗ[k] Γ(X, ⊤) :=
-  letI := algΓ s
-  (cohOn.mapIso k ⊤ 0 (omegaZeroIso s)).trans ((coh.zeroUnitEquiv X).restrictScalars k)
 
 end Zero2
 

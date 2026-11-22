@@ -58,9 +58,6 @@ def zLin {H : Host E} {Dw : Datum H} {n : ℕ} (ix : Fin n ≃ GlobalTheory.AllW
   map_add' u v := by ext i j; simp [coordOf]
   map_smul' c u := by ext i j; simp [coordOf]
 
-theorem zLin_apply {H : Host E} {Dw : Datum H} {n : ℕ} (ix : Fin n ≃ GlobalTheory.AllWt.Psi H × Fin Dw.p × Fin Dw.q)
-    (σ : GlobalTheory.AllWt.Psi H) (u : ReciprocityTheory.L2DbarEstimates.V n) : zLin ix σ u = coordOf ix u σ := rfl
-
 def jMat {H : Host E} {Dw : Datum H} {n : ℕ} (ix : Fin n ≃ GlobalTheory.AllWt.Psi H × Fin Dw.p × Fin Dw.q)
     (A : GlobalTheory.AllWt.Psi H → Matrix (Fin Dw.p) (Fin Dw.p) ℂ) (B : GlobalTheory.AllWt.Psi H → Matrix (Fin Dw.q) (Fin Dw.q) ℂ) :
     Matrix (Fin n) (Fin n) ℂ := fun c a =>
@@ -172,7 +169,6 @@ theorem chernPoly_model_eq_subst {H : Host E} (Dw : Datum H) {n : ℕ}
       split_ifs <;> simp
 
 end GlobalTheory.PointChernScale
-
 
 open GlobalTheory.PointChernScale in
 theorem GlobalTheory.PointChern.chernTop_model_eq_mul : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) {n : ℕ}

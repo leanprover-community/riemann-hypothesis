@@ -23,8 +23,6 @@ open Matrix
 
 variable {D : D7}
 
-local notation "𝒪" => Formalism.L2.Herm.intAf D.host.F D.host.E
-
 set_option maxHeartbeats 1000000 in
 theorem exists_unit_res (Pg : Finset (Formalism.L2.DIV.Pl D.host.E)) (d : ∀ PP : Formalism.L2.DIV.Pl D.host.E, (Formalism.L2.DIV.kP PP)ˣ) :
     ∃ u : (𝒪)ˣ, ∀ PP ∈ Pg, Formalism.L2.DIV.resS D.host.F PP (u : 𝒪) = d PP := by
@@ -114,7 +112,6 @@ theorem frGL_mul {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E
 theorem bc_conj {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) {n : ℕ} (δ y : GL (Fin n) A) :
     Formalism.UG.bc φ (δ⁻¹ * y * δ) = (Formalism.UG.bc φ δ)⁻¹ * Formalism.UG.bc φ y * Formalism.UG.bc φ δ := by
   rw [MonoidHom.map_mul, MonoidHom.map_mul, MonoidHom.map_inv]
-
 
 set_option maxHeartbeats 1000000 in
 theorem exists_rescale : ∀ {D : D7} {n r : ℕ} (hr : r ≤ n) (β : GL (Fin n) (EAf D)) (Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E)), IsFrame β Λ → ∀ (Pg : Finset (Pl D.host.E)) (d : ∀ PP : Pl D.host.E, Fin r → (kP PP)ˣ), ∃ β' : GL (Fin n) (EAf D), IsFrame β' Λ ∧ (∀ M, M ∈ St β' ↔ M ∈ St β) ∧ ∀ PP ∈ Pg, ∀ M ∈ St β, upperLeftBlock hr (redFn β' PP M) = (diagGL (d PP))⁻¹ * upperLeftBlock hr (redFn β PP M) * diagGL (d PP) := by

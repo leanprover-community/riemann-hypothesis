@@ -15,9 +15,6 @@ namespace PI.QnRT
 
 variable {k r : ℕ}
 
-private lemma tau_val_lemma (i : Fin (2 * r + k + 1)) :
-    (WeylGroupFacts.tau k r i).val = if i.val < r ∨ r + k < i.val then 2 * r + k - i.val else i.val := rfl
-
 private lemma tau_tau_lemma (i : Fin (2 * r + k + 1)) : WeylGroupFacts.tau k r (WeylGroupFacts.tau k r i) = i := by
   have hi := i.isLt
   apply Fin.ext

@@ -35,9 +35,6 @@ def colEmb (D : D7) (N N' m : ℕ) :
     simp only [Prod.mk.injEq, Fin.castAdd_inj] at h
     simp [h]⟩
 
-theorem colEmb_apply (D : D7) (N N' m : ℕ) (k : D.what₂.Tau × Fin N' × Fin N) :
-    colEmb D N N' m k = (k.1, k.2.1, Fin.castAdd m k.2.2) := rfl
-
 theorem pad_coordV (D : D7) {N N' : ℕ} (m : ℕ) (k : D.what₂.Tau × Fin N' × Fin N) :
     pad D m (coordV D k) = coordV D (colEmb D N N' m k) := by
   funext τ a i

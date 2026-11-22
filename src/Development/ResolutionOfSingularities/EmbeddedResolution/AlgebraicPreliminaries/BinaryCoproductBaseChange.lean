@@ -66,9 +66,6 @@ private noncomputable def coprodIsoSigmaBoolFamily (X₁ X₂ : Scheme.{u}) : (X
     · rw [← Category.assoc, pairInl_comp_desc, coprod.inl_desc, Category.comp_id]
     · rw [← Category.assoc, pairInr_comp_desc, coprod.inr_desc, Category.comp_id]
 
-private theorem pairCoprodIso_hom (X₁ X₂ : Scheme.{u}) :
-    (coprodIsoSigmaBoolFamily X₁ X₂).hom = coprod.desc (sigmaBoolFamilyInl X₁ X₂) (sigmaBoolFamilyInr X₁ X₂) := rfl
-
 private noncomputable def isoCoprodInitial (P : Scheme.{u}) : P ≅ P ⨿ (⊥_ Scheme.{u}) where
   hom := coprod.inl
   inv := coprod.desc (𝟙 P) (initial.to P)

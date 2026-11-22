@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.TamagawaSpecialUnitary
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.WeightFunctionOnFrames
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PhaseFrame
 
@@ -80,8 +79,5 @@ def torusDerL {Ψ : Finset (E →+* ℂ)} (x : Frame Ψ r) :
 def torusDer {Ψ : Finset (E →+* ℂ)} (x : Frame Ψ r) :
     (Ψ → Fin (r - 1) → ℝ) →L[ℝ] (Ψ → Fin r → Fin r → ℂ) :=
   LinearMap.toContinuousLinearMap (torusDerL x)
-
-theorem torusDer_apply {Ψ : Finset (E →+* ℂ)} (x : Frame Ψ r) (θ : Ψ → Fin (r - 1) → ℝ) (τ : Ψ) (a b : Fin r) :
-    torusDer x θ τ a b = (mat x τ * diagonal (fun c => I * (angles (θ τ) c : ℂ)) * (mat x τ)⁻¹) a b := rfl
 
 end GlobalTheory.TorusFrame

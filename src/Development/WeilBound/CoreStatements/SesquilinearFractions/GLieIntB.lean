@@ -29,8 +29,6 @@ theorem toR_tan {A : Over (Sp R)} [GrpObj A] (t : epsAt (𝟙 (Sp R)) ⟶ A) (ht
   rw [ht]
   rw [Hom.one_def]; simp
 
-theorem epsScaleR_eq (c : R) : epsScaleR c = GlobalTheory.CompanionTheory.Ar.epsMul c := rfl
-
 theorem basis_of_lieBasis {A : Over (Sp R)} [GrpObj A] (v : epsR R ⟶ A) (hv : IsLieBasis ![v]) {E : Type}
     [AddCommGroup E] [Module R E] (M : LieModel A (𝟙 (Sp R)) E) :
     ∃ b : Module.Basis (Fin 1) R E, (M.pt (b 0)).left = v.left := by

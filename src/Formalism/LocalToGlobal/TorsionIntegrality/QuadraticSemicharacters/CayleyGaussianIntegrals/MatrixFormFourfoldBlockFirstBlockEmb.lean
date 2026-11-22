@@ -27,10 +27,6 @@ theorem slice_analyticAt (a : Fin 4) (z : Fin 4 × n → ℂ) :
 
 def mk4 (u : Fin 4 → n → ℂ) : Fin 4 × n → ℂ := fun p => u p.1 p.2
 
-theorem blockSlice_fourfoldMk (u : Fin 4 → n → ℂ) (a : Fin 4) : slice a (mk4 u) = u a := rfl
-
-theorem slice_add (a : Fin 4) (z w : Fin 4 × n → ℂ) : slice a (z + w) = slice a z + slice a w := rfl
-
 def emb0 : (n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ) where
   toFun v := fun p => if p.1 = 0 then v p.2 else 0
   map_add' u v := by

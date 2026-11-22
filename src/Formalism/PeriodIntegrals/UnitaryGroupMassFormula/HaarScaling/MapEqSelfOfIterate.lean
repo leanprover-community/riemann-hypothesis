@@ -22,9 +22,6 @@ def rmap {m n : Type} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] (e
   map_one' := map_one (reindexAlgEquiv ℂ ℂ e)
   map_mul' := map_mul (reindexAlgEquiv ℂ ℂ e)
 
-theorem rmap_apply {m n : Type} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] (e : m ≃ n)
-    (M : Matrix m m ℂ) : rmap e M = reindex e e M := rfl
-
 theorem reindex_conj {m n : Type} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n]
     (e : m ≃ n) (M J : Matrix m m ℂ) :
     reindex e e (Mᴴ * J * M) = (reindex e e M)ᴴ * reindex e e J * reindex e e M := by

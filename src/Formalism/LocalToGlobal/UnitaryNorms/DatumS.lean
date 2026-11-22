@@ -1,6 +1,26 @@
 module
 
-public import Formalism.LocalToGlobal.ClassS
+public import Formalism.LocalToGlobal.UnitaryNorms.CharGal
+public import Formalism.LocalToGlobal.JointCharacters.SameChr
+public import Formalism.LocalToGlobal.HilbertRowConditions.KaTiedIffKapDef
+public import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.TwoPowS0EqTwoPartModulus
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.HeckeStdTwOfStd
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.RingSpecSidedEmbeddingFixedField
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.ValLeOneOfIsIntegral
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.GlobalDatumRegularityOfTypesCompatibility
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.RingHomOfBaseOrderToFraction
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.Choice
+public import Formalism.LocalToGlobal.LocalInduction.BridgeInd
+public import Formalism.LocalToGlobal.HermitianForms.ExtraSym
+public import Formalism.LocalToGlobal.HilbertRowConditions.TiedEMt
+public import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
+public import Formalism.LocalToGlobal.GroupLattices.StdSubAtOfRing
+public import Formalism.LocalToGlobal.GroupLattices.Joint0
+public import Formalism.LocalToGlobal.LatticeGeometry.GeoTiedP
+public import Formalism.SharpRestriction.PageFix
+public import Formalism.SharpRestriction.Divisibility.SmallFirstModulusBelowScale
+public import Formalism.SharpRestriction.LevelLetterCocycles.AlignN
 public import Formalism.LocalToGlobal.UnitaryNorms.DefsDatum
 
 @[expose] public section
@@ -28,31 +48,6 @@ section
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {K : MainNotions.G.Consts} {Y : DivX D}
   {cX : ExtraC}
-
-structure HostDatumC {ex : Extra D L hT Gi Gl K Y cX} (T : LinkedFamilyData ex) where
-
-  d3b : Host.PlacesOverCommonPrime D.host
-
-  Tu_g : ∀ u i, (D.mem u).A.T ≠ D.host.g i
-
-  Qw_Tu : ∀ w, D.what₂.muAt w ≠ D.what₂.mu0 → ∀ v ∈ ex.nch.Q w, ∀ u, ¬ Host.OverP D.host (D.mem u).A.T v
-
-  clsK : Host.ClsRepK D.host
-
-  clsK_Tu : ∀ c u, IsCoprime (clsK.rep c : Ideal (𝓞 D.host.K)) (Host.idK (H := D.host) (D.mem u).A.T)
-
-  clsK_Qw : ∀ w, D.what₂.muAt w ≠ D.what₂.mu0 → ∀ v ∈ ex.nch.Q w, ∀ c,
-    Host.PrimeToPl (H := D.host) (clsK.rep c : Ideal (𝓞 D.host.K)) v
-
-  LLgal : IsGalois ℚ T.host.LLQ
-
-  HE : Fld
-  HE_fd : FiniteDimensional ℚ HE
-  HE_hilb : Host.IsHilbertCFE (hL := HE_fd) D.host HE
-
-  HE_le : HE ≤ Rows.KsQ D T.host T.n.cf T.what₂.O.pieces
-
-def HostDatumS {ex : Extra D L hT Gi Gl K Y cX} (T : LinkedFamilyData ex) : Prop := Nonempty (HostDatumC T)
 
 end
 

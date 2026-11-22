@@ -7,12 +7,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Commutative
 
 open IsLocalRing Polynomial UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 
-private structure SxCOb (O : Type) [CommRing O] [IsLocalRing O] : Type 1 where
-  R : Type
-  [ring : CommRing R]
-  [alg : Algebra O R]
-  [co : IsCO O R]
-
 attribute [local instance] SxCOb.ring SxCOb.alg SxCOb.co
 
 theorem UpperTheory.V.Ws.sxCoprodOpt :

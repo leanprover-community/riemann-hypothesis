@@ -20,12 +20,8 @@ open GroundTheory.LocalField EigenWitt EigenChar
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-local notation "𝔹" => BDeRhamPlus (normInteger ℂ_[p]) p
-local notation "𝔹dR" => BDeRham (normInteger ℂ_[p]) p
-
 variable {ε : PreTilt (normInteger ℂ_[p]) p} (hε : PreTilt.untilt ε = 1)
   (hζ : PreTilt.untilt ((_root_.frobeniusEquiv (PreTilt (normInteger ℂ_[p]) p) p).symm ε) ≠ 1)
-
 
 include hζ in
 theorem exists_eq_zpow_mul_unit {y : 𝔹dR} (hy : y ≠ 0) :
@@ -90,7 +86,6 @@ theorem exists_gal_smul_unit (σ : Gal(PadicAlgCl p/L)) {i : ℤ} {u : 𝔹} {q 
   field_simp
   linear_combination h3
 
-
 variable (p) in
 def SenTateCharacters : Prop :=
   ∀ (K : IntermediateField ℚ_[p] (PadicAlgCl p)) [FiniteDimensional ℚ_[p] K]
@@ -129,7 +124,6 @@ theorem exists_twist_of_finite_image {K : IntermediateField ℚ_[p] (PadicAlgCl 
   refine ⟨L, hKL, this, f, c, hf, fun σ => ?_⟩
   obtain ⟨z, hz, hzc⟩ := hc σ
   exact ⟨z, by rw [hz, hψL], hzc⟩
-
 
 include hζ in
 set_option maxHeartbeats 1600000 in
@@ -196,7 +190,6 @@ theorem isUnit_of_fixed_twist {R F G : Type*} [CommRing R] [IsDomain R] [Field F
     exact (hBu.mul c.isUnit).mul (Units.isUnit _)
   exact (isUnit_pow_iff hf.ne').1 hbfu
 
-
 include hζ in
 set_option maxHeartbeats 3200000 in
 theorem isUnit_of_twist {L : IntermediateField ℚ_[p] (PadicAlgCl p)} [FiniteDimensional ℚ_[p] L]
@@ -243,7 +236,6 @@ theorem isUnit_of_twist {L : IntermediateField ℚ_[p] (PadicAlgCl p)} [FiniteDi
     ← gal_smul_bDeRham_def, gal_smul_algebraMap_bDeRham, huL σ, hCσ σ, map_mul, mul_pow]
   field_simp
 
-
 include hζ in
 set_option maxHeartbeats 3200000 in
 theorem isUnit_of_forall_galB_eq_mul (hST : SenTateCharacters p)
@@ -258,7 +250,6 @@ theorem isUnit_of_forall_galB_eq_mul (hST : SenTateCharacters p)
       refine ⟨q, ?_⟩
       rw [← iotaB_galB (K := K) hε hζ σ b, hq, map_mul, iotaB_algebraMap_padic_bdRPlus])
   exact isUnit_of_twist hε hζ (L := L) hb0 hyu hf huL hc
-
 
 end ACris
 

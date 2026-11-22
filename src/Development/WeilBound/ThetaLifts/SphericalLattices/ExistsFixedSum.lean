@@ -34,12 +34,6 @@ def IsLocRep.onKX (L : IsLocRep M ψ om v ω ρ) : KSub σ X v →* Module.End �
   map_one' := LinearMap.ext fun φ => Subtype.ext (L.one φ φ.2)
   map_mul' a b := LinearMap.ext fun φ => Subtype.ext ((IsLocRep.mulX L) a.2.1 b.2.1 φ.2)
 
-theorem IsLocRep.onKX_apply (L : IsLocRep M ψ om v ω ρ) (k : KSub σ X v) (φ : SB (Fin n × Fin d → Fv F v)) :
-    ((IsLocRep.onKX L) k φ).1 = ω (k.1, 1) φ.1 := rfl
-
-theorem IsLocRep.onK_apply (L : IsLocRep M ψ om v ω ρ) (k : KSub σ W v) (φ : SB (Fin n × Fin d → Fv F v)) :
-    (L.onK k φ).1 = ω (1, k.1) φ.1 := rfl
-
 theorem IsLocRep.sub_mem_aug (L : IsLocRep M ψ om v ω ρ) {g : UA σ X.J} (hg : g ∈ UAt σ X (evFin F v)) {φ}
     (hφ : φ ∈ SB _) : ω (g, 1) φ - φ ∈ augAt om v :=
   Submodule.subset_span ⟨g, hg, φ, hφ, _, L.pres g hg 1 (one_mem_UAt W v) φ hφ,

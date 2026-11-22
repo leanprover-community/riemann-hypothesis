@@ -35,19 +35,6 @@ def wdTr (P : LocPrime l) (ι : Om l ≃+* ℂ) {E Ω : Type} [Field E] [NumberF
     (r : ↥(Dec (F := E) A) →* GL (Fin a) (Om l)) (g : ↥(Weil h)) : Om l :=
   ι.symm (-((wdAt P ι Bw h hj r).charPol g).nextCoeff)
 
-def ClosedPhi : Prop :=
-  ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (l : ℕ) [Fact l.Prime] (ι : Om l ≃+* ℂ)
-    (a : ℕ), 1 ≤ a → ∀ (P : LocPrime l) (AI : LocAinf l P), Nonempty (LocTied l P AI) →
-    ∀ (w : HeightOneSpectrum (𝓞 E)) (A : ValuationSubring Ω) (h : IsPlaceOver A w)
-      (O : Type) [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O] (Bw : LocBridge l E Ω (Dec (F := E) A) O) (hj : Induces Bw)
-      (J : (E →+* Om l) → Multiset ℤ) (r : Formalism.ConjugateSelfDual.G E Ω →* GL (Fin a) (Om l)), Continuous r → IsSSRep r →
-    ∀ (C : Set (Formalism.ConjugateSelfDual.G E Ω →* GL (Fin a) (Om l))) (g : ↥(Weil h)), deg g ≤ 0 → ∀ θ : Om l,
-      JointApprox r C (fun ρ => wdTr P ι Bw h hj (ρ.comp (Dec (F := E) A).subtype) g) θ →
-      (∀ ρ ∈ C, Continuous ρ ∧ GlobalTheory.GalOfCusp.IsSstAt P Bw (ρ.comp (Dec (F := E) A).subtype) ∧ IsCrysAt P Bw (ρ.comp (Dec (F := E) A).subtype) ∧
-        ∀ (τ : E →+* Om l) (LL' : FinExt l) (τ' : ↥Bw.Kw.1 →ₐ[ℚ_[l]] ↥LL'.1), IsInduced Bw τ τ' →
-          IsJumpsAt P Bw (ρ.comp (Dec (F := E) A).subtype) τ (J τ)) →
-      wdTr P ι Bw h hj (r.comp (Dec (F := E) A).subtype) g = θ
-
 abbrev iA (l : ℕ) [Fact l.Prime] : Ainf l →+* Per.Acris l := algebraMap (Ainf l) (Per.Acris l)
 
 abbrev iB (l : ℕ) [Fact l.Prime] : Per.Acris l →+* Per.Bcris l := algebraMap (Per.Acris l) (Per.Bcris l)

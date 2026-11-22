@@ -8,7 +8,6 @@ public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.Imports
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.RegBall
 public import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.CvxOfConvex
 public import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.MinimalSolution
-public import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.HormanderLemma
 public import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.OntoWithBoundTop
 public import ReciprocityTheory.L2DbarEstimates.BasicIdentity.ImportsAlt
 public import ReciprocityTheory.L2DbarEstimates.HormanderEstimate.HStatementOf
@@ -42,8 +41,5 @@ theorem skoda (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M]
 theorem tw (n : ℕ) (M : Type u) [TopologicalSpace M] [T2Space M]
     [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] : TWStatement n M :=
   I.tw n M (hormander n M) (F.holoClosedNeed n M (regMAll n M))
-
-theorem ma (n : ℕ) : MAStatement n :=
-  I.ma n (I.maCof n)
 
 end ReciprocityTheory.L2DbarEstimates

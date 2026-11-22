@@ -3,7 +3,7 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ToRepFam
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSiegelObjectLoweredLevel
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ObjMapCompAlt
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsDefiniteDatumGoodObj
 
 @[expose] public section
 

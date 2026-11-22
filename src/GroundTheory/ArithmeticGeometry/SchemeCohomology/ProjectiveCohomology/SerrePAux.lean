@@ -19,25 +19,6 @@ open AlgebraicGeometry CategoryTheory TopologicalSpace
 
 universe c236Ext c236Scheme
 
-private noncomputable def H.linearMapV436 {X : Scheme.{c236Scheme}}
-    [HasExt.{c236Ext} (Sheaf (Opens.grothendieckTopology X.toTopCat) AddCommGrpCat.{c236Scheme})]
-    (A : Type*) [CommRing A] [Algebra A Γ(X, ⊤)]
-    {F G : X.Modules} (φ : F ⟶ G) (n : ℕ) :
-    Sheaf.H.{c236Ext} (modulesAb F) n →ₗ[A] Sheaf.H.{c236Ext} (modulesAb G) n where
-  toFun := Sheaf.H.map.{c236Ext} (modulesAbMap φ) n
-  map_add' := map_add _
-  map_smul' a x := by
-    change Sheaf.H.map.{c236Ext} (modulesAbMap φ) n (a • x) =
-      a • Sheaf.H.map.{c236Ext} (modulesAbMap φ) n x
-    rw [H.smul_def, H.smul_def, ← Sheaf.H.map_comp_apply, ← Sheaf.H.map_comp_apply,
-      ← modulesAbMap_comp, ← modulesAbMap_comp, smulHom_comp]
-
-private lemma H.linearMapV436_apply {X : Scheme.{c236Scheme}}
-    [HasExt.{c236Ext} (Sheaf (Opens.grothendieckTopology X.toTopCat) AddCommGrpCat.{c236Scheme})]
-    (A : Type*) [CommRing A] [Algebra A Γ(X, ⊤)]
-    {F G : X.Modules} (φ : F ⟶ G) (n : ℕ) (x : Sheaf.H.{c236Ext} (modulesAb F) n) :
-    H.linearMapV436 A φ n x = Sheaf.H.map.{c236Ext} (modulesAbMap φ) n x := rfl
-
 end
 
 open AlgebraicGeometry CategoryTheory Opposite TopologicalSpace Limits MonoidalCategory
@@ -126,9 +107,6 @@ def H.δLinear (p : ℕ) :
   map_smul' a x :=
     H.δ_naturality hS hS (abSmulEnd S (algebraMap A Γ(X, ⊤) a)) p (p + 1) rfl x
 
-lemma H.δLinear_apply (p : ℕ) (x : Sheaf.H.{w'} (modulesAb S.X₃) p) :
-    H.δLinear A hS p x = H.δ hS p (p + 1) rfl x := rfl
-
 end Delta
 
 section Finite
@@ -160,7 +138,6 @@ variable {X : Scheme.{u}}
   (A : Type*) [CommRing A] [Algebra A Γ(X, ⊤)]
   {S : ShortComplex X.Modules} (hS : S.ShortExact)
 
-
 include hS in
 theorem finite_H_X₃ [IsNoetherianRing A] (p : ℕ)
     [Module.Finite A (Sheaf.H.{w'} (modulesAb S.X₂) p)]
@@ -168,7 +145,6 @@ theorem finite_H_X₃ [IsNoetherianRing A] (p : ℕ)
     Module.Finite A (Sheaf.H.{w'} (modulesAb S.X₃) p) :=
   finite_of_exact_noetherian (H.linearMap A S.g p) (H.δLinear A (shortExact_abSC hS) p)
     fun y hy => H.exact₃ (shortExact_abSC hS) rfl y hy
-
 
 include hS in
 theorem subsingleton_H_X₃ (p : ℕ) [Subsingleton (Sheaf.H.{w'} (modulesAb S.X₂) p)]
@@ -199,7 +175,6 @@ lemma twistEquiv_obj (k : ℤ) (M : (projectiveSpace A n).Modules) :
 
 lemma twistEquiv_additive (k : ℤ) : (twistEquiv (A := A) (n := n) k).functor.Additive :=
   Functor.additive_of_preserves_binary_products _
-
 
 variable (A n) in
 abbrev freeP (I : Type u) : (projectiveSpace A n).Modules :=

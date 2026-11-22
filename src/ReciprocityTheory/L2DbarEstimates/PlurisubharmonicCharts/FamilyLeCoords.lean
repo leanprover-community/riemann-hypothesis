@@ -83,9 +83,6 @@ def Pos (A : WeightedAtlas n Y ι La) (la : La) (ps : Y → ℝ) : Prop :=
   ∀ i y, y ∈ (A.chart i).source → ∀ ξ : Fin n → ℂ,
     0 ≤ A.leviAt i (fun x => A.ph la i x + ps x) y ξ
 
-def dbarAt (A : WeightedAtlas n Y ι La) (i : ι) (F : ι → Y → ℂ) (y : Y) (ξ : Fin n → ℂ) : ℂ :=
-  ∑ j, wdb n j (F i ∘ (A.chart i).symm) (A.chart i y) * (starRingEnd ℂ) (ξ j)
-
 def zeroSet {N : ℕ} (A : WeightedAtlas n Y ι La) (s : Fin N → ι → Y → ℂ) : Set Y :=
   {y | ∀ k, s k (A.pick y) y = 0}
 
@@ -99,41 +96,6 @@ def zmap (A : WeightedAtlas n Y ι La) (w0 : ι → Y → ℂ) (s : Fin n → ι
 def IsCoordAt (A : WeightedAtlas n Y ι La) (w0 : ι → Y → ℂ) (s : Fin n → ι → Y → ℂ) (P : Y) :
     Prop :=
   (fderiv ℂ (A.zLoc w0 s (A.pick P)) (A.chart (A.pick P) P)).det ≠ 0
-
-def VanishOrd (A : WeightedAtlas n Y ι La) (s : ι → Y → ℂ) (P : Y) (k : ℕ) : Prop :=
-  ∃ C : ℝ, ∀ᶠ v in 𝓝 (A.chart (A.pick P) P),
-    ‖s (A.pick P) ((A.chart (A.pick P)).symm v)‖ ≤ C * ‖v - A.chart (A.pick P) P‖ ^ k
-
-def Mset (A : WeightedAtlas n Y ι La) (w0 : ι → Y → ℂ) (s : Fin n → ι → Y → ℂ)
-    (De : MvPolynomial (Fin n) ℂ) : Set Y :=
-  {y | w0 (A.pick y) y ≠ 0 ∧ MvPolynomial.eval (fun k => A.zmap w0 s y k) De ≠ 0}
-
-structure D0 {N : ℕ} (A : WeightedAtlas n Y ι La) (L : La) (w : Fin N → ι → Y → ℂ)
-    (w0 : ι → Y → ℂ) (s : Fin n → ι → Y → ℂ) : Prop where
-  sec_w : ∀ k, A.IsSec L (w k)
-  isSection_denom : A.IsSec L w0
-  sec_s : ∀ k, A.IsSec L (s k)
-  no_common_zero : ∀ y, ∃ k, w k (A.pick y) y ≠ 0
-  finite_S : (A.zeroSet s).Finite
-  w0_ne : ∀ P ∈ A.zeroSet s, w0 (A.pick P) P ≠ 0
-  coord : ∀ P ∈ A.zeroSet s, A.IsCoordAt w0 s P
-  meets : ∀ y, ∃ P ∈ A.zeroSet s, P ∈ connectedComponent y
-  family_le_coords : ∀ U : Set Y, IsOpen U → A.zeroSet s ⊆ U → ∃ C : ℝ, ∀ y ∉ U, A.sqn L w y ≤ C * A.sqn L s y
-  s_le_w : ∃ C : ℝ, ∀ y, A.sqn L s y ≤ C * A.sqn L w y
-  denom_le_family : ∃ C : ℝ, ∀ y, A.nsq L w0 y ≤ C * A.sqn L w y
-
-structure Flat (A : WeightedAtlas n Y ι La) (w0 : ι → Y → ℂ) (s : Fin n → ι → Y → ℂ)
-    (De : MvPolynomial (Fin n) ℂ) : Prop where
-  De_ne : De ≠ 0
-  deriv_ne : ∀ y ∈ A.Mset w0 s De, (fderiv ℂ (A.zLoc w0 s (A.pick y)) (A.chart (A.pick y) y)).det ≠ 0
-  localHomeo : IsLocalHomeomorph (fun y : A.Mset w0 s De => A.zmap w0 s y)
-  proper : ∀ K : Set (V n), IsCompact K → (∀ v ∈ K, MvPolynomial.eval (fun k => v k) De ≠ 0) →
-    IsCompact (A.Mset w0 s De ∩ A.zmap w0 s ⁻¹' K)
-
-def flatE (A : WeightedAtlas n Y ι La) (w0 : ι → Y → ℂ) (s : Fin n → ι → Y → ℂ)
-    (De : MvPolynomial (Fin n) ℂ) (y : Y) : ℝ :=
-  ((De.totalDegree : ℝ) + 1) * Real.log (1 + ‖A.zmap w0 s y‖ ^ 2) -
-    Real.log (‖MvPolynomial.eval (fun k => A.zmap w0 s y k) De‖ ^ 2)
 
 end WeightedAtlas
 

@@ -1,7 +1,11 @@
 module
 
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Counterexample.Objects
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.IsFrameOverLine
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.IsSmoothHermConstLine
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCurveDivVertical
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntisym
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PPtsIntegralPoints
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitDegree
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ConservationDegreeFormOfExistence
@@ -51,12 +55,9 @@ end Curve
 
 section Point
 
-def ptIdeal : Ideal (MRing (PBlk 2)) := orbitIdeal samplePoint
-
 end Point
 
 section Shift
-
 
 end Shift
 

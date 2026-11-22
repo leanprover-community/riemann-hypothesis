@@ -85,14 +85,6 @@ section Abs
 
 variable {Γ G W : Type} [Group Γ] [Group G] [AddCommGroup W] [Module ℂ W]
 
-def AF (j : Γ →* G) (R : Representation ℂ G W) : Submodule ℂ (G → W) where
-  carrier := {f | ∀ γ g, f (j γ * g) = R (j γ) (f g)}
-  add_mem' h h' γ g := by simp [h γ g, h' γ g]
-  zero_mem' γ g := by simp
-  smul_mem' c f h γ g := by simp [h γ g]
-
-def stab (j : Γ →* G) (H : Subgroup G) (g : G) : Subgroup Γ := H.comap ((MulAut.conj g⁻¹).toMonoidHom.comp j)
-
 end Abs
 
 variable (F : Type) [Field F] [NumberField F]
@@ -113,20 +105,7 @@ section Sp
 
 variable {W : Type} [AddCommGroup W] [Module ℂ W]
 
-
-variable (W) in
-def Cen (ω : (Af F)ˣ →* ℂˣ) : Submodule ℂ (GF F → W) where
-  carrier := {f | ∀ z g, f (g * zc F z) = (ω z : ℂ) • f g}
-  add_mem' h h' z g := by simp [h z g, h' z g]
-  zero_mem' z g := by simp
-  smul_mem' c f h z g := by simp only [Pi.smul_apply, h z g]; exact smul_comm _ _ _
-
-def Sp (Q : DefQuat F) (R : Representation ℂ (GF F) W) (c : Pl F → ℕ) (ω : (Af F)ˣ →* ℂˣ) : Submodule ℂ (GF F → W) :=
-  AF Q.toFin R ⊓ Hi.fixd (Hi.rtr ℂ (GF F) W) (Kc c) ⊓ Cen W ω
-
-
 end Sp
-
 
 variable (F) in
 structure LDat {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) where
@@ -154,8 +133,6 @@ def ea (v : InfinitePlace F) : Af F →+* ℂ := (D.em v).comp (pLoc F (D.pl v))
 def gl : GF F →* (InfinitePlace F → GL (Fin 2) ℂ) := Pi.monoidHom fun v => Matrix.GeneralLinearGroup.map (D.ea v)
 
 def R (n : InfinitePlace F → ℕ) (e : InfinitePlace F → ℤ) : Representation ℂ (GF F) (Wt n) := (wRep n e).comp D.gl
-
-
 
 open Classical in
 def uf (e : InfinitePlace F → ℤ) (w : Pl F) : ℂ :=

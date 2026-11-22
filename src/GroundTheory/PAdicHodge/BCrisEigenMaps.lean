@@ -16,9 +16,6 @@ namespace ACris
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-local notation "𝔹" => BDeRhamPlus (normInteger ℂ_[p]) p
-local notation "𝔹dR" => BDeRham (normInteger ℂ_[p]) p
-
 variable {ε : PreTilt (normInteger ℂ_[p]) p} (hε : PreTilt.untilt ε = 1)
   (hζ : PreTilt.untilt ((_root_.frobeniusEquiv (PreTilt (normInteger ℂ_[p]) p) p).symm ε) ≠ 1)
 
@@ -46,8 +43,6 @@ theorem iotaB_periodTCris_eq :
   (iotaB_periodTCris hε hζ).trans (congrArg _ (iota_periodT hε))
 
 variable {L : IntermediateField ℚ_[p] (PadicAlgCl p)}
-
-
 
 include hζ in
 set_option maxHeartbeats 3200000 in

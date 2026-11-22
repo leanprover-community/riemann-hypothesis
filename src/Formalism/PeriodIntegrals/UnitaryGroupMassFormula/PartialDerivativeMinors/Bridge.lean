@@ -73,9 +73,6 @@ theorem symm_add_single (m : XV H N0 →₀ ℕ) (κ : ZV H N0 N1 →₀ ℕ) (v
     simp [Finsupp.single_apply, Finsupp.sumFinsuppEquivProdFinsupp_symm_inl,
       Finsupp.sumFinsuppEquivProdFinsupp_symm_inr]
 
-theorem symm_inr (m : XV H N0 →₀ ℕ) (κ : ZV H N0 N1 →₀ ℕ) (v : ZV H N0 N1) :
-    (Finsupp.sumFinsuppEquivProdFinsupp.symm (m, κ) : XZ (Bool × H) N0 N1 →₀ ℕ) (Sum.inr v) = κ v := rfl
-
 variable [Fintype H]
 
 def wv (c κ : ZV H N0 N1 →₀ ℕ) : ℕ :=

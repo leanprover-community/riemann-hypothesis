@@ -17,10 +17,6 @@ section AlternatingWeights
 
 variable {M : Type*} [NormedAddCommGroup M] [InnerProductSpace ℂ M]
 
-private theorem w_coord_mAct (E : Fin n → Fin n → Module.End ℂ M) (k : ℕ) (a b : Fin n)
-    (κ : Fin k → Fin n × Fin n) (F : Big n k M) :
-    coord k κ (mAct E k a b F) = E a b (F κ) := rfl
-
 private theorem w_coord_positionAd (k : ℕ) (i : Fin k) (a b : Fin n) (κ : Fin k → Fin n × Fin n)
     (F : Big n k M) :
     coord k κ (factorAd k i a b F) =

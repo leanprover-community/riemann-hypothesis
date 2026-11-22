@@ -146,9 +146,6 @@ def actL (g : GL (Fin N) k) : Module.End k (nablaSq k N lam) where
     apply Subtype.ext
     simp [sqAct, smul_comm c]
 
-theorem actL_coe (g : GL (Fin N) k) (f : nablaSq k N lam) :
-    ((actL k N lam g f : nablaSq k N lam) : MvPolynomial (Fin N × Fin N) k) = sqAct k N lam g f := rfl
-
 def rho : GL (Fin N) k →* Module.End k (nablaSq k N lam) where
   toFun := actL k N lam
   map_one' := by
@@ -282,7 +279,6 @@ theorem mem_spanAlg [CharZero k] (hS : ∀ M : Submodule k (MvPolynomial (Fin N 
   exact this ▸ r.2
 
 end GlobalTheory.NablaDensity
-
 
 open GlobalTheory.NablaDensity in
 theorem GlobalTheory.NablaDensity.endo_eq_sum_sqAct : ∀ (k : Type) [Field k] [CharZero k] (N : ℕ) (lam : DomWeight N),

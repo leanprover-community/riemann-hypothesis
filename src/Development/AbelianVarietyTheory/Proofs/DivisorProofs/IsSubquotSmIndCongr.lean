@@ -28,11 +28,6 @@ private theorem isSubquotient_smInd_congr {G V W : Type} [Group G] [TopologicalS
 
 open MeasureTheory ValuativeRel in
 open scoped NNReal in
-private theorem blk_points (n : Type) (j : n) :
-    _root_.GlobalTheory.SmGL.blk (_root_.GlobalTheory.SmGL.points n) j = j := rfl
-
-open MeasureTheory ValuativeRel in
-open scoped NNReal in
 private theorem borelGL_Q_eq_parab_points (k : Type) [Field k] [TopologicalSpace k]
     [IsTopologicalRing k] [T2Space k] (n : Type) [Fintype n] [DecidableEq n] [LinearOrder n] :
     (_root_.GlobalTheory.LGrp.borelGL k n).Q =
@@ -152,7 +147,6 @@ private theorem borelGL_deltaHalf_eq_smGL_deltaHalf_leviTorus (k : Type) [Field 
     modulus_leviEmb_eq_smGL_modulus k (_root_.GlobalTheory.SmGL.points n) _
       (borelGL_U_eq_unipRad_points k n) _ _ _ (borelGL_s_eq_leviEmb_points_leviTorus k n _)]
 
-
 open MeasureTheory ValuativeRel in
 open scoped NNReal in
 variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -173,7 +167,6 @@ theorem _root_.GlobalTheory.LGrp.SatakeCompare.isSubquot_ps_iff {V : Type} [AddC
   rw [leviProj_points_eq_leviTorus_borel_p k n ⟨g, hg⟩, borelGL_deltaHalf_eq_smGL_deltaHalf_leviTorus]
   simp [_root_.GlobalTheory.SmGL.torusChar_apply, _root_.GlobalTheory.LGrp.unrTorus_apply,
     _root_.GlobalTheory.LGrp.unrChar_eq]
-
 
 open MeasureTheory ValuativeRel in
 open scoped NNReal in

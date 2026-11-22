@@ -18,9 +18,6 @@ variable {K Γ R : Type} [Field K] [Group Γ] [CommRing R] [Algebra K R]
 theorem act_mul_apply (a b : Γ) (x : R) : act (a * b) x = act a (act b x) := by
   rw [map_mul]; rfl
 
-theorem act_one_apply (x : R) : act 1 x = x := by
-  rw [map_one]; rfl
-
 theorem sum_act_act (x : R) (g : H) : ∑ k : H, act k (act g x) = ∑ k : H, act k x := by
   rw [← Equiv.sum_comp (Equiv.mulRight g⁻¹)]
   refine Finset.sum_congr rfl fun k _ => ?_
@@ -77,7 +74,6 @@ theorem eq_zero_of_sum [DecidableEq H] (u : R)
 end GlobalTheory.RegEmbed
 
 namespace GlobalTheory.BadCount
-
 
 open GlobalTheory.RegEmbed in
 theorem embReg_of_groupDet : ∀ (K Γ R : Type) [Field K] [Group Γ] [Finite Γ] [CommRing R] [Algebra K R] (act : Γ →* (R →ₐ[K] R)) (H : Subgroup Γ) [Fintype H] [DecidableEq H] (u : R), (Matrix.of fun h g : H => act ((h : Γ) * g) u).det ∈ nonZeroDivisors R → ∀ (V V₁ V₂ : Submodule K R) [FiniteDimensional K V₂] (ρ : Representation K Γ V), (∀ g x, (ρ g x : R) = act g x) → (∀ h : H, ∀ x ∈ V, x * act h u ∈ V₁) → (∀ h : H, ∀ x ∈ V₁, act h x ∈ V₁) → (∀ h : H, ∀ x ∈ V₁, x * act h u ∈ V₂) → ∃ n : ℕ, EmbReg ρ H n ∧ n * Nat.card H ≤ finrank K V₂ := by

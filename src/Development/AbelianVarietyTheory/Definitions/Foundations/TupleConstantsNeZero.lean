@@ -19,56 +19,7 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K]
 def IsAwayUnit (m : ℕ) (x : K) : Prop :=
   ∃ (a : 𝓞 K) (k k' : ℕ), a ∣ (m : 𝓞 K) ^ k' ∧ x * (m : K) ^ k = (a : K)
 
-structure An (y : ℕ) where
-
-  c : ℂ
-
-  c0 : ℂ
-
-  u : Fin y → ℂ
-
-  Lv : ℤ → ℂ
-
-structure Co (K κ : Type) where
-
-  X : Type
-  [finX : Fintype X]
-
-  gam : X → ℕ
-
-  z : X → κ → K
-
-  z' : X → κ → K
-
 attribute [instance] Co.finX
-
-def normAlg {κ X : Type} [Fintype κ] [Fintype X] (G : κ → κ → K) (gam : X → ℕ) (z : X → κ → K) : K :=
-  ∑ x, (gam x : K)⁻¹ * ∑ k, ∑ l, z x k * star (z x l) * G k l
-
-structure Sq (K : Type) where
-
-  κ : Type
-  [finκ : Fintype κ]
-
-  G : κ → κ → K
-
-  Om : ℂ
-
-  Om' : ℂ
-
-  A : ℂ
-
-  e : ℕ
-
-  p : ℕ
-
-  q : ℕ
-
-  e0 : ℕ
-
-  h0 : ℕ
-
-  base : An (p + q)
 
 attribute [instance] Sq.finκ
 
@@ -77,16 +28,13 @@ def StepRatio {T : Type} (σ₀ : K →+* ℂ) (Qn : ℕ) (S0 : Finset T) (cc qq
     (∀ v ∈ S0, g v ∣ (qq v : 𝓞 K) ^ cc v ∧ g' v ∣ (qq v : 𝓞 K) ^ cc v) ∧
     u1 = σ₀ (b * ∏ v ∈ S0, (g v : K) / (g' v : K)) * u0
 
-
 omit [NumberField K] [StarRing K] in
 theorem IsAwayUnit.of_dvd {m k : ℕ} {a : 𝓞 K} (h : a ∣ (m : 𝓞 K) ^ k) : IsAwayUnit m (a : K) :=
   ⟨a, 0, k, h, by simp⟩
 
-
 omit [NumberField K] [StarRing K] in
 theorem IsAwayUnit.one (m : ℕ) : IsAwayUnit m (1 : K) :=
   ⟨1, 0, 0, by simp, by simp⟩
-
 
 omit [NumberField K] [StarRing K] in
 theorem IsAwayUnit.mul {m : ℕ} {x x' : K} (h : IsAwayUnit m x) (h' : IsAwayUnit m x') : IsAwayUnit m (x * x') := by
@@ -96,7 +44,6 @@ theorem IsAwayUnit.mul {m : ℕ} {x x' : K} (h : IsAwayUnit m x) (h' : IsAwayUni
   have : ((a * a' : 𝓞 K) : K) = (a : K) * (a' : K) := by simp
   rw [this, ← hx, ← hx']
   ring
-
 
 omit [StarRing K] in
 theorem vw_eq_zero_of_notMem (w : Pl K) {a : 𝓞 K} (ha : a ∉ w.asIdeal) : vw w (a : K) = 0 := by
@@ -133,14 +80,11 @@ theorem IsAwayUnit.ne_zero_and_vw {m : ℕ} {x : K} (h : IsAwayUnit m x) (w : Pl
   rw [hx, h2, h3] at h1
   omega
 
-
 namespace TwoStep
 
 theorem vw_natCast_nonneg (w : Pl K) (n : ℕ) : (0 : ℝ) ≤ (vw w (n : K) : ℝ) := by
   have : 0 ≤ vw w (n : K) := by simpa using Formalism.DivisionValues.ValuationRepresentative.vw_int_nonneg w (n : 𝓞 K)
   exact_mod_cast this
-
-
 
 end TwoStep
 

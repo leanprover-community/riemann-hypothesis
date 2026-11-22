@@ -1,13 +1,11 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogNormRationalSectionArchIntegrable
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchIntegrableRegularVariety
 public import Development.AbelianVarietyTheory.Definitions.Divisors.LineSCShortExact
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChernPartOverProperClosedEqZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArithVarComplexPointsCompact
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsFlagBundleRankOne
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsFlagModelHermSum
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OfSwap2
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrictChernPart

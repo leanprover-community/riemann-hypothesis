@@ -41,10 +41,6 @@ def reImL (m : ℕ) : EuclideanSpace ℂ (Fin m) ≃ₗ[ℝ] EuclideanSpace ℝ 
     obtain ⟨i, k⟩ := p
     fin_cases k <;> simp
 
-theorem reImL_apply (m : ℕ) (y : EuclideanSpace ℂ (Fin m)) (p : Fin m × Fin 2) :
-    reImL m y p = (![(y p.1).re, (y p.1).im] : Fin 2 → ℝ) p.2 :=
-  rfl
-
 theorem norm_reImL (m : ℕ) (y : EuclideanSpace ℂ (Fin m)) : ‖reImL m y‖ = ‖y‖ := by
   rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq, Fintype.sum_prod_type]
   congr 1
@@ -96,10 +92,6 @@ theorem measurePreserving_splitE (e : ℕ) : MeasurePreserving (splitE e) volume
 
 def tailL (e : ℕ) : EuclideanSpace ℂ (Fin (e + 1)) →L[ℂ] (Fin e → ℂ) :=
   ContinuousLinearMap.pi fun j => EuclideanSpace.proj j.succ
-
-theorem tailL_apply (e : ℕ) (p : EuclideanSpace ℂ (Fin (e + 1))) (j : Fin e) :
-    tailL e p j = p j.succ :=
-  rfl
 
 def coneMapE {e n : ℕ} (v : (Fin e → ℂ) → (Fin n → ℂ)) (p : EuclideanSpace ℂ (Fin (e + 1))) :
     EuclideanSpace ℂ (Fin n) :=
@@ -268,7 +260,6 @@ theorem coordBall_eq (m k : ℕ) :
       simp [zeroExt]
 
 end ConeMapAreaFormula
-
 
 open ConeMapAreaFormula in
 theorem ConeMapAreaOne.proof (hA : AreaFormulaInj.Statement) : ConeMapAreaOne.Statement := by

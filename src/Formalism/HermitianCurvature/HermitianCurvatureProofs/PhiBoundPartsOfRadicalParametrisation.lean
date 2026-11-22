@@ -565,8 +565,6 @@ def mulB (k r : ℕ) : Mat k r →L[ℝ] Mat k r →L[ℝ] Mat k r :=
       map_add' := fun A B => by ext g : 1; simp [mulL_apply, Matrix.add_mul]
       map_smul' := fun c A => by ext g : 1; simp [mulL_apply] }
 
-lemma mulB_apply (A B : Mat k r) : mulB k r A B = A * B := rfl
-
 def cT (k r : ℕ) : Mat k r →L[ℝ] Mat k r :=
   LinearMap.toContinuousLinearMap
     { toFun := fun A => Aᴴ
@@ -576,8 +574,6 @@ def cT (k r : ℕ) : Mat k r →L[ℝ] Mat k r :=
         rw [RCLike.real_smul_eq_coe_smul (K := ℂ), RCLike.real_smul_eq_coe_smul (K := ℂ),
           conjTranspose_smul]
         simp only [RCLike.star_def, RCLike.conj_ofReal] }
-
-lemma cT_apply (A : Mat k r) : cT k r A = Aᴴ := rfl
 
 lemma tangent {g0 : Mat k r} (hg0 : g0 ∈ GV k r) {Y : J k r → ℝ} (hY : Y ∈ Dom k r) (W : J k r → ℝ) :
     inLie k r (-(fderiv ℝ (chart g0) Y W) * (chart g0 Y)⁻¹) := by

@@ -76,12 +76,6 @@ theorem jetAug_comp_jetSub {a b : ℕ} (T : (Fin a → R) →ₗ[R] (Fin b → R
   rw [AlgHom.comp_apply, jetSub_zR, jetAug_zR_lemma]
   exact RingHom.mem_ker.mp (sum_smul_zR_mem m _)
 
-private theorem trunc_zR_lemma_3 {κ : Type} (m : ℕ) (j : κ) :
-    jetTruncR R κ m (zR (m + 1) j) = zR m j := rfl
-
-private theorem zero_zR_lemma_4 {κ : Type} (m : ℕ) (j : κ) :
-    jetZeroR R κ m (zR m j) = zR 0 j := rfl
-
 theorem trunc_comp_jetSub {a b : ℕ} (T : (Fin a → R) →ₗ[R] (Fin b → R)) (m : ℕ) :
     (jetTruncR R (Fin a) m).comp (jetSub T (m + 1)) = (jetSub T m).comp (jetTruncR R (Fin b) m) := by
   apply jet_ext_lemma_2

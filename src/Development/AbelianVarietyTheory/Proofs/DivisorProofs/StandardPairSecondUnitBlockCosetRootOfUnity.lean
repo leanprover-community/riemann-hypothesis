@@ -33,8 +33,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle Formalism.L2.DIV G
 
 variable {D : D7}
 
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
-
 theorem cpt_toEAf (Q : Pl D.host.E) (z : Formalism.L2.Theta.AE D) :
     cpt Q (toEAf D z) = GlobalTheory.LFun.finAdEquiv D.host.F D.host.E (finPart D z) Q := by
   have h : toAd D (toEAf D z) = GlobalTheory.LFun.finAdEquiv D.host.F D.host.E (finPart D z) := by

@@ -36,8 +36,6 @@ def archParts (y : (κ → AF F) × (κ → AF F)) :
     (κ → mixedEmbedding.mixedSpace F) × (κ → mixedEmbedding.mixedSpace F) :=
   (GlobalTheory.WeilL2Words.archPart F y.1, GlobalTheory.WeilL2Words.archPart F y.2)
 
-local notation "toM" => InfiniteAdeleRing.ringEquiv_mixedSpace F
-
 theorem archimedean_map_add (z z' : mixedEmbedding.mixedSpace F) :
     GlobalTheory.WeilL2Words.arch1 F (z + z') = GlobalTheory.WeilL2Words.arch1 F z + GlobalTheory.WeilL2Words.arch1 F z' := by
   show (((toM).symm (z + z'), 0) : AF F) = (((toM).symm z + (toM).symm z', 0 + 0) : AF F)

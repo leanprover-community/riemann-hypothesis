@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRham
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRhamLog
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.CrisTheta
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Action
 
 @[expose] public section
@@ -188,7 +187,6 @@ theorem toRange_algebraMap (n : ℕ) (a : AcrisZero p R) :
   refine (congrArg (AdicCompletion.ofAlgEquiv _).symm this).trans ?_
   exact (AdicCompletion.ofAlgEquiv _).symm.commutes _
 
-
 omit [IsDomain R] [ValuationRing R] [CharZero R] [IsAlgClosed (FractionRing R)] in
 def rangeMap {m n : ℕ} (g : AinfInv p R ⧸ AinfInv.kerTheta p R ^ n →+*
       AinfInv p S ⧸ AinfInv.kerTheta p S ^ m) (e : AcrisZero p R →+* AcrisZero p S)
@@ -341,18 +339,9 @@ def toBdR : Bcris p R →+* BdR p R :=
     toBdR p R (logTeich η) = algebraMap _ _ (BdRPlus.logTeich η) := by
   rw [logTeich, toBdR_algebraMap_acris, Acris.toBdRPlus_logTeich]
 
-variable (p R) in
-def fil (i : ℤ) : AddSubgroup (Bcris p R) :=
-  (BdR.fil p R i).toAddSubgroup.comap (toBdR p R).toAddMonoidHom
-
 end Bcris
 
 namespace Bst
-
-variable (p R) in
-def toBdR : Bst p R →+* BdR p R :=
-  lift (Bcris.toBdR p R) (fun ϖ => algebraMap _ _ (BdRPlus.logFlat ϖ)) (fun η ϖ => by
-    rw [BdRPlus.logFlat_twist, map_add (f := _), Bcris.toBdR_logTeich])
 
 @[simp] theorem toBdR_algebraMap (x : Bcris p R) :
     toBdR p R (algebraMap _ _ x) = Bcris.toBdR p R x := lift_algebraMap _ _ _ x
@@ -360,10 +349,6 @@ def toBdR : Bst p R →+* BdR p R :=
 @[simp] theorem toBdR_algebraMap_padic (a : ℚ_[p]) :
     toBdR p R (algebraMap _ _ a) = algebraMap _ _ a := by
   rw [IsScalarTower.algebraMap_apply _ (Bcris p R), toBdR_algebraMap, Bcris.toBdR_algebraMap_padic]
-
-variable (p R) in
-def fil (i : ℤ) : AddSubgroup (Bst p R) :=
-  (BdR.fil p R i).toAddSubgroup.comap (toBdR p R).toAddMonoidHom
 
 end Bst
 

@@ -74,8 +74,6 @@ theorem continuous_u_det (X : Fin n → ℝ) (w : ℂ) :
     hM.matrix_submatrix (fun i : Fin n => (Sum.inr i : Fin n ⊕ Fin n)) (fun j : Fin n => (Sum.inr j : Fin n ⊕ Fin n))
   exact ((h21.const_smul w).add h22).matrix_det
 
-theorem first_cayley_block_eq (M : M2 n) : u1 M = Complex.I • M.toBlocks₂₁ + M.toBlocks₂₂ := rfl
-
 theorem second_cayley_block_eq (M : M2 n) : u2 M = (-Complex.I) • M.toBlocks₂₁ + M.toBlocks₂₂ := by
   simp [u2, neg_smul]
 

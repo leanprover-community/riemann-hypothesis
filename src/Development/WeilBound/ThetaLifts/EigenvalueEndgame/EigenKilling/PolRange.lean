@@ -20,9 +20,6 @@ section Tensor
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {V : ι → Type} [∀ i, AddCommGroup (V i)] [∀ i, Module ℂ (V i)]
 
-theorem atPl_eq' (w : ι) (L : Module.End ℂ (V w)) :
-    atPl w L = PiTensorProduct.mapMultilinear ℂ V V (Function.update (fun i => (LinearMap.id : V i →ₗ[ℂ] V i)) w L) := rfl
-
 theorem atPl_add' (w : ι) (L L' : Module.End ℂ (V w)) : atPl w (L + L') = atPl w L + atPl w L' := by
   simp only [atPl_eq', MultilinearMap.map_update_add]
 

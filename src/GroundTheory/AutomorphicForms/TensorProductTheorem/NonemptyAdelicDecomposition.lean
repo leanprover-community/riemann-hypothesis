@@ -77,7 +77,6 @@ variable {V : Type u} [AddCommGroup V] [Module ℂ V] {Mx : AdelicGKModule K n V
 
 end AdelicDecomposition
 
-
 variable (K n) in
 def cuspSubmodule (U : Submodule ℂ (cuspForms K n))
     (hρ : ∀ X, ∀ φ ∈ U, (gkModuleCusp K n).ρ X φ ∈ U)
@@ -90,27 +89,7 @@ def cuspSubmodule (U : Submodule ℂ (cuspForms K n))
   comm_σ k g := LinearMap.ext fun φ => Subtype.ext
     (gkModuleCusp_σ_finRepCusp k g φ)
 
-
-variable (K n) in
-structure CuspidalAutomorphicRep where
-
-  carrier : Submodule ℂ (cuspForms K n)
-  stable_ρ : ∀ X, ∀ φ ∈ carrier, (gkModuleCusp K n).ρ X φ ∈ carrier
-  stable_σ : ∀ k, ∀ φ ∈ carrier, (gkModuleCusp K n).σ k φ ∈ carrier
-  stable_τ : ∀ g, ∀ φ ∈ carrier, finRepCusp K n g φ ∈ carrier
-  isIrreducible : (cuspSubmodule K n carrier stable_ρ stable_σ stable_τ).IsIrreducible
-  exists_compl : ∃ C : Submodule ℂ (cuspForms K n), IsCompl carrier C ∧
-    (∀ X, ∀ φ ∈ C, (gkModuleCusp K n).ρ X φ ∈ C) ∧ (∀ k, ∀ φ ∈ C, (gkModuleCusp K n).σ k φ ∈ C) ∧
-    ∀ g, ∀ φ ∈ C, finRepCusp K n g φ ∈ C
-
 namespace CuspidalAutomorphicRep
-
-abbrev toModule (π : CuspidalAutomorphicRep K n) : AdelicGKModule K n π.carrier :=
-  cuspSubmodule K n π.carrier π.stable_ρ π.stable_σ π.stable_τ
-
-theorem nonempty_adelicDecomposition (π : CuspidalAutomorphicRep K n)
-    (hadm : π.toModule.IsAdmissible) : Nonempty (AdelicDecomposition π.toModule) :=
-  AutomorphicForm.nonempty_adelicDecomposition π.toModule π.isIrreducible hadm
 
 end CuspidalAutomorphicRep
 

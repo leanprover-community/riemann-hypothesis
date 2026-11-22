@@ -35,59 +35,20 @@ abbrev Stand (u u' : D.what₂.Word) : Prop := Cnt.Stand D u u'
 
 abbrev Hyp0 (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : ℝ) : Prop := Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0
 
-def aux₃ (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A c : ℝ) : Prop :=
-  UnitaryVolumeMass.VolumeRatioBound D large₂ u u' C' Cl Cg cb Cu cT CT C0 A c
-
 end B3
 
 section Lat
 
 variable (D : D7)
 
-def adm11 (u u' : D.what₂.Word) : Prop :=
-  UnitaryVolumeMass.stLem1At D u (Tu D u')
-
-def adm12 (u u' : D.what₂.Word) : Prop :=
-  UnitaryVolumeMass.stLem2At D u (Tu D u')
-
-def adm13 (u u' : D.what₂.Word) : Prop :=
-  UnitaryVolumeMass.HyperplaneRankAtWord D u (Tu D u')
-
 def adm14 (u u' : D.what₂.Word) : Prop :=
   UnitaryVolumeMass.stThmAAt D u (Tu D u')
-
-def adm15 (u u' : D.what₂.Word) : Prop :=
-  UnitaryVolumeMass.stThmBAt D u (Tu D u')
 
 end Lat
 
 section MassBR
 
 variable (D : D7)
-
-def adm3a : Prop :=
-  UnitaryVolumeMass.stMassRatio D
-
-def adm3b : Prop :=
-  UnitaryVolumeMass.stMassL D
-
-def IntegralityRemainder (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A C : ℝ) : Prop :=
-  UnitaryVolumeMass.stMass2 D large₂ u u' C' Cl Cg cb Cu cT CT C0 A C
-
-def DoublingBasicIdentity' (G : GlobalTheoryTheory.GenusMassVolumes.GaugeFam D.host.F D.host.E D.sp.cm.sig) : Prop :=
-  UnitaryVolumeMass.stMassVol D G
-
-def BranchingMultiplicityVariant : Prop :=
-  UnitaryVolumeMass.stBRmult
-
-def MinkowskiCounting : Prop :=
-  UnitaryVolumeMass.stBRhad
-
-def HeckeCommutation : Prop :=
-  UnitaryVolumeMass.stBRtrans
-
-def MinkowskiSubgroupOrderBound : Prop :=
-  UnitaryVolumeMass.stBRmink
 
 end MassBR
 
@@ -103,9 +64,6 @@ def adm7 (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : ℝ) : Prop :=
 
 def adm8 (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A : ℝ) : Prop :=
   UnitaryVolumeMass.stForm D large₂ u u' C' Cl Cg cb Cu cT CT C0 A
-
-def adm9 (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 C1 C : ℝ) : Prop :=
-  UnitaryVolumeMass.stSchur D large₂ C' Cl Cg cb Cu cT CT C0 C1 C
 
 def PlaneWaveLetters : Prop :=
   UnitaryVolumeMass.stWeyl D
@@ -124,21 +82,6 @@ variable (D : D7)
 def ArchimedeanSignatureMatching (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A C : ℝ) : Prop :=
   UnitaryVolumeMass.stSW D large₂ u u' C' Cl Cg cb Cu cT CT C0 A C
 
-def adm16 (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A C c : ℝ) : Prop :=
-  UnitaryVolumeMass.stX D large₂ u u' C' Cl Cg cb Cu cT CT C0 A C c
-
-def LatticeGenusVolumeLemma : Prop :=
-  UnitaryVolumeMass.stLem3 D
-
-def TotalMassIdentityForWord (u : D.what₂.Word) : Prop :=
-  UnitaryVolumeMass.stLem3L0 D u
-
-def adm18 (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A C : ℝ) : Prop :=
-  UnitaryVolumeMass.congruence_at_split_frobenius_holds D large₂ u u' C' Cl Cg cb Cu cT CT C0 A C
-
-def adm19 (large₂ : SizeData₂ D) (CH C : ℝ) : Prop :=
-  UnitaryVolumeMass.SubmoduleIndexCount D large₂ CH C
-
 def adm20 (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A Ad C : ℝ) : Prop :=
   UnitaryVolumeMass.MeanFlagPairCount D large₂ u u' C' Cl Cg cb Cu cT CT C0 A Ad C
 
@@ -152,24 +95,6 @@ section Loc
 open MeasureTheory Finset Formalism.QuantumDeterminants
 
 variable (D : D7) (large₂ : SizeData₂ D)
-
-def ArthurRepresentationUpDown (C' Cl Cg cb Cu cT CT C0 Cn C1 C : ℝ) : Prop :=
-  UnitaryVolumeMass.stPT D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 C
-
-def ShareLowerBound (C' Cl Cg cb Cu cT CT C0 Cn C1 C : ℝ) : Prop :=
-  UnitaryVolumeMass.stPTsum D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 C
-
-def PlancherelDifferenceBound (C' Cl Cg cb Cu cT CT C0 Cn C1 C : ℝ) : Prop :=
-  UnitaryVolumeMass.stPTDl D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 C
-
-def DegreeNormalizationFormula (C' Cl Cg cb Cu cT CT C0 Cn C1 : ℝ) : Prop :=
-  UnitaryVolumeMass.PieriNormDegreeFormula D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1
-
-def FormalDegreeUnitShiftRatio (C' Cl Cg cb Cu cT CT C0 Cn C1 C : ℝ) : Prop :=
-  UnitaryVolumeMass.FormalDegreeUnitStepRatio D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 C
-
-def adm2 (C' Cl Cg cb Cu cT CT C0 Cn C1 Cq C : ℝ) : Prop :=
-  UnitaryVolumeMass.stMOM D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 Cq C
 
 end Loc
 
@@ -232,36 +157,6 @@ section Stmt
 
 variable (D : D7) (large₂ : SizeData₂ D) (X : TermTie D) (u u' : D.what₂.Word) (C1 : ℝ) (Y : LoopTie D large₂ X u u' C1)
   (G : GlobalTheoryTheory.GenusMassVolumes.GaugeFam D.host.F D.host.E D.sp.cm.sig)
-
-def Adm3 (C' Cl Cg cb Cu cT CT C0 A CM CSW δ Cn Cq CPT CDl hilbertNinetyConstant CMo CS : ℝ) : Prop :=
-  ArthurRepresentationUpDown D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 CPT ∧ ShareLowerBound D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 CPT ∧
-  PlancherelDifferenceBound D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 CDl ∧ DegreeNormalizationFormula D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 ∧
-  FormalDegreeUnitShiftRatio D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 hilbertNinetyConstant ∧ adm2 D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 Cq CMo ∧
-  adm3a D ∧ adm3b D ∧ IntegralityRemainder D large₂ u u' C' Cl Cg cb Cu cT CT C0 A CM ∧ DoublingBasicIdentity' D G ∧
-  ArchimedeanSignatureMatching D large₂ u u' C' Cl Cg cb Cu cT CT C0 A CSW ∧
-  BranchingMultiplicityVariant ∧ MinkowskiCounting ∧ HeckeCommutation ∧ MinkowskiSubgroupOrderBound ∧
-  adm6 D large₂ C' Cl Cg cb Cu cT CT C0 δ ∧ adm7 D large₂ C' Cl Cg cb Cu cT CT C0 ∧ adm8 D large₂ u u' C' Cl Cg cb Cu cT CT C0 A ∧
-  adm9 D large₂ C' Cl Cg cb Cu cT CT C0 C1 CS ∧ PlaneWaveLetters D ∧ PlaneWaveIsometry D large₂ C' Cl Cg cb Cu cT CT C0
-
-def Adm3b (C' Cl Cg cb Cu cT CT C0 A CX cX IncreasingRowChoicePerColumn LocalCohomologySetup CC2 Ad CC3 CC4 Cpr Ca Ca2 Ch δm CH : ℝ) : Prop :=
-  adm11 D u u' ∧ adm12 D u u' ∧ adm13 D u u' ∧ adm14 D u u' ∧ adm15 D u u' ∧
-  adm16 D large₂ u u' C' Cl Cg cb Cu cT CT C0 A CX cX ∧ LatticeGenusVolumeLemma D ∧ TotalMassIdentityForWord D u ∧
-  adm18 D large₂ u u' C' Cl Cg cb Cu cT CT C0 A IncreasingRowChoicePerColumn ∧ adm19 D large₂ LocalCohomologySetup CC2 ∧
-  adm20 D large₂ u u' C' Cl Cg cb Cu cT CT C0 A Ad CC3 ∧ adm21 D large₂ u u' C' Cl Cg cb Cu cT CT C0 A CC4 ∧
-  AmplitudeBoundsConjunction D large₂ C' Cl Cg cb Cu cT CT C0 A C1 Cpr Ca Ca2 Ch δm ∧
-  HerrCocycleExtensionClass D large₂ u u' C' Cl Cg cb Cu cT CT C0 A CH
-
-def admitted (C' Cl Cg cb Cu cT CT C0 A CM CSW δ Cn Cq CPT CDl hilbertNinetyConstant CMo CS CX cX IncreasingRowChoicePerColumn LocalCohomologySetup CC2 Ad CC3 CC4 Cpr Ca Ca2 Ch δm CH CV : ℝ) :
-    Prop :=
-  Adm3 D large₂ u u' C1 G C' Cl Cg cb Cu cT CT C0 A CM CSW δ Cn Cq CPT CDl hilbertNinetyConstant CMo CS ∧
-  Adm3b D large₂ u u' C1 C' Cl Cg cb Cu cT CT C0 A CX cX IncreasingRowChoicePerColumn LocalCohomologySetup CC2 Ad CC3 CC4 Cpr Ca Ca2 Ch δm CH ∧
-  TermVolumeSmallCellBound D large₂ X u u' C1 Y C' Cl Cg cb Cu cT CT C0 A CV
-
-def Stmt (C' Cl Cg cb Cu cT CT C0 A CM CSW δ Cn Cq CPT CDl hilbertNinetyConstant CMo CS CX cX IncreasingRowChoicePerColumn LocalCohomologySetup CC2 Ad CC3 CC4 Cpr Ca Ca2 Ch δm CH CV c : ℝ) :
-    Prop :=
-  admitted D large₂ X u u' C1 Y G C' Cl Cg cb Cu cT CT C0 A CM CSW δ Cn Cq CPT CDl hilbertNinetyConstant CMo CS CX cX IncreasingRowChoicePerColumn LocalCohomologySetup CC2 Ad CC3 CC4 Cpr Ca Ca2
-      Ch δm CH CV →
-    aux₃ D large₂ u u' C' Cl Cg cb Cu cT CT C0 A c
 
 end Stmt
 

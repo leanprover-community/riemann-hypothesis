@@ -104,11 +104,6 @@ section Tests
 
 abbrev PBlk (n : ℕ) : Unit → Type := fun _ => Fin n
 
-def fsLine (n : ℕ) : HermLine (PBlk n) :=
-  HermLine.ofMetrics (fun _ => fsMetric (ι := Fin n)) 1
-
-abbrev Xc (n : ℕ) (i : Fin n) : MRing (PBlk n) := X ⟨(), i⟩
-
 end Tests
 
 end ReciprocityTheory.ChartRestriction.G.Geo

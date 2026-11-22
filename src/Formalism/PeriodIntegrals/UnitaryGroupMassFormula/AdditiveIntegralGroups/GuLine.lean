@@ -18,10 +18,6 @@ def G (W : WeierstrassCurve ℂ_[p]) {R : Type*} [CommRing R] [Algebra ℂ_[p] R
     algebraMap ℂ_[p] R W.a₃ * v ^ 2 + algebraMap ℂ_[p] R W.a₄ * u * v ^ 2 +
     algebraMap ℂ_[p] R W.a₆ * v ^ 3 - v
 
-def Gu (W : WeierstrassCurve ℂ_[p]) {R : Type*} [CommRing R] [Algebra ℂ_[p] R] (u v : R) : R :=
-  3 * u ^ 2 + algebraMap ℂ_[p] R W.a₁ * v + 2 * algebraMap ℂ_[p] R W.a₂ * u * v +
-    algebraMap ℂ_[p] R W.a₄ * v ^ 2
-
 def Gv (W : WeierstrassCurve ℂ_[p]) {R : Type*} [CommRing R] [Algebra ℂ_[p] R] (u v : R) : R :=
   algebraMap ℂ_[p] R W.a₁ * u + algebraMap ℂ_[p] R W.a₂ * u ^ 2 + 2 * algebraMap ℂ_[p] R W.a₃ * v +
     2 * algebraMap ℂ_[p] R W.a₄ * u * v + 3 * algebraMap ℂ_[p] R W.a₆ * v ^ 2 - 1

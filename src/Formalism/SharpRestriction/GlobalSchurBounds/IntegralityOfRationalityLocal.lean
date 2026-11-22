@@ -1,7 +1,8 @@
 module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.LinkMin
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiamondCommDistinctPlaces
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiamondPreservesRationalFormZero
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.AdelicFunctionRightTranslateDiamond
 public import Formalism.LocalToGlobal.HermitianForms.TiedSym
 
 @[expose] public section

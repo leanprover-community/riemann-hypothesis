@@ -65,18 +65,6 @@ def LemmaFc : Prop :=
       Fnum l d D - (∑ s : ZMod d, E s * max (sig s - gam l) 0) ≤ Fnum l d (D + E) ∧
         Fnum l d (D + E) ≤ Fnum l d D + gam l * (∑ s : ZMod d, E s)
 
-def LemmaFd : Prop :=
-  ∀ (l d : ℕ) [NeZero d], 3 ≤ l → 2 ≤ d → Even d → ∀ D sig : ZMod d → ℝ, 0 ≤ D →
-    IsOptDual l d D sig → ∀ s : ZMod d, 2 / (l : ℝ) ≤ sig s →
-      (∀ x, IsFlow l d D x → flowVal d x = maxFlow l d D →
-          (∀ i ∈ oddLevels d, x s i = 0) ∧ D s = ∑ i ∈ oddLevels d, x (s - (i : ZMod d)) i) ∧
-        D s ≤ ∑ i ∈ oddLevels d, D (s - (i : ZMod d)) / (l : ℝ) ^ i ∧
-        (0 < D s → ∃ s' : ZMod d, D s / gam l ≤ D s')
-
-def LemmaFe : Prop :=
-  ∀ (l d : ℕ) [NeZero d], 3 ≤ l → 2 ≤ d → Even d → ∀ D : ZMod d → ℝ, 0 ≤ D →
-    (∀ s s' : ZMod d, D s' ≤ (l : ℝ) * D s) → Fnum l d D = rho l * (∑ s : ZMod d, D s)
-
 def IncomingBound : Prop :=
   ∀ (l d : ℕ) [NeZero d], 3 ≤ l → 2 ≤ d → Even d → ∀ D sig : ZMod d → ℝ, 0 ≤ D →
     IsOptDual l d D sig →
@@ -103,7 +91,6 @@ def topTerm (s : ZMod d) : ℝ :=
       max ((nu1 s : ℝ) / (l : ℝ) ^ e - capL d TT nu1 nu2 (s + (e : ZMod d))) 0
     else if Odd e ∧ dTop d TT s < (e : ℕ∞) then (nu1 s : ℝ) / (l : ℝ) ^ e
     else 0
-
 
 end TopData
 

@@ -148,9 +148,6 @@ theorem detachedClosureCompl_coe (i : ℕ) :
 def comapAmbientCenter (i : ℕ) : (T.strictTransform i).IdealSheafData :=
   (T.ambientCenter i).comap (T.strictTransformι i)
 
-theorem comapAmbientCenter_eq (i : ℕ) :
-    T.comapAmbientCenter i = (T.ambientCenter i).comap (T.strictTransformι i) := rfl
-
 def centerOffDetached (i : ℕ) : (T.strictTransform i).IdealSheafData :=
   Scheme.Hom.ker
     (((T.comapAmbientCenter i).comap (T.detachedClosureCompl i).ι).subschemeι ≫ (T.detachedClosureCompl i).ι)

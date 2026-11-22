@@ -67,8 +67,6 @@ theorem det_sqrtTwoSMulComplex : LinearMap.det (sqrtTwoSMulComplex : ℂ →ₗ[
 
 def sqrtTwoSMulConj : ℂ ≃L[ℝ] ℂ := Complex.conjCLE.trans sqrtTwoSMulComplex
 
-theorem sqrtTwoSMulConj_apply (z : ℂ) : sqrtTwoSMulConj z = (√2 : ℝ) • conj z := rfl
-
 theorem det_sqrtTwoSMulConj : LinearMap.det (sqrtTwoSMulConj : ℂ →ₗ[ℝ] ℂ) = -2 := by
   have : (sqrtTwoSMulConj : ℂ →ₗ[ℝ] ℂ) =
       (sqrtTwoSMulComplex : ℂ →ₗ[ℝ] ℂ) ∘ₗ Complex.conjAe.toLinearEquiv.toLinearMap :=

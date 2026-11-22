@@ -19,12 +19,6 @@ open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheor
 
 variable {R k : Type} [CommRing R] [CommRing k] {f : R →+* k} {d : ℕ}
 
-local macro "map_descent_series" : tactic =>
-  `(tactic|
-    simp (disch := solve | apply_rules [nc_zero, nc_pt, nc_comp1, nc_addOf, nc_law, nc_act])
-      only [FGLaw.add, map_ev1, map_ev2, map_ev3, mapPt_zero, mapPt_pt, mapPt_comp1,
-        mapPt_addOf, map_X, map_one, map_mul])
-
 theorem map_inj (hf : Function.Injective f) {σ : Type} {a b : MvPowerSeries σ R}
     (h : MvPowerSeries.map f a = MvPowerSeries.map f b) : a = b := by
   ext m

@@ -14,8 +14,6 @@ open NumberField ReciprocityTheory.Aut Formalism.AUTREP
 
 variable (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ)
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 theorem exists_finite_place : Nonempty (IsDedekindDomain.HeightOneSpectrum (𝓞 L⁺)) := by
   obtain ⟨I, hbot, htop⟩ := Ring.not_isField_iff_exists_ideal_bot_lt_and_lt_top.mp
     (NumberField.RingOfIntegers.not_isField L⁺)

@@ -18,8 +18,6 @@ variable {X Y : Type} [AddCommGroup X] [Fintype X] [DecidableEq X]
 
 abbrev pbE (e : X ≃+ Y) : (Y → C) ≃ₗ[R] (X → C) := LinearEquiv.funCongrLeft R C e.toEquiv
 
-lemma pbE_apply (e : X ≃+ Y) (f : Y → C) (x : X) : pbE (C := C) (R := R) e f x = f (e x) := rfl
-
 lemma pbE_symm_apply (e : X ≃+ Y) (f : X → C) (y : Y) :
     (pbE (C := C) (R := R) e).symm f y = f (e.symm y) := by
   rfl

@@ -104,9 +104,6 @@ noncomputable def ev (x : V ⊗[Qp] BdR) : LL ⊗[Qp] K →ₗ[Qp] V ⊗[Qp] BdR
           tmul_smul]
       | add y z hy hz => simp only [map_add (f := _), hy, hz, smul_add]))
 
-theorem ev_tmul (x : V ⊗[Qp] BdR) (c : LL) (k : K) :
-    ev (LL := LL) (K := K) x (c ⊗ₜ k) = c • mulVdR (LL := LL) (V := V) k x := rfl
-
 theorem mul_mul (y k : K) (x : V ⊗[Qp] BdR) :
     mulVdR (LL := LL) (V := V) (y * k) x = mulVdR (LL := LL) (V := V) y (mulVdR (LL := LL) (V := V) k x) := by
   induction x using TensorProduct.induction_on with

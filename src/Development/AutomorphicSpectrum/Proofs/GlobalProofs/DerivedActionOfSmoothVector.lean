@@ -22,8 +22,6 @@ def coord : Matrix (Fin n) (Fin n) ℂ →L[ℝ] (Fin n → Fin n → ℂ) :=
       map_add' := fun _ _ => rfl
       map_smul' := fun _ _ => rfl }
 
-theorem coord_apply (A : Matrix (Fin n) (Fin n) ℂ) : coord A = Matrix.of.symm A := rfl
-
 theorem hasDerivAt_coord_mul_exp (g X : Matrix (Fin n) (Fin n) ℂ) :
     HasDerivAt (fun t : ℝ => coord (g * NormedSpace.exp (t • X))) (coord (g * X)) 0 := by
   have h := hasDerivAt_exp_smul_const (𝕂 := ℝ) X (0 : ℝ)

@@ -57,19 +57,12 @@ variable {D : D7} {V A : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) {
   (χ : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ → ℂ) {Wt : D.what₂.Tau → Type} [∀ τ, AddCommGroup (Wt τ)] [∀ τ, Module ℂ (Wt τ)]
   (π : ∀ τ, Matrix (Fin A.rank) (Fin A.rank) ℂ → Module.End ℂ (Wt τ))
 
-
 open Classical in
 def SepBes (β : (∀ τ, Wt τ) → M.Vec → ℂ) : Prop :=
   ∀ τ x v, ∃ b ∈ GlobalTheory.RealBessel.besselForms (gramAt D V τ) (gramAt D A τ) (F τ) (e τ) (χ τ) (M.rep τ) (π τ) (M.sm τ),
     ∀ y u, β (Function.update x τ y) (Function.update v τ u) = b y u
 
 end Sep
-
-def TopFrame : Prop := All fun {D} _ _ _ {G} W _ => ∃ z : D.what₂.Tau → Fin (G.V (.grid D.R.m 0)).rank → ℂ, ∀ τ,
-  GlobalTheory.RealBessel.IsFrame (gramAt D (G.V (.grid D.R.m 0)) τ) (gramAt D (G.V (.top 0)) τ)
-               ((frameMat _ _ (G.rowDec 0 (by have := D.R.two_le_m; omega)).ι).map (tauE D τ)) (G.besTop.e.map (tauE D τ)) (z τ) ∧
-    GlobalTheory.RealBessel.IsGeneric (gramAt D (G.V (.grid D.R.m 0)) τ) (G.besTop.e.map (tauE D τ)) (z τ)
-      fun u => besChar W.ψ G.besTop (atTau W.θ _ τ u)
 
 def TopSep : Prop := All fun {D} _ _ _ {G} W M => ∀ (S : D.what₂.Tau → SPar) (MB : DSModel (G.V (.grid D.R.m 0)) S),
   ∀ F' ∈ MultT W.θ MB ∅ 1, ∀ Ψ ∈ Cols G W.θ,

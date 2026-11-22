@@ -18,8 +18,6 @@ namespace ACris
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p] [CharZero K]
 
-local notation "𝔸" => Localization.Away (p : AInf K p)
-
 theorem mem_acrisZero_of_forall_dvd {z : 𝔸}
     (h : ∀ m : ℕ, ∃ s ∈ ACrisZero K p, algebraMap (AInf K p) 𝔸 (xiGen K p ^ m) ∣ z - s) :
     z ∈ ACrisZero K p := by
@@ -66,7 +64,6 @@ theorem span_p_pow_map (k : ℕ) :
       Ideal.span {(p : ACris K p)} ^ k := by
   rw [Ideal.map_pow, Ideal.map_span, Set.image_singleton, map_natCast]
 
-
 set_option maxHeartbeats 1600000 in
 theorem exists_eq_pow_mul_of_iota_eq_zero {y : ACris K p} (hy : iota K p y = 0) {k : ℕ}
     {yk : ACrisZero K p}
@@ -107,7 +104,6 @@ theorem exists_eq_pow_mul_of_iota_eq_zero {y : ACris K p} (hy : iota K p y = 0) 
     rw [h5] at h4
     exact ((hu.pow k).dvd_mul_left).1 h4
   · rw [← mul_assoc, Units.val_pow_eq_pow_val, ← mul_pow, IsUnit.mul_val_inv, one_pow, one_mul]
-
 
 set_option maxHeartbeats 1600000 in
 theorem iota_injective : Function.Injective (iota K p) := by

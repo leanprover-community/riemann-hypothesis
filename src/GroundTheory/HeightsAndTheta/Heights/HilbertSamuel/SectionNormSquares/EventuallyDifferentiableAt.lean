@@ -181,23 +181,18 @@ section Graph
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
 
-
 variable (ι) in
 def oldEmb (N : ℕ) (p : Σ k, ι k) : Σ k, addIdx ι N k := ⟨some p.1, p.2⟩
-
 
 variable (ι) in
 def oldL (N : ℕ) : ((Σ k, addIdx ι N k) → ℂ) →L[ℂ] ((Σ k, ι k) → ℂ) :=
   ContinuousLinearMap.pi fun p => ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : (Σ k, addIdx ι N k) => ℂ)
     (oldEmb ι N p)
 
-
 variable (ι) in
 def newL (N : ℕ) : ((Σ k, addIdx ι N k) → ℂ) →L[ℂ] (Fin N → ℂ) :=
   ContinuousLinearMap.pi fun j => ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : (Σ k, addIdx ι N k) => ℂ)
     (⟨none, j⟩ : Σ k, addIdx ι N k)
-
-theorem oldL_apply {N : ℕ} (z : (Σ k, addIdx ι N k) → ℂ) : oldL ι N z = basePart₂ z := rfl
 
 theorem newL_apply {N : ℕ} (z : (Σ k, addIdx ι N k) → ℂ) (j : Fin N) : newL ι N z j = z ⟨none, j⟩ := rfl
 

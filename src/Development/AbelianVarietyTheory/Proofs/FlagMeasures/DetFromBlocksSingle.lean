@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SymmetricFlagBasisVectorsApplyCentre
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.CmStarOfIsCMUnram
 
 @[expose] public section
 

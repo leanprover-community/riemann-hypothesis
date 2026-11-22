@@ -39,13 +39,6 @@ def PhEDef : Prop :=
           (sigma1 e1 kap w * fExp (-(PowerSeries.C (s2 / 2) * PowerSeries.X ^ 2))) =
         fExp (-phE s2 e1 kap w l)
 
-def ParE : Prop :=
-  ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [CharZero K] (A kap e1 s2 : K)
-    (w l i : PowerSeries K) (F : MvPowerSeries (Fin 2) K),
-    IsW A kap w → LawLog F l → IsInv l i → ‖kap‖ ≤ 1 →
-    Integral (ι := Unit) (PowerSeries.subst l w) →
-    Simeq (par F i (phE s2 e1 kap w l)) 0
-
 def ParO : Prop :=
   ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [CharZero K] (g2 g3 s2 c0 : K)
     (P l i ep : PowerSeries K) (F : MvPowerSeries (Fin 2) K),

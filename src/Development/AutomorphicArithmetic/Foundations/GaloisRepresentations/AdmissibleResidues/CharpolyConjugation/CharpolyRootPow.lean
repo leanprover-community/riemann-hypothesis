@@ -3,7 +3,7 @@ module
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AdmissibleResidues.IsAutomorphicOverImagQuad
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AdmissibleResidues.CharpolyConjugation.Unlfrob
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AdmissibleResidues.SphericalOfHasSat
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Hypotheses2
+public import Mathlib
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.LocIsotypic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.GalUnitary
 public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaBound.JacquetShalikaBound
@@ -38,8 +38,6 @@ variable {F Ω K : Type} [Field F] [Field Ω] [Algebra F Ω] [Field K] [Algebra 
 private def resK (K : Type) [Field K] [Algebra F K] [Algebra K Ω] [IsScalarTower F K Ω]
     (σ : G F Ω) : K →ₐ[F] Ω :=
   (σ : Ω →ₐ[F] Ω).comp (IsScalarTower.toAlgHom F K Ω)
-
-private theorem resK_apply (σ : G F Ω) (x : K) : resK K σ x = σ (algebraMap K Ω x) := rfl
 
 private theorem lift_of_fix (σ : G F Ω) (h : ∀ x : K, σ (algebraMap K Ω x) = algebraMap K Ω x) :
     ∃ τ : G K Ω, (AlgEquiv.restrictScalarsHom F : G K Ω →* G F Ω) τ = σ := by

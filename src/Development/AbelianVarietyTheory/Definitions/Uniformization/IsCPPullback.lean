@@ -28,9 +28,6 @@ structure Lev {R : Type} [CommRing R] [IsDomain R] (I : Ideal R) {G : Over (Spec
   lev : IsLevelCP I e Pe P
   D : Q.Desc Pe
 
-def Lev.B {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]
-    {P : CP G} {X : Type} [AddCommGroup X] {e : ℕ} (l : Lev I P X e) : Over (Spec (CommRingCat.of (R ⧸ I ^ (e + 1)))) := l.Q.B
-
 def IsCPPullback {S S' : Scheme.{0}} {B' : Over S'} {B : Over S} [GrpObj B'] [IsCommMonObj B'] [GrpObj B] [IsCommMonObj B]
     (M' : CP B') (M : CP B) (f : S' ⟶ S) (β : B'.left ⟶ B.left) : Prop :=
   ∃ h : IsGrpPullback B' B f β, ∃ v, IsCPMap M' M f β h.1.w v

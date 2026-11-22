@@ -18,13 +18,11 @@ open GlobalTheory.EmbChart (atPlace evFin_atPlace atPlace_mul_right)
 
 variable {F : Type} [Field F] [NumberField F] {κ : Type} (v : Pl F)
 
-
 variable (κ) in
 def evA : (κ → AF F) →+ (κ → Fv F v) where
   toFun x i := evFin F v (x i)
   map_zero' := by funext i; simp
   map_add' x y := by funext i; simp
-
 
 variable (κ) in
 def inA : (κ → Fv F v) →+ (κ → AF F) where
@@ -32,13 +30,11 @@ def inA : (κ → Fv F v) →+ (κ → AF F) where
   map_zero' := by funext i; simp
   map_add' x y := by funext i; simp
 
-
 variable (κ) in
 def evF : (κ → Af F) →+ (κ → Fv F v) where
   toFun x i := evalV F v (x i)
   map_zero' := by funext i; simp
   map_add' x y := by funext i; simp
-
 
 variable (κ) in
 def inF : (κ → Fv F v) →+ (κ → Af F) where
@@ -63,9 +59,6 @@ abbrev PA (φ : (κ → Fv F v) → ℂ) (y : κ → Fv F v) : Module.End ℂ ((
 theorem putA_fst (x : κ → AF F) (y : κ → Fv F v) (i : κ) : (putA v x y i).1 = (x i).1 := by
   change (x i).1 - 0 + 0 = _
   simp
-
-theorem putA_snd (x : κ → AF F) (y : κ → Fv F v) :
-    (fun i => (putA v x y i).2) = put (evF κ v) (inF κ v) (fun i => (x i).2) y := rfl
 
 theorem PA_pureA (φ : (κ → Fv F v) → ℂ) (y : κ → Fv F v) (f : (κ → mixedEmbedding.mixedSpace F) → ℂ)
     (g : (κ → Af F) → ℂ) : PA v φ y (pureA F f g) = pureA F f (Pm (evF κ v) (inF κ v) φ y g) := by

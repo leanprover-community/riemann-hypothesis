@@ -164,28 +164,6 @@ def inWL (j : ℕ) : ↥LL0 ⊗[S.Ks] FmK S j →ₗ[S.Ks] S.WL j :=
         change ((S.kKs c : ↥LL0) : what₂.LL) • _ = _
         rw [S.kKs_spec, algebraMap_smul] }
 
-def IsThOf (j : ℕ) (σ0 : what₂.LL →+* ℂ) (thC : S.W j σ0) (x : ↥LL0 ⊗[S.Ks] FmK S j) : Prop :=
-  (S.A j).j σ0 (inWL S j x) = thC
-
-def ThExists {Dat : Type} (j : ℕ) (σ0 : what₂.LL →+* ℂ) (thC : Dat → S.W j σ0) : Prop :=
-  ∀ d, ∃ x : ↥LL0 ⊗[S.Ks] FmK S j, IsThOf S j σ0 (thC d) x
-
-def thK {Dat : Type} (j : ℕ) (σ0 : what₂.LL →+* ℂ) (thC : Dat → S.W j σ0) (h : ThExists S j σ0 thC) (d : Dat) :
-    ↥LL0 ⊗[S.Ks] FmK S j :=
-  (h d).choose
-
-def readLL0Ks (i : tw.Tw) (b : Bool) : ↥LL0 →ₗ[S.Ks] KB S i b where
-  toFun := readLL0 S i b
-  map_add' := map_add _
-  map_smul' c x := by
-    change readLL0 S i b (S.kKs c * x) = ιK S i b c * readLL0 S i b x
-    rw [map_mul]
-    rfl
-
-def thOf {Dat : Type} (i : tw.Tw) (j : ℕ) (b : Bool) (σ0 : what₂.LL →+* ℂ) (thC : Dat → S.W j σ0)
-    (h : ThExists S j σ0 thC) (d : Dat) : Fm S i j b :=
-  (LinearMap.rTensor (FmK S j) (readLL0Ks S i b) (thK S j σ0 thC h d) : KB S i b ⊗[S.Ks] FmK S j)
-
 end Act
 
 end Formalism.IndefR.NX

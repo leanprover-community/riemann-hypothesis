@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.MatchPowAlt
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.PowerMatchingTraces.NormTriv
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.Places
-public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.SelmerRankBounds.SelmerRankBoundLaurent
 public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.BaseChange
 public import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialFinite

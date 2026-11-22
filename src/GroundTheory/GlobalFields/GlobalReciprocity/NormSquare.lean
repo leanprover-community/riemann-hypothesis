@@ -14,8 +14,6 @@ open scoped GroundTheory.LocalField.Abstract
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 namespace IdeleClassLimit
 
 open FiniteSubfield
@@ -24,7 +22,6 @@ section Kernel
 
 variable (K L : FiniteSubfield) [hKL : Fact (K ≤ L)]
   [(L.1.fixingSubgroup.subgroupOf K.1.fixingSubgroup).Normal]
-
 
 omit [(L.1.fixingSubgroup.subgroupOf K.1.fixingSubgroup).Normal] in
 theorem normClass_ideleClassNorm (c : IdeleClassGroup L.1) :
@@ -51,7 +48,6 @@ section Square
 variable {K L K' L' : FiniteSubfield} [hKL : Fact (K ≤ L)]
   [(L.1.fixingSubgroup.subgroupOf K.1.fixingSubgroup).Normal] [hKL' : Fact (K' ≤ L')]
   [(L'.1.fixingSubgroup.subgroupOf K'.1.fixingSubgroup).Normal]
-
 
 omit [(L.1.fixingSubgroup.subgroupOf K.1.fixingSubgroup).Normal]
   [(L'.1.fixingSubgroup.subgroupOf K'.1.fixingSubgroup).Normal] in

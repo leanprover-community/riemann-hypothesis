@@ -74,11 +74,6 @@ def IsLevelOne {n : ℕ} {W : Type} [AddCommGroup W] [Module ℂ W] (π : Repres
 
 end Local
 
-def labAt (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) (k : Fin 2) (v : D.nd.PlG k) {n : ℕ}
-    (π : Irr ((D.naut.plGw k v).adicCompletion D.host.E) n) : (ZMod (D.host.g k))[X] :=
-  haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-  GlobalTheory.WeilDeligne.WD.lab (D.ntypes.teichC k) (D.ntypes.tg k v) (rcAt hL D (D.naut.plGw k v) n π)
-
 def InSeries (D : D7) (k : Fin 2) (ρ : FDRep ℂ (GL (Fin D.R.r) (ZMod (D.host.g k)))) (f : (ZMod (D.host.g k))[X]) : Prop :=
   haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
   CategoryTheory.Simple ρ ∧ Formalism.IrreducibleCountingLemmas.TYPES.zIdem ρ * D.ntypes.eSer k f = Formalism.IrreducibleCountingLemmas.TYPES.zIdem ρ
@@ -87,28 +82,6 @@ def idemOf (D : D7) (k : Fin 2) (ρ : FDRep ℂ (GL (Fin D.R.r) (ZMod (D.host.g 
     MonoidAlgebra ℂ (GL (Fin D.R.r) (ZMod (D.host.g k))) :=
   haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
   Formalism.IrreducibleCountingLemmas.TYPES.zIdem ρ
-
-def RegLoc (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) : Prop :=
-  ∀ (k : Fin 2) (v : D.nd.PlG k) (π : Irr ((D.naut.plGw k v).adicCompletion D.host.E) D.R.r) ρ f, InSeries D k ρ f →
-    Squarefree f → (∃ x, IsLevelOne π.π x ∧ NotKilled π.π (idemOf D k ρ) x) →
-    (rcAt hL D (D.naut.plGw k v) D.R.r π).mono0 ∧ labAt hL D k v π = f
-
-def SplitLoc (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) : Prop :=
-  ∀ (k : Fin 2) (v : D.nd.PlG k) (χ : ((D.naut.plGw k v).adicCompletion D.host.E)ˣ →* ℂˣ) (hχ : IsSmoothChar χ)
-    (u : ZMod (D.host.g k)) (π : Irr ((D.naut.plGw k v).adicCompletion D.host.E) (D.R.r + D.R.t)) ρ f,
-    IsTame χ → labAt hL D k v (Irr.ofDet 1 χ hχ) = X - C u → InSeries D k ρ f → ¬ f.IsRoot u →
-    (∃ x, IsBlockVec χ π.π x ∧ NotKilled π.π (idemOf D k ρ) x) →
-    ∃ (π₁ : Irr ((D.naut.plGw k v).adicCompletion D.host.E) D.R.r)
-      (π₂ : Irr ((D.naut.plGw k v).adicCompletion D.host.E) D.R.t), IsSpherical π₂.π ∧
-      Nonempty (π.π.Equiv (prod₂ π₁.π (twist π₂.π (detChar (Fin D.R.t) χ)))) ∧
-      ∃ y, IsLevelOne π₁.π y ∧ NotKilled π₁.π (idemOf D k ρ) y
-
-def LocDZ (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) : Prop :=
-  ∀ (k : Fin 2) (v : D.nd.PlG k) (χ : ((D.naut.plGw k v).adicCompletion D.host.E)ˣ →* ℂˣ) (hχ : IsSmoothChar χ)
-    (u : ZMod (D.host.g k)) (π : Irr ((D.naut.plGw k v).adicCompletion D.host.E) (D.R.r + D.R.t)) ρ f,
-    IsTame χ → labAt hL D k v (Irr.ofDet 1 χ hχ) = X - C u → InSeries D k ρ f → Squarefree f → ¬ f.IsRoot u →
-    (∃ x, IsBlockVec χ π.π x ∧ NotKilled π.π (idemOf D k ρ) x) →
-    (rcAt hL D (D.naut.plGw k v) _ π).mono0 ∧ labAt hL D k v π = f * (X - C u) ^ D.R.t
 
 def ConjDual (D : D7) : Prop :=
   ∀ (i : D.nd.Loc) (PI : D.naut.AV i) (k : Fin 2) (v : D.nd.PlG k) (w' : PlE D.host),

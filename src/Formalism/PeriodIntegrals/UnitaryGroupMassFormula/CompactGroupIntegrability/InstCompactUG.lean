@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.EvalDet
 
 @[expose] public section
 

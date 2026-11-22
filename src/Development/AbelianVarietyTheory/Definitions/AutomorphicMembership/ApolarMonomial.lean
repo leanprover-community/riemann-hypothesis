@@ -27,15 +27,6 @@ section Alg
 
 variable {S : Type} [CommRing S] {ρ V : Type}
 
-def apolar (P : MvPolynomial V S) (f : MvPowerSeries V S) : S :=
-  ∑ m ∈ P.support, P.coeff m * ((m.prod fun _ n => (n.factorial : S)) * MvPowerSeries.coeff m f)
-
-theorem apolar_monomial (m : V →₀ ℕ) (c : S) (f : MvPowerSeries V S) :
-    apolar (MvPolynomial.monomial m c) f = c * ((m.prod fun _ n => (n.factorial : S)) * MvPowerSeries.coeff m f) := by
-  classical
-  rw [apolar, Finset.sum_subset (MvPolynomial.support_monomial_subset) fun x _ hx => by
-    rw [MvPolynomial.notMem_support_iff.1 hx, zero_mul], Finset.sum_singleton, MvPolynomial.coeff_monomial, if_pos rfl]
-
 end Alg
 
 section Exp
@@ -45,14 +36,6 @@ variable {X : Scheme.{0}} {G : Over X} [GrpObj G] [IsCommMonObj G] {O : Type} [C
   (ch : ρ → O →+* S)
 
 variable (bar : O → O) (L : LB G.left) (rig : LB.Gen (LB.LinComb L (K := PUnit) (fun _ => eSec G) fun _ => 1))
-
-
-variable (G) in
-abbrev Pw (n : ℕ) : Over X := Over.mk x0 ⊗ powObj G n
-
-
-variable (G) in
-abbrev pr {n : ℕ} (b : Fin n) : (Pw G x0 n).left ⟶ G.left := (snd _ _ ≫ powPr G b).left
 
 end Exp
 

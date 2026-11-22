@@ -44,7 +44,6 @@ instance instAlgebraAinfAinfP : Algebra (Ainf l) (AinfP l) := inferInstanceAs (A
 instance instAwayAinfCastAinfP : IsLocalization.Away ((l : ℕ) : Ainf l) (AinfP l) :=
   inferInstanceAs (IsLocalization.Away ((l : ℕ) : Ainf l) (AinfInv l (OC l)))
 def zP : ℤ_[l] →+* AinfP l := UpperTheory.Ring.Comp.zP l
-def toC : Localization.Away ((l : ℕ) : OC l) →+* ℂ_[l] := (IsUnitBall.awayEquiv (PadicComplexInt l) l).toRingEquiv.toRingHom
 def θP : AinfP l →+* ℂ_[l] := UpperTheory.Ring.Comp.θP l
 def kerP : Ideal (AinfP l) := AinfInv.kerTheta l (OC l)
 def BdRp : Type := BdRPlus l (OC l)

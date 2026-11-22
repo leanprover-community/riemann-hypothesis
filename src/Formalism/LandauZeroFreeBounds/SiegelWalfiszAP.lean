@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LandauZeroFreeBounds.Statement
-public import Formalism.JacobiWeightFamilies.Statement
 public import Formalism.LFunctionBounds.PositivityBound
 
 @[expose] public section

@@ -22,17 +22,6 @@ def Sys (W : R2 Ω l) (c : Coef l) (y : G ℚ Ω → Fin 2 → Qbar l) (S' : Fin
 def NzAt (W : R2 Ω l) (A : ValuationSubring Ω) (y : G ℚ Ω → Fin 2 → Qbar l) : Prop :=
   ∃ s ∈ Ine (F := ℚ) A, cycBar ℚ Ω l s = 1 ∧ mat W s 1 1 = 1 ∧ y s 1 ≠ 0
 
-def Layer (c : Coef l) (A : ValuationSubring Ω) (ν : G ℚ Ω →* (Qbar l)ˣ) (r : ℕ)
-    (z : G ℚ Ω → (ZMod (l ^ r))ˣ → Qbar l) : Prop :=
-  (∀ s x, z s x ∈ c.O) ∧ ∀ s ∈ Dec (F := ℚ) A, ∀ t ∈ Dec (F := ℚ) A, ∀ x,
-    z (s * t) x = z s x + (ν s : Qbar l) * z t (x * (cycMod ℚ Ω l r s)⁻¹)
-
-def IwSys (c : Coef l) (A : ValuationSubring Ω) (ν : G ℚ Ω →* (Qbar l)ˣ) (Z : ∀ r : ℕ, G ℚ Ω → (ZMod (l ^ r))ˣ → Qbar l) :
-    Prop :=
-  (∀ r, Layer c A ν r (Z r)) ∧ ∀ r s (x : (ZMod (l ^ r))ˣ),
-    Z r s x = ∑ x' ∈ (Finset.univ.filter fun x' : (ZMod (l ^ (r + 1)))ˣ =>
-      Units.map (ZMod.castHom (pow_dvd_pow l (Nat.le_succ r)) (ZMod (l ^ r))).toMonoidHom x' = x), Z (r + 1) s x'
-
 def sp {r : ℕ} (η : (ZMod (l ^ r))ˣ → Qbar l) (z : G ℚ Ω → (ZMod (l ^ r))ˣ → Qbar l) (s : G ℚ Ω) : Qbar l :=
   ∑ x, η x * z s x
 
@@ -50,10 +39,6 @@ theorem not_gr_of_nzAt {W : R2 Ω l} {A : ValuationSubring Ω} {y : G ℚ Ω →
 theorem es_of_sys {W : R2 Ω l} {A : ValuationSubring Ω} (h : ∃ c y S', Sys W c y S' ∧ NzAt W A y) : ES W A := by
   obtain ⟨c, y, S', ⟨hW, hy, hyO, hU, hT⟩, hnz⟩ := h
   exact ⟨c, y, S', hW, hy, hyO, hU, not_gr_of_nzAt hnz, hT⟩
-
-def IwSysC (c : Coef l) (A : ValuationSubring Ω) (ν : G ℚ Ω →* (Qbar l)ˣ) (Z : ∀ r : ℕ, G ℚ Ω → (ZMod (l ^ r))ˣ → Qbar l) :
-    Prop :=
-  IwSys c A ν Z ∧ ∀ r x, ContinuousOn (fun s => Z r s x) (Dec (F := ℚ) A)
 
 namespace IwC
 
@@ -82,37 +67,6 @@ private lemma continuous_toZModPow_foundations {l : ℕ} [Fact l.Prime] (r : ℕ
 theorem isLocallyConstant_cycMod [IsAlgClosure ℚ Ω] (r : ℕ) : IsLocallyConstant (cycMod ℚ Ω l r) := by
   rw [IsLocallyConstant.iff_continuous]
   exact (Units.continuous_map (continuous_toZModPow_foundations (l := l) r)).comp (continuous_cycZ ℚ Ω l)
-
-
-open Classical in
-def cobDirac (A : ValuationSubring Ω) (ν : G ℚ Ω →* (Qbar l)ˣ) (r : ℕ) (s : G ℚ Ω) (x : (ZMod (l ^ r))ˣ) : Qbar l :=
-  if s ∈ Dec (F := ℚ) A then (ν s : Qbar l) * (if x = cycMod ℚ Ω l r s then 1 else 0) - (if x = 1 then 1 else 0) else 0
-
-theorem iwSysC_cobDirac [IsAlgClosure ℚ Ω] (hO : ∀ s ∈ Dec (F := ℚ) A, (ν s : Qbar l) ∈ c.O)
-    (hc : ContinuousOn (fun s => (ν s : Qbar l)) (Dec (F := ℚ) A)) : IwSysC c A ν (cobDirac A ν) := by
-  have hind : ∀ r (x : (ZMod (l ^ r))ˣ), Continuous fun s : G ℚ Ω => if x = cycMod ℚ Ω l r s then (1 : Qbar l) else 0 :=
-    fun r x => ((isLocallyConstant_cycMod r).comp fun u => if x = u then (1 : Qbar l) else 0).continuous
-  refine ⟨⟨fun r => ⟨fun s x => ?_, fun s hs t ht x => ?_⟩, fun r s x => ?_⟩, fun r x => ?_⟩
-  · by_cases hs : s ∈ Dec (F := ℚ) A
-    · simp only [cobDirac, if_pos hs]
-      refine sub_mem (mul_mem (hO s hs) ?_) ?_ <;> split_ifs <;> first | exact one_mem _ | exact zero_mem _
-    · simp only [cobDirac, if_neg hs]
-      exact zero_mem _
-  · have hst := (Dec (F := ℚ) A).mul_mem hs ht
-    have e1 : (x * (cycMod ℚ Ω l r s)⁻¹ = cycMod ℚ Ω l r t) ↔ (x = cycMod ℚ Ω l r s * cycMod ℚ Ω l r t) := by
-      rw [mul_inv_eq_iff_eq_mul, mul_comm (cycMod ℚ Ω l r t)]
-    have e2 : (x * (cycMod ℚ Ω l r s)⁻¹ = 1) ↔ (x = cycMod ℚ Ω l r s) := mul_inv_eq_one
-    simp only [cobDirac, if_pos hs, if_pos ht, if_pos hst, map_mul, Units.val_mul, e1, e2]
-    ring
-  · by_cases hs : s ∈ Dec (F := ℚ) A
-    · simp only [cobDirac, if_pos hs, Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_ite_eq',
-        Finset.mem_filter, Finset.mem_univ, true_and, map_cycMod_succ, map_one, @eq_comm _ _ x]
-    · simp only [cobDirac, if_neg hs, Finset.sum_const_zero]
-  · refine ContinuousOn.congr (f := fun s => (ν s : Qbar l) * (if x = cycMod ℚ Ω l r s then 1 else 0) -
-      (if x = 1 then 1 else 0)) ((hc.mul (hind r x).continuousOn).sub continuousOn_const) ?_
-    intro s hs
-    have hs' : s ∈ Dec (F := ℚ) A := hs
-    simp only [cobDirac, if_pos hs']
 
 end IwC
 

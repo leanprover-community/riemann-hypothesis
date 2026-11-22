@@ -26,8 +26,6 @@ abbrev ptLoc (w : σ → ℂ) : Type := Localization.AtPrime (ptMax w)
 abbrev ptIdeal (I : Ideal (MvPolynomial σ ℂ)) (w : σ → ℂ) : Ideal (ptLoc w) :=
   I.map (algebraMap (MvPolynomial σ ℂ) (ptLoc w))
 
-abbrev ptQuot (I : Ideal (MvPolynomial σ ℂ)) (w : σ → ℂ) : Type := ptLoc w ⧸ ptIdeal I w
-
 theorem exists_mul_mem_of_algebraMap_mem (w : σ → ℂ) (J : Ideal (MvPolynomial σ ℂ)) (x : MvPolynomial σ ℂ)
     (hx : algebraMap _ (ptLoc w) x ∈ J.map (algebraMap _ (ptLoc w))) :
     ∃ s : MvPolynomial σ ℂ, eval w s ≠ 0 ∧ s * x ∈ J := by

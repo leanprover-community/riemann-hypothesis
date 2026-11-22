@@ -19,12 +19,9 @@ attribute [local instance 2000] Rep.hV2
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)) (n : ℕ)
   [NeZero n]
-
 
 omit [NeZero n] in
 theorem nsmul_galRootsOfUnity_eq_zero' {F L : Type} [Field F] [Field L] [Algebra F L]
@@ -114,7 +111,6 @@ theorem zmodActPairing_tmul (D Z' : Rep.{0} (ULift.{0} ℤ) H) (hD : ∀ d : D, 
   pairingHom_tmul _ _ d z
 
 end ActPairings
-
 
 omit [NeZero n] in
 theorem zsmul_eq_cast_zsmul {M : Type*} [AddCommGroup M] [NeZero n] {x : M} (hx : n • x = 0) (z : ℤ) :
@@ -295,7 +291,6 @@ theorem eq_of_add_neg_one_pow_one_smul_eq_zero {R M : Type*} [Ring R] [AddCommGr
     (h : a + (-1 : R) ^ 1 • b = 0) : a = b := by
   rw [pow_one, neg_one_smul, add_neg_eq_zero] at h
   exact h
-
 
 set_option maxHeartbeats 1600000 in
 theorem gsKummerCompactδ_cup (hnS : ∀ v ∉ S, ((n : ℕ) : 𝓞 K.1) ∉ v.asIdeal) (x : gsUnitsCompact S ιs 1)

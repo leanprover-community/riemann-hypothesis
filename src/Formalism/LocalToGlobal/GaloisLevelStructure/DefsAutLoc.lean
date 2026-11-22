@@ -13,8 +13,6 @@ namespace Formalism.L2.NG
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 def SatAt (π : AutRep L n) {v : HeightOneSpectrum (𝓞 L⁺)} {w : HeightOneSpectrum (𝓞 L)} (Dv : InertDatum L n v w)
     (α : Fin (n / 2) → ℂ) : Prop :=
   ∃ f ∈ π.S, f ≠ 0 ∧ ∃ U : Subgroup (GAf L n), (∀ κ ∈ U, rt L n κ f = f) ∧

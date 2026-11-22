@@ -62,13 +62,8 @@ def ofP : D₁ × D₂ →ₗ[ℂ] sD D₁ D₂ where
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
-theorem toPrimitive_ofPrimitive (p : D₁ × D₂) : toP (ofP p) = p := rfl
-
 def lift (F₁ : Module.End ℂ D₁) (F₂ : Module.End ℂ D₂) : Module.End ℂ (sD D₁ D₂) :=
   ofP ∘ₗ (F₁.prodMap F₂) ∘ₗ toP
-
-theorem lift_ofP (F₁ : Module.End ℂ D₁) (F₂ : Module.End ℂ D₂) (p : D₁ × D₂) :
-    lift F₁ F₂ (ofP p) = ofP (F₁ p.1, F₂ p.2) := rfl
 
 theorem lift_mul (F₁ G₁ : Module.End ℂ D₁) (F₂ G₂ : Module.End ℂ D₂) :
     lift (F₁ * G₁) (F₂ * G₂) = lift F₁ F₂ * lift G₁ G₂ := LinearMap.ext fun _ => rfl

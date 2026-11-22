@@ -29,9 +29,6 @@ def hermLin {r : ℕ} (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (K : ℂ
   map_add' u v := by rw [hermC_add_left]; ring
   map_smul' k v := by rw [hermC_smul_left]; simp only [smul_eq_mul, RingHom.id_apply]; ring
 
-lemma hermLin_apply {r : ℕ} (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (K : ℂ) (w v : Fin r → ℂ) :
-    hermLin τ G K w v = K * hermC τ G v w := rfl
-
 lemma posPart_smul {r : ℕ} (X : Data E r) (x : Frame X.Ψ r) (τ : X.Ψ) (c : ℂ) (v : Fin r → ℂ) :
     X.posPart x τ (c • v) = Complex.normSq c * X.posPart x τ v := by
   unfold Data.posPart

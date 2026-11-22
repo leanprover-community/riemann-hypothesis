@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaExponen
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MulSmulIdemMem
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralFramePointStalk
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
-public import Development.AbelianVarietyTheory.Definitions.Divisors.P22
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsHorizontalGeneratorOfCharts
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactification
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.InjectiveOfSmulMemRange

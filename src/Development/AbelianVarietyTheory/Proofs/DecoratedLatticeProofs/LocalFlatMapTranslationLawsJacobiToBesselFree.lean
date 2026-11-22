@@ -298,8 +298,6 @@ variable {σ : ℕ} (B : BesLev D σ)
 
 def zCol : Matrix (Fin B.V.rank) (Fin 1) D.host.E := B.d.i₀ * (B.o.iB * Matrix.of fun r (_ : Fin 1) => B.ζ r)
 
-theorem zCol_apply (r : Fin B.V.rank) : zCol B r 0 = (B.d.i₀ *ᵥ vecB B.o B.ζ) r := rfl
-
 theorem zCol_gram {m : ℕ} (N : Matrix (Fin B.V.rank) (Fin m) D.host.E) : (zCol B)ᴴ * B.V.gram * N =
     (Matrix.of fun r (_ : Fin 1) => B.ζ r)ᴴ * (B.o.iBᴴ * (B.d.i₀ᴴ * B.V.gram * N)) := by
   simp only [zCol, conjTranspose_mul, Matrix.mul_assoc]

@@ -62,7 +62,6 @@ theorem Reads.inj {μ μ' : Chr F E K} {ξ : HChar E} (h : Reads σ μ ξ) (h' :
   obtain ⟨a, rfl⟩ := finAf_surjective F E y
   exact Units.ext (σ.injective ((h a).symm.trans (h' a)))
 
-
 variable (σ) in
 theorem reads_one : Reads σ (1 : Chr F E K) (1 : HChar E) := fun a => by
   show ((1 : ℂˣ) : ℂ) = σ ((1 : Kˣ) : K)
@@ -93,12 +92,6 @@ theorem chiId_span_singleton {L : Type} [Field L] [NumberField L] (χ : HChar L)
     chiId χ (Submodule.span (𝓞 L) {(u : L)}) =
       ((∏ᶠ w : HeightOneSpectrum (𝓞 L), χ.val w ^ (ordF w u).toNat : ℂˣ) : ℂ) := by
   simp only [chiId, ordSub_span_singleton]
-
-theorem chiId_one {L : Type} [Field L] [NumberField L] (χ : HChar L) : chiId χ 1 = 1 := by
-  have h := chiId_span_singleton χ 1
-  rw [Units.val_one, ← Submodule.one_eq_span] at h
-  rw [h]
-  simp [ordF]
 
 theorem detId_std {R : Ranks} (H : Host R) (N : ℕ) : Th.detId H (Th.stdL H N) (Th.stdL H N) = 1 := by
   classical
@@ -208,7 +201,6 @@ def chi : Submodule (𝓞 B.host.E) B.host.E → ℂ := chiId I.C.chiPsi
 def A : Amb B.fields := I.J.amb B I.chi
 
 abbrev Q (a : I.ι) : Finset (HeightOneSpectrum (𝓞 B.fields.E)) := QE I.sel (I.tup a : Chr B.fields.F B.fields.E B.fields.K)
-
 
 open Classical in
 def SQ : Finset (HeightOneSpectrum (𝓞 B.host.E)) := Finset.univ.biUnion I.Q

@@ -345,8 +345,6 @@ section ActLift
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V] {n : ℕ}
 
-theorem pr_sub_fst (p q : Q.Pr V) : (p - q).1 = p.1 - q.1 := rfl
-
 theorem sub_blockMulVec {S : Type} [Fintype S] [DecidableEq S] (M N : SlopeTestRemainingChoices S (Q.Pr V)) (X : Ix S → V) :
     actP (M - N) X = actP M X - actP N X := by
   funext a; simp only [actP, Matrix.sub_apply, pr_sub_fst, LinearMap.sub_apply, Finset.sum_sub_distrib, Pi.sub_apply]

@@ -501,9 +501,6 @@ private def coprodSwapAssocIso (A F T : Scheme.{u}) : A ⨿ (T ⨿ F) ≅ (A ⨿
         simp [coprodSwapAssocHom, coprodSwapAssocInv, coprod.inl_desc, coprod.inr_desc]
     · simp [coprodSwapAssocHom, coprodSwapAssocInv, coprod.inl_desc, coprod.inr_desc]
 
-private theorem coprodSwapAssocIso_hom (A F T : Scheme.{u}) :
-    (coprodSwapAssocIso A F T).hom = coprodSwapAssocHom A F T := rfl
-
 theorem isBlowupAlongIdealSheaf_totalTransition_of_coprod_desc (i : ℕ)
     (h : Blowup.IsBlowupAlongIdealSheaf (coprod.desc (S.strictTransformMap i) (S.detachedι i)) (S.centerOffDetached i)) :
     Blowup.IsBlowupAlongIdealSheaf (S.totalTransition i) (S.totalCenter i) := by

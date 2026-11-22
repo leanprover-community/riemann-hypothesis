@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConvUAbsU
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemShellUIffDepth
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeylRepInvMulDiag
 
 @[expose] public section
 

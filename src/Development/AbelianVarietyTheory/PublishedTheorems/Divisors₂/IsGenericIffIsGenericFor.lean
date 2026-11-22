@@ -73,7 +73,6 @@ theorem isSmoothChar_whitChar {ψ : AddChar k Circle} (hψ : Continuous ψ) : Is
     simp [GlobalTheory.SplitWeil.cball]
   · rw [val_whitChar, hr _ hu]; rfl
 
-
 end Exact
 
 end GlobalTheory.Whittaker
@@ -86,7 +85,6 @@ def CuspidalGeneric : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ), 1 ≤ a → ∀ (π : CuspSub E a)
     (w : HeightOneSpectrum (𝓞 E)) (ψ : AddChar (w.adicCompletion E) Circle), Continuous ψ → ψ ≠ 1 →
     GlobalTheory.Whittaker.IsGeneric ψ (π.locRep w)
-
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField in
 open GlobalTheory.CuspGeneric GlobalTheory.CuspRep.Generic in
@@ -129,14 +127,6 @@ theorem cuspidalGeneric_holds : CuspidalGeneric := by
     simpa [coe_locPsi] using this
   exact (isGeneric_iff_isGenericFor _ _).2 ((GlobalTheory.LocGL.isGenericFor_iff_of_continuous hcont hne1 hc' h1' _).1
     ((isGeneric_iff_isGenericFor _ _).1 hgen))
-
-def GenericityGL : Prop :=
-  ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (ψ : AddChar k Circle), Continuous ψ → ψ ≠ 1 →
-    ∀ (N c : ℕ) (m : Fin c → ℕ) (e : (Σ a, Fin (m a)) ≃ Fin N) (W : Type) [AddCommGroup W] [Module ℂ W]
-      (ρ : Representation ℂ (Levi k fun a => Fin (m a)) W), IsSmooth ρ → GlobalTheory.Whittaker.IsGeneric ψ (parInd e ρ) →
-      ∃ l : Module.Dual ℂ W, l ≠ 0 ∧ ∀ u : Levi k fun a => Fin (m a), (∀ a, u a ∈ unipB k (Fin (m a))) →
-        ∀ v, l (ρ u v) = (∏ a, (ψ (superDiag (u a)) : ℂ)) * l v
 
 namespace GenericityGL
 

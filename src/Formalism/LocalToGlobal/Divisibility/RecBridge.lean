@@ -323,120 +323,12 @@ section PartD
 
 open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions
 
-structure DivisionRows {D : D7} (L : SizeData₂ D) : Type 1 where
-
-  G : Type
-  [grp : Group G]
-  [fin : Fintype G]
-
-  Pl0 : Type
-
-  T : Type
-
-  A : FamIn D.what₂.LL G Pl0 T D.R.m
-
-  s : ℕ
-  hOk : A.fam.Ok s
-  hsep : A.fam.TypesSep
-
-  P0 : Subgroup G
-  ψ0 : P0 →* D.what₂.LLˣ
-
-  P1 : Subgroup G
-  ψ1 : P1 →* D.what₂.LLˣ
-
-  Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)
-  Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs)
-  Zsc : DefSub A.fam.amb → IndefScale A.fam.base
-
-  Zs : DefSub A.fam.amb
-  stable : Zs.Stable
-  inBlock : Zs.InBlock
-
-  what₂ : IndefRows (A.side P0 ψ0 Zs)
-
 attribute [instance] DivisionRows.grp DivisionRows.fin
 
 def sgRec {D : D7} (L : SizeData₂ D) (u : D.what₂.Word) (w : HeightOneSpectrum (𝓞 D.what₂.LL)) : ℝ :=
   ((⌊ur D (D.plEq.symm w) (L.sg u (D.plEq.symm w))⌋ : ℤ) : ℝ)
 
-structure DivisionPackage {D : D7} {L : SizeData₂ D} (Rw : DivisionRows L) (C Cabs : ℝ) : Type 1 where
-
-  Cp : ℝ
-  CHp : ℝ
-
-  cf : ConvFace Rw.A.fam.base
-
-  Pk : IndefPkgR Rw.A.fam.amb (faceOf Rw.A Rw.P0 Rw.ψ0 Rw.P1 Rw.ψ1 Rw.Dc Rw.Sp Rw.Zsc) cf Cp CHp
-
-  hZs : Pk.Zs = Rw.Zs
-
-  hRows : HEq Pk.core.base.toIndefRows Rw.what₂
-
-  X0 : BaseLevelRowSide D
-
-  I : DivisionCompatibilityData D Rw.A Rw.P0 Rw.ψ0 Rw.P1 Rw.ψ1 Pk.Zs Pk.core.base.toIndefData Pk.core.cols.toIndefData X0 (Rw.Dc Pk.Zs)
-
-  NuC : ∀ w, Submodule (𝓞 D.what₂.LL) (Fin ((Rw.Dc Pk.Zs).a w) → D.what₂.LL)
-
-  tied : DivisionCompatible D Rw.A Rw.P0 Rw.ψ0 Rw.P1 Rw.ψ1 Pk.Zs Pk.core.base.toIndefData Pk.core.cols.toIndefData X0 Pk.core.cols.col NuC I
-
-  Pl : Type
-  [plF : Fintype Pl]
-  [plD : DecidableEq Pl]
-
-  R : D.what₂.Word → RecNums Rw.A.fam.base.J Pl
-
-  Nu : ∀ u, Submodule (𝓞 D.what₂.LL) (Fin ((Rw.Dc Pk.Zs).a (I.wU u)) → D.what₂.LL)
-
-  inp : ∀ u, DivInputs0R Pk.core (R u) (I.wU u) (Nu u) (sgRec L u)
-
-  dcPt : ∀ (u : D.what₂.Word) (t : Rw.T) (x : Fin ((Rw.Dc Pk.Zs).a (I.wU u)) → D.what₂.LL)
-    (F : Fin ((Rw.A.side Rw.P1 Rw.ψ1 Pk.Zs).nV t) → D.what₂.LL),
-    D.what₂.embLL ((Rw.Dc Pk.Zs).Pt (I.wU u) t x F) =
-      D.what₂.perCol u (I.tup t) (D.jN u (I.eNu u x)) (I.jA t ((rV0 D Rw.A Rw.P1 Rw.ψ1 t).mulVec F))
-
-  shift : ∀ u, NuC (I.wU u) = shiftLat (Nu u) (sgRec L u)
-
-  hTie : ∀ u, (R u).hu - meanLog Pk.core.cols.κ = D.div.h u
-
-  foTie : 2 * FoOfR Pk.core = L.Fo
-
-  rhs : ∀ u, (R u).rhs ≤ L.MAIN u + C * (D.host.TT.card : ℝ) * L.sc.a * L.La +
-    C * (D.R.m : ℝ) * (L.B0 + L.Nc) * L.sc.x ^ (Cabs * L.sc.eps)
-
 attribute [instance] DivisionPackage.plF DivisionPackage.plD
-
-def DivisionPackage.colBr {D : D7} {L : SizeData₂ D} {Rw : DivisionRows L} {C Cabs : ℝ} (P : DivisionPackage Rw C Cabs) : Formalism.L2.G.ServJoint.ColBr D where
-  Gp := Rw.G
-  Pl0 := Rw.Pl0
-  T := Rw.T
-  m := D.R.m
-  A := Rw.A
-  P0 := Rw.P0
-  ψ0 := Rw.ψ0
-  Ps := Rw.P1
-  ψs := Rw.ψ1
-  Zs := P.Pk.Zs
-  S0 := P.Pk.core.base.toIndefData
-  S1 := P.Pk.core.cols.toIndefData
-  X0 := P.X0
-  Dc := Rw.Dc P.Pk.Zs
-  I := P.I
-
-theorem DivisionPackage.colBr_tied {D : D7} {L : SizeData₂ D} {Rw : DivisionRows L} {C Cabs : ℝ} (P : DivisionPackage Rw C Cabs) : P.colBr.Tied := by
-  refine ⟨⟨Rw.s, Rw.hOk⟩, ?_, P.tied.sharp, P.dcPt⟩
-  intro w
-  show D.what₂.muAt w = P.I.tup (P.Pk.core.cols.toIndefData.μ (D.plEq w))
-  rw [P.tied.tup.muAt w, P.tied.mu1]
-
-theorem DivisionPackage.val2 {D : D7} {L : SizeData₂ D} {Rw : DivisionRows L} {C Cabs : ℝ} (P : DivisionPackage Rw C Cabs) (h2 : Formalism.MainNotions.LocalQuadraticParts.adm2 D L)
-    (hcut : ∀ μ, Formalism.BasicNotions.DV.Used D μ → Formalism.L2.G.ServJoint.CutUp D μ) (hN : Formalism.BasicNotions.DV.NprimeDef D L) (u : D.what₂.Word) (w : HeightOneSpectrum (𝓞 D.what₂.LL)) :
-    ∀ φ ∈ P.Nu u, ∀ F ∈ (Rw.A.side Rw.P1 Rw.ψ1 P.Pk.Zs).Mt (P.Pk.core.cols.μ w),
-      (Rw.Dc P.Pk.Zs).Pt (P.I.wU u) (P.Pk.core.cols.μ w) φ F = 0 ∨
-        sgRec L u w ≤ (vw w ((Rw.Dc P.Pk.Zs).Pt (P.I.wU u) (P.Pk.core.cols.μ w) φ F) : ℝ) :=
-  Formalism.L2.G.ServJoint.val2AllAtR D L P.colBr P.colBr_tied hcut h2 u (P.Nu u)
-    (Formalism.L2.G.ServJoint.nu_into L hN u (P.I.eNu u) (P.NuC (P.I.wU u)) (P.Nu u) (P.tied.cols.Nu u).lat (P.shift u)) w
 
 theorem WordFacts.mono {D : D7} {L : SizeData₂ D} {C C' Cabs Cabs' : ℝ} {u : D.what₂.Word} (h : WordFacts L C Cabs u)
     (hC : C ≤ C') (hC0 : 0 ≤ C') (hA : Cabs ≤ Cabs') (hLa : 0 ≤ L.La) : WordFacts L C' Cabs' u := by

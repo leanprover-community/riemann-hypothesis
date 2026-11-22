@@ -22,9 +22,6 @@ variable {G Q : Type} (F : Type) {B : Type} [Field Q] [Field F] [CommRing B] [Al
 private def sig (ρ : G → V →ₗ[Q] V) (g : G) : B ⊗[Q] V →ₗ[Q] B ⊗[Q] V :=
   TensorProduct.map (a g).toLinearMap (ρ g)
 
-private theorem sig_tmul (ρ : G → V →ₗ[Q] V) (g : G) (b : B) (v : V) :
-    sig a ρ g (b ⊗ₜ[Q] v) = a g b ⊗ₜ[Q] ρ g v := rfl
-
 private theorem sig_smul (ρ : G → V →ₗ[Q] V) (g : G) (b : B) (w : B ⊗[Q] V) :
     sig a ρ g (b • w) = a g b • sig a ρ g w := by
   induction w using TensorProduct.induction_on with

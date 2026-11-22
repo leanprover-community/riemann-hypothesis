@@ -121,8 +121,6 @@ theorem resultant_prod {a b : ℕ} (α : Fin a → ℂ) (β : Fin b → ℂ) :
   rw [← Finset.prod_eq_multiset_prod]
   simp [eval_prod]
 
-theorem delta_apply (n : ℕ) (j : Fin n) : delta n j = (n : ℤ) - 1 - (j : ℕ) := rfl
-
 theorem antitone_select {n m : ℕ} (lam : DomWeight n) (p : Fin m → Fin n) (hp : StrictMono p) :
     Antitone fun k : Fin m => (lam.w + delta n) (p k) - delta m k := by
   intro k k' hkk'
@@ -171,7 +169,6 @@ theorem val_add_compl {n : ℕ} (s : Finset (Fin n)) : s.val + sᶜ.val = (Finse
   rfl
 
 end GlobalTheory.LaplaceChar
-
 
 open GlobalTheory.LaplaceChar ReciprocityTheory.ChartRestriction.TR.Weyl in
 theorem GlobalTheory.character_laplace_factorisation : ∀ (a b : ℕ) (lam : DomWeight (a + b)) (e : ℤ), Odd e → ∃ (ι : Type) (_ : Fintype ι) (l₁ : ι → DomWeight a) (l₂ : ι → DomWeight b) (ε : ι → ℂ), (∀ j, (infOfWeight (l₁ j)).map (· + (b : ℂ) * e / 2) + (infOfWeight (l₂ j)).map (· + (a : ℂ) * e / 2) = infOfWeight lam) ∧ ∀ Q₁ Q₂ : ℂ[X], Q₁.Monic → Q₂.Monic → Q₁.natDegree = a → Q₂.natDegree = b → (Q₁ * Q₂).Separable → (∀ z ∈ (Q₁ * Q₂).roots, ‖z‖ = 1) → ((resultant Q₁ Q₂ / (‖resultant Q₁ Q₂‖ : ℂ)) ^ e * ‖resultant Q₁ Q₂‖) * (starRingEnd ℂ) (chAt lam (Q₁ * Q₂)) = ∑ j, ε j * (starRingEnd ℂ) (chAt (l₁ j) Q₁) * (starRingEnd ℂ) (chAt (l₂ j) Q₂) := by

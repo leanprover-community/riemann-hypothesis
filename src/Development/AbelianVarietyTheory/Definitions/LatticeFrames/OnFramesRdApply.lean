@@ -200,9 +200,6 @@ end Sized
   cK := t.cK
   cP := t.cP
 
-def ClsPinF {c : Comm D} {𝒯 : Type} (t : 𝒯 → Tup c) : Prop :=
-  ∃ (N : ℕ → ℕ) (fr : ∀ j, j ≤ D.R.m → (c.Fr j ≃ FrN D (N j))), ClsPinD fun s => (t s).onFrames fr
-
 section Frames
 
 variable {c : Comm D} {N : ℕ → ℕ} (fr : ∀ j, j ≤ D.R.m → (c.Fr j ≃ FrN D (N j)))

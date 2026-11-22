@@ -131,13 +131,6 @@ def SliceCpt : Prop :=
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par) (p : Pl P Wp Wq) (F) (j : ℕ) (hj : j ≤ P.r) (w : List C.Letter) (a : C.LPt) (ha : D.IsLocPt a j),
     CptCoef p.T.base F → ∀ e, CptCoef (p.T.bs j) (slv p.T F j hj w a ha.2 e)
 
-def VIso : Prop :=
-  P5.ThmPActual → ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-    [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par) (p : Pl P Wp Wq) (j : ℕ) (hj : j ≤ P.r) (w : List C.Letter), CutWord P p.l0 w →
-    ∀ (s : ℂ) x x' ε, 0 < ε → (∀ e, JC.NiceCoef (p.T.bs j) ε (x e)) → (∀ e, JC.NiceCoef (p.T.bs j) ε (x' e)) →
-      (∀ e, JC.NiceCoef (p.T.bs j) ε (waveG (p.T.bs j) s w x e)) ∧
-      p.form j hj w (waveG (p.T.bs j) s w x) (waveG (p.T.bs j) s w x') = p.form j hj w x x'
-
 def DegWave : Prop :=
   ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par) (p : Pl P Wp Wq) (F) (j : ℕ) (hj : j ≤ P.r) (w : List C.Letter) (h h' : C.LPt)
@@ -162,15 +155,6 @@ def DegLift : Prop :=
         pairJ (p.form j hj w) (List.ofFn fun a => grid a (n a))
           (slv p.T F j hj (plusW (List.ofFn fun a => grid a (n a)) w) _ ha.2)
           (slv p.T F j hj (minusW (List.ofFn fun a => grid a (n a)) w) _ ha'.2)
-
-def PStd : Prop :=
-  P5.ThmPActual → ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-    [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par) (p : Pl P Wp Wq) (F) (j : ℕ) (hj : j ≤ P.r) (w : List C.Letter) (h h' : C.LPt)
-    (hh : D.IsLocPt h j) (hh' : D.IsLocPt h' j) (Cb : ℝ), InDDplus2 P p.l0 p.T.base Cb p.Θ → CptCoef p.T.base F → CutWord P p.l0 w →
-    ∃ φ : ℂ → ℂ, Continuous φ ∧ Integrable φ ∧
-      (∀ c : ℂ, c ≠ 0 → φ c = (levW P (j + 1) c : ℂ) * p.RR F (j + 1) w (h ++ [(1, c)]) (h' ++ [(1, c)])) ∧
-      ∀ s : ℂ, ∫ c, P5.fsv s c * φ c =
-        p.form j hj w (waveG (p.T.bs j) s w (slv p.T F j hj w h hh.2)) (slv p.T F j hj w h' hh'.2)
 
 def SliceStep : Prop :=
   ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]

@@ -6,7 +6,6 @@ public import Development.WeilBound.CoreStatements.PublishedTheorems.SiegelWeilS
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IwasawaDecompositionUnitary
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SiegelParabolicUnnMatrixBlockUpperTriangular
 public import Mathlib
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EisensteinIsotropicLine
 public import Development.AbelianVarietyTheory.Definitions.Foundations.AnalyticOnNhdTsumNpow
 
 @[expose] public section

@@ -3,7 +3,7 @@ module
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapFacts
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapSplit
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapLoc
-public import Formalism.SharpRestriction.InertJacobiLevels.ExtraNum
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
 public import Formalism.ThetaLiftIndependence.Statement
 public import Formalism.HermitianLattices.StatementMass
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
@@ -30,10 +30,6 @@ end Order
 section LocInt
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
-local notation "𝔸" => FiniteAdeleRing (𝓞 F) F
-local notation "𝒜" => E ⊗[F] 𝔸
-local notation "𝒮" => tensInt (F := F) 𝔸 (intOE E) (intAd F)
 
 variable (E) in
 def trV (v : HeightOneSpectrum (𝓞 F)) : E ⊗[F] v.adicCompletion F →ₗ[F] v.adicCompletion F :=
@@ -84,7 +80,6 @@ theorem adele_expand {ι : Type} [Fintype ι] [DecidableEq ι] (β : Module.Basi
   | add x y hx hy =>
     simp only [add_mul, map_add (f := _), TensorProduct.tmul_add, Finset.sum_add_distrib]
     exact congrArg₂ (· + ·) hx hy
-
 
 variable (F E) in
 theorem loc_int_bound : ∃ c : 𝓞 F, c ≠ 0 ∧ ∀ x : 𝒜, (∀ w, prV (E := E) w x ∈ intV E w) →

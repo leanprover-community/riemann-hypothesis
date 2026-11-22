@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.LocallyCompactSpaceAxis
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EisensteinResidueLine
 
 @[expose] public section
 

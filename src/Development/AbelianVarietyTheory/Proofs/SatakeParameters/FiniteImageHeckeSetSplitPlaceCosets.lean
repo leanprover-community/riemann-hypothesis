@@ -119,8 +119,6 @@ theorem natCast_le_one {F : Type} [Field F] [NumberField F] (v : HeightOneSpectr
 section Glob
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 theorem proj_tmul_one (s : SplitPlace L) (c : L) : s.proj (c ⊗ₜ[L⁺] (1 : AFplus L)) = s.i c := by
   simp [SplitPlace.proj, Algebra.TensorProduct.lift_tmul]
 

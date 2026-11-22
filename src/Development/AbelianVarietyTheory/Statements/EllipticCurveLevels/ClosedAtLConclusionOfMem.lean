@@ -20,32 +20,6 @@ variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAl
 def Apart (w u : HeightOneSpectrum (𝓞 E)) : Prop :=
   w.under (𝓞 (maximalRealSubfield E)) ≠ u.under (𝓞 (maximalRealSubfield E))
 
-
-omit [IsAlgClosure E Ω] in
-def SplitAtt (π : CuspSub E a) (ι : Qbar l ≃+* ℂ) (r : G E Ω →* GL (Fin a) (Qbar l)) : Prop :=
-  Continuous r ∧ IsSSRep r ∧ ∀ w : HeightOneSpectrum (𝓞 E), IsSplitAt w → ((l : ℕ) : 𝓞 E) ∉ w.asIdeal →
-    ∀ B, (CG.mk π).HasSat w B → UpperTheory.V.Af.FrobEig ι r w (UpperTheory.V.Af.algSat a (normV w) B)
-
-
-omit [IsCMField E] [IsAlgClosure E Ω] in
-def SstAt (r : G E Ω →* GL (Fin a) (Qbar l)) (w : HeightOneSpectrum (𝓞 E)) : Prop :=
-  ∀ (P : LocPrime l) (AI : LocAinf l P), Nonempty (LocTied l P AI) → ∀ (A : ValuationSubring Ω), IsPlaceOver A w →
-    ∀ (O : Type) [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O] (Bw : LocBridge l E Ω (Dec (F := E) A) O), Pst.Induces Bw →
-    IsSstAt P Bw (r.comp (Dec (F := E) A).subtype)
-
-def IwaAt (π : CuspSub E a) (w : HeightOneSpectrum (𝓞 E)) : Prop :=
-  ∃ σ, π.IsLocComp w σ ∧ PRep.fixed σ.ρ (SmGL.iwahori (w.adicCompletion E) (Fin a)) ≠ ⊥
-
-def ScAt (π : CuspSub E a) (w : HeightOneSpectrum (𝓞 E)) : Prop :=
-  ∃ σ, π.IsLocComp w σ ∧ SmGL.IsCuspidal σ.ρ
-
-def Seed : Prop :=
-  ∀ (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
-    (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ), 1 ≤ a → ∀ π : CuspSub E a, InScope .csd l π (quadChar E ^ a) →
-    ∀ w₀ : HeightOneSpectrum (𝓞 E), ((l : ℕ) : 𝓞 E) ∈ w₀.asIdeal → ScAt π w₀ →
-    ∃ r : G E Ω →* GL (Fin a) (Qbar l), SplitAtt π ι r ∧ ∀ w, IsSplitAt w → Apart w w₀ →
-      ClauseAt .ss π ι r w ∧ ClauseAt .dR π ι r w ∧ ClauseAt .crys π ι r w ∧ (IwaAt π w → SstAt r w)
-
 structure Match (U : Submodule ℂ (UA E a → ℂ)) (π : CuspSub E a) : Prop where
   aut : IsAutRepU U
   unram : ∀ w, ¬ IsSplitAt w → IsUnramU U w
@@ -91,14 +65,6 @@ def ClosedAtL : Prop :=
         ∀ (τ : E →+* Qbar l) (LL' : FinExt l) (τ' : ↥Bw.Kw.1 →ₐ[ℚ_[l]] ↥LL'.1), IsInduced Bw τ τ' →
           IsJumpsAt P Bw (r.comp (Dec (F := E) A).subtype) τ (J τ)) ∧
       ((∀ ρ ∈ C, IsCrysAt P Bw (ρ.comp (Dec (F := E) A).subtype)) → IsCrysAt P Bw (r.comp (Dec (F := E) A).subtype))
-
-def Limit : Prop :=
-  ∀ (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
-    (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ), 1 ≤ a → ∀ π : CuspSub E a, InScope .csd l π (quadChar E ^ a) →
-    ∀ w₀ : HeightOneSpectrum (𝓞 E), ((l : ℕ) : 𝓞 E) ∈ w₀.asIdeal →
-    ∃ r : G E Ω →* GL (Fin a) (Qbar l), SplitAtt π ι r ∧
-      ∀ w, IsSplitAt w → Apart w w₀ →
-        ClauseAt .ss π ι r w ∧ ClauseAt .crys π ι r w ∧ (IwaAt π w → ClauseAt .dR π ι r w)
 
 theorem not_apart_self (w : HeightOneSpectrum (𝓞 E)) : ¬ Apart w w := fun h => h rfl
 

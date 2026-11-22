@@ -2,12 +2,13 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockPolynomialsLocallyFiniteRationalWeights
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GlBlockFiniteDimModuleStructure
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HighestWeightTensor
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormExists
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsBilinearFischerPairingMatrixEntryPolynomia
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueJointTop
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RowDerivationChainRule.DetDer
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CasimirFockAct1SubCasimirFockAct2
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNontrivialLiftModule
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsJointShapeGenerated
@@ -28,11 +29,14 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockPolynomi
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneParamSubgroupGeneratorsExistStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryLieElementsGenerateOneParamLinesStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MaximalCompactOneParameterLinesOfLieLinesStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieScalarStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieSecondOfPrintsStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieFirstOfLieSecondStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieScalar
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledFockVacuumEqSmulVacuumMulConjStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiagonalIntegralInvariantFormDiagonalLagrangianStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchimedeanSchwartzIntegralMulStarNeZeroStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledSpaceSplittingConstantHalfRealPlacesStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealPlaceSplittingConstantEqDoubledSpaceStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieFirstOfLieSecond
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CartanEigenOrthonormalFrameExistsStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AtAlgebraMapSgnAdSubOneStatement
 
 @[expose] public section
 
@@ -50,40 +54,9 @@ theorem incM_map_piInf {n m : Type} (J : Matrix n m E) {w : InfinitePlace F} (τ
   ext i j
   simp [incM, piInf, compInf, inclR, infEmb_tmul]
 
-theorem hasExp_div (τ : ∀ w : InfinitePlace F, EmbOver E w) {χ χ' : Chr F E} {m m' : InfinitePlace F → ℤ}
-    (h : HasExp τ χ m) (h' : HasExp τ χ' m') : HasExp τ (χ / χ') (fun w => m w - m' w) := by
-  intro z hz
-  rw [MonoidHom.div_apply, Circle.coe_div, h z hz, h' z hz, ← Finset.prod_div_distrib]
-  refine Finset.prod_congr rfl fun w _ => ?_
-  have : piInf (τ w) (z : AE F E) / (‖piInf (τ w) (z : AE F E)‖ : ℂ) ≠ 0 := by
-    have h0 : piInf (τ w) (z : AE F E) ≠ 0 := by
-      intro e
-      have := congrArg (piInf (τ w)) z.mul_inv
-      rw [map_mul, e, zero_mul, map_one] at this
-      exact zero_ne_one this
-    exact div_ne_zero h0 (by exact_mod_cast norm_ne_zero_iff.2 h0)
-  rw [zpow_sub₀ this]
-
 section Tensor
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {V W : ι → Type} [∀ i, AddCommGroup (V i)] [∀ i, Module ℂ (V i)]
   [∀ i, AddCommGroup (W i)] [∀ i, Module ℂ (W i)]
-
-theorem map_atPl (p : ∀ i, V i →ₗ[ℂ] W i) (w : ι) (L : Module.End ℂ (V w)) (L' : Module.End ℂ (W w))
-    (h : p w ∘ₗ L = L' ∘ₗ p w) : PiTensorProduct.map p ∘ₗ atPl w L = atPl w L' ∘ₗ PiTensorProduct.map p := by
-  unfold atPl
-  rw [← PiTensorProduct.map_comp, ← PiTensorProduct.map_comp]
-  congr 1
-  funext i
-  by_cases hi : i = w
-  · subst hi; simp [h]
-  · simp [Function.update_of_ne hi]
-
-theorem map_sumPl (p : ∀ i, V i →ₗ[ℂ] W i) (L : ∀ i, Module.End ℂ (V i)) (L' : ∀ i, Module.End ℂ (W i))
-    (h : ∀ i, p i ∘ₗ L i = L' i ∘ₗ p i) : PiTensorProduct.map p ∘ₗ sumPl L = sumPl L' ∘ₗ PiTensorProduct.map p := by
-  apply LinearMap.ext; intro x
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [sumPl, LinearMap.comp_apply, LinearMap.sum_apply, map_sum]
-  exact Finset.sum_congr rfl fun i _ => LinearMap.congr_fun (map_atPl p i (L i) (L' i) (h i)) x
 
 end Tensor
 
@@ -107,36 +80,12 @@ theorem i_lineex : GlobalTheory.RealLift.LineEx := GlobalTheory.T.unitaryLieElem
 
 theorem i_kline : GlobalTheory.RealLift.LineEx → GlobalTheory.RealLift.KLine := GlobalTheory.T.maximalCompact_oneParameterLines_of_lieLines
 
-theorem i_liescalar : GlobalTheory.FunPr.Hypotheses₂ → GlobalTheory.RealLift.DerEx → GlobalTheory.RealLift.VacLine → GlobalTheory.RealLift.LieScalar := GlobalTheory.T.lieScalar_of_prints_derEx_vacLine
-
-theorem i_liesecond : GlobalTheory.FunPr.Hypotheses₂ → GlobalTheory.RealLift.DerEx → GlobalTheory.RealLift.FockEx → GlobalTheory.RealLift.VacLine → GlobalTheory.RealLift.LieScalar → GlobalTheory.RealLift.LieSecond := GlobalTheory.T.lieSecond_of_prints_derEx_fockEx_vacLine_lieScalar
-
-theorem i_liefirst : GlobalTheory.RealLift.LieSecond → GlobalTheory.RealLift.LieFirst := GlobalTheory.T.lieFirst_of_lieSecond'
-
 theorem i_frameex : GlobalTheory.RealLift.FrameEx := GlobalTheory.T.cartanEigen_orthonormalFrame_exists
-
-theorem i_parity : GlobalTheory.RealLift.Parity := GlobalTheory.T.realLift_parity
 
 section Helpers
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {V W : ι → Type} [∀ i, AddCommGroup (V i)] [∀ i, Module ℂ (V i)]
   [∀ i, AddCommGroup (W i)] [∀ i, Module ℂ (W i)]
-
-theorem atPl_eq (w : ι) (L : Module.End ℂ (V w)) :
-    atPl w L = PiTensorProduct.mapMultilinear ℂ V V (Function.update (fun i => (LinearMap.id : V i →ₗ[ℂ] V i)) w L) := rfl
-
-theorem atPl_add (w : ι) (L L' : Module.End ℂ (V w)) : atPl w (L + L') = atPl w L + atPl w L' := by
-  simp only [atPl_eq, MultilinearMap.map_update_add]
-
-theorem atPl_smul (w : ι) (c : ℂ) (L : Module.End ℂ (V w)) : atPl w (c • L) = c • atPl w L := by
-  simp only [atPl_eq, MultilinearMap.map_update_smul, RingHom.id_apply]
-
-theorem atPl_one (w : ι) : atPl w (1 : Module.End ℂ (V w)) = 1 := by
-  rw [atPl_eq, show Function.update (fun i => (LinearMap.id : V i →ₗ[ℂ] V i)) w 1 = fun i => LinearMap.id by
-    funext i; by_cases h : i = w
-    · subst h; simp; rfl
-    · simp [Function.update_of_ne h]]
-  exact PiTensorProduct.map_id
 
 theorem atPl_zero (w : ι) : atPl w (0 : Module.End ℂ (V w)) = 0 := by
   simp only [atPl_eq, MultilinearMap.map_update_zero]
@@ -146,23 +95,6 @@ end Helpers
 section Exp
 
 variable {V V' Z : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] [AddCommGroup Z] [Module ℂ Z]
-
-theorem pow_comm {q : V →ₗ[ℂ] Z} {L : Module.End ℂ V} {L0 : Module.End ℂ Z} (h : q ∘ₗ L = L0 ∘ₗ q) (n : ℕ) (v : V) :
-    q ((L ^ n) v) = (L0 ^ n) (q v) := by
-  induction n with
-  | zero => simp
-  | succ n ih => rw [pow_succ', pow_succ', Module.End.mul_apply, Module.End.mul_apply, ← ih, ← LinearMap.comp_apply, h,
-      LinearMap.comp_apply]
-
-theorem exp_equiv {q : V →ₗ[ℂ] Z} {q' : V' →ₗ[ℂ] Z} {L U : Module.End ℂ V} {L' U' : Module.End ℂ V'} {L0 : Module.End ℂ Z}
-    (hU : IsExp L U) (hU' : IsExp L' U') (h : q ∘ₗ L = L0 ∘ₗ q) (h' : q' ∘ₗ L' = L0 ∘ₗ q') {v : V} {v' : V'}
-    (e : q v = q' v') : q (U v) = q' (U' v') := by
-  refine sub_eq_zero.1 ((Module.forall_dual_apply_eq_zero_iff ℂ (q (U v) - q' (U' v'))).1 fun l => ?_)
-  rw [map_sub, sub_eq_zero]
-  have a := hU v (l ∘ₗ q)
-  have b := hU' v' (l ∘ₗ q')
-  simp only [LinearMap.comp_apply, pow_comm h, pow_comm h', e] at a b
-  exact a.unique b
 
 end Exp
 
@@ -200,7 +132,5 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
   (Φ : Tens F P Q R S →ₗ[ℂ] SInf F (Fin n × Fin d)) (Ψ : SInf F (Fin n × Fin d) →ₗ[ℂ] Tens F P Q R S)
 
 end SideW
-
-theorem zero_mem_upq (R S : ℕ) : (0 : Mat R S) ∈ upq R S := by simp [upq]
 
 end GlobalTheory.RealLift.Main

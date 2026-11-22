@@ -24,18 +24,12 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
 def StdAtAll (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) : Prop :=
   ∀ P ∈ ST, d.1.at P = stdAt E n P
 
-def DetUnitAt (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) (Q : HeightOneSpectrum (𝓞 E)) : Prop :=
-  ∀ g : Sp E n ≃ₗ[E] Sp E n, (∀ x : Sp E n, g x ∈ d.1.at Q ↔ x ∈ stdAt E n Q) →
-    Q.valuation E (LinearMap.det (g : Sp E n →ₗ[E] Sp E n)) = 1
-
 def SplitNonConj (ST : Finset (HeightOneSpectrum (𝓞 E))) : Prop :=
   ∀ P ∈ ST, ∀ Q ∈ ST, Q ≠ conjPrime₂ P
-
 
 variable (E n ST SG) in
 def HasStdReps : Prop :=
   ∀ d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG), ∃ ga : UF E n, StdAtAll (((ga, 1) : UF E n × GLG (E := E) (n := n) (SG := SG)) • d)
-
 
 end Generic
 

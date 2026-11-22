@@ -172,14 +172,6 @@ theorem val_symGen {T : Over S} (θ : ThetaGrp A L k T) (nu : LB.Gen (negLB A L 
   exact (val_mul hJ _ _ r).trans (congrArg₂ (· * ·) ((val_mul hJ _ _ r).trans (congrArg₂ (· * ·) (val_pull hJ _ _ r) rfl))
     ((val_mul hJ _ _ r).trans (congrArg₂ (· * ·) (val_pull hJ _ _ r) ((val_inv _ r).trans (congrArg (·⁻¹) (val_pull hJ _ _ r))))))
 
-theorem eθ {T T' : Over S} (σ : T' ⟶ T) (x : T ⟶ A) :
-    ∀ kk, (![(snd T' A).left, (translPt A (σ ≫ x)).left] : Fin 2 → _) kk =
-      (σ ▷ A).left ≫ (![(snd T A).left, (translPt A x).left] : Fin 2 → _) kk := by
-  intro kk
-  fin_cases kk
-  · simp [← Over.comp_left]
-  · simp [← Over.comp_left, translPt_whisk]
-
 theorem symLift_pull (hL : L.IsLB) {T T' : Over S} (σ : T' ⟶ T) {n : ℕ} {x : T ⟶ A} {θ : ThetaGrp A L k T}
     (hθ : SymLift A L k n x θ) (φ' : LB.Gen (thetaLB A L k (σ ≫ θ.pt))) (gφ' : φ'.IsGen)
     (hv : ∀ {Z : Scheme.{0}} (r : Z ⟶ (T' ⊗ A).left) (z : Z) {J : (Z ⟶ A.left) → L.ι}, Good L z J →

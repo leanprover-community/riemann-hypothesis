@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPointsTranslationFamilyChartsThickenings
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CloseTensorStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTensorLiftOfAnalyticThickeningStatement
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsTaylorExpansionOrderOne
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FstTszeSec
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsPeriodHom

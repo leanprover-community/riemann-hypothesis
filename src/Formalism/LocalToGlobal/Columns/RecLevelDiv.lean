@@ -134,7 +134,6 @@ variable {F E K : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Sta
 variable (hc : Formalism.BasicNotions.CMData F E) {n r : ℕ} [NeZero n] (h : r ≤ n) {t s : ℕ} (ht : 0 < t) (hn : n = r + s * t)
   {SG : Finset (Pl E)} (P : LevFam E K r SG) (χ : ∀ w : SG, ℕ → (𝓞 E ⧸ w.1.asIdeal)ˣ →* Kˣ)
 
-
 include ht hn in
 theorem levU_parFam_eq_lev :
     levU hc n ∅ SG (parFam h t s P χ).grp =
@@ -150,7 +149,6 @@ theorem levU_parFam_eq_lev :
   · rintro ⟨⟨⟨⟨h1, h2⟩, h3⟩, -⟩, h4⟩
     exact ⟨h1, h2, fun _ hP => by simp at hP, fun w => ⟨(h3 w.1 w.2).2, h4 w (Set.mem_univ w)⟩⟩
 
-
 omit [StarRing E] in
 theorem rld_ofLocal_chi (Hl : ∀ PP : SG, Subgroup (GL (Fin r) (kP PP.1))) (cl : ∀ PP : SG, Hl PP →* Kˣ)
     (y : (Subgroup.pi Set.univ Hl : Subgroup (Formalism.L2.DIV.G0 SG r))) :
@@ -164,7 +162,6 @@ theorem rld_ofLocal_chi (Hl : ∀ PP : SG, Subgroup (GL (Fin r) (kP PP.1))) (cl 
 omit [StarRing E] in
 theorem rld_parDat_cg (c : ℕ) (w : SG) : (parDat h t s P χ).cg (c + 1) w.1 = χ w c := by
   simp only [parDat, dif_pos w.2, Nat.add_sub_cancel, Subtype.coe_eta]
-
 
 include ht hn in
 theorem levChr_parFam_eq_levChar (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))
@@ -246,10 +243,6 @@ section Sharp
 open Formalism.BasicNotions (Ranks)
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (hc : Formalism.BasicNotions.CMData X.F X.E) (Ch : Chars X Pr R.m)
-
-theorem colLevS_of_lt {j : ℕ} (hj : j + 1 < R.m) : colLevS Ch j = colLev Ch j := by
-  funext w
-  simp only [colLevS, if_pos hj]
 
 end Sharp
 

@@ -70,12 +70,6 @@ theorem scale_smul (a : ℚ) (t : R) (φ : HahnSeries ℚ R) : scale a (t • φ
   · ext r; simp [coeff_scale ha]
   · simp [scale, ha]
 
-theorem scale_mul (a : ℚ) (φ ψ : HahnSeries ℚ R) : scale a (φ * ψ) = scale a φ * scale a ψ := by
-  by_cases ha : 0 < a
-  · simp only [scale, dif_pos ha]
-    exact HahnSeries.embDomain_mul _ (fun x y => mul_add a x y) φ ψ
-  · simp [scale, ha]
-
 theorem coeff_latPart (N : ℕ) (φ : HahnSeries ℚ R) (r : ℚ) :
     (latPart N φ).coeff r = if ((N : ℚ) * r).den = 1 then φ.coeff r else 0 := by
   simp [latPart]
@@ -108,17 +102,14 @@ namespace Api
 
 attribute [local simp] coeff_cm coeff_qD
 
-
 omit [Algebra ℚ Ω] in
 theorem coeff_sub_upper {a d : ℚ} (h : 0 < a / d) (b : ℚ) (φ : HahnSeries ℚ Ω) (r : ℚ) :
     (sub ε a b d φ).coeff (r * a / d) = eOm ε (r * b / d) * φ.coeff r := by
   rw [sub, mul_div_assoc, mul_comm r, coeff_scale_mul h, coeff_cm]
 
-
 omit [Algebra ℚ Ω] in
 theorem sub_map_add (a b d : ℚ) (φ ψ : HahnSeries ℚ Ω) : sub ε a b d (φ + ψ) = sub ε a b d φ + sub ε a b d ψ := by
   simp only [sub, cm_add, scale_add]
-
 
 omit [Algebra ℚ Ω] in
 theorem sub_map_smul (a b d : ℚ) (t : Ω) (φ : HahnSeries ℚ Ω) : sub ε a b d (t • φ) = t • sub ε a b d φ := by
@@ -139,11 +130,9 @@ theorem exp_sl_upper (X : Tower Ω ε) (g : GQ) (hg : ent g 1 0 = 0) (f : X.K) :
     ⟨s / (ent g 0 0 / ent g 1 1), by rw [mul_div_assoc, div_mul_cancel₀ _ h.ne']⟩
   rw [X.exp_upper g hg, coeff_sub_upper h]
 
-
 omit [Algebra ℚ Ω] in
 theorem eOm_eq_of {x : ℚ} {c : Ω} (h : ε c = Complex.exp (2 * Real.pi * Complex.I * (x : ℂ))) : eOm ε x = c := by
   rw [eOm, ← h]; exact Function.leftInverse_invFun ε.injective c
-
 
 omit [Algebra ℚ Ω] in
 theorem eOm_intCast_div {q : ℕ} {ζ : Ω} (hζ : ε ζ = Complex.exp (2 * Real.pi * Complex.I / q)) (n : ℤ) :
@@ -151,7 +140,6 @@ theorem eOm_intCast_div {q : ℕ} {ζ : Ω} (hζ : ε ζ = Complex.exp (2 * Real
   apply eOm_eq_of
   rw [map_zpow₀, hζ, ← Complex.exp_int_mul]
   congr 1; push_cast; ring
-
 
 omit [Algebra ℚ Ω] in
 theorem exists_root_of_isAlgClosed [IsAlgClosed Ω] (ε : Ω →+* ℂ) {q : ℕ} (hq : 0 < q) :
@@ -163,7 +151,6 @@ theorem exists_root_of_isAlgClosed [IsAlgClosed Ω] (ε : Ω →+* ℂ) {q : ℕ
     (Complex.isPrimitiveRoot_exp q hq.ne').pow_eq_one
   exact ⟨ξ ^ i, by rw [map_pow, hi]⟩
 
-
 omit [Algebra ℚ Ω] in
 theorem coeff_hq {q : ℕ} (hq0 : 0 < q) (φ : HahnSeries ℚ Ω) (r : ℚ) :
     (hq ε q φ).coeff r = (q : Ω)⁻¹ * (∑ j ∈ Finset.range q, eOm ε (r * j)) * φ.coeff (q * r) := by
@@ -174,7 +161,6 @@ theorem coeff_hq {q : ℕ} (hq0 : 0 < q) (φ : HahnSeries ℚ Ω) (r : ℚ) :
   have := coeff_sub_upper (ε := ε) (a := 1) (d := q) (by positivity) j φ (q * r)
   rw [show (q : ℚ) * r * 1 / q = r by field_simp, show (q : ℚ) * r * j / q = r * j by field_simp] at this
   exact this
-
 
 omit [Algebra ℚ Ω] in
 theorem hq_eq_uq {q : ℕ} (hq0 : 0 < q) (hζ : ∃ ζ : Ω, ε ζ = Complex.exp (2 * Real.pi * Complex.I / q))
@@ -212,7 +198,6 @@ theorem hq_eq_uq {q : ℕ} (hq0 : 0 < q) (hζ : ∃ ζ : Ω, ε ζ = Complex.exp
     have hq1 : (ζ ^ n) ^ q = 1 := by
       rw [← zpow_natCast, ← zpow_mul, mul_comm, zpow_mul, zpow_natCast, hp.pow_eq_one, one_zpow]
     rw [geom_sum_eq hne, hq1]; simp
-
 
 omit [Algebra ℚ Ω] in
 theorem hq_eq_uq_of_isAlgClosed [IsAlgClosed Ω] {q : ℕ} (hq0 : 0 < q) {φ : HahnSeries ℚ Ω} (hφ : IsLat 1 φ) :

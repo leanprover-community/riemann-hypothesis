@@ -44,14 +44,6 @@ theorem gU_pullU {X Y : Scheme.{0}} (f : Y ⟶ X) (U : X.Opens) (y : Y) (hy : y 
   | exact (congrArg (fun φ => φ.hom x.val) (Scheme.Hom.germ_stalkMap f U y hy)).symm
   | exact congrArg (fun φ => φ.hom x.val) (Scheme.Hom.germ_stalkMap f U y hy)
 
-theorem pullU_res' {X Y : Scheme.{0}} (f : Y ⟶ X) {U V : X.Opens} (h : V ≤ U) (x : Γ(X, U)ˣ) :
-    pullU f V (res h x) = res (fun _ hy => h hy : f ⁻¹ᵁ V ≤ f ⁻¹ᵁ U) (pullU f U x) := by
-  apply unit_ext
-  intro y hy
-  have hP : f ⁻¹ᵁ V ≤ f ⁻¹ᵁ U := fun _ hz => h hz
-  rw [gU_pullU, gU_res h (f.base y) hy x]
-  exact (gU_pullU f U y (hP hy) x).symm.trans (gU_res hP y hy (pullU f U x)).symm
-
 theorem gU_pullU_congr {X Y : Scheme.{0}} {φ ψ : Y ⟶ X} (h : φ = ψ) (U : X.Opens) (x : Γ(X, U)ˣ)
     (p : Y) (hp : p ∈ φ ⁻¹ᵁ U) (hp' : p ∈ ψ ⁻¹ᵁ U) :
     gU p hp (pullU φ U x) = gU p hp' (pullU ψ U x) := by

@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLatticeComapMulVecLinOfLeftInverseMatrix
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 
 @[expose] public section

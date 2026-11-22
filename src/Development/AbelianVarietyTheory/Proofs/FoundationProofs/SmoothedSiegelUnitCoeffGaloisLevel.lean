@@ -13,7 +13,6 @@ noncomputable section
 
 open scoped UpperHalfPlane MatrixGroups Manifold
 open GlobalTheory.Sieg GlobalTheory.QFam GlobalTheory.Sieg.Model GlobalTheory.Sieg.Hol PowerSeries
-local notation "𝕢" => Function.Periodic.qParam
 
 namespace GlobalTheory.Sieg.Gal
 

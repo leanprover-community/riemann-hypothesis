@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeIsobaric
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary
 
 @[expose] public section
 
@@ -142,30 +142,7 @@ def kapSign (n : ℕ) (w : Pl E) (Q₁ : (w.adicCompletion E)[X]) (γ : GLw n w)
 def kapOrb (n : ℕ) (w : Pl E) (Q₁ Q₂ : (w.adicCompletion E)[X]) (f : UL n w → ℂ) : ℂ :=
   clSum (MonoidHom.id _) (KL n w) {γ | γ.1.val.charpoly = Q₁ * Q₂} (fun γ => kapSign n w Q₁ γ.1) f
 
-structure Term (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) : Type 1 where
-  c : ℕ
-  N : Fin c → ℕ
-  h : ∑ i, N i = n
-  V : ∀ i, Submodule ℂ (Sm E (N i))
-  σ : ∀ i (w : Pl E), SmIrr (GLw (N i) w)
-  m : Fin c → (E →+* ℂ) → Multiset ℂ
-  P : ∀ w : Pl E, SmIrr (GLw n w)
-  A : ∀ w : Pl E, (P w).V →ₗ[ℂ] (P w).V
-  pos : ∀ i, 0 < N i
-  discrete : ∀ i, IsDiscrete (V i)
-  csd : ∀ i, IsCsdGL (V i)
-  loc : ∀ i w, IsLocCompGL (V i) w (σ i w)
-  inf : ∀ i τ, HasInfCharGL (V i) τ (m i τ)
-  iso : ∀ w, Nonempty ((P w).ρ.Equiv (locProd h w (σ · w)))
-  bij : ∀ w, Function.Bijective (A w)
-  split : ∀ w, IsSplitAt w → A w = LinearMap.id
-  inter : ∀ w g, A w ∘ₗ (P w).ρ g = (P w).ρ (thL n w g) ∘ₗ A w
-  unit : ∀ᶠ w in cofinite, twTr (P w).ρ (GlobalTheory.LFun.KGL w (n := n)) (GlobalTheory.LFun.KGL w (n := n))
-    ((GlobalTheory.LFun.KGL w (n := n) : Set (GLw n w)).indicator 1) (A w) = 1
-
 variable {n : ℕ}
-
-abbrev Term.rep (t : Term E n) (w : Pl E) : Representation ℂ (GLw n w) (t.P w).V := (t.P w).ρ
 
 def IsLevelFam {H : Pl E → Type} [∀ w, Group (H w)] [∀ w, TopologicalSpace (H w)] (θ : ∀ w, H w →* H w)
     (K K' : ∀ w : Pl E, Subgroup (H w)) : Prop :=
@@ -182,10 +159,6 @@ def RegAt2 (a b : ℕ) (w : Pl E) (φ : GLw a w × GLw b w → ℂ) : Prop :=
 
 def Unr (E : Type) [Field E] [NumberField E] [IsCMField E] : Prop :=
   ∀ w : Pl E, Algebra.IsUnramifiedAt (𝓞 (maximalRealSubfield E)) w.asIdeal
-
-def spec {ι : Type} [Fintype ι] (S : Set (Pl E)) (t : ι → Term E n) (C : ι → ℂ) (K' : ∀ w : Pl E, Subgroup (GLw n w))
-    (φ : ∀ w : Pl E, GLw n w → ℂ) : ℂ :=
-  ∑ i, C i * ∏ᶠ w ∈ S, twTr ((t i).rep w) (GlobalTheory.LFun.KGL w (n := n)) (K' w) (φ w) ((t i).A w)
 
 def IsCompU (π : Submodule ℂ (UA E n → ℂ)) (w : Pl E) (σ : SmIrr (UL n w)) : Prop :=
   ∃ p : locU n w →* UL n w, (∀ x, (p x).1 = cLoc w x.1) ∧ IsCompAlong π (locU n w) p σ.ρ
@@ -226,21 +199,5 @@ def Match (n a b : ℕ) (w : Pl E) (μ : (w.adicCompletion E)ˣ →* ℂˣ) (f :
     (φ : GLw a w × GLw b w → ℂ) : Prop :=
   ∀ Q₁ Q₂ : (w.adicCompletion E)[X], Q₁.Monic → Q₂.Monic → Q₁.natDegree = a → Q₂.natDegree = b →
     (Q₁ * Q₂).Separable → IsCsr w Q₁ → IsCsr w Q₂ → stTw2 a b w Q₁ Q₂ φ = delta w μ Q₁ Q₂ * kapOrb n w Q₁ Q₂ f
-
-def HasTransfer (n : ℕ) (w : Pl E) : Prop :=
-  ∀ U : Subgroup (UL n w), IsOpen (U : Set (UL n w)) → ∃ K' ≤ U, IsLevel (MonoidHom.id _) (KL n w) K' ∧
-    ∀ a b, a + b = n → ∃ K₁ K₂ φ, IsLevel (thL a w) (GlobalTheory.LFun.KGL w (n := a)) K₁ ∧ IsLevel (thL b w) (GlobalTheory.LFun.KGL w (n := b)) K₂ ∧
-      IsHecke (K₁.prod K₂) φ ∧ Match n a b w 1 ((K' : Set (UL n w)).indicator 1) φ
-
-def HasBC (π : Submodule ℂ (UA E n → ℂ)) : Prop :=
-  ∃ (c : ℕ) (N : Fin c → ℕ) (h : ∑ i, N i = n) (V : ∀ i, Submodule ℂ (Sm E (N i)))
-    (σ : ∀ i (w : Pl E), SmIrr (GLw (N i) w)) (m : Fin c → (E →+* ℂ) → Multiset ℂ), UnitaryBC.IsBaseChange π h V σ m
-
-def BCCore : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ n : ℕ, 1 ≤ n →
-    ∀ π : Submodule ℂ (UA E n → ℂ), IsAutRepU π → (∀ w, ¬ IsSplitAt w → IsUnramU π w ∨ HasTransfer n w) → HasBC π
-
-def TransferInert : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (n : ℕ) (w : Pl E), ¬ IsSplitAt w → HasTransfer n w
 
 end GlobalTheory.BCT

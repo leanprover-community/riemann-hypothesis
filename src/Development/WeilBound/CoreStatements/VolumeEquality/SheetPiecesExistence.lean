@@ -8,7 +8,7 @@ public import Development.WeilBound.CoreStatements.VolumeEquality.LocInj
 public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnif
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ThreeLeLevel
+public import Mathlib
 
 @[expose] public section
 

@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RadialGaugeOfGaugeIdentitySlices
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEstimateTheorem
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PoissonSummationDecay
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PsdFormConjRewrite
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DualCovolumeChangeOfVariables
@@ -625,70 +624,11 @@ open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.
 
 attribute [local instance] Classical.propDecidable
 
-def sclL (av : ℕ → ℕ → ℂ) : ℕ → List (ℂ × ℕ) → List (ℂ × ℕ)
-  | _, [] => []
-  | o, (t, s) :: bs => (av (o + 1) s * t, s) :: sclL av (o + s) bs
-
-def okL (r : ℕ) (T T' : ℝ) (o s : ℕ) (t : ℂ) : Prop := t ≠ 0 ∧ (s = 1 → o = r → T * T' < Complex.normSq t)
-
-def wLoc (k r : ℕ) (T T' : ℝ) : ℕ → List (ℂ × ℕ) → ℝ
-  | _, [] => 1
-  | o, (t, s) :: bs =>
-    (if okL r T T' o s t then Real.sqrt (ptWeightFrom k r T T' o [(t, s)]) else 0) * wLoc k r T T' (o + s) bs
-
-def cblk (κ : ℝ) (i s : ℕ) : ℝ := (κ ^ (s * (s - 1)))⁻¹ * ∏ l ∈ Finset.Ico i (i + s), κ ^ (4 * (l - 1))
-
-def ccL (κ : ℝ) : ℕ → List (ℂ × ℕ) → ℝ
-  | _, [] => 1
-  | o, (_, s) :: bs => Real.sqrt (cblk κ (o + 1) s) * ccL κ (o + s) bs
-
-structure LocFrame (D : D7) {k0 : ℕ} (hk : k0 + 1 = D.R.k) (G : GramWordSpace.GramMap k0 D.R.rS) (B : LocBessel D.R.k D.R.rS)
-    (f : Matrix (Fin (2 * D.R.rS + D.R.k + 1)) (Fin (2 * D.R.rS + D.R.k + 1)) ℂ → (B.Wq →L[ℂ] B.Wp))
-    (μsec : ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ) where
-  B' : LocBessel (k0 + 1) D.R.rS
-  f' : GramWordSpace.GFn B'
-  μ' : GramWordSpace.Sec k0
-  av : ℕ → ℕ → ℂ
-  A : ℝ
-  hc : B'.c = cStd
-  hε : ∀ i, B'.ε i = B.ε (Fin.cast (by omega) i)
-  hlam : ∀ i, B'.lam i = B.lam (Fin.cast (by omega) i)
-  hu : ∀ i, B'.u i = B.u (Fin.cast hk i)
-  hu' : ∀ i, B'.u' i = B.u' (Fin.cast hk i)
-  hT : Tz (k0 + 1) D.R.rS B'.z = (‖B.c‖ / 2) ^ (2 * D.R.rS) * Tz D.R.k D.R.rS B.z
-  hT' : Tz (k0 + 1) D.R.rS B'.z' = (‖B.c‖ / 2) ^ (2 * D.R.rS) * Tz D.R.k D.R.rS B.z'
-  hsec : IsSection (k0 + 1) D.R.rS B'.z B'.z' μ'
-  hf : UnitaryLevelOperators.IsKFinCoefT B'.σ f'
-  hav : ∀ i s, ‖av i s‖ = (‖B.c‖ / 2) ^ (2 * i + s - 3)
-  hA : 0 < A
-  val : ∀ γ γ' : Point ℂ (D.R.rS + 1),
-    ((Real.sqrt (ptWeightFrom D.R.k D.R.rS (Tz D.R.k D.R.rS B.z) (Tz D.R.k D.R.rS B.z') 0 γ.1) *
-        Real.sqrt (ptWeightFrom D.R.k D.R.rS (Tz D.R.k D.R.rS B.z) (Tz D.R.k D.R.rS B.z') 0 γ'.1) : ℝ) : ℂ) *
-      hsInner ((BlockEstimateTheorem.vmOf D hk G).V B f γ.1) ((BlockEstimateTheorem.vmOf D hk G).V B f γ'.1) =
-    ((A * (ccL (‖B.c‖ / 2) 0 γ.1 * ccL (‖B.c‖ / 2) 0 γ'.1) *
-        (wLoc (k0 + 1) D.R.rS (Tz (k0 + 1) D.R.rS B'.z) (Tz (k0 + 1) D.R.rS B'.z') 0 (sclL av 0 γ.1) *
-          wLoc (k0 + 1) D.R.rS (Tz (k0 + 1) D.R.rS B'.z) (Tz (k0 + 1) D.R.rS B'.z') 0 (sclL av 0 γ'.1)) : ℝ) : ℂ) *
-      hsInner (G.V B' f' (sclL av 0 γ.1)) (G.V B' f' (sclL av 0 γ'.1))
-  energy : ENNReal.ofReal (A * (B'.beta μ' f' f').re) ≤
-    ∫⁻ p : (Fin D.R.rS → ℂ) × ℂ, ENNReal.ofReal (bcWeight D.R.k D.R.rS (Tz D.R.k D.R.rS B.z) (Tz D.R.k D.R.rS B.z') p *
-      hsNormSq (B.J f (bigCell D.R.k D.R.rS p.1 (μsec p.2))))
-
 section Glob
 
 variable {D : D7} (L : LatticeDataWithDual D) (kap : D.what₂.Tau → ℝ) (av : D.what₂.Tau → ℕ → ℕ → ℂ) (Aa : D.what₂.Tau → ℝ)
 
 end Glob
-
-structure XTie {D : D7} {k0 : ℕ} (X : GramWordSpace.Dat D k0) (x : D.what₂.Tau → LocalDataRealPlace D) (T T' : ℝ) (kap : D.what₂.Tau → ℝ) : Prop where
-  hT : ∀ v, X.T v = kap v ^ (2 * D.R.rS) * T
-  hT' : ∀ v, X.T' v = kap v ^ (2 * D.R.rS) * T'
-  lam : ∀ v, (X.loc v).lam = (x v).lam
-  u : ∀ v, (X.loc v).u = (x v).u
-  u' : ∀ v, (X.loc v).u' = (x v).u'
-  a : ∀ v, X.a v = (x v).a
-  b : ∀ v, X.b v = (x v).b
-  a1 : ∀ v, X.a1 v = (x v).a1
-  b1 : ∀ v, X.b1 v = (x v).b1
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -757,7 +697,6 @@ namespace Formalism.MainNotions.BlockEstimateWords
 open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
-
 
 section Num
 

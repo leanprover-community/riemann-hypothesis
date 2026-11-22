@@ -40,8 +40,6 @@ theorem smooth_tensor {A B : HermLine ι} (hA : IsSmoothHerm A) (hB : IsSmoothHe
 def segreLine (m : ℕ) : HermLine ι :=
   HermLine.ofMetrics (fun k => fsMetric (ι := ι k)) (fun _ => (m : ℤ))
 
-theorem segreLine_a (m : ℕ) : (segreLine m : HermLine ι).a = fun _ => (m : ℤ) := rfl
-
 theorem isSmoothHerm_segreLine (m : ℕ) : IsSmoothHerm (segreLine m : HermLine ι) := by
   have hfun : (segreLine m : HermLine ι).h =
       fun z => ∏ k, Real.sqrt (∑ i : ι k, ‖z ⟨k, i⟩‖ ^ 2) ^ m := by
@@ -66,7 +64,6 @@ theorem exists_form {P : Ideal (MRing ι)} {d : ℕ} (hP : IsArithVar P d) (b : 
   rw [ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.xpow, Ideal.IsPrime.prod_mem_iff] at h
   obtain ⟨k, _, hk⟩ := h
   exact (hrel k).choose_spec (hpr.mem_of_pow_mem _ hk)
-
 
 open Classical in
 def secOf (P : Ideal (MRing ι)) (b : K → ℕ) : MRing ι :=

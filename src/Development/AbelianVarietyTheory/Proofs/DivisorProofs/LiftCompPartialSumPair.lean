@@ -26,9 +26,6 @@ variable {R : Type} [CommRing R] [IsDomain R]
 section
 variable {S : Scheme.{0}} (G : Over S) [GrpObj G] [IsCommMonObj G] {T : Over S} (u v : T ⟶ G)
 
-theorem padd_eq_mul' (x y : T ⟶ G) : padd G x y = x * y := rfl
-theorem pzero_eq_one' : pzero G T = 1 := rfl
-
 theorem psum_pair_01 : psum G ![u, v] {0, 1} = u * v := by
   have hl : (List.finRange 2).filter (· ∈ ({0, 1} : Finset (Fin 2))) = [0, 1] := by decide
   rw [psum, hl]

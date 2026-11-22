@@ -49,14 +49,6 @@ noncomputable def basisKaehler : Module.Basis ι S (KaehlerDifferential k S) :=
 noncomputable def partialDeriv (i : ι) : Derivation k S S :=
   ((basisKaehler k ι S).coord i).compDer (KaehlerDifferential.D k S)
 
-noncomputable def partialDerivLinear (i : ι) : S →ₗ[k] S :=
-  (partialDeriv k ι S i).toLinearMap
-
-theorem partialLinear_leibniz (i : ι) :
-    ∀ a b : S, partialDerivLinear k ι S i (a * b)
-      = a • partialDerivLinear k ι S i b + b • partialDerivLinear k ι S i a :=
-  (partialDeriv k ι S i).leibniz
-
 theorem partialDeriv_apply (i : ι) (s : S) :
     partialDeriv k ι S i s = (basisKaehler k ι S).repr (KaehlerDifferential.D k S s) i := rfl
 

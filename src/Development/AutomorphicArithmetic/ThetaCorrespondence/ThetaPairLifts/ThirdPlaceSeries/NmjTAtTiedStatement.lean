@@ -4,7 +4,6 @@ public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.RealTB
 public import Formalism.LocalToGlobal.IndefiniteReal.RealPins
 public import Formalism.LocalToGlobal.IndefiniteReal.RealRec
-public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.NMjT
 public import Formalism.LocalRingCardinality.DataNChTie
 public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.NHkRow
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatticeFamilyAdoptionFirst

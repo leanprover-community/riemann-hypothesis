@@ -4,7 +4,8 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.FourierCompactness.SigmaSigmaOfGood
 public import Development.WeilBound.ThetaLifts.LatticeBasics.IsCompactIntV
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.AdelicFormCongruences.MemRatVIff
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.G2HaarMeasure.UnipotentLeDiagonalStabiliser
+public import Mathlib
+public import GroundTheory.GlobalFields.Adele.Compact
 
 @[expose] public section
 

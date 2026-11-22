@@ -5,7 +5,19 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.JacquetFiniteLength2
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.Tensor2
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.Subquotient2
-public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.SupportProduct
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PSpTop
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PSpLat
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PSpUniq
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PSpCount
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PSpLift
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PSpTwBasic
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PSpRes
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PSpPiEta
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PSpOrd
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PSpPiSub
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PSpSupp
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.CuspidalSupport2
+public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.ProductIrreducible2
 
 @[expose] public section
 

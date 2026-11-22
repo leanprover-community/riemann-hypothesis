@@ -19,8 +19,6 @@ section Matrices
 
 variable {r : ℕ}
 
-local notation "Mat" => Matrix (Fin r) (Fin r) ℂ
-
 def cj (M : Mat) : Mat := M.map conj
 
 theorem cj_mul (M N : Mat) : cj (M * N) = cj M * cj N := Matrix.map_mul
@@ -268,7 +266,6 @@ theorem cj_sgnM : cj (-sgnM X) = -sgnM X := by
   ext a b
   by_cases h : a = b <;> simp [cj, sgnM, h]
 
-
 variable {X} in
 theorem aLin_aAnti_comm {x₁ x₂ : Frame X.Ψ r} (h₁ : x₁ ∈ X.dom) (h₂ : x₂ ∈ X.dom) (τ : X.Ψ) :
     aLin X x₁ x₂ τ * (X.Gm.map τ.1)ᵀ⁻¹ * (aAnti X x₁ x₂ τ)ᵀ * -sgnM X =
@@ -296,7 +293,6 @@ theorem aLin_aAnti_comm {x₁ x₂ : Frame X.Ψ r} (h₁ : x₁ ∈ X.dom) (h₂
 
 theorem conj_kappa (τ : X.Ψ) : conj (τ.1 X.κ0) = -τ.1 X.κ0 :=
   Complex.ext (by simp [DblPoint.re_kappa]) (by simp)
-
 
 variable {X} in
 theorem kZero_swap {x₁ x₂ : Frame X.Ψ r} (h₁ : x₁ ∈ X.dom) (h₂ : x₂ ∈ X.dom)
@@ -328,7 +324,6 @@ theorem kZero_swap {x₁ x₂ : Frame X.Ψ r} (h₁ : x₁ ∈ X.dom) (h₂ : x�
     map_mul, Complex.conj_conj, Finset.mul_sum]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
-
 
 variable {X} in
 theorem kZero_ortho {x : Frame X.Ψ r} (hx : ∀ τ : X.Ψ, gram τ.1 X.Gm (mat x τ) = sgnM X)
@@ -385,7 +380,6 @@ theorem letterCoord_letterDir (l l' : Harm.Var X.Ψ q0 X.p0 (Fin n)) :
   obtain ⟨τ', a', k'⟩ := l'
   by_cases hk : k = k' <;> simp [letterCoord, letterDir, Pi.single_apply, hk, -rowOf_apply]
 
-
 variable {X} in
 theorem kern_pos {m : ℕ} (P : Fin m → Harm.Poly ℂ X.Ψ q0 X.p0 (Fin n)) (hP : ∃ j, P j ≠ 0)
     {x : Frame X.Ψ r} (hx : ∀ τ : X.Ψ, gram τ.1 X.Gm (mat x τ) = sgnM X) :
@@ -415,7 +409,6 @@ theorem kern_pos {m : ℕ} (P : Fin m → Harm.Poly ℂ X.Ψ q0 X.p0 (Fin n)) (h
   by_cases hi : P i = 0
   · simp [hi]
   · exact (mul_pos hC (apolar_norm_pos hi tpos)).le
-
 
 variable {X} in
 theorem kern_swap {m : ℕ} (P : Fin m → Harm.Poly ℂ X.Ψ q0 X.p0 (Fin n)) {x₁ x₂ : Frame X.Ψ r}

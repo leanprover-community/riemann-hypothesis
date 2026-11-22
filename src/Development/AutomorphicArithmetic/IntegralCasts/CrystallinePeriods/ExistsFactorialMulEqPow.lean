@@ -43,9 +43,6 @@ def tateModule.map (f : R →+* S) : tateModule p R →* tateModule p S where
   map_one' := Subtype.ext (map_one _)
   map_mul' _ _ := Subtype.ext (map_mul _ _ _)
 
-def PFlat.map (f : R →+* S) (ϖ : PFlat p R) : PFlat p S :=
-  ⟨Tilt.map p f ϖ.1, by rw [Tilt.untilt_map, ϖ.2, map_natCast]⟩
-
 variable {p}
 
 @[simp] theorem tateModule.coe_map (f : R →+* S) (η : tateModule p R) :
@@ -53,14 +50,6 @@ variable {p}
 
 @[simp] theorem tateModule.map_id (η : tateModule p R) : tateModule.map p (RingHom.id R) η = η :=
   Subtype.ext (Tilt.map_id _)
-
-theorem tateModule.map_map (f : R →+* S) (g : S →+* U) (η : tateModule p R) :
-    tateModule.map p g (tateModule.map p f η) = tateModule.map p (g.comp f) η :=
-  Subtype.ext (Tilt.map_map _ _ _)
-
-theorem PFlat.map_twist (f : R →+* S) (η : tateModule p R) (ϖ : PFlat p R) :
-    PFlat.map p f (ϖ.twist η) = (PFlat.map p f ϖ).twist (tateModule.map p f η) :=
-  Subtype.ext (map_mul (Tilt.map p f) _ _)
 
 theorem IsPrimitive.map {ε : tateModule p R} (h : IsPrimitive ε) (f : R →+* S)
     (hf : Function.Injective f) : IsPrimitive (tateModule.map p f ε) := by
@@ -275,11 +264,6 @@ theorem map_map (f : R →+* S) (g : S →+* U) (x : BcrisPlus p R) :
   RingHom.congr_fun (hom_ext (f := (map p g).comp (map p f)) (g := map p (g.comp f))
     (by simp [Acris.map_map])) x
 
-theorem map_frob (f : R →+* S) (x : BcrisPlus p R) :
-    map p f (frob p R x) = frob p S (map p f x) :=
-  RingHom.congr_fun (hom_ext (f := (map p f).comp (frob p R)) (g := (frob p S).comp (map p f))
-    (by simp [Acris.map_frob])) x
-
 end BcrisPlus
 
 namespace Bcris
@@ -346,11 +330,6 @@ theorem map_map (f : R →+* S) (hf : Function.Injective f) (g : S →+* U)
 theorem map_congr {f g : R →+* S} (hf : Function.Injective f) (hg : Function.Injective g)
     (h : f = g) : map p f hf = map p g hg := by subst h; rfl
 
-theorem map_frob (f : R →+* S) (hf : Function.Injective f) (x : Bcris p R) :
-    map p f hf (frob p R x) = frob p S (map p f hf x) :=
-  RingHom.congr_fun (hom_ext (f := (map p f hf).comp (frob p R))
-    (g := (frob p S).comp (map p f hf)) (by simp [BcrisPlus.map_frob])) x
-
 @[simp] theorem map_logTeich (f : R →+* S) (hf : Function.Injective f) (η : tateModule p R) :
     map p f hf (logTeich η) = logTeich (tateModule.map p f η) := by
   simp [logTeich]
@@ -361,12 +340,6 @@ theorem map_frob (f : R →+* S) (hf : Function.Injective f) (x : Bcris p R) :
 end Bcris
 
 namespace Bst
-
-variable (p) in
-def map (f : R →+* S) (hf : Function.Injective f) : Bst p R →+* Bst p S :=
-  lift ((algebraMap (Bcris p S) _).comp (Bcris.map p f hf)) (fun ϖ => logFlat (PFlat.map p f ϖ))
-    (fun η ϖ => by rw [PFlat.map_twist, logFlat_twist, RingHom.comp_apply, Bcris.map_logTeich])
-
 
 end Bst
 

@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlkFProperStepInjectiveBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ColFlags
 
 @[expose] public section

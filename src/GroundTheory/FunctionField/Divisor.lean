@@ -42,20 +42,6 @@ theorem deg_nonneg {D : Divisor k K} (hD : 0 ≤ D) : 0 ≤ deg D := by
 
 variable [IsFunctionField k K]
 
-theorem eq_zero_of_deg_eq_zero {D : Divisor k K} (hD : 0 ≤ D) (h : deg D = 0) : D = 0 := by
-  rw [deg_eq_sum] at h
-  have hnn : ∀ v ∈ D.support, 0 ≤ D v * v.deg := fun v _ =>
-    mul_nonneg (by simpa using Finsupp.le_def.1 hD v) (Int.natCast_nonneg _)
-  have h0 := (Finset.sum_eq_zero_iff_of_nonneg hnn).1 h
-  ext v
-  by_cases hv : v ∈ D.support
-  · have := h0 v hv
-    have hdeg : (0 : ℤ) < v.deg := by exact_mod_cast v.deg_pos
-    rcases mul_eq_zero.1 this with h' | h'
-    · simpa using h'
-    · omega
-  · simpa using hv
-
 end Divisor
 
 variable [IsFunctionField k K]
@@ -85,17 +71,6 @@ theorem divisor_inv (x : K) : divisor x⁻¹ = -(divisor x : Divisor k K) := by
 theorem divisor_eq_zero_of_isAlgebraic {x : K} (hx : IsAlgebraic k x) (hx0 : x ≠ 0) :
     divisor x = (0 : Divisor k K) := by
   ext v; simp [v.ord_eq_zero_of_isAlgebraic hx hx0]
-
-noncomputable def divisorHom : Additive Kˣ →+ Divisor k K where
-  toFun x := divisor ((x.toMul : Kˣ) : K)
-  map_zero' := by simp
-  map_add' x y := by
-    simp only [toMul_add, Units.val_mul]
-    exact divisor_mul (Additive.toMul x).ne_zero (Additive.toMul y).ne_zero
-
-
-variable (k K) in
-noncomputable def principalDivisors : AddSubgroup (Divisor k K) := (divisorHom (k := k)).range
 
 noncomputable def zeroDivisor (x : K) : Divisor k K := divisor x ⊔ 0
 

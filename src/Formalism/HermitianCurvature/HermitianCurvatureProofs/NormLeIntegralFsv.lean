@@ -32,8 +32,6 @@ def isoQ : ℂ ≃ₗᵢ[ℝ] ℂ where
     simp [Complex.I_sq]
   norm_map' s := by simp
 
-theorem isoQ_apply (s : ℂ) : isoQ s = conj (Complex.I * s) := rfl
-
 theorem fsv_smul (s u z : ℂ) : P5.fsv s u * z = 𝐞 (-⟪u, (π⁻¹ : ℝ) • isoQ s⟫) • z := by
   unfold P5.fsv
   simp [Circle.smul_def, isoQ_apply]

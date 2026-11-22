@@ -22,10 +22,6 @@ private noncomputable def pY : (Fin 2 → k) →ₗ[k] (Fin 4 → k) where
   map_add' a b := by ext i; fin_cases i <;> simp <;> ring
   map_smul' c a := by ext i; fin_cases i <;> simp
 
-private theorem pX_apply (α β : kˣ) (a : Fin 2 → k) : pX α β a = ![a 1 / β, a 0 / α, -(a 1 / β), a 0 / α] := rfl
-
-private theorem pY_apply (b : Fin 2 → k) : pY b = ![b 1, -b 0, b 1, b 0] := rfl
-
 private theorem pX_inj (α β : kˣ) : Function.Injective (pX α β) := by
   intro a b h
   have h0 := congrFun h 0

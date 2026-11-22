@@ -16,8 +16,6 @@ def conj (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [N
     right_inv := fun x => by simp
     commutes' := fun x => by simpa [starRingEnd_apply] using Unram.star_fix (F := F) (E := E) x }
 
-theorem conj_apply (y : E) : conj F E y = star y := rfl
-
 include hU in
 theorem findim : FiniteDimensional F E :=
   Module.finite_of_finrank_eq_succ (hU.finrank_eq)

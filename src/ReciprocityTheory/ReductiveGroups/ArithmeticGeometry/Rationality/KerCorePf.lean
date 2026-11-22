@@ -2,7 +2,7 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.KerCoreSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.DescPf
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.FunKerPf
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.FiniteDimensionalBaseSpan
 
 @[expose] public section
 

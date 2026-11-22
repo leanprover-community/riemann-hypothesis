@@ -20,15 +20,8 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-def IsDyIdem (v : HeightOneSpectrum (𝓞 D.host.F)) (e : AE D) : Prop :=
-  IsSplitIdem D e ∧ finPart D e ∈ intAE D ∧
-    ∃ ε : AF D.host.F, IsPlaceIdem D v ε ∧ e + cA D e = algebraMap (AF D.host.F) (AE D) ε
-
-
 theorem fstA_pairA (x : Ainf D.host.F) (y : Af D.host.F) : fstA D.host.F (pairA D.host.F x y) = x := rfl
 theorem sndA_pairA (x : Ainf D.host.F) (y : Af D.host.F) : sndA D.host.F (pairA D.host.F x y) = y := rfl
-
-
 
 section Sym
 
@@ -67,7 +60,6 @@ theorem open_neighbourhood_set_eq (Λ : AddSubgroup (WO S T)) :
   refine exists_congr fun u => and_congr_right fun _ => ⟨fun h => ?_, fun h i j => ?_⟩
   · ext i j; exact h i j
   · have := congrFun (congrFun h i) j; simpa using this
-
 
 end Phi
 

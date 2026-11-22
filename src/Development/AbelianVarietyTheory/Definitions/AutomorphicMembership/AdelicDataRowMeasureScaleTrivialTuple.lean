@@ -490,51 +490,6 @@ def BesGlob {X : ThetaX D} (T : ThetaTied D X) (ψ : AddChar (AF D.host.F) ℂ) 
     ∀ (φ : X.AF A) (F : X.cusp B), IsAniso A ∨ φ ∈ X.cusp A →
       GlobalTheory.BesselCompare.ClauseFlag ψ d μ 𝓕 s (T.ev A φ) (T.ev B (F : X.AF B)) (T.petC A) (X.Bper A B ι p σ φ F)
 
-structure Realises {θ : InfF D} {X : ThetaX D} {T : ThetaTied D X} {W : WeilTied D X T} (B : BesselTied D X T W)
-    (Wf : WeilFun D W.ψ) (Tw : Tow D) (Rc : RecFun D θ W.ψ) : Prop where
-  inf : IsInfFam θ
-
-  forms : ∀ V, Set.range (T.ev V) = {φ | IsAutFunSm θ V φ}
-  typ : ∀ V P F, F ∈ X.typ V P ↔ T.ev V F ∈ TypS θ V P
-
-  sch : ∀ V V', Set.range (W.evS V V') = {f | IsThetaFun W.ψ V V' f}
-  chr : ∀ μ j, T.eChr (X.chrOf μ j) = Rc.chr μ j
-  eta : T.eChr X.etaT = Rc.eta
-  col : ∀ u μ j φ, T.ev _ (X.colAF u μ j φ).1 = (Rc.col u μ j φ).1
-  row : ∀ μ j F, T.ev _ (X.rowAF μ j F).1 = (Rc.row μ j F).1
-  phi : ∀ μ j, W.evS _ _ (X.PhiY μ j) = (Rc.Phi μ j).1
-  phiUp : PhiYupTied W
-  mY : X.mY = Rc.mY
-  petF : T.petF = Rc.petF
-  petR : T.petR = Rc.meas.petR
-  xs : X.Xs = Tw.Xs
-  ys : X.Ys = Tw.Ys
-  ysLow : X.YsLow = Tw.YsLow
-  iXYs : ∀ t j, HEq (X.iXYs t j) (Tw.iXYs t j)
-  iYXm : ∀ t, HEq (X.iYXm t) (Tw.iYXm t)
-  om : ∀ V V' χ χ' p (Φ : X.Sch V V') (f : ThS W.ψ V V'), W.evS V V' Φ = f.1 →
-    W.evS V V' (W.om V V' χ χ' p Φ) = (Wf.om V V' (T.eChr χ) (T.eChr χ') p f).1
-
-  thOff : ∀ (V V' : HSp D) χ χ', ¬ (admitted V V' (T.eChr χ) (T.eChr χ') ∧ V.SigOK) → X.th V V' χ χ' = 0
-
-  fact : ∀ V V' Φ, Φ ∈ X.fact V V' ↔ IsPureFun W.ψ V V' (W.evS V V' Φ)
-
-  kfin : ∃ K : KfinTied W, K.cpt = Rc.dec.cpt ∧ K.bas = Rc.dec.bas
-
-  posDat : ∀ u ho, B.dat _ _ _ ho (X.posSym u) = Rc.posSym u ∧ B.dat _ _ _ ho (X.pos1 u) = Rc.pos1 u
-
-  pos1Val : ∀ u σ μ 𝓕, IsVolPair D (D.sp.X 0) μ 𝓕 → ∀ ν 𝓝, (Rc.per1.dat u).bes.IsUnitPair ν 𝓝 →
-    ∀ s : GA D (D.sp.X 0) → GA D (D.sp.Y 0), (∀ h, EmbRel (D.sp.Y 0) (D.sp.X 0) (D.sp.iXY 0) (s h) h) →
-    ∀ (φ : X.AF (D.sp.X 0)) (F : X.cusp (D.sp.Y 0)), X.Bper _ _ _ (X.pos1 u) σ φ F = (T.petC (D.sp.X 0) : ℂ) *
-      (Rc.per1.dat u).period W.ψ μ 𝓕 ν 𝓝 s (fun g => star (T.ev _ φ g)) (T.ev _ (F : X.AF (D.sp.Y 0)))
-
-  besAll : ∀ (A A' : HSp D) (ι : A.V →ₗ[D.host.E] A'.V) ho, A.SigOK → HSpace.IsIsomEmb A A' ι →
-    ∀ d : BesDat A A' ι, (d.y : GA D A') = 1 → ∃ p, B.dat A A' ι ho p = d ∧ BesGlob T W.ψ d p
-
-  besOnly : ∀ (A A' : HSp D) (ι : A.V →ₗ[D.host.E] A'.V) ho, A.SigOK → HSpace.IsIsomEmb A A' ι →
-    ∀ p, BesGlob T W.ψ (B.dat A A' ι ho p) p ∨ ∃ u,
-      (⟨A, A', ι, p⟩ : Σ (A A' : HSp D) (ι : A.V →ₗ[D.host.E] A'.V), X.Pos A A' ι) = ⟨_, _, _, X.pos1 u⟩
-
 def IsQuot (V : HSp D) (μ : Measure (GA D V)) (𝓕 : Set (GA D V)) : Prop :=
   μ.IsHaarMeasure ∧ IsFundamentalDomain (GQ V) 𝓕 μ
 

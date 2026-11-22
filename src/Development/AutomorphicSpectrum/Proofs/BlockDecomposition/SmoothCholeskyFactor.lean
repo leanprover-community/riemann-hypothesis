@@ -32,18 +32,6 @@ def step (σ : Mat n → Mat n) (P : Mat (n + 1)) : Mat (n + 1) :=
       (Fin.cases (motive := fun _ => ℂ) ((Real.sqrt (P 0 0).re : ℝ) : ℂ) (fun _ => 0) j)
       (fun i' => Fin.cases (motive := fun _ => ℂ) (col P i') (fun j' => σ (schur P) i' j') j) i
 
-lemma step_zero_zero (σ : Mat n → Mat n) (P : Mat (n + 1)) :
-    step σ P 0 0 = ((Real.sqrt (P 0 0).re : ℝ) : ℂ) := rfl
-
-lemma step_zero_succ (σ : Mat n → Mat n) (P : Mat (n + 1)) (j : Fin n) :
-    step σ P 0 j.succ = 0 := rfl
-
-lemma step_succ_zero (σ : Mat n → Mat n) (P : Mat (n + 1)) (i : Fin n) :
-    step σ P i.succ 0 = col P i := rfl
-
-lemma step_succ_succ (σ : Mat n → Mat n) (P : Mat (n + 1)) (i j : Fin n) :
-    step σ P i.succ j.succ = σ (schur P) i j := rfl
-
 lemma lead_pos {P : Mat (n + 1)} (hP : P.PosDef) : 0 < (P 0 0).re :=
   (Complex.pos_iff.1 (hP.diag_pos (i := 0))).1
 

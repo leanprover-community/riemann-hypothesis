@@ -37,9 +37,6 @@ def twoT (x : WO A S × WO S A') : (WO A S → WO S A' → ℂ) →ₗ[ℂ] (WO 
     simp only [heisO, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
     ring
 
-theorem twoT_apply (x : WO A S × WO S A') (C : WO A S → WO S A' → ℂ) (u : WO A S) (v : WO S A') :
-    twoT ψ A S A' x C u v = ψ (symplOH A S u x.1) * (ψ (symplOH S A' v x.2) * C (u + x.1) (v + x.2)) := rfl
-
 theorem symplOH_add_l (T T' : HSp D) (x x' y : WO T T') :
     symplOH T T' (x + x') y = symplOH T T' x y + symplOH T T' x' y := by
   unfold symplOH
@@ -194,7 +191,6 @@ theorem psi_eq_one_of_neg {z : AF D.host.F} (h : ψ (-z) = 1) : ψ z = 1 := by
   exact h
 
 end GlobalTheory.ZeroOrInv
-
 
 open GlobalTheory.ZeroOrInv GlobalTheory.LatVac in
 theorem GlobalTheory.FinPl.biInv_main : ∀ D : D7, GlobalTheory.FinPl.BiInv D := by

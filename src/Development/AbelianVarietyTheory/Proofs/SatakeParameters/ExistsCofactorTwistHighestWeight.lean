@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.GlobSpecOfExists
 public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas

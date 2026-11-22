@@ -51,73 +51,6 @@ theorem preF_mul {D : D7} {V : Formalism.BasicNotions.TH.HSp D} {n : ℕ} (PV : 
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {P : Pin hL D} {X : GlobalTheory.NJoin.RealAt D P.cf P.C P.tp}
 
-theorem eW_cast_symm_wt (A : GlobalTheory.NJoin.Agree X P.M P.rep) (i : D.nd.Loc) (j : Fin D.R.m)
-    (hμ : Formalism.IndefR.RecTie.Used0 D (D.nd.mu i)) (h' : ReciprocityTheory.Aut.GQ D.host.E D.R.nV) (γ : GA D (Vc D j))
-    (hγ : γ ∈ GQ (Vc D j)) (he : finHom (Vc D j) γ = finHom (Vc D j) ((A.PV j).ψ ((A.a j)⁻¹ * h' * A.a j)))
-    (k : ℕ) (hk : j.1 + 1 = k) (p1 : 1 ≤ k) (p2 : k ≤ D.R.m) (w : (P.M (D.nd.mu i) k p1 p2).wt.W) :
-    (Eq.ndrec (motive := fun k => (p1 : 1 ≤ k) → (p2 : k ≤ D.R.m) →
-        (X.R.cV j).W ≃ₗ[ℂ] (P.M (D.nd.mu i) k p1 p2).wt.W) (fun _ _ => A.eW (D.nd.mu i) hμ j) hk p1 p2).symm
-        ((P.M (D.nd.mu i) k p1 p2).wt.ρ h' w) =
-      (X.R.cV j).ρ γ ((Eq.ndrec (motive := fun k => (p1 : 1 ≤ k) → (p2 : k ≤ D.R.m) →
-        (X.R.cV j).W ≃ₗ[ℂ] (P.M (D.nd.mu i) k p1 p2).wt.W) (fun _ _ => A.eW (D.nd.mu i) hμ j) hk p1 p2).symm w) := by
-  subst hk
-  apply (A.eW _ hμ j).injective
-  simp only [LinearEquiv.apply_symm_apply]
-  rw [A.wt _ hμ j h' γ hγ he]
-  simp
-
-theorem eWloc_symm_wt (A : GlobalTheory.NJoin.Agree X P.M P.rep) (i : D.nd.Loc) (j : Fin D.R.m) (hj : j.1 + 1 = D.nd.j i)
-    (hμ : Formalism.IndefR.RecTie.Used0 D (D.nd.mu i)) (h' : ReciprocityTheory.Aut.GQ D.host.E D.R.nV) (γ : GA D (Vc D j))
-    (hγ : γ ∈ GQ (Vc D j)) (he : finHom (Vc D j) γ = finHom (Vc D j) ((A.PV j).ψ ((A.a j)⁻¹ * h' * A.a j)))
-    (w : (P.M.loc i).wt.W) :
-    (eWloc A i j hj hμ).symm ((P.M.loc i).wt.ρ h' w) = (X.R.cV j).ρ γ ((eWloc A i j hj hμ).symm w) :=
-  eW_cast_symm_wt A i j hμ h' γ hγ he (D.nd.j i) hj _ _ w
-
-theorem fV_rt (A : GlobalTheory.NJoin.Agree X P.M P.rep) (i : D.nd.Loc) (j : Fin D.R.m) (hj : j.1 + 1 = D.nd.j i)
-    (hμ : Formalism.IndefR.RecTie.Used0 D (D.nd.mu i)) (hcv : (X.R.cV j).Is) (h : Formalism.AUTREP.GAf D.host.E D.R.nV)
-    (F F' : ↥(NG.AFall D.host.E D.R.nV (P.M.loc i).wt.ρ))
-    (hF : (F' : Formalism.AUTREP.GAf D.host.E D.R.nV → (P.M.loc i).wt.W) = NG.rt D.host.E D.R.nV h F)
-    (x : GA D (Vc D j)) : fV A i j hj hμ F' x = fV A i j hj hμ F (x * (A.PV j).ψ h) := by
-  show (X.R.cV j).ext _ x = (X.R.cV j).ext _ (x * (A.PV j).ψ h)
-  rw [GlobalTheory.DefLiftHecke.ext_mul _ hcv _ ((A.PV j).into h) x]
-  show (X.R.cV j).ρ x⁻¹ _ = _
-  simp only [LinearMap.coe_mk, AddHom.coe_mk, preF_mul, hF, NG.rt, mul_assoc]
-
-theorem fV_rat (A : GlobalTheory.NJoin.Agree X P.M P.rep) (i : D.nd.Loc) (j : Fin D.R.m) (hj : j.1 + 1 = D.nd.j i)
-    (hμ : Formalism.IndefR.RecTie.Used0 D (D.nd.mu i)) (F : ↥(NG.AFall D.host.E D.R.nV (P.M.loc i).wt.ρ))
-    (γ : GA D (Vc D j)) (hγ : γ ∈ GQ (Vc D j)) (x : GA D (Vc D j)) :
-    fV A i j hj hμ F (γ * x) = fV A i j hj hμ F x := by
-  obtain ⟨y, hy⟩ := fin_frame_surj (A.PV j) ((finHom (Vc D j)).rangeRestrict γ)
-  obtain ⟨z, hz⟩ := fin_frame_surj (A.PV j) ((finHom (Vc D j)).rangeRestrict x)
-  have hh' : A.a j * y * (A.a j)⁻¹ ∈ ReciprocityTheory.Aut.GQ D.host.E D.R.nV := by
-    refine (A.rat j _).2 ⟨γ, hγ, ?_⟩
-    have : (A.a j)⁻¹ * (A.a j * y * (A.a j)⁻¹) * A.a j = y := by group
-    rw [this]
-    exact (congrArg Subtype.val hy).symm
-  have he : finHom (Vc D j) γ = finHom (Vc D j) ((A.PV j).ψ ((A.a j)⁻¹ *
-      ((⟨_, hh'⟩ : ReciprocityTheory.Aut.GQ D.host.E D.R.nV) : Formalism.AUTREP.GAf D.host.E D.R.nV) * A.a j)) := by
-    have : (A.a j)⁻¹ * (A.a j * y * (A.a j)⁻¹) * A.a j = y := by group
-    simp only [this]
-    exact (congrArg Subtype.val hy).symm
-  show (X.R.cV j).ρ (γ * x)⁻¹ ((eWloc A i j hj hμ).symm ((F : Formalism.AUTREP.GAf D.host.E D.R.nV → (P.M.loc i).wt.W)
-      (A.a j * preF (A.PV j) ((finHom (Vc D j)).rangeRestrict (γ * x))))) =
-    (X.R.cV j).ρ x⁻¹ ((eWloc A i j hj hμ).symm ((F : Formalism.AUTREP.GAf D.host.E D.R.nV → (P.M.loc i).wt.W)
-      (A.a j * preF (A.PV j) ((finHom (Vc D j)).rangeRestrict x))))
-  have hprod : (finHom (Vc D j)).rangeRestrict γ * (finHom (Vc D j)).rangeRestrict x =
-      (finHom (Vc D j)).rangeRestrict ((A.PV j).ψ (y * z)) :=
-    (congrArg₂ (· * ·) hy.symm hz.symm).trans
-      ((map_mul (finHom (Vc D j)).rangeRestrict _ _).symm.trans
-        (congrArg (finHom (Vc D j)).rangeRestrict (map_mul (A.PV j).ψ y z).symm))
-  have key : preF (A.PV j) ((finHom (Vc D j)).rangeRestrict (γ * x)) = y * z :=
-    (congrArg (preF (A.PV j)) ((map_mul (finHom (Vc D j)).rangeRestrict γ x).trans hprod)).trans (preF_frame _ _)
-  have hz' : preF (A.PV j) ((finHom (Vc D j)).rangeRestrict x) = z :=
-    (congrArg (preF (A.PV j)) hz.symm).trans (preF_frame _ _)
-  rw [key, hz']
-  have e1 : A.a j * (y * z) = (A.a j * y * (A.a j)⁻¹) * (A.a j * z) := by group
-  rw [e1, F.2.1 ⟨_, hh'⟩ (A.a j * z), eWloc_symm_wt A i j hj hμ ⟨_, hh'⟩ γ hγ he, _root_.mul_inv_rev,
-    map_mul, Module.End.mul_apply, ← Module.End.mul_apply ((X.R.cV j).ρ γ⁻¹), ← map_mul, inv_mul_cancel, map_one,
-    Module.End.one_apply]
-
 theorem lift_actM {V : Formalism.BasicNotions.TH.HSp D} {n : ℕ} {Sp : D.what₂.Tau → Formalism.BasicNotions.TH.SPar}
     (PW : Formalism.IndefR.principalLevelFrame.RowPsi V n) (M : Formalism.IndefR.Mult.DSModel V Sp) (g : Formalism.AUTREP.GAf D.host.E n)
     (T : Formalism.IndefR.Mult.MMap M) (u : PiTensorProduct ℂ fun τ => ↥(M.sm τ)) (x : GA D V) :
@@ -152,28 +85,6 @@ theorem minf_le_leftInv {V : Formalism.BasicNotions.TH.HSp D} {n : ℕ} {Sp : D.
     Formalism.IndefR.principalLevelFrame.Minf θ PW M ≤ LeftInvM M := by
   refine iSup_le fun N => Submodule.span_le.2 fun T hT v γ hγ x => ?_
   exact (hT.aut v).left γ hγ x
-
-theorem yv_apply {j : Fin D.R.m} {j' : ℕ} {hj : j.1 + 1 = j'} {Y : RowMod D P.rep j'} (hc : GlobalTheory.NJoin.IsCanon X j hj Y)
-    (y : ↥Y.C) (x : GA D (Wc D j)) :
-    yv hc y x = PiTensorProduct.lift (eC hc (y : Y.A)) (PiTensorProduct.map
-      (fun τ => (lowT (X.R.MW j (sg0 D X.A)) τ).subtype) (kUnit (X.R.MW j (sg0 D X.A)))) x := rfl
-
-theorem yv_rt {j : Fin D.R.m} {j' : ℕ} {hj : j.1 + 1 = j'} {Y : RowMod D P.rep j'} (hc : GlobalTheory.NJoin.IsCanon X j hj Y)
-    (g : Formalism.AUTREP.GAf D.host.E D.R.r) (y y' : ↥Y.C) (hy : (y' : Y.A) = Y.ρ g y) (x : GA D (Wc D j)) :
-    yv hc y' x = yv hc y (x * (X.PW j).ψ g) := by
-  have he : eC hc (y' : Y.A) = Formalism.IndefR.principalLevelFrame.actM (X.PW j) (X.R.MW j (sg0 D X.A)) g (eC hc (y : Y.A)) := by
-    rw [hy]; exact (Classical.choose_spec (Classical.choose_spec hc)).2.2.2.1 g y
-  rw [yv_apply, yv_apply, he, lift_actM]
-
-theorem yv_rat {j : Fin D.R.m} {j' : ℕ} {hj : j.1 + 1 = j'} {Y : RowMod D P.rep j'} (hc : GlobalTheory.NJoin.IsCanon X j hj Y)
-    (y : ↥Y.C) (γ : GA D (Wc D j)) (hγ : γ ∈ GQ (Wc D j)) (x : GA D (Wc D j)) :
-    yv hc y (γ * x) = yv hc y x := by
-  have hm : eC hc (y : Y.A) ∈ LeftInvM (X.R.MW j (sg0 D X.A)) := by
-    apply minf_le_leftInv X.R.θ (X.PW j)
-    rw [← (Classical.choose_spec (Classical.choose_spec hc)).2.2.1]
-    exact Submodule.mem_map_of_mem y.2
-  rw [yv_apply, yv_apply]
-  exact lift_left _ _ hm _ γ hγ x
 
 end GlobalTheory.ThetaTri
 

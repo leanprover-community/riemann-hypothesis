@@ -27,7 +27,6 @@ theorem af_ext {x y : Af F} (h : ∀ w, evalV F w x = evalV F w y) : x = y := by
     | (ext w
        exact h w)
 
-
 open Classical in
 def sglV (a : v.adicCompletion F) : Af F :=
   ⟨Pi.single v a, by
@@ -132,24 +131,6 @@ theorem sA_one_mul (a : AF F) : sA v 1 * a = sA v (evalV F v (sndA F a)) := by
       rw [sglV_same, sglV_same, one_mul] <;> rfl
     · rw [sglV_ne _ _ h, sglV_ne _ _ h, zero_mul]
 
-theorem mem_O_of_integral {y : v.adicCompletion F} (hy : IsIntegral ℤ y) : Valued.v y ≤ 1 := by
-  first
-    | (have hm := (Valuation.integer.integers (Valued.v : Valuation (v.adicCompletion F) _)).mem_of_integral
-         (IsIntegral.tower_top hy)
-       first
-         | exact hm
-         | (obtain ⟨o, rfl⟩ := hm
-            exact o.2)
-         | (rcases hm with ⟨o, ho⟩
-            rw [← ho]
-            exact o.2))
-    | (have hm := Valuation.Integers.mem_of_integral (Valuation.integer.integers (Valued.v : Valuation (v.adicCompletion F) _))
-         (IsIntegral.tower_top (A := (Valued.v : Valuation (v.adicCompletion F) _).integer) hy)
-       first
-         | exact hm
-         | (obtain ⟨o, rfl⟩ := hm
-            exact o.2))
-
 theorem val_coe_lt_one_iff (f : 𝓞 F) :
     Valued.v (((f : F) : v.adicCompletion F)) < 1 ↔ f ∈ v.asIdeal := by
   have e : Valued.v (((f : F) : v.adicCompletion F)) = v.intValuation f := by
@@ -174,7 +155,6 @@ theorem val_coe_le_one (f : 𝓞 F) : Valued.v (((f : F) : v.adicCompletion F)) 
          exact IsDedekindDomain.HeightOneSpectrum.valuation_of_algebraMap (v := v) (r := f)
        rw [e]
        exact IsDedekindDomain.HeightOneSpectrum.intValuation_le_one v f)
-
 
 set_option maxHeartbeats 800000 in
 theorem roots_exist (t N : 𝓞 F) (hN : N ∈ v.asIdeal) (ht : t ∉ v.asIdeal) :

@@ -23,9 +23,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 def atHom (a b : ℕ) (w : Pl E) : Gf E a b →* GLw a w × GLw b w :=
   (GeneralLinearGroup.map (pLoc E w)).prodMap (GeneralLinearGroup.map (pLoc E w))
 
-omit [IsCMField E] in
-theorem atHom_apply (w : Pl E) (y : Gf E a b) : atHom a b w y = atW w y := rfl
-
 theorem continuous_atHom (w : Pl E) : Continuous (atHom (E := E) a b w) :=
   ((GlobalTheory.EulerTwU.continuous_pc w).comp continuous_fst).prodMk ((GlobalTheory.EulerTwU.continuous_pc w).comp continuous_snd)
 

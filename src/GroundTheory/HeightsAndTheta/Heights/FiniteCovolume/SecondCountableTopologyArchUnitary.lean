@@ -106,8 +106,6 @@ section Inhabitants
 
 open GaussianPlane
 
-abbrev C2 : Type := Multiplicative (ZMod 2)
-
 instance : MeasurableSpace C2 := ⊤
 
 end Inhabitants

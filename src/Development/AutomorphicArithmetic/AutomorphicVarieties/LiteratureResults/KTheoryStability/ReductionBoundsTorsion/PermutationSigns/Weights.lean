@@ -82,12 +82,6 @@ theorem cyc_move {N q : ℕ} (σ : Equiv.Perm (Fin q)) (X Z : Fin q → Matrix (
   congr 1
   exact Fintype.prod_equiv σ _ _ (fun j => by simp)
 
-theorem mat_padL (n M : ℕ) (h : HS L n) (w : InfinitePlace L) : mat (padL n M h) w = padM (mat h w) := rfl
-
-theorem mat_blkL (d n : ℕ) (h : HS L n) (w : InfinitePlace L) :
-    mat (blkL d n h) w = Matrix.reindex finProdFinEquiv finProdFinEquiv
-      ((1 : Matrix (Fin d) (Fin d) ℂ) ⊗ₖ mat h w) := rfl
-
 theorem tmC_pad {n M q : ℕ} (hnm : n ≤ M) (σ : Equiv.Perm (Fin q)) (w : Fin q → InfinitePlace L)
     (Y : Fin q → HS L n) : tmC (N := M) σ w (fun i => padL n M (Y i)) = tmC σ w Y := by
   by_cases hw : ∀ i, w (σ i) = w i

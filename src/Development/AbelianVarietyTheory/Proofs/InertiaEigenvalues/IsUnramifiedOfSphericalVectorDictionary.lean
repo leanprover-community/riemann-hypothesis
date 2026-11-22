@@ -24,8 +24,6 @@ namespace GlobalTheory.UnramDict
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 theorem kappa_tmul (F : FinIso L n) (x : L) (a : AFplus L) :
     F.κ.toRingHom (x ⊗ₜ[L⁺] a) = algebraMap L _ x * GlobalTheory.AdeleBaseChange.adMap L⁺ L a := by
   rw [Model.kappa_eq F (Model.finIso L n)]
@@ -41,7 +39,6 @@ theorem mem_ALint (F : FinIso L n) (z : AL L) (hz : ∀ u, F.κ z u ∈ u.adicCo
 theorem compAt_eq_zero (F : FinIso L n) (v : HeightOneSpectrum (𝓞 L⁺)) (z : AL L)
     (hz : ∀ u : HeightOneSpectrum (𝓞 L), u.under (𝓞 L⁺) = v → F.κ z u = 0) : compAt L v z = 0 :=
   (GlobalTheory.AdeleBaseChange.prV_eq_zero_iff (ι := F.κ.toRingHom) (kappa_tmul F) v z).2 hz
-
 
 omit [IsCMField L] in
 theorem entry_mem {w : HeightOneSpectrum (𝓞 L)} {g : GL (Fin n) (w.adicCompletion L)} (hg : g ∈ GlobalTheory.LFun.KGL w (n := n))

@@ -18,9 +18,6 @@ open Formalism.HermitianLattices.Ext.L3 Formalism.L2.SG.Pf.Cnt Formalism.L2.SG.P
 variable {K F V : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
   [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-local notation "jK" => algebraMap (𝓞 K) K
-
 variable {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (𝓞 K) V} {𝔭 : Ideal (𝓞 F)} {m : ℕ}
   {b : Fin m → V} {a : Fin m → 𝓞 F}
 

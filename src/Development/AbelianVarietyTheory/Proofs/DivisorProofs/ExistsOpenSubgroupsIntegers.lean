@@ -63,73 +63,8 @@ theorem exists_nhds_zero_add_eq {X : Type} [TopologicalSpace X] [AddCommGroup X]
 
 variable {F : Type} [Field F] [NumberField F]
 
-def ballR (r : 𝓞 F) (v : HeightOneSpectrum (𝓞 F)) : AddSubgroup (v.adicCompletion F) :=
-  Valued.v.leAddSubgroup (v.intValuation r)
-
-theorem mem_ballR {r : 𝓞 F} {v : HeightOneSpectrum (𝓞 F)} {x : v.adicCompletion F} :
-    x ∈ ballR r v ↔ Valued.v x ≤ v.intValuation r := Iff.rfl
-
-theorem isOpen_ballR {r : 𝓞 F} (hr : r ≠ 0) (v : HeightOneSpectrum (𝓞 F)) :
-    IsOpen (ballR r v : Set (v.adicCompletion F)) := by
-  set c : v.adicCompletion F := algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F r)
-  have hcv : Valued.v c = v.intValuation r := PI.UnipApproxD.IntegersDenseFiniteAdeles.val_R v r
-  have hc : c ≠ 0 := by
-    intro h
-    rw [h, map_zero] at hcv
-    exact (v.intValuation_ne_zero r hr) hcv.symm
-  have e : (ballR r v : Set (v.adicCompletion F)) =
-      (fun x => x / c) ⁻¹' (v.adicCompletionIntegers F : Set (v.adicCompletion F)) := by
-    ext x
-    change Valued.v x ≤ v.intValuation r ↔ Valued.v (x / c) ≤ 1
-    rw [map_div₀, ← hcv, div_le_one₀ (zero_lt_iff.2 ((Valuation.ne_zero_iff _).2 hc))]
-  rw [e]
-  exact (Valued.isOpen_valuationSubring _).preimage (continuous_id.div_const c)
-
-theorem ballR_subset (r : 𝓞 F) (v : HeightOneSpectrum (𝓞 F)) :
-    (ballR r v : Set (v.adicCompletion F)) ⊆ v.adicCompletionIntegers F := fun x hx => by
-  rw [SetLike.mem_coe, HeightOneSpectrum.mem_adicCompletionIntegers]
-  exact (mem_ballR.1 hx).trans (v.intValuation_le_one r)
-
-theorem eventually_ballR_eq {r : 𝓞 F} (hr : r ≠ 0) :
-    ∀ᶠ v in Filter.cofinite, (ballR r v : Set (v.adicCompletion F)) = v.adicCompletionIntegers F := by
-  have h : (Ideal.span {r} : Ideal (𝓞 F)) ≠ 0 := by
-    rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]; exact hr
-  refine Filter.eventually_cofinite.2 ((Ideal.finite_factors h).subset fun v hv => ?_)
-  simp only [Set.mem_setOf_eq] at hv ⊢
-  rw [← HeightOneSpectrum.intValuation_lt_one_iff_dvd]
-  refine lt_of_le_of_ne (v.intValuation_le_one r) fun h1 => hv ?_
-  ext x
-  rw [SetLike.mem_coe, SetLike.mem_coe, mem_ballR, h1, HeightOneSpectrum.mem_adicCompletionIntegers]
-
 end GlobalTheory.SBBox
 
 namespace GlobalTheory.SBBox
-
-theorem exists_box_invariant : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] (g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ),
-    g ∈ GlobalTheory.WeilM.SB (κ → FiniteAdeleRing (𝓞 F) F) →
-    ∃ B : ∀ v : IsDedekindDomain.HeightOneSpectrum (𝓞 F), AddSubgroup (v.adicCompletion F),
-      (∀ v, IsOpen (B v : Set (v.adicCompletion F))) ∧
-      (∀ v, (B v : Set (v.adicCompletion F)) ⊆ v.adicCompletionIntegers F) ∧
-      (∀ᶠ v in Filter.cofinite, (B v : Set (v.adicCompletion F)) = v.adicCompletionIntegers F) ∧
-      ∀ y u : κ → FiniteAdeleRing (𝓞 F) F, (∀ i v, Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F v (u i) ∈ B v) → g (y + u) = g y := by
-  intro F _ _ κ _ g hg
-  classical
-  obtain ⟨N, hN, hNg⟩ := exists_nhds_zero_add_eq hg.1 hg.2
-  rw [nhds_pi, Filter.mem_pi] at hN
-  obtain ⟨I, -, t, ht, hIt⟩ := hN
-  have hr : ∀ i, ∃ r : 𝓞 F, r ≠ 0 ∧ ∀ y : FiniteAdeleRing (𝓞 F) F,
-      (∀ v : HeightOneSpectrum (𝓞 F), Valued.v (y v) ≤ v.intValuation r) → y ∈ t i :=
-    fun i => GlobalTheory.OpenSubAdele.exists_small_of_mem_nhds (ht i)
-  choose r hr0 hrt using hr
-  set R : 𝓞 F := ∏ i, r i
-  have hR0 : R ≠ 0 := Finset.prod_ne_zero_iff.2 fun i _ => hr0 i
-  have hle : ∀ i (v : HeightOneSpectrum (𝓞 F)), v.intValuation R ≤ v.intValuation (r i) := by
-    intro i v
-    obtain ⟨c, hc⟩ := Finset.dvd_prod_of_mem r (Finset.mem_univ i)
-    rw [show R = r i * c from hc, map_mul]
-    exact mul_le_of_le_one_right' (v.intValuation_le_one c)
-  refine ⟨ballR R, isOpen_ballR hR0, ballR_subset R, eventually_ballR_eq hR0, fun y u hu => ?_⟩
-  refine hNg y u (hIt fun i _ => hrt i (u i) fun v => ?_)
-  exact (mem_ballR.1 (hu i v)).trans (hle i v)
 
 end GlobalTheory.SBBox

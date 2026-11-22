@@ -18,9 +18,6 @@ private theorem eD_coe {K : Type} [Field K] {Δ s : K} (hs : s * s = Δ) (g : DX
     (eD hs g : Matrix (Fin 2) (Fin 2) K) = (mt g).map (proj hs) := by
   rfl
 
-private theorem ev_coe {K : Type} [Field K] {τ a : K} (h : a * a = τ * a - 1) (z : (Etau K τ)ˣ) :
-    (evU h z : K) = (z : Etau K τ).re + a * (z : Etau K τ).im := rfl
-
 private theorem proj_smul {K : Type} [Field K] {Δ s : K} (hs : s * s = Δ) (c : K) (x : Lsq K Δ) :
     proj hs (c • x) = c * proj hs x := by
   simp [proj]

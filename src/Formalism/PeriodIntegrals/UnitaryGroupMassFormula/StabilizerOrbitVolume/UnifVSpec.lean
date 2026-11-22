@@ -5,7 +5,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitV
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.LocDensFF
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.DensFibV
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TensTop
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.LocDensHC
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.ExistsUnifFv
 
 @[expose] public section
@@ -38,10 +37,5 @@ theorem unifV_spec {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (
     exact tendsto_pow_atTop_nhds_zero_of_norm_lt_one hlt
   · rw [IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers]
     exact h1.le
-
-def hF {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {d : ℕ}
-    (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) (σ : E →ₐ[F] E) (a : ℕ)
-    (n : ℕ) : AddSubgroup (HermR (Fv F v) σ a) :=
-  smulSub (unifV v ^ (n + 1)) (hermO b v σ a)
 
 end PI.VolStabSW

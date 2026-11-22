@@ -22,8 +22,6 @@ section QLev
 variable {F E K : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] [Field K]
 variable {hc : Formalism.BasicNotions.CMData F E} {n : ℕ} [NeZero n] {ST SG Q : Finset (Pl E)} {Θ : LevQFam E K n Q}
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-
 abbrev qFst (q : QLoc hc n Q Θ) (P : Q) : GL (Fin n) (E ⊗[F] (qv F P.1).adicCompletion F) →* GL (Fin n) ((qv F P.1).adicCompletion F) :=
   bc ((RingHom.fst _ _).comp (q.sp P).toRingHom)
 
@@ -60,7 +58,6 @@ def lqRes (P : Q) : levUQ hc n ST SG Q H q →* q.U P where
 
 def chiQ (σ₀ : K →+* ℂ) : levUQ hc n ST SG Q H q →* ℂˣ :=
   ∏ P : Q, (Units.map σ₀.toMonoidHom).comp ((q.chr P).comp (lqRes q H P))
-
 
 variable (ST) in
 def qUloc (v : HeightOneSpectrum (𝓞 F)) : Subgroup (GL (Fin n) (E ⊗[F] v.adicCompletion F)) :=

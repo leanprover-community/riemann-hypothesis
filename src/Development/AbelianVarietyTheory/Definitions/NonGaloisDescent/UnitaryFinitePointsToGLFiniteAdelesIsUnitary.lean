@@ -15,8 +15,6 @@ namespace GlobalTheory.FormDict.Model
 
 variable (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ)
 
-local notation3 "F₀" => maximalRealSubfield L
-
 def kappa : AL L ≃+* FiniteAdeleRing (𝓞 L) L :=
   (Algebra.TensorProduct.comm F₀ L (FiniteAdeleRing (𝓞 F₀) F₀)).toRingEquiv.trans (GlobalTheory.LFun.finAdEquiv F₀ L)
 
@@ -127,7 +125,6 @@ theorem kappa_eq (F G : FinIso L n) : F.κ = G.κ := by
         exact a1.symm.trans a2)
     change F.κ (1 ⊗ₜ a) w = G.κ (1 ⊗ₜ a) w
     rw [h1, h2, this]
-
 
 end GlobalTheory.FormDict.Model
 

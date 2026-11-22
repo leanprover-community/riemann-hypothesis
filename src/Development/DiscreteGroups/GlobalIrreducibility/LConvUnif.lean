@@ -47,11 +47,6 @@ theorem hop_mul_integral (g : GL (Fin n) F) {k : GL (Fin n) F}
   rw [show g * κ * k = (g * k) * (k⁻¹ * κ * k⁻¹⁻¹) by group, map_mul, mul_apply_eq_comp,
     hw _ (GLnLocal.conj_mem_congruenceSubgroup F n (inv_mem hk) hκ)]
 
-local notation "K0" => GLnLocal.integralGL F n
-local notation "Kr" => GLnLocal.congruenceSubgroup F n r
-local notation "W" => fixedVectors ρ Kr
-local notation "T" => hop ρ hρ hKc hKo
-
 theorem finrank_le_of_commBound (hr : 1 ≤ r) [ρ.IsIrreducible] [FiniteDimensional ℂ W]
     [Fintype (K0 ⧸ (Kr).subgroupOf K0)] {c : ℕ}
     (hc : ∀ a : Fin (n + 1) → Module.End ℂ W, (∀ i j, a i * a j = a j * a i) →

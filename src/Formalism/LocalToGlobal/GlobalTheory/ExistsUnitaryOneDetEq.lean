@@ -15,8 +15,6 @@ open Formalism.UG Formalism.UG.CS Formalism.UG.P Formalism.BasicNotions
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n m : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-
 theorem glob_companion (σ : E →ₐ[F] E) (J : Matrix n n E)
     (hJ : ∀ M : Submodule (𝓞 E) (n → E), IsLat M → IsLat (dl σ J M))
     {Λ : Submodule (𝓞 E) (n → E)} (hΛ : IsLat Λ) {a : 𝓞 E} (ha : a ≠ 0) (g : GL n 𝒜)

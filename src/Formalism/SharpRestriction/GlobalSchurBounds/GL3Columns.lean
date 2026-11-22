@@ -18,92 +18,12 @@ namespace Formalism.MainNotions.GL3Columns
 
 open NumberField Formalism.BasicNotions Classical Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta Formalism.MainNotions.StandardLatticesGL3
 
-abbrev dtG (D : D7) {N : ℕ} (g : GA D N) : (AE D)ˣ := Matrix.GeneralLinearGroup.det (g : GL (Fin N) (AE D))
-
-def InUnitaryOneIdeles (D : D7) (t : (AE D)ˣ) : Prop := t * sgU D t = 1
-
-def incU (D : D7) (a : D.host.Eˣ) : (AE D)ˣ := Units.map (inc D).toMonoidHom a
-
-def CongOne (D : D7) (m : ℕ) (u : (AE D)ˣ) : Prop := ∃ s ∈ OhE D, (u : AE D) - 1 = (m : AE D) * s
-
-structure DtAd (D : D7) where
-  q : (AE D)ˣ → D.Dt
-  q_mul : ∀ s t, InUnitaryOneIdeles D s → InUnitaryOneIdeles D t → q (s * t) = q s * q t
-  q_surj : ∀ x : D.Dt, ∃ t, InUnitaryOneIdeles D t ∧ q t = x
-  q_UO : ∀ t, InUnitaryOneIdeles D t → (q t ∈ D.UO ↔ IntU D t)
-  q_open : ∃ m : ℕ, 0 < m ∧ ∀ t, InUnitaryOneIdeles D t → IntU D t → CongOne D m t → q t = 1
-  q_rat : letI := D.host.cmStar
-    ∀ (z : unitary D.host.E) (a : D.host.Eˣ), (a : D.host.E) = (z : D.host.E) → q (incU D a) = D.e1Dt z
-  q_det : letI := D.host.cmStar
-    ∀ (N : ℕ) (g : GA D N) (L₀ L : SDLat D.host.E N), L₀.1 = stdL D N → Moves D (g : GL (Fin N) (AE D)) L.1 →
-      (QuotientGroup.mk (q (dtG D g)) : D.Dt ⧸ D.UO) = D.relDet N L₀ L
-
-def dOrt (D : D7) (T : Tor D) : ℂ := ((Real.sqrt (area T.abelian₂ / Real.pi) : ℝ) : ℂ)
-
-def sclP (D : D7) {N N' : ℕ} (s : D.what₂.Tau → ℂ) (P : MvPolynomial (Idx D N N') ℂ) : MvPolynomial (Idx D N N') ℂ :=
-  MvPolynomial.aeval (fun k : Idx D N N' => MvPolynomial.C (s k.1) * MvPolynomial.X k) P
-
-def applyO (D : D7) (T : Tor D) {N N' : ℕ} (P : MvPolynomial (Idx D N N') ℂ) (G : VC D N N' → ℂ) : ℂ :=
-  applyAt0 D (sclP D (fun _ => dOrt D T) P) G
-
-abbrev e00 (D : D7) (e : FamE D) (N N' : ℕ) : VC D N N' → ℂ := e N N' (stdL D N) (stdL D N')
-
-structure ThetaD (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (N N' : ℕ) where
-  Th : MvPolynomial (Idx D N N') ℂ → (VC D N N' → ℂ) → ℂ
-  gen : (VC D N N' → ℂ) → VC D N N' → ℂ
-  gen_add : ∀ G ∈ TT D (tor0 D cc δ) N N', ∀ G' ∈ TT D (tor0 D cc δ) N N', gen (G + G') = gen G + gen G'
-  gen_smul : ∀ (a : ℂ), ∀ G ∈ TT D (tor0 D cc δ) N N', gen (a • G) = a • gen G
-  gen_diff : ∀ G ∈ TT D (tor0 D cc δ) N N', Differentiable ℂ (gen G)
-  gen_jet : ∀ P, ∀ G ∈ TT D (tor0 D cc δ) N N', Th P G = applyO D (tor0 D cc δ) P (gen G)
-  gen_heis : ∀ (x : Matrix (Fin N') (Fin N) D.host.E), ∀ G ∈ TT D (tor0 D cc δ) N N',
-    gen (U D (tor0 D cc δ) (pt D (tor0 D cc δ) δ x) G) = U D (tor0 D cc δ) (pt D (tor0 D cc δ) δ x) (gen G)
-  ne : ∃ G ∈ TT D (tor0 D cc δ) N N', gen G ≠ 0
-
-def IsKJ (D : D7) (Q : DtAd D) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {N N' : ℕ} {e0 : VC D N N' → ℂ}
-    (W : WeilO D cc δ N N' e0) (m1 : D.Dt →* ℂˣ) : Prop :=
-  W.ep = 1 ∧ W.ep' = -1 ∧ W.chV.f = W.chV'.f ∧ W.chV.n = W.chV'.n ∧
-    ∀ x : (AE D)ˣ, m1 (Q.q (x * (sgU D x)⁻¹)) = W.chV.f x
-
-structure AdLift (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (e : FamE D) (Q : DtAd D) {u : D.what₂.Word}
-    {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} (O : LiftObj D C) (i : ℕ) where
-  W : WeilO D cc δ (D.R.N i) (D.R.N (i + 1)) (e00 D e (D.R.N i) (D.R.N (i + 1)))
-  isKJ : IsKJ D Q W (O.mt (i + 1))
-  Θ : ThetaD D cc δ (D.R.N i) (D.R.N (i + 1))
-  g : C.cls i → GA D (D.R.N i)
-  g' : C.cls (i + 1) → GA D (D.R.N (i + 1))
-  g_lat : ∀ c, Moves D (g c : GL (Fin (D.R.N i)) (AE D)) (O.lat i c).1
-  g'_lat : ∀ c', Moves D (g' c' : GL (Fin (D.R.N (i + 1))) (AE D)) (O.lat (i + 1) c').1
-  g_dt : ∀ c, Q.q (dtG D (g c)) = O.dt i c
-  g'_dt : ∀ c', Q.q (dtG D (g' c')) = O.dt (i + 1) c'
-  n : C.cls i → C.cls (i + 1) → ℕ
-  r : ∀ c c', Fin (n c c') → ℂ
-  z : ∀ c c', Fin (n c c') → Matrix (Fin (D.R.N (i + 1))) (Fin (D.R.N i)) D.host.E
-  r_alg : ∀ c c' k, r c c' k ∈ Qbar
-  r_int : ∀ c c' k (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), p ∉ O.S → ‖lamC lam (r c c' k)‖ ≤ 1
-  z_S : ∀ c c' k, ∃ a : ℕ, 0 < a ∧ (∀ q : ℕ, q.Prime → q ∣ a → q ∈ O.S) ∧
-    a • pt D (tor0 D cc δ) δ (z c c' k) ∈ La0 D (tor0 D cc δ) (D.R.N i) (D.R.N (i + 1))
-  dg : D.what₂.Tau → ℕ
-
 namespace AdLift
 
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {e : FamE D} {Q : DtAd D} {u : D.what₂.Word}
   {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {O : LiftObj D C} {i : ℕ} (A : AdLift D cc δ e Q O i)
 
 end AdLift
-
-
-
-def br (D : D7) {u : D.what₂.Word} (C : ColumnChain D.R D.what₂.Tau (D.hcW u)) (mt : ℕ → D.Dt →* ℂˣ) : Prop :=
-  ∀ idl : D.Dt ⧸ D.UO → IdE D, RelDetPinned D idl →
-    ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), p ≠ 2 → InertK D p →
-    ∀ (t : D.Dt) (iv : ℤ) (Ev Od : Finset D.what₂.Tau), Disjoint Ev Od → Ev.card = Od.card →
-      (∀ τ ∈ Ev, nrmId D lam τ (idl (QuotientGroup.mk t)) = (p : ℝ) ^ (-iv)) →
-      (∀ τ ∈ Od, nrmId D lam τ (idl (QuotientGroup.mk t)) = (p : ℝ) ^ iv) →
-      (∀ τ, τ ∉ Ev → τ ∉ Od → nrmId D lam τ (idl (QuotientGroup.mk t)) = 1) →
-      (∀ i < D.R.m,
-        ‖lamC lam ((rhoOf D mt i t : ℂˣ) : ℂ)‖ = (p : ℝ) ^ (iv * (∑ τ ∈ Ev, C.sSharp i τ - ∑ τ ∈ Od, C.sSharp i τ)) ∧
-        ‖lamC lam ((rhoOf' D mt i t : ℂˣ) : ℂ)‖ = (p : ℝ) ^ (-(iv * (∑ τ ∈ Ev, C.sDiv i τ - ∑ τ ∈ Od, C.sDiv i τ)))) ∧
-      ∀ c : ℤ, (∏ _τ ∈ Ev, ((p : ℝ) ^ (-iv)) ^ c) * ∏ _τ ∈ Od, ((p : ℝ) ^ iv) ^ c = 1
 
 section Rel7
 
@@ -257,10 +177,6 @@ theorem norm_un (h : T.unUnit) {i : ℕ} (hi : i < D.R.m) (c : (D.chTw u μ).cls
 
 end KFTie
 
-
-
-
-
 def eJ (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) (i : ℕ) : ℚ := if h : i < D.R.m then (D.hcW u τ).e ⟨i, h⟩ else 0
 
 def sJ' (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) (i : ℕ) : ℚ := sExp' D.R (eJ D u τ i) (i + 1)
@@ -393,8 +309,5 @@ theorem wtRec_thm (D : D7) : wtRec D := by
       linear_combination hr'
 
 end Rel7
-
-
-
 
 end Formalism.MainNotions.GL3Columns

@@ -31,9 +31,6 @@ def toCircle (ψ0 : AddChar k ℂ) (h1 : ∀ y ∈ 𝒪[k], ψ0 y = 1) : AddChar
   map_zero_eq_one' := Circle.ext (by simp)
   map_add_eq_mul' a b := Circle.ext (AddChar.map_add_eq_mul ψ0 a b)
 
-theorem coe_toCircle (ψ0 : AddChar k ℂ) (h1 : ∀ y ∈ 𝒪[k], ψ0 y = 1) (x : k) :
-    ((toCircle ψ0 h1 x : Circle) : ℂ) = ψ0 x := rfl
-
 theorem continuous_toCircle (ψ0 : AddChar k ℂ) (h1 : ∀ y ∈ 𝒪[k], ψ0 y = 1) (hψ : Continuous ψ0) :
     Continuous (toCircle ψ0 h1) :=
   hψ.subtype_mk _

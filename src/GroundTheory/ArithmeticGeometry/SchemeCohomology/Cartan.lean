@@ -57,7 +57,6 @@ end
 variable (P : (Opens X)ᵒᵖ ⥤ AddCommGrpCat.{u})
   (hP : Presheaf.IsSheaf (Opens.grothendieckTopology X) P)
 
-
 include hP in
 lemma exists_glue {ι : Type w} (U : ι → Opens X) (V : Opens X) (hUV : ∀ a, U a ≤ V)
     (hV : V ≤ iSup U) (τ : Cochain P U 0) (hτ : d P U 0 τ = 0) :
@@ -95,7 +94,6 @@ lemma exists_glue {ι : Type w} (U : ι → Opens X) (V : Opens X) (hUV : ∀ a,
   rw [← res_res P (inter_le U i 0) (hUV (i 0)), ht']
   simp only [sf, res_res]
   exact (res_congr P U τ hi _ le_rfl).trans (res_refl _ _ _)
-
 
 variable {P} in
 lemma CechAcyclic.of_shortExact' {ι : Type w} (U : ι → Opens X)
@@ -155,21 +153,6 @@ def CechCondition (F : TopCat.Sheaf AddCommGrpCat.{u} X) : Prop :=
     CechAcyclic F.obj U
 
 variable {B}
-
-lemma inter_mem (hinf : ∀ V W, B V → B W → B (V ⊓ W)) {ι : Type w} (U : ι → Opens X)
-    (hU : ∀ a, B (U a)) {n : ℕ} (i : Fin (n + 1) → ι) : B (inter U i) := by
-  induction n with
-  | zero =>
-    have : inter U i = U (i 0) := le_antisymm (inter_le U i 0) (by
-      intro x hx
-      rw [mem_inter_iff]
-      intro a
-      rwa [Fin.fin_one_eq_zero a])
-    rw [this]
-    exact hU _
-  | succ n ih =>
-    rw [inter_succ]
-    exact hinf _ _ (hU _) (ih _)
 
 variable {S : ShortComplex (TopCat.Sheaf AddCommGrpCat.{u} X)} (hS : S.ShortExact)
 

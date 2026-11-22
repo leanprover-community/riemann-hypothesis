@@ -5,7 +5,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.Intersection
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HasBaseDegreeSettingStrict
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ThreeLeLevel
 
 @[expose] public section
 

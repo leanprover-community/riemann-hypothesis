@@ -232,18 +232,12 @@ lemma W_toPresheaf_iff (φ : M ⟶ N) :
 
 end
 
-
 variable (J R) in
 abbrev W (J : GrothendieckTopology C) (R : Cᵒᵖ ⥤ CommRingCat.{u}) :
     MorphismProperty (PresheafOfModules.{u} (R ⋙ forget₂ CommRingCat RingCat)) :=
   J.W.inverseImage (PresheafOfModules.toPresheaf _)
 
 variable [J.WEqualsLocallyBijective AddCommGrpCat.{u}]
-
-lemma W_whiskerRight {φ : M ⟶ N} (hφ : W J R φ) (P : PresheafOfModules.{u} (R ⋙ forget₂ _ _)) :
-    W J R (φ ▷ P) := by
-  rw [W, MorphismProperty.inverseImage_iff, W_toPresheaf_iff] at hφ ⊢
-  exact ⟨whiskerRight_zeroSieve_mem P φ hφ.1 hφ.2, whiskerRight_imSieve_mem P φ hφ.2⟩
 
 instance isMonoidal_W : (W J R).IsMonoidal where
   whiskerLeft P _ _ φ hφ :=
@@ -290,22 +284,7 @@ section
 variable {C' : Type u} [Category.{u} C'] (K : GrothendieckTopology C') (S : Sheaf K CommRingCat.{u})
 variable [HasWeakSheafify K AddCommGrpCat.{u}] [K.WEqualsLocallyBijective AddCommGrpCat.{u}]
 
-@[instance_reducible]
-noncomputable def sheafModulesMonoidal : MonoidalCategory (SheafOfModules.{u} (ringSheaf K S)) :=
-  inferInstanceAs (MonoidalCategory (LocalizedMonoidal (L := modulesSheafification K S)
-    (W := ModulesTensor.W K S.obj) (sheafificationUnitIso K S)))
-
 attribute [local instance] sheafModulesMonoidal
-
-@[instance_reducible]
-noncomputable def sheafModulesSymmetric : SymmetricCategory (SheafOfModules.{u} (ringSheaf K S)) :=
-  inferInstanceAs (SymmetricCategory (LocalizedMonoidal (L := modulesSheafification K S)
-    (W := ModulesTensor.W K S.obj) (sheafificationUnitIso K S)))
-
-@[instance_reducible]
-noncomputable def modulesSheafificationMonoidal : (modulesSheafification K S).Monoidal :=
-  inferInstanceAs (Localization.Monoidal.toMonoidalCategory (L := modulesSheafification K S)
-    (W := ModulesTensor.W K S.obj) (sheafificationUnitIso K S)).Monoidal
 
 attribute [local instance] modulesSheafificationMonoidal
 

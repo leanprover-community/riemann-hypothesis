@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Formalism.PeriodIntegrals.BesselDeriv
+public import Formalism.PeriodIntegrals.IsLowUnitH
 
 @[expose] public section
 

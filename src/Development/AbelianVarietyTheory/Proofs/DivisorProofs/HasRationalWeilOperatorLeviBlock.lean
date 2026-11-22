@@ -101,9 +101,6 @@ def mulVecCLE (M N : Matrix κ κ (mixedEmbedding.mixedSpace F)) (h1 : M * N = 1
       simp only [mulVecR, LinearMap.coe_comp, Function.comp_apply, LinearMap.coe_restrictScalars, Matrix.mulVecLin_apply,
         Matrix.mulVec_mulVec, h2, Matrix.one_mulVec, LinearMap.id_coe, id_eq])).toContinuousLinearEquiv
 
-theorem mulVecCLE_apply (M N : Matrix κ κ (mixedEmbedding.mixedSpace F)) (h1 : M * N = 1) (h2 : N * M = 1) (x) :
-    mulVecCLE M N h1 h2 x = M *ᵥ x := rfl
-
 theorem levi_map_mul {R : Type} [CommRing R] (f : F →+* R) {g h : Matrix κ κ F} (hg : gᵀ * h = 1) :
     hᵀ.map f * g.map f = 1 ∧ g.map f * hᵀ.map f = 1 := by
   have h1 := levi_transpose_mul hg
@@ -144,7 +141,6 @@ end GlobalTheory.RatWeilOp
 noncomputable section
 namespace GlobalTheory.RatWeilOp
 variable {κ : Type} [Fintype κ] [DecidableEq κ] {F : Type} [Field F] [NumberField F]
-
 
 open scoped Classical in
 theorem funLeft_pure_levi {g h : Matrix κ κ F} (hI1 : hᵀ.map (mixedEmbedding F) * g.map (mixedEmbedding F) = 1)
@@ -189,7 +185,6 @@ end GlobalTheory.RatWeilOp
 
 noncomputable section
 namespace GlobalTheory.RatWeilOp
-
 
 open scoped Classical in
 theorem hasOp_levi (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ) (κ : Type) [Fintype κ] [DecidableEq κ]

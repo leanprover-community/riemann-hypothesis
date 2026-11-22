@@ -25,8 +25,6 @@ def hermL (n : ℕ) : (Fin n → Fin n → ℝ) →L[ℝ] Mc n :=
         ext i j; simp only [herm, Pi.smul_apply, smul_eq_mul, Matrix.smul_apply, RingHom.id_apply]
         rw [Complex.real_smul]; push_cast; ring }
 
-theorem hermL_apply (x : Fin n → Fin n → ℝ) : hermL n x = herm x := rfl
-
 theorem vkl_re (k l a b : Fin n) :
     (vkl k l a b).re = (if a = k ∧ b = l then 1 / 2 else 0) + (if a = l ∧ b = k then 1 / 2 else 0) := by
   unfold vkl; split_ifs <;> simp

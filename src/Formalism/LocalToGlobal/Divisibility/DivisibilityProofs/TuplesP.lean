@@ -64,22 +64,6 @@ section C
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-def c_lat (x : (AfE F E)ˣ) : Submodule (𝓞 E) E where
-  carrier := {e | ((x⁻¹ : (AfE F E)ˣ) : AfE F E) *
-    inclE (F := F) (FiniteAdeleRing (𝓞 F) F) e ∈ RInt F E}
-  add_mem' := by
-    intro a b ha hb
-    simp only [Set.mem_ofPred_eq, map_add (f := _), mul_add] at *
-    exact add_mem ha hb
-  zero_mem' := by
-    simp only [Set.mem_ofPred_eq, map_zero, mul_zero]
-    exact zero_mem _
-  smul_mem' := by
-    intro c a ha
-    simp only [Set.mem_ofPred_eq] at *
-    rw [Algebra.smul_def, map_mul, mul_left_comm]
-    exact mul_mem (Formalism.UG.CS.incl_int c) ha
-
 end C
 
 section B
@@ -622,7 +606,6 @@ end D1
 section D2
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {L : Type} [Field L]
-
 
 theorem d_other {v : HeightOneSpectrum (𝓞 F)} {P P' Q : HeightOneSpectrum (𝓞 E)}
     (hv : Ideal.map (algebraMap (𝓞 F) (𝓞 E)) v.asIdeal = P.asIdeal * P'.asIdeal) (h1 : Q ≠ P) (h2 : Q ≠ P') :

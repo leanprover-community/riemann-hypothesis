@@ -19,9 +19,6 @@ def twistRep {H V : Type} [Group H] [AddCommGroup V] [Module ℂ V] (ρ : Repres
   map_one' := by simp
   map_mul' x y := by rw [map_mul, map_mul, Units.val_mul, smul_mul_smul_comm]
 
-theorem twistRep_apply {H V : Type} [Group H] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ H V)
-    (ν : H →* ℂˣ) (x : H) : twistRep ρ ν x = ((ν x : ℂˣ) : ℂ) • ρ x := rfl
-
 theorem isIrreducible_twistRep {H V : Type} [Group H] [AddCommGroup V] [Module ℂ V]
     {ρ : Representation ℂ H V} (h : ρ.IsIrreducible) (ν : H →* ℂˣ) :
     (twistRep ρ ν).IsIrreducible := by
@@ -45,7 +42,6 @@ theorem isIrrChar_mul_char {H : Type} [Group H] {χ : H → ℂ} (hχ : IsIrrCha
   ring
 
 end GlobalTheory.CliffTwo
-
 
 open GlobalTheory.CliffTwo in
 theorem GlobalTheory.Shin.coset_pair_eq_zero_or_twist :

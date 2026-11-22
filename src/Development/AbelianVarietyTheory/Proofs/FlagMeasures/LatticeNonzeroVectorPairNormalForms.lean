@@ -185,9 +185,6 @@ def consZero (k : ℕ) : (Fin k → E) →ₗ[E] (Fin (k + 1) → E) where
     refine Fin.cases ?_ (fun j => ?_) i <;> simp
 
 omit [NumberField E] in
-theorem consZero_apply {k : ℕ} (z : Fin k → E) : consZero k z = Fin.cons 0 z := rfl
-
-omit [NumberField E] in
 theorem cons_eq {k : ℕ} (c : E) (z : Fin k → E) :
     (Fin.cons c z : Fin (k + 1) → E) = Pi.single 0 c + consZero k z := by
   ext i

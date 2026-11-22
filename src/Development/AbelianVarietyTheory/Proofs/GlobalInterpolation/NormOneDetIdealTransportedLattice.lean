@@ -74,14 +74,11 @@ section Vp
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-
 end Vp
 
 section Val
 
 variable {K : Type} [Field K] [NumberField K] (σ : K →+* ℂ)
-
-
 
 end Val
 
@@ -156,11 +153,6 @@ section Parts
 variable {D : D7} {Z : Dat} {s : Seam D Z.X} {χ : TaylorLogMetric.IdE D → ℂ}
   {sel : HeightOneSpectrum (𝓞 Z.X.F) → HeightOneSpectrum (𝓞 Z.X.E)} {S : Set ℕ}
   {mu : Tup Z.X.F Z.X.E Z.X.K S} {cst : LocCst Z.X (rowSG Z.Pr sel mu)}
-
-theorem T_mem (hZ : Z.Ok) {u : Z.Pr.Word} {P : HeightOneSpectrum (𝓞 Z.X.E)} (hP : P ∈ Z.Pr.vT u) :
-    ((Z.Pr.T u : ℕ) : 𝓞 Z.X.E) ∈ P.asIdeal := by
-  rw [← hZ.primes.piT_norm u]
-  exact Ideal.mul_mem_right _ _ (decoFin_mem_of_mem_divs hP)
 
 end Parts
 

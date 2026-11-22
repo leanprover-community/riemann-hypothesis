@@ -157,7 +157,6 @@ theorem seriesEval_subst {z : B} (hz : z ∈ I) {g : ℚ⟦X⟧} (hg : constantC
         rw [AlgHom.comp_apply, AlgHom.comp_apply, coe_substAlgHom, subst_X hS, hgw])]
   rw [key, AlgHom.comp_apply, coe_substAlgHom]
 
-
 omit [IsAdicComplete I B] in
 theorem map_partialSum {B' : Type*} [CommRing B'] [Algebra ℚ B'] (F : B →+* B') (z : B)
     (f : ℚ⟦X⟧) (n : ℕ) :
@@ -231,7 +230,6 @@ theorem log_subst_one_add_X_pow_sub_one (k : ℕ) :
 
 variable {B : Type*} [CommRing B] [Algebra ℚ B] {I : Ideal B} [IsAdicComplete I B]
 
-
 variable (I) in
 def logOnePlus (z : B) (hz : z ∈ I) : B :=
   seriesEval I z hz (log ℚ)
@@ -250,17 +248,6 @@ theorem logOnePlus_sub_sum_mem {z : B} (hz : z ∈ I) (n : ℕ) :
         RingHom.id_apply]
   rw [hs]
   exact seriesEval_sub_sum_mem hz (log ℚ) n
-
-theorem logOnePlus_eq_mul {z : B} (hz : z ∈ I) : ∃ u, u - 1 ∈ I ∧ logOnePlus I z hz = z * u := by
-  set h : ℚ⟦X⟧ := mk fun n => coeff (n + 1) (log ℚ)
-  have hlog : log ℚ = X * h := by
-    conv_lhs => rw [eq_X_mul_shift_add_const (log ℚ)]
-    rw [constantCoeff_log, map_zero, add_zero]
-  refine ⟨seriesEval I z hz h, ?_, ?_⟩
-  · have h1 := seriesEval_sub_sum_mem hz h 1
-    rwa [Finset.sum_range_one, pow_zero, mul_one, pow_one, coeff_mk, zero_add, coeff_one_log,
-      map_one] at h1
-  · rw [logOnePlus, hlog, map_mul, seriesEval_X]
 
 theorem logOnePlus_pow {z : B} (hz : z ∈ I) (k : ℕ) (hk : (1 + z) ^ k - 1 ∈ I) :
     logOnePlus I ((1 + z) ^ k - 1) hk = k * logOnePlus I z hz := by

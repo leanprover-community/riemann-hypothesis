@@ -18,8 +18,6 @@ namespace GlobalTheory.SplitConjPlace
 
 variable {D : D7}
 
-local notation "cO" => IsCMField.ringOfIntegersComplexConj D.host.E
-
 theorem cO_cO (x : 𝓞 D.host.E) : cO (cO x) = x := by
   apply RingOfIntegers.ext
   rw [IsCMField.coe_ringOfIntegersComplexConj, IsCMField.coe_ringOfIntegersComplexConj]
@@ -143,9 +141,6 @@ namespace GlobalTheory.SplitConjPlace
 
 variable {D : D7}
 
-local notation "cO" => IsCMField.ringOfIntegersComplexConj D.host.E
-local notation "Fp" => maximalRealSubfield D.host.E
-
 def belowE (v : PlE D.host) : HeightOneSpectrum (𝓞 Fp) where
   asIdeal := v.asIdeal.comap (algebraMap (𝓞 Fp) (𝓞 D.host.E))
   isPrime := Ideal.comap_isPrime _ _
@@ -155,7 +150,6 @@ def belowE (v : PlE D.host) : HeightOneSpectrum (𝓞 Fp) where
 
 theorem fixed_of_cO {x : 𝓞 D.host.E} (hx : cO x = x) : ∃ y : 𝓞 Fp, algebraMap (𝓞 Fp) (𝓞 D.host.E) y = x :=
   (IsCMField.ringOfIntegersComplexConj_eq_self_iff D.host.E _).1 hx
-
 
 set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 200000 in

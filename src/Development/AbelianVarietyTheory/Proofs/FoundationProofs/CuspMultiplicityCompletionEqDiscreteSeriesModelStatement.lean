@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CuspMultiplicityCompletionEqDiscreteSeriesModel
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasTypeVec
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PseudoCoefficientUpqTrivial
 
 @[expose] public section
 

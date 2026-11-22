@@ -20,20 +20,4 @@ abbrev setGat : D7 := { D with gat := g', gat_d := hd' }
 
 open Formalism.L2.Herm
 
-structure FullTiedNoG (D : D7) extends AllTied D where
-  levelZeroCompatibility : Lev0Tied D base.toHermCols atT
-  ad : AdTied D base.toHermCols atT
-  cof : CofTied D base.toHermCols atT
-  piG : PiGConst D base.toHermCols atT levelZeroCompatibility
-  stabMap : StabMapTied D base.toHermCols atT
-  fvI : FvStepTied D base.toHermCols atT
-  relDet : RelativeDeterminantCompatible D base
-  std : StdTied D
-  vpos : PositiveVolumeCompatible D
-  baseL : BaseTied D base.toHermCols atT
-
-
-
-
-
 end Formalism.L2.G

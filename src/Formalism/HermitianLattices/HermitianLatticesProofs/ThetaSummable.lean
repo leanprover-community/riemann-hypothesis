@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Formalism.HermitianLattices.StatementTheta
+public import Formalism.LatticeTheta.Statement
+public import Formalism.HermitianLattices.StatementLat
 
 @[expose] public section
 

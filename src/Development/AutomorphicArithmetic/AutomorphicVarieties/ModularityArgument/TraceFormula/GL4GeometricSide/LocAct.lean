@@ -36,9 +36,6 @@ private def trR (M : KMod n) (T : M.V →L[ℂ] M.V) : (M.V →L[ℂ] M.V) →L[
   LinearMap.toContinuousLinearMap
     (((LinearMap.trace ℂ M.V).comp (ContinuousLinearMap.coeLM ℂ)).comp (LinearMap.mulRight ℂ T))
 
-private theorem trR_apply (M : KMod n) (T X : M.V →L[ℂ] M.V) :
-    trR M T X = LinearMap.trace ℂ M.V ((X * T : M.V →L[ℂ] M.V) : M.V →ₗ[ℂ] M.V) := rfl
-
 section Abs
 
 variable [MeasurableSpace (Un n)] [BorelSpace (Un n)] (ν : Measure (Un n)) [ν.IsHaarMeasure] (M : KMod n)

@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.OExt
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RatInEig
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsWildInertiaCyclotomicElement
 
 @[expose] public section
 

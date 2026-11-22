@@ -71,8 +71,6 @@ theorem retr_out (c : Quotient (QuotientGroup.rightRel U)) : retr U c.out = 1 :=
   apply Subtype.ext
   simp only [retr, rep_out, mul_inv_cancel, OneMemClass.coe_one]
 
-theorem retr_spec (g : G) : (retr U g : G) = g * (rep U g)⁻¹ := rfl
-
 theorem continuous_rep (hU : IsOpen (U : Set G)) : Continuous (rep U) := by
   refine continuous_iff_continuousAt.2 fun x => ?_
   have hn : (fun y => y * x⁻¹) ⁻¹' (U : Set G) ∈ nhds x := by

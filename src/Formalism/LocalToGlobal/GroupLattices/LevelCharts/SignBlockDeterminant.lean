@@ -23,24 +23,11 @@ section Cong
 
 variable {A R : Type} [CommRing A] [CommRing R] {n : Type} [Fintype n] [DecidableEq n]
 
-theorem bc_injective (ι : R →+* A) (h : Function.Injective ι) : Function.Injective (bc (n := n) ι) := by
-  intro x y hxy
-  apply Units.ext
-  have h2 : (x : Matrix n n R).map ι = (y : Matrix n n R).map ι := congrArg Units.val hxy
-  exact Matrix.map_injective h h2
-
-def congChar {Z : Type} [Group Z] (ι : R →+* A) (hι : Function.Injective ι) (I : Ideal R) (H : Subgroup (GL n (R ⧸ I)))
-    (lam : H →* Z) : congPre ι I H →* Z :=
-  (lam.comp ((redGL I).subgroupComap H)).comp
-    ((H.comap (redGL I)).equivMapOfInjective (bc ι) (bc_injective ι hι)).symm.toMonoidHom
-
 end Cong
 
 section Loc
 
 variable (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
-
-abbrev resV : Type := (v.adicCompletionIntegers F) ⧸ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F)
 
 theorem algMapV_injective :
     Function.Injective (algebraMap (v.adicCompletionIntegers F) (v.adicCompletion F)) :=

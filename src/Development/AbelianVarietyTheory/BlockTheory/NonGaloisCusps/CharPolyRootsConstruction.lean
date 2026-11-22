@@ -29,33 +29,6 @@ section HidaSetting
 variable (N : NData R H what₂) (i : N.Loc)
   (r : N.X i → (GE N →* GL (Fin R.nV) (N.O i))) (ρ : N.X i → (GE N →* GL (Fin R.r) (N.O i)))
 
-def repBar (x : N.X i) : Representation (kk N i) (GE N) (Fin R.nV → kk N i) :=
-  matRep (mapM (IsLocalRing.residue (N.O i)) (rO N i r x))
-
-def ContSemisimple : Prop :=
-  ∀ x, Continuous (fun g => rO N i r x g) ∧ IsSS (repK N i r x)
-
-def CharPolyInT : Prop :=
-  ∀ (h : GE N) (d : ℕ),
-    (fun x => (Matrix.det (1 - (X : (N.O i)[X]) • (rO N i r x h).map (C (R := N.O i)))).coeff d) ∈ N.T i
-
-def Constituents : Prop :=
-  (∀ x, AbsIrrDistinct (repK N i r x)) ∧
-  (∀ x y, SameSS (repBar N i r x) (repBar N i r y)) ∧
-  (∀ x (h : GE N), ∃ s : Multiset (kk N i),
-    ((rO N i r x h).map (IsLocalRing.residue (N.O i))).charpoly = (s.map fun a => X - C a).prod)
-
-def ThetaShape : Prop :=
-  ∀ x ∈ N.Z i,
-    (∃ e : (Fin R.nV → KK N i) ≃ₗ[KK N i] ((Fin R.r → KK N i) × (Fin R.t → KK N i)),
-      ∀ g u, e ((mapM (toK N i) (rO N i r x) g).mulVec u) =
-        ((mapM (toK N i) (rhoO N i ρ x) g).mulVec (e u).1,
-          fun c : Fin R.t => toK N i ((N.chi i ((c : ℕ) + 1) g : (N.O i)ˣ) : N.O i) * (e u).2 c)) ∧
-    AbsIrrSub (mapRep (IsLocalRing.residue (N.O i)) (ρ x)) ⊤
-
-def HidaSetting : Prop :=
-  ContSemisimple N i r ∧ CharPolyInT N i r ∧ Constituents N i r ∧ ThetaShape N i r ρ
-
 end HidaSetting
 
 section Enlarge

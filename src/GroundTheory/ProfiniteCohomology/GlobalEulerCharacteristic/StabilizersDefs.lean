@@ -95,8 +95,6 @@ end Restrict
 
 section Real
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
   {L : FiniteSubfield} [Fact (K ≤ L)] [Normal K.1 L.1]

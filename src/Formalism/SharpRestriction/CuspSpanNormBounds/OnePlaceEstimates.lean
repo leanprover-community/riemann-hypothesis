@@ -8,7 +8,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.RootMeasBig
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LeadMinorK
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RotatedWeightedBound
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyBlockLiftEstimate
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
 
 @[expose] public section
 
@@ -41,16 +40,6 @@ def ConclusionB3 (D : D7) (Aw Ch Cg Cb : ℝ) : Prop :=
     BSumRot D X (fun γ => normWt D T T' γ ^ (Aw * ((D.R.rS : ℝ) + 1) ^ 2)) ≤
       ENNReal.ofReal (Real.exp (Cb * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 5 * (Fintype.card D.what₂.Tau : ℝ) * Real.log b)) *
         jSqG D X
-
-def FormalDegreeRatioAlt (_D : D7) : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (μ : Fin n → ℝ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    [CompleteSpace H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (X : TensorDS n ε μ H σ),
-    IsHCParam μ → IsDS ε μ σ →
-    (∀ v w : H, IsKFin ε σ v → IsKFin ε σ w →
-      MemLp (fun g : Formalism.REAL.UJ ε => (frob (umat g) : ℂ) * coefOn σ v w g) 2 (Formalism.REAL.muG ε)) →
-    ∀ s ∈ X.Sm, ∀ (v : H) (vs : X.Hs s), v ≠ 0 → vs ≠ 0 →
-      fdegOf (Formalism.REAL.muG ε) (X.σs s) vs / fdegOf (Formalism.REAL.muG ε) σ v =
-        ∏ s' ∈ Finset.univ.erase s, (μ s + 1 - μ s') / (μ s - μ s')
 
 def RngU (D : D7) (Cu Cg' : ℝ) (lam' lam0 : Fin (2 * D.R.rS + D.R.k + 1) → ℝ) : Prop :=
   AllGaps lam0 (Cg' * D.R.k * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3) ∧
@@ -111,26 +100,6 @@ section Cells71
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 end Cells71
-
-structure TensorDSd (n : ℕ) (ε : Fin n → Bool) (μ : Fin n → ℝ) (H : Type) [NormedAddCommGroup H]
-    [InnerProductSpace ℂ H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) where
-  Sm : Finset (Fin n)
-  Hs : Fin n → Type
-  [nH : ∀ s, NormedAddCommGroup (Hs s)]
-  [iH : ∀ s, InnerProductSpace ℂ (Hs s)]
-  [cH : ∀ s, CompleteSpace (Hs s)]
-  σs : ∀ s, Matrix (Fin n) (Fin n) ℂ → (Hs s →L[ℂ] Hs s)
-  ds : ∀ s ∈ Sm, IsHCParam (μ - Pi.single s 1) ∧ IsDS ε (μ - Pi.single s 1) (σs s)
-  inequiv : ∀ s ∈ Sm, ∀ s' ∈ Sm, s ≠ s' → ¬ ∃ U : Hs s ≃ₗᵢ[ℂ] Hs s',
-    ∀ g ∈ UJset ε, ∀ x, U (σs s g x) = σs s' g (U x)
-  toSum : ∀ (v w : H) (x y : Fin n → ℂ), IsKFin ε σ v → IsKFin ε σ w →
-    ∃ (ι : Type) (_ : Fintype ι) (sI : ι → Fin n) (vI wI : ∀ i, Hs (sI i)),
-      (∀ i, sI i ∈ Sm ∧ IsKFin ε (σs (sI i)) (vI i) ∧ IsKFin ε (σs (sI i)) (wI i)) ∧
-      ∀ g ∈ UJset ε, ⟪w, σ g v⟫_ℂ * (star y ⬝ᵥ (g⁻¹ *ᵥ x)) = ∑ i, ⟪wI i, σs (sI i) g (vI i)⟫_ℂ
-  ofSum : ∀ s ∈ Sm, ∀ v w : Hs s, IsKFin ε (σs s) v → IsKFin ε (σs s) w →
-    ∃ (ι : Type) (_ : Fintype ι) (vI wI : ι → H) (xI yI : ι → Fin n → ℂ),
-      (∀ i, IsKFin ε σ (vI i) ∧ IsKFin ε σ (wI i)) ∧
-      ∀ g ∈ UJset ε, ⟪w, σs s g v⟫_ℂ = ∑ i, ⟪wI i, σ g (vI i)⟫_ℂ * (star (yI i) ⬝ᵥ (g⁻¹ *ᵥ xI i))
 
 attribute [instance] TensorDSd.nH TensorDSd.iH TensorDSd.cH
 

@@ -199,7 +199,6 @@ namespace Model
 
 variable [MeasurableSpace E]
 
-
 open scoped Classical in
 def bbIntegrand (M : Model F E) {m : ℕ} (w : Pt E (m + 1)) (c : M.Cls m)
     (xy : (IL (m + 1) → E) × (IN w → E)) : ℂ := by
@@ -221,14 +220,6 @@ def Kk (M : Model F E) : (i : ℕ) → Pt E i → Pt E i → ℂ
   | 0, _, _ => 1
   | m + 1, w, w' => ∑' c : M.Cls m, M.BB w c * conj (M.BB w' c) / (M.nAut c : ℂ)
 
-def N0 (M : Model F E) {m : ℕ} (h h' : Pt E m) : ℂ := M.Kk m h h'
-
-def Ns (M : Model F E) {m : ℕ} (s : ℕ+) (t t' : Eˣ) (h h' : Pt E m) : ℂ :=
-  ((M.modK ((t : E) * t') ^ ((s : ℕ) * ((s : ℕ) - 1) / 2) : ℝ) : ℂ) *
-    M.Kk (m + s) (h.snoc t s) (h'.snoc t' s)
-
-def detMod (M : Model F E) {m : ℕ} (h : Pt E m) : ℝ := M.modK h.mat.det
-
 def InGLR (M : Model F E) {m : ℕ} (h : Pt E m) : Prop :=
   (∀ a b, h.mat a b ∈ M.R) ∧ ∃ u ∈ M.R, h.mat.det * u = 1
 
@@ -248,7 +239,6 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 
 namespace Model
-
 
 theorem Kk_succ (M : Model F E) (m : ℕ) (w w' : Pt E (m + 1)) :
     M.Kk (m + 1) w w' = ∑' c : M.Cls m, M.BB w c * conj (M.BB w' c) / (M.nAut c : ℂ) := rfl

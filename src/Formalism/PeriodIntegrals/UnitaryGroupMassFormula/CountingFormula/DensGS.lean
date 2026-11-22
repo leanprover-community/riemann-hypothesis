@@ -14,23 +14,6 @@ namespace PI.UnitaryGroupMassFormula.CntFormula
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
 
-def SplitCount : Prop :=
-  ∀ (F E : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [CommRing E] [Algebra F E]
-    [TopologicalSpace E] [MeasurableSpace E] (M : Loc.Model F E),
-    IsNonarchimedeanLocalField F → CharZero F →
-    (∃ e : E ≃ₐ[F] F × F, ∀ x, e (M.L.cj x) = (e x).swap) →
-    ∀ (V : Type) [AddCommGroup V] [Module E V] (H : Loc.HermSp M V) (Λ : Submodule M.L.O V),
-      H.IsSelfDual Λ → ∀ ϖ : 𝒪[F], Irreducible ϖ →
-      ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (G₀ : Matrix ι ι E), (∀ a b, G₀ a b ∈ M.L.O) →
-        (∀ a b, G₀ b a = M.L.cj (G₀ a b)) → (∃ y ∈ M.L.O, G₀.det * y = 1) →
-        Fintype.card ι ≤ Module.finrank E V →
-        ∃ (Ph : Matrix (Fin (Module.finrank E V)) (Fin (Module.finrank E V)) 𝓀[F])
-          (Gm : Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) 𝓀[F]),
-          IsUnit Ph.det ∧ Gm.rank = Fintype.card ι ∧
-          H.dens ϖ Λ G₀ * (Nat.card 𝓀[F] : ℝ) ^
-              ((2 * Module.finrank E V * Fintype.card ι : ℤ) - (Fintype.card ι : ℤ) ^ 2) =
-            (Formalism.L2.SG.DensExact.countSplit 𝓀[F] (Module.finrank E V) (Fintype.card ι) Ph Gm : ℝ)
-
 def OSplit : Prop :=
   ∀ (F E : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [CommRing E] [Algebra F E]
     [TopologicalSpace E] (L : Loc.LocE F E), IsNonarchimedeanLocalField F →

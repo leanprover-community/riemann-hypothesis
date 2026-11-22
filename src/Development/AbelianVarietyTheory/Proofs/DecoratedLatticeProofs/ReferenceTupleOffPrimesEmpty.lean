@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFor
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.WeilDatumExistence
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SameCosetOfMemCosetIn
 public import Formalism.LocalToGlobal.Columns.ChainTwMain
-public import Formalism.LocalToGlobal.Columns.WithTopLevGTop
 public import Formalism.LocalToGlobal.Columns.ChainOneP
 public import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.OffSmall
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsTwIffCanonEq
@@ -16,7 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Kma
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JetsInIffStepField
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CevInjective
 public import Formalism.LocalToGlobal.Columns.ToHLat
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HtPsiLeIffExists
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.JetStepEqZeroExample
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.KmapOfOkOfVecP
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TrueChainComplexFormsStabiliserLaw

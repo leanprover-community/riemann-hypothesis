@@ -45,12 +45,6 @@ private lemma qm_mul_siegel_theta_transformation {α β γ : Type} [Fintype β] 
 open Matrix Complex in
 open scoped ComplexConjugate Real in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
-private lemma qm_transpose' {α β : Type} (M : Matrix α β ℚ) :
-    _root_.GlobalTheory.SW.qm Mᵀ = (_root_.GlobalTheory.SW.qm M)ᵀ := rfl
-
-open Matrix Complex in
-open scoped ComplexConjugate Real in
-variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma qm_zero' {α β : Type} : _root_.GlobalTheory.SW.qm (0 : Matrix α β ℚ) = 0 := by
   ext i j
   simp [_root_.GlobalTheory.SW.qm]
@@ -101,7 +95,6 @@ variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma dotProduct_transpose_mulVec_self (N : Matrix ι ι ℂ) (ζ : ι → ℂ) :
     ζ ⬝ᵥ (Nᵀ *ᵥ ζ) = ζ ⬝ᵥ (N *ᵥ ζ) := by
   rw [mulVec_transpose, dotProduct_comm, dotProduct_mulVec]
-
 
 open Matrix Complex in
 open scoped ComplexConjugate Real in

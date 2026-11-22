@@ -104,12 +104,6 @@ private theorem jetTrunc_mk_lemma (n : ℕ) (P : MvPolynomial κ S) :
     (jetTrunc : Jet S κ (n + 1) →ₐ[S] Jet S κ n) (Ideal.Quotient.mk (orig S κ ^ (n + 1 + 1)) P) =
       Ideal.Quotient.mk (orig S κ ^ (n + 1)) P := rfl
 
-private theorem jetSubstPS_mk_lemma (n : ℕ) (g : κ → MvPowerSeries κ' S) (P : MvPolynomial κ S) :
-    (jetSubstPS (m := n) g) (Ideal.Quotient.mk (orig S κ ^ (n + 1)) P) =
-      Ideal.Quotient.mk (orig S κ' ^ (n + 1))
-        (MvPolynomial.aeval (fun i => psTrunc n (g i) -
-          MvPolynomial.C (MvPolynomial.constantCoeff (psTrunc n (g i)))) P) := rfl
-
 theorem jetSubstPS_trunc (m : ℕ) (g : κ → MvPowerSeries κ' S) :
     (jetTrunc : Jet S κ' (m + 1) →ₐ[S] Jet S κ' m).comp (jetSubstPS (m := m + 1) g) =
       (jetSubstPS (m := m) g).comp (jetTrunc : Jet S κ (m + 1) →ₐ[S] Jet S κ m) := by

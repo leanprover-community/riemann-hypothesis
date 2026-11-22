@@ -2,11 +2,8 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SemiposAtOfPositive
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemConeOfMem
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormsOfInduces
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPairDetCovec
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CoordAtConstMulIff
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.PermutesRefl
 
 @[expose] public section
@@ -34,14 +31,6 @@ variable {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {O : Type} [CommRing O] 
 variable {p : ℕ} [Fact p.Prime]
 
 end Defs
-
-def RegLocSt : Prop :=
-  ∀ (F : Type) [Field F] [NumberField F] (Y : Var F) (V : GlobalTheory.Mean4O.Cover Y) (U W : V.X.Opens), (W : Set V.X).Nonempty →
-    ∀ (v : HeightOneSpectrum (𝓞 F)) (g : V.X.functionField),
-    (∀ (e : TrueGeo.Ext v) (z : Sp (AlgebraicClosure F) ⟶ V.G) (yt : Sp e.O ⟶ V.X),
-      z ≫ V.π ≫ Y.str = spMap (algebraMap F (AlgebraicClosure F)) → spMap e.O.subtype ≫ yt = z ≫ V.j → ⊤ ≤ yt ⁻¹ᵁ U →
-      below (z ≫ V.j) ∈ W → e.w (TrueGeo.valAt (z ≫ V.j) g) ≤ 1) →
-    ∀ x ∈ U, (V.p x).asIdeal = v.asIdeal → RegAt x g
 
 end GlobalTheory.DetHT
 

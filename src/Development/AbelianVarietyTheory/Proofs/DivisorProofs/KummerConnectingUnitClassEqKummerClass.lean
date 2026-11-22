@@ -24,8 +24,6 @@ theorem sec_eq_zero_of_isZero {F : Shv R} (h : IsZero F) {U : Scheme.{0}} (x : S
   have h1 : Sec.map (𝟙 F) x = Sec.map (0 : F ⟶ F) x := by rw [e]
   exact h1.trans rfl
 
-theorem face_sch {X U : Scheme.{0}} {p : ℕ} (x : Sx (sch.obj X) (p + 1) U) (i : Fin (p + 2)) : x.face i = x := rfl
-
 theorem isZero_res_neg (F : Shv R) (n : ℤ) (hn : n < 0) : IsZero ((res R F).X n) := by
   have : (res R F).IsStrictlyGE 0 := inferInstanceAs ((injectiveResolution F).cochainComplex.IsStrictlyGE 0)
   exact CochainComplex.isZero_of_isStrictlyGE _ 0 _ hn

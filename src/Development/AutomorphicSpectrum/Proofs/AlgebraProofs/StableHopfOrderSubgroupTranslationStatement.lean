@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderSubgroupTranslation
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.RcFlag
 public import ReciprocityTheory.DualLattices.CotangentSurjective
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsTight
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.StepOrderRes

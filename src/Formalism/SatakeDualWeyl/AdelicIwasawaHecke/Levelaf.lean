@@ -162,9 +162,6 @@ section Tensor
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-
 variable (E) in
 def levelafC (d : 𝓞 F) : E ⊗[F] FiniteAdeleRing (𝓞 F) F :=
   (1 : E) ⊗ₜ[F] algebraMap (𝓞 F) (FiniteAdeleRing (𝓞 F) F) d
@@ -276,9 +273,6 @@ section Quot
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-
 theorem levelaf_finite_quot (D : 𝓞 F) (hD : D ≠ 0) (c : 𝒮) (hc : (c : 𝒜) = levelafC E D) :
     Finite (𝒮 ⧸ Ideal.span {c}) := by
   classical
@@ -356,9 +350,6 @@ section Final
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
-
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
 
 theorem levelaf_exists_denom (g : GL n 𝒜) : ∃ d : 𝓞 F, d ≠ 0 ∧ ∃ c : 𝒮, (c : 𝒜) = levelafC E d ∧
     (c : 𝒜) • (g : Matrix n n 𝒜) ∈ (RingHom.mapMatrix (m := n) (𝒮).subtype).range ∧

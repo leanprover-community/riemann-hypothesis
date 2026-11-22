@@ -120,9 +120,6 @@ def csm (θ : InfFam D) (M : DSModel V S) (τ : D.what₂.Tau) : (conjModel M).s
   left_inv x := Subtype.ext (by simp)
   right_inv x := Subtype.ext (by simp)
 
-theorem csm_val (θ : InfFam D) (M : DSModel V S) (τ : D.what₂.Tau) (w : (conjModel M).sm τ) :
-    ((csm θ M τ w : M.sm τ) : M.H τ) = cM M τ (w : (conjModel M).H τ) := rfl
-
 def chs (M : DSModel V S) (τ : D.what₂.Tau) : (conjModel M).H τ ≃ₗ⋆[ℂ] M.H τ := (cM M τ).toLinearEquiv
 
 theorem incl_kap (θ : InfFam D) (M : DSModel V S) (x : SmT (conjModel M)) :

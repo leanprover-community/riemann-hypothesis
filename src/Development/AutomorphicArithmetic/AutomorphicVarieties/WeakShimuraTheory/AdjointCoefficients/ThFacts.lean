@@ -170,9 +170,6 @@ private theorem pow_eq_one_of_pow_eq_one_of_dvd {M : Type} [Monoid M] {x : M} {n
   obtain ⟨k, rfl⟩ := hd
   rw [pow_mul, h, one_pow]
 
-private theorem cycZ_resQ_eq_cycZ_of_charZero {Ω : Type} [Field Ω] [CharZero Ω] (F : IntermediateField ℚ Ω) {l : ℕ} [Fact l.Prime] (g : G F Ω) :
-    cycZ ℚ Ω l (resQ F g) = cycZ F Ω l g := rfl
-
 private theorem nu_eq_one_of_mem_mu_of_good_of_deep {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c) (T : Tower D) (hG : D.Good) (hDeep : T.Deep) :
     ∀ v, ∀ s ∈ (T.fr ∅).Mu v, (T.fr ∅).ν s = 1 := by
   intro v s hs

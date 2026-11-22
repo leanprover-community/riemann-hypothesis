@@ -28,7 +28,6 @@ def band : Set (GA E a) :=
   {g | a = 0 ∨ (1 ≤ Reduction.detModule E a g ∧
     Reduction.detModule E a g < Reduction.detModule E a (splitCentre E a 1))}
 
-
 variable {E a} in
 def muOne (μ : Measure (GA E a)) : Measure (G1 E a) := Measure.map retractOne (μ.restrict (band E a))
 
@@ -68,12 +67,6 @@ def QuotPres : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (μ : Measure (GA E a)) [μ.IsHaarMeasure],
     Pres μ (muOne μ)
 
-def LiftCmp : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (μ : Measure (GA E a)) [μ.IsHaarMeasure]
-    (μ₁ : Measure (G1 E a)) [μ₁.IsHaarMeasure] (hp : Pres μ μ₁) (v : CuspL2 μ₁) (Φ : RightCosetSpace (Γ1 E a) → ℂ),
-    (toLp μ₁ v : RightCosetSpace (Γ1 E a) → ℂ) =ᵐ[RightCosetSpace.quotientMeasure (Γ1 E a) μ₁] Φ →
-    lift (latticeGL E a) (cmp hp v) =ᵐ[μ] fun g => Φ (RightCosetSpace.mk (Γ1 E a) (retractOne g))
-
 def CmpEquiv : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (μ : Measure (GA E a)) [μ.IsHaarMeasure]
     [μ.IsMulRightInvariant] (μ₁ : Measure (G1 E a)) [μ₁.IsHaarMeasure] (hp : Pres μ μ₁) (g : GA E a) (v : CuspL2 μ₁),
@@ -83,10 +76,6 @@ def CmpForm : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (μ : Measure (GA E a)) [μ.IsHaarMeasure]
     (μ₁ : Measure (G1 E a)) [μ₁.IsHaarMeasure] (hp : Pres μ μ₁) (φ : cuspForms E a), φ ∈ centralCuspForms E a →
     lift (latticeGL E a) (cmp hp (cuspVecL μ₁ φ)) =ᵐ[μ] φ.1
-
-def Dense : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (μ₁ : Measure (G1 K n)) [μ₁.IsHaarMeasure],
-    ((centralCuspForms K n).map (cuspVecL μ₁)).topologicalClosure = ⊤
 
 def NeBot : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (μ₁ : Measure (G1 K n)) [μ₁.IsHaarMeasure]

@@ -1,8 +1,6 @@
 module
 
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Objects
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Examples
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightObjects
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.TargetSt
 

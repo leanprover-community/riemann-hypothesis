@@ -484,8 +484,6 @@ theorem rank_pos_of_hyp (P : Par) (hH : P.Hyp) : 0 < P.Nr := by
   have h2 := hH.t_ge
   omega
 
-theorem one_le_k_of_hyp (P : Par) (hH : P.Hyp) : 1 ≤ P.k := le_trans hH.m_pos hH.m_le
-
 theorem kc_cast_le_k (P : Par) : (kc P : ℝ) ≤ (P.k : ℝ) := by
   unfold kc
   exact_mod_cast Nat.sub_le _ _

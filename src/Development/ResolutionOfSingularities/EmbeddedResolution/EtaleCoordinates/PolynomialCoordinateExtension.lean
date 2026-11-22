@@ -176,10 +176,6 @@ theorem algebraMap_eq_sumEval (p : MvPolynomial (ι ⊕ κ) k) :
       = C (coord k ι S i) := by
   simp [algebraMap_eq_sumEval, sumEval]
 
-private theorem algebraMap_eq_sumEvalIter (p : MvPolynomial (ι ⊕ κ) k) :
-    algebraMap (MvPolynomial (ι ⊕ κ) k) (MvPolynomial κ (MvPolynomial ι k)) p
-      = sumEvalIter k ι κ p := rfl
-
 theorem mapCoeffAlgebra_isScalarTower_of_isScalarTower [IsScalarTower k (MvPolynomial ι k) S] :
     IsScalarTower k (MvPolynomial κ (MvPolynomial ι k)) (MvPolynomial κ S) :=
   IsScalarTower.of_algebraMap_eq fun x => by

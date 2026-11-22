@@ -1,7 +1,9 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncChartRegularAtConePoint
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AffineChartIdealPrimeAndSaturatedStatement
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinimalPrimesOfMultihomogSupStatement
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularSystemOfParametersLocalRingAltBis
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FiniteMinimalPrimes
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChPrime
 

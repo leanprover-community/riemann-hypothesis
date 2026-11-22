@@ -199,9 +199,6 @@ def prodFn (S₁ : Submodule ℂ (Sm E r)) (S₂ : Submodule ℂ (Sm E s)) : S�
     (fun a b b' => by funext m; simp [mul_add])
     (fun c a b => by funext m; simp; ring))
 
-theorem prodFn_tmul (S₁ : Submodule ℂ (Sm E r)) (S₂ : Submodule ℂ (Sm E s)) (a : S₁) (b : S₂) (m : GA E r × GA E s) :
-    prodFn S₁ S₂ (a ⊗ₜ[ℂ] b) m = a.1.1 m.1 * b.1.1 m.2 := rfl
-
 def evAt (S : Submodule ℂ (Sm E r)) (a : GA E r) : S →ₗ[ℂ] ℂ where
   toFun φ := φ.1.1 a
   map_add' _ _ := rfl

@@ -12,9 +12,6 @@ noncomputable section
 
 namespace PositivityTheory.Xgf
 
-theorem complexEmbedding_conjugate_conjugate {E : Type} [Field E] (τ : E →+* ℂ) :
-    ComplexEmbedding.conjugate (ComplexEmbedding.conjugate τ) = τ := star_star τ
-
 private theorem eventually_posDef_add_mul_conjTranspose {I J : Type} [Fintype I] [Fintype J] [DecidableEq I]
     (C : Matrix I J ℂ) (M : Matrix J J ℂ) (hM : M.IsHermitian) (h : (C * M * Cᴴ).PosDef) :
     ∀ᶠ D in nhds (0 : Matrix I J ℂ), ((C + D) * M * (C + D)ᴴ).PosDef := by

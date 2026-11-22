@@ -19,7 +19,6 @@ namespace GlobalTheory.VB
 
 variable {X Y : Scheme.{0}} {F G H : X.Modules} {U V W : X.Opens} {ι : Type} [Fintype ι]
 
-
 variable (F G V) in
 def homGroup :
     AddSubgroup (∀ W : {W : X.Opens // W ≤ V}, Γ(F, W.1) →ₗ[Γ(X, W.1)] Γ(G, W.1)) where
@@ -49,13 +48,11 @@ instance homGroupModule : Module Γ(X, V) (homGroup F G V) where
     change resG X h 0 • φ.1 ⟨W, h⟩ = 0
     rw [map_zero, zero_smul]
 
-
 variable (F G) in
 def homRes (h : W ≤ V) : homGroup F G V →+ homGroup F G W where
   toFun φ := ⟨fun T => φ.1 ⟨T.1, T.2.trans h⟩, fun T T' hT h' s => φ.2 T T' (hT.trans h) h' s⟩
   map_zero' := rfl
   map_add' _ _ := rfl
-
 
 variable (F G) in
 def homPresheaf : TopCat.Presheaf Ab.{0} X where
@@ -63,7 +60,6 @@ def homPresheaf : TopCat.Presheaf Ab.{0} X where
   map f := AddCommGrpCat.ofHom (homRes F G (leOfHom f.unop))
   map_id _ := rfl
   map_comp _ _ := rfl
-
 
 variable (F G) in
 theorem isSheaf_homPresheaf : (homPresheaf F G).IsSheaf := by
@@ -146,7 +142,6 @@ theorem isSheaf_homPresheaf : (homPresheaf F G).IsSheaf := by
     rw [← h1, h2]
     exact (key W.1 W.2 s i _ inf_le_left inf_le_right).symm
 
-
 variable (F G) in
 def homMod : X.Modules :=
   letI : ∀ V, Module (X.ringCatSheaf.obj.obj V) ((homPresheaf F G).obj V) :=
@@ -196,7 +191,6 @@ theorem homApp_sum {κ : Type*} (t : Finset κ) (φ : κ → Γ(homMod F G, V)) 
 @[simp] theorem homApp_res (φ : Γ(homMod F G, V)) (h : W ≤ V) {T : X.Opens} (h' : T ≤ W) :
     homApp (resM (homMod F G) h φ) h' = homApp φ (h'.trans h) := rfl
 
-
 variable (F G) in
 def homGlobalEquiv : Γ(homMod F G, ⊤) ≃+ (F ⟶ G) where
   toFun φ := homOfLinear (fun _ => homApp φ le_top) fun h s => homApp_resM φ le_top h s
@@ -217,7 +211,6 @@ def homMap {F' G' : X.Modules} (α : F' ⟶ F) (β : G ⟶ G') : homMod F G ⟶ 
 @[simp] theorem homApp_homMap {F' G' : X.Modules} (α : F' ⟶ F) (β : G ⟶ G')
     (φ : Γ(homMod F G, V)) (h : W ≤ V) (s : Γ(F', W)) :
     homApp ((homMap α β).app V φ) h s = β.app W (homApp φ h (α.app W s)) := rfl
-
 
 variable (F) in
 def dual : X.Modules := homMod F (structureModule X)
@@ -261,13 +254,6 @@ def dualMap (φ : F ⟶ G) : dual G ⟶ dual F := homMap φ (𝟙 _)
 
 theorem dualMap_comp (φ : F ⟶ G) (ψ : G ⟶ H) : dualMap (φ ≫ ψ) = dualMap ψ ≫ dualMap φ := rfl
 
-theorem dualMap_add (φ ψ : F ⟶ G) : dualMap (φ + ψ) = dualMap φ + dualMap ψ := by
-  refine Scheme.Modules.hom_ext _ _ fun V => ?_
-  ext l W h s
-  first
-  | simp [dualApp_dualMap]
-  | (rw [dualApp_dualMap]; simp)
-
 @[simp] theorem dualMap_zero : dualMap (0 : F ⟶ G) = 0 := by
   refine Scheme.Modules.hom_ext _ _ fun V => ?_
   ext l W h s
@@ -308,36 +294,8 @@ instance mono_dualMap (φ : F ⟶ G) [Epi φ] : Mono (dualMap φ) := by
   rw [← dualApp_resM, ← ht, ← dualApp_dualMap, hl]
   exact (map_zero _).symm
 
-
-variable (F) in
-def cartierDualToBidual : F ⟶ dual (dual F) :=
-  homOfLinear (fun V =>
-    { toFun s := dualMk (fun W h =>
-        { toFun l := dualApp l le_rfl (resM F h s)
-          map_add' := fun _ _ => rfl
-          map_smul' := fun a l => by
-            rw [dualApp_smul, resG_self]; rfl })
-        fun W W' h h' l => by
-          change dualApp l h' (resM F _ s) = resG X h' (dualApp l le_rfl (resM F h s))
-          rw [← dualApp_resM, resM_resM]
-      map_add' := fun s t => dual_ext fun W h l => by
-        change dualApp l le_rfl (resM F h (s + t)) = _
-        rw [map_add (f := _), map_add (f := _)]; rfl
-      map_smul' := fun a s => dual_ext fun W h l => by
-        change dualApp l le_rfl (resM F h (a • s)) = _
-        rw [resM_smul, map_smul]; rfl })
-    fun h s => dual_ext fun W h' l => congrArg (dualApp l le_rfl) (resM_resM h h' s)
-
 @[simp] theorem dualSheafSectionApply_toBidual (s : Γ(F, V)) (h : W ≤ V) (l : Γ(dual F, W)) :
     dualApp ((cartierDualToBidual F).app V s) h l = dualApp l le_rfl (resM F h s) := rfl
-
-@[reassoc] theorem toBidual_naturality_dualSheafTranspose (φ : F ⟶ G) :
-    φ ≫ cartierDualToBidual G = cartierDualToBidual F ≫ dualMap (dualMap φ) := by
-  refine Scheme.Modules.hom_ext _ _ fun V => ?_
-  ext s W h l
-  first
-  | simp [dualSheafSectionApply_toBidual, dualApp_dualMap, app_resM]
-  | (simp only [Scheme.Modules.Hom.comp_app, AddCommGrpCat.hom_comp, AddMonoidHom.comp_apply, dualSheafSectionApply_toBidual, dualApp_dualMap, app_resM])
 
 namespace IsFrame
 
@@ -395,14 +353,6 @@ theorem dual_basis_repr (he : IsFrame e) (h : V ≤ U) (l : Γ(VB.dual F, V)) (i
   conv_rhs => rw [h1]
   rw [dualApp_sum_smul_coord_eq, Module.Basis.equivFun_apply]
 
-theorem toBidual_app (he : IsFrame e) (i : ι) : (cartierDualToBidual F).app U (e i) = he.dual.coord i := by
-  classical
-  refine he.dual.dual_ext le_rfl fun j => ?_
-  rw [he.dual.dualApp_coord_frame i j le_rfl, dualSheafSectionApply_toBidual, dualApp_res, he.dualApp_coord_frame j i]
-  by_cases hij : i = j
-  · subst hij; simp
-  · simp [hij, Ne.symm hij]
-
 end IsFrame
 
 variable {r : ℕ}
@@ -427,14 +377,6 @@ theorem isIso_of_frames (φ : F ⟶ G) (h : ∀ x : X, ∃ (U : X.Opens) (e : ι
   have : Mono φ := (QCoh.mono_iff_stalkLinear_injective φ).2 fun x => (hb x).1
   have : Epi φ := (QCoh.epi_iff_stalkLinear_surjective φ).2 fun x => (hb x).2
   exact isIso_of_mono_of_epi φ
-
-theorem IsVB.isIso_toBidual_of_local_frames (h : IsVB F r) : IsIso (cartierDualToBidual F) := by
-  refine isIso_of_frames (ι := Fin r) _ fun x => ?_
-  obtain ⟨U, e, hx, he⟩ := h x
-  refine ⟨U, e, hx, he, ?_⟩
-  simp only [he.toBidual_app]
-  exact he.dual.dual
-
 
 namespace IsFrame
 
@@ -522,7 +464,6 @@ private theorem pullbackSections_resM [F.IsQuasicoherent] (f : Y ⟶ X) (h : V �
   rw [QCoh.pullbackSections_res f F hT h x,
     QCoh.res_pullbackSections f F (le_refl (f ⁻¹ᵁ U)) (hT.trans (f.preimage_mono h)) x]
 
-
 omit [DecidableEq ι] in
 theorem pullback_basis_repr [F.IsQuasicoherent] (he : IsFrame e) (f : Y ⟶ X) (h : V ≤ U)
     {T : Y.Opens} (hT : T ≤ f ⁻¹ᵁ V) (s : Γ(F, V)) (i : ι) :
@@ -551,7 +492,6 @@ theorem val_detUnit_pullback [F.IsQuasicoherent] (he : IsFrame e) (he' : IsFrame
 
 end IsFrame
 
-
 variable (F r) in
 structure Chart where
 
@@ -560,7 +500,6 @@ structure Chart where
   e : Fin r → Γ(F, U)
 
   isFrame : IsFrame e
-
 
 variable (F r) in
 def det : LB X where
@@ -587,7 +526,6 @@ theorem isLB_det_iff : (det F r).IsLB ↔ IsVB F r := by
         ((IsFrame.detUnit_mul _ _ _ _ _ _).trans (IsFrame.res_detUnit _ _ _ _ _).symm)
 
 theorem IsVB.isLB_det (h : IsVB F r) : (det F r).IsLB := isLB_det_iff.2 h
-
 
 theorem lbIso_det_of_frames {L : LB X} (hL : L.IsLB) (e : ∀ i, Fin r → Γ(F, L.U i))
     (he : ∀ i, IsFrame (e i))
@@ -653,34 +591,5 @@ theorem IsVB.lbIso_det_pullback (h : IsVB F r) (f : Y ⟶ X) :
   rw [hpg j j' hh,
     IsFrame.detUnit_res ((j PUnit.unit).isFrame.pullback f) ((j' PUnit.unit).isFrame.pullback f),
     IsFrame.val_detUnit_pullback (j PUnit.unit).isFrame (j' PUnit.unit).isFrame f inf_le_left inf_le_right hh]
-
-theorem lbIso_det_toMod {L : LB X} (hL : L.IsLB) : LBIso L (det (toMod L) 1) := by
-  refine (lbIso_det_of_frames hL (fun i _ => LB.chartSec hL i) (fun i => isFrame_chartSec hL i)
-    (fun i j => ?_)).2
-  have key : resM (toMod L) (inf_le_right : L.U i ⊓ L.U j ≤ L.U j) (LB.chartSec hL j) =
-      ((L.g i j : Γ(X, L.U i ⊓ L.U j)ˣ) : Γ(X, L.U i ⊓ L.U j)) •
-        resM (toMod L) (inf_le_left : L.U i ⊓ L.U j ≤ L.U i) (LB.chartSec hL i) := by
-    have ext {s t : Γ(toMod L, L.U i ⊓ L.U j)}
-        (hst : ∀ k, LB.coord s k = LB.coord t k) : s = t :=
-      Subtype.ext (funext hst)
-    refine ext fun k => ?_
-    rw [LB.coord_smul]
-    change resG X _ (LB.coord (LB.chartSec hL j) k) =
-      resG X _ ((L.g i j : Γ(X, L.U i ⊓ L.U j)ˣ) : Γ(X, L.U i ⊓ L.U j)) * resG X _ (LB.coord (LB.chartSec hL i) k)
-    rw [LB.coord_chartSec, LB.coord_chartSec, resG_resG, resG_resG]
-    have c0 := congrArg Units.val (hL.3 k i j)
-    have c := congrArg (resG X (show (L.U i ⊓ L.U j) ⊓ L.U k ≤ _ by
-      intro x hx
-      simp only [TopologicalSpace.Opens.mem_inf] at hx ⊢
-      tauto)) c0
-    simp only [Units.val_mul, map_mul, val_res, resG_resG] at c
-    rw [mul_comm]
-    exact c.symm
-  refine Units.ext ?_
-  rw [IsFrame.val_detUnit]
-  simp only [Module.Basis.det_apply, Matrix.det_unique, Module.Basis.toMatrix_apply]
-  rw [key, map_smul, ← IsFrame.basis_apply (isFrame_chartSec hL i) inf_le_left (default : Fin 1),
-    Module.Basis.repr_self]
-  simp
 
 end GlobalTheory.VB

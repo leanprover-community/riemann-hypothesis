@@ -41,11 +41,6 @@ abbrev matOf {R : Type} [CommRing R] [Algebra F R] {σ : E →ₐ[F] E} {n : ℕ
   (((show Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.HR R σ J from x) : GL (Fin n) (R ⊗[F] E)) :
     Matrix (Fin n) (Fin n) (R ⊗[F] E))
 
-theorem diagH_val (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E)
-    (g : Formalism.UG.UJ (σ : E →+* E) J) (i j : Fin n) :
-    matOf (diagH σ J F g) i j =
-      Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR F (((g : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) i j) := rfl
-
 theorem diagH_bijective : ∀ (F E : Type) [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ)
     (J : Matrix (Fin n) (Fin n) E), Function.Bijective (diagH σ J F) := by
   intro F E _ _ _ σ n J

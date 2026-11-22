@@ -23,19 +23,6 @@ theorem unramifiedDegree_maximalUnramifiedExtensionFrobenius_zpow (n : ℤ) :
       Multiplicative.ofAdd (n : ℤ̂) := by
   rw [map_zpow, unramifiedDegree_maximalUnramifiedExtensionFrobenius, ← ofAdd_zsmul, zsmul_one]
 
-theorem injective_zpow_maximalUnramifiedExtensionFrobenius :
-    Function.Injective fun n : ℤ ↦ maximalUnramifiedExtensionFrobenius K Ω ^ n := by
-  intro m n h
-  have h' := congrArg (unramifiedDegree K (maximalUnramifiedExtension K Ω)) h
-  simp only [unramifiedDegree_maximalUnramifiedExtensionFrobenius_zpow] at h'
-  exact Int.cast_injective (Multiplicative.ofAdd.injective h')
-
-def frobeniusZPowersEquiv :
-    Multiplicative ℤ ≃* Subgroup.zpowers (maximalUnramifiedExtensionFrobenius K Ω) :=
-  MonoidHom.ofInjective (f := zpowersHom _ (maximalUnramifiedExtensionFrobenius K Ω))
-    (fun _ _ h ↦ Multiplicative.toAdd.injective
-      (injective_zpow_maximalUnramifiedExtensionFrobenius K Ω h))
-
 end Frobenius
 
 section Weil
@@ -47,7 +34,6 @@ def weilSubgroup : Subgroup (Ω ≃ₐ[K] Ω) :=
   (Subgroup.zpowers (maximalUnramifiedExtensionFrobenius K Ω)).comap
     (AlgEquiv.restrictNormalHom (maximalUnramifiedExtension K Ω))
 
-
 variable {K Ω} in
 theorem mem_weilSubgroup_iff {σ : Ω ≃ₐ[K] Ω} :
     σ ∈ weilSubgroup K Ω ↔ ∃ n : ℤ,
@@ -55,14 +41,12 @@ theorem mem_weilSubgroup_iff {σ : Ω ≃ₐ[K] Ω} :
   simp only [weilSubgroup, Subgroup.mem_comap, Subgroup.mem_zpowers_iff]
   exact exists_congr fun n ↦ eq_comm
 
-
 variable {K Ω} in
 theorem restrictNormal_eq_frobenius_zpow_iff (σ : Ω ≃ₐ[K] Ω) (n : ℤ) :
     σ.restrictNormal (maximalUnramifiedExtension K Ω) = maximalUnramifiedExtensionFrobenius K Ω ^ n ↔
       unramifiedDegree K Ω σ = Multiplicative.ofAdd (n : ℤ̂) := by
   rw [← unramifiedDegree_restrictNormal, ← unramifiedDegree_maximalUnramifiedExtensionFrobenius_zpow K Ω n]
   exact unramifiedDegree_maximalUnramifiedExtension_injective.eq_iff.symm
-
 
 variable {K Ω} in
 theorem mem_weilSubgroup_iff_unramifiedDegree {σ : Ω ≃ₐ[K] Ω} :
@@ -110,21 +94,9 @@ theorem dense_weilSubgroup : Dense (weilSubgroup K Ω : Set (Ω ≃ₐ[K] Ω)) :
   have := C.mul_mem hc hk'
   rwa [mul_inv_cancel_left] at this
 
-def WeilGroup : Type _ := weilSubgroup K Ω
-
 namespace WeilGroup
 
-
-
-
-
 variable {K Ω}
-
-
-
-
-
-
 
 end WeilGroup
 

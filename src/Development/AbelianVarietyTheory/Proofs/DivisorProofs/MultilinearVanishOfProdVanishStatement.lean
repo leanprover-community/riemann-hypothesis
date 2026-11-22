@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MultilinearVanishOfProdVanish
 
 @[expose] public section
 

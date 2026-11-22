@@ -16,10 +16,8 @@ namespace UpperTheory.V.Sd
 
 abbrev Pl (F : Type) [Field F] : Type := HeightOneSpectrum (𝓞 F)
 
-
 open Classical in
 def levL {F : Type} [Field F] (l : ℕ) (c : Pl F → ℕ) (w : Pl F) : ℕ := if ((l : ℕ) : 𝓞 F) ∈ w.asIdeal then 1 else c w
-
 
 open Classical in
 def eisT {F : Type} [Field F] [NumberField F] (l : ℕ) (ω : HChar F) (c : Pl F → ℕ) (P : Set (Pl F)) (w : Pl F) : ℂ :=
@@ -51,7 +49,6 @@ def HolMul : Prop :=
     HasExp ψ.1 k' d₀ b → (∀ 𝔪, 𝔪 ≠ ⊥ → ‖ι.symm (a 𝔪)‖ ≤ 1) → (∀ y, ‖ι.symm (d₀ y) - 1‖ < 1) → (∀ 𝔪, 𝔪 ≠ ⊥ → ‖ι.symm (b 𝔪)‖ < 1) →
     ∃ (χ : TR.Sm F 2) (a' : Ideal (𝓞 F) → ℂ), IsHol (k + k') c ω χ ∧ HasExp χ.1 (k + k') 0 a' ∧
       ∀ 𝔪, 𝔪 ≠ ⊥ → ‖ι.symm (a' 𝔪 - a 𝔪)‖ < 1
-
 
 open Classical in
 def HolB : Prop :=
@@ -131,27 +128,8 @@ def HolRep : Prop :=
       ∀ w, c w = 0 → ∃ B, π.HasSat w B ∧ ((algSat 2 (normV w) B).map fun b => X - C b).prod =
         X ^ 2 - C (lam w) * X + C ((ω.val w : ℂˣ) * (normV w : ℂ) ^ (k - 1))
 
-def PropM : Prop :=
-  ∀ (F Ω : Type) [Field F] [NumberField F] [IsTotallyReal F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime], l ≠ 2 →
-    ∀ (ι : Qbar l ≃+* ℂ) (ξ : G F Ω →* (Qbar l)ˣ), IsOpen (ξ.ker : Set (G F Ω)) → (∀ c, IsConjEl c → ξ c = -1) →
-    (∀ A : ValuationSubring Ω, A.valuation (l : Ω) < 1 → Ine (F := F) A ≤ ξ.ker) → (∃ A : ValuationSubring Ω, ¬ Ine (F := F) A ≤ ξ.ker) →
-    ∀ P : Set (Pl F),
-    (∃ w ∈ P, ((l : ℕ) : 𝓞 F) ∈ w.asIdeal ∧ ∃ A, IsPlaceOver A w ∧ ∃ σ ∈ Dec (F := F) A, ¬ Cong (ξ σ) 1) →
-    (∃ w ∉ P, ((l : ℕ) : 𝓞 F) ∈ w.asIdeal ∧ ∃ A, IsPlaceOver A w ∧ ∃ σ ∈ Dec (F := F) A, ¬ Cong (ξ σ) 1) →
-    ∀ B : ℕ, ∃ k ≥ B, l - 1 ∣ k ∧ ∃ c a π r, OrdForm ι ξ (-(k : ℤ)) c (fun _ => ![0, -(k : ℤ)]) a π r ∧ ResSum r ![1, ξ] ∧
-      ∀ (w : Pl F), ((l : ℕ) : 𝓞 F) ∈ w.asIdeal → ∀ A, IsPlaceOver A w → ∀ σ : G F Ω, IsFrob A (normV w) σ →
-        (w ∈ P → a w = (ξ σ⁻¹ : (Qbar l)ˣ)) ∧ (w ∉ P → a w = 1)
-
 def SplitL (F : Type) [Field F] [NumberField F] (l : ℕ) : Prop :=
   ∀ w : Pl F, ((l : ℕ) : 𝓞 F) ∈ w.asIdeal → Ideal.absNorm w.asIdeal = l ∧ ((l : ℕ) : 𝓞 F) ∉ w.asIdeal ^ 2
-
-def WeightChange : Prop :=
-  ∀ (F Ω : Type) [Field F] [NumberField F] [IsTotallyReal F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime], l ≠ 2 →
-    Even (Module.finrank ℚ F) → SplitL F l → ∀ (ι : Qbar l ≃+* ℂ) (ξ : G F Ω →* (Qbar l)ˣ) s c m a π r, OrdForm ι ξ s c m a π r →
-    (∃ u, c u ≠ 0 ∧ normV u = 2) → ∀ m' : Pl F → Fin 2 → ℤ,
-    (∀ w : Pl F, ((l : ℕ) : 𝓞 F) ∈ w.asIdeal → m' w 1 + 2 ≤ m' w 0 ∧ m' w 0 + m' w 1 = s ∧ ((l : ℤ) - 1) ∣ m' w 0 - m w 0) →
-    ∃ π' r', OrdForm ι ξ s c m' a π' r' ∧ ∀ g i, ‖(r' g : Matrix (Fin 2) (Fin 2) (Qbar l)).charpoly.coeff i -
-      (r g : Matrix (Fin 2) (Fin 2) (Qbar l)).charpoly.coeff i‖ < 1
 
 def JacqOfU : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] (w : Pl F) (σ : SmIrr (GL (Fin 2) (w.adicCompletion F))) (c : ℕ) (lam : ℂˣ), c ≠ 0 →

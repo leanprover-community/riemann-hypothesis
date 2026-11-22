@@ -37,10 +37,6 @@ theorem exists_finExt_of_open (U : Subgroup (Ω ≃ₐ[E] Ω)) (hU : IsOpen (U :
   rw [hts] at this
   exact this
 
-theorem rep_apply {m : ℕ} (r : ↥Gw →* Matrix.GeneralLinearGroup (Fin m) O) (g : ↥(GK Bw.Kw))
-    (x : Fin m → ↥Bw.LL.1) :
-    Bw.rep r g x = (((r (Bw.e.symm g) : Matrix.GeneralLinearGroup (Fin m) O) : Matrix (Fin m) (Fin m) O).map Bw.toLL).mulVec x := rfl
-
 end Bridge
 
 end GlobalTheory.PotExt
@@ -63,7 +59,6 @@ theorem mem_stdG_OL {LL : FinExt l} {k : ℕ} (x : Fin k → ↥LL.1) :
     exact (u j).2
   · intro h
     exact ⟨fun j => ⟨x j, h j⟩, rfl⟩
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 def bridgeLat {m : ℕ} (r : ↥Gw →* Matrix.GeneralLinearGroup (Fin m) O)

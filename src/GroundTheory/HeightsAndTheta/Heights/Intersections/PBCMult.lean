@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Asse
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LengthLocalizedModuleQuotient
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LocalMultRadical
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Length
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.MemOfMemSupportDivCycle
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDivCycleMul
 
 @[expose] public section

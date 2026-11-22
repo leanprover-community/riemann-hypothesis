@@ -29,9 +29,6 @@ theorem cont_ext {A : PAlg l} {f g : (A.cont ℤ_[l]).A}
     (h : ∀ z, Hom.f (A.evCont z) f = Hom.f (A.evCont z) g) : f = g :=
   Subtype.ext (funext h)
 
-theorem ev_toCont (A : PAlg l) (z : ℤ_[l]) (a : A.A) :
-    Hom.f (A.evCont z) (Hom.f (A.toCont ℤ_[l]) a) = a := rfl
-
 theorem mem_span_pi_pow (A : PAlg l) (k : ℕ) (f : (A.cont ℤ_[l]).A) :
     f ∈ Ideal.span {(A.cont ℤ_[l]).pi ^ k} ↔ ∀ z, Hom.f (A.evCont z) f ∈ Ideal.span {A.pi ^ k} :=
   (RL.cont_ex A ℤ_[l]).2.2.2 k f

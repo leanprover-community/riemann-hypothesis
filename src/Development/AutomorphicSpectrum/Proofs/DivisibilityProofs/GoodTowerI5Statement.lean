@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GoodTowerI5
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
 public import Development.WeilBound.CoreStatements.FlagImmersions.GlobalModelTowerFifthCondition
 public import Development.AutomorphicSpectrum.Statements.TowerExistence.GoodTowerExistsX

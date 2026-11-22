@@ -6,7 +6,6 @@ public import Formalism.LogVandermondeBounds.HookGammaAmgmMultinomialBounds
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.SquareMomentFromBound
 public import Mathlib
 public import Formalism.GL3MeanSquares.ConcavityEquidistribution
-public import Formalism.LogVandermondeBounds.MultinomialPowerBound
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.SquareMomentArithmeticBound
 
 @[expose] public section
@@ -131,9 +130,6 @@ end PG
 
 section PH
 open Formalism.BasicNotions NumberField Finset
-
-def toEuc (D : D7) (i : ℕ) (s : D.what₂.LL →+* ℂ) (w : Gx D i → ℂ) : EuclideanSpace ℂ (Gx D i) :=
-  WithLp.toLp 2 fun g => (((Real.sqrt (Real.pi * D.gx.Om g.1 s))⁻¹ : ℝ) : ℂ) * w g
 
 end PH
 
@@ -645,9 +641,6 @@ end MV1
 
 section MV2
 open Formalism.BasicNotions NumberField MeasureTheory Complex
-
-def rho (D : D7) (i : ℕ) (s : D.what₂.LL →+* ℂ) (w : Gx D i → ℂ) : ℝ :=
-  2 ^ Fintype.card (Gx D i) * Real.exp (-(2 * Real.pi) * Hq D i s w)
 
 end MV2
 

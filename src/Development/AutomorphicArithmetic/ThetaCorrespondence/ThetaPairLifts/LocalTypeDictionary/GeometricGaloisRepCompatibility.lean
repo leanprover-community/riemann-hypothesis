@@ -1,7 +1,10 @@
 module
 
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.DiscreteSpectrumResidualClassification
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HypothesesX
+public import Mathlib
+public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HtCard
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleCoefficientsAnalytic
+public import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.DiscreteSeriesClassificationIff
 
 @[expose] public section
 

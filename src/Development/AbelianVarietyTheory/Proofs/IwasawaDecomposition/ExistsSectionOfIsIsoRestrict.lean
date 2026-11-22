@@ -111,16 +111,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {Xo : ∀ l : Level H, Moduli Dw l} {p : ℕ} {W : ValuationSubring ℂ} {Y : LocalSystem Xo p W} {i₀ : Idx H p}
 
-theorem isDiscreteValuationRing_coeff {l : Level H} (c : Coeff l) (hp : p ≠ 0) (hW : (p : ℂ) ∈ W.nonunits) :
-    IsDiscreteValuationRing (c.V W) := by
-  have := c.fin
-  have : NumberField c.F := {}
-  refine (isDiscreteValuationRing_and_finite_residueField_of_numberField (c.V W) hp ?_).1
-  rw [ValuationSubring.mem_nonunits_iff_or] at hW ⊢
-  rcases hW with h | h
-  · exact absurd (by exact_mod_cast h) hp
-  · exact Or.inr fun h' => h (by simpa [Coeff.V] using h')
-
 end
 
 end GlobalTheory.ProjBlowup

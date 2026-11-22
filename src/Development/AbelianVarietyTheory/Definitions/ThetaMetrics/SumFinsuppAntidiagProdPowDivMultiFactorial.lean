@@ -20,8 +20,6 @@ def l1Norm (P : MvPolynomial σ K) : ℝ := ∑ α ∈ P.support, ‖P.coeff α�
 
 def l2Norm (P : MvPolynomial σ K) : ℝ := √(∑ α ∈ P.support, ‖P.coeff α‖ ^ 2)
 
-def supCoeff (P : MvPolynomial σ K) : ℝ := ((P.support.sup fun α ↦ ‖P.coeff α‖₊ : NNReal) : ℝ)
-
 def multiFactorial (α : σ →₀ ℕ) : ℕ := α.prod fun _ n ↦ n.factorial
 
 def fockNormSq (P : MvPolynomial σ K) : ℝ :=
@@ -45,12 +43,6 @@ theorem l1Norm_eq_sum_of_subset {P : MvPolynomial σ K} {s : Finset (σ →₀ �
 
 theorem l1Norm_nonneg (P : MvPolynomial σ K) : 0 ≤ l1Norm P :=
   sum_nonneg fun _ _ ↦ norm_nonneg _
-
-theorem sum_norm_coeff_le_l1Norm (P : MvPolynomial σ K) (s : Finset (σ →₀ ℕ)) :
-    ∑ α ∈ s, ‖P.coeff α‖ ≤ l1Norm P := by
-  classical
-  rw [l1Norm_eq_sum_of_subset (s := P.support ∪ s) subset_union_left]
-  exact sum_le_sum_of_subset_of_nonneg subset_union_right fun _ _ _ ↦ norm_nonneg _
 
 @[simp] theorem l1Norm_zero : l1Norm (0 : MvPolynomial σ K) = 0 := by simp [l1Norm]
 
@@ -138,22 +130,6 @@ theorem l1Norm_linearForm_le_sum {ι : Type*} (s : Finset ι) (v : ι → σ) (e
     l1Norm (∑ k ∈ s, C (e k) * X (v k) : MvPolynomial σ K) ≤ ∑ k ∈ s, ‖e k‖ := by
   refine (l1Norm_sum_le _ _).trans_eq (sum_congr rfl fun k _ ↦ ?_)
   rw [C_mul_X_eq_monomial, l1Norm_monomial]
-
-theorem l1Norm_linearForm_eq_sum {ι : Type*} (s : Finset ι) {v : ι → σ}
-    (hv : Function.Injective v) (e : ι → K) :
-    l1Norm (∑ k ∈ s, C (e k) * X (v k) : MvPolynomial σ K) = ∑ k ∈ s, ‖e k‖ := by
-  classical
-  refine (l1Norm_linearForm_le_sum s v e).antisymm ?_
-  have hinj : Function.Injective fun k ↦ (Finsupp.single (v k) 1 : σ →₀ ℕ) :=
-    fun a b h ↦ hv (Finsupp.single_left_injective one_ne_zero h)
-  refine le_trans (le_of_eq ?_) (sum_norm_coeff_le_l1Norm _ (s.image fun k ↦ .single (v k) 1))
-  rw [sum_image fun a _ b _ h ↦ hinj h]
-  refine sum_congr rfl fun k hk ↦ ?_
-  rw [coeff_sum, sum_eq_single k]
-  · simp [C_mul_X_eq_monomial]
-  · intro b _ hb
-    rw [C_mul_X_eq_monomial, coeff_monomial, if_neg fun h ↦ hb (hinj h)]
-  · exact fun h ↦ (h hk).elim
 
 theorem l1Norm_linearForm_le {ι : Type*} [Fintype ι] (v : ι → σ) (e : ι → K) :
     l1Norm (∑ k, C (e k) * X (v k) : MvPolynomial σ K) ≤
@@ -247,13 +223,11 @@ theorem support_subset_monomialsLE {R : Type*} [CommSemiring R] {P : MvPolynomia
   ⟨fun h ↦ Finset.sup_le fun _ hα ↦ mem_monomialsLE.mp (h hα),
     fun h _ hα ↦ mem_monomialsLE.mpr ((degree_le_totalDegree hα).trans h)⟩
 
-
 omit [DecidableEq σ] in
 theorem card_support_le_choose {R : Type*} [CommSemiring R] {P : MvPolynomial σ R} {d : ℕ}
     (h : P.totalDegree ≤ d) : #P.support ≤ (Fintype.card σ + d).choose d := by
   classical
   exact card_monomialsLE σ d ▸ card_le_card (support_subset_monomialsLE.mpr h)
-
 
 omit [DecidableEq σ] in
 theorem ncard_setOf_degree_le (d : ℕ) :
@@ -263,7 +237,6 @@ theorem ncard_setOf_degree_le (d : ℕ) :
   congr 1
   ext α
   simp
-
 
 omit [DecidableEq σ] in
 theorem finrank_restrictTotalDegree (R : Type*) [CommRing R] [Nontrivial R] (d : ℕ) :
@@ -317,20 +290,6 @@ theorem l1Norm_le_sqrt_choose_mul_l2Norm [Fintype σ] {P : MvPolynomial σ K} {d
   (l1Norm_le_sqrt_card_mul_l2Norm P).trans <| mul_le_mul_of_nonneg_right
     (Real.sqrt_le_sqrt (by exact_mod_cast card_support_le_choose h)) (l2Norm_nonneg P)
 
-theorem supCoeff_nonneg (P : MvPolynomial σ K) : 0 ≤ supCoeff P := NNReal.coe_nonneg _
-
-theorem norm_coeff_le_supCoeff (P : MvPolynomial σ K) (α : σ →₀ ℕ) :
-    ‖P.coeff α‖ ≤ supCoeff P := by
-  by_cases h : α ∈ P.support
-  · exact NNReal.coe_le_coe.mpr (Finset.le_sup (f := fun α ↦ ‖P.coeff α‖₊) h)
-  · rw [notMem_support_iff.mp h, norm_zero]; exact supCoeff_nonneg P
-
-theorem supCoeff_le_iff {P : MvPolynomial σ K} {B : ℝ} (hB : 0 ≤ B) :
-    supCoeff P ≤ B ↔ ∀ α, ‖P.coeff α‖ ≤ B := by
-  refine ⟨fun h α ↦ (norm_coeff_le_supCoeff P α).trans h, fun h ↦ ?_⟩
-  lift B to NNReal using hB
-  exact NNReal.coe_le_coe.mpr (Finset.sup_le fun α _ ↦ h α)
-
 end L2
 
 section Fock
@@ -361,10 +320,6 @@ theorem multiFactorial_add_single (α : σ →₀ ℕ) (i : σ) :
       (Finsupp.support_single_subset.trans (by simp))
 
 variable [NormedCommRing K] [NormedCommRing L]
-
-theorem fockNormSq_eq_sum_of_subset {P : MvPolynomial σ K} {s : Finset (σ →₀ ℕ)}
-    (h : P.support ⊆ s) : fockNormSq P = ∑ α ∈ s, (multiFactorial α : ℝ) * ‖P.coeff α‖ ^ 2 :=
-  sum_subset h fun α _ hα ↦ by simp [notMem_support_iff.mp hα]
 
 theorem fockNormSq_nonneg (P : MvPolynomial σ K) : 0 ≤ fockNormSq P :=
   sum_nonneg fun _ _ ↦ by positivity
@@ -442,12 +397,6 @@ theorem fockInner_monomial_left (α : σ →₀ ℕ) (c : 𝕜) (Q : MvPolynomia
     fockInner (monomial α c) Q = multiFactorial α * (c * starRingEnd 𝕜 (Q.coeff α)) := by
   classical
   rw [fockInner_eq_sum_of_subset_left Q (s := {α}) support_monomial_subset]
-  simp
-
-theorem fockInner_monomial_right (P : MvPolynomial σ 𝕜) (α : σ →₀ ℕ) (c : 𝕜) :
-    fockInner P (monomial α c) = multiFactorial α * (P.coeff α * starRingEnd 𝕜 c) := by
-  classical
-  rw [fockInner_eq_sum_of_subset_right P (s := {α}) support_monomial_subset]
   simp
 
 theorem fockInner_X_mul_left (i : σ) (P Q : MvPolynomial σ 𝕜) :

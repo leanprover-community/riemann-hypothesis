@@ -64,11 +64,6 @@ theorem pOm_id {j : ℕ} (x : Om R (F.obj T) j) : pOm F j (𝟙 T) x = x := by
   unfold pOm
   exact (semiHom_mp F (𝟙 T)).mOm_id (fun b ↦ mp_id F T b) x
 
-theorem pOm_dOm {j : ℕ} (x : Om R (F.obj T) j) :
-    pOm F (j + 1) φ (dOm R _ j x) = dOm R _ j (pOm F j φ x) := by
-  unfold pOm
-  exact (semiHom_mp F φ).mOm_dOm x
-
 theorem pOm_dOne (ω : Ω[F.obj T⁄R]) : pOm F 2 φ (dOne R _ ω) = dOne R _ (p1 F φ ω) := by
   unfold pOm p1
   exact (semiHom_mp F φ).mOm_dOne ω
@@ -148,7 +143,6 @@ theorem dTot1_η (c : Tot1 F) (T : C) : (dTot1 F c).2.2 T = dOne R _ (c.2 T) := 
 
 end
 
-
 variable {F} in
 theorem Tot1.ext {c c' : Tot1 F} (h1 : ∀ T T' φ, c.1 T T' φ = c'.1 T T' φ) (h2 : ∀ T, c.2 T = c'.2 T) :
     c = c' := by
@@ -157,7 +151,6 @@ theorem Tot1.ext {c c' : Tot1 F} (h1 : ∀ T T' φ, c.1 T T' φ = c'.1 T T' φ) 
     exact h1 T T' φ
   · funext T
     exact h2 T
-
 
 variable {F} in
 theorem Tot2.ext {c c' : Tot2 F} (h1 : ∀ T T' T'' φ ψ, c.1 T T' T'' φ ψ = c'.1 T T' T'' φ ψ)
@@ -358,8 +351,6 @@ def cupTot : Tot1 F →ₗ[R] Tot1 F →ₗ[R] Tot2 F :=
 section
 variable {T T' T'' : C} (φ : T ⟶ T') (ψ : T' ⟶ T'') (a b : Tot1 F)
 
-theorem cupTot_apply : (cupTot F a b).1 T T' T'' φ ψ = mp F ψ (a.1 T T' φ) * b.1 T' T'' ψ := rfl
-
 theorem cupTot_a : (cupTot F a b).2.1 T T' φ = a.1 T T' φ • b.2 T' - b.1 T T' φ • p1 F φ (a.2 T) := rfl
 
 theorem cupTot_η (T : C) : (cupTot F a b).2.2 T = wedge R _ (a.2 T) (b.2 T) := rfl
@@ -492,7 +483,6 @@ theorem Fil1_eq_range : Fil1 F = LinearMap.range (ofForm F) := by
     refine ⟨0, ?_⟩
     rw [map_zero]
     rfl
-
 
 variable {F} in
 theorem ofForm_eq_zero {ω : Closed1 F} : ofForm F ω = 0 ↔

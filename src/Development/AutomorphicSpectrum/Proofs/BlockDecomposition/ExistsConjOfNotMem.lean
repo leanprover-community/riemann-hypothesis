@@ -57,8 +57,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-
-
 section Conj
 
 open GlobalTheory.SplitPts GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorLiftConclusion GlobalTheory.ConjPairLoc GlobalTheory.CuspRep.ParLaws
@@ -68,16 +66,6 @@ end Conj
 section Int
 
 open GlobalTheory.SplitPts GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorLiftConclusion GlobalTheory.ConjPairLoc GlobalTheory.CuspRep.ParLaws
-
-theorem mem_KGL_map_conj (u : Pl E) (g : GLw n (conjSrc (conjE E) u)) :
-    GeneralLinearGroup.map (conjLoc (conjE E) u) g ∈ GlobalTheory.LFun.KGL u (n := n) ↔ g ∈ GlobalTheory.LFun.KGL (conjSrc (conjE E) u) (n := n) := by
-  have hv : ∀ x : (conjSrc (conjE E) u).adicCompletion E,
-      conjLoc (conjE E) u x ∈ u.adicCompletionIntegers E ↔ x ∈ (conjSrc (conjE E) u).adicCompletionIntegers E := fun x => by
-    rw [HeightOneSpectrum.mem_adicCompletionIntegers, HeightOneSpectrum.mem_adicCompletionIntegers, (conjLoc_spec (conjE E) u).2.2 x]
-  rw [GlobalTheory.AdelicU.mem_GLint_iff, GlobalTheory.AdelicU.mem_GLint_iff]
-  refine and_congr (forall₂_congr fun a b => hv _) (forall₂_congr fun a b => ?_)
-  rw [← map_inv]
-  exact hv _
 
 end Int
 

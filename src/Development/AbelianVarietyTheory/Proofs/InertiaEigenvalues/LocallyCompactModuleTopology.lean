@@ -16,8 +16,6 @@ variable (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [N
 def conjAlg [h : Unram F E] : E →ₐ[F] E :=
   { starRingEnd E with commutes' := fun x => h.star_fix x }
 
-theorem conjAlg_apply [Unram F E] (y : E) : conjAlg F E y = star y := rfl
-
 variable (K : Type) [CommRing K] [Algebra F K]
 
 def conjT [Unram F E] : E ⊗[F] K →ₐ[F] E ⊗[F] K := Algebra.TensorProduct.map (conjAlg F E) (AlgHom.id F K)

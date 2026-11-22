@@ -59,12 +59,6 @@ def centralIdem [Finite G] (τ : G → K) : MonoidAlgebra K G :=
   haveI := Fintype.ofFinite G
   ∑ a : G, MonoidAlgebra.single a (τ 1 / (Nat.card G : K) * τ a⁻¹)
 
-def twistInv (χ : G →* Kˣ) : MonoidAlgebra K G →ₐ[K] MonoidAlgebra K G :=
-  MonoidAlgebra.lift K (MonoidAlgebra K G) G
-    { toFun := fun a => MonoidAlgebra.single a (((χ a)⁻¹ : Kˣ) : K)
-      map_one' := by simp [MonoidAlgebra.one_def]
-      map_mul' := fun a b => by simp [MonoidAlgebra.single_mul_single, mul_comm] }
-
 end Idem
 
 section Types
@@ -118,7 +112,6 @@ variable {p} {K : Type} [Field K]
 def torVal {d : ℕ} (θ : Tor p d →* Kˣ) : Fbar p → K :=
   Function.extend (fun u : Tor p d => ((u : (Fbar p)ˣ) : Fbar p)) (fun u => ((θ u : Kˣ) : K)) 0
 
-
 open Classical in
 def cuspChar {ι : Type} [Fintype ι] [DecidableEq ι] (θ : Tor p (Fintype.card ι) →* Kˣ) (h : Matrix ι ι (ZMod p)) : K :=
   if ∃ (φ : (ZMod p)[X]) (n : ℕ), Irreducible φ ∧ h.charpoly = φ ^ n then
@@ -138,7 +131,6 @@ theorem cycLen_pos {r : ℕ} (b : Fin r → Fin r) (c : Cyc b) : 0 < cycLen b c 
 
 theorem cycLen_dvd {r : ℕ} (b : Fin r → Fin r) (c : Cyc b) : cycLen b c ∣ r.factorial :=
   Nat.dvd_factorial (cycLen_pos b c) (by simpa using Fintype.card_subtype_le (fun i : Fin r => b i = c.1))
-
 
 variable (p K) in
 abbrev SSParam (r : ℕ) : Type := Σ b : Fin r → Fin r, ∀ c : Cyc b, (Tor p (cycLen b c) →* Kˣ)
@@ -160,7 +152,6 @@ def cycChar (s : SSParam p K r) (c : Cyc s.1) : Tor p r.factorial →* Kˣ :=
 
 def rootChar (s : SSParam p K r) (x : Σ c : Cyc s.1, Fin (cycLen s.1 c)) : Tor p r.factorial →* Kˣ :=
   cycChar s x.1 ^ (p ^ x.2.val)
-
 
 open Classical in
 def typeChar (s : SSParam p K r) (x : GL (Fin r) (ZMod p)) : K :=
@@ -231,11 +222,6 @@ def IsGeneratorFamily (om : ∀ i : Fin 2, (ZMod (H.g i))ˣ →* Kˣ) : Prop := 
 def chiTame (om : ∀ i : Fin 2, (ZMod (H.g i))ˣ →* Kˣ) (i : Fin 2) (j : Fin R.m) : (ZMod (H.g i))ˣ →* Kˣ :=
   om i ^ (2 * (j.val + 1))
 
-def chiDet (om : ∀ i : Fin 2, (ZMod (H.g i))ˣ →* Kˣ) (j : Fin R.m) : LevelGroup H →* Kˣ :=
-  haveI := Fintype.ofFinite (Sq H)
-  ∏ v : Sq H, ((chiTame om v.1 j).comp Matrix.GeneralLinearGroup.det).comp
-    (Pi.evalMonoidHom (fun v : Sq H => GL (Fin R.r) (ZMod (H.g v.1))) v)
-
 def IsGoodParam (om : ∀ i : Fin 2, (ZMod (H.g i))ˣ →* Kˣ) (s : ∀ v : Sq H, SSParam (H.g v.1) K R.r) : Prop :=
   ∀ i : Fin 2, GoodAt (chiTame om i) (fun w : PlOver H i => s ⟨i, w⟩)
 
@@ -251,10 +237,6 @@ theorem goodTypes_finite (om : ∀ i : Fin 2, (ZMod (H.g i))ˣ →* Kˣ) : (good
 
 def goodIdem (om : ∀ i : Fin 2, (ZMod (H.g i))ˣ →* Kˣ) : MonoidAlgebra K (LevelGroup H) :=
   ∑ τ ∈ (goodTypes_finite om).toFinset, centralIdem τ
-
-def goodIdemTw (om : ∀ i : Fin 2, (ZMod (H.g i))ˣ →* Kˣ) (j : Fin R.m) : MonoidAlgebra K (LevelGroup H) :=
-  twistInv (chiDet om j) (goodIdem om)
-
 
 end Level
 

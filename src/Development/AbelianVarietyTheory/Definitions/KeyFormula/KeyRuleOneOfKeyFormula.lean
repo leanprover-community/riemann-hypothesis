@@ -55,10 +55,7 @@ def KeyRule (N : ℕ → ℕ) (g₀ : ℕ) (S : ∀ g : ℕ, (Fin g → ℂ) →
     ∀ (x : KeyIn ℂ) (τ : Matrix (Fin x.P.g) (Fin x.P.g) ℂ) (a b : Fin x.P.g → ℂ), g₀ ≤ x.P.g → S x.P.g a b →
       NormalAt x τ 1 a b 1 → κ ℂ x = 1
 
-def charZero' (g : ℕ) (a b : Fin g → ℂ) : Prop := a = 0 ∧ b = 0
-
 def charHalf (g : ℕ) (a b : Fin g → ℂ) : Prop := (∀ i, a i = 0 ∨ a i = 1 / 2) ∧ ∀ i, b i = 0 ∨ b i = 1 / 2
-
 
 open ReciprocityTheory.PTheta ReciprocityTheory.ChartRestriction.G.Key ReciprocityTheory.ChartRestriction.G.Key.Chi in
 def ThetaLaw (g : ℕ) (sp : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℤ) (n n' k k' : Fin g → ℤ) : Prop :=
@@ -94,7 +91,6 @@ theorem NormalAt.mem_siegelH {x : KeyIn ℂ} {τ M : Matrix (Fin x.P.g) (Fin x.P
     (h : NormalAt x τ M a b c) : τ ∈ ReciprocityTheory.PTheta.SiegelH (Fin x.P.g) := by
   obtain ⟨_, hs, hp, -⟩ := h
   exact ⟨hs, hp⟩
-
 
 open ReciprocityTheory.ChartRestriction.G.Key.Chi in
 theorem chiAt_iff_thetaLaw (g : ℕ) (sp : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℤ) :

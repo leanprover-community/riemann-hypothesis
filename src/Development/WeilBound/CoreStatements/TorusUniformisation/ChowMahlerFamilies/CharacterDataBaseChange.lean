@@ -266,9 +266,6 @@ end Span
 noncomputable def aug (Ω : Type) [Field Ω] {ι : Type} (x₀ : ι) : (ι → Ω) →ₗ[Ω] (ι → Ω) :=
   LinearMap.id - (LinearMap.proj x₀ : (ι → Ω) →ₗ[Ω] Ω).smulRight 1
 
-theorem aug_apply {Ω : Type} [Field Ω] {ι : Type} (x₀ : ι) (g : ι → Ω) :
-    aug Ω x₀ g = g - g x₀ • (1 : ι → Ω) := rfl
-
 theorem span_aug {o Ω C : Type} [CommRing o] [Field Ω] [Field C] [Algebra o C] [Algebra Ω C]
     (RC : Subalgebra o C) {ι : Type} (x₀ : ι) (M : AddSubgroup (ι → Ω))
     (hM : ∀ g ∈ M, aug Ω x₀ g ∈ M) (x : ι → C) :

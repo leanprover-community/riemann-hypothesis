@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianPairingAlgebra
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemIffForallMemLocalizeRingOfIntegers
-public import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.DifferentiableToContinuousLinearMap
 
 @[expose] public section
 

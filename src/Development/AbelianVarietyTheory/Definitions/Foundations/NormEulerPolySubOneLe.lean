@@ -102,7 +102,6 @@ def npowU (w : HeightOneSpectrum (𝓞 K)) (z : ℂ) : ℂˣ := Units.mk0 (npow 
 
 @[simp] theorem coe_npowU (w : HeightOneSpectrum (𝓞 K)) (z : ℂ) : (npowU w z : ℂ) = npow w z := rfl
 
-
 variable (K) in
 abbrev Fam : Type := HeightOneSpectrum (𝓞 K) → Multiset ℂˣ
 
@@ -273,7 +272,6 @@ section Hecke
 
 variable {K : Type} [Field K] [NumberField K]
 
-
 open Classical in
 def heckeFam (χ : HChar K) : Fam K := fun w => if χ.UnrAt w then {χ.val w} else 0
 
@@ -321,7 +319,6 @@ section Ext
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-
 variable (E) in
 def above (S : Set (HeightOneSpectrum (𝓞 F))) : Set (HeightOneSpectrum (𝓞 E)) := {w | w.under (𝓞 F) ∈ S}
 
@@ -342,9 +339,6 @@ theorem LvTw_eq (c : Fam E) (m : HeightOneSpectrum (𝓞 E) → ℂˣ) (v : Heig
     LvTw c m v s = ∏ w ∈ aboveF (L := E) F v,
       ((c w).map fun b : ℂˣ => (1 - (b : ℂ) * (m w : ℂ)⁻¹ * npow w (-s))⁻¹).prod := by
   simp [LvTw, Lv, locL_twist]
-
-theorem Lv_add (c c' : Fam E) (v : HeightOneSpectrum (𝓞 F)) (s : ℂ) : Lv (c + c') v s = Lv c v s * Lv c' v s := by
-  simp [Lv, locL_add, Finset.prod_mul_distrib]
 
 theorem hasProd_Lv {S : Set (HeightOneSpectrum (𝓞 F))} {c : Fam E} {s : ℂ} (h : Converges (above E S) c s) :
     HasProd (fun v : {v // v ∉ S} => Lv c v.1 s) (LS S c s) := by
@@ -372,7 +366,6 @@ theorem LvTw_inert (c : Fam E) (m : HeightOneSpectrum (𝓞 E) → ℂˣ) {v : H
 
 open Formalism.MainNotions.SchurIrreducible
 
-
 open Classical in
 variable (E) in
 def etaU (v : HeightOneSpectrum (𝓞 F)) : ℂˣ := if IsSplit (E := E) v then 1 else -1
@@ -380,11 +373,9 @@ def etaU (v : HeightOneSpectrum (𝓞 F)) : ℂˣ := if IsSplit (E := E) v then 
 theorem etaU_sq (v : HeightOneSpectrum (𝓞 F)) : etaU E v ^ 2 = 1 := by
   unfold etaU; split_ifs <;> simp
 
-
 open Classical in
 variable (E) in
 def etaFam (k : ℕ) : Fam F := fun v => if IsUnram (E := E) v ∨ Even k then {etaU E v ^ k} else 0
-
 
 variable (E) in
 def etaL (S : Set (HeightOneSpectrum (𝓞 F))) (k : ℕ) (s : ℂ) : ℂ := eulerProd S (etaFam E k) s
@@ -412,18 +403,12 @@ theorem bounded_etaFam (S : Set (HeightOneSpectrum (𝓞 F))) (k : ℕ) : Bounde
 theorem converges_etaFam (S : Set (HeightOneSpectrum (𝓞 F))) (k : ℕ) {s : ℂ} (hs : 1 < s.re) :
     Converges S (etaFam E k) s := (bounded_etaFam S k).converges (by simpa using hs)
 
-
 variable (E) in
 def dv (a b : ℕ) (v : HeightOneSpectrum (𝓞 F)) (s : ℂ) : ℂ :=
   ∏ i ∈ Finset.range a, locL (etaFam E (b + i)) v (2 * s + a - i)
 
-
 variable (E) in
 def dSfun (S : Set (HeightOneSpectrum (𝓞 F))) (a b : ℕ) (s : ℂ) : ℂ := ∏' v : {v // v ∉ S}, dv E a b v.1 s
-
-
-variable (E) in
-def dS (S : Set (HeightOneSpectrum (𝓞 F))) (a b : ℕ) : ℂ := dSfun E S a b (((b : ℂ) - a) / 2)
 
 theorem dv_center (a t : ℕ) (v : HeightOneSpectrum (𝓞 F)) :
     dv E a (a + t) v ((t : ℂ) / 2) = ∏ k ∈ Finset.Icc (t + 1) (t + a), locL (etaFam E k) v k := by

@@ -191,8 +191,6 @@ def wd : V →ₗ[R] V →ₗ[R] ⋀[R]^2 V :=
     (fun _ _ _ ↦ Subtype.ext (by simp [ExteriorAlgebra.ιMulti_apply, mul_add]))
     (fun _ _ _ ↦ Subtype.ext (by simp [ExteriorAlgebra.ιMulti_apply]))
 
-theorem wd_apply (a b : V) : wd (R := R) a b = exteriorPower.ιMulti R 2 ![a, b] := rfl
-
 theorem wd_self (a : V) : wd (R := R) a a = 0 :=
   Subtype.ext (by simp [wd_apply, ExteriorAlgebra.ιMulti_apply])
 

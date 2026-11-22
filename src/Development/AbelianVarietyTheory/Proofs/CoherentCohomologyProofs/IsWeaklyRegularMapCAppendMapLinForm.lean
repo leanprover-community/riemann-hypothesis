@@ -88,21 +88,6 @@ def quotientSpanXEquiv (R : Type*) [CommRing R] (S : Set σ) :
   (Ideal.quotientEquivAlgOfEq R (ker_killVars S).symm).trans
     (Ideal.quotientKerAlgEquivOfSurjective (killVars_surjective S))
 
-theorem mem_map_C_of_X_mul_mem (x : σ) (I : Ideal R) {p : MvPolynomial σ R}
-    (hp : X x * p ∈ I.map (C : R →+* MvPolynomial σ R)) :
-    p ∈ I.map (C : R →+* MvPolynomial σ R) := by
-  rw [MvPolynomial.mem_map_C_iff] at hp ⊢
-  intro m
-  have := hp (Finsupp.single x 1 + m)
-  rwa [coeff_X_mul] at this
-
-theorem mem_of_X_mul_mem {S : Set σ} {x : σ} (hx : x ∉ S) (I : Ideal R) {p : MvPolynomial σ R}
-    (hp : X x * p ∈ I.map (C : R →+* MvPolynomial σ R) ⊔ Ideal.span (X '' S)) :
-    p ∈ I.map (C : R →+* MvPolynomial σ R) ⊔ Ideal.span (X '' S) := by
-  rw [← comap_killVars_map_C, Ideal.mem_comap] at hp ⊢
-  rw [map_mul, killVars_X_of_notMem hx] at hp
-  exact mem_map_C_of_X_mul_mem _ I hp
-
 end Variables
 
 section LinearForms
@@ -122,7 +107,6 @@ theorem linForm_eq [DecidableEq J] (u : J → R) (i : ι) (j₀ : J) :
     linForm u i = C (u j₀) * X (i, j₀) + ∑ j ∈ Finset.univ.erase j₀, C (u j) * X (i, j) :=
   (Finset.add_sum_erase _ (fun j => (C (u j) * X (i, j) : MvPolynomial (ι × J) R))
     (Finset.mem_univ j₀)).symm
-
 
 open Classical in
 def linFormHom (u : J → R) (S : Set ι) (j₀ : J) :
@@ -168,7 +152,6 @@ theorem linFormHom_comp_eq_id {u v : J → R} (S : Set ι) {j₀ : J} (h₀ : v 
       have hk' := Finset.ne_of_mem_erase hk
       rw [if_neg hk', h k hk', C_0, zero_mul]
   · simp [linFormHom_X_of_notMem _ hx]
-
 
 open Classical in
 def linFormInvCoeff (u : J → R) (j₀ : J) (hu : IsUnit (u j₀)) (j : J) : R :=

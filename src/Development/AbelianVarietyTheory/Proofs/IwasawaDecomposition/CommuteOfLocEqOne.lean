@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfCompAtEqZero
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsRealAdd
 
 @[expose] public section
 

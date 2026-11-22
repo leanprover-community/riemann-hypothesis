@@ -6,9 +6,6 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 
 open MeasureTheory GroundTheory.Automorphic GroundTheory.Automorphic.Spherical UpperTheory.Gal.Gen
 
-private lemma pt_coe {n : ℕ} (θ : Fin n → UnitAddCircle) (i : Fin n) :
-    ((pt θ i : ℂˣ) : ℂ) = ((AddCircle.toCircle (θ i) : Circle) : ℂ) := rfl
-
 private lemma eval_cons_pt {n : ℕ} (s : UnitAddCircle) (θ : Fin n → UnitAddCircle)
     (p : MvPolynomial (Fin (n + 1)) ℂ) :
     MvPolynomial.eval (fun i => (pt (Fin.cons s θ : Fin (n + 1) → UnitAddCircle) i : ℂ)) p =

@@ -14,8 +14,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace GlobalTheory.Published
 
-def ArthurClozelLocalSC : Prop := LocalBC lbc
-
 end GlobalTheory.Published
 
 end

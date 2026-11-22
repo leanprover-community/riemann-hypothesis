@@ -95,7 +95,6 @@ def kapB (l : ℕ) (ψ : DirichletCharacter O N) : DirichletCharacter O N := kap
 
 def c2 (ψ : DirichletCharacter O N) : ℕ := (psi2 ψ).conductor.factorization 2
 
-
 open Classical in
 def Sb (l : ℕ) (ψ : DirichletCharacter O N) : Finset ℕ := N.primeFactors.filter fun p => p ≠ l ∧ comp p (kap l ψ) ≠ 1
 
@@ -122,12 +121,6 @@ def Vlen (e : ℕ) (ψ : DirichletCharacter c.O N) : ℕ∞ := Chr.V' l N e (Chr
 def Vn (e : ℕ) (ψ : DirichletCharacter c.O N) : ℝ := Chr.nrm l c.O (Vlen Ω c e ψ)
 
 def VLe (e : ℕ) (ψ : DirichletCharacter c.O N) (B : ℝ) : Prop := Vlen Ω c e ψ ≠ ⊤ ∧ Vn Ω c e ψ * Real.log l ≤ B
-
-def hLen (e : ℕ) (ψ : DirichletCharacter c.O N) : ℕ∞ :=
-  ∑ᶠ (v : HeightOneSpectrum (𝓞 ℚ)) (_ : ((l * N : ℕ) : 𝓞 ℚ) ∈ v.asIdeal),
-    Chr.h0 l e (Chr.dirG ℚ Ω ψ) (Dec (F := ℚ) (placeOf Ω v))
-
-def hn (e : ℕ) (ψ : DirichletCharacter c.O N) : ℝ := Chr.nrm l c.O (hLen Ω c e ψ)
 
 theorem Vn_nonneg (e : ℕ) (ψ : DirichletCharacter c.O N) : 0 ≤ Vn Ω c e ψ := Chr.nrm_nonneg _ _
 

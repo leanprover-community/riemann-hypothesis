@@ -6,7 +6,8 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.IsLevMove
 public import Formalism.LocalToGlobal.ProjectiveLattices.FamilyUniformisationBasePointOrthogonalBis
 public import Formalism.LocalRingCardinality.DataKap
 public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.ComplexResidueRing
-public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.UnitaryDeterminantRoot
+public import Formalism.LocalToGlobal.ProjectiveLattices.LiftLaSpec
+public import Formalism.LocalToGlobal.ProjectiveLattices.NormsFree
 
 @[expose] public section
 
@@ -23,22 +24,7 @@ section Adeles
 
 variable (F : Type) {E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-def idHat (𝔞 : Ideal (𝓞 E)) : AddSubgroup (AdE F E) :=
-  AddSubgroup.closure {z | ∃ a, IsIntF F a ∧ ∃ o ∈ 𝔞, z = a ⊗ₜ ((o : 𝓞 E) : E)}
-
 variable {F}
-
-def IsIntUnit (y : (AdE F E)ˣ) : Prop :=
-  (y : AdE F E) ∈ intAdE F E ∧ ((y⁻¹ : (AdE F E)ˣ) : AdE F E) ∈ intAdE F E
-
-def TrivMod (ξ : (AdE F E)ˣ →* Circle) (𝔞 : Ideal (𝓞 E)) : Prop :=
-  ∀ y : (AdE F E)ˣ, IsIntUnit y → (y : AdE F E) - 1 ∈ idHat F 𝔞 → ξ y = 1
-
-def RamExactly (ξ : (AdE F E)ˣ →* Circle) (𝔣 : Ideal (𝓞 E)) : Prop :=
-  𝔣 ≠ ⊥ ∧ TrivMod ξ 𝔣 ∧ ∀ P 𝔤 : Ideal (𝓞 E), P.IsPrime → 𝔣 = P * 𝔤 → ¬ TrivMod ξ 𝔤
-
-def Generates (x : AdE F E) (𝔠 : Ideal (𝓞 E)) : Prop :=
-  ∀ y, y ∈ idHat F 𝔠 ↔ ∃ z ∈ intAdE F E, y = x * z
 
 end Adeles
 
@@ -49,23 +35,11 @@ variable {H : Host E} {Dw : Datum H} {r n : ℕ}
 
 def barI (H : Host E) (𝔞 : Ideal (𝓞 E)) : Ideal (𝓞 E) := 𝔞.map (H.bar : 𝓞 E →+* 𝓞 E)
 
-def InLevel (r M : ℕ) (PQ : Ideal (𝓞 E)) (γ : Matrix (Fin n) (Fin n) E) : Prop :=
-  (γ.map cc).transpose * γ = 1 ∧ OneMod M γ ∧
-    ∃ k : ℕ, Nat.Coprime k (Ideal.absNorm PQ) ∧ ∀ i b : Fin n, r ≤ i.val → b.val < r →
-      ∃ o ∈ PQ, (k : E) * γ i b = ((o : 𝓞 E) : E)
-
-def Carries (γ : Matrix (Fin n) (Fin n) E) (L L' : Submodule (𝓞 E) (Fin n → E)) : Prop :=
-  ∀ v, v ∈ L' ↔ ∃ u ∈ L, v = γ.mulVec u
-
 end Lattices
 
 section Record
 
 variable {D : D7}
-
-abbrev IdF (D : D7) : Type := (AdE D.host.F D.host.E)ˣ
-
-def finU (D : D7) : (AE D)ˣ →* IdF D := Units.map (finPart D).toMonoidHom
 
 variable (T : CoreJ D) {X : ThetaX D} (Tt : ThetaTied D X) (j : ℕ)
 

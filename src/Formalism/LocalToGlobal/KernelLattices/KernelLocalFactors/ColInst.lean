@@ -5,7 +5,8 @@ public import Formalism.LocalToGlobal.KernelLattices.ColInst
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.StdOK
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
-public import Formalism.LocalToGlobal.Columns.CyclotomicIsCyclotomicExtension
+public import Formalism.LocalToGlobal.Columns.BaseHost
+public import Formalism.LocalToGlobal.Columns.NonDeg
 
 @[expose] public section
 
@@ -569,13 +570,6 @@ theorem kerFin {E : Type} [Field E] [NumberField E] [StarRing E] {a b : ℕ} (Sa
     (fun x hx j hj => homAt_div Sall N N' (cA * cB) (Nat.mul_pos hA hB) x hx j hj)
   exact finite_div_quot _ cA cB hA F hF hFM
 
-theorem jetLin_smul {K : Type} [Field K] {ι : Type} [Fintype ι] {a b : ℕ} (c : K) (J : (DVar ι a b →₀ ℕ) → K) :
-    jetLin (fun m => c * J m) = c • jetLin J := by
-  apply (basisMonomials ((ι × Fin b × Fin b) ⊕ DVar ι a b) K).ext
-  intro m
-  rw [LinearMap.smul_apply]
-  simp only [coe_basisMonomials, jetLin_monomial, one_mul, smul_monomial, smul_eq_mul]
-
 variable {X : Fields} (A : Amb X) {a b : ℕ} (Sall SB : Finset (HeightOneSpectrum (𝓞 X.E)))
 
 end Tab
@@ -586,10 +580,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
   (A : Amb X) (u : Pr.Word) (m2 : ℕ)
-
-theorem cAof_pos : 0 < cAof sel mu cst := pow_pos (Finset.prod_pos fun P _ => qOf_pos P.1) _
-
-theorem cBof_pos (hT : 0 < Pr.T u) : 0 < cBof sel mu cst u := Nat.mul_pos hT (pow_pos (Finset.prod_pos fun P _ => qOf_pos P.1) _)
 
 end Ne
 
@@ -947,7 +937,6 @@ section Phi
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
-
 end Phi
 
 section XiLoc
@@ -959,9 +948,6 @@ end XiLoc
 section XiFr
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
-
-def Cong1 {n : ℕ} (P : HeightOneSpectrum (𝓞 E)) (f : Sp E n ≃ₗ[E] Sp E n) : Prop :=
-  (∀ x, f x ∈ stdAt E n P ↔ x ∈ stdAt E n P) ∧ ∀ x ∈ stdAt E n P, redV P (f x) = redV P x
 
 theorem redV_single {n : ℕ} (i : Fin n) : redV P (Pi.single i (1 : E) : Sp E n) = Pi.single i 1 := xqRedV_single i
 
@@ -979,14 +965,6 @@ section XiNum
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)}
 
-theorem notMem_of_coprime {q q' : ℕ} (h : Nat.Coprime q q') (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) : ((q' : ℕ) : 𝓞 E) ∉ P.asIdeal := by
-  intro hq'
-  obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 h
-  apply one_notMem P
-  have h1 : ((a : ℤ) : 𝓞 E) * ((q : ℕ) : 𝓞 E) + ((b : ℤ) : 𝓞 E) * ((q' : ℕ) : 𝓞 E) = 1 := by exact_mod_cast congrArg (fun z : ℤ => (z : 𝓞 E)) hab
-  rw [← h1]
-  exact P.asIdeal.add_mem (P.asIdeal.mul_mem_left _ hq) (P.asIdeal.mul_mem_left _ hq')
-
 end XiNum
 
 section XiOk
@@ -1001,14 +979,6 @@ section Ref
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S : Set ℕ)
-
-theorem qe_one : QE sel (1 : Chr X.F X.E X.K) = ∅ := by
-  have h : Qprime (1 : Chr X.F X.E X.K) = ∅ := by
-    ext v
-    simp [Qprime]
-  unfold QE
-  rw [dif_pos (by rw [h]; exact Set.finite_empty)]
-  simp [h]
 
 variable (cst : LocCst X (rowSG Pr sel (mu0 X.F X.E X.K S)))
   (L : ChIdx X Pr R (QE sel ((mu0 X.F X.E X.K S : Tup X.F X.E X.K S) : Chr X.F X.E X.K))) (A : Amb X) (u : Pr.Word)

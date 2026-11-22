@@ -25,8 +25,6 @@ open AutomorphicForm RightCosetSpace Reduction
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => Reduction.rationalGLOne (K := K) (n := n)
-
 variable (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 theorem rconv_mul_of_left_inv {f : normOneGL (K := K) (n := n) → ℂ} {u : normOneGL (K := K) (n := n)}
@@ -42,16 +40,13 @@ theorem archimedeanProjection_maximalCompact (k : archCompact K n) :
       ⟨infEmb K n (k : archGroup K n), Reduction.maxCompact_le_normOneGL k.2⟩ :=
   archProj_of_mem (Reduction.maxCompact_le_normOneGL k.2)
 
-
 variable {μ} in
 theorem IsContRep.of_eq {φ ψ : Lp ℂ 2 (quotientMeasure Γ₁ μ)} {F : normOneGL (K := K) (n := n) → ℂ}
     (h : IsContRep μ φ F) (e : φ = ψ) : IsContRep μ ψ F := e ▸ h
 
-
 variable {μ} in
 theorem IsContRep.of_eq_fun {φ : Lp ℂ 2 (quotientMeasure Γ₁ μ)} {F G : normOneGL (K := K) (n := n) → ℂ}
     (h : IsContRep μ φ F) (e : F = G) : IsContRep μ φ G := e ▸ h
-
 
 omit [μ.IsHaarMeasure] in
 theorem smul_comb {E : Type*} [AddCommGroup E] [Module ℂ E] (X : E) (r i c : ℂ) :
@@ -61,7 +56,6 @@ theorem smul_comb {E : Type*} [AddCommGroup E] [Module ℂ E] (X : E) (r i c : �
   ring
 
 variable (ν : Measure (archGroup K n)) [ν.IsHaarMeasure]
-
 
 set_option maxHeartbeats 1000000 in
 theorem exists_contRep_of_zkFinite (v : CuspL2 μ)

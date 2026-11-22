@@ -71,8 +71,6 @@ theorem isBaseChange_of_forall_eq [Module.Flat R S] {ι : Type*} [Finite ι]
 
 variable {G : Type*} [Group G]
 
-
-
 end FlatModule
 
 section FlatRing
@@ -83,7 +81,6 @@ section
 variable {R S A A' : Type*} [CommRing R] [CommRing S] [CommRing A] [CommRing A']
   [Algebra R S] [Algebra R A] [Algebra R A'] [Algebra S A'] [IsScalarTower R S A']
   [MulSemiringAction G A] [SMulCommClass G R A] [MulSemiringAction G A'] [SMulCommClass G S A']
-
 
 variable (S) in
 def fixedSubalgebraMap (f : A →ₐ[R] A') (hf : ∀ (g : G) a, f (g • a) = g • f a) :
@@ -127,7 +124,6 @@ theorem isInvariant_of_isBaseChange [Finite G] [Module.Flat R S] [Algebra.IsInva
       exact ⟨t + u, by rw [map_add (f := _), ht, hu]; rfl⟩
   exact key ⟨y, hy⟩
 
-
 omit [MulSemiringAction G A] [SMulCommClass G R A] [MulSemiringAction G A']
   [SMulCommClass G S A'] in
 theorem faithfulSMul_of_isBaseChange [Module.Flat R S] [FaithfulSMul R A]
@@ -170,12 +166,6 @@ theorem dual_apply_smul_comm [Module.Invertible A M] (f : Module.Dual A M) (x y 
   have := congrArg (fun z ↦ TensorProduct.lid A M (f.rTensor M z))
     (Module.Invertible.tmul_comm (R := A) (m₁ := x) (m₂ := y))
   simpa using this
-
-theorem exists_sum_dual_apply_eq_one (A M : Type*) [CommRing A] [AddCommGroup M] [Module A M]
-    [Module.Invertible A M] : ∃ s : Finset (Module.Dual A M × M), ∑ p ∈ s, p.1 p.2 = 1 := by
-  obtain ⟨s, hs⟩ := ((Module.Invertible.linearEquiv A M).symm 1).exists_finset
-  refine ⟨s, Eq.symm ?_⟩
-  simpa [LinearEquiv.symm_apply_eq, Module.Invertible.linearEquiv] using hs
 
 theorem free_of_invertible_of_finite_maximalSpectrum (A M : Type*) [CommRing A] [AddCommGroup M]
     [Module A M] [Finite (MaximalSpectrum A)] [Module.Invertible A M] : Module.Free A M :=
@@ -246,9 +236,6 @@ end
 
 section
 variable {M : Type*} [AddCommGroup M] [Module A M] [DistribMulAction G M] {ι : Type*}
-
-
-
 
 variable [SMulDistribClass G A M]
 

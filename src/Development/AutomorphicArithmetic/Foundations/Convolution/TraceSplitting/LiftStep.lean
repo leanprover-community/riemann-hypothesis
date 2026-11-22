@@ -8,7 +8,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSpl
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.CarryLift
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ExTwist
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ExCusp
-public import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.LiftPow
 
 @[expose] public section
 

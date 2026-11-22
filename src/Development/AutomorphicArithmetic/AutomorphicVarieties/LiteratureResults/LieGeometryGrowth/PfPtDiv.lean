@@ -24,9 +24,6 @@ private noncomputable def ptForm (χ : HChar E) (g : GA E a) : Sm E a →ₗ⋆[
     (fun c φ ψ => by
       simp only [map_smul, Submodule.coe_smul, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]; ring)
 
-private theorem ptForm_apply (χ : HChar E) (g : GA E a) (φ ψ : Sm E a) :
-    ptForm χ g φ ψ = starRingEnd ℂ ((mulChi a χ φ).1 g) * (mulChi a χ ψ).1 g := rfl
-
 private theorem pt_tform (χ : HChar E) {d : ℕ} (G : Matrix (Fin d) (Fin d) ℂ) (x y : Sm E a ⊗[ℂ] (Fin d → ℂ)) (g : GA E a) :
     pt χ G x y g = tform (ptForm χ g) G x y := by
   rw [(ptInv E a χ d G x y).1 g, tform_apply]

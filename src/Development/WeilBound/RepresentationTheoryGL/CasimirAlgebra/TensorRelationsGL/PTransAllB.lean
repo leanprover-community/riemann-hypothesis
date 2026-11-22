@@ -68,10 +68,6 @@ def spl : TV n M P ≃ₗ[ℂ] TV n (TV n M {p // ¬ q p}) {p // q p} where
     · exact merge_left q J I x
     · exact merge_right q J I x
 
-omit [Fintype P] [DecidableEq P] in
-theorem spl_apply (F : TV n M P) (J : {p // q p} → Fin n) (I : {p // ¬ q p} → Fin n) :
-    spl q F J I = F (merge q J I) := rfl
-
 omit [Fintype P] in
 theorem spl_tE (S : Finset P) (F : Fin n → Fin n → Module.End ℂ M) (a b : Fin n) (f : TV n M P) :
     spl q (tE S F a b f) =

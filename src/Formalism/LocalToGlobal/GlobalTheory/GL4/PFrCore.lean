@@ -19,9 +19,6 @@ open Formalism.UG Formalism.UG.CS Formalism.UG.P Formalism.BasicNotions Formalis
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "ιA" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 variable (F) in
 def vi (x : n → E) : n → 𝒜 := fun i => ιA (x i)
 

@@ -19,8 +19,6 @@ open PI.UpqRep
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-abbrev Mat (k r : ℕ) := Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ
-
 def eps48 (k r : ℕ) : Fin (2 * r + k + 1) → Bool :=
   fun i => if i.val < k - 1 then true else decide ((i.val - (k - 1)) % 2 = 0)
 

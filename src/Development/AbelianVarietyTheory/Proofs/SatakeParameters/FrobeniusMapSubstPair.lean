@@ -21,8 +21,6 @@ open MvPowerSeries
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-local notation "φ" => Formalism.L2.G.Pend.k0ToC p
-
 def lK {ι : Type} (p : ℕ) [Fact p.Prime] (i : ι) : MvPowerSeries ι (FormalGroupSystem.K0 p) :=
   PowerSeries.subst (X i : MvPowerSeries ι (FormalGroupSystem.K0 p)) (FormalGroupSystem.logF p)
 

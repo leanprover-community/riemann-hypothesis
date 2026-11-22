@@ -72,11 +72,6 @@ def rankEquiv {k : ℕ} (hk : k ≤ n) (g : normOneGL (K := K) (n := n)) :
     reps k g × R (K := K) (n := n) k ≃ {ξ : Matrix (Fin n) (Fin n) K // ξ.rank = n - k} :=
   Equiv.ofBijective _ (bijective_mulMap hk (existsUnique_reps k g))
 
-theorem coe_rankEquiv {k : ℕ} (hk : k ≤ n) (g : normOneGL (K := K) (n := n)) (x : reps k g × R (K := K) (n := n) k) :
-    ((rankEquiv hk g x : {ξ : Matrix (Fin n) (Fin n) K // ξ.rank = n - k}) : Matrix (Fin n) (Fin n) K) =
-      (x.2 : Matrix (Fin n) (Fin n) K) * ((x.1 : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) :=
-  rfl
-
 theorem mul_ratMat_mul (y : AdelicGLn.AdelicGL K n) (Z : Matrix (Fin n) (Fin n) K) (γ : GL (Fin n) K)
     (g : normOneGL (K := K) (n := n)) :
     (y : Matrix (Fin n) (Fin n) 𝔸[K]) * ratMat (Z * (γ : Matrix (Fin n) (Fin n) K)) *

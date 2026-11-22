@@ -16,10 +16,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace PositivityTheory.Rg.Sw.Glob
 
-def CompInj : Prop :=
-  ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (m n : ℕ) (x y : Mx D m n), (∀ τ, compAt θ τ x = compAt θ τ y) →
-    x.map (finPart D) = y.map (finPart D) → x = y
-
 def WEx : Prop := ∀ (D : D7) (n : ℕ), ∃ W : G D n, mat W = blk4 0 1 (-1) 0
 
 def UnipTau : Prop :=

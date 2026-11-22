@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SplitTorusPartGenericFibreClosedFibreDvr
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTorPartTorusExtension
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsToricRankOne
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 
 @[expose] public section
 

@@ -14,8 +14,6 @@ open CategoryTheory IsDedekindDomain NumberField GroundTheory.Global
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)) (n : ℕ)
   [NeZero n]
@@ -27,7 +25,6 @@ theorem pow_notMem_asIdeal_of_forall (ℓ k : ℕ)
   exact hv (hS v (v.isPrime.mem_of_pow_mem k h))
 
 variable (hnS : ∀ v ∉ S, ((n : ℕ) : 𝓞 K.1) ∉ v.asIdeal)
-
 
 include hnS in
 theorem nsmul_gsRootsCompact (m : ℕ) (w : gsRootsCompact S ιs n m) : n • w = 0 := by

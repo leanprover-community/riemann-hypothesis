@@ -22,15 +22,11 @@ open scoped Classical
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-abbrev HS (D : D7) : Type 1 := Formalism.BasicNotions.TH.HSp D
-
 abbrev FF (D : D7) : Type := ↥D.host.F
 
 abbrev FinF (D : D7) : Type := HeightOneSpectrum (𝓞 (FF D))
 
 abbrev FinE (D : D7) : Type := HeightOneSpectrum (𝓞 D.host.E)
-
-abbrev FI (D : D7) : Type := FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E
 
 abbrev Pl (D : D7) : Type := FinF D ⊕ D.what₂.Tau
 
@@ -39,9 +35,6 @@ def Over (D : D7) (w : FinE D) (v : FinF D) : Prop :=
 
 def Split (D : D7) (v : FinF D) : Prop :=
   ∃ w w' : FinE D, w ≠ w' ∧ Over D w v ∧ Over D w' v
-
-def SplitsCompletely (D : D7) (ℓ : ℕ) : Prop :=
-  Nat.card {P : FinE D // ((ℓ : ℤ) : 𝓞 D.host.E) ∈ P.asIdeal} = Module.finrank ℚ D.host.E
 
 def InertPlaceConditions (D : D7) : Prop :=
   ∀ v : FinF D, ¬ Split D v →
@@ -375,7 +368,6 @@ theorem val_eq_one (D : D7) (w : FinE D) (x : 𝓞 D.host.E) (hx : x ∉ w.asIde
 
 end InertConditionsOfHost
 
-
 open InertConditionsOfHost Formalism.FrobeniusOrbits in
 theorem inert_conditions_hold (D : D7) : InertPlaceConditions D := by
   intro v hv
@@ -435,266 +427,13 @@ theorem inert_conditions_hold (D : D7) : InertPlaceConditions D := by
     rw [Formalism.BasicNotions.Host.xi0, Formalism.BasicNotions.Host.sqrtMinusD, map_div₀, Valuation.map_neg, map_one, map_mul, e2, e1]
     simp
 
-def IsotDim {D : D7} (V : HS D) (k : ℕ) : Prop :=
-  ∃ U : Submodule D.host.E V.V, Module.finrank D.host.E U = k ∧ ∀ x ∈ U, ∀ y ∈ U, V.hT x y = 0
-
-def WittIdx {D : D7} (V : HS D) (r : ℕ) : Prop := IsotDim V r ∧ ¬ IsotDim V (r + 1)
-
-def WittMinus {D : D7} (V U : HS D) (i : ℕ) : Prop :=
-  ∃ ι : U.V →ₗ[D.host.E] V.V, Formalism.BasicNotions.HSpace.IsIsomEmb U V ι ∧
-    ∃ e f : Fin i → V.V, (∀ k l, V.hT (e k) (e l) = 0) ∧ (∀ k l, V.hT (f k) (f l) = 0) ∧
-      (∀ k l, V.hT (e k) (f l) = if k = l then 1 else 0) ∧
-      (∀ x k, V.hT (ι x) (e k) = 0 ∧ V.hT (ι x) (f k) = 0) ∧ V.rank = U.rank + 2 * i
-
 def Restr {ι : Type} {M : ι → Type} (s : ∀ i, M i) (φ : ∀ i, M i) : Prop := {i | φ i ≠ s i}.Finite
-
-def IsIrr {Gp M : Type} [Monoid Gp] [AddCommGroup M] [Module ℂ M] (σ : Representation ℂ Gp M) : Prop :=
-  Nontrivial M ∧ ∀ N : Submodule ℂ M, (∀ g, ∀ x ∈ N, σ g x ∈ N) → N = ⊥ ∨ N = ⊤
-
-def RepIso {Gp M N : Type} [Monoid Gp] [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]
-    (σ : Representation ℂ Gp M) (π : Representation ℂ Gp N) : Prop :=
-  ∃ e : M ≃ₗ[ℂ] N, ∀ g x, e (σ g x) = π g (e x)
-
-
-open Classical in
-structure LocW (D : D7) (T : ThetaX D) where
-
-  sR : Bool
-
-  ChrF : Type
-  [chrFG : CommGroup ChrF]
-
-  res : T.Chr →* ChrF
-
-  eta : ChrF
-  eta_sq : eta ^ 2 = 1
-  eta_ne : eta ≠ 1
-
-  cc : T.Chr →* T.Chr
-  cc_cc : ∀ χ, cc (cc χ) = χ
-  res_cc : ∀ χ, res (cc χ) = res χ
-  cc_inf : ∀ χ τ, T.infTy (cc χ) τ = -T.infTy χ τ
-
-  unr : T.Chr → FinE D → Prop
-
-  val : T.Chr → FinE D → ℂ
-  unr_one : ∀ w, unr 1 w ∧ val 1 w = 1
-  unr_mul : ∀ χ χ' w, unr χ w → unr χ' w → unr (χ * χ') w ∧ val (χ * χ') w = val χ w * val χ' w
-  unr_inv : ∀ χ w, unr χ w → unr χ⁻¹ w
-  val_ram : ∀ χ w, ¬ unr χ w → val χ w = 0
-  val_abs : ∀ χ w, unr χ w → ‖val χ w‖ = 1
-  unr_ae : ∀ χ, Set.Finite {w | ¬ unr χ w}
-
-  valI : T.Chr → FI D → ℂ
-  valI_one : ∀ χ, valI χ 1 = 1
-  valI_mul : ∀ χ (I J : FI D), I ≠ 0 → J ≠ 0 →
-    (∀ w, ¬ unr χ w → FractionalIdeal.count D.host.E w I = 0 ∧ FractionalIdeal.count D.host.E w J = 0) →
-    valI χ (I * J) = valI χ I * valI χ J
-  valI_prime : ∀ χ (w : FinE D), unr χ w →
-    valI χ ((w.asIdeal : Ideal (𝓞 D.host.E)) : FI D) = val χ w
-
-  locChr : T.Chr → (w : FinE D) → (w.adicCompletion D.host.E)ˣ →* ℂˣ
-  locChr_mul : ∀ χ χ' w, locChr (χ * χ') w = locChr χ w * locChr χ' w
-
-  G : HS D → Type
-  [gG : ∀ V, Group (G V)]
-  [gM : ∀ V, MeasurableSpace (G V)]
-  μG : ∀ V, Measure (G V)
-
-  GF : ∀ V, Subgroup (G V)
-
-  Fd : ∀ V, Set (G V)
-  Fd_fund : ∀ V, IsFundamentalDomain (GF V) (Fd V) (μG V)
-
-  ht : ∀ V, G V → ℝ
-  ht_ge : ∀ V g, 1 ≤ ht V g
-  ht_mul : ∀ V g g', ht V (g * g') ≤ ht V g * ht V g'
-
-  Gk : ∀ V, Subgroup (G V)
-
-  om : ∀ V W, T.Chr → T.Chr → Representation ℂ (G V × G W) (T.Sch V W)
-
-  thF : ∀ V W, T.Sch V W →ₗ[ℂ] ℂ
-  thF_aut : ∀ (V W : HS D) χ₁ χ₂, res χ₁ = eta ^ V.rank → res χ₂ = eta ^ W.rank →
-    ∀ (γ : GF V) (γ' : GF W) (Φ : T.Sch V W),
-      thF V W (om V W χ₁ χ₂ ((γ : G V), (γ' : G W)) Φ) = thF V W Φ
-
-  Hloc : HS D → Pl D → Type
-  [hL : ∀ V v, Monoid (Hloc V v)]
-
-  aug : ∀ V v, Hloc V v →* ℂ
-  aug_fin : ∀ V (v : FinF D) g, aug V (Sum.inl v) g = 1
-
-  loc : ∀ V v, Gk V →* Hloc V v
-  aug_loc : ∀ V v k, aug V v (loc V v k) = 1
-
-  SchL : HS D → HS D → Pl D → Type
-  [schLA : ∀ V W v, AddCommGroup (SchL V W v)]
-  [schLM : ∀ V W v, Module ℂ (SchL V W v)]
-
-  omL : ∀ V W, T.Chr → T.Chr → ∀ v, Representation ℂ (Hloc V v × Hloc W v) (SchL V W v)
-
-  vac : ∀ V W v, SchL V W v
-
-  pure : ∀ V W, (∀ v, SchL V W v) → T.Sch V W
-
-  pure_span : ∀ V W, Submodule.span ℂ {Φ | ∃ φ, Restr (vac V W) φ ∧ Φ = pure V W φ} = T.kfin V W
-  pure_om : ∀ (V W : HS D) χ₁ χ₂, res χ₁ = eta ^ V.rank → res χ₂ = eta ^ W.rank →
-    ∀ (g : Gk V) (h : Gk W) φ, Restr (vac V W) φ →
-      om V W χ₁ χ₂ ((g : G V), (h : G W)) (pure V W φ) =
-        pure V W (fun v => omL V W χ₁ χ₂ v (loc V v g, loc W v h) (φ v))
-  pure_mlin : ∀ V W φ v (c : ℂ) (x y : SchL V W v), Restr (vac V W) φ →
-    pure V W (Function.update φ v (c • x + y)) =
-      c • pure V W (Function.update φ v x) + pure V W (Function.update φ v y)
-
-  glL : ∀ (V : HS D) (v : FinF D) (w : FinE D), Over D w v →
-    Hloc V (Sum.inl v) →* Matrix.GeneralLinearGroup (Fin V.rank) (v.adicCompletion (FF D))
-  glL_bij : ∀ V v w (hw : Over D w v), Split D v → Function.Bijective (glL V v w hw)
-
-  linM : ∀ (V W : HS D) (v : FinF D) (w : FinE D), Over D w v →
-    SchL V W (Sum.inl v) →ₗ[ℂ] (Matrix (Fin V.rank) (Fin W.rank) (v.adicCompletion (FF D)) → ℂ)
-  linM_inj : ∀ V W v w (hw : Over D w v), Split D v → Function.Injective (linM V W v w hw)
-  linM_eq : ∀ (V W : HS D) χ₁ χ₂ v w (hw : Over D w v), res χ₁ = eta ^ V.rank → res χ₂ = eta ^ W.rank →
-    Split D v → ∀ g k, ∃ c : ℂ, c ≠ 0 ∧ ∀ φ,
-    linM V W v w hw (omL V W χ₁ χ₂ (Sum.inl v) (g, k) φ) = c • fun Xm =>
-      linM V W v w hw φ (Units.val (glL V v w hw g)⁻¹ * Xm * (Units.val (glL W v w hw k)⁻¹).transpose)
 
 attribute [instance] LocW.chrFG LocW.gG LocW.gM LocW.hL LocW.schLA LocW.schLM
 
 variable {D : D7} {T : ThetaX D}
 
-def IsThetaMap (X : LocW D T) (V W : HS D) (χ₁ χ₂ : T.Chr) (v : Pl D) {N : Type} [AddCommGroup N]
-    [Module ℂ N] (σ : Representation ℂ (X.Hloc W v) N) (f : X.SchL V W v →ₗ[ℂ] N) : Prop :=
-  ∀ g h φ, f (X.omL V W χ₁ χ₂ v (g, h) φ) = X.aug V v g • σ h (f φ)
-
-def SmallTheta (X : LocW D T) (V W : HS D) (χ₁ χ₂ : T.Chr) (v : Pl D) {M : Type} [AddCommGroup M]
-    [Module ℂ M] (π : Representation ℂ (X.Hloc W v) M) : Prop :=
-  IsIrr π ∧ ∀ (N : Type) [AddCommGroup N] [Module ℂ N] (σ : Representation ℂ (X.Hloc W v) N), IsIrr σ →
-    ((∃ f : X.SchL V W v →ₗ[ℂ] N, f ≠ 0 ∧ IsThetaMap X V W χ₁ χ₂ v σ f) ↔ RepIso σ π)
-
-def HasSmallTheta (X : LocW D T) (V W : HS D) (χ₁ χ₂ : T.Chr) (v : Pl D) : Prop :=
-  ∃ (M : Type) (_ : AddCommGroup M) (_ : Module ℂ M) (π : Representation ℂ (X.Hloc W v) M),
-    SmallTheta X V W χ₁ χ₂ v π
-
-def ePlus (X : LocW D T) (τ : D.what₂.Tau) : Prop :=
-  0 < ((tauE D τ) D.host.xi0).im ↔ X.sR = true
-
-
-open Classical in
-structure LocP {D : D7} {T : ThetaX D} (X : LocW D T) where
-  PiT : HS D → HS D → HS D → T.Chr → T.Chr → Pl D → Type
-  [piA : ∀ V V' W α β v, AddCommGroup (PiT V V' W α β v)]
-  [piM : ∀ V V' W α β v, Module ℂ (PiT V V' W α β v)]
-  piRep : ∀ V V' W α β v, Representation ℂ (X.Hloc W v) (PiT V V' W α β v)
-
-  pi_def : ∀ V V' W α β v, HasSmallTheta X V W β (β / α) v →
-    SmallTheta X V W β (β / α) v (piRep V V' W α β v)
-
-  pL : ∀ V V' W α β v, X.SchL V W v →ₗ[ℂ] PiT V V' W α β v
-
-  pL' : ∀ V V' W α β v, X.SchL V' W v →ₗ[ℂ] PiT V V' W α β v
-  pL_th : ∀ V V' W α β v, IsThetaMap X V W β (β / α) v (piRep V V' W α β v) (pL V V' W α β v)
-  pL'_th : ∀ V V' W α β v, IsThetaMap X V' W α (α / β) v (piRep V V' W α β v) (pL' V V' W α β v)
-  pL_ne : ∀ V V' W α β v,
-    (∃ f, f ≠ 0 ∧ IsThetaMap X V W β (β / α) v (piRep V V' W α β v) f) → pL V V' W α β v ≠ 0
-  pL'_ne : ∀ V V' W α β v,
-    (∃ f, f ≠ 0 ∧ IsThetaMap X V' W α (α / β) v (piRep V V' W α β v) f) → pL' V V' W α β v ≠ 0
-
-  pL'_sph : ∀ V V' W α β (v : FinF D), (∀ w, Over D w v → X.unr α w ∧ X.unr β w) →
-    (∃ f, f ≠ 0 ∧ IsThetaMap X V' W α (α / β) (Sum.inl v) (piRep V V' W α β (Sum.inl v)) f ∧
-      f (X.vac V' W (Sum.inl v)) = pL V V' W α β (Sum.inl v) (X.vac V W (Sum.inl v))) →
-    pL' V V' W α β (Sum.inl v) (X.vac V' W (Sum.inl v)) =
-      pL V V' W α β (Sum.inl v) (X.vac V W (Sum.inl v))
-
-  PiG : HS D → HS D → HS D → T.Chr → T.Chr → Type
-  [piGA : ∀ V V' W α β, AddCommGroup (PiG V V' W α β)]
-  [piGM : ∀ V V' W α β, Module ℂ (PiG V V' W α β)]
-  purePi : ∀ V V' W α β, (∀ v, PiT V V' W α β v) → PiG V V' W α β
-  purePi_mlin : ∀ V V' W α β ξ v (c : ℂ) (x y : PiT V V' W α β v),
-    Restr (fun v => pL V V' W α β v (X.vac V W v)) ξ →
-    purePi V V' W α β (Function.update ξ v (c • x + y)) =
-      c • purePi V V' W α β (Function.update ξ v x) + purePi V V' W α β (Function.update ξ v y)
-  purePi_span : ∀ V V' W α β, Submodule.span ℂ
-    {z | ∃ ξ, Restr (fun v => pL V V' W α β v (X.vac V W v)) ξ ∧ z = purePi V V' W α β ξ} = ⊤
-
-  purePi_sep : ∀ V V' W α β (l : ∀ v, PiT V V' W α β v →ₗ[ℂ] ℂ),
-    {v | l v (pL V V' W α β v (X.vac V W v)) ≠ 1}.Finite →
-    ∃ Λ : PiG V V' W α β →ₗ[ℂ] ℂ, ∀ ξ, Restr (fun v => pL V V' W α β v (X.vac V W v)) ξ →
-      Λ (purePi V V' W α β ξ) = ∏ᶠ v, l v (ξ v)
-
-  pG : ∀ V V' W α β, T.Sch V W →ₗ[ℂ] PiG V V' W α β
-  pG' : ∀ V V' W α β, T.Sch V' W →ₗ[ℂ] PiG V V' W α β
-  pG_pure : ∀ V V' W α β φ, Restr (X.vac V W) φ →
-    pG V V' W α β (X.pure V W φ) = purePi V V' W α β (fun v => pL V V' W α β v (φ v))
-  pG'_pure : ∀ V V' W α β φ, Restr (X.vac V' W) φ →
-    pG' V V' W α β (X.pure V' W φ) = purePi V V' W α β (fun v => pL' V V' W α β v (φ v))
-
 attribute [instance] LocP.piA LocP.piM LocP.piGA LocP.piGM
-
-structure Loc (D : D7) (T : ThetaX D) where
-  w : LocW D T
-  p : LocP w
-
-def IntV (v : FinF D) (c : ℕ) (x : v.adicCompletion (FF D)) : Prop :=
-  Valued.v x ≤ WithZero.exp (-(c : ℤ))
-
-structure Sett (D : D7) (T : ThetaX D) (Lc : Loc D T) where
-
-  Vt : ℕ → HS D
-  V't : ℕ → HS D
-  Wt : ℕ → HS D
-  a : ℕ
-  a' : ℕ
-  d : ℕ
-  e : ℕ
-  p : ℕ
-  q : ℕ
-  rV : (Vt 0).rank = a
-  rV' : (V't 0).rank = a'
-  rW : (Wt 0).rank = d
-  lt : a' < a
-  sum : a + a' = d
-  two_e : a = a' + 2 * e
-  e_big : 2 * (p + q) + 1 < e
-  a'_big : 2 * (p + q) + 1 < a'
-  Vt_spec : ∀ i ≤ p, WittMinus (Vt 0) (Vt i) i
-  V't_spec : ∀ j ≤ q, WittMinus (V't 0) (V't j) j
-  Wt_spec : ∀ k ≤ p + q, WittMinus (Wt 0) (Wt k) k
-  wittV : WittIdx (Vt 0) p
-  wittV' : WittIdx (V't 0) q
-  α : T.Chr
-  β : T.Chr
-  α_sd : Lc.w.cc α = α⁻¹
-  β_sd : Lc.w.cc β = β⁻¹
-  α_res : Lc.w.res α = Lc.w.eta ^ a'
-  β_res : Lc.w.res β = Lc.w.eta ^ a
-
-  kap : ∀ τ, (d : ℚ) < |2 * T.infTy (α / β) τ|
-  okV : ∀ i ≤ p, (Vt i).SigOK
-  okV' : ∀ j ≤ q, (V't j).SigOK
-  okW : ∀ k ≤ p + q, (Wt k).SigOK
-
-  sigV : ∀ i ≤ p, ∀ τ, (Vt i).sig (tauE D τ) = (a - p - i, p - i)
-  sigV' : ∀ j ≤ q, ∀ τ, (V't j).sig (tauE D τ) = (q - j, a' - q - j)
-
-  sigW : ∀ k ≤ p + q, ∀ τ, (Wt k).sig (tauE D τ) =
-    if (ePlus Lc.w τ ↔ 0 < T.infTy (α / β) τ) then (d - (p + q) - k, p + q - k)
-    else (p + q - k, d - (p + q) - k)
-  S0 : Finset (FinF D)
-  Q : Finset (FinF D)
-  disj : Disjoint S0 Q
-  spl : ∀ v ∈ S0 ∪ Q, Split D v
-  ram : ∀ v ∈ S0 ∪ Q, ∀ w, Over D w v → ¬ Lc.w.unr (α / β) w
-  unram : ∀ w : FinE D, (∀ v ∈ S0 ∪ Q, ¬ Over D w v) → Lc.w.unr α w ∧ Lc.w.unr β w
-
-  psiSQ : ∀ v ∈ S0 ∪ Q, ¬ differentIdeal ℤ (𝓞 (FF D)) ≤ v.asIdeal
-  v1 : FinF D
-  w1 : FinE D
-  hw1 : Over D w1 v1
-  auxiliary_place_outside : v1 ∉ S0 ∪ Q
-  auxiliary_place_split_prime : ∃ ℓ : ℕ, ℓ.Prime ∧ ((ℓ : ℤ) : 𝓞 (FF D)) ∈ v1.asIdeal ∧ SplitsCompletely D ℓ
-
-  f13 : InertPlaceConditions D := inert_conditions_hold D
 
 namespace Sett
 
@@ -705,7 +444,6 @@ end Sett
 namespace Sett
 
 variable {Lc : Loc D T} (S : Sett D T Lc)
-
 
 end Sett
 

@@ -24,9 +24,6 @@ noncomputable def pdZ {σ R : Type} [CommRing R] (j : σ) : Derivation ℤ (MvPo
   map_one_eq_zero' := MvPowerSeries.pderiv_one
   leibniz' := (MvPowerSeries.pderiv (R := R) j).leibniz
 
-theorem pdZ_apply {σ R : Type} [CommRing R] (j : σ) (F : MvPowerSeries σ R) :
-    pdZ j F = MvPowerSeries.pderiv (R := R) j F := rfl
-
 theorem add_sum_apply {σ R ι : Type} [CommRing R] [Fintype ι] (E : Derivation ℤ (MvPowerSeries σ R) (MvPowerSeries σ R))
     (G : ι → MvPowerSeries σ R) (P : ι → Derivation ℤ (MvPowerSeries σ R) (MvPowerSeries σ R))
     (F : MvPowerSeries σ R) : (E + ∑ j, G j • P j) F = E F + ∑ j, G j * P j F := by

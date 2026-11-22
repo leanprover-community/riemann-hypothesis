@@ -17,8 +17,6 @@ variable {D : D7} {m n : ℕ}
 
 section Subst
 
-def dExp (m : ℕ) (p : D.what₂.Tau → ℕ) (e : D.what₂.Tau → ℤ) (τ : D.what₂.Tau) : ℤ := (p τ : ℤ) - ((m + 1) / 2 : ℕ) - e τ
-
 end Subst
 
 section Equiv

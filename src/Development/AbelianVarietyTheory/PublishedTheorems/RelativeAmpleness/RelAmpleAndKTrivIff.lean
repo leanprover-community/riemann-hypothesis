@@ -153,19 +153,11 @@ theorem memKL_iff_of_kTriv {S : Scheme.{0}} {A : Over S} [GrpObj A] {L : LB A.le
 
 namespace Published
 
-def AmpleOfGenericSt : Prop :=
-  ∀ (V K : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [Field K] [Algebra V K] [IsFractionRing V K]
-    (A : Over (Sp V)) [GrpObj A], IsAbelianScheme A → ∀ L : LB A.left, L.IsLB → Out.Rigidified A L → Out.Sym A L →
-    ∀ (A' : Over (Sp K)) (φ : A'.left ⟶ A.left), IsPullback φ A'.hom A.hom (spMap (algebraMap V K)) →
-    ∀ L' : LB A'.left, L'.IsLB → LBIso L' (L.pull φ) → Out.RelAmple A' L' → Out.RelAmple A L
-
 def KernelFiniteFlatSt : Prop :=
   ∀ (V : Type) [CommRing V] [IsNoetherianRing V] (A : Over (Sp V)) [GrpObj A], IsAbelianScheme A →
     ∀ L : LB A.left, L.IsLB → Out.RelAmple A L →
     ∃ (Z : Over (Sp V)) (i : Z ⟶ A), IsClosedImmersion i.left ∧ IsFinite Z.hom ∧ Flat Z.hom ∧
       ∀ (T : Over (Sp V)) (x : T ⟶ A), MemKL A L x ↔ ∃ z : T ⟶ Z, z ≫ i = x
-
-def PolExtSt : Prop := AmpleOfGenericSt ∧ KernelFiniteFlatSt
 
 theorem KernelFiniteFlatSt.kTriv_of_generic (hK : KernelFiniteFlatSt) {V K : Type} [CommRing V] [IsDomain V]
     [IsNoetherianRing V] [Field K] [Algebra V K] [IsFractionRing V K] {A : Over (Sp V)} [GrpObj A]

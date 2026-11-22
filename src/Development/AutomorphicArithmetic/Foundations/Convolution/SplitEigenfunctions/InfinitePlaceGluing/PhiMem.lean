@@ -63,8 +63,6 @@ private def mE : Mx ≃L[ℝ] ℝ :=
 private def eE : (Fin 2 → Mx) ≃L[ℝ] EuclideanSpace ℝ (Fin 2) :=
   (ContinuousLinearEquiv.piCongrRight fun _ => mE).trans (EuclideanSpace.equiv (Fin 2) ℝ).symm
 
-private theorem eE_apply (x : Fin 2 → A ℚ) (i : Fin 2) : eE (infPartPi x) i = re (x i) := rfl
-
 private theorem temp (p : MvPolynomial (Fin 2) ℂ) :
     (fun y : Fin 2 → Mx => MvPolynomial.eval (fun i => ((eE y i : ℝ) : ℂ)) p).HasTemperateGrowth := by
   induction p using MvPolynomial.induction_on with

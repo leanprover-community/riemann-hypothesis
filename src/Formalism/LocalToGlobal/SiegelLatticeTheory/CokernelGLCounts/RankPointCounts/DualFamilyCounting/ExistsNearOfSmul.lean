@@ -19,9 +19,6 @@ open Formalism.HermitianLattices.Ext.L3 Formalism.HermitianLattices.Ext.L3.U0 Fo
 
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-local notation "κ" => algebraMap (𝓞 K) K
-
 theorem exists_F_mul_int (hF : IsFixF K F) (z : K) :
     ∃ s : 𝓞 F, s ≠ 0 ∧ ∃ r : 𝓞 K, κ (ι s) * z = κ r := by
   obtain ⟨a, m, hm, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 K) z

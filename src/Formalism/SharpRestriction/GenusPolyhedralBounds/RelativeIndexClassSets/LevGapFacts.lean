@@ -24,18 +24,9 @@ structure SplitAt (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) (a : E) 
   int : ∀ x, x ∈ intV E v ↔ (φ x).1 ∈ v.adicCompletionIntegers F ∧ (φ x).2 ∈ v.adicCompletionIntegers F
   ori : Valued.v (φ (a ⊗ₜ[F] (1 : v.adicCompletion F))).1 < 1
 
-structure Par (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (k : ℕ) where
-  σ : E →ₐ[F] E
-  J : Matrix (Fin k) (Fin k) E
-  gp : Fin 2 → ℕ
-  T : ℕ
-  pz : 𝓞 E
-  a : Fin 2 → E
-
 namespace Par
 
 variable {k : ℕ} (P : Par F E k)
-
 
 end Par
 

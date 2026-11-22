@@ -22,16 +22,6 @@ def wtSize (lam : (E →+* ℂ) → DomWeight a) : ℕ :=
 def IntMat (u : HeightOneSpectrum (𝓞 E)) (x : Matrix (Fin a) (Fin a) (u.adicCompletion E)) : Prop :=
   ∀ i j, x i j ∈ u.adicCompletionIntegers E
 
-def IsIntegralOpW (ι : Qbar l ≃+* ℂ) (lam : (E →+* ℂ) → DomWeight a) (w₀ : HeightOneSpectrum (𝓞 E))
-    (f : UA E a →₀ ℂ) : Prop :=
-  ∀ g ∈ f.support, g ∈ finU (E := E) (n := a) ∧ (∀ u, ¬ Apart u w₀ → cLoc u g = 1) ∧
-    ∃ d : ℕ, (∀ u : HeightOneSpectrum (𝓞 E), ((l : ℕ) : 𝓞 E) ∈ u.asIdeal →
-        IntMat u (((l : u.adicCompletion E) ^ d) • ((cLoc u g : GL (Fin a) (u.adicCompletion E)) :
-          Matrix (Fin a) (Fin a) (u.adicCompletion E))) ∧
-        IntMat u (((l : u.adicCompletion E) ^ d) • (((cLoc u g)⁻¹ : GL (Fin a) (u.adicCompletion E)) :
-          Matrix (Fin a) (Fin a) (u.adicCompletion E)))) ∧
-      ‖ι.symm (f g)‖ ≤ ((l : ℝ)⁻¹) ^ (a * d * wtSize lam)
-
 def HasTypeVec (w₀ : HeightOneSpectrum (𝓞 E)) (K : Subgroup (UA E a)) (J : Subgroup (GL (Fin a) (w₀.adicCompletion E)))
     {A : Type} [Group A] (θ : J →* A) (χ : A →* ℂˣ) (U : Submodule ℂ (UA E a → ℂ)) : Prop :=
   ∃ φ ∈ U, φ ≠ 0 ∧ (∀ x ∈ K, RU E a x φ = φ) ∧

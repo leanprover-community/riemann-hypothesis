@@ -71,62 +71,7 @@ namespace SideTie
 
 variable {YS fw T} {i : D.ntw.Tw} {j : Fin D.R.m} {b : Bool} (Z : SideTie YS fw T i j b)
 
-theorem ev_some {y z} (h : Z.pt y = some z) (f) : T.ev i _ b f y = valAt YS fw j z.1 (toK YS j b f) := by
-  rw [Z.ev_eq, h]; rfl
-
-theorem ev_none {y} (h : Z.pt y = none) (f) : T.ev i _ b f y = 0 := by rw [Z.ev_eq, h]; rfl
-
-
-include Z in
-theorem exists_ev_eq (z : Pts YS (T.iC i) b ((j : ℕ) + 1)) :
-    ∃ (y : T.Pt i ((j : ℕ) + 1)) (u : ℂ_[D.ntw.l i]), ‖u‖ = 1 ∧ ∀ f, valAt YS fw j z.1 (toK YS j b f) = u * T.ev i _ b f y := by
-  obtain ⟨y, z', t, hy, ht, hb⟩ := Z.cover z
-  exact ⟨y, _, norm_wchar ht _, fun f => by rw [Z.ev_some hy]; exact valAt_frBor YS fw j hb _⟩
-
-
-
-include Z in
-theorem norm_le_iff {B : ℝ} (hB : 0 ≤ B) (f : D.nexp.Fm i ((j : ℕ) + 1) b) : (∀ y, ‖T.ev i _ b f y‖ ≤ B) ↔
-    ∀ z : Pts YS (T.iC i) b ((j : ℕ) + 1), ‖valAt YS fw j z.1 (toK YS j b f)‖ ≤ B := by
-  refine ⟨fun h z => ?_, fun h y => ?_⟩
-  · obtain ⟨y, u, hu, e⟩ := Z.exists_ev_eq z
-    rw [e, norm_mul, hu, one_mul]
-    exact h y
-  · rcases hy : Z.pt y with _ | z
-    · rw [Z.ev_none hy, norm_zero]; exact hB
-    · rw [Z.ev_some hy]; exact h z
-
-
-
-theorem hecke {k P} (h : HkIdx i k P) : ∃ s : T0.Q.c.F, ‖embC YS (T.iC i) b s‖ = 1 ∧ ∀ y z, Z.pt y = some z →
-    ∃ quot : HkKer P.asIdeal (charAt P) k z.1 → FrC YS (T.iC i) b ((j : ℕ) + 1),
-      (∀ C, IsHkQuot P.asIdeal (charAt P) k z.1 C (quot C)) ∧ ∀ f,
-        valAt YS fw j z.1 (toK YS j b (D.nexp.hkF i _ b k P f)) =
-          embC YS (T.iC i) b s * ∑ᶠ C, valAt YS fw j (quot C) (toK YS j b f) := by
-  obtain ⟨u, hu, H⟩ := Z.hk k P h
-  refine ⟨u, hu, fun y z hy => ?_⟩
-  obtain ⟨e, he⟩ := H y z hy
-  choose z' t w h1 h2 _ h4 h5 using he
-  refine ⟨fun C => w (e.symm C), fun C => by simpa using h2 (e.symm C), fun f => ?_⟩
-  rw [← Z.ev_some hy, T.hk_ev i _ b k P h.1 h.2.1 h.2.2.1 h.2.2.2, ← finsum_comp_equiv e, finsum_eq_sum_of_fintype,
-    Finset.mul_sum]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  beta_reduce
-  rw [h5, Z.ev_some (h1 c), e.symm_apply_apply, valAt_frBor YS fw j (h4 c), mul_assoc]
-
-
-
-
-include Z in
-theorem detects : Detects YS fw (T.iC i) b j := fun x hx => by
-  obtain ⟨f, rfl⟩ := (toK YS j b).surjective x
-  have : f = 0 := T.ev_inj i _ b (funext fun y => by
-    rw [map_zero, Pi.zero_apply, ← norm_le_zero_iff]
-    exact (Z.norm_le_iff le_rfl f).2 (fun z => by rw [hx z, norm_zero]) y)
-  rw [this, map_zero]
-
 end SideTie
-
 
 variable {YS} in
 theorem mem_span_toK {i : D.ntw.Tw} {j : Fin D.R.m} {b : Bool} {s : Set (D.nexp.Fm i ((j : ℕ) + 1) b)}
@@ -141,11 +86,6 @@ theorem mem_span_toK {i : D.ntw.Tw} {j : Fin D.R.m} {b : Bool} {s : Set (D.nexp.
 
 def SupPin (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool) : Prop :=
   ∀ f : D.nexp.Fm i ((j : ℕ) + 1) b, f ∈ D.nexp.Bsup i _ b ↔ toK YS j b f ∈ NX.Bsup S i ((j : ℕ) + 1) b
-
-
-
-
-
 
 section Record
 
@@ -190,10 +130,8 @@ def allEv (j : Fin D.R.m) (b : Bool) : D.nexp.Fm i ((j : ℕ) + 1) b →+ (AllPt
     rw [Pi.add_apply]
     cases atSide b y <;> simp
 
-
 open Classical in
 def kerNum (j k : ℕ) (P : PlE D.host) : ℕ := if h : ∃ n, KerCard YS iC j k P n then h.choose else 0
-
 
 open Classical in
 def allMove (j k : ℕ) (P : PlE D.host) (c : Fin (kerNum YS iC j k P)) (y : AllPts YS iC j) : AllPts YS iC j :=
@@ -203,7 +141,6 @@ def allMove (j k : ℕ) (P : PlE D.host) (c : Fin (kerNum YS iC j k P)) (y : All
 theorem allMove_fst (j k : ℕ) (P : PlE D.host) (c) (y : AllPts YS iC j) : (allMove YS iC j k P c y).1 = y.1 := by
   unfold allMove
   split_ifs <;> rfl
-
 
 open Classical in
 def hkUnit (j : Fin D.R.m) (b : Bool) (k : ℕ) (P : PlE D.host) : ℂ_[D.ntw.l i] :=
@@ -261,13 +198,11 @@ theorem allEv_ball {j : Fin D.R.m} {b : Bool} {B : ℝ} (hB : 0 ≤ B) (f : D.ne
   · rw [allEv_other f hb, norm_zero]
     exact hB
 
-
 variable (YS fw) in
 def evN (j : ℕ) : ∀ b, D.nexp.Fm i j b →+ (AllPts YS iC j → ℂ_[D.ntw.l i]) :=
   extLift (α := fun j => ∀ b, D.nexp.Fm i j b →+ (AllPts YS iC j → ℂ_[D.ntw.l i])) (allEv YS fw iC) (fun _ _ => 0) j
 
 theorem evN_succ (j : Fin D.R.m) : evN YS fw (iC := iC) ((j : ℕ) + 1) = allEv YS fw iC j := extLift_succ _ _ j
-
 
 variable (YS iC) in
 def fmUrN (j : ℕ) : ∀ b, AddSubgroup (D.nexp.Fm i j b) :=
@@ -277,7 +212,6 @@ def fmUrN (j : ℕ) : ∀ b, AddSubgroup (D.nexp.Fm i j b) :=
 theorem mem_fmUrN (j : Fin D.R.m) (b : Bool) (f) :
     f ∈ fmUrN YS iC ((j : ℕ) + 1) b ↔ toK YS j b f ∈ ratForms S _ b (kurAt YS iC b) := by
   rw [fmUrN, extLift_succ]; rfl
-
 
 variable (YS fw iC) in
 def hkUnitN (j : ℕ) (b : Bool) (k : ℕ) (P : PlE D.host) : ℂ_[D.ntw.l i] :=

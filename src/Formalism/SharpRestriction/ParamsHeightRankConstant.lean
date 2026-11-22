@@ -23,7 +23,6 @@ def CfL : ℝ := Fm.PK.getD 2 0
 theorem params_CfL (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) : (Fm.params x hx i).CfL = Fm.CfL := by
   unfold CfL; rw [← Fm.params_K x hx i]; rfl
 def cLL : ℝ := Fm.PK.getD 3 0
-def CnW : ℝ := Fm.PK.getD 4 0
 def Crho : ℝ := Fm.PK.getD 5 0
 def CDelG : ℝ := Fm.PK.getD 6 0
 def CLw : ℝ := Fm.PK.getD 7 0

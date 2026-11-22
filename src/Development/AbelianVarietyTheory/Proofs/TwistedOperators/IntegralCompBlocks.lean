@@ -24,9 +24,6 @@ lemma nabs_pow (x : kˣ) (m : ℕ) : nabs k (x ^ m) = nabs k x ^ m := by
 lemma nabs_inv (x : kˣ) : nabs k x⁻¹ = (nabs k x)⁻¹ := by
   simp [nabs]
 
-lemma nabs_one : nabs k 1 = 1 := by
-  simp [nabs]
-
 variable [MeasurableSpace k] [BorelSpace k]
 
 lemma integral_comp_blocks {F n J : Type} [Fintype F] [Fintype n] [DecidableEq n] [Fintype J]
@@ -68,7 +65,6 @@ end cov
 
 section alg
 variable {k : Type} [Field k] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ}
-
 
 open Classical in
 def ext (p : ℕ) (e : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free p rs} → k) :
@@ -194,8 +190,6 @@ lemma card_rows (p : ℕ) (h1 : 1 ≤ p) (h2 : p ≤ c) :
     rw [this, Fin.card_Iio]
   rw [this, Nat.cast_sub (by omega)]; push_cast; ring
 
-lemma embX_val (g : GL n k) : (embX c g).val = fromBlocks g.val 0 0 1 := rfl
-
 lemma det_embX (g : GL n k) :
     Matrix.GeneralLinearGroup.det (embX c g) = Matrix.GeneralLinearGroup.det g := by
   ext
@@ -275,7 +269,6 @@ lemma opE_const_mul (p : ℕ) (ψ : AddChar k Circle) (ν : Measure k) (a : ℂ)
 end alg
 
 end GlobalTheory.RootEx.OpELevi
-
 
 open GlobalTheory.RootEx.OpELevi in
 theorem GlobalTheory.RootEx.opE_om_embX : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c p : ℕ) (_ : 1 ≤ p) (_ : p ≤ c) (ψ : AddChar k Circle) (ν : Measure k) [ν.IsAddHaarMeasure] (μ : kˣ →* ℂˣ) (Φ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ), (∀ g : GL n k, opE ψ ν p (om μ 1 (embX c g) Φ) = ((nabs k (Matrix.GeneralLinearGroup.det g) ^ (((c : ℝ) + 1) / 2 - p) : ℝ) : ℂ) • om μ 1 g (opE ψ ν p Φ)) ∧ ∀ g : GL n' k, opE ψ ν p (om μ (embX (c + 1) g) 1 Φ) = ((nabs k (Matrix.GeneralLinearGroup.det g) ^ (((c : ℝ) + 2) / 2 - p) : ℝ) : ℂ) • om μ g 1 (opE ψ ν p Φ) := by

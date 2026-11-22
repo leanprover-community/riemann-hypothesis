@@ -104,10 +104,6 @@ def ComposeDDPlus : Prop :=
       ∀ F : B.Mat k r → (Wq →L[ℂ] Wp), B.CkOn ((o₁ + o₂ : ℕ) : ℕ∞) (B.GV k r) F →
         ∀ g ∈ domL D L, B.opApply Θ F g = B.opApply Θ₁ (B.opApply Θ₂ F) g
 
-def AV (CV r n : ℕ) : ℝ := (CV : ℝ) * ((r : ℝ) ^ 3 * n + (n : ℝ) ^ 2 + (r : ℝ) ^ 4)
-
-def mmV (CV r : ℕ) : ℕ := CV * (r ^ 2 + 1)
-
 section radial
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
@@ -132,15 +128,6 @@ def IsRelevant (D : B.RealPlaceData k r Wp Wq) (γ : B.Mat k r) : Prop :=
 
 def actR (γ ρ : B.Mat k r) (p : B.SS k r) : B.SS k r :=
   ((p.1.1, Matrix.of.symm (ρ * Matrix.of p.1.2)), (p.2.1, Matrix.of.symm (γ⁻¹ * ρ * γ * Matrix.of p.2.2)))
-
-structure OrbData (D : B.RealPlaceData k r Wp Wq) (γ : B.Mat k r) where
-  μR : Measure (Mt k r)
-  haarR : B.IsHaarOn (Rset γ) μR
-  J : (B.Mat k r → (Wq →L[ℂ] Wp)) → (Wq →L[ℂ] Wp)
-  weil : ∀ (F : B.Mat k r → (Wq →L[ℂ] Wp)) (θ : B.SS k r → ℝ), Measurable θ → (∀ p, 0 ≤ θ p) →
-    (∀ p, D.inSS p → ∫ x, θ (actR γ (Matrix.of x) p) ∂μR = 1) →
-    Integrable (fun p => θ p • (B.xiTau D (1, 1) p • B.rho D p F γ)) D.μSS →
-    ∫ p, θ p • (B.xiTau D (1, 1) p • B.rho D p F γ) ∂D.μSS = J F
 
 end orbit
 

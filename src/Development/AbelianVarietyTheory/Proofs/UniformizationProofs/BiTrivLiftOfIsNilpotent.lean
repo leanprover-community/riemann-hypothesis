@@ -28,9 +28,6 @@ namespace GlobalTheory.UU.BiLift
 variable {A : Type} [CommRing A] {J : Ideal A} {X : Type} [AddCommGroup X]
   {G : Over (Spec (CommRingCat.of A))} [GrpObj G] [IsCommMonObj G] {L : RigLB G}
 
-set_option hygiene false in
-local notation "𝕋" => splitTorus (Spec (CommRingCat.of A)) X
-
 theorem exists_red_lift {Z W : Over (Spec (CommRingCat.of A))} (hZ : ∃ s, s ≫ red J = Z.hom) (p : Z ⟶ W) :
     ∃ a : Z.left ⟶ pullback W.hom (red J), a ≫ pullback.fst _ _ = p.left := by
   obtain ⟨s, hs⟩ := hZ
@@ -138,7 +135,6 @@ variable (h₀ : s₀.IsGen)
     b ≫ pullback.fst _ _ = (lift t x).left → d ≫ pullback.fst _ _ = (lift t' x).left → ∀ (z : Z.left) (I),
     Good L.L z I → val s₀ a z I = cubV c z I (t ≫ i) (t' ≫ i) x * val s₀ b z I * val s₀ d z I)
 
-
 include h₀ in
 theorem exists_reduces (hJ : IsNilpotent J) {Y : Over (Spec (CommRingCat.of A))} [IsAffine Y.left] (x : Y ⟶ G) :
     ∃ s, s.IsGen ∧ Reduces i s₀ x s := by
@@ -191,7 +187,6 @@ private theorem mul_assoc_comm_law {U : Type} [CommGroup U] {Gq F θ Vt Vt' Gt G
   have e : Gq * (F * (θ * Vt * Vt')) = (F * Gq) * (θ * Vt * Vt') := by ac_rfl
   rw [e, h]
   ac_rfl
-
 
 include h₀ l₀ in
 theorem exists_lift_affine [IsMonHom i] (hJ : IsNilpotent J) {Y : Over (Spec (CommRingCat.of A))} [IsAffine Y.left]
@@ -285,7 +280,6 @@ theorem exists_affine_mem {Y : Scheme.{0}} (y : Y) : ∃ U : Y.affineOpens, y �
 private theorem comp_opnI_mem {S : Scheme.{0}} {Z Y : Over S} (U : Y.left.Opens) (y : Z ⟶ opn Y U) (z : Z.left) :
     (y ≫ opnι Y U).left z ∈ U := by
   exact (y.left z).2
-
 
 include h₀ l₀ in
 theorem exists_glued [IsMonHom i] (hJ : IsNilpotent J) :
@@ -405,7 +399,6 @@ theorem exists_glued [IsMonHom i] (hJ : IsNilpotent J) :
   rw [vtU U Z.left q.left z I hI]
   exact congrArg (fun m => val (s' U) m z I) (congrArg Over.Hom.left hqκ)
 
-
 include h₀ l₀ in
 theorem exists_lift [IsMonHom i] (hJ : IsNilpotent J) :
     ∃ s : LB.Gen (LB.LinComb L.L (lamφ i) Oε), s.IsGen ∧
@@ -500,7 +493,6 @@ private theorem eq_mul_of_two_factorizations {U : Type} [CommGroup U] {W F Ft Ft
   have h2 : (Ft * Ft') * ((T4 * T5 * FreeQuotientRank) * (A * B * C * D)) = W := by rw [E4, E5, E6]; ac_rfl
   rw [hc] at h1
   exact mul_right_cancel (h1.trans h2.symm)
-
 
 include h₀ l₀ in
 theorem nonempty_biTriv [IsMonHom i] (hJ : IsNilpotent J)

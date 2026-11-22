@@ -87,13 +87,6 @@ def Val0 (k : ℕ) (α : D.toPre.X)
       ((TF (R := V) F).left.presheaf.map (homOfLE le_top).op).hom
           ((Scheme.ΓSpecIso (CommRingCat.of F)).inv.hom x) * (τ.s j).val
 
-def SumTo (x : D.toPre.X → F) (w : F) : Prop :=
-  ∀ q : ℚ, ∃ S : Finset D.toPre.X, ∀ T : Finset D.toPre.X, S ⊆ T →
-    ((q : ℚ) : WithTop ℚ) ≤ v (w - ∑ α ∈ T, x α)
-
-def ValAt0 (k : ℕ) (s : Fam D.toPre F k) (w : F) : Prop :=
-  ∃ x : D.toPre.X → F, (∀ α, Val0 D F k α (s.s α) (x α)) ∧ SumTo D F v x w
-
 def FamIsAdd {k : ℕ} (s s' s'' : Fam D.toPre F k) : Prop :=
   ∀ (α : D.toPre.X) (j : Fin 4 → D.toPre.P.L.ι), (s''.s α).f j = (s.s α).f j + (s'.s α).f j
 
@@ -126,15 +119,6 @@ def FiniteOrderValuationInvariance : Prop :=
       w.IsGen → ∀ ζ : F, ζ ≠ 0 → FinOrd D F k p w ζ →
       ∀ s t s' : Fam D.toPre F k, PhiRel D.toPre F k p w s t → Fam.IsSmul D.toPre F ζ t s' →
         ∀ r : ℚ, NuGe D Q F v k s r ↔ NuGe D Q F v k s' r
-
-def ValuationBoundAtZero : Prop :=
-  ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] (ϖ : V), Irreducible ϖ →
-    ∀ (D : DegData V (maximalIdeal V)) (Q : D.toPre.X → ℤ), IsQ D.toPre ϖ Q →
-    ∀ (F : Type) [Field F] [Algebra (FractionRing V) F] (v : AddValuation F (WithTop ℚ)), ValOver ϖ F v →
-    ∀ m : ℕ, 1 ≤ m → ∀ (R' : ℕ) (β : D.toPre.X) (s : Fam D.toPre F m),
-      (∀ α : D.toPre.X, (∀ z : D.toPre.X, α ≠ β + R' • z) → ∀ j, (s.s α).f j = 0) →
-      NuGe D Q F v m s 0 → ∀ w : F, ValAt0 D F v m s w →
-      ∀ q : ℚ, (∀ z : D.toPre.X, q ≤ (Q (β + R' • z) : ℚ) / m) → ((q : ℚ) : WithTop ℚ) ≤ v w
 
 def GermIntegrality : Prop :=
   ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] (ϖ : V), Irreducible ϖ →

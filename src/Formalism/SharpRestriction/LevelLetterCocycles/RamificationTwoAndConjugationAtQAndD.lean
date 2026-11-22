@@ -6,7 +6,6 @@ public import Formalism.WachLatticeTwists.LatticeDualFibres.LatticeDualProofs.Qu
 public import Formalism.WachLatticeTwists.LatticeDualFibres.Statement
 public import ReciprocityTheory.GaloisValuations.ContinuousConstSMulQuotient
 public import Formalism.WachLatticeTwists.LatticeDualFibres.FibreDualStable
-public import Formalism.WachLatticeTwists.LatticeDualFibres.LatticeDualProofs.ExistsPowSmulIntegral
 public import Formalism.WachLatticeTwists.LatticeDualFibres.StatDualFibreLattice
 public import Formalism.WeaklyAdmissibleFiltrations.PhtGalois
 

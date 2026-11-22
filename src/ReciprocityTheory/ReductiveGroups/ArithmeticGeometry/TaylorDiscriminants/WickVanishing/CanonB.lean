@@ -34,9 +34,6 @@ private theorem sq_sq_lemma {m : ℕ} (b : Fin n → Q k d l) (a : Fin m → Q k
 
 variable [Algebra ℚ k]
 
-
-
-
 section Transfer
 
 omit [Algebra ℚ k]
@@ -75,11 +72,8 @@ theorem sq_op (b : Fin n → Q k d l) (F : Q k d 2) (u v : Q k d n) : sq b (op F
     funext j; fin_cases j <;> rfl
   rw [sq_sq_lemma, h]
 
-theorem gen_val (j : Fin n) : (gen j : Q k d n).1 = pt k d j := rfl
-
 variable {R : Type} [CommRing R] (φ : R →+* k)
 
 end Transfer
-
 
 end ReciprocityTheory.ChartRestriction.G.TB.Canon

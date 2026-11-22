@@ -123,24 +123,17 @@ structure AbelianUnramifiedExtensionConditions : Prop where
   unram : ∀ P : HeightOneSpectrum (𝓞 X.E),
     ¬ (P.asIdeal.comap (algebraMap (𝓞 X.F) (𝓞 X.E))).map (algebraMap (𝓞 X.F) (𝓞 X.E)) ≤ P.asIdeal ^ 2
 
-
-
 variable {X} in
 theorem Ok.f_pos (h : X.Ok) : 0 < X.f := by
   show 0 < Fintype.card X.Tau
   rw [h.card_Tau]
   exact Module.finrank_pos
 
-
-
-
-
 def IsCond (N : ℕ) : Prop := ∀ j : X.E →ₐ[ℚ] Qb, Formalism.L2.Host.IsCond j.fieldRange N
 
 def embC (σ₀ : X.K →+* ℂ) (τ : X.Tau) : X.E →+* ℂ := σ₀.comp (X.emb τ)
 
 end Fields
-
 
 open Classical in
 def divs {A : Type} [CommRing A] [IsDedekindDomain A] (a : A) : Finset (HeightOneSpectrum A) :=
@@ -172,7 +165,6 @@ variable {X : Fields} (Pr : Primes X)
 def vT (u : Pr.Word) : Finset (HeightOneSpectrum (𝓞 X.E)) := divs (Pr.piT u)
 
 def vG (i : Fin 2) : Finset (HeightOneSpectrum (𝓞 X.E)) := divs (X.conjO (Pr.piG i))
-
 
 open Classical in
 def vGs : Finset (HeightOneSpectrum (𝓞 X.E)) := open Classical in Pr.vG 0 ∪ Pr.vG 1
@@ -223,7 +215,6 @@ theorem natCast_dvd_intCast {E : Type} [Field E] [NumberField E] {c : ℕ} {n : 
     rw [← Module.finrank_eq_card_basis b]
     exact Module.finrank_pos.ne'
   exact (Int.pow_dvd_pow_iff hpos).1 hd
-
 
 variable {Pr} in
 theorem PiGCong.g_cong (h : Pr.PiGCong) (hn : ∀ i, Pr.piG i * X.conjO (Pr.piG i) = (Pr.g i : 𝓞 X.E)) (i : Fin 2) :
@@ -304,26 +295,9 @@ structure Chars.Tied {X : Fields} {Pr : Primes X} {m : ℕ} (Ch : Chars X Pr m) 
   etaT : IsEtaT X σ₀ eta
   etaVal : ∀ v : HeightOneSpectrum (𝓞 X.E), σ₀ (Ch.etaVal v : X.K) = eta.valTw (1 / 2) v
 
-structure QDat (X : Fields) where
-
-  Q : Finset (HeightOneSpectrum (𝓞 X.E))
-
-  xi : ∀ P : {P // P ∈ Q}, (𝓞 X.E ⧸ P.1.asIdeal)ˣ →* X.Kˣ
-
 namespace QDat
 
 variable {X : Fields} (Z : QDat X)
-
-structure Ok : Prop where
-
-  deg_one : ∀ P ∈ Z.Q, (Ideal.absNorm P.asIdeal).Prime
-
-  unram : ∀ P ∈ Z.Q, ((Ideal.absNorm P.asIdeal : ℕ) : 𝓞 X.E) ∉ P.asIdeal ^ 2
-
-  one_over : ∀ P ∈ Z.Q, ∀ P' ∈ Z.Q, P'.asIdeal ≠ P.asIdeal.comap X.conjO
-
-  xi_ne : ∀ P, Z.xi P ≠ 1
-
 
 end QDat
 
@@ -341,7 +315,6 @@ theorem spread_shiftW {N : ℕ} (lam : DomWeight N) (c : ℤ) : (shiftW lam c).s
   · simp only [shiftW]
     ring
   · rfl
-
 
 open Classical in
 def ofQ {N : ℕ} (x : Fin N → ℚ) : DomWeight N :=
@@ -431,8 +404,6 @@ def sgTrue (τ : X.Tau) : DomWeight (R.N R.m - 1) := (W.row τ).sgTrue
 
 def lamV (j : ℕ) (τ : X.Tau) : DomWeight R.nV := (W.row τ).lamV j
 
-def bTop (u : Word) (τ : X.Tau) : ℤ := -(W.lamN u 0 τ).detShift
-
 end Wts
 
 structure Sizes {X : Fields} (Pr : Primes X) {R : Ranks} (W : Wts X Pr.Word R) (a : ℝ) : Prop where
@@ -494,51 +465,12 @@ structure Dat.Ok (D : Dat) : Prop where
   e_even : ∀ j : Fin D.R.m, ∃ z : ℤ, ∑ τ, (D.W.row τ).e j = 2 * (z : ℚ)
   sizes : Sizes D.Pr D.W D.a
 
-theorem finite_pow_eq (n : ℕ) (hn : 0 < n) (a : Qb) : {z : Qb | z ^ n = a}.Finite := by
-  classical
-  refine (Polynomial.nthRoots n a).toFinset.finite_toSet.subset ?_
-  intro z hz
-  simp only [Finset.mem_coe, Multiset.mem_toFinset, Polynomial.mem_nthRoots hn]
-  exact hz
-
-theorem fin_adjoin {S : Set Qb} (hS : S.Finite) : FiniteDimensional ℚ (adjoin ℚ S) := by
-  haveI : Finite S := hS.to_subtype
-  exact IntermediateField.finiteDimensional_adjoin fun x _ => Algebra.IsIntegral.isIntegral x
-
-theorem normal_of_map_le (L : Fld) (h : ∀ s : Qb ≃ₐ[ℚ] Qb, L.map (s : Qb →ₐ[ℚ] Qb) ≤ L) : Normal ℚ L := IntermediateField.normal_iff_forall_map_le'.2 h
-
-theorem normal_adjoin {S : Set Qb} (hS : ∀ (s : Qb ≃ₐ[ℚ] Qb), ∀ x ∈ S, s x ∈ S) : Normal ℚ (adjoin ℚ S) := by
-  apply normal_of_map_le
-  intro s
-  rw [IntermediateField.adjoin_map]
-  refine IntermediateField.adjoin_le_iff.2 ?_
-  rintro x ⟨y, hy, rfl⟩
-  exact IntermediateField.subset_adjoin ℚ S (hS s y hy)
-
 instance fin_sqQ (m : ℤ) : FiniteDimensional ℚ (sqQ m) := fin_adjoin (finite_pow_eq 2 (by norm_num) _)
 
 instance normal_sqQ (m : ℤ) : Normal ℚ (sqQ m) := normal_adjoin fun s x hx => by
   show (s x) ^ 2 = (m : Qb)
   rw [← map_pow, show x ^ 2 = (m : Qb) from hx, map_intCast]
 
-
-open Classical in
-def embQ {φ : Formalism.HC.Frame} (H : Formalism.HC.HostRaw φ) (g : φ.GG) : H.EQ →ₐ[ℚ] Qb :=
-  if h : ∃ s : H.EQ →ₐ[ℚ] Qb, H.ActsAs s g then h.choose else H.EQ.val
-
 instance fintypePsi (φ : Formalism.HC.Frame) : Fintype φ.Psi := Fintype.ofFinite _
-
-def hostFields {φ : Formalism.HC.Frame} (H : Formalism.HC.HostRaw φ) (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL]
-    (hE : H.EQ ≤ LL) : Fields where
-  F := H.FQ
-  E := H.EQ
-  K := CoF ι LL
-  nfF := { to_charZero := inferInstance, to_finiteDimensional := H.fin_FQ }
-  nfE := { to_charZero := inferInstance, to_finiteDimensional := H.fin_EQ }
-  algFE := (inclusion H.FQ_le_EQ).toRingHom.toAlgebra
-  starE := starLL ι H.EQ
-  Tau := φ.Psi
-  emb := fun g => (tauLL hE (embQ H (g : φ.GG))).toRingHom
-
 
 end Formalism.L2.Col

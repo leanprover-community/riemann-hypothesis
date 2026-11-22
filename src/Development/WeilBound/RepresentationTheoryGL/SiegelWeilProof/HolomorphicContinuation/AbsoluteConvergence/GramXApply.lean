@@ -74,9 +74,6 @@ theorem trace_scal (ε : Fin m → Bool) (X : Fin n → ℝ) (h : ℝ) (b : Matr
     simp only [mul_assoc], hAB, one_mul, trace_mul_comm,
     show b * (gramX ε y * B) * A = b * gramX ε y * (B * A) by simp only [mul_assoc], hBA, mul_one]
 
-theorem ept_true (v : Fin m → Fin n → ℂ) (a : Fin m) (j : Fin n) : ept v (a, j, true) = star (v a j) := rfl
-theorem ept_false (v : Fin m → Fin n → ℂ) (a : Fin m) (j : Fin n) : ept v (a, j, false) = v a j := rfl
-
 theorem evX_dil (c : ℝ) (X : Fin n → ℝ) (Q : PX m n) (v : Fin m → Fin n → ℂ) :
     evX (dil c X Q) v = ((m : ℂ) * ∑ j, (X j : ℂ)) * evX Q v +
       ∑ k, eval (ept v) (pderiv k Q) * ((X k.2.1 : ℂ) * ept v k) -

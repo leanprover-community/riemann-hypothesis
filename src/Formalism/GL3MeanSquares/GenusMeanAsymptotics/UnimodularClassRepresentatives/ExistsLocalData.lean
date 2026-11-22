@@ -19,8 +19,6 @@ variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberFi
 variable {V : Type} [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-
 theorem bddAbove_vF {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {n : 𝓞 F} (hn : n ≠ 0) :
     BddAbove {e : ℕ | n ∈ 𝔭 ^ e} := by
   refine ⟨Ideal.absNorm (Ideal.span {n}), fun e he => ?_⟩

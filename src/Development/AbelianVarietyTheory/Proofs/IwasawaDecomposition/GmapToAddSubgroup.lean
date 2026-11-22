@@ -33,9 +33,6 @@ theorem twO_gmap (φ : W ≃ₗ[E] W) (M : Submodule (𝓞 E) W) (c : ℕ) (e : 
   rw [apply_mem_gmap, ThShape.mem_twO, ThShape.mem_twO]
   exact forall_congr' fun Q => by rw [← map_smul, apply_mem_locP]
 
-theorem gmap_toAddSubgroup (φ : W ≃ₗ[E] W) (M : Submodule (𝓞 E) W) :
-    (gmap φ M).toAddSubgroup = M.toAddSubgroup.map φ.toLinearMap.toAddMonoidHom := rfl
-
 variable {a b : ℕ} (γ : Sp E a ≃ₗ[E] Sp E a) (γ' : Sp E b ≃ₗ[E] Sp E b)
 
 def conjH : HomE E a b ≃ₗ[E] HomE E a b := LinearEquiv.arrowCongr γ γ'

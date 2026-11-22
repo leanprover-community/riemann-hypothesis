@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AutomorphicArithmetic.LocalEmbeddings.StageGeoDefs
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AutomorphicArithmetic.DivisorFrames.ExistsThOEqOfIsLatVacThetaFun
 public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.ThetaIntegralsAgree
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels

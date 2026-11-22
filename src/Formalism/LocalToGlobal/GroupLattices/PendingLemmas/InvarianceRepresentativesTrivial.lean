@@ -146,11 +146,6 @@ theorem kapG_ne_zero (j : ℕ) (c : X.Lv.comp j) (γ : (X.Lv.lev j c).Γ) : kapG
   rw [kapG_eq]
   exact mul_ne_zero (mul_ne_zero (chiC_ne_zero X Kc j c γ) (cA_ne_zero X Kc j _)) (pPart_ne_zero X hp0 j _)
 
-theorem kapG_one (j : ℕ) (c : X.Lv.comp j) : kapG X Kc j c 1 = 1 := by
-  have h := kapG_mul X Kc hp0 j c 1 1
-  rw [mul_one] at h
-  exact (mul_eq_left₀ (kapG_ne_zero X Kc hp0 j c 1)).1 h.symm
-
 omit hp0
 
 variable (hfin : ∀ j c, (X.Lv.lev j c).FinClasses)
@@ -248,10 +243,6 @@ variable (hfin : ∀ j c, (X.Lv.lev j c).FinClasses)
 def thGeo (j : ℕ) (La : X.Lt j) (La' : X.Lt (j + 1)) : MvPowerSeries (X.ZA j) Kc :=
   SA X Kc j (gamAt X j La.1 (delt X hfin j La.1 La.2))
     (ThR j (La.1, (X.Lv.lev j La.1).smul (delt X hfin j La.1 La.2)⁻¹ La.2) La')
-
-theorem gamAt_one (j : ℕ) (c : X.Lv.comp j) : gamAt X j c 1 = fun _ => 1 := by
-  funext v
-  cases j <;> exact map_one _
 
 end Geo
 

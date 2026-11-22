@@ -28,7 +28,6 @@ def evalCone {F : Type*} [CommRing F] (z : Cone n F) (f : MvPolynomial (Coord n)
 
 def BlockNonzero {F : Type*} [Zero F] (z : Cone n F) : Prop := ∀ k, z k ≠ 0
 
-
 variable (n) in
 structure ArithVariety (n : ι → ℕ) where
 
@@ -50,22 +49,7 @@ def ZariskiDense (P : ArithVariety n) (S : Set (Cone n (AlgebraicClosure ℚ))) 
   ∀ (m : ι → ℕ) (f : MvPolynomial (Coord n) ℤ), IsWeightedHomogeneous (coordDeg n) f m →
     (∀ z ∈ S, evalCone z f = 0) → f ∈ P.ideal
 
-
-variable (n) in
-def whole : ArithVariety n where
-  ideal := ⊥
-  isPrime := Ideal.isPrime_bot
-  homogeneous f hf m := by
-    rw [Submodule.mem_bot] at hf ⊢
-    rw [hf, map_zero]
-  relevant k := ⟨0, by rw [Submodule.mem_bot]; exact X_ne_zero _⟩
-  horizontal a ha := by
-    rw [Submodule.mem_bot] at ha
-    exact C_eq_zero.mp ha
-
-
 end ArithVariety
-
 
 variable (n) in
 structure HermLine (n : ι → ℕ) where
@@ -105,7 +89,6 @@ theorem contDiffOn_l2Norm_block (k : ι) :
 
 namespace HermLine
 
-
 variable (n) in
 def standard : HermLine n where
   deg _ := 1
@@ -114,7 +97,6 @@ def standard : HermLine n where
   metric_smul c z _ _ := by
     simp only [vectorL2Norm_const_mul, zpow_one, Finset.prod_mul_distrib]
   metric_smooth := contDiffOn_prod fun k _ ↦ contDiffOn_l2Norm_block k
-
 
 end HermLine
 
@@ -147,27 +129,6 @@ def finiteTerm {L : Type*} [Field L] [NumberField L] (A : HermLine n) (v : Finit
 def chartMonomial (c : (k : ι) → Fin (n k + 1)) (d : ι → ℕ) : MvPolynomial (Coord n) ℤ :=
   ∏ k, X ⟨k, c k⟩ ^ d k
 
-def IsChartForm (P : ArithVariety n) (a : ι → ℤ) (num den : MvPolynomial (Coord n) ℤ)
-    (c : (k : ι) → Fin (n k + 1)) (d : ι → ℕ) (e : MvPolynomial (Coord n) ℤ) : Prop :=
-  (∃ δ : ι → ℕ, IsWeightedHomogeneous (coordDeg n) e δ ∧ ∀ k, (δ k : ℤ) = a k + d k) ∧
-    den * e - num * chartMonomial c d ∈ P.ideal
-
-structure IntegralSection (P : ArithVariety n) (a : ι → ℤ) where
-
-  num : MvPolynomial (Coord n) ℤ
-
-  den : MvPolynomial (Coord n) ℤ
-
-  numDeg : ι → ℕ
-
-  denDeg : ι → ℕ
-  num_isHomogeneous : IsWeightedHomogeneous (coordDeg n) num numDeg
-  den_isHomogeneous : IsWeightedHomogeneous (coordDeg n) den denDeg
-  deg_eq : ∀ k, (numDeg k : ℤ) - denDeg k = a k
-  den_not_mem : den ∉ P.ideal
-  regular : ∀ c : (k : ι) → Fin (n k + 1), (∀ k, (X ⟨k, c k⟩ : MvPolynomial (Coord n) ℤ) ∉ P.ideal) →
-    ∃ (d : ι → ℕ) (e : MvPolynomial (Coord n) ℤ), IsChartForm P a num den c d e
-
 theorem isWeightedHomogeneous_chartMonomial (c : (k : ι) → Fin (n k + 1)) (d : ι → ℕ) :
     IsWeightedHomogeneous (coordDeg n) (chartMonomial c d) d := by
   have h := IsWeightedHomogeneous.prod Finset.univ
@@ -183,25 +144,6 @@ theorem isWeightedHomogeneous_chartMonomial (c : (k : ι) → Fin (n k + 1)) (d 
 namespace IntegralSection
 
 variable {P : ArithVariety n} {a : ι → ℤ}
-
-
-variable (P) in
-def chartSection (c : (k : ι) → Fin (n k + 1)) : IntegralSection P (fun _ ↦ 1) where
-  num := chartMonomial c 1
-  den := 1
-  numDeg := 1
-  denDeg := 0
-  num_isHomogeneous := isWeightedHomogeneous_chartMonomial c 1
-  den_isHomogeneous := isWeightedHomogeneous_one ℤ (coordDeg n)
-  deg_eq k := by simp
-  den_not_mem := (Ideal.ne_top_iff_one _).mp P.isPrime.ne_top
-  regular _ _ := ⟨0, chartMonomial c 1,
-    ⟨⟨1, isWeightedHomogeneous_chartMonomial c 1, fun k ↦ by simp⟩, by simp [chartMonomial]⟩⟩
-
-def SupNormLE (A : HermLine n) (s : IntegralSection P A.deg) (C : ℝ) : Prop :=
-  ∀ z ∈ P.points ℂ, ∀ (c : (k : ι) → Fin (n k + 1)) (d : ι → ℕ) (e : MvPolynomial (Coord n) ℤ),
-    IsChartForm P A.deg s.num s.den c d e → (∀ k, z k (c k) ≠ 0) →
-    ‖evalCone z e‖ / (‖evalCone z (chartMonomial c d)‖ * A.metric z) ≤ Real.exp C
 
 end IntegralSection
 

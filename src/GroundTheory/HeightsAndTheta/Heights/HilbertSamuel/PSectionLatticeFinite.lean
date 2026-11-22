@@ -134,7 +134,6 @@ theorem secM_fg (y : (Σ k, ι k) → Ω) (d : K → ℕ) : (secM y d).FG := by
   have := isNoetherian_of_le hle
   exact Module.Finite.iff_fg.mp inferInstance
 
-
 omit [∀ k, Fintype (ι k)] in
 theorem chartLat_le_nm (y : (Σ k, ι k) → Ω) (a : K → ℤ) (τ : ℕ) : chartLat y a τ ≤ chartLatNm y a τ :=
   fun _ hs c hc => isIntegral_algebraMap (x := (⟨_, hs c hc⟩ : chartRingZ y c))
@@ -172,14 +171,12 @@ omit [Fintype K] in
 theorem mem_fnField (y : (Σ k, ι k) → Ω) {s : Ω} : s ∈ fnField y ↔ ∃ (d : K → ℕ) (g h : MRing ι),
     IsMultiHomog g d ∧ IsMultiHomog h d ∧ aeval y h ≠ 0 ∧ aeval y g = s * aeval y h := Iff.rfl
 
-
 omit [Fintype K] in
 open Classical in
 theorem ratio_mem (y : (Σ k, ι k) → Ω) (p : Σ k, ι k) (q : ι p.1) (hq : y ⟨p.1, q⟩ ≠ 0) :
     y p / y ⟨p.1, q⟩ ∈ fnField y :=
   ⟨Pi.single p.1 1, X p, X ⟨p.1, q⟩, homog_X p, homog_X ⟨p.1, q⟩, by rw [aeval_X]; exact hq,
     by rw [aeval_X, aeval_X, div_mul_cancel₀ _ hq]⟩
-
 
 omit [Fintype K] in
 theorem chartRingZ_le (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) {x : Ω}
@@ -200,9 +197,6 @@ def yr (y : (Σ k, ι k) → Ω) (c0 : ∀ k, ι k) (hc0 : ∀ k, y ⟨k, c0 k�
 section Rescaled
 
 variable (y : (Σ k, ι k) → Ω) (c0 : ∀ k, ι k) (hc0 : ∀ k, y ⟨k, c0 k⟩ ≠ 0)
-
-omit [Fintype K] in
-theorem coe_yr (p : Σ k, ι k) : (yr y c0 hc0 p : Ω) = y p / y ⟨p.1, c0 p.1⟩ := rfl
 
 omit [Fintype K] in
 theorem yr_self (k : K) : yr y c0 hc0 ⟨k, c0 k⟩ = 1 :=
@@ -241,7 +235,6 @@ theorem birational_yr : Birational (yr y c0 hc0) := by
     rw [Subfield.coe_mul, coe_aeval_yr_homog y c0 hc0 hg, coe_aeval_yr_homog y c0 hc0 hh, hgs]
     show _ = s * _
     ring
-
 
 omit [Fintype K] in
 theorem map_chartRingZ_yr (c : ∀ k, ι k) :

@@ -22,25 +22,11 @@ namespace DefFam
 
 variable {T T' J : Type} (F : DefFam K G Pl0 T J)
 
-def comap (f : T' → T) (μ0' : T') : DefFam K G Pl0 T' J where
-  v0 := F.v0
-  μ0 := μ0'
-  X := F.X
-  R t := F.R (f t)
-  L j t := F.L j (f t)
-  tr := F.tr
-
 end DefFam
 
 namespace DefFam3
 
 variable {I0 Ty T T' J : Type} (F3 : DefFam3 K G Pl0 I0 Ty T J)
-
-def comap (f : T' → T) (μ0' : T') : DefFam3 K G Pl0 I0 Ty T' J where
-  F := F3.F.comap f μ0'
-  RI t := F3.RI (f t)
-  LI j t := F3.LI j (f t)
-  trI := F3.trI
 
 end DefFam3
 
@@ -94,13 +80,6 @@ variable (v0 : InfinitePlace X.K) {TU TC : Finset (Tup X.F X.E X.K S)} (h : TU �
   (Xg : Finset (Col.G0 X.E Pr.vGs R.r → X.K)) (S0 : Set (HeightOneSpectrum (𝓞 X.E)))
   (xiVal : Tup X.F X.E X.K S → HeightOneSpectrum (𝓞 X.E) → X.Kˣ)
   (trIv : Fin R.m → (Col.LevOffI ∅ Pr.vGs S0 × List ℕ → X.K) → Col.LevOffI ∅ Pr.vGs S0 × List ℕ → X.K)
-
-
-
-
-
-
-
 
 variable (Zs : DefSub (colFam3 W Ch sel hX v0 TC Xg S0 xiVal trIv).amb3)
 

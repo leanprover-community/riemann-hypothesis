@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.LocalToGlobal.Columns.ToHLatLemmas
 public import Formalism.LocalToGlobal.Columns.AtTRank
-public import Formalism.LocalToGlobal.Columns.DiamondPreservesRamified
 public import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.LengthQuotientBoundGeneral
 

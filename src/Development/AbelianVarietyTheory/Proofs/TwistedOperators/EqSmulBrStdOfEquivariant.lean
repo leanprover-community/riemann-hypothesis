@@ -292,9 +292,6 @@ theorem resRep_id_apply {N n : ℕ} (hN : N = n + 1) (lam : DomWeight N) (g : GL
     GlobalTheory.Branching.resRep (MonoidHom.id (GL (Fin n) ℂ)) hN.symm lam g x =
       GlobalTheory.Branching.sqRep ℂ N lam (Formalism.MainNotions.PrimeDegreeVariant.embGL ℂ n N hN.symm g) x := rfl
 
-theorem smallRep_id_apply {n : ℕ} (sg : DomWeight n) (g : GL (Fin n) ℂ) (x : nablaSq ℂ n sg) :
-    GlobalTheory.Branching.smallRep (MonoidHom.id (GL (Fin n) ℂ)) sg g x = GlobalTheory.Branching.sqRep ℂ n sg g x := rfl
-
 theorem embGL_update {ι : Type} [DecidableEq ι] {N n : ℕ} (hN : N = n + 1) (τ₀ : ι) (g : GL (Fin n) ℂ) :
     (fun τ => Formalism.MainNotions.PrimeDegreeVariant.embGL ℂ n N hN.symm (Function.update (1 : ι → GL (Fin n) ℂ) τ₀ g τ)) =
       Function.update (1 : ι → GL (Fin N) ℂ) τ₀ (Formalism.MainNotions.PrimeDegreeVariant.embGL ℂ n N hN.symm g) := by

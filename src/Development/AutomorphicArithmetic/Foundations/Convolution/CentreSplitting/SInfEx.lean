@@ -3,7 +3,7 @@ module
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.DefsObj
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ExCusp
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.SInfIff
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.TemperedLocalComponents.AutBridge
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.GalUnitary
 
 @[expose] public section
 

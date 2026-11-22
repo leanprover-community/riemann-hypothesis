@@ -98,8 +98,6 @@ theorem map_expS {n : ℕ} (g : PS S n d) (hg : constantCoeff g = 0) :
 
 variable {O : Type} [CommRing O] [StarRing O]
 
-theorem hid (R : Type) [CommRing R] : algebraMap R R = RingHom.id R := rfl
-
 theorem const_comp1_act (B : FB S d O) (a : O) (i : Fin d) :
     constantCoeff (comp1 (B.actK S a) (pt S (n := 1) d 0) i) = 0 := by
   have h1 : ∀ j l, constantCoeff ((![pt S (n := 1) d 0] : Fin 1 → Pt S 1 d) j l) = 0 := by

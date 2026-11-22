@@ -36,10 +36,4 @@ theorem fg_of_isNzFamily {Em : Type} [Field Em] [NumberField Em] {N : ℕ} {I : 
     exact Subtype.ext (smul_right_injective _ (by exact_mod_cast hm) h1)
   exact (Submodule.fg_top I).1 (fg_of_injective (N := ⊤) f hf)
 
-theorem TorusIndex.proof (hA : EigenLatDifferent.Statement) (hB : DifferentLatIndex.Statement) :
-    TorusIndex.Statement := by
-  intro Em _ _ K _ _ ι hι N I ρ v hv s
-  rw [hA Em K ι hι N I (fg_of_isNzFamily hv) s]
-  exact hB Em K N I ρ v hv s
-
 end GroundTheory.Heights₂.Heights.NineStatements

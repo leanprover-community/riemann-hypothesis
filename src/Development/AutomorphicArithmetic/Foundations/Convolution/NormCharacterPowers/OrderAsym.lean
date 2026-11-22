@@ -18,13 +18,6 @@ structure Cover (l : ℕ) {W W' : Type} (q : W → ℕ) (q' : W' → ℕ) (u : W
   fib : ∀ v, (Nat.card {w // u w = v} = l ∧ (∀ w, u w = v → f w = 1) ∧ c v = 1) ∨
     (Nat.card {w // u w = v} = 1 ∧ (∀ w, u w = v → f w = l) ∧ IsPrimitiveRoot (c v) l)
 
-def OrderAsym : Prop := ∀ (F : ℂ → ℂ) (S : ℝ → ℂ) (δ : ℕ), AnalyticAt ℂ F 1 →
-  (∀ σ₁ : ℝ, 1 < σ₁ → ∃ M : ℝ, ∀ σ : ℝ, σ₁ ≤ σ → ‖S σ‖ ≤ M) →
-  (∀ σ : ℝ, 1 < σ → F σ = ((σ : ℂ) - 1) ^ δ * Complex.exp (S σ)) →
-    ∃ (k : ℕ) (M : ℝ), ∀ σ : ℝ, 1 < σ → σ ≤ 2 → |(S σ).re - ((δ : ℝ) - k) * (-Real.log (σ - 1))| ≤ M
-
-
-
 open Classical in
 def LogAsym : Prop := ForSys fun q X _ A =>
   letI : DecidableEq X := Classical.decEq X
@@ -43,7 +36,6 @@ def BCSum : Prop := ∀ (l : ℕ) (W W' : Type) (q : W → ℕ) (q' : W' → ℕ
     (∀ w (k : ℕ), ∑ a, ξ w a ^ k = ∑ a, α (u w) a ^ (f w * k)) → (∀ w (k : ℕ), ∑ b, ζ w b ^ k = ∑ b, β (u w) b ^ (f w * k)) →
     (Summable fun p => ‖lterm q α β σ p‖) → (Summable fun p => ‖lterm q' ξ ζ σ p‖) ∧
       ∑' p, lterm q' ξ ζ σ p = ∑ j ∈ Finset.range l, ∑' p, lterm q α (fun v b => β v b * c v ^ j) σ p
-
 
 open Classical in
 def AbsCount : Prop := ∀ (l : ℕ) (W W' : Type) (q : W → ℕ) (q' : W' → ℕ) (u : W' → W) (f : W' → ℕ) (c : W → ℂ), 1 ≤ l →

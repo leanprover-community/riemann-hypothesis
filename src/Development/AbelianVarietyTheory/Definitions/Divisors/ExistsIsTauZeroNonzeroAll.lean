@@ -53,7 +53,6 @@ theorem IsAdm.spans {R : ℕ} (hR : 1 < R) {n : ℕ} {x₀ : Fin n → Dw.La} (h
     EtaAn.Spans (shiftFam R x₀ : (Fin n → LatMod Dw R) → Fin n → LatMod Dw (R ^ 4)) := fun u =>
   (EtaCard.card_levGrp_and_span E H Dw R hR).2.2.2.2.2.2 n x₀ h u (LinearEquiv.refl _ _)
 
-
 variable (Dw) in
 theorem exists_isAdm {R : ℕ} (hR : 1 < R) : ∃ x₀ : Fin (Dw.p + Dw.q) → Dw.La, IsAdm R x₀ :=
   (EtaCard.card_levGrp_and_span E H Dw R hR).2.2.2.2.2.1
@@ -73,10 +72,6 @@ def IsTauRule (R : ℕ) {J : Type} [Fintype J] {n : ℕ} (cf : J → ℤ) (x : J
 
 def IsGenRule (R : ℕ) {n : ℕ} (x₀ : Fin n → Dw.La) (u : Fin n → LatMod Dw R) (f : Rul Xo c) : Prop :=
   IsTauRule Xo c R (fun _ : Unit => 1) (fun _ => shiftFam R x₀ u) f
-
-def IsTauZero (R : ℕ) [Fintype (LatMod Dw R)] {n : ℕ} (x₀ : Fin n → Dw.La) (cf : (Fin n → LatMod Dw R) → ℤ)
-    (f : Rul Xo c) : Prop :=
-  IsTauRule Xo c R cf (shiftFam R x₀) f
 
 variable {Xo c}
 
@@ -150,7 +145,6 @@ theorem exists_cover (hR : Odd R) (hM : R ^ 4 ∣ l.M) {S : Type} [CommRing S] [
   choose w hw using fun q => (existsUnique_nullVal GlobalTheory.firstFiveLaws.1 hR hev.2.1 q).exists
   exact ⟨B, inferInstance, inferInstance, φ, y', ev, w, hφ, hm, hev, hw⟩
 
-
 variable (cf x) in
 theorem exists_tauValAt (hR : Odd R) (hM : R ^ 4 ∣ l.M) {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S) :
     ∃ v, TauValAt Xo c R cf x y v := by
@@ -185,7 +179,6 @@ theorem TauValAt.frBor {S : Type} [CommRing S] [Algebra c.F S] {t : Ix Dw → S�
   refine ⟨S', _, _, φ, z', ev', fun q => φ (t none) * w q, hφ, hz', hev', fun q => ?_, ?_⟩
   · exact NullValue.triangular hb (ev q) (ev' q) (he q) (hw q)
   · rw [tauExpr_scale, map_mul, map_pow, hv]
-
 
 variable (Xo c cf x) in
 theorem existsUnique_isTauRule (hR : Odd R) (hM : R ^ 4 ∣ l.M) : ∃! f, IsTauRule Xo c R cf x f :=

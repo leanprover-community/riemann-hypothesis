@@ -2,9 +2,7 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAlgAtlasAtlasOf
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MSmoothOfWeightIffIsCInf
 public import ReciprocityTheory.AnalyticForms.LeviForms.Energy
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ProdProofA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential

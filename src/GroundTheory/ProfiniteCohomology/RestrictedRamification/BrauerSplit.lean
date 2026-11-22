@@ -22,8 +22,6 @@ open CategoryTheory NumberField IsDedekindDomain IntermediateField GroundTheory.
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 section TowerInfl
 
 variable {k L : Type} [Field k] [Field L] [Algebra k L] [IsGalois k L] (M : IntermediateField k L)
@@ -126,7 +124,6 @@ theorem gsRestrict_comp_galToFixing :
   exact (gsRestrict_apply K S (galToFixing K σ) y).trans
     (AlgEquiv.restrictNormal_commutes σ (maxUnramifiedOutside K.1 ℚ̄ S) y).symm
 
-
 set_option maxHeartbeats 1000000 in
 theorem gsBrauerInfl_injective : Function.Injective (gsBrauerInfl K S 2).hom := by
   set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
@@ -175,7 +172,6 @@ theorem gsBrauerInfl_comp_unitsLocalRes (n : ℕ) :
     (gsUnitsMor_comp_unitsLocalMor_hom_apply K S ι) n
 
 end Local
-
 
 set_option maxHeartbeats 2000000 in
 theorem brauerLocal_gsBrauerInfl_inr (ιs : LocalEmbeddings K) (v : HeightOneSpectrum (𝓞 K.1))
@@ -238,11 +234,9 @@ instance isDiscreteRep_quotientToInvariants_fixingSubgroupOf :
     IsDiscreteRep ((unitsLimitRep K).quotientToInvariants (fixingSubgroupOf K E)) :=
   isDiscreteRep_quotientToInvariants_of_normal _ _
 
-
 variable (E) in
 abbrev unitsInvariantsOf :=
   Representation.invariants ((unitsLimitRep K).ρ.comp (fixingSubgroupOf K E).subtype)
-
 
 omit [IsGalois K.1 E.1] in
 theorem mem_of_mem_invariants (hE : ∀ x ∈ E.1, x ∈ maxUnramifiedOutside K.1 ℚ̄ S)

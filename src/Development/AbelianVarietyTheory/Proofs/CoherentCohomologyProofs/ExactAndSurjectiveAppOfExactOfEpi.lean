@@ -169,7 +169,6 @@ instance isQuasicoherent_pair_obj [M.IsQuasicoherent] [N.IsQuasicoherent]
     (j : Discrete WalkingPair) : ((pair M N).obj j).IsQuasicoherent := by
   obtain ⟨_ | _⟩ := j <;> assumption
 
-
 instance isQuasicoherent_cokernel (φ : M ⟶ N) [M.IsQuasicoherent] [N.IsQuasicoherent] :
     (cokernel φ).IsQuasicoherent :=
   isQuasicoherent_colimit _
@@ -345,10 +344,6 @@ end Cover
 
 section Subcategory
 
-
-variable (X) in
-abbrev qcoh : ObjectProperty X.Modules := fun M ↦ M.IsQuasicoherent
-
 end Subcategory
 
 section Equivs
@@ -356,12 +351,6 @@ section Equivs
 theorem range_kernel_ι_app (φ : M ⟶ N) (U : X.Opens) :
     LinearMap.range (appLinear (kernel.ι φ) U) = LinearMap.ker (appLinear φ U) :=
   Submodule.ext fun s ↦ (exact_kernel_ι_app φ U s).symm
-
-def kernelSectionsEquiv (φ : M ⟶ N) (U : X.Opens) :
-    Γ(kernel φ, U) ≃ₗ[Γ(X, U)] LinearMap.ker (appLinear φ U) :=
-  (LinearEquiv.ofInjective (appLinear (kernel.ι φ) U) (injective_kernel_ι_app φ U)).trans
-    (LinearEquiv.ofEq _ _ (range_kernel_ι_app φ U))
-
 
 theorem app_sum {ι : Type w} (t : Finset ι) (φ : ι → (M ⟶ N)) (U : X.Opens) (s : Γ(M, U)) :
     (∑ i ∈ t, φ i).app U s = ∑ i ∈ t, (φ i).app U s := by
@@ -390,23 +379,6 @@ def biproductSectionsEquiv {ι : Type} [Fintype ι] (F : ι → X.Modules) [HasB
 theorem biproductSectionsEquiv_symm_apply {ι : Type} [Fintype ι] (F : ι → X.Modules)
     [HasBiproduct F] (U : X.Opens) (s : ∀ i, Γ(F i, U)) :
     (biproductSectionsEquiv F U).symm s = ∑ i, (biproduct.ι F i).app U (s i) := rfl
-
-def biprodSectionsEquiv (M N : X.Modules) (U : X.Opens) :
-    Γ(M ⊞ N, U) ≃ₗ[Γ(X, U)] Γ(M, U) × Γ(N, U) where
-  toLinearMap := LinearMap.prod (appLinear biprod.fst U) (appLinear biprod.snd U)
-  invFun s := (biprod.inl : M ⟶ M ⊞ N).app U s.1 + (biprod.inr : N ⟶ M ⊞ N).app U s.2
-  left_inv s := by
-    change (biprod.fst ≫ biprod.inl + biprod.snd ≫ biprod.inr : M ⊞ N ⟶ M ⊞ N).app U s = s
-    rw [biprod.total]
-    rfl
-  right_inv s := by
-    ext
-    · change (biprod.fst : M ⊞ N ⟶ M).app U _ = _
-      rw [map_add (f := _), app_app, app_app, biprod.inl_fst, biprod.inr_fst]
-      exact add_zero _
-    · change (biprod.snd : M ⊞ N ⟶ N).app U _ = _
-      rw [map_add (f := _), app_app, app_app, biprod.inl_snd, biprod.inr_snd]
-      exact zero_add _
 
 end Equivs
 

@@ -15,15 +15,8 @@ section SlopeTestRemainingChoices
 
 variable {R S : Type} [CommRing R] [CommRing S] {a b : ℕ}
 
-private theorem blk_val (x : GL (Fin a) R) (y : GL (Fin b) R) :
-    (blk x y).val = Matrix.reindex finSumFinEquiv finSumFinEquiv (Matrix.fromBlocks x.val 0 0 y.val) := rfl
-
 private theorem blk_inv_val (x : GL (Fin a) R) (y : GL (Fin b) R) :
     (blk x y)⁻¹ = blk x⁻¹ y⁻¹ := Units.ext rfl
-
-private theorem wGL_val :
-    (wGL R).val = Matrix.reindex finSumFinEquiv finSumFinEquiv
-      (Matrix.fromBlocks 0 (1 : Matrix (Fin 2) (Fin 2) R) 1 0) := rfl
 
 private theorem wGL_inv : (wGL R)⁻¹ = wGL R := Units.ext rfl
 

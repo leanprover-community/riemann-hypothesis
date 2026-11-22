@@ -16,8 +16,6 @@ section cont
 
 variable {l : ℕ} [Fact l.Prime]
 
-local notation "φi" => RingEquiv.symm (_root_.frobeniusEquiv (PreTilt (normInteger ℂ_[l]) l) l)
-
 theorem exists_coe_eq_untilt_pFlat (m : ℕ) : ∃ z : PadicAlgCl l,
     (z : ℂ_[l]) = ((PreTilt.untilt (φi^[m] (pFlat l)) : normInteger ℂ_[l]) : ℂ_[l]) := by
   have hN : l ^ m ≠ 0 := pow_ne_zero _ (Fact.out : l.Prime).ne_zero

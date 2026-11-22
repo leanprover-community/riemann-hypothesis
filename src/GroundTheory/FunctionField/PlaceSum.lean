@@ -50,9 +50,6 @@ namespace Place
 variable {k K K' : Type*} [Field k] [Field K] [Field K'] [Algebra k K] [Algebra k K']
   [Algebra K K'] [IsScalarTower k K K']
 
-noncomputable abbrev algebraExt (v : Place k K) : Algebra v.ring K' :=
-  ((algebraMap K K').comp (algebraMap v.ring K)).toAlgebra
-
 attribute [local instance low] algebraExt
 
 omit [Algebra k K'] [IsScalarTower k K K'] in
@@ -119,7 +116,6 @@ theorem ne_bot_of_mem_primesOver {q : Ideal (integralClosure v.ring K')}
 noncomputable def primeHS (q : (maximalIdeal v.ring).primesOver (integralClosure v.ring K')) :
     HeightOneSpectrum (integralClosure v.ring K') :=
   ⟨q.1, q.2.1, v.ne_bot_of_mem_primesOver q.2⟩
-
 
 omit [IsScalarTower k K K'] [IsFunctionField k K] [FiniteDimensional K K'] [Algebra.IsSeparable K K'] in
 theorem mem_of_isIntegral_of_liesOver {w : Place k K'} (h : w.LiesOver v) {x : K'}
@@ -300,7 +296,6 @@ theorem ramificationIdx_primeOfPlace_eq
   rw [WithZero.log_exp, nsmul_eq_mul, mul_neg_one] at hlog
   change _ = (-WithZero.log ((v.placeOfPrime q).valuation (algebraMap K K' v.uniformizer))).toNat
   rw [← hlog, neg_neg, Int.toNat_natCast]
-
 
 omit [IsFunctionField k K'] in
 theorem inertiaDeg_primeOfPlace_eq

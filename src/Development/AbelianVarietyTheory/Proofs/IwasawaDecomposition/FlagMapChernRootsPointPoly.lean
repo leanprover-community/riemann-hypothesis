@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SchubGamApply
 public import Formalism.DegreeFormula.PointDegree.PermExpInj
-public import Development.AbelianVarietyTheory.Definitions.Foundations.CurveCl
 
 @[expose] public section
 

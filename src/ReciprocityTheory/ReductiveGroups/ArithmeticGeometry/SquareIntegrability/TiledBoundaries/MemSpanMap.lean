@@ -26,8 +26,6 @@ section PiR
 def piR (X : PT E) {q : ℕ} {π : Vsp X.dim →ₗ[ℂ] Vsp X.dim} (hq : 1 ≤ q) (hπ : IsPi X q π) : Vsp X.dim ≃ₗ[ℝ] Vsp X.dim :=
   LinearEquiv.ofBijective (π.restrictScalars ℝ) (pi_bij X hq hπ)
 
-theorem piR_apply (X : PT E) {q : ℕ} {π : Vsp X.dim →ₗ[ℂ] Vsp X.dim} (hq : 1 ≤ q) (hπ : IsPi X q π) (v : Vsp X.dim) : piR X hq hπ v = π v := rfl
-
 def bP (X : PT E) {q : ℕ} {π : Vsp X.dim →ₗ[ℂ] Vsp X.dim} (hq : 1 ≤ q) (hπ : IsPi X q π) : Basis (Fin (2 * Fintype.card (Idx X.dim))) ℝ (Vsp X.dim) := X.b.map (piR X hq hπ).symm
 
 theorem mem_P (X : PT E) {q : ℕ} {π : Vsp X.dim →ₗ[ℂ] Vsp X.dim} (hq : 1 ≤ q) (hπ : IsPi X q π) (x : Vsp X.dim) : x ∈ span ℤ (range (bP X hq hπ)) ↔ π x ∈ X.L := by
@@ -60,8 +58,6 @@ def Ui (X : PT E) {q : ℕ} {π : Vsp X.dim →ₗ[ℂ] Vsp X.dim} (hq : 1 ≤ q
     show ‖(Real.sqrt q)⁻¹ • π x‖ = ‖x‖
     rw [norm_smul, norm_pi X hπ, Real.norm_eq_abs, abs_inv, abs_of_pos (sqrt_q_pos hq), ← mul_assoc,
       inv_mul_cancel₀ (sqrt_q_pos hq).ne', one_mul]
-
-theorem Ui_apply (X : PT E) {q : ℕ} {π : Vsp X.dim →ₗ[ℂ] Vsp X.dim} (hq : 1 ≤ q) (hπ : IsPi X q π) (x : Vsp X.dim) : Ui X hq hπ x = (Real.sqrt q)⁻¹ • π x := rfl
 
 theorem piR_preimage (X : PT E) {q : ℕ} {π : Vsp X.dim →ₗ[ℂ] Vsp X.dim} (hq : 1 ≤ q) (hπ : IsPi X q π) (S : Set (Vsp X.dim)) :
     piR X hq hπ ⁻¹' S = Ui X hq hπ ⁻¹' ((fun x => Real.sqrt q • x) ⁻¹' S) := by

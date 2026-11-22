@@ -35,10 +35,6 @@ theorem da_mulVec (y : Fin k → Fin n → A) (v : Fin n → A) (i : Fin k) :
     Matrix.map_apply, Matrix.of_apply, Finset.sum_mul]
   rw [Finset.sum_comm]
 
-theorem da_row (y : Fin k → Fin n → A) (j : Fin k) (q : Fin n) :
-    (Formalism.UG.cT σ (daB y) * J) j q = hrow σ J (y j) q := by
-  simp only [Matrix.mul_apply, Formalism.UG.cT, hrow, daB, Matrix.transpose_apply, Matrix.map_apply, Matrix.of_apply]
-
 theorem da_sum (x y : Fin k → Fin n → A) (M : Matrix (Fin k) (Fin k) A) :
     ∑ i, ∑ j, M i j • Matrix.vecMulVec (x i) (hrow σ J (y j)) = daP σ J x y M := by
   ext p q

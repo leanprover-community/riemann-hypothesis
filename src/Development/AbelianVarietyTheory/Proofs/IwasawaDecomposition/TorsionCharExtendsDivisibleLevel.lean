@@ -39,15 +39,7 @@ variable (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C]
 
 end Ring
 
-theorem sp_id (A : Type) [CommRing A] : spMap (RingHom.id A) = 𝟙 _ := Spec.map_id _
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {X : Scheme.{0}}
   (t : SAB H X)
-
-def pull {S S' : Scheme.{0}} {a : S ⟶ X} {a' : S' ⟶ X} (g : S' ⟶ S) (h : g ≫ a = a') :
-    (Over.mk a ⟶ t.G) →* (Over.mk a' ⟶ t.G) where
-  toFun w := (Over.homMk g h : Over.mk a' ⟶ Over.mk a) ≫ w
-  map_one' := MonObj.comp_one _
-  map_mul' _ _ := MonObj.comp_mul _ _ _
 
 end GlobalTheory.TorsCharExt

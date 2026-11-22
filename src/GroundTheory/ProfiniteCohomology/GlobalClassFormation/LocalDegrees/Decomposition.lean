@@ -18,8 +18,6 @@ noncomputable section
 
 namespace CyclotomicLayer
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 section Component
 
 theorem exists_toZModPow_degreeComponent_ne_zero (q : Nat.Primes) (w : ℤ_[q]ˣ)

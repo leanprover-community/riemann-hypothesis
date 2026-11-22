@@ -15,11 +15,7 @@ theorem end_mul_apply (f h : AddMonoid.End A) (x : A) : (f * h) x = f (h x) := r
 
 theorem end_add_apply (f h : AddMonoid.End A) (x : A) : (f + h) x = f x + h x := rfl
 
-theorem end_nsmul_apply (n : ℕ) (f : AddMonoid.End A) (x : A) : (n • f) x = n • f x := rfl
-
 theorem end_neg_apply (f : AddMonoid.End A) (x : A) : (-f) x = -f x := rfl
-
-theorem end_zero_apply (x : A) : (0 : AddMonoid.End A) x = 0 := rfl
 
 theorem inj_core {g : ℕ} (hprim : ∀ x : A, ∃ j : ℕ, g ^ j • x = 0)
     (N Z : AddMonoid.End A) (hc : Commute N Z) (k c : ℕ) (hcg : Nat.Coprime c g)
@@ -224,7 +220,6 @@ theorem kill_geom {g r : ℕ} (C : AddMonoid.End A) (s : ℕ)
   exact kill_mul _ _ (comm_geom C s) h
 
 end FiniteOrderUnipotent
-
 
 open FiniteOrderUnipotent in
 theorem finite_order_unipotent_eq_id : ∀ (A : Type) [AddCommGroup A] (β : A →+ A) (n g r m : ℕ),

@@ -36,11 +36,9 @@ section PartG
 
 open Formalism.BasicNotions Formalism.BasicNotions.DV
 
-
 section Proof
 
 open Formalism.FrobeniusOrbits
-
 
 end Proof
 
@@ -104,7 +102,6 @@ theorem loss_bound_nonneg (L : SizeData₂ D) : 0 ≤ L.B0 := by
   positivity
 
 def sumA (L : SizeData₂ D) : ℝ := ∑ t : D.host.TT, (L.aT t : ℝ)
-
 
 open Classical in
 def C2atG (D : D7) (L : SizeData₂ D) (C : ℝ) : Prop :=
@@ -291,7 +288,6 @@ theorem sum_val_log_le (n : ℕ) (hn : 0 < n) (P : Finset ℕ) (hP : ∀ p ∈ P
         rw [Real.log_pow]; ring
     _ ≤ Real.log (n : ℝ) := Real.log_le_log h3 (by exact_mod_cast h2)
 
-
 open Classical in
 def EatCI (L : SizeData₂ D) (K : Consts) (c : ErrC) (j p : ℕ) : ℝ :=
   if IsResidueClassZero D p ∧ hP D p = 0 then EatC L c j p else EatI L K c j p
@@ -307,7 +303,6 @@ def InertPrimeLossBound (D : D7) (L : SizeData₂ D) (K : Consts) (c : ErrC) (C 
   ∀ j ∈ SizeData₂.lifts D, ∀ P : Finset ℕ,
     (∀ p ∈ P, p.Prime ∧ (IsResidueClassZero D p ∨ IsSg D p) ∧ (p : ℝ) ≤ L.sc.X'' D.R.n) →
     ∑ p ∈ P, 2 * Real.log (p : ℝ) * |EatCI L K c j p| ≤ C * L.B0
-
 
 open Classical in
 def hOff (L : SizeData₂ D) (K : Consts) (c : ErrC) (u : D.what₂.Word) (j p : ℕ) : ℝ :=
@@ -461,33 +456,12 @@ section PartB
 open scoped BigOperators
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions.G Formalism.MainNotions.WeilJacquetShalikaLaw
 
-def PairAtT (D : D7) (Dx : DivX D) (T : TwForms D) : Prop :=
-  DGamDef D → (∀ u (w : D.what₂.places.Pl), D.what₂.places.resChar w = (D.mem u).A.T →
-    ∀ z ∈ locW D.what₂.places w ((D.fm u).lat D.R.m).L,
-    ∀ F ∈ (D.what₂.Mtilde D.what₂.mu0).carrier, F ∈ D.what₂.V0 D.what₂.mu0 →
-      ∃ y : D.what₂.LL, D.what₂.embLL y = (D.mem u).P.Ptil ((D.fm u).emb D.R.m z) ((D.eMt u).symm F) ∧
-        (y = 0 ∨ -ur D w (vDG D u w) ≤ (vAdd (D.plEq w) y : ℝ))) ∧
-  ∀ u μ, μ ≠ D.what₂.mu0 → ∀ w : D.what₂.places.Pl, D.what₂.places.resChar w = (D.mem u).A.T →
-    D.what₂.places.resChar w ∉ Dx.Qp μ → ∀ z ∈ locW D.what₂.places w ((T.fm u μ).lat D.R.m).L,
-    ∀ F ∈ (D.what₂.Mtilde μ).carrier, F ∈ D.what₂.V0 μ →
-      ∃ y : D.what₂.LL, D.what₂.embLL y = (D.PTw u μ).Ptil ((T.fm u μ).emb D.R.m z) ((D.eMtTw u μ).symm F) ∧
-        (y = 0 ∨ -ur D w (vDG D u w) ≤ (vAdd (D.plEq w) y : ℝ))
-
 def MemberChainIntegral (D : D7) : Prop := ∀ u, Formalism.MainNotions.product_first_zeroth_parts.Conclusion6 D u
-
-def TwistedChainIntegral (D : D7) (T : TwForms D) : Prop :=
-  ∀ u μ, μ ≠ D.what₂.mu0 → ∃ h : (T.fm u μ).PRat, (T.fm u μ).PtilIntegral h
 
 def PeriodClassSumWeyl (D : D7) : Prop :=
   DGamDef D → ∀ u, ∀ x ∈ (D.fm u).ptLat.L, ∀ F ∈ (D.what₂.Mtilde D.what₂.mu0).carrier, F ∈ D.what₂.V0 D.what₂.mu0 →
     ∃ y : D.what₂.LL, D.what₂.embLL y = (D.mem u).P.period ((D.fm u).ptEmb x) ((D.eMt u).symm F) ∧
       ∀ w : D.what₂.places.Pl, y = 0 ∨ -ur D w (vDG D u w) ≤ (vAdd (D.plEq w) y : ℝ)
-
-def TwistedPeriodIntegral (D : D7) (Dx : DivX D) (T : TwForms D) : Prop :=
-  DGamDef D → ∀ u μ, μ ≠ D.what₂.mu0 → ∀ x ∈ (T.fm u μ).ptLat.L, ∀ F ∈ (D.what₂.Mtilde μ).carrier, F ∈ D.what₂.V0 μ →
-    ∃ y : D.what₂.LL, D.what₂.embLL y = (D.PTw u μ).period ((T.fm u μ).ptEmb x) ((D.eMtTw u μ).symm F) ∧
-      ∀ w : D.what₂.places.Pl, D.what₂.places.resChar w ∉ Dx.Qp μ →
-        y = 0 ∨ -ur D w (vDG D u w) ≤ (vAdd (D.plEq w) y : ℝ)
 
 theorem pair_add_ge (D : D7) (w : D.what₂.places.Pl) {a b : D.what₂.LL} {B : ℝ}
     (ha : a = 0 ∨ B ≤ (vAdd (D.plEq w) a : ℝ)) (hb : b = 0 ∨ B ≤ (vAdd (D.plEq w) b : ℝ)) :
@@ -674,26 +648,6 @@ section Arch
 
 variable {D : D7} {T : ThetaX D}
 
-structure LocC (X : ZetaProductPairs.Loc D T) where
-
-  Vc : D.what₂.Word → Type
-  [acVc : ∀ u, AddCommGroup (Vc u)]
-  [moVc : ∀ u, Module ℂ (Vc u)]
-
-  VD : D.what₂.Word → Type
-  [acVD : ∀ u, AddCommGroup (VD u)]
-  [moVD : ∀ u, Module ℂ (VD u)]
-
-  ell : ∀ u, Vc u →ₗ[ℂ] VD u →ₗ[ℂ] ℂ
-
-  vOf : ∀ u, X.ArchDat u → Vc u
-
-  TOf : ∀ u, X.ArchDat u → VD u
-
-  ellT_eq : ∀ u da, X.ellT u da = ell u (vOf u da) (TOf u da)
-
-  v_free : ∀ u (v : Vc u) (da : X.ArchDat u), ∃ da', vOf u da' = v ∧ TOf u da' = TOf u da
-
 attribute [instance] LocC.acVc LocC.moVc LocC.acVD LocC.moVD
 
 end Arch
@@ -704,7 +658,6 @@ variable (D : D7)
 
 def RationalMapValues : Prop :=
   ∀ u (φ : (D.div.Nu u).V) (x : D.div.RR.V), ∃ y : D.what₂.LL, D.what₂.embLL y = D.what₂.Bu u (D.jN u φ) (D.jEE x)
-
 
 end Rat
 
@@ -776,9 +729,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.DV
 
 variable (D : D7)
 
-
-
-
 end PartF
 
 section PartF2
@@ -792,7 +742,6 @@ section Fam
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
 end Fam
-
 
 section IV
 
@@ -819,12 +768,9 @@ theorem vAdd_lpow (D : D7) (w : D.what₂.places.Pl) (k : ℕ) :
 
 end IV
 
-
-
 section FamJ
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-
 
 end FamJ
 

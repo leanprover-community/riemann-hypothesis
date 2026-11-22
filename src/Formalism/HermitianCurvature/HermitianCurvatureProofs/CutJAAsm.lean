@@ -53,12 +53,6 @@ theorem opApply_van {Wp' Wq' : Type} [NormedAddCommGroup Wp'] [InnerProductSpace
 
 end van
 
-theorem list_sum_flatMap {α M : Type} [AddCommMonoid M] (l : List α) (f : α → List M) :
-    (l.flatMap f).sum = (l.map fun a => (f a).sum).sum := by
-  induction l with
-  | nil => simp
-  | cons a l ih => simp [List.flatMap_cons, List.sum_append, ih]
-
 theorem list_sum_map_flatMap {α β M : Type} [AddCommMonoid M] (l : List α) (f : α → List β) (g : β → M) :
     ((l.flatMap f).map g).sum = (l.map fun a => ((f a).map g).sum).sum := by
   induction l with
@@ -93,13 +87,6 @@ def PI (U V : M.Ty P → MA.SmQ P.r P.TT) : Prop :=
   ∀ π, Integrable (fun q => MA.evQ P (U π) q * conj (MA.evQ P (V π) q)) (MA.mu0 P.r P.TT)
 
 variable {P}
-
-theorem ipA_eq (U V : M.Ty P → MA.SmQ P.r P.TT) :
-    MA.ipA P U V = ∑ π, ∫ q, MA.evQ P (U π) q * conj (MA.evQ P (V π) q) ∂MA.mu0 P.r P.TT := rfl
-
-theorem evQ_add (a b : MA.SmQ P.r P.TT) (q : MA.Qp P.r P.TT) : MA.evQ P (a + b) q = MA.evQ P a q + MA.evQ P b q := rfl
-theorem evQ_smul (c : ℂ) (a : MA.SmQ P.r P.TT) (q : MA.Qp P.r P.TT) : MA.evQ P (c • a) q = c * MA.evQ P a q := rfl
-theorem evQ_zero (q : MA.Qp P.r P.TT) : MA.evQ P (0 : MA.SmQ P.r P.TT) q = 0 := rfl
 
 theorem PI_add_left {U U' V : M.Ty P → MA.SmQ P.r P.TT} (h : PI P U V) (h' : PI P U' V) : PI P (U + U') V := by
   intro π

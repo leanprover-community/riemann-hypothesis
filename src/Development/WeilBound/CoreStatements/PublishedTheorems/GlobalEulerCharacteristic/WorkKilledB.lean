@@ -19,8 +19,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.GEN.W_killed_b
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 set_option maxHeartbeats 1000000 in
 theorem ratio_shortExact_prime (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
     (hS : S.Finite) (hSℓ : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
@@ -123,7 +121,6 @@ theorem coind_stages {k G : Type} [CommRing k] [Group G] (U W : Subgroup G) (hUW
         (Rep.res (U.subgroupOf W).subtype (Rep.res W.subtype A))) ≅
       Rep.coind U.subtype (Rep.res U.subtype A)) :=
   ⟨Rep.mkIso (coindStagesEquiv U W hUW A)⟩
-
 
 set_option maxHeartbeats 1000000 in
 theorem isMultiplicativeOn_ratio_coind (ℓ : ℕ) [Fact ℓ.Prime]

@@ -16,8 +16,6 @@ section Chart
 
 variable (P Q : ℕ)
 
-local notation "Mat" => Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ
-
 theorem two_eq : (1 + 1 : Mat) = (2 : ℂ) • (1 : Mat) := (two_smul ℂ (1 : Mat)).symm
 
 theorem cayCand_mem (g : UpqT P Q) : cayCand P Q g ∈ lieU P Q := by

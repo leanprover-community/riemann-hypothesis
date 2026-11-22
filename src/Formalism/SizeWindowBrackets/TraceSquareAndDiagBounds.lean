@@ -58,14 +58,6 @@ def TraceLower : Prop :=
   ∀ (n : ℕ) (K : Matrix (Fin n) (Fin n) ℂ),
     (n : ℝ) - Real.sqrt n * hsNorm (K - 1) ≤ K.trace.re
 
-def TraceSquareAndDiagBounds : Prop :=
-  ∀ (ι : Type) [Fintype ι] (D : ℕ) (d : ι → ℕ) (B : ∀ u, Matrix (Fin D) (Fin (d u)) ℂ)
-    (ga : ι → ℝ) (Dstar sg η0 η1 e0 : ℝ),
-    (∀ u, 0 ≤ ga u) → 0 < Dstar → 0 < sg → sg ≤ 1 / 4 → Dstar / sg ≤ Rs d →
-    -1 ≤ η0 → η0 ≤ sg / 2 → η1 ≤ sg / 2 → 0 ≤ e0 → Real.sqrt e0 ≤ sg / 2 →
-    InputS B ga Dstar η0 η1 e0 →
-    F1 B ga (5 * sg) ∧ F2 B ga e0 ∧ e0 ≤ 1 / 4
-
 def RamTrace : Prop :=
   ∀ (ι : Type) [Fintype ι] (D : ℕ) (d r : ι → ℕ) (B : ∀ u, Matrix (Fin D) (Fin (d u)) ℂ)
     (V : ∀ u, Matrix (Fin (d u)) (Fin (r u)) ℂ) (ga : ι → ℝ) (de e0 : ℝ),

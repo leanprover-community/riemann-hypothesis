@@ -82,9 +82,6 @@ noncomputable def hermBil (c : E ≃ₐ[F] E) (G : Matrix (Fin n) (Fin n) E) :
     (fun x y y' => by simp [hermA, mul_add, Finset.sum_add_distrib])
     (fun a x y => by simp [hermA, Finset.smul_sum, lim_sg_smul])
 
-theorem hermBil_apply (c : E ≃ₐ[F] E) (G : Matrix (Fin n) (Fin n) E) (x y : Fin n → RA F E) :
-    hermBil F c G x y = hermA c G x y := rfl
-
 theorem lim_herm_fv (c : E ≃ₐ[F] E) (G : Matrix (Fin n) (Fin n) E) (x y : Fin n → E) :
     hermBil F c G (fv F x) (fv F y) =
       (1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ[F] (∑ a, ∑ b, x a * G a b * c (y b)) := by

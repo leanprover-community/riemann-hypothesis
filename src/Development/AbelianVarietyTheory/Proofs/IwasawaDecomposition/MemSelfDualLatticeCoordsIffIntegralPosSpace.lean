@@ -28,9 +28,6 @@ abbrev swi (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Alg
     E ⊗[F] FiniteAdeleRing (𝓞 F) F →+* FiniteAdeleRing (𝓞 F) F ⊗[F] E :=
   (Algebra.TensorProduct.comm F (FiniteAdeleRing (𝓞 F) F) E).symm.toAlgHom.toRingHom
 
-theorem swi_sw (z : FiniteAdeleRing (𝓞 F) F ⊗[F] E) : swi F E (sw F E z) = z :=
-  (Algebra.TensorProduct.comm F (FiniteAdeleRing (𝓞 F) F) E).symm_apply_apply z
-
 theorem swi_tmul (a : FiniteAdeleRing (𝓞 F) F) (x : E) : swi F E (x ⊗ₜ[F] a) = a ⊗ₜ[F] x := by
   show (Algebra.TensorProduct.comm F (FiniteAdeleRing (𝓞 F) F) E).symm (x ⊗ₜ[F] a) = a ⊗ₜ[F] x
   rw [AlgEquiv.symm_apply_eq]; rfl

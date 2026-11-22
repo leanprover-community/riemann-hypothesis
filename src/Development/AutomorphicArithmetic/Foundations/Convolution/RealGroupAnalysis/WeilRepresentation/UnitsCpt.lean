@@ -16,10 +16,6 @@ section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F]
 
-private theorem vn (q : A F) : (nU q).val = !![1, q; 0, 1] := rfl
-
-private theorem vm (a : (A F)ˣ) : (mD a).val = !![(a : A F), 0; 0, ((a⁻¹ : (A F)ˣ) : A F)] := rfl
-
 private theorem gmul (x y : G1 F) : gl (x * y) = gl x * gl y := map_mul _ _ _
 
 private theorem cont_n : Continuous fun q : A F => gl (nU q) := by

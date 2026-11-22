@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FlatOfQuasiFiniteOfFlatFibres
-public import Development.AbelianVarietyTheory.Statements.HeightBoundStatement.HTBoundSt
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AmpleOnAbelianBase
 
 @[expose] public section
 

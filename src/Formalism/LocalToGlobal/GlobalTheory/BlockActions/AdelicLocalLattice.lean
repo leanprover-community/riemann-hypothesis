@@ -56,10 +56,6 @@ def glueInt (r : ∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletion F)
     (hr : ∀ v, r v ∈ v.adicCompletionIntegers F) : FiniteAdeleRing (𝓞 F) F :=
   ⟨r, Filter.Eventually.of_forall hr⟩
 
-theorem glueInt_apply (r : ∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletion F)
-    (hr : ∀ v, r v ∈ v.adicCompletionIntegers F) (v : HeightOneSpectrum (𝓞 F)) :
-    glueInt r hr v = r v := rfl
-
 theorem glueInt_mem (r : ∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletion F)
     (hr : ∀ v, r v ∈ v.adicCompletionIntegers F) : glueInt r hr ∈ intAd F := by
   first

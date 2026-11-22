@@ -144,21 +144,6 @@ theorem rel_out {Γ : Type*} [Group Γ] (H : Subgroup Γ) (φ : Γ → ℝ)
       = (y * ((Quotient.mk (QuotientGroup.rightRel H) y).out)⁻¹)⁻¹ * y := by group
   rw [e, hφ _ (H.inv_mem h1)]
 
-def rmul {Γ : Type*} [Group Γ] (H : Subgroup Γ) (k : Γ) :
-    Quotient (QuotientGroup.rightRel H) ≃ Quotient (QuotientGroup.rightRel H) where
-  toFun := Quotient.map' (· * k) (fun a b hab => by
-    rw [QuotientGroup.rightRel_apply] at hab ⊢
-    convert hab using 1; group)
-  invFun := Quotient.map' (· * k⁻¹) (fun a b hab => by
-    rw [QuotientGroup.rightRel_apply] at hab ⊢
-    convert hab using 1; group)
-  left_inv := fun c => by
-    induction c using Quotient.inductionOn' with
-    | h a => simp [Quotient.map'_mk'']
-  right_inv := fun c => by
-    induction c using Quotient.inductionOn' with
-    | h a => simp [Quotient.map'_mk'']
-
 theorem bridge {Γ : Type*} [Group Γ] (H N : Subgroup Γ) [N.Normal] (hNH : N ≤ H) (hH : H.index ≠ 0)
     [Fintype (Γ ⧸ N)] (φ : Γ → ℝ) (hφ : ∀ h ∈ H, ∀ k, φ (h * k) = φ k) :
     (H.index : ℝ)⁻¹ * ∑ᶠ c : Quotient (QuotientGroup.rightRel H), φ c.out =

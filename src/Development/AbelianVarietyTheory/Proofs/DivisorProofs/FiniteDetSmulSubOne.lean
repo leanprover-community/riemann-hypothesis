@@ -309,8 +309,6 @@ theorem act_one (u : WO S T) : actO S T 1 1 u = u := by
 
 def subst (p : GA D S × GA D T) : Module.End ℂ (WO S T → ℂ) := LinearMap.funLeft ℂ ℂ (actO S T p.1⁻¹ p.2⁻¹)
 
-theorem subst_apply (p : GA D S × GA D T) (f : WO S T → ℂ) : subst p f = fun w => f (actO S T p.1⁻¹ p.2⁻¹ w) := rfl
-
 theorem subst_mul (p q : GA D S × GA D T) (f : WO S T → ℂ) : subst (p * q) f = subst p (subst q f) := by
   funext w
   show f (actO S T (p.1 * q.1)⁻¹ (p.2 * q.2)⁻¹ w) = f (actO S T q.1⁻¹ q.2⁻¹ (actO S T p.1⁻¹ p.2⁻¹ w))

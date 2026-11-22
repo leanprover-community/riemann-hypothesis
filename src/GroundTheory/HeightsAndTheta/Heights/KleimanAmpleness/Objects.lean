@@ -415,14 +415,12 @@ theorem homogeneousComponent_mem_primeOf {f : Poly S N} (hf : f ∈ primeOf x) (
     homogeneousComponent d f ∈ primeOf x :=
   coneGen_homogeneousComponent x hf d
 
-
 open NumbersDVR in
 def oneBlock : NumbersDVR.MRing (fun _ : Unit => Fin (N + 1)) S →ₐ[S] Poly S N :=
   rename fun v => v.2
 
 def primeOfOne : Ideal (NumbersDVR.MRing (fun _ : Unit => Fin (N + 1)) S) :=
   (primeOf (S := S) x).comap (oneBlock (S := S) (N := N))
-
 
 open NumbersDVR in
 theorem isMultiProjPrime_primeOfOne (hx : x ≠ 0) :
@@ -536,31 +534,7 @@ theorem chartRing_mono {I J : Chart x} (h : I.1 ⊆ J.1) : chartRing S x I ≤ c
 def chartIncl {I J : Chart x} (h : I.1 ⊆ J.1) : chartRing S x I →ₐ[S] chartRing S x J :=
   Subalgebra.inclusion (chartRing_mono h)
 
-variable (S x) in
-structure Family where
-
-  F : Chart x → Type v
-  [grp : ∀ I, AddCommGroup (F I)]
-  [modA : ∀ I, Module (chartRing S x I) (F I)]
-  [modS : ∀ I, Module S (F I)]
-  [tower : ∀ I, IsScalarTower S (chartRing S x I) (F I)]
-
-  res : ∀ I J : Chart x, I.1 ⊆ J.1 → F I →ₗ[S] F J
-  res_smul : ∀ (I J : Chart x) (h : I.1 ⊆ J.1) (a : chartRing S x I) (m : F I),
-    res I J h (a • m) = chartIncl h a • res I J h m
-  res_self : ∀ (I : Chart x) (m : F I), res I I subset_rfl m = m
-  res_comp : ∀ (I J K : Chart x) (h : I.1 ⊆ J.1) (h' : J.1 ⊆ K.1) (m : F I),
-    res J K h' (res I J h m) = res I K (h.trans h') m
-
-  exists_smul_eq_res : ∀ (I J : Chart x) (h : I.1 ⊆ J.1) (y : F J), ∃ (a : chartRing S x I)
-    (m : F I), IsUnit (chartIncl h a) ∧ chartIncl h a • y = res I J h m
-
-  exists_smul_eq_zero : ∀ (I J : Chart x) (h : I.1 ⊆ J.1) (m : F I), res I J h m = 0 →
-    ∃ a : chartRing S x I, IsUnit (chartIncl h a) ∧ a • m = 0
-
 attribute [instance] Family.grp Family.modA Family.modS Family.tower
-
-def Family.H (F : Family.{u, v, w} S x) (i : ℕ) : Type v := Cech.H F.F F.res i
 
 variable (E : Type v) [AddCommGroup E] [Module Ω E] [Module S E] [IsScalarTower S Ω E]
 
@@ -883,8 +857,6 @@ section Line
 
 variable (k : Type u) [Field k]
 
-def lineX : Fin (1 + 1) → RatFunc k := ![1, RatFunc.X]
-
 end Line
 
 section Generic
@@ -1016,9 +988,6 @@ end AmpleExample
 section MoreInhabitants
 
 variable {S : Type u} [CommRing S] {N : ℕ}
-
-
-
 
 variable {Ω : Type w} [Field Ω] [Algebra S Ω] (x : Fin (N + 1) → Ω)
 

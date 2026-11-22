@@ -20,9 +20,6 @@ def orbE (D : D7) (p : ℕ) (r : Pl D) : ZMod (nP D p) ↪ Pl D := ⟨orbMap D p
 
 abbrev pE (D : D7) (p : ℕ) (r : Pl D) (γ : Type) : ZMod (nP D p) × γ ↪ Pl D × γ := OJ.pEmb (orbE D p r) γ
 
-theorem pE_apply (D : D7) (p : ℕ) (r : Pl D) (γ : Type) (v : ZMod (nP D p) × γ) :
-    pE D p r γ v = (orbMap D p r v.1, v.2) := rfl
-
 theorem cc_log (D : D7) (p : ℕ) [Fact p.Prime] {β : Type} (v : Pl D × β) :
     constantCoeff (logPl D p v) = 0 := by
   show (logPl D p v) 0 = 0

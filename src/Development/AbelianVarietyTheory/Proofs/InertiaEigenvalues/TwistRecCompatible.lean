@@ -42,18 +42,6 @@ theorem segSum_append_lpSum (rc : IrrGL (k := w.adicCompletion E) → WD h) (l l
 
 end Sums
 
-theorem lawsLit_prod : LanglandsExhaustionGL → LanglandsMultisegments → StandardCosocleGL → ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w) (a : Weil h →* (w.adicCompletion E)ˣ) (ha : IsLocalArtin h a) (e : AddChar (w.adicCompletion E) Circle → WD h → ℂˣ) (rc : IrrGL (k := w.adicCompletion E) → WD h), LawsLit a ha e rc → ∀ (r t : ℕ) (σ : IrrRep (GL (Fin r) (w.adicCompletion E))) (τ : IrrRep (GL (Fin t) (w.adicCompletion E))) (π : IrrRep (GL (Fin (r + t)) (w.adicCompletion E))), Nonempty (π.ρ.Equiv (prod₂ σ.ρ τ.ρ)) → rc (cls π) = (rc (cls σ)).lpSum (rc (cls τ)) := by
-  intro hX hM hS E Ω _ _ _ _ _ A w h a ha e rc H r t σ τ π hπ
-  have : CharZero (w.adicCompletion E) := algebraRat.charZero _
-  obtain ⟨𝔪, h𝔪⟩ := hX _ (cls σ)
-  obtain ⟨𝔫, h𝔫⟩ := hX _ (cls τ)
-  have hp := GlobalTheory.T.isLanglandsClassification_add_of_irreducible_product hM hS _ r t σ τ π 𝔪 𝔫 (h𝔪.of_equiv (equivRep σ).symm) (h𝔫.of_equiv (equivRep τ).symm) hπ
-  rw [H.langlands 𝔪.toList (cls σ) (by rwa [Multiset.coe_toList]),
-    H.langlands 𝔫.toList (cls τ) (by rwa [Multiset.coe_toList]),
-    H.langlands (𝔪.toList ++ 𝔫.toList) (cls π) (by
-      rw [← Multiset.coe_add, Multiset.coe_toList, Multiset.coe_toList]
-      exact hp.of_equiv (equivRep π)), segSum_append_lpSum]
-
 end GlobalTheory.LocLanglands
 
 end

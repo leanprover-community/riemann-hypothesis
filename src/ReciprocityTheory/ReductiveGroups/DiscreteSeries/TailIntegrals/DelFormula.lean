@@ -122,9 +122,6 @@ private theorem bvec_apply_eq_ite_val {n : ℕ} (p q : Fin n) : bvec p q = if q.
        · subst h; simp [bvec]
        · rw [if_neg (fun e => h (Fin.ext e))]; simp [bvec, h])
 
-private theorem epsV_apply_eq (k r : ℕ) (q : Fin (2 * r + k + 1)) :
-    epsV k r q = (Real.sqrt 2 : ℂ)⁻¹ * (bvec (wI k r 0) q + bvec (wI k r (Fin.last k)) q) := rfl
-
 theorem phiV_succ (k r' t : ℕ) (ht : t < r' + 1) (h : t + 1 < 1 + r' + 1) :
     phiV k (1 + r') ⟨t + 1, h⟩ = liftVec k 1 r' (phiV k r' ⟨t, ht⟩) := by
   funext p

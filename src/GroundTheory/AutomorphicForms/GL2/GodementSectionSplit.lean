@@ -17,23 +17,6 @@ noncomputable section
 
 variable {K : Type*} [Field K] [NumberField K]
 
-def infChar (χ : HeckeCharacter K) : (InfiniteAdeleRing K)ˣ →* Circle :=
-  χ.toIdele.comp ofInfinite
-
-def infMod (a : (InfiniteAdeleRing K)ˣ) : ℝ :=
-  ∏ w : InfinitePlace K, ‖(a : InfiniteAdeleRing K) w‖ ^ w.mult
-
-def infVec (y : Fin 2 → InfiniteAdeleRing K) : Fin 2 → mixedSpace K :=
-  fun i ↦ homeomorphMixedSpace K (y i)
-
-def archSection (χ₁ χ₂ : HeckeCharacter K) (s : ℂ) (φ : (Fin 2 → mixedSpace K) → ℂ)
-    (g : GL (Fin 2) (InfiniteAdeleRing K)) : ℂ :=
-  (infChar χ₁ (Matrix.GeneralLinearGroup.det g) : ℂ) *
-    ((infMod (Matrix.GeneralLinearGroup.det g) : ℝ) : ℂ) ^ s *
-      ∫ a, φ (infVec (![0, (a : InfiniteAdeleRing K)] ᵥ*
-        (g : Matrix (Fin 2) (Fin 2) (InfiniteAdeleRing K)))) *
-        (infChar (χ₁ * χ₂⁻¹) a : ℂ) * ((infMod a : ℝ) : ℂ) ^ (2 * s) ∂infiniteIdeleMeasure K
-
 theorem toInfinite_symm (p : (InfiniteAdeleRing K)ˣ × (FiniteAdeleRing (𝓞 K) K)ˣ) :
     toInfinite K ((IdeleGroup.prodEquiv K).symm p) = p.1 := by
   change (IdeleGroup.prodEquiv K ((IdeleGroup.prodEquiv K).symm p)).1 = p.1

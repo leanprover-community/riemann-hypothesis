@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegIdxOfIsStd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsStageConstantTriangle
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFactorOfStageTriangle
@@ -98,10 +97,6 @@ def BigIn (W : G.Weil) (μ₀ : T) : Prop := ∀ (i j : Fin D.R.m) (p : ℕ) (A 
 def cons (y : T → ℂ) (u : ℕ → T → ℂ) : ℕ → T → ℂ
   | 0 => y
   | k + 1 => u k
-
-theorem cons_zero (y : T → ℂ) (u : ℕ → T → ℂ) : cons y u 0 = y := rfl
-
-theorem cons_succ (y : T → ℂ) (u : ℕ → T → ℂ) (k : ℕ) : cons y u (k + 1) = u k := rfl
 
 theorem descent (hF : FacIn W) (hs : SmallIn W μ₀) (hb : BigIn W μ₀) (i j : Fin D.R.m) (Lf : T → ℂ → ℂ)
     (hL : ∀ t, IsHeckeL (nuH G t i j) (Lf t)) :

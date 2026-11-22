@@ -343,28 +343,6 @@ def pull (n : ℕ) : H L n →ₛₗ[σ] H L' n :=
       τ := fun _ => { toFun := fun z => z, map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
       nat := fun _ _ => rfl } n
 
-
-open scoped Classical in
-open Classical in
-def id (L : b.Fun) : Mor L L (RingHom.id b.R) where
-  hp := rfl
-  hI := ⟨by rw [Ideal.map_id], fun _ _ => rfl⟩
-  a := 1
-  ha := by simp
-  m := 1
-  ht := by simp
-  e i j := if i = j then 1 else 0
-  he j := by simp
-  c α := α
-  pt := 𝟙 L.Pt
-  str _ _ := rfl
-  inc h := h
-  w _ _ _ _ := 1
-  w_map _ _ _ _ _ _ := by simp
-  hf i _ _ _ := by simp [pow_ite]
-  hg i _ _ _ _ := by simp [pow_ite]
-  hw _ := by simp
-
 end Mor
 
 namespace Ex
@@ -374,96 +352,6 @@ theorem isDPMorphism_bot {A B : Type} [CommRing A] [DecidableEq A] [CommRing B] 
   rw [isDPMorphism_iff]
   refine ⟨by rw [Ideal.map_bot]; exact bot_le, fun n hn a ha => ?_⟩
   rw [Ideal.mem_bot.1 ha, map_zero, δ.dpow_eval_zero hn, (dividedPowersBot A).dpow_eval_zero hn, map_zero]
-
-abbrev base : Base where
-  R := ℚ
-  I := ⊥
-  γ := dividedPowersBot ℚ
-  t := 0
-  p := 0
-
-abbrev nodePt (k : Type) [CommRing k] (τ : k) : CommRingCat.{0} ⥤ Type where
-  obj B := {q : (k →+* B) × B × B // q.2.1 * q.2.2 = q.1 τ}
-  map φ := TypeCat.ofHom fun q => ⟨(φ.hom.comp q.1.1, φ.hom q.1.2.1, φ.hom q.1.2.2), by
-    simp only [RingHom.comp_apply, ← map_mul, q.2]⟩
-  map_id _ := by ext q <;> rfl
-  map_comp _ _ := by ext q <;> rfl
-
-abbrev node (k : Type) [CommRing k] (τ : k) : LogFun k τ where
-  ι := Fin 2
-  A := Unit
-  Pt := nodePt k τ
-  str y := y.1.1
-  str_map _ _ := rfl
-  In _ _ _ := True
-  in_map _ _ _ := trivial
-  f _ i _ y := ![y.1.2.1, y.1.2.2] i
-  f_map i _ _ φ y _ := by fin_cases i <;> rfl
-  g _ _ _ _ _ := 1
-  g_map _ _ _ _ _ _ _ := by simp
-  f_eq _ _ _ _ _ := by simp
-  g_self _ _ _ _ := rfl
-  g_comp _ _ _ _ _ _ := by simp
-  prod_f {_ _ y} _ := by simpa [Fin.prod_univ_two] using y.2
-  prod_g _ _ := by simp
-
-abbrev nodeL : base.Fun := node _ _
-
-abbrev D := DualNumber ℚ
-
-abbrev J : Ideal D := Ideal.span {DualNumber.eps}
-
-theorem J_sq : J ^ 2 = 0 := by
-  rw [Ideal.span_singleton_pow, pow_two, DualNumber.eps_mul_eps, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
-
-
-open scoped Classical in
-open Classical in
-def δJ : DividedPowers J := RatAlgebra.dividedPowers J
-
-def T : Thick nodeL where
-  B := D
-  i := algebraMap ℚ D
-  J := J
-  δ := δJ
-  adm := ⟨fun h => absurd rfl h, fun _ => ⟨2, J_sq⟩⟩
-  compat := isDPMorphism_bot _ _
-  α := ()
-  y := ⟨(Ideal.Quotient.lift _ ((Ideal.Quotient.mk J).comp (algebraMap ℚ D)) (fun a ha => by
-      rw [(Submodule.mem_bot _).1 ha, map_zero]), Ideal.Quotient.mk J DualNumber.eps,
-      Ideal.Quotient.mk J DualNumber.eps), by
-    change _ = Ideal.Quotient.lift _ _ _ (Ideal.Quotient.mk _ (0 : ℚ))
-    rw [Ideal.Quotient.lift_mk, ← map_mul, DualNumber.eps_mul_eps]; simp⟩
-  inα := trivial
-  w r := Ideal.Quotient.lift_mk _ _ _
-  x := ![DualNumber.eps, DualNumber.eps]
-  v _ := 1
-  s := 1
-  hx j := by fin_cases j <;> simp [nodeL, node, nodePt]
-  hs := by simp [Fin.prod_univ_two, DualNumber.eps_mul_eps, base]
-  hv := by simp
-
-def sq : Mor nodeL nodeL (RingHom.id ℚ) where
-  hp := rfl
-  hI := isDPMorphism_bot _ _
-  a := 1
-  ha := by simp
-  m := 2
-  ht := by simp [base]
-  e i j := if i = j then 2 else 0
-  he j := by simp
-  c := fun α => α
-  pt := { app := fun B => TypeCat.ofHom fun y => ⟨(y.1.1, y.1.2.1 ^ 2, y.1.2.2 ^ 2), by
-            rw [← mul_pow, y.2]; simp⟩
-          naturality := fun _ _ φ => by
-            ext y <;> first | rfl | exact (map_pow (CommRingCat.Hom.hom φ) _ 2).symm }
-  str _ _ := rfl
-  inc _ := trivial
-  w _ _ _ _ := 1
-  w_map _ _ _ _ _ _ := by simp
-  hf i _ _ _ := by fin_cases i <;> simp [Fin.prod_univ_two, nodeL, node, nodePt]
-  hg _ _ _ := by simp
-  hw _ := by simp
 
 end Ex
 

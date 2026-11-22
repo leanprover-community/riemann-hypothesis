@@ -13,15 +13,11 @@ open QuadraticAlgebra
 
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {Δ τ : K}
 
-
 variable (Δ) in
 def mkL (σ : K) : (K × Etau K τ) × (K × Etau K τ) →ₗ[K] Sp Δ τ where
   toFun p := (⟨p.1.1, σ * p.2.1⟩, ⟨⟨p.1.2.re, σ * p.2.2.re⟩, ⟨p.1.2.im, σ * p.2.2.im⟩⟩)
   map_add' a b := by ext <;> simp <;> ring
   map_smul' a b := by ext <;> simp <;> ring
-
-theorem mkL_apply (σ : K) (v w : K × Etau K τ) :
-    mkL Δ σ (v, w) = (⟨v.1, σ * w.1⟩, ⟨⟨v.2.re, σ * w.2.re⟩, ⟨v.2.im, σ * w.2.im⟩⟩) := rfl
 
 theorem mkL_surj {σ : K} (hσ : σ ≠ 0) (x : Sp Δ τ) : ∃ v w, x = mkL Δ σ (v, w) := by
   refine ⟨(x.1.re, ⟨x.2.re.re, x.2.im.re⟩), (σ⁻¹ * x.1.im, ⟨σ⁻¹ * x.2.re.im, σ⁻¹ * x.2.im.im⟩), ?_⟩
@@ -44,7 +40,6 @@ theorem semi_mkL (σ : K) (u : Etau K τ) (v w : K × Etau K τ) : semi (ofE Δ 
 theorem mul_mkL (σ : K) (u : Etau K τ) (v w : K × Etau K τ) :
     (((mkL Δ σ (v, w)).1, ofE Δ u * (mkL Δ σ (v, w)).2) : Sp Δ τ) = mkL Δ σ (Mu u v, Mu u w) := by
   ext <;> simp [mkL_apply, Mu, ofE] <;> ring
-
 
 variable (Δ) in
 def up (σ : K) (S : Set (K × Etau K τ)) : Set (Sp Δ τ) := {x | ∃ v ∈ S, ∃ w ∈ S, x = mkL Δ σ (v, w)}

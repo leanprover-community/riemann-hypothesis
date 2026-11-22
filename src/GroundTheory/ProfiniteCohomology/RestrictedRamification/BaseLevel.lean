@@ -32,7 +32,6 @@ theorem exists_isUnit_mul_of_surjective_of_bijective {Y : Type*} [AddCommGroup Y
   obtain ⟨y, hy1⟩ := hf 1
   exact IsUnit.of_mul_eq_one (g y) ((hfy y).symm.trans hy1)
 
-
 omit [NeZero n] in
 theorem bijective_of_transport {X X' Y Y' W W' : Type*} [AddCommGroup X] [AddCommGroup X'] [AddCommGroup Y]
     [AddCommGroup Y'] [AddCommGroup W] [AddCommGroup W'] (B : Y →+ X →+ W) (B' : Y' →+ X' →+ W')
@@ -62,8 +61,6 @@ end Algebra
 
 section Level
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K L : FiniteSubfield} [Fact (K ≤ L)] (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
   (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S) (n : ℕ) [NeZero n]
@@ -77,12 +74,10 @@ def GsCoresSurjective (U : OpenSubgroup (galUnramifiedOutside K.1 ℚ̄ S))
     (t : compactCohomologyRes (gsFinFamily S ιs) (gsRoots S n) 3 →+ ZMod n) : Prop :=
   Function.Surjective (t.comp (compactCores (gsFinFamily S ιs) U (gsRoots S n) 3).hom.toAddMonoidHom)
 
-
 variable {S ιs n} in
 def GsLevelBijective (T : compactCohomologyRes (gsFinFamily S ιs) (gsRoots S n) 3 →+ ZMod n) : Prop :=
   Function.Bijective T ∧ ∀ {r s : ℕ} (h : r + s = 3), Function.Bijective (compactZmodDualityMap (gsFinFamily S ιs)
     (gsRoots S n) (nsmul_gsRoots S n) T h)
-
 
 set_option maxHeartbeats 3200000 in
 theorem bijective_zmodCompactDualityMap_gsOpenSubgroup

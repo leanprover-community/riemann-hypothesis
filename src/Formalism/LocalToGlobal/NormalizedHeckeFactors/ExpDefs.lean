@@ -231,8 +231,6 @@ open NumberField IsDedekindDomain ReciprocityTheory.Aut Formalism.AUTREP
 
 variable (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ)
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 def TypeSpF (K : Type) [Field K] {W : Type} [AddCommGroup W] [Module K W] (ρ : Representation K (GQ L n) W)
     (J : Subgroup (GAf L n)) (χ : J →* Kˣ) : Submodule K (GAf L n → W) where
   carrier := {f | (∀ (γ : GQ L n) (g : GAf L n), f ((γ : GAf L n) * g) = ρ γ (f g)) ∧
@@ -258,8 +256,6 @@ section Local
 open NumberField IsDedekindDomain ReciprocityTheory.Aut Formalism.AUTREP
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
-
-local notation3 "L⁺" => maximalRealSubfield L
 
 def InParah (v : HeightOneSpectrum (𝓞 L⁺)) (r : ℕ) (x : Matrix (Fin n) (Fin n) (v.adicCompletion L⁺)) : Prop :=
   (∀ a b, x a b ∈ v.adicCompletionIntegers L⁺) ∧ ∀ a b : Fin n, r ≤ (a : ℕ) → (b : ℕ) < r → Valued.v (x a b) < 1
@@ -292,7 +288,6 @@ def detT (r : ℕ) {R : Type} [CommRing R] (x : Matrix (Fin n) (Fin n) R) : R :=
 def topR {r : ℕ} (h : r ≤ n) {R : Type} (x : Matrix (Fin n) (Fin n) R) : Matrix (Fin r) (Fin r) R :=
   x.submatrix (Fin.castLE h) (Fin.castLE h)
 
-
 open scoped Classical in
 open Classical in
 def intLift (v : HeightOneSpectrum (𝓞 L⁺)) (y : v.adicCompletion L⁺) : v.adicCompletionIntegers L⁺ :=
@@ -301,7 +296,6 @@ def intLift (v : HeightOneSpectrum (𝓞 L⁺)) (y : v.adicCompletion L⁺) : v.
 def redMat (v : HeightOneSpectrum (𝓞 L⁺)) {ι R : Type} [CommRing R] (red : v.adicCompletionIntegers L⁺ →+* R)
     (x : Matrix ι ι (v.adicCompletion L⁺)) : Matrix ι ι R :=
   fun a b => red (intLift v (x a b))
-
 
 open scoped Classical in
 open Classical in
@@ -313,7 +307,6 @@ theorem glOf_val {ι R : Type} [Fintype ι] [DecidableEq ι] [CommRing R] (M : M
   unfold glOf
   rw [dite_eq_left h]
   rfl
-
 
 variable (L n) in
 def IsAlgWeightF (K : Type) [Field K] {W : Type} [AddCommGroup W] [Module K W] (ρ : Representation K (GQ L n) W) : Prop :=

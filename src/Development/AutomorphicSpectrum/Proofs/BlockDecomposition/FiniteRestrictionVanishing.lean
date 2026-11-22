@@ -42,9 +42,6 @@ def Kn (n : ℕ) (v : PlF E) : Subgroup (GL (Fin n) (Av v)) :=
 theorem mem_Kn {v : PlF E} {y : GL (Fin n) (Av v)} : y ∈ Kn n v ↔ ∀ w : Above v, ev w y ∈ GlobalTheory.LFun.KGL w.1 (n := n) := by
   simp only [Kn, Subgroup.mem_iInf, Subgroup.mem_comap]
 
-theorem ev_pn {v : PlF E} (w : Above v) (g : GL (Fin n) (Af E)) :
-    ev w (pn n v g) = GeneralLinearGroup.map (pLoc E w.1) g := rfl
-
 theorem mem_Kv {a b : ℕ} {v : PlF E} {y : Yv a b v} : y ∈ Kv a b v ↔ y.1 ∈ Kn a v ∧ y.2 ∈ Kn b v := by
   simp only [Kv, Subgroup.mem_iInf, Subgroup.mem_comap, mem_Kn, Subgroup.mem_prod, forall_and]
   rfl

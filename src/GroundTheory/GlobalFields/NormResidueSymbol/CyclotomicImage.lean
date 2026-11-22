@@ -19,8 +19,6 @@ namespace CyclotomicSymbol
 
 open FiniteSubfield RationalSymbol _root_.GroundTheory.Global.Cyclotomic
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 abbrev layer (m : ℕ+) : FiniteSubfield :=
   ⟨rootsOfUnityField m, inferInstance⟩
 

@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagFrameAtGoodPoint
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.Pull1
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsImg

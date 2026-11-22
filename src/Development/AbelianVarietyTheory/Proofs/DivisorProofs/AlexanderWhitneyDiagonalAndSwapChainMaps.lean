@@ -85,12 +85,6 @@ theorem aw_eq (N : ℕ) : Pr.aw N = ∑ q ∈ Finset.HasAntidiagonal.antidiagona
   have := p.2
   rw [cm_eq N 0 p (by omega), cm_eq N p (N - p) (by omega)]
 
-theorem d₁_zero {N r : ℕ} (a : SimplexCategory.mk 0 ⟶ SimplexCategory.mk N) (b : SimplexCategory.mk r ⟶ SimplexCategory.mk N) :
-    Pr.d₁ (⟨0, r, a, b⟩ : Pr N) = 0 := rfl
-
-theorem d₂_zero {N p : ℕ} (a : SimplexCategory.mk p ⟶ SimplexCategory.mk N) (b : SimplexCategory.mk 0 ⟶ SimplexCategory.mk N) :
-    Pr.d₂ (⟨p, 0, a, b⟩ : Pr N) = 0 := rfl
-
 theorem d₁_succ {N p r : ℕ} (a : SimplexCategory.mk (p + 1) ⟶ SimplexCategory.mk N) (b : SimplexCategory.mk r ⟶ SimplexCategory.mk N) :
     Pr.d₁ (⟨p + 1, r, a, b⟩ : Pr N) =
       ∑ i : Fin (p + 2), (-1 : ℤ) ^ (i : ℕ) • Finsupp.single (⟨p, r, SimplexCategory.δ i ≫ a, b⟩ : Pr N) (1 : ℤ) := by

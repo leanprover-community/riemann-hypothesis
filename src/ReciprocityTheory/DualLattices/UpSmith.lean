@@ -169,11 +169,6 @@ theorem smith_gen (hv : v.Integers R) : ∀ (b : ℕ) {ι : Type} [Fintype ι] (
     obtain ⟨c', ⟨e2⟩⟩ := ih (fun j => Fin.removeNth i0 (g j - s j • a • u))
     exact ⟨Fin.cons a c', ⟨(e1.trans ((LinearEquiv.refl R _).prodCongr e2)).trans (consEquiv a c')⟩⟩
 
-theorem hasLen_coker_gen (hv : v.Integers R) {b : ℕ} {ι : Type} [Fintype ι] (g : ι → Fin b → R) :
-    HasLen v R ((Fin b → R) ⧸ Submodule.span R (Set.range g))
-      (∏ i, v (algebraMap R C ((smith_gen hv b g).choose i))) :=
-  ⟨b, _, (smith_gen hv b g).choose_spec, rfl⟩
-
 theorem det_colop {b : ℕ} (X : Matrix (Fin (b + 1)) (Fin (b + 1)) R) (j0 : Fin (b + 1))
     (s : Fin (b + 1) → R) :
     (Matrix.of fun i j => if j = j0 then X i j0 else X i j - s j * X i j0).det = X.det := by

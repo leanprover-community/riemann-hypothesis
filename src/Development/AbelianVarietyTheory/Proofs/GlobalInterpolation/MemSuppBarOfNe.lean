@@ -51,18 +51,6 @@ theorem lamC_mul {x y : ℂ} (hx : x ∈ TaylorLogMetric.Qbar) (hy : y ∈ Taylo
 theorem lamC_zpow {x : ℂ} (hx : x ∈ TaylorLogMetric.Qbar) (n : ℤ) : TaylorLogMetric.lamC lam (x ^ n) = TaylorLogMetric.lamC lam x ^ n := by
   rw [lamC_of_mem lam hx, lamC_of_mem lam (zpow_mem hx n), ← map_zpow₀]; rfl
 
-theorem lamC_sum {κ : Type} (T : Finset κ) (f : κ → ℂ) (h : ∀ i ∈ T, f i ∈ TaylorLogMetric.Qbar) :
-    TaylorLogMetric.lamC lam (∑ i ∈ T, f i) = ∑ i ∈ T, TaylorLogMetric.lamC lam (f i) := by
-  classical
-  induction T using Finset.induction_on with
-  | empty => rw [Finset.sum_empty, Finset.sum_empty, lamC_of_mem lam (zero_mem _)]; exact map_zero lam
-  | insert i T hi ih =>
-    have h1 := h i (Finset.mem_insert_self _ _)
-    have h2 : ∀ j ∈ T, f j ∈ TaylorLogMetric.Qbar := fun j hj => h j (Finset.mem_insert_of_mem hj)
-    rw [Finset.sum_insert hi, Finset.sum_insert hi, ← ih h2, lamC_of_mem lam h1, lamC_of_mem lam (sum_mem h2),
-      lamC_of_mem lam (add_mem h1 (sum_mem h2)), ← map_add]
-    rfl
-
 end abelian₂
 
 section Asm

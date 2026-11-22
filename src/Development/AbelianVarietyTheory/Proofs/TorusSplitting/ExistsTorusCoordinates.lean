@@ -16,7 +16,6 @@ noncomputable section
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-
 open NumberField in
 open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
@@ -48,29 +47,12 @@ open scoped Classical in
 open Classical in
 def dimOf (X : Data E r) (σ : E →+* ℂ) : ℕ := if σ ∈ X.Ψ then X.p0 else r - X.p0
 
-theorem dimOf_mem (X : Data E r) {σ : E →+* ℂ} (h : σ ∈ X.Ψ) : dimOf X σ = X.p0 := by
-  simp [dimOf, h]
-
-theorem dimOf_not_mem (X : Data E r) {σ : E →+* ℂ} (h : σ ∉ X.Ψ) : dimOf X σ = r - X.p0 := by
-  simp [dimOf, h]
-
 open NumberField in
 open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.TorusCoord.conj_mem (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {σ : E →+* ℂ} (h : σ ∉ X.Ψ) :
     ComplexEmbedding.conjugate σ ∈ X.Ψ :=
   (X.cmType _).mpr (by rwa [_root_.ReciprocityTheory.ChartRestriction.G.I2.TorusAtDataPf.conj_conj_X])
-
-theorem dimOf_add (X : Data E r) (σ : E →+* ℂ) :
-    dimOf X σ + dimOf X (ComplexEmbedding.conjugate σ) = r := by
-  have := X.p0_le
-  by_cases h : σ ∈ X.Ψ
-  · rw [dimOf_mem X h, dimOf_not_mem X ((X.cmType σ).mp h)]; omega
-  · rw [dimOf_not_mem X h, dimOf_mem X (conj_mem X h)]; omega
-
-theorem card_idx (X : Data E r) : Fintype.card (Idx (dimOf X)) = X.Ψ.card * r := by
-  rw [Fintype.card_sigma, sum_emb_split X]
-  simp [dimOf_add]
 
 open NumberField in
 open scoped ComplexConjugate in
@@ -137,13 +119,6 @@ def coordMap (X : Data E r) (e : X.Ψ → Fin r → (Fin r → ℂ)) :
     split_ifs
     · rw [pr_real_smul]
     · rw [pr_real_smul, map_mul, Complex.conj_ofReal]; ring
-
-theorem finrank_eq (X : Data E r) :
-    Module.finrank ℝ (X.Ψ → Fin r → ℂ) = Module.finrank ℝ (Vsp (dimOf X)) := by
-  rw [(WithLp.linearEquiv 2 ℝ (Idx (dimOf X) → ℂ)).finrank_eq]
-  simp only [Module.finrank_pi_fintype, Complex.finrank_real_complex, Finset.sum_const,
-    Finset.card_univ, card_idx, smul_eq_mul, Fintype.card_coe, Fintype.card_fin]
-  ring
 
 end
 
@@ -245,7 +220,6 @@ private theorem torusCoordinates_pair_im_lemma_4 (X : _root_.ReciprocityTheory.C
   · refine Finset.sum_congr rfl fun b hb => ?_
     rw [Finset.mem_filter] at hb
     simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.sgn, hb.2]
-
 
 open NumberField in
 open scoped ComplexConjugate in

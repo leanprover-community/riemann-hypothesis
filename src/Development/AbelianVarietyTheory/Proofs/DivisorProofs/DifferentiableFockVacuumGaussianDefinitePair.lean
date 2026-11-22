@@ -32,9 +32,6 @@ def entryR {m n : ℕ} (τ : D.what₂.Tau) (a : Fin m) (b : Fin n) : (D.what₂
     ((ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin m => Fin n → ℂ) a).comp
       (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : D.what₂.Tau => Fin m → Fin n → ℂ) τ))
 
-theorem entryR_apply {m n : ℕ} (τ : D.what₂.Tau) (a : Fin m) (b : Fin n) (Z : D.what₂.Tau → Fin m → Fin n → ℂ) :
-    entryR τ a b Z = Z τ a b := rfl
-
 def dSq {m n : ℕ} (Z : D.what₂.Tau → Fin m → Fin n → ℂ) : (D.what₂.Tau → Fin m → Fin n → ℂ) →L[ℝ] ℝ :=
   ∑ τ, ∑ a, ∑ b, (2 : ℕ) • (innerSL ℝ (Z τ a b)).comp (entryR τ a b)
 

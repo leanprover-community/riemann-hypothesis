@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.SharpRestriction.GlobalSchurBounds.CMFieldLemmas
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.ExistsOpenNormalOrderOf
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.UnitaryKronecker
 

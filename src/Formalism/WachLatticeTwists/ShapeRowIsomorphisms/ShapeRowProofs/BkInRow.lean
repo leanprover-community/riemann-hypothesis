@@ -8,7 +8,6 @@ public import Formalism.WachLatticeTwists.LatticeDualFibres.LatticeDualProofs.Lo
 public import Formalism.WachLatticeTwists.LatticeDualFibres.LatticeDualProofs.QuotLen
 public import Formalism.WachLatticeTwists.LatticeDualFibres.Statement
 public import ReciprocityTheory.GaloisValuations.ContinuousConstSMulQuotient
-public import Formalism.WachLatticeTwists.LatticeDualFibres.LatticeDualProofs.ExistsPowSmulIntegral
 public import Formalism.WachLatticeTwists.LatticeDualFibres.StatDualFibreLattice
 
 @[expose] public section

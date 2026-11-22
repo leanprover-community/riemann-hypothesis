@@ -103,9 +103,6 @@ section Galois
 
 variable {p : ℕ} [hp : Fact p.Prime] {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
 
-local notation "𝔸" => Localization.Away (p : AInf ℂ_[p] p)
-local notation "θ" => WittVector.fontaineTheta (normInteger ℂ_[p]) p
-
 def galAway (σ : Gal(PadicAlgCl p/K)) : 𝔸 →+* 𝔸 :=
   Localization.awayLift ((algebraMap (AInf ℂ_[p] p) 𝔸).comp (AInf.galMap σ)) (p : AInf ℂ_[p] p)
     (by

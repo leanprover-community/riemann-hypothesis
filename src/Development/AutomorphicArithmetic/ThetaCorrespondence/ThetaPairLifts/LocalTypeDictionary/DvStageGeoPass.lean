@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.DiscreteSpectrumResidualClassification
 public import Mathlib
 public import Development.AutomorphicArithmetic.LocalEmbeddings.StageGeoDefs
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareCommutationIntegralIdentity
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjUInvMemGfC
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MatchOfPolMatch

@@ -51,10 +51,6 @@ def res (U U' : URep k r) (e : U.R.H →L[ℂ] U'.R.H) (he : ∀ g ∈ GG k r, �
     U.R.smSub →ₗ[ℂ] U'.R.smSub :=
   (e : U.R.H →ₗ[ℂ] U'.R.H).restrict fun v hv => isSm_map (G := GG k r) e he (v := v) hv
 
-theorem res_coe (U U' : URep k r) (e : U.R.H →L[ℂ] U'.R.H)
-    (he : ∀ g ∈ GG k r, ∀ x, e (U.R.σ g x) = U'.R.σ g (e x)) (v : U.R.smSub) :
-    (res U U' e he v : U'.R.H) = e v := rfl
-
 theorem isHom_res (F : FRep k r) (U U' : URep k r) (e : U.R.H →L[ℂ] U'.R.H)
     (he : ∀ g ∈ GG k r, ∀ x, e (U.R.σ g x) = U'.R.σ g (e x)) (hn : ∀ x, ‖e x‖ = ‖x‖) :
     IsHom (F, U) (F, U') (dOp F.ι (res U U' e he)) := by

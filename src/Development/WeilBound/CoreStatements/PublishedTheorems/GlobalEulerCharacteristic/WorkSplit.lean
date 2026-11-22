@@ -12,8 +12,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.GEN.W_split
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 theorem isTotallyComplex_of_sq_eq_neg_one {E : Type*} [Field E] (x : E) (hx : x ^ 2 = -1) :
     NumberField.IsTotallyComplex E := by
   refine ⟨fun w => ?_⟩

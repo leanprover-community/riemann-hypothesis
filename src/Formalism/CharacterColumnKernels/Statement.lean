@@ -52,8 +52,4 @@ def bigMat {R O : Type*} [CommRing O] {g d : Type*} (ρ : R → Matrix d d O) (�
     Matrix (g × d) (g × d) O :=
   fun p q => ρ (Θ p.1 q.1) p.2 q.2
 
-abbrev baseChange {T : Type*} (T' : Type*) [CommRing T] [CommRing T'] [Algebra T T'] (J : Ideal T) :
-    Type _ :=
-  T' ⧸ Ideal.map (algebraMap T T') J
-
 end Formalism.NG

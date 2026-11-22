@@ -110,30 +110,6 @@ theorem sqrt_exists {p : ℕ} [Fact p.Prime] (hp4 : p % 4 = 3) {N : ℕ} [NeZero
     ∃ g : Cyc N, g ^ 2 = -(p : Cyc N) := by
   exact ⟨_, gs_sq hp4 (prim_pow hp)⟩
 
-theorem top_adjoin (m : ℕ) [NeZero m] : IntermediateField.adjoin ℚ ({z m} : Set (Cyc m)) = ⊤ := by
-  exact IntermediateField.adjoin_eq_top_of_algebra ℚ _
-   (IsCyclotomicExtension.adjoin_primitive_root_eq_top (z_spec m))
-
-theorem aut (N : ℕ) [NeZero N] (v : ℕ) (hv : v.Coprime N) :
-    ∃ σ : Cyc N ≃ₐ[ℚ] Cyc N, ∀ w : Cyc N, w ^ N = 1 → σ w = w ^ v := by
-  have hpos : 0 < N := NeZero.pos N
-  have hirr : Irreducible (cyclotomic N ℚ) := cyclotomic.irreducible_rat hpos
-  let u : (ZMod N)ˣ := ZMod.unitOfCoprime v hv
-  refine ⟨(IsCyclotomicExtension.autEquivPow (Cyc N) hirr).symm u, fun w hw => ?_⟩
-  have hu : (IsCyclotomicExtension.autEquivPow (Cyc N) hirr)
-      ((IsCyclotomicExtension.autEquivPow (Cyc N) hirr).symm u) = u := MulEquiv.apply_symm_apply _ _
-  have hz : (IsCyclotomicExtension.autEquivPow (Cyc N) hirr).symm u (z N) = z N ^ v := by
-    have h2 := (z_spec N).autToPow_spec ℚ ((IsCyclotomicExtension.autEquivPow (Cyc N) hirr).symm u)
-    have h3 : ((z_spec N).autToPow ℚ ((IsCyclotomicExtension.autEquivPow (Cyc N) hirr).symm u) :
-        ZMod N) = (v : ZMod N) := by
-      rw [show (z_spec N).autToPow ℚ ((IsCyclotomicExtension.autEquivPow (Cyc N) hirr).symm u)
-         = u from hu]
-      simp [u]
-    rw [← h2, h3, ZMod.val_natCast]
-    exact pow_mod_of (z_spec N).pow_eq_one v
-  obtain ⟨i, -, rfl⟩ := (z_spec N).eq_pow_of_pow_eq_one hw
-  rw [map_pow, hz, ← pow_mul, ← pow_mul, mul_comm]
-
 end Cyc
 
 section Div
@@ -167,6 +143,5 @@ section Two
 end Two
 
 end Cond
-
 
 end Formalism.FrobeniusOrbits

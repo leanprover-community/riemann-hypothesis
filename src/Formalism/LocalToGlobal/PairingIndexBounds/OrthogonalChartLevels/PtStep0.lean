@@ -32,35 +32,6 @@ def stdG {N : ℕ} (σ : E →+* E) (J : Matrix (Fin N) (Fin N) E) (γ : GL (Fin
 def reE {N n : ℕ} (h : N = n) : (Fin N → E) ≃ₗ[E] (Fin n → E) :=
   LinearEquiv.funCongrLeft E E (finCongr h.symm)
 
-structure PtD (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (n : ℕ) where
-  N : Submodule (𝓞 E) (Fin n → E)
-  g : (Fin n → E) ≃ₗ[E] (Fin n → E)
-  dt : (E ⊗[F] FiniteAdeleRing (𝓞 F) F)ˣ
-
-def PtD.re {N n : ℕ} (h : N = n) (Λ : Submodule (𝓞 E) (Fin N → E)) (g : (Fin N → E) ≃ₗ[E] (Fin N → E))
-    (dt : (E ⊗[F] FiniteAdeleRing (𝓞 F) F)ˣ) : PtD F E n where
-  N := Λ.map (((reE (E := E) h : (Fin N → E) ≃ₗ[E] (Fin n → E)) : (Fin N → E) →ₗ[E] (Fin n → E)).restrictScalars (𝓞 E))
-  g := ((reE h).symm.trans g).trans (reE h)
-  dt := dt
-
 variable {I : LocId L p nV W Qq} {N m : ℕ}
-
-def ptStep (S : StepG I N) (hk : m + 1 = N) (a : 𝓞 E) (bad : Finset (HeightOneSpectrum (𝓞 F))) (i : S.comp)
-    (Lt : Fin nV → Submodule W (Fin (m + 1) → Qq)) : PtD F E (m + 1) :=
-  PtD.re hk.symm (kerLat (sp := sp) S hk a i Lt)
-    ((toLE (gamAd S.Uloc bad (ptAd S hk i Lt))).trans (stdCo (sp.cm.sig : E →+* E) S.J))
-    (Matrix.GeneralLinearGroup.det (ptAd S hk i Lt))
-
-def ptAd0 (hdet : IsUnit sp.gram0.det) (hk : m + 1 = R.k) (y : compL L p → UPts sp.cm.sig sp.gram0 (Formalism.L2.Herm.Af F))
-    (i : compL L p) (Lt : Fin nV → Submodule W (Fin (m + 1) → Qq)) : GL (Fin R.k) (E ⊗[F] FiniteAdeleRing (𝓞 F) F) :=
-  ((y i * jQ I hdet hk (gOf Lt) : GA sp) : GL (Fin R.k) (E ⊗[F] FiniteAdeleRing (𝓞 F) F))
-
-def ptStep0 (hdet : IsUnit sp.gram0.det) (hk : m + 1 = R.k) (y : compL L p → UPts sp.cm.sig sp.gram0 (Formalism.L2.Herm.Af F))
-    (a : 𝓞 E) (bad : Finset (HeightOneSpectrum (𝓞 F))) (i : compL L p) (Lt : Fin nV → Submodule W (Fin (m + 1) → Qq)) :
-    PtD F E (m + 1) :=
-  PtD.re hk.symm
-    (toStd (sp.cm.sig : E →+* E) sp.gram0 (compan (sp := sp) sp.gram0 a (latAd (ptAd0 (I := I) hdet hk y i Lt) L.Lb)))
-    ((toLE (gamAd L.Uloc bad (ptAd0 (I := I) hdet hk y i Lt))).trans (stdCo (sp.cm.sig : E →+* E) sp.gram0))
-    (Matrix.GeneralLinearGroup.det (ptAd0 (I := I) hdet hk y i Lt))
 
 end Formalism.L2.PairingIndexBounds.F

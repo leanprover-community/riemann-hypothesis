@@ -53,8 +53,6 @@ abbrev runOf (T : ParamsT D L P) (S : SizesAt L) (hZ : 10 ^ 60 ≤ zBase L) : Ru
     have := T.TO_nW; have := order_le_modulus T S hZ
     omega
 
-def Kc0 : KAdm := ⟨1, 1, 1, 1, 1, 1, 1, 1, 2⟩
-
 def NonvanishingSectionCondition (T : ParamsT D L P) : KHyp := ⟨10, 20, 1000, 12, T.CP, T.eP, 2⟩
 
 section Run

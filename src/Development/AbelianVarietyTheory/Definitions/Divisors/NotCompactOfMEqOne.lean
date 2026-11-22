@@ -87,8 +87,6 @@ variable {p : ℕ} [Fact p.Prime]
 def Datum.IsDivision (D : Datum p) : Prop :=
   ∀ x : D.O, x ≠ 0 → ∃ y : D.O, ∃ c : ℤ, c ≠ 0 ∧ x * y = (c : D.O)
 
-def Datum.IsSimple (D : Datum p) : Prop := D.a = 1 ∧ D.m = D.n ∧ D.IsDivision
-
 def Datum.Compact (D : Datum p) : Prop :=
   2 * D.a < Module.finrank ℚ D.F ∨ (D.IsDivision ∧ D.n < 2 * D.m)
 

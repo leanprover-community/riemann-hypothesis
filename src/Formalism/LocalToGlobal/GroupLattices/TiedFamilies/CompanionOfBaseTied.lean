@@ -94,12 +94,4 @@ def locIdStd (D : D7) (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx 
         exact ⟨1, by simp⟩
       · exact ⟨0, by simp [h]⟩)))
 
-theorem companion_of_baseTied (D : D7) (H : Formalism.L2.Herm.HermCols D) (aT : ∀ u, Formalism.L2.Herm.AtT D u (H.vT u) (H.Fv u))
-    (hb : Formalism.L2.Herm.BaseTied D H aT) (u : D.what₂.Word) :
-    ∃ 𝔞 : Ideal (𝓞 D.host.E), (H.lev0 u).Lb ⊔ 𝔞 • Submodule.span (𝓞 D.host.E)
-      (dualSet (D.sp.cm.sig : D.host.E →+* D.host.E) D.sp.gram0 (H.lev0 u).Lb) = D.sp.crdLat0 (D.sp.X 0).L0 := by
-  have hi : IsIntegral ℤ (D.host.conj ((aT u).piU : D.host.E)) :=
-    map_isIntegral_int D.host.conj (RingOfIntegers.isIntegral_coe _)
-  exact ⟨Ideal.span {(⟨_, hi⟩ : 𝓞 D.host.E)}, (hb u ⟨_, hi⟩ rfl).1⟩
-
 end Formalism.L2.G

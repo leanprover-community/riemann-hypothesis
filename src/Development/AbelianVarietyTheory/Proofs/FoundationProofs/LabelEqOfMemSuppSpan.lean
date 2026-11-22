@@ -71,8 +71,6 @@ end Dual
 
 local instance factTypePrime (D : D7) (k : Fin 2) : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
 
-abbrev LocRep (D : D7) (k : Fin 2) (n : ℕ) : Type 1 := Rep.{0} ℂ (GL (Fin n) ℚ_[D.host.g k])
-
 variable (D : D7)
   (σ : D.ntypes.Par → ∀ k, D.nd.PlG k → LocRep D k D.R.r)
   (ΩV : D.what₂.Tup → ℕ → ∀ k, D.nd.PlG k → LocRep D k D.R.nV)

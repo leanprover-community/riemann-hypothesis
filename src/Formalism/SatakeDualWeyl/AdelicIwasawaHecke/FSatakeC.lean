@@ -12,8 +12,6 @@ namespace Formalism.UG.P
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {σ : L →+* L} {n : ℕ}
 
-local notation "⟪" x "⟫" => (((x : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L)
-
 theorem fSatake_borel_of_diag {d : GU σ n} {e : Fin n → L} (hd : ⟪d⟫ = Matrix.diagonal e) :
     IsBorelU d := by
   intro i j hij

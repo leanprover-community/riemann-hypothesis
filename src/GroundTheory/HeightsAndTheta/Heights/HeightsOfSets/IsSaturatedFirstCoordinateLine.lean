@@ -27,13 +27,6 @@ def height (I : Ideal (MRing ι) → (n : ℕ) → (Fin n → HermLine ι) → �
 
 variable {Ω : Type*} [Field Ω]
 
-def IsSectionBounded (P : Ideal (MRing ι)) (y : (Σ k, ι k) → Ω) (A : HermLine ι) (s : Ω) (c : ℝ) :
-    Prop :=
-  ∀ (dg dh : K → ℕ) (g h : MRing ι) (z : (Σ k, ι k) → ℂ),
-    IsMultiHomog g dg → IsMultiHomog h dh → (∀ k, (dg k : ℤ) = dh k + A.a k) →
-    aeval y g = s * aeval y h → z ∈ mcPts P →
-    ‖eval z (map (Int.castRingHom ℂ) g)‖ ≤ c * ‖eval z (map (Int.castRingHom ℂ) h)‖ * A.h z
-
 end HeightObjects
 
 def HeightComparison.Statement : Prop :=

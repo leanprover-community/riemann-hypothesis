@@ -29,9 +29,6 @@ open Module Formalism.L2.SG.Pf.G2
 variable {K F V : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
   [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-local notation "jK" => algebraMap (𝓞 K) K
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-
 private theorem coe_iota_eq_algebraMap_coe (a : 𝓞 F) : jK (ι a) = algebraMap F K (a : F) := by
   rw [← IsScalarTower.algebraMap_apply (𝓞 F) (𝓞 K) K, IsScalarTower.algebraMap_apply (𝓞 F) F K]
 
@@ -148,10 +145,6 @@ theorem jK_ι_ne_zero {t : 𝓞 F} (ht : t ≠ 0) : jK (ι t) ≠ 0 := by
   apply ht
   have h1 : ((t : F)) = 0 := (map_eq_zero_iff _ (algebraMap F K).injective).1 h
   exact_mod_cast h1
-
-theorem jordan_ne_zero_of_notMem {𝔭 : Ideal (𝓞 F)} {t : 𝓞 F} (ht : t ∉ 𝔭) : t ≠ 0 := by
-  rintro rfl
-  exact ht 𝔭.zero_mem
 
 theorem exists_inv_mod {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {t : 𝓞 F} (ht : t ∉ 𝔭) (e : ℕ) :
     ∃ u : 𝓞 F, 1 - t * u ∈ 𝔭 ^ e := by

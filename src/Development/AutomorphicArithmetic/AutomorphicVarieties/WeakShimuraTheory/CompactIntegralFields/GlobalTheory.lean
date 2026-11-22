@@ -16,8 +16,6 @@ private def Par (X : M4 k) : Prop := ∀ i j : Fin 4, i.1 < 2 → 2 ≤ j.1 → 
 
 private noncomputable def comb (A B : M4 k) : M4 k[X] := Matrix.of fun i j => C (A i j) + X * C (B i j - A i j)
 
-private theorem comb_apply (A B : M4 k) (i j : Fin 4) : comb A B i j = C (A i j) + X * C (B i j - A i j) := rfl
-
 private theorem comb_eq (A B : M4 k) : comb A B = A.map C + (X : k[X]) • (B - A).map C := by
   ext1 i j; simp [comb_apply]
 

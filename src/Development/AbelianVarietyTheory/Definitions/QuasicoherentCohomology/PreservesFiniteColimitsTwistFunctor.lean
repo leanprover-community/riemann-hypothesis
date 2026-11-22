@@ -36,7 +36,6 @@ def secGroup (V : X.Opens) : AddSubgroup (∀ i, Γ(F, V ⊓ L.U i)) where
   zero_mem' := fun i j => by simp only [Pi.zero_apply, map_zero, smul_zero]
   neg_mem' := fun {s} hs i j => by simp only [Pi.neg_apply, map_neg, hs i j, smul_neg]
 
-
 variable {F L} in
 theorem secGroup_rel {V : X.Opens} (s : secGroup F L V) (i j : L.ι)
     {W : X.Opens} (hi : W ≤ V ⊓ L.U i) (hj : W ≤ V ⊓ L.U j) (hij : W ≤ L.U i ⊓ L.U j) :
@@ -157,7 +156,6 @@ theorem coord_rel {V : X.Opens} (s : Γ(twist F L, V)) (i j : L.ι)
     resM F hi (coord s i) = resG X hij (L.g i j : Γ(X, L.U i ⊓ L.U j)) • resM F hj (coord s j) :=
   secGroup_rel (show secGroup F L V from s) i j hi hj hij
 
-
 variable (L) in
 def map (φ : F ⟶ G) : twist F L ⟶ twist G L :=
   homOfLinear
@@ -232,17 +230,10 @@ theorem chartEquiv_change (hL : L.IsLB) (i j : L.ι) {V : X.Opens} (hi : V ≤ L
       resG X (le_inf hi hj) (L.g i j : Γ(X, L.U i ⊓ L.U j)) • chartEquiv hL j hj s :=
   coord_rel s i j _ _ _
 
-theorem chartEquiv_map_app (hL : L.IsLB) (φ : F ⟶ G) (i : L.ι) {V : X.Opens} (h : V ≤ L.U i)
-    (s : Γ(twist F L, V)) :
-    chartEquiv hL i h ((map L φ).app V s) = φ.app V (chartEquiv hL i h s) :=
-  (app_resM φ _ _).symm
-
-
 variable (F) in
 def restrictIso (hL : L.IsLB) (i : L.ι) (g : Y ⟶ X) [IsOpenImmersion g]
     (hg : g.opensRange ≤ L.U i) : (twist F L).restrict g ≅ F.restrict g :=
   restrictIsoOfLinear (fun _ h => chartEquiv hL i h) (chartEquiv_resM hL i) g hg
-
 
 variable (F) in
 def chartIso (hL : L.IsLB) (i : L.ι) : (twist F L).restrict (L.U i).ι ≅ F.restrict (L.U i).ι :=
@@ -261,7 +252,6 @@ theorem isFiniteType_twist_iff (hL : L.IsLB) : (twist F L).IsFiniteType ↔ F.Is
       restrictIso F hL i W.ι (W.opensRange_ι.le.trans h),
     fun _ => isFiniteType_of_locally_iso hL.cover fun i W h =>
       (restrictIso F hL i W.ι (W.opensRange_ι.le.trans h)).symm⟩
-
 
 variable (F) in
 def stalkEquiv (hL : L.IsLB) (i : L.ι) {x : X} (hx : x ∈ L.U i) :
@@ -305,7 +295,6 @@ theorem isFiniteQC_twist_iff (hL : L.IsLB) : QCoh.IsFiniteQC (twist F L) ↔ QCo
 theorem isFiniteQC_twist (hL : L.IsLB) [h : QCoh.IsFiniteQC F] : QCoh.IsFiniteQC (twist F L) :=
   (isFiniteQC_twist_iff hL).2 h
 
-
 variable (L) in
 def unitTwistIso : twist (unitMod X) L ≅ toMod L :=
   isoOfLinear
@@ -325,7 +314,6 @@ def tmulFun {V : X.Opens} (t : Γ(F, V)) (σ : Γ(toMod L, V)) : Γ(twist F L, V
 
 theorem coord_tmulFun {V : X.Opens} (t : Γ(F, V)) (σ : Γ(toMod L, V)) (i : L.ι) :
     coord (tmulFun t σ) i = LB.coord σ i • resM F inf_le_left t := rfl
-
 
 variable (F L) in
 def tmul (V : X.Opens) : Γ(F, V) →ₗ[Γ(X, V)] Γ(toMod L, V) →ₗ[Γ(X, V)] Γ(twist F L, V) :=
@@ -352,7 +340,6 @@ theorem map_app_tmul (φ : F ⟶ G) {V : X.Opens} (t : Γ(F, V)) (σ : Γ(toMod 
     (map L φ).app V (tmul F L V t σ) = tmul G L V (φ.app V t) σ :=
   sec_ext fun i => by
     rw [coord_map_app, coord_tmul, coord_tmul, Scheme.Modules.Hom.app_smul, app_resM]
-
 
 variable (F) in
 def secHom (σ : LB.Sec L) : F ⟶ twist F L :=
@@ -394,7 +381,6 @@ theorem isIso_secHom_genSec (hL : L.IsLB) (t : LB.Gen L) (ht : t.IsGen) :
   isIso_of_bijective _ fun _ =>
     bijective_secHom_app hL _ (le_top.trans (nonzeroLocus_genSec hL t ht).ge)
 
-
 variable (F) in
 def genIso (hL : L.IsLB) (t : LB.Gen L) (ht : t.IsGen) : F ≅ twist F L :=
   haveI := isIso_secHom_genSec (F := F) hL t ht
@@ -405,7 +391,6 @@ def genNatIso (hL : L.IsLB) (t : LB.Gen L) (ht : t.IsGen) : 𝟭 X.Modules ≅ t
 
 theorem isGen_one_triv : LB.Gen.IsGen (L := LB.triv X) ⟨fun _ => 1⟩ :=
   fun _ _ => (one_mul _).symm
-
 
 variable (F) in
 def trivIso : F ≅ twist F (LB.triv X) := genIso F (LB.isLB_triv X) _ isGen_one_triv
@@ -448,7 +433,6 @@ def divFun (hL : L.IsLB) {V : X.Opens} (t : Γ(twist F N, V)) :
 theorem coord_divFun (hL : L.IsLB) {V : X.Opens} (t : Γ(twist F N, V)) (p : (LB.div N L).ι) :
     coord (divFun hL t) p = (chartEquiv hL p.2 (inf_le_right.trans (div_U_le_right p))).symm
       (resM F (inf_le_inf_left V (div_U_le_left p)) (coord t p.1)) := rfl
-
 
 variable (F N) in
 def divHom (hL : L.IsLB) : twist F N ⟶ twist (twist F L) (LB.div N L) :=
@@ -537,7 +521,6 @@ theorem coord_coord_swapFun {V : X.Opens} (s : Γ(twist (twist F L) M, V)) (l : 
     coord (coord (swapFun s) l) m =
       resM F (inf_right_comm V (L.U l) (M.U m)).le (coord (coord s m) l) := rfl
 
-
 variable (F L M) in
 def swapHom : twist (twist F L) M ⟶ twist (twist F M) L :=
   homOfLinear
@@ -559,7 +542,6 @@ theorem swapHom_swapHom : swapHom F L M ≫ swapHom F M L = 𝟙 _ :=
     change coord (coord (swapFun (swapFun s)) m) l = coord (coord s m) l
     rw [coord_coord_swapFun, coord_coord_swapFun, resM_resM, resM_self]
 
-
 variable (F L M) in
 def swapIso : twist (twist F L) M ≅ twist (twist F M) L where
   hom := swapHom F L M
@@ -567,12 +549,10 @@ def swapIso : twist (twist F L) M ≅ twist (twist F M) L where
   hom_inv_id := swapHom_swapHom
   inv_hom_id := swapHom_swapHom
 
-
 variable (L M) in
 def swapNatIso : twistFunctor L ⋙ twistFunctor M ≅ twistFunctor M ⋙ twistFunctor L :=
   NatIso.ofComponents (fun F => swapIso F L M) fun φ =>
     hom_ext fun _ _ _ => sec_ext fun _ => (app_resM φ _ _).symm
-
 
 variable (F) in
 def homOfSec (hL : L.IsLB) (hM : M.IsLB) (w : LB.Sec (LB.div M L)) : twist F L ⟶ twist F M :=
@@ -619,7 +599,6 @@ theorem nonempty_iso_of_lbIso (hL : L.IsLB) (hM : M.IsLB) (h : LBIso L M) :
     Nonempty (twist F L ≅ twist F M) :=
   let ⟨w, hw⟩ := h
   ⟨isoOfGen F hL hM w hw⟩
-
 
 variable (F) in
 def twistTwistIso (hL : L.IsLB) (hM : M.IsLB) (hN : N.IsLB) (w : LB.Gen (LB.div (LB.div N L) M))
@@ -714,7 +693,6 @@ theorem le_pull_inf (V : X.Opens) (i : L.ι) :
     f ⁻¹ᵁ (V ⊓ L.U i) ≤ f ⁻¹ᵁ V ⊓ (L.pull f).U fun _ => i :=
   fun _ hx => ⟨hx.1, (LB.pull_U f fun _ => i).ge hx.2⟩
 
-
 set_option backward.isDefEq.respectTransparency false in
 def projFun {G : Y.Modules} {V : X.Opens} (s : Γ(twist G (L.pull f), f ⁻¹ᵁ V)) :
     Γ(twist ((Scheme.Modules.pushforward f).obj G) L, V) :=
@@ -730,7 +708,6 @@ def projFun {G : Y.Modules} {V : X.Opens} (s : Γ(twist G (L.pull f), f ⁻¹ᵁ
       (le_inf ((hi.trans (le_pull_inf f V i)).trans inf_le_right)
         ((hj.trans (le_pull_inf f V j)).trans inf_le_right)),
       LB.resG_pull_g, ← Scheme.Hom.appLE_eq_app, LB.appLE_resG]
-
 
 set_option backward.isDefEq.respectTransparency false in
 def projInv {G : Y.Modules} {V : X.Opens}
@@ -750,7 +727,6 @@ def projInv {G : Y.Modules} {V : X.Opens}
     rw [resM_smul, resM_resM, resM_resM, LB.resG_app, LB.appLE_resG] at this
     rw [resM_resM, resM_resM, LB.resG_pull_g]
     exact this
-
 
 variable (L) in
 def projIso (G : Y.Modules) :
@@ -776,13 +752,11 @@ def projIso (G : Y.Modules) :
       (resM_resM (F := G) _ (le_pull_inf f W i) _).trans
         (resM_resM (F := G) (le_pull_inf f V i) (f.preimage_mono (inf_le_inf_right _ h)) _).symm
 
-
 variable (L) in
 def projNatIso : twistFunctor (L.pull f) ⋙ Scheme.Modules.pushforward f ≅
     Scheme.Modules.pushforward f ⋙ twistFunctor L :=
   NatIso.ofComponents (projIso L f) fun φ =>
     hom_ext fun V _ i => (app_resM φ (le_pull_inf f V i) _).symm
-
 
 variable (F L) in
 def pullbackHom : (Scheme.Modules.pullback f).obj (twist F L) ⟶
@@ -794,7 +768,6 @@ theorem isIso_pullbackHom (hL : L.IsLB) : IsIso (pullbackHom F L f) :=
   haveI := isEquivalence_twistFunctor hL
   haveI := isEquivalence_twistFunctor (Semi.LB.isLB_pull hL f)
   isIso_mateHom _ _ _ _ _
-
 
 variable (F) in
 def pullbackIso (hL : L.IsLB) : (Scheme.Modules.pullback f).obj (twist F L) ≅
@@ -810,7 +783,6 @@ section Refine
 
 variable (r : M.ι → L.ι) (hU : ∀ m, M.U m ≤ L.U (r m))
   (hg : ∀ m m', M.g m m' = res (inf_le_inf (hU m) (hU m')) (L.g (r m) (r m')))
-
 
 variable (F) in
 def refineHom : twist F L ⟶ twist F M :=
@@ -836,7 +808,6 @@ theorem isIso_refineHom (hL : L.IsLB) (hM : M.IsLB) : IsIso (refineHom F r hU hg
     bijective_of_eq_smul (chartEquiv hL (r m) (h.trans (hU m))).bijective
       (chartEquiv hM m h).bijective isUnit_one fun s => by
         rw [one_smul, chartEquiv_apply, chartEquiv_apply, coord_refineHom_app, resM_resM]
-
 
 variable (F) in
 def refineIso (hL : L.IsLB) (hM : M.IsLB) : twist F L ≅ twist F M :=
@@ -865,7 +836,6 @@ theorem twistZ_natCast (F : X.Modules) (L : LB X) (n : ℕ) :
     twistZ F L n = twist F (lbPow L n) := rfl
 
 theorem isLB_lbZPow (hL : L.IsLB) (n : ℤ) : (lbZPow L n).IsLB := Semi.LB.isLB_linComb hL _ _
-
 
 variable (L) in
 def zidx (n : ℤ) (i : L.ι) : (lbZPow L n).ι := fun _ => i
@@ -963,13 +933,6 @@ theorem zchartEquiv_resM (hL : L.IsLB) (i : L.ι) {V W : X.Opens} (h : V ≤ L.U
       resM F h' (zchartEquiv hL n i h s) :=
   chartEquiv_resM _ _ _ h' s
 
-theorem zchartEquiv_change (hL : L.IsLB) (i j : L.ι) {V : X.Opens} (hi : V ≤ L.U i)
-    (hj : V ≤ L.U j) (s : Γ(twistZ F L n, V)) :
-    zchartEquiv hL n i hi s =
-      ((res (le_inf hi hj) (L.g i j) ^ n : Γ(X, V)ˣ) : Γ(X, V)) • zchartEquiv hL n j hj s := by
-  rw [zchartEquiv_apply, zchartEquiv_apply]
-  exact zcoord_rel s i j _ _ _
-
 def zfun (σ : LB.Sec (lbZPow L m)) (i : L.ι) : Γ(X, L.U i) :=
   resG X (le_zidx_U m i) (σ.f (zidx L m i))
 
@@ -1015,7 +978,6 @@ def zmkGlobal (f : ∀ i, Γ(X, L.U i))
     zfun (a • σ) i = resG X le_top a * zfun σ i := by
   rw [zfun, zfun, LB.smul_f, map_mul, resG_resG]
 
-
 def zofSec (σ : LB.Sec L) : LB.Sec (lbZPow L 1) :=
   zmkGlobal σ.f fun i j => by rw [zpow_one]; exact σ.compat i j
 
@@ -1049,7 +1011,6 @@ theorem zcoord_mulFun (σ : LB.Sec (lbZPow L m)) (h : n + m = k) {V : X.Opens}
     zcoord (mulFun σ h s) i = resG X (inf_le_right : V ⊓ L.U i ≤ L.U i) (zfun σ i) • zcoord s i :=
   zcoord_zmkSec _ _ i
 
-
 variable (F) in
 def mulSecOfEq (σ : LB.Sec (lbZPow L m)) (h : n + m = k) : twistZ F L n ⟶ twistZ F L k :=
   homOfLinear
@@ -1062,7 +1023,6 @@ def mulSecOfEq (σ : LB.Sec (lbZPow L m)) (h : n + m = k) : twistZ F L n ⟶ twi
     fun h' s => zsec_ext fun i => by
       change zcoord (mulFun σ h (resM _ h' s)) i = zcoord (resM _ h' (mulFun σ h s)) i
       rw [zcoord_resM, zcoord_mulFun, zcoord_mulFun, zcoord_resM, resM_smul, resG_resG]
-
 
 variable (F) in
 abbrev mulSec (σ : LB.Sec (lbZPow L m)) (n : ℤ) : twistZ F L n ⟶ twistZ F L (n + m) :=
@@ -1112,7 +1072,6 @@ theorem bijective_mulSecOfEq_app (hL : L.IsLB) (σ : LB.Sec (lbZPow L m)) (h : n
     bijective_of_eq_smul (zchartEquiv hL n i hi).bijective (zchartEquiv hL k i hi).bijective
       (isUnit_resG_zfun σ i hi (h'.trans hV)) (zchartEquiv_mulSecOfEq_app hL σ h i hi)
 
-
 variable (L) in
 def zoneGen : LB.Gen (lbZPow L 0) := ⟨fun _ => 1⟩
 
@@ -1122,7 +1081,6 @@ theorem isGen_zoneGen : (zoneGen L).IsGen := fun i j => by
   have e' : (lbZPow L 0).g i j = 1 := (Units.ext (resG_self _ _)).symm.trans e
   rw [e', one_mul]
   exact (map_one _).trans (map_one _).symm
-
 
 variable (F) in
 def twistZZeroIso (hL : L.IsLB) : F ≅ twistZ F L 0 :=
@@ -1134,13 +1092,11 @@ def twistZZeroIso (hL : L.IsLB) : F ≅ twistZ F L 0 :=
     resG X (inf_le_right : V ⊓ (lbZPow L 0).U (zidx L 0 i) ≤ _) 1 • resM F inf_le_left t := rfl
   rw [zcoord, e, map_one, one_smul, resM_resM]
 
-
 theorem res_div_g (p q : (LB.div N L).ι) {W : X.Opens}
     (h : W ≤ (LB.div N L).U p ⊓ (LB.div N L).U q) (hN : W ≤ N.U p.1 ⊓ N.U q.1)
     (hL : W ≤ L.U p.2 ⊓ L.U q.2) :
     res h ((LB.div N L).g p q) = res hN (N.g p.1 q.1) * (res hL (L.g p.2 q.2))⁻¹ :=
   Semi.LB.res_dg N L p q h
-
 
 variable (L n m k) in
 def zaddGen : LB.Gen (LB.div (LB.div (lbZPow L k) (lbZPow L n)) (lbZPow L m)) where
@@ -1199,7 +1155,6 @@ theorem isGen_zaddGen (hL : L.IsLB) (h : n + m = k) : (zaddGen L n m k).IsGen :=
     c _ _ _ _ pa' pc' qa' qc', ← h]
   exact zpow_mul_inv_mul_identity_commGroup _ _ _ _ _ _ _
 
-
 variable (F) in
 def twistZAddIso (hL : L.IsLB) (h : n + m = k) : twistZ (twistZ F L n) L m ≅ twistZ F L k :=
   twistTwistIso F (isLB_lbZPow hL n) (isLB_lbZPow hL m) (isLB_lbZPow hL k) _ (isGen_zaddGen hL h)
@@ -1231,7 +1186,6 @@ end Pow
 
 section PowInv
 
-
 variable (F) in
 def twistZNegOneIso (hL : L.IsLB) : twistZ F L (-1) ≅ twist F (LB.div (LB.triv X) L) :=
   refineIso F (fun p : (LB.div (LB.triv X) L).ι => zidx L (-1) p.2)
@@ -1244,7 +1198,6 @@ def twistZNegOneIso (hL : L.IsLB) : twistZ F L (-1) ≅ twist F (LB.div (LB.triv
       exact (congrArg (· * _) (map_one _)).trans (one_mul _))
     (isLB_lbZPow hL (-1)) (Semi.LB.isLB_div (LB.isLB_triv X) hL)
 
-
 variable (F) in
 def twistTwistZNegOneIso (hL : L.IsLB) : twistZ (twist F L) L (-1) ≅ F :=
   twistZNegOneIso (twist F L) hL ≪≫ ((twistInvNatIso hL).app F).symm
@@ -1254,7 +1207,6 @@ end PowInv
 section PowPushPull
 
 variable {n m k : ℤ} (f : Y ⟶ X)
-
 
 variable (L) in
 def pidx (i : L.ι) : (L.pull f).ι := fun _ => i
@@ -1328,23 +1280,6 @@ def zpull (σ : LB.Sec (lbZPow L m)) : LB.Sec (lbZPow (L.pull f) m) :=
 @[simp] theorem zfun_zpull (σ : LB.Sec (lbZPow L m)) (j : (L.pull f).ι) :
     zfun (zpull f σ) j = (f.appLE _ _ (LB.pull_U_le f j)).hom (zfun σ (j PUnit.unit)) :=
   zfun_zmkGlobal _ _ j
-
-@[reassoc] theorem projZIso_mulSecOfEq (hL : L.IsLB) (G : Y.Modules) (σ : LB.Sec (lbZPow L m))
-    (h : n + m = k) :
-    (Scheme.Modules.pushforward f).map (mulSecOfEq G (zpull f σ) h) ≫ (projZIso f hL G k).hom =
-      (projZIso f hL G n).hom ≫ mulSecOfEq ((Scheme.Modules.pushforward f).obj G) σ h :=
-  zhom_ext fun V (s : Γ(twistZ G (L.pull f) n, f ⁻¹ᵁ V)) i => by
-    refine (zcoord_projZIso_hom_app f hL G ((mulSecOfEq G (zpull f σ) h).app _ s) i).trans ?_
-    refine Eq.trans ?_ (zcoord_mulSecOfEq_app σ h ((projZIso f hL G n).hom.app V s) i).symm
-    have e : (f.app (V ⊓ L.U i)).hom (resG X inf_le_right (zfun σ i)) =
-        (f.appLE (L.U i) _ (f.preimage_mono (inf_le_right : V ⊓ L.U i ≤ L.U i))).hom (zfun σ i) := by
-      rw [← Scheme.Hom.appLE_eq_app, LB.appLE_resG]
-    rw [zcoord_mulSecOfEq_app, resM_smul, resG_resG, zfun_zpull, LB.resG_appLE]
-    refine Eq.trans (congrArg (· • resM G (le_pidx_inf f V i) (zcoord s (pidx L f i))) e.symm) ?_
-    exact congrArg (fun t : Γ(G, f ⁻¹ᵁ (V ⊓ L.U i)) =>
-      (f.app (V ⊓ L.U i)).hom (resG X inf_le_right (zfun σ i)) • t)
-      (zcoord_projZIso_hom_app f hL G s i).symm
-
 
 variable (F) in
 def pullbackZIso (hL : L.IsLB) (n : ℤ) : (Scheme.Modules.pullback f).obj (twistZ F L n) ≅

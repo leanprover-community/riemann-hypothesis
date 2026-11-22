@@ -8,7 +8,6 @@ public import Formalism.LocalRingCardinality.DataParamsT
 public import Formalism.LocalRingCardinality.ConjSqrtMinusD
 public import Formalism.SharpRestriction.ParamsHeightRankConstant
 public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
-public import Formalism.GelfandTransference.EnergyIdentity
 
 @[expose] public section
 
@@ -91,79 +90,12 @@ def IntOn (X : Submodule (𝓞 D.host.E) (Fin n → D.host.E)) (A : Matrix (Fin 
 def ExpoSet (X : Submodule (𝓞 D.host.E) (Fin n → D.host.E)) : Set (Matrix (Fin n) (Fin n) D.host.E) :=
   {A | IsHerm D A ∧ PosDefE D A ∧ IntOn D X A (((D.host.g 0 * D.host.g 1 : ℕ) : D.host.E))}
 
-abbrev BForm (D : D7) (n : ℕ) : Type := D.what₂.Tau → Matrix (Fin n) (Fin n) ℂ
-
-def embV (τ : D.what₂.Tau) (x : Fin n → D.host.E) : Fin n → ℂ := fun i => DV.tauEmb D τ (x i)
-
-def PsdRat (b : BForm D n) : Prop :=
-  (∀ τ, (b τ).PosSemidef) ∧ ∃ U : Submodule D.host.E (Fin n → D.host.E), ∀ τ,
-    LinearMap.ker (Matrix.toLin' (b τ)) = Submodule.span ℂ (embV D τ '' (U : Set (Fin n → D.host.E)))
-
-def pairB (A : Matrix (Fin n) (Fin n) D.host.E) (b : BForm D n) : ℝ :=
-  ∑ τ, (Matrix.trace (b τ * A.map (DV.tauEmb D τ))).re
-
 theorem emb_conj (σ : D.host.E →+* ℂ) (z : D.host.E) : σ (D.host.conj z) = star (σ z) := by
   have hg : D.host.gal D.host.conj = D.R.cc := by
     first
     | exact MulEquiv.apply_symm_apply _ _
     | simp [Formalism.HC.HostRaw.conj]
   exact (D.host.der.conj_iff σ D.host.conj).mpr hg z
-
-theorem embV_add (τ : D.what₂.Tau) (x y : Fin n → D.host.E) :
-    embV D τ (x + y) = embV D τ x + embV D τ y := by
-  funext i
-  simp [embV]
-
-theorem embV_smul (τ : D.what₂.Tau) (c : D.host.E) (x : Fin n → D.host.E) :
-    embV D τ (c • x) = DV.tauEmb D τ c • embV D τ x := by
-  funext i
-  simp [embV]
-
-def Bv (b : BForm D n) (x y : Fin n → D.host.E) : ℝ :=
-  ∑ τ, (star (embV D τ x) ⬝ᵥ (b τ).mulVec (embV D τ y) +
-    star (embV D τ y) ⬝ᵥ (b τ).mulVec (embV D τ x)).re
-
-theorem Bv_comm (b : BForm D n) (x y : Fin n → D.host.E) : Bv D b x y = Bv D b y x := by
-  unfold Bv
-  refine Finset.sum_congr rfl fun τ _ => ?_
-  rw [add_comm]
-
-theorem Bv_add_left (b : BForm D n) (x x' y : Fin n → D.host.E) :
-    Bv D b (x + x') y = Bv D b x y + Bv D b x' y := by
-  unfold Bv
-  rw [← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun τ _ => ?_
-  simp [embV_add, Matrix.mulVec_add, Complex.add_re]
-  try ring
-
-theorem Bv_bal (b : BForm D n) (c : D.host.E) (x y : Fin n → D.host.E) :
-    Bv D b (c • x) y = Bv D b x (D.host.conj c • y) := by
-  unfold Bv
-  refine Finset.sum_congr rfl fun τ _ => ?_
-  rw [embV_smul, embV_smul, emb_conj]
-  simp [Matrix.mulVec_smul]
-  try ring
-
-def symB (X : Submodule (𝓞 D.host.E) (Fin n → D.host.E)) (b : BForm D n) :
-    ModuliIntegralCharts.SymB (fun x : D.host.E => D.host.conj x) X :=
-  ⟨LinearMap.mk₂ ℤ (fun x y : X => Bv D b x y)
-      (fun x x' y => Bv_add_left D b x x' y)
-      (fun c x y => map_zsmul (AddMonoidHom.mk' (fun x : X => Bv D b x y)
-        (fun x x' => Bv_add_left D b x x' y)) c x)
-      (fun x y y' => by
-        simp only [Bv_comm D b (x : Fin n → D.host.E)]; exact Bv_add_left D b y y' x)
-      (fun c x y => map_zsmul (AddMonoidHom.mk' (fun y : X => Bv D b x y)
-        (fun y y' => by
-          simp only [Bv_comm D b (x : Fin n → D.host.E)]; exact Bv_add_left D b y y' x)) c y),
-    fun x y => Bv_comm D b x y,
-    fun c c' h x y => by
-      change Bv D b ((c • x : X) : Fin n → D.host.E) y = Bv D b x ((c' • y : X) : Fin n → D.host.E)
-      have h1 : ((c • x : X) : Fin n → D.host.E) = (c : D.host.E) • (x : Fin n → D.host.E) := rfl
-      have h2 : ((c' • y : X) : Fin n → D.host.E) = (c' : D.host.E) • (y : Fin n → D.host.E) := rfl
-      rw [h1, h2, h, Bv_bal]⟩
-
-def phiC (X : Submodule (𝓞 D.host.E) (Fin n → D.host.E)) (b : BForm D n) : ℝ :=
-  ModuliIntegralCharts.phiC (fun x : D.host.E => D.host.conj x) (symB D X b)
 
 def trF (z : D.host.E) : ℝ := ∑ τ, (DV.tauEmb D τ z).re
 
@@ -277,51 +209,7 @@ section Statements
 
 variable {D : D7}
 
-def adm1 (X : Prov D) : Prop :=
-  ∀ j, 1 ≤ j → j ≤ D.R.m → ∀ ka : Wt D j, Submodule.IsLattice X.KO (X.Mlat j ka)
-
-def adm2 (L : SizeData₂ D) (X : Prov D) (CG AG : ℝ) : Prop :=
-  ∀ j, 1 ≤ j → j ≤ D.R.m → ∀ (ka : Wt D j) (F : X.Cusp j ka) (σ : X.KO →+* ℂ),
-    X.supN j ka σ F ^ 2 ≤
-      Real.exp (PPv D L CG AG * (1 + Real.log ka.size)) * X.l2NormAlt j ka σ F ^ 2
-
-def TransferenceTheoremCond : Prop := Formalism.HadamardInequality.Transference
-
-def Conclusion1 (L : SizeData₂ D) (X : Prov D) (C A : ℝ) : Prop :=
-  ∀ j, 1 ≤ j → j ≤ D.R.m → ∀ (ka : Wt D j) (F : X.Cusp j ka), F ∈ X.Mlat j ka → F ≠ 0 →
-    -(PP0v D L C A * ka.size) ≤ meanLogSup X F
-
-def Conclusion2 (X : Prov D) (CR : ℝ) : Prop :=
-  0 ≤ CR → ∀ j, 1 ≤ j → j < D.R.m → (dP D j : ℝ) ^ 2 ≤ RRv D CR →
-    ∀ (ka : Wt D j) (T c : ℝ), 0 < T → 0 < c → T * c ≤ 1 →
-    ∀ F ∈ X.Mlat j ka, F ∈ MggK X CR T c j ka →
-    ∀ (cu : X.Cu j) (χ : ExpoSet D (X.Xc j cu)), X.sg j cu χ ka F ≠ 0 →
-    ∀ b : BForm D (rho D j), PsdRat D b → b ≠ 0 →
-      T * c * phiC D (X.Xc j cu) b < pairB D χ.1 b
-
-def PointsLemma (L : SizeData₂ D) (X : Prov D) (CR Ck Ch Ah Cc Ac : ℝ) : Prop :=
-  0 ≤ CR → Obound X L Ch Ah →
-  ∀ j, 1 ≤ j → j < D.R.m → ∀ ka : Wt D j, ka.n = D.R.nV → ka.LastPos →
-    ka.size ≤ Ck * (D.R.k : ℝ) * (D.R.f : ℝ) * L.sc.b →
-  ∀ T c : ℝ, 0 < T → 0 < c → T * c ≤ 1 →
-  ∃ be : HeightOneSpectrum (𝓞 X.KO) →₀ ℝ, (∀ la, 0 ≤ be la) ∧
-    (be.sum fun la v => v * lnN X la) / degO X ≤ PPv D L Cc Ac * ka.size ∧
-  ∀ th : Fin (rhoP X CR T c j ka) → X.Mlat j ka,
-    Submodule.span X.KO (Set.range fun i => ((th i : X.Mlat j ka) : X.Cusp j ka)) ⊔
-      MggK X CR T c j ka = ⊤ →
-    (∀ i, meanLogSup X ((th i : X.Mlat j ka) : X.Cusp j ka) ≤ PPv D L Ch Ah * ka.size) →
-  ∃ nn : HeightOneSpectrum (𝓞 X.KO) →₀ ℝ,
-    (∀ la, ∃ ℓ : ℕ,
-      lenAt X la (Qm X CR T c j ka ⧸ Submodule.span (𝓞 X.KO)
-        (Set.range fun i => (Submodule.Quotient.mk (th i) : Qm X CR T c j ka))) = ℓ ∧
-      (ℓ : ℝ) ≤ nn la + (rhoP X CR T c j ka : ℝ) * be la) ∧
-    (nn.sum fun la v => v * lnN X la) / degO X ≤
-      (rhoP X CR T c j ka : ℝ) * PPv D L Cc Ac * ka.size
-
 end Statements
-
-abbrev ProvF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Type 1 :=
-  ∀ x (_ : Fm.x1 < x) (i : Fm.Ix x), Prov (Fm.D x i)
 
 section Family
 

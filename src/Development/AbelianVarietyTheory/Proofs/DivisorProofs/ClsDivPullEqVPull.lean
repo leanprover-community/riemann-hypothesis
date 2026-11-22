@@ -1,7 +1,9 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToIThCapDegOfAddNsmulDivP
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsIsoGenResMapSmulHom
+public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.LengthQuotientMaximalIdealPowSmulTop
+public import Formalism.LocalRingCardinality.DataDIV
 
 @[expose] public section
 

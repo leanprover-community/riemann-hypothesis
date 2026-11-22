@@ -72,11 +72,6 @@ def hMap (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (φ : R �
     apply Subtype.ext
     exact map_mul (bc (tm E φ)) _ _
 
-theorem hMap_mat (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (φ : R →ₐ[F] R')
-    (h : HA R σ J) :
-    ((HA.mat R' σ J (hMap σ J φ h) : GL _ _) : Matrix (Fin M) (Fin M) (R' ⊗[F] E)) =
-      ((HA.mat R σ J h : GL _ _) : Matrix (Fin M) (Fin M) (R ⊗[F] E)).map (tm E φ) := rfl
-
 theorem mat_mul (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (g h : HA R σ J) :
     HA.mat R σ J (g * h) = HA.mat R σ J g * HA.mat R σ J h := rfl
 

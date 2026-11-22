@@ -33,9 +33,6 @@ noncomputable def contr (v : V ⊗[ℂ] W) : Module.Dual ℂ W →ₗ[ℂ] V whe
   show TensorProduct.rid ℂ V (LinearMap.lTensor V l (a ⊗ₜ[ℂ] b)) = l b • a
   rw [LinearMap.lTensor_tmul, TensorProduct.rid_tmul]
 
-theorem contr_apply (v : V ⊗[ℂ] W) (l : Module.Dual ℂ W) :
-    contr v l = TensorProduct.rid ℂ V (LinearMap.lTensor V l v) := rfl
-
 theorem contr_add (s t : V ⊗[ℂ] W) (l : Module.Dual ℂ W) :
     contr (s + t) l = contr s l + contr t l := by
   simp only [GlobalTheory.CompanionTheory.TensContr.contr_apply, map_add (f := _)]

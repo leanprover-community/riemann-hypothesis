@@ -96,9 +96,6 @@ def RecAt {Pm : ParameterChoice' D L} (Tp : ParamsT D L Pm) (r : TwoRuns p.T p.P
 
 end Point
 
-def AtPts (Q : ∀ {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x), Pt Fm x hx i → Prop) : Prop :=
-  Closed FamHyp fun Fm _ => EvPt Fm fun x hx i p => More p → Q Fm x hx i p
-
 section Checks
 
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.SeriesTie

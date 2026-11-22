@@ -1,7 +1,9 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PrismaticDieudonneAt
+public import Development.AbelianVarietyTheory.Definitions.Divisors.XiMulNu
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZeta
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqZeroOfCobOneEqZero
 public import ReciprocityTheory.DualLattices.ExistsPrimitiveRoot
 
 @[expose] public section

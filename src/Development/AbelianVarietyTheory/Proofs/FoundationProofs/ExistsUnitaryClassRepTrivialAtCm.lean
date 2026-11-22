@@ -128,11 +128,6 @@ section Ad
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-local notation "𝔸" => FiniteAdeleRing (𝓞 F) F
-local notation "𝒜" => E ⊗[F] 𝔸
-local notation "𝒮" => tensInt (F := F) 𝔸 (intOE E) (intAd F)
-local notation "ιA" => inclE (F := F) (E := E) 𝔸
-
 theorem levelafC_nat (m : ℕ) : levelafC (F := F) E (m : 𝓞 F) = (m : 𝒜) := by
   rw [levelafC, map_natCast]
   exact map_natCast (Algebra.TensorProduct.includeRight : 𝔸 →ₐ[F] 𝒜) m
@@ -383,7 +378,6 @@ end GlobalTheory.NormSum.RepAt
 
 open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum
 open scoped BigOperators
-
 
 open GlobalTheory.NormSum.RepAt GlobalTheory.NormSum.PtsMem in
 theorem GlobalTheory.NormSum.exists_rep_trivial_at : ∀ D : D7, oddRep D := by

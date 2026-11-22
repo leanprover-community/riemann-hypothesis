@@ -47,20 +47,10 @@ def SmoothInf (I : AutInst) (a : I.Ginf → ℂ) : Prop :=
   ∀ x : I.Ginf, ∃ F : (InfinitePlace I.F → Fin I.n → Fin I.n → ℂ) → ℂ,
     ContDiffAt ℝ ∞ F (fun v i j => uMat (x v) i j) ∧ ∀ᶠ g in nhds x, a g = F (fun v i j => uMat (g v) i j)
 
-
-open Classical in
-def slice (I : AutInst) (f : I.GA → ℂ) (x : I.GA) (v : InfinitePlace I.F) : Matrix (Fin I.n) (Fin I.n) ℂ → ℂ :=
-  fun y => if h : ∃ g : UJ (I.ε v), uMat g = y then f (x * (Pi.mulSingle v h.choose, 1)) else 0
-
-def zOp (I : AutInst) (v : InfinitePlace I.F) (m : ℕ) (f : I.GA → ℂ) : I.GA → ℂ :=
-  fun x => gelf (I.ε v) m (slice I f x v) 1
-
 def IsSmoothMG (I : AutInst) (g : ℕ) (f : I.GA → ℂ) : Prop :=
   (∀ γ ∈ I.GFset, ∀ x, f (γ * x) = f x) ∧ (∀ k ∈ I.Kg g, ∀ x, f (x * (1, k)) = f x) ∧
     ∀ xf : I.Gf, SmoothInf I (fun y => f (y, xf)) ∧
       ∃ C N : ℝ, ∀ y : I.Ginf, ‖f (y, xf)‖ ≤ C * Real.exp (N * dSum I y)
-
-abbrev Kinf (I : AutInst) : Type := ∀ v : InfinitePlace I.F, KG (I.ε v)
 
 def majPh (B : RowsAut) (d : InfinitePlace B.I.F → ℝ) (h : ℝ) (g : B.I.Ginf) : ℝ :=
   (∏ v, d v) * ∏ v, decE (rkR (B.I.ε v)) h (dOp (uMat (g v)))
@@ -85,15 +75,6 @@ def phG {G : Type*} [Group G] {H : Type*} [NormedAddCommGroup H] [InnerProductSp
 def IsOpIntG {G : Type*} [Group G] [MeasurableSpace G] (μ : Measure G) {Hp : Type*} [NormedAddCommGroup Hp]
     [InnerProductSpace ℂ Hp] (π : G →* (Hp →L[ℂ] Hp)) (φ : G → ℂ) (P : Hp →L[ℂ] Hp) : Prop :=
   Integrable φ μ ∧ ∀ x y : Hp, ⟪x, P y⟫_ℂ = ∫ g, φ g * ⟪x, π g y⟫_ℂ ∂μ
-
-def slopeD {K V : Type} [Field K] [AddCommGroup V] [Module K V] (d : Submodule K V → ℝ) (A B : Submodule K V) : ℝ :=
-  (d B - d A) / ((Module.finrank K B : ℝ) - (Module.finrank K A : ℝ))
-
-def IsChainD {K V : Type} [Field K] [AddCommGroup V] [Module K V] (d : Submodule K V → ℝ) (s : ℕ)
-    (W : ℕ → Submodule K V) : Prop :=
-  FiniteDimensional K V ∧ W 0 = ⊥ ∧ W s = ⊤ ∧ (∀ i < s, W i < W (i + 1)) ∧
-    (∀ i, i + 2 ≤ s → slopeD d (W (i + 1)) (W (i + 2)) < slopeD d (W i) (W (i + 1))) ∧
-    ∀ i < s, ∀ U : Submodule K V, W i < U → U ≤ W (i + 1) → slopeD d (W i) U ≤ slopeD d (W i) (W (i + 1))
 
 theorem IsURep.integrable_coef {G H : Type} [Group G] [TopologicalSpace G] [MeasurableSpace G]
     [OpensMeasurableSpace G] [NormedAddCommGroup H] [InnerProductSpace ℂ H] {π : G → (H →L[ℂ] H)} (hπ : IsURep π)
@@ -262,7 +243,6 @@ theorem exists_isHaarSub_NW {n : ℕ} (ε : Fin n → Bool) (W : Submodule ℂ (
   rw [coe_nwSub] at h
   exact ⟨_, h⟩
 
-
 theorem Eword_congr {n : ℕ} (ε : Fin n → Bool) {f f' : Matrix (Fin n) (Fin n) ℂ → ℂ}
     (h : ∀ g, inUJ ε g → f g = f' g) (w : List (Fin n × Fin n)) :
     ∀ g, inUJ ε g → Eword ε w f g = Eword ε w f' g := by
@@ -277,9 +257,7 @@ theorem Eword_congr {n : ℕ} (ε : Fin n → Bool) {f f' : Matrix (Fin n) (Fin 
     simp only [Eword, Eab, Ec, Rd]
     rw [hcurve _ hm.1, hcurve _ hm.2.1]
 
-
 namespace ProjEx
-
 
 end ProjEx
 

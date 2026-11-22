@@ -12,10 +12,9 @@ public import Development.AutomorphicArithmetic.WeightCongruences.IsRootOfIntegr
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.MuCardLeTwo
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.SplitPairOfGen
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.DiagramFitsSourceRank
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.GlobTied
+public import Formalism.LocalToGlobal.Columns.RecLevelSym
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 public import Formalism.LocalToGlobal.Columns.ChainOneP
-public import Formalism.LocalToGlobal.Columns.RefXi1Above
 public import Formalism.LocalToGlobal.Columns.ReferenceKernelEquivOfLastComponent
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivConcrete
 

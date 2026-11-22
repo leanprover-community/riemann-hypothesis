@@ -39,8 +39,6 @@ variable {L : Type} [Field L] [NumberField L] {n : ℕ}
 noncomputable def mulVecHom (T : Matrix (Fin n) (Fin n) L) : (Fin n → L) →+ (Fin n → L) :=
   AddMonoidHom.mk' (fun x => T *ᵥ x) (Matrix.mulVec_add T)
 
-theorem mulVecHom_apply (T : Matrix (Fin n) (Fin n) L) (x : Fin n → L) : mulVecHom T x = T *ᵥ x := rfl
-
 theorem frame_eq_map (T : Matrix (Fin n) (Fin n) L) :
     (frame T).toAddSubgroup = (frame (1 : Matrix (Fin n) (Fin n) L)).toAddSubgroup.map (mulVecHom T) := by
   ext x

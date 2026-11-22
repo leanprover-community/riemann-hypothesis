@@ -84,43 +84,4 @@ end GlobalTheory.DeRhamCharpolyP
 
 namespace GlobalTheory.DeRhamCharpolyP
 
-
-open GlobalTheory.AV GlobalTheory.PDivGroup in
-theorem charpoly_push : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p] [PerfectRing k p]
-    (B : GlobalTheory.AV.AbVar k) (f : B ⟶ B) [Module.Finite k (HdR B.X)],
-    LinearMap.charpoly (push (dp0 k) (𝟙 _) f.hom) =
-      (GlobalTheory.AV.AbVar.charpoly (End.of f)).map (Int.castRingHom k) := by
-  intro p _ k _ _ _ B f _
-  obtain ⟨G, -, ⟨t⟩⟩ := GlobalTheory.AVTower.exists_tower p k B
-  let T := GlobalTheory.Dieu.theory p
-  have : Module.Free (WittVector p k) (T.M G) := T.base.free G trivial
-  have : Module.Finite (WittVector p k) (T.M G) := T.base.finite G trivial
-  have h1 := GlobalTheory.Dieu.CharpolyAV.charpoly_map_eq p T k B G t (End.of f)
-  have hπ : Function.Surjective (WittVector.constantCoeff : WittVector p k →+* k) := fun x =>
-    ⟨WittVector.teichmuller p x, by simp⟩
-  obtain ⟨hfin, h2⟩ := charpoly_of_red (WittVector.constantCoeff : WittVector p k →+* k) hπ p
-    (CharP.cast_eq_zero k p) (T.red G) (T.base.red_surjective G trivial) (T.base.red_eq_zero G trivial)
-    (T.map (t.map t f.hom)) (rigExtMap (t.map t f.hom)) (fun m => by
-      have := T.base.red_smap trivial trivial (SemiHom.ofHom (t.map t f.hom)) m
-      rw [SemiHom.ofHom_rig] at this
-      exact this)
-  have : Module.Finite k G.RigExt := hfin
-  obtain ⟨e, he, -, -⟩ := GlobalTheory.deRhamVectorExtension p
-  have hR : IsNilpotent (p : k) := by rw [CharP.cast_eq_zero]; exact IsNilpotent.zero
-  let E : primDR B.X ≃ₗ[k] G.RigExt := e hR B.ab t
-  have : Module.Finite k (primDR B.X) := Module.Finite.equiv E.symm
-  have hconj : primPull (dp0 k) (𝟙 _) f.hom = E.symm.conj (rigExtMap (t.map t f.hom)) := by
-    refine LinearMap.ext fun c => ?_
-    exact E.eq_symm_apply.mpr (he.primPull hR B.ab B.ab t t f.hom c)
-  have h3 : (primPull (dp0 k) (𝟙 _) f.hom).charpoly = (rigExtMap (t.map t f.hom)).charpoly := by
-    exact (congrArg LinearMap.charpoly hconj).trans (E.symm.charpoly_conj _)
-  calc LinearMap.charpoly (push (dp0 k) (𝟙 _) f.hom)
-      = ((primPull (dp0 k) (𝟙 _) f.hom).dualMap).charpoly := rfl
-    _ = (primPull (dp0 k) (𝟙 _) f.hom).charpoly := charpoly_dualMap _
-    _ = (rigExtMap (t.map t f.hom)).charpoly := h3
-    _ = ((GlobalTheory.AV.AbVar.charpoly (End.of f)).map (Int.castRingHom (WittVector p k))).map WittVector.constantCoeff :=
-      h2.trans (congrArg (Polynomial.map WittVector.constantCoeff) h1)
-    _ = (GlobalTheory.AV.AbVar.charpoly (End.of f)).map (Int.castRingHom k) := by
-        rw [Polynomial.map_map]; congr 1; exact RingHom.ext_int _ _
-
 end GlobalTheory.DeRhamCharpolyP

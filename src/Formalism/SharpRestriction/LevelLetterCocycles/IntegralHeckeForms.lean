@@ -167,15 +167,6 @@ def partAB (i : X.Tw) (F : RFam Y i) (Q : Finset (PlE D.host)) (k' : ℕ)
 
 variable (bkP : Formalism.MainNotions.BlochKatoReduction.Gen.BKPh X)
 
-def TwistingCharacterExistence (N0 : X.Tw → ℕ) : Prop :=
-  ∀ i : X.Tw, X.NonzeroIndexPlace i → Formalism.MainNotions.BlochKatoReduction.Gen.SetHyp bkP i → ∀ eps' : ℝ, 0 < eps' → ∀ F : RFam Y i,
-    (∀ j ∈ Finset.Icc 1 D.R.m, ∀ b : Bool, ABHyp Y i F j b) →
-    ∀ A0 : Finset (PlE D.host),
-    ∃ (Q : Finset (PlE D.host)) (k' : ℕ) (ψ' : X.RCG i Q →* (X.Ok i k')ˣ),
-      Formalism.MainNotions.BlochKatoReduction.Gen.PsiOk i A0 Q k' ψ' ∧ Formalism.MainNotions.BlochKatoReduction.Gen.partAT bkP i Q k' ψ' eps' ∧
-      Formalism.MainNotions.BlochKatoReduction.Gen.partC N0 i Q k' ψ' eps' ∧ Formalism.MainNotions.BlochKatoReduction.Gen.partD i Q k' ψ' eps' ∧
-      partAB Y i F Q k' ψ' eps'
-
 variable (E : ExpDat Y)
 
 def FullRk (i : X.Tw) (j : ℕ) (b : Bool) (Sg : Set (Y.Dat i j b)) : Prop :=
@@ -189,15 +180,12 @@ def BasisOf (i : X.Tw) (j : ℕ) (b : Bool) (Sg : Set (Y.Dat i j b)) (S : Finset
   (↑S ⊆ Sg) ∧ LinearIndependent (X.O i) (fun a : ↥S => AO Y i j b (Y.th i j b a)) ∧
   Submodule.span (X.O i) ((fun a => AO Y i j b (Y.th i j b a)) '' ↑S) = (Th Y i j b Sg).map (AO Y i j b)
 
-
 open Classical in
 def levs (i : X.Tw) (S : ∀ (j : ℕ) (b : Bool), Finset (Y.Dat i j b)) : Finset (PlE D.host) :=
   (Finset.Icc 1 D.R.m).biUnion fun j =>
     (Finset.univ : Finset Bool).biUnion fun b => (S j b).biUnion (Y.lev i j b)
 
 def SgJ (i : X.Tw) (j : ℕ) (b : Bool) : Set (Y.Dat i j b) := E.Dat0 i j b
-
-def ThJ (i : X.Tw) (j : ℕ) (b : Bool) : Submodule (X.O i) (Y.Fm i j b) := Th Y i j b (SgJ Y E i j b)
 
 def IdxAt (i : X.Tw) (j : ℕ) (b : Bool) (Sg : Set (Y.Dat i j b)) (k : ℕ) (Q : Finset (PlE D.host))
     (ψ : G D.host.E N.Om →* (X.Ok i k)ˣ) (e : ℝ) : Prop :=
@@ -214,7 +202,6 @@ def IdxAt (i : X.Tw) (j : ℕ) (b : Bool) (Sg : Set (Y.Dat i j b)) (k : ℕ) (Q 
 def InclAt (i : X.Tw) (j : ℕ) (b : Bool) (Sg : Set (Y.Dat i j b)) (k : ℕ) (Q : Finset (PlE D.host))
     (ψ : G D.host.E N.Om →* (X.Ok i k)ˣ) : Prop :=
   eThPsi Y i j b k Q ψ Sg ≤ eThPMt Y i j b k Q ψ
-
 
 open Classical in
 def GoodTw (N0 : X.Tw → ℕ) (i : X.Tw) (eps' : ℝ)
@@ -287,33 +274,6 @@ def TwistedSeriesSpecialisation : Prop :=
       specU Y i j b Q M k χ (Y.thU i j b Q M a) ∈ ThPsi Y i j b k Q (χ.comp (Y.delU i Q M)) {a}
 
 abbrev XD (D : Formalism.BasicNotions.D7) : Type := ExpDat D.nexp
-
-def adm1 (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (N0 : D.ntw.Tw → ℕ) : Prop :=
-  Formalism.MainNotions.BlochKatoReduction.aux₃ D bkP N0
-
-def adm2 (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (N0 : D.ntw.Tw → ℕ) : Prop :=
-  TwistingCharacterExistence D.nexp (Formalism.MainNotions.BlochKatoReduction.pin bkP) N0
-
-def adm3 (D : Formalism.BasicNotions.D7) (E : XD D) : Prop := IsotypicPartsInternalDirectSum D.nexp E
-
-def ArchimedeanSignatureMatching (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.ArithmeticCylinders.PointsLemma D
-
-def adm5 (D : Formalism.BasicNotions.D7) : Prop := GroupAlgebraIntegrality D.nexp
-
-def adm7 (D : Formalism.BasicNotions.D7) (E : XD D) : Prop := admT4 D.nexp E
-
-def adm8 (D : Formalism.BasicNotions.D7) (N0 : D.ntw.Tw → ℕ) : Prop := Formalism.MainNotions.BlochKatoReduction.adm9 D N0
-
-def adm9 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.BlochKatoReduction.adm10 D
-
-def adm10 (D : Formalism.BasicNotions.D7) : Prop := TwistedSeriesSpecialisation D.nexp
-
-def adm11 (D : Formalism.BasicNotions.D7) : Prop := GoodLatticePoints D.nexp
-
-def admitted (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (E : XD D)
-    (N0 : D.ntw.Tw → ℕ) : Prop :=
-  adm1 D bkP N0 ∧ adm2 D bkP N0 ∧ adm3 D E ∧ ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm7 D E ∧
-    adm8 D N0 ∧ adm9 D ∧ adm10 D ∧ adm11 D
 
 end Formalism.MainNotions.IntegralHeckeForms
 

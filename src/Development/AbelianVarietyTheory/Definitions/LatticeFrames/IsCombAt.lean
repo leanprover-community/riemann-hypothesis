@@ -124,93 +124,15 @@ def GLast (D : D7) : Prop :=
       biComb ψ B.A W X c₁ c₂ fun u => o''.boxT W (T₂ O₂) fun w => T₁ O₁ ((B.o.resS W).symm
         (u, GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule.ofAdj B.L W ((rat τ : Mx D B.L.rank L''.rank) * w)))
 
-
-
 variable {D : D7} {u : D.what₂.Word}
 
 def MovedTo {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : Place D k) (V : HSp D) (g : GA D V) (β : GL (Fin V.rank) (Lev.EAf D))
     (M : Matrix (Fin V.rank) (Fin V.rank) k) : Prop :=
   ∀ b : Matrix (Fin V.rank) (Fin V.rank) (AE D), b.map (toEAf D) = β.val → (mt V g * b).map p.π = M
 
-structure GAt (d : Dat D u) (τ : ∀ j h, Matrix (Fin (d.bes j 0 h).L.rank) (Fin d.Lz.rank) D.host.E)
-    (PP : Formalism.L2.DIV.Pl D.host.E) where
-
-  k : Type
-  [fld : Field k]
-  [val : ValuativeRel k]
-  [top : TopologicalSpace k]
-  [loc : IsNonarchimedeanLocalField k]
-  [mea : MeasurableSpace k]
-  [bor : BorelSpace k]
-
-  ν : Measure k
-  unitVol : IsUnitVol ν
-
-  q : GlobalTheory.FinPl.SplitPt D k
-  idem : Formalism.L2.NTheta.IsIdemAt q.e PP
-  unit : q.UnitAA
-
-  s : ℕ
-  hs : s + 1 + 1 = D.R.m
-
-  S : SymData k s D.R.k
-  char : (ofSplit q).IsChar d.c.ψ S.ψ
-  mu : ∀ j, 1 ≤ j → j ≤ D.R.m → (ofSplit q).IsComp (d.c.chS j)⁻¹ (S.μ j)
-
-  FX : ∀ j, j ≤ s + 1 → Frame k (D.sp.X j).rank (XIx (Fin D.R.k) (Fin D.R.t) j)
-  FT : Frame k D.sp.X'.rank (Ix (Fin D.R.k ⊕ Fin (s + 1)) (Fin D.R.t) (s + 2))
-  FM : Frame k (D.sp.X (s + 1 + 1)).rank (Ix (Fin D.R.k ⊕ Fin (s + 1)) (Fin D.R.t) (s + 2) ⊕ Unit)
-  FY : ∀ j c, j + c = s + 1 → Frame k (d.st j).V.rank (XIx (Fin D.R.k) (Fin D.R.t) j ⊕ Fin c)
-
-  sc : ℕ → k
-  sc_unit : ∀ j, valuation k (sc j) = 1
-  sc_step : ∀ j, sc (j + 1 + 1) = sc j * (ofSplit q).xi
-  hz_unit : ∀ j ρ h, valuation k ((ofSplit q).hz (d.B j ρ h)) = 1
-  bes : ∀ j ρ h c (hc : j + c = s + 1), (ofSplit q).IsBesFrame (d.B j ρ h) (sc j) (FX j (by omega)) (FY j c hc)
-  jac : ∀ j ρ h c (hc : j + 1 + c = s + 1), (ofSplit q).IsJacFrame ((d.jac j ρ h).lev (d.x (j + 1)).vol) (sc j)
-    ((ofSplit q).hz (d.B j ρ h)) (FX (j + 1) (by omega)) (FY (j + 1) c hc)
-
-  z₀ : Fin d.Lz.rank → k
-  last : FM.β = fromCols ((d.oT (s + 1 + 1) hs).iA.map (ofSplit q).pr * FT.β)
-    (Matrix.of fun r _ => ((d.oT (s + 1 + 1) hs).iB.map (ofSplit q).pr *ᵥ z₀) r)
-  tau : ∀ h, (τ s h).map (ofSplit q).pr *ᵥ z₀ = (-((ofSplit q).xi * sc s)) • fun i => (ofSplit q).pr ((d.bes s 0 h).ζ i)
-  latX : ∀ j hj (y : XIx (Fin D.R.k) (Fin D.R.t) j → k), (∀ i, y i ∈ 𝒪[k]) ↔
-    (fun i => q.sec (((FX j hj).β *ᵥ y) i)) ∈ GlobalTheory.FinPl.latV (D.sp.X j) (d.x j).L (· = q.v)
-  latM : ∀ y : Ix (Fin D.R.k ⊕ Fin (s + 1)) (Fin D.R.t) (s + 2) ⊕ Unit → k, (∀ i, y i ∈ 𝒪[k]) ↔
-    (fun i => q.sec ((FM.β *ᵥ y) i)) ∈ GlobalTheory.FinPl.latV (D.sp.X (s + 1 + 1)) (d.x (s + 1 + 1)).L (· = q.v)
-  frame : ∀ j c (hc : j + c = s + 1), ∃ e : Ix (Fin D.R.k ⊕ Fin (s + 1)) (Fin D.R.t) j ≃ Fin (d.st j).V.rank,
-    GlobalTheory.SymBridge.IsOrd GlobalTheory.SymBridge.zPos e ∧ MovedTo (ofSplit q) (d.st j).V (d.t j) (d.st j).β
-      (((FY j c hc).β * ((S.T (Fin D.R.t)).bas j c hc).val).submatrix id fun i => stdOrd (Fin D.R.k) (Fin D.R.t) j c hc (e.symm i))
-  frameTop : ∃ e : Ix (Fin D.R.k ⊕ Fin (s + 1)) (Fin D.R.t) (s + 2) ≃ Fin D.sp.X'.rank,
-    GlobalTheory.SymBridge.IsOrd GlobalTheory.SymBridge.zPos e ∧ MovedTo (ofSplit q) D.sp.X' 1 d.top.β (FT.β.submatrix id e.symm)
-
-  cg : ∀ j, WO (D.sp.X j) (D.sp.X (j + 1)) →₀ ℂ
-  cg_mid : ∀ j c (H : j + 1 + c = s), (ofSplit q).IsCombAt d.c.ψ (FX j (by omega)) (FX (j + 1) (by omega)) (cg j)
-    ((S.T (Fin D.R.t)).entry S.ψ ν j c H 1 1)
-  cg_pen : (ofSplit q).IsCombAt d.c.ψ (FX s (by omega)) (FX (s + 1) le_rfl) (cg s)
-    fun x₀ => (S.T (Fin D.R.t)).Psi 1 x₀ (S.y0 (Fin D.R.t))
-  cg_top : (ofSplit q).IsCombAt d.c.ψ (FX (s + 1) le_rfl) FM (cg (s + 1))
-    ((S.T (Fin D.R.t)).xiTop (box _ (1 : kˣ)) S.ψ ν (-1) (Submodule.Quotient.mk (S.y0 (Fin D.R.t))))
-
 attribute [instance] GAt.fld GAt.val GAt.top GAt.loc GAt.mea GAt.bor
 
 variable {d : Dat D u} {τ : ∀ j h, Matrix (Fin (d.bes j 0 h).L.rank) (Fin d.Lz.rank) D.host.E}
-
-def GAt.Red {PP : Formalism.L2.DIV.Pl D.host.E} (G : GAt d τ PP) (x : G.S.P.J) (g : GL (Fin D.R.r) (Formalism.L2.DIV.kP PP)) : Prop :=
-  ∀ (a b : Fin D.R.k ⊕ Fin (G.s + 1)) (a' b' : Fin D.R.r), a'.val = GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.framePos _ _ a →
-    b'.val = GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.framePos _ _ b → ∀ z : 𝓞 D.host.E, Ideal.Quotient.mk PP.asIdeal z = g.val a' b' →
-      valuation G.k ((x : GL (Fin D.R.k ⊕ Fin (G.s + 1)) G.k).val a b - (ofSplit G.q).pr (z : D.host.E)) < 1
-
-structure PinGBy (G : ∀ PP : d.c.Pg, GAt d τ PP.1) (cG : ∀ j, WO (D.sp.X j) (D.sp.X (j + 1)) →₀ ℂ) : Prop where
-  line : d.Lz.rank = 1
-  norm : ∀ j h, (τ j h)ᴴ * ((d.bes j 0 h).L.gram * τ j h) = (-(D.host.xi0 * star D.host.xi0)) • d.Lz.gram
-  grp : ∀ g : ∀ PP : d.c.Pg, GL (Fin D.R.r) (Formalism.L2.DIV.kP PP.1), g ∈ d.c.P.H ↔ ∀ PP, ∃ x, (G PP).Red x (g PP)
-  chr : ∀ (g : d.c.P.H) (x : ∀ PP, (G PP).S.P.J), (∀ PP, (G PP).Red (x PP) (g.1 PP)) →
-    d.c.P.chi g = ∏ PP, (G PP).S.P.lam (x PP)
-  supp : ∀ j, ∀ w ∈ (cG j).support, GlobalTheory.FinPl.MxAt (· ∈ d.c.S) w
-  prod : ∀ j, j < D.R.m → ∀ f, IsThetaFunO d.c.ψ _ _ f → comb d.c.ψ _ _ (cG j) f =
-    d.c.Pg.attach.toList.foldr (fun PP f' => comb d.c.ψ _ _ ((G PP).cg j) f') f
-
 
 end GlobalTheory.LocMod
 end

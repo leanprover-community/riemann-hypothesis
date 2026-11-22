@@ -16,10 +16,6 @@ variable (p : ℕ) [Fact p.Prime] (OE : Type) [CommRing OE]
 
 abbrev Op : Type := ℤ_[p] ⊗[ℤ] OE
 
-def bar [StarRing OE] : Op p OE ≃ₐ[ℤ_[p]] Op p OE :=
-  Algebra.TensorProduct.congr (AlgEquiv.refl : ℤ_[p] ≃ₐ[ℤ_[p]] ℤ_[p])
-    (AlgEquiv.ofRingEquiv (f := (starRingAut : RingAut OE)) (fun n => by simp))
-
 variable {p OE}
 
 def extend {O : Type} [CommRing O] [Algebra ℤ_[p] O] (σ : OE →+* O) : Op p OE →ₐ[ℤ_[p]] O :=

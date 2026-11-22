@@ -124,10 +124,6 @@ private lemma sgn_tau_lemma (i : Fin (2 * r + k + 1)) : WeylGroupFacts.sgn k r (
   simp only [tau_val_lemma]
   split_ifs <;> first | rfl | omega
 
-private lemma sgn_sq_lemma (i : Fin (2 * r + k + 1)) : WeylGroupFacts.sgn k r i * WeylGroupFacts.sgn k r i = 1 := by
-  unfold WeylGroupFacts.sgn
-  split_ifs <;> norm_num
-
 private lemma sgn_ne_zero' (i : Fin (2 * r + k + 1)) : WeylGroupFacts.sgn k r i ≠ 0 := by
   unfold WeylGroupFacts.sgn
   split_ifs <;> norm_num
@@ -150,15 +146,6 @@ private lemma hpk_col_lemma (x y : Fin (2 * r + k + 1)) :
     intro h'
     apply h
     rw [h', tau_tau_lemma]
-
-private lemma hpk_sq_lemma : Hpk k r * Hpk k r = 1 := by
-  ext i j
-  rw [Matrix.mul_apply, Matrix.one_apply]
-  simp only [hpk_eq_lemma, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true, tau_tau_lemma, sgn_tau_lemma]
-  by_cases h : i = j
-  · subst h
-    simp [sgn_sq_lemma]
-  · simp [h, Ne.symm h]
 
 private lemma conjTranspose_mul_Hpk_mul_apply (A : Mx k r) (p q : Fin (2 * r + k + 1)) :
     (Aᴴ * Hpk k r * A) p q = ∑ y, star (A (WeylGroupFacts.tau k r y) p) * WeylGroupFacts.sgn k r y * A y q := by

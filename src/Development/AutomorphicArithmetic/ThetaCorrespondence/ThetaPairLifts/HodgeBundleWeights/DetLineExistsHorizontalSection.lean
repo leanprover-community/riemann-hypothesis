@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsModelR
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.ToKnownTheoremsOf
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReadsZero
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsHorizontalGeneratorOfCharts
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactification
 

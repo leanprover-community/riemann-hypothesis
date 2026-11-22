@@ -39,7 +39,6 @@ theorem rayField_iff : RayField ↔ ∀ (K : Type) [Field K] [NumberField K] (�
 variable {K L L' : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
   [Field L'] [NumberField L'] [Algebra K L']
 
-
 omit [NumberField K] [NumberField L] [NumberField L'] in
 theorem exists_prime_congr (e : L ≃ₐ[K] L') (𝔭 : Ideal (𝓞 K)) (σ : L ≃ₐ[K] L) (n : ℕ)
     (h : ∃ P : Ideal (𝓞 L), P.IsPrime ∧ P.LiesOver 𝔭 ∧ ∀ x : 𝓞 L, σ • x - x ^ n ∈ P) :
@@ -54,14 +53,12 @@ theorem exists_prime_congr (e : L ≃ₐ[K] L') (𝔭 : Ideal (𝓞 K)) (σ : L 
   rw [Ideal.mem_comap, map_sub, map_pow, h1]
   exact hx _
 
-
 omit [NumberField L] [NumberField L'] in
 theorem isFrob_congr (e : L ≃ₐ[K] L') (𝔭 : HeightOneSpectrum (𝓞 K)) (σ : L ≃ₐ[K] L) :
     IsFrob L' 𝔭 (e.autCongr σ) ↔ IsFrob L 𝔭 σ := by
   refine ⟨fun h => ?_, exists_prime_congr e _ σ _⟩
   have h1 := exists_prime_congr e.symm _ _ _ h
   rwa [show e.symm.autCongr (e.autCongr σ) = σ from e.autCongr.symm_apply_apply σ] at h1
-
 
 omit [NumberField K] [NumberField L] [NumberField L'] in
 theorem inInertia_congr (e : L ≃ₐ[K] L') (𝔭 : HeightOneSpectrum (𝓞 K)) (σ : L ≃ₐ[K] L) :
@@ -134,7 +131,6 @@ theorem imField_le_iff {M : IntermediateField ℚ ℂ} : imField φ ≤ M ↔ �
 @[instance_reducible] def algOf (M : IntermediateField ℚ ℂ) (h : ∀ x, φ x ∈ M) : Algebra E M :=
   (φ.codRestrict M h).toAlgebra
 
-
 omit [NumberField E] in
 theorem algOf_apply (M : IntermediateField ℚ ℂ) (h : ∀ x, φ x ∈ M) (x : E) :
     letI := algOf φ M h; ((algebraMap E M x : M) : ℂ) = φ x := rfl
@@ -154,16 +150,13 @@ theorem degOver_pos (M : IntermediateField ℚ ℂ) [NumberField M] (h : ∀ x, 
 def IsRayFieldIn (𝔮 : Ideal (𝓞 E)) (M : IntermediateField ℚ ℂ) : Prop :=
   ∃ (h : ∀ x, φ x ∈ M) (_ : NumberField M), letI := algOf φ M h; IsRayField E M 𝔮
 
-
 variable {φ} in
 theorem IsRayFieldIn.emb_mem {𝔮 : Ideal (𝓞 E)} {M : IntermediateField ℚ ℂ} (h : IsRayFieldIn φ 𝔮 M) (x : E) :
     φ x ∈ M := h.1 x
 
-
 variable {φ} in
 theorem IsRayFieldIn.numberField {𝔮 : Ideal (𝓞 E)} {M : IntermediateField ℚ ℂ} (h : IsRayFieldIn φ 𝔮 M) :
     NumberField M := h.2.1
-
 
 variable {φ} in
 theorem IsRayFieldIn.isRayField {𝔮 : Ideal (𝓞 E)} {M : IntermediateField ℚ ℂ} [NumberField M]
@@ -189,13 +182,11 @@ theorem exists_isRayFieldIn (h : RayField) {𝔮 : Ideal (𝓞 E)} (h𝔮 : 𝔮
   obtain ⟨L, _, _, _, hL⟩ := rayField_iff.1 h E 𝔮 h𝔮
   exact hL.exists_isRayFieldIn φ
 
-
 variable (E) in
 abbrev natIdeal (n : ℕ) : Ideal (𝓞 E) := Ideal.span {(n : 𝓞 E)}
 
 theorem natIdeal_ne_bot {n : ℕ} (hn : n ≠ 0) : natIdeal E n ≠ ⊥ := by
   simpa using hn
-
 
 variable (E) in
 def powIdealElts (h : ℕ) : Set E :=
@@ -277,7 +268,6 @@ theorem discField_le_iff {M : IntermediateField ℚ ℂ} : discField d A ≤ M �
   simp only [discField, torsionField, hilbertField, sup_le_iff, IntermediateField.adjoin_le_iff, and_assoc,
     Set.singleton_subset_iff, SetLike.mem_coe]
   rfl
-
 
 variable {d A} in
 theorem hilbertField_eq (h : IsGoodCMCurve d F A) {L : PeriodPair} (hL : IsIntegersLattice d L) :
@@ -433,8 +423,6 @@ def fixedCoefficientFieldInComplex : IntermediateField ℚ ℂ := B.LL0.map B.em
 
 def KsC : IntermediateField ℚ ℂ := B.Ks.map B.embLL.toRatAlgHom
 
-def AutomorphicRingToComplex : B.LL0 →+* ℂ := B.embLL.comp B.LL0.val.toRingHom
-
 def KstoC : B.Ks →+* ℂ := B.embLL.comp B.Ks.val.toRingHom
 
 theorem mem_LLC {z : ℂ} : z ∈ B.LLC ↔ ∃ x, B.embLL x = z := Iff.rfl
@@ -460,30 +448,11 @@ theorem rootsField_le_KsC : rootsField B.toPre ≤ B.KsC := by
 
 variable (D : FieldDat B.toPre) (C : Chars B.toPre) (c M : ℕ)
 
-def RayInLL : Prop :=
-  (∀ u, ∃ R, IsRayFieldIn B.host.φ₀ (natIdeal B.host.E (B.T u)) R ∧ R ≤ B.LLC) ∧
-    ∃ R, IsRayFieldIn B.host.φ₀ (natIdeal B.host.E (B.host.g 0 * B.host.g 1)) R ∧ R ≤ B.LLC
-
-def RayIn : Prop := D.ray ≤ B.KsC ∧ B.RayInLL
-
 def CurveIn : Prop := D.M' ≤ B.KsC
-
-def ValIn : Prop :=
-  (∀ j, (C.mu0 j).ValuesIn 0 B.KstoC) ∧ C.eta.ValuesIn (1 / 2) B.KstoC ∧ C.del.ValuesIn 0 B.KstoC ∧
-    C.del'.ValuesIn 0 B.KstoC ∧ (∀ k a, ((C.W.om k a : ℂˣ) : ℂ) ∈ B.KsC) ∧ C.chiPsi.ValuesIn 0 B.AutomorphicRingToComplex
-
-def RootsIn : Prop :=
-  rootOne (15 ^ c) ∈ B.fixedCoefficientFieldInComplex ∧ rootOne (B.host.pde ^ (2 * M)) ∈ B.fixedCoefficientFieldInComplex ∧ rootOne (B.host.pde' ^ (2 * M)) ∈ B.fixedCoefficientFieldInComplex
 
 def KummerIn : Prop := ∀ j, 1 ≤ j → j ≤ B.R.m → D.KPsi j ≤ B.KsC
 
-def KsLeOm : Prop := B.KsC ≤ D.Om
-
 def KsExact : Prop := B.KsC = listField D C
-
-def LowerOK : Prop := B.RayIn D ∧ B.CurveIn D ∧ B.ValIn C ∧ B.RootsIn c M ∧ B.KummerIn D
-
-def FieldsOK : Prop := B.LowerOK D C c M ∧ B.KsLeOm D
 
 variable {B D C c M}
 

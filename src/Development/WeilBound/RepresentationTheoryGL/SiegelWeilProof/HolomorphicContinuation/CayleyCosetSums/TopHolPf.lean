@@ -30,10 +30,6 @@ theorem lift_mR (φ : GR n → ℂ) (w : GR n) : lift φ (mR w) = φ w := by
   apply Units.ext
   simp [mR]
 
-theorem ιK_apply (k : KR n) : ιK n k = mR (k : GR n) := rfl
-
-theorem mR_mul' (g h : GR n) : mR (g * h) = mR g * mR h := rfl
-
 theorem tOp_resG {G : Type} [Group G] (ι : GR n →* G) [MeasurableSpace (KR n)] (μ : Measure (KR n)) (ρ : KR n → ℂ)
     (ψ : (Fin n → Fin n → ℝ) → ℂ) {a b : M2 n} (ha : InG a) (hb : InG b) (F : G → ℂ) (g : G) (y : GR n) :
     tOp μ (ιK n) ρ ψ a b (resG ι F g) (mR y) =

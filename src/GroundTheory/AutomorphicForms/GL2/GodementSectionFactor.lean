@@ -33,10 +33,6 @@ theorem glAt_apply (v : HeightOneSpectrum (𝓞 K)) (g : GL (Fin 2) (FiniteAdele
     (glAt v g : Matrix (Fin 2) (Fin 2) (v.adicCompletion K)) i j =
       (g : Matrix (Fin 2) (Fin 2) (FiniteAdeleRing (𝓞 K) K)) i j v := rfl
 
-def vecAt (v : HeightOneSpectrum (𝓞 K)) (x : Fin 2 → FiniteAdeleRing (𝓞 K) K) :
-    Fin 2 → v.adicCompletion K :=
-  fun i ↦ x i v
-
 def awayIntegral (S : Finset (HeightOneSpectrum (𝓞 K))) :
     AddSubgroup (FiniteAdeleRing (𝓞 K) K) where
   carrier := {a | ∀ v ∉ S, a v ∈ v.adicCompletionIntegers K}
@@ -51,14 +47,6 @@ theorem isOpen_awayIntegral (S : Finset (HeightOneSpectrum (𝓞 K))) :
     IsOpen (awayIntegral S : Set (FiniteAdeleRing (𝓞 K) K)) := by
   refine AddSubgroup.isOpen_mono (H₁ := (integralFiniteAdeles (𝓞 K) K).toAddSubgroup)
     (fun a ha v _ ↦ mem_integralFiniteAdeles.1 ha v) isOpen_integralFiniteAdeles
-
-def awayBox (S : Finset (HeightOneSpectrum (𝓞 K))) : Set (Fin 2 → FiniteAdeleRing (𝓞 K) K) :=
-  {x | ∀ i, x i ∈ awayIntegral S}
-
-def restrictedTensor2 (S : Finset (HeightOneSpectrum (𝓞 K)))
-    (Ψ : ∀ v : S, (Fin 2 → v.1.adicCompletion K) → ℂ) :
-    (Fin 2 → FiniteAdeleRing (𝓞 K) K) → ℂ :=
-  (awayBox S).indicator fun x ↦ ∏ v : S, Ψ v (vecAt v.1 x)
 
 theorem valued_le_exp_of_norm_le {v : HeightOneSpectrum (𝓞 K)} {y : v.adicCompletion K} {n : ℕ}
     (hy : ‖y‖ ≤ (Ideal.absNorm v.asIdeal : ℝ) ^ n) :
@@ -157,10 +145,6 @@ theorem ofReal_prod_cpow {ι : Type*} (T : Finset ι) (r : ι → ℝ) (hr : ∀
   | insert a T ha ih =>
     rw [Finset.prod_insert ha, Finset.prod_insert ha, Complex.ofReal_mul,
       Complex.mul_cpow_ofReal_nonneg (hr a) (Finset.prod_nonneg fun i _ ↦ hr i), ih]
-
-def partialLFunction (χ : HeckeCharacter K) (S : Finset (HeightOneSpectrum (𝓞 K))) (z : ℂ) : ℂ :=
-  ∑' I : Ideal (𝓞 K), (if ∀ v ∈ S, ¬ v.asIdeal ∣ I then χ.coeff I else 0) *
-    (Ideal.absNorm I : ℂ) ^ (-z)
 
 end
 

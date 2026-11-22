@@ -29,8 +29,6 @@ variable {l : ℕ} [Fact l.Prime]
 noncomputable def incl (d : ℕ) : (Fin d → ℤ_[l]) →ₗ[ℤ_[l]] (Fin d → ℚ_[l]) :=
   (Algebra.linearMap ℤ_[l] ℚ_[l]).compLeft (Fin d)
 
-theorem incl_apply (d : ℕ) (v : Fin d → ℤ_[l]) : incl d v = fun i => algebraMap ℤ_[l] ℚ_[l] (v i) := rfl
-
 theorem incl_injective (d : ℕ) : Function.Injective (incl (l := l) d) := by
   intro v w h
   funext i

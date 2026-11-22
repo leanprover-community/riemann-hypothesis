@@ -28,32 +28,9 @@ variable {S : Scheme.{0}}
 
 def mulBy (A : Over S) [GrpObj A] (k : ℕ) : A ⟶ A := (𝟙 A) ^ k
 
-abbrev constOver (S : Scheme.{0}) (I : Type) : Over S := ∐ fun _ : I => 𝟙_ (Over S)
-
-structure Level (P : PolAV S) (k : ℕ) (ζ : Γ(S, ⊤)ˣ) where
-
-  hom : Multiplicative (Fin P.g ⊕ Fin P.g → ZMod k) →* (𝟙_ (Over S) ⟶ P.A)
-
-  isKer : IsPullback
-    (Sigma.desc fun v : Fin P.g ⊕ Fin P.g → ZMod k => hom (Multiplicative.ofAdd v) :
-      constOver S (Fin P.g ⊕ Fin P.g → ZMod k) ⟶ P.A)
-    (toUnit _) (mulBy P.A k) η[P.A]
-
-  pairing : ∀ a b : Fin P.g ⊕ Fin P.g → ℤ,
-    WeilIs P.A P.L (k : ℤ) (T := 𝟙_ (Over S))
-      (hom (Multiplicative.ofAdd (reduce k a))) (hom (Multiplicative.ofAdd (reduce k b)))
-      (ζ ^ stdForm a b : Γ(S, ⊤)ˣ)
-
 namespace Level
 
 variable {P : PolAV S} {k : ℕ} {ζ : Γ(S, ⊤)ˣ}
-
-def pt (ℓ : Level P k ζ) (v : Fin P.g ⊕ Fin P.g → ZMod k) : 𝟙_ (Over S) ⟶ P.A :=
-  ℓ.hom (Multiplicative.ofAdd v)
-
-def ptKer (ℓ : Level P k ζ) (v : Fin P.g ⊕ Fin P.g → ZMod k) :
-    𝟙_ (Over S) ⟶ pullback (mulBy P.A k) η[P.A] :=
-  Sigma.ι (fun _ : Fin P.g ⊕ Fin P.g → ZMod k => 𝟙_ (Over S)) v ≫ ℓ.isKer.isoPullback.hom
 
 end Level
 

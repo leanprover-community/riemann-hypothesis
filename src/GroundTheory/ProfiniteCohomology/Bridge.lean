@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains
-public import GroundTheory.ProfiniteCohomology.BridgeDefs
 
 @[expose] public section
 

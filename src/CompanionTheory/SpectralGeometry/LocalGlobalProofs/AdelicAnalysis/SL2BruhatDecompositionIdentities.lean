@@ -9,15 +9,6 @@ open scoped ENNReal NNReal MatrixGroups
 
 namespace GlobalTheory.CompanionTheory.SW.Core.SL2BruhatDecomposition
 
-private theorem coe_n {R : Type} [CommRing R] (b : R) :
-    ((nMat b : SL(2, R)) : Matrix (Fin 2) (Fin 2) R) = !![1, b; 0, 1] := rfl
-
-private theorem coe_m {R : Type} [CommRing R] (a : Rˣ) :
-    ((mMat a : SL(2, R)) : Matrix (Fin 2) (Fin 2) R) = !![(a : R), 0; 0, ((a⁻¹ : Rˣ) : R)] := rfl
-
-private theorem coe_w {R : Type} [CommRing R] :
-    ((wMat : SL(2, R)) : Matrix (Fin 2) (Fin 2) R) = !![0, 1; -1, 0] := rfl
-
 private theorem SL2_eq_of_entries_eq_matrix {R : Type} [CommRing R] {g : SL(2, R)} {p q r s : R}
     {h : SL(2, R)} (hh : (h : Matrix (Fin 2) (Fin 2) R) = !![p, q; r, s])
     (h0 : g 0 0 = p) (h1 : g 0 1 = q) (h2 : g 1 0 = r) (h3 : g 1 1 = s) : g = h := by

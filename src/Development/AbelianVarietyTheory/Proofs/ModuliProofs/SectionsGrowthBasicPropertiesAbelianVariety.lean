@@ -84,8 +84,6 @@ variable {K : Type} [Field K] {X : Scheme.{0}}
 def cst (p : X ⟶ Sp K) (U : X.Opens) : K →+* Γ(X, U) :=
   (p.appLE ⊤ U le_top).hom.comp (Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom
 
-theorem constFn_eq (p : X ⟶ Sp K) (U : X.Opens) (a : K) : constFn p U a = cst p U a := rfl
-
 theorem res_cst (p : X ⟶ Sp K) {U V : X.Opens} (h : V ≤ U) (a : K) : resG X h (cst p U a) = cst p V a := by
   have := congrArg (fun f => f.hom ((Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom a))
     (Scheme.Hom.appLE_map p (U := ⊤) (V := U) le_top (homOfLE h).op)

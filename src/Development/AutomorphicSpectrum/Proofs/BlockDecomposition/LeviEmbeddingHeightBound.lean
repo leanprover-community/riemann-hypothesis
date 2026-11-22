@@ -12,9 +12,6 @@ noncomputable section
 namespace GlobalTheory.CompanionTheory.CTFin.Slice1.Height
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {r s : ℕ}
 
-theorem norm_one_le : ‖(1 : Cinf E)‖ ≤ 1 := by
-  exact (pi_norm_le_iff_of_nonneg zero_le_one).2 fun i => by simp
-
 theorem norm_lev_le (y : GL (Fin r) (Cinf E)) :
     ‖toL (lev (Cinf E) r s (y, 1)).val‖ ≤ ‖toL y.val‖ + 1 := by
   have n0 := norm_nonneg (toL y.val)

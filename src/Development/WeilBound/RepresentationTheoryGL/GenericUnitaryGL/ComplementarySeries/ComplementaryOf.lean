@@ -26,11 +26,6 @@ theorem irr_nontrivial {ρ : Representation ℂ G V} (h : ρ.IsIrreducible) : No
   have : (⊥ : Subrepresentation ρ) = ⊤ := Subrepresentation.toSubmodule_injective (Subsingleton.elim _ _)
   exact bot_ne_top this
 
-def starF {M : Type} [AddCommGroup M] [Module ℂ M] (B : M →ₗ[ℂ] M →ₛₗ[starRingEnd ℂ] ℂ) :
-    M →ₗ[ℂ] M →ₛₗ[starRingEnd ℂ] ℂ :=
-  LinearMap.mk₂'ₛₗ (RingHom.id ℂ) (starRingEnd ℂ) (fun v w => starRingEnd ℂ (B w v))
-    (fun _ _ _ => by simp) (fun _ _ _ => by simp) (fun _ _ _ => by simp) (fun _ _ _ => by simp)
-
 def resF {M : Type} [AddCommGroup M] [Module ℂ M] (B : M →ₗ[ℂ] M →ₛₗ[starRingEnd ℂ] ℂ) (W : Submodule ℂ M) :
     W →ₗ[ℂ] W →ₛₗ[starRingEnd ℂ] ℂ :=
   LinearMap.mk₂'ₛₗ (RingHom.id ℂ) (starRingEnd ℂ) (fun v w => B v w)

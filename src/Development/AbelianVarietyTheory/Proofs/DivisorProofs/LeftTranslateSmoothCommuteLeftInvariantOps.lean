@@ -28,11 +28,6 @@ def leftTranslateSmoothEnd (h : IsExpLieAlgebra G 𝔤) (g : G) :
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
-theorem coe_leftTranslateSmoothEnd (h : IsExpLieAlgebra G 𝔤) (g : G)
-    (f : h.smoothFuns (F := ℂ)) (y : G) :
-    ((leftTranslateSmoothEnd h g f : h.smoothFuns (F := ℂ)) : G → ℂ) y = (f : G → ℂ) (g * y) :=
-  rfl
-
 theorem commute_rightDerivEnd_leftTranslate (h : IsExpLieAlgebra G 𝔤) (g : G) (X : 𝔤) :
     Commute (h.rightDerivEnd (F := ℂ) X) (leftTranslateSmoothEnd h g) := by
   ext f y

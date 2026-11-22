@@ -9,7 +9,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formal
 
 namespace GlobalTheory.Mem.Col2.LRank
 
-
 open scoped TensorProduct in
 theorem natCard_quot {R N : Type} [CommRing R] [IsDomain R] [AddCommGroup N] [Module R N]
     [Module.Finite R N] [Module.Projective R N] (I : Ideal R) [Finite (R ⧸ I)] :
@@ -27,20 +26,6 @@ theorem natCard_quot {R N : Type} [CommRing R] [IsDomain R] [AddCommGroup N] [Mo
   rw [← Nat.card_congr (TensorProduct.quotTensorEquivQuotSMul N I).toEquiv, Nat.card_congr b.equivFun.toEquiv,
     Nat.card_fun, Nat.card_eq_fintype_card (α := Fin _), Fintype.card_fin]
 
-theorem finrank_of_span_top {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V]
-    [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (p : Submodule (𝓞 K) V)
-    (h : Submodule.span K (p : Set V) = ⊤) : Module.finrank (𝓞 K) p = Module.finrank K V := by
-  have : IsLocalizedModule (nonZeroDivisors (𝓞 K)) p.subtype := by
-    refine ⟨fun s => ?_, fun y => ?_, fun {a b} hab => ⟨1, by simpa using hab⟩⟩
-    · have := isLocalizedModule_id (nonZeroDivisors (𝓞 K)) V K
-      exact IsLocalizedModule.map_units (S := nonZeroDivisors (𝓞 K)) (LinearMap.id : V →ₗ[𝓞 K] V) s
-    · have hy : y ∈ Submodule.span K (p : Set V) := h ▸ Submodule.mem_top
-      obtain ⟨t, ht⟩ := multiple_mem_span_of_mem_localization_span (nonZeroDivisors (𝓞 K)) K _ y hy
-      rw [Submodule.span_eq] at ht
-      exact ⟨(⟨_, ht⟩, t), rfl⟩
-  rw [← IsLocalizedModule.finrank_eq (nonZeroDivisors (𝓞 K)) p.subtype le_rfl,
-    IsFractionRing.finrank_right_eq (𝓞 K) K V]
-
 theorem finrank_of_card {F V : Type} [Field F] [Finite F] [AddCommGroup V] [Module F V] {n : ℕ}
     (h : Nat.card V = Nat.card F ^ n) : Module.finrank F V = n := by
   have h1 : 1 < Nat.card F := Finite.one_lt_card
@@ -49,7 +34,6 @@ theorem finrank_of_card {F V : Type} [Field F] [Finite F] [AddCommGroup V] [Modu
   have h2 := Module.natCard_eq_pow_finrank (K := F) (V := V)
   rw [h] at h2
   exact (Nat.pow_right_injective h1 h2).symm
-
 
 set_option maxHeartbeats 800000 in
 theorem finrank_red {E : Type} [Field E] [NumberField E] {n : ℕ} (N : Submodule (𝓞 E) (Fin n → E))
@@ -66,7 +50,6 @@ theorem finrank_red {E : Type} [Field E] [NumberField E] {n : ℕ} (N : Submodul
   have h := natCard_quot (R := 𝓞 E) (N := N) P.asIdeal
   rw [hr] at h
   exact finrank_of_card (F := Res P) h
-
 
 set_option maxHeartbeats 1600000 in
 theorem ranks : ∀ {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {n : ℕ} {S : GStep E K n} {ST : Finset (HeightOneSpectrum (𝓞 E))} (A : TDat S ST) (T : ℕ), S.Ok → A.Ok T → (∀ P c, Module.finrank (Res P.1) (A.lv P c) = n) ∧ ∀ P c, Module.finrank (Res P.1) (A.lk P c) = n := by

@@ -41,9 +41,6 @@ def admitted (N l : ℕ) : Letter → Prop
   | Letter.U => True
   | Letter.D d => Nat.Coprime d N
 
-def LetAlg (R : Type) [CommRing R] (S : Letter → Prop) : Subalgebra R (FreeAlgebra R Letter) :=
-  Algebra.adjoin R (FreeAlgebra.ι R '' {T | S T})
-
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
 def FrobAt (q : ℕ) (s : Ω ≃ₐ[ℚ] Ω) : Prop :=
@@ -66,17 +63,6 @@ namespace Betti
 section Letters
 
 variable {R : Type} [CommRing R] {S : Letter → Prop}
-
-theorem lift_congr {A : Type} [Semiring A] [Algebra R A] {f g : Letter → A} (h : ∀ T, S T → f T = g T)
-    {P : FreeAlgebra R Letter} (hP : P ∈ LetAlg R S) : FreeAlgebra.lift R f P = FreeAlgebra.lift R g P := by
-  unfold LetAlg at hP
-  induction hP using Algebra.adjoin_induction with
-  | mem x hx =>
-    obtain ⟨T, hT, rfl⟩ := hx
-    simp [h T hT]
-  | algebraMap r => simp
-  | add x y _ _ hx hy => simp [hx, hy]
-  | mul x y _ _ hx hy => simp [hx, hy]
 
 end Letters
 

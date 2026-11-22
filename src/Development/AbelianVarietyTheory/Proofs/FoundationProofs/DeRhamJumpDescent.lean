@@ -148,9 +148,6 @@ theorem actVdR_comp {K K' : FinExt l} (h : K.1 ≤ K'.1) (ρ : Representation LL
 def mulOm (c : Om l) : V ⊗[ℚ_[l]] P.R.BdR →ₗ[LL] V ⊗[ℚ_[l]] P.R.BdR :=
   AlgebraTensorModule.map LinearMap.id (LinearMap.mulLeft ℚ_[l] (algebraMap (Om l) P.R.BdR c))
 
-theorem mulOm_tmul (c : Om l) (v : V) (b : P.R.BdR) :
-    mulOm (LL := LL) P c (v ⊗ₜ b) = v ⊗ₜ (algebraMap (Om l) P.R.BdR c * b) := rfl
-
 theorem mem_succ_of_fixed {K K' : FinExt l} (h : K.1 ≤ K'.1) (ρ : Representation LL ↥(GK K) V)
     (u : ℤ)
     (hfix : ∀ y ∈ FilV (P.PD K) (LL := LL) (V := V) u, y ∈ DdR (P.PD K) ρ →

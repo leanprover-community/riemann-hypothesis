@@ -21,11 +21,9 @@ abbrev TwPick (D : D7) (i : D.ntw.Tw) : Type :=
 def ExpHyp (D : D7) (I : TwIn D) (i : D.ntw.Tw) : Prop :=
   Formalism.MainNotions.IntegralHeckeEveryConjugate D (BlochKatoReduction.bk0 D) I.E I.N0 ∧ D.ntw.NonzeroIndexPlace i ∧ BlochKatoReduction.Gen.SetHyp (BlochKatoReduction.bk0 D) i ∧ I.Ok i
 
-
 open Classical in
 def ExpGood (D : D7) (I : TwIn D) (A : Finset (PlE D.host)) (i : D.ntw.Tw) (p : TwPick D i) : Prop :=
   IntegralHeckeForms.GoodTw D.nexp (BlochKatoReduction.bk0 D) I.E I.N0 i (twEps D i) (I.S i) A p.1 p.2.1 p.2.2
-
 
 open Classical in
 theorem expGood_anti {D : D7} {I : TwIn D} {A A' : Finset (PlE D.host)} (hA : A ⊆ A') {i : D.ntw.Tw} {p : TwPick D i}
@@ -49,9 +47,6 @@ theorem avRec_subset_avD (D : D7) (Av : TwAv D) (i : D.ntw.Tw) : AvRec D ⊆ avD
   intro v hv
   unfold avD
   exact Finset.mem_union_left _ hv
-
-def placesOverQ0 (D : D7) : Finset (PlE D.host) :=
-  (placesOver_finite_av D.host.E (AbsolutelyIrreducibleSpan.q0 D) (Host.leastSplitAuxiliaryPrimeThetaChain_spec D).1.ne_zero).toFinset
 
 def avOver (D : D7) (s : Finset ℕ) : Finset (PlE D.host) :=
   (Set.Finite.biUnion (s := ((s.filter (· ≠ 0) : Finset ℕ) : Set ℕ)) (t := fun p => placesOver D.host.E p)
@@ -112,7 +107,6 @@ structure NChoiceTied (D : D7) (C : NChoice D) (I : TwIn D) (Av : TwAv D) : Prop
 
 variable {D : D7} {C : NChoice D} {I : TwIn D} {Av : TwAv D}
 
-
 theorem emb0_mem_maximalIdeal_iff_val_pos_of_sidePl (D : D7) (w : D.what₂.places.Pl) (i : D.ntw.Tw) (h : SidePl D w i true)
     (x : D.LL0) :
     (∃ y ∈ IsLocalRing.maximalIdeal (D.ntw.O0 i),
@@ -164,7 +158,6 @@ theorem emb0_mem_maximalIdeal_iff_val_pos_of_sidePl (D : D7) (w : D.what₂.plac
       add_pos_of_pos_of_nonneg hpos hinv
     rw [hsum] at this
     exact lt_irrefl _ this
-
 
 section Vac
 

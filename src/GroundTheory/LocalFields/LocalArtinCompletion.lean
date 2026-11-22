@@ -16,23 +16,12 @@ section Restrict
 
 variable {F Ω : Type*} [Field F] [Field Ω] [Algebra F Ω] [IsGalois F Ω]
 
-theorem restrictAb_eq_of_le {E E' : IntermediateField F Ω} [Normal F E] [Normal F E']
-    (hE' : E' ≤ maximalAbelianExtension F Ω) (hEE' : E ≤ E')
-    {σ τ : maximalAbelianExtension F Ω ≃ₐ[F] maximalAbelianExtension F Ω}
-    (h : restrictAb E' hE' σ = restrictAb E' hE' τ) :
-    restrictAb E (hEE'.trans hE') σ = restrictAb E (hEE'.trans hE') τ := by
-  ext y
-  have := congrArg (fun ρ : E' ≃ₐ[F] E' => ((ρ ⟨y, hEE' y.2⟩ : E') : Ω)) h
-  simp only [restrictAb_apply] at this ⊢
-  exact this
-
 end Restrict
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {Ω : Type*} [Field Ω] [Algebra K Ω] [IsSepClosure K Ω]
 
 section ClassField
-
 
 variable (K Ω) in
 def classField (H : openFiniteIndex Kˣ) : finiteAbelianExtensions K Ω :=
@@ -46,7 +35,6 @@ theorem range_normUnits_classField (H : openFiniteIndex Kˣ) :
 end ClassField
 
 section Coord
-
 
 variable (K Ω) in
 def artinCoord (H : openFiniteIndex Kˣ) :
@@ -83,8 +71,6 @@ theorem continuous_artinCoord (H : openFiniteIndex Kˣ) : Continuous (artinCoord
 end Coord
 
 section Completion
-
-
 
 end Completion
 

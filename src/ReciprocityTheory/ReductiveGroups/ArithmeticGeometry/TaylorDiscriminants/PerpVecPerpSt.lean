@@ -10,18 +10,6 @@ open MvPolynomial
 
 variable {R : Type} [CommRing R]
 
-noncomputable def xForm {p q n : ℕ} (e : Fin p → Fin n → R) (a b : Fin p) :
-    MvPolynomial ((Fin p × Fin n) ⊕ (Fin q × Fin n)) R :=
-  ∑ k, X (Sum.inl (a, k)) * C (e b k)
-
-noncomputable def yForm {p q n : ℕ} (f : Fin q → Fin n → R) (a b : Fin q) :
-    MvPolynomial ((Fin p × Fin n) ⊕ (Fin q × Fin n)) R :=
-  ∑ k, X (Sum.inr (a, k)) * C (f b k)
-
-noncomputable def leadMinor {S : Type} [CommRing S] {m : ℕ} (M : Matrix (Fin m) (Fin m) S) (i : Fin (m + 1)) : S :=
-  (M.submatrix (Fin.castLE (Nat.lt_succ_iff.mp i.isLt)) (Fin.castLE (Nat.lt_succ_iff.mp i.isLt)) :
-    Matrix (Fin i) (Fin i) S).det
-
 section Perp
 
 variable {V : Type} [AddCommGroup V] [Module R V]

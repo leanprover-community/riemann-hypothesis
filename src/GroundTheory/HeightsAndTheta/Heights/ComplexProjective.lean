@@ -21,18 +21,6 @@ variable {N : ℕ}
 
 namespace CP
 
-def conjVec : (Fin (N + 1) → ℂ) →ₛₗ[starRingEnd ℂ] (Fin (N + 1) → ℂ) where
-  toFun w k := starRingEnd ℂ (w k)
-  map_add' w w' := by ext k; simp
-  map_smul' c w := by ext k; simp
-
-lemma conjVec_injective : Function.Injective (conjVec (N := N)) := by
-  intro w w' h
-  ext k
-  exact (starRingEnd ℂ).injective (congrFun h k)
-
-def conj : CP N → CP N := Projectivization.map (conjVec (N := N)) conjVec_injective
-
 end CP
 
 variable {A : Type*} [CommRing A]

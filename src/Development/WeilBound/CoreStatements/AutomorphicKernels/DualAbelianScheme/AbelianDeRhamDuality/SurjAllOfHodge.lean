@@ -90,15 +90,4 @@ theorem toPicard_surjective (s : X ⟶ Sp R) (h₁ : Function.Surjective (cmp1 s
     GlobalTheory.CechDR.cmpO_injective R X s (by rw [cmpO_toH1O_eq_toHO1_cmp1]; exact hc)
   rw [← toPO_toH1O, e, toPO_ofPC]
 
-theorem surjAll_of_hodge (hC : CrystallineSmoothLift) (hH : AbelianHodgeDeRham) : SurjAll := by
-  intro R _ A _ g hAb hsm
-  haveI := hAb
-  haveI : IsProper A.hom := IsAbelianScheme.proper
-  have hs : A.hom ≫ 𝟙 (Sp R) = A.hom := Category.comp_id _
-  refine toPicard_surjective _ ?_ ?_
-  · rw [hs]
-    exact (hC.bijective_cechDeRhamComparison_degreeOne A.hom IsAbelianScheme.smooth inferInstance inferInstance).2
-  · rw [hs]
-    exact (hH R A g hAb hsm).2.2.2.2.1.2.2
-
 end PositivityTheory.DualRT

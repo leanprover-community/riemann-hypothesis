@@ -83,27 +83,6 @@ theorem exists_frac (y : ↥B.LL.1) : ∃ n d : O, d ≠ 0 ∧ B.toLL d * y = B.
     rw [h1, map_zero] at hd
     exact hy (inv_eq_zero.1 hd)
 
-theorem algHom_ext (τ τ' : ↥B.Kw.1 →ₐ[ℚ_[l]] ↥B.LL.1)
-    (h : ∀ x : E, τ ⟨B.j (algebraMap E Ω x), B.j_E x⟩ = τ' ⟨B.j (algebraMap E Ω x), B.j_E x⟩) :
-    τ = τ' := by
-  ext y
-  by_contra hne
-  have hpos : 0 < ‖((τ y : ↥B.LL.1) : Om l) - (τ' y : ↥B.LL.1)‖ := norm_pos_iff.2 (sub_ne_zero.2 hne)
-  obtain ⟨_, ⟨x, rfl⟩, hx⟩ := Metric.mem_closure_iff.1 (B.j_dense y.2) _ (half_pos hpos)
-  rw [dist_eq_norm] at hx
-  set z : ↥B.Kw.1 := ⟨B.j (algebraMap E Ω x), B.j_E x⟩ with hz
-  have e : ((τ y : ↥B.LL.1) : Om l) - (τ' y : ↥B.LL.1) =
-      ((τ (y - z) : ↥B.LL.1) : Om l) - (τ' (y - z) : ↥B.LL.1) := by
-    rw [map_sub, map_sub, hz, h x]
-    push_cast
-    ring
-  have h1 := norm_algHom _ _ τ (y - z)
-  have h2 := norm_algHom _ _ τ' (y - z)
-  have h3 := norm_sub_le ((τ (y - z) : ↥B.LL.1) : Om l) (τ' (y - z) : ↥B.LL.1)
-  have h4 : ‖((y - z : ↥B.Kw.1) : Om l)‖ < ‖((τ y : ↥B.LL.1) : Om l) - (τ' y : ↥B.LL.1)‖ / 2 := hx
-  rw [← e, h1, h2] at h3
-  linarith
-
 end Local
 
 end GlobalTheory.EmbInj

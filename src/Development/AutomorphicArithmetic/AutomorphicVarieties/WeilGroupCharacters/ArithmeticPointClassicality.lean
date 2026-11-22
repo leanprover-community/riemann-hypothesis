@@ -46,12 +46,10 @@ section U
 
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
 
-
 variable (L) in
 def Large (c : Coef l) : Prop := ∀ (τ : L →+* Qbar l) (x : 𝓞 L), τ x ∈ c.O
 
 variable {s : HidaSetting l L Ω} {V : s.Lev} {c : Coef l} {n : ℕ} {r : Resid V.frame c.O n}
-
 
 variable (s n) in
 abbrev HidaSetting.Wt : Type := ∀ v : Vl l L, Fin n → Emb l (s.w v) → ℤ
@@ -83,54 +81,15 @@ variable (B) (ι : Qbar l ≃+* ℂ) (J : Ideal B.B)
 
 def Dense : Prop := ∀ h : s.Wt n, h.Incr → ∀ b : B.B, (∀ x : B.Pt, J ≤ RingHom.ker x → x.Good h → x b = 0) → b ∈ J
 
-def PT : Prop :=
-  ∀ (x : B.Pt) (h : s.Wt n) (ρ : G L Ω →* GL (Fin n) (Qbar l)), 2 ≤ n → n ≤ 4 → x.Arith h →
-    x.IsRep ρ → Continuous ρ → Af.IsAutCsd ι ρ → (∀ g ∈ Ine (F := L) (s.A s.v0), ρ g = 1) →
-    (∀ v : Vl l L, HasFlag (ρ.comp (Dec (F := L) (s.A v)).subtype) (x.psi v) ∧
-      ∀ i j, x.psi v i ≠ x.psi v j * (cycBar L Ω l).comp (Dec (F := L) (s.A v)).subtype) →
-    J ≤ RingHom.ker x
-
-def arithmeticPointPurity : Prop :=
-  ∀ (x : B.Pt) (h : s.Wt n), J ≤ RingHom.ker x → x.Arith h →
-    ∃ ρ : G L Ω →* GL (Fin n) (Qbar l), Continuous ρ ∧ IsSSRep ρ ∧ x.IsRep ρ ∧
-      ∃ (a : ℕ) (d m : Fin a → ℕ) (ρ' : ∀ i, G L Ω →* GL (Fin (d i)) (Qbar l)),
-        (∀ i, 1 ≤ d i ∧ 1 ≤ m i ∧ Continuous (ρ' i)) ∧
-        (∀ g, (mat ρ g).charpoly =
-          ∏ i, ∏ j ∈ Finset.range (m i), (mat (Af.tw (ρ' i) (cycBar L Ω l ^ (-(j : ℤ)))) g).charpoly) ∧
-        ((∀ i, m i = 1) → ∀ (w : Plc L) (b : Multiset ℂ), ((l : ℕ) : 𝓞 L) ∉ w.asIdeal → Af.FrobEig ι ρ w b →
-          ∀ z ∈ b, ‖z‖ = (normV w : ℝ) ^ (((n : ℝ) - 1) / 2))
-
-def arithmeticPointClassicality : Prop :=
-  ∀ (x : B.Pt) (h : s.Wt n) (ρ : G L Ω →* GL (Fin n) (Qbar l)), J ≤ RingHom.ker x → x.Arith h → x.IsRep ρ → Af.IsIrr ρ →
-    Af.IsAutCsd ι ρ
-
 def TwistOk : Prop :=
   ∀ (x x' : B.Pt) (h : s.Wt n) (β : V.frame.G₀ →* (Qbar l)ˣ), J ≤ RingHom.ker x → x.Good h →
     IsOpen (β.ker : Set V.frame.G₀) → (∃ k : ℕ, β ^ l ^ k = 1) → β.comp V.frame.conj = β⁻¹ →
     (∀ u, V.frame.Iu u ≤ β.ker) → V.frame.I0 ≤ β.ker →
     x.D.IsTwist β x'.D → (∀ (v : Vl l L) (j : Fin n), x'.psi v j = x.psi v j * β.comp (V.pr.comp (Dec (F := L) (s.A v)).subtype)) → J ≤ RingHom.ker x'
 
-structure HidaProps (Λ : LamObj r) : Prop where
-  ring : B.RingProps Λ J
-  dense : B.Dense J
-  pt : B.PT ι J
-  end1 : B.arithmeticPointPurity ι J
-  end2 : B.arithmeticPointClassicality ι J
-  twist : B.TwistOk J
-
-structure Modular (Λ : LamObj r) : Prop extends B.HidaProps ι J Λ where
-  p1 : B.P1core J
-  p3 : B.P3core J
-
 end UniversalOrdinaryDeterminantRing
 
 end U
-
-def ModU : Prop :=
-  ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
-    (s : HidaSetting l L Ω) (V : s.Lev), V.S' = s.S → (¬ ∃ ζ : L, IsPrimitiveRoot ζ l) →
-    ∀ (c : Coef l), Large L c → ∀ (n : ℕ), 1 ≤ n → ∀ (r : Resid V.frame c.O n) (B : UniversalOrdinaryDeterminantRing r) (Λ : LamObj r) (ι : Qbar l ≃+* ℂ),
-      ∃ J : Ideal B.B, B.Modular ι J Λ
 
 def LevEx : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]

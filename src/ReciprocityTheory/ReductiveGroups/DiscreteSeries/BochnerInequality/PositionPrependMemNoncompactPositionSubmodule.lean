@@ -21,19 +21,12 @@ variable {M : Type*} [NormedAddCommGroup M] [InnerProductSpace ℂ M] {ε : Fin 
 theorem coord_apply' (k : ℕ) (κ : Fin k → Fin n × Fin n) (F : Big n k M) :
     coord k κ F = F κ := rfl
 
-theorem ofCoords_apply' {X : Type*} [AddCommGroup X] [Module ℂ X] (k : ℕ)
-    (f : (Fin k → Fin n × Fin n) → (X →ₗ[ℂ] M)) (x : X) (κ : Fin k → Fin n × Fin n) :
-    ofCoords k f x κ = f κ x := rfl
-
 theorem wordContraction_apply (k : ℕ) (F : Big n k M) :
     phi E k F = ∑ κ, word E κ (F κ) := by
   first
   | simp only [phi, LinearMap.coeFn_sum, Finset.sum_apply, LinearMap.comp_apply, coord_apply']
   | (rw [phi, LinearMap.sum_apply]; rfl)
   | simp [phi, coord_apply']
-
-theorem mAct_apply' (k : ℕ) (a b : Fin n) (F : Big n k M) (κ : Fin k → Fin n × Fin n) :
-    mAct E k a b F κ = E a b (F κ) := rfl
 
 theorem factorAd_apply' (k : ℕ) (i : Fin k) (a b : Fin n) (F : Big n k M)
     (κ : Fin k → Fin n × Fin n) :

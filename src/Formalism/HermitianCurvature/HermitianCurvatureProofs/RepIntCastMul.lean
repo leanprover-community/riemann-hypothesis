@@ -26,8 +26,6 @@ abbrev AA (k r : ℕ) (E : Type*) [NormedAddCommGroup E] [NormedSpace ℂ E] := 
 
 def ell (x : Ix k r) : AA k r E := LinearMap.funLeft ℂ (Mat k r → E) (fun w : List (Ix k r) => w ++ [x])
 
-theorem ell_apply (x : Ix k r) (Φ : VV k r E) (w : List (Ix k r)) : ell x Φ w = Φ (w ++ [x]) := rfl
-
 def Lf (k r : ℕ) (E : Type*) [NormedAddCommGroup E] [NormedSpace ℂ E] (a b : Fin (2 * r + k + 1)) : AA k r E :=
   ell (a, b)
 

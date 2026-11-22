@@ -2126,9 +2126,6 @@ variable {n : ℕ} {K V : Type} [Field K] [AddCommGroup V] [Module K V]
 def crRes (E : GLOps n K V) (P : Submodule K V) (hP : Stab E P) : GLOps n K P :=
   fun a b => (E a b).restrict (hP a b)
 
-theorem crRes_coe (E : GLOps n K V) (P : Submodule K V) (hP : Stab E P) (a b : Fin n) (x : P) :
-    ((crRes E P hP a b x : P) : V) = E a b (x : V) := rfl
-
 theorem crRes_weight (E : GLOps n K V) (P : Submodule K V) (hP : Stab E P) (mu : Fin n → ℤ) (y : P)
     (hy : (y : V) ∈ weightSp E mu) : y ∈ weightSp (crRes E P hP) mu := by
   unfold weightSp at hy ⊢

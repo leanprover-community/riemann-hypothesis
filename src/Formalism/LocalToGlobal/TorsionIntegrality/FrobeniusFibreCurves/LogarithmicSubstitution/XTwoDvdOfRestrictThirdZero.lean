@@ -199,10 +199,6 @@ theorem restrictThirdZero_shear (h : MvPowerSeries (Fin 3) K) : ev3 (sh h) = ev3
   funext s
   fin_cases s <;> simp [subst_X hasSubst_restrictThirdZero, subst_fin_three_sub hasSubst_restrictThirdZero]
 
-private theorem pderiv_X_fin_three_of_ne {i j : Fin 3} (hij : j ≠ i) :
-    MvPowerSeries.pderiv (R := K) i (X j : MvPowerSeries (Fin 3) K) = 0 := by
-  simp [hij]
-
 theorem partialDeriv_two_shear (h : MvPowerSeries (Fin 3) K) : pd 2 (sh h) = sh (pd 2 h) - sh (pd 1 h) := by
   unfold sh Formalism.L2.Th1.B.pd
   rw [Formalism.G.LogCR.pderiv_subst cc_sh, Fin.sum_univ_three]

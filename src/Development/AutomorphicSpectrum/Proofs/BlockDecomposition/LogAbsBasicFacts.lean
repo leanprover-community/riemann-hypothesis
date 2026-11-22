@@ -43,9 +43,6 @@ theorem norm_cV_algebraMap (v : InfinitePlace E) (c : E) : ‖cV v (algebraMap E
   rw [← InfinitePlace.norm_embedding_eq]
   exact congrArg norm (pInf_algebraMap c v)
 
-theorem norm_cW_algebraMap (w : HeightOneSpectrum (𝓞 E)) (c : E) :
-    ‖cW w (algebraMap E (Ad E) c)‖ = FinitePlace.mk w c := rfl
-
 theorem logAbs_algebraMap (c : E) (hc : c ≠ 0) : logAbs (algebraMap E (Ad E) c) = 0 := by
   have hprod := prod_abs_eq_one hc
   have hA : (∏ w : InfinitePlace E, w c ^ w.mult) ≠ 0 := left_ne_zero_of_mul_eq_one hprod

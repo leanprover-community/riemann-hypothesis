@@ -160,26 +160,6 @@ end Consequences
 
 section Inhabitants
 
-private theorem sub_line (S : Submodule ℂ ℂ) : S = ⊥ ∨ S = ⊤ := eq_bot_or_eq_top S
-
-theorem det_isURepOn {n : ℕ} (ε : Fin n → Bool) :
-    IsURepOn (UJset ε) (fun g => g.det • (1 : ℂ →L[ℂ] ℂ)) ∧
-    IsIrredOn (UJset ε) (fun g => g.det • (1 : ℂ →L[ℂ] ℂ)) ∧
-    ∀ v, IsKFin ε (fun g => g.det • (1 : ℂ →L[ℂ] ℂ)) v := by
-  refine ⟨⟨⟨by simp, fun a _ b _ => by ext; simp [mul_comm]⟩, fun g hg v => ?_, fun v => ?_⟩, fun S _ _ => sub_line S,
-    fun v => ⟨⊤, inferInstance, trivial, fun _ _ _ _ => trivial⟩⟩
-  · have hm : gᴴ * Formalism.REAL.Jm ε * g = Formalism.REAL.Jm ε := hg
-    have hd := congrArg (fun A => ‖Matrix.det A‖) hm
-    have hJ : ‖(Formalism.REAL.Jm ε).det‖ ≠ 0 := norm_ne_zero_iff.2
-      ((Matrix.isUnit_iff_isUnit_det _).1 (IsUnit.of_mul_eq_one _ (Formalism.REAL.Jm_mul_self ε))).ne_zero
-    simp only [Matrix.det_mul, Matrix.det_conjTranspose, norm_mul, norm_star] at hd
-    have h2 : ‖g.det‖ ^ 2 = 1 := mul_right_cancel₀ hJ (by nlinarith)
-    have h1 : ‖g.det‖ = 1 := (pow_eq_one_iff_of_nonneg (norm_nonneg _) (by norm_num)).1 h2
-    simp [h1]
-  · have : Continuous fun g : Matrix (Fin n) (Fin n) ℂ => g.det * v :=
-      (continuous_id.matrix_det).mul continuous_const
-    simpa using this.continuousOn
-
 end Inhabitants
 
 end GlobalTheory.Published

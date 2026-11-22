@@ -44,13 +44,6 @@ def FiniteH (F : X.Modules) : Prop :=
 
 variable {A}
 
-theorem FiniteH.of_iso {F G : X.Modules} (e : F ≅ G) (hF : FiniteH.{w'} A F) :
-    FiniteH.{w'} A G := fun p =>
-  have := hF p
-  have eH : Sheaf.H.{w'} (modulesAb F) p ≃ₗ[A] Sheaf.H.{w'} (modulesAb G) p :=
-    ((H.moduleFunctor.{w'} A p).mapIso e).toLinearEquiv
-  Module.Finite.equiv eH
-
 lemma H.map_zero_injective {C : Type*} [Category C] {J : GrothendieckTopology C}
     [HasSheafify J AddCommGrpCat.{u}] [HasExt.{w'} (Sheaf J AddCommGrpCat.{u})]
     {F G : Sheaf J AddCommGrpCat.{u}} (f : F ⟶ G) [Mono f] :

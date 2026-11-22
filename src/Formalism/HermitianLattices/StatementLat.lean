@@ -109,16 +109,6 @@ def DualBasic : Prop :=
     (∀ L : Submodule R V, IsIntegralLat h L ↔ L ≤ dual h L) ∧
     (∀ L : Submodule R V, IsUnimodular h L ↔ IsIntegralLat h L ∧ dual h L ≤ L)
 
-def DualLattice : Prop :=
-  ∀ (R K V : Type) [CommRing R] [IsDedekindDomain R] [Field K] [StarRing K] [Algebra R K]
-    [IsFractionRing R K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module R V]
-    [IsScalarTower R K V] (h : V →ₗ⋆[K] V →ₗ[K] K), h.IsSymm → h.Nondegenerate →
-    (∀ r : R, star (algebraMap R K r) ∈ Set.range (algebraMap R K)) →
-    ∀ L : Submodule R V, Submodule.IsLattice K L →
-      Submodule.IsLattice K (dual h L) ∧ dual h (dual h L) = L ∧
-      ∀ a : K, a ≠ 0 → dual h (L.map ((LinearMap.lsmul K V a).restrictScalars R)) =
-        (dual h L).map ((LinearMap.lsmul K V (star a)⁻¹).restrictScalars R)
-
 def LocBasic : Prop :=
   ∀ (R K V : Type) [CommRing R] [IsDomain R] [Field K] [StarRing K] [Algebra R K]
     [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V],
@@ -176,18 +166,5 @@ def ClassSetFinite : Prop :=
     ∀ L : Submodule (NumberField.RingOfIntegers K) V, Submodule.IsLattice K L →
       ∃ s : Finset (Submodule (NumberField.RingOfIntegers K) V), (∀ M ∈ s, M ∈ genus h L) ∧
         ∀ M ∈ genus h L, ∃ N ∈ s, ∃ g ∈ isom h, gmap g N = M
-
-def IndexBasic : Prop :=
-  ∀ (R K V : Type) [CommRing R] [IsDedekindDomain R] [Field K] [StarRing K] [Algebra R K]
-    [IsFractionRing R K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module R V]
-    [IsScalarTower R K V] (h : V →ₗ⋆[K] V →ₗ[K] K), h.IsSymm → h.Nondegenerate →
-    (∀ r : R, star (algebraMap R K r) ∈ Set.range (algebraMap R K)) →
-    ∀ (p : Ideal R) [p.IsMaximal] (A B C : Submodule R V),
-      Submodule.IsLattice K A → Submodule.IsLattice K B → Submodule.IsLattice K C →
-      lidx p A A = 0 ∧ lidx p A B = - lidx p B A ∧
-      lidx p A C = lidx p A B + lidx p B C ∧
-      (B ≤ A → lidx p A B = locLen p A B) ∧
-      (IsUnimodular h A → jIdx h p A = 0) ∧
-      (IsIntegralLat h A → (jIdx h p A ≤ 0 ∧ (jIdx h p A = 0 ↔ localization₂ p (dual h A) = localization₂ p A)))
 
 end Formalism.HermitianLatticesTheory

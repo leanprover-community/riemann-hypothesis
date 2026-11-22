@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsFiniteCoverProjSpaceReducedFibreOrigin
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.TcoMem
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAffCoverSpec
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ToPtIdPtBijective
 
 @[expose] public section
 

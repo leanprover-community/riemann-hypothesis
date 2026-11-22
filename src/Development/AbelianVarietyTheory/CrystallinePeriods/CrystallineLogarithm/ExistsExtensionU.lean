@@ -6,12 +6,10 @@ public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRham
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRhamMap
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Embedding
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Section
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Action
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.MapEqPadicPowCyclotomicCharacter
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.TruncLogEqOfPowEqZero
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Period
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.CrisTheta
 
 @[expose] public section
 

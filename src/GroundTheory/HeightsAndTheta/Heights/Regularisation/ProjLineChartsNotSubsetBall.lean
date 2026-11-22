@@ -15,8 +15,6 @@ open ReciprocityTheory.AnForm.A (Mollifier molli regMax coordDiv limsupExt)
 open ReciprocityTheory.AnForm.M (FinHolAtlas LocPot IsPotential IsPosPot)
 open GroundTheory.Heights₂.Heights.Regular (PotentialCharts BoundedPshData pointReg pointCharts pointAtlas)
 
-local notation "RegChartDataA" => GroundTheory.Heights₂.Heights.Regular.RegChartData
-
 noncomputable section
 
 theorem isClosed_coordDiv {D : ℕ} (S : Finset (Fin D)) : IsClosed (coordDiv S) := by

@@ -24,11 +24,6 @@ section Ad
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-local notation "𝔸" => FiniteAdeleRing (𝓞 F) F
-local notation "𝒜" => E ⊗[F] 𝔸
-local notation "𝒮" => tensInt (F := F) 𝔸 (intOE E) (intAd F)
-local notation "ιA" => inclE (F := F) (E := E) 𝔸
-
 theorem mat_denom {n : ℕ} (M : Matrix (Fin n) (Fin n) 𝒜) : ∃ d : ℕ, 0 < d ∧ d • M ∈ matIn 𝒮 n := by
   have cast_level (m : ℕ) : levelafC (F := F) E (m : 𝓞 F) = (m : 𝒜) := by
     rw [levelafC, map_natCast]

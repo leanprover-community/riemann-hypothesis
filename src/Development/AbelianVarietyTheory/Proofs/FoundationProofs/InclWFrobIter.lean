@@ -118,9 +118,6 @@ section Comp
 variable {Z O R R' : Type} [CommRing Z] [CommRing O] [CommRing R] [CommRing R'] [Algebra Z O]
   [Algebra Z R] [Algebra Z R']
 
-def cf (lam : O →ₗ[Z] Z) : O ⊗[Z] R →ₗ[Z] R :=
-  (TensorProduct.lid Z R).toLinearMap ∘ₗ lam.rTensor R
-
 end Comp
 
 section Situation

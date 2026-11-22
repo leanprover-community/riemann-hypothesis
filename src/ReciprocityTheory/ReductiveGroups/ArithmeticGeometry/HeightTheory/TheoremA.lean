@@ -159,8 +159,6 @@ def G1 : WT := d.wL - d.wde
 
 def G2 : WT := (d.D + 4 : ℕ) • d.wL - d.wF
 
-def F0 : WT := d.wF + d.D • d.wL
-
 def n1 : ℕ := d.i * d.g0
 
 noncomputable def x (c : ι) (k : Fin d.N) : Ω c :=
@@ -204,8 +202,6 @@ noncomputable abbrev KT (c : ι) : IntermediateField K (OmS (Ω c) d.D d.N) :=
 noncomputable def delc (c : ι) : ℕ := Module.finrank (d.KT c) (OmS (Ω c) d.D d.N)
 noncomputable def del : ℕ := ∑ c, d.delc c
 
-def a0 : ℕ := d.T - d.D
-
 def PH : ℝ := d.PP0' + d.PN + d.tableLineDegreeFive + d.tableLineDegreeTwo + d.PI4 + d.Prw
 
 noncomputable def n96 : ℕ :=
@@ -224,6 +220,5 @@ variable {K ι Ω WT A}
 variable (d : Data K ι Ω WT A)
 
 end Data
-
 
 end ReciprocityTheory.ChartRestriction.G.T0

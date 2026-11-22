@@ -3,7 +3,7 @@ module
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.FrobeniusBoundOfMulNearOne
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LiftingTheory
+public import Mathlib
 
 @[expose] public section
 

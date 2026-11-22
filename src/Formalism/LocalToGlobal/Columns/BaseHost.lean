@@ -1,9 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
-public import Formalism.LocalToGlobal.Divisibility.CoeffLemmas
 public import Formalism.LocalToGlobal.UnitaryNorms.RealPl
-public import Formalism.LocalToGlobal.UnitaryNorms.ExistsCycAct
+public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostRam
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Inertia
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 

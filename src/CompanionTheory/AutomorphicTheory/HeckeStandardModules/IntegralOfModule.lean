@@ -15,8 +15,6 @@ namespace CompanionTheory.L3H
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {W : Type} [AddCommGroup W] [Module ℂ W]
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 section Loc
 
 variable (s : SplitPlace L) (n)

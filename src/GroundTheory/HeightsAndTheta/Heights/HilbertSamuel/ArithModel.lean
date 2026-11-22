@@ -68,18 +68,6 @@ theorem isMultiHomog_X (p : Σ k, ι k) [DecidableEq K] :
 
 end Homog
 
-abbrev Kfr : Type := FractionRing (MRing (GlobalTheory (Fin 2)))
-
-abbrev Xk (i : Fin 2) : Kfr := algebraMap (MRing (GlobalTheory (Fin 2))) Kfr (X ⟨(), i⟩)
-
-def u : Kfr := Xk 1 / Xk 0
-
-abbrev FnField : Type := Subfield.closure ({u} : Set Kfr)
-
-def uF : FnField := ⟨u, Subfield.subset_closure rfl⟩
-
-def y : Ix (Fin 2) → FnField := fun p => ![1, uF] p.2
-
 section FS
 
 open scoped Topology
@@ -94,8 +82,6 @@ theorem eL_apply (z : J → ℂ) : eL z = WithLp.toLp 2 z := rfl
 def reInner : (J → ℂ) →L[ℝ] ((J → ℂ) →L[ℝ] ℝ) :=
   ((ContinuousLinearMap.compL ℝ (J → ℂ) (EuclideanSpace ℂ J) ℝ).flip eL).comp
     ((innerSL ℝ (E := EuclideanSpace ℂ J)).comp eL)
-
-theorem reInner_apply (y v : J → ℂ) : reInner y v = inner ℝ (eL y) (eL v) := rfl
 
 theorem realInner_eq (x y : EuclideanSpace ℂ J) : inner ℝ x y = RCLike.re (inner ℂ x y) := by
   set_option synthInstance.maxHeartbeats 100000 in

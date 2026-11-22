@@ -1,10 +1,10 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsFlagBundleRankOne
+public import Development.AbelianVarietyTheory.Definitions.Divisors.SemiposAtOfPositive
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsFlagModelHermSum
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BcDensEqOfGram
+public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.LengthQuotientMaximalIdealPowSmulTop
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NontrivialIsomClassInt
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsBlockOrderedSumEquivTrueIndex
 
@@ -25,14 +25,6 @@ open scoped ContDiff ComplexOrder
 namespace GlobalTheory.MixDens
 
 variable {k : Type} [CommRing k] {X : Scheme.{0}} {p : X ⟶ Sp k} {σ : k →+* ℂ} {D d : ℕ}
-
-def part (ρ : AlgChart p σ D → CxPts p σ → ℝ) : Measure (CxPts p σ) :=
-  ChartGlue.glueMeas (fun c : AlgChart p σ D => c.e) fun c y => ENNReal.ofReal (ρ c y)
-
-def IsDens (ρ : AlgChart p σ D → CxPts p σ → ℝ) : Prop :=
-  (∀ (c c' : AlgChart p σ D) (y : CxPts p σ), y ∈ c.e.source → y ∈ c'.e.source →
-    ρ c y = ‖ChartGlue.transDet c.e c'.e y‖ ^ 2 * ρ c' y) ∧
-  ∀ c : AlgChart p σ D, ContinuousOn (fun v => ρ c (c.e.symm v)) c.e.target
 
 variable {ρ ρ' : AlgChart p σ D → CxPts p σ → ℝ}
 
@@ -64,12 +56,6 @@ end Flag
 section Cell
 
 variable {ι : Type} [Fintype ι] {r : ι → ℕ} (e : Fin (d + 1) ≃ Option (Σ a, Low (r a)))
-
-
-
-def emb {m : ℕ} (i : Fin m) : Fin i ⊕ Fin 1 → Fin m := Sum.elim (Fin.castLE i.isLt.le) fun _ => i
-
-
 
 variable {m : ℕ}
 

@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharZeroStalkCompactFlagSpaceOverComponent
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PhiAt
 
 @[expose] public section

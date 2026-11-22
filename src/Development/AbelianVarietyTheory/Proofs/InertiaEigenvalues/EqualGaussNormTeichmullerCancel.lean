@@ -22,9 +22,6 @@ namespace GlobalTheory.GaussCancel
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem untilt_zero' : (0 : Formalism.Per.Fl l).untilt = 0 := by
-  rw [← WittVector.fontaineTheta_teichmuller, WittVector.teichmuller_zero, map_zero]
-
 theorem isGauss_gC {ρ : ℝ} (h1 : (l : ℝ)⁻¹ ≤ ρ) (h2 : ρ < 1) : IsGauss l ρ (gC l ρ) := by
   have h : ∃ N, IsGauss l ρ N := by
     obtain ⟨N, hN⟩ := GlobalTheory.GaussExt.exists_gauss_acris l ρ h1 h2

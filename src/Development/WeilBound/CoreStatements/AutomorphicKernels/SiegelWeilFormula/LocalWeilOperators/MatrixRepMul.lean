@@ -33,10 +33,6 @@ theorem bb1 : incM F d.b.1 * incM F (d.b⁻¹).1 = 1 := by
 theorem bb2 : incM F (d.b⁻¹).1 * incM F d.b.1 = 1 := by
   rw [← incM_mul', ← Units.val_mul, inv_mul_cancel, Units.val_one, incM_one']
 
-theorem matrixRep_mul (x y : d.G) : mat2 (x * y) = mat2 x * mat2 y := rfl
-
-theorem matrixRep_one : mat2 (1 : d.G) = 1 := rfl
-
 theorem inFrame_mul (x y : d.G) : inFrame d.b (x * y) = inFrame d.b x * inFrame d.b y := by
   simp only [inFrame, matrixRep_mul]
   calc incM F (d.b⁻¹).1 * (mat2 x * mat2 y) * incM F d.b.1

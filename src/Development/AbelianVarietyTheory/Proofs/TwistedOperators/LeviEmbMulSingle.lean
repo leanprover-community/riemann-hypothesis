@@ -18,7 +18,6 @@ section Blocks
 
 variable {n : Type} [Fintype n] [DecidableEq n]
 
-
 open ValuativeRel Matrix MeasureTheory in
 variable {n : Type} [Fintype n] [DecidableEq n] in
 omit [DecidableEq n] in
@@ -50,7 +49,6 @@ def unipOf (c : n → ℤ) : Subgroup (GL n R) :=
 
 variable {R}
 
-
 open ValuativeRel Matrix MeasureTheory in
 variable {n : Type} [Fintype n] [DecidableEq n] in
 variable (R : Type) [CommRing R] in
@@ -61,7 +59,6 @@ theorem _root_.GlobalTheory.InertSupp.mem_unipOf {c : n → ℤ} {g : GL n R} :
   Iff.rfl
 
 variable {α : Type} {m : α → Type} [Fintype α] [LinearOrder α] [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)]
-
 
 open ValuativeRel Matrix MeasureTheory in
 variable {n : Type} [Fintype n] [DecidableEq n] in
@@ -85,9 +82,6 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
   {n : Type} [Fintype n] [DecidableEq n] {V : Type} [AddCommGroup V] [Module ℂ V]
 
 variable [MeasurableSpace k] [BorelSpace k]
-
-def zetaIntegrand (Φ : Matrix n n k → ℂ) (c : GL n k → ℂ) (s : ℂ) (g : GL n k) : ℂ :=
-  Φ g.val * c g * (absPow k (s + ((Fintype.card n : ℂ) - 1) / 2) (GeneralLinearGroup.det g) : ℂ)
 
 end Local
 

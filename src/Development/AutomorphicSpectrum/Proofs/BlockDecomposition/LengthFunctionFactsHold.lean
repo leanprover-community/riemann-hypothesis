@@ -58,8 +58,6 @@ theorem hs_right_unitary {k : Mat n} (hk : k * kᴴ = 1) (x : Mat n) : hs (x * k
 
 def ent (a b : Fin n) : Mat n →L[ℝ] ℂ := LinearMap.toContinuousLinearMap (Matrix.entryLinearMap ℝ ℂ a b)
 
-theorem ent_apply (a b : Fin n) (y : Mat n) : ent a b y = y a b := rfl
-
 theorem contDiff_ent (a b : Fin n) : ContDiff ℝ ∞ (fun y : Mat n => y a b) := (ent a b).contDiff
 
 theorem contDiffOn_inv : ContDiffOn ℝ ∞ (fun y : Mat n => y⁻¹) (GLs n) :=

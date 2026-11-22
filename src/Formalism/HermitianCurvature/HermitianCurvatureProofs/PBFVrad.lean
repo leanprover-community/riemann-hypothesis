@@ -233,12 +233,7 @@ theorem act_insert_numeric_matrix_zero (U : M2 (Pr (RadSp k r z z' π π'))) (W 
   rw [Fin.sum_univ_two, Fin.sum_univ_two, Fin.sum_univ_two]
   fin_cases i0 <;> simp
 
-theorem pr_alg_fst_apply (c : ℂ) (Φ : RadSp k r z z' π π') :
-    (algebraMap ℂ (Pr (RadSp k r z z' π π')) c).1 Φ = c • Φ := rfl
-
 theorem pr_one_fst_apply (Φ : RadSp k r z z' π π') : (1 : Pr (RadSp k r z z' π π')).1 Φ = Φ := rfl
-
-theorem pr_zero_fst_apply (Φ : RadSp k r z z' π π') : (0 : Pr (RadSp k r z z' π π')).1 Φ = 0 := rfl
 
 theorem uInv_cons {X : Type} [AddCommGroup X] [Module ℂ X] (s : ℂ) (l : C.Letter) (w : List C.Letter)
     (x : Ix (Fin (l :: w).length) → X) (e : Ix (Fin (l :: w).length)) :

@@ -31,9 +31,6 @@ theorem map_neg (h : IsDer D) (a : A) : D (-a) = -D a := by
   rw [show a + -a = 0 by ring, h.map_zero] at h1
   linear_combination -h1
 
-theorem map_sub (h : IsDer D) (a b : A) : D (a - b) = D a - D b := by
-  rw [sub_eq_add_neg, h.map_add, h.map_neg, ← sub_eq_add_neg]
-
 theorem map_natCast (h : IsDer D) (n : ℕ) : D (n : A) = 0 := by
   induction n with
   | zero => rw [Nat.cast_zero]; exact h.map_zero

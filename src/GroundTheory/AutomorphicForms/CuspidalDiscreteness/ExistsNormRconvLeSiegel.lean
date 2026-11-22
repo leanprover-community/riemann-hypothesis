@@ -22,8 +22,6 @@ open Reduction AutomorphicForm RightCosetSpace
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => rationalGLOne (K := K) (n := n)
-
 theorem exists_archProj_eq {g : normOneGL (K := K) (n := n)} (hg : (AdelicGLn.prodEquiv K n g).2 = 1) :
     ∃ C : ArchUnits K n, archProj K n C = g ∧
       (C : ArchMatrix K n) = archMat K n ((g : AdelicGLn.AdelicGL K n) :
@@ -51,7 +49,6 @@ theorem coe_conj_unipGL {r : ℕ} (x : AdelicGLn.AdelicGL K n) (P : UPos n r →
         (x : Matrix (Fin n) (Fin n) 𝔸[K]) := by
   rw [Units.val_mul, Units.val_mul, coe_unipGL, unipMatrix, Matrix.mul_add, Matrix.add_mul,
     Matrix.mul_one, Units.inv_mul]
-
 
 variable (K n) in
 def conjArch {r : ℕ} (x : AdelicGLn.AdelicGL K n) : (UPos n r → 𝔸[K]) →+ ArchMatrix K n where
@@ -93,7 +90,6 @@ theorem map_altPoint {V W : Type*} [AddCommGroup V] [AddCommGroup W] (φ : V →
     rw [map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   split_ifs <;> simp
-
 
 variable (n) in
 def truncInfHom (r : ℕ) : (UPos n r → 𝔸[K]) →+ (UPos n r → 𝔸[K]) where

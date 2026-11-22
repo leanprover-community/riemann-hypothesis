@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SpecFirstDetFormNeZero
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 
 @[expose] public section
 

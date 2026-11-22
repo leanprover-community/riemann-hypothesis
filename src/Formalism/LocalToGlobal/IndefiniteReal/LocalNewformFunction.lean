@@ -97,7 +97,6 @@ variable {m n : ℕ}
 def compAt (θ : InfFam D) (τ : D.what₂.Tau) (w : Mx D m n) : Matrix (Fin m) (Fin n) ℂ :=
   w.map fun a => θ τ (infPart D a)
 
-
 open Classical in
 def IsLineAt (θ : InfFam D) (τ : D.what₂.Tau) (z : Matrix (Fin m) (Fin n) ℂ) (L : ℝ →+ Mx D m n) : Prop :=
   Continuous L ∧ (∀ t, (L t).map (finPart D) = 0) ∧
@@ -150,9 +149,6 @@ def IsONBasis {k : ℕ} (G s B : Matrix (Fin k) (Fin k) ℂ) (p : ℕ) : Prop :=
 def opPow {ι X : Type} (A : ι → (X → ℂ) → (X → ℂ)) (k : ι →₀ ℕ) (f : X → ℂ) : X → ℂ :=
   (Multiset.toList (Finsupp.toMultiset k)).foldr (fun i g => A i g) f
 
-def polyAct {ι X : Type} (A : ι → (X → ℂ) → (X → ℂ)) (P : MvPolynomial ι ℂ) (f : X → ℂ) : X → ℂ :=
-  ∑ k ∈ P.support, P.coeff k • opPow A k f
-
 def pureTensorL {ι X : Type} (A : ι → (X → ℂ) → (X → ℂ)) (f : X → ℂ) : MvPolynomial ι ℂ →ₗ[ℂ] (X → ℂ) :=
   (MvPolynomial.basisMonomials ι ℂ).constr ℂ (fun k : ι →₀ ℕ => opPow A k f)
 
@@ -175,13 +171,6 @@ def latO (S T : HSp D) (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.ran
   AddSubgroup.closure {w | ∃ α ∈ intAf D.host.F, (∀ v, ¬ P v → evalV D.host.F v α = 0) ∧
     ∃ a : D.host.E, a ∈ D.host.AA ∧ ∃ s ∈ LS, ∃ t ∈ LT,
       w = Matrix.of fun i j => (pairA D.host.F 0 α) ⊗ₜ[D.host.F] (a * t i * ∑ k, star (s k) * S.gram k j)}
-
-def latT (V W : HSp D) (LV : Set (Fin V.rank → D.host.E)) (LW : Set (Fin W.rank → D.host.E))
-    (P : HeightOneSpectrum (𝓞 D.host.F) → Prop) : AddSubgroup (WA V W) :=
-  AddSubgroup.closure {w | ∃ α ∈ intAf D.host.F, (∀ v, ¬ P v → evalV D.host.F v α = 0) ∧
-    ∃ a : D.host.E, a ∈ D.host.AA ∧ ∃ x ∈ LV, ∃ y ∈ LW,
-      w = Matrix.of fun i j => (pairA D.host.F 0 α) ⊗ₜ[D.host.F]
-        (if V.rank ≤ W.rank then a * star (x i) * y j else a * x i * star (y j))}
 
 def IsHalf (e : AE D) (u : Mx D m n) : Prop := ∀ i j, e * u i j = u i j
 
@@ -225,7 +214,6 @@ def IsSBHalf (e : AE D) (Λ : AddSubgroup (Mx D m n)) (Φ : Mx D m n → ℂ) : 
   (∀ t, Φ t ≠ 0 → IsHalf e t) ∧ ∃ k : ℕ, 0 < k ∧
     (∀ u ∈ Λ, IsHalf e u → ∀ t, Φ (t + k • u) = Φ t) ∧ ∀ t, Φ t ≠ 0 → k • t ∈ Λ
 
-
 open Classical in
 def halfInd (e : AE D) (Λ : AddSubgroup (Mx D m n)) (t : Mx D m n) : ℂ :=
   if t ∈ Λ ∧ IsHalf e t then 1 else 0
@@ -245,7 +233,6 @@ def IsThetaAt (ψ : AddChar (AF D.host.F) ℂ) (B : Mx D m n → Mx D m n → AF
 end Split
 
 section Local
-
 
 open Classical in
 def localNewformFunction (v : HeightOneSpectrum (𝓞 D.host.F)) {r t : ℕ}

@@ -22,9 +22,6 @@ theorem det_invTranspose (n : ℕ) (g : GL (Fin n) k) :
   ext
   simp [GlobalTheory.TypeTame.invTranspose, Matrix.GeneralLinearGroup.det, Matrix.det_transpose]
 
-theorem nabs_inv (x : kˣ) : GlobalTheory.SplitWeil.nabs k x⁻¹ = (GlobalTheory.SplitWeil.nabs k x)⁻¹ := by
-  simp [GlobalTheory.SplitWeil.nabs]
-
 theorem absPow_det_invTranspose (n : ℕ) (s : ℂ) (g : GL (Fin n) k) :
     detChar (Fin n) (absPow k s) (GlobalTheory.TypeTame.invTranspose n g) =
       detChar (Fin n) (absPow k (-s)) g := by

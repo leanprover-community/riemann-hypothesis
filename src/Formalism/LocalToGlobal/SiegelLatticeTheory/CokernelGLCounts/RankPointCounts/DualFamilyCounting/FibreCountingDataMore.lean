@@ -18,9 +18,6 @@ open Formalism.HermitianLattices.Ext.L3 Formalism.L2.SG.Pf.Cnt Formalism.L2.SG.P
 variable {K F V : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
   [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-local notation "jK" => algebraMap (𝓞 K) K
-
 theorem div_mul_mul' {x y z : K} (hz : z ≠ 0) : x / z * (z * y) = x * y := by
   rw [div_mul_eq_mul_div, mul_left_comm, mul_div_cancel_left₀ _ hz]
 

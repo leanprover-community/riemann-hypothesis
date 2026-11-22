@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import GroundTheory.ProfiniteCohomology.InflationRestriction.CohomologyResMemCohomologyConjInvariants
 public import GroundTheory.ProfiniteCohomology.Factor
-public import GroundTheory.ProfiniteCohomology.PoitouTate.PoitouTateInfinite.Restrict
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerFrob
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.ClassFieldGSUnram
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomology.Ramified

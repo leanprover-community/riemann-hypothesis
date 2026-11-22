@@ -1,7 +1,7 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.IsCharZeroPt
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ThetaInvolution
+public import Mathlib
 
 @[expose] public section
 

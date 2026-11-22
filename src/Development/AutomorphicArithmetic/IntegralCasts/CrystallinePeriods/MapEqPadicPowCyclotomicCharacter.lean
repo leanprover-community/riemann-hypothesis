@@ -210,10 +210,6 @@ instance : Nonempty (PFlat p R) :=
   let ⟨y, hy⟩ := Tilt.untilt_surjective_of_isAlgClosed (p := p) (p : R)
   ⟨⟨y, hy⟩⟩
 
-
-variable (p R) in
-def pflat : PFlat p R := Classical.arbitrary _
-
 variable [CharZero R]
 
 variable (p R) in

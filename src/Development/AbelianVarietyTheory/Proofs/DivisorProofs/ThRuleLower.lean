@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PolyBetween
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LocalValuationColumns
 public import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarmonicValueGeLocalDepthPrimeToPStatement
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ThetaGeneratorPlaceValuationBound
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ShortBoundOfTrivAt

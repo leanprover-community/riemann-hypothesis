@@ -26,17 +26,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 def adm5 (D : D7) (C : ℝ) : Prop :=
   UnitaryVolumeMass.stNG D C
 
-structure Given where
-  C0 : ℝ
-  Cg : ℝ
-  cb : ℝ
-  Cu : ℝ
-  cT : ℝ
-  CT : ℝ
-  one_le_window_constant : 1 ≤ C0
-  cb_pos : 0 < cb
-  cT_pos : 0 < cT
-
 section Fam
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (g : Given)

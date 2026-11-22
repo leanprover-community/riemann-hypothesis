@@ -15,9 +15,6 @@ open Formalism.UG
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-
 section Trace
 
 variable (F E) in
@@ -81,8 +78,6 @@ end Trace
 
 variable {n : Type} [Fintype n] [DecidableEq n]
 
-local notation "ι" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 section Lattice
 
 theorem adelstab_incl_C (d : 𝓞 F) : ι (algebraMap (𝓞 F) E d) = levelafC E d := by
@@ -103,7 +98,6 @@ theorem adelstab_algebraMap_ne_zero (d : 𝓞 F) (hd : d ≠ 0) : algebraMap (�
   | (rw [IsScalarTower.algebraMap_apply (𝓞 F) F E, map_eq_zero_iff _ (algebraMap F E).injective] at h
      exact IsFractionRing.injective (𝓞 F) F (h.trans (map_zero _).symm))
   | simpa using h
-
 
 variable (F E) in
 def adelstabLam (G : GL n (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) (L : Submodule 𝒮 (n → 𝒜)) :

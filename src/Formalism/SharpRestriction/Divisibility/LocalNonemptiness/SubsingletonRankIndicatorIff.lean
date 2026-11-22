@@ -184,30 +184,11 @@ theorem beK_posDef (k : ℕ) (c : (Σ _ : Fin k, Module.Free.ChooseBasisIndex �
   exact Finset.sum_pos' (fun _ _ => Complex.normSq_nonneg _)
     ⟨σ, Finset.mem_univ _, Complex.normSq_pos.mpr hσ⟩
 
-
-open Classical in
-def rk01 (P : Prop) : ℕ := if P then 0 else 1
-
-theorem rank_indicator_le_one (P : Prop) : rk01 P ≤ 1 := by
-  unfold rk01
-  split_ifs <;> omega
-
 theorem finrank_copies (k : ℕ) : Module.finrank ℤ (Fin k → 𝓞 D.host.E) = 2 * D.R.f * k := by
   rw [Module.finrank_pi_fintype, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
     smul_eq_mul, NumberField.RingOfIntegers.rank, D.host.der.finrank_E]
   simp only [Formalism.BasicNotions.Ranks.f, Formalism.BasicNotions.Ranks.n]
   ring
-
-theorem subsingleton_rank_indicator_iff (P : Prop) : Subsingleton (Fin (rk01 P) → 𝓞 D.host.E) ↔ P := by
-  unfold rk01
-  by_cases h : P
-  · rw [if_pos h]
-    exact ⟨fun _ => h, fun _ => inferInstance⟩
-  · rw [if_neg h]
-    refine ⟨fun hs => ?_, fun hp => absurd hp h⟩
-    exfalso
-    have h1 := congrFun (hs.elim (fun _ => (0 : 𝓞 D.host.E)) (fun _ => 1)) 0
-    exact zero_ne_one h1
 
 def pmM (dg : PsiT D → ℕ → ℤ) (n : ℕ) : ℤ := ∑ t : D.what₂.Tau, ∑ k ∈ Finset.Icc 1 n, |dg (D.eTau t) k|
 

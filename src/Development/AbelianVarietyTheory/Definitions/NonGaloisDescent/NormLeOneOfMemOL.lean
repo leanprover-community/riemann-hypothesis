@@ -19,7 +19,6 @@ namespace GlobalTheory.Prism
 
 variable {l : ℕ} [hl : Fact l.Prime]
 
-
 variable (l) in
 def galTilt : GQ l →* (OCb l ≃+* OCb l) where
   toFun g := RingEquiv.ofRingHom (Per.σF g) (Per.σF g⁻¹)
@@ -31,7 +30,6 @@ def galTilt : GQ l →* (OCb l ≃+* OCb l) where
   map_mul' g h := RingEquiv.ext fun x => GlobalTheory.RingBasics.σF_mul g h x
 
 theorem galTilt_apply (g : GQ l) (x : OCb l) : galTilt l g x = Per.σF g x := rfl
-
 
 variable (l) in
 def galW : GQ l →* (WCb l ≃ₐ[ℤ_[l]] WCb l) where
@@ -73,11 +71,9 @@ theorem frobenius_eq_pow_add (a : Ainf l) : ∃ b, WittVector.frobenius a = a ^ 
   obtain ⟨b, hb⟩ := h
   exact ⟨b, by linear_combination hb⟩
 
-
 variable (l) in
 def ainfDelta : Delta l (Ainf l) :=
   Delta.ofLift l WittVector.frobenius ainf_torsionFree frobenius_eq_pow_add
-
 
 variable (l) in
 theorem theta_onto : Function.Surjective (Per.θ l) := by
@@ -91,7 +87,6 @@ theorem theta_onto : Function.Surjective (Per.θ l) := by
   refine ⟨Ideal.Quotient.mk _ ⟨y, hy1⟩, ?_⟩
   rw [frobenius_def, ← map_pow]
   exact congrArg _ (Subtype.ext hy)
-
 
 variable (l) in
 theorem exists_generator : ∃ ξ : Ainf l, RingHom.ker (Per.θ l) = Ideal.span {ξ} ∧ ξ ≠ 0 ∧
@@ -140,11 +135,9 @@ theorem isUnit_inclW_of_span {d : Ainf l} (hd : Ideal.span {d} = RingHom.ker (Pe
     have h7 := Ideal.mem_span_singleton_self ξ
     rwa [← h5, ← hd, h4, Ideal.span_singleton_zero, Ideal.mem_bot] at h7
 
-
 variable (l) in
 def ainfQuot : (Ainf l ⧸ RingHom.ker (Per.θ l)) ≃+* OC l :=
   RingHom.quotientKerEquivOfSurjective (theta_onto l)
-
 
 variable (l) in
 def ainfC : Obj l (OC l) where
@@ -350,10 +343,6 @@ instance faithfullyFlat_WCb : Module.FaithfullyFlat ℤ_[l] (WCb l) := by
   have h3 := h1 (h.ge (Submodule.mem_top (x := (1 : WCb l))))
   rw [Submodule.restrictScalars_mem, RingHom.mem_ker, map_one] at h3
   exact one_ne_zero h3
-
-theorem one_tmul_injective (T : Type) [AddCommGroup T] [Module ℤ_[l] T] :
-    Function.Injective fun t : T => (1 : WCb l) ⊗ₜ[ℤ_[l]] t :=
-  Module.FaithfullyFlat.tensorProduct_mk_injective (A := ℤ_[l]) (B := WCb l) T
 
 theorem SemiBC.finite_projective {A B M N : Type} [CommRing A] [CommRing B] [AddCommGroup M] [Module A M]
     [AddCommGroup N] [Module B N] {f : A →+* B} {u : M →ₛₗ[f] N} (h : SemiBC u) [Module.Finite A M]

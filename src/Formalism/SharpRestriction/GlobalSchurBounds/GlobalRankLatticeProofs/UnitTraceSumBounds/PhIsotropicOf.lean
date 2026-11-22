@@ -1,7 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.CubeOfTwoIdentities
-public import Formalism.SharpRestriction.GlobalSchurBounds.StatementTranslationInvariantSeventh
+public import Mathlib
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.TestVectorMemSchwartzBruhat
 
 @[expose] public section

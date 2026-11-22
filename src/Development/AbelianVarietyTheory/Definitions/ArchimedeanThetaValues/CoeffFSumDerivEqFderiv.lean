@@ -20,7 +20,6 @@ variable {O : Type} [CommRing O] [StarRing O] (A : AnArc O)
 def perFactor (w : ℂ) (la : A.La) (v : A.V) : ℂ :=
   A.ah la.l (v.2 + A.ct la.y) * (A.psi la.y * eTwoPi (v.1 la.y) * eTwoPi (w * A.q la.y))⁻¹
 
-
 open AlgebraicGeometry CategoryTheory Limits in
 variable {O : Type} [CommRing O] [StarRing O] (A : _root_.GlobalTheory.AnArc O) in
 open _root_.GlobalTheory.AnArc.La in
@@ -75,7 +74,6 @@ theorem _root_.GlobalTheory.AnArc.term_add_period {j : ℕ} {α : A.X} {th : (Fi
         rw [key, hterm, hfac]
         ring
 
-
 open AlgebraicGeometry CategoryTheory Limits in
 variable {O : Type} [CommRing O] [StarRing O] (A : _root_.GlobalTheory.AnArc O) in
 theorem _root_.GlobalTheory.AnArc.Sum_add_period {j : ℕ} {α : A.X} {th : (Fin A.gB → ℂ) → ℂ} (h : th ∈ A.Theta j α) (w : ℂ)
@@ -107,14 +105,7 @@ variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G]
 
-def IsRigFrame (L : RigLB G) (y : Sp ℂ ⟶ S) (e : V → (Sp ℂ ⟶ G.left)) (fr : L.L.ι → V → ℂ) : Prop :=
-  (∀ j, DifferentiableOn ℂ (fr j) {z | ⊤ ≤ e z ⁻¹ᵁ L.L.U j}) ∧ (∀ j z, ⊤ ≤ e z ⁻¹ᵁ L.L.U j → fr j z ≠ 0) ∧
-    (∀ j j' z, ⊤ ≤ e z ⁻¹ᵁ (L.L.U j ⊓ L.L.U j') →
-      fr j z = valAt' (e z) (L.L.U j ⊓ L.L.U j') (L.L.g j j').val * fr j' z) ∧
-    ∀ j, ⊤ ≤ e 0 ⁻¹ᵁ L.L.U j → fr j 0 = valAt' y ((L.L.pull (eSec G)).U (fun _ => j)) (L.rig.s (fun _ => j)).val
-
 variable {V' : Type} [NormedAddCommGroup V'] [NormedSpace ℂ V']
-
 
 end Along
 

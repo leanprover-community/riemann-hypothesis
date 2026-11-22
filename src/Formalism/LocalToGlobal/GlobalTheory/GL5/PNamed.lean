@@ -25,10 +25,6 @@ def VolSigIndep (D : D7) : Prop :=
       IsVolMeas D W₀ P₀ Q₀ μ₀ → IsFundamentalDomain (HFinIn (AF D.host.F) D.sp.cm.sig W₀.gram) 𝓕₀ μ₀ →
       μ 𝓕 = μ₀ 𝓕₀
 
-def stdPos (D : D7) (n : ℕ) : HSpace D.host.E :=
-  Formalism.BasicNotions.Examples₂.posSpace (E := D.host.E) (fun x hx => Formalism.BasicNotions.Examples₂.star_isIntegral x hx) n
-
-
 def band (m a b : ℕ) : Fin m → Bool := fun i => decide (a ≤ (i : ℕ) ∧ (i : ℕ) < b)
 
 theorem card_band (m a b : ℕ) (hb : b ≤ m) :
@@ -100,8 +96,6 @@ theorem bandSpace_sigOK (D : D7) (m a b : ℕ) (hb : b ≤ m) : (bandSpace D m a
     by_cases h : i = j <;> simp [h, Formalism.BasicNotions.Examples₂.map_sgn]
   rw [hg]
   exact hasSig_diag_sgn (band m a b) (b - a) (card_band m a b hb)
-
-
 
 end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 

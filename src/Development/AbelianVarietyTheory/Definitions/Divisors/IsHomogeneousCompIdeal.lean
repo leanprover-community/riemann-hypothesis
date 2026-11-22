@@ -7,12 +7,9 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroO
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.GenFrExAndGenFromTest
 public import Formalism.LocalRingCardinality.DataDIV
 public import Formalism.LocalRingCardinality.DataParams₂
-public import Formalism.SharpRestriction.Divisibility.PrinLevClass
 public import Formalism.SharpRestriction.Divisibility.WeightThresholdDefs
 public import Formalism.SharpRestriction.ParamsHeightRankConstant
 public import Formalism.DegreeFormula.FlagDegFormula
-public import Development.AbelianVarietyTheory.Definitions.Foundations.CurveCl
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsLimDeg
 
 @[expose] public section
 
@@ -88,14 +85,6 @@ structure IsShortGen {κ : Type} (Nm : κ → V → ℝ) (L : Submodule (𝓞 K)
 
   one_le : 1 ≤ abelian₂
 
-theorem exists_isShortGen {κ : Type} [Finite κ] (Nm : κ → V → ℝ) {L : Submodule (𝓞 K) V} (hL : L.FG) :
-    ∃ (n : ℕ) (w : Fin n → V) (abelian₂ : ℝ), IsShortGen Nm L w abelian₂ := by
-  obtain ⟨n, w, hw⟩ := Submodule.fg_iff_exists_fin_generating_family.1 (hL.restrictScalars (R := ℤ))
-  obtain ⟨B, hB⟩ := (Set.finite_range fun p : Fin n × κ => Nm p.2 (w p.1)).bddAbove
-  exact ⟨n, w, max B 1, fun x => by rw [hw]; rfl, fun i k => (hB ⟨(i, k), rfl⟩).trans (le_max_left _ _),
-    le_max_right _ _⟩
-
-
 end Generic
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
@@ -137,10 +126,6 @@ section
 
 set_option synthInstance.maxHeartbeats 100000
 
-def compIdeal (Z : Comp Xo c) (G : WTZ E) {N : ℕ} (b : Basis (Fin N) c.F (cuspOn U Z G)) :
-    Ideal (MvPolynomial (Fin N) c.F) := imageIdeal (genPoint Z (cuspOn U Z G)) b
-
-
 def compDeg (Z : Comp Xo c) (G : WTZ E) : ℕ := imageDeg (genPoint Z (cuspOn U Z G)) (dimFlag Dw)
 
 def compHeight (Z : Comp Xo c) (G : WTZ E) : ℝ :=
@@ -177,11 +162,6 @@ theorem petOn_conj (Z : Comp Xo c) (G : WTZ E) (σ : c.F →+* ℂ) (f : Rul Xo 
     petOn U x V dict Z G ((starRingEnd ℂ).comp σ) f = petOn U x V dict Z G σ f :=
   congrArg (fun s => petAt (U s) x (V s) (dict s) (muOn (U s) (V s) (dict s) Z) G f) (goodOf_conj σ)
 
-
-
-def CompShortGen (G : WTZ E) {n : ℕ} (w : Fin n → cuspW Xo c U G) (abelian₂ : ℝ) : Prop :=
-  IsShortGen (fun (k : (c.F →+* ℂ) × Comp Xo c) (f : cuspW Xo c U G) => petOn U x V dict k.2 G k.1 f) (latW U G) w abelian₂
-
 def depth_vw (G : WTZ E) (v : Rul Xo c → EReal) : EReal := ⨅ w ∈ latW U G, v w
 
 def growthOn (Z : Comp Xo c) (G : WTZ E) : ℝ≥0∞ :=
@@ -202,15 +182,12 @@ theorem delPrime_eq (Z : Comp Xo c) {u : Weight Dw} (h : vdm u ≠ 0) :
   rw [delPrime, topDeg, topDeg, ← one_sub_rhoOf_mul (u' := uPrime Dw u) h, rhoB]
   ring
 
-
 variable (Xo c) in
 def ValFam : Type :=
   {Vs : HeightOneSpectrum (𝓞 c.F) → Set (Rul Xo c → EReal) // ∀ la, ∀ v ∈ Vs la, IsVal la v}
 
-
 variable (Xo c) in
 def recVals : ValFam Xo c := ⟨valSet Xo c (algCls Xo c), isVal_valSet⟩
-
 
 open Classical in
 def ValFam.patch (S : Set ℕ) (A B : ValFam Xo c) : ValFam Xo c :=

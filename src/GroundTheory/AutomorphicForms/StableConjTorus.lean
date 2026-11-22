@@ -51,81 +51,15 @@ namespace HermitianForm
 
 variable (h : HermitianForm F E V)
 
-noncomputable def adjoint (A : Module.End E V) : Module.End E V where
-  toFun y := (Equiv.ofBijective _ h.nonsingular).symm ((h.toSesq y).comp A)
-  map_add' x y := by
-    apply h.nonsingular.1
-    simp only [Equiv.ofBijective_apply_symm_apply, map_add (f := _), LinearMap.add_comp]
-  map_smul' c x := by
-    apply h.nonsingular.1
-    simp only [Equiv.ofBijective_apply_symm_apply, LinearMap.map_smulₛₗ, LinearMap.smul_comp,
-      RingHom.id_apply]
-
-theorem toSesq_adjoint_left (A : Module.End E V) (y x : V) :
-    h.toSesq (h.adjoint A y) x = h.toSesq y (A x) := by
-  change h.toSesq ((Equiv.ofBijective _ h.nonsingular).symm ((h.toSesq y).comp A)) x = _
-  rw [Equiv.ofBijective_apply_symm_apply (⇑h.toSesq) h.nonsingular]
-  rfl
-
-theorem eq_adjoint_iff (A B : Module.End E V) :
-    B = h.adjoint A ↔ ∀ y x, h.toSesq (B y) x = h.toSesq y (A x) := by
-  refine ⟨fun hB y x => hB ▸ h.toSesq_adjoint_left A y x, fun hB => LinearMap.ext fun y => ?_⟩
-  apply h.nonsingular.1
-  ext x
-  rw [hB, toSesq_adjoint_left]
-
-theorem adjoint_mul (A B : Module.End E V) : h.adjoint (A * B) = h.adjoint B * h.adjoint A := by
-  symm
-  rw [eq_adjoint_iff]
-  intro y x
-  rw [Module.End.mul_apply, toSesq_adjoint_left, toSesq_adjoint_left, Module.End.mul_apply]
-
-theorem adjoint_one : h.adjoint 1 = 1 := by
-  symm
-  rw [eq_adjoint_iff]
-  intro y x
-  rfl
-
-noncomputable def adjointEquiv (g : V ≃ₗ[E] V) : V ≃ₗ[E] V where
-  toLinearMap := h.adjoint g.toLinearMap
-  invFun := h.adjoint g.symm.toLinearMap
-  left_inv x := by
-    change (h.adjoint g.symm.toLinearMap * h.adjoint g.toLinearMap) x = x
-    rw [← adjoint_mul]
-    have : g.toLinearMap * g.symm.toLinearMap = 1 := by
-      ext y; simp
-    rw [this, adjoint_one]
-    rfl
-  right_inv x := by
-    change (h.adjoint g.toLinearMap * h.adjoint g.symm.toLinearMap) x = x
-    rw [← adjoint_mul]
-    have : g.symm.toLinearMap * g.toLinearMap = 1 := by
-      ext y; simp
-    rw [this, adjoint_one]
-    rfl
-
 end HermitianForm
 
 section Stable
 
 variable [FiniteDimensional E V]
 
-def IsRegularSemisimple (γ : V ≃ₗ[E] V) : Prop :=
-  (γ.toLinearMap).charpoly.Separable
-
-def torusE (γ : V ≃ₗ[E] V) : Subgroup (V ≃ₗ[E] V) :=
-  Subgroup.centralizer {γ}
-
-
-
-def TorusE (γ : V ≃ₗ[E] V) : Type _ := torusE γ
-
 namespace TorusE
 
 variable {γ : V ≃ₗ[E] V}
-
-
-
 
 variable [Fact (IsRegularSemisimple γ)]
 

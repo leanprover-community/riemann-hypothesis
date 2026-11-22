@@ -4,7 +4,41 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.
 public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.GapSizes
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemma3
 public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.KDecayOfGap
-public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.FamilyThroughDiscreteSeries
+public import Mathlib
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.BetaInfEqIntegralOfIntegrableCoefficientImports
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.BesselNormSqEqConstMulArchPairingImports
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.DecayThresholdsOfSpectralGapConditionImports
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.BesselNormSqEqBigCellNormSqAltImports
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.AemeasurableBesselNormIntegrandBigCellImports
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.NormSqIntegralInnerWeightLeImports
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.ImportsMore
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.SumNormSqHermTranslatesOrthonormalImports
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.CasimirScalarOfCapelliDeterminantEigenvalueImpor
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.FrameWConjMatrixUnitsImports
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.ExistsLieUnitaryElementSimpleRootImports
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.ProductMomentBoundDensityMassOneImports
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.NumericalFamilyProductBoundConstantLeImports
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.BesselFunctionLocalityInvariantFactorFiniteSumIm
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.FactorizationOfConjHomogeneousAndHomogeneous
+public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.ExistsRegularRepBesselBigCellVectorEqBesselImpor
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BaseRepCapelliEigenDual
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BigCellExpansionSmulStatement
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BigCellExpansionOfBesselFunctionZeroStatement
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HermCmpWedgeEqDet
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QuotientMeasureAeMemAndMeasurableBesselModelStatement
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QuotientMeasureIntegralRmulBesselGroupStatement
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.LevZeroOfKHighest
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsLowestKFiniteVectorDiscreteSeriesStatement
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QuantumDeterminantEigenvalue
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UnitaryGlProjectionLevelSumSqLeStatement
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ProjectorEntryValueUnderLinearFunctionalStatement
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExpMemUnipotentAndHasDerivAtCharacterStatement
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DualTensorCapelliIntertwine
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SplitCasimirEigenvalueOnDualTensorSummandStatement
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.LoweringBound
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.LevEAddTwo
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UnitaryGlModuleLevelSumNormSqLeStatement
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.TopNum
 public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.TypeHC
 public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.NqOfLamData
 
@@ -16,18 +50,6 @@ namespace CompanionTheory.WaveGrid.Tied
 
 open MeasureTheory Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.L2.SG.Pf.BesselExpansion Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P
 open CompanionTheory.WaveGrid CompanionTheory.WaveGrid.Coef
-
-def ExpBall : Prop :=
-  ∀ C : ℝ, 0 ≤ C → ∀ (P : M.Par) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
-    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
-    (p : KB.Pl P Wp Wq) (lam : Fin (2 * P.r + P.k + 1) → ℝ) (b bv ga h : ℝ) (q0 a₁ : ℕ) (R0 : BranchingSupport.Rep P.k P.r)
-    (f : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (ν₀ : Fin (2 * P.r + P.k + 1) → ℤ),
-    BranchingSupport.Num P.k P.r lam P.u b bv ga h q0 → BranchingSupport.Num P.k P.r lam P.u' b bv ga h q0 →
-    P.T ≤ b ^ (C * ((2 * P.r + 2 : ℕ) : ℝ)) → P.T' ≤ b ^ (C * ((2 * P.r + 2 : ℕ) : ℝ)) →
-    BranchingSupport.n1 ν₀ + (P.r + 1) * a₁ + (P.r + 1) * (P.r + 2) ≤ q0 →
-    R0.IsDS (PI.BesselPeriodGGP.eps48 P.k P.r) (fun a => lam a + (ν₀ a : ℝ)) →
-    (haveI := FiniteDimensional.complete ℂ Wp; PI.CapelliEig.IsKFinCoefT (k := P.k) (r := P.r) R0.σ f) →
-    CutBP.BigCellDerivativeExpansion p f b (C / 2 + 6) a₁
 
 section num
 
@@ -120,7 +142,6 @@ theorem scaled_le {T ka b Ch : ℝ} (r : ℕ) (hb : 1 ≤ b) (hka : 0 < ka) (h1 
     _ = _ := by rw [← Real.rpow_add hb0]; congr 1; ring
 
 end num
-
 
 open CompanionTheory.LimBd.Main (ZuckT CoefCC) in
 theorem coefCC1_of {t : ∀ n : ℕ, (Fin n → Bool) → ℝ} {Ct : ℝ} (hCt : 0 ≤ Ct)

@@ -68,7 +68,6 @@ theorem exists_good : ∃ m, Good Ξ e m := by
   have h2 : u = 1 := Units.ext (by rw [h1, Units.val_one])
   rw [h2, map_one]
 
-
 open Classical in
 def QS : ℕ := Nat.find (exists_good Ξ e)
 
@@ -105,73 +104,10 @@ theorem xi_surj : Function.Surjective (xi Ξ e) := by
 
 variable (hev : ∀ χ ∈ Ξ, χ.Even)
 
-def data : EvenData where
-  e := e
-  m := QS Ξ e
-  m_pos := QS_pos Ξ e
-  tower := (good_QS Ξ e).2.1
-  B := B Ξ
-  ξ := xi Ξ e
-  even := by
-    rw [← D7.unitsMap_neg_one (QS_dvd Ξ e), xi_unitsMap]
-    show ((ZMod.unitsMap _ (-1) : (ZMod M)ˣ) : B Ξ) = 1
-    rw [D7.unitsMap_neg_one, QuotientGroup.eq_one_iff, mem_ann]
-    exact hev
-
-def frame : Frame := (data Ξ e hev).frame
-
 theorem dvd_of_dvd_QS {l : ℕ} (hl : l.Prime) (h2 : l ≠ 2) (h : l ∣ QS Ξ e) : l ∣ M := by
   rcases (Nat.Prime.dvd_mul hl).mp (h.trans (QS_dvd_mul Ξ e)) with h1 | h1
   · exact absurd ((Nat.prime_dvd_prime_iff_eq hl Nat.prime_two).mp (hl.dvd_of_dvd_pow h1)) h2
   · exact h1
-
-theorem exact_data (he : 1 ≤ e) (l : ℕ) (hl : l.Prime) (hd : l ∣ QS Ξ e) :
-    ∃ v : (ZMod (QS Ξ e))ˣ, (v : ZMod (QS Ξ e)).val ≡ 1 [MOD QS Ξ e / l] ∧ (data Ξ e hev).eta v ≠ 1 := by
-  have hlt : QS Ξ e / l < QS Ξ e := Nat.div_lt_self (QS_pos Ξ e) hl.one_lt
-  have hdv : QS Ξ e / l ∣ QS Ξ e := Nat.div_dvd_of_dvd hd
-  by_cases h2 : 2 ^ (e + 2) ∣ QS Ξ e / l
-  · by_contra hn
-    refine not_good Ξ e hlt ⟨hdv.trans (QS_dvd Ξ e), h2, fun u hu => ?_⟩
-    by_contra h3
-    refine hn ⟨ZMod.unitsMap (QS_dvd Ξ e) u, ((unitsMap_val_modEq (QS_dvd Ξ e) u).of_dvd hdv).symm.trans hu, fun h4 => h3 ?_⟩
-    rw [← xi_unitsMap]
-    exact congrArg Prod.snd h4
-  · obtain ⟨c, hc⟩ := (good_QS Ξ e).2.1
-    have hl2 : l = 2 := by
-      by_contra h3
-      have h4 : Nat.Coprime (2 ^ (e + 2)) l := Nat.Coprime.pow_left _ ((Nat.coprime_primes Nat.prime_two hl).mpr (Ne.symm h3))
-      exact h2 (h4.dvd_of_dvd_mul_right (by rw [Nat.div_mul_cancel hd]; exact (good_QS Ξ e).2.1))
-    subst hl2
-    obtain ⟨k, rfl⟩ : ∃ k, e = k + 1 := ⟨e - 1, by omega⟩
-    have hdiv : QS Ξ (k + 1) / 2 = 2 ^ (k + 2) * c := by
-      rw [hc, show 2 ^ (k + 1 + 2) * c = 2 * (2 ^ (k + 2) * c) by ring, Nat.mul_div_cancel_left _ (by norm_num)]
-    have hQ : QS Ξ (k + 1) = 2 * (2 ^ (k + 2) * c) := by rw [hc]; ring
-    have hcop : Nat.Coprime (2 ^ (k + 2) * c + 1) (QS Ξ (k + 1)) := by
-      rw [hQ]
-      refine Nat.Coprime.mul_right ?_ (by simp)
-      rw [Nat.coprime_two_right]
-      exact ⟨2 ^ (k + 1) * c, by ring⟩
-    have hval : ((ZMod.unitOfCoprime _ hcop : (ZMod (QS Ξ (k + 1)))ˣ) : ZMod (QS Ξ (k + 1))).val ≡ 2 ^ (k + 2) * c + 1
-        [MOD QS Ξ (k + 1)] := by
-      rw [ZMod.coe_unitOfCoprime, ZMod.val_natCast]
-      exact Nat.mod_modEq _ _
-    refine ⟨ZMod.unitOfCoprime _ hcop, (hval.of_dvd hdv).trans ?_, fun h4 => ?_⟩
-    · rw [hdiv]
-      simp [Nat.ModEq]
-    · have h5 : hcl (k + 1) (ZMod.unitsMap (good_QS Ξ (k + 1)).2.1 (ZMod.unitOfCoprime _ hcop)) = hcl (k + 1) 1 :=
-        congrArg Prod.fst h4
-      rw [unitsMap_unitOfCoprime, hcl_eq_hcl_iff, Units.ext_iff, Units.ext_iff, ZMod.coe_unitOfCoprime, Units.val_neg,
-        Units.val_one, Nat.cast_add, Nat.cast_one] at h5
-      rcases h5 with h5 | h5
-      · refine h2 ?_
-        rw [hdiv, ← ZMod.natCast_eq_zero_iff]
-        linear_combination h5
-      · have h6 : 2 ^ (k + 1 + 2) ∣ 2 ^ (k + 2) * c + 2 := by
-          rw [← ZMod.natCast_eq_zero_iff, Nat.cast_add, Nat.cast_ofNat]
-          linear_combination h5
-        have h7 : 4 ∣ 2 ^ (k + 2) * c + 2 := Dvd.dvd.trans ⟨2 ^ (k + 1), by ring⟩ h6
-        have h8 : 4 ∣ 2 ^ (k + 2) * c := ⟨2 ^ k * c, by ring⟩
-        omega
 
 def thetaB (χ : DirichletCharacter ℂ M) (hχ : χ ∈ Ξ) : B Ξ →* ℂˣ :=
   QuotientGroup.lift (ann Ξ) χ.toUnitHom fun u hu =>
@@ -191,14 +127,6 @@ theorem coprime_QS : Nat.Coprime (QS Ξ e) (q * d) := by
     · exact (Nat.coprime_primes Nat.prime_two hq).mpr (by omega)
     · exact (Nat.coprime_primes Nat.prime_two hd).mpr (by omega)
   exact Nat.Coprime.coprime_dvd_left (QS_dvd_mul Ξ e) (Nat.Coprime.mul_left (Nat.Coprime.pow_left _ h2) hc)
-
-def host : HostRaw (frame Ξ e hev) :=
-  (data Ξ e hev).host hH (coprime_QS Ξ e hH hc) he fun l hl h2 h => hs l hl h2 (dvd_of_dvd_QS Ξ e hl h2 h)
-
-theorem exact : (host Ξ e hev hH hc he hs).Exact := by
-  apply (data Ξ e hev).exact
-  intro l hl hd
-  exact exact_data Ξ e hev (by omega) l hl hd
 
 end Host
 

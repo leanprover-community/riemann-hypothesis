@@ -104,9 +104,6 @@ def pI : AF F ⊗[F] E →ₐ[F] Ainf F ⊗[F] E := Algebra.TensorProduct.map (f
 def pV (v : HeightOneSpectrum (𝓞 F)) : AF F ⊗[F] E →ₐ[F] Fv F v ⊗[F] E :=
   Algebra.TensorProduct.map ((evalV F v).comp (sndA F)) (AlgHom.id F E)
 
-theorem projInf_apply {n M : ℕ} (X : Fin n → Fin M → AF F ⊗[F] E) (a : Fin n) (i : Fin M) :
-    projInf X a i = pI (X a i) := rfl
-
 theorem projV_projFin_apply (v : HeightOneSpectrum (𝓞 F)) {n M : ℕ} (X : Fin n → Fin M → AF F ⊗[F] E) (a : Fin n) (i : Fin M) :
     projV v (projFin X) a i = pV v (X a i) := by
   simp only [projV, projFin, pV]

@@ -36,8 +36,6 @@ theorem hOf : TieHyp (wOf X) hI :=
     dim := fun u => Formalism.L2.SG.Pf.dimTie X u
     pairs := Formalism.L2.SG.Pf.pairTiesAll_holds _ _ Y hF (wOf X) hI }
 
-def aOf : AmpDat X := Classical.choose (Formalism.L2.SG.Pf.KernelOfEmbedding.pvalForm_holds (wOf X) hI hCT.2.2.2.2.1)
-
 end Point
 
 section PointW

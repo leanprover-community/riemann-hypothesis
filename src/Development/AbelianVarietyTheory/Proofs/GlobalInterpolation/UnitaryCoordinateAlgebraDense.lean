@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SplitsAlgebraMap
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ContinuousOfMem
 
 @[expose] public section

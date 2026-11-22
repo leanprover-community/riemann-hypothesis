@@ -64,9 +64,6 @@ def par (σ : Fin k ⊕ Fin l ≃ Fin n) (x : Gn g k) (B : Matrix (Fin k) (Fin l
     simp only [Matrix.reindex_apply, Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
     simp [Matrix.mul_assoc]
 
-theorem par_val (σ : Fin k ⊕ Fin l ≃ Fin n) (x : Gn g k) (B : Matrix (Fin k) (Fin l) (ZMod g)) (y : Gn g l) :
-    ((par σ x B y : Gn g n) : Mt g n) = Matrix.reindex σ σ (Matrix.fromBlocks (x : Mt g k) B 0 (y : Mt g l)) := rfl
-
 theorem par_apply (σ : Fin k ⊕ Fin l ≃ Fin n) (x : Gn g k) (B : Matrix (Fin k) (Fin l) (ZMod g)) (y : Gn g l)
     (i j : Fin k ⊕ Fin l) : ((par σ x B y : Gn g n) : Mt g n) (σ i) (σ j) =
       Matrix.fromBlocks (x : Mt g k) B 0 (y : Mt g l) i j := by
@@ -92,20 +89,6 @@ def inB (σ : Fin k ⊕ Fin l ≃ Fin n) : Gn g l →* Gn g n where
   toFun y := par σ 1 0 y
   map_one' := par_one σ
   map_mul' x x' := by simp [par_mul]
-
-theorem par_swap (σ : Fin k ⊕ Fin l ≃ Fin n) (x : Gn g k) (y : Gn g l) :
-    par ((Equiv.sumComm _ _).trans σ) y 0 x = par σ x 0 y := by
-  apply Units.ext
-  ext i j
-  obtain ⟨i, rfl⟩ := σ.surjective i
-  obtain ⟨j, rfl⟩ := σ.surjective j
-  rcases i with i | i <;> rcases j with j | j <;> simp [par_val]
-
-theorem inA_swap (σ : Fin k ⊕ Fin l ≃ Fin n) : inA (g := g) ((Equiv.sumComm _ _).trans σ) = inB σ :=
-  MonoidHom.ext fun _ => par_swap σ _ _
-
-theorem inB_swap (σ : Fin k ⊕ Fin l ≃ Fin n) : inB (g := g) ((Equiv.sumComm _ _).trans σ) = inA σ :=
-  MonoidHom.ext fun _ => par_swap σ _ _
 
 theorem sum_mul_left {A : Type} [AddCommMonoid A] (x : Gn g k) (F : Matrix (Fin k) (Fin l) (ZMod g) → A) :
     ∑ B : Matrix (Fin k) (Fin l) (ZMod g), F ((x : Mt g k) * B) = ∑ B, F B := by
@@ -341,14 +324,6 @@ theorem comp_alg {G H W : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
   | smul r x hx => simp only [map_smul, hx]
 
-theorem equiv_alg {G W W' : Type} [Group G] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
-    (ρ : Representation ℂ G W) (ρ' : Representation ℂ G W') (T : W →ₗ[ℂ] W') (h : ∀ m, T ∘ₗ ρ m = ρ' m ∘ₗ T)
-    (a : MonoidAlgebra ℂ G) (w : W) : T (ρ.asAlgebraHom a w) = ρ'.asAlgebraHom a (T w) := by
-  induction a using MonoidAlgebra.induction_on with
-  | of m => simpa using LinearMap.congr_fun (h m) w
-  | add x y hx hy => simp only [map_add (f := _), LinearMap.add_apply, hx, hy]
-  | smul r x hx => simp only [map_smul, LinearMap.smul_apply, hx]
-
 theorem eN_left {W W' : Type} [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
     (σ : Fin k ⊕ Fin l ≃ Fin n) (ρ : Representation ℂ (Gn g n) W) (T : W →ₗ[ℂ] W')
     (h : ∀ B, T ∘ₗ ρ (par σ 1 B 1) = T) (w : W) : T (ρ.asAlgebraHom (eN g σ) w) = T w := by
@@ -365,142 +340,5 @@ theorem eN_right {W : Type} [AddCommGroup W] [Module ℂ W]
     simp only [eN, map_sum, Representation.asAlgebraHom_single, LinearMap.sum_apply, LinearMap.smul_apply, h]
   rw [Finset.sum_const, Finset.card_univ, ← Nat.cast_smul_eq_nsmul ℂ, card_mat, smul_smul, mul_inv_cancel₀ gpow_ne,
     one_smul]
-
-theorem exists_split (a : Fin n → ℤ) (hn : 0 < n) : ∃ (k l : ℕ) (σ : Fin k ⊕ Fin l ≃ Fin n) (M : ℤ), k < n ∧
-    (∀ i, a (σ (.inl i)) < M) ∧ ∀ j, a (σ (.inr j)) = M := by
-  obtain ⟨i₀, -, hi₀⟩ := Finset.exists_max_image Finset.univ a ⟨⟨0, hn⟩, Finset.mem_univ _⟩
-  refine ⟨_, _, (Equiv.sumCongr (Fintype.equivFin _).symm (Fintype.equivFin _).symm).trans
-    (Equiv.sumCompl fun i => a i < a i₀), a i₀, ?_, fun i => ?_, fun j => ?_⟩
-  · simpa using Fintype.card_subtype_lt (p := fun i => a i < a i₀) (x := i₀) (lt_irrefl _)
-  · exact ((Fintype.equivFin {i // a i < a i₀}).symm i).2
-  · exact le_antisymm (hi₀ _ (Finset.mem_univ _)) (not_lt.1 ((Fintype.equivFin {i // ¬ a i < a i₀}).symm j).2)
-
-open MonoidAlgebra in
-theorem step (L : LabelDatum g) (h5 : 5 ≤ g) (hG : Green) (σ : Fin k ⊕ Fin l ≃ Fin n) {W W' : Type}
-    [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W'] (ρ : Representation ℂ (Gn g n) W)
-    (ρ' : Representation ℂ (Gn g n) W') (T : W →ₗ[ℂ] W')
-    (hN : ∀ w, T (ρ.asAlgebraHom (eN g σ) w) = T w)
-    (hN' : ∀ w, ρ'.asAlgebraHom (eN g ((Equiv.sumComm _ _).trans σ)) (T w) = T w)
-    (hB : ∀ b w, T (ρ.asAlgebraHom (mapDomainAlgHom ℂ ℂ (inB σ) b) w) =
-      ρ'.asAlgebraHom (mapDomainAlgHom ℂ ℂ (inB σ) b) (T w))
-    (hA : ∀ f f', f ≠ f' → ∀ w, ρ'.asAlgebraHom (mapDomainAlgHom ℂ ℂ (inA σ) (eSerC L k f'))
-      (T (ρ.asAlgebraHom (mapDomainAlgHom ℂ ℂ (inA σ) (eSerC L k f)) w)) = 0)
-    (f f' : (ZMod g)[X]) (hf : f ≠ f') (w : W) :
-    ρ'.asAlgebraHom (eSerC L n f') (T (ρ.asAlgebraHom (eSerC L n f) w)) = 0 := by
-  obtain ⟨S₁, -, h₁⟩ := (GlobalTheory.T.harishChandraSeriesCentralIdempotent_laws g L h5 hG k).2.2.2.2
-  obtain ⟨S₂, -, h₂⟩ := (GlobalTheory.T.harishChandraSeriesCentralIdempotent_laws g L h5 hG l).2.2.2.2
-  have e₁ : ∀ v : W, v = ∑ f₁ ∈ S₁, ρ.asAlgebraHom (mapDomainAlgHom ℂ ℂ (inA σ) (eSerC L k f₁)) v := by
-    intro v
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← LinearMap.sum_apply, ← map_sum, ← map_sum, h₁, map_one, map_one, Module.End.one_apply]
-  have e₂ : ∀ v : W, v = ∑ f₂ ∈ S₂, ρ.asAlgebraHom (mapDomainAlgHom ℂ ℂ (inB σ) (eSerC L l f₂)) v := by
-    intro v
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← LinearMap.sum_apply, ← map_sum, ← map_sum, h₂, map_one, map_one, Module.End.one_apply]
-  have e₃ : ∀ v : W', v = ∑ f₁ ∈ S₁, ρ'.asAlgebraHom (mapDomainAlgHom ℂ ℂ (inA σ) (eSerC L k f₁)) v := by
-    intro v
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← LinearMap.sum_apply, ← map_sum, ← map_sum, h₁, map_one, map_one, Module.End.one_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e₂ (ρ.asAlgebraHom (eSerC L n f) w), map_sum, map_sum]
-  refine Finset.sum_eq_zero fun f₂ _ => ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e₁ (ρ.asAlgebraHom (mapDomainAlgHom ℂ ℂ (inB σ) (eSerC L l f₂)) _), map_sum, map_sum]
-  refine Finset.sum_eq_zero fun f₁ _ => ?_
-  by_cases h12 : f = f₁ * f₂
-  swap
-  · rw [← hN, ← Module.End.mul_apply, ← Module.End.mul_apply, ← Module.End.mul_apply, ← map_mul, ← map_mul,
-      ← map_mul, ser_vanish L h5 hG σ f f₁ f₂ h12]
-    simp
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [e₃ (T _), map_sum]
-  refine Finset.sum_eq_zero fun f₃ _ => ?_
-  by_cases h13 : f₁ = f₃
-  swap
-  · rw [hA f₁ f₃ h13, map_zero]
-  subst h13
-  have hc : ∀ v, ρ.asAlgebraHom (mapDomainAlgHom ℂ ℂ (inA σ) (eSerC L k f₁))
-      (ρ.asAlgebraHom (mapDomainAlgHom ℂ ℂ (inB σ) (eSerC L l f₂)) v) =
-      ρ.asAlgebraHom (mapDomainAlgHom ℂ ℂ (inB σ) (eSerC L l f₂))
-      (ρ.asAlgebraHom (mapDomainAlgHom ℂ ℂ (inA σ) (eSerC L k f₁)) v) := by
-    intro v
-    rw [← Module.End.mul_apply, ← map_mul, (commute_AB σ _ _).eq, map_mul, Module.End.mul_apply]
-  have hv := ser_vanish' L h5 hG ((Equiv.sumComm _ _).trans σ) f' f₂ f₁ (by rw [mul_comm, ← h12]; exact hf.symm)
-  rw [inA_swap, inB_swap] at hv
-  rw [hc, hB, ← hN', ← Module.End.mul_apply, ← Module.End.mul_apply, ← Module.End.mul_apply, ← map_mul, ← map_mul,
-    ← map_mul, hv]
-  simp
-
-theorem vanish (L : LabelDatum g) (h5 : 5 ≤ g) (hG : Green) {W W' : Type}
-    [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W'] (T : W →ₗ[ℂ] W') (n : ℕ) :
-    ∀ (ρ : Representation ℂ (Gn g n) W) (ρ' : Representation ℂ (Gn g n) W') (a : Fin n → ℤ),
-    (∀ u : Gn g n, (∀ i j, ¬ a i < a j → (u : Mt g n) i j = (1 : Mt g n) i j) → T ∘ₗ ρ u = T) →
-    (∀ u : Gn g n, (∀ i j, ¬ a j < a i → (u : Mt g n) i j = (1 : Mt g n) i j) → ρ' u ∘ₗ T = T) →
-    (∀ m : Gn g n, (∀ i j, a i ≠ a j → (m : Mt g n) i j = 0) → T ∘ₗ ρ m = ρ' m ∘ₗ T) →
-    ∀ f f' : (ZMod g)[X], f ≠ f' → ∀ w, ρ'.asAlgebraHom (eSerC L n f') (T (ρ.asAlgebraHom (eSerC L n f) w)) = 0 := by
-  induction n using Nat.strong_induction_on with
-  | _ n ih =>
-  intro ρ ρ' a hU hU' hM f f' hf w
-  rcases Nat.eq_zero_or_pos n with rfl | hn
-  · rw [equiv_alg ρ ρ' T (fun m => hM m fun i => i.elim0), ← Module.End.mul_apply, ← map_mul,
-      (GlobalTheory.T.harishChandraSeriesCentralIdempotent_laws g L h5 hG 0).2.2.1 f' f hf.symm]
-    simp
-  obtain ⟨k, l, σ, M, hk, h₁, h₂⟩ := exists_split a hn
-  have one : ∀ i j, (1 : Mt g n) (σ i) (σ j) = Matrix.fromBlocks (1 : Mt g k) 0 0 (1 : Mt g l) i j := by
-    intro i j
-    simp [Matrix.one_apply]
-  refine step L h5 hG σ ρ ρ' T (eN_left σ ρ T fun B => hU _ fun i j hij => ?_)
-    (fun w => eN_right _ ρ' _ fun B => LinearMap.congr_fun (hU' _ fun i j hij => ?_) w) (fun b w => ?_)
-    (fun f f' hf w => ?_) f f' hf w
-  · obtain ⟨i, rfl⟩ := σ.surjective i
-    obtain ⟨j, rfl⟩ := σ.surjective j
-    rw [par_apply, one]
-    rcases i with i | i <;> rcases j with j | j
-    · simp
-    · exact absurd (h₂ j ▸ h₁ i) hij
-    · simp
-    · simp
-  · obtain ⟨i, rfl⟩ := σ.surjective i
-    obtain ⟨j, rfl⟩ := σ.surjective j
-    rw [one]
-    rcases i with i | i <;> rcases j with j | j
-    · simp [par_val]
-    · simp [par_val]
-    · exact absurd (h₂ i ▸ h₁ j) hij
-    · simp [par_val]
-  · rw [← comp_alg, ← comp_alg]
-    refine equiv_alg _ _ T (fun m => hM (par σ 1 0 m) fun i j hij => ?_) b w
-    obtain ⟨i, rfl⟩ := σ.surjective i
-    obtain ⟨j, rfl⟩ := σ.surjective j
-    rw [par_apply]
-    rcases i with i | i <;> rcases j with j | j
-    · have : i ≠ j := fun h => hij (by rw [h])
-      simp [Matrix.one_apply_ne this]
-    · simp
-    · simp
-    · exact absurd ((h₂ i).trans (h₂ j).symm) hij
-  · rw [← comp_alg, ← comp_alg]
-    refine ih k hk _ _ (fun i => a (σ (.inl i))) (fun u hu => hU (par σ u 0 1) fun i j hij => ?_)
-      (fun u hu => hU' (par σ u 0 1) fun i j hij => ?_) (fun u hu => hM (par σ u 0 1) fun i j hij => ?_) f f' hf w
-    · obtain ⟨i, rfl⟩ := σ.surjective i
-      obtain ⟨j, rfl⟩ := σ.surjective j
-      rw [par_apply, one]
-      rcases i with i | i <;> rcases j with j | j
-      · simpa using hu i j hij
-      all_goals simp
-    · obtain ⟨i, rfl⟩ := σ.surjective i
-      obtain ⟨j, rfl⟩ := σ.surjective j
-      rw [par_apply, one]
-      rcases i with i | i <;> rcases j with j | j
-      · simpa using hu i j hij
-      all_goals simp
-    · obtain ⟨i, rfl⟩ := σ.surjective i
-      obtain ⟨j, rfl⟩ := σ.surjective j
-      rw [par_apply]
-      rcases i with i | i <;> rcases j with j | j
-      · simpa using hu i j hij
-      · simp
-      · simp
-      · exact absurd ((h₂ i).trans (h₂ j).symm) hij
 
 end GlobalTheory.GLq.Opp

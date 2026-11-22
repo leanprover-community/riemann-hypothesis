@@ -162,15 +162,12 @@ theorem exists_midLev_iff (j : ℕ) (P : rowSG Pr sel mu) (h : AutY X R j) (g : 
     (∃ z, MidLev Ch sel mu cst j P h g z) ↔ g ∈ prCat (Pr := Pr) cst.sharp j P.1 h :=
   ⟨fun ⟨_, r, hr, hg, _⟩ => ⟨r, hr, hg⟩, fun ⟨r, hr, hg⟩ => ⟨_, r, hr, hg, rfl⟩⟩
 
-
 open Classical in
 def SameCoset {n : ℕ} (P : rowSG Pr sel mu) (y y' : Sp X.E n) : Prop :=
   ∀ l, IntAt P.1 (((qOf P.1 : X.E) ^ (if P.1 ∈ Pr.vGs then 0 else cst.M))⁻¹ * (y - y') l)
 
-
 open Classical in
 def topDep (P : rowSG Pr sel mu) : ℕ := if P.1 ∈ Pr.vGs then 1 else 2 * cst.M
-
 
 open Classical in
 def rowLevTop (Pr : Primes X) (R : Ranks) (sharp : Bool) (n : ℕ) (P : HeightOneSpectrum (𝓞 X.E)) :
@@ -178,7 +175,6 @@ def rowLevTop (Pr : Primes X) (R : Ranks) (sharp : Bool) (n : ℕ) (P : HeightOn
   if P ∈ Pr.vGs then
     (if sharp then LocE.JGsym P (qOf P) R.k R.rS R.r R.t (n - 1) 0 else LocE.JG P (qOf P) R.k R.r R.t (n - 1) 0)
   else LocE.JQ P (qOf P) R.r (n - 1) 0
-
 
 open Classical in
 def rowChrTop (sharp : Bool) (j n : ℕ) (P : HeightOneSpectrum (𝓞 X.E)) (h : HomE X.E ((n - 1) + 0) ((n - 1) + 0)) : X.K :=
@@ -213,7 +209,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {u : D.what₂.Word}
 
-
 set_option maxHeartbeats 1000000 in
 structure StepCharts (C : ColumnChain D.R D.what₂.Tau (D.hcW u)) (i : ℕ) (hi : i ≤ D.R.m) where
 
@@ -246,23 +241,6 @@ def ofStepIn {A : ColumnsAtT D.R C} {P : PeriodMap D.R C}
   lat := S.lat
   K := S.K
 
-def ofOne {T : ℕ} {bad : Set (HeightOneSpectrum (𝓞 D.host.F))} (eY : C.Y i ≃ Fr D i hi)
-    {lat : C.cls i → Submodule (𝓞 D.host.E) (Fin (D.R.N i) → D.host.E)} (K : LevelChart D T bad i hi (C.stab i) lat) : StepCharts C i hi where
-  T := T
-  bad := bad
-  eY := eY
-  Ch := Unit
-  chOf := fun _ => ()
-  lat := lat
-  K := fun _ =>
-    { lev := K.lev
-      y := fun c => K.y c.1
-      y_bij := K.y_bij.comp ⟨Subtype.val_injective, fun c => ⟨⟨c, rfl⟩, rfl⟩⟩
-      y_lat := fun c => K.y_lat c.1
-      stabI := fun c => K.stabI c.1
-      stabI_inj := fun c => K.stabI_inj c.1
-      stabI_range := fun c => K.stabI_range c.1 }
-
 variable (St : StepCharts C i hi)
 
 def y (c : C.cls i) : UPts (sigD D) (gramN D i hi) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) := (St.K (St.chOf c)).y ⟨c, rfl⟩
@@ -270,10 +248,6 @@ def y (c : C.cls i) : UPts (sigD D) (gramN D i hi) (FiniteAdeleRing (𝓞 D.host
 theorem y_eq {β : St.Ch} (c : {c // St.chOf c = β}) : (St.K β).y c = St.y c.1 := by
   obtain ⟨c, rfl⟩ := c
   rfl
-
-abbrev Base : Type := ∀ β : St.Ch, basePts (St.K β).lev
-
-def move (k : St.Base) : StepCharts C i hi := { St with K := fun β => moveChart (St.K β) (k β) }
 
 end StepCharts
 
@@ -376,14 +350,11 @@ end W
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {Kc : G.Consts} {Y : DivX D} {cX : ExtraC}
   {ex : Extra D L hT Gi Gl Kc Y cX} (t : KerEntTied ex) (u : D.what₂.Word) (μ : D.what₂.Tup)
 
-
 include μ in
 theorem m_eq : D.R.m = t.m2 + 2 := (t.idx_ok μ).hm
 
-
 include μ in
 theorem cpl_lt : t.m2 + 1 < D.R.m := by have := m_eq t μ; omega
-
 
 include μ in
 theorem top_le : t.m2 + 1 + 1 ≤ D.R.m := by have := m_eq t μ; omega
@@ -535,7 +506,6 @@ theorem AdTie.latK_eq (H : AdTie A dtU a) (i : ℕ) (hi : i ≤ D.R.m) (c : (D.c
   rw [H.lat i hi c]
   exact latK_eq_map _ _ _ _ _
 
-
 variable (St) in
 abbrev AdDatum : Type :=
   ∀ i (hi : i + 1 ≤ D.R.m), (St i (Nat.le_of_succ_le hi)).Ch → (St (i + 1) hi).Ch →
@@ -602,21 +572,11 @@ theorem AdLawAt.mu_ne {XiAd : AdDatum St} {muT : ℕ → (AfE D.host.F D.host.E)
   rw [mul_inv_cancel, (H.mu_mul i hi).1, h0, zero_mul] at h
   exact one_ne_zero h
 
-
-variable (St) in
-abbrev ChainBase : Type := ∀ i hi, (St i hi).Base
-
-
-variable (St) in
-def moveCharts (k : ChainBase St) : ChainCharts D u μ := fun i hi => (St i hi).move (k i hi)
-
 variable (A dtU a)
 
 variable {A dtU a}
 
-
 end Comparison₂
-
 
 end GlobalTheory.TwU
 

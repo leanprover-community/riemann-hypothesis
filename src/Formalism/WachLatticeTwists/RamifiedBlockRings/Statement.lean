@@ -23,14 +23,6 @@ def AbsIrr {k : Type*} [Field k] {n : Type*} [Fintype n] [DecidableEq n] {G : Ty
   (∀ W : Submodule k (n → k), (∀ g, ∀ v ∈ W, (ρ g).mulVec v ∈ W) → W = ⊥ ∨ W = ⊤) ∧
   (∀ M : Matrix n n k, (∀ g, M * ρ g = ρ g * M) → ∃ c : k, M = c • (1 : Matrix n n k))
 
-def BlockDiagonalIrreducibleAt {K : Type*} [Field K] {d : Type*} [Fintype d] [DecidableEq d] {G : Type*}
-    (ρ : G → Matrix d d K) (m : ℕ) (c : d → Fin m) (P : Matrix d d K) : Prop :=
-  IsUnit P ∧
-  (∀ g a b, c a ≠ c b → (P * ρ g * P⁻¹) a b = 0) ∧
-  (∀ i, AbsIrr (fun g => (P * ρ g * P⁻¹).toSquareBlock c i)) ∧
-  (∀ i j, i ≠ j → ∀ M : Matrix {a // c a = i} {a // c a = j} K,
-    (∀ g, M * (P * ρ g * P⁻¹).toSquareBlock c j = (P * ρ g * P⁻¹).toSquareBlock c i * M) → M = 0)
-
 def PrimHyp (O : Type) [CommRing O] {X : Type} (T : Subalgebra O (X → O)) {d : Type} [Fintype d]
     [DecidableEq d] {G : Type} [Group G] (r : G →* (X → Matrix d d O)) (π : X) {t : ℕ}
     (bl : d → Fin (t + 1)) (χ₁ ε : G →* Oˣ) : Prop :=

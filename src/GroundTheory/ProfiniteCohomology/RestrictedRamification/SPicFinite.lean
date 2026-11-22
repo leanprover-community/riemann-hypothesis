@@ -21,9 +21,6 @@ noncomputable def integerUnit {a : 𝓞 F} (ha : a ≠ 0) : Fˣ :=
     rw [ne_eq, map_eq_zero_iff _ (IsFractionRing.injective (𝓞 F) F)]
     exact ha)
 
-theorem coe_integerUnit {a : 𝓞 F} (ha : a ≠ 0) : (integerUnit ha : F) = algebraMap (𝓞 F) F a :=
-  rfl
-
 theorem integerUnit_mul {a b : 𝓞 F} (ha : a ≠ 0) (hb : b ≠ 0) (hab : a * b ≠ 0) :
     integerUnit hab = integerUnit ha * integerUnit hb :=
   Units.ext (by simp [coe_integerUnit])
@@ -46,7 +43,6 @@ theorem ordAt_integerUnit_eq_of_associated {a b : 𝓞 F} (ha : a ≠ 0) (hb : b
   rw [hu, ordAt_mul]
   simp [ordAt, valuation_of_unit_eq]
 
-
 open scoped Classical in
 theorem ordAt_placeUnit (v w : HeightOneSpectrum (𝓞 F)) :
     ordAt w (GroundTheory.Global.SUnit.placeUnit v) = if w = v then (classNumber F : ℤ) else 0 := by
@@ -60,7 +56,6 @@ theorem placeUnit_eq_integerUnit (v : HeightOneSpectrum (𝓞 F)) :
 
 def primeNZD (v : HeightOneSpectrum (𝓞 F)) : (Ideal (𝓞 F))⁰ :=
   ⟨v.asIdeal, mem_nonZeroDivisors_of_ne_zero v.ne_bot⟩
-
 
 open scoped Classical in
 theorem exists_ordAt_eq_of_mk0_eq {v p : HeightOneSpectrum (𝓞 F)}
@@ -126,7 +121,6 @@ theorem classNumber_nsmul_sPic (c : sPic S) : classNumber F • c = 0 := by
     ext w
     by_cases hw : v = w <;> simp [hw]
     ring
-
 
 open scoped Classical in
 noncomputable def sPicGen (c : ClassGroup (𝓞 F)) : sPic S :=

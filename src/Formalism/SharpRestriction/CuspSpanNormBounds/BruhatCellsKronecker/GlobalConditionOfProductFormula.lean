@@ -94,7 +94,6 @@ def chiX (A : ∀ p : HeightOneSpectrum (𝓞 F), LocAt F E sig p) (p : HeightOn
   (A p).psiE.compAddMonoidHom
     (((A p).ιE.toAddMonoidHom.comp (AddMonoidHom.mulLeft x)).comp (algebraMap (𝓞 E) E).toAddMonoidHom)
 
-
 theorem psi_of_approx (p : HeightOneSpectrum (𝓞 F)) (x : E) (y : (A p).Ep) (z : 𝓞 E)
     (h1 : (A p).ιE (z : E) - y ∈ Uw A δ p ((A p).ιE x)) (h2 : (A p).psiE ((A p).ιE (x * (z : E))) = 1) :
     (A p).psiE ((A p).ιE x * y) = 1 := by
@@ -193,7 +192,6 @@ theorem exists_common (p : HeightOneSpectrum (𝓞 F)) (S : Finset E) (c : E)
     · rw [cmul, map_mul, mul_assoc]; exact int_smul_mem _ a _ hx
     · rw [cmul, mul_comm (a : F), map_mul, mul_assoc]; exact int_smul_mem _ b _ (hS y hy)
 
-
 omit H in
 theorem memLocalizedAt_inv (p : HeightOneSpectrum (𝓞 F)) (I : FractionalIdeal (𝓞 E)⁰ E) (hI : I ≠ 0) (c : E)
     (h : ∀ x ∈ I, atP p (1 : FractionalIdeal (𝓞 E)⁰ E) (x * c)) : atP p I⁻¹ c := by
@@ -219,7 +217,6 @@ theorem memLocalizedAt_inv (p : HeightOneSpectrum (𝓞 F)) (I : FractionalIdeal
   | smul r y hy1 ih1 =>
     rw [mul_smul_comm]
     exact ((1 : FractionalIdeal (𝓞 E)⁰ E) : Submodule (𝓞 E) E).smul_mem r ih1
-
 
 omit H in
 theorem exists_val_eq (p : HeightOneSpectrum (𝓞 F)) (hδ : δ p ≠ 0) :
@@ -396,7 +393,6 @@ theorem locGen_diff (p : HeightOneSpectrum (𝓞 F)) :
   · have := memLocalization_mul hx hb
     rwa [one_mul, div_mul_cancel₀ _ hac] at this
 
-
 omit H in
 theorem LocGen.inv {p : HeightOneSpectrum (𝓞 F)} {I : FractionalIdeal (𝓞 E)⁰ E} {c : E} (hI : I ≠ 0) (h : LocGen p I c) :
     LocGen p I⁻¹ c⁻¹ := by
@@ -458,28 +454,6 @@ theorem isDiffGen_of_agree (δ : ∀ p, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.
 theorem laIsPeriod_of_adm (δ : ∀ p, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep)
     (hA : ∀ p, Agree δ M p) (h6 : adm6 D) (h7 : adm7 D) (ν s : ℕ) : LaIsPeriod δ M ν s :=
   laIsPeriod_of δ M hA (isDiffGen_of_agree δ M hA h6 h7) ν s
-
-def LocalModelsAtRemainingPrimes (δ : ∀ p, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) (m s : ℕ) : Prop :=
-  let ν := nu D.R.rS (m + 1) (m + s)
-  let L := La M δ ν s
-  ∀ (T T' : ℕ), 0 < T → 0 < T' → T ≡ T' [MOD (Lat.gS D) ^ 2] → Nat.Coprime T (Lat.gS D) → Nat.Coprime T' (Lat.gS D) →
-  ∀ (hs : 1 ≤ s),
-    Gfin δ M T T' ∧
-    (∀ (h h' : Point D.host.E m) (t t' : D.host.E) (ht : t ≠ 0) (ht' : t' ≠ 0),
-      Kglob δ M T T' (m + s) (ptApp h t ht s hs) (ptApp h' t' ht' s hs) ≠ 0 →
-        t⁻¹ - t'⁻¹ ∈ LaP (D := D) ν s ∧ (m + s = D.R.rS + 1 → s = 1 → t = t')) ∧
-    ∀ (ι : Type) [Fintype ι] (hd : ι → Point D.host.E m),
-      (∀ x y p, detNrmP M δ T T' p (hd x) = detNrmP M δ T T' p (hd y)) →
-      ∃ Th : D.host.E → Matrix ι ι ℂ,
-        (∀ t, (Th t).PosSemidef) ∧ (∀ t, ∀ l ∈ L, Th (t + l) = Th t) ∧
-        (∀ (t : D.host.E) (ht : t ≠ 0), (Th t - Matrix.of fun x y =>
-          ∏ᶠ p, ((((M p).modK (blkMod δ T T' p (m + 1) s t * blkMod δ T T' p (m + 1) s t)) ^
-            (s * (s - 1) / 2) : ℝ) : ℂ) *
-            locK M δ T T' p (m + s) (ptApp (hd x) t ht s hs) (ptApp (hd y) t ht s hs)).PosSemidef) ∧
-        ∃ S : Finset D.host.E, (∀ a ∈ S, ∀ b ∈ S, a - b ∈ L → a = b) ∧
-          (∀ t, Th t ≠ 0 → ∃ a ∈ S, t - a ∈ L) ∧
-          ∀ x0 : ι, ((((∏ᶠ p, (detNrmP M δ T T' p (hd x0)) ^ (-(2 * (s : ℤ)))) : ℝ) : ℂ) •
-            (Matrix.of fun x y => ∏ᶠ p, locK M δ T T' p m (hd x) (hd y)) - ∑ a ∈ S, Th a).PosSemidef
 
 end RecD
 

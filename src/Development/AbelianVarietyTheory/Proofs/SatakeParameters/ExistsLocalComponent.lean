@@ -93,8 +93,6 @@ section Adeles
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 theorem exists_imaginary (L : Type) [Field L] [NumberField L] [IsCMField L] :
     ∃ δ : 𝓞 L, (δ : L) ≠ 0 ∧ IsCMField.complexConj L (δ : L) = -(δ : L) := by
   have : ∃ y : 𝓞 L, IsCMField.complexConj L (y : L) ≠ y := by
@@ -183,7 +181,6 @@ theorem adele_ext (s : SplitPlace L) {z z' : AL L} (h1 : s.proj z = s.proj z')
   have hy : y = 0 := FiniteAdeleRing.ext _ fun u => (key u).2
   rw [hx, hy]; simp
 
-
 open Classical in
 def single (v : HeightOneSpectrum (𝓞 L⁺)) (a : v.adicCompletion L⁺) : AFplus L :=
   ⟨Pi.single (M := fun u : HeightOneSpectrum (𝓞 L⁺) => u.adicCompletion L⁺) v a, by
@@ -259,8 +256,6 @@ end Adeles
 section Group
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
-
-local notation3 "L⁺" => maximalRealSubfield L
 
 open Matrix
 
@@ -387,7 +382,6 @@ theorem eventually_cong (s : SplitPlace L) {δ : 𝓞 L} (h0 : (δ : L) ≠ 0) (
     rw [liftMat, Matrix.add_apply, Matrix.of_apply, e, add_sub_cancel_left]
 
 end Group
-
 
 open Formalism.AUTREP Formalism.L2.NG in
 theorem exists_local_component {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} (π : FinTyp L n) (s : SplitPlace L)

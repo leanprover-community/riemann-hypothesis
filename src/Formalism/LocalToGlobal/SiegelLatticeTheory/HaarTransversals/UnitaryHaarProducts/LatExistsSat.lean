@@ -17,8 +17,6 @@ section Sat
 variable {E V : Type} [Field E] [NumberField E] [AddCommGroup V] [Module E V] [Module (𝓞 E) V]
   [IsScalarTower (𝓞 E) E V]
 
-local notation "𝓕" => FractionalIdeal (nonZeroDivisors (𝓞 E)) E
-
 def lineV (c : 𝓕) (v : V) : Submodule (𝓞 E) V :=
   Submodule.span (𝓞 E) {y | ∃ x : E, x ∈ c ∧ y = x • v}
 

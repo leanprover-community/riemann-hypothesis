@@ -1,12 +1,7 @@
 module
 
 public import Mathlib
-public import Formalism.TameInertiaTowers.CentralOrderTwo.OrderOfThreeUnitsTwoPow
-public import Formalism.TameInertiaTowers.CentralOrderTwo.TwoAdic
-public import Formalism.TameInertiaTowers.CentralOrderTwo.MemDecompositionSubgroupIff
-public import Formalism.TameInertiaTowers.CentralOrderTwo.NegOneNeOneUnitsZmodFour
-public import Formalism.TameInertiaTowers.CentralOrderTwo.Groups
-public import Formalism.TameInertiaTowers.CentralOrderTwo.NormalOrderTwoCentral
+public import Formalism.TameInertiaTowers.StatementGroup
 public import Formalism.CyclotomicNorms.NonsquarefreeBounds.Jordan
 public import Formalism.CyclotomicNorms.NonsquarefreeBounds.RestrictionOfBlocksAndJordan
 public import Formalism.CyclotomicNorms.NonsquarefreeBounds.NonsquarefreeMonicBoundHolds

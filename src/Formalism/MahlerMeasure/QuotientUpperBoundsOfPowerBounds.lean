@@ -35,7 +35,6 @@ def WindowMeanAP : Prop :=
     (∑ j ∈ range Y₀, (β (progr t₀ d j) : ℝ)) / (Y₀ : ℝ) ≤
       (n₀ : ℝ) * ((del₀ : ℝ) / Y₀ + (La₀ + (del₀ : ℝ) * h / Y₀) / E)
 
-
 open Classical in
 def WindowFullAP : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (K : Type) [NormedField K] [NormedAlgebra ℚ_[p] K] [IsUltrametricDist K]
@@ -50,15 +49,6 @@ def WindowFullAP : Prop :=
     -Real.logb p ‖lead‖ + (roots.card : ℝ) / ((p : ℝ) - 1) ≤ (n : ℝ) * La₀ →
     (∑ j ∈ range Y₀, ((univ.filter (fun i => ‖dg (progr t₀ d j) i‖ ≤ (p : ℝ) ^ (-E))).card : ℝ)) / (Y₀ : ℝ) ≤
       (n : ℝ) * ((del₀ : ℝ) / Y₀ + (La₀ + (del₀ : ℝ) * h / Y₀) / E)
-
-def QuotientUpperBoundsOfPowerBounds : Prop :=
-  ∀ (p a Y k Ns Qn be : ℝ) (D₁ L₁ Rj Rn : ℤ),
-    1 < p → 0 < a → 0 < Y → 0 < k → 0 < Ns → 0 < Qn →
-    be ≤ 4 * a * p ^ (-D₁ - L₁ - Rj) →
-    a / (8 * Y * k ^ 2 * Ns * p ^ D₁ * Qn) < p ^ (Rn + 1) →
-    128 * k ^ 2 * Ns * Y ^ 2 ≤ p ^ (L₁ - 1) →
-    be / (Qn * p ^ (Rn - Rj)) ≤ 32 * p * Y * k ^ 2 * Ns * p ^ (-L₁) ∧
-      32 * p * Y * k ^ 2 * Ns * p ^ (-L₁) ≤ 1 / (4 * Y)
 
 noncomputable def lgV2 (p a r : ℕ) : ℝ := Real.logb p (8 * a + r) + 1
 

@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegIdxOfIsStd
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentMulCutSubOneEntry
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstStandardPairMemberHasThetaFunction
@@ -25,8 +24,6 @@ namespace GlobalTheory.frameChangeUnitDeterminant
 open Formalism.IndefR.Datum
 
 variable {D : D7}
-
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
 
 private theorem isIntM_mul {b a c : ℕ} {N : Matrix (Fin b) (Fin a) (EAf D)} {κ : Matrix (Fin a) (Fin c) (EAf D)}
     (hN : IsIntM N) (hκ : IsIntM κ) : IsIntM (N * κ) := fun i j => by
@@ -77,8 +74,6 @@ namespace GlobalTheory.frameChangeUnitDeterminant
 open Formalism.IndefR.Datum GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle
 
 variable {D : D7}
-
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
 
 private theorem det_int {k : ℕ} {N : Matrix (Fin k) (Fin k) (EAf D)} (hN : IsIntM N) : N.det ∈ OO := by
   let A : Matrix (Fin k) (Fin k) OO := fun i j => ⟨N i j, hN i j⟩
@@ -153,8 +148,6 @@ open Formalism.IndefR.Datum GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTria
 
 variable {D : D7}
 
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
-
 private theorem half_mul {e : AE D} {m m' n : ℕ} (P : Matrix (Fin m) (Fin m') (AE D)) {y : Mx D m' n} (h : IsHalf e y) :
     IsHalf e (P * y : Mx D m n) := fun i j => by
   simp only [Matrix.mul_apply, Finset.mul_sum]
@@ -179,7 +172,6 @@ private theorem exists_unitDet {e : AE D} {S : Finset (Formalism.L2.DIV.Pl D.hos
   exact ⟨x, ⟨a, b, c ▸ m2⟩, a, GlobalTheory.PlaceDatum.finPart_mem_of_toEAf (b ▸ m1),
     GlobalTheory.PlaceDatum.finPart_mem_of_toEAf (c ▸ m2)⟩
 
-
 set_option synthInstance.maxHeartbeats 100000 in
 set_option maxHeartbeats 1000000 in
 private theorem smul_inv_eq {n : ℕ} {ε : EAf D} {g B : GL (Fin n) (EAf D)} (h : ε • g.val = ε • B.val) :
@@ -188,7 +180,6 @@ private theorem smul_inv_eq {n : ℕ} {ε : EAf D} {g B : GL (Fin n) (EAf D)} (h
         rw [Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_assoc, Units.mul_inv, Matrix.mul_one]
     _ = (g⁻¹).val * (ε • g.val) * (B⁻¹).val := by rw [h]
     _ = ε • (B⁻¹).val := by rw [Matrix.mul_smul, Units.inv_mul, Matrix.smul_mul, Matrix.one_mul]
-
 
 set_option synthInstance.maxHeartbeats 100000 in
 set_option maxHeartbeats 2000000 in
@@ -220,7 +211,6 @@ end GlobalTheory.frameChangeUnitDeterminant
 namespace GlobalTheory.frameChangeUnitDeterminant
 
 open Formalism.IndefR.Datum
-
 
 set_option synthInstance.maxHeartbeats 100000 in
 set_option maxHeartbeats 4000000 in

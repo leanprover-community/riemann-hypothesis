@@ -34,9 +34,6 @@ lemma nu_eq (w s : ℂ) : nu k w s = nuG k (star w) s w := by
   simp only [Matrix.single_eq_single_vecMulVec_single, Matrix.add_vecMulVec, Matrix.smul_vecMulVec]
   module
 
-lemma dnu_eq (a b c : ℂ) : dnu k a b c =
-    a • Su k 0 0 + b • (Su k 0 (Fin.last k) + Su k (Fin.last k) 0) + c • Su k (Fin.last k) (Fin.last k) := rfl
-
 lemma nuG_mul (h0 : (0 : Fin (k + 1)) ≠ Fin.last k) (v s w : ℂ) (hw : w * v - s * s = 1) :
     nuG k v s w * nuG k w (-s) v = 1 := by
   simp only [nuG, mul_add, add_mul, Matrix.smul_mul, Matrix.mul_smul, one_mul, mul_one, Su_mul, h0, h0.symm, if_true,

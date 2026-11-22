@@ -164,7 +164,6 @@ def expL (L : ℝ) : ℕ := ⌊3 * L / Real.log 3⌋₊
 theorem le_expL {L : ℝ} {e : ℕ} (h : e * Real.log 3 ≤ 3 * L) : e ≤ expL L :=
   Nat.le_floor ((le_div_iff₀ (Real.log_pos (by norm_num))).2 h)
 
-
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
 structure Deep (T : Core D) (j : ℕ) : Type 1 where
@@ -222,18 +221,15 @@ theorem good_resEmb {σ : Y.d.c₂.F →+* ℂ} (hσ : GoodEmb Y.d.c₂ σ) : Go
 
 abbrev GoodL (L o : ℝ) : Prop := Y.Good (expL L) o
 
-
 variable {Y} in
 theorem Good.deg {e : ℕ} {o : ℝ} (h : Y.Good e o) : Real.log (Module.finrank ℚ Y.d.c₂.F : ℝ) ≤ o :=
   (log_finrank_le_fieldSz _).trans h.size
-
 
 variable {Y} in
 theorem Good.rd {e : ℕ} {o : ℝ} (h : Y.Good e o) :
     Real.log |(discr Y.d.c₂.F : ℝ)| ≤ o * Module.finrank ℚ Y.d.c₂.F := by
   have hp : (0 : ℝ) < Module.finrank ℚ Y.d.c₂.F := by exact_mod_cast Module.finrank_pos
   exact (div_le_iff₀ hp).1 ((log_rd_le_fieldSz _).trans h.size)
-
 
 variable {Y} in
 theorem Good.mono {e : ℕ} {o o' : ℝ} (h : Y.Good e o) (ho : o ≤ o') : Y.Good e o' :=
@@ -306,24 +302,6 @@ open scoped Pointwise
 section Half
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E)
-
-theorem bar_root : H.bar H.rt = -H.rt := by
-  have h1 : (H.bar H.rt) ^ 2 = H.rt ^ 2 := by rw [← map_pow, H.rt_sq]; simp
-  rcases sq_eq_sq_iff_eq_or_eq_neg.1 h1 with h | h
-  · exfalso
-    obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
-    have h2 : IsCMField.complexConj E (H.rt : E) = (H.rt : E) := by rw [← H.bar_eq, h]
-    have h3 := IsCMField.complexEmbedding_complexConj E φ (H.rt : E)
-    rw [h2] at h3
-    have h4 : (φ (H.rt : E)) ^ 2 = -(H.d : ℂ) := by
-      have := congrArg (fun x : 𝓞 E => φ (x : E)) H.rt_sq
-      simpa using this
-    have h5 : (φ (H.rt : E)).im = 0 := Complex.conj_eq_iff_im.1 h3.symm
-    have h6 := congrArg Complex.re h4
-    simp [sq, h5] at h6
-    have h7 : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
-    nlinarith [mul_self_nonneg (φ (H.rt : E)).re]
-  · exact h
 
 theorem exists_half (s : ℤ) (hs : (15 : ℤ) ∣ s ^ 2 + H.d) (e : ℕ) :
     ∃ I : Ideal (𝓞 E), (∃ G : Set (𝓞 E), I = Ideal.span G ∧ G ⊆ Algebra.adjoin ℤ {H.w0}) ∧
@@ -429,7 +407,6 @@ theorem rank_pos (T : Core D) (hQ : T.Q.Pins) (j : ℕ) (hj : InR D j) : 1 ≤ (
   have h1 := D.R.two_le_m; have h2 := D.R.m_add_three_le_k
   rw [hr]; unfold Ranks.r; omega
 
-
 set_option maxHeartbeats 1000000 in
 theorem exists_good_pin (T : Core D) (hQ : T.Q.Pins) (j : ℕ) (hj : InR D j) (c' : Coeff T.Q.l) (hle : T.Q.c.F ≤ c'.F)
     (d : DeltaDat (T.Q.Xo j) c' 0) (e : ℕ) (a1 : d.pd = 15 ^ e) (a2 : d.IsLev) (a3 : d.l₂.A = 1)
@@ -493,7 +470,6 @@ theorem exists_good_of_cover (T : Core D) (hQ : T.Q.Pins) (j : ℕ) (hj : InR D 
   choose x hx using h
   obtain ⟨U, dict, Kf, h, -⟩ := exists_good_pin T hQ j hj c' hle d e a1 a2 a3 a4 a5 ι hι x hx
   exact ⟨U, dict, Kf, h⟩
-
 
 end Inhab
 

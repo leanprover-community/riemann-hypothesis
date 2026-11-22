@@ -111,9 +111,6 @@ def crdL (π : TrivSqZeroExt k (Fin d → k) →ₗ[k] k) (u : CrysC k d A₀) :
   map_add' q q' := crdL_add A₀ π u q q'
   map_smul' r q := crdL_smul A₀ π u r q
 
-theorem crdL_apply (π : TrivSqZeroExt k (Fin d → k) →ₗ[k] k) (u : CrysC k d A₀) (q : primDR A₀) :
-    crdL A₀ π u q = π (u ((GlobalTheory.FODef.constMorV k (Fin d → k) A₀).pull q)) := rfl
-
 theorem crdL_add_u (π : TrivSqZeroExt k (Fin d → k) →ₗ[k] k) (u v : CrysC k d A₀) (q : primDR A₀) :
     crdL A₀ π (u + v) q = crdL A₀ π u q + crdL A₀ π v q := by
   simp only [crdL_apply, LinearMap.add_apply, map_add (f := _)]
@@ -327,7 +324,6 @@ theorem sub_mem_trans {C M : Type*} [Ring C] [AddCommGroup M] [Module C M] (E : 
 end GlobalTheory.HTGlueLie
 
 namespace GlobalTheory.HTGlueLie
-
 
 open GlobalTheory.HTCount in
 theorem glueFil_lie : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Datum p) (R : Type) [CommRing R] (b : GlobalTheory.UPel.HT.Base D R) (N : ℕ), 3 ≤ N → N.Coprime p → ∀ (k : Type) [Field k] [IsAlgClosed k] (t : Sp k ⟶ Sp R) (o₀ : GlobalTheory.UPel.HT.Obj b N t) (β : R →+* k), t = spMap β → ∀ φ : LinearMap.BilinForm k (HdR o₀.A), GlobalTheory.AbDual.IsCorrForm (dp0 k) (𝟙 _) o₀.A o₀.A o₀.P φ → ∀ (d : ℕ) (f : Fin d → (HdR o₀.A →ₗ[k] HdR o₀.A)), (∀ j, IsKS (GlobalTheory.HTCount.crysAct o₀) φ (Fil o₀.A) (GlobalTheory.HTCount.lieZ o₀ β) (f j)) → (∀ e : Crys (divided₂ (GlobalTheory.FODef.sqZero k (Fin d → k))) (spMap (TrivSqZeroExt.fstHom k k (Fin d → k)).toRingHom) o₀.A, (haveI := o₀.act.hom (algebraMap (𝓞 D.F) D.O D.ω); push (divided₂ (GlobalTheory.FODef.sqZero k (Fin d → k))) (spMap (TrivSqZeroExt.fstHom k k (Fin d → k)).toRingHom) (o₀.act.act (algebraMap (𝓞 D.F) D.O D.ω)) (e)) - algebraMap k (TrivSqZeroExt k (Fin d → k)) (β b.ρ) • e ∈ (GlobalTheory.HTGlue.glueFil o₀.A f) → ∃ w : Fin D.a → Crys (divided₂ (GlobalTheory.FODef.sqZero k (Fin d → k))) (spMap (TrivSqZeroExt.fstHom k k (Fin d → k)).toRingHom) o₀.A, (∀ i (c : 𝓞 D.F), (haveI := o₀.act.hom (algebraMap (𝓞 D.F) D.O c); push (divided₂ (GlobalTheory.FODef.sqZero k (Fin d → k))) (spMap (TrivSqZeroExt.fstHom k k (Fin d → k)).toRingHom) (o₀.act.act (algebraMap (𝓞 D.F) D.O c)) (w i)) - algebraMap k (TrivSqZeroExt k (Fin d → k)) (β (b.t i c)) • w i ∈ (GlobalTheory.HTGlue.glueFil o₀.A f)) ∧ e - ∑ i, w i ∈ (GlobalTheory.HTGlue.glueFil o₀.A f)) := by

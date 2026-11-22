@@ -152,14 +152,6 @@ section LawApi
 
 variable {p : ℕ} [Fact p.Prime] {X : Sys p} {Kc : Type} [Field Kc] [Algebra (FormalGroupSystem.K0 p) Kc] [Algebra X.G.Kf Kc]
 
-theorem KapLawLt.congr {Th Th' : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (X.ZA j) Kc} (h : KapLawLt X Kc Th)
-    (he : ∀ j < X.mm, ∀ (La : X.Lt j) (La' : X.Lt (j + 1)), (X.Pj j).IsLatTup La.2 → (X.Pj (j + 1)).IsLatTup La'.2 →
-      Th' j La La' = Th j La La') : KapLawLt X Kc Th' := by
-  intro j hj c L La' γ hL hL'
-  have hγ : (X.Pj j).IsLatTup ((X.Lv.lev j c).smul γ L) := (Formalism.MainNotions.FormalGroupSystem.Pf.latTup_smul _ _ γ L).2 hL
-  rw [he j hj (c, (X.Lv.lev j c).smul γ L) La' hγ hL', he j hj (c, L) La' hL hL']
-  exact h j hj c L La' γ hL hL'
-
 theorem KapLawLt.stab {Th : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (X.ZA j) Kc} (h : KapLawLt X Kc Th) {j : ℕ} (hj : j < X.mm)
     (c : X.Lv.comp j) (L : (X.Pj j).Tup) (La' : X.Lt (j + 1)) (ε : (X.Lv.lev j c).Γ) (hL : (X.Pj j).IsLatTup L)
     (hL' : (X.Pj (j + 1)).IsLatTup La'.2) (hε : (X.Lv.lev j c).smul ε L = L) :

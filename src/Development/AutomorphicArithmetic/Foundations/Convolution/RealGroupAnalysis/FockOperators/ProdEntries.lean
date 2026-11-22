@@ -13,15 +13,6 @@ open scoped Classical
 
 private noncomputable def infPart {F : Type} [Field F] [NumberField F] (b : A F) : A F := ⟨b.1, 0⟩
 
-private theorem cm {F : Type} [Field F] [NumberField F] (a b : G1 F) :
-    ((a * b : G1 F) : Matrix (Fin 2) (Fin 2) (A F)) = a.1 * b.1 := rfl
-
-private theorem nU_coe {F : Type} [Field F] [NumberField F] (b : A F) :
-    ((nU b : G1 F) : Matrix (Fin 2) (Fin 2) (A F)) = !![1, b; 0, 1] := rfl
-
-private theorem wW_coe (F : Type) [Field F] [NumberField F] :
-    ((wW F : G1 F) : Matrix (Fin 2) (Fin 2) (A F)) = !![0, 1; -1, 0] := rfl
-
 private theorem pi_nU {F : Type} [Field F] [NumberField F] (pi : G1 F →* G1 F)
     (h1 : ∀ g, FinOne (pi g)) (h2 : ∀ g i j, (pi g i j).1 = (g i j).1) (b : A F) :
     pi (nU b) = nU (infPart b) := by

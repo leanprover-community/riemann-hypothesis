@@ -246,8 +246,6 @@ theorem ez_dx (j a : Fin d) :
     | exact h
     | simpa [eq_comm] using h
 
-theorem ez_dy (c b : Fin d) : ev (n := 1) ![pt k d 0, 0] (pderiv (R := k) ((1 : Fin 2), b) (G.F c)) = Jac G c b := rfl
-
 private theorem mvPowerSeries_pderiv_comm {σ : Type} (i j : σ) (f : MvPowerSeries σ k) :
     pderiv (R := k) i (pderiv (R := k) j f) = pderiv (R := k) j (pderiv (R := k) i f) := by
   classical

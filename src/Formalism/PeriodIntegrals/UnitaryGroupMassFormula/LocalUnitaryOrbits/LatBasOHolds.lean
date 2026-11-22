@@ -55,23 +55,4 @@ theorem exists_basO (L : Submodule (𝓞 E) (Fin n → E)) (hLat : Submodule.IsF
   obtain ⟨c, rfl⟩ := (hmem x).1 hx
   exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
 
-theorem latBasO_holds
-    (hFull : ∃ L : Submodule (𝓞 E) (Fin n → E),
-      Submodule.IsFullLattice E L ∧ (L : Set (Fin n → E)) = Λ)
-    (a : ℕ) (Y : TupV (E := E) v n a) : LatBasO σ J ψ v Λ a Y := by
-  classical
-  rintro ⟨⟨hCM, -⟩, -, -⟩
-  obtain ⟨L, hLat, rfl⟩ := hFull
-  have : FiniteDimensional F E := Module.Finite.of_restrictScalars_finite ℚ F E
-  have h2 : Module.finrank F E = 2 := hCM.2.2.1
-  obtain ⟨m, b, hli, hmem, hsp⟩ := exists_basO v L hLat
-  have hm : m = 2 * n := by
-    have h1 := Module.finrank_eq_card_basis (Module.Basis.mk hli hsp)
-    rw [Fintype.card_fin] at h1
-    rw [← h1, Module.finrank_pi_fintype]
-    simp only [Module.finrank_baseChange, h2, Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul]
-    ring
-  subst hm
-  exact ⟨b, hli, hmem⟩
-
 end PI.OmLocU

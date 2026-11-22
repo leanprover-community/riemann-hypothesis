@@ -57,7 +57,6 @@ abbrev FrP : Type := Frames (gramC (gramP D) (embT D))
 
 variable {D}
 
-
 set_option maxHeartbeats 1000000 in
 structure ClsPTied (u : D.what₂.Word) where
 
@@ -83,7 +82,6 @@ structure ClsPTied (u : D.what₂.Word) where
 def sgT (u : D.what₂.Word) : D.what₂.Tau → DomWeight (D.R.N D.R.m - 1) :=
   fun τ => shW ((D.fm u).sg τ) ((D.R.m * (D.R.t + 1) / 2 : ℕ) : ℤ)
 
-
 set_option maxHeartbeats 1000000 in
 structure ValPTied (u : D.what₂.Word) (K : ClsPTied u) where
 
@@ -108,7 +106,6 @@ structure ValPTied (u : D.what₂.Word) (K : ClsPTied u) where
       ∃ P ∈ IntSpan D w (D.fm u).sg, eW ((D.fm u).ptEmb x) c =
         fnOf _ (shiftOf (sgT u)) (atInf (embT D) (B⁻¹ : GL (Fin (D.R.N D.R.m - 1)) D.host.E).1) P
 
-
 set_option maxHeartbeats 1000000 in
 structure TilTied (u : D.what₂.Word) (A : AtTTied u) (K : ClsPTied u) (P : LvTied u A D.R.m le_rfl) where
   z0 : Fin (D.R.N D.R.m) → D.host.E
@@ -121,12 +118,10 @@ structure TilTied (u : D.what₂.Word) (A : AtTTied u) (K : ClsPTied u) (P : LvT
     (r : D.host.E) = hform (sigD D : D.host.E →+* D.host.E) (gramN D D.R.m le_rfl) z0 ((ga c).1.1 *ᵥ x.1) →
     (D.fm u).fv D.R.m v ((D.fm u).til c) (P.pr v _ x) = A.res v r
 
-
 set_option maxHeartbeats 4000000 in
 def TilBaseLat {u : D.what₂.Word} {A : AtTTied u} {K : ClsPTied u} {P : LvTied u A D.R.m le_rfl}
     (Tl : TilTied u A K P) (Km : ClsTied u D.R.m le_rfl) : Prop :=
   Km.lev.Lb = K.lev.Lb.map ((iXc D).restrictScalars (𝓞 D.host.E)) ⊔ Submodule.span (𝓞 D.host.E) {Tl.z0}
-
 
 set_option maxHeartbeats 4000000 in
 def TilBaseFv {u : D.what₂.Word} {A : AtTTied u} {K : ClsPTied u} {P : LvTied u A D.R.m le_rfl}
@@ -140,7 +135,6 @@ def TilBaseFv {u : D.what₂.Word} {A : AtTTied u} {K : ClsPTied u} {P : LvTied 
     (r : D.host.E) = hform (sigD D : D.host.E →+* D.host.E) (gramN D D.R.m le_rfl) Tl.z0 x →
     fMe v (Km.lev.fT (A.eV v).1 (A.eV v).2 t) = A.res v r
 
-
 set_option maxHeartbeats 4000000 in
 structure TilAd {u : D.what₂.Word} {A : AtTTied u} {K : ClsPTied u} {P : LvTied u A D.R.m le_rfl}
     (Tl : TilTied u A K P) (Km : ClsTied u D.R.m le_rfl) where
@@ -149,17 +143,5 @@ structure TilAd {u : D.what₂.Word} {A : AtTTied u} {K : ClsPTied u} {P : LvTie
     IsExt D Tl.z0 (inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) (K.y c).1.1 g.1 →
     bc (inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) (Tl.ga c).1 * (Km.y ((D.fm u).til c)).1 =
       g * (ka c).1
-
-
-set_option maxHeartbeats 4000000 in
-def FrExt {u : D.what₂.Word} (z0 : Fin (D.R.N D.R.m) → D.host.E) {K : ClsPTied u} {Km : ClsTied u D.R.m le_rfl}
-    {G : GLoc D.host.F D.host.E (sigD D) D.host.g} {a t nb sk fc a' t' nb' sk' fc' : ℕ} {zl zl' : Bool}
-    (Lm : GLev Km.lev G a t nb sk fc zl) (Lp : GLev K.lev G a' t' nb' sk' fc' zl') : Prop :=
-  ∀ (i : Fin 2) (v : HeightOneSpectrum (𝓞 D.host.F)) (h : (D.host.g i : 𝓞 D.host.F) ∈ v.asIdeal),
-    (∀ (x : Fin (D.R.N D.R.m)) (b : Fin (D.R.N D.R.m - 1)) (b' : Fin (D.R.N D.R.m)), (b : ℕ) = b' →
-      (Lm.fr i v h).1 x b' =
-        ((iXm D).map ((G.phi i v h).comp (inclE (F := D.host.F) (v.adicCompletion D.host.F))) * (Lp.fr i v h).1) x b) ∧
-    ∀ (x l : Fin (D.R.N D.R.m)), (l : ℕ) + 1 = D.R.N D.R.m →
-      (Lm.fr i v h).1 x l = G.phi i v h (inclE (F := D.host.F) (v.adicCompletion D.host.F) (z0 x))
 
 end Formalism.L2.Forms

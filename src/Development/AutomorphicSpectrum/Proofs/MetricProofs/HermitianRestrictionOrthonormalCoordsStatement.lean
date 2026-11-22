@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HermitianRestrictionOrthonormalCoords
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsFundSet
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ThreeLeLevel
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeEigenProjectionStatement
 
 @[expose] public section

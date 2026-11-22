@@ -94,13 +94,6 @@ theorem Good.sum {p : ℕ} {ι : Type} (s : Finset ι) (f : ι → MvPolynomial 
     rw [Finset.sum_insert ha]
     exact Good.add D (h a (Finset.mem_insert_self a s)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
-theorem Good.monomial {p : ℕ} {ζ : D.EM} (h : D.GoodE p ζ) (c : K) : D.Good p (monomial ζ c) := by
-  classical
-  intro ζ' hζ'
-  have := support_monomial_subset hζ'
-  rw [Finset.mem_singleton] at this
-  rw [this]; exact h
-
 end TwistData
 
 end Formalism.MainNotions.PlaneGram

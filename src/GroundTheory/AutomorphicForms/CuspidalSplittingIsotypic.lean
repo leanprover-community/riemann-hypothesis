@@ -29,7 +29,6 @@ def subrepIncl (Y : Subrepresentation ρ) :
   toLinearMap := Y.toSubmodule.subtype
   isIntertwining' _ := rfl
 
-
 theorem isSmooth_toRepresentation (hρ : IsSmooth ρ) (Y : Subrepresentation ρ) :
     IsSmooth Y.toRepresentation := by
   intro y
@@ -49,13 +48,11 @@ theorem isSmooth_prod (hπ : IsSmooth π) (hρ : IsSmooth ρ) : IsSmooth (π.pro
   rw [mem_stabilizerOf] at h1 h2 ⊢
   exact Prod.ext h1 h2
 
-
 variable (π) in
 def piRep (m : ℕ) : Representation ℂ (GL (Fin n) F) (Fin m → V) where
   toFun g := LinearMap.pi fun i => π g ∘ₗ LinearMap.proj i
   map_one' := by ext; simp
   map_mul' g h := by ext; simp
-
 
 theorem isSmooth_piRep (hπ : IsSmooth π) (m : ℕ) : IsSmooth (piRep π m) := by
   intro x
@@ -71,7 +68,6 @@ omit [ValuativeRel F] [IsNonarchimedeanLocalField F] [TopologicalSpace F] in
 theorem HasCentralChar.piRep (hωπ : HasCentralChar π ω) (m : ℕ) :
     HasCentralChar (piRep π m) ω := fun z hz x => funext fun i => hωπ z hz (x i)
 
-
 variable (π) in
 def piIncl (m : ℕ) (i : Fin m) : Representation.IntertwiningMap π (piRep π m) where
   toLinearMap := LinearMap.single ℂ (fun _ => V) i
@@ -79,9 +75,6 @@ def piIncl (m : ℕ) (i : Fin m) : Representation.IntertwiningMap π (piRep π m
     ext x j
     change (Pi.single i (π g x) : Fin m → V) j = π g ((Pi.single i x : Fin m → V) j)
     exact (LinearMap.apply_single (fun _ : Fin m => π g) i j x).symm
-
-
-
 
 end Constructions
 
@@ -120,7 +113,6 @@ theorem exists_retraction [π.IsIrreducible] (hπ : IsSmooth π) (hsc : IsSuperc
     rwa [hj, ZeroMemClass.coe_zero, add_zero] at this
   · have := hF (0, ⟨y, hy⟩)
     rwa [hj, map_zero, zero_add] at this
-
 
 omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 theorem iSup_range_stable (s : Finset (Representation.IntertwiningMap π ρ))
@@ -187,11 +179,9 @@ variable {V U : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup U] [Module 
   {π : Representation ℂ (GL (Fin n) F) V} {ρ : Representation ℂ (GL (Fin n) F) U}
   {ω : GL (Fin n) F → ℂ}
 
-
 variable (π ρ) in
 def isotypicPart : Submodule ℂ U :=
   ⨆ t : Representation.IntertwiningMap π ρ, LinearMap.range t.toLinearMap
-
 
 variable (π ρ) in
 def isotypicKernel : Submodule ℂ U :=
@@ -208,15 +198,6 @@ theorem apply_mem_isotypicPart (t : Representation.IntertwiningMap π ρ) (x : V
     t x ∈ isotypicPart π ρ :=
   (le_iSup (fun t : Representation.IntertwiningMap π ρ => LinearMap.range t.toLinearMap) t)
     ⟨x, rfl⟩
-
-
-
-omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
-theorem isotypicKernel_stable (g : GL (Fin n) F) {u : U} (hu : u ∈ isotypicKernel π ρ) :
-    ρ g u ∈ isotypicKernel π ρ := by
-  rw [mem_isotypicKernel] at hu ⊢
-  intro Fm
-  rw [Representation.IntertwiningMap.isIntertwining, hu, map_zero]
 
 variable [π.IsIrreducible] (hπ : IsSmooth π) (hsc : IsSupercuspidal π)
   (hωπ : HasCentralChar π ω) (hρ : IsSmooth ρ) (hωρ : HasCentralChar ρ ω)

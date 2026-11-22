@@ -23,25 +23,11 @@ variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAl
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {a : ℕ} [_root_.NumberField.IsTotallyComplex E]
   (hL : GlobalTheory.Published.LocalLanglandsGL) (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL)
 
-
-
 end Twist
 
 namespace Old
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {T : GlobalTheory.RowTie.WDTie D.nd D.naut}
-
-theorem cgGood (s : Sw) (C : CGTrue hL D T) : ∀ a (π : D.naut.CG a), GoodAll (C.e a π) := s.elim
-
-theorem cgSurj (C : CGTrue hL D T) : ∀ a, 0 < a → ∀ ρ : HostCGu D.host a, GoodAll ρ → ∃ π, C.e a π = ρ :=
-  fun a h ρ _ => C.surj a h ρ
-
-def cgMk (s : Sw) (e : ∀ a, D.naut.CG a ↪ HostCGu D.host a) (_good : ∀ a (π : D.naut.CG a), GoodAll (e a π))
-    (_surj : ∀ a, 0 < a → ∀ ρ : HostCGu D.host a, GoodAll ρ → ∃ π, e a π = ρ) (_zero : IsEmpty (D.naut.CG 0))
-    (_loc : ∀ a (π : D.naut.CG a) w, T.e w (D.naut.locG π w) = ParLaws.locG hL D.nd.plOm (e a π) w)
-    (_tw : haveI := host_isCMField D.host; ∀ a (π : D.naut.CG a) (χ : D.naut.CG 1), e a (D.naut.tw π χ) = (e a π).tw (e 1 χ))
-    (_inf : haveI := host_isCMField D.host; ∀ a (π : D.naut.CG a) τ, D.naut.infG π τ = (e a π).infChar τ)
-    (_csd : haveI := host_isCMField D.host; ∀ a (π : D.naut.CG a), D.naut.csd π ↔ (e a π).IsCsd) : CGTrue hL D T := False.elim s
 
 end Old
 
@@ -74,7 +60,6 @@ theorem locParT_unr_iff {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Alge
     rw [← WithZero.exp_log h0, hl, WithZero.exp_zero]
   · intro hv
     rw [hv, WithZero.log_one]
-
 
 set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 400000 in

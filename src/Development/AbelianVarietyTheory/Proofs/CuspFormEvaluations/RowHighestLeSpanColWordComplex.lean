@@ -17,10 +17,6 @@ open GlobalTheory.MvPoly
 namespace GlobalTheory.Harm
 
 -- Retain the explicit coefficient-ring argument in the statements below.
-local macro:max "rowHighest" R:term:arg : term =>
-  `(GlobalTheory.Harm.rowHighest (R := $R))
-local macro:max "rowHighest" "(" name:ident " := " value:term ")" R:term:arg : term =>
-  `(GlobalTheory.Harm.rowHighest (R := $R) ($name := $value))
 
 section CoeffForm
 
@@ -346,7 +342,6 @@ theorem rowHighest_eq_orbitSpan [Field K] [CharZero K] :
   rw [rowHighest_eq_span_colWord h, Submodule.span_le]
   rintro _ ⟨w, rfl⟩
   exact colWord_mem_orbitSpan h c c' w
-
 
 include h in
 theorem span_map_rowHighest_int [CommRing K] [Algebra ℚ K] :

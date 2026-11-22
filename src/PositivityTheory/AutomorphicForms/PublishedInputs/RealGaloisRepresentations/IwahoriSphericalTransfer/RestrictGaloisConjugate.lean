@@ -37,8 +37,6 @@ def galoisConjugate (g : G F Ω) (t : G K Ω) : G K Ω :=
 theorem restrict_galois_conjugate (g : G F Ω) (t : G K Ω) : res F Ω K (galoisConjugate K g t) = g * res F Ω K t * g⁻¹ := by
   ext z; rfl
 
-theorem galois_conjugate_apply (g : G F Ω) (t : G K Ω) (z : Ω) : galoisConjugate K g t z = g (t (g⁻¹ z)) := rfl
-
 def conj (g : G F Ω) : G K Ω →* G K Ω where
   toFun := galoisConjugate K g
   map_one' := by ext z; simp [galois_conjugate_apply]
@@ -89,7 +87,6 @@ theorem isSSRep_comp {Γ k : Type} [Group Γ] [Field k] {a : ℕ} (r : Γ →* G
 end GlobalTheory.RealGal.TrInv
 
 namespace GlobalTheory.RealGal
-
 
 open TrInv in
 theorem trace_conj_of_attRes : ∀ (F Ω : Type) [Field F] [NumberField F] [IsTotallyReal F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (K : Type) [Field K] [NumberField K] [Algebra F K] [Algebra K Ω] [IsScalarTower F K Ω] [IsAlgClosure K Ω], Module.finrank F K = 2 → ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ) (π : TR.CuspSub F a) (r : G K Ω →* GL (Fin a) (Qbar l)), Continuous r → IsSSRep r → AttRes π ι K r → ∀ (g : G F Ω) (s s' : G K Ω), res F Ω K s' = g * res F Ω K s * g⁻¹ → ((r s' : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l)).trace = ((r s : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l)).trace := by

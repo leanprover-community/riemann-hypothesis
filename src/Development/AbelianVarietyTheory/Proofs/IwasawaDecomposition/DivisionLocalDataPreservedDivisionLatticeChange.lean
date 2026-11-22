@@ -27,21 +27,14 @@ variable {B : Base} {f : Fr B.toPre} {T : TwDat B}
 variable (col : ColW B f T) (Z : col.Lt)
 variable (N : ∀ u, Submodule (𝓞 B.LL) (Z.V.div.Nu u).V) (h : B.Word → ℝ)
 
-local notation "D₀" => col.D Z
-local notation "D₁" => col.D (setDivZ Z N h)
-
-
 set_option maxHeartbeats 4000000 in
 @[reducible] def datBk {Lev : Type} (w : Dat D₁ Lev) : Dat D₀ Lev := { w with }
-
 
 set_option maxHeartbeats 4000000 in
 @[reducible] def mdlT {p : ℕ} [Fact p.Prime] {M : ℕ} {rk : DV.Emb D₀ p → ℕ} (m : DV.Mdl D₀ p M rk) : DV.Mdl D₁ p M rk := { m with }
 
-
 set_option maxHeartbeats 4000000 in
 @[reducible] def locT {M j p : ℕ} (l : ModuliIntegralCharts.Loc D₀ M j p) : ModuliIntegralCharts.Loc D₁ M j p := { l with }
-
 
 set_option maxHeartbeats 4000000 in
 @[reducible] def padT {M j : ℕ} {Comp : Type} {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D₀ p → (DV.KW p →+* ℂ)} {ng : NgPkg}
@@ -54,14 +47,12 @@ set_option maxHeartbeats 4000000 in
     bc := fun p z => P.bc p z
     md := fun p _ la z => mdlT col Z N h (padMd P p la z) }
 
-
 set_option maxHeartbeats 4000000 in
 @[reducible] def shimUT {G : DV.Geo (D₀).what₂.LL} {Lev : Type} {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D₀ p → (DV.KW p →+* ℂ)} {ng : NgPkg}
     {w : Dat D₁ Lev} (U : ShimU D₀ G jC ng (datBk col Z N h w)) : ShimU D₁ G jC ng w :=
   { U with alg := { U.alg with }, pad := padT col Z N h U.pad }
 
 @[reducible] def wtB {j : ℕ} (w : WeightFamilies.Wt D₁ j) : WeightFamilies.Wt D₀ j := { w with }
-
 
 set_option maxHeartbeats 8000000 in
 @[reducible] def formsT {G : DV.Geo (D₀).what₂.LL} {NW : ℕ → ℕ} {CompW : ℕ → Type} [∀ j, Fintype (CompW j)]
@@ -116,13 +107,11 @@ set_option maxHeartbeats 8000000 in
   thAll := fun j w => P.thAll j (wtB col Z N h w)
   shortTh := fun j w => P.shortTh j (wtB col Z N h w)
 
-
 set_option maxHeartbeats 8000000 in
 def famT {G : DV.Geo (D₀).what₂.LL} {Lev : Type} (F : ShimFam D₀ G Lev) : ShimFam D₁ G Lev :=
   { F with
     U := fun w => shimUT col Z N h (F.U (datBk col Z N h w))
     forms := formsT col Z N h F.forms }
-
 
 set_option maxHeartbeats 4000000 in
 theorem heq_mdlT {p : ℕ} [Fact p.Prime] {A A' : Type} {M M' : ℕ} {rk rk' : DV.Emb D₀ p → ℕ}
@@ -131,7 +120,6 @@ theorem heq_mdlT {p : ℕ} [Fact p.Prime] {A A' : Type} {M M' : ℕ} {rk rk' : D
   subst hA hM hrk
   obtain rfl := eq_of_heq hfg
   rfl
-
 
 set_option maxHeartbeats 8000000 in
 theorem geoTiedP_divTr {X : DivX D₀} {inK : X.Lev → ℕ → Prop} (hg : GeoTiedP X inK) :

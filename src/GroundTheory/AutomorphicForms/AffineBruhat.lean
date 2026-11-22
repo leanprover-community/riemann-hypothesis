@@ -18,8 +18,6 @@ namespace GLnLocal
 variable (F : Type*) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   (n : ℕ)
 
-local notation "ϖ" => ((uniformizer F : 𝒪[F]) : F)
-
 section Iwahori
 
 def residueReduction : GL (Fin n) 𝒪[F] →* GL (Fin n) (IsLocalRing.ResidueField 𝒪[F]) :=
@@ -169,14 +167,6 @@ def permAct : Equiv.Perm (Fin n) →* MulAut (Fin n → Multiplicative ℤ) wher
     ext a i
     show a ((σ * τ)⁻¹ i) = a (τ⁻¹ (σ⁻¹ i))
     rw [_root_.mul_inv_rev, Equiv.Perm.mul_apply]
-
-theorem permAct_apply (σ : Equiv.Perm (Fin n)) (a : Fin n → Multiplicative ℤ) (i : Fin n) :
-    permAct n σ a i = a (σ⁻¹ i) :=
-  rfl
-
-theorem permAct_symm_apply (σ : Equiv.Perm (Fin n)) (a : Fin n → Multiplicative ℤ) (i : Fin n) :
-    (permAct n σ).symm a i = a (σ i) :=
-  rfl
 
 abbrev ExtendedAffineWeyl := (Fin n → Multiplicative ℤ) ⋊[permAct n] Equiv.Perm (Fin n)
 
@@ -521,7 +511,6 @@ section Integral
 theorem affineWeylGL_inr (σ : Equiv.Perm (Fin n)) :
     affineWeylGL F n (SemidirectProduct.inr σ) = permGL F σ :=
   SemidirectProduct.lift_inr _ _ _ _
-
 
 omit [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 theorem permGL_mem_integralGL (σ : Equiv.Perm (Fin n)) : permGL F σ ∈ integralGL F n := by

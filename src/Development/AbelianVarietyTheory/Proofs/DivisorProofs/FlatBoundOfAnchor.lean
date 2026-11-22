@@ -2,11 +2,10 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.QuoIff
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsCoreGoodMatch
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatLineThetaRootTwistTwistingSectionStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightBoundHoldsStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightBoundHolds
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HostBoundHolds
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatLineC1LogBound
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HtValOnSubset

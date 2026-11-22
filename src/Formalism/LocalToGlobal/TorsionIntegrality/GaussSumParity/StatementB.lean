@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementA
-public import Formalism.GaussJetBounds.StatementS
 public import Formalism.GaussJetBounds.StatementU
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementGK
 

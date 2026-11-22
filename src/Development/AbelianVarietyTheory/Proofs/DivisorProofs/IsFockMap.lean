@@ -22,13 +22,6 @@ def IsLift (x t : ℚ) (M : GKMod R S) (pr : Formalism.BasicNotions.TH.Pol P Q R
   Function.Surjective pr ∧ (∀ X f, pr (fockAct1 P Q R S X f) = ((x : ℂ) * X.trace) • pr f) ∧
     ∀ Y f, M.act Y (pr f) = pr (fockAct2 P Q R S Y f) + ((t : ℂ) * Y.trace) • pr f
 
-def lam (P Q R S : ℕ) (κ : ℤ) : Ix R S → ℚ
-  | .inl i => if (i : ℕ) < P then (κ : ℚ) / 2 - cPair R S + cPair P Q else cPair P Q
-  | .inr j => if (j : ℕ) < Q then (κ : ℚ) / 2 + cPair R S - cPair P Q else -cPair P Q
-
-def casK (μ : Ix R S → ℚ) : ℚ :=
-  ∑ a, μ a ^ 2 + (∑ i : Fin R, μ (.inl i) * ((R : ℚ) - 1 - 2 * (i : ℕ))) + ∑ j : Fin S, μ (.inr j) * ((S : ℚ) - 1 - 2 * (j : ℕ))
-
 def GenBy (M : GKMod R S) (Λ : Ix R S → ℚ) : Prop := ∃ v, IsHW M.act Λ v ∧ genSub M.act {v} = ⊤
 
 def ScalarEnd (M : GKMod R S) : Prop :=
@@ -65,7 +58,6 @@ section Adelic
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {α β κ : Type} [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β] [Fintype κ] {P Q R S : ℕ}
 
-
 variable (F) in
 abbrev Tens (P Q R S : ℕ) : Type := ⨂[ℂ] _ : InfinitePlace F, Formalism.BasicNotions.TH.Pol P Q R S
 
@@ -86,7 +78,6 @@ def IsFockMap (ψ : AddChar (AF F) ℂ) (τ : ∀ w : InfinitePlace F, EmbOver E
   Function.Injective Φ ∧ ∀ u : Matrix α β (AE F E), At (evI F) u → ∀ c : InfinitePlace F → Matrix (Ix P Q) (Ix R S) ℂ,
     (∀ w, u.map (piInf (τ w)) = A w * c w * (C w)ᵀ) →
       ∀ T, SD (fun t => d.rho ψ (realAd F t • u)) (Φ T) (Φ (sumPl (fun w => heisOp (c w)) T))
-
 
 variable (σ) in
 def RLines (J : Matrix β β (AE F E)) : Set (Multiplicative ℝ →* UG (_root_.Algebra.TensorProduct.map (_root_.AlgHom.id (AF F) (AF F)) σ) J) :=

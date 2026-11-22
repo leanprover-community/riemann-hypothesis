@@ -24,18 +24,9 @@ abbrev Mat (k r : ℕ) := Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ
 
 variable {k r : ℕ}
 
-def IsClosedMatGroup (U : Set (Mat k r)) : Prop :=
-  IsClosed U ∧ (1 : Mat k r) ∈ U ∧ (∀ a ∈ U, ∀ b ∈ U, a * b ∈ U) ∧
-    ∀ a ∈ U, IsUnit a.det ∧ a⁻¹ ∈ U
-
 def IsHaarOn (U : Set (Mat k r)) (μ : Measure (Mt k r)) : Prop :=
   μ {x | Matrix.of x ∉ U} = 0 ∧ (∀ a ∈ U, μ.map (lmulM a) = μ) ∧
     (∀ C : Set (Mt k r), IsCompact C → (∀ x ∈ C, Matrix.of x ∈ U) → μ C < ⊤) ∧ μ ≠ 0
-
-def IsQuotRep (G : Set (Mat k r)) (μG μS ν : Measure (Mt k r)) : Prop :=
-  ν {x | Matrix.of x ∉ G} = 0 ∧
-    ∀ f : Mt k r → ℝ≥0∞, Measurable f →
-      ∫⁻ g, f g ∂μG = ∫⁻ g, (∫⁻ s, f (lmulM (Matrix.of s) g) ∂μS) ∂ν
 
 def leviW (k r : ℕ) (s : Mat k r) : Mat k r := fun i j =>
   if (r ≤ i.val ∧ i.val ≤ r + k) ∧ (r ≤ j.val ∧ j.val ≤ r + k) then s i j
@@ -117,10 +108,6 @@ theorem leviW_mul {z : Fin (2 * r + k + 1) → ℂ} {h n : Mat k r} (hh : h ∈ 
   · by_cases hj : r ≤ j.val ∧ j.val ≤ r + k
     · rw [row_out hh (i := i) (by tauto) j, if_neg h2]
     · rw [col_out hh hj i, if_neg h2]
-
-theorem measurable_lmulM (a : Mat k r) : Measurable (lmulM a : Mt k r → Mt k r) := by
-  apply Continuous.measurable
-  exact continuous_const.matrix_mul continuous_id
 
 end GlobalTheory.IndefiniteRowSideFullHecke.FormalDegreeHaarQuotient
 

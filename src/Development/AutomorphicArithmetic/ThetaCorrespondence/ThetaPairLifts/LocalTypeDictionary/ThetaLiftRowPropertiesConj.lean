@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.Fo
 public import Development.AbelianVarietyTheory.Definitions.Divisors.TieTest
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ToricSymbols
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.InfClassAt
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DictAt
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm

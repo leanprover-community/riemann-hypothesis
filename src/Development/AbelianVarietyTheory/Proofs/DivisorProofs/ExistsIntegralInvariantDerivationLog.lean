@@ -4,7 +4,6 @@ public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.TypicalCurveStructureConstants
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.RootStatement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.FactorialWeightedSumBound
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.OmBStatement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.WtSubOneLe
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatFrame
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormalGroupExpTwoSidedInverseUniqueStatement
@@ -100,48 +99,6 @@ theorem formalGroupLaw_subst_secondBlock_zero (G : LogFGL v d) (l : Fin d) : sub
   simp only [key, hElg]
 
 -- Inline the chain rule in the proofs that differentiate a substitution.
-local macro "have_subst_chain_rule " h:ident : tactic => `(tactic|
-  have $h {R σ τ : Type} [CommRing R] [Fintype σ] {a : σ → MvPowerSeries τ R}
-      (ha0 : ∀ s, constantCoeff (a s) = 0) (f : MvPowerSeries σ R) (j : τ) :
-      pderiv j (subst a f) = ∑ i, subst a (pderiv i f) * pderiv j (a i) := by
-    classical
-    let : UniformSpace R := ⊥
-    have ha := hasSubst_of_constantCoeff_zero ha0
-    have hc := continuous_subst (R := R) ha
-    have hs0 : subst a (0 : MvPowerSeries σ R) = 0 := by rw [← coe_substAlgHom ha, map_zero]
-    have hs1 : subst a (1 : MvPowerSeries σ R) = 1 := by rw [← coe_substAlgHom ha, map_one]
-    have hd {ι : Type} (i : ι) :
-        Continuous (pderiv (R := R) i : MvPowerSeries ι R → MvPowerSeries ι R) := by
-      apply continuous_pi
-      intro n
-      change Continuous (fun g : MvPowerSeries ι R => coeff n (pderiv i g))
-      simp only [coeff_pderiv]
-      exact (MvPowerSeries.WithPiTopology.continuous_coeff R (n + Finsupp.single i 1)).mul
-        continuous_const
-    refine congr_fun (DenseRange.equalizer
-      (MvPowerSeries.WithPiTopology.denseRange_toMvPowerSeries (σ := σ) (R := R))
-      (g := fun f => pderiv j (subst a f))
-      (h := fun f => ∑ i, subst a (pderiv i f) * pderiv j (a i))
-      ((hd j).comp hc)
-      (continuous_finsetSum _ fun i _ => (hc.comp (hd i)).mul continuous_const) ?_) f
-    funext p
-    simp only [Function.comp_apply]
-    induction p using MvPolynomial.induction_on with
-    | C r =>
-      simp only [MvPolynomial.coe_C, subst_C, pderiv_C, hs0, zero_mul, Finset.sum_const_zero]
-    | add p q hp hq =>
-      simp only [MvPolynomial.coe_add, subst_add ha, map_add (f := _), hp, hq,
-        add_mul, Finset.sum_add_distrib]
-    | mul_X p i hp =>
-      simp only [MvPolynomial.coe_mul, MvPolynomial.coe_X, subst_mul ha, Derivation.leibniz, hp,
-        smul_eq_mul, subst_add ha, subst_X ha, add_mul, Finset.sum_add_distrib, Finset.mul_sum]
-      congr 1
-      · rw [Finset.sum_eq_single i]
-        · simp only [pderiv_X_self, hs1, mul_one]
-        · intro b _ hb
-          simp only [pderiv_X_of_ne (Ne.symm hb), hs0, mul_zero, zero_mul]
-        · simp
-      · exact Finset.sum_congr rfl fun i _ => by ring)
 
 theorem jac_lg_mul_jacEntry (G : LogFGL v d) (a k : Fin d) :
     ∑ l, pderiv l (G.lg a) * jacEntry G k l = if a = k then 1 else 0 := by

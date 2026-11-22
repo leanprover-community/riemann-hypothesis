@@ -76,9 +76,6 @@ noncomputable def heightOneOfNonsingular {x y : F} (h : W.toAffine.Nonsingular x
   isPrime := (isMaximal_XYIdeal h.1).isPrime
   ne_bot := XYIdeal_ne_bot x (C y)
 
-theorem heightOneOfNonsingular_asIdeal {x y : F} (h : W.toAffine.Nonsingular x y) :
-    (heightOneOfNonsingular h).asIdeal = XYIdeal W.toAffine x (C y) := rfl
-
 theorem heightOneOfNonsingular_inj {x y x' y' : F} (h : W.toAffine.Nonsingular x y)
     (h' : W.toAffine.Nonsingular x' y')
     (he : heightOneOfNonsingular h = heightOneOfNonsingular h') : x = x' ∧ y = y' :=
@@ -142,7 +139,6 @@ theorem exists_eq_XYIdeal {P : Ideal W.toAffine.CoordinateRing} [hP : P.IsPrime]
   · exact ⟨x, _, (nonsingular_neg ..).mpr hns,
       ((isMaximal_XYIdeal ((equation_neg ..).mpr hy)).eq_of_le hP.ne_top h1).symm⟩
   · exact ⟨x, y, hns, ((isMaximal_XYIdeal hy).eq_of_le hP.ne_top h1).symm⟩
-
 
 omit [IsAlgClosed F] [W.IsElliptic] in
 theorem isDiscreteValuationRing_localization_XYIdeal {x y : F} (h : W.toAffine.Nonsingular x y)

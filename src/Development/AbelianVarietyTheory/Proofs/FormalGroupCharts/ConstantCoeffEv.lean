@@ -53,9 +53,6 @@ theorem constantCoeff_ev {a : Fin m → Pt k n d} (ha : CZ a) {f : PS k m d} (hf
     constantCoeff (ev a f) = 0 :=
   constantCoeff_subst_eq_zero ha.hasSubst (fun p => ha p.1 p.2) hf
 
-theorem CZ.ev {a : Fin m → Pt k n d} (ha : CZ a) {l : ℕ} {b : Fin l → Pt k m d} (hb : CZ b) :
-    CZ (fun j i => ev a (b j i)) := fun j i => constantCoeff_ev ha (hb j i)
-
 theorem ev_ev {l : ℕ} {a : Fin m → Pt k n d} (ha : CZ a) {b : Fin l → Pt k m d} (hb : CZ b) (f : PS k l d) :
     ev a (ev b f) = ev (fun j i => ev a (b j i)) f := by
   unfold ev

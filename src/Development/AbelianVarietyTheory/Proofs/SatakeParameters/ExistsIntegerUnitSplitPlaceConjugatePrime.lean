@@ -14,9 +14,6 @@ namespace GlobalTheory.SplitSep
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
-local notation3 "L⁺" => maximalRealSubfield L
-local notation3 "cc" => IsCMField.complexConj L
-
 theorem exists_near (v : HeightOneSpectrum (𝓞 L⁺))
     (f : v.adicCompletion L⁺ → v.adicCompletion L⁺) (hf : Continuous f)
     (y₀ : v.adicCompletion L⁺) (hy₀ : Valued.v (f y₀) < 1) :
@@ -28,7 +25,6 @@ theorem exists_near (v : HeightOneSpectrum (𝓞 L⁺))
   obtain ⟨k, hk⟩ := (HeightOneSpectrum.denseRange_algebraMap (R := 𝓞 L⁺) (K := L⁺) v).exists_mem_open
     hU ⟨y₀, hy₀⟩
   exact ⟨k, hk⟩
-
 
 variable (L) in
 theorem exists_sep (s : ReciprocityTheory.Aut.SplitPlace L) :

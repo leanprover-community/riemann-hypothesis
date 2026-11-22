@@ -323,8 +323,6 @@ theorem rd_split (s : Bool) (X : Mat n) : (rd X : Module.End ℂ (Sm n V)) = T s
 def eM (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] (n : ℕ) (s : Bool) : Matrix (Fin n) (Fin n) (Module.End ℂ (Sm n V)) :=
   Matrix.of fun a b => T s (Matrix.single a b 1)
 
-theorem eM_apply (s : Bool) (a b : Fin n) : eM V n s a b = T s (Matrix.single a b 1) := rfl
-
 theorem eM_rel (s : Bool) (a b c d : Fin n) :
     eM V n s a b * eM V n s c d - eM V n s c d * eM V n s a b =
       (if b = c then eM V n s a d else 0) - (if a = d then eM V n s c b else 0) := by

@@ -91,20 +91,6 @@ structure IsCxBasis {n : ℕ} (σ : K →+* ℂ) {W : Type} [AddCommGroup W] [Mo
 
   span : Submodule.span ℂ (Set.range fun i => j (Pi.single i 1)) = ⊤
 
-structure Chain (m : ℕ) (A B : Type) [NormedAddCommGroup A] [InnerProductSpace ℂ A]
-    [NormedAddCommGroup B] [InnerProductSpace ℂ B] where
-
-  Mult : ℕ → Type
-  [inst1 : ∀ j, NormedAddCommGroup (Mult j)]
-  [inst2 : ∀ j, InnerProductSpace ℂ (Mult j)]
-  [inst3 : ∀ j, FiniteDimensional ℂ (Mult j)]
-
-  zero : Mult 0 ≃ₗᵢ[ℂ] B
-
-  top : Mult m ≃ₗᵢ[ℂ] A
-
-  io : ∀ j, Mult (j + 1) →ₗ[ℂ] Mult j
-
 attribute [instance] Chain.inst1 Chain.inst2 Chain.inst3
 
 namespace Chain

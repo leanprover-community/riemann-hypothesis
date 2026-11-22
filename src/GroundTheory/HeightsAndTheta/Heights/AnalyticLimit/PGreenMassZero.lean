@@ -20,12 +20,9 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PushAFinsumInter
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Pullback
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Measure
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AtlasIndep
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Degree
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ProjectiveLinePartitionContinuousCoe
 
 @[expose] public section
 

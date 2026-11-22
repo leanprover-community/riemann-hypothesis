@@ -7,7 +7,6 @@ public import Formalism.CyclotomicNorms.IrreducibilityOfGoodTuple
 public import Formalism.PadicSubsetSums.CentralIdempotents.GaloisIrreducibility
 public import Formalism.GaloisIrreducibility.NoSolvableTransitive
 public import Formalism.PadicSubsetSums.StableGradedCounts.LocalEstimateIVOfTypeSetWeight
-public import Formalism.PadicSubsetSums.StableGradedCounts.TWCentralIdempotentIntegral
 
 @[expose] public section
 

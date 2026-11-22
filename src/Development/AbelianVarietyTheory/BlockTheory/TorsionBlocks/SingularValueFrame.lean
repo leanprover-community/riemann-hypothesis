@@ -16,10 +16,6 @@ section Matrices
 
 variable {n : ℕ} (ε : Fin n → Bool)
 
-def IsInP (X : Matrix (Fin n) (Fin n) ℂ) : Prop := X.IsHermitian ∧ ∀ i j, ε i = ε j → X i j = 0
-
-def realRank : ℕ := min (Fintype.card {i // ε i = true}) (Fintype.card {i // ε i = false})
-
 end Matrices
 
 section Place

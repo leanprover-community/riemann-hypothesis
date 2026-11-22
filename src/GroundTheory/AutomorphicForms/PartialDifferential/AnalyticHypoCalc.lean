@@ -13,8 +13,6 @@ noncomputable section
 
 variable {n : ℕ}
 
-local notation "𝔼" => EuclideanSpace ℝ (Fin n)
-
 theorem contDiff_dT {f : 𝔼 → ℂ} (hf : ContDiff ℝ ∞ f) {k : ℕ} (v : Fin k → 𝔼) :
     ContDiff ℝ ∞ (dT v f) := by
   have h : ContDiff ℝ ∞ (iteratedFDeriv ℝ k f) := by
@@ -68,15 +66,6 @@ theorem pdT_snoc {f : 𝔼 → ℂ} (hf : ContDiff ℝ ∞ f) {k : ℕ} (J : Fin
     funext l
     refine Fin.lastCases ?_ (fun j ↦ ?_) l <;> simp
   rw [pdT, h, dT_snoc hf]
-  rfl
-
-theorem pdT_cons {f : 𝔼 → ℂ} (hf : ContDiff ℝ ∞ f) {k : ℕ} (i : Fin n) (J : Fin k → Fin n) :
-    pdT (Fin.cons i J) f = pd i (pdT J f) := by
-  have h : (fun l ↦ ev (Fin.cons (α := fun _ ↦ Fin n) i J l)) =
-      Fin.cons (ev i : 𝔼) (fun l ↦ ev (J l)) := by
-    funext l
-    refine Fin.cases ?_ (fun j ↦ ?_) l <;> simp
-  rw [pdT, h, dT_cons hf]
   rfl
 
 theorem fderiv_fderiv_apply_comm {g : 𝔼 → ℂ} (hg : ContDiff ℝ ∞ g) (x a b : 𝔼) :

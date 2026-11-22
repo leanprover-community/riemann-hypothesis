@@ -22,12 +22,9 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PushAFinsumInter
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Pullback
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Measure
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AtlasIndep
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Degree
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ProjectiveLinePartitionContinuousCoe
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Objects
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StListTailLogSmooth
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PGreenMassStep
@@ -35,7 +32,6 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PGreenMassRepla
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PGreenMassError
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.ConvergenceRate
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
-public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Telescoping
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.RegularizedMaxC2ExampleRealLine
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.IsOpenKappaOpenNeighbourhood
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.NormIteratedFDerivCompLeOfIsOpen

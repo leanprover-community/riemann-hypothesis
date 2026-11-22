@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RegularisedSiegelWeilFirstTerm
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EisensteinIsotropicLine
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSquareIntegrableIffMemL2
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDualFamilyOfIsLattice
 
 @[expose] public section

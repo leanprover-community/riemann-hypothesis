@@ -60,7 +60,6 @@ def IsLeftSmooth (a : normOneGL (K := K) (n := n) → ℂ) : Prop :=
     ∃ U : Subgroup (AdelicGLn.integralFiniteGL K n), IsOpen (U : Set (AdelicGLn.integralFiniteGL K n)) ∧
       ∀ u ∈ U, ∀ x, a (finOne K n u * x) = a x
 
-
 variable (K n) in
 def trForm (X Y : (isExpLieAlgebra K n).lieSubalgebra) : ℝ :=
   Algebra.trace ℝ _ (Matrix.trace ((X : ArchMatrix K n) * (Y : ArchMatrix K n)))
@@ -79,16 +78,6 @@ def TraceSum : Prop :=
 def SummandsSpan : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure],
     (⨆ V : {V // IsSummand μ V}, V.1).topologicalClosure = cuspidalL2 μ
-
-def TwistedSum : Prop :=
-  ∀ (G H : Type) [Group G] [TopologicalSpace G] [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-    (π : UnitaryRep G H) (W : Submodule ℂ H) (e : G ≃* G) (U : H ≃ₗᵢ[ℂ] H) (B : H →L[ℂ] H),
-    (∀ g v, U (π g v) = π (e g) (U v)) → W.map (U : H →ₗ[ℂ] H) = W →
-    (⨆ V : {V // IsSummandOf π W V}, V.1).topologicalClosure = W →
-    (∀ V V', IsSummandOf π W V → IsSummandOf π W V' → V ≠ V' → V ⟂ V') →
-    (∀ V, IsSummandOf π W V → ∀ v ∈ V, B v ∈ V) → IsTraceClass (prj W ∘L B ∘L prj W) →
-    HasSum (fun V : {V // IsSummandOf π W V ∧ V.map (U : H →ₗ[ℂ] H) = V} => trOn V.1 (B ∘L (U : H →L[ℂ] H)))
-      (trOn W (B ∘L (U : H →L[ℂ] H)))
 
 def EigSplit : Prop :=
   ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (W : Submodule ℂ H) (A : H →L[ℂ] H),

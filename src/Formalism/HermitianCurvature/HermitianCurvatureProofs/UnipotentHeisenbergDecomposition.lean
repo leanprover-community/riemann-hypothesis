@@ -170,10 +170,6 @@ lemma mat_ext {m : ℕ} {A B : Matrix (Fin m) (Fin m) ℂ} (h : ∀ u, A *ᵥ u 
   simp only [liftVec, res]; rw [dite_eq_left (by rw [lv_val]; omega)]
   congr 1
 
-lemma res_add (u w : Fin (2 * (1 + r') + k + 1) → ℂ) : res (u + w) = res u + res w := rfl
-lemma res_sub (u w : Fin (2 * (1 + r') + k + 1) → ℂ) : res (u - w) = res u - res w := rfl
-lemma res_smul (c : ℂ) (u : Fin (2 * (1 + r') + k + 1) → ℂ) : res (c • u) = c • res u := rfl
-
 lemma hermitian_form_base_vector_right (u : Fin (2 * (1 + r') + k + 1) → ℂ) : herm (Hpk k (1 + r')) u (e0 k r') = u (iL k r') := by
   rw [herm3]; simp [herm_zero_right]
 

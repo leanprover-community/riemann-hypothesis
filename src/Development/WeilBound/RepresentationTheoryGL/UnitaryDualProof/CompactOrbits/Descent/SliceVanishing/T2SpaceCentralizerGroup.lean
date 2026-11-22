@@ -18,8 +18,6 @@ theorem t2k : T2Space k := Asm.t2
 
 theorem tdk : TotallyDisconnectedSpace k := totallyDisconnectedSpace_localField
 
-theorem sck : SecondCountableTopology k := (GlobalTheory.SplitWeil.Model.secondCountable_and_t2_local_field (k := k)).1
-
 theorem continuous_aevalM (P : k[X]) : Continuous fun x : Matrix (Fin n) (Fin n) k => aeval x P := by
   have : T2Space k := t2k
   simp_rw [aeval_eq_sum_range]

@@ -40,12 +40,6 @@ def pm (F : Type) [Field F] (w : Equiv.Perm (Fin r)) : GL (Fin r) F where
       rw [if_neg hl, zero_mul]
     · simp
 
-theorem pm_val (w : Equiv.Perm (Fin r)) (a c : Fin r) :
-    (pm F w : Matrix (Fin r) (Fin r) F) a c = if a = w c then 1 else 0 := rfl
-
-theorem pm_inv_val (w : Equiv.Perm (Fin r)) (a c : Fin r) :
-    (((pm F w)⁻¹ : GL (Fin r) F) : Matrix (Fin r) (Fin r) F) a c = if c = w a then 1 else 0 := rfl
-
 theorem pm_conj (w' w : Equiv.Perm (Fin r)) (g : GL (Fin r) F) (a c : Fin r) :
     (((pm F w')⁻¹ * g * pm F w : GL (Fin r) F) : Matrix (Fin r) (Fin r) F) a c =
       (g : Matrix (Fin r) (Fin r) F) (w' a) (w c) := by

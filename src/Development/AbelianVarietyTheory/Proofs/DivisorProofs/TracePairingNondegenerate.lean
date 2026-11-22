@@ -1,9 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinRel
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TrPApply
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulRealAdEqZero
 

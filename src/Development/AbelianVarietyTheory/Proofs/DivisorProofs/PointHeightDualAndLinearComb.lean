@@ -2,7 +2,10 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsUniqueLiesUnder
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAlgAtlasAtlasOf
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LinearIndependentOfCutSec
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RingKrullDimRingOfIntegers
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GrNormPosOfBasis
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NontrivialIsomClassInt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmallSectionHeightLowerBound
 

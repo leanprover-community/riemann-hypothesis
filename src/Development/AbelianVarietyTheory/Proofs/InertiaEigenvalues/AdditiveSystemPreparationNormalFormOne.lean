@@ -21,8 +21,6 @@ noncomputable def prepV (q : ℕ) (M : ℕ → Matrix m m F) (A : Matrix m m F) 
   Nat.rec (motive := fun _ => ℕ → Matrix m m F) (fun _ => 0)
     (fun _ V n => M (n + 1) + V (n + 1) * A.map (fun a => a ^ q ^ (n + 1))) k
 
-theorem prepV_zero (q : ℕ) (M : ℕ → Matrix m m F) (A : Matrix m m F) (n : ℕ) : prepV q M A 0 n = 0 := rfl
-
 theorem prepV_succ (q : ℕ) (M : ℕ → Matrix m m F) (A : Matrix m m F) (k n : ℕ) :
     prepV q M A (k + 1) n = M (n + 1) + prepV q M A k (n + 1) * A.map (fun a => a ^ q ^ (n + 1)) := rfl
 

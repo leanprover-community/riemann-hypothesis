@@ -2,7 +2,9 @@ module
 
 public import Mathlib
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.CechFunctor
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.RiemannRoch
+public import GroundTheory.FunctionField.ExistsBoundDegSubFinrankL
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.InvertibleDual
+public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CurveFunctionField
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.NaturalLeray
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.HasExtInstances
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.PSpaceFinite

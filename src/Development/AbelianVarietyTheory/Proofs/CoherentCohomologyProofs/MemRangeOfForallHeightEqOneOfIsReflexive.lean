@@ -31,7 +31,6 @@ theorem finite_height_eq_one_mem {a : A} (ha : a ≠ 0) :
   rintro p ⟨hp, hap⟩
   exact mem_minimalPrimes_span_singleton_of_height_eq_one hp ha hap
 
-
 omit [IsNoetherianRing A] in
 theorem krullDimLE_one_of_height_eq_one (p : Ideal A) [p.IsPrime] (hp : p.height = 1)
     (B : Type*) [CommRing B] [Algebra A B] [IsLocalization.AtPrime B p] :
@@ -176,14 +175,12 @@ theorem mem_range_of_forall_height_eq_one_of_projective [Module.Projective A M]
   mem_range_of_forall_height_eq_one_of_dual
     (fun _ _ => exists_smul_eq_of_forall_dual_dvd_of_projective) f hf ha hav h
 
-
 omit [IsDomain A] [IsNoetherianRing A] [IsIntegrallyClosed A] in
 omit [IsNoetherianRing A] [IsIntegrallyClosed A] in
 theorem isTorsionFree_of_isLocalizedModule (f : M →ₗ[A] V) [IsLocalizedModule A⁰ f] :
     Module.IsTorsionFree A V :=
   ⟨fun r hr => ((Module.End.isUnit_iff _).mp
     (IsLocalizedModule.map_units f (⟨r, hr.mem_nonZeroDivisors⟩ : A⁰))).1⟩
-
 
 omit [IsDomain A] [IsNoetherianRing A] [IsIntegrallyClosed A] in
 theorem injective_of_isLocalizedModule_nonZeroDivisors [Module.IsTorsionFree A M]
@@ -272,7 +269,6 @@ theorem mem_range_algebraMap_iff_mem_primeLocalSubalgebra (p : Ideal A) [p.IsPri
 
 variable [IsNoetherianRing A]
 
-
 variable (K) in
 noncomputable def heightOneOrdHom (p : Ideal A) [p.IsPrime] (hp : p.height = 1) : K →*₀ ℤᵐ⁰ :=
   haveI := IsLocalization.isNoetherianRing p.primeCompl (primeLocalSubalgebra K p) inferInstance
@@ -281,7 +277,6 @@ noncomputable def heightOneOrdHom (p : Ideal A) [p.IsPrime] (hp : p.height = 1) 
 
 noncomputable def heightOneOrd_vw (p : Ideal A) [p.IsPrime] (hp : p.height = 1) (x : K) : ℤ :=
   WithZero.log (heightOneOrdHom K p hp x)
-
 
 omit [IsDomain A] [IsNoetherianRing A] in
 theorem ord_map_ringEquiv {B : Type*} [CommRing B] (e : A ≃+* B) (a : A) :
@@ -387,7 +382,6 @@ theorem mem_range_algebraMap_iff_forall_height_eq_one (x : K) :
   simp only [mem_primeLocalSubalgebra_iff]
   exact mem_range_iff_forall_height_eq_one_of_projective (Algebra.linearMap A K) x
 
-
 theorem mem_range_tensor_iff_forall_height_eq_one {M : Type*} [AddCommGroup M] [Module A M]
     [Module.Projective A M] (v : K ⊗[A] M) :
     v ∈ LinearMap.range (TensorProduct.mk A K M 1) ↔
@@ -400,7 +394,6 @@ theorem mem_range_tensor_iff_forall_height_eq_one {M : Type*} [AddCommGroup M] [
 section Ord
 
 variable (p : Ideal A) [p.IsPrime] (hp : p.height = 1)
-
 
 omit [IsIntegrallyClosed A] in
 theorem heightOneOrdHom_eq_valuation_inv (B : Type*) [CommRing B] [IsDomain B]
@@ -419,21 +412,6 @@ theorem mem_primeLocalSubalgebra_iff_heightOneOrd_vw_nonneg {x : K} (hx : x ≠ 
     one_le_inv₀ (zero_lt_iff.mpr ((map_ne_zero _).mpr hx))] at h1
   obtain ⟨y, rfl⟩ := IsDiscreteValuationRing.exists_lift_of_le_one h1
   exact y.2
-
-theorem heightOneOrd_vw_algebraMap_pos_iff {a : A} (ha : a ≠ 0) :
-    0 < heightOneOrd_vw p hp (algebraMap A K a) ↔ a ∈ p := by
-  have ha' : algebraMap A K a ≠ 0 := IsFractionRing.to_map_eq_zero_iff.not.mpr ha
-  refine ⟨fun h => by_contra fun hn => h.ne' (heightOneOrd_vw_algebraMap_of_notMem p hp hn),
-    fun hap => lt_of_not_ge fun h => ?_⟩
-  have h1 : (algebraMap A K a)⁻¹ ∈ primeLocalSubalgebra K p := by
-    rw [mem_primeLocalSubalgebra_iff_heightOneOrd_vw_nonneg p hp (inv_ne_zero ha'),
-      heightOneOrd_vw_inv]
-    omega
-  obtain ⟨s, hs, c, e⟩ := (mem_primeLocalSubalgebra_iff p _).mp h1
-  have : s = c * a := by
-    apply IsFractionRing.injective A K
-    rw [map_mul, e, Algebra.smul_def, inv_mul_cancel_right₀ ha']
-  exact hs (this ▸ p.mul_mem_left c hap)
 
 end Ord
 

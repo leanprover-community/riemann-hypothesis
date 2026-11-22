@@ -27,10 +27,6 @@ variable {S : Scheme.{0}} {A : Over S} [GrpObj A] [IsCommMonObj A]
 def cub {T : Over S} {n : ℕ} (xs : Fin n → (T ⟶ A)) : ULift.{0} (Finset (Fin n)) → (T.left ⟶ A.left) :=
   fun I => (psum A xs I.down).left
 
-private theorem padd_lemma {T : Over S} (a b : T ⟶ A) : padd A a b = a * b := rfl
-
-private theorem pzero_eq_one_cusp_form_evaluations {T : Over S} : pzero A T = 1 := rfl
-
 theorem comp_cub {T T' : Over S} {n : ℕ} (h : T' ⟶ T) (xs : Fin n → (T ⟶ A)) (I : ULift.{0} (Finset (Fin n))) :
     h.left ≫ cub xs I = cub (fun k => h ≫ xs k) I := by
   simp only [cub]

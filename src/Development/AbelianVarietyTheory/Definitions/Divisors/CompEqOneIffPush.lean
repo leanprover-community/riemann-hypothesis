@@ -31,10 +31,6 @@ section Basic
 variable {A A' A'' : Over S} [GrpObj A] [IsCommMonObj A] [GrpObj A'] [IsCommMonObj A'] [GrpObj A'']
   [IsCommMonObj A'']
 
-structure IsLin (ρ : RingAct A O) (ρ' : RingAct A' O) (f : A ⟶ A') : Prop where
-  hom : IsMonHom f
-  comm : ∀ a, ρ.act a ≫ f = f ≫ ρ'.act a
-
 structure IsIsogDeg (f : A ⟶ A') (d : ℕ) : Prop where
   fin : IsFinite f.left
   flat : Flat f.left
@@ -44,12 +40,10 @@ structure IsIsogDeg (f : A ⟶ A') (d : ℕ) : Prop where
 def KilledBy (ρ : RingAct A O) (𝔴 : Ideal O) {T : Over S} (x : T ⟶ A) : Prop :=
   ∀ a ∈ 𝔴, x ≫ ρ.act a = 1
 
-
 omit [GrpObj A] [IsCommMonObj A] [GrpObj A'] [IsCommMonObj A'] in
 theorem IsIsogDeg.of_isIso (f : A ⟶ A') [IsIso f] : IsIsogDeg f 1 := by
   have : IsIso f.left := inferInstanceAs (IsIso ((Over.forget S).map f))
   exact ⟨inferInstance, inferInstance, inferInstance, congrFun (Scheme.Hom.finrank_eq_one_of_isIso _)⟩
-
 
 omit [GrpObj A] [IsCommMonObj A] [GrpObj A'] [IsCommMonObj A'] [GrpObj A''] [IsCommMonObj A''] in
 theorem IsIsogDeg.comp {f : A ⟶ A'} {g : A' ⟶ A''} {d e : ℕ} (hf : IsIsogDeg f d) (hg : IsIsogDeg g e) :
@@ -62,8 +56,6 @@ theorem IsIsogDeg.comp {f : A ⟶ A'} {g : A' ⟶ A''} {d e : ℕ} (hf : IsIsogD
   · rw [Over.comp_left]; infer_instance
   · rw [Over.comp_left, FinrankComp.finrank_comp_of_const _ _ d hf.rank, hg.rank]
 
-
-
 omit [GrpObj A] [IsCommMonObj A] [GrpObj A'] [IsCommMonObj A'] in
 theorem IsIsogDeg.of_isPullback {C C' : Over S'} {f : A ⟶ A'} {g : C ⟶ C'} {d : ℕ} (hf : IsIsogDeg f d)
     {u : C.left ⟶ A.left} {v : C'.left ⟶ A'.left} (H : IsPullback u g.left f.left v) : IsIsogDeg g d := by
@@ -74,7 +66,6 @@ theorem IsIsogDeg.of_isPullback {C C' : Over S'} {f : A ⟶ A'} {g : C ⟶ C'} {
     fun y => (Scheme.Hom.finrank_of_isPullback _ _ _ _ H y).trans (hf.rank _)⟩
 
 abbrev ker (f : A ⟶ A') : Over S := pullback f η[A']
-
 
 omit [GrpObj A] [IsCommMonObj A] [IsCommMonObj A'] in
 theorem IsIsogDeg.ker {f : A ⟶ A'} {d : ℕ} (hf : IsIsogDeg f d) : IsIsogDeg (toUnit (ker f)) d := by
@@ -112,25 +103,6 @@ end Basic
 
 variable {A : Over S} [GrpObj A] [IsCommMonObj A]
 
-structure Chain (ρ : RingAct A O) (𝔴 : Ideal O) (d n : ℕ) where
-
-  B : Fin (n + 1) → Over S
-  [grp : ∀ i, GrpObj (B i)]
-  [comm : ∀ i, IsCommMonObj (B i)]
-  ab : ∀ i, IsAbelianScheme (B i)
-
-  act : ∀ i, RingAct (B i) O
-
-  φ : ∀ i : Fin n, B i.castSucc ⟶ B i.succ
-  φ_lin : ∀ i, IsLin (act _) (act _) (φ i)
-  φ_deg : ∀ i, IsIsogDeg (φ i) d
-
-  π : ∀ i, A ⟶ B i
-  π_zero_lin : IsLin ρ (act 0) (π 0)
-  π_zero_iso : IsIso (π 0)
-  π_succ : ∀ i : Fin n, π i.succ = π i.castSucc ≫ φ i
-  ker_last : ∀ (T : Over S) (x : T ⟶ A), x ≫ π (Fin.last n) = 1 ↔ KilledBy ρ 𝔴 x
-
 attribute [instance] Chain.grp Chain.comm
 
 namespace Chain
@@ -138,14 +110,6 @@ namespace Chain
 variable {ρ : RingAct A O} {𝔴 : Ideal O} {d n : ℕ} (C : Chain ρ 𝔴 d n)
 
 end Chain
-
-structure ChainMap {A' : Over S'} [GrpObj A'] [IsCommMonObj A'] {ρ' : RingAct A' O} {ρ : RingAct A O}
-    {𝔴 : Ideal O} {d n : ℕ} (C' : Chain ρ' 𝔴 d n) (C : Chain ρ 𝔴 d n) (f : S' ⟶ S) (u : A'.left ⟶ A.left) where
-
-  ψ : ∀ i, (C'.B i).left ⟶ (C.B i).left
-  cart : ∀ i, IsGrpPullback (C'.B i) (C.B i) f (ψ i)
-  act : ∀ i a, ((C'.act i).act a).left ≫ ψ i = ψ i ≫ ((C.act i).act a).left
-  π_comm : ∀ i, (C'.π i).left ≫ ψ i = u ≫ (C.π i).left
 
 namespace ChainMap
 

@@ -237,10 +237,6 @@ theorem ideleModule_mk (x : IdeleGroup K) :
 theorem continuous_ideleModule : Continuous (ideleModule K) :=
   (QuotientGroup.isQuotientMap_mk _).continuous_iff.2 (IdeleGroup.continuous_ideleModule (K := K))
 
-theorem ideleModule_surjective : Function.Surjective (ideleModule K) := fun t ↦
-  let ⟨x, hx⟩ := IdeleGroup.ideleModule_surjective (K := K) t
-  ⟨mk K x, hx⟩
-
 def normOneSubgroup : Subgroup (IdeleClassGroup K) := (ideleModule K).ker
 
 theorem normOneSubgroup_eq_map :

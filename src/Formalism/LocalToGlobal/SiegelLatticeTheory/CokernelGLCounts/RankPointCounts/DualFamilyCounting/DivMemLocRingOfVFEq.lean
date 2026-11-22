@@ -25,9 +25,6 @@ open Formalism.HermitianLattices.Ext.L3
 
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-local notation "κ" => algebraMap (𝓞 K) K
-
 theorem κι_ne_zero {a : 𝓞 F} (ha : a ≠ 0) : κ (ι a) ≠ 0 := by
   intro h
   apply ha

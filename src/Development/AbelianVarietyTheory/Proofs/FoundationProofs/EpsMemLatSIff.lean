@@ -49,10 +49,6 @@ section Ad
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-local notation "𝔸" => FiniteAdeleRing (𝓞 F) F
-local notation "𝒜" => E ⊗[F] 𝔸
-local notation "𝒮" => tensInt (F := F) 𝔸 (intOE E) (intAd F)
-
 theorem exists_mult {n : ℕ} (Λ : Submodule (𝓞 E) (Fin n → E)) (hfin : Module.Finite (𝓞 E) Λ)
     (hspan : Submodule.span E (Λ : Set (Fin n → E)) = ⊤) :
     ∃ m : ℕ, 0 < m ∧ ∀ Y ∈ matIn 𝒮 n, ∀ u ∈ latS (F := F) 𝔸 𝒮 Λ,

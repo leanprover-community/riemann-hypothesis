@@ -26,9 +26,6 @@ def iotaR (R : RealDat3 D A3 Ks) (i : Fin D.R.m) :
     (Fin (R.nW i) → D.what₂.LL) →ₛₗ[sg0 D A3.A] Formalism.IndefR.Mult.MMap (R.MW i (sg0 D A3.A)) :=
   (R.HW i (sg0 D A3.A)).e.comp ((R.FW i).j (sg0 D A3.A))
 
-theorem iotaR_apply (R : RealDat3 D A3 Ks) (i : Fin D.R.m) (v : Fin (R.nW i) → D.what₂.LL) :
-    iotaR R i v = (R.HW i (sg0 D A3.A)).e ((R.FW i).j (sg0 D A3.A) v) := rfl
-
 variable {R : RealDat D A3.A Ks} {F : Face D A3.A} {X0 : BaseLevelRowSide D}
 
 theorem readW_mem_goodW (Y : Read (A3 := A3) R F X0) (i : Fin D.R.m) (y : D.what₂.Mj ((i : ℕ) + 1)) :

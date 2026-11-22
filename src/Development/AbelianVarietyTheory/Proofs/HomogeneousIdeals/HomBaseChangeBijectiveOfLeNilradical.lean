@@ -517,20 +517,6 @@ theorem exists_eq_torusMap [ConnectedSpace S] (f : splitTorus S X ⟶ splitTorus
   · rw [← hφ, val_add, hφ, hφ, ← val_id, ← val_id, ← val_id, val_add]
   · rw [val_torusMap, hφ]; rfl
 
-variable (X) in
-def uliftMultiples : X ≃ (ULift.{u} ℤ →+ X) where
-  toFun a := (zmultiplesHom X a).comp (AddEquiv.ulift : ULift.{u} ℤ ≃+ ℤ).toAddMonoidHom
-  invFun φ := φ (ULift.up 1)
-  left_inv a := one_zsmul a
-  right_inv φ := by
-    ext ⟨n⟩
-    change n • φ (ULift.up 1) = _
-    rw [← map_zsmul]
-    congr 1
-    ext
-    simp
-
-
 end Characters
 
 theorem connectedSpace_of_isLocalRing (R : Type*) [CommRing R] [IsLocalRing R] :
@@ -656,7 +642,6 @@ theorem pullback_map_torusMap (φ : Y →+ X) :
     (Over.pullback f).map (torusMap S φ) =
       (bcIso f X).inv ≫ torusMap S' φ ≫ (bcIso f Y).hom := by
   rw [(comm_bcMap_iff f _ _).1 (torusMap_bcMap f φ), Iso.inv_hom_id_assoc]
-
 
 end BaseChange
 

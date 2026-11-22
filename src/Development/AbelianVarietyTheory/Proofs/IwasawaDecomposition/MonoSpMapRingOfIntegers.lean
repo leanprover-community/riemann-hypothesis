@@ -37,9 +37,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
 theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
     spMap g ≫ spMap f = spMap (g.comp f) := (Spec.map_comp _ _).symm
 
-theorem sp_inj {A B : Type} [CommRing A] [CommRing B] {f g : A →+* B} (h : spMap f = spMap g) : f = g :=
-  congrArg CommRingCat.Hom.hom (Spec.map_injective h)
-
 section Move
 
 variable {A B T : Type} [CommRing A] [Algebra c.F A] [CommRing B] [Algebra c.F B] [CommRing T] [Algebra c.F T]
@@ -55,8 +52,6 @@ theorem ptF_map {φ : A →ₐ[c.F] B} {P : FrPt Xo c A} {Q : FrPt Xo c B} (h : 
   · rw [Category.assoc, ptF_fst, ptF_fst, h]
   · rw [Category.assoc, ptF_snd, ptF_snd, sp_comp]
     exact congrArg spMap φ.comp_algebraMap.symm
-
-def umap (φ : A →ₐ[c.F] B) (t : Ix Dw → Aˣ) : Ix Dw → Bˣ := fun i => Units.map (φ : A →* B) (t i)
 
 theorem frBor_one (P : FrPt Xo c A) : FrBor 1 P P :=
   ((frBor_calculus E H Dw l Xo c A P P P).1 1).2 ⟨fun _ => 1, fun _ _ _ h => Matrix.one_apply_ne h.ne,
@@ -78,7 +73,6 @@ end Move
 section Dict
 
 variable {S T : Type} [CommRing S] [CommRing T]
-
 
 attribute [local instance] Over.cartesianMonoidalCategory in
 open GlobalTheory.Exist.FlagBaseChange MonObj in
@@ -131,25 +125,6 @@ theorem TanRel.map (ψ : S →+* T) {u v} (h : TanRel Z xF u v) :
   congr 2
   ext s <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
 
-theorem exists_tanRel_right (h₀ : xF ≫ pullback.fst _ _ = x₀) {u} (hu : IsTanAt x₀ u) : ∃ v, TanRel Z xF u v := by
-  obtain ⟨w, h1, h2⟩ := (sab_dict Z.m0.toSABMap h₀).1 u hu.1
-  exact ⟨_, w, h1, h2, rfl⟩
-
-theorem exists_tanRel_left (hx : xF ≫ Z.j = x) {v} (hv : IsTanAtG Z.t x v) : ∃ u, TanRel Z xF u v := by
-  obtain ⟨w, h1, h2⟩ := (sab_dict Z.m hx).1 v hv.1
-  exact ⟨_, w, h1, rfl, h2⟩
-
-theorem TanRel.tan_iff (h₀ : xF ≫ pullback.fst _ _ = x₀) (hx : xF ≫ Z.j = x) {u v} (h : TanRel Z xF u v) :
-    IsTanAt x₀ u ↔ IsTanAtG Z.t x v := by
-  obtain ⟨w, h1, rfl, rfl⟩ := h
-  exact ((sab_dict Z.m0.toSABMap h₀).2.1 w h1).1.trans ((sab_dict Z.m hx).2.1 w h1).1.symm
-
-theorem TanRel.eig_iff {u v} (h : TanRel Z xF u v) (χ : 𝓞 E → S) :
-    (∀ a, u ≫ (Xo.univ.t.act.act a).left = spMap (epsMul (χ a)) ≫ u) ↔
-      ∀ a, v ≫ (Z.t.act.act a).left = spMap (epsMul (χ a)) ≫ v := by
-  obtain ⟨w, h1, rfl, rfl⟩ := h
-  exact (((sab_dict Z.m0.toSABMap rfl).2.1 w h1).2 χ).trans (((sab_dict Z.m rfl).2.1 w h1).2 χ).symm
-
 theorem TanRel.comb_iff (h₀ : xF ≫ pullback.fst _ _ = x₀) (hx : xF ≫ Z.j = x) {n : ℕ} {u v u' v'}
     (h : ∀ i : Fin n, TanRel Z xF (u i) (v i)) (h' : TanRel Z xF u' v') (a : Fin n → S) :
     IsCombAt x₀ u a u' ↔ IsCombAtG Z.t x v a v' := by
@@ -163,15 +138,6 @@ variable [Algebra c.F S] [Algebra c.F T]
 
 def Comparison₂ (P : FrPt Xo c S) {φ : c.F →+* S} {x : Sp S ⟶ Z.X} (g : EigFrame Z φ x) : Prop :=
   φ = algebraMap c.F S ∧ GlobalTheory.AllWt.ptF P ≫ Z.j = x ∧ ∀ τ i, TanRel Z (GlobalTheory.AllWt.ptF P) (P.u τ i) (g.v τ i)
-
-theorem exists_tie_frame (P : FrPt Xo c S) (hx : GlobalTheory.AllWt.ptF P ≫ Z.j = x) :
-    ∃ g : EigFrame Z (algebraMap c.F S) x, Comparison₂ P g := by
-  choose v hv using fun τ i => exists_tanRel_right (Z := Z) (ptF_fst P) (P.tan τ i)
-  refine ⟨⟨v, fun τ i => ((hv τ i).tan_iff (ptF_fst P) hx).1 (P.tan τ i), fun τ i => ((hv τ i).eig_iff _).1 (P.eig τ i),
-    fun τ w hw he => ?_⟩, rfl, hx, hv⟩
-  obtain ⟨u, hu⟩ := exists_tanRel_left hx hw
-  exact (existsUnique_congr fun a => TanRel.comb_iff (ptF_fst P) hx (hv τ) hu a).1
-    (P.basis τ u ((hu.tan_iff (ptF_fst P) hx).2 hw) ((hu.eig_iff _).2 he))
 
 theorem Comparison₂.tri_of_bm {P : FrPt Xo c S} {Q : FrPt Xo c T} {φ : c.F →+* S} {φ' : c.F →+* T} {x' : Sp T ⟶ Z.X}
     {f : EigFrame Z φ x} {g : EigFrame Z φ' x'} (hf : Comparison₂ P f) (hg : Comparison₂ Q g) {ψ : S →ₐ[c.F] T} {t : Ix Dw → Tˣ}

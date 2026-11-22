@@ -26,10 +26,6 @@ theorem embHom_apply_ll {F : Type} [CommRing F] {r : ℕ} (a : Matrix (Fin r) (F
     GlobalTheory.JR.Step.embHom r F a (Fin.last r) (Fin.last r) = 1 := by
   simp [GlobalTheory.JR.Step.embHom, finSumFinEquiv_symm_last]
 
-theorem coe_emb {F : Type} [CommRing F] {r : ℕ} (g : GL (Fin r) F) :
-    ((GlobalTheory.JR.Step.emb r F g : GL (Fin (r + 1)) F) : Matrix (Fin (r + 1)) (Fin (r + 1)) F) =
-      GlobalTheory.JR.Step.embHom r F (g : Matrix (Fin r) (Fin r) F) := rfl
-
 theorem coe_emb_inv {F : Type} [CommRing F] {r : ℕ} (g : GL (Fin r) F) :
     (((GlobalTheory.JR.Step.emb r F g)⁻¹ : GL (Fin (r + 1)) F) : Matrix (Fin (r + 1)) (Fin (r + 1)) F) =
       GlobalTheory.JR.Step.embHom r F ((g⁻¹ : GL (Fin r) F) : Matrix (Fin r) (Fin r) F) := by

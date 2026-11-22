@@ -49,7 +49,6 @@ section Block
 
 variable {ι : Type} [Fintype ι] {n : ℕ}
 
-
 open Classical in
 def bigM (g : ι → Matrix (Fin n) (Fin n) ℂ) : Matrix (ι × Fin n × Fin n) (ι × Fin n × Fin n) ℂ :=
   fun x y => if x.1 = y.1 ∧ x.2.2 = y.2.2 then g x.1 x.2.1 y.2.1 else 0
@@ -356,13 +355,6 @@ theorem gramC_one {E : Type} [Field E] (emb : ι → E →+* ℂ) :
   simp only [gramC]
   exact Matrix.map_one _ (map_zero _) (map_one _)
 
-theorem frame_std {E : Type} [Field E] (emb : ι → E →+* ℂ) (y : Frames (gramC (1 : Matrix (Fin n) (Fin n) E) emb))
-    (hy : y.IsON) (τ : ι) :
-    (y.1 τ)ᴴ * gramC (1 : Matrix (Fin n) (Fin n) E) emb τ * y.1 τ = 1 := by
-  refine frame_pos y hy τ ?_
-  simp only [gramC_one]
-  exact Matrix.PosSemidef.one
-
 end Pos
 
 section Image
@@ -412,7 +404,6 @@ theorem map_ten (s : K →+* ℂ) (f : ι → MvPolynomial (Fin n × Fin n) K) :
   refine Finset.prod_congr rfl fun τ _ => ?_
   simp only [Formalism.GradedWeylDivisibility.blockEmb]
   rw [MvPolynomial.map_rename]
-
 
 omit [CharZero K] in
 theorem map_mem_CSpan (s : K →+* ℂ) (lam : ι → DomWeight n) (F : MvPolynomial (ι × Fin n × Fin n) K) (hF : F ∈ VV K lam) :

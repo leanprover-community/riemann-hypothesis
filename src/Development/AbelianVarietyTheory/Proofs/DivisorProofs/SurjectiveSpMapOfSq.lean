@@ -23,16 +23,4 @@ theorem surjective_spMap_of_sq {A B : Type} [CommRing A] [CommRing B] (π : A �
   rw [← range_comap_of_surjective B π hπ] at hx
   exact hx
 
-theorem pt_dual_le_of_fst : ∀ (R : Type) [CommRing R] (H : Over (Sp R)) (D : Type) [CommRing D] [Algebra R D]
-      (Z : Over.mk (spMap (algebraMap R (DualNumber D))) ⟶ H) (U : H.left.Opens),
-      ⊤ ≤ (spOver (TrivSqZeroExt.fstHom R D D) ≫ Z).left ⁻¹ᵁ U → ⊤ ≤ Z.left ⁻¹ᵁ U := by
-  intro R _ H D _ _ Z U h x _
-  have hs : Function.Surjective (spMap ((TrivSqZeroExt.fstHom R D D : DualNumber D →ₐ[R] D) : DualNumber D →+* D)) :=
-    surjective_spMap_of_sq _ (fun d ↦ ⟨TrivSqZeroExt.inl d, rfl⟩) fun a ha ↦ by
-      have h0 : a.fst = 0 := ha
-      ext <;> simp [h0]
-  obtain ⟨y, rfl⟩ := hs x
-  have hy := h (show y ∈ (⊤ : (Sp D).Opens) from trivial)
-  simpa [Over.comp_left, PDiv.spOver_left] using hy
-
 end GlobalTheory.PtExt

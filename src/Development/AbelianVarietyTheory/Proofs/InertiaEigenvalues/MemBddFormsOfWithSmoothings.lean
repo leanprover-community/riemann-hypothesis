@@ -18,7 +18,6 @@ namespace GlobalTheory.Petersson
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
 
-
 variable (E a) in
 def bddForms (ω : HChar E) : Submodule ℂ (GA E a → ℂ) where
   carrier := {φ | Continuous φ ∧ (∀ γ g, φ (ratGL E a γ * g) = φ g) ∧
@@ -79,7 +78,6 @@ theorem integrable_mul_conj (hω : ω.IsUnitary) (h : φ ∈ bddForms E a ω) (h
   refine Integrable.of_bound (aesm_mul_conj μ hω h h') (C * D) (Eventually.of_forall fun q => ?_)
   rw [norm_mul, Complex.norm_conj]
   exact mul_le_mul (hC _) (hD _) (norm_nonneg _) ((norm_nonneg _).trans (hC 1))
-
 
 variable {μ} in
 theorem pet_eq_setIntegral (hω : ω.IsUnitary) (h : φ ∈ bddForms E a ω) (h' : ψ ∈ bddForms E a ω) {𝓕 : Set (GA E a)}
@@ -226,7 +224,6 @@ theorem pet_smoothing_left (hω : ω.IsUnitary) (hα : IsTest (invSet E a) α) (
   refine integral_congr_ae (.of_forall fun x => ?_)
   simp only [(pet_eq_setIntegral hω (chart_mem_bddForms h x) h' hD).2, ← integral_const_mul, mul_assoc]
 
-
 omit [_root_.NumberField.IsTotallyComplex E] in
 def invL (x : Lie E a) : Lie E a := toL (Matrix.of x)⁻¹
 
@@ -254,17 +251,6 @@ theorem contDiffAt_invL {x : Lie E a} (h : x ∈ invSet E a) : ContDiffAt ℝ (�
 def withSmoothings (π : CuspSub E a) : Submodule ℂ (Sm E a) :=
   π.V ⊔ Submodule.span ℂ {F | ∃ (f : Lie E a → ℂ) (φ : Sm E a), IsTest (invSet E a) f ∧ φ ∈ π.V ∧
     F.1 = GlobalTheory.JSW.smoothInf f φ.1}
-
-theorem le_withSmoothings (π : CuspSub E a) : π.V ≤ withSmoothings π := le_sup_left
-
-theorem lie_mem_withSmoothings {π : CuspSub E a} (X : Lie E a) {φ : Sm E a} (h : φ ∈ withSmoothings π) :
-    lie E a X φ ∈ withSmoothings π := by
-  refine (sup_le (fun ψ hψ => le_withSmoothings π (π.stable (.lie X) ψ hψ)) (Submodule.span_le.2 ?_) :
-    withSmoothings π ≤ (withSmoothings π).comap (lie E a X)) h
-  rintro F ⟨f, ψ, hf, hψ, e⟩
-  refine Submodule.mem_sup_right (Submodule.subset_span ⟨dens X f, ψ, isTest_dens X hf, hψ, funext fun g => ?_⟩)
-  rw [CuspRep.lie_apply, e]
-  exact lieD_smoothing volume hf ψ.2 X g
 
 theorem mem_bddForms_of_withSmoothings (hB : GlobalTheory.Published.CuspFormsBoundedGL) (hω : ω.IsUnitary) {π : CuspSub E a}
     (h : π.HasCentChar ω) {φ : Sm E a} (hφ : φ ∈ withSmoothings π) : φ.1 ∈ bddForms E a ω := by

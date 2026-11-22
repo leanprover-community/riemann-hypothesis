@@ -77,7 +77,6 @@ abbrev MMap (M : DSModel V S) : Type := MultilinearMap (RingHom.id ℂ) (fun τ 
 
 variable (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
 
-
 open Classical in
 structure IsMultMap (M : DSModel V S) (J : Set (GA D V)) (χ : GA D V → ℂ) (T : MMap M) : Prop where
   aut : ∀ v, IsAutFunSm θ V (T v)
@@ -94,7 +93,6 @@ def Mult (M : DSModel V S) (J : Set (GA D V)) (χ : GA D V → ℂ) : Submodule 
 def IsMultIP (M : DSModel V S) (μ : Measure (GA D V)) (𝓕 : Set (GA D V)) (T T' : MMap M) (c : ℂ) : Prop :=
   ∀ v v' : M.Vec, IntegrableOn (fun g => star (T v g) * T' v' g) 𝓕 μ ∧
     ∫ g in 𝓕, star (T v g) * T' v' g ∂μ = c * ∏ τ, ⟪(v τ : M.H τ), (v' τ : M.H τ)⟫_ℂ
-
 
 open Classical in
 def ipM (M : DSModel V S) (μ : Measure (GA D V)) (𝓕 : Set (GA D V)) (T T' : MMap M) : ℂ :=
@@ -113,18 +111,15 @@ def heckeLin (V : HSp D) (R : Finset (GA D V)) : (GA D V → ℂ) →ₗ[ℂ] (G
 def locPart (V : HSp D) (K : Set (GA D V)) (e : Formalism.L2.Theta.AE D) : Set (GA D V) :=
   {k | k ∈ K ∧ Formalism.L2.Theta.SuppAt e V k}
 
-
 variable (V) in
 def IsCosetRep (K : Set (GA D V)) (α : GA D V) (R : Finset (GA D V)) : Prop :=
   (∀ γ ∈ R, γ ∈ GfC V ∧ ∃ k₁ ∈ K, ∃ k₂ ∈ K, γ = k₁ * α * k₂) ∧
     ∀ x : GA D V, (∃ k₁ ∈ K, ∃ k₂ ∈ K, x = k₁ * α * k₂) → ∃! γ, γ ∈ R ∧ γ⁻¹ * x ∈ K
 
-
 variable (D) in
 def OffS (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) (P : HeightOneSpectrum (𝓞 D.host.E)) : Prop :=
   ∀ v ∈ S, ∃ x : 𝓞 D.host.F, x ∈ v.asIdeal ∧
     ∀ y : 𝓞 D.host.E, (y : D.host.E) = algebraMap D.host.F D.host.E (x : D.host.F) → y ∉ P.asIdeal
-
 
 variable (V) in
 def IsHeckeOpAt (J : Set (GA D V)) (χ : GA D V → ℂ) (S : Finset (HeightOneSpectrum (𝓞 D.host.F)))
@@ -142,28 +137,17 @@ def goodPart (M : DSModel V S) (J : Set (GA D V)) (χ : GA D V → ℂ) (e : (GA
     Submodule ℂ (MMap M) :=
   Mult θ M J χ ⊓ LinearMap.ker (postOn M e - LinearMap.id)
 
-def part (M : DSModel V S) (J : Set (GA D V)) (χ : GA D V → ℂ) (Sb : Finset (HeightOneSpectrum (𝓞 D.host.F)))
-    (c : HeightOneSpectrum (𝓞 D.host.E) → ℕ → ℂ) : Submodule ℂ (MMap M) :=
-  Mult θ M J χ ⊓ ⨅ (P : HeightOneSpectrum (𝓞 D.host.E)) (k : ℕ) (R : Finset (GA D V))
-    (_ : IsHeckeOpAt V J χ Sb P k R), LinearMap.ker (heckeOn M R - c P k • LinearMap.id)
-
-def Ix (M : DSModel V S) (J : Set (GA D V)) (χ : GA D V → ℂ) (Sb : Finset (HeightOneSpectrum (𝓞 D.host.F)))
-    (e : (GA D V → ℂ) →ₗ[ℂ] (GA D V → ℂ)) : Set (HeightOneSpectrum (𝓞 D.host.E) → ℕ → ℂ) :=
-  {c | (∀ P k, (¬ ∃ R, IsHeckeOpAt V J χ Sb P k R) → c P k = 0) ∧ part θ M J χ Sb c ⊓ goodPart θ M J χ e ≠ ⊥}
-
 def IsPrimeIdem (P : HeightOneSpectrum (𝓞 D.host.E)) (e f : Formalism.L2.Theta.AE D) : Prop :=
   (Formalism.L2.NTheta.IsIdemAt e P ∧ f = e + cA D e) ∨
   (f = e ∧ (∃ v ε, IsPlaceIdem D v ε ∧ e = algebraMap (AF D.host.F) (Formalism.L2.Theta.AE D) ε) ∧
     ∀ x : 𝓞 D.host.E, x ≠ 0 →
       (x ∈ P.asIdeal ↔ finPart D (e * incA D ((x : D.host.E)⁻¹)) ∉ intAE D))
 
-
 variable (V) in
 def SuppF (f : Formalism.L2.Theta.AE D) (g : GA D V) : Prop :=
   ∀ i j, f * (Formalism.L2.Theta.mt V g - 1) i j = (Formalism.L2.Theta.mt V g - 1) i j
 
 def IntVec {n : ℕ} (z : Fin n → Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F ⊗[D.host.F] D.host.E) : Prop := ∀ i, z i ∈ intAE D
-
 
 variable (V) in
 def DivAt (e : Formalism.L2.Theta.AE D) (ϖ : D.host.E) (d : List ℤ) (α : GA D V) : Prop :=
@@ -177,7 +161,6 @@ def DivAt (e : Formalism.L2.Theta.AE D) (ϖ : D.host.E) (d : List ℤ) (α : GA 
     (∀ z, IntVec z → ∃ y ∈ Formalism.L2.NTheta.LamHat V,
       (fun a => finPart D e * (finMat D.sp.cm.sig V.gram α).mulVec y a) =
         fun a => finPart D e * B.mulVec (fun i => finPart D (incA D (ϖ ^ (d.getD i.1 0))) * z i) a)
-
 
 variable (V) in
 def Hecke₂ (J : Set (GA D V)) (χ : GA D V → ℂ) (S : Finset (HeightOneSpectrum (𝓞 D.host.F)))
@@ -193,11 +176,6 @@ def partFull (M : DSModel V S) (J : Set (GA D V)) (χ : GA D V → ℂ) (Sb : Fi
   Mult θ M J χ ⊓ ⨅ (P : HeightOneSpectrum (𝓞 D.host.E)) (d : List ℤ) (R : Finset (GA D V))
     (_ : Hecke₂ V J χ Sb P d R), LinearMap.ker (heckeOn M R - c P d • LinearMap.id)
 
-def IxFull (M : DSModel V S) (J : Set (GA D V)) (χ : GA D V → ℂ) (Sb : Finset (HeightOneSpectrum (𝓞 D.host.F)))
-    (e : (GA D V → ℂ) →ₗ[ℂ] (GA D V → ℂ)) : Set (HeightOneSpectrum (𝓞 D.host.E) → List ℤ → ℂ) :=
-  {c | (∀ P d, (¬ ∃ R, Hecke₂ V J χ Sb P d R) → c P d = 0) ∧
-    partFull θ M J χ Sb c ⊓ goodPart θ M J χ e ≠ ⊥}
-
 def dualLab (d : List ℤ) : List ℤ := (d.map Neg.neg).reverse
 
 def partDual (M : DSModel V S) (J : Set (GA D V)) (χ : GA D V → ℂ) (Sb : Finset (HeightOneSpectrum (𝓞 D.host.F)))
@@ -212,35 +190,6 @@ def splitLab (n k : ℕ) : List ℤ := List.replicate (n - k) 0 ++ List.replicat
 
 def tparRec (D : D7) : TPar D := tparHC D (fun _ => -(1 / 2)) (fun _ => Or.inr rfl)
 
-def EE {Y0 : HSp D} (Ptw : TPar D) (M : DSModel Y0 (parB Ptw 0)) (J : Set (GA D Y0)) (χ : GA D Y0 → ℂ)
-    (e : (GA D Y0 → ℂ) →ₗ[ℂ] (GA D Y0 → ℂ)) : Submodule ℂ (MMap M) :=
-  goodPart θ M J χ e
-
-def Wgood {W : HSp D} {κ : ∀ τ : D.what₂.Tau, Fin (W.sig (tauE D τ)).1 ⊕ Fin (W.sig (tauE D τ)).2 → ℤ}
-    (M : DSModel W (parW W κ)) (J : Set (GA D W)) (χ : GA D W → ℂ)
-    (e : (GA D W → ℂ) →ₗ[ℂ] (GA D W → ℂ)) : Submodule ℂ (MMap M) :=
-  goodPart θ M J χ e
-
-def EErec (M : DSModel (D.sp.Y 0) (parB (tparRec D) 0)) (J : Set (GA D (D.sp.Y 0))) (χ : GA D (D.sp.Y 0) → ℂ)
-    (e : (GA D (D.sp.Y 0) → ℂ) →ₗ[ℂ] (GA D (D.sp.Y 0) → ℂ)) : Submodule ℂ (MMap M) :=
-  EE θ (tparRec D) M J χ e
-
-def WgoodRec (j : ℕ) (M : DSModel (D.sp.W j) (parW (D.sp.W j) (Formalism.L2.NTheta.wtOf D (D.sp.W j))))
-    (J : Set (GA D (D.sp.W j))) (χ : GA D (D.sp.W j) → ℂ)
-    (e : (GA D (D.sp.W j) → ℂ) →ₗ[ℂ] (GA D (D.sp.W j) → ℂ)) : Submodule ℂ (MMap M) :=
-  Wgood θ M J χ e
-
-def EEpart (M : DSModel (D.sp.Y 0) (parB (tparRec D) 0)) (J : Set (GA D (D.sp.Y 0))) (χ : GA D (D.sp.Y 0) → ℂ)
-    (e : (GA D (D.sp.Y 0) → ℂ) →ₗ[ℂ] (GA D (D.sp.Y 0) → ℂ)) (Sb : Finset (HeightOneSpectrum (𝓞 D.host.F)))
-    (c : HeightOneSpectrum (𝓞 D.host.E) → List ℤ → ℂ) : Submodule ℂ (MMap M) :=
-  partDual θ M J χ Sb c ⊓ EErec θ M J χ e
-
-def Wpart (j : ℕ) (M : DSModel (D.sp.W j) (parW (D.sp.W j) (Formalism.L2.NTheta.wtOf D (D.sp.W j))))
-    (J : Set (GA D (D.sp.W j))) (χ : GA D (D.sp.W j) → ℂ)
-    (e : (GA D (D.sp.W j) → ℂ) →ₗ[ℂ] (GA D (D.sp.W j) → ℂ)) (Sb : Finset (HeightOneSpectrum (𝓞 D.host.F)))
-    (c : HeightOneSpectrum (𝓞 D.host.E) → List ℤ → ℂ) : Submodule ℂ (MMap M) :=
-  partFull θ M J χ Sb c ⊓ WgoodRec θ j M J χ e
-
 theorem hasPeterssonInner_unique (M : DSModel V S) (μ : Measure (GA D V)) (𝓕 : Set (GA D V)) (T T' : MMap M) {c c' : ℂ}
     (v : M.Vec) (hv : ∏ τ, ⟪(v τ : M.H τ), (v τ : M.H τ)⟫_ℂ ≠ 0)
     (h : IsMultIP M μ 𝓕 T T' c) (h' : IsMultIP M μ 𝓕 T T' c') : c = c' := by
@@ -253,7 +202,6 @@ theorem ipM_spec (M : DSModel V S) (μ : Measure (GA D V)) (𝓕 : Set (GA D V))
     (h : ∃ c, IsMultIP M μ 𝓕 T T' c) : IsMultIP M μ 𝓕 T T' (ipM M μ 𝓕 T T') := by
   rw [ipM, dite_eq_left h]
   exact h.choose_spec
-
 
 variable (V) in
 def DSExists (S : D.what₂.Tau → SPar) : Prop :=

@@ -49,14 +49,6 @@ section KerLin
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {K : Type} [Field K] {a b : ℕ} {SB : Finset (HeightOneSpectrum (𝓞 E))}
   {V V' : Type} [AddCommGroup V] [Module K V] [AddCommGroup V'] [Module K V']
 
-
-omit [StarRing E] in
-theorem kerOf_congr (th : ThDist E K a b SB V V') (Sall : Finset (HeightOneSpectrum (𝓞 E))) (cA cB : ℕ)
-    (N : Submodule (𝓞 E) (Sp E a)) (fr : Frs E a SB) (N' : Submodule (𝓞 E) (Sp E b)) (fr' : Frs E b SB)
-    {Ξ Ξ' : HomE E a b → K} (h : ∀ x, Ξ x = Ξ' x) :
-    kerOf th Sall cA cB N fr N' fr' Ξ = kerOf th Sall cA cB N fr N' fr' Ξ' := by
-  rw [funext h]
-
 end KerLin
 
 section OffT
@@ -98,111 +90,7 @@ set_option linter.unusedSectionVars false
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-theorem localization_kerAt_eq {d : Deco E n ST SG} (hd : d.Ok) (P : ST) (z : Sp E n) :
-    z ∈ localization₂ P.1.asIdeal (d.kerAt P) ↔ z ∈ d.at P.1 ∧ d.f P z = 0 := by
-  constructor
-  · intro hz
-    obtain ⟨s, hs, hsz⟩ := (mem_locP P.1 _ z).1 hz
-    obtain ⟨h1, h2⟩ := (hd.mem_kerAt P _).1 hsz
-    have hz' : z ∈ d.at P.1 := (mem_locP P.1 _ z).2 ⟨s, hs, h1⟩
-    refine ⟨hz', ?_⟩
-    rw [hd.f_smul P s z hz'] at h2
-    exact (mul_eq_zero.1 h2).resolve_left (mk_ne_zero hs)
-  · rintro ⟨hz, h0⟩
-    obtain ⟨s, hs, hsz⟩ := (mem_locP P.1 _ z).1 hz
-    refine (mem_locP P.1 _ z).2 ⟨s, hs, (hd.mem_kerAt P _).2 ⟨hsz, ?_⟩⟩
-    rw [hd.f_smul P s z hz, h0, mul_zero]
-
-theorem exists_f_one {d : Deco E n ST SG} (hd : d.Ok) (P : ST) : ∃ e ∈ d.N, d.f P e = 1 := by
-  obtain ⟨x, hx, hne⟩ := hd.f_ne P
-  have := P.1.isMaximal
-  obtain ⟨b, hb⟩ := Ideal.Quotient.exists_inv hne
-  obtain ⟨t, rfl⟩ := Ideal.Quotient.mk_surjective b
-  exact ⟨t • x, Submodule.smul_mem _ t hx, by rw [hd.f_smul P t x (le_locP _ _ hx), mul_comm, hb]⟩
-
-theorem f_sub {d : Deco E n ST SG} (hd : d.Ok) (P : ST) {y y' : Sp E n} (hy : y ∈ d.at P.1) (hy' : y' ∈ d.at P.1) :
-    d.f P (y - y') = d.f P y - d.f P y' := by
-  have e : y - y' = y + (-1 : 𝓞 E) • y' := by rw [neg_smul, one_smul, sub_eq_add_neg]
-  rw [e, hd.f_add P y hy _ (Submodule.smul_mem _ _ hy'), hd.f_smul P _ y' hy', map_neg, map_one, neg_mul, one_mul, sub_eq_add_neg]
-
-theorem isUp_facts {lo hi : Deco E n ST SG} (hlo : lo.Ok) {P : ST} (hP : MoveHyp ST SG P) {q : 𝓞 E} (hq : q ∈ P.1.asIdeal)
-    (hq2 : q ∉ P.1.asIdeal ^ 2) (h : Deco.IsUp P q lo hi) :
-    (∀ z, z ∈ lo.at P.1 ↔ z ∈ hi.at P.1 ∧ hi.f P z = 0) ∧ (∀ z ∈ hi.at P.1, hi.f P z = lo.f P (q • z)) ∧
-      (∀ Q : ST, Q ≠ P → hi.at Q.1 = lo.at Q.1 ∧ hi.f Q = lo.f Q) := by
-  obtain ⟨x, hx, hfx, rfl⟩ := h
-  have hhi := hlo.up P hP hq hq2 hx hfx
-  refine ⟨fun z => ?_, fun z hz => ?_, fun Q hQ => ⟨?_, lo.up_f_ne P q x hQ⟩⟩
-  · rw [← localization_kerAt_eq hhi P z, ← (hhi.dnN_spec P hP.ne).2.2.2, hlo.dnN_up P hP hq hq2 hx hfx]
-  · rw [Deco.up_f]
-    exact if_pos hz
-  · exact ((upN_spec hlo.lat hlo.uni P.1 hP.ne hx).2.2.1 Q.1 (fun h => hQ (Subtype.ext h)) (hP.st Q)).localization_eq
-
 variable {a b : ℕ} {SG' : Finset (HeightOneSpectrum (𝓞 E))}
-
-def PhiCond (d : Deco E a ST SG) (d' : Deco E b ST SG') (x : HomE E a b) : Prop :=
-  ∀ Q : ST, ∀ y ∈ d.at Q.1, x y ∈ d'.at Q.1 ∧ d'.f Q (x y) = d.f Q y
-
-theorem dn_unique {d e₁ e₂ : Deco E a ST SG} {d' : Deco E b ST SG'} (h₁ : e₁.Ok) (h₂ : e₂.Ok) {P : ST} {q : 𝓞 E}
-    (k₁ : Deco.IsDn P q d e₁) (k₂ : Deco.IsDn P q d e₂) {x : HomE E a b} (x₁ : PhiCond e₁ d' x) (x₂ : PhiCond e₂ d' x) : e₁ = e₂ := by
-  have hN : e₁.N = e₂.N := (congrArg Deco.N k₁.1).trans (congrArg Deco.N k₂.1).symm
-  have hat : e₁.at P.1 = e₂.at P.1 := by
-    show localization₂ _ e₁.N = localization₂ _ e₂.N
-    rw [hN]
-  have hf : e₁.f P = e₂.f P := by
-    funext y
-    by_cases hy : y ∈ e₁.at P.1
-    · rw [← (x₁ P y hy).2, ← (x₂ P y (hat ▸ hy)).2]
-    · rw [h₁.f_off P y hy, h₂.f_off P y (hat ▸ hy)]
-  calc e₁ = d.dn P (e₁.f P) := k₁.1
-    _ = d.dn P (e₂.f P) := by rw [hf]
-    _ = e₂ := k₂.1.symm
-
-theorem q_ne_zero {P : HeightOneSpectrum (𝓞 E)} {q : 𝓞 E} (hq2 : q ∉ P.asIdeal ^ 2) : algebraMap (𝓞 E) E q ≠ 0 := by
-  intro h
-  apply hq2
-  have : q = 0 := by
-    apply FaithfulSMul.algebraMap_injective (𝓞 E) E
-    rw [h, map_zero]
-  rw [this]
-  exact Ideal.zero_mem _
-
-theorem q_smul_inv {P : HeightOneSpectrum (𝓞 E)} {q : 𝓞 E} (hq2 : q ∉ P.asIdeal ^ 2) (w : Sp E n) :
-    q • ((algebraMap (𝓞 E) E q)⁻¹ • w) = w := by
-  rw [← algebraMap_smul E q, smul_smul, mul_inv_cancel₀ (q_ne_zero hq2), one_smul]
-
-theorem up_diff_mem {d' : Deco E n ST SG} (hd' : d'.Ok) {P : ST} (hP' : MoveHyp ST SG P) {q : 𝓞 E} (hq : q ∈ P.1.asIdeal)
-    (hq2 : q ∉ P.1.asIdeal ^ 2) {xW : Sp E n} (hxW : xW ∈ d'.N) (hfW : d'.f P xW = 1) :
-    (algebraMap (𝓞 E) E q)⁻¹ • xW ∈ (d'.up P q xW).at P.1 ∧
-      ∀ z ∈ (d'.up P q xW).at P.1, (d'.up P q xW).f P z = 1 → z - (algebraMap (𝓞 E) E q)⁻¹ • xW ∈ d'.at P.1 := by
-  have hOk := hd'.up P hP' hq hq2 hxW hfW
-  have hv := hd'.up_f_inv P hP' hq hq2 hxW hfW
-  have hvm : (algebraMap (𝓞 E) E q)⁻¹ • xW ∈ (d'.up P q xW).at P.1 := by
-    by_contra hc
-    rw [hOk.f_off P _ hc] at hv
-    exact zero_ne_one hv
-  refine ⟨hvm, fun z hz h1 => ?_⟩
-  exact ((isUp_facts hd' hP' hq hq2 ⟨xW, hxW, hfW, rfl⟩).1 _).2 ⟨Submodule.sub_mem _ hz hvm, by
-    rw [f_sub hOk P hz hvm, h1, hv, sub_self]⟩
-
-theorem up_unique {d : Deco E a ST SG} {d' e₁ e₂ : Deco E b ST SG'} (hd : d.Ok) (hd' : d'.Ok) {P : ST} (hP' : MoveHyp ST SG' P) {q : 𝓞 E}
-    (hq : q ∈ P.1.asIdeal) (hq2 : q ∉ P.1.asIdeal ^ 2) (k₁ : Deco.IsUp P q d' e₁) (k₂ : Deco.IsUp P q d' e₂) {x : HomE E a b}
-    (x₁ : PhiCond d e₁ x) (x₂ : PhiCond d e₂ x) : e₁ = e₂ := by
-  obtain ⟨w₁, hw₁, hf₁, rfl⟩ := k₁
-  obtain ⟨w₂, hw₂, hf₂, rfl⟩ := k₂
-  apply Deco.up_congr
-  obtain ⟨e1, he1, hfe1⟩ := exists_f_one hd P
-  have he1P : e1 ∈ d.at P.1 := le_locP _ _ he1
-  have m₁ := (up_diff_mem hd' hP' hq hq2 hw₁ hf₁).2 (x e1) (x₁ P e1 he1P).1 ((x₁ P e1 he1P).2.trans hfe1)
-  have m₂ := (up_diff_mem hd' hP' hq hq2 hw₂ hf₂).2 (x e1) (x₂ P e1 he1P).1 ((x₂ P e1 he1P).2.trans hfe1)
-  have m : (algebraMap (𝓞 E) E q)⁻¹ • w₁ - (algebraMap (𝓞 E) E q)⁻¹ • w₂ ∈ d'.at P.1 := by
-    have := Submodule.sub_mem _ m₂ m₁
-    rwa [sub_sub_sub_cancel_left] at this
-  obtain ⟨s, hs, hsm⟩ := (mem_locP P.1 _ _).1 m
-  refine mem_smul_of_loc (Submodule.sub_mem _ hw₁ hw₂) hs ?_
-  have e : s • (w₁ - w₂) = q • (s • ((algebraMap (𝓞 E) E q)⁻¹ • w₁ - (algebraMap (𝓞 E) E q)⁻¹ • w₂)) := by
-    rw [smul_comm q s, smul_sub q, q_smul_inv hq2, q_smul_inv hq2]
-  rw [e]
-  exact Submodule.smul_mem_smul hq hsm
 
 end Step3
 
@@ -266,9 +154,6 @@ set_option linter.unusedSectionVars false
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {K : Type} [Field K] {a b : ℕ}
 
-theorem intAt_natCast (P : HeightOneSpectrum (𝓞 E)) (k : ℕ) : IntAt P (k : E) := by
-  simpa using IntAt.coe P (k : 𝓞 E)
-
 end FrProd
 
 section OffAdmCh
@@ -276,7 +161,6 @@ section OffAdmCh
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))) {u : Pr.Word}
-
 
 open Classical in
 theorem frsF_isFr {j : ℕ} (p : ChPt (R := R) sel mu u j) (P : rowSG Pr sel mu) : IsFrAt P.1 p.deco.1.N (frsF sel mu p P) := by
@@ -298,7 +182,6 @@ theorem sel_injective {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum 
   apply HeightOneSpectrum.ext
   rw [← hsel v, ← hsel v', h]
 
-
 open Classical in
 def muFac (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (SB : Finset (HeightOneSpectrum (𝓞 X.E)))
     (mU : HeightOneSpectrum (𝓞 X.E) → X.Kˣ) (N : Submodule (𝓞 X.E) (Sp X.E n)) (v : HeightOneSpectrum (𝓞 X.F)) : X.K :=
@@ -306,7 +189,6 @@ def muFac (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) 
 
 theorem muOff_eq (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (SB : Finset (HeightOneSpectrum (𝓞 X.E)))
     (mU : HeightOneSpectrum (𝓞 X.E) → X.Kˣ) (N : Submodule (𝓞 X.E) (Sp X.E n)) : muOff sel SB mU N = ∏ᶠ v, muFac sel SB mU N v := rfl
-
 
 theorem muFac_support {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} (hsel : IsSel X sel) (SB : Finset (HeightOneSpectrum (𝓞 X.E)))
     (mU : HeightOneSpectrum (𝓞 X.E) → X.Kˣ) (hfin : OrdDetFin X.E n) (N : Submodule (𝓞 X.E) (Sp X.E n)) (hN : IsSdLat N) :
@@ -732,7 +614,6 @@ variable {X : Fields} {Pr : Primes X} (sel : HeightOneSpectrum (𝓞 X.F) → He
 theorem intAt_qpow3 (w : HeightOneSpectrum (𝓞 X.E)) (k : ℕ) : IntAt w ((qOf w : X.E) ^ k) := by
   rw [← Nat.cast_pow]
   exact intAt_natCast_kernel_local_factors _ _
-
 
 open Classical in
 theorem coupling_index_scaled_mem_local {n : ℕ} {N : Submodule (𝓞 X.E) (Sp X.E n)} {Y : Set (Sp X.E n)} (hY : Y ∈ ybSet sel mu cst N)

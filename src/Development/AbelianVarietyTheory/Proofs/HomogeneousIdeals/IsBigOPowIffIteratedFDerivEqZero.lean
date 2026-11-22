@@ -26,8 +26,6 @@ section Series
 variable {E G : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [NormedAddCommGroup G]
   [NormedSpace ℂ G]
 
-def quadPart (h : E → G) (z : E) : G := (2 : ℂ)⁻¹ • iteratedFDeriv ℂ 2 h 0 fun _ => z
-
 end Series
 
 section Character

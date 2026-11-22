@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.RecChainUnfOne
+public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 public import Mathlib
 public import Formalism.LocalToGlobal.Divisibility.Tuples
 public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf

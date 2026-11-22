@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPrimitiveCechPoincareRichCharts
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCechPrimitiveBoxSegment
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EllFamNontrivial
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FstTszeSec
 

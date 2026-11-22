@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SupLatticeRe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetNumberQuotientBounds
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LocalValuationColumns
 public import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuotientWeightGapBounds
 
 @[expose] public section

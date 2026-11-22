@@ -104,8 +104,6 @@ def σ (B : Subalgebra ℤ A) : ResidueField (O A B) →+* ResidueField A :=
 
 def ρ (B : Subalgebra ℤ A) : O A B →+* ResidueField A := (σ A B).comp (residue _)
 
-theorem σ_apply (B : Subalgebra ℤ A) (x : ResidueField (O A B)) : σ A B x = ((sh A B).e x : ResidueField A) := rfl
-
 theorem rho_alg (B : Subalgebra ℤ A) (r : RB A B) : ρ A B (algebraMap _ _ r) = residue A (toA A B r) := by
   simp only [ρ, RingHom.comp_apply, σ_apply]
   rw [← ResidueField.algebraMap_residue, AlgEquiv.commutes]
@@ -362,7 +360,6 @@ theorem isStalk_O (B : Subalgebra ℤ A) :
   letI : Algebra B (O A B) := (fromB B).toAlgebra
   exact ⟨⟨inferInstance, (sh A B).sep⟩, B, inferInstance, inferInstance, 𝟙 _, inferInstance, indEt_fromB B,
     (Category.comp_id _).symm⟩
-
 
 variable (A) in
 abbrev Idx (u : A) : Type := {B : Subalgebra ℤ A // B.FG ∧ u ∈ B}

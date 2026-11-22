@@ -59,9 +59,6 @@ theorem posDef_blocks (e : Fin j × Fin g ≃ Fin G) {M : Matrix (Fin g) (Fin g)
 def blockEquiv (e : Fin j × Fin g ≃ Fin G) : (Fin G → ℤ) ≃ (Fin j → Fin g → ℤ) :=
   (Equiv.arrowCongr e.symm (Equiv.refl ℤ)).trans (Equiv.curry _ _ _)
 
-theorem blockEquiv_apply (e : Fin j × Fin g ≃ Fin G) (m : Fin G → ℤ) (i : Fin j) (k : Fin g) :
-    blockEquiv e m i k = m (e (i, k)) := rfl
-
 theorem thTerm_blocks (e : Fin j × Fin g ≃ Fin G) (τ : Matrix (Fin g) (Fin g) ℂ) (a b : Fin g → ℝ)
     (z : Fin G → ℂ) (m : Fin G → ℤ) :
     CanTh.thTerm (Matrix.of fun p q => if (e.symm p).1 = (e.symm q).1 then
@@ -78,7 +75,6 @@ theorem thTerm_blocks (e : Fin j × Fin g ≃ Fin G) (τ : Matrix (Fin g) (Fin g
 end GlobalTheory.ThetaPow
 
 namespace GlobalTheory
-
 
 open ThetaPow in
 theorem thetaChar_blockDiagonal (j g : ℕ) (τ : Matrix (Fin g) (Fin g) ℂ) (a b : Fin g → ℝ) (G : ℕ)

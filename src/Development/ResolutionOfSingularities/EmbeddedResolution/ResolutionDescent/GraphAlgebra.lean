@@ -219,10 +219,6 @@ def graphPreSubmersivePresentation (f : τ → MvPolynomial σ R) (v : τ → σ
 def graphJacobianMinorMatrix (f : τ → MvPolynomial σ R) (v : τ → σ) : Matrix τ τ (MvPolynomial σ R) :=
   Matrix.of fun i j => MvPolynomial.pderiv (v i) (f j)
 
-theorem graphJacobianMinorMatrix_apply (f : τ → MvPolynomial σ R) (v : τ → σ) (i j : τ) :
-    graphJacobianMinorMatrix f v i j = MvPolynomial.pderiv (v i) (f j) :=
-  rfl
-
 theorem graphPreSubmersivePresentation_jacobiMatrix [Fintype τ] [DecidableEq τ]
     (f : τ → MvPolynomial σ R) (v : τ → σ) (hv : Function.Injective v) :
     (graphPreSubmersivePresentation f v hv).jacobiMatrix

@@ -7,7 +7,6 @@ public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverStd
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContainsAfterLocalization
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SideEigenLevel
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SideEigenWeight
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SideEigenConductor
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SideEigenCharacter
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFiniteChosenSet

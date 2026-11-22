@@ -16,8 +16,6 @@ section
 
 variable {K : Type} [Field K] [CharZero K]
 
-local notation "A3" => MvPowerSeries (Fin 3) K
-
 theorem cc_psubst {ι : Type} {u : MvPowerSeries ι K} (hu : MvPowerSeries.constantCoeff u = 0)
     {f : PowerSeries K} (hf : PowerSeries.constantCoeff f = 0) :
     MvPowerSeries.constantCoeff (PowerSeries.subst u f) = 0 :=

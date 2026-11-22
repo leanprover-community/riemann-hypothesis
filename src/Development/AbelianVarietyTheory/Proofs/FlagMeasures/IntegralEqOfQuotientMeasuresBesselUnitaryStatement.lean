@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralEqOfQuotientMeasuresBesselUnitary
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NCoords
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
 public import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne

@@ -21,8 +21,6 @@ open Reduction AutomorphicForm RightCosetSpace GJMatrix
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => rationalGLOne (K := K) (n := n)
-
 section Continuity
 
 variable (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
@@ -131,7 +129,6 @@ theorem tsum_inv_eq (Ψ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ) (t : {r : ℝ 
     rw [e1, ← map_inv, ← centralSection_mul_comm t⁻¹ (y⁻¹ * AdelicGLn.diagonal K n γ * x)]
     simp only [mul_assoc]
   rw [e, Units.val_mul, Units.val_mul, coe_diagonal]
-
 
 set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 400000 in

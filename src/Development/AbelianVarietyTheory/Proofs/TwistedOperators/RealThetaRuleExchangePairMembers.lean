@@ -14,8 +14,6 @@ open GlobalTheory.PairLift
 
 noncomputable section
 
-local notation "FP" => Formalism.BasicNotions.TH.Pol
-
 namespace GlobalTheory.SwapRule
 
 open MvPolynomial

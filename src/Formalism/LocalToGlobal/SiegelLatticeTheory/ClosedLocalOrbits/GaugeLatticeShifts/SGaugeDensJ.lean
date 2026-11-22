@@ -27,8 +27,6 @@ def lmulP (Z : Matrix (Fin n) (Fin n) ℂ) : MP n →L[ℝ] MP n :=
         funext i j
         simp [Matrix.mul_apply, Finset.smul_sum, mul_left_comm] }
 
-theorem lmulP_apply (Z : Matrix (Fin n) (Fin n) ℂ) (X : MP n) : lmulP Z X = Matrix.of.symm (Z * Matrix.of X) := rfl
-
 theorem of_sum_smul (c : Fin N → ℝ) (X : Fin N → MP n) :
     Matrix.of (∑ k, c k • X k) = ∑ k, c k • Matrix.of (X k) := by
   ext i j

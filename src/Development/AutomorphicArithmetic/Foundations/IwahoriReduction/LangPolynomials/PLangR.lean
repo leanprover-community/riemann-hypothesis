@@ -1,7 +1,8 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.LangPolynomials.FixedIntegersIsUnitOfNotMemPrimeSpan
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsFrobEqMulField
+public import Mathlib
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LangXRoot
 
 @[expose] public section
 

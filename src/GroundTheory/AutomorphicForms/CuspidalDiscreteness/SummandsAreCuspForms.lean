@@ -21,8 +21,6 @@ open AutomorphicForm RightCosetSpace Reduction
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => Reduction.rationalGLOne (K := K) (n := n)
-
 theorem retractOne_mul (g h : AdelicGLn.AdelicGL K n) :
     retractOne (g * h) = retractOne g * retractOne h := by
   ext1
@@ -119,7 +117,6 @@ theorem eq_integral_of_integrated_eq {v : CuspL2 μ} {Φ : normOneGL (K := K) (n
   congrFun (hrep.unique ((isContRep_integrated_archRepT μ ν hrep hb hκt.continuous hκt.2).of_eq
     (congrArg (toLp μ) hκv))) y
 
-
 omit [μ.IsHaarMeasure] in
 theorem slice_eq_integral {Φ : normOneGL (K := K) (n := n) → ℂ} {κ : archGroup K n → ℂ}
     (hΦκ : ∀ y, Φ y = ∫ a, κ a * Φ (y * archP K n a) ∂ν) (y : normOneGL (K := K) (n := n)) :
@@ -129,7 +126,6 @@ theorem slice_eq_integral {Φ : normOneGL (K := K) (n := n) → ℂ} {κ : archG
   refine (hΦκ (y * archP K n x)).trans (integral_congr_ae (Eventually.of_forall fun a => ?_))
   show κ a * Φ (y * archP K n x * archP K n a) = Φ (y * archP K n (x * a)) * κ a
   rw [map_mul, mul_assoc y, mul_comm]
-
 
 omit [μ.IsHaarMeasure] in
 theorem isSmoothFun_slice {Φ : normOneGL (K := K) (n := n) → ℂ} (hΦc : Continuous Φ) {κ : archGroup K n → ℂ}
@@ -176,7 +172,6 @@ def IsZKFinite (v : CuspL2 μ) : Prop :=
         cuspRepT μ ⟨k, Reduction.maxCompact_le_normOneGL k.2⟩ v)) ∧
     FiniteDimensional ℂ (Submodule.span ℂ ((fun z => (isExpLieAlgebra K n).uAction (archRepT μ) z
       ⟨v, hs⟩) '' ((isExpLieAlgebra K n).centerU : Set _)))
-
 
 set_option maxHeartbeats 1000000 in
 theorem exists_cuspForm_of_isZKFinite (v : CuspL2 μ) (hv : IsZKFinite μ v) :

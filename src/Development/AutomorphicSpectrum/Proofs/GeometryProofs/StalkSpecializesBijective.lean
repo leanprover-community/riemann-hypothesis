@@ -465,8 +465,6 @@ end Point
 section Transport
 variable {S : Scheme.{0}} {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R'']
 
-theorem alg_eq (a : R) : algebraMap R (DualNumber R) a = TrivSqZeroExt.inl a := rfl
-
 theorem dualMap_comp (f : R →+* R') (g : R' →+* R'') : dualMap (g.comp f) = (dualMap g).comp (dualMap f) := by
   ext a <;> simp [dualMap]
 

@@ -21,7 +21,7 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BigCellTrivia
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PairSpaceMajorantIntegrableBigCellStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SmallCellRelevantPointsHaarQuotientMajorantStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselPeriodPositivity
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselCoefficientNonzeroExists
+public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocInOfUniqOfDecLow
 
 @[expose] public section
 

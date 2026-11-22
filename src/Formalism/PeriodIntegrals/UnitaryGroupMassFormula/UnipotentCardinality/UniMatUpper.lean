@@ -28,8 +28,6 @@ theorem uniMat_det (f : Pairs k → F) : (uniMat f).det = 1 := by
 noncomputable def uniGL (f : Pairs k → F) : GL (Fin k) F :=
   GeneralLinearGroup.mkOfDetNeZero (uniMat f) (by rw [uniMat_det]; exact one_ne_zero)
 
-theorem uniGL_coe (f : Pairs k → F) : ((uniGL f : GL (Fin k) F) : Matrix (Fin k) (Fin k) F) = uniMat f := rfl
-
 theorem isUni_uniGL (f : Pairs k → F) : IsUni k (uniGL f) := by
   unfold IsUni
   refine ⟨fun i => ?_, fun i j h => ?_⟩

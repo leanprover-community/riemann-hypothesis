@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.PowSmulLatticeLeWeightLatticeTop
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLcInt
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.RamifiedLatticePropsOfModel
+public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGlob
 
 @[expose] public section
 

@@ -67,29 +67,6 @@ theorem discrete_series_map_mul {H : Type} [NormedAddCommGroup H] [InnerProductS
 
 end Grp
 
-structure BData : Type 1 where
-  k : ℕ
-  r : ℕ
-  z : Fin (2 * r + k + 1) → ℂ
-  c : Fin r → ℂ
-  u : Fin k → ℝ
-  v : Fin (k - 1) → ℝ
-  b : Fin (2 * r + 2) → ℝ
-  H : Type
-  [hN : NormedAddCommGroup H]
-  [hI : InnerProductSpace ℂ H]
-  [hC : CompleteSpace H]
-  σ : Mat k r → (H →L[ℂ] H)
-  Vp : Type
-  [vN : NormedAddCommGroup Vp]
-  [vI : InnerProductSpace ℂ Vp]
-  [vF : FiniteDimensional ℂ Vp]
-  π : Mat k r → (Vp →L[ℂ] Vp)
-  w : H
-  μG : Measure (Formalism.QuantumDeterminants.Mt k r)
-  μS : Measure (Formalism.QuantumDeterminants.Mt k r)
-  ν : Measure (Formalism.QuantumDeterminants.Mt k r)
-
 attribute [instance] BData.hN BData.hI BData.hC BData.vN BData.vI BData.vF
 
 namespace BData

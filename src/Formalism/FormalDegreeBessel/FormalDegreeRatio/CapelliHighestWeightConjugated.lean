@@ -80,17 +80,6 @@ lemma ioh_EabH_eq (ε : Fin n → Bool) (H P Q : Matrix (Fin n) (Fin n) ℂ)
   rw [ioh_rdV P Q _ x f hQP hPQ, ioh_rdV P Q (hpart2 H _) x f hQP hPQ,
     ioh_hpart1 ε H P Q _ hQP hPQ hH, ioh_hpart2 ε H P Q _ hQP hPQ hH]
 
-lemma ioh_EabH_fun (ε : Fin n → Bool) (H P Q : Matrix (Fin n) (Fin n) ℂ)
-    (f : Matrix (Fin n) (Fin n) ℂ → E) (a b : Fin n) (hQP : Q * P = 1) (hPQ : P * Q = 1)
-    (hH : H = Pᴴ * Jm ε * P) :
-    (fun y => EabH H a b f (Q * y * P)) =
-      EcV ε (P * Matrix.single a b 1 * Q) (fun y => f (Q * y * P)) := by
-  funext y
-  rw [ioh_EabH_eq ε H P Q f a b hQP hPQ hH]
-  congr 1
-  have : P * (Q * y * P) * Q = (P * Q) * y * (P * Q) := by simp only [Matrix.mul_assoc]
-  rw [this, hPQ]; simp
-
 lemma ioh_inUJ (ε : Fin n → Bool) (H P Q g : Matrix (Fin n) (Fin n) ℂ) (hPQ : P * Q = 1)
     (hH : H = Pᴴ * Jm ε * P) (hg : inUH H g) : inUJ ε (P * g * Q) := by
   unfold inUH at hg
@@ -132,31 +121,6 @@ lemma ioh_smooth (ε : Fin n → Bool) (H P Q : Matrix (Fin n) (Fin n) ℂ)
     exact hfF _ hx (ioh_inUH ε H P Q x hPQ hH hxJ)
 
 end Transport
-
-theorem conjugated_generator_gl_relation : EabHGl := by
-  intro n ε E _ _ H P Q f a b c d g hQP hPQ hH hf hg
-  have hsm := ioh_smooth ε H P Q f hPQ hH hf
-  have hg' := ioh_inUJ ε H P Q g hPQ hH hg
-  rw [ioh_EabH_eq ε H P Q (EabH H c d f) a b hQP hPQ hH g, ioh_EabH_fun ε H P Q f c d hQP hPQ hH,
-    ioh_EabH_eq ε H P Q (EabH H a b f) c d hQP hPQ hH g, ioh_EabH_fun ε H P Q f a b hQP hPQ hH,
-    vector_complexified_derivative_commutator rdLinV rdBracketV rdSmoothV ε _ _ _ _ hsm hg']
-  have hQPX : ∀ X : Matrix (Fin n) (Fin n) ℂ, Q * (P * X) = X := by
-    intro X; rw [← Matrix.mul_assoc, hQP, Matrix.one_mul]
-  have hm : Matrix.single a b (1 : ℂ) * Matrix.single c d 1 - Matrix.single c d 1 * Matrix.single a b 1 =
-      (if b = c then Matrix.single a d 1 else 0) - (if d = a then Matrix.single c b 1 else 0) := by
-    by_cases h1 : b = c <;> by_cases h2 : d = a
-    · subst h1; subst h2; simp
-    · subst h1; simp [h2]
-    · subst h2; simp [h1]
-    · simp [h1, h2]
-  have hm2 : P * Matrix.single a b (1 : ℂ) * Q * (P * Matrix.single c d 1 * Q) -
-      P * Matrix.single c d 1 * Q * (P * Matrix.single a b 1 * Q) =
-      P * (Matrix.single a b (1 : ℂ) * Matrix.single c d 1 -
-        Matrix.single c d 1 * Matrix.single a b 1) * Q := by
-    simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc, hQPX]
-  rw [hm2, hm, Matrix.mul_sub, Matrix.sub_mul, vector_complexified_derivative_sub rdLinV hsm hg']
-  split_ifs <;> simp only [Matrix.mul_zero, Matrix.zero_mul, vector_complexified_derivative_zero, sub_zero, zero_sub,
-    ioh_EabH_eq ε H P Q f _ _ hQP hPQ hH g]
 
 section Central
 
@@ -215,7 +179,6 @@ lemma ioh_qminor_rep {Eop : Fin n → Fin n → (Matrix (Fin n) (Fin n) ℂ → 
   unfold qminorOp
   simp only [Finset.sum_apply, Pi.smul_apply, List.map_ofFn]
   rfl
-
 
 variable (ε E) in
 def iohE (P Q : Matrix (Fin n) (Fin n) ℂ) (a b : Fin n) : Module.End ℂ (ioS ε E) :=

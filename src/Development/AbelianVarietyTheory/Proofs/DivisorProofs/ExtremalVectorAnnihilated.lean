@@ -87,49 +87,4 @@ theorem smoothVec_conj (hP : IsUnit P) (hG : Pᴴ * J * P = G) {w : H}
 
 end Conj
 
-theorem kill_and_weight : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (J : Set (GA D V)) (χ : GA D V → ℂ) (T : MMap M), IsInfFam θ → IsMultMap θ M J χ T → ∀ v : M.Vec, IsExtVec M v → ∀ (ρ : D.what₂.Tau) (p : ℕ) (s : Bool), (∀ a : Fin V.rank, M.ε ρ a = if (a : ℕ) < p then s else !s) → (∀ a b, KillPair (M.ε ρ) a b → RderC θ V ρ ((M.fr ρ)⁻¹ * Matrix.single a b 1 * M.fr ρ) (T v) = 0) ∧ ∀ (t : Fin V.rank → ℝ) (g : GA D V), T v (g * atTau θ V ρ ((M.fr ρ)⁻¹ * Matrix.diagonal (fun a => Complex.exp ((t a : ℂ) * Complex.I)) * M.fr ρ)) = Complex.exp (((∑ a, extWt M ρ a * t a : ℝ) : ℂ) * Complex.I) * T v g := by
-  intro D θ V S M J χ T hθ hT v hv ρ p s hε
-  have hP := M.fr_unit ρ
-  have hG := M.fr_gram ρ
-  obtain ⟨-, hlow, hwt⟩ := hv ρ
-  have hlow' : (v ρ : M.H ρ) ∈ lowKSub (M.ε ρ) (M.lam ρ) (M.σ ρ) := hlow
-  refine ⟨fun a b hab => ?_, fun t g => ?_⟩
-  · obtain ⟨hs, hd⟩ := GlobalTheory.T.right_derivative_multiplicity_map_value_eq D θ V S M J χ T hθ hT v ρ
-    have hs' := smoothVec_conj (σ := M.σ ρ) hP hG hs
-    set Z := (M.fr ρ)⁻¹ * Matrix.single a b 1 * M.fr ρ with hZ
-    obtain ⟨hX, hY⟩ := GlobalTheory.SmoothAutCheck.parts_mem V ρ Z
-    have hXY := GlobalTheory.SmoothAutCheck.parts_sum V ρ Z
-    unfold RderC
-    generalize (1 / 2 : ℂ) • (Z + conjAt V ρ Z) = X at hX hXY ⊢
-    generalize (1 / (2 * Complex.I)) • (Z - conjAt V ρ Z) = Y at hY hXY ⊢
-    obtain ⟨u, hu, eu⟩ := hd X hX
-    obtain ⟨u', hu', eu'⟩ := hd Y hY
-    have hX' := lie_conj hP hG hX
-    have hY' := lie_conj hP hG hY
-    have hE : M.fr ρ * X * (M.fr ρ)⁻¹ + Complex.I • (M.fr ρ * Y * (M.fr ρ)⁻¹) = Matrix.single a b 1 := by
-      rw [← conj_cancel hP (Matrix.single a b 1), ← hZ, ← hXY]
-      simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_smul, Matrix.smul_mul]
-    have key : dRep (M.σ ρ) (M.fr ρ * X * (M.fr ρ)⁻¹) (v ρ : M.H ρ) +
-        Complex.I • dRep (M.σ ρ) (M.fr ρ * Y * (M.fr ρ)⁻¹) (v ρ : M.H ρ) = 0 := by
-      rcases hab with h | h | h
-      · exact GlobalTheory.T.extremal_lowestKType_killed_compact_roots _ _ _ _ _ (M.ds ρ).2.2.1 _ hlow' hs' hwt a b (Or.inl h) _ hX' _ hY' hE
-      · exact GlobalTheory.T.extremal_lowestKType_killed_compact_roots _ _ _ _ _ (M.ds ρ).2.2.1 _ hlow' hs' hwt a b (Or.inr h) _ hX' _ hY' hE
-      · exact GlobalTheory.T.lowestKType_killed_by_negative_noncompact_roots _ _ _ _ _ p s hε (M.enum ρ).1 (M.ds ρ) _ hlow' hs' a b h.1 h.2 _ hX' _ hY' hE
-    have h0 : u + Complex.I • u' = 0 := by
-      apply Subtype.ext
-      show (u : M.H ρ) + Complex.I • (u' : M.H ρ) = 0
-      rw [hu, hu', ← key, ← dRep_conj hP, ← dRep_conj hP]
-      rfl
-    have hsmul : T (Function.update v ρ (Complex.I • u')) = Complex.I • T (Function.update v ρ u') := by
-      simpa only [RingHom.id_apply] using T.map_update_smul v ρ Complex.I u'
-    rw [eu, eu', ← hsmul, ← T.map_update_add, h0, T.map_update_zero]
-  · have hK := Formalism.IndefR.FWT.diag_mem (ε := M.ε ρ) t
-    have hg := GlobalTheory.HolDict.ModelRep.conj_mem_inv hP hG (kset_uj hK)
-    have h := hT.equiv ρ _ hg v (Complex.exp (((∑ a, extWt M ρ a * t a : ℝ) : ℂ) * Complex.I) • v ρ) (by
-      unfold DSModel.rep
-      rw [conj_cancel hP, hwt t hK]
-      rfl)
-    rw [T.map_update_smul, Function.update_eq_self] at h
-    exact (congrFun h g).symm
-
 end GlobalTheory.HolRead.ExtKill

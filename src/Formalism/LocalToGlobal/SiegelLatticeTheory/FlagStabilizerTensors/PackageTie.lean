@@ -47,22 +47,6 @@ variable {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberFie
   {τ Rw I H H₁ : Type} [Fintype I] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁]
 
-structure RowIn (τ : Type) : Type 1 where
-  Rw : Type
-  I : Type
-  [fI : Fintype I]
-  H₁ : Type
-  [n₁ : NormedAddCommGroup H₁]
-  [i₁ : InnerProductSpace ℂ H₁]
-  [c₁ : CompleteSpace H₁]
-  vec : τ → H₁
-  rowOf : τ → Rw
-  io : Rw → I
-  GG : I → I → ℂ
-  Gam1 : ℝ
-  s0 : τ → τ → ℕ
-  scal : τ → τ → Prop
-
 attribute [instance] RowIn.fI RowIn.n₁ RowIn.i₁ RowIn.c₁
 
 end Comparison₂

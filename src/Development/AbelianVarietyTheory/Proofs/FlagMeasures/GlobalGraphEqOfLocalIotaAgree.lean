@@ -161,12 +161,6 @@ theorem X_le_orth {T : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T) : Xsp G ≤ ort
   | add x y _ _ hx hy => simp [map_add (f := _), hx, hy]
   | smul c x _ hx => simp [hx]
 
-theorem gS_ne : ((gS D : ℕ) : D.host.E) ≠ 0 := by
-  have h0 := (D.host.g_prime 0).pos
-  have h1 := (D.host.g_prime 1).pos
-  have : 0 < gS D := Nat.mul_pos h0 h1
-  exact_mod_cast this.ne'
-
 theorem ngx_lattice {T T' : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (Λ : LV D)
     (h : Submodule.IsLattice D.host.E Λ) : Submodule.IsLattice D.host.E (NgX Λ (gS D) F F') := by
   have hle : NgX Λ (gS D) F F' ≤ Λ := sup_le (sup_le Submodule.smul_le_right inf_le_left) inf_le_left

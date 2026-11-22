@@ -61,9 +61,6 @@ def eqv (e : A ≃+* (P → ℝ)) (he : Continuous e) (he' : Continuous e.symm) 
     continuous_toFun := he
     continuous_invFun := he' }
 
-theorem eqv_apply (e : A ≃+* (P → ℝ)) (he : Continuous e) (he' : Continuous e.symm) (x : A) :
-    eqv e he he' x = e x := rfl
-
 def eqvPi (e : A ≃+* (P → ℝ)) (he : Continuous e) (he' : Continuous e.symm) (ι : Type) :
     (ι → A) ≃ₜ+ (ι × P → ℝ) :=
   { toFun := fun x q => e (x q.1) q.2
@@ -75,9 +72,6 @@ def eqvPi (e : A ≃+* (P → ℝ)) (he : Continuous e) (he' : Continuous e.symm
       (continuous_apply q.2).comp (he.comp (continuous_apply q.1))
     continuous_invFun := continuous_pi fun i =>
       he'.comp (continuous_pi fun w => continuous_apply (i, w)) }
-
-theorem eqvPi_apply (e : A ≃+* (P → ℝ)) (he : Continuous e) (he' : Continuous e.symm) (ι : Type)
-    (x : ι → A) (q : ι × P) : eqvPi e he he' ι x q = e (x q.1) q.2 := rfl
 
 end Abstract
 
@@ -165,7 +159,6 @@ theorem selfDual_pi_of_form [LocallyCompactSpace A] (e : A ≃+* (P → ℝ)) (h
 end Meas
 
 end GlobalTheory.CompanionTheory.SW.SdPi
-
 
 open GlobalTheory.CompanionTheory.SW.SdPi GlobalTheory.CompanionTheory.SW.RealCoord in
 theorem GlobalTheory.CompanionTheory.SW.selfDual_pi_inf : ∀ (F : Type) [Field F] [NumberField F], IsTotallyReal F → ∀ (ψ : AddChar (AF F) ℂ), IsCharAF F ψ → ∀ k : Measure (Ainf F), SelfDual k (fun s t => psiInf F ψ (s * t)) → ∀ (ι : Type) [Fintype ι], SelfDual (Measure.pi fun _ : ι => k) (fun x y => psiInf F ψ (x ⬝ᵥ y)) := by

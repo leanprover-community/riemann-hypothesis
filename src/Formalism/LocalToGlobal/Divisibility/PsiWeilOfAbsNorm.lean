@@ -53,15 +53,6 @@ theorem psiWeil_iff (Pg : Finset (Pl D.host.E)) (pl : (Σ k : Fin 2, D.nd.PlG k)
 theorem absNorm_eq_of_res {PP : Pl D.host.E} {n : ℕ} (r : kP PP ≃+* ZMod n) [NeZero n] : Ideal.absNorm PP.asIdeal = n := by
   rw [Ideal.absNorm_apply, Submodule.cardQuot_apply, Nat.card_congr r.toEquiv, Nat.card_zmod]
 
-def psiAt {Pg : Finset (Pl D.host.E)} (pl : (Σ k : Fin 2, D.nd.PlG k) ≃ ↥Pg)
-    (res : ∀ kv : (Σ k : Fin 2, D.nd.PlG k), kP (pl kv).1 ≃+* ZMod (D.host.g kv.1)) (ζ : Fin 2 → D.what₂.LL)
-    (hζ : ∀ k, ζ k ^ D.host.g k = 1) (kv : Σ k : Fin 2, D.nd.PlG k) (PP : Pl D.host.E) (e : (pl kv).1 = PP) :
-    AddChar (kP PP) D.what₂.LL := by
-  subst e
-  exact (AddChar.zmodChar (D.host.g kv.1) (hζ kv.1)).compAddMonoidHom
-    ((res kv).toRingHom.toAddMonoidHom.comp (AddMonoidHom.mulLeft (xiBar D (pl kv).1)))
-
-
 end Txt
 
 section Det
@@ -70,7 +61,6 @@ variable {D : Formalism.BasicNotions.D7} {G : Type} [Group G] {P0 : Subgroup G} 
   {ψs : Ps →* D.what₂.LLˣ} {eG : G ≃* Formalism.BasicNotions.G0g D.nd} {Pg : Finset (Pl D.host.E)}
   {pl : (Σ k : Fin 2, D.nd.PlG k) ≃ ↥Pg} {res : ∀ kv : (Σ k : Fin 2, D.nd.PlG k), kP (pl kv).1 ≃+* ZMod (D.host.g kv.1)}
   {ψ : ∀ PP : Pl D.host.E, AddChar (kP PP) D.what₂.LL} {eC : G ≃* G0 Pg D.R.r}
-
 
 theorem res_unique {R : Type} [Semiring R] {n : ℕ} (r r' : R ≃+* ZMod n) : r = r' := by
   have hs : r.symm = r'.symm := RingEquiv.toRingHom_injective (Subsingleton.elim _ _)

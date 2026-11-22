@@ -20,7 +20,6 @@ section Degree
 
 variable {K : FiniteSubfield} (w : HeightOneSpectrum (𝓞 K.1))
 
-
 set_option maxHeartbeats 2000000 in
 theorem eq_univ_of_unramifiedDegree
     (σ : Gal(AlgebraicClosure (w.adicCompletion K.1)/w.adicCompletion K.1))
@@ -54,15 +53,6 @@ end Degree
 variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1))) (ιs : LocalEmbeddings K)
   (v : {v : HeightOneSpectrum (𝓞 K.1) // v ∉ S})
 
-theorem gsDecomp_eq_one_of_unramifiedDegree_eq_one
-    (g : Gal(AlgebraicClosure (v.1.adicCompletion K.1)/v.1.adicCompletion K.1))
-    (hg : unramifiedDegree (v.1.adicCompletion K.1) (AlgebraicClosure (v.1.adicCompletion K.1)) g = 1) :
-    gsDecomp K S ιs v g = 1 :=
-  decompHomS_eq_one_of_unramifiedDegree_eq_one S (ιs.fin v.1) v.2 g hg
-
-theorem continuous_rangeRestrict_gsDecomp : Continuous (gsDecomp K S ιs v).rangeRestrict :=
-  (continuous_gsDecomp K S ιs v).subtype_mk _
-
 instance t2Space_galUnramifiedOutside : T2Space (galUnramifiedOutside K.1 (AlgebraicClosure ℚ) S) :=
   galois_t2Space K.1 (maxUnramifiedOutside K.1 (AlgebraicClosure ℚ) S)
 
@@ -70,32 +60,6 @@ instance compactSpace_range_gsDecomp : CompactSpace (gsDecomp K S ιs v).range :
   refine isCompact_iff_compactSpace.mp ?_
   rw [MonoidHom.coe_range]
   exact isCompact_range (continuous_gsDecomp K S ιs v)
-
-theorem isQuotientMap_rangeRestrict_gsDecomp : Topology.IsQuotientMap (gsDecomp K S ιs v).rangeRestrict :=
-  ((continuous_rangeRestrict_gsDecomp K S ιs v).isClosedMap).isQuotientMap
-    (continuous_rangeRestrict_gsDecomp K S ιs v) (MonoidHom.rangeRestrict_surjective _)
-
-
-set_option maxHeartbeats 2000000 in
-theorem isTopologicalGenerator_rangeRestrict_gsDecomp
-    (σ : Gal(AlgebraicClosure (v.1.adicCompletion K.1)/v.1.adicCompletion K.1))
-    (hσ : unramifiedDegree (v.1.adicCompletion K.1) (AlgebraicClosure (v.1.adicCompletion K.1)) σ =
-      Multiplicative.ofAdd 1) :
-    IsTopologicalGenerator ((gsDecomp K S ιs v).rangeRestrict σ) := by
-  set f := (gsDecomp K S ιs v).rangeRestrict
-  set C := closure (Subgroup.zpowers (f σ) : Set (gsDecomp K S ιs v).range)
-  have hE := eq_univ_of_unramifiedDegree v.1 σ hσ (f ⁻¹' C)
-    (isClosed_closure.preimage (continuous_rangeRestrict_gsDecomp K S ιs v))
-    (fun k => subset_closure (by rw [map_zpow]; exact Subgroup.zpow_mem_zpowers _ k))
-    (fun g hg h hh => by
-      have h1 : f h = 1 := Subtype.ext (gsDecomp_eq_one_of_unramifiedDegree_eq_one K S ιs v h hh)
-      rw [Set.mem_preimage, map_mul, h1, mul_one]
-      exact hg)
-  rw [IsTopologicalGenerator, dense_iff_closure_eq]
-  refine Set.eq_univ_of_forall fun z => ?_
-  obtain ⟨g, rfl⟩ := MonoidHom.rangeRestrict_surjective _ z
-  have : g ∈ f ⁻¹' C := by rw [hE]; exact Set.mem_univ _
-  exact this
 
 end
 

@@ -11,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Local
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianLatticeTransportPreservesSelfDual
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.CharacterValueAtT
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LiesOverSpanOfNatCastMemHeightOne
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorNormLeIffTensorNormBound
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaTaylorCoeffsAlgebraicAtComplexMultiplicatio
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.VacuumNormConjCmPointsAllEmbeddings
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsAlgClosureEmbeddingExtendingOnAlgebraic
@@ -50,41 +49,8 @@ def psiWeil (ξ : E) : AddChar (Res P) ℂ := (psiRes P).mulShift (redP P ξ)
 
 variable {P}
 
-theorem resCh_eq {T : ℕ} (hT : T.Prime) (h : Ideal.absNorm P.asIdeal = T) : resCh P = T := by
-  have h1 : ((T : ℕ) : Res P) = 0 := by
-    rw [← map_natCast (Ideal.Quotient.mk P.asIdeal), Ideal.Quotient.eq_zero_iff_mem, ← h]
-    exact Ideal.absNorm_mem _
-  exact (Nat.prime_dvd_prime_iff_eq (resCh_prime P).out hT).1 ((CharP.cast_eq_zero_iff (Res P) _ _).1 h1)
-
 theorem card_res (P : HeightOneSpectrum (𝓞 E)) : Nat.card (Res P) = Ideal.absNorm P.asIdeal := by
   rw [Ideal.absNorm_apply, Submodule.cardQuot_apply]
-
-theorem psiRes_intCast {T : ℕ} (hT : T.Prime) (h : Ideal.absNorm P.asIdeal = T) (b : ℤ) :
-    psiRes P (b : Res P) = Complex.exp (2 * Real.pi * Complex.I * b / (T : ℂ)) := by
-  letI := resAlg P
-  haveI : Finite (Res P) := Ideal.finiteQuotientOfFreeOfNeBot _ P.ne_bot
-  have h1 : Module.finrank (ZMod (resCh P)) (Res P) = 1 := by
-    have h2 := Module.natCard_eq_pow_finrank (K := ZMod (resCh P)) (V := Res P)
-    rw [card_res, h, Nat.card_zmod, ← resCh_eq hT h] at h2
-    exact Nat.pow_right_injective (resCh_prime P).out.two_le (by simpa using h2.symm)
-  have h3 : Algebra.trace (ZMod (resCh P)) (Res P) (b : Res P) = (b : ZMod (resCh P)) := by
-    rw [← map_intCast (algebraMap (ZMod (resCh P)) (Res P)), Algebra.trace_algebraMap, h1, one_smul]
-  show ZMod.stdAddChar (Algebra.trace (ZMod (resCh P)) (Res P) (b : Res P)) = _
-  rw [h3, ZMod.stdAddChar_coe, resCh_eq hT h]
-
-theorem exists_intCast_res {T : ℕ} (hT : T.Prime) (h : Ideal.absNorm P.asIdeal = T) (c : Res P) : ∃ b : ℤ, (b : Res P) = c := by
-  letI := resAlg P
-  haveI : Finite (Res P) := Ideal.finiteQuotientOfFreeOfNeBot _ P.ne_bot
-  have hb : Function.Bijective (algebraMap (ZMod (resCh P)) (Res P)) :=
-    (Nat.bijective_iff_injective_and_card _).2 ⟨(algebraMap (ZMod (resCh P)) (Res P)).injective, by
-      rw [card_res, h, Nat.card_zmod, resCh_eq hT h]⟩
-  obtain ⟨z, rfl⟩ := hb.2 c
-  obtain ⟨b, rfl⟩ := ZMod.intCast_surjective z
-  exact ⟨b, (map_intCast _ b).symm⟩
-
-theorem psiWeil_apply {T : ℕ} (hT : T.Prime) (h : Ideal.absNorm P.asIdeal = T) (ξ : E) (c : Res P) (b : ℤ)
-    (hb : redP P ξ * c = (b : Res P)) : psiWeil P ξ c = Complex.exp (2 * Real.pi * Complex.I * b / (T : ℂ)) := by
-  rw [psiWeil, AddChar.mulShift_apply, hb, psiRes_intCast hT h]
 
 theorem psiRes_ne_one (P : HeightOneSpectrum (𝓞 E)) : psiRes P ≠ 1 := by
   letI := resAlg P
@@ -100,21 +66,16 @@ theorem psiWeil_ne_one {ξ : E} (h : redP P ξ ≠ 0) : psiWeil P ξ ≠ 1 := fu
     have h1 : psiRes P (redP P ξ * ((redP P ξ)⁻¹ * x)) = 1 := DFunLike.congr_fun e ((redP P ξ)⁻¹ * x)
     rwa [mul_inv_cancel_left₀ h] at h1)
 
-theorem psiWeil_pow (ξ : E) (c : Res P) : psiWeil P ξ c ^ resCh P = 1 := by
-  rw [← AddChar.map_nsmul_eq_pow, nsmul_eq_mul, CharP.cast_eq_zero, zero_mul, AddChar.map_zero_eq_one]
-
 end Psi
 
 section Seen
 
 variable {X : Fields} {Pr : Primes X} (hPr : Pr.Ok) (u : Pr.Word)
 
-
 open Classical in
 def tauAt (w : HeightOneSpectrum (𝓞 X.K)) : Pr.vT u ≃ X.Tau :=
   if h : ∃ e : Pr.vT u ≃ X.Tau, ∀ P, SeesP w (e P) P.1 ∨ SeesPbar w (e P) P.1 then h.choose
   else Fintype.equivOfCardEq (by rw [Fintype.card_coe, hPr.vT_card u]; rfl)
-
 
 include hPr in
 theorem eq_of_sees {w : HeightOneSpectrum (𝓞 X.K)} {τ : X.Tau} {P P' : Pr.vT u} (h : SeesP w τ P.1 ∨ SeesPbar w τ P.1)
@@ -131,7 +92,6 @@ theorem eq_of_sees {w : HeightOneSpectrum (𝓞 X.K)} {τ : X.Tau} {P P' : Pr.vT
   · refine Subtype.ext ?_
     rw [← GlobalTheory.CharVal.conjP_conjP' P.1, ← GlobalTheory.CharVal.conjP_conjP' P'.1]
     exact congrArg conjPrime₂ (h.symm.trans h')
-
 
 include hPr in
 theorem T_mem_vT (P : Pr.vT u) : ((Pr.T u : ℕ) : 𝓞 X.E) ∈ P.1.asIdeal := hPr.vT_norm u P.1 P.2 ▸ Ideal.absNorm_mem _
@@ -193,40 +153,8 @@ def brNorm (hN : N = n + 1) (lam : DomWeight N) (sg : DomWeight n) : ℝ :=
 
 variable (lam : DomWeight N) (sg : DomWeight n) (b : MvPolynomial (Fin N × Fin N) ℂ →ₗ[ℂ] MvPolynomial (Fin n × Fin n) ℂ)
 
-theorem normFock_self_re (f : MvPolynomial (Fin N × Fin N) ℂ) :
-    (normFock lam f f).re = (fockS f f).re / (fockS (extremal ℂ N lam) (extremal ℂ N lam)).re := by
-  obtain ⟨s, -, h'⟩ := GlobalTheory.IndefiniteRowSideFullHecke.TensorPlaceNorm.fockS_self_nonneg (extremal ℂ N lam)
-  simp only [normFock, GlobalTheory.IndefiniteRowSideFullHecke.TensorPlaceNorm.fockF_eq_fockS, h', Complex.div_ofReal_re, Complex.ofReal_re]
-
-theorem normFock_self_pos {f : MvPolynomial (Fin N × Fin N) ℂ} (hf : f ≠ 0) : 0 < (normFock lam f f).re := by
-  rw [normFock_self_re]
-  exact div_pos (GlobalTheory.TensorNormCompare.fockS_re_pos' hf) (GlobalTheory.TensorNormCompare.extremal_fock_pos lam)
-
-theorem fockRatios_bddAbove : BddAbove (fockRatios lam sg b) := by
-  haveI := GlobalTheory.TensorNormCompare.finiteDimensional_nablaSq lam
-  obtain ⟨C, -, h⟩ := GlobalTheory.TensorNormCompare.exists_fock_bound (nablaSq ℂ N lam) (b ∘ₗ (nablaSq ℂ N lam).subtype)
-  have h1 := GlobalTheory.TensorNormCompare.extremal_fock_pos lam
-  have h2 := GlobalTheory.TensorNormCompare.extremal_fock_pos sg
-  refine ⟨Real.sqrt (C * (fockS (extremal ℂ N lam) (extremal ℂ N lam)).re / (fockS (extremal ℂ n sg) (extremal ℂ n sg)).re), ?_⟩
-  rintro _ ⟨f, ⟨hf, h0⟩, rfl⟩
-  refine Real.sqrt_le_sqrt ?_
-  have h3 : (fockS (b f) (b f)).re ≤ C * (fockS f f).re := h ⟨f, (nablaSq_eq_delSq ℂ lam).symm ▸ hf⟩
-  rw [div_le_iff₀ (normFock_self_pos lam h0), normFock_self_re, normFock_self_re, div_le_iff₀ h2]
-  refine h3.trans (le_of_eq ?_)
-  field_simp
-
-theorem fockRatios_nonempty : (fockRatios lam sg b).Nonempty :=
-  ⟨_, extremal ℂ N lam, ⟨nablaSq_eq_delSq ℂ lam ▸ Formalism.GradedWeylDivisibility.hwMem ℂ N N le_rfl _ (natW_anti lam),
-    Formalism.GradedWeylDivisibility.hwNe ℂ N N le_rfl lam.natW⟩, rfl⟩
-
 theorem fockOpNorm_nonneg : 0 ≤ fockOpNorm lam sg b :=
   Real.sSup_nonneg (by rintro _ ⟨f, -, rfl⟩; exact Real.sqrt_nonneg _)
-
-theorem fockOpNorm_le {C : ℝ} (hC : 0 ≤ C)
-    (h : ∀ f ∈ delSq ℂ N lam, (normFock sg (b f) (b f)).re ≤ C ^ 2 * (normFock lam f f).re) : fockOpNorm lam sg b ≤ C := by
-  refine csSup_le (fockRatios_nonempty lam sg b) ?_
-  rintro _ ⟨f, ⟨hf, h0⟩, rfl⟩
-  exact Real.sqrt_le_iff.2 ⟨hC, (div_le_iff₀ (normFock_self_pos lam h0)).2 (h f hf)⟩
 
 theorem fockOpNorm_congr {lam lam' : DomWeight N} {sg sg' : DomWeight n} (h : lam.natW = lam'.natW) (h' : sg.natW = sg'.natW) :
     fockOpNorm lam sg b = fockOpNorm lam' sg' b := by
@@ -246,7 +174,6 @@ theorem exists_embQbar : ∃ ρ : TaylorLogMetric.Qbar →ₐ[ℚ] ℂ, ∀ x : 
   refine ⟨ρ, fun x => ?_⟩
   rw [← h _ (emb_mem_Qbar σ₀ x) ⟨x, rfl⟩, GlobalTheory.ThetaConj.cj_of_mem (GlobalTheory.Glob.imM σ₀) _ (x := σ₀ x) ⟨x, rfl⟩]
   exact GlobalTheory.Glob.rhoOf_imEquiv σ₀ s x
-
 
 open Classical in
 def embQbar : TaylorLogMetric.Qbar →ₐ[ℚ] ℂ := if s = σ₀ then TaylorLogMetric.Qbar.val else (exists_embQbar σ₀ s).choose
@@ -307,7 +234,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
 
 variable (hPr : Pr.Ok) (W : Wts X Pr.Word R) (A : Amb X) {Pl : Rows.Places X.K} (plEq : Pl.Pl ≃ HeightOneSpectrum (𝓞 X.K))
 
-
 section Val
 
 variable (hval : ∀ w (x : X.K), x ≠ 0 → Pl.val w x = ((vAdd (plEq w) x : ℤ) : WithTop ℤ))
@@ -336,61 +262,6 @@ section Same
 
 variable {X : Fields} {Pr : Primes X} (hX : X.Ok) (hPr : Pr.Ok) {ξ : X.E} (hK : ξ ∈ X.Kq)
 include hX hPr hK
-
-theorem exists_int_red (u : Pr.Word) (hi : ∀ P : Pr.vT u, IntAt P.1 ξ) : ∃ c : ℤ, ∀ P : Pr.vT u, redP P.1 ξ = (c : Res P.1) := by
-  have hp := hPr.T_prime u
-  by_cases h0 : IsEmpty (Pr.vT u)
-  · exact ⟨0, h0.elim⟩
-  obtain ⟨P₀⟩ := not_isEmpty_iff.1 h0
-  have hbar : ((X.conjO (Pr.piT u) : 𝓞 X.E) : X.E) ∈ X.Kq := fun τ τ' => by
-    show X.emb τ (star ((Pr.piT u : 𝓞 X.E) : X.E)) = X.emb τ' (star ((Pr.piT u : 𝓞 X.E) : X.E))
-    rw [hX.emb_star, hX.emb_star, hPr.piT_Kq u τ τ']
-  have hint : ∀ (y : 𝓞 X.E) (hy : (y : X.E) ∈ X.Kq), ∃ a : 𝓞 X.Kq, RingOfIntegers.mapRingHom X.Kq.subtype a = y :=
-    fun y hy => ⟨⟨⟨y, hy⟩, (isIntegral_algHom_iff X.Kq.subtype.toIntAlgHom X.Kq.subtype.injective).1 y.isIntegral_coe⟩, rfl⟩
-  obtain ⟨b, hb⟩ := hint _ (hPr.piT_Kq u)
-  obtain ⟨a, ha⟩ := hint _ hbar
-  have hab : a * b = (Pr.T u : 𝓞 X.Kq) := RingOfIntegers.ext (X.Kq.subtype.injective (by
-    have := congrArg (fun z : 𝓞 X.E => (z : X.E)) (show RingOfIntegers.mapRingHom X.Kq.subtype (a * b) =
-      RingOfIntegers.mapRingHom X.Kq.subtype (Pr.T u) by rw [map_mul, ha, hb, map_natCast, mul_comm, hPr.piT_norm])
-    exact this))
-  have hnu : ¬ IsUnit (Pr.piT u) := fun h => P₀.1.isPrime.ne_top (Ideal.eq_top_of_isUnit_mem _ (decoFin_mem_of_mem_divs P₀.2) h)
-  have hN := GlobalTheory.TrueChars.absNorm_span_of_mul_eq hX.quad hp hab
-    (fun h => hnu (cO_cO (Pr.piT u) ▸ (ha ▸ h.map (RingOfIntegers.mapRingHom X.Kq.subtype) : IsUnit (X.conjO (Pr.piT u))).map X.conjO))
-    (fun h => hnu (hb ▸ h.map (RingOfIntegers.mapRingHom X.Kq.subtype)))
-  obtain ⟨n, d, hd, h⟩ := GlobalTheory.TrueChars.exists_nat_red X.Kq.subtype hp hN ⟨ξ, hK⟩
-  rw [hb] at hd h
-  obtain ⟨c, hc⟩ := exists_intCast_res hp (hPr.vT_norm u P₀.1 P₀.2) (redP P₀.1 ξ)
-  have tr : ∀ (P : Pr.vT u) (x y : ℕ), (x : Res P₀.1) * redP P₀.1 ξ = y → (x : Res P.1) * (c : Res P.1) = y := fun P x y e => by
-    have e1 : ((x * c - y : ℤ) : Res P₀.1) = 0 := by push_cast; rw [hc, e, sub_self]
-    rw [CharP.intCast_eq_zero_iff _ (resCh P₀.1), resCh_eq hp (hPr.vT_norm u P₀.1 P₀.2), ← resCh_eq hp (hPr.vT_norm u P.1 P.2),
-      ← CharP.intCast_eq_zero_iff (Res P.1)] at e1
-    push_cast at e1
-    exact sub_eq_zero.1 e1
-  refine ⟨c, fun P => ?_⟩
-  have m := fun P : Pr.vT u => decoFin_mem_of_mem_divs P.2
-  rcases h with h | h
-  · exact mul_left_cancel₀ (hd _ (m P)) ((h _ (m P) (hi P)).trans (tr P _ _ (h _ (m P₀) (hi P₀))).symm)
-  · have h1 := h _ (m P) (hi P)
-    exact mul_left_cancel₀ (fun e : (n : Res P.1) = 0 => hd _ (m P) (by rw [← h1, e, zero_mul]))
-      (h1.trans (tr P _ _ (h _ (m P₀) (hi P₀))).symm)
-
-theorem psiWeil_same (u : Pr.Word) (hi : ∀ P : Pr.vT u, IntAt P.1 ξ) (P P' : Pr.vT u) (a : ℤ) :
-    psiWeil P.1 ξ (a : Res P.1) = psiWeil P'.1 ξ (a : Res P'.1) := by
-  obtain ⟨c, hc⟩ := exists_int_red hX hPr hK u hi
-  rw [psiWeil_apply (hPr.T_prime u) (hPr.vT_norm u P.1 P.2) ξ _ (c * a) (by rw [hc]; push_cast; rfl),
-    psiWeil_apply (hPr.T_prime u) (hPr.vT_norm u P'.1 P'.2) ξ _ (c * a) (by rw [hc]; push_cast; rfl)]
-
-theorem exists_charT (σ₀ : X.K →+* ℂ) (hr : ∀ u (z : ℂ), z ^ Pr.T u = 1 → ∃ y, σ₀ y = z) (hu : ∀ u, XiUnitAt (Pr.vT u) ξ) :
-    ∃ Ps : CharT X Pr, Ps.Ok ∧ ∀ u P c, σ₀ (Ps.psiT u P c) = psiWeil P.1 ξ c := by
-  have h : ∀ u (P : Pr.vT u) (c : Multiplicative (Res P.1)), ∃ y, σ₀ y = (psiWeil P.1 ξ).toMonoidHom c := fun u P c =>
-    hr u _ (resCh_eq (hPr.T_prime u) (hPr.vT_norm u P.1 P.2) ▸ psiWeil_pow ξ c.toAdd)
-  let Ps : CharT X Pr := ⟨fun u P => AddChar.toMonoidHomEquiv.symm (GlobalTheory.TrueChars.liftHom σ₀ _ (h u P))⟩
-  have hs : ∀ u P c, σ₀ (Ps.psiT u P c) = psiWeil P.1 ξ c := fun u P c =>
-    GlobalTheory.TrueChars.liftHom_spec σ₀ _ (h u P) (Multiplicative.ofAdd c)
-  refine ⟨Ps, ⟨fun u P e => psiWeil_ne_one (hu u P).2 (AddChar.ext _ _ fun c => ?_), fun u P P' a => σ₀.injective ?_⟩, hs⟩
-  · rw [← hs, e, AddChar.one_apply, AddChar.one_apply, map_one]
-  · rw [hs, hs]
-    exact psiWeil_same hX hPr hK u (fun P => (hu u P).1) P P' a
 
 end Same
 

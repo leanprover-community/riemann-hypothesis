@@ -23,13 +23,6 @@ namespace GlobalTheory.DiscSMO
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a c N : ℕ} {n : Fin c → ℕ}
   {π π' : ∀ i, CuspSub E (n i)}
 
-
-def prodForm (φ : ∀ i, (π i).V) : (∀ i, GA E (n i)) → ℂ := fun m => ∏ i, (φ i).1.1 (m i)
-
-structure IsTensorOf (T : ∀ i, (π i).V →ₗ[ℂ] (π' i).V) (Θ : Module.End ℂ ((∀ i, GA E (n i)) → ℂ)) : Prop where
-  comm : ∀ i o φ, T i ((π i).op o φ) = (π' i).op o (T i φ)
-  prod : ∀ φ, Θ (prodForm φ) = prodForm fun i => T i (φ i)
-
 namespace IsTensorOf
 
 variable {T : ∀ i, (π i).V →ₗ[ℂ] (π' i).V} {Θ : Module.End ℂ ((∀ i, GA E (n i)) → ℂ)}
@@ -37,9 +30,6 @@ variable {T : ∀ i, (π i).V →ₗ[ℂ] (π' i).V} {Θ : Module.End ℂ ((∀ 
 end IsTensorOf
 
 variable {h : ∑ i, n i = N}
-
-
-
 
 namespace IsTensorOf
 
@@ -73,14 +63,11 @@ theorem contDiffAt_chart_mul {f : GA E a → ℂ} {g : GA E a} {y : GL (Fin a) (
   rw [e1]
   exact hf
 
-
 namespace IsTensorOf
 
 variable {T : ∀ i, (π i).V →ₗ[ℂ] (π' i).V} {Θ : Module.End ℂ ((∀ i, GA E (n i)) → ℂ)}
 
-
 end IsTensorOf
-
 
 end GlobalTheory.DiscSMO
 

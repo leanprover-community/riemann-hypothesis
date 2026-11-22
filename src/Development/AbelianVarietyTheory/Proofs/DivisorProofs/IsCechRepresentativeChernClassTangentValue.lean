@@ -124,11 +124,6 @@ theorem prismContractionTwoCochain_coboundary (β : C1 (OSmall U)) {v : epsR K �
   simp only [hs, ht, hd, cochainTangentDiffCoeff, dif_pos h, dif_pos hQ]
   exact snd_d1_lemma φ.ρ _ _ _ _ _ _ _ _ _
 
-private theorem ev2_pullback_cupZ (c : Z1 (O (dp0 K) (A.hom ≫ 𝟙 (Sp K)))) (ω : Form (A.hom ≫ 𝟙 (Sp K)))
-    {T T' T'' : Thick (dp0 K) (A.hom ≫ 𝟙 (Sp K))} (a : T ⟶ T') (b : T' ⟶ T'') (hT : ∃ i, ⊤ ≤ T.x ⁻¹ᵁ U i) :
-    ev2 ((CoefMap.restrict (O (dp0 K) (A.hom ≫ 𝟙 (Sp K))) (IsSmall (dp0 K) (A.hom ≫ 𝟙 (Sp K)) U).ι).pullbackTwoCocycle
-      (cupZ _ c ω.1)).1 a b hT = b.φ (ev c a) * ev ω.1 b := rfl
-
 private theorem snd_cup_difference_eq {R B C : Type} [CommRing R] [CommRing B] [CommRing C] [Algebra R B]
     [Algebra R C] (ρ : B →ₐ[R] C) (a t : C) (sQ τQ σQ θQ e w b : DualNumber C) (sP τP θP : DualNumber B)
     (e1 : TrivSqZeroExt.inl a + sQ = dualAlg ρ sP + e) (e2 : b + τQ = dualAlg ρ τP + e)

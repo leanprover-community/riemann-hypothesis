@@ -190,12 +190,6 @@ def FormAt (u : D.what₂.Word) : Prop :=
   ∀ what₂ : Finset (LatV D), IsRowReps D F0 what₂ →
     gaG D * massRows D F0 what₂ * dimPi (hc := D.hcW) u = D.duS u
 
-def LoopPairSumBound (u u' : D.what₂.Word) (c : ℝ) : Prop :=
-  ∀ S : Finset (D.s.Pair u u'), (∀ p ∈ S, loopP D.s p) →
-    gaG D * ∑ p ∈ S, ‖D.s.pval p‖ ≤
-      Real.exp (-(c * (D.R.k : ℝ) * (D.R.f : ℝ) * Real.log (D.R.k : ℝ))) *
-        ((D.duS u : ℝ) * (D.duS u' : ℝ)) / D.what₂.Dstar
-
 def Mass2At (large₂ : SizeData₂ D) (C : ℝ) : Prop :=
   ∀ (V : Type) [AddCommGroup V] [Module D.host.E V] [Module (𝓞 D.host.E) V]
     [IsScalarTower (𝓞 D.host.E) D.host.E V]
@@ -224,56 +218,9 @@ def stMassL (D : D7) : Prop :=
 def stMass2 (D : D7) (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A C : ℝ) : Prop :=
   Hyp D large₂ u u' C' Cl Cg cb Cu cT CT C0 A → Mass2At D large₂ C
 
-def stMassVol (D : D7) (G : GlobalTheoryTheory.GenusMassVolumes.GaugeFam D.host.F D.host.E D.sp.cm.sig) : Prop :=
-  ∀ (j : ℕ) (e : Fin j → (hS D).V) (U : Submodule D.host.E (hS D).V), 2 ≤ j → LinearIndependent D.host.E e →
-    U ≤ Wb D → Submodule.span D.host.E (Set.range e) = Wb D ⊓ orth (hS D) U →
-    (∀ τ : D.host.E →+* ℂ, ∀ y ∈ Submodule.span D.host.E (Set.range e), y ≠ 0 → 0 < nrm (hS D) τ y) →
-    GlobalTheoryTheory.GenusMassVolumes.volHE G j (Matrix.of fun a b => (hS D).hT (e a) (e b)) = GlobalTheoryTheory.GenusMassVolumes.volHE G j 1
-
 end Mass
 
 section BR
-
-def embU (k : ℕ) (h : Matrix (Fin k) (Fin k) ℂ) : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ :=
-  Matrix.reindex finSumFinEquiv finSumFinEquiv (Matrix.fromBlocks h 0 0 (1 : Matrix (Fin 1) (Fin 1) ℂ))
-
-def stBRmult : Prop :=
-  ∀ (k : ℕ) (u : Fin (k + 1) → ℝ) (u' : Fin k → ℝ) (H H' : Type)
-    [NormedAddCommGroup H] [InnerProductSpace ℂ H] [NormedAddCommGroup H'] [InnerProductSpace ℂ H']
-    (π : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ → (H →L[ℂ] H)) (ρ : Matrix (Fin k) (Fin k) ℂ → (H' →L[ℂ] H')),
-    IsHCTypeU (k + 1) u π → IsHCTypeU k u' ρ →
-    ∀ A B : H' →L[ℂ] H,
-      (∀ h ∈ UJset (allPos k), A.comp (ρ h) = (π (embU k h)).comp A) →
-      (∀ h ∈ UJset (allPos k), B.comp (ρ h) = (π (embU k h)).comp B) →
-      A ≠ 0 → ∃ c : ℂ, B = c • A
-
-def stBRhad : Prop :=
-  ∀ (N : ℕ) (A : Matrix (Fin N) (Fin N) ℂ), ‖A.det‖ ≤ ∏ j, Real.sqrt (∑ i, ‖A i j‖ ^ 2)
-
-def succMin {N : ℕ} (M : Submodule ℤ (EuclideanSpace ℝ (Fin N))) (i : ℕ) : ℝ :=
-  sInf {t : ℝ | 0 ≤ t ∧ ∃ v : Fin i → EuclideanSpace ℝ (Fin N),
-    (∀ j, v j ∈ M) ∧ LinearIndependent ℝ v ∧ ∀ j, ‖v j‖ ≤ t}
-
-def dualZ {N : ℕ} (M : Submodule ℤ (EuclideanSpace ℝ (Fin N))) : Submodule ℤ (EuclideanSpace ℝ (Fin N)) where
-  carrier := {x | ∀ y ∈ M, ∃ z : ℤ, ⟪x, y⟫_ℝ = z}
-  add_mem' := by
-    intro a b ha hb y hy
-    obtain ⟨z1, h1⟩ := ha y hy
-    obtain ⟨z2, h2⟩ := hb y hy
-    exact ⟨z1 + z2, by rw [inner_add_left, h1, h2]; push_cast; ring⟩
-  zero_mem' := fun y _ => ⟨0, by simp⟩
-  smul_mem' := by
-    intro c a ha y hy
-    obtain ⟨z, h⟩ := ha y hy
-    exact ⟨c * z, by rw [← Int.cast_smul_eq_zsmul ℝ c a, real_inner_smul_left, h]; push_cast; ring⟩
-
-def stBRtrans : Prop :=
-  ∀ (N : ℕ) (M : Submodule ℤ (EuclideanSpace ℝ (Fin N))),
-    DiscreteTopology M → Submodule.span ℝ (M : Set (EuclideanSpace ℝ (Fin N))) = ⊤ →
-    ∀ i, 1 ≤ i → i ≤ N → succMin M i * succMin (dualZ M) (N + 1 - i) ≤ N
-
-def stBRmink : Prop :=
-  ∀ (N : ℕ) (G : Subgroup (GL (Fin N) ℤ)), Finite G → Nat.card G ∣ (2 * N).factorial
 
 end BR
 
@@ -321,18 +268,6 @@ def stPT (C' Cl Cg cb Cu cT CT C0 Cn C1 C : ℝ) : Prop :=
           ENNReal.ofReal (large₂.sc.b ^ (C * (D.R.m : ℝ) ^ 4) *
             (max 1 (Gf D.R.k D.R.rS W.z W.z' γ)⁻¹) ^ (C * (D.R.m : ℝ) ^ 2)) * MMv D w w' A μsec
 
-def stPTsum (C' Cl Cg cb Cu cT CT C0 Cn C1 C : ℝ) : Prop :=
-  Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0 →
-  ∀ τ w w', HypTT D w w' → ∀ θ, normWin D large₂ C1 θ → ∀ W, GoodW D τ w w' θ W →
-    ∀ (ι : Type) [Fintype ι] (lams : ι → Fin (2 * D.R.rS + D.R.k + 1) → ℝ) (As : ι → LocS W) (a : ι → ℂ),
-      (∀ i, l1dist (lams i) (lamD D τ) ≤ Cn * D.R.k * (D.R.m : ℝ) ^ 3 ∧ GoodS D (lams i) (As i)) →
-      ∀ μsec, IsSection D.R.k D.R.rS W.z W.z' μsec →
-      ∀ γ p, RelPt D W.z W.z' γ p → ∀ θ', normWin D large₂ C1 θ' → ∀ νR, RMeas D W γ θ' νR →
-        ptWeight D.R.k D.R.rS (Tr D w) (Tr D w') p *
-            hsNormSq (∑ i, a i • jhUnit D w w' (As i) μsec νR γ) ≤
-          large₂.sc.b ^ (C * (D.R.m : ℝ) ^ 4) *
-            (max 1 (Gf D.R.k D.R.rS W.z W.z' γ)⁻¹) ^ (C * (D.R.m : ℝ) ^ 2) * (∑ i, ‖a i‖) ^ 2
-
 def stPTDl (C' Cl Cg cb Cu cT CT C0 Cn C1 C : ℝ) : Prop :=
   Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0 →
   ∀ τ w w', HypTT D w w' → ∀ θ, normWin D large₂ C1 θ → ∀ W, GoodW D τ w w' θ W →
@@ -354,23 +289,6 @@ def PieriNormDegreeFormula (C' Cl Cg cb Cu cT CT C0 Cn C1 : ℝ) : Prop :=
     ∀ μsec, IsSection D.R.k D.R.rS W.z W.z' μsec → ∃ K : ℝ, 0 < K ∧
       ∀ lam', l1dist lam' (lamD D τ) ≤ Cn * D.R.k * (D.R.m : ℝ) ^ 3 → ∀ A : LocS W, GoodS D lam' A →
         MMv D w w' A μsec = ENNReal.ofReal (K / A.deg)
-
-def FormalDegreeUnitStepRatio (C' Cl Cg cb Cu cT CT C0 Cn C1 C : ℝ) : Prop :=
-  Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0 →
-  ∀ τ w w', HypTT D w w' → ∀ θ, normWin D large₂ C1 θ → ∀ W, GoodW D τ w w' θ W →
-    ∀ lam', l1dist lam' (lamD D τ) ≤ Cn * D.R.k * (D.R.m : ℝ) ^ 3 → ∀ A : LocS W, GoodS D lam' A →
-      ∀ (i : Fin (2 * D.R.rS + D.R.k + 1)) (s : ℝ), (s = 1 ∨ s = -1) →
-        ∀ A' : LocS W, GoodS D (lam' + s • epsI {i}) A' →
-          (D.R.r : ℝ) ^ (-C) ≤ A'.deg / A.deg ∧ A'.deg / A.deg ≤ (D.R.r : ℝ) ^ C
-
-def stMOM (C' Cl Cg cb Cu cT CT C0 Cn C1 Cq C : ℝ) : Prop :=
-  Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0 →
-  ∀ τ w w', HypTT D w w' → ∀ θ, normWin D large₂ C1 θ → ∀ W, GoodW D τ w w' θ W →
-    ∀ lam', l1dist lam' (lamD D τ) ≤ Cn * D.R.k * (D.R.m : ℝ) ^ 3 → ∀ A : LocS W, GoodS D lam' A →
-      ∀ (a : Fin (D.R.rS + 1)) (q : ℕ), (q : ℝ) ≤ Cq * (D.R.rS : ℝ) ^ 3 →
-        ∫⁻ x, ENNReal.ofReal (lA D.R.k D.R.rS W.z (Matrix.of x) a ^ (2 * q)) *
-            (‖A.Φ (Matrix.of x)‖₊ : ℝ≥0∞) ^ 2 ∂W.νS ≤
-          ENNReal.ofReal (large₂.sc.b ^ (2 * C * D.R.m * q)) * l2SG W.νS A.Φ
 
 end Loc
 
@@ -496,21 +414,6 @@ def stX (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT
       XiS D u HH C s ≤ Hb large₂.sc.b C D.R.m D.R.f ^ C * C ^ (s * D.R.k * D.R.f) *
         (c / (D.R.k * D.host.v)) ^ (D.R.k * D.R.f)
 
-def stLem3 : Prop :=
-  ∀ (V : Type) [AddCommGroup V] [Module D.host.E V] [FiniteDimensional D.host.E V]
-    [Module (𝓞 D.host.E) V] [IsScalarTower (𝓞 D.host.E) D.host.E V]
-    (h : V →ₗ⋆[D.host.E] V →ₗ[D.host.E] D.host.E), h.IsSymm → IsPosDef h →
-    ∀ M : Submodule (𝓞 D.host.E) V, Submodule.IsLattice D.host.E M → Formalism.HermitianLatticesTheory.IsIntegralLat h M →
-    ∀ de : ℕ, latDetH h M = de → ∀ e : ℕ, DiscGen h M e →
-      Formalism.HermitianLatticesTheory.mass h M * levelIdx h M de =
-        massU D.host.E (finrank D.host.E V) * (de : ℝ) ^ (finrank D.host.E V) *
-          ∏ᶠ p : PrimesOver D.host.F de,
-            thP (finrank D.host.E V) (eP h M p.1) (eta₃ D.host.F D.host.E p.1) (Ideal.absNorm p.1) ∧
-      (∀ p : Ideal (𝓞 D.host.F), p.IsMaximal →
-        thP (finrank D.host.E V) (eP h M p) (eta₃ D.host.F D.host.E p) (Ideal.absNorm p) ≤ (2 : ℝ) ^ e) ∧
-      Formalism.HermitianLatticesTheory.mass h M ≤ massU D.host.E (finrank D.host.E V) * (de : ℝ) ^ (finrank D.host.E V) *
-        (2 : ℝ) ^ (e * omegaF D.host.F de)
-
 def stLem3L0 (u : D.what₂.Word) : Prop :=
   (Tu D u).Prime → 3 ≤ Tu D u → SplitsCompletely (E := D.host.E) (Tu D u) →
   ∀ F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E), F0.e = D.sp.hypE → F0.z = D.zmOf u →
@@ -531,17 +434,6 @@ def congruence_at_split_frobenius_holds (large₂ : SizeData₂ D) (u u' : D.wha
           (cntPrim (D.sp.X 0).hT L' (D.R.k - s) de : ℝ≥0∞)) ≤
         ENNReal.ofReal (Formalism.HermitianLatticesTheory.mass (D.sp.X 0).hT (L0X D Λ (lf D F0)) *
           (((de : ℝ) / NT D u) ^ D.R.k * ((de : ℝ) * NT D u) ^ (C * s + C * Real.log D.R.f) * XiS D u HH C s))
-
-def SubmoduleIndexCount (large₂ : SizeData₂ D) (CH C : ℝ) : Prop :=
-  (∀ (P : Type) [AddCommGroup P] [Module (𝓞 D.host.E) P] [Module.Projective (𝓞 D.host.E) P]
-      [Module.Finite (𝓞 D.host.E) P], finrank (𝓞 D.host.E) P ≤ D.R.k → ∀ j : ℕ, 1 ≤ j →
-      ((ENat.card {Q : Submodule (𝓞 D.host.E) P // Nat.card (P ⧸ Q) = j} : ℕ∞) : ℝ≥0∞) ≤
-        ENNReal.ofReal ((j : ℝ) ^ ((D.R.k : ℝ) + lg2f D.R.f))) ∧
-  (∀ (A : Type) [AddCommGroup A] [Module (𝓞 D.host.E) A] [Finite A] (e : ℕ),
-      (∃ s : Finset A, s.card ≤ e ∧ Submodule.span (𝓞 D.host.E) (s : Set A) = ⊤) →
-      (Nat.card A : ℝ) ≤ Hb large₂.sc.b CH D.R.m D.R.f →
-      (Nat.card (Submodule (𝓞 D.host.E) A) : ℝ) ≤ Hb large₂.sc.b CH D.R.m D.R.f ^ (C * e) ∧
-      (Nat.card (A ≃ₗ[𝓞 D.host.E] A) : ℝ) ≤ Hb large₂.sc.b CH D.R.m D.R.f ^ (C * e))
 
 def MeanFlagPairCount (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A Ad C : ℝ) : Prop :=
   Hyp D large₂ u u' C' Cl Cg cb Cu cT CT C0 A →
@@ -596,48 +488,11 @@ def stVol (D : D7) (large₂ : SizeData₂ D) (X : TermTie D) (u u' : D.what₂.
   ∀ t : D.s.Term u u', D.s.Gterm t ≠ 0 → D.s.relevant t →
     Y.volR t ≤ HHZ D large₂.sc.b C (ZhatL (X.fl t) (X.fl' t)) ^ (C * (D.R.rS : ℝ) ^ 2)
 
-def VolumeRatioBound (D : D7) (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A c : ℝ) : Prop :=
-  Hyp D large₂ u u' C' Cl Cg cb Cu cT CT C0 A → LoopPairSumBound D u u' c
-
 section S0lines
 
 variable (D : D7)
 
-def cExp : Prop := ∀ u u' : D.what₂.Word, KExpansion D.s u u' ∧ KAbsConv D.s u u'
-
-def cIdOne : Prop := ∀ u : D.what₂.Word, IdCellDiag D.s u
-
-def f3 : ℝ := ∏ᶠ p ∈ typedPl D, (1 + 3 / (Ideal.absNorm p.asIdeal : ℝ))
-
-def c2aG : Prop :=
-  ∀ (u u' : D.what₂.Word) (Φ : Set (D.s.Term u u')), IsSat D Φ → (∀ t ∈ Φ, D.s.Gterm t ≠ 0) →
-    Summable (fun p : pairsIn D.s Φ => ‖D.s.pval p.1‖) →
-    hsNormSq (KOf D.s u u' Φ) ≤ f3 D * gaG D * (∑' p : pairsIn D.s Φ, D.s.pval p.1).re
-
 def Kpp (u u' : D.what₂.Word) : D.s.Cu u' →L[ℂ] D.s.Cu u := KOf D.s u u' {t | D.s.Gterm t = 0 ∧ ¬ D.s.isId t}
-
-def cK2off : Prop :=
-  ∀ u u' : D.what₂.Word, u ≠ u' →
-    ∀ t : D.s.Term u u', D.s.Gterm t = 0 → D.s.aTerm u u' t = 0
-
-def Kng (u u' : D.what₂.Word) : D.s.Cu u' →L[ℂ] D.s.Cu u := KOf D.s u u' (famNG D.s)
-
-def scalG (u u' : D.what₂.Word) : Set (D.s.Pair u u') :=
-  {p | p ∈ pairsIn D.s (famG D.s) ∧ scalarP D.s p}
-
-def NonGenericKernelBound (large₂ : SizeData₂ D) (c C : ℝ) : Prop :=
-  ∀ u u' : D.what₂.Word,
-    hsNormSq (Kng D u u') ≤
-      (Real.exp (-(c * (D.R.k : ℝ) * (D.R.f : ℝ) * Real.log (D.R.k : ℝ))) +
-        (2 : ℝ) ^ (-((D.R.k : ℝ) - 2 * (D.R.rS : ℝ) - 5)) *
-          Real.exp (C * (D.R.m : ℝ) ^ 5 * (D.R.f : ℝ) * large₂.sc.L)) *
-      ((D.duS u : ℝ) * (D.duS u' : ℝ)) / D.what₂.Dstar
-
-def GenericScalarPairSum (large₂ : SizeData₂ D) (C : ℝ) : Prop :=
-  ∀ u : D.what₂.Word,
-    Summable (fun p : scalG D u u => D.s.pval p.1) ∧
-    ‖(gaG D : ℂ) * ∑' p : scalG D u u, D.s.pval p.1‖ ≤
-      Real.exp (C * (D.R.m : ℝ) ^ 5 * (D.R.f : ℝ) * large₂.sc.L) * (D.duS u : ℝ) ^ 2 / D.what₂.Dstar
 
 end S0lines
 
@@ -654,12 +509,6 @@ def cTvC (D : D7) (C2 : ℝ) : Prop := ∀ u u', Tr D u / Tr D u' ≤ C2
 def cTvD (D : D7) (C3 : ℝ) : Prop :=
   ∀ u τ, gg D ^ D.R.m * D.host.ka ^ (-((D.R.m : ℝ) - 1)) * (∏ j ∈ Finset.Icc 1 D.R.m, bOne D τ j) *
       (D.R.k : ℝ) ^ (-C3) / aEff D u τ ≤ Tcrit D u τ
-
-def cTvF (D : D7) (large₂ : SizeData₂ D) (c5 CA : ℝ) : Prop :=
-  ∀ u u' (l : ℕ), 1 ≤ l → l ≤ D.R.k - 2 → (∀ τ, uOne D u τ (l + 1) ≠ uOne D u' τ (l + 1)) →
-    ∀ (x : D.what₂.Tau → LocalDataRealPlace D) (L : LatticeDataWithDual D), IsLocC D u u' l x → IsLatGLOB D L →
-      (D.R.k : ℝ) ^ c5 ≤ ThA D CA u u' x L ∧
-      ((D.R.rS : ℝ) + 1) * (CA / ThA D CA u u' x L) ^ (D.R.f : ℝ) ≤ large₂.sc.b ^ (-7 : ℝ)
 
 def cTvG (D : D7) (large₂ : SizeData₂ D) (ep0 CV : ℝ) : Prop :=
   ∀ τ, (1 - ep0) * vand (lamSH D.R (D.hc τ)) ≤ VV D τ ∧
@@ -678,17 +527,6 @@ def stNG (D : D7) (C : ℝ) : Prop := 4 * D.R.rS + 7 ≤ D.R.k → stNGLoc D.R.k
 section K2
 
 variable (D : D7) (large₂ : SizeData₂ D)
-
-def KTwoParameterConditions (Cl Cg CT : ℝ) : Prop :=
-  Cl * (D.R.m : ℝ) ^ 6 * large₂.sc.L ≤ (D.R.k : ℝ) * Real.log D.R.k ∧
-  (∀ i : Fin 2, ((D.R.k : ℝ) * large₂.sc.b) ^ 8 ≤ (D.host.g i : ℝ) ∧ (D.host.g i : ℝ) ≤ large₂.sc.b ^ Cg) ∧
-  (∀ (τ : D.what₂.Tau) (a c : Fin D.R.r), a ≠ c →
-    Cl * (D.R.k : ℝ) * (D.R.m : ℝ) ^ 3 < |lamS D.R (D.hc τ) a - lamS D.R (D.hc τ) c|) ∧
-  Cl * Real.log D.host.rdE ≤ large₂.sc.L ∧
-  Real.log (D.R.f : ℝ) ≤ (D.R.rS : ℝ) ^ 2 ∧
-  (∀ u : D.what₂.Word, ((D.mem u).A.T : ℝ) ≤ large₂.sc.b ^ (CT * (D.R.m : ℝ)) ∧
-    Nat.Coprime (D.mem u).A.T (D.host.g 0 * D.host.g 1)) ∧
-  Formalism.HermitianLatticesTheory.IsCMUnram D.host.E
 
 end K2
 

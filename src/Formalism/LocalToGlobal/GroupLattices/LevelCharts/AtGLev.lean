@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.AtGGlob
+public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SignBlockDeterminant
 
 @[expose] public section
 

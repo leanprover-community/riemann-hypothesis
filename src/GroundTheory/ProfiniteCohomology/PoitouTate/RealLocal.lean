@@ -81,7 +81,6 @@ theorem bijective_dualToCartier {n : ℕ} [NeZero n] (hL : Nonempty (galRootsOfU
           Nat.card_le_card_of_injective _ (bijective_toDualDual hD hM).1
       _ ≤ Nat.card (dualRep D M) := card_dualRep_le hD
 
-
 omit [IsTopologicalGroup G] [IsDiscreteRep D] [IsDiscreteRep M] in
 theorem tensorHom_dualToCartier_cartierPairing :
     (𝟙 (Rep.res ψ.toMonoidHom M) ⊗ₘ dualToCartier ψ D ρ M) ≫
@@ -120,7 +119,6 @@ variable [FiniteDimensional K L] [IsGalois K L] (h2 : Module.finrank K L ≤ 2)
   (inv : cohomology (Rep.res ψ.toMonoidHom D) 2 →+ QZ)
   (hinv : ∀ z, inv z = realInv K L h2 hN ((cohomologyMap ρ 2).hom z))
 
-
 include hG hc hneg hconj hroots hinv in
 theorem exists_orderTwo_pairing_zero {n : ℕ} [NeZero n] (hD : Nonempty (D ≃+ ZMod n))
     (hρ : Function.Injective ρ.hom) (hM : ∀ m : M, n • m = 0)
@@ -139,7 +137,6 @@ theorem exists_orderTwo_pairing_zero {n : ℕ} [NeZero n] (hD : Nonempty (D ≃+
   refine e1.trans ?_
   change χ (e.symm (e η)) = χ η
   rw [AddEquiv.symm_apply_apply]
-
 
 include hG hc hneg hconj hroots hinv in
 theorem exists_orderTwo_pairing_two {n : ℕ} [NeZero n] (hD : Nonempty (D ≃+ ZMod n))
@@ -177,8 +174,6 @@ end Order2
 end Abstract
 
 section GS
-
-local notation "ℚ̄" => AlgebraicClosure ℚ
 
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
@@ -227,7 +222,6 @@ variable (M : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 ℚ̄ S)) [IsDis
 
 variable [NeZero n] (hD : Nonempty (gsRoots S n ≃+ ZMod n)) (hM : ∀ m : M, n • m = 0)
 
-
 set_option maxHeartbeats 400000 in
 include hD hM in
 theorem surjective_gsRealPairing_zero (w : {v : InfinitePlace K.1 // v.IsReal}) :
@@ -252,7 +246,6 @@ theorem surjective_gsRealPairing_zero (w : {v : InfinitePlace K.1 // v.IsReal}) 
   case hρ => exact gsRealRootsToUnits_injective S ιr n w
   obtain ⟨ξ, hξ⟩ := key
   exact ⟨ξ, AddMonoidHom.ext fun η => (ptLocalPairing_apply _ _ _ _ _ _ _ _).trans (hξ η)⟩
-
 
 set_option maxHeartbeats 400000 in
 include hD hM in

@@ -23,9 +23,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-local notation "FIE" => FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E
-local notation "FIF" => FractionalIdeal (nonZeroDivisors (𝓞 D.host.F)) D.host.F
-
 theorem conj_conj (x : D.host.E) : D.host.conj (D.host.conj x) = x := by
   first
     | exact Formalism.HC.HostRaw.conj_conj _ x

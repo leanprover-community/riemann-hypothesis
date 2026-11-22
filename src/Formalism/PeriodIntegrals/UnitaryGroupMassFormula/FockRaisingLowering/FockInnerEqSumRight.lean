@@ -96,10 +96,6 @@ theorem fockInner_neg_right (P Q : MvPolynomial σ ℂ) :
   rw [coeff_neg]
   ring
 
-theorem fockInner_sub_right (P Q₁ Q₂ : MvPolynomial σ ℂ) :
-    fockInner P (Q₁ - Q₂) = fockInner P Q₁ - fockInner P Q₂ := by
-  rw [sub_eq_add_neg, fockInner_add_right, fockInner_neg_right, ← sub_eq_add_neg]
-
 private theorem fockInner_eq_sum_support_right (P Q : MvPolynomial σ ℂ) :
     FockH1Action.fockInner P Q = ∑ α ∈ Q.support, (starRingEnd ℂ) (AddMonoidAlgebra.coeff P α) * AddMonoidAlgebra.coeff Q α * wt α :=
   fockInner_eq_sum_right P Q Q.support (Finset.Subset.refl _)

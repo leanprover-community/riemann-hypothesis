@@ -25,18 +25,6 @@ def quo (l : ℕ) (K : Cx.{1} W) (n : ℕ) : Cx.{1} W where
     obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
     simp [Submodule.mapQ_apply, K.dd]
 
-def red (l : ℕ) (K : Cx.{1} W) (n : ℕ) : Cx.Hom (quo l K (n + 1)) (quo l K n) (RingHom.id W) where
-  f i := Submodule.mapQ _ _ LinearMap.id (by
-    rintro _ ⟨y, rfl⟩
-    exact ⟨(l : W) • y, by simp [pow_succ, mul_smul, smul_comm ((l : W) ^ n) (l : W) y]⟩)
-  comm i x := by
-    obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-    rfl
-
-def qsys (l : ℕ) (K : Cx.{1} W) (j : ℕ) : Sys.{1} W where
-  M n := (quo l K n).H j
-  r n := (red l K n).mapH j
-
 def redg (l : ℕ) (K : Cx.{1} W) {b c : ℕ} (h : b ≤ c) : Cx.Hom (quo l K c) (quo l K b) (RingHom.id W) where
   f i := Submodule.mapQ _ _ LinearMap.id (by
     rintro _ ⟨y, rfl⟩

@@ -16,27 +16,9 @@ namespace UpperTheory.Cb.OffDiagonalContinuation
 
 universe u
 
-structure Sys (J : Type) [SmallCategory J] where
-  G : J → Type u
-  [g : ∀ j, AddCommGroup (G j)]
-  L : Type u
-  [l : AddCommGroup L]
-  ρ : ∀ {j k : J}, (j ⟶ k) → G j →+ G k
-  ι : ∀ j, G j →+ L
-  ι_ρ : ∀ {j k : J} (f : j ⟶ k) (y : G j), ι k (ρ f y) = ι j y
-  ρ_comp : ∀ {j k l : J} (f : j ⟶ k) (g : k ⟶ l) (y : G j), ρ (f ≫ g) y = ρ g (ρ f y)
-
 attribute [instance] Sys.g Sys.l
 
 variable {J : Type} [SmallCategory J]
-
-def Sys.prod (S T : Sys.{u} J) : Sys.{u} J where
-  G j := S.G j × T.G j
-  L := S.L × T.L
-  ρ f := (S.ρ f).prodMap (T.ρ f)
-  ι j := (S.ι j).prodMap (T.ι j)
-  ι_ρ f y := Prod.ext (S.ι_ρ f y.1) (T.ι_ρ f y.2)
-  ρ_comp f g y := Prod.ext (S.ρ_comp f g y.1) (T.ρ_comp f g y.2)
 
 structure Sq {X : Scheme.{0}} (U V W P : X.Opens) : Prop where
   hW : W = U ⊔ V

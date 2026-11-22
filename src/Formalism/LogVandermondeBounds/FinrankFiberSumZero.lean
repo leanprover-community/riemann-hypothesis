@@ -12,26 +12,6 @@ section Ops
 
 variable {k : Type*} [Field k] [Fintype k] [DecidableEq k] {r : ℕ} {R : Type*} [CommRing R]
 
-def pair (f x : Fin r → k) : k := ∑ i, f i * x i
-
-def opU (ψ : (Fin r → k) → R) (f : Fin r → k) : R :=
-  ∑ x ∈ univ.filter (fun x => pair f x = 1), ψ x
-
-def opD (φ : (Fin r → k) → R) (x : Fin r → k) : R :=
-  ∑ f ∈ univ.filter (fun f => pair f x = 1), φ f
-
-def diaP (c : kˣ) (φ : (Fin r → k) → R) (f : Fin r → k) : R := φ ((c : k) • f)
-
-def diaV (c : kˣ) (ψ : (Fin r → k) → R) (x : Fin r → k) : R := ψ (((c⁻¹ : kˣ) : k) • x)
-
-def nmP (φ : (Fin r → k) → R) (f : Fin r → k) : R := ∑ c : kˣ, diaP c φ f
-
-def nmV (ψ : (Fin r → k) → R) (x : Fin r → k) : R := ∑ c : kˣ, diaV c ψ x
-
-def trV (ψ : (Fin r → k) → R) : R := ∑ x ∈ univ.filter (fun x => x ≠ 0), ψ x
-
-def trP (φ : (Fin r → k) → R) : R := ∑ f ∈ univ.filter (fun f => f ≠ 0), φ f
-
 end Ops
 
 def ramSub (ι H X K : Type) [DecidableEq ι] [Group H] [Fintype H] [MulAction (ι → H) X] [Field K] :

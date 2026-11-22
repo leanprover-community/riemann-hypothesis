@@ -100,9 +100,6 @@ def TmLin (v : X.Pl) (i j : ℕ) : X.Fm j →ₗ[X.G.Kf] X.Fm j where
     funext c
     exact (TminusLin (X.Pj j) (X.vJ j v) i).map_smul a (F c)
 
-def TtLin (v : X.Pl) (i j : ℕ) : X.Fm j →ₗ[X.G.Kf] X.Fm j :=
-  if i = 0 then LinearMap.id else ((p : X.G.Kf) ^ (Nprime (X.G.P.lam0 v) (X.w v) j i)) • TmLin X v i j
-
 @[simp] theorem TtLin_apply (v : X.Pl) (i j : ℕ) (F : X.Fm j) : TtLin X v i j F = X.Tt v i j F := by
   unfold TtLin Sys.Tt
   split_ifs <;> rfl

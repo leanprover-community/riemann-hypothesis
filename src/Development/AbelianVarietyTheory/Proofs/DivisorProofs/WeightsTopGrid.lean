@@ -306,8 +306,6 @@ section Num
 
 variable (D : D7) (C : ℝ) (τ : D.what₂.Tau)
 
-local notation "Γ" => num D C τ
-
 theorem good_U {i : ℕ} (h1 : 1 ≤ i) (h2 : i ≤ D.R.m) :
     Good (-1) 0 0 ((Γ).blockC' i ∪ {(Γ).a i}) ((Γ).blockC i) := by
   have hs : 1 ≤ (Γ).s := (odd_sLen D).pos
@@ -573,8 +571,6 @@ open Finset GlobalTheory.SignedHC GlobalTheory.FunObj GlobalTheory.ChiGrid
 section Min
 
 variable (D : D7) (C : ℝ) (τ : D.what₂.Tau)
-
-local notation "Γ" => num D C τ
 
 theorem low_mem_weightX : -((Γ).e D.R.m : ℚ) - (D.R.t : ℚ) / 2 ∈ (Γ).weightX D.R.m := by
   have hm2 := D.R.two_le_m

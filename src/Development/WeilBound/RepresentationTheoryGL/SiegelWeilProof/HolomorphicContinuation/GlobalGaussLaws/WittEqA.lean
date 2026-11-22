@@ -24,9 +24,6 @@ section Gen
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-local notation "hermF" => ReciprocityTheory.ChartRestriction.G.FD.herm
-local notation "ccF" => ReciprocityTheory.ChartRestriction.G.FD.cc
-
 def dSgn (r k : ℕ) : Matrix (Fin r) (Fin r) E := Matrix.diagonal fun a => if (a : ℕ) < k then 1 else -1
 
 theorem dSgn_hermF (r k : ℕ) (a b : Fin r) : ccF (dSgn (E := E) r k a b) = dSgn r k b a := by

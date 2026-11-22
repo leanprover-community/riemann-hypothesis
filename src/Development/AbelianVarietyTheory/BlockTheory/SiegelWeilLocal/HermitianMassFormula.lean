@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Partners
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FrameLats
 
 @[expose] public section

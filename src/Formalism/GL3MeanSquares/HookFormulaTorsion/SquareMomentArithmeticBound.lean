@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.GL3MeanSquares.ConcavityEquidistribution
-public import Formalism.LogVandermondeBounds.MultinomialPowerBound
 
 @[expose] public section
 

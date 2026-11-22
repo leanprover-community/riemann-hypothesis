@@ -13,19 +13,6 @@ noncomputable section
 
 namespace Formalism.HermitianLatticeCounting.LatticeSumBounds
 
-def hs {m n : Type*} [Fintype m] [Fintype n] (A : Matrix m n ℂ) : ℝ :=
-  Real.sqrt (∑ i, ∑ j, ‖A i j‖ ^ 2)
-
-def WeightedAMGM : Prop :=
-  ∀ a b La : ℝ, 0 < La → |a * b| ≤ (La * a ^ 2 + b ^ 2 / La) / 2
-
-def CommonLiftExpand : Prop :=
-  ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (h : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ) (r : ℕ)
-    (e e' : Fin r → V) (l₁ l₂ : V) (α α' : Fin r → ℂ),
-    (∀ b, h l₁ (e' b) = 0) → (∀ a, h (e a) l₂ = 0) →
-    h (l₁ + ∑ a, α a • e a) (l₂ + ∑ b, α' b • e' b) =
-      h l₁ l₂ + ∑ a, ∑ b, α a * conj (α' b) * h (e a) (e' b)
-
 def AbsA : Prop :=
   ∀ (U₁ U₂ : Type) [NormedAddCommGroup U₁] [InnerProductSpace ℂ U₁]
     [NormedAddCommGroup U₂] [InnerProductSpace ℂ U₂] (r : ℕ) (u : Fin r → U₁) (u' : Fin r → U₂)
@@ -143,12 +130,6 @@ def TraceLower : Prop :=
   ∀ (ι : Type) [Fintype ι] (a : ι → ℝ), (∀ v, 0 ≤ a v) → 1 ≤ ∏ v, a v →
     (Fintype.card ι : ℝ) ≤ ∑ v, a v
 
-def theta (j e : ℕ) (η q : ℝ) : ℝ := ∏ i ∈ Finset.Icc (j - e + 1) j, (1 - η ^ i * (q ^ i)⁻¹)
-
-def ThetaBound : Prop :=
-  ∀ (j e : ℕ) (η q : ℝ), e ≤ j → 2 ≤ q → (η = 1 ∨ η = -1) →
-    0 < theta j e η q ∧ theta j e η q ≤ (3 / 2) ^ e ∧ theta j e η q ≤ 2 ^ e
-
 def IdealNormLeCount : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (x : ℝ), 1 ≤ x →
     {I : Ideal (NumberField.RingOfIntegers K) | I ≠ ⊥ ∧ (Ideal.absNorm I : ℝ) ≤ x}.Finite ∧
@@ -207,10 +188,6 @@ def CoveringO : Prop :=
     ∀ x : NumberField.InfinitePlace E → ℂ, ∃ a : NumberField.RingOfIntegers E,
       ∀ w, ‖x w - w.embedding (a : E)‖ ≤
         Real.sqrt (finrank ℚ E) * |(NumberField.discr E : ℝ)| ^ (1 / (finrank ℚ E : ℝ))
-
-def eichler {R V : Type*} [CommRing R] [StarRing R] [AddCommGroup V] [Module R V]
-    (h : V →ₗ[R] V →ₗ⋆[R] R) (u σ : V) (τ : R) (x : V) : V :=
-  x - h x σ • u + h x u • σ - (τ * h x u) • u
 
 def HomRestrictIndex : Prop :=
   ∀ (O M X : Type) [CommRing O] [IsDedekindDomain O] [AddCommGroup M] [Module O M]

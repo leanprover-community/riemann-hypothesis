@@ -32,9 +32,6 @@ variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAl
   {M : Type} [AddCommGroup M] [Module (ZMod (l ^ r)) M] [TopologicalSpace M] [DiscreteTopology M]
   (ρ : Representation (ZMod (l ^ r)) (GS Ω (S : Set (HeightOneSpectrum (𝓞 F)))) M)
 
-def PoitouTateExactSecond : Prop :=
-  Function.Exact (loc2 S Av ρ) (tr2 S Av μ (invAt S Av μ hμ inv) ρ)
-
 end Glob
 
 def VanishAll : Prop :=

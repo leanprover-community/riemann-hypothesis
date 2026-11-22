@@ -142,10 +142,6 @@ end
 variable {K : Type} [Field K] [NumberField K] {m : ℕ} {X : Scheme.{0}} {p : X ⟶ Sp (𝓞 K)} {L : HermLB p}
   {s : Fin m → L.B.Sec} {D : ℕ} {H : ArchData K m} {h : X → ℝ}
 
-local notation "φ" => (MvPolynomial.map (algebraMap (𝓞 K) K) :
-  MvPolynomial (Fin m) (𝓞 K) →+* MvPolynomial (Fin m) K)
-local notation "CC" => (C : 𝓞 K →+* MvPolynomial (Fin m) (𝓞 K))
-
 theorem charZero_iff {Z : Scheme.{0}} [IsIntegral Z] {q : Z ⟶ Sp (𝓞 K)} {B : LB Z} {s : Fin m → B.Sec} (hE : Emb q s) :
     CharZero Γ(Z, ⊤) ↔ (ptIdeal q s (genericPoint Z)).comap CC = ⊥ := by
   have hcov : genericPoint Z ∈ (⨆ i, B.U i) := by

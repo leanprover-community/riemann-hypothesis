@@ -30,7 +30,6 @@ def charRep (χ : Γ →* Rˣ) : Representation R Γ R where
 @[simp] theorem charRep_apply (χ : Γ →* Rˣ) (g : Γ) (x : R) :
     charRep χ g x = ((χ g : Rˣ) : R) * x := rfl
 
-
 variable (R M) in
 def TDual := Module.Dual R M
 
@@ -139,13 +138,6 @@ def IsCCAt (w : InfinitePlace F) (c : G F Ω) : Prop :=
 variable (F Ω) (l : ℕ) [Fact l.Prime] (r : ℕ)
 
 abbrev muRep : Representation (ZMod (l ^ r)) (G F Ω) (ZMod (l ^ r)) := charRep (cycMod F Ω l r)
-
-
-variable {F Ω l r} in
-abbrev tateDual {M : Type*} [AddCommGroup M] [Module (ZMod (l ^ r)) M]
-    (rho : Representation (ZMod (l ^ r)) (G F Ω) M) :
-    Representation (ZMod (l ^ r)) (G F Ω) (TDual (ZMod (l ^ r)) M) :=
-  twDual (cycMod F Ω l r) rho
 
 end Field
 

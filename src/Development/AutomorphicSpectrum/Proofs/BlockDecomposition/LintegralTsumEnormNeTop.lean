@@ -137,9 +137,6 @@ def reidx {K : Type*} [Group K] (S : Subgroup K) : (K ⧸ S) × S ≃ K where
     simp only [h1, inv_mul_cancel_right]
   right_inv γ := by simp
 
-theorem reidx_apply {K : Type*} [Group K] (S : Subgroup K) (q : K ⧸ S) (s : S) :
-    reidx S (q, s) = (s : K) * q.out⁻¹ := rfl
-
 theorem tsum_equiv_prod {K Q S : Type*} (e : Q × S ≃ K) (a : K → ℂ) (hs : Summable a) :
     ∑' k, a k = ∑' q, ∑' s, a (e (q, s)) := by
   rw [← e.tsum_eq a]

@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
-public import Formalism.LocalToGlobal.UnitaryNorms.CharRat
 public import Formalism.LocalToGlobal.UnitaryNorms.RealPl
 public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension

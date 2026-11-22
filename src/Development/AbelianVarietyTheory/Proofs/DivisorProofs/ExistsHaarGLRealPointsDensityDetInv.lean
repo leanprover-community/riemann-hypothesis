@@ -16,8 +16,6 @@ namespace GlobalTheory.GLHaar
 
 variable {E : Type} [Field E] [NumberField E] {a : ℕ}
 
-theorem lmul_apply (y x : Lie E a) : lmul y x = toL (Matrix.of y * Matrix.of x) := rfl
-
 theorem lmul_lmul (y x : Lie E a) : lmul (lmul y x) = (lmul y).comp (lmul x) := by
   ext z : 1
   simp only [ContinuousLinearMap.comp_apply, lmul_apply]

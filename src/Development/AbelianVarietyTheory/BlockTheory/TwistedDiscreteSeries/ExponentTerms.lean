@@ -21,9 +21,6 @@ variable {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq 
 def MapsInto (x : Matrix κ ι k) (M' : Submodule 𝒪[k] (ι → k)) (M : Submodule 𝒪[k] (κ → k)) : Prop :=
   ∀ v ∈ M', x *ᵥ v ∈ M
 
-def InjMod (ϖ : 𝒪[k]) (x : Matrix κ ι k) (M' : Submodule 𝒪[k] (ι → k)) (M : Submodule 𝒪[k] (κ → k)) : Prop :=
-  MapsInto x M' M ∧ ∀ v ∈ M', x *ᵥ v ∈ ϖ • M → v ∈ ϖ • M'
-
 def act (g : GL ι k) (M : Submodule 𝒪[k] (ι → k)) : Submodule 𝒪[k] (ι → k) :=
   M.map ((Matrix.mulVecLin g.val).restrictScalars 𝒪[k])
 
@@ -66,8 +63,6 @@ def Yle (k : Type) [Field k] [ValuativeRel k] (n : Type) (c i : ℕ) : Submodule
 def pt (x₀ : Matrix n n' k) (y : Fin c → (n ⊕ Fin c → k)) : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k :=
   basePt c x₀ + Matrix.of fun r s =>
     Sum.elim (fun _ => 0) (fun j : Fin (c + 1) => Fin.cases 0 (fun i => y i r) j) s
-
-def expo (c d : ℕ) : ℕ := ∑ i ∈ Finset.Icc 1 c, (i * d + i * (i - 1) / 2)
 
 variable [MeasurableSpace k] [BorelSpace k]
 

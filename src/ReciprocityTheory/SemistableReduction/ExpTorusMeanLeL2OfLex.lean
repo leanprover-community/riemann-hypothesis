@@ -53,9 +53,6 @@ def coeffVec {ι : Type*} (T : Finset (ι →₀ ℕ)) : MvPolynomial ι ℂ →
   map_add' P Q := by ext t; simp
   map_smul' c P := by ext t; simp
 
-theorem coeffVec_apply {ι : Type*} (T : Finset (ι →₀ ℕ)) (P : MvPolynomial ι ℂ) (t : T) :
-    coeffVec T P t = P.coeff t := rfl
-
 theorem norm_coeffVec {ι : Type*} (T : Finset (ι →₀ ℕ)) (P : MvPolynomial ι ℂ)
     (hP : P.support ⊆ T) : ‖coeffVec T P‖ = polyL2 P := by
   classical

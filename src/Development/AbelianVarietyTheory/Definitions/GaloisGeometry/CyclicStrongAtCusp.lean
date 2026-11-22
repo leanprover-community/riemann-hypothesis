@@ -39,8 +39,6 @@ def Unlinked (s : Multiset (IrrGL (k := k))) : Prop := ∀ y ∈ s, ∀ z ∈ s,
 
 def PlainTor (x : IrrGL (k := k)) : Prop := ∃ s, HasSupport x.rep s ∧ (∀ y ∈ s, y.1 = 1) ∧ Unlinked s
 
-def Plain (x : IrrGL (k := k)) : Prop := PlainTor x ∨ (x.IsCusp ∧ UpperTheory.Zero.LLC.GoodCusp x)
-
 def chars {n : ℕ} (ξ : Fin n → (kˣ →* ℂˣ)) (hξ : ∀ j, IsSmoothChar (ξ j)) : Multiset (IrrGL (k := k)) :=
   Finset.univ.val.map fun j => IrrGL.ofChar (ξ j) (hξ j)
 
@@ -52,9 +50,6 @@ def satWD {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} (h : IsPlac
   (WD.lpUnr (h := h) (B.map fun b => ((b⁻¹ : ℂˣ) : ℂ))).lpTw ((1 - (a : ℝ)) / 2)
 
 variable [IsCMField E]
-
-def PlainAt (π : CuspSub E a) (w : HeightOneSpectrum (𝓞 E)) : Prop :=
-  ∀ σ : SmIrr (GL (Fin a) (w.adicCompletion E)), π.IsLocComp w σ → Plain (IrrGL.of σ.ρ σ.smooth σ.irred)
 
 inductive Sph
   | unr | dR | crys | phi
@@ -97,34 +92,6 @@ def ToralGal : Prop :=
       HasSupport (algNorm σ).rep (chars ξ hξ) → Unlinked (chars ξ hξ) →
     ∀ a : Weil h →* (w.adicCompletion E)ˣ, IsLocalArtin h a →
       (wdOf h hl ι r).mono0 ∧ ∀ g : Weil h, (wdOf h hl ι r).charPol g = ∏ j, (X - C ((ξ j (a g) : ℂˣ) : ℂ))
-
-structure Inputs : Prop where
-
-  js : GlobalTheory.Published.JacquetShalikaRigidity
-
-  gk : GlobalTheory.Published.GelfandKazhdanDual
-
-  adm : GlobalTheory.Published.IrreducibleAdmissibleGL
-
-  len : GlobalTheory.Published.StandardFunctorsFiniteLength
-
-  exh : GlobalTheory.Published.LanglandsExhaustionGL
-
-  zel : GlobalTheory.Published.ZelevinskyPolynomialRing
-
-  gen : GlobalTheory.Published.GenericUnitaryDualGL
-
-  ac : GlobalTheory.Published.ArthurClozelStrongTC
-
-  acs : GlobalTheory.Published.ArthurClozelStrongSupp
-
-  loc : GlobalTheory.Published.ArthurClozelLocalSC
-
-  hk : GlobalTheory.Published.HeckeLAdicCharacterAbove
-
-  alg : GlobalTheory.Published.AlgebraicCharacterWD
-
-  pst : GlobalTheory.Published.DeRhamPotSemistable
 
 end GlobalTheory.RoadU
 

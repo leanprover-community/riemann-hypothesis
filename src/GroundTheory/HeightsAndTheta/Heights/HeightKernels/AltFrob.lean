@@ -17,10 +17,6 @@ def frobDelta {r : ℕ} (la : Fin r → ℕ) : ℚ :=
   ∏ a : Fin r, ∏ b : Fin r,
     if a < b then ((la a + (r - 1 - a) : ℕ) : ℚ) - ((la b + (r - 1 - b) : ℕ) : ℚ) else 1
 
-theorem frobDim_eq {r : ℕ} (la : Fin r → ℕ) :
-    frobDim la = ((∑ a, la a).factorial : ℚ) * frobDelta la /
-      ∏ a : Fin r, ((la a + (r - 1 - a)).factorial : ℚ) := rfl
-
 theorem frobDelta_add_const {r : ℕ} (s : ℕ) (ν : Fin r → ℕ) :
     frobDelta (fun a => s + ν a) = frobDelta ν := by
   unfold frobDelta

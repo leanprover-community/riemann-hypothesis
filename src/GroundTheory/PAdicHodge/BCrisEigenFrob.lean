@@ -21,8 +21,6 @@ open Polynomial GroundTheory.LocalField
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-local notation "𝒪♭" => PreTilt (normInteger ℂ_[p]) p
-
 theorem exists_padicAlgCl_eq_of_pow_eq_one {z : ℂ_[p]} {m : ℕ} (hm : 0 < m) (hz : z ^ m = 1) :
     ∃ ζ : PadicAlgCl p, algebraMap (PadicAlgCl p) ℂ_[p] ζ = z ∧ ζ ^ m = 1 := by
   classical

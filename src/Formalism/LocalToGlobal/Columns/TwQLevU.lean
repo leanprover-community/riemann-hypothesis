@@ -19,8 +19,6 @@ variable {F E K : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Sta
   (hint : ∀ r : 𝓞 E, Valued.v (φ (algebraMap (𝓞 E) E r)) ≤ 1)
   (hPv : ∀ r : 𝓞 E, Valued.v (φ (algebraMap (𝓞 E) E r)) < 1 ↔ r ∈ P.asIdeal)
 
-local notation "Kv" => v.adicCompletion F
-
 def qbIota : ↥(GLint E n P) →* GL (Fin n) Kv :=
   (bc φ).comp ((toGLm E n).toMonoidHom.comp (GLint E n P).subtype)
 
@@ -86,7 +84,6 @@ theorem qbU_inv_wit (hI : ∀ g : ↥(GLint E n P), qbInt ((qbIota P φ g : GL (
   simp only [map_inv, inv_inv, mul_inv_rev, mul_assoc, mul_inv_cancel, mul_one] at h ⊢
   exact h
 
-
 include hint hPv in
 def qbU : Subgroup (GL (Fin n) Kv) where
   carrier := {k | qbInt (k : Matrix (Fin n) (Fin n) Kv) ∧ qbInt ((k⁻¹ : GL (Fin n) Kv) : Matrix (Fin n) (Fin n) Kv) ∧
@@ -105,7 +102,6 @@ def qbU : Subgroup (GL (Fin n) Kv) where
 
 variable {N : ℕ} (d : E) (hd : d ≠ 0) (hdN : P.valuation E d ≤ WithZero.exp (-(N : ℤ)))
 
-
 include hint hPv hd hdN in
 theorem qbK_princ {g : ↥(GLint E n P)} (hg : qbIota P φ g ∈ qbK (φ d)) : lqPrinc P N (g : Sp E n ≃ₗ[E] Sp E n) := by
   intro i j
@@ -120,7 +116,6 @@ theorem qbK_princ {g : ↥(GLint E n P)} (hg : qbIota P φ g ∈ qbK (φ d)) : l
 
 variable (hΘ : ∀ g : ↥(GLint E n P), lqPrinc P N (g : Sp E n ≃ₗ[E] Sp E n) → ∃ h : g ∈ Θ.H, Θ.lam ⟨g, h⟩ = 1)
 
-
 include hint hPv hd hdN hΘ in
 theorem qbU_rat (g : ↥(GLint E n P)) : qbIota P φ g ∈ qbU P φ hint hPv Θ (φ d) ↔ g ∈ Θ.H := by
   constructor
@@ -131,7 +126,6 @@ theorem qbU_rat (g : ↥(GLint E n P)) : qbIota P φ g ∈ qbU P φ hint hPv Θ 
     rwa [mul_inv_cancel_left] at this
   · intro hg
     exact ⟨qbIota_int P φ hint hPv g, by rw [← map_inv]; exact qbIota_int P φ hint hPv g⁻¹, g, hg, by simpa using (qbK (φ d)).one_mem⟩
-
 
 include hint hPv hd hdN hΘ in
 theorem qbChr_wd {k : GL (Fin n) Kv} {g0 g1 : ↥(GLint E n P)} (h0 : g0 ∈ Θ.H) (h1 : g1 ∈ Θ.H)

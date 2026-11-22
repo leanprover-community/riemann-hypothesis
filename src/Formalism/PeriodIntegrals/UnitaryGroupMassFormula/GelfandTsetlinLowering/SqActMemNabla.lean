@@ -17,9 +17,6 @@ def gStar {N : ℕ} (g : GL (Fin N) ℂ) : GL (Fin N) ℂ where
   val_inv := by rw [← Matrix.conjTranspose_mul]; simp
   inv_val := by rw [← Matrix.conjTranspose_mul]; simp
 
-theorem gStar_val {N : ℕ} (g : GL (Fin N) ℂ) :
-    ((gStar g : GL (Fin N) ℂ) : Matrix (Fin N) (Fin N) ℂ) = Matrix.conjTranspose (g : Matrix (Fin N) (Fin N) ℂ) := rfl
-
 theorem gStar_gStar {N : ℕ} (g : GL (Fin N) ℂ) : gStar (gStar g) = g := by
   ext i j; simp [gStar_val]
 

@@ -113,8 +113,6 @@ def cj : Vsp T.dim ≃ₗ[ℝ] EuclideanSpace ℂ ι where
   left_inv y := by ext j; simp
   right_inv z := by ext i; simp
 
-theorem cj_apply (y : Vsp T.dim) (i : ι) : cj T e y i = conj (y (e i)) := rfl
-
 theorem Hf_cj (v w : Vsp T.dim) : Hf (cj T e v) (cj T e w) = conj (Hf v w) := by
   set_option synthInstance.maxHeartbeats 100000 in
     simp only [Hf, cj_apply, map_sum, map_mul]
@@ -188,7 +186,6 @@ section Lattice
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-
 open SemicharIndep in
 theorem exists_sign (X : Data E r) : ∃ σ : ℤ, (σ = 1 ∨ σ = -1) ∧ ∀ u v, EF X u v = σ * B X u v := by
   rcases EF_eq_or X with h | h
@@ -218,7 +215,6 @@ theorem finrank_lattice (X : Data E r) : Module.Free ℤ X.Λ ∧ Module.Finite 
   let c := (b.restrictScalars ℤ).map (LinearEquiv.ofBijective f.toIntLinearMap hf).symm
   exact ⟨Module.Free.of_basis c, Module.Finite.of_basis c, by
     rw [Module.finrank_eq_card_basis c, Fintype.card_fin]⟩
-
 
 open SemicharIndep in
 theorem exists_isSympl (X : DataX E r) :

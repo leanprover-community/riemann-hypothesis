@@ -18,13 +18,7 @@ section Comp
 variable {F : Type} [Field F] [NumberField F]
 
 theorem finite_adele_fst_mul (x y : AF F) : (x * y).1 = x.1 * y.1 := rfl
-theorem finite_adele_fst_add (x y : AF F) : (x + y).1 = x.1 + y.1 := rfl
-theorem finite_adele_fst_sub (x y : AF F) : (x - y).1 = x.1 - y.1 := rfl
-theorem finite_adele_fst_one : (1 : AF F).1 = 1 := rfl
 theorem finite_adele_snd_mul (x y : AF F) (v : HeightOneSpectrum (𝓞 F)) : (x * y).2 v = x.2 v * y.2 v := rfl
-theorem finite_adele_snd_add (x y : AF F) (v : HeightOneSpectrum (𝓞 F)) : (x + y).2 v = x.2 v + y.2 v := rfl
-theorem finite_adele_snd_sub (x y : AF F) (v : HeightOneSpectrum (𝓞 F)) : (x - y).2 v = x.2 v - y.2 v := rfl
-theorem finite_adele_snd_one (v : HeightOneSpectrum (𝓞 F)) : (1 : AF F).2 v = 1 := rfl
 theorem finite_adele_snd_algebraMap (c : F) (v : HeightOneSpectrum (𝓞 F)) :
     (algebraMap F (AF F) c).2 v = algebraMap F (v.adicCompletion F) c := rfl
 
@@ -65,7 +59,6 @@ section Split
 
 variable {D : D7} (δ : D.host.E) (hδ : D.sp.cm.sig δ = -δ) (hδ0 : δ ≠ 0) (Δ : D.host.F)
   (hΔ : algebraMap D.host.F D.host.E Δ = δ * δ)
-
 
 include hΔ hδ0 hδ in
 theorem exists_splitIdem' (v : HeightOneSpectrum (𝓞 D.host.F)) (s : v.adicCompletion D.host.F)
@@ -204,7 +197,6 @@ theorem exists_splitIdem' (v : HeightOneSpectrum (𝓞 D.host.F)) (s : v.adicCom
   · rw [hce]
     linear_combination k3 - ι b * ι b * kd
   · exact ⟨single v 1, rfl, epv_self v, fun v' hv' => epv_ne hv'⟩
-
 
 end Split
 

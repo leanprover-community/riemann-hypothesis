@@ -35,60 +35,10 @@ def LiesUnder (i : D.ntw.Tw) (w : D.what₂.places.Pl) : Prop :=
       algebraMap (D.ntw.O0 i) (FractionRing (D.ntw.O0 i)) y = D.ntw.emb0 i (x : ↥D.LL0)) ↔
     0 < D.what₂.places.val w ((x : ↥D.LL0) : D.what₂.LL)
 
-def TwistedPlaceSettings (twI : D.what₂.places.Pl → D.ntw.Tw) : Prop :=
-  (∀ w, Twisted D w → D.ntw.l (twI w) = D.what₂.places.resChar w ∧
-    (LiesUnder D (twI w) w ∨ LiesUnder D (twI w) (D.what₂.places.conj w))) ∧
-  ∀ w w', Twisted D w → Twisted D w' → SamePair D w w' → twI w = twI w'
-
-def namedPrimes : Set ℕ :=
-  {2, 3, 5, D.host.g 0, D.host.g 1, D.host.pde, D.host.pde'} ∪ Set.range fun u : D.what₂.Word => (D.mem u).A.T
-
 variable {D}
-
-def expDat (xd : ThData D) : IntegralHeckeForms.XD D := ⟨xd.xd0, xd.thetaBase_invariant_action⟩
-
-def GoodDatum (xd : ThData D) (N0 : D.ntw.Tw → ℕ) (A : Finset (PlE D.host)) (t : TwDatum D) : Prop :=
-  (∀ P ∈ t.2.1, ∀ P', IsConjPl D.host P P' → P' ∈ t.2.1) ∧
-  (∀ P ∈ t.2.1, ∀ p ∈ namedPrimes D, P ∉ placesOver D.host.E p) ∧
-  (∀ lam : D.ntw.abelian₂ t.1, (∑ δ, D.ntw.th t.1 ∅ lam δ) ≠ 0) ∧
-  (∀ j ∈ Finset.Icc 1 D.R.m, ∀ b : Bool,
-    IntegralHeckeForms.FullRk D.nexp (expDat xd) t.1 j b (IntegralHeckeForms.SgJ D.nexp (expDat xd) t.1 j b)) ∧
-  ∃ S : ∀ (j : ℕ) (b : Bool), Finset (D.nexp.Dat t.1 j b),
-    (∀ j ∈ Finset.Icc 1 D.R.m, ∀ b : Bool,
-      IntegralHeckeForms.BasisOf D.nexp t.1 j b (IntegralHeckeForms.SgJ D.nexp (expDat xd) t.1 j b) (S j b)) ∧
-    ∀ a : ℤ, IsCoprime a (D.ntw.l t.1 : ℤ) →
-      IntegralHeckeForms.GoodTw D.nexp (BlochKatoReduction.bk0 D) (expDat xd) N0 t.1 (((D.ntw.l t.1 : ℝ) ^ 2)⁻¹) S A t.2.1 t.2.2.1
-        (t.2.2.2 ^ a)
-
-def GoodSystem (xd : ThData D) (N0 : D.ntw.Tw → ℕ) (A : D.ntw.Tw → Finset (PlE D.host))
-    (t : D.what₂.places.Pl → TwDatum D) : Prop :=
-  TwistedPlaceSettings D (fun w => (t w).1) ∧
-  (∀ w, Twisted D w → GoodDatum xd N0 (A (t w).1) (t w)) ∧
-  (∀ w w', Twisted D w → Twisted D w' → SamePair D w w' → t w = t w') ∧
-  ∀ w w', Twisted D w → Twisted D w' → ¬ SamePair D w w' →
-    ∀ P ∈ (t w).2.1, ∀ P' ∈ (t w').2.1, ∀ p : ℕ, p.Prime →
-      ¬ (P ∈ placesOver D.host.E p ∧ P' ∈ placesOver D.host.E p)
 
 def recorded (c : NChoice D) (w : D.what₂.places.Pl) : TwDatum D :=
   ⟨c.twI w, c.Q w, c.k' w, BlochKatoReduction.Gen.psiAt (c.sd w) (c.psi' w)⟩
-
-def TwGoodAt (c : NChoice D) (xd : ThData D) (N0 : D.ntw.Tw → ℕ) : Prop :=
-  GoodSystem xd N0 (fun _ => ∅) (recorded c) ∧
-  ∀ w, Twisted D w → D.what₂.places.conj w ≠ w → c.sd (D.what₂.places.conj w) = !c.sd w
-
-def ExistsChoice (xd : ThData D) (N0 : D.ntw.Tw → ℕ) : Prop :=
-  (∃ twI, TwistedPlaceSettings D twI) ∧
-  ∀ twI, TwistedPlaceSettings D twI → ∀ A : D.ntw.Tw → Finset (PlE D.host),
-    ∃ t : D.what₂.places.Pl → TwDatum D, (∀ w, (t w).1 = twI w) ∧ GoodSystem xd N0 A t
-
-def WithToricIntegralityConstant (D : D7) (P : (D.ntw.Tw → ℕ) → Prop) : Prop :=
-  (∃ N0, BlochKatoReduction.adm9 D N0) ∧ ∀ N0, BlochKatoReduction.adm9 D N0 → P N0
-
-def FamTwGood {eps : ℝ} (Fm : FamP eps) : Prop :=
-  ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (hx : Fm.x1 < x) (i : Fm.Ix x),
-    WithToricIntegralityConstant (Fm.D x i) fun N0 => TwGoodAt (Fm.ex x hx i).nch (Fm.ex x hx i).xd N0
-
-def TwGoodClosed (𝒞 : FamClass) : Prop := Closed 𝒞 fun Fm _ => FamTwGood Fm
 
 open NumberField IsDedekindDomain in
 variable (D : _root_.Formalism.BasicNotions.D7) in

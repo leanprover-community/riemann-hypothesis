@@ -29,36 +29,9 @@ attribute [local instance 2000] Submodule.module
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
 
-structure RunData (J : CoreJ D) : Type 1 where
-
-  loc : In66 J.Q
-
-  nab : ∀ j, NabV (J.Q.Xo j) J.Q.c
-
-  dδ : ∀ j n, DeltaDat (J.Q.Xo j) J.Q.c n
-
-  xi : (Af D.host.F ⊗[D.host.F] D.host.E)ˣ →* ℂˣ
-
-  half₂ : Ideal (𝓞 D.host.E)
-
-abbrev RunData.full {J : CoreJ D} (r : RunData J) : Full D :=
-  ⟨⟨J.toCore, r.loc, r.nab, r.dδ⟩, J.cE, J.chiW, J.x₀, J.iota, r.xi, r.half₂⟩
-
 section Cusp
 
 variable (B : WeightFamilies.Prov D) {j : ℕ} {w : WeightFamilies.Wt D j} {K : Type} [Field K] [NumberField K] [Algebra B.KO K] {n : ℕ}
-
-def supSpan (z : (Fin n → K) ≃ₗ[K] K ⊗[B.KO] B.Cusp j w) : Submodule (𝓞 K) (Fin n → K) := spanK z (B.Mlat j w : Set _)
-
-def shortSpan {P6 : ModuliIntegralCharts.Prov D} (X : WeightAlgebra.PJ D B P6 j) (z : (Fin n → K) ≃ₗ[K] K ⊗[B.KO] B.Cusp j w) :
-    Submodule (𝓞 K) (Fin n → K) := spanK z (X.shortTh w : Set _)
-
-def scaledSpan {P6 : ModuliIntegralCharts.Prov D} (X : WeightAlgebra.PJ D B P6 j) (hinj : Function.Injective D.what₂.OtoLL) (EX : ErrX D) (p : ℕ)
-    (wL wF : WeightFamilies.Wt D j) (nT : ℕ) (z : (Fin n → K) ≃ₗ[K] K ⊗[B.KO] B.Cusp j w) : Submodule (𝓞 K) (Fin n → K) :=
-  spanK z {F | X.inc w F ∈ X.Theta (scalOfP B hinj EX p w wL wF nT) w wL wF nT}
-
-
-
 
 omit [NumberField K] in
 theorem exists_cuspRep_of_injective (f : B.Cusp j w →ₗ[B.KO] (Fin n → K)) (hf : Function.Injective f) {P : Type} [Group P]
@@ -104,7 +77,6 @@ variable (h : LawsP T.toTop) (fw : FWTie T.J R κ v₀) (hinj : Function.Injecti
   (O : OnObj S P oc)
   (z : ∀ i, (Fin (O.nZ i) → D.what₂.LL) ≃ₗ[D.what₂.LL]
     D.what₂.LL ⊗[(recB h.toLawsCore).KO] (recB h.toLawsCore).Cusp ((ι i : ℕ) + 1) (κ (ι i)))
-
 
 end Tied
 

@@ -17,45 +17,7 @@ open Classical
 section gen
 variable {α : Type}
 
-lemma psd_congr {P : Finset α} {k k' : α → α → ℂ} (h : ∀ x ∈ P, ∀ y ∈ P, k x y = k' x y)
-    (hk : PSDOn P k) : PSDOn P k' := by
-  unfold TA.PSDOn at hk ⊢
-  refine ⟨fun x hx y hy => ?_, fun a => ?_⟩
-  · rw [← h x hx y hy, ← h y hy x hx]
-    exact hk.1 x hx y hy
-  · have e : ∑ x ∈ P, ∑ y ∈ P, conj (a x) * k' x y * a y =
-        ∑ x ∈ P, ∑ y ∈ P, conj (a x) * k x y * a y :=
-      Finset.sum_congr rfl fun x hx => Finset.sum_congr rfl fun y hy => by rw [h x hx y hy]
-    rw [e]
-    exact hk.2 a
-
-lemma psd_zero (P : Finset α) : PSDOn P (fun _ _ => (0 : ℂ)) := by
-  unfold TA.PSDOn
-  exact ⟨fun _ _ _ _ => by simp, fun a => by simp⟩
-
-lemma psd_add {P : Finset α} {k k' : α → α → ℂ} (hk : PSDOn P k) (hk' : PSDOn P k') :
-    PSDOn P (fun x y => k x y + k' x y) := by
-  unfold TA.PSDOn at hk hk' ⊢
-  refine ⟨fun x hx y hy => ?_, fun a => ?_⟩
-  · simp only [hk.1 x hx y hy, hk'.1 x hx y hy, map_add (f := _)]
-  · have e : ∑ x ∈ P, ∑ y ∈ P, conj (a x) * (k x y + k' x y) * a y =
-        (∑ x ∈ P, ∑ y ∈ P, conj (a x) * k x y * a y) +
-          ∑ x ∈ P, ∑ y ∈ P, conj (a x) * k' x y * a y := by
-      rw [← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl fun x _ => ?_
-      rw [← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl fun y _ => ?_
-      ring
-    rw [e, Complex.add_re]
-    exact add_nonneg (hk.2 a) (hk'.2 a)
-
 variable {E : Type} [AddCommGroup E]
-
-lemma mk_eq_iff (L : AddSubgroup E) (x y : E) : ((x : E ⧸ L) = (y : E ⧸ L)) ↔ x - y ∈ L := by
-  exact QuotientAddGroup.eq_iff_sub_mem
-
-noncomputable def G (L : AddSubgroup E) (S : Finset E) (Th : E → α → α → ℂ) (c : E ⧸ L) : α → α → ℂ :=
-  if hc : ∃ t₁ ∈ S, (t₁ : E ⧸ L) = c then Th hc.choose else fun _ _ => 0
 
 end gen
 

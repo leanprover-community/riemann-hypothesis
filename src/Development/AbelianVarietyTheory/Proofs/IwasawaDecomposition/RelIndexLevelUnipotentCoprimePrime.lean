@@ -63,8 +63,6 @@ section Loc
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
-local notation3 "L⁺" => NumberField.maximalRealSubfield L
-
 variable (v : HeightOneSpectrum (𝓞 (NumberField.maximalRealSubfield L)))
 
 def toVS : (v.adicCompletionIntegers L⁺).toSubring →+* v.adicCompletionIntegers L⁺ where
@@ -126,8 +124,6 @@ end Loc
 section Main
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
-
-local notation3 "L⁺" => NumberField.maximalRealSubfield L
 
 theorem prime_dvd_card_residue (v : HeightOneSpectrum (𝓞 (NumberField.maximalRealSubfield L))) {p : ℕ} (hp : p.Prime)
     (hv : ((p : ℕ) : 𝓞 L⁺) ∈ v.asIdeal) [Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers L⁺))] :

@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IndicatorIntMMemSB
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalCharacterSmoothUnitary
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GSEqZeroOfLt
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsSplitChartSplitChart

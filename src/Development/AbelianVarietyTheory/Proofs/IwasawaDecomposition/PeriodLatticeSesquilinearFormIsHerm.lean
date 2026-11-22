@@ -325,8 +325,6 @@ section Four
 
 variable {n : Type} [Fintype n]
 
-theorem matH_apply (h : Matrix n n ℂ) (z w : n → ℂ) : matH h z w = ∑ i, ∑ j, z i * h i j * conj (w j) := rfl
-
 theorem matrixForm_fourfoldBlock (h : Matrix n n ℂ) (z w : Fin 4 × n → ℂ) :
     matH (blk4 h) z w = ∑ a, matH h (slice a z) (slice a w) := by
   simp only [matH_apply, Fintype.sum_prod_type, blk4, slice]

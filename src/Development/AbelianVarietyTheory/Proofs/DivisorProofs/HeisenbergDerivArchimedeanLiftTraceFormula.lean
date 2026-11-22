@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WordAppend
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AppSmul
@@ -43,8 +42,6 @@ theorem realAd_mul_infAd (t : ℝ) (α : mixedEmbedding.mixedSpace F) :
 theorem evIr_infAd (α : mixedEmbedding.mixedSpace F) : evIr (infAd F α) = α := by
   show InfiniteAdeleRing.ringEquiv_mixedSpace F ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm α) = α
   exact RingEquiv.apply_symm_apply _ _
-
-theorem sndr_infAd (α : mixedEmbedding.mixedSpace F) : sndr (infAd F α) = 0 := rfl
 
 theorem at_of_snd (z : AF F) (h : z.2 = 0) : At (evI F) z := by
   intro u hu

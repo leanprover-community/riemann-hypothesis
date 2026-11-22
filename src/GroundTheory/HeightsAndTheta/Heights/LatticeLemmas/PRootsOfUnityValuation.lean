@@ -1,7 +1,9 @@
 module
 
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.IsProbabilityMeasureSphereLaw
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogGaussNormSupportFinite
+public import GroundTheory.HeightsAndTheta.Heights.HermitianDual
+public import GroundTheory.HeightsAndTheta.Heights.ArithDegree
 
 @[expose] public section
 

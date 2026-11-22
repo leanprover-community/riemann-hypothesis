@@ -34,8 +34,6 @@ def valL (q : ℕ) (M : Matrix (Fin n) (Fin n) L) (y : Fin n → L) : (Fin n →
   map_add' x x' := val_add_left x x' y
   map_smul' c x := by simp only [val_smul_left, smul_eq_mul, RingHom.id_apply]
 
-theorem valL_apply (y x : Fin n → L) : valL q M y x = hf q M x y := rfl
-
 def valPerp (q : ℕ) (M : Matrix (Fin n) (Fin n) L) (W : Submodule L (Fin n → L))
     (e : Fin n → L) : Submodule L (Fin n → L) :=
   (LinearMap.ker ((valL q M e).domRestrict W)).map W.subtype

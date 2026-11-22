@@ -80,7 +80,6 @@ structure SameForms {D D' : D7} {N : NData D.R D.host D.what₂} {N' : NData D'.
   thP : HEq Y.thP Y'.thP
   hkF : HEq Y.hkF Y'.hkF
 
-
 set_option maxHeartbeats 4000000 in
 set_option maxRecDepth 100000 in
 theorem goodTw_transfer {D D' : D7} {N : NData D.R D.host D.what₂} {N' : NData D'.R D'.host D'.what₂}
@@ -125,7 +124,6 @@ theorem goodTw_transfer {D D' : D7} {N : NData D.R D.host D.what₂} {N' : NData
   dsimp only at h ⊢
   exact h
 
-
 set_option maxHeartbeats 4000000 in
 set_option maxRecDepth 100000 in
 theorem fullRk_basisOf_transfer {D D' : D7} {N : NData D.R D.host D.what₂} {N' : NData D'.R D'.host D'.what₂}
@@ -160,7 +158,6 @@ theorem fullRk_basisOf_transfer {D D' : D7} {N : NData D.R D.host D.what₂} {N'
   subst yFm; subst yacgFm; subst ymodFmK; subst ymodFmO; subst yactG; subst yU; subst ypsiU; subst yeAlg; subst yDat; subst yth; subst ylev; subst ythPsi; subst yMtV; subst yacgMt; subst ymodMtK; subst ymodMtO; subst yMtLat; subst ythP; subst yhkF
   subst hE; subst hi; subst hS
   exact h
-
 
 set_option maxHeartbeats 4000000 in
 set_option maxRecDepth 100000 in
@@ -212,9 +209,6 @@ structure SameExport (D D' : D7) : Prop where
   frm : SameForms D.nexp D'.nexp
   br : HEq D.ntwbr D'.ntwbr
   av : avPrimes D = avPrimes D'
-
-theorem SameExport.refl (D : D7) : SameExport D D :=
-  ⟨by constructor <;> rfl, by constructor <;> rfl, by constructor <;> rfl, HEq.rfl, rfl⟩
 
 theorem SameExport.trans {D D' D'' : D7} (h : SameExport D D') (h' : SameExport D' D'') : SameExport D D'' :=
   ⟨⟨h.gal.R.trans h'.gal.R, h.gal.host.trans h'.gal.host, h.gal.loc.trans h'.gal.loc, h.gal.Om.trans h'.gal.Om, h.gal.instOm.trans h'.gal.instOm, h.gal.algOm.trans h'.gal.algOm, h.gal.plOm.trans h'.gal.plOm, h.gal.PlG.trans h'.gal.PlG⟩,

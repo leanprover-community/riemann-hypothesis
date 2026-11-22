@@ -3,7 +3,7 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ESmall
 public import Development.AbelianVarietyTheory.Definitions.Divisors.QuoIff
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightBoundHoldsStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightBoundHolds
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedWeightEntriesSignsSizes
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedWeightGapsBlockAndBar
 

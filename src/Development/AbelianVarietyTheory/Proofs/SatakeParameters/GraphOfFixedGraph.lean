@@ -130,12 +130,6 @@ theorem IsAvg.pair_mem (h : IsAvg ρ K P) (X : Submodule ℂ (V × V))
   rw [this]
   exact X.smul_mem _ (X.sum_mem fun i _ => hX _ (hk i) z hz)
 
-theorem IsAvg.mem (h : IsAvg ρ K P) (S : Submodule ℂ V) (hS : ∀ k ∈ K, ∀ x ∈ S, ρ k x ∈ S) {x : V}
-    (hx : x ∈ S) : P x ∈ S := by
-  obtain ⟨ι, _, k, c, hk, e1, -⟩ := h.pair x x
-  rw [e1]
-  exact S.smul_mem _ (S.sum_mem fun i _ => hS _ (hk i) x hx)
-
 theorem IsAvg.comm (h : IsAvg ρ K P) (T : Module.End ℂ V) (hT : ∀ k ∈ K, ∀ x, T (ρ k x) = ρ k (T x)) (x : V) :
     P (T x) = T (P x) := by
   obtain ⟨ι, _, k, c, hk, e1, e2⟩ := h.pair x (T x)

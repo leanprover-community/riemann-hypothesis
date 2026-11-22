@@ -125,7 +125,6 @@ theorem toLieG_surjective : Function.Surjective (toLieG (G := G)) := by
   · rw [tangentAlg_fst, h3]; rfl
   · rw [tangentAlg_snd, hv]
 
-
 variable (G) in
 def lieEquiv : Lie G ≃ LieG G :=
   Equiv.ofBijective toLieG ⟨toLieG_injective, toLieG_surjective⟩
@@ -229,7 +228,6 @@ theorem mem_omega_iff (g : LieG G → O) :
       rw [hF, ← smul_eq_mul, ← map_smul, ← hF]
       exact congrArg g (Subtype.ext (lieEquiv_smul a v).symm)
 
-
 variable (G) in
 def cotangentBidualToTangentFunction : Module.Dual O (Lie G) →ₗ[O] (LieG G → O) where
   toFun F x := F ((lieEquiv G).symm x)
@@ -254,12 +252,6 @@ theorem range_cotangentBidualToTangentFunction : LinearMap.range (cotangentBidua
     obtain ⟨v, rfl⟩ := (lieEquiv G).surjective x
     rw [cotangentBidualToTangentFunction_apply, hF]
 
-
-variable (G) in
-def bidualEquivOmega : Module.Dual O (Lie G) ≃ₗ[O] omega G :=
-  (LinearEquiv.ofInjective _ cotangentBidualToTangentFunction_injective).trans (LinearEquiv.ofEq _ _ range_cotangentBidualToTangentFunction)
-
-
 variable (G) in
 def ev : Cotangent G →ₗ[O] (LieG G → O) := cotangentBidualToTangentFunction G ∘ₗ Module.Dual.eval O (Cotangent G)
 
@@ -272,7 +264,6 @@ theorem ev_injective [Module.IsReflexive O (Cotangent G)] : Function.Injective (
 theorem range_ev [Module.IsReflexive O (Cotangent G)] : LinearMap.range (ev G) = omega G := by
   rw [ev, LinearMap.range_comp_of_range_eq_top _
     (LinearMap.range_eq_top.2 (Module.bijective_dual_eval O (Cotangent G)).2), range_cotangentBidualToTangentFunction]
-
 
 variable (G) in
 def omegaEquiv [Module.IsReflexive O (Cotangent G)] : Cotangent G ≃ₗ[O] omega G :=
@@ -320,7 +311,6 @@ section Characters
 variable {O : Type} [CommRing O] {G : Over (Spec (CommRingCat.of O))} [GrpObj G]
 
 variable [IsCommMonObj G]
-
 
 end Characters
 

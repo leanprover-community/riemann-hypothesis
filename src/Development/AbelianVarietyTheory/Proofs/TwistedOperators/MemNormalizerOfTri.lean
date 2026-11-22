@@ -23,9 +23,6 @@ def cj (U : Subgroup G) (g : Subgroup.normalizer (U : Set G)) : U ≃ₜ* U wher
     (f := fun u : U => ((g⁻¹ : Subgroup.normalizer (U : Set G)) : G) * u *
       ((g⁻¹ : Subgroup.normalizer (U : Set G)) : G)⁻¹) (by fun_prop) _
 
-theorem cj_coe (U : Subgroup G) (g : Subgroup.normalizer (U : Set G)) (u : U) :
-    (cj U g u : G) = g * u * (g : G)⁻¹ := rfl
-
 variable (U : Subgroup G) [MeasurableSpace U] [BorelSpace U] [LocallyCompactSpace U]
 
 def md : Subgroup.normalizer (U : Set G) →* ℝ≥0 where

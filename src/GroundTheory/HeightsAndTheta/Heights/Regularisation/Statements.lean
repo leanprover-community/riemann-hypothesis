@@ -79,7 +79,6 @@ def chartMid (j : Fin P.N) : Set (Fin D → ℂ) :=
 instance midNonempty (x : X) : Nonempty {j // x ∈ P.mid j} :=
   ⟨⟨(P.cover x).choose, P.inner_subset_mid _ (P.cover x).choose_spec⟩⟩
 
-
 open Classical in
 def glue (a : Fin P.N → X → ℝ) (ε : ℝ) (x : X) : ℝ :=
   regMax ε (fun j : {j // x ∈ P.mid j} => a j x) + ε / 2
@@ -264,10 +263,6 @@ def HodgeDerivative.Statement : Prop :=
 
 section Inhabitants
 
-theorem isPsh_const {D : ℕ} (U : Set (Fin D → ℂ)) (c : ℝ) : IsPsh U (fun _ => c) :=
-  ⟨upperSemicontinuousOn_const, fun _ _ _ =>
-    ⟨circleIntegrable_const _ _ _, by rw [Real.circleAverage_const]⟩⟩
-
 theorem isPsh_mono {D : ℕ} {U V : Set (Fin D → ℂ)} {u : (Fin D → ℂ) → ℝ} (h : IsPsh U u)
     (hVU : V ⊆ U) : IsPsh V u :=
   ⟨h.1.mono hVU, fun z w hz => h.2 z w fun ζ hζ => hVU (hz ζ hζ)⟩
@@ -280,68 +275,6 @@ theorem mollifier_exists_bound {D : ℕ} (ρ : Mollifier D) : ∃ b : ℝ, ∀ w
       exact hx (ball_subset_closedBall (ρ.support_subset (Function.mem_support.mpr h)))
   obtain ⟨C, hC⟩ := hc.bounded_above_of_compact_support hs
   exact ⟨C, fun w => (le_abs_self _).trans (by simpa [Real.norm_eq_abs] using hC w)⟩
-
-def pointChart : OpenPartialHomeomorph Unit (Fin 0 → ℂ) :=
-  (Homeomorph.homeomorphOfUnique Unit (Fin 0 → ℂ)).toOpenPartialHomeomorph
-
-theorem analyticOnNhd_fin_zero {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-    (f : E → (Fin 0 → ℂ)) (s : Set E) : AnalyticOnNhd ℂ f s := by
-  have : f = fun _ => 0 := funext fun _ => Subsingleton.elim _ _
-  rw [this]
-  exact analyticOnNhd_const
-
-def pointAtlas : FinHolAtlas 0 Unit where
-  n := 1
-  chart _ := pointChart
-  cover _ := ⟨0, by simp [pointChart]⟩
-  holo _ _ := analyticOnNhd_fin_zero _ _
-
-theorem pointChart_compat : IsCompatChart pointAtlas pointChart :=
-  fun _ => ⟨analyticOnNhd_fin_zero _ _, analyticOnNhd_fin_zero _ _⟩
-
-theorem holoOn_zero {D : ℕ} {X : Type*} [TopologicalSpace X] (A : FinHolAtlas D X) (W : Set X) :
-    A.HoloOn W (fun _ => (0 : ℂ)) :=
-  fun _ => analyticOnNhd_const
-
-def pointCharts : PotentialCharts pointAtlas where
-  N := 1
-  chart _ := pointChart
-  compat _ := pointChart_compat
-  target_subset _ y _ := by simp [Subsingleton.elim y 0]
-  mid _ := Set.univ
-  inner _ := Set.univ
-  isOpen_mid _ := isOpen_univ
-  isOpen_inner _ := isOpen_univ
-  closure_inner _ := by simp
-  closure_mid _ := by simp [pointChart]
-  cover _ := ⟨0, Set.mem_univ _⟩
-  th := LocPot.ofFun (fun _ => 0)
-  th_pot := ReciprocityTheory.AnForm.M.isPotential_ofFun _ _ fun _ => contDiffOn_const
-  q _ _ := 0
-  q_smooth _ := contDiffOn_const
-  q_th _ _ y _ := ⟨Set.univ, isOpen_univ, Set.mem_univ _, fun _ => 0, holoOn_zero _ _,
-    fun _ _ => by simp [LocPot.ofFun]⟩
-
-def pointReg : RegChartData pointAtlas where
-  toPotentialCharts := pointCharts
-  S _ := ∅
-  Yo := Set.univ
-  mem_Yo _ _ _ := by simp [coordDiv]
-  ph _ := 0
-  ph_smooth _ := contDiffOn_const
-  u_psh _ := by simpa [pointCharts] using isPsh_const _ (0 : ℝ)
-  r _ := Real.exp 1
-  one_le_r _ _ := by linarith [Real.add_one_le_exp (1 : ℝ)]
-  f _ _ := 0
-  f_smooth _ := contDiffOn_const
-  f_bdd := ⟨0, fun _ _ _ => by simp⟩
-  r_chart _ _ _ := by simp
-  Clog := 0
-  Cph := 0
-  ph_le _ _ := le_rfl
-  ph_ge _ _ := by simp
-  Cgrad := 0
-  grad_le _ _ _ := by simp [pointCharts]
 
 theorem im_div_two_pi_I (z : ℂ) : (z / (2 * Real.pi * Complex.I)).im = -z.re / (2 * Real.pi) := by
   have hπ : (Real.pi : ℝ) ≠ 0 := Real.pi_ne_zero

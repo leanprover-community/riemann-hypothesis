@@ -97,9 +97,6 @@ def conjE (φ : V ≃ₗ[K] V') : (V ≃ₗ[K] V) ≃ (V' ≃ₗ[K] V') where
   left_inv g := by ext x; simp
   right_inv g := by ext x; simp
 
-theorem conjE_apply (φ : V ≃ₗ[K] V') (g : V ≃ₗ[K] V) (y : V') :
-    conjE φ g y = φ (g (φ.symm y)) := rfl
-
 theorem mem_gmap (g : V ≃ₗ[K] V) (M : Submodule (𝓞 K) V) (y : V) :
     y ∈ gmap g M ↔ g.symm y ∈ M := by
   change y ∈ M.map ((g.restrictScalars (𝓞 K)) : V →ₗ[𝓞 K] V) ↔ _

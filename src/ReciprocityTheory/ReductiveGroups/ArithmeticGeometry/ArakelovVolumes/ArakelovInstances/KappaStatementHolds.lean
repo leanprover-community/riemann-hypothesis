@@ -74,8 +74,6 @@ def vecL : V (nd X) ≃ₗ[ℂ] (Ent X → ℂ) :=
   (WithLp.linearEquiv 2 ℂ (Fin (nd X) → ℂ)).trans
     (LinearEquiv.funCongrLeft ℂ ℂ (Fintype.equivFin (Ent X)))
 
-theorem vecL_apply (v : V (nd X)) : vecL X v = vecOf X v := rfl
-
 theorem kappa_statement_holds : KapGGStatement (E := E) := by
   intro r X x0 x1 γ U Φ bf hU hdiff hrel z hz
   obtain ⟨hdom, hbor, -⟩ := hrel z hz

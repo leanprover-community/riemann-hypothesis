@@ -110,9 +110,6 @@ variable {R : Type} [CommRing R] {O C : Type} [CommRing O] [Field C] [Algebra O 
 
 def res : (T → R) →+* (X → C) := RingHom.pi fun x => κ.comp (Pi.evalRingHom (fun _ : T => R) (s x))
 
-omit [CommGroup T] [AddCommGroup X] in
-theorem res_apply (f : T → R) (x : X) : res κ s f x = κ (f (s x)) := rfl
-
 def WW : Submodule RC (X → C) := Submodule.span RC {g | ∃ f ∈ A, g = res κ s f}
 
 def TH : Submodule RC ((X → C) × (Fin r → C)) :=

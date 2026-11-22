@@ -25,23 +25,9 @@ namespace GlobalTheory.Core.Rk
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-structure Link (D : D7) (u : D.what₂.Word) (W : Tower D) where
-
-  P : W.Lv
-
-  eT : (D.mem u).P.Mt →ₗ[ℂ] W.CXP P
-  eT_onto : Function.Surjective eT
-
-  jE : W.CP P 0 →ₗ⋆[ℂ] D.s.HH
-  jE_onto : Function.Surjective jE
-
-  Θ : Desc D u
-  Θ_eq : ∀ F, ∃ T₀ : W.CP P 0, W.IsDn (eT F) T₀ ∧ Θ F = jE T₀
-
 namespace Link
 
 variable {D : D7} {u : D.what₂.Word} {W : Tower D} (L : Link D u W)
-
 
 end Link
 

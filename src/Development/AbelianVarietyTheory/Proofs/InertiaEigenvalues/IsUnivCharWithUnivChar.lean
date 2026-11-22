@@ -21,27 +21,11 @@ section Chosen
 def IsUnivChar (Y : NExp D.R D.host D.what₂ D.LL0 N X) : Prop :=
   ∀ i Q M, Y.delU i Q M = GalChar.delU D.host X.cc (X.l i) Q M
 
-def withUnivChar (Y : NExp D.R D.host D.what₂ D.LL0 N X) : NExp D.R D.host D.what₂ D.LL0 N X :=
-  { Y with
-    delU := fun i Q M => GalChar.delU D.host X.cc (X.l i) Q M
-    delU_unr := fun i => (GalChar.universal_anticyclotomic_character_laws D.host X.cc (X.l i)).1
-    delU_l := fun i => (GalChar.universal_anticyclotomic_character_laws D.host X.cc (X.l i)).2.1
-    delU_anti := fun i => (GalChar.universal_anticyclotomic_character_laws D.host X.cc (X.l i)).2.2.1
-    delU_open := fun i => (GalChar.universal_anticyclotomic_character_laws D.host X.cc (X.l i)).2.2.2.1
-    delU_res := fun i => (GalChar.universal_anticyclotomic_character_laws D.host X.cc (X.l i)).2.2.2.2.1
-    delU_conj := fun i => (GalChar.universal_anticyclotomic_character_laws D.host X.cc (X.l i)).2.2.2.2.2.1 }
-
 end Chosen
 
 section Family
 
-
-variable (X) in
-abbrev Fam (i : X.Tw) (M : ℕ) : Type := PlE D.host → (GE N →* Multiplicative (ZMod (X.l i ^ M)))
-
 variable {i : X.Tw} {M : ℕ} (H : Subgroup (GE N)) (S : Finset (PlE D.host)) (d : Fam X i M)
-
-
 
 variable {H S d}
 

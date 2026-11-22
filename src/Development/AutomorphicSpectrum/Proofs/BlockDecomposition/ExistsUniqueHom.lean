@@ -24,8 +24,6 @@ def powHom (hS : (l : S) = 0) (n : ℕ) : S →+* S where
     obtain ⟨r, hr⟩ := exists_add_pow_prime_pow_eq (Fact.out : l.Prime) x y n
     rw [hr, hS]; simp
 
-theorem powHom_apply (hS : (l : S) = 0) (n : ℕ) (x : S) : powHom hS n x = x ^ l ^ n := rfl
-
 def rootHom [PerfectRing R l] (hR : (l : R) = 0) (n : ℕ) : R ≃+* R :=
   RingEquiv.ofBijective (powHom hR n)
     (PerfectRing.bijective_frobenius : Function.Bijective fun x : R => x ^ l ^ n)

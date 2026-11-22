@@ -14,8 +14,6 @@ namespace GroundTheory.ProfCoh
 
 open IsDedekindDomain NumberField CategoryTheory GroundTheory.Global
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 section Local
@@ -24,7 +22,6 @@ variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)) (n : ℕ)
   [NeZero n] (hnS : ∀ v ∉ S, ((n : ℕ) : 𝓞 K.1) ∉ v.asIdeal)
 include hnS
-
 
 set_option maxHeartbeats 1600000 in
 theorem bijective_gsRootsLocalMor_of_places (v : S) : Function.Bijective (gsRootsLocalMor S ιs n v).hom :=
@@ -76,12 +73,10 @@ def GsPairingInput (n ℓ : ℕ) [NeZero n] : Prop :=
     (∀ ζ : ℚ̄, ζ ^ n = 1 → ζ ∈ L.1) → ∀ (hodd' : Odd n ∨ IsTotallyComplex L.1)
     (h3' : Subsingleton (cohomology (gsRoots S' n) 3)), GsPairingNondegenerate S' ιs' n hodd' h3'
 
-
 omit [Fintype S] [NeZero n] in
 include hnk hS in
 theorem natCast_not_mem_of_not_mem : ∀ v ∉ S, ((n : ℕ) : 𝓞 K.1) ∉ v.asIdeal :=
   fun v hv h => hv (mem_of_natCast_pow_mem S n ℓ k hnk hS v h)
-
 
 set_option maxHeartbeats 3200000 in
 include hℓ hnk hS in

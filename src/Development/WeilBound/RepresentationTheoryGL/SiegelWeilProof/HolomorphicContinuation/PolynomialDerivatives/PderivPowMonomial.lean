@@ -14,8 +14,6 @@ open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LC
 
 variable {m n : ℕ}
 
-local notation "σ" => Fin m × Fin n × Bool
-
 theorem pderiv_pow_monomial (i : σ) (e : ℕ) (s : σ →₀ ℕ) (a : ℂ) :
     (((pderiv (R := ℂ) i).toLinearMap ^ e) (monomial s a) : PX m n) =
       monomial (s - Finsupp.single i e) (a * ((s i).descFactorial e : ℂ)) := by

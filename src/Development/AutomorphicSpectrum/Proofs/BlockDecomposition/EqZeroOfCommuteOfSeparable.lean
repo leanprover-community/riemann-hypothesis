@@ -198,9 +198,6 @@ section Nil
 
 variable {n : ℕ}
 
-local notation "cj" => (starRingEnd ℂ)
-local notation "Mx" => Matrix (Fin n) (Fin n) ℂ
-
 def slin (d : GL (Fin n) ℂ) (X : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ :=
   -(d.val * Xᴴ * (d⁻¹ : GL (Fin n) ℂ).val)
 
@@ -331,7 +328,6 @@ section Main
 
 variable {n : ℕ} {W₁ W₂ : Submodule ℂ (Fin n → ℂ)}
 
-local notation "cj" => (starRingEnd ℂ)
 local notation "Mx" => Matrix (Fin n) (Fin n) ℂ
 
 instance : ContinuousSMul ℝ (nilrad W₁ W₂) :=

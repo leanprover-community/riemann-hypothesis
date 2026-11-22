@@ -21,10 +21,6 @@ noncomputable section
 section Gen
 variable {R S : Type} [CommRing R] [CommRing S]
 
-def levMap (I : Ideal R) (J : Ideal S) (f : R →+* S) (hf : I ≤ J.comap f) (n : ℕ) :
-    R ⧸ I ^ n →+* S ⧸ J ^ n :=
-  Ideal.quotientMap (J ^ n) f (Reformulated.AutPerF.pow_le_comap_pow hf n)
-
 def adicMap (I : Ideal R) (J : Ideal S) (f : R →+* S) (hf : I ≤ J.comap f) :
     AdicCompletion I R →+* AdicCompletion J S :=
   Reformulated.AutPerF.adicMap I J f hf

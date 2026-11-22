@@ -53,8 +53,6 @@ def curryML : (∀ p, M p) →ₘₗ[ℂ] ⨂[ℂ] a, ⨂[ℂ] b, M ⟨a, b⟩ w
     obtain ⟨a₀, b₀⟩ := p
     simp only [tprod_tprod_update_sigma, MultilinearMap.map_update_smul, RingHom.id_apply]
 
-theorem curryML_apply (x : ∀ p, M p) : curryML M x = tprod ℂ fun a => tprod ℂ fun b => x ⟨a, b⟩ := rfl
-
 variable [Finite α] [∀ a, Finite (β a)]
 
 def sigBasis : Basis (∀ p, Free.ChooseBasisIndex ℂ (M p)) ℂ (⨂[ℂ] p, M p) :=

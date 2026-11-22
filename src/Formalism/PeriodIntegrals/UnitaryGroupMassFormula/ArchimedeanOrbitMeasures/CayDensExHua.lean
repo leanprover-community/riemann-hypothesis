@@ -18,8 +18,6 @@ section Defs
 
 variable {P Q : ℕ}
 
-local notation "Mat" => Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ
-
 def nH (h : UpqT P Q) (X : Mat) : Mat := UpqT.mat h * ((1 + 1) + X) + ((1 + 1) - X)
 
 def tauL (h : UpqT P Q) (X : lieU P Q) : lieU P Q := cayInv P Q (h * cayF P Q X)
@@ -49,8 +47,6 @@ def TauDeriv : Prop := ∀ (P Q : ℕ) (h : UpqT P Q) (x : lieU P Q), x ∈ D0 P
 section Alg
 
 variable {P Q : ℕ}
-
-local notation "Mat" => Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ
 
 theorem mat_mul' (a b : UpqT P Q) : UpqT.mat (a * b) = UpqT.mat a * UpqT.mat b := rfl
 

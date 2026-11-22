@@ -15,9 +15,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.TwInputs
 
-theorem supHk_commG : ∀ (D : D7) (X : RealSide D) (E : IntegralHeckeForms.XD D) (Y : SerSide X E), (∀ j, GlobalTheory.IndefiniteRowSideFullHecke.LatticesOverBalls.HkSupAt X.core X.R.toRealDat j) → SupHk D ∧ CommG D := by
-  intro D X E Y hSup
-  exact GlobalTheory.HkSupComm.supHk_commG D X.Γ X.Pl0 X.I0 X.T X.A3 X.core X.R X.cG Y.S Y.YS Y.H Y.sup X.char.lev X.char.allPl
-    (fun i => (X.integral i).2.1) hSup Y.reads (fun i b P h _ => (GlobalTheory.T.rational_datum_small_field_form_hecke_scalar_unit D X E Y).2 i b P h)
-
 end GlobalTheory.TwInputs

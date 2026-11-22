@@ -24,10 +24,6 @@ noncomputable def resAct {p q : ℕ} (M : GKMod p q) (N : Submodule ℂ M.V)
     ext x
     simp [LinearMap.restrict_apply]
 
-theorem resAct_coe {p q : ℕ} (M : GKMod p q) (N : Submodule ℂ M.V)
-    (h : ∀ Z, ∀ x ∈ N, M.act Z x ∈ N) (Z : Mat p q) (x : N) :
-    ((resAct M N h Z x : N) : M.V) = M.act Z x := rfl
-
 theorem exists_submodule : ∀ (p q : ℕ) (M : GKMod p q) (N : Submodule ℂ M.V), (∀ Z, ∀ x ∈ N, M.act Z x ∈ N) → ∃ (M' : GKMod p q) (i : M'.V →ₗ[ℂ] M.V), Function.Injective i ∧ LinearMap.range i = N ∧ ∀ Z x, i (M'.act Z x) = M.act Z (i x) := by
   intro p q M N h
   have hlie : IsLieAct (resAct M N h) := by

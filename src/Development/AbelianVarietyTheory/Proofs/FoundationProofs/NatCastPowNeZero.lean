@@ -81,25 +81,6 @@ variable {l : ℕ} [Fact l.Prime] {E Ω : Type} [Field E] [Field Ω] [Algebra E 
   {Gw : Subgroup (Ω ≃ₐ[E] Ω)} {O₀ : Type} [CommRing O₀] [Algebra ℤ_[l] O₀] [TopologicalSpace O₀]
   (Bw : LocBridge l E Ω Gw O₀) (P : LocPrime l) {m : ℕ}
 
-include Bw in
-theorem natCast_pow_ne_zero (N : ℕ) : (l : O₀) ^ N ≠ 0 := by
-  intro h
-  have := congrArg Bw.toLL h
-  rw [map_pow, map_natCast, map_zero] at this
-  exact (Fact.out : l.Prime).ne_zero (by exact_mod_cast (eq_zero_of_pow_eq_zero this))
-
-theorem exists_integral {X : Type} [TopologicalSpace X] [CompactSpace X]
-    (c : X → Fin m → ↥Bw.LL.1) (hc : Continuous c) :
-    ∃ d : O₀, d ≠ 0 ∧ ∃ f : X → Fin m → O₀, Continuous f ∧
-      ∀ g j, Bw.toLL (f g j) = Bw.toLL d * c g j := by
-  obtain ⟨N, hN⟩ := exists_pow_mul_mem_OL Bw.LL c hc
-  refine ⟨(l : O₀) ^ N, natCast_pow_ne_zero Bw N, fun g j => Bw.eO.symm ⟨_, hN g j⟩, ?_, ?_⟩
-  · refine continuous_pi fun j => Bw.eO_symm_cont.comp ?_
-    exact Continuous.subtype_mk (continuous_const.mul ((continuous_apply j).comp hc)) _
-  · intro g j
-    show ((Bw.eO (Bw.eO.symm _) : Loc.OL Bw.LL) : Bw.LL.1) = _
-    rw [RingEquiv.apply_symm_apply, map_pow, map_natCast]
-
 end Bridge
 
 end GlobalTheory.BlochKatoRank

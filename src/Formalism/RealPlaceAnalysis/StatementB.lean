@@ -26,9 +26,6 @@ def lsh {n : ℕ} (ν : Fin n → ℂ) : Fin n → ℂ := fun a => ν a + ((n : 
 def Amat {n : ℕ} (l : Fin n → ℂ) : Matrix (Fin n) (Fin n) ℂ :=
   Matrix.of fun a b => if a = b then l a else if a < b then -1 else 0
 
-def vand {n : ℕ} (l : Fin n → ℂ) : ℂ :=
-  ∏ a, ∏ b ∈ univ.filter (fun b => a < b), (l a - l b)
-
 def EpowCov : Prop :=
   ∀ (A : Type) [Ring A] (n : ℕ) (E : Fin n → Fin n → A), GlRel E →
     ∀ (k : ℕ) (a b c d : Fin n),
@@ -45,12 +42,5 @@ def HWDiag : Prop :=
     ∀ (k : ℕ) (a : Fin n),
       epow E (k + 1) a a v =
         lsh ν a • epow E k a a v - ∑ b ∈ univ.filter (fun b => a < b), epow E k b b v
-
-def DiagChar : Prop :=
-  ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (n : ℕ) (E : Fin n → Fin n → Module.End ℂ V)
-    (ν : Fin n → ℂ) (v : V), GlRel E → IsHW E ν v →
-    ∀ a : Fin n,
-      ∑ i ∈ range (n + 1),
-        (∏ s : Fin n, (Polynomial.X - Polynomial.C (lsh ν s))).coeff i • epow E i a a v = 0
 
 end Formalism.REAL

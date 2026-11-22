@@ -20,12 +20,6 @@ open _root_.WittVector Laurent
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝒪" => normInteger K
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "K♭" => FractionRing 𝒪♭
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "θ" => fontaineTheta 𝒪 p
-
 theorem norm_zcoeff_incl_le_one (x : AInf K p) (n : ℤ) :
     ‖(teichLift K p).zcoeff (incl K p x) n‖ ≤ 1 := by
   unfold TeichLift.zcoeff
@@ -59,7 +53,6 @@ theorem convergesAt_toB (z : 𝔸) {ρ : ℝ} (hρ0 : 0 < ρ) (hρ1 : ρ < 1) :
   obtain ⟨M, x, h⟩ := exists_toB_mul z
   rw [TeichLift.coeffB_eq _ h]
   exact convergesAt_shift hρ0 (convergesAt_zcoeff_incl x hρ0 hρ1) M
-
 
 variable (K p) in
 def gn (ρ : ℝ) (z : 𝔸) : ℝ := gaussNorm ((teichLift K p).coeffB (toB K p z)) ρ

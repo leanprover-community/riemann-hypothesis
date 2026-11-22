@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.ExpansionFromLemmaB
 public import Formalism.SharpRestriction.CuspSpanNormBounds.TheoremBConstants
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLitG
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BesselBoundFamilyOfDoubleCoset
 

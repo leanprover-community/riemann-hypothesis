@@ -27,7 +27,6 @@ theorem cochainsMap_smul (c : k) (f : A ⟶ B) : cochainsMap (c • f) = c • c
   funext y
   rfl
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem cohomologyMap_smul (c : k) (f : A ⟶ B) (n : ℕ) :
     cohomologyMap (c • f) n = c • cohomologyMap f n := by
@@ -42,14 +41,11 @@ section Morphisms
 
 variable (T : Rep.{u} k G) {M : Rep.{u} k G}
 
-
 omit [TopologicalSpace G] [IsTopologicalGroup G] in
 noncomputable def tensorRightMor (m : M) (hm : ∀ g : G, M.ρ g m = m) : T ⟶ T ⊗ M :=
   Rep.ofHom ⟨(TensorProduct.mk k T M).flip m, fun g => by
     ext t
     simp [Representation.tprod_apply, hm g]⟩
-
-
 
 omit [TopologicalSpace G] [IsTopologicalGroup G] in
 noncomputable def tensorFormMor (f : M →ₗ[k] k) (hf : ∀ (g : G) (m : M), f (M.ρ g m) = f m) :
@@ -57,7 +53,6 @@ noncomputable def tensorFormMor (f : M →ₗ[k] k) (hf : ∀ (g : G) (m : M), f
   Rep.ofHom ⟨(TensorProduct.rid k T).toLinearMap ∘ₗ LinearMap.lTensor T f, fun g => by
     ext t m
     simp [Representation.tprod_apply, hf g]⟩
-
 
 end Morphisms
 
@@ -98,10 +93,6 @@ noncomputable def twistMap (n : ℕ) :
       map_smul' := fun c x => by
         ext m
         simp }
-
-theorem twistMap_tmul (n : ℕ) (x : cohomology T n) (m : M) :
-    twistMap T hM n (x ⊗ₜ[k] m) = (cohomologyMap (tensorRightMor T m (fun g => hM g m)) n).hom x :=
-  rfl
 
 end TwistMap
 

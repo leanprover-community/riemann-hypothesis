@@ -6,8 +6,8 @@ public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsT
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.StepOrderRes
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.PowCongr
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RdBase
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TeichmullerCharacterExistsStatement
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrderFundamentalCharacterStatement
+public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TeichmullerCharacterExists
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.RbProj
 
 @[expose] public section
 

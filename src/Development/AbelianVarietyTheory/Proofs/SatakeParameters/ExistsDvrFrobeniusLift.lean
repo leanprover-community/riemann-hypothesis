@@ -1,7 +1,9 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.GlobSpecOfExists
+public import Formalism.SharpRestriction.GrowthBounds.DataGChain
+public import Formalism.LocalToGlobal.Columns.HeckeSp
+public import Formalism.LocalToGlobal.Columns.ColFormsLemmas
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfValuedEq
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
 

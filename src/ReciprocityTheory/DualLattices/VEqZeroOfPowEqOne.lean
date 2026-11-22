@@ -98,10 +98,6 @@ structure MuAction {v : AddValuation C (WithTop ℝ)} {d : ℕ} (G : LogFGL v d)
   lg_mul : ∀ z, z ^ (p ^ h - 1) = 1 → ∀ a,
     subst (mul z) (G.lg a) = (z ^ (p ^ (ty a).val)) • G.lg a
 
-def expComp [CharZero C] (Ω : C) (lg : PowerSeries C) : PowerSeries C :=
-  PowerSeries.mk fun m => ∑ n ∈ Finset.range (m + 1),
-    Ω ^ n / (n.factorial : C) * PowerSeries.coeff m (lg ^ n)
-
 def lgSum {d M : ℕ} (p : ℕ) (c : Fin d → ℕ → Fin d → C)
     (t : Fin d → MvPowerSeries (Fin M) C) (b : Fin d) : MvPowerSeries (Fin M) C :=
   fun α => ∑ n ∈ Finset.range (Finsupp.degree α + 1), ∑ a, c a n b * coeff α (t a ^ (p ^ n))

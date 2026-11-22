@@ -55,17 +55,7 @@ def ASKjt (D : D7) (a : ℝ) (w : D.R.GG → ℝ) (τ : D.R.GG) : ℝ :=
   (∑' p : ℕ, if InertK D p then 2 * Real.log p * askP D a w τ p else 0) +
     Real.log D.host.d * askD D a w τ
 
-def adm5 (D : D7) (s : Scale) (c : ℝ) : Prop :=
-  ∀ ψ : Chr D, ∀ y : ℝ, s.X' / 3 ≤ y → ‖Gc D ψ y‖ ≤ y * Real.exp (-(c * s.x ^ (s.eps / 8)))
-
 def adm10 (D : D7) : Prop := ∀ ψ : Chr D, ∃ χ, Reads D ψ χ
-
-def SizesAt (D : D7) (s : Scale) (δ : ℝ) : Prop :=
-  s.x ^ (2 + 8 * s.eps - δ) ≤ (D.R.n : ℝ) ∧ (D.R.n : ℝ) ≤ s.x ^ (2 + 8 * s.eps + δ) ∧
-  (s.x * s.delta1) ^ ((1 : ℝ) / 2 - δ) ≤ (D.R.m : ℝ) ∧
-    (D.R.m : ℝ) ≤ (s.x * s.delta1) ^ ((1 : ℝ) / 2 + δ) ∧
-  s.x ^ ((9 : ℝ) / 2 + 10 * s.eps - δ) ≤ (D.R.k : ℝ) ∧
-    (D.R.k : ℝ) ≤ s.x ^ ((9 : ℝ) / 2 + 10 * s.eps + δ)
 
 end Formalism.MainNotions.ZetaZeroFreeRegion
 

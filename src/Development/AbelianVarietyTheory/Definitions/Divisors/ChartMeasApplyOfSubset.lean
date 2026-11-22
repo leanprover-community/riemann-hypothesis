@@ -155,12 +155,6 @@ theorem glueMeas_apply (e : ι → OpenPartialHomeomorph X (V n)) (ρ : ι → X
 
 end Measure
 
-theorem differentiableOn_prod {κ : Type*} [Fintype κ] {f : κ → V n → ℂ} {U : Set (V n)}
-    (h : ∀ a, DifferentiableOn ℂ (f a) U) : DifferentiableOn ℂ (fun v => ∏ a, f a v) U := by
-  have := Finset.prod_induction (s := Finset.univ) f (fun g => DifferentiableOn ℂ g U)
-    (fun _ _ => DifferentiableOn.mul) (differentiableOn_const 1) fun a _ => h a
-  exact this.congr fun v _ => (Finset.prod_apply _ _ _).symm
-
 theorem log_normSq_prod_zpow {κ : Type*} [Fintype κ] (g : κ → ℂ) (hg : ∀ a, g a ≠ 0) (m : κ → ℤ) :
     Real.log (‖∏ a, g a ^ m a‖ ^ 2) = ∑ a, m a * Real.log (‖g a‖ ^ 2) := by
   rw [norm_prod, ← Finset.prod_pow, Real.log_prod fun a _ =>
@@ -170,50 +164,5 @@ theorem log_normSq_prod_zpow {κ : Type*} [Fintype κ] (g : κ → ℂ) (hg : �
   ring
 
 variable [T2Space X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X]
-
-def freeAtlas (e : ι → OpenPartialHomeomorph X (V n)) (cover : ∀ y, ∃ i, y ∈ (e i).source)
-    (hd : ∀ i j, DifferentiableOn ℂ (e j ∘ (e i).symm) (ovl e i j))
-    {κ : Type*} [Fintype κ] [DecidableEq κ] (g : κ → ι → ι → X → ℂ)
-    (holo_g : ∀ a i j, DifferentiableOn ℂ (g a i j ∘ (e i).symm) (ovl e i j))
-    (g_ne : ∀ a i j y, y ∈ (e i).source → y ∈ (e j).source → g a i j y ≠ 0)
-    (g_cocycle : ∀ a i j k y, y ∈ (e i).source → y ∈ (e j).source → y ∈ (e k).source →
-      g a i k y = g a i j y * g a j k y)
-    (ph : κ → ι → X → ℝ) (smooth_ph : ∀ a i, ContDiffOn ℝ ∞ (ph a i ∘ (e i).symm) (e i).target)
-    (ph_trans : ∀ a i j y, y ∈ (e i).source → y ∈ (e j).source →
-      ph a j y = ph a i y - Real.log (‖g a i j y‖ ^ 2))
-    (a₀ : κ) (g_kap : ∀ i j y, y ∈ (e i).source → y ∈ (e j).source →
-      g a₀ i j y = transDet (e i) (e j) y) : WeightedAtlas n X ι (κ → ℤ) where
-  chart := e
-  pick y := (cover y).choose
-  mem_pick y := (cover y).choose_spec
-  holo_trans := hd
-  g m i j y := ∏ a, g a i j y ^ m a
-  holo_g m i j := differentiableOn_prod (f := fun a v => g a i j ((e i).symm v) ^ m a)
-    fun a => (holo_g a i j).zpow (Or.inl fun v hv => g_ne a i j _ ((e i).map_target hv.1) hv.2)
-  g_ne m i j y hi hj := Finset.prod_ne_zero_iff.2 fun a _ => zpow_ne_zero _ (g_ne a i j y hi hj)
-  g_cocycle m i j k y hi hj hk := by
-    simp only [fun a => g_cocycle a i j k y hi hj hk, mul_zpow, Finset.prod_mul_distrib]
-  g_add m m' i j y hi hj := by
-    simp only [Pi.add_apply, fun a => zpow_add₀ (g_ne a i j y hi hj), Finset.prod_mul_distrib]
-  ph m i y := ∑ a, m a * ph a i y
-  smooth_ph m i := ContDiffOn.sum (f := fun a v => m a * ph a i ((e i).symm v))
-    fun a _ => contDiffOn_const.mul (smooth_ph a i)
-  ph_add m m' i y _ := by simp only [Pi.add_apply, Int.cast_add, add_mul, Finset.sum_add_distrib]
-  ph_trans m i j y hi hj := by
-    rw [log_normSq_prod_zpow _ fun a => g_ne a i j y hi hj, ← Finset.sum_sub_distrib]
-    exact Finset.sum_congr rfl fun a _ => by rw [ph_trans a i j y hi hj, mul_sub]
-  kap := Pi.single a₀ 1
-  g_kap i j y hi hj := by
-    rw [Fintype.prod_eq_single a₀ fun a ha => by rw [Pi.single_eq_of_ne ha, zpow_zero],
-      Pi.single_eq_same, zpow_one]
-    exact g_kap i j y hi hj
-  mu := glueMeas e fun i y => ENNReal.ofReal (Real.exp (ph a₀ i y))
-  mu_chart i A hA h := by
-    rw [glueMeas_apply e _ hd _ i hA h, chartMeas_apply_of_subset _ _ hA h]
-    · simp [Pi.single_apply]
-    · intro i j y hi hj
-      rw [← g_kap i j y hi hj, ph_trans a₀ i j y hi hj, ← ENNReal.ofReal_mul (sq_nonneg _),
-        Real.exp_sub, Real.exp_log (pow_pos (norm_pos_iff.2 (g_ne a₀ i j y hi hj)) 2),
-        mul_div_cancel₀ _ (pow_ne_zero _ (norm_ne_zero_iff.2 (g_ne a₀ i j y hi hj)))]
 
 end GlobalTheory.ChartGlue

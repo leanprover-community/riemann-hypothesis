@@ -23,8 +23,6 @@ open Alg
 
 variable {D : D7}
 
-local notation "FI" => FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E
-
 theorem mem_mul_inv_of {I J : FI} (hI : I ≠ 0) {x : D.host.E} (h : ∀ c ∈ I, c * x ∈ J) : x ∈ J * I⁻¹ := by
   have h1 : FractionalIdeal.spanSingleton (nonZeroDivisors (𝓞 D.host.E)) x * I ≤ J := by
     rw [FractionalIdeal.mul_le]
@@ -126,7 +124,6 @@ theorem rows_mem (hL : Formalism.HermitianLatticesTheory.gmap n (VS D).L0 = (VS 
   simpa using key 1 h1
 
 end LatF
-
 
 open Alg LatF in
 theorem dictLatF_holds : DictLatF := by

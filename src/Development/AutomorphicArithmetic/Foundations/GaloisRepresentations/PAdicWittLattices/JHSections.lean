@@ -14,9 +14,6 @@ open PositivityTheory.AutomorphicGaloisHodgeTate.G8.HBC
 
 namespace UpperTheory.Gal.G3
 
-private theorem secMap_eq_appLE {k : Type} [CommRing k] {X : Scheme.{0}} (s : X ⟶ Sp k) (U : X.Opens) :
-    secMap s U = (Scheme.ΓSpecIso (CommRingCat.of k)).inv ≫ s.appLE ⊤ U le_top := rfl
-
 private theorem pushout_secMap {k k' : Type} [CommRing k] [CommRing k'] [Algebra k k']
     {X X' : Scheme.{0}} {s : X ⟶ Sp k} {s' : X' ⟶ Sp k'} {g : X' ⟶ X}
     (h : IsPullback g s' s (spMap (algebraMap k k'))) {V : X.Opens} (hV : IsAffineOpen V) :

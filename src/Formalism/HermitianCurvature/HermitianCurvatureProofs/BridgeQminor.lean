@@ -32,8 +32,6 @@ theorem rep_Tm_of {Λ : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → AA k r E
   · exact ⟨[(v, [])], by simp, fun _ _ => by simp⟩
   · exact rep_zero_lemma_2 1
 
-theorem ev_one (f : Mat k r → E) : ev Eop (1 : AA k r E) f = f := rfl
-
 private theorem ckOn_mono_lemma_4 {m m' : ℕ∞} (h : m' ≤ m) {f : Mat k r → E} (hf : CkOn m (GV k r) f) :
     CkOn m' (GV k r) f := by
   intro g₀ hg₀

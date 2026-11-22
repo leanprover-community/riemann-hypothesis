@@ -20,9 +20,6 @@ open GlobalTheory.CompanionTheory.SaGen
 variable {F E K : Type} [Field F] [NumberField F] [Field E] [Algebra F E] [Field K] [Algebra F K]
   [TopologicalSpace K]
 
-theorem iB_tmul (P : PlaceMap F K) (x : K) (e : E) :
-    iB (E := E) P (x ⊗ₜ[F] e) = P.inj x ⊗ₜ[F] e := rfl
-
 theorem iB_eq_sum [FiniteDimensional F E] (P : PlaceMap F K) (y : K ⊗[F] E) :
     iB (E := E) P y = ∑ k, P.inj ((Algebra.TensorProduct.basis K (Module.finBasis F E)).repr y k) •
       ((1 : AF F) ⊗ₜ[F] (Module.finBasis F E) k) := by

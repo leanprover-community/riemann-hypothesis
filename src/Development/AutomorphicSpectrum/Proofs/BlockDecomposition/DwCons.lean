@@ -36,9 +36,6 @@ theorem pd_cons {ι V : Type} [Fintype ι] [DecidableEq ι] [NormedAddCommGroup 
     (i : ι) (L : List ι) (F : (ι → ℝ) → V) :
     pd (i :: L) F = fun t => fderiv ℝ (pd L F) t (Pi.single i 1) := rfl
 
-theorem Dw_nil {n : ℕ} {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] (f : Mat n → V) :
-    Dw [] f = f := rfl
-
 theorem Dw_cons {n : ℕ} {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] (p : Idx n)
     (L : List (Idx n)) (f : Mat n → V) :
     Dw (p :: L) f = fun y => fderiv ℝ (Dw L f) y (bs p) := rfl

@@ -38,10 +38,6 @@ noncomputable def truncEval {W C : Type} [CommRing W] [CommRing C] (ω : W →+*
   map_zero' := by simp
   map_add' f g := by simp [Polynomial.eval₂_add]
 
-theorem truncEval_apply {W C : Type} [CommRing W] [CommRing C] (ω : W →+* C) (v : C)
-    (I : Ideal C) (K : ℕ) (hK : v ^ (K + 1) ∈ I) (f : W⟦X⟧) :
-    truncEval ω v I K hK f = Ideal.Quotient.mk I ((PowerSeries.trunc (K + 1) f).eval₂ ω v) := rfl
-
 end GlobalTheory.PowerSeriesEval
 
 open GlobalTheory.PowerSeriesEval in

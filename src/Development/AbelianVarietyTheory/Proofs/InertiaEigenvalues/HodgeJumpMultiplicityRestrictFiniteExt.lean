@@ -21,9 +21,6 @@ open GlobalTheory.DRFil
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem algebraMap_inclusion (P : LocPrime l) {K K' : FinExt l} (h : K.1 ≤ K'.1) (c : ↥K.1) :
-    algebraMap ↥K'.1 P.R.BdR (IntermediateField.inclusion h c) = algebraMap ↥K.1 P.R.BdR c := rfl
-
 theorem idem_restrict_mul (P : LocPrime l) {K K' LL : FinExt l} (h : K.1 ≤ K'.1)
     (τ : ↥K'.1 →ₐ[ℚ_[l]] ↥LL.1) :
     haveI := K.2; haveI := K'.2

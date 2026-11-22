@@ -24,11 +24,6 @@ private theorem hom_hasSubst_pair {R : Type*} [CommRing R] {τ : Type*}
     (hb : MvPowerSeries.constantCoeff b = 0) : MvPowerSeries.HasSubst ![a, b] :=
   MvPowerSeries.hasSubst_of_constantCoeff_zero fun s => by fin_cases s <;> simp [ha, hb]
 
-private theorem hom_cc_at {R : Type*} [CommRing R] {τ : Type*} (f : PowerSeries R) (t : τ)
-    (hf : constantCoeff f = 0) :
-    MvPowerSeries.constantCoeff (f.subst (MvPowerSeries.X t : MvPowerSeries τ R)) = 0 :=
-  PowerSeries.constantCoeff_subst_eq_zero (MvPowerSeries.constantCoeff_X t) f hf
-
 private theorem hom_substInj {R : Type*} [CommRing R] {ι : Type*} (f : PowerSeries R)
     (a b : MvPowerSeries ι R) (h0 : constantCoeff f = 0) (h1 : coeff 1 f = 1)
     (ha : MvPowerSeries.constantCoeff a = 0) (hb : MvPowerSeries.constantCoeff b = 0)
@@ -105,55 +100,6 @@ private theorem hom_substInj {R : Type*} [CommRing R] {ι : Type*} (f : PowerSer
       add_zero]
     exact isUnit_one
   exact sub_eq_zero.1 (hU.mul_left_eq_zero.1 key2)
-
-theorem homComp_statement : HomComp := by
-  unfold HomComp
-  intro R _ F G H f g hf hg
-  obtain ⟨hf0, hfe⟩ := hf
-  obtain ⟨hg0, hge⟩ := hg
-  have hF := PowerSeries.HasSubst.of_constantCoeff_zero F.zero_constantCoeff
-  have hvf : MvPowerSeries.HasSubst ![atX f, atY f] :=
-    hom_hasSubst_pair _ _ (hom_cc_at f 0 hf0) (hom_cc_at f 1 hf0)
-  have hvg : MvPowerSeries.HasSubst ![atX g, atY g] :=
-    hom_hasSubst_pair _ _ (hom_cc_at g 0 hg0) (hom_cc_at g 1 hg0)
-  have hfs : PowerSeries.HasSubst f := PowerSeries.HasSubst.of_constantCoeff_zero' hf0
-  refine ⟨PowerSeries.constantCoeff_subst_eq_zero hf0 g hg0, ?_⟩
-  rw [PowerSeries.subst_comp_subst_apply hfs hF, hfe,
-    ← hom_ps_subst_mv_subst g G.toPowerSeries _ G.zero_constantCoeff hvf, hge,
-    MvPowerSeries.subst_comp_subst_apply hvg hvf]
-  congr 1
-  funext s
-
-  have hcoord : ∀ t : Fin 2, MvPowerSeries.subst ![atX f, atY f]
-      (g.subst (MvPowerSeries.X t : MvPowerSeries (Fin 2) R)) =
-      PowerSeries.subst (MvPowerSeries.X t : MvPowerSeries (Fin 2) R) (PowerSeries.subst f g) := by
-    intro t
-    rw [hom_ps_subst_mv_subst g _ _ (MvPowerSeries.constantCoeff_X t) hvf, MvPowerSeries.subst_X hvf,
-      PowerSeries.subst_comp_subst_apply hfs (PowerSeries.HasSubst.X t)]
-    fin_cases t <;> rfl
-  fin_cases s
-  · exact hcoord 0
-  · exact hcoord 1
-
-theorem log_iff_hom_additive : LogIffHomGa := by
-  unfold LogIffHomGa
-  intro R _ F f
-
-  have ga : constantCoeff f = 0 →
-      MvPowerSeries.subst ![atX f, atY f] (FormalGroup.𝔾ₐ (R := R)).toPowerSeries = atX f + atY f := by
-    intro h0
-    have hv : MvPowerSeries.HasSubst ![atX f, atY f] :=
-      hom_hasSubst_pair _ _ (hom_cc_at f 0 h0) (hom_cc_at f 1 h0)
-    show MvPowerSeries.subst _ (MvPowerSeries.X 0 + MvPowerSeries.X 1) = _
-    rw [← MvPowerSeries.coe_substAlgHom hv, map_add (f := _), MvPowerSeries.coe_substAlgHom,
-      MvPowerSeries.subst_X hv, MvPowerSeries.subst_X hv]
-    rfl
-  unfold IsLog IsHom
-  constructor
-  · rintro ⟨h0, h1, h2⟩
-    exact ⟨⟨h0, by rw [h2, ga h0]⟩, h1⟩
-  · rintro ⟨⟨h0, h2⟩, h1⟩
-    exact ⟨h0, h1, by rw [h2, ga h0]⟩
 
 theorem substInjective_statement : SubstInjective := by
   unfold SubstInjective

@@ -1,6 +1,6 @@
 module
 
-public import Formalism.PeriodIntegrals.HaarDefs
+public import Formalism.FormalDegreeBessel.StatementBF
 public import Formalism.FormalDegreeBessel.FinalG
 
 @[expose] public section
@@ -159,20 +159,6 @@ theorem exp_mem_N {X : Mx k r} (hX : InLieN k r X) : NormedSpace.exp X ∈ Nset 
   · intro i j h1 h2 h3
     exact exp_entry_of_InA i j (fun n => (hX.2.pow n).2 i j h1 h2 h3)
 
-theorem InLieN.add {X Y : Mx k r} (hX : InLieN k r X) (hY : InLieN k r Y) : InLieN k r (X + Y) := by
-  refine ⟨?_, ?_, ?_⟩
-  · show (X + Y)ᴴ * Hpk k r + Hpk k r * (X + Y) = 0
-    have h1 : Xᴴ * Hpk k r + Hpk k r * X = 0 := hX.1
-    have h2 : Yᴴ * Hpk k r + Hpk k r * Y = 0 := hY.1
-    rw [Matrix.conjTranspose_add, Matrix.add_mul, Matrix.mul_add]
-    calc Xᴴ * Hpk k r + Yᴴ * Hpk k r + (Hpk k r * X + Hpk k r * Y)
-        = (Xᴴ * Hpk k r + Hpk k r * X) + (Yᴴ * Hpk k r + Hpk k r * Y) := by abel
-      _ = 0 := by rw [h1, h2, add_zero]
-  · intro a i hai
-    rw [Matrix.add_apply, hX.2.1 a i hai, hY.2.1 a i hai, add_zero]
-  · intro i j h1 h2 h3
-    rw [Matrix.add_apply, hX.2.2 i j h1 h2 h3, hY.2.2 i j h1 h2 h3, add_zero]
-
 theorem InLieN.smul {X : Mx k r} (hX : InLieN k r X) (c : ℝ) : InLieN k r ((c : ℂ) • X) := by
   refine ⟨?_, ?_, ?_⟩
   · show ((c : ℂ) • X)ᴴ * Hpk k r + Hpk k r * ((c : ℂ) • X) = 0
@@ -183,32 +169,5 @@ theorem InLieN.smul {X : Mx k r} (hX : InLieN k r X) (c : ℝ) : InLieN k r ((c 
     rw [Matrix.smul_apply, hX.2.1 a i hai, smul_zero]
   · intro i j h1 h2 h3
     rw [Matrix.smul_apply, hX.2.2 i j h1 h2 h3, smul_zero]
-
-theorem InLieN.zero : InLieN k r (0 : Mx k r) := by
-  refine ⟨?_, ?_, ?_⟩
-  · show (0 : Mx k r)ᴴ * Hpk k r + Hpk k r * 0 = 0
-    simp
-  · intro a i _; rfl
-  · intro i j _ _ _; rfl
-
-theorem unrealify_add (x y : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool)) :
-    unrealify (x + y) = unrealify x + unrealify y := by
-  ext i j
-  apply Complex.ext <;> simp [unrealify]
-
-theorem unrealify_smul (c : ℝ) (x : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool)) :
-    unrealify (c • x) = (c : ℂ) • unrealify x := by
-  ext i j
-  apply Complex.ext <;> simp [unrealify]
-
-theorem continuous_of : Continuous (fun x : Mt k r => (Matrix.of x : Mx k r)) := continuous_id
-
-def unrealL (k r : ℕ) : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool) →ₗ[ℝ] Mx k r where
-  toFun := unrealify
-  map_add' := unrealify_add
-  map_smul' := by
-    intro c x
-    rw [unrealify_smul]
-    exact Complex.coe_smul c _
 
 end PI

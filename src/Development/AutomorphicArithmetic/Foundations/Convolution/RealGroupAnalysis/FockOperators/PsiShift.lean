@@ -39,8 +39,6 @@ variable [IsTotallyReal F]
 
 private theorem cw_add (w : InfinitePlace F) (a b : A F) : cw w (a + b) = cw w a + cw w b := by
   simp [cw]
-private theorem cw_sub (w : InfinitePlace F) (a b : A F) : cw w (a - b) = cw w a - cw w b := by
-  simp [cw]
 private theorem cw_mul (w : InfinitePlace F) (a b : A F) : cw w (a * b) = cw w a * cw w b := by
   simp [cw]
 private theorem cw_neg (w : InfinitePlace F) (a : A F) : cw w (-a) = -cw w a := by

@@ -64,9 +64,6 @@ theorem diag_anti {r : ℕ} (m : Fin r × Fin r →₀ ℕ) (hm : Interlaced m) 
 def res {n : ℕ} (m : Fin (n + 1) × Fin (n + 1) →₀ ℕ) : Fin n × Fin n →₀ ℕ :=
   Finsupp.equivFunOnFinite.symm fun v => m (v.1.castSucc, v.2.castSucc)
 
-theorem res_apply {n : ℕ} (m : Fin (n + 1) × Fin (n + 1) →₀ ℕ) (a t : Fin n) :
-    res m (a, t) = m (a.castSucc, t.castSucc) := rfl
-
 theorem ps_res {n : ℕ} (m : Fin (n + 1) × Fin (n + 1) →₀ ℕ) (a : ℕ) (ha : a ≤ n) (t : Fin n) :
     ps (res m) a t = ps m a t.castSucc := by
   have : ¬ n < a := by omega

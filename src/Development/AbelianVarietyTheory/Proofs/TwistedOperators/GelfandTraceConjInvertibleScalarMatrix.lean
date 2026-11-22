@@ -2,7 +2,8 @@ module
 
 public import Mathlib
 public import Formalism.PeriodIntegrals.DSInfCharCap
-public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.PseudoCoefficientSeparation
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MeasurableEmbeddingEquiv
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.DiscreteSeriesCharacter
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
 public import Formalism.RealPlaceAnalysis.StatementE
 public import Formalism.RealPlaceAnalysis.StatementB

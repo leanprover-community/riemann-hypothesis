@@ -96,56 +96,45 @@ theorem mdel_neg (A : E → Matrix m n ℂ) (z ξ : E) : mdel (fun x => -A x) z 
 theorem mdbar_neg (A : E → Matrix m n ℂ) (z ξ : E) : mdbar (fun x => -A x) z ξ = -mdbar A z ξ := by
   ext a b; simp [dbar_neg]
 
-
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.of_le (h : MContDiffAt k A z) (hjk : j ≤ k) : MContDiffAt j A z :=
   fun a b => (h a b).of_le hjk
-
 
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.diff (h : MContDiffAt 1 A z) (a : m) (b : n) :
     DifferentiableAt ℝ (fun x => A x a b) z := (h a b).differentiableAt one_ne_zero
 
-
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem mContDiffAt_const (C : Matrix m n ℂ) : MContDiffAt k (fun _ : E => C) z :=
   fun _ _ => contDiffAt_const
-
 
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.add (h : MContDiffAt k A z) (h' : MContDiffAt k B z) :
     MContDiffAt k (fun x => A x + B x) z := fun a b => (h a b).add (h' a b)
 
-
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.sub (h : MContDiffAt k A z) (h' : MContDiffAt k B z) :
     MContDiffAt k (fun x => A x - B x) z := fun a b => (h a b).sub (h' a b)
-
 
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.neg (h : MContDiffAt k A z) : MContDiffAt k (fun x => -A x) z :=
   fun a b => (h a b).neg
 
-
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.smul {f : E → ℂ} (hf : ContDiffAt ℝ k f z) (h : MContDiffAt k A z) :
     MContDiffAt k (fun x => f x • A x) z := fun a b => hf.mul (h a b)
-
 
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.transpose (h : MContDiffAt k A z) : MContDiffAt k (fun x => (A x)ᵀ) z :=
   fun a b => h b a
 
-
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.conjTranspose (h : MContDiffAt k A z) : MContDiffAt k (fun x => (A x)ᴴ) z :=
   fun a b => conjCLE.contDiff.contDiffAt.comp z (h b a)
 
-
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.submatrix {m' n' : Type*} (h : MContDiffAt k A z) (f : m' → m) (g : n' → n) :
     MContDiffAt k (fun x => (A x).submatrix f g) z := fun a b => h (f a) (g b)
-
 
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.mul [Fintype n] {B : E → Matrix n l ℂ} (h : MContDiffAt k A z)
@@ -153,13 +142,11 @@ theorem MContDiffAt.mul [Fintype n] {B : E → Matrix n l ℂ} (h : MContDiffAt 
   simp only [Matrix.mul_apply]
   exact ContDiffAt.sum fun c _ => (h a c).mul (h' c b)
 
-
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.det [Fintype n] [DecidableEq n] {A : E → Matrix n n ℂ}
     (h : MContDiffAt k A z) : ContDiffAt ℝ k (fun x => (A x).det) z := by
   simp only [det_apply']
   exact ContDiffAt.sum fun σ _ => contDiffAt_const.mul (contDiffAt_prod fun c _ => h _ _)
-
 
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.inv [Fintype n] [DecidableEq n] {A : E → Matrix n n ℂ}
@@ -172,12 +159,10 @@ theorem MContDiffAt.inv [Fintype n] [DecidableEq n] {A : E → Matrix n n ℂ}
   split_ifs
   exacts [contDiffAt_const, h c d]
 
-
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.eventually_isUnit [Fintype n] [DecidableEq n] {A : E → Matrix n n ℂ}
     (h : MContDiffAt k A z) (hu : IsUnit (A z).det) : ∀ᶠ x in 𝓝 z, IsUnit (A x).det :=
   (h.det.continuousAt.eventually_ne hu.ne_zero).mono fun _ hx => hx.isUnit
-
 
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem MContDiffAt.eventually_two [Finite m] [Finite n] (h : MContDiffAt 2 A z) :
@@ -300,39 +285,22 @@ def dualGram (H : Matrix n n ℂ) : Matrix n n ℂ := H⁻¹ᵀ
 
 variable {U : Set E} {H H' : E → Matrix n n ℂ} {z : E} {j k : WithTop ℕ∞}
 
-
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem IsPosFrame.isHermFrame (h : IsPosFrame U H) : IsHermFrame U H :=
   ⟨h.isOpen, h.smooth, fun z hz => (h.posDef z hz).isHermitian,
     fun z hz => (isUnit_iff_isUnit_det _).1 (h.posDef z hz).isUnit⟩
 
-
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem IsHermFrame.mContDiffAt (h : IsHermFrame U H) (hz : z ∈ U) : MContDiffAt ∞ H z :=
   fun a b => (h.smooth a b).contDiffAt (h.isOpen.mem_nhds hz)
-
 
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem IsHermFrame.two (h : IsHermFrame U H) (hz : z ∈ U) : MContDiffAt 2 H z :=
   (h.mContDiffAt hz).of_le (by norm_cast)
 
-
-
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem IsHermFrame.eventually_herm (h : IsHermFrame U H) (hz : z ∈ U) :
     ∀ᶠ x in 𝓝 z, (H x).IsHermitian := mem_of_superset (h.isOpen.mem_nhds hz) h.herm
-
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
-theorem IsHermFrame.of_mContDiffAt (hU : IsOpen U) (h : ∀ z ∈ U, MContDiffAt ∞ H z)
-    (h1 : ∀ z ∈ U, (H z).IsHermitian) (h2 : ∀ z ∈ U, IsUnit (H z).det) : IsHermFrame U H :=
-  ⟨hU, fun a b z hz => (h z hz a b).contDiffWithinAt, h1, h2⟩
-
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
-theorem IsHermFrame.isPosFrame (h : IsHermFrame U H) (h' : ∀ z ∈ U, (H z).PosDef) :
-    IsPosFrame U H := ⟨h.isOpen, h.smooth, h'⟩
-
 
 theorem conn_eq_of_isSymm (h : ∀ᶠ x in 𝓝 z, (H x).IsSymm) (ξ : E) :
     conn H z ξ = (H z)⁻¹ * mdel H z ξ := by
@@ -538,8 +506,6 @@ def kappa : ℂ := I / (2 * Real.pi)
 
 def ddc (u : E → ℝ) (z ξ η : E) : ℂ := kappa * leviForm u z ξ η
 
-def diagVal {V : Type*} (α : V → V → ℂ) (ξ : V) : ℝ := (-I * α ξ ξ).re
-
 section Tangent
 
 variable {ι : Type*} [Fintype ι]
@@ -593,115 +559,10 @@ section Sub
 
 variable [Fintype m] [Fintype l] [DecidableEq m] [DecidableEq l]
 
-def secondForm (H : E → Matrix (m ⊕ l) (m ⊕ l) ℂ) (z ξ : E) : Matrix l m ℂ :=
-  quotMap (m := m) (l := l) * conn H z ξ * incl (m := m) (l := l)
-
-def secondFormAdj (H : E → Matrix (m ⊕ l) (m ⊕ l) ℂ) (z η : E) : Matrix m l ℂ :=
-  adj (subGram (H z)) (quotGram (H z)) (secondForm H z η)
-
-def extForm (H : E → Matrix (m ⊕ l) (m ⊕ l) ℂ) (z η : E) : Matrix m l ℂ :=
-  orthProj (H z) * mdbar (fun x => orthLift (H x)) z η
-
-def extFormAdj (H : E → Matrix (m ⊕ l) (m ⊕ l) ℂ) (z ξ : E) : Matrix l m ℂ :=
-  adj (quotGram (H z)) (subGram (H z)) (extForm H z ξ)
-
-def extTrace (H : E → Matrix (m ⊕ l) (m ⊕ l) ℂ) (z ξ η : E) : ℂ :=
-  kappa * (extFormAdj H z ξ * extForm H z η).trace
-
 variable {U : Set E} {H : E → Matrix (m ⊕ l) (m ⊕ l) ℂ} {z : E} {k : WithTop ℕ∞}
-
 
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] [Fintype m] [Fintype l] [DecidableEq m]
   [DecidableEq l] in
-theorem MContDiffAt.subGram (h : MContDiffAt k H z) : MContDiffAt k (fun x => subGram (H x)) z :=
-  fun a b => h (Sum.inl a) (Sum.inl b)
-
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] [Fintype l] [DecidableEq l] in
-theorem MContDiffAt.quotGram (h : MContDiffAt k H z) (hu : IsUnit (HermFrame.subGram (H z)).det) :
-    MContDiffAt k (fun x => quotGram (H x)) z :=
-  (h.submatrix Sum.inr Sum.inr).sub (((h.submatrix Sum.inr Sum.inl).mul (h.subGram.inv hu)).mul
-    (h.submatrix Sum.inl Sum.inr))
-
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
-theorem IsHermFrame.sub (h : IsHermFrame U H) (hu : ∀ z ∈ U, IsUnit (subGram (H z)).det) :
-    IsHermFrame U fun x => subGram (H x) :=
-  .of_mContDiffAt h.isOpen (fun _ hz => (h.mContDiffAt hz).subGram)
-    (fun z hz => isHermitian_subGram (h.herm z hz)) hu
-
-
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
-theorem IsPosFrame.sub (h : IsPosFrame U H) : IsPosFrame U fun x => subGram (H x) :=
-  (h.isHermFrame.sub fun z hz =>
-    (isUnit_iff_isUnit_det _).1 (posDef_subGram (h.posDef z hz)).isUnit).isPosFrame
-    fun z hz => posDef_subGram (h.posDef z hz)
-
-
-theorem secondForm_eq (H : E → Matrix (m ⊕ l) (m ⊕ l) ℂ) (z ξ : E) :
-    secondForm H z ξ = (conn H z ξ).toBlocks₂₁ := by
-  rw [secondForm]
-  conv_lhs => rw [← fromBlocks_toBlocks (conn H z ξ)]
-  simp [quotMap, incl, fromCols_mul_fromBlocks, fromCols_mul_fromRows]
-
-theorem extForm_eq_neg_mdbar (H : E → Matrix (m ⊕ l) (m ⊕ l) ℂ) (z η : E) :
-    extForm H z η = -mdbar (fun x => orthCoeff (H x)) z η := by
-  have h : mdbar (fun x => orthLift (H x)) z η =
-      fromRows (-mdbar (fun x => orthCoeff (H x)) z η) 0 := by
-    ext (a | a) b <;> simp [orthLift, dbar_neg]
-  rw [extForm, h, orthProj, fromCols_mul_fromRows]; simp
-
-theorem extForm_eq_neg_secondFormAdj (h : MContDiffAt 1 H z)
-    (hh : ∀ᶠ x in 𝓝 z, (H x).IsHermitian) (hu : IsUnit (H z).det)
-    (hs : IsUnit (subGram (H z)).det) (η : E) : extForm H z η = -secondFormAdj H z η := by
-  have hz := hh.self_of_nhds
-  have hs' : IsUnit (H z).toBlocks₁₁ᵀ.det := by rwa [det_transpose]
-
-  have h1 : (H z)ᵀ * orthLift (H z) = fromRows 0 (quotGram (H z))ᵀ := by
-    have := congrArg transpose (orthLift_transpose_mul hs)
-    rwa [transpose_mul, transpose_transpose, transpose_fromCols, transpose_zero] at this
-
-  have h2 : (conn H z η)ᴴ * (H z)ᵀ = (mdbar H z η)ᵀ := by
-    have := congrArg conjTranspose (transpose_mul_conn hu η)
-    rwa [conjTranspose_mul, hz.transpose.eq,
-      show (mdel H z η)ᵀᴴ = (mdel H z η)ᴴᵀ from rfl, conjTranspose_mdel hh] at this
-  have h3 : (conn H z η)ᴴ * fromRows (0 : Matrix m l ℂ) (quotGram (H z))ᵀ =
-      (mdbar H z η)ᵀ * orthLift (H z) := by
-    rw [← h1, ← Matrix.mul_assoc, h2]
-  rw [← fromBlocks_toBlocks (conn H z η)ᴴ, ← fromBlocks_toBlocks (mdbar H z η)ᵀ, orthLift,
-    fromBlocks_mul_fromRows, fromBlocks_mul_fromRows] at h3
-  have h4 := congrArg toRows₁ h3
-  simp only [toRows₁_fromRows, Matrix.mul_zero, zero_add, Matrix.mul_one] at h4
-  have h11 : MContDiffAt 1 (fun x => (H x).toBlocks₁₁ᵀ) z := h.subGram.transpose
-  have h21 : MContDiffAt 1 (fun x => (H x).toBlocks₂₁ᵀ) z :=
-    (h.submatrix Sum.inr Sum.inl).transpose
-  rw [extForm_eq_neg_mdbar, secondFormAdj, adj, secondForm_eq, Matrix.mul_assoc,
-    show (conn H z η).toBlocks₂₁ᴴ = (conn H z η)ᴴ.toBlocks₁₂ from rfl, h4]
-  simp only [orthCoeff]
-  rw [mdbar_mul (h11.inv hs') h21, mdbar_inv h11 hs',
-    show mdbar (fun x => (H x).toBlocks₂₁ᵀ) z η = (mdbar H z η)ᵀ.toBlocks₁₂ from rfl,
-    show mdbar (fun x => (H x).toBlocks₁₁ᵀ) z η = (mdbar H z η)ᵀ.toBlocks₁₁ from rfl, subGram]
-  simp only [Matrix.mul_add, Matrix.mul_neg, Matrix.neg_mul, Matrix.mul_assoc]
-  abel
-
-theorem adj_adj {A : Matrix m m ℂ} {B : Matrix l l ℂ} (hA : A.IsHermitian) (hAu : IsUnit A.det)
-    (hB : B.IsHermitian) (hBu : IsUnit B.det) (T : Matrix l m ℂ) : adj B A (adj A B T) = T := by
-  have hA' : IsUnit Aᵀ.det := by rwa [det_transpose]
-  have hB' : IsUnit Bᵀ.det := by rwa [det_transpose]
-  simp only [adj, conjTranspose_mul, conjTranspose_conjTranspose, hB.transpose.eq,
-    hA.transpose.inv.eq, Matrix.mul_assoc, nonsing_inv_mul _ hA', Matrix.mul_one,
-    nonsing_inv_mul_cancel_left _ _ hB']
-
-theorem extFormAdj_eq_neg_secondForm (h : MContDiffAt 1 H z)
-    (hh : ∀ᶠ x in 𝓝 z, (H x).IsHermitian) (hu : IsUnit (H z).det)
-    (hs : IsUnit (subGram (H z)).det) (ξ : E) : extFormAdj H z ξ = -secondForm H z ξ := by
-  have hz := hh.self_of_nhds
-  rw [extFormAdj, extForm_eq_neg_secondFormAdj h hh hu hs, secondFormAdj,
-    ← adj_adj (isHermitian_subGram hz) hs (isHermitian_quotGram hz) (isUnit_det_quotGram hu hs)
-      (secondForm H z ξ),
-    adj_adj (isHermitian_quotGram hz) (isUnit_det_quotGram hu hs) (isHermitian_subGram hz) hs]
-  simp [adj]
 
 theorem conn_submatrix_equiv [Fintype n] [DecidableEq n] (K : E → Matrix n n ℂ) (e : m ≃ n)
     (z ξ : E) : conn (fun x => (K x).submatrix e e) z ξ = (conn K z ξ).submatrix e e := by
@@ -716,38 +577,6 @@ theorem curv_submatrix_equiv [Fintype n] [DecidableEq n] (K : E → Matrix n n �
 end Sub
 
 section Examples
-
-def tautGram (e : ℕ) (z : Fin e → ℂ) : Matrix (Fin 1) (Fin 1) ℂ :=
-  of fun _ _ => ((1 + ∑ k, ‖z k‖ ^ 2 : ℝ) : ℂ)
-
-theorem contDiff_one_add_normSq (e : ℕ) :
-    ContDiff ℝ ∞ fun z : Fin e → ℂ => 1 + ∑ k, ‖z k‖ ^ 2 :=
-  contDiff_const.add (ContDiff.sum fun k _ => (contDiff_apply ℝ (fun _ => ℂ) k).norm_sq ℂ)
-
-theorem isPosFrame_tautGram (e : ℕ) : IsPosFrame Set.univ (tautGram e) := by
-  refine ⟨isOpen_univ, fun _ _ =>
-    (ofRealCLM.contDiff.comp (contDiff_one_add_normSq e)).contDiffOn, fun z _ => ?_⟩
-  have : tautGram e z = diagonal fun _ => ((1 + ∑ k, ‖z k‖ ^ 2 : ℝ) : ℂ) := by
-    ext a b; rw [Subsingleton.elim a b]; simp [tautGram]
-  rw [this, posDef_diagonal_iff]
-  intro _
-  exact_mod_cast (by positivity : (0 : ℝ) < 1 + ∑ k, ‖z k‖ ^ 2)
-
-theorem curv_tautGram_zero (e : ℕ) (ξ η : Fin e → ℂ) :
-    curv (tautGram e) 0 ξ η = -(∑ k, ξ k * conj (η k)) • (1 : Matrix (Fin 1) (Fin 1) ℂ) := by
-  ext a b
-  rw [curv_line (f := fun z : Fin e → ℂ => 1 + ∑ k, ‖z k‖ ^ 2)
-    ((contDiff_one_add_normSq e).contDiffAt.of_le (by norm_cast)) (by simp)
-    (Eventually.of_forall fun _ => rfl), Subsingleton.elim a b]
-  let φ : (Fin e → ℂ) →L[ℂ] EuclideanSpace ℂ (Fin e) := (EuclideanSpace.equiv (Fin e) ℂ).symm
-  have h : (fun x : Fin e → ℂ => Real.log (1 + ∑ k, ‖x k‖ ^ 2)) =
-      fun x => Real.log (‖φ x‖ ^ 2 + 1) := by
-    funext x; rw [EuclideanSpace.norm_sq_eq, add_comm]; rfl
-  rw [h, leviForm_log_normSq_add_comp φ.contDiff.contDiffAt (by simp), φ.fderiv]
-  simp [φ, PiLp.inner_apply]
-
-def tautPairGram (z : ℂ) : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ :=
-  fromBlocks (of fun _ _ => 1 + z * conj z) (of fun _ _ => z) (of fun _ _ => conj z) 1
 
 end Examples
 

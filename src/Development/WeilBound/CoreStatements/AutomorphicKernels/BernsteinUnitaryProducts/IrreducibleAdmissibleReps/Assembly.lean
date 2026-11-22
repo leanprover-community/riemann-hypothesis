@@ -19,11 +19,6 @@ section Deriv
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {N : ℕ} {X Y Z : Type} [AddCommGroup X] [Module ℂ X] [AddCommGroup Y] [Module ℂ Y] [AddCommGroup Z] [Module ℂ Z]
 
-def jacMap₂ {n h : ℕ} (hn : n + h = N) {ρ : Representation ℂ (GL (Fin N) k) X}
-    {σ : Representation ℂ (GL (Fin N) k) Y} (f : ρ.IntertwiningMap σ) :
-    Jacquet ρ (unipRad k (two (stdSum hn))) →ₗ[ℂ] Jacquet σ (unipRad k (two (stdSum hn))) :=
-  twMap ρ σ (unipRad k (two (stdSum hn))) 1 f.toLinearMap (fun g v => LinearMap.congr_fun (f.isIntertwining' g) v)
-
 end Deriv
 
 section Sub
@@ -69,7 +64,6 @@ theorem isSmooth_sub {ρ : Representation ℂ G X} (hρ : IsSmooth ρ) (S : Subr
   simp only [Set.mem_setOf_eq]
   exact Subtype.ext_iff
 
-
 omit [TopologicalSpace G] in
 theorem eq_bot_or_eq_top_of_equiv_twist {σ : Representation ℂ G D} {τ : Representation ℂ G Z} {χ : G →* ℂˣ}
     (e : σ.Equiv (twist τ χ)) (hτ : τ.IsIrreducible) (I : Submodule ℂ D) (hI : ∀ g, ∀ y ∈ I, σ g y ∈ I) :
@@ -96,7 +90,6 @@ theorem eq_bot_or_eq_top_of_equiv_twist {σ : Representation ℂ G D} {τ : Repr
     apply hinjf
     rw [Submodule.map_top, LinearMap.range_eq_top.2 e.toLinearEquiv.surjective]
     exact congrArg Subrepresentation.toSubmodule hS
-
 
 omit [TopologicalSpace G] in
 theorem range_ne_bot_ne_top (DS : A →ₗ[ℂ] D) (DT : B →ₗ[ℂ] D) (Dp : D →ₗ[ℂ] B) (hinj : Function.Injective DS)

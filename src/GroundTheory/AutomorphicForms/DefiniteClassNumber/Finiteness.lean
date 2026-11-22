@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import GroundTheory.AutomorphicForms.DefiniteClassNumber.IsIntegralVecCoordsOfRatCoordsSingle
+public import GroundTheory.AutomorphicForms.DefiniteClassNumber.AdelicLattice
 
 @[expose] public section
 

@@ -18,13 +18,6 @@ lemma res_of_le_of_le {X : Scheme.{0}} {U Z : X.Opens} (h : Z ≤ U) (h' : U ≤
   ext
   simp [res]
 
-def gw {X Y : Scheme.{0}} (L : LB X) {K : Type} [Fintype K] (ψ : K → (Y ⟶ X)) (ε : K → ℤ) (j j' : K → L.ι) :
-    Γ(Y, LB.wchart L ψ j ⊓ LB.wchart L ψ j')ˣ :=
-  ∏ k, (res (le_inf (inf_le_left.trans (LB.wchart_le L ψ j k)) (inf_le_right.trans (LB.wchart_le L ψ j' k)) :
-      LB.wchart L ψ j ⊓ LB.wchart L ψ j' ≤ ψ k ⁻¹ᵁ (L.U (j k) ⊓ L.U (j' k)))
-    (pullU (ψ k) _ (L.g (j k) (j' k)))) ^ (ε k)
-
-
 lemma eq_top_of_closedPoint_mem {V : Type} [CommRing V] [IsLocalRing V] (U : (Spec (CommRingCat.of V)).Opens)
     (hU : (IsLocalRing.closedPoint V : Spec (CommRingCat.of V)) ∈ U) : U = ⊤ := by
   refine eq_top_iff.2 fun x _ => ?_
@@ -150,7 +143,6 @@ lemma genHasVal_units {X : Scheme.{0}} (L : LB X) {Ix : Type} [Fintype Ix]
       | simp
   · exact (inv_mul_cancel_right _ _).symm
 
-
 set_option maxHeartbeats 1000000 in
 lemma genHasVal_top {X : Scheme.{0}} (L : LB X) {Ix : Type} [Fintype Ix]
     (φ : Ix → (Spec (CommRingCat.of V) ⟶ X)) (ε : Ix → ℤ) (t : LB.Gen (LB.LinComb L (fun k => jK V ≫ φ k) ε)) {n : ℤ}
@@ -188,7 +180,6 @@ lemma genHasVal_top {X : Scheme.{0}} (L : LB X) {Ix : Type} [Fintype Ix]
     erw [← hnat]
     rw [CommRingCat.comp_apply]
     congr 1
-
 
 omit [IsDiscreteValuationRing V] in
 theorem isDominant_jK : IsDominant (jK V) := by

@@ -53,9 +53,6 @@ theorem of_algebraMap (a : F) : of σ (algebraMap F A a) = algebraMap ℂ (CxExt
      rw [Algebra.algebraMap_eq_smul_one, ← TensorProduct.smul_tmul, Algebra.smul_def, mul_one]
      rfl)
 
-theorem of_smul (a : F) (x : A) : of σ (a • x) = σ a • of σ x := by
-  rw [Algebra.smul_def, map_mul, of_algebraMap, ← Algebra.smul_def]
-
 private theorem complex_smul_of_eq (c : ℂ) (a : A) :
     c • of σ a = (letI := σ.toAlgebra; (c ⊗ₜ[F] a : ℂ ⊗[F] A) : CxExt σ A) := by
   letI := σ.toAlgebra
@@ -64,7 +61,6 @@ private theorem complex_smul_of_eq (c : ℂ) (a : A) :
      rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one])
   | (show c • ((1 : ℂ) ⊗ₜ[F] a) = c ⊗ₜ[F] a
      simp [TensorProduct.smul_tmul'])
-
 
 variable {σ} in
 @[elab_as_elim] theorem induction {P : CxExt σ A → Prop} (x : CxExt σ A)
@@ -79,7 +75,6 @@ variable {σ} in
   · intro x y hx hy
     exact add x y hx hy
 
-
 variable {σ} in
 def lift {B : Type} [CommRing B] [Algebra ℂ B] (φ : A →+* B)
     (h : ∀ a, φ (algebraMap F A a) = algebraMap ℂ B (σ a)) : CxExt σ A →ₐ[ℂ] B :=
@@ -88,7 +83,6 @@ def lift {B : Type} [CommRing B] [Algebra ℂ B] (φ : A →+* B)
   haveI : IsScalarTower F ℂ B := .of_algebraMap_eq fun _ => rfl
   Algebra.TensorProduct.lift (Algebra.ofId ℂ B) ({ φ with commutes' := h } : A →ₐ[F] B)
     fun _ _ => Commute.all _ _
-
 
 variable {σ} in
 @[simp] theorem lift_of {B : Type} [CommRing B] [Algebra ℂ B] (φ : A →+* B)
@@ -186,9 +180,6 @@ abbrev FnC : Type := CxExt σ Y.Fn
 
 def cx : Y.Fn →+* Y.FnC σ := CxExt.of σ
 
-theorem cx_smul (a : F) (f : Y.Fn) : Y.cx σ (a • f) = σ a • Y.cx σ f :=
-  CxExt.of_smul σ a f
-
 instance algebraStalk (x : Y.X) : Algebra F (Y.X.presheaf.stalk x) :=
   ((Y.X.presheaf.germ ⊤ x trivial).hom.comp (algX Y.str ⊤)).toAlgebra
 
@@ -234,7 +225,6 @@ def HasVal (y : Y.pts σ) (f : Y.FnC σ) (c : ℂ) : Prop :=
 
 def RegC (y : Y.pts σ) (f : Y.FnC σ) : Prop := ∃ c, HasVal y f c
 
-
 open Classical in
 def val (y : Y.pts σ) (f : Y.FnC σ) : ℂ := if h : RegC y f then h.choose else 0
 
@@ -269,21 +259,6 @@ theorem regC_of_val_ne_zero (h : val y f ≠ 0) : RegC y f := by
 
 theorem hasVal_germIncl (a) : HasVal y (germIncl y a) (germEv y a) := ⟨a, 1, by simp, by simp, by simp⟩
 
-theorem hasVal_algebraMap (c : ℂ) : HasVal y (algebraMap ℂ _ c) c := ⟨algebraMap ℂ _ c, 1, by simp, by simp, by simp⟩
-
-theorem hasVal_one : HasVal y 1 1 := ⟨1, 1, by simp, by simp, by simp⟩
-
-theorem hasVal_zero : HasVal y 0 0 := ⟨0, 1, by simp, by simp, by simp⟩
-
-theorem HasVal.add (h : HasVal y f c) (h' : HasVal y f' c') : HasVal y (f + f') (c + c') := by
-  obtain ⟨a, b, hb, hf, ha⟩ := h
-  obtain ⟨a', b', hb', hf', ha'⟩ := h'
-  refine ⟨a * b' + a' * b, b * b', by rw [map_mul]; exact mul_ne_zero hb hb', ?_, ?_⟩
-  · simp only [map_mul, map_add (f := _)]
-    linear_combination (germIncl y b') * hf + (germIncl y b) * hf'
-  · simp only [map_mul, map_add (f := _)]
-    linear_combination (germEv y b') * ha + (germEv y b) * ha'
-
 theorem HasVal.mul (h : HasVal y f c) (h' : HasVal y f' c') : HasVal y (f * f') (c * c') := by
   obtain ⟨a, b, hb, hf, ha⟩ := h
   obtain ⟨a', b', hb', hf', ha'⟩ := h'
@@ -292,24 +267,6 @@ theorem HasVal.mul (h : HasVal y f c) (h' : HasVal y f' c') : HasVal y (f * f') 
     linear_combination (germIncl y b' * f') * hf + (germIncl y a) * hf'
   · simp only [map_mul]
     linear_combination (germEv y a') * ha + (germEv y b * c) * ha'
-
-theorem HasVal.smul (a : ℂ) (h : HasVal y f c) : HasVal y (a • f) (a * c) := by
-  rw [Algebra.smul_def]
-  exact (hasVal_algebraMap (y := y) a).mul h
-
-theorem HasVal.pow (h : HasVal y f c) (n : ℕ) : HasVal y (f ^ n) (c ^ n) := by
-  induction n with
-  | zero => rw [pow_zero, pow_zero]; exact hasVal_one
-  | succ n ih => rw [pow_succ, pow_succ]; exact ih.mul h
-
-theorem HasVal.sum {ι : Type*} {s : Finset ι} {f : ι → Y.FnC σ} {c : ι → ℂ}
-    (h : ∀ i ∈ s, HasVal y (f i) (c i)) : HasVal y (∑ i ∈ s, f i) (∑ i ∈ s, c i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => rw [Finset.sum_empty, Finset.sum_empty]; exact hasVal_zero
-  | insert i t hi ih =>
-    rw [Finset.sum_insert hi, Finset.sum_insert hi]
-    exact (h i (Finset.mem_insert_self i t)).add (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
 
 theorem HasVal.of_mul {u : Y.FnC σ} {d : ℂ} (hu : HasVal y u d) (hd : d ≠ 0)
     (h : HasVal y (u * f) c) : HasVal y f (c / d) := by

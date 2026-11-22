@@ -28,7 +28,6 @@ abbrev tensCast {E : Type} [Field E] [NumberField E] {F1 F2 : Subfield E} (h : F
 abbrev StdFrame {D : D7} {V : HSp D} {n : ℕ} (hF : D.host.F = maximalRealSubfield D.host.E) (P : RowPsi V n) : Prop :=
   Formalism.IndefR.principalLevelFrame.StdPsi hF P
 
-
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
 structure RealAt (D : D7) (cf : CharFrame D) (nch : NChoice D) (tp : TupTied D cf nch) : Type 1 where
@@ -119,9 +118,6 @@ def EigString (i : D.nd.Loc) : Prop :=
     ∃ s, GlobalTheory.DownLift.HasString X.R j t s ∧ GlobalTheory.DownLift.IsEigV X.R j t h s y
 
 def EigGood (i : D.nd.Loc) : Prop := OnGood X i fun j t y => GlobalTheory.DownLift.GoodVt X.R j t y
-
-theorem used_mu (i : D.nd.Loc) : Used0 D (D.nd.mu i) :=
-  Or.inr ⟨D.nd.w i, (D.nd.mu_w i).trans ((D.what₂.muAt_or _).resolve_left (D.nd.w_tw i)).symm⟩
 
 theorem RealAt.existsUnique_vec {μ} (hμ : Used0 D μ) (j : Fin D.R.m) (f : D.what₂.Mt μ (j.1 + 1)) :
     ∃! y, X.R.extV j (X.tupT μ) y = X.fn hμ j f := by

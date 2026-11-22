@@ -1,7 +1,7 @@
 module
 
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.DiscreteSpectrumResidualClassification
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HoweDualityOfMinguezStatement
+public import Mathlib
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.GermIntegrals.StepSt
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.GermIntegrals.DetNeZeroOfNearOne
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.GermIntegrals.Imports

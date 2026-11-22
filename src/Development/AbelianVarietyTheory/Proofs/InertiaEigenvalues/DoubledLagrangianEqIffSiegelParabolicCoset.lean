@@ -45,9 +45,6 @@ theorem gram_det_unit (W : HSp D) : IsUnit W.gram.det := by
   intro a b hab
   exact sub_eq_zero.1 (key (a - b) (by rw [Matrix.mulVec_sub, hab, sub_self]))
 
-theorem hAdj_eq (W : HSp D) (M : Matrix (Fin W.rank) (Fin W.rank) D.host.E) :
-    hAdj W M = W.gram⁻¹ * Mᴴ * W.gram := rfl
-
 theorem hAdj_mul (W : HSp D) (M N : Matrix (Fin W.rank) (Fin W.rank) D.host.E) :
     hAdj W (M * N) = hAdj W N * hAdj W M := by
   simp only [hAdj_eq, Matrix.conjTranspose_mul, Matrix.mul_assoc]
@@ -66,9 +63,6 @@ def rowD₁ (W : HSp D) (g : Matrix (Fin (W.rank + W.rank)) (Fin (W.rank + W.ran
 def rowD₂ (W : HSp D) (g : Matrix (Fin (W.rank + W.rank)) (Fin (W.rank + W.rank)) D.host.E) :
     Matrix (Fin W.rank) (Fin W.rank) D.host.E :=
   (GlobalTheory.SWLagTerms.blk W g).toBlocks₂₂ - (GlobalTheory.SWLagTerms.blk W g).toBlocks₁₂
-
-theorem frameOf_eq (W : HSp D) (g : Matrix (Fin (W.rank + W.rank)) (Fin (W.rank + W.rank)) D.host.E) :
-    frameOf W g = (hAdj W (rowD₂ W g), hAdj W (rowD₁ W g)) := rfl
 
 theorem blk_mul (W : HSp D) (h g : Matrix (Fin (W.rank + W.rank)) (Fin (W.rank + W.rank)) D.host.E) :
     GlobalTheory.SWLagTerms.blk W (h * g) = GlobalTheory.SWLagTerms.blk W h * GlobalTheory.SWLagTerms.blk W g := by

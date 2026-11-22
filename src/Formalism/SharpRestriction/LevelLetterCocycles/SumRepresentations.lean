@@ -121,20 +121,6 @@ def G1 (i : N.Loc) (r : N.X i → (G H.E N.Om →* GL (Fin R.nV) (N.O i))) : Pro
     (f : N.X i → N.O i) x =
       ((r x g : GL (Fin R.nV) (N.O i)) : Matrix (Fin R.nV) (Fin R.nV) (N.O i)).charpolyRev.coeff k
 
-def G3 (i : N.Loc) (r : N.X i → (G H.E N.Om →* GL (Fin R.nV) (N.O i))) : Prop :=
-  (∃ (K' : Type) (_ : Field K') (_ : Algebra (Kf N i) K') (_ : FiniteDimensional (Kf N i) K'),
-    ∀ x, (∀ W, IsIrrSub (mapRep ((algebraMap (Kf N i) K').comp (algebraMap (N.O i) (Kf N i))) (r x)) W →
-        AbsIrrSub (mapRep ((algebraMap (Kf N i) K').comp (algebraMap (N.O i) (Kf N i))) (r x)) W) ∧
-      ∀ W₁ W₂, IsIrrSub (mapRep ((algebraMap (Kf N i) K').comp (algebraMap (N.O i) (Kf N i))) (r x)) W₁ →
-        IsIrrSub (mapRep ((algebraMap (Kf N i) K').comp (algebraMap (N.O i) (Kf N i))) (r x)) W₂ →
-        W₁ ⊓ W₂ = ⊥ →
-        ¬ IsoSub (mapRep ((algebraMap (Kf N i) K').comp (algebraMap (N.O i) (Kf N i))) (r x)) W₁ W₂) ∧
-  ∀ (x y : N.X i) (g : G H.E N.Om),
-    ((redRep N i (r x) g : GL (Fin R.nV) (IsLocalRing.ResidueField (N.O i))) :
-        Matrix (Fin R.nV) (Fin R.nV) (IsLocalRing.ResidueField (N.O i))).charpoly =
-      ((redRep N i (r y) g : GL (Fin R.nV) (IsLocalRing.ResidueField (N.O i))) :
-        Matrix (Fin R.nV) (Fin R.nV) (IsLocalRing.ResidueField (N.O i))).charpoly
-
 def G4 (i : N.Loc) (r : N.X i → (G H.E N.Om →* GL (Fin R.nV) (N.O i))) : Prop :=
   ∀ x w, w ∉ placesOver H.E (N.l i) → w ∉ N.S i → w ∉ N.Q i → UnramAt (F := H.E) (r x) w
 
@@ -246,7 +232,6 @@ def ConclusionG6 (i : N.Loc) : Prop :=
         Matrix (Fin R.nV) (Fin R.nV) (Kf N i)).mulVec v = algebraMap (N.O i) (Kf N i) (chi1 N i g) • v) →
     x ∈ ZN N A i ∧ ∀ Sig, HasParamX N A i x Sig → IsCuspIso N A Sig
 
-
 open Classical in
 def ConclusionZ (i : N.Loc) : Prop :=
   HG N A i →
@@ -289,9 +274,6 @@ def JacquetShalikaStrongMultOne : Prop :=
       ((ρ' g : GL _ _) : Matrix (Fin a) (Fin a) k).charpoly) →
     ∃ Pm : GL (Fin a) k, ∀ g, ρ' g = Pm⁻¹ * ρ g * Pm)
 
-def TemperedCuspidal : Prop :=
-  ∀ (a : ℕ) (π : A.CG a), 1 ≤ a → A.csd π → A.ralg π → ∀ w, A.tempered (A.locG π w)
-
 def ResidualIrreducibility : Prop :=
   ∀ i, HG N A i → ∀ rb : Formalism.ConjugateSelfDual.G H.E N.Om →* GL (Fin R.r) (IsLocalRing.ResidueField (N.O i)), IsRhoBar N i rb →
     Formalism.CyclotomicNorms.IrredOn (mapRep (A.kFbar i) rb) ⊤ ∧
@@ -316,8 +298,6 @@ def ArchimedeanSignatureMatching (D : D7) : Prop := At.MonodromyInertiaType D.nd
 def adm5 (D : D7) : Prop := At.JacquetShalikaStrongMultOne D.nd D.naut
 
 def adm6 (D : D7) : Prop := At.ResidualIrreducibility D.nd D.naut
-
-def adm7 (D : D7) : Prop := At.TemperedCuspidal D.nd D.naut
 
 def adm8 (D : D7) : Prop := Rows.IsotInternal D.what₂
 

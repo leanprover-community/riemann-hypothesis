@@ -1,8 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.WeightedChainData
-public import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.AmbientLatticeAvoidance
+public import Formalism.SharpRestriction.Divisibility.LocalQuadraticParts
 public import Formalism.LocalToGlobal.Columns.DecorationStabilizerTrivialUnipotent
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.RedPEqZeroOfDiv
@@ -38,11 +37,6 @@ end Cong
 section Red
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {P : HeightOneSpectrum (𝓞 E)}
-
-
-
-
-
 
 end Red
 
@@ -101,8 +95,6 @@ section Levels
 
 variable {D : D7} {u : D.what₂.Word} {μ : D.what₂.Tup} (T : ChainData D u μ)
 
-
-
 variable {T}
 
 end Levels
@@ -110,9 +102,6 @@ end Levels
 section Points
 
 variable {D : D7} {u : D.what₂.Word} {μ : D.what₂.Tup} (T : ChainData D u μ)
-
-abbrev APt (i : ℕ) : Type := AmbientLatticeAvoidance.Pt (R := D.R) T.sel T.xi T.L T.w i
-
 
 variable {T}
 
@@ -134,9 +123,7 @@ variable {D : D7} {u : D.what₂.Word} {μ : D.what₂.Tup} {T : ChainData D u �
   {abelian₂ : HeightOneSpectrum (𝓞 T.X.E) → Submodule (𝓞 T.X.E) (Sp T.X.E (AmbientLatticeAvoidance.rkTop D.R))}
   {dep : HeightOneSpectrum (𝓞 T.X.E) → ℕ}
 
-
 variable {rep : ∀ i, (D.chTw u μ).cls i → APt T i}
-
 
 end Classes
 
@@ -144,9 +131,6 @@ section Kernels
 
 variable {D : D7} {u : D.what₂.Word} {μ : D.what₂.Tup} {T : ChainData D u μ}
   {rep : ∀ i, (D.chTw u μ).cls i → APt T i}
-
-
-
 
 variable {abelian₂ : HeightOneSpectrum (𝓞 T.X.E) → Submodule (𝓞 T.X.E) (Sp T.X.E (AmbientLatticeAvoidance.rkTop D.R))}
   {dep : HeightOneSpectrum (𝓞 T.X.E) → ℕ}

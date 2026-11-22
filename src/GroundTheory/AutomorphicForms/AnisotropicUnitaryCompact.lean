@@ -29,8 +29,6 @@ attribute [local instance] tensorTopology finite_of_isQuadraticExtension isModul
 variable {κ : Type*} [Fintype κ] [DecidableEq κ] (b : Basis κ K E)
 variable (R : Type*) [CommRing R] [Algebra K R] [TopologicalSpace R] [IsTopologicalRing R]
 
-local notation "𝒩" => Fintype.card (ι × κ)
-
 theorem continuous_coords : Continuous (coords b R) :=
   (tensorCoordsHomeomorph R b).continuous
 

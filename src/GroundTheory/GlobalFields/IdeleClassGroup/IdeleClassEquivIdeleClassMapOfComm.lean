@@ -12,8 +12,6 @@ namespace GroundTheory.Global
 open NumberField IntermediateField AdeleBaseChange
 open scoped NumberField.AdeleRing
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 section Naturality

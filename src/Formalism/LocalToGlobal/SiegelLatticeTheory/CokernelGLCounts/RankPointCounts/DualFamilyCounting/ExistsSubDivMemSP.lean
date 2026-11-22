@@ -19,9 +19,6 @@ open Formalism.HermitianLattices.Ext.L3
 
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-local notation "jK" => algebraMap (𝓞 K) K
-
 theorem jK_ι (t : 𝓞 F) : jK (ι t) = algebraMap F K (t : F) := rfl
 
 theorem jK_ι_ne_zero {t : 𝓞 F} (ht : t ≠ 0) : jK (ι t) ≠ 0 := by
@@ -119,8 +116,6 @@ theorem exists_sub_div_mem_SP {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {
     ring
   rw [e]
   exact Subring.mul_mem _ hr h1
-
-theorem star_jK (w : 𝓞 K) : ∃ w' : 𝓞 K, jK w' = star (jK w) := StandardSymmetricSums.star_int w
 
 theorem star_jK_ι (hF : IsFixF K F) (t : 𝓞 F) : star (jK (ι t)) = jK (ι t) :=
   (hF _).2 ⟨(t : F), rfl⟩

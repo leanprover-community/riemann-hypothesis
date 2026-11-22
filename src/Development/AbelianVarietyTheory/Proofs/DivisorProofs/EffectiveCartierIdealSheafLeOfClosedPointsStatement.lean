@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EffectiveCartierIdealSheafLeOfClosedPoints
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NonUnitAt
 
 @[expose] public section

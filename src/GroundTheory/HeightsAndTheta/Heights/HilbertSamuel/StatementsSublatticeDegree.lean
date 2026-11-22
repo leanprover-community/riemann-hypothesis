@@ -22,12 +22,6 @@ def SublatticeDegree.Statement : Prop :=
 
 namespace SublatticeDegree
 
-abbrev b1 : Module.Basis (Fin 1) ℝ (EuclideanSpace ℝ (Fin 1)) := (EuclideanSpace.basisFun (Fin 1) ℝ).toBasis
-
-abbrev lat1 : Submodule ℤ (EuclideanSpace ℝ (Fin 1)) := Submodule.span ℤ (Set.range b1)
-
-abbrev φ1 : lat1 →+ EuclideanSpace ℝ (Fin 1) := lat1.subtype.toAddMonoidHom
-
 end SublatticeDegree
 
 end

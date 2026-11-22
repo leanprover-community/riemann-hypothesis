@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasFlagDepthAtLeastOfFreeEntriesVanish
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsVolData
 
 @[expose] public section
 

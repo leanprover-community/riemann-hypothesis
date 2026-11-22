@@ -58,10 +58,6 @@ theorem isClosed_col (c : HeightOneSpectrum (𝓞 F) → ℕ) :
   · exact (isClosed_valuation_le w _).preimage
       ((continuous_pLoc w).comp (continuous_pFin.comp (continuous_apply 1)))
 
-theorem coe_scalar (a : Ideles F) :
-    ((Matrix.GeneralLinearGroup.scalar (Fin 2) a : GA F 2) : Matrix (Fin 2) (Fin 2) (Ad F)) =
-      Matrix.diagonal fun _ => (a : Ad F) := rfl
-
 theorem continuous_av : Continuous (av (F := F)) :=
   ((continuous_moduleSection (w0 F)).comp continuous_fst).mul
     (continuous_subtype_val.comp continuous_snd)

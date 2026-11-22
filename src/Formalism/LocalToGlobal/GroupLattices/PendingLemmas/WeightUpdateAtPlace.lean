@@ -161,20 +161,6 @@ def FinStab : Prop :=
   ∀ j (c : Lv.comp j) (L : (Fl.Pj j).Tup), (Fl.Pj j).IsLatTup L →
     Finite {γ : (Lv.lev j c).Γ // (Lv.lev j c).smul γ L = L}
 
-def dGOf (h : ∀ j c, (Lv.lev j c).FinClasses) (j : ℕ) : ℕ :=
-  (repOf Lv h j).sup fun La =>
-    padicValNat p (Nat.card {γ : (Lv.lev j La.1).Γ // (Lv.lev j La.1).smul γ La.2 = La.2})
-
-theorem dG_spec (h : ∀ j c, (Lv.lev j c).FinClasses) :
-    ∀ j (c : Lv.comp j) (L : (Fl.Pj j).Tup), (Fl.Pj j).IsLatTup L →
-      padicValNat p (Nat.card {γ : (Lv.lev j c).Γ // (Lv.lev j c).smul γ L = L}) ≤ dGOf Lv h j := by
-  intro j c L hL
-  obtain ⟨L0, ⟨h1, γ0, hγ0⟩, _⟩ := repOf_ex Lv h j c L hL
-  have hc := card_stab_smul (Lv.lev j c) γ0 L0
-  rw [hγ0, hc]
-  exact Finset.le_sup (f := fun La : Lv.comp j × (Fl.Pj j).Tup =>
-    padicValNat p (Nat.card {γ : (Lv.lev j La.1).Γ // (Lv.lev j La.1).smul γ La.2 = La.2})) h1
-
 end Levels
 
 section Unif
@@ -205,22 +191,6 @@ theorem p_ne_zero_of_place (v : Fin G.P.nV) : (p : G.O) ≠ 0 := by
   exact (map_eq_zero_iff _ (IsFractionRing.injective _ _)).mp h2
 
 end Unif
-
-abbrev sysOf {p : ℕ} [Fact p.Prime] (G : GAtP p) (Fl : Fills G) (Lv : Levels Fl) (Ch : Chain Lv)
-    (std : ∀ v, Std p (G.P.n' v) G.P.m Fl.t Fl.mm Fl.c G.P.r (Fl.TT v) (Fl.a v) (Fl.b v) (G.P.lam0 v) (Fl.w v))
-    (hfin : ∀ j c, (Lv.lev j c).FinClasses) (h0 : (p : G.O) ≠ 0) (om : ∀ v, OmBasis p (G.P.n' v)) : Sys p where
-  G := G
-  Fl := Fl
-  Lv := Lv
-  Ch := Ch
-  std := std
-  vp := vpOf G
-  unif := vpOf_irreducible G
-  eO := eOOf G h0
-  eO_spec := eOOf_spec G h0
-  dG := dGOf Lv hfin
-  dG_spec := fun j _ => dG_spec Lv hfin j
-  om := om
 
 theorem update_eq_update_iff {ι : Type} [DecidableEq ι] {β : ι → Type} (u0 : ι) (b : β u0) (A B : ∀ i, β i) :
     Function.update A u0 b = Function.update B u0 b ↔ ∀ u, u ≠ u0 → A u = B u := by

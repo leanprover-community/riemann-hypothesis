@@ -21,7 +21,6 @@ variable {F : Type*} [Field F] {n : ℕ}
 
 section Action
 
-
 variable (F n) in
 abbrev NN (F : Type*) [Field F] (n : ℕ) :=
   (Iwasawa.unipotent F n) × (Iwasawa.unipotent F n)
@@ -85,8 +84,6 @@ section Pull
 variable [TopologicalSpace F] [IsTopologicalRing F]
 
 def sigmaL : (GL (Fin n) F → ℂ) →ₗ[ℂ] (GL (Fin n) F → ℂ) := LinearMap.funLeft ℂ ℂ sigma
-
-theorem sigmaL_apply (f : GL (Fin n) F → ℂ) (x : GL (Fin n) F) : sigmaL f x = f (sigma x) := rfl
 
 theorem sigmaL_sigmaL (f : GL (Fin n) F → ℂ) : sigmaL (sigmaL f) = f := by
   funext x
@@ -689,14 +686,12 @@ theorem sub_sigma_mem_rel (hψ : Continuous ψ₀) (hψ₁ : ψ₀ ≠ 1) {f : G
     supportedIn_le_of_local fun x _ => exists_good_nhds ψ₀ hψ hψ₁ x
   exact key ⟨hf, subset_univ _⟩
 
-
 omit [ValuativeRel F] [IsNonarchimedeanLocalField F] in
 theorem twoSided_mem [IsTopologicalRing F] {f : GL (Fin n) F → ℂ}
     (hf : f ∈ locallyConstantCompactSupport (GL (Fin n) F) ℂ ℂ) (a b : GL (Fin n) F) :
     (fun x => f (a⁻¹ * x * b)) ∈ locallyConstantCompactSupport (GL (Fin n) F) ℂ ℂ := by
   refine ⟨hf.1.comp_continuous (by fun_prop), ?_⟩
   exact hf.2.comp_homeomorph ((Homeomorph.mulLeft a⁻¹).trans (Homeomorph.mulRight b))
-
 
 omit [ValuativeRel F] [IsNonarchimedeanLocalField F] in
 theorem comp_sigma_mem [IsTopologicalRing F] {f : GL (Fin n) F → ℂ}

@@ -113,15 +113,4 @@ theorem exists_unimod_GG : ∃ μ : Measure (Mt k r), IsHaarOn (GG k r) μ ∧ I
   obtain ⟨μ, hμ⟩ := Formalism.FourierDecayAlt.P.unitary_group_haar_exists k r
   exact ⟨μ, haar_unimod_of_biinv isClosedSub_GG hμ⟩
 
-def zStd (k r : ℕ) : Fin (2 * r + k + 1) → ℂ := bvec (wI k r (Fin.last k))
-
-theorem Tz_zStd : Tz k r (zStd k r) = 1 := by
-  have hH : herm (Hpk k r) (zStd k r) (zStd k r) =
-      Hpk k r (wI k r (Fin.last k)) (wI k r (Fin.last k)) := by
-    simp [herm, zStd, bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
-  rw [Tz, hH]
-  simp [Hpk, wI]
-
-def detRep (k r m : ℕ) (h : Mat k r) : ℂ →L[ℂ] ℂ := h.det ^ m • ContinuousLinearMap.id ℂ ℂ
-
 end GlobalTheory.SgInf

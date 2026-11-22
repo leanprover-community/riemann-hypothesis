@@ -190,8 +190,6 @@ def mulL (X : Mat k r) : Mat k r →L[ℝ] Mat k r :=
 def mulR (X : Mat k r) : Mat k r →L[ℝ] Mat k r :=
   LinearMap.toContinuousLinearMap (LinearMap.mulRight ℝ X)
 
-lemma mulL_apply (X g : Mat k r) : mulL X g = X * g := rfl
-
 def vf (b : Bool) (X : Mat k r) : Mat k r →L[ℝ] Mat k r :=
   match b with
   | true => -(mulL X)

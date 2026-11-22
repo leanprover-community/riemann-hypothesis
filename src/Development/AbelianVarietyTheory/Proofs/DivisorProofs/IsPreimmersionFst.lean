@@ -27,7 +27,6 @@ def IsProjMat {X : Scheme.{0}} (t : SAB H X) {R : Type} [CommRing R] (ξ : Sp R 
     ∀ w v, IsCombAtG t (spMap φ ≫ ξ) (bcV t φ e) w v → IsEigG t (φ.comp σ) v →
       Matrix.vecMul w (U.map φ) = ((discr E : ℤ) : S) • w
 
-
 open GlobalTheory.FlatModel.Proj in
 theorem exists_isProjMat {X : Scheme.{0}} {t : SAB H X} {R : Type} [CommRing R] {ξ : Sp R ⟶ X} {g : ℕ}
     {e : Fin g → (Sp (DualNumber R) ⟶ t.G.left)} (he : IsTanBasis t ξ e) (σ : 𝓞 E →+* R) :
@@ -93,15 +92,6 @@ theorem exists_isProjMat {X : Scheme.{0}} {t : SAB H X} {R : Type} [CommRing R] 
     simp [Matrix.vecMul, dotProduct, Finset.sum_apply]
 
 variable {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
-
-def IsFrameCoord (Y : Model Xo c β) {R : Type} [CommRing R] (ξ : Sp R ⟶ Y.X) {g : ℕ}
-    (e : Fin g → (Sp (DualNumber R) ⟶ Y.t.G.left)) (U : Matrix (Fin g) (Fin g) R) {k : Type} [CommRing k]
-    [Algebra c.F k] (φ : R →+* k) (y : FrPt Xo c k) (σ : E →+* ℂ) (M : Matrix (Fin (Dw.mult σ)) (Fin g) k)
-    (C : Matrix (Fin g) (Fin (Dw.mult σ)) k) : Prop :=
-  (∀ i, ∃ w : Sp (DualNumber k) ⟶ Y.oF.t.G.left,
-    w ≫ Y.oF.t.G.hom = spMap (algebraMap k (DualNumber k)) ≫ GlobalTheory.AllWt.ptF y ∧ w ≫ Y.m0.toSABMap.φ = y.u σ i ∧
-      IsCombAtG Y.t (spMap φ ≫ ξ) (bcV Y.t φ e) (M i) (w ≫ Y.m.φ)) ∧
-  C * M = U.map φ ∧ M * C = ((discr E : ℤ) : k) • (1 : Matrix (Fin (Dw.mult σ)) (Fin (Dw.mult σ)) k)
 
 def DetLaw (Z : Comp Xo c) (f : Rul Xo c) (σ₁ σ₂ : E →+* ℂ) : Prop :=
   IsNatural (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) f ∧

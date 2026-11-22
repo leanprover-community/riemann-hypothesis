@@ -19,8 +19,6 @@ attribute [local instance 2000] Rep.hV2
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)) (n : ℕ)
   [NeZero n] (hnS : ∀ v ∉ S, ((n : ℕ) : 𝓞 K.1) ∉ v.asIdeal)
@@ -30,7 +28,6 @@ theorem linearMap_apply_add_apply {R M N P : Type*} [CommRing R] [AddCommGroup M
     [Module R M] [Module R N] [Module R P] (f : M →ₗ[R] N →ₗ[R] P) (a b : M) (c : N) :
     f (a + b) c = f a c + f b c := by
   rw [map_add (f := _), LinearMap.add_apply]
-
 
 set_option maxHeartbeats 1600000 in
 theorem gsRootsToUnitsCompact_comparison_cup (h : gsUnitsCompact S ιs 1)
@@ -59,7 +56,6 @@ theorem gsRootsToUnitsCompact_comparison_cup (h : gsUnitsCompact S ιs 1)
   exact (congrArg (gsRootsToUnitsCompact S ιs n 3).hom (ea.trans (congrArg (fun w =>
     compactCup (gsFinFamily S ιs) (gsZmodPairing S n) (gsZmodPairingᵥ S ιs n) (gsZmodPairing_hμ S ιs n)
       (show 2 + 1 = 3 from rfl) w x) ea'))).trans eb
-
 
 set_option maxHeartbeats 1600000 in
 theorem gsRootsToUnitsCompact_cup_eq (ℓ k : ℕ) (hℓ : ℓ.Prime) (hnk : n = ℓ ^ k)
@@ -116,13 +112,11 @@ theorem prod_ofFinite_eq {M : Type*} [CommMonoid M] (f : S → M) :
   congr
   exact Subsingleton.elim _ _
 
-
 omit [NeZero n] in
 theorem sPresentation_fst (a : ∀ w : S, ((w : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)ˣ) :
     sPresentation S (a, 1) = ∏ w : S, SIdeleClassGroup.mk S (finiteEmbedding (w : HeightOneSpectrum (𝓞 K.1)) (a w)) := by
   rw [sPresentation_apply, toAdd_one, map_zero, toMul_zero, mul_one, placesIdele_apply, map_prod]
   exact prod_ofFinite_eq S _
-
 
 set_option maxHeartbeats 1600000 in
 theorem zmodToQZ_charEquiv_gsUnitsClass

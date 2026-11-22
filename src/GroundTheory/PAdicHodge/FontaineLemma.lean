@@ -17,9 +17,6 @@ namespace ACris
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p] [CharZero K]
 
-local notation "𝒪♭" => PreTilt (normInteger K) p
-local notation "θdR" => IsPerfectoidField.thetaBDeRhamPlusField (K := K) p
-
 theorem iterate_phiPlus_algebraMap (n : ℕ) (x : ACris K p) :
     (phiPlus K p)^[n] (algebraMap (ACris K p) (BCrisPlus K p) x) =
       algebraMap (ACris K p) (BCrisPlus K p) ((phi (K := K) (p := p))^[n] x) := by
@@ -39,7 +36,6 @@ theorem theta_phi_iterate_eq_zero_of_mul_eq {y : BCrisPlus K p} {a : ACris K p} 
   apply Subtype.ext
   rw [ZeroMemClass.coe_zero, ← thetaField_iotaPlus_algebraMap, ← iterate_phiPlus_algebraMap, ← hya,
     ← RingHom.coe_pow, map_mul, map_mul, map_mul, RingHom.coe_pow, hy n, zero_mul]
-
 
 set_option maxHeartbeats 1600000 in
 theorem phiPlus_mem_span_periodT {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1)

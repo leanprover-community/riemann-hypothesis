@@ -23,8 +23,6 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 noncomputable def icEv (z : (Σ k, ι k) → ℂ) : MRing ι →+* ℂ :=
   (eval z).comp (MvPolynomial.map (Int.castRingHom ℂ))
 
-theorem icEv_eq (z : (Σ k, ι k) → ℂ) (f : MRing ι) : evC z f = icEv z f := rfl
-
 def IcGood (P : Ideal (MRing ι)) (Xo : Set ((Σ k, ι k) → ℂ)) (d : K → ℤ) (r : ((Σ k, ι k) → ℂ) → ℝ) : Prop :=
   ∃ f g : MRing ι, IsLineIso P d 0 f g ∧ ∀ z ∈ Xo, ∃ u v : MRing ι, u * f - v * g ∈ P ∧ icEv z u ≠ 0 ∧
     icEv z v ≠ 0 ∧ ‖icEv z v‖ * r z = ‖icEv z u‖

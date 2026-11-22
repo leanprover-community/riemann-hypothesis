@@ -23,17 +23,11 @@ def bf (a b Y : HS L N) : HS L N :=
     simp only [IsHermitian, conjTranspose_smul, conjTranspose_add, conjTranspose_mul, (mat_herm a w).eq, (mat_herm b w).eq,
       (mat_herm Y w).eq, star_trivial, mul_assoc, add_comm]
 
-theorem mat_bf (a b Y : HS L N) (w : InfinitePlace L) :
-    mat (bf a b Y) w = (2 : ℝ)⁻¹ • (mat a w * mat Y w * mat b w + mat b w * mat Y w * mat a w) := rfl
-
 def bl (a b : HS L N) : HS L N →ₗ[ℝ] HS L N where
   toFun := bf a b
   map_add' Y Z := HS_ext fun w => by simp only [mat_bf, mat_add, Matrix.mul_add, Matrix.add_mul]; module
   map_smul' c Y := HS_ext fun w => by
     simp only [mat_bf, mat_smul, Matrix.mul_smul, Matrix.smul_mul, RingHom.id_apply]; module
-
-theorem mat_bl (a b Y : HS L N) (w : InfinitePlace L) :
-    mat (bl a b Y) w = (2 : ℝ)⁻¹ • (mat a w * mat Y w * mat b w + mat b w * mat Y w * mat a w) := rfl
 
 def b3 : HS L N →ₗ[ℝ] HS L N →ₗ[ℝ] HS L N →ₗ[ℝ] HS L N :=
   LinearMap.mk₂ ℝ bl

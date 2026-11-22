@@ -16,11 +16,6 @@ namespace GlobalTheory.TypeSumCtrl
 def allWords {α : Type} {k : ℕ} (E : Fin k → α) (m : ℕ) : List (List α) :=
   Nat.rec [[]] (fun _ T => [] :: T.flatMap fun l => (List.ofFn E).map fun X => X :: l) m
 
-theorem allWords_zero {α : Type} {k : ℕ} (E : Fin k → α) : allWords E 0 = [[]] := rfl
-
-theorem allWords_succ {α : Type} {k : ℕ} (E : Fin k → α) (m : ℕ) :
-    allWords E (m + 1) = [] :: (allWords E m).flatMap fun l => (List.ofFn E).map fun X => X :: l := rfl
-
 theorem mem_allWords {α : Type} {k : ℕ} (E : Fin k → α) :
     ∀ (m : ℕ) (l : List α), l ∈ allWords E m ↔ l.length ≤ m ∧ ∀ X ∈ l, ∃ i, E i = X
   | 0, l => by

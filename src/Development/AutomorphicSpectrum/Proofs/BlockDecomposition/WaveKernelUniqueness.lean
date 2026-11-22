@@ -43,8 +43,6 @@ local instance : SecondCountableTopology (UK n) :=
 
 def emb : UK n →* G n := Unitary.toUnits
 
-theorem emb_val (κ : UK n) : (emb κ).val = κ.1 := rfl
-
 theorem continuous_emb : Continuous (emb : UK n → G n) := by
   rw [Units.continuous_iff]
   refine ⟨continuous_subtype_val, ?_⟩

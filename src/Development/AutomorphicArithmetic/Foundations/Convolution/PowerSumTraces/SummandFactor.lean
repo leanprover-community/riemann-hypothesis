@@ -41,11 +41,6 @@ def HopOloc : Prop :=
     (x : Gw n w), CO J → m J = 1 →
     IsOloc μ w m (Set.indicator {g | ∃ a ∈ J, ∃ b ∈ J, g = a * x * b} 1) (Hop μ w J x)
 
-def OccursIff : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure] (V : Submodule ℂ (LL μ))
-    (hV : IsSummand μ V) (w : Pl K) (σ : SmIrr (Gw n w)),
-    Occurs μ V w σ ↔ ∃ f : σ.V →ₗ[ℂ] V, f ≠ 0 ∧ ∀ g x, f (σ.ρ g x) = Dp.locOn hV w g (f x)
-
 def SummandFactor : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure] (V Z : Submodule ℂ (LL μ))
     (r : ℕ) (w : Fin r → Pl K) [∀ i, MeasurableSpace (Gw n (w i))] [∀ i, BorelSpace (Gw n (w i))]

@@ -25,7 +25,6 @@ namespace CxPts
 
 variable {A B : LB Y} {y : CxPts p σ} {U W : Y.Opens}
 
-
 variable (p σ) in
 def gv (B : LB Y) (i j : B.ι) : CxPts p σ → ℂ := ev p σ (B.U i ⊓ B.U j) (B.g i j).val
 
@@ -54,15 +53,6 @@ theorem gv_self (hB : B.IsLB) {i : B.ι} (hi : y ∈ ptsIn p σ (B.U i)) : gv p 
   rw [ev_res_units_val_eq, ev_one] at e
   · exact e
   all_goals simp [hi]
-
-theorem gv_mul (hB : B.IsLB) {i j l : B.ι} (hi : y ∈ ptsIn p σ (B.U i))
-    (hj : y ∈ ptsIn p σ (B.U j)) (hl : y ∈ ptsIn p σ (B.U l)) :
-    gv p σ B i j y * gv p σ B j l y = gv p σ B i l y := by
-  have e := congrArg (fun u => ev p σ _ (Units.val u) y) (hB.3 i j l)
-  simp only [Units.val_mul, ev_mul] at e
-  rw [ev_res_units_val_eq, ev_res_units_val_eq, ev_res_units_val_eq] at e
-  · exact e
-  all_goals simp [hi, hj, hl]
 
 theorem gv_tens {c c' : (tens A B).ι} (h : y ∈ ptsIn p σ ((tens A B).U c))
     (h' : y ∈ ptsIn p σ ((tens A B).U c')) :
@@ -160,19 +150,10 @@ theorem mem_pow_iff {n : ℤ} {j : PUnit → B.ι} :
     rw [mem_ptsIn] at h ⊢
     exact Set.mem_iInter.2 fun _ => h
 
-theorem gv_pow {n : ℤ} {j j' : PUnit → B.ι} (h : y ∈ ptsIn p σ (B.U (j PUnit.unit)))
-    (h' : y ∈ ptsIn p σ (B.U (j' PUnit.unit))) :
-    gv p σ (LB.LinComb B (fun _ => 𝟙 Y) fun _ => n) j j' y =
-      gv p σ B (j PUnit.unit) (j' PUnit.unit) y ^ n := by
-  rw [gv_linComb (m := fun _ => y) (fun _ => (Category.comp_id _).symm) (mem_pow_iff.2 h)
-    (mem_pow_iff.2 h')]
-  simp
-
 section Ratio
 
 variable {D : ℕ} {U' U'' : Y.Opens} {η : FormsOn p D U} {η' : FormsOn p D U'}
   {η'' : FormsOn p D U''}
-
 
 variable (σ) in
 def rv (hη : IsFrame η) (hη' : IsFrame η') : CxPts p σ → ℂ := ev p σ (U ⊓ U') (hη.ratio hη').val
@@ -180,30 +161,10 @@ def rv (hη : IsFrame η) (hη' : IsFrame η') : CxPts p σ → ℂ := ev p σ (
 theorem rv_ne_zero (hη : IsFrame η) (hη' : IsFrame η') (h : y ∈ ptsIn p σ U)
     (h' : y ∈ ptsIn p σ U') : rv σ hη hη' y ≠ 0 := ev_ne_zero (mem_ptsIn_inf.2 ⟨h, h'⟩) (Units.isUnit _)
 
-theorem rv_mul (hη : IsFrame η) (hη' : IsFrame η') (hη'' : IsFrame η'') (h : y ∈ ptsIn p σ U)
-    (h' : y ∈ ptsIn p σ U') (h'' : y ∈ ptsIn p σ U'') :
-    rv σ hη hη' y * rv σ hη' hη'' y = rv σ hη hη'' y := by
-  have e := congrArg (fun u => ev p σ (U ⊓ U' ⊓ U'') (Units.val u) y)
-    (hη.res_ratio_mul hη' hη'' (V := U ⊓ U' ⊓ U'')
-      (le_inf (inf_le_left.trans inf_le_left) (inf_le_left.trans inf_le_right))
-      (le_inf (inf_le_left.trans inf_le_right) inf_le_right)
-      (le_inf (inf_le_left.trans inf_le_left) inf_le_right))
-  simp only [Units.val_mul, ev_mul] at e
-  rw [ev_res_units_val_eq, ev_res_units_val_eq, ev_res_units_val_eq] at e
-  · exact e
-  all_goals simp [h, h', h'']
-
-theorem gv_canon [SmoothOfRelativeDimension D p] (K : CanonLB p D) (a b : K.bundle.ι) :
-    gv p σ K.bundle a b = rv σ (K.isFrame a) (K.isFrame b) := by
-  funext y
-  show ev p σ _ (K.bundle.g a b).val y = ev p σ _ ((K.isFrame a).ratio (K.isFrame b)).val y
-  rw [K.g_eq_ratio a b]
-
 theorem rv_chart (c c' : AlgChart p σ D) (hy : y ∈ c.e.source) (hy' : y ∈ c'.e.source) :
     rv σ c.isFrame c'.isFrame y = transDet c.e c'.e y := c.ev_ratio c' hy hy'
 
 end Ratio
-
 
 variable (p σ B) in
 def fibSec : Submodule ℂ (B.ι → CxPts p σ → ℂ) where
@@ -216,7 +177,6 @@ def fibSec : Submodule ℂ (B.ι → CxPts p σ → ℂ) where
   smul_mem' c s hs := ⟨fun i j y hi hj => by
     simp only [Pi.smul_apply, hs.1 i j y hi hj, smul_eq_mul, mul_left_comm],
     fun i y h => by simp only [Pi.smul_apply, hs.2 i y h, smul_zero]⟩
-
 
 variable (p σ) in
 def secVal : B.Sec →+ (B.ι → CxPts p σ → ℂ) where
@@ -299,7 +259,6 @@ instance : Module ℂ (SecC p σ B) :=
   letI := σ.toAlgebra
   letI := secModuleBase p B
   (inferInstance : Module ℂ (ℂ ⊗[k] B.Sec))
-
 
 variable (p σ) in
 def of : B.Sec →+ SecC p σ B :=
@@ -489,14 +448,6 @@ theorem ofPairs_φ {hA : A.IsLB} {hB : B.IsLB} {ψ : A.ι → B.ι → CxPts p �
   rw [gv_self hA ha, norm_one, one_pow, Real.log_one, sub_zero] at e
   exact e.symm
 
-def cancel (hA : A.IsLB) (χ : Weight p σ (CechPic.tens A B)) (φ : Weight p σ B) : Weight p σ A :=
-  ofPairs hA φ.isLB (fun a b y => χ.φ (a, b) y - φ.φ b y) fun a a' b b' y ha ha' hb hb' => by
-    have e : y ∈ ptsIn p σ ((CechPic.tens A B).U (a, b)) := mem_ptsIn_inf.2 ⟨ha, hb⟩
-    have e' : y ∈ ptsIn p σ ((CechPic.tens A B).U (a', b')) := mem_ptsIn_inf.2 ⟨ha', hb'⟩
-    rw [χ.trans _ _ y e e', φ.trans b b' y hb hb', gv_tens e e',
-      log_normSq_mul (gv_ne_zero ha ha') (gv_ne_zero hb hb')]
-    ring
-
 def ofIso (hA : A.IsLB) (w : LB.Iso B A) (hw : w.IsGen) : Weight p σ A :=
   ofPairs hA φ.isLB (fun a b y => φ.φ b y + Real.log (‖ev p σ _ (w.s (a, b)).val y‖ ^ 2))
     fun a a' b b' y ha ha' hb hb' => by
@@ -541,11 +492,9 @@ theorem sum_nsq_fs {hB : B.IsLB} {he : ∀ a, e a ∈ fibSec p σ B} {h : NoComm
 
 variable [DecidableEq α]
 
-
 variable (p σ) in
 def combVal (b : α → B.Sec) (M : Matrix α α ℂ) (a : α) : B.ι → CxPts p σ → ℂ :=
   ∑ j, M j a • secVal p σ (b j)
-
 
 omit [DecidableEq α] in
 theorem combVal_eq (b : α → B.Sec) (M : Matrix α α ℂ) (a : α) :
@@ -567,7 +516,6 @@ theorem noCommonZero_combVal {b : α → B.Sec} (hb : ⨆ j, nonzeroLocus (b j) 
     rw [Pi.zero_apply, ← hcon a]
     simp [combVal, Matrix.vecMul, dotProduct, Finset.sum_apply, mul_comm]
   exact hj' (congrFun (Matrix.eq_zero_of_vecMul_eq_zero hM hv) j)
-
 
 variable (p σ) in
 def fsBasis (hB : B.IsLB) (b : α → B.Sec) (hb : ⨆ j, nonzeroLocus (b j) = ⊤) (M : Matrix α α ℂ)

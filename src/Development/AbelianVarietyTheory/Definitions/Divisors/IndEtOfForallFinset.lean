@@ -89,14 +89,11 @@ def Hyp {T : Type 1} [Category.{0} T] (Φ : T ⥤ Spcᵒᵖ) {U : T} {X : Cosimp
     (a : (CosimplicialObject.const T).obj U ⟶ X) : Prop :=
   ∀ k : SimplexCategoryᵒᵖ, QuasiIso ((chains R).map (lev (Φ ⋙ ((evaluation _ PSh).obj k).op) a))
 
-
 variable {R} in
 def onRings (F : Shv R) : CommRingCat.{0} ⥤ ModuleCat.{1} (ULift.{1} R) := Scheme.Spec.rightOp ⋙ F.obj
 
-
 variable {R} in
 def Finitary (F : Shv R) : Prop := PreservesFilteredColimitsOfSize.{0, 0} (onRings F)
-
 
 variable {R} in
 abbrev Sec.pull {F : Shv R} {U V : Scheme.{0}} (j : V ⟶ U) (x : Sec F U) : Sec F V := (F.obj.map j.op).hom x
@@ -112,15 +109,8 @@ def EtFF : MorphismProperty CommRingCat.{0} := fun _ _ g => g.hom.Etale ∧ g.ho
 def IndEt (A O : Type) [CommRing A] [CommRing O] [Algebra A O] : Prop :=
   GlobalTheory.IndefiniteRowSideFullHecke.ProjectiveSpaceOverSpec.IsIndEtale (algebraMap A O)
 
-def IndFEt (A O : Type) [CommRing A] [CommRing O] [Algebra A O] : Prop :=
-  MorphismProperty.ind.{0} (RingHom.toMorphismProperty fun f => f.Etale ∧ f.Finite) (CommRingCat.ofHom (algebraMap A O))
-
 theorem indEt_of_etale (A O : Type) [CommRing A] [CommRing O] [Algebra A O] [Algebra.Etale A O] : IndEt A O :=
   MorphismProperty.le_ind _ _ (RingHom.etale_algebraMap.2 inferInstance)
-
-theorem indFEt_of_finite_etale (A O : Type) [CommRing A] [CommRing O] [Algebra A O] [Algebra.Etale A O] [Module.Finite A O] :
-    IndFEt A O :=
-  MorphismProperty.le_ind _ _ ⟨RingHom.etale_algebraMap.2 inferInstance, RingHom.finite_algebraMap.2 inferInstance⟩
 
 set_option synthInstance.maxHeartbeats 200000 in
 def bc {E : Spc} {S : Scheme.{0}} (p : E ⟶ sch.obj S) : Over S ⥤ Spc where
@@ -143,14 +133,12 @@ def IsStalk {S : Scheme.{0}} (O : Type) [CommRing O] (s : Spec (CommRingCat.of O
   SH O ∧ ∃ (A : Type) (_ : CommRing A) (_ : Algebra A O) (j : Spec (CommRingCat.of A) ⟶ S), Etale j ∧ IndEt A O ∧
     s = Spec.map (CommRingCat.ofHom (algebraMap A O)) ≫ j
 
-
 variable {R} in
 def Gen (F : Shv R) (S : Scheme.{0}) (g : Sec F S) : Prop :=
   ∀ (U : Scheme.{0}) (s : U ⟶ S),
     (∀ (x : Sec F U) (u : U), ∃ (V : Scheme.{0}) (j : V ⟶ U) (v : V) (c : R), Etale j ∧ j v = u ∧
       Sec.pull j x = (ULift.up c : ULift.{1} R) • Sec.pull (j ≫ s) g) ∧
     ∀ c : R, Nonempty U → (ULift.up c : ULift.{1} R) • Sec.pull s g = 0 → c = 0
-
 
 variable {R} in
 def val {P : PSh} {F : Shv R} (s : (free R).obj P ⟶ F) (U : Scheme.{0}) (x : P.obj (op U)) : Sec F U :=
@@ -161,17 +149,14 @@ def cechPt {Y X : Scheme.{0}} (f : Y ⟶ X) (k : ℕ) {U : Scheme.{0}} (x : U �
   (WidePullback.lift (arrows := fun _ : Fin (k + 1) => yoneda.map f) (yoneda.map x) (fun i => yoneda.map (y i))
     (fun i => by rw [← yoneda.map_comp, h i])).app (op U) (𝟙 U)
 
-
 variable {R} in
 def cobd {E : Spc} {F : Shv R} {n : ℕ} (s : (free R).obj (E.obj (op ⦋n⦌)) ⟶ F) : (free R).obj (E.obj (op ⦋n + 1⦌)) ⟶ F :=
   ∑ i : Fin (n + 2), (-1 : ℤ) ^ (i : ℕ) • ((free R).map (SimplicialObject.δ E i) ≫ s)
-
 
 variable {R} in
 def IsCls {E : Spc} {F : Shv R} {n : ℕ} (s : (free R).obj (E.obj (op ⦋n⦌)) ⟶ F) (x : H R E F n) : Prop :=
   ∃ z : Cocycle ((chains R).obj E) (res R F) n, CohomologyClass.mk z = x ∧
     z.1 = Cochain.single (p := -(n : ℤ)) (q := 0) ((chainsXIso R E n).hom ≫ s ≫ resι R F) n
-
 
 variable {R} in
 def Z1 (F : Shv R) (A B : Type) [CommRing A] [CommRing B] [Algebra A B] : AddSubgroup ((onRings F).obj (CommRingCat.of (B ⊗[A] B))) :=

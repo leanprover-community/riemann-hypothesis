@@ -111,19 +111,6 @@ abbrev FiniteRestrictedGL (K : Type*) [Field K] [NumberField K] (n : ℕ) : Type
   Πʳ v : HeightOneSpectrum (𝓞 K),
     [GL (Fin n) (v.adicCompletion K), GLnLocal.integralGL (v.adicCompletion K) n]
 
-theorem finiteAdele_add_apply (x y : FiniteAdeleRing (𝓞 K) K) (v : HeightOneSpectrum (𝓞 K)) :
-    (x + y) v = x v + y v :=
-  rfl
-
-theorem finiteAdele_one_apply (v : HeightOneSpectrum (𝓞 K)) :
-    (1 : FiniteAdeleRing (𝓞 K) K) v = 1 :=
-  rfl
-
-theorem finiteAdele_zero_apply (v : HeightOneSpectrum (𝓞 K)) :
-    (0 : FiniteAdeleRing (𝓞 K) K) v = 0 :=
-  rfl
-
-
 open Classical in
 def finiteAdeleSingleAdd (v : HeightOneSpectrum (𝓞 K)) (c : v.adicCompletion K) :
     FiniteAdeleRing (𝓞 K) K :=
@@ -134,7 +121,6 @@ theorem finiteAdeleSingleAdd_apply (v w : HeightOneSpectrum (𝓞 K)) (c : v.adi
     finiteAdeleSingleAdd v c w = Pi.single (M := fun u : HeightOneSpectrum (𝓞 K) =>
       u.adicCompletion K) v c w :=
   rfl
-
 
 open Classical in
 def localEmbedding (v : HeightOneSpectrum (𝓞 K)) : GL (Fin n) (v.adicCompletion K) →* FiniteAdelicGL K n where
@@ -148,7 +134,6 @@ theorem finiteRestrictedEquiv_symm_apply (y : FiniteRestrictedGL K n) (w : Heigh
     ((finiteRestrictedEquiv K n).symm y : FiniteAdelicGL K n) a b w =
       (y w : GL (Fin n) (w.adicCompletion K)) a b := by
   rw [← finiteRestrictedEquiv_apply, ContinuousMulEquiv.apply_symm_apply]
-
 
 open Classical in
 theorem localEmbedding_transvectionGL (v : HeightOneSpectrum (𝓞 K))
@@ -201,7 +186,6 @@ theorem det_finiteRestrictedEquiv_apply (g : FiniteAdelicGL K n) (v : HeightOneS
   change _ = evalFinite v _
   rw [RingHom.map_det]
   rfl
-
 
 open Classical in
 def truncate (S : Finset (HeightOneSpectrum (𝓞 K))) (y : FiniteRestrictedGL K n) :

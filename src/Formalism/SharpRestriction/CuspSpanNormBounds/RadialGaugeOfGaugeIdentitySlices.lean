@@ -1,11 +1,9 @@
 module
 
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyBlockLiftEstimate
 public import Formalism.SharpRestriction.CuspSpanNormBounds.OscillatoryIntegralBounds
 public import Formalism.HermitianCurvature.StatementWd
 public import Formalism.SharpRestriction.CuspSpanNormBounds.PExtra
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEstimateTheorem
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LeSCSCl
 public import Formalism.SharpRestriction.ParConsts
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.WRWeyl
@@ -30,7 +28,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TransferProd
 public import Formalism.HermitianCurvature.StatementB
 public import Formalism.RealPlaceAnalysis.FinalF
 public import Formalism.FormalDegreeBessel.FinalG
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PSDKOnOfPSDK
 public import Formalism.HermitianCurvature.StatementTC
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RecursionWithDensities
 
@@ -665,23 +662,6 @@ namespace Formalism.MainNotions.BridgeLemma₅
 open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt.TA Formalism.MainNotions.InterlacingSignCuts
 
 attribute [local instance] Classical.propDecidable
-
-def ThmAHyp (D : D7) (C : ℝ) (Kst : ℕ) (δ : D.host.E) (T T' : ℝ) (x : D.what₂.Tau → LocalDataRealPlace D) (L : LatticeDataWithDual D) (Kd : KernelData D)
-    (B : D.what₂.Tau → LocBessel D.R.k D.R.rS)
-    (f : ∀ v, Matrix (Fin (2 * D.R.rS + D.R.k + 1)) (Fin (2 * D.R.rS + D.R.k + 1)) ℂ → ((B v).Wq →L[ℂ] (B v).Wp))
-    (μsec : D.what₂.Tau → ℂ → Matrix (Fin (D.R.k + 1)) (Fin (D.R.k + 1)) ℂ) : Prop :=
-  4 ≤ Kst ∧ 1 ≤ D.host.v ∧ PsiAx D δ ∧ LatAx D δ L ∧ FrameAx D δ L B ∧ ArithAxF D L Kd ∧
-    (∀ v, LocMatch D T T' (x v) (B v) ∧ IsKFinCoefH (B v).σ (f v) ∧
-      IsSection D.R.k D.R.rS (B v).z (B v).z' (μsec v)) ∧
-    (∀ v, InterlaceS (k_le_nS D) (x v).u (x v).lam ∧ InterlaceS (k_le_nS D) (x v).u' (x v).lam) ∧
-    (∀ v, (x v).u ≠ (x v).u') ∧
-    (∀ v, GapAtLeast (epsSH D.R) (x v).lam
-      (C * (D.R.m : ℝ) ^ ((9 : ℝ) / 2) * (Nlet D Kst * (D.R.r : ℝ) ^ 2 + (D.R.r : ℝ) ^ 3))) ∧
-    (∀ v, IsCutS (x v).u (x v).u' (Set.Icc (x v).a (x v).b)) ∧
-    (∀ v, (x v).a ≤ (x v).a1 ∧ (x v).a1 ≤ (x v).b1 ∧ (x v).b1 ≤ (x v).b ∧
-      Nlet D Kst ^ 3 / 2 ≤ (x v).b1 - (x v).a1) ∧
-    (∀ v, C * ((D.R.k : ℝ) * Nlet D Kst * ((D.R.rS : ℝ) + 1) ^ 2 +
-        Nlet D Kst ^ 2 * ((D.R.rS : ℝ) + 1) ^ 2 + Nlet D Kst ^ 3) ≤ (x v).b - (x v).a)
 
 end Formalism.MainNotions.BridgeLemma₅
 

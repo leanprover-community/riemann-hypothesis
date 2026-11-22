@@ -79,7 +79,6 @@ theorem isField_away : IsField (Localization.Away (p : R)) :=
 
 namespace BdRPlus
 
-
 omit [IsDomain R] [ValuationRing R] [CharZero R] in
 def xi (ϖ : PFlat p R) : BdRPlus p R := algebraMap (Ainf p R) _ (Ainf.xi ϖ)
 
@@ -136,7 +135,6 @@ theorem ker_theta_eq_map : RingHom.ker (theta p R) =
 instance isAdicComplete_ker_theta : IsAdicComplete (RingHom.ker (theta p R)) (BdRPlus p R) := by
   rw [ker_theta_eq_map]
   exact AdicCompletion.isAdicComplete_self _ AinfInv.kerTheta_fg
-
 
 omit [CharZero R] in
 theorem theta_surjective : Function.Surjective (theta p R) := fun y =>
@@ -213,14 +211,6 @@ theorem maximalIdeal_eq : IsLocalRing.maximalIdeal (BdRPlus p R) = RingHom.ker (
 
 theorem irreducible_iff (π : BdRPlus p R) : Irreducible π ↔ RingHom.ker (theta p R) = span {π} := by
   rw [IsDiscreteValuationRing.irreducible_iff_uniformizer, maximalIdeal_eq]
-
-
-theorem algebraMap_injective : Function.Injective (algebraMap (AinfInv p R) (BdRPlus p R)) := by
-  obtain ⟨ϖ⟩ : Nonempty (PFlat p R) := inferInstance
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro x hx
-  refine AinfInv.eq_zero_of_forall_mem_kerTheta_pow ϖ fun n => ?_
-  rw [← Ideal.Quotient.eq_zero_iff_mem, ← eval_algebraMap, hx, map_zero]
 
 theorem ker_theta_eq_span_teich_sub_one {ε : tateModule p R} (hε : IsPrimitive ε) :
     RingHom.ker (theta p R) = span {algebraMap (Ainf p R) (BdRPlus p R) (Ainf.teich p ε.1 - 1)} := by

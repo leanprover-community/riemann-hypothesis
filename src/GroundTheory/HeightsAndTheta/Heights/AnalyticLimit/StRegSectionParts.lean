@@ -5,8 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StRegSection
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Objects
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.ConvergenceRate
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ProjectiveLinePartitionContinuousCoe
-public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Telescoping
 
 @[expose] public section
 

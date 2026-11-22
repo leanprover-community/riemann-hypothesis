@@ -67,51 +67,9 @@ end Integral
 
 section Bounded
 
-def boundedSeries (F : Type*) [NormedField F] [IsUltrametricDist F] : Subring F⟦X⟧ where
-  carrier := {f | ∃ B : ℝ, ∀ n, ‖coeff n f‖ ≤ B}
-  mul_mem' := by
-    rintro f g ⟨A, hA⟩ ⟨B, hB⟩
-    have hA0 : 0 ≤ A := (norm_nonneg _).trans (hA 0)
-    have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
-    refine ⟨A * B, fun n => ?_⟩
-    rw [coeff_mul]
-    refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (mul_nonneg hA0 hB0)
-      fun p _ => ?_
-    rw [norm_mul]
-    exact mul_le_mul (hA _) (hB _) (norm_nonneg _) hA0
-  one_mem' := ⟨1, fun n => by rw [coeff_one]; split_ifs <;> simp⟩
-  add_mem' := by
-    rintro f g ⟨A, hA⟩ ⟨B, hB⟩
-    refine ⟨A + B, fun n => ?_⟩
-    rw [map_add (f := _)]
-    exact (norm_add_le _ _).trans (add_le_add (hA n) (hB n))
-  zero_mem' := ⟨0, fun n => by simp⟩
-  neg_mem' := by
-    rintro f ⟨A, hA⟩
-    exact ⟨A, fun n => by simpa using hA n⟩
-
 variable {F : Type*} [NormedField F] [IsUltrametricDist F]
 
-theorem mem_boundedSeries {f : F⟦X⟧} :
-    f ∈ boundedSeries F ↔ ∃ B : ℝ, ∀ n, ‖coeff n f‖ ≤ B := by exact Iff.rfl
-
-theorem summable_norm_boundedSeries (f : boundedSeries F) {π : F} (hπ : ‖π‖ < 1) :
-    Summable fun n => ‖coeff n (f : F⟦X⟧) * π ^ n‖ := by
-  obtain ⟨B, hB⟩ := mem_boundedSeries.1 f.2
-  exact summable_norm_of_bounded hB hπ
-
 variable [CompleteSpace F]
-
-noncomputable def evalBounded (π : F) (hπ : ‖π‖ < 1) : boundedSeries F →+* F where
-  toFun f := ∑' n, coeff n (f : F⟦X⟧) * π ^ n
-  map_one' := by simpa only [map_one, OneMemClass.coe_one] using tsum_coeff_C (1 : F) π
-  map_mul' f g := tsum_coeff_mul (f : F⟦X⟧) g π (summable_norm_boundedSeries f hπ)
-    (summable_norm_boundedSeries g hπ)
-  map_zero' := by simp
-  map_add' f g := by
-    rw [← (summable_norm_boundedSeries f hπ).of_norm.tsum_add
-      (summable_norm_boundedSeries g hπ).of_norm]
-    simp only [Subring.coe_add, map_add (f := _), add_mul]
 
 variable (π : F) (hπ : ‖π‖ < 1)
 

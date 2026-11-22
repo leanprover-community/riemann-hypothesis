@@ -66,7 +66,6 @@ abbrev withPsi (D : DegPre R) (psi : ∀ χ : D.X, LB.Gen (LB.LinComb D.P.L (K :
 
 namespace Cmp
 
-
 omit [IsDomain R] in
 theorem spMap_ringHom_id : spMap (RingHom.id R) = 𝟙 _ := by
   simp [spMap]
@@ -81,64 +80,13 @@ theorem grpPullback_id {S : Scheme.{0}} (H : Over S) [GrpObj H] {f : S ⟶ S} (h
   rw [e₁, e₂, ← toBase_mul_of_isMonHom (𝟙 H) hq]
   rfl
 
-theorem cpMap_id {S : Scheme.{0}} {H : Over S} [GrpObj H] [IsCommMonObj H] (P : CP H) {f : S ⟶ S} (hf : f = 𝟙 S)
-    (hw : 𝟙 H.left ≫ H.hom = H.hom ≫ f) : IsCPMap P P f (𝟙 H.left) hw (idIso P.L.L) := by
-  subst hf
-  exact IsCPMap.id P
-
 theorem mono_fstG (I : Ideal R) (e : ℕ) (G : Over (Spec (CommRingCat.of R))) : Mono (fstG I e G).left := by
   have hs : Function.Surjective (Ideal.Quotient.mk (I ^ (e + 1))) := Ideal.Quotient.mk_surjective
   have : Epi (CommRingCat.ofHom (Ideal.Quotient.mk (I ^ (e + 1)))) := ConcreteCategory.epi_of_surjective _ hs
   have : Mono (thick R I e) := Scheme.Spec.map_mono (CommRingCat.ofHom (Ideal.Quotient.mk (I ^ (e + 1)))).op
   exact (inferInstance : Mono (pullback.fst G.hom (thick R I e)))
 
-def refl (U : PreU I D A G) : Cmp (RingHom.id R) U U (𝟙 G.left) where
-  pb := grpPullback_id G spMap_ringHom_id
-  wL := idIso U.P.L.L
-  wL_map := cpMap_id U.P spMap_ringHom_id _
-  β := 𝟙 _
-  pbB := grpPullback_id D.P.A spMap_ringHom_id
-  v := idIso D.P.L
-  v_gen := idIso_isGen D.P.isLB
-  xe := AddEquiv.refl _
-  c_pr x := by rw [spMap_ringHom_id]; exact (Category.comp_id _).trans (Category.id_comp _).symm
-  lev e Z x' x hx := by
-    have := mono_fstG I e G
-    rw [Category.comp_id, cancel_mono] at hx
-    subst hx
-    refine ⟨by rw [Category.comp_id], fun z J J' hJ hJ' => ⟨fun χ => ?_, fun k k' hk hk' => ?_⟩⟩
-    · refine (val_change ((U.gt e).t_gen χ) x hJ hJ').trans ((mul_comm _ _).trans (congrArg _ ?_))
-      refine Finset.prod_congr rfl fun k _ => congrArg (· ^ _) ?_
-      rw [Category.comp_id, gw_idIso _ _ _ (hJ _) (hJ' _)]
-    · rw [gw_idIso _ _ _ (hJ _) (hJ' _), gw_idIso U.P.L.L (x ≫ (fstG I e G).left) z hk hk']
-      have h := (isGen_iff (U.w e)).1 (U.w_gen e) Z x z (J (x ≫ (U.gt e).pG.left)) (J' (x ≫ (U.gt e).pG.left))
-        (fun _ => k) (fun _ => k') (hJ (x ≫ (U.gt e).pG.left)) (hJ' (x ≫ (U.gt e).pG.left))
-        (mem_pull.2 hk) (mem_pull.2 hk')
-      have g := gm_pull_g U.P.L.L (fstG I e G).left x z (fun _ => k) (fun _ => k') (mem_pull.2 hk) (mem_pull.2 hk')
-      rw [h, g]
-      exact (congrArg (· * _) (inv_mul_cancel_right _ _).symm).trans (mul_right_comm _ _ _)
-
 variable {φ : R →+* V} {U : PreU I D A G} {U' : PreU I' D' A' G'} {F : G'.left ⟶ G.left}
-
-theorem pow_le (C : Cmp φ U U' F) (e : ℕ) : I ^ (e + 1) ≤ (I' ^ (e + 1)).comap φ := by
-  rw [← Ideal.map_le_iff_le_comap, Ideal.map_pow]
-  exact Ideal.pow_right_mono C.map_le _
-
-def baseMap (C : Cmp φ U U' F) (e : ℕ) :
-    Spec (CommRingCat.of (V ⧸ I' ^ (e + 1))) ⟶ Spec (CommRingCat.of (R ⧸ I ^ (e + 1))) :=
-  spMap (Ideal.quotientMap (I' ^ (e + 1)) φ (C.pow_le e))
-
-theorem baseMap_thick (C : Cmp φ U U' F) (e : ℕ) : C.baseMap e ≫ thick R I e = thick V I' e ≫ spMap φ := by
-  simp only [baseMap, thick, spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp, Ideal.quotientMap_comp_mk]
-
-def levMap (C : Cmp φ U U' F) (e : ℕ) : (thickObj V I' e G').left ⟶ (thickObj R I e G).left :=
-  pullback.lift ((fstG I' e G').left ≫ F) (pullback.snd G'.hom (thick V I' e) ≫ C.baseMap e) (by
-    simp only [Category.assoc]
-    rw [C.pb.1.w, C.baseMap_thick]
-    exact pullback.condition_assoc (f := G'.hom) (g := thick V I' e) _)
-
-theorem levMap_fst (C : Cmp φ U U' F) (e : ℕ) : C.levMap e ≫ (fstG I e G).left = (fstG I' e G').left ≫ F :=
-  pullback.lift_fst _ _ _
 
 end Cmp
 

@@ -209,84 +209,6 @@ theorem mem_of_forall_locP {M : Submodule (𝓞 E) S.V} {x : S.V}
   obtain ⟨s, hs, hsx⟩ := h ⟨m, hm.isPrime, hne⟩
   exact hs (hIm (by simpa [I] using hsx))
 
-theorem coe_smul_eq (c : 𝓞 E) (v : S.V) : ((c : E)) • v = c • v := algebraMap_smul E c v
-
-theorem xlam_le (Λ : Submodule (𝓞 E) S.V) (g : ℕ) {T T' : E} (F : LFlag S r T) (F' : LFlag S r T')
-    (hF : IsFixedConv Λ g F) (hF' : IsFixedConv Λ g F') (hadm : IsAdmissible Λ g F F') :
-    XLam Λ F ≤ Ideal.span {(g : 𝓞 E)} • Λ ⊔ XLam Λ F' := by
-  intro x hx
-  refine mem_of_forall_locP (fun P => ?_)
-  haveI := P.isPrime
-  by_cases hgP : (g : 𝓞 E) ∈ P.asIdeal
-  · obtain ⟨ξ, hlow, hdiag, hmod⟩ := hadm
-    obtain ⟨c, -, hc1, hloc⟩ := hF.1 P
-    obtain ⟨c', -, hc1', hloc'⟩ := hF'.1 P
-    have hc : c = fun _ => 1 := funext (hc1 hgP)
-    have hc' : c' = fun _ => 1 := funext (hc1' hgP)
-    subst hc hc'
-    simp only [one_smul] at hloc hloc'
-    have he' : ∀ b, F'.fl.e b ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal (Ideal.span {(g : 𝓞 E)} • Λ ⊔ XLam Λ F') := by
-      intro b
-      have h1 : F'.fl.e b ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal (XLam Λ F') := by
-        rw [hloc']
-        exact mem_localization_of_mem' (Submodule.subset_span ⟨b, rfl⟩)
-      exact localization_mono le_sup_right h1
-    have hmod' : ∀ b, frame F' b - frameAct (frame F) ξ b ∈
-        Formalism.HermitianLatticesTheory.localization₂ P.asIdeal (Ideal.span {(g : 𝓞 E)} • Λ ⊔ XLam Λ F') := fun b =>
-      localization_mono le_sup_left (hmod b P hgP)
-    have hfr : ∀ a : Fin r, frame F (Fin.castSucc a) = F.fl.e a := fun a => by
-      simp [frame, FlagG.fvec]
-    have hfr' : ∀ a : Fin r, frame F' (Fin.castSucc a) = F'.fl.e a := fun a => by
-      simp [frame, FlagG.fvec]
-    have he : ∀ n : ℕ, ∀ a : Fin r, a.val < n →
-        F.fl.e a ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal (Ideal.span {(g : 𝓞 E)} • Λ ⊔ XLam Λ F') := by
-      intro n
-      induction n with
-      | zero => intro a ha; omega
-      | succ n ih =>
-        intro a ha
-        have hsum : frameAct (frame F) ξ (Fin.castSucc a) - frame F (Fin.castSucc a) ∈
-            Formalism.HermitianLatticesTheory.localization₂ P.asIdeal (Ideal.span {(g : 𝓞 E)} • Λ ⊔ XLam Λ F') := by
-          have heq : frameAct (frame F) ξ (Fin.castSucc a) - frame F (Fin.castSucc a) =
-              ∑ i, (((ξ i (Fin.castSucc a) : 𝓞 E) : E) - if i = Fin.castSucc a then 1 else 0) • frame F i := by
-            simp [frameAct, sub_smul, Finset.sum_sub_distrib]
-          rw [heq]
-          refine Submodule.sum_mem _ (fun i _ => ?_)
-          rcases lt_trichotomy i (Fin.castSucc a) with hi | hi | hi
-          · rw [if_neg hi.ne, sub_zero]
-            have hir : i.val < r := lt_trans hi a.castSucc_lt_last
-            have hi' : Fin.castSucc (⟨i.val, hir⟩ : Fin r) = i := Fin.ext rfl
-            rw [← hi', hfr, coe_smul_eq]
-            refine Submodule.smul_mem _ _ (ih _ ?_)
-            have : i.val < a.val := hi
-            simp only
-            omega
-          · subst hi
-            rw [if_pos rfl, hdiag]
-            simp
-          · rw [hlow _ _ hi, if_neg hi.ne']
-            simp
-        have hb := hmod' (Fin.castSucc a)
-        have hrw : F.fl.e a = F'.fl.e a - (frame F' (Fin.castSucc a) - frameAct (frame F) ξ (Fin.castSucc a)) -
-            (frameAct (frame F) ξ (Fin.castSucc a) - frame F (Fin.castSucc a)) := by
-          rw [hfr, hfr']
-          abel
-        rw [hrw]
-        exact sub_mem (sub_mem (he' a) hb) hsum
-    have hx' : x ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal (Submodule.span (𝓞 E) (Set.range F.fl.e)) := by
-      rw [← hloc]
-      exact mem_localization_of_mem' hx
-    obtain ⟨s, hs, hsx⟩ := hx'
-    have hspan : Submodule.span (𝓞 E) (Set.range F.fl.e) ≤
-        Formalism.HermitianLatticesTheory.localization₂ P.asIdeal (Ideal.span {(g : 𝓞 E)} • Λ ⊔ XLam Λ F') :=
-      Submodule.span_le.2 (by rintro _ ⟨a, rfl⟩; exact he (a.val + 1) a (by omega))
-    obtain ⟨t, ht, htx⟩ := hspan hsx
-    refine ⟨t * s, P.asIdeal.primeCompl.mul_mem ht hs, ?_⟩
-    rw [mul_smul]
-    exact htx
-  · refine ⟨(g : 𝓞 E), hgP, ?_⟩
-    exact Submodule.mem_sup_left (Submodule.smul_mem_smul (Ideal.mem_span_singleton_self _) hx.1)
-
 end Helpers
 
 section Sig
@@ -385,11 +307,6 @@ section D7
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef Formalism.L2.SG.Corank
-
-def IotaLift (D : D7) (u u' : D.what₂.Word) : Prop :=
-  ∀ (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (Λ : Submodule (𝓞 D.host.E) (VS D).V),
-    IsRowLat D F0 Λ → ∀ x : Carrier (PD D Λ (lf D F0) u'), ∀ x' ∈ Lrep Λ x.1,
-      ∃ l ∈ Lrep Λ (lf D F0), l - x' ∈ NgX Λ (gS D) (lf D F0) x.1
 
 def PosW (D : D7) : Prop :=
   ∀ T' : ℕ, 0 < T' → ∀ F' : FlagG (VS D) D.R.rS (T' : D.host.E), ∀ v ∈ orth (VS D) F'.Xplus, v ∉ F'.X →

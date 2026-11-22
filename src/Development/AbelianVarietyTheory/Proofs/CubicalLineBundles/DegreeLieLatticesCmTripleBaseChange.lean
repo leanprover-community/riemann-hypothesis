@@ -46,8 +46,6 @@ variable {P : Out.PolAV (Sp (𝓞 K))} {P' : Out.PolAV (Sp (𝓞 K'))} {ξ : P'.
   {fib : IsPolFibre (algebraMap (𝓞 K') K') P' (withDim Q F.P₀.g hd) φ'} {v' : Fin F.P₀.g → (epsR K' ⟶ Q.A)}
   {basis : IsLieBasis v'} {ψ : Q.A.left ⟶ F.P₀.A.left}
 
-local notation "F₁" => (GenFib.mk (withDim Q (Out.PolAV.g (GenFib.P₀ F)) hd) φ' fib v' basis : GenFib P')
-
 theorem isCoord_over (hξ : IsGrpPullback P'.A P.A (spMap (RingOfIntegers.mapRingHom j)) ξ)
     (hψ : IsGrpPullback Q.A F.P₀.A (spMap j) ψ) (w : ψ ≫ F.φ = φ' ≫ ξ) (hv : ∀ i, IsVecOver j ψ (F.v i) (v' i))
     {u : epsR (𝓞 K) ⟶ P.A} {c : Fin F.P₀.g → K} (hc : F.IsCoord u c) {u' : epsR (𝓞 K') ⟶ P'.A}

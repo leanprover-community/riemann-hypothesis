@@ -98,9 +98,6 @@ theorem la_img {N N' : ℕ} (γ : Matrix (Fin N) (Fin N) D.host.E) (γ' : Matrix
     simp only [star_star, ← Matrix.mul_assoc, h2', Matrix.one_mul]
     rw [Matrix.mul_assoc, h2, Matrix.mul_one]
 
-theorem Hf_eq' (T : TaylorLogMetric.Tor D) {N N' : ℕ} (z w : TaylorLogMetric.VC D N N') :
-    TaylorLogMetric.Hf D T z w = Ker.formV (TaylorLogMetric.area T.abelian₂) D.what₂.Tau N N' z w := rfl
-
 theorem pull_eq {N N' : ℕ} (γ : Matrix (Fin N) (Fin N) D.host.E) (γ' : Matrix (Fin N') (Fin N') D.host.E)
     (h1 h2 h1' h2') (F : TaylorLogMetric.VC D N N' → ℂ) :
     TaylorLogMetric.pull D (TaylorLogMetric.tor0 D cc δ) γ γ' F = pullInv (phiL γ γ' h1 h2 h1' h2') F := rfl

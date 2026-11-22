@@ -5,7 +5,7 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.The
 public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.PlaneFormNondegenerate
 public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.FiniteDimensionalNablaSq
 public import Mathlib
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.PageThm
+public import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.OrderNeTop
 
 @[expose] public section

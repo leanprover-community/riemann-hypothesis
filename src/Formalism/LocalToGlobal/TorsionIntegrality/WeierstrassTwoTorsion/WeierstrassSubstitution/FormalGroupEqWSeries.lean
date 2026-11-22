@@ -68,9 +68,6 @@ end Univ
 
 namespace Fgl1
 
-local notation "L" i => MvPowerSeries.coeff (Finsupp.single i 1)
-local notation "cc" => MvPowerSeries.constantCoeff
-
 section Tools
 
 variable {R : Type u} {S : Type v} [CommRing R] [CommRing S]
@@ -97,9 +94,6 @@ theorem L_mul (φ ψ : MvPowerSeries (Fin 2) R) (i : Fin 2) :
   rw [MvPowerSeries.coeff_mul, Finsupp.antidiagonal_single]
   simp [Finset.Nat.antidiagonal_succ]
   try ring
-
-theorem L_C (a : R) (i : Fin 2) : (L i) (MvPowerSeries.C a : MvPowerSeries (Fin 2) R) = 0 := by
-  simp [MvPowerSeries.coeff_C]
 
 theorem L_X (i j : Fin 2) :
     (L i) (MvPowerSeries.X j : MvPowerSeries (Fin 2) R) = if i = j then 1 else 0 := by
@@ -160,7 +154,6 @@ theorem sub_cancel {f : MvPowerSeries (Fin 2) R}
     fin_cases i <;> simp [mk]
   rw [he, hall]
   simp
-
 
 open Formalism.ELL.WeierstrassChordSeries in
 theorem vieta' {A : Type*} [CommRing A] {a1 a2 a3 a4 a6 l n z1 z2 z3 : A}

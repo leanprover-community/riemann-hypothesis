@@ -10,7 +10,6 @@ noncomputable section
 namespace GlobalTheory.LeastExponentCompare
 open NumberField NumberField.IsCMField TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.BalancedHermitianSpace
 
-
 set_option autoImplicit false in
 open NumberField NumberField.IsCMField TensorProduct in
 theorem _root_.GlobalTheory.LeastExponentCompare.isCMField_of_conj (E : Type) [Field E] [NumberField E] (cj : E → E)
@@ -65,7 +64,6 @@ theorem _root_.GlobalTheory.LeastExponentCompare.isCMField_of_conj (E : Type) [F
   haveI : Algebra.IsQuadraticExtension (maximalRealSubfield E) E := ⟨hfin⟩
   exact ⟨⟩
 
-
 set_option autoImplicit false in
 open NumberField NumberField.IsCMField TensorProduct in
 theorem _root_.GlobalTheory.LeastExponentCompare.conj_iff (E : Type) [Field E] [NumberField E]
@@ -87,10 +85,6 @@ theorem _root_.GlobalTheory.LeastExponentCompare.conj_iff (E : Type) [Field E] [
 section Comparison₂
 variable {Y : Type} [AddCommGroup Y] [Module.Free ℤ Y] [Module.Finite ℤ Y]
 
-def IntegralAreSums (S : Submodule ℝ (Bil Y)) : Prop :=
-  ∀ l : S →ₗ[ℝ] ℝ, (∀ β : S, (∀ a c, ∃ z : ℤ, (β : Bil Y) a c = z) → ∃ z : ℤ, l β = z) →
-    ∃ (m : ℕ) (x x' : Fin m → Y), ∀ β : S, l β = ∑ i, (β : Bil Y) (x i) (x' i)
-
 end Comparison₂
 
 section AtLattice
@@ -101,14 +95,6 @@ variable [IsCMField E]
 end AtLattice
 
 section Families
-
-abbrev SpaceRule : Type 1 :=
-  ∀ (E : Type) [Field E] [NumberField E] (_ : E → E) (Y : Type) [AddCommGroup Y] [Module (𝓞 E) Y],
-    Submodule ℝ (Bil Y)
-
-abbrev ValueRule (S : SpaceRule) : Type 1 :=
-  ∀ (E : Type) [Field E] [NumberField E] (cj : E → E) (Y : Type) [AddCommGroup Y] [Module (𝓞 E) Y],
-    S E cj Y → ℝ
 
 variable {S : SpaceRule} {φ : ValueRule S}
 

@@ -133,7 +133,6 @@ theorem hat_N {f : K⟦X⟧} (hf : f ∈ RpiE O K l e) :
     show hat O l e (1 : K⟦X⟧) = 1 from (hat_coe l e 1).trans (map_one _), mul_one, map_pow] at h1
   exact ((IsLocalization.Away.algebraMap_isUnit (Ehat O K l e)).pow n).mul_left_cancel h1
 
-
 variable (K) in
 def Ezpow (i : ℤ) : K⟦X⟧ := (((isUnit_E (K := K) l e).unit ^ i : K⟦X⟧ˣ) : K⟦X⟧)
 
@@ -154,7 +153,6 @@ section DivE
 
 variable {R : Type} [Semiring R] [Module R (Vec K a ι)] [SMulCommClass R K⟦X⟧ (Vec K a ι)]
 
-
 variable (l e) in
 def divE (n : ℕ) (W : Submodule R (Vec K a ι)) : Submodule R (Vec K a ι) where
   carrier := {y | E K l e ^ n • y ∈ W}
@@ -168,7 +166,6 @@ theorem mem_divE {n : ℕ} {W : Submodule R (Vec K a ι)} {y : Vec K a ι} :
 
 variable [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero e]
 
-
 variable (l e) in
 def shiftE (i : ℤ) (W : Submodule R (Vec K a ι)) : Submodule R (Vec K a ι) where
   carrier := {y | Ezpow K l e (-i) • y ∈ W}
@@ -181,7 +178,6 @@ theorem mem_shiftE {i : ℤ} {W : Submodule R (Vec K a ι)} {y : Vec K a ι} :
     y ∈ shiftE l e i W ↔ Ezpow K l e (-i) • y ∈ W := Iff.rfl
 
 end DivE
-
 
 variable (K a ι) in
 def mulV (f : K⟦X⟧) : Module.End K (Vec K a ι) where
@@ -233,15 +229,6 @@ theorem EN_apply (v : Vec K a ι) : P.EN v = E K l e • P.conn v := rfl
 def Mon : Vec K a ι →ₗ[K] P.Pol := P.cls ∘ₗ (P.EN - mulV K a ι (E K l e) * P.zeta)
 
 theorem Mon_apply (y : Vec K a ι) : P.Mon y = P.cls (P.EN y - E K l e • P.zeta y) := rfl
-
-theorem eisenstein_x_eq_neg {y : Vec K a ι} (hy : y ∈ P.Mext (invE l e (A O K))) :
-    (P.plus hy).EN xVec = -(P.plusInl hy).app (P.EN y - E K l e • P.zeta y) := by
-  rw [EN_apply, plus_conn_xVec_eq, EN_apply, ← smul_sub, ← map_smul, ← map_neg, ← smul_neg, neg_sub]
-
-theorem Mon_eq_zero_iff {y : Vec K a ι} (hy : y ∈ P.Mext (invE l e (A O K))) :
-    P.Mon y = 0 ↔ (P.plus hy).EN xVec ∈ (P.plus hy).Man := by
-  rw [eisenstein_x_eq_neg, neg_mem_iff, plusInl_app, mem_Man, P.join_mem_Mext hy, Mon_apply, cls_eq_zero_iff]
-  exact ⟨fun h => ⟨h, fun _ => zero_mem _⟩, fun h => h.1⟩
 
 theorem Mon_phi_sub (m : Vec K a ι) : P.Mon (P.phi m - m) = -P.cls (P.EN m) := by
   rw [Mon_apply, zeta_phi_sub, map_sub P.EN, ← EN_apply, sub_sub_cancel_left, map_neg]

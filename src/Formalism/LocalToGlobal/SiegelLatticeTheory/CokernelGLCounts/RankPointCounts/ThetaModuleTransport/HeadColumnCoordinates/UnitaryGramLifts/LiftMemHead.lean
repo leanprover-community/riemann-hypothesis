@@ -78,10 +78,6 @@ def liftMapQ (Z Z' A : Matrix (Fin (r + 1)) (Fin (r + 1)) R)
     (h : ∀ a : Fin r, A.mulVec (fun i => Z i a.castSucc) ∈ headCols Z') : MbMod Z →ₗ[R] MbMod Z' :=
   (headCols Z).mapQ (headCols Z') A.mulVecLin (Submodule.span_le.2 (by rintro _ ⟨a, rfl⟩; exact h a))
 
-theorem liftMapQ_mk (Z Z' A : Matrix (Fin (r + 1)) (Fin (r + 1)) R)
-    (h : ∀ a : Fin r, A.mulVec (fun i => Z i a.castSucc) ∈ headCols Z') (v : Fin (r + 1) → R) :
-    liftMapQ Z Z' A h (Submodule.Quotient.mk v) = Submodule.Quotient.mk (A.mulVec v) := rfl
-
 def liftEquiv (Z Z' A B : Matrix (Fin (r + 1)) (Fin (r + 1)) R)
     (hA : ∀ a : Fin r, A.mulVec (fun i => Z i a.castSucc) ∈ headCols Z')
     (hB : ∀ a : Fin r, B.mulVec (fun i => Z' i a.castSucc) ∈ headCols Z)

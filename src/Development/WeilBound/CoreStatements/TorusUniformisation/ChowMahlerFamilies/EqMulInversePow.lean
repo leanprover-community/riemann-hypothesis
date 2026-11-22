@@ -142,16 +142,6 @@ theorem IsBC.cancel {f : S →+* S₂} {k : S₂ →+* S₃} {g : GermAt t x d} 
   · intro m Z r z J hJ
     rw [h'.fr m Z r z J hJ, h.fr m Z _ z J hJ, Category.assoc, Bc.spMap_cp, jetCoef_comp]
 
-theorem IsBC.trans {f : S →+* S₂} {k : S₂ →+* S₃} {g : GermAt t x d} {g₂ : GermAt t x₂ d} {g₃ : GermAt t x₃ d}
-    (h : IsBC f g g₂) (h' : IsBC k g₂ g₃) : IsBC (k.comp f) g g₃ := by
-  refine ⟨h.map.trans h'.map, ?_, ?_, ?_⟩
-  · intro l
-    rw [h'.tg, h.tg, ← Category.assoc, Bc.spMap_cp, dualMap_comp]
-  · intro m
-    rw [h'.jet, h.jet, ← jetCoef_comp, ← Bc.spMap_cp, Category.assoc]
-  · intro m Z r z J hJ
-    rw [h'.fr m Z r z J hJ, h.fr m Z _ z J hJ, Category.assoc, Bc.spMap_cp, jetCoef_comp]
-
 structure Cmp (g g₂ : GermAt t x d) (φ ψ : Q S d 1) (lam : PS S 2 d) : Prop where
   hφ : ∀ m, g₂.x m = PP m g.x φ
   hψ : ∀ m, g.x m = PP m g₂.x ψ

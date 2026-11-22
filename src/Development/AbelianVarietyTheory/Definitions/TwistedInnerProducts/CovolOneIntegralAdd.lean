@@ -22,8 +22,6 @@ namespace GlobalTheory.MixModel
 
 variable {D : D7}
 
-scoped infixl:70 " ⬝ " => HMul.hMul
-
 def rat {m n : ℕ} (M : Matrix (Fin m) (Fin n) D.host.E) : Mx D m n := M.map (incA D)
 
 def adj {m n : ℕ} (x : Mx D m n) : Mx D n m := (x.map (cA D))ᵀ

@@ -4,7 +4,6 @@ public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
 public import Formalism.LocalRingCardinality.DataKap
 public import Formalism.LocalRingCardinality.DataParams
-public import Formalism.ThetaLiftIndependence.FinalThetaLiftAMFKIndep
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.RowsOfLevel
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormGoodRowsFiniteGroupActionStatement

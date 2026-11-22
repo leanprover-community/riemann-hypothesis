@@ -120,24 +120,10 @@ theorem mAct_mul (A B : Matrix ι ι ℂ) : (mAct A * mAct B : Module.End ℂ (�
   simp only [Module.End.mul_apply, mAct_apply, Matrix.mul_apply, Finset.sum_smul, Finset.smul_sum, mul_smul]
   exact Finset.sum_comm
 
-theorem dOp_mul (S T : Module.End ℂ V) : (dOp ι (S * T) : Module.End ℂ (ι → V)) = dOp ι S * dOp ι T := rfl
-
 theorem dOp_sum {α : Type} (s : Finset α) (T : α → Module.End ℂ V) :
     (dOp ι (∑ a ∈ s, T a) : Module.End ℂ (ι → V)) = ∑ a ∈ s, dOp ι (T a) := by
   refine LinearMap.ext fun x => funext fun c => ?_
   simp [dOp]
-
-theorem left_factor_action_mul (f g : Module.End ℂ (ι → V)) :
-    (on1 (f * g) : Module.End ℂ (ι × κ → V)) = on1 f * on1 g := rfl
-
-theorem right_factor_action_mul (f g : Module.End ℂ (κ → V)) :
-    (on2 (f * g) : Module.End ℂ (ι × κ → V)) = on2 f * on2 g := rfl
-
-theorem left_factor_action_add (f g : Module.End ℂ (ι → V)) :
-    (on1 (f + g) : Module.End ℂ (ι × κ → V)) = on1 f + on1 g := rfl
-
-theorem right_factor_action_add (f g : Module.End ℂ (κ → V)) :
-    (on2 (f + g) : Module.End ℂ (ι × κ → V)) = on2 f + on2 g := rfl
 
 theorem left_factor_action_sum {α : Type} (s : Finset α) (T : α → Module.End ℂ (ι → V)) :
     (on1 (∑ a ∈ s, T a) : Module.End ℂ (ι × κ → V)) = ∑ a ∈ s, on1 (T a) := by
@@ -148,10 +134,6 @@ theorem right_factor_action_sum {α : Type} (s : Finset α) (T : α → Module.E
     (on2 (∑ a ∈ s, T a) : Module.End ℂ (ι × κ → V)) = ∑ a ∈ s, on2 (T a) := by
   refine LinearMap.ext fun x => funext fun c => ?_
   simp [on2]
-
-theorem left_factor_action_diag_op (T : Module.End ℂ V) : (on1 (dOp ι T) : Module.End ℂ (ι × κ → V)) = dOp (ι × κ) T := rfl
-
-theorem right_factor_action_diag_op (T : Module.End ℂ V) : (on2 (dOp κ T) : Module.End ℂ (ι × κ → V)) = dOp (ι × κ) T := rfl
 
 theorem left_factor_action_kronecker (A : Matrix ι ι ℂ) :
     (on1 (mAct A) : Module.End ℂ (ι × κ → V)) = mAct (A ⊗ₖ (1 : Matrix κ κ ℂ)) := by

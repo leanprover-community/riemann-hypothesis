@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.IdealLattice
 public import Mathlib
-public import Formalism.PeriodIntegrals.HeisDefs
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.IdealLattice
 
 @[expose] public section

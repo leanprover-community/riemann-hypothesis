@@ -59,9 +59,6 @@ private theorem go_mat {D C : Type} [Group D] [CommRing C] (r : D →* GG (m := 
     (hg : (r g).right = 1) : (conjBy h⁻¹ r g).mat = (h⁻¹).val * (r g).mat * h.val := by
   simp [conjBy, GG.mat, hg]
 
-private theorem diagonal_character_rep_matrix {O D : Type} [CommRing O] [Group D] (η : D →* ℤˣ) (Ψ : D →* Oˣ) (g : D) :
-    (r0 η Ψ g).mat = Matrix.diagonal fun a => UnitaryThreeInertia.psi Ψ a g := rfl
-
 private theorem go_unit {O D : Type} [CommRing O] [Group D] (Ψ : D →* Oˣ) (x : D)
     (hu : IsUnit ((Ψ x : O) ^ 2 - 1)) (a b : Fin 3) (hab : a ≠ b) : IsUnit (UnitaryThreeInertia.psi Ψ a x - UnitaryThreeInertia.psi Ψ b x) := by
   have e0 : UnitaryThreeInertia.psi Ψ 0 x = Ψ x := by simp [UnitaryThreeInertia.psi, wt1]

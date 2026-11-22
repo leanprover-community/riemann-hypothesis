@@ -16,10 +16,6 @@ namespace GlobalTheory.StdFrameCong
 
 open ReciprocityTheory.Aut
 
-theorem swapCast_rfl_symm_tmul {E : Type} [Field E] [NumberField E] {F1 : Subfield E}
-    (y : E) (a : FiniteAdeleRing (𝓞 F1) F1) :
-    (swapCast (rfl : F1 = F1)).symm (y ⊗ₜ[F1] a) = a ⊗ₜ[F1] y := rfl
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem swapCast_symm_smul_mem {F1 : Subfield E} (h : F1 = maximalRealSubfield E) {n : ℕ}

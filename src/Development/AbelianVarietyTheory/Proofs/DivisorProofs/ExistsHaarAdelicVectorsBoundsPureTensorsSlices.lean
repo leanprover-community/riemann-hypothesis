@@ -27,9 +27,6 @@ def splitE : ((κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (�
   right_inv x := funext fun i => Prod.ext (RingEquiv.symm_apply_apply _ _) rfl
   map_add' p q := funext fun i => Prod.ext (map_add (InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (p.1 i) (q.1 i)) rfl
 
-theorem splitE_apply (p : (κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (𝓞 F) F)) :
-    splitE F κ p = fun i => ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (p.1 i), p.2 i) := rfl
-
 theorem continuous_splitE : Continuous (splitE F κ) := by
   rw [show ⇑(splitE F κ) = fun p : (κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (𝓞 F) F) =>
     fun i => ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (p.1 i), p.2 i) from rfl]

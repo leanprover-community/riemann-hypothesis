@@ -30,8 +30,6 @@ theorem host_star_conj : Formalism.BasicNotions.bridge_star := by
       exact MulEquiv.apply_symm_apply _ _)
   exact H.φ₀.injective ((hemb x).trans (h1 x).symm)
 
-theorem sig_apply {D : D7} (X : HidaSetting D) (a : X.B.I.E) : X.B.I.cm.sig a = star a := rfl
-
 theorem hE_crdOf {D : D7} (X : HidaSetting D) (x y : (VS D).V) :
     hE X.B.I.cm.sig X.B.I.J (crdOf X.B.I X.ιE X.bas x) (crdOf X.B.I X.ιE X.bas y) =
       X.ιE.symm ((VS D).hT x y) := by

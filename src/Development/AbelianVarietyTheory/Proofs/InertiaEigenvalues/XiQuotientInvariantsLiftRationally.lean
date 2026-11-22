@@ -217,9 +217,6 @@ def eM (a : ℤ) : Ainf l →ₗ[ℤ_[l]] ↥(Mxi (AinfSub l) (xiU AI) a) :=
     ((LinearMap.mulLeft ℤ_[l] (((xiU AI) ^ a : (WCb l)ˣ) : WCb l)) ∘ₗ (inclWA l).toLinearMap)
     (fun y => ⟨inclWA l y, ⟨y, rfl⟩, rfl⟩)
 
-theorem eM_coe (a : ℤ) (y : Ainf l) :
-    (eM AI a y : WCb l) = (((xiU AI) ^ a : (WCb l)ˣ) : WCb l) * inclW l y := rfl
-
 theorem eM_bij (a : ℤ) : Function.Bijective (eM AI a) := by
   constructor
   · intro y y' h
@@ -326,7 +323,6 @@ theorem zpow_mul_mem (J : ThetaL P AI) (w : P.R.BdR) (hw : w ∈ (P.PD (botExt l
     intro c x
     rw [zpow_sub_one, Units.val_mul, mul_assoc, show c + (-(k : ℤ) - 1) = c - 1 + -k by ring,
       ih (c - 1), ← H (c - 1), ← mul_assoc, Units.mul_inv, one_mul, sub_add_cancel]
-
 
 omit hu in
 theorem exists_beta (LT : LocTied l P AI) (J : ThetaL P AI) (K : FinExt l) (a : ℤ) :
@@ -745,7 +741,6 @@ theorem lift_lev {l : ℕ} [Fact l.Prime] {P : LocPrime l} (AI : LocAinf l P) (L
     (fun _ => rfl) (denom LL) (Subgroup.inclusion hle') (continuous_inclusion hle') T
     h5 hdR a e b hae heb p hp ((actTZ LL T).comp (Subgroup.inclusion hle'))
     (fun _ _ => rfl)
-
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc in
 theorem invariants_lift : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), adm5 D → adm7 D → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let E : S.Comparison₂ := ((F l).E K s LL h).tie; ∀ (T : LocLat S.G S.Qp S.LL S.O) (a e b : ℤ) (j : ℕ) (hle : Gj K j ≤ GK K), s ≤ j → a ≤ e → e ≤ b → IsCrysOn S S.W.GKs T → ∀ p : Qab (AinfSub l) (xiU (D.locA l)) a b →ₗ[ℤ_[l]] Qab (AinfSub l) (xiU (D.locA l)) a e, (∀ x, p (Submodule.Quotient.mk x) = Submodule.Quotient.mk x) → letI := zlMod LL T; ∀ z : (TensorProduct ℤ_[l] ↥T.L.T (Qab (AinfSub l) (xiU (D.locA l)) a e)), (∀ g, (repQ (D.locA l) (Gj K j) ((actTZ LL T).comp (Subgroup.inclusion hle)) a e) g z = z) → ∃ (k : ℕ) (x : (TensorProduct ℤ_[l] ↥T.L.T (Qab (AinfSub l) (xiU (D.locA l)) a b))), (∀ g, (repQ (D.locA l) (Gj K j) ((actTZ LL T).comp (Subgroup.inclusion hle)) a b) g x = x) ∧ LinearMap.lTensor ↥T.L.T p x = (l : ℤ_[l]) ^ k • z :=

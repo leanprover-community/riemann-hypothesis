@@ -67,8 +67,6 @@ section Form
 
 variable {E : Type} [Field E] [StarRing E] {n : ℕ} (J : Matrix (Fin n) (Fin n) E)
 
-local notation "𝒽" => Formalism.UG.hform (starRingEnd E) J
-
 theorem form_eq (x y : Fin n → E) : 𝒽 x y = star x ⬝ᵥ (J *ᵥ y) := by
   simp only [Formalism.UG.hform, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc, Pi.star_apply,
     starRingEnd_apply]

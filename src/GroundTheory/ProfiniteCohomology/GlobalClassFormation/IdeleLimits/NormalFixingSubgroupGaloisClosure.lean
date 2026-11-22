@@ -14,8 +14,6 @@ namespace GroundTheory.ProfCoh
 open CategoryTheory NumberField IntermediateField GroundTheory.Global GroundTheory.Global.AdeleBaseChange
   FiniteSubfield IdeleLimit
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 variable (K : FiniteSubfield)
@@ -99,12 +97,10 @@ theorem smul_of_restrictHom [F.1.fixingSubgroup.Normal] (g : K.1.fixingSubgroup)
   rw [smul_idele_eq_ideleEquiv]
   exact smul_of_eq_of_ideleEquiv _ _ (fun _ ↦ rfl) x
 
-
 variable (K F) in
 def levelMor [F.1.fixingSubgroup.Normal] : Rep.res (restrictHom (F := K) (E := F)) (ideleRep K.1 F.1) ⟶ limitRep K :=
   Rep.ofHom ⟨(MonoidHom.toAdditive (of F)).toIntLinearMap, fun g => LinearMap.ext fun x =>
     congrArg Additive.ofMul (smul_of_restrictHom g x.toMul).symm⟩
-
 
 variable (K F) in
 def levelInfl [F.1.fixingSubgroup.Normal] (n : ℕ) : cohomology (ideleRep K.1 F.1) n ⟶ cohomology (limitRep K) n :=

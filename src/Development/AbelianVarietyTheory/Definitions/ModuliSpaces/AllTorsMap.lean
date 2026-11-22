@@ -34,11 +34,4 @@ def IsImage (P : PELUnif I t) (F : Type) [Field F] [Algebra (FractionRing R) F] 
     (v : Sp F ⟶ t.G.left) : Prop :=
   ∃ a : TFK (R := R) F ⟶ P.A.A, a.left ≫ P.U.gen.inv.left ≫ pullback.fst t.G.hom (jK R) = v ∧ P.ToA F k q a
 
-def AllFlat (p : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {R : Type} [CommRing R] [IsDomain R]
-    [IsLocalRing R] {t : SAB H (Sp R)} (P : PELUnif (maximalIdeal R) t) {W : (Sp R).Opens},
-    PsiOn P.D.toPre W → ℕ → Prop) : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R]
-    [CharZero R], AdmBase R (maximalIdeal R) → ∀ (t : SAB H (Sp R)) (P : PELUnif (maximalIdeal R) t) (W : (Sp R).Opens),
-    (W : Set (Sp R)).Nonempty → IsProper (t.G.hom ∣_ W) → ∀ (ψW : PsiOn P.D.toPre W) (k : ℕ), 1 ≤ k → p P ψW k
-
 end GlobalTheory.FlatTors

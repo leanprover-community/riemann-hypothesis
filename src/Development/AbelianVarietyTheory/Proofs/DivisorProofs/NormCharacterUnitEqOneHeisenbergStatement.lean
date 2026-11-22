@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormCharacterUnitEqOneHeisenberg
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntIndMemSB
 
 @[expose] public section

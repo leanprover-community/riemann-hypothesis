@@ -364,9 +364,6 @@ open NumberField IsDedekindDomain
 abbrev Pl (F : Type) [Field F] [NumberField F] : Type :=
   InfinitePlace F ⊕ HeightOneSpectrum (𝓞 F)
 
-def qNorm {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F)) : ℕ :=
-  Nat.card (𝓞 F ⧸ w.asIdeal)
-
 def wittIdx {E : Type} [Field E] [NumberField E] [StarRing E] (B : Formalism.BasicNotions.HSpace E) : ℕ :=
   sSup {k | ∃ W : Submodule E B.V, Module.finrank E W = k ∧ ∀ x ∈ W, ∀ y ∈ W, B.hT x y = 0}
 
@@ -382,101 +379,14 @@ def IsUnram (w : HeightOneSpectrum (𝓞 F)) : Prop :=
   ∀ P : HeightOneSpectrum (𝓞 E), P.asIdeal.comap (algebraMap (𝓞 F) (𝓞 E)) = w.asIdeal →
     Ideal.ramificationIdx P.asIdeal (𝓞 F) = 1
 
-
-open Classical in
-def etaV (w : HeightOneSpectrum (𝓞 F)) : ℂ := if IsSplit (E := E) w then 1 else -1
-
-def dvLoc (n M : ℕ) (w : HeightOneSpectrum (𝓞 F)) (s : ℂ) : ℂ :=
-  ∏ i ∈ Finset.Icc 1 n,
-    (1 - (etaV (E := E) w) ^ (M + n - i) * (qNorm w : ℂ) ^ (-(2 * s + i)))⁻¹
-
 end Helpers
-
-structure RFObj (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E]
-    [Algebra F E] (A B : Formalism.BasicNotions.HSpace E) where
-  GQ : Type
-  [msG : MeasurableSpace GQ]
-
-  muG : Measure GQ
-  HQ : Type
-  [msH : MeasurableSpace HQ]
-
-  muH : Measure HQ
-  [probH : IsProbabilityMeasure muH]
-  GhQ : Type
-
-  one : GhQ
-
-  io : GQ → GQ → GhQ
-
-  ht : GhQ → ℝ
-
-  Sch : Type
-
-  good : Sch → Prop
-
-  SchD : Type
-  factD : SchD → Prop
-
-  tensor : Sch → Sch → SchD
-  tensor_fact : ∀ φ₁ φ₂, good φ₁ → good φ₂ → factD (tensor φ₁ φ₂)
-
-  thetaK : Sch → GQ → HQ → ℂ
-
-  thetaD : SchD → GhQ → HQ → ℂ
-
-  muInv : GQ → ℂ
-
-  thetaD_io : ∀ φ₁ φ₂ g₁ g₂ h, thetaK φ₁ g₁ h * star (thetaK φ₂ g₂ h) =
-    thetaD (tensor φ₁ φ₂) (io g₁ g₂) h * muInv g₂
-
-  thetaT : SchD → Matrix (Fin A.rank) (Fin A.rank) E → HQ → ℂ
-
-  thetaT_sum : ∀ ph h, HasSum (fun T : Matrix (Fin A.rank) (Fin A.rank) E => thetaT ph T h)
-    (thetaD ph one h)
-
-  dens : SchD → Pl F → Matrix (Fin A.rank) (Fin A.rank) E → ℂ
-
-  Pi : Type
-
-  Vec : Pi → Type
-  form : ∀ π, Vec π → GQ → ℂ
-
-  be : ∀ π, Vec π → Vec π → ℂ
-
-  sph : ∀ π, Vec π → Vec π → Sch → Sch → Pl F → Prop
-
-  psiXi : HeightOneSpectrum (𝓞 F) → Prop
-
-  zconv : ∀ π, Vec π → Vec π → Sch → Sch → Pl F → ℂ → Prop
-
-  Zv : ∀ π, Vec π → Vec π → Sch → Sch → Pl F → ℂ → ℂ
-
-  Lv : Pi → Pl F → ℂ → ℂ
-
-  dv : Pl F → ℂ → ℂ
-  dv_def : ∀ w, IsUnram (E := E) w → ∀ s,
-    dv (Sum.inr w) s = dvLoc (E := E) A.rank B.rank w s
-
-  sat : Pi → HeightOneSpectrum (𝓞 F) → Fin A.rank → ℂ
-
-  Eis : SchD → ℂ → GhQ → ℂ
 
 attribute [instance] RFObj.msG RFObj.msH RFObj.probH
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E]
   [Algebra F E] {A B : Formalism.BasicNotions.HSpace E} (O : RFObj F E A B)
 
-def LS (π : O.Pi) (S : Finset (Pl F)) (s : ℂ) : ℂ :=
-  ∏' v : {v : Pl F // v ∉ S}, O.Lv π v s
-
-def dS (S : Finset (Pl F)) (s : ℂ) : ℂ := ∏' v : {v : Pl F // v ∉ S}, O.dv v s
-
 end PartB
-
-structure Prov (D : Formalism.BasicNotions.D7) extends ProvA where
-  rf : letI := D.host.cmStar
-    ∀ A B : Formalism.BasicNotions.HSpace D.host.E, RFObj D.host.F D.host.E A B
 
 section Packet
 

@@ -19,11 +19,6 @@ variable {A : Type} [CommRing A]
 
 private def Bl (X : Matrix (Fin 3) (Fin 3) A) : Prop := X 0 1 = 0 ∧ X 1 0 = 0 ∧ X 1 2 = 0 ∧ X 2 1 = 0
 
-private theorem c00 (X : Matrix (Fin 3) (Fin 3) A) : corner X 0 0 = X 0 0 := rfl
-private theorem c01 (X : Matrix (Fin 3) (Fin 3) A) : corner X 0 1 = X 0 2 := rfl
-private theorem c10 (X : Matrix (Fin 3) (Fin 3) A) : corner X 1 0 = X 2 0 := rfl
-private theorem c11 (X : Matrix (Fin 3) (Fin 3) A) : corner X 1 1 = X 2 2 := rfl
-
 private theorem corner_mul {X : Matrix (Fin 3) (Fin 3) A} (hX : Bl X) (Y : Matrix (Fin 3) (Fin 3) A) :
     corner (X * Y) = corner X * corner Y := by
   obtain ⟨h1, h2, h3, h4⟩ := hX

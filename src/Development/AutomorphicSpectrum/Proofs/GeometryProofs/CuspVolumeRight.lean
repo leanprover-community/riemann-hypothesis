@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ThreeLeLevel
 public import Development.WeilBound.CoreStatements.VolumeEquality.SheetPiecesComponent
 
 @[expose] public section

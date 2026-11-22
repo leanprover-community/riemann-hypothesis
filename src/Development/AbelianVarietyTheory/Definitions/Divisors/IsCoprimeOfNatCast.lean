@@ -222,9 +222,6 @@ theorem isTypeLevel_of_eq {m : ℕ} (hA : l.A = 1) (hM : l.M = D.host.g 0 * D.ho
     rw [cofactor, hM, Nat.mul_div_cancel_left _ (Nat.mul_pos (D.host.g_prime 0).pos (D.host.g_prime 1).pos)]
   exact ⟨⟨hA, h ▸ hM, h ▸ hm⟩, h⟩
 
-theorem isTypeLevel_of_pin {Q : Par D} (h : Q.PinLevel) : IsTypeLevel Q.l ∧ cofactor Q.l = 1 :=
-  isTypeLevel_of_eq h.2 (by rw [mul_one]; exact h.1) (Nat.coprime_one_right _)
-
 theorem g_mem_typePrime (v : Sq D.host) : ((D.host.g v.1 : ℕ) : 𝓞 D.host.E) ∈ typePrime l v :=
   Ideal.mem_sup_right (by simpa using Ideal.mem_map_of_mem (algebraMap _ (𝓞 D.host.E)) v.2.2)
 
@@ -308,32 +305,6 @@ theorem IsTypeLevel.smul_eq_zsmul (hl : IsTypeLevel l) (v : Sq D.host) (a : 𝓞
     Submodule.smul_mem_smul hz trivial
   rw [smul_top_qMod, Submodule.mem_bot, sub_smul, sub_eq_zero, Int.cast_smul_eq_zsmul] at h
   exact h.symm
-
-theorem nonempty_addEquiv_pi {M : Type} [AddCommGroup M] {p r : ℕ} [hp : Fact p.Prime] (h : ∀ x : M, p • x = 0)
-    (hN : Nat.card M = p ^ r) : Nonempty (M ≃+ (Fin r → ZMod p)) := by
-  haveI : Finite M := Nat.finite_of_card_ne_zero (hN ▸ pow_ne_zero _ hp.out.ne_zero)
-  obtain ⟨inst⟩ : Nonempty (Module (ZMod p) M) := ⟨AddCommGroup.zmodModule h⟩
-  have hf : Module.finrank (ZMod p) M = Module.finrank (ZMod p) (Fin r → ZMod p) := by
-    have := Module.natCard_eq_pow_finrank (K := ZMod p) (V := M)
-    rw [hN, Nat.card_zmod] at this
-    rw [Module.finrank_fin_fun]
-    exact (Nat.pow_right_injective hp.out.two_le this).symm
-  haveI : FiniteDimensional (ZMod p) M := Module.Finite.of_finite
-  exact ⟨(LinearEquiv.ofFinrankEq (R := ZMod p) M (Fin r → ZMod p) hf).toAddEquiv⟩
-
-theorem IsTypeLevel.nonempty_typeFrame (hl : IsTypeLevel l) (hr : Dw.p + Dw.q = D.R.r) : Nonempty (TypeFrame Dw l) := by
-  refine ⟨fun v => Classical.choice ?_⟩
-  have hc : Nat.card (𝓞 D.host.E ⧸ typePrime l v) = D.host.g v.1 := by
-    rw [← (hl.typePrime_spec v).2, Ideal.absNorm_apply, Submodule.cardQuot_apply]
-  haveI : Finite (𝓞 D.host.E ⧸ typePrime l v) := Nat.finite_of_card_ne_zero (hc ▸ (D.host.g_prime _).ne_zero)
-  haveI := Dw.fin
-  haveI := Dw.proj
-  have hN : Nat.card (QMod Dw.La (typePrime l v)) = D.host.g v.1 ^ D.R.r := by
-    rw [natCard_quot_smul_top_of_projective, hc, Dw.rank, hr]
-  refine nonempty_addEquiv_pi (fun x => ?_) hN
-  have h : ((D.host.g v.1 : ℕ) : 𝓞 D.host.E) • x ∈ typePrime l v • (⊤ : Submodule _ (QMod Dw.La (typePrime l v))) :=
-    Submodule.smul_mem_smul (g_mem_typePrime v) trivial
-  rwa [smul_top_qMod, Submodule.mem_bot, Nat.cast_smul_eq_nsmul] at h
 
 def typeRed (fr : TypeFrame Dw l) : LevelAut Dw l →* LevelGroup D.host :=
   MonoidHom.pi fun v => (autMat (fr v)).comp (autRed (N := Dw.La) (J := typePrime l v) le_sup_left)

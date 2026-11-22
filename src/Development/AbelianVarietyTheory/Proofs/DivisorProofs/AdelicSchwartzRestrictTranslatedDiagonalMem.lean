@@ -21,7 +21,6 @@ variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
 attribute [local instance] GlobalTheory.AdelicUnitaryTop.locallyCompact_finiteAdele
   GlobalTheory.AdelicUnitaryTop.secondCountable_finiteAdele GlobalTheory.AdelicUnitaryTop.t2Space_finiteAdeleRing_of_numberField
 
-
 variable (F κ) in
 def diagA : (κ → mixedEmbedding.mixedSpace F) →L[ℝ] (κ ⊕ κ → mixedEmbedding.mixedSpace F) :=
   LinearMap.toContinuousLinearMap
@@ -29,12 +28,9 @@ def diagA : (κ → mixedEmbedding.mixedSpace F) →L[ℝ] (κ ⊕ κ → mixedE
       map_add' := fun x x' => by funext i; cases i <;> simp
       map_smul' := fun c x => by funext i; cases i <;> simp }
 
-theorem diagA_apply (x : κ → mixedEmbedding.mixedSpace F) : diagA F κ x = Sum.elim x x := rfl
-
 theorem norm_le_diagA (x : κ → mixedEmbedding.mixedSpace F) : ‖x‖ ≤ ‖diagA F κ x‖ :=
   (pi_norm_le_iff_of_nonneg (norm_nonneg _)).2 fun j => by
     simpa [diagA_apply] using norm_le_pi_norm (diagA F κ x) (Sum.inl j)
-
 
 variable (F κ) in
 def restrA : SchwartzMap (κ ⊕ κ → mixedEmbedding.mixedSpace F) ℂ →L[ℂ] SchwartzMap (κ → mixedEmbedding.mixedSpace F) ℂ :=
@@ -43,9 +39,6 @@ def restrA : SchwartzMap (κ ⊕ κ → mixedEmbedding.mixedSpace F) ℂ →L[�
       have := norm_le_diagA x
       have h0 := norm_nonneg (diagA F κ x)
       rw [pow_one, one_mul]; linarith⟩
-
-theorem restrA_apply (f : SchwartzMap (κ ⊕ κ → mixedEmbedding.mixedSpace F) ℂ) (x : κ → mixedEmbedding.mixedSpace F) :
-    restrA F κ f x = f (Sum.elim x x) := rfl
 
 theorem shift_mem_finite {g : (κ ⊕ κ → FiniteAdeleRing (𝓞 F) F) → ℂ}
     (hg : g ∈ SB (κ ⊕ κ → FiniteAdeleRing (𝓞 F) F)) (b : κ → FiniteAdeleRing (𝓞 F) F) :

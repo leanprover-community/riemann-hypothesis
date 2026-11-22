@@ -10,46 +10,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 namespace GlobalTheory.WeilDeligne
 
-theorem exists_pow_frob_commute {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
-    [IsAlgClosure E Ω] {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)}
-    {h : IsPlaceOver A w} {V : Type} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
-    (ρ : Representation ℂ (Weil h) V) (hρ : IsSmooth ρ) :
-    ∃ m : ℕ, 0 < m ∧ ∀ σ, Commute (ρ (frob (h := h)) ^ m) (ρ σ) := by
-  have h1 : ∀ τ : Weil h, ∃ m : ℕ, 0 < m ∧ Commute (ρ (frob (h := h)) ^ m) (ρ τ) := by
-    intro τ
-    obtain ⟨m, hm, he⟩ := exists_pow_eq_pow_of_deg_eq E Ω A w h V ρ hρ (frob (h := h))
-      (τ * frob (h := h) * τ⁻¹) (by simp [deg_mul, deg_inv])
-    refine ⟨m, hm, ?_⟩
-    rw [← map_pow, ← map_pow, conj_pow] at he
-    show _ * _ = _ * _
-    rw [← map_pow]
-    conv_lhs => rw [he]
-    rw [← map_mul, ← map_mul, inv_mul_cancel_right]
-  have h2 : ∀ S : Set (End ℂ V), S.Finite → (∀ x ∈ S, ∃ τ, ρ τ = x) →
-      ∃ m : ℕ, 0 < m ∧ ∀ x ∈ S, Commute (ρ (frob (h := h)) ^ m) x := by
-    intro S hS
-    induction S, hS using Set.Finite.induction_on with
-    | empty => exact fun _ => ⟨1, one_pos, by simp⟩
-    | @insert x S _ _ ih =>
-      intro hx
-      obtain ⟨m, hm, hc⟩ := ih fun y hy => hx y (Set.mem_insert_of_mem _ hy)
-      obtain ⟨τ, rfl⟩ := hx x (Set.mem_insert _ _)
-      obtain ⟨n, hn, hc'⟩ := h1 τ
-      refine ⟨m * n, Nat.mul_pos hm hn, ?_⟩
-      rintro y (rfl | hy)
-      · rw [mul_comm, pow_mul]; exact hc'.pow_left m
-      · rw [pow_mul]; exact (hc y hy).pow_left n
-  obtain ⟨m, hm, hc⟩ := h2 _ hρ.finite_range (by rintro _ ⟨σ, rfl⟩; exact ⟨_, rfl⟩)
-  refine ⟨m, hm, fun σ => ?_⟩
-  have h0 : deg ((frob (h := h) ^ deg σ)⁻¹ * σ) = 0 := by
-    simp [deg_mul, deg_inv, deg_zpow, deg_frob]
-  have h3 : Commute (ρ (frob (h := h)) ^ m) (ρ ((frob (h := h) ^ deg σ)⁻¹ * σ)) :=
-    hc _ ⟨⟨_, deg_eq_zero_iff.mp h0⟩, rfl⟩
-  have h4 : Commute (ρ (frob (h := h)) ^ m) (ρ (frob (h := h) ^ deg σ)) :=
-    (((Commute.refl (frob (h := h))).zpow_right _).map ρ).pow_left m
-  have := h4.mul_right h3
-  rwa [← map_mul, mul_inv_cancel_left] at this
-
 open NumberField IsDedekindDomain Polynomial Module in
 private lemma exists_polynomial_eigenspace_smul_lemma {V : Type} [AddCommGroup V] [Module ℂ V]
     [FiniteDimensional ℂ V] (T : Module.End ℂ V) (f : ℂ → ℂ) :
@@ -91,7 +51,6 @@ private lemma commute_aeval_of_commute_lemma_4 {V : Type} [AddCommGroup V] [Modu
   induction p using Polynomial.induction_on' with
   | add p r hp hr => rw [map_add (f := _)]; exact hp.add_right hr
   | monomial n x => rw [aeval_monomial]; exact (Algebra.commute_algebraMap_right x S).mul_right (hST.pow_right n)
-
 
 open NumberField IsDedekindDomain Polynomial Module in
 theorem _root_.GlobalTheory.WeilDeligne.WDRep.iso_of_N_eq_smul : ∀ (E Ω : Type) [Field E] [NumberField E]

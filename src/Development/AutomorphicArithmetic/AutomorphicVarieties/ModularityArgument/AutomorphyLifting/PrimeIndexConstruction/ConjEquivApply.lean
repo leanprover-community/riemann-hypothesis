@@ -21,9 +21,6 @@ private def conjEquiv (g : GL (Fin n) k) : (Fin n → k) ≃ₗ[k] (Fin n → k)
     (by rw [← Matrix.mulVecLin_mul, ← Units.val_mul, mul_inv_cancel]; simp)
     (by rw [← Matrix.mulVecLin_mul, ← Units.val_mul, inv_mul_cancel]; simp)
 
-private theorem conjEquiv_apply (g : GL (Fin n) k) (v : Fin n → k) :
-    conjEquiv g v = (g : Matrix (Fin n) (Fin n) k).mulVec v := rfl
-
 private theorem intertwine {r r' : Γ →* GL (Fin n) k} {g : GL (Fin n) k}
     (hg : ∀ s, r' s = g * r s * g⁻¹) (s : Γ) (v : Fin n → k) :
     (r' s : Matrix (Fin n) (Fin n) k).mulVec (conjEquiv g v) =

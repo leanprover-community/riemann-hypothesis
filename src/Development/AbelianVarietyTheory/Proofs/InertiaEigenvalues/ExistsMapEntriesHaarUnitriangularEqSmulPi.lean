@@ -45,9 +45,6 @@ def ofCoords (x : Pos n → R) : GlobalTheory.SmGL.unipB R (Fin n) := ⟨unit x,
 def coords (u : GlobalTheory.SmGL.unipB R (Fin n)) : Pos n → R :=
   fun p => ((u : GL (Fin n) R) : Matrix (Fin n) (Fin n) R) p.1.1 p.1.2
 
-theorem val_ofCoords (x : Pos n → R) :
-    (((ofCoords x : GlobalTheory.SmGL.unipB R (Fin n)) : GL (Fin n) R) : Matrix (Fin n) (Fin n) R) = mat x := rfl
-
 theorem coords_ofCoords (x : Pos n → R) : coords (ofCoords x) = x := by
   funext p
   simp only [coords, val_ofCoords, mat_lt x p.2]
@@ -305,7 +302,6 @@ instance (μR : Measure R) [μR.IsOpenPosMeasure] [SigmaFinite μR] :
   continuous_ofCoords.isOpenPosMeasure_map fun u => ⟨coords u, ofCoords_coords u⟩
 
 end GlobalTheory.UnipCoord
-
 
 open GlobalTheory.UnipCoord in
 theorem GlobalTheory.UnipCoord.map_coords_haar : ∀ (R : Type) [CommRing R] [TopologicalSpace R] [IsTopologicalRing R] [LocallyCompactSpace R]

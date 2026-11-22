@@ -13,8 +13,6 @@ open CategoryTheory NumberField IsDedekindDomain IntermediateField GroundTheory.
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1))) {v : HeightOneSpectrum (𝓞 K.1)}
   (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure (v.adicCompletion K.1))
 

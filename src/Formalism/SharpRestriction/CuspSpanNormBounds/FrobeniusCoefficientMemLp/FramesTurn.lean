@@ -200,9 +200,6 @@ theorem turn_kfin (L : LocBessel k r) (ka : ℝ) {f : Mx k r → (L.Wq →L[ℂ]
 theorem tT_mul_tTi_assoc (M : Mx k r) : tT k r * (tTi k r * M) = M := by
   rw [← Matrix.mul_assoc, tT_mul_tTi, Matrix.one_mul]
 
-theorem tTi_mul_tT_assoc (M : Mx k r) : tTi k r * (tT k r * M) = M := by
-  rw [← Matrix.mul_assoc, tTi_mul_tT, Matrix.one_mul]
-
 theorem besselIntg_turn (L : LocBessel k r) (ka : ℝ) (hc : L.c = ((2 * ka : ℝ) : ℂ)) (f : Mx k r → (L.Wq →L[ℂ] L.Wp))
     (g : Mx k r) (p : PairSp k r) :
     besselIntg (turnL L ka) (turnF L ka f) g (thP k r p) = besselIntg L f (tT k r * g * tTi k r) p := by

@@ -51,23 +51,6 @@ def OnSD (ψ : AddChar (AF F) ℂ) (n : ℕ) (Yi : Type) [AddCommGroup Yi] [Topo
 
 def SW1a1 : Prop := OnH F E σ M J fun μ 𝓕 => μ 𝓕 < ⊤
 
-def SW1b1 : Prop :=
-  3 ≤ M → ∀ (β : F) (d : ℕ) (b : Module.Basis (Fin d) F E)
-    (Φ : (Fin 1 → Fin M → AF F ⊗[F] E) → ℂ) (Φi : (Fin 1 → Fin M → Ainf F ⊗[F] E) → ℂ)
-    (Φf : (Fin 1 → Fin M → Af F ⊗[F] E) → ℂ)
-    (Φv : ∀ v : HeightOneSpectrum (𝓞 F), (Fin 1 → Fin M → Fv F v ⊗[F] E) → ℂ),
-    Continuous Φi → RapidDecay b Φi → IsPureFin b Φf Φv → IsProdInfFin Φ Φi Φf →
-    AllSome (IsCharAF F) fun ψ =>
-    OnH F E σ M J fun μ 𝓕 =>
-    OnSD F E σ M J ψ 1 (Ainf F) (Fv F) (fun s t => psiInf F ψ (s * t)) (fun v s t => psiV F ψ v (s * t))
-      fun μi νi μv νv =>
-      ∃ (Fi : Ainf F → ℂ) (Fl : ∀ v, Fv F v → ℂ),
-        IsContDensity μi (fun X => qR (Ainf F) σ J (X 0)) id νi Φi Fi ∧
-        (∀ v, IsContDensity (μv v) (fun X => qR (Fv F v) σ J (X 0)) id (νv v) (Φv v) (Fl v)) ∧
-        Multipliable (fun v => Fl v (algebraMap F (Fv F v) β)) ∧
-        meanC μ 𝓕 (thSum F E σ M J Φ {x | x 0 ≠ 0 ∧ hE σ J (x 0) (x 0) = algebraMap F E β}) =
-          Fi (algebraMap F (Ainf F) β) * ∏' v, Fl v (algebraMap F (Fv F v) β)
-
 def SW1b2 : Prop :=
   3 ≤ M → ∀ (β : F), β ≠ 0 → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E)
     (Φ : (Fin 1 → Fin M → AF F ⊗[F] E) → ℝ≥0∞) (Φi : (Fin 1 → Fin M → Ainf F ⊗[F] E) → ℝ≥0∞)
@@ -95,14 +78,6 @@ def SW1b2 : Prop :=
           Φ (h⁻¹ • ratTup (F := F) (AF F) (x : Fin 1 → Fin M → E))) =
         (∫⁻ X, Φi X ∂(fi (algebraMap F (Ainf F) β))) *
           ∏' v, ∫⁻ X, ENNReal.ofReal (Φv v X).re ∂(fv v (algebraMap F (Fv F v) β))
-
-def Carries (x : Fin 1 → Fin M → E) (μ : Measure (HA (AF F) σ J))
-    (μ' : Measure (Hstab (AF F) σ J x)) (ν : Measure (Fin 1 → Fin M → AF F ⊗[F] E)) : Prop :=
-  ∀ f : HA (AF F) σ J → ℝ≥0∞, Measurable f →
-    ∀ s : (Fin 1 → Fin M → AF F ⊗[F] E) → HA (AF F) σ J,
-      (∀ y, (∃ g : HA (AF F) σ J, g • ratTup (F := F) (AF F) x = y) →
-        s y • ratTup (F := F) (AF F) x = y) →
-      ∫⁻ g, f g ∂μ = ∫⁻ y, ∫⁻ h', f (s y * (h' : HA (AF F) σ J)) ∂μ' ∂ν
 
 end SW
 
@@ -140,7 +115,6 @@ def L0c (D : D7) : letI := D.host.cmStar; ∀ W : HSpace D.host.E, Set (Fin W.ra
   letI := D.host.cmStar
   fun W => {x | ∑ i, x i • W.frame i ∈ W.L0}
 
-
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory in
 def IsVolMeas (D : D7) : letI := D.host.cmStar; ∀ (W : HSpace D.host.E) (_P _Q : ℕ),
     Measure (HA (AF D.host.F) D.sp.cm.sig W.gram) → Prop :=
@@ -156,7 +130,6 @@ def IsVolMeas (D : D7) : letI := D.host.cmStar; ∀ (W : HSpace D.host.E) (_P _Q
           (finMat D.sp.cm.sig W.gram h).mulVec y ∈ latHat D.host.F D.host.E (L0c D W)) ∧
         ∀ ρ, ∃ b ∈ B ρ, UpqT.mat b * A ρ = A ρ * infMat D.sp.cm.sig W.gram (θ ρ) h} =
       ∏ ρ, D.cd.cd P Q (B ρ)
-
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory in
 def VolTie (D : D7) : Prop :=
@@ -234,55 +207,6 @@ section DS
 
 open Formalism.MainNotions.S MeasureTheory Matrix
 open scoped InnerProductSpace ComplexOrder
-
-def wtF {n : ℕ} (lam : Fin n → ℝ) (X km : Matrix (Fin n) (Fin n) ℂ) : ℝ :=
-  ∏ i : Fin (n - 1),
-    (leadMinor (km⁻¹ * NormedSpace.exp X * km) (i.val + 1) (by omega)).re ^
-      (-(lam ⟨i.val, by omega⟩ - lam ⟨i.val + 1, by omega⟩ + 1))
-
-def rank1 {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (x : H) : H →L[ℂ] H :=
-  (innerSL ℂ x).smulRight x
-
-def SmallPrimeLengthBound (_D : D7) : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ), Formalism.QuantumDeterminants.IsHCParam lam →
-    ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-      (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), IsDS ε lam σ →
-      ∀ E : H →L[ℂ] H, IsOrthProjOnto E (lowKSub ε lam σ) →
-      ∀ w : H, IsHighestUnit ε lam σ w →
-      ∀ h : ℝ, Formalism.QuantumDeterminants.GapAtLeast ε lam h →
-        120 * (n : ℝ) * ((min (nPlus ε) (nMinus ε) : ℕ) : ℝ) ^ ((3 : ℝ) / 2) ≤ h →
-      ∀ X : Matrix (Fin n) (Fin n) ℂ, Formalism.REAL.inP ε X →
-        (E ∘L σ (NormedSpace.exp X) ∘L E =
-          ((Module.finrank ℂ (lowKSub ε lam σ) : ℕ) : ℂ) •
-            ∫ kk : Formalism.REAL.KG ε, ((wtF lam X (Formalism.REAL.toMK kk) : ℝ) : ℂ) • rank1 (σ (Formalism.REAL.toMK kk) w)
-              ∂(Formalism.REAL.muK ε)) ∧
-        (E ∘L σ (NormedSpace.exp X) ∘L E).IsPositive
-
-def NonvanishingBesselPeriod (_D : D7) : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ), Formalism.QuantumDeterminants.IsHCParam lam →
-    ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-      (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), IsDS ε lam σ →
-      ∃ d : ℝ, IsFdeg (Formalism.REAL.muG ε) σ d
-
-def FamilyMassLastLine (_D : D7) : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ), Formalism.QuantumDeterminants.IsHCParam lam →
-    ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-      (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), IsDS ε lam σ →
-      IsKTypeOf ε σ (Formalism.QuantumDeterminants.lowK ε lam) (lowKSub ε lam σ) ∧
-        ((Module.finrank ℂ (lowKSub ε lam σ) : ℕ) : ℝ) = dTau ε lam
-
-def RepresentationDimensionGeneral (D : D7) (C3 : ℝ) : Prop :=
-  ∀ (N : ℕ) (ε : Fin N → Bool) (lam : Fin N → ℝ) (ep0 h0 : ℝ) (H : Type) [NormedAddCommGroup H]
-    [InnerProductSpace ℂ H] (σ : Matrix (Fin N) (Fin N) ℂ → (H →L[ℂ] H)) (w : H),
-    let p : ℝ := (Finset.univ.filter (fun a => ε a = true)).card
-    let q : ℝ := (Finset.univ.filter (fun a => ε a = false)).card
-    Formalism.QuantumDeterminants.IsHCParam lam → Formalism.QuantumDeterminants.GapAtLeast ε lam h0 →
-    Real.exp (-(N : ℝ)) ≤ ep0 → ep0 < 1 / 2 →
-    C3 * min p q * (p * q) ^ 3 * N * Real.log N / ep0 ^ 2 ≤ h0 →
-    IsDS ε lam σ → w ≠ 0 →
-    (1 - ep0) * Formalism.QuantumDeterminants.fdegHC lam ≤ fdegOf ((D.s.cdScale N ε : ENNReal) • Formalism.REAL.muG ε) σ w ∧
-    fdegOf ((D.s.cdScale N ε : ENNReal) • Formalism.REAL.muG ε) σ w ≤
-      4 * (Module.finrank ℂ (lowKSub ε lam σ) : ℝ) * (C3 * p * q * N * lamAbs lam) ^ (p * q)
 
 end DS
 
@@ -401,11 +325,7 @@ def VandermondeVariationBound (D : D7) (sc : Scale) (C0 C : ℝ) : Prop :=
         C * D.R.k * Real.log D.R.k) ∧
     ∀ u u' : D.what₂.Word, |logXuD D u - logXuD D u'| ≤ C * Real.log D.R.k
 
-def Adm3 (D : D7) : Prop := SmallPrimeLengthBound D ∧ NonvanishingBesselPeriod D ∧ FamilyMassLastLine D
-
 def Conclusion5₂ (D : D7) (sc : Scale) (C0 C : ℝ) : Prop := Conclusion5 D sc C0 C ∧ TorusPairsWithVariant D sc C0 C ∧ VandermondeVariationBound D sc C0 C
-
-def admitted (D : D7) (Lv : LevelData D) : Prop := Adm3 D ∧ adm17 D Lv
 
 section Fam
 

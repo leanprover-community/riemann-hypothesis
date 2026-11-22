@@ -20,8 +20,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit.QuotientForm
 
-local notation "κ[" R "]" => Matrix.map R (fun x : ℝ => (x : ℂ))
-
 section Real
 
 variable {g : ℕ} {Pr : Matrix (Fin g) (Fin g) ℝ}

@@ -5,7 +5,6 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedB
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.BlowupFlatBaseChange
 public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossings
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.AffineResolutionRule
-public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.AffineSpaceFieldBaseChange
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.AffineSpaceChartPresentation
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.EmbeddedResolutionRule
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.SupportFlatPullback
@@ -75,17 +74,6 @@ theorem isCompatibleWithFieldBaseChange_toAffineResolutionRule (R : EmbeddedReso
       (C.sel K (baseChange p K) (baseChangeToSpec p K))
       (C.basePres k Y p K hkerK hsncK)
       (C.pres K (baseChange p K) (baseChangeToSpec p K)))
-
-def affineSpacePresentedSelection (hemb : AffineEmbedsIntoAffineSpace.{u})
-    (hsncE : NilIsStrictNormalCrossingsOnAffineSpace.{u}) (hsm : AffineSpaceIsSmooth.{u}) :
-    PresentedSelection.{u} where
-  sel := affineSpaceEmbeddingChoice hemb hsncE hsm
-  pres := fun k _ _ Y p _ _ _ _ => affineSpaceChartPresentation hemb hsncE hsm k Y p
-  basePres := fun k _ _ Y p _ _ _ _ K _ _ _ _ _ =>
-    let n := (hemb k Y p).choose
-    presentationOfAmbientIso hsm _ n
-      (baseChangeAffineSpaceIso k K (ULift.{u, 0} (Fin n)))
-      (baseChangeAffineSpaceIso_hom_comp_toSpec k K (ULift.{u, 0} (Fin n)))
 
 @[simp]
 theorem affineSpacePresentedSelection_selection (hemb : AffineEmbedsIntoAffineSpace.{u})

@@ -76,9 +76,6 @@ private theorem right_tr {E : Type} [Field E] [NumberField E] (N : MeasE E) (u :
   rw [h3]
   exact hfd.setIntegral_eq N.fund hinv
 
-private theorem diag_val (E : Type) [Field E] [NumberField E] (t : Eˣ) :
-    ((IdeleGroup.diagonal E t : (A E)ˣ) : A E) = rt (t : E) := rfl
-
 private theorem diag_inv_val (E : Type) [Field E] [NumberField E] (t : Eˣ) :
     (((IdeleGroup.diagonal E t : (A E)ˣ)⁻¹ : (A E)ˣ) : A E) = rt ((t : E)⁻¹) := by
   rw [← map_inv, ← Units.val_inv_eq_inv_val]

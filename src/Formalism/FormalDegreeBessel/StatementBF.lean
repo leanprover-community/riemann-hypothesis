@@ -12,23 +12,6 @@ namespace Formalism.QuantumDeterminants
 
 abbrev Mt (k r : ℕ) := Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → ℂ
 
-def dualAct {Wp : Type*} [AddCommGroup Wp] [Module ℂ Wp] {m : ℕ}
-    (π : Matrix (Fin m) (Fin m) ℂ → Module.End ℂ Wp) (h : Matrix (Fin m) (Fin m) ℂ)
-    (w : Module.Dual ℂ Wp) : Module.Dual ℂ Wp :=
-  w ∘ₗ π h⁻¹
-
-def IsBesselFunctional {Vs Wp : Type*} [AddCommGroup Vs] [Module ℂ Vs] [AddCommGroup Wp] [Module ℂ Wp]
-    (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ)
-    (σ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → Module.End ℂ Vs)
-    (π : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → Module.End ℂ Wp)
-    (ℓ : Vs ⊗[ℂ] Module.Dual ℂ Wp →ₗ[ℂ] ℂ) : Prop :=
-  ∀ h ∈ UWset k r z, ∀ n ∈ Nset k r, ∀ (v : Vs) (w : Module.Dual ℂ Wp),
-    ℓ (σ (h * n) v ⊗ₜ dualAct π h w) = psi k r z c n * ℓ (v ⊗ₜ w)
-
-def pairing {Vs Wp : Type*} [AddCommGroup Vs] [Module ℂ Vs] [AddCommGroup Wp] [Module ℂ Wp]
-    (L : Vs →ₗ[ℂ] Wp) : Vs ⊗[ℂ] Module.Dual ℂ Wp →ₗ[ℂ] ℂ :=
-  TensorProduct.lift ((LinearMap.applyₗ (R := ℂ)).compl₁₂ L LinearMap.id).flip.flip
-
 def IsRepOn {Wp : Type*} [AddCommGroup Wp] [Module ℂ Wp] {m : ℕ}
     (U : Set (Matrix (Fin m) (Fin m) ℂ)) (π : Matrix (Fin m) (Fin m) ℂ → Module.End ℂ Wp) : Prop :=
   π 1 = 1 ∧ ∀ a ∈ U, ∀ b ∈ U, π (a * b) = π a * π b

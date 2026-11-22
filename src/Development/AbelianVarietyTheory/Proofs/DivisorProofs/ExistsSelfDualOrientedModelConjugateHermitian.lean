@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegIdxOfIsStd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BaseFits
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DownRight
@@ -53,14 +52,6 @@ def cvO (D : D7) (n : ℕ) : (Fin n → D.host.E) →ₛₗ[cO D] (Fin n → D.h
     first
       | exact Or.inl rfl
       | (simp [mul_comm]; exact Or.inl rfl)
-
-def cvE (D : D7) (n : ℕ) : (Fin n → D.host.E) →ₛₗ[starRingEnd D.host.E] (Fin n → D.host.E) where
-  toFun z i := star (z i)
-  map_add' x y := by ext i; simp
-  map_smul' o z := by
-    funext i
-    show star (o * z i) = star o * star (z i)
-    exact star_mul' _ _
 
 def conjLat {n : ℕ} (L : Submodule (𝓞 D.host.E) (Fin n → D.host.E)) : Submodule (𝓞 D.host.E) (Fin n → D.host.E) :=
   L.map (cvO D n)
@@ -183,7 +174,6 @@ theorem hasSignature_all (hG : B.IsGood D.sp.cm.sig) {m a b : ℕ} (J : Matrix (
     rw [e]; exact hs w
 
 end GlobalTheory.ConjSpace
-
 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc) in
 theorem GlobalTheory.ConjSpace.main : ∀ (D : D7) (Bs : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base D.host.F D.host.E), Bs.IsGood D.sp.cm.sig → GlobalTheory.SqStepBig.EmbCM Bs →

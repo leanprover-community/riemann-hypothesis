@@ -46,10 +46,6 @@ structure Pair (μ₂ : Measure (G1 K 2)) [μ₂.IsHaarMeasure] (τ₁ τ₂ : S
   irr₂ : CuspIrr μ₂ τ₂
   orth : τ₁ ⟂ τ₂
 
-def LineEx : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] (μ : Measure (G1 K (2 + 2))) [μ.IsHaarMeasure] (μ₂ : Measure (G1 K 2)) [μ₂.IsHaarMeasure]
-    (τ₁ τ₂ : Submodule ℂ (L2 μ₂)), Pair μ₂ τ₁ τ₂ → ∀ D : TypeDat K (2 + 2), ∃ d, Nonempty (Line μ τ₁ τ₂ D d)
-
 section Steps
 
 variable (μ : Measure (G1 K (2 + 2))) [μ.IsHaarMeasure] {μ₂ : Measure (G1 K 2)} [μ₂.IsHaarMeasure]

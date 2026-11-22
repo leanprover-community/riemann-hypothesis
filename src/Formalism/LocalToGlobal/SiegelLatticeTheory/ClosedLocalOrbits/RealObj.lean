@@ -36,8 +36,6 @@ def Zhat (ε : Fin n → Bool) (f f' : Fin (r + 1) → Fin n → ℂ) (g : Matri
 def Dl (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (l : ℕ) : ℂ :=
   if h : l ≤ r + 1 then (Z.submatrix (Fin.castLE h) (Fin.castLE h)).det else 0
 
-def cl (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (l : ℕ) : ℂ := Dl Z l / Dl Z (l - 1)
-
 def Gv (T T' : ℝ) (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) : ℝ :=
   ‖Dl Z (r + 1)‖ ^ 2 - T * T' * ‖Dl Z r‖ ^ 2
 
@@ -299,12 +297,6 @@ def PtRepExists (u u' : D.what₂.Word) (sc : ℝ) (i0 i0' : ∀ _ : InfinitePla
   ∀ w : Point D.host.E (D.R.rS + 1),
     (∀ v, 0 < Gv (Tw u) (Tw u') (ZhatO (ptC X v w))) →
       ∃ γ, IsPtRep X u u' w γ ∧ ∃ h h', IsDFrameX X u u' sc i0 i0' γ h h'
-
-def OOtReg (u u' : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
-    (F0' : FlagG (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (what₂ rows' : Finset (Submodule (𝓞 D.host.E) (VS D).V)) :
-    Prop :=
-  TermOp.FrameTie X u u' F0 F0' →
-  ∀ t : TermOp.GTerm X u u' F0 F0' what₂ rows', RegX X u u' t.pt.1 → TermOp.OOt t = OOinf X u u' t.pt.1
 
 end GlobV
 

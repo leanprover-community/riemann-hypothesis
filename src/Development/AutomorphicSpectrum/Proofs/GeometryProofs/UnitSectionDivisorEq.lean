@@ -85,23 +85,4 @@ theorem multAt_sup_span_eq_of_sub_mem {P W : Ideal (MRing ι)} (hW : W.IsPrime) 
       (fun x hx => ⟨u, hu, mul_mem_sup_span_of_sub_mem hm hx⟩)
       (fun x hx => ⟨v, hv, mul_mem_sup_span_of_sub_mem hm' hx⟩)]
 
-theorem cycles_eq_of_isUnitSec :
-    ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MRing ι)) (f g : MRing ι),
-      IsUnitSec P f g → divSupp P f = divSupp P g ∧
-        (∀ W ∈ divSupp P f, multAt (P ⊔ Ideal.span {f}) W = multAt (P ⊔ Ideal.span {g}) W) ∧
-        ∀ (n : ℕ) (L : Fin n → HermLine ι), vertR P L f = vertR P L g := by
-  intro K _ ι _ P f g h
-  have hsupp : divSupp P f = divSupp P g :=
-    Set.Subset.antisymm (divSupp_subset_of_isUnitSec h) (divSupp_subset_of_isUnitSec h.symm)
-  have hmult : ∀ W ∈ divSupp P f, multAt (P ⊔ Ideal.span {f}) W = multAt (P ⊔ Ideal.span {g}) W := by
-    rintro W ⟨hmin, hrel⟩
-    have hWp : W.IsPrime := hmin.1.1
-    obtain ⟨u, v, hu, hv, hm⟩ := h W hWp (le_sup_left.trans hmin.1.2) hrel
-    exact multAt_sup_span_eq_of_sub_mem hWp hu hv hm
-  refine ⟨hsupp, hmult, fun n L => ?_⟩
-  unfold vertR
-  rw [← hsupp]
-  refine finsum_mem_congr rfl fun W hW => ?_
-  rw [hmult W hW]
-
 end GlobalTheory.CompanionTheory.Ar.Flat

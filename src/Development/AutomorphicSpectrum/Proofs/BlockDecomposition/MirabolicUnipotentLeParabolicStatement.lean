@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicUnipotentLeParabolic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCIndValue
 
 @[expose] public section

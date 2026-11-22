@@ -20,9 +20,6 @@ def eT (X : PT E) (n : ℕ) : (Fin n → Vsp X.dim) ≃ₗ[ℂ] EuclideanSpace �
   left_inv v := rfl
   right_inv w := rfl
 
-theorem eT_apply (X : PT E) (n : ℕ) (v : Fin n → Vsp X.dim) (p : Fin n × Idx X.dim) :
-    eT X n v p = v p.1 p.2 := rfl
-
 theorem Hf_eT (X : PT E) (n : ℕ) (v w : Fin n → Vsp X.dim) :
     Hf (eT X n v) (eT X n w) = HC v w := by
   simp only [Hf, HC, eT_apply]

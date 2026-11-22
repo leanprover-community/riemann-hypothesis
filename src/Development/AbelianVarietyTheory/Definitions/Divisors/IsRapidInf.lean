@@ -18,22 +18,15 @@ variable {E : Type} [Field E] [NumberField E] {a : ℕ}
 
 def whit (F : GA E a → ℂ) (g : GA E a) : ℂ := GroundTheory.Automorphic.FourierWhittaker.whittaker F g
 
-
 variable (E a) in
 def NA : Set (GA E a) :=
   {u | (∀ i j : Fin a, j < i → (u : Matrix (Fin a) (Fin a) (Ad E)) i j = 0) ∧ ∀ i, (u : Matrix (Fin a) (Fin a) (Ad E)) i i = 1}
 
 def psiN (u : GA E a) : ℂ := (GroundTheory.Global.adelicChar E (GlobalTheory.Whittaker.superDiag u) : ℂ)
 
-
 variable (E a) in
 def supS (S : Finset (HeightOneSpectrum (𝓞 E))) : Set (GA E a) :=
   {g | ∀ w ∉ S, GeneralLinearGroup.map ((pLoc E w).comp (pFin E)) g = 1}
-
-
-variable (E) in
-def mirS (S : Finset (HeightOneSpectrum (𝓞 E))) (m : ℕ) : Set (GA E (m + 1)) :=
-  supS E (m + 1) S ∩ {g | ∀ j, (g : Matrix (Fin (m + 1)) (Fin (m + 1)) (Ad E)) (Fin.last m) j = if j = Fin.last m then 1 else 0}
 
 def diagPow {K : Type} [CommRing K] {n : ℕ} (ϖ : Kˣ) (l : Fin n → ℕ) : GL (Fin n) K :=
   Units.map (Matrix.diagonalRingHom (Fin n) K).toMonoidHom (MulEquiv.piUnits.symm fun i => ϖ ^ l i)

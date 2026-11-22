@@ -14,10 +14,6 @@ namespace TowerExample
 
 variable (p : ℕ) [Fact p.Prime]
 
-lemma ne_top (m : ℕ) (hm : 0 < m) : Ideal.span {(X : (ZMod p)⟦X⟧) ^ m} ≠ ⊤ := by
-  rw [Ne, Ideal.span_singleton_eq_top, PowerSeries.isUnit_iff_constantCoeff]
-  simp [zero_pow hm.ne']
-
 lemma isLocalHom_of_surj {R S : Type} [CommRing R] [IsLocalRing R] [CommRing S] [Nontrivial S]
     (f : R →+* S) (hf : Function.Surjective f) : IsLocalHom f := by
   refine ⟨fun a ha => ?_⟩
@@ -34,6 +30,5 @@ lemma isLocalHom_of_surj {R S : Type} [CommRing R] [IsLocalRing R] [CommRing S] 
   exact (Ideal.ne_top_iff_one _).1 (IsLocalRing.maximalIdeal.isMaximal R).ne_top h3
 
 end TowerExample
-
 
 end ReciprocityTheory.PGsh

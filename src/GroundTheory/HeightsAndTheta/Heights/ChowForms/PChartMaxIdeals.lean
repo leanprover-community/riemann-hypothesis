@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartMax
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PProperSymm
+public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsMahler
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LowerBoundConditional
 
 @[expose] public section

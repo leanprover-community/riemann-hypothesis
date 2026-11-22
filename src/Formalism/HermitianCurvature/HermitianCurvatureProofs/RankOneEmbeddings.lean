@@ -101,11 +101,6 @@ lemma emb_cont : Continuous (fun μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ => 
     | exact (continuous_apply _).comp (continuous_apply _)
     | fun_prop
 
-lemma lmulM_cont (a : Mat k r) : Continuous (lmulM a : Mt k r → Mt k r) := by
-  refine continuous_pi fun i => continuous_pi fun j => ?_
-  simp only [lmulM, Matrix.mul_apply, Matrix.of_apply]
-  fun_prop
-
 end Formalism.FourierDecayAlt.P.RankOneEmbeddings.Wb
 
 namespace Formalism.FourierDecayAlt.P
@@ -212,7 +207,6 @@ def Om (k r : ℕ) (z z' : Vc k r) : Set ℂ := {ζ | Tz k r z * Tz k r z' < Com
 
 theorem Om_open (z z' : Vc k r) : IsOpen (Om k r z z') := by
   exact isOpen_lt continuous_const Complex.continuous_normSq
-
 
 open Classical in
 def secF (k r : ℕ) (z z' : Vc k r) (μsec : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (ζ : ℂ) :
@@ -903,7 +897,6 @@ theorem cW_cont : Continuous (cWeight k r) := by
 theorem cW_nonneg (c : Fin r → ℂ) : 0 ≤ cWeight k r c := by
   unfold cWeight
   exact Finset.prod_nonneg fun a _ => pow_nonneg (norm_nonneg _) _
-
 
 set_option maxHeartbeats 800000 in
 theorem engine {μG μN μb μW μW' : Measure (Mt k r)} [SFinite μN] [SFinite μb] [SFinite μW] [SFinite μW'] (T T' : ℝ)

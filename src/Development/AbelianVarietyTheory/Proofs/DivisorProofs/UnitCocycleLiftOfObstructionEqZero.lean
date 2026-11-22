@@ -19,8 +19,6 @@ def unitOneSub {B : Type} [CommRing B] (w : B) (h : w * w = 0) : Bˣ where
   val_inv := by linear_combination (-1 : B) * h
   inv_val := by linear_combination (-1 : B) * h
 
-theorem unitOneSub_val {B : Type} [CommRing B] (w : B) (h : w * w = 0) : (unitOneSub w h : B) = 1 - w := rfl
-
 theorem mul_eq_zero_of_mem {R B : Type} [CommRing R] [CommRing B] [Algebra R B] {I : Ideal R} (hI : I ^ 2 = 0)
     {x y : B} (hx : x ∈ I.map (algebraMap R B)) (hy : y ∈ I.map (algebraMap R B)) : x * y = 0 := by
   have h := Ideal.mul_mem_mul hx hy

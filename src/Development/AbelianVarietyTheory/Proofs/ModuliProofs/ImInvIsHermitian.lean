@@ -24,9 +24,6 @@ def per (τ : Matrix (Fin h) (Fin h) ℂ) : (Fin h ⊕ Fin h → ℤ) →ₗ[ℤ
         simp only [Matrix.mulVec, dotProduct, Pi.add_apply, Int.cast_add, mul_add, Finset.sum_add_distrib]
         ring }
 
-theorem per_apply (τ : Matrix (Fin h) (Fin h) ℂ) (x : Fin h ⊕ Fin h → ℤ) (i : Fin h) :
-    per τ x i = τ.mulVec (fun i' => (x (.inl i') : ℂ)) i + (x (.inr i) : ℂ) := rfl
-
 def imInv (τ : Matrix (Fin h) (Fin h) ℂ) : Matrix (Fin h) (Fin h) ℂ :=
   (τ.map Complex.im)⁻¹.map fun x : ℝ => (x : ℂ)
 

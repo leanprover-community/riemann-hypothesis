@@ -6,7 +6,7 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Teichmull
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DepthZeroLabelsOfLabelLaws
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.RootsCharpolyPowEqMapPow
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsTameGenAt
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsTeichmullerMaps
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GoodTupleConditionOfIdempotentZero
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCongOfCongOnFixed
 
 @[expose] public section
@@ -19,7 +19,6 @@ namespace GlobalTheory.WeilDeligne
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
 variable {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)}
-
 
 variable (E) in
 def Wild (A : ValuationSubring Ω) : Subgroup (G E Ω) where
@@ -55,11 +54,9 @@ def Wild (A : ValuationSubring Ω) : Subgroup (G E Ω) where
     rw [e, Valuation.map_neg, map_div₀, h2, div_one]
     exact h1
 
-
 omit [NumberField E] in
 theorem mem_Wild {σ : G E Ω} :
     σ ∈ Wild E A ↔ ∀ y : Ω, y ≠ 0 → A.valuation (σ y / y - 1) < 1 := Iff.rfl
-
 
 open Pointwise in
 theorem Wild_le_Ine : Wild E A ≤ Ine (F := E) A := by
@@ -377,11 +374,9 @@ end WD
 
 variable {g : ℕ} [Fact g.Prime]
 
-
 variable (A w) in
 def TeichmullerInertiaLabelCondition (τ : Fbar g →* ℂ) (γ : G E Ω) : Prop :=
   normV w = g ∧ γ ∈ Ine (F := E) A ∧ IsTeich τ
-
 
 omit [IsAlgClosure E Ω] in
 theorem TeichmullerInertiaLabelCondition.of_tameGenAt {τ : Fbar g →* ℂ} {γ : G E Ω} (hw : normV w = g)
@@ -400,7 +395,6 @@ theorem existsUnique_lab (H : TeichmullerInertiaLabelCondition A w τ γ) (x : W
   have h2 := tameEig_map_pow x H.2.1
   rw [H.1] at hc h2
   exact H.2.2.existsUnique_monic (fun z hz => H.2.2.exists_eq h0 hc (hn z hz)) h2
-
 
 open Classical in
 def lab (τ : Fbar g →* ℂ) (γ : G E Ω) (x : WD h) : (ZMod g)[X] :=
@@ -532,19 +526,6 @@ theorem rootsBar_X_sub_C_pow (c : ZMod g) (n : ℕ) :
     rootsBar ((X - C c) ^ n) = n • {algebraMap (ZMod g) (Fbar g) c} := by
   rw [rootsBar, Polynomial.map_pow, Polynomial.map_sub, map_X, map_C, roots_pow, roots_X_sub_C]
 
-theorem lab_mk_of_trivial (H : TeichmullerInertiaLabelCondition A w τ γ) (a : WDRep h V)
-    (ha : ∀ σ : Ine (F := E) A, a.ρ (ineIncl h σ) = 1) :
-    lab τ γ (mk a) = (X - 1) ^ finrank ℂ V := by
-  rw [lab_eq_iff_of_tame H ((tame_mk a).mpr fun σ hσ => ha ⟨σ, Wild_le_Ine hσ⟩), ← C_1,
-    rootsBar_X_sub_C_pow, inePol_of_mem_Ine _ H.2.1, charPol_mk, ha, LinearMap.charpoly_one, ← C_1,
-    roots_pow, roots_X_sub_C]
-  exact ⟨(monic_X_sub_C _).pow _, by simp [Multiset.map_nsmul]⟩
-
-theorem lab_lpSp (H : TeichmullerInertiaLabelCondition A w τ γ) (n : ℕ) :
-    lab τ γ (lpSp (h := h) n) = (X - 1) ^ n := by
-  rw [lpSp, lab_mk_of_trivial H (WDRep.sp (h := h) n) (WDRep.unr_diag (WDRep.spEig w n)).2]
-  simp
-
 theorem lab_lpOfChar_eq_iff (H : TeichmullerInertiaLabelCondition A w τ γ) {χ : Weil h →* ℂˣ} (hχ : IsSmooth χ)
     (ht : ∀ σ : Weil h, (σ : G E Ω) ∈ Wild E A → χ σ = 1) (c : ZMod g) :
     lab τ γ (lpOfChar h χ hχ) = X - C c ↔
@@ -559,22 +540,5 @@ theorem lab_lpOfChar_eq_iff (H : TeichmullerInertiaLabelCondition A w τ γ) {χ
   exact and_iff_right (monic_X_sub_C c)
 
 end WD
-
-theorem exists_tameInertiaSetting (h : IsPlaceOver A w) (hw : normV w = g) :
-    ∃ (τ : Fbar g →* ℂ) (γ : G E Ω), TameGenAt A γ ∧ TeichmullerInertiaLabelCondition A w τ γ := by
-  obtain ⟨γ, hγ⟩ := GlobalTheory.MemTame.exists_tameGenAt E Ω w A h
-  obtain ⟨τ, hτ⟩ := (GlobalTheory.MemN.exists_teichmuller_maps g Fact.out).1
-  exact ⟨τ, γ, hγ, .of_tameGenAt hw hγ hτ⟩
-
-theorem exists_normV_eq (g : ℕ) (hg : g.Prime) : ∃ v : HeightOneSpectrum (𝓞 ℚ), normV v = g := by
-  obtain ⟨p, hp⟩ := (Rat.HeightOneSpectrum.primesEquiv (R := 𝓞 ℚ)).surjective ⟨g, hg⟩
-  have hp' : Rat.HeightOneSpectrum.natGenerator p = g := congrArg Subtype.val hp
-  have e := Ideal.quotientEquiv p.asIdeal _ (Rat.IsIntegralClosure.intEquiv (𝓞 ℚ))
-    (Rat.HeightOneSpectrum.span_natGenerator p)
-  refine ⟨p, ?_⟩
-  rw [normV, Nat.card_congr e.toEquiv, hp']
-  simpa using Nat.card_congr (Int.quotientSpanNatEquivZMod g).toEquiv
-
-
 
 end GlobalTheory.WeilDeligne

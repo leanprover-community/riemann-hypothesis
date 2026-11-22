@@ -268,8 +268,6 @@ open GlobalTheory.Mem.Chr
 
 variable (K : Type) [Field K] [NumberField K] [IsCMField K]
 
-local notation3 "K⁺" => maximalRealSubfield K
-
 theorem val_under (w : HeightOneSpectrum (𝓞 K)) (v : HeightOneSpectrum (𝓞 K⁺))
     (hwv : w.under (𝓞 K⁺) = v)
     (h : (Ideal.primesOver v.asIdeal (𝓞 K)).ncard = 2 ∨
@@ -408,7 +406,6 @@ theorem etaAll_eq_one {m : 𝓞 K⁺} (hm : m ≠ 0)
   rwa [map_mul, h1, mul_one] at h2
 
 end CM
-
 
 open Classical in
 theorem eta_product_formula : ∀ (R : Ranks) (H : Formalism.BasicNotions.Host R) (a : (H.F)ˣ), (∏ᶠ v : HeightOneSpectrum (𝓞 H.F), etaFin (L := H.E) H.F v a) * ∏ w : InfinitePlace H.F, etaInf H.F w a = 1 := by

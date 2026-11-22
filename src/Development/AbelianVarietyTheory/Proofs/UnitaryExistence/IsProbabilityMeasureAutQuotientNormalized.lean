@@ -25,12 +25,9 @@ section Adelic
 
 variable {G : Type} [Group G] (Γ : Subgroup G) {Comp : Type}
 
-abbrev AutQ : Type := Quotient (QuotientGroup.rightRel Γ)
-
 variable {K : Type} [Field K] {C : Type} [AddCommGroup C] [Module K C] (σ : K →+* ℂ)
 
 variable [MeasurableSpace G] (μ₀ : Measure (AutQ Γ))
-
 
 end Adelic
 
@@ -41,7 +38,6 @@ section AdelicCusp
 variable (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (σ : c.F →+* ℂ) {G : Type} [Group G] [MeasurableSpace G]
   (Γ : Subgroup G) (μ₀ : Measure (AutQ Γ)) (dict : G → Σ k, Frame ((U σ).X k).Ψ r) (mu : G → ℂ)
 
-
 variable {U σ Γ μ₀ dict mu}
 
 end AdelicCusp
@@ -50,7 +46,6 @@ section Fundamental
 
 variable {G : Type} [Group G] [MeasurableSpace G] [MeasurableMul G] {μ : Measure G} [μ.IsMulLeftInvariant]
   {Λ : Subgroup G} [Countable Λ] {𝓕 : Set G}
-
 
 open scoped Pointwise in
 theorem iSup_inj_eq (h𝓕 : IsFundamentalDomain Λ 𝓕 μ) {Φ : G → ℝ≥0∞} (hΦ : ∀ (s : Λ) g, Φ (s • g) = Φ g) :

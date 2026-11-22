@@ -22,7 +22,6 @@ variable {l : ℕ} [hl : Fact l.Prime] {a : ℕ} [NeZero a] {e : ℕ} [NeZero e]
   (t : Wq l a →ₐ[ℤ_[l]] O) (ϖ : PiSys l e)
   {ι κ μ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ] [Fintype μ] [DecidableEq μ]
 
-
 variable (a) in
 theorem PiSys.isGalois_field (he : e ∣ l ^ a - 1) : IsGalois ℚ_[l] ↥(ϖ.field a).1 := by
   have : Normal ℚ_[l] ↥(ϖ.field a).1 := by
@@ -78,23 +77,16 @@ theorem phiW_smul (r : OW l O) (v : ι → OW l O) : phiW t ϖ P (r • v) = fro
 
 def Treal : Submodule O (ι → OW l O) := LinearMap.eqLocus (phiW t ϖ P) LinearMap.id
 
-
 variable {t ϖ P} in
 theorem mem_Treal {v : ι → OW l O} : v ∈ Treal t ϖ P ↔ phiW t ϖ P v = v := Iff.rfl
 
-
-variable (O ι) in
-def galCoef (g : GQ l) : (ι → OW l O) →ₗ[O] (ι → OW l O) := (galOW O g).toLinearMap.compLeft ι
-
 abbrev ME : Submodule (invE l e (A O K)) (Vec K a ι) := P.Mext (invE l e (A O K))
-
 
 variable {P} in
 omit hl [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
   [NormedAlgebra ℚ_[l] K] in
 theorem mem_ME_of_mem_M {v : Vec K a ι} (hv : v ∈ P.M) : v ∈ ME P :=
   mem_tot.2 fun τ i => le_away _ _ (mem_tot.1 hv τ i)
-
 
 variable {P} in
 omit hl [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
@@ -104,7 +96,6 @@ theorem mem_ME_of_mem_L {v : Vec K a ι} (hv : v ∈ P.L) : v ∈ ME P :=
     obtain ⟨m, hm, h⟩ := P.mem_extc.1 (mem_tot.1 hv τ)
     rw [h]
     exact Subalgebra.sum_mem _ fun j _ => mul_mem (P.mx_mem τ i j) (le_away _ _ (hm j))
-
 
 omit hl [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
   [NormedAlgebra ℚ_[l] K] in
@@ -148,17 +139,10 @@ theorem toW_phi {v : Vec K a ι} (hv : v ∈ P.M) :
   rw [PiSys.iTot_frob, ← frobOW_inclO, ← ϖ.iW_of_mem t K]
   rfl
 
-
 variable (l O ι) in
 def inclV : (ι → OA l O) →ₗ[O] (ι → OW l O) := (inclO l O).toLinearMap.compLeft ι
 
 def MA (_ : PhiMod O K l e a ι) : Submodule O (ι → OW l O) := LinearMap.range (inclV l O ι)
-
-
-omit [NeZero a] [NeZero e] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] [NormedAlgebra ℚ_[l] K] in
-theorem galCoef_mem_MA (g : GQ l) {v : ι → OW l O} (hv : v ∈ MA P) : galCoef O ι g v ∈ MA P := by
-  obtain ⟨c, rfl⟩ := hv
-  exact ⟨fun i => galOA O g (c i), funext fun i => (galOW_inclO g (c i)).symm⟩
 
 def inclL : (ι → OA l O) →ₗ[O] (ι → OW l O) :=
   ((frobMat t ϖ P).mulVecLin.restrictScalars O).comp (inclV l O ι)
@@ -179,14 +163,12 @@ theorem toW_mem_LA {v : Vec K a ι} (hv : v ∈ P.L) : toW t ϖ P ⟨v, mem_ME_o
   choose m hm h using fun τ => P.mem_extc.1 (mem_tot.1 hv τ)
   exact ⟨_, (toW_of_mx t ϖ P _ (fun j τ => ⟨m τ j, hm τ j⟩) h).symm⟩
 
-
 omit hl [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
   [NormedAlgebra ℚ_[l] K] in
 def coordL (B : Subalgebra O K⟦X⟧) : P.ext B →ₗ[O] (ι → ZMod a → B) where
   toFun v i τ := ⟨(P.mxInv τ *ᵥ v.1 τ) i, P.mem_extc_iff.1 (mem_tot.1 v.2 τ) i⟩
   map_add' v w := funext fun i => funext fun τ => Subtype.ext (congrFun (Matrix.mulVec_add (P.mxInv τ) (v.1 τ) (w.1 τ)) i)
   map_smul' c v := funext fun i => funext fun τ => Subtype.ext (congrFun (Matrix.mulVec_smul (P.mxInv τ) c (v.1 τ)) i)
-
 
 omit hl [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
   [NormedAlgebra ℚ_[l] K] in
@@ -257,27 +239,6 @@ theorem homW_phiW (F : BK.Hom P Q) (v : ι → OW l O) :
   ext1 i
   exact (RingHom.map_mulVec (frobOW l O).toRingHom _ _ i).symm
 
-theorem homW_injective : Function.Injective (homW t ϖ : BK.Hom P Q → _) := by
-  rintro ⟨F, hF, _⟩ ⟨G, hG, _⟩ h
-  have h1 := Matrix.toLin'.injective h
-  obtain rfl : F = G := funext fun τ => Matrix.ext fun i j => congrArg Subtype.val
-    (congrFun (ϖ.iTot_injective t K (inclO_injective (congrFun₂ h1 i j))) τ)
-  rfl
-
-theorem homW_scalar (c : O) (v : ι → OW l O) : homW t ϖ (BK.Hom.scalar P c) v = c • v := by
-  have : (homMat t ϖ (BK.Hom.scalar P c)).map (inclO l O) = c • (1 : Matrix ι ι (OW l O)) := by
-    ext1 i j
-    have h : (fun τ => (⟨(BK.Hom.scalar P c).mat τ i j, (BK.Hom.scalar P c).mem τ i j⟩ : A O K)) =
-        c • (1 : Matrix ι ι (ZMod a → A O K)) i j := funext fun τ => Subtype.ext (by
-      change algebraMap O K⟦X⟧ c * (1 : Matrix ι ι K⟦X⟧) i j =
-        c • (((1 : Matrix ι ι (ZMod a → A O K)) i j τ : A O K) : K⟦X⟧)
-      rw [← Algebra.smul_def]
-      by_cases hij : i = j <;> simp [Matrix.one_apply, hij])
-    change inclO l O (ϖ.iTot t K _) = _
-    rw [h, map_smul, map_smul]
-    by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
-  rw [homW_apply, this, Matrix.smul_mulVec, Matrix.one_mulVec]
-
 end Hom
 
 section Lat
@@ -298,7 +259,6 @@ structure Ident (P : PhiMod O K l e a ι) (T : LocLat G ℚ_[l] K O) where
 
   j : (ι → OW l O) ≃ₗ[OW l O] TW (OW l O) T
   j_φ : ∀ v, j (phiW t ϖ P v) = TWmap (frobOW l O) T (j v)
-
 
 omit [Module.Finite ℤ_[l] O] in
 theorem frob_fixed (T : LocLat G ℚ_[l] K O) :
@@ -330,10 +290,6 @@ theorem range_ofT : LinearMap.range I.ofT = Treal t ϖ P := by
   ext v
   rw [mem_Treal, ← I.j.injective.eq_iff, I.j_φ, (frob_fixed T).2.1]
   exact exists_congr fun x => by rw [← I.j.injective.eq_iff, j_ofT, eq_comm]
-
-def equivT : ↥T.L.T ≃ₗ[O] Treal t ϖ P :=
-  (LinearEquiv.ofInjective I.ofT I.ofT_injective).trans (LinearEquiv.ofEq _ _ I.range_ofT)
-
 
 include I in
 theorem exists_phiW_sub (y : ι → OW l O) : ∃ v, phiW t ϖ P v - v = y := by
@@ -386,7 +342,6 @@ theorem act_mul (s s' : GQ l) (g g' : G) (v : ι → OW l O) :
 def IsLMat (s : GQ l) (g : G) (Γ : Matrix ι ι (OA l O)) : Prop :=
   ∀ c : ι → OA l O, I.act s g (inclL t ϖ P c) = inclL t ϖ P (Γ *ᵥ fun i => galOA O s (c i))
 
-
 theorem exists_isLMat_iff (s : GQ l) (g : G) :
     (∃ Γ, I.IsLMat s g Γ) ↔ ∀ v ∈ LA t ϖ P, I.act s g v ∈ LA t ϖ P := by
   refine ⟨?_, fun h => ?_⟩
@@ -416,11 +371,6 @@ def IsMapOf {P : PhiMod O K l e a ι} {Q : PhiMod O K l e a κ} {T T' : LocLat G
     (F : BK.Hom P Q) : Prop :=
   ∀ v, I'.j (homW t ϖ F v) = latW f (I.j v)
 
-theorem IsMapOf.unique {P : PhiMod O K l e a ι} {Q : PhiMod O K l e a κ} {T T' : LocLat G ℚ_[l] K O}
-    {t : Wq l a →ₐ[ℤ_[l]] O} {ϖ : PiSys l e} {I : Ident t ϖ P T} {I' : Ident t ϖ Q T'} {f : LatHom T.L T'.L}
-    {F F' : BK.Hom P Q} (h : IsMapOf I I' f F) (h' : IsMapOf I I' f F') : F = F' :=
-  homW_injective t ϖ (LinearMap.ext fun v => I'.j.injective ((h v).trans (h' v).symm))
-
 theorem IsMapOf.homW_ofT {P : PhiMod O K l e a ι} {Q : PhiMod O K l e a κ} {T T' : LocLat G ℚ_[l] K O}
     {t : Wq l a →ₐ[ℤ_[l]] O} {ϖ : PiSys l e} {I : Ident t ϖ P T} {I' : Ident t ϖ Q T'} {f : LatHom T.L T'.L}
     {F : BK.Hom P Q} (h : IsMapOf I I' f F) (x : ↥T.L.T) :
@@ -449,12 +399,10 @@ def kappa (T : LocLat G ℚ_[l] K O) :
       change ((1 : O) ⊗ₜ[ℤ_[l]] (z • w)) ⊗ₜ[O] x = ((1 : O) ⊗ₜ[ℤ_[l]] w) ⊗ₜ[O] (algebraMap ℤ_[l] O z • x)
       rw [tmul_smul, ← algebraMap_smul O z, smul_tmul]
 
-
 omit [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] [IsUltrametricDist K] [IsUnitBall O K] in
 theorem kappa_tmul (T : LocLat G ℚ_[l] K O) (w : WCb l) (x : ↥T.L.T) :
     letI := zlLat T
     kappa T (w ⊗ₜ[ℤ_[l]] x) = ((1 : O) ⊗ₜ[ℤ_[l]] w) ⊗ₜ[O] x := rfl
-
 
 omit [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] [IsUltrametricDist K] [IsUnitBall O K] in
 theorem kappa_bijective (T : LocLat G ℚ_[l] K O) :
@@ -475,10 +423,8 @@ theorem kappa_bijective (T : LocLat G ℚ_[l] K O) :
 
 end Lat
 
-
 variable (a O K) in
 abbrev Lat : Type 1 := LocLat ↥(GK (ϖ.field a)) ℚ_[l] K O
-
 
 variable {t ϖ} in
 def IsBK {P : PhiMod O K l e a ι} {T : Lat a O K ϖ} (I : Ident t ϖ P T) : Prop :=
@@ -507,7 +453,6 @@ structure BKFunctor (C : Lat a O K ϖ → Prop) where
   isMapOf : ∀ {T T'} (hT : C T) (hT' : C T') (f : LatHom T.L T'.L),
     IsMapOf (obj T hT).I (obj T' hT').I f (map hT hT' f)
 
-
 variable {t ϖ} in
 def BKFunctor.ofExists {C : Lat a O K ϖ → Prop} (h₁ : ∀ T, C T → Nonempty (BKMod t ϖ T))
     (h₂ : ∀ {T T' : Lat a O K ϖ} (M : BKMod t ϖ T) (M' : BKMod t ϖ T') (f : LatHom T.L T'.L),
@@ -516,7 +461,6 @@ def BKFunctor.ofExists {C : Lat a O K ϖ → Prop} (h₁ : ∀ T, C T → Nonemp
   map _ _ f := (h₂ _ _ f).choose
   isMapOf _ _ f := (h₂ _ _ f).choose_spec
 
-
 variable (K) in
 abbrev CrysBKFunctor (Pl : LocPrime l) : Type 1 :=
   BKFunctor t ϖ fun T : Lat a O K ϖ => IsCrys (Pl.PD (ϖ.field a)) T.ρ
@@ -524,17 +468,6 @@ abbrev CrysBKFunctor (Pl : LocPrime l) : Type 1 :=
 namespace BKFunctor
 
 variable {t ϖ} {C : Lat a O K ϖ → Prop} (F : BKFunctor t ϖ C)
-
-theorem map_smul {T : Lat a O K ϖ} (hT : C T) (c : O) :
-    F.map hT hT (latSmul T c) = BK.Hom.scalar _ c := by
-  refine (F.isMapOf hT hT _).unique fun v => ?_
-  rw [homW_scalar, LinearMapClass.map_smul_of_tower]
-  induction (F.obj T hT).I.j v using TensorProduct.induction_on with
-  | zero => simp only [smul_zero, map_zero]
-  | tmul w x =>
-    rw [← tmul_smul]
-    exact congrArg (fun y : ↥T.L.T => w ⊗ₜ[O] y) (Subtype.ext (algebraMap_smul K c (x : T.V)).symm)
-  | add x y hx hy => simp only [smul_add, map_add (f := _), hx, hy]
 
 end BKFunctor
 
@@ -584,14 +517,6 @@ namespace Conn
 
 variable {P : PhiMod O K l e a ι} {Q : PhiMod O K l e a κ} (D : Conn P)
 
-def FrobCompat : Prop :=
-  ∀ m ∈ P.MM, D.nabla (P.phi m) = ((l : K⟦X⟧) * X ^ (l - 1)) • P.phi (D.nabla m)
-
-def TopNilp : Prop :=
-  ∀ m ∈ P.MM, ∀ r : ℕ, ∃ i₀ : ℕ, ∀ i ≥ i₀, ∃ m' ∈ P.MM, (D.nabla ^ i) m = (l : K⟦X⟧) ^ r • m'
-
-def Natural (D' : Conn Q) (F : BK.Hom P Q) : Prop := ∀ m ∈ P.MM, D'.nabla (F.app m) = F.app (D.nabla m)
-
 end Conn
 
 namespace Ident
@@ -611,45 +536,21 @@ def Taylor (D : Conn P) : Prop :=
 
 end Ident
 
-
-variable {t ϖ} in
-structure BKFunctor.IntConn {C : Lat a O K ϖ → Prop} (F : BKFunctor t ϖ C) where
-
-  conn : ∀ T (hT : C T), Conn (F.obj T hT).P
-  natural : ∀ {T T'} (hT : C T) (hT' : C T') (f : LatHom T.L T'.L),
-    (conn T hT).Natural (conn T' hT') (F.map hT hT' f)
-  frobCompat : ∀ T (hT : C T), (conn T hT).FrobCompat
-  topNilp : ∀ T (hT : C T), (conn T hT).TopNilp
-  stable : ∀ T (hT : C T), (F.obj T hT).I.Stable
-  taylor : ∀ T (hT : C T), (F.obj T hT).I.Taylor (conn T hT)
-
 end Conn
 
 section Triv
 
-
 variable (O K l e a ι) in
 def unitMod : PhiMod O K l e a ι := ⟨fun _ => 1⟩
 
+omit hl [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
+  [NormedAlgebra ℚ_[l] K] in
 
 omit hl [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
   [NormedAlgebra ℚ_[l] K] in
-theorem mx_unitMod (τ : ZMod a) : (unitMod l a e O K ι).mx τ = 1 :=
-  Matrix.map_one _ (map_zero _) (map_one _)
-
 
 omit hl [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
   [NormedAlgebra ℚ_[l] K] in
-theorem mxInv_unitMod (τ : ZMod a) : (unitMod l a e O K ι).mxInv τ = 1 := by
-  rw [← (unitMod l a e O K ι).mx_mul_mxInv τ, mx_unitMod, one_mul]
-
-
-omit hl [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
-  [NormedAlgebra ℚ_[l] K] in
-theorem mem_ext_unitMod {B : Subalgebra O K⟦X⟧} {v : Vec K a ι} :
-    v ∈ (unitMod l a e O K ι).ext B ↔ ∀ τ i, v τ i ∈ B :=
-  mem_tot.trans (forall_congr' fun τ => by
-    rw [PhiMod.mem_extc_iff, mxInv_unitMod, Matrix.one_mulVec, mem_vecs])
 
 theorem frobMat_unitMod : frobMat t ϖ (unitMod l a e O K ι) = 1 := by
   rw [frobMat, ← Matrix.map_one (ϖ.iW t K) (map_zero _) (map_one _)]
@@ -659,80 +560,11 @@ theorem frobMat_unitMod : frobMat t ϖ (unitMod l a e O K ι) = 1 := by
   change (1 : Matrix ι ι (invE l e (A O K))) i j = _
   by_cases h : i = j <;> simp [Matrix.one_apply, h]
 
-
-variable (l e a ι) in
-def unitConn : Conn (unitMod l a e O K ι) where
-  nabla := ((PowerSeries.derivative (R := K)).toLinearMap.compLeft ι).compLeft (ZMod a)
-  leibniz f v := funext fun τ => funext fun i => by
-    change PowerSeries.derivative (f τ * v τ i) =
-      PowerSeries.derivative (f τ) * v τ i + f τ * PowerSeries.derivative (v τ i)
-    rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul]
-    ring
-  mem_MM m hm := mem_ext_unitMod.2 fun τ i => derivative_mem_S (mem_ext_unitMod.1 hm τ i)
-
-
 omit [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
   [NormedAlgebra ℚ_[l] K] in
-theorem unitConn_frobCompat : (unitConn (O := O) (K := K) l a e ι).FrobCompat := fun m _ =>
-  funext fun τ => funext fun i => by
-    rw [Pi.smul_apply, Pi.smul_apply, PhiMod.phi_apply, mx_unitMod, Matrix.one_mulVec]
-    change PowerSeries.derivative ((unitMod l a e O K ι).phi m τ i) =
-      _ * frob K l (PowerSeries.derivative (m (τ - 1) i))
-    rw [PhiMod.phi_apply, mx_unitMod, Matrix.one_mulVec, frobV_apply]
-    apply mul_left_cancel₀ (X_ne_zero (R := K))
-    have h := N_frob l (m (τ - 1) i)
-    rw [BK.N_apply, BK.N_apply, map_mul, frob_X] at h
-    have h1 : (X : K⟦X⟧) ^ l = X * X ^ (l - 1) := by rw [← pow_succ', Nat.sub_add_cancel hl.out.one_le]
-    rw [h, h1]
-    ring
-
-
-omit [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] in
-theorem exists_iterate_derivative {f : K⟦X⟧} (hf : f ∈ S O K e) (r : ℕ) : ∃ i₀ : ℕ, ∀ i ≥ i₀,
-    ∃ h ∈ S O K e, (PowerSeries.derivative (R := K))^[i] f = (l : K⟦X⟧) ^ r * h := by
-  obtain ⟨N, hN⟩ := exists_sum_monomial_add l e hf r
-  obtain ⟨h, hh, hf⟩ := hN N le_rfl
-  have key : ∀ (i : ℕ) (p h : K⟦X⟧), (∀ n, N ≤ n → coeff n p = 0) → h ∈ S O K e →
-      ∃ p' h', (∀ n, N ≤ n + i → coeff n p' = 0) ∧ h' ∈ S O K e ∧
-        (PowerSeries.derivative (R := K))^[i] (p + (l : K⟦X⟧) ^ r * h) = p' + (l : K⟦X⟧) ^ r * h' := by
-    intro i p h hp hh
-    induction i with
-    | zero => exact ⟨p, h, hp, hh, rfl⟩
-    | succ i ih =>
-      obtain ⟨p', h', h1, h2, h3⟩ := ih
-      refine ⟨PowerSeries.derivative p', _, fun n hn => ?_, derivative_mem_S h2, ?_⟩
-      · rw [coeff_derivative, h1 _ (by omega), zero_mul]
-      · rw [Function.iterate_succ_apply', h3, map_add (f := _), ← Nat.cast_pow, ← nsmul_eq_mul, map_nsmul, nsmul_eq_mul]
-  refine ⟨N, fun i hi => ?_⟩
-  obtain ⟨p', h', h1, h2, h3⟩ := key i (∑ n ∈ Finset.range N, monomial n (coeff n f)) h (fun n hn => by
-    simp [coeff_monomial, hn]) hh
-  refine ⟨h', h2, ?_⟩
-  rw [hf, h3, show p' = 0 from PowerSeries.ext fun n => h1 n (by omega), zero_add]
-
-
-omit [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] in
-theorem unitConn_topNilp : (unitConn (O := O) (K := K) l a e ι).TopNilp := fun m hm r => by
-  choose N hN using fun p : ZMod a × ι => exists_iterate_derivative (l := l) (mem_ext_unitMod.1 hm p.1 p.2) r
-  refine ⟨Finset.univ.sup N, fun i hi => ?_⟩
-  choose h hh e1 using fun p => hN p i ((Finset.le_sup (Finset.mem_univ p)).trans hi)
-  refine ⟨fun τ j => h (τ, j), mem_ext_unitMod.2 fun τ j => hh (τ, j), funext fun τ => funext fun j => ?_⟩
-  refine Eq.trans ?_ (e1 (τ, j))
-  clear e1 hh h hi
-  induction i with
-  | zero => rfl
-  | succ i ih => rw [pow_succ', Function.iterate_succ_apply', ← ih]; rfl
-
 
 omit hl [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
   [NormedAlgebra ℚ_[l] K] in
-theorem unitConn_desc (i : ℕ) (m : Vec K a ι) (τ : ZMod a) (j : ι) :
-    (unitConn (O := O) (K := K) l a e ι).desc i m τ j = descN K i (m τ j) := by
-  induction i generalizing m with
-  | zero => simp [Conn.desc_zero, descN]
-  | succ i ih =>
-    rw [Conn.desc_succ, ih, descN, descN, descPochhammer_succ_right, map_mul, Module.End.mul_apply, map_sub,
-      Polynomial.aeval_X, map_natCast, LinearMap.sub_apply, Module.End.natCast_apply]
-    rfl
 
 variable {G : Type} [Group G] [TopologicalSpace G]
 
@@ -749,15 +581,6 @@ theorem unitIdent_j (T : LocLat G ℚ_[l] K O) (b : Module.Basis ι O ↥T.L.T) 
     (unitIdent t ϖ T b).j v = ∑ i, v i ⊗ₜ[O] b i := by
   simp only [unitIdent, Module.Basis.equivFun_symm_apply, Module.Basis.baseChange_apply, smul_tmul',
     smul_eq_mul, mul_one]
-
-theorem unitIdent_act (T : LocLat G ℚ_[l] K O) (b : Module.Basis ι O ↥T.L.T) (s : GQ l) {g : G}
-    (hg : ∀ x, T.ρ g x = x) (v : ι → OW l O) : (unitIdent t ϖ T b).act s g v = galCoef O ι s v := by
-  apply (unitIdent t ϖ T b).j.injective
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [Ident.j_act, unitIdent_j, unitIdent_j, map_sum]
-  exact Finset.sum_congr rfl fun i _ =>
-    congrArg (fun y : ↥T.L.T => galOW O s (v i) ⊗ₜ[O] y) (Subtype.ext (hg _))
-
 
 variable {ϖ} in
 def IsTriv (T : Lat a O K ϖ) : Prop := ∀ g x, T.ρ g x = x
@@ -809,62 +632,6 @@ def latBasis (T : LocLat G ℚ_[l] K O) : Module.Basis (Fin (Module.finrank O �
   haveI := Module.Finite.iff_fg.2 T.L.fg
   Module.finBasis O ↥T.L.T
 
-
-variable (l a e) in
-def constHom (Y : Matrix κ ι O) : BK.Hom (unitMod l a e O K ι) (unitMod l a e O K κ) where
-  mat _ := Y.map (algebraMap O K⟦X⟧)
-  mem _ _ _ := Subalgebra.algebraMap_mem _ _
-  comm τ := by
-    rw [mx_unitMod, mx_unitMod, Matrix.mul_one, Matrix.one_mul]
-    ext1 i j
-    simp [algebraMap_eq_C]
-
-theorem homMat_constHom (Y : Matrix κ ι O) (i : κ) (j : ι) :
-    (homMat t ϖ (constHom (K := K) l a e Y)).map (inclO l O) i j = algebraMap O _ (Y i j) := by
-  rw [← (inclO l O).commutes, ← (ϖ.iTot t K).commutes]
-  rfl
-
-theorem isMapOf_constHom {T T' : LocLat G ℚ_[l] K O} (b : Module.Basis ι O ↥T.L.T)
-    (b' : Module.Basis κ O ↥T'.L.T) (f : LatHom T.L T'.L) :
-    IsMapOf (unitIdent t ϖ T b) (unitIdent t ϖ T' b') f
-      (constHom l a e (LinearMap.toMatrix b b' ((f.f.restrictScalars O).restrict f.T_le))) := by
-  intro v
-  rw [unitIdent_j, unitIdent_j, latW]
-  generalize (f.f.restrictScalars O).restrict f.T_le = φ
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [homW_apply, Matrix.mulVec, dotProduct, homMat_constHom, map_sum, TensorProduct.map_tmul,
-    LinearMap.id_apply, sum_tmul, LinearMap.toMatrix_apply]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  conv_rhs => rw [← b'.sum_repr (φ (b j)), tmul_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [← Algebra.smul_def, smul_tmul]
-
-def trivFunctor : BKFunctor t ϖ (IsTriv : Lat a O K ϖ → Prop) where
-  obj T hT := ⟨_, _, unitIdent t ϖ T (latBasis T), isBK_unitIdent t ϖ hT _⟩
-  map {T T'} _ _ f := constHom l a e (LinearMap.toMatrix (latBasis T) (latBasis T')
-    ((f.f.restrictScalars O).restrict f.T_le))
-  isMapOf _ _ f := isMapOf_constHom t ϖ _ _ f
-
-theorem isLMat_unitIdent (T : LocLat G ℚ_[l] K O) (b : Module.Basis ι O ↥T.L.T) (s : GQ l) {g : G}
-    (hg : ∀ x, T.ρ g x = x) : (unitIdent t ϖ T b).IsLMat s g 1 := fun c => by
-  rw [unitIdent_act t ϖ T b s hg, inclL_apply, inclL_apply, frobMat_unitMod, Matrix.one_mulVec,
-    Matrix.one_mulVec, Matrix.one_mulVec]
-  exact funext fun i => galOW_inclO s (c i)
-
-theorem stable_unitIdent {T : Lat a O K ϖ} (hT : IsTriv T) (b : Module.Basis ι O ↥T.L.T) :
-    (unitIdent t ϖ T b).Stable := fun g =>
-  ⟨(Ident.exists_isLMat_iff _ _ _).1 ⟨1, isLMat_unitIdent t ϖ T b g (hT g)⟩, fun v hv => by
-    rw [Ident.gal, unitIdent_act t ϖ T b (g : GQ l) (hT g)]
-    exact galCoef_mem_MA _ (g : GQ l) hv⟩
-
-theorem toCris_unitMod (v : (unitMod l a e O K ι).MM) (j : ι) : toCris t ϖ _ v j =
-    ∑ τ, idem (constC t) τ * ϖ.iS O K ⟨v.1 τ j, mem_ext_unitMod.1 v.2 τ j⟩ :=
-  Finset.sum_congr rfl fun τ _ => congrArg (fun y => idem (constC t) τ * ϖ.iS O K y) (Subtype.ext (by
-    change ((unitMod l a e O K ι).mxInv τ *ᵥ v.1 τ) j = v.1 τ j
-    rw [mxInv_unitMod, Matrix.one_mulVec]))
-
-
 omit [NeZero e] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] in
 theorem galOCr_idem (g : ↥(GK (ϖ.field a))) (τ : ZMod a) :
     galOCr O g (idem (constC t) τ) = idem (constC t) τ := by
@@ -872,42 +639,8 @@ theorem galOCr_idem (g : ↥(GK (ϖ.field a))) (τ : ZMod a) :
     (IntermediateField.mem_fixingSubgroup_iff _ _).1 g.2 x (ϖ.Kunr_le_field a hx)
   rw [idem, constC, AlgHom.comp_apply, galOCr_toOCr, galOA_constA t h]
 
-theorem taylor_unitIdent {T : Lat a O K ϖ} (hT : IsTriv T) (b : Module.Basis ι O ↥T.L.T) :
-    (unitIdent t ϖ T b).Taylor (unitConn l a e ι) := fun g => by
-  refine ⟨1, isLMat_unitIdent t ϖ T b g (hT g), fun m r => ?_⟩
-  have hm := mem_ext_unitMod.1 m.2
-  choose N hN using fun p : ZMod a × ι => ϖ.taylor_S a O K g ⟨m.1 p.1 p.2, hm p.1 p.2⟩ r
-  refine ⟨Finset.univ.sup N, fun n hn => ?_⟩
-  choose z hz using fun p => hN p n ((Finset.le_sup (Finset.mem_univ p)).trans hn)
-  refine ⟨fun j => ∑ τ, idem (constC t) τ * z (τ, j), funext fun j => ?_⟩
-  rw [Matrix.map_one _ (map_zero _) (map_one _), Matrix.one_mulVec, Pi.sub_apply, Finset.sum_apply]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [Pi.smul_apply, smul_eq_mul, toCris_unitMod, unitConn_desc, map_sum, map_mul, galOCr_idem,
-    Finset.mul_sum]
-  rw [Finset.sum_comm, ← Finset.sum_sub_distrib]
-  refine Finset.sum_congr rfl fun τ _ => ?_
-  rw [mul_left_comm, ← hz (τ, j), mul_sub, Finset.mul_sum]
-  simp only [mul_left_comm (idem (constC t) τ)]
-
-
 omit [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
   [NormedAlgebra ℚ_[l] K] in
-theorem natural_constHom (Y : Matrix κ ι O) :
-    (unitConn (K := K) l a e ι).Natural (unitConn l a e κ) (constHom l a e Y) := fun m _ =>
-  funext fun τ => funext fun i => by
-    change PowerSeries.derivative (∑ j, algebraMap O K⟦X⟧ (Y i j) * m τ j) =
-      ∑ j, algebraMap O K⟦X⟧ (Y i j) * PowerSeries.derivative (m τ j)
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, algebraMap_eq_C, ← smul_eq_C_mul, Derivation.map_smul]
-
-def trivConn : (trivFunctor (K := K) t ϖ).IntConn where
-  conn _ _ := unitConn l a e _
-  natural _ _ _ := natural_constHom _
-  frobCompat _ _ := unitConn_frobCompat
-  topNilp _ _ := unitConn_topNilp
-  stable _ hT := stable_unitIdent t ϖ hT _
-  taylor _ hT := taylor_unitIdent t ϖ hT _
-
 
 variable (G) in
 def unitLat : LocLat G ℚ_[l] K O where
@@ -925,16 +658,11 @@ def unitLat : LocLat G ℚ_[l] K O where
           Submodule.subset_span ⟨1, by simp⟩
         simpa using Submodule.smul_mem _ x h }
 
-
-omit [NeZero e] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] [Algebra ℤ_[l] O] in
-theorem isTriv_unitLat : IsTriv (unitLat ↥(GK (ϖ.field a)) : Lat a O K ϖ) := fun _ _ => rfl
-
 end Triv
 
 section FinExt
 
 variable (LL : FinExt l) {G : Type} [Group G] [TopologicalSpace G]
-
 
 variable (a) in
 abbrev CrysBKFunctorOL [HasUnr a LL] (Pl : LocPrime l) : Type 1 :=

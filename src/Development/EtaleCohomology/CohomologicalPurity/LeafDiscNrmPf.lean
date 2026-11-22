@@ -13,9 +13,6 @@ namespace LateralTheory.CohomologicalPurity.Cl.DiscNrmPf
 
 def up {P : PSh} {U : Scheme.{0}} {p q : ℕ} (x : Sx (disc.obj P) p U) : Sx (disc.obj P) q U := x
 
-theorem face_disc {P : PSh} {U : Scheme.{0}} {p : ℕ} (x : Sx (disc.obj P) (p + 1) U) (i : Fin (p + 2)) :
-    ((disc.obj P).δ i).app (op U) x = up x := rfl
-
 open LateralTheory.KummerTheory.AW in
 theorem normal (R : Type) [CommRing R] (I : Cx R) (P : PSh) (n : ℤ) (α : Cocycle ((chains R).obj (disc.obj P)) I n) :
     ∃ β : Cochain ((chains R).obj (disc.obj P)) I (n - 1), ∀ p s h U y,

@@ -75,8 +75,6 @@ private def RM : (Fin (m + 1) → Mt d) →ₘₗ[ℂ] Module.End ℂ W where
     rw [RR_update r hc a i (c • x), RR_update r hc a i x, map_smul, smul_mul_assoc,
       RingHom.id_apply]
 
-private theorem RM_apply (a : Fin (m + 1) → Mt d) : RM r hc a = RR r hc a := rfl
-
 private theorem RR_shift (Ue : Module.End ℂ W)
     (hU : ∀ i a, Ue * r (i + 1) a = r i a * Ue) (a : Fin (m + 1) → Mt d) :
     Ue * RR r hc a = RR r hc (fun i => a (i + 1)) * Ue := by

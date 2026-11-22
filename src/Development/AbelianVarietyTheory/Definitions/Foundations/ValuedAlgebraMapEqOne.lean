@@ -16,7 +16,6 @@ abbrev Ideles : Type := (AdeleRing (𝓞 L) L)ˣ
 
 def diagUnits : Lˣ →* Ideles L := Units.map (algebraMap L (AdeleRing (𝓞 L) L)).toMonoidHom
 
-
 open Classical in
 def finSingle (v : HeightOneSpectrum (𝓞 L)) : v.adicCompletion L →* FiniteAdeleRing (𝓞 L) L := by
   classical
@@ -39,17 +38,10 @@ def finSingle (v : HeightOneSpectrum (𝓞 L)) : v.adicCompletion L →* FiniteA
 def localIdele (v : HeightOneSpectrum (𝓞 L)) : (v.adicCompletion L)ˣ →* Ideles L :=
   Units.map ((MonoidHom.inr (InfiniteAdeleRing L) (FiniteAdeleRing (𝓞 L) L)).comp (finSingle L v))
 
-
 open Classical in
 def infIdele (w : InfinitePlace L) : (w.Completion)ˣ →* Ideles L := by
   classical
   exact Units.map ((MonoidHom.inl (InfiniteAdeleRing L) (FiniteAdeleRing (𝓞 L) L)).comp
     (MonoidHom.mulSingle (fun w : InfinitePlace L => w.Completion) w))
-
-theorem valued_algebraMap_eq_one (v : HeightOneSpectrum (𝓞 L)) (x : 𝓞 L) (hx : x ∉ v.asIdeal) :
-    Valued.v (algebraMap L (v.adicCompletion L) (algebraMap (𝓞 L) L x)) = 1 := by
-  show Valued.v ((algebraMap (𝓞 L) L x : L) : v.adicCompletion L) = _
-  rw [HeightOneSpectrum.valuedAdicCompletion_eq_valuation', HeightOneSpectrum.valuation_of_algebraMap]
-  exact (HeightOneSpectrum.intValuation_eq_one_iff).mpr hx
 
 end GlobalTheory.Mem.Chr

@@ -132,9 +132,6 @@ def h3e (K : Type) [Field K] {k : ℕ} (i : Fin k) : Module.End K (PolXY K k) :=
 def h3d (K : Type) [Field K] {k : ℕ} (i : Fin k) : Module.End K (PolXY K k) :=
   (pderiv (R := K) (Sum.inl i : XY k)).toLinearMap ∘ₗ (pderiv (R := K) (Sum.inr i : XY k)).toLinearMap
 
-theorem diagLaplacian_apply (i : Fin k) (f : PolXY K k) :
-    h3d K i f = pderiv (Sum.inl i) (pderiv (Sum.inr i) f) := rfl
-
 theorem diagMul_pow_apply (i : Fin k) (n : ℕ) (f : PolXY K k) :
     (h3e K i ^ n) f = monomial (h3s i n) (1 : K) * f := by
   have : (monomial (h3s i n) (1 : K) : PolXY K k) = (X (Sum.inl i) * X (Sum.inr i)) ^ n := by

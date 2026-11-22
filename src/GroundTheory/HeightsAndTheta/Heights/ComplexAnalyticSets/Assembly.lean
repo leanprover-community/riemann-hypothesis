@@ -156,7 +156,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PGenericP
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PGradDensSheetBound
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PGraphAreaHolomorphic
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PGraphJacContinuous
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PProperSymm
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHessCCompPluri
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHomogDimZeroPow
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PImplicitCurve
@@ -174,7 +173,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMaDensLe
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMassFinite
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNullSmaller
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVanishNearPoint
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPlaneSliceMass
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLelongRegularise
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLelongLimit
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PPointLine

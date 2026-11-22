@@ -112,8 +112,6 @@ section OnMt
 
 variable (D : D7) (μ : D.what₂.Tup) (j : ℕ)
 
-local notation "CZ" => Subalgebra.center ℂ (MonoidAlgebra ℂ (G0g D.nd))
-
 theorem onMt_add {a b : MonoidAlgebra ℂ (G0g D.nd)} (ha : a ∈ CZ) (hb : b ∈ CZ) :
     D.ntypes.onMt μ j (a + b) = D.ntypes.onMt μ j a + D.ntypes.onMt μ j b := by
   unfold NTypes.onMt
@@ -280,16 +278,9 @@ section Series
 
 variable {D : D7}
 
-local notation "CZ" => Subalgebra.center ℂ (MonoidAlgebra ℂ (G0g D.nd))
-
 theorem eSer_mem (k : Fin 2) (v : D.nd.PlG k) (f : (ZMod (D.host.g k))[X]) :
     Formalism.MainNotions.ArithmeticCylinders.atPlace D k v (D.ntypes.eSer k f) ∈ CZ :=
   atPlace_mem_center D k v _ (D.ntypes.eSer_central k f)
-
-theorem onMt_coe (μ : D.what₂.Tup) (j : ℕ) (c : ↥CZ) :
-    D.ntypes.onMt μ j (c : MonoidAlgebra ℂ (G0g D.nd)) = D.ntypes.cenMt μ j c := by
-  unfold NTypes.onMt
-  rw [dite_eq_left c.2]
 
 theorem series_fix (hSer : GlobalTheory.TypeLeaf.SerLoc D) (i : D.nd.Loc) (σ' : D.ntypes.Par)
     (F : D.what₂.Mt (D.nd.mu i) (D.nd.j i)) (hF : F ∈ D.ntypes.MtPar (D.nd.mu i) (D.nd.j i) σ')
@@ -312,39 +303,6 @@ theorem series_fix (hSer : GlobalTheory.TypeLeaf.SerLoc D) (i : D.nd.Loc) (σ' :
     exact h1
   · rw [Finset.sum_eq_zero (fun f hf => hz f (fun h => hm (h ▸ hf)))] at h1
     rw [← h1, map_zero]
-
-def ef (s : ∀ kv : (Σ k : Fin 2, D.nd.PlG k), (ZMod (D.host.g kv.1))[X]) (kv : Σ k : Fin 2, D.nd.PlG k) : ↥CZ :=
-  ⟨Formalism.MainNotions.ArithmeticCylinders.atPlace D kv.1 kv.2 (D.ntypes.eSer kv.1 (s kv)), eSer_mem kv.1 kv.2 (s kv)⟩
-
-theorem list_prod_eq (s : ∀ kv : (Σ k : Fin 2, D.nd.PlG k), (ZMod (D.host.g kv.1))[X])
-    (L : List (Σ k : Fin 2, D.nd.PlG k)) (hnd : L.Nodup) (hall : ∀ kv, kv ∈ L) :
-    (L.map fun kv => Formalism.MainNotions.ArithmeticCylinders.atPlace D kv.1 kv.2 (D.ntypes.eSer kv.1 (s kv))).prod =
-      ((∏ kv, ef s kv : ↥CZ) : MonoidAlgebra ℂ (G0g D.nd)) := by
-  classical
-  have h1 : (L.map fun kv => Formalism.MainNotions.ArithmeticCylinders.atPlace D kv.1 kv.2 (D.ntypes.eSer kv.1 (s kv))) =
-      (L.map (ef s)).map (Subalgebra.val CZ) := by
-    rw [List.map_map]
-    rfl
-  have h2 : L.toFinset = Finset.univ := Finset.eq_univ_of_forall fun kv => List.mem_toFinset.2 (hall kv)
-  rw [h1, ← map_list_prod (Subalgebra.val CZ), ← List.prod_toFinset (ef s) hnd, h2]
-  rfl
-
-theorem cen_prod_fix {M : Type} [AddCommGroup M] [Module ℂ M] (cen : ↥CZ →ₐ[ℂ] Module.End ℂ M)
-    {ι : Type} (e : ι → ↥CZ) (S : Finset ι) (F : M) (h : ∀ a ∈ S, cen (e a) F = F) :
-    cen (∏ a ∈ S, e a) F = F := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => rw [Finset.prod_empty, map_one]; rfl
-  | insert a S ha ih =>
-    rw [Finset.prod_insert ha, map_mul, mul_apply_eq_comp,
-      ih fun b hb => h b (Finset.mem_insert_of_mem hb), h a (Finset.mem_insert_self a S)]
-
-theorem cen_prod_ne {M : Type} [AddCommGroup M] [Module ℂ M] (cen : ↥CZ →ₐ[ℂ] Module.End ℂ M)
-    {ι : Type} [DecidableEq ι] (e : ι → ↥CZ) (S : Finset ι) (F : M) (hne : cen (∏ a ∈ S, e a) F ≠ 0)
-    (a : ι) (ha : a ∈ S) : cen (e a) F ≠ 0 := by
-  intro h0
-  apply hne
-  rw [← Finset.prod_erase_mul S e ha, map_mul, mul_apply_eq_comp, h0, map_zero]
 
 end Series
 

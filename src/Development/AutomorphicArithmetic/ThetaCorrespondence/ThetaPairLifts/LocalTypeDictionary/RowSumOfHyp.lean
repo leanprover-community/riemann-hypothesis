@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.DiscreteSpectrumResidualClassification
 public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAtOfSubsingleton
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousReGLSymm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumOKEx

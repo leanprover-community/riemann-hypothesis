@@ -375,13 +375,6 @@ theorem resG_eq_mul_of_injective {A B G T A' B' T' : X.Opens} (hA : T ≤ A) (hB
   apply hi
   simpa only [map_mul, resG_resG] using h
 
-theorem res_mem_secOn {L : LB X} {V W : X.Opens} (h : W ≤ V) {s : ∀ i, Γ(X, V ⊓ L.U i)}
-    (hs : s ∈ secOn L V) : (fun i ↦ resG X (inf_le_inf_right _ h) (s i)) ∈ secOn L W := by
-  intro i j
-  have := congrArg (resG X (inf_le_inf_right _ (inf_le_inf_right _ h) :
-    W ⊓ L.U i ⊓ L.U j ≤ V ⊓ L.U i ⊓ L.U j)) (hs i j)
-  simpa only [map_mul, resG_resG] using this
-
 theorem res_sec_mem_secOn {L : LB X} (W : X.Opens) (s : L.Sec) :
     (fun i ↦ resG X inf_le_right (s.f i)) ∈ secOn L W := by
   intro i j
@@ -525,7 +518,6 @@ theorem exists_sec_res_eq_iff {L : LB X} (hL : L.IsLB) {W : X.Opens} [Nonempty W
       (injective_resG_of_inf_le W _ fun x hx ↦ ⟨⟨hx.1, hx.2.1⟩, hx.2.2⟩) ?_
     rw [ht, ht]
     exact hs i j
-
 
 omit [IsLocallyNoetherian X] [GlobalTheory.IsNormalScheme X] in
 theorem lbSec_eq_of_res_eq {L : LB X} (W : X.Opens) [Nonempty W] {t t' : L.Sec}

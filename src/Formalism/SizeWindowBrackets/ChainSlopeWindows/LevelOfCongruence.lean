@@ -192,6 +192,4 @@ theorem each_unit_bound_statement {U0 : Type} [Fintype U0] {W : U0 → Type}
   unfold ErrX5at UBar5
   linarith
 
-def C1 : Consts := ⟨1, 1, 1, 1, 1, 1, 1, 1, 1, 1⟩
-
 end Formalism.LFunctionChainParameters.WeightedSlopeBounds

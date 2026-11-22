@@ -14,9 +14,6 @@ def coordIncl (O K : Type) [CommRing O] [Field K] [Algebra O K] (r : ℕ) :
     (Fin r → O) →ₗ[O] (Fin r → K) :=
   LinearMap.pi fun i => (Algebra.linearMap O K).comp (LinearMap.proj i)
 
-theorem coordIncl_apply {O K : Type} [CommRing O] [Field K] [Algebra O K] {r : ℕ} (x : Fin r → O) :
-    coordIncl O K r x = fun i => algebraMap O K (x i) := rfl
-
 theorem coordIncl_injective {O K : Type} [CommRing O] [IsDomain O] [Field K] [Algebra O K]
     [IsFractionRing O K] {r : ℕ} : Function.Injective (coordIncl O K r) := by
   intro x y h
@@ -48,7 +45,6 @@ theorem glMap_std_eq {O K : Type} [CommRing O] [IsDomain O] [IsDiscreteValuation
   exact (RingHom.map_mulVec (algebraMap O K) A x i).symm
 
 end GlobalTheory.LatHecke
-
 
 open GlobalTheory.LatHecke in
 theorem GlobalTheory.LatHecke.relIndex_glMap_std_of_integral : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] [IsFractionRing O K] (r : ℕ) (A : Matrix (Fin r) (Fin r) O) (g : GL (Fin r) K), (g : Matrix (Fin r) (Fin r) K) = A.map (algebraMap O K) → (glMap g (std O K r).1).toAddSubgroup.relIndex (std O K r).1.toAddSubgroup = Nat.card ((Fin r → O) ⧸ LinearMap.range A.mulVecLin) ∧ (IsLocalRing.maximalIdeal O • (std O K r).1 ≤ glMap g (std O K r).1 → IsLocalRing.maximalIdeal O • (⊤ : Submodule O (Fin r → O)) ≤ LinearMap.range A.mulVecLin) := by

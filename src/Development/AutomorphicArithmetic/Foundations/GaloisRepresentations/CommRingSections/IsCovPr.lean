@@ -14,16 +14,8 @@ namespace UpperTheory.Gal.DifferentialFormSections
 
 variable {K : Type} [CommRing K]
 
-abbrev Fm (K A : Type) [CommRing K] [CommRing A] [Algebra K A] : Type := ExteriorAlgebra A Ω[A⁄K]
-
 section
 variable {A B : Type} [CommRing A] [CommRing B] [Algebra K A] [Algebra K B]
-
-def fmMap (φ : A →ₐ[K] B) : Fm K A →ₐ[K] Fm K B :=
-  letI : Algebra A B := φ.toRingHom.toAlgebra
-  haveI : IsScalarTower K A B := IsScalarTower.of_algHom φ
-  (ExteriorAlgebra.lift A ⟨((ExteriorAlgebra.ι B).restrictScalars A) ∘ₗ KaehlerDifferential.map K K A B,
-    fun _ => ExteriorAlgebra.ι_sq_zero _⟩).restrictScalars K
 
 end
 
@@ -53,23 +45,6 @@ def secRes (X : Sch K) {U V : X.left.Opens} (h : V ≤ U) : Sec X U →ₐ[K] Se
 variable {X Y : Sch K} {ι κ : Type}
 
 abbrev cap (U : ι → X.left.Opens) {n : ℕ} (i : Fin n → ι) : X.left.Opens := inter (X := X.left.toTopCat) U i
-
-abbrev Co (U : ι → X.left.Opens) (n : ℕ) : Type := ∀ i : Fin (n + 1) → ι, Fm K (Sec X (cap U i))
-
-def dC (U : ι → X.left.Opens) (n : ℕ) : Co U n →ₗ[K] Co U (n + 1) :=
-  LinearMap.pi fun i => ∑ k : Fin (n + 2), ((-1 : ℤ) ^ (k : ℕ)) •
-    ((fmMap (secRes X (inter_le_comp (X := X.left.toTopCat) U i k.succAbove))).toLinearMap ∘ₗ LinearMap.proj (i ∘ k.succAbove))
-
-def Bd (U : ι → X.left.Opens) : (n : ℕ) → Submodule K (Co U n)
-  | 0 => ⊥
-  | n + 1 => LinearMap.range (dC U n)
-
-abbrev HC (U : ι → X.left.Opens) (n : ℕ) : Type := LinearMap.ker (dC U n) ⧸ (Bd U n).submoduleOf (LinearMap.ker (dC U n))
-
-
-abbrev all (X : Sch K) : X.left.affineOpens → X.left.Opens := Subtype.val
-
-abbrev H (X : Sch K) (n : ℕ) : Type := HC (all X) n
 
 structure IsCov (U : ι → X.left.Opens) : Prop where
   aff : ∀ i, IsAffineOpen (U i)

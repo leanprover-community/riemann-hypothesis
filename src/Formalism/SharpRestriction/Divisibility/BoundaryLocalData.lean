@@ -181,9 +181,6 @@ structure LocB (D : Formalism.BasicNotions.D7) {r j p : ℕ} (L : ModuliIntegral
 attribute [instance] LocB.xAdd LocB.xMod LocB.iRr LocB.iRd LocB.iRl LocB.iRn LocB.iRi LocB.iYa LocB.iYm
   LocB.iXa LocB.iXm LocB.iSg LocB.iSk LocB.iSm LocB.iSt LocB.fbAdd LocB.fbMod
 
-structure Prov (D : Formalism.BasicNotions.D7) (X : ModuliIntegralCharts.Prov D) where
-  loc : ∀ w p, p.Prime → LocB D (X.loc w p)
-
 namespace LocB
 
 variable {D : Formalism.BasicNotions.D7} {r j p : ℕ} {L : ModuliIntegralCharts.Loc D r j p} (B : LocB D L)
@@ -199,10 +196,6 @@ variable (D : Formalism.BasicNotions.D7) (X : ModuliIntegralCharts.Prov D)
 section Family
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-
-abbrev BaseObjectsAlongFamily : Type 1 := ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, ModuliIntegralCharts.Prov (Fm.D x i)
-
-abbrev ProvF (XF : BaseObjectsAlongFamily Fm) : Type 1 := ∀ x hx (i : Fm.Ix x), Prov (Fm.D x i) (XF x hx i)
 
 variable (XF : BaseObjectsAlongFamily Fm) (YF : ProvF Fm XF)
 

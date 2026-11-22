@@ -54,9 +54,6 @@ def bcL (A : Places F E sig) (p : HeightOneSpectrum (𝓞 F)) (n : ℕ) :
   map_add' x y := by funext i; simp [Places.bc]
   map_smul' c x := by funext i; simp [Places.bc]
 
-theorem bcL_apply (A : Places F E sig) (p : HeightOneSpectrum (𝓞 F)) (n : ℕ) (x : Fin n → E) :
-    bcL A p n x = A.bc p x := rfl
-
 variable {A : Places F E sig} {r k : ℕ} (G : GFrames A r k) (p : HeightOneSpectrum (𝓞 F))
 
 def B (x y : G.V) : E := ∑ i, ∑ j, x i * G.Hm i j * sig (y j)

@@ -20,12 +20,9 @@ universe u
 
 variable {X : Scheme.{u}}
 
-
 end VectorBundle
 
 section OverZ
-
-abbrev SpecZ : Scheme.{0} := Spec (CommRingCat.of ℤ)
 
 variable {X : Scheme.{0}}
 
@@ -167,17 +164,11 @@ def FiniteIntegralClosure.Statement : Prop :=
     (L : Type) [Field L] [Algebra K L] [FiniteDimensional K L] [Algebra A L] [IsScalarTower A K L],
     Module.Finite A (integralClosure A L)
 
-def FiniteNormalization.Statement : Prop :=
-  ∀ (Z : Scheme.{0}) [IsIntegral Z] (f : Z ⟶ SpecZ) [LocallyOfFiniteType f] [QuasiCompact f]
-    (L : Type) [Field L] [Algebra Z.functionField L] [FiniteDimensional Z.functionField L],
-    IsFinite (genericSpecMap Z L).fromNormalization
-
 section Transport
 
 universe u
 
 variable {X Y : Scheme.{u}}
-
 
 end Transport
 

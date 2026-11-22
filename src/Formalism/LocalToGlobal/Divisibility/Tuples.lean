@@ -63,7 +63,6 @@ def SplitAt (v : HeightOneSpectrum (𝓞 F)) : Prop :=
   ∃ P P' : HeightOneSpectrum (𝓞 E), P ≠ P' ∧
     Ideal.map (algebraMap (𝓞 F) (𝓞 E)) v.asIdeal = P.asIdeal * P'.asIdeal
 
-
 variable {E} in
 def DegOne (v : HeightOneSpectrum (𝓞 F)) : Prop :=
   (Ideal.absNorm v.asIdeal).Prime ∧ ((Ideal.absNorm v.asIdeal : ℕ) : 𝓞 F) ∉ v.asIdeal ^ 2
@@ -134,11 +133,8 @@ def QprimeN (ξ : Chr F E L) : Set ℕ := plc '' Qprime ξ
 def InertOrd (ξ : Chr F E L) (v : HeightOneSpectrum (𝓞 F)) (n : ℕ) : Prop :=
   ∀ m : ℕ, (∀ x ∈ inertAt E v, ξ x ^ m = 1) ↔ n ∣ m
 
-def TrivAt (ξ : Chr F E L) (v : HeightOneSpectrum (𝓞 F)) : Prop := suppAt E v ≤ ξ.ker
-
 def IsBaseChar (p : ℕ) (δ : Chr F E L) : Prop :=
   p.Prime ∧ ∀ v : HeightOneSpectrum (𝓞 F), (plc v = p → InertOrd δ v 15) ∧ (plc v ≠ p → v ∉ Qprime δ)
-
 
 variable (F E) in
 def toRInt : 𝓞 E →+* RInt F E :=
@@ -152,7 +148,6 @@ def IsResChar (ξ : Chr F E L) (P : HeightOneSpectrum (𝓞 E)) (χ : (𝓞 E �
     (u : RInt F E) - toRInt F E b ∈ P.asIdeal.map (toRInt F E) →
     (∀ P' : HeightOneSpectrum (𝓞 E), P' ≠ P → (u : RInt F E) - 1 ∈ P'.asIdeal.map (toRInt F E)) →
     ξ (Units.map (RInt F E).subtype.toMonoidHom u) = χ a
-
 
 open scoped Classical in
 open Classical in
@@ -172,21 +167,6 @@ def h90 (σ : E →ₐ[F] E) : (AfE F E)ˣ →* (AfE F E)ˣ := MonoidHom.id _ / 
 
 def U1 (σ : E →ₐ[F] E) : Subgroup (AfE F E)ˣ := (MonoidHom.id _ * conjId σ).ker
 
-
-open scoped Classical in
-open Classical in
-def tilde (σ : E →ₐ[F] E) (ξ : Chr F E L) : (h90 σ).range →* Lˣ :=
-  if h : (h90 σ).ker ≤ ξ.ker then
-    (h90 σ).rangeRestrict.liftOfSurjective (h90 σ).rangeRestrict_surjective
-      ⟨ξ, by rw [MonoidHom.ker_rangeRestrict]; exact h⟩
-  else 1
-
-
-open scoped Classical in
-open Classical in
-def detTw (σ : E →ₐ[F] E) (ξ : Chr F E L) {n : ℕ} (g : GL (Fin n) (AfE F E)) : Lˣ :=
-  if h : Matrix.GeneralLinearGroup.det g ∈ (h90 σ).range then tilde σ ξ ⟨_, h⟩ else 1
-
 end Tilde
 
 section Maps
@@ -194,26 +174,11 @@ section Maps
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {K : Type} [Field K] [NumberField K] [StarRing K] {S : Set ℕ}
 
-def deAt (p : ℕ) (δ0 δ0' : Tup F E K S) (w : HeightOneSpectrum (𝓞 K)) : Tup F E K S :=
-  if plc w = p then δ0' else δ0
-
-def muTw (p : ℕ) (δ0 δ0' : Tup F E K S) (ψ : HeightOneSpectrum (𝓞 K) → Tup F E K S)
-    (w : HeightOneSpectrum (𝓞 K)) : Tup F E K S := deAt p δ0 δ0' w * ψ w
-
 end Maps
 
 section Ref
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {L : Type} [Field L]
-
-structure IsMu0 (σ : E →ₐ[F] E) (Ψ : Finset (E →+* L)) (e : (E →+* L) → ℤ) (G : Set ℕ) (μ : Chr F E L) : Prop where
-  isOpen : μ ∈ openChr F E L
-  rat : ∀ a : Eˣ, ((μ (ratId F E a) : Lˣ) : L) = ∏ τ ∈ Ψ, (τ (a : E) / τ (σ (a : E))) ^ e τ
-  trivF : (idF F E).range ≤ μ.ker
-  tame : ∀ v : HeightOneSpectrum (𝓞 F), wildAt E v ≤ μ.ker
-  ram : ∀ v : HeightOneSpectrum (𝓞 F), v ∈ Qprime μ ↔ plc v ∈ G
-
-def chiOf (μ : Chr F E L) (P : HeightOneSpectrum (𝓞 E)) : (𝓞 E ⧸ P.asIdeal)ˣ →* Lˣ := (resChar μ P)⁻¹
 
 end Ref
 

@@ -405,10 +405,6 @@ open Formalism.UG.P
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-local notation "ιA" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 theorem levelafC_eq_incl (D : 𝓞 F) : levelafC E D = ιA (algebraMap (𝓞 F) E D) := by
   have := csGlob_tmul_int (F := F) (E := E) (1 : E) D
   rw [mul_one] at this
@@ -569,7 +565,6 @@ def mkAd (f : ∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletion F)
 theorem mkAd_apply (f : ∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletion F)
     (h : ∀ v, f v ∈ v.adicCompletionIntegers F) (v : HeightOneSpectrum (𝓞 F)) :
     ((mkAd f h : intAd F) : Af F) v = f v := rfl
-
 
 open Classical in
 def idemAd (P : HeightOneSpectrum (𝓞 F) → Prop) : intAd F :=
@@ -1147,7 +1142,6 @@ theorem resS_sigS_selector (hc : CMData F E) {T : Finset (Pl E)} {c : intAf F E}
     rwa [map_sub, map_sub, map_one, map_one, sub_eq_zero] at h2
   · exact fun QQ hQ => (resS_sigS_eq_zero_iff hc (isConjPl_conjPl QQ).symm c).2 (hc2 _ hQ)
 
-
 set_option maxHeartbeats 800000 in
 theorem exists_unitary_lift (hc : CMData F E) (G : GL (Fin n) (intAf F E))
     (hGh : cT (sigS hc) (G : Matrix (Fin n) (Fin n) (intAf F E)) = (G : Matrix (Fin n) (Fin n) (intAf F E)))
@@ -1513,9 +1507,6 @@ section FrGlue
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "ιA" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 theorem fr_mem_hat {L : Submodule (𝓞 E) (Fin n → E)} {l : Fin n → E} (hl : l ∈ L) :
     (fun i => ιA (l i)) ∈ hatL (F := F) L :=
   Submodule.subset_span ⟨l, hl, rfl⟩
@@ -1705,107 +1696,6 @@ theorem frame_exists_alt : FrameExists := by
 section Lat
 
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
-
-theorem mk_span_rat (Λ : Submodule (𝓞 E) (Fin n → E)) (hΛ : Submodule.span E (Λ : Set (Fin n → E)) = ⊤) :
-    Submodule.span ℚ ((Λ.restrictScalars ℤ : Submodule ℤ (Fin n → E)) : Set (Fin n → E)) = ⊤ := by
-  have hsm : ∀ (e : E) (y : Fin n → E), y ∈ Submodule.span ℚ (Λ : Set (Fin n → E)) →
-      e • y ∈ Submodule.span ℚ (Λ : Set (Fin n → E)) := by
-    intro e y hy
-    obtain ⟨m, hm0, hm⟩ := Formalism.UG.P.adelstabL_den (E := E) (fun _ : Fin 1 => e)
-    have hm1 := hm 0
-    induction hy using Submodule.span_induction with
-    | mem l hl =>
-      have h1 : (⟨(m : E) * e, hm1⟩ : 𝓞 E) • l ∈ Λ := Λ.smul_mem _ hl
-      have h2 : e • l = ((m : ℚ)⁻¹) • ((⟨(m : E) * e, hm1⟩ : 𝓞 E) • l) := by
-        funext i
-        have hmE : (m : E) ≠ 0 := by exact_mod_cast hm0
-        show e * l i = ((m : ℚ)⁻¹) • (((m : E) * e) * l i)
-        rw [Algebra.smul_def, map_inv₀]
-        have : (algebraMap ℚ E) (m : ℚ) = (m : E) := by simp
-        rw [this]
-        field_simp
-      rw [h2]
-      exact Submodule.smul_mem _ _ (Submodule.subset_span h1)
-    | zero => rw [smul_zero]; exact Submodule.zero_mem _
-    | add a b _ _ ha hb => rw [smul_add]; exact Submodule.add_mem _ ha hb
-    | smul q a _ ha => rw [smul_comm]; exact Submodule.smul_mem _ _ ha
-  have key : ∀ x ∈ Submodule.span E (Λ : Set (Fin n → E)), x ∈ Submodule.span ℚ (Λ : Set (Fin n → E)) := by
-    intro x hx
-    induction hx using Submodule.span_induction with
-    | mem l hl => exact Submodule.subset_span hl
-    | zero => exact Submodule.zero_mem _
-    | add a b _ _ ha hb => exact Submodule.add_mem _ ha hb
-    | smul e a _ ha => exact hsm e a ha
-  exact eq_top_iff.2 fun x _ => key x (by rw [hΛ]; trivial)
-
-theorem mk_isLattice (Λ : Submodule (𝓞 E) (Fin n → E)) (hΛ : Submodule.IsFullLattice E Λ) :
-    Submodule.IsFullLattice ℚ (Λ.restrictScalars ℤ : Submodule ℤ (Fin n → E)) := by
-  have : Submodule.IsLattice ℚ (Λ.restrictScalars ℤ) :=
-    Submodule.IsLattice.of_fg ℚ (Submodule.IsLattice.fg E Λ).restrictScalars
-  exact { span_eq_top := mk_span_rat Λ hΛ.span_eq_top }
-
-theorem mk_finrank (Λ : Submodule (𝓞 E) (Fin n → E)) (hΛ : Submodule.IsFullLattice E Λ) :
-    Module.finrank ℤ (Λ.restrictScalars ℤ : Submodule ℤ (Fin n → E)) = Module.finrank ℚ E * n := by
-  have := mk_isLattice Λ hΛ
-  have h1 : Module.finrank ℤ (Λ.restrictScalars ℤ : Submodule ℤ (Fin n → E)) = Module.finrank ℚ (Fin n → E) :=
-    Submodule.IsFullLattice.finrank_eq ℚ (Λ.restrictScalars ℤ)
-  rw [h1, Module.finrank_pi_fintype]
-  simp [mul_comm]
-
-def mkAct (Λ : Submodule (𝓞 E) (Fin n → E)) :
-    stabGL Λ →* Module.End ℤ (Λ.restrictScalars ℤ : Submodule ℤ (Fin n → E)) where
-  toFun g := ((Matrix.mulVecLin ((g : GL (Fin n) E) : Matrix (Fin n) (Fin n) E)).restrictScalars ℤ).restrict
-    (fun x hx => (g.2 x).1 hx)
-  map_one' := by
-    ext x
-    simp
-  map_mul' a b := by
-    ext x
-    show ((((a * b : stabGL Λ) : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) *ᵥ (x : Fin n → E)) _ =
-      (((a : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) *ᵥ
-        (((b : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) *ᵥ (x : Fin n → E))) _
-    rw [Matrix.mulVec_mulVec]
-    rfl
-
-theorem mkAct_injective (Λ : Submodule (𝓞 E) (Fin n → E)) (hΛ : Submodule.span E (Λ : Set (Fin n → E)) = ⊤) :
-    Function.Injective (mkAct Λ) := by
-  intro a b hab
-  apply Subtype.ext
-  apply Units.ext
-  have h1 : ∀ x ∈ Λ, ((a : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) *ᵥ x =
-      ((b : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) *ᵥ x := by
-    intro x hx
-    have := congrArg (fun f => ((f ⟨x, hx⟩ : (Λ.restrictScalars ℤ : Submodule ℤ (Fin n → E))) : Fin n → E)) hab
-    exact this
-  have h2 : Matrix.mulVecLin ((a : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) =
-      Matrix.mulVecLin ((b : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) := by
-    refine LinearMap.ext_on hΛ ?_
-    intro x hx
-    exact h1 x hx
-  exact Matrix.toLin'.injective h2
-
-theorem mk_card_dvd (hM : Formalism.HermitianLatticeCounting.S6.MinkowskiBound) (Λ : Submodule (𝓞 E) (Fin n → E))
-    (hΛ : Submodule.IsFullLattice E Λ) (Γ : Subgroup (GL (Fin n) E)) (hfin : Finite Γ) (hst : Γ ≤ stabGL Λ) :
-    Nat.card Γ ∣ minkNum (Module.finrank ℚ E * n) := by
-  have hlat := mk_isLattice Λ hΛ
-  have hfree : Module.Free ℤ (Λ.restrictScalars ℤ : Submodule ℤ (Fin n → E)) := Submodule.IsLattice.free ℚ _
-  have hfinm : Module.Finite ℤ (Λ.restrictScalars ℤ : Submodule ℤ (Fin n → E)) := Submodule.IsLattice.finite ℚ _
-  let b := Module.finBasisOfFinrankEq ℤ (Λ.restrictScalars ℤ : Submodule ℤ (Fin n → E)) (mk_finrank Λ hΛ)
-  let φ : Γ →* GL (Fin (Module.finrank ℚ E * n)) ℤ :=
-    (Units.map ((LinearMap.toMatrixAlgEquiv b).toRingEquiv.toMonoidHom :
-      Module.End ℤ (Λ.restrictScalars ℤ : Submodule ℤ (Fin n → E)) →* _)).comp
-      (((mkAct Λ).comp (Subgroup.inclusion hst)).toHomUnits)
-  have hφ : Function.Injective φ := by
-    intro x y hxy
-    have h1 : LinearMap.toMatrixAlgEquiv b (mkAct Λ (Subgroup.inclusion hst x)) =
-        LinearMap.toMatrixAlgEquiv b (mkAct Λ (Subgroup.inclusion hst y)) := congrArg Units.val hxy
-    have h2 : mkAct Λ (Subgroup.inclusion hst x) = mkAct Λ (Subgroup.inclusion hst y) :=
-      (LinearMap.toMatrixAlgEquiv b).injective h1
-    exact Subgroup.inclusion_injective hst (mkAct_injective Λ hΛ.span_eq_top h2)
-  have hcard : Nat.card Γ = Nat.card φ.range := Nat.card_congr (MonoidHom.ofInjective hφ).toEquiv
-  have hfr : Finite φ.range := Finite.of_equiv _ (MonoidHom.ofInjective hφ).toEquiv
-  rw [hcard]
-  exact hM _ φ.range hfr
 
 end Lat
 
@@ -2027,17 +1917,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarR
 end TypeE
 
 section Tests
-
-def gT : GL (Fin 3) (ZMod 5) :=
-  ⟨!![1, 2, 4; 0, 1, 1; 0, 0, 1], !![1, 3, 3; 0, 1, 4; 0, 0, 1], by decide, by decide⟩
-
-def gB : GL (Fin 3) (ZMod 5) :=
-  ⟨!![2, 1, 1; 0, 3, 0; 0, 0, 4], !![3, 4, 3; 0, 2, 0; 0, 0, 4], by decide, by decide⟩
-
-theorem gB_mem : gB ∈ blockTri (blkOf 1 1) :=
-  mem_blockTri.2 (by
-    intro i j h
-    fin_cases i <;> fin_cases j <;> first | rfl | exact absurd h (by decide))
 
 end Tests
 

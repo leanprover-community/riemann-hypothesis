@@ -31,7 +31,6 @@ theorem inK_iff_locGen (x : T ⟶ B) : InK B L x ↔
     KerPow.LocGen L (K := Fin 2) (fst T B).left ![(translPt B x).left, (snd T B).left] ![1, -1] :=
   KerPow.locGen_iff _ _ _
 
-
 theorem inK_one (hL : L.IsLB) (T : Over S) : InK B L (1 : T ⟶ B) := memKL_one hL T
 
 theorem InK.comp {x : T ⟶ B} (hx : InK B L x) (u : T' ⟶ T) : InK B L (u ≫ x) := MemKL.comp hx u
@@ -65,7 +64,6 @@ theorem InK.mul (hL : L.IsLB) {x y : T ⟶ B} (hx : InK B L x) (hy : InK B L y) 
   refine (inK_iff_locGen _).2 ((hx.translate y).comb hL H fun U _ h => ?_)
   simp [Fin.prod_univ_two]
 
-
 variable (B) in
 def kSubgroup (hL : L.IsLB) (T : Over S) : Subgroup (T ⟶ B) where
   carrier := {x | InK B L x}
@@ -83,17 +81,6 @@ theorem inK_of_push {S' : Scheme.{0}} {f : S' ⟶ S} {B' : Over S'} [GrpObj B'] 
     {L' : LB B'.left} (h : IsGrpPullback B' B f φ) (hL : L.IsLB) (hL' : L'.IsLB) (hw : LBIso L' (L.pull φ))
     {Z : Over S'} (x : Z ⟶ B') (hx : InK B L (pushPt h.1.w x)) : InK B' L' x :=
   memKL_of_push h hL hL' hw x hx
-
-
-variable (B) in
-theorem inK_triv (x : T ⟶ B) : InK B (Inh.trivLB B.left) x := by
-  intro p
-  refine ⟨⊤, trivial, ?_⟩
-  refine gen_chartPull (chartPullPull _ _ _ rfl)
-    (⟨fun _ => 1⟩ : LB.Gen (translDiff B (Inh.trivLB B.left) x)) ?_
-  intro i j
-  exact (map_one _).trans
-    ((congrArg₂ (· * ·) (Inh.linComb_triv_g _ _ i j) (map_one _)).trans (_root_.one_mul _)).symm
 
 end GlobalTheory.UU
 end

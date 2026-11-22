@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.LocPoly
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaPair
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.ExistsCombComb
 public import GroundTheory.AutomorphicForms.MacdonaldWhittakerHecke
 

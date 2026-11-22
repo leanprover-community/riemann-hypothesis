@@ -72,7 +72,6 @@ theorem IsAdditive.evc_one {M : LB (A ⊗ T).left} (hM : M.IsLB) (h : IsAdditive
   rw [_root_.mul_one] at e
   exact left_eq_add.1 e
 
-
 variable (A B) in
 structure IsDual (P : LB (A ⊗ B).left) : Prop where
   isLB : P.IsLB
@@ -80,7 +79,6 @@ structure IsDual (P : LB (A ⊗ B).left) : Prop where
   zero : Triv (ev P (𝟙 A) (1 : A ⟶ B))
   univ : ∀ (T : Over S) (M : LB (A ⊗ T).left), M.IsLB → IsAdditive M →
     ∃! x : T ⟶ B, LBIso M (ev P (fst A T) (snd A T ≫ x))
-
 
 variable (A B) in
 structure IsPerfect (P : LB (A ⊗ B).left) : Prop where
@@ -225,12 +223,5 @@ theorem isPerfect_lam [IsCommMonObj A] {L : LB A.left} (hL : L.IsLB) (hK : Out.K
   · rwa [triv_ev_iff hP, e] at hx
   · have e' := congrArg (CechPic.pull (lift (snd T A) (fst T A)).left) ((triv_ev_iff hP _ _).1 hx)
     rwa [pull_evc, map_zero, lift_snd_assoc, lift_fst, e, lam_comm] at e'
-
-theorem isPerfect_ell {R : Type} [CommRing R] (W : WeierstrassCurve R) [W.IsElliptic] :
-    haveI := (WeierstrassCurve.ellPolAV W).isAb.comm
-    IsPerfect (WeierstrassCurve.ellPolAV W).A (WeierstrassCurve.ellPolAV W).A
-      (abelian₂ _ (WeierstrassCurve.ellPolAV W).L) :=
-  haveI := (WeierstrassCurve.ellPolAV W).isAb.comm
-  isPerfect_lam (WeierstrassCurve.ellPolAV W).isLB (WeierstrassCurve.ellPolAV W).ktriv
 
 end GlobalTheory.AbDual

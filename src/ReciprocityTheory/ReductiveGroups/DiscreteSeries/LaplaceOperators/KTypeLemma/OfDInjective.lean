@@ -18,8 +18,6 @@ variable {n : ℕ}
 
 def sub (A : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ := A.submatrix Fin.revPerm Fin.revPerm
 
-theorem sub_apply (A : Matrix (Fin n) (Fin n) ℂ) (a b : Fin n) : sub A a b = A (Fin.rev a) (Fin.rev b) := rfl
-
 theorem sub_mul (A B : Matrix (Fin n) (Fin n) ℂ) : sub (A * B) = sub A * sub B := by
   simp only [sub]
   exact (Matrix.submatrix_mul_equiv _ _ _ _ _).symm
@@ -32,8 +30,6 @@ theorem sub_H (A : Matrix (Fin n) (Fin n) ℂ) : (sub A)ᴴ = sub Aᴴ := by
   simp [sub, Matrix.conjTranspose_submatrix]
 
 theorem sub_add (A B : Matrix (Fin n) (Fin n) ℂ) : sub (A + B) = sub A + sub B := rfl
-
-theorem sub_smul (c : ℂ) (A : Matrix (Fin n) (Fin n) ℂ) : sub (c • A) = c • sub A := rfl
 
 theorem sub_zero : sub (0 : Matrix (Fin n) (Fin n) ℂ) = 0 := rfl
 
@@ -134,8 +130,6 @@ def ofD (u : D) : cjSub D := ⟨toCj (u : H), u.2⟩
 theorem ofD_add (u v : D) : ofD (u + v) = ofD u + ofD v := rfl
 
 theorem ofD_sub (u v : D) : ofD (u - v) = ofD u - ofD v := rfl
-
-theorem ofD_neg (u : D) : ofD (-u) = -ofD u := rfl
 
 theorem ofD_zero : ofD (0 : D) = 0 := rfl
 

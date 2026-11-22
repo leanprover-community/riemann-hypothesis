@@ -1,6 +1,6 @@
 module
 
-public import Formalism.SharpRestriction.InertJacobiLevels.ExtraNum
+public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
 public import Formalism.ThetaLiftIndependence.Statement
 public import Formalism.HermitianLattices.StatementMass
 public import Formalism.ThetaLiftIndependence.ThetaOrbitSums.ClassRepsDefinite

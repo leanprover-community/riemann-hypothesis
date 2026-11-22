@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsEtCoord
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ResidueFieldFormallySmooth
 
 @[expose] public section
 

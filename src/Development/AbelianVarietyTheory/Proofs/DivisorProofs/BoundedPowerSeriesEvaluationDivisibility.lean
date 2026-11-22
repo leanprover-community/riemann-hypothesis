@@ -1,7 +1,7 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.KeyPBIff
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbsoluteSiegel
+public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffTopMonEqZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SummableNormMulPowOfBounded
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.SummableNormBoundedSeries
@@ -16,13 +16,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.MBLow.BddPS
 
-def bdd (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C] : Subring (PowerSeries C) :=
-  GlobalTheory.BoundedPowerSeriesDisc.boundedSeries C
-
 variable {C : Type} [NontriviallyNormedField C] [IsUltrametricDist C]
-
-noncomputable def ev [CompleteSpace C] (π : C) (h : ‖π‖ < 1) : bdd C →+* C :=
-  GlobalTheory.BoundedPowerSeriesDisc.evalBounded π h
 
 theorem main : ∀ (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C] [CompleteSpace C] (π : C), ‖π‖ < 1 → ∃ (B : Subring (PowerSeries C)) (ev : B →+* C) (t : B), (∀ Φ, Φ ∈ B ↔ ∃ b : ℝ, ∀ n, ‖PowerSeries.coeff n Φ‖ ≤ b) ∧ (∀ Φ : B, ev Φ = ∑' n, PowerSeries.coeff n (Φ : PowerSeries C) * π ^ n) ∧ t ≠ 0 ∧ (∀ Φ, ev Φ = 0 ↔ t ∣ Φ) ∧ ∀ Φ : B, Φ ≠ 0 → ∃ n : ℕ, ¬ t ^ n ∣ Φ := by
   first

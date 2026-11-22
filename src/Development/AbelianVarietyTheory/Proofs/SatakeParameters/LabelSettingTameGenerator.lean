@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Formalism.LocalRingCardinality.SpanPowerMembership.PlacesOverNcardOfSplitInj
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DepthZeroLabelsOfLabelLaws
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsTameGenAt
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsTeichmullerMaps
 
 @[expose] public section
 

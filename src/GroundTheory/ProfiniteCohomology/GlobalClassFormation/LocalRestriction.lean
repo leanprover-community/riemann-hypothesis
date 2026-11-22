@@ -14,8 +14,6 @@ open CategoryTheory NumberField IntermediateField GroundTheory.Global FiniteSubf
 
 open scoped DirectSum Pointwise
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 variable {K : FiniteSubfield}
@@ -29,7 +27,6 @@ def globalDecomp : Gal(Ωv/Kv) →* K.1.fixingSubgroup :=
   ((AlgEquiv.restrictScalarsHom ℚ).comp (decompHom Kv ι)).codRestrict _ fun σ =>
     (IntermediateField.mem_fixingSubgroup_iff _ _).2 fun x hx =>
       (decompHom Kv ι σ).commutes ⟨x, hx⟩
-
 
 omit [Algebra.IsIntegral Kv Ωv] in
 theorem globalDecomp_apply (σ : Gal(Ωv/Kv)) (x : ℚ̄) :
@@ -70,7 +67,6 @@ theorem localUnitsMor_finiteComponentRep_levelDiag (u : Additive F.1ˣ) :
       (unitsLocalMor (v.adicCompletion K.1) ι).hom ((unitsLevelMor K F).hom u) :=
   congrArg Additive.ofMul (Units.ext (completionEmbedding_algebraMap ι F (u.toMul : F.1)))
 
-
 set_option maxHeartbeats 4000000 in
 theorem localInfl_finiteComponent_levelDiag (n : ℕ) (y : cohomology (galUnitsZ K.1 F.1) n) :
     (localInfl ι F n).hom ((finiteComponent (placeOfEmbedding ι F) n).hom
@@ -91,7 +87,6 @@ section Infinite
 
 variable {v : InfinitePlace K.1} (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure v.Completion)
   (F : FiniteSubfield) [Fact (K ≤ F)] [F.1.fixingSubgroup.Normal]
-
 
 set_option maxHeartbeats 4000000 in
 theorem levelDiag_infiniteComponent_infLocalInfl_cochains :
@@ -122,7 +117,6 @@ theorem levelDiag_infiniteComponent_infLocalInfl_cochains :
       (c.1 fun i => restrictHom (E := F) (globalDecomp v.Completion ι (σ i))))
   rw [funext fun i => hfun (σ i)]
   exact hval _
-
 
 set_option maxHeartbeats 4000000 in
 theorem infLocalInfl_infiniteComponent_levelDiag (n : ℕ) (y : cohomology (galUnitsZ K.1 F.1) n) :
@@ -155,7 +149,6 @@ section Components
 
 variable (ι : LocalEmbeddings K) {n : ℕ} (hn : 1 ≤ n)
 
-
 set_option maxHeartbeats 4000000 in
 theorem idelesLimitCohomologyEquiv_unitsToIdeles_inr (v : HeightOneSpectrum (𝓞 K.1))
     (x : cohomology (unitsLimitRep K) n) :
@@ -167,7 +160,6 @@ theorem idelesLimitCohomologyEquiv_unitsToIdeles_inr (v : HeightOneSpectrum (�
       ((cohomologyMap (placeProj (.inr v)) n).hom ((cohomologyMap (levelDiag K p.1) n).hom y))) = _
   rw [CompatiblePlaces.shapiro_placeProj_inr]
   exact localInfl_finiteComponent_levelDiag (ι.fin v) p.1 n y
-
 
 set_option maxHeartbeats 4000000 in
 theorem idelesLimitCohomologyEquiv_unitsToIdeles_inl (v : InfinitePlace K.1)

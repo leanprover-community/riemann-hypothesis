@@ -14,7 +14,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.NormChar
 public import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.Imports
 public import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.TwoParts
 public import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.LiftSum
-public import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.LiftPow
 public import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.PartBOfDecomposition
 public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.JacquetShalikaRigidity
 

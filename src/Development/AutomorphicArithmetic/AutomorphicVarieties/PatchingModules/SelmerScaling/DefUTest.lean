@@ -12,9 +12,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingMod
 
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
 
-private theorem UpperTheory.V.Pa.defUTest_smul {F : Type} [CommRing F] {e : ℕ} (c : F) (x : DD F e) :
-    c • x = DD.C c * x := rfl
-
 private def UpperTheory.V.Pa.defUTest_a (F : Type) [CommRing F] (e : ℕ) : DD F e →ₗ[F] F where
   toFun x := x.a
   map_add' _ _ := rfl

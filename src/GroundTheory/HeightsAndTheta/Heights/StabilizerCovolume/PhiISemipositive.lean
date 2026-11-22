@@ -1,9 +1,6 @@
 module
 
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ThreeLeLevel
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.GaussCM
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.DataHodge
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.IsFrameOverLine
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Values
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.CpRegPhRegOfNonneg

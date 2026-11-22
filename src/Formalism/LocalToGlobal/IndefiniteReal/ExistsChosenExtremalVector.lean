@@ -244,9 +244,6 @@ theorem IsModelBaseFrameFamily.mul {V : HSp D} {S : D.what₂.Tau → SPar} {M :
 def castDict {Y : Type} {V W : HSp D} (hV : V = W) (dict : GA D V → Y) : GA D W → Y :=
   fun g => dict (cast (congrArg (GA D) hV.symm) g)
 
-theorem archM_eq (V : HSp D) (th : Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ) (h : GA D V) :
-    archM V th h = infMat D.sp.cm.sig V.gram th h := rfl
-
 end Base
 
 section Collected
@@ -275,7 +272,6 @@ theorem exists_chosen_extremal_vector (i : Fin D.R.m) (σ : D.what₂.LL →+* �
       exact ⟨v, hv, fun _ h' => absurd h' hu⟩
   · obtain ⟨v, hv⟩ := exists_isExtVec _ h
     exact ⟨v, hv, fun h' => absurd h' hσ⟩
-
 
 open Classical in
 def v0 (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) : (R.MW i σ).Vec :=

@@ -29,8 +29,6 @@ def mulR (c : Coef l) (n : ℕ) (a : c.O) : Red c n →+ Red c n :=
     calc _ ≤ 1 * ‖(x : Qbar l)‖ := mul_le_mul_of_nonneg_right (norm_le_one c a) (norm_nonneg _)
       _ ≤ _ := by rw [one_mul]; exact hx)
 
-theorem mulR_red (c : Coef l) (n : ℕ) (a x : c.O) : mulR c n a (red c n x) = red c n (a * x) := rfl
-
 def redV (c : Coef l) (n : ℕ) (x : Fin 2 → c.O) : Fin 2 → Red c n := fun i => red c n (x i)
 
 theorem redV_surjective (c : Coef l) (n : ℕ) : Function.Surjective (redV c n) := by

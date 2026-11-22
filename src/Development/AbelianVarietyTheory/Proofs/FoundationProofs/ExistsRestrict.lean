@@ -249,20 +249,6 @@ theorem exists_bound {lam : (ℕ → Qbar l) →ₗ[Qbar l] Qbar l} (h : FinSupp
     rw [norm_mul]
     exact mul_le_of_le_one_right (norm_nonneg _) (hf s)
 
-theorem act_sgD_one (X : Tower Ω ε) {N w : ℕ} (hN : N ≠ 0) {b : X.Fn l} (hb : b ∈ X.B N l w) :
-    X.act l (sgD N l 1 : Matrix (Fin 2) (Fin 2) ℤ) b = b := by
-  obtain ⟨⟨h0, h1⟩, h2⟩ := Betti.isDiam_sgD (d := 1) hN (Fact.out : l.Prime).ne_zero (Nat.coprime_one_left N)
-  have h3 : (⟨sgD N l 1, h0⟩ : CongruenceSubgroup.Gamma0 N) ∈ CongruenceSubgroup.Gamma1' N := by
-    rw [CongruenceSubgroup.Gamma1_mem']
-    simpa [en, CongruenceSubgroup.Gamma0Map] using h2
-  have h4 : sgD N l 1 ∈ Gam N l :=
-    ⟨(CongruenceSubgroup.Gamma1_mem N _).2 ((CongruenceSubgroup.Gamma1_to_Gamma0_mem _).1 h3), h1⟩
-  induction hb using Submodule.span_induction with
-  | mem x hx => exact hx.2 _ h4
-  | zero => simp
-  | add x y _ _ hx hy => rw [map_add (f := _), hx, hy]
-  | smul a x _ hx => rw [map_smul, hx]
-
 end GlobalTheory.LamPr
 
 end

@@ -25,9 +25,6 @@ def rightMul (Y : Matrix (Fin n) (Fin n) ℂ) : (Fin n → Fin n → ℂ) →L[�
         ext a b
         simp [Matrix.mul_apply, Finset.mul_sum, mul_assoc] }
 
-theorem rightMul_apply (Y : Matrix (Fin n) (Fin n) ℂ) (z : Fin n → Fin n → ℂ) :
-    rightMul Y z = Matrix.of.symm (Matrix.of z * Y) := rfl
-
 open scoped Matrix.Norms.Operator in
 theorem hasDerivAt_entry (X : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
     HasDerivAt (fun t : ℝ => (NormedSpace.exp (t • X)) i j) (X i j) 0 := by

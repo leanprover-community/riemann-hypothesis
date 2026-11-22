@@ -41,8 +41,6 @@ def hJL (u : Fin n → ℂ) : (Fin n → ℂ) →ₗ[ℂ] ℂ where
   map_add' x y := by simp [hJ, Matrix.mulVec_add, dotProduct_add]
   map_smul' c x := by simp [hJ, Matrix.mulVec_smul, dotProduct_smul]
 
-theorem hJL_apply (u x : Fin n → ℂ) : hJL ε u x = hJ ε u x := rfl
-
 def piW (e f : Fin r → Fin n → ℂ) (z : Fin n → ℂ) : (Fin n → ℂ) →ₗ[ℂ] (Fin n → ℂ) :=
   LinearMap.id - ∑ a, (hJL ε (f a)).smulRight (e a) - ∑ a, (hJL ε (e a)).smulRight (f a) -
     ((hJ ε z z)⁻¹ • hJL ε z).smulRight z

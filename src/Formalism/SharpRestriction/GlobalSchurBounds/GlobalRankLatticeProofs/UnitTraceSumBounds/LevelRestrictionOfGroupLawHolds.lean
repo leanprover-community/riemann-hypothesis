@@ -1,7 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.CubeOfTwoIdentities
-public import Formalism.SharpRestriction.GlobalSchurBounds.StatementTranslationInvariantSeventh
+public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.CubeRelationOfParallelogram
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.PhGram
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.GramUnit

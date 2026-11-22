@@ -43,10 +43,6 @@ structure Away (x y : WD h) : Prop where
 
   tame0 : IsQp w → TmW y → Sqf y → y.mono0 → x.mono0 ∧ ∀ g : ↥(Weil h), deg g = 0 → x.charPol g = y.charPol g
 
-structure AwayN (x y : WD h) : Prop where
-  ine : IsQp w → TmW y → ∀ g : ↥(Weil h), deg g = 0 → x.charPol g = y.charPol g
-  spl : IsQp w → TmW y → ∀ (u : WD h) (c : G E Ω → ℂ) (t : ℕ), ∀ γ ∈ Ine (F := E) A,
-    ((y.lpSum u).inePol γ).rootMultiplicity (c γ) ≤ t → SplW c t (y.lpSum u) → SplW c t (x.lpSum u)
 end Local
 
 variable (Rc : RecNotion) {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] {l : ℕ} [Fact l.Prime] {a : ℕ}
@@ -82,11 +78,6 @@ structure Props (π : CuspSub E a) (ι : Qbar l ≃+* ℂ)
     ∀ (w : HeightOneSpectrum (𝓞 E)) (A : ValuationSubring Ω) (h : IsPlaceOver A w)
       (O : Type) [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O]
       (Bw : LocBridge l E Ω (Dec (F := E) A) O) (hj : Pst.Induces Bw), Above Rc π ι r HT P h Bw hj
-
-def TameN (π : CuspSub E a) (ι : Qbar l ≃+* ℂ) (r : G E Ω →* GL (Fin a) (Qbar l)) : Prop :=
-  ∀ (w : HeightOneSpectrum (𝓞 E)) (hl : ((l : ℕ) : 𝓞 E) ∉ w.asIdeal) (A : ValuationSubring Ω) (h : IsPlaceOver A w)
-    (rc : IrrGL (k := w.adicCompletion E) → WD h), Rc h rc → ∀ σ, π.IsLocComp w σ →
-      AwayN (GlobalTheory.WeilDeligne.wdOf h hl ι r) (rc (algNorm σ))
 
 def Row0 : Prop :=
   ∀ (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]

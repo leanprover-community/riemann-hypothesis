@@ -164,17 +164,6 @@ theorem nuCommens_of {D : D7} {L : SizeData₂ D} (hNu : DV.NuDef D L) (hT : NuA
     obtain ⟨s, hs, hsy⟩ := locLe_zero hEq.2 y hy
     exact ⟨s, fun h0 => hs (by rw [h0]; exact Ideal.zero_mem _), hsy⟩
 
-theorem nuCommensF_of {eps : ℝ} (Fm : FamP eps) (crystallineComparison : ℝ) (h10 : product_first_zeroth_parts.ConclusionOnFamily Fm crystallineComparison) (hS : SettingEventually Fm) :
-    NuCommensF Fm := by
-  obtain ⟨a0, h10⟩ := h10
-  obtain ⟨a1, hS⟩ := hS
-  refine ⟨max (max a0 a1) (Fm.x1 + 1), fun x hx i => ?_⟩
-  have e0 : a0 ≤ x := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hx
-  have e1 : a1 ≤ x := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hx
-  have e2 : Fm.x1 < x := by have := le_trans (le_max_right (max a0 a1) (Fm.x1 + 1)) hx; linarith
-  exact nuCommens_of (Fm.nuDef x e2 i) (nuAtT_of (Fm.ex x e2 i).lat.atT
-    (fun u w hw => ((h10 x e0 i u (hS x e1 e2 i u)).2.2.2.2.1 w hw).1))
-
 end Formalism.MainNotions.Lnk
 
 end
@@ -186,7 +175,6 @@ noncomputable section
 namespace Formalism.MainNotions
 
 open Formalism.BasicNotions Formalism.MainNotions.Lnk Formalism.MainNotions.GlobalTheoryTheory
-
 
 end Formalism.MainNotions
 

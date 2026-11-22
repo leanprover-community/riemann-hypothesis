@@ -1,6 +1,16 @@
 module
 
-public import Formalism.LocalToGlobal.ClassS
+public import Formalism.LocalToGlobal.JointCharacters.SameChr
+public import Formalism.LocalToGlobal.HilbertRowConditions.KaTiedIffKapDef
+public import Formalism.LocalToGlobal.HermitianForms.ExtraSym
+public import Formalism.LocalToGlobal.HilbertRowConditions.TiedEMt
+public import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
+public import Formalism.LocalToGlobal.GroupLattices.StdSubAtOfRing
+public import Formalism.LocalToGlobal.GroupLattices.Joint0
+public import Formalism.LocalToGlobal.LatticeGeometry.GeoTiedP
+public import Formalism.SharpRestriction.PageFix
+public import Formalism.SharpRestriction.Divisibility.SmallFirstModulusBelowScale
+public import Formalism.SharpRestriction.LevelLetterCocycles.AlignN
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RingSpecNormalisedCharacterEqAlt
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NGalTied

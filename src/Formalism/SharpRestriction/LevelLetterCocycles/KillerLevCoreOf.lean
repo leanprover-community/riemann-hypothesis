@@ -25,8 +25,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 variable (W : LocWach PD LL O v n)
 
-local notation "ιE" => algebraMap (LetA O n) W.EE
-
 section Gen
 
 theorem γA_comm (g h : W.Gam) (a : LetA O n) : W.γA g (W.γA h a) = W.γA h (W.γA g a) := by

@@ -83,14 +83,6 @@ def gelfVal (χ : Fin n → ℂ) (k : ℕ) : ℂ :=
 def IsZEigen (ε : Fin n → Bool) (χ : Fin n → ℂ) (f : Matrix (Fin n) (Fin n) ℂ → ℂ) : Prop :=
   Formalism.REAL.SmoothOnG ε f ∧ ∀ m : ℕ, ∀ g ∈ UJset ε, gelf ε m f g = gelfVal χ (m + 1) * f g
 
-def IsZFinite (ε : Fin n → Bool) (f : Matrix (Fin n) (Fin n) ℂ → ℂ) : Prop :=
-  Formalism.REAL.SmoothOnG ε f ∧ ∀ m : ℕ, ∃ (N : ℕ) (c : Fin N → ℂ), ∀ g ∈ UJset ε,
-    (gelf ε m)^[N] f g = ∑ i, c i * (gelf ε m)^[i.val] f g
-
-def IsBiKFin (ε : Fin n → Bool) (f : Matrix (Fin n) (Fin n) ℂ → ℂ) : Prop :=
-  FiniteDimensional ℂ (Submodule.span ℂ {F : Formalism.REAL.UJ ε → ℂ |
-    ∃ k₁ ∈ Formalism.REAL.Kset ε, ∃ k₂ ∈ Formalism.REAL.Kset ε, F = fun g => f (k₁ * umat g * k₂)})
-
 def HasInfChar (ε : Fin n → Bool) (χ : Fin n → ℂ) {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) : Prop :=
   ∀ v w : H, IsKFin ε σ v → IsKFin ε σ w →
@@ -152,7 +144,6 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 end Smooth
 
-
 open scoped MatrixOrder in
 theorem posPart_posDef_sq {g : Matrix (Fin n) (Fin n) ℂ} (hg : IsUnit g) :
     (posPart g).PosDef ∧ posPart g * posPart g = gᴴ * g := by
@@ -164,7 +155,6 @@ theorem posPart_posDef_sq {g : Matrix (Fin n) (Fin n) ℂ} (hg : IsUnit g) :
   have hu : IsUnit (gᴴ * g) := (by simpa [Matrix.star_eq_conjTranspose] using hg.star : IsUnit gᴴ).mul hg
   rw [← hs] at hu
   exact isUnit_of_mul_isUnit_left hu
-
 
 open scoped MatrixOrder in
 theorem posPart_eq_of_sq {g p : Matrix (Fin n) (Fin n) ℂ} (hp : p.PosDef) (h : p * p = gᴴ * g) :

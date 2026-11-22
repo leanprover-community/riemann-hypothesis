@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FormsOver
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingKrullDimIntegers
 public import Formalism.LocalToGlobal.LatticeGeometry.GeoTiedP
 public import Formalism.LocalToGlobal.LatticeGeometry.LevPrPrime
 public import Formalism.LocalToGlobal.LatticeGeometry.ShimuraSheafOfIndefiniteSubspace
@@ -13,8 +13,6 @@ public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
 public import Formalism.SharpRestriction.Divisibility.BoundaryLocalData
 public import Formalism.SharpRestriction.Divisibility.WeightThresholdDefs
 public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
-public import Formalism.SharpRestriction.Divisibility.PrinLevClass
-public import Formalism.SharpRestriction.Divisibility.LatticeTransfer
 public import Formalism.SharpRestriction.Divisibility.PlaceRankTwoOne
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 public import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant

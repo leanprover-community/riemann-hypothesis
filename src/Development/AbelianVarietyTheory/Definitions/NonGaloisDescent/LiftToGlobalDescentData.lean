@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.NormalizedHeckeData
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
+public import Formalism.LocalToGlobal.PlaceMapInjectivity.MapPlInjective
 
 @[expose] public section
 

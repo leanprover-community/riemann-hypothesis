@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
-public import Development.AbelianVarietyTheory.BlockTheory.JetGauges.TraceFormDualSystem
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FunctionalValuesNonempty
 
 @[expose] public section

@@ -2,7 +2,7 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.MapEta
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.PlProps
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ResMap
+public import Mathlib
 
 @[expose] public section
 

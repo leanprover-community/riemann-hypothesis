@@ -22,7 +22,6 @@ def EvzTie {u : D.what₂.Word} {A : AtTTied u} {K : ClsPTied u} {P : LvTied u A
     IsTr (atInf (embT D) (Tl.ga c).1.1) (W.eY s') (W.eY s) →
     eWz ((D.mem u).P.evz φ) c s = (((Km.lev.chi (Ta.ka c))⁻¹ : ℂˣ) : ℂ) * φ ((D.fm u).til c) s'
 
-
 open Classical in
 def BwTie {u : D.what₂.Word} (A : AtTTied u) {i : ℕ} {hi : i ≤ D.R.m} {K : ClsTied u i hi}
     (W : ValTied u A.eV i hi K) : Prop :=
@@ -68,48 +67,6 @@ def NormPTie {u : D.what₂.Word} {K : ClsPTied u} (W : ValPTied u K) : Prop :=
           (nfAll (D.fm u).sg (subP o.1 (MvPolynomial.map s (Pc c))) (subP o.1 (MvPolynomial.map s (Pc c)))).re
 
 def aOf (R : Ranks) (i : ℕ) : ℕ := if i < R.m then R.k + i else R.r
-
-def skipOf (R : Ranks) (i : ℕ) : ℕ := if i + 1 < R.m then R.k else R.N i
-
-def fcOf (R : Ranks) (i : ℕ) : ℕ := if R.m ≤ i + 1 then R.k else R.N i
-
-theorem fcOf_lt {R : Ranks} {i : ℕ} (h : i + 1 < R.m) : fcOf R i = R.N i := if_neg (Nat.not_le.2 h)
-
-
-set_option maxHeartbeats 1000000 in
-structure FormsTied (D : D7) (u : D.what₂.Word) where
-  atT : AtTTied u
-  cls : ∀ i hi, ClsTied u i hi
-  val : ∀ i hi, ValTied u atT.eV i hi (cls i hi)
-
-  gl : GLoc D.host.F D.host.E (sigD D) D.host.g
-  gl_K : ∀ i, (gl.piG i : D.host.E) ∈ D.host.K
-
-  glev : ∀ i hi, GLev (cls i hi).lev gl (aOf D.R i) D.R.t i (skipOf D.R i) (fcOf D.R i) (decide (i = D.R.m))
-  lv : ∀ i hi, LvTied u atT i hi
-  fMe : ∀ i hi v, (cls i hi).lev.fM (atT.eV v).1 (atT.eV v).2 ≃+ (D.mem u).A.Fv v
-  fv : ∀ i hi, FvTie (lv i hi) (cls i hi) (fMe i hi)
-
-  upN : ∀ i hi, UpNatTie (lv i hi) (cls i hi) (val i hi)
-  dnN : ∀ i hi, DnNatTie (lv i hi) (cls i hi) (val i hi)
-  norm : ∀ i hi, NormTie (val i hi)
-  bw : ∀ i hi, BwTie atT (val i hi)
-  clsP : ClsPTied u
-  valP : ValPTied u clsP
-  normP : NormPTie valP
-
-  glevP : GLev clsP.lev gl D.R.r D.R.t D.R.m (D.R.N D.R.m) (fcOf D.R D.R.m) false
-  til : TilTied u atT clsP (lv D.R.m le_rfl)
-  tilLat : TilBaseLat til (cls D.R.m le_rfl)
-  tilFv : TilBaseFv til (cls D.R.m le_rfl) (fMe D.R.m le_rfl)
-  tilAd : TilAd til (cls D.R.m le_rfl)
-  frExt : FrExt til.z0 (glev D.R.m le_rfl) glevP
-  eWz : (D.mem u).P.Wz ≃ₗ[ℂ] ((D.fm u).clsP → (D.mem u).C.Y D.R.m → ℂ)
-  evz : EvzTie tilAd (val D.R.m le_rfl) eWz
-  jM : (D.mem u).P.Mt →ₛₗ[starRingEnd ℂ] (D.mem u).P.Wrow
-  per : PerTie u jM
-
-  DGam : (D.mem u).C.DGam = (D.mem D.u₀).C.DGam
 
 theorem Mu0_iff {u : D.what₂.Word} {eV : (D.mem u).A.vT ≃ PlT D u} {K : ClsTied u 0 (Nat.zero_le _)}
     (W : ValTied u eV 0 (Nat.zero_le _) K) (φ : (D.mem u).C.cls 0 → (D.mem u).C.Y 0 → ℂ) :

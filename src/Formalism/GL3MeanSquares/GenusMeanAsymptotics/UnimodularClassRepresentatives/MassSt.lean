@@ -44,35 +44,6 @@ def lValEtaF (K F : Type*) [Field K] [Field F] [NumberField F] [Algebra F K] (M 
   ∏' 𝔭 : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal},
     (1 - etaF K F 𝔭.1 ^ M * (Ideal.absNorm 𝔭.1 : ℝ) ^ (-(M : ℤ)))⁻¹
 
-def SiegelOne : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] [StarRing K], Formalism.HermitianLatticesTheory.IsCMUnram K →
-    ∀ (M : ℕ), 3 ≤ M →
-    ∀ (V : Type) [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
-      (h : V →ₗ⋆[K] V →ₗ[K] K) (L : Submodule (𝓞 K) V),
-      h.IsSymm → Formalism.HermitianLatticesTheory.IsOrthoLattice h L M →
-      Formalism.HermitianLatticesTheory.mass h L = Formalism.HermitianLatticesTheory.massRatioRightSide K M * repMass h L 1
-
-def OrbitCount : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] [StarRing K], Formalism.HermitianLatticesTheory.IsCMUnram K →
-    ∀ (M : ℕ), 2 ≤ M →
-    ∀ (V V' : Type) [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
-      [IsScalarTower (𝓞 K) K V] [AddCommGroup V'] [Module K V']
-      [Module (𝓞 K) V'] [IsScalarTower (𝓞 K) K V']
-      (h : V →ₗ⋆[K] V →ₗ[K] K) (h' : V' →ₗ⋆[K] V' →ₗ[K] K)
-      (L : Submodule (𝓞 K) V) (L' : Submodule (𝓞 K) V'),
-      h.IsSymm → h'.IsSymm → Formalism.HermitianLatticesTheory.IsOrthoLattice h L M →
-      Formalism.HermitianLatticesTheory.IsOrthoLattice h' L' (M - 1) →
-      repMass h L 1 = Formalism.HermitianLatticesTheory.mass h' L'
-
-def LandherrUnram : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] [StarRing K], Formalism.HermitianLatticesTheory.IsCMUnram K →
-    ∀ (n : ℕ) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V]
-      [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K),
-      h.IsSymm → IsTotPosDef h → finrank K V = n →
-      (∃ L : Submodule (𝓞 K) V, Submodule.IsLattice K L ∧
-        ∀ p : Ideal (𝓞 K), p.IsMaximal → Formalism.HermitianLatticesTheory.IsUnimodularAt h p L) →
-      ∃ L : Submodule (𝓞 K) V, Formalism.HermitianLatticesTheory.IsOrthoLattice h L n
-
 def LocalDensity : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] [StarRing K], Formalism.HermitianLatticesTheory.IsCMUnram K →
     ∀ (P : Ideal (𝓞 K)), P.IsMaximal → ∀ (M k : ℕ), 1 ≤ M → 1 ≤ k →

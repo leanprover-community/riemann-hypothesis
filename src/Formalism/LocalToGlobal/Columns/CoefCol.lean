@@ -102,10 +102,6 @@ def mtVal (j : ℕ) (SG : Finset (HeightOneSpectrum (𝓞 X.E))) :
     CoefPk X R.nV (DecoSet (E := X.E) (n := R.nV) (ST := ∅) (SG := SG)) :=
   roundPk X (W.lamV j) fun d => d.1.N
 
-def BvLat (u : Pr.Word) (j : ℕ) {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
-    (P : ST) (d : DecoSet (E := X.E) (n := R.N j) (ST := ST) (SG := SG)) : Submodule (𝓞 X.K) (VV X.K (W.lamTrue u j)) :=
-  delAtr X.emb (W.lamTrue u j) (d.1.LshKer P)
-
 end Vals
 
 end Formalism.L2.Col

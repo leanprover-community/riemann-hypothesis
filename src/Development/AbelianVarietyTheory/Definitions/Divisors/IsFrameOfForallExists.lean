@@ -258,7 +258,6 @@ theorem isFrame_one (U : X.Opens) :
   isFrame_of_basis (fun V _ => Module.Basis.singleton (Fin 1) Γ(X, V)) fun V h i =>
     (Module.Basis.singleton_apply (Fin 1) Γ(X, V) i).trans (map_one (resG X h)).symm
 
-
 variable (X) in
 def freeFrame (ι : Type) (i : ι) : Γ(freeModule X ι, ⊤) :=
   Scheme.Modules.Hom.app (M := structureModule X) (N := freeModule X ι)
@@ -278,7 +277,6 @@ theorem isFrame_biproduct (ι : Type) [Fintype ι] [HasBiproduct fun _ : ι => s
   · exact (congrArg _ (Pi.single_eq_of_ne hj _)).trans (map_zero _)
   · exact congrArg _ ((Pi.single_eq_same _ _).trans (map_one (resG X h)).symm)
 
-
 variable (X) in
 theorem isFrame_freeFrame (ι : Type) [Fintype ι] : IsFrame (freeFrame X ι) := by
   have := Abelian.hasFiniteBiproducts (C := X.Modules)
@@ -294,7 +292,6 @@ theorem isFrame_freeFrame (ι : Type) [Fintype ι] : IsFrame (freeFrame X ι) :=
   rw [funext e] at this
   exact this
 
-
 variable (F) in
 def IsVB (r : ℕ) : Prop := ∀ x : X, ∃ (U : X.Opens) (e : Fin r → Γ(F, U)), x ∈ U ∧ IsFrame e
 
@@ -308,16 +305,9 @@ theorem isVB_of_frames (hr : Fintype.card ι = r)
 theorem IsFrame.isVB {e : ι → Γ(F, ⊤)} (he : IsFrame e) : IsVB F (Fintype.card ι) :=
   isVB_of_frames rfl fun _ => ⟨⊤, e, trivial, he⟩
 
-
 variable (X) in
 theorem isVB_freeModule (ι : Type) [Fintype ι] : IsVB (freeModule X ι) (Fintype.card ι) :=
   (isFrame_freeFrame X ι).isVB
-
-
-variable (X) in
-theorem isVB_freeModule_fin (r : ℕ) : IsVB (freeModule X (Fin r)) r := by
-  simpa using isVB_freeModule X (Fin r)
-
 
 variable (X) in
 theorem isVB_structureModule : IsVB (structureModule X) 1 :=
@@ -357,7 +347,6 @@ theorem isFiniteQC (h : IsVB F r) : IsFiniteQC F :=
     have ⟨U, _, hU, hx, _, he⟩ := h.exists_affine (V := ⊤) (x := x) trivial
     ⟨U, hU, hx, Module.Finite.of_basis (he.basis le_rfl)⟩
 
-
 theorem nonempty_basis_stalk (h : IsVB F r) (x : X) :
     Nonempty (Module.Basis (Fin r) (X.presheaf.stalk x) (F.presheaf.stalk x :)) :=
   have ⟨_, _, hx, he⟩ := h x
@@ -367,51 +356,13 @@ theorem finrank_stalk (h : IsVB F r) (x : X) :
     Module.finrank (X.presheaf.stalk x) (F.presheaf.stalk x :) = r :=
   (h.nonempty_basis_stalk x).elim fun b => by simpa using Module.finrank_eq_card_basis b
 
-theorem rank_unique [Nonempty X] (h : IsVB F r) (h' : IsVB F s) : r = s :=
-  (h.finrank_stalk (Classical.arbitrary X)).symm.trans (h'.finrank_stalk _)
-
 theorem pullback (h : IsVB F r) (f : Y ⟶ X) : IsVB ((Scheme.Modules.pullback f).obj F) r :=
   fun y =>
     have := h.isQuasicoherent
     have ⟨_, _, hx, he⟩ := h (f y)
     ⟨_, _, hx, he.pullback f⟩
 
-theorem restrict (h : IsVB F r) (g : Y ⟶ X) [IsOpenImmersion g] : IsVB (F.restrict g) r :=
-  (h.pullback g).of_iso ((Scheme.Modules.restrictFunctorIsoPullback g).app F).symm
-
-theorem twist (h : IsVB F r) {L : LB X} (hL : L.IsLB) : IsVB (twist F L) r := fun x => by
-  obtain ⟨i, hi⟩ := Semi.LB.mem_of_cover hL x
-  obtain ⟨U, e, -, hx, hle, he⟩ := h.exists_affine hi
-  refine ⟨U, fun j => (Twist.chartEquiv hL i hle).symm (e j), hx,
-    he.map_of_linearEquiv (fun V hV => (Twist.chartEquiv hL i (hV.trans hle)).symm) ?_⟩
-  exact fun V hV j => (Twist.resM_chartEquiv_symm hL i hle hV _).symm
-
-theorem biprod (hF : IsVB F r) (hG : IsVB G s) : IsVB (F ⊞ G) (r + s) := by
-  refine isVB_of_frames (ι := Fin r ⊕ Fin s) (by simp) fun x => ?_
-  obtain ⟨U, e, hx, he⟩ := hF x
-  obtain ⟨V, e', -, hx', hle, he'⟩ := hG.exists_affine hx
-  refine ⟨V, Sum.elim (fun i => (biprod.inl : F ⟶ F ⊞ G).app V (resM F hle (e i)))
-    fun i => (biprod.inr : G ⟶ F ⊞ G).app V (e' i), hx', isFrame_of_basis
-      (fun W h => ((he.basis (h.trans hle)).prod (he'.basis h)).map
-        (QCoh.biprodSectionsEquiv F G W).symm) ?_⟩
-  rintro W h (i | i)
-  · rw [Module.Basis.map_apply, Module.Basis.prod_apply, Sum.elim_inl, Sum.elim_inl, ← app_resM]
-    change (Limits.biprod.inl : F ⟶ F ⊞ G).app W _ + (Limits.biprod.inr : G ⟶ F ⊞ G).app W 0 = _
-    simp
-  · rw [Module.Basis.map_apply, Module.Basis.prod_apply, Sum.elim_inr, Sum.elim_inr, ← app_resM]
-    change (Limits.biprod.inl : F ⟶ F ⊞ G).app W 0 + (Limits.biprod.inr : G ⟶ F ⊞ G).app W _ = _
-    simp
-
 end IsVB
-
-theorem isVB_zero_iff : IsVB F 0 ↔ IsZero F := by
-  refine ⟨fun h => QCoh.support_eq_empty_iff.1 (Set.eq_empty_of_forall_notMem fun x =>
-    QCoh.notMem_support_iff.2 ?_), fun h x => ⟨⊤, Fin.elim0, trivial, fun V _ => ?_⟩⟩
-  · obtain ⟨b⟩ := h.nonempty_basis_stalk x
-    exact b.equivFun.injective.subsingleton
-  · have := QCoh.subsingleton_sections_of_isZero h V
-    exact ⟨fun _ _ _ => Subsingleton.elim _ _, fun _ => ⟨0, Subsingleton.elim _ _⟩⟩
-
 
 variable (F) in
 structure Sub where
@@ -471,15 +422,8 @@ theorem incl_app_injective (V : X.Opens) : Function.Injective (N.incl.app V) := 
 
 theorem incl_app_mem (s : Γ(N.toMod, V)) : N.incl.app V s ∈ N.sec V := (show N.sec V from s).2
 
-theorem mem_sec_iff {s : Γ(F, V)} : s ∈ N.sec V ↔ ∃ t, N.incl.app V t = s :=
-  ⟨fun h => ⟨N.mkSec s h, rfl⟩, fun ⟨t, ht⟩ => ht ▸ N.incl_app_mem t⟩
-
 instance mono_incl : Mono N.incl :=
   QCoh.mono_of_locally_app_injective _ fun W _ hx => ⟨W, hx, le_rfl, N.incl_app_injective W⟩
-
-def lift (φ : G ⟶ F) (h : ∀ V s, φ.app V s ∈ N.sec V) : G ⟶ N.toMod :=
-  homOfLinear (G := N.toMod) (fun V => (appLinear φ V).codRestrict (N.sec V) (h V))
-    fun hW s => Subtype.ext (app_resM φ hW s)
 
 @[reassoc (attr := simp)] theorem lift_incl (φ : G ⟶ F) (h : ∀ V s, φ.app V s ∈ N.sec V) :
     N.lift φ h ≫ N.incl = φ := rfl
@@ -503,21 +447,5 @@ theorem isQuasicoherent [F.IsQuasicoherent]
     exact ⟨n, N.incl_app_injective _ (by rw [Scheme.Modules.Hom.app_smul, e, map_zero])⟩
 
 end Sub
-
-def Sub.ker (φ : F ⟶ G) : Sub F where
-  sec V := LinearMap.ker (appLinear φ V)
-  res_mem h s hs := (app_resM φ h s).trans ((congrArg _ hs).trans (map_zero _))
-  mem_of_local {V s} H := by
-    choose W hW hx hs using fun x : V => H x x.2
-    exact sec_ext_of_cover W hW (fun x hxV => Opens.mem_iSup.2 ⟨⟨x, hxV⟩, hx _⟩) fun x =>
-      (app_resM φ _ s).symm.trans ((hs x).trans (map_zero _).symm)
-
-def Sub.iInf {κ : Type*} (N : κ → Sub F) : Sub F where
-  sec V := ⨅ k, (N k).sec V
-  res_mem h _ hs := (Submodule.mem_iInf _).2 fun k =>
-    (N k).res_mem h ((Submodule.mem_iInf _).1 hs k)
-  mem_of_local H := (Submodule.mem_iInf _).2 fun k => (N k).mem_of_local fun x hx =>
-    have ⟨W, h, hxW, hs⟩ := H x hx
-    ⟨W, h, hxW, (Submodule.mem_iInf _).1 hs k⟩
 
 end GlobalTheory.VB

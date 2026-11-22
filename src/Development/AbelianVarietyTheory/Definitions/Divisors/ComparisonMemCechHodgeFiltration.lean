@@ -348,10 +348,6 @@ theorem isPullForm_iff {ω : GlobForm s} {ω' : GlobForm s'} : IsPullForm h ω �
       ((congrArg (fun z : Glob1 (OPair φ s') ↦ z.1 (op p)) e).trans (k (op p)))
   · exact (k' p).trans ((e p.unop).trans (k p).symm)
 
-theorem IsPull1.smul {a : HH1 s} {a' : HH1 s'} (ha : IsPull1 h a a') (r : R) :
-    IsPull1 h (r • a) (σ r • a') := by
-  unfold IsPull1 at *; rw [map_smulₛₗ, map_smulₛₗ, ha]; rfl
-
 theorem IsPull1.cup {a b : HH1 s} {a' b' : HH1 s'} (ha : IsPull1 h a a') (hb : IsPull1 h b b') :
     IsPull2 h (cupHH s a b) (cupHH s' a' b') := by
   unfold IsPull1 IsPull2 at *; rw [pullHyp2_cup, pullHyp2_cup, ha, hb]
@@ -411,66 +407,9 @@ theorem res_toSec ⦃U V : AffOp (Sp B)⦄ (a : U ⟶ V) (b : B) :
     mp (OAff (algStr R B)) a (toSec R B U.unop b) = toSec R B V.unop b :=
   (Sec.res (𝟙 (Sp B)) (leOfHom a.unop)).commutes b
 
-def affEquiv : AlgebraFirstDeRham R B ≃ₗ[R] HH1 (algStr R B) :=
-  LinearEquiv.ofBijective (coneMap (F := OAff (algStr R B)) (fun U ↦ toSec R B U.unop) (res_toSec R B))
-    (coneMap_bijective _ _ (T₀ := op ⟨⊤, isAffineOpen_top _⟩)
-      (Limits.IsInitial.ofUniqueHom (fun U ↦ (homOfLE (show U.unop ≤ ⟨⊤, isAffineOpen_top _⟩ from
-        le_top (a := U.unop.1))).op) fun _ _ ↦ rfl)
-      (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of B)).inv))
-
-theorem affEquiv_mk (ω : LinearMap.ker (dOne R B)) : affEquiv R B (Submodule.Quotient.mk ω) =
-    clForm _ (coneForm (F := OAff (algStr R B)) (fun U ↦ toSec R B U.unop) (res_toSec R B) ω) := rfl
-
 open Polynomial
 
-theorem dOne_line (ω : Ω[R[X]⁄R]) : dOne R R[X] ω = 0 := by
-  induction ω using ind1 with
-  | h b c =>
-    rw [dOne_smul_D, polynomial_D_apply R b, polynomial_D_apply R c]
-    simp
-  | h0 => simp
-  | ha x y hx hy => rw [map_add (f := _), hx, hy, add_zero]
-
-def lineEquiv : (Ω[R[X]⁄R] ⧸ LinearMap.range (D R R[X]).toLinearMap) ≃ₗ[R] HH1 (lineStr R) :=
-  (Submodule.Quotient.equiv (exact1 R R[X]) _
-    (LinearEquiv.ofTop _ (eq_top_iff.2 fun ω _ ↦ dOne_line R ω)) (by
-      ext ω
-      exact ⟨fun ⟨x, hx, e⟩ ↦ e ▸ hx, fun hω ↦ ⟨⟨ω, dOne_line R ω⟩, hω, rfl⟩⟩)).symm.trans
-    (affEquiv R R[X])
-
-theorem lineEquiv_mk (ω : Ω[R[X]⁄R]) : lineEquiv R (Submodule.Quotient.mk ω) =
-    affEquiv R R[X] (Submodule.Quotient.mk ⟨ω, dOne_line R ω⟩) := rfl
-
-
 attribute [local instance] opModule isCentralScalar_kaehler isScalarTower_kaehler in
-variable {R B} in
-theorem connForm_tdt (x : Sp B ⟶ Sp R[X]) (hx : x ≫ lineStr R = spMap (algebraMap R B)) :
-    connForm (tdt R).1 x hx =
-      (Spec.preimage x).hom Polynomial.X • D R B ((Spec.preimage x).hom Polynomial.X) := by
-  have c0 : coordLift (Thick.triv B x hx) = (Spec.preimage x).hom Polynomial.X :=
-    π_coordLift (Thick.triv B x hx)
-  have c1 : (coordLift ((diagExt R B).thick x hx)).fst = (Spec.preimage x).hom Polynomial.X :=
-    π_coordLift ((diagExt R B).thick x hx)
-  change TrivSqZeroExt.snd (R := B) ((TrivSqZeroExt.inl (coordLift (Thick.triv B x hx)) *
-    (_ - TrivSqZeroExt.inl (coordLift (Thick.triv B x hx))) + (divided₂ (diagExt R B).sq).dpow 2 _) -
-    (diagSec R B (coordLift (Thick.triv B x hx)) * (_ - diagSec R B (coordLift (Thick.triv B x hx))) +
-      (divided₂ (diagExt R B).sq).dpow 2 _)) = _
-  rw [squareZeroDividedPowers_dpow _ le_rfl, squareZeroDividedPowers_dpow _ le_rfl, c0]
-  have key : ∀ (c : TrivSqZeroExt B Ω[B⁄R]) (b : B), c.fst = b →
-      TrivSqZeroExt.snd ((TrivSqZeroExt.inl b * (c - TrivSqZeroExt.inl b) + 0) -
-        (diagSec R B b * (c - diagSec R B b) + 0)) = b • D R B b := by
-    intro c b h
-    simp [h, smul_sub]
-  exact key _ _ c1
-
-theorem comparison_tdt_line : cmp1 (lineStr R) (Form.cl _ (tdt R)) =
-    lineEquiv R (Submodule.Quotient.mk ((Polynomial.X : R[X]) • D R R[X] Polynomial.X)) := by
-  rw [comparison_formClass, lineEquiv_mk, affEquiv_mk]
-  refine congrArg _ (Subtype.ext (Subtype.ext (funext fun U ↦ ?_)))
-  rw [cmpForm_apply, connForm_tdt, coneForm_apply, SemiHom.oneFormMap_smul_semilinear, SemiHom.m1_D]
-  have : Spec.preimage (affPt (lineStr R) U.unop) = secMap (𝟙 (Sp R[X])) U.unop.1 := by
-    rw [affPt_eq]; exact Spec.preimage_map _
-  rw [this]; rfl
 
 end Affine
 

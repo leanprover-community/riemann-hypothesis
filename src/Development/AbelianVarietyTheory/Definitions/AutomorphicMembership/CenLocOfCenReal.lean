@@ -33,17 +33,6 @@ def CenLoc (D : D7) (M : MtFam D) : Prop :=
 def SumTw (D : D7) (M : MtFam D) : Prop :=
   ∀ w, TwistedAt D w → ∀ (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m), GlobalTheory.CoefDuty.ClassSum (M (D.what₂.muTw w) j h1 h2)
 
-structure ParIn (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) (cf : CharFrame D) (rep : D.what₂.FT → NG.FinTyp D.host.E D.R.r)
-    (Rw : RowSide D) : Type 1 where
-  T : GlobalTheory.RowTie.WDTie D.nd D.naut
-  lab : LabTrue D T
-  chr : CharSide D cf
-  cg : CGTrue hL D T
-  A : AUSide D
-  au : AUTrue hL D T A
-  row : RowTrue hL D rep (fun σ w => T.e w (Rw.locR σ w)) Rw.satR
-
-
 open GlobalTheory.IndefiniteRowSideFullHecke.CMTypeEmbeddings in
 structure LiftAt (D : D7) (Rw : RowSide D) (j : ℕ) (σ : D.what₂.FT) (π : D.nbc.AU j) (μ : D.naut.CG 1) : Prop where
   csd : D.naut.csd μ
@@ -63,15 +52,6 @@ def LiftAll (D : D7) (Rw : RowSide D) : Prop :=
 def RowLoc (D : D7) (Rw : RowSide D) (σ : D.what₂.FT) : Prop :=
   ∀ w : PlE D.host, IsSplitPl D.host w → (∀ k : Fin 2, w ∉ placesOver D.host.E (D.host.g k)) → D.naut.unr (Rw.locR σ w) ∧
     ∀ α ∈ D.naut.frobEig (Rw.locR σ w), ‖α‖ < ((Ideal.absNorm w.asIdeal : ℕ) : ℝ) ^ (((D.R.t : ℝ) - 1) / 2)
-
-structure ParLaws (D : D7) : Prop where
-  tie0 : SumRepresentations.tie0 D
-  an : SumRepresentations.adm5 D
-  temp : SumRepresentations.adm7 D
-  lab : SumRepresentations.tieLab D
-  one : GlobalTheory.RowCopy.HeckeSplitOne D
-  cancel : ∀ w (a b c : D.naut.LP w), D.naut.lpSum a c = D.naut.lpSum b c → a = b
-  gsp : ∀ (k : Fin 2) (v : D.nd.PlG k), IsSplitPl D.host (D.naut.plGw k v)
 
 end GlobalTheory.HeightCounting.Up
 

@@ -399,36 +399,6 @@ def L1e : Prop :=
 
 end ColData
 
-structure IndefCols {Bs : DefBase K} (Df : DefSide Bs) (Dc : DefCols Df) (Sp : SPer Dc) (N : IndefNum Bs)
-    extends IndefRows Df where
-
-  l6 : toIndefData.L6 N
-
-  col : ColData Dc Sp toIndefData
-
-  l1b : col.PairingFactorsThroughPeriods
-
-  l1e : col.L1e
-
-structure IndefExtra {Bs : DefBase K} {Df0 Df1 : DefSide Bs} {Dc : DefCols Df1} {Sp : SPer Dc} {N : IndefNum Bs}
-    (S0 : IndefSide Df0 N) (S1 : IndefCols Df1 Dc Sp N) : Prop where
-
-  untw : S0.toIndefData.Untwisted N
-
-  level : LevelLink S0.toIndefData S1.toIndefData
-
-  passage : Passage N S0.toIndefData S1.toIndefData
-
-  fun0 : S0.toIndefData.FUN N
-
-structure IndefCore {Bs : DefBase K} (Df0 Df1 : DefSide Bs) (Dc : DefCols Df1) (Sp : SPer Dc) (N : IndefNum Bs) where
-
-  base : IndefSide Df0 N
-
-  cols : IndefCols Df1 Dc Sp N
-
-  extra : IndefExtra base cols
-
 structure DefFace (Bs : DefBase K) where
 
   Df0 : DefSide Bs
@@ -440,34 +410,6 @@ structure DefFace (Bs : DefBase K) where
   Sp : SPer Dc
 
   Z : IndefScale Bs
-
-structure IndefPkg {Bs : DefBase K} (A : DefAmb Bs) (fc : DefSub A → DefFace Bs) (C CH : ℝ) where
-
-  Zs : DefSub A
-
-  stable : Zs.Stable
-
-  inBlock : Zs.InBlock
-
-  core : IndefCore (fc Zs).Df0 (fc Zs).Df1 (fc Zs).Dc (fc Zs).Sp ((fc Zs).Z.num C CH)
-
-structure IndefFace where
-
-  K : Type
-
-  [fK : Field K]
-
-  [nK : NumberField K]
-
-  [sK : StarRing K]
-
-  [tK : _root_.NumberField.IsTotallyComplex K]
-
-  Bs : DefBase K
-
-  A : DefAmb Bs
-
-  fc : DefSub A → DefFace Bs
 
 attribute [instance] IndefFace.fK IndefFace.nK IndefFace.sK IndefFace.tK
 

@@ -8,7 +8,7 @@ public import Development.AbelianVarietyTheory.Definitions.Degenerations.PlOrdSo
 public import Development.AbelianVarietyTheory.Statements.SemistableTorsion.SemistableFin
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsFrobGBaseChange
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.EqOneOfPowOfClosedPoint
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FrobeniusOnTorsionStatement
+public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FrobeniusOnTorsion
 
 @[expose] public section
 

@@ -83,18 +83,6 @@ open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 variable {F} {E : Type} [Field E] [Algebra F E] [FiniteDimensional F E]
 
-theorem secondCountable_HA_of (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R]
-    [IsTopologicalRing R] [SecondCountableTopology R] (σ : E →ₐ[F] E) {M : ℕ}
-    (J : Matrix (Fin M) (Fin M) E) : SecondCountableTopology (HA R σ J) := by
-  haveI : SecondCountableTopology (R ⊗[F] E) := inferInstance
-  haveI hm : SecondCountableTopology (Matrix (Fin M) (Fin M) (R ⊗[F] E)) :=
-    inferInstanceAs (SecondCountableTopology (Fin M → Fin M → R ⊗[F] E))
-  haveI : SecondCountableTopology (Matrix (Fin M) (Fin M) (R ⊗[F] E))ᵐᵒᵖ :=
-    (MulOpposite.opHomeomorph (M := Matrix (Fin M) (Fin M) (R ⊗[F] E))).symm.secondCountableTopology
-  haveI : SecondCountableTopology (GL (Fin M) (R ⊗[F] E)) :=
-    Units.isEmbedding_embedProduct.isInducing.secondCountableTopology
-  exact (Topology.IsInducing.subtypeVal (t := (HR R σ J : Set (GL (Fin M) (R ⊗[F] E))))).secondCountableTopology
-
 instance secondCountable_HA (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) :
     SecondCountableTopology (HA (AF F) σ J) :=
   secondCountable_HA_of (AF F) σ J

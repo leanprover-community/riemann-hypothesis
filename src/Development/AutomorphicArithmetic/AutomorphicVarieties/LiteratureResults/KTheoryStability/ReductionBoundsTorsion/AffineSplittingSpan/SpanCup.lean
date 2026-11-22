@@ -64,8 +64,6 @@ theorem dc_inv (S : Set P) {m : ℕ} (F : (Fin (m + 1) → P) → ℝ) (hF : Inv
 def tcup (l : Additive P →+ ℝ) {n : ℕ} (e : (Fin (n + 1) → P) → ℝ) : (Fin (n + 2) → P) → ℝ :=
   fun y => l (Additive.ofMul ((y 0)⁻¹ * y 1)) * e (Fin.tail y)
 
-theorem tail_eq' {α : Type} {k : ℕ} (q : Fin (k + 1) → α) : Fin.tail q = fun i => q i.succ := rfl
-
 theorem dc_tcup (l : Additive P →+ ℝ) {n : ℕ} (e : (Fin (n + 1) → P) → ℝ) :
     dc (tcup l e) = -tcup l (dc e) := by
   funext y

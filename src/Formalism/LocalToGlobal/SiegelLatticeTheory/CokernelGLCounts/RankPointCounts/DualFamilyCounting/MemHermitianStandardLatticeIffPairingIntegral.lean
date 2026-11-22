@@ -21,8 +21,6 @@ open Alg
 
 variable {D : D7} (X : HidaSetting D)
 
-local notation "FI" => FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E
-
 theorem fi_smul_mem {I : FI} {x : D.host.E} (hx : x ∈ I) (o : 𝓞 D.host.E) : (o : D.host.E) * x ∈ I := by
   have h := (I : Submodule (𝓞 D.host.E) D.host.E).smul_mem o hx
   rw [Algebra.smul_def] at h

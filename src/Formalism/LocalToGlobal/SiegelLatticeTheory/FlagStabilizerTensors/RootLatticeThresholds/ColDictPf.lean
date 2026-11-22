@@ -21,41 +21,14 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 abbrev unitaryGroupFiniteAdeles (D : D7) : Subgroup (GL (Fin (D.R.N 0)) (D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F)) :=
   Formalism.UG.UPts (Formalism.L2.Forms.sigD D) (Formalism.L2.Forms.gramN D 0 (Nat.zero_le _)) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)
 
-abbrev unitaryGroupRational (D : D7) : Subgroup (GL (Fin (D.R.N 0)) D.host.E) :=
-  Formalism.UG.UJ (Formalism.L2.Forms.sigD D : D.host.E →+* D.host.E) (Formalism.L2.Forms.gramN D 0 (Nat.zero_le _))
-
-abbrev bcA (D : D7) :
-    GL (Fin (D.R.N 0)) D.host.E →* GL (Fin (D.R.N 0)) (D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F) :=
-  Formalism.UG.bc (Formalism.UG.inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F))
-
-abbrev G0 (D : D7) : D.what₂.Tau → Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) ℂ :=
-  Formalism.L2.Forms.gramC (Formalism.L2.Forms.gramN D 0 (Nat.zero_le _)) (Formalism.L2.Forms.embT D)
-
 instance instGroupUP0 (D : D7) : Group (unitaryGroupFiniteAdeles D) := Subgroup.toGroup _
 
 set_option synthInstance.maxHeartbeats 200000
-
-structure TrFacts {D : D7} (X : HidaSetting D) {u : D.what₂.Word} {F : Formalism.L2.Forms.Forms0 D u}
-    (Tr : Transport X u F) : Prop where
-  tot : ∀ h : Hfin X u, ∃ y : unitaryGroupFiniteAdeles D, RepF X Tr.wt Tr.ιA (h : X.B.I.Gf) y
-  onto : ∀ y : unitaryGroupFiniteAdeles D, ∃ h : Hfin X u, RepF X Tr.wt Tr.ιA (h : X.B.I.Gf) y
-  uniq : ∀ (h : X.B.I.Gf) (y y' : unitaryGroupFiniteAdeles D), RepF X Tr.wt Tr.ιA h y → RepF X Tr.wt Tr.ιA h y' → y = y'
-  inj : ∀ (h h' : Hfin X u) (y : unitaryGroupFiniteAdeles D), RepF X Tr.wt Tr.ιA (h : X.B.I.Gf) y →
-    RepF X Tr.wt Tr.ιA (h' : X.B.I.Gf) y → h = h'
-  ratF : ∀ γ : Gam X u, ∃ γ' ∈ unitaryGroupRational D, ∃ y : unitaryGroupFiniteAdeles D, (y : GL _ _) = bcA D γ' ∧
-      RepF X Tr.wt Tr.ιA (iotaF X u γ : X.B.I.Gf) y
-  ratB : ∀ γ' ∈ unitaryGroupRational D, ∃ γ : Gam X u, (∃ y : unitaryGroupFiniteAdeles D, (y : GL _ _) = bcA D γ' ∧
-      RepF X Tr.wt Tr.ιA (iotaF X u γ : X.B.I.Gf) y) ∧
-      ∀ τ, sTil X Tr.wt (iotaI X u γ : X.B.I.Ginf) τ =
-        Formalism.L2.Forms.atInf (Formalism.L2.Forms.embT D) (γ' : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) τ
-  infOnto : ∀ g : D.what₂.Tau → Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) ℂ, (∀ τ, (g τ)ᴴ * G0 D τ * g τ = G0 D τ) →
-    ∃ s ∈ Hinf X u, ∀ τ, sTil X Tr.wt s τ * g τ = 1
 
 section RepAlg
 
 variable {D : D7} (X : HidaSetting D) (wt : (VS D).V ≃ₗ[D.host.E] (VS D).V)
   (ιA : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F ≃+* D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F)
-
 
 end RepAlg
 

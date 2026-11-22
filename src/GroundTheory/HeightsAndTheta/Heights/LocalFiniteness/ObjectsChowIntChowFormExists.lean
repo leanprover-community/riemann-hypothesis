@@ -8,8 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChartPointS
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormCycleSmul
 public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SpecFirstDetFormNeZero
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.IsMultiHomogOfIsChowForm
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PIntChowFormExists
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsMahler
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
@@ -62,8 +60,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveVertPointIn
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveVertPointNagata
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PGoodChartModel
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PGoodChartZeroSet
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivPushA
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.KerEqBotOfCoord
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun

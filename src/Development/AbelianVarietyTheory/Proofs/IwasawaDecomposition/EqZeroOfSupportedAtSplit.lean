@@ -10,7 +10,6 @@ open NumberField IsDedekindDomain ReciprocityTheory.Aut Formalism.AUTREP Formali
 
 namespace GlobalTheory.SplitLocEq
 
-
 open NumberField IsDedekindDomain TensorProduct in
 theorem _root_.GlobalTheory.SplitLocEq.conj_entry {L : Type} [Field L] [NumberField L] [IsCMField L]
     {n : ℕ} (x : _root_.ReciprocityTheory.Aut.GA L n) (i j : Fin n) :
@@ -30,10 +29,6 @@ theorem proj_entry {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} 
     (i j : Fin n) : SplitPlace.proj s ((x.1 : Matrix (Fin n) (Fin n) (AL L)) i j) =
       ((SplitPlace.loc s n x : GL (Fin n) (s.v.adicCompletion (maximalRealSubfield L))) :
         Matrix (Fin n) (Fin n) (s.v.adicCompletion (maximalRealSubfield L))) i j := rfl
-
-open NumberField IsDedekindDomain TensorProduct in
-private theorem evalAt_apply' {L : Type} [Field L] [NumberField L] (w)
-    (a : _root_.ReciprocityTheory.Aut.AFplus L) : _root_.ReciprocityTheory.Aut.evalAt L w a = a w := rfl
 
 open NumberField IsDedekindDomain TensorProduct in
 private theorem eq_zero_of_compAt_eq_zero_of_proj_conj_eq_zero {L : Type} [Field L] [NumberField L] [IsCMField L]
@@ -89,7 +84,6 @@ private theorem eq_zero_of_compAt_eq_zero_of_proj_conj_eq_zero {L : Type} [Field
     · subst hv; exact hC
     · exact (hw' w hv).2
   simp [ha, hc]
-
 
 open NumberField IsDedekindDomain TensorProduct in
 theorem _root_.GlobalTheory.SplitLocEq.eq_of_trivOutside_of_loc_eq : ∀ (L : Type) [Field L] [NumberField L]

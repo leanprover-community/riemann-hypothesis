@@ -44,8 +44,6 @@ theorem finite_compactCohomology [Finite ι] (n : ℕ) [Finite (cohomology A n)]
 
 end Abstract
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1))) [Finite S]
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
 

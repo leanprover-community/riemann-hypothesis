@@ -111,15 +111,6 @@ theorem IsRegular.card_entries {S : SPar} (h : IsRegular S) : (entries S).card =
 theorem isRegular_iff_card {S : SPar} : IsRegular S ↔ (entries S).card = S.card :=
   ⟨IsRegular.card_entries, fun h _ hx _ hy e => congrArg Prod.snd (card_image_iff.1 h hx hy e)⟩
 
-theorem IsRegular.union {S T : SPar} (hS : IsRegular S) (hT : IsRegular T) (h : Disjoint (entries S) (entries T)) :
-    IsRegular (S ∪ T) := by
-  intro x hx y hy e
-  rcases mem_union.1 hx with hx | hx <;> rcases mem_union.1 hy with hy | hy
-  · exact hS x hx y hy e
-  · exact absurd (e ▸ fst_mem_entries hy) (disjoint_left.1 h (fst_mem_entries hx))
-  · exact absurd (e ▸ fst_mem_entries hx) (disjoint_left.1 h (fst_mem_entries hy))
-  · exact hT x hx y hy e
-
 theorem nPlus_add_nMinus (S : SPar) : nPlus S + nMinus S = S.card := by
   unfold nPlus nMinus
   rw [← card_filter_add_card_filter_not (s := S) (fun x => x.2 = true)]
@@ -290,22 +281,6 @@ theorem lift_shift (o : Orientation) (c h : ℚ) (t : ℕ) (S : SPar) :
     simp only [lift, mem_liftMinus, mem_shift, mem_liftPlus, sub_mem_block, le_sub_iff_add_le, sub_lt_iff_lt_add,
       sub_le_iff_le_add, lt_sub_iff_add_lt]
 
-theorem IsRegular.lift {S : SPar} (hS : IsRegular S) (o : Orientation) {c : ℚ} {t : ℕ}
-    (h : Disjoint (entries S) (TPar.block c t)) : IsRegular (lift o c t S) := by
-  have key : ∀ (P : ℚ → Prop) [DecidablePred P],
-      IsRegular ((S.image fun y => (y.1, if P y.1 then !y.2 else y.2)) ∪ plus (TPar.block c t)) := by
-    intro P _
-    refine IsRegular.union ?_ (isRegular_plus _) ?_
-    · intro x hx y hy e
-      obtain ⟨x, hx', rfl⟩ := mem_image.1 hx
-      obtain ⟨y, hy', rfl⟩ := mem_image.1 hy
-      have e' : x.1 = y.1 := e
-      simp only [e', hS x hx' y hy' e']
-    · rw [entries_plus, entries, image_image]; exact h
-  cases o
-  · exact key fun y => y < c
-  · exact key fun y => c < y
-
 def ofIx {p q : ℕ} (lam : Ix p q → ℚ) : SPar := univ.image fun a => (lam a, a.isLeft)
 
 theorem mem_ofIx_ofBlocks {p q : ℕ} {l₁ l₂ : List ℚ} (hp : l₁.length = p) (hq : l₂.length = q) {x : ℚ × Bool} :
@@ -346,30 +321,6 @@ theorem isChain_descList_iff {E : Finset ℚ} {R : ℚ → ℚ → Prop} :
     · rcases (Nat.succ_le_of_lt h).eq_or_lt with h | h
       · subst h; exact absurd h1 (lt_irrefl _)
       · exact absurd (hp (i + 1) k hi hk h) (not_lt.2 h1.le)
-
-inductive Letter
-
-  | plus
-
-  | minus
-
-  | circPlus
-
-  | circMinus
-
-def hePairs : List (Letter × Letter) :=
-  [(.circPlus, .plus), (.plus, .circPlus), (.minus, .circMinus), (.circMinus, .minus),
-    (.plus, .minus), (.minus, .plus), (.circPlus, .circMinus), (.circMinus, .circPlus)]
-
-def HePair (a b : Letter) : Prop := (a, b) ∈ hePairs
-
-def letter (S T : SPar) (x : ℚ) : Letter :=
-  if x ∈ entries S then (if sign S x then .plus else .minus) else (if sign T x then .circPlus else .circMinus)
-
-def word (S T : SPar) : List Letter := (descList (entries S ∪ entries T)).map (letter S T)
-
-def HeInterlace (S T : SPar) : Prop :=
-  IsRegular S ∧ IsRegular T ∧ Disjoint (entries S) (entries T) ∧ (word S T).IsChain HePair
 
 def StrictInterlace (A B : Finset ℚ) : Prop :=
   ∃ (n : ℕ) (a : Fin (n + 1) → ℚ) (b : Fin n → ℚ), A = univ.image a ∧ B = univ.image b ∧

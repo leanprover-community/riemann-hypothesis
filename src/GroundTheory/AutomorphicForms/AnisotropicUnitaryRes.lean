@@ -23,13 +23,8 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 variable {κ : Type*} [Fintype κ] [DecidableEq κ] (b : Basis κ K E)
 variable (R : Type*) [CommRing R] [Algebra K R] {R' : Type*} [CommRing R'] [Algebra K R']
 
-local notation "𝒩" => Fintype.card (ι × κ)
-
 def resHom : Matrix ι ι (R ⊗[K] E) →ₐ[R] Matrix (Fin 𝒩) (Fin 𝒩) R :=
   (Matrix.reindexAlgEquiv R R (Fintype.equivFin (ι × κ))).toAlgHom.comp (blockHom b R)
-
-theorem resHom_apply (M : Matrix ι ι (R ⊗[K] E)) (p q : Fin 𝒩) :
-    resHom b R M p q = blockHom b R M ((Fintype.equivFin (ι × κ)).symm p) ((Fintype.equivFin (ι × κ)).symm q) := rfl
 
 theorem resHom_injective : Function.Injective (resHom (ι := ι) b R) := by
   intro M M' h

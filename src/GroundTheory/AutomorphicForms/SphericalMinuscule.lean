@@ -18,8 +18,6 @@ namespace Spherical
 variable {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   {n : ℕ}
 
-local notation "π" => (GLnLocal.uniformizer F : F)
-
 theorem mem_integralGL_of_forall_mem {g : GL (Fin n) F} (h₁ : ∀ i j, g i j ∈ 𝒪[F])
     (h₂ : valuation F (g : Matrix (Fin n) (Fin n) F).det = 1) : g ∈ integralGL F n := by
   rw [mem_integralGL_iff]
@@ -41,7 +39,6 @@ theorem mem_integralGL_of_forall_mem {g : GL (Fin n) F} (h₁ : ∀ i j, g i j �
       · exact (𝒪[F]).zero_mem
     · exact h₁ _ _
 
-
 variable (F) in
 def MBdd (t : ℤ) (A : Matrix (Fin n) (Fin n) F) : Prop := ∀ i j, Bdd F t (A i j)
 
@@ -62,7 +59,6 @@ theorem bdd_neg_one_iff {x : F} : Bdd F (-1) x ↔ π * x ∈ 𝒪[F] := by
     have := (bdd_zpow (F := F) (-1)).mul (bdd_of_mem h)
     rwa [← mul_assoc, _root_.zpow_neg_one, inv_mul_cancel₀ (Cartan.uniformizer_ne_zero F), one_mul,
       add_zero] at this
-
 
 variable (F n) in
 def minusculeSet (k : ℕ) : Set (GL (Fin n) F) :=
@@ -105,7 +101,6 @@ instance (S : Finset (Fin n)) : Fintype (Pairs S) := by
 instance (S : Finset (Fin n)) : DecidableEq (Pairs S) := by
   unfold Pairs
   infer_instance
-
 
 variable (F) in
 def residueLift : 𝓀[F] → 𝒪[F] :=

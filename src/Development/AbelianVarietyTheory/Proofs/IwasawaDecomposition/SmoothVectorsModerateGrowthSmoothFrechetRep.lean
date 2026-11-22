@@ -105,8 +105,6 @@ def sn (ρ : Mx n → (E →L[ℂ] E)) (b : Fin d → lie (Jm ε)) (k : ℕ) : S
   Nat.rec ((normSeminorm ℂ E).comp (ev ρ []))
     (fun _ q => ∑ j, q.comp (der ρ (b j) : Fam ε ρ →ₗ[ℂ] Fam ε ρ)) k
 
-theorem sn_zero (b : Fin d → lie (Jm ε)) (v : Fam ε ρ) : sn ρ b 0 v = ‖v.1 []‖ := rfl
-
 theorem sn_succ (b : Fin d → lie (Jm ε)) (k : ℕ) (v : Fam ε ρ) :
     sn ρ b (k + 1) v = ∑ j, sn ρ b k (der ρ (b j) v) := by
   show (∑ j, (sn ρ b k).comp (der ρ (b j) : Fam ε ρ →ₗ[ℂ] Fam ε ρ)) v = _
@@ -284,10 +282,8 @@ theorem continuous_mexp : Continuous (NormedSpace.exp : Mx n → Mx n) := by
   letI := Matrix.linftyOpNormedAlgebra (R := ℝ) (n := Fin n) (α := ℂ)
   exact continuous_iff_continuousAt.2 fun x => (NormedSpace.exp_analytic (𝕂 := ℝ) x).continuousAt
 
-
 open Classical in
 def piOp (h : ModRep ε ρ) (g : Mx n) : Fam ε ρ →L[ℂ] Fam ε ρ := if hg : g ∈ UJset ε then act h hg else 1
-
 
 open Classical in
 def dpiOp (ε : Fin n → Bool) (ρ : Mx n → (E →L[ℂ] E)) (X : Mx n) : Fam ε ρ →L[ℂ] Fam ε ρ :=

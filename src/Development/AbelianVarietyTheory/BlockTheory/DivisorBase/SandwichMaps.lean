@@ -16,13 +16,6 @@ section Eigen
 variable {O : Type} [CommRing O] (C : Type) [Field C] [Algebra O C]
   {Λ : Type} [CommRing Λ] {h : ℕ}
 
-def eig (ρ : Λ → Matrix (Fin h) (Fin h) O) (σ : Λ →+* O) : Submodule C (Fin h → C) :=
-  ⨅ a : Λ, Module.End.eigenspace (Matrix.toLin' ((ρ a).map (algebraMap O C)))
-    (algebraMap O C (σ a))
-
-abbrev detLine (ρ : Λ → Matrix (Fin h) (Fin h) O) (τ : Λ →+* O) (N : ℕ) : Type :=
-  ⋀[C]^N (eig C ρ τ)
-
 end Eigen
 
 section Datum

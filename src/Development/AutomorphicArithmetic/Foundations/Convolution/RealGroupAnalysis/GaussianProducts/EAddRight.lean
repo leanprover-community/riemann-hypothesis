@@ -81,9 +81,6 @@ private theorem vol : (adeleMeasurePi F).restrict (FS2 F) Set.univ = 1 := by
   rw [Measure.restrict_apply_univ]
   exact vecMeasure_vecDomain
 
-private theorem fin_inst : IsFiniteMeasure ((adeleMeasurePi F).restrict (FS2 F)) :=
-  ⟨by rw [vol]; exact ENNReal.one_lt_top⟩
-
 private theorem int_const (a : ℝ) : ∫ _ in FS2 F, a ∂(adeleMeasurePi (ι := Fin 2) F) = a := by
   rw [integral_const, measureReal_def, vol]
   simp

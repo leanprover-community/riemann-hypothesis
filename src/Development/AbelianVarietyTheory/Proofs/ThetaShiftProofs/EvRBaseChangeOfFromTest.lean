@@ -1,9 +1,8 @@
 module
 
 public import Mathlib
-public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.ArcWitnessExistence.EnlargeCf
+public import Formalism.LocalToGlobal.ProjectiveLattices.AxHSupA
 public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
-public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.ArcLineFunctions.ArcDatumIsArcPointBasis
 public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.FinitePlaceArcs.FrameCut
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsFramedPointChangedByLetters
 public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt

@@ -10,8 +10,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.Osc
 
 namespace ReciprocityTheory.ChartRestriction.DS.Xi
 
-theorem sub : SUB := quadraticSublevelDecay'
-
 theorem ker : KER := planarKernelBound'
 
 theorem slow : SLOW := slowWeightBound'

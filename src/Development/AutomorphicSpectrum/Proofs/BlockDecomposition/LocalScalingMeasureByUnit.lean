@@ -62,8 +62,6 @@ def mulE (u : Bˣ) : B ≃ₜ+ B where
   continuous_toFun := continuous_const.mul continuous_id
   continuous_invFun := continuous_const.mul continuous_id
 
-theorem mulE_apply (u : Bˣ) (x : B) : mulE u x = (u : B) * x := rfl
-
 variable [LocallyCompactSpace B] [T2Space B] [SecondCountableTopology B] [MeasurableSpace B] [BorelSpace B]
 
 theorem char_mulE_one : addEquivAddHaarChar (mulE (1 : Bˣ)) = 1 := by
@@ -386,7 +384,6 @@ theorem scale_ring (σ : E →ₐ[F] E) (hσ : IsCMExt F E σ) (R : Type) [CommR
 end Main
 
 end GlobalTheory.CompanionTheory.AvgFree.HD
-
 
 open GlobalTheory.CompanionTheory.AvgFree.HD in
 theorem GlobalTheory.CompanionTheory.AvgFree.cjPre_dMat_scale : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)) (lv : Measure (Fv F v)), GlobalTheory.CompanionTheory.SW.IsStdV v lv → ∀ (s : (Fv F v ⊗[F] E)ˣ) (θ : ℝ≥0), (∀ Y : Set (Fv F v ⊗[F] E), (GlobalTheory.CompanionTheory.SW.coordK (Fv F v) b lv) ((fun x => (s : (Fv F v ⊗[F] E)) * x) '' Y) = θ * (GlobalTheory.CompanionTheory.SW.coordK (Fv F v) b lv) Y) → ∀ (n : ℕ) (l : Fin n) (Y : Set (HermR (Fv F v) σ n)), MeasurableSet Y → MeasurableSet (cjPre (Fv F v) σ (dMat (Fv F v) l (s : (Fv F v ⊗[F] E))) Y) ∧ (GlobalTheory.CompanionTheory.SW.coordHerm (Fv F v) σ b lv n) (cjPre (Fv F v) σ (dMat (Fv F v) l (s : (Fv F v ⊗[F] E))) Y) = ((θ : ℝ≥0∞) ^ n)⁻¹ * (GlobalTheory.CompanionTheory.SW.coordHerm (Fv F v) σ b lv n) Y := by

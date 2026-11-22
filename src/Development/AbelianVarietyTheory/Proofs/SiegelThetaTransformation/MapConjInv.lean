@@ -393,8 +393,6 @@ theorem det_swap {a q m : Matrix (Fin r) (Fin r) ℂ} (h : a * q = m * a) (ha : 
   rw [det_mul, det_mul, mul_comm m.det] at this
   exact mul_left_cancel₀ ha this
 
-theorem of_at {α β : Type} (f : α → β → ℂ) (k : α) : Matrix.of f k = f k := rfl
-
 theorem det_factor {l a q d : ℂ} (hl : l ≠ 0) (ha : a ≠ 0) (hq : q ≠ 0) (hd : d ≠ 0) (m : ℕ) :
     ((l * (q * d) * (a * q)) ^ m)⁻¹ * (q * d) ^ (m + m) = d ^ m * ((l * a) ^ m)⁻¹ := by
   simp only [mul_pow, pow_add]
@@ -405,7 +403,6 @@ theorem exp_factor {a b c d u v w : ℂ} (h : a * b = d * c) (h' : u + v = w) :
   rw [mul_mul_mul_comm, h, ← Complex.exp_add, h', mul_assoc]
 
 end GlobalTheory.SW.DblPair
-
 
 open GlobalTheory.SW.DblPair in
 theorem GlobalTheory.SW.iota_act_dbl : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ γ₁ γ₂ : GL (Fin r) E, IsUn X γ₁ → IsUn X γ₂ → iota X γ₁ γ₂ ∈ UU E r ∧ ∃ a : ℂ, a ≠ 0 ∧ ∀ x₁ ∈ X.dom, ∀ x₂ ∈ X.dom, hAct X.Ψ (iota X γ₁ γ₂) (dblZ X x₁ x₂) = dblZ X (lact γ₁ x₁) (lact γ₂ x₂) ∧ ∀ z₁ w : Fin n → Fin g → ℂ, (dblz X idx (lact γ₁ x₁) (lact γ₂ x₂) z₁ w = fun τ => Matrix.of fun k => (hDen' X.Ψ (iota X γ₁ γ₂) (dblZ X x₁ x₂) τ)⁻¹ *ᵥ dblz X idx x₁ x₂ z₁ w τ k) ∧ (dblz' X idx (lact γ₁ x₁) (lact γ₂ x₂) z₁ w = fun τ => Matrix.of fun k => dblz' X idx x₁ x₂ z₁ w τ k ᵥ* (hDen X.Ψ (iota X γ₁ γ₂) (dblZ X x₁ x₂) τ)⁻¹) ∧ kZero X idx (lact γ₁ x₁) (lact γ₂ x₂) z₁ w * hFac X.Ψ (iota X γ₁ γ₂) (dblZ X x₁ x₂) (dblz X idx x₁ x₂ z₁ w) (dblz' X idx x₁ x₂ z₁ w) = a * kZero X idx x₁ x₂ z₁ w := by

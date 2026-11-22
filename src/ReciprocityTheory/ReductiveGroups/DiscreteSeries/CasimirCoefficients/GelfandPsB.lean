@@ -20,8 +20,6 @@ variable {n : ℕ}
 
 namespace GPs
 
-local notation "𝕄f" => Fin n → Fin n → ℂ
-
 lemma contDiff_entry (i j : Fin n) : ContDiff ℂ ∞ (fun z : Matrix (Fin n) (Fin n) ℂ => z i j) := by
   first
     | exact contDiff_apply_apply (𝕜 := ℂ) (n := ∞) i j

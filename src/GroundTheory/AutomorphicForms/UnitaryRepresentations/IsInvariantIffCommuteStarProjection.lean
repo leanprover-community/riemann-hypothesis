@@ -117,7 +117,6 @@ theorem isInvariant_iff_commute_starProjection (V : Submodule ℂ H) [V.HasOrtho
       congrArg (fun T : H →L[ℂ] H => T v) (h g)
     rw [← this, hv]
 
-
 variable (π) in
 def intertwiners (σ : UnitaryRep G K) : Submodule ℂ (H →L[ℂ] K) where
   carrier := {T | ∀ (g : G) (v : H), T (π g v) = σ g (T v)}
@@ -136,19 +135,9 @@ lemma mem_intertwiners_self_iff {T : H →L[ℂ] H} :
   refine ⟨commute_of_mem_intertwiners, fun h g v => ?_⟩
   exact congrArg (fun S : H →L[ℂ] H => S v) (h g)
 
-
-variable (π σ) in
-structure Equiv where
-
-  toLinearIsometryEquiv : H ≃ₗᵢ[ℂ] K
-
-  map_apply' : ∀ (g : G) (v : H), toLinearIsometryEquiv (π g v) = σ g (toLinearIsometryEquiv v)
-
-
 namespace Equiv
 
 end Equiv
-
 
 variable (π) in
 def IsIrreducible : Prop :=

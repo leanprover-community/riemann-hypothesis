@@ -16,8 +16,6 @@ section U2E
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O]
   [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
 
-local notation "mkI" y => Ideal.Quotient.mk (DualFramesAlt.eigenRingInvariants.Ia y)
-
 theorem u2ringPfE_mem_max (p : ℕ) [hp : Fact p.Prime] (hpm : (p : O) ∈ IsLocalRing.maximalIdeal O)
     {x : O} (hroot : (1 + x) ^ p = 1) : x ∈ IsLocalRing.maximalIdeal O := by
   have : CharP (IsLocalRing.ResidueField O) p :=

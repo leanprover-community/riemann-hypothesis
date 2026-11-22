@@ -59,9 +59,6 @@ theorem B_right (key : Q.1 * h'.1 = h.1 * Q.1) (hd : gdet h' = gdet h) :
   simp only [omB, hd, map_one, Units.val_one, apow_one, Matrix.one_mul, one_mul, mul_one, transpose_one, Matrix.mul_assoc, key]
   ring
 
-theorem gdet_conj (b g : GL (Fin n) k) : gdet (b⁻¹ * g * b) = gdet g := by
-  rw [gdet_mul, gdet_mul, mul_right_comm, ← gdet_mul, inv_mul_cancel, gdet, map_one, one_mul]
-
 end Loc
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {v : Pl F}

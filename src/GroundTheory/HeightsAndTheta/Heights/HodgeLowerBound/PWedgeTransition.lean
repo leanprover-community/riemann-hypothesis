@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.DataHodge
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.IsFrameOverLine

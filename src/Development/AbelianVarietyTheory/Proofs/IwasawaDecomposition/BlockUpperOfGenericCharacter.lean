@@ -38,9 +38,6 @@ theorem rankOneUnit_val (Q : Matrix ι ι K) (q μ : K) (hQ : Q * Q = q • Q)
 noncomputable def unip (Q : Matrix ι ι K) (h : Q * Q = 0) (y : K) : GL ι K :=
   rankOneUnit Q 0 y (by rw [h, zero_smul]) (by simp)
 
-theorem unip_val (Q : Matrix ι ι K) (h : Q * Q = 0) (y : K) :
-    (unip Q h y).val = 1 + y • Q := rfl
-
 noncomputable def diagUnit (f : ι → K) (hf : ∀ a, f a ≠ 0) : GL ι K where
   val := diagonal f
   inv := diagonal fun a => (f a)⁻¹

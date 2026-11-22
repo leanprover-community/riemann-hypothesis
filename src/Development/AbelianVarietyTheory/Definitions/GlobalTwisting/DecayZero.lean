@@ -32,8 +32,6 @@ def re (x : Ainf F) (w : InfinitePlace F) : ℝ :=
 
 def sz (u : Fin N → AF F) : ℝ := ∑ l, ∑ w : InfinitePlace F, |re (inf u l) w|
 
-def hf (F : Type) [Field F] [NumberField F] : AF F := pairA F (algebraMap F (Ainf F) (1 / 2)) 1
-
 def Decay (Φ : (Fin N → AF F) → ℂ) : Prop :=
   Continuous Φ ∧ (∃ K : Set (Fin N → Af F), IsCompact K ∧ ∀ u, fin u ∉ K → Φ u = 0) ∧
     ∀ k : ℕ, ∃ C : ℝ, ∀ u, ‖Φ u‖ * (1 + sz u) ^ k ≤ C

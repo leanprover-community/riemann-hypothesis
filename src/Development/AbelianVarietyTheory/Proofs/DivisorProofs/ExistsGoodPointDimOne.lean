@@ -6,7 +6,33 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.HodgeTateLat
 public import Development.AbelianVarietyTheory.Definitions.Divisors.TorsionTowersOfDivisibleGroup
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZeta
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.HodgeTateKernel
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.VolGe
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EmbGLMemRealSU
+public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.NonemptyAlgHomOfIsRayOfDvd
+public import Development.AbelianVarietyTheory.PublishedTheorems.WeberRayClassFields.WeberRayFieldSt
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
+public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.GreenSeriesSt
+public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.BlockTriangularOfSubOne
+public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.MumfordProportionality
+public import Development.AbelianVarietyTheory.PublishedTheorems.ThetaCharacteristics.ThetaCharZero
+public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.WeylDualWeylLatticesAgreeOfLowestAlcove
+public import Development.AbelianVarietyTheory.PublishedTheorems.AbelianLaws.PrincipalPolarisationOneSection
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CanonicalOfAbelianDeRham
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsHorizontalGeneratorOfCharts
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactification
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.KawamataViehweg
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsAlgClosedBaseChange
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.L2ExtensionLogCanonical
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SmallSecTensTriv
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsMultiHomogeneousFixFirstBlock
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ResidueDegreeOfIsClosedImmersion
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.TopSelfEqLengthOfSmooth
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SerreHolomorphicSections
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsLogCanonicalMultipleCanonical
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.TateUnramifiedOfTorsionUnramified
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.FormalAlgebraisation
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbelianDieudonne
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeTateSandwichOfPrismaticDieudonne
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilCharSurjectiveAndMapRangeAl
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCobOneOfIntegral
@@ -84,53 +110,14 @@ end Lattices
 
 variable [IsAlgClosed C] [CharZero C]
 
-theorem pairV_mapV [Algebra ℤ_[p] C] (x : P.V) (y : P'.V) :
-    P'.pairV (mapV P P' α x) y = P.pairV x (adjV P P' α y) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | add x x' hx hx' => simp only [map_add (f := _), LinearMap.add_apply, hx, hx']
-  | tmul c s =>
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | add y y' hy hy' => simp only [map_add (f := _), hy, hy']
-    | tmul d t => exact congrArg (· • (c * d)) (pairT_mapT P P' α s t)
-
-theorem weil_adjT (he : P'.eps = P.eps) (t : P'.T) {n : ℕ} {z : ChTor.Pts P.A.A} (hz : z ^ p ^ n = 1) :
-    weil P'.A (p ^ n) (z ≫ α) (t.lev n) = weil P.A (p ^ n) z ((adjT P P' α t).lev n) := by
-  obtain ⟨s, rfl⟩ := (tate_free_of_card p _ _ P.card_torsion).2.1 n z hz
-  rw [← pow_pairT P.A P.eps, ← pairT_mapT, ← he, pow_pairT, lev_mapT]
-
 variable [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O]
   (β : P.Gt ⟶ P'.Gt) [IsMonHom β] (he : P'.eps = P.eps) (hβ : ∀ x, P'.toA (x ≫ β) = P.toA x ≫ α)
 
 include he hβ
 
-theorem weilChar_adjT (t : P'.T) (n : ℕ) : (P.weilChar (adjT P P' α t)).χ n =
-    ExtensionTorsion.torsionHom β (p ^ n) ≫ (P'.weilChar t).χ n := P.char_ext fun w => by
-  rw [← Category.assoc, P.isWeilChar_weilChar, P'.isWeilChar_weilChar, Category.assoc,
-    ExtensionTorsion.torsionHom_ι, ← Category.assoc, hβ, weil_adjT α he t (P.toA_pow w)]
-
 variable [Algebra ℤ_[p] O]
 
-theorem al₀_adjT (t : P'.T) (x : LieG P.Gt) :
-    (P.al₀ (adjT P P' α t)).1 x = (P'.al₀ t).1 (lieMap β x) := by
-  refine HodgeTateImage.eq_of_forall (p := p) fun n => ?_
-  have hR := HodgeTateImage.pow_quot (O := O) (p := p) n
-  have h1 := isAl_dlogTv (P.weilChar (adjT P P' α t)) n _ hR x _ (HodgeTateImage.lift_ι hR x)
-  have h2 := isAl_dlogTv (P'.weilChar t) n _ hR (lieMap β x)
-    (HodgeTateImage.lift hR x ≫ ExtensionTorsion.torsionHom β (p ^ n)) (by
-      rw [Category.assoc, ExtensionTorsion.torsionHom_ι, ← Category.assoc, HodgeTateImage.lift_ι]
-      exact Category.assoc _ _ _)
-  rw [Category.assoc, ← weilChar_adjT α β he hβ, h1] at h2
-  change algebraMap O _ ((dlogTv (P.weilChar (adjT P P' α t))).1 x) =
-    algebraMap O _ ((dlogTv (P'.weilChar t)).1 (lieMap β x))
-  simpa [Algebra.algebraMap_eq_smul_one] using congrArg TrivSqZeroExt.snd h2
-
 variable [Algebra ℤ_[p] C] [IsScalarTower ℤ_[p] O C]
-
-theorem mapV_bLie (x : LieG P.Gt) : mapV P P' α (P.bLie x) = P'.bLie (lieMap β x) :=
-  P'.eq_of_pairV fun t => by
-    rw [pairV_mapV, adjV_tmul, Point.pairV_bLie, Point.pairV_bLie, al₀_adjT α β he hβ]
 
 end General
 
@@ -160,27 +147,9 @@ end Linear
 
 variable [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O]
 
-theorem toG_goodPoint (x : specO O O ⟶ (goodPoint hv ε j B o).Gt) : (goodPoint hv ε j B o).toG x = x :=
-  (goodPoint hv ε j B o).hom_ext_red fun m => (goodPoint hv ε j B o).red_toG x m
-
-theorem toA_homO (f : B.A ⟶ B'.A) (x : specO O O ⟶ (goodPoint hv ε j B o).Gt) :
-    (goodPoint hv ε j B' o').toA (x ≫ homO hv ε j o o' f) = (goodPoint hv ε j B o).toA x ≫ homC hv ε j o o' f := by
-  have h1 := ((goodPoint hv ε j B o).eq_toA_iff x _).1 rfl
-  have h2 : (homC hv ε j o o' f).left ≫ (goodPoint hv ε j B' o').gen =
-      (goodPoint hv ε j B o).gen ≫ (homO hv ε j o o' f).left := pullback.lift_fst _ _ _
-  rw [toG_goodPoint] at h1
-  symm
-  rw [Point.eq_toA_iff, toG_goodPoint, Over.comp_left, Category.assoc, h2]
-  exact (Category.assoc _ _ _).symm.trans ((congrArg (· ≫ (homO hv ε j o o' f).left) h1).trans (Category.assoc _ _ _))
-
 variable [IsAlgClosed C] [CharZero C] [Algebra ℤ_[p] O] [Algebra ℤ_[p] C] [IsScalarTower ℤ_[p] O C]
 
-theorem homV_bLie (f : B.A ⟶ B'.A) [IsMonHom f] (x : LieG (goodPoint hv ε j B o).Gt) :
-    homV hv ε j o o' f ((goodPoint hv ε j B o).bLie x) = (goodPoint hv ε j B' o').bLie (homLie hv ε j o o' f x) :=
-  mapV_bLie _ (homO hv ε j o o' f) rfl (toA_homO hv ε j o o' f) x
-
 variable {f : B.A ⟶ B'.A} [IsMonHom f]
-
 
 end Good
 
@@ -196,12 +165,6 @@ variable [Algebra ℤ_[ℓ] C]
 variable [Algebra ℤ_[ℓ] O] [IsScalarTower ℤ_[ℓ] O C]
 
 variable [Fact ¬IsUnit (ℓ : O)] [IsAdicComplete (Ideal.span {(ℓ : O)}) O] [IsAlgClosed C] [CharZero C]
-
-theorem patV_bLie : letI := H.starRing
-    ∀ x, patV hv ε i hf ((patPoint hv ε i T).bLie x) = (patPoint hv ε i T').bLie (patLie hv ε i hf x) :=
-  letI := H.starRing
-  haveI : IsMonHom (C := Over (Sp (𝓞 K))) (M := T.pol.A) (N := T'.pol.A) f := hf.isMonHom
-  homV_bLie (B := T.pol) (B' := T'.pol) hv ε (embO hv i) (patAct T) (patAct T') f
 
 end Triples
 

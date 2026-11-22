@@ -22,10 +22,6 @@ section General
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-local notation "ι" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 def lat (g : GL n 𝒜) : Submodule (𝓞 E) (n → E) :=
   Formalism.UG.CS.globLat g (stdLat (n := n) (A := E) (𝓞 E))
 
@@ -229,7 +225,6 @@ theorem lat_one_eq (D : D7) (N : ℕ) : lat (1 : GL (Fin N) (AE D)) = stdL D N :
   simp only [Set.mem_univ, true_implies, Submodule.mem_one, RingHom.mem_range]
 
 end GlobalTheory.NormSum.AdLattice
-
 
 open GlobalTheory.NormSum.AdLattice in
 theorem GlobalTheory.NormSum.exists_lattice_of_adelic_point : ∀ (D : D7) (N : ℕ), ∃ Lt : GA D N → Submodule (𝓞 D.host.E) (Fin N → D.host.E), (∀ g : GA D N, Moves D (g : GL (Fin N) (AE D)) (Lt g) ∧ SD D (Lt g)) ∧ Lt 1 = stdL D N ∧ (∀ g g' : GA D N, Lt g = Lt g' ↔ g⁻¹ * g' ∈ intG D N) ∧ (∀ (γA g : GA D N) γ, IsRat D (γA : GL (Fin N) (AE D)) γ → ∀ x, x ∈ Lt g ↔ γ.mulVec x ∈ Lt (γA * g)) ∧ (∀ (p : ℕ) (g : GA D N), p.Prime → TrivAt D p (g : GL (Fin N) (AE D)) → EqAt D p (stdL D N) (Lt g)) := by

@@ -1,15 +1,12 @@
 module
 
 public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.LatticeVariant
 public import Formalism.SharpRestriction.LevelLetterCocycles.BlochKatoPhases
 public import Formalism.SharpRestriction.LevelLetterCocycles.CommutingEndomorphismPreservesInvariants
-public import Formalism.PadicSubsetSums.CentralIdempotents.CentralIdempotentIntegral
 public import Formalism.ResultantValuation.ResultantAdjugateProofs.Window
 public import Formalism.ResultantValuation.ResultantAdjugateProofs.Laplace
 public import Formalism.CyclotomicNorms.StatementI
 public import Formalism.CyclotomicNorms.IrreducibilityOfGoodTuple
-public import Formalism.CyclotomicNorms.StatementTW
 
 @[expose] public section
 
@@ -54,36 +51,7 @@ open scoped TensorProduct
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} (Y : NExp D.R D.host D.what₂ D.LL0 N X)
 
-def AdmQ (i : X.Tw) (Q : Finset (PlE D.host)) (M : ℕ) : Prop :=
-  (∀ P ∈ Q, IsSplitPl D.host P) ∧ Disjoint Q (X.S0 i) ∧ ConjCl Q ∧ DelOn Y i Q M ∧ Formalism.MainNotions.IntegralHeckeForms.ClsQ (D := D) Q
-
-structure Pack (i : X.Tw) (j : ℕ) (b : Bool) where
-  B : Submodule (X.O i) (Y.Fm i j b)
-  A : Module.End (X.O i) (Y.Fm i j b)
-  S : Finset (Y.Dat i j b)
-  c : ℕ
-  fg : B.FG
-  hkB : ∀ k P, HkIdx i k P → B.map (hkO Y i j b k P) ≤ B
-  comm : ∀ k P, HkIdx i k P → A ∘ₗ hkO Y i j b k P = hkO Y i j b k P ∘ₗ A
-  li : LinearIndependent (X.O i) (fun a : ↥S => A (Y.th i j b a))
-  spn : Submodule.span (FractionRing (X.O i)) ((fun a => A (Y.th i j b a)) '' ↑S) =
-    Submodule.span (FractionRing (X.O i)) (B : Set (Y.Fm i j b))
-  t2 : ∀ Q M, AdmQ Y i Q M → ∀ a ∈ S, Disjoint Q (Y.lev i j b a) →
-    ((X.l i : X.O i) ^ c) • (A.rTensor (LamO X i Q M)) (Y.thU i j b Q M a) ∈
-      LinearMap.range (B.subtype.rTensor (LamO X i Q M))
-  t3 : T3 Y i j b B
-
 variable {Y} {i : X.Tw} {j : ℕ} {b : Bool} (p : Pack Y i j b)
-
-def Pack.Th : Submodule (X.O i) (Y.Fm i j b) :=
-  Submodule.span (X.O i) ((fun a => p.A (Y.th i j b a)) '' ↑p.S)
-
-def Pack.y (Q : Finset (PlE D.host)) (M k : ℕ)
-    (χ : Multiplicative (DelQM D.host (X.l i) Q M) →* (X.Ok i k)ˣ) (a : Y.Dat i j b) :
-    X.Ok i k ⊗[X.O i] Y.Fm i j b :=
-  (p.A.baseChange (X.Ok i k)) (specU Y i j b Q M k χ (Y.thU i j b Q M a))
-
-def Pack.v : ℝ := sIdx (X.l i) p.B p.Th + (p.c : ℝ) * p.S.card
 
 end Lattice
 
@@ -113,8 +81,6 @@ variable (Y : NExp D.R D.host D.what₂ D.LL0 N X)
 
 variable {Y}
 
-
-
 end Chain
 
 section CrdAll
@@ -127,7 +93,6 @@ variable {O Fm : Type} [CommRing O] [AddCommGroup Fm] [Module O Fm]
 
 variable {B : Submodule O Fm} {d : ℕ} (β : Module.Basis (Fin d) O B)
   (Λ : Type) [CommRing Λ] [Algebra O Λ]
-
 
 variable {Λ}
 
@@ -234,9 +199,6 @@ variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
 
 variable {n : ℕ} (β : Module.Basis (Fin n) (X.O i) p.B) (es : Fin n ≃ ↥p.S)
 
-
-def Pack.x (a : Y.Dat i j b) : Y.Fm i j b := ((X.l i : X.O i) ^ p.c) • p.A (Y.th i j b a)
-
 end Asm2
 
 section Asm3
@@ -263,7 +225,6 @@ open scoped TensorProduct
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} {Y : NExp D.R D.host D.what₂ D.LL0 N X}
-
 
 end Fin
 

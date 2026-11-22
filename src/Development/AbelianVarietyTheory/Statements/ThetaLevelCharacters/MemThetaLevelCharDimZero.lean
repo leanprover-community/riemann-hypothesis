@@ -91,26 +91,6 @@ end Signs
 
 section Hypotheses
 
-theorem hypotheses_inhabited :
-    (∀ (g : ℕ) (B : Matrix (Fin g) (Fin g) ℝ), B.IsSymm →
-      (Complex.I • (1 : Matrix (Fin g) (Fin g) ℂ) + B.map Complex.ofReal).IsSymm ∧
-      ((Complex.I • (1 : Matrix (Fin g) (Fin g) ℂ) + B.map Complex.ofReal).map Complex.im).PosDef) ∧
-    ((!![Complex.I, 1 / 3; 1 / 3, Complex.I] : Matrix (Fin 2) (Fin 2) ℂ).IsSymm ∧
-      ((!![Complex.I, 1 / 3; 1 / 3, Complex.I] : Matrix (Fin 2) (Fin 2) ℂ).map Complex.im).PosDef ∧
-      (∀ i, (![1 / 2, 0] : Fin 2 → ℂ) i = 0 ∨ (![1 / 2, 0] : Fin 2 → ℂ) i = 1 / 2) ∧
-      ∀ i, (![1 / 2, 1 / 2] : Fin 2 → ℂ) i = 0 ∨ (![1 / 2, 1 / 2] : Fin 2 → ℂ) i = 1 / 2) := by
-  refine ⟨fun g B hB => ⟨(Matrix.isSymm_one.smul _).add (hB.map _), ?_⟩, ?_, ?_, ?_, ?_⟩
-  · convert (Matrix.PosDef.one : (1 : Matrix (Fin g) (Fin g) ℝ).PosDef) using 1
-    ext i j
-    by_cases h : i = j <;> simp [Matrix.one_apply, h]
-  · ext i j
-    fin_cases i <;> fin_cases j <;> simp
-  · convert (Matrix.PosDef.one : (1 : Matrix (Fin 2) (Fin 2) ℝ).PosDef) using 1
-    ext i j
-    fin_cases i <;> fin_cases j <;> simp
-  · intro i; fin_cases i <;> simp
-  · intro i; fin_cases i <;> simp
-
 end Hypotheses
 
 section DimZero

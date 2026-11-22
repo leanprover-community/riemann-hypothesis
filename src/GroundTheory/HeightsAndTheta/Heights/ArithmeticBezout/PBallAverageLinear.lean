@@ -25,8 +25,6 @@ def matEquiv {n : ℕ} (h : HermNorm n) : (Fin n → ℂ) ≃L[ℝ] (Fin n → �
       (LinearMap.ext fun v => by
         simp [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ h.isUnit_det]))
 
-theorem matEquiv_apply {n : ℕ} (h : HermNorm n) (v : Fin n → ℂ) : matEquiv h v = h.mat *ᵥ v := rfl
-
 theorem ballH_eq_preimage {n : ℕ} (h : HermNorm n) :
     ballH h = matEquiv h ⁻¹' ballH (HermNorm.std n) := by
   ext v

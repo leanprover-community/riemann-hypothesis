@@ -38,14 +38,11 @@ theorem finPart_algebraMap (ξ : Fin 2 → K) :
   funext i
   simp only [finPart, adeleRing_algebraMap_snd]
 
-
 variable (K) in
 def splitEquiv : (Fin 2 → 𝔸[K]) ≃ᵐ (Fin 2 → mixedSpace K) × (Fin 2 → 𝔸ᶠ[K]) :=
   (MeasurableEquiv.arrowProdEquivProdArrow (InfiniteAdeleRing K) 𝔸ᶠ[K] (Fin 2)).trans
     (MeasurableEquiv.prodCongr (MeasurableEquiv.piCongrRight fun _ ↦ measurableEquivMixedSpace K)
       (MeasurableEquiv.refl _))
-
-theorem splitEquiv_apply (x : Fin 2 → 𝔸[K]) : splitEquiv K x = (infPart x, finPart x) := rfl
 
 theorem measurePreserving_splitEquiv :
     MeasurePreserving (splitEquiv K) (adeleMeasure2 K) ((mixedMeasure2 K).prod (finiteMeasure2 K)) :=
@@ -65,7 +62,6 @@ theorem adelicChar_sum_mul_eq (x y : Fin 2 → 𝔸[K]) :
 def schwartzBruhatTensor2 (φ : 𝓢(Fin 2 → mixedSpace K, ℂ)) (g : (Fin 2 → 𝔸ᶠ[K]) → ℂ) :
     (Fin 2 → 𝔸[K]) → ℂ :=
   fun x ↦ φ (infPart x) * g (finPart x)
-
 
 variable (K) in
 def schwartzBruhat2 : Submodule ℂ ((Fin 2 → 𝔸[K]) → ℂ) :=
@@ -95,7 +91,6 @@ theorem integrable_of_mem_schwartzBruhat2 {F : (Fin 2 → 𝔸[K]) → ℂ} (hF 
   | zero => exact integrable_zero _ _ _
   | add G H _ _ hG hH => exact hG.add hH
   | smul c G _ hG => exact hG.smul c
-
 
 variable (K) in
 def adelicFourier2 (F : (Fin 2 → 𝔸[K]) → ℂ) (y : Fin 2 → 𝔸[K]) : ℂ :=
@@ -318,14 +313,8 @@ def vecMulCLE (M : GL (Fin 2) (mixedSpace K)) :
       right_inv := fun u ↦ by
         simp only [vecMul_vecMul, Units.inv_mul, vecMul_one] }
 
-theorem vecMulCLE_apply (M : GL (Fin 2) (mixedSpace K)) (u : Fin 2 → mixedSpace K) :
-    vecMulCLE M u = u ᵥ* (M : Matrix (Fin 2) (Fin 2) (mixedSpace K)) := rfl
-
 def rightTranslate (g : GL (Fin 2) 𝔸[K]) (F : (Fin 2 → 𝔸[K]) → ℂ) : (Fin 2 → 𝔸[K]) → ℂ :=
   fun x ↦ F (x ᵥ* (g : Matrix (Fin 2) (Fin 2) 𝔸[K]))
-
-theorem rightTranslate_apply (g : GL (Fin 2) 𝔸[K]) (F : (Fin 2 → 𝔸[K]) → ℂ)
-    (x : Fin 2 → 𝔸[K]) : rightTranslate g F x = F (x ᵥ* (g : Matrix (Fin 2) (Fin 2) 𝔸[K])) := rfl
 
 theorem rightTranslate_add (g : GL (Fin 2) 𝔸[K]) (F G : (Fin 2 → 𝔸[K]) → ℂ) :
     rightTranslate g (F + G) = rightTranslate g F + rightTranslate g G := rfl

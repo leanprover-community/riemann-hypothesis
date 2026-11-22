@@ -27,7 +27,6 @@ public import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.Minkowski
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilyPacketOfEquivalentStatement
 public import Formalism.FlagUnipotentLattices.IdealCountLeWAsm
-public import Formalism.FlagUnipotentLattices.OmSumLong
 public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ColonCountWeighted
 public import Formalism.FlagUnipotentLattices.ValuationProductBound
 public import Formalism.FlagUnipotentLattices.PairingOrthogonalComplement
@@ -366,10 +365,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : TermTie D)
 
-def Ineq2a (D : D7) {u u' : D.what₂.Word} (Φ : Set (D.s.Term u u')) (c : ℝ) : Prop :=
-  Summable (fun p : pairsIn D.s Φ => ‖D.s.pval p.1‖) →
-    hsNormSq (KOf D.s u u' Φ) ≤ c * (∑' p : pairsIn D.s Φ, D.s.pval p.1).re
-
 end Rec
 
 end Formalism.MainNotions.KappaEndpoints
@@ -445,14 +440,6 @@ theorem two_pow_le_height_bound (b CH C : ℝ) (r m f : ℕ) (hb : 2 ≤ b) (hm 
     _ = 2 * (CH + 1) * (m : ℝ) ^ 2 * f := by ring
     _ ≤ C * (m : ℝ) ^ 2 * f := by
         apply mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hC (by positivity)) hf0
-
-def AmplitudeBoundWithoutNorms (large₂ : SizeData₂ D) (om : ∀ u : D.what₂.Word, D.s.Term u u → ℝ) (CH Cs C : ℝ) : Prop :=
-  ∀ u : D.what₂.Word, LatticeIndexAndWeightTheory.TieOK X u → ∀ t : D.s.Term u u, LatticeIndexAndWeightTheory.IsInertiaCyclotomicGeneratorElement t →
-    Real.sqrt (hsNormSq (X.Jt t)) ≤ Real.sqrt (Module.finrank ℂ (X.Hpi u) : ℝ) *
-      (om u t * (C / D.R.k) ^ ((LatticeIndexAndWeightTheory.jOf X t : ℝ) * ((D.R.k : ℝ) - 1 - LatticeIndexAndWeightTheory.jOf X t) * D.R.f) *
-        LatticeIndexAndWeightTheory.DelJ X t ^ (-(((D.R.k : ℝ) - 1 - LatticeIndexAndWeightTheory.jOf X t) / 2)) *
-        Hb large₂.sc.b C D.R.m D.R.f ^ (C * (D.R.rS : ℝ) ^ 4) *
-        ∏ τ, LatticeIndexAndWeightTheory.sg X t (large₂.sc.b ^ (CH * (D.R.m : ℝ))) τ ^ (-(Cs * D.R.k)))
 
 end Rec
 
@@ -759,11 +746,9 @@ section Main
 
 variable {D : D7} {large₂ : SizeData₂ D} (X : TermTie D)
 
-
 end Main
 
 section Abstract
-
 
 end Abstract
 
@@ -832,7 +817,6 @@ end Steps
 section Assembly
 
 variable {D : D7} (large₂ : SizeData₂ D) (X : TermTie D)
-
 
 def k2Cf (C Ch Cc : ℝ) : ℝ := 1 + C + C ^ 2 + Ch ^ 2 + Cc ^ 2
 
@@ -912,8 +896,6 @@ section PairsS
 
 variable {D : D7} (large₂ : SizeData₂ D) (X : TermTie D)
 
-
-
 end PairsS
 
 section Fam
@@ -938,7 +920,6 @@ section NGa
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
-
 
 open MeasureTheory in
 theorem ng_scale (hOK : M.OK) (x : Eˣ) :
@@ -1633,7 +1614,6 @@ theorem ng_factors (hOK : M.OK) (hG : P.Gv ≠ 0) {d : Datum P} {t : Term V M r}
     exact ⟨Finset.prod_pos (fun l h => (hl l h).1),
       Finset.prod_le_one₀ (fun l h => (hl l h).1.le) (fun l h => (hl l h).2)⟩
 
-
 omit [TopologicalSpace E] [MeasurableSpace E] [CommRing E] in
 theorem ng_real_q {a b c q : ℝ} (hq : 0 < q) (a0 : 0 < a) (a1 : a ≤ 1) (b0 : 0 < b) (b1 : b ≤ 1) (c0 : 0 < c) (c1 : c ≤ 1)
     (h : a ≤ (q ^ 2)⁻¹ ∨ b ≤ (q ^ 2)⁻¹) : q ≤ (a * b * c) ^ (-(1 / 2 : ℝ)) := by
@@ -1807,8 +1787,6 @@ theorem ng_mem_Aut {g : V ≃ₗ[E] V} {Λ : Submodule M.L.O V} : g ∈ Aut Λ �
     | mul x y _ _ hx hy => rw [ng_img_mul, hy, hx]
     | inv x _ hx => exact ng_img_inv hx
   · intro h; exact Subgroup.subset_closure h
-
-
 
 end NGa
 

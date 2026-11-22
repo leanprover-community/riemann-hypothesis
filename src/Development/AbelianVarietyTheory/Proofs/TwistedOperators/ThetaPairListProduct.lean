@@ -3,10 +3,8 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaEqB
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsThetaSubSelf
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HoweDualityUnitary
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HoweDualityReal
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HypothesesAbsDet
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRealmapsIsomorphism
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjUInvMemGfC
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsThetaSubGAlgDOne
@@ -19,7 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LieAction
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFinOfRest
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilLineGoodModelPolynomial
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilModelStandardCharacter
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolynomialDatumActionOfPairStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatchedPairThetaVanishing
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaPairListAction
 

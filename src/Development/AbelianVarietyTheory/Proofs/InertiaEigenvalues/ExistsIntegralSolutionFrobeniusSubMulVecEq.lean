@@ -15,8 +15,6 @@ open Polynomial Finset GlobalTheory.PMonE
 def backPoly {k : Type*} [Field k] (q n : ℕ) (c : ℕ → k) (j : ℕ) : k[X] :=
   Nat.rec X (fun j P => P ^ q - C (c (n - j)) * X) j
 
-theorem backPoly_zero {k : Type*} [Field k] (q n : ℕ) (c : ℕ → k) : backPoly q n c 0 = X := rfl
-
 theorem backPoly_succ {k : Type*} [Field k] (q n : ℕ) (c : ℕ → k) (j : ℕ) :
     backPoly q n c (j + 1) = backPoly q n c j ^ q - C (c (n - j)) * X := rfl
 

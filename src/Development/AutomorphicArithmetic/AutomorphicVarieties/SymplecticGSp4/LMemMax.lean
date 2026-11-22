@@ -127,9 +127,6 @@ variable {l : ℕ} [Fact l.Prime] {c : Coef l}
 
 private noncomputable def rd (c : Coef l) : c.Oˣ →* (ResidueField c.O)ˣ := Units.map (residue c.O).toMonoidHom
 
-omit [IsAlgClosure ℚ Ω] in
-private theorem bar_eq (γ : G ℚ Ω →* c.Oˣ) (g : G ℚ Ω) : residue c.O (γ g : c.O) = rd c (γ g) := rfl
-
 private theorem eq_of_rd {x y : c.Oˣ} {m : ℕ} (hm : ¬ l ∣ m) (hx : x ^ m = 1) (hy : y ^ m = 1) (h : rd c x = rd c y) : x = y :=
   (congrFacts (AlgebraicClosure ℚ) l c).2.2.2.1 x y m hm hx hy (Ideal.Quotient.eq.1 (congrArg Units.val h))
 

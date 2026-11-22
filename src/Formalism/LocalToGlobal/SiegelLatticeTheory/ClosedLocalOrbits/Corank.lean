@@ -23,13 +23,6 @@ def ScalRel (Λ : Submodule (𝓞 E) S.V) (g k : ℕ) {T T' : E} (F : LFlag S r 
 
 end Gen
 
-def CorankPosG : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (S : HSpace E) (r k : ℕ),
-    finrank E S.V = k + 2 * r + 1 →
-    ∀ Λ : Submodule (𝓞 E) S.V, Submodule.IsFullLattice E Λ →
-    ∀ (T T' : E) (F : LFlag S r T) (F' F'' : LFlag S r T') (β : S.V ≃ₗ[E] S.V),
-      IsLift Λ F → IsLift Λ F' → Gval F F' ≠ 0 → 1 ≤ s0 Λ F F' F'' β k
-
 def ScalarEquivG : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (S : HSpace E) (r k g : ℕ),
     finrank E S.V = k + 2 * r + 1 →
@@ -92,15 +85,6 @@ def ScalRelD {u : D.what₂.Word} (u' : D.what₂.Word) (F0 : FlagG (VS D) D.R.r
 def ScalarEquiv (u u' : D.what₂.Word) : Prop :=
   ∀ (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (Λ : Submodule (𝓞 D.host.E) (VS D).V),
     IsRowLat D F0 Λ → Equivalence (ScalRelD D u' F0 Λ)
-
-def BetaL (u u' : D.what₂.Word) : Prop :=
-  (∀ i, 3 ≤ D.host.g i ∧ LemmaN.Unram D.host.E (D.host.g i)) →
-  ∀ (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (Λ : Submodule (𝓞 D.host.E) (VS D).V),
-    IsRowLat D F0 Λ → ∀ x y : Carrier (PD D Λ (lf D F0) u'),
-      Gval (lf D F0) x.1 ≠ 0 → Gval (lf D F0) y.1 ≠ 0 →
-      ∀ β₁ β₂ : (VS D).V ≃ₗ[D.host.E] (VS D).V,
-        IsPair Λ (lf D F0) x.1 y.1 β₁ (gS D) → IsPair Λ (lf D F0) x.1 y.1 β₂ (gS D) →
-        ∀ v ∈ orth (VS D) (Xsp x.1), β₁ v - β₂ v ∈ Xsp y.1
 
 def BetaFree (u u' : D.what₂.Word) : Prop :=
   (∀ i, 3 ≤ D.host.g i ∧ LemmaN.Unram D.host.E (D.host.g i)) →

@@ -93,9 +93,6 @@ theorem JR_diagonal (R : Type) [CommRing R] [Algebra F R] (d : Fin n → E) :
     JR (F := F) R (Matrix.diagonal d) = Matrix.diagonal fun i => inclR R (d i) :=
   Matrix.diagonal_map (map_zero _)
 
-theorem cT_JR (σ : E →ₐ[F] E) (R : Type) [CommRing R] [Algebra F R] (X : Matrix (Fin n) (Fin n) E) :
-    Formalism.UG.cT (sigR R σ) (JR R X) = JR R (Formalism.UG.cT (σ : E →+* E) X) := rfl
-
 theorem cT_diagonal {A : Type} [CommRing A] (s : A →+* A) (c : Fin n → A) :
     Formalism.UG.cT s (Matrix.diagonal c) = Matrix.diagonal fun i => s (c i) := by
   unfold Formalism.UG.cT

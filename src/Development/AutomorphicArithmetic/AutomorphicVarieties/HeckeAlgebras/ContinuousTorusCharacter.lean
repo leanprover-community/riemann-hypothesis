@@ -206,15 +206,12 @@ variable {A M ι : Type} [CommRing A] [IsLocalRing A] [AddCommGroup M] [Module A
 def locPart (Y : Submodule A M) (op : ι → Module.End A M) (a : ι → A) : Submodule A M :=
   Y ⊓ ⨅ (i : ι) (k : ℕ), ⨆ n : ℕ, (maximalIdeal A ^ k • Y).comap ((op i - algebraMap A _ (a i)) ^ n)
 
-
 omit [IsLocalRing A] in
 def Restr {Y : Submodule A M} (t : Module.End A Y) (φ : Module.End A M) : Prop := ∀ y : Y, (t y : M) = φ y
-
 
 omit [IsLocalRing A] in
 def heckeAlg (Y : Submodule A M) (op : ι → Module.End A M) : Subalgebra A (Module.End A Y) :=
   Algebra.adjoin A {t | ∃ i, Restr t (op i)}
-
 
 omit [IsLocalRing A] in
 def CommOn (Y : Submodule A M) (op : ι → Module.End A M) : Prop :=
@@ -244,8 +241,6 @@ structure WtRep {G : Type} [Group G] (I : Iwa G) (O Ω : Type) [CommRing O] [IsL
     ξ y i j = (if i = j then 1 else 0) + algebraMap O Ω x
   continuous_torusCharacter : ∀ k : ℕ, ∃ c, ∀ t : I.Tf, (t : G) ∈ I.Tc c → ∃ x ∈ maximalIdeal O ^ k, (χ t : Ω) = 1 + algebraMap O Ω x
   central : ∀ t : I.Tf, (t : G) ∈ Subgroup.center G → ∀ i j, ξ t i j = if i = j then (χ t : Ω) else 0
-
-private theorem fin1 (i j : Fin (0 + 1)) : i = j := Subsingleton.elim (α := Fin 1) i j
 
 namespace Frame
 

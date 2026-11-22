@@ -157,9 +157,6 @@ theorem blk_conj {J k : Matrix (Fin m) (Fin m) ℂ} (hJ : Jᴴ = J) (hk : k * J 
     Matrix.conjTranspose_sub, Matrix.conjTranspose_one, hJ, h2, Matrix.smul_mul, Matrix.mul_smul, add_mul, mul_add,
     one_mul, mul_one, h1]
 
-theorem detPlus_def₂ (ε : Fin m → Bool) (k : Matrix (Fin m) (Fin m) ℂ) :
-    detP ε k = (blk (Formalism.REAL.Jm ε) k).det := rfl
-
 theorem detM_eq (ε : Fin m → Bool) (k : Matrix (Fin m) (Fin m) ℂ) :
     detM ε k = (blk (-Formalism.REAL.Jm ε) k).det := by
   rw [detM, blk, sub_neg_eq_add, ← sub_eq_add_neg]

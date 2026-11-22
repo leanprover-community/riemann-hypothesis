@@ -115,8 +115,6 @@ def toMixed : Cinf E ≃L[ℝ] mixedEmbedding.mixedSpace E :=
       map_smul' := fun r x => Prod.ext (funext fun w => ((isEmpty_isReal E).false w).elim)
         (funext fun w => (toMixedRing_snd E _ w).trans (congrArg (r • ·) (toMixedRing_snd E x w).symm)) }
 
-theorem toMixed_apply (x : Cinf E) : toMixed E x = toMixedRing E x := rfl
-
 theorem toMixed_pInf (x : Ad E) : toMixed E (pInf E x) = homeomorphMixedSpace E x.1 :=
   congrArg (InfiniteAdeleRing.ringEquiv_mixedSpace E) ((infEq E).apply_symm_apply x.1)
 
@@ -205,7 +203,6 @@ theorem mixedFourierPi_toMixedSch (f : 𝓢(Fin n → Cinf E, ℂ)) (u : Fin n �
     ContinuousLinearEquiv.symm_apply_apply, Circle.smul_def, smul_eq_mul]
   exact mul_comm _ _
 
-
 omit [_root_.NumberField.IsTotallyComplex E] in
 def latt (n : ℕ) (J : (FractionalIdeal (𝓞 E)⁰ E)ˣ) : Set (Fin n → Af E) := {z | ∀ i, z i ∈ idealFiniteAdeles J}
 
@@ -230,7 +227,6 @@ theorem thetaFn_mem (f : 𝓢(Fin n → Cinf E, ℂ)) (J : (FractionalIdeal (�
   rw [thetaFn_eq]
   exact schwartzBruhatTensorPi_mem _ (finiteTensor_mem fun i => cosetIndicator_mem_finiteSchwartzBruhat J (η i))
 
-
 omit [_root_.NumberField.IsTotallyComplex E] in
 theorem finiteMeasurePi_latt (J : (FractionalIdeal (𝓞 E)⁰ E)ˣ) :
     (finiteMeasurePi E (latt n J)).toReal = (finiteAdeleMeasure E (idealFiniteAdeles J)).toReal ^ n := by
@@ -253,7 +249,6 @@ theorem adelicFourierPi_thetaFn (f : 𝓢(Fin n → Cinf E, ℂ)) (J : (Fraction
   change _ * (_ * ((∏ i, (finiteAdelicChar E (η i * pFin E (y i)) : ℂ)) *
     if ∀ i, pFin E (y i) ∈ idealFiniteAdeles (traceDualIdeal E J) then 1 else 0)) = _
   ring
-
 
 end Complex
 

@@ -12,17 +12,6 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.ConjugateSelf
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (A : NAut N)
 
-def Spl {w : PlE H} (c : G H.E N.Om → ℂ) (t : ℕ) (y : A.LP w) : Prop :=
-  ∃ a b : A.LP w, y = A.lpSum a b ∧ A.lpDim b = t ∧ A.mono0 b ∧
-    ∀ σ ∈ Ine (F := H.E) (N.plOm.1 w), A.inePol b σ = (X - C (c σ)) ^ t
-
-structure RelW {w : PlE H} (x y : A.LP w) : Prop where
-  dim : A.lpDim x = A.lpDim y
-  ine : ∀ σ ∈ Ine (F := H.E) (N.plOm.1 w), A.inePol x σ = A.inePol y σ
-  n0 : A.mono0 y → x = y
-  spl : ∀ (u : A.LP w) (c : G H.E N.Om → ℂ) (t : ℕ), ∀ γ ∈ Ine (F := H.E) (N.plOm.1 w),
-    (A.inePol (A.lpSum y u) γ).rootMultiplicity (c γ) ≤ t → Spl N A c t (A.lpSum y u) → Spl N A c t (A.lpSum x u)
-
 structure RelA {w : PlE H} (x y : A.LP w) : Prop where
   dim : A.lpDim x = A.lpDim y
   mono : A.mono0 y → A.mono0 x
@@ -104,35 +93,9 @@ theorem RelA.char (hLP : TieLP N A) {w : PlE H} {x y : A.LP w} (h : RelA N A x y
       exact e
     rw [hch x σ hσ, hch y σ hσ, h.ine ⟨hm, hab'⟩ σ hσ]
 
-theorem RelW.refl {w : PlE H} (x : A.LP w) : RelW N A x x := ⟨rfl, fun _ _ => rfl, fun _ => rfl, fun _ _ _ _ _ _ k => k⟩
-
-theorem RelW.of_eq {w : PlE H} {x y : A.LP w} (e : x = y) : RelW N A x y := e ▸ RelW.refl x
-
 theorem CuspA.of_eq {w : PlE H} {x y : A.LP w} (e : x = y) : CuspA N A x y := by
   subst e
   exact ⟨RelA.refl x, fun _ => rfl⟩
-
-theorem RelW.mono {w : PlE H} {x y : A.LP w} (h : RelW N A x y) (hy : A.mono0 y) : A.mono0 x := (h.n0 hy) ▸ hy
-
-theorem RelW.sum {w : PlE H} {x y x' y' : A.LP w} (h : RelW N A x y) (h' : RelW N A x' y') :
-    RelW N A (A.lpSum x x') (A.lpSum y y') := by
-  refine ⟨by rw [A.lpDim_sum, A.lpDim_sum, h.dim, h'.dim],
-    fun σ hσ => by rw [A.inePol_sum, A.inePol_sum, h.ine σ hσ, h'.ine σ hσ],
-    fun k => by rw [h.n0 ((A.monomial_sum_iff _ _).1 k).1, h'.n0 ((A.monomial_sum_iff _ _).1 k).2], fun u c t γ hγ hm hs => ?_⟩
-  rw [A.lpSum_assoc] at hm hs
-  have s1 := h.spl _ c t γ hγ hm hs
-  have e : A.lpSum x (A.lpSum y' u) = A.lpSum y' (A.lpSum x u) := by
-    rw [← A.lpSum_assoc, A.lpSum_comm x y', A.lpSum_assoc]
-  have hm' : (A.inePol (A.lpSum y' (A.lpSum x u)) γ).rootMultiplicity (c γ) ≤ t := by
-    rw [← e, A.inePol_sum, h.ine γ hγ, ← A.inePol_sum]; exact hm
-  have s2 := h'.spl _ c t γ hγ hm' (e ▸ s1)
-  rwa [← A.lpSum_assoc, A.lpSum_comm x' x] at s2
-
-theorem Spl.char (hLP : TieLP N A) {w : PlE H} {c : G H.E N.Om → ℂ} {t : ℕ} {y : A.LP w} (h : Spl N A c t y)
-    (k : A.LP w) (hk : A.lpDim k = 1) (hu : A.unr k) : Spl N A c t (A.lpChar y k) := by
-  obtain ⟨a, b, e, d, m, p⟩ := h
-  exact ⟨A.lpChar a k, A.lpChar b k, by rw [e, (hLP w a b k k 0 hk hk).1], by rw [A.lpDim_char _ _ hk, d],
-    (A.monomial_char_iff _ _ hk).2 m, fun σ hσ => by rw [inePol_char_unr hLP _ _ hk hu σ hσ, p σ hσ]⟩
 
 theorem exists_inv_unr {w : PlE H} (k : A.LP w) (hk : A.lpDim k = 1) (hu : A.unr k) :
     ∃ k' : A.LP w, A.lpDim k' = 1 ∧ A.unr k' ∧ A.lpChar k k' = A.lpUnr w {1} ∧ A.lpChar k' k = A.lpUnr w {1} := by
@@ -146,44 +109,8 @@ theorem exists_inv_unr {w : PlE H} (k : A.LP w) (hk : A.lpDim k = 1) (hu : A.unr
   · rw [A.unr_eq_lpUnr _ (A.unr_char _ _ hk hu' hu), A.frobEig_char _ _ c hu' hu hk hc, hf']
     simp [hc0]
 
-theorem RelW.char (hLP : TieLP N A) {w : PlE H} {x y : A.LP w} (h : RelW N A x y) (k : A.LP w) (hk : A.lpDim k = 1)
-    (hu : A.unr k) : RelW N A (A.lpChar x k) (A.lpChar y k) := by
-  refine ⟨by rw [A.lpDim_char _ _ hk, A.lpDim_char _ _ hk, h.dim],
-    fun σ hσ => by rw [inePol_char_unr hLP _ _ hk hu σ hσ, inePol_char_unr hLP _ _ hk hu σ hσ, h.ine σ hσ],
-    fun m => by rw [h.n0 ((A.monomial_char_iff _ _ hk).1 m)], fun u c t γ hγ hm hs => ?_⟩
-  obtain ⟨k', hk', hu', e1, e2⟩ := exists_inv_unr k hk hu
-  have e : ∀ z : A.LP w, A.lpSum (A.lpChar z k) u = A.lpChar (A.lpSum z (A.lpChar u k')) k := fun z => by
-    rw [(hLP w z _ k k 0 hk hk).1, (hLP w u u k' k 0 hk' hk).2.2.2.1, e2, (hLP w u u k' k 0 hk' hk).2.2.2.2.1]
-  rw [e] at hm hs ⊢
-  rw [inePol_char_unr hLP _ _ hk hu γ hγ] at hm
-  have hs' := hs.char hLP k' hk' hu'
-  rw [(hLP w _ u k k' 0 hk hk').2.2.2.1, e1, (hLP w _ u k k' 0 hk hk').2.2.2.2.1] at hs'
-  exact (h.spl _ c t γ hγ hm hs').char hLP k hk hu
-
 variable (N A)
 
-def AutomorphicGaloisAdmissible : Prop :=
-  ∀ i, (∀ a, 1 ≤ a → ∀ π : A.CG a, A.csd π → A.ralg π →
-      ∃ ρ : G H.E N.Om →* GL (Fin a) (Qbar (N.l i)),
-        Continuous (fun g => ((ρ g : GL _ _) : Matrix (Fin a) (Fin a) (Qbar (N.l i)))) ∧
-        IsSSRep ρ ∧
-        (∀ w, w ∉ placesOver H.E (N.l i) →
-          RelW N A (A.wdOf i ρ w) (A.lpTw (A.locG π w) ((1 - (a : ℝ)) / 2))) ∧
-        (∀ w ∈ placesOver H.E (N.l i), A.IsdRW i ρ w ∧
-          (∀ τ, InducesW N i τ w → A.jumpsW i ρ τ = A.jumpsInf i π τ) ∧
-          CuspA N A (A.wdOf i ρ w) (A.lpTw (A.locG π w) ((1 - (a : ℝ)) / 2)))) ∧
-    (∀ a (π : A.CG a), A.ralg π → ∃ w₀ : ℂ, ∀ τ : H.E →+* ℂ,
-      A.infG π (τ.comp (H.conj : H.E ≃ₐ[ℚ] H.E).toRingEquiv.toRingHom) = (A.infG π τ).map (w₀ - ·)) ∧
-    (∀ (χ : A.CG 1) (s : ℝ), (∀ τ : H.E →+* ℂ, ∀ z ∈ A.infG χ τ, ∃ k : ℤ, z + (s : ℂ) = (k : ℂ)) →
-      ∃ ρ : G H.E N.Om →* GL (Fin 1) (Qbar (N.l i)), ContQ N i ρ ∧
-        (∀ w, w ∉ placesOver H.E (N.l i) → A.wdOf i ρ w = A.lpTw (A.locG χ w) s) ∧
-        ∀ w ∈ placesOver H.E (N.l i), A.IsdRW i ρ w ∧ A.wdOf i ρ w = A.lpTw (A.locG χ w) s ∧
-          ∀ τ, InducesW N i τ w → (A.jumpsW i ρ τ).map (fun n : ℤ => (n : ℂ)) =
-            (A.infG χ ((A.iotaQC i).toRingHom.comp τ)).map (fun z => -(z + (s : ℂ))))
-
 variable {N A}
-
-theorem weakA' (h : AutomorphicGaloisAdmissible N A) : AutomorphicGaloisAdmissible N A := h
-theorem weak' {D : D7} (h : AutomorphicGaloisAdmissible D.nd D.naut) : AutomorphicGaloisAdmissible D.nd D.naut := h
 
 end UpperTheory.GalN

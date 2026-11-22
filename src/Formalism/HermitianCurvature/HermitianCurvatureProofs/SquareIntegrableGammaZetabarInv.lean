@@ -34,29 +34,6 @@ noncomputable section
 
 variable {τ : ℝ}
 
-abbrev S (τ : ℝ) := SmQ 0 τ
-def z : S τ := coordQ M.vz
-def gg : S τ := (anQ 0 τ).gg τ
-def th : Module.End ℂ (S τ) := eulerQ M.vz
-def thb : Module.End ℂ (S τ) := eulerQ M.vzb
-
-def ev (f : S τ) (q : Qp 0 τ) : ℂ := f.1 q
-
-theorem S_ext {f g : S τ} (h : ∀ q, ev f q = ev g q) : f = g := Subtype.ext (funext h)
-
-theorem ev_gg (q) : ev (gg : S τ) q = q.1.2 * conj q.1.2 - τ := by
-  have := gg_apply (r := 0) (TT := τ) q
-  rw [coordE_vz, coordE_vzb] at this
-  exact this
-
-theorem ext_conj (f : Qp 0 τ → ℂ) : ext (fun q => conj (f q)) = fun x => Complex.conjCLE (ext f x) := by
-  funext x; by_cases hx : x ∈ Qset 0 τ <;> simp [ext, hx]
-
-def cj (f : S τ) : S τ := ⟨fun q => conj (f.1 q), by
-  show ContDiffOn ℝ sm (ext fun q => conj (f.1 q)) (Qset 0 τ)
-  rw [ext_conj]
-  exact Complex.conjCLE.contDiff.comp_contDiffOn f.2⟩
-
 @[simp] theorem ev_cj (f : S τ) (q) : ev (cj f) q = conj (ev f q) := rfl
 
 instance haarE : (volume : Measure (E 0)).IsAddHaarMeasure :=
@@ -78,12 +55,6 @@ open scoped ComplexConjugate
 noncomputable section
 
 variable {τ : ℝ}
-
-theorem inner_eq_integral_alt (f g : S τ) : ip0 f g = ∫ q, ev (f * cj g) q ∂mu0 0 τ := rfl
-
-theorem cj_mul (f g : S τ) : cj (f * g) = cj f * cj g :=
-  S_ext fun q => (starRingEnd ℂ).map_mul (ev f q) (ev g q)
-theorem cj_gg : cj (gg : S τ) = gg := S_ext fun q => by simp [ev_gg, mul_comm]
 
 end
 
@@ -123,7 +94,6 @@ theorem act_one (f) : actA P 1 f = f := by
 theorem act_sc (w : (DQ P).Pr) (f π) : actA P (sc P (DQ P) w) f π = w.1 (f π) := act_diag P _ f π
 theorem star_sc (w : (DQ P).Pr) : star (sc P (DQ P) w) = sc P (DQ P) (star w) := by
   simp only [sc, Matrix.scalar_apply, Matrix.star_eq_conjTranspose, Matrix.diagonal_conjTranspose]; rfl
-theorem alg_fst (c : ℂ) (g : SmQ P.r P.TT) : (algebraMap ℂ (DQ P).Pr c).1 g = c • g := rfl
 theorem act_alg (c : ℂ) (f π) : actA P (algebraMap ℂ (A P (DQ P)) c) f π = c • f π := by
   rw [Matrix.algebraMap_eq_diagonal, act_diag]; rfl
 theorem act_kap (g : M.Ty P → ℂ) (f π) : actA P (kap P (DQ P) g) f π = g π • f π := act_diag P _ f π
@@ -133,17 +103,11 @@ section R0
 variable {B : Type} [Ring B] [Algebra ℂ B] (L : LevelData B 0)
 end R0
 
-abbrev Pb (b : ℕ) : M.Par := ⟨1, 0, 1, 1, fun _ => 0, fun _ => 2 * b⟩
-
 variable (b : ℕ)
-
-theorem hT : 1 ≤ (Pb b).TT := by simp [M.Par.TT]
 
 variable {b}
 variable {L : LevelData (A (Pb b) (DQ (Pb b))) 0} (hL : IsModelLevel (Pb b) (DQ (Pb b)) L)
 include hL
-
-
 
 end
 
@@ -660,8 +624,6 @@ def matSub {R : Type} [Ring R] [Algebra ℂ R] (S : Subalgebra ℂ R) (n : Type)
 section Gen
 variable {R : Type} [Ring R] [Algebra ℂ R] (S : Subalgebra ℂ R) {n : Type} [Fintype n] [DecidableEq n]
 
-theorem mem_matSub {M : Matrix n n R} : M ∈ matSub S n ↔ ∀ i j, M i j ∈ S := Iff.rfl
-
 theorem diag_mem (d : n → R) (h : ∀ i, d i ∈ S) : Matrix.diagonal d ∈ matSub S n := fun i j => by
   rw [Matrix.diagonal_apply]; split_ifs
   · exact h i
@@ -932,38 +894,7 @@ noncomputable section
 
 variable {τ : ℝ}
 
-abbrev S (τ : ℝ) := SmQ 0 τ
-def z : S τ := coordQ M.vz
-def gg : S τ := (anQ 0 τ).gg τ
-def th : Module.End ℂ (S τ) := eulerQ M.vz
-def thb : Module.End ℂ (S τ) := eulerQ M.vzb
-
-def ev (f : S τ) (q : Qp 0 τ) : ℂ := f.1 q
-
-theorem S_ext {f g : S τ} (h : ∀ q, ev f q = ev g q) : f = g := Subtype.ext (funext h)
-
-theorem ev_gg (q) : ev (gg : S τ) q = q.1.2 * conj q.1.2 - τ := by
-  have := gg_apply (r := 0) (TT := τ) q
-  rw [coordE_vz, coordE_vzb] at this
-  exact this
-
-def GR (q : Qp 0 τ) : ℝ := Complex.normSq q.1.2 - τ
-
-theorem ext_conj (f : Qp 0 τ → ℂ) : ext (fun q => conj (f q)) = fun x => Complex.conjCLE (ext f x) := by
-  funext x; by_cases hx : x ∈ Qset 0 τ <;> simp [ext, hx]
-
-def cj (f : S τ) : S τ := ⟨fun q => conj (f.1 q), by
-  show ContDiffOn ℝ sm (ext fun q => conj (f.1 q)) (Qset 0 τ)
-  rw [ext_conj]
-  exact Complex.conjCLE.contDiff.comp_contDiffOn f.2⟩
-
 @[simp] theorem ev_cj (f : S τ) (q) : ev (cj f) q = conj (ev f q) := rfl
-
-theorem cj_mul (f g : S τ) : cj (f * g) = cj f * cj g :=
-  S_ext fun q => (starRingEnd ℂ).map_mul (ev f q) (ev g q)
-theorem cj_add (f g : S τ) : cj (f + g) = cj f + cj g :=
-  S_ext fun q => (starRingEnd ℂ).map_add (ev f q) (ev g q)
-theorem cj_gg : cj (gg : S τ) = gg := S_ext fun q => by simp [ev_gg, mul_comm]
 
 instance haarE : (volume : Measure (E 0)).IsAddHaarMeasure :=
   Measure.prod.instIsAddHaarMeasure (volume : Measure (Fin 0 → ℂ)) (volume : Measure ℂ)
@@ -985,25 +916,6 @@ noncomputable section
 section Act
 variable (P : M.Par)
 
-def Phi : (DQ P).Pr →+* Module.End ℂ (SmQ P.r P.TT) :=
-  RingHom.fst (Module.End ℂ (SmQ P.r P.TT)) (Module.End ℂ (SmQ P.r P.TT))ᵐᵒᵖ
-theorem actA_eq (a : A P (DQ P)) (f π) : actA P a f π = ∑ π', Phi P (a π π') (f π') := rfl
-
-theorem act_mul (a b : A P (DQ P)) (f) : actA P (a * b) f = actA P a (actA P b f) := by
-  funext π
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [actA_eq, Matrix.mul_apply, map_sum, map_mul, LinearMap.sum_apply, Module.End.mul_apply]
-  rw [Finset.sum_comm]
-theorem act_diag (d : M.Ty P → (DQ P).Pr) (f π) : actA P (Matrix.diagonal d) f π = (d π).1 (f π) := by
-  rw [actA_eq, Finset.sum_eq_single π (fun b _ hb => by rw [Matrix.diagonal_apply_ne _ hb.symm, map_zero]; rfl)
-    (by simp), Matrix.diagonal_apply_eq]
-  rfl
-theorem act_one (f) : actA P 1 f = f := by
-  funext π; rw [← Matrix.diagonal_one, act_diag]; rfl
-theorem act_sc (w : (DQ P).Pr) (f π) : actA P (sc P (DQ P) w) f π = w.1 (f π) := act_diag P _ f π
-theorem alg_fst (c : ℂ) (g : SmQ P.r P.TT) : (algebraMap ℂ (DQ P).Pr c).1 g = c • g := rfl
-theorem act_alg (c : ℂ) (f π) : actA P (algebraMap ℂ (A P (DQ P)) c) f π = c • f π := by
-  rw [Matrix.algebraMap_eq_diagonal, act_diag]; rfl
 end Act
 
 section R0
@@ -1030,9 +942,6 @@ noncomputable section
 
 variable {τ : ℝ}
 
-def Bdd (δ : ℝ) (β : S τ) : Prop := ∃ C, 0 ≤ C ∧ ∀ q, δ < GR q → ‖ev β q‖ ≤ C
-def Good (δ : ℝ) (β : S τ) : Prop := Bdd δ β ∧ Bdd δ (th β) ∧ Bdd δ (thb β)
-
 end
 
 end Formalism.FourierDecayAlt.P.MAx2.J0
@@ -1048,8 +957,6 @@ open scoped ComplexConjugate
 noncomputable section
 
 variable {τ : ℝ}
-
-theorem inner_eq_integral_alt (f g : S τ) : ip0 f g = ∫ q, ev (f * cj g) q ∂mu0 0 τ := rfl
 
 variable {k : ℕ} {T T' : ℝ} {uu uu' : ℕ → ℝ}
 

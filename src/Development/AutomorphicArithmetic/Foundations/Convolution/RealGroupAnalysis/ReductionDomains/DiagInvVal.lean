@@ -11,9 +11,6 @@ open GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.GJMat
 open scoped Classical ENNReal NNReal Pointwise
 open UpperTheory.ConvolutionTheory.R2
 
-private theorem diag_val (F : Type) [Field F] [NumberField F] (t : Fˣ) :
-    ((IdeleGroup.diagonal F t : (A F)ˣ) : A F) = rt (t : F) := rfl
-
 private theorem diag_inv_val (F : Type) [Field F] [NumberField F] (t : Fˣ) :
     (((IdeleGroup.diagonal F t : (A F)ˣ)⁻¹ : (A F)ˣ) : A F) = rt ((t : F)⁻¹) := by
   rw [← map_inv, ← Units.val_inv_eq_inv_val]

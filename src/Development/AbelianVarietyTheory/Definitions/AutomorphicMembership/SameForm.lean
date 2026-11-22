@@ -64,10 +64,6 @@ structure RowsDef : Type 1 where
   tru : DefTrue I l hX W e
   std : StandIn W
 
-structure AmbTrue (Z : TC.Later B (I.cols l)) (e : ∀ a : (I.cols l).Tup, MtCx I a ≃ₗ[ℂ] Z.W.Amb a)
-    (A : AmbForm (I.rec7 l Z) (RowSide.sharp (I.rec7 l Z))) : Prop where
-  mt : ∀ a : (I.cols l).Tup, (⟨A.MtH a, fun x => A.jAmb a x⟩ : Σ H : HLat B.LL, (H.V → Z.W.Amb a)) = ⟨MtHL I hX a, fun x => e a (toCx I hX a x)⟩
-
 end GlobalTheory.Mem.Df
 
 end

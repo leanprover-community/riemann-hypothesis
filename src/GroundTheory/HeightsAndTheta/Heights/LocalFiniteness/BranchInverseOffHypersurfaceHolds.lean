@@ -38,7 +38,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtra
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ChartRingOverOneBlockBase
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.MemClosureOfMemChartRing
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.BaseComap
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.NefGenericDVRSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SegreJoin
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFramePlaneGraph
 

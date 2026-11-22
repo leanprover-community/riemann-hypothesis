@@ -24,9 +24,6 @@ theorem gp4 {n : ℕ} {a b c e : Pt k n d} (ha : GP a) (hb : GP b) (hc : GP c) (
     ∀ j, GP (![a, b, c, e] j) := by
   intro j; fin_cases j; exacts [ha, hb, hc, he]
 
-theorem gp_add (G : FGLaw k d) {n : ℕ} {a b : Pt k n d} (ha : GP a) (hb : GP b) : GP (addOf G.F a b) :=
-  gp_addOf _ G.const _ _ ha hb
-
 theorem germEv_germEv_two_points {m n : ℕ} (V : Fin m → Pt k n d) (a b : Pt k m d) (hV : ∀ j, GP (V j)) (ha : GP a)
     (hb : GP b) (f : PS k 2 d) : ev V (ev ![a, b] f) = ev ![evP V a, evP V b] f := by
   rw [gt_ev_ev' V _ hV (pair_points_zero_constant ha hb), eval_pair_points]
@@ -88,27 +85,9 @@ theorem addOf_zero_left (G : FGLaw k d) {n : ℕ} (b : Pt k n d) (hb : GP b) : a
     evP_pt _ (single_point_zero_constant hb), gt_ev_X _ (single_point_zero_constant hb)] at this
   exact this
 
-local macro "gp" : tactic =>
-  `(tactic| (
-    repeat' first
-      | assumption
-      | apply gp_pt
-      | apply gp_zero₂
-      | apply gp_addOf
-      | apply single_point_zero_constant
-      | apply pair_points_zero_constant
-      | apply triple_points_zero_constant
-      | apply gp4
-    done))
-
 private theorem ev_one_for_germ_points {m n : ℕ} (V : Fin m → Pt k n d)
     (hV : ∀ j, GP (V j)) : ev V (1 : PS k m d) = 1 :=
   GlobalTheory.FormalCalc.subst_one' (gt_hasSubst V hV)
-
-local macro "push_ev" loc:(Lean.Parser.Tactic.location)? : tactic =>
-  `(tactic| simp (discharger := gp) only [FGLaw.add, gt_ev_add, gt_ev_sub, gt_ev_mul,
-    gt_ev_zero, ev_one_for_germ_points, germEv_germEv_two_points, germEv_germEv_three_points,
-    evP_pt, evP_zero, evP_addOf, Matrix.cons_val, one_mul, mul_one] $[$loc]?)
 
 theorem exists_gauge_second_law : (∀ (k : Type) [CommRing k] [Algebra ℚ k] (d : ℕ) (G : FGLaw k d) (c : PS k 3 d), ev (n := 2) ![0, pt k d 0, pt k d 1] c = 0 → ev (n := 3) ![pt k d 1, pt k d 0, pt k d 2] c = c → ev (n := 4) ![pt k d 0, pt k d 1, pt k d 3] c + ev (n := 4) ![addOf G.F (pt k d 0) (pt k d 1), pt k d 2, pt k d 3] c = ev (n := 4) ![pt k d 1, pt k d 2, pt k d 3] c + ev (n := 4) ![pt k d 0, addOf G.F (pt k d 1) (pt k d 2), pt k d 3] c → ∃ h : PS k 2 d, ev (n := 1) ![0, pt k d 0] h = 0 ∧ (∀ i, ev (n := 1) ![0, pt k d 0] (pderiv (R := k) ((0 : Fin 2), i) h) = 0) ∧ c = (ev (n := 3) ![pt k d 0, pt k d 2] h + ev (n := 3) ![pt k d 1, pt k d 2] h - ev (n := 3) ![addOf G.F (pt k d 0) (pt k d 1), pt k d 2] h)) → (∀ (k : Type) [CommRing k] [Algebra ℚ k] (d : ℕ) (G : FGLaw k d) (q : ℕ) (g : PS k (q + 1) d), ev (n := q + 2) (Fin.cons (addOf G.F (pt k d 0) (pt k d 1)) (fun j : Fin q => pt k d j.succ.succ)) g = ev (n := q + 2) (Fin.cons (pt k d 0) (fun j : Fin q => pt k d j.succ.succ)) g + ev (n := q + 2) (Fin.cons (pt k d 1) (fun j : Fin q => pt k d j.succ.succ)) g → (∀ i, ev (n := q) (Fin.cons 0 (fun j : Fin q => pt k d j)) (pderiv (R := k) ((0 : Fin (q + 1)), i) g) = 0) → g = 0) → ∀ (k : Type) [CommRing k] [Algebra ℚ k] (d : ℕ) (O : Type) [CommRing O] [StarRing O] (B : FB k d O), B.ph1 = 1 → ∃ h : PS k 2 d, (ev (n := 1) ![0, pt k d 0] h = 0 ∧ ev (n := 1) ![pt k d 0, 0] h = 0) ∧ (ev (n := 3) ![pt k d 0, pt k d 2] h + ev (n := 3) ![pt k d 1, pt k d 2] h - ev (n := 3) ![addOf B.G.F (pt k d 0) (pt k d 1), pt k d 2] h) = 0 ∧ B.ph2 = FB.expS k (ev (n := 3) ![pt k d 0, pt k d 1] h + ev (n := 3) ![pt k d 0, pt k d 2] h - ev (n := 3) ![pt k d 0, addOf B.G.F (pt k d 1) (pt k d 2)] h) := by
   intro H1 H2 k _ _ d O _ _ B hB

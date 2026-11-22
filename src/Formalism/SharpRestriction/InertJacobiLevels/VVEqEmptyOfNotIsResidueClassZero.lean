@@ -54,13 +54,6 @@ theorem eq_resChar_of_mem (w : D.what₂.places.Pl) (p : ℕ) (hp : p.Prime)
   rw [h2] at h1
   exact (D.plEq w).isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h1)
 
-theorem resChar_conj (w : D.what₂.places.Pl) :
-    D.what₂.places.resChar (D.what₂.places.conj w) = D.what₂.places.resChar w := by
-  apply eq_resChar_of_mem D _ _ (D.what₂.places.resChar_prime w)
-  apply natCast_mem_of_val_pos D _ _ (D.what₂.places.resChar_prime w).ne_zero
-  rw [D.conj_val, star_natCast, D.what₂.places.val_resChar]
-  exact_mod_cast D.what₂.places.ramIdx_pos w
-
 end Places
 
 section Base
@@ -68,32 +61,6 @@ section Base
 variable {N : ℕ} [NeZero N]
 
 end Base
-
-theorem scale_b'_nonneg (sc : Scale) : 0 ≤ sc.b' := by
-  have hx : 0 < sc.x := by linarith [sc.one_lt_alt]
-  have hb : 0 < sc.b := Real.exp_pos _
-  have hX : 0 < sc.X' := Real.exp_pos _
-  exact div_nonneg (mul_nonneg hx.le hb.le) hX.le
-
-theorem scale_w''_le (sc : Scale) (n : ℕ) (hn : 1 ≤ n) : sc.w'' n ≤ sc.b' / sc.x ∧ sc.w'' n ≤ sc.b := by
-  have hx : 0 < sc.x := by linarith [sc.one_lt_alt]
-  have hb : 0 < sc.b := Real.exp_pos _
-  have hX : 1 ≤ sc.X' := Real.one_le_exp (Real.rpow_nonneg hx.le _)
-  have hb' : 0 ≤ sc.b' := scale_b'_nonneg sc
-  have hn' : (1 : ℝ) ≤ n := by exact_mod_cast hn
-  have h1 : sc.w'' n ≤ sc.b' / sc.x := by
-    show sc.b' / (sc.x * n) ≤ sc.b' / sc.x
-    rw [← div_div]
-    exact div_le_self (div_nonneg hb' hx.le) hn'
-  have h2 : sc.b' / sc.x ≤ sc.b := by
-    rw [div_le_iff₀ hx]
-    show sc.x * sc.b / sc.X' ≤ sc.b * sc.x
-    rw [mul_comm sc.b]
-    exact div_le_self (mul_nonneg hx.le hb.le) hX
-  exact ⟨h1, h1.trans h2⟩
-
-theorem ranks_one_le_n (R : Ranks) : 1 ≤ R.n := by
-  exact R.toFrame.ord_pos
 
 section BaseA
 
@@ -176,11 +143,6 @@ theorem ord_nsmul_A (h : φ.A) : φ.ord • h = 0 := by
 
 end BaseA
 
-
-open Classical in
-def offC (D : D7) (sc : Scale) (_j : ℕ) (z : Bool × G.HH D) : ℝ :=
-  if G.IsTopPl D z then sc.b' / sc.x else if G.IsThickPl D z then sc.b else sc.w'' D.R.n
-
 section InstW
 
 variable (D : D7)
@@ -192,15 +154,6 @@ theorem plGG_false (t : G.HH D) : G.plGG D (false, t) = D.R.tau1 t := by
 theorem plGG_true (t : G.HH D) : G.plGG D (true, t) = D.R.tau2 t := by
   unfold G.plGG
   simp
-
-theorem plGG_mem_Psi (z : Bool × G.HH D) : G.plGG D z ∈ D.R.Psi := by
-  unfold G.plGG Formalism.HC.Frame.Psi
-  rw [MonoidHom.mem_ker]
-  split <;> first
-    | rfl
-    | simp [Formalism.HC.Frame.chD, Formalism.HC.Frame.tau1, Formalism.HC.Frame.tau2]
-
-def tauOf (z : Bool × G.HH D) : D.what₂.Tau := D.eTau.symm ⟨G.plGG D z, plGG_mem_Psi D z⟩
 
 theorem tau1_injective (φ : Formalism.HC.Frame) : Function.Injective φ.tau1 := by
   intro s t hst
@@ -227,42 +180,11 @@ theorem plGG_top_iff (z : Bool × G.HH D) : G.plGG D z ∈ D.host.topPlaces ↔ 
 
 variable {D} (L : SizeData₂ D)
 
-
 end InstW
 
 section Comparison₂
 
 variable {D : D7} (L0 : SizeData₂ D) (X0 : G.Inst D L0) (K : G.Consts)
-
-theorem one_le_fill (hw : 1 ≤ L0.sc.w'' D.R.n) (j : ℕ) (z : Bool × G.HH D) :
-    1 ≤ G.fill X0 (G.bL L0) j z := by
-  have hs := scale_w''_le L0.sc D.R.n (ranks_one_le_n D.R)
-  have hb' := scale_b'_nonneg L0.sc
-  unfold G.fill
-  by_cases htop : G.IsTopPl D z
-  · have ho := (X0.off_top j z htop).1
-    have hc : z.1 = false ∧ z.2 ∈ D.host.TT := htop
-    rw [if_pos hc]
-    have hbl : (0 : ℝ) ≤ (G.bL L0 z.2 : ℝ) := by
-      unfold G.bL
-      rw [dite_eq_left hc.2]
-      exact hb'.trans (L0.bT_ge _)
-    linarith [hs.1]
-  · have hc : ¬ (z.1 = false ∧ z.2 ∈ D.host.TT) := htop
-    rw [if_neg hc, zero_add]
-    by_cases hthick : G.IsThickPl D z
-    · linarith [(X0.off_thick j z hthick).1, hs.2]
-    · linarith [(X0.off_thin j z ⟨htop, hthick⟩).1]
-
-theorem TTP_subset (a b : G.HH D → ℤ) (p : ℕ) : ∀ t ∈ G.TTP X0 K a b p, t ∈ D.host.TT := by
-  intro t ht
-  unfold G.TTP at ht
-  split at ht
-  · exact ht
-  · exact (Finset.mem_filter.1 ht).1
-
-
-
 
 variable (dr : Set ℕ) (len : D.what₂.Word → D.what₂.places.Pl → ℚ) (hw : 1 ≤ L0.sc.w'' D.R.n)
     (hg : ∀ i, ¬ (G.IsResidueClassZero D (D.host.g i) ∨ G.IsSg D (D.host.g i)))

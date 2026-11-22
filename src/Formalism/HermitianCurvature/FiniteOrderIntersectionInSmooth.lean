@@ -103,13 +103,6 @@ def Majorant : Prop :=
 
 def NormInv : Prop := ∀ (k r : ℕ), ∀ g ∈ B.GV k r, B.gN g⁻¹ = B.gN g ∧ 1 ≤ B.gN g
 
-def TwoSided : Prop :=
-  ∀ (k r : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] (A : ℝ) (m : ℕ) (F : B.Mat k r → E) (c : ℝ),
-    B.CkOn (m : ℕ∞) (B.GV k r) F →
-    (∀ v : List (B.Mat k r), (∀ X ∈ v, B.unitLie k r X) → v.length ≤ m →
-      ∀ g ∈ B.GV k r, B.gN g ^ A * ‖B.Rw v F g‖ ≤ c) →
-    B.InCC (A - 2 * m) m F
-
 def Uperp (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (γ : B.Mat k r) : Submodule ℂ (Fin (2 * r + k + 1) → ℂ) :=
   LinearMap.ker (Matrix.mulVecLin ((Matrix.of fun i j => star (gramVec k r z z' γ i j)) * Hpk k r))
 

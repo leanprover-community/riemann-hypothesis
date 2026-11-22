@@ -66,9 +66,6 @@ def pass (Ψ : Finset (E →+* ℂ)) (x₀ x₁ : (E →+* ℂ) → Matrix (Fin 
 
 theorem mat_rmul {Ψ : Finset (E →+* ℂ)} (x b : Frame Ψ r) (τ : Ψ) : mat (rmul x b) τ = mat x τ * mat b τ := rfl
 
-theorem mat_lact {Ψ : Finset (E →+* ℂ)} (γ : GL (Fin r) E) (x : Frame Ψ r) (τ : Ψ) :
-    mat (lact γ x) τ = (γ : Matrix (Fin r) (Fin r) E).map τ.1 * mat x τ := rfl
-
 theorem mat_pass {Ψ : Finset (E →+* ℂ)} (x₀ x₁ : (E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ) (τ : Ψ) :
     mat (pass Ψ x₀ x₁) τ = (x₀ τ.1)⁻¹ * x₁ τ.1 := rfl
 
@@ -193,7 +190,6 @@ theorem orth_of_arch {V : HSp D} {hr : V.rank = r} {X : Data D.host.E r} (hW : M
   · exact h₀ τ.1 τ.2
   · rw [gm_map hW]
     exact (unitary_iff _ _).2 (GlobalTheory.RecDictModel.archM_unitary V (hth τ) g)
-
 
 set_option maxHeartbeats 1000000 in
 theorem exists_dict_of_x0Orth : ∀ (D : D7) (T : CoreJ D) (x₀ : ℕ → (T.Q.c.F →+* ℂ) → (D.host.E →+* ℂ) → Matrix (Fin D.R.r) (Fin D.R.r) ℂ), VolTieG D → LawsJ T → LawsCore T.toCore → (∀ j, InR D j → ∀ σ, GoodEmb T.Q.c σ → ∀ k, IsOrthogonalFrame ((T.U j σ).X k) (x₀ j σ)) → ∃ dict, LawsJ (reCore T dict T.mu T.chiW x₀ T.cE) ∧ LawsCore (reCore T dict T.mu T.chiW x₀ T.cE).toCore := by

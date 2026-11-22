@@ -346,7 +346,6 @@ theorem constantCoeff_blockAct (U : ι → Matrix (Fin n) (Fin n) K) (g : Pol K 
     · intro i; simp [blockAct_X]
   exact congrArg (fun φ : Pol K ι n →+* K => φ g) this
 
-
 omit [StarRing K] in
 theorem pderiv_blockAct [DecidableEq ι] (V : ι → Matrix (Fin n) (Fin n) K) (s : ι) (a t : Fin n) (g : Pol K ι n) :
     pderiv (s, (a, t)) (Formalism.GradedWeylDivisibility.blockAct K V g) =
@@ -642,21 +641,6 @@ end Checks
 section RankOne
 
 variable {K : Type} [Field K] [NumberField K]
-
-theorem colLat_one_eq (B : GL (Fin 1) K) :
-    colLat B = Submodule.span (𝓞 K) {fun _ : Fin 1 => (B : Matrix (Fin 1) (Fin 1) K) 0 0} := by
-  unfold colLat
-  congr 1
-  ext x
-  simp only [Set.mem_range, Set.mem_singleton_iff]
-  constructor
-  · rintro ⟨j, rfl⟩
-    funext a
-    rw [Subsingleton.elim a 0, Subsingleton.elim j 0]
-  · rintro rfl
-    refine ⟨0, ?_⟩
-    funext a
-    rw [Subsingleton.elim a 0]
 
 end RankOne
 

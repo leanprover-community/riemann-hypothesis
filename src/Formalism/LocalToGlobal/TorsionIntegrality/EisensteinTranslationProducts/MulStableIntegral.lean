@@ -23,7 +23,6 @@ theorem isogenySigma : IsogenySigma :=
   isogenySigma_of ellipticNoPole sigmaOrder sgStarAdd sgStarQuasi sgStarBasic kerRepsCard sigmaEntire
 theorem translateProduct : TranslateProduct := translateProduct_of sgStarAdd
 theorem halfShift : HalfShift := halfShift_of sigmaAdd sigmaQuasi sigmaZero pInjective
-theorem cmThetaEq : CmThetaEq := cm_theta_eq
 theorem cmStable : CmStable := cm_stable
 theorem cmNorm : CmNorm := cm_norm
 

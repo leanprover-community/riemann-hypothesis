@@ -248,10 +248,6 @@ theorem omL_apply (w w' : (κ → R) × (κ → R)) : omL R κ w w' = w.1 ⬝ᵥ
 def emb (R : Type) [CommRing R] [Algebra F R] : ((κ → F) × (κ → F)) →ₗ[F] ((κ → R) × (κ → R)) :=
   ((Algebra.linearMap F R).compLeft κ).prodMap ((Algebra.linearMap F R).compLeft κ)
 
-omit [Fintype κ] in
-theorem emb_apply (w : (κ → F) × (κ → F)) :
-    emb R w = (fun i => algebraMap F R (w.1 i), fun i => algebraMap F R (w.2 i)) := rfl
-
 theorem omL_emb (u v : (κ → F) × (κ → F)) : omL R κ (emb R u) (emb R v) = algebraMap F R (omL F κ u v) := by
   simp [omL_apply, emb_apply, dotProduct]
 

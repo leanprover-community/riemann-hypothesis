@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsVolData
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitQuotientTopology.IsClosedRStab
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniqueLayeredStrictFundamentalDomainStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StrictFundamentalDomainMeasureEqStatement

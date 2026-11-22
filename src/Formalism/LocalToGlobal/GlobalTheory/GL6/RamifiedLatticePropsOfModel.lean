@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.EqOneOfCoprimeTorsionTwoPrimes
+public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.OneAddPowOfSq
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.RamifiedRankEqFinrank
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
 public import Formalism.HarderNarasimhan.ShiftInvariance

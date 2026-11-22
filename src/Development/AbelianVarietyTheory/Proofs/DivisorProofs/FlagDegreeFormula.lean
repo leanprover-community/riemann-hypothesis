@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.DegreeFormula.PointDegree.PowSum
 public import Formalism.DegreeFormula.PointDegree.PermExpInj
-public import Development.AbelianVarietyTheory.Definitions.Foundations.CurveCl
 public import Formalism.DegreeFormula.FlagDegFormula
 
 @[expose] public section

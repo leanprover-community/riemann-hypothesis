@@ -57,7 +57,6 @@ theorem fixingSubgroupHomeomorph_apply
     fixingSubgroupHomeomorph E σ x = (σ : Ω ≃ₐ[K] Ω) x :=
   rfl
 
-
 omit [IsGalois K Ω] in
 theorem maximalAbelianExtension_le_restrictScalars :
     maximalAbelianExtension K Ω ≤ (maximalAbelianExtension E Ω).restrictScalars K := by
@@ -89,7 +88,6 @@ instance isSepClosure_intermediateField (E : IntermediateField K Ω) : IsSepClos
   ⟨IsSepClosure.sep_closed K, Algebra.isSeparable_tower_top_of_isSeparable K E Ω⟩
 
 variable (E : IntermediateField K Ω) [FiniteDimensional K E]
-
 
 variable (K) in
 def unitsEquivFixingOpen :
@@ -156,7 +154,6 @@ theorem extendScalars_restrictScalars' (L : IntermediateField E Ω) :
   ext x
   rw [IntermediateField.mem_extendScalars, IntermediateField.mem_restrictScalars]
 
-
 variable (K) in
 def baseChangeArtinMap : Eˣ →* (maximalAbelianExtension E Ω ≃ₐ[E] maximalAbelianExtension E Ω) :=
   (topologicalAbelianizationEquiv E Ω).toMulEquiv.toMonoidHom.comp
@@ -164,7 +161,6 @@ def baseChangeArtinMap : Eˣ →* (maximalAbelianExtension E Ω ≃ₐ[E] maxima
       (fixingSubgroupHomeomorph E).continuous).comp
       (((localClassFieldData K Ω).reciprocityLimit (classFieldAxiom_units K Ω) (fixingOpenSubgroup E)).comp
         (unitsEquivFixingOpen K E).symm.toMonoidHom))
-
 
 omit [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω] [ValuativeExtension K Ω] in
 theorem baseChangeArtinMap_apply (x : Eˣ)
@@ -197,7 +193,6 @@ variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchi
 
 attribute [local instance] isDiscreteModule_units
 
-
 omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] [ValuativeRel Ω]
   [TopologicalSpace Ω] [IsValuativeTopology Ω] [ValuativeExtension K Ω] in
 variable {E} in
@@ -218,7 +213,6 @@ theorem isAbelianExtension_fixingOpenSubgroup_of_le {F : IntermediateField K Ω}
   simp only [r] at this
   rw [MonoidHom.comp_apply, AlgEquiv.restrictNormalHom_apply] at this
   exact this
-
 
 omit [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω] [ValuativeExtension K Ω] in
 variable {E} in
@@ -266,12 +260,6 @@ attribute [local instance] isDiscreteModule_units
 omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] [ValuativeRel Ω]
   [TopologicalSpace Ω] [IsValuativeTopology Ω] [ValuativeExtension K Ω] [IsSepClosure K Ω]
   [FiniteDimensional K E] in
-theorem abelianization_of_injective_of_comm {G : Type*} [Group G] [IsMulCommutative G] :
-    Function.Injective (Group.Abelianization.of : G →* Group.Abelianization G) := by
-  refine (injective_iff_map_eq_one _).2 fun σ hσ => ?_
-  rw [← MonoidHom.mem_ker, Group.Abelianization.ker_of, commutator,
-    Subgroup.commutator_eq_bot_iff_le_centralizer.2 (fun x _ y _ => mul_comm' y x)] at hσ
-  exact hσ
 
 theorem restrictAb_baseChangeArtinMap_uniformizer {ϖ : Eˣ} (hϖ : ord (ϖ : E) = 1) :
     restrictAb (maximalUnramifiedExtension E Ω) maximalUnramifiedExtension_le_maximalAbelianExtension

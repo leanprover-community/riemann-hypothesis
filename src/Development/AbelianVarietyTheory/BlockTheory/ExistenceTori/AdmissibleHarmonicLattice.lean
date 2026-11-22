@@ -54,27 +54,11 @@ def Lat.std (E : Type) [Field E] (n : ℕ) : Lat E n where
     rintro _ ⟨j, rfl⟩
     simpa using single_mem_stdMod j
 
-def Lat.inter (Λ : Lat E n) : Submodule (𝓞 E) (Fin n → E) := stdMod E n ⊓ Λ.L
-
 def Lat.SelfDual (Λ : Lat E n) : Prop :=
   ∀ x : Fin n → E, x ∈ Λ.L ↔ ∀ y ∈ Λ.L, ∃ a : 𝓞 E, (a : E) = stdForm x y
 
 def EqAtPrime (p : ℕ) (L₁ L₂ : Submodule (𝓞 E) (Fin n → E)) : Prop :=
   (∀ x ∈ L₁, ∃ k : ℕ, ¬ p ∣ k ∧ k • x ∈ L₂) ∧ ∀ x ∈ L₂, ∃ k : ℕ, ¬ p ∣ k ∧ k • x ∈ L₁
-
-def Lat.StdAt (Λ : Lat E n) (s : ℕ) : Prop :=
-  ∀ p : ℕ, p.Prime → p ∣ s → EqAtPrime p Λ.L (stdMod E n)
-
-def mulStd (E : Type) [Field E] (n N : ℕ) : Submodule (𝓞 E) (Fin n → E) := (N : 𝓞 E) • stdMod E n
-
-def Lat.Admissible (Λ : Lat E n) (M N : ℕ) : Prop :=
-  Odd N ∧ M ∣ N ∧ mulStd E n N ≤ Λ.inter
-
-def Lat.cardCenterZero (Λ : Lat E n) (r N : ℕ) : ℕ :=
-  (mulStd E n N).toAddSubgroup.relIndex Λ.inter.toAddSubgroup ^ r
-
-def halfPart {H : Host E} (l : Level H) (N : ℕ) : Ideal (𝓞 E) :=
-  ⨅ k : ℕ, Ideal.span {(N : 𝓞 E)} ⊔ l.Mb ^ k
 
 def IsUnitary (γ : (Fin n → E) ≃ₗ[E] (Fin n → E)) : Prop := ∀ x y, stdForm (γ x) (γ y) = stdForm x y
 
@@ -94,23 +78,6 @@ section Poly
 
 variable {H : Host E} (Dw : Datum H) {l : Level H} (c : Coeff l)
 
-def letter (σ : E →+* ℂ) (i : Fin (Dw.mult σ)) (b : Fin n → E) : MvPolynomial (LtN Dw n) c.F :=
-  ∑ j, C (embF c σ (b j)) * X ⟨σ, i, j⟩
-
-def symLat (Λ : Lat E n) : Subalgebra (integralClosure ℤ c.F) (MvPolynomial (LtN Dw n) c.F) :=
-  Algebra.adjoin (integralClosure ℤ c.F) {P | ∃ σ i, ∃ b ∈ Λ.L, P = letter Dw c σ i b}
-
-def harmSpace (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) : Set (MvPolynomial (LtN Dw n) c.F) :=
-  HHa Dw.mult n c.F ComplexEmbedding.conjugate (InPsi H) fun τ i => a (τ, i)
-
-def harmLat (a : (E →+* ℂ) × ℕ → ℕ) (Λ : Lat E n) : Set (MvPolynomial (LtN Dw n) c.F) :=
-  {P | P ∈ harmSpace Dw c a n ∧ P ∈ symLat Dw c Λ}
-
-def push (γ : (Fin n → E) ≃ₗ[E] (Fin n → E)) :
-    MvPolynomial (LtN Dw n) c.F →ₐ[c.F] MvPolynomial (LtN Dw n) c.F :=
-  aeval fun ℓ => letter Dw c ℓ.1 ℓ.2.1 (γ (Pi.single ℓ.2.2 1))
-
 end Poly
-
 
 end GlobalTheory.IndefiniteRowSideFullHecke.AdmissibleHarmonicLattice

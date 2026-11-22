@@ -21,8 +21,6 @@ open Formalism.UG GlobalTheory.AutFunCounterexample
 
 variable {D : D7} {A B : HSp D}
 
-local notation "σ" => (D.sp.cm.sig : D.host.E →+* D.host.E)
-
 abbrev emb (d : HermitianOrthogonalExtensionData A B 1 1) : Matrix (Fin B.rank) (Fin A.rank) D.host.E := frameMat B A d.ι
 
 def prj (d : HermitianOrthogonalExtensionData A B 1 1) : Matrix (Fin A.rank) (Fin B.rank) D.host.E := A.gram⁻¹ * (cT σ (emb d) * B.gram)
@@ -139,9 +137,6 @@ end Ext
 section Lat
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
-local notation "hat" => Formalism.L2.Herm.hatL (F := F)
-local notation "ιf" => inclE (F := F) (E := E) (Formalism.L2.Herm.Af F)
 
 theorem hat_mulVec {p q : ℕ} (N : Matrix (Fin p) (Fin q) E) {Λ : Submodule (𝓞 E) (Fin q → E)}
     {Λ' : Submodule (𝓞 E) (Fin p → E)} (h : ∀ y ∈ Λ, N *ᵥ y ∈ Λ') {v} (hv : v ∈ hat Λ) :
@@ -315,7 +310,6 @@ theorem rhoF_incA (x : D.host.E) : rhoF D (incA D x) = inclE (F := D.host.F) (Fo
 theorem map_incA_rhoF {p q : ℕ} (X : Matrix (Fin p) (Fin q) D.host.E) :
     (X.map (incA D)).map (rhoF D) = X.map (inclE (F := D.host.F) (Formalism.L2.Herm.Af D.host.F)) :=
   Matrix.ext fun i j => rhoF_incA (X i j)
-
 
 set_option maxHeartbeats 2000000 in
 theorem top_abs (d : HermitianOrthogonalExtensionData A B 1 1) (S : Finset ℕ) (Λ : Submodule (𝓞 D.host.E) (Fin A.rank → D.host.E))

@@ -21,8 +21,6 @@ theorem gaussIdeal_isPrime : (gaussIdeal σ O).IsPrime := by
 
 variable [(gaussIdeal σ O).IsPrime]
 
-local notation "A" => Localization.AtPrime (gaussIdeal σ O)
-
 theorem maximalIdeal_eq :
     IsLocalRing.maximalIdeal A = Ideal.map (algebraMap O A) (IsLocalRing.maximalIdeal O) := by
   rw [← Localization.AtPrime.map_eq_maximalIdeal, IsScalarTower.algebraMap_eq O (MvPolynomial σ O) A,

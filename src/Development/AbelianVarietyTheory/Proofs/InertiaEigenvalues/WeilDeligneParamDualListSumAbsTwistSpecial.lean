@@ -42,7 +42,6 @@ theorem iso_tensor_dual (a : WDRep h V) (b : WDRep h V') :
       ring
     | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
-
 omit [IsAlgClosure E Ω] in
 theorem qPow_neg' (s : ℝ) : qPow w (-s) = (qPow w s)⁻¹ :=
   eq_inv_of_mul_eq_one_left (by rw [← qPow_add, neg_add_cancel, qPow_zero])
@@ -148,22 +147,6 @@ theorem lpDual_lpTw (y : WD h) (s : ℝ) : (y.lpTw s).lpDual = y.lpDual.lpTw (-s
     rw [WD.lpTw_mk, WD.lpDual_mk, WD.lpDual_mk, WD.lpTw_mk]
     exact WD.sound (iso_tw_dual a s)
 
-theorem lpDual_lpChar_lpSp (y : WD h) (n : ℕ) :
-    (y.lpChar (WD.lpSp (h := h) n)).lpDual = y.lpDual.lpChar (WD.lpSp (h := h) n) := by
-  induction y using WD.ind with
-  | hP m a =>
-    rw [WD.lpSp, WD.lpChar_mk, WD.lpDual_mk, WD.lpDual_mk, WD.lpChar_mk]
-    exact WD.sound ((iso_tensor_dual a (WDRep.sp h n)).symm.trans
-      ((WDRep.Iso.refl a.dual).tensor (iso_sp_dual n)))
-
 end WDClass
-
-theorem lpDual_sum_tw_sp : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
-    [IsAlgClosure E Ω] (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w),
-    (∀ l : List (WD h), (sumList l).lpDual = sumList (l.map WD.lpDual)) ∧
-    (∀ (y : WD h) (s : ℝ), (y.lpTw s).lpDual = y.lpDual.lpTw (-s)) ∧
-    ∀ (y : WD h) (n : ℕ), (y.lpChar (WD.lpSp (h := h) n)).lpDual = y.lpDual.lpChar (WD.lpSp (h := h) n) :=
-  fun _ _ _ _ _ _ _ _ _ _ =>
-    ⟨WDClass.lpDual_sumList, WDClass.lpDual_lpTw, WDClass.lpDual_lpChar_lpSp⟩
 
 end GlobalTheory.WDDual

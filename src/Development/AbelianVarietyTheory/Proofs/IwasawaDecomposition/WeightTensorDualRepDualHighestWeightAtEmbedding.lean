@@ -213,8 +213,6 @@ variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {ι : Type
 
 abbrev cL (L : Type) [Field L] [NumberField L] [IsCMField L] : L →+* L := (IsCMField.complexConj L : L →+* L)
 
-theorem cL_cL (x : L) : cL L (cL L x) = x := IsCMField.complexConj_apply_apply L x
-
 def detP (σ : L →+* K) : MvPolynomial ((L →+* K) × Fin n × Fin n) K :=
   (Matrix.of fun a b => (X (σ, a, b) : MvPolynomial ((L →+* K) × Fin n × Fin n) K)).det
 

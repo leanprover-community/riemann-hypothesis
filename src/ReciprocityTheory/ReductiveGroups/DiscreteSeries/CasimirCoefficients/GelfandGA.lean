@@ -25,8 +25,6 @@ variable {n : ℕ}
 
 namespace GelfandGA
 
-local notation "𝕄" => Fin n → Fin n → ℂ
-
 def conjK (ε : Fin n → Bool) (k : KG ε) : 𝕄 →L[ℂ] 𝕄 := Ps1.conjCLM (toMK k⁻¹) (toMK k)
 
 lemma continuous_conjK (ε : Fin n → Bool) : Continuous (conjK ε) := by

@@ -4,7 +4,6 @@ public import Mathlib
 public import Formalism.LocalToGlobal.ProjectiveLattices.SpMapAlgHomId
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 public import Formalism.LocalToGlobal.ProjectiveLattices.UnitIndepOfCharts
-public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.SectionBaseChange
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CoefChangeTypingsEquivOfValueWD
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ChartCoverFOfSectionBaseChange
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReducedFromTestRing

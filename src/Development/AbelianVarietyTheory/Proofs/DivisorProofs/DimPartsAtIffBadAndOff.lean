@@ -103,10 +103,6 @@ theorem cover (k : Fin 2) (w : Pl D.host.E) (hw : ((D.host.g k : ℕ) : 𝓞 D.h
   · exact ⟨v, Or.inl (congrArg Subtype.val hx).symm⟩
   · exact ⟨v, Or.inr (congrArg Subtype.val hx).symm⟩
 
-def PlaceTie (D : D7) : Prop :=
-  ∃ pb : Fin 2 → 𝓞 D.host.E, ∀ k, (pb k : D.host.E) ∈ D.host.K ∧
-    (pb k : D.host.E) * star (pb k : D.host.E) = (D.host.g k : D.host.E) ∧ ∀ v, pb k ∈ (D.naut.plGw k v).asIdeal
-
 def OnePrime (D : D7) : Prop :=
   ∀ k v v', (D.naut.plGw k v).under (𝓞 D.host.K) = (D.naut.plGw k v').under (𝓞 D.host.K)
 
@@ -163,7 +159,6 @@ section Match
 
 variable {Pg : Finset (Pl D.host.E)} (h : LinearCoefficientData.IsRecPlaces D Pg)
 
-
 end Match
 
 def pull (x : LevelCuspCharacters.LevelGroup D.host) : G0g D.nd := fun kv => x ⟨kv.1, below kv.1 kv.2⟩
@@ -192,26 +187,9 @@ section Level
 
 variable {Pg : Finset (Pl D.host.E)}
 
-def FirstAtBad (h : LinearCoefficientData.IsRecPlaces D Pg) (P : LevelP Pg D.R.r ℂ) : Prop :=
-  ∀ (θ : LinearCoefficientData.InfFam D), IsInfFam θ →
-  ∀ (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m)
-    (M₀ : DSModel (D.sp.Y 0) (parB (tparRec D) 0))
-    (M₁ : DSModel (D.sp.W j) (parW (D.sp.W j) (Formalism.L2.NTheta.wtOf D (D.sp.W j))))
-    (β₀ : GL (Fin (D.sp.Y 0).rank) (Lev.EAf D)) (β₁ : GL (Fin (D.sp.W j).rank) (Lev.EAf D)),
-    BadPlacesGoodCoefficients.IsFrameAtG (D.sp.Y 0) β₀ → BadPlacesGoodCoefficients.IsFrameAtG (D.sp.W j) β₁ →
-  ∀ c : LinearCoefficientData.Eig D,
-    FiniteDimensional ℂ (LinearCoefficientData.EEc θ M₀ h β₀ P (BadPlacesGoodCoefficients.badPlaces D) c) ∧
-      FiniteDimensional ℂ (LinearCoefficientData.Wc θ j h1 h2 M₁ h β₁ P (BadPlacesGoodCoefficients.badPlaces D) c) ∧
-      Module.finrank ℂ (LinearCoefficientData.Wc θ j h1 h2 M₁ h β₁ P (BadPlacesGoodCoefficients.badPlaces D) c) =
-        Module.finrank ℂ (LinearCoefficientData.EEc θ M₀ h β₀ P (BadPlacesGoodCoefficients.badPlaces D) c)
-
 variable (h : LinearCoefficientData.IsRecPlaces D Pg) (P : LevelP Pg D.R.r ℂ)
 
 end Level
-
-def FirstRec (D : D7) : Prop :=
-  ∀ (Pg : Finset (Pl D.host.E)) (h : LinearCoefficientData.IsRecPlaces D Pg) (ψ : ∀ PP : Pl D.host.E, AddChar (kP PP) ℂ),
-    IsGenericPsi Pg ψ → FirstAtBad h (P0 Pg D.R.r ψ)
 
 section Above
 
@@ -373,11 +351,6 @@ theorem tameTie_of_typesTrue {P : Formalism.L2.Host.PiBar D.host} {W : Formalism
   ⟨W.gen, fun k => ⟨_, (h.teich k).symm, h.ser k, fun v j =>
     ⟨_, Or.inl rfl, fun a => GlobalTheory.Mem.TypePl.thetaOf_of_isCharLab _ (h.isCharLab k v j) a⟩⟩,
     fun k v v' => (h.pl k v).trans (h.pl k v').symm⟩
-
-def Tied (D : D7) : Prop :=
-  (∃ L : SizeData₂ D, Nonempty (ParameterChoice' D L)) ∧ ∃ om, LevelCuspCharacters.IsGeneratorFamily (H := D.host) om ∧ TameTie D om
-
-def Core : Prop := ∀ D : D7, Tied D → FirstRec D
 
 end GlobalTheory.DimPartsCompare
 

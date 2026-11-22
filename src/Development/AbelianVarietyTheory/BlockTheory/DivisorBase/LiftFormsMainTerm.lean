@@ -20,46 +20,8 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-
-
-def absPow (half : Bool) (P : Pl D.host.E) (k : D.host.E) : ℂ :=
-  cond half ((Real.sqrt (NumberField.FinitePlace.mk P k) : ℝ) : ℂ) 1
-
-def conjRes (s : ℂ →+* ℂ) (χ : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ :=
-  fun PP => (Units.map s.toMonoidHom).comp (χ PP)
-
-
-
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
-
-
-
-set_option genInjectivity false in
-set_option genSizeOfSpec false in
-structure LiftInput (R : RealDat D A Ks) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) where
-
-  mu : (AE D)ˣ →* Circle
-
-  eta : (AE D)ˣ →* Circle
-
-  om : GA D (Vc D i) × GA D (Wc D i) →* Module.End ℂ (WO (Vc D i) (Wc D i) → ℂ)
-
-  BV : D.what₂.Tau → Matrix (Fin (Vc D i).rank) (Fin (Vc D i).rank) ℂ
-
-  BW : D.what₂.Tau → Matrix (Fin (Wc D i).rank) (Fin (Wc D i).rank) ℂ
-
-  vac : WO (Vc D i) (Wc D i) → ℂ
-
-  vec : WO (Vc D i) (Wc D i) → ℂ
-
-  coef : CoefA (Vc D i)
-
-  io : LowT (R.MW i σ) →ₗ[ℂ] coef.W →ₗ[ℂ] PolF D (Wc D i).rank (Vc D i).rank
-
-  ν : Measure (GA D (Vc D i))
-
-  fd : Set (GA D (Vc D i))
 
 namespace LiftInput
 

@@ -182,9 +182,6 @@ end Concrete
 section Loc
 variable {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K))
 
-local notation "LL" => nlFun (dividedPowersBot K) 0 X q (Ideal.Quotient.mk ⊥)
-local notation "TFs" => (TF 1 : ℕ → ObjectProperty (Thick LL))
-
 theorem loc_vanish (hG : KH.LocGr) (hP : KH.PolyTf) {V : X.Opens} {d : ℕ} (c : Coord q V d) (r s' : ℕ) (hd : d < r)
     (hs : r + 1 ≤ s') (j : ℕ) : Subsingleton (CH.H (gr (sFil (St (TFs s') {V})) (r : ℤ)) j) := by
   have hb : TFBase (dividedPowersBot K) 1 s' := tfBase (by omega)

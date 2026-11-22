@@ -193,7 +193,6 @@ def qlen (la : HeightOneSpectrum (𝓞 B.KO)) (A A' : Submodule (X.Ol la) (X.Vl 
 def bad (_X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO)) : Prop :=
   (((2 * (NumberField.discr D.host.E).natAbs * D.host.g 0 * D.host.g 1 : ℕ) : 𝓞 B.KO) ∈ la.asIdeal)
 
-
 open Classical in
 def eLa (T : ℕ) (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ) (la : HeightOneSpectrum (𝓞 B.KO)) : ℤ :=
   ⌈(T : ℝ) * (nus la + if X.bad la then 1 else 0)⌉
@@ -353,13 +352,6 @@ def ScalB (large₂ : SizeData₂ D) (X : PJ D B P j) (_C1 _A1 : ℝ) (S : Scal 
       Real.log ‖σ (S.sK : B.KO)‖ ≤ 2 * (lamStar D + 2 * Real.log po) * ka.size) ∧
     ∃ PLam : ℝ, PLam ≤ 1009 * Zb D large₂ ∧ S4 X S ka wL wF (Gc large₂ B PLam po)
 
-def H1 (large₂ : SizeData₂ D) (X : PJ D B P j) (H : KHyp) (S : Scal B) (wL : WeightFamilies.Wt D j)
-    (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ) : Prop :=
-  (∀ la, 0 ≤ nus la) ∧ (Function.support nus).Finite ∧
-  (∑ᶠ la, |nus la| * X.lN la) ≤ PN D large₂ * wL.size ∧
-  ∀ la (y : X.Pt la), X.depth S.sW wL la y ≤
-    ((nus la + cc D large₂ H.Cc H.Ac H.CRc wL * X.phiC la y : ℝ) : EReal)
-
 def H2 (X : PJ D B P j) (S : Scal B) (ka wL wF : WeightFamilies.Wt D j) : Prop :=
   X.WWc S.sW wL ≤ B.Mlat j wL ∧ X.Thc S.sF wF ≤ B.Mlat j wF ∧
   X.Thc S.s0 (X.wF0 wL wF) ≤ B.Mlat j (X.wF0 wL wF) ∧ X.Thc S.sK ka ≤ B.Mlat j ka
@@ -396,61 +388,7 @@ def Concl (X : PJ D B P j) (S : Scal B) (ka wL wF : WeightFamilies.Wt D j) (T : 
           (X.loc la (X.Theta S ka wL wF T) ⊓ X.ofK la V')).toNat : ℝ) ≤
         (e : ℝ) * (Module.finrank (X.Kl la) V' : ℝ) + r la
 
-def Hyp (large₂ : SizeData₂ D) (X : PJ D B P j) (H : KHyp) (C2 A2 CR Bx CT : ℝ) (S : Scal B)
-    (ka wL wF : WeightFamilies.Wt D j) (T nP nW : ℕ) (h0 : ℝ) (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ) : Prop :=
-  ParA large₂ H.CA ∧ SetC large₂ X H.CK H.C1 H.A1 ka wL wF T nP nW h0 ∧ ScalB large₂ X H.C1 H.A1 S ka wL wF T ∧
-    H1 large₂ X H S wL nus ∧ H2 X S ka wL wF ∧ H3 large₂ H C2 A2 CR Bx wL T ∧
-    H4 large₂ X H C2 A2 CR ka wL wF T nW ∧ (T : ℝ) ≤ large₂.sc.x ^ CT
-
 end J
-
-def Conclusion1 (large₂ : SizeData₂ D) (X : Prov D B P) (H : KHyp) (C2 A2 CR CT : ℝ) : Prop :=
-  ∀ j (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (S : Scal B) (ka wL wF : WeightFamilies.Wt D j) (T nP nW : ℕ) (h0 : ℝ)
-    (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ),
-    Hyp large₂ (X j h1 h2) H C2 A2 CR 0 CT S ka wL wF T nP nW h0 nus →
-    Concl (X j h1 h2) S ka wL wF T nus
-      ((X j h1 h2).rk ka (B.Mlat j ka) * D.R.f * D.R.m * large₂.sc.b * large₂.de2)
-
-def adm1 (B : WeightFamilies.Prov D) : Prop := WeightFamilies.adm1 B
-
-def adm2 (large₂ : SizeData₂ D) (X : Prov D B P) (CA _C1 _A1 CG AG : ℝ) : Prop :=
-  (ParA large₂ CA → OPO large₂ B → ∀ j (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (w : WeightFamilies.Wt D j), 8 * D.R.f * D.R.r + 4 ≤ w.n →
-    Submodule.span B.KO ((X j h1 h2).shortTh w : Set (B.Cusp j w)) = ⊤ ∧
-    ∃ S : Finset (B.Cusp j w),
-      Submodule.span (𝓞 B.KO) (S : Set (B.Cusp j w)) = (X j h1 h2).shortTh w ∧
-      ∀ g ∈ S, ∀ σ, Real.log (B.supN j w σ g) ≤
-        WeightFamilies.PPv D large₂ CG AG * (1 + Real.log (absA w + w.n)) * (absA w + w.n)) ∧
-  WeightFamilies.adm2 large₂ B CG AG
-
-def adm3 (large₂ : SizeData₂ D) (X : Prov D B P) (CA Cf Af : ℝ) : Prop :=
-  ParA large₂ CA → ∀ j (h1 : 1 ≤ j) (h2 : j < D.R.m), ∃ i : ℕ, 0 < i ∧
-    ∃ et : B.Cusp j (wscalar D j (g0 D * i) (by unfold g0; exact ⟨5 ^ 4 * D.R.r * i, by ring⟩)),
-    et ≠ 0 ∧ (X j h1 h2.le).NonZeroComp _ et ∧
-    (∀ la (y : (X j h1 h2.le).Pt la), ((2 * i * (X j h1 h2.le).phiC la y : ℝ) : EReal) ≤
-      (X j h1 h2.le).vAt la y ((X j h1 h2.le).inc _ et)) ∧
-    ∀ σ, Real.log (B.supN j _ σ et) / i ≤ WeightFamilies.PPv D large₂ Cf Af
-
-def ArchimedeanSignatureMatching (large₂ : SizeData₂ D) (X : Prov D B P) (CA _C1 _A1 CW AW : ℝ) : Prop :=
-  ParA large₂ CA → OPO large₂ B → ∀ j (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (w : WeightFamilies.Wt D j), 8 * D.R.f * D.R.r + 4 ≤ w.n →
-    w.LastPos →
-    (∃ S : Finset (B.Cusp j w),
-      Submodule.span (𝓞 B.KO) (S : Set (B.Cusp j w)) = (X j h1 h2).thAll w ∧
-      Real.log (S.card : ℝ) ≤ WeightFamilies.PPv D large₂ CW AW * w.n * (1 + Real.log (absA w + w.n)) ∧
-      ∀ g ∈ S, ∀ σ, Real.log (B.supN j w σ g) ≤
-        WeightFamilies.PPv D large₂ CW AW * (1 + Real.log (absA w + w.n)) * (absA w + w.n)) ∧
-    Real.log ((X j h1 h2).rk w ((X j h1 h2).thAll w)) ≤
-      WeightFamilies.PPv D large₂ CW AW * w.n * (1 + Real.log (absA w + w.n))
-
-def adm5 (large₂ : SizeData₂ D) (B : WeightFamilies.Prov D) (CL AL : ℝ) : Prop := WeightFamilies.Conclusion1 large₂ B CL AL
-
-def adm6 (B : WeightFamilies.Prov D) (CRm : ℝ) : Prop := WeightFamilies.Conclusion2 B CRm
-
-def adm7 (large₂ : SizeData₂ D) (B : WeightFamilies.Prov D) (CRm Ck Ch Ah Cq Aq : ℝ) : Prop :=
-  WeightFamilies.PointsLemma large₂ B CRm Ck Ch Ah Cq Aq
-
-def admitted (large₂ : SizeData₂ D) (X : Prov D B P) (K : KAdm) (H : KHyp) (Ch Ah Cq Aq : ℝ) : Prop :=
-  adm1 B ∧ adm2 large₂ X H.CA H.C1 H.A1 K.CG K.AG ∧ adm3 large₂ X H.CA K.Cf K.Af ∧ ArchimedeanSignatureMatching large₂ X H.CA H.C1 H.A1 K.CW K.AW ∧
-    adm5 large₂ B K.CL K.AL ∧ adm6 B K.CRm ∧ adm7 large₂ B K.CRm H.CK Ch Ah Cq Aq
 
 section Family
 

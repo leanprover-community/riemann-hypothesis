@@ -37,11 +37,6 @@ variable {K L : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [Fact p.Prime] [IsPerfectoidField K p] [IsPerfectoidField L p]
 variable (φ : K →+* L) (hφ : ∀ x, ‖φ x‖ = ‖x‖)
 
-local notation "𝒪K♭" => PreTilt (normInteger K) p
-local notation "𝒪L♭" => PreTilt (normInteger L) p
-local notation "K♭" => FractionRing (PreTilt (normInteger K) p)
-local notation "L♭" => FractionRing (PreTilt (normInteger L) p)
-
 def modPMap : ModP (normInteger K) p →+* ModP (normInteger L) p :=
   Ideal.quotientMap _ (integerMap φ hφ) (Ideal.span_le.2 (Set.singleton_subset_iff.2 (by
     rw [SetLike.mem_coe, Ideal.mem_comap, map_natCast]
@@ -52,7 +47,6 @@ theorem modPMap_mk (a : normInteger K) :
     modPMap φ hφ (Ideal.Quotient.mk (Ideal.span {(p : normInteger K)}) a) =
       Ideal.Quotient.mk (Ideal.span {(p : normInteger L)}) (integerMap φ hφ a) :=
   Ideal.quotientMap_mk
-
 
 variable (p) in
 def preTiltMap : 𝒪K♭ →+* 𝒪L♭ :=
@@ -88,18 +82,6 @@ theorem coe_untilt_preTiltMap (x : 𝒪K♭) :
     ((PreTilt.untilt (preTiltMap (p := p) φ hφ x) : normInteger L) : L) =
       φ ((PreTilt.untilt x : normInteger K) : K) := by
   rw [untilt_preTiltMap, coe_integerMap]
-
-theorem preTiltMap_injective : Function.Injective (preTiltMap (p := p) φ hφ) := by
-  refine (injective_iff_map_eq_zero _).2 fun x hx => ?_
-  have h1 := coe_untilt_preTiltMap φ hφ x
-  rw [hx, IsPerfectoidField.untilt_zero, ZeroMemClass.coe_zero, eq_comm,
-    map_eq_zero_iff φ φ.injective] at h1
-  exact (IsPerfectoidField.untilt_eq_zero_iff p).1 (Subtype.ext h1)
-
-
-variable (p) in
-def tiltMap : K♭ →+* L♭ :=
-  IsFractionRing.map (preTiltMap_injective (p := p) φ hφ)
 
 theorem ringHom_ext_wittVector_preTilt {f g : WittVector p 𝒪K♭ →+* normInteger L}
     (h : ∀ a, f (WittVector.teichmuller p a) = g (WittVector.teichmuller p a)) : f = g := by

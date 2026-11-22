@@ -115,23 +115,5 @@ structure ThetaFam (n : ℕ) {N' : ℕ} {b : TBase o (N' ^ 2)} (em : o →+* ℂ
   unram : ∀ (K : Type) [Field K] (x : Sp (DualNumber K) ⟶ MM) (t : TObj g (N' ^ 2) J b (x ≫ s)),
     x ≫ s = constPt x ≫ s → TMap t univ x → TMap t univ (constPt x) → x = constPt x
 
-def TObj.zero (k : ℕ) (J : Type) (b : TBase o k) (s : S ⟶ Sp o) : TObj 0 k J b s where
-  A := (Out.Inh.zeroPolAV S).A
-  grp := (Out.Inh.zeroPolAV S).grp
-  ab := (Out.Inh.zeroPolAV S).isAb
-  dim := (Out.Inh.zeroPolAV S).smoothDim
-  L := (Out.Inh.zeroPolAV S).L
-  isLB := (Out.Inh.zeroPolAV S).isLB
-  rigid := (Out.Inh.zeroPolAV S).rigid
-  sym := (Out.Inh.zeroPolAV S).sym
-  ample := (Out.Inh.zeroPolAV S).ample
-  ktriv := (Out.Inh.zeroPolAV S).ktriv
-  pt := fun i => Fin.elim0 i
-  torsion := fun i => Fin.elim0 i
-  bij := fun _ _ _ _ _ _ => ⟨fun i => Fin.elim0 i, toUnit_unique _ _, fun _ _ => funext fun i => Fin.elim0 i⟩
-  pairing := fun i => Fin.elim0 i
-  act := fun _ => 𝟙 _
-  hom := fun _ => inferInstance
-
 end GlobalTheory.ZM
 end

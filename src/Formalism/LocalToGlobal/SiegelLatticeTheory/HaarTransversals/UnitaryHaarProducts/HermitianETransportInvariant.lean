@@ -716,12 +716,6 @@ theorem psi_Iad (hP : PsiDd X) (w : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F)
     rw [Subring.smul_def, smul_eq_mul, ← mul_assoc]
     exact hw _ (mul_mem ht c.2)
 
-theorem Iad_mono {J J' : Submodule (𝓞 D.host.E) D.host.E} (h : J ≤ J') : Iad X J ≤ Iad X J' := by
-  unfold Iad
-  apply Submodule.span_mono
-  rintro w ⟨y, hy, rfl⟩
-  exact ⟨y, h hy, rfl⟩
-
 theorem Iad_mul (Q J : Submodule (𝓞 D.host.E) D.host.E) (s : D.host.E) (hs : s ∈ Q)
     (w : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) (hw : w ∈ Iad X J) :
     Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) (X.ιE.symm s) * w ∈ Iad X (Q * J) := by
@@ -1020,13 +1014,6 @@ theorem incl_mulVec (G : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E) (y : Fin X.
 
 theorem nxt_rv (v : InfinitePlace X.B.I.F) (a : Fin D.R.rS) :
     nxt (fun b => rv X.B.I v (X.eR b)) (rv X.B.I v (X.zR u)) a = rv X.B.I v (nxt X.eR (X.zR u) a) := by
-  first
-  | (unfold nxt; split_ifs <;> rfl)
-  | (unfold nxt; split <;> rfl)
-  | rfl
-
-theorem nxt_incl (a : Fin D.R.rS) :
-    incl X.B.I (nxt X.eR (X.zR u) a) = nxt (fun b => incl X.B.I (X.eR b)) (incl X.B.I (X.zR u)) a := by
   first
   | (unfold nxt; split_ifs <;> rfl)
   | (unfold nxt; split <;> rfl)

@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import GroundTheory.AutomorphicForms.HermitianValues
+public import GroundTheory.AutomorphicForms.HermitianLocalForms
 public import GroundTheory.AutomorphicForms.HermitianClassification
 
 @[expose] public section

@@ -64,8 +64,6 @@ section GSPoitouTate
 
 attribute [local instance 2000] Rep.hV2
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1))) [Fintype S]
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
   {N : ℕ} [NeZero N] (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((N : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
@@ -78,12 +76,10 @@ variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1))) [Fintype 
   (M : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 ℚ̄ S)) [IsDiscreteRep M] [Finite M]
   (hM : ∀ m : M, N • m = 0)
 
-
 omit [Fintype S] [NeZero N] in
 instance isDiscreteRep_res_gsFinFamily_dualRep (v : S) :
     IsDiscreteRep (Rep.res (gsFinFamily S ιs v).toMonoidHom (dualRep (gsRoots S N) M)) :=
   isDiscreteRep_res_dualRep_of_finite (gsRoots S N) M (gsFinFamily S ιs v)
-
 
 omit [Fintype S] in
 include hS hM in
@@ -100,7 +96,6 @@ theorem natCard_gs_local_cohomology_two (v : S) :
       (dualRep (gsRoots S N) M))).toLinearEquiv.toEquiv.symm
   rw [Nat.card_congr (Equiv.ofBijective _ (bijective_gsLocalPairing S ιs N hD M hM v (show 2 + 0 = 2 from rfl))),
     QZ.card_hom]
-
 
 include H hM in
 theorem natCard_gs_cohomology_two_mul :

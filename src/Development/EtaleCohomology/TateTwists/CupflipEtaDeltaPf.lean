@@ -113,9 +113,6 @@ theorem d_Fm {I J K : Cx R} (μ : Pair I J K) {E : Spc} {n m : ℤ} (α : Cocycl
 theorem secmap_add' {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} (a b : Sec F U) :
     Sec.map φ (a + b) = Sec.map φ a + Sec.map φ b := map_add ((φ.hom.app (op U)).hom) a b
 
-theorem secmap_zero' {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} : Sec.map φ (0 : Sec F U) = 0 :=
-  map_zero ((φ.hom.app (op U)).hom)
-
 section
 variable {I J K : Cx R} (μ : Pair I J K) {E : Spc} {n m k : ℤ} (hk : n + m = k)
   (α : Cocycle ((chains R).obj E) I n) (β : Cocycle ((chains R).obj E) J m)
@@ -192,7 +189,6 @@ theorem phi_sub {N : ℕ} {U : Scheme.{0}} (x : Sx E N U) (w : ℤ) (c d : Pr N 
 end
 
 end LateralTheory.EtaleFoundations.EtaDelta
-
 
 open LateralTheory.KummerTheory.AW LateralTheory.EtaleFoundations.EtaDelta in
 theorem LateralTheory.EtaleFoundations.cupflip_eta_delta_of : LateralTheory.EtaleFoundations.cupflip_eta_delta := by

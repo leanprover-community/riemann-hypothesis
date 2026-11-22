@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsRationalDblCoord
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardTraceAddCharIsStandardCharOfAdmissibleCM
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnitDetGramOfHermitianSelfDualLatticeSpace
 public import Development.AbelianVarietyTheory.Definitions.Foundations.AnalyticOnNhdTsumNpow
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
 

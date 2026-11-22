@@ -159,7 +159,6 @@ section Tower
 
 variable {Ψ : Type} [Fintype Ψ]
 
-
 open Classical in
 theorem det_gram_tower (R : RiemLat E g Λ) {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) {I : Submodule (𝓞 E) Λ}
     (hI : IsIsoSub R.form I) {ρ : ℕ} {v : Fin ρ → Λ} (hv : ∀ a, v a ∈ I) (hli : LinearIndependent (𝓞 E) v) :
@@ -181,7 +180,6 @@ theorem det_gram_tower (R : RiemLat E g Λ) {σ : Ψ → (𝓞 E →+* ℂ)} (h�
   push_cast at key ⊢
   linear_combination
     (∏ τ, ((R.gram fun a => eigComp R.B (σ τ) (R.P (v a))).det.re : ℂ) ^ 2) * key
-
 
 omit [IsCMField E] in
 theorem card_basis_eq (htf : ∀ (n : ℕ) (x : Λ), n ≠ 0 → n • x = 0 → x = 0) {I : Submodule (𝓞 E) Λ} {ρ : ℕ}
@@ -214,7 +212,6 @@ theorem card_basis_eq (htf : ∀ (n : ℕ) (x : Λ), n ≠ 0 → n • x = 0 →
   have l1 := LinearMap.finrank_le_finrank_of_injective h1
   have l2 := LinearMap.finrank_le_finrank_of_injective h2
   omega
-
 
 omit [IsCMField E] in
 open Classical in
@@ -277,8 +274,6 @@ end Tower
 def reForm (R : RiemLat E g Λ) : Λ →+ Λ →+ ℝ :=
   AddMonoidHom.mk' (fun x => AddMonoidHom.mk' (fun y => (R.ip (R.P x) (R.P y)).re)
     (fun a b => by simp [map_add (f := _), ip_add_right])) (fun a b => by ext y; simp [map_add (f := _), ip_add_left])
-
-theorem reForm_apply (R : RiemLat E g Λ) (x y : Λ) : reForm R x y = (R.ip (R.P x) (R.P y)).re := rfl
 
 theorem rd_sq {f : ℕ} (hn : Module.finrank ℚ E = 2 * f) (ρ : ℕ) :
     ((|(discr E : ℝ)| ^ (1 / (Module.finrank ℚ E : ℝ))) ^ (f * ρ)) ^ 2 = |(discr E : ℝ)| ^ ρ := by

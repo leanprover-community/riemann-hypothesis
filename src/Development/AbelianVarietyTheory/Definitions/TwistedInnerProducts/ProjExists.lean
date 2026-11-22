@@ -47,10 +47,6 @@ variable {H H' : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [NormedA
 def IsHMap (e : Option (Fin n) ≃ Fin (n + 1)) (ε' : Fin n → Bool) (π : Mat (n + 1) → (H →L[ℂ] H)) (σ : Mat n → (H' →L[ℂ] H'))
     (j : H' →L[ℂ] H) : Prop := ∀ h ∈ UJset ε', ∀ w, j (σ h w) = π (embH e h) (j w)
 
-def IsProj (e : Option (Fin n) ≃ Fin (n + 1)) (ε' : Fin n → Bool) (π : Mat (n + 1) → (H →L[ℂ] H)) (σ : Mat n → (H' →L[ℂ] H'))
-    (j : H' →L[ℂ] H) (P : H →L[ℂ] H') : Prop :=
-  IsHMap e ε' π σ j ∧ (∀ w, ‖j w‖ = ‖w‖) ∧ (∀ v w, ⟪j w, v⟫_ℂ = ⟪w, P v⟫_ℂ) ∧ ∀ j', IsHMap e ε' π σ j' → ∃ c : ℂ, j' = c • j
-
 end Reps
 
 structure Par (e : Option (Fin n) ≃ Fin (n + 1)) (ε : Fin (n + 1) → Bool) (lam : Fin (n + 1) → ℝ) (ε' : Fin n → Bool) (mu : Fin n → ℝ)

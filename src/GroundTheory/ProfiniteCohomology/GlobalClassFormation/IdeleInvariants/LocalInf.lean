@@ -16,8 +16,6 @@ open scoped NumberField.LiesOver
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K E : GroundTheory.Global.FiniteSubfield} [Fact (K ≤ E)]
 
 set_option maxHeartbeats 4000000 in

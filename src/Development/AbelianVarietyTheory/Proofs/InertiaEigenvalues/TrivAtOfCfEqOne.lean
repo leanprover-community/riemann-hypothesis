@@ -32,9 +32,6 @@ def cf (V : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F)) : GfC V →* GfC V wh
   map_one' := Subtype.ext (map_one _)
   map_mul' x y := Subtype.ext (map_mul _ _ _)
 
-theorem cf_val (V : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F)) (g : GfC V) :
-    (cf V v g : GA D V) = GlobalTheory.LevelProduct.cmp V v g := rfl
-
 theorem isFinIdem_fE (v : HeightOneSpectrum (𝓞 D.host.F)) : IsFinIdem D v (GlobalTheory.LevelProduct.fE D v) :=
   ⟨_, GlobalTheory.LevelProduct.epsF_spec v, rfl⟩
 

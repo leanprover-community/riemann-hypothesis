@@ -144,7 +144,6 @@ def rho (b : S.β) : S.G b →* Module.End K (VV K lam) where
     simp only [map_mul, Units.val_mul]
     rw [smul_mul_smul_comm]
 
-
 open Classical in
 @[reducible] def fam : GFam K where
   β := S.β
@@ -293,18 +292,15 @@ abbrev lv (P : ST) (c : S.Cl) : Type := Red (A.N c.1 (S.rep c)) P.1
 
 abbrev lk (P : ST) (c : S.Cl) : Type := Red (A.dnN c.1 (S.rep c) P) P.1
 
-
 open Classical in
 def fv (P : ST) (c : S.Cl) : Module.Dual (Res P.1) (A.lv P c) :=
   if h : ∃ φ : Module.Dual (Res P.1) (A.lv P c), ∀ x : A.N c.1 (S.rep c),
     φ (Submodule.Quotient.mk x) = A.f c.1 (S.rep c) P x then h.choose else 0
 
-
 open Classical in
 def te (T : ℕ) (P : ST) (c : S.Cl) : A.lk P c :=
   if h : ∃ t : A.dnN c.1 (S.rep c) P, ∃ e ∈ A.N c.1 (S.rep c), A.f c.1 (S.rep c) P e = 1 ∧ (t : Fin n → E) = (T : 𝓞 E) • e
   then Submodule.Quotient.mk h.choose else 0
-
 
 open Classical in
 def extF (M : Submodule (𝓞 E) (Fin n → E)) (P : HeightOneSpectrum (𝓞 E)) (g : Module.Dual (Res P) (Red M P))
@@ -328,17 +324,14 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
 
 def autO (N : Submodule (𝓞 E) (Sp E n)) : Subgroup (Sp E n ≃ₗ[E] Sp E n) := UF E n ⊓ autLat N
 
-
 variable (E n) in
 def autOrd : Set ℕ :=
   {a | ∃ N : Submodule (𝓞 E) (Sp E n), Submodule.IsLattice E N ∧ Formalism.HermitianLatticesTheory.IsUnimodular (hStd E n) N ∧ a = Nat.card (autO N)}
 
 def gamRanks (R : Ranks) : Finset ℕ := (Finset.Icc 1 R.m).image R.N ∪ {R.rankX', R.rankY (R.m - 1), R.nV}
 
-
 variable (E) in
 def gamOrd (R : Ranks) : Set ℕ := ⋃ n ∈ gamRanks R, autOrd E n
-
 
 variable (E) in
 open Classical in
@@ -694,7 +687,6 @@ namespace TDat
 variable {E K : Type} [Field E] [NumberField E] [Field K] {n : ℕ} {S : GStep E K n}
   {ST : Finset (HeightOneSpectrum (𝓞 E))} (A : TDat S ST)
 
-
 set_option maxHeartbeats 1600000 in
 structure Laws (T : ℕ) : Prop where
   lv_rank : ∀ P c, Module.finrank (Res P.1) (A.lv P c) = n
@@ -748,7 +740,6 @@ structure FmLaws (Pl : Rows.Places K) (hI : I.Ok) (hQ : Q.Ok) : Prop where
     (I.S 0).embF emb σ (lamT hc 0) (fam 0) y = J.diaLin emb σ P a ((I.S 0).embF emb σ (lamT hc 0) (fam 0) x)
   B_span : ∀ i (w : Pl.Pl) P, Submodule.span K
     (locW Pl w (BLat J emb hc i (fam i) P) : Set ((I.S i).hlat emb (lamT hc i) (fam i)).V) = ⊤
-
 
 set_option maxHeartbeats 1600000 in
 def forms {Pl : Rows.Places K} (Z : FmIn J Pl) (hI : I.Ok) (hJ : J.Ok) (hQ : Q.Ok) (l : J.Laws emb σ hc)
@@ -851,7 +842,6 @@ def Ys.Off (y : Ys X n) (P : HeightOneSpectrum (𝓞 X.E)) : Prop :=
   ∀ N N' : Submodule (𝓞 X.E) (Sp X.E n), (∀ w : HeightOneSpectrum (𝓞 X.E), w ≠ P → w ≠ conjPrime₂ P →
     Formalism.HermitianLatticesTheory.localization₂ w.asIdeal N' = Formalism.HermitianLatticesTheory.localization₂ w.asIdeal N) → y.ys N' = y.ys N
 
-
 variable (ST SG Q) in
 def PtY (y : Ys X n) : Type := {p : DecoF X.E n ST SG Q × Set (Sp X.E n) // p.2 ∈ y.ys p.1.deco.1.N}
 
@@ -865,7 +855,6 @@ def PtY (y : Ys X n) : Type := {p : DecoF X.E n ST SG Q × Set (Sp X.E n) // p.2
     show FrmG.incl Λ Θ (g * h) • p.1.1 = FrmG.incl Λ Θ g • FrmG.incl Λ Θ h • p.1.1
     rw [map_mul, mul_smul]) (Set.image_image (fun v => g.1.1 v) (fun v => h.1.1 v) p.1.2).symm)
 
-
 open Classical in
 def prefRep {G D : Type} [Group G] [MulAction G D] (pref : D → Prop) (q : MulAction.orbitRel.Quotient G D) : D :=
   if h : ∃ p, Quotient.mk (MulAction.orbitRel G D) p = q ∧ pref p then h.choose else Quotient.out q
@@ -876,7 +865,6 @@ theorem prefRep_spec {G D : Type} [Group G] [MulAction G D] (pref : D → Prop) 
   split_ifs with h
   · exact h.choose_spec.1
   · exact Quotient.out_eq q
-
 
 variable (ST) in
 @[reducible] def stepY (y : Ys X n) (β : Type) [Fintype β] [DecidableEq β] (Λ : β → LevFam X.E X.K n SG)
@@ -892,12 +880,10 @@ variable (ST) in
   rp b := @prefRep _ _ _ (ptYAct y (Λ b) (Θ b)) fun p => pref p.1.1
   rp_spec b := @prefRep_spec _ _ _ (ptYAct y (Λ b) (Θ b)) fun p => pref p.1.1
 
-
 open Classical in
 def PtY.mv {y : Ys X n} (p : PtY ST SG Q y) (d : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)) : PtY ST SG Q y :=
   if h : (∀ (P : Q) (x : Sp X.E n), p.1.1.1.2 P x ∈ d.1.at P.1 ↔ x ∈ stdAt X.E n P.1) ∧ p.1.2 ∈ y.ys d.1.N
   then ⟨(⟨(d, p.1.1.1.2), h.1⟩, p.1.2), h.2⟩ else p
-
 
 variable (ST) in
 def tdatY (T : ℕ) (y : Ys X n) (β : Type) [Fintype β] [DecidableEq β] (Λ : β → LevFam X.E X.K n SG)
@@ -924,19 +910,6 @@ structure TopLev (X : Fields) (Pr : Primes X) (R : Ranks) (Q : Finset (HeightOne
 
   pref : ∀ u j, DecoF X.E (R.N j) (Pr.vT u) Pr.vGs Q → Prop
 
-structure TopLev.Ok {X : Fields} {Pr : Primes X} {R : Ranks} {Q : Finset (HeightOneSpectrum (𝓞 X.E))}
-    (Tp : TopLev X Pr R Q) : Prop where
-  idx : ∀ j P, (Tp.levQ j P).H.FiniteIndex
-  root : ∀ j P g, ∃ m : ℕ, 0 < m ∧ (Tp.levQ j P).lam g ^ m = 1
-  levG_top : (Tp.levG R.m).grp ≤ (extGH (N_m_succ R)).range
-  levQ_last : ∀ P, ∀ κ ∈ (Tp.levQ R.m P).H, ∀ x ∈ stdAt X.E (R.N R.m) P.1,
-    redP P.1 (κ.1 x (Br.iL (N_m_succ R))) = redP P.1 (x (Br.iL (N_m_succ R)))
-  levQ_ini : ∀ P, ∀ κ ∈ (Tp.levQ R.m P).H, ∀ i,
-    redP P.1 (κ.1 (Pi.single (Br.iL (N_m_succ R)) 1) (Br.iC (N_m_succ R) i)) = 0
-  pref_off : ∀ u j, j ≠ R.m → ∀ p, Tp.pref u j p
-  pref_top : ∀ u p, Tp.pref u R.m p → ∃ d, p.deco = DecoSet.tilH (N_m_succ R) (Pr.piT u) d
-
-
 variable (R) in
 open Classical in
 def ysAt (j : ℕ) : Ys X (R.N j) :=
@@ -959,18 +932,6 @@ def levQAt (j : ℕ) (b : Idx sel mu L j) : LevQFam X.E X.K (R.N j) (QE sel (mu 
 
 def tdatAt (u : Pr.Word) (j : ℕ) : TDat (stepAt sel mu cst L Tp u j) (Pr.vT u) :=
   tdatY (Pr.vT u) (Pr.T u) (ysAt R sel mu cst j) (Idx sel mu L j) (levGAt sel mu L Tp j) (levQAt sel mu L Tp j) (Tp.pref u j)
-
-def chainAt (u : Pr.Word)
-    (rho : ∀ i (b : Idx sel mu L i), (stepAt sel mu cst L Tp u i).D b → ℂ)
-    (rho' : ∀ i (b : Idx sel mu L (i + 1)), (stepAt sel mu cst L Tp u (i + 1)).D b → ℂ) (cD : X.Tau → ℂ)
-    (Th : ∀ i (b : Idx sel mu L i) (b' : Idx sel mu L (i + 1)), (stepAt sel mu cst L Tp u i).D b →
-      (stepAt sel mu cst L Tp u (i + 1)).D b' → Formalism.L2.Ker.VCx X.Tau (R.N i) (R.N (i + 1)) → ℂ) :
-    ChainIn X.E X.K X.Tau R where
-  S := stepAt sel mu cst L Tp u
-  rho i c := rho i c.1 (GStep.rep _ c)
-  rho' i c := rho' i c.1 (GStep.rep _ c)
-  jet i c c' := Formalism.L2.Ker.jetMap (Formalism.L2.Ker.jetC cD (Th i c.1 c'.1 (GStep.rep _ c) (GStep.rep _ c'))) 0
-  DG := DGam X.E R
 
 end Chain
 

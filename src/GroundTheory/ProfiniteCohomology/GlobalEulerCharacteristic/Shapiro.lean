@@ -14,8 +14,6 @@ open CategoryTheory NumberField IsDedekindDomain GroundTheory.Global
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   {L : FiniteSubfield} [Fact (K ≤ L)]
   (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S)

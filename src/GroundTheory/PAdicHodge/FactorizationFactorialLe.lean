@@ -99,8 +99,6 @@ section Defs
 
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "θ" => fontaineTheta (normInteger K) p
 
 theorem isUnit_natCast {m : ℕ} (hm : m ≠ 0) : IsUnit (m : 𝔸) :=
   WittVector.isUnit_natCast_away hm
@@ -149,7 +147,6 @@ theorem dpow_mul_dpow (m n : ℕ) (x : AInf K p) :
     _ = ((m + n).factorial : 𝔸) * (((m + n).choose m : 𝔸) * dpow (m + n) x) := by
         rw [← factorial_mul_dpow (m + n) x]; ring
 
-
 variable (K p) in
 def ACrisZero : Subalgebra (AInf K p) 𝔸 :=
   Algebra.adjoin (AInf K p) {y | ∃ n : ℕ, ∃ x ∈ RingHom.ker θ, dpow n x = y}
@@ -172,7 +169,6 @@ theorem acrisZero_eq_adjoin {ξ : AInf K p} (hξ : RingHom.ker θ = Ideal.span {
     rintro _ ⟨n, rfl⟩
     exact dpow_mem (by rw [hξ]; exact Ideal.mem_span_singleton_self ξ) n
 
-
 variable (K p) in
 abbrev ACris : Type _ :=
   AdicCompletion (Ideal.span {(p : ACrisZero (K := K) (p := p))}) (ACrisZero (K := K) (p := p))
@@ -183,10 +179,6 @@ section Theta
 
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p] [CharZero K]
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "𝒪" => normInteger K
-local notation "θ" => fontaineTheta 𝒪 p
-
 
 variable (K p) in
 def thetaAway : 𝔸 →+* K :=
@@ -205,7 +197,6 @@ theorem thetaAway_dpow {x : AInf K p} (hx : x ∈ RingHom.ker θ) {n : ℕ} (hn 
   simp only [ZeroMemClass.coe_zero, zero_pow hn, mul_eq_zero, Nat.cast_eq_zero] at h
   exact h.resolve_left (Nat.factorial_ne_zero n)
 
-
 variable (K p) in
 def thetaIntegral : Subalgebra (AInf K p) 𝔸 :=
   { (normInteger K).comap (thetaAway (K := K) (p := p)) with
@@ -221,7 +212,6 @@ theorem acrisZero_le_thetaIntegral : ACrisZero (K := K) (p := p) ≤ thetaIntegr
   rcases n with _ | n
   · rw [dpow_zero, map_one]; exact one_mem _
   · rw [thetaAway_dpow hx n.succ_ne_zero]; exact zero_mem _
-
 
 variable (K p) in
 def thetaZero : ACrisZero (K := K) (p := p) →+* 𝒪 :=
@@ -244,7 +234,6 @@ theorem span_p_le_comap_thetaZero :
   rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, Ideal.mem_comap, map_natCast]
   exact Ideal.mem_span_singleton_self _
 
-
 variable (K p) in
 def theta : ACris (K := K) (p := p) →+* 𝒪 :=
   AdicCompletion.extendRingHom _ _ (thetaZero (K := K) (p := p)) span_p_le_comap_thetaZero
@@ -263,9 +252,6 @@ section Frobenius
 
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "φ" => WittVector.frobeniusEquiv p (PreTilt (normInteger K) p)
-local notation "θ" => fontaineTheta (normInteger K) p
 
 theorem exists_natCast_mul_eq_pow {n k : ℕ} (hn : n ≠ 0) (hk : n.factorization p ≤ k) :
     ∃ w : AInf K p, (n : AInf K p) * w = (p : AInf K p) ^ k := by
@@ -336,7 +322,6 @@ theorem dpow_frobenius_mem {x : AInf K p} (hx : x ∈ RingHom.ker θ) (n : ℕ) 
     rw [hw]
     exact Subalgebra.algebraMap_mem _ w
 
-
 variable (K p) in
 def phiAway : 𝔸 →+* 𝔸 :=
   Localization.awayLift ((algebraMap (AInf K p) 𝔸).comp (φ : AInf K p →+* AInf K p)) (p : AInf K p)
@@ -365,7 +350,6 @@ theorem phiAway_mem {y : 𝔸} (hy : y ∈ ACrisZero (K := K) (p := p)) : phiAwa
   | add y z _ _ hy hz => rw [map_add]; exact add_mem hy hz
   | mul y z _ _ hy hz => rw [map_mul]; exact mul_mem hy hz
 
-
 variable (K p) in
 def phiZero : ACrisZero (K := K) (p := p) →+* ACrisZero (K := K) (p := p) :=
   ((phiAway (K := K) (p := p)).comp (ACrisZero (K := K) (p := p)).val.toRingHom).codRestrict (ACrisZero (K := K) (p := p))
@@ -378,7 +362,6 @@ theorem phiZero_algebraMap (x : AInf K p) :
     phiZero (K := K) (p := p) (algebraMap (AInf K p) (ACrisZero (K := K) (p := p)) x) =
       algebraMap (AInf K p) (ACrisZero (K := K) (p := p)) (φ x) :=
   Subtype.ext (phiAway_algebraMap x)
-
 
 variable (K p) in
 instance isAdicComplete : IsAdicComplete (Ideal.span {(p : ACris (K := K) (p := p))}) (ACris (K := K) (p := p)) := by
@@ -395,7 +378,6 @@ theorem span_p_le_comap_phiZero :
       ((algebraMap (ACrisZero (K := K) (p := p)) (ACris (K := K) (p := p))).comp (phiZero (K := K) (p := p))) := by
   rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, Ideal.mem_comap, map_natCast]
   exact Ideal.mem_span_singleton_self _
-
 
 variable (K p) in
 def phi : ACris (K := K) (p := p) →+* ACris (K := K) (p := p) :=

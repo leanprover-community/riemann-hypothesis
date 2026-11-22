@@ -47,11 +47,6 @@ theorem isUnitIn_of_mul {a b : K} (ha : a ∈ S) (hb : b ∈ S) (hab : IsUnitIn 
   rw [this]
   exact S.mul_mem ha hab.2.2
 
-theorem Dv.mem (hπ : IsUnif S π) {a : K} (ha : Dv S π a) : a ∈ S := by
-  have : a = a * π⁻¹ * π := by field_simp [hπ.ne]
-  rw [this]
-  exact S.mul_mem ha hπ.mem
-
 theorem Dv.add {a b : K} (ha : Dv S π a) (hb : Dv S π b) : Dv S π (a + b) := by
   first | exact GlobalTheory.AddMulInvMembership.add_mul_inv_mem .. | (apply GlobalTheory.AddMulInvMembership.add_mul_inv_mem <;> assumption) | (intros; apply GlobalTheory.AddMulInvMembership.add_mul_inv_mem <;> assumption) | (apply @GlobalTheory.AddMulInvMembership.add_mul_inv_mem <;> assumption) | (intros; apply @GlobalTheory.AddMulInvMembership.add_mul_inv_mem <;> assumption) | (apply @GlobalTheory.AddMulInvMembership.add_mul_inv_mem <;> first | assumption | infer_instance) | exact @GlobalTheory.AddMulInvMembership.add_mul_inv_mem K ‹_› ‹_› S π a b ha hb | exact @GlobalTheory.AddMulInvMembership.add_mul_inv_mem K ‹_› ‹_› S π a b ha | exact @GlobalTheory.AddMulInvMembership.add_mul_inv_mem K ‹_› ‹_› S π a b | exact @GlobalTheory.AddMulInvMembership.add_mul_inv_mem K ‹_› ‹_› S π a | exact @GlobalTheory.AddMulInvMembership.add_mul_inv_mem K ‹_› ‹_› S π | exact @GlobalTheory.AddMulInvMembership.add_mul_inv_mem K ‹_› ‹_› S | exact @GlobalTheory.AddMulInvMembership.add_mul_inv_mem K ‹_› ‹_› | exact @GlobalTheory.AddMulInvMembership.add_mul_inv_mem K ‹_› | exact @GlobalTheory.AddMulInvMembership.add_mul_inv_mem K
 

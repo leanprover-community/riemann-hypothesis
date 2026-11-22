@@ -54,9 +54,6 @@ theorem not_inPsi_and_conjugate (H : Host E) (τ : E →+* ℂ) :
   have hd : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
   nlinarith [mul_self_nonneg H.rt0.re]
 
-private theorem coe_embF {H : Host E} {l : Level H} (c : Coeff l) (τ : E →+* ℂ) (x : E) :
-    ((embF c τ x : c.F) : ℂ) = τ x := rfl
-
 theorem injective_embF_inPsi {H : Host E} {l : Level H} (c : Coeff l) :
     Function.Injective fun s : {τ : E →+* ℂ // InPsi H τ} × Bool =>
       fun x : E => embF c s.1.1 (if s.2 then FD.cc x else x) := by

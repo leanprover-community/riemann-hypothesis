@@ -17,8 +17,6 @@ section Deriv
 
 variable {P Q : ℕ}
 
-local notation "Mat" => Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ
-
 def tauR (H X : Mat) : Mat :=
   (1 + 1) - (4 : ℂ) • (((1 + 1) - X) * Ring.inverse (H * ((1 + 1) + X) + ((1 + 1) - X)))
 
@@ -86,8 +84,6 @@ end Deriv
 section Sub
 
 variable {P Q : ℕ}
-
-local notation "Mat" => Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ
 
 theorem tauDeriv_at (h : UpqT P Q) (x : lieU P Q) (hx : x ∈ D0 P Q)
     (hn : IsUnit (nH h (x : Mat)).det) :

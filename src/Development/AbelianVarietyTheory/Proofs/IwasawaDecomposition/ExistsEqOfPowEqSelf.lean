@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DecompositionGroupLocalGaloisIso
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPowCharPowEqSelf
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Mono0OfLpDimEqOne
-public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsGal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasNormGroups
 
 @[expose] public section

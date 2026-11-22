@@ -16,8 +16,6 @@ section lvl
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 def ParaRT (s : SplitPlace L) (r : ℕ) (h : GL (Fin n) (s.v.adicCompletion L⁺)) : Prop :=
   h ∈ Formalism.UG.GLint (Fin n) (s.v.adicCompletionIntegers L⁺).toSubring ∧
     ∀ a b : Fin n, r ≤ a.val → b.val < r → Valued.v (h.val a b) < 1
@@ -58,7 +56,6 @@ def IsPsi0 (s : SplitPlace L) (ψ₀ : AddChar (s.v.adicCompletion L⁺) ℂ) : 
   (∀ x, Valued.v x < 1 → ψ₀ x = 1) ∧ ∃ x, Valued.v x ≤ 1 ∧ ψ₀ x ≠ 1
 
 end lvl
-
 
 open Formalism.BasicNotions in
 def paramV (R : Ranks) (h : HCParam R) (j : Fin R.m) (sh : ℂ) : Multiset ℂ :=

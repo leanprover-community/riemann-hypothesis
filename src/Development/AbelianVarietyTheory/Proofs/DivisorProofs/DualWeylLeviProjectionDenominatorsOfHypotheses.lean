@@ -22,8 +22,6 @@ def lpFock (σ : Type) : LinearMap.BilinForm ℚ (MvPolynomial σ ℚ) :=
     (fun f g g' => Formalism.CohomologicalDescent.LR.fock_add_right f g g')
     (fun c f g => Formalism.CohomologicalDescent.LR.fock_smul_right c f g)
 
-theorem lpFock_apply (σ : Type) (f g : MvPolynomial σ ℚ) : lpFock σ f g = fockQ f g := rfl
-
 def lpTen (p q : ℕ) : LinearMap.BilinMap ℚ (MvPolynomial (Fin p × Fin p) ℚ ⊗[ℚ] MvPolynomial (Fin q × Fin q) ℚ) ℚ :=
   (lpFock (Fin p × Fin p)).tmul (lpFock (Fin q × Fin q))
 

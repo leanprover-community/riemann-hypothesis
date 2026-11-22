@@ -1,8 +1,6 @@
 module
 
-public import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.AlgebraMapMemChartRingJoinPt
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.StatementsGluing
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.Bundle
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChartChoiceAlgClosed
@@ -13,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsMi
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsFundCycleBaseChange
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PRadicalBaseChange
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormExtend
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormReduced
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormBaseChange
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormAssoc
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormCycleAdd
@@ -101,7 +98,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCombCycli
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AlgebraMapMemChartRingLine
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationExists
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.BaseComap
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.NefGenericDVRSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.OneBlockPnPt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsMultiProjPrimeBaseComap
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TrdegEqOfLeOfIsAlgebraic
@@ -162,7 +158,6 @@ public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PDiagonalChange
 public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PExactSequence
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.LinearIndependentSumElimOfExact
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Extension
-public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.IsProbabilityMeasureSphereLaw
 public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PRootsOfUnityValuation
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ContinuousHermNormGroup
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.GaussSum
@@ -186,13 +181,11 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.JInvariant
 public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialConstantField
 public import GroundTheory.GlobalFields.AnalyticClassNumber.DirichletHeckeCorrespondence
 public import GroundTheory.GlobalFields.Artin.OneDim
-public import GroundTheory.GlobalFields.Artin.Series
 public import GroundTheory.GlobalFields.ExistenceTheorem.ExistsIsAbelianGaloisRangeIdeleClassNormEqOfFini
 public import GroundTheory.GlobalFields.NormResidueSymbol.RestrictNormalInfiniteLocalSymbol
 public import GroundTheory.GlobalFields.Artin.Places
 public import GroundTheory.GlobalFields.Artin.InflationTower
 public import GroundTheory.GlobalFields.AnalyticClassNumber.HeckeContinued
-public import GroundTheory.LocalFields.BrauerInductionClifford
 public import GroundTheory.GlobalFields.TateThesis.FiniteOrderParams
 public import GroundTheory.GlobalFields.TateThesis.DedekindZetaContinuation
 public import GroundTheory.LocalFields.DifferentGalois

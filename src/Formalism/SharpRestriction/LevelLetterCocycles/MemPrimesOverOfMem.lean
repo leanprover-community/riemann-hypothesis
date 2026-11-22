@@ -44,7 +44,6 @@ theorem logWeight_nonneg (w : D.what₂.places.Pl) : 0 ≤ SizeData₂.lwP w := 
   apply div_nonneg (Real.log_natCast_nonneg _)
   positivity
 
-
 open Classical in
 theorem etaSum_eq_sum (L : SizeData₂ D) (j : ℕ) :
     etaSum L j = ∑ l ∈ (L.supp.filter (fun w => D.what₂.muAt w ≠ D.what₂.mu0)).image
@@ -237,7 +236,6 @@ section Bound
 
 variable (L : SizeData₂ D) (tb : Tab L) (C : ℝ)
 
-
 open Classical in
 def bandI (l : ℕ) : ℝ :=
   if ∃ s : ℝ, L.sc.w'' D.R.n ≤ s ∧ s ≤ wB L ∧
@@ -248,7 +246,6 @@ def flatB (l : ℕ) : ℝ := (wP L + eta₃ L) / l + L.Sc + large₂ L + eta₃ 
 def rowBr (l : ℕ) : ℝ :=
   hB L / ((l : ℝ) - 1) ^ (jA L l + 1) + (GP L + 1) * ((jA L l : ℝ) + 1) + large₂ L
 
-
 open Classical in
 def lenB (l : ℕ) : ℝ :=
   if SplitK D l then (2 * (D.R.f : ℝ) * D.R.m + D.R.f) * eP L C l
@@ -257,7 +254,6 @@ def lenB (l : ℕ) : ℝ :=
     2 * (D.R.f : ℝ) * (C * D.R.m * eP L C l)
 
 def bbB : ℝ := C * D.R.f * D.R.n * (D.R.t : ℝ) ^ 2 * D.R.nV * (large₂ L) ^ 2
-
 
 open Classical in
 def lamB (l : ℕ) : ℝ :=
@@ -527,7 +523,6 @@ theorem vvTerm_nonneg (D : D7) (l : ℕ) : 0 ≤ vvTerm D l := by
 
 theorem vhE_nonneg (D : D7) (l : ℕ) : 0 ≤ vhE D l := by unfold vhE; positivity
 
-
 open Classical in
 def lamG (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (l : ℕ) : ℝ :=
   if l ∈ gset D then C * L.sc.x ^ C * L.etaSz else lamB L tb C l
@@ -556,7 +551,6 @@ theorem lamB_nonneg (L : SizeData₂ D) (tb : Tab L) {C : ℝ} (hC : 0 < C) {l :
       have hh : 0 ≤ hB L / (l : ℝ) ^ 2 := div_nonneg (by linarith [one_le_hB L]) (by positivity)
       split_ifs <;> positivity
     linarith
-
 
 open Classical in
 theorem etaSum_le (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (P : ParameterChoice' D L) (hA : AdmT L tb C P)
@@ -716,52 +710,6 @@ end
 noncomputable section
 
 namespace Formalism.MainNotions.ExportFamilies
-
-alias etaSum_le := Formalism.MainNotions.TwistedPlaces.etaSum_le
-alias placeWeight_nonneg := Formalism.MainNotions.TwistedPlaces.placeWeight_nonneg
-alias flatCD_le := Formalism.MainNotions.TwistedPlaces.flatCD_le
-alias one_le_b := Formalism.MainNotions.TwistedPlaces.one_le_b
-alias vhE_nonneg := Formalism.MainNotions.TwistedPlaces.vhE_nonneg
-alias VVr_nonneg := Formalism.MainNotions.TwistedPlaces.VVr_nonneg
-alias Mst := Formalism.MainNotions.TwistedPlaces.Mst
-alias one_le_hB := Formalism.MainNotions.TwistedPlaces.one_le_hB
-alias sumOver_eq := Formalism.MainNotions.TwistedPlaces.sumOver_eq
-alias finrank_E_host := Formalism.MainNotions.TwistedPlaces.finrank_E_host
-alias mem_primesOver_of_mem := Formalism.MainNotions.TwistedPlaces.mem_primesOver_of_mem
-alias etaSum_eq_sum := Formalism.MainNotions.TwistedPlaces.etaSum_eq_sum
-alias bandI := Formalism.MainNotions.TwistedPlaces.bandI
-alias nLam_pos := Formalism.MainNotions.TwistedPlaces.nLam_pos
-alias flatB := Formalism.MainNotions.TwistedPlaces.flatB
-alias flatB_nonneg := Formalism.MainNotions.TwistedPlaces.flatB_nonneg
-alias w''_nonneg := Formalism.MainNotions.TwistedPlaces.w''_nonneg
-alias ge_five := Formalism.MainNotions.TwistedPlaces.ge_five
-alias lamB_nonneg := Formalism.MainNotions.TwistedPlaces.lamB_nonneg
-alias rowBr := Formalism.MainNotions.TwistedPlaces.rowBr
-alias bbB := Formalism.MainNotions.TwistedPlaces.bbB
-alias vvTerm_nonneg := Formalism.MainNotions.TwistedPlaces.vvTerm_nonneg
-alias eP_nonneg := Formalism.MainNotions.TwistedPlaces.eP_nonneg
-alias bandI_nonneg := Formalism.MainNotions.TwistedPlaces.bandI_nonneg
-alias lamB := Formalism.MainNotions.TwistedPlaces.lamB
-alias x_pos := Formalism.MainNotions.TwistedPlaces.x_pos
-alias wB_nonneg := Formalism.MainNotions.TwistedPlaces.wB_nonneg
-alias etaP_nonneg := Formalism.MainNotions.TwistedPlaces.etaP_nonneg
-alias GP_nonneg := Formalism.MainNotions.TwistedPlaces.GP_nonneg
-alias lenB := Formalism.MainNotions.TwistedPlaces.lenB
-alias sum_nLam_succ_le := Formalism.MainNotions.TwistedPlaces.sum_nLam_succ_le
-alias rowBr_nonneg := Formalism.MainNotions.TwistedPlaces.rowBr_nonneg
-alias placesOver_finite := Formalism.MainNotions.TwistedPlaces.placesOver_finite
-alias lamG := Formalism.MainNotions.TwistedPlaces.lamG
-alias split_or_inert := Formalism.MainNotions.TwistedPlaces.split_or_inert
-alias pm_mod_of_dvd := Formalism.MainNotions.TwistedPlaces.pm_mod_of_dvd
-alias logWeight_nonneg := Formalism.MainNotions.TwistedPlaces.logWeight_nonneg
-alias sum_nLam_le := Formalism.MainNotions.TwistedPlaces.sum_nLam_le
-alias b'_pos := Formalism.MainNotions.TwistedPlaces.b'_pos
-alias rowd_cong := Formalism.MainNotions.TwistedPlaces.rowd_cong
-alias etaAt_le_g := Formalism.MainNotions.TwistedPlaces.etaAt_le_g
-alias loc_le_lamB := Formalism.MainNotions.TwistedPlaces.loc_le_lamB
-alias Mst_ge := Formalism.MainNotions.TwistedPlaces.Mst_ge
-alias etaAt_le := Formalism.MainNotions.TwistedPlaces.etaAt_le
-alias Lg_nonneg := Formalism.MainNotions.TwistedPlaces.Lg_nonneg
 
 end Formalism.MainNotions.ExportFamilies
 

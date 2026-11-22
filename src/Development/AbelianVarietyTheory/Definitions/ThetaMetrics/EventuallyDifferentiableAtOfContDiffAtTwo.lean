@@ -24,7 +24,6 @@ theorem realCLM_map_complex_smul (L : E →L[ℝ] F) (c : ℂ) (v : E) :
     rw [add_smul, mul_smul, ← Complex.coe_algebraMap, algebraMap_smul, algebraMap_smul]
   rw [h, map_add (f := _), map_smul, map_smul, ← Complex.coe_algebraMap, algebraMap_smul, algebraMap_smul]
 
-
 omit [NormedSpace ℝ E] [IsScalarTower ℝ ℂ E] in
 theorem I_smul_I_smul (v : E) : I • I • v = -v := by
   rw [smul_smul, I_mul_I, neg_smul, one_smul]
@@ -106,7 +105,6 @@ theorem norm_linPart_le (L : E →L[ℝ] F) : ‖linPart L‖ ≤ ‖L‖ := by
   have : ‖(1 / 2 : ℂ)‖ = 1 / 2 := by simp
   rw [this]; linarith
 
-
 variable (E F) in
 def linPartCLM : (E →L[ℝ] F) →L[ℝ] (E →L[ℂ] F) :=
   LinearMap.mkContinuous
@@ -117,7 +115,6 @@ def linPartCLM : (E →L[ℝ] F) →L[ℝ] (E →L[ℂ] F) :=
         ext v; simp only [linPart_apply, ContinuousLinearMap.smul_apply, RingHom.id_apply]
         rw [smul_comm I c, ← smul_sub, smul_comm] }
     1 fun L => by rw [one_mul]; exact norm_linPart_le L
-
 
 variable (E F) in
 def antilinPartCLM : (E →L[ℝ] F) →L[ℝ] (E →L⋆[ℂ] F) :=
@@ -139,9 +136,6 @@ def dbar (f : E → F) (z : E) : E →L⋆[ℂ] F := antilinPart (fderiv ℝ f z
 def ddbar (u : E → F) (z : E) : E →L[ℂ] E →L⋆[ℂ] F := del (dbar u) z
 
 def leviForm (u : E → ℝ) (z : E) : E →L[ℂ] E →L⋆[ℂ] ℂ := ddbar (fun x => (u x : ℂ)) z
-
-def IsPshC2On (u : E → ℝ) (s : Set E) : Prop :=
-  ∀ z ∈ s, ContDiffAt ℝ 2 u z ∧ ∀ v, 0 ≤ (leviForm u z v v).re
 
 section FirstOrder
 
@@ -260,15 +254,6 @@ theorem del_conj (a : E → ℂ) (z v : E) :
 theorem dbar_ofReal (u : E → ℝ) (z v : E) :
     dbar (fun x => (u x : ℂ)) z v = conj (del (fun x => (u x : ℂ)) z v) := by
   simpa using dbar_conj (fun x => (u x : ℂ)) z v
-
-theorem del_comp {u : F → G} {φ : E → F} (hu : DifferentiableAt ℝ u (φ z))
-    (hφ : DifferentiableAt ℝ φ z) (v : E) :
-    del (fun x => u (φ x)) z v = del u (φ z) (del φ z v) + dbar u (φ z) (dbar φ z v) := by
-  have h : HasFDerivAt (fun x => u (φ x)) _ z := hu.hasFDerivAt.comp z hφ.hasFDerivAt
-  rw [del_apply, h.fderiv, del_apply φ, dbar_apply φ]
-  simp only [ContinuousLinearMap.comp_apply, ← del_add_dbar u, map_smul, map_sub, map_add (f := _),
-    map_smulₛₗ, conj_I, map_div₀, map_one, map_ofNat]
-  module
 
 theorem del_comp_holo {u : F → G} {φ : E → F} (hu : DifferentiableAt ℝ u (φ z))
     (hφ : DifferentiableAt ℂ φ z) (v : E) :
@@ -469,7 +454,6 @@ section Levi
 
 variable {u u' : E → ℝ} {z : E}
 
-
 omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem contDiffAt_ofReal_comp {n : WithTop ℕ∞} (hu : ContDiffAt ℝ n u z) :
     ContDiffAt ℝ n (fun x => (u x : ℂ)) z := ofRealCLM.contDiff.contDiffAt.comp z hu
@@ -541,21 +525,12 @@ theorem leviForm_real_comp {t : E → ℝ} {h : ℝ → ℝ} (hh : ContDiffAt �
     del_mul hd' (differentiableAt_dbar_apply (contDiffAt_ofReal_comp ht) w),
     del_ofReal_comp hd.hasDerivAt ht1, leviForm_eq_del_dbar ht, mul_assoc]
 
-def leviMatrix {ι : Type*} (u : E → ℝ) (z : E) (b : ι → E) : Matrix ι ι ℂ :=
-  Matrix.of fun i j => leviForm u z (b i) (b j)
-
-theorem leviMatrix_isHermitian {ι : Type*} (hu : ContDiffAt ℝ 2 u z) (b : ι → E) :
-    (leviMatrix u z b).IsHermitian := by
-  ext i j
-  exact leviForm_conj_symm hu _ _
-
 end Levi
 
 section Inner
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [NormedSpace ℝ H]
   [IsScalarTower ℝ ℂ H]
-
 
 omit [NormedSpace ℝ H] [IsScalarTower ℝ ℂ H] in
 theorem inner_self_eq_ofReal_norm_sq (v : H) : inner ℂ v v = ((‖v‖ ^ 2 : ℝ) : ℂ) := by
@@ -643,10 +618,6 @@ variable {u u' : E → ℝ} {s t : Set E}
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [NormedSpace ℝ H]
   [IsScalarTower ℝ ℂ H]
 
-theorem isPshC2On_normSq (s : Set H) : IsPshC2On (fun x : H => ‖x‖ ^ 2) s := fun z _ =>
-  ⟨(contDiff_norm_sq ℂ).contDiffAt, fun v => by
-    rw [leviForm_normSq, inner_self_eq_ofReal_norm_sq, ofReal_re]; positivity⟩
-
 end Psh
 
 section Circle
@@ -654,6 +625,5 @@ section Circle
 open Real MeasureTheory Set Metric
 
 end Circle
-
 
 end GlobalTheory

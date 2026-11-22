@@ -1725,8 +1725,6 @@ theorem star_dA (u : ℂ) : star (dA P (star u)) = dA P u := by
   have : star u + 1 = star (u + 1) := by simp
   rw [star_inv₀, this, star_xC]
 
-theorem star_lA (u : ℂ) : star (lA P (star u)) = mt P u := rfl
-
 theorem commutator_t22_m (u v : ℂ) (hu : Good P u) (hv : Good P v) :
     (u - v) • (t22 P u * mt P v - mt P v * t22 P u) = (mt P u - mt P v) * t22 P u := by
   have h := congrArg star (lowering_relation_diagonal_left P (star u) (star v) (good_star P hu) (good_star P hv))

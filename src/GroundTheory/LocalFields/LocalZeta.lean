@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import GroundTheory.LocalFields.LocalZetaGauss
+public import GroundTheory.LocalFields.LocalZetaEpsilon
 
 @[expose] public section
 

@@ -23,18 +23,7 @@ lemma omega_zero_right {R : Type*} [CommRing R] {l : Type*} [Fintype l] [Decidab
 
 variable {R : Type*} [Zero R] {n : ℕ} (α β γ δ : R) (Q : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) R)
 
-lemma row_e : symplExt α β γ δ Q (Sum.inl 0) = symplCons α β 0 := rfl
-
-lemma row_f : symplExt α β γ δ Q (Sum.inr 0) = symplCons γ δ 0 := rfl
-
-lemma row_inl (i : Fin n) :
-    symplExt α β γ δ Q (Sum.inl i.succ) = symplCons 0 0 (Q (Sum.inl i)) := rfl
-
-lemma row_inr (i : Fin n) :
-    symplExt α β γ δ Q (Sum.inr i.succ) = symplCons 0 0 (Q (Sum.inr i)) := rfl
-
 end PSymplExtMem
-
 
 open PSymplExtMem in
 theorem SymplExtMem.proof (h1 : SymplOmegaMem.Statement) (h2 : SymplCons.Statement) :

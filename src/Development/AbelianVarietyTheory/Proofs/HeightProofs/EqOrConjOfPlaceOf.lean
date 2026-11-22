@@ -112,10 +112,6 @@ theorem projFin_ofFin (y : GFin hc V) : IndefiniteRowSideFullHecke.AdelicUnitary
   mapH_extH_self _ _ _ _ _ (fun _ => rfl) y
 theorem projInf_ofFin (y : GFin hc V) : IndefiniteRowSideFullHecke.AdelicUnitaryGroups.projInf hc V (ofFin hc V y) = 1 :=
   mapH_extH_zero _ _ _ _ _ (fun _ => rfl) y
-theorem projInf_ofInf (y : GInf hc V) : IndefiniteRowSideFullHecke.AdelicUnitaryGroups.projInf hc V (ofInf hc V y) = y :=
-  mapH_extH_self _ _ _ _ _ (fun _ => rfl) y
-theorem projFin_ofInf (y : GInf hc V) : IndefiniteRowSideFullHecke.AdelicUnitaryGroups.projFin hc V (ofInf hc V y) = 1 :=
-  mapH_extH_zero _ _ _ _ _ (fun _ => rfl) y
 
 theorem eq_of_proj {g h : GA hc V} (h1 : IndefiniteRowSideFullHecke.AdelicUnitaryGroups.projInf hc V g = IndefiniteRowSideFullHecke.AdelicUnitaryGroups.projInf hc V h)
     (h2 : IndefiniteRowSideFullHecke.AdelicUnitaryGroups.projFin hc V g = IndefiniteRowSideFullHecke.AdelicUnitaryGroups.projFin hc V h) : g = h := by
@@ -127,15 +123,6 @@ theorem eq_of_proj {g h : GA hc V} (h1 : IndefiniteRowSideFullHecke.AdelicUnitar
 
 theorem ofFin_projFin {g : GA hc V} (h : g ∈ finPts hc V) : ofFin hc V (IndefiniteRowSideFullHecke.AdelicUnitaryGroups.projFin hc V g) = g :=
   eq_of_proj hc V ((projInf_ofFin hc V _).trans (Eq.symm h)) (projFin_ofFin hc V _)
-
-theorem ofInf_projInf {g : GA hc V} (h : g ∈ realPts hc V) : ofInf hc V (IndefiniteRowSideFullHecke.AdelicUnitaryGroups.projInf hc V g) = g :=
-  eq_of_proj hc V (projInf_ofInf hc V _) ((projFin_ofInf hc V _).trans (Eq.symm h))
-
-theorem continuous_ofFin : Continuous (ofFin hc V) :=
-  continuous_extH _ _ _ _ (continuous_const.prodMk continuous_id)
-
-theorem continuous_projFin : Continuous (IndefiniteRowSideFullHecke.AdelicUnitaryGroups.projFin hc V) :=
-  continuous_mapH _ _ _ continuous_snd
 
 def infEmb (τ : E →+* ℂ) : Ainf F ⊗[F] E →+* ℂ :=
   (locMap hc τ).comp (Algebra.TensorProduct.map
@@ -177,7 +164,6 @@ theorem isInfEmb_unique (τ : E →+* ℂ) (θ θ' : Ainf F ⊗[F] E →+* ℂ) 
 def evW (w : InfinitePlace F) : Ainf F →ₐ[F] w.Completion :=
   Pi.evalAlgHom F (fun w : InfinitePlace F => w.Completion) w
 
-
 open Classical in
 def sgW (w : InfinitePlace F) : w.Completion →ₗ[F] Ainf F :=
   LinearMap.single F (fun w : InfinitePlace F => w.Completion) w
@@ -206,8 +192,6 @@ theorem infTens_ext {z z' : Ainf F ⊗[F] E} (h : ∀ w : InfinitePlace F,
       rw [← hx, ← hy]
   rw [key z, key z']
   exact Finset.sum_congr rfl fun w _ => by rw [h w]
-
-
 
 end Groups
 

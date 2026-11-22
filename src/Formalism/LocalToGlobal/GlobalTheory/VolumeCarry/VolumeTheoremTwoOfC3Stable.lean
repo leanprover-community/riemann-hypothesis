@@ -18,8 +18,6 @@ open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem sig_apply (D : D7) (a : D.host.E) : (D.sp.cm.sig : D.host.E →+* D.host.E) a = star a := rfl
-
 theorem hE_repr (D : D7) (W : HSpace D.host.E) (x y : W.V) :
     hE D.sp.cm.sig W.gram (W.frame.repr x) (W.frame.repr y) = W.hT x y := by
   conv_rhs => rw [← W.frame.sum_repr x, ← W.frame.sum_repr y]

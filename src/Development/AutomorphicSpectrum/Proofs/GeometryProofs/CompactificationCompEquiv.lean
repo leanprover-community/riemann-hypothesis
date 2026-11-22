@@ -42,7 +42,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LogMeanShares.LogMeanStatements.HSClaim
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SpecFirstDetFormNeZero
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionsGenericIndicators
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsBijectiveKappa
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsEquivComp

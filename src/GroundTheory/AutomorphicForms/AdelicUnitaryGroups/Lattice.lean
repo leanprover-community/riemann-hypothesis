@@ -35,18 +35,11 @@ theorem repr_mul (z w : R ⊗[K] E) (m : κ) :
     repr_one_tmul]
   exact Finset.sum_comm
 
-
 variable (ι R) in
 def stdLattice (O : Subring R) : Set (ι → R ⊗[K] E) :=
   {x | ∀ i k, (Algebra.TensorProduct.basis R b).repr (x i) k ∈ O}
 
-
 variable {H b}
-
-
-variable (b) in
-def IsAdapted (O : Subring R) : Prop :=
-  (∀ k, algebraMap K R (b.repr 1 k) ∈ O) ∧ ∀ k l m, algebraMap K R (b.repr (b k * b l) m) ∈ O
 
 end
 

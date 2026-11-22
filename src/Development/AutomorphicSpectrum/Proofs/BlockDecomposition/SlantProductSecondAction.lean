@@ -22,7 +22,6 @@ section Slant
 variable {ι : Type} [Fintype ι] {M : ι → Type} [∀ i, CommRing (M i)] [∀ i, Algebra R (M i)]
   {V : Type} [CommRing V] [Algebra R V]
 
-
 open Classical in
 def slv (Λ : (∀ i, M i) →ₗ[R] R) : (∀ i, M i ⊗[R] V) →ₗ[R] V :=
   ∑ i, (TensorProduct.lid R V).toLinearMap ∘ₗ LinearMap.rTensor V (Λ ∘ₗ LinearMap.single R M i) ∘ₗ
@@ -164,14 +163,6 @@ theorem slant_product_second_action {p q q' : ℕ} [Fintype (Fin (p + 1) ⥤ C)]
 end Sl
 
 section Vertices
-
-theorem th_apply (q : ℕ) (i : Fin (q + 1)) (j : Fin (q + 2)) : th q i j = if j ≤ i.castSucc then 0 else 1 := rfl
-
-theorem sg_apply (q : ℕ) (i : Fin (q + 1)) (j : Fin (q + 2)) : sg q i j = Fin.predAbove i j := rfl
-
-theorem cst_apply (n p : ℕ) (a : Fin (p + 1)) (j : Fin (n + 1)) : cst n a j = a := rfl
-
-theorem front_zero (n : ℕ) : front n 0 = 0 := rfl
 
 theorem front_one (n : ℕ) : front n 1 = 1 := by
   apply Fin.ext

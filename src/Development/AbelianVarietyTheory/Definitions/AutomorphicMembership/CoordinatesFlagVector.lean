@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GqPtOfNeZeroIff
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SymmetricFlagBasisVectorsApplyCentre
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DetFromBlocksSingle
 
 @[expose] public section

@@ -46,15 +46,6 @@ def DlatImg (W : LocWach PD LL O v n) {T₁ T₂ : LocLat G Qp LL O} (F : LatHom
     (i : ZMod n) : Set (T₂.V ⊗[Qp] B) :=
   {z | ∃ (x : W.DD T₁) (_ : x ∈ W.N T₁) (hx' : W.map F x ∈ W.N T₂), DL W T₁ i x ∧ z = W.cmp T₂ ⟨W.map F x, hx'⟩}
 
-def RankFC [NeZero n] (W : LocWach PD LL O v n) : Prop :=
-  ∀ (d : ℕ) (T₁ T₂ : LocLat G Qp LL O) (F : LatHom T₁.L T₂.L) (b : ZMod n → ℕ) (S η m : ℕ),
-    Formalism.MainNotions.RamifiedCoefficientChains.SetCS W d T₁ T₂ F b S η m → ∀ i : ZMod n,
-      ((i.val + d) % 2 = 0 →
-        finrank LL ↥(FilCris PD T₂.ρ (-(η : ℤ)) ⊓ DcrisL PD T₂.ρ (W.emb i)) ≤ m) ∧
-      ((i.val + d) % 2 = 1 →
-        (finrank LL ↥(DcrisL PD T₂.ρ (W.emb i)) : ℤ) -
-          finrank LL ↥(FilCris PD T₂.ρ (b i : ℤ) ⊓ DcrisL PD T₂.ρ (W.emb i)) ≤ m)
-
 def QTool [NeZero n] (W : LocWach PD LL O v n) : Prop :=
   ∀ (d : ℕ) (T₁ T₂ : LocLat G Qp LL O) (F : LatHom T₁.L T₂.L) (b : ZMod n → ℕ) (S η m : ℕ)
     (Mi hi : ZMod n → ℕ),
@@ -237,10 +228,6 @@ def adm6 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formal
 def adm8 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ConclusionH D HW F
 
 def adm9 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW F
-
-def adm12 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Prop :=
-  ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hg : Good K 1 LL)
-    [NeZero (Module.finrank ℚ_[l] ↥(K0 K))], RankFC ((HW l).W K 1 LL hg)
 
 def adm13 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hg : Good K 1 LL)

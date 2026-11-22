@@ -16,7 +16,6 @@ def TwAtT.eU {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup} (a : TwA
     ((Tw.A u μ).Fv v)ˣ →* ((D.mem u).A.Fv (a.eVT v))ˣ :=
   Units.map ((a.eFv v : (Tw.A u μ).Fv v ≃+* (D.mem u).A.Fv (a.eVT v)) : (Tw.A u μ).Fv v →* (D.mem u).A.Fv (a.eVT v))
 
-
 set_option maxHeartbeats 1000000 in
 structure LvSame {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup} (a : TwAtT Tw u μ) (i : ℕ)
     (eC : (D.mem u).C.cls i ≃ (D.chTw u μ).cls i) (eYi : (D.mem u).C.Y i ≃ (D.chTw u μ).Y i)
@@ -48,10 +47,6 @@ structure LvSame {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup} (a :
     ∀ v x, eL x ∈ (Tw.fm u μ).Bw i w v ↔ x ∈ (D.fm u).Bw i w (a.eVT v)
 
 variable {inQ : D.what₂.Tup → HeightOneSpectrum (𝓞 D.host.F) → Prop}
-
-structure TwLvSame {Tw : TwForms D} {T : Formalism.L2.Herm.TwChTied D inQ} {F : ∀ u, FormsTied D u} (W : TwFormsTied D Tw T F) where
-  step0 : ∀ u μ, LvSame (W.atT u μ) 0 (T.eCls0 u μ) (T.eY u μ 0 (Nat.zero_le _)) (Tw.e0 u μ)
-  mu0 : ∀ u i (hi : i ≤ D.R.m), LvSame (W.atT u D.what₂.mu0) i (Formalism.L2.Herm.clsCast D u i) (Formalism.L2.Herm.yCast D u i) (Tw.eMu0 u i hi)
 
 end Formalism.L2.Forms
 

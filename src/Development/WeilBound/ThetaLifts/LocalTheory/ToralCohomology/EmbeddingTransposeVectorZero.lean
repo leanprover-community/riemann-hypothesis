@@ -167,10 +167,6 @@ theorem J_single (a b : Ix R S) : Jm R S * Matrix.single a b (1 : ℂ) = sg a �
 theorem single_J (a b : Ix R S) : Matrix.single a b (1 : ℂ) * Jm R S = sg b • Matrix.single a b 1 := by
   ext c d; rw [Jm_sg, Matrix.mul_diagonal]; simp only [Matrix.smul_apply, Matrix.single_apply]; split_ifs with h <;> simp [h]
 
-theorem sg_l (i : Fin R) : sg (.inl i : Ix R S) = 1 := rfl
-
-theorem sg_r (i : Fin S) : sg (.inr i : Ix R S) = -1 := rfl
-
 def hf {d : ℕ} (M : Matrix (Fin d) (Fin d) ℂ) (u v : Fin d → ℂ) : ℂ := u ⬝ᵥ M *ᵥ star v
 
 theorem gram_apply {d : ℕ} {I : Type} (M : Matrix (Fin d) (Fin d) ℂ) (C : Matrix (Fin d) I ℂ) (a b : I) :

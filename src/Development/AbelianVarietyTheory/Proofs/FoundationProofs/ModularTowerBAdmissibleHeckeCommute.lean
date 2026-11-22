@@ -17,8 +17,6 @@ noncomputable section
 namespace GlobalTheory.KZ.HeckeComm
 open StabHecke
 
-local notation "M₂" => Matrix (Fin 2) (Fin 2) ℤ
-
 theorem herm (p : ℕ) (hp : p.Prime) (m : M₂) (h : (p : ℤ) ∣ m.det) :
     (∃ y : M₂, m = y * !![(p : ℤ), 0; 0, 1]) ∨
       ∃ k : ℕ, k < p ∧ ∃ y : M₂, m = y * !![1, (k : ℤ); 0, (p : ℤ)] :=

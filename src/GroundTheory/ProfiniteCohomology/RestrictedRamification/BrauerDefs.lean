@@ -15,8 +15,6 @@ open CategoryTheory NumberField IsDedekindDomain IntermediateField GroundTheory.
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
 
 def gsRestrict : K.1.fixingSubgroup →* galUnramifiedOutside K.1 ℚ̄ S :=

@@ -62,13 +62,6 @@ section Cp
 
 variable {p : ℕ} [Fact p.Prime]
 
-local notation "𝒪" => normInteger ℂ_[p]
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "𝕎𝒪♭" => WittVector p 𝒪♭
-local notation "𝔹" => BDeRhamPlus 𝒪 p
-local notation "𝔪" => maximalIdeal 𝔹
-local notation "φi" => RingEquiv.symm (_root_.frobeniusEquiv 𝒪♭ p)
-
 theorem exists_coe_eq_of_pow_eq_one {x : ℂ_[p]} {N : ℕ} (hN : N ≠ 0) (hx : x ^ N = 1) :
     ∃ y : PadicAlgCl p, (y : ℂ_[p]) = x := by
   have : NeZero N := ⟨hN⟩

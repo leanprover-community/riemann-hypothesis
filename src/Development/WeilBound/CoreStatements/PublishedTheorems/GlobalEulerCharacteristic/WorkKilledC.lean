@@ -11,8 +11,6 @@ public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.DefsFor
 
 open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheory.Global
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 namespace PositivityTheory.Lit1.GEN.W_killed_c
 
 section Infl
@@ -202,7 +200,6 @@ theorem gs_posKilled (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set 
     exact_mod_cast Nat.card_pos
   unfold gsEulerRatio
   convert div_pos (mul_pos hEuler (pow_pos hCard (Fintype.card (InfinitePlace K.1)))) hReal
-
 
 set_option maxHeartbeats 1000000 in
 theorem exists_field_of_cyclic (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))

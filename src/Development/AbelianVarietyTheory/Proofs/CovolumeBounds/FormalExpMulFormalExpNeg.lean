@@ -22,20 +22,9 @@ private theorem hasSubst_sub_one {g : MvPowerSeries σ A} (hg : constantCoeff g 
     PowerSeries.HasSubst (g - 1) :=
   PowerSeries.HasSubst.of_constantCoeff_zero (by simp [hg])
 
-theorem constantCoeff_formalExp {f : MvPowerSeries σ A} (hf : constantCoeff f = 0) :
-    constantCoeff (formalExp f) = 1 := by
-  have h := constantCoeff_subst_of_zero (σ := Unit) (a := fun _ => f)
-    (PowerSeries.HasSubst.of_constantCoeff_zero hf).const (fun _ => hf) (PowerSeries.exp A)
-  rw [formalExp, PowerSeries.subst, h, ← PowerSeries.constantCoeff_eq]
-  simp
-
 theorem constantCoeff_formalLog {g : MvPowerSeries σ A} (hg : constantCoeff g = 1) :
     constantCoeff (formalLog g) = 0 :=
   PowerSeries.constantCoeff_subst_eq_zero (by simp [hg]) _ PowerSeries.constantCoeff_log
-
-theorem isUnit_formalExp {f : MvPowerSeries σ A} (hf : constantCoeff f = 0) :
-    IsUnit (formalExp f) :=
-  isUnit_iff_constantCoeff.mpr (by rw [constantCoeff_formalExp hf]; exact isUnit_one)
 
 theorem pderiv_formalExp {f : MvPowerSeries σ A} (hf : constantCoeff f = 0) (i : σ) :
     pderiv (R := A) i (formalExp f) = formalExp f * pderiv (R := A) i f := by
@@ -59,21 +48,6 @@ theorem mul_pderiv_formalLog {g : MvPowerSeries σ A} (hg : constantCoeff g = 1)
     PowerSeries.coe_substAlgHom] at h
   rw [formalLog, pderiv_powerSeries_subst hs, ← mul_assoc, h, map_sub, pderiv_one, sub_zero,
     one_mul]
-
-theorem eq_formalExp_of_pderiv {f u : MvPowerSeries σ A} (hf : constantCoeff f = 0)
-    (hu : constantCoeff u = 1) (h : ∀ i, pderiv (R := A) i u = u * pderiv (R := A) i f) :
-    u = formalExp f := by
-  haveI : HasUniqueDiv A := IsAddTorsionFree.of_module_rat A
-  have hn : constantCoeff (-f) = 0 := by simp [hf]
-  have key : ∀ v : MvPowerSeries σ A, constantCoeff v = 1 →
-      (∀ i, pderiv (R := A) i v = v * pderiv (R := A) i f) → v * formalExp (-f) = 1 := by
-    intro v hv hd
-    refine pderiv.ext (fun i => ?_) (by simp [hv, constantCoeff_formalExp hn])
-    rw [Derivation.leibniz, pderiv_formalExp hn, hd, map_neg, pderiv_one, smul_eq_mul,
-      smul_eq_mul]
-    ring
-  exact (isUnit_formalExp hn).mul_right_cancel
-    ((key u hu h).trans (key _ (constantCoeff_formalExp hf) (pderiv_formalExp hf)).symm)
 
 theorem eq_formalLog_of_pderiv {g u : MvPowerSeries σ A} (hg : constantCoeff g = 1)
     (hu : constantCoeff u = 0) (h : ∀ i, g * pderiv (R := A) i u = pderiv (R := A) i g) :
@@ -111,12 +85,6 @@ theorem formalLog_prod {κ : Type*} (s : Finset κ) {g : κ → MvPowerSeries σ
 theorem formalLog_pow (n : ℕ) {g : MvPowerSeries σ A} (hg : constantCoeff g = 1) :
     formalLog (g ^ n) = n • formalLog g := by
   simpa using formalLog_prod (Finset.range n) (g := fun _ => g) fun _ _ => hg
-
-theorem subst_formalExp {a : σ → MvPowerSeries τ A} (ha : HasSubst a)
-    {f : MvPowerSeries σ A} (hf : constantCoeff f = 0) :
-    subst a (formalExp f) = formalExp (subst a f) := by
-  rw [formalExp, formalExp, PowerSeries.subst, PowerSeries.subst,
-    subst_comp_subst_apply (PowerSeries.HasSubst.of_constantCoeff_zero hf).const ha]
 
 theorem subst_formalLog {a : σ → MvPowerSeries τ A} (ha : HasSubst a)
     {g : MvPowerSeries σ A} (hg : constantCoeff g = 1) :

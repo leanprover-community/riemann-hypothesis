@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BottomExistsIntegrable
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HoweDualityReal
@@ -52,7 +51,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DixmierCo
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LsumMapDomainSome
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FinFLin
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaIntegralsOfMinguez
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HypothesesAbsDet
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefiniteBottomDictionaryFramesExponentsKernelStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteChainFrameBottom
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralRightTranslate

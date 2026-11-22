@@ -56,16 +56,13 @@ def IsSqReps (R : Finset kˣ) : Prop :=
 
 end Lev
 
-
 variable (k) in
 abbrev th (n : ℕ) : GL (Fin n) k →* GL (Fin n) k := GlobalTheory.CuspRep.invT n k
-
 
 variable (k) in
 def Phi : GL (Fin 3) k := ⟨!![0, 0, 1; 0, -1, 0; 1, 0, 0], !![0, 0, 1; 0, -1, 0; 1, 0, 0],
   by ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three],
   by ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three]⟩
-
 
 variable (k) in
 def th' : GL (Fin 3) k →* GL (Fin 3) k := (MulAut.conj (Phi k)).toMonoidHom.comp (th k 3)
@@ -74,29 +71,17 @@ namespace Lev
 
 variable (V : Lev k)
 
-
 open Classical in
 def unitaryDoubleCosetIndicator (d : Fin 3 → kˣ) (g : GL (Fin 3) k) : ℂ := if g * (Phi k)⁻¹ ∈ V.DC d then 1 else 0
 
 def fG (ω : kˣ →* ℂˣ) (Rs Ry : Finset kˣ) (x z : kˣ) (g : GL (Fin 3) k) : ℂ :=
   ∑ e ∈ Rs, ∑ y ∈ Ry, (ω e : ℂ) * V.unitaryDoubleCosetIndicator ![x * e, y, z] g
 
-
 open Classical in
 def fZ (ω : kˣ →* ℂˣ) {n : ℕ} (d : Fin n → kˣ) (g : GL (Fin n) k) : ℂ :=
   if h : ∃ z : kˣ, (GeneralLinearGroup.scalar (Fin n) z)⁻¹ * g ∈ V.DC d then (((ω h.choose)⁻¹ : ℂˣ) : ℂ) else 0
 
-def fS (ω : kˣ →* ℂˣ) (t : kˣ) : GL (Fin 2) k → ℂ := V.fZ ω ![t, t⁻¹]
-
-def fK (ω ω' : kˣ →* ℂˣ) (Rs : Finset kˣ) (t : kˣ) (g : GL (Fin 2) k) : ℂ := ∑ e ∈ Rs, (ω e : ℂ) * V.fZ ω' ![t * e, 1] g
-
-
 end Lev
-
-structure Cone (t x z : kˣ) : Prop where
-  eq : x / z = t
-  x_lt : valuation k (x : k) < valuation k (unif k : k)
-  z_gt : 1 < valuation k (z : k)
 
 structure Pres (V : Lev k) {n : ℕ} (σ : GL (Fin n) k →* GL (Fin n) k) : Prop where
   cont : Continuous σ

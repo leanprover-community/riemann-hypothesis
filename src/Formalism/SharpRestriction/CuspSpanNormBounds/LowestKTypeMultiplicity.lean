@@ -1001,9 +1001,7 @@ section Gen
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [FiniteDimensional ℂ Wp] [NormedAddCommGroup Wq]
   [NormedSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
-
 end Gen
-
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -1045,14 +1043,6 @@ namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.BesselShellMomentBounds
 
-structure DSPk {k r : ℕ} (L : LocBessel k r) where
-  H : Type
-  [i1 : NormedAddCommGroup H]
-  [i2 : InnerProductSpace ℂ H]
-  [i3 : CompleteSpace H]
-  σ : Mx k r → (H →L[ℂ] H)
-  f : Mx k r → (L.Wq →L[ℂ] L.Wp)
-
 attribute [instance] DSPk.i1 DSPk.i2 DSPk.i3
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
@@ -1071,12 +1061,6 @@ noncomputable section
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S
-
-def KFinSmooth : Prop :=
-  ∀ (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (lam : Fin (2 * r + k + 1) → ℝ) (H : Type) [NormedAddCommGroup H]
-    [InnerProductSpace ℂ H] [CompleteSpace H]
-    (σ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (H →L[ℂ] H)), IsHCParam lam → IsDSHpk k r ε lam σ →
-    ∀ v : H, IsKFinHpk (k := k) (r := r) σ v → v ∈ smoothVecs (k := k) (r := r) σ
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 

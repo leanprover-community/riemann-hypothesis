@@ -70,9 +70,6 @@ theorem rowAct_theta (R : Type) [CommRing R] (m : ℕ) (vec : Bool) (g : Matrix 
 def psiM (R : Type) [CommRing R] (m : ℕ) : Matrix (Fin (m + 1)) (Fin (m + 1)) (MvPolynomial (Fin (m + 1)) R) :=
   Matrix.of fun a s => (if a = s then X (Fin.last m) else 0) - (if a = Fin.last m ∧ s ≠ Fin.last m then X s else 0)
 
-theorem psiM_apply (R : Type) [CommRing R] (m : ℕ) (a s : Fin (m + 1)) : psiM R m a s =
-    (if a = s then X (Fin.last m) else 0) - (if a = Fin.last m ∧ s ≠ Fin.last m then X s else 0) := rfl
-
 def psi (R : Type) [CommRing R] (m : ℕ) (vec : Bool) :
     MvPolynomial (Fin (m + 1) × Fin (m + 1)) R →ₐ[R] MvPolynomial (Fin (m + 1)) R :=
   aeval fun v => if vec then (if v.2 = 0 then X v.1 else 0) else psiM R m v.1 v.2

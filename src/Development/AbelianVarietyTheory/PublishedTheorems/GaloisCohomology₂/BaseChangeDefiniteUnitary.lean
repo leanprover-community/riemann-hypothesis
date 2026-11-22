@@ -20,11 +20,9 @@ section Linear
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
 
-
 variable (E a) in
 def splitCentre (t : ℝ) : GA E a :=
   infGL E a (Units.map (Matrix.scalar (Fin a)).toMonoidHom (expU fun _ : InfinitePlace E => (t : ℂ)))
-
 
 variable (E a) in
 def latticeGL : Subgroup (GA E a) := (ratGL E a).range ⊔ Subgroup.zpowers (splitCentre E a 1)
@@ -49,7 +47,6 @@ def IsLocCompGL (V : Submodule ℂ (Sm E a)) (w : HeightOneSpectrum (𝓞 E))
 def HasInfCharGL (V : Submodule ℂ (Sm E a)) (τ : E →+* ℂ) (m : Multiset ℂ) : Prop :=
   Multiset.card m = a ∧ ∀ u, ∀ φ ∈ V, cap τ u φ = (m.map (u + ·)).prod • φ
 
-
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField in
 omit [_root_.NumberField.IsTotallyComplex E] in
 def locProd {c n : ℕ} {N : Fin c → ℕ} (h : ∑ i, N i = n) (w : HeightOneSpectrum (𝓞 E))
@@ -61,7 +58,6 @@ end Linear
 section CM
 
 variable (E : Type) [Field E] [NumberField E] [IsCMField E] {a : ℕ}
-
 
 variable {E} in
 def IsCsdGL (V : Submodule ℂ (Sm E a)) : Prop :=
@@ -83,29 +79,23 @@ def cLoc (w : HeightOneSpectrum (𝓞 E)) : UA E n →* GL (Fin n) (w.adicComple
 
 def cEmb (τ : E →+* ℂ) : UA E n →* GL (Fin n) ℂ := (GeneralLinearGroup.map (coord τ)).comp cInf
 
-
 variable (E n) in
 def ratU : Subgroup (UA E n) := (ratGL E n).range.subgroupOf (UA E n)
-
 
 variable (E n) in
 def finU : Subgroup (UA E n) := (cInf (E := E) (n := n)).ker
 
-
 variable (E n) in
 def infU : Subgroup (UA E n) := ((GeneralLinearGroup.map (pFin E)).comp (UA E n).subtype).ker
-
 
 variable (n) in
 def locU (w : HeightOneSpectrum (𝓞 E)) : Subgroup (UA E n) :=
   finU E n ⊓ ⨅ (u : HeightOneSpectrum (𝓞 E))
     (_ : u.under (𝓞 (maximalRealSubfield E)) ≠ w.under (𝓞 (maximalRealSubfield E))), (cLoc u).ker
 
-
 variable (n) in
 def embU (τ : E →+* ℂ) : Subgroup (UA E n) :=
   infU E n ⊓ ⨅ (τ' : E →+* ℂ) (_ : InfinitePlace.mk τ' ≠ InfinitePlace.mk τ), (cEmb τ').ker
-
 
 variable (E n) in
 abbrev RU : Representation ℂ (UA E n) (UA E n → ℂ) := rightReg ℂ (UA E n) ℂ
@@ -146,26 +136,6 @@ def HasWeightAt (π : Submodule ℂ (UA E n → ℂ)) (τ : E →+* ℂ) (lam : 
 def infOfWeight (lam : DomWeight n) : Multiset ℂ :=
   Finset.univ.val.map fun k : Fin n => (lam.w k : ℂ) + (((n : ℂ) - 1) / 2 - (k : ℕ))
 
-structure IsBaseChange (π : Submodule ℂ (UA E n → ℂ)) {c : ℕ} {N : Fin c → ℕ} (h : ∑ i, N i = n)
-    (V : ∀ i, Submodule ℂ (Sm E (N i)))
-    (σ : ∀ i (w : HeightOneSpectrum (𝓞 E)), SmIrr (GL (Fin (N i)) (w.adicCompletion E)))
-    (m : Fin c → (E →+* ℂ) → Multiset ℂ) : Prop where
-  pos : ∀ i, 0 < N i
-  discrete : ∀ i, IsDiscrete (V i)
-  csd : ∀ i, IsCsdGL (V i)
-  loc : ∀ i w, IsLocCompGL (V i) w (σ i w)
-  inf : ∀ i τ, HasInfCharGL (V i) τ (m i τ)
-
-  unram : ∀ w, IsUnramU π w → GlobalTheory.LGrp.IsSpherical (locProd h w (σ · w)) (GlobalTheory.LFun.KGL w (n := n))
-
-  inert : ∀ (w : HeightOneSpectrum (𝓞 E)) (s : w.adicCompletion E →+* w.adicCompletion E) (ϖ : w.adicCompletion E)
-    (q : ℕ), (∀ x : E, s (algebraMap E _ x) = algebraMap E _ (IsCMField.complexConj E x)) → IsUnramInv ϖ s q →
-    ∀ α, HasSatAt π w s ϖ q α → GlobalTheory.LFun.HasSatGL w (locProd h w (σ · w)) (GlobalTheory.LGrp.bcParam n α)
-
-  split : ∀ w, IsSplitAt w → IsCompAlong π (locU n w) ((cLoc w).comp (locU n w).subtype) (locProd h w (σ · w))
-
-  weight : ∀ τ lam, HasWeightAt π τ lam → ∑ i, m i τ = infOfWeight lam
-
 theorem conjAd_algebraMap (x : E) :
     conjAd E (algebraMap E (Ad E) x) = algebraMap E (Ad E) (IsCMField.complexConj E x) := by
   refine ad_ext ?_ ?_
@@ -199,14 +169,6 @@ end GlobalTheory.UnitaryBC
 namespace GlobalTheory.Published
 
 open GlobalTheory.UnitaryBC
-
-def BaseChangeDefiniteUnitary : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E],
-    (∀ w : HeightOneSpectrum (𝓞 E), Algebra.IsUnramifiedAt (𝓞 (maximalRealSubfield E)) w.asIdeal) →
-    ∀ n : ℕ, 1 ≤ n → ∀ π : Submodule ℂ (UA E n → ℂ), IsAutRepU π →
-      ∃ (c : ℕ) (N : Fin c → ℕ) (h : ∑ i, N i = n) (V : ∀ i, Submodule ℂ (Sm E (N i)))
-        (σ : ∀ i (w : HeightOneSpectrum (𝓞 E)), SmIrr (GL (Fin (N i)) (w.adicCompletion E)))
-        (m : Fin c → (E →+* ℂ) → Multiset ℂ), UnitaryBC.IsBaseChange π h V σ m
 
 end GlobalTheory.Published
 

@@ -15,14 +15,11 @@ namespace Formalism.MainNotions
 
 open NumberField Formalism.BasicNotions
 
-def condE (D : D7) : ℝ := (D.host.QS : ℝ) * D.host.q * D.host.d
-
 def ShaFinOdd (D : D7) : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (e : ℕ), 0 < e → e < D.R.t → Formalism.GaloisCohomology.shaLen (D.nd.ldat p) (e : ℤ) ≠ ⊤
 
 def vvTerm (D : D7) (l : ℕ) : ℝ :=
   if l.Prime then ((∑ e ∈ Finset.Ico 1 D.R.t, D.what₂.shaLen l e : ℚ) : ℝ) * Real.log l else 0
-
 
 open Classical in
 def etaSum {D : D7} (L : SizeData₂ D) (j : ℕ) : ℝ :=

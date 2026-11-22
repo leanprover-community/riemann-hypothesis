@@ -31,43 +31,6 @@ def orbit (N₁ N : ℕ) (k : X₀ →ₗ[ℤ] X) {ι : Type} (a : ι → X₀) 
 
 end Orbit
 
-structure FSys {O : Type} [CommRing O] (bar : O → O) (q : ℕ) {s : ℕ} (W : Matrix (Fin s) (Fin s) ℤ) (N₁ p : ℕ) [Fact p.Prime]
-    (A : Type) [CommRing A] [IsLocalRing A] where
-
-  Y : Type
-
-  ev : Y → A →+* PadicAlgCl p
-  ev_le : ∀ y h, ‖ev y h‖ ≤ 1
-  ev_lt : ∀ y, ∀ h ∈ maximalIdeal A, ‖ev y h‖ < 1
-
-  X : Y → Type
-  [add : ∀ y, AddCommGroup (X y)]
-  [mod : ∀ y, Module O (X y)]
-  [fin : ∀ y, Module.Finite O (X y)]
-  [proj : ∀ y, Module.Projective O (X y)]
-  [freeZ : ∀ y, Module.Free ℤ (X y)]
-  [finZ : ∀ y, Module.Finite ℤ (X y)]
-  rank_le : ∀ y, Module.finrank O (X y) ≤ q
-
-  β : ∀ y, LinearMap.BilinForm ℤ (X y)
-  bal : ∀ y, β y ∈ balForms bar (X y)
-  pos : ∀ y x, x ≠ 0 → 0 < β y x x
-
-  sc : Y → ℝ
-  sc_pos : ∀ y, 0 < sc y
-
-  Q : Type
-
-  t : ∀ y, (Fin s → X y) → Q → PadicAlgCl p
-  t_le : ∀ y μ c, ‖t y μ c‖ ≤ Real.exp (-(sc y * qW W (β y) μ))
-  t_eq : ∀ y μ, ∃ c, ‖t y μ c‖ = Real.exp (-(sc y * qW W (β y) μ))
-  lam : ∃ C : ℝ, ∀ y x, x ≠ 0 → ∃ h ∈ maximalIdeal A, Real.exp (-(C * (sc y * β y x x))) ≤ ‖ev y h‖
-  four : ∀ (y₀ : Y) (N₀ : ℕ), ∃ N, N₀ ≤ N ∧ N₁ ∣ N ∧ ∃ k : ∀ y, X y₀ →ₗ[ℤ] X y, k y₀ = LinearMap.id ∧
-    (∀ y, IsUnimodMod O N (k y)) ∧ ∀ (m : ℕ) (a : Fin m × Fin s → X y₀) (c : Fin m → Q) (e : ℕ), ∃ f : A, ∀ y,
-      ∃ h ∈ maximalIdeal A, ∀ ε : ℝ, 0 < ε → ∃ S : Finset (Fin m × Fin s → X y), (↑S : Set _) ⊆ orbit O N₁ N (k y) a ∧
-        (∀ μ ∈ orbit O N₁ N (k y) a, μ ∉ S → Real.exp (-(sc y * ∑ i, (qW W (β y) (fun u => μ (i, u)) : ℝ))) < ε) ∧
-        ‖ev y f - ∑ μ ∈ S, ∏ i, t y (fun u => μ (i, u)) (c i)‖ ≤ max ε (‖ev y h‖ ^ e)
-
 attribute [instance] FSys.add FSys.mod FSys.fin FSys.proj FSys.freeZ FSys.finZ
 
 structure Supports {O : Type} [CommRing O] (bar : O → O) (φ : InvFun O) (d : ℕ) {X : Type} [AddCommGroup X] [Module O X]

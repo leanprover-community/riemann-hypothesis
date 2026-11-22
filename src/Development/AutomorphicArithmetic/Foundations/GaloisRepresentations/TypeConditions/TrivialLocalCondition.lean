@@ -34,17 +34,12 @@ def LGCatN {i : N.Loc} (r : N.X i → (G H.E N.Om →* GL (Fin R.nV) (N.O i))) (
 
 variable (A)
 
-def AwayRepN (i : N.Loc) (m : ℕ) (L : ∀ w, A.LP w) : Prop :=
-  ∃ r : G H.E N.Om →* GL (Fin m) (Qbar (N.l i)), ContQ N i r ∧ IsSSRep r ∧
-    ∀ w, w ∉ placesOver H.E (N.l i) → A.unr (L w) → A.wdOf i r w = L w
-
 def GalIsoN (i : N.Loc) : Prop := ∀ (P : A.AV i) (Pa : List (Part A.CG)), IsBCV N A i P Pa →
   ∃ r : G H.E N.Om →* GL (Fin R.nV) (Qbar (N.l i)),
     Continuous (fun g => ((r g : GL (Fin R.nV) (Qbar (N.l i))) : Matrix (Fin R.nV) (Fin R.nV) (Qbar (N.l i)))) ∧
     IsSSRep r ∧ ∀ w, w ∉ placesOver H.E (N.l i) →
       RelW N A (A.wdOf i r w) (A.lpTw (isoLoc N A Pa w) ((1 - (R.nV : ℝ)) / 2))
 
-def Gd (i : N.Loc) (x : N.X i) (w : PlE H) : Prop := (N.l i ≠ H.g 0 ∧ N.l i ≠ H.g 1) ∨ NcPt N A i x w
 end
 
 def LGCN (D : D7) : Prop :=

@@ -1,7 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.DataGChain
-public import Formalism.LocalRingCardinality.SpanPowerMembership.GatSetting
+public import Formalism.LocalRingCardinality.SpanPowerMembership.GatRing
 public import Formalism.SharpRestriction.GrowthBounds.DefsInst
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.SharpRestriction.GrowthBounds.WeilJacquetShalikaLaw

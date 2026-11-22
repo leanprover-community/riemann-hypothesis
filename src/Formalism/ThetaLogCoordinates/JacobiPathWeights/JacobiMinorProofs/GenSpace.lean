@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Formalism.ThetaLogCoordinates.JacobiPathWeights.GenSpaceFacts
+public import Formalism.ThetaLogCoordinates.JacobiPathWeights.StatementC
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.ExistsSuppOfEvalNe
 
 @[expose] public section

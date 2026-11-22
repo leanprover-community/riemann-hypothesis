@@ -18,7 +18,6 @@ public import Formalism.LocalToGlobal.Columns.ReferenceKernelEquivOfLastComponen
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivConcrete
 public import Formalism.LocalToGlobal.Columns.FixEColLevSym
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.RatKDeg
-public import Formalism.LocalToGlobal.Columns.RecChainUnfOne
 public import Formalism.LocalToGlobal.Columns.ChainLawPhiTop
 public import Formalism.LocalToGlobal.Columns.UnfoldingNonvanishingDoubleCosetHolds
 public import Formalism.LocalToGlobal.Columns.ChainLawXiQF

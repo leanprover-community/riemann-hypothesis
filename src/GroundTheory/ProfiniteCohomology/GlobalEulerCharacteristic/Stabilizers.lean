@@ -14,8 +14,6 @@ open scoped NumberField.LiesOver
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 section Complex
 
 variable {K L : Type*} [Field K] [Field L] [Algebra K L] [IsGalois K L]
@@ -131,7 +129,6 @@ theorem stabilizer_infPlaceOfEmbedding (v : {v : NumberField.InfinitePlace K.1 /
 variable {k N : Type*} [Field k] [AddCommGroup N] [Module k N] [FiniteDimensional k N]
   (σN : Representation k (L.1 ≃ₐ[K.1] L.1) N)
 
-
 omit [FiniteDimensional k N] [IsGalois K.1 L.1] in
 theorem finrank_invariants_comp_bot :
     Module.finrank k (Representation.invariants (σN.comp (⊥ : Subgroup (L.1 ≃ₐ[K.1] L.1)).subtype)) =
@@ -143,7 +140,6 @@ theorem finrank_invariants_comp_bot :
     subst hg
     simp
   rw [htop, finrank_top]
-
 
 open Classical in
 theorem finrank_invariants_funPermRep_infinitePlace :

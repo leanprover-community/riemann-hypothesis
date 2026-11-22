@@ -13,8 +13,6 @@ open NumberField IsDedekindDomain
 
 variable {L : Type*} [Field L] [NumberField L] [IsCMField L]
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 theorem SplitPlace.split_le_one (s : SplitPlace L) (x : 𝓞 L) : Valued.v (s.i (x : L)) ≤ 1 := by
   have hx : IsIntegral ℤ (x : L) := x.isIntegral_coe
   have h1 : IsIntegral ℤ (s.i (x : L)) := by
@@ -119,6 +117,5 @@ theorem SplitPlace.card_quot (s : SplitPlace L) :
 def SplitPlace.q (s : SplitPlace L) : ℕ := Nat.card (𝓞 L⁺ ⧸ s.v.asIdeal)
 
 def SplitPlace.Above (s : SplitPlace L) (l : ℕ) : Prop := ((l : ℕ) : 𝓞 L⁺) ∈ s.v.asIdeal
-
 
 end ReciprocityTheory.Aut

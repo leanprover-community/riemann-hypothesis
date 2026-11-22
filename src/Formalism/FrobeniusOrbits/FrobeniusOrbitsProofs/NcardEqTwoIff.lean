@@ -24,8 +24,6 @@ section CM
 
 variable (K : Type) [Field K] [NumberField K] [IsCMField K]
 
-local notation3 "K⁺" => maximalRealSubfield K
-
 theorem cases (g : K ≃ₐ[K⁺] K) : g = 1 ∨ g = IsCMField.complexConj K := by
   classical
   by_contra hne

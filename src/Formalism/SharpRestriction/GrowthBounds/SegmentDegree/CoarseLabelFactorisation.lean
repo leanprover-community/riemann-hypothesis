@@ -78,7 +78,6 @@ section Lab
 
 variable {n' r : ℕ} [NeZero n'] [NeZero r] (X : Dat n' r) (p K : ℕ)
 
-
 open Classical in
 def ellExp (l : Fin n' × Fin (r + K) →₀ ℕ) (j : ℤ) : ℤ × Fin (r + K) →₀ ℕ :=
   Finsupp.onFinset (X.toLate j ×ˢ (Finset.univ : Finset (Fin (r + K))))
@@ -88,10 +87,6 @@ def ellExp (l : Fin n' × Fin (r + K) →₀ ℕ) (j : ℤ) : ℤ × Fin (r + K)
       refine ⟨?_, Finset.mem_univ _⟩
       by_contra h
       exact hv (if_neg h))
-
-open Classical in
-theorem ellExp_apply (l : Fin n' × Fin (r + K) →₀ ℕ) (j : ℤ) (v : ℤ × Fin (r + K)) :
-    ellExp X p K l j v = if v.1 ∈ X.toLate j then l (posOf n' v.1, v.2) / p ^ X.F.dist j v.1 else 0 := rfl
 
 open Classical in
 theorem img_ellExp (l : Fin n' × Fin (r + K) →₀ ℕ) (j : ℤ) (t : Fin n') (c : Fin (r + K)) :

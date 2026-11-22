@@ -6,8 +6,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.ValNeBot
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SpecFirstDetFormNeZero
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP
 
 @[expose] public section
 

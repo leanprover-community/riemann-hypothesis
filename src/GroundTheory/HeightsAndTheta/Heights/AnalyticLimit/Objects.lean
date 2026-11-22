@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.IsOpenKappaOpenNeighbourhood
 
 @[expose] public section
@@ -21,8 +20,6 @@ open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Regular (RegChar
 noncomputable section
 
 variable {D : ℕ} {X : Type*} [TopologicalSpace X]
-
-theorem locPot_add_φ (P Q : LocPot X) (x y : X) : (P + Q).φ x y = P.φ x y + Q.φ x y := rfl
 
 def FormNonneg (A : FinHolAtlas D X) (V : Set X) (P : LocPot X) : Prop :=
   ∀ x k, ∀ y ∈ (A.chart k).target ∩ (A.chart k).symm ⁻¹' (V ∩ P.U x), ∀ w : Fin D → ℂ,
@@ -72,32 +69,6 @@ def TailLogBound (A : FinHolAtlas D X) (Yo : Set X) (r : X → ℝ) (T : Fin D �
     MIntegrable A T ((tail Yo r R₀).indicator fun x => Real.log (r x)) ∧
     mInt A T ((tail Yo r R₀).indicator fun x => Real.log (r x)) ≤
       CE * Real.log R₀ ^ (D + 1) / R₀
-
-structure System {A : FinHolAtlas D X} (R : RegChartData A) where
-
-  ph : ℝ → X → ℝ
-
-  C : ℝ
-
-  ell₀ : ℝ
-  smooth : ∀ t, 0 < t → ell₀ ≤ ell t → A.Smooth (ph t)
-  le_ph : ∀ t, 0 < t → ell₀ ≤ ell t → ∀ x ∈ R.Yo, R.φ x ≤ ph t x
-  ph_le : ∀ t, 0 < t → ell₀ ≤ ell t → ∀ x, ph t x ≤ C
-  le_log : ∀ t, 0 < t → ell₀ ≤ ell t → ∀ x, -(C * Real.log (ell t)) ≤ ph t x
-  thGe : ∀ t, 0 < t → ell₀ ≤ ell t → ThGe A R.θ (ph t) R.om (-errE C t)
-  near : ∀ t, 0 < t → ell₀ ≤ ell t → ∀ x ∈ R.Yo, R.r x ≤ ell t →
-    ph t x ≤ R.φ x + t ^ (1 / 3 : ℝ) + errE C t
-  far : ∀ t, 0 < t → ell₀ ≤ ell t → ∀ x ∈ R.Yo,
-    ph t x ≤ R.φ x + t ^ (1 / 3 : ℝ) + errE C t * R.r x
-  mono : ∀ t t₀, 0 < t → t ≤ t₀ → ell₀ ≤ ell t₀ → ∀ x, ph t x ≤ ph t₀ x + C * errE C t₀
-  c2 : ∀ (k : Fin A.n) (K : Set (Fin D → ℂ)), IsCompact K →
-    K ⊆ (A.chart k).target ∩ (A.chart k).symm ⁻¹' R.Yo →
-    TendstoUniformlyOn (fun t y => ph t ((A.chart k).symm y)) (fun y => R.φ ((A.chart k).symm y))
-        (𝓝[>] 0) K ∧
-      TendstoUniformlyOn (fun t y => fderiv ℝ (fun y' => ph t ((A.chart k).symm y')) y)
-        (fun y => fderiv ℝ (fun y' => R.φ ((A.chart k).symm y')) y) (𝓝[>] 0) K ∧
-      TendstoUniformlyOn (fun t y => fderiv ℝ (fderiv ℝ fun y' => ph t ((A.chart k).symm y')) y)
-        (fun y => fderiv ℝ (fderiv ℝ fun y' => R.φ ((A.chart k).symm y')) y) (𝓝[>] 0) K
 
 namespace System
 

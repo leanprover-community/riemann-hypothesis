@@ -113,7 +113,6 @@ def goodE (Y : NExp D.R D.host D.what₂ D.LL0 N X) (i : X.Tw) (s : X.Sig i) : P
 
 def goodS (i : X.Tw) (s : X.Sig i) : Prop := goodE bkP.ex i s
 
-
 open Classical in
 def SigG (i : X.Tw) : Finset (X.Sig i) := Finset.univ.filter (goodS bkP i)
 
@@ -166,7 +165,6 @@ def IsConjEmb (i : X.Tw) (v v' : HeightOneSpectrum (𝓞 D.host.E))
   ∀ (x : D.host.E) (n d : X.O0 i),
     IsFrac bkP i v' hv' (τ' (cE bkP i v' hv' x)) n d ↔ IsFrac bkP i v hv (τ (cE bkP i v hv (D.host.conj x))) n d
 
-
 open Classical in
 def bk (i : X.Tw) (s : X.Sig i) (k : ℕ) (ψ : GE N →* (X.Ok i k)ˣ)
     (v : HeightOneSpectrum (𝓞 D.host.E)) :
@@ -199,9 +197,6 @@ def sLen (i : X.Tw) (s : X.Sig i) (k : ℕ) (Q : Finset (HeightOneSpectrum (𝓞
   lenN (X.Ok i k) (X.l i) (selT bkP i s k Q ψ)
 
 variable (X)
-
-def v0 (i : X.Tw) (j : ℕ) (b : Bool) : ℝ≥0∞ :=
-  lenN (X.O i) (X.l i) (X.B i j b ⧸ X.Theta i j b)
 
 def kMap (i : X.Tw) (k : ℕ) : FractionRing (X.O i) →+* FractionRing (X.Ok i k) :=
   IsFractionRing.lift (g := (algebraMap (X.Ok i k) (FractionRing (X.Ok i k))).comp
@@ -275,7 +270,6 @@ def NoJump (i : X.Tw) (s : X.Sig i) : Prop :=
   ∀ v (hv : v ∈ placesOver D.host.E (X.l i)) (τ : EmbV bkP i v hv) (a : ℤ),
     Formalism.WeaklyAdmissibleFiltrations.IsJumpV (PDv bkP i v hv) (repV bkP i v hv (Tgl i s)) τ a → a < -1 ∨ (D.R.t : ℤ) < a
 
-
 open Classical in
 def PsiOk (i : X.Tw) (A Q : Finset (HeightOneSpectrum (𝓞 D.host.E))) (k' : ℕ)
     (ψ' : X.RCG i Q →* (X.Ok i k')ˣ) : Prop :=
@@ -286,11 +280,6 @@ def PsiOk (i : X.Tw) (A Q : Finset (HeightOneSpectrum (𝓞 D.host.E))) (k' : �
     (∀ g, ψ'.comp (X.art i Q) g ∈ Subgroup.zpowers (X.zk i k')) ∧
     RamExactly (ψ'.comp (X.art i Q)) ↑Q ∧
     TrivAbove (ψ'.comp (X.art i Q)) (X.l i)
-
-def partA (i : X.Tw) (Q : Finset (HeightOneSpectrum (𝓞 D.host.E))) (k' : ℕ)
-    (ψ' : X.RCG i Q →* (X.Ok i k')ˣ) (eps' : ℝ) : Prop :=
-  ∑ s ∈ SigG bkP i, sLen bkP i s k' Q (psiAt (X.side i s) (ψ'.comp (X.art i Q))) ≤
-    ENNReal.ofReal (eps' + (nu X i : ℝ) * (SigG bkP i).card)
 
 def partAT (i : X.Tw) (Q : Finset (HeightOneSpectrum (𝓞 D.host.E))) (k' : ℕ)
     (ψ' : X.RCG i Q →* (X.Ok i k')ˣ) (eps' : ℝ) : Prop :=
@@ -313,14 +302,6 @@ def SetHyp (i : X.Tw) : Prop :=
     (∀ lam, (∑ δ, X.th i ∅ lam δ) ≠ 0) ∧ (∀ lam, ∃ s : ℤ, SOk X i lam s) ∧ 100 ≤ D.R.r ∧
     ∀ k, 2 * D.R.r ≤ D.host.g k
 
-def ProjectionDerivativeEstimate (N0 : X.Tw → ℕ) (i : X.Tw) : Prop :=
-  SetHyp bkP i → ∀ eps' : ℝ, 0 < eps' → ∀ A : Finset (HeightOneSpectrum (𝓞 D.host.E)),
-  ∃ (Q : Finset (HeightOneSpectrum (𝓞 D.host.E))) (k' : ℕ) (ψ' : X.RCG i Q →* (X.Ok i k')ˣ),
-    PsiOk i A Q k' ψ' ∧ partA bkP i Q k' ψ' eps' ∧ partAT bkP i Q k' ψ' eps' ∧
-    partC N0 i Q k' ψ' eps' ∧ partD i Q k' ψ' eps'
-
-def aux₃ (N0 : X.Tw → ℕ) : Prop := ∀ i, X.NonzeroIndexPlace i → ProjectionDerivativeEstimate bkP N0 i
-
 abbrev IsotypicValuationAtRing (i : X.Tw) (s : X.Sig i) : Prop :=
     (∀ v, v ∉ placesOver D.host.E (X.l i) → (∀ k, v ∉ placesOver D.host.E (D.host.g k)) →
       ∀ A : ValuationSubring N.Om, IsPlaceOver A v → ∀ σ ∈ Ine (F := D.host.E) A, X.rhoS i s σ = 1) ∧
@@ -342,13 +323,11 @@ abbrev IsotypicValuationAtRing (i : X.Tw) (s : X.Sig i) : Prop :=
 
 def adm1 : Prop := ∀ i, X.NonzeroIndexPlace i → ∀ s : X.Sig i, IsotypicValuationAtRing bkP i s
 
-
 variable (X) in
 def rbar (i : X.Tw) (s : X.Sig i) (g : GE N) :
     Matrix (Fin D.R.r) (Fin D.R.r) (IsLocalRing.ResidueField (X.O0 i)) :=
   ((X.rhoS i s g : GL (Fin D.R.r) (X.O0 i)) : Matrix (Fin D.R.r) (Fin D.R.r) (X.O0 i)).map
     (IsLocalRing.residue (X.O0 i))
-
 
 variable (X) in
 abbrev ValuationStabilityAtRing (i : X.Tw) (s : X.Sig i) : Prop :=
@@ -360,10 +339,8 @@ abbrev ValuationStabilityAtRing (i : X.Tw) (s : X.Sig i) : Prop :=
           (rbar X i s σ - (IsLocalRing.residue (X.O0 i)
             ((chiS i s σ : (X.O0 i)ˣ) : X.O0 i)) • (1 : Matrix _ _ _)).det ≠ 0
 
-
 variable (X) in
 def adm2 : Prop := ∀ i, X.NonzeroIndexPlace i → ∀ s : X.Sig i, ValuationStabilityAtRing X i s
-
 
 variable (D) in
 def adm3 : Prop :=
@@ -405,7 +382,6 @@ def adm9 (N0 : X.Tw → ℕ) : Prop :=
 def eq' {K : Type} [Field K] (Y qms : K) (q : ℕ) : K :=
   (1 - Y * qms) * (1 - Y⁻¹ * qms) + ((q : K) - 1) * qms ^ 2
 
-
 open Classical in
 def adm10 : Prop :=
   ∀ i, X.NonzeroIndexPlace i → ∀ (Q : Finset (HeightOneSpectrum (𝓞 D.host.E))), QOk X i Q →
@@ -420,7 +396,6 @@ def adm10 : Prop :=
               (((normV P : ℕ) : FractionRing (X.Ok i k)) ^ (-s)) (normV P) *
             thEval X i ((Q.erase P).erase Pb) lam k ψ
 
-
 variable {X}
 
 def AdmACD (N0 : X.Tw → ℕ) : Prop :=
@@ -434,10 +409,8 @@ abbrev BK := Gen.BKPh D.ntw
 
 def bk0 : BK D := ⟨D.ntwbr, D.nexp⟩
 
-
 variable {D} in
 def pin (bkP : BK D) : BK D := ⟨bkP.br, D.nexp⟩
-
 
 variable {D} in
 def adm1 (bkP : BK D) : Prop := Gen.adm1 bkP
@@ -453,11 +426,6 @@ def adm8 : Prop := Gen.adm8 D.ntw D.nexp
 def adm9 (N0 : D.ntw.Tw → ℕ) : Prop := Gen.adm9 D.ntw N0
 
 def adm10 : Prop := Gen.adm10 D.ntw
-
-def AdmACD (bkP : BK D) (N0 : D.ntw.Tw → ℕ) : Prop :=
-  adm1 bkP ∧ adm2 D ∧ adm3 D ∧ ArchimedeanSignatureMatching ∧ adm9 D N0 ∧ adm10 D
-
-def aux₃ (bkP : BK D) (N0 : D.ntw.Tw → ℕ) : Prop := Gen.aux₃ (pin bkP) N0
 
 end Formalism.MainNotions.BlochKatoReduction
 

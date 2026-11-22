@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.SharpRestriction.Divisibility.WeightThresholdDefs
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsFlagModelHermSum
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToNatLengthEqRangeAddRange
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsTorsionFreeOfForallExists
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneCompOfIsGrpPullback
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
@@ -29,19 +28,9 @@ open scoped CategoryTheory.Obj
 
 namespace GlobalTheory.ShFam.Pad
 
-structure ProjCode (R : Type) [CommRing R] : Type where
-
-  n : ℕ
-
-  I : (PSpace R n).IdealSheafData
-
 namespace ProjCode
 
 variable {R : Type} [CommRing R] (C : ProjCode R)
-
-def X : Scheme.{0} := C.I.subscheme
-
-def str : C.X ⟶ Sp R := C.I.subschemeι ≫ PSpace.str R C.n
 
 instance algebra : Algebra R Γ(C.X, ⊤) :=
   ((Scheme.ΓSpecIso (.of R)).inv ≫ C.str.appTop).hom.toAlgebra
@@ -71,63 +60,17 @@ theorem isArithVar_toSpZ {k : Type} [CommRing k] {Y : Scheme.{0}} {p : Y ⟶ Sp 
     specZIsTerminal.hom_ext (p ≫ spMap (Int.castRingHom k))
       (toSpZ Y ≫ spMap (Int.castRingHom ℤ)) ▸ h.flat, h.dim_eq⟩
 
-structure PPCode (S : Scheme.{0}) : Type where
-
-  C : ProjCode ℤ
-
-  π : C.X ⟶ S
-
-  [grp : GrpObj (Over.mk π)]
-
-  isAb : IsAbelianScheme (Over.mk π)
-
-  g : ℕ
-
-  pos : 1 ≤ g
-
-  smoothDim : SmoothOfRelativeDimension g π
-
-  c : SmallPic (Over.mk π ⊗ Over.mk π).left
-
-  isPol : IsPrincipalPol (Over.mk π) (smallPicEquiv _ c)
-
 namespace PPCode
 
 variable {S S' : Scheme.{0}}
 
-def P (Q : PPCode S) : PPAS S :=
-  letI := Q.grp
-  { A := Over.mk Q.π, isAb := Q.isAb, g := Q.g, smoothDim := Q.smoothDim,
-    c := smallPicEquiv _ Q.c, isPol := Q.isPol }
-
 end PPCode
-
-structure Surf : Type where
-
-  C : ProjCode ℤ
-
-  arith : IsArithVar C.str 1
-
-  A : PPCode C.X
 
 namespace Surf
 
 variable (s : Surf)
 
-
 end Surf
-
-structure SurfFp : Type where
-
-  p : ℕ
-
-  [prime : Fact p.Prime]
-
-  C : ProjCode (ZMod p)
-
-  surf : IsProjSurface (ZMod p) C.X
-
-  A : PPCode C.X
 
 namespace SurfFp
 
@@ -135,26 +78,11 @@ attribute [instance] prime
 
 variable (s : SurfFp)
 
-
 end SurfFp
-
-structure SurfSt : Type 1 where
-
-  Surf : Type
-
-  surfCh2 : Surf → ℝ
-
-  surfDegOm : Surf → ℝ
-
-  SurfFp : Type
-
-  surfFpCh2 : SurfFp → ℝ
 
 namespace SurfSt
 
 variable {D : D7}
-
-def of (X : DivX D) : SurfSt := ⟨X.Surf, X.surfCh2, X.surfDegOm, X.SurfFp, X.surfFpCh2⟩
 
 end SurfSt
 

@@ -15,7 +15,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HasArcDataIff
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AdmissibleBasePowerSeries
-public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsPrimitiveRootArcRoot
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.OneAddZeta21PowSevenAddPowFourteenEqZero
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LinearUniformisationTriplesTorsionStatement
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsModuliSchemePolarizedAbelianLevelStatement
@@ -40,15 +39,6 @@ namespace GlobalTheory.TorusPart
 
 variable {S S' S'' : Scheme.{0}}
 
-def Cochar (G : Over S) [GrpObj G] : Type := {l : Gm S ⟶ G // IsMonHom l}
-
-def cocharSubgroup (G : Over S) [GrpObj G] [IsCommMonObj G] : Subgroup (Gm S ⟶ G) where
-  carrier := {l | IsMonHom l}
-  mul_mem' := fun {a b} (_ : IsMonHom a) (_ : IsMonHom b) => Serre.isMonHom_mul a b
-  one_mem' := Serre.isMonHom_one
-  inv_mem' := fun {a} (_ : IsMonHom a) => by
-    rw [← zpow_neg_one]; exact Serre.isMonHom_zpow a (-1)
-
 namespace Cochar
 
 section Basic
@@ -60,10 +50,6 @@ instance isMonHom (l : Cochar G) : IsMonHom l.1 := l.2
 variable [IsCommMonObj G] [IsCommMonObj H] [IsCommMonObj K]
 
 instance : AddCommGroup (Cochar G) := inferInstanceAs (AddCommGroup (Additive (cocharSubgroup G)))
-
-def map (u : G ⟶ H) [IsMonHom u] : Cochar G →+ Cochar H :=
-  AddMonoidHom.mk' (fun l => ⟨l.1 ≫ u, inferInstance⟩) fun l m =>
-    Subtype.ext (MonObj.mul_comp l.1 m.1 u)
 
 end Basic
 
@@ -92,15 +78,6 @@ theorem eq_pullTorus_iff (h : IsGrpPullback G' G f φ) (i : splitTorus S X ⟶ G
 instance isMonHom_pullTorus (h : IsGrpPullback G' G f φ) (i : splitTorus S X ⟶ G) [IsMonHom i] :
     IsMonHom (pullTorus h i) :=
   Out.PullGtPf.isMonHom_of_grpPullback (SplitTorus.isGrpPullback_bcMap f X) h i _ (pullTorus_left h i)
-
-theorem pullTorus_mul (h : IsGrpPullback G' G f φ) (i j : splitTorus S X ⟶ G) :
-    pullTorus h (i * j) = pullTorus h i * pullTorus h j := by
-  let b : Over.mk ((splitTorus S' X).hom ≫ f) ⟶ splitTorus S X :=
-    Over.homMk (bcMap f X) (SplitTorus.bcMap_hom f X)
-  have k := h.2 _ (pullTorus h i) (pullTorus h j) (b ≫ i) (b ≫ j) (pullTorus_left h i).symm
-    (pullTorus_left h j).symm
-  rw [← MonObj.comp_mul] at k
-  exact ((eq_pullTorus_iff h _ _).2 k.symm).symm
 
 theorem bcMap_comp (g : S'' ⟶ S') (f : S' ⟶ S) : bcMap (g ≫ f) X = bcMap g X ≫ bcMap f X := by
   apply pullback.hom_ext
@@ -155,15 +132,9 @@ variable [IsCommMonObj G] [IsCommMonObj G'] [IsCommMonObj G'']
 
 namespace Cochar
 
-def pull (h : IsGrpPullback G' G f φ) : Cochar G →+ Cochar G' :=
-  AddMonoidHom.mk' (fun l => ⟨pullTorus h l.1, inferInstance⟩) fun l m =>
-    Subtype.ext (pullTorus_mul h l.1 m.1)
-
 end Cochar
 
 end Pull
-
-abbrev Char (G : Over S) [GrpObj G] [IsCommMonObj G] : Type := Cochar G →+ ℤ
 
 namespace Char
 
@@ -180,10 +151,6 @@ end Char
 section Triple
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
-
-def CocharOf (t : SAB H S) : Type := Cochar t.G
-
-def CharOf (t : SAB H S) : Type := Char t.G
 
 namespace CocharOf
 
@@ -204,32 +171,7 @@ section Torus
 variable {G : Over S} [GrpObj G] [IsCommMonObj G] {G' : Over S'} [GrpObj G'] [IsCommMonObj G']
   {f : S' ⟶ S} {φ : G'.left ⟶ G.left} {X Y : Type} [AddCommGroup X] [AddCommGroup Y]
 
-def torusCochar (S : Scheme.{0}) (l : X →+ ℤ) : Gm S ⟶ splitTorus S X :=
-  torusMap S ((AddEquiv.ulift.symm : ℤ ≃+ ULift.{0} ℤ).toAddMonoidHom.comp l)
-
 instance (l : X →+ ℤ) : IsMonHom (torusCochar S l) := SplitTorus.isMonHom_torusMap _
-
-theorem torusCochar_add (l m : X →+ ℤ) :
-    torusCochar S (l + m) = torusCochar S l * torusCochar S m := by
-  rw [torusCochar, torusCochar, torusCochar, AddMonoidHom.comp_add, SplitTorus.torusMap_add]
-
-def ofTorus (i : splitTorus S X ⟶ G) [IsMonHom i] : (X →+ ℤ) →+ Cochar G :=
-  AddMonoidHom.mk' (fun l => ⟨torusCochar S l ≫ i, inferInstance⟩) fun l m => Subtype.ext
-    ((congrArg (· ≫ i) (torusCochar_add l m)).trans (MonObj.mul_comp _ _ i))
-
-theorem ofTorus_injective [Nonempty S] (i : splitTorus S X ⟶ G) [IsMonHom i] [Mono i] :
-    Function.Injective (ofTorus i) := fun l m e => by
-  have k := SplitTorus.torusMap_injective ((cancel_mono i).1 (congrArg Subtype.val e))
-  exact AddMonoidHom.ext fun x => congrArg ULift.down (DFunLike.congr_fun k x)
-
-theorem mem_range_ofTorus [ConnectedSpace S] (i : splitTorus S X ⟶ G) [IsMonHom i] (l : Cochar G)
-    (u : Gm S ⟶ splitTorus S X) [IsMonHom u] (e : u ≫ i = l.1) : ∃ m, ofTorus i m = l := by
-  obtain ⟨v, rfl⟩ := SplitTorus.exists_eq_torusMap u
-  exact ⟨(AddEquiv.ulift : ULift.{0} ℤ ≃+ ℤ).toAddMonoidHom.comp v, Subtype.ext e⟩
-
-theorem ofTorus_id_bijective [ConnectedSpace S] :
-    Function.Bijective (ofTorus (𝟙 (splitTorus S X))) :=
-  ⟨ofTorus_injective _, fun l => mem_range_ofTorus _ l l.1 (Category.comp_id _)⟩
 
 section Ext
 
@@ -237,23 +179,7 @@ variable {K : Type} [Field K] {G : Over (Sp K)} [GrpObj G] [IsCommMonObj G]
 
 end Ext
 
-theorem eval_bijective (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] :
-    Function.Bijective (AddMonoidHom.eval : X →+ (X →+ ℤ) →+ ℤ) := by
-  have hb := Module.bijective_dual_eval ℤ X
-  refine ⟨fun x y e => hb.1 (LinearMap.ext fun l => DFunLike.congr_fun e l.toAddMonoidHom), fun F => ?_⟩
-  obtain ⟨x, hx⟩ := hb.2 (F.comp (LinearMap.toAddMonoidHom' (R₁ := ℤ) (R₂ := ℤ))).toIntLinearMap
-  exact ⟨x, AddMonoidHom.ext fun l => LinearMap.congr_fun hx l.toIntLinearMap⟩
-
 variable [Module.Free ℤ X] [Module.Finite ℤ X]
-
-def charEquivOfTorus (i : splitTorus S X ⟶ G) [IsMonHom i] (hi : Function.Bijective (ofTorus i)) :
-    X ≃+ Char G :=
-  (AddEquiv.ofBijective _ (eval_bijective X)).trans
-    (AddEquiv.addMonoidHomCongrLeft (AddEquiv.ofBijective _ hi))
-
-def charEquivSplitTorus (S : Scheme.{0}) [ConnectedSpace S] (X : Type) [AddCommGroup X]
-    [Module.Free ℤ X] [Module.Finite ℤ X] : X ≃+ Char (splitTorus S X) :=
-  charEquivOfTorus (𝟙 _) ofTorus_id_bijective
 
 end Torus
 
@@ -266,28 +192,23 @@ section Coord
 variable {D : Out.DegPre R} {e : ℕ} {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G]
   {G₀ : Over (Sp A)} [GrpObj G₀] {φ : G₀.left ⟶ G.left}
 
-
 omit [IsDomain R] in
 def thickPt (e : ℕ) (hρ : ∀ x ∈ I ^ (e + 1), ρ x = 0) : Sp A ⟶ Sp (R ⧸ I ^ (e + 1)) :=
   spMap (Ideal.Quotient.lift _ ρ hρ)
-
 
 omit [IsDomain R] in
 theorem thickPt_thick (hρ : ∀ x ∈ I ^ (e + 1), ρ x = 0) :
     thickPt e hρ ≫ Out.thick R I e = spMap ρ := by
   rw [thickPt, ← Spec.map_comp]; rfl
 
-
 omit [IsDomain R] [IsCommMonObj G] in
 def thickLift (hρ : ∀ x ∈ I ^ (e + 1), ρ x = 0) (h : IsGrpPullback G₀ G (spMap ρ) φ) :
     G₀.left ⟶ (Out.thickObj R I e G).left :=
   pullback.lift φ (G₀.hom ≫ thickPt e hρ) (by rw [Category.assoc, thickPt_thick, h.1.w])
 
-
 omit [IsDomain R] [IsCommMonObj G] in
 theorem thickLift_fst (hρ : ∀ x ∈ I ^ (e + 1), ρ x = 0) (h : IsGrpPullback G₀ G (spMap ρ) φ) :
     thickLift hρ h ≫ pullback.fst G.hom (Out.thick R I e) = φ := pullback.lift_fst _ _ _
-
 
 omit [IsDomain R] [IsCommMonObj G] in
 theorem isGrpPullback_thickLift (hρ : ∀ x ∈ I ^ (e + 1), ρ x = 0) (h : IsGrpPullback G₀ G (spMap ρ) φ) :
@@ -334,7 +255,6 @@ end Coord
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {t : SAB H (Sp R)}
   {t₀ : SAB H (Sp A)}
 
-
 omit [IsDomain R] in
 theorem map_pow_one_eq_zero (hρ : ∀ x ∈ I, ρ x = 0) : ∀ x ∈ I ^ (0 + 1), ρ x = 0 :=
   fun x hx => hρ x (Ideal.pow_le_self (Nat.succ_ne_zero 0) hx)
@@ -377,7 +297,6 @@ theorem torus_comp_act (P : PELUnif I t) (hρ : ∀ x ∈ I, ρ x = 0) (m : SABM
 variable [IsLocalRing A] [IsNoetherianRing A]
 
 end PELUnif
-
 
 omit [IsDomain R] in
 theorem map_eq_zero_of_isLocalHom [IsLocalRing R] {k : Type} [Field k] (ρ : R →+* k) [IsLocalHom ρ] :

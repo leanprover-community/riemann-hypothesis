@@ -15,8 +15,6 @@ open Formalism.MainNotions.BigCellDensity Formalism.FourierDecayAlt.P.Dx2.Rad Fo
 
 variable {r : ℕ} (pN : Formalism.MainNotions.S.Point ℂ (r + 1))
 
-local notation "W" => wPt pN
-
 theorem mul_unit_mp (c : ℂ) (h : ‖c‖ = 1) : MeasurePreserving (fun z : ℂ => c * z) volume volume := by
   have hc : c ∈ Submonoid.unitSphere ℂ := by simp [Submonoid.unitSphere, h]
   have key := (rotation (⟨c, hc⟩ : Circle)).measurePreserving

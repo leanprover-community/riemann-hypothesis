@@ -192,9 +192,6 @@ def piRep (π : Formalism.L2.NG.FinTyp L n) : Formalism.AUTREP.GAf L n →* Modu
     ext f x
     simp [LinearMap.restrict_apply, rt_apply, mul_assoc]
 
-theorem piRep_coe (π : Formalism.L2.NG.FinTyp L n) (h : Formalism.AUTREP.GAf L n) (f : π.S) :
-    ((piRep π h f : π.S) : Formalism.AUTREP.GAf L n → ℂ) = Formalism.L2.NG.rt L n h f := rfl
-
 def stabN (π : Formalism.L2.NG.FinTyp L n) (H : Subgroup (Formalism.AUTREP.GAf L n)) (N : ℕ) : Subgroup H where
   carrier := {s | ∀ x : π.S, (∀ κ, Formalism.L2.NG.Cong L n N κ → piRep π κ x = x) → piRep π (s : Formalism.AUTREP.GAf L n) x = x}
   one_mem' := fun x _ => by simp

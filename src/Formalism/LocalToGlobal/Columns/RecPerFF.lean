@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.FirstKernelEqLastComponentKernel
-public import Formalism.LocalToGlobal.Columns.RecChainUnfOne
 
 @[expose] public section
 

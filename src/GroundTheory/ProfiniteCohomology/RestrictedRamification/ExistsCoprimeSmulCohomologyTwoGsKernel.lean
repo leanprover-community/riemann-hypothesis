@@ -15,8 +15,6 @@ open CategoryTheory Limits NumberField IsDedekindDomain IntermediateField Ground
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
 
 abbrev gsKernel : Subgroup K.1.fixingSubgroup := (gsRestrict K S).ker

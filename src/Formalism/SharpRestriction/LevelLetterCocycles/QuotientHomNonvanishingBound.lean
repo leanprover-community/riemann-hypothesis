@@ -46,18 +46,6 @@ variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂
 def epsO (i : N.Loc) : G H.E N.Om →* (N.O i)ˣ :=
   (Units.map (algebraMap ℤ_[N.l i] (N.O i)).toMonoidHom).comp (cycZ (F := H.E) (Ω := N.Om) (N.l i))
 
-def Wp (i : N.Loc) (ρ : G H.E N.Om →* GL (Fin R.r) (N.O i)) :
-    Representation (N.O i) (G H.E N.Om) (Fin R.r → N.O i) :=
-  twistRep (glRep ρ) (N.chi i 1)⁻¹
-
-def T2 (i : N.Loc) (ρ : G H.E N.Om →* GL (Fin R.r) (N.O i)) :
-    Representation (N.O i) (G H.E N.Om) (Module.Dual (N.O i) (Fin R.r → N.O i)) :=
-  twistRep (Representation.dual (Wp N i ρ)) (epsO N i)
-
-def WpK (i : N.Loc) (ρ : G H.E N.Om →* GL (Fin R.r) (N.O i)) := coefRep (Wp N i ρ) (FractionRing (N.O i))
-
-def WpKO (i : N.Loc) (ρ : G H.E N.Om →* GL (Fin R.r) (N.O i)) := coefRep (Wp N i ρ) (KmodO (N.O i))
-
 def KOtw (i : N.Loc) (e : ℤ) : Representation (N.O i) (G H.E N.Om) (KmodO (N.O i)) :=
   Formalism.GaloisCohomology.scalRep (KmodO (N.O i)) ((epsO N i) ^ (-e))
 
@@ -297,34 +285,6 @@ def MtLow (i : N.Loc) (Z' : Finset (N.X i)) :
     Submodule (N.O i) (TensorProduct (N.O i) (KK N i) (N.Mt i)) :=
   MtIn N i ⊓ (VS N i (Z' : Set (N.X i))).restrictScalars (N.O i)
 
-theorem stdO_inj (i : N.Loc) (k : ℕ) :
-    Function.Injective (LinearMap.compLeft (Algebra.linearMap (N.O i) (KK N i)) (Fin k)) := by
-  intro u v h
-  funext j
-  exact IsFractionRing.injective (N.O i) (KK N i) (congrFun h j)
-
-def stdLat (i : N.Loc) {Γ : Type} [Group Γ] {k : ℕ} (M : Γ →* Matrix (Fin k) (Fin k) (N.O i)) :
-    Lattice (O := N.O i) (matRep (mapM (toK N i) M)) where
-  T := stdO N i k
-  stable g x hx := by
-    obtain ⟨u, rfl⟩ := hx
-    refine ⟨(M g).mulVec u, ?_⟩
-    funext j
-    simp only [LinearMap.compLeft_apply, Function.comp_apply, Algebra.linearMap_apply]
-    show _ = ((M g).map (algebraMap (N.O i) (KK N i))).mulVec _ j
-    exact RingHom.map_mulVec (algebraMap (N.O i) (KK N i)) (M g) u j
-  fg := by
-    rw [stdO, LinearMap.range_eq_map]
-    exact (Module.Finite.fg_top).map _
-  free := Module.Free.of_equiv (LinearEquiv.ofInjective _ (stdO_inj N i k))
-  span := by
-    rw [eq_top_iff, ← (Pi.basisFun (KK N i) (Fin k)).span_eq]
-    apply Submodule.span_mono
-    rintro _ ⟨j, rfl⟩
-    refine ⟨Pi.single j 1, ?_⟩
-    funext j'
-    simp [Pi.single_apply]
-
 def actRep {O LL G V : Type} [CommRing O] [Field LL] [Algebra O LL] [Group G] [AddCommGroup V]
     [Module LL V] [Module O V] [IsScalarTower O LL V] {ρ : Representation LL G V}
     (L : Lattice (O := O) ρ) : Representation O G (V ⧸ L.T) where
@@ -355,41 +315,6 @@ variable [∀ i, Algebra ℚ_[N.l i] (KK N i)] [∀ i, TopologicalSpace (KK N i)
 open Classical
 
 variable (i : N.Loc) (ρ : N.X i → (GE N →* GL (Fin R.r) (N.O i)))
-
-def WKO (π : N.X i) : Representation (N.O i) (GE N) (KOr N i) := actRep (stdLat N i (WpO N i ρ π))
-
-def bkW (π : N.X i) (w : HeightOneSpectrum (𝓞 H.E))
-    {G : Type} [Group G] [TopologicalSpace G] {K₀ Kw B BdR : Type} [Field K₀] [Field Kw]
-    [Algebra ℚ_[N.l i] K₀] [Algebra ℚ_[N.l i] Kw] [Algebra K₀ Kw] [IsScalarTower ℚ_[N.l i] K₀ Kw]
-    [CommRing B] [CommRing BdR] [Algebra ℚ_[N.l i] B] [Algebra K₀ B] [IsScalarTower ℚ_[N.l i] K₀ B]
-    [Algebra ℚ_[N.l i] BdR] [Algebra K₀ BdR] [Algebra Kw BdR] [IsScalarTower ℚ_[N.l i] Kw BdR]
-    [IsScalarTower K₀ Kw BdR] [IsScalarTower ℚ_[N.l i] K₀ BdR]
-    (PD : PeriodData G ℚ_[N.l i] K₀ Kw B BdR) (ι : G →* Gw N w) :
-    Submodule (N.O i) (H1 ((WKO N i ρ π).comp (decS N w))) :=
-  ((Z1 ((WKO N i ρ π).comp (decS N w))).comap (Submodule.subtype _) ⊓
-    (HfD PD (stdLat N i (((WpO N i ρ π).comp (decS N w)).comp ι))).comap
-      ((LinearMap.funLeft (N.O i) (KOr N i) ι).comp (Submodule.subtype _))).map (Submodule.mkQ _)
-
-def selPi (π : N.X i)
-    (Ll : ∀ v, Submodule (N.O i) (H1 ((WKO N i ρ π).comp (Dec (F := H.E) (N.plOm.1 v)).subtype))) :
-    Submodule (N.O i) (H1 (WKO N i ρ π)) :=
-  Formalism.GaloisCohomology.SelAll (WKO N i ρ π) N.plOm
-    (Formalism.GaloisCohomology.bkCond (WKO N i ρ π) N.plOm (N.l i) (↑(N.S i ∪ N.Q i)) Ll)
-
-def jW (π : N.X i) (w : HeightOneSpectrum (𝓞 H.E))
-    {G : Type} [Group G] [TopologicalSpace G] {K₀ Kw B BdR : Type} [Field K₀] [Field Kw]
-    [Algebra ℚ_[N.l i] K₀] [Algebra ℚ_[N.l i] Kw] [Algebra K₀ Kw] [IsScalarTower ℚ_[N.l i] K₀ Kw]
-    [CommRing B] [CommRing BdR] [Algebra ℚ_[N.l i] B] [Algebra K₀ B] [IsScalarTower ℚ_[N.l i] K₀ B]
-    [Algebra ℚ_[N.l i] BdR] [Algebra K₀ BdR] [Algebra Kw BdR] [IsScalarTower ℚ_[N.l i] Kw BdR]
-    [IsScalarTower K₀ Kw BdR] [IsScalarTower ℚ_[N.l i] K₀ BdR]
-    (PD : PeriodData G ℚ_[N.l i] K₀ Kw B BdR) (ι : G →* Gw N w) : ℕ :=
-  finrank (KK N i) (FiniteCohomology PD (matRep (mapM (toK N i) (((WpO N i ρ π).comp (decS N w)).comp ι))))
-
-def h0W (π : N.X i) (w : HeightOneSpectrum (𝓞 H.E)) : ℚ :=
-  lenUnit (O := N.O i) (N.l i) ↥(Representation.invariants ((WKO N i ρ π).comp (decS N w)))
-
-def lenCol (e' : ℕ) (j : ℕ) (π : N.X i) (w : HeightOneSpectrum (𝓞 H.E)) : ℚ :=
-  (e' : ℚ) + (j : ℚ) * ((e' : ℚ) + N.vdel i) + 2 * N.vdel i + h0W N i ρ π w
 
 end Sel
 
@@ -683,7 +608,6 @@ def vecS (k : ℕ) : (Fin k → FractionRing O) →ₛₗ[Bw.eO.toRingHom] (Fin 
     simp only [Pi.smul_apply, Algebra.smul_def, map_mul, toLLK_alg]
     rfl
 
-
 set_option synthInstance.maxHeartbeats 100000 in
 set_option synthInstance.maxHeartbeats 400000 in
 def phi (k : ℕ) : KOG O k →ₛₗ[Bw.eO.toRingHom] ((Fin k → LLw Bw) ⧸ stdG (Ow Bw) (LLw Bw) k) :=
@@ -692,7 +616,6 @@ def phi (k : ℕ) : KOG O k →ₛₗ[Bw.eO.toRingHom] ((Fin k → LLw Bw) ⧸ s
     refine ⟨fun j => Bw.eO (u j), ?_⟩
     funext j
     exact (toLLK_alg Bw (u j)).symm)
-
 
 set_option synthInstance.maxHeartbeats 100000 in
 set_option synthInstance.maxHeartbeats 400000 in
@@ -705,7 +628,6 @@ def Phi {k : ℕ} (rho : Representation O ↥Gw (KOG O k)) :
   map_smul' c a := by
     funext g
     exact (phi Bw k).map_smulₛₗ c _
-
 
 set_option synthInstance.maxHeartbeats 100000 in
 set_option synthInstance.maxHeartbeats 400000 in
@@ -745,7 +667,6 @@ variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] (A : 
   (l : ℕ) [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [Algebra ℤ_[l] O] [TopologicalSpace O]
   (P : LocPrime l)
   (nb : ∀ w, w ∈ placesOver E l → LocBridge l E Ω (Dec (F := E) (A.1 w)) O)
-
 
 open Classical in
 def LlG {k : ℕ} (M : Formalism.ConjugateSelfDual.G E Ω →* Matrix (Fin k) (Fin k) O) :
@@ -843,9 +764,6 @@ def IsCrysW : Prop := (nbr i w hw).IsCrysW (L (N.l i)) (r.comp (decS N w))
 def IsdRW : Prop := (nbr i w hw).IsdRW (L (N.l i)) (r.comp (decS N w))
 
 def IsPotCrysW : Prop := (nbr i w hw).IsPotCrysW (L (N.l i)) (r.comp (decS N w))
-
-def IsJumpW (τ : Kw nbr i w hw →ₐ[ℚ_[N.l i]] LL nbr i w hw) (a : ℤ) : Prop :=
-  (nbr i w hw).IsJumpW (L (N.l i)) (r.comp (decS N w)) τ a
 
 end Cr
 

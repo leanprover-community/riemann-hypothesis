@@ -5,7 +5,6 @@ public import Formalism.SubspaceCounting.SubspaceCountingProofs.LengthLayers
 public import Formalism.SubspaceCounting.StatementB
 public import Formalism.SubspaceCounting.SubspaceCountingProofs.ManyOrbits
 public import Formalism.SubspaceCounting.SubspaceCountingProofs.QVandermonde
-public import Formalism.SubspaceCounting.SubspaceCountingProofs.TopsChoicePartA
 public import Formalism.SubspaceCounting.SubspaceCountingProofs.SubspaceCount
 public import Formalism.SubspaceCounting.SubspaceCountingProofs.TypeIIDown
 public import Formalism.SubspaceCounting.SubspaceCountingProofs.WalkSharp

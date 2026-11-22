@@ -27,8 +27,6 @@ namespace GlobalTheory.CompanionTheory.StdFstTheta
 
 variable {D : D7}
 
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
-
 theorem hom_sum {R R' ι : Type} [CommRing R] [CommRing R'] (f : R →+* R') (p : ι → R) (s : Finset ι) :
     f (∑ i ∈ s, p i) = ∑ i ∈ s, f (p i) := map_sum f p s
 
@@ -173,8 +171,6 @@ namespace GlobalTheory.CompanionTheory.StdFstTheta
 
 variable {D : D7}
 
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
-
 theorem coe_nat {R : Type} [CommRing R] (A : Subring R) (n : ℕ) : (((n : A)) : R) = n := map_natCast A.subtype n
 
 theorem hom_nsmul {R R' : Type} [CommRing R] [CommRing R'] (f : R →+* R') (n : ℕ) (a : R) : f (n • a) = n • f a :=
@@ -220,7 +216,6 @@ theorem exists_isUnitDet {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e
   obtain ⟨w, hw⟩ := hU'.exists_right_inv
   obtain ⟨x', a, b, d⟩ := exists_unit (u := 1 - toEAf D e + toEAf D e * N'.det) (v := (w : EAf D)) (congrArg Subtype.val hw)
   exact ⟨x', a, b, by rw [d]; exact w.2⟩
-
 
 set_option maxHeartbeats 2000000 in
 theorem nu_eq {ν : (AE D)ˣ →* Circle} {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e S) {n c : ℕ}
@@ -343,9 +338,6 @@ namespace GlobalTheory.CompanionTheory.StdFstTheta
 
 variable {D : D7}
 
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
-
-
 set_option maxHeartbeats 1000000 in
 theorem stdFst_shift {ν : (AE D)ˣ →* Circle} {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e S)
     {I : Ideal (𝓞 D.host.E)} {n₀ n c : ℕ} (hn₀ : ((n₀ : ℕ) : 𝓞 D.host.E) ∈ I)
@@ -380,7 +372,6 @@ theorem stdFst_shift {ν : (AE D)ˣ →* Circle} {e : AE D} {S : Finset (Pl D.ho
     rw [h, Nat.cast_mul n₀]
     ring
   · rw [if_neg hcnd, if_neg fun h' => hcnd ⟨hh.1 h'.1, hint.1 h'.2.1, hid.1 h'.2.2⟩]
-
 
 set_option maxHeartbeats 1000000 in
 theorem stdFst_isSB {ν : (AE D)ˣ →* Circle} (hν : Continuous ν) {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e S)

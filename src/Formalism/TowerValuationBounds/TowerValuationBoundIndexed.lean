@@ -10,22 +10,6 @@ namespace Formalism.ValuationGridEstimates
 
 open Finset
 
-def TowerValuationBoundIndexed : Prop :=
-  ∀ (G : Type) [CommGroup G] (v : G → ℝ), (∀ x y, v (x * y) = v x + v y) →
-    ∀ (a a' d h p q e : ℕ), a + a' = d → a = a' + 2 * e → d = 2 * h →
-    2 * (p + q) + 1 < e → 2 * (p + q) + 1 < a' →
-    ∀ (T Td Tdp ρ E : ℤ → G) (N0 : ℤ → ℝ) (ε δ σ : ℝ),
-    (∀ s : ℤ, 1 ≤ s → s ≤ h →
-      0 ≤ N0 s ∧ ρ s = Tdp s / T s ∧ -N0 s ≤ v (Tdp s) ∧ v (Tdp s) ≤ v (Td s) + ε) →
-    (∀ s : ℤ, 1 - ((e : ℤ) + q - p) ≤ s → s ≤ 0 → ρ s = E s * ρ (1 - s) ∧ v (E s) = 0) →
-    ∀ (c0 c00 A A0 A0' : G), v c0 ≤ v A + 3 * δ → -v c00 ≤ v A0' + 3 * δ →
-    A / A0 = ∏ s ∈ Icc (1 - ((e : ℤ) + q - p)) ((h : ℤ) - (p + q)), ρ s →
-    ∀ (ub ua : ℕ → G), (∀ j, j < q → v (ub j) ≤ σ) → (∀ i, i < p → v (ua i) ≤ σ) →
-    ∀ r : G, r = ((∏ j ∈ range q, ub j) * ∏ i ∈ range p, ua i) * (c0 / c00) *
-        (∏ k ∈ Icc 1 p, ρ ((e : ℤ) + q - k + 1)) * (∏ k ∈ Icc 1 q, ρ ((e : ℤ) + k))⁻¹ →
-    v r ≤ v A0 + v A0' + 3 * (∑ s ∈ Icc (1 : ℤ) h, |v (T s)|) + 2 * (∑ s ∈ Icc (1 : ℤ) h, |v (Td s)|) +
-      ((a : ℝ) - p) * ε + 5 * (∑ s ∈ Icc (1 : ℤ) h, N0 s) + 6 * δ + (p + q : ℕ) * σ
-
 def GridValuationBoundIndexed : Prop :=
   ∀ (W X S : Type) (m N : ℕ) (lam δ : W → ℝ) (ell : W → ℕ) (N0 : Fin m × Fin m → ℤ → ℕ → ℝ)
     (vr : W → Fin m × Fin m → ℝ) (vx : W → X → ℝ) (XX : Fin m × Fin m → Bool → Finset X)

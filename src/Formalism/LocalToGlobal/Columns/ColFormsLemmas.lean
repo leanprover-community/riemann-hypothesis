@@ -114,10 +114,6 @@ theorem formGSD_ok (hX : X.Ok) (hC : C.Eqv) : (formGSD C Λ).Ok := by
     show (star ((Λ.chr g.2 : X.Kˣ) : X.K) * _) • _ = _
     rw [star_mul_root hX.conjK hm hc, one_smul]
 
-theorem formGSD_stab_inj (d : (formGSD C Λ).D) {a b : (formGSD C Λ).G} (ha : a • d = d) (hb : b • d = d)
-    (hab : a.1 = b.1) : a = b :=
-  FormG.incl_injective Λ (DecoSet.stab_fst_injective (d : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)) ha hb hab)
-
 end Form
 
 section Cols

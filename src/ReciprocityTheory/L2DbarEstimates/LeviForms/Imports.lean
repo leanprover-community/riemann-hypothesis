@@ -17,8 +17,7 @@ public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.IntegralFderivA
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.FixedA
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.FixedC
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.DetMonoDetOneAdd
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.MacofFderivApplyContDiffOn
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.IntegrableWd
+public import ReciprocityTheory.L2DbarEstimates.LeviForms.DetUpdateColEq
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.ImportsAlt
 
 @[expose] public section

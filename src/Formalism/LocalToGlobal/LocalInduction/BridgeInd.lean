@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsGal
+public import Mathlib
 
 @[expose] public section
 

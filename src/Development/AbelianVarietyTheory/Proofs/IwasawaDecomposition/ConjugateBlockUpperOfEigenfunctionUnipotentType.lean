@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsRh
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsComp
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DepthZeroWild
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DepthZeroSupport
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalGlobalAboveL
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsXdAllIff
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.JumpsCardOfBuilt
 public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
@@ -35,8 +34,6 @@ open ReciprocityTheory.Aut Formalism.AUTREP GlobalTheory.CenFrame
 section Local
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
-
-local notation3 "E⁺" => NumberField.maximalRealSubfield E
 
 abbrev incl (s : SplitPlace E) : Os s →+* s.v.adicCompletion E⁺ :=
   (s.v.adicCompletionIntegers E⁺).subtype

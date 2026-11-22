@@ -4,7 +4,6 @@ public import Mathlib
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
 public import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
-public import Formalism.HermitianLattices.StatementTheta
 public import Formalism.LatticeTheta.ThetaShiftInversion
 public import Formalism.HermitianLattices.HermitianLatticesProofs.ThetaSummable
 public import Formalism.HermitianLattices.StatementLat
@@ -28,7 +27,6 @@ public import Formalism.HermitianLattices.HermitianLatticesProofs.MajBasic
 public import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
 public import Formalism.HermitianLattices.HermitianLatticesProofs.NeighbourConstruct
 public import Formalism.HermitianLattices.HermitianLatticesProofs.ClassSetFinite
-public import Formalism.HermitianLattices.DiscrFinite
 public import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodUnramUnique
 
 @[expose] public section

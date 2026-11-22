@@ -27,16 +27,6 @@ theorem linSub_rename {ι σ : Type} [Fintype ι] [DecidableEq ι] [Fintype σ] 
   set_option synthInstance.maxHeartbeats 100000 in
     simp [Function.comp_apply, map_sum, Matrix.transpose_apply]
 
-theorem fockOne_apply (a b : ℕ) (α β : ℤ) (h : U a) (g : U b) (f : MvPolynomial (Fin b × Fin a) ℂ) :
-    fockOne a b α β (h, g) f =
-      ((detU a h ^ α * detU b g ^ β : ℂˣ) : ℂ) • Formalism.GradedWeylDivisibility.sub (g.1 ⊗ₖ (star h.1)ᵀ)ᵀ f := rfl
-
-theorem fock_apply {ι : Type} [Fintype ι] [DecidableEq ι] (a b : ℕ) (α β : ι → ℤ) (h : UG ι a) (g : UG ι b)
-    (f : Pol ι a b) :
-    fock a b α β (h, g) f =
-      (((∏ τ, detU a (h τ) ^ α τ) * ∏ τ, detU b (g τ) ^ β τ : ℂˣ) : ℂ) •
-        linSub (fun τ => (g τ).1 ⊗ₖ (star (h τ).1)ᵀ) f := rfl
-
 theorem outer₂_fockOne_iso : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (a b : ℕ) (α β : ι → ℤ),
     Iso (outer₂ fun τ => fockOne a b (α τ) (β τ)) (fock a b α β) := by
   intro ι _ _ a b α β

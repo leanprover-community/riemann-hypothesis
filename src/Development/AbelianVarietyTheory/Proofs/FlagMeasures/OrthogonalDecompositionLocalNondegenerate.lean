@@ -80,9 +80,6 @@ noncomputable def formLeft (Z : LocDat D) (p : PlF D) (w : Vp D p) : Vp D p →�
   map_add' x y := (locH Z p).h_add_left x y w
   map_smul' a x := (locH Z p).h_smul_left a x w
 
-theorem formLeft_apply (Z : LocDat D) (p : PlF D) (w v : Vp D p) :
-    formLeft Z p w v = LocFacts₂ Z.M p v w := rfl
-
 theorem eq_zero_of_local_orth (U : Submodule D.host.E (VS D).V) (hU : U ⊓ orth (VS D) U = ⊥)
     (Z : LocDat D) (p : PlF D) (v : Vp D p)
     (hv : v ∈ Submodule.span (D.s.atP p).Ep (baseChange₂ D p '' (U : Set (VS D).V)))

@@ -65,28 +65,6 @@ def Chart.rd {i : ℕ} {hi : i ≤ D.R.m} (Q : Chart D u i hi) (θ : InfFam D)
 section Sym
 variable {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i} (F : FormsTiedSym D u Ch chOf)
 
-def endChart (i : ℕ) (hi : i ≤ D.R.m) (h : i = 0 ∨ i = D.R.m) : Chart D u i hi where
-  cl := (D.mem u).C.cls i
-  inc := id
-  K := (F.cls i hi h).toChart
-  eY := (F.val i hi h).eY
-
-def midChart (i : ℕ) (h1 : 1 ≤ i) (h2 : i + 1 ≤ D.R.m) (β : Ch i) : Chart D u i (le_of_succ_m h2) where
-  cl := {c // chOf i c = β}
-  inc := Subtype.val
-  K := F.ch i h1 h2 β
-  eY := F.eYC i h1 h2
-
-def chart (i : ℕ) (hi : i ≤ D.R.m) (β : Ch i) : Chart D u i hi :=
-  if h : i = 0 ∨ i = D.R.m then endChart F i hi h else midChart F i (by omega) (by omega) β
-
-def rd (θ : InfFam D) (i : ℕ) (hi : i ≤ D.R.m) (β : Ch i) (ψ : (D.mem u).C.cls i → (D.mem u).C.Y i → ℂ)
-    (y : (D.mem u).C.Y i) : GA D (D.sp.X i) → ℂ :=
-  (chart F i hi β).rd θ ψ y
-
-def OnChart (i : ℕ) (hi : i ≤ D.R.m) (β : Ch i) (ψ : (D.mem u).C.cls i → (D.mem u).C.Y i → ℂ) : Prop :=
-  ∀ c, c ∉ Set.range (chart F i hi β).inc → ψ c = 0
-
 end Sym
 
 end GlobalTheory.AdForm

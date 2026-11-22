@@ -96,24 +96,6 @@ section BaseChange
 variable {R' : Type} [CommRing R'] {W' : _root_.WeierstrassCurve R'} [W'.IsElliptic]
   (f : R →+* R') (h : W.map f = W')
 
-theorem isGrpPullback_ellPolAV :
-    IsGrpPullback (ellPolAV W').A (ellPolAV W).A (spMap f) (mapHom W f h) :=
-  isGrpPullback_mapHom W f h
-
-theorem lbIso_ellPolAV : LBIso (ellPolAV W').L ((ellPolAV W).L.pull (mapHom W f h)) :=
-  lbIso_pull_originLB W f h
-
 end BaseChange
-
-theorem not_isGen_ellPolAV [Nontrivial R] (t : (ellPolAV W).L.Gen) : ¬ t.IsGen :=
-  not_isGen_originLB W t
-
-theorem weierstrass_0_0_1_neg_one_0_isElliptic : (⟨0, 0, 1, -1, 0⟩ : _root_.WeierstrassCurve ℚ).IsElliptic :=
-  ⟨by
-    have : (⟨0, 0, 1, -1, 0⟩ : _root_.WeierstrassCurve ℚ).Δ = 37 := by
-      norm_num [WeierstrassCurve.Δ, WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆,
-        WeierstrassCurve.b₈]
-    rw [this]
-    exact Ne.isUnit (by norm_num)⟩
 
 end GlobalTheory.WeierstrassCurve

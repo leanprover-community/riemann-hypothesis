@@ -175,8 +175,6 @@ theorem WD_prod (Q R Q' R' : Matrix (Fin n) (Fin n) ℂ) :
 
 def mulLc (M : M2 n) : M2 n →L[ℂ] M2 n := LinearMap.toContinuousLinearMap (LinearMap.mulLeft ℂ M)
 
-theorem mulLc_apply (M v : M2 n) : mulLc M v = M * v := rfl
-
 def mulLcL : M2 n →ₗ[ℂ] (M2 n →L[ℂ] M2 n) where
   toFun := mulLc
   map_add' a b := by ext1 v; simp [mulLc_apply, Matrix.add_mul]

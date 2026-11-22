@@ -124,25 +124,10 @@ theorem exists_places {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {
 
 section Args
 
-open Lean Elab Tactic Meta in
-local elab "exact_defeq " e:term : tactic =>
-  closeMainGoalUsing `exact_defeq fun target _ => do
-    let proof ← Term.elabTerm e none
-    Term.synthesizeSyntheticMVarsNoPostponing
-    let proof ← instantiateMVars proof
-    let proofType ← instantiateMVars (← inferType proof)
-    let target ← instantiateMVars target
-    let localContext ← instantiateLCtxMVars (← getLCtx)
-    match Kernel.isDefEq (← getEnv) localContext proofType target with
-    | .ok true => return proof
-    | .ok false => throwError "term type does not match the goal"
-    | .error ex => throwError (ex.toMessageData (← getOptions))
-
 variable {K : Ctx} {B : GlobalTheory.Mem.Base} {f : Top.Fr B.toPre} {T : TwDat B} {w : ColW B f T} {Z : w.Lt} {Wt : Set B.places.Pl}
   {L : SizeData₂ (w.st Z).toD7} {hT : GatTies (w.st Z).toD7} {Gi : Formalism.MainNotions.G.Inst (w.st Z).toD7 L} {Gl : Formalism.MainNotions.G.LatInst (w.st Z).toD7}
   {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX (w.st Z).toD7} {cX : ExtraC} {ex : Extra (w.st Z).toD7 L hT Gi Gl Kc Yd cX}
   {t : RowsT K w Z Wt ex.p0}
-
 
 set_option maxHeartbeats 1000000 in
 theorem zsc_pin (a : TwArgs ex t) (x : R3.TwIn ex) (hx : HEq a.x x) (L' : SizeData₂ (w.st Z).toD7) (Del h0 : ℕ) (c : ℝ)
@@ -155,7 +140,6 @@ theorem zsc_pin (a : TwArgs ex t) (x : R3.TwIn ex) (hx : HEq a.x x) (L' : SizeDa
   | mk G Pl0 I0 T' A3 core R' F cG geo pins err' Y Z' C' sEE div JA amb0 JM mjH =>
   cases pack
   exact (by with_unfolding_all exact (h :))
-
 
 set_option maxHeartbeats 1000000 in
 theorem sp_pin (a : TwArgs ex t) (x : R3.TwIn ex) (hx : HEq a.x x) (X : Formalism.L2.SG.HidaSetting.HidaSetting (w.st Z).toD7) (hK : X.LevelSubgroupCharacter)
@@ -189,7 +173,6 @@ theorem sp_pin (a : TwArgs ex t) (x : R3.TwIn ex) (hx : HEq a.x x) (X : Formalis
     wU bij eNu wU' bij' eNu' hw hn
   exact_defeq (heq_of_eq (hz.trans h))
 
-
 set_option maxHeartbeats 1000000 in
 theorem see_pin (a : TwArgs ex t) (x : R3.TwIn ex) (hx : HEq a.x x) (X : Formalism.L2.SG.HidaSetting.HidaSetting (w.st Z).toD7)
     (Gd : Formalism.L2.SG.RowDict.GoodOp X) (ι : Formalism.L2.Theta.GA (w.st Z).toD7 (Yc (w.st Z).toD7 0) ≃* X.B.I.GA)
@@ -209,7 +192,6 @@ theorem see_pin (a : TwArgs ex t) (x : R3.TwIn ex) (hx : HEq a.x x) (X : Formali
   · exact (by with_unfolding_all exact (HEq.refl sE :))
   · exact (by with_unfolding_all exact (h :))
 
-
 set_option maxHeartbeats 1000000 in
 theorem read_cols (Dc : ∀ Zs : DefSub (famT t).fam3.amb3, DefCols ((famT t).side3 t.r.z.F.P1 t.r.z.F.ψ1 Zs)) (Sp₀ : ∀ Zs, SPer (Dc Zs))
     (Zsc₀ : DefSub (famT t).fam3.amb3 → IndefScale (famT t).fam3.base3)
@@ -220,7 +202,6 @@ theorem read_cols (Dc : ∀ Zs : DefSub (famT t).fam3.amb3, DefCols ((famT t).si
   refine ⟨(by with_unfolding_all exact (C₀.wU :)), (by with_unfolding_all exact (C₀.bij :)), (by with_unfolding_all exact (C₀.eNu :)), ?_, ?_⟩
   · exact (by with_unfolding_all exact (HEq.refl C₀.wU :))
   · exact (by with_unfolding_all exact (HEq.refl C₀.eNu :))
-
 
 set_option maxHeartbeats 1000000 in
 theorem see_cast (X : Formalism.L2.SG.HidaSetting.HidaSetting (w.st Z).toD7) (hK : X.LevelSubgroupCharacter)
@@ -234,7 +215,6 @@ theorem see_cast (X : Formalism.L2.SG.HidaSetting.HidaSetting (w.st Z).toD7) (hK
   subst hz
   refine ⟨(by with_unfolding_all exact (sE :)), ?_⟩
   exact (by with_unfolding_all exact (HEq.refl sE :))
-
 
 set_option maxHeartbeats 2000000 in
 theorem selection_group_ambient_tie (hC : GlobalTheory.Published.DiscreteSeriesCover ∧ GlobalTheory.Published.HarishChandraModules ∧ GlobalTheory.Published.CasselmanWallach ∧

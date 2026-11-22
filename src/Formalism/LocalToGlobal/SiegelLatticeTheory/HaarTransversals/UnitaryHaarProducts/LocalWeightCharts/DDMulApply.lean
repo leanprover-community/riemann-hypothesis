@@ -40,8 +40,6 @@ theorem pos_bij : Function.Bijective (pos k r) := by
 
 def posE (k r : ℕ) : Ix k r ≃ Fin (2 * r + k + 1) := Equiv.ofBijective _ pos_bij
 
-theorem posE_apply (p : Ix k r) : posE k r p = pos k r p := rfl
-
 theorem sum_split {β : Type*} [AddCommMonoid β] (f : Fin (2 * r + k + 1) → β) :
     ∑ l, f l = ∑ a, f (eI k r a) + ∑ j, f (wI k r j) + ∑ a, f (esI k r a) := by
   rw [← Equiv.sum_comp (posE k r) f, Fintype.sum_sum_type, Fintype.sum_sum_type]

@@ -18,10 +18,6 @@ open Formalism.UG Formalism.UG.CS Formalism.UG.P Formalism.BasicNotions
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-local notation "ιA" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 def IsLat (Λ : Submodule (𝓞 E) (n → E)) : Prop :=
   Module.Finite (𝓞 E) Λ ∧ Submodule.span E (Λ : Set (n → E)) = ⊤
 

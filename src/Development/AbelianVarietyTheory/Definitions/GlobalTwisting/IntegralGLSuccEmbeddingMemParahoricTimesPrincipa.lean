@@ -22,7 +22,6 @@ section Index
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {P : HeightOneSpectrum (𝓞 E)}
 
-
 omit [StarRing E] in
 theorem exists_int_approx (c : ℕ) {a : E} (ha : IntAt P a) :
     ∃ r : 𝓞 E, IntAt P (((qOf P : E) ^ c)⁻¹ * (a - algebraMap (𝓞 E) E r)) := by
@@ -130,8 +129,6 @@ theorem mem_parahoricTimesPrincipalCongruence_iff {k : GLint E N P} : k ∈ K1 h
 theorem integralGLSuccEmbedding_mem_parahoricTimesPrincipalCongruence {j : GLint E n P} (hj : j ∈ levJ l) : extI hN P j ∈ K1 hN l c :=
   (mem_parahoricTimesPrincipalCongruence_iff hN l c).2 ⟨j, hj, 1, one_mem _, (mul_one _).symm⟩
 
-theorem principalCongruence_le_levelGroup : prinCong N P c ≤ K1 hN l c := le_sup_right
-
 variable {c} (hc : 0 < c)
 include hc
 
@@ -151,9 +148,6 @@ theorem parahoricTimesPrincipalCongruence_character_eq {j : GLint E n P} (hj : j
   show redGL N P k = _
   rw [e, map_mul, redGL_of_prinCong hc hκ, mul_one, redGL_extI]
 
-theorem levelGroup_character_isOfFinOrder (k : (levelParahoricTimesPrincipalCongruence hN l hc).H) : IsOfFinOrder ((levelParahoricTimesPrincipalCongruence hN l hc).lam k) :=
-  MonoidHom.isOfFinOrder (levExt (by omega : n ≤ N) l).lam (isOfFinOrder_of_finite _)
-
 end K1
 
 def TopDepth (R : Ranks) (M : ℕ) : Type := {c : ℕ // max (4 * R.m + 1) (2 * R.m + 2 * M) ≤ c}
@@ -168,13 +162,11 @@ section Top
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
-
 variable (R) in
 abbrev TopPt (u : Pr.Word) : Type := ChPt (R := R) sel mu u R.m
 
 def topLevG (P : LevFam X.E X.K R.r Pr.vGs) : LevFam X.E X.K (R.N R.m) Pr.vGs := fun w =>
   levExt (Nat.sub_le _ 1) (rowTyG Ch P w)
-
 
 variable (R) in
 def topLevQ {c : ℕ} (hc : 0 < c) : LevQFam X.E X.K (R.N R.m) (QE sel (mu : Chr X.F X.E X.K)) := fun P =>
@@ -183,25 +175,12 @@ def topLevQ {c : ℕ} (hc : 0 < c) : LevQFam X.E X.K (R.N R.m) (QE sel (mu : Chr
 @[reducible] def topGSD (P : LevFam X.E X.K R.r Pr.vGs) (u : Pr.Word) {M : ℕ} (c : TopDepth R M) : GSD X.K :=
   frmGSD (colValF W sel mu u R.m) (topLevG Ch P) (topLevQ R sel mu c.pos)
 
-theorem topGSD_ok (hX : X.Ok) (P : LevFam X.E X.K R.r Pr.vGs) (u : Pr.Word) {M : ℕ} (c : TopDepth R M) :
-    (topGSD W Ch sel mu P u c).Ok := by
-  refine GlobalTheory.FramedForms.main hX (W.lamTrue u R.m) (topLevG Ch P) (topLevQ R sel mu c.pos)
-    (fun Q => Subgroup.finiteIndex_of_le (principalCongruence_le_levelGroup _ _ _)) fun g => isOfFinOrder_iff_pow_eq_one.1 ?_
-  have e : (topLevQ R sel mu c.pos).chr g = _ :=
-    piChar_apply (fun w => (topLevQ R sel mu c.pos w).H) (fun w => (topLevQ R sel mu c.pos w).lam) g
-  rw [e]
-  exact Finset.prod_induction _ IsOfFinOrder (fun a b => IsOfFinOrder.mul) IsOfFinOrder.one fun w _ =>
-    levelGroup_character_isOfFinOrder _ _ c.pos _
-
-
 open Classical in
 abbrev inG (w : Pr.vGs) : rowSG Pr sel mu := ⟨w.1, Finset.mem_union_left _ w.2⟩
-
 
 open Classical in
 variable (Pr) in
 abbrev inQ (w : QE sel (mu : Chr X.F X.E X.K)) : rowSG Pr sel mu := ⟨w.1, Finset.mem_union_right _ w.2⟩
-
 
 variable (Pr) in
 def TilOk (u : Pr.Word) : Prop :=
@@ -263,7 +242,6 @@ def tilFr (H : TilOk Pr sel mu u) (d : RowPt Pr R sel mu) (P : rowSG Pr sel mu) 
 theorem tilFr_isLiftFr (H : TilOk Pr sel mu u) (d : RowPt Pr R sel mu) (P : rowSG Pr sel mu) :
     IsLiftFr (tilQ sel mu u d).1 P (tilFr H d P) :=
   isLiftFr_tilH (N_m_succ R) d H.1 H.2.1 P (liftFr_spec d.2 P) _ rfl
-
 
 open Classical in
 def tilTop (H : TilOk Pr sel mu u) (d : RowPt Pr R sel mu) : TopPt R sel mu u := by
@@ -386,17 +364,6 @@ theorem tilEl_rho (H : TilOk Pr sel mu u) {M : ℕ} (c : TopDepth R M) (g : Form
   exact congrArg (fun z : X.Kˣ => (z : X.K) • (colVal W u R.m (Pr.vT u) (rowSG Pr sel mu)).rho (extUH (N_m_succ R) g.1))
     (tilEl_chr H c.pos g d)
 
-
-variable (Ch P) in
-def evTop (H : TilOk Pr sel mu u) {M : ℕ} (c : TopDepth R M) :
-    (topGSD W Ch sel mu P u c).EqFun →ₗ[X.K] (evGSD W Ch sel mu P u).EqFun where
-  toFun φ := ⟨fun d => φ.1 (tilTop H d), fun g d => by
-    have h := φ.2 (tilEl H c.pos g d) (tilTop H d)
-    rw [tilEl_rho] at h
-    exact (congrArg φ.1 (tilEl_smul H c.pos g d).symm).trans h⟩
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
-
 end Top
 
 section Ker
@@ -416,7 +383,6 @@ def XiTop {u : Pr.Word} (m2 : ℕ) (p : ChPt (R := R) sel mu u (m2 + 1)) (Y : Se
       locTop Ch sel mu cst m2 P (inFr (frsF sel mu p P) (frsF sel mu p' P) x) ((frsF sel mu p P).symm (repY Y))
 
 variable {u : Pr.Word} {m2 : ℕ} (T : ChTh W sel mu u m2)
-
 
 open Classical in
 def topDegreeKTwo (p : ChPt (R := R) sel mu u (m2 + 1)) (Y : Set (Sp X.E (R.N (m2 + 1)))) (p' : TopPt R sel mu u) :
@@ -591,7 +557,6 @@ theorem XiTop_tilTop (hX : X.Ok) (hPr : Pr.Ok) (hm : R.m = m2 + 2) (hc : cst.Ok)
     rfl
   · rw [frsF_tilTop_Q H d P hP]
 
-
 variable {W} in
 theorem k2top_tilTop (hX : X.Ok) (hPr : Pr.Ok) (hm : R.m = m2 + 2) (hc : cst.Ok) (H : TilOk Pr sel mu u) {T : ChTh W sel mu u m2}
     (hT : TameFr T.top) (p : ChPt (R := R) sel mu u (m2 + 1)) (Y : Set (Sp X.E (R.N (m2 + 1)))) (d : RowPt Pr R sel mu) :
@@ -650,20 +615,6 @@ theorem TopEquiv.cp2Equiv (h : TopEquiv W Ch sel mu cst L T b hY P c) (hX : X.Ok
   refine e2.symm.trans (h1.trans ?_)
   rw [e1]
   rfl
-
-def topCpl (h1 : Cp1Equiv W Ch sel mu cst L T b hY) (h2 : TopEquiv W Ch sel mu cst L T b hY P c) (al : L.β m2) :
-    CplKer ((chF W sel mu L u m2).mem al) (midGSD W sel mu L u m2 b) (topGSD W Ch sel mu P u c) (ybCpl W sel mu cst L u m2 b hY) :=
-  CplKer.mk (cp1K W Ch sel mu cst L T al) (topDegreeKTwo W Ch sel mu cst T) (h1 al) h2
-
-
-open Classical in
-def matFam (hM : MatEquiv W Ch sel mu cst L T) : KerFam (chF W sel mu L u) := fun i al be =>
-  if h : i < m2 then ClsKer.mk (matK W Ch sel mu cst L T i al be) (hM i h al be) else zeroKer _ _
-
-def colTop (hM : MatEquiv W Ch sel mu cst L T) (h1 : Cp1Equiv W Ch sel mu cst L T b hY) (h2 : TopEquiv W Ch sel mu cst L T b hY P c)
-    (hF : ∀ j, (chF W sel mu L u j).Ok) {G : ChGlob X R.m} (hL : L.Ok Ch sel mu cst G m2) :
-    MfV W Ch u →ₗ[X.K] (topGSD W Ch sel mu P u c).EqFun :=
-  colCpl (matFam hM) hF m2 (topCpl h1 h2) (hF (m2 + 1) b) ∘ₗ startC hL u
 
 end Col
 

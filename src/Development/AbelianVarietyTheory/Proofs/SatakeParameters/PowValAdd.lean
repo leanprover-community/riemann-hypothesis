@@ -36,9 +36,6 @@ def zchar {N : ℕ} [NeZero N] (ζ : ℂˣ) (hζ : ζ ^ N = 1) : Multiplicative 
     simp only [toAdd_mul]
     rw [ZMod.val_add, ← pow_add, ← pow_eq_pow_mod _ hζ]
 
-theorem zchar_apply {N : ℕ} [NeZero N] (ζ : ℂˣ) (hζ : ζ ^ N = 1) (x : Multiplicative (ZMod N)) :
-    zchar ζ hζ x = ζ ^ (Multiplicative.toAdd x).val := rfl
-
 theorem sum_roots {N : ℕ} {ζ : ℂ} (hζ : IsPrimitiveRoot ζ N) (k : ℕ) (hk : k < N) :
     ∑ i : Fin N, (ζ ^ (i : ℕ)) ^ k = if k = 0 then (N : ℂ) else 0 := by
   rw [Fin.sum_univ_eq_sum_range (fun i => (ζ ^ i) ^ k)]

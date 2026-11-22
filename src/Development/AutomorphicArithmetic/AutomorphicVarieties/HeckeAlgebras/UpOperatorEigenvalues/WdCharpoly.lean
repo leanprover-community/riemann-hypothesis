@@ -49,16 +49,6 @@ section WD
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
   {ι : Qbar l ≃+* ℂ} {w : Plc F} {A : ValuationSubring Ω} {h : IsPlaceOver A w}
 
-theorem wd_charpoly (hl : ((l : ℕ) : 𝓞 F) ∉ w.asIdeal) {r r' : G F Ω →* GL (Fin n) (Qbar l)} {x : WD h}
-    (hx : IsWDOf ι r x) (hx' : IsWDOf ι r' x) (g : Weil h) :
-    (r g : Matrix (Fin n) (Fin n) (Qbar l)).charpoly = (r' g : Matrix (Fin n) (Fin n) (Qbar l)).charpoly := by
-  have e := hx.wdOf_eq hl
-  have e' := hx'.wdOf_eq hl
-  obtain ⟨t, ht, φ, hφ, N, b, hN, -⟩ := hx
-  obtain ⟨t', ht', φ', hφ', N', b', hN', -⟩ := hx'
-  refine Polynomial.map_injective ι.toRingHom ι.injective ?_
-  rw [← hN.charPol_wdOf hl ht ι g, ← hN'.charPol_wdOf hl ht' ι g, e, e']
-
 theorem wd_type (hl : ((l : ℕ) : 𝓞 F) ∉ w.asIdeal) {r : G F Ω →* GL (Fin n) (Qbar l)} (χ : Fin n → Ine (F := F) A →* (Qbar l)ˣ)
     (hχ : ∀ i, IsOpen ((χ i).ker : Set (Ine (F := F) A))) (g : GL (Fin n) (Qbar l))
     (hg : ∀ s : Ine (F := F) A, ((g * r s * g⁻¹ : GL (Fin n) (Qbar l)) : Matrix (Fin n) (Fin n) (Qbar l)) =

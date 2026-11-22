@@ -38,9 +38,6 @@ theorem exists_int_integral (z : E) : ∃ k : ℤ, k ≠ 0 ∧ IsIntegral ℤ ((
 
 variable [IsCMField E]
 
-local notation "𝔽" => maximalRealSubfield E
-local notation "cc" => IsCMField.complexConj E
-
 theorem conj_coe (a : 𝔽) : cc (a : E) = a := (IsCMField.complexConj E).commutes a
 
 def lam (θ x : E) : E := (x - cc x) / (θ - cc θ)

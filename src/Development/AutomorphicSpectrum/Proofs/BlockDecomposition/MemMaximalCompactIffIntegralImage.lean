@@ -44,7 +44,6 @@ theorem mem_stabLoc_std_iff (h : IsCMExt F E σ) (τ : E →ₐ[F] Fv F v) {g : 
   · rintro ⟨H1, H2⟩ y
     exact and_congr (H1 _) (H2 _)
 
-
 omit [NumberField E] in
 theorem transpose_splitHom_comp (τ : E →ₐ[F] Fv F v) (hJ : J.map τ * J.map τ = -1) (g : GLoc σ J v) :
     (splitHom σ J (τ.comp σ) g).1ᵀ = -(J.map τ * (splitHom σ J τ g⁻¹).1 * J.map τ) := by
@@ -65,7 +64,6 @@ theorem mul_entry_mem {ι : Type} [Fintype ι] {X Y : Matrix ι ι (Fv F v)}
     (X * Y) i j ∈ v.adicCompletionIntegers F := by
   rw [Matrix.mul_apply]
   exact sum_mem fun l _ => mul_mem (hX i l) (hY l j)
-
 
 omit [NumberField E] in
 theorem comp_mem_GLint (τ : E →ₐ[F] Fv F v) (hJ : J.map τ * J.map τ = -1)
@@ -99,9 +97,6 @@ end Gen
 section Blocks
 
 variable {D : D7} {n : ℕ} {v : Pl D}
-
-theorem blkGL_val {R : Type} [CommRing R] (x : GL (Fin (n + n)) R) (i j : Ix n) :
-    (blkGL n x).1 i j = x.1 (finSumFinEquiv i) (finSumFinEquiv j) := rfl
 
 theorem mem_GLint_iff_blkGL {x : GL (Fin (n + n)) (Lv D v)} :
     x ∈ GLint (Fin (n + n)) (v.adicCompletionIntegers D.host.F).toSubring ↔

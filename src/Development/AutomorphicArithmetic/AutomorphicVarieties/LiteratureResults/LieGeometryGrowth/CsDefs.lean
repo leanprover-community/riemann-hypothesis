@@ -66,7 +66,6 @@ def pt (g : GL (Fin a) (Cinf E)) (x : GL (Fin a) (Af E)) : GA E a := infGL E a g
 theorem pt_mul (g h : GL (Fin a) (Cinf E)) (x : GL (Fin a) (Af E)) : pt (g * h) x = pt g x * infGL E a h := by
   rw [pt, pt, map_mul, mul_assoc, infGL_comm, mul_assoc]
 
-
 omit [_root_.NumberField.IsTotallyComplex E] in
 def Bnd (c : ℝ) (h : GL (Fin a) (Cinf E)) : Prop := ‖toL h.val‖ ≤ c ∧ ‖toL (h⁻¹).val‖ ≤ c
 
@@ -85,9 +84,6 @@ def Tw {q : ℕ} (w : Fm U Ξ q) (g : GL (Fin a) (Cinf E)) (x : GL (Fin a) (Af E
 
 def Dec (f lam : GA E a → ℝ) (f₀ : ℝ) (k : ℕ) (A B M : ℝ) {q : ℕ} (w : Fm U Ξ q) : Prop :=
   ∀ g x, f₀ ≤ f (pt g x) → Sz k (Tw U Ξ w g x) (hOne E a) (M * Real.exp (B * |lam (pt g x)| - A * f (pt g x)))
-
-theorem Dec.mono {f lam : GA E a → ℝ} {f₀ f₁ : ℝ} {k : ℕ} {A B M : ℝ} {q : ℕ} {w : Fm U Ξ q}
-    (h : Dec U Ξ f lam f₀ k A B M w) (hf : f₀ ≤ f₁) : Dec U Ξ f lam f₁ k A B M w := fun g x hg => h g x (hf.trans hg)
 
 theorem Dec.of_le {f lam : GA E a → ℝ} {f₀ : ℝ} {k : ℕ} {A B M M' : ℝ} {q : ℕ} {w : Fm U Ξ q}
     (h : Dec U Ξ f lam f₀ k A B M w) (hM : M ≤ M') : Dec U Ξ f lam f₀ k A B M' w :=
@@ -108,7 +104,6 @@ theorem Tw_eq {q : ℕ} (w : Fm U Ξ q) (g h : GL (Fin a) (Cinf E)) (x : GL (Fin
 
 def Desc (f : GA E a → ℝ) (Φ : (GL (Fin a) (Af E) ⧸ U) → HV E a → ℝ) : Prop :=
   ∀ (g : GL (Fin a) (Cinf E)) (x : GL (Fin a) (Af E)), Φ (x : GL (Fin a) (Af E) ⧸ U) (sand g (hOne E a)) = f (pt g x)
-
 
 omit [_root_.NumberField.IsTotallyComplex E] in
 def Zw (Z : (GL (Fin a) (Af E) ⧸ U) → HV E a → HV E a) (g : GL (Fin a) (Cinf E)) (x : GL (Fin a) (Af E)) (p : HV E a) :

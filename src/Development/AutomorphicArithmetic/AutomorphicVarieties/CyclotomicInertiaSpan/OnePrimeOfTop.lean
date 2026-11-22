@@ -63,7 +63,6 @@ section Coord
 
 variable (n q d : ℕ) [Fact q.Prime] [Fact d.Prime]
 
-
 end Coord
 
 end B1
@@ -71,12 +70,6 @@ end B1
 namespace AbF
 
 open B1
-
-def U (A : AbF) (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] : Subgroup (G ℚ Ω) := A.H.comap (cycN ℚ Ω A.m)
-
-def comp (A B : AbF) : AbF :=
-  ⟨Nat.lcm A.m B.m, Nat.lcm_pos A.pos B.pos,
-    A.H.comap (ZMod.unitsMap (Nat.dvd_lcm_left _ _)) ⊓ B.H.comap (ZMod.unitsMap (Nat.dvd_lcm_right _ _))⟩
 
 end AbF
 

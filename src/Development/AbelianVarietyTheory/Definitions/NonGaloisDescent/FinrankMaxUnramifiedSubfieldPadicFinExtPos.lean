@@ -164,8 +164,6 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
     (ρ : Representation LL G V)
 
-local notation "μ" => mulVdR (Qp := Qp) (K := K) (BdR := BdR) (V := V) (LL := LL)
-
 theorem FilV_anti' (a : ℤ) : FilV PD (LL := LL) (V := V) (a + 1) ≤ FilV PD (LL := LL) (V := V) a := by
   rintro _ ⟨x, rfl⟩
   have hle : (PD.Fil (a + 1)).restrictScalars Qp ≤ (PD.Fil a).restrictScalars Qp := PD.Fil_anti a
@@ -314,24 +312,6 @@ section D
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module NumberField IsDedekindDomain Formalism.MainNotions
 section Loc
 variable {l : ℕ} [Fact l.Prime]
-
-theorem Ks_mono (K : FinExt l) {s s' : ℕ} (h : s ≤ s') : Ks K s ≤ Ks K s' := by
-  unfold Ks
-  refine sup_le_sup_left (IntermediateField.adjoin.mono _ _ _ ?_) _
-  intro x hx
-  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le h
-  have hx' : x ^ (l ^ s) = 1 := hx
-  show x ^ (l ^ (s + k)) = 1
-  rw [pow_add, pow_mul, hx', one_pow]
-
-theorem good_one {K LL : FinExt l} {s : ℕ} (h : Good K s LL) (h2 : l ≠ 2) (hK : K.1 ≤ Ks K 1) :
-    Good K 1 LL := by
-  refine ⟨le_rfl, fun e => absurd e h2, hK, fun τ x => ?_⟩
-  have e := h.2.2.2 ((τ.liftNormal (Om l)).comp (Ks K s).val) ⟨x.1, Ks_mono K h.1 x.2⟩
-  have e2 : τ.liftNormal (Om l) (algebraMap ↥(Ks K 1) (Om l) x) = algebraMap (Om l) (Om l) (τ x) :=
-    AlgHom.liftNormal_commutes τ (Om l) x
-  have e3 : ((τ.liftNormal (Om l)).comp (Ks K s).val) ⟨x.1, Ks_mono K h.1 x.2⟩ = τ x := e2
-  rwa [e3] at e
 
 theorem card_emb (K LL : FinExt l) (h : ∀ (τ : ↥K.1 →ₐ[ℚ_[l]] Om l) (x : ↥K.1), τ x ∈ LL.1) :
     Nat.card (↥K.1 →ₐ[ℚ_[l]] ↥LL.1) = finrank ℚ_[l] ↥K.1 := by

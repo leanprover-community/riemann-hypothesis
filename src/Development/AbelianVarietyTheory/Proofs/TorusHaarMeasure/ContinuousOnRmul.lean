@@ -135,13 +135,6 @@ open NumberField MeasureTheory Topology in
 open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
-private theorem sFinite_muF (x0 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) : SFinite (_root_.ReciprocityTheory.ChartRestriction.G.AR.Up.muF X x0) := by
-  unfold _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.muF; infer_instance
-
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
-variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem continuous_frame_mat (τ : X.Ψ) : Continuous fun x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r => _root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ :=
   continuous_apply τ
 

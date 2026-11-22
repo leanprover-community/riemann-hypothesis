@@ -16,8 +16,6 @@ namespace GlobalTheory.GcdGen
 
 variable {K : Type} [NormedField K] [IsUltrametricDist K]
 
-local notation "𝒪" => Valuation.valuationSubring (NormedField.valuation (K := K))
-
 theorem mem_ball (x : K) : x ∈ 𝒪 ↔ ‖x‖ ≤ 1 := by
   rw [Valuation.mem_valuationSubring_iff, NormedField.valuation_apply, ← NNReal.coe_le_coe]
   simp

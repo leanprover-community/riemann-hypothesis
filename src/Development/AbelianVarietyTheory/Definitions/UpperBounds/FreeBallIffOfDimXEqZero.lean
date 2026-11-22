@@ -223,8 +223,6 @@ section Ball
 
 variable {r : ℕ} {X : Data E r} {G G' : Subgroup (GL (Fin r) E)} {x0 x : Frame X.Ψ r} {ρ0 ρ1 : ℝ}
 
-theorem FreeBall.le (h : FreeBall X G x0 ρ0) : X.Γ ≤ G := h.1
-
 theorem FreeBall.isUStab (h : FreeBall X G x0 ρ0) {γ : GL (Fin r) E} (hγ : γ ∈ G) :
     IsUStab X.Gm X.Λ γ := h.2.1 γ hγ
 
@@ -239,17 +237,6 @@ theorem FreeBall.unique (h : FreeBall X G x0 ρ0) {γ γ' : GL (Fin r) E} (hγ :
     (by rwa [FundSetPf.lact_mul, FundSetPf.lact_inv])
   exact (mul_inv_eq_one.1 this).symm
 
-theorem FreeBall.lact (h : FreeBall X G x0 ρ0) {g : GL (Fin r) E} (hg : g ∈ G) :
-    FreeBall X G (lact g x0) ρ0 := by
-  refine ⟨h.1, h.2.1, fun γ hγ hne x hx hlt => ?_⟩
-  have hg' := h.isUStab (G.inv_mem hg)
-  rw [← rhX_lact_lact hg', FundSetPf.lact_inv] at hlt ⊢
-  have hc : g⁻¹ * γ * g ≠ 1 := fun hc => hne (by
-    have : γ = g * (g⁻¹ * γ * g) * g⁻¹ := by group
-    rw [this, hc]; group)
-  have := h.2.2 _ (G.mul_mem (G.mul_mem (G.inv_mem hg) hγ) hg) hc _ (MajInv.lact_mem_dom X hg' hx) hlt
-  rwa [← FundSetPf.lact_mul, mul_inv_cancel_right, FundSetPf.lact_mul] at this
-
 end Ball
 
 section Pole
@@ -262,11 +249,6 @@ theorem IsPole.lact (h : IsPole X G x0 κ ε C δ ψ) {γ : GL (Fin r) E} (hγ :
   have := h.1 γ hγ x hx _ (ExtFPf.oneF_mem X)
   rwa [ExtFPf.rmul_oneF] at this
 
-theorem IsPole.rmul (h : IsPole X G x0 κ ε C δ ψ) (hx : x ∈ X.dom) {b : Frame X.Ψ r}
-    (hb : b ∈ Bor X.Ψ r) : ψ (rmul x b) = ψ x := by
-  have := h.1 1 G.one_mem x hx b hb
-  rwa [FundSetPf.lact_one] at this
-
 theorem IsPole.isInvFn (h : IsPole X G x0 κ ε C δ ψ) (hG : X.Γ ≤ G) : IsInvFn X ψ :=
   fun γ hγ => h.1 γ (hG hγ)
 
@@ -277,26 +259,6 @@ theorem IsPole.le_log_orbit (h : IsPole X G x0 κ ε C δ ψ) (hG : ∀ γ ∈ G
   rw [← rhX_lact_lact hγ', FundSetPf.lact_inv] at hle ⊢
   rw [← h.lact (G.inv_mem hγ) hx]
   exact h.2.2.2.1 _ (MajInv.lact_mem_dom X hγ' hx) hle
-
-theorem IsPole.centre (h : IsPole X G x0 κ ε C δ ψ) (h0 : IsOrth X x0) (hε : 0 ≤ ε) :
-    ψ x0 ≤ dimX X * Real.log δ + C := by
-  have := h.2.2.2.1 x0 (IW.orth_mem_dom X x0 h0) (by rwa [rhX_self h0])
-  rwa [rhX_self h0, zero_add] at this
-
-theorem isPole_zero (h0 : IsOrth X x0) (hκ : 0 ≤ κ) (hδ : 0 < δ) (hC : 0 ≤ C)
-    (hC' : -(dimX X * Real.log δ) ≤ C) : IsPole X G x0 κ ε C δ fun _ => 0 := by
-  refine ⟨fun _ _ _ _ _ _ => rfl, fun _ _ => le_rfl, fun x1 hx1 => ⟨contDiffOn_const, fun z hz ξ => ?_⟩,
-    fun x hx _ => ?_, fun _ _ _ _ => by linarith⟩
-  · have e : leviO X x1 (fun _ => 0) z ξ = 0 := by
-      have e1 : ∀ k, wdb (nd X) k (fun _ => (0 : ℂ)) = fun _ => 0 := fun k => by
-        funext y; simp [wdb]
-      simp [leviO, leviM, leviV, e1, wd]
-    rw [e]
-    exact neg_nonpos.2 (mul_nonneg hκ (leviRh_nonneg hx1 hz ξ))
-  · have h1 : Real.log δ ≤ Real.log (rhX X x0 x + δ) :=
-      Real.log_le_log hδ (by linarith [rhX_nonneg h0 hx])
-    have h2 := mul_le_mul_of_nonneg_left h1 (Nat.cast_nonneg (α := ℝ) (dimX X))
-    linarith
 
 end Pole
 

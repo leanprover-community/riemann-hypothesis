@@ -164,8 +164,6 @@ theorem hermitian_flag_dual_basis (hσ : ∀ e, σ (σ e) = e) (hJ : IsHermND σ
     · subst h; simp
     · simp [h, Fin.castSucc_inj]
 
-local notation "hA" => Formalism.UG.hform (sigR R σ) (JR R J)
-
 variable (x : {p : Fin (r + 1) × Fin (r + 1) // p.1 < p.2} → R ⊗[F] E)
 
 theorem yv_perp (hP : P.IsStd σ J T) (b c : Fin (r + 1)) :
@@ -256,9 +254,6 @@ def Pm (x : {p : Fin (r + 1) × Fin (r + 1) // p.1 < p.2} → R ⊗[F] E) (k : �
     Matrix (Fin n) (Fin n) (R ⊗[F] E) :=
   Nat.rec (motive := fun _ => Matrix (Fin n) (Fin n) (R ⊗[F] E)) 1
     (fun k M => (if h : k < r + 1 then Mb R σ J P T x ⟨k, h⟩ else 1) * M) k
-
-theorem Pm_zero (x : {p : Fin (r + 1) × Fin (r + 1) // p.1 < p.2} → R ⊗[F] E) :
-    Pm R σ J P T x 0 = 1 := rfl
 
 theorem Pm_succ (x : {p : Fin (r + 1) × Fin (r + 1) // p.1 < p.2} → R ⊗[F] E) (k : ℕ) :
     Pm R σ J P T x (k + 1) = (if h : k < r + 1 then Mb R σ J P T x ⟨k, h⟩ else 1) * Pm R σ J P T x k := rfl

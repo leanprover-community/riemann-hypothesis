@@ -15,8 +15,6 @@ open IsDedekindDomain NumberField GroundTheory.Global
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
 
 theorem mem_of_forall_gsOpenSubgroup_fixes {L : FiniteSubfield} [Fact (K ≤ L)]

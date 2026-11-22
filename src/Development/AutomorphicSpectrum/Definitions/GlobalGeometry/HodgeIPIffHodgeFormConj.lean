@@ -89,9 +89,6 @@ variable {r : ℕ} {Γ : Matrix (Fin r) (Fin r) ℂ}
 
 theorem leadMinor_size_zero (Γ : Matrix (Fin r) (Fin r) ℂ) : leadMinor Γ 0 = 1 := by simp [leadMinor]
 
-theorem leadMinor_size_one (Γ : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) : leadMinor Γ 1 = (Γ 0 0).re := by
-  simp [leadMinor]
-
 theorem leadMinor_size_self (Γ : Matrix (Fin r) (Fin r) ℂ) : leadMinor Γ r = Γ.det.re := by
   simp [leadMinor]
 
@@ -207,26 +204,10 @@ theorem SecNorm.exists_chart (h : SecNorm ξ y A e₀ z w t ν) : ∃ c : (k : K
   choose c hc using h.2.1.1
   exact ⟨c, fun k => (hc k).ne_zero⟩
 
-theorem SecNorm.unique (h : SecNorm ξ y A e₀ z w t ν) (h' : SecNorm ξ y A e₀ z w t ν') : ν = ν' := by
-  obtain ⟨c, hc⟩ := h.exists_chart
-  obtain ⟨u, hu, e⟩ := h.2.2 c hc
-  obtain ⟨u', hu', e'⟩ := h'.2.2 c hc
-  rw [CxVal.unique hu hu', ← e'] at e
-  exact mul_right_cancel₀ (A.pos w fun k => ⟨c k, hc k⟩).ne' e
-
 theorem SecNorm.specializes (h : SecNorm ξ y A e₀ z w t ν) : genPt ξ ⤳ centre z := by
   obtain ⟨c, hc⟩ := h.exists_chart
   obtain ⟨u, hu, -⟩ := h.2.2 c hc
   exact hu.1
-
-theorem SecNorm.mul (h : SecNorm ξ y A e₀ z w t ν) {f : Ω} {s : ℂ} (hf : ValAt ξ z f s) :
-    SecNorm ξ y A e₀ z w (f * t) (‖s‖ * ν) := by
-  refine ⟨h.1, h.2.1, fun c hc => ?_⟩
-  obtain ⟨u, hu, e⟩ := h.2.2 c hc
-  refine ⟨s * u, ?_, ?_⟩
-  · rw [mul_div_assoc]
-    exact CxVal.mul hf hu
-  · rw [_root_.mul_assoc, e, norm_mul, _root_.mul_assoc]
 
 theorem aeval_blockScale {R : Type} [CommRing R] {s : MRing J} {b : K → ℕ} (hs : IsMultiHomog s b) (κ : K → R)
     (x : (Σ k, J k) → R) :

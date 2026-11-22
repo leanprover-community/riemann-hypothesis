@@ -14,8 +14,6 @@ open idealPowerSpanBounds
 
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-
 theorem exists_trace_one (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {𝔭 : Ideal (𝓞 F)}
     (h𝔭 : 𝔭.IsMaximal) (N : ℕ) : ∃ a : 𝓞 K, a + star a - 1 ∈ extP K 𝔭 ^ N := by
   obtain ⟨θ, hθ⟩ := exists_theta hK hF h𝔭

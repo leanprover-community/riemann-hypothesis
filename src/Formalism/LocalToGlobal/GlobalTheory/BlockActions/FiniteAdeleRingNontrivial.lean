@@ -16,10 +16,6 @@ section Proof
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-local notation "ι" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 omit [Field E] [NumberField E] [Algebra F E] in
 theorem finiteAdeleRing_nontrivial : Nontrivial (FiniteAdeleRing (𝓞 F) F) := by
   obtain ⟨M, hM⟩ := Ideal.exists_maximal (𝓞 F)

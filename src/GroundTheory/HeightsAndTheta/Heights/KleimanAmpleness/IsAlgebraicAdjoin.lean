@@ -17,10 +17,6 @@ noncomputable section
 
 namespace RatioDim
 
-abbrev graphIdxFintype (N m : ℕ) : ∀ c, Fintype (graphIdx N m c)
-  | Sum.inl () => inferInstanceAs (Fintype (Fin (N + 1)))
-  | Sum.inr () => inferInstanceAs (Fintype (Fin m))
-
 attribute [local instance] graphIdxFintype
 
 variable {k : Type} [Field k] {N m : ℕ}
@@ -189,7 +185,6 @@ theorem isAlgebraic_adjoin [W.IsPrime] (j : Fin m)
   exact (hR a).mul (IsAlgebraic.inv_iff.mpr (hR d))
 
 end RatioDim
-
 
 open RatioDim in
 theorem RatioDim.full : RatioDim.Statement := by

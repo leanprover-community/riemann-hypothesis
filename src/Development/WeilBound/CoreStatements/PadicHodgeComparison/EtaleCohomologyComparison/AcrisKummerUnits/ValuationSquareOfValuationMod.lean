@@ -7,24 +7,21 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Idempote
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemIdempotentComplementIffStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdempotentLocalizationDichotomyStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ValuationOfLocalDichotomyStatement
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ComparableModSquareLocalizationStatement
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ComparableModSquareLocalization
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DichotomyOfComparableModSquareStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PolynomialRootsOfClosedQuotientStatement
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AbsolutelyClosedPolynomialSplitsStatement
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AbsolutelyClosedUnitCoefficientRootStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewtonPolygonSlopeExistenceStatement
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewtonApproximationOfDichotomyStatement
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewtonApproximationOfDichotomy
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewtonApproximationLocalToGlobalStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PowerDivisibilityRootExtractionStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AbsolutelyIntegrallyClosedOfNewtonStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralLocalizationAwayInRingStatement
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalizationPreservesClosednessStatement
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalizationPreservesClosedness
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ValuationPowerIffStatement
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EtaleSurjectiveLocalSectionStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SectionOverIdempotentPropertiesStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SectionOrthogonalIdempotentSumStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DividedPowerIdealTorsionFree
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DividedPowerQuotientExistsStatement
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DividedPowerQuotientExists
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DividedPowerMorphismCompatibleStatement
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.Splits
 
@@ -303,10 +300,5 @@ theorem CrystallineSemistableComparison.RL.split_pt : ∀ {S : Type} [CommRing S
 theorem CrystallineSemistableComparison.RL.sec_rules : ∀ {S : Type} [CommRing S] (Y : Scheme.{0}) (f : Y ⟶ Spec (CommRingCat.of S)), SecOn f 0 ∧ (∀ e e' : S, SecOn f e → SecOn f (e * e')) ∧ (SecOn f 1 → ∃ s : Spec (CommRingCat.of S) ⟶ Y, s ≫ f = 𝟙 _) := GlobalTheory.T.section_over_idempotent_properties
 
 theorem CrystallineSemistableComparison.RL.sec_add : ∀ {S : Type} [CommRing S] (Y : Scheme.{0}) (f : Y ⟶ Spec (CommRingCat.of S)) (e e' : S), IsIdempotentElem e → IsIdempotentElem e' → e * e' = 0 → SecOn f e → SecOn f e' → SecOn f (e + e') := GlobalTheory.T.section_orthogonal_idempotent_sum
-
-theorem CrystallineSemistableComparison.RL.pd_quot : ∀ {S : Type} [CommRing S] , TF (S := S) → ∀ I J : Ideal S, PdI I → (∀ x ∈ I, x ∈ J → ∀ k : ℕ, k ≠ 0 → ∀ y : S, (k.factorial : S) * y = x ^ k → y ∈ J) → ∃ δ : DividedPowers (I.map (Ideal.Quotient.mk J)), IsPd (Ideal.Quotient.mk J) I δ := by
-  intro S _ hS I J hI hJ
-  have hpd := GlobalTheory.CompanionTheory.PdTF.exists_dividedPowers_map_quotient hS I J hI hJ
-  exact hpd
 
 theorem CrystallineSemistableComparison.RL.pd_mor : ∀ {S : Type} [CommRing S] {S' E E' : Type} [CommRing S'] [CommRing E] [CommRing E'] (π : S →+* E) (π' : S' →+* E') (I : Ideal S) (I' : Ideal S') {J : Ideal E} {J' : Ideal E'} (δ : DividedPowers J) (δ' : DividedPowers J') (F₀ : S →+* S') (F : E →+* E'), Function.Surjective π → PdI I → IsPd π I δ → IsPd π' I' δ' → (∀ x ∈ I, F₀ x ∈ I') → (∀ x, F (π x) = π' (F₀ x)) → DividedPowers.IsDPMorphism δ δ' F := GlobalTheory.T.divided_power_morphism_compatible

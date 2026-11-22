@@ -28,9 +28,6 @@ variable {K : Type} [Field K] [Algebra c.F K] {K₀ : Type} [CommRing K₀] [Alg
 
 def IsDef (y : FrPt Xo c K) (v : FrPt Xo c (DualNumber K)) : Prop := FrMap (red c K) v y
 
-def der (φ : K₀ →ₐ[c.F] K) (v : FrPt Xo c (DualNumber K)) (s : RulK Xo c K₀) : K :=
-  (val ((cst c K).comp φ) v s).snd
-
 def IsShift (N : FIx Dw → K) (v v' : FrPt Xo c (DualNumber K)) : Prop := FrChg (unip K N) (unip₀ K N) v v'
 
 def IsVert (y : FrPt Xo c K) (N : FIx Dw → K) (v : FrPt Xo c (DualNumber K)) : Prop :=
@@ -87,45 +84,6 @@ theorem exists_isVert_iff {y : FrPt Xo c K} {v : FrPt Xo c (DualNumber K)} :
   obtain ⟨N, hN⟩ := (isDef_const h₀).exists_isShift h (hx.trans h₀.1.symm)
   exact ⟨N, y₀, h₀, hN⟩
 
-theorem der_dir {ι : Type} [Fintype ι] (φ : K₀ →ₐ[c.F] K) {W : FrPt Xo c (TrivSqZeroExt K (ι → K))} {m : ι → K}
-    {v : FrPt Xo c (DualNumber K)} (h : FrMap (dir c m) W v) {e : Ix Dw → ℤ} {s : RulK Xo c K₀}
-    (hs : s ∈ secK Xo c K₀ e) :
-    der φ v s = ∑ k, (val ((inlAlgHom c.F K (ι → K)).comp φ) W s).snd k * m k := by
-  rw [der, val_frMap hs (φ := (inlAlgHom c.F K (ι → K)).comp φ) (fun a => by ext <;> simp) h, snd_dir]
-
-theorem IsDef.der_shift {y : FrPt Xo c K} {N : FIx Dw → K} {v v' : FrPt Xo c (DualNumber K)} (h : IsDef y v)
-    (h' : IsShift N v v') {z : FIx Dw → FrPt Xo c (DualNumber K)} (hz : ∀ k, IsVert y (Pi.single k (1 : K)) (z k))
-    (φ : K₀ →ₐ[c.F] K) {e : Ix Dw → ℤ} {s : RulK Xo c K₀} (hs : s ∈ secK Xo c K₀ e) :
-    der φ v' s = der φ v s + ∑ k, N k * der φ (z k) s := by
-  let emb : DualNumber K →ₐ[c.F] TrivSqZeroExt K (Option (FIx Dw) → K) :=
-    (TrivSqZeroExt.map (LinearMap.single K (fun _ : Option (FIx Dw) => K) none)).restrictScalars c.F
-  have e1 : ∀ a, (emb a).fst = a.fst := fun a => fst_map _ a
-  have e2 : ∀ a, (emb a).snd = Pi.single none a.snd := fun a => snd_map _ a
-  obtain ⟨W₀, hW₀⟩ := exists_frMap emb v
-  let n : FIx Dw → Option (FIx Dw) → K := fun k => Pi.single (some k) 1
-  obtain ⟨W, hW, -⟩ := existsUnique_frChg E H Dw l Xo c _ W₀ _ (isUnit_unip₀ (K := K) n).unit (isUnit_det_unip n)
-  have key : ∀ (m : Option (FIx Dw) → K) (z₀ z : FrPt Xo c (DualNumber K)), FrMap (dir c m) W₀ z₀ →
-      IsShift (fun k => m (some k)) z₀ z → FrMap (dir c m) W z := fun m z₀ z k₀ k => by
-    refine (frMap_iff_frChg hW k₀).2 ?_
-    unfold IsShift at k
-    convert k using 2 with τ
-    · ext i j <;> simp [unip, n, Pi.single_apply]
-    · ext <;> simp [unip₀, n, Pi.single_apply]
-  have k1 : ∀ m : Option (FIx Dw) → K, m none = 1 → FrMap (dir c m) W₀ v := fun m hm =>
-    frMap_of_comp hW₀ (frMap_id v) fun a => by ext <;> simp [e1, e2, Pi.single_apply, hm]
-  rw [der_dir φ (key (fun k => k.elim 1 N) v v' (k1 _ rfl) h') hs,
-    der_dir φ (key (Pi.single none 1) v v (k1 _ (by simp)) (by
-      convert isShift_zero v using 2; simp)) hs, Fintype.sum_option]
-  congr 1
-  · simp [Pi.single_apply]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  obtain ⟨y₀, h₀, hk⟩ := hz k
-  rw [der_dir φ (key (Pi.single (some k) 1) y₀ (z k)
-    (frMap_of_comp hW₀ (frMap_comp (χ := (cst c K).comp (red c K)) h h₀ fun _ => rfl) fun a => by
-      ext <;> simp [e1, e2, Pi.single_apply]) (by
-      convert hk using 2; simp [Pi.single_apply])) hs]
-  simp [Pi.single_apply, mul_comm]
-
 def oneAddEps : Multiplicative K →* (DualNumber K)ˣ :=
   MonoidHom.toHomUnits
     { toFun := fun x => inl 1 + inr x.toAdd
@@ -136,33 +94,14 @@ def diagOf (N : FIx Dw → K) : Ix Dw → K
   | none => N none
   | some q => N (some ⟨q.1, q.2, q.2⟩)
 
-theorem IsVert.der_eq_weight {y : FrPt Xo c K} {N : FIx Dw → K} {v : FrPt Xo c (DualNumber K)}
-    (h : IsVert y N v) (hN : ∀ σ i j, i < j → N (some ⟨σ, i, j⟩) = 0) (φ : K₀ →ₐ[c.F] K) {e : Ix Dw → ℤ}
-    {s : RulK Xo c K₀} (hs : s ∈ secK Xo c K₀ e) : der φ v s = (∑ k, (e k : K) * diagOf N k) * val φ y s := by
-  obtain ⟨y₀, h₀, h⟩ := h
-  have hb : FrBor (fun k => oneAddEps (Multiplicative.ofAdd (diagOf N k))) y₀ v :=
-    (frBor_iff_frChg _ _ _).2 ⟨unip K N, fun σ i j hij => by simp [unip, hN σ i j hij, hij.ne],
-      fun _ _ => by simp [unip, oneAddEps, diagOf], h⟩
-  rw [der, val_frBor hs _ hb, val_frMap hs (φ := φ) (fun _ => rfl) h₀, DualNumber.snd_mul]
-  simp only [← map_zpow, ← map_prod, ← ofAdd_zsmul, ← ofAdd_sum, zsmul_eq_mul]
-  generalize ∑ k, (e k : K) * diagOf N k = a
-  simp [oneAddEps]
-
-theorem IsVert.der_of_triangular {y : FrPt Xo c K} {N : FIx Dw → K} {v : FrPt Xo c (DualNumber K)}
-    (h : IsVert y N v) (hN : ∀ σ i j, i < j → N (some ⟨σ, i, j⟩) = 0) (φ : K₀ →ₐ[c.F] K) (e : Ix Dw → ℤ) :
-    ∃ a : K, ∀ s ∈ secK Xo c K₀ e, der φ v s = a * val φ y s :=
-  ⟨_, fun _ hs => h.der_eq_weight hN φ hs⟩
-
 end Der
 
 section Index
 
 def IsHalf (Φ : Finset (E →+* ℂ)) : Prop := ∀ τ, τ ∈ Φ ↔ conjEmb τ ∉ Φ
 
-
 variable (H) in
 def psiSet : Finset (E →+* ℂ) := Finset.univ.filter fun τ => τ (H.rt : E) = H.rt0
-
 
 variable (H) in
 theorem isHalf_psiSet : IsHalf (psiSet H) := fun τ => by
@@ -337,20 +276,6 @@ theorem KSIso.exists_isTanFrame {Φ : Finset (E →+* ℂ)} {y : FrPt Xo c K} (h
   choose w hw using fun k : VIx Dw => (existsUnique_isVert y (Pi.single k.toF (1 : K))).exists
   exact ⟨Sum.elim (fun k => z (Pi.single k 1)) w, fun k => (hz _).2, hw⟩
 
-theorem existsUnique_isTanFrame_of_isEmpty {Φ : Finset (E →+* ℂ)} [IsEmpty (HIx Dw Φ)] (y : FrPt Xo c K) :
-    ∃! v, IsTanFrame Φ y v := by
-  choose w hw hu using fun k : VIx Dw => existsUnique_isVert y (Pi.single k.toF (1 : K))
-  refine ⟨Sum.elim isEmptyElim w, ⟨isEmptyElim, hw⟩, fun v hv => funext fun k => ?_⟩
-  rcases k with k | k
-  · exact isEmptyElim k
-  · exact hu k _ (hv.2 k)
-
-theorem isEmpty_HIx (Φ : Finset (E →+* ℂ)) (h : Dw.p = 0 ∨ Dw.q = 0) : IsEmpty (HIx Dw Φ) :=
-  ⟨fun ⟨τ, a, b⟩ => by
-    have ha := a.2
-    have hb := b.2
-    rcases mult_conj (Dw := Dw) τ.1 with ⟨k, k'⟩ | ⟨k, k'⟩ <;> omega⟩
-
 theorem sum_FIx (g : FIx Dw → K) :
     ∑ k, g k = ∑ k : VIx Dw, g k.toF + ∑ k ∈ Finset.univ.filter (fun k => k ∉ Set.range VIx.toF), g k := by
   rw [← Finset.sum_filter_add_sum_filter_not Finset.univ (fun k => k ∈ Set.range VIx.toF)]
@@ -360,164 +285,17 @@ theorem sum_FIx (g : FIx Dw → K) :
   ext k
   simp
 
-theorem IsDef.der_shift_frame {y : FrPt Xo c K} {v : VIx Dw → FrPt Xo c (DualNumber K)}
-    (hv : ∀ k : VIx Dw, IsVert y (Pi.single k.toF (1 : K)) (v k)) {N : FIx Dw → K}
-    {w w' : FrPt Xo c (DualNumber K)} (h : IsDef y w) (h' : IsShift N w w') (φ : K₀ →ₐ[c.F] K) (e : Ix Dw → ℤ) :
-    ∃ a : K, ∀ s ∈ secK Xo c K₀ e,
-      der φ w' s = der φ w s + ∑ k : VIx Dw, N k.toF * der φ (v k) s + a * val φ y s := by
-  choose z hz hu using fun k : FIx Dw => existsUnique_isVert y (Pi.single k (1 : K))
-  have : ∀ k : FIx Dw, ∃ a : K, k ∉ Set.range VIx.toF → ∀ s ∈ secK Xo c K₀ e, der φ (z k) s = a * val φ y s :=
-    fun k => by
-      by_cases hk : k ∈ Set.range VIx.toF
-      · exact ⟨0, fun h => absurd hk h⟩
-      · refine ((hz k).der_of_triangular (fun σ i j hij => Pi.single_eq_of_ne ?_ _) φ e).imp fun a ha _ => ha
-        rintro rfl
-        exact hk ⟨⟨σ, (i, j), hij⟩, rfl⟩
-  choose a ha using this
-  refine ⟨∑ k ∈ Finset.univ.filter (fun k => k ∉ Set.range VIx.toF), N k * a k, fun s hs => ?_⟩
-  rw [h.der_shift h' hz φ hs, sum_FIx, add_assoc, Finset.sum_mul]
-  congr 2
-  · exact Finset.sum_congr rfl fun k _ => by rw [hu _ _ (hv k)]
-  · exact Finset.sum_congr rfl fun k hk => by rw [ha k (Finset.mem_filter.1 hk).2 s hs, mul_assoc]
-
-theorem IsVert.der_eq {y : FrPt Xo c K} {v : VIx Dw → FrPt Xo c (DualNumber K)}
-    (hv : ∀ k : VIx Dw, IsVert y (Pi.single k.toF (1 : K)) (v k)) {N : FIx Dw → K}
-    {w : FrPt Xo c (DualNumber K)} (h : IsVert y N w) (φ : K₀ →ₐ[c.F] K) (e : Ix Dw → ℤ) :
-    ∃ a : K, ∀ s ∈ secK Xo c K₀ e, der φ w s = ∑ k : VIx Dw, N k.toF * der φ (v k) s + a * val φ y s := by
-  obtain ⟨y₀, h₀, h⟩ := h
-  obtain ⟨a, ha⟩ := (isDef_const h₀).der_shift_frame hv h φ e
-  refine ⟨a, fun s hs => ?_⟩
-  have : der φ y₀ s = 0 := by rw [der, val_frMap hs (φ := φ) (fun _ => rfl) h₀]; rfl
-  rw [ha s hs, this, zero_add]
-
-theorem KSIso.der_eq {Φ : Finset (E →+* ℂ)} {y : FrPt Xo c K} (h : KSIso Φ y)
-    {v : TIx Dw Φ → FrPt Xo c (DualNumber K)} (hv : IsTanFrame Φ y v) {w : FrPt Xo c (DualNumber K)}
-    (hw : IsDef y w) {M : HIx Dw Φ → K} (hM : IsKS Φ y w.x M) (φ : K₀ →ₐ[c.F] K) (e : Ix Dw → ℤ) :
-    ∃ (C : VIx Dw → K) (a : K), ∀ s ∈ secK Xo c K₀ e, der φ w s =
-      ∑ k, M k * der φ (v (.inl k)) s + ∑ k, C k * der φ (v (.inr k)) s + a * val φ y s := by
-  obtain ⟨W, z, hz⟩ := h.exists_universal
-  have key : ∀ (w : FrPt Xo c (DualNumber K)) (M : HIx Dw Φ → K), IsDef y w → IsKS Φ y w.x M →
-      ∃ (C : VIx Dw → K) (a : K), ∀ s ∈ secK Xo c K₀ e, der φ w s =
-        ∑ k, (val ((inlAlgHom c.F K (HIx Dw Φ → K)).comp φ) W s).snd k * M k +
-          ∑ k, C k * der φ (v (.inr k)) s + a * val φ y s := fun w M hw hM => by
-    obtain ⟨N, hN⟩ := (hz M).2.1.exists_isShift hw (h.injective hw.isTanX (hz M).2.1.isTanX hM (hz M).2.2)
-    obtain ⟨a, ha⟩ := (hz M).2.1.der_shift_frame hv.2 hN φ e
-    exact ⟨_, a, fun s hs => by rw [ha s hs, der_dir φ (hz M).1 hs]⟩
-  obtain ⟨C, a, hC⟩ := key w M hw hM
-  choose C' a' hC' using fun k => key _ _ (hv.1 k).1 (hv.1 k).2
-  refine ⟨fun j => C j - ∑ k, M k * C' k j, a - ∑ k, M k * a' k, fun s hs => ?_⟩
-  rw [hC s hs, Finset.sum_congr rfl fun k _ => congrArg (M k * ·) (hC' k s hs)]
-  simp only [Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, mul_add,
-    Finset.sum_add_distrib, sub_mul, Finset.sum_sub_distrib, Finset.sum_mul, Finset.mul_sum, mul_assoc]
-  rw [Finset.sum_comm (s := (Finset.univ : Finset (VIx Dw)))]
-  simp only [mul_comm _ (M _)]
-  ring
-
 end KS
 
 section Wedge
 
 variable {K : Type} [Field K] [Algebra c.F K] {K₀ : Type} [CommRing K₀] [Algebra c.F K₀] {ι : Type} [Fintype ι]
 
-def wedge (φ : K₀ →ₐ[c.F] K) (v : ι → FrPt Xo c (DualNumber K)) (s : ι → RulK Xo c K₀) : K :=
-  (Matrix.of fun i k => der φ (v k) (s i)).det
-
-def jac (φ : K₀ →ₐ[c.F] K) (y : FrPt Xo c K) (v : ι → FrPt Xo c (DualNumber K)) (s₀ : RulK Xo c K₀)
-    (s : ι → RulK Xo c K₀) : K :=
-  (Matrix.fromBlocks (Matrix.of fun _ _ : Unit => val φ y s₀) (Matrix.of fun _ k => der φ (v k) s₀)
-    (Matrix.of fun i _ => val φ y (s i)) (Matrix.of fun i k => der φ (v k) (s i))).det
-
-theorem wedge_comp {κ : Type} [Fintype κ] (φ : K₀ →ₐ[c.F] K) (v : κ → FrPt Xo c (DualNumber K)) (e : ι ≃ κ)
-    (s : ι → RulK Xo c K₀) : wedge φ (v ∘ e) s = wedge φ v (s ∘ e.symm) := by
-  rw [wedge, wedge, ← Matrix.det_submatrix_equiv_self e]
-  congr 1
-  ext i k
-  simp
-
-theorem wedge_perm (φ : K₀ →ₐ[c.F] K) (v : ι → FrPt Xo c (DualNumber K)) (σ : Equiv.Perm ι)
-    (s : ι → RulK Xo c K₀) : wedge φ (v ∘ σ) s = (Equiv.Perm.sign σ : ℤ) * wedge φ v s :=
-  Matrix.det_permute' σ (Matrix.of fun i k => der φ (v k) (s i))
-
-theorem wedge_jac_of_comb {φ : K₀ →ₐ[c.F] K} {y : FrPt Xo c K} {v w : ι → FrPt Xo c (DualNumber K)}
-    {e : Ix Dw → ℤ} {P : Matrix ι ι K} {a : ι → K}
-    (h : ∀ k, ∀ s ∈ secK Xo c K₀ e, der φ (w k) s = ∑ j, P k j * der φ (v j) s + a k * val φ y s)
-    {s : ι → RulK Xo c K₀} (hs : ∀ i, s i ∈ secK Xo c K₀ e) :
-    ((∀ i, val φ y (s i) = 0) → wedge φ w s = P.det * wedge φ v s) ∧
-      ∀ s₀ ∈ secK Xo c K₀ e, jac φ y w s₀ s = P.det * jac φ y v s₀ s := by
-  refine ⟨fun h0 => ?_, fun s₀ h₀ => ?_⟩
-  · rw [wedge, wedge, mul_comm, ← Matrix.det_transpose P, ← Matrix.det_mul]
-    congr 1
-    ext i k
-    simp [Matrix.mul_apply, h k _ (hs i), h0, mul_comm]
-  · have : P.det = (Matrix.fromBlocks (1 : Matrix Unit Unit K) (Matrix.of fun _ k => a k) 0 P.transpose).det := by
-      simp
-    rw [jac, jac, mul_comm, this, ← Matrix.det_mul]
-    congr 1
-    ext (i | i) (k | k) <;>
-      simp [Matrix.mul_apply, h _ _ (hs _), h _ _ h₀, mul_comm, add_comm]
-
 variable {Φ : Finset (E →+* ℂ)}
-
-theorem KSIso.chain_rule {y : FrPt Xo c K} (h : KSIso Φ y) {v w : TIx Dw Φ → FrPt Xo c (DualNumber K)}
-    (hv : IsTanFrame Φ y v) {M : HIx Dw Φ → HIx Dw Φ → K} {N : VIx Dw → FIx Dw → K}
-    (hM : ∀ k, IsDef y (w (.inl k)) ∧ IsKS Φ y (w (.inl k)).x (M k)) (hN : ∀ k, IsVert y (N k) (w (.inr k)))
-    (φ : K₀ →ₐ[c.F] K) {e : Ix Dw → ℤ} {s : TIx Dw Φ → RulK Xo c K₀} (hs : ∀ i, s i ∈ secK Xo c K₀ e) :
-    ((∀ i, val φ y (s i) = 0) →
-      wedge φ w s = (Matrix.of M).det * (Matrix.of fun k j : VIx Dw => N k j.toF).det * wedge φ v s) ∧
-    ∀ s₀ ∈ secK Xo c K₀ e,
-      jac φ y w s₀ s = (Matrix.of M).det * (Matrix.of fun k j : VIx Dw => N k j.toF).det * jac φ y v s₀ s := by
-  choose C a hC using fun k => h.der_eq hv (hM k).1 (hM k).2 φ e
-  choose b hb using fun k => (hN k).der_eq hv.2 φ e
-  have := wedge_jac_of_comb (φ := φ) (y := y) (v := v) (w := w) (e := e) (a := Sum.elim a b)
-    (P := Matrix.fromBlocks (Matrix.of M) (Matrix.of C) 0 (Matrix.of fun k j : VIx Dw => N k j.toF))
-    (fun k s hs => by rcases k with k | k <;> simp [hC _ s hs, hb _ s hs]) hs
-  rw [← Matrix.det_fromBlocks_zero₂₁ _ (Matrix.of C)]
-  convert this
-
-theorem KSIso.wedge_jac_eq {y : FrPt Xo c K} (h : KSIso Φ y) {v w : TIx Dw Φ → FrPt Xo c (DualNumber K)}
-    (hv : IsTanFrame Φ y v) (hw : IsTanFrame Φ y w) (φ : K₀ →ₐ[c.F] K) {e : Ix Dw → ℤ}
-    {s : TIx Dw Φ → RulK Xo c K₀} (hs : ∀ i, s i ∈ secK Xo c K₀ e) :
-    ((∀ i, val φ y (s i) = 0) → wedge φ w s = wedge φ v s) ∧
-      ∀ s₀ ∈ secK Xo c K₀ e, jac φ y w s₀ s = jac φ y v s₀ s := by
-  have := h.chain_rule hv hw.1 hw.2 φ hs
-  have e1 : (Matrix.of fun k : HIx Dw Φ => (Pi.single k 1 : HIx Dw Φ → K)) = 1 := by
-    ext i j; simp [Pi.single_apply, Matrix.one_apply, eq_comm]
-  have e2 : (Matrix.of fun k j : VIx Dw => (Pi.single k.toF 1 : FIx Dw → K) j.toF) = 1 := by
-    ext i j; simp [Pi.single_apply, Matrix.one_apply, VIx.toF_injective.eq_iff, eq_comm]
-  simpa only [e1, e2, Matrix.det_one, one_mul] using this
 
 variable (Φ)
 
-def IsWedgeVal (o : ι ≃ TIx Dw Φ) (φ : K₀ →ₐ[c.F] K) (y : FrPt Xo c K) (s : ι → RulK Xo c K₀) (d : K) : Prop :=
-  (∀ i, val φ y (s i) = 0) ∧ ∃ v, IsTanFrame Φ y v ∧ d = wedge φ (v ∘ o) s
-
 variable {Φ}
-
-theorem KSIso.existsUnique_isWedgeVal {y : FrPt Xo c K} (h : KSIso Φ y) (o : ι ≃ TIx Dw Φ) (φ : K₀ →ₐ[c.F] K)
-    {e : Ix Dw → ℤ} {s : ι → RulK Xo c K₀} (hs : ∀ i, s i ∈ secK Xo c K₀ e) (h0 : ∀ i, val φ y (s i) = 0) :
-    ∃! d, IsWedgeVal Φ o φ y s d := by
-  obtain ⟨v, hv⟩ := h.exists_isTanFrame
-  refine ⟨_, ⟨h0, v, hv, rfl⟩, ?_⟩
-  rintro _ ⟨-, w, hw, rfl⟩
-  rw [wedge_comp, wedge_comp]
-  exact (h.wedge_jac_eq hv hw φ fun _ => hs _).1 fun _ => h0 _
-
-theorem existsUnique_isWedgeVal_of_isEmpty [IsEmpty (HIx Dw Φ)] (o : ι ≃ TIx Dw Φ) (φ : K₀ →ₐ[c.F] K)
-    {y : FrPt Xo c K} {s : ι → RulK Xo c K₀} (h0 : ∀ i, val φ y (s i) = 0) : ∃! d, IsWedgeVal Φ o φ y s d := by
-  obtain ⟨v, hv, hu⟩ := existsUnique_isTanFrame_of_isEmpty (Φ := Φ) y
-  refine ⟨_, ⟨h0, v, hv, rfl⟩, ?_⟩
-  rintro _ ⟨-, w, hw, rfl⟩
-  rw [hu w hw]
-
-theorem IsWedgeVal.reorder {o : ι ≃ TIx Dw Φ} {φ : K₀ →ₐ[c.F] K} {y : FrPt Xo c K} {s : ι → RulK Xo c K₀} {d : K}
-    (h : IsWedgeVal Φ o φ y s d) (o' : ι ≃ TIx Dw Φ) :
-    IsWedgeVal Φ o' φ y s ((Equiv.Perm.sign (o'.trans o.symm) : ℤ) * d) := by
-  obtain ⟨h0, v, hv, rfl⟩ := h
-  refine ⟨h0, v, hv, ?_⟩
-  rw [← wedge_perm]
-  congr 1
-  funext i
-  simp
 
 end Wedge
 
@@ -525,63 +303,9 @@ section Norm
 
 variable {T : CDVR} {io : c.F →+* T.Fr} {K₀ : Type} [CommRing K₀] [Algebra c.F K₀] {ι : Type} [Fintype ι]
 
-
-variable (c) in
-abbrev CoefHom (io : c.F →+* T.Fr) (K₀ : Type) [CommRing K₀] [Algebra c.F K₀] : Type :=
-  letI := io.toAlgebra
-  K₀ →ₐ[c.F] T.Fr
-
-def secOrd (n : ℕ) (φ : CoefHom c io K₀) (y : IntFr Xo c T io) (s : RulK Xo c K₀) : EReal :=
-  letI := io.toAlgebra
-  nval T.V n (val φ y.1 s)
-
 variable (Φ : Finset (E →+* ℂ))
 
-def IsWedgeOrd (n : ℕ) (φ : CoefHom c io K₀) (y : IntFr Xo c T io) (s : ι → RulK Xo c K₀) (w : EReal) : Prop :=
-  letI := io.toAlgebra
-  ∃ (o : ι ≃ TIx Dw Φ) (d : T.Fr), IsWedgeVal Φ o φ y.1 s d ∧ w = nval T.V n d
-
-def wedgeOrd (n : ℕ) (φ : CoefHom c io K₀) (y : IntFr Xo c T io) (s : ι → RulK Xo c K₀) : EReal :=
-  if h : ∃! w, IsWedgeOrd Φ n φ y s w then h.choose else ⊥
-
-
-def normOfOrd (p : ℕ) (w : EReal) : ENNReal := EReal.exp (-(w * (Real.log p : ℝ)))
-
 variable {Φ}
-
-theorem wedgeOrd_ne_bot_iff {n : ℕ} {φ : CoefHom c io K₀} {y : IntFr Xo c T io} {s : ι → RulK Xo c K₀} :
-    wedgeOrd Φ n φ y s ≠ ⊥ ↔ ∃! w, IsWedgeOrd Φ n φ y s w := by
-  refine ⟨fun h => by_contra fun h' => h (dif_neg h'), fun h => ?_⟩
-  obtain ⟨o, d, -, e⟩ := h.choose_spec.1
-  rw [wedgeOrd, dite_eq_left h, e]
-  exact nval_ne_bot _ _
-
-theorem wedgeOrd_eq {n : ℕ} {φ : CoefHom c io K₀} {y : IntFr Xo c T io} {s : ι → RulK Xo c K₀}
-    (h : wedgeOrd Φ n φ y s ≠ ⊥) {w : EReal} (hw : IsWedgeOrd Φ n φ y s w) : wedgeOrd Φ n φ y s = w := by
-  have h' := wedgeOrd_ne_bot_iff.1 h
-  rw [wedgeOrd, dite_eq_left h']
-  exact h'.unique h'.choose_spec.1 hw
-
-theorem nval_sign_mul (n : ℕ) (u : ℤˣ) (x : T.Fr) : nval T.V n (((u : ℤ) : T.Fr) * x) = nval T.V n x := by
-  rcases Int.units_eq_one_or u with rfl | rfl
-  · simp
-  · refine nval_mul_unit n (by simp) ?_ x
-    simp [vV]
-
-theorem wedgeOrd_eq_of_unique (n : ℕ) {φ : CoefHom c io K₀} {y : IntFr Xo c T io} {s : ι → RulK Xo c K₀}
-    {o : ι ≃ TIx Dw Φ} (h : letI := io.toAlgebra; ∃! d, IsWedgeVal Φ o φ y.1 s d) {d : T.Fr}
-    (hd : letI := io.toAlgebra; IsWedgeVal Φ o φ y.1 s d) : wedgeOrd Φ n φ y s = nval T.V n d := by
-  letI := io.toAlgebra
-  refine wedgeOrd_eq (wedgeOrd_ne_bot_iff.2 ⟨_, ⟨o, d, hd, rfl⟩, ?_⟩) ⟨o, d, hd, rfl⟩
-  rintro _ ⟨o', d', hd', rfl⟩
-  rw [← h.unique (hd'.reorder o) hd, nval_sign_mul]
-
-theorem KSIso.wedgeOrd_eq {y : IntFr Xo c T io} (h : letI := io.toAlgebra; KSIso Φ y.1) (n : ℕ)
-    {φ : CoefHom c io K₀} {e : Ix Dw → ℤ} {s : ι → RulK Xo c K₀} (hs : ∀ i, s i ∈ secK Xo c K₀ e)
-    {o : ι ≃ TIx Dw Φ} {d : T.Fr} (hd : letI := io.toAlgebra; IsWedgeVal Φ o φ y.1 s d) :
-    wedgeOrd Φ n φ y s = nval T.V n d :=
-  letI := io.toAlgebra
-  wedgeOrd_eq_of_unique n (h.existsUnique_isWedgeVal o φ hs hd.1) hd
 
 end Norm
 

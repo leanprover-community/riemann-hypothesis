@@ -63,9 +63,6 @@ theorem mem_DdR (ρ : Representation LL G V) (x : V ⊗[Qp] BdR) :
 def tw (χ : G → LL) (g : G) : BdR ⊗[Qp] LL →ₗ[Qp] BdR ⊗[Qp] LL :=
   TensorProduct.map (((PD.actdR g).toAlgHom.toLinearMap).restrictScalars Qp) (LinearMap.mulLeft Qp (χ g))
 
-theorem tw_tmul (χ : G → LL) (g : G) (b : BdR) (c : LL) :
-    tw PD χ g (b ⊗ₜ[Qp] c) = PD.actdR g b ⊗ₜ[Qp] (χ g * c) := rfl
-
 theorem tw_smul (χ : G → LL) (g : G) (b : BdR) (w : BdR ⊗[Qp] LL) :
     tw PD χ g (b • w) = PD.actdR g b • tw PD χ g w := by
   induction w using TensorProduct.induction_on with
@@ -133,7 +130,6 @@ theorem exists_unit [Infinite Qp] [FiniteDimensional Qp LL] (hB : IsField BdR) (
   refine Submodule.span_mono ?_
   rintro _ ⟨i, rfl⟩
   exact (v i).2
-
 
 variable (V) in
 def mulR : BdR ⊗[Qp] LL →ₗ[Qp] (V ⊗[Qp] BdR →ₗ[LL] V ⊗[Qp] BdR) :=

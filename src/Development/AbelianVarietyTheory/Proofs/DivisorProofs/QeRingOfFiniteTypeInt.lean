@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinalTheorems
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinTypeQE
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GeomRegFibOfIsRegularRingTensorEssFiniteTypeStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormalFibreIsRegularRingEssFiniteTypeIntStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRegularQuotientNearPrimeFiniteTypeIntStatement

@@ -305,7 +305,6 @@ theorem finite_of_finiteReduction (φ : MvPowerSeries τ R →ₐ[R] MvPowerSeri
   rw [Ideal.map_span, ← Set.range_comp]
   rfl
 
-
 omit [IsNoetherianRing R] [IsAdicComplete (maximalIdeal R) R] [Finite σ] in
 theorem isLocalHom_of_constantCoeff_mem (φ : MvPowerSeries τ R →ₐ[R] MvPowerSeries σ R)
     (h0 : ∀ j, constantCoeff (φ (X j)) ∈ maximalIdeal R) : IsLocalHom φ.toRingHom := by
@@ -358,23 +357,6 @@ theorem finiteReduction_iff {f : τ → MvPowerSeries σ R} : FiniteReduction f 
     ∃ N, Ideal.span (Set.range X) ^ N ≤
       Ideal.span (Set.range fun j => MvPowerSeries.map (residue R) (f j)) :=
   ⟨exists_pow_le_of_finite_quotient, fun ⟨_, h⟩ => finite_quotient_of_pow_le h⟩
-
-theorem FiniteReduction.map {S : Type*} [CommRing S] [IsLocalRing S] (ρ : R →+* S) [IsLocalHom ρ]
-    {f : τ → MvPowerSeries σ R} (h : FiniteReduction f) :
-    FiniteReduction fun j => MvPowerSeries.map ρ (f j) := by
-  obtain ⟨N, hN⟩ := finiteReduction_iff.1 h
-  refine finiteReduction_iff.2 ⟨N, ?_⟩
-  have := Ideal.map_mono (f := MvPowerSeries.map (σ := σ) (ResidueField.map ρ)) hN
-  rw [Ideal.map_pow, Ideal.map_span, Ideal.map_span, ← Set.range_comp, ← Set.range_comp] at this
-  have e1 : (MvPowerSeries.map (σ := σ) (ResidueField.map ρ)) ∘ X = X := by
-    ext1 i
-    simp
-  have e2 : ((MvPowerSeries.map (ResidueField.map ρ)) ∘
-      fun j => MvPowerSeries.map (residue R) (f j)) =
-      fun j => MvPowerSeries.map (residue S) (MvPowerSeries.map ρ (f j)) := by
-    ext j d
-    simp only [Function.comp_apply, coeff_map, ResidueField.map_residue]
-  rwa [e1, e2] at this
 
 end Criterion
 

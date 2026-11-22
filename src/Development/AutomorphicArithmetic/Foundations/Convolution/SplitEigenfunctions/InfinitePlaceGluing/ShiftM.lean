@@ -184,11 +184,6 @@ private theorem cont_ev (q : MvPolynomial (Fin 2) ℂ) :
   · exact Complex.continuous_ofReal.comp Real.continuous_sin
   · exact Complex.continuous_ofReal.comp Real.continuous_cos
 
-private theorem Mk_eq (D : Dat ℚ E) (χ : HChar ℚ) (k : ℕ) (φ : GL (Fin 2) (A E) → ℂ)
-    (p : MvPolynomial (Fin 2) ℂ) (s : ℂ) :
-    Mk D χ k φ p s = ∫ t in (0 : ℝ)..2 * Real.pi, MvPolynomial.eval ![(Real.sin t : ℂ), (Real.cos t : ℂ)] p *
-      ∫ y, G D χ k φ s t y := rfl
-
 private theorem ii (D : Dat ℚ E) {ω χ : HChar ℚ} (hχ : ∀ a, ‖((χ.1 a : ℂˣ) : ℂ)‖ = 1)
     {φ : GL (Fin 2) (A E) → ℂ} (hφ : admitted D ω φ) (k : ℕ) {s : ℂ} (hs : 4 < s.re)
     (q : MvPolynomial (Fin 2) ℂ) :

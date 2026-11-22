@@ -14,16 +14,6 @@ open MvPolynomial Finset Formalism.MainNotions.G
 
 namespace Formalism.MainNotions.CovariantDegrees
 
-lemma genMat_map_eval {n : ℕ} {R : Type} [CommRing R] (f : ℤ →+* R) (g : Matrix (Fin n) (Fin n) R) :
-    (MvPolynomial.eval₂Hom f (fun ab : Fin n × Fin n => g ab.1 ab.2)).mapMatrix (genMat ℤ n) = g := by
-  ext a b
-  simp [genMat]
-
-def evGL {n : ℕ} {R : Type} [CommRing R] (g : GL (Fin n) R) : GLCoord ℤ n →+* R :=
-  IsLocalization.Away.lift (genMat ℤ n).det
-    (g := MvPolynomial.eval₂Hom (Int.castRingHom R) (fun ab : Fin n × Fin n => g.val ab.1 ab.2))
-    (by rw [RingHom.map_det, genMat_map_eval]; exact Matrix.isUnits_det_units g)
-
 lemma genMat_map_coord {n : ℕ} (F : Type) [CommRing F] :
     (MvPolynomial.map (Int.castRingHom F)).mapMatrix (genMat ℤ n) = genMat F n := by
   ext a b
@@ -34,14 +24,6 @@ def mapCoord {n : ℕ} (F : Type) [CommRing F] : GLCoord ℤ n →+* GLCoord F n
     (g := (algebraMap (MvPolynomial (Fin n × Fin n) F) (GLCoord F n)).comp (MvPolynomial.map (Int.castRingHom F)))
     (by rw [RingHom.comp_apply, RingHom.map_det, genMat_map_coord]
         exact IsLocalization.Away.algebraMap_isUnit _)
-
-structure GLMod (n : ℕ) where
-  ι : Type
-  [fi : Fintype ι]
-  [de : DecidableEq ι]
-  A : Matrix ι ι (GLCoord ℤ n)
-  mul : ∀ (R : Type) [CommRing R] (g h : GL (Fin n) R), A.map (evGL (g * h)) = A.map (evGL g) * A.map (evGL h)
-  one : ∀ (R : Type) [CommRing R], A.map (evGL (1 : GL (Fin n) R)) = 1
 
 attribute [instance] GLMod.fi GLMod.de
 
@@ -69,66 +51,13 @@ def TMat {n : ℕ} [NeZero n] (mu : Fin n → ℤ) : Matrix (TIdx mu) (TIdx mu) 
 
 def brk {n : ℕ} [NeZero n] (mu : Fin n → ℤ) (I : TIdx mu) : GLCoord ℤ n := TMat mu (canT mu) I
 
-def StdT {n : ℕ} [NeZero n] {mu : Fin n → ℤ} (I : TIdx mu) : Prop :=
-  ∀ (c : ↥(TCols mu)) (hc : (c : ℤ) + 1 ∈ TCols mu) (t : Fin n),
-    ((I ⟨(c : ℤ) + 1, hc⟩).1.filter (· ≤ t)).card ≤ ((I c).1.filter (· ≤ t)).card
-
-def dMu {n : ℕ} [NeZero n] (mu : Fin n → ℤ) : ℕ := Nat.card {I : TIdx mu // StdT I}
-
-def SMu {n : ℕ} [NeZero n] (mu : Fin n → ℤ) : Submodule ℤ (GLCoord ℤ n) :=
-  Submodule.span ℤ (Set.range (brk mu))
-
-def torusPt (n : ℕ) : GL (Fin n) (AddMonoidAlgebra ℤ (Fin n → ℤ)) where
-  val := Matrix.diagonal fun a => AddMonoidAlgebra.single (Pi.single a 1) 1
-  inv := Matrix.diagonal fun a => AddMonoidAlgebra.single (Pi.single a (-1)) 1
-  val_inv := by
-    rw [Matrix.diagonal_mul_diagonal]; convert Matrix.diagonal_one using 2
-    funext a; rw [AddMonoidAlgebra.single_mul_single, ← Pi.single_add]; simp [AddMonoidAlgebra.one_def]
-  inv_val := by
-    rw [Matrix.diagonal_mul_diagonal]; convert Matrix.diagonal_one using 2
-    funext a; rw [AddMonoidAlgebra.single_mul_single, ← Pi.single_add]; simp [AddMonoidAlgebra.one_def]
-
-def prMu {n : ℕ} (M : GLMod n) (mu : Fin n → ℤ) : Matrix M.ι M.ι ℤ :=
-  fun i j => (evGL (torusPt n) (M.A i j)).coeff mu
-
-def IsHighest {n : ℕ} (M : GLMod n) (R : Type) [CommRing R] (mu : Fin n → ℤ) (x : M.ι → R) : Prop :=
-  Matrix.mulVec ((prMu M mu).map (Int.castRingHom R)) x = x ∧
-  ∀ (R' : Type) [CommRing R'] [Algebra R R'] (u : GL (Fin n) R'), (∀ a, u.val a a = 1) →
-    (∀ a b, b < a → u.val a b = 0) → Matrix.mulVec (M.A.map (evGL u)) (fun i => algebraMap R R' (x i)) = fun i => algebraMap R R' (x i)
-
-def typeSum {n : ℕ} (M : GLMod n) (pi : Set (Fin n → ℤ)) : Submodule ℚ (M.ι → ℚ) :=
-  Submodule.span ℚ {y | ∃ mu ∈ pi, ∃ v, IsHighest M ℚ mu v ∧ ∃ g : GL (Fin n) ℚ, y = Matrix.mulVec (M.A.map (evGL g)) v}
-
 def DomLE {n : ℕ} (nu mu : Fin n → ℤ) : Prop :=
   (∀ a : Fin n, ∑ b ∈ univ.filter (· ≤ a), nu b ≤ ∑ b ∈ univ.filter (· ≤ a), mu b) ∧ ∑ b, nu b = ∑ b, mu b
 
 def DomLowerSet {n : ℕ} (pi : Set (Fin n → ℤ)) : Prop :=
   (∀ mu ∈ pi, Dominant mu) ∧ ∀ mu ∈ pi, ∀ nu, Dominant nu → DomLE nu mu → nu ∈ pi
 
-structure ColFam {n : ℕ} [NeZero n] (M : GLMod n) where
-  J : Type
-  [fJ : Fintype J]
-  [dJ : DecidableEq J]
-  mu : J → Fin n → ℤ
-  dom : ∀ j, Dominant (mu j)
-  ph : (j : J) → Matrix M.ι (TIdx (mu j)) ℤ
-  equiv : ∀ j, M.A * (ph j).map (Int.castRingHom _) = (ph j).map (Int.castRingHom _) * TMat (mu j)
-  indepP : ∀ (p : ℕ), p.Prime → ∀ nu : Fin n → ℤ,
-    LinearIndependent (ZMod p) (fun j : {j : J // mu j = nu} => fun i => ((ph j.1 i (canT (mu j.1)) : ℤ) : ZMod p))
-  indepQ : ∀ nu : Fin n → ℤ,
-    LinearIndependent ℚ (fun j : {j : J // mu j = nu} => fun i => ((ph j.1 i (canT (mu j.1)) : ℤ) : ℚ))
-  rank : Fintype.card M.ι = ∑ j, dMu (mu j)
-
 attribute [instance] ColFam.fJ ColFam.dJ
-
-def ColFam.vec {n : ℕ} [NeZero n] {M : GLMod n} (CF : ColFam M) (j : CF.J) (I : TIdx (CF.mu j)) : M.ι → ℤ :=
-  fun i => CF.ph j i I
-
-def ColFam.Mpi {n : ℕ} [NeZero n] {M : GLMod n} (CF : ColFam M) (pi : Set (Fin n → ℤ)) : Submodule ℤ (M.ι → ℤ) :=
-  Submodule.span ℤ {x | ∃ j, CF.mu j ∈ pi ∧ ∃ I : TIdx (CF.mu j), x = CF.vec j I}
-
-def ColFam.MM {n : ℕ} [NeZero n] {M : GLMod n} (CF : ColFam M) (mu : Fin n → ℤ) : Submodule ℤ (M.ι → ℤ) :=
-  Submodule.span ℤ {x | ∃ j, CF.mu j = mu ∧ x = CF.vec j (canT (CF.mu j))}
 
 lemma genMat_map_evalR {n : ℕ} {R R' : Type} [CommRing R] [CommRing R'] [Algebra R R']
     (g : Matrix (Fin n) (Fin n) R') :
@@ -151,39 +80,6 @@ def brkPol {n : ℕ} [NeZero n] (mu : Fin n → ℤ) (I : TIdx mu) : MvPolynomia
   (genMat ℤ n).det ^ (mu (lastIdx n)).toNat *
     ∏ c : ↥(TCols mu), Matrix.det (Matrix.of fun a b : Fin (colH mu c) =>
       genMat ℤ n ((canT mu c).1.orderEmbOfFin (canT mu c).2 a) ((I c).1.orderEmbOfFin (I c).2 b))
-
-def PathPairCorrespondence (_D : Formalism.BasicNotions.D7) : Prop :=
-  ∀ (n : ℕ) [NeZero n] (mu : Fin n → ℤ), Dominant mu → ∀ (F : Type) [Field F],
-    LinearIndependent F (fun I : {I : TIdx mu // StdT I} => mapCoord (n := n) F (brk mu I.1))
-
-def admB2 (_D : Formalism.BasicNotions.D7) : Prop :=
-  ∀ (n : ℕ) [NeZero n] (mu : Fin n → ℤ), Dominant mu →
-    LinearIndependent ℤ (fun I : {I : TIdx mu // StdT I} => brk mu I.1) ∧
-    Submodule.span ℤ (Set.range fun I : {I : TIdx mu // StdT I} => brk mu I.1) = SMu mu
-
-def admB3 (_D : Formalism.BasicNotions.D7) : Prop :=
-  ∀ (n : ℕ) [NeZero n] (M : GLMod n) (CF : ColFam M),
-    (LinearIndependent ℤ (fun x : (Σ j, {I : TIdx (CF.mu j) // StdT I}) => CF.vec x.1 x.2.1) ∧
-      Submodule.span ℤ (Set.range fun x : (Σ j, {I : TIdx (CF.mu j) // StdT I}) => CF.vec x.1 x.2.1) = ⊤) ∧
-    ∀ (R : Type) [CommRing R],
-      LinearIndependent R (fun x : (Σ j, {I : TIdx (CF.mu j) // StdT I}) => fun i => (CF.vec x.1 x.2.1 i : R)) ∧
-      Submodule.span R (Set.range fun x : (Σ j, {I : TIdx (CF.mu j) // StdT I}) =>
-        fun i => (CF.vec x.1 x.2.1 i : R)) = ⊤
-
-def ColumnFamilyLowerSet (_D : Formalism.BasicNotions.D7) : Prop :=
-  ∀ (n : ℕ) [NeZero n] (M : GLMod n) (CF : ColFam M) (pi : Set (Fin n → ℤ)), DomLowerSet pi →
-    CF.Mpi pi = Submodule.span ℤ {x | ∃ j, CF.mu j ∈ pi ∧ ∃ I : TIdx (CF.mu j), StdT I ∧ x = CF.vec j I} ∧
-    (∀ x : M.ι → ℤ, x ∈ CF.Mpi pi ↔ (fun i => (x i : ℚ)) ∈ typeSum M pi) ∧
-    (∀ x ∈ CF.Mpi pi, ∀ ℓ : GLCoord ℤ n →ₗ[ℤ] ℤ,
-      (fun i => ℓ (Matrix.mulVec M.A (fun j => ((x j : ℤ) : GLCoord ℤ n)) i)) ∈ CF.Mpi pi) ∧
-    (∃ C : Submodule ℤ (M.ι → ℤ), IsCompl (CF.Mpi pi) C) ∧
-    ∀ mu ∈ pi, (∀ nu ∈ pi, DomLE mu nu → nu = mu) →
-      (∃ Φ : (↥(CF.Mpi pi) ⧸ (CF.Mpi (pi \ {mu})).comap (CF.Mpi pi).subtype) ≃ₗ[ℤ]
-          TensorProduct ℤ ↥(SMu mu) ↥(CF.MM mu),
-        ∀ (j : CF.J) (I : TIdx (CF.mu j)) (x : ↥(CF.Mpi pi)) (y : ↥(SMu mu)) (z : ↥(CF.MM mu)),
-          CF.mu j = mu → StdT I → x.1 = CF.vec j I → y.1 = brk (CF.mu j) I → z.1 = CF.vec j (canT (CF.mu j)) →
-          Φ (Submodule.Quotient.mk x) = y ⊗ₜ z) ∧
-      (CF.MM mu : Set (M.ι → ℤ)) = {x | IsHighest M ℤ mu x}
 
 def GlobalSectionsSchur (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (n : ℕ) [NeZero n] (mu : Fin n → ℤ) (R : Type) [CommRing R] [IsDomain R],
@@ -286,7 +182,6 @@ def XXZ (O : Type) [CommRing O] {N r K : ℕ}
     (PP : Set ((Fin (N + 1) → Fin r → ℤ) × (Fin (N + 1) → Fin K → ℤ))) :
     Submodule O (MvPolynomial (Fin N × Fin (r + K)) O) :=
   Submodule.span O {G | ∃ q ∈ PP, ∃ I' I'', IsSt q.1 I' ∧ IsSt q.2 I'' ∧ G = PsiPl O q.1 I' * PsiTan O q.2 I''}
-
 
 open Classical in
 def glOpsE (F : Type*) [Field F] {N m k : ℕ} (LL : Letters (Fin N)) (S : Set (Fin N)) (e : Fin m → Fin k) :

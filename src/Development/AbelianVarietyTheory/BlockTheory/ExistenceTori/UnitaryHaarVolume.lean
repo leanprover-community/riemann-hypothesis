@@ -108,27 +108,8 @@ section OneEmb
 
 variable {σ : c.F →+* ℂ} (V : Unf Xo c σ r)
 
-def totVol : ℝ≥0∞ := ∑ k, quotInt (V.X k) fun _ => 1
-
-def totInt (F : ∀ k, Frame (V.X k).Ψ r → ℝ≥0∞) : ℝ≥0∞ := ∑ k, quotInt (V.X k) (F k)
-
-def piFac (a : (E →+* ℂ) × ℕ → ℕ) (k : V.Comp) : ℝ :=
-  ∏ τ : E →+* ℂ, ∏ i : Fin (Dw.mult τ), (2 * Real.pi * ‖relab c σ τ (V.X k).ξ0‖) ^ (-(a (τ, i) : ℝ) / 2)
-
-def ptNorm (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (f : Rul Xo c) (k : V.Comp) (x : Frame (V.X k).Ψ r) : ℝ :=
-  piFac V a k * (V.X k).pnorm (laU V a n k) (rdU V f k) x
-
-def sqInt (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (f : Rul Xo c) : ℝ≥0∞ :=
-  totInt V fun k x => ENNReal.ofReal (ptNorm V a n f k x ^ 2)
-
-def petNorm (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (f : Rul Xo c) : ℝ :=
-  Real.sqrt ((sqInt V a n f).toReal / (totVol V).toReal)
-
 end OneEmb
 
 variable (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r)
-
-def petAt (σ : c.F →+* ℂ) (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (f : Rul Xo c) : ℝ :=
-  petNorm (U (goodOf c σ)) a n f
 
 end GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHaarVolume

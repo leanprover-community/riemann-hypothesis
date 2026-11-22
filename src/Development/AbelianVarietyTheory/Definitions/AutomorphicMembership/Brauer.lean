@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeIsobaric
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.BernsteinUnitaryProductIrreducible
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DiscreteSpectrumResidual
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.GreenRegularCharacters
@@ -16,7 +15,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomolog
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.CohDimTwoLocalOfLocalFiniteness
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ExistsIdealsPrimeToEqSpan
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ChebotarevOpenNormalIffDegreeOne
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HypothesesAbsDet
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.TotallyDisjointProductIrreducible
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.MoyPrasadJacquetIsoTrivial
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.ClozelPurity
@@ -27,7 +25,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry�
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.CaraianiTempered
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.GelfandKazhdanDual
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.CaraianiLocalGlobalDual
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.GaloisRepOfPolarizedPair
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.LocalLanglandsExists
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DepthZeroCuspidalLL
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.LocalConverseGL
@@ -71,7 +68,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFor
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonzeroPlacesOverPrimes
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FieldTies
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MovedReadingSameMapsBaseReadingAgrees
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LargeFor
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CmHostRootComplexEqPmSqrt
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonzeroPlacesOverPrimesLifts
@@ -100,7 +96,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SplitOffDetection
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistAllPowersOfGaloisCohomologyClassField
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CoreEq
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalGlobalAboveL
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CenUsedOfCenReal
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsRhoPtOfSplitting
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsComp
@@ -133,51 +128,6 @@ namespace GlobalTheory.Mem.LiteralAutomorphy
 
 open ReciprocityTheory.Gal Formalism.GaloisCohomology GlobalTheory.Published
 
-structure LitLoc : Prop where
-  bz : BernsteinZelevinskyFiniteness
-  bern : BernsteinUnitaryProductIrreducible
-  geo : GeometricLemma
-  zel : ZelevinskyPolynomialRing
-  disj : TotallyDisjointProductIrreducible
-  mp : MoyPrasadJacquetIso
-  theta : MinguezThetaGL
-  temp : TemperedProductOfSquareIntegrable
-  seg : EssSquareIntegrableSegments
-  sq : SquareIntegrableSegment
-  unit : UnitaryDualGL
-  gen : GenericUnlinkedGL
-  multi : LanglandsMultisegments
-  exh : LanglandsExhaustionGL
-  cos : StandardCosocleGL
-  llc : LocalLanglandsExists
-  conv : LocalConverseGL
-  dzc : DepthZeroCuspidalLL
-  dzi : DepthZeroInduction
-  dzt : DepthZeroTypeInertia
-  brauer : BrauerDegreeZero
-  chev : ChevalleyUnits
-  green : GreenRegularCharacters
-
-structure LitAut : Prop where
-  decay : CuspRapidDecay
-  hc : HarishChandraFinite
-  fin : AutomorphicFormsFiniteGL
-  js : JacquetShalika
-  cusp : CuspidalSpectrumGL
-  mw : DiscreteSpectrumResidual
-  bc : BaseChangeIsobaric
-  gk : GelfandKazhdanDual
-  gal : GaloisRepOfPolarizedPair
-  car : CaraianiLocalGlobalDual
-  ctemp : CaraianiTempered
-  pur : ClozelPurity
-  coh : ClozelCohomological
-  art : GlobalArtinReciprocity
-  ray : RayClassFieldSt
-  chA : HeckeLAdicCharacterAbove
-  chW : AlgebraicCharacterWD
-  berger : DeRhamPotSemistable
-
 structure LitCoh : Prop where
   pt : PoitouTateNormalised
   lf : LocalFiniteness
@@ -191,25 +141,5 @@ structure LitCoh : Prop where
   ltK : LocalTateDualityK
   leK : LocalEulerCharK
   bk : BlochKatoLocal
-
-structure LitCM : Prop where
-  hb : HilbertBlumenthal
-  gm : GrothendieckDeformation
-  dr : AbelianDeRham
-  dual : AbelianDualCrystal
-  per : PeriodComparison
-  gmp : GaussManinPeriods
-  st : SerreTateGoodReductionSt
-  cm : EllipticMainTheoremCM
-  hj : HilbertClassFieldJ
-  dri : SiegelKlingenDeligneRibet
-  pz : PartialZetaFunctionalEquation
-  fe : HeckeTateFunctionalEquation
-
-structure LitN : Prop where
-  loc : LitLoc
-  aut : LitAut
-  coh : LitCoh
-  cm : LitCM
 
 end GlobalTheory.Mem.LiteralAutomorphy

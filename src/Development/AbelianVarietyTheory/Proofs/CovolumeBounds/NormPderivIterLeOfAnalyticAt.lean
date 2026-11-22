@@ -20,9 +20,6 @@ noncomputable def pderivList (l : List ι) (F : (ι → 𝕜) → V) : (ι → �
 noncomputable def pderivIter (α : ι →₀ ℕ) (F : (ι → 𝕜) → V) : (ι → 𝕜) → V :=
   pderivList α.toMultiset.toList F
 
-noncomputable def polyDeriv (P : MvPolynomial ι 𝕜) (F : (ι → 𝕜) → V) (a : ι → 𝕜) : V :=
-  ∑ α ∈ P.support, P.coeff α • pderivIter α F a
-
 theorem pderivList_append (l₁ l₂ : List ι) (F : (ι → 𝕜) → V) :
     pderivList (l₁ ++ l₂) F = pderivList l₁ (pderivList l₂ F) := by
   simp only [pderivList, List.map_append, lineDerivList_append]
@@ -54,12 +51,6 @@ theorem pderivIter_single (k : ι) (n : ℕ) (F : (ι → 𝕜) → V) (z : ι �
   congr 1
   rw [← List.perm_replicate, ← Multiset.coe_eq_coe, Multiset.coe_toList,
     Multiset.nsmul_singleton, Multiset.coe_replicate]
-
-theorem polyDeriv_eq_sum_of_subset (P : MvPolynomial ι 𝕜) {s : Finset (ι →₀ ℕ)}
-    (hs : P.support ⊆ s) (F : (ι → 𝕜) → V) (a : ι → 𝕜) :
-    polyDeriv P F a = ∑ α ∈ s, P.coeff α • pderivIter α F a := by
-  refine Finset.sum_subset hs fun α _ hα => ?_
-  rw [MvPolynomial.notMem_support_iff.1 hα, zero_smul]
 
 @[simp] theorem polyDeriv_monomial (α : ι →₀ ℕ) (c : 𝕜) (F : (ι → 𝕜) → V) (a : ι → 𝕜) :
     polyDeriv (MvPolynomial.monomial α c) F a = c • pderivIter α F a := by
@@ -103,28 +94,6 @@ end Analytic
 section Polynomial
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] {ι : Type*} [DecidableEq ι]
-
-theorem hasDerivAt_eval_line (Q : MvPolynomial ι 𝕜) (z : ι → 𝕜) (k : ι) :
-    HasDerivAt (fun t : 𝕜 => MvPolynomial.eval (z + t • (Pi.single k 1 : ι → 𝕜)) Q)
-      (MvPolynomial.eval z (MvPolynomial.pderiv k Q)) 0 := by
-  induction Q using MvPolynomial.induction_on with
-  | C c => simpa using hasDerivAt_const (0 : 𝕜) c
-  | add P Q hP hQ => simpa using hP.fun_add hQ
-  | mul_X P j hP =>
-    have hj : HasDerivAt (fun t : 𝕜 => z j + t * (Pi.single k 1 : ι → 𝕜) j)
-        ((Pi.single k 1 : ι → 𝕜) j) 0 := by
-      simpa using ((hasDerivAt_id (0 : 𝕜)).mul_const ((Pi.single k 1 : ι → 𝕜) j)).const_add (z j)
-    have := hP.fun_mul hj
-    have e : (fun t : 𝕜 => MvPolynomial.eval (z + t • (Pi.single k 1 : ι → 𝕜))
-        (P * MvPolynomial.X j)) = fun t : 𝕜 =>
-          MvPolynomial.eval (z + t • (Pi.single k 1 : ι → 𝕜)) P
-            * (z j + t * (Pi.single k 1 : ι → 𝕜) j) := by
-      funext t; simp
-    rw [e]
-    refine this.congr_deriv ?_
-    by_cases h : j = k
-    · subst h; simp [add_comm, mul_comm]
-    · simp [h, mul_comm]
 
 end Polynomial
 

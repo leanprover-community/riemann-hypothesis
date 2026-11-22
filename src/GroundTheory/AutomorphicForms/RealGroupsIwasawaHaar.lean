@@ -99,9 +99,6 @@ noncomputable def kbHomeomorph : unitaryGroup n 𝕜 × upperPosSubgroup n 𝕜 
     refine continuous_iwasawaK.prodMk (Continuous.subtype_mk ?_ _)
     exact ((ht.comp continuous_iwasawaK).inv).mul continuous_id
 
-theorem kbHomeomorph_apply (p : unitaryGroup n 𝕜 × upperPosSubgroup n 𝕜) :
-    kbHomeomorph p = Unitary.toUnits p.1 * p.2 := rfl
-
 end Split
 
 section HaarKB

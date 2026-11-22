@@ -11,8 +11,6 @@ namespace GroundTheory.ProfCoh
 
 open CategoryTheory NumberField IntermediateField GroundTheory.Global FiniteSubfield IsDedekindDomain IdeleLimit
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 variable {K : FiniteSubfield}
@@ -21,7 +19,6 @@ section Finite
 
 variable {v : HeightOneSpectrum (𝓞 K.1)} (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure (v.adicCompletion K.1))
   (F : FiniteSubfield) [Fact (K ≤ F)] [F.1.fixingSubgroup.Normal]
-
 
 set_option maxHeartbeats 4000000 in
 theorem localInfl_finiteComponent_eq_idelesLocalRes (n : ℕ) (y : cohomology (ideleRep K.1 F.1) n) :
@@ -41,7 +38,6 @@ section Infinite
 
 variable {v : InfinitePlace K.1} (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure v.Completion)
   (F : FiniteSubfield) [Fact (K ≤ F)] [F.1.fixingSubgroup.Normal]
-
 
 set_option maxHeartbeats 4000000 in
 theorem infLocalInfl_infiniteComponent_eq_infIdelesLocalRes (n : ℕ) (y : cohomology (ideleRep K.1 F.1) n) :
@@ -63,7 +59,6 @@ section Components
 
 variable (ι : LocalEmbeddings K) {n : ℕ} (hn : 1 ≤ n)
 
-
 set_option maxHeartbeats 4000000 in
 theorem idelesLimitCohomologyEquiv_apply_inr (v : HeightOneSpectrum (𝓞 K.1)) (y : cohomology (limitRep K) n) :
     idelesLimitCohomologyEquiv ι hn y (.inr v) = (idelesLocalRes (ι.fin v) n).hom y := by
@@ -73,7 +68,6 @@ theorem idelesLimitCohomologyEquiv_apply_inr (v : HeightOneSpectrum (𝓞 K.1)) 
       ((cohomologyMap (placeProj (.inr v)) n).hom z)) = _
   rw [CompatiblePlaces.shapiro_placeProj_inr]
   exact localInfl_finiteComponent_eq_idelesLocalRes (ι.fin v) p.1 n z
-
 
 set_option maxHeartbeats 4000000 in
 theorem idelesLimitCohomologyEquiv_apply_inl (v : InfinitePlace K.1) (y : cohomology (limitRep K) n) :

@@ -20,11 +20,9 @@ variable {Λ : Type} [CommRing Λ] {C : Type 1} [Category.{0} C] {F : C ⥤ Modu
   {T₁ T₂ : C} {ι : Type} (e : (ι →₀ F.obj T₁) ≃ₗ[Λ] F.obj T₂)
   (he : ∀ r z, e z ∈ (Φ.S r).S T₂ ↔ ∀ a, z a ∈ (Φ.S r).S T₁)
 
-
 include he in
 theorem coord_mem (r : ℕ) (w : F.obj T₂) (hw : w ∈ (Φ.S r).S T₂) (a : ι) : e.symm w a ∈ (Φ.S r).S T₁ :=
   (he r _).1 (by simpa using hw) a
-
 
 include he in
 theorem filt_mem (p : ι → Prop) (r : ℕ) (w : F.obj T₂) (hw : w ∈ (Φ.S r).S T₂) :
@@ -68,10 +66,6 @@ def fl (p : ι → Prop) : Φ.Pr T₂ →ₗ[ℤ[X]] Φ.Pr T₂ :=
       congr 1
       ext a
       by_cases ha : p a <;> simp [Finsupp.filter_apply, ha]
-
-theorem fl_coe (p : ι → Prop) (x : Φ.Pr T₂) (r : ℕ) :
-    (fl Φ e he p x r).1 = e (Finsupp.filter p (e.symm (x r).1)) := rfl
-
 
 omit he in
 theorem diag {φ₂ : T₂ ⟶ T₂} {φ₁ : T₁ ⟶ T₁} {c : ι → Λ}

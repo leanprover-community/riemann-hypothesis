@@ -26,9 +26,6 @@ def UnfoldAlongSubgroup.Statement (G Y : Type*) [Group G] [MeasurableSpace G] [M
 
 section Inhabitants
 
-theorem measurableSingletonClass_cyclicTwo : MeasurableSingletonClass C2 :=
-  ⟨fun _ => MeasurableSpace.measurableSet_top⟩
-
 attribute [local instance] measurableSingletonClass_cyclicTwo
 
 end Inhabitants

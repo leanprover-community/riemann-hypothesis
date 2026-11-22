@@ -177,8 +177,6 @@ theorem coordinate_real (P : Par) (l : ℕ) (π : Ty P) (Y : ℂ) (hY : star Y =
   show (starRingEnd ℂ) (x0 P l π Y) = x0 P l π Y
   simp [x0, map_prod, hY']
 
-def Ent {A : Type} [Ring A] [Algebra ℂ A] (C : Subalgebra ℂ A) (M : M2 A) : Prop := ∀ a b, M a b ∈ C
-
 section Ent
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {C : Subalgebra ℂ A}

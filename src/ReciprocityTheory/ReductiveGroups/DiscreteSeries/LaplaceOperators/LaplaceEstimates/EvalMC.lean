@@ -65,9 +65,6 @@ theorem actU_smul (E : Fin n → Fin n → 𝒰) (c : ℂ) (X : Matrix (Fin n) (
 def frameAB (A B : Matrix (Fin n) (Fin n) ℂ) (E : Fin n → Fin n → 𝒰) (a b : Fin n) : 𝒰 :=
   ∑ i, ∑ j, (A a i * B j b) • E i j
 
-theorem frameAB_eq_actU (A B : Matrix (Fin n) (Fin n) ℂ) (E : Fin n → Fin n → 𝒰) (a b : Fin n) :
-    frameAB A B E a b = actU E (Matrix.of fun i j => A a i * B j b) := rfl
-
 theorem frameX_mul (A B : Matrix (Fin n) (Fin n) ℂ) (hAB : A * B = 1) (a b c d : Fin n) :
     (Matrix.of fun i j => A a i * B j b) * (Matrix.of fun i j => A c i * B j d) =
       (if b = c then (1 : ℂ) else 0) • (Matrix.of fun i j => A a i * B j d) := by

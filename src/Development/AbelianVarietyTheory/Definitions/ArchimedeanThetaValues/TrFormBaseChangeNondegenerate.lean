@@ -41,7 +41,6 @@ theorem trForm_mul_left (H : Host E) (a y z : 𝓞 E) : trForm H (a * y) z = trF
 theorem embedding_bar (H : Host E) (τ : E →+* ℂ) (a : 𝓞 E) : τ (H.bar a : 𝓞 E) = conj (τ a) := by
   rw [H.bar_eq, IsCMField.complexEmbedding_complexConj]
 
-
 omit [IsCMField E] in
 theorem coe_trace_eq_sum (a : 𝓞 E) : (Algebra.trace ℤ (𝓞 E) a : ℂ) = ∑ τ : E →+* ℂ, τ a := by
   have h : (Algebra.trace ℤ (𝓞 E) a : ℂ) = algebraMap ℚ ℂ (Algebra.trace ℚ E (a : E)) := by
@@ -73,15 +72,9 @@ theorem trForm_nondegenerate (H : Host E) : (trForm H).Nondegenerate := by
 theorem trForm_injective (H : Host E) : Function.Injective (trForm H) :=
   LinearMap.ker_eq_bot.1 (trForm_nondegenerate H).ker_eq_bot
 
-theorem trForm_one_one (H : Host E) : trForm H 1 1 = Module.finrank ℚ E := by
-  apply Int.cast_injective (α := ℝ)
-  rw [trForm_self_eq_sum]
-  simp [Embeddings.card]
-
 def realEmb (τ : E →+* ℂ) : ℝ ⊗[ℤ] 𝓞 E →ₐ[ℝ] ℂ :=
   Algebra.TensorProduct.lift (Algebra.ofId ℝ ℂ) (τ.comp (algebraMap (𝓞 E) E)).toIntAlgHom
     fun _ _ => Commute.all _ _
-
 
 omit [NumberField E] [IsCMField E] in
 @[simp] theorem realEmb_tmul (τ : E →+* ℂ) (r : ℝ) (a : 𝓞 E) : realEmb τ (r ⊗ₜ a) = r * τ a := rfl
@@ -131,13 +124,6 @@ theorem trForm_baseChange_pos (H : Host E) {v : ℝ ⊗[ℤ] 𝓞 E} (hv : v ≠
   refine (trForm_baseChange_nondegenerate H).1 v fun w => Complex.ofReal_injective ?_
   rw [trForm_baseChange_eq_sum]
   simp [h0]
-
-theorem trForm_rt_rt (H : Host E) : trForm H H.rt H.rt = H.d * Module.finrank ℚ E := by
-  have h : H.bar H.rt * H.rt = (H.d : ℤ) • (H.bar 1 * 1) := by
-    rw [bar_rt, map_one]
-    simp only [mul_one, zsmul_eq_mul, Int.cast_natCast]
-    linear_combination -H.rt_sq
-  rw [trForm_apply, h, map_smul, ← trForm_apply, trForm_one_one, smul_eq_mul]
 
 end GlobalTheory.HostModel
 

@@ -26,9 +26,6 @@ def psum (A : Γ → X →+ X) (g : Γ) (w : X) (n : ℕ) : X := (fun x => w + A
 variable {G : Subgroup Γ} {A : Γ → X →+ X} {g : Γ} {w : X}
 
 omit [Group Γ] in
-theorem psum_zero : psum A g w 0 = 0 := rfl
-
-omit [Group Γ] in
 theorem psum_succ (n : ℕ) : psum A g w (n + 1) = w + A g (psum A g w n) :=
   Function.iterate_succ_apply' _ _ _
 
@@ -120,7 +117,6 @@ theorem eqOn_of_dense {H : Subgroup Γ} (hg : g ∈ G) (hHG : H ≤ G)
     exact h x hx a
   · rintro _ ⟨x, hx, a, rfl⟩
     exact G.mul_mem (hHG hx) (pow_mem hg a)
-
 
 omit [IsUltrametricDist X] [TopologicalSpace Γ] in
 theorem exists_extension [CompleteSpace X] (Gn : ℕ → Subgroup Γ) (hanti : Antitone Gn)

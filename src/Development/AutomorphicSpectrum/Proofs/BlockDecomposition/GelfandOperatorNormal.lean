@@ -24,8 +24,6 @@ def wordOp (T : ι → ι → Module.End R M) (w : List (ι × ι)) : Module.End
 
 def wordWt (blk : ι → ℕ) (w : List (ι × ι)) : ℤ := (w.map fun p => (blk p.2 : ℤ) - blk p.1).sum
 
-theorem wordOp_nil (T : ι → ι → Module.End R M) : wordOp T [] = 1 := rfl
-
 theorem wordOp_cons (T : ι → ι → Module.End R M) (p : ι × ι) (w : List (ι × ι)) :
     wordOp T (p :: w) = T p.1 p.2 * wordOp T w := by
   simp [wordOp]
@@ -33,8 +31,6 @@ theorem wordOp_cons (T : ι → ι → Module.End R M) (p : ι × ι) (w : List 
 theorem wordOp_append (T : ι → ι → Module.End R M) (v w : List (ι × ι)) :
     wordOp T (v ++ w) = wordOp T v * wordOp T w := by
   simp [wordOp]
-
-theorem wordWt_nil (blk : ι → ℕ) : wordWt blk [] = 0 := rfl
 
 theorem wordWt_cons (blk : ι → ℕ) (p : ι × ι) (w : List (ι × ι)) :
     wordWt blk (p :: w) = (blk p.2 : ℤ) - blk p.1 + wordWt blk w := by

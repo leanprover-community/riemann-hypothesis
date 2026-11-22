@@ -307,12 +307,6 @@ def sgm (D : D7) : D.R.GG := ((-1, 1), 1)
 def tauSg (D : D7) (τ : D.what₂.Tau) : D.what₂.Tau :=
   if h : (D.eTau τ : D.R.GG) * sgm D ∈ D.R.Psi then D.eTau.symm ⟨_, h⟩ else τ
 
-def Qd (D : D7) {N N' : ℕ} {p : ℕ} [Fact p.Prime] (u : D.what₂.Tau → ℂ_[p]) :
-    MvPowerSeries (D.what₂.Tau × Fin N' × Fin N) ℂ_[p] :=
-  ∑ τ : D.what₂.Tau, ∑ a : Fin N', ∑ b : Fin N,
-    algebraMap ℂ_[p] (MvPowerSeries (D.what₂.Tau × Fin N' × Fin N) ℂ_[p]) (u τ) *
-      MvPowerSeries.X (τ, a, b) * MvPowerSeries.X (tauSg D τ, a, b)
-
 abbrev IdE (D : D7) : Type := Submodule (𝓞 D.host.E) D.host.E
 
 def N1 (D : D7) (𝔞 : IdE D) : Prop :=
@@ -374,12 +368,6 @@ def XiF (D : D7) (T : Tor D) (δ : ℂ) {N N' r : ℕ} (p n : ℕ) [Fact p.Prime
 def expPS {p : ℕ} [Fact p.Prime] (F : PowerSeries ℂ_[p]) : PowerSeries ℂ_[p] :=
   PowerSeries.mk fun n => ∑ k ∈ Finset.range (n + 1), PowerSeries.coeff n (F ^ k) / (k.factorial : ℂ_[p])
 
-def IsOmP {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (Λ : AddSubgroup ℂ) (Ω : ℂ_[p]) : Prop :=
-  ‖Ω‖ = 1 ∧ ∀ (C : WeierstrassCurve.VariableChange ℂ_[p]) (wq : PowerSeries ℂ_[p]),
-    IsModel lam Λ C → IsWq (C • wModel lam Λ) wq →
-    ∀ n, IsIntP (PowerSeries.coeff n (expPS (algebraMap ℂ_[p] (PowerSeries ℂ_[p])
-      (((C.u⁻¹ : ℂ_[p]ˣ) : ℂ_[p]) / Ω) * flog (C • wModel lam Λ) wq)))
-
 def zc {p : ℕ} [Fact p.Prime] (a : ℤ_[p]) : ℂ_[p] := algebraMap ℚ_[p] ℂ_[p] (a : ℚ_[p])
 
 def pairN (D : D7) {N N' r p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (Ω : ℂ_[p])
@@ -395,64 +383,15 @@ def jet (D : D7) {N N' : ℕ} {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]
 def EqAway {N : ℕ} (D : D7) (p : ℕ) (L L₁ : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) : Prop :=
   ∃ k : ℕ, (∀ x ∈ L, ((p : D.host.E) ^ k) • x ∈ L₁) ∧ ∀ x ∈ L₁, ((p : D.host.E) ^ k) • x ∈ L
 
-def NonzeroIndexPlace {l : ℕ} [Fact l.Prime] (c : ℂ_[l]) : Prop :=
-  c ∈ closure {x : ℂ_[l] | ∃ m : ℕ, 0 < m ∧ Nat.Coprime m l ∧ ∃ (ζ : ℂ_[l]) (a : Fin m → ℚ_[l]),
-    ζ ^ m = 1 ∧ x = ∑ k, algebraMap ℚ_[l] ℂ_[l] (a k) * ζ ^ (k : ℕ)}
-
-def InW {l : ℕ} [Fact l.Prime] (c : ℂ_[l]) : Prop := NonzeroIndexPlace c ∧ ‖c‖ ≤ 1
-
-def posG (D : D7) (φ : D.R.GG) {d : ℕ} (τ0 : D.what₂.Tau) (s : ZMod d) :
-    D.R.GG :=
-  (D.eTau τ0 : D.R.GG) * φ ^ s.val
-
-def letterOf (D : D7) (φ : D.R.GG) {d : ℕ} (τ0 : D.what₂.Tau) (s : ZMod d) : D.what₂.Tau :=
-  if h : posG D φ τ0 s ∈ D.R.Psi then D.eTau.symm ⟨_, h⟩
-  else if h' : D.R.cc * posG D φ τ0 s ∈ D.R.Psi then D.eTau.symm ⟨_, h'⟩
-  else τ0
-
-structure Pos (D : D7) (p d : ℕ) where
-  φ : D.R.GG
-  frob : ∀ (P : Ideal (𝓞 D.host.E)) [P.IsPrime] [P.LiesOver (Ideal.span {(p : ℤ)})],
-    IsArithFrobAt ℤ (D.host.sigmaOf φ) P
-  d_eq : d = orderOf φ
-  V : Finset D.what₂.Tau
-  bij : Function.Bijective (fun x : {v // v ∈ V} × ZMod d => letterOf D φ x.1.1 x.2)
-
-def posEmb (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (φ : D.R.GG) {d : ℕ}
-    (τ0 : D.what₂.Tau) (s : ZMod d) : D.host.E → ℂ_[p] :=
-  fun x => lamC lam (D.host.emb (posG D φ τ0 s) x)
-
 def LocBasisW (D : D7) {p : ℕ} [Fact p.Prime] (ρ : D.host.E → ℂ_[p]) {N : ℕ}
     (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (P : Matrix (Fin N) (Fin N) D.host.E) : Prop :=
   P.det ≠ 0 ∧ (∀ a, ∃ s : 𝓞 D.host.E, ‖ρ (s : D.host.E)‖ = 1 ∧ s • P.transpose a ∈ L) ∧
   ∀ x ∈ L, ∃ s : 𝓞 D.host.E, ‖ρ (s : D.host.E)‖ = 1 ∧ ∃ c : Fin N → 𝓞 D.host.E,
     s • x = ∑ a, c a • P.transpose a
 
-abbrev TVar (D : D7) {p d : ℕ} (Po : Pos D p d) (N N' : ℕ) : Type :=
-  ZMod d × ({v // v ∈ Po.V} × Fin N × Fin N')
-
-def chg (D : D7) {p d : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (Po : Pos D p d) {N N' : ℕ}
-    (P : {v // v ∈ Po.V} → Matrix (Fin N) (Fin N) D.host.E)
-    (P' : {v // v ∈ Po.V} → Matrix (Fin N') (Fin N') D.host.E)
-    (k : D.what₂.Tau × Fin N' × Fin N) (j : TVar D Po N N') : ℂ_[p] :=
-  let ρ := posEmb D lam Po.φ j.2.1.1 j.1
-  if letterOf D Po.φ j.2.1.1 j.1 = k.1 then
-    (if posG D Po.φ j.2.1.1 j.1 ∈ D.R.Psi then
-      ((P' j.2.1).map ρ) k.2.1 j.2.2.2 * (((P j.2.1).map ρ)⁻¹) j.2.2.1 k.2.2
-    else
-      ((((P' j.2.1).map ρ)⁻¹).transpose) k.2.1 j.2.2.2 * (((P j.2.1).map ρ).transpose) j.2.2.1 k.2.2)
-  else 0
-
 def atLin {σ κ : Type*} [Fintype κ] {p : ℕ} [Fact p.Prime] (c : σ → κ → ℂ_[p])
     (w : κ → MvPowerSeries κ ℂ_[p]) (F : MvPowerSeries σ ℂ_[p]) : MvPowerSeries κ ℂ_[p] :=
   MvPowerSeries.subst (fun k : σ => ∑ j : κ, algebraMap ℂ_[p] (MvPowerSeries κ ℂ_[p]) (c k j) * w j) F
-
-def AllSplit (D : D7) (p : ℕ) : Prop :=
-  ∀ P : Ideal (𝓞 D.host.E), P.IsPrime → P ≠ ⊥ → (p : 𝓞 D.host.E) ∈ P → (D.host.conj : _) • P ≠ P
-
-def IsFrobC (D : D7) (p : ℕ) : Prop :=
-  ∀ (P : Ideal (𝓞 D.host.E)) [P.IsPrime] [P.LiesOver (Ideal.span {(p : ℤ)})],
-    IsArithFrobAt ℤ D.host.conj P
 
 abbrev TVarB (D : D7) (N N' : ℕ) : Type := ZMod 1 × (D.what₂.Tau × Fin N × Fin N')
 
@@ -467,9 +406,5 @@ def chgB (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) {N N' : �
     ((P' j.2.1).map (tauEmb D lam j.2.1)) k.2.1 j.2.2.2 *
       (((P j.2.1).map (tauEmb D lam j.2.1))⁻¹) j.2.2.1 k.2.2
   else 0
-
-def OrthoBasisW (D : D7) {p : ℕ} [Fact p.Prime] (ρ : D.host.E → ℂ_[p]) {N : ℕ}
-    (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (P : Matrix (Fin N) (Fin N) D.host.E) : Prop :=
-  LocBasisW D ρ L P ∧ (P.map D.host.conj).transpose * P = 1
 
 end Formalism.MainNotions.TaylorLogMetric

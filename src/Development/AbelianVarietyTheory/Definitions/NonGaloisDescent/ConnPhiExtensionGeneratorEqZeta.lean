@@ -32,7 +32,6 @@ theorem ulim_sub_dvd {s : ℕ → K⟦X⟧} (h : ∀ n, (X : K⟦X⟧) ^ (n + 1)
   rw [map_sub] at this ⊢
   rw [ulim, coeff_mk, ← neg_sub, this, neg_zero]
 
-
 variable (K a ι) in
 def uPow (m : ℕ) : Submodule K⟦X⟧ (Vec K a ι) where
   carrier := {v | ∀ τ i, (X : K⟦X⟧) ^ m ∣ v τ i}
@@ -169,7 +168,6 @@ theorem raises_smul_phi (c : K) : Raises (c • P.phi) := fun m v hv => by
   ext τ i : 2
   simp [smul_eq_C_mul]
 
-
 omit [IsUltrametricDist K] [Fintype ι] [DecidableEq ι] in
 theorem _root_.GlobalTheory.BK.Raises.eq_zero {T : Module.End K (Vec K a ι)} (hT : Raises T) {α : Type}
     {σ : α → α} (hσ : Function.Surjective σ) {δ : α → Vec K a ι} (h1 : ∀ x, δ x ∈ uPow K a ι 1)
@@ -286,7 +284,6 @@ theorem phi_xi (d : P.D) : P.phi (P.xi d) = P.xi (P.phiD d) := by
   ext τ i : 2
   simp [phiD_apply, Matrix.mulVec, dotProduct]
 
-
 variable {P} in
 theorem map_xi {Q : PhiMod O K l e a κ} {g : Vec K a ι → Vec K a κ}
     (hg : ∀ v, g (P.phi v) = Q.phi (g v)) (d : P.D) : g (P.xi d) = Q.xi (red (g (P.xi d))) := by
@@ -295,14 +292,6 @@ theorem map_xi {Q : PhiMod O K l e a κ} {g : Vec K a ι → Vec K a κ}
     (δ := fun d => g (P.xi d) - Q.xi (red (g (P.xi d)))) (fun d => ?_) (fun d => ?_) d
   · rw [mem_uPow_one, map_sub, red_xi, sub_self]
   · simp only [← phi_xi, hg, red_phi, map_sub]
-
-theorem xi_unique {s : P.D → Vec K a ι} (h0 : ∀ d, red (s d) = d)
-    (h : ∀ d, P.phi (s d) = s (P.phiD d)) (d : P.D) : s d = P.xi d := by
-  rw [← sub_eq_zero]
-  refine P.raises_phi.eq_zero (σ := P.phiD) P.phiD.surjective
-    (δ := fun d => s d - P.xi d) (fun d => ?_) (fun d => ?_) d
-  · rw [mem_uPow_one, map_sub, red_xi, h0, sub_self]
-  · simp only [← phi_xi, ← h, map_sub]
 
 def nabla : Module.End K (Vec K a ι) := P.xiExt.conj derV
 
@@ -359,7 +348,6 @@ theorem conn_phi (v : Vec K a ι) : P.conn (P.phi v) = (l : K) • P.phi (P.conn
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [← smul_eq_C_mul, ← smul_eq_C_mul, Derivation.map_smul, N_frob, smul_comm, smul_eq_C_mul (a := (l : K)),
     map_natCast]
-
 
 variable {P} in
 theorem map_conn {Q : PhiMod O K l e a κ} (g : Vec K a ι →+ Vec K a κ)
@@ -457,7 +445,6 @@ theorem zeta_phi_sub (m : Vec K a ι) : P.zeta (P.phi m - m) = P.conn (P.phi m) 
   (P.zeta_unique (P.conn_mem_uPow _) (by
     rw [map_sub P.conn, sub_sub_cancel, lphi_apply, conn_phi])).symm
 
-
 variable {P} in
 theorem map_zeta {Q : PhiMod O K l e a κ} (g : Vec K a ι →ₗ[K] Vec K a κ)
     (h1 : ∀ v ∈ uPow K a ι 1, g v ∈ uPow K a κ 1) (hg : ∀ v, g (P.phi v) = Q.phi (g v))
@@ -484,11 +471,6 @@ theorem app_xi (d : P.D) : F.app (P.xi d) = Q.xi (F.onD d) := by
 theorem app_conn (v : Vec K a ι) : F.app (P.conn v) = Q.conn (F.app v) :=
   PhiMod.map_conn F.app.toAddMonoidHom id (fun _ => rfl) F.app_smul_tot F.app_phi v
 
-theorem app_nabla (v : Vec K a ι) : F.app (P.nabla v) = Q.nabla (F.app v) := by
-  have h := F.app_conn v
-  rw [PhiMod.conn_apply, PhiMod.conn_apply, map_smul] at h
-  exact smul_right_injective _ X_ne_zero h
-
 theorem app_zeta (y : Vec K a ι) : F.app (P.zeta y) = Q.zeta (F.app y) :=
   PhiMod.map_zeta (F.app.restrictScalars K) (fun _ => F.app_mem_uPow) F.app_phi F.app_conn y
 
@@ -504,7 +486,6 @@ def xVec : Vec K a (ι ⊕ Unit) := join 0 1
 namespace PhiMod
 
 variable (P : PhiMod O K l e a ι) {y : Vec K a ι} (hy : y ∈ P.Mext (invE l e (A O K)))
-
 
 omit [Fact l.Prime] in
 def plus : PhiMod O K l e a (ι ⊕ Unit) :=
@@ -557,9 +538,6 @@ theorem phi_extension_generator_eq_add : (P.plus hy).phi xVec = xVec + (P.plusIn
 
 theorem conn_phi_extension_generator_eq_zeta : (P.plus hy).conn ((P.plus hy).phi xVec) = (P.plusInl hy).app (P.zeta y) := by
   rw [Hom.app_zeta, ← zeta_phi_sub, phi_extension_generator_eq_add, add_sub_cancel_left]
-
-theorem plus_conn_xVec_eq : (P.plus hy).conn xVec = (P.plusInl hy).app (P.zeta y - P.conn y) := by
-  rw [map_sub, ← conn_phi_extension_generator_eq_zeta, phi_extension_generator_eq_add, map_add (f := _), Hom.app_conn, add_sub_cancel_right]
 
 variable [NormedAlgebra ℚ_[l] K] [NeZero e]
 

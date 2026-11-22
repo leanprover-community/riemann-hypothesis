@@ -34,9 +34,6 @@ section API
 
 variable {M} {T : UTrait Xo c} {ξ : Sp T.V ⟶ M.Z} {x y : Ω} {a b : ℕ}
 
-theorem uOrdEq_one (T : UTrait Xo c) (ξ : Sp T.V ⟶ M.Z) : UOrdEq M T ξ 1 0 :=
-  ⟨1, by rw [RatModel.val_one, pow_zero, Units.val_one, mul_one, map_one]⟩
-
 end API
 
 variable {M}

@@ -35,11 +35,6 @@ def coneLift (b : Module.Basis T ℤ (dualLattice (HermLattice.standard K i))) :
     (mConeMap (dualLatticeCoord b) : MRing (dualBlocks T) →+* MvPolynomial Unit (ProjField K i)) fun _ ha => ha
 
 omit [Fintype T] in
-theorem coneLift_mk (b : Module.Basis T ℤ (dualLattice (HermLattice.standard K i))) (f : MRing (dualBlocks T)) :
-    coneLift b (Ideal.Quotient.mk _ f) = mConeMap (dualLatticeCoord b) f :=
-  rfl
-
-omit [Fintype T] in
 theorem coneLift_injective (b : Module.Basis T ℤ (dualLattice (HermLattice.standard K i))) :
     Function.Injective (coneLift b) :=
   RingHom.lift_injective_of_ker_le_ideal _ _ fun _ ha => ha
@@ -69,7 +64,6 @@ theorem modelMap_comp_graphMap [DecidableEq T]
       dualStdModelPt, dualStdModelEmb, dualStdModelS, dualStdModelT, genPt]
 
 end StandardDualGraphModel
-
 
 open StandardDualGraphModel in
 theorem DualStdGraphModel.proof : DualStdGraphModel.Statement := by

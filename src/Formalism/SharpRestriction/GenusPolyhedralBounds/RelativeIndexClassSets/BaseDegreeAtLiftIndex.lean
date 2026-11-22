@@ -62,12 +62,6 @@ def apW (D : D7) (j l g n : ℕ) (hn : Even n) : WeightFamilies.Wt D j where
 
 variable {D : D7}
 
-theorem apW_aP (j l g n : ℕ) (hn : Even n) (τ : D.what₂.Tau) (i : Fin (D.R.sigW j).1) :
-    (apW D j l g n hn).aP τ i = l + ((D.R.sigW j).1 - 1 - i.1) * g := rfl
-
-theorem apW_aM (j l g n : ℕ) (hn : Even n) (τ : D.what₂.Tau) (i : Fin (D.R.sigW j).2) :
-    (apW D j l g n hn).aM τ i = 0 := rfl
-
 theorem sum_apW (j l g n : ℕ) (hn : Even n) :
     (∑ τ, ((∑ i, ((apW D j l g n hn).aP τ i : ℝ)) + ∑ i, ((apW D j l g n hn).aM τ i : ℝ))) =
       D.R.f * sA (D.R.sigW j).1 l g := by
@@ -103,9 +97,6 @@ theorem f_pos (D : D7) : 0 < D.R.f := by
 theorem dimY_m (D : D7) : WeightFamilies.dimY D D.R.m = D.R.f * D.R.r.choose 2 := by
   rw [Nat.choose_two_right]
   simp [WeightFamilies.dimY, Ranks.sigW, Ranks.r]
-
-theorem baseDegree_at_lift_index (D : D7) : n0 D D.R.m = D.R.r + 2 * g0 D := by
-  simp [n0, Ranks.sigW]
 
 theorem size_apW_m (l g n : ℕ) (hn : Even n) :
     (apW D D.R.m l g n hn).size = D.R.f * sA D.R.r l g + (D.R.f : ℝ) * D.R.r * n + 1 := by

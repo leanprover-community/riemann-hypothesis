@@ -112,17 +112,6 @@ theorem fockB_projVV [CharZero K] (p : Pol K ι n) (v : Pol K ι n) (hv : v ∈ 
     simp only [← fockBL_apply, map_sum, map_smul]
   simp only [fockBL_apply, fockB_projVV_basis]
 
-theorem projVV_of_mem [CharZero K] (v : Pol K ι n) (hv : v ∈ VV K sg) : (projVV sg v : Pol K ι n) = v := by
-  set d : VV K sg := projVV sg v - ⟨v, hv⟩ with hd
-  have hd0 : ∀ y : VV K sg, pairBK sg y d = 0 := by
-    intro y
-    rw [pairBK_apply, pairB_apply, hd, Submodule.coe_sub, ← fockBL_apply, map_sub, fockBL_apply, fockBL_apply,
-      fockB_comm (y : Pol K ι n), fockB_comm (y : Pol K ι n), fockB_projVV sg v y y.2]
-    simp
-  have := (pairingBNondegenerate_holds K ι n sg).2 d hd0
-  rw [hd, sub_eq_zero] at this
-  exact congrArg Subtype.val this
-
 end Proj
 
 section Adj
@@ -426,7 +415,6 @@ theorem lb_gram_det_ne : (gramB (K := K) lam).det ≠ 0 := by
   apply hc
   funext i
   exact Fintype.linearIndependent_iff.mp (bVVfun_spec K lam).1 c (by rw [← hxdef]; exact hx0) i
-
 
 open Classical in
 theorem lb_proj_spec (p : Pol K ι n) : ∀ v ∈ VV K lam, fockB ((projVV lam p : VV K lam) : Pol K ι n) v = fockB p v := by
@@ -819,7 +807,6 @@ end One
 section Ten
 
 variable {K : Type} [Field K] {ι : Type} [Fintype ι] {N n : ℕ} (hN : N = n + 1)
-
 
 open Classical in
 def lxW (τ : ι) : ι × Fin N × Fin N → ℕ := fun v => if v.1 = τ ∧ v.2.1 = iL hN then v.2.2.val + 1 else 0
@@ -1338,8 +1325,6 @@ section Inhabit
 end Inhabit
 
 section Small
-
-def wt0 : DomWeight 1 := ⟨![0], by intro a b _; fin_cases a; fin_cases b; simp⟩
 
 end Small
 
@@ -1989,7 +1974,6 @@ theorem hwA_slice_unique (ν : Fin N → ℕ) (ρ : Fin n → ℕ) (m m' : Fin N
       Finset.sum_congr rfl fun x hx => h1 x j (Finset.ne_of_mem_erase hx)
     omega
   · exact h1 a j ha
-
 
 open Classical in
 def hwAw : Fin N × Fin N → ℕ := fun v => if v.1 = v.2 ∧ v.1 ≠ iL hN then 1 else 0
@@ -3495,7 +3479,6 @@ theorem int_brOne (hI : Interlace hN l s) (hS : SameShift l s) (f₀ : MvPolynom
     ∃ g ∈ delSq ℤ n s, brOne ℂ hN l s (map (Int.castRingHom ℂ) f₀) = map (Int.castRingHom ℂ) g :=
   inD_brInt hN l s (inE_ioInt hN l s hI hS) f₀ hf₀
 
-
 open Formalism.MainNotions.product_first_zeroth_parts in
 theorem int_member (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) (τ : D.what₂.Tau)
     (hI : Formalism.MainNotions.PrimeDegreeVariant.Interlace (Nm_succ D.R) (lamTr D u τ) (sgTr D u τ)) :
@@ -3539,8 +3522,6 @@ variable {N n : ℕ} (hN : N = n + 1)
 def nmR (c : Fin n → ℕ) : MvPolynomial (Fin n × Fin n) ℂ →ₗ[ℂ] MvPolynomial (Fin N × Fin N) ℂ :=
   LinearMap.mulLeft ℂ (∏ s : Fin n, (X (iL hN, iC hN s) : MvPolynomial (Fin N × Fin N) ℂ) ^ c s) ∘ₗ
     (rename (fun v : Fin n × Fin n => (iC hN v.1, iC hN v.2))).toLinearMap
-
-theorem nmR_apply (c : Fin n → ℕ) (p : MvPolynomial (Fin n × Fin n) ℂ) : nmR hN c p = raiseOne hN c p := rfl
 
 theorem nm_R_conj (c : Fin n → ℕ) (p : MvPolynomial (Fin n × Fin n) ℂ) :
     MvPolynomial.map (starRingEnd ℂ) (raiseOne hN c p) = raiseOne hN c (MvPolynomial.map (starRingEnd ℂ) p) := by

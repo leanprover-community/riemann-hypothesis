@@ -30,13 +30,8 @@ def blk {R : Type} [CommRing R] {r s N : ℕ} (h : r + s = N) : GL (Fin r) R × 
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {N r s m a : ℕ}
 
-
 variable (E) in
 def nu (t : ℝ) : HChar E := GlobalTheory.HeckeGal.Model.absPow E t
-
-
-
-
 
 section Passive
 
@@ -44,16 +39,8 @@ variable {M : Type} [AddCommGroup M] [Module ℂ M]
 
 end Passive
 
-
 variable (E) in
 abbrev Letter : Type := Σ a : ℕ, CuspSub E a
-
-def wsize (u : List (Letter E)) : ℕ := (u.map (·.1)).sum
-
-noncomputable def Vec : List (Letter E) → Type
-  | [] => PUnit
-  | x :: u => x.2.V × Vec u
-
 
 variable (E N) in
 def zc : Module.End ℂ (Sm E N) := lie E N fun i j => if i = j then 1 else 0
@@ -68,7 +55,6 @@ def SatVec (φ : Sm E N) (B : HeightOneSpectrum (𝓞 E) → Multiset ℂˣ) : P
   ∀ᶠ v in Filter.cofinite, GlobalTheory.LFun.IsSatVecGL v ((finRep E N).comp (locGL E N v)) φ (B v)
 
 def SatFam (V : Submodule ℂ (Sm E N)) (B : HeightOneSpectrum (𝓞 E) → Multiset ℂˣ) : Prop := ∀ φ ∈ V, φ ≠ 0 → SatVec φ B
-
 
 end GlobalTheory.ResW
 

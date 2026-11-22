@@ -2,7 +2,8 @@ module
 
 public import Mathlib
 public import Formalism.PeriodIntegrals.DSInfCharCap
-public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.PseudoCoefficientSeparation
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MeasurableEmbeddingEquiv
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.DiscreteSeriesCharacter
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
 public import Formalism.RealPlaceAnalysis.StatementE
 public import Formalism.RealPlaceAnalysis.StatementB
@@ -36,7 +37,6 @@ theorem Jm_conjTranspose (ε : Fin n → Bool) : (Jm ε)ᴴ = Jm ε := by
 
 theorem isUnit_Jm_det (ε : Fin n → Bool) : IsUnit (Jm ε).det :=
   isUnit_det_of_left_inverse (Jm_mul_self ε)
-
 
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra in
 theorem dRep_add_bracket {ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}
@@ -116,8 +116,6 @@ theorem dRep_smul_vec {ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {v :
   exact deriv_const_smul c (differentiableAt_orbit hv hX)
 
 section Theta
-
-local notation "θ" => PI.DSInfCharCap.thetaJ ε
 
 theorem theta_add (Y Z : Matrix (Fin n) (Fin n) ℂ) : θ (Y + Z) = θ Y + θ Z := by
   simp only [PI.DSInfCharCap.thetaJ, conjTranspose_add, mul_add, add_mul, neg_add]

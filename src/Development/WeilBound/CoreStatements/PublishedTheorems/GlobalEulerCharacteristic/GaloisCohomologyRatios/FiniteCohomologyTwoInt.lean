@@ -11,8 +11,6 @@ namespace PositivityTheory.Lit1.GEN.X
 
 attribute [local instance 2000] Rep.hV2
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 section Cards
 
 variable {K : FiniteSubfield} {S : Set (HeightOneSpectrum (𝓞 K.1))} {ℓ : ℕ} [Fact ℓ.Prime]

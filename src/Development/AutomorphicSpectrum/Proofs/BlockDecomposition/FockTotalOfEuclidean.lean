@@ -130,16 +130,10 @@ def coordV (k : D.what₂.Tau × Fin m × Fin n × Bool) (z : D.what₂.Tau → 
 def polyV (q : MvPolynomial (D.what₂.Tau × Fin m × Fin n × Bool) ℂ) (z : D.what₂.Tau → Fin m → Fin n → ℂ) : ℂ :=
   evalPoly q fun τ => Matrix.of (z τ)
 
-theorem polyV_eq (q : MvPolynomial (D.what₂.Tau × Fin m × Fin n × Bool) ℂ) (z : D.what₂.Tau → Fin m → Fin n → ℂ) :
-    polyV q z = MvPolynomial.eval (fun k => coordV k z) q := rfl
-
 def coordL (k : D.what₂.Tau × Fin m × Fin n) : (D.what₂.Tau → Fin m → Fin n → ℂ) →L[ℝ] ℂ :=
   (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => ℂ) k.2.2).comp
     ((ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin m => Fin n → ℂ) k.2.1).comp
       (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : D.what₂.Tau => Fin m → Fin n → ℂ) k.1))
-
-theorem coordL_apply (k : D.what₂.Tau × Fin m × Fin n) (z : D.what₂.Tau → Fin m → Fin n → ℂ) :
-    coordL k z = z k.1 k.2.1 k.2.2 := rfl
 
 theorem coordV_temperate (k : D.what₂.Tau × Fin m × Fin n × Bool) :
     Function.HasTemperateGrowth (coordV (D := D) k) := by

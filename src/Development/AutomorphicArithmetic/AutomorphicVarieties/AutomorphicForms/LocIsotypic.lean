@@ -23,7 +23,6 @@ def IsLevelWD {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 F)} {h : Is
   ∃ (χ : Fin n → G F Ω →* ℂˣ) (a : WDRep h (Fin n → ℂ)), (∀ i, KillsMu M (χ i)) ∧ WD.mk a = x ∧ a.N = 0 ∧
     ∀ s : ↥(Ine (F := F) A), a.ρ (ineIncl h s) = Matrix.toLin' (Matrix.diagonal fun i => (χ i s : ℂ))
 
-
 variable (F) in
 def KLoc (w : HeightOneSpectrum (𝓞 F)) (n M : ℕ) : Subgroup (GL (Fin n) (w.adicCompletion F)) :=
   (KLev F n M).comap (locGL F n w)
@@ -65,12 +64,6 @@ def JumpsAbove : Prop :=
       FlagAt M m r A κ → ∀ (τ : F →+* Qbar l) (J : Multiset ℤ),
       IsJumpsAt (Loc.PP l) Bw (r.comp (Dec (F := F) A).subtype) τ J → J = Finset.univ.val.map fun i => -m i
 
-def LocFixed : Prop :=
-  ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (n M : ℕ), 1 ≤ M →
-    ∀ (w : HeightOneSpectrum (𝓞 F)) (A : ValuationSubring Ω) (h : IsPlaceOver A w)
-      (rc : IrrGL (k := w.adicCompletion F) → WD h), IsRec h rc → ∀ σ : SmIrr (GL (Fin n) (w.adicCompletion F)),
-      IsLevelWD M n (rc (algNorm σ)) → HasFixed σ.ρ (KLoc F w n M)
-
 def GlobFixed : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] (n M : ℕ), 1 ≤ M → ∀ (V : Type) [AddCommGroup V] [Module ℂ V]
     (ρ : Representation ℂ (GL (Fin n) (Af F)) V), GlobalTheory.PRep.IsSmooth ρ →
@@ -89,28 +82,6 @@ def SatLoc : Prop :=
     (HasFixed σ.ρ (GlobalTheory.LFun.KGL w (n := n)) → ∃ B, GlobalTheory.LFun.HasSatGL w σ.ρ B) ∧
     ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GL (Fin n) (Af F)) V), LocIsotypic ρ w σ →
       ∀ B, GlobalTheory.LFun.HasSatGL w (ρ.comp (locGL F n w)) B ↔ GlobalTheory.LFun.HasSatGL w σ.ρ B
-
-def SatFrob : Prop :=
-  ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime]
-    (ι : Qbar l ≃+* ℂ) (n : ℕ) (r : G F Ω →* GL (Fin n) (Qbar l)), Continuous r →
-    ∀ (w : HeightOneSpectrum (𝓞 F)), ((l : ℕ) : 𝓞 F) ∉ w.asIdeal →
-    ∀ (σ : SmIrr (GL (Fin n) (w.adicCompletion F))) (B : Multiset ℂˣ), GlobalTheory.LFun.HasSatGL w σ.ρ B →
-      (∀ (A : ValuationSubring Ω) (h : IsPlaceOver A w) (rc : IrrGL (k := w.adicCompletion F) → WD h), IsRec h rc →
-        IsWDOf ι r (rc (algNorm σ))) → FrobEig ι r w (algSat n (normV w) B)
-
-def CrysSlopes : Prop :=
-  ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (p : ℕ) [Fact p.Prime],
-    ¬ (p : ℤ) ∣ discr F → ∀ (ι : Qbar p ≃+* ℂ) (n : ℕ) (m : Fin n → ℤ) (r : G F Ω →* GL (Fin n) (Qbar p)), Continuous r →
-    ∀ (w : HeightOneSpectrum (𝓞 F)) (A : ValuationSubring Ω) (h : IsPlaceOver A w)
-      (O : Type) [CommRing O] [Algebra ℤ_[p] O] [TopologicalSpace O]
-      (Bw : LocBridge p F Ω (Dec (F := F) A) O) (hj : Induces Bw),
-      IsCrysAt (Loc.PP p) Bw (r.comp (Dec (F := F) A).subtype) →
-      (∀ (τ : F →+* Qbar p) (LL' : FinExt p) (τ' : ↥Bw.Kw.1 →ₐ[ℚ_[p]] ↥LL'.1), IsInduced Bw τ τ' →
-        IsJumpsAt (Loc.PP p) Bw (r.comp (Dec (F := F) A).subtype) τ (Finset.univ.val.map fun i => -m i)) →
-      ∀ (σ : SmIrr (GL (Fin n) (w.adicCompletion F))) (B : Multiset ℂˣ), GlobalTheory.LFun.HasSatGL w σ.ρ B →
-      ∀ rc, IsRec h rc → wdAt (Loc.PP p) ι Bw h hj (r.comp (Dec (F := F) A).subtype) = rc (algNorm σ) →
-      ∀ b ∈ algSat n (normV w) B, (∀ a : ℤ, (∀ i, -a ≤ m i) → ‖ι.symm ((normV w : ℂ) ^ a * b⁻¹)‖ ≤ 1) ∧
-        ∀ a : ℤ, (∀ i, m i ≤ a) → ‖ι.symm ((normV w : ℂ) ^ a * b)‖ ≤ 1
 
 def WeylC : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (n : ℕ), ∃ c A : ℕ, ∀ m : Fin n → ℤ, StrictAnti m →

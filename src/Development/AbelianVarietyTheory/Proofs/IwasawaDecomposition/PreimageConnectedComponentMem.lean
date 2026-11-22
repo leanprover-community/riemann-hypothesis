@@ -103,36 +103,4 @@ end Free
 
 variable {D : D7} {A : Amb D} {N j : ℕ} {S : Sig A N j} {κ : Lv A} (s : FinalTheorems S κ)
 
-theorem exists_equiv : ∃ q : s.Comp ≃ Comp (S.Xo κ.l) κ.c, ∀ k z,
-    OnComp s k z ↔ (q k).1 = s.T.Z.jQ ⁻¹' connectedComponent z := by
-  have hσ : Formalism.L2.PjFree.GoodEmb κ.c κ.σ₀ := rfl
-  have hne : ∀ k, ((s.U κ.σ₀).X k).dom.Nonempty := fun k => GlobalTheory.OrbitScalar.exists_mem_dom _
-  obtain ⟨q, hq⟩ := GlobalTheory.UnifComp.exists_equiv_comp _ _ _ _ _ _ κ.σ₀ N (s.U κ.σ₀) hσ (s.unf _ hσ).1 hne s.geo
-  have hsm : Smooth (genStr s.T.Z) := haveI := s.T.smooth; SmoothOfRelativeDimension.smooth S.Dw.dim _
-  refine ⟨q, fun k z => ⟨?_, fun h => ?_⟩⟩
-  · rintro ⟨x, hx⟩
-    by_contra hn
-    let pt : Sp (CAt κ.σ₀) := (⟨⊥, Ideal.isPrime_bot⟩ : PrimeSpectrum ℂ)
-    exact Set.disjoint_left.1 (CompSplitPfD.cspD_comp_disj _ _ (q k)
-      ⟨_, preimage_connectedComponent_mem s.T.Z hsm z⟩ fun e => hn (congrArg Subtype.val e)) (hq k x pt) (hx pt)
-  · obtain ⟨x, hx⟩ := hne k
-    refine ⟨⟨x, hx⟩, fun pt => ?_⟩
-    have := hq k ⟨x, hx⟩ pt
-    rw [h] at this
-    exact this
-
-theorem existsUnique_onComp (z : gen s.T.Z) : ∃! k, OnComp s k z := by
-  obtain ⟨q, hq⟩ := exists_equiv s
-  have hsm : Smooth (genStr s.T.Z) := haveI := s.T.smooth; SmoothOfRelativeDimension.smooth S.Dw.dim _
-  refine ⟨q.symm ⟨_, preimage_connectedComponent_mem s.T.Z hsm z⟩, (hq _ _).2 (by rw [Equiv.apply_symm_apply]),
-    fun k hk => ?_⟩
-  rw [Equiv.eq_symm_apply]
-  exact Subtype.ext ((hq _ _).1 hk)
-
-theorem onComp_compPt (y : Pt s) (pt : Sp Qb) : OnComp s (compPt s y) (y.y pt) := by
-  obtain ⟨k, hk, -⟩ := existsUnique_onComp s (y.y pt)
-  have : ∃ k, ∀ pt', OnComp s k (y.y pt') :=
-    ⟨k, fun pt' => (Subsingleton.elim (α := PrimeSpectrum Qb) pt pt') ▸ hk⟩
-  exact Classical.epsilon_spec this pt
-
 end GlobalTheory.ShFam.PtComp

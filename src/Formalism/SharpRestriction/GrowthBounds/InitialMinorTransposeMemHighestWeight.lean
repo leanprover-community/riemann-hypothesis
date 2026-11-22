@@ -482,8 +482,6 @@ theorem L_mul (x y : ℚ_[p]) (hx : ‖x - 1‖ < 1) (hy : ‖y - 1‖ < 1) :
   field_simp
   ring
 
-lemma plog_eq (x : ℚ_[p]) : Formalism.MainNotions.tableLineDegreeFive.plog p x = L p (x - 1) := rfl
-
 theorem plog_mul (x y : ℚ_[p]) (hx : ‖x - 1‖ < 1) (hy : ‖y - 1‖ < 1) :
     Formalism.MainNotions.tableLineDegreeFive.plog p (x * y) = Formalism.MainNotions.tableLineDegreeFive.plog p x + Formalism.MainNotions.tableLineDegreeFive.plog p y := by
   simpa only [plog_eq] using L_mul p x y hx hy
@@ -724,15 +722,6 @@ theorem dec_of_binomDecay {p : ℕ} {f : ℕ → ℚ} (h : BinomDecay p f) : Dec
     have e : (1 / 4 : ℝ) * (j : ℝ) + 0 = (j : ℝ) / 4 := by ring
     rw [e]; exact h1
 
-theorem binomDecay_of_dec {p : ℕ} {f : ℕ → ℚ} (h : Dec p (1 / 4) 0 f) : BinomDecay p f := by
-  intro j
-  rw [mahlerCoef_eq_mah]
-  rcases h j with h0 | h1
-  · exact Or.inl h0
-  · refine Or.inr ?_
-    have e : (1 / 4 : ℝ) * (j : ℝ) + 0 = (j : ℝ) / 4 := by ring
-    rw [← e]; exact h1
-
 theorem binomial_basis_approximation (p : ℕ) [Fact p.Prime] :
     (∀ (K : ℕ) (f : Fin K → ℕ → ℚ), (∀ k, BinomDecay p (f k)) → ∀ c : ℕ,
       ∃ b : (Fin K → ℕ) → ℚ,
@@ -826,9 +815,6 @@ theorem kr_evalG_algebraMap {n : ℕ} (g : Matrix (Fin n) (Fin n) A)
   rw [IsScalarTower.algebraMap_apply O (MvPolynomial (Fin n × Fin n) O) (GLCoord O n), evalG_alg, AlgHom.commutes]
 
 variable {r : ℕ}
-
-def kr_cellW {n : ℕ} (g : Matrix (Fin (n + 1)) (Fin (n + 1)) A) (γ : Aˣ) : Fin n → A :=
-  fun j => ((γ⁻¹ : Aˣ) : A) * g 0 j.succ
 
 end Eval
 

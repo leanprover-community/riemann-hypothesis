@@ -15,10 +15,6 @@ namespace Formalism.DimensionVariation
 
 open Formalism.LatticeIndexTer (ph)
 
-def liftBlock {Pl ι W : Type} [Fintype Pl] [Fintype ι] [NormedAddCommGroup W] [NormedSpace ℂ W]
-    (c : (Pl × ι → ℕ) → ℂ) (Rc : (Pl × ι → ℕ) →₀ W) (lam : Pl → ℂ) : W :=
-  Rc.sum (fun e A => (c e * (mfact e : ℂ) * ∏ x, lam x.1 ^ e x) • A)
-
 def liftOp {Cl Cl' A B : Type} [Fintype Cl] [NormedAddCommGroup A] [NormedSpace ℂ A]
     [NormedAddCommGroup B] [NormedSpace ℂ B] (γ : Cl → ℝ) (ε : Cl → Cl' → ℂ)
     (T : Cl → Cl' → A →L[ℂ] B) (fn : Cl → A) (L' : Cl') : B :=

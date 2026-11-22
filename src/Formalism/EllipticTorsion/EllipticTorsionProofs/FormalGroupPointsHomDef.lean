@@ -144,9 +144,6 @@ def ev (a b : K) (ha : ‖a‖ < 1) (hb : ‖b‖ < 1) : IL K →+* K where
   map_zero' := by simp [evalMv2]
   map_add' F G := evalMv2_add F.2 G.2 ha hb
 
-theorem ev_apply {a b : K} (ha : ‖a‖ < 1) (hb : ‖b‖ < 1) (F : IL K) :
-    ev a b ha hb F = evalMv2 F.1 a b := rfl
-
 theorem evalMv2_C (c a b : K) : evalMv2 (MvPowerSeries.C c : MvPowerSeries (Fin 2) K) a b = c := by
   classical
   rw [evalMv2_eq, tsum_eq_single 0]
@@ -1214,13 +1211,3 @@ end MainLemma
 
 end Formalism.ELL.FormalGroupPointsHom
 
-theorem Formalism.ELL.formal_group_points_hom_of (hU : Formalism.ELL.WSubstUnique.{u}) (hS : Formalism.ELL.WChordSubst.{u})
-    (hFG : Formalism.ELL.WFormalGroup.{u}) (hPar : Formalism.ELL.FormalGroupPointsParametrisation.{u}) : Formalism.ELL.FormalGroupPointsHomomorphism.{u} := by
-  intro K _ _ _ W w F₂ hW hw hF₂i hF₂0 hch P Q hP hQ
-  obtain ⟨F, -, hFch⟩ := hFG K W w hw
-  obtain ⟨u0, hwu, hu⟩ := Formalism.ELL.WeierstrassCoordinateSubstitution.exists_unit_factor hw
-  have hFeq : F₂ = F.toPowerSeries :=
-    Formalism.ELL.WeierstrassCoordinateSubstitution.eq_of_xy hwu hu _ _ hF₂0 F.zero_constantCoeff (hch.1.trans hFch.1.symm)
-      (hch.2.trans hFch.2.symm)
-  subst hFeq
-  exact Formalism.ELL.FormalGroupPointsHom.e1hom_main hU hS hPar hW hw F hF₂i hch P Q hP hQ

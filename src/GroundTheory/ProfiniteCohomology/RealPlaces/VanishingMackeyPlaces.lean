@@ -19,8 +19,6 @@ open CategoryTheory NumberField IsDedekindDomain GroundTheory.Global
 
 open scoped NumberField.LiesOver
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 section Place
 
 variable {K : FiniteSubfield} {v : InfinitePlace K.1} (L : FiniteSubfield) [Fact (K ≤ L)]

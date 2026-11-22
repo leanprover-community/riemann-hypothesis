@@ -125,7 +125,6 @@ lemma toH'_δ (x : cohOn S.X₃ U n) :
     toH' S.X₁ U (n + 1) (δ R hS U n x) =
       SheafLES.δ.{u} (shortExact_toAbSheaf hS) n U (toH' S.X₃ U n x) := rfl
 
-
 include hS in
 theorem exact₂ : Function.Exact (map R S.f U n) (map R S.g U n) :=
   SheafLES.exact₂.{u} (shortExact_toAbSheaf hS) n U
@@ -140,7 +139,6 @@ theorem map_zero_injective_of_mono {F G : X.Modules} (φ : F ⟶ G) [Mono φ] :
     Function.Injective (map R φ U 0) :=
   SheafLES.map_zero_injective_of_mono.{u} ((toAbSheaf (X := X)).map φ) U
 
-
 include hS in
 theorem injective_zero : Function.Injective (map R S.f U 0) :=
   SheafLES.injective_zero.{u} (shortExact_toAbSheaf hS) U
@@ -148,12 +146,7 @@ theorem injective_zero : Function.Injective (map R S.f U 0) :=
 @[simp] lemma δ_map (x : cohOn S.X₂ U n) : δ R hS U n (map R S.g U n x) = 0 :=
   (exact₃ R hS U n).apply_apply_eq_zero x
 
-
 include hS
-
-theorem map_g_surjective (h : Subsingleton (cohOn S.X₁ U (n + 1))) :
-    Function.Surjective (map R S.g U n) :=
-  fun x ↦ (exact₃ R hS U n x).1 (Subsingleton.elim _ _)
 
 theorem app_surjective (h : Subsingleton (cohOn S.X₁ U 1)) : Function.Surjective (S.g.app U) :=
   SheafLES.sections_surjective_of_subsingleton.{u} (shortExact_toAbSheaf hS) U h
@@ -259,7 +252,6 @@ theorem sum_neg_one_pow_hdim_eq_add (N : ℕ) (h₁ : ∀ i < N, Module.Finite k
       ∑ i ∈ Finset.range N, (-1 : ℤ) ^ i * hdim k S.X₁ i +
         ∑ i ∈ Finset.range N, (-1 : ℤ) ^ i * hdim k S.X₃ i :=
   cohOn.sum_neg_one_pow_finrank_eq_add hS ⊤ k N h₁ h₃ (Function.injective_of_subsingleton _)
-
 
 omit hS in
 theorem finsum_neg_one_pow_hdim_eq_sum (F : X.Modules) (N : ℕ)

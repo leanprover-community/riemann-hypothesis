@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConjGeneratorsMemFramePrimesTrueColumns
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FieldTies
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonzeroPlacesOverPrimes
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LargeFor
 
 @[expose] public section
 

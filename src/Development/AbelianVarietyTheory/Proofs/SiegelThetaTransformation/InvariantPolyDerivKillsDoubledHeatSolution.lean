@@ -148,9 +148,6 @@ def act (c : T → Bool → Matrix (Fin n) (Fin n) ℂ) : (Ell T n r → ℂ) �
       map_add' := fun x y => by funext v; simp [mul_add, Finset.sum_add_distrib]
       map_smul' := fun a x => by funext v; simp [Finset.mul_sum, mul_left_comm] }
 
-theorem act_apply (c : T → Bool → Matrix (Fin n) (Fin n) ℂ) (y : Ell T n r → ℂ) (v : Ell T n r) :
-    act c y v = ∑ l, c v.1 v.2.1 v.2.2.1 l * y (v.1, v.2.1, l, v.2.2.2) := rfl
-
 theorem dotProduct_act (c : T → Bool → Matrix (Fin n) (Fin n) ℂ) (x y : Ell T n r → ℂ) :
     x ⬝ᵥ act c y = act (fun t b => (c t b)ᵀ) x ⬝ᵥ y := by
   simp only [dotProduct, act_apply, Fintype.sum_prod_type, Finset.mul_sum, Finset.sum_mul,
@@ -236,7 +233,6 @@ theorem eval_barP {σ : Type} (y : σ → ℂ) (P : MvPolynomial σ ℂ) :
   | C a => simp [barP]
   | add P Q hP hQ => simp only [barP, map_add (f := _)] at *; rw [hP, hQ]
   | mul_X P l hP => simp only [barP, map_mul, map_X, eval_X, conj_conj] at *; rw [hP]
-
 
 omit [Fintype T] in
 theorem invFam_eval {P : J → Harm.Poly ℂ T p q (Fin n)} (hP : InvFam P)

@@ -25,13 +25,6 @@ def area (Λ : AddSubgroup ℂ) : ℝ :=
 
 def liftM (M : IntermediateField ℚ ℂ) (x : ℂ) : M := if h : x ∈ M then ⟨x, h⟩ else 0
 
-def KroneckerLimit : Prop :=
-  ∀ τ : ℂ, 0 < τ.im → ∃ C ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 1 < s → s < 1 + ε →
-    |(∑' p : ℤ × ℤ, if p = 0 then (0 : ℝ) else τ.im ^ s / ‖(p.1 : ℂ) * τ + (p.2 : ℂ)‖ ^ (2 * s))
-        - Real.pi / (s - 1)
-        - 2 * Real.pi * (Real.eulerMascheroniConstant - Real.log 2
-            - Real.log (Real.sqrt τ.im * ‖ModularForm.eta τ‖ ^ 2))| ≤ C * (s - 1)
-
 def latI {K : Type} [Field K] [NumberField K] (φ : K →+* ℂ) (𝔞 : Ideal (𝓞 K)) (δ : ℂ) :
     AddSubgroup ℂ :=
   AddSubgroup.closure {w | ∃ c ∈ 𝔞, w = δ * φ (c : K)}

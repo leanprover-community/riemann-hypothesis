@@ -2,12 +2,10 @@ module
 
 public import Mathlib
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExistsIdealDenominator
-public import Formalism.PadicSubsetSums.CentralIdempotents.CentralIdempotentIntegral
 public import Formalism.ResultantValuation.ResultantAdjugateProofs.Window
 public import Formalism.ResultantValuation.ResultantAdjugateProofs.Laplace
 public import Formalism.CyclotomicNorms.StatementI
 public import Formalism.CyclotomicNorms.IrreducibilityOfGoodTuple
-public import Formalism.CyclotomicNorms.StatementTW
 
 @[expose] public section
 
@@ -22,42 +20,6 @@ open Formalism.IrreducibleCountingLemmas.TW
 section Dense
 
 variable (l : ℕ) [Fact l.Prime]
-
-theorem norm_l : ‖(l : ℂ_[l])‖ = (l : ℝ)⁻¹ := by
-  have h := PadicComplex.norm_extends' l (l : ℚ_[l])
-  rw [Padic.norm_p, map_natCast, PadicComplex.coe_natCast] at h
-  exact h
-
-theorem exists_norm_btwn (x y : ℝ) (hx : 0 ≤ x) (hxy : x < y) : ∃ a : ℂ_[l], x < ‖a‖ ∧ ‖a‖ < y := by
-  have hl1 : (1 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).one_lt
-  have hl0 : (0 : ℝ) < l := lt_trans one_pos hl1
-  have hy : 0 < y := lt_of_le_of_lt hx hxy
-  set x' := max x (y / 2) with hx'
-  have hx'0 : 0 < x' := lt_of_lt_of_le (half_pos hy) (le_max_right _ _)
-  have hx'y : x' < y := max_lt hxy (half_lt_self hy)
-  obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn ((Real.logb_lt_logb_iff hl1 hx'0 hy).2 hx'y)
-  obtain ⟨c, hc⟩ := IsAlgClosed.exists_pow_nat_eq (l : ℂ_[l]) q.den_pos
-  have hcn : ‖c‖ ^ q.den = (l : ℝ)⁻¹ := by rw [← norm_pow, hc, norm_l]
-  have hc' : ‖c‖ = ((l : ℝ)⁻¹) ^ ((q.den : ℝ)⁻¹) := by
-    rw [← hcn, Real.pow_rpow_inv_natCast (norm_nonneg _) q.den_ne_zero]
-  have hval : ‖c ^ (-q.num)‖ = (l : ℝ) ^ (q : ℝ) := by
-    rw [norm_zpow, ← Real.rpow_intCast, hc', ← Real.rpow_mul (inv_nonneg.2 hl0.le),
-      Real.inv_rpow hl0.le, ← Real.rpow_neg hl0.le]
-    congr 1
-    have hq : (q : ℝ) = (q.num : ℝ) / (q.den : ℝ) := by
-      exact_mod_cast (Rat.num_div_den q).symm
-    rw [hq]
-    push_cast
-    field_simp
-  refine ⟨c ^ (-q.num), ?_, ?_⟩
-  · rw [hval]
-    refine lt_of_le_of_lt (le_max_left x (y / 2)) ?_
-    rw [← hx']
-    calc x' = (l : ℝ) ^ Real.logb l x' := (Real.rpow_logb hl0 hl1.ne' hx'0).symm
-      _ < (l : ℝ) ^ (q : ℝ) := (Real.rpow_lt_rpow_left_iff hl1).2 hq1
-  · rw [hval]
-    calc (l : ℝ) ^ (q : ℝ) < (l : ℝ) ^ Real.logb l y := (Real.rpow_lt_rpow_left_iff hl1).2 hq2
-      _ = y := Real.rpow_logb hl0 hl1.ne' hy
 
 @[reducible] def denseC : DenselyNormedField ℂ_[l] where
   __ := (inferInstance : NormedField ℂ_[l])

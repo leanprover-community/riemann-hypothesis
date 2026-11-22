@@ -1,6 +1,8 @@
 module
 
-public import Formalism.LocalToGlobal.HermitianForms.TiedTwAll
+public import Formalism.LocalToGlobal.HermitianForms.TiedTwSame
+public import Formalism.LocalToGlobal.HermitianForms.TiedTwJ
+public import Formalism.LocalToGlobal.HermitianColumns.TiedQCHost
 
 @[expose] public section
 

@@ -15,7 +15,6 @@ open CategoryTheory NumberField IntermediateField GroundTheory.Global FiniteSubf
   GroundTheory.Global.IdeleGroup GroundTheory.Global.SemiLocal
 
 open scoped NumberField.LiesOver NumberField.AdeleRing
-local notation "ℚ̄" => AlgebraicClosure ℚ
 
 noncomputable section
 
@@ -100,7 +99,6 @@ theorem coe_idelesProj_of (F : FiniteSubfield) [Fact (K ≤ F)] (x : IdeleGroup 
     ((idelesProj ι (of F x) : (AlgebraicClosure (v.adicCompletion K.1))ˣ) : AlgebraicClosure (v.adicCompletion K.1)) =
       completionEmbedding ι F ((x : 𝔸[F.1]).2 (placeOfEmbedding ι F).1) := by
   rw [idelesProj_of, coe_idelesLevelProj]
-
 
 set_option maxHeartbeats 2000000 in
 theorem idelesProj_smul (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) (z : IdeleLimit) :

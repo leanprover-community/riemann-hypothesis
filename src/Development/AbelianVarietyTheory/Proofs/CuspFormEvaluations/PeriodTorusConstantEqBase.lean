@@ -25,7 +25,6 @@ open ThFr TorusCoord TorusAtAssembly
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r)
 
-
 open Classical in
 def dimPer (σ : E →+* ℂ) : ℕ := if σ ∈ X.Ψ then r - X.p0 else X.p0
 
@@ -43,7 +42,6 @@ theorem dimPer_add (σ : E →+* ℂ) :
 theorem card_idx_dimPer : Fintype.card (Idx (dimPer X)) = X.Ψ.card * r := by
   rw [Fintype.card_sigma, sum_emb_split X]
   simp [dimPer_add]
-
 
 open Classical in
 def rowFn (i : Idx (dimPer X)) : X.Ψ × Fin r :=
@@ -259,39 +257,7 @@ variable {Y : DataX E r} {x : Frame Y.Ψ r}
   (hx : ∀ τ : Y.Ψ, gram τ.1 Y.Gm (mat x τ) =
     Matrix.diagonal fun a : Fin r => ((sgn Y.p0 (a : ℕ) : ℝ) : ℂ))
 
-def basis : Module.Basis (Fin (2 * Fintype.card (Idx (dimPer Y.toData)))) ℝ
-    (Vsp (dimPer Y.toData)) := (exists_basis hx).choose
-
-theorem mem_lat_basis (y : Vsp (dimPer Y.toData)) :
-    y ∈ lat (basis hx) ↔ ∃ v ∈ Y.Λ, scaled Y.toData x v = y := (exists_basis hx).choose_spec y
-
-theorem stable (α : 𝓞 E) (y : Vsp (dimPer Y.toData)) (hy : y ∈ lat (basis hx)) :
-    act α y ∈ lat (basis hx) := by
-  obtain ⟨v, hv, rfl⟩ := (mem_lat_basis hx y).1 hy
-  exact (mem_lat_basis hx _).2 ⟨(α : E) • v, Y.Λ.smul_mem α hv, scaled_smul _ x α v⟩
-
-theorem perfect (ψ : lat (basis hx) →+ ℤ) : ∃ y ∈ lat (basis hx), ∀ z : lat (basis hx),
-    (ψ z : ℝ) = (Hf y (z : Vsp (dimPer Y.toData))).im := by
-  let j : Y.Λ →+ lat (basis hx) :=
-    { toFun := fun v => ⟨scaled Y.toData x v, (mem_lat_basis hx _).2 ⟨v, v.2, rfl⟩⟩
-      map_zero' := by ext1; simp
-      map_add' := fun u v => by ext1; simp }
-  obtain ⟨u, hu, hψ⟩ := Y.EF_perf (ψ.comp j)
-  have hu' : scaled Y.toData x u ∈ lat (basis hx) := (mem_lat_basis hx _).2 ⟨u, hu, rfl⟩
-  rcases EF_eq_or Y.toData with h | h
-  · refine ⟨_, hu', ?_⟩
-    rintro ⟨z, hz⟩
-    obtain ⟨v, hv, rfl⟩ := (mem_lat_basis hx z).1 hz
-    rw [im_Hf_scaled hx, h, ← hψ ⟨v, hv⟩, Rat.cast_intCast]
-    rfl
-  · refine ⟨_, neg_mem hu', ?_⟩
-    rintro ⟨z, hz⟩
-    obtain ⟨v, hv, rfl⟩ := (mem_lat_basis hx z).1 hz
-    rw [im_Hf_neg_left, im_Hf_scaled hx, h, ← hψ ⟨v, hv⟩, Rat.cast_neg, neg_neg, Rat.cast_intCast]
-    rfl
-
 variable {w₀ : 𝓞 E} (hw : (w₀ : E) + cc (w₀ : E) = 1)
-
 
 end Torus
 

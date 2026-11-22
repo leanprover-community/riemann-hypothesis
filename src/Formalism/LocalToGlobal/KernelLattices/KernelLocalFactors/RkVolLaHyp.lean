@@ -12,7 +12,6 @@ public import Formalism.LocalToGlobal.Columns.RowFormsSel
 public import Formalism.LocalToGlobal.Columns.RecLevelLocP
 public import Formalism.LocalToGlobal.Columns.RecLevelHost
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ExistsIntegralMulOrderElement
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.RkVolTies
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.BaseLinkOfNonzeroDelta
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.BaseExP

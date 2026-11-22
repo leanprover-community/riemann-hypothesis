@@ -23,8 +23,6 @@ namespace GroundTheory.ProfCoh
 
 open CategoryTheory NumberField IsDedekindDomain GroundTheory.Global
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 section NSMul
@@ -263,7 +261,6 @@ theorem unitsLocalRes_gsBrauerInfl_sUnitsToUnitsZ (r : ℕ)
     exact gsRestrict_globalDecomp S ι σ
   · intro a
     rfl
-
 
 set_option maxHeartbeats 2000000 in
 theorem unitsLocalRes_sUnitsInfl (r : ℕ) (y : cohomology (galSUnitsMax K.1 ℚ̄ S) r) :

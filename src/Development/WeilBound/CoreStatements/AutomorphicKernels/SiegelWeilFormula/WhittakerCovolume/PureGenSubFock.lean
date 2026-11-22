@@ -23,9 +23,6 @@ def schrL {R : Type} [CommRing R] [Invertible (2 : R)] (ψ : AddChar R ℂ) {κ 
   map_add' f g := by funext x; simp only [schr, Pi.add_apply]; ring
   map_smul' c f := by funext x; simp only [schr, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]; ring
 
-theorem T_eq_lin (d : SD σ) (Φ : d.Fn) (X : Mx F E d.m d.n) :
-    d.T Φ X = (d.l ∘ₗ schrL d.B.ψ (d.dd.e (X * (incM F d.b.1.toCols₂)ᵀ))) Φ := rfl
-
 theorem T_sum (d : SD σ) {k : ℕ} (c : Fin k → ℂ) (Φs : Fin k → d.Fn) :
     d.T (∑ i, c i • Φs i) = ∑ i, c i • d.T (Φs i) := by
   funext X

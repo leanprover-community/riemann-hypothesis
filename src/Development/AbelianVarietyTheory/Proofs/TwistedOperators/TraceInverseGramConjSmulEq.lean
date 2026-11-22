@@ -49,9 +49,6 @@ theorem mt_reGrp (S : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) (h : G
       ((frPinv S b).map (incA D)) :=
   GlobalTheory.VolTransport.conjA_mat (isoPair_re S b) h
 
-theorem finHom_eq (V : HSp D) (g : GA D V) :
-    ((finHom V g : GL _ _) : Matrix (Fin V.rank) (Fin V.rank) _) = finMat D.sp.cm.sig V.gram g := rfl
-
 theorem reW_continuous (S T : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) : Continuous (reW S T b) := by
   haveI : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) (AE D)
   unfold reW

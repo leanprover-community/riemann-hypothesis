@@ -272,12 +272,6 @@ lemma res_lift (k r' : ℕ) (y : Fin (2 * r' + k + 1) → ℂ) : res k r' (liftV
     rw [lev_val]
     constructor <;> omega
 
-lemma res_add (k r' : ℕ) (u v : Fin (2 * (1 + r') + k + 1) → ℂ) : res k r' (u + v) = res k r' u + res k r' v := rfl
-
-lemma res_sub (k r' : ℕ) (u v : Fin (2 * (1 + r') + k + 1) → ℂ) : res k r' (u - v) = res k r' u - res k r' v := rfl
-
-lemma res_smul (k r' : ℕ) (c : ℂ) (u : Fin (2 * (1 + r') + k + 1) → ℂ) : res k r' (c • u) = c • res k r' u := rfl
-
 lemma lift_add (k r' : ℕ) (y y' : Fin (2 * r' + k + 1) → ℂ) :
     liftVec k 1 r' (y + y') = liftVec k 1 r' y + liftVec k 1 r' y' := by
   funext p

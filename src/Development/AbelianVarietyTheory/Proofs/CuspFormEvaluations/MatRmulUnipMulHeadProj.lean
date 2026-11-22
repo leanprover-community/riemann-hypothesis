@@ -68,7 +68,6 @@ theorem hermC_eq_sum_col (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) {A : 
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ =>
     Finset.sum_congr rfl fun _ _ => by ring
 
-
 variable {X} in
 theorem EF_eq_coper {y : Frame X.Ψ r} (hy : ∀ τ, (mat y τ).det ≠ 0) (u v : Fin r → E) :
     ((EF X u v : ℚ) : ℂ) = I / 2 * (coper X y u ⬝ᵥ per X y v - per X y u ⬝ᵥ coper X y v) := by
@@ -460,9 +459,6 @@ end Holo
 section Compl
 
 def headProj : Matrix (Fin r) (Fin r) ℂ := diagonal fun a => if (a : ℕ) < X.p0 then 1 else 0
-
-def mix (x y : Frame X.Ψ r) : Frame X.Ψ r := fun τ i a =>
-  if (a : ℕ) < X.p0 then x τ i a else y τ i a
 
 def unip (K : Frame X.Ψ r) : Frame X.Ψ r := fun τ a c =>
   if (a : ℕ) < X.p0 ∧ X.p0 ≤ (c : ℕ) then K τ a c else if a = c then 1 else 0

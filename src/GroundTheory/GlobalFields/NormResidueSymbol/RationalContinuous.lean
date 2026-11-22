@@ -16,26 +16,6 @@ namespace RationalSymbol
 
 open _root_.GroundTheory.Global.Cyclotomic GroundTheory.LocalField.Abstract
 
-theorem continuous_cycRestrict : Continuous cycRestrict := by
-  have : IsGalois ℚ (AlgebraicClosure ℚ) := IsAlgClosure.isGalois ℚ (AlgebraicClosure ℚ)
-  have h : @Normal ℚ maxCyclotomic _ _ (IntermediateField.algebra' maxCyclotomic) := by
-    convert isGalois_maxCyclotomic.to_normal
-  have hc := @InfiniteGalois.restrictNormalHom_continuous ℚ (AlgebraicClosure ℚ) _ _ _ maxCyclotomic h
-  exact hc
-
-theorem continuous_cycCharacter : Continuous cycCharacter := by
-  have : T2Space Gal(maxCyclotomic/ℚ) := krullTopology_t2
-  have hq : IsQuotientMap cycRestrict :=
-    continuous_cycRestrict.isClosedMap.isQuotientMap continuous_cycRestrict cycRestrict_surjective
-  rw [hq.continuous_iff]
-  exact continuous_character.congr fun σ ↦ (cycCharacter_cycRestrict σ).symm
-
-def cycCharacterHomeomorph : Gal(maxCyclotomic/ℚ) ≃ₜ* ℤ̂ˣ where
-  toMulEquiv := cycCharacter
-  continuous_toFun := continuous_cycCharacter
-  continuous_invFun :=
-    (continuous_cycCharacter.homeoOfEquivCompactToT2 (f := cycCharacter.toEquiv)).symm.continuous
-
 def unitsPadicHomeomorph : (Π q : Nat.Primes, ℤ_[q])ˣ ≃ₜ* ℤ̂ˣ :=
   unitsContinuousMulEquiv padicEquiv.symm.toMulEquiv continuous_ofPadics continuous_toPadics
 

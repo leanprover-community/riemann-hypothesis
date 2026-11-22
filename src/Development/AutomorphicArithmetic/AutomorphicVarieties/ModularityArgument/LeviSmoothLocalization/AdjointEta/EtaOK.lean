@@ -1,7 +1,7 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.WinUpDown
-public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.CyclicCharacterEigen.ToIdeleSq
+public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.CyclicCharacterEigen.PropEG
 
 @[expose] public section
 
@@ -23,12 +23,6 @@ section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-def lin3 (ν c : kˣ →* ℂˣ) : ℂ[X] := lin (ν * c) * lin c * lin (ν⁻¹ * c)
-
-def Ram3 (ν c : kˣ →* ℂˣ) : Prop := ¬ IsUnram (ν * c) ∧ ¬ IsUnram c ∧ ¬ IsUnram (ν⁻¹ * c)
-
 end Loc
-
-def tri (a x : ℂˣ) : Multiset ℂ := (({a * x, x, a⁻¹ * x} : Multiset ℂˣ)).map fun b : ℂˣ => (b : ℂ)
 
 end UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.Ad

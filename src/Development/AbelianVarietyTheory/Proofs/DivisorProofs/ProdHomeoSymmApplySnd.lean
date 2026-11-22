@@ -14,9 +14,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {N N' 
 def prodMap (hle : N' ≤ N) (hs : ∀ v, s v ∈ N) (z : N' × V) : N :=
   ⟨z.1 * s z.2, N.mul_mem (hle z.1.2) (hs z.2)⟩
 
-theorem coe_prodMap (hle : N' ≤ N) (hs : ∀ v, s v ∈ N) (z : N' × V) :
-    (prodMap hle hs z : G) = z.1 * s z.2 := rfl
-
 theorem map_inv_of_mul (hπmul : ∀ a b : N, π (a * b) = π a + π b) (a : N) : π a⁻¹ = -π a := by
   have h1 : π 1 = 0 := by simpa using hπmul 1 1
   have := hπmul a a⁻¹

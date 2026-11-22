@@ -23,8 +23,6 @@ def shL (G : HTGroup p) : G.C →ₗ[ℚ] G.C where
     show (G.star (q • x)).unop = q • (G.star x).unop
     rw [map_rat_smul]; rfl
 
-theorem shL_apply (G : HTGroup p) (c : G.C) : shL G c = sh G c := rfl
-
 def phi (G : HTGroup p) (β Y : G.C) (β' : G.C) : G.C →ₗ[ℚ] G.C × G.C :=
   (LinearMap.mulRight ℚ Y - LinearMap.mulLeft ℚ Y).prod
     (LinearMap.mulLeft ℚ β ∘ₗ LinearMap.mulRight ℚ β' ∘ₗ shL G - LinearMap.id)

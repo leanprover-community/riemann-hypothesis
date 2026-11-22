@@ -26,8 +26,6 @@ open Formalism.L2.SG.Pf.unitaryCongruence
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
-local notation "RA" => X.B.I.E ⊗[X.B.I.F] Formalism.MainNotions.S.Af X.B.I.F
-
 theorem natCast_int (c : ℕ) : (c : RA) ∈ IntAf X.B.I.F X.B.I.E := natCast_mem _ c
 
 theorem sigA_natCast (c : ℕ) : sigA X.B.I (c : RA) = c := map_natCast _ c

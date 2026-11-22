@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachOperatorProductShiftMemLattice
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachShiftMemOfExpansions
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExpansionRulesCriterionOddRootOfUnityCaseAStatement
 public import Formalism.SharpRestriction.LevelLetterCocycles.UsedLocalConclusion
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExpRules
 public import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineLiftingInputs

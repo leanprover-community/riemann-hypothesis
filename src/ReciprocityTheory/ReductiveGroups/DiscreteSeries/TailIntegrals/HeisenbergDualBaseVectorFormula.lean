@@ -237,44 +237,6 @@ theorem sum_lt_split (N m : ℕ) (hm : m ≤ N) (f : ℕ → ℂ) :
   simp only [Finset.mem_Ico, Finset.mem_filter, Finset.mem_range]
   omega
 
-theorem final_alg (N m : ℕ) (hm : m ≤ N) (A A' : ℕ → ℂ) (Uu b : ℂ) :
-    let x : ℕ → ℂ := fun j => A' j - b * A j
-    (1 + (∑ j ∈ Finset.range N, (star (A j) * A j + star (A' j) * A' j) + Uu + b * star b) -
-        ∑ j ∈ Finset.range m, star (x j) * x j) * (1 + ∑ j ∈ Finset.range m, star (A j) * A j) +
-      (∑ j ∈ Finset.range m, star (x j) * A j) * (∑ j ∈ Finset.range m, star (A j) * x j) =
-    (1 + ∑ j ∈ Finset.range m, star (A j) * A j) * ((1 + ∑ j ∈ Finset.range N, star (A j) * A j) + Uu +
-        ∑ j ∈ Finset.range N, (if m ≤ j then star (A' j) * A' j else 0)) +
-      (b + ∑ j ∈ Finset.range m, A' j * star (A j)) * star (b + ∑ j ∈ Finset.range m, A' j * star (A j)) := by
-  intro x
-  have hx1 : ∑ j ∈ Finset.range m, star (x j) * x j = ∑ j ∈ Finset.range m, star (A' j) * A' j -
-      b * ∑ j ∈ Finset.range m, star (A' j) * A j - star b * ∑ j ∈ Finset.range m, star (A j) * A' j +
-      b * star b * ∑ j ∈ Finset.range m, star (A j) * A j := by
-    simp only [Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    simp only [x, star_sub, star_mul']
-    ring
-  have hx2 : ∑ j ∈ Finset.range m, star (x j) * A j = ∑ j ∈ Finset.range m, star (A' j) * A j -
-      star b * ∑ j ∈ Finset.range m, star (A j) * A j := by
-    simp only [Finset.mul_sum, ← Finset.sum_sub_distrib]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    simp only [x, star_sub, star_mul']
-    ring
-  have hx3 : ∑ j ∈ Finset.range m, star (A j) * x j = ∑ j ∈ Finset.range m, star (A j) * A' j -
-      b * ∑ j ∈ Finset.range m, star (A j) * A j := by
-    simp only [Finset.mul_sum, ← Finset.sum_sub_distrib]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    simp only [x]
-    ring
-  have hq : ∑ j ∈ Finset.range m, A' j * star (A j) = ∑ j ∈ Finset.range m, star (A j) * A' j :=
-    Finset.sum_congr rfl fun j _ => mul_comm _ _
-  have hs : star (b + ∑ j ∈ Finset.range m, star (A j) * A' j) =
-      star b + ∑ j ∈ Finset.range m, star (A' j) * A j := by
-    rw [star_add, star_sum]
-    congr 1
-    exact Finset.sum_congr rfl fun j _ => by rw [star_mul', star_star, mul_comm]
-  rw [hx1, hx2, hx3, hq, hs, Finset.sum_add_distrib, sum_lt_split N m hm (fun j => star (A' j) * A' j)]
-  ring
-
 def ix (k r' : ℕ) : Fin (r' + 1) ⊕ (Fin (r' + 1) ⊕ Fin (k - 1)) → Fin (2 * r' + k + 1)
   | Sum.inl t => ⟨t.val, by omega⟩
   | Sum.inr (Sum.inl t) => ⟨2 * r' + k - t.val, by omega⟩

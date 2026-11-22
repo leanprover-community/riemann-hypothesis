@@ -18,7 +18,6 @@ def wordSpan {V : Type} [AddCommGroup V] [Module ℂ V] {m : ℕ} (E : Fin m →
     Submodule ℂ (Module.End ℂ V) :=
   Submodule.span ℂ {T | ∃ w : List (Fin m × Fin m), w.length ≤ L ∧ T = (w.map fun p => E p.1 p.2).prod}
 
-
 open Classical in
 def ap {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {S : Submodule ℂ H} (T : Module.End ℂ S) (x : H) : H :=
   if hx : x ∈ S then (T ⟨x, hx⟩ : H) else 0
@@ -46,12 +45,6 @@ def KeyId : Prop :=
     (ι : Fin (N + 1) → Fin (N + 2)) (z : Fin (N + 2)) (f : V →ₗ[ℂ] V'), GlRel E → Function.Injective ι → (∀ a, ι a ≠ z) →
     (∀ a b x, f (E (ι a) (ι b) x) = E' a b (f x)) → ∀ (w cG : ℂ), (∀ x, qdet E (w + 1) x = cG • x) → (∀ y, qdet E' w y = 0) →
     ∀ v, cG • f v = -∑ c, Th E' w (fun l => f (E (ι l) z (E z (ι c) v))) c
-
-def Grow : Prop :=
-  ∀ (m : ℕ) (ε : Fin m → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    (σ : Matrix (Fin m) (Fin m) ℂ → (H →L[ℂ] H)) (S : Submodule ℂ H) (E : Fin m → Fin m → Module.End ℂ S), 1 ≤ m → IsSmMod ε σ S E → IsURepOn (UJset ε) σ →
-    ∀ (L : ℕ) (T : Module.End ℂ S), T ∈ wordSpan E L → ∀ v : S, ∃ C : ℝ, ∀ g : UJ ε,
-      ‖ap T (σ (um g) v)‖ ≤ C * hs (um g) ^ L
 
 def Zero : Prop :=
   ∀ (n : ℕ) (ε : Fin (n + 1) → Bool) (ε' : Fin n → Bool) (e : Fin n ⊕ Unit ≃ Fin (n + 1)) (H : Type) [NormedAddCommGroup H]

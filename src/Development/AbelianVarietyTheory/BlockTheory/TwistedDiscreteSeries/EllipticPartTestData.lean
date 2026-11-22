@@ -209,7 +209,6 @@ theorem exists_isTorusMeas (P : PPol σ r) : ∃ dta dtf dt, IsTorusMeas P dta d
 def torVol (P : PPol σ r) (dt : Measure (Tor P (AF F))) : ENNReal :=
   quotMeasure (ratPts (star' P) (one₁ P)) dt univ
 
-
 open Classical in
 def PhiReal (P : PPol σ r) {w : InfinitePlace F} (τ : EmbOver E w) (lam : Fin r → ℤ)
     (dt : Measure (Tor P w.Completion)) : ℂ :=
@@ -241,13 +240,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-def IsTestData (V : HSp D) (lam : D.what₂.Tau → Fin V.rank → ℤ) {S : D.what₂.Tau → SPar} (M : DSModel V S)
-    (T : TypeDataG V) (U : AuxiliaryPlaceHermitianSpace V) (μa : ∀ w, Measure (GArch D.sp.cm.sig V.gram w))
-    (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)) (μ : Measure (GA D V))
-    (fa : ∀ w, GArch D.sp.cm.sig V.gram w → ℂ) (ff : ∀ v, GLoc D.sp.cm.sig V.gram v → ℂ) : Prop :=
-  Odd V.rank ∧ (∀ ρ, Gap (lam ρ)) ∧ (∀ ρ i, M.lam ρ i = lam ρ i) ∧ NoFixed T ∧
-    IsRestrictedProd D.sp.cm.sig V.gram (frameLat V) μa μf μ ∧ IsTestArchG M μa fa ∧ IsTestFin T U μf ff
-
 section Terms
 
 variable (V : HSp D) (lam : D.what₂.Tau → Fin V.rank → ℤ) (μa : ∀ w, Measure (GArch D.sp.cm.sig V.gram w))
@@ -273,53 +265,6 @@ end Terms
 
 def ellKernel (V : HSp D) (f : GA D V → ℂ) (x : GA D V) : ℂ :=
   ∑ᶠ δ : {δ : GRat D.sp.cm.sig V.gram // Irreducible δ.1.1.charpoly}, f (x⁻¹ * ratEmb D.sp.cm.sig V.gram δ.1 * x)
-
-def GeomExpansion : Prop :=
-  ∀ (D : D7) (V : HSp D) (lam : D.what₂.Tau → Fin V.rank → ℤ) (S : D.what₂.Tau → SPar) (M : DSModel V S)
-    (T : TypeDataG V) (U : AuxiliaryPlaceHermitianSpace V) (μa : ∀ w, Measure (GArch D.sp.cm.sig V.gram w))
-    (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)) (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
-    (fa : ∀ w, GArch D.sp.cm.sig V.gram w → ℂ) (ff : ∀ v, GLoc D.sp.cm.sig V.gram v → ℂ),
-    IsTestData V lam M T U μa μf μ fa ff →
-    ∀ (dta : ∀ (P : PPol D.sp.cm.sig V.rank) (w : InfinitePlace D.host.F), Measure (Tor P w.Completion))
-      (dtf : ∀ (P : PPol D.sp.cm.sig V.rank) (v : HeightOneSpectrum (𝓞 D.host.F)), Measure (Tor P (Fv D.host.F v)))
-      (dt : ∀ P : PPol D.sp.cm.sig V.rank, Measure (Tor P (AF D.host.F))),
-      (∀ P, IsTorusMeas P (dta P) (dtf P) (dt P)) →
-      (∀ P, FinOK V μf ff P (dtf P) (dt P)) ∧
-      (Function.support fun P => term V lam μf ff P (dta P) (dtf P) (dt P)).Finite ∧
-      HasTrace (RopG V μ (tensor D.sp.cm.sig V.gram fa ff)) (∑ᶠ P, term V lam μf ff P (dta P) (dtf P) (dt P))
-
-def EllipticPart : Prop :=
-  ∀ (D : D7) (V : HSp D) (lam : D.what₂.Tau → Fin V.rank → ℤ) (S : D.what₂.Tau → SPar) (M : DSModel V S)
-    (T : TypeDataG V) (U : AuxiliaryPlaceHermitianSpace V) (μa : ∀ w, Measure (GArch D.sp.cm.sig V.gram w))
-    (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)) (μ : Measure (GA D V))
-    (fa : ∀ w, GArch D.sp.cm.sig V.gram w → ℂ) (ff : ∀ v, GLoc D.sp.cm.sig V.gram v → ℂ),
-    IsTestData V lam M T U μa μf μ fa ff →
-    ∀ (dta : ∀ (P : PPol D.sp.cm.sig V.rank) (w : InfinitePlace D.host.F), Measure (Tor P w.Completion))
-      (dtf : ∀ (P : PPol D.sp.cm.sig V.rank) (v : HeightOneSpectrum (𝓞 D.host.F)), Measure (Tor P (Fv D.host.F v)))
-      (dt : ∀ P : PPol D.sp.cm.sig V.rank, Measure (Tor P (AF D.host.F))),
-      (∀ P, IsTorusMeas P (dta P) (dtf P) (dt P)) →
-      (∀ P, FinOK V μf ff P (dtf P) (dt P) ∧ ∀ w, PhiOK (J := V.gram) (μa w) (dta P w) (fa w)) ∧
-      (Function.support fun P => termOrb V μa μf fa ff P (dta P) (dtf P) (dt P)).Finite ∧
-      Integrable (descend (GQ V) (ellKernel V (tensor D.sp.cm.sig V.gram fa ff))) (autMeasure V μ) ∧
-      ∫ q, descend (GQ V) (ellKernel V (tensor D.sp.cm.sig V.gram fa ff)) q ∂autMeasure V μ =
-        ∑ᶠ P, termOrb V μa μf fa ff P (dta P) (dtf P) (dt P)
-
-def TraceEq : Prop :=
-  ∀ (D : D7) (V : HSp D) (lam : D.what₂.Tau → Fin V.rank → ℤ) (S : D.what₂.Tau → SPar) (M : DSModel V S)
-    (T : TypeDataG V) (U : AuxiliaryPlaceHermitianSpace V) (μa : ∀ w, Measure (GArch D.sp.cm.sig V.gram w))
-    (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)) (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
-    (fa : ∀ w, GArch D.sp.cm.sig V.gram w → ℂ) (ff : ∀ v, GLoc D.sp.cm.sig V.gram v → ℂ),
-    IsTestData V lam M T U μa μf μ fa ff →
-    ∀ (V' : HSp D) (hr : V'.rank = V.rank) (S' : D.what₂.Tau → SPar) (M' : DSModel V' S'),
-      (∀ ρ i, M'.lam ρ i = lam ρ (i.cast hr)) →
-      ∀ j : ∀ v, GLoc D.sp.cm.sig V.gram v ≃ₜ* GLoc D.sp.cm.sig V'.gram v,
-        (∀ v, IsLatticeConj (frameLat V) (frameLat V') (j v)) →
-        ∀ (μa' : ∀ w, Measure (GArch D.sp.cm.sig V'.gram w)) (μ' : Measure (GA D V')) [μ'.IsHaarMeasure]
-          [μ'.IsMulRightInvariant] (fa' : ∀ w, GArch D.sp.cm.sig V'.gram w → ℂ),
-          IsRestrictedProd D.sp.cm.sig V'.gram (frameLat V') μa' (fun v => (μf v).map (j v)) μ' →
-          IsTestArchG M' μa' fa' →
-          ∃ c : ℂ, HasTrace (RopG V μ (tensor D.sp.cm.sig V.gram fa ff)) c ∧
-            HasTrace (RopG V' μ' (tensor D.sp.cm.sig V'.gram fa' (transfer j ff))) c
 
 end Record
 

@@ -24,7 +24,6 @@ variable {F Ω : Type u} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [Is
 variable (S : Set (HeightOneSpectrum (𝓞 F))) (n : ℕ) [NeZero n]
   (hnS : ∀ v ∉ S, ((n : ℕ) : 𝓞 F) ∉ v.asIdeal)
 
-
 include hnS in
 theorem finite_cohomology_one_rootsOfUnity [Finite S] :
     Finite (cohomology (galRootsOfUnity.{u} F (maxUnramifiedOutside F Ω S) n) 1) := by
@@ -46,7 +45,6 @@ theorem finite_cohomology_one_rootsOfUnity [Finite S] :
   · intro y z h
     simp only at h
     exact Subtype.ext (Subtype.mk.inj h)
-
 
 include hnS in
 theorem finite_cohomology_two_rootsOfUnity_of_finite
@@ -80,8 +78,6 @@ end General
 section Brauer
 
 open GroundTheory.Global FiniteSubfield DirectSum
-
-local notation "ℚ̄" => AlgebraicClosure ℚ
 
 variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
 

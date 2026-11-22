@@ -39,8 +39,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     (hA : ∀ (lam : O →ₗ[Z] Z) a, cf lam (sc E a) ∈ A) {Y : LocLat G Qp LL O}
     {J ι : Type} [Fintype J] [Fintype ι] (o : Module.Basis J Z O)
 
-
-
 end Module
 
 section Transport
@@ -60,7 +58,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     [TopologicalSpace V'] [ContinuousAdd V'] [ContinuousConstSMul LL V']
     {L : Lattice (O := O) ρ} {L' : Lattice (O := O) ρ'}
 
-
 end Transport
 
 section RankOne
@@ -73,7 +70,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     (PD : PeriodData G Qp K₀ K B BdR) {LL : Type} [Field LL] [Algebra Qp LL]
     {O : Type} [CommRing O] [Algebra O LL] [TopologicalSpace LL] [IsTopologicalRing LL]
     {ψ : G →* LLˣ} (L : Lattice (O := O) (charRep ψ))
-
 
 end RankOne
 
@@ -121,33 +117,6 @@ variable {P : LocPrime l} {AI : LocAinf l P} {K : FinExt l} {s : ℕ} {LL : FinE
 theorem mem_GKs (hs : W.s = s) (g : ↥(GK K)) : g ∈ W.GKs ↔ (g : GQ l) ∈ GK (levelField K s) := by
   rw [W.GKs_def, hs, P.PD_χ, ← map_one (algebraMap ℚ_[l] ↥LL.1), ← map_sub, val_le_iff]
   exact (((GlobalTheory.Cyc.cyc_basic l P.χQ P.χQ_cyc).2.2 K g (absoluteGalois_mem_fixingSubgroup_maxUnramified g)).1 s).symm
-
-theorem prim_ζQ (P : LocPrime l) (m : ℕ) : IsPrimitiveRoot (P.ζQ (m + 1)) (l ^ (m + 1)) := by
-  have h : ∀ j, P.ζQ (j + 1) ^ l ^ j = P.ζQ 1 := by
-    intro j
-    induction j with
-    | zero => simp
-    | succ j ih => rw [pow_succ', pow_mul, P.ζQ_succ, ih]
-  have h1 : ¬ P.ζQ (m + 1) ^ l ^ m = 1 := by rw [h]; exact P.ζQ_one
-  have h2 : P.ζQ (m + 1) ^ l ^ (m + 1) = 1 := by rw [pow_succ, pow_mul, h, P.ζQ_succ, P.ζQ_zero]
-  rw [← orderOf_eq_prime_pow h1 h2]
-  exact IsPrimitiveRoot.orderOf _
-
-theorem resΓ_eq_one (g : ↥(GK K)) (hg : ∀ j : ℕ, (g : GQ l) (P.ζQ j) = P.ζQ j) : W.resΓ g = 1 := by
-  have h1 : (P.χQ (g : GQ l) : ℚ_[l]) = 1 := by
-    by_contra hne
-    obtain ⟨m, hm⟩ := GlobalTheory.Cyc.exists_zpow_neg_lt (l := l) (norm_pos_iff.mpr (sub_ne_zero.mpr hne))
-    have h2 := GlobalTheory.Cyc.IsCyc.norm_sub_one_le_of_prim P.χQ_cyc g _ (prim_ζQ P m) (hg _)
-    have h3 : (l : ℝ) ^ (-((m + 1 : ℕ) : ℤ)) ≤ (l : ℝ) ^ (-(m : ℤ)) :=
-      zpow_le_zpow_right₀ (by exact_mod_cast (Fact.out : l.Prime).one_le) (by push_cast; omega)
-    exact absurd (h2.trans h3) (not_le.mpr hm)
-  apply W.χΓ_inj
-  apply Units.ext
-  apply Subtype.val_injective
-  have h2 := W.χΓ_res g
-  rw [P.PD_χ, h1, map_one] at h2
-  rw [map_one]
-  exact h2
 
 variable (E : EtTie W (RA LL) (RW LL) (inclR LL) (φRW LL) (fun g : ↥(GK K) => AI.gRW LL (g : GQ l))
     ((1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] piS AI s))

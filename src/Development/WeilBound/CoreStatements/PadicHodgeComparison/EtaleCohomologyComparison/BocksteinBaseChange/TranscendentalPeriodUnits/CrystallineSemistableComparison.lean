@@ -15,9 +15,6 @@ namespace CrystallineSemistableComparison
 
 variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
 
-local notation "ιB" =>
-  ACris.iotaB (untilt_epsilon (p := l)) untilt_frobeniusEquiv_symm_epsilon_ne_one
-
 theorem fix_of_σD {x : BdR l} (h : ∀ g : K.fixingSubgroup, σD g.1 x = x) (σ : Gal(PadicAlgCl l/K)) : σ • x = x := by
   have e := h ((IntermediateField.fixingSubgroupEquiv K).symm σ)
   have e2 : σD ((IntermediateField.fixingSubgroupEquiv K).symm σ).1 x =

@@ -23,10 +23,6 @@ private noncomputable def flipConj {V : Type} [AddCommGroup V] [Module ℂ V]
     (by intro v w₁ w₂; simp [map_add (f := _)])
     (by intro c v w; simp [map_smulₛₗ, smul_eq_mul])
 
-private theorem flipConj_apply {V : Type} [AddCommGroup V] [Module ℂ V]
-    (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ) (v w : V) :
-    flipConj B v w = starRingEnd ℂ (B w v) := rfl
-
 end UpperTheory.Reformulated.B.SesquilinearFlipConj.Helpers
 
 open UpperTheory.Reformulated.B.SesquilinearFlipConj.Helpers in

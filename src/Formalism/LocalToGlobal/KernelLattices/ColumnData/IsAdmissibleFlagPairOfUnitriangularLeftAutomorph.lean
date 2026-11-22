@@ -451,13 +451,6 @@ namespace Base
 
 variable {D : Car} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ)
 
-theorem thHalf_mem (hS : B.StdOK) (hL : B.LatAll) {N N' : ℕ} {L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)}
-    {L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)} (hA : TaylorLogMetric.admitted D N N' L L') :
-    B.thHalf N N' L ∈ Formalism.L2.Th1.H.Th (formV (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ)) D.what₂.Tau N N') (TaylorLogMetric.al D B.tor)
-      (TaylorLogMetric.La D B.tor L (StandardLatticesGL3.stdL D N')) :=
-  kInterTh _ _ (formV_herm (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ)) D.what₂.Tau N N') _ _ _
-    (hL.1 N N' L _ (isAdmissible_flagPair_of_unitriangular_left_automorphism hA)).2 (hL.2 N N' _ _ _ _ (first_coordinate_admissible hA) (isAdmissible_flagPair_of_unitriangular_left_automorphism hA)).1 _ (B.thZeroMem hS N N')
-
 end Base
 
 section Rec

@@ -52,16 +52,6 @@ variable {t : SAB H (Sp (𝓞 K))} (G : EigenLatticeFibres.GenFib t)
 
 end Vec
 
-structure Partner {T : PAT H (Sp (𝓞 K))} (F : GenFib T.pol) where
-
-  tK : SAB H (Sp K)
-
-  m : SABMap tK T.t (spMap (algebraMap (𝓞 K) K))
-
-  v : Fin F.P₀.g → (epsR K ⟶ tK.G)
-  basis : IsLieBasis v
-  same : ∀ i, (v i).left ≫ m.φ = (F.v i).left ≫ F.φ
-
 variable {T T' : PAT H (Sp (𝓞 K))}
 
 namespace Partner

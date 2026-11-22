@@ -17,8 +17,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.SWLagTerms
 variable {D : D7}
 
-theorem cA_incA_loc (e : D.host.E) : cA D (incA D e) = incA D (star e) := rfl
-
 theorem adjO_mul_rat (V W : HSp D) (y : Mx D V.rank W.rank) (M : Matrix (Fin W.rank) (Fin W.rank) D.host.E) :
     GlobalTheory.PairLift.adjO V W (HMul.hMul (y : Matrix (Fin V.rank) (Fin W.rank) (AE D)) (M.map (incA D))) =
       ratMul (hAdj W M) (GlobalTheory.PairLift.adjO V W y) := by

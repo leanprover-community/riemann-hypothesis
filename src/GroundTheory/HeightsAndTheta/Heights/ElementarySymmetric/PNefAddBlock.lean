@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.StatementsGluing
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.GeoNum
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PContractRelDimLe
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PGeoNumCut

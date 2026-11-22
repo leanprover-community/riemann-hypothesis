@@ -540,13 +540,6 @@ theorem nuW_eq_true (u : Word) {j : ℕ} (hj : j < R.m) (τ : X.Tau) (i : Fin (R
 
 variable {W}
 
-theorem lamV_eq (hW : W.Ok) {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ R.m) (τ : X.Tau) (i : Fin R.nV) :
-    ((W.lamV j τ).w i : ℚ) = (W.row τ).lamVQ j i := by
-  obtain ⟨P, hP⟩ := hW.row_ok τ
-  unfold Wts.lamV
-  rw [← hP]
-  exact RowPar.lamV_eq P h1 h2 i
-
 end Wts
 
 namespace RowPar

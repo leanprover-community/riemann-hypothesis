@@ -61,7 +61,6 @@ lemma cartesian_lift_three_comp_projection (x y z : T ⟶ A) : (fun k => lift x 
 def lamP (u v : T ⟶ A) : (T ⟶ A) →₀ ℤ :=
   Finsupp.single (u * v) 1 - Finsupp.single u 1 - Finsupp.single v 1 + Finsupp.single 1 1
 
-
 private lemma fsum_eq_sum_single {X Y : Scheme} {K : Type} [Fintype K] (φ : K → (Y ⟶ X)) (ε : K → ℤ) :
     fsum φ ε = ∑ k, Finsupp.single (φ k) (ε k) := rfl
 
@@ -147,10 +146,6 @@ lemma mapDomain_sub' {α β : Type} (f : α → β) (F G : α →₀ ℤ) :
 
 lemma single_two {α : Type} (a : α) : Finsupp.single a (2 : ℤ) = Finsupp.single a 1 + Finsupp.single a 1 := by
   rw [← Finsupp.single_add]
-  norm_num
-
-lemma single_neg_two {α : Type} (a : α) : Finsupp.single a (-2 : ℤ) = -Finsupp.single a 1 - Finsupp.single a 1 := by
-  rw [← Finsupp.single_neg, ← Finsupp.single_sub]
   norm_num
 
 def psiP (w : A ⟶ A) (y : T ⟶ A) : (T ⟶ A) →₀ ℤ :=

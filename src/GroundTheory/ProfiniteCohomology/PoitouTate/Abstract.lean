@@ -22,7 +22,6 @@ section ExactTransport
 variable {A B X Y C : Type*} [AddCommGroup A] [AddCommGroup B] [AddCommGroup X] [AddCommGroup Y]
   [AddCommGroup C]
 
-
 omit [AddCommGroup A] in
 theorem exact_comp_addEquiv {f : A → B} {g : B →+ X} (hfg : Function.Exact f g) (e : X ≃+ Y) :
     Function.Exact f (e.toAddMonoidHom.comp g) := fun b => by
@@ -36,7 +35,6 @@ theorem exact_addEquiv_comp_comp_symm {g : B →+ X} {c : X → C} (hgc : Functi
     exact ⟨b, by simp [hb]⟩
   · rintro ⟨b, rfl⟩
     exact ⟨b, by simp⟩
-
 
 omit [AddCommGroup C] in
 theorem exact_comp_symm_addEquiv {c : X → C} {β : C → A} (hcβ : Function.Exact c β) (e : X ≃+ Y) :
@@ -80,26 +78,6 @@ variable {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Com
   (t : compactCohomologyRes φ D 3 →+ ZMod n)
   (inv : ∀ v, cohomology (Rep.res (φ v).toMonoidHom D) 2 →+ QZ)
 
-structure PoitouTateHypotheses : Prop where
-
-  compactDuality : ∃ U₀ : OpenSubgroup G, CompactDualityHypotheses φ n D t U₀
-
-  finite_cohomology : ∀ (M : Rep.{u} (ULift.{u} ℤ) G) [IsDiscreteRep M] [Finite M],
-    (∀ m : M, n • m = 0) → ∀ r, Finite (cohomology M r)
-
-  finite_compactCohomology : ∀ (M : Rep.{u} (ULift.{u} ℤ) G) [IsDiscreteRep M] [Finite M],
-    (∀ m : M, n • m = 0) → ∀ r, Finite (compactCohomologyRes φ M r)
-
-  subsingleton_three : ∀ (M : Rep.{u} (ULift.{u} ℤ) G) [IsDiscreteRep M] [Finite M],
-    (∀ m : M, n • m = 0) → Subsingleton (cohomology M 3)
-
-  localToCompact_two : ∀ ξ : ∀ v, cohomology (Rep.res (φ v).toMonoidHom D) 2,
-    zmodToQZ n (t ((localToCompact φ D _ (fun _ => 𝟙 _) 2).hom ξ)) = ∑ v, inv v (ξ v)
-
-  surjective_localPairing : ∀ (M : Rep.{u} (ULift.{u} ℤ) G) [IsDiscreteRep M] [Finite M],
-    (∀ m : M, n • m = 0) → ∀ v,
-      Function.Surjective (ptLocalPairing φ D M inv v (show 0 + 2 = 2 from rfl))
-
 variable (M : Rep.{u} (ULift.{u} ℤ) G) [IsDiscreteRep M] [Finite M]
 
 def ptDualToGlobal {r s : ℕ} (h : r + s = 3)
@@ -110,15 +88,6 @@ def ptDualToGlobal {r s : ℕ} (h : r + s = 3)
 namespace PoitouTateHypotheses
 
 variable {φ D t inv} (P : PoitouTateHypotheses φ D t inv)
-
-
-
-
-
-
-
-
-
 
 end PoitouTateHypotheses
 

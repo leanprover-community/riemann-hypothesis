@@ -33,7 +33,6 @@ variable {K : Type} [Field K] {σ : K →+* ℂ} {V : Type} [NormedAddCommGroup 
 variable {A : Type} [CommRing A] [Algebra K A]
 
 theorem toC_mul (x y : CAt σ) : toC (x * y) = toC x * toC y := rfl
-theorem toC_add (x y : CAt σ) : toC (x + y) = toC x + toC y := rfl
 theorem toC_one : toC (1 : CAt σ) = 1 := rfl
 
 def holSub (B : Set V) (k : V → (A →ₐ[K] CAt σ)) : Subalgebra K A where

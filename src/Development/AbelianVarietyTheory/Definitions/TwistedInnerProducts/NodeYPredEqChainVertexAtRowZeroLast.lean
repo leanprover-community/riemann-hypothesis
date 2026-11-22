@@ -81,7 +81,6 @@ theorem parP_m : parP D D.R.m = parXp D 0 := funext fun τ => (grid D τ).parPi_
 
 end Numbers
 
-
 variable (D) in
 structure PlaceDat where
 
@@ -97,10 +96,8 @@ namespace PlaceDat
 
 variable (Z : PlaceDat D) (Pg : Finset (Pl D.host.E))
 
-
 open Classical in
 def W : Finset (Pl D.host.E) := Pg ∪ Z.Wd ∪ {Z.w0}
-
 
 open Classical in
 def depth (w : Pl D.host.E) : ℕ := if w = Z.w0 then Z.e0 else 2
@@ -200,7 +197,6 @@ def meas0 (t : T) (j : ℕ) : (row0 R (j + 1)).MeasDat :=
   if h : j + 1 < D.R.m then Node.MeasDat.cast (nodeY_eq_chainVertexAtRowZero_of_lt R h) ⟨R.νY t (j + 1), R.fdY t (j + 1)⟩
   else Node.MeasDat.cast (nodeX_eq_chainVertexAtRowZero_of_ge R h) ⟨R.νX t, R.fdX t⟩
 
-
 variable (D) in
 structure GridSp extends PlaceDat D where
 
@@ -227,7 +223,6 @@ abbrev lvl : Ideal (𝓞 D.host.E) := G.toPlaceDat.ideal R.Pg
 abbrev Cos (i : ℕ) : Type := Coset (G.vert R (i + 1) 0) (G.vert R i 0) (G.lvl R)
 
 end GridSp
-
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
@@ -369,80 +364,11 @@ structure Is : Prop where
 
   data : G.IsData
 
-def ValuesInField : Prop :=
-  (∀ i, 1 ≤ i → i ≤ D.R.m → (G.chiH i).ValuesIn 0 D.what₂.embLL) ∧
-    ∀ w ∈ G.toPlaceDat.W R.Pg, ∃ z : D.what₂.LL, IsPrimitiveRoot z (Nat.card (kP w) ^ G.toPlaceDat.depth w)
-
-abbrev CV (i j : ℕ) : Submodule ℂ (G.V i j).Maps := (G.V i j).Cusp R.θ
-
-structure HasLifts : Prop where
-
-  X : ∀ t i j, i < D.R.m → j ≤ D.R.m → ∀ f, IsFinVec R.ψ R.θ true (G.V (i + 1) j) (G.V i j) f →
-    ∃ io, (G.X i j).IsLift R.ψ R.θ true (G.meas t i j) f io
-
-  th : ∀ t i j, i ≤ D.R.m → j < D.R.m → ∀ f, IsFinVec R.ψ R.θ false (G.V i j) (G.V i (j + 1)) f →
-    ∃ io, (G.th t i j).IsLift R.ψ R.θ false (G.meas t i (j + 1)) f io
-
-  col : ∀ t j, j < D.R.m → ∀ f, IsFinVec R.ψ R.θ false (G.Xp j) (G.Xp (j + 1)) f →
-    ∃ io, (G.col t j).IsLift R.ψ R.θ false (G.measX j) f io
-
-  dn : ∀ i, i < D.R.m → ∀ f, IsFinVec R.ψ R.θ true (G.P (i + 1)) (G.P i) f →
-    ∃ io, (G.dn i).IsLift R.ψ R.θ true (G.mP (i + 1)) f io
-
-  up : ∀ i, i < D.R.m → ∀ f, IsFinVec R.ψ R.θ true (G.P (i + 1)) (G.P i) f →
-    ∃ io, (G.dn i).IsLiftConj R.ψ R.θ true (G.ItU i) (G.mP i) f io
-
 end GridPre
-
-
-set_option genInjectivity false in
-set_option genSizeOfSpec false in
-structure GridDat extends GridPre R where
-
-  gridInclusionColumnZero : ∀ i, (WO (toGridPre.V (i + 1) 0).V (toGridPre.V i 0).V → ℂ) → toGridPre.CV i 0 →ₗ[ℂ] toGridPre.CV (i + 1) 0
-
-  gridInclusionColumnSucc : T → ∀ i j, (WO (toGridPre.V (i + 1) (j + 1)).V (toGridPre.V i (j + 1)).V → ℂ) →
-    toGridPre.CV i (j + 1) →ₗ[ℂ] toGridPre.CV (i + 1) (j + 1)
-
-  ioT : T → ∀ i j, (WO (toGridPre.V i j).V (toGridPre.V i (j + 1)).V → ℂ) → toGridPre.CV i (j + 1) →ₗ[ℂ] toGridPre.CV i j
-
-  ioC : T → ∀ j, (WO (toGridPre.Xp j).V (toGridPre.Xp (j + 1)).V → ℂ) →
-    (toGridPre.Xp j).Cusp R.θ →ₗ[ℂ] (toGridPre.Xp (j + 1)).Cusp R.θ
-
-  ioD : ∀ i, (WO (P (i + 1)).V (P i).V → ℂ) → (P (i + 1)).Cusp R.θ →ₗ[ℂ] (P i).Cusp R.θ
-
-  ioU : ∀ i, (WO (P (i + 1)).V (P i).V → ℂ) → (P i).Cusp R.θ →ₗ[ℂ] (P (i + 1)).Cusp R.θ
 
 namespace GridDat
 
 variable {R} (G : GridDat R)
-
-def ioX (t : T) (i : ℕ) : ∀ j, (WO (G.V (i + 1) j).V (G.V i j).V → ℂ) → G.CV i j →ₗ[ℂ] G.CV (i + 1) j
-  | 0 => G.gridInclusionColumnZero i
-  | j + 1 => G.gridInclusionColumnSucc t i j
-
-structure IsLifts : Prop where
-
-  X : ∀ t i j, i < D.R.m → j ≤ D.R.m → ∀ f, IsFinVec R.ψ R.θ true (G.V (i + 1) j) (G.V i j) f →
-    (G.X i j).IsLift R.ψ R.θ true (G.meas t i j) f (G.ioX t i j f)
-
-  th : ∀ t i j, i ≤ D.R.m → j < D.R.m → ∀ f, IsFinVec R.ψ R.θ false (G.V i j) (G.V i (j + 1)) f →
-    (G.th t i j).IsLift R.ψ R.θ false (G.meas t i (j + 1)) f (G.ioT t i j f)
-
-  col : ∀ t j, j < D.R.m → ∀ f, IsFinVec R.ψ R.θ false (G.Xp j) (G.Xp (j + 1)) f →
-    (G.col t j).IsLift R.ψ R.θ false (G.measX j) f (G.ioC t j f)
-
-  dn : ∀ i, i < D.R.m → ∀ f, IsFinVec R.ψ R.θ true (G.P (i + 1)) (G.P i) f →
-    (G.dn i).IsLift R.ψ R.θ true (G.mP (i + 1)) f (G.ioD i f)
-
-  up : ∀ i, i < D.R.m → ∀ f, IsFinVec R.ψ R.θ true (G.P (i + 1)) (G.P i) f →
-    (G.dn i).IsLiftConj R.ψ R.θ true (G.ItU i) (G.mP i) f (G.ioU i f)
-
-structure Is : Prop where
-
-  pre : G.toGridPre.Is
-
-  lifts : G.IsLifts
 
 end GridDat
 

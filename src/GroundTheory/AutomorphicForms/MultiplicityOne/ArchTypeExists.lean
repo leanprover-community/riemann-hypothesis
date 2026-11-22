@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import GroundTheory.AutomorphicForms.MultiplicityOne.FinitePart
+public import GroundTheory.AutomorphicForms.MultiplicityOne.FiniteFactor
 public import GroundTheory.AutomorphicForms.WhittakerCriterion
 public import GroundTheory.AutomorphicForms.MultiplicityOne.NormOne
 

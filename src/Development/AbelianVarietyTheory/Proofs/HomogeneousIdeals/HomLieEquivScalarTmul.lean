@@ -242,7 +242,6 @@ section Algebra
 
 variable [Algebra O O'] [Module O' M] [IsScalarTower O O' M]
 
-
 theorem lieEquivBase_smul (x : O') (z : Lie a ⊗[O] M) :
     h.lieEquivBase (h.algAct O') ((Algebra.lsmul O O M x).lTensor _ z) =
       x • h.lieEquivBase (h.algAct O') z := by
@@ -420,7 +419,6 @@ theorem lieMult_iff_finrank (hφ : IsLinearPullback a₁ a t φ) (τ : O →+* k
   exact ⟨fun ⟨v⟩ ↦ ⟨.of_basis v, (Module.finrank_eq_card_basis v).trans (Fintype.card_fin n)⟩,
     fun ⟨_, h⟩ ↦ ⟨Module.finBasisOfFinrankEq _ _ h⟩⟩
 
-
 end Lie
 
 namespace IsTensor
@@ -490,15 +488,5 @@ end Ideal
 end IsTensor
 
 end Mult
-
-def Lie.splitTorusEquiv {R O X : Type} [CommRing R] [CommRing O] [AddCommGroup X]
-    (a : OAct O (ReciprocityTheory.ChartRestriction.G.Semi.splitTorus (Sp R) X)) : (X →+ R) ≃ₗ[R] Lie a :=
-  LinearEquiv.ofBijective
-    ({ toFun c := Lie.mk a (Diag.lieVec c) (Diag.isTangent_lieVec c)
-       map_add' c d := Lie.ext (Diag.lieVec_add c d)
-       map_smul' r c := Lie.ext (Diag.lieVec_smul r c) } : (X →+ R) →ₗ[R] Lie a)
-    ⟨fun _ _ e ↦ Diag.lieVec_injective (congrArg Lie.hom e), fun v ↦
-      ((Diag.isTangent_iff_exists _).mp v.isTangent).imp fun _ e ↦ Lie.ext e⟩
-
 
 end GlobalTheory.Serre

@@ -110,9 +110,6 @@ def Pt (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (N N' : ℕ) : (Fin N' �
   map_zero' := by funext τ i j; simp [pt, embV, tor0]
   map_add' z w := by funext τ i j; simp [pt, embV, tor0, mul_add]
 
-theorem Pt_apply (δ : ℂ) {N N' : ℕ} (z : Fin N' → Fin N → D.host.E) (τ : D.what₂.Tau) (i : Fin N') (j : Fin N) :
-    Pt D cc δ N N' z τ i j = δ * embT D τ (z i j) := rfl
-
 def Row (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) {N : ℕ} (N' : ℕ) (t₀ : D.host.E) (b : Fin N → D.host.E)
     (i : Fin N') : 𝓞 D.host.E →+ VC D N N' where
   toFun a := Pt D cc δ N N' (Pi.single i ((a • t₀) • cv D b))

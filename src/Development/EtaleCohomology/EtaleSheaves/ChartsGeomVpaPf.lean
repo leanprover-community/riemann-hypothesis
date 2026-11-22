@@ -16,9 +16,6 @@ def chartEquiv {Z : Scheme.{0}} {U : Z.Opens} (φ : Γ(Z, U) →+* K) (hi : Func
   (RingEquiv.ofBijective φ.rangeRestrict ⟨fun a b h => hi (congrArg Subtype.val h), φ.rangeRestrict_surjective⟩).trans
     (RingEquiv.subringCongr hr)
 
-theorem chartEquiv_apply {Z : Scheme.{0}} {U : Z.Opens} (φ : Γ(Z, U) →+* K) (hi : Function.Injective φ)
-    (B : Subalgebra A K) (hr : φ.range = B.toSubring) (s : Γ(Z, U)) : ((chartEquiv φ hi B hr s : B) : K) = φ s := rfl
-
 def chartMap {Z : Scheme.{0}} {U : Z.Opens} (hU : IsAffineOpen U) (φ : Γ(Z, U) →+* K) (hi : Function.Injective φ)
     (B : Subalgebra A K) (hr : φ.range = B.toSubring) : Spec (CommRingCat.of B) ⟶ Z :=
   Spec.map (CommRingCat.ofHom (chartEquiv φ hi B hr).toRingHom) ≫ hU.fromSpec

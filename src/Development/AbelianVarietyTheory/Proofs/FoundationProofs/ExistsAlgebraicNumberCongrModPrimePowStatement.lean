@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsAlgebraicNumberCongrModPrimePow
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AlgebraicElementApproximation
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ApplyEqOfMemAdjoin
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsTopWTopWOfExists
 

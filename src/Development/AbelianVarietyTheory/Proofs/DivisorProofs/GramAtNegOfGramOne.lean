@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BottomExistsIntegrable
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IntegrandSZero
@@ -50,14 +49,9 @@ theorem sig_of_gram_one {V : HSp D} (hg : V.gram = 1) (hV : V.SigOK) (τ : D.hos
   simp only [Fintype.card_fin, Fintype.card_sum, hq] at this
   omega
 
-
 open GlobalTheory.Grid (neg neg_gram) in
 def negFrame (A : HSp D) : CptF (neg A) := fun τ r c =>
   Sum.elim (fun _ => (0 : ℂ)) (fun k => if (k : ℕ) = (c : ℕ) then 1 else 0) r
-
-open GlobalTheory.Grid (neg) in
-theorem negFrame_inl (A : HSp D) (τ : D.what₂.Tau) (a : Fin ((neg A).sig (tauE D τ)).1) (c : Fin (neg A).rank) :
-    negFrame A τ (Sum.inl a) c = 0 := rfl
 
 open GlobalTheory.Grid (neg) in
 theorem negFrame_inr (A : HSp D) (τ : D.what₂.Tau) (k : Fin ((neg A).sig (tauE D τ)).2) (c : Fin (neg A).rank) :
@@ -107,7 +101,6 @@ theorem gramAt_neg_of_gram_one {A : HSp D} (hg : A.gram = 1) (τ : D.what₂.Tau
   simp only [gramAt, neg_gram, hg, Matrix.map_apply, Matrix.neg_apply, Matrix.one_apply]
   split_ifs <;> simp
 
-
 open GlobalTheory.Grid (neg neg_gram sigOK_sgn isCartanInv_sgn) in
 theorem exists_pair {T : Type} {A A' WW : HSp D} (X : Tri T A A' WW) {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D}
     {α β : T → ((AE D)ˣ →* Circle)} {νH : T → Formalism.L2.Host.HChar D.host.E} {S}
@@ -133,7 +126,6 @@ theorem exists_pair {T : Type} {A A' WW : HSp D} (X : Tri T A A' WW) {ψ : AddCh
   · rw [hgn, hs]
     simp [compAt]
 
-
 open GlobalTheory.Grid (neg) in
 theorem one_le_bot (i j : Fin D.R.m) : 1 ≤ botBig D i j ∧ 1 ≤ botSmall D i j := by
   obtain ⟨u, hu⟩ := D.R.t_odd
@@ -149,7 +141,6 @@ theorem one_le_bot (i j : Fin D.R.m) : 1 ≤ botBig D i j ∧ 1 ≤ botSmall D i
   constructor <;> omega
 
 end GlobalTheory.BottomPairData
-
 
 open GlobalTheory.BottomPairData in
 theorem GlobalTheory.BottomPairData.pair_data : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),

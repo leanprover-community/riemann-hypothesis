@@ -1,15 +1,21 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsConstAlongSingleton
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsGenericIffIsGenericFor
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HeckeTateFunctionalEquationCM
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.GeometricLemmaFiltration
+public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.CuspDiscreteDecompositionGL
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardTraceAddCharIsStandardCharOfAdmissibleCM
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnitDetGramOfHermitianSelfDualLatticeSpace
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsSplitChartSplitChart
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasureFundDomLtTop
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDiagonalLagrangianInvariantForm
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjMapApply
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasTemperateGrowthElim
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProductFunctionOnSumCoordsMemAdelicSchwartzSpace
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzTensorRightOperatorStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzProductDecompositionStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzSeminormTranslateSubLineDerivLe
 
 @[expose] public section
 
@@ -55,44 +61,5 @@ theorem totallyDisconnected_finiteAdele : ∀ (F : Type) [Field F] [NumberField 
     td_of_inj (fun x v => x v) (continuous_pi fun v => RestrictedProduct.continuous_eval v)
       fun x y h => Subtype.ext (funext fun v => congrFun h v)
   exact inferInstanceAs (TotallyDisconnectedSpace (Πʳ v : HeightOneSpectrum (𝓞 F), [v.adicCompletion F, v.adicCompletionIntegers F]))
-
-theorem pureA_sum (F : Type) [Field F] [NumberField F] {κ ι : Type} [Fintype ι] (f : (κ → mixedEmbedding.mixedSpace F) → ℂ)
-    (g : ι → (κ → FiniteAdeleRing (𝓞 F) F) → ℂ) : pureA F f (∑ i, g i) = ∑ i, pureA F f (g i) := by
-  funext x
-  simp [pureA, Finset.sum_apply, Finset.mul_sum]
-
-theorem isTame_partR : ∀ (F : Type) [Field F] [NumberField F] (κ κ' κ₁' : Type) [Fintype κ] [Fintype κ'] [Fintype κ₁']
-    (T : ((κ' → AF F) → ℂ) →ₗ[ℂ] ((κ₁' → AF F) → ℂ)), IsTame F T → IsTame F (partR (κ := κ) T) := by
-  intro F _ _ κ κ' κ₁' _ _ _ T hT g hg
-  haveI := GlobalTheory.AdelicUnitaryTop.locallyCompact_finiteAdele (F := F)
-  haveI := GlobalTheory.AdelicUnitaryTop.t2Space_finiteAdeleRing_of_numberField (F := F)
-  haveI := totallyDisconnected_finiteAdele F
-  obtain ⟨ι₀, _, g₁, g₂, hg₁, hg₂, rfl⟩ := GlobalTheory.T.schwartz_product_decomposition _ κ κ' g hg
-  choose ι inst P g' hg' hP using fun i => hT (g₂ i) (hg₂ i)
-  choose Q hQ using fun (p : Σ i, ι i) => GlobalTheory.T.schwartz_tensor_right_operator (mixedEmbedding.mixedSpace F) κ κ' κ₁' (P p.1 p.2)
-  refine ⟨Σ i, ι i, inferInstance, Q, fun p z => g₁ p.1 (z ∘ Sum.inl) * g' p.1 p.2 (z ∘ Sum.inr),
-    fun p => GlobalTheory.SchwartzBox.sb_box (hg₁ p.1) (hg' p.1 p.2), fun f => ?_⟩
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [pureA_sum, map_sum, Fintype.sum_sigma]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  funext s
-  rw [partR_apply, Finset.sum_apply]
-  set xa : κ → mixedEmbedding.mixedSpace F := fun k => InfiniteAdeleRing.ringEquiv_mixedSpace F (s (Sum.inl k)).1
-  have hfun : (fun x₂ => pureA F f (fun z => g₁ i (z ∘ Sum.inl) * g₂ i (z ∘ Sum.inr)) (Sum.elim (s ∘ Sum.inl) x₂)) =
-      g₁ i (fun k => (s (Sum.inl k)).2) • pureA F (sliceR f xa) (g₂ i) := by
-    funext x₂
-    simp only [pureA, Pi.smul_apply, smul_eq_mul, sliceR_apply]
-    have e : (fun k => InfiniteAdeleRing.ringEquiv_mixedSpace F ((Sum.elim (s ∘ Sum.inl) x₂ : κ ⊕ κ' → AF F) k).1) =
-        Sum.elim xa (fun k => InfiniteAdeleRing.ringEquiv_mixedSpace F (x₂ k).1) := by
-      funext k; cases k <;> rfl
-    rw [e]
-    simp only [Function.comp_def, Sum.elim_inl, Sum.elim_inr]
-    ring
-  rw [hfun, map_smul, hP i (sliceR f xa)]
-  simp only [Pi.smul_apply, Finset.sum_apply, smul_eq_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  simp only [pureA, hQ]
-  simp only [Function.comp_def]
-  ring
 
 end GlobalTheory.TamePartR

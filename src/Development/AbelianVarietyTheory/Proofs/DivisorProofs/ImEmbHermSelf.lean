@@ -18,9 +18,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 def frm {r : ℕ} (Ψ : Finset (E →+* ℂ)) (u : Fin r → Fin r → E) : Frame Ψ r :=
   fun τ k a => τ.1 (u a k)
 
-theorem col_frm {r : ℕ} (Ψ : Finset (E →+* ℂ)) (u : Fin r → Fin r → E) (τ : Ψ) (a : Fin r) :
-    col (mat (frm Ψ u) τ) a = Data.emb τ.1 (u a) := rfl
-
 theorem emb_cc (τ : E →+* ℂ) (x : E) : τ (cc x) = conj (τ x) :=
   IsCMField.complexEmbedding_complexConj E τ x
 

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelIndu
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BernsteinUnitaryProductIrreducible
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ParRowZero
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 
 @[expose] public section
 

@@ -366,14 +366,8 @@ structure KerEntTied (ex : Extra D L hT Gi Gl K Y cX) where
 
 def KerEntTied.amb {ex : Extra D L hT Gi Gl K Y cX} (t : KerEntTied ex) : Amb t.X := ambOf t.seam t.B t.χ t.cD
 
-def KerEntTied.AAUnit {ex : Extra D L hT Gi Gl K Y cX} (t : KerEntTied ex) : Prop :=
-  ∀ u μ, t.amb.AAUnit (Sall t.sel (t.tup μ) (t.word u))
-
 def KerEntTied.Hyp {ex : Extra D L hT Gi Gl K Y cX} (t : KerEntTied ex) : Prop :=
   ∀ u μ i, i < D.R.m → (t.rd u μ).Hyp t.seam t.amb t.B.tor (t.B.eNat t.χ) (t.O u μ).S i
-
-def KerEntTied.UnfAll {ex : Extra D L hT Gi Gl K Y cX} (t : KerEntTied ex) : Prop :=
-  ∀ u μ i, i < D.R.m → UnfIsAll (t.O u μ) i
 
 end Ent
 

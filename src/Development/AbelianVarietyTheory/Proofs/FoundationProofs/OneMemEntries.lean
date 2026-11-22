@@ -35,8 +35,6 @@ def cti (σ : A →+* A) : GL n A →* GL n A where
   map_one' := Units.ext (by simp [cT_one])
   map_mul' g h := Units.ext (by simp [cT_mul])
 
-theorem val_cti (σ : A →+* A) (g : GL n A) : (cti σ g).1 = cT σ g⁻¹.1 := rfl
-
 variable [Invertible (2 : A)]
 
 theorem conj_mem (x : GL ι A) (h : (x.1.submatrix e e).toBlocks₂₁ = 0) :

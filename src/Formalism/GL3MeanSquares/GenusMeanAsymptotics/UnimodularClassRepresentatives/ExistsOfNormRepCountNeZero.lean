@@ -16,9 +16,6 @@ open LocalSpans idealPowerSpanBounds localizedQuotients WCA
 
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-local notation "κ" => algebraMap (𝓞 K) K
-
 variable {𝔭 : Ideal (𝓞 F)}
 
 theorem exists_of_normRepCount_ne_zero {Q : Ideal (𝓞 K)} {n : 𝓞 K} (h : normRepCount K Q 1 n ≠ 0) :

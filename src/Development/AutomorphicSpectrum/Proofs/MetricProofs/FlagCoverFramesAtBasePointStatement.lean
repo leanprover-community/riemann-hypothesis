@@ -3,8 +3,6 @@ module
 public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesAtBasePoint
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.TransPtBase
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointRegularStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorOfRegularMatrixValueStatement
 
 @[expose] public section
 

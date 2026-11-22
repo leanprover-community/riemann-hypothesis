@@ -27,9 +27,6 @@ def uFi (b : Fin (D.R.rS + 1)) : (D.s.atP p).Ep := (((uF_unit Zd p b).unit⁻¹ 
 theorem uFi_mul (b : Fin (D.R.rS + 1)) : uFi Zd p b * uF Zd p b = 1 :=
   IsUnit.val_inv_mul (uF_unit Zd p b)
 
-theorem mul_uFi (b : Fin (D.R.rS + 1)) : uF Zd p b * uFi Zd p b = 1 := by
-  rw [mul_comm]; exact uFi_mul Zd p b
-
 def Cm (ξ : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) (𝓞 D.host.E)) :
     Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) (D.s.atP p).Ep :=
   Matrix.diagonal (uFi Zd p) * ξ.map (fun x => (D.s.atP p).ιE (x : D.host.E)) * Matrix.diagonal (uF Zd p)
@@ -149,7 +146,6 @@ theorem admissible_local_term {u u' : D.what₂.Word} (F0 : FlagG (VS D) D.R.rS 
     rw [smul_smul, ← map_mul, mul_inv_cancel₀ (bt_q_ne Zd p g), map_one, one_smul]
   rw [e]
   exact Submodule.subset_span ⟨_, hmem, rfl⟩
-
 
 set_option maxHeartbeats 1000000 in
 theorem admissible_local_partner {u u' : D.what₂.Word} (F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u))

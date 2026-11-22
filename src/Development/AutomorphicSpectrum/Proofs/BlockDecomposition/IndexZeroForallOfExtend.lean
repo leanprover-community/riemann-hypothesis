@@ -56,8 +56,6 @@ theorem rep_iff {Fil : ℤ → IdF Φ.A} (hF : IsFil Φ Fil) {d : ℕ} (E : Fram
 section Cut
 variable {d : ℕ} (Q : Poly Φ) (E : Frame Φ (d + 1)) (σ : ∀ T : C, E.D ⟶ T) (Fil : ℤ → IdF Φ.A)
 
-abbrev Fil1 : ℤ → IdF (Cut.Φ1 E).A := fun r => (Fil r).res (Cut.U E)
-
 abbrev G (r : ℤ) : C ⥤ ModuleCat.{0} R := Cut.Pσ Q σ ⋙ Cut.U E ⋙ gr Fil r
 
 def jW (r : ℤ) : gr Fil r ⟶ G Q E σ Fil r := Functor.whiskerRight (Cut.jσ Q σ) (gr Fil r)

@@ -176,10 +176,6 @@ variable {D : D7} {i : D.nd.Loc} {w : HeightOneSpectrum (𝓞 D.host.E)} {hw : w
 abbrev phiC (C : TruncatedSeriesCountingIdentities.CoefExt D i w hw) : D.nd.O i →+* ↥(OL C.LL) :=
   (incO C.le).comp (D.nbr i w hw).eO.toRingHom
 
-theorem locOC_apply (C : TruncatedSeriesCountingIdentities.CoefExt D i w hw) {k : ℕ} (M : GE D.nd →* Matrix (Fin k) (Fin k) (D.nd.O i))
-    (g : Br.G D.nbr i w hw) :
-    locOC C M g = (M (decS D.nd w (Br.iota D.nbr i w hw g))).map (phiC C) := rfl
-
 theorem charpoly_repV (C : TruncatedSeriesCountingIdentities.CoefExt D i w hw) {k : ℕ} (N : Br.G D.nbr i w hw →* Matrix (Fin k) (Fin k) ↥(OL C.LL))
     (g : Br.G D.nbr i w hw) :
     LinearMap.charpoly (repV C N g) = (N g).charpoly.map (algebraMap ↥(OL C.LL) ↥C.LL.1) := by
@@ -220,7 +216,6 @@ theorem chiT_val (C : TruncatedSeriesCountingIdentities.CoefExt D i w hw) (θ : 
   ring
 
 end Main
-
 
 set_option synthInstance.maxHeartbeats 200000 in
 set_option maxHeartbeats 800000 in

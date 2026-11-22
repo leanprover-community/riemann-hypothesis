@@ -10,7 +10,6 @@ public import Formalism.LocalRingCardinality.DataKap
 public import Formalism.LocalRingCardinality.DataDIVDefs
 public import Formalism.LocalRingCardinality.DataRows
 public import Formalism.LocalRingCardinality.DataForms
-public import Formalism.LocalRingCardinality.SpanPowerMembership.NZRowC
 
 @[expose] public section
 
@@ -116,20 +115,7 @@ def IsStep [MeasurableSpace F] (δ : Fˣ →* ℂˣ) (ν : ℕ → Fˣ →* ℂ�
 
 end Local
 
-def zVal (q : ℝ) (r t j : ℕ) (x : ℕ → ℂ) : ℂ :=
-  ((q ^ (-((j * t * r : ℕ) : ℤ)) * MainNotions.ZetaProductPairs.qE q 1 r * MainNotions.ZetaProductPairs.qE q (t + 1) (j * t) : ℝ) : ℂ) *
-    ∏ i ∈ Finset.Ico 1 j, MainNotions.ZetaProductPairs.Lpair q t (x i / x j)
-
 def zVal1 (q : ℝ) (r t : ℕ) : ℝ := MainNotions.ZetaProductPairs.qE q 1 r * q ^ (-((t * r : ℕ) : ℤ))
-
-theorem zVal_one (q : ℝ) (r t : ℕ) (x : ℕ → ℂ) : zVal q r t 1 x = (zVal1 q r t : ℂ) := by
-  have he : MainNotions.ZetaProductPairs.qE q (t + 1) (1 * t) = 1 := by
-    unfold MainNotions.ZetaProductPairs.qE
-    rw [Finset.Icc_eq_empty (by omega), Finset.prod_empty]
-  unfold zVal zVal1
-  rw [Finset.Ico_self, Finset.prod_empty, mul_one, he, mul_one, Nat.one_mul]
-  congr 1
-  ring
 
 section AtP
 
@@ -168,13 +154,6 @@ end AtP
 end QLoc
 
 open QLoc
-
-def ThmQ : Prop :=
-  ∀ (L : Type) [Field L] [NumberField L] (P : HeightOneSpectrum (𝓞 L)), Deg1 P →
-    ∀ (δ : (P.adicCompletion L)ˣ →* ℂˣ) (ν : ℕ → (P.adicCompletion L)ˣ →* ℂˣ), IsDel P δ → (∀ i, IsNu P (ν i)) →
-    ∀ r t j : ℕ, 1 ≤ t →
-      (∀ n, TypeDimAt P δ ν r t j n → n = 1) ∧
-      ∀ z, StepAt P δ ν r t j z → z = zVal (qP P) r t (j + 1) (fun i => ((ν i (piP P) : ℂˣ) : ℂ))
 
 variable {D : D7} {C : CharFrame D} {nch : NChoice D}
 
@@ -221,11 +200,6 @@ def QLocTiedC {Tp : TupTied D C nch} {Z : DivX D} (T : DivisorCharacterCompatibi
   (∀ μ v, Pv (T.eQPl μ v).1 ∈ aboveF (L := D.host.E) D.host.F (T.eQPl μ v).1) ∧
     QLocTied Tp Z fun μ v => Pv (T.eQPl μ v).1
 
-structure QLocVal (Z : DivX D) : Prop where
-  typeDim : ∀ μ v j, j ≤ D.R.m → Z.typeDim μ v j = 1
-  ZQ : ∀ μ v j, 1 ≤ j → j ≤ D.R.m → Z.ZQ μ v j = zVal (Z.qv μ v) D.R.r D.R.t j (Z.nu μ v)
-  quotientLocalValueFirst : ∀ μ v, Z.quotientLocalValueFirst μ v = (zVal1 (Z.qv μ v) D.R.r D.R.t : ℂ)
-
 theorem isDel_delQ (Tp : TupTied D C nch) (μ : D.what₂.Tup) {P : HeightOneSpectrum (𝓞 D.host.E)}
     (h : ¬ (Tp.xi μ).UnrAt P) : IsDel P (delQ Tp μ P) := by
   refine ⟨?_, ?_, ?_⟩
@@ -257,34 +231,5 @@ theorem isNu_nuP (C : CharFrame D) {P : HeightOneSpectrum (𝓞 D.host.E)} (h : 
     show ((C.mu0 ⟨i - 1, by omega⟩).loc P x)⁻¹ = 1
     rw [h1, inv_one]
   · exact ⟨fun x => by simp, fun x _ => rfl⟩
-
-theorem QLocTied.nu_nuP {Tp : TupTied D C nch} {Z : DivX D} {PQ} (h : QLocTied Tp Z PQ) (μ : D.what₂.Tup) (v : Z.QPl μ)
-    (i : ℕ) (h1 : 1 ≤ i) (h2 : i ≤ D.R.m) : Z.nu μ v i = ((nuP C (PQ μ v) i (piP (PQ μ v)) : ℂˣ) : ℂ) := by
-  obtain ⟨j, rfl⟩ : ∃ j : ℕ, i = j + 1 := ⟨i - 1, by omega⟩
-  have hj : j < D.R.m := by omega
-  rw [h.nu_eq μ v ⟨j, hj⟩, nuP_succ C (PQ μ v) ⟨j, hj⟩]
-  rfl
-
-theorem QLocTied.val (hQ : ThmQ) {Tp : TupTied D C nch} {Z : DivX D} {PQ} (h : QLocTied Tp Z PQ) : QLocVal Z := by
-  have ht : 1 ≤ D.R.t := D.R.t_odd.pos
-  have hm := D.R.two_le_m
-  refine ⟨fun μ v j hj => ?_, fun μ v j h1 hj => ?_, fun μ v => ?_⟩
-  · exact (hQ D.host.E (PQ μ v) (h.deg1 μ v) (delQ Tp μ (PQ μ v)) (nuP C (PQ μ v))
-      (isDel_delQ Tp μ (h.ram μ v)) (fun i => isNu_nuP C (h.off_g μ v) i) D.R.r D.R.t j ht).1 _
-      (h.typeDim_eq μ v j hj)
-  · obtain ⟨j', rfl⟩ : ∃ j', j = j' + 1 := ⟨j - 1, by omega⟩
-    have hz := (hQ D.host.E (PQ μ v) (h.deg1 μ v) (delQ Tp μ (PQ μ v)) (nuP C (PQ μ v))
-      (isDel_delQ Tp μ (h.ram μ v)) (fun i => isNu_nuP C (h.off_g μ v) i) D.R.r D.R.t j' ht).2 _
-      (h.ZQ_eq μ v j' (by omega))
-    rw [hz, h.qv_eq μ v]
-    unfold zVal
-    congr 1
-    refine Finset.prod_congr rfl fun i hi => ?_
-    rw [Finset.mem_Ico] at hi
-    rw [h.nu_nuP μ v i hi.1 (by omega), h.nu_nuP μ v (j' + 1) (by omega) hj]
-  · have hz := (hQ D.host.E (PQ μ v) (h.deg1 μ v) (delQ Tp μ (PQ μ v)) (fun _ => nuP C (PQ μ v) 1)
-      (isDel_delQ Tp μ (h.ram μ v)) (fun _ => isNu_nuP C (h.off_g μ v) 1) D.R.r D.R.t 0 ht).2 _
-      (h.quotientLocalValueFirst_eq μ v 1 le_rfl (by omega))
-    rw [hz, zero_add, zVal_one, h.qv_eq μ v]
 
 end Formalism.L2.DIV

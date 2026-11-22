@@ -82,7 +82,6 @@ private theorem exists_int_basis {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [
   rw [h1, Basis.repr_sum_self]
   exact PadicInt.norm_le_one _
 
-
 open GlobalTheory.UnramifiedRep GlobalTheory.UnramifiedCrys GlobalTheory.Cyc in
 private theorem exists_split {l : ℕ} [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (Ti : LocTied l P AI)
     (K : FinExt l) {V : Type} [AddCommGroup V] [Module ℚ_[l] V] [FiniteDimensional ℚ_[l] V] [TopologicalSpace V]
@@ -272,9 +271,6 @@ private noncomputable def extRep (c : G → V) (hc : ∀ g h, c (g * h) = c g + 
   map_mul' g h := by
     refine LinearMap.ext fun p => ?_
     simp [hc, add_assoc, add_comm, add_left_comm]
-
-private theorem extRep_apply (c : G → V) (hc : ∀ g h, c (g * h) = c g + ρ g (c h)) (g : G) (p : V × ℚ_[l]) :
-    extRep ρ c hc g p = (ρ g p.1 + p.2 • c g, p.2) := rfl
 
 private theorem fst_act (c : G → V) (hc : ∀ g h, c (g * h) = c g + ρ g (c h)) (g : G)
     (z : (V × ℚ_[l]) ⊗[ℚ_[l]] Bdr l) :

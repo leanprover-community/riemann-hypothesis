@@ -10,11 +10,6 @@ open NumberField
 
 namespace PI.KerIso
 
-def IsIsom {K E : Type} [Field K] [Field E] [Algebra K E] (cj : E → E) {n : Type} [Fintype n]
-    (g : (Fin 4 → E) ≃ₗ[K] (Fin 4 × n → K)) : Prop :=
-  ∀ x y, ∑ w, algebraMap K E (g x w) * cj (algebraMap K E (g y w))
-      = algebraMap K E (∑ a, Algebra.trace K E (x a * cj (y a)))
-
 def AtP {K E : Type} [Field K] [NumberField K] [Field E] [Algebra K E] {n : Type} [Fintype n] (M : Set E)
     (g : (Fin 4 → E) ≃ₗ[K] (Fin 4 × n → K)) (p : ℕ) : Prop :=
   (∀ x : Fin 4 → E, (∀ a, x a ∈ M) → ∃ s : ℕ, Nat.Coprime s p ∧
@@ -28,10 +23,6 @@ def detRel {K E : Type} [Field K] [Field E] [Algebra K E] {n : Type} [Fintype n]
 
 def ordK {K : Type} [Field K] [NumberField K] (𝔭 : IsDedekindDomain.HeightOneSpectrum (𝓞 K)) (x : K) : ℤ :=
   -WithZero.log (𝔭.valuation K x)
-
-def IsConj (K : Type) {E : Type} [Field K] [Field E] [NumberField E] [Algebra K E] (cj : E ≃ₐ[ℚ] E) : Prop :=
-  (∀ x, cj (cj x) = x) ∧ (∀ k : K, ∃ k' : K, cj (algebraMap K E k) = algebraMap K E k') ∧
-    ∃ k : K, cj (algebraMap K E k) ≠ algebraMap K E k
 
 def DetOrdIndep : Prop :=
   ∀ (K E : Type) [Field K] [NumberField K] [Field E] [Algebra K E] (n : Type) [Fintype n] (M : Set E) (p : ℕ)
@@ -51,9 +42,5 @@ def DetOrdFin : Prop :=
 def SplitsAt (K : Type) {E : Type} [Field K] [NumberField K] [Field E] [NumberField E] [Algebra K E] (cj : E ≃ₐ[ℚ] E) (p : ℕ) : Prop :=
   ∃ P : Ideal (𝓞 K), P.IsPrime ∧ ((p : ℕ) : 𝓞 K) ∈ P ∧ ∃ a b : 𝓞 K,
     cj (algebraMap K E (a : K)) = algebraMap K E (b : K) ∧ a ∈ P ∧ b ∉ P
-
-def SelfDualI (K : Type) {E : Type} [Field K] [NumberField K] [Field E] [NumberField E] [Algebra K E] (cj : E ≃ₐ[ℚ] E)
-    (I : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) : Prop :=
-  ∀ y : E, y ∈ I ↔ ∀ x ∈ I, Algebra.trace K E (x * cj y) ∈ (algebraMap (𝓞 K) K).range
 
 end PI.KerIso

@@ -179,8 +179,6 @@ def consV (m : ℕ) : W →ₗ[LL] (Fin (m + 1) → W) where
   map_add' s t := funext fun a => Fin.cases (by simp) (fun j => by simp) a
   map_smul' c s := funext fun a => Fin.cases (by simp) (fun j => by simp) a
 
-theorem consZ_apply (m : ℕ) (s : Fin m → W) : consZ (LL := LL) m s = Fin.cons 0 s := rfl
-
 theorem consZ_inj (m : ℕ) : Function.Injective (consZ (LL := LL) (W := W) m) := fun s t h => funext fun a => by
   have h1 := congrFun h a.succ
   simpa [consZ_apply] using h1

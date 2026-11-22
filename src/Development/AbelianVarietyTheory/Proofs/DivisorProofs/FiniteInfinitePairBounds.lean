@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NsmulProj
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.InfClassAt
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DictAt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BrPairFApply
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightsTopGrid

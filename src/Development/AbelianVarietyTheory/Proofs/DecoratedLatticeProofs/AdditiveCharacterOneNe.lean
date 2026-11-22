@@ -66,22 +66,6 @@ end Ext
 section Reparam
 variable (X : Fields) (K' : Type) [Field K'] [NumberField K']
 
-abbrev extFields : Fields where
-  F := X.F
-  E := X.E
-  K := K'
-  starK := starRingOfComm
-  Tau := Empty
-  emb := Empty.elim
-
-def onePrimes (π : 𝓞 X.E) : Primes (extFields X K') where
-  cond := 0
-  g := 0
-  piG := fun _ => X.conjO π
-  Word := Empty
-  T := Empty.elim
-  piT := Empty.elim
-
 variable {X K'} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) (φ : X.K →+* K') (π : 𝓞 X.E)
 
 variable {π} {P : HeightOneSpectrum (𝓞 X.E)}

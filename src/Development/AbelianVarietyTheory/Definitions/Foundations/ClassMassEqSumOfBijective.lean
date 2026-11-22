@@ -67,14 +67,6 @@ theorem FiniteClasses.inv_card_le (h : FiniteClasses Γ K) (g : G) :
 theorem FiniteClasses.classMass_pos (h : FiniteClasses Γ K) : 0 < classMass Γ K :=
   lt_of_lt_of_le (inv_pos.2 (by exact_mod_cast h.stabOrder_pos (DoubleCoset.mk Γ K 1))) (h.inv_card_le 1)
 
-theorem classMass_of_isNeat [Finite (ClassSet Γ K)] (h : IsNeat Γ K) :
-    classMass Γ K = Nat.card (ClassSet Γ K) := by
-  haveI := Fintype.ofFinite (ClassSet Γ K)
-  have : ∀ c, stabOrder Γ K c = 1 := fun c => by
-    induction c using Quotient.inductionOn' with
-    | h g => change Nat.card (stabAt Γ K g) = 1; rw [h g]; simp
-  simp [classMass_eq_sum, this]
-
 theorem FiniteClasses.of_le (h : FiniteClasses Γ K) (hle : K' ≤ K) (hi : K'.relIndex K ≠ 0) :
     FiniteClasses Γ K' := by
   haveI := h.1
@@ -186,7 +178,6 @@ theorem finiteClasses_comap (hπ : Function.Surjective π) (hΓ : Set.InjOn π �
 
 end Transport
 
-
 open MeasureTheory in
 theorem FiniteClasses.measure_toReal [MeasurableSpace G] [MeasurableMul G] [Countable Γ] (h : FiniteClasses Γ K)
     (μ : Measure G) [μ.IsMulLeftInvariant] (hK : MeasurableSet (K : Set G)) (hK1 : μ K = 1) {𝓕 : Set G}
@@ -272,7 +263,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 def unitaryMass (K : Subgroup (HA (Af F) σ J)) : ℝ :=
   classMass (ratIn (Af F) σ J) K
-
 
 omit [NumberField E] in
 theorem unitaryMass_comap_swapPts (L : Subgroup (UPts σ J (Af F))) :
@@ -493,7 +483,6 @@ theorem IsFinProj.surjective (h : IsFinProj σ J π) : Function.Surjective π :=
   obtain ⟨g, h1, h2⟩ := (parts_spec σ J).2 1 (HA.mat (Af F) σ J b)
   refine ⟨⟨g, ((parts_spec σ J).1 g).2 ⟨h1 ▸ one_mem _, h2 ▸ b.2⟩⟩, Subtype.ext ((h _).trans h2)⟩
 
-
 omit [NumberField E] in
 theorem IsFinProj.injOn (h : IsFinProj σ J π) : Set.InjOn π (ratIn (AF F) σ J) := by
   haveI : Nontrivial (Af F) := by
@@ -560,22 +549,5 @@ theorem IsFinProj.measure_toReal (h : IsFinProj σ J π) (hσ : IsCMExt F E σ) 
   exact hf.measure_toReal μ (ho.preimage h.continuous).measurableSet hK1 h𝓕
 
 end Adelic
-
-theorem classMass_top_top (G : Type) [Group G] :
-    classMass (⊤ : Subgroup G) ⊤ = ((Nat.card G : ℝ))⁻¹ := by
-  rw [classMass_eq_sum_of_bijective (ι := Unit) (fun _ => 1) ⟨fun _ _ _ => rfl, fun c => ?_⟩]
-  · have : stabAt (⊤ : Subgroup G) ⊤ 1 = Set.univ := Set.eq_univ_of_forall fun _ => Subgroup.mem_top _
-    simp [this]
-  · induction c using Quotient.inductionOn' with
-    | h g => exact ⟨(), (@DoubleCoset.eq _ _ ⊤ ⊤ _ _).2 ⟨g, trivial, 1, trivial, by simp⟩⟩
-
-theorem classMass_bot {G : Type} [Group G] (K : Subgroup G) [K.FiniteIndex] :
-    classMass (⊥ : Subgroup G) K = K.index := by
-  have e : ClassSet (⊥ : Subgroup G) K = (G ⧸ K) := DoubleCoset.left_bot_eq_left_quot K
-  haveI : Finite (ClassSet (⊥ : Subgroup G) K) := by rw [e]; infer_instance
-  rw [classMass_of_isNeat fun g => Set.eq_singleton_iff_unique_mem.2
-    ⟨one_mem_stabAt _ _ _, fun _ _ => Subsingleton.elim _ _⟩, e]
-  rfl
-
 
 end GlobalTheory.Mass

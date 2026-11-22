@@ -51,11 +51,6 @@ theorem infinitePart_gInf (n : ℕ) (g : GA E n) : infP n (fun v => gInf v g) = 
 theorem infinitePart_mul_finGL (n : ℕ) (g : GA E n) : infP n (fun v => gInf v g) * finGL E n (gFin g) = g := by
   rw [infinitePart_gInf]; exact infGL_mul_finGL g
 
-theorem continuous_pInf' : Continuous (pInf E) :=
-  continuous_pi fun w =>
-    (InfinitePlace.Completion.isometryEquivComplexOfIsComplex (IsTotallyComplex.isComplex w)).continuous.comp
-      ((continuous_apply w).comp continuous_fst)
-
 theorem continuous_gInf (n : ℕ) (v : InfinitePlace E) : Continuous (gInf (n := n) v : GA E n → G n) :=
   Continuous.units_map _ (continuous_id.matrix_map ((continuous_apply v).comp continuous_pInf'))
 

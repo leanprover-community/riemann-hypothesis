@@ -43,10 +43,6 @@ def Heisenberg₂ {n : ℕ} {i j k : Fin n} (hij : i ≠ j) (hjk : j ≠ k) (hik
 theorem heis_val {n : ℕ} {i j k : Fin n} (hij : i ≠ j) (hjk : j ≠ k) (hik : i ≠ k) (p q r : L) :
     ((Heisenberg₂ hij hjk hik p q r : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) = heisM i j k p q r := rfl
 
-theorem heis_inv_val {n : ℕ} {i j k : Fin n} (hij : i ≠ j) (hjk : j ≠ k) (hik : i ≠ k) (p q r : L) :
-    (((Heisenberg₂ hij hjk hik p q r)⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) =
-      heisM i j k (-p) (-q) (p * q - r) := rfl
-
 theorem map_heisM_rev (σ : L →+* L) {n : ℕ} {i j k : Fin n} (hr : i.rev = k) (hj : j.rev = j) (p q r : L)
     (s t : Fin n) : σ (heisM i j k p q r t.rev s.rev) = heisM i j k (σ q) (σ p) (σ r) s t := by
   have e1 : ∀ x : Fin n, i = x.rev ↔ k = x := fun x => by

@@ -58,10 +58,6 @@ noncomputable def rho : G →* Module.End ℤ (lat G) where
       (((g' : GeneralLinearGroup (Fin N) ℚ) : Matrix (Fin N) (Fin N) ℚ).mulVec (v : Fin N → ℚ))
     simp [Matrix.mulVec_mulVec]
 
-theorem rho_apply_coe (g : G) (v : lat G) :
-    ((rho G g v : lat G) : Fin N → ℚ) =
-      ((g : GeneralLinearGroup (Fin N) ℚ) : Matrix (Fin N) (Fin N) ℚ).mulVec v := rfl
-
 section finite
 
 variable [Finite G]

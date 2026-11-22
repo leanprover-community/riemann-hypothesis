@@ -51,9 +51,6 @@ private theorem sig_sig (x : ℤ_[p] ⊗[ℤ] R) : sig p R (sig p R x) = x := by
   | tmul a b => simp [sig]
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
 
-private def sigEquiv : (ℤ_[p] ⊗[ℤ] R) ≃ₐ[ℤ_[p]] (ℤ_[p] ⊗[ℤ] R) :=
-  AlgEquiv.ofAlgHom (sig p R) (sig p R) (AlgHom.ext sig_sig) (AlgHom.ext sig_sig)
-
 variable {s : ℕ} (w : Fin s → Place p R)
 
 private def sumMap : (∀ i, (w i).Ow) →ₗ[ℤ_[p]] (ℤ_[p] ⊗[ℤ] R) :=
@@ -252,7 +249,6 @@ private theorem discr_CMDatum_eq_prod_places_lemma_6 {p : ℕ} [Fact p.Prime] {R
       Sum.map_inr, Module.Basis.prod_apply, Sum.elim_inr, Function.comp_apply, Pi.basis_apply,
       LinearMap.inr_apply]
     rw [hsplit, map_zero, zero_add, hs]
-
 
 open UpperTheory.PlacesDiscr in
 theorem UpperTheory.discr_CMDatum_eq_prod_places :

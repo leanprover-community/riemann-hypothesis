@@ -49,10 +49,6 @@ end VF
 variable {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O]
 variable (k : Type) [CommRing k] [Algebra ℚ k] [Algebra R k]
 
-def cf (B : FB R d O) (h : PS k 2 d) (u φ : Fin d → k) : Fin d ⊕ Fin d → AA k d :=
-  Sum.elim (fun j => liftX k (∑ i : Fin d, C (u i) * ev (n := 1) ![pt k d 0, 0] (pderiv ((1 : Fin 2), i) (B.FK k j))))
-    (fun i => liftX k (Dof (B.FK k) u (sgOf k h i)) + C (φ i))
-
 end Part1
 
 section Part2
@@ -126,10 +122,6 @@ theorem d_F (h : PS k 1 d) (v : Fin 2 × Fin d) :
     pderiv v (ev (n := 2) ![G.F] h) = ∑ c, ev (n := 2) ![G.F] (pderiv ((0 : Fin 1), c) h) * pderiv v (G.F c) := by
   rw [pderiv_ev (czFF G), Fintype.sum_prod_type, Fin.sum_univ_one]
   rfl
-
-theorem ez_Ar (j c : Fin d) : ev (n := 1) ![pt k d 0, 0] (Ar G j c) = Jac G j c := rfl
-
-theorem ez_dF (c b : Fin d) : ev (n := 1) ![pt k d 0, 0] (pderiv ((1 : Fin 2), b) (G.F c)) = Jac G c b := rfl
 
 theorem coeff_F_y (c i : Fin d) : coeff (Finsupp.single ((1 : Fin 2), i) 1) (G.F c) = if c = i then 1 else 0 := by
   classical

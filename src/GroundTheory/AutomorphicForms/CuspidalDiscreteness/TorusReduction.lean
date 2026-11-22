@@ -23,8 +23,6 @@ open Reduction AutomorphicForm RightCosetSpace
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => rationalGLOne (K := K) (n := n)
-
 def truncInf {r : ℕ} (s : UPos n r → 𝔸[K]) : UPos n r → 𝔸[K] := fun p => ((s p).1, 0)
 
 def truncFin {r : ℕ} (s : UPos n r → 𝔸[K]) : UPos n r → 𝔸[K] := fun p => (0, (s p).2)

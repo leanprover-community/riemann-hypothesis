@@ -28,7 +28,6 @@ theorem isNonarchimedeanLocalField_fixedField (V : OpenSubgroup Gal(Ksep/K)) :
   rw [← hrel] at h1
   exact h1
 
-
 omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] [IsSepClosure K Ksep]
   [ValuativeExtension K Ksep] in
 theorem valuation_le_valuation_iff_coe (E : IntermediateField K Ksep) (x y : E) :
@@ -62,7 +61,6 @@ theorem natCast_residueField_fixedField_ne_zero {l : ℕ} (hl : (l : 𝓀[K]) �
   have := isNonarchimedeanLocalField_fixedField V
   have h := (algebraMap 𝓀[K] 𝓀[fixedField (V : Subgroup Gal(Ksep/K))]).injective.ne hl
   rwa [map_natCast, map_zero] at h
-
 
 omit [IsSepClosure K Ksep] in
 theorem natCast_ne_zero_of_residueField {l : ℕ} (hl : (l : 𝓀[K]) ≠ 0) : (l : K) ≠ 0 := by
@@ -142,7 +140,6 @@ theorem apply_eq_of_valuation_sub_lt_one (hl : (l : 𝓀[K]) ≠ 0)
 
 variable (h : V ≤ W) [((V : Subgroup Gal(Ksep/K)).subgroupOf (W : Subgroup Gal(Ksep/K))).Normal]
 
-
 include h in
 theorem cohomologyConj_one_galRootsOfUnity_eq_id (hl : (l : 𝓀[K]) ≠ 0)
     (hind : ((V : Subgroup Gal(Ksep/K)).relIndex W).Coprime l) (g : (W : Subgroup Gal(Ksep/K)))
@@ -204,7 +201,6 @@ theorem cohomologyConj_one_galRootsOfUnity_eq_id (hl : (l : 𝓀[K]) ≠ 0)
   apply Additive.toMul.injective
   rw [toMul_add, toMul_nsmul, toMul_ofMul, hsm, hy]
 
-
 include h in
 theorem cohomologyConj_galRootsOfUnity_eq_id (hl : (l : 𝓀[K]) ≠ 0)
     (hμ : ∀ ζ : Ksep, ζ ^ l = 1 → ζ ∈ fixedField (V : Subgroup Gal(Ksep/K)))
@@ -246,11 +242,6 @@ def addHomToULiftLinear {M N : Type*} [AddCommGroup M] [AddCommGroup N] {iM : Mo
     have h2 := @Int.cast_smul_eq_zsmul (ULift.{0} ℤ) N _ _ iN n (f x)
     have e : ((n : ℤ) : ULift.{0} ℤ) = ULift.up n := rfl
     rw [RingHom.id_apply, ← e, h1, h2, map_zsmul]
-
-theorem addHomToULiftLinear_apply {M N : Type*} [AddCommGroup M] [AddCommGroup N]
-    {iM : Module (ULift.{0} ℤ) M} {iN : Module (ULift.{0} ℤ) N} (f : M →+ N) (x : M) :
-    (addHomToULiftLinear (iM := iM) (iN := iN) f) x = f x :=
-  rfl
 
 theorem exists_sum_addHom_comp_eq {l : ℕ} [Fact l.Prime] {T A : Type*} [AddCommGroup T]
     [AddCommGroup A] [Module (ZMod l) A] [Finite A] (e : ZMod l ≃+ T) :

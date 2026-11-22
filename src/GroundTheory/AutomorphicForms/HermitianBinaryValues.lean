@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import GroundTheory.AutomorphicForms.HermitianLocalSplit
+public import GroundTheory.AutomorphicForms.HermitianClassification
+public import GroundTheory.AutomorphicForms.HermitianNormLocal
 public import GroundTheory.GlobalFields.Adele.WeakApprox
 public import GroundTheory.GlobalFields.Adele.BaseChange.FiniteMap
 public import GroundTheory.GlobalFields.LocalFieldAtPlace

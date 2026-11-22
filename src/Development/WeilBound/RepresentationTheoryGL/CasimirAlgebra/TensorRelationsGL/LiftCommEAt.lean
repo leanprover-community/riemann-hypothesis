@@ -79,9 +79,6 @@ theorem actT_apply {ι Γ : Type} (lab : P → ι) (κ : ι → Γ → Matrix (F
   simp only [actT, LinearMap.pi_apply, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.comp_apply,
     LinearMap.proj_apply]
 
-theorem curF_apply {m k : ℕ} (f : TV n M (Fin (m + k))) (J : Fin k → Fin n) (I : Fin m → Fin n) :
-    curF n M m k f J I = f (Fin.append I J) := rfl
-
 end PositivityTheory.Rg.Cz
 
 end

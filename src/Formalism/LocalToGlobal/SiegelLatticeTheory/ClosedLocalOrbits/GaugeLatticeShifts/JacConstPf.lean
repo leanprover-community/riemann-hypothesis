@@ -99,8 +99,6 @@ theorem meas_Jint {φ : Mt k r → ℝ≥0∞} (hφ : Measurable φ) (μW μW' :
 
 def mm (A B : Mt k r) : Mt k r := fun i j => (Matrix.of A * Matrix.of B) i j
 
-theorem of_mm (A B : Mt k r) : Matrix.of (mm A B) = Matrix.of A * Matrix.of B := rfl
-
 theorem meas_PQinv {α : Type*} [TopologicalSpace α] [MeasurableSpace α] [OpensMeasurableSpace α]
     (P Q : α → Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (hP : Continuous P) (hQ : Continuous Q) :
     Measurable fun a => (fun i j => (P a * (Q a)⁻¹) i j : Mt k r) := by

@@ -18,10 +18,6 @@ def rh1 (g : SplitG M.L) : M.R →+* F := (ph1 g).comp M.R.subtype
 
 def rh2 (g : SplitG M.L) : M.R →+* F := (ph2 g).comp M.R.subtype
 
-theorem ringFirstProj_apply (x : M.R) : rh1 g x = ph1 g (x : E) := rfl
-
-theorem ringSecondProj_apply (x : M.R) : rh2 g x = ph2 g (x : E) := rfl
-
 def crn (r : ℕ) (c : F) : Matrix (Fin (r + 1)) (Fin (r + 1)) F :=
   Matrix.of fun a b => if a = Fin.last r ∧ b = Fin.last r then c else 0
 

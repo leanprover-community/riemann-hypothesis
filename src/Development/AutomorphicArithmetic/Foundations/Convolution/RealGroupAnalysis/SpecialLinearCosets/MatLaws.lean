@@ -22,8 +22,6 @@ private theorem cp_cont : Continuous (cp v) := by
   have h2 : Continuous (pFin F) := continuous_snd
   exact h1.comp h2
 
-private theorem cp_rt (c : F) : cp v (rt c) = algebraMap F (Kv v) c := rfl
-
 private theorem cp_sg (x : Kv v) : cp v (sg v x) = x := (UpperTheory.ConvolutionTheory.R2.H.sgLaws F v).2.2.1 x
 
 private theorem sg_cp (a : A F) : sg v (cp v a) = a * sg v 1 := by

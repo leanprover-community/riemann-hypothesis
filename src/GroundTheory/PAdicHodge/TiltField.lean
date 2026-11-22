@@ -18,9 +18,6 @@ open Filter Topology NNReal
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝒪" => normInteger K
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "K♭" => FractionRing 𝒪♭
 local notation "♮" x:arg => ((PreTilt.untilt x : 𝒪) : K)
 
 instance isDomain_preTilt_of_isPerfectoidField : IsDomain 𝒪♭ :=
@@ -48,7 +45,6 @@ theorem exists_mul_algebraMap_eq (x : K♭) :
   ⟨_, _, nonZeroDivisors.ne_zero (IsLocalization.sec (nonZeroDivisors 𝒪♭) x).2.2,
     IsLocalization.sec_spec (nonZeroDivisors 𝒪♭) x⟩
 
-
 variable (K p) in
 def tiltSharpFun (x : K♭) : K :=
   ♮(IsLocalization.sec (nonZeroDivisors 𝒪♭) x).1 /
@@ -68,7 +64,6 @@ theorem tiltSharpFun_eq {x : K♭} {a b : 𝒪♭} (hb : b ≠ 0)
     rw [← untiltK_mul, ← untiltK_mul, key]
   change ♮a' / ♮b' = _
   rw [div_eq_div_iff (untiltK_ne_zero hb') (untiltK_ne_zero hb), key']
-
 
 variable (K p) in
 def tiltSharp : K♭ →*₀ K where
@@ -127,7 +122,6 @@ end Sharp
 
 section Norm
 
-
 variable (K p) in
 def tiltAbv : AbsoluteValue K♭ ℝ where
   toFun x := ‖tiltSharp (K := K) (p := p) x‖
@@ -169,7 +163,6 @@ theorem norm_le_one_iff_exists_algebraMap {x : K♭} :
   · rintro ⟨a, rfl⟩
     rw [norm_algebraMap_preTilt]
     exact preTilt_norm_le_one a
-
 
 theorem exists_tilt_norm_mem_Ioo (r : ℝ) (hr : r < 1) : ∃ x : K♭, r < ‖x‖ ∧ ‖x‖ < 1 := by
   obtain ⟨ϖ, h1, h2⟩ := IsPerfectoidField.exists_norm_mem_Ioo (K := K) (p := p) (max r ‖(p : K)‖)

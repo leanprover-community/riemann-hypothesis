@@ -15,7 +15,6 @@ open PDiv
 
 variable {p : ℕ} {O : Type} [CommRing O]
 
-
 open TensorProduct Coalgebra Bialgebra WithConv Module CategoryTheory in
 variable {p : ℕ} {O : Type} [CommRing O] in
 theorem _root_.GlobalTheory.PDivGroup.Test.mulP_injective (G : _root_.GlobalTheory.PDivGroup p O) (n : ℕ) :
@@ -27,45 +26,11 @@ theorem _root_.GlobalTheory.PDivGroup.Test.mulP_injective (G : _root_.GlobalTheo
   rw [hxy, ← hy] at hx
   exact (_root_.GlobalTheory.CartierDual.bidual O (G.A n)).injective (hinj hx)
 
-theorem hodgeTate_values [Fact p.Prime] (hp : ¬ IsUnit (p : O)) :
-    (∀ t, hodgeTate (mu p O) t = 0) ∧ hodgeTate (const p O) (constGen p O) ≠ 0 := by
-  refine ⟨fun t => Subsingleton.elim _ _, fun h => dlogT_ne_zero p O hp ?_⟩
-  rw [hodgeTate_eq_omegaMap, ← dualHom_constHom, show constHom _ (constGen p O) = 𝟙 _ by
-    rw [← LinearEquiv.eq_symm_apply, constHom_symm_apply, tateMap_id], dualHom_id,
-    Category.id_comp] at h
-  have h2 := LinearMap.congr_fun (omegaMap_comp (mu p O).bidual.hom (mu p O).bidual.inv) (dlogT p O)
-  rw [Iso.hom_inv_id, omegaMap_id, LinearMap.id_apply, LinearMap.comp_apply] at h2
-  rw [h2]
-  exact (congrArg _ h).trans (map_zero _)
-
 section Prod
 
 variable (A B : Type) [CommRing A] [CommRing B] [Bialgebra O A] [Bialgebra O B]
 
-def inl : A →ₐc[O] A ⊗[O] B :=
-  (Bialgebra.TensorProduct.map (BialgHom.id O A) (Bialgebra.unitBialgHom O B)).comp
-    (Bialgebra.TensorProduct.rid O O A).symm.toBialgHom
-
-def inr : B →ₐc[O] A ⊗[O] B :=
-  (Bialgebra.TensorProduct.map (Bialgebra.unitBialgHom O A) (BialgHom.id O B)).comp
-    (Bialgebra.TensorProduct.lid O B).symm.toBialgHom
-
 variable {A B}
-
-theorem inl_apply (a : A) : inl (O := O) A B a = a ⊗ₜ 1 :=
-  congrArg (fun y : B => a ⊗ₜ[O] y) (map_one (Bialgebra.unitBialgHom O B))
-
-theorem inr_apply (b : B) : inr (O := O) A B b = 1 ⊗ₜ b :=
-  congrArg (fun y : A => y ⊗ₜ[O] b) (map_one (Bialgebra.unitBialgHom O A))
-
-theorem pts_ext {E : Type} [CommRing E] [Algebra O E] {x y : WithConv (A ⊗[O] B →ₐ[O] E)}
-    (h1 : pointsMap E (inl A B) x = pointsMap E (inl A B) y)
-    (h2 : pointsMap E (inr A B) x = pointsMap E (inr A B) y) : x = y := by
-  refine ofConv_injective (Algebra.TensorProduct.ext' fun a b => ?_)
-  have e1 : x.ofConv (inl A B a) = y.ofConv (inl A B a) := DFunLike.congr_fun (congrArg ofConv h1) a
-  have e2 : x.ofConv (inr A B b) = y.ofConv (inr A B b) := DFunLike.congr_fun (congrArg ofConv h2) b
-  have e : a ⊗ₜ[O] b = inl A B a * inr A B b := by simp [inl_apply, inr_apply]
-  rw [e, map_mul, map_mul, e1, e2]
 
 end Prod
 

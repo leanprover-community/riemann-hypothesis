@@ -24,7 +24,6 @@ def cyl (S : Finset κ) (A : ∀ i, Set (H i)) (B : ∀ k, Set (P k)) : Set G :=
 theorem mem_cyl {S : Finset κ} {A : ∀ i, Set (H i)} {B : ∀ k, Set (P k)} {g : G} :
     g ∈ cyl p q K S A B ↔ (∀ i, p i g ∈ A i) ∧ (∀ k ∈ S, q k g ∈ B k) ∧ ∀ k ∉ S, q k g ∈ K k := Iff.rfl
 
-
 variable [TopologicalSpace G] [∀ i, TopologicalSpace (H i)] [∀ k, TopologicalSpace (P k)]
 
 structure IsRestrGroup : Prop where
@@ -48,11 +47,6 @@ structure IsRestrProd (μi : ∀ i, Measure (H i)) (μf : ∀ k, Measure (P k)) 
 
 variable {p q K} {μi : ∀ i, Measure (H i)} {μf : ∀ k, Measure (P k)} {μ : Measure G}
 
-
-omit [∀ k, TopologicalSpace (P k)] in
-theorem exists_finset_vol_one (h : ∀ᶠ k in cofinite, μf k (K k) = 1) : ∃ S : Finset κ, ∀ k ∉ S, μf k (K k) = 1 :=
-  ⟨(eventually_cofinite.1 h).toFinset, fun k hk => by simpa using hk⟩
-
 theorem IsRestrProd.smul_inf [DecidableEq ι] [MeasurableConstSMul G G]
     (h : IsRestrProd p q K μi μf μ) (i : ι) [MeasurableConstSMul (H i) (H i)] {c : ℝ≥0} (hc : c ≠ 0) :
     IsRestrProd p q K (Function.update μi i (c • μi i)) μf (c • μ) := by
@@ -74,39 +68,9 @@ variable [IsTopologicalGroup G] [BorelSpace G] [LocallyCompactSpace G] [SecondCo
   [∀ k, IsTopologicalGroup (P k)] [∀ k, BorelSpace (P k)] [∀ k, LocallyCompactSpace (P k)]
   [∀ k, SecondCountableTopology (P k)] [∀ k, T2Space (P k)]
 
-
 omit [IsTopologicalGroup G] [BorelSpace G] [LocallyCompactSpace G] [SecondCountableTopology G]
   [∀ i, SecondCountableTopology (H i)] [∀ k, SecondCountableTopology (P k)] [MeasurableSpace G] [Group G]
   [TopologicalSpace G] in
-theorem exists_box_pos (μi : ∀ i, Measure (H i)) (μf : ∀ k, Measure (P k))
-    [∀ i, (μi i).IsHaarMeasure] [∀ k, (μf k).IsHaarMeasure] (S : Finset κ) :
-    ∃ (A : ∀ i, Set (H i)) (B : ∀ k, Set (P k)), (∀ i, MeasurableSet (A i)) ∧ (∀ k, MeasurableSet (B k)) ∧
-      (∏ i, μi i (A i)) * ∏ k ∈ S, μf k (B k) ≠ 0 ∧ (∏ i, μi i (A i)) * ∏ k ∈ S, μf k (B k) ≠ ∞ := by
-  let A := fun i => (Classical.arbitrary (TopologicalSpace.PositiveCompacts (H i)))
-  let B := fun k => (Classical.arbitrary (TopologicalSpace.PositiveCompacts (P k)))
-  exact ⟨fun i => A i, fun k => B k, fun i => (A i).isCompact.measurableSet, fun k => (B k).isCompact.measurableSet,
-    mul_ne_zero (Finset.prod_ne_zero_iff.2 fun i _ => (Measure.measure_pos_of_nonempty_interior _ (A i).interior_nonempty).ne')
-      (Finset.prod_ne_zero_iff.2 fun k _ => (Measure.measure_pos_of_nonempty_interior _ (B k).interior_nonempty).ne'),
-    ENNReal.mul_ne_top (ENNReal.prod_ne_top fun i _ => (A i).isCompact.measure_lt_top.ne)
-      (ENNReal.prod_ne_top fun k _ => (B k).isCompact.measure_lt_top.ne)⟩
-
-
-
-omit [∀ i, SecondCountableTopology (H i)] [∀ k, SecondCountableTopology (P k)] in
-theorem IsRestrProd.unique {μ' : Measure G} (h : IsRestrProd p q K μi μf μ) (h' : IsRestrProd p q K μi μf μ') :
-    μ = μ' := by
-  have := h.haar
-  have := h'.haar
-  have := h.haar_inf
-  have := h.haar_fin
-  obtain ⟨S, hS⟩ := exists_finset_vol_one h.vol_one
-  obtain ⟨A, B, hA, hB, h0, ht⟩ := exists_box_pos μi μf S
-  have e := Measure.isMulLeftInvariant_eq_smul μ μ'
-  have e1 := h.measure_cyl S hS A B hA fun k _ => hB k
-  rw [e, Measure.smul_apply, h'.measure_cyl S hS A B hA fun k _ => hB k, ENNReal.smul_def, smul_eq_mul] at e1
-  have e2 : Measure.haarScalarFactor μ μ' = 1 := by
-    exact_mod_cast (ENNReal.mul_left_inj h0 ht).1 (e1.trans (one_mul _).symm)
-  rw [e, e2, one_smul]
 
 end Generic
 
@@ -116,33 +80,11 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 def IsProdMeasure (μi : ∀ w, Measure (GArch σ J w)) (μf : ∀ v, Measure (GLoc σ J v)) (μ : Measure (GAd σ J)) : Prop :=
   IsRestrProd (projArch σ J) (proj σ J) (stabLoc σ J L) μi μf μ
 
-def IsProdMeasureFin (μf : ∀ v, Measure (GLoc σ J v)) (μ : Measure (GFin σ J)) : Prop :=
-  IsRestrProd (H := fun _ : Empty => Unit) (fun _ => 1) (projFinLoc σ J) (stabLoc σ J L) (fun e => e.elim) μf μ
-
 section Unfold
 
 omit [NumberField E]
 
 variable {σ J L}
-
-theorem isRestrProd_empty_iff {G κ : Type} {P : κ → Type} [Group G] [∀ k, Group (P k)] [TopologicalSpace G]
-    [∀ k, TopologicalSpace (P k)] [MeasurableSpace G] [∀ k, MeasurableSpace (P k)] {q : ∀ k, G →* P k}
-    {K : ∀ k, Subgroup (P k)} {μf : ∀ k, Measure (P k)} {μ : Measure G} :
-    IsRestrProd (H := fun _ : Empty => Unit) (fun _ => 1) q K (fun e => e.elim) μf μ ↔
-      (∀ k, (μf k).IsHaarMeasure) ∧ (∀ᶠ k in cofinite, μf k (K k) = 1) ∧ μ.IsHaarMeasure ∧
-      ∀ S : Finset κ, (∀ k ∉ S, μf k (K k) = 1) → ∀ B : ∀ k, Set (P k), (∀ k ∈ S, MeasurableSet (B k)) →
-        μ {g | (∀ k ∈ S, q k g ∈ B k) ∧ ∀ k ∉ S, q k g ∈ K k} = ∏ k ∈ S, μf k (B k) :=
-  ⟨fun h => ⟨h.2, h.3, h.4, fun S hS B hB => by
-      simpa [cyl] using h.5 S hS (fun _ => Set.univ) B (fun e => e.elim) hB⟩,
-    fun h => ⟨fun e => e.elim, h.1, h.2.1, h.2.2.1, fun S hS A B _ hB => by simpa [cyl] using h.2.2.2 S hS B hB⟩⟩
-
-theorem isProdMeasureFin_iff {μf : ∀ v, Measure (GLoc σ J v)} {μ : Measure (GFin σ J)} :
-    IsProdMeasureFin σ J L μf μ ↔ (∀ v, (μf v).IsHaarMeasure) ∧
-      (∀ᶠ v in cofinite, μf v (stabLoc σ J L v) = 1) ∧ μ.IsHaarMeasure ∧
-      ∀ S : Finset (HeightOneSpectrum (𝓞 F)), (∀ v ∉ S, μf v (stabLoc σ J L v) = 1) →
-        ∀ B : ∀ v, Set (GLoc σ J v), (∀ v ∈ S, MeasurableSet (B v)) →
-          μ {g | (∀ v ∈ S, projFinLoc σ J v g ∈ B v) ∧ ∀ v ∉ S, projFinLoc σ J v g ∈ stabLoc σ J L v} =
-            ∏ v ∈ S, μf v (B v) := isRestrProd_empty_iff
 
 theorem comp_glue {S : Finset (HeightOneSpectrum (𝓞 F))} (a : ∀ w, GArch σ J w) (b : ∀ v : S, GLoc σ J v) :
     (∀ w, projArch σ J w (ofInf σ J (embArchPi σ J a) * embAt σ J S b) = a w) ∧
@@ -217,20 +159,6 @@ section Away
 
 variable (T : Finset (HeightOneSpectrum (𝓞 F)))
 
-omit [NumberField E] [Submodule.IsFullLattice E L] in
-theorem exists_away (S : Finset {v // v ∉ T}) (x : ∀ w, GArch σ J w) (y : ∀ v : S, GLoc σ J v.1) :
-    ∃ g ∈ awayPts σ J T, (∀ w, projArch σ J w g = x w) ∧ (∀ v : S, proj σ J v.1 g = y v) ∧
-      ∀ v ∉ S, proj σ J v.1 g ∈ stabLoc σ J L v := by
-  classical
-  obtain ⟨e1, e2, e3⟩ := comp_glue (S := S.map (Function.Embedding.subtype _)) x fun v =>
-    y ⟨⟨v.1, Finset.property_of_mem_map_subtype S v.2⟩, by
-      obtain ⟨u, hu, e⟩ := Finset.mem_map.1 v.2
-      convert hu using 1
-      exact Subtype.ext e.symm⟩
-  exact ⟨_, mem_awayPts.2 fun v hv => e3 v fun h => Finset.property_of_mem_map_subtype S h hv, e1,
-    fun v => e2 ⟨v.1.1, Finset.mem_map_of_mem _ v.2⟩, fun v hv => by
-      rw [e3 v (by simpa [v.2] using hv)]; exact one_mem _⟩
-
 instance (U : Subgroup (GAd σ J)) : SecondCountableTopology U := TopologicalSpace.Subtype.secondCountableTopology _
 
 end Away
@@ -247,7 +175,6 @@ instance (v : HeightOneSpectrum (𝓞 F)) : (haarLoc σ J L v).IsHaarMeasure := 
   Measure.haarMeasure_self (K₀ := stabCompacts σ J L v)
 
 variable {σ J L}
-
 
 end GlobalTheory.AdelicU
 

@@ -38,9 +38,6 @@ theorem mem_saturation_iff [IsDomain R] {N : Submodule R M} {x : M} :
   rw [mem_saturation_iff']
   simp only [mem_nonZeroDivisors_iff_ne_zero]
 
-theorem mem_saturation_of_smul_mem [IsDomain R] {N : Submodule R M} {a : R} {x : M} (ha : a ≠ 0)
-    (hx : a • x ∈ N) : x ∈ saturation N := mem_saturation_iff.2 ⟨a, ha, hx⟩
-
 theorem le_saturation (N : Submodule R M) : N ≤ saturation N := fun x hx => mem_saturation_iff'.2 ⟨1, one_mem _, by rwa [one_smul]⟩
 
 @[gcongr]
@@ -56,7 +53,6 @@ theorem saturation_saturation (N : Submodule R M) : saturation (saturation N) = 
   obtain ⟨b, hb, hbx⟩ := mem_saturation_iff'.1 hax
   refine mem_saturation_iff'.2 ⟨b * a, mul_mem hb ha, ?_⟩
   rwa [mul_smul]
-
 
 theorem IsSaturatedSubmodule.saturation_eq {N : Submodule R M} (h : IsSaturatedSubmodule N) :
     saturation N = N := h
@@ -145,9 +141,6 @@ section Relative
 variable {R : Type*} [CommRing R] {V V' : Type*} [AddCommGroup V] [Module R V]
   [AddCommGroup V'] [Module R V']
 
-def saturationIn (M N : Submodule R V) : Submodule R V :=
-  M ⊓ saturation N
-
 end Relative
 
 section Localisation
@@ -156,21 +149,6 @@ variable {R : Type*} [CommRing R] {M : Type*} [AddCommGroup M] [Module R M]
   (S : Type*) [CommRing S] [Algebra R S] (p : Submonoid R) [IsLocalization p S]
   {Mp : Type*} [AddCommGroup Mp] [Module R Mp] [Module S Mp] [IsScalarTower R S Mp]
   (f : M →ₗ[R] Mp) [IsLocalizedModule p f]
-
-theorem mk'_mem_localized'_iff (N : Submodule R M) (x : M) (s : p) :
-    IsLocalizedModule.mk' f x s ∈ N.localized' S p f ↔ ∃ a ∈ p, a • x ∈ N := by
-  rw [Submodule.mem_localized']
-  constructor
-  · rintro ⟨m, hm, t, ht⟩
-    obtain ⟨c, hc⟩ := (IsLocalizedModule.mk'_eq_mk'_iff f m x t s).1 ht
-    refine ⟨((c * t : p) : R), (c * t).2, ?_⟩
-    have e : ((c * t : p) : R) • x = ((c * s : p) : R) • m := by
-      simp only [Submonoid.coe_mul, mul_smul]
-      simpa only [Submonoid.smul_def] using hc
-    rw [e]
-    exact N.smul_mem _ hm
-  · rintro ⟨a, ha, hax⟩
-    exact ⟨a • x, hax, ⟨a, ha⟩ * s, IsLocalizedModule.mk'_cancel_left f x ⟨a, ha⟩ s⟩
 
 end Localisation
 
@@ -213,29 +191,6 @@ theorem mem_span_localization_iff (N : Submodule R V) (x : V) :
     rw [← Submodule.smul_mem_iff_of_isUnit _ hu, algebraMap_smul]
     exact Submodule.subset_span hax
 
-theorem isLocalizedModule_inclusionSpan (M : Submodule R V) :
-    IsLocalizedModule p (M.inclusionSpan S) where
-  map_units := by
-    intro x
-    rw [Module.End.isUnit_iff]
-    have hu : IsUnit (algebraMap R S x) := IsLocalization.map_units S x
-    constructor
-    · intro y z hyz
-      simp only [Module.algebraMap_end_apply] at hyz
-      rw [← algebraMap_smul S (x : R) y, ← algebraMap_smul S (x : R) z] at hyz
-      exact (hu.smul_left_cancel).1 hyz
-    · intro y
-      obtain ⟨u, hu'⟩ := hu
-      refine ⟨(↑u⁻¹ : S) • y, ?_⟩
-      simp only [Module.algebraMap_end_apply]
-      rw [← algebraMap_smul S (x : R), smul_smul, ← hu', Units.mul_inv, one_smul]
-  surj y := by
-    obtain ⟨a, ha, hay⟩ := (mem_span_localization_iff S p M (y : V)).1 y.2
-    exact ⟨(⟨a • (y : V), hay⟩, ⟨a, ha⟩), Subtype.ext rfl⟩
-  exists_of_eq {x₁ x₂} h := ⟨1, by
-    rw [one_smul, one_smul]
-    exact Submodule.injective_inclusionSpan (p := M) (S := S) h⟩
-
 end AmbientLocalisation
 
 section GenericFibre
@@ -245,37 +200,12 @@ variable {R : Type*} [CommRing R] {M : Type*} [AddCommGroup M] [Module R M]
   {V : Type*} [AddCommGroup V] [Module R V] [Module K V] [IsScalarTower R K V]
   (f : M →ₗ[R] V) [IsLocalizedModule R⁰ f]
 
-theorem saturation_eq_comap_localized' (N : Submodule R M) :
-    saturation N = ((N.localized' K R⁰ f).restrictScalars R).comap f := by
-  ext x
-  rw [Submodule.mem_comap, Submodule.restrictScalars_mem, ← IsLocalizedModule.mk'_one R⁰ f x,
-    mk'_mem_localized'_iff, mem_saturation_iff']
-
 end GenericFibre
 
 section Lattice
 
 variable {R : Type*} [CommRing R] (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K]
   {V : Type*} [AddCommGroup V] [Module R V] [Module K V] [IsScalarTower R K V]
-
-theorem saturation_eq_span (N : Submodule R V) :
-    saturation N = (Submodule.span K (N : Set V)).restrictScalars R := by
-  ext x
-  rw [Submodule.restrictScalars_mem, mem_span_localization_iff K R⁰ N x, mem_saturation_iff']
-
-
-
-
-
-
-theorem rank_eq_rank_span (N : Submodule R V) :
-    Module.rank R N = Module.rank K (Submodule.span K (N : Set V)) := by
-  have := isLocalizedModule_inclusionSpan K R⁰ N
-  rw [IsLocalization.rank_eq K R⁰ le_rfl, IsLocalizedModule.rank_eq R⁰ le_rfl (N.inclusionSpan K)]
-
-
-
-
 
 end Lattice
 

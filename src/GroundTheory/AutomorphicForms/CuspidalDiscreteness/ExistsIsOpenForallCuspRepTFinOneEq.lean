@@ -22,8 +22,6 @@ open AutomorphicForm RightCosetSpace Reduction
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => rationalGLOne (K := K) (n := n)
-
 variable (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 def CuspL2 : Type _ := cuspidalL2 μ
@@ -63,7 +61,6 @@ def archRepT : BanachRep (archGroup K n) (CuspL2 μ) := BanachRep.ofUnitary (arc
 theorem archRepT_apply (a : archGroup K n) (v : CuspL2 μ) :
     archRepT μ a v = cuspRepT μ (archP K n a) v := rfl
 
-
 set_option maxHeartbeats 1000000 in
 theorem exists_isOpen_forall_cuspRepT_finOne_eq (v : CuspL2 μ)
     (hv : FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k :
@@ -95,7 +92,6 @@ theorem toLp_integrated_archRepT {γ : archGroup K n → ℂ} (hγ : Continuous 
       ∫ a, γ a • rightRegularRep Γ₁ μ (archP K n a) (toLp μ w) ∂ν :=
   ((toLp μ).integral_comp_comm (integrable_smul_archRepT μ ν hγ hγc w)).symm.trans
     (integral_congr_ae (Eventually.of_forall fun a => (toLp μ).map_smul (γ a) _))
-
 
 set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 400000 in

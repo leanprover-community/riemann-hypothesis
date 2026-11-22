@@ -8,7 +8,9 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MovedReadingSameMapsBaseReadingAgrees
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HasPartAnd
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ColNorm
-public import Formalism.LocalToGlobal.ClassRec
+public import Formalism.LocalToGlobal.HilbertRowConditions.RowPin
+public import Formalism.LocalToGlobal.RatioJoints.CharacterProductEqOne
+public import Formalism.LocalToGlobal.UnitaryNorms.DatumS
 
 @[expose] public section
 
@@ -26,12 +28,6 @@ abbrev SExt : Type 2 := ∀ (K : Ctx) (B : Base) (f : Fr B.toPre) (T : TwDat B) 
 def SExt.none : SExt := fun _ _ _ _ _ _ _ _ _ _ _ => PUnit
 
 def SXE (E : SExt) : SPosition := fun K B f T w Z Wt p0 r col => Σ a : SX K B f T w Z Wt p0 r col, E K B f T w Z Wt p0 r col a
-
-structure Prm (hL : GlobalTheory.Published.LocalLanglandsGL) : Type 2 where
-  R : RPosition
-  N : NExt hL
-  S : SExt
-  Γ : GeoP
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL}
 

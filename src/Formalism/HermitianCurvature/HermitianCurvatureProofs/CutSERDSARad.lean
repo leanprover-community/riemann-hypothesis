@@ -63,8 +63,6 @@ variable {V : Type} [AddCommGroup V] [Module ℂ V]
 
 theorem rdsR_fst_neg (a : Pr V) : (-a).1 = -a.1 := rfl
 theorem rdsR_fst_sub (a b : Pr V) : (a - b).1 = a.1 - b.1 := rfl
-theorem rdsR_fst_one : (1 : Pr V).1 = 1 := rfl
-theorem rdsR_fst_zero : (0 : Pr V).1 = 0 := rfl
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {π : Mx k r → (Wp →L[ℂ] Wp)}

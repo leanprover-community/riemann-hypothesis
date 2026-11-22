@@ -19,9 +19,6 @@ section DefsT
 
 variable {K : Type} [Field K]
 
-def th0 [CharZero K] (W : WeierstrassCurve K) (x0 y0 s2 : K) : PowerSeries K :=
-  mvExp (-(lam (wTr W x0 y0) s2))
-
 end DefsT
 
 def KernelTwo : Prop :=

@@ -13,7 +13,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForm
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.GaloisRepOfPolarizedCuspidal
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RankOneLocalComponentDet
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeCharLocalComponentExistsUniqueUnitary
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AdmissibleOfRankOneUnitary
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormEqOfSamePlace
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPadicAlgClRingEquivComplexCompEqOfCountabl
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsRecLawsSuppUnitSurj
@@ -34,13 +33,5 @@ namespace UpperTheory.GalN.V
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w} {l : ℕ} [Fact l.Prime] {n : ℕ}
   {ι : Qbar l ≃+* ℂ} {r : G E Ω →* GL (Fin n) (Qbar l)} {y : WD h}
-
-theorem WDN.charpoly (hl : ((l : ℕ) : 𝓞 E) ∉ w.asIdeal) (k : WDN ι r y) (g : ↥(Weil h)) :
-    (r g : Matrix (Fin n) (Fin n) (Qbar l)).charpoly.map ι.toRingHom = y.charPol g := by
-  obtain ⟨x, hx, k⟩ := k
-  obtain ⟨t, ht, φ, hφ, N, b, hN, hb, rfl⟩ := hx
-  rw [← k.pol g, WD.charPol_mk, hb.charpoly_eq,
-    charpoly_toEndC, hN.charpoly_wdMat hl ht]
-
 
 end UpperTheory.GalN.V

@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EigenlatticeSlopeLowerBoundDefiniteCase
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefiniteCaseCuspFormFibreSlopeGeBoundStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelMoveEigenlatticeSlopeDefinite
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EigLatLe
 public import Formalism.LocalToGlobal.ProjectiveLattices.LiftLaSpec
 

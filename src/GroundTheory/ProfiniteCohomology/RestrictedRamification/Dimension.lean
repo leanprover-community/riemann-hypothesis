@@ -37,8 +37,6 @@ theorem subsingleton_cohomology_of_cdp_le_two {n : ℕ} (hn : n ≠ 0)
 
 end Abstract
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 section Global
 
 variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
@@ -80,7 +78,6 @@ theorem nonempty_zmod_addEquiv_rootsOfUnity_gs {ℓ : ℕ} (hℓ : ℓ.Prime)
 variable {ℓ : ℕ} (hℓ : ℓ.Prime)
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
 
-
 include hℓ hS in
 theorem subsingleton_h3_rootsOfUnity (hK : ℓ ≠ 2 ∨ IsTotallyComplex K.1) :
     Subsingleton (cohomology (galRootsOfUnity.{0} K.1 (maxUnramifiedOutside K.1 ℚ̄ S) ℓ) 3) :=
@@ -88,7 +85,6 @@ theorem subsingleton_h3_rootsOfUnity (hK : ℓ ≠ 2 ∨ IsTotallyComplex K.1) :
     (fun z hz => eq_zero_of_h3_sUnits K S ℓ hℓ hS z 1 (by rwa [pow_one])) x).trans
     (eq_zero_h3_rootsOfUnity_of_h3_sUnits K S ℓ hℓ hS hK
       (fun z hz => eq_zero_of_h3_sUnits K S ℓ hℓ hS z 1 (by rwa [pow_one])) y).symm⟩
-
 
 include hℓ hS in
 theorem subsingleton_h3_res_rootsOfUnity (hK : ℓ ≠ 2 ∨ IsTotallyComplex K.1)
@@ -105,7 +101,6 @@ theorem subsingleton_h3_res_rootsOfUnity (hK : ℓ ≠ 2 ∨ IsTotallyComplex K.
   have := subsingleton_h3_rootsOfUnity L (placesOver S) hℓ hSL hKL'
   exact ((gsRootsOfUnityCohomologyIso S hL ℓ 3).toLinearEquiv.toEquiv.symm).subsingleton
 
-
 include hℓ hS in
 theorem cdp_galUnramifiedOutside_le_two (hK : ℓ ≠ 2 ∨ IsTotallyComplex K.1) :
     cdp ℓ (galUnramifiedOutside K.1 ℚ̄ S) ≤ 2 := by
@@ -121,7 +116,6 @@ variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1))) {n : ℕ}
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((n : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
   (hK : Odd n ∨ IsTotallyComplex K.1)
 
-
 include hn hS hK in
 theorem cdp_galUnramifiedOutside_le_two_of_dvd {ℓ : ℕ} (hℓ : ℓ.Prime) (hℓn : ℓ ∣ n) :
     cdp ℓ (galUnramifiedOutside K.1 ℚ̄ S) ≤ 2 := by
@@ -133,10 +127,7 @@ theorem cdp_galUnramifiedOutside_le_two_of_dvd {ℓ : ℕ} (hℓ : ℓ.Prime) (h
     rw [h2] at hℓn
     exact (Nat.not_even_iff_odd.2 ho) (even_iff_two_dvd.2 hℓn)
 
-
-
 variable (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
-
 
 set_option maxHeartbeats 2000000 in
 include hn hS hK in

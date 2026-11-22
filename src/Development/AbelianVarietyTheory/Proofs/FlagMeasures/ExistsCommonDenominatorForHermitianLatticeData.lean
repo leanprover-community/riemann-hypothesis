@@ -20,9 +20,6 @@ open scoped Pointwise ENNReal Classical
 
 namespace GlobalTheory.DenClear
 
-theorem ringOfIntegers_smul_eq {E : Type} [Field E] [NumberField E] (o : 𝓞 E) (x : E) :
-    o • x = (o : E) * x := rfl
-
 theorem coeO_mul {E : Type} [Field E] [NumberField E] (a b : 𝓞 E) :
     ((a * b : 𝓞 E) : E) = (a : E) * b := rfl
 

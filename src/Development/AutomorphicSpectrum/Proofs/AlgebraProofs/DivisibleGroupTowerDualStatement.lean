@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerDual
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.ExistsBialgHom
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.IsPolLatticePlane
 
 @[expose] public section

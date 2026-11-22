@@ -12,7 +12,7 @@ public import Formalism.RealPlaceAnalysis.StatementA
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.GeneratorCommutatorQuantumDet
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CharId
+public import Formalism.RealPlaceAnalysis.StatementC
 
 @[expose] public section
 
@@ -73,11 +73,9 @@ end Formalism.REAL
 namespace Formalism.REAL
 theorem epowCov : EpowCov := generatorPowCovariance_holds
 theorem etrCentral : EtrCentral := generatorTraceCentral_holds
-theorem diagChar : DiagChar := diagChar_of generatorPowDiagRecursion_holds
 end Formalism.REAL
 
 namespace Formalism.REAL
-theorem charId : CharId := characteristicIdentity_holds
 end Formalism.REAL
 
 namespace Formalism.REAL

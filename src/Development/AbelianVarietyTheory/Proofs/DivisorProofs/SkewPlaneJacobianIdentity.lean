@@ -1,18 +1,11 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiffsZeroOfLev
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ConstTermOnMulLeftOfNormalizer
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSquareIntegrableIffMemL2
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.LanglandsSquareIntegrable
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToGAdMat
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HyperbolicPlaneComplementDet
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPurelyImaginaryElement
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasureFundDomLtTop
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HyperbolicPlaneComplementForm
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConstantTermUnipotentIntegral
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CcGASmoothAndRderMem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeApproximationUpwardIdele
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LineToGAdDerivative
@@ -24,7 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TripleAdapte
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryAdelicHeightWittEmbeddingLeConstMul
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DifferentiableAtFoldrLineDer
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsLevi
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLeviElementTorusPart
 
 @[expose] public section
 

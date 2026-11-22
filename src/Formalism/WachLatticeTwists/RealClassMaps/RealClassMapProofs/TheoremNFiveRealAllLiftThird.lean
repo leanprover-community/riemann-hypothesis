@@ -10,15 +10,9 @@ public import Formalism.WachLatticeTwists.LagrangeExtensionCocycles.StatementTop
 public import Formalism.WachLatticeTwists.CharacterSplitJumps.WachTwistTheoremFromTorsionBound
 public import Formalism.WachLatticeTwists.CoprimeLiftBounds.StatBridgeChiOne
 public import Formalism.WachLatticeTwists.Statement
-public import Formalism.WachLatticeTwists.HodgeTateChains.HodgeTateFiltrations.MinimalExponentAttained
-public import Formalism.WachLatticeTwists.HodgeTateChains.InvariantsCohomologyData
 public import Formalism.CharacterColumnKernels.Statement
 public import Formalism.CharacterColumnKernels.StatementPsi
-public import Formalism.WachLatticeTwists.HodgeTateChains.HodgeTateFiltrations.Imports
-public import Formalism.WachLatticeTwists.HodgeTateChains.HodgeTateFiltrations.Complete
 public import Formalism.WachLatticeTwists.TorsionLengthCounts.SubmoduleLengthBoundStatement
-public import Formalism.WachLatticeTwists.HodgeTateChains.H2KilledByTateDuality
-public import Formalism.WachLatticeTwists.HodgeTateChains.Statement
 public import Formalism.WindowSums.AnnihilatorPolynomials.ZpowVal
 public import Formalism.WachLatticeTwists.RealClassMaps.RealClassMapProofs.TheoremNFiveReal
 public import Formalism.WachLatticeTwists.RealClassMaps.RealClassMapProofs.InRowRealOf
@@ -46,7 +40,6 @@ public import Formalism.WachLatticeTwists.LatticeDualFibres.LatticeDualProofs.Qu
 public import Formalism.WachLatticeTwists.LatticeDualFibres.Statement
 public import ReciprocityTheory.GaloisValuations.ContinuousConstSMulQuotient
 public import Formalism.WachLatticeTwists.LatticeDualFibres.FibreDualStable
-public import Formalism.WachLatticeTwists.LatticeDualFibres.LatticeDualProofs.ExistsPowSmulIntegral
 public import Formalism.WachLatticeTwists.LatticeDualFibres.StatDualFibreLattice
 
 @[expose] public section

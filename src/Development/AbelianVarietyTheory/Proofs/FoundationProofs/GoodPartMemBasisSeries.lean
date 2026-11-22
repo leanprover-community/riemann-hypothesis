@@ -53,9 +53,6 @@ theorem isLatIn_iff (V : Submodule (FractionRing R) W) (L : Submodule R W) :
     rw [this]
     exact Submodule.smul_mem _ _ (Submodule.subset_span hx)
 
-def inside (V : Submodule (FractionRing R) W) (L : Submodule R W) : Submodule R ↥V :=
-  L.comap (V.subtype.restrictScalars R)
-
 end Index
 
 section Transport
@@ -251,7 +248,6 @@ theorem eTh_isLatIn (Sg : Set (Y.Dat i j b))
 
 variable (E : Formalism.MainNotions.IntegralHeckeForms.ExpDat Y)
 
-
 end Basis
 
 section Main
@@ -260,9 +256,6 @@ variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : N
   (bkP : BKPh X)
 
 variable (Y : NExp D.R D.host D.what₂ D.LL0 N X) (E : Formalism.MainNotions.IntegralHeckeForms.ExpDat Y)
-
-
-
 
 end Main
 

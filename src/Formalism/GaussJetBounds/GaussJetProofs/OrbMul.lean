@@ -1,7 +1,6 @@
 module
 
 public import Formalism.GaussJetBounds.GenLogInverse
-public import Formalism.GaussJetBounds.StatementW
 public import Formalism.GaussJetBounds.ThmAGauss
 public import Formalism.GaussJetBounds.GaussJetProofs.OneGauss
 

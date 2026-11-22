@@ -100,7 +100,6 @@ variable {ψ W N} {n : ℕ}
       Subsingleton (cohomology (mackeyRep (W : Subgroup G) (ψ w).toMonoidHom N d.out) n))
 include h
 
-
 omit [CompactSpace G] [∀ w, CompactSpace (F w)] in
 theorem injective_mackeyRealRes_iff :
     Function.Injective (mackeyRealRes ψ W N n) ↔ Function.Injective (mackeyTopRes ψ W N n) := by
@@ -112,7 +111,6 @@ theorem injective_mackeyRealRes_iff :
     · exact (h w d hd).elim _ _
   · intro hi c c' hcc
     exact hi (funext fun p => congrFun (congrFun hcc p.1.1) p.1.2)
-
 
 omit [CompactSpace G] [∀ w, CompactSpace (F w)] in
 theorem surjective_mackeyRealRes_iff :
@@ -160,8 +158,6 @@ theorem subsingleton_cohomology_of_subsingleton_group [Subsingleton H] (A : Rep.
 end Trivial
 
 section GS
-
-local notation "ℚ̄" => AlgebraicClosure ℚ
 
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))

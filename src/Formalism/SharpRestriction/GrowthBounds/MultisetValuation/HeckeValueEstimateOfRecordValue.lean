@@ -99,9 +99,6 @@ def RestTmFQ : Prop := ∀ (v : X.Pl) (i j : ℕ), ∀ F ∈ X.FQ j, X.Tm v i j 
 def TmR (hT : RestTmFQ X) (v : X.Pl) (j i : ℕ) : Module.End X.G.Kf (X.FQ j) :=
   (TmLin X v i j).restrict fun F hF => hT v i j F hF
 
-theorem TmR_coe (hT : RestTmFQ X) (v : X.Pl) (j i : ℕ) (F : X.FQ j) :
-    ((TmR X hT v j i F : X.FQ j) : X.Fm j) = X.Tm v i j F := rfl
-
 def KkR (h3b : ∀ j < X.mm, ∀ F ∈ X.FQ j, X.Kz j F ∈ X.FQ (j + 1)) (j : ℕ) :
     X.FQ j →ₗ[X.G.Kf] X.FQ (j + 1) :=
   if h : j < X.mm then (X.Kz j).restrict fun F hF => h3b j h F hF else 0

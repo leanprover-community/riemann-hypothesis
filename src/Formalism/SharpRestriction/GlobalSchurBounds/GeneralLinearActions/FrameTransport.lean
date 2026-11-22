@@ -56,9 +56,4 @@ def IsGauge : Prop := G.IsHaar ∧ G.BasisInv ∧ G.StepCompat
 
 end GaugeFam
 
-def volHE (G : GaugeFam F E σ) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) : ENNReal :=
-  covolume (HFinIn (AF F) σ J) (HA (AF F) σ J) (G.μ M J)
-
-def volH (G : GaugeFam F E σ) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) : ℝ := (volHE G M J).toReal
-
 end Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes

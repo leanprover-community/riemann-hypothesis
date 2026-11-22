@@ -87,18 +87,6 @@ structure FHom (E E' : FCrys l R) where
   u_Φ : ∀ (P : Obj l R) (d : ↥P.I) (x m : E.M P) (k : ℕ),
     IsFrac (d : P.A) (E.Φ P d x) m k → IsFrac (d : P.A) (E'.Φ P d (u P x)) (u P m) k
 
-structure VBun (l : ℕ) (R : Type) [CommRing R] where
-  M : Obj l R → Type
-  [acg : ∀ P, AddCommGroup (M P)]
-  [mod : ∀ P, Module P.A (M P)]
-  fin : ∀ P, Module.Finite P.A (M P)
-  proj : ∀ P, Module.Projective P.A (M P)
-  tr : ∀ {P P' : Obj l R} (f : Hom P P'), M P →ₛₗ[f.f] M P'
-  tr_bc : ∀ {P P' : Obj l R} (f : Hom P P'), SemiBC (tr f)
-  tr_id : ∀ (P : Obj l R) x, tr (Hom.id P) x = x
-  tr_comp : ∀ {P P' P'' : Obj l R} (g : Hom P' P'') (f : Hom P P') x,
-    tr (g.comp f) x = tr g (tr f x)
-
 attribute [instance] VBun.acg VBun.mod
 
 theorem Delta.δ_zero {A : Type} [CommRing A] (D : Delta l A) : D.δ 0 = 0 := by
@@ -233,28 +221,6 @@ def FCrys.pullback {R' : Type} [CommRing R'] (g : R →+* R') (E : FCrys l R) : 
   Φ_bc P := E.Φ_bc (P.restrict g)
   Φ_nat f := E.Φ_nat (f.restrict g)
 
-def Obj.crys (l : ℕ) [hl : Fact l.Prime] : Obj l ℤ_[l] where
-  A := ℤ_[l]
-  D := Delta.ofLift l (RingHom.id _)
-    (fun x hx => (mul_eq_zero.1 hx).resolve_left (by exact_mod_cast hl.out.ne_zero))
-    (fun a => by
-      have : a - a ^ l ∈ RingHom.ker (PadicInt.toZMod (p := l)) := by
-        simp [RingHom.mem_ker]
-      rw [PadicInt.ker_toZMod, PadicInt.maximalIdeal_eq_span_p, Ideal.mem_span_singleton] at this
-      obtain ⟨b, hb⟩ := this
-      exact ⟨b, by simp only [RingHom.id_apply]; linear_combination hb⟩)
-  I := Ideal.span {(l : ℤ_[l])}
-  inv := invertible_span_singleton (mem_nonZeroDivisors_of_ne_zero (by exact_mod_cast hl.out.ne_zero))
-  complete := by
-    rw [sup_idem, ← PadicInt.maximalIdeal_eq_span_p]; infer_instance
-  l_mem := Ideal.mem_sup_left (Ideal.mem_span_singleton_self _)
-  bdd := ⟨1, fun x _ => by
-    have : ((l : ℕ) : ℤ_[l] ⧸ Ideal.span {(l : ℤ_[l])}) = 0 := by
-      rw [← map_natCast (Ideal.Quotient.mk _), Ideal.Quotient.eq_zero_iff_mem]
-      exact Ideal.mem_span_singleton_self _
-    simp [this]⟩
-  str := Ideal.Quotient.mk _
-
 theorem semiBC_self {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) : SemiBC f.toSemilinearMap := by
   intro Q _ _ v
   refine ⟨LinearMap.toSpanSingleton B Q (v 1), fun x => ?_, fun w hw => ?_⟩
@@ -293,10 +259,5 @@ def FCrys.unit (l : ℕ) (R : Type) [CommRing R] : FCrys l R where
     change (d' : P'.A) ^ b * ((d' : P'.A) ^ j * P'.D.φ (f.f x)) = _ at hb
     linear_combination (-(f.f d) ^ b * (d' : P'.A) ^ (a + b + j)) * ha' +
       (f.f d ^ (a + b + k) * (d' : P'.A) ^ a) * hb
-
-def FHom.comp {E E' E'' : FCrys l R} (v : FHom E' E'') (u : FHom E E') : FHom E E'' where
-  u P := (v.u P).comp (u.u P)
-  u_tr f x := by simp [u.u_tr, v.u_tr]
-  u_Φ P d x m k h := v.u_Φ P d _ _ k (u.u_Φ P d x m k h)
 
 end GlobalTheory.Prism

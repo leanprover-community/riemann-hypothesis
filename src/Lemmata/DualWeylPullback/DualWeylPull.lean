@@ -25,7 +25,6 @@ public import Formalism.MahlerMeasure.WithMargin
 public import Formalism.SubspaceCounting.ChoiceOfTopsRefined
 public import Formalism.GrowthSums.LemmaATwoFactList
 public import Formalism.FrobeniusOrbits.DiscrMaximalRealCyclotomic
-public import Formalism.FrobeniusOrbits.HostOrbitsPlaces
 public import Formalism.FrobeniusOrbits.HostDiffSupport
 public import Formalism.FrobeniusOrbits.HostThickExists
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
@@ -47,9 +46,7 @@ public import Formalism.FormalDegreeBessel.StatementG
 public import Formalism.SharpRestriction.GrowthBounds.Imports
 public import Formalism.ThetaLiftIndependence.Statement
 public import Formalism.ThetaLiftIndependence.ThetaOrbitSums.LatLiftIndep
-public import Formalism.ThetaLiftIndependence.ThetaOrbitSums.GaussOp
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.DiscriminantRealSubfield
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.ThickOrbit
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ZsmulGeneratorEqZeroOfProjection
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DegSupermodZ
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.ExistsSmulMemOfFinrankEq
@@ -80,7 +77,6 @@ public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtImage
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.Rerealize
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.QuotRealize
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.FrameLinearAlgebraFirst
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Actions
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AutomorphicFormsDecompositionHolds
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.HeckeAssoc
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
@@ -91,7 +87,6 @@ public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Heckebasic
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.InclusionInjective
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Ipindep
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelvsplit
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.LinSubstIsHomogeneous
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureConjugationInvariant
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureExists
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SplitUnitaryGroupIso
@@ -116,12 +111,6 @@ public import Formalism.SatakeDualWeyl.StatementE
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Heckecomm
 public import Formalism.SatakeDualWeyl.StatementF
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SphericalA
-public import Formalism.TameInertiaTowers.CentralOrderTwo.OrderOfThreeUnitsTwoPow
-public import Formalism.TameInertiaTowers.CentralOrderTwo.TwoAdic
-public import Formalism.TameInertiaTowers.CentralOrderTwo.MemDecompositionSubgroupIff
-public import Formalism.TameInertiaTowers.CentralOrderTwo.NegOneNeOneUnitsZmodFour
-public import Formalism.TameInertiaTowers.CentralOrderTwo.Groups
-public import Formalism.TameInertiaTowers.CentralOrderTwo.NormalOrderTwoCentral
 public import Formalism.TameInertiaTowers.CentralOrderTwo.Galois
 public import Formalism.TameInertiaTowers.CentralOrderTwo.ConjEqInvOfPowEqOne
 public import Formalism.FormalDegreeBessel.StatementBF
@@ -129,7 +118,6 @@ public import Formalism.FormalDegreeBessel.StatementWR
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
 public import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
-public import Formalism.HermitianLattices.StatementTheta
 public import Formalism.HermitianLattices.StatementLat
 public import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
 public import Formalism.HermitianLattices.HermitianLatticesProofs.GenusBasic
@@ -150,14 +138,12 @@ public import Formalism.DirichletDensity.Statement
 public import Formalism.CMTypeGalois.CMTypeFrobenius.MQGalois
 public import Formalism.CMTypeGalois.CMTypeFrobenius.MQKummer
 public import Formalism.CMTypeGalois.StatementField
-public import Formalism.StatementCM
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SatakeComb
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SatakeMat
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.TjcosetsFF
 public import Formalism.RealPlaceAnalysis.StatementE
 public import Formalism.HermitianLattices.DefsCS
 public import Formalism.HermitianLattices.GenusCovolBound
-public import Formalism.HermitianLattices.DiscrFinite
 public import Formalism.LatticeTheta.ThetaShiftInversion
 public import Formalism.SatakeDualWeyl.StatementB
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactCasimirHighestWeight

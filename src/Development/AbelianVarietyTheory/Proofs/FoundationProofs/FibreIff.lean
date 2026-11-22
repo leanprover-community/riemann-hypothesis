@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsAbelianGaloisHost
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.GeometricComponentEmbedding
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.RamifiedPlacesSplitEigen
 
 @[expose] public section

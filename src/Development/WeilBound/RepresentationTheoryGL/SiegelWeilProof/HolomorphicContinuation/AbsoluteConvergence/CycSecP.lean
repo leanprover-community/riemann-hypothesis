@@ -70,13 +70,6 @@ theorem adjoin_le (ε : Fin m → Bool) {R : PX m n}
     obtain ⟨d', hd'⟩ := hy
     exact ⟨d + d', mon_mul ε hd hd'⟩
 
-theorem dsum_apply {ι : Type*} (s : Finset ι) (D : ι → Derivation ℂ (PX m n) (PX m n)) (x : PX m n) :
-    (∑ i ∈ s, D i) x = ∑ i ∈ s, D i x := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, add_apply, ih]
-
 def eulD (H : Matrix (Fin n) (Fin n) ℂ) : Derivation ℂ (PX m n) (PX m n) :=
   ∑ a : Fin m, ∑ j : Fin n, ((∑ i, X (a, i, false) * C (H i j)) • pderiv (a, j, false) +
     (∑ i, X (a, i, true) * C (star (H i j))) • pderiv (a, j, true))

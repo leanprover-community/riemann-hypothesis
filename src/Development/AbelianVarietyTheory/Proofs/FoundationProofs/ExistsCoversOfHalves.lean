@@ -36,7 +36,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.TupleCover
 
-
 set_option maxHeartbeats 1000000 in
 theorem exists_xi (D : D7) (V : HSp D) (c : (AE D)ˣ →* Circle) (χ : HChar D.host.E) (h : ChrEq c χ) (n : ℕ) (hn : 0 < n)
     (ho : χ.OrderDvd n) (hF : χ.TrivOn D.host.F) (ht : ∀ P, χ.TameAt P) :
@@ -113,7 +112,6 @@ theorem iotaOK_and_frame (J : CoreJ D) (hJ : LawsJ J) (j : ℕ) (hj : InR D j) (
   let k₀ := (J.dict j σ 1).1
   have h1 := hJ.familyUniformisationBasePointOrthogonal j hj _ hσ k₀ τ (((hU.2.1 k₀).2 τ).2 hτ)
   rwa [(hW k₀).1, (hU.2.1 k₀).1] at h1
-
 
 set_option maxHeartbeats 1000000 in
 theorem exists_fun {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
@@ -196,7 +194,6 @@ def CoversAt (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c
     CXiVal (Wc D i) (rank_Wc i) (inC c') dδ U₂ dict₂ (iotaW T i) (T.x₀ ((i : ℕ) + 1) (sOv T.toCore c' hle)) xi ∧
     (∀ t k, ModelW (Wc D i) (rank_Wc i) ((U₂ t).X k)) ∧
     ∀ t, ∃ m : ℕ, 0 < m ∧ (dδ t).cδ ^ m = 1
-
 
 set_option maxHeartbeats 1000000 in
 theorem exists_covers_of_halves (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) {μ0 : T0} [Finite T0]
@@ -288,14 +285,5 @@ theorem finite_tuples {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what
   · by_cases hw : w ∈ R.twPl
     · exact Set.mem_insert_of_mem _ ⟨w, hw, rfl⟩
     · exact (h1 w hw).symm ▸ Set.mem_insert _ _
-
-theorem exists_covers_of_char (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A)
-    (hT : LawsJ T) (hR : R.Char F) (hO : T.pb = R.C.P.pb) (hG : QGuard R) (i : Fin D.R.m) :
-    ∃ (pd : T0 → ℕ) (l₂ : T0 → Level T.Q.H) (c₁ : Coeff T.Q.l),
-      T.Q.c.F ≤ c₁.F ∧ D.what₂.embLL.toRatAlgHom.fieldRange ≤ c₁.F ∧
-      ∀ (c' : Coeff T.Q.l) (hle : T.Q.c.F ≤ c'.F), c₁.F ≤ c'.F →
-        CoversAt T R i (Vc D i).rank pd (fun t => coverHalf D (R.Q t)) l₂ c' hle :=
-  haveI := finite_tuples R hR.tup.mu_off hR.tup.mu_used
-  exists_covers T R hT hR.lev hO hG i _
 
 end GlobalTheory.TupleCover

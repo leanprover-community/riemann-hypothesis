@@ -6,7 +6,7 @@ public import Formalism.LocalToGlobal.Columns.ChainTwFin
 public import Formalism.LocalToGlobal.Columns.UnfoldingNonvanishingDoubleCosetHolds
 public import Formalism.LocalToGlobal.Columns.RecLevelSym
 public import Formalism.LocalToGlobal.Columns.Record
-public import Formalism.LocalToGlobal.Columns.StabMapRLInjective
+public import Formalism.LocalToGlobal.Columns.RecChainCUnfPol
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 
 @[expose] public section

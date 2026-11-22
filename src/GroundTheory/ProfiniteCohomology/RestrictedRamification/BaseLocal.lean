@@ -58,7 +58,6 @@ section IsoOfBijective
 
 variable {k Γ : Type u} [CommRing k] [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
 
-
 omit [TopologicalSpace Γ] [IsTopologicalGroup Γ] in
 def invOfBijective {A B : Rep.{u} k Γ} (f : A ⟶ B) (hf : Function.Bijective f.hom) : B ⟶ A :=
   Rep.ofHom ⟨(LinearEquiv.ofBijective f.hom.toLinearMap hf).symm.toLinearMap, fun g => LinearMap.ext fun b => by
@@ -135,8 +134,6 @@ theorem brauerInvZOfIsSepClosure_cohomologyMap_uliftInt_base (A : Rep.{0} (ULift
 
 end AbstractLocal
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)) (n : ℕ)
 
@@ -157,7 +154,6 @@ theorem gsRootsLocalMor_hom_apply (v : S) (ζ : Additive (rootsOfUnity n (maxUnr
     (Additive.toMul ((gsRootsLocalMor S ιs n v).hom ζ)).val.val =
       ιs v ((Additive.toMul ζ).val.val : ℚ̄) :=
   rfl
-
 
 set_option maxHeartbeats 1600000 in
 theorem bijective_gsRootsLocalMor [NeZero n] (hμ : ∀ ζ : ℚ̄, ζ ^ n = 1 → ζ ∈ K.1) (v : S) :

@@ -84,31 +84,14 @@ section pr
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem pr_fst_add (x y : Q.Pr V) : (x + y).1 = x.1 + y.1 := rfl
-theorem pr_fst_neg (x : Q.Pr V) : (-x).1 = -x.1 := rfl
-theorem pr_fst_zero : (0 : Q.Pr V).1 = 0 := rfl
-theorem pr_fst_alg (Y : ℂ) : (algebraMap ℂ (Q.Pr V) Y).1 = algebraMap ℂ (Module.End ℂ V) Y := rfl
-theorem pr_fst_star (x : Q.Pr V) : (star x).1 = x.2.unop := rfl
-theorem pr_snd_add (x y : Q.Pr V) : (x + y).2.unop = x.2.unop + y.2.unop := rfl
-theorem pr_snd_neg (x : Q.Pr V) : (-x).2.unop = -x.2.unop := rfl
-theorem pr_snd_alg (Y : ℂ) : (algebraMap ℂ (Q.Pr V) Y).2.unop = algebraMap ℂ (Module.End ℂ V) (conj Y) := rfl
-theorem mkPair_fst (X Xs : Module.End ℂ V) : (Q.mkP X Xs).1 = X := rfl
-theorem snd_eq_of_mkPair_eq (X Xs : Module.End ℂ V) : (Q.mkP X Xs).2.unop = Xs := rfl
-
 end pr
 
-theorem pathSpace_add_apply (f g : V1 E) (τ : ℂ) : (f + g).1 τ = f.1 τ + g.1 τ := rfl
-theorem pathSpace_neg_apply (f : V1 E) (τ : ℂ) : (-f).1 τ = -f.1 τ := rfl
-theorem pathSpace_smul_apply (c : ℂ) (f : V1 E) (τ : ℂ) : (c • f).1 τ = c • f.1 τ := rfl
-theorem pathSpace_zero_apply (τ : ℂ) : (0 : V1 E).1 τ = 0 := rfl
 theorem opP_apply (κ : ℂ) (f : V1 E) {τ : ℂ} (hτ : τ ≠ 0) :
     (opP κ f).1 τ = τ • PBP.dz f.1 τ + κ • f.1 τ := by
   simp [opP, off0, hτ]
 theorem opPb_apply (κ : ℂ) (f : V1 E) {τ : ℂ} (hτ : τ ≠ 0) :
     (opPb κ f).1 τ = conj τ • PBP.dzb f.1 τ + κ • f.1 τ := by
   simp [opPb, off0, hτ]
-theorem opM_apply (m : ℂ → ℂ) (hm : ContDiffOn ℝ ∞ m {τ | τ ≠ 0}) (f : V1 E) (τ : ℂ) :
-    (opM m hm f).1 τ = m τ • f.1 τ := rfl
 
 theorem vlet_apply {A : Type} [Ring A] [StarRing A] [Algebra ℂ A] (σ : Wd.Site A) (l : Wd.Letter ℂ S)
     (e b : Wd.Ix S) :

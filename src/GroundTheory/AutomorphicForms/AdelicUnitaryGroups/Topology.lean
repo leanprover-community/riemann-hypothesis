@@ -38,7 +38,6 @@ section Algebraic
 variable (H : Matrix ι ι E)
 variable (R : Type*) [CommRing R] [Algebra K R]
 
-
 variable (K) in
 abbrev baseMatrix : Matrix ι ι (R ⊗[K] E) :=
   H.map (Algebra.TensorProduct.includeRight : E →ₐ[K] R ⊗[K] E)
@@ -360,10 +359,6 @@ variable (K R S)
 def unitaryProdHom : unitaryPoints K E H (R × S) →* unitaryPoints K E H R × unitaryPoints K E H S :=
   (unitaryMap K E H (AlgHom.fst K R S)).prod (unitaryMap K E H (AlgHom.snd K R S))
 
-theorem unitaryProdHom_apply (g : unitaryPoints K E H (R × S)) :
-    unitaryProdHom K H R S g =
-      (unitaryMap K E H (AlgHom.fst K R S) g, unitaryMap K E H (AlgHom.snd K R S) g) := rfl
-
 theorem unitaryProdHom_bijective (hH : IsUnit H.det) :
     Function.Bijective (unitaryProdHom K H R S) := by
   let b := Module.finBasis K E
@@ -439,9 +434,6 @@ variable {J : Type*} (T : J → Type*) [∀ j, CommRing (T j)] [∀ j, Algebra K
 
 def unitaryPiHom : unitaryPoints K E H (∀ j, T j) →* ∀ j, unitaryPoints K E H (T j) :=
   MonoidHom.pi fun j => unitaryMap K E H (Pi.evalAlgHom K T j)
-
-theorem unitaryPiHom_apply (g : unitaryPoints K E H (∀ j, T j)) (j : J) :
-    unitaryPiHom K H T g j = unitaryMap K E H (Pi.evalAlgHom K T j) g := rfl
 
 theorem unitaryPiHom_bijective (hH : IsUnit H.det) : Function.Bijective (unitaryPiHom K H T) := by
   let b := Module.finBasis K E

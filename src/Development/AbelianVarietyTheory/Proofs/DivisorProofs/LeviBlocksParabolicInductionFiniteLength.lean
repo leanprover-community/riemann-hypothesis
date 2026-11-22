@@ -51,9 +51,6 @@ def glIso (e : (Σ a, m a) ≃ n) : GL (Fin (∑ i, blockSize m i)) R ≃* GL n 
 
 variable {R}
 
-theorem val_glIso (e : (Σ a, m a) ≃ n) (g : GL (Fin (∑ i, blockSize m i)) R) (x y : n) :
-    (glIso R e g : Matrix n n R) x y = (g : Matrix _ _ R) ((stdIdx e).symm x) ((stdIdx e).symm y) := rfl
-
 variable (R)
 
 theorem glIso_mem_parab (e : (Σ a, m a) ≃ n) {g : GL (Fin (∑ i, blockSize m i)) R}
@@ -253,6 +250,5 @@ theorem hasFiniteLength_parInd (e : (Σ a, m a) ≃ n) (ρ : Representation ℂ 
 end GlobalTheory.BlockReorder
 
 namespace GlobalTheory
-
 
 end GlobalTheory

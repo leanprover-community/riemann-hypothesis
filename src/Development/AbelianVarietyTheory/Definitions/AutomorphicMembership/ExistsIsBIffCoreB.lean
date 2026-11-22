@@ -17,106 +17,13 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Fo
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-structure NStd {B : Base} {C : Cols B} {W : RowsRest B C} (N : NStage B C W) : Prop where
-  loc : IsEmpty N.nd.Loc
-  cover : N.ntw.TwCover
-  chiT : ∀ (k : Fin 2) (v : N.nd.PlG k), ∃ w : (ZMod (B.host.g k))ˣ, orderOf w = B.host.g k - 1 ∧
-    ∀ j : Fin B.R.m, N.nd.chiT k v j = w ^ (2 * (j.1 + 1))
-
-structure SStd (K : Ctx) {B : Base} {C : Cols B} {W : RowsRest B C} (S : SStage B C W) (cd : CDHaar) : Prop where
-  del : S.s.Del = (Delv K.s K.cD : ℚ)
-  scale : S.s.cdScale = Vol.trueScale cd
-  dsig : ∀ τ, S.dsig τ = Vol.trueDsig B.R (B.hc τ)
-
 variable {B : Base} {f : Fr B.toPre} {T : TwDat B}
-
-def GCols (K : Ctx) (w : ColW B f T) (G : GJStage B w.C) : Prop :=
-  ∀ W V S N, GatNum K.s (w.D ⟨W, V, S, N, G⟩) ∧ Nonempty (ColumnDataSplitPrimes K w ⟨W, V, S, N, G⟩)
-
-structure ZDef (K : Ctx) (w : ColW B f T) (Z : w.Lt) : Type 1 where
-  hX : B.fields.Ok
-  e : ∀ a : w.C.Tup, MtCx w.I a ≃ₗ[ℂ] Z.W.Amb a
-  tru : DefTrue w.I w.l hX Z.W e
-  std : StandIn Z.W
-  etaF : Z.V.div.etaF = 6 * K.s.x ^ (-K.C.P.CF)
-  s : SStd K Z.S Z.G.cd
-  n : NStd Z.N
-  g : GCols K w Z.G
-
-structure Side (w : ColW B f T) (Z : w.Lt) : Type 1 where
-  th : ThetaX (w.D Z)
-  th_io : th.TieIo
-  nch : NChoice (w.D Z)
-  n : NchT w Z ∅ nch
-  xd : ThData (w.D Z)
-  X : DivX (w.D Z)
-  qp : TC.QpIs w.I X.Qp
-  p0 : BaseLevelRowSide (w.D Z)
-  amb0 : AmbForm (w.D Z) p0.s
-  row : V4.RowLay (w.D Z) p0 X
-  gauge : GlobalTheoryTheory.GenusMassVolumes.GaugeFam (w.D Z).host.F (w.D Z).host.E (w.D Z).sp.cm.sig
-  gauge_def : gauge.IsGauge
-
-structure CoreB (K : Ctx) (w : ColW B f T) (Z : w.Lt) : Type 1 where
-  isOver : K.Over B.toPre
-  untw : T = TwDat.untw B T.pl
-  forced : Forced K B T
-  pin : ColPin w
-  z : ZDef K w Z
-  mu : V4.MuIsW (w.st Z) f T ∅ w.I.xi
-  sd : Side w Z
-  t : ColumnDataSplitPrimes K w Z
-  Gy : G.LatInst (w.D Z)
-  ker : KerFam (w.D Z) t.Gt t.cmp (w.tw Z) Gy
-  gy : GyLay K (w.D Z) t.Gt t.cmp Gy
-  kt : KerT t.toColT sd.X Gy ker
-  entC : ∃ (Pl : Examples₂.EntPl (w.D Z)) (Bs : Formalism.L2.Ker.PlaceMatrixFamily (w.D Z)) (h : Formalism.L2.Ker.KerEntHyp Pl kt.O Bs sd.X (w.tw Z)),
-    kt.E = Formalism.L2.Ker.kerEntC Pl kt.O Bs h
-  col : ColLay (w.D Z) t.full.1.base.lev0 (Formalism.L2.Herm.toErrXS t.full.1)
-  amb : AmbForm (w.D Z) (RowSide.sharp (w.D Z))
-  ambTrue : AmbTrue w.I w.l z.hX Z z.e amb
-  mtStable : DQ.MtStableAt (w.D Z)
-  cd : cdScaleTie (w.D Z)
-  dsT : dsigTie (w.D Z)
-  ds : ∀ τ, Formalism.L2.Theta.IsDsig (w.D Z) τ ((w.D Z).dsig τ)
-
-def CoreB.obj {K : Ctx} {w : ColW B f T} {Z : w.Lt} (b : CoreB K w Z) : Obj2 (w.D Z) where
-  gatT := b.t.Gt
-  th := b.sd.th
-  cmp := b.t.cmp
-  tw := w.tw Z
-  Gy := b.Gy
-  errX := Formalism.L2.Herm.toErrXS b.t.full.1
-  nch := b.sd.nch
-  xd := b.sd.xd
-  lev := b.t.full.1.base.lev0
-  X := b.sd.X
-  p0 := b.sd.p0
-  ker := b.ker
-  amb := b.amb
-  amb0 := b.sd.amb0
-  gauge := b.sd.gauge
 
 def setDivZ {C : Cols B} (Z : TC.Later B C) (N : ∀ u, Submodule (𝓞 B.LL) (Z.V.div.Nu u).V) (h : B.Word → ℝ) : TC.Later B C :=
   { Z with V := { Z.V with div := (setDiv (assemble B C Z.W Z.V Z.S Z.N Z.G) N h).div } }
 
 theorem D_setDivZ (w : ColW B f T) (Z : w.Lt) (N : ∀ u, Submodule (𝓞 B.LL) (Z.V.div.Nu u).V) (h : B.Word → ℝ) :
     w.D (setDivZ Z N h) = setDiv (w.D Z) N h := rfl
-
-def IsB (K : Ctx) (D : D7) (O : Obj2 D) : Prop :=
-  ∃ (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (Z : w.Lt) (b : CoreB K w Z),
-    (⟨D, O⟩ : Σ D : D7, Obj2 D) = ⟨w.D Z, b.obj⟩
-
-def ForVol (w : ColW B f T) (P : w.Lt → Prop) : Prop :=
-  ∀ (vol : HSpace B.host.E → ℝ) (cd : CDHaar), (∀ W, 0 < vol W) →
-    (∀ Z : w.Lt, Z.G.vol = vol → Z.G.cd = cd → Formalism.L2.Herm.VolumeCompatible (w.D Z)) → ∃ Z : w.Lt, Z.G.vol = vol ∧ Z.G.cd = cd ∧ P Z
-
-theorem IsB.ind {K : Ctx} {R : ∀ D : D7, Obj2 D → Prop}
-    (h : ∀ (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (Z : w.Lt) (b : CoreB K w Z), R (w.D Z) b.obj)
-    {D : D7} {O : Obj2 D} (hD : IsB K D O) : R D O := by
-  obtain ⟨B, f, T, w, Z, b, e⟩ := hD
-  cases e
-  exact h B f T w Z b
 
 section Layers
 

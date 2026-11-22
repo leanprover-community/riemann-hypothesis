@@ -222,17 +222,11 @@ def projLoc (v : HeightOneSpectrum (𝓞 F)) : GFin hc V →* GLoc hc V v := map
 def ofFin : GFin hc V →* GA hc V :=
   extH (R' := AF F) hc.sig V.gram (LinearMap.inr F (Ainf F) (Af F)) (fun a b => Prod.ext (mul_zero _).symm rfl)
 
-def ofInf : GInf hc V →* GA hc V :=
-  extH (R' := AF F) hc.sig V.gram (LinearMap.inl F (Ainf F) (Af F)) (fun a b => Prod.ext rfl (mul_zero _).symm)
-
 def ratA : GRat hc V →* GA hc V := diagH hc.sig V.gram (AF F)
 
 def ratPts : Subgroup (GA hc V) := (ratA hc V).range
 
 def finPts : Subgroup (GA hc V) := (projInf hc V).ker
-
-def realPts : Subgroup (GA hc V) := (projFin hc V).ker
-
 
 def coordR (R : Type) [CommRing R] [Algebra F R] (x : V.V) : Fin V.rank → R ⊗[F] E :=
   fun i => inclR R (V.frame.repr x i)

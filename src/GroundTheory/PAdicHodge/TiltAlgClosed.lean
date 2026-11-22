@@ -148,10 +148,6 @@ section Tilt
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝒪♭" => PreTilt (normInteger K) p
-local notation "K♭" => FractionRing 𝒪♭
-local notation "♮" x:arg => ((PreTilt.untilt x : normInteger K) : K)
-
 theorem exists_tilt_norm_pow_eq [IsAlgClosed K] (z : K♭) (hz : z ≠ 0) (n : ℕ) (hn : 0 < n) :
     ∃ c : K♭, ‖c‖ ^ n = ‖z‖ := by
   obtain ⟨w, hw⟩ := IsAlgClosed.exists_pow_nat_eq (tiltSharp (K := K) (p := p) z) hn

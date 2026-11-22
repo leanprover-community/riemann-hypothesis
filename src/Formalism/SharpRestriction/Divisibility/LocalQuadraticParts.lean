@@ -26,28 +26,9 @@ namespace Formalism.MainNotions.LocalQuadraticParts
 
 open Formalism.BasicNotions Formalism.BasicNotions.DV NumberField IsDedekindDomain
 
-structure Loc (D : D7) where
-
-  Jx : ℕ → D.what₂.places.Pl → ℝ
-
-abbrev qn {D : D7} (A : AmbForm D (RowSide.sharp D)) (v : InfinitePlace D.what₂.LL) (q : (A.MtH D.what₂.mu0).V) : ℝ :=
-  DV.quotNorm A v q
-
 def nTT (D : D7) : ℝ := (D.host.TT.card : ℝ)
 
 def UsedT (D : D7) (μ : D.what₂.Tup) : Prop := μ = D.what₂.mu0 ∨ ∃ w, μ = D.what₂.muAt w
-
-def PeterssonBoundAtEmbedding (D : D7) (Z : DivX D) (A : AmbForm D (RowSide.sharp D)) (s : D.what₂.LL →+* ℂ) : Prop :=
-  ∀ (x : D.div.RR.V) (q : (A.MtH D.what₂.mu0).V), A.jAmb D.what₂.mu0 q ∈ D.what₂.V0 D.what₂.mu0 →
-    D.jEE x = D.what₂.iota D.what₂.mu0 (A.jAmb D.what₂.mu0 q) →
-    Z.kapR s * Real.exp (⨅ σ : Fin D.what₂.Drows, ∑ j ∈ SizeData₂.lifts D, Z.logLam j (D.what₂.ft σ) s) *
-        qn A (InfinitePlace.mk s) q ^ 2 ≤
-      Formalism.HermitianLatticesTheory.normAt D.div.RR.b D.div.RR.X (InfinitePlace.mk s) x ^ 2 ∧
-    Formalism.HermitianLatticesTheory.normAt D.div.RR.b D.div.RR.X (InfinitePlace.mk s) x ^ 2 ≤
-      Z.kapR s * Real.exp (⨆ σ : Fin D.what₂.Drows, ∑ j ∈ SizeData₂.lifts D, Z.logLam j (D.what₂.ft σ) s) *
-        qn A (InfinitePlace.mk s) q ^ 2
-
-def PeterssonBoundAllEmbeddings (D : D7) (Z : DivX D) (A : AmbForm D (RowSide.sharp D)) : Prop := ∀ s, PeterssonBoundAtEmbedding D Z A s
 
 def adm2 (D : D7) (L : SizeData₂ D) : Prop :=
   ∀ u (w : D.what₂.places.Pl) (φ : (D.div.Nu u).V), φ ∈ L.NuLat u →
@@ -65,23 +46,6 @@ theorem valuation_bound_of_unrounded (D : D7) (L : SizeData₂ D) (h : Unrounded
   intro u w φ hφ F hF hV
   obtain ⟨y, hy, h'⟩ := h u w φ hφ F hF hV
   exact ⟨y, hy, h'.imp_right fun h'' => (Int.floor_le _).trans h''⟩
-
-def ArchimedeanSignatureMatching (D : D7) (L : SizeData₂ D) (X : Loc D) (C Cabs : ℝ) : Prop :=
-  ∃ (err : ℕ → D.what₂.places.Pl → ℝ) (fl : ℕ → ℕ → ℝ) (r : ℕ → D.what₂.places.Pl → ℝ),
-    (∀ j l, 0 ≤ fl j l) ∧ (∀ j w, 0 ≤ r j w) ∧ (∀ j w, 0 ≤ X.Jx j w) ∧
-    (∀ j w, err j w = fl j (D.what₂.places.resChar w) +
-      (r j w + r j (D.what₂.places.conj w)) / (D.what₂.D0 : ℝ)) ∧
-    (∀ w, D.what₂.muAt w ≠ D.what₂.mu0 →
-      ∑ j ∈ SizeData₂.lifts D,
-        (((D.what₂.Ij (D.what₂.muAt w) j w : ℝ) +
-          (D.what₂.Ij (D.what₂.muAt w) j (D.what₂.places.conj w) : ℝ)) /
-          (D.what₂.D0 : ℝ) - 2 * ur D w (L.F j w)) ≤
-        ur D w ((∑ j ∈ SizeData₂.lifts D, err j w) + 2 / ((D.what₂.places.resChar w : ℝ) ^ 2))) ∧
-    (∀ j ∈ SizeData₂.lifts D,
-      Summable (fun w => SizeData₂.lwP w * ur D w (err j w + X.Jx j w)) ∧
-      ∑' w, SizeData₂.lwP w * ur D w (err j w + X.Jx j w) ≤
-        C * L.sc.x ^ (Cabs * L.sc.eps) * (L.B0 + L.Nc))
-
 
 def adm11 (D : D7) (L : SizeData₂ D) (C : ℝ) : Prop :=
   ∀ u, ∀ j ∈ SizeData₂.lifts D,
@@ -129,7 +93,6 @@ open Formalism.FrobeniusOrbits
 
 def MuH (D : D7) (u : D.what₂.Word) : HLat D.what₂.LL := { D.div.Nu u with L := MramL D u }
 
-
 open Classical in
 def wAt (D : D7) (j : ℕ) (g : D.R.GG) : ℝ :=
   if h : g ∈ D.R.Psi then wSz D j (D.eTau.symm ⟨g, h⟩) else 0
@@ -142,7 +105,6 @@ def IOsum : ℝ := ∑ w ∈ L.supp, SizeData₂.lwP w * (D.what₂.places.ramId
 
 def askPrimes (a : ℤ) : Finset ℕ := (Finset.range (a.toNat + 1)).filter Nat.Prime
 
-
 open Classical in
 def ASK : ℝ :=
   ∑ j ∈ SizeData₂.lifts D, ∑ t : D.host.TT,
@@ -153,7 +115,6 @@ def ASK : ℝ :=
 def LoU (C : ℝ) (u : D.what₂.Word) : ℝ :=
   C * IOsum L + C * nTT D * D.R.m * (L.sc.a / D.R.k + L.sc.b') * Real.log ((D.mem u).A.T : ℝ) +
     C * L.sc.X'' D.R.n + 1
-
 
 end Derived
 
@@ -179,7 +140,6 @@ section Adm3
 
 variable {D : D7} {L : SizeData₂ D}
 
-
 end Adm3
 
 section Adm4
@@ -196,7 +156,6 @@ def FrobeniusExpansionCongruence (C : ℝ) : Prop :=
     ((D.fm u).lat 0).muMax ≤ C * nTT D * L.sc.a * Real.log (D.R.k * D.host.v) +
       C * D.R.f * (L.sc.b' + L.Sc) * (D.R.k * Real.log (D.R.k * D.host.v) +
         Real.log ((D.mem u).A.T : ℝ)) + C * D.R.f * (D.R.k : ℝ) ^ 2 * L.sc.L
-
 
 open Classical in
 def adm26 (C : ℝ) : Prop :=

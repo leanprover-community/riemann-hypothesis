@@ -16,17 +16,11 @@ open CategoryTheory NumberField IsDedekindDomain GroundTheory.Global
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
 
 section Places
 
 variable (ι : ∀ v : InfinitePlace K.1, ℚ̄ →ₐ[K.1] AlgebraicClosure v.Completion)
-
-def gsInfFamily (v : InfinitePlace K.1) :
-    Gal(AlgebraicClosure v.Completion / v.Completion) →ₜ* galUnramifiedOutside K.1 ℚ̄ S :=
-  ⟨decompHomS v.Completion S (ι v), continuous_decompHomS (Kv := v.Completion) S (ι v)⟩
 
 end Places
 
@@ -39,7 +33,6 @@ def gsRealH0Card
     (v : {v : InfinitePlace K.1 // v.IsReal}) : ℕ :=
   Nat.card (cohomology (Rep.res (gsRealFamily S ιr v).toMonoidHom M) 0)
 
-
 open scoped Classical in
 def gsEulerRatio
     (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion) : ℚ :=
@@ -49,7 +42,6 @@ def gsEulerRatio
 end Factor
 
 section Statement
-
 
 end Statement
 

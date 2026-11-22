@@ -563,7 +563,6 @@ theorem ptWeightFrom_nonneg (k r : ℕ) (T T' : ℝ) : ∀ (bs : List (ℂ × �
         | nil => simp at ht'
         | cons b' bs' => exact h3 t' (by rw [List.getLast?_cons_cons]; exact ht')
 
-
 open Formalism.HermitianLatticeCounting.ExpansionTerms in
 theorem last_block {r : ℕ} (γ : Point ℂ (r + 1)) (t : ℂ) (h : γ.1.getLast? = some (t, 1)) :
     leadMinor (ptMat γ) (r + 1) le_rfl = leadMinor (ptMat γ) r (Nat.le_succ r) * t ∧
@@ -916,31 +915,6 @@ namespace Formalism.MainNotions.BesselShellMomentBounds
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.OnePlaceEstimates Formalism.MainNotions.S.Pv.Frames
 
-def CloudNodeShape (D : D7) (Ch Cg : ℝ) (L : LocBessel D.R.k D.R.rS) (lam0 : Fin (2 * D.R.rS + D.R.k + 1) → ℝ)
-    (ka b bv : ℝ) (Bf : L.Hs → L.Wp) (μG μS νq : Measure (Mt D.R.k D.R.rS)) (P : Mx D.R.k D.R.rS) (w : L.Hs)
-    (j : ℕ) : Prop :=
-  LocOk0 D Ch Cg L lam0 ka b ka ∧
-    Cg * ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 7 ≤ bv ∧ ShapeS L.u lam0 bv ∧
-    IsBesselMapSm L.z (psi D.R.k D.R.rS L.z L.c) L.σ L.π Bf ∧
-    IsHaarOn (UH (Hpk D.R.k D.R.rS)) μG ∧ IsHaarOn (Sset D.R.k D.R.rS L.z) μS ∧ IsQuotMeas μG μS νq ∧
-    (∀ v ∈ smoothVecs (k := D.R.k) (r := D.R.rS) L.σ, l2SG νq (fun g => Bf (L.σ g v)) = (‖v‖₊ : ENNReal) ^ 2) ∧
-    IsCayleyU D.R.k D.R.rS L.ε P ∧ w ∈ shell L P j ∧ w ≠ 0
-
-def H1 (D : D7) (C2 b ka : ℝ) : ℝ :=
-  b ^ (C2 * ((2 * D.R.rS + 2 : ℕ) : ℝ)) * (1 + 1 / ka) ^ (2 * D.R.rS + 2)
-
-def la (D : D7) (L : LocBessel D.R.k D.R.rS) (a : Fin (D.R.rS + 1)) (g : Mx D.R.k D.R.rS) : ℝ :=
-  lA D.R.k D.R.rS L.z g a
-
-def ShellCommonHypotheses (D : D7) (Ch Cg : ℝ) (L : LocBessel D.R.k D.R.rS) (lam0 : Fin (2 * D.R.rS + D.R.k + 1) → ℝ)
-    (ka b bv : ℝ) (Bf : L.Hs → L.Wp) (μG μS νq : Measure (Mt D.R.k D.R.rS)) (P : Mx D.R.k D.R.rS) : Prop :=
-  LocOk0 D Ch Cg L lam0 ka b ka ∧
-    Cg * ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 7 ≤ bv ∧ ShapeS L.u lam0 bv ∧
-    IsBesselMapSm L.z (psi D.R.k D.R.rS L.z L.c) L.σ L.π Bf ∧
-    IsHaarOn (UH (Hpk D.R.k D.R.rS)) μG ∧ IsHaarOn (Sset D.R.k D.R.rS L.z) μS ∧ IsQuotMeas μG μS νq ∧
-    (∀ v ∈ smoothVecs (k := D.R.k) (r := D.R.rS) L.σ, l2SG νq (fun g => Bf (L.σ g v)) = (‖v‖₊ : ENNReal) ^ 2) ∧
-    IsCayleyU D.R.k D.R.rS L.ε P
-
 section Geometry
 
 variable {k r : ℕ}
@@ -968,7 +942,6 @@ end Meas
 section Arith
 
 end Arith
-
 
 end Formalism.MainNotions.BesselShellMomentBounds
 

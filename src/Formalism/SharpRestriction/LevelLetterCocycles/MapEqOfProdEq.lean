@@ -32,9 +32,6 @@ def eG : (Fin (r + t) → K) ≃ₗ[K] ((Fin r → K) × (Fin t → K)) :=
   (LinearEquiv.funCongrLeft K K finSumFinEquiv).trans
     (LinearEquiv.sumArrowLequivProdArrow (Fin r) (Fin t) K K)
 
-theorem eG_apply (u : Fin (r + t) → K) :
-    eG r t K u = (fun a => u (Fin.castAdd t a), fun c => u (Fin.natAdd r c)) := rfl
-
 variable {r t K}
 
 theorem eG_mulVec (M : Matrix (Fin (r + t)) (Fin (r + t)) K)

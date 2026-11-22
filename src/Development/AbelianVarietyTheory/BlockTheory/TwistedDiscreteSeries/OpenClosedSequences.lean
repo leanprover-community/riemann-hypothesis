@@ -82,7 +82,6 @@ theorem act_mul (x : Matrix b a k) (γ δ : GL a k × GL b k) : act x (γ * δ) 
 theorem continuous_act (γ : GL a k × GL b k) : Continuous fun x : Matrix b a k => act x γ :=
   (continuous_const.matrix_mul continuous_id).matrix_mul continuous_const
 
-
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 theorem rank_act (x : Matrix b a k) (γ : GL a k × GL b k) : (act x γ).rank = x.rank := by
   unfold act
@@ -94,10 +93,6 @@ variable (a b)
 def omChar (μ : kˣ →* ℂˣ) : GL a k × GL b k →* ℂˣ :=
   (detChar a (μ⁻¹ * absPow k ((Fintype.card b : ℂ) / 2))).comp (MonoidHom.fst _ _) *
     (detChar b (μ * absPow k (-(Fintype.card a : ℂ) / 2))).comp (MonoidHom.snd _ _)
-
-def omega (μ : kˣ →* ℂˣ) : Representation ℂ (GL a k × GL b k) (SB (Matrix b a k)) :=
-  twist (sbRep act act_one act_mul continuous_act) (omChar a b μ)
-
 
 variable (k) in
 abbrev RankIn (s : Set ℕ) : Type := {x : Matrix b a k // x.rank ∈ s}
@@ -113,23 +108,6 @@ theorem omegaOn_apply (μ : kˣ →* ℂˣ) (s : Set ℕ) (γ : GL a k × GL b k
     (x : RankIn (k := k) (a := a) (b := b) s) :
     (omegaOn a b μ s γ Φ).1 x =
       (omChar a b μ γ : ℂ) * Φ.1 ⟨act x.1 γ, by rw [rank_act]; exact x.2⟩ := rfl
-
-
-variable (a b) in
-def filt (μ : kˣ →* ℂˣ) (s : Set ℕ) (κ : ℕ) : Subrepresentation (omegaOn a b μ s) where
-  toSubmodule :=
-    { carrier := {Φ | ∀ x : RankIn (k := k) (a := a) (b := b) s, x.1.rank < κ → Φ.1 x = 0}
-      add_mem' := fun {f g} hf hg x hx => by
-        show f.1 x + g.1 x = 0
-        rw [hf x hx, hg x hx, add_zero]
-      zero_mem' := fun _ _ => rfl
-      smul_mem' := fun c f hf x hx => by
-        show c * f.1 x = 0
-        rw [hf x hx, mul_zero] }
-  apply_mem_toSubmodule γ Φ hΦ x hx := by
-    rw [omegaOn_apply, hΦ _ (by rwa [rank_act]), mul_zero]
-
-
 
 end Model
 

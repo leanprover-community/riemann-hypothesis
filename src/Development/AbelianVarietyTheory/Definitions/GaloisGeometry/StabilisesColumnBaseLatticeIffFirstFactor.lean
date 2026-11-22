@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.ClsSEqIffExistsGMapPrPSRatAS
 public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteClassSetOfFiniteIndex
 public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SplitStab
 public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SplitIntPI

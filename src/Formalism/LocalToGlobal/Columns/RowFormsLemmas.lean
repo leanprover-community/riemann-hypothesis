@@ -33,48 +33,6 @@ theorem mtVal_eqv (hX : X.Ok) (j : ℕ) (SG : Finset (HeightOneSpectrum (𝓞 X.
     del_smul := mtVal_del_smul W j
     inv := roundPk_inv X _ _ hX.emb_star }
 
-local macro "prove_row_form_ok " hX:term:max hC:term : tactic =>
-  `(tactic| (
-    have hOk {Y : Fields} {n : ℕ} {SG : Finset (HeightOneSpectrum (𝓞 Y.E))}
-        {C : CoefPk Y n (DecoSet (E := Y.E) (n := n) (ST := ∅) (SG := SG))}
-        {Λ : LevFam Y.E Y.K n SG} (hY : Y.Ok) (hEqv : C.Eqv) :
-        (formGSD C Λ).Ok := by
-      refine ⟨?_, ?_, ?_, ?_, ?_⟩
-      · obtain ⟨s, hs, hrep⟩ := DecoSet.finite_reps (ST := ∅) (SG := SG)
-          (n := n) (posStar_of_conj hY.conjE)
-        have : Finite s := hs
-        refine Finite.of_surjective (fun d : s => (formGSD C Λ).cls d.1) ?_
-        intro c
-        induction c using Quotient.inductionOn' with
-        | h d =>
-          obtain ⟨d0, hd0, g, hg⟩ := hrep d
-          refine ⟨⟨d0, hd0⟩, ((formGSD C Λ).cls_eq_iff d0 d).mpr
-            ⟨((g, 1) : FormG Λ)⁻¹, ?_⟩⟩
-          change d = (((g, 1) : FormG Λ) : (formGSD C Λ).G) • d0 at hg
-          rw [hg, inv_smul_smul]
-      · intro d
-        have := DecoSet.finite_stabilizer (posStar_of_conj hY.conjE)
-          (d : DecoSet (E := Y.E) (n := n) (ST := ∅) (SG := SG))
-        refine Finite.of_injective (fun a : MulAction.stabilizer (formGSD C Λ).G d =>
-          (⟨FormG.incl Λ a.1, a.2⟩ :
-            MulAction.stabilizer (UF Y.E n × GLG (E := Y.E) (n := n) (SG := SG)) d)) ?_
-        intro a b hab
-        exact Subtype.ext (FormG.incl_injective Λ (congrArg Subtype.val hab))
-      · intro g d
-        obtain ⟨m, hm, hc⟩ := Λ.chr_root g.2
-        exact (hEqv.nab_smul (FormG.incl Λ g) d).trans (map_root_smul _ _ hm hc).symm
-      · intro g d
-        obtain ⟨m, hm, hc⟩ := Λ.chr_root g.2
-        exact (hEqv.del_smul (FormG.incl Λ g) d).trans (map_root_smul _ _ hm hc).symm
-      · intro g x y
-        obtain ⟨m, hm, hc⟩ := Λ.chr_root g.2
-        let c : Y.K := (Λ.chr g.2 : Y.Kˣ)
-        change C.pair (c • C.rho g.1 x) (c • C.rho g.1 y) = C.pair x y
-        rw [LinearMap.map_smulₛₗ₂, map_smul, hEqv.inv, smul_smul]
-        change (star c * c) • C.pair x y = C.pair x y
-        rw [star_mul_root hY.conjK hm (show c ^ m = 1 from hc), one_smul]
-    exact hOk $hX $hC))
-
 theorem mtildeOk (hX : X.Ok) (P : LevFam X.E X.K R.r Pr.vGs) : (mtildeGSD W Ch sel mu P).Ok := by
   prove_row_form_ok hX (rowVal_eqv W hX _)
 
@@ -321,7 +279,6 @@ section Split
 
 variable {κ K : Type} [CommRing κ] [Field K] {n r : ℕ}
 
-
 open Classical in
 def Lev.ev (l : Lev κ K n) (M : GL (Fin n) κ) : Kˣ := if h : M ∈ l.H then l.lam ⟨M, h⟩ else 1
 
@@ -426,17 +383,6 @@ theorem Lev.inv_ev (l : Lev κ K n) (M : GL (Fin n) κ) : l.inv.ev M = (l.ev M)�
   · unfold Lev.ev
     rw [dif_neg h, dif_neg (show M ∉ l.inv.H from h), inv_one]
 
-theorem Lev.Split.inv {e : GL (Fin r) κ →* GL (Fin n) κ} {lP lK : Lev κ K n} {l0 : Lev κ K r}
-    (H : Lev.Split e lP lK l0) : Lev.Split e lP.inv lK.inv l0.inv := by
-  refine { fac := ?_, emb := ?_, sub := ?_ }
-  · intro M hM
-    obtain ⟨a, ha, k, hk, e1, e2⟩ := H.fac M hM
-    exact ⟨a, ha, k, hk, e1, by rw [Lev.inv_ev, Lev.inv_ev, Lev.inv_ev, e2, mul_inv]⟩
-  · intro a ha
-    exact ⟨(H.emb a ha).1, by rw [Lev.inv_ev, Lev.inv_ev, (H.emb a ha).2]⟩
-  · intro k hk
-    exact ⟨(H.sub k hk).1, by rw [Lev.inv_ev, Lev.inv_ev, (H.sub k hk).2]⟩
-
 end Split
 
 section SplitFam
@@ -459,7 +405,6 @@ structure LevFam.Split {SG0 SG : Finset (HeightOneSpectrum (𝓞 X.E))} (ι : GL
 
 variable {SG0 Q : Finset (HeightOneSpectrum (𝓞 X.E))}
 
-
 open Classical in
 def inlSG (w : SG0) : uSG SG0 Q := ⟨w.1, Finset.mem_union_left _ w.2⟩
 
@@ -477,7 +422,6 @@ theorem prod_uSG {M : Type} [CommMonoid M] (f : SG0 → M) :
   · intro w
     rw [dif_pos (show (inlSG (Q := Q) w).1 ∈ SG0 from w.2)]
     rfl
-
 
 open Classical in
 theorem LevFam.glue_split (h : r ≤ n) (TP TK : LevFam X.E X.K n SG0) (P : LevFam X.E X.K r SG0)

@@ -21,9 +21,6 @@ def intersection_update_fsHerm_neg_one (i0 k0 : Fin 2) : (ι → ℝ) →ₗ[ℝ
   map_smul' s p := by
     funext τ i k; simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]; split_ifs <;> simp
 
-lemma position_apply (i0 k0 : Fin 2) (p : ι → ℝ) (τ : ι) (i k : Fin 2) :
-    intersection_update_fsHerm_neg_one i0 k0 p τ i k = if i = i0 ∧ k = k0 then p τ else 0 := rfl
-
 lemma sum_position (y : ι → Fin 2 → Fin 2 → ℝ) :
     y = ∑ i0, ∑ k0, intersection_update_fsHerm_neg_one i0 k0 (fun τ => y τ i0 k0) := by
   funext τ i k

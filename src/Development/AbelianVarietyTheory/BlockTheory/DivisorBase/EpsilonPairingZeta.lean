@@ -15,12 +15,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta
 
 open GlobalTheory.PDivGroup GlobalTheory.Sandwich
 
-structure IsIntegers (O C : Type) [CommRing O] [NormedField C] [Algebra O C] : Prop where
-
-  inj : Function.Injective (algebraMap O C)
-
-  mem_iff : ∀ x : C, (∃ a : O, algebraMap O C a = x) ↔ ‖x‖ ≤ 1
-
 variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
   [IsAdicComplete (span {(p : O)}) O]
 
@@ -114,11 +108,6 @@ def HodgeTateSandwichAt [IsDomain O] {ε : PreTilt O p} (hε : IsPrimitiveSystem
 section Inhabitant
 
 variable [IsDomain O] {ε : PreTilt O p} (hε : IsPrimitiveSystem ε)
-
-
-
-
-
 
 end Inhabitant
 

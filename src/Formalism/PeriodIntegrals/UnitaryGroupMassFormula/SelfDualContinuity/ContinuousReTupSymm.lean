@@ -77,9 +77,6 @@ def reTup (ι : Type) [Fintype ι] :
     simp
   map_add' _ _ := rfl
 
-theorem reTup_apply (ι : Type) [Fintype ι] (x : ι → Fv F v ⊗[F] E) (p : Fin (Fintype.card ι))
-    (k : Fin 1) : reTup v ι x p k = x ((Fintype.equivFin ι).symm p) := rfl
-
 theorem continuous_reTup (ι : Type) [Fintype ι] : Continuous (reTup (E := E) v ι) := by
   refine continuous_pi fun p => continuous_pi fun k => ?_
   simp only [reTup_apply]

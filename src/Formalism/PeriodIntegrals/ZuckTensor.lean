@@ -61,18 +61,6 @@ structure TensorDSd (n : ℕ) (ε : Fin n → Bool) (μ : Fin n → ℝ) (H : Ty
 
 attribute [instance] TensorDSd.nH TensorDSd.iH TensorDSd.cH
 
-def Zuck : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (μ : Fin n → ℝ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    [CompleteSpace H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)),
-    IsHCParam μ → IsDS ε μ σ → (∃ g : ℝ, 1 < g ∧ GapAtLeast ε μ g) →
-      ∃ X : TensorDS n ε μ H σ, ∀ s, s ∈ X.Sm ↔ IsHCParam (μ + Pi.single s 1)
-
-def ZuckDual : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (μ : Fin n → ℝ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    [CompleteSpace H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)),
-    IsHCParam μ → IsDS ε μ σ → (∃ g : ℝ, 1 < g ∧ GapAtLeast ε μ g) →
-      ∃ X : TensorDSd n ε μ H σ, ∀ s, s ∈ X.Sm ↔ IsHCParam (μ - Pi.single s 1)
-
 end PI.ZuckTensor
 
 end

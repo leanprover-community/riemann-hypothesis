@@ -17,15 +17,12 @@ public import Formalism.SharpRestriction.Divisibility.WeightThresholdDefs
 public import Formalism.LocalRingCardinality.DataParams₂
 public import Formalism.LocalRingCardinality.DataDIVDefs
 public import Formalism.DegreeFormula.FlagDegFormula
-public import Formalism.SharpRestriction.Divisibility.LatticeTransfer
-public import Formalism.SharpRestriction.Divisibility.PrinLevClass
 public import Formalism.SharpRestriction.Divisibility.PlaceRankTwoOne
 public import Formalism.SharpRestriction.Divisibility.WeightFamilies
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders
 public import Formalism.DegreeFormula.PointDegree.FlagDeg
 public import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.GelfandTransference.EnergyIdentity
 public import Formalism.NormUnitaryBounds.DetPolynomialWeights.ShortIndependentVectorsOfDualMinimum
 public import Formalism.LatticeTheta.ThetaShiftInversion
 public import Formalism.SharpRestriction.LevelLetterCocycles.CommutingEndomorphismPreservesInvariants

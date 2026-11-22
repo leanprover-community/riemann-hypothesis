@@ -31,11 +31,6 @@ variable {T T' : Scheme.{0}} {G₀ : Over T} [GrpObj G₀] {G₁ : Over T'} [Grp
 def IsTorPart (tι : splitTorus T X ⟶ G₀) : Prop :=
   IsMonHom tι ∧ ∃ (B : Over T) (_ : GrpObj B) (q : G₀ ⟶ B), IsProper B.hom ∧ IsMonHom q ∧ IsPullback tι (toUnit _) q η[B]
 
-theorem isTorPart_id : IsTorPart (𝟙 (splitTorus T X)) :=
-  ⟨inferInstance, 𝟙_ _, inferInstance, toUnit _, inferInstanceAs (IsProper (𝟙 T)), inferInstance,
-    haveI : IsIso η[𝟙_ (Over T)] := by rw [show η[𝟙_ (Over T)] = 𝟙 _ from toUnit_unique _ _]; infer_instance
-    IsPullback.of_horiz_isIso ⟨toUnit_unique _ _⟩⟩
-
 theorem IsTorPart.mono {tι : splitTorus T X ⟶ G₀} (h : IsTorPart tι) : Mono tι := by
   obtain ⟨-, B, _, q, -, -, hk⟩ := h
   exact ⟨fun a b k => hk.hom_ext k (toUnit_unique _ _)⟩
@@ -183,7 +178,6 @@ def LatAt {X : Type} [AddCommGroup X] (m : I → X →+ X) (c : T → X →+ ZMo
     (tι : splitTorus (Sp κ) X ⟶ G₀), s (closedPoint κ) = w ∧ s ≫ M.s = spMap a ∧ IsGrpPullback G₀ G s φ ∧ IsTorPart tι ∧
     Compat f gγ ζ L m c s a φ tι
 
-
 variable (G) in
 def RkAt (w : M.Z) (r : ℕ) : Prop :=
   ∃ (X : Type) (_ : AddCommGroup X) (_ : Module.Free ℤ X) (_ : Module.Finite ℤ X) (κ : Type) (_ : Field κ)
@@ -191,7 +185,6 @@ def RkAt (w : M.Z) (r : ℕ) : Prop :=
     s (closedPoint κ) = w ∧ IsGrpPullback G₀ G s φ ∧ IsTorPart tι ∧ Module.finrank ℤ X = r
 
 variable {f gγ ζ L}
-
 
 omit [GrpObj G] in
 theorem Compat.equiv {X X' : Type} [AddCommGroup X] [AddCommGroup X'] {m : I → X →+ X} {c : T → X →+ ZMod L}
@@ -217,7 +210,6 @@ theorem Compat.equiv {X X' : Type} [AddCommGroup X] [AddCommGroup X'] {m : I →
         show e.symm.toAddMonoidHom.comp e.toAddMonoidHom = AddMonoidHom.id X from by ext x; simp,
         GlobalTheory.SplitTorus.torusMap_id, Category.id_comp]
       exact hv
-
 
 omit [GrpObj G] in
 theorem Compat.pull {X : Type} [AddCommGroup X] {m : I → X →+ X} {c : T → X →+ ZMod L} {A B : Type} [CommRing A]

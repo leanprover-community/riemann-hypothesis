@@ -18,8 +18,6 @@ variable {S : Type} [Group S] [TopologicalSpace S] [IsTopologicalGroup S] [Local
 
 def tr (g : S) : C(S, S) := ⟨(g * ·), continuous_const_mul g⟩
 
-theorem coe_tr (g : S) : ⇑(tr g) = (g * ·) := rfl
-
 theorem continuous_tr : Continuous (tr : S → C(S, S)) :=
   ContinuousMap.continuous_of_continuous_uncurry _ continuous_mul
 

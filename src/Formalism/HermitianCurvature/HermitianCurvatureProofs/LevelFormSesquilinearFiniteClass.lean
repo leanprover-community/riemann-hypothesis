@@ -74,23 +74,6 @@ theorem ckOn_smul' {m : ℕ∞} {UU : Set (B.Mat k r)} {F : B.Mat k r → (Wq �
   refine ⟨U, c • f, hU, hgU, hf.const_smul c, fun g hg hG => ?_⟩
   simp only [Pi.smul_apply, hFf g hg hG]
 
-def KKc (Bs : B.RealPlaceData k r Wp Wq) (A : ℝ) (mm : ℕ) : Submodule ℂ (B.Mat k r → (Wq →L[ℂ] Wp)) where
-  carrier := {F | ∃ ε, 0 < ε ∧ JC.CCCoef Bs A mm ε F}
-  zero_mem' := ⟨1, one_pos, ckOn_zero', ⟨0, Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_zero⟩, fun _ _ h => (h rfl).elim⟩
-  add_mem' := by
-    rintro F F' ⟨ε, hε, hF1, ⟨c, hc⟩, hF3⟩ ⟨ε', hε', hF1', ⟨c', hc'⟩, hF3'⟩
-    refine ⟨min ε ε', lt_min hε hε', ckOn_add' hF1 hF1', ⟨c + c', Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_add hc hc'⟩,
-      fun g hg hne => ?_⟩
-    by_cases h : F g = 0
-    · have h' : F' g ≠ 0 := by simpa [h] using hne
-      exact (min_le_right _ _).trans (hF3' g hg h')
-    · exact (min_le_left _ _).trans (hF3 g hg h)
-  smul_mem' := by
-    rintro a F ⟨ε, hε, hF1, ⟨c, hc⟩, hF3⟩
-    refine ⟨ε, hε, ckOn_smul' a hF1, ⟨‖a‖ * c, Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_smul a hc⟩, fun g hg hne => ?_⟩
-    refine hF3 g hg fun h => hne ?_
-    simp [h]
-
 end classes
 
 theorem auser_mono (P : M.Par) {N N' : ℕ} (h : N ≤ N') : P5.Auser P N ≤ P5.Auser P N' := by
@@ -1349,7 +1332,6 @@ theorem rma_isDom_omPlus (hz : inWb k r z) (hz' : inWb k r z') : IsDom k r z z' 
   rw [e]
   exact hg.2
 
-
 variable (k r z z' π π') in
 def rma_K : Submodule ℂ (Mx k r → (Wq →L[ℂ] Wp)) where
   carrier := FFl k r z z' π π' 0 (OmPlus k r z z')
@@ -1367,7 +1349,6 @@ theorem rma_resG_add {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (i :
     (J J' : Mx k r → E) (c : Fin r → ℂ) (g : Mx k r) :
     resG k r i (J + J') c g = resG k r i J c g + resG k r i J' c g := by
   simp only [resG, Pi.add_apply, smul_add]
-
 
 open Classical in
 variable (z z') in
@@ -1453,7 +1434,6 @@ theorem rma_res_apply (hz : inWb k r z) (hz' : inWb k r z') (J : Mx k r → (Wq 
   rw [e]
   exact rma_resFn_of_mem J hy
 
-
 variable (V : Type) [AddCommGroup V] [Module ℂ V] in
 def rma_fst : Pr V →ₐ[ℂ] Module.End ℂ V where
   toFun x := x.1
@@ -1463,12 +1443,9 @@ def rma_fst : Pr V →ₐ[ℂ] Module.End ℂ V where
   map_add' _ _ := rfl
   commutes' _ := rfl
 
-theorem rma_fst_mkP {V : Type} [AddCommGroup V] [Module ℂ V] (A B : Module.End ℂ V) : rma_fst V (mkP A B) = A := rfl
-
 theorem rma_star_alg {V : Type} [AddCommGroup V] [Module ℂ V] (w : ℂ) :
     star (algebraMap ℂ (Pr V) w) = algebraMap ℂ (Pr V) (star w) := by
   rw [P.Qx8.algebraMap_Pr, P.Qx8.algebraMap_Pr, P.Qx8.star_mkPair, star_star]
-
 
 variable (k r z z') in
 def rma_Loc {E : Type*} (N : OM (Fn k r E)) : Prop :=
@@ -1658,7 +1635,6 @@ theorem rma_QQi (X : ActualOps k r z z' π π') (L : R.LevelData (Pr (RadSp k r 
   rw [hQ, Matrix.smul_apply, map_smul, LinearMap.smul_apply, Submodule.coe_smul, Pi.smul_apply, Pi.smul_apply]
   congr 1
   exact (rma_sandw X L hL Y r le_rfl _ _ (rma_base X Y) (rma_QL_loc Y)).1 a b Ψ y hy
-
 
 variable (k r z z') in
 def rma_Qop (s : ℂ) : ℂ → Wd.M2 (D.Op (Mx k r → (Wq →L[ℂ] Wp))) := fun Y =>

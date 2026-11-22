@@ -16,16 +16,11 @@ section Forms
 
 variable {Y : Type} [AddCommGroup Y]
 
-def quad (β : Bil Y) (x : Y) : ℝ := β x x / 2
-
 def IsIntegralFn (S : Submodule ℝ (Bil Y)) (l : S →ₗ[ℝ] ℝ) : Prop :=
   ∀ β : S, (∀ a c, ∃ z : ℤ, (β : Bil Y) a c = z) → ∃ z : ℤ, l β = z
 
 def IsPositiveFn (S : Submodule ℝ (Bil Y)) (l : S →ₗ[ℝ] ℝ) : Prop :=
   ∀ β : S, (∀ a, 0 ≤ (β : Bil Y) a a) → β ≠ 0 → 0 < l β
-
-def leastExponent (S : Submodule ℝ (Bil Y)) (b : S) : ℝ :=
-  sInf {x | ∃ l : S →ₗ[ℝ] ℝ, IsIntegralFn S l ∧ IsPositiveFn S l ∧ x = l b}
 
 def evalSum (S : Submodule ℝ (Bil Y)) {k : ℕ} (x x' : Fin k → Y) : S →ₗ[ℝ] ℝ where
   toFun β := ∑ i, (β : Bil Y) (x i) (x' i)
@@ -36,8 +31,6 @@ end Forms
 
 variable (E : Type) [Field E] [NumberField E] [IsCMField E]
 
-def HasTraceOne : Prop := ∃ w : 𝓞 E, w + ringOfIntegersComplexConj E w = 1
-
 variable {Y : Type} [AddCommGroup Y] [Module (𝓞 E) Y]
 
 def IsBalanced (β : Bil Y) : Prop :=
@@ -45,8 +38,6 @@ def IsBalanced (β : Bil Y) : Prop :=
     ∀ (a : 𝓞 E) (x y : Y), β (a • x) y = β x (ringOfIntegersComplexConj E a • y)
 
 def IsBalancedSpace (S : Submodule ℝ (Bil Y)) : Prop := ∀ β, β ∈ S ↔ IsBalanced E β
-
-
 
 open NumberField NumberField.IsCMField TensorProduct in
 variable (E : Type) [Field E] [NumberField E] [IsCMField E] in

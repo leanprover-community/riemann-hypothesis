@@ -113,9 +113,6 @@ def Into (Λ : Set (Fin n → E)) : Set (HA (Fv F v) σ J) :=
     ((HA.mat (Fv F v) σ J x : GL (Fin n) (Fv F v ⊗[F] E)) : Matrix (Fin n) (Fin n) _) *ᵥ z ∈
       latLoc (E := E) v Λ}
 
-theorem mat_inv (x : HA (Fv F v) σ J) :
-    HA.mat (Fv F v) σ J x⁻¹ = (HA.mat (Fv F v) σ J x)⁻¹ := rfl
-
 theorem kv_eq (Λ : Set (Fin n → E)) :
     Formalism.L2.SG.TypedSets.Kv σ J Λ v = Into σ J v Λ ∩ (fun x => x⁻¹) ⁻¹' Into σ J v Λ := by
   ext x

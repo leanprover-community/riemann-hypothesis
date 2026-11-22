@@ -47,9 +47,6 @@ theorem hs_neg_l (A C : Wq →L[ℂ] Wp) : B.hsInner (-A) C = -B.hsInner A C := 
 theorem hs_neg_r (A C : Wq →L[ℂ] Wp) : B.hsInner A (-C) = -B.hsInner A C := by
   rw [← neg_one_smul ℂ C, hs_smul_r]; simp
 
-theorem hs_zero_l (C : Wq →L[ℂ] Wp) : B.hsInner 0 C = 0 := by
-  rw [← zero_smul ℂ (0 : Wq →L[ℂ] Wp), hs_smul_l]; ring
-
 theorem hs_zero_r (A : Wq →L[ℂ] Wp) : B.hsInner A 0 = 0 := by
   rw [← zero_smul ℂ (0 : Wq →L[ℂ] Wp), hs_smul_r]; simp
 
@@ -58,17 +55,6 @@ end HS
 section Act
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V] {S : Type} [Fintype S] [DecidableEq S]
-
-theorem pfst_zero : (0 : Pr V).1 = 0 := rfl
-theorem pfst_one : (1 : Pr V).1 = 1 := rfl
-theorem pfst_add (x y : Pr V) : (x + y).1 = x.1 + y.1 := rfl
-theorem pfst_neg (x : Pr V) : (-x).1 = -x.1 := rfl
-theorem pfst_sub (x y : Pr V) : (x - y).1 = x.1 - y.1 := rfl
-theorem pfst_one_apply (Φ : V) : (1 : Pr V).1 Φ = Φ := rfl
-theorem pfst_alg (Y : ℂ) (Φ : V) : (algebraMap ℂ (Pr V) Y).1 Φ = Y • Φ := rfl
-theorem pfst_star_alg (Y : ℂ) (Φ : V) : (star (algebraMap ℂ (Pr V) Y)).1 Φ = conj Y • Φ := rfl
-theorem pfst_mkP (X Xs : Module.End ℂ V) : (mkP X Xs : Pr V).1 = X := rfl
-theorem pfst_star_mkP (X Xs : Module.End ℂ V) : (star (mkP X Xs : Pr V)).1 = Xs := rfl
 
 theorem ins_apply1 (a : S) (M : M2 (Pr V)) (y y' : Ix S) :
     (ins a (lift0 M) : SlopeTestRemainingChoices S (Pr V)) y y' = ∑ j, if y' = Function.update y a j then M (y a) j else 0 := by
@@ -609,7 +595,6 @@ theorem core (X : ActualOps k r z z' π π') (L : R.LevelData (Pr (RadSp k r z z
 end Core
 
 end OneLetterPf
-
 
 open OneLetterPf in
 theorem one_letter_density_estimate (hL : LeibnizCls) (hS : DensSmoothCls) : OneLetterDens := by

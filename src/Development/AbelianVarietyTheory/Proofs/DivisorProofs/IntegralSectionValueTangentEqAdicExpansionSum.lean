@@ -2,7 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.TanRel
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsPolAVSectionInverseImage
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbsoluteSiegel
+public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffTopMonEqZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigValD
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.GermEqZeroOfThickenings

@@ -89,10 +89,6 @@ def xv (S : HSpace E) (x v : S.V) : S.V →ₗ[E] S.V where
   map_add' y y' := by simp only [brS, map_add (f := _), add_smul]; abel
   map_smul' c y := by simp [brS, map_smul, smul_sub, mul_smul]
 
-def blockEnds {T' : E} (F : FlagG S r T) (F' : FlagG S r T') (j : ℕ) : Finset ℕ := by
-  classical
-  exact (Finset.Icc 1 j).filter (fun l => Dl F F' l ≠ 0)
-
 def frameExp (r l : ℕ) : ℕ := ∑ a ∈ Finset.Icc 1 l, (r + 1 - a)
 
 def Nloc (dd : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (r l : ℕ) (x : E) : ℚ :=

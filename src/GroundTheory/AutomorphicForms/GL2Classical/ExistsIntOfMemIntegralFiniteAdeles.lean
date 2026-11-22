@@ -20,8 +20,6 @@ open AdelicGLn
 
 set_option linter.unusedSectionVars false
 
-local notation "𝔸f" => FiniteAdeleRing (𝓞 ℚ) ℚ
-
 theorem exists_int_of_mem_integralFiniteAdeles {x : ℚ}
     (hx : algebraMap ℚ 𝔸f x ∈ integralFiniteAdeles (𝓞 ℚ) ℚ) : ∃ m : ℤ, x = m := by
   obtain ⟨z, hz⟩ := exists_eq_of_forall_mem_adicCompletionIntegers ℚ x fun v => hx v

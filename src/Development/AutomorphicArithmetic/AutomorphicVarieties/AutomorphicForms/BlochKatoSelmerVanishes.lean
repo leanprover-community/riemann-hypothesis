@@ -54,7 +54,6 @@ def KLev (n M : ℕ) : Subgroup (GL (Fin n) (Af F)) :=
   (Matrix.GeneralLinearGroup.map (n := Fin n) (Ideal.Quotient.mk (Ideal.span {(M : ↥(Ohat F))}))).ker.map
     (Matrix.GeneralLinearGroup.map (Ohat F).subtype)
 
-
 variable {F} in
 def HasFixed {Γ V : Type} [Group Γ] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ Γ V) (U : Subgroup Γ) : Prop :=
   ∃ v : V, v ≠ 0 ∧ ∀ u ∈ U, ρ u v = v
@@ -64,7 +63,6 @@ end Level
 section Gal
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
-
 
 omit [NumberField F] in
 def KillsMu (M : ℕ) {C : Type} [Monoid C] (χ : G F Ω →* C) : Prop :=
@@ -85,22 +83,16 @@ def AttachedSys (ι : Qbar l ≃+* ℂ) (r : G F Ω →* GL (Fin n) (Qbar l))
 def AttC [_root_.NumberField.IsTotallyComplex F] (ι : Qbar l ≃+* ℂ) (r : G F Ω →* GL (Fin n) (Qbar l)) (π : CuspSub F n) : Prop :=
   AttachedSys ι r (CG.mk π).HasSat
 
-def IsAutCsd [IsCMField F] (ι : Qbar l ≃+* ℂ) (r : G F Ω →* GL (Fin n) (Qbar l)) : Prop :=
-  ∃ π : CuspSub F n, (CG.mk π).IsRegAlg ∧ GlobalTheory.ContraPair.DualIsConj π ∧ AttC ι r π
-
-
 variable (l) in
 def LevelAway (M : ℕ) (r : G F Ω →* GL (Fin n) (Qbar l)) : Prop :=
   ∀ w : HeightOneSpectrum (𝓞 F), ((l : ℕ) : 𝓞 F) ∉ w.asIdeal → ∃ A : ValuationSubring Ω, IsPlaceOver A w ∧
     ∃ χ : Fin n → G F Ω →* (Qbar l)ˣ, (∀ i, KillsMu M (χ i)) ∧ IsDiagOn r (Ine (F := F) A) χ
-
 
 omit [NumberField F] in
 def PotCrysAt (r : G F Ω →* GL (Fin n) (Qbar l)) (A : ValuationSubring Ω) : Prop :=
   ∃ (O : Type) (_ : CommRing O) (_ : Algebra ℤ_[l] O) (_ : TopologicalSpace O)
     (Bw : LocBridge l F Ω (Dec (F := F) A) O), GlobalTheory.Pst.Induces Bw ∧
       GlobalTheory.Pst.IsPotCrysAt (Loc.PP l) Bw (r.comp (Dec (F := F) A).subtype)
-
 
 variable (l) in
 def LevelAt (M : ℕ) (m : Fin n → ℤ) (r : G F Ω →* GL (Fin n) (Qbar l)) : Prop :=
@@ -110,13 +102,11 @@ def LevelAt (M : ℕ) (m : Fin n → ℤ) (r : G F Ω →* GL (Fin n) (Qbar l)) 
       (∀ i (s : ↥(Dec (F := F) A)), (s : G F Ω) ∈ Ine (F := F) A → κ i s = cycBar F Ω l s ^ m i * χ i s) ∧
       ((∀ i j, κ i ≠ κ j * (cycBar F Ω l).comp (Dec (F := F) A).subtype) ∨ PotCrysAt r A)
 
-
 variable (l) in
 structure Level (M : ℕ) (m : Fin n → ℤ) (r : G F Ω →* GL (Fin n) (Qbar l)) : Prop where
   cont : Continuous r
   away : LevelAway l M r
   above : LevelAt l M m r
-
 
 omit [NumberField F] in
 variable (F) in
@@ -134,7 +124,6 @@ def decJ (j : Ω →+* Om l) : Subgroup (G F Ω × GQ l) where
 variable {C V : Type} [CommRing C] [Algebra ℚ_[l] C] [AddCommGroup V] [Module C V] [Module ℚ_[l] V]
   [IsScalarTower ℚ_[l] C V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousConstSMul C V]
 
-
 variable (l) in
 structure IsBK (ρ : Representation C (G F Ω) V) (c : G F Ω → V) : Prop where
   away : ∀ w : HeightOneSpectrum (𝓞 F), ((l : ℕ) : 𝓞 F) ∉ w.asIdeal → ∃ A : ValuationSubring Ω, IsPlaceOver A w ∧
@@ -142,7 +131,6 @@ structure IsBK (ρ : Representation C (G F Ω) V) (c : G F Ω → V) : Prop wher
   above : ∀ τ : F →+* Om l, ∃ j : Ω →+* Om l, j.comp (algebraMap F Ω) = τ ∧
     (fun x : ↥(decJ F j) => c x.1.1) ∈ Loc.finiteCocycles ((MonoidHom.snd _ _).comp (decJ F j).subtype)
       (ρ.comp ((MonoidHom.fst _ _).comp (decJ F j).subtype))
-
 
 variable (l) in
 def BlochKatoSelmerVanishes (ρ : Representation C (G F Ω) V) : Prop := ∀ c ∈ Z1 ρ, IsBK l ρ c → c ∈ ReciprocityTheory.Gal.B1 ρ

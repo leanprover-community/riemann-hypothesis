@@ -52,12 +52,6 @@ private theorem fin_split {E : Type} [Field E] [NumberField E] [IsCMField E] {a 
   · have hi' : i ≠ w := by simpa using hi
     simp only [Fm.fac, position_off L _ hi']
 
-private theorem ex_add {ι G : Type} [Group G] (K : Subgroup G) (g : ι → G → ℂ) (x y : Ex ι) (h : G) :
-    (x.add y).fn K g h = x.fn K g h + y.fn K g h := rfl
-
-private theorem ex_smul {ι G : Type} [Group G] (K : Subgroup G) (g : ι → G → ℂ) (c : ℂ) (x : Ex ι) (h : G) :
-    (Ex.smul c x).fn K g h = c * x.fn K g h := rfl
-
 theorem hkLin : HkLin := by
   intro E _ _ _ a b l₁ l₂ D A S Z L hS hZ' w hw hZ x y z c
   have key : ∀ (e₁ e₂ : Ex (Fin (a + 1) × Fin (b + 1))) (u v : Unit) (h : Hf E a b), A.hk S L {w} (fun _ => e₁) (fun _ => e₂) u v h =

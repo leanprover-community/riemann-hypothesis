@@ -92,13 +92,9 @@ section Tens
 variable {Qp LL V : Type} [Field Qp] [Field LL] [Algebra Qp LL] [AddCommGroup V] [Module LL V]
   [Module Qp V] [IsScalarTower Qp LL V] {R : Type} [CommRing R] [Algebra Qp R]
 
-
 variable (Qp LL V) in
 def mu (b : R) : V ⊗[Qp] R →ₗ[LL] V ⊗[Qp] R :=
   AlgebraTensorModule.map LinearMap.id (LinearMap.mulLeft Qp b)
-
-theorem mu_tmul (b c : R) (v : V) : mu Qp LL V b (v ⊗ₜ c) = v ⊗ₜ (b * c) := rfl
-
 
 variable (Qp V R) in
 def muHom : R →ₐ[Qp] Module.End Qp (V ⊗[Qp] R) :=
@@ -137,9 +133,6 @@ theorem exists_sum {K : Type} [Field K] [Algebra Qp K] [Algebra K R] [IsScalarTo
 def coords {n : ℕ} (v : Basis (Fin n) LL V) (ι : LL →ₐ[Qp] R) : V ⊗[Qp] R →ₗ[Qp] (Fin n → R) :=
   LinearMap.pi fun j => TensorProduct.lift
     ((LinearMap.mul Qp R) ∘ₗ ι.toLinearMap ∘ₗ (v.coord j).restrictScalars Qp)
-
-theorem coords_tmul {n : ℕ} (v : Basis (Fin n) LL V) (ι : LL →ₐ[Qp] R) (x : V) (b : R) (j : Fin n) :
-    coords v ι (x ⊗ₜ b) j = ι (v.repr x j) * b := rfl
 
 theorem coords_smul {n : ℕ} (v : Basis (Fin n) LL V) (ι : LL →ₐ[Qp] R) (c : LL) (x : V ⊗[Qp] R) :
     coords v ι (c • x) = ι c • coords v ι x := by
@@ -510,7 +503,6 @@ theorem mem_FilV_local [IsDomain P.R.BdR] (K LL : FinExt l) (T : Lt K LL) (τ : 
     (by rw [← hσ₀, hι]; rfl)) hσ
   exact ⟨g, fun c => by rw [P.PD_actdR, hσ₀, P.actQdR_Om, hg]⟩
 
-
 variable {P} in
 theorem ddR_le {AI : LocAinf l P} (ht : LocTied l P AI) (K LL : FinExt l) (T : Lt K LL)
     (hc : Nat.card (↥K.1 →ₐ[ℚ_[l]] ↥LL.1) = finrank ℚ_[l] ↥K.1)
@@ -524,7 +516,6 @@ theorem ddR_le {AI : LocAinf l P} (ht : LocTied l P AI) (K LL : FinExt l) (T : L
   intro y hy
   obtain ⟨m, c, d, hd, rfl⟩ := (GlobalTheory.Per.CrisDR.isDR_of_isCrys l _ _ ht K LL T.V T.ρ hT).2 y hy
   exact Submodule.sum_mem _ fun j _ => mu_iota_mem (P.PD K) T hc hc0 τ (c j) (d j) (hd j)
-
 
 variable {P} in
 theorem component_tied {AI : LocAinf l P} (ht : LocTied l P AI) (K LL : FinExt l) (T : Lt K LL)
@@ -556,7 +547,6 @@ theorem component_tied {AI : LocAinf l P} (ht : LocTied l P AI) (K LL : FinExt l
     exists_lift (P.PD K) T τ _ hle, hdim⟩
 
 end Local
-
 
 set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 1000000 in

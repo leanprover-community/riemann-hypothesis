@@ -201,13 +201,8 @@ theorem finrank_L_add_divisor (D : Divisor k K) {x : K} (hx : x ≠ 0) :
 
 end Divisor
 
-
-variable (k K) in
-noncomputable abbrev Pic := Divisor k K ⧸ principalDivisors (k := k) (K := K)
-
 namespace Pic
 
 end Pic
-
 
 end GroundTheory.FunctionField

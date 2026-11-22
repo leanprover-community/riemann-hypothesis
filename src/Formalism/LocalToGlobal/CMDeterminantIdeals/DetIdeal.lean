@@ -54,12 +54,8 @@ namespace MLat
 
 variable {m : ℕ}
 
-def Good (L : MLat K m) : Prop :=
-  L.M.FG ∧ Submodule.span K (L.M : Set (Fin m → K)) = ⊤ ∧ ∀ σ, (L.H σ).PosDef
-
 def detSub (L : MLat K m) : Submodule (𝓞 K) K :=
   Submodule.span (𝓞 K) {d | ∃ x : Fin m → Fin m → K, (∀ i, x i ∈ L.M) ∧ d = (Matrix.of x).det}
-
 
 open Classical in
 def detIdeal (L : MLat K m) : FractionalIdeal (𝓞 K)⁰ K := by

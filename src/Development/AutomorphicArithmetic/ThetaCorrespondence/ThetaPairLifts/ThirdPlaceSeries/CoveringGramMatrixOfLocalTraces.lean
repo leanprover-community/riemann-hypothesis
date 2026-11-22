@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.TamagawaNumberSpecialUnitary
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowNormHasGram
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowLatticeFinitelyGenerated
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowGoodLatticeNeBot

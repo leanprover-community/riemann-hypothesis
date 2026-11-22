@@ -342,9 +342,6 @@ def matEquiv (m n : ℕ) : (Fin m → Fin n → ℂ) ≃L[ℝ] EuclideanSpace �
       left_inv := fun _ => rfl
       right_inv := fun _ => rfl }
 
-theorem matEquiv_apply (u : Fin m → Fin n → ℂ) (p : Fin m × Fin n) :
-    matEquiv m n u p = u p.1 p.2 := rfl
-
 theorem trace_eq_inner (u v : Fin m → Fin n → ℂ) :
     Matrix.trace ((Matrix.of u)ᴴ * Matrix.of v) = inner ℂ (matEquiv m n u) (matEquiv m n v) := by
   rw [PiLp.inner_apply, Fintype.sum_prod_type_right]

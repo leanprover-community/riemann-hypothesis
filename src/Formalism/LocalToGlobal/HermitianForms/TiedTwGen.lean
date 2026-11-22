@@ -20,14 +20,10 @@ def latCrd (D : D7) (i : ℕ) (hi : i ≤ D.R.m) (L : letI := D.host.cmStar; Sub
       (D.sp.X i).V ≃ₗ[D.host.E] (Fin (D.R.N i) → D.host.E)) :
       (D.sp.X i).V →ₗ[D.host.E] (Fin (D.R.N i) → D.host.E)).restrictScalars (𝓞 D.host.E))
 
-theorem clsCrd_eq (D : D7) (u : D.what₂.Word) (i : ℕ) (hi : i ≤ D.R.m) (c : (D.mem u).C.cls i) :
-    clsCrd D u i hi c = latCrd D i hi (D.clsLat u i c) := rfl
-
 def badQ (D : D7) (Q : Finset (HeightOneSpectrum (𝓞 D.host.F))) : Set (HeightOneSpectrum (𝓞 D.host.F)) :=
   badG D ∪ (Q : Set (HeightOneSpectrum (𝓞 D.host.F)))
 
 variable {D : D7}
-
 
 set_option maxHeartbeats 1000000 in
 structure LevelChart (D : D7) (T : ℕ) (bad : Set (HeightOneSpectrum (𝓞 D.host.F))) (i : ℕ) (hi : i ≤ D.R.m) {cl : Type}
@@ -69,7 +65,6 @@ variable {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {A :
 def lamTG (i : ℕ) : D.what₂.Tau → DomWeight (D.R.N i) :=
   fun τ => shW (M.lam i τ) ((i * (D.R.t + 1) / 2 : ℕ) : ℤ)
 
-
 set_option maxHeartbeats 1000000 in
 structure ValuationCompatibleChart {T : ℕ} {bad : Set (HeightOneSpectrum (𝓞 D.host.F))} {i : ℕ} {hi : i ≤ D.R.m} (eY : C.Y i ≃ Fr D i hi)
     (okW : D.what₂.places.Pl → Prop) {Ch : Type} (chOf : C.cls i → Ch) {lat : C.cls i → Submodule (𝓞 D.host.E) (Fin (D.R.N i) → D.host.E)}
@@ -104,7 +99,6 @@ def NormTieG {i : ℕ} {hi : i ≤ D.R.m} (eY : C.Y i ≃ Fr D i hi) : Prop :=
       (Formalism.HermitianLatticesTheory.majAt (M.lat i).b (M.lat i).X (InfinitePlace.mk s) x x).re =
         ∑ c, (C.wt i c).re * (∏ τ, ‖(o.1 τ).det‖ ^ (2 * shiftOf (lamTG M i) τ)) *
           (nfAll (M.lam i) (subP o.1 (MvPolynomial.map s (Pc c))) (subP o.1 (MvPolynomial.map s (Pc c)))).re
-
 
 set_option maxHeartbeats 1000000 in
 structure DilationCompatibleChart {T : ℕ} {bad : Set (HeightOneSpectrum (𝓞 D.host.F))} {i : ℕ} {hi : i ≤ D.R.m} (eY : C.Y i ≃ Fr D i hi)

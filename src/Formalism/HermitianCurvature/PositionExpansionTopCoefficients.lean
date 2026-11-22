@@ -12,31 +12,12 @@ open scoped ComplexOrder
 
 noncomputable section
 
-structure Rep (A V : Type) [Ring A] [StarRing A] [Algebra ℂ A] [AddCommGroup V] [Module ℂ V]
-    [Module A V] where
-
-  β : F7.Sesq V
-
-  adj : ∀ (a : A) (x y : V), β (a • x) y = β x (star a • y)
-
 section Defs
 
 variable {A S V : Type} [Ring A] [StarRing A] [Algebra ℂ A] [Fintype S] [DecidableEq S]
   [AddCommGroup V] [Module ℂ V] [Module A V]
 
 end Defs
-
-def GrowthHypotheses {S : Type} (α β : ℝ) (w : List (Letter ℂ S)) : Prop :=
-  (w.map Letter.intersection_update_fsHerm_neg_one).Nodup ∧
-  (∀ l ∈ w, l.pt.im = 0 ∧ l.pt.re ∈ Set.Ioo α β ∧
-    (if l.plus then l.pt.re + 1 else l.pt.re - 1) ∈ Set.Ioo α β) ∧
-  ∀ i j : Fin w.length, i ≠ j →
-    if (w.get j).plus then
-      2 < |(w.get i).pt.re - (w.get j).pt.re| ∧ 2 < |(w.get i).pt.re - (w.get j).pt.re + 1| ∧
-        2 < |(w.get i).pt.re - (w.get j).pt.re - 1|
-    else
-      2 < |(w.get j).pt.re - (w.get i).pt.re| ∧ 2 < |(w.get j).pt.re - (w.get i).pt.re - 1| ∧
-        2 < |(w.get j).pt.re - (w.get i).pt.re - 2|
 
 def DKHyp {S : Type} [Fintype S] [DecidableEq S] (q : ℂ → ℂ) (w L : List (Letter ℂ S)) : Prop :=
   (∀ l ∈ L, l.plus = true) ∧ Good (L ++ w) ∧ Good (L.map dl ++ w) ∧

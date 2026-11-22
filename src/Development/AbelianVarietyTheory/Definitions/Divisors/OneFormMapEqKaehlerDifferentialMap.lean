@@ -64,7 +64,6 @@ theorem indDR {P : DR R B → Prop} (h : ∀ b : B, P (algebraMap B _ b)) (hd : 
   | mul a b h1 h2 => exact hm _ _ h1 h2
   | add a b h1 h2 => exact ha _ _ h1 h2
 
-
 variable (R B) in
 def Tw : Type := DR R B × DR R B
 
@@ -131,8 +130,6 @@ instance : Algebra B (Tw R B) := (ofFun (R := R)).toAlgebra' fun b x ↦ by
   · simp [Algebra.commutes]
   · simp [Algebra.commutes, ι_mul (D R B b), add_comm]
 
-theorem smul_def' (b : B) (x : Tw R B) : b • x = ofFun b * x := rfl
-
 instance : Module R (Tw R B) := inferInstanceAs (Module R (DR R B × DR R B))
 
 @[local simp] private theorem smul_1 (r : R) (a : Tw R B) : (r • a).1 = r • a.1 := rfl
@@ -153,8 +150,6 @@ def der : Derivation R B (Tw R B) :=
       ext
       · simp [smul_def', ← Algebra.smul_def]
       · simp [smul_def', ι_mul_ι_swap (D R B a)]
-
-theorem der_apply (b : B) : der (R := R) b = mk (ι1 (D R B b)) 0 := rfl
 
 theorem lift_anti (a b : Ω[B⁄R]) :
     der.liftKaehlerDifferential a * der.liftKaehlerDifferential b +
@@ -197,7 +192,6 @@ theorem graph_1 (x : DR R B) : (graph x).1 = x := by
   | ha x y hx hy => rw [map_add (f := _), add_1, hx, hy]
 
 end Tw
-
 
 variable (R B) in
 def dDR : DR R B →ₗ[R] DR R B where
@@ -272,7 +266,6 @@ theorem sgn_of_mem {j : ℕ} {x : DR R B} (hx : x ∈ ⋀[B]^j Ω[B⁄R]) : sgn 
     rw [map_mul, sgn_ι, ih, pow_succ]
     rcases neg_one_pow_eq_or (DR R B) i with h | h <;> simp [h]
 
-
 variable (R B) in
 def dOm (j : ℕ) : Om R B j →ₗ[R] Om R B (j + 1) where
   toFun x := ⟨dDR R B x, dDR_mem x.2⟩
@@ -284,21 +277,16 @@ def dOm (j : ℕ) : Om R B j →ₗ[R] Om R B (j + 1) where
 @[simp] theorem dOm_dOm {j : ℕ} (x : Om R B j) : dOm R B (j + 1) (dOm R B j x) = 0 :=
   Subtype.ext (dDR_dDR _)
 
-
 variable (R B) in
 def dOne : Ω[B⁄R] →ₗ[R] Om R B 2 where
   toFun ω := ⟨dDR R B (ι1 ω), dDR_ι_mem ω⟩
   map_add' x y := Subtype.ext (by simp)
   map_smul' r x := Subtype.ext (by simp)
 
-
 variable (R B) in
 def dTwo : Om R B 2 →ₗ[R] Om R B 3 := dOm R B 2
 
 @[simp] theorem coe_dOne (ω : Ω[B⁄R]) : (dOne R B ω : DR R B) = dDR R B (ι1 ω) := rfl
-
-theorem dOne_eq_dOm (ω : Ω[B⁄R]) : dOne R B ω = dOm R B 1 ⟨ι1 ω, ι_mem ω⟩ := rfl
-
 
 variable (R B) in
 def wedge : Ω[B⁄R] →ₗ[B] Ω[B⁄R] →ₗ[B] Om R B 2 :=
@@ -456,9 +444,6 @@ def SemiHom.mOm (h : SemiHom σ α) (j : ℕ) : Om R B j →ₛₗ[σ] Om R' B' 
 
 theorem SemiHom.mOm_smul (h : SemiHom σ α) {j : ℕ} (b : B) (x : Om R B j) :
     h.mOm j (b • x) = α b • h.mOm j x := Subtype.ext (h.mDR_smul b x)
-
-theorem SemiHom.mOm_dOm (h : SemiHom σ α) {j : ℕ} (x : Om R B j) :
-    h.mOm (j + 1) (dOm R B j x) = dOm R' B' j (h.mOm j x) := Subtype.ext (h.mDR_dDR x)
 
 theorem SemiHom.mOm_dOne (h : SemiHom σ α) (ω : Ω[B⁄R]) : h.mOm 2 (dOne R B ω) = dOne R' B' (h.m1 ω) :=
   Subtype.ext (by simp [h.mDR_dDR])

@@ -178,11 +178,6 @@ theorem spMap_base : spMap (base F y) = toPow F y ≫ toO F r := by
   show Spec.map (CommRingCat.ofHom (Spec.preimage (toPow F y ≫ toO F r)).hom) = _
   rw [CommRingCat.ofHom_hom, Spec.map_preimage]
 
-abbrev sieg : SiegPre h n ζ (spMap (base F y)) := siegAt F (toPow F y) _ (spMap_base F y).symm
-
-theorem principal_sieg : (sieg F y).Principal :=
-  principal_siegPull _ _ _ _ F.princ
-
 end Base
 
 end GlobalTheory.LowChart
@@ -202,14 +197,6 @@ theorem isRegularLocalRing_stalk [IsRegularRing o] : IsRegularLocalRing ((powA F
   have : IsRegularRing ((powA F r).left.presheaf.stalk y) :=
     GlobalTheory.ExtendRig.isRegularRing_stalk GlobalTheory.isRegularRing_of_smooth o (toO F r) y
   exact IsRegularLocalRing.of_isRegularRing_of_isLocalRing _
-
-theorem isRegularLocalRing_W_of_isRegularRing [IsRegularRing o] : IsRegularLocalRing (W F y) := by
-  have := isRegularLocalRing_stalk F y
-  exact GlobalTheory.RegularCompletion.isRegularLocalRing_adicCompletion _
-
-theorem isDomain_W_of_isRegularRing [IsRegularRing o] : IsDomain (W F y) := by
-  have := isRegularLocalRing_W_of_isRegularRing F y
-  exact (GlobalTheory.isDomain_and_isIntegrallyClosed_of_isRegularLocalRing _).1
 
 theorem existsUnique_factor [IsNoetherianRing o] (V : Type) [CommRing V] [IsLocalRing V]
     [IsAdicComplete (maximalIdeal V) V] (f : Sp V ⟶ (powA F r).left) (hf : f (closedPoint V) = y) :
@@ -262,31 +249,6 @@ section Flat
 
 variable {o : Type} [CommRing o] {ζ : o} {h n : ℕ} (F : ZM.SFam h n ζ) {r : ℕ} (y : (powA F r).left)
   [IsNoetherianRing o]
-
-theorem flat_spMap_base : Flat (spMap (base F y)) := by
-  rw [spMap_base, toPow, GlobalTheory.fromSpecCompletedStalk]
-  have h₁ : Flat (Spec.map (CommRingCat.ofHom (algebraMap ((powA F r).left.presheaf.stalk y) (W F y)))) := by
-    rw [HasRingHomProperty.Spec_iff (P := @Flat)]
-    exact RingHom.flat_algebraMap_iff.2 inferInstance
-  have := GlobalTheory.LocalRingGeneralisation.flat_fromSpecStalk (powA F r).left y
-  infer_instance
-
-theorem flat_base : (base F y).Flat := (HasRingHomProperty.Spec_iff (P := @Flat)).1 (flat_spMap_base F y)
-
-theorem injective_base [IsDomain o] : Function.Injective (base F y) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro a ha
-  by_contra h0
-  algebraize [base F y]
-  have : Module.Flat o (W F y) := flat_base F y
-  have hreg := IsSMulRegular.of_ne_zero (M := W F y) h0
-  have e : a • (1 : W F y) = a • 0 := by
-    rw [Algebra.smul_def, _root_.mul_one, smul_zero]
-    exact ha
-  exact one_ne_zero (hreg e)
-
-theorem charZero_W_of_charZero [IsDomain o] [CharZero o] : CharZero (W F y) :=
-  charZero_of_injective_ringHom (injective_base F y)
 
 end Flat
 

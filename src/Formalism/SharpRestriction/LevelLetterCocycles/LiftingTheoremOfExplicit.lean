@@ -4,7 +4,7 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.ElementDenominator
 public import Formalism.PadicSubsetSums.StableGradedCounts.ARCReuse
 public import Formalism.PadicSubsetSums.CentralIdempotents.WindowSums
 public import Formalism.PadicSubsetSums.StableGradedCounts.LiftingTheExponent
-public import Formalism.PadicSubsetSums.StableGradedCounts.TWCentralIdempotentIntegral
+public import Mathlib
 public import Formalism.PadicSubsetSums.StableGradedCounts.PadicValCardGL
 
 @[expose] public section
@@ -51,33 +51,11 @@ variable {l : ℕ} [Fact l.Prime]
     (PC : PotCrysData ↥(GK (qlExt l)) ℚ_[l] ↥(K0 (qlExt l)) ↥(qlExt l).1 K₀' K' B BdR)
     (LL : FinExt l)
 
-def HypT (T₁ T₂ : LocLat ↥(GK (qlExt l)) ℚ_[l] ↥LL.1 ↥(OL LL)) (F : LatHom T₁.L T₂.L) (N η H : ℕ)
-    (U : Finset ℤ) (Sig : Finset (PC.Iner →* (↥LL.1)ˣ)) (Fr : ↥(GK (qlExt l))) : Prop :=
-  PC.IsPotCrys T₁.ρ ∧ PC.IsPotCrys T₂.ρ ∧ F.Onto ∧
-    PC.IsFrob Fr ∧ FrobStable PC.Iner Fr Sig ∧ 1 ∈ Sig ∧ Sig.card ≤ N ∧ 2 ≤ N ∧
-    PC.InertiaThrough T₁.ρ Sig ∧ PC.InertiaThrough T₂.ρ Sig ∧
-    (∀ u ∈ U, -(η : ℤ) ≤ u ∧ u ≤ H) ∧ (0 : ℤ) ∈ U ∧ U.card ≤ N + 1 ∧ 1 ≤ η ∧ η < H ∧
-    (∀ τ, JumpsInV PC.PD T₁.ρ τ (U : Set ℤ)) ∧ (∀ τ, JumpsInV PC.PD T₂.ρ τ (U : Set ℤ))
-
-def thmTLift (C : ℕ) : Prop :=
-  ∀ (T₁ T₂ : LocLat ↥(GK (qlExt l)) ℚ_[l] ↥LL.1 ↥(OL LL)) (F : LatHom T₁.L T₂.L) (N η H : ℕ)
-    (U : Finset ℤ) (Sig : Finset (PC.Iner →* (↥LL.1)ˣ)) (Fr : ↥(GK (qlExt l))),
-    HypT PC LL T₁ T₂ F N η H U Sig Fr → C * (H * N ^ 2 + N ^ 3) < l →
-      F.LiftF PC.PD (C * (N * rPrime PC.Iner Fr Sig + η * (N + rPrime PC.Iner Fr Sig)))
-
 variable {PC LL}
 
 variable (PC LL)
 
 end PartII
-
-def LiftingClause (D : D7) (C : ℕ) : Prop :=
-  ∀ (l : ℕ) [Fact l.Prime] (K' : FinExt l) (h : (qlExt l).1 ≤ K'.1) (hN : (GKin h).Normal)
-    (hF : (GKin h).FiniteIndex)
-    (hS : ∀ (g : ↥(GK (qlExt l))) (c : ↥(K0 K')), ∃ c' : ↥(K0 K'),
-      ((D.loc l).PD (qlExt l)).actB g (algebraMap ↥(K0 K') (D.loc l).R.B c) =
-        algebraMap ↥(K0 K') (D.loc l).R.B c')
-    (LL : FinExt l), thmTLift (pc (D.loc l) h hN hF hS) LL C
 
 def TwoStep {O M : Type} [CommRing O] [AddCommGroup M] [Module O M] (l g g₀ e e' : ℕ)
     (Z Bc I : Submodule O M) : Prop :=

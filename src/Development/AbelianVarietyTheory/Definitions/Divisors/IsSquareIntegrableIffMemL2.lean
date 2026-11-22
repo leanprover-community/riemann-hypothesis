@@ -24,7 +24,6 @@ def IsSm (f : GAd σ J → ℂ) : Prop :=
   ∀ (k : ℕ) (γ : Fin k → ℝ → GAd σ J), (∀ i, IsRealLine σ J (γ i)) → ∀ g,
     ContDiff ℝ ∞ fun t : Fin k → ℝ => f (g * (List.ofFn fun i => γ i (t i)).prod)
 
-
 variable {σ J} in
 def dop (z : List (ℝ → GAd σ J) →₀ ℂ) (f : GAd σ J → ℂ) : GAd σ J → ℂ :=
   fun g => z.sum fun l c => c * l.foldr lineDer f g
@@ -35,11 +34,6 @@ def IsCentral (z : List (ℝ → GAd σ J) →₀ ℂ) : Prop :=
 
 def IsMaxCpt (K : Subgroup (GAd σ J)) : Prop :=
   Maximal (fun K' : Subgroup (GAd σ J) => K' ≤ infPts σ J ∧ IsCompact (K' : Set (GAd σ J))) K
-
-structure IsAut (K : Subgroup (GAd σ J)) (φ : GAd σ J → ℂ) : Prop where
-  mod : IsSmoothModerate σ J φ
-  kfin : FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k : K => fun g => φ (g * k)))
-  zfin : FiniteDimensional ℂ (Submodule.span ℂ {f | ∃ z, IsCentral σ J z ∧ f = dop z φ})
 
 structure IsAutOn (H K : Subgroup (GAd σ J)) (φ : GAd σ J → ℂ) : Prop where
   left : LeftInv H φ
@@ -60,12 +54,7 @@ def IsConstTermOn (N : Subgroup (GAd σ J)) (φ c : GAd σ J → ℂ) : Prop :=
   ∀ (μ : Measure N) (𝓕 : Set N), μ.IsHaarMeasure → IsFundamentalDomain ((ratPts σ J).subgroupOf N) 𝓕 μ → μ 𝓕 = 1 →
     ∀ g, c g = ∫ u in 𝓕, φ ((u : GAd σ J) * g) ∂μ
 
-def IsSqInt (φ : GAd σ J → ℂ) : Prop :=
-  ∀ (μ : Measure (GAd σ J)) (𝓕 : Set (GAd σ J)), μ.IsHaarMeasure → IsFundamentalDomain (ratPts σ J) 𝓕 μ →
-    IntegrableOn (fun g => ‖φ g‖ ^ 2) 𝓕 μ
-
 variable {σ J} {r : ℕ} {H H' K K' N : Subgroup (GAd σ J)} {φ c c' : GAd σ J → ℂ} {C : Matrix (Fin n) (Fin r) E}
-
 
 omit [NumberField E] in
 theorem kfin_iff : FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k : K => fun g => φ (g * k))) ↔
@@ -74,19 +63,10 @@ theorem kfin_iff : FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k : 
     Set.ext fun Ψ => ⟨fun ⟨k, e⟩ => ⟨k, k.2, e.symm⟩, fun ⟨k, hk, e⟩ => ⟨⟨k, hk⟩, e.symm⟩⟩]
   rfl
 
-
-
-
-
-omit [NumberField E] in
-theorem isMaxCpt_infPts (h : IsCompact (infPts σ J : Set (GAd σ J))) : IsMaxCpt σ J (infPts σ J) :=
-  ⟨⟨le_rfl, h⟩, fun _ hK _ => hK.1⟩
-
 theorem le_one_of_pow_mul_le {t a M : ℝ} (ha : 0 < a) (h : ∀ k : ℕ, t ^ k * a ≤ M) : t ≤ 1 := by
   by_contra ht
   obtain ⟨k, hk⟩ := ((tendsto_pow_atTop_atTop_of_one_lt (not_le.1 ht)).atTop_mul_const ha).eventually_gt_atTop M |>.exists
   exact hk.not_ge (h k)
-
 
 open scoped ComplexOrder in
 theorem eq_one_of_powers_compact {b Q : Matrix (Fin n) (Fin n) ℂ} {S : Set (Matrix (Fin n) (Fin n) ℂ)} (hS : IsCompact S)
@@ -129,7 +109,6 @@ theorem conj_mem_UJ {R : Type} [CommRing R] {s : R →+* R} {A D : Matrix (Fin n
   refine ⟨fun h => ?_, fun h => by rw [h]⟩
   have := congrArg (fun X => Formalism.UG.cT s (c⁻¹).1 * X * (c⁻¹).1) h
   simpa only [← Matrix.mul_assoc, h1, Matrix.one_mul, Units.mul_inv_cancel_right] using this
-
 
 variable (σ J) in
 def majCpt (c : ∀ w : InfinitePlace F, GL (Fin n) (w.Completion ⊗[F] E)) : Subgroup (GAd σ J) :=
@@ -199,17 +178,8 @@ theorem isMaxCpt_majCpt (h : IsCMExt F E σ) {c : ∀ w : InfinitePlace F, GL (F
   rw [mul_one, ← h2]
   exact Matrix.map_injective (infEmb_bijective h τ).1 (h4.trans (Matrix.map_one _ (map_zero _) (map_one _)).symm)
 
-
 omit [NumberField E] in
 theorem isConstTerm_iff : IsConstTerm σ J C φ c ↔ IsConstTermOn σ J (unipRad σ J C) φ c := Iff.rfl
-
-theorem isConstTerm_iff_unipFlag : IsConstTerm σ J C φ c ↔ IsConstTermOn σ J (unipFlag σ J C fun _ => 0) φ c := by
-  rw [unipFlag_const]; rfl
-
-
-omit [NumberField E] in
-theorem isConstTermOn_const (N : Subgroup (GAd σ J)) (a : ℂ) : IsConstTermOn σ J N (fun _ => a) fun _ => a :=
-  fun μ 𝓕 _ _ h _ => by simp [Measure.real, h]
 
 theorem isConstTermOn_constTermOn [LocallyCompactSpace N] (hφ : LeftInv (ratPts σ J ⊓ N) φ) :
     IsConstTermOn σ J N φ (constTermOn (ratPts σ J) N φ) := fun μ 𝓕 _ h h1 g => by
@@ -258,10 +228,6 @@ theorem locallyCompact_unipRad : LocallyCompactSpace (unipRad σ J C) :=
 theorem cocompact_unipRad : Cocompact (ratPts σ J) (unipRad σ J C) :=
   unipFlag_const (σ := σ) (J := J) C 0 ▸ cocompact_unipFlag hJ (sigma_sigma h) hC _
 
-theorem existsUnique_isConstTerm (hφ : LeftInv (ratPts σ J) φ) : ∃! c, IsConstTerm σ J C φ c := by
-  simp only [isConstTerm_iff_unipFlag]
-  exact existsUnique_isConstTermOn h hJ hC _ fun γ hγ => hφ γ hγ.1
-
 theorem IsConstTermOn.eq_constTermOn_par {d : Fin r → ℕ} (hc : IsConstTermOn σ J (unipFlag σ J C d) φ c)
     (hφ : LeftInv (ratPts σ J ⊓ parFlag σ J C d) φ) [LocallyCompactSpace (unipFlag σ J C d)] :
     Cocompact (ratPts σ J ⊓ parFlag σ J C d) (unipFlag σ J C d) ∧
@@ -292,7 +258,6 @@ theorem IsConstTermOn.continuous {d : Fin r → ℕ} (hc : IsConstTermOn σ J (u
   exact e ▸ hco.continuous_constTermOn hφ hφc
 
 end Flag
-
 
 omit [NumberField F] [NumberField E] in
 theorem isIsoCols_of_isWittFrame {X Y : Matrix (Fin n) (Fin r) E} (hW : IsWittFrame σ J X Y) (hσ : ∀ x, σ (σ x) = x)

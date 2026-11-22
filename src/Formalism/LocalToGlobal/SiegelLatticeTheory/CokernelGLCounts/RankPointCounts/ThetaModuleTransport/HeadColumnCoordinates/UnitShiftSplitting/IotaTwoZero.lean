@@ -103,7 +103,6 @@ def iota2H : (Fin (r + 1) → M.R) →+ (Ix r → M.L.O) where
   map_zero' := iotaTwo_zero hs
   map_add' := iotaTwo_add hs
 
-
 include hTT hZ hZσ in
 def toP : DG g Zh T T' →+ DD1 hs Z TT × DD1 hs Zσ TT :=
   QuotientAddGroup.lift (RelG g Zh T T').toAddSubgroup
@@ -113,7 +112,6 @@ def toP : DG g Zh T T' →+ DD1 hs Z TT × DD1 hs Zσ TT :=
       simp only [AddMonoidHom.mem_ker, AddMonoidHom.prod_apply, AddMonoidHom.coe_comp, Function.comp_apply,
         QuotientAddGroup.mk'_apply]
       exact Prod.ext ((QuotientAddGroup.eq_zero_iff _).2 h1) ((QuotientAddGroup.eq_zero_iff _).2 h2))
-
 
 include hTT hZ hZσ in
 def ofP : DD1 hs Z TT × DD1 hs Zσ TT →+ DG g Zh T T' :=
@@ -153,10 +151,5 @@ def splitQ : DG g Zh T T' ≃+ DD1 hs Z TT × DD1 hs Zσ TT where
     obtain ⟨w, rfl⟩ := QuotientAddGroup.mk_surjective y
     rw [ofP_mk, toP_mk, map_add (f := _), map_add (f := _), firstComponent_iotaOne, secondComponent_iotaOne, firstComponent_iotaTwo, secondComponent_iotaTwo, add_zero, zero_add]
   map_add' := (toP hs hTT hZ hZσ).map_add
-
-theorem splitQ_mk (Y : Ix r → M.L.O) :
-    splitQ hs hTT hZ hZσ (Submodule.Quotient.mk Y : DG g Zh T T') =
-      ((QuotientAddGroup.mk (cmp1 hs Y) : DD1 hs Z TT), (QuotientAddGroup.mk (cmp2 hs Y) : DD1 hs Zσ TT)) :=
-  rfl
 
 end Formalism.L2.SG.LocalCountModules.AlgGSplit

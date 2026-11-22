@@ -2,7 +2,8 @@ module
 
 public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HasArcDataIff
-public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsPrimitiveRootArcRoot
+public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ToMatrixTrFormBaseChange
+public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.SqrtNegDiscMemCoeffField
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.CoeffFSumDerivEqFderiv
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ExistsChartComplexPoint
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.DegeneratingToriPeriodMapEqBaseOfYEqZero
@@ -40,8 +41,6 @@ structure GtAn [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing
     (a : ArcIn D l β ℂ b) extends GtAn₀ a where
 
   sec : letI := H.starRing; toGtAn₀.toGtDict.SecFn
-
-
 
 namespace GtAn₀
 
@@ -97,9 +96,5 @@ theorem exists_lifts {k : ℕ} [NeZero k] (p : Out.QkPt a.D₀ (FractionRing ℂ
     exact TorusExt.equiv_symm a.bimult (Λ.toGtDict.qk_equiv_add k la m)
 
 end GtAn₀
-
-abbrev GtAn.fn {b : O →+* ℂ} {a : ArcIn D l β ℂ b} (Λ : GtAn a) (j : ℕ) [NeZero j] : letI := H.starRing
-    ∀ α : Λ.A.X, a.D₀.SecB j (Λ.eX α) ≃ Λ.A.Theta j α :=
-  letI := H.starRing; Λ.sec.fn j
 
 end GlobalTheory

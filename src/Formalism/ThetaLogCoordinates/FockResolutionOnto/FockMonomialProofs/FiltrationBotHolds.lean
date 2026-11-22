@@ -101,16 +101,11 @@ noncomputable def grMap (p : ℕ) [Fact p.Prime] (v : σ) (e : ℕ) :
     MvPolynomial σ ℚ_[p] →ₗ[ℤ_[p]] MvPolynomial σ ℚ_[p] :=
   ((LinearMap.mulLeft ℚ_[p] (X v ^ e : MvPolynomial σ ℚ_[p])).restrictScalars ℤ_[p]) ∘ₗ initL p v 0
 
-theorem grMap_apply (v : σ) (e : ℕ) (h : MvPolynomial σ ℚ_[p]) : grMap p v e h = X v ^ e * initPart v 0 h := rfl
-
 end Gen
 
 section Last
 
 variable {p : ℕ} [Fact p.Prime] {K r : ℕ} (LL : Letters (K + 1))
-
-theorem wt_setLast (o j : ℕ) (c : Fin r) (m : Fin (K + 1) × Fin r →₀ ℕ) :
-    wt (setLast LL o) j c m = wt LL j c m := rfl
 
 theorem glAct_setLast (o j : ℕ) (c d : Fin r) : glAct p (setLast LL o) j c d = glAct p LL j c d := rfl
 

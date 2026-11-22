@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviEmbeddingMemLevi
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.SquareIntegrableTempered.CasselmanCriterion.Zj
 public import GroundTheory.AutomorphicForms.SupercuspidalCoefficients
 

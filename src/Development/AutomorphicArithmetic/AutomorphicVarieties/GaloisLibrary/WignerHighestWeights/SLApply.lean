@@ -16,7 +16,6 @@ section
 
 variable {E : Type} [Field E] [NumberField E] {a : ℕ} {A : Type} [Ring A] [Algebra ℂ A] [Module ℝ A]
 
-
 omit [Algebra ℂ A] in
 private noncomputable def sL (L : Lie E a →ₗ[ℝ] A) (i j : Fin a) : Cinf E →ₗ[ℝ] A where
   toFun x := L (toL (Matrix.single i j x))
@@ -28,10 +27,6 @@ private noncomputable def sL (L : Lie E a →ₗ[ℝ] A) (i j : Fin a) : Cinf E 
     have h : toL (Matrix.single i j (c • x)) = c • toL (Matrix.single i j x) :=
       congrArg toL (Matrix.smul_single c i j x).symm
     exact (congrArg L h).trans (L.map_smul _ _)
-
-omit [Algebra ℂ A] in
-private theorem sL_apply (L : Lie E a →ₗ[ℝ] A) (i j : Fin a) (x : Cinf E) :
-    sL L i j x = L (toL (Matrix.single i j x)) := rfl
 
 omit [Algebra ℂ A] in
 private theorem sL_comm (L : Lie E a →ₗ[ℝ] A) (hL : IsLieHom L) (i j k l : Fin a) (x y : Cinf E) :

@@ -19,9 +19,6 @@ def rowQ (n : ℕ) (g : Mir k (n + 1)) : Fin (n + 1) → k :=
 def unipM (n : ℕ) : Multiplicative (Fin (n + 1) → k) →* Mir k (n + 1) :=
   (unip k (n + 1)).codRestrict (Mir k (n + 1)) (fun v => MirU_le_Mir k (n + 1) ⟨v, rfl⟩)
 
-theorem unipM_val (n : ℕ) (v : Multiplicative (Fin (n + 1) → k)) :
-    ((unipM k n v : Mir k (n + 1)) : GL (Fin (n + 2)) k) = unip k (n + 1) v := rfl
-
 theorem unipM_mem_MirUin (n : ℕ) (v : Multiplicative (Fin (n + 1) → k)) : unipM k n v ∈ MirUin k (n + 1) := by
   rw [GlobalTheory.BZMir.MirUin, Subgroup.mem_subgroupOf, GlobalTheory.BZMir.MirU]
   exact ⟨v, rfl⟩

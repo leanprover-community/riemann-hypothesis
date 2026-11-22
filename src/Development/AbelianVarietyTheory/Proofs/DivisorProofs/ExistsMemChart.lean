@@ -20,7 +20,6 @@ namespace GlobalTheory
 
 variable {k : Type} [CommRing k] {X Y : Scheme.{0}} {p : X ⟶ Sp k} {σ : k →+* ℂ}
 
-
 variable (p) in
 def ratFibre : Scheme.{0} := pullback (p ≫ spMap (Int.castRingHom k)) (spMap (Int.castRingHom ℚ))
 
@@ -41,19 +40,7 @@ theorem strHom_eq : strHom ℚ (ratFibre p) = snd p := GlobalTheory.strHom_eq fu
 
 end ratFibre
 
-
 variable (p) in
 def ratDeg (L : LB X) : ℤ := degOfRank ℚ (toMod (L.pull (ratFibre.fst p))) 1
-
-abbrev CxPts.pt (y : CxPts p σ) : X := y.1 (IsLocalRing.closedPoint ℂ)
-
-def germOrd {W : X.Opens} (f : Γ(X, W)) {x : X} (hx : x ∈ W) : ℕ :=
-  (Ring.ord (X.presheaf.stalk x) (X.presheaf.germ W x hx f)).toNat
-
-theorem exists_mem_chart {L : LB X} (hL : L.IsLB) (x : X) : ∃ i, x ∈ L.U i :=
-  Opens.mem_iSup.1 (hL.cover.ge (Opens.mem_top x))
-
-def secOrd {L : LB X} (hL : L.IsLB) (s : L.Sec) (x : X) : ℕ :=
-  germOrd (s.f (exists_mem_chart hL x).choose) (exists_mem_chart hL x).choose_spec
 
 end GlobalTheory

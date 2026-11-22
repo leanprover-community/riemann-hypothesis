@@ -17,7 +17,6 @@ section Lattice
 
 variable (F : Type) [Field F] [NumberField F] {E : Type} [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-
 variable (E) in
 def intLoc (v : HeightOneSpectrum (𝓞 F)) : Subring (Fv F v ⊗[F] E) where
   carrier := AddSubgroup.closure {z | ∃ a ∈ v.adicCompletionIntegers F, ∃ x : 𝓞 E, z = a ⊗ₜ[F] (x : E)}
@@ -71,7 +70,6 @@ theorem sigR_mem_intLoc (σ : E →ₐ[F] E) {v : HeightOneSpectrum (𝓞 F)} {y
     (by simp) (fun y z hy hz => by rw [map_add]; exact add_mem hy hz)
     (fun y hy => by rw [map_neg]; exact neg_mem hy) hy
 
-
 variable (F) in
 def latLoc (L : Submodule (𝓞 E) (Fin n → E)) (v : HeightOneSpectrum (𝓞 F)) :
     Submodule (intLoc F E v) (Fin n → Fv F v ⊗[F] E) where
@@ -110,10 +108,8 @@ theorem latLoc_induction {L : Submodule (𝓞 E) (Fin n → E)} {v : HeightOneSp
   | add y z _ _ hy hz => exact hadd y z hy hz
   | neg y _ hy => exact hneg y hy
 
-
 variable (E n) in
 abbrev stdLattice : Submodule (𝓞 E) (Fin n → E) := Formalism.UG.stdLat (𝓞 E)
-
 
 omit [NumberField E] in
 theorem mem_latLoc_stdLattice {v : HeightOneSpectrum (𝓞 F)} {y : Fin n → Fv F v ⊗[F] E} :
@@ -227,25 +223,6 @@ def dualLoc (L : Submodule (𝓞 E) (Fin n → E)) (v : HeightOneSpectrum (𝓞 
 
 def IsSelfDualAt (L : Submodule (𝓞 E) (Fin n → E)) (v : HeightOneSpectrum (𝓞 F)) : Prop :=
   latLoc F L v = dualLoc σ J L v
-
-theorem isSelfDualAt_stdLattice_one (v : HeightOneSpectrum (𝓞 F)) :
-    IsSelfDualAt σ (1 : Matrix (Fin n) (Fin n) E) (stdLattice E n) v := by
-  have e : ∀ y x : Fin n → Fv F v ⊗[F] E,
-      hLin σ 1 (Fv F v) y x = ∑ i, Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR _ σ (x i) * y i := fun y x => by
-    simp [hLin, hR, hform, JR, Matrix.one_apply]
-  ext y
-  rw [mem_latLoc_stdLattice]
-  constructor
-  · intro hy x hx
-    rw [e]
-    exact sum_mem fun i _ => mul_mem (sigR_mem_intLoc σ (mem_latLoc_stdLattice.1 hx i)) (hy i)
-  · intro hy i
-    have := hy (Pi.single i 1) (mem_latLoc_stdLattice.2 fun j => by
-      by_cases h : j = i
-      · subst h; simp
-      · simp [h])
-    rw [e, Finset.sum_eq_single i (fun j _ h => by simp [h]) (by simp)] at this
-    simpa using this
 
 end Dual
 
@@ -371,16 +348,12 @@ theorem htInf_le_height (w : InfinitePlace F) (g : GAd σ J) :
     (fun _ _ => one_le_htOf _ _) (Finset.mem_univ w)).trans
     (le_mul_of_one_le_right' (one_le_finprod' fun _ => one_le_htOf _ _))
 
-
-
 end Height
 
 section Moderate
 
 def IsModerate {G X : Type*} [Norm X] (ht : G → ℝ≥0) (f : G → X) : Prop :=
   ∃ (C : ℝ) (N : ℕ), ∀ g, ‖f g‖ ≤ C * (ht g : ℝ) ^ N
-
-def ModerateGrowth {X : Type*} [Norm X] (f : GAd σ J → X) : Prop := IsModerate (height σ J) f
 
 variable {σ J}
 

@@ -69,8 +69,6 @@ variable (D : D7) (i : D.ntw.Tw) (j : ℕ) (b : Bool) (k : ℕ) (Q : Finset (PlE
   (ψ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ) (e : ℤ)
   (τ : ∀ kv : (Σ kk : Fin 2, D.nd.PlG kk), (ZMod (D.host.g kv.1))ˣ →* (FractionRing (D.ntw.O i))ˣ)
 
-abbrev algKk : Algebra (FractionRing (D.ntw.O i)) (Kk D i k) := (toKk D i k).toAlgebra
-
 attribute [local instance] algKk
 
 end Real
@@ -92,14 +90,6 @@ end LevNX
 
 section ChrG
 
-theorem supSum_map {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) {r : ℕ} (A : Matrix (Fin r) (Fin r) R) :
-    Formalism.L2.NX.supSum r (A.map f) = f (Formalism.L2.NX.supSum r A) := by
-  unfold Formalism.L2.NX.supSum
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, Matrix.map_apply]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun c _ => ?_
-  split_ifs <;> simp
-
 section RedGen
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
@@ -117,8 +107,6 @@ end RedGen
 variable (D : D7) (i : D.ntw.Tw) (b : Bool) (k : ℕ)
   (τ : ∀ kv : (Σ kk : Fin 2, D.nd.PlG kk), (ZMod (D.host.g kv.1))ˣ →* (FractionRing (D.ntw.O i))ˣ)
   (sp : PlE D.host → SplitPlace D.host.E)
-
-
 
 open Classical in
 theorem gVal_of (kv : Σ kk : Fin 2, D.nd.PlG kk) (s : SplitPlace D.host.E)
@@ -143,7 +131,6 @@ section Tau
 
 variable (D : D7)
 
-
 end Tau
 
 section Assembly
@@ -159,7 +146,6 @@ end Assembly
 section Pq
 
 variable (D : D7)
-
 
 open Classical in
 def qpOf (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) (S : Finset (PlE D.host)) :

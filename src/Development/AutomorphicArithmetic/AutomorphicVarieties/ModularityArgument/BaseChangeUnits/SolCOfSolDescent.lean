@@ -1,6 +1,5 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.BaseChangeUnits.IsAutQ
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.GalUnitary
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BcDefs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.CrystallineBaseChange.CqStmt
@@ -64,9 +63,5 @@ def PolK : Prop :=
       ∃ (χ : HChar (maximalRealSubfield K)) (μ : G (maximalRealSubfield K) Ω →* (Qbar l)ˣ),
         GlobalTheory.ContraPair.PolarizedPair P χ ∧ IsLAdicCharOf ι χ μ ∧
         μ.comp (res (maximalRealSubfield K) Ω K) = θ.comp (res ℚ Ω K) * cycBar K Ω l ^ ((n : ℤ) - 1)
-
-def AutQIso : Prop :=
-  ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (n : ℕ)
-    (r r' : G F Ω →* GL (Fin n) (Qbar l)), RepIso r r' → IsAutQ ι r' → IsAutQ ι r
 
 end UpperTheory.V.Z.Bc

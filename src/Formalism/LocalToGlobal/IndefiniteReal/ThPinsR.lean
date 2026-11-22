@@ -37,14 +37,11 @@ variable {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.L
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (i : Fin D.R.m)
   {K' : Type} [Field K'] (jL : D.what₂.LL →+* K') (σ' : K' →+* ℂ)
 
-
 variable (D) in
 abbrev lamV : D.what₂.Tau → DomWeight (Vc D i).rank := fun τ => Bridge.lamLdef (Vc D i).rank ((i : ℕ) + 1) τ
 
-
 variable (D) in
 abbrev VsV (K : Type) [Field K] : Type := ↥(VV K (lamV D i))
-
 
 variable (D) in
 def embV (τ : D.what₂.Tau) : D.host.E →+* K' := jL.comp (labLL D τ)
@@ -62,7 +59,6 @@ theorem embV_eq_embF {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.ho
   exact RingHom.congr_fun (embV_spec j c.F.val.toRingHom h τ) x
 
 abbrev levJ (t : T0) : Subgroup (Bridge.Gf (Vc D i)) := (levEnv (Vc D i) (R.βV i) (R.datVt i t)).J
-
 
 variable (D) in
 def VStd : Prop :=
@@ -107,7 +103,6 @@ def XiIs (xi : (Af D.host.F ⊗[D.host.F] D.host.E)ˣ →* ℂˣ) : Prop :=
     ((xi (Matrix.GeneralLinearGroup.det (finHom (Wc D i) g)) : ℂˣ) : ℂ) = ((R.xi t x : Circle) : ℂ)
 
 variable {La : Type} [AddCommGroup La] [Module (𝓞 D.host.E) La] (ι : La →ₗ[𝓞 D.host.E] (Fin (Wc D i).rank → D.host.E))
-
 
 open Classical in
 def PhiIs (N : Submodule (𝓞 D.host.E) La) (φ : (Fin (Vc D i).rank → La ⧸ N) → K') : Prop :=
@@ -171,12 +166,6 @@ theorem ext_fin {V : HSp D} (c : CoefA V) (hc : c.Is) (f : Bridge.Gf V → c.W) 
   show c.ρ h⁻¹ (f (fin V h)) = _
   rw [hc.1 _ (inv_mem hh)]
   rfl
-
-def MuR {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
-    (T : Core D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) : Prop :=
-  ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), GoodEmb T.Q.c (σ.comp (algebraMap T.Q.c.F D.what₂.LL)) →
-    ∃ χ, ChiAt R i σ χ ∧ MuVal (T.V ((i : ℕ) + 1) (σ.comp (algebraMap T.Q.c.F D.what₂.LL))) χ
-      (T.mu ((i : ℕ) + 1) (σ.comp (algebraMap T.Q.c.F D.what₂.LL)))
 
 def ChiR {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
     (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) : Prop :=

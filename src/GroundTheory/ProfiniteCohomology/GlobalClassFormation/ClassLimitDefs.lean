@@ -15,8 +15,6 @@ universe u
 
 open CategoryTheory NumberField IntermediateField GroundTheory.Global FiniteSubfield
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 abbrev unitsRep : Rep ℤ (ℚ̄ ≃ₐ[ℚ] ℚ̄) := galUnitsZ ℚ ℚ̄

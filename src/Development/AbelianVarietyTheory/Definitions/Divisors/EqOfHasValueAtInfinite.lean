@@ -16,11 +16,6 @@ namespace GlobalTheory.LGrp
 section Rational
 open Polynomial
 
-def IsLaurentPoly (R : RatFunc ℂ) : Prop :=
-  ∃ (m : ℕ) (p : ℂ[X]), R * RatFunc.X ^ m = algebraMap _ _ p
-
-def lFactor (S : Multiset ℂˣ) : RatFunc ℂ := (S.map fun a : ℂˣ => (1 - RatFunc.C (a : ℂ) * RatFunc.X)⁻¹).prod
-
 end Rational
 
 section ZetaNonvanishing₂
@@ -50,7 +45,6 @@ private theorem valuation_det_le_one_of_entries_integer {y : GL n k}
     rw [GeneralLinearGroup.val_det_apply, RingHom.map_det, ← e]
   rw [hd]
   exact (Valuation.mem_integer_iff _ _).mp (SetLike.coe_mem _)
-
 
 open MeasureTheory Matrix in
 open ValuativeRel in
@@ -131,7 +125,6 @@ private theorem exists_unit_ord_eq_one_and_nabs_eq_inv_resCard :
   · exact h2
   · omega
 
-
 open MeasureTheory Matrix in
 open ValuativeRel in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -185,7 +178,6 @@ theorem _root_.GlobalTheory.LGrp.nabs_eq_zpow (x : kˣ) :
       = _root_.GlobalTheory.SplitWeil.nabs k (x * ϖ ^ (-o) * ϖ ^ o) := by rw [hx]
     _ = (_root_.GlobalTheory.SplitWeil.resCard k : ℝ) ^ (-o) := by
       rw [_root_.GlobalTheory.SplitWeil.nabs_mul, hy1, (key o).1, one_mul]
-
 
 end ZetaNonvanishing₂
 

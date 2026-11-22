@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffOnFubiniStudyProfileInvNormSqFirst
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ExistsAtlas
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjectiveLineMultihomogClassify
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IsOpenAlt
@@ -26,32 +26,15 @@ open GroundTheory.Heights₂.Heights.NumbersDVR (MRing IsMultiHomog IsMultiHomog
 open ReciprocityTheory.AnForm.M (FinHolAtlas LocPot IsPotential IsSection IsSNC HoloMap mInt MIntegrable
   logNormSec)
 
-abbrev HLine {K : Type} [Fintype K] (ι : K → Type) := ReciprocityTheory.ChartRestriction.G.Geo.HermLine ι
-
 section Objects
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)]
-
-abbrev MCone (ι : K → Type) := (Σ k, ι k) → ℂ
-
-def logH (L : HLine ι) : MCone ι → ℝ := fun z => Real.log (L.h z)
-
-
-variable (ι) in
-structure Res (P : Ideal (MRing ι ℂ)) (e : ℕ) where
-
-  D : Ideal (MRing ι ℂ)
-  homog : IsMultiHomogIdeal D
-  not_le : ¬ D ≤ P
-
-  R : ReciprocityTheory.AnForm.R.AlgRes ι P D e
 
 namespace Res
 
 variable {P : Ideal (MRing ι ℂ)} {e : ℕ} (R : Res ι P e)
 
 end Res
-
 
 def IsProjVarQ (P0 : Ideal (MRing ι ℚ)) (e : ℕ) : Prop :=
   IsMultiProjPrime P0 ∧ ringKrullDim (MRing ι ℚ ⧸ P0) = ((e + Fintype.card K : ℕ) : WithBot ℕ∞)

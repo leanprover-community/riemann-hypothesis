@@ -20,9 +20,6 @@ def permCoord (σ : Equiv.Perm (Fin n)) : (Fin n → ℤ) →+ (Fin n → ℤ) w
   map_zero' := rfl
   map_add' _ _ := rfl
 
-theorem permCoord_apply (σ : Equiv.Perm (Fin n)) (l : Fin n → ℤ) : permCoord σ l = l ∘ σ.symm :=
-  rfl
-
 def permAct (σ : Equiv.Perm (Fin n)) : LaurentRing (n := n) →ₐ[ℂ] LaurentRing (n := n) :=
   mapDomainAlgHom ℂ ℂ (permCoord σ)
 
@@ -50,7 +47,6 @@ theorem evalAt_permAct (w : Fin n → ℂˣ) (σ : Equiv.Perm (Fin n)) (p : Laur
     congr 1
     exact Fintype.prod_equiv σ.symm _ _ fun i => by simp
   exact AlgHom.congr_fun this p
-
 
 variable (n) in
 def symmetricLaurent : Subalgebra ℂ (LaurentRing (n := n)) where
@@ -84,7 +80,6 @@ theorem natToInt_apply (s : Fin n →₀ ℕ) (i : Fin n) : natToInt s i = s i :
 theorem natToInt_injective : Function.Injective (natToInt (n := n)) := fun s t h => by
   ext i
   exact Int.ofNat_inj.1 (congrFun h i)
-
 
 variable (n) in
 def polyEmb : MvPolynomial (Fin n) ℂ →ₐ[ℂ] LaurentRing (n := n) :=

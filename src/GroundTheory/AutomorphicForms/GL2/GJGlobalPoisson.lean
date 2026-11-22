@@ -246,10 +246,6 @@ def twistInf (a b : GL (Fin n) 𝔸[K]) :
     (Fin n × Fin n → mixedSpace K) ≃L[ℝ] (Fin n × Fin n → mixedSpace K) :=
   (twistInfLin a b).toContinuousLinearEquiv
 
-theorem coe_twistInf (a b : GL (Fin n) 𝔸[K]) :
-    ⇑(twistInf a b) = twistCoord ((a : Matrix (Fin n) (Fin n) 𝔸[K]).map infHom)
-      ((b : Matrix (Fin n) (Fin n) 𝔸[K]).map infHom) := rfl
-
 def twistFin (a b : GL (Fin n) 𝔸[K]) :
     (Fin n × Fin n → FiniteAdeleRing (𝓞 K) K) ≃ₜ (Fin n × Fin n → FiniteAdeleRing (𝓞 K) K) where
   toFun := twistCoord ((a : Matrix (Fin n) (Fin n) 𝔸[K]).map finHom)
@@ -260,10 +256,6 @@ def twistFin (a b : GL (Fin n) 𝔸[K]) :
   right_inv u := twistCoord_twistCoord (map_mul_map_inv finHom a) (map_inv_mul_map finHom b) u
   continuous_toFun := continuous_twistCoord _ _
   continuous_invFun := continuous_twistCoord _ _
-
-theorem coe_twistFin (a b : GL (Fin n) 𝔸[K]) :
-    ⇑(twistFin a b) = twistCoord ((a : Matrix (Fin n) (Fin n) 𝔸[K]).map finHom)
-      ((b : Matrix (Fin n) (Fin n) 𝔸[K]).map finHom) := rfl
 
 theorem tensor_comp_twistCoord (φ : 𝓢(Fin n × Fin n → mixedSpace K, ℂ))
     (g : (Fin n × Fin n → FiniteAdeleRing (𝓞 K) K) → ℂ) (a b : GL (Fin n) 𝔸[K]) :

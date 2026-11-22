@@ -346,9 +346,6 @@ noncomputable def oneLoc (P : LocPl ψ S T M M') : LocPl ψ S T M M' where
   o_at := P.o_at
   o_is := P.o_is
 
-theorem oneLoc_e (P : LocPl ψ S T M M') : (oneLoc P).e = Finsupp.single 0 1 := rfl
-theorem oneLoc_o (P : LocPl ψ S T M M') : (oneLoc P).o = P.o := rfl
-
 theorem prodDat_perm {n : ℕ} (L : Fin n → LocPl ψ S T M M') (σ : Equiv.Perm (Fin n)) :
     prodDat (fun i => L (σ i)) = prodDat L := by
   funext x

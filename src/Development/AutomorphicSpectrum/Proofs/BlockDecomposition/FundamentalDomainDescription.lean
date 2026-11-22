@@ -15,10 +15,6 @@ namespace GlobalTheory.CompanionTheory.RankinSelberg.IdeleDomain
 
 open Ad3.R
 
-theorem pri_eq_diagonal (α : ℚˣ) : pri α = diagonal ℚ α := rfl
-
-theorem md_eq (a : Jd) : md a = (ideleModule ℚ a : ℝ) := rfl
-
 theorem lintegral_posReal_weight_lt_top (τ : ℝ) (M : ℕ) (h0 : 0 < τ) (h1 : τ < M) :
     ∫⁻ t : {r : ℝ // 0 < r}, ENNReal.ofReal (min 1 (t : ℝ)⁻¹ ^ M * (t : ℝ) ^ τ) ∂posRealMeasure < ∞ := by
   have hF : Measurable (fun t : {r : ℝ // 0 < r} => ENNReal.ofReal (min 1 (t : ℝ)⁻¹ ^ M * (t : ℝ) ^ τ)) := by

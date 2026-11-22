@@ -60,7 +60,6 @@ theorem ScalarDr_holds : Formalism.L2.SG.Corank.ScalarDr D u u' := by
 
 end Terms
 
-theorem CorankPosG_holds : PI.PairCorankPos.CorankPosG := pair_corank_pos
 theorem ScalarEquivG_holds : Formalism.L2.SG.Corank.ScalarEquivG := scalar_equiv_general
 
 theorem GelfandGraevMultOne_holds : Formalism.L2.SG.GGMirabolic.GelfandGraevMultOne := whittaker_functional_dual Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.gelfand_graev_multiplicity_one

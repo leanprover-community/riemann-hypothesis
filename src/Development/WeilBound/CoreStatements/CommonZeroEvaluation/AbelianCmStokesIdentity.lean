@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HasBaseDegreeSettingStrict
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ThreeLeLevel
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PStokesLimit
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PStokesTelescope
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PStokesStep

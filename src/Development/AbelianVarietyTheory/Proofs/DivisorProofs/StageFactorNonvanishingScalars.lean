@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TupleMatch
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegIdxOfIsStd
 public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.ThetaIntegralsAgree
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEquivOfKer
@@ -67,7 +66,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DixmierCo
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LsumMapDomainSome
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FinFLin
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaIntegralsOfMinguez
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HypothesesAbsDet
 
 @[expose] public section
 

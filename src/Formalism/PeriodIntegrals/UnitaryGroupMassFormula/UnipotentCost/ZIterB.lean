@@ -20,8 +20,6 @@ def act (Z : Fin s → Fin s → ℂ) : En s :=
       map_add' := fun v w => Matrix.mulVec_add _ _ _
       map_smul' := fun c v => by simp [Matrix.mulVec_smul] }
 
-theorem act_apply (Z : Fin s → Fin s → ℂ) (v : Fin s → ℂ) : act s Z v = (Matrix.of Z).mulVec v := rfl
-
 def eA : (Fin s → Fin s → ℂ) →L[ℝ] En s :=
   LinearMap.toContinuousLinearMap
     { toFun := act s

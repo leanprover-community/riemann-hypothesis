@@ -22,10 +22,6 @@ def repOf {K LL : FinExt l} {m : ℕ} (r : ↥(GK K) →* Matrix.GeneralLinearGr
   ((Matrix.toLinAlgEquiv' : Matrix (Fin m) (Fin m) ↥LL.1 ≃ₐ[↥LL.1] _) : _ →* _).comp
     ((Units.coeHom _).comp r)
 
-theorem repOf_apply {K LL : FinExt l} {m : ℕ} (r : ↥(GK K) →* Matrix.GeneralLinearGroup (Fin m) ↥LL.1)
-    (g : ↥(GK K)) (v : Fin m → ↥LL.1) :
-    repOf r g v = (r g : Matrix (Fin m) (Fin m) ↥LL.1).mulVec v := rfl
-
 variable (P : LocPrime l) (LL : FinExt l) (m : ℕ)
 
 def embF : ↥LL.1 →ₐ[ℚ_[l]] P.R.BdR :=

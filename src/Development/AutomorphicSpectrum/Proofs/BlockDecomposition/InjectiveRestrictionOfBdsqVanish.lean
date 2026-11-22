@@ -30,8 +30,6 @@ theorem annL_apply (l : Lt n) (x : Cq n V) (A : Finset (Lt n)) :
 theorem creL_apply (l : Lt n) (x : Cq n V) (A : Finset (Lt n)) :
     creL l x A = if l ∈ A then sgL l A • x (A.erase l) else 0 := rfl
 
-theorem liftL_apply (T : V →ₗ[ℂ] V) (x : Cq n V) (A : Finset (Lt n)) : liftL n T x A = T (x A) := rfl
-
 theorem FtL_apply (E1 E2 : Fin n → Fin n → Module.End ℂ V) (c : Fin n) (x : Cq n V) (A : Finset (Lt n)) :
     FtL E1 E2 c x A = kA E1 E2 c c (x A) + (wtL A c : ℂ) • x A := rfl
 

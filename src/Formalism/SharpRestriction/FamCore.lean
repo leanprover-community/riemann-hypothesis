@@ -16,9 +16,6 @@ def aWin {D : D7} (L : SizeData₂ D) (a : ℤ) : Prop :=
 def wordBits (D : D7) (u : D.what₂.Word) (l : ℕ) : Bool :=
   if h : l < D.R.k - 2 then D.s.letter u ⟨l, h⟩ else false
 
-def suppAt {D : D7} (L : SizeData₂ D) (p : ℕ) : Finset D.what₂.places.Pl :=
-  L.supp.filter (fun w => D.what₂.places.resChar w = p)
-
 theorem wt_self {D : D7} (L : SizeData₂ D) (TTn : Finset ℕ) (bTop : ℝ) (hTT : D.host.TT.image Formalism.HC.Frame.A.val = TTn)
     (hb : ∀ t : D.host.TT, (L.bT t : ℝ) ≤ bTop) :
     ∃ a b : ℕ → ℤ, (∀ t ∈ TTn, aWin L (a t) ∧ L.sc.b' ≤ (b t : ℝ) ∧ (b t : ℝ) ≤ bTop) ∧

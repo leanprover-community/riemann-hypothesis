@@ -14,9 +14,6 @@ open IsLocalRing GroundTheory.Arith.Abelian
 variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
   (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] (W : WeierstrassCurve 𝒪)
 
-local notation "ι" => algebraMap 𝒪 K
-local notation "ρ" => residue 𝒪
-
 theorem exists_zw_of_notMem_range {X₁ Y₁ : K} (h₁ : (curveK K W).Equation X₁ Y₁)
     (hX : X₁ ∉ Set.range ι) :
     ∃ z w v : 𝒪, z ∈ maximalIdeal 𝒪 ∧ z ≠ 0 ∧ w ∈ maximalIdeal 𝒪 ∧ w ≠ 0 ∧

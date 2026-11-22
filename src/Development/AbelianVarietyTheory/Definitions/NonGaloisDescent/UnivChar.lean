@@ -101,18 +101,6 @@ structure SerSide (X : RealSide D) (E : IntegralHeckeForms.XD D) : Type 1 where
 def BaseTup {X : RealSide D} {E : IntegralHeckeForms.XD D} (Y : SerSide X E) (i : D.ntw.Tw) : Prop :=
   ∀ j b, ∃ t : X.T, X.R.xi t = (Y.Z.ρ.B i j b).de.chi ∧ X.R.Q t = (Y.Z.ρ.B i j b).de.Q
 
-structure GalSide (D : D7) : Type 1 where
-  wd : GlobalTheory.RowTie.WDTie D.nd D.naut
-  lab : GlobalTheory.HeightCounting.LabTrue D wd
-  cf : CharFrame D
-  chr : GlobalTheory.HeightCounting.CharSide D cf
-  triple : GlobalTheory.Triple.IsTriple D
-  lam : GlobalTheory.LamTie.LamDat D
-  lamOk : lam.Ok
-  lamTie : GlobalTheory.LamTie.IsLamTie D.ntw lam
-  rank : 100 ≤ D.R.r
-  primes : ∀ k, 2 * D.R.r ≤ D.host.g k
-
 section Abstract
 
 variable {ρ : Setup D.ntw} (hρ : ρ.Good) (rd : Rds D.nexp ρ)

@@ -62,21 +62,6 @@ theorem Deco.Lsh_act (d : Deco E n ST SG) {ga : Sp E n ≃ₗ[E] Sp E n} (hga : 
   unfold Deco.Lsh
   rw [Deco.L_act, dual_gmap ga hga]
 
-theorem Deco.LshKer_act (d : Deco E n ST SG) {ga : Sp E n ≃ₗ[E] Sp E n} (hga : ga ∈ UF E n)
-    (h : GLG (E := E) (n := n) (SG := SG)) (P : ST) :
-    (d.act ga h).LshKer P = gmap ga (d.LshKer P) := by
-  unfold Deco.LshKer gmap
-  rw [Submodule.map_span]
-  congr 1
-  ext x
-  simp only [Set.mem_ofPred_eq, Set.mem_image, LinearMap.coe_restrictScalars, LinearEquiv.coe_coe]
-  rw [Deco.Lsh_act d hga h]
-  constructor
-  · rintro ⟨hx, hf⟩
-    refine ⟨ga.symm x, ⟨(mem_gmap ga d.Lsh x).1 hx, hf⟩, by simp⟩
-  · rintro ⟨y, ⟨hy, hf⟩, rfl⟩
-    refine ⟨(mem_gmap ga d.Lsh (ga y)).2 (by simpa using hy), by simpa [Deco.act] using hf⟩
-
 theorem Deco.N_act (d : Deco E n ST SG) (ga : Sp E n ≃ₗ[E] Sp E n) (h : GLG (E := E) (n := n) (SG := SG)) :
     (d.act ga h).N = gmap ga d.N := rfl
 
@@ -240,13 +225,6 @@ theorem colVal_del_smul (u : Pr.Word) (j : ℕ) {ST SG : Finset (HeightOneSpectr
       ((colVal W u j ST SG).Del d).map (((colVal W u j ST SG).rho a.1).restrictScalars (𝓞 X.K)) :=
   roundPk_del X _ _ (d.1.Lsh_act a.1.2 a.2)
 
-theorem BvLat_smul (u : Pr.Word) (j : ℕ) {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))} (P : ST)
-    (a : UF X.E (R.N j) × GLG (E := X.E) (n := R.N j) (SG := SG)) (d : DecoSet (E := X.E) (n := R.N j) (ST := ST) (SG := SG)) :
-    BvLat W u j P (a • d) = (BvLat W u j P d).map (((colVal W u j ST SG).rho a.1).restrictScalars (𝓞 X.K)) := by
-  show delAtr X.emb (W.lamTrue u j) ((a • d).1.LshKer P) = _
-  rw [DecoSet.smul_val, Deco.LshKer_act _ a.1.2, delAtr_gmap]
-  rfl
-
 theorem rowVal_nab_smul {SG : Finset (HeightOneSpectrum (𝓞 X.E))}
     (a : UF X.E (R.N R.m - 1) × GLG (E := X.E) (n := R.N R.m - 1) (SG := SG)) (d : DecoSet (E := X.E) (n := R.N R.m - 1) (ST := ∅) (SG := SG)) :
     (rowVal W SG).Nab (a • d) = ((rowVal W SG).Nab d).map (((rowVal W SG).rho a.1).restrictScalars (𝓞 X.K)) :=
@@ -337,13 +315,6 @@ theorem extVV_ne_zero (lam : ι → DomWeight n) : extVV K lam ≠ 0 := by
 
 instance VV_nontrivial (lam : ι → DomWeight n) : Nontrivial (VV K lam) :=
   ⟨⟨⟨extVV K lam, extVV_mem K lam⟩, 0, fun h => extVV_ne_zero K lam (congrArg Subtype.val h)⟩⟩
-
-theorem CoefPk.V_nontrivial {X : Fields} {D : Type} (C : CoefPk X n D) : Nontrivial C.V := VV_nontrivial X.K C.lam
-
-theorem CoefPk.finrank_pos {X : Fields} {D : Type} (C : CoefPk X n D) : 0 < Module.finrank X.K C.V := by
-  have := C.V_nontrivial
-  have : Module.Finite X.K C.V := Module.Finite.of_basis C.bV
-  exact Module.finrank_pos
 
 end NonVac
 

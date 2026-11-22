@@ -23,8 +23,6 @@ theorem castSp_apply {E : Type} [Field E] {a b : ℕ} (h : a = b) (x : Sp E a) (
 
 theorem castSp_comp {E : Type} [Field E] {a b : ℕ} (x : HomE E a b) : castSp E rfl ∘ₗ x = x := rfl
 
-def castV {ι : Type} {a b b' : ℕ} (h : b = b') (z : VCx ι a b) : VCx ι a b' := fun τ r c => z τ (Fin.cast h.symm r) c
-
 end Cast
 
 theorem thC_zero {E : Type} [Field E] [NumberField E] [StarRing E] {ι : Type} [Fintype ι] {a b : ℕ} (emb : ι → E →+* ℂ) (δ : ℂ)
@@ -78,36 +76,29 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
 
-
 variable {sel mu L} in
 def Idx.get {j : ℕ} (b : Idx sel mu L j) (h : j < R.m) : L.β j := b.1.get (b.2.2 h)
-
 
 variable {sel mu L} in
 def Idx.of {j : ℕ} (al : L.β j) (h : j < R.m) : Idx sel mu L j := ⟨some al, iff_of_true rfl h⟩
 
 def Idx.top {j : ℕ} (h : R.m ≤ j) : Idx sel mu L j := ⟨none, iff_of_false (by simp) (by omega)⟩
 
-
 variable {sel mu L} in
 theorem Idx.some_get {j : ℕ} (b : Idx sel mu L j) (h : j < R.m) : some (b.get h) = b.1 := Option.some_get _
-
 
 variable {sel mu L} in
 theorem Idx.get_eq {j : ℕ} {b : Idx sel mu L j} {al : L.β j} (e : b.1 = some al) (h : j < R.m) : b.get h = al :=
   Option.some_injective _ ((b.some_get h).trans e)
 
-
 variable {sel mu L} in
 theorem Idx.of_get {j : ℕ} (b : Idx sel mu L j) (h h' : j < R.m) : Idx.of (b.get h) h' = b := Subtype.ext (b.some_get h)
-
 
 variable {sel mu L} in
 theorem Idx.eq_top {j : ℕ} (b : Idx sel mu L j) (h : R.m ≤ j) : b = Idx.top sel mu L h := by
   obtain ⟨_ | b, hb⟩ := b
   · rfl
   · exact absurd (hb.1 rfl) (by omega)
-
 
 variable (R) in
 abbrev PtAt (u : Pr.Word) (j : ℕ) : Type :=
@@ -122,11 +113,9 @@ theorem ysAt_ys_of_ne {j : ℕ} (h : j + 1 ≠ R.m) (N : Submodule (𝓞 X.E) (S
   rw [ysAt, if_neg h]
   rfl
 
-
 variable {sel mu cst} in
 theorem PtAt.mem_ybSet {u : Pr.Word} {j : ℕ} (p : PtAt R sel mu cst u j) (h : j + 1 = R.m) :
     p.1.2 ∈ ybSet sel mu cst p.1.1.deco.1.N := ysAt_ys_of_eq sel mu cst h _ ▸ p.2
-
 
 variable {sel mu cst} in
 theorem PtAt.repY_mem {u : Pr.Word} {j : ℕ} (p : PtAt R sel mu cst u j) (h : j + 1 = R.m) : repY p.1.2 ∈ p.1.2 := by

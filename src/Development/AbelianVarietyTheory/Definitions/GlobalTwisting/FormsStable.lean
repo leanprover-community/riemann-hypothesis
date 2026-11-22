@@ -47,7 +47,6 @@ structure Raw.Ok (p : Raw Lc n) : Prop where
   off : ∀ x, x ∉ p.L → p.f x = 0
   ne : ∃ x, p.f x ≠ 0
 
-
 variable (Lc n) in
 def PP : Type := {p : Raw Lc n // p.Ok}
 
@@ -126,8 +125,6 @@ def Inc (v : X.A.vT) (p p₁ : M.Pt) : Prop :=
 
 def Dil (v : X.A.vT) (a : X.A.Fv v) (p p' : M.Pt) : Prop :=
   p'.1 = p.1 ∧ (∀ v', v' ≠ v → p'.2 v' = p.2 v') ∧ LocF.PP.IsDil a (p.2 v) (p'.2 v)
-
-def WeakApprox : Prop := ∀ p : M.Pt, ∃ g : M.G, ∀ v, ((g • p).2 v).1.L = (M.Lc v).std (D.R.N i)
 
 end PtModel
 
@@ -238,16 +235,6 @@ end
 section
 
 variable {D : D7} {u : D.what₂.Word}
-
-structure Unf (X : Ch D u) (i : ℕ) (v : X.A.vT) where
-  Lc : Type
-  [fin : Fintype Lc]
-  nL : Lc → ℕ
-  cf : Lc → (Fin (D.R.N i) → X.A.Fv v) → X.C.cls i
-  cx : Lc → (Fin (D.R.N i) → X.A.Fv v) → X.C.cls i
-  tf : Lc → (Fin (D.R.N i) → X.A.Fv v) → ((X.C.Y i → ℂ) →ₗ[ℂ] (X.C.Y i → ℂ))
-  tx : Lc → (Fin (D.R.N i) → X.A.Fv v) → ((X.C.Y i → ℂ) →ₗ[ℂ] (X.C.Y i → ℂ))
-  ipL : Lc → (X.C.Y i → ℂ) →ₗ⋆[ℂ] (X.C.Y i → ℂ) →ₗ[ℂ] ℂ
 
 attribute [instance] Unf.fin
 

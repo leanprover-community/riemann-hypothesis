@@ -21,7 +21,6 @@ theorem zEquiv_val {κ l τ j : ℕ} (a : Ix (Fin κ ⊕ Fin l) (Fin τ) j) : (z
 
 variable {E K : Type} [Field E] [NumberField E] [Field K] {P : HeightOneSpectrum (𝓞 E)}
 
-
 open Classical in
 def phiM (q : ℕ) (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (k₀ rS r t j N : ℕ)
     (M : ℕ → ℕ → E) : K :=
@@ -44,9 +43,6 @@ variable {k : Type} [Field k]
 theorem zPos_ixSucc_inl {κ l τ j : ℕ} (a : Ix (Fin κ ⊕ Fin l) (Fin τ) j) :
     zPos (ixSucc (Fin κ ⊕ Fin l) (Fin τ) j (Sum.inl a)) = zPos a := by
   rcases a with (i | i) | ⟨i, u⟩ <;> rfl
-
-theorem zPos_ixSucc_inr {κ l τ j : ℕ} (u : Fin τ) :
-    zPos (ixSucc (Fin κ ⊕ Fin l) (Fin τ) j (Sum.inr u)) = κ + l + j * τ + u := rfl
 
 theorem zPos_lt {κ l τ j : ℕ} (a : Ix (Fin κ ⊕ Fin l) (Fin τ) j) : zPos a < κ + l + j * τ := by
   rw [← zEquiv_val]; exact (zEquiv κ l τ j a).isLt

@@ -48,23 +48,6 @@ open Formalism.MainNotions.TruncatedSeriesCountingIdentities.Br
 
 variable {D : D7}
 
-theorem eig_isCompl (i : D.nd.Loc) (S : Finset (D.nd.X i)) :
-    IsCompl (D.nd.eigSum i ↑S) (D.nd.eigSum i (↑S)ᶜ) := by
-  refine ⟨(heckeEig_indep (D.nd.T i) (D.nd.act i) (D.nd.T_sep i)).disjoint_biSup_biSup
-    disjoint_compl_right, codisjoint_iff.2 ?_⟩
-  rw [eq_top_iff, ← EigSpan_holds D.nd i]
-  refine iSup_le fun x => ?_
-  by_cases hx : x ∈ (S : Set (D.nd.X i))
-  · exact le_sup_of_le_left (le_biSup (heckeEig (D.nd.T i) (D.nd.act i)) hx)
-  · exact le_sup_of_le_right
-      (le_biSup (heckeEig (D.nd.T i) (D.nd.act i)) (show x ∈ (S : Set (D.nd.X i))ᶜ from hx))
-
-def prGood (i : D.nd.Loc) :
-    Module.End (FractionRing (D.nd.O i))
-      (TensorProduct (D.nd.O i) (FractionRing (D.nd.O i)) (D.nd.Mt i)) :=
-  (D.nd.eigSum i ↑(D.nd.Zgood i)).projection (D.nd.eigSum i (↑(D.nd.Zgood i))ᶜ)
-    (eig_isCompl i (D.nd.Zgood i))
-
 end Record
 
 section Reduce
@@ -79,18 +62,6 @@ def EtaBound (CT : ℕ) (i : D.nd.Loc) (k : Fin 2)
     D.nd.etaLoc i ≤
       ∑ π ∈ D.nd.Zgood i, (D.nd.mult i π : ℚ) * (c π + padicValNat (D.host.g k) D.what₂.restRowsFiniteGroupCard) ∧
     ∀ π ∈ D.nd.Zgood i, LocalCongruenceBound CT eta i ρ π (c π)
-
-def CongruenceSingleEndomorphism (CT : ℕ) (i : D.nd.Loc) (k : Fin 2)
-    (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (eta : ℕ) : Prop :=
-  ∃ (α : Module.End (D.nd.O i) (D.nd.Mt i)) (a : D.nd.X i → D.nd.O i) (c : D.nd.X i → ℚ),
-    (∀ π ∈ D.nd.Zgood i, a π ≠ 0 ∧
-      (∀ u ∈ heckeEig (D.nd.T i) (D.nd.act i) π,
-        α.baseChange (FractionRing (D.nd.O i)) u = a π • u) ∧
-      lenUnit (O := D.nd.O i) (D.nd.l i) (D.nd.O i ⧸ Ideal.span {a π}) ≤
-        c π + padicValNat (D.host.g k) D.what₂.restRowsFiniteGroupCard ∧
-      LocalCongruenceBound CT eta i ρ π (c π)) ∧
-    ∀ x, x ∉ D.nd.Zgood i → ∀ u ∈ heckeEig (D.nd.T i) (D.nd.act i) x,
-      α.baseChange (FractionRing (D.nd.O i)) u = 0
 
 def CongruenceFamilyEndomorphisms (CT : ℕ) (i : D.nd.Loc) (k : Fin 2)
     (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (eta : ℕ) : Prop :=

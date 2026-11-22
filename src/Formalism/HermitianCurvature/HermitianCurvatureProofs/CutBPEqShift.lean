@@ -36,35 +36,6 @@ theorem ckOn_of_polyOp {d : ℕ} {A : B.Mat k r → (Wq' →L[ℂ] Wq)} (hA : Po
 
 end poly
 
-structure ShiftAt {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
-    [FiniteDimensional ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
-    (p : KB.Pl P Wp Wq) (f : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (b : ℝ) (n₀ : ℕ) where
-  up : ℕ → ℝ
-  up' : ℕ → ℝ
-  um : ℕ → ℝ
-  um' : ℕ → ℝ
-  Wqp : Type
-  Wqm : Type
-  [iNp : NormedAddCommGroup Wqp]
-  [iIp : InnerProductSpace ℂ Wqp]
-  [iFp : FiniteDimensional ℂ Wqp]
-  [iNm : NormedAddCommGroup Wqm]
-  [iIm : InnerProductSpace ℂ Wqm]
-  [iFm : FiniteDimensional ℂ Wqm]
-  pp : KB.Pl (shP P up up') Wp Wqp
-  pm : KB.Pl (shP P um um') Wp Wqm
-  Ap : B.Mat P.k P.r → (Wqp →L[ℂ] Wq)
-  Am : B.Mat P.k P.r → (Wqm →L[ℂ] Wq)
-  ApPt : C.LPt → (Wqp →L[ℂ] Wq)
-  AmPt : C.LPt → (Wqm →L[ℂ] Wq)
-  hzp : pp.T.base.z = p.T.base.z
-  hzp' : pp.T.base.z' = p.T.base.z'
-  hzm : pm.T.base.z = p.T.base.z
-  hzm' : pm.T.base.z' = p.T.base.z'
-  polyP : PolyOp n₀ Ap
-  polyM : PolyOp n₀ Am
-  amaps : AmapsSh p pp pm f Ap Am ApPt AmPt b n₀
-
 attribute [instance] ShiftAt.iNp ShiftAt.iIp ShiftAt.iFp ShiftAt.iNm ShiftAt.iIm ShiftAt.iFm
 
 end

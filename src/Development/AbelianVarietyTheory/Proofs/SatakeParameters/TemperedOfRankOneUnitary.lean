@@ -27,13 +27,4 @@ theorem tempered_of_rank_le_one (D : D7) (T : WDTie D.nd D.naut) (h1 : RankOneUn
     rw [WDTie.eig, WD.inePol_of_mem _ φ.2]
     exact hα
 
-theorem tempered_all_ranks : ∀ (D : D7) (T : GlobalTheory.RowTie.WDTie D.nd D.naut), GlobalTheory.RowTie.RankOneUnitary T → (∀ (a : ℕ) (π : D.naut.CG a), 2 ≤ a → D.naut.csd π → D.naut.ralg π → ∀ w, D.naut.tempered (D.naut.locG π w)) → GlobalTheory.RowCopy.TempCSD D ∧ GlobalTheory.ThetaExh.Tempered D.nd D.naut := by
-  intro D T h1 h2
-  have key : GlobalTheory.ThetaExh.Tempered D.nd D.naut := by
-    intro a π hc hr w
-    rcases Nat.lt_or_ge a 2 with ha | ha
-    · exact tempered_of_rank_le_one D T h1 a π (by omega) w
-    · exact h2 a π ha hc hr w
-  exact ⟨fun a π _ hc hr w => key a π hc hr w, key⟩
-
 end GlobalTheory.RowTie

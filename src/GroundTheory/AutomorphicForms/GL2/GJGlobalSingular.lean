@@ -21,8 +21,6 @@ open Reduction AutomorphicForm RightCosetSpace
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => rationalGLOne (K := K) (n := n)
-
 theorem isLeftInvariant_conj {ψ : AdelicGLn.AdelicGL K n → ℂ} (h : IsLeftInvariant ψ) :
     IsLeftInvariant (fun g => conj (ψ g)) := fun γ g => by
   simp only [h γ g]
@@ -60,7 +58,6 @@ theorem integrableOn_mul_tsum_comp {ψ : AdelicGLn.AdelicGL K n → ℂ} (hψc :
     refine (norm_tsum_le_tsum_norm ((hsum g).comp_injective he)).trans ?_
     exact Summable.tsum_le_tsum_of_inj e he (fun _ _ => norm_nonneg _) (fun _ => le_rfl)
       ((hsum g).comp_injective he) (hsum g)
-
 
 set_option maxHeartbeats 800000 in
 theorem setIntegral_mul_tsum_det_eq_zero (hn : 2 ≤ n) {ψ : AdelicGLn.AdelicGL K n → ℂ}
@@ -119,7 +116,6 @@ theorem setIntegral_mul_tsum_det_eq_zero (hn : 2 ≤ n) {ψ : AdelicGLn.AdelicGL
     have := UnfoldGL.setIntegral_mul_tsum_rank_eq_zero μ hψc hψl hψ hΦ y hsum ⟨C, hC⟩ hk hkn
     rw [e] at this
     exact this
-
 
 set_option maxHeartbeats 800000 in
 theorem setIntegral_mul_tsum_eq_tsum_GL (hn : 2 ≤ n) {ψ : AdelicGLn.AdelicGL K n → ℂ}

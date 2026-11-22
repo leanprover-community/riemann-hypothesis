@@ -6,7 +6,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.PowObjGeometricallyConnected
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomBaseChangeBijectiveOfLeNilradical
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.LocallyOfFinitePresentationDiagMap
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToBidualDualMapEigenImageInclusion
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsEquivariantToBidual
 
 @[expose] public section
 
@@ -135,7 +135,6 @@ theorem dUnit_mul (h : V ≤ unitSec G ⁻¹ᵁ W) (f g : Γ(G.left, W)) : dUnit
 theorem dUnit_base (h : V ≤ unitSec G ⁻¹ᵁ W) (k : W ≤ G.hom ⁻¹ᵁ U) (a : Γ(S, U)) :
     dUnit G h (G.hom.appLE U W k a) = 0 := d_base _ h k a
 
-
 variable {G} in
 theorem omega_hom_ext {F : S.Modules} {φ ψ : omega G ⟶ F}
     (H : ∀ (W : G.left.Opens) (f : Γ(G.left, W)),
@@ -163,8 +162,6 @@ variable [QuasiSeparated G.hom]
 
 instance isQuasicoherent_omega : (omega G).IsQuasicoherent := isQuasicoherent_conormal _
 
-
-
 theorem isVB_omega (g : ℕ) [SmoothOfRelativeDimension g G.hom] : IsVB (omega G) g :=
   isVB_conormal (sec_hom η[G]) g
 
@@ -176,40 +173,17 @@ theorem exists_isVB [Smooth G.hom] [PreconnectedSpace S] :
     ∃ g, IsVB (omega G) g ∧ IsVB (Lie G) g :=
   (exists_isVB_conormal (sec_hom η[G])).imp fun _ h => ⟨h, h.dual⟩
 
-
 omit [QuasiSeparated G.hom] in
 theorem exists_isVB_of_isSemiAbelian [h : IsSemiAbelian G] [PreconnectedSpace S] :
     ∃ g, IsVB (omega G) g ∧ IsVB (Lie G) g :=
   have := h.smooth
   exists_isVB G
 
-
 end Def
 
 section Map
 
 variable {G H K : Over S} [GrpObj G] [GrpObj H] [GrpObj K]
-
-def omegaMap (φ : G ⟶ H) [IsMonHom φ] : omega H ⟶ omega G := cotMap φ (IsMonHom.one_hom φ)
-
-def lieMap (φ : G ⟶ H) [IsMonHom φ] : Lie G ⟶ Lie H := dualMap (omegaMap φ)
-
-theorem omegaMap_dUnit (φ : G ⟶ H) [IsMonHom φ] {V : S.Opens} {W : H.left.Opens}
-    {W' : G.left.Opens} (h : V ≤ unitSec H ⁻¹ᵁ W) (h' : V ≤ unitSec G ⁻¹ᵁ W')
-    (k : W' ≤ φ.left ⁻¹ᵁ W) (f : Γ(H.left, W)) :
-    (omegaMap φ).app V (dUnit H h f) = dUnit G h' (φ.left.appLE W W' k f) := cotMap_d _ _ _ _ _ _
-
-theorem omegaMap_congr {φ ψ : G ⟶ H} [IsMonHom φ] [IsMonHom ψ] (h : φ = ψ) :
-    omegaMap φ = omegaMap ψ := by
-  subst h; rfl
-
-theorem omegaMap_comp (φ : G ⟶ H) (ψ : H ⟶ K) [IsMonHom φ] [IsMonHom ψ] :
-    omegaMap (φ ≫ ψ) = omegaMap ψ ≫ omegaMap φ := (cotMap_comp _ _ rfl _).symm
-
-theorem omegaMap_one [IsMonHom (1 : G ⟶ H)] : omegaMap (1 : G ⟶ H) = 0 := cotMap_eq_zero rfl _
-
-theorem omegaMap_mul [QuasiSeparated H.hom] (φ ψ : G ⟶ H) [IsMonHom φ] [IsMonHom ψ]
-    [IsMonHom (φ * ψ)] : omegaMap (φ * ψ) = omegaMap φ + omegaMap ψ := cotMap_mul _ _ _
 
 end Map
 
@@ -241,26 +215,6 @@ instance isIso_omegaBase [QuasiSeparated G.hom] (h : IsGrpPullback G' G f φ) :
   have : QuasiSeparated G'.hom := MorphismProperty.of_isPullback h.1 ‹_›
   isIso_baseMap (sec_hom η[G]) (sec_hom η[G']) h.1 _
 
-theorem omegaBase_naturality (h : IsGrpPullback G' G f φ) (h' : IsGrpPullback H' H f ψ)
-    (a : G ⟶ H) (a' : G' ⟶ H') [IsMonHom a] [IsMonHom a'] (w : a'.left ≫ ψ = φ ≫ a.left) :
-    (Scheme.Modules.pullback f).map (omegaMap a) ≫ omegaBase h = omegaBase h' ≫ omegaMap a' :=
-  pullback_hom_ext (sec_hom η[H]) fun W b => by
-    have e₁ : unitSec G ≫ a.left = unitSec H := congrArg (·.left) (IsMonHom.one_hom a)
-    have e₂ : unitSec G' ≫ a'.left = unitSec H' := congrArg (·.left) (IsMonHom.one_hom a')
-    have k₁ := (le_preimage_of_comp e₁).2 (le_refl (unitSec H ⁻¹ᵁ W))
-    have k₂ := le_of_sq (unitSec_comp h) k₁ le_rfl
-    have k₃ := le_of_sq (unitSec_comp h') (le_refl (unitSec H ⁻¹ᵁ W)) le_rfl
-    have k₄ : φ ⁻¹ᵁ a.left ⁻¹ᵁ W ≤ (φ ≫ a.left) ⁻¹ᵁ W := le_rfl
-    have k₅ := (le_preimage_of_comp w).2 k₄
-    calc _ = (omegaBase h).app _ (pullbackSections f _ le_rfl
-          ((omegaMap a).app _ (dUnit H le_rfl b))) :=
-          congrArg _ (QCoh.pullback_map_app_pullbackSections f _ _ _)
-      _ = dUnit G' k₂ ((φ ≫ a.left).appLE W _ k₄ b) := by
-          rw [omegaMap_dUnit a _ k₁ le_rfl, omegaBase_dUnit h k₁ _ k₂ le_rfl, appLE_appLE rfl]
-      _ = (omegaMap a').app _ ((omegaBase h').app _ (pullbackSections f _ le_rfl
-          (dUnit H le_rfl b))) := by
-          rw [omegaBase_dUnit h' _ _ k₃ le_rfl, omegaMap_dUnit a' k₃ k₂ k₅, appLE_appLE w]
-
 variable [QuasiSeparated G.hom] [QuasiSeparated H.hom]
 
 def lieBase (h : IsGrpPullback G' G f φ) : (Scheme.Modules.pullback f).obj (Lie G) ⟶ Lie G' :=
@@ -287,38 +241,6 @@ section Act
 variable {O : Type} [CommRing O] {G H : Over S} [GrpObj G] [GrpObj H] [QuasiSeparated G.hom]
   [QuasiSeparated H.hom] (i : OAct O G) (σ : O →+* Γ(S, ⊤))
 
-def omegaAct : O →+* End (omega G) := by
-  have unit_hom (a : O) : η ≫ i.act a = η :=
-    letI := i.hom a
-    IsMonHom.one_hom (i.act a)
-  refine RingHom.mk'
-    { toFun a := End.of (@omegaMap _ _ _ _ _ (i.act a) (i.hom a))
-      map_one' := ?_
-      map_mul' := ?_ } ?_
-  · apply End.ext
-    exact cotMap_id i.one (unit_hom 1)
-  · intro a b
-    apply End.ext
-    exact (cotMap_comp (unit_hom b) (unit_hom a) (i.mul a b).symm (unit_hom (a * b))).symm
-  · intro a b
-    apply End.ext
-    have := i.hom a
-    have := i.hom b
-    have : IsMonHom (i.act a * i.act b) := i.add a b ▸ i.hom _
-    exact (@omegaMap_congr _ _ _ _ _ _ _ (i.hom _) _ (i.add a b)).trans (omegaMap_mul _ _)
-
-def lieAct : O →+* End (Lie G) := dualAct (omegaAct i)
-
-def omegaConjAct (c : O →+* O) : O →+* End (omega G) := (omegaAct i).comp c
-
-abbrev lieSub : S.Modules := eigen (lieAct i) σ
-
-abbrev omegaQuot : S.Modules := eigenQuot (omegaAct i) σ
-
-abbrev lieIm : S.Modules := eigenIm (lieAct i) σ
-
-abbrev omegaIm : S.Modules := eigenIm (omegaAct i) σ
-
 variable {i}
 
 variable {G' : Over S'} [GrpObj G'] [QuasiSeparated G'.hom] {i' : OAct O G'} {f : S' ⟶ S}
@@ -333,7 +255,6 @@ variable {σ} {g : ℕ} (hg : IsVB (omega G) g) {D : Γ(S, ⊤)} (hf : IsRegular
 section
 
 variable {ε : omega G ⟶ omega G} (hε : IsEigenProj (omegaAct i) σ ε D)
-
 
 end
 
@@ -456,7 +377,6 @@ theorem tangent_scale (a : O) (x : LieG G) (h) :
   refine dual_ext fun W _ s => ?_
   exact (congr((epsIso O).hom.app W (($e).app W s))).symm.trans ((epsIso O).hom.app_smul _ _)
 
-
 end Affine
 
 section Torus
@@ -465,95 +385,13 @@ open AddMonoidAlgebra (single)
 
 variable (S) (X Y : Type) [AddCommGroup X] [AddCommGroup Y]
 
-def dlogChar : X →+ Γ(omega (splitTorus S X), ⊤) :=
-  AddMonoidHom.mk' (fun a => dUnit _ (le_preimage_top _ _) (Rosenlicht.chi X a)) fun a b => by
-    have h (c : X) : (unitSec (splitTorus S X)).appLE ⊤ ⊤ (le_preimage_top _ _) (Rosenlicht.chi X c) = 1 :=
-      (appLE_top _ _).trans ((SplitTorus.val_eq η c).symm.trans
-        (MonObj.one_eq_one (splitTorus S X) ▸ SplitTorus.val_one c))
-    rw [← SplitTorus.val_id, SplitTorus.val_add, SplitTorus.val_id, SplitTorus.val_id, dUnit_mul,
-      h, h, one_smul, one_smul, add_comm]
-
-
-variable {X Y} in
-theorem omegaMap_dlogChar (u : Y →+ X) (b : Y) :
-    (omegaMap (SplitTorus.torusMap S u)).app ⊤ (dlogChar S Y b) = dlogChar S X (u b) :=
-  (omegaMap_dUnit _ (le_preimage_top _ _) (le_preimage_top _ _) (le_preimage_top _ _) _).trans
-    (congrArg _ ((appLE_top _ _).trans (SplitTorus.torusMap_appTop_chi u b)))
-
 variable {X} {κ : Type} [Fintype κ] (b : Module.Basis κ ℤ X)
-
-theorem exists_basis_augCot (R : Type) [CommRing R] :
-    ∃ c : Module.Basis κ R (AugCot (Bialgebra.counitAlgHom R (AddMonoidAlgebra R X))),
-      ∀ i, c i = AugCot.d _ (single (b i) 1) := by
-  classical
-  let ε := Bialgebra.counitAlgHom R (AddMonoidAlgebra R X)
-  have hε (x : X) : ε (single x 1) = 1 := by simp [ε]
-  let δ : X →+ AugCot ε := AddMonoidHom.mk' (fun x => AugCot.d ε (single x 1)) fun x y => by
-    rw [← _root_.mul_one (1 : R), ← AddMonoidAlgebra.single_mul_single, AugCot.d_mul, hε, hε]
-    simp [add_comm]
-  let D (i : κ) : AddMonoidAlgebra R X →ₗ[R] R :=
-    (AddMonoidAlgebra.basis X R).constr R fun x => (b.repr x i : R)
-  have hD (i : κ) (x : X) : D i (single x 1) = b.repr x i := Module.Basis.constr_basis _ _ _ x
-  have hmul (i : κ) (x y : AddMonoidAlgebra R X) : D i (x * y) = ε x • D i y + ε y • D i x := by
-    have : (LinearMap.mul R _).compr₂ (D i) = (LinearMap.lsmul R R).compl₁₂ ε.toLinearMap (D i) +
-        ((LinearMap.lsmul R R).compl₁₂ ε.toLinearMap (D i)).flip :=
-      (AddMonoidAlgebra.basis X R).ext fun x => (AddMonoidAlgebra.basis X R).ext fun y => by
-        simp [AddMonoidAlgebra.single_mul_single, hD, hε, add_comm]
-    exact congr($this x y)
-  refine ⟨.mk (v := fun i => δ (b i)) (LinearIndependent.of_pairwise_dual_eq_zero_one _
-    (fun i => AugCot.lift ε (D i) (hmul i)) (fun i j h => ?_) fun i => ?_) fun w _ => ?_,
-    fun i => Module.Basis.mk_apply _ _ i⟩
-  · simp [δ, hD, h.symm]
-  · simp [δ, hD]
-  · obtain ⟨a, rfl⟩ := AugCot.d_surjective ε w
-    rw [← (AddMonoidAlgebra.basis X R).linearCombination_repr a, Finsupp.linearCombination_apply,
-      map_finsuppSum]
-    refine Submodule.sum_mem _ fun x _ => ?_
-    beta_reduce
-    rw [map_smul]
-    refine Submodule.smul_mem _ _ ?_
-    change δ x ∈ _
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← b.sum_repr x, map_sum]
-    exact Submodule.sum_mem _ fun i _ => by
-      rw [map_zsmul]
-      exact zsmul_mem (Submodule.subset_span (Set.mem_range_self i)) _
-
-theorem isFrame_dlogChar : IsFrame fun i => dlogChar S X (b i) := by
-  obtain ⟨c, hc⟩ := exists_basis_augCot b ZU
-  have : IsAffineHom (splitTorusAff ZU X).hom := inferInstanceAs (IsAffineHom (Spec.map _))
-  have h₁ : unitSec (splitTorusAff ZU X) = Spec.map (CommRingCat.ofHom
-      (Bialgebra.counitAlgHom ZU (torusRing ZU X)).toRingHom) :=
-    one_spec_asOver_spec_left (R := ZU) (A := torusRing ZU X)
-  have h₀ := isFrame_d_Spec (R := ZU) (A := torusRing ZU X) _ (sec_hom η[splitTorusAff ZU X]) rfl
-    h₁ c _ hc
-  have h : IsGrpPullback (splitTorus S X) _ _ _ := isGrpPullback_pullback (splitTorusAff ZU X) (toZ S)
-  have e (i : κ) := (omegaBase_dUnit h (le_preimage_top _ ⊤) (le_refl _) (le_preimage_top _ _)
-    (le_preimage_top _ _) ((Scheme.ΓSpecIso (torusRing ZU X)).inv (single (b i) 1))).trans
-    (congrArg (dUnit _ _) ((appLE_top _ _).trans (SplitTorus.chi_eq X (b i)).symm))
-  have := isIso_omegaBase h
-  have := (IsFrame.pullback (F := omega (splitTorusAff ZU X)) h₀ (toZ S)).map_iso (omegaBase h)
-  exact (funext e) ▸ this
-
-theorem isFrame_Gm : IsFrame fun _ : Fin 1 => dlogChar S (ULift ℤ) (ULift.up 1) := by
-  convert isFrame_dlogChar S ((Module.Basis.singleton (Fin 1) ℤ).map ULift.moduleEquiv.symm)
-    using 3 with i
-  simp
-
-theorem isVB_Gm : IsSemiAbelian (Gm S) ∧ IsVB (omega (Gm S)) 1 ∧ IsVB (Lie (Gm S)) 1 :=
-  ⟨inferInstance, (isFrame_Gm S).isVB, (isFrame_Gm S).isVB.dual⟩
 
 end Torus
 
 section Examples
 
 variable {G : Over S} [GrpObj G] [QuasiSeparated G.hom]
-
-theorem actsThrough_omegaAct_int (i : OAct ℤ G) : ActsThrough (omegaAct i) (Int.castRingHom _) :=
-  fun a => congr(($(RingHom.ext_int (omegaAct i) (scalarAct _ (Int.castRingHom _))) a).asHom)
-
-theorem actsThrough_lieAct_int (i : OAct ℤ G) : ActsThrough (lieAct i) (Int.castRingHom _) :=
-  (actsThrough_omegaAct_int i).dual
 
 end Examples
 

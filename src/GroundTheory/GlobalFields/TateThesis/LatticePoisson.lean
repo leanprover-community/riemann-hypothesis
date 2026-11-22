@@ -80,8 +80,6 @@ def dualEquiv : (ι → ℤ) ≃ dualLattice L :=
       refine Finset.sum_congr rfl fun i _ => ?_
       simp only [dualB, LinearMap.BilinForm.dualBasis_repr_apply, innerₗ_apply_apply, hm]⟩
 
-theorem coe_dualEquiv (m : ι → ℤ) : (dualEquiv b m : E) = dualPt b m := rfl
-
 def toTorus : C(ι → ℝ, UnitAddTorus ι) :=
   ⟨fun x i => (x i : UnitAddCircle),
     continuous_pi fun i => continuous_quotient_mk'.comp (continuous_apply i)⟩
@@ -148,7 +146,6 @@ theorem perTorus_toTorus (f : 𝓢(E, ℂ)) (x : ι → ℝ) :
 
 variable [MeasurableSpace E] [BorelSpace E]
 
-
 omit [DecidableEq ι] in
 theorem integral_fundamentalDomain (f : 𝓢(E, ℂ)) {μ : E} (hμ : μ ∈ dualLattice L) :
     ∫ y in ZSpan.fundamentalDomain (b.ofZLatticeBasis ℝ L),
@@ -189,7 +186,6 @@ theorem integral_fundamentalDomain (f : 𝓢(E, ℂ)) {μ : E} (hμ : μ ∈ dua
   simp only
   rw [← tsum_mul_left]
   exact tsum_congr fun ℓ => by rw [add_comm y]
-
 
 omit [DecidableEq ι] in
 theorem setIntegral_cube (φ : E → ℂ) :
@@ -297,7 +293,6 @@ section Main
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
   [MeasurableSpace E] [BorelSpace E]
 variable (L : Submodule ℤ E) [DiscreteTopology L] [IsZLattice ℝ L]
-
 
 omit [MeasurableSpace E] [BorelSpace E] [IsZLattice ℝ L] in
 theorem lattice_summable_norm (f : 𝓢(E, ℂ)) (a : E) : Summable fun ℓ : L => ‖f (ℓ + a)‖ := by

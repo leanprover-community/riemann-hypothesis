@@ -52,8 +52,6 @@ section Gen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {N : ℕ}
 
-local notation "ιA" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 theorem incl_int_mem (x : 𝓞 E) : ιA (algebraMap (𝓞 E) E x) ∈ Formalism.L2.Herm.intAf F E :=
   Subring.subset_closure (Or.inl ⟨⟨algebraMap (𝓞 E) E x, x, rfl⟩, rfl⟩)
 
@@ -93,8 +91,6 @@ end Gen
 section Gen2
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {N : ℕ}
-
-local notation "ιA" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
 
 theorem coord_int (B : GL (Fin N) E) (Λ : Submodule (𝓞 E) (Fin N → E)) (t : 𝓞 E)
     (ht : ∀ x ∈ Λ, t • x ∈ mvL B (stdLat E N)) (z : Fin N → E ⊗[F] FiniteAdeleRing (𝓞 F) F)

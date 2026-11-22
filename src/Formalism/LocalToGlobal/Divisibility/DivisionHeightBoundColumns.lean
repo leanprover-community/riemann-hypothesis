@@ -167,69 +167,11 @@ variable (hX : X.Ok) (v0 : InfinitePlace X.K) (TU : Finset (Tup X.F X.E X.K S))
   (Xg : Finset (Col.G0 X.E Pr.vGs R.r → X.K)) (S0 : Set (HeightOneSpectrum (𝓞 X.E)))
   (xiVal : Tup X.F X.E X.K S → HeightOneSpectrum (𝓞 X.E) → X.Kˣ)
 
-theorem colFam_rows_ok (commR : ∀ τ : TupF TU, Col.HeckeComm (rowPts W Ch sel τ.1) S0)
-    (splitR : ∀ τ : TupF TU, Col.HeckeFieldsIn (rowPts W Ch sel τ.1) S0) (τ : TupF TU) :
-    ((colFam W Ch sel hX v0 TU Xg S0 xiVal).R τ).Ok 1 := by
-  exact {
-    good := Col.MtildeKCSD_good W Ch sel τ.1 hX _
-    hrat := Col.CSDRat.H_mem _ (Col.MtildeKCSD_rat W Ch sel τ.1 hX _)
-      (Col.csd_hasRatBasis _ (Col.MtildeKCSD_rat W Ch sel τ.1 hX _))
-    hpos := fun v => (Col.mtildeK_rat W Ch sel τ.1 hX).posH _ v
-    act := Col.unipotentActionForms_good W Ch sel τ.1 hX _
-    actRat := Col.unipotentActionForms_rational W Ch sel τ.1 hX _
-    comm := heckeCSD_comm _ _ _ _ _ (commR τ)
-    split := heckeCSD_split _ _ _ _ _ (splitR τ)
-    opG := fun i g => heckeCSD_comm_trRep _ _ _ _ _ _ _ i g
-    blocks := Col.blockOk_firstValB (fun j (P : ↥(offSub ∅ Pr.vGs (Col.rowSG Pr sel τ.1) S0)) =>
-        Ch.muVal j P.1.1 * xiVal τ.1 P.1.1) (q := fun P => Col.SplitOff.q P.1) R.r R.t_odd.pos
-      (by have := R.two_le_m; omega) (fun P => Col.SplitOff.q_ne_zero P.1)
-    q_pos := fun P => Nat.pos_of_ne_zero (Col.SplitOff.q_ne_zero P.1)
-    pl_inj := Subtype.val_injective }
-
-theorem colFam_lifts_ok (commL : ∀ (j : Fin R.m) (τ : TupF TU), Col.HeckeComm (liftPts W Ch sel τ.1 (j.1 + 1)) S0)
-    (splitL : ∀ (j : Fin R.m) (τ : TupF TU), Col.HeckeFieldsIn (liftPts W Ch sel τ.1 (j.1 + 1)) S0)
-    (j : Fin R.m) (τ : TupF TU) :
-    ((colFam W Ch sel hX v0 TU Xg S0 xiVal).L j τ).Ok 1 := by
-  exact {
-    good := Col.MtKCSD_good W Ch sel τ.1 hX (j.1 + 1) _
-    hrat := Col.CSDRat.H_mem _ (Col.MtKCSD_rat W Ch sel τ.1 hX (j.1 + 1) _)
-      (Col.csd_hasRatBasis _ (Col.MtKCSD_rat W Ch sel τ.1 hX (j.1 + 1) _))
-    hpos := fun v => (Col.mtK_rat W Ch sel τ.1 hX (j.1 + 1)).posH _ v
-    act := Col.unipotentActionClassSum_good W Ch sel τ.1 hX (j.1 + 1) _
-    actRat := Col.unipotentActionClassSum_rational W Ch sel τ.1 hX (j.1 + 1) _
-    comm := heckeCSD_comm _ _ _ _ _ (commL j τ)
-    split := heckeCSD_split _ _ _ _ _ (splitL j τ)
-    opG := fun i g => heckeCSD_comm_trRep _ _ _ _ _ _ _ i g
-    blocks := Col.blockOk_firstValA (fun (P : ↥(offSub ∅ Pr.vGs (Col.rowSG Pr sel τ.1) S0)) =>
-        Ch.muVal j P.1.1 * xiVal τ.1 P.1.1) (fun P => Ch.etaVal P.1.1) (q := fun P => Col.SplitOff.q P.1) R.r
-      R.t_odd.pos (fun P => Col.SplitOff.q_ne_zero P.1)
-    q_pos := fun P => Nat.pos_of_ne_zero (Col.SplitOff.q_ne_zero P.1)
-    pl_inj := Subtype.val_injective }
-
-theorem colFam_ok (hH : ColHyp W Ch sel v0 TU Xg S0) : (colFam W Ch sel hX v0 TU Xg S0 xiVal).Ok 1 := by
-  exact {
-    conj := hH.conj
-    tup_fin := tupF_finite TU
-    irr := hH.irr
-    what₂ := colFam_rows_ok W Ch sel hX v0 TU Xg S0 xiVal hH.commR hH.splitR
-    lifts := colFam_lifts_ok W Ch sel hX v0 TU Xg S0 xiVal hH.commL hH.splitL }
-
 end Inst
 
 section Xi
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {L : Type} [Field L]
-
-def IsUnifIdele (P : HeightOneSpectrum (𝓞 E)) (u : (AfE F E)ˣ) : Prop :=
-  ∃ (v : HeightOneSpectrum (𝓞 F)) (hu : (u : AfE F E) ∈ RInt F E) (b : 𝓞 E),
-    P.asIdeal.under (𝓞 F) = v.asIdeal ∧ u ∈ suppAt E v ∧ b ∈ P.asIdeal ∧ b ∉ P.asIdeal ^ 2 ∧
-    (⟨(u : AfE F E), hu⟩ : RInt F E) - toRInt F E b ∈ (P.asIdeal ^ 2).map (toRInt F E) ∧
-    ∀ P' : HeightOneSpectrum (𝓞 E), P' ≠ P → (⟨(u : AfE F E), hu⟩ : RInt F E) - 1 ∈ P'.asIdeal.map (toRInt F E)
-
-
-open Classical in
-def unifVal (ξ : Chr F E L) (P : HeightOneSpectrum (𝓞 E)) : Lˣ :=
-  if h : ∃ u, IsUnifIdele (F := F) P u then ξ h.choose else 1
 
 end Xi
 
@@ -237,8 +179,6 @@ section XiCol
 
 variable {X : Col.Fields} {Pr : Col.Primes X} {R : Ranks} (W : Col.Wts X Pr.Word R) (Ch : Col.Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
-
-def xiVal (τ : Tup X.F X.E X.K S) (P : HeightOneSpectrum (𝓞 X.E)) : X.Kˣ := unifVal (τ : Chr X.F X.E X.K) P
 
 variable (hX : X.Ok) (v0 : InfinitePlace X.K) (TU : Finset (Tup X.F X.E X.K S))
   (Xg : Finset (Col.G0 X.E Pr.vGs R.r → X.K)) (S0 : Set (HeightOneSpectrum (𝓞 X.E)))
@@ -250,7 +190,6 @@ section LinkCol
 variable {X : Col.Fields} {Pr : Col.Primes X} {R : Ranks} (W : Col.Wts X Pr.Word R) (Ch : Col.Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (hX : X.Ok) (v0 : InfinitePlace X.K)
   (TU : Finset (Tup X.F X.E X.K S)) (Xg : Finset (Col.G0 X.E Pr.vGs R.r → X.K)) (S0 : Set (HeightOneSpectrum (𝓞 X.E)))
-
 
 end LinkCol
 

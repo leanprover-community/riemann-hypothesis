@@ -30,8 +30,6 @@ variable {ι : Type} {a : ℕ}
 
 def tr (v : ι × Fin a × Fin a) : ι × Fin a × Fin a := (v.1, v.2.2, v.2.1)
 
-theorem tr_tr (v : ι × Fin a × Fin a) : tr (tr v) = v := rfl
-
 def cα : ℂ := ⟨1 / 2, 1 / 2⟩
 
 def cβ : ℂ := ⟨-1 / 2, 1 / 2⟩

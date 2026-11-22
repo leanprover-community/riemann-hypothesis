@@ -56,8 +56,6 @@ section Common
 variable {ψ : AddChar k Circle} {m N : ℕ} {h : m + 2 ≤ N} {V : Type} [AddCommGroup V] [Module ℂ V]
   {π : Representation ℂ (GL (Fin N) k) V} {s : ℝ} {B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ}
 
-local notation "P" => avg (1 : AddChar k Circle) h π 0
-
 theorem colInv (hB : MirEq π (m + 1) h s B) (x : Fin (m + 1) → k) (v w : V) :
     B (π (colEl k m N h x) v) (π (colEl k m N h x) w) = B v w := by
   have := hB (unip k (m + 1) (Multiplicative.ofAdd x)) (unip_mem_Mir m x) v w
@@ -112,9 +110,6 @@ section AtomCons
 
 variable {m N : ℕ} {h : m + 2 ≤ N} {V : Type} [AddCommGroup V] [Module ℂ V]
   {π : Representation ℂ (GL (Fin N) k) V} {s : ℝ} {B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ}
-
-local notation "P" => avg (1 : AddChar k Circle) h π 0
-local notation "LT" => {A : AddSubgroup (Fin (m + 1) → k) // IsLat A}
 
 variable (hπ : IsSmooth π) (hpsd : IsPsd B) (hB : MirEq π (m + 1) h s B)
 include hπ hpsd hB
@@ -204,9 +199,6 @@ section AtomProps
 
 variable {m N : ℕ} {h : m + 2 ≤ N} {V : Type} [AddCommGroup V] [Module ℂ V]
   {π : Representation ℂ (GL (Fin N) k) V} {s : ℝ} {B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ}
-
-local notation "P" => avg (1 : AddChar k Circle) h π 0
-local notation "LT" => {A : AddSubgroup (Fin (m + 1) → k) // IsLat A}
 
 variable (hπ : IsSmooth π) (hpsd : IsPsd B) (hB : MirEq π (m + 1) h s B)
 include hπ hpsd hB

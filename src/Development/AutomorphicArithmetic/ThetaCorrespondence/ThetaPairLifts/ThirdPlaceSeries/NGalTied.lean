@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.GaloisLevelStructure.NGalTied
+public import Formalism.LocalToGlobal.GaloisLevelStructure.TiedGal
+public import Formalism.LocalToGlobal.PlaceMapInjectivity.MapPlInjective
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.DaAutRepSphAt
 

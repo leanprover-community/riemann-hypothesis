@@ -13,9 +13,6 @@ variable {F : Type} [Field F] (O : Subring F) {a : ℕ}
 def intM (M : Matrix (Fin a) (Fin a) F) (h : IsInt O M) : Matrix (Fin a) (Fin a) O :=
   fun i j => ⟨M i j, h i j⟩
 
-theorem map_intM (M : Matrix (Fin a) (Fin a) F) (h : IsInt O M) : (intM O M h).map O.subtype = M :=
-  rfl
-
 theorem map_sub_inj : Function.Injective
     (fun M : Matrix (Fin a) (Fin a) O => M.map O.subtype) :=
   Matrix.map_injective Subtype.val_injective

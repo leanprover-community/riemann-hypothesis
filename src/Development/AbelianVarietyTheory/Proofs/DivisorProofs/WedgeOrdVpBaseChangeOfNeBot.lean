@@ -101,7 +101,6 @@ theorem IsLieImage.baseChange (hF : PrimitiveSubmodule B = Submodule.span R' ((b
   rw [← hk.2 f hf, ← sub_eq_zero]
   exact mem_Fil.1 this f hf
 
-
 set_option maxHeartbeats 1000000 in
 theorem IsKSValue.baseChange (P : AbelianDeRham) {A' : Over (Sp (DualNumber R))} [GrpObj A']
     {B' : Over (Sp (DualNumber R'))} [GrpObj B'] {g : ℕ} (hA : IsAbelianScheme A')
@@ -193,49 +192,10 @@ variable {K K' : Type} [Field K] [Algebra c.F K] [Field K'] [Algebra c.F K'] {K�
   [Algebra c.F K₀] {ι : Type} [Fintype ι] {Φ : Finset (E →+* ℂ)} {ψ : K →ₐ[c.F] K'} {y : FrPt Xo c K}
   {y' : FrPt Xo c K'}
 
-
 open scoped CategoryTheory.Obj in
 theorem exists_isGrpPullback {S S' : Scheme.{0}} (G : Over S) [GrpObj G] (f : S' ⟶ S) :
     ∃ (G' : Over S') (_ : GrpObj G') (φ : G'.left ⟶ G.left), IsGrpPullback G' G f φ :=
   ⟨_, inferInstance, _, isGrpPullback_pullback G f⟩
-
-theorem IsKS.baseChange (P : AbelianDeRham) (h : FrMap ψ y y') {x : Sp (DualNumber K) ⟶ Xo.X} {M : HIx Dw Φ → K}
-    (hM : IsKS Φ y x M) : IsKS Φ y' (spMap (dualMap ψ.toRingHom) ≫ x) (ψ ∘ M) := open CategoryTheory.MonoidalCategory CategoryTheory.CartesianMonoidalCategory CategoryTheory.MonObj in open scoped CategoryTheory.Obj in by
-  obtain ⟨A, _, A', _, π, π', i, hi, b, ub, hb, hπ, hπ', e, hpol, hu, hl, hM⟩ := hM
-  let : Algebra K K' := ψ.toRingHom.toAlgebra
-  obtain ⟨B, _, φ, hφ⟩ := exists_isGrpPullback A (spMap (algebraMap K K'))
-  obtain ⟨B', _, φ', hφ'⟩ := exists_isGrpPullback A' (spMap (dualMap (algebraMap K K')))
-  have e₀ : spMap (algebraMap K K') ≫ epsRed K = epsRed K' ≫ spMap (dualMap (algebraMap K K')) := by
-    rw [← Cris.spMap_comp, ← Cris.spMap_comp]
-    congr 1
-    ext a <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
-  have w : (φ ≫ i) ≫ A'.hom = (B.hom ≫ epsRed K') ≫ spMap (dualMap (algebraMap K K')) := by
-    rw [(hφ.comp hi).1.w, e₀, Category.assoc]
-  have sq : hφ'.1.lift _ _ w ≫ φ' = φ ≫ i := hφ'.1.lift_fst _ _ _
-  have hj : IsGrpPullback B B' (epsRed K') (hφ'.1.lift _ _ w) :=
-    hφ'.cancel ((hφ.comp hi).congr e₀ sq.symm) (hφ'.1.lift_snd _ _ _)
-  have hU := ObjDim.isAbelianScheme Xo.univ
-  have hg := ObjDim.smoothOfRelativeDimension Xo.univ
-  have hA := PolPull.isAbelianScheme_of_isGrpPullback hU hπ
-  have gA := (smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback hπ.1 hg
-  have hA' := PolPull.isAbelianScheme_of_isGrpPullback hU hπ'
-  have gA' := (smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback hπ'.1 hg
-  obtain ⟨bc, hF⟩ := P.2.2.1 K A _ hA gA K' B φ hφ
-  have hL := (P.2.1 K' B _ (PolPull.isAbelianScheme_of_isGrpPullback hA hφ)
-    ((smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback hφ.1 gA)).1
-  obtain ⟨b', hpol', eb⟩ := hpol.pull_comp (AbelianDeRham.bcMor hφ) (UnivPol.pol Xo).isLB
-  choose tv htv using ArcQ.NormalForm.exists_baseChange hφ
-  choose th hth using bc.exists
-  refine ⟨B, _, B', _, φ ≫ π, φ' ≫ π', _, hj, b', fun σ k => tv (ub σ k), fun k => th (hb k),
-    (hφ.comp hπ).congr h.1.symm rfl, hφ'.comp hπ', by rw [← Category.assoc, sq, Category.assoc, e], hpol',
-    fun σ k => ?_, fun σ k => (hl σ k).baseChange (hφ := hφ) hF hL (hth _) (htv _), fun τ a => ?_⟩
-  · rw [← Category.assoc, htv, Category.assoc, hu, h.2.1]
-  · obtain ⟨w, hw, f, hf, hd, hv⟩ := hM τ a
-    refine ⟨tv w, ArcQ.NormalForm.isLieComb_baseChange hφ (fun _ => htv _) (htv w) hw, th f,
-      mem_Fil_of_corr (hφ := hφ) hF (hth f) hf, fun k => ?_,
-      hv.baseChange (hφ := hφ) P hA' gA' hj hφ' sq (hth f) (htv w)⟩
-    rw [eb _ _ _ _ (hth f) (hth _), hd]
-    split_ifs <;> simp
 
 end Field
 
@@ -249,8 +209,6 @@ variable (P : AbelianDeRham) (ψ : letI := io.toAlgebra; CoefHom c io' T.Fr) {r 
   (hφ : ∀ a, ψ (φ a) = φ' a) {y : IntFr Xo c T io} {y' : IntFr Xo c T' io'}
   (h : letI := io.toAlgebra; letI := io'.toAlgebra; FrMap ψ y.1 y'.1) {e : Ix Dw → ℤ} {s₀ : RulK Xo c K₀}
   (h₀ : s₀ ∈ secK Xo c K₀ e) {s : ι → RulK Xo c K₀} (hs : ∀ i, s i ∈ secK Xo c K₀ e)
-
-
 
 variable (k : letI := io.toAlgebra; KSIso Φ y.1) (k' : letI := io'.toAlgebra; KSIso Φ y'.1)
 

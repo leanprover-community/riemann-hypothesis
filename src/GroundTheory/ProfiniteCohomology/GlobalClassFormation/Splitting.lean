@@ -18,8 +18,6 @@ open CategoryTheory NumberField IntermediateField GroundTheory.Global FiniteSubf
 
 open scoped DirectSum
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 variable {K E : FiniteSubfield} [Fact (K ≤ E)]
@@ -56,7 +54,6 @@ theorem exists_placeOfEmbedding_eq (w : PlacesOver E.1 v) :
   change j' x = ιE (algebraMap E.1 ℚ̄ x)
   rw [AlgHom.commutes]
   rfl
-
 
 set_option maxHeartbeats 2000000 in
 variable (v) in
@@ -125,7 +122,6 @@ theorem exists_infPlaceOfEmbedding_eq (w : v.placesOver E.1) :
   rw [AlgHom.commutes]
   rfl
 
-
 set_option maxHeartbeats 8000000 in
 theorem exists_unitsLocalRes_unitsResField_eq_zero_of_infPlaceOfEmbedding
     (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure v.Completion) (x : cohomology (unitsLimitRep K) 2)
@@ -164,7 +160,6 @@ end Infinite
 section Main
 
 open scoped NumberField.LiesOver
-
 
 set_option maxHeartbeats 2000000 in
 theorem unitsResField_eq_zero_of_dvd_finrank (ι : LocalEmbeddings K) (x : cohomology (unitsLimitRep K) 2)

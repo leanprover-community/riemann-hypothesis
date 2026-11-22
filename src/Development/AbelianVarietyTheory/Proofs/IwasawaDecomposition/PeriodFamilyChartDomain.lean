@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsIsHodgeFrameIff
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.HodgeGramEqRiemann
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UniformizedFamilyChartIndex
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ChartMeasApplyOfSubset
 
@@ -27,9 +27,6 @@ def imForm {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) :
     (fun y a b => by simp [hermForm, Matrix.mulVec_add, dotProduct_add])
     (fun c y a => by
       simp [hermForm, star_smul, Matrix.mulVec_smul, dotProduct_smul, Complex.smul_im])
-
-theorem imForm_apply {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (z w : Fin g → ℂ) :
-    imForm Hm z w = (hermForm Hm z w).im := rfl
 
 theorem entry_eq {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (p q : Fin g) :
     Hm p q = ((imForm Hm (stdR g ⟨p, 1⟩) (stdR g ⟨q, 0⟩) : ℝ) : ℂ) +

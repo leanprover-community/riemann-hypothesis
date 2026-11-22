@@ -107,8 +107,6 @@ section LinearLie
 
 variable {𝔸 : Type*} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [CompleteSpace 𝔸] [FiniteDimensional ℝ 𝔸]
 
-local notation "𝔢" => expPartialHomeomorph ℝ 𝔸
-
 noncomputable def subspaceProj (𝔤 : Submodule ℝ 𝔸) : 𝔸 →L[ℝ] 𝔤 :=
   LinearMap.toContinuousLinearMap
     (Submodule.projectionOnto 𝔤 _ (Submodule.exists_isCompl 𝔤).choose_spec)
@@ -364,8 +362,6 @@ open Matrix
 open scoped Matrix.Norms.L2Operator
 
 variable (p q : ℕ)
-
-local notation "𝔐" => Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ
 
 theorem mem_indefiniteUnitaryLieAlgebra_iff {X : 𝔐} :
     X ∈ indefiniteUnitaryLieAlgebra p q ↔ Xᴴ = -(indefJ p q * X * indefJ p q) := by

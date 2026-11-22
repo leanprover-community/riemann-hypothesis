@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.IsEpCont
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.HeisenbergTheta.HeisenbergThetaConstant.ThetaC
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchExponentEqZeroOfMulSelf
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FunctionalEquationPairEntirePartBound
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousSetIntegralIoiOne
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ImportsSide
@@ -299,10 +298,6 @@ theorem continuous_pairAt_Λ₀ : Continuous fun q : ℂ × GL ι 𝔸[k] ↦ (p
     obtain ⟨C, hC, hp⟩ := exists_compact_mem_nhds p₀
     obtain ⟨M, -, hM⟩ := pairAt_bound w hΨ hω hC r
     exact ⟨C, hp, M, hM⟩
-
-theorem pairAt_k (A : GL ι 𝔸[k]) : (pairAt w hΨ hω A).k = (Fintype.card ι : ℝ) := rfl
-
-theorem pairAt_ε (A : GL ι 𝔸[k]) : (pairAt w hΨ hω A).ε = 1 := rfl
 
 theorem continuous_entireForm_inv :
     Continuous fun y : ℂ × GL ι 𝔸[k] ↦ entireForm (pairAt w hΨ hω y.2⁻¹) y.1 := by

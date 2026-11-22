@@ -44,8 +44,6 @@ def rhoVec (N : ℕ) (i : Fin N) : ℚ := ((N : ℚ) - 1) / 2 - (i : ℚ)
 
 def hcToWeightQ {N : ℕ} (hc : Fin N → ℚ) : Fin N → ℚ := fun i => hc i - rhoVec N i
 
-def IsIntegralHC {N : ℕ} (hc : Fin N → ℚ) : Prop := ∀ i, ∃ z : ℤ, hcToWeightQ hc i = z
-
 section Modules
 
 variable (R : Type) [CommRing R] (N : ℕ)
@@ -119,11 +117,6 @@ def FactSqHighestWeight : Prop := ∀ (R : Type) [CommRing R] (N : ℕ) (lam : D
 def bridge_normFock_extremal : Prop := ∀ (N : ℕ) (lam : DomWeight N),
   normFock lam (extremal ℂ N lam) (extremal ℂ N lam) = 1
 
-def FactNormFockUnitary : Prop := ∀ (N : ℕ) (lam : DomWeight N) (g : GL (Fin N) ℂ),
-  (g : Matrix (Fin N) (Fin N) ℂ) ∈ Matrix.unitaryGroup (Fin N) ℂ →
-  ∀ f h : MvPolynomial (Fin N × Fin N) ℂ,
-    normFock lam (roundAct ℂ N lam g f) (roundAct ℂ N lam g h) = normFock lam f h
-
 def FactDelDualNabla : Prop := ∀ (N : ℕ) (lam : DomWeight N) (f : MvPolynomial (Fin N × Fin N) ℚ),
   f ∈ nablaSq ℚ N lam →
   ((∀ g ∈ nablaSq ℤ N lam, ∃ z : ℤ, normFockQ lam f (map (Int.castRingHom ℚ) g) = z) ↔
@@ -131,9 +124,6 @@ def FactDelDualNabla : Prop := ∀ (N : ℕ) (lam : DomWeight N) (f : MvPolynomi
 
 def NablaMemDeltaLocallyAtLargePrime : Prop := ∀ (N : ℕ) (lam : DomWeight N) (p : ℕ), p.Prime → lam.spread < p →
   ∀ f ∈ nablaSq ℤ N lam, ∃ c : ℤ, ¬ (p : ℤ) ∣ c ∧ c • f ∈ delSq ℤ N lam
-
-def bridge_hc_rho : Prop := ∀ (N : ℕ) (hc : Fin N → ℚ), StrictAnti hc → IsIntegralHC hc →
-  ∃ lam : DomWeight N, ∀ i, (lam.w i : ℚ) = hcToWeightQ hc i
 
 end
 

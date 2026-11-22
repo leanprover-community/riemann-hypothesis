@@ -35,17 +35,12 @@ noncomputable def piUnitsRep : Representation ℤ G (∀ x, Additive (U x)) wher
   map_mul' g h := LinearMap.ext fun y => funext fun x =>
     congrArg (fun f : ∀ x, U x => Additive.ofMul (f x)) (mul_smul g h fun x => (y x).toMul)
 
-theorem piUnitsRep_apply (g : G) (y : ∀ x, Additive (U x)) (x : X) :
-    piUnitsRep g y x = Additive.ofMul ((g • fun x => (y x).toMul) x) :=
-  rfl
-
 end PiUnits
 
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
   (v : HeightOneSpectrum (𝓞 K))
 
 section Representation
-
 
 variable (L) in
 noncomputable abbrev finiteUnitsAboveRep :
@@ -132,13 +127,11 @@ section Decomposition
 
 variable (w : PlacesOver L v)
 
-
 omit [NumberField K] [NumberField L] in
 theorem mem_stabilizer_iff_smul_eq (σ : Gal(L/K)) :
     σ ∈ MulAction.stabilizer Gal(L/K) w.1.asIdeal ↔ σ • w = w := by
   rw [MulAction.mem_stabilizer_iff, Subtype.ext_iff, coe_smul_placesOver,
     HeightOneSpectrum.ext_iff, smul_asIdeal]
-
 
 omit [NumberField K] in
 theorem galHom_eq_decomposition (σ : MulAction.stabilizer Gal(L/K) w.1.asIdeal)

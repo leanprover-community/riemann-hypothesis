@@ -52,8 +52,6 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
 abbrev neg (V : Formalism.BasicNotions.HSpace E) : Formalism.BasicNotions.HSpace E := sgn true V
 
-theorem neg_hT (V : Formalism.BasicNotions.HSpace E) (x y : V.V) : (neg V).hT x y = -V.hT x y := rfl
-
 theorem neg_gram (V : Formalism.BasicNotions.HSpace E) : (neg V).gram = -V.gram := rfl
 
 theorem hasSignature_neg {n : Type} {J : Matrix n n ℂ} {p q : ℕ} (h : Formalism.UG.HasSignature J p q) :
@@ -161,7 +159,6 @@ theorem princGL_mono (β : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) {I I' :
 
 end Princ
 
-
 variable (D) in
 structure Node where
 
@@ -257,7 +254,6 @@ def InCosetOf (I : Ideal (𝓞 D.host.E)) (c : Coset S T I) (x : WO S.V T.V) : P
   ∀ i j, ∃ h : frMapO S.V T.V S.β T.β x i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E,
     Ideal.Quotient.mk (idS D.host.F I) ⟨_, h⟩ = cmpS D.host.F I (c i j)
 
-
 open Classical in
 def cosetInd (e : AE D) (I : Ideal (𝓞 D.host.E)) (c : Coset S T I) (x : WO S.V T.V) : ℂ :=
   if IsHalf e x ∧ InCosetOf S T I c x then 1 else 0
@@ -337,23 +333,10 @@ structure ArrT.Is (a : ArrT S T) (χS χT : (AE D)ˣ →* Circle) : Prop where
 
   intw : IsIntw θ T.M S.M a.ω.swap (fock ψ θ ε S T a.vac) a.It
 
-def ArrS.int (a : ArrS S T) (m : T.MeasDat) (Φ : WO S.V T.V → ℂ) (F : GA D T.V → ℂ) : GA D S.V → ℂ :=
-  Lift.liftInt m.ν m.fd (thetaKO a.ω) Φ F
-
-def ArrS.IsLift (a : ArrS S T) (m : T.MeasDat) (f : WO S.V T.V → ℂ) (io : T.Cusp θ →ₗ[ℂ] S.Cusp θ) : Prop :=
-  Lift.IsIo m.ν m.fd (thetaKO a.ω) (fock ψ θ ε S T f) a.It (T.Cusp θ) (S.Cusp θ) io
-
-def ArrT.IsLift (a : ArrT S T) (m : S.MeasDat) (f : WO S.V T.V → ℂ) (io : S.Cusp θ →ₗ[ℂ] T.Cusp θ) : Prop :=
-  Lift.IsIo m.ν m.fd (fun h g Φ => thetaKO a.ω g h Φ) (fock ψ θ ε S T f) a.It (S.Cusp θ) (T.Cusp θ) io
-
 def ArrT.IsAdj (a : ArrT S T) (Tp : Pol S T →ₗ⋆[ℂ] SmT T.M →ₗ[ℂ] SmT S.M) : Prop :=
   ∀ (P : Pol S T) (v : S.M.Vec) (w : T.M.Vec),
     ellT T.M (fun τ => w τ) (inclT T.M (a.It P (PiTensorProduct.tprod ℂ v))) =
       starRingEnd ℂ (ellT S.M (fun τ => v τ) (inclT S.M (Tp P (PiTensorProduct.tprod ℂ w))))
-
-def ArrT.IsLiftConj (a : ArrT S T) (Tp : Pol S T →ₗ⋆[ℂ] SmT T.M →ₗ[ℂ] SmT S.M) (m : T.MeasDat) (f : WO S.V T.V → ℂ)
-    (up : T.Cusp θ →ₗ[ℂ] S.Cusp θ) : Prop :=
-  Lift.IsIoUp m.ν m.fd (fun h g Φ => thetaKO a.ω g h Φ) (fock ψ θ ε S T f) Tp (S.Cusp θ) (T.Cusp θ) up
 
 variable {ψ θ ε}
 

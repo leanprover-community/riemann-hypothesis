@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DescNEqXPowMulIterateDerivative
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsIterateDerivative
 
 @[expose] public section

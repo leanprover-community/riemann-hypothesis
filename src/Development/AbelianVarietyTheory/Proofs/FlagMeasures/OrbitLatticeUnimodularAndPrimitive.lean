@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HbApply
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ImportsBisBis
 
 @[expose] public section
 
@@ -19,10 +18,6 @@ section Gen
 
 variable {E V : Type*} [Field E] [NumberField E] [AddCommGroup V] [Module E V] [Module (𝓞 E) V]
   [IsScalarTower (𝓞 E) E V]
-
-theorem exists_smul_mem_lat (Λ : Submodule (𝓞 E) V) (hL : Submodule.IsFullLattice E Λ) (v : V) :
-    ∃ o : 𝓞 E, o ≠ 0 ∧ o • v ∈ Λ := by
-  exact _root_.GlobalTheory.NonzeroSmulMemSpanLattice.exists_ne_zero_smul_mem Λ hL v
 
 end Gen
 

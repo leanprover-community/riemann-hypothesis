@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegIdxOfIsStd
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentMulCutSubOneEntry
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstStandardPairMemberHasThetaFunction
@@ -23,8 +22,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta
 
 variable {D : D7}
-
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
 
 private theorem isIntM_rightBlock {k d a : ℕ} {Y : Matrix (Fin k) (Fin d) (EAf D)} (h : IsIntM Y) :
     IsIntM (rightBlock a Y) := fun i j => by
@@ -119,7 +116,6 @@ private theorem dualCoord_down (A WW : HSp D) (βA : GL (Fin A.rank) (EAf D)) (�
   change d • frMapAdj A WW βA βW x i j ∈ OO
   rw [inv_aux d h1]
   exact mul_mem hx (hi i j)
-
 
 set_option maxHeartbeats 1000000 in
 private theorem stdSnd_isSB {ν : (AE D)ˣ →* Circle} (hν : Continuous ν) {e : AE D} {S : Finset (Pl D.host.E)}

@@ -40,9 +40,6 @@ private theorem mk_add (u t u' t' : A F) : D.mkE u t + D.mkE u' t' = D.mkE (u + 
 private theorem mk_mul (u t u' t' : A F) :
     D.mkE u t * D.mkE u' t' = D.mkE (u * u' + rt D.δ * (t * t')) (u * t' + t * u') :=
   (mkLaws F E D).1 u t u' t'
-private theorem mk_zero : D.mkE (0 : A F) 0 = 0 := by
-  have h := mk_add D (0 : A F) 0 0 0
-  simpa using h
 private theorem mk_co (u t : A F) : D.co (D.mkE u t) = ![u, t] := (mkLaws F E D).2.2.2.1 u t
 
 private noncomputable def sB (k : Kv v) : A E := D.mkE (sg v (k / 2)) (sg v (-(k / (2 * θ))))

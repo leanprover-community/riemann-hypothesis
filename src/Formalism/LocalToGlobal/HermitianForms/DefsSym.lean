@@ -161,39 +161,9 @@ end Sym
 
 section Ext
 
-def insB (k c x : ℕ) : ℕ := if x < k then x else x + c
-
-def eBf (N k c : ℕ) (hk : k ≤ N) : Fin N ⊕ Fin c → Fin (N + c) :=
-  Sum.elim (fun x => ⟨insB k c x, by have := x.isLt; unfold insB; split_ifs <;> omega⟩)
-    (fun i => ⟨k + i, by have := i.isLt; omega⟩)
-
-theorem eBf_inj (N k c : ℕ) (hk : k ≤ N) : Function.Injective (eBf N k c hk) := by
-  intro a b h
-  rcases a with a | a <;> rcases b with b | b <;>
-    simp only [eBf, Sum.elim_inl, Sum.elim_inr, Fin.mk.injEq, insB, Sum.inl.injEq, Sum.inr.injEq,
-      reduceCtorEq, Fin.ext_iff] at h ⊢ <;>
-    have ha := a.isLt <;> have hb := b.isLt <;> (try split_ifs at h) <;> omega
-
-def eB (N k c : ℕ) (hk : k ≤ N) : Fin N ⊕ Fin c ≃ Fin (N + c) :=
-  Equiv.ofBijective (eBf N k c hk) ((Fintype.bijective_iff_injective_and_card _).2 ⟨eBf_inj N k c hk, by simp⟩)
-
 variable (κ : Type) [Field κ]
 
-def extMon (N k c : ℕ) (hk : k ≤ N) : Matrix (Fin N) (Fin N) κ →* Matrix (Fin (N + c)) (Fin (N + c)) κ where
-  toFun M := Matrix.reindex (eB N k c hk) (eB N k c hk) (Matrix.fromBlocks M 0 0 1)
-  map_one' := by simp [Matrix.fromBlocks_one]
-  map_mul' M M' := by
-    rw [Matrix.reindex_apply, Matrix.reindex_apply, Matrix.reindex_apply, Matrix.submatrix_mul_equiv,
-      Matrix.fromBlocks_multiply]
-    simp
-
-def HX (N k rS t c : ℕ) (hk : k ≤ N) : Subgroup (GL (Fin N) κ) :=
-  (JSymG κ (N + c) k rS t false).comap (Units.map (extMon κ N k c hk))
-
 variable {κ}
-
-def lamX (ψ : AddChar κ ℂ) (χ : ℕ → MulChar κ ℂ) (N k rS t c nb : ℕ) (hk : k ≤ N) (M : Matrix (Fin N) (Fin N) κ) : ℂ :=
-  lamSym ψ χ k rS t nb (extMon κ N k c hk M)
 
 end Ext
 

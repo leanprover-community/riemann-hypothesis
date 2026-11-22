@@ -17,11 +17,6 @@ open Formalism.UG Formalism.UG.P
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 variable (hc : Formalism.BasicNotions.CMData F E) (n : ℕ) [NeZero n] {ST : Finset (Pl E)} {π : 𝓞 E} (v : HeightOneSpectrum (𝓞 F))
 
-local notation "Rv" => E ⊗[F] v.adicCompletion F
-local notation "ιv" => inclE (F := F) (E := E) (v.adicCompletion F)
-local notation "𝒪v" => Formalism.BasicNotions.intV E v
-local notation "pE" => algebraMap (𝓞 E) E π
-
 section Fun
 
 theorem rll_baseLb_le_Ker : baseLb E n ST ≤ baseKer E n ST := by

@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.LocalToGlobal.Columns.ScaledRamifiedLattice
 public import Formalism.LogVandermondeBounds.FinrankFiberSumZero
-public import Formalism.LogVandermondeBounds.GaussOperatorProductFormula
 
 @[expose] public section
 
@@ -19,26 +18,10 @@ section Coord
 
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 
-structure CoordAt (P : HeightOneSpectrum (𝓞 E)) (N : Submodule (𝓞 E) (Sp E n))
-    (co : Sp E n → (Fin n → 𝓞 E ⧸ P.asIdeal)) : Prop where
-  add : ∀ x ∈ localization₂ P.asIdeal N, ∀ y ∈ localization₂ P.asIdeal N, co (x + y) = co x + co y
-  smul : ∀ (a : 𝓞 E), ∀ x ∈ localization₂ P.asIdeal N, co (a • x) = Ideal.Quotient.mk P.asIdeal a • co x
-  off : ∀ x, x ∉ localization₂ P.asIdeal N → co x = 0
-  surj : ∀ c, ∃ x ∈ N, co x = c
-  ker : ∀ x ∈ N, co x = 0 → x ∈ P.asIdeal • N
-
 structure FunAt (P : HeightOneSpectrum (𝓞 E)) (N : Submodule (𝓞 E) (Sp E n)) (f : Sp E n → 𝓞 E ⧸ P.asIdeal) : Prop where
   add : ∀ x ∈ localization₂ P.asIdeal N, ∀ y ∈ localization₂ P.asIdeal N, f (x + y) = f x + f y
   smul : ∀ (a : 𝓞 E), ∀ x ∈ localization₂ P.asIdeal N, f (a • x) = Ideal.Quotient.mk P.asIdeal a * f x
   off : ∀ x, x ∉ localization₂ P.asIdeal N → f x = 0
-
-def coF {P : HeightOneSpectrum (𝓞 E)} (co : Sp E n → (Fin n → 𝓞 E ⧸ P.asIdeal)) (c : Fin n → 𝓞 E ⧸ P.asIdeal)
-    (y : Sp E n) : 𝓞 E ⧸ P.asIdeal := ∑ i, c i * co y i
-
-def dualV {κ : Type} [CommRing κ] (x : Fin n → κ) : Fin n → κ := Classical.epsilon fun c => ∑ i, c i * x i = 1
-
-def liftV {P : HeightOneSpectrum (𝓞 E)} (N : Submodule (𝓞 E) (Sp E n)) (co : Sp E n → (Fin n → 𝓞 E ⧸ P.asIdeal))
-    (x : Fin n → 𝓞 E ⧸ P.asIdeal) : Sp E n := Classical.epsilon fun y => y ∈ N ∧ co y = x
 
 end Coord
 
@@ -46,17 +29,6 @@ section Fib
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
   {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
-
-def Deco.fibF (d : Deco E n ST SG) (P : ST) (co : Sp E n → (Fin n → 𝓞 E ⧸ P.1.asIdeal))
-    (c : Fin n → 𝓞 E ⧸ P.1.asIdeal) : Deco E n ST SG := d.repl P d.N (coF co c)
-
-def DecoSet.fibF (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) (P : ST) (co : Sp E n → (Fin n → 𝓞 E ⧸ P.1.asIdeal))
-    (c : Fin n → 𝓞 E ⧸ P.1.asIdeal) : DecoSet (E := E) (n := n) (ST := ST) (SG := SG) :=
-  open Classical in if h : (d.1.fibF P co c).Ok then ⟨_, h⟩ else d
-
-def DecoSet.fibX (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) (P : ST) (q : 𝓞 E) (co : Sp E n → (Fin n → 𝓞 E ⧸ P.1.asIdeal))
-    (x : Fin n → 𝓞 E ⧸ P.1.asIdeal) : DecoSet (E := E) (n := n) (ST := ST) (SG := SG) :=
-  (d.fibF P co (dualV x)).up P q (liftV d.1.N co x)
 
 structure SepElt (ST : Finset (HeightOneSpectrum (𝓞 E))) (a : 𝓞 E) : Prop where
   conj : ∀ P : ST, cO (E := E) a ∈ P.1.asIdeal
@@ -70,11 +42,6 @@ variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
   (C : CoefPk X n (DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG))) (Λ : LevFam X.E X.K n SG)
 
 variable {C Λ}
-
-def resX {R : Type} (d : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)) (P : ST) (q : 𝓞 X.E)
-    (co : Sp X.E n → (Fin n → 𝓞 X.E ⧸ P.1.asIdeal)) (ℓ : C.V → R) (φ : (formGSD C Λ).EqFun) :
-    (Fin n → 𝓞 X.E ⧸ P.1.asIdeal) → R :=
-  fun x => ℓ ((φ : (formGSD C Λ).D → (formGSD C Λ).V) (d.fibX P q co x))
 
 end Ops
 

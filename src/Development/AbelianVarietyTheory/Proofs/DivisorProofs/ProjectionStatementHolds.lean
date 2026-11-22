@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPairDetCovec
-public import Development.AbelianVarietyTheory.Statements.HeightBoundStatement.HTBoundSt
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LineModel
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GrNormPush
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsFlagFrame

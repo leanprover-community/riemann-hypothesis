@@ -27,17 +27,6 @@ namespace PCandSa
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-theorem locM_comp {a b : ℕ} {k k' : Type} [Fintype k] [Fintype k'] (w : Pl E) (φ : k ≃ k')
-    (N : k' → k' → LF a b w) (Y : k' → H E a b → ℂ) (m : ℕ) :
-    (locM w (fun x y => N (φ x) (φ y)))^[m] (Y ∘ φ) = ((locM w N)^[m] Y) ∘ φ := by
-  induction m with
-  | zero => rfl
-  | succ m ih =>
-    rw [Function.iterate_succ_apply', Function.iterate_succ_apply', ih]
-    funext x
-    simp only [locM, Function.comp]
-    exact Equiv.sum_comp φ (fun y' => actP w (N (φ x) y') (((locM w N)^[m] Y) y'))
-
 theorem isLev_lev {n a : ℕ} (d : LocData E n) (hd : d.Ok) (ha : a ≤ n) : Tail.IsLev (d.lev a) := by
   refine ⟨fun w => ?_, ?_⟩
   · obtain ⟨K₁, K₂, h₁, h₂, e⟩ := LocOk.lev_lv d hd ha w
@@ -68,20 +57,6 @@ theorem betaL_hecke {n a : ℕ} (d : LocData E n) (hd : d.Ok) (ha : a ≤ n) :
       tauto
     rw [LocOk.lev_S d hT (Finset.mem_union_left _ hS)]
     exact LocOk.mac_H d PositivityTheory.Rg.BcN.F2.LocOpPf.locOp3 hd ha hS (LocOk.kap_X d hT hS x) (LocOk.kap_X d hT hS y)
-
-def kapX {n : ℕ} (d : LocData E n) {w : Pl E} (hT : w ∉ d.T) (hS : w ∈ d.S₀) : d.kap w ≃ (d.X w) :=
-  Equiv.ofBijective (fun x => ⟨x.1.2, LocOk.kap_X d hT hS x⟩) (by
-    have e : d.idx w = {∅} ×ˢ d.X w := by unfold LocData.idx; rw [if_neg hT, if_pos hS]
-    constructor
-    · rintro ⟨⟨s, x⟩, hx⟩ ⟨⟨s', x'⟩, hx'⟩ h
-      have h1 := (Finset.mem_product.1 (e ▸ hx)).1
-      have h2 := (Finset.mem_product.1 (e ▸ hx')).1
-      simp only [Finset.mem_singleton] at h1 h2
-      simp only [Subtype.mk.injEq] at h
-      subst h1 h2 h
-      rfl
-    · rintro ⟨x, hx⟩
-      exact ⟨⟨(∅, x), by rw [e]; simp [hx]⟩, rfl⟩)
 
 end PCandSa
 

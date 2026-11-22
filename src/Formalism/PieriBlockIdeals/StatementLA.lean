@@ -22,10 +22,6 @@ def lamU (r n : ℕ) (ν : Fin n → ℕ) : Fin r → ℤ :=
 def InclZ (r n : ℕ) (hn : n ≤ r) (ν : Fin n → ℕ) (l e : ℕ) : Prop :=
   ∃ m : ℕ, ¬ l ∣ m ∧ ∀ x ∈ dualWeyl ℤ r n ν, ((m * l ^ e : ℕ) : ℤ) • x ∈ weyl ℤ r n hn ν
 
-def LemmaAZ : Prop :=
-  ∀ (r n : ℕ) (hn : n ≤ r) (ν : Fin n → ℕ), Antitone ν → ∀ l : ℕ, l.Prime →
-    InclZ r n hn ν l (Formalism.RankGapBounds.JumpSetsAlt.eExp (lamU r n ν) l)
-
 def exZ (r n : ℕ) (hn : n ≤ r) (ν : Fin n → ℕ) (l : ℕ) : ℕ := sInf {e : ℕ | InclZ r n hn ν l e}
 
 def ExZSpec : Prop :=
@@ -36,12 +32,6 @@ def ExactExponentRankTwo : Prop :=
   ∀ (n : ℕ) (ν : Fin n → ℕ) (l : ℕ),
     Formalism.RankGapBounds.JumpSetsAlt.eExp (lamU 2 n ν) l =
       Formalism.RankGapBounds.JumpSetsAlt.maxVal l (rowNu (r := 2) ν 0 - rowNu (r := 2) ν 1)
-
-def binForm (R : Type) [CommRing R] (d : ℕ) :
-    (Fin (d + 1) → R) →ₗ[R] MvPolynomial (Fin 2 × Fin 1) R :=
-  ∑ i : Fin (d + 1), (LinearMap.proj i : (Fin (d + 1) → R) →ₗ[R] R).smulRight
-    ((X ((0 : Fin 2), (0 : Fin 1)) : MvPolynomial (Fin 2 × Fin 1) R) ^ (d - i.val) *
-      X ((1 : Fin 2), (0 : Fin 1)) ^ i.val)
 
 def LatticeInclusionTrivialWeight : Prop :=
   ∀ (r : ℕ) (hn : 0 ≤ r) (ν : Fin 0 → ℕ) (l : ℕ), l.Prime →

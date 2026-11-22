@@ -17,11 +17,6 @@ open Formalism.MainNotions.TaylorLogMetric hiding admitted AdmittedStatements Al
 
 variable {D : Car} {N N' : ℕ}
 
-def ChiUnitDet (D : Car) (χ : IdE D → ℂ) : Prop :=
-  letI := D.host.cmStar
-  ∀ N (L L' : Submodule (𝓞 D.host.E) (Fin N → D.host.E)), Even N →
-    IsSDLat D.host.E N L → IsSDLat D.host.E N L' → ‖χ (detId D L L')‖ = 1
-
 end Formalism.L2.Ker.Cd.IntegralLatticeDensity
 
 namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity.CU

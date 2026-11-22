@@ -43,9 +43,6 @@ def gradedMap : grading A n →+*ᵍ grading B n where
   map_mem {_ _} hx :=
     (mem_homogeneousSubmodule _ _).2 (((mem_homogeneousSubmodule _ _).1 hx).map _)
 
-lemma gradedMap_apply (p : MvPolynomial (Fin (n + 1)) A) :
-    gradedMap A B n p = MvPolynomial.map (algebraMap A B) p := rfl
-
 @[simp] lemma gradedMap_X (j : Fin (n + 1)) : gradedMap A B n (X j) = X j := by
   simp [gradedMap_apply]
 
@@ -104,9 +101,6 @@ lemma awayCongr_symm {s t : MvPolynomial (Fin (n + 1)) B} (h : s = t) :
   subst h
   rfl
 
-lemma chartEquiv_symm_apply (j : Fin (n + 1)) (p : MvPolynomial {i // i ≠ j} A) :
-    (chartEquiv A j).symm p = polyToChart A j p := rfl
-
 lemma polyToChart_C (j : Fin (n + 1)) (a : A) :
     polyToChart A j (C a) = chartAlgebraMap A (X j) a := by
   simp [polyToChart, chartAlgebraMap]
@@ -131,7 +125,6 @@ lemma map_polyToChart_apply (j : Fin (n + 1)) (p : MvPolynomial {i // i ≠ j} A
       (awayCongr B n (gradedMap_X A B n j)).symm (polyToChart B j (MvPolynomial.map (algebraMap A B) p)) :=
   congrArg (fun φ => φ p) (map_polyToChart (A := A) (B := B) j)
 
-
 attribute [local instance] MvPolynomial.algebraMvPolynomial in
 theorem isPushout_chart (j : Fin (n + 1)) :
     IsPushout (CommRingCat.ofHom (algebraMap A B)) (CommRingCat.ofHom (chartAlgebraMap A (X j)))
@@ -152,7 +145,6 @@ theorem isPushout_chart (j : Fin (n + 1)) :
     apply MvPolynomial.ringHom_ext <;> intro x <;>
       simp [chartEquiv_symm_apply, map_polyToChart_apply]
 
-
 variable (A) in
 lemma awayι_toSpecBase {s : MvPolynomial (Fin (n + 1)) A} {d : ℕ} (hs : s ∈ grading A n d)
     (hd : 0 < d) :
@@ -160,7 +152,6 @@ lemma awayι_toSpecBase {s : MvPolynomial (Fin (n + 1)) A} {d : ℕ} (hs : s ∈
       Spec.map (CommRingCat.ofHom (chartAlgebraMap A s)) := by
   rw [toSpecBase, ← Category.assoc, Proj.awayι_toSpecZero, ← Spec.map_comp]
   rfl
-
 
 variable (A B n) in
 theorem isPullback_baseChange :

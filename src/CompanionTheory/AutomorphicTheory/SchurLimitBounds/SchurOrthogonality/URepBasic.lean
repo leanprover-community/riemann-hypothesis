@@ -86,7 +86,6 @@ theorem IsInvariant.topologicalClosure {V : Submodule ℂ H} (hV : π.IsInvarian
   have := hsub.closure (π g).continuous hv'
   rwa [V.isClosed_topologicalClosure.closure_eq] at this
 
-
 variable (π) in
 def intertwiners (σ : UnitaryRep G K) : Submodule ℂ (H →L[ℂ] K) where
   carrier := {T | ∀ (g : G) (v : H), T (π g v) = σ g (T v)}
@@ -125,14 +124,12 @@ lemma isInvariant_range {T : H →L[ℂ] K} (hT : T ∈ π.intertwiners σ) :
   rintro g _ ⟨v, rfl⟩
   exact ⟨π g v, hT g v⟩
 
-
 variable (π σ) in
 structure Equiv (π : UnitaryRep G H) (σ : UnitaryRep G K) where
 
   toLinearIsometryEquiv : H ≃ₗᵢ[ℂ] K
 
   map_apply' : ∀ (g : G) (v : H), toLinearIsometryEquiv (π g v) = σ g (toLinearIsometryEquiv v)
-
 
 variable (π σ) in
 def IsEquivalent (π : UnitaryRep G H) (σ : UnitaryRep G K) : Prop := Nonempty (Equiv π σ)
@@ -149,7 +146,6 @@ end Equiv
 
 lemma IsEquivalent.symm (h : π.IsEquivalent σ) : σ.IsEquivalent π := ⟨h.some.symm⟩
 
-
 variable (π) in
 def IsIrreducible : Prop :=
   Nontrivial H ∧ ∀ V : Submodule ℂ H, IsClosed (V : Set H) → π.IsInvariant V → V = ⊥ ∨ V = ⊤
@@ -157,23 +153,6 @@ def IsIrreducible : Prop :=
 section restrict
 
 variable (π) (V : Submodule ℂ H) [CompleteSpace V] (hV : π.IsInvariant V)
-
-noncomputable def restrictAux (g : G) : V ≃ₗᵢ[ℂ] V where
-  toFun v := ⟨π g v, hV g v v.2⟩
-  invFun v := ⟨π g⁻¹ v, hV _ v v.2⟩
-  map_add' v w := Subtype.ext (by simp)
-  map_smul' c v := Subtype.ext (by simp)
-  left_inv v := Subtype.ext (by simp)
-  right_inv v := Subtype.ext (by simp)
-  norm_map' v := by simp [Submodule.coe_norm]
-
-noncomputable def restrict : UnitaryRep G V :=
-  ofLinearIsometryEquiv
-    { toFun := restrictAux π V hV
-      map_one' := by ext v; simp [restrictAux]
-      map_mul' := fun g h =>
-        LinearIsometryEquiv.ext fun v => Subtype.ext (map_mul_apply π g h v) }
-    (fun v => (π.continuous_orbit v).subtype_mk _)
 
 end restrict
 

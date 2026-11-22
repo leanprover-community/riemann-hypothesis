@@ -70,8 +70,6 @@ theorem incI_evI {a : AF F} (h : (finOne : AF F) * a = 0) : incI (evI F a) = a :
 
 variable {κ : Type} [Fintype κ] {W : Type} [AddCommGroup W] [Module (AF F) W] {B : W → W → AF F}
 
-local notation "Vs" κ => (κ → mixedEmbedding.mixedSpace F) × (κ → mixedEmbedding.mixedSpace F)
-
 def lift (d : GlobalTheory.WeilM.Darboux B κ) (w : (κ → mixedEmbedding.mixedSpace F) × (κ → mixedEmbedding.mixedSpace F)) : W :=
   d.e.symm (fun i => incI (w.1 i), fun i => incI (w.2 i))
 
@@ -174,8 +172,6 @@ section Orbit2
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {n d : ℕ} {X : Spc F E n} {W : Spc F E d}
-
-local notation "Vs" κ => (κ → mixedEmbedding.mixedSpace F) × (κ → mixedEmbedding.mixedSpace F)
 
 theorem at_mul {x : Matrix (Fin n) (Fin d) (AE F E)} (hx : At (evI F) x) (A : Matrix (Fin d) (Fin d) (AE F E)) :
     At (evI F) (x * A) := by

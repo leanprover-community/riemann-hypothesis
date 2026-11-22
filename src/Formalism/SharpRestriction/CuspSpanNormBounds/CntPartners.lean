@@ -85,15 +85,6 @@ def PrimSubs (h : V →ₗ⋆[K] V →ₗ[K] K) (L : Submodule (𝓞 K) V) (j de
 
 def cntPrim (h : V →ₗ⋆[K] V →ₗ[K] K) (L : Submodule (𝓞 K) V) (j de : ℕ) : ℕ∞ := (PrimSubs h L j de).encard
 
-def stabAt (h : V →ₗ⋆[K] V →ₗ[K] K) (M : Submodule (𝓞 K) V) (de : ℕ) : Set (V ≃ₗ[K] V) :=
-  {γ | γ ∈ Formalism.HermitianLatticesTheory.isom h ∧ ∀ P : HeightOneSpectrum (𝓞 K), ((de : 𝓞 K) ∈ P.asIdeal) →
-    (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal (Formalism.HermitianLatticesTheory.gmap γ M) = Formalism.HermitianLatticesTheory.localization₂ P.asIdeal M)}
-
-def levelIdx (h : V →ₗ⋆[K] V →ₗ[K] K) (M : Submodule (𝓞 K) V) (de : ℕ) : ℕ :=
-  Nat.card (Quot (fun γ₁ γ₂ : stabAt h M de =>
-    ∀ x ∈ Formalism.HermitianLatticesTheory.dual h M, ∀ P : HeightOneSpectrum (𝓞 K), ((de : 𝓞 K) ∈ P.asIdeal) →
-      (haveI := P.isPrime; γ₁.1.symm (γ₂.1 x) - x ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal M)))
-
 end AnyLat
 
 section Local
@@ -101,14 +92,6 @@ section Local
 variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 
 def pE (p : Ideal (𝓞 F)) : Ideal (𝓞 E) := Ideal.map (algebraMap (𝓞 F) (𝓞 E)) p
-
-def eta₃ (p : Ideal (𝓞 F)) : ℤ :=
-  if ∃ P : Ideal (𝓞 E), P.IsMaximal ∧ P.comap (algebraMap (𝓞 F) (𝓞 E)) = p ∧
-      Formalism.HermitianLatticesTheory.conjIdeal (K := E) P ≠ P then 1 else -1
-
-abbrev PrimesOver (de : ℕ) : Type := {p : Ideal (𝓞 F) // p.IsMaximal ∧ ((de : 𝓞 F)) ∈ p}
-
-def omegaF (de : ℕ) : ℕ := Nat.card (PrimesOver F de)
 
 variable {F E} {V : Type} [AddCommGroup V] [Module E V] [Module (𝓞 E) V] [IsScalarTower (𝓞 E) E V]
 
@@ -118,9 +101,6 @@ def eP (h : V →ₗ⋆[E] V →ₗ[E] E) (M : Submodule (𝓞 E) V) (p : Ideal 
       (M ⊔ pE F E p • Formalism.HermitianLatticesTheory.dual h M).comap (Formalism.HermitianLatticesTheory.dual h M).subtype))
 
 end Local
-
-def thP (j ep : ℕ) (eta : ℤ) (q : ℕ) : ℝ :=
-  ∏ i ∈ Finset.Icc (j - ep + 1) j, (1 - (eta : ℝ) ^ i * (q : ℝ) ^ (-(i : ℤ)))
 
 def Hb (b C : ℝ) (m f : ℕ) : ℝ := b ^ (C * (m : ℝ) ^ 2 * f)
 
@@ -216,13 +196,6 @@ def MeanLe {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (s : Finset (LatV D)) (N 
 
 def Wb : Submodule D.host.E (hS D).V :=
   orth (hS D) (Submodule.span D.host.E (Set.range D.sp.hypE ∪ Set.range D.sp.hypF))
-
-structure GaugeVol where
-  vol : Submodule D.host.E (hS D).V → ℝ
-  volUni : ℕ → ℝ
-  vol_uni : ∀ (Y : Submodule D.host.E (hS D).V) (j : ℕ) (e : Fin j → (hS D).V),
-    Submodule.span D.host.E (Set.range e) = Y → (∀ a b, (hS D).hT (e a) (e b) = if a = b then 1 else 0) →
-    vol Y = volUni j
 
 end Rows
 

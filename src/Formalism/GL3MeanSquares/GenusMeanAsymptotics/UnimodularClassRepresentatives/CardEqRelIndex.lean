@@ -16,8 +16,6 @@ namespace Formalism.HermitianLattices.Ext.L3.LIOrb.IA
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
 variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-
 def mu (𝔮 I : Ideal (𝓞 F)) : ℕ := sSup {e : ℕ | I ≤ 𝔮 ^ e}
 
 theorem mu_mul {𝔮 : Ideal (𝓞 F)} (h𝔮 : 𝔮.IsMaximal) {I J : Ideal (𝓞 F)} (hI : I ≠ ⊥)

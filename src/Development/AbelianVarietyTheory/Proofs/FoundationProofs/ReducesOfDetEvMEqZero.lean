@@ -3,7 +3,7 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteIndexOfGammaLe
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLevelOneSimpleZeroFormAtPoint
-public import Development.AbelianVarietyTheory.Definitions.Foundations.EtaSixProductDifferentiable
+public import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
 
 @[expose] public section
 

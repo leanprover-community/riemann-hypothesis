@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.WeilLieAlgebraScalarAction
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsRtensOp
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 
 @[expose] public section
 

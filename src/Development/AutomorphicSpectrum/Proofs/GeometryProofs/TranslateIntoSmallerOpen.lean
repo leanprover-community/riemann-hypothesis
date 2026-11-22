@@ -4,7 +4,7 @@ public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.DualOrder
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FinitePointExtendsSectionStatement
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FinitePointExtendsSection
 
 @[expose] public section
 

@@ -18,8 +18,6 @@ variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 private theorem pInf_sInf (x : TR.Rinf F) : TR.pInf F (TR.sInf F x) = x :=
   (TR.infEq F).symm_apply_apply x
 
-private theorem pFin_sInf (x : TR.Rinf F) : pFin F (TR.sInf F x) = 0 := rfl
-
 private noncomputable def cU (w : InfinitePlace F) (t : ℝ) : GL (Fin 2) (TR.Rinf F) :=
   ⟨!![1, Pi.single w t; 0, 1], !![1, Pi.single w (-t); 0, 1],
     by

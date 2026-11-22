@@ -165,14 +165,8 @@ theorem IsEisFamily.leftInv_eisLaurent (h : IsEisFamily V Φ) (s₀ : ℂ) (n : 
   unfold eisLaurent laurent
   rw [e]
 
-theorem EisCoeffAt.add (h : EisCoeffAt V Φ s₀ n φ) (h' : EisCoeffAt V Ψ s₀ n ψ) : EisCoeffAt V (Φ + Ψ) s₀ n (φ + ψ) :=
-  ⟨h.1.add h'.1, fun g => ((h.2 g).add (h'.2 g)).congr ⟨_, fun s hs => (eis_add ((h.1 s hs).2 g) ((h'.1 s hs).2 g)).symm⟩⟩
-
 theorem EisValueAt.add (h : EisValueAt V Φ s₀ φ) (h' : EisValueAt V Ψ s₀ ψ) : EisValueAt V (Φ + Ψ) s₀ (φ + ψ) :=
   ⟨h.1.add h'.1, fun g => ((h.2 g).add (h'.2 g)).congr ⟨_, fun s hs => (eis_add ((h.1 s hs).2 g) ((h'.1 s hs).2 g)).symm⟩⟩
-
-theorem EisCoeffAt.smul (h : EisCoeffAt V Φ s₀ n φ) (c : ℂ) : EisCoeffAt V (c • Φ) s₀ n (c • φ) :=
-  ⟨h.1.smul fun _ => c, fun g => ((h.2 g).const_mul c).congr ⟨0, fun s _ => (congrFun (eis_smul c (Φ s)) g).symm⟩⟩
 
 theorem EisValueAt.smul (h : EisValueAt V Φ s₀ φ) (c : ℂ) : EisValueAt V (c • Φ) s₀ (c • φ) :=
   ⟨h.1.smul fun _ => c, fun g => ((holValueAt_const c s₀).mul (h.2 g)).congr
@@ -199,7 +193,6 @@ section Spherical
 
 variable (hμ : IsHeckeChar D μ) (hI : HasIwasawa D.sp.cm.sig (dblSp V).gram (Khat V a)) (hs : SphConv V a)
 
-
 omit hμ hs in
 include hI in
 theorem isIwasawa_Khat : IsIwasawa ((absA D).comp (aP V)) (Khat V a) :=
@@ -209,13 +202,11 @@ theorem isIwasawa_Khat : IsIwasawa ((absA D).comp (aP V)) (Khat V a) :=
 variable (hc : ContinuousOn (fun x : ℂ × GA D (dblSp V) => Φ x.1 x.2) (rightOf (V.rank / 2) ×ˢ univ))
   (hl : ∀ s : ℂ, (V.rank : ℝ) / 2 < s.re → Φ s ∈ degPS V a μ s)
 
-
 omit hμ hI hs hc in
 include hl in
 theorem indLaw_of_mem : ∀ s ∈ rightOf (V.rank / 2),
     IndLaw ((absA D).comp (aP V)) (μ.comp (aP V)) (s + ((V.rank : ℝ) / 2 : ℝ)) (Φ s) := fun s hs p g => by
   rw [((mem_degPS V a).1 (hl s hs)).1 p g]; push_cast; rfl
-
 
 omit hμ hI in
 include hs in
@@ -227,7 +218,6 @@ include hμ hI hs hc hl
 
 theorem SphConv.isEisFamily : IsEisFamily V Φ := fun s h => ⟨leftInv_of_mem hμ (hl s h),
   cosetConv_of_spherical (isIwasawa_Khat hI) (isCompact_Khat V a) hc (indLaw_of_mem hl) hs.summable h⟩
-
 
 omit hμ in
 theorem SphConv.continuousOn_eis :
@@ -268,12 +258,10 @@ theorem SphConv.eisValueAt_flat (hs : SphConv V a) (hμ : IsHeckeChar D μ) (h :
   have h1 := hs.isEisFamily_flat hI hφ hμ
   simpa only [flatH_self] using h1.eisValueAt h1.analyticOnNhd_flat h
 
-
 omit hφ in
 theorem sph_mem (s : ℂ) : sph V a s ∈ degPS V a 1 s :=
   haveI := t2Space_adeleRing' (F := D.host.F)
   hI.spherical_mem continuous_absE (isCompact_Khat V a) s
-
 
 open scoped Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes in
 omit hφ in
@@ -314,14 +302,12 @@ theorem leftInv_dblIntegrand (hμ : IsHeckeChar D μ) (hE : LeftInv (GQ (dblSp V
   simp only [dblIntegrand, map_mul (io V), hE _ (io_mem_GQ V hγ.1 hγ.2), Prod.fst_mul, Prod.snd_mul, h₁ _ hγ.1, h₂ _ hγ.2,
     map_mul (detA V), map_mul μ, apply_detA hμ hγ.2, one_mul]
 
-
 open scoped Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes in
 theorem continuous_detA : Continuous (detA V) := by
   have h1 : Continuous (aP V) := continuous_aH
   have h2 : Continuous fun g : GA D V => (⟨io V (g, g), (io_mem_siegel V).2 rfl⟩ : siegel V) :=
     ((continuous_io V).comp (continuous_id.prodMk continuous_id)).subtype_mk _
   exact (h1.comp h2).congr fun g => aH_ioDiag (gram_hdbl V) g
-
 
 open scoped Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes in
 theorem continuous_dblIntegrand (hμ : IsHeckeChar D μ) (hE : Continuous E) (h₁ : Continuous f₁) (h₂ : Continuous f₂) :
@@ -396,12 +382,6 @@ open NumberField IsDedekindDomain
 variable {K : Type} [Field K] [NumberField K] {T : Set (HeightOneSpectrum (𝓞 K))} {c : LFun.Fam K} {σ : ℝ} {Λ : ℂ → ℂ}
 
 end Euler
-
-theorem eis_smul_indicator (V : HSp D) (c : ℂ → ℂ) :
-    IsEisFamily V (fun s => c s • indicator (siegelQ V : Set (GA D (dblSp V))) 1) ∧
-      ∀ s, eis V (c s • indicator (siegelQ V : Set (GA D (dblSp V))) 1) = c s • indicator (GQ (dblSp V) : Set _) 1 :=
-  ⟨IsEisFamily.smul (Φ := fun _ => _) (fun _ _ => ⟨(cosetSum_indicator 1).1, fun g => (cosetSum_indicator g).2.1⟩) c,
-    fun s => (eis_smul _ _).trans (congrArg _ (funext fun g => (cosetSum_indicator g).2.2))⟩
 
 end GlobalTheory.Eis
 

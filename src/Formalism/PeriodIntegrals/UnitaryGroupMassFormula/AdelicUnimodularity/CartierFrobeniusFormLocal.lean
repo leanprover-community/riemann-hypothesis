@@ -54,10 +54,6 @@ def toOv (v : HeightOneSpectrum (𝓞 F)) : 𝓞 F →+* Valued.integer (v.adicC
     rw [val_algebraMap_F, valuation_of_algebraMap]
     exact intValuation_le_one v a)
 
-theorem toOv_coe (v : HeightOneSpectrum (𝓞 F)) (a : 𝓞 F) :
-    ((toOv v a : Valued.integer (v.adicCompletion F)) : v.adicCompletion F) =
-      algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F a) := rfl
-
 theorem isUnit_integer_iff (v : HeightOneSpectrum (𝓞 F)) (x : Valued.integer (v.adicCompletion F)) :
     IsUnit x ↔ Valued.v (x : v.adicCompletion F) = 1 :=
   (Valuation.integer.integers (Valued.v : Valuation (v.adicCompletion F) _)).isUnit_iff_valuation_eq_one

@@ -42,13 +42,4 @@ theorem inter_comp_equiv {K : Type} [Field K] (A : AbVar K) {J J' : Type} [Finty
   letI := A.algΓ
   exact congrFun (multiDiff_comp_equiv e c _) 0
 
-theorem inter_multilinear_and_symm :
-    ∀ (K : Type) [Field K] (A : AbVar K) (J : Type) [Fintype J], Fintype.card J = A.dim →
-      (∃ M : (J → Pic A.X.left) →ₘₗ[ℤ] ℤ, ∀ c, M c = inter A c) ∧
-      ∀ (J' : Type) [Fintype J'] (e : J' ≃ J) (c : J → Pic A.X.left), inter A (c ∘ e) = inter A c := by
-  intro K _ A J _ hJ
-  classical
-  refine ⟨⟨MultilinearMap.mk' (fun c => inter A c) (fun c i a b => inter_update_add A hJ c i a b)
-    (fun c i n a => map_zsmul (interAdd A hJ c i) n a), fun c => rfl⟩, fun J' _ e c => inter_comp_equiv A e c⟩
-
 end GlobalTheory.AV.AbVar

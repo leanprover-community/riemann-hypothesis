@@ -139,8 +139,6 @@ theorem quotientEquivLocalQuotients_mk {I : FractionalIdeal (𝓞 K)⁰ K} (hI :
 
 namespace IdeleGroup
 
-local notation "𝓘" => (FractionalIdeal (𝓞 K)⁰ K)ˣ
-
 def localMul (s : IdeleGroup K) (I : 𝓘) (v : HeightOneSpectrum (𝓞 K)) :
     LocalQuotient (I : FractionalIdeal (𝓞 K)⁰ K) v ≃ₗ[𝓞 K]
       LocalQuotient ((s • I : 𝓘) : FractionalIdeal (𝓞 K)⁰ K) v :=

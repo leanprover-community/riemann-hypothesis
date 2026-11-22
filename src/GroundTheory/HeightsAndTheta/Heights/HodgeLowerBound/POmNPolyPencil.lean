@@ -96,9 +96,6 @@ theorem mixW_zero {e : ℕ} (α β : ((Σ k, ι k) → ℂ) → ℝ) : mixW (e :
   funext k
   simp [mixW]
 
-theorem mixedDisc_eq_mdisc {D : ℕ} (A : Fin D → Matrix (Fin D) (Fin D) ℂ) :
-    mixedDisc A = ReciprocityTheory.AnForm.mdisc A := rfl
-
 theorem sheetDensity_pencil {e : ℕ} (Q : Ideal (MRing ι))
     (Ψ : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (e + 1) → ℂ)) {α β : ((Σ k, ι k) → ℂ) → ℝ}
     (hα : IsC2AlongSheets Q Ψ α) (hβ : IsC2AlongSheets Q Ψ β) (a b : ℝ)
@@ -162,7 +159,6 @@ theorem ptsIntegral_pencil {e : ℕ} {Q : Ideal (MRing ι)} (hQ : IsArithVar Q (
     rw [hfun, integral_finsetSum _ fun i hi => (hint _ hΨ.choose_spec i hi).const_mul _]
     exact Finset.sum_congr rfl fun i _ => integral_const_mul _ _
   · simp
-
 
 open Matrix in
 theorem integrable_of_nodes {Y : Type*} [MeasurableSpace Y] {μ : Measure Y} {N : ℕ} (M : ℕ → Y → ℝ)

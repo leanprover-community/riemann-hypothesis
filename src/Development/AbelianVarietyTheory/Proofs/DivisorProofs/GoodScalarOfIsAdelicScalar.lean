@@ -71,12 +71,6 @@ section Geometric
 variable {C : Core D} [Algebra C.Q.c.F D.what₂.LL] {R : RealDat D A C.Q.c.F} {i : Fin D.R.m}
   (O : OMDat C R i Unit (fun _ => A.μ0)) (κ : WeightFamilies.Wt D ((i : ℕ) + 1)) (cc : (C.U ((i : ℕ) + 1) O.s0).Comp → ℂ)
 
-structure DictFacts : Prop where
-  dom : ∀ g, (O.dict g).2 ∈ ((C.U ((i : ℕ) + 1) O.s0).X (O.dict g).1).dom
-  mu : ∀ g, ‖O.mu g‖ = 1
-  cc : ∀ k, ‖cc k‖ = 1
-  lifts : Lev.LiftsExist (Wc D i) (R.βW i) (R.datWp i R.triv)
-
 variable {O cc} (hd : DictFacts O cc)
 include hd
 

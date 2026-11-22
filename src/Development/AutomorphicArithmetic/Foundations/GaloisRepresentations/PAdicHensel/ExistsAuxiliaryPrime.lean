@@ -7,7 +7,6 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicHensel.PArithK
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicHensel.PScOf
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicHensel.PRootAt
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicHensel.PStdForm
 
 @[expose] public section
 

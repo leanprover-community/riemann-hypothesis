@@ -46,9 +46,6 @@ theorem incl_integral {LL LL' : FinExt l} (h : LL.1 ≤ LL'.1) {x : ↥LL.1} (hx
   have hx' : IsIntegral ℤ_[l] x := hx
   exact hx'.map ((incl h).restrictScalars ℤ_[l])
 
-theorem rep_apply {F : Type} [Field F] {k : ℕ} (M : G →* Matrix (Fin k) (Fin k) F) (g : G) (x : Fin k → F) :
-    CJ.rep M g x = (M g).mulVec x := rfl
-
 set_option synthInstance.maxHeartbeats 400000
 
 def intVecEquiv (LL' : FinExt l) (k : ℕ) : ↥(intVec LL' k) ≃ₗ[↥(OL LL')] (Fin k → ↥(OL LL')) where

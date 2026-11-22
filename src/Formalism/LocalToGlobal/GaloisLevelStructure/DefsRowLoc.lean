@@ -13,8 +13,6 @@ namespace Formalism.L2.NG
 
 variable (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ)
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 variable {L n}
 
 variable {W : Type} [AddCommGroup W] [Module ℂ W]

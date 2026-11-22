@@ -296,7 +296,6 @@ theorem mem_cuspForms_uAction (u : UEnv K n) :
 theorem automorphicForms_le_archSmooth : automorphicForms K n ≤ archSmooth K n :=
   fun _ hφ => hφ.isSmooth.1
 
-
 variable (K n) in
 def uActionAF : UEnv K n →ₐ[ℝ] Module.End ℂ (automorphicForms K n) where
   toFun u := LinearMap.codRestrict (automorphicForms K n)
@@ -320,7 +319,6 @@ def uActionAF : UEnv K n →ₐ[ℝ] Module.End ℂ (automorphicForms K n) where
     show ((AutomorphicForm.uAction (algebraMap ℝ (UEnv K n) r) _ : archSmooth K n) :
       AdelicGLn.AdelicGL K n → ℂ) = _
     rw [AlgHom.commutes]; rfl)
-
 
 variable (K n) in
 def uActionCusp : UEnv K n →ₐ[ℝ] Module.End ℂ (cuspForms K n) where
@@ -361,16 +359,6 @@ theorem uActionCusp_finRepCusp (u : UEnv K n) (h : AdelicGLn.FiniteAdelicGL K n)
 
 section GK
 
-
-variable (K n) in
-def lieActionAF : (isExpLieAlgebra K n).lieSubalgebra →ₗ⁅ℝ⁆ Module.End ℂ (automorphicForms K n) where
-  toFun X := uActionAF K n (UniversalEnvelopingAlgebra.ι ℝ X)
-  map_add' X Y := by rw [map_add (f := _), map_add (f := _)]
-  map_smul' r X := by rw [map_smul, map_smul]; rfl
-  map_lie' {X Y} := by
-    rw [LieHom.map_lie, Ring.lie_def, Ring.lie_def, map_sub, map_mul, map_mul]
-
-
 variable (K n) in
 def lieActionCusp : (isExpLieAlgebra K n).lieSubalgebra →ₗ⁅ℝ⁆ Module.End ℂ (cuspForms K n) where
   toFun X := uActionCusp K n (UniversalEnvelopingAlgebra.ι ℝ X)
@@ -378,14 +366,6 @@ def lieActionCusp : (isExpLieAlgebra K n).lieSubalgebra →ₗ⁅ℝ⁆ Module.E
   map_smul' r X := by rw [map_smul, map_smul]; rfl
   map_lie' {X Y} := by
     rw [LieHom.map_lie, Ring.lie_def, Ring.lie_def, map_sub, map_mul, map_mul]
-
-
-variable (K n) in
-def gkModuleAF : (isExpLieAlgebra K n).GKModule (archCompact K n) (automorphicForms K n) :=
-  IsExpLieAlgebra.GKModule.comap (isExpLieAlgebra K n) (gkModule K n) (Submodule.inclusion automorphicForms_le_smoothKZ)
-    (Submodule.inclusion_injective _) (lieActionAF K n) (archCompactRep K n)
-    (fun _ _ => Subtype.ext rfl) (fun _ _ => Subtype.ext rfl)
-
 
 variable (K n) in
 def gkModuleCusp : (isExpLieAlgebra K n).GKModule (archCompact K n) (cuspForms K n) :=

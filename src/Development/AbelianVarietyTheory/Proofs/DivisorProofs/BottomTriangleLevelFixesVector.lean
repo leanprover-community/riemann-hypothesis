@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFinPt
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.IntegralFundamentalDomainEqSumDoubleCoset
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefiniteBottomTowerConstantsDifferByFactor
@@ -54,8 +53,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle GlobalTheory.Indef
 open Formalism.IndefR.Fin.LevelGroupLemmas.Lat (frG intM)
 
 variable {D : D7}
-
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
 
 theorem prod_idem {R ι : Type} [CommRing R] [DecidableEq ι] (es : ι → R) (d : R) (s : Finset ι)
     (h : ∀ a ∈ s, ∀ b ∈ s, a ≠ b → es a * es b = 0) :

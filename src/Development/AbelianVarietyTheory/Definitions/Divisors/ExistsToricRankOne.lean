@@ -76,21 +76,6 @@ section
 
 variable {R : Type} [CommRing R] [IsDomain R]
 
-def IsFactor (D D' : DegPre R) : Prop :=
-  letI := D.P.isAb.comm
-  letI := D'.P.isAb.comm
-  ∃ (O : Type) (_ : Ring O) (_ : StarRing O) (_ : Module O D'.X) (o : D'.OAct O) (e f : O)
-    (inc : D.P.A ⟶ D'.P.A) (pr : D'.P.A ⟶ D.P.A) (xi : D.X →+ D'.X) (xp : D'.X →+ D.X)
-    (w : LB.Iso (abelian₂ D.P.A D.P.L) ((abelian₂ D'.P.A D'.P.L).pull
-      (lift (fst D.P.A D.P.A ≫ inc) (snd D.P.A D.P.A ≫ inc ≫ o.onB.act f) : G2 D.P.A ⟶ G2 D'.P.A).left)),
-    e * e = e ∧ IsMonHom inc ∧ IsMonHom pr ∧ inc ≫ pr = 𝟙 _ ∧ pr ≫ inc = o.onB.act e ∧
-    (∀ y, xp (xi y) = y) ∧ (∀ z, xi (xp z) = e • z) ∧ (∀ y, D'.c (xi y) = D.c y ≫ inc) ∧
-    (Function.Injective (fun y => star e • f • xi y) ∧ ∀ z, ∃ y, star e • z = star e • f • xi y) ∧ w.IsGen ∧
-    ∀ a b z J J', Good D'.P.L z J → Good D.P.L z J' →
-      val (D.tau a b) (𝟙 _) z J' =
-        GlobalTheory.PolDeg.lamVal w (lift (toUnit (TK R) ≫ D.c a) (toUnit (TK R) ≫ D.c b)).left z J J' *
-          val (D'.tau (xi a) (f • xi b)) (𝟙 _) z J
-
 def PelOK {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (Dm : Datum H) (D : DegPre R)
     [Module (𝓞 E) D.X] (o : letI := H.starRing; D.OAct (𝓞 E)) : Prop :=
   letI := H.starRing
@@ -147,11 +132,6 @@ attribute [instance] LabCover.grp LabCover.comm
 section Inhabitants
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R]
-
-theorem base_powerSeries : Base (PowerSeries ℚ) := by
-  have hc : IsAdicComplete (maximalIdeal (PowerSeries ℚ)) (PowerSeries ℚ) := by
-    rw [PowerSeries.maximalIdeal_eq_span_X]; infer_instance
-  exact ⟨⟨inferInstance, inferInstance, inferInstance, hc⟩, algebraRat.charZero _⟩
 
 end Inhabitants
 

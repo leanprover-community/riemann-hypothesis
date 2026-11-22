@@ -8,7 +8,6 @@ public import Formalism.GradedWeylDivisibility.StatementE
 public import Formalism.SuccessiveMinima.StatementMink
 public import Formalism.SharpRestriction.GlobalSchurBounds.IntegrableOfContinuousCircleMeasure
 public import Formalism.GL3MeanSquares.ConcavityEquidistribution
-public import Formalism.LogVandermondeBounds.MultinomialPowerBound
 
 @[expose] public section
 

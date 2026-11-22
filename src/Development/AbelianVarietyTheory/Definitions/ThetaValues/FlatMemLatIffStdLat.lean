@@ -94,7 +94,6 @@ end Flat
 
 variable {E : Type} [Field E] [NumberField E] {dim : (E →+* ℂ) → ℕ} {n : ℕ}
 
-
 open Classical in
 theorem flat_dir (l : Letter n dim) : flat (dir l) = EuclideanSpace.single l (1 : ℂ) := by
   have := flat_single (n := n) l.1 l.2 (1 : ℂ)
@@ -129,9 +128,6 @@ theorem actE_sum_right {κ : Type*} (s : Finset κ) (α : E) (v : κ → Vsp dim
     actE α (∑ j ∈ s, v j) = ∑ j ∈ s, actE α (v j) := by
   set_option synthInstance.maxHeartbeats 100000 in
     simp only [← actL_apply, map_sum]
-
-theorem actE_neg_left (α : E) (v : Vsp dim) : actE (-α) v = -actE α v := by
-  ext i; simp
 
 theorem actE_comm (α β : E) (v : Vsp dim) : actE α (actE β v) = actE β (actE α v) := by
   rw [← actE_mul, ← actE_mul, mul_comm]
@@ -329,7 +325,6 @@ theorem mem_tensorLat_span {S : Set (Fin n → E)} {γ : Fin n → Vsp X.dim} :
     exact actE_mem_of_isIntegral X
       (α.isIntegral_coe.map (IsCMField.complexConj E).toRingEquiv.toRingHom.toIntAlgHom) ha
 
-
 omit [IsCMField E] in
 theorem mem_stdLat {v : Fin n → E} : v ∈ stdLat E n ↔ ∀ k, IsIntegral ℤ (v k) := by
   rw [stdLat, Submodule.mem_span_range_iff_exists_fun]
@@ -345,7 +340,6 @@ theorem mem_stdLat {v : Fin n → E} : v ∈ stdLat E n ↔ ∀ k, IsIntegral �
     refine ⟨c, ?_⟩
     funext k
     simp [Finset.sum_apply, Pi.single_apply, Algebra.smul_def, hc]
-
 
 omit [IsCMField E] in
 theorem stdLat_fg : (stdLat E n).FG := Submodule.fg_span (Set.finite_range _)
@@ -370,8 +364,6 @@ theorem mem_stdLat_iff_herm {v : Fin n → E} :
 theorem mem_tensorLat_stdLat {γ : Fin n → Vsp X.dim} :
     γ ∈ tensorLat X (stdLat E n) ↔ ∀ k, γ k ∈ X.L := by
   simp [stdLat, mem_tensorLat_span]
-
-
 
 end
 

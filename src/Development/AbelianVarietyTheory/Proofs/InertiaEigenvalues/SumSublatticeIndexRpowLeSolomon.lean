@@ -90,8 +90,6 @@ theorem sum_ideal_le [Finite (IsLocalRing.ResidueField O)] (σ : ℝ) (hσ : 0 <
 
 def headL (r : ℕ) : (Fin (r+1) → O) →ₗ[O] O := LinearMap.proj (R := O) (φ := fun _ => O) 0
 
-theorem headL_apply (r : ℕ) (x : Fin (r+1) → O) : headL r x = x 0 := rfl
-
 def consL (r : ℕ) : (Fin r → O) →ₗ[O] (Fin (r+1) → O) where
   toFun y := Fin.cons 0 y
   map_add' y z := by
@@ -100,8 +98,6 @@ def consL (r : ℕ) : (Fin r → O) →ₗ[O] (Fin (r+1) → O) where
   map_smul' c y := by
     funext i
     refine Fin.cases ?_ (fun j => ?_) i <;> simp
-
-theorem consL_apply (r : ℕ) (y : Fin r → O) : consL r y = Fin.cons 0 y := rfl
 
 theorem index_split {r : ℕ} (M : Submodule O (Fin (r+1) → O)) :
     M.toAddSubgroup.index =

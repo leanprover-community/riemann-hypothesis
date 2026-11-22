@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.LatticeGeometry.OperatorNormFibers.StExtInv
+public import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
 
 @[expose] public section
 

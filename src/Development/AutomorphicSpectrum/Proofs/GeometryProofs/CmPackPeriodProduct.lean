@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCMFrame
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieNormSquareOfFamilyStatement
+public import Development.WeilBound.CoreStatements.SesquilinearFractions.HermFormSelfEqRe
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeGramLinearCombinationStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeGramInvariantPullbackStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DualBasisHermitianSumStatement

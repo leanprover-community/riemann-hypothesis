@@ -18,8 +18,6 @@ open UpperTheory.V.Af.Smo (Eig EigAt)
 open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.H
 open scoped Classical
 
-private theorem gl_mul {K : Type} [Field K] [NumberField K] (x y : G1 K) : gl (x * y) = gl x * gl y := map_mul _ x y
-
 private theorem md_mul {K : Type} [Field K] [NumberField K] (x y : (A K)ˣ) : mD (x * y) = mD x * mD y := by
   refine Subtype.ext ?_
   rw [Matrix.SpecialLinearGroup.coe_mul]

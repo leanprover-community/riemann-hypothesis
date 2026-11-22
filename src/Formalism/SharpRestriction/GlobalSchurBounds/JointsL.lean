@@ -1084,19 +1084,6 @@ theorem two_lt_level_prime (D : D7) (u : D.what₂.Word) (h : product_first_zero
   have h3 : 2 * D.R.f * D.R.N D.R.m = 2 * (D.R.f * D.R.N D.R.m) := by ring
   omega
 
-theorem jnt_du_pos (D : D7) (u : D.what₂.Word) (h2 : product_first_zeroth_parts.Conclusion2 D u) (hS : 0 < D.duS u)
-    (hT : 2 < (D.mem u).A.T) : 0 < (D.mem u).A.du := by
-  have h := h2.1
-  have hT' : (2 : ℚ) < ((D.mem u).A.T : ℚ) := by exact_mod_cast hT
-  have h1 : (0 : ℚ) < 1 - 1 / (((D.mem u).A.T : ℚ) - 1) := by
-    rw [sub_pos, div_lt_one (by linarith)]
-    linarith
-  have h3 : (0 : ℚ) < ((D.mem u).A.du : ℚ) := by
-    rw [h]
-    have : (0 : ℚ) < (D.duS u : ℚ) := by exact_mod_cast hS
-    positivity
-  exact_mod_cast h3
-
 theorem jnt_duS_pos_of_proviso {D : D7} (L : SizeData₂ D) (C0 : ℝ) (hC0 : 0 < C0) (h : ChProviso_at L C0)
     (u : D.what₂.Word) : 0 < D.duS u := by
   rcases Nat.eq_zero_or_pos (D.duS u) with h0 | h0
@@ -1106,28 +1093,6 @@ theorem jnt_duS_pos_of_proviso {D : D7} (L : SizeData₂ D) (C0 : ℝ) (hC0 : 0 
     simp at h1
     linarith
   · exact h0
-
-theorem muRank_of_chosen {eps : ℝ} (Fm : FamP eps) {C0 CH : ℝ} (crystallineComparison : ℝ) (hC0 : 0 < C0)
-    (hCh : ChosenE Fm C0 CH) (hN : NuFullF Fm) (h10 : product_first_zeroth_parts.ConclusionOnFamily Fm crystallineComparison) (hS : SettingEventually Fm) :
-    J.MuRank Fm := by
-  obtain ⟨C5, c6, Cb, -, -, -, hCh⟩ := hCh
-  obtain ⟨a3, hP⟩ := hCh.2.2.2.2.2.1
-  obtain ⟨a0, hN⟩ := hN
-  obtain ⟨a1, h10⟩ := h10
-  obtain ⟨a2, hS⟩ := hS
-  refine ⟨max (max a0 a1) (max (max a2 a3) (Fm.x1 + 1)), fun x hx i u => ?_⟩
-  have b0 : a0 ≤ x := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hx
-  have b1 : a1 ≤ x := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hx
-  have b2 : a2 ≤ x := le_trans (le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) (le_max_right _ _)) hx
-  have b3 : a3 ≤ x := le_trans (le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) (le_max_right _ _)) hx
-  have b4 : Fm.x1 < x := by
-    have := le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hx
-    linarith
-  have hSet := hS x b2 b4 i u
-  have h1 : ((Fm.D x i).div.Nu u).rank = ((Fm.D x i).mem u).A.du := (hN x b0 i).rank u
-  rw [h1]
-  exact jnt_du_pos _ u (h10 x b1 i u hSet).2.1 (jnt_duS_pos_of_proviso (Fm.L x i) C0 hC0 (hP x b3 i) u)
-    (two_lt_level_prime _ u hSet)
 
 namespace JSL
 

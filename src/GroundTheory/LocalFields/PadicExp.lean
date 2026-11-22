@@ -118,19 +118,6 @@ theorem mem_integer_of_mem_valBall {n : ℤ} (hn : 0 ≤ n) {x : K} (hx : x ∈ 
   rw [← normalizedValuation_le_one_iff]
   exact hx.trans (by rw [← WithZero.exp_zero, WithZero.exp_le_exp]; omega)
 
-
-variable (K) in
-noncomputable def valBallEquivMaximalIdealPow (n : ℕ) :
-    valBall (K := K) n ≃ₜ+ (𝓂[K] ^ n : Ideal 𝒪[K]) where
-  toFun x := ⟨⟨x, mem_integer_of_mem_valBall (by positivity) x.2⟩,
-    mem_maximalIdeal_pow_iff_valBall.mpr x.2⟩
-  invFun y := ⟨((y : 𝒪[K]) : K), mem_maximalIdeal_pow_iff_valBall.mp y.2⟩
-  left_inv x := rfl
-  right_inv y := rfl
-  map_add' x y := rfl
-  continuous_toFun := (continuous_subtype_val.subtype_mk _).subtype_mk _
-  continuous_invFun := (continuous_subtype_val.comp continuous_subtype_val).subtype_mk _
-
 variable (p : ℕ) [hp : Fact p.Prime] [CharP 𝓀[K] p] [CharZero K]
 
 theorem one_le_of_lt_sub_one_mul_nat {n : ℕ}

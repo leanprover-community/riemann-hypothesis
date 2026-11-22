@@ -21,7 +21,8 @@ public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
 public import Formalism.FrobeniusOrbits.HostThickExists
-public import Development.AutomorphicArithmetic.FrobeniusLocalisation.MuSplitsCfacts
+public import Development.AutomorphicArithmetic.FrobeniusLocalisation.FrobGSpec
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompletelySplitPrimeHostPlaceProperties
 public import Development.AutomorphicArithmetic.WeightCongruences.ProdResidueCharNormOneUnitEqOne
 
 @[expose] public section

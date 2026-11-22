@@ -30,8 +30,6 @@ theorem heckeT_zero (k : ℤ) (q : ℕ) (σ : SL(2, ℤ)) : GlobalTheory.Hk.heck
 section
 variable {N l : ℕ} {k : ℤ}
 
-local notation "P" => GlobalTheory.Hk.pet (GlobalTheory.Hk.lev N l) k
-
 theorem pet_zero_right (hN : 0 < N) (hl : 0 < l) (f : CuspForm (GlobalTheory.Hk.lev N l) k) :
     P ⇑f 0 = 0 := by
   have h := (GlobalTheory.T.peterssonCosetIntegralSum_sesquilinear_hermitian N l k hN hl f 0 0 1).1

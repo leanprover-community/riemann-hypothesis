@@ -185,11 +185,6 @@ private theorem dU_res [IsLocalRing O] [IsCO O (DualNumber O)] (Y : M4 O) :
 
 end Dual
 
-private theorem cjL_hom_eq_conj {B : Type} [CommRing B] {O : Type} [CommRing O] [IsLocalRing O] [Algebra O B]
-    [IsCO O B] {H : Type} [Group H] [TopologicalSpace H] {rb : H →* M4 (ResidueField O)} (h : (M4 B)ˣ)
-    (h1 : (h : M4 B).map (res O B) = 1) (h2 : ((h⁻¹ : (M4 B)ˣ) : M4 B).map (res O B) = 1) (r : Lift O rb B) (g : H) :
-    (cjL h h1 h2 r).hom g = h * r.hom g * (h⁻¹ : (M4 B)ˣ) := rfl
-
 theorem UpperTheory.exists_local_first_order_lifts :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → ∀ Y : D.T → M4 c.O, (∀ v, Y v ∈ sp4 c.O) → ∃ ρ : ∀ v : D.T, Lift c.O (D.rbarAt v) (DualNumber c.O), D.LocEqs ρ ∧ ∀ (v : D.T) (g : D.Gp v) (a b : Fin 4), ((ρ v).hom g a b).fst = D.r0 g a b ∧ ((ρ v).hom g a b).snd = (Y v * D.r0 g - D.r0 g * Y v) a b := by
   intro Ω _ _ _ l _ c D hD Y hY

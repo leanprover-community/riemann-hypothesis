@@ -13,7 +13,6 @@ namespace GlobalTheory.EmbUnitary
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-
 open Classical in
 def twist (τ : E →+* ℂ) : ℂ →+* ℂ :=
   if (InfinitePlace.mk τ).embedding = τ then RingHom.id ℂ else starRingEnd ℂ
@@ -50,8 +49,6 @@ def sN (τ : E →+* ℂ) : ℂ →ₙ+* Cinf E where
     classical
     simp only [atEmb_apply, Pi.add_apply]
     split_ifs <;> simp
-
-theorem sN_apply (τ : E →+* ℂ) (z : ℂ) : sN τ z = atEmb τ z := rfl
 
 theorem continuous_sN (τ : E →+* ℂ) : Continuous (sN τ) := by
   classical

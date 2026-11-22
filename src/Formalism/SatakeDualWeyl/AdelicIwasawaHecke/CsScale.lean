@@ -53,10 +53,6 @@ section Main
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-local notation "ιA" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 theorem csScale_sigR_incl (σ : E →ₐ[F] E) (e : E) :
     sigR σ (FiniteAdeleRing (𝓞 F) F) (ιA e) = ιA ((σ : E →+* E) e) := by
   exact Algebra.TensorProduct.map_tmul σ (AlgHom.id F (FiniteAdeleRing (𝓞 F) F)) e 1

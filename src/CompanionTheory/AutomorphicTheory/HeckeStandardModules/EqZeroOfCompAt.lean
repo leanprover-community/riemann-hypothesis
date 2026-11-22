@@ -15,8 +15,6 @@ namespace CompanionTheory.Split
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 open Classical in
 def sgl (v : HeightOneSpectrum (𝓞 L⁺)) (r : v.adicCompletion L⁺) : AFplus L :=
   ⟨Pi.single (M := fun w : HeightOneSpectrum (𝓞 L⁺) => w.adicCompletion L⁺) v r, by

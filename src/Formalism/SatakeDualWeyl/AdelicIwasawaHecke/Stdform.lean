@@ -47,10 +47,6 @@ theorem stdform_Q_real (M : Matrix n n ℂ) (hM : ∀ i j, (M i j).im = 0) (y : 
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   simp [Complex.mul_re, Complex.mul_im, hM i j]
 
-theorem stdform_normSq (z : ℂ) : (star z * z).re = Complex.normSq z := by
-  rw [Complex.star_def, Complex.mul_re, Complex.conj_re, Complex.conj_im, Complex.normSq_apply]
-  ring
-
 section Emb
 
 variable {E : Type} [Field E]
@@ -180,10 +176,6 @@ end Inv
 section Sign
 
 variable {n : Type} [Fintype n] [DecidableEq n]
-
-private lemma re_conj_mul_self_eq_normSq (z : ℂ) : (starRingEnd ℂ z * z).re = Complex.normSq z := by
-  rw [Complex.mul_re, Complex.conj_re, Complex.conj_im, Complex.normSq_apply]
-  ring
 
 theorem stdform_sig_diag {p q : ℕ} (M : Matrix n n ℂ) (e : n ≃ Fin p ⊕ Fin q)
     (P : GL (Fin p ⊕ Fin q) ℂ)

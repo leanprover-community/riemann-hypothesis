@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.Columns.AtTRank
 public import Formalism.LocalToGlobal.Columns.ToHLatLemmas
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP
 public import Formalism.LocalToGlobal.Columns.ColFormsLemmas
-public import Formalism.LocalToGlobal.Columns.BaseInst
 public import Formalism.LocalToGlobal.Columns.AtTOwedS
 public import Formalism.LocalToGlobal.Columns.AtTLemmas
 public import Formalism.LocalRingCardinality.DataArith
@@ -143,10 +142,6 @@ section GaussInst
 variable (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL] (hE : KQ 1 ≤ LL)
 
 end GaussInst
-
-def ndIota : Qb →+* ℂ :=
-  haveI : Algebra.IsAlgebraic ℚ Qb := AlgebraicClosure.isAlgebraic ℚ
-  (IsAlgClosed.lift (R := ℚ) (M := ℂ) (S := Qb)).toRingHom
 
 section OfSizes
 

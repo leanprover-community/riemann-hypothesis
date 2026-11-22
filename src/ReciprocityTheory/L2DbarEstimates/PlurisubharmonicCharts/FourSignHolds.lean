@@ -1,7 +1,7 @@
 module
 
 public import ReciprocityTheory.L2DbarEstimates.Imports
-public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.HyPhi
+public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.ContDiffAtSectionFrameQuotient
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.AApproxL
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.GROWCountStatement
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.APrimeLoc
@@ -10,8 +10,9 @@ public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.DifferentiableA
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.DerivDerivNonposOfIsLocalMax
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.APrimeI
-public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.Imports
-public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.ImportsAlt
+public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.BStepA
+public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.ZLocLower
+public import Mathlib.Topology.Algebra.MvPolynomial
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.ZeroDimA
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FourIndep
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FourBasic

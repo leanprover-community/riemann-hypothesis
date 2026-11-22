@@ -9,7 +9,6 @@ public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.M
 public import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.LocalClassDataOfTrivialStabilizers
 public import Formalism.LocalToGlobal.GlobalTheory.BaseLatticeSelfDual
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormalisedFamilyNonzeroThetaVectorsNumberField
-public import Formalism.LocalToGlobal.KernelLattices.DeterminantCokernelCount.JetMomTA
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PThIndep
 public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsTraceNorm

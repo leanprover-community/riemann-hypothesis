@@ -12,13 +12,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference
 
 variable {C : Type} [Field C] {w : Valuation C ℝ≥0}
 
-theorem smul_vec_apply {r : ℕ} (b : w.valuationSubring) (v : Fin r → C) (i : Fin r) :
-    (b • v) i = (b : C) * v i := rfl
-
 theorem smul_C (b : w.valuationSubring) (z : C) : b • z = (b : C) * z := rfl
-
-theorem smul_pi_apply {S : Type} {r : ℕ} (b : w.valuationSubring) (x : S → Fin r → C) (s : S)
-    (i : Fin r) : (b • x) s i = (b : C) * x s i := rfl
 
 theorem exists_prod_apply {S : Type} [DecidableEq S] {r : ℕ} (a : S → w.valuationSubring)
     (Fil : Submodule w.valuationSubring (S → Fin r → C))

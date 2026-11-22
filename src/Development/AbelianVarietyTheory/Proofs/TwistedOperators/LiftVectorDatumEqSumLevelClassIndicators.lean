@@ -24,8 +24,6 @@ namespace GlobalTheory.LiftLevel.DatSum
 
 variable {D : D7}
 
-theorem partAt_eq_smul {S T : HSp D} (c : AE D) (w : WO S T) : partAt c w = c • w := rfl
-
 theorem actO_partAt (S T : HSp D) (g : GA D S) (h : GA D T) (c : AE D) (w : WO S T) :
     actO S T g h (partAt c w) = partAt c (actO S T g h w) := by
   simp only [partAt_eq_smul, actO, Matrix.mul_smul, Matrix.smul_mul]

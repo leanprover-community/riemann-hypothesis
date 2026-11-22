@@ -48,9 +48,6 @@ private def permR (R : Type) [CommRing R] {Γ : Type} [Group Γ] (H : Subgroup �
   map_one' := by ext f x; simp
   map_mul' g h := by ext f x; simp [mul_smul]
 
-private theorem permR_apply (R : Type) [CommRing R] {Γ : Type} [Group Γ] (H : Subgroup Γ) (g : Γ) (f : Γ ⧸ H → R)
-    (x : Γ ⧸ H) : permR R H g f x = f (g⁻¹ • x) := rfl
-
 private theorem sec_mem {Γ : Type} [Group Γ] (H : Subgroup Γ) (g : Γ) (x : Γ ⧸ H) :
     (x.out)⁻¹ * g * (g⁻¹ • x).out ∈ H := by
   have h1 : (QuotientGroup.mk (g⁻¹ * x.out) : Γ ⧸ H) = QuotientGroup.mk ((g⁻¹ • x).out) := by

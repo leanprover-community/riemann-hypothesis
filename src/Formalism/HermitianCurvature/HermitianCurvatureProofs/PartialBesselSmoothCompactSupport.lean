@@ -27,8 +27,6 @@ def iotL (k r : ℕ) : Mat k r →L[ℝ] Mat k r :=
         rw [Matrix.conjTranspose_smul, Matrix.mul_smul, Matrix.smul_mul]
         simp only [RingHom.id_apply, star_trivial] }
 
-theorem iotL_apply (g : Mat k r) : iotL k r g = Hpk k r * gᴴ * Hpk k r := rfl
-
 theorem iotL_iotL (g : Mat k r) : iotL k r (iotL k r g) = g := by
   obtain ⟨h1, h2, -⟩ := Formalism.QuantumDeterminants.hpkFacts k r
   simp only [iotL_apply, Matrix.conjTranspose_mul, h1, Matrix.conjTranspose_conjTranspose]
@@ -209,7 +207,6 @@ section main
 
 variable {k p ρ n : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
-
 
 open Classical in
 def fam (Bj : B.RealPlaceData k ρ Wp Wq) (e : p + ρ = n) (Φt : Mat k n → (Wq →L[ℂ] Wp)) (x : PBQ.XP k p ρ)

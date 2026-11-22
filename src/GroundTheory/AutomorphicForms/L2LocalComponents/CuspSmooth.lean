@@ -21,8 +21,6 @@ attribute [local instance 100] LieRing.ofAssociativeRing
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => Reduction.rationalGLOne (K := K) (n := n)
-
 variable (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 def cuspVecL : cuspForms K n →ₗ[ℂ] CuspL2 μ := cuspToL2 μ
@@ -41,7 +39,6 @@ theorem isContRep_cuspToL2 (φ : cuspForms K n) :
   · filter_upwards [QuasiMeasurePreserving.ae_eq_comp (quasiMeasurePreserving_mk Γ₁ μ)
       (coeFn_cuspToL2 μ φ)] with y hy
     exact hy.trans (cuspQuot_mk _ y)
-
 
 variable {μ} in
 theorem eq_of_isContRep {v w : CuspL2 μ} {F : normOneGL (K := K) (n := n) → ℂ} (hv : IsContRep μ (toLp μ v) F)
@@ -100,7 +97,6 @@ theorem isSmoothVector_cuspToL2 {φ : cuspForms K n} (hφ : φ ∈ centralCuspFo
   rw [← integrated_cuspToL2 μ hφ Measure.haar hκ hconv]
   exact (isExpLieAlgebra K n).isSmoothVector_integrated (archRepT μ) Measure.haar hκ _
 
-
 set_option maxHeartbeats 1000000 in
 theorem uAction_cuspToL2 {φ : cuspForms K n} (hφ : φ ∈ centralCuspForms K n) (u : UEnv K n) :
     ((isExpLieAlgebra K n).uAction (archRepT μ) u
@@ -155,7 +151,6 @@ theorem toOne_eq_retractOne (g : AdelicGLn.AdelicGL K n) : toOne g = retractOne 
   ext1
   rw [coe_toOne, coe_retractOne]
 
-
 set_option maxHeartbeats 2000000 in
 theorem cuspToL2_sigma (k : archCompact K n) {φ : cuspForms K n} (hφ : φ ∈ centralCuspForms K n) :
     cuspVecL μ ((gkModuleCusp K n).σ k φ) =
@@ -168,7 +163,6 @@ theorem cuspToL2_sigma (k : archCompact K n) {φ : cuspForms K n} (hφ : φ ∈ 
   have h2 := congrArg Subtype.val this
   rw [coe_cuspRep_apply] at h2
   exact h2
-
 
 set_option maxHeartbeats 2000000 in
 theorem cuspToL2_finRepCusp (h : AdelicGLn.FiniteAdelicGL K n) {φ : cuspForms K n}

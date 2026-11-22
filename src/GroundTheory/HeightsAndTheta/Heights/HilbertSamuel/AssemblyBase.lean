@@ -91,14 +91,13 @@ public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PDiagonalChange
 public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PExactSequence
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.LinearIndependentSumElimOfExact
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Extension
-public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.IsProbabilityMeasureSphereLaw
 public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PRootsOfUnityValuation
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ContinuousHermNormGroup
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.GaussSum
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FieldChange
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.MahlerMul
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SphereMean
-public import GroundTheory.HeightsAndTheta.Heights.Slopes
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.DegreeTopEqArithDegree
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHilbFnValueSpan
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHilbertDimZero
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHilbertIncrement
@@ -581,9 +580,6 @@ theorem ShiftIntersectionPolynomial.full : GroundTheory.Heights₂.Heights.Hilbe
 
 theorem SmallSectionPointHeight.full : GroundTheory.Heights₂.Heights.HilbertSamuel.SmallSectionPointHeight.Statement :=
   GroundTheory.Heights₂.Heights.HilbertSamuel.SmallSectionPointHeight.proof SectionOrderAtPoint.full
-
-theorem SublatticeDegree.full : GroundTheory.Heights₂.Heights.HilbertSamuel.SublatticeDegree.Statement :=
-  GroundTheory.Heights₂.Heights.Targets.SublatticeDegree.full
 
 theorem SupBoundCount.full : GroundTheory.Heights₂.Heights.HilbertSamuel.SupBoundCount.Statement :=
   GroundTheory.Heights₂.Heights.HilbertSamuel.SupBoundCount.proof

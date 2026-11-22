@@ -20,58 +20,11 @@ section Had
 
 variable {K : Type*} [Field K] [NumberField K]
 
-def fibreNorm (E : HermitianBundle K) (σ : K →+* ℂ) (x : Fibre σ E.carrier) : ℝ :=
-  ‖FibreSpace.equiv E.metric σ x‖
-
-abbrev bundleRank (E : HermitianBundle K) : ℕ := Module.finrank (𝓞 K) E.carrier
-
-
-structure BoundedInjection (E' E : HermitianBundle K) (A : (K →+* ℂ) → ℝ) where
-
-  toLinearMap : E'.carrier →ₗ[𝓞 K] E.carrier
-  injective : Function.Injective toLinearMap
-  norm_le : ∀ (σ : K →+* ℂ) (x : Fibre σ E'.carrier),
-    fibreNorm E σ (toLinearMap.lTensor (ComplexAt σ) x) ≤ A σ * fibreNorm E' σ x
-
-structure ShortFamily (E : HermitianBundle K) (lam : (K →+* ℂ) → ℝ) where
-
-  vec : Fin (bundleRank E) → E.carrier
-  linearIndependent : LinearIndependent (𝓞 K) vec
-  norm_le : ∀ (σ : K →+* ℂ) (i : Fin (bundleRank E)),
-    fibreNorm E σ ((1 : ComplexAt σ) ⊗ₜ[𝓞 K] vec i) ≤ lam σ
-
 end Had
 
 section HadExamples
 
 variable (K : Type*) [Field K] [NumberField K]
-
-theorem fibreNorm_standard_single (n : ℕ) (σ : K →+* ℂ) (i : Fin n) :
-    fibreNorm (HermitianBundle.standard K n) σ ((1 : ComplexAt σ) ⊗ₜ[𝓞 K] Pi.single i 1) = 1 := by
-  have h := norm_fibreVec_sq (HermitianMetric.standard K (Fin n)) σ (Pi.single i 1)
-  rw [HermitianMetric.standard_inner_single, Complex.one_re] at h
-  have h0 := norm_nonneg (fibreVec (HermitianMetric.standard K (Fin n)) σ (Pi.single i 1))
-  have h1 : ‖fibreVec (HermitianMetric.standard K (Fin n)) σ (Pi.single i 1)‖ = 1 := by
-    nlinarith [sq_nonneg (‖fibreVec (HermitianMetric.standard K (Fin n)) σ (Pi.single i 1)‖ - 1)]
-  exact h1
-
-theorem bundleRank_standard (n : ℕ) : bundleRank (HermitianBundle.standard K n) = n :=
-  Module.finrank_fin_fun (𝓞 K)
-
-def ShortFamily.standard (n : ℕ) : ShortFamily (HermitianBundle.standard K n) (fun _ ↦ 1) where
-  vec i := (Pi.basisFun (𝓞 K) (Fin n) (Fin.cast (bundleRank_standard K n) i) : Fin n → 𝓞 K)
-  linearIndependent :=
-    (Pi.basisFun (𝓞 K) (Fin n)).linearIndependent.comp _ (Fin.cast_injective _)
-  norm_le σ i := by
-    rw [Pi.basisFun_apply]
-    exact (fibreNorm_standard_single K n σ _).le
-
-
-variable {K} in
-def BoundedInjection.id (E : HermitianBundle K) : BoundedInjection E E (fun _ ↦ 1) where
-  toLinearMap := LinearMap.id
-  injective := Function.injective_id
-  norm_le σ x := by rw [LinearMap.lTensor_id, LinearMap.id_apply, one_mul]
 
 end HadExamples
 

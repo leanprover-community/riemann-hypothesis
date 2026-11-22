@@ -21,8 +21,6 @@ variable {n : ℕ}
 
 namespace CasPsB
 
-local notation "𝕄" => Fin n → Fin n → ℂ
-
 variable {ε : Fin n → Bool} {Λ : Fin n → ℝ}
 
 theorem hasFDerivAt_integral_K [CompactSpace (KG ε)] {E : Type*} [NormedAddCommGroup E]

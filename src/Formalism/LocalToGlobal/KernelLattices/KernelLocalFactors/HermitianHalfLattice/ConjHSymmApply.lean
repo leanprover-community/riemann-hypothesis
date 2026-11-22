@@ -23,7 +23,4 @@ def conjH (γ : Sp E a ≃ₗ[E] Sp E a) (γ' : Sp E b ≃ₗ[E] Sp E b) : HomE 
   left_inv y := by ext v i; simp
   right_inv y := by ext v i; simp
 
-theorem conjH_symm_apply (γ : Sp E a ≃ₗ[E] Sp E a) (γ' : Sp E b ≃ₗ[E] Sp E b) (y : HomE E a b) :
-    (conjH γ γ').symm y = γ'.symm.toLinearMap ∘ₗ y ∘ₗ γ.toLinearMap := rfl
-
 end Formalism.L2.Ker.TI

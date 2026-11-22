@@ -49,11 +49,6 @@ private def subRep (ρ : Γ →* GL (Fin n) k) {W' : Submodule k (Fin n → k)}
       map_mul' := fun g h => by
         rw [map_mul, Module.End.mul_eq_comp, LinearMap.toMatrix_comp c c c] }
 
-private lemma subRep_val (ρ : Γ →* GL (Fin n) k) {W' : Submodule k (Fin n → k)}
-    (hinv : IsInv ρ W') (c : Module.Basis (Fin b) k W') (g : Γ) :
-    ((subRep ρ hinv c g : GL (Fin b) k) : Matrix (Fin b) (Fin b) k) =
-      LinearMap.toMatrix c c (resHom ρ hinv g) := rfl
-
 private def colM (A : Matrix (Fin n) (Fin a) k) {W' : Submodule k (Fin n → k)}
     (c : Module.Basis (Fin b) k W') : Matrix (Fin n) (Fin a ⊕ Fin b) k :=
   Matrix.of fun i => Sum.elim (fun j => A i j) (fun j => (c j : Fin n → k) i)

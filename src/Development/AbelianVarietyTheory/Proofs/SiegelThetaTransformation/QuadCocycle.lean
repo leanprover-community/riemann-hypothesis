@@ -14,7 +14,6 @@ namespace GlobalTheory.SW.HermComp
 
 variable {N : ℕ}
 
-
 open Matrix Complex NumberField Filter Topology in
 open scoped ComplexConjugate ComplexOrder Real in
 variable {N : ℕ} in
@@ -74,12 +73,6 @@ private theorem inv_denominator_mul_lower_left_cocycle {N : ℕ}
   rw [hinv, Matrix.mul_inv_rev, hC]
   simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc]
   abel
-
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
-private theorem matrix_of_apply_row {m r : Type} {α : Type} (f : m → r → α) (k : m) :
-    Matrix.of f k = f k := rfl
-
 
 open Matrix Complex NumberField Filter Topology in
 open scoped ComplexConjugate ComplexOrder Real in

@@ -58,14 +58,8 @@ theorem hasFDerivAt_eval_mvPolynomial (q : MvPolynomial (Fin n) ℂ) (x : Fin n 
 def HermNorm.pointOfE (h : HermNorm n) : EuclideanSpace ℂ (Fin n) ≃ₗ[ℂ] (Fin n → ℂ) :=
   h.pointOfL.toLinearEquiv.trans (WithLp.linearEquiv 2 ℂ (Fin n → ℂ))
 
-theorem HermNorm.pointOfE_apply (h : HermNorm n) (v : EuclideanSpace ℂ (Fin n)) :
-    h.pointOfE v = h.pointOf v := rfl
-
 def HermNorm.pointOfC (h : HermNorm n) : EuclideanSpace ℂ (Fin n) →L[ℂ] (Fin n → ℂ) :=
   LinearMap.toContinuousLinearMap (h.pointOfE : EuclideanSpace ℂ (Fin n) →ₗ[ℂ] (Fin n → ℂ))
-
-theorem HermNorm.pointOfC_apply (h : HermNorm n) (v : EuclideanSpace ℂ (Fin n)) :
-    h.pointOfC v = h.pointOf v := rfl
 
 theorem hasFDerivAt_eval_pointOf (h : HermNorm n) (q : MvPolynomial (Fin n) ℂ)
     (z : EuclideanSpace ℂ (Fin n)) :

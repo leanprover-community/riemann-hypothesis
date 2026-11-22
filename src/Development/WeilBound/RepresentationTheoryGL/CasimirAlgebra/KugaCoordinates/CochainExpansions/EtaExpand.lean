@@ -23,8 +23,6 @@ def ent (τ : E →+* ℂ) (i j : Fin a) : Herm E a →ₗ[ℝ] ℂ where
   map_add' X Y := by simp
   map_smul' c X := (coordL τ).map_smul c (X.1 i j)
 
-theorem ent_apply (τ : E →+* ℂ) (i j : Fin a) (X : Herm E a) : ent τ i j X = coord τ (X.1 i j) := rfl
-
 variable {M : Type} [AddCommGroup M] [Module ℂ M] [Module ℝ M] [IsScalarTower ℝ ℂ M] {q N : ℕ}
 
 def vec (η : TV a M (Fin q ⊕ (Fin N ⊕ Fin N))) (I' I'' : Fin N → Fin a) : TV a M (Fin q) :=

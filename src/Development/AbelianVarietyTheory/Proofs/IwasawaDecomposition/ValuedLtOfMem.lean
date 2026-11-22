@@ -17,14 +17,11 @@ namespace GlobalTheory.Mem.Col2.PtExist
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-local notation "ι" => Formalism.UG.inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 theorem ad_ext {a b : AfE F E} (h : ∀ P, adAt F P a = adAt F P b) : a = b :=
   (afIso F E).injective (FiniteAdeleRing.ext _ h)
 
 def idem (F : Type) [Field F] [NumberField F] [Algebra F E] (P : HeightOneSpectrum (𝓞 E)) : AfE F E :=
   (finAf F E (localIdele E P (atFin P (Units.mk0 2 two_ne_zero))) : AfE F E) - 1
-
 
 open Classical in
 theorem adAt_idem (P w : HeightOneSpectrum (𝓞 E)) : adAt F w (idem F P) = if w = P then 1 else 0 := by
@@ -66,10 +63,7 @@ theorem hasRes_redA [StarRing E] (P : HeightOneSpectrum (𝓞 E)) {a : AfE F E} 
 
 variable [StarRing E] (hc : CMData F E)
 
-local notation "σ" => Formalism.UG.sigR hc.sig (FiniteAdeleRing (𝓞 F) F)
-
 theorem sig_sig (z : AfE F E) : σ (σ z) = z := DetClass.sigR_sigR (fun x => star_star x) z
-
 
 open Classical in
 theorem adAt_sig_idem (P w : HeightOneSpectrum (𝓞 E)) : adAt F w (σ (idem F P)) = if conjPrime₂ w = P then 1 else 0 := by
@@ -90,7 +84,6 @@ theorem sig_glue (z : AfE F E) (a b : HeightOneSpectrum (𝓞 E) → E) : σ (gl
   unfold glue
   rw [map_add (f := _), map_add (f := _), map_mul, map_sub, map_sub, sig_sig, sig_sig, map_one]
   ring
-
 
 open Classical in
 theorem adAt_glue (hQ : ∀ P ∈ Q, conjPrime₂ P ∉ Q) (z : AfE F E) (a b : HeightOneSpectrum (𝓞 E) → E)
@@ -164,7 +157,6 @@ theorem int_of_uni (hQ : ∀ P ∈ Q, conjPrime₂ P ∉ Q) {k : GL (Fin n) (AfE
 
 def mat (f : Sp E n ≃ₗ[E] Sp E n) : Matrix (Fin n) (Fin n) E := Matrix.of fun i j => f (Pi.single j 1) i
 
-
 omit [NumberField E] [StarRing E] in
 theorem mat_mulVec (f : Sp E n ≃ₗ[E] Sp E n) (v : Sp E n) (i : Fin n) : ∑ j, mat f i j * v j = f v i := by
   set_option synthInstance.maxHeartbeats 100000 in
@@ -174,7 +166,6 @@ theorem mat_mulVec (f : Sp E n ≃ₗ[E] Sp E n) (v : Sp E n) (i : Fin n) : ∑ 
     rw [← Pi.single_smul', smul_eq_mul, mul_one]
   rw [this, map_smul, Pi.smul_apply, smul_eq_mul, mul_comm]
   rfl
-
 
 omit [NumberField E] [StarRing E] in
 theorem mat_symm_mul (f : Sp E n ≃ₗ[E] Sp E n) : mat f.symm * mat f = 1 := by
@@ -231,7 +222,6 @@ theorem carries_globLat (x : GL (Fin n) (AfE F E)) :
       rw [hv]
       exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _
         (Submodule.subset_span (by simpa using single_mem_stdLat (E := E) i 1))) x
-
 
 omit [StarRing E] in
 theorem mulVec_int {k : Matrix (Fin n) (Fin n) (AfE F E)} (hk : ∀ i j, k i j ∈ RInt F E) {z : Fin n → AfE F E}
@@ -326,7 +316,6 @@ theorem exists_modify (hQ : ∀ P ∈ Q, conjPrime₂ P ∉ Q) {x : GL (Fin n) (
   set_option synthInstance.maxHeartbeats 100000 in
     · simp only [pullV, Formalism.L2.Col.pullV, Matrix.mulVec, dotProduct, map_sum, map_mul, g, Units.inv_mk, hG', if_neg h,
       if_neg h']
-
 
 variable (hc) in
 theorem exists_isPtOf_cm (n : ℕ) (ST SG Q : Finset (HeightOneSpectrum (𝓞 E))) (p : DecoF E n ST SG Q)

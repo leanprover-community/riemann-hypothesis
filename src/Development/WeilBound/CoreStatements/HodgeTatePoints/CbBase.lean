@@ -147,35 +147,6 @@ section ChainRule
 
 open scoped MvPowerSeries.WithPiTopology
 
-local macro "prove_cb_ev_chain_rule " R:ident b:ident hb:ident f:ident v:ident : term =>
-  `(by
-    classical
-    let : UniformSpace $R := ⊥
-    let family := fun p : _ × _ => $b p.1 p.2
-    change pderiv $v (subst family $f) = ∑ p, subst family (pderiv p $f) * pderiv $v (family p)
-    have hsubst := continuous_subst (R := $R) (LogPf.CZ.hasSubst (show LogPf.CZ $b from $hb))
-    have hderiv {σ : Type} (i : σ) : Continuous (pderiv (R := $R) i) := by
-      apply continuous_pi
-      intro e
-      change Continuous (fun g => coeff e (pderiv i g))
-      simp only [coeff_pderiv]
-      exact (WithPiTopology.continuous_coeff $R _).mul continuous_const
-    refine congrFun (WithPiTopology.denseRange_toMvPowerSeries.equalizer
-      ((hderiv $v).comp hsubst) (continuous_finsetSum _ fun p _ =>
-        (hsubst.comp (hderiv p)).mul continuous_const) ?_) $f
-    funext q
-    change pderiv $v (subst family (q : MvPowerSeries _ $R)) =
-      ∑ p, subst family (pderiv p (q : MvPowerSeries _ $R)) * pderiv $v (family p)
-    simp only [pderiv_coe, subst_coe]
-    induction q using MvPolynomial.induction_on with
-    | C c => simp
-    | add q r hq hr => simp only [map_add, hq, hr, add_mul, Finset.sum_add_distrib]
-    | mul_X q p hq =>
-      rw [map_mul, MvPolynomial.aeval_X, Derivation.leibniz, hq, smul_eq_mul, smul_eq_mul,
-        Finset.mul_sum]
-      simp [Pi.single_apply, apply_ite (MvPolynomial.aeval family), add_mul,
-        Finset.sum_add_distrib, mul_assoc])
-
 theorem d1 {x : Pt R n d} (hx : Z x) (f : PS R 1 d) (v : Fin n × Fin d) :
     pderiv v (ev ![x] f) = ∑ c, ev ![x] (pderiv ((0 : Fin 1), c) f) * pderiv v (x c) := by
   let b : Fin 1 → Pt R n d := ![x]
@@ -197,19 +168,6 @@ theorem d2 {x y : Pt R n d} (hx : Z x) (hy : Z y) (f : PS R 2 d) (v : Fin n × F
     prove_cb_ev_chain_rule R b hb f v
   change pderiv v (ev b f) = _
   rw [hchain, Fintype.sum_prod_type, Fin.sum_univ_two]
-  rfl
-
-theorem d3 {x y z : Pt R n d} (hx : Z x) (hy : Z y) (hz : Z z) (f : PS R 3 d) (v : Fin n × Fin d) :
-    pderiv v (ev ![x, y, z] f) = ∑ c, ev ![x, y, z] (pderiv ((0 : Fin 3), c) f) * pderiv v (x c) +
-      ∑ c, ev ![x, y, z] (pderiv ((1 : Fin 3), c) f) * pderiv v (y c) +
-      ∑ c, ev ![x, y, z] (pderiv ((2 : Fin 3), c) f) * pderiv v (z c) := by
-  let b : Fin 3 → Pt R n d := ![x, y, z]
-  have hb : ZZ b := ZZ_cons hx (ZZ_cons hy (ZZ_cons hz ZZ_nil))
-  have hchain : pderiv v (ev b f) =
-      ∑ p : Fin 3 × Fin d, ev b (pderiv p f) * pderiv v (b p.1 p.2) :=
-    prove_cb_ev_chain_rule R b hb f v
-  change pderiv v (ev b f) = _
-  rw [hchain, Fintype.sum_prod_type, Fin.sum_univ_three]
   rfl
 
 end ChainRule

@@ -44,35 +44,6 @@ theorem witt_mem_integers_Cp (x : WW p) : algebraMap (K0 p) (Kc p) (algebraMap (
   rw [mem_Oc, ← IsScalarTower.algebraMap_apply]
   exact isIntegral_algebraMap
 
-theorem Oc_val (x : Kc p) : x ∈ Oc p ∨ x⁻¹ ∈ Oc p := by
-  have hx : IsIntegral (K0 p) x := Algebra.IsIntegral.isIntegral x
-  have : FiniteDimensional (K0 p) (K0 p)⟮x⟯ := adjoin.finiteDimensional hx
-  have hD : IsDiscreteValuationRing (integralClosure (WW p) (K0 p)⟮x⟯) :=
-    IntCl.isDVR (WW p) (K0 p) (K0 p)⟮x⟯ (completeWW p)
-  have hF : IsFractionRing (integralClosure (WW p) (K0 p)⟮x⟯) (K0 p)⟮x⟯ := IntCl.frac (WW p) (K0 p) (K0 p)⟮x⟯
-  have : IsScalarTower (WW p) (K0 p)⟮x⟯ (Kc p) := IsScalarTower.of_algebraMap_eq (fun _ => rfl)
-  let x' : (K0 p)⟮x⟯ := ⟨x, mem_adjoin_simple_self _ _⟩
-  have key : ∀ y : (K0 p)⟮x⟯, IsLocalization.IsInteger (integralClosure (WW p) (K0 p)⟮x⟯) y →
-      IsIntegral (WW p) (y : Kc p) := by
-    rintro y ⟨b, rfl⟩
-    exact (b.2 : IsIntegral (WW p) (b : (K0 p)⟮x⟯)).map (IsScalarTower.toAlgHom (WW p) (K0 p)⟮x⟯ (Kc p))
-  rcases ValuationRing.isInteger_or_isInteger (integralClosure (WW p) (K0 p)⟮x⟯) x' with h | h
-  · exact Or.inl (key _ h)
-  · exact Or.inr (key _ h)
-
-theorem Oc_rank1 (x : Kc p) (_hx : x ≠ 0) : ∃ m : ℕ, (p : Kc p) ^ m / x ∈ Oc p := by
-  have halg : IsAlgebraic (WW p) x⁻¹ :=
-    (IsFractionRing.isAlgebraic_iff (WW p) (K0 p) (Kc p)).2 (Algebra.IsAlgebraic.isAlgebraic _)
-  obtain ⟨a, ha, hint⟩ := halg.exists_integral_multiple
-  obtain ⟨m, u, hu⟩ := WittVector.exists_eq_pow_p_mul' a ha
-  refine ⟨m, ?_⟩
-  rw [mem_Oc]
-  have h1 : (p : Kc p) ^ m / x = ((u⁻¹ : (WW p)ˣ) : WW p) • (a • x⁻¹) := by
-    rw [smul_smul, hu, mul_comm ((p : WW p) ^ m), ← mul_assoc, Units.inv_mul, one_mul, Algebra.smul_def, map_pow,
-      map_natCast, div_eq_mul_inv]
-  rw [h1]
-  exact hint.smul _
-
 theorem p_inv_notMem_Oc : (p : Kc p)⁻¹ ∉ Oc p := by
   rw [mem_Oc]
   intro h
@@ -246,20 +217,6 @@ theorem Oc_K (L : IntermediateField (KO p n) (Om p n)) [FiniteDimensional (KO p 
     exact p_inv_notMem_Oc p (h5 ▸ (Oc p).mul_mem ((Oc p).pow_mem hx e) h4)
   · rintro ⟨b, rfl⟩
     exact gL_mem L b.2
-
-def gWW (p : ℕ) [Fact p.Prime] (n : ℕ) : W2 p n →+* WW p := WittVector.map (gF p n)
-
-theorem intermediate_map_witt_quadratic (L : IntermediateField (KO p n) (Om p n)) (a : W2 p n) :
-    gL L (algebraMap (OO p n) L (algebraMap (W2 p n) (OO p n) a)) =
-      algebraMap (K0 p) (Kc p) (algebraMap (WW p) (K0 p) (gWW p n a)) := by
-  rw [gL_algO, gO_apply]
-  simp [gW, gWW, IsScalarTower.algebraMap_apply (WW p) (K0 p) (Kc p)]
-
-theorem gL_jO (L : IntermediateField (KO p n) (Om p n)) (a : WQ p n) :
-    gL L (algebraMap (OO p n) L (jO p n a)) =
-      algebraMap (K0 p) (Kc p) (algebraMap (WW p) (K0 p) (gWW p n (jW p n a))) := by
-  rw [jO, RingHom.comp_apply]
-  exact intermediate_map_witt_quadratic L (jW p n a)
 
 theorem exists_inv_pow {B L : Type*} [CommRing B] [IsDomain B] [IsDiscreteValuationRing B] [Field L] [Algebra B L]
     [IsFractionRing B L] {π : B} (hπ : π ≠ 0) {x : L} (hx : x ∉ Set.range (algebraMap B L)) :

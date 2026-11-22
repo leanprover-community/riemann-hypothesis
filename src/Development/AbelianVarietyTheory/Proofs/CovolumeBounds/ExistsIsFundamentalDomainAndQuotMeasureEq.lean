@@ -9,19 +9,6 @@ open scoped Pointwise ENNReal
 
 namespace GlobalTheory
 
-structure IsAEAddOrbitSection (G : Type*) {X : Type*} [VAdd G X] [MeasurableSpace X]
-    (D : Set X) (μ : Measure X) : Prop where
-  protected nullMeasurableSet : NullMeasurableSet D μ
-  protected ae_covers : ∀ᵐ x ∂μ, ∃ g : G, g +ᵥ x ∈ D
-  protected ae_unique : ∀ᵐ x ∂μ, x ∈ D → ∀ g : G, g +ᵥ x ∈ D → g +ᵥ x = x
-
-@[to_additive IsAEAddOrbitSection]
-structure IsAEOrbitSection (G : Type*) {X : Type*} [SMul G X] [MeasurableSpace X]
-    (D : Set X) (μ : Measure X) : Prop where
-  protected nullMeasurableSet : NullMeasurableSet D μ
-  protected ae_covers : ∀ᵐ x ∂μ, ∃ g : G, g • x ∈ D
-  protected ae_unique : ∀ᵐ x ∂μ, x ∈ D → ∀ g : G, g • x ∈ D → g • x = x
-
 section Existence
 
 variable {G X : Type*} [Group G] [MulAction G X]
@@ -85,152 +72,19 @@ section Comparison
 
 variable {G X : Type*} [Group G] [MulAction G X] [MeasurableSpace X] {μ : Measure X}
 
-@[to_additive measure_le_of_ae_unique_of_ae_covers_add
-]
-theorem measure_le_of_ae_unique_of_ae_covers [Countable G] [MeasurableConstSMul G X]
-    [SMulInvariantMeasure G X μ] {S B : Set X} (hS : NullMeasurableSet S μ)
-    (hB : NullMeasurableSet B μ) (hu : ∀ᵐ x ∂μ, x ∈ S → ∀ g : G, g • x ∈ S → g • x = x)
-    (hc : ∀ᵐ x ∂μ, x ∈ S → ∃ g : G, g • x ∈ B) : μ S ≤ μ B := by
-  classical
-  obtain ⟨e, he⟩ := exists_injective_nat G
-  have hq : ∀ g : G, QuasiMeasurePreserving (g • · : X → X) μ μ := fun g =>
-    (measurePreserving_smul g μ).quasiMeasurePreserving
-  let P : G → Set X := fun g => (S ∩ (g • ·) ⁻¹' B) \ ⋃ h, ⋃ (_ : e h < e g), (h • ·) ⁻¹' B
-  have hPm : ∀ g, NullMeasurableSet (P g) μ := fun g =>
-    (hS.inter (hB.preimage (hq g))).diff <|
-      NullMeasurableSet.iUnion fun h => NullMeasurableSet.iUnion fun _ => hB.preimage (hq h)
-  let Q : G → Set X := fun g => (g⁻¹ • ·) ⁻¹' P g
-  have hQm : ∀ g, NullMeasurableSet (Q g) μ := fun g => (hPm g).preimage (hq _)
-  have h1 : S ≤ᵐ[μ] ⋃ g, P g := by
-    filter_upwards [hc] with x hx hxS
-    have hex : ∃ n, ∃ g : G, e g = n ∧ g • x ∈ B := by
-      obtain ⟨g, hg⟩ := hx hxS
-      exact ⟨_, g, rfl, hg⟩
-    obtain ⟨g, hg, hgB⟩ := Nat.find_spec hex
-    refine mem_iUnion.2 ⟨g, ⟨hxS, hgB⟩, fun h => ?_⟩
-    obtain ⟨k, hk, h⟩ := mem_iUnion₂.1 h
-    exact Nat.find_min hex (hg ▸ hk) ⟨k, rfl, h⟩
-  have h2 : Pairwise (Function.onFun (AEDisjoint μ) Q) := by
-    intro g h hgh
-    have := (hq g⁻¹).ae hu
-    refine measure_mono_null (fun y hy => ?_) this
-    intro hy'
-    obtain ⟨⟨⟨hg1, hg2⟩, hg3⟩, ⟨hh1, hh2⟩, hh3⟩ := hy
-    have key : h⁻¹ • y = g⁻¹ • y := by
-      have := hy' hg1 (h⁻¹ * g) (by simpa [mul_smul] using hh1)
-      simpa [mul_smul] using this
-    rcases lt_trichotomy (e g) (e h) with hl | hl | hl
-    · exact hh3 (mem_iUnion₂.2 ⟨g, hl, by rw [mem_preimage]; beta_reduce; rw [key]; exact hg2⟩)
-    · exact hgh (he hl)
-    · exact hg3 (mem_iUnion₂.2 ⟨h, hl, by rw [mem_preimage]; beta_reduce; rw [← key]; exact hh2⟩)
-  calc μ S ≤ μ (⋃ g, P g) := measure_mono_ae h1
-    _ ≤ ∑' g, μ (P g) := measure_iUnion_le _
-    _ = ∑' g, μ (Q g) := tsum_congr fun g => (measure_preimage_smul μ g⁻¹ (P g)).symm
-    _ = μ (⋃ g, Q g) := (measure_iUnion₀ h2 hQm).symm
-    _ ≤ μ B := measure_mono <| iUnion_subset fun g y hy => by simpa using hy.1.2
-
 end Comparison
 
 section Quot
 
 variable {G X : Type*} [Group G] [MulAction G X] [MeasurableSpace X] {μ : Measure X}
 
-@[to_additive addQuotMeasure  ]
-noncomputable def quotMeasure (G : Type*) {X : Type*} [Group G] [MulAction G X] [MeasurableSpace X]
-    (μ : Measure X) : Measure (Quotient (MulAction.orbitRel G X)) :=
-  ⨆ (D : Set X) (_ : NullMeasurableSet D μ)
-    (_ : ∀ᵐ x ∂μ, x ∈ D → ∀ g : G, g • x ∈ D → g • x = x),
-    (μ.restrict D).map (Quotient.mk (MulAction.orbitRel G X))
-
-@[to_additive map_restrict_le_addQuotMeasure]
-theorem map_restrict_le_quotMeasure {D : Set X} (hD : NullMeasurableSet D μ)
-    (hu : ∀ᵐ x ∂μ, x ∈ D → ∀ g : G, g • x ∈ D → g • x = x) :
-    (μ.restrict D).map (Quotient.mk (MulAction.orbitRel G X)) ≤ quotMeasure G μ :=
-  le_iSup_of_le D (le_iSup_of_le hD (le_iSup_of_le hu le_rfl))
-
-@[to_additive isAEAddOrbitSection_of_isAddFundamentalDomain
-]
-theorem isAEOrbitSection_of_isFundamentalDomain [Countable G] {D : Set X}
-    (hD : IsFundamentalDomain G D μ) : IsAEOrbitSection G D μ := by
-  refine ⟨hD.nullMeasurableSet, hD.ae_covers, ?_⟩
-  have h : ∀ᵐ x ∂μ, ∀ g : G, x ∈ D → g • x ∈ D → g • x = x := by
-    refine ae_all_iff.2 fun g => ?_
-    by_cases hg : g = 1
-    · exact Eventually.of_forall fun x _ _ => by rw [hg, one_smul]
-    · have hdisj : AEDisjoint μ (g⁻¹ • D) D := by
-        simpa only [Function.onFun, one_smul] using hD.aedisjoint (inv_ne_one.2 hg)
-      refine measure_mono_null (fun x hx => ?_) hdisj.eq
-      simp only [mem_compl_iff, mem_ofPred_eq, Classical.not_imp] at hx
-      refine ⟨?_, hx.1⟩
-      rw [mem_smul_set_iff_inv_smul_mem, inv_inv]
-      exact hx.2.1
-  filter_upwards [h] with x hx hxD g hg using hx g hxD hg
-
 variable [Countable G] [MeasurableConstSMul G X] [SMulInvariantMeasure G X μ]
-
-@[to_additive map_restrict_le_map_restrict_of_ae_unique_of_ae_covers_add]
-theorem map_restrict_le_map_restrict_of_ae_unique_of_ae_covers {S B : Set X}
-    (hS : NullMeasurableSet S μ) (hB : NullMeasurableSet B μ)
-    (hu : ∀ᵐ x ∂μ, x ∈ S → ∀ g : G, g • x ∈ S → g • x = x) (hc : ∀ᵐ x ∂μ, ∃ g : G, g • x ∈ B) :
-    (μ.restrict S).map (Quotient.mk (MulAction.orbitRel G X)) ≤
-      (μ.restrict B).map (Quotient.mk (MulAction.orbitRel G X)) := by
-  refine Measure.le_iff.2 fun U hU => ?_
-  rw [measure_map_restrict_apply μ S hU, measure_map_restrict_apply μ B hU]
-  have hU' : NullMeasurableSet (Quotient.mk (MulAction.orbitRel G X) ⁻¹' U) μ :=
-    (measurableSet_quotient.1 hU).nullMeasurableSet
-  refine measure_le_of_ae_unique_of_ae_covers (G := G) (hU'.inter hS) (hU'.inter hB) ?_ ?_
-  · filter_upwards [hu] with x hx hxS g hg using hx hxS.2 g hg.2
-  · filter_upwards [hc] with x ⟨g, hg⟩ hxS
-    refine ⟨g, ?_, hg⟩
-    have : Quotient.mk (MulAction.orbitRel G X) (g • x) = Quotient.mk (MulAction.orbitRel G X) x :=
-      Quotient.sound ⟨g, rfl⟩
-    rw [mem_preimage, this]
-    exact hxS.1
-
-@[to_additive addQuotMeasure_le_map_restrict
-]
-theorem quotMeasure_le_map_restrict {B : Set X} (hB : NullMeasurableSet B μ)
-    (hc : ∀ᵐ x ∂μ, ∃ g : G, g • x ∈ B) :
-    quotMeasure G μ ≤ (μ.restrict B).map (Quotient.mk (MulAction.orbitRel G X)) :=
-  iSup_le fun _ => iSup_le fun hS => iSup_le fun hu =>
-    map_restrict_le_map_restrict_of_ae_unique_of_ae_covers hS hB hu hc
-
-@[to_additive addQuotMeasure_univ_le
-]
-theorem quotMeasure_univ_le {B : Set X} (hB : NullMeasurableSet B μ)
-    (hc : ∀ᵐ x ∂μ, ∃ g : G, g • x ∈ B) : quotMeasure G μ univ ≤ μ B := by
-  refine (quotMeasure_le_map_restrict hB hc univ).trans_eq ?_
-  rw [measure_map_restrict_apply μ B MeasurableSet.univ, preimage_univ, univ_inter]
 
 namespace IsAEOrbitSection
 
 variable {D D' : Set X}
 
-@[to_additive IsAEAddOrbitSection.addQuotMeasure_eq
-]
-theorem quotMeasure_eq (hD : IsAEOrbitSection G D μ) :
-    quotMeasure G μ = (μ.restrict D).map (Quotient.mk (MulAction.orbitRel G X)) :=
-  le_antisymm (quotMeasure_le_map_restrict hD.nullMeasurableSet hD.ae_covers)
-    (map_restrict_le_quotMeasure hD.nullMeasurableSet hD.ae_unique)
-
-@[to_additive IsAEAddOrbitSection.addQuotMeasure_apply]
-theorem quotMeasure_apply (hD : IsAEOrbitSection G D μ)
-    {U : Set (Quotient (MulAction.orbitRel G X))} (hU : MeasurableSet U) :
-    quotMeasure G μ U = μ (Quotient.mk (MulAction.orbitRel G X) ⁻¹' U ∩ D) := by
-  rw [hD.quotMeasure_eq, measure_map_restrict_apply μ D hU]
-
-@[to_additive IsAEAddOrbitSection.addQuotMeasure_univ]
-theorem quotMeasure_univ (hD : IsAEOrbitSection G D μ) : quotMeasure G μ univ = μ D := by
-  rw [hD.quotMeasure_apply MeasurableSet.univ, preimage_univ, univ_inter]
-
 end IsAEOrbitSection
-
-@[to_additive addQuotMeasure_univ_eq_addCovolume
-]
-theorem quotMeasure_univ_eq_covolume [h : HasFundamentalDomain G X μ] :
-    quotMeasure G μ univ = covolume G X μ := by
-  obtain ⟨D, hD⟩ := h.ExistsIsFundamentalDomain
-  rw [(isAEOrbitSection_of_isFundamentalDomain hD).quotMeasure_univ, hD.covolume_eq_volume]
 
 end Quot
 

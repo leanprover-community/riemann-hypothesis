@@ -138,7 +138,6 @@ def quot : Scheme := (glueData f g a ha p hp).glued
 
 def cover : (quot f g a ha p hp).OpenCover := (glueData f g a ha p hp).cover
 
-
 lemma isOpenImmersion_cover (U : Y.affineOpens) :
     IsOpenImmersion ((cover f g a ha p hp).f U) :=
   (cover f g a ha p hp).map_prop U
@@ -267,13 +266,6 @@ private lemma of_charts_aux (P : MorphismProperty Scheme.{0}) [IsZariskiLocalAtT
   change P (pullback.snd f (v i))
   rw [← this, MorphismProperty.cancel_left_of_respectsIso P]
   exact hP i
-
-omit [QuasiCompact f] [QuasiSeparated f] [QuasiCompact g] [QuasiSeparated g] in
-lemma of_charts (P : MorphismProperty Scheme.{0}) [IsZariskiLocalAtTarget P] {ι : Type}
-    (X' Y' : ι → Scheme.{0}) (u : ∀ i, X' i ⟶ X) (v : ∀ i, Y' i ⟶ Y) (f' : ∀ i, X' i ⟶ Y' i)
-    [∀ i, IsOpenImmersion (v i)] (hv : ∀ y, ∃ i z, v i z = y)
-    (h : ∀ i, IsPullback (f' i) (u i) (v i) f) (hP : ∀ i, P (f' i)) : P f :=
-  of_charts_aux f P X' Y' u v f' hv h hP
 
 omit [QuasiCompact f] [QuasiSeparated f] [QuasiCompact g] [QuasiSeparated g] in
 lemma isPullback_of_charts {Z Q : Scheme.{0}} (b : W ⟶ Z) (q : X ⟶ Q) (q' : Z ⟶ Q) {ι : Type}

@@ -14,7 +14,4 @@ open Classical ValuativeRel
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-def DetGaNe : Prop :=
-  ∀ (D : Formalism.BasicNotions.D7) (T T' : D.host.E) (Z : MatZ D), GZ T T' Z ≠ 0 → (Ga T T' Z).det ≠ 0
-
 end PI.UnitaryGroupMassFormula.CntFormula

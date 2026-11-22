@@ -4,7 +4,7 @@ public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HasArcDataIff
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.CoeffFSumDerivEqFderiv
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.RelationsAreFunctions
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ZeroFLeftExt
+public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.PsiWeightZeroLinearCombination
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.SurjectiveOfComplexPointsLiftOfUniversallyClosed
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.IsReducedSchemeOfSmoothOfIsIntegrallyClosed
@@ -238,9 +238,6 @@ namespace ToricDict
 
 open ToricData Out.Inh Out.InhTate
 
-theorem valAt'_gv_unitOn (t : ℂˣ) {W : (Sp ℂ).Opens} (h : ⊤ ≤ W) : valAt' (𝟙 (Sp ℂ)) W (gv (unitOn t) W).val = t :=
-  (valAt'_res (𝟙 (Sp ℂ)) le_top _ h).trans (valAt'_id_top _)
-
 def expChar {X : Type} [AddCommGroup X] (l : X →+ ℂ) : Multiplicative X →* ℂˣ :=
   MonoidHom.mk' (fun x => Units.mk0 (eTwoPi (l x.toAdd)) (AnArc.e_ne_zero _)) fun a b =>
     Units.ext (by simp [AnArc.e_add])
@@ -274,121 +271,11 @@ theorem expChar_eq_one_iff {X : Type} [AddCommGroup X] (l : X →+ ℂ) :
 
 variable {O : Type} [CommRing O] [StarRing O] (A : AnArc O) [IsEmpty (Fin A.gB)]
 
-def zeroUnif : HolUnif (zeroPolAV (Sp ℂ)).A (zeroPolAV (Sp ℂ)).L A.gB where
-  ex _ := η[(zeroPolAV (Sp ℂ)).A]
-  ex_add _ _ := toUnit_unique _ _
-  ex_onto _ := ⟨0, toUnit_unique _ _⟩
-  Λ := A.abelian₂
-  ker z := ⟨fun _ => Subsingleton.elim 0 z ▸ zero_mem _, fun _ => toUnit_unique _ _⟩
-  discrete := A.discrete
-  full := A.full
-  hol _ _ := ⟨isOpen_discrete _, differentiableOn_const _⟩
-  fr _ _ := 1
-  fr_hol _ := differentiableOn_const _
-  fr_ne _ _ _ := one_ne_zero
-  fr_compat _ _ _ h := ((_root_.mul_one _).trans (valAt'_one _ h)).symm
-
-theorem frameProd_zeroUnif {K : Type} [Fintype K] (j z) (ε : K → ℤ) : frameProd (zeroUnif A) j z ε = 1 :=
-  Finset.prod_eq_one fun _ _ => one_zpow _
-
-theorem lam_eq_zero (l : A.abelian₂) : l = 0 := Subtype.ext (Subsingleton.elim _ _)
-
 variable [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ]
   (q : A.X → (FractionRing ℂ)ˣ) (hq : ∀ x, algebraMap (FractionRing ℂ) ℂ (q x) = A.psi x)
   (h : ∀ (a : O) y z, polar q (a • y) z = polar q y (star a • z))
 
-def dict : GtDict (toricPre ℂ A.X q) (toricOAct q O h) where
-  A := A
-  eX := LinearEquiv.refl O A.X
-  u := zeroUnif A
-  lam_eq := rfl
-  isAH := ⟨A.Hm_herm, A.Hm_pos, fun _ => A.chi_norm _, fun l i z _ => by
-    change (1 : ℂ) = A.ah l z * 1
-    rw [lam_eq_zero A l]
-    simp [AnArc.ah]⟩
-  isRig j hj := (valAt'_gv_unitOn 1 hj).symm.trans (by rw [unitOn_one]; rfl)
-  ex_act _ _ := toUnit_unique _ _
-  ex_ct _ := toUnit_unique _ _
-  psi_val x j _ := by
-    change valAt' (Out.jFK (R := ℂ) ℂ) _ (gv (unitOn (q x)) _).val = A.psi x * (1 : ℂ)⁻¹
-    rw [inv_one, _root_.mul_one, ← hq]
-    refine (valAt'_res _ le_top _ (le_top.trans_eq ?_)).trans ?_
-    · exact (congrArg (Out.jFK (R := ℂ) ℂ ⁻¹ᵁ ·) (wchart_triv _ _)).symm
-    · have := valAt'_comp (𝟙 (Sp ℂ)) (Out.jFK (R := ℂ) ℂ) ⊤ (unitOn (q x)).val
-      rw [Category.id_comp] at this
-      rw [← this]
-      exact (congrArg (fun t : Γ(Sp ℂ, ⊤)ˣ => valAt' (𝟙 (Sp ℂ)) ⊤ t.val) (pullTop_unitOn _ (q x))).trans
-        (valAt'_id_top _)
-  ex₀ v := pt q ℂ (expChar v.1)
-  ex₀_b _ := rfl
-  chi_val v x j hj := (valAt'_gv_unitOn _ hj).trans
-    ((_root_.mul_one _).symm.trans (congrArg _ (frameProd_zeroUnif A _ _ _).symm))
-  add v v' := (isAdd_pt q ℂ _ _ _).2 (MonoidHom.ext fun x => Units.ext (AnArc.e_add _ _))
-  onto g := by
-    obtain ⟨t, rfl⟩ := (pt_bijective q ℂ).2 g
-    obtain ⟨l, rfl⟩ := expChar_surjective t
-    exact ⟨(l, 0), rfl⟩
-  lin a v := (gtAct_pt q ℂ O h a _ _).2 fun _ => rfl
-  ker v := (isZero_pt q ℂ _).trans ((expChar_eq_one_iff _).trans
-    ⟨fun ⟨n, hn⟩ => ⟨AnArc.La.mk 0 n 0, rfl, Prod.ext (AddMonoidHom.ext fun x => by simp [hn]) (Subsingleton.elim _ _)⟩,
-      fun ⟨la, h0, e⟩ => ⟨la.n, fun x => by simp [e, h0, lam_eq_zero A la.l]⟩⟩)
-  iota la := (isIota_pt q ℂ la.y _).2 fun x => by
-    have h1 := (A.psi la.y).ne_zero
-    have h2 := (A.psi x).ne_zero
-    simp [expChar, polar, hq, A.psi_add, lam_eq_zero A la.l, AnArc.e_add]
-    field_simp
-
-
-omit [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ] in
-theorem mem_Theta (j : ℕ) (α : A.X) (θ : (Fin A.gB → ℂ) → ℂ) : θ ∈ A.Theta j α :=
-  ⟨by
-    rw [show θ = fun _ => θ 0 from funext fun z => congrArg θ (Subsingleton.elim _ _)]
-    exact differentiable_const _, fun l z => by simp [lam_eq_zero A l, AnArc.ah]⟩
-
-def secFn : (dict A q hq h).SecFn where
-  fn j _ α := Equiv.ofBijective
-    (fun s => ⟨fun _ => valAt' (𝟙 (Sp ℂ)) _ (s.f fun _ => PUnit.unit), mem_Theta A j α _⟩) (by
-      constructor
-      · rintro ⟨f, _⟩ ⟨f', _⟩ e
-        have e' := congrFun (congrArg Subtype.val e) 0
-        congr 1
-        funext i
-        refine ComplexPoints.eq_of_valAt'_eq (𝟙 (Sp ℂ)) _ _ _ fun x hx _ => ?_
-        obtain rfl : x = 𝟙 _ := (Category.comp_id _).symm.trans hx
-        exact e'
-      · intro θ
-        refine ⟨⟨fun i => constFn (𝟙 (Sp ℂ)) _ (θ.1 0), fun i i' => ?_⟩, Subtype.ext (funext fun z => ?_)⟩
-        · obtain rfl : i = i' := funext fun _ => rfl
-          erw [linComb_triv_g]
-          exact (_root_.one_mul _).symm
-        · exact (valAt'_constFn _ _ (Category.comp_id _) _ _ (wchart_triv _ _).ge).trans
-            (congrArg θ.1 (Subsingleton.elim (α := Fin A.gB → ℂ) _ _)))
-  fn_val j _ α s z i _ :=
-    (_root_.mul_one _).symm.trans (congrArg _ (frameProd_zeroUnif A _ _ _).symm)
-
-def psiFrac (x : A.X) : (FractionRing ℂ)ˣ := Units.map (algebraMap ℂ (FractionRing ℂ)).toMonoidHom (A.psi x)
-
-
-omit [IsEmpty (Fin A.gB)] in
-theorem algebraMap_psiFrac (x : A.X) : algebraMap (FractionRing ℂ) ℂ (psiFrac A x) = A.psi x :=
-  (IsScalarTower.algebraMap_apply ℂ (FractionRing ℂ) ℂ _).symm
-
-
-omit [IsEmpty (Fin A.gB)] [IsScalarTower ℂ (FractionRing ℂ) ℂ] in
-include hq in
-theorem polar_bal (a : O) (y z : A.X) : polar q (a • y) z = polar q y (star a • z) := by
-  have key : ∀ y z, algebraMap (FractionRing ℂ) ℂ (polar q y z) = eTwoPi (A.T y z) := fun y z => by
-    have h1 := (A.psi y).ne_zero
-    have h2 := (A.psi z).ne_zero
-    simp [polar, hq, A.psi_add]
-    field_simp
-  exact Units.ext ((algebraMap (FractionRing ℂ) ℂ).injective (by rw [key, key, A.T_adj]))
-
 instance (τ₀ : ℂ) : IsEmpty (Fin (AnArc.tate τ₀).gB) := inferInstanceAs (IsEmpty (Fin 0))
-
-def tate (τ₀ : ℂ) : GtDict (toricPre ℂ (AnArc.tate τ₀).X (psiFrac (AnArc.tate τ₀)))
-    (toricOAct _ ℤ (polar_bal (AnArc.tate τ₀) _ (algebraMap_psiFrac _))) :=
-  dict _ _ (algebraMap_psiFrac _) _
 
 end ToricDict
 

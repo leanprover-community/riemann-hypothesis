@@ -10,8 +10,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.GEN.X
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} {S : Set (HeightOneSpectrum (𝓞 K.1))} {ℓ : ℕ} [Fact ℓ.Prime]
 
 theorem pow_ratio_eq_one {ι : Type*} [Fintype ι] (ℓ : ℕ) (hl0 : (ℓ : ℚ) ≠ 0) (a0 a1 a2 m c : ℕ) (b : ι → ℕ)
@@ -26,7 +24,6 @@ theorem pow_ratio_eq_one {ι : Type*} [Fintype ι] (ℓ : ℕ) (hl0 : (ℓ : ℚ
     push_cast
     linarith
   exact_mod_cast h'
-
 
 open scoped Classical in
 theorem ratio_eq_one_of_altSum [Finite S] (hℓS : ∀ v ∉ S, ((ℓ : ℕ) : 𝓞 K.1) ∉ v.asIdeal)

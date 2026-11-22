@@ -4,8 +4,8 @@ public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.DualOrder
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularAtTranslateStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TranslateIntoSmallerOpenStatement
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularAtTranslate
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TranslateIntoSmallerOpen
 
 @[expose] public section
 

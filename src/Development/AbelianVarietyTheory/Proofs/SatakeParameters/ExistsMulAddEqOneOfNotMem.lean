@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.GlobSpecOfExists
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TransportedLatticeLocalizationFreeLeCoefficientS
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DualLatticeIsLatticeAndHermitianDual
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeExtensionAlongFieldEmbeddingDuals

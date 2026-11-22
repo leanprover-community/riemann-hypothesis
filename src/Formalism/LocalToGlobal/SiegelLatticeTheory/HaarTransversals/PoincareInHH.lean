@@ -229,28 +229,6 @@ theorem one_mem_level_subgroup : (1 : X.B.I.Gf) ∈ X.K2 := by
   | simp [AutInst.Kset]
   | exact (Formalism.UG.stabGL X.B.I.Lf).one_mem
 
-def frameOrthogonalLattice : Set (VA X.B.I) :=
-  {y | y ∈ X.B.I.Lf ∧ ∀ a, hA X.B.I (incl X.B.I (X.eR a)) y = 0 ∧ hA X.B.I (incl X.B.I (X.fR a)) y = 0 ∧
-    hA X.B.I (incl X.B.I (X.zR u)) y = 0}
-
-def IsLevelTwoCongruentAt (x : X.B.I.Gf) : Prop :=
-  (∀ a : Fin D.R.rS, ∃ c : ℕ, Nat.Coprime c X.B.g ∧
-      InMod X.B.I X.B.g (X.e0 '' {b | b.1 < a.1}) ((c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • ((X.B.I.fmat x - 1) *ᵥ X.e0 a))) ∧
-    (∃ c : ℕ, Nat.Coprime c X.B.g ∧
-      InMod X.B.I X.B.g (Set.range X.e0) ((c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • ((X.B.I.fmat x - 1) *ᵥ X.z0))) ∧
-    ∀ i : Fin D.R.k, ∃ c : ℕ, Nat.Coprime c X.B.g ∧
-      InMod X.B.I X.B.g (Set.range X.e0 ∪ X.bw '' {j | j.1 < i.1})
-        ((c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • ((X.B.I.fmat x - 1) *ᵥ X.bw i))
-
-def HaarTransversal : Set (Hfin X u) :=
-  {h | (∀ y ∈ frameOrthogonalLattice X u, X.B.I.fmat (h : X.B.I.Gf) *ᵥ y ∈ frameOrthogonalLattice X u ∧
-      X.B.I.fmat ((h : X.B.I.Gf)⁻¹) *ᵥ y ∈ frameOrthogonalLattice X u) ∧
-    IsLevelTwoCongruentAt X ((X.xu u)⁻¹ * (h : X.B.I.Gf) * X.xu u)}
-
-def K0 : Subgroup (Hfin X u) := Subgroup.closure (HaarTransversal X u)
-
-def c0 (volN volH : ℝ) : ℝ := volN * volH / (Module.finrank ℂ (X.Vpi u) : ℝ)
-
 def NOinf : Set X.B.I.Ginf :=
   {s | ∃ γ ∈ X.B.I.GFset, γ.1 = s ∧ γ.1 ∈ X.NinfU u ∧ γ.2 ∈ X.NfinU u ∧ (X.xu u)⁻¹ * γ.2 * X.xu u ∈ X.K2}
 

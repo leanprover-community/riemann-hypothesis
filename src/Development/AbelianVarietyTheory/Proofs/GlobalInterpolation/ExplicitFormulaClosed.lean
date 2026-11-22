@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
 public import Formalism.CyclotomicNorms.StatementI
 public import Formalism.LandauZeroFreeBounds.Statement
 public import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.IsExcRat
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FiniteBox
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TruncatedExplicitFormula
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DirichletLZerosInWindowFiniteAndPosOrder

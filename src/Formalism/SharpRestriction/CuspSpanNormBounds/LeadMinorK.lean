@@ -76,13 +76,6 @@ def LocOk (D : D7) (Ch Cg : ℝ) (L : LocBessel D.R.k D.R.rS) (lam0 : Fin (2 * D
       (Tz D.R.k D.R.rS L.z' * (κ / ka) ^ (2 * D.R.rS)) ka b ∧
     1 ≤ Tz D.R.k D.R.rS L.z * κ ^ (2 * D.R.rS) ∧ 1 ≤ Tz D.R.k D.R.rS L.z' * κ ^ (2 * D.R.rS)
 
-def LocOk0 (D : D7) (Ch Cg : ℝ) (L : LocBessel D.R.k D.R.rS) (lam0 : Fin (2 * D.R.rS + D.R.k + 1) → ℝ)
-    (ka b κ : ℝ) : Prop :=
-  1 ≤ D.R.k ∧ L.ε = epsSH D.R ∧ L.c = cOfDpsi (κ : ℂ) ∧ 0 < L.κN ∧ L.κN ≠ ⊤ ∧
-    StdHyp0 Ch Cg D.R.k D.R.rS L.ε lam0 L.u L.u' (Tz D.R.k D.R.rS L.z * (κ / ka) ^ (2 * D.R.rS))
-      (Tz D.R.k D.R.rS L.z' * (κ / ka) ^ (2 * D.R.rS)) ka b ∧
-    1 ≤ Tz D.R.k D.R.rS L.z * κ ^ (2 * D.R.rS) ∧ 1 ≤ Tz D.R.k D.R.rS L.z' * κ ^ (2 * D.R.rS)
-
 def jNorm2 {k r : ℕ} (L : LocBessel k r) (F : Mx k r → (L.Wq →L[ℂ] L.Wp))
     (μsec : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) : ENNReal :=
   jNormSq k r (Tz k r L.z) (Tz k r L.z') (fun p => Real.sqrt (hsNormSq (L.J F (bigCell k r p.1 (μsec p.2)))))
@@ -96,24 +89,7 @@ def orbSq {k r : ℕ} (L : LocBessel k r) (F : Mx k r → (L.Wq →L[ℂ] L.Wp))
     (_ : IsPtRep L γ g ∧ IsRelStab L g ∧ IsRootMeas L γ g μR ∧ IsOrbQuot L g μR ν),
     ENNReal.ofReal (hsNormSq (OrbInt L F g ν))
 
-def hNC {n : ℕ} (ε : Fin n → Bool) (lam : Fin n → ℝ) : ℝ :=
-  sInf {x | ∃ a b : Fin n, ε a ≠ ε b ∧ x = |lam a - lam b|}
-
-def cloudGap {n k : ℕ} (u : Fin k → ℝ) (lam : Fin n → ℝ) : ℝ :=
-  sInf {x | ∃ a b : Fin n, a ≠ b ∧ IsCloud u lam a ∧ IsCloud u lam b ∧ x = |lam a - lam b|}
-
-def q0 {n k : ℕ} (Cq : ℝ) (m : ℕ) (ε : Fin n → Bool) (u : Fin k → ℝ) (lam : Fin n → ℝ) : ℝ :=
-  min (hNC ε lam / (Cq * Real.sqrt m)) (cloudGap u lam) / Cq
-
 def l1 {n : ℕ} (x y : Fin n → ℝ) : ℝ := ∑ a, |x a - y a|
-
-def shell {k r : ℕ} (L : LocBessel k r) (P : Mx k r) (j : ℕ) : Submodule ℂ L.Hs :=
-  Submodule.span ℂ {v | ∃ (Λ' ν : Fin (2 * r + k + 1) → ℝ) (S : Submodule ℂ L.Hs),
-    IsKTypeOf L.ε (fun g => L.σ (P⁻¹ * g * P)) Λ' S ∧ v ∈ S ∧
-      IsWtOn (Formalism.REAL.Kset L.ε) (fun g => L.σ (P⁻¹ * g * P)) ν v ∧
-      l1 Λ' (lowK L.ε L.lam) ≤ j ∧ l1 ν (lowK L.ε L.lam) ≤ j}
-
-def frob {n : ℕ} (g : Matrix (Fin n) (Fin n) ℂ) : ℝ := Real.sqrt (∑ i, ∑ j, Complex.normSq (g i j))
 
 section Glob
 
@@ -168,26 +144,6 @@ def jSqG {Ch Cg : ℝ} {T T' : ℕ} {b dist : ℝ} (X : BData D Ch Cg T T' b dis
   ∏ v, jNorm2 (X.L v) (X.f v) (X.μsec v)
 
 end Glob
-
-structure TensorDS (n : ℕ) (ε : Fin n → Bool) (μ : Fin n → ℝ) (H : Type) [NormedAddCommGroup H]
-    [InnerProductSpace ℂ H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) where
-  Sm : Finset (Fin n)
-  Hs : Fin n → Type
-  [nH : ∀ s, NormedAddCommGroup (Hs s)]
-  [iH : ∀ s, InnerProductSpace ℂ (Hs s)]
-  [cH : ∀ s, CompleteSpace (Hs s)]
-  σs : ∀ s, Matrix (Fin n) (Fin n) ℂ → (Hs s →L[ℂ] Hs s)
-  ds : ∀ s ∈ Sm, IsHCParam (μ + Pi.single s 1) ∧ IsDS ε (μ + Pi.single s 1) (σs s)
-  inequiv : ∀ s ∈ Sm, ∀ s' ∈ Sm, s ≠ s' → ¬ ∃ U : Hs s ≃ₗᵢ[ℂ] Hs s',
-    ∀ g ∈ UJset ε, ∀ x, U (σs s g x) = σs s' g (U x)
-  toSum : ∀ (v w : H) (x y : Fin n → ℂ), IsKFin ε σ v → IsKFin ε σ w →
-    ∃ (ι : Type) (_ : Fintype ι) (sI : ι → Fin n) (vI wI : ∀ i, Hs (sI i)),
-      (∀ i, sI i ∈ Sm ∧ IsKFin ε (σs (sI i)) (vI i) ∧ IsKFin ε (σs (sI i)) (wI i)) ∧
-      ∀ g ∈ UJset ε, ⟪w, σ g v⟫_ℂ * (star y ⬝ᵥ (g *ᵥ x)) = ∑ i, ⟪wI i, σs (sI i) g (vI i)⟫_ℂ
-  ofSum : ∀ s ∈ Sm, ∀ v w : Hs s, IsKFin ε (σs s) v → IsKFin ε (σs s) w →
-    ∃ (ι : Type) (_ : Fintype ι) (vI wI : ι → H) (xI yI : ι → Fin n → ℂ),
-      (∀ i, IsKFin ε σ (vI i) ∧ IsKFin ε σ (wI i)) ∧
-      ∀ g ∈ UJset ε, ⟪w, σs s g v⟫_ℂ = ∑ i, ⟪wI i, σ g (vI i)⟫_ℂ * (star (yI i) ⬝ᵥ (g *ᵥ xI i))
 
 attribute [instance] TensorDS.nH TensorDS.iH TensorDS.cH
 

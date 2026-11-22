@@ -56,13 +56,6 @@ structure Coord {K : Type} [Field K] [NumberField K] (G : Geo K) {s : Fin G.D �
     csq (hs.normOn j) σ c g =
       ∑ p, ‖∑ i, c i * σ (ev j (g i) p)‖ ^ 2 / (c₂ σ p * archSize (G.A σ) (fun k => σ (y p k)) ^ j) ^ 2
 
-def Claim (X : Data F) (C h J : ℝ) : Prop :=
-  0 ≤ X.z ∧ X.z ≤ 1 ∧
-    (1 - X.z) * (X.T * h - 3 * ((X.D : ℝ) + 1) * |h| - J - C * (X.D : ℝ) ^ 2 * (X.logRho C h + Real.log X.T) -
-        ((X.T : ℝ) + X.D + 1) * Real.log X.beta - ((X.T : ℝ) + (X.D : ℝ) ^ 2) * (X.g + 2)) -
-      X.z * (X.T * (Real.log 2 + X.logRho C h + Real.log X.beta / 2) + Real.log X.LamD + Real.log X.LamT) ≤
-    X.degM X.T / X.d
-
 def RankLow : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] (G : Geo F), IsNef F G.LA → IsBig F G.LA → ∀ T : ℕ,
     ((T - 1).choose G.D : ℤ) * G.del ≤ Module.finrank F (G.global T)

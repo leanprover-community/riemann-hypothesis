@@ -57,10 +57,6 @@ namespace ProjSpace
 
 variable (A : Type u) [CommRing A] {n : ℕ} (i : Fin (n + 1))
 
-local notation "Pn" => MvPolynomial (Fin (n + 1)) A
-local notation "xinv" => IsLocalization.Away.invSelf (S := ChartLoc A i)
-  (X i : MvPolynomial (Fin (n + 1)) A)
-
 lemma algebraMap_X_mul_invSelf :
     algebraMap (MvPolynomial (Fin (n + 1)) A) (ChartLoc A i) (X i) * xinv = 1 :=
   IsLocalization.Away.mul_invSelf _

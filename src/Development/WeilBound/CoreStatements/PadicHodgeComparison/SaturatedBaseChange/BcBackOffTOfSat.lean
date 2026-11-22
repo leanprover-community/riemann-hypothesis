@@ -5,7 +5,16 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.IsIntegralOp
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsUnitarisableTrivChar
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpehShapeIffOfDiscreteSpectrum
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEquivOfIsSubquotient
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.DualIsConjOfIsCsd
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.CaraianiLocalGlobalDual
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.GelfandKazhdanDual
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.CaraianiLocalGlobal
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.ConclusionFinite
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Mono0OfLpDimEqOne
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.NotIsTemperedGLDetRepTwo
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsPotentiallySemistableCoefficientFieldEnlarge
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KummerNotCoboundary
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WdParameterMonodromyZeroIffPotentiallyCrystallin
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.PolarizedPairLineIff
 
 @[expose] public section
 
@@ -23,13 +32,6 @@ def CompUnique : Prop :=
     ∀ w : HeightOneSpectrum (𝓞 E), IsSplitAt w → ∀ σ τ : LocIrr w n,
       IsCompAlong U (locU n w) ((cLoc w).comp (locU n w).subtype) σ.ρ →
       IsCompAlong U (locU n w) ((cLoc w).comp (locU n w).subtype) τ.ρ → Nonempty (σ.ρ.Equiv τ.ρ)
-
-def CuspOne : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (w : HeightOneSpectrum (𝓞 E)) (n c : ℕ), 1 ≤ n →
-    ∀ (a d : Fin c → ℕ) (h : ∑ i, d i * a i = n) (ρ : ∀ i, LocIrr w (a i)) (σ : ∀ i, LocIrr w (d i * a i)),
-      (∀ i, 1 ≤ a i ∧ 1 ≤ d i) →
-      (∀ i, GlobalTheory.LocGL.IsSpeh (GlobalTheory.LocGL.IrrGL.of (ρ i).ρ (ρ i).smooth (ρ i).irred) (d i) (σ i).ρ) →
-      (locProd h w σ).IsIrreducible → IsCuspidal (locProd h w σ) → c = 1 ∧ ∀ i, d i = 1
 
 def OneFactor : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ)

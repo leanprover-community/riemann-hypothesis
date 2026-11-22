@@ -3,8 +3,7 @@ module
 public import Formalism.SizeWindowBrackets.GrowthBoundGivesRiemannHypothesis
 public import Formalism.StatementOC
 public import Mathlib.NumberTheory.LSeries.RiemannZeta
-public import Formalism.ZetaNonvanishing.ZetaLandau
-public import Formalism.ZetaRealNonvanish
+public import Formalism.ZetaNonvanishing.MellinSgen
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.StronglyIrreducible
 public import Formalism.ThickAverageLoss.ThickAverageProofs.Balance
 public import Formalism.ThickAverageLoss.ThickAverageProofs.ThickAverage

@@ -30,8 +30,6 @@ theorem ofS_inv_coe (x : Sp L N) (w : InfinitePlace L) :
   rw [← Pi.inv_apply, ← map_inv]
   rfl
 
-theorem mat_one (w : InfinitePlace L) : mat (one L N).1 w = 1 := rfl
-
 theorem q_actL (x : Sp L N) (y : Lat L N) :
     q (actL (ofS L N x) (one L N).1) y = ∑ w, ∑ i, ‖(mt x⁻¹ w *ᵥ toR y w) i‖ ^ 2 := by
   simp only [q, qR]

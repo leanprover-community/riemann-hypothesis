@@ -85,9 +85,6 @@ theorem ev₀_algebraMap (z : ℂ) : ev₀ ι g₀ hy (algebraMap ℂ (Sec p (fO
   | exact (CxPts.ev_eq hy _).symm.trans (CxPts.ev_algX hy z)
   | exact CxPts.ev_algX hy z
 
-theorem ev₀_smul (z : ℂ) (a : Sec p (fOpen ι g₀)) : ev₀ ι g₀ hy (z • a) = z * ev₀ ι g₀ hy a := by
-  rw [Algebra.smul_def, map_mul, ev₀_algebraMap]
-
 theorem mkQ_eq_mkQ (a b : Sec p (fOpen ι g₀)) :
     (sqQ ι g₀ hy).mkQ a = (sqQ ι g₀ hy).mkQ b ↔ a - b ∈ RingHom.ker (ev₀ ι g₀ hy) ^ 2 := by
   rw [Submodule.mkQ_apply, Submodule.mkQ_apply, Submodule.Quotient.eq]

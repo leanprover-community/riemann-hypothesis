@@ -23,14 +23,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory
 
-theorem levelPrime_not_mem_places : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX} (W : RealPack ex) (u : D.what₂.Word), PkHyp W → (∀ PP ∈ (pk W).Pg, (((D.mem u).A.T : ℕ) : 𝓞 D.host.F) ∉ ((_root_.IsDedekindDomain.HeightOneSpectrum.under (𝓞 D.host.F) PP)).asIdeal) → ∀ PP : Pl D.host.E, PP ∈ (pk W).Pg ∨ QAll W PP → (((D.mem u).A.T : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal := by
-  intro D L hT Gi Gl Kc Yd cX ex W u hP hg PP hPP
-  rcases hPP with h | ⟨t, ht⟩
-  · intro hm
-    apply hg PP h
-    rw [IsDedekindDomain.HeightOneSpectrum.under_asIdeal]
-    rw [Ideal.mem_comap, map_natCast]
-    exact hm
-  · exact (hP.bot.hyp.2.2.2.1.lev.Q_off t PP ht).2 u
-
 end GlobalTheory

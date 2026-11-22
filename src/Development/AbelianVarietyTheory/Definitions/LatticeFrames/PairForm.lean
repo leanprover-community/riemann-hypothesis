@@ -42,39 +42,9 @@ end Alg
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX} (W : RealPack ex)
 
-abbrev rJ : Set (GA D (D.sp.Y 0)) :=
-  levS (Yc D 0) (W.Q.Rl.βY 0) (W.Q.Rl.dat0 (W.Q.Rl.toRealDat.levR W.Q.F.lv2 true))
-
-abbrev rChi : GA D (D.sp.Y 0) → ℂ :=
-  Formalism.IndefR.Lev.levChi (Yc D 0) (W.Q.Rl.βY 0) (W.Q.Rl.dat0 (W.Q.Rl.toRealDat.levR W.Q.F.lv2 true))
-
-def rowOf (e : W.Q.Rl.HE.H) : SmT (W.Q.Rl.MY 0) →ₗ[ℂ] (GA D (Yc D 0) → ℂ) := PiTensorProduct.lift (W.Q.Rl.HE.e e)
-
-def rowAt (t : W.P.T) (F : Fin ((W.Q.F.fc (cxW W).zs).Df1.nV t) → D.what₂.LL) :
-    SmT (W.Q.Rl.MY 0) →ₗ[ℂ] (GA D (Yc D 0) → ℂ) :=
-  rowOf W (W.Q.Rl.Th t (W.Q.Rl.jX t (W.Q.F.eV (cxW W).zs t F)))
-
-abbrev F0 (u : D.what₂.Word) : Formalism.L2.Forms.Forms0 D u := (W.R.T.cols.forms u).to0
-
-structure BotDat (u : D.what₂.Word) where
-  B : SBes W.S.X W.Q.instEq u W.Q.Rl.ψ (D.sp.X 0)
-  b : GA D (D.sp.Y 0)
-  a₀ : GA D (D.sp.X 0)
-  a : GA D (D.sp.X 0)
-  k : GA D (D.sp.Y 0)
-
 variable {W}
 
 variable (W)
-
-structure BotHyp : Prop where
-  hyp : HypAt W
-  pins : RealPins W.Q
-  see : SeeEx W.Q
-  used : ∀ t : W.P.T, Formalism.IndefR.RecTie.Used0 D (W.P.I.tup t)
-  idE : GlobalTheory.Core.Mi.IdE W.S.X
-  gap : GlobalTheory.Count.GapGe W.S.X.B (100 * (D.R.r : ℝ) ^ 4)
-  fin : Formalism.L2.SG.PackageTie2.FinX W.S.Y
 
 end GlobalTheory.MiTop
 

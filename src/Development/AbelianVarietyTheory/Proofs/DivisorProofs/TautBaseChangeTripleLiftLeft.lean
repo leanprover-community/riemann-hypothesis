@@ -54,26 +54,7 @@ section Base
 
 variable {o W : Type} [CommRing o] [CommRing W] [IsDomain W] [IsLocalRing W] (T : TautBase o W) (N : ℕ)
 
-abbrev fC : Sp (MvPowerSeries (Fin N) W) ⟶ Sp W := spMap MvPowerSeries.C
-
-abbrev Bp : Over (Sp (MvPowerSeries (Fin N) W)) := (Over.pullback (fC (W := W) N)).obj T.B
-
-theorem isAb_Bp : IsAbelianScheme (Bp T N) := GlobalTheory.isAbelianScheme_pullback_obj _ _ T.isAb
-
 instance : IsCommMonObj (Bp T N) := (isAb_Bp T N).comm
-
-theorem cart : IsGrpPullback (Bp T N) T.B (fC N) (pullback.fst T.B.hom (fC N)) := isGrpPullback_pullback T.B _
-
-abbrev cm : CubeMap (Bp T N) T.B := cubeMapOf (cart T N)
-
-theorem pullSt : ∃ (hL : (T.M.L.pull (cm T N).F).IsLB) (hr : ((cm T N).rigPull T.M.L T.M.rig).IsGen),
-    (∃ c' : CubicalStr (Bp T N) ((cm T N).rigLB T.M hL hr), (cm T N).IsPullCubical c' T.cub) ∧
-      (T.M.IsSymmetric → ((cm T N).rigLB T.M hL hr).IsSymmetric) :=
-  proved_CubePullSt _ _ T.B (Bp T N) (cm T N) T.M T.cub
-
-abbrev Mp : RigLB (Bp T N) := (cm T N).rigLB T.M (pullSt T N).fst (pullSt T N).snd.fst
-
-abbrev cubP : CubicalStr (Bp T N) (Mp T N) := CubePf.cubical (cm T N) T.M T.cub _ _
 
 end Base
 
@@ -98,7 +79,6 @@ end Periods
 section Charts
 
 variable {o W : Type} [CommRing o] [CommRing W] [IsDomain W] [IsLocalRing W] (T : TautBase o W) (N : ℕ)
-
 
 end Charts
 

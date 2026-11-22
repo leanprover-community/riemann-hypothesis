@@ -12,7 +12,6 @@ public import Development.AbelianVarietyTheory.Definitions.HeightFunctions.Finit
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.SzAdjoinRootOfUnity
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.SzFieldRangeEmbedding
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFinsetTypeNormPrincipal
-public import Development.AbelianVarietyTheory.Proofs.HeightProofs.FieldSizeAdjoinKthRootStatement
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsImagQuadraticHost
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.FieldSizeMonotone
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HostXiOrderBounds

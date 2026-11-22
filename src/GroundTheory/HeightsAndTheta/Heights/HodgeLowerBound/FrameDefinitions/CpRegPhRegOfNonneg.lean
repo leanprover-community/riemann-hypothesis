@@ -2,7 +2,9 @@ module
 
 public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Weights
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.LineModel
+public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.LineMu
+public import GroundTheory.HeightsAndTheta.Heights.FubiniStudyCharts
+public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PBoundedGlue
 
 @[expose] public section
 

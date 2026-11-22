@@ -39,29 +39,6 @@ section Real
 variable {F Ω : Type} [Field F] [NumberField F] [IsTotallyReal F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
   {l : ℕ} [Fact l.Prime] {a : ℕ}
 
-structure IsGalRepOfR (π : TR.CuspSub F a) (ι : Qbar l ≃+* ℂ) (r : G F Ω →* GL (Fin a) (Qbar l)) (wt : ℤ)
-    (HT : (F →+* Qbar l) → Multiset ℤ) : Prop where
-  cont : Continuous r
-  ss : IsSSRep r
-  away : ∀ (w : HeightOneSpectrum (𝓞 F)), ((l : ℕ) : 𝓞 F) ∉ w.asIdeal → ∀ (A : ValuationSubring Ω) (h : IsPlaceOver A w)
-    (rc : IrrGL (k := w.adicCompletion F) → WD h), IsRec h rc → ∀ σ, π.IsLocComp w σ → IsWDOf ι r (rc (algNorm σ))
-  pure : ∀ (w : HeightOneSpectrum (𝓞 F)), ((l : ℕ) : 𝓞 F) ∉ w.asIdeal → ∀ (A : ValuationSubring Ω) (h : IsPlaceOver A w),
-    ∃ x : WD h, IsWDOf ι r x ∧ (x.lpTw ((wt : ℝ) / 2)).tempered
-  weights : ∀ (τ : F →+* Qbar l) (m : Multiset ℂ), π.HasInfChar (InfinitePlace.mk (ι.toRingHom.comp τ)) m →
-    (HT τ).map (fun n : ℤ => (n : ℂ)) = m.map fun z => ((a : ℂ) - 1) / 2 - z
-  weights_sym : ∀ τ : F →+* Qbar l, HT τ = (HT τ).map (wt - ·)
-  above : ∀ (P : LocPrime l) (AI : LocAinf l P), Nonempty (LocTied l P AI) →
-    ∀ (w : HeightOneSpectrum (𝓞 F)) (A : ValuationSubring Ω) (h : IsPlaceOver A w)
-      (O : Type) [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O]
-      (Bw : LocBridge l F Ω (Dec (F := F) A) O) (hj : GlobalTheory.Pst.Induces Bw),
-      IsdRAt P Bw (r.comp (Dec (F := F) A).subtype) ∧
-      (∀ (τ : F →+* Qbar l) (LL' : FinExt l) (τ' : ↥Bw.Kw.1 →ₐ[ℚ_[l]] ↥LL'.1), IsInduced Bw τ τ' →
-        IsJumpsAt P Bw (r.comp (Dec (F := F) A).subtype) τ (HT τ)) ∧
-      (∀ σ, π.IsLocComp w σ → GlobalTheory.PRep.fixed σ.ρ (GlobalTheory.SmGL.iwahori (w.adicCompletion F) (Fin a)) ≠ ⊥ →
-        IsSstAt P Bw (r.comp (Dec (F := F) A).subtype) ∧
-          ∀ rc, IsRec h rc → wdAt P ι Bw h hj (r.comp (Dec (F := F) A).subtype) = rc (algNorm σ)) ∧
-      ∀ σ, π.IsLocComp w σ → GlobalTheory.SmGL.IsSpherical σ.ρ → IsCrysAt P Bw (r.comp (Dec (F := F) A).subtype)
-
 end Real
 
 def StrongMultOneReal : Prop :=
@@ -91,7 +68,6 @@ def IsoTwist (π : TR.CuspSub F a) (η : HChar F) : Prop :=
   ∃ T : π.V ≃ₗ[ℂ] π.V, (∀ k φ, T (π.op (.fin k) φ) = ((chiDet a η (finGL F a k) : ℂˣ) : ℂ) • π.op (.fin k) (T φ)) ∧
     (∀ k φ, T (π.op (.cpt k) φ) = ((chiDet a η (TR.infGL F a (Unitary.toUnits k)) : ℂˣ) : ℂ) • π.op (.cpt k) (T φ)) ∧
     ∀ X φ, T (π.op (.lie X) φ) = π.op (.lie X) (T φ)
-
 
 variable (E) in
 omit [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] in

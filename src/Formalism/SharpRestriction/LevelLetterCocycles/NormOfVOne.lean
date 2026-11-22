@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Formalism.SharpRestriction.LevelLetterCocycles.T2SpaceLatticeVOfGoodSituation
 public import Formalism.SharpRestriction.LevelLetterCocycles.ZlWCbInjective
 public import Formalism.SharpRestriction.LevelLetterCocycles.NormLtOneIffToZMod
 

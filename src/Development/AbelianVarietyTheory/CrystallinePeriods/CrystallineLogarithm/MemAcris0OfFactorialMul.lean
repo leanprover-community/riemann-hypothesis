@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRham
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRhamMap
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Embedding
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Section
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Action
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.TruncLogEqOfPowEqZero
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.MapEqPadicPowCyclotomicCharacter
@@ -900,13 +899,6 @@ end
 end SpanPowerIntegral
 namespace CrisHomExt
 section
-
-theorem Bridge.CrisLoc.bcris_hom_ext : ∀ (l : ℕ) [Fact l.Prime] {R : Type} [CommRing R] {f g : (Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l)) →+* R} (h : ∀ x : (Reformulated.AutPerF.Acris l ↥(PadicComplexInt l)), f (algebraMap _ _ x) = g (algebraMap _ _ x)), f = g := by
-  intro l _ R _ f g h
-  refine IsLocalization.ringHom_ext (Reformulated.AutPerF.BcrisPlus.periods l ↥(PadicComplexInt l)) ?_
-  refine IsLocalization.ringHom_ext
-    (Submonoid.powers (l : Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) ?_
-  exact RingHom.ext fun x => h x
 
 end
 end CrisHomExt

@@ -97,7 +97,6 @@ def IsIsogeny {A B : AbVar K} (f : A ⟶ B) : Prop := IsFinite f.hom.left ∧ Su
 def origin (A : AbVar K) : A.X.left :=
   (1 : Over.mk (𝟙 (Sp K)) ⟶ A.X).left (IsLocalRing.closedPoint K)
 
-
 open Classical in
 def deg {A B : AbVar K} (f : A ⟶ B) : ℕ := if IsIsogeny f then f.hom.left.finrank B.origin else 0
 
@@ -150,12 +149,8 @@ end Tate
 def IsCharpoly {A : AbVar K} (f : End A) (P : Polynomial ℤ) : Prop :=
   P.Monic ∧ P.natDegree = 2 * A.dim ∧ ∀ n : ℤ, P.eval n = (deg ((n : End A) - f).asHom : ℤ)
 
-
 open Classical in
 def charpoly {A : AbVar K} (f : End A) : Polynomial ℤ := if h : ∃ P, IsCharpoly f P then h.choose else 0
-
-def trace {A : AbVar K} (f : End A) : ℤ := -(charpoly f).nextCoeff
-
 
 def lam {A : AbVar K} (c : Pic A.X.left) {Y : Over (Sp K)} (x y : Y ⟶ A.X) : Pic Y.left :=
   CechPic.pull (x * y).left c - CechPic.pull x.left c - CechPic.pull y.left c
@@ -165,12 +160,6 @@ def IsAdj {A B : AbVar K} (c : Pic A.X.left) (d : Pic B.X.left) (f : A ⟶ B) (n
 
 def IsAmpleCls {A : AbVar K} (c : Pic A.X.left) : Prop :=
   ∃ (L : LB A.X.left) (hL : L.IsLB), Out.RelAmple A.X L ∧ cls L hL = c
-
-def zero (K : Type) [Field K] : AbVar K where
-  X := 𝟙_ (Over (Sp K))
-  ab := GlobalTheory.Diag.isAbelianScheme_unit _
-  dim := 0
-  smooth := inferInstanceAs (SmoothOfRelativeDimension 0 (𝟙 (Sp K)))
 
 def prod (A B : AbVar K) : AbVar K where
   X := A.X ⊗ B.X
@@ -215,16 +204,6 @@ def inter (A : AbVar K) {J : Type} [Fintype J] (c : J → Pic A.X.left) : ℤ :=
 
 def IsDualPair (A B : AbVar K) (P : LB (A.X ⊗ B.X).left) : Prop :=
   AbDual.IsDual A.X B.X P ∧ AbDual.IsDual B.X A.X (AbDual.swap P)
-
-
-open GlobalTheory.WeierstrassCurve in
-def ell (W : WeierstrassCurve K) [W.IsElliptic] : AbVar K where
-  X := (ellPolAV W).A
-  ab := (ellPolAV W).isAb
-  dim := 1
-  smooth := (ellPolAV W).smoothDim
-
-
 
 theorem lam_eq {A : AbVar K} (c : Pic A.X.left) {Y : Over (Sp K)} (x y : Y ⟶ A.X) :
     lam c x y = CechPic.lam c x y := by

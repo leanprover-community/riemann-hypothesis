@@ -1,6 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.ClassRec
+public import Formalism.LocalToGlobal.HilbertRowConditions.RowPin
+public import Formalism.LocalToGlobal.RatioJoints.CharacterProductEqOne
+public import Formalism.LocalToGlobal.UnitaryNorms.DatumS
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeilEq
 public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTransport
 

@@ -10,14 +10,8 @@ public import Formalism.WachLatticeTwists.LagrangeExtensionCocycles.StatementTop
 public import Formalism.WachLatticeTwists.CharacterSplitJumps.WachTwistTheoremFromTorsionBound
 public import Formalism.WachLatticeTwists.CoprimeLiftBounds.StatBridgeChiOne
 public import Formalism.WachLatticeTwists.Statement
-public import Formalism.WachLatticeTwists.HodgeTateChains.HodgeTateFiltrations.MinimalExponentAttained
-public import Formalism.WachLatticeTwists.HodgeTateChains.InvariantsCohomologyData
 public import Formalism.CharacterColumnKernels.Statement
-public import Formalism.WachLatticeTwists.HodgeTateChains.HodgeTateFiltrations.Imports
-public import Formalism.WachLatticeTwists.HodgeTateChains.HodgeTateFiltrations.Complete
 public import Formalism.WachLatticeTwists.TorsionLengthCounts.SubmoduleLengthBoundStatement
-public import Formalism.WachLatticeTwists.HodgeTateChains.H2KilledByTateDuality
-public import Formalism.WachLatticeTwists.HodgeTateChains.Statement
 public import Formalism.WindowSums.AnnihilatorPolynomials.ZpowVal
 public import Formalism.WachLatticeTwists.RamifiedBlockRings.ChainFromPrimitiveData
 public import Formalism.WachLatticeTwists.RealDisplaySplitting.SurjectionRankOneIdempotent
@@ -30,7 +24,6 @@ public import Formalism.WachLatticeTwists.LatticeDualFibres.LatticeDualProofs.Qu
 public import Formalism.WachLatticeTwists.LatticeDualFibres.Statement
 public import ReciprocityTheory.GaloisValuations.ContinuousConstSMulQuotient
 public import Formalism.WachLatticeTwists.LatticeDualFibres.FibreDualStable
-public import Formalism.WachLatticeTwists.LatticeDualFibres.LatticeDualProofs.ExistsPowSmulIntegral
 public import Formalism.WachLatticeTwists.LatticeDualFibres.StatDualFibreLattice
 public import Formalism.WachLatticeTwists.CharacterSplitJumps.CharacterJumpProofs.MemAnnih
 public import Formalism.WachLatticeTwists.CoprimeLiftBounds.CoprimeLiftProofs.FirstSummandActionMem
@@ -260,9 +253,6 @@ theorem vMap_bij : Function.Bijective (vMap (O := O) (n := n)) := by
 
 def vStd : (n → O) ≃ₗ[O] dualLat (pairStd (O := O) (n := n)) latT :=
   LinearEquiv.ofBijective vMap vMap_bij
-
-theorem vStd_apply (y : n → O) (a : n) :
-    ((vStd y : dualLat (pairStd (O := O) (n := n)) latT) : n → FractionRing O) a = algebraMap O _ (y a) := rfl
 
 def uStd : (n → KO O) ≃ₗ[O] (n → FractionRing O) ⧸ (latT : Submodule O (n → FractionRing O)) :=
   (Submodule.quotientPi (fun _ : n => (1 : Submodule O (FractionRing O)))).symm

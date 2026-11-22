@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsPo
 open UpperHalfPlane ModularForm Complex Function Filter PowerSeries
 open scoped Topology MatrixGroups Manifold Real NumberField
 
-local notation "𝕢" => Periodic.qParam
-
 noncomputable section
 
 namespace GlobalTheory
@@ -296,7 +294,6 @@ theorem isIntegral_modularJ_of_mul_mem {τ : ℍ} {α : ℂ} (hα : ∀ m : ℤ,
   · push_cast
     linear_combination (τ : ℂ) * hrs - hpq
 
-
 open NumberField in
 theorem isIntegral_modularJ_of_ringOfIntegers {K : Type*} [Field K] [NumberField K]
     (hK : Module.finrank ℚ K = 2) (ι : K →+* ℂ) {τ : ℍ}
@@ -341,6 +338,5 @@ theorem exists_hasSum_modularJ_sub_inv : ∃ c : ℕ → ℤ, ∀ τ : ℍ,
     .of_qParam_mul (h1.congr fun τ ↦ by
       rw [mul_sub, mul_inv_cancel₀ (Periodic.qParam_ne_zero _)])
   exact ⟨fun n ↦ coeff n K, fun τ ↦ by simpa using h2 τ⟩
-
 
 end GlobalTheory

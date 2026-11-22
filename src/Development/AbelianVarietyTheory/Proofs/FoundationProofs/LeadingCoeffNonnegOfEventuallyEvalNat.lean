@@ -157,7 +157,6 @@ theorem exists_isHilbertPoly_quotPiece [Fintype ι] {I : Ideal (MvPolynomial ι 
     push_cast
     ring
 
-
 open Classical in
 noncomputable def idealHilbertPoly (I : Ideal (MvPolynomial ι k)) : ℚ[X] := by
   classical
@@ -237,11 +236,5 @@ theorem finite_projComponents [Finite ι] (I : Ideal (MvPolynomial ι k)) :
 
 noncomputable def projSetDegree [Finite ι] (I : Ideal (MvPolynomial ι k)) : ℕ :=
   ∑ P ∈ (finite_projComponents I).toFinset, hilbertDegree P
-
-def IsProjPureDim (I : Ideal (MvPolynomial ι k)) (e : ℕ) : Prop :=
-  ∀ P ∈ projComponents I, ringKrullDim (MvPolynomial ι k ⧸ P) = (e + 1 : ℕ)
-
-def projPoints (I : Ideal (MvPolynomial ι k)) : Set (Projectivization k (ι → k)) :=
-  {y | ∀ g ∈ I, MvPolynomial.eval y.rep g = 0}
 
 end GlobalTheory

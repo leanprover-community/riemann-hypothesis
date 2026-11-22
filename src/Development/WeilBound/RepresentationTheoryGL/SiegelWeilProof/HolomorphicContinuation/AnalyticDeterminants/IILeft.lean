@@ -46,8 +46,6 @@ def mulL (A : M2 n) : M2 n →L[ℝ] M2 n := LinearMap.toContinuousLinearMap (Li
 
 def mulR (A : M2 n) : M2 n →L[ℝ] M2 n := LinearMap.toContinuousLinearMap (LinearMap.mulRight ℝ A)
 
-theorem mulL_apply (A B : M2 n) : mulL A B = A * B := rfl
-
 theorem cE_hasDerivAt (E : M2 n) (s : ℝ) : HasDerivAt (cE E) (cE E s * E) s := by
   have h0 : HasDerivAt (fun t : ℝ => cE E (t - s)) E s := by
     have h : HasDerivAt (cE E) E (s - s) := by simpa using cE_hasDerivAt0 E

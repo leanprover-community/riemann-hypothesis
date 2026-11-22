@@ -227,7 +227,6 @@ theorem mem_invL_A_iff {f : K⟦X⟧} : f ∈ invL l (A O K) ↔ ∃ b : ℝ, �
     rw [h2, ← map_pow, coeff_C_mul, norm_mul, norm_pow]
     exact (mul_le_mul_of_nonneg_left (hb n) (pow_pos hl m).le).trans hm.le
 
-
 variable (O K) in
 abbrev Rpi : Subalgebra O K⟦X⟧ := R O K l (1 / e)
 
@@ -371,7 +370,6 @@ theorem exists_div_E_pow (m : ℕ) {f : K⟦X⟧} (hf : f ∈ Rpi O K l e) :
       add_mem hg (mul_mem (pow_mem (E_mem l e _) m) (sub_E_mul_quotE_mem l e hh)),
       quotE l e h, quotE_mem_Rpi l e hh, by ring⟩
 
-
 variable (O K) in
 theorem sameJets : SameJets
     (Subalgebra.inclusion (invL_A_le_Rpi (O := O) (K := K) l e)).toRingHom
@@ -424,8 +422,6 @@ def dHat : Derivation K (Ahat O K l e) (Ahat O K l e) := complDer _ (derAl O K l
 
 def dHatE : Derivation K (AhatE O K l e) (AhatE O K l e) := awayDer (dHat O K l e) _
 
-def NHat : Derivation K (Ahat O K l e) (Ahat O K l e) := uhat O K l e • dHat O K l e
-
 def NHatE : Derivation K (AhatE O K l e) (AhatE O K l e) :=
   algebraMap (Ahat O K l e) (AhatE O K l e) (uhat O K l e) • dHatE O K l e
 
@@ -435,7 +431,6 @@ theorem dHatE_algebraMap (x : Ahat O K l e) :
 variable [NeZero e] [CompleteSpace K]
 
 def toHat : Rpi O K l e →+* Ahat O K l e := (sameJets O K l e).toCompl
-
 
 variable {O K} in
 theorem evalₐ_toHat_eq_iff (m : ℕ) (f : Rpi O K l e) (g : invL l (A O K)) :
@@ -451,13 +446,11 @@ theorem toHat_eq_ofAl {f : Rpi O K l e} {g : invL l (A O K)} (h : (f : K⟦X⟧)
   rw [← (sameJets O K l e).toCompl_ι g]
   exact congrArg _ (Subtype.ext h)
 
-
 variable {O K} in
 def toHatOf {B : Subalgebra O K⟦X⟧} (h : B ≤ Rpi O K l e) : B →+* Ahat O K l e :=
   (toHat O K l e).comp (Subalgebra.inclusion h).toRingHom
 
 def toHatS : invL l (S O K e) →+* Ahat O K l e := toHatOf l e (invL_S_le_Rpi l e)
-
 
 abbrev RpiE : Subalgebra O K⟦X⟧ := invE l e (Rpi O K l e)
 

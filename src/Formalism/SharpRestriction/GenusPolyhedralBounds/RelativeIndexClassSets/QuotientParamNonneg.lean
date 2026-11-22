@@ -123,46 +123,9 @@ theorem total_le_of_bounds (d D T c RR γ κ P1 P2 P3 P4 PP : ℝ)
         mul_le_mul_of_nonneg_left hsum hd
     _ = d * PP ^ 2 * (D ^ 3 * κ / T + T * c + (RR ^ 2 * c + 1 / T) * κ / γ) + d * PP ^ 3 * T := by ring
 
-structure SumDat (ι : Type*) where
-
-  s : Finset ι
-
-  l : ι → ℝ
-
-  I : ι → ℝ
-
-  N : ι → ℝ
-
-  cD : ι → ℝ
-
-  vQ : ι → ℝ
-
-  be : ι → ℝ
-
-  (R δ d D T c i g₀ rw : ℝ)
-
-  (G PH Prw Pη Pd PD PQ DivisibilityWeightConstant RR γ₀ : ℝ)
-
-  (L κ F' f r : ℝ)
-
-  (aδ aF HF Hδ SS Λ' : ℝ)
-
-  (ρ ρ' : ℝ)
-
 namespace SumDat
 
 variable {ι : Type*} (X : SumDat ι)
-
-def rr (la : ι) : ℝ :=
-  X.R * (X.I la + X.T * (X.c / (2 * X.i)) * X.N la) + X.cD la + (X.vQ la + X.ρ' * X.be la)
-
-def P1 : ℝ := 60 * X.G + 180 * X.PH + 40 * X.PD
-
-def P2 : ℝ := 5 * X.G * (X.f * X.r ^ 2) + X.Pd
-
-def P3 : ℝ := X.Pη / 2
-
-def P4 : ℝ := X.DivisibilityWeightConstant * (X.PD + X.PQ)
 
 variable {X}
 

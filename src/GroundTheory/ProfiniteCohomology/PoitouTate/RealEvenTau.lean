@@ -15,8 +15,6 @@ open IsDedekindDomain NumberField CategoryTheory GroundTheory.Global
 
 attribute [local instance 2000] Rep.hV2
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
   [Fintype S] {N : ℕ} [NeZero N]
@@ -30,7 +28,6 @@ def GsTauBijective (U : OpenSubgroup (galUnramifiedOutside K.1 ℚ̄ S)) : Prop 
     Function.Surjective τ → ∀ {r s : ℕ} (h : r + s = 3),
       Function.Bijective (compactZmodDualityMap (mackeyFamily U (gsFinFamily S ιs))
         (Rep.res (U : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subtype (gsRoots S N)) (nsmul_gsRoots S N) τ h)
-
 
 set_option maxHeartbeats 1000000 in
 include hS hev in

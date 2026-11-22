@@ -74,11 +74,6 @@ open AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestriction.G.Semi 
 
 variable (c c') (hle : c.F ≤ c'.F)
 
-abbrev inclF : c.F →+* c'.F := (IntermediateField.inclusion hle).toRingHom
-
-def Compat (S : Type) [CommRing S] [Algebra c.F S] [Algebra c'.F S] : Prop :=
-  ∀ a : c.F, algebraMap c'.F S (inclF c c' hle a) = algebraMap c.F S a
-
 variable {c c'}
 
 variable {r : ℕ}
@@ -91,10 +86,8 @@ abbrev Natural (c : Coeff l) (f : Rul Xo c) : Prop :=
 abbrev FromT {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S) : Prop :=
   FromTest (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) y
 
-
 variable (Xo c) in
 abbrev ValueWD : Prop := EvalWD (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z)
-
 
 variable (Xo c) in
 abbrev HasBC : Prop :=

@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.RankConditionsOfLayerTwo
-public import Formalism.LocalToGlobal.ClassS
 public import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeFamilyOfFormalDegreeInput
 public import Formalism.SharpRestriction.GlobalSchurBounds.MainSup
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.MinkowskiQ

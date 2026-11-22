@@ -18,9 +18,6 @@ section Alg
 variable {F E : Type} [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) {M : ℕ}
   (J : Matrix (Fin M) (Fin M) E)
 
-theorem hE_eq_sum (x y : Fin M → E) :
-    hE σ J x y = ∑ i, ∑ j, σ (x i) * J i j * y j := rfl
-
 theorem hE_add_right (x y z : Fin M → E) : hE σ J x (y + z) = hE σ J x y + hE σ J x z := by
   simp only [hE_eq_sum, Pi.add_apply, mul_add, Finset.sum_add_distrib]
 

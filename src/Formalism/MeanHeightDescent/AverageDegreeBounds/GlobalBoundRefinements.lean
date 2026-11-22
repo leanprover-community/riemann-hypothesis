@@ -83,41 +83,6 @@ section Line
 variable {K V ι : Type} [Field K] [NumberField K] [StarRing K] [_root_.NumberField.IsTotallyComplex K] [AddCommGroup V]
   [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [Fintype ι] [DecidableEq ι]
 
-theorem muDef_line_eq (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
-    (hX : ∀ v, IsUnit (X v).det) (x : V) (hx : x ≠ 0) :
-    muDef b X (Submodule.span (𝓞 K) ({x} : Set V)) =
-      -((1 / (nPl K : ℝ)) * ∑ v, 2 * Real.log (Formalism.HermitianLatticesTheory.normAt b X v x)) := by
-  set L : Submodule (𝓞 K) V := Submodule.span (𝓞 K) ({x} : Set V) with hL
-  have hLfg : L.FG := Submodule.fg_span (Set.finite_singleton x)
-  have hL0 : L ≠ ⊥ := by
-    intro h
-    exact hx ((Submodule.span_singleton_eq_bot).1 h)
-  have hrk : rkK (K := K) L = 1 := rkK_span_singleton x hx
-  have hf : 0 < nPl K := Fintype.card_pos
-  have hfR : (0 : ℝ) < (nPl K : ℝ) := by exact_mod_cast hf
-  obtain ⟨-, hmu, -⟩ := size_maximal_slope K V ι b X hX L hLfg hL0
-  have hpos : 0 < ht b X L := (place_lattice_structure K V ι b X hX L hLfg).2.2
-  have hli : LinearIndependent K (fun _ : Fin 1 => x) :=
-    LinearIndependent.of_subsingleton (0 : Fin 1) hx
-  have hrange : Set.range (fun _ : Fin 1 => x) = {x} := Set.range_const
-  have hg := (height_gram_determinant K V ι b X hX 1 (fun _ : Fin 1 => x) hli).1
-  rw [hrange] at hg
-  have hht : ht b X L = ∏ v, Formalism.HermitianLatticesTheory.normAt b X v x ^ 2 := by
-    rw [hL, hg]
-    refine Finset.prod_congr rfl fun v _ => ?_
-    rw [Matrix.det_fin_one]
-    simp only [gramPl, Matrix.of_apply]
-    rw [majAt_self_re]
-  have hlog : Real.log (ht b X L) = ∑ v, 2 * Real.log (Formalism.HermitianLatticesTheory.normAt b X v x) := by
-    rw [hht, Real.log_prod (s := Finset.univ) (f := fun v => Formalism.HermitianLatticesTheory.normAt b X v x ^ 2)
-      (fun v _ => pow_ne_zero 2 (mink_normAt_pos b X hX v x hx).ne')]
-    refine Finset.sum_congr rfl fun v _ => ?_
-    rw [Real.log_pow]; norm_num
-  rw [hmu]
-  unfold size
-  rw [Real.log_rpow hpos, hrk, hlog, Nat.cast_one]
-  field_simp
-
 end Line
 
 end Short

@@ -22,8 +22,6 @@ private def phiK (τ r : K) (h : r * r = -1 + τ * r) : Etau K τ →ₐ[K] K wh
     simp only [QuadraticAlgebra.algebraMap_re, QuadraticAlgebra.algebraMap_im, zero_mul,
       add_zero, Algebra.algebraMap_self_apply]
 
-private lemma phiK_apply (h : r * r = -1 + τ * r) (x : Etau K τ) : phiK τ r h x = x.re + x.im * r := rfl
-
 private lemma phiK_star (h : r * r = -1 + τ * r) (h' : r' * r' = -1 + τ * r') (hs : r + r' = τ) (x : Etau K τ) :
     phiK τ r h (star x) = phiK τ r' h' x := by
   simp only [phiK_apply, QuadraticAlgebra.re_star, QuadraticAlgebra.im_star]

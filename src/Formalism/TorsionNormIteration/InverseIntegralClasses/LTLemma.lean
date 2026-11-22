@@ -21,8 +21,6 @@ section Near
 
 variable {K : Type u} [NormedField K] {ι : Type*}
 
-def Near (k : ℕ) (A B : MvPowerSeries ι K) : Prop := Low k A ∧ Low k B ∧ Low (k + 1) (A - B)
-
 end Near
 
 section Master
@@ -43,9 +41,6 @@ lemma norm_finsum_le' {α : Type*} {g : α → K} {C : ℝ} (hC : 0 ≤ C) (hg :
     exact IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hC (fun i _ => hg i)
   · rw [finsum_of_infinite_support hfin]
     simpa using hC
-
-def Cong (c : K) (A B : MvPowerSeries ι K) : Prop :=
-  IntegralMv A ∧ IntegralMv B ∧ DivByMv c (A - B)
 
 end Cong
 

@@ -131,8 +131,6 @@ def eqvL (i : Fin r) : {y : Fin r // y ≤ i} ≃ {x : Fin (r + t) // x ≤ Fin.
       have hx' : (x : ℕ) ≤ i := by simpa [Fin.le_def] using hx
       exact ⟨⟨⟨x, by omega⟩, by simp [Fin.le_def]; omega⟩, by ext; simp⟩)
 
-theorem eqvL_val (i : Fin r) (y : {y : Fin r // y ≤ i}) : ((eqvL (t := t) i y) : Fin (r + t)) = Fin.castAdd t y.1 := rfl
-
 def eqvR (j : Fin t) : Fin r ⊕ {y : Fin t // y ≤ j} ≃ {x : Fin (r + t) // x ≤ Fin.natAdd r j} :=
   Equiv.ofBijective (Sum.elim (fun i : Fin r => (⟨Fin.castAdd t i, by
         simp only [Fin.le_def, Fin.coe_castAdd, Fin.coe_natAdd]; omega⟩ : {x : Fin (r + t) // x ≤ Fin.natAdd r j}))
@@ -152,9 +150,6 @@ def eqvR (j : Fin t) : Fin r ⊕ {y : Fin t // y ≤ j} ≃ {x : Fin (r + t) // 
       by_cases h : (x : ℕ) < r
       · exact ⟨Sum.inl ⟨x, h⟩, by ext; simp⟩
       · exact ⟨Sum.inr ⟨⟨x - r, by omega⟩, by simp [Fin.le_def]; omega⟩, by ext; simp; omega⟩)
-
-theorem eqvR_inl (j : Fin t) (i : Fin r) : ((eqvR j (Sum.inl i)) : Fin (r + t)) = Fin.castAdd t i := rfl
-theorem eqvR_inr (j : Fin t) (y : {y : Fin t // y ≤ j}) : ((eqvR (r := r) j (Sum.inr y)) : Fin (r + t)) = Fin.natAdd r y.1 := rfl
 
 theorem minor_castAdd (a : GL (Fin r) k) (b : GL (Fin t) k) (i : Fin r) :
     minor (emb₂ k (stdSum (rfl : r + t = r + t)) (a, b)) (Fin.castAdd t i) = minor a i := by
@@ -216,7 +211,6 @@ theorem first_part : ∀ (r t : ℕ) (ψ : Fin (r + t) → kˣ →* ℂˣ) (a : 
     rw [nxt_castAdd_castSucc]
 
 end GlobalTheory.PsType.BlockTheta
-
 
 open GlobalTheory.PsType.BlockTheta in
 theorem GlobalTheory.PsType.theta_emb₂_std : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (r t : ℕ) (ψ : Fin (r + t) → kˣ →* ℂˣ), Ordered ψ → ∀ a ∈ grp (fun i => ψ (Fin.castAdd t i)), ∀ b ∈ grp (fun i => ψ (Fin.natAdd r i)), theta ψ (emb₂ k (stdSum (rfl : r + t = r + t)) (a, b)) = theta (fun i => ψ (Fin.castAdd t i)) a * theta (fun i => ψ (Fin.natAdd r i)) b := by

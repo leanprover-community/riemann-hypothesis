@@ -24,8 +24,3 @@ open ValuativeRel
 open scoped GlobalTheory.VacAny
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-set_option maxHeartbeats 1000000 in
-theorem _root_.GlobalTheory.T.schrodinger_preserves_schwartz_bruhat : ∀ {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (ψ : AddChar (AF F) ℂ), Continuous ψ →
-    ∀ (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (w : (κ → Fv F v) × (κ → Fv F v)), ∀ φ ∈ GlobalTheory.WeilM.SB (κ → Fv F v),
-      GlobalTheory.WeilM.schr (GlobalTheory.LatVac.psiAt ψ v) w φ ∈ GlobalTheory.WeilM.SB _ := by
-  first | exact @GlobalTheory.SchrSB.schr_mem_SB | exact GlobalTheory.SchrSB.schr_mem_SB | (intros; apply GlobalTheory.SchrSB.schr_mem_SB <;> assumption)

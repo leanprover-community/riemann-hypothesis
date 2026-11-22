@@ -18,9 +18,6 @@ variable {R : Type} [CommRing R]
 
 def ct (σ : R →+* R) {a b : Type} (x : Matrix a b R) : Matrix b a R := (x.map σ).transpose
 
-theorem ct_apply (σ : R →+* R) {a b : Type} (x : Matrix a b R) (i : b) (j : a) :
-    ct σ x i j = σ (x j i) := rfl
-
 theorem ct_mul (σ : R →+* R) {a b c : Type} [Fintype b] (x : Matrix a b R) (y : Matrix b c R) :
     ct σ (x * y) = ct σ y * ct σ x := by
   unfold ct

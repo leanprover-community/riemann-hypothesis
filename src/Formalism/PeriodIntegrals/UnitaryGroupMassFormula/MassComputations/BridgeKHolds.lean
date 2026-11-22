@@ -13,13 +13,6 @@ open Matrix
 
 namespace MassDataMassesW.NBr
 
-theorem incAf_finHA {D : Formalism.BasicNotions.D7} (X : HidaSetting D) (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I)
-    (x : X.B.I.Gf) :
-    Formalism.L2.SG.Sub.incAf X.B.I.cm.sig X.B.I.J (finHA X hb x) =
-      Formalism.UG.bc (Formalism.L2.SG.AdBridge.prF X.B.I)
-        (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.HA.mat (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF X.B.I.F) X.B.I.cm.sig X.B.I.J
-          (Formalism.L2.SG.AdBridge.toHA X.B.I hb (1, x))) := rfl
-
 theorem bridgeK_holds : BridgeK := by
   intro D X hb x
   have hbr' : X.B.I.fmat x = _ := (hb.choose_spec (1, x)).2

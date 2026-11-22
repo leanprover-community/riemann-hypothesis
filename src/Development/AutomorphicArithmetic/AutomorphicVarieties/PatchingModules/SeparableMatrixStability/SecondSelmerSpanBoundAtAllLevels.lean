@@ -55,16 +55,6 @@ theorem adicCont_iff {R : Type} [CommRing R] (I : Ideal R) (f : G'.G₀ → R) :
     AdicCont I (fun g => f (h.p₀ g)) ↔ AdicCont I f :=
   forall_congr' fun N => h.locConst_iff fun g => Ideal.Quotient.mk (I ^ N) (f g)
 
-def comp {G'' : Glob l L} (h' : G'.Hom G'') : G.Hom G'' where
-  p := h'.p.comp h.p
-  cont := h'.cont.comp h.cont
-  surj := h'.surj.comp h.surj
-  η g := (h'.η _).trans (h.η g)
-  c := by rw [MonoidHom.comp_apply, h.c, h'.c]
-  ε g := (h'.ε _).trans (h.ε g)
-  φ v g := by rw [MonoidHom.comp_apply, h.φ, h'.φ]
-  φu u g := by rw [MonoidHom.comp_apply, h.φu, h'.φu]
-
 section Sel
 
 variable {n : ℕ} {A R : Type} [CommRing A] [CommRing R] [Algebra A R] (t : A)

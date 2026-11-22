@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsMixedSpaceReImCoordsTotallyComplex
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ImV
 
 @[expose] public section
 

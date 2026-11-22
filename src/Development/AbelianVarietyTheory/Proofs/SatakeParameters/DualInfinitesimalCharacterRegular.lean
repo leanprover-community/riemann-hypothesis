@@ -253,19 +253,16 @@ theorem commute_mat (Ξ : AlgRep E a) (Z : Matrix (Fin Ξ.d) (Fin Ξ.d) ℂ) (hZ
 
 end Diff
 
-
 omit [NumberField E] in
 def expDiag (δ : Fin a → Cinf E) : GL (Fin a) (Cinf E) :=
   ⟨diagonal fun l w => Complex.exp (δ l w), diagonal fun l w => Complex.exp (-δ l w),
     by rw [diagonal_mul_diagonal, ← diagonal_one]; congr; funext l w; simp [← Complex.exp_add],
     by rw [diagonal_mul_diagonal, ← diagonal_one]; congr; funext l w; simp [← Complex.exp_add]⟩
 
-
 omit [NumberField E] in
 theorem expDiag_add (δ δ' : Fin a → Cinf E) : expDiag (δ + δ') = expDiag δ * expDiag δ' := Units.ext (by
   change diagonal _ = diagonal _ * diagonal _
   rw [diagonal_mul_diagonal]; congr; funext l w; simp [Complex.exp_add])
-
 
 omit [NumberField E] in
 theorem expDiag_zero : expDiag (0 : Fin a → Cinf E) = 1 := Units.ext (by
@@ -302,7 +299,6 @@ theorem laurent_mul {f g : Multiplicative ℂ → ℂ} (hf : f ∈ laurent) (hg 
   simp only [expChar, Pi.mul_apply, MonoidHom.coe_mk, OneHom.coe_mk, ← Complex.exp_add, Prod.fst_add, Prod.snd_add]
   congr 1; push_cast; ring
 
-
 omit [NumberField E] in
 theorem exists_coord_exp (τ τ' : E →+* ℂ) : ∃ p : ℤ × ℤ, ∀ z : Multiplicative ℂ,
     coord τ' (fun w => Complex.exp (atEmb τ z.toAdd w)) = expChar p z := by
@@ -319,10 +315,8 @@ theorem exists_coord_exp (τ τ' : E →+* ℂ) : ∃ p : ℤ × ℤ, ∀ z : Mu
     unfold coord atEmb
     split_ifs <;> simp [expChar, Pi.single_eq_of_ne hw]
 
-
 omit [NumberField E] in
 def torus (τ : E →+* ℂ) (k : Fin a) (z : ℂ) : GL (Fin a) (Cinf E) := expDiag (Pi.single k (atEmb τ z))
-
 
 omit [NumberField E] in
 theorem reg_torus (τ : E →+* ℂ) (k : Fin a) {f : GL (Fin a) (Cinf E) → ℂ} (hf : f ∈ regFun E a) :
@@ -446,8 +440,6 @@ def dualL (Ξ : AlgRep E a) (i j : Fin a) : Cinf E →ₗ[ℝ] Matrix (Fin Ξ.d)
       congrArg toL (Matrix.smul_single c i j x).symm
     simp only [dualS, h, map_smul, Matrix.transpose_smul, smul_neg, RingHom.id_apply]
 
-theorem dualL_apply (Ξ : AlgRep E a) (i j : Fin a) (x : Cinf E) : dualL Ξ i j x = dualS Ξ i j x := rfl
-
 theorem dualL_comm (Ξ : AlgRep E a) (i j k l : Fin a) (x y : Cinf E) :
     dualL Ξ i j x * dualL Ξ k l y - dualL Ξ k l y * dualL Ξ i j x =
       (if j = k then dualL Ξ i l (x * y) else 0) - (if l = i then dualL Ξ k j (x * y) else 0) := by
@@ -553,7 +545,6 @@ theorem commute_dmat (Ξ : AlgRep E a) (Z : Matrix (Fin Ξ.d) (Fin Ξ.d) ℂ)
     rw [map_sum, Matrix.transpose_sum]
   refine Commute.sum_right _ _ _ fun j _ => ?_
   simpa [dualL_apply, dualS] using (h2 i j (X i j)).neg_right
-
 
 omit [_root_.NumberField.IsTotallyComplex E] in
 theorem exists_scalar (Ξ : AlgRep E a) (Z : Matrix (Fin Ξ.d) (Fin Ξ.d) ℂ) (h : ∀ y, Z * Ξ.mat y = Ξ.mat y * Z) :

@@ -43,8 +43,6 @@ def rtMul : X →ₗ[ℤ] X := (DistribSMul.toAddMonoidHom X H.rt).toIntLinearMa
 
 variable {H X}
 
-theorem rtMul_apply (y : X) : rtMul H X y = H.rt • y := rfl
-
 theorem rt_smul_rt_smul (y : X) : H.rt • H.rt • y = -((H.d : ℤ) • y) := by
   rw [smul_smul, ← sq, H.rt_sq, neg_smul, ← Int.cast_natCast, Int.cast_smul_eq_zsmul]
 

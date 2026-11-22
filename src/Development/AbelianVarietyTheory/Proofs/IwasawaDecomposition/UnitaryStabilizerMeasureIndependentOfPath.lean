@@ -195,9 +195,6 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E] {σ : E →ₐ[F] E}
 abbrev mt {M : ℕ} {J : Matrix (Fin M) (Fin M) E} (g : HA R σ J) : Matrix (Fin M) (Fin M) (R ⊗[F] E) :=
   ((HA.mat R σ J g : GL (Fin M) (R ⊗[F] E)) : Matrix (Fin M) (Fin M) (R ⊗[F] E))
 
-theorem smul_apply' {M n : ℕ} {J : Matrix (Fin M) (Fin M) E} (g : HA R σ J)
-    (X : Fin n → Fin M → R ⊗[F] E) (a : Fin n) : (g • X) a = mt R g *ᵥ X a := rfl
-
 theorem mt_mul {M : ℕ} {J : Matrix (Fin M) (Fin M) E} (g h : HA R σ J) :
     mt R (g * h) = mt R g * mt R h := rfl
 

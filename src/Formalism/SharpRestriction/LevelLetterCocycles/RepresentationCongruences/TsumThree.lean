@@ -149,105 +149,6 @@ private theorem logb_two_mul_natCast_nonneg_of_eleven_le (l n : ℕ) (hl : 11 �
     have : (1:ℝ) ≤ n := by exact_mod_cast (show 1 ≤ n by omega)
     linarith
 
-private theorem mul_div_sub_one_sq_eq_mul_add_sq (v L y : ℝ) (hy : y = (L - 1)⁻¹) (eLy : L * y = 1 + y) :
-    v * L / (L - 1) ^ 2 = v * (y + y ^ 2) := by
-  have key : L * y ^ 2 = y + y ^ 2 := by linear_combination y * eLy
-  rw [← key, hy, inv_pow]
-  ring
-
-
-set_option maxHeartbeats 800000 in
-theorem rr_le (l : ℕ) (hl : 11 ≤ l) (h w S η H H₁ : ℕ) (hη : η + 1 ≤ h)
-    (hH : H ≤ h + η) (hH₁ : H₁ ≤ w + S + η) (s r : ℝ)
-    (hs : s ≤ ((H₁ : ℝ) + cW l H + 3) + ((H : ℝ) + cW l H + 3) / ((l : ℝ) - 2))
-    (hr : r ≤ s * l / ((l : ℝ) - 1) ^ 2 + cW l H) :
-    r ≤ 2 * ((w : ℝ) + S + η) / l + 2 * (h : ℝ) / (l : ℝ) ^ 2 + 2 * Real.logb l (2 * (h : ℝ)) + 3 ∧
-    2 * ((w : ℝ) + S + η) / l + 2 * (h : ℝ) / (l : ℝ) ^ 2 + 2 * Real.logb l (2 * (h : ℝ)) + 3 ≤
-      3 * Sg l h w S η := by
-  have hL : (11:ℝ) ≤ l := by exact_mod_cast hl
-  obtain ⟨x, hx⟩ : ∃ x : ℝ, x = (l:ℝ)⁻¹ := ⟨_, rfl⟩
-  obtain ⟨y, hy⟩ : ∃ y : ℝ, y = ((l:ℝ) - 1)⁻¹ := ⟨_, rfl⟩
-  obtain ⟨z, hz⟩ : ∃ z : ℝ, z = ((l:ℝ) - 2)⁻¹ := ⟨_, rfl⟩
-  obtain ⟨eLx, eLy, eLz, px, py, pz, hx1, hy1, hz1, hyx, hzx, iy⟩ := reciprocal_bounds_of_eleven_le hL hx hy hz
-  obtain ⟨hx2, -, hP1, hP2, hzP1, hzP2, -⟩ := reciprocal_product_bounds_of_eleven_le px py pz hx1 hy1 hz1 hyx hzx
-  have cw1 : ((w:ℝ) + S + η) / l = ((w:ℝ) + S + η) * x := by rw [hx, div_eq_mul_inv]
-  have ch1 : (h:ℝ) / (l:ℝ) ^ 2 = (h:ℝ) * x ^ 2 := by rw [hx, inv_pow, div_eq_mul_inv]
-  have n1 : 0 ≤ (w:ℝ) * x := mul_nonneg (Nat.cast_nonneg _) px.le
-  have n2 : 0 ≤ (S:ℝ) * x := mul_nonneg (Nat.cast_nonneg _) px.le
-  have n3 : 0 ≤ (η:ℝ) * x := mul_nonneg (Nat.cast_nonneg _) px.le
-  have n4 : 0 ≤ (h:ℝ) * x ^ 2 := mul_nonneg (Nat.cast_nonneg _) (sq_nonneg x)
-  have hc := cW_le l hl h η H hη hH
-  have hg := logb_two_mul_natCast_nonneg_of_eleven_le l h hl
-  rw [mul_div_sub_one_sq_eq_mul_add_sq _ _ _ hy eLy] at hr
-  have ez : ((H : ℝ) + cW l H + 3) / ((l : ℝ) - 2) = ((H : ℝ) + cW l H + 3) * z := by
-    rw [hz, div_eq_mul_inv]
-  rw [ez] at hs
-  have cw : 2 * ((w:ℝ) + S + η) / l = 2 * ((w:ℝ) + S + η) * x := by rw [hx, div_eq_mul_inv]
-  have ch : 2 * (h:ℝ) / (l:ℝ) ^ 2 = 2 * (h:ℝ) * x ^ 2 := by rw [hx, inv_pow, div_eq_mul_inv]
-  have hP0 : 0 ≤ y + y ^ 2 := add_nonneg py.le (sq_nonneg y)
-  have hzP0 : 0 ≤ z * (y + y ^ 2) := mul_nonneg pz.le hP0
-  have hH1r : (H₁:ℝ) ≤ (w:ℝ) + S + η := by exact_mod_cast hH₁
-  have hHr : (H:ℝ) ≤ (h:ℝ) + η := by exact_mod_cast hH
-  have hu0 : (0:ℝ) ≤ (w:ℝ) + S + η := by positivity
-  have hc3 : (0:ℝ) ≤ (cW l H : ℝ) + 3 := by positivity
-  have b1 := mul_le_mul hH1r hP1 hP0 hu0
-  have b2 := mul_le_mul_of_nonneg_left hP2 hc3
-  have b3 := mul_le_mul hHr hzP1 hzP0 (by positivity : (0:ℝ) ≤ (h:ℝ) + η)
-  have b4 := mul_le_mul_of_nonneg_left hzP2 hc3
-  have hsP := mul_le_mul_of_nonneg_right hs hP0
-  have b5 := mul_le_mul_of_nonneg_left hx2 (Nat.cast_nonneg η : (0:ℝ) ≤ η)
-  unfold Sg
-  refine ⟨?_, ?_⟩
-  · linarith
-  · linarith
-
-theorem sig_le (l : ℕ) (hl : 11 ≤ l) (h w S η : ℕ) (h1 : 1 ≤ h) (hG : w + S ≤ h) :
-    (⌈((2 * (w + S) : ℕ) + ((2 * h / (l - 1) + 1 : ℕ) : ℝ)) * l / ((l : ℝ) - 1) ^ 2 + 1⌉₊ : ℝ) ≤
-      3 * Sg l h w S η := by
-  have hL : (11:ℝ) ≤ l := by exact_mod_cast hl
-  obtain ⟨x, hx⟩ : ∃ x : ℝ, x = (l:ℝ)⁻¹ := ⟨_, rfl⟩
-  obtain ⟨y, hy⟩ : ∃ y : ℝ, y = ((l:ℝ) - 1)⁻¹ := ⟨_, rfl⟩
-  obtain ⟨z, hz⟩ : ∃ z : ℝ, z = ((l:ℝ) - 2)⁻¹ := ⟨_, rfl⟩
-  obtain ⟨eLx, eLy, eLz, px, py, pz, hx1, hy1, hz1, hyx, hzx, iy⟩ := reciprocal_bounds_of_eleven_le hL hx hy hz
-  have cw1 : ((w:ℝ) + S + η) / l = ((w:ℝ) + S + η) * x := by rw [hx, div_eq_mul_inv]
-  have ch1 : (h:ℝ) / (l:ℝ) ^ 2 = (h:ℝ) * x ^ 2 := by rw [hx, inv_pow, div_eq_mul_inv]
-  have n1 : 0 ≤ (w:ℝ) * x := mul_nonneg (Nat.cast_nonneg _) px.le
-  have n2 : 0 ≤ (S:ℝ) * x := mul_nonneg (Nat.cast_nonneg _) px.le
-  have n3 : 0 ≤ (η:ℝ) * x := mul_nonneg (Nat.cast_nonneg _) px.le
-  have n4 : 0 ≤ (h:ℝ) * x ^ 2 := mul_nonneg (Nat.cast_nonneg _) (sq_nonneg x)
-  have hx2 : x ^ 2 ≤ x / 11 := by nlinarith [mul_le_mul_of_nonneg_left hx1 px.le]
-  have hg := logb_two_mul_natCast_nonneg_of_eleven_le l h hl
-  have hl1 : ((l - 1 : ℕ) : ℝ) = (l:ℝ) - 1 := by
-    rw [Nat.cast_sub (show 1 ≤ l by omega), Nat.cast_one]
-  have hm : ((2 * h / (l - 1) : ℕ) : ℝ) ≤ 2 * (h:ℝ) * y := by
-    calc ((2 * h / (l - 1) : ℕ) : ℝ) ≤ ((2 * h : ℕ) : ℝ) / ((l - 1 : ℕ) : ℝ) := Nat.cast_div_le
-      _ = 2 * (h:ℝ) * y := by
-        rw [hl1, hy, div_eq_mul_inv]
-        push_cast <;> ring
-  have e1 : ((2 * (w + S) : ℕ) : ℝ) = 2 * ((w:ℝ) + S) := by push_cast <;> ring
-  have e2 : ((2 * h / (l - 1) + 1 : ℕ) : ℝ) = ((2 * h / (l - 1) : ℕ) : ℝ) + 1 := by
-    rw [Nat.cast_add, Nat.cast_one]
-  refine le_trans (Nat.ceil_lt_add_one ?_).le ?_
-  · positivity
-  rw [mul_div_sub_one_sq_eq_mul_add_sq _ _ _ hy eLy]
-  have hP0 : 0 ≤ y + y ^ 2 := add_nonneg py.le (sq_nonneg y)
-  have hP1 : y + y ^ 2 ≤ 121 / 100 * x := by nlinarith [mul_le_mul_of_nonneg_left hy1 py.le]
-  have hhy : 0 ≤ (h:ℝ) * y := mul_nonneg (Nat.cast_nonneg _) py.le
-  have hV : ((2 * (w + S) : ℕ) : ℝ) + ((2 * h / (l - 1) + 1 : ℕ) : ℝ) ≤
-      2 * ((w:ℝ) + S) + 2 * (h:ℝ) * y + 1 := by
-    rw [e1, e2]
-    linarith
-  have hV0 : (0:ℝ) ≤ 2 * ((w:ℝ) + S) + 2 * (h:ℝ) * y + 1 := by
-    have hw0 : (0:ℝ) ≤ w := Nat.cast_nonneg _
-    have hS0 : (0:ℝ) ≤ S := Nat.cast_nonneg _
-    linarith
-  have b1 := mul_le_mul hV hP1 hP0 hV0
-  have hxy : x * y ≤ 11 / 10 * x ^ 2 := by nlinarith [mul_le_mul_of_nonneg_left hyx px.le]
-  have b2 := mul_le_mul_of_nonneg_left hxy (Nat.cast_nonneg h : (0:ℝ) ≤ h)
-  unfold Sg
-  linarith
-
-
 set_option maxHeartbeats 800000 in
 theorem Aa_cut_le (l : ℕ) (hl : 11 ≤ l) (h w S η H H₁ H₂ : ℕ) (hη : η + 1 ≤ h)
     (hH : H ≤ h + η) (hH₁ : H₁ ≤ h + η) (hH₂ : H₂ ≤ w + S + η) (s A : ℝ)
@@ -297,7 +198,6 @@ theorem Aa_cut_le (l : ℕ) (hl : 11 ≤ l) (h w S η H H₁ H₂ : ℕ) (hη : 
   have d6 := mul_le_mul_of_nonneg_left hy2z' hc3
   unfold Sg
   linarith
-
 
 set_option maxHeartbeats 800000 in
 theorem Aa_le (l : ℕ) (hl : 11 ≤ l) (h w S η H H₁ : ℕ) (hη : η + 1 ≤ h)

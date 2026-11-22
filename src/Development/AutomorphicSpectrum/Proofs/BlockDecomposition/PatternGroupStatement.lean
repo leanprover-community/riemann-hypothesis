@@ -55,42 +55,6 @@ theorem Supp.add {A B : Matrix ι ι K} (hA : Supp Φ A) (hB : Supp Φ B) : Supp
     rw [Matrix.add_apply, ha, hb, add_zero]
   · exact hA i j ha
 
-theorem det_one_add (h : IsPat Φ) {N : Matrix ι ι K} (hN : Supp Φ N) : (1 + N).det = 1 := by
-  classical
-  let b : ι → ℕ := fun i => (Finset.univ.filter fun k => Φ k i).card
-  have hb : ∀ i j, Φ i j → b i < b j := by
-    intro i j hij
-    apply Finset.card_lt_card
-    refine (Finset.ssubset_iff_of_subset ?_).2 ⟨i, ?_, ?_⟩
-    · intro k hk
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hk ⊢
-      exact h.2 k i j hk hij
-    · simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-      exact hij
-    · simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-      exact h.1 i
-  have hN0 : ∀ i j, b j ≤ b i → N i j = 0 := by
-    intro i j hle
-    by_contra hne
-    exact absurd (hb i j (hN i j hne)) (not_lt.2 hle)
-  have hT : (1 + N).BlockTriangular b := by
-    intro i j hlt
-    have hij : i ≠ j := by
-      rintro rfl
-      exact lt_irrefl _ hlt
-    rw [Matrix.add_apply, Matrix.one_apply_ne hij, hN0 i j hlt.le, add_zero]
-  rw [hT.det]
-  refine Finset.prod_eq_one fun a _ => ?_
-  have hblk : (1 + N).toSquareBlock b a = 1 := by
-    ext ⟨i, hi⟩ ⟨j, hj⟩
-    show (1 + N) i j = (1 : Matrix {a' // b a' = a} {a' // b a' = a} K) ⟨i, hi⟩ ⟨j, hj⟩
-    have hNij : N i j = 0 := hN0 i j (by rw [hi, hj])
-    rcases eq_or_ne i j with rfl | hij
-    · rw [Matrix.add_apply, hNij, add_zero, Matrix.one_apply_eq, Matrix.one_apply_eq]
-    · rw [Matrix.add_apply, Matrix.one_apply_ne hij, hNij, add_zero,
-        Matrix.one_apply_ne (fun e => hij (congrArg Subtype.val e))]
-  rw [hblk, Matrix.det_one]
-
 def patSubgroup (h : IsPat Φ) : Subgroup (GL ι K) :=
   let M : Submonoid (GL ι K) :=
     { carrier := patSet (K := K) Φ
@@ -118,54 +82,5 @@ def patSubgroup (h : IsPat Φ) : Subgroup (GL ι K) :=
         inv_eq_of_mul_eq_one_right (by rw [mul_pow_sub_one hn, pow_orderOf_eq_one])
       rw [this]
       exact M.pow_mem hu _ }
-
-
-open Classical in
-noncomputable def fill (Φ : ι → ι → Prop) (f : {p : ι × ι // Φ p.1 p.2} → K) : Matrix ι ι K := by
-  classical
-  exact fun i j => if h : Φ i j then f ⟨(i, j), h⟩ else 0
-
-theorem supp_fill (f : {p : ι × ι // Φ p.1 p.2} → K) : Supp Φ (fill Φ f) := by
-  intro i j hij
-  by_contra hΦ
-  apply hij
-  simp [fill, hΦ]
-
-theorem card_patSet (h : IsPat Φ) :
-    (patSet (K := K) Φ).ncard = Fintype.card K ^ Nat.card {p : ι × ι // Φ p.1 p.2} := by
-  classical
-  have hunit : ∀ f : {p : ι × ι // Φ p.1 p.2} → K, IsUnit (1 + fill Φ f).det := fun f => by
-    rw [det_one_add h (supp_fill f)]
-    exact isUnit_one
-  let e : patSet (K := K) Φ ≃ ({p : ι × ι // Φ p.1 p.2} → K) :=
-    { toFun := fun u p => (u.1 : Matrix ι ι K) p.1.1 p.1.2
-      invFun := fun f => ⟨Matrix.nonsingInvUnit (1 + fill Φ f) (hunit f), by
-        refine (mem_patSet_iff h _).2 ?_
-        show Supp Φ ((1 + fill Φ f) - 1)
-        rw [add_sub_cancel_left]
-        exact supp_fill f⟩
-      left_inv := fun u => by
-        apply Subtype.ext
-        apply Units.ext
-        show 1 + fill Φ (fun p => (u.1 : Matrix ι ι K) p.1.1 p.1.2) = (u.1 : Matrix ι ι K)
-        ext i j
-        have hu := (show ∀ i j, (i = j → (u.1 : Matrix ι ι K) i j = 1) ∧
-          (i ≠ j → ¬Φ i j → (u.1 : Matrix ι ι K) i j = 0) from u.2) i j
-        rw [Matrix.add_apply]
-        simp only [fill]
-        rcases eq_or_ne i j with rfl | hij
-        · rw [Matrix.one_apply_eq, dite_eq_right (h.1 i), add_zero, hu.1 rfl]
-        · rw [Matrix.one_apply_ne hij, zero_add]
-          by_cases hΦ : Φ i j
-          · rw [dite_eq_left hΦ]
-          · rw [dite_eq_right hΦ, hu.2 hij hΦ]
-      right_inv := fun f => by
-        funext p
-        show (1 + fill Φ f) p.1.1 p.1.2 = f p
-        have hne : p.1.1 ≠ p.1.2 := fun e => h.1 p.1.2 (by have hp := p.2; rw [e] at hp; exact hp)
-        rw [Matrix.add_apply, Matrix.one_apply_ne hne, zero_add]
-        simp only [fill]
-        rw [dite_eq_left p.2] }
-  rw [← Nat.card_coe_set_eq, Nat.card_congr e, Nat.card_fun, Nat.card_eq_fintype_card (α := K)]
 
 end GlobalTheory.CompanionTheory.PatGrp

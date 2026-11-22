@@ -225,7 +225,6 @@ def FlagModel.value {x : (Σ k, ι k) → Ω} {d N : ℕ} {V : Type*} [AddCommGr
     (Fin.append F.flag.g fun l => rename (liftVar F.ι') (g l))
     (rename (Fin.castAdd r) G * rename (Fin.natAdd N) Q)
 
-
 open scoped Classical in
 open Classical in
 def ck (x : (Σ k, ι k) → Ω) (d N : ℕ) {V : Type*} [AddCommGroup V] [Module Ω V]
@@ -235,7 +234,6 @@ def ck (x : (Σ k, ι k) → Ω) (d N : ℕ) {V : Type*} [AddCommGroup V] [Modul
     (Classical.choice h).value O (fieldNum (kap O) _) (psum (Fin N) ℤ k) L L (fun _ => 1)
       (fun _ => 1) Q
   else 0
-
 
 open scoped Classical in
 open Classical in
@@ -264,32 +262,6 @@ def QuotIso (x : (Σ k, ι k) → Ω) {N N₁ : ℕ} {V V₁ : Type*} [AddCommGr
   ∃ Pb : ChartBundle O (mseg x) (N + N₁) (V × V₁), ∀ s, mseg x s ≠ 0 →
     (∀ v, (v, 0) ∈ Pb.lat s ↔ v ∈ E'.lat s) ∧ (∀ v, (∃ w, (v, w) ∈ Pb.lat s) ↔ v ∈ E.lat s) ∧
     (∀ w, (0, w) ∈ Pb.lat s ↔ w ∈ E₁'.lat s) ∧ (∀ w, (∃ v, (v, w) ∈ Pb.lat s) ↔ w ∈ E₁.lat s)
-
-def IsQuotLin (x : (Σ k, ι k) → Ω) {N₁ : ℕ} {V₁ : Type*} [AddCommGroup V₁] [Module Ω V₁]
-    (E₁ E₁' : ChartBundle O (mseg x) N₁ V₁) (s : ∀ k, ι k) {Nm : Type*} [AddCommGroup Nm]
-    [Module (chartRing O (mseg x) s) Nm] (lam : V₁ → Nm) : Prop :=
-  (∀ v ∈ E₁.lat s, ∀ w ∈ E₁.lat s, lam (v + w) = lam v + lam w) ∧ (∀ v ∈ E₁'.lat s, lam v = 0) ∧
-    ∀ a : chartRing O (mseg x) s, ∀ v ∈ E₁.lat s, lam ((a : Ω) • v) = a • lam v
-
-def IsFrobPres (p : ℕ) (x : (Σ k, ι k) → Ω) {N N₁ : ℕ} {V : Type uV} {V₁ : Type uV₁} [AddCommGroup V]
-    [Module Ω V] [AddCommGroup V₁] [Module Ω V₁] (E E' : ChartBundle O (mseg x) N V)
-    (E₁ E₁' : ChartBundle O (mseg x) N₁ V₁) (ψ : (∀ k, ι k) → V → V₁) : Prop :=
-  (∀ s, mseg x s ≠ 0 →
-    (∀ v ∈ E.lat s, ψ s v ∈ E₁.lat s) ∧ (∀ v ∈ E'.lat s, ψ s v ∈ E₁'.lat s) ∧
-    (∀ v ∈ E.lat s, ∀ w ∈ E.lat s, ψ s (v + w) - ψ s v - ψ s w ∈ E₁'.lat s) ∧
-    (∀ a ∈ chartRing O (mseg x) s, ∀ v ∈ E.lat s, ψ s (a • v) - a ^ p • ψ s v ∈ E₁'.lat s) ∧
-    (∀ v ∈ E₁.lat s, (p : Ω) • v ∈ E₁'.lat s) ∧
-    ∀ (Nm : Type (max uΩ uV uV₁)) [AddCommGroup Nm] [Module (chartRing O (mseg x) s) Nm],
-      (∀ n : Nm, (p : chartRing O (mseg x) s) • n = 0) →
-      ∀ χ : V → Nm, (∀ v ∈ E.lat s, ∀ w ∈ E.lat s, χ (v + w) = χ v + χ w) →
-        (∀ v ∈ E'.lat s, χ v = 0) →
-        (∀ a : chartRing O (mseg x) s, ∀ v ∈ E.lat s, χ ((a : Ω) • v) = a ^ p • χ v) →
-        ∃ lam : V₁ → Nm, IsQuotLin O x E₁ E₁' s lam ∧ (∀ v ∈ E.lat s, lam (ψ s v) = χ v) ∧
-          ∀ lam' : V₁ → Nm, IsQuotLin O x E₁ E₁' s lam' → (∀ v ∈ E.lat s, lam' (ψ s v) = χ v) →
-            ∀ v ∈ E₁.lat s, lam' v = lam v) ∧
-  ∀ s t, mseg x s ≠ 0 → mseg x t ≠ 0 → ∀ v ∈ E.lat s, ∀ m : ℕ,
-    (mseg x s / mseg x t) ^ m • v ∈ E.lat t → ∃ n : ℕ, (mseg x s / mseg x t) ^ n •
-      (ψ t ((mseg x s / mseg x t) ^ m • v) - (mseg x s / mseg x t) ^ (p * m) • ψ s v) ∈ E₁'.lat t
 
 def bcCoord {Ω₁ : Type*} [Field Ω₁] [Algebra Ω Ω₁] {K' : Type} {ι' : K' → Type}
     (x : (Σ k, ι k) → Ω) (z : (Σ k, ι' k) → Ω₁) : (Σ k : K ⊕ K', Sum.elim ι ι' k) → Ω₁ :=

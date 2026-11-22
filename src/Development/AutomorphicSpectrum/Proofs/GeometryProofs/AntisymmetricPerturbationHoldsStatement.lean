@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AntisymmetricPerturbationHolds
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PAntisymPerturbation
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PAntisymStability
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PAntisymDivisible

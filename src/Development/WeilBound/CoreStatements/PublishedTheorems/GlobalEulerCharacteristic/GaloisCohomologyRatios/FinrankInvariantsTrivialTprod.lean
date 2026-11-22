@@ -9,8 +9,6 @@ open scoped TensorProduct
 
 namespace PositivityTheory.Lit1.GEN.X
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 section Helpers
 
 variable {k Γ Δ V : Type*} [CommRing k] [Group Γ] [Group Δ] [AddCommGroup V] [Module k V]

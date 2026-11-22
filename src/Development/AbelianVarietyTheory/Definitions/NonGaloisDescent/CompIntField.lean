@@ -24,13 +24,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-def IsLevN (E : ExpSet D) (N : ℕ) : Prop :=
-  N ≠ 0 ∧ (∀ p : ℕ, p.Prime → p ∣ N →
-    p ≠ 2 ∧ Nat.Coprime p E.l ∧ (∀ a, p ≠ E.pde a) ∧ (∀ a, p ≠ E.gp a) ∧ D.host.cls p = .splitK ∧
-      ¬ p ∣ Ideal.absNorm D.host.ccK) ∧ Squarefree N
-
-def LevN (E : ExpSet D) : Type := {N : ℕ // IsLevN E N}
-
 section Fields
 
 variable (E : ExpSet D) {O : Type} [CommRing O] (C : CoefLat E O) (Base : Set (GA D E.W → ℂ))

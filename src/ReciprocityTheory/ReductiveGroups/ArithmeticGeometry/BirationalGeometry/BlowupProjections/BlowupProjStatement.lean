@@ -1,7 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.LogResStC
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinalTheorems
 
 @[expose] public section
 
@@ -30,12 +30,6 @@ def HasSncCoords {Y : Scheme.{0}} (g : Y ⟶ Sp K) (D : ℕ) (T : Set Y) : Prop 
     ∀ j, ∃ (z : Fin D → Γ(Y, (V j : Y.Opens))) (k : ℕ), k ≤ D ∧ IsCoords g (V j) z ∧
       ((V j : Y.Opens) : Set Y) ∩ T =
         {y | y ∈ (V j : Y.Opens) ∧ ∃ i : Fin D, (i : ℕ) < k ∧ y ∉ Y.basicOpen (z i)}
-
-def BlowupProjStatement : Prop :=
-  ∀ (K : Type) [Field K] (M : ℕ) (X : Scheme.{0}) (i : X ⟶ PSpace K M), IsClosedImmersion i →
-    ∀ (J : X.IdealSheafData) (X' : Scheme.{0}) (f : X' ⟶ X), FinalTheorems.Blowup f J →
-      ∃ (r : ℕ) (j : X' ⟶ pullback (PSpace.str K M) (PSpace.str K r)),
-        IsClosedImmersion j ∧ f ≫ i = j ≫ pullback.fst _ _
 
 def CoordsStatement : Prop :=
   ∀ (K : Type) [Field K] [CharZero K] (D : ℕ) (Y : Scheme.{0}) (g : Y ⟶ Sp K) (W : Y.Opens)

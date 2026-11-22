@@ -24,9 +24,6 @@ noncomputable def incl (j : Fin n) : H →L[ℂ] PiLp 2 (fun _ : Fin n => H) :=
   (PiLp.continuousLinearEquiv 2 ℂ (fun _ : Fin n => H)).symm.toContinuousLinearMap.comp
     (ContinuousLinearMap.single ℂ (fun _ : Fin n => H) j)
 
-lemma incl_apply (j : Fin n) (x : H) (i : Fin n) :
-    (incl j x : PiLp 2 (fun _ : Fin n => H)) i = (Pi.single j x : Fin n → H) i := rfl
-
 lemma diag_incl (T : H →L[ℂ] H) (j : Fin n) (x : H) :
     diag n T (incl j x) = incl j (T x) := by
   ext i
@@ -50,7 +47,6 @@ lemma comm_diag (P : PiLp 2 (fun _ : Fin n => H) →L[ℂ] PiLp 2 (fun _ : Fin n
   simp [hc]
 
 end IrreducibleUnitaryDensity
-
 
 open IrreducibleUnitaryDensity in
 theorem irreducibleUnitary_density (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]

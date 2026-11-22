@@ -20,30 +20,7 @@ noncomputable section
 namespace GlobalTheory.ZM.Model
 open Out.Inh
 
-def baseC (k : ℕ) (hk : k ≠ 0) : TBase ℂ k where
-  ζ := ((Complex.isPrimitiveRoot_exp k hk).isUnit hk).unit
-  unit := IsUnit.mk0 _ (Nat.cast_ne_zero.2 hk)
-  prim := fun _ _ β => (Complex.isPrimitiveRoot_exp k hk).map_of_injective β.injective
-
 variable {o : Type} [CommRing o] {S S' : Scheme.{0}} {k : ℕ}
-
-def zeroObj (J : Type) (b : TBase o k) (s : S ⟶ Sp o) : TObj 0 k J b s where
-  A := 𝟙_ (Over S)
-  grp := (zeroPolAV S).grp
-  ab := (zeroPolAV S).isAb
-  dim := (zeroPolAV S).smoothDim
-  L := trivLB _
-  isLB := (zeroPolAV S).isLB
-  rigid := (zeroPolAV S).rigid
-  sym := (zeroPolAV S).sym
-  ample := (zeroPolAV S).ample
-  ktriv := (zeroPolAV S).ktriv
-  pt := fun i => Fin.elim0 i
-  torsion := fun i => Fin.elim0 i
-  bij := fun _ _ _ _ _ _ => ⟨fun i => Fin.elim0 i, toUnit_unique _ _, fun _ _ => funext fun i => Fin.elim0 i⟩
-  pairing := fun i => Fin.elim0 i
-  act := fun _ => 𝟙 _
-  hom := fun _ => inferInstance
 
 theorem lbIso_of_g {X : Scheme.{0}} (L M : LB X) (hL : ∀ i j, L.g i j = 1) (hM : ∀ i j, M.g i j = 1) : LBIso L M := by
   refine ⟨⟨fun _ => 1⟩, fun i j => ?_⟩
@@ -51,38 +28,6 @@ theorem lbIso_of_g {X : Scheme.{0}} (L M : LB X) (hL : ∀ i j, L.g i j = 1) (hM
     (congrArg₂ (· * ·) ((congrArg _ (hM _ _)).trans (map_one _)) ((congrArg (·⁻¹) ((congrArg _ (hL _ _)).trans
       (map_one _))).trans inv_one)).trans (_root_.mul_one _)
   exact (map_one _).trans ((congrArg₂ (· * ·) h (map_one _)).trans (_root_.mul_one _)).symm
-
-theorem zero_tmap {J : Type} (b : TBase o k) (s : S ⟶ Sp o) (s' : S' ⟶ Sp o) (f : S' ⟶ S) :
-    TMap (zeroObj J b s') (zeroObj J b s) f := by
-  refine ⟨f, ⟨?_, fun T x y x₀ y₀ _ _ => ?_⟩, lbIso_of_g _ _ (fun _ _ => rfl) (linComb_triv_g _ _),
-    fun i => Fin.elim0 i, fun j => ?_⟩
-  · show IsPullback f (𝟙 S') (𝟙 S) f
-    exact IsPullback.of_vert_isIso ⟨by simp⟩
-  · have h1 : (x₀ * y₀).left ≫ 𝟙 S = T.hom ≫ f := Over.w (x₀ * y₀)
-    have h2 : (x * y).left ≫ 𝟙 S' = T.hom := Over.w (x * y)
-    exact ((Category.comp_id _).symm.trans h1).trans (congrArg (· ≫ f) ((Category.comp_id _).symm.trans h2)).symm
-  · show 𝟙 S' ≫ f = f ≫ 𝟙 S
-    simp
-
-theorem zero_hasTh {J : Type} {N : ℕ} (hN : Odd N) (b : TBase o (N ^ 2)) {R : Type} [CommRing R] (β : o →+* R) (x : Sp R ⟶ S)
-    (s : S ⟶ Sp o) : (zeroObj J b s).HasTh x (fun _ => 1) := by
-  have hu : IsUnit (N : R) := by
-    have := b.unit.map β
-    rw [map_natCast, Nat.cast_pow] at this
-    exact (isUnit_pow_iff two_ne_zero).1 this
-  have hu' : IsUnit (N : Γ((Over.mk x).left, ⊤)) := by
-    have := hu.map (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom
-    rwa [map_natCast] at this
-  unfold TObj.HasTh
-  simp only [map_one]
-  exact GlobalTheory.ThetaPtDet.isThetaPt_zero S N hN hu' _
-
-theorem zero_fromC {J : Type} (b : TBase ℂ k) :
-    fromSet (RingHom.id ℂ) (fun _ => True) (zeroObj J b (spMap (RingHom.id ℂ))) = Set.univ := by
-  refine Set.eq_univ_of_forall fun p => ⟨ℂ, inferInstance, 𝟙 _, ⟨p, rfl⟩, ℂ, inferInstance, RingHom.id ℂ, RingHom.id ℂ,
-    RingHom.id ℂ, zeroObj J b _, zeroObj J b _, zeroObj J b _, rfl, ?_, zero_tmap _ _ _ _, zero_tmap _ _ _ _,
-    zero_tmap _ _ _ _, trivial⟩
-  simp [spMap]
 
 theorem isIso_of_dim_zero (A : Over S) [GrpObj A] (h : IsAbelianScheme A) (hd : SmoothOfRelativeDimension 0 A.hom) :
     IsIso A.hom := by
@@ -127,70 +72,6 @@ theorem lbIso_of_gen {X : Scheme.{0}} (L M : LB X) (F : X ⟶ X) (hF : F = 𝟙 
   dsimp only [LB.pull, LB.LinComb]
   erw [Fintype.prod_unique, zpow_one, DVR.res_res']
   rfl
-
-theorem tmap_zero {J : Type} {b : TBase o k} (s : S ⟶ Sp o) {s' : S' ⟶ Sp o} (t : TObj 0 k J b s') (f : S' ⟶ S) :
-    TMap t (zeroObj J b s) f := by
-  haveI := isIso_of_dim_zero t.A t.ab t.dim
-  obtain ⟨r, hr⟩ := t.rigid
-  have he : (eSec t.A : S' ⟶ t.A.left) ≫ t.A.hom = 𝟙 S' := Over.w η[t.A]
-  have hF : t.A.hom ≫ (eSec t.A : S' ⟶ t.A.left) = 𝟙 _ := by
-    rw [← cancel_mono t.A.hom, Category.assoc, he]; simp
-  refine ⟨t.A.hom ≫ f, ⟨?_, fun T x y x₀ y₀ _ _ => ?_⟩,
-    lbIso_of_gen _ _ _ hF _ (DVR.pullGen_isGen _ _ _ r hr t.A.hom) (linComb_triv_g _ _),
-    fun i => Fin.elim0 i, fun j => ?_⟩
-  · show IsPullback (t.A.hom ≫ f) t.A.hom (𝟙 S) f
-    exact IsPullback.of_vert_isIso ⟨by simp⟩
-  · have h1 : (x₀ * y₀).left ≫ 𝟙 S = T.hom ≫ f := Over.w (x₀ * y₀)
-    exact ((Category.comp_id _).symm.trans h1).trans
-      ((congrArg (· ≫ f) (Over.w (x * y))).symm.trans (Category.assoc _ _ _))
-  · show (t.act j).left ≫ t.A.hom ≫ f = (t.A.hom ≫ f) ≫ 𝟙 S
-    rw [← Category.assoc, Over.w (t.act j), Category.comp_id]
-
-theorem zero_hasTh_unit {J : Type} {N : ℕ} (hN : Odd N) (b : TBase o (N ^ 2)) {R : Type} [CommRing R] (β : o →+* R)
-    (x : Sp R ⟶ S) (s : S ⟶ Sp o) (v : Ix 0 (N ^ 2) → R) (c : Rˣ) (hv : ∀ a, v a = c) : (zeroObj J b s).HasTh x v := by
-  obtain ⟨h1, h2, h3⟩ := zero_hasTh (J := J) hN b β x s
-  refine ⟨h1, h2, fun p => ?_⟩
-  obtain ⟨V, hV, th, s1, α, τ, U, s2, w, u, a1, a2, a3, a4, a5, a6, a7, a8⟩ := h3 p
-  refine ⟨V, hV, th, s1, α, τ, U, s2, w,
-    (show Γ((Out.overRes V).left, ⊤)ˣ from
-      Units.map (V.ι.appTop.hom.comp (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom).toMonoidHom c) * u,
-    a1, a2, a3, a4, a5, a6, a7, fun i => ?_⟩
-  have h := a8 i
-  simp only [map_one] at h
-  erw [Units.val_mul, _root_.mul_assoc, ← h, _root_.mul_one]
-  simp only [hv]
-  rfl
-
-def thetaFamZero (n N : ℕ) (hN : Odd N) (J : Type) (b : TBase ℂ (N ^ 2)) :
-    ThetaFam (g := 0) (J := J) (b := b) n (RingHom.id ℂ) (fun _ => True) where
-  MM := Sp ℂ
-  s := spMap (RingHom.id ℂ)
-  qproj := by
-    haveI := GlobalTheory.ProjSpace.Model.isIso_str_zero (R := ℂ)
-    exact ⟨0, inv (PSpace.str ℂ 0), inferInstance, inferInstance, by simp [spMap]⟩
-  flat := by simp only [spMap, CommRingCat.ofHom_id, Spec.map_id]; infer_instance
-  reduced := inferInstance
-  univ := zeroObj J b _
-  dense := by rw [zero_fromC]; exact dense_univ
-  loc := fun R _ _ β x _ => ⟨fun _ => 1, zero_hasTh hN b β x _, fun F hF => by
-    have h0 : MvPolynomial.eval₂ (RingHom.id ℂ) (fun _ => 1) F = 0 := by
-      simp only [thIdeal, Ideal.mem_iInf] at hF
-      exact hF (zeroObj J b _) (fun _ => 1) ⟨trivial, zero_hasTh hN b (RingHom.id ℂ) _ _⟩
-    have h1 := congrArg β h0
-    rw [MvPolynomial.eval₂_comp_left, map_zero] at h1
-    simpa [Function.comp_def] using h1, fun q hq a => ⟨0, (Ideal.ne_top_iff_one q).1 hq.ne_top⟩⟩
-  pts := fun R _ β v hv => by
-    haveI : Subsingleton (Ix 0 (N ^ 2)) := ⟨fun _ _ => funext fun i => Fin.elim0 i⟩
-    have hu : IsUnit (v 0) := by
-      by_contra hn
-      obtain ⟨m, hm, hmv⟩ := exists_max_ideal_of_mem_nonunits (mem_nonunits_iff.2 hn)
-      obtain ⟨c, hc⟩ := hv.2 m hm.isPrime 0
-      exact hc (by rwa [Subsingleton.elim (0 + (N / n) • c) 0])
-    refine ⟨spMap β, ⟨by simp [spMap], zero_hasTh_unit hN b β _ _ v hu.unit fun a => ?_⟩, fun y hy => ?_⟩
-    · rw [Subsingleton.elim a 0]; rfl
-    · simpa [spMap] using hy.1
-  rep := fun S s' t _ _ => ⟨s', ⟨by simp [spMap], tmap_zero _ t _⟩, fun y hy => by simpa [spMap] using hy.1⟩
-  unram := fun K _ x _ h _ _ => by simpa [spMap] using h
 
 theorem linComb_g_one {X Y : Scheme.{0}} (M : LB X) (hg : ∀ i j, M.g i j = 1) {K : Type} [Fintype K]
     (φ : K → (Y ⟶ X)) (ε : K → ℤ) (j j' : (LB.LinComb M φ ε).ι) : (LB.LinComb M φ ε).g j j' = 1 :=

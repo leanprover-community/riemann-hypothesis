@@ -33,7 +33,6 @@ abbrev Lk (P : Ideal (𝓞 D.host.E)) (i : ℕ) (c : (D.mem u).C.cls i) : Submod
 
 end Abbr
 
-
 set_option maxHeartbeats 4000000 in
 structure AtT (D : D7) (u : D.what₂.Word)
     (e : (D.mem u).A.vT ≃ {v : HeightOneSpectrum (𝓞 D.host.F) // (((D.mem u).A.T : ℕ) : 𝓞 D.host.F) ∈ v.asIdeal})
@@ -136,11 +135,6 @@ structure AtT (D : D7) (u : D.what₂.Word)
     ∀ v (z : Ld D u D.R.m ((D.fm u).til c)) (a : 𝓞 D.host.E),
       (a : D.host.E) = (D.sp.X D.R.m).hT z0 ((tilG c).1 (z : (D.sp.X D.R.m).V)) →
       (D.fm u).fv D.R.m v _ (pr D.R.m v _ z) = res v a
-
-structure AllTied (D : D7) where
-  base : HermTied D
-  atT : ∀ u, AtT D u (base.vT u) (base.Fv u)
-  vol : VolumeCompatible D
 
 end Formalism.L2.Herm
 

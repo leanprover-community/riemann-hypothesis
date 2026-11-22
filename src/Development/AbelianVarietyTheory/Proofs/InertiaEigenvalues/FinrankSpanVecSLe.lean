@@ -24,8 +24,6 @@ def vecS : (Fin a → Fin n → K) →ₛₗ[φ] (Fin a → Fin n → L) where
 
 variable {φ a n}
 
-theorem vecS_apply (v : Fin a → Fin n → K) (b : Fin a) (j : Fin n) : vecS φ a n v b j = φ (v b j) := rfl
-
 theorem span_vecS_span (S : Set (Fin a → Fin n → K)) :
     Submodule.span L (vecS φ a n '' (Submodule.span K S : Set (Fin a → Fin n → K))) =
       Submodule.span L (vecS φ a n '' S) := by
@@ -101,7 +99,6 @@ theorem isCompl_span_vecS {W W' : Submodule K (Fin a → Fin n → K)} (h : IsCo
   exact ⟨disjoint_iff.2 hinf, codisjoint_iff.2 hsup⟩
 
 end VecGen
-
 
 set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 400000 in

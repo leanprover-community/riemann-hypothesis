@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.ScaledValuations.ValuationApplyLtOneIff
+public import Formalism.ConjugateSelfDual.Statement
 
 @[expose] public section
 

@@ -106,36 +106,6 @@ theorem divBy_partialYAtZero_subst_atX_atY {x : K} (hΦ₂ : IntegralMv Φ₂) (
     (homE_norm_coeff_one_pow hg0 h0 _) n
   exact (mul_le_mul (hΦ₂ m) this (norm_nonneg _) zero_le_one).trans_eq (one_mul _)
 
-theorem hom_deriv (hl1 : ‖(l : K)‖ ≤ 1) (h₁ : LawD lam₁ Φ₁) (h₂ : LawD lam₂ Φ₂)
-    (hg : HomCls l Φ₁ A₁ Φ₂ A₂ g) (h0 : ‖coeff 1 g‖ ≤ ‖(l : K)‖) :
-    DivBy (l : K) (derivative g) := by
-  have hchain (D : PowerSeries K) : d2 (D.subst Φ₁) = derivative D * d2 Φ₁ := by
-    rw [partialYAtZero_eq, Formalism.G.LogCR.pderiv_psubst h₁.Φ0, evalYZero_mul,
-      evalYZero_subst _ h₁.Φ0, h₁.evalYZero_eq, PowerSeries.X_subst, ← partialYAtZero_eq]
-  have h1 := divBy_partialYAtZero hg.add
-  rw [partialYAtZero_sub, hchain] at h1
-  have h2 := divBy_partialYAtZero_subst_atX_atY (x := (l : K)) h₂.Φint hg.g0 hg.gInt h0
-  have h3 : DivBy (l : K) (derivative g * d2 Φ₁) := by
-    unfold DivBy at h1 h2 ⊢
-    intro n
-    have h4 := IsUltrametricDist.norm_add_le_max
-      (coeff n (derivative g * d2 Φ₁ - d2 (Φ₂.subst ![atX g, atY g])))
-      (coeff n (d2 (Φ₂.subst ![atX g, atY g])))
-    rw [← map_add (f := _), sub_add_cancel] at h4
-    exact h4.trans (max_le (h1 n) (h2 n))
-  have hunit : constantCoeff (d2 Φ₁) = 1 := by
-    have hmul : derivative lam₁ * d2 Φ₁ = 1 := by
-      have hlog := congrArg d2 h₁.log
-      rwa [hchain, partialYAtZero_add, partialYAtZero_atX, partialYAtZero_atY,
-        h₁.lam1, zero_add, map_one] at hlog
-    have hconst : constantCoeff (derivative lam₁) = 1 := by
-      rw [← coeff_zero_eq_constantCoeff_apply, coeff_derivative]
-      simp [h₁.lam1]
-    have h := congrArg constantCoeff hmul
-    rwa [map_mul, hconst, one_mul, map_one] at h
-  exact divBy_of_mul_unit (integralPS_partialYAtZero h₁.Φint) (by rw [hunit, norm_one])
-    (by simpa only [mul_comm] using h3)
-
 theorem hom_eigen (hA₁ : constantCoeff A₁ = 0) (hA₂ : constantCoeff A₂ = 0)
     (hg : HomCls l Φ₁ A₁ Φ₂ A₂ g) (h : ‖coeff 1 A₁ - coeff 1 A₂‖ = 1) :
     ‖coeff 1 g‖ ≤ ‖(l : K)‖ := by
@@ -212,72 +182,5 @@ theorem homE_expand_subst_X (hl0 : l ≠ 0) (f : PowerSeries K) (i : Fin 2) :
   rw [PowerSeries.expand_subst l hl0 (PowerSeries.HasSubst.X i), MvPowerSeries.expand_X,
     PowerSeries.subst_comp_subst_apply (PowerSeries.HasSubst.X_pow hl0) (PowerSeries.HasSubst.X i),
     PowerSeries.subst_pow (PowerSeries.HasSubst.X i), PowerSeries.subst_X (PowerSeries.HasSubst.X i)]
-
-theorem hom_desc (hF : FrobField K l σ) (hΦ₁0 : MvPowerSeries.constantCoeff Φ₁ = 0)
-    (hΦ₁ : IntegralMv Φ₁) (hΦ₂0 : MvPowerSeries.constantCoeff Φ₂ = 0) (hΦ₂ : IntegralMv Φ₂)
-    (hA₁0 : constantCoeff A₁ = 0) (hA₁ : IntegralPS A₁) (hA₂0 : constantCoeff A₂ = 0)
-    (hA₂ : IntegralPS A₂) (hg : HomCls l Φ₁ A₁ Φ₂ A₂ g) (hg' : DivBy (l : K) (derivative g)) :
-    DivBy (l : K) (g - (desc l g).subst ((X : PowerSeries K) ^ l)) ∧
-      HomCls l (MvPowerSeries.map σ Φ₁) (PowerSeries.map σ A₁) Φ₂ A₂ (desc l g) := by
-  have hl0 : l ≠ 0 := hF.prime.ne_zero
-  have hc : DivBy (l : K) (g - (desc l g).subst ((X : PowerSeries K) ^ l)) := by
-    intro m
-    rw [map_sub, PowerSeries.coeff_subst_X_pow hl0, Algebra.algebraMap_self, RingHom.id_apply]
-    split_ifs with hm
-    · obtain ⟨q, rfl⟩ := hm
-      rw [desc, coeff_mk, Nat.mul_div_cancel_left q hF.prime.pos, sub_self, norm_zero]
-      exact norm_nonneg _
-    · rw [sub_zero]
-      have hm0 : m ≠ 0 := fun h => hm (h ▸ dvd_zero l)
-      obtain ⟨n, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hm0
-      have h := hg' n
-      rwa [coeff_derivative, norm_mul, ← Nat.cast_add_one,
-        norm_natCast_of_coprime hF.prime hF.norm_l _ hm, mul_one] at h
-  refine ⟨hc, ?_⟩
-  have hg₁0 : constantCoeff (desc l g) = 0 := by rw [desc_const, hg.g0]
-  have hg₁ : IntegralPS (desc l g) := desc_integral hg.gInt
-  generalize desc l g = g₁ at hc hg₁0 hg₁ ⊢
-  obtain ⟨E, hE⟩ : ∃ E : PowerSeries K, E = g₁.subst ((X : PowerSeries K) ^ l) := ⟨_, rfl⟩
-  have hE0 : constantCoeff E = 0 := by
-    rw [hE]; exact PowerSeries.constantCoeff_subst_eq_zero
-      (by rw [map_pow]; exact (congrArg (· ^ l) (constantCoeff_X (R := K))).trans (zero_pow hl0)) g₁ hg₁0
-  have hEint : IntegralPS E := by
-    rw [hE]
-    exact (integralPS_iff_divBy_one _).2 ((divBy_expand_iff 1 l hl0 g₁).2
-      ((integralPS_iff_divBy_one _).1 hg₁))
-  have hc' : DivBy (l : K) (g - E) := by rw [hE]; exact hc
-  refine ⟨hg₁0, hg₁, ?_, ?_⟩
-  · rw [← divByMv_expand_iff (l : K) l hl0, map_sub]
-    have T := homE_expand_subst_map_congr hF hg₁ hc Φ₁ hΦ₁0 hΦ₁
-    have hv : MvPowerSeries.HasSubst ![atX g₁, atY g₁] :=
-      MvPowerSeries.hasSubst_of_constantCoeff_zero (homE_vec_const hg₁0)
-    have hex : MvPowerSeries.expand l hl0 (Φ₂.subst ![atX g₁, atY g₁]) =
-        Φ₂.subst ![atX E, atY E] := by
-      rw [MvPowerSeries.expand_subst l hl0 hv]
-      congr 1
-      funext i
-      fin_cases i
-      · show MvPowerSeries.expand l hl0 (atX g₁) = atX E
-        rw [atX, atX, homE_expand_subst_X hl0, hE]
-      · show MvPowerSeries.expand l hl0 (atY g₁) = atY E
-        rw [atY, atY, homE_expand_subst_X hl0, hE]
-    have T5 : DivByMv (l : K) (Φ₂.subst ![atX g, atY g] - Φ₂.subst ![atX E, atY E]) :=
-      divByMv_subst2_congr hF.norm_l.le hΦ₂ (homE_vec_const hg.g0) (homE_vec_const hE0)
-        (homE_vec_integral hg.gInt) (homE_vec_integral hEint) (homE_vec_divBy hc')
-    rw [hex]
-    have := divByMv_add (divByMv_add T hg.add) T5
-    rwa [sub_add_sub_cancel, sub_add_sub_cancel] at this
-  · rw [divBy_iff_mv, ← divByMv_expand_iff (l : K) l hl0, map_sub]
-    have T := homE_expand_subst_map_congr (ι := Unit) hF hg₁ hc A₁ hA₁0 ((integralPS_iff_mv _).1 hA₁)
-    have hex : MvPowerSeries.expand l hl0 (A₂.subst g₁) = A₂.subst E := by
-      rw [PowerSeries.expand_subst l hl0 (PowerSeries.HasSubst.of_constantCoeff_zero' hg₁0), hE]
-      congr 1
-      exact PowerSeries.expand_apply l hl0 g₁
-    have T5 : DivByMv (l : K) (A₂.subst g - A₂.subst E) :=
-      divByMv_subst_congr (ι := Unit) hF.norm_l.le hA₂ hg.g0 hE0 ((integralPS_iff_mv _).1 hg.gInt)
-        ((integralPS_iff_mv _).1 hEint) ((divBy_iff_mv _ _).1 hc')
-    rw [hex]
-    have := divByMv_add (divByMv_add T ((divBy_iff_mv _ _).1 hg.eig)) T5
-    rwa [sub_add_sub_cancel, sub_add_sub_cancel] at this
 
 end ReciprocityTheory.ChartRestriction.L1

@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.ShortIntervalPrimes
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.SmoothedRemainderRealIntegralFormula
 public import Mathlib
 public import Formalism.GL3MeanSquares.SmoothedRemainderRealIntegralFormula
-public import Formalism.GL3MeanSquares.HookFormulaTorsion.PrimesInProgressionCountLowerBound
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.PsiZeroIntegral
 public import Formalism.GL3MeanSquares.PrimeCountAsymptoticInProgressions
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.CharacterEstimateOfHypothesis
@@ -264,12 +263,6 @@ namespace Formalism.MainNotions.ShortIntervalPrimes
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory Filter Topology
 
-
-open Classical in
-def badZero (Q : ℝ) {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) : ℂ :=
-  if h : ∃ s : ℂ, 1 - 1 / 400 < s.re ∧ |s.im| ≤ Q ∧ DirichletCharacter.LFunction χ s = 0
-  then h.choose else 0
-
 theorem not_primitive_two (χ : DirichletCharacter ℂ 2) : ¬ χ.IsPrimitive := by
   intro hp
   have h1 : χ = 1 := by
@@ -316,7 +309,6 @@ theorem exceptional_zero_real_of_landau_page {C1 c : ℝ} (hc : 0 < c) (D : D7) 
         div_le_div_of_nonneg_left hc.le hg hll
       linarith
     · exact not_primitive_two χ hp
-
 
 theorem fam_eps {eps : ℝ} (Fm : FamP eps) : 0 < eps ∧ eps < 1 := by
   obtain ⟨i⟩ := Fm.Ix_zero
@@ -462,7 +454,6 @@ theorem rpow_le_mul_exp_neg_log {u v r k : ℝ} (hu0 : 0 < u) (hv : v = Real.log
   calc Real.exp (v * r) ≤ Real.exp (v + -k * v) := Real.exp_le_exp.2 (by nlinarith)
     _ = Real.exp v * Real.exp (-k * v) := Real.exp_add _ _
     _ = u * Real.exp (-k * v) := by rw [← hu]
-
 
 set_option maxHeartbeats 1000000 in
 theorem psi_thin_core {C7 C2 c lam : ℝ} (hC7 : 0 < C7) (hC2 : 0 ≤ C2) (hc : 0 < c) (hlam : 1 ≤ lam) (D : D7)
@@ -617,7 +608,6 @@ theorem psiThin_of {C7 C2 c : ℝ} (hC7 : 0 < C7) (hC2 : 0 ≤ C2) (hc : 0 < c) 
     nlinarith
   exact psi_thin_core hC7 hC2 hc (le_max_left _ _) D h7 χ hχ.1 (log_cond_le hcond hχ)
     (fun ρ h0 h1 hz => hzf N χ hχ ρ h0 h1 hz) (fun T hT => hZ N χ hχ T hT) u hu1
-
 
 set_option maxHeartbeats 1000000 in
 theorem zero_sum_core {C7 C lam ka : ℝ} (hC : 0 < C) (hlam : 1 ≤ lam) (hka : 0 < ka) (D : D7)

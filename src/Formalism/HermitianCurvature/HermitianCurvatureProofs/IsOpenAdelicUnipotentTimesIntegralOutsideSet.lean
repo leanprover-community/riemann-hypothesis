@@ -64,8 +64,6 @@ end gen
 
 variable {k r : ℕ}
 
-local notation "⟪" u ", " v "⟫" => herm (Hpk k r) u v
-
 lemma Hh : (Hpk k r)ᴴ = Hpk k r := B2x8.Hpk_herm k r
 
 lemma herm_bvec_right (u : Fin (2 * r + k + 1) → ℂ) (j : Fin (2 * r + k + 1)) :
@@ -156,9 +154,6 @@ lemma uw_glev {z : Fin (2 * r + k + 1) → ℂ} {h : Mx k r} (hh : h ∈ UWset k
   ⟨hh.1, fun a _ => hh.2.1 a⟩
 
 variable {l : Fin r}
-
-local notation "𝐞" => bvec (eI k r l)
-local notation "𝐬" => bvec (esI k r l)
 
 def UP (k r : ℕ) (l : Fin r) : Set (Mx k r) :=
   {u | u ∈ Glev k r l.castSucc ∧ u *ᵥ bvec (eI k r l) = bvec (eI k r l) ∧
@@ -450,7 +445,6 @@ lemma dec_exists {g : Mx k r} (hg : g ∈ Glev k r l.castSucc) (hc : ⟪g *ᵥ �
   refine ⟨u, g₁, u', hc, hu, hg₁, hu', ?_⟩
   rw [Matrix.mul_assoc, Matrix.mul_assoc, ← h, ← Matrix.mul_assoc (w1 k r l c), uh_mul_inv hw.1, Matrix.one_mul,
     ← Matrix.mul_assoc, uh_mul_inv hu.1.1, Matrix.one_mul]
-
 
 def cF (k r : ℕ) (l : Fin r) (g : Mx k r) : ℂ := herm (Hpk k r) (g *ᵥ bvec (eI k r l)) (bvec (eI k r l))
 

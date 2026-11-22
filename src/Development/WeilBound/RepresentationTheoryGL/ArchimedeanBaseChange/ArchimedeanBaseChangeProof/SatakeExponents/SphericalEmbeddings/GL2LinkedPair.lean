@@ -33,10 +33,6 @@ def constInd (P : Subgroup (GL (Fin n) k)) (σ : Representation ℂ P W) (χ : k
         show (detChar (Fin n) χ (x * g) : ℂ) • w0 = (detChar (Fin n) χ x : ℂ) • w0
         rw [map_mul, hg', mul_one])⟩
 
-theorem constInd_apply (P : Subgroup (GL (Fin n) k)) (σ : Representation ℂ P W) (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ)
-    (w0 : W) (hw : ∀ p : P, σ p w0 = (detChar (Fin n) χ (p : GL (Fin n) k) : ℂ) • w0) (x : GL (Fin n) k) :
-    (constInd P σ χ hχ w0 hw).1.1 x = (detChar (Fin n) χ x : ℂ) • w0 := rfl
-
 theorem smInd_constInd (P : Subgroup (GL (Fin n) k)) (σ : Representation ℂ P W) (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ)
     (w0 : W) (hw : ∀ p : P, σ p w0 = (detChar (Fin n) χ (p : GL (Fin n) k) : ℂ) • w0) (g : GL (Fin n) k) :
     smInd P σ g (constInd P σ χ hχ w0 hw) = (detChar (Fin n) χ g : ℂ) • constInd P σ χ hχ w0 hw := by

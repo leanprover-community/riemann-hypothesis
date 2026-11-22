@@ -33,7 +33,6 @@ section Ring
 
 variable {O : Type} [CommRing O] {n : ℕ}
 
-
 open GlobalTheory.ClassParam in
 theorem exists_cyclic [IsLocalRing O] (M : Matrix (Fin n) (Fin n) O) (hs : M.charpoly.Separable) :
     ∃ v, IsUnit (krylov M v) := by
@@ -62,7 +61,6 @@ theorem conj_of_charpoly [IsLocalRing O] (a b : GL (Fin n) O) (hs : a.val.charpo
   refine ⟨ka * kb⁻¹, ?_⟩
   calc b = kb * (kb⁻¹ * b * kb) * kb⁻¹ := by group
     _ = _ := by rw [← h3]; group
-
 
 open GlobalTheory.ClassParam in
 theorem commute_of_commute [IsLocalRing O] (M s t : Matrix (Fin n) (Fin n) O) (hs : M.charpoly.Separable)
@@ -113,8 +111,6 @@ theorem adjt_adjt (c : O →+* O) (hc : ∀ x, c (c x) = x) (b : Matrix (Fin n) 
   simp only [adjt, GlobalTheory.ThetaPull.phi_mul_apply, transpose_apply, map_apply, map_mul, map_pow, map_neg, map_one, hc,
     Fin.rev_rev]
   rw [← mul_assoc, GlobalTheory.ThetaPull.sign_rev, one_mul]
-
-theorem adjt_val (c : O →+* O) (g : GL (Fin n) O) : adjt c g.val = (thetaGL n c g⁻¹).val := rfl
 
 theorem twConj_of_norm_eq [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
     [Finite (O ⧸ IsLocalRing.maximalIdeal O)] (c : O →+* O) (hc : ∀ x, c (c x) = x)

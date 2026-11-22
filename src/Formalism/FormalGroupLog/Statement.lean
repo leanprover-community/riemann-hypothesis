@@ -21,24 +21,7 @@ abbrev atX (f : PowerSeries R) : MvPowerSeries (Fin 2) R := f.subst (MvPowerSeri
 
 abbrev atY (f : PowerSeries R) : MvPowerSeries (Fin 2) R := f.subst (MvPowerSeries.X (1 : Fin 2))
 
-def IsHom (F G : FormalGroup R) (f : PowerSeries R) : Prop :=
-  constantCoeff f = 0 ∧ f.subst F.toPowerSeries = G.toPowerSeries.subst ![atX f, atY f]
-
-def IsLog (F : FormalGroup R) (f : PowerSeries R) : Prop :=
-  constantCoeff f = 0 ∧ coeff 1 f = 1 ∧ f.subst F.toPowerSeries = atX f + atY f
-
 end Hom
-
-def HomComp : Prop :=
-  ∀ (R : Type u) [CommRing R] (F G H : FormalGroup R) (f g : PowerSeries R),
-    IsHom F G f → IsHom G H g → IsHom F H (g.subst f)
-
-def LogIffHomGa : Prop :=
-  ∀ (R : Type u) [CommRing R] (F : FormalGroup R) (f : PowerSeries R),
-    IsLog F f ↔ (IsHom F FormalGroup.𝔾ₐ f ∧ coeff 1 f = 1)
-
-def LogExistsUnique : Prop :=
-  ∀ (R : Type u) [CommRing R] [Algebra ℚ R] (F : FormalGroup R), ∃! f : PowerSeries R, IsLog F f
 
 section FunEq
 
@@ -94,9 +77,5 @@ def SubstInjective : Prop :=
     constantCoeff f = 0 → coeff 1 f = 1 →
     MvPowerSeries.constantCoeff a = 0 → MvPowerSeries.constantCoeff b = 0 →
     f.subst a = f.subst b → a = b
-
-def ltLog (p : ℕ) [Fact p.Prime] : PowerSeries ℚ_[p] :=
-  PowerSeries.mk fun n => by
-    classical exact if ∃ k : ℕ, p ^ k = n then ((n : ℚ_[p]))⁻¹ else 0
 
 end Formalism.G

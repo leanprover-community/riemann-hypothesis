@@ -102,8 +102,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePla
 
 def σ (v : Fin S.f) : E →+* ℂ := S.emb v
 
-def r : ℕ := S.G.r
-
 def P (v : Fin S.f) : ℝ → ℝ := (S.G.place (S.pl v)).P
 
 def g : ℕ := S.G.g1 * S.G.g2

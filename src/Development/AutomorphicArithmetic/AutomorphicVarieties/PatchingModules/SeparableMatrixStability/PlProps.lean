@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.SecondSelmerSpanBoundAtAllLevels
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ResNormal
 public import Mathlib
 
 @[expose] public section

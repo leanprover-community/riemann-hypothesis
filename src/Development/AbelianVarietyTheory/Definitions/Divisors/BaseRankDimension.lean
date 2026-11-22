@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.Column
 public import Formalism.LocalToGlobal.IndefiniteReal.RealTB
 public import Formalism.LocalToGlobal.IndefiniteReal.RealRecPins
 public import Formalism.LocalToGlobal.IndefiniteReal.BaseLiftsPackageOfPrimitiveLinks
-public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.NMjT
 public import Formalism.LocalToGlobal.Divisibility.NumericScaleExponentEqExtended
 public import Formalism.LocalToGlobal.Divisibility.PsiWeilOfAbsNorm
 public import Formalism.SharpRestriction.GlobalTheoremInputs
@@ -23,45 +22,6 @@ namespace GlobalTheory.Fc.Ind
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-protected abbrev zsc {D : D7} {O : Obj D} (P : RowSideFamily O.ex) (Del h0 : ℕ) (c : ℝ) :
-    DefSub P.A3.fam3.amb3 → IndefScale P.A3.fam3.base3 :=
-  GlobalTheory.Fc.zsc P Del h0 c
-
-
-set_option genInjectivity false in
-set_option genSizeOfSpec false in
-structure Part (D : D7) (O : Obj D) (c : ℝ) : Type 1 where
-  R : Formalism.L2.RecT O.ex
-  S : Formalism.L2.SG.SpectralTiesReal.STiesR R
-  P : RowSideFamily O.ex
-  pin : RowSideDetermined R.T P
-  DH : {p : ℕ × ℕ // D.s.Del = (p.1 : ℚ) ∧ O.L.etaSz = (D.R.m : ℝ) * (p.2 : ℝ)}
-  Dcf : ∀ Zs : DefSub P.A3.fam3.amb3, DefCols (P.A3.side3 P.Ps P.ψs Zs)
-  Spf : ∀ Zs : DefSub P.A3.fam3.amb3, SPer (Dcf Zs)
-  ok1 : P.A3.fam3.Ok3 1
-  B : RealTB R P Dcf Spf (GlobalTheory.Fc.zsc P DH.1.1 DH.1.2 c) S
-  Rr : RealRec B.Q
-  psi : PsiPPTie D P.P0 P.ψ0 P.Ps P.ψs P.I.eG
-  pins : RealPins B.Q
-  muDef : ∀ C CH : ℝ, (B.Q.Rl.toCx3 B.Q.F).MuDef B.Q.F.cr (B.Q.Rl.num B.Q.F C CH) B.Q.Rl.mu
-  recPins : RealRecPins pins Rr
-
-def PFire : BdP Part := fun _ _ _ b =>
-  b.B.Q.Rl.toRealDat.ExAt ∧ JEvBar b.B.T b.B.Q.Rl.toRealDat b.B.κ ∧ GeoAct b.B.T b.B.Q.Rl.toRealDat b.B.κ b.B.v₀ ∧
-    EvInj b.B.T b.B.Q.Rl.toRealDat b.B.v₀
-
-def PRB : BdP Part := fun _ _ _ b => RowsB b.B
-
-def PNmj : BdP Part := fun _ O _ b => NX.NMjT b.B.Q b.B.Q.cG b.B.Q.Sx b.B.Q.nexp O.ex.nch
-
-def L3 (C CH : ℝ) : BdP Part := fun _ _ _ b => ((b.B.Q.Rl.toCx3 b.B.Q.F).data b.B.Q.F.cr false).L3 (b.B.Q.Rl.num b.B.Q.F C CH)
-
-def ON (C CH : ℝ) : BdP Part := fun _ _ _ b => ((b.B.Q.Rl.toCx3 b.B.Q.F).data b.B.Q.F.cr false).ON (b.B.Q.Rl.num b.B.Q.F C CH)
-
-def L6 (C CH : ℝ) : BdP Part := fun _ _ _ b => ((b.B.Q.Rl.toCx3 b.B.Q.F).data b.B.Q.F.cr true).L6 (b.B.Q.Rl.num b.B.Q.F C CH)
-
-def FUN (C CH : ℝ) : BdP Part := fun _ _ _ b => ((b.B.Q.Rl.toCx3 b.B.Q.F).data b.B.Q.F.cr false).FUN (b.B.Q.Rl.num b.B.Q.F C CH)
-
 variable {Bd : BdT}
 
 def Ev {𝒜 : FamClass} (σ : RawSel Bd 𝒜) {eps : ℝ} (Fm : FamP eps) (hc : 𝒜 Fm) (q : BdP Bd) : Prop :=
@@ -77,6 +37,5 @@ theorem ev_of_atAll {𝒜 : FamClass} {σ : RawSel Bd 𝒜} {q : BdP Bd} (h : At
     Ev σ Fm hc q := ⟨0, fun x hx _ i => h Fm hc x hx i⟩
 
 end GlobalTheory.Fc.Ind
-
 
 end

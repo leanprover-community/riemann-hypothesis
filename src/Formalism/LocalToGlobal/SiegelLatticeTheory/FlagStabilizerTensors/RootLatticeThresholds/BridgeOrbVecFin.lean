@@ -38,8 +38,6 @@ variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' : D.what
     List Formalism.FourierDecayAlt.C.Letter → Formalism.FourierDecayAlt.C.LPt → Formalism.FourierDecayAlt.C.LPt → ℂ) (A₀ : ℝ)
   (Mo : ModelsFor (sOf (carrierInOf X u u' e he hv C CA de de' l grid grid1 T hT fc χ sg ν' m₀ top A₀)))
 
-local notation "PP" => CarrierOf (carrierInOf X u u' e he hv C CA de de' l grid grid1 T hT fc χ sg ν' m₀ top A₀) Mo
-
 def MeasPinAt (sc : ℝ) (i0 i0' : ∀ _ : InfinitePlace X.B.I.F, Fin D.R.k) : Prop :=
   ∀ (p : Formalism.FourierDecayAlt.TB.Pt D.host.E) (w : Formalism.MainNotions.S.Point D.host.E (D.R.rS + 1)),
     ptOfL (D := D) (D.R.rS + 1) p = some w → OkPt X u u' w →

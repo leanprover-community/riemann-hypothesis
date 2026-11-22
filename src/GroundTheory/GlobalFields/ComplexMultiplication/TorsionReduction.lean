@@ -44,9 +44,6 @@ variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing
   (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] (W : WeierstrassCurve 𝒪)
   [(W.map (algebraMap 𝒪 K)).IsElliptic] [DecidableEq K] [DecidableEq (ResidueField 𝒪)]
 
-local notation "ι" => algebraMap 𝒪 K
-local notation "ρ" => residue 𝒪
-
 theorem nsmul_ne_zero_of_notMem_range {n : ℕ} (hn : (n : ResidueField 𝒪) ≠ 0) {X Y : K}
     (h : (curveK K W).Nonsingular X Y) (hX : X ∉ Set.range ι) :
     n • WeierstrassCurve.Affine.Point.some _ _ h ≠ 0 := by

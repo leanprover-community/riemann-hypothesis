@@ -83,8 +83,6 @@ theorem rows_norm_entry (hrd : 0 < D.host.rdE) (Z : GramM D) (i : Fin (D.R.rS + 
 def rows_one (N : ℕ) (a : Fin N) : Fin 1 ↪o Fin N :=
   OrderEmbedding.ofStrictMono (fun _ => a) (fun x y h => absurd h (by rw [Subsingleton.elim x y]; exact lt_irrefl _))
 
-theorem rows_one_apply (N : ℕ) (a : Fin N) (x : Fin 1) : rows_one N a x = a := rfl
-
 theorem rows_absMinor_one (Z : GramM D) (a b : Fin (D.R.rS + 1)) (τ : D.what₂.Tau) :
     UnitaryVolumeMass.absMinor D Z (rows_one _ a) (rows_one _ b) τ = ‖embS D τ (Z a b)‖ * (rhoF D a * rhoF D b) := by
   unfold UnitaryVolumeMass.absMinor
@@ -197,7 +195,6 @@ theorem rows_isTermF' (t : D.s.Term u u') (hG : D.s.Gterm t ≠ 0) :
     rw [Y.fl_eq t] at h
     rw [← h]
     exact (map_ne_zero_iff _ (algebraMap D.host.F D.host.E).injective).2 hG
-
 
 include Y in
 theorem rows_reduced_exists {C' Cl Cg cb Cu cT CT C0 A C : ℝ} (hH : Cnt.Hyp D large₂ u u' C' Cl Cg cb Cu cT CT C0 A)

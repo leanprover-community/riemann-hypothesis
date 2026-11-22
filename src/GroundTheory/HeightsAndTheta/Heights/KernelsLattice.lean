@@ -42,7 +42,6 @@ def subDegree {n : ℕ} (L : Submodule (𝓞 K) (Fin n → K)) (h : (K →+* ℂ
       (Submodule.span (𝓞 K) (Set.range u)).toAddSubgroup) -
     1 / 2 * ∑ σ : K →+* ℂ, log (gramAt (h σ) σ u).det.re
 
-
 variable (K) in
 def normalise (x : ℝ) : ℝ := x / Module.finrank ℚ K
 
@@ -65,9 +64,6 @@ end HermLattice
 
 def idealLattice {n : ℕ} (a : Fin n → FractionalIdeal (𝓞 K)⁰ K) : Submodule (𝓞 K) (Fin n → K) :=
   Submodule.pi Set.univ fun x => (a x : Submodule (𝓞 K) K)
-
-def diagMetric {n : ℕ} (d : (K →+* ℂ) → Fin n → ℝ) : (K →+* ℂ) → Matrix (Fin n) (Fin n) ℂ :=
-  fun σ => Matrix.diagonal fun x => (d σ x : ℂ)
 
 def LineOfLargeDegree.Statement : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (i : ℕ), 1 ≤ i → ∀ (F : HermLattice K i) (ε : ℝ), 0 < ε →

@@ -40,11 +40,6 @@ def NegCount (bkP : BKPh X) (i : X.Tw) (s : X.Sig i) : Prop :=
     dimD bkP i v hv (Tgl i s) τ + dimD bkP i v' hv' (Tgl i s) τ' =
       dimFil0 bkP i v hv (Tgl i s) τ + dimFil0 bkP i v' hv' (Tgl i s) τ' + D.R.r
 
-def Pure (i : X.Tw) (s : X.Sig i) (ι : FractionRing (X.O0 i) →+* ℂ) : Prop :=
-  ∀ v, v ∉ placesOver D.host.E (X.l i) → v ∉ Spl (X := X) i → ∀ A : ValuationSubring N.Om, IsPlaceOver (F := D.host.E) A v →
-    ∀ σ : GE N, IsFrob (F := D.host.E) A (normV v) σ → ∀ z : ℂ,
-      ((Tmat i s σ).charpoly.map (rd i ι)).IsRoot z → ‖z‖ = ((normV v : ℕ) : ℝ) ^ ((1 - (D.R.t : ℝ)) / 2)
-
 def ReadEmb (bkP : BKPh X) (i : X.Tw) (ι : FractionRing (X.O0 i) →+* ℂ) (v : HeightOneSpectrum (𝓞 D.host.E))
     (hv : v ∈ placesOver D.host.E (X.l i)) (τ : EmbV bkP i v hv) (τc : D.host.E →+* ℂ) : Prop :=
   ∀ (x : D.host.E) (n d : X.O0 i), IsFrac bkP i v hv (τ (cE bkP i v hv x)) n d → rd i ι d * τc x = rd i ι n
@@ -73,7 +68,6 @@ def HkFrob (i : X.Tw) (s : X.Sig i) : Prop :=
     ∀ k, k ≤ D.R.r → (-1 : X.O i) ^ k * ((normV P : ℕ) : X.O i) ^ (k * (k - 1) / 2) * X.hEig i s k P =
       algebraMap (X.O0 i) (X.O i)
         ((((((eps0 X i σ : (X.O0 i)ˣ) : X.O0 i) ^ D.R.t) • Tmat i s σ).charpolyRev).coeff k)
-
 
 def HkSat (A : NAut N) (i : X.Tw) (s : X.Sig i) (ι : FractionRing (X.O0 i) →+* ℂ) (π : A.CG D.R.r) : Prop :=
   ∀ P, P ∉ X.S0 i → Formalism.BasicNotions.IsSplitPl D.host P → ∀ k, k ≤ D.R.r → ∃ h : X.O0 i,

@@ -44,7 +44,6 @@ theorem mem_max : q.1 ∈ maximalIdeal 𝒪[k] := q.mem_max_iff.2 dvd_rfl
 
 end Unif
 
-
 variable (k) in
 structure Pair (n : Type*) where
 
@@ -235,24 +234,6 @@ theorem eq_glue_iff (h : IsGlue L e) {P : Pair k n} : P = glue h ↔ P.ker = L �
 
 end
 
-
-variable (k) in
-structure GluePair (n : Type*) where
-
-  ker : Submodule 𝒪[k] (n → k)
-  isLat : ker.IsFullLattice k
-
-  cls : (n → k) ⧸ ker
-  cls_ne : cls ≠ 0
-  smul_cls : ∀ s ∈ maximalIdeal 𝒪[k], s • cls = 0
-
-def Pair.toGlue (P : Pair k n) : GluePair k n where
-  ker := P.ker
-  isLat := P.ker_isLat
-  cls := P.ker.mkQ P.vec
-  cls_ne h := (Pair.isGlue P.hasVal_vec).not_mem ((Submodule.Quotient.mk_eq_zero _).1 h)
-  smul_cls s hs := (Submodule.Quotient.mk_eq_zero _).2 (Pair.smul_mem_ker hs P.hasVal_vec.mem)
-
 namespace Pair
 
 instance (P : Pair k n) : P.lat.IsFullLattice k := P.isLat
@@ -281,7 +262,6 @@ theorem dia_hasVal_one {c : 𝓀[k]ˣ} {P : Pair k n} {e : n → k} (he : P.HasV
     (hs : residue 𝒪[k] s = (c⁻¹ : 𝓀[k]ˣ)) : (c • P).HasVal (s • e) 1 := by
   rw [dia_hasVal, ← hs]
   exact he.smul s
-
 
 open Classical in
 def ev (P : Pair k n) (x : n → k) : 𝓀[k] := by
@@ -569,7 +549,6 @@ theorem exists_gl_of_equiv {L L' : Submodule 𝒪[k] (n → k)} [L.IsFullLattice
   rw [LinearMap.toMatrix'_mulVec]
   rfl
 
-
 omit [Fintype n] [DecidableEq n] in
 theorem Pair.exists_split (P : Pair k n) :
     ∃ (K : Submodule 𝒪[k] P.lat) (e : (K × 𝒪[k]) ≃ₗ[𝒪[k]] P.lat), ∀ z, P.fn (e z) = residue 𝒪[k] z.2 := by
@@ -629,10 +608,8 @@ end Action
 section Std
 variable [Fintype n]
 
-
 variable (k n) in
 def stdLat : Submodule 𝒪[k] (n → k) := LinearMap.range ((Algebra.linearMap 𝒪[k] k).compLeft n)
-
 
 omit [Fintype n] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 theorem mem_stdLat {x : n → k} : x ∈ stdLat k n ↔ ∀ i, x i ∈ 𝒪[k] :=
@@ -650,7 +627,6 @@ instance : (stdLat k n).IsFullLattice k := by
     rw [Pi.basisFun_apply, Pi.single_apply]
     split_ifs
     exacts [one_mem _, zero_mem _]
-
 
 variable (k) in
 def stdPair (i : n) : Pair k n where

@@ -26,11 +26,6 @@ def epsOn (V : (Sp (DualNumber S)).Opens) : Γ(Sp (DualNumber S), V) :=
 theorem epsOn_mul_self (V : (Sp (DualNumber S)).Opens) : epsOn V * epsOn V = 0 := by
   rw [epsOn, ← map_mul, ← map_mul, DualNumber.eps_mul_eps, map_zero, map_zero]
 
-theorem epsOn_res {V V' : (Sp (DualNumber S)).Opens} (h : V' ≤ V) :
-    ((Sp (DualNumber S)).presheaf.map (homOfLE h).op).hom (epsOn V) = epsOn V' := by
-  rw [epsOn, epsOn, ← CommRingCat.comp_apply, ← Functor.map_comp]
-  rfl
-
 variable {Z : Scheme.{0}} {W : Z.Opens} {e : ∀ O : Z.Opens, Γ(Z, O) → Γ(Z, O)}
 
 theorem field_one (he : IsField W e) {V : Z.Opens} (hV : V ≤ W) : e V 1 = 0 := by

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFinite
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PolyBetween
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LocalValuationColumns
 public import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 
 @[expose] public section
 

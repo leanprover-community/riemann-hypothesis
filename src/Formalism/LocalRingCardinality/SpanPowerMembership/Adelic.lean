@@ -77,9 +77,6 @@ section Local2
 variable {R : Type*} [CommRing R] [IsDedekindDomain R] {K : Type*} [Field K] [Algebra R K]
   [IsFractionRing R K] (v : HeightOneSpectrum R)
 
-local notation "Kv" => v.adicCompletion K
-local notation "Ov" => v.adicCompletionIntegers K
-
 theorem adicInt_dvd_iff (x y : Ov) :
     x ∣ y ↔ Valued.v (y : Kv) ≤ Valued.v (x : Kv) := by
   first
@@ -198,9 +195,6 @@ section Residue
 
 variable {R : Type*} [CommRing R] [IsDedekindDomain R] {K : Type*} [Field K] [Algebra R K]
   [IsFractionRing R K] (v : HeightOneSpectrum R)
-
-local notation "Kv" => v.adicCompletion K
-local notation "Ov" => v.adicCompletionIntegers K
 
 theorem adicCompl_val_algebraMap (y : K) : Valued.v (algebraMap K Kv y) = v.valuation K y := by
   first

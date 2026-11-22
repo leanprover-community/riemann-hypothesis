@@ -17,8 +17,6 @@ open CategoryTheory NumberField IsDedekindDomain IntermediateField GroundTheory.
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 theorem surjective_of_injective_of_injective {α β : Type*} [Finite α] {f : α → β} {g : β → α}
     (hf : Function.Injective f) (hg : Function.Injective g) : Function.Surjective f := by
   have : Finite β := Finite.of_injective g hg
@@ -119,7 +117,6 @@ def evalChar {G : Type} [Group G] [TopologicalSpace G] (g : G) : (Additive G →
   map_zero' := rfl
   map_add' _ _ := rfl
 
-
 set_option maxHeartbeats 2000000 in
 include hℓ hS in
 theorem exists_gsVal_eq (v : HeightOneSpectrum (𝓞 K.1)) (hv : v ∉ S) (hF : FrobData K S ιs v) (n : ℕ)
@@ -156,7 +153,6 @@ section H3
 
 variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1))) (ℓ : ℕ) (hℓ : ℓ.Prime)
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S) (ιs : LocalEmbeddings K)
-
 
 set_option maxHeartbeats 4000000 in
 include hℓ hS in
@@ -217,7 +213,6 @@ def gsDivH2 (ιs : LocalEmbeddings K) :
     cohomology (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) 2 →+ cohomology (gsDiv K S ιs ℤ) 2 :=
   (cohomologyMap (sUnitsQuotDiv K S ιs) 2).hom.toAddMonoidHom.comp
     (cohomologyMap (gsQuotMor K S) 2).hom.toAddMonoidHom
-
 
 set_option maxHeartbeats 8000000 in
 include hℓ hS in

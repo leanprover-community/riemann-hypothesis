@@ -4,7 +4,6 @@ public import Mathlib
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalRingCardinality.DataDIV
 public import Formalism.SharpRestriction.ParConsts
-public import Formalism.GelfandTransference.EnergyIdentity
 
 @[expose] public section
 
@@ -361,16 +360,6 @@ theorem dP_le (h1 : 1 ≤ j) (h2 : j + 1 ≤ r) {Z : L.Mdl} (y : L.Pt Z) : L.dP 
   rw [dP, h]
   exact Nat.mul_le_mul_left _ (le_min h3 (by omega))
 
-def cJ {Z : L.Mdl} (y : L.Pt Z) (n DF : ℕ) : ℝ :=
-  ((L.dP y : ℝ) ^ 5 * (D.R.f : ℝ) ^ 2 * D.host.rdE ^ 2 / 2) * (DF : ℝ) ^ 2 / (n : ℝ)
-
-def SymLift (y : L.Pt L.Xm) (La : L.Unim) (n : ℕ) (sg : L.At y La n → L.Th y La n) : Prop :=
-  ∀ x, L.ovr y La n (sg x) = Multiplicative.ofAdd x ∧ L.dl y La n (sg x) = (sg x)⁻¹ ∧ sg x ^ n = 1
-
-def secJet (y : L.Pt L.Xm) (La : L.Unim) (n DF : ℕ) (sg : L.At y La n → L.Th y La n) :
-    Set (L.Jet y La n DF) :=
-  Set.range fun x => L.jet y La n DF (L.act y La n (sg x) (L.vth y La n))
-
 end Loc
 
 def NHyp (D : Formalism.BasicNotions.D7) (p n : ℕ) : Prop :=
@@ -385,9 +374,6 @@ section Ext
 def bs {D : D7} {r j p : ℕ} (L : Loc D r j p) : Option ℕ → L.Mdl
   | none => L.Xm
   | some n => L.Xn n
-
-def IsChart {D : D7} {r j p : ℕ} (L : Loc D r j p) {Z y e} (χ : L.Chart Z y e) : Prop :=
-  L.chAt χ ∧ L.chOpen χ ∧ L.chAbExact χ ∧ L.chModU χ ∧ L.chConst χ
 
 structure ExtA (D : D7) {r j p : ℕ} (L : Loc D r j p) where
 
@@ -634,21 +620,6 @@ structure Prov (D : Formalism.BasicNotions.D7) where
   limRA : ∀ {w}, Met w → Prop
 
 variable {D : Formalism.BasicNotions.D7}
-
-theorem Prov.dP_le (X : Prov D) (w : X.Dat) (p : ℕ) {Z : (X.loc w p).Mdl} (y : (X.loc w p).Pt Z) :
-    (X.loc w p).dP y ≤ 2 * D.R.f * min (X.jj w) (X.rk w - X.jj w) :=
-  (X.loc w p).dP_le (X.jj_range w).1 (X.jj_range w).2 y
-
-def LinkConditions (D : Formalism.BasicNotions.D7) (X : Prov D) : Prop :=
-  ∀ w p, p.Prime → ∀ n DF nW : ℕ, NHyp D p n → 3 * DF + 2 ≤ n →
-    ∀ y : (X.loc w p).Pt (X.loc w p).Xm,
-      (∃ sg, (X.loc w p).SymLift y ((X.loc w p).latStd nW) n sg) ∧
-      ∀ sg, (X.loc w p).SymLift y ((X.loc w p).latStd nW) n sg →
-      ∃ t : ((X.loc w p).fld y).C,
-        (p : ℝ) ^ (-((X.loc w p).cJ y n DF * (X.loc w p).phiCy y)) ≤ ‖t‖ ∧
-        ∀ v ∈ (X.loc w p).intJet y ((X.loc w p).latStd nW) n DF,
-          t • v ∈ Ospan (C := ((X.loc w p).fld y).C)
-            ((X.loc w p).secJet y ((X.loc w p).latStd nW) n DF sg)
 
 end Formalism.MainNotions.ModuliIntegralCharts
 

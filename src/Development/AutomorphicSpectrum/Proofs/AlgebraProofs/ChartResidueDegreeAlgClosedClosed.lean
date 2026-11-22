@@ -5,10 +5,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.ValNeBot
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SpecFirstDetFormNeZero
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DvdOfForallEmultiplicityLe
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.IsMultiHomogOfIsChowForm
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.GaussNormEqCoeffGaussNorm
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormExtend
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PRadicalBaseChange
@@ -25,7 +22,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LengthLocalizedModuleQuotient
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowDegreeGeoNum
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConePtsIntegral
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChartGram

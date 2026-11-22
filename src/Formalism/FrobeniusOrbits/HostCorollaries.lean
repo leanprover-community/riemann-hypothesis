@@ -16,13 +16,10 @@ public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Orbits
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.DiscriminantRealSubfield
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.DiscrB
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Principal
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.ThickOrbit
 public import Mathlib
 public import Formalism.FrobeniusOrbits.HostThickExists
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.ExistsOpenNormalOrderOf
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.OrdUnimod
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.NcardEqTwoIff
-public import Formalism.FrobeniusOrbits.HostOrbitsPlaces
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.ThickExists
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.EqZeroOfNegEq
 public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum

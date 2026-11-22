@@ -22,59 +22,6 @@ open Formalism.LogVandermondeBounds.product_first_zeroth_parts (pair opU opD nmV
 
 variable (D : D7) (u : D.what₂.Word)
 
-abbrev Val (i : ℕ) : Type := (D.mem u).C.Y i → ℂ
-
-def fnl {k M : Type} [Field k] [AddCommGroup M] [Module k M] {r : ℕ} (e : M ≃ₗ[k] (Fin r → k)) :
-    (Fin r → k) ≃ₗ[k] Module.Dual k M := (dotProductEquiv k (Fin r)).trans e.dualMap
-
-structure Unf (i : ℕ) (v : (D.mem u).A.vT) where
-  Lc : Type
-  [LcFin : Fintype Lc]
-
-  nL : Lc → ℕ
-  nL_pos : ∀ Λ, 0 < nL Λ
-
-  ipL : Lc → (Val D u i →ₗ⋆[ℂ] Val D u i →ₗ[ℂ] ℂ)
-
-  cf : Lc → (Fin (D.R.N i) → (D.mem u).A.Fv v) → (D.mem u).C.cls i
-
-  tf : Lc → (Fin (D.R.N i) → (D.mem u).A.Fv v) → (Val D u i ≃ₗ[ℂ] Val D u i)
-
-  cx : Lc → (Fin (D.R.N i) → (D.mem u).A.Fv v) → (D.mem u).C.cls i
-
-  tx : Lc → (Fin (D.R.N i) → (D.mem u).A.Fv v) → (Val D u i ≃ₗ[ℂ] Val D u i)
-  cf_surj : ∀ c, ∃ Λ f, f ≠ 0 ∧ cf Λ f = c
-  cx_surj : ∀ c, ∃ Λ x, x ≠ 0 ∧ cx Λ x = c
-
-  up_tie : ∀ Λ f, f ≠ 0 →
-    ∃ e : (D.fm u).lv i v (cf Λ f) ≃ₗ[(D.mem u).A.Fv v] (Fin (D.R.N i) → (D.mem u).A.Fv v),
-      (D.fm u).fv i v (cf Λ f) = fnl e f ∧
-      ∀ φ ∈ (D.fm u).Fi i, ∀ x, (D.fm u).fv i v (cf Λ f) x = 1 →
-        tf Λ f ((D.fm u).upT i v (cf Λ f) x (φ ((D.fm u).up i v (cf Λ f) x))) = tx Λ (e x) (φ (cx Λ (e x)))
-
-  dn_tie : ∀ Λ x, x ≠ 0 →
-    ∃ e : (D.fm u).lk i v (cx Λ x) ≃ₗ[(D.mem u).A.Fv v] (Fin (D.R.N i) → (D.mem u).A.Fv v),
-      e ((D.fm u).te i v (cx Λ x)) = x ∧
-      ∀ φ ∈ (D.fm u).Fi i, ∀ f, f ≠ 0 →
-        tx Λ x ((D.fm u).dnT i v (cx Λ x) (fnl e f) (φ ((D.fm u).dn i v (cx Λ x) (fnl e f)))) = tf Λ f (φ (cf Λ f))
-
-  dil_f : ∀ Λ f, f ≠ 0 → ∀ a : ((D.mem u).A.Fv v)ˣ, ∀ φ ∈ (D.fm u).Fi i,
-    tf Λ f ((D.fm u).dilT i v a (cf Λ f) (φ ((D.fm u).dil i v a (cf Λ f)))) =
-      tf Λ ((a : (D.mem u).A.Fv v) • f) (φ (cf Λ ((a : (D.mem u).A.Fv v) • f)))
-
-  unfoldDilationUnit : ∀ Λ x, x ≠ 0 → ∀ a : ((D.mem u).A.Fv v)ˣ, ∀ φ ∈ (D.fm u).Fi i,
-    tx Λ x ((D.fm u).dilT i v a (cx Λ x) (φ ((D.fm u).dil i v a (cx Λ x)))) =
-      tx Λ (((a⁻¹ : ((D.mem u).A.Fv v)ˣ) : (D.mem u).A.Fv v) • x)
-        (φ (cx Λ (((a⁻¹ : ((D.mem u).A.Fv v)ˣ) : (D.mem u).A.Fv v) • x)))
-
-  ip_f : ∀ φ ∈ (D.fm u).Fi i, ∀ ψ ∈ (D.fm u).Fi i, (D.fm u).ipC i φ ψ =
-    ∑ Λ, ((nL Λ : ℂ))⁻¹ * ∑ f ∈ Finset.univ.filter (fun f => f ≠ 0),
-      ipL Λ (tf Λ f (φ (cf Λ f))) (tf Λ f (ψ (cf Λ f)))
-
-  unfoldInnerProduct : ∀ φ ∈ (D.fm u).Fi i, ∀ ψ ∈ (D.fm u).Fi i, (D.fm u).ipC i φ ψ =
-    ∑ Λ, ((nL Λ : ℂ))⁻¹ * ∑ x ∈ Finset.univ.filter (fun x => x ≠ 0),
-      ipL Λ (tx Λ x (φ (cx Λ x))) (tx Λ x (ψ (cx Λ x)))
-
 attribute [instance] Unf.LcFin
 
 variable {D u}
@@ -82,12 +29,6 @@ variable {D u}
 namespace Unf
 
 variable {i : ℕ} {v : (D.mem u).A.vT} (H : Unf D u i v)
-
-def P (Λ : H.Lc) (f : Fin (D.R.N i) → (D.mem u).A.Fv v) : Fn D u i →ₗ[ℂ] Val D u i :=
-  (H.tf Λ f).toLinearMap ∘ₗ LinearMap.proj (H.cf Λ f)
-
-def Q (Λ : H.Lc) (x : Fin (D.R.N i) → (D.mem u).A.Fv v) : Fn D u i →ₗ[ℂ] Val D u i :=
-  (H.tx Λ x).toLinearMap ∘ₗ LinearMap.proj (H.cx Λ x)
 
 end Unf
 
@@ -104,7 +45,6 @@ namespace Unf
 
 variable {i : ℕ} {v : (D.mem u).A.vT} (H : Unf D u i v)
 
-
 include H
 
 section ram
@@ -117,18 +57,6 @@ end ram
 end Unf
 
 variable (D u)
-
-def FiSt : Prop :=
-  ∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ (D.fm u).Fi i,
-    Uop D u i v φ ∈ (D.fm u).Fi i ∧ Dop D u i v φ ∈ (D.fm u).Fi i ∧ ∀ a, dia D u i v a φ ∈ (D.fm u).Fi i
-
-def CrossDia : Prop :=
-  ∀ i, i ≤ D.R.m → ∀ v v', v ≠ v' → ∀ φ ∈ (D.fm u).Fi i, ∀ a,
-    dia D u i v' a (Uop D u i v φ) = Uop D u i v (dia D u i v' a φ) ∧
-    dia D u i v' a (Dop D u i v φ) = Dop D u i v (dia D u i v' a φ) ∧
-    ∀ b, dia D u i v' a (dia D u i v b φ) = dia D u i v b (dia D u i v' a φ)
-
-def UnfAll : Prop := ∀ i, i ≤ D.R.m → ∀ v, Nonempty (Unf D u i v)
 
 variable {D u}
 
@@ -301,20 +229,6 @@ lemma emb_mem (i : ℕ) (x : Vl D u i) : (D.fm u).emb i x ∈ (D.fm u).Fi i := b
 def Ul (D : D7) (u : D.what₂.Word) (i : ℕ) (l : List (D.mem u).A.vT) : Fn D u i →ₗ[ℂ] Fn D u i :=
   l.foldr (fun v g => (Uop D u i v).comp g) LinearMap.id
 
-def chL (D : D7) (u : D.what₂.Word) : (j : ℕ) → (Fn D u 0 →ₗ[ℂ] Fn D u j)
-  | 0 => LinearMap.id
-  | j + 1 => (KT D u j).comp (chL D u j)
-
-lemma colT_eq (φ : Fn D u 0) : colT D u φ = chL D u D.R.m φ := by
-  have : ∀ j, Formalism.ThetaLiftIndependence.chainOpM (D.mem u).C.wt (D.mem u).C.Kmap j φ = chL D u j φ := by
-    intro j
-    induction j with
-    | zero => rfl
-    | succ j ih =>
-      show (D.mem u).C.K j (Formalism.ThetaLiftIndependence.chainOpM (D.mem u).C.wt (D.mem u).C.Kmap j φ) = KT D u j (chL D u j φ)
-      rw [ih]; rfl
-  exact this _
-
 lemma rat_of_into {i j : ℕ} (w : D.what₂.places.Pl) (f : Fn D u i →ₗ[ℂ] Fn D u j)
     (A : Submodule (Ow D w) (Vl D u i)) (B : Submodule (Ow D w) (Vl D u j)) (h : Into D u w f A B)
     (hA : Submodule.span D.what₂.LL (A : Set (Vl D u i)) = ⊤) (x : Vl D u i) :
@@ -334,18 +248,6 @@ lemma S_span (i : ℕ) (w : D.what₂.places.Pl) :
     Submodule.span D.what₂.LL ((D.fm u).S i w : Set (Vl D u i)) = ⊤ := by
   rw [eq_top_iff, ← ((D.fm u).lat_good i).2.2]
   exact Submodule.span_mono (fun x hx => Submodule.subset_span hx)
-
-
-variable (D u) in
-def LatticeChainWithoutLast (C : ℝ) : Prop :=
-  ∀ w, OverT D u w →
-    (∀ i, i < D.R.m →
-      ((D.fm u).seenP w = false →
-        Into D u w (fun φ => tpow D u (lossK D u C) • KT D u i φ) ((D.fm u).S i w) ((D.fm u).S (i + 1) w)) ∧
-      ((D.fm u).seenP w = true → ∃ BV, IsBfam D u (i + 1) w BV ∧
-        Into D u w (fun φ => tpow D u (lossK D u C) • KT D u i φ) ((D.fm u).S i w) (BV Finset.univ))) ∧
-    (∀ i, i ≤ D.R.m → (D.fm u).seenP w = true → ∀ v, (D.fm u).tauOf w v ∉ tops D →
-      Into D u w (fun φ => tpow D u (2 * Wt D u ((D.fm u).tauOf w v) + D.R.t) • φ) ((D.fm u).Bw i w v) ((D.fm u).S i w))
 
 lemma natCast_not_isUnit (K : Type) [Field K] [NumberField K] {p : ℕ} (hp : p.Prime) : ¬ IsUnit ((p : ℕ) : 𝓞 K) := by
   intro h
@@ -845,7 +747,6 @@ lemma Nlam_eq (hS : HidaSetting D u) (hR : Rat0 D u) (w : D.what₂.places.Pl) :
   refine Finset.sum_congr rfl (fun v hv => ?_)
   exact Int.toNat_of_nonneg (hS.2.2 _ (mem_VV hv).2)
 
-
 lemma dense_embLL (D : D7) : DenseRange D.what₂.embLL := by
   have hv : (InfinitePlace.mk D.what₂.embLL).IsComplex := IsTotallyComplex.isComplex _
   have hd := denseRange_embedding_of_isComplex _ hv
@@ -1014,7 +915,6 @@ theorem Pt_integral (P : Pend D u) (h4 : ArchimedeanSignatureMatching P) (hPF : 
   have := D.inLoc_of_mem_locW (D.plEq.symm p) (D.fm u).ptLat.L y hy
   rwa [Equiv.apply_symm_apply, e] at this
 
-
 variable (D u) in
 def ClassMapInjectiveBijectiveNorms : Prop :=
   Function.Injective (D.fm u).til ∧
@@ -1028,6 +928,5 @@ theorem classMap_estimate_of_partial (P : Pend D u) (h4 : ArchimedeanSignatureMa
   ⟨h.1, h.2.1, h.2.2.1,
     ⟨PRat_of P h4 h.2.2.1, Pt_integral P h4 h.2.2.1 _, h.2.2.2 _⟩,
     cplx_of_place (PRat_of P h4 h.2.2.1) (fun x => h.2.2.2 _ (InfinitePlace.mk D.what₂.embLL) x)⟩
-
 
 end Formalism.MainNotions.product_first_zeroth_parts

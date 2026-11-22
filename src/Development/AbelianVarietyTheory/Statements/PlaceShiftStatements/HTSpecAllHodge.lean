@@ -71,17 +71,6 @@ end Frame
 
 universe u
 
-structure HodgeFam (K : FinExt l) : Type (max 1 (u + 1)) where
-
-  H : ∀ {X : Scheme.{0}}, (X ⟶ Sp ↥K.1) → ∀ n : ℕ, Fin (n + 1) → Type u
-
-  [add : ∀ {X : Scheme.{0}} (q : X ⟶ Sp ↥K.1) (n : ℕ) (a : Fin (n + 1)), AddCommGroup (H q n a)]
-
-  [mod : ∀ {X : Scheme.{0}} (q : X ⟶ Sp ↥K.1) (n : ℕ) (a : Fin (n + 1)), Module ↥K.1 (H q n a)]
-
-  pull : ∀ {X X' : Scheme.{0}} {q : X ⟶ Sp ↥K.1} {q' : X' ⟶ Sp ↥K.1} {f : X' ⟶ X}, f ≫ q = q' →
-    ∀ (n : ℕ) (a : Fin (n + 1)), H q n a →ₗ[↥K.1] H q' n a
-
 attribute [instance] HodgeFam.add HodgeFam.mod
 
 end GlobalTheory.HTLink

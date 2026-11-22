@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsRowFrame
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LambdaCharSymMulInvEqOne
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemZmuOfPowPred
 

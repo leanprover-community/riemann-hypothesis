@@ -43,7 +43,6 @@ theorem sec_etale [IsFinite f] [Etale f] {U : X.Opens} (hU : IsAffineOpen U) :
 
 variable [IsFinite f] [Etale f]
 
-
 variable (s s') in
 def secTrace {U : X.Opens} (hU : IsAffineOpen U) : Sec s' (f ⁻¹ᵁ U) →+ Sec s U :=
   letI := secAlg s s' f U
@@ -238,48 +237,6 @@ section Identity
 
 variable {k : Type} [CommRing k] {X X' : Scheme.{0}} {s : X ⟶ Sp k} {s' : X' ⟶ Sp k}
   {f : X' ⟶ X} [IsFinite f] [Etale f]
-
-theorem secTrace_appSec_of_bijective {U : X.Opens} (hU : IsAffineOpen U)
-    (h : Function.Bijective (appSec s s' f U)) (b : Sec s U) :
-    secTrace s s' hU (appSec s s' f U b) = b := by
-  letI := secAlg s s' f U
-  haveI := sec_finite (s := s) (s' := s') (f := f) hU
-  haveI := sec_etale (s := s) (s' := s') (f := f) hU
-  haveI := projective_of_etale (Sec s U) (Sec s' (f ⁻¹ᵁ U))
-  exact algTrace_algebraMap_of_bijective h b
-
-
-variable (s) in
-theorem secTrace_id {U : X.Opens} (hU : IsAffineOpen U) (b : Sec s U) :
-    secTrace (f := 𝟙 X) s s hU b = b := by
-  have h : Function.Bijective (appSec s s (𝟙 X) U) :=
-    ConcreteCategory.bijective_of_isIso (Scheme.Hom.app (𝟙 X) U)
-  have e : appSec s s (𝟙 X) U b = b := by
-    change (Scheme.Hom.app (𝟙 X) U).hom b = b
-    rw [Scheme.Hom.id_app]; rfl
-  conv_lhs => rw [← e]
-  exact secTrace_appSec_of_bijective hU h b
-
-
-variable (s) in
-theorem omegaTrace_id (j : ℕ) :
-    omegaTrace (f := 𝟙 X) (Category.id_comp s) j =
-      (Scheme.Modules.pushforwardId X).hom.app (Omega s j) := by
-  refine (omegaTrace_ext (Category.id_comp s) j _ fun U hU b' x ↦ ?_).symm
-  change toOm s j U (b' • formPull (f := 𝟙 X) (Category.id_comp s) U j x) =
-    toOm s j U (secTrace s s hU b' • x)
-  congr 1
-  erw [secTrace_id s hU, formPull_id]
-  rfl
-
-
-variable (s) in
-theorem hodgeTrace_id (j q : ℕ) (x : hodgeH s j q) :
-    hodgeTrace (f := 𝟙 X) (Category.id_comp s) j q x = x := by
-  letI := algΓ s
-  have e := hodgeTrace_hodgePull (f := 𝟙 X) (Category.id_comp s) j q x
-  rw [hodgePull_id, omegaPull_id, omegaTrace_id, Iso.inv_hom_id_app] at e
-  exact e.trans (LinearMap.congr_fun (cohOn.map_id k _ ⊤ q) x)
 
 end Identity
 

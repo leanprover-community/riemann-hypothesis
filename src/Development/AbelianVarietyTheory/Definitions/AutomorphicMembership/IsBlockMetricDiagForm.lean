@@ -42,9 +42,6 @@ def diagForm (b : Module.Basis n ℂ M) (a : n → ℝ) : M →ₗ[ℂ] M →ₗ
     (fun _ _ _ => by simp [mul_add, Finset.sum_add_distrib])
     (fun _ _ _ => by simp [Finset.mul_sum, mul_left_comm])
 
-theorem diagForm_apply (b : Module.Basis n ℂ M) (a : n → ℝ) (v w : M) :
-    diagForm b a v w = ∑ i, a i * (b.repr v i * starRingEnd ℂ (b.repr w i)) := rfl
-
 theorem diagForm_symm (b : Module.Basis n ℂ M) (a : n → ℝ) (v w : M) :
     diagForm b a w v = starRingEnd ℂ (diagForm b a v w) := by
   simp [diagForm_apply, mul_comm]
@@ -57,17 +54,6 @@ theorem diagForm_pos (b : Module.Basis n ℂ M) {a : n → ℝ} (ha : ∀ i, 0 <
     ⟨i, Finset.mem_univ _, mul_pos (ha i) (Complex.normSq_pos.2 hi)⟩
 
 variable [DecidableEq n]
-
-def dualGram (M : Matrix n n ℂ) : Matrix n n ℂ := M⁻¹ᵀ
-
-theorem dualGram_posDef {A : Matrix n n ℂ} (hA : A.PosDef) : (dualGram A).PosDef := hA.inv.transpose
-
-theorem dualGram_conj (A T : Matrix n n ℂ) : dualGram (Tᴴ * A * T) = (T⁻¹ᵀ)ᴴ * dualGram A * T⁻¹ᵀ := by
-  simp only [dualGram, Matrix.mul_inv_rev, transpose_mul, Matrix.mul_assoc, ← conjTranspose_nonsing_inv]
-  rfl
-
-theorem dualGram_smul_one {a : ℂ} (ha : a ≠ 0) : dualGram (a • (1 : Matrix n n ℂ)) = a⁻¹ • 1 := by
-  rw [dualGram, inv_eq_left_inv (B := a⁻¹ • 1) (by simp [smul_smul, ha]), transpose_smul, transpose_one]
 
 end Gram
 
@@ -97,7 +83,6 @@ theorem isComb_iff {m : ℕ} (u : Fin m → TanM x t.G) (a : Fin m → S) (w : T
 section Push
 
 variable {f : X' ⟶ X} (m : SABMap t' t f) (x' : Sp S ⟶ X') (hx : x' ≫ f = x)
-
 
 include hx in
 theorem isTan_push {v : Sp (DualNumber S) ⟶ t'.G.left} (hv : IsTanAtG t' x' v) : IsTanAtG t x (v ≫ m.φ) := by
@@ -188,7 +173,6 @@ instance finite_tanM (y : Sp ℂ ⟶ X) : Module.Finite ℂ (TanM y t.G) := by
   rw [(isComb_iff (fun i => tanOf (isTan_map _ e (hD i))) a w).1 ha]
   exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
 
-
 variable (t) in
 theorem exists_isBlockMetric (y : Sp ℂ ⟶ X) : ∃ h : TanM y t.G →ₗ[ℂ] TanM y t.G →ₗ⋆[ℂ] ℂ, IsBlockMetric h := by
   classical
@@ -228,28 +212,5 @@ variable {k : Type} [CommRing k] {Z : Scheme.{0}} {p : Z ⟶ Sp k} {σ : k →+*
 
 theorem spMap_evHom {V : Z.affineOpens} {y : CxPts p σ} (hy : y ∈ ptsIn p σ V.1) :
     spMap (evHom hy) ≫ LogKS.chart V = y.1 := GlobalTheory.Points.specMap_valMap_fromSpec V.2 y.1 hy
-
-def valAt (f : Z ⟶ X) {V : Z.affineOpens} (v : TanM (LogKS.chart V ≫ f) t.G) {y : CxPts p σ}
-    (hy : y ∈ ptsIn p σ V.1) : TanM (y.1 ≫ f) t.G :=
-  tanOf (isTan_map (evHom hy) (by rw [← Category.assoc, spMap_evHom]) (isTan_tv v))
-
-def IsLieMetric (t : SAB H X) (f : Z ⟶ X) (R : AnRead p σ D)
-    (h : ∀ y : CxPts p σ, TanM (y.1 ≫ f) t.G →ₗ[ℂ] TanM (y.1 ≫ f) t.G →ₗ⋆[ℂ] ℂ) : Prop :=
-  (∀ y, IsBlockMetric (h y)) ∧ ∀ (V : Z.affineOpens) (v w : TanM (LogKS.chart V ≫ f) t.G),
-    ∃ g : CxPts p σ → ℂ, R.SmoothOn (ptsIn p σ V.1) (fun y => (g y).re) ∧
-      R.SmoothOn (ptsIn p σ V.1) (fun y => (g y).im) ∧
-      ∀ y (hy : y ∈ ptsIn p σ V.1), g y = h y (valAt f v hy) (valAt f w hy)
-
-theorem smoothOn_dim_zero (hD : D = 0) (R : AnRead p σ D) (T : Set (CxPts p σ)) (g : CxPts p σ → ℝ) :
-    R.SmoothOn T g := fun i => by
-  subst hD
-  exact contDiffOn_const.congr fun v _ => congrArg (g ∘ (R.chart i).e.symm) (Subsingleton.elim v 0)
-
-theorem isLieMetric_dim_zero (hD : D = 0) (f : Z ⟶ X) (R : AnRead p σ D)
-    {h : ∀ y : CxPts p σ, TanM (y.1 ≫ f) t.G →ₗ[ℂ] TanM (y.1 ≫ f) t.G →ₗ⋆[ℂ] ℂ} (hh : ∀ y, IsBlockMetric (h y)) :
-    IsLieMetric t f R h := by
-  classical
-  exact ⟨hh, fun V v w => ⟨fun y => if hy : y ∈ ptsIn p σ V.1 then h y (valAt f v hy) (valAt f w hy) else 0,
-    smoothOn_dim_zero hD R _ _, smoothOn_dim_zero hD R _ _, fun y hy => dif_pos hy⟩⟩
 
 end GlobalTheory.LieMet

@@ -25,14 +25,6 @@ variable (D : D7) (H : FullTiedNoG D)
       (QQ (D.what₂.places.resChar w) (nFr D (D.what₂.places.resChar w))))
   (B : GL (Fin D.R.k) D.host.E) (hBs : Cmp.StdB D B)
 
-def idStd : ∀ u (w : D.what₂.places.Pl), GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w) →
-    LocId (H.base.lev0 u) (D.what₂.places.resChar w) (nOrb (zH D.R.toFrame (hP D (D.what₂.places.resChar w))))
-      (WQ (D.what₂.places.resChar w) (nFr D (D.what₂.places.resChar w)))
-      (QQ (D.what₂.places.resChar w) (nFr D (D.what₂.places.resChar w))) :=
-  fun u w hg => locIdStd D u w hg (I0 u w hg) B hBs
-    (Classical.choose (companion_of_baseTied D H.base.toHermCols H.atT H.baseL u))
-    (Classical.choose_spec (companion_of_baseTied D H.base.toHermCols H.atT H.baseL u))
-
 variable (sc : Scale) (Ce : ℝ) (T : ∀ u : D.what₂.Word, Forms0 D u)
   (ψ : ∀ u (w : D.what₂.places.Pl), GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w) →
     Formalism.L2.Herm.awayFrom₂ (H.base.lev0 u) (D.what₂.places.resChar w) →* (ORec D w (nFr D (D.what₂.places.resChar w)))ˣ)

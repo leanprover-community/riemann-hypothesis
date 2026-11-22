@@ -1,9 +1,6 @@
 module
 
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalDataRealPlace
-public import Formalism.SharpRestriction.CuspSpanNormBounds.IsGramNorm
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PSDKOnOfPSDK
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyBlockLiftEstimate
 public import Formalism.SharpRestriction.ParamsHeightRankConstant
 public import Formalism.SharpRestriction.ParConsts
@@ -30,8 +27,6 @@ section GroupS0
 open Formalism.BasicNotions Formalism.MainNotions.S NumberField IsDedekindDomain
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-def Exp (D : D7) : Prop := ∀ u u' : D.what₂.Word, KExpansion D.s u u' ∧ KAbsConv D.s u u'
 
 def GDr (D : D7) (X : TermTie D) : Prop :=
   ∀ (u u' : D.what₂.Word) (t : D.s.Term u u'), D.s.Gterm t ≠ 0 →

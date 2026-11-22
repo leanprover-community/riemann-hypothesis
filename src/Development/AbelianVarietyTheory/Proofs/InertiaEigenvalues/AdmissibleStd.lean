@@ -115,10 +115,6 @@ def prodLat (T T' : LocLat G Qp LL O) : LocLat G Qp LL O where
 def prodLatEquiv (T T' : LocLat G Qp LL O) : ↥(prodLat T T').L.T ≃ₗ[O] (↥T.L.T × ↥T'.L.T) :=
   prodSubEquiv T.L.T T'.L.T
 
-theorem prodLatEquiv_act (T T' : LocLat G Qp LL O) (g : G) (x : ↥(prodLat T T').L.T) :
-    prodLatEquiv T T' (latRep (prodLat T T').L g x) =
-      (latRep T.L g (prodLatEquiv T T' x).1, latRep T'.L g (prodLatEquiv T T' x).2) := rfl
-
 def kerLattice [IsDomain O] [IsPrincipalIdealRing O] [CharZero LL] (T : LocLat G Qp LL O) {M : Type}
     [AddCommGroup M] [Module O M] [Finite M] (π : Representation O G M) (p : ↥T.L.T →ₗ[O] M)
     (hg : ∀ g x, p (latRep T.L g x) = π g (p x)) : Lattice (O := O) T.ρ where

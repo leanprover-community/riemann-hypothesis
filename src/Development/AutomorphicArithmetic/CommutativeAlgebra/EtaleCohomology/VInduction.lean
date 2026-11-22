@@ -269,9 +269,6 @@ private theorem inj_conn (hF : R.Facts) (hS : EtSide G) (hL : D.Laws G) (e : EMa
   · intro z x _ hx
     simp only [LinearMap.smul_apply, smul_eq_mul, map_mul, mul_assoc, ← Finset.mul_sum, hx, mul_zero]
 
-private theorem toV_pullT {M N : Model l K} (u : M.X ⟶ N.X) (hu : u ≫ N.p = M.p) (n : ℕ) (v : N.T n) :
-    M.toV n (Model.pullT u hu n v) = Model.pullV u hu n (N.toV n v) := rfl
-
 theorem injAbs : UpperTheory.Ru.crystallineComparison.InjAbs := by
   intro l _ K R G D hF hS hL e b p M hM a j ι _ v c u h f
   obtain ⟨r, P, d, uu, hu, hP, hinj⟩ := hS.comp M hM

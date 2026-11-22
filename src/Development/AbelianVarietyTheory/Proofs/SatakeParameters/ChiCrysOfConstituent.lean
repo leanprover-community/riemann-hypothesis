@@ -40,10 +40,6 @@ theorem continuous_toGlobal :
     Continuous fun g : Br.G D.nbr i w hw => decS D.nd w (Br.iota D.nbr i w hw g) :=
   continuous_subtype_val.comp (Br.iota_cont D.nbr i w hw)
 
-theorem loc_apply {k : ℕ} (M : GE D.nd →* Matrix (Fin k) (Fin k) (D.nd.O i)) (g : Br.G D.nbr i w hw)
-    (a b : Fin k) : Br.loc D.nbr i w hw M g a b =
-      (D.nbr i w hw).toLL (M (decS D.nd w (Br.iota D.nbr i w hw g)) a b) := rfl
-
 theorem continuous_loc {k : ℕ} (M : GE D.nd →* Matrix (Fin k) (Fin k) (D.nd.O i)) (hM : Continuous M) :
     Continuous (Br.loc D.nbr i w hw M) := by
   refine continuous_matrix fun a b => ?_

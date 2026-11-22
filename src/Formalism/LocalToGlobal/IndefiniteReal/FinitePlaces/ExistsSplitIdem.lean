@@ -105,12 +105,6 @@ theorem fa_ext {x y : Af F} (h : ∀ w, x w = y w) : x = y := by
   first
     | exact RestrictedProduct.ext h
     | exact Subtype.ext (funext h)
-theorem fa_mul (x y : Af F) (w : HeightOneSpectrum (𝓞 F)) : (x * y) w = x w * y w := rfl
-theorem fa_add (x y : Af F) (w : HeightOneSpectrum (𝓞 F)) : (x + y) w = x w + y w := rfl
-theorem fa_zero (w : HeightOneSpectrum (𝓞 F)) : (0 : Af F) w = 0 := rfl
-theorem fa_neg (x : Af F) (w : HeightOneSpectrum (𝓞 F)) : (-x) w = -x w := rfl
-theorem af_apply (c : F) (v : HeightOneSpectrum (𝓞 F)) :
-    (algebraMap F (Af F) c) v = algebraMap F (v.adicCompletion F) c := rfl
 
 end Single
 
@@ -118,7 +112,6 @@ section Split
 
 variable {D : D7} (δ : D.host.E) (hδ : D.sp.cm.sig δ = -δ) (hδ0 : δ ≠ 0) (Δ : D.host.F)
   (hΔ : algebraMap D.host.F D.host.E Δ = δ * δ)
-
 
 end Split
 

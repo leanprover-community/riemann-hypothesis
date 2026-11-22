@@ -3,7 +3,7 @@ module
 public import Mathlib
 public import ReciprocityTheory.AnalyticForms.MaIntEmpty
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffOnFubiniStudyProfileInvNormSqFirst
 
 @[expose] public section
 

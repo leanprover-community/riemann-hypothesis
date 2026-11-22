@@ -19,15 +19,6 @@ section BaseChange
 
 variable {L : Type*} [Field L] (d : L) (R : Type*) [CommRing R] [Algebra L R]
 
-theorem algebraMap_quadraticAlgebra_apply (x : L) :
-    algebraMap L (QuadraticAlgebra R (algebraMap L R d) 0) x = ⟨algebraMap L R x, 0⟩ := rfl
-
-omit [Algebra L R] in
-theorem quadraticAlgebra_re_one (a : R) : (1 : QuadraticAlgebra R a 0).re = 1 := rfl
-
-omit [Algebra L R] in
-theorem quadraticAlgebra_im_one (a : R) : (1 : QuadraticAlgebra R a 0).im = 0 := rfl
-
 def omegaRoot : {u : QuadraticAlgebra R (algebraMap L R d) 0 //
     u * u = d • 1 + (0 : L) • u} :=
   ⟨QuadraticAlgebra.omega, by
@@ -100,8 +91,6 @@ open NumberField IsDedekindDomain GroundTheory.Global GroundTheory.Global.SemiLo
 open scoped NumberField.LiesOver
 
 variable {L : Type*} [Field L] [NumberField L] (d : L) [Fact (∀ r : L, r ^ 2 ≠ d + 0 * r)]
-
-
 
 end Bridge
 

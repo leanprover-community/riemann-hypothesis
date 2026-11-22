@@ -15,8 +15,6 @@ namespace GroundTheory.ProfCoh
 
 open IsDedekindDomain NumberField CategoryTheory GroundTheory.Global
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 theorem finite_of_exact_of_finite {A B C : Type*} [AddCommGroup A] [AddCommGroup B] [AddCommGroup C] [Finite A]
@@ -68,11 +66,9 @@ theorem exists_natCast_mem_place (K : FiniteSubfield) {ℓ : ℕ} (hℓ : ℓ.Pr
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1))) (n ℓ k : ℕ) (hℓ : ℓ.Prime)
   (hnk : n = ℓ ^ k) (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
 
-
 include hℓ hS in
 theorem nonempty_of_natCast_mem : Nonempty S :=
   (exists_natCast_mem_place K hℓ).elim fun v hv => ⟨⟨v, hS v hv⟩⟩
-
 
 include hnk hS in
 theorem mem_of_natCast_pow_mem : ∀ v : HeightOneSpectrum (𝓞 K.1), ((n : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S := by
@@ -83,13 +79,11 @@ theorem mem_of_natCast_pow_mem : ∀ v : HeightOneSpectrum (𝓞 K.1), ((n : ℕ
 
 variable [NeZero n] (hodd : Odd n ∨ IsTotallyComplex K.1)
 
-
 include hnk hS hodd in
 theorem subsingleton_gsRoots_three : Subsingleton (cohomology (gsRoots S n) 3) :=
   subsingleton_cohomology_of_cdp_le_two (NeZero.ne n)
     (fun _ hp hpn => cdp_galUnramifiedOutside_le_two_of_dvd K S (NeZero.ne n)
       (mem_of_natCast_pow_mem S n ℓ k hnk hS) hodd hp hpn) (gsRoots S n) (nsmul_gsRoots S n) le_rfl
-
 
 include hnk hS hodd in
 theorem subsingleton_zmodRep_gs_three :
@@ -106,7 +100,6 @@ theorem natCard_zmodRep (G : Type) [Group G] : Nat.card (zmodRep.{0} G n) = n :=
 
 variable [Finite S]
 
-
 include hnk hS in
 theorem finite_zmodRep_gs_one : Finite (cohomology (zmodRep.{0} (galUnramifiedOutside K.1 ℚ̄ S) n) 1) := by
   have : Finite (zmodRep.{0} (galUnramifiedOutside K.1 ℚ̄ S) n) := inferInstanceAs (Finite (ULift.{0} (ZMod n)))
@@ -115,7 +108,6 @@ theorem finite_zmodRep_gs_one : Finite (cohomology (zmodRep.{0} (galUnramifiedOu
   exact mem_of_natCast_pow_mem S n ℓ k hnk hS v hv
 
 variable (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
-
 
 omit [Finite S] in
 include hnk hS in
@@ -131,7 +123,6 @@ theorem natCard_gsRoots : Nat.card (gsRoots S n) = n := by
       Subtype.val_injective
   exact hζS.card_rootsOfUnity
 
-
 omit [Finite S] in
 include hnk hS in
 theorem finite_gsRoots_local_one (v : S) :
@@ -142,7 +133,6 @@ theorem finite_gsRoots_local_one (v : S) :
   change ((Nat.card (gsRoots S n) : ℕ) : (v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1) ≠ 0
   rw [natCard_gsRoots S n ℓ k hnk hS]
   exact Nat.cast_ne_zero.2 (NeZero.ne n)
-
 
 include hnk hS in
 theorem finite_gsRoots_compact_two [Fintype S] :

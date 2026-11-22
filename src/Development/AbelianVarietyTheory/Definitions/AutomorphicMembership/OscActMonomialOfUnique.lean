@@ -42,12 +42,6 @@ def oscAct (P Q : ℕ) : Mat P Q →ₗ[ℂ] Module.End ℂ (OscPol P Q) :=
 theorem oscAct_apply (Z : Mat P Q) : oscAct P Q Z = ∑ l, ∑ l', Z l l' • unitOp l l' := by
   simp [oscAct, LinearMap.sum_apply]
 
-theorem oscAct_single (a b : Ix P Q) (c : ℂ) : oscAct P Q (Matrix.single a b c) = c • unitOp a b := by
-  simp [oscAct_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq, ite_smul]
-
-theorem oscAct_Eab (a b : Ix P Q) : oscAct P Q (Eab a b) = unitOp a b := by
-  rw [Eab, oscAct_single, one_smul]
-
 theorem unitOp_inl_inl (i j : Fin P) (f : OscPol P Q) :
     unitOp (.inl i) (.inl j) f = X (.inl i) * pderiv (.inl j) f + if i = j then (1 / 2 : ℂ) • f else 0 := by
   by_cases h : i = j <;> simp [unitOp, rai, low, h]
@@ -70,12 +64,6 @@ theorem unitOp_inr_inr (i j : Fin Q) (f : OscPol P Q) :
     module
   · simp [unitOp, rai, low, h, Ne.symm h]
 
-theorem unitOp_diag (l : Ix P Q) (α : Ix P Q →₀ ℕ) :
-    unitOp l l (monomial α 1) = ((sgn l : ℂ) * (((α l : ℕ) : ℂ) + 1 / 2)) • monomial α 1 := by
-  rcases l with i | i
-  · rw [unitOp_inl_inl, Formalism.BasicNotions.TH.X_mul_pderiv_monomial]; simp [sgn, add_smul]
-  · rw [unitOp_inr_inr, Formalism.BasicNotions.TH.X_mul_pderiv_monomial]; simp [sgn, add_smul, sub_eq_add_neg, add_comm]
-
 theorem pderiv_pderiv_comm (a b : Ix P Q) (f : OscPol P Q) : pderiv a (pderiv b f) = pderiv b (pderiv a f) := by
   have h : ⁅(pderiv a : Derivation ℂ (OscPol P Q) (OscPol P Q)), (pderiv b : Derivation ℂ (OscPol P Q) (OscPol P Q))⁆ = 0 :=
     derivation_ext fun i => by
@@ -88,7 +76,6 @@ section Adjoint
 
 variable {σ H : Type} [DecidableEq σ] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {ι : MvPolynomial σ ℂ →ₗ[ℂ] H}
-
 
 omit [DecidableEq σ] in
 theorem mfact_add_single (α : σ →₀ ℕ) (l : σ) :
@@ -265,58 +252,6 @@ section RankOne
 
 variable [Unique (Ix P Q)]
 
-def expo (α : Ix P Q →₀ ℕ) : ℤ := sgn (default : Ix P Q) * (2 * α default + 1)
-
-theorem oscAct_monomial_of_unique (Z : Mat P Q) (α : Ix P Q →₀ ℕ) (c : ℂ) :
-    oscAct P Q Z (monomial α c) = ((expo α : ℂ) * (Z.trace / 2)) • monomial α c := by
-  have e : (monomial α c : OscPol P Q) = c • monomial α 1 := by simp [smul_monomial]
-  rw [e, map_smul, smul_comm, oscAct_apply, Fintype.sum_unique, Fintype.sum_unique, LinearMap.smul_apply,
-    unitOp_diag, smul_smul (Z _ _), Matrix.trace, Fintype.sum_unique, expo]
-  congr 2
-  simp; ring
-
-theorem norm_sq_zpow (g : T0.G) (α : Ix P Q →₀ ℕ) : ‖((T0.sq g : ℂˣ) : ℂ) ^ expo α‖ = 1 := by
-  rw [norm_zpow, RealPar.Cover.norm_sq, one_zpow]
-
-def rankOneRep (T0 : GrpData P Q) : T0.G →* (FockSeq.L2 (Ix P Q) →L[ℂ] FockSeq.L2 (Ix P Q)) where
-  toFun g := FockSeq.diag (fun α => ((T0.sq g : ℂˣ) : ℂ) ^ expo α) (norm_sq_zpow g)
-  map_one' := by ext x α; simp
-  map_mul' g h := by ext x α; simp [mul_zpow, mul_assoc]
-
-theorem rankOneRep_monomial (g : T0.G) (α : Ix P Q →₀ ℕ) (c : ℂ) :
-    rankOneRep T0 g (FockSeq.emb _ (monomial α c)) =
-      ((T0.sq g : ℂˣ) : ℂ) ^ expo α • FockSeq.emb _ (monomial α c) :=
-  FockSeq.diag_emb_monomial _ (norm_sq_zpow g) α c
-
-def rankOne (T0 : GrpData P Q) : Osc P Q T0 where
-  H := FockSeq.L2 (Ix P Q)
-  Om := rankOneRep T0
-  isom g := FockSeq.norm_diag _ (norm_sq_zpow g)
-  cont := by
-    refine FockSeq.continuous_of_dense _ (fun g => FockSeq.norm_diag _ (norm_sq_zpow g)) FockSeq.dense_range_emb ?_
-    rintro _ ⟨f, rfl⟩
-    induction f using MvPolynomial.induction_on' with
-    | add f g hf hg => simpa only [map_add (f := _)] using hf.fun_add hg
-    | monomial α c =>
-      simp only [rankOneRep_monomial]
-      exact (RealPar.Cover.continuous_sq.zpow₀ _ fun g => .inl (T0.sq g).ne_zero).smul continuous_const
-  ι := FockSeq.emb _
-  ι_inj := FockSeq.emb_injective
-  dense := FockSeq.dense_range_emb
-  fockIP α β := by convert FockSeq.isFockIsometry_embedding α β
-  der Z hZ f := by
-    induction f using MvPolynomial.induction_on' with
-    | add f g hf hg =>
-      simp only [map_add (f := _)]
-      exact @HasDerivAt.fun_add ℝ _ _ _ NormedSpace.complexToReal _ _ _ _ _ hf hg
-    | monomial α c =>
-      simp only [rankOneRep_monomial, oscAct_monomial_of_unique, map_smul]
-      have h1 := RealPar.Cover.hasDerivAt_sq (T := T0) hZ
-      have h2 := (hasDerivAt_zpow (expo α) ((T0.sq (T0.expt ((0 : ℝ) • Z)) : ℂˣ) : ℂ)
-        (.inl (Units.ne_zero _))).scomp (0 : ℝ) h1
-      refine (h2.smul_const _).congr_deriv ?_
-      simp [T0.expt_zero, mul_comm]
-
 end RankOne
 
 end Osc
@@ -372,8 +307,6 @@ section Bridge
 open MvPolynomial GlobalTheory.Oscillator
 
 variable {P Q : ℕ} {T0 : GrpData P Q}
-
-theorem matrixUnitOperator_eq (l l' : Ix P Q) : oscillatorMatrixUnit l l' = unitOp l l' := rfl
 
 theorem omAct0_eq (P Q : ℕ) : omAct0 P Q = oscAct P Q := rfl
 

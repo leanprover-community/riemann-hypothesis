@@ -29,8 +29,6 @@ private theorem ent_dg {N : ℕ} (hN : 0 < N) (i j : Fin 2) :
     ent (toGQ !![(N : ℤ), 0; 0, 1]) i j = (!![(N : ℚ), 0; 0, 1] : Matrix (Fin 2) (Fin 2) ℚ) i j := by
   fin_cases i <;> fin_cases j <;> simp [ent, toGQ, hN, Matrix.GeneralLinearGroup.mkOfDetNeZero]
 
-private theorem ent_sl (γ : SL(2, ℤ)) (i j : Fin 2) : ent (ofSL γ) i j = (en γ i j : ℚ) := rfl
-
 private theorem dg_mul {a b : ℕ} (ha : 0 < a) (hb : 0 < b) :
     toGQ !![(a : ℤ), 0; 0, 1] * toGQ !![(b : ℤ), 0; 0, 1] = toGQ !![((a * b : ℕ) : ℤ), 0; 0, 1] := by
   refine ent_ext fun i j => ?_

@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.AdmissibleStabilisersOfCompatibleForms
+public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.GramTotallyDefinite
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.RndLinkAdmTOf
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PSplitT
 

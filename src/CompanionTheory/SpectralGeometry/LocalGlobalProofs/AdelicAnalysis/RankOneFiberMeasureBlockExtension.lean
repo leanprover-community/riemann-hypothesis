@@ -46,9 +46,6 @@ def sclMat : R →* Matrix (Fin 1) (Fin 1) (R ⊗[F] E) where
     rw [Matrix.mul_apply, Fin.sum_univ_one]
     simp only [Matrix.of_apply, Algebra.TensorProduct.tmul_mul_tmul, one_mul]
 
-theorem sclMat_apply (u : R) (i j : Fin 1) :
-    sclMat (F := F) (E := E) R u i j = u ⊗ₜ[F] (1 : E) := rfl
-
 def unitTens : Rˣ →* (R ⊗[F] E)ˣ :=
   Units.map (Algebra.TensorProduct.includeLeft : R →ₐ[F] R ⊗[F] E).toMonoidHom
 

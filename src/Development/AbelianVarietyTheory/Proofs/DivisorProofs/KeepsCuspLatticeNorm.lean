@@ -112,24 +112,6 @@ def rightEquiv (V : HSp D) (κ : GA D V) : AutQ V ≃ᵐ AutQ V :=
     measurable_toFun := hm κ
     measurable_invFun := hm κ⁻¹ }
 
-theorem eLpNorm_right (V : HSp D) (hs : V.SigOK) (κ : GA D V) (Φ : GA D V → ℝ)
-    (hΦ : ∀ γ ∈ GQ V, ∀ g, Φ (γ * g) = Φ g) (p : ENNReal) :
-    eLpNorm (fun q : AutQ V => Φ (q.out * κ)) p (muQ1 V) = eLpNorm (fun q : AutQ V => Φ q.out) p (muQ1 V) := by
-  obtain ⟨hP, hV⟩ := GlobalTheory.FinalJoin2.volPairEx_and_finVol D V hs
-  have hR := ((GlobalTheory.CoreLawsCompare.invProb_iff V hP hV _).2 rfl).2
-  have hmap : (muQ1 V).map (rightEquiv V κ) = muQ1 V := Measure.ext fun s hs => by
-    rw [MeasurableEquiv.map_apply]
-    exact hR κ _ (fun _ => rfl) s hs
-  have hout : ∀ g, Φ (autMk V g).out = Φ g := fun g => by
-    have e : (QuotientGroup.rightRel (GQ V)) g (autMk V g).out := Quotient.exact (Quotient.out_eq (autMk V g)).symm
-    rw [QuotientGroup.rightRel_apply] at e
-    rw [← hΦ _ e g, inv_mul_cancel_right]
-  conv_rhs => rw [← hmap, (rightEquiv V κ).measurableEmbedding.eLpNorm_map_measure]
-  congr 1
-  funext q
-  rw [← hout (q.out * κ)]
-  exact congrArg (fun q' : AutQ V => Φ (rightEquiv V κ q').out) (Quotient.out_eq q)
-
 variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H}
 
 theorem exists_induces (V : HSp D) {ι : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E)} (hι : LatEmb V ι)
@@ -152,7 +134,6 @@ theorem exists_induces (V : HSp D) {ι : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank
     rw [e]
   · obtain ⟨w, hw, e⟩ := h3 k a ha
     exact ⟨-w, neg_mem hw, by rw [neg_nsmul, ← e, neg_sub]; exact (add_sub_cancel _ _).symm⟩
-
 
 set_option maxHeartbeats 4000000 in
 theorem petE_transl {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ} {U : Unf Xo c σ r} {V : HSp D}
@@ -224,7 +205,6 @@ open GlobalTheory.LevDesc (transl pull KeepsCusp)
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open scoped TensorProduct
 open GlobalTheory GlobalTheory.CovTop
-
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar in
 set_option maxHeartbeats 1000000 in

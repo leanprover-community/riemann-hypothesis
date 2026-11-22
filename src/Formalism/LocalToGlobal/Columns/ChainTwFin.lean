@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.Columns.ChainFrmOk
 public import Formalism.LocalToGlobal.Columns.ThetaOpenTwLevQ
 public import Formalism.LocalToGlobal.Columns.ChainTwMain
-public import Formalism.LocalToGlobal.Columns.WithTopLevGTop
 
 @[expose] public section
 

@@ -17,8 +17,6 @@ namespace GlobalTheory.DoubleAnnihilator
 section
 variable {LL O : Type} [Field LL] [CommRing O] [Algebra O LL]
 
-local notation "QE" => LL ⧸ LinearMap.range (Algebra.linearMap O LL)
-
 theorem mk_eq_zero_iff (z : LL) :
     (Submodule.Quotient.mk z : QE) = 0 ↔ ∃ b : O, algebraMap O LL b = z := by
   simp only [Submodule.Quotient.mk_eq_zero, LinearMap.mem_range, Algebra.linearMap_apply]
@@ -106,7 +104,6 @@ end
 end GlobalTheory.DoubleAnnihilator
 
 namespace GlobalTheory
-
 
 open GlobalTheory.DoubleAnnihilator in
 theorem mem_of_forall_annihilator_annihilator :

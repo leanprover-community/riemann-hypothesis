@@ -26,18 +26,7 @@ theorem ev_log (c α : ℝ) (hα : 0 < α) : ∀ᶠ x : ℝ in atTop, c * Real.l
     _ ≤ 1 * x ^ α := by gcongr
     _ = x ^ α := one_mul _
 
-theorem ev_pow (c α β : ℝ) (h : α < β) : ∀ᶠ x : ℝ in atTop, c * x ^ α ≤ x ^ β := by
-  have ht := tendsto_rpow_atTop (sub_pos.2 h)
-  filter_upwards [ht.eventually_ge_atTop c, eventually_gt_atTop 0] with x hx hx0
-  have hsplit : x ^ β = x ^ α * x ^ (β - α) := by
-    rw [← Real.rpow_add hx0]
-    ring_nf
-  rw [hsplit, mul_comm c]
-  exact mul_le_mul_of_nonneg_left hx (Real.rpow_pos_of_pos hx0 α).le
-
 def rE (eps : ℝ) : ℕ := ⌈8 * (2 + 8 * eps + 2) / eps⌉₊ + 1
-
-theorem rG_rE (s : Scale) : rG s = rE s.eps := rfl
 
 def cGE (eps : ℝ) : ℝ := (((2 + 8 * eps + 3) * 10 ^ (6 * rE eps + 1) + 1) + 5) * (6 * (rE eps : ℝ) + 1) * 2
 
@@ -148,10 +137,6 @@ theorem k_le_x_pow_six {D : D7} (L : SizeData₂ D) (hS : Formalism.MainNotions.
 theorem one_le_k (D : D7) : (1 : ℝ) ≤ (D.R.k : ℝ) := by
   have h := D.R.m_add_three_le_k
   exact_mod_cast (by omega : 1 ≤ D.R.k)
-
-theorem xpow_le_exp (x N y : ℝ) (hx : 0 < x) (h : N * Real.log x ≤ y) : x ^ N ≤ Real.exp y := by
-  rw [Real.rpow_def_of_pos hx]
-  exact Real.exp_le_exp.2 (by rw [mul_comm]; exact h)
 
 theorem second_level_lt_good_of_log {D : D7} (L : SizeData₂ D) (hS : Formalism.MainNotions.SizesAt L) (hx : Real.exp 1 ≤ L.sc.x)
     (h : 514 * Real.log L.sc.x ≤ L.sc.x ^ (L.sc.eps / 8)) : L2 D L.sc < goodU L.sc.delta1 := by

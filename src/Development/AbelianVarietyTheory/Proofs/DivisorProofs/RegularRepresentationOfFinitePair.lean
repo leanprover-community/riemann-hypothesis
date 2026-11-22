@@ -28,8 +28,6 @@ def tr (g : G) : Quotient (QuotientGroup.rightRel Γ) → Quotient (QuotientGrou
     rw [QuotientGroup.rightRel_apply] at h ⊢
     simpa [mul_assoc] using h
 
-theorem tr_cl (g x : G) : tr Γ g (cl Γ x) = cl Γ (x * g) := rfl
-
 theorem tr_one : tr Γ 1 = id := by
   funext q
   induction q using Quotient.inductionOn with
@@ -128,9 +126,6 @@ def reg (h𝓕 : IsFundamentalDomain Γ 𝓕 μ) :
     rw [tr_mul]
     exact ((measurePreserving_tr h𝓕 g).quasiMeasurePreserving.ae_eq_comp
       (Lp.coeFn_compMeasurePreserving F (measurePreserving_tr h𝓕 h))).symm
-
-theorem reg_apply (h𝓕 : IsFundamentalDomain Γ 𝓕 μ) (g : G) (F : Lp ℂ 2 ((μ.restrict 𝓕).map (cl Γ))) :
-    reg h𝓕 g F = Lp.compMeasurePreserving (tr Γ g) (measurePreserving_tr h𝓕 g) F := rfl
 
 theorem reg_val (h𝓕 : IsFundamentalDomain Γ 𝓕 μ) (g : G) (F : Lp ℂ 2 ((μ.restrict 𝓕).map (cl Γ))) :
     ∀ᵐ x ∂μ, reg h𝓕 g F (cl Γ x) = F (cl Γ (x * g)) :=

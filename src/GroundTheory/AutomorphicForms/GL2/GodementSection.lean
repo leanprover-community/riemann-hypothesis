@@ -32,15 +32,6 @@ theorem modPow_one (s : ℂ) : modPow (1 : IdeleGroup K) s = 1 := by
 theorem modPow_ne_zero (x : IdeleGroup K) (s : ℂ) : modPow x s ≠ 0 := by
   simp [modPow, (ideleModule K x).2.ne']
 
-abbrev detI (g : GL (Fin 2) 𝔸[K]) : IdeleGroup K := Matrix.GeneralLinearGroup.det g
-
-def rightReg (h : GL (Fin 2) 𝔸[K]) (f : GL (Fin 2) 𝔸[K] → ℂ) : GL (Fin 2) 𝔸[K] → ℂ :=
-  fun g ↦ f (g * h)
-
-def IsKFinite (f : GL (Fin 2) 𝔸[K] → ℂ) : Prop :=
-  FiniteDimensional ℂ (Submodule.span ℂ {F | ∃ k ∈ (maxCompact : Subgroup (AdelicGLn.AdelicGL K 2)),
-    F = rightReg k f})
-
 theorem globalZeta_mul_right (F : 𝔸[K] → ℂ) (μ : HeckeCharacter K) (s : ℂ) (d : IdeleGroup K) :
     globalZeta (fun t ↦ F (t * (d : 𝔸[K]))) μ s =
       (((μ.toIdele d)⁻¹ : Circle) : ℂ) * modPow d (-s) * globalZeta F μ s := by
@@ -63,13 +54,6 @@ theorem globalZeta_mul_right (F : 𝔸[K] → ℂ) (μ : HeckeCharacter K) (s : 
   simp_rw [mul_comm _ d]
   rw [integral_mul_left_eq_self G d]
   rfl
-
-def slice (Φ : (Fin 2 → 𝔸[K]) → ℂ) (g : GL (Fin 2) 𝔸[K]) : 𝔸[K] → ℂ :=
-  fun t ↦ Φ (![0, t] ᵥ* (g : Matrix (Fin 2) (Fin 2) 𝔸[K]))
-
-def godementSection (χ₁ χ₂ : HeckeCharacter K) (s : ℂ) (Φ : (Fin 2 → 𝔸[K]) → ℂ)
-    (g : GL (Fin 2) 𝔸[K]) : ℂ :=
-  (χ₁.toIdele (detI g) : ℂ) * modPow (detI g) s * globalZeta (slice Φ g) (χ₁ * χ₂⁻¹) (2 * s)
 
 end
 

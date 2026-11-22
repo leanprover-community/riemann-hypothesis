@@ -141,20 +141,4 @@ namespace GlobalTheory.LocFieldOfDVR
 open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Topology
 open scoped WithZero
 
-theorem exists_isNonarchimedeanLocalField : ∀ (o F : Type) [CommRing o] [IsDomain o] [IsDiscreteValuationRing o] [IsAdicComplete (IsLocalRing.maximalIdeal o) o] [Finite (IsLocalRing.ResidueField o)] [Field F] [Algebra o F] [IsFractionRing o F], ∃ (_ : ValuativeRel F) (_ : TopologicalSpace F), IsNonarchimedeanLocalField F ∧ ∀ x : F, x ∈ 𝒪[F] ↔ ∃ a : o, algebraMap o F a = x := by
-  intro o F _ _ _ _ _ _ _ _
-  letI := valued o F
-  letI vr : ValuativeRel F := .ofValuation (val o F)
-  haveI : (val o F).Compatible := .ofValuation _
-  refine ⟨vr, inferInstance, ?_, fun x => ?_⟩
-  · have h1 : IsValuativeTopology F :=
-      IsValuativeTopology.of_mem_nhds_iff_vle (val o F) (fun {s x} => Valued.mem_nhds)
-    have h2 : ValuativeRel.IsNontrivial F :=
-      (ValuativeRel.isNontrivial_iff_isNontrivial (val o F)).mpr inferInstance
-    have h3 : LocallyCompactSpace F := locallyCompactSpace (o := o) (F := F)
-    exact {}
-  · rw [Valuation.mem_integer_iff, ← (ValuativeRel.valuation F).vle_one_iff, (val o F).vle_one_iff]
-    exact ⟨IsDiscreteValuationRing.exists_lift_of_le_one,
-      fun ⟨a, ha⟩ => ha ▸ valuation_le_one _ a⟩
-
 end GlobalTheory.LocFieldOfDVR

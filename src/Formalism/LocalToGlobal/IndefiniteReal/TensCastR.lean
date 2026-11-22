@@ -38,12 +38,6 @@ def RowRepTie {V : HSp D} {n : ℕ} {Sp : D.what₂.Tau → SPar} (rowRep : D.wh
     (χ : Bool → GA D V → ℂ) (e : Bool → (GA D V → ℂ) →ₗ[ℂ] (GA D V → ℂ)) (eFT : D.what₂.FT ≃ FTR θ PY M J χ e) : Prop :=
   ∀ σ, (rowRep σ).Iso (rowRepR θ (eFT σ))
 
-def RowLocPin {V : HSp D} {Sp : D.what₂.Tau → SPar} (lp : Formalism.L2.LPTiedPlaceholder D)
-    (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (PY : RowPsi V D.R.r)
-    (M : Formalism.IndefR.Mult.DSModel V Sp) (J : Bool → Set (GA D V)) (χ : Bool → GA D V → ℂ)
-    (e : Bool → (GA D V → ℂ) →ₗ[ℂ] (GA D V → ℂ)) (eFT : D.what₂.FT ≃ FTR θ PY M J χ e) : Prop :=
-  Formalism.L2.RowLocTied D lp (Formalism.L2.Col.rowFrameOf D (OccRows θ PY M J χ e) eFT)
-
 end Formalism.IndefR.principalLevelFrame
 
 end

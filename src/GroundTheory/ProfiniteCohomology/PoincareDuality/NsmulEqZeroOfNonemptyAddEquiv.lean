@@ -38,9 +38,6 @@ def dualMap (D : Rep.{u} k G) {A B : Rep.{u} k G} (φ : A ⟶ B) : dualRep D B �
     change D.ρ σ (f (B.ρ σ⁻¹ (φ.hom a))) = D.ρ σ (f (φ.hom (A.ρ σ⁻¹ a)))
     rw [Rep.hom_comm_apply]⟩
 
-theorem dualMap_id (D A : Rep.{u} k G) : dualMap D (𝟙 A) = 𝟙 (dualRep D A) :=
-  rfl
-
 theorem dualMap_comp (D : Rep.{u} k G) {A B C : Rep.{u} k G} (φ : A ⟶ B) (ψ : B ⟶ C) :
     dualMap D (φ ≫ ψ) = dualMap D ψ ≫ dualMap D φ :=
   rfl

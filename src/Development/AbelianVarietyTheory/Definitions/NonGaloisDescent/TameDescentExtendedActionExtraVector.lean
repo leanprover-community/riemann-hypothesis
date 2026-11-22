@@ -130,7 +130,6 @@ def actQuot (η : ℕ) : Representation O (TameGal K l e a)
     rw [← coe_actEM] at h
     exact h
 
-
 variable (P) in
 def quotToPol (η : ℕ) : ((P.EM η).restrictScalars O ⧸
     (P.M.restrictScalars O).submoduleOf ((P.EM η).restrictScalars O)) →ₗ[O] P.Pol :=
@@ -178,11 +177,9 @@ namespace Hom
 
 variable {Δ₁ : Descent P} {Δ₂ : Descent Q} {Δ₃ : Descent T} (F : Hom Δ₁ Δ₂)
 
-
 omit [NeZero e] in
 theorem app_mem_inv {v : Vec K a ι} (hv : v ∈ Δ₁.inv) : F.app v ∈ Δ₂.inv :=
   fun g => by rw [← F.app_act, hv g]
-
 
 omit [NeZero e] in
 theorem app_mem_Y {η : ℕ} {y : Vec K a ι} (hy : y ∈ Δ₁.Y η) : F.app y ∈ Δ₂.Y η :=
@@ -210,7 +207,6 @@ theorem tameDescent_extended_action_extraVector (g : TameGal K l e a) : (Δ.plus
   rw [xVec, plus_act_join, map_zero, map_one]
 
 end Descent
-
 
 omit [NormedAlgebra ℚ_[l] K] [NeZero e] [NeZero a] [TameDescentExponentData K l e a] in
 structure IsExactTriple {P : PhiMod O K l e a ι} {Q : PhiMod O K l e a κ} {T : PhiMod O K l e a μ}
@@ -267,34 +263,9 @@ variable {y : Vec K a ι} (hy : y ∈ P.Mext (invE l e (A O K)))
 
 omit [NormedAlgebra ℚ_[l] K] [NeZero e]
 
-theorem bas_inl (i : ι) : bas (Sum.inl i) = (P.plusInl hy).app (bas i) := by
-  rw [plusInl_app]
-  ext τ (j | j) : 2 <;> simp [bas, join, Pi.single_apply]
-
 omit [IsUltrametricDist K] [Fintype ι] in
 theorem bas_inr : (bas (Sum.inr ()) : Vec K a (ι ⊕ Unit)) = xVec := by
   ext τ (j | j) : 2 <;> simp [bas, join, xVec]
-
-theorem plus_upper {η : ℕ} (h : ∀ v ∈ P.L, E K l e ^ η • v ∈ P.M) (hη : y ∈ P.EM η) :
-    ∀ v ∈ (P.plus hy).L, E K l e ^ η • v ∈ (P.plus hy).M := fun _ =>
-  (P.plus hy).smul_mem_Mext_of_basis (by
-    rintro (i | ⟨⟨⟩⟩)
-    · rw [P.bas_inl hy, ← Hom.app_phi, ← map_smul]
-      exact Hom.app_mem_M _ (h _ (P.phi_mem_L (P.bas_mem_M i)))
-    · rw [bas_inr, phi_extension_generator_eq_add, smul_add, ← map_smul, ← bas_inr]
-      exact add_mem ((P.plus hy).M.smul_mem (EIn l e (A O K) ^ η) ((P.plus hy).bas_mem_M _))
-        (Hom.app_mem_M _ hη)) le_rfl
-
-theorem plus_lower {n : ℕ} (h : ∀ v ∈ P.M, E K l e ^ n • v ∈ P.L) (hn : E K l e ^ n • y ∈ P.L) :
-    ∀ v ∈ (P.plus hy).M, E K l e ^ n • v ∈ (P.plus hy).L := fun _ =>
-  (P.plus hy).smul_mem_ext_of_basis (by
-    rintro (i | ⟨⟨⟩⟩)
-    · rw [P.bas_inl hy, ← map_smul]
-      exact Hom.app_mem_ext _ le_rfl (h _ (P.bas_mem_M i))
-    · rw [bas_inr, eq_sub_of_add_eq (P.phi_extension_generator_eq_add hy).symm, smul_sub,
-        ← map_smul (P.plusInl hy).app, ← bas_inr]
-      exact sub_mem ((P.plus hy).L.smul_mem (EIn l e (A O K) ^ n)
-        ((P.plus hy).phi_mem_L ((P.plus hy).bas_mem_M _))) (Hom.app_mem_ext _ le_rfl hn)) le_rfl
 
 end PhiMod
 

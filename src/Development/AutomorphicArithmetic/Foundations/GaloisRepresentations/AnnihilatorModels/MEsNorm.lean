@@ -9,7 +9,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagPotentia
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundlePartialBlockMap
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PartialFlagBundleMetricLine
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsReducedNormalModelGenericCorrespondence
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.FiniteFlatCoverModelIntegral
+public import Mathlib
 
 @[expose] public section
 

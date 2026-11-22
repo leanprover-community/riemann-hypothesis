@@ -53,10 +53,6 @@ theorem Fr.adj (h : Fr s J J' P Q x y) {a b : ℕ} {U : Matrix (Fin n) (Fin a) R
   have := congrArg (cT s) e
   rwa [cT_mul, cT_mul, h.cc, h.herm, cT_zero, ← Matrix.mul_assoc] at this
 
-theorem Fr.yx (h : Fr s J J' P Q x y) : cT s y * J * x = 1 := by
-  have := congrArg (cT s) h.xy
-  rwa [cT_mul, cT_mul, h.cc, h.herm, cT_one, ← Matrix.mul_assoc] at this
-
 theorem Fr.Px (h : Fr s J J' P Q x y) : cT s P * J * x = 0 := h.adj h.xP
 theorem Fr.Py (h : Fr s J J' P Q x y) : cT s P * J * y = 0 := h.adj h.yP
 
@@ -595,10 +591,8 @@ theorem Fr.nice_mem {X' : Matrix (Fin m) (Fin r) E} (hX : adMat F P * adMat F X'
   rw [← hX, ← Matrix.mul_assoc, e2, Matrix.add_mul, Matrix.mul_one, Matrix.mul_assoc (adMat F (hd X))]
   exact add_comm _ _
 
-
 variable (F E) in
 def dd {k : ℕ} (t : Fin k → ℝ) : Fin k → AF F ⊗[F] E := fun i => algebraMap (AF F) (AF F ⊗[F] E) (rId F (t i)) - 1
-
 
 variable (σ J) in
 def tM {k : ℕ} (U V : Matrix (Fin n) (Fin k) E) (t : Fin k → ℝ) : Matrix (Fin n) (Fin n) (AF F ⊗[F] E) :=
@@ -656,7 +650,6 @@ open scoped TensorProduct
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n m r : ℕ}
   {J : Matrix (Fin n) (Fin n) E} {J' : Matrix (Fin m) (Fin m) E} {P : Matrix (Fin n) (Fin m) E}
   {Q : Matrix (Fin m) (Fin n) E} {X Y : Matrix (Fin n) (Fin (r + 1)) E}
-
 
 variable (F E) in
 def d1 (c : ℝ) : AF F ⊗[F] E := algebraMap (AF F) (AF F ⊗[F] E) (rId F c) - 1

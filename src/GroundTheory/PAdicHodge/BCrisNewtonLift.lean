@@ -20,10 +20,6 @@ open _root_.WittVector
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝒪♭" => PreTilt (normInteger K) p
-local notation "K♭" => FractionRing 𝒪♭
-local notation "𝔸" => Localization.Away (p : AInf K p)
-
 variable (K p) in
 def incl : AInf K p →+* WittVector p K♭ := WittVector.map (algebraMap 𝒪♭ K♭)
 

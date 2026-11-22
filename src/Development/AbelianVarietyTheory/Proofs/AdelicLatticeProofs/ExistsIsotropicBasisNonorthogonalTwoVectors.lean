@@ -20,9 +20,6 @@ def hfL (σ : E →+* E) (G : Matrix (Fin n) (Fin n) E) (y : Fin n → E) : (Fin
   map_add' u v := by simp [hf, add_mul, Finset.sum_add_distrib]
   map_smul' c u := by simp [hf, Finset.mul_sum, mul_assoc]
 
-theorem hfL_apply (σ : E →+* E) (G : Matrix (Fin n) (Fin n) E) (y x : Fin n → E) :
-    hfL σ G y x = hf σ G x y := rfl
-
 theorem hf_symm {σ : E →+* E} {G : Matrix (Fin n) (Fin n) E} (hG : IsHerm σ G) (x y : Fin n → E) :
     σ (hf σ G x y) = hf σ G y x := by
   set_option synthInstance.maxHeartbeats 100000 in

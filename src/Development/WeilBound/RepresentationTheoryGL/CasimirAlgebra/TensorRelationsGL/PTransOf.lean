@@ -25,9 +25,6 @@ variable {P Q : Type} [Fintype P] [DecidableEq P] [Fintype Q] [DecidableEq Q]
 def rl (e : P ≃ Q) : TV n M P ≃ₗ[ℂ] TV n M Q :=
   LinearEquiv.funCongrLeft ℂ M (e.symm.arrowCongr (Equiv.refl (Fin n)))
 
-omit [Fintype P] [DecidableEq P] [Fintype Q] [DecidableEq Q] in
-theorem rl_apply (e : P ≃ Q) (f : TV n M P) (J : Q → Fin n) : rl e f J = f (J ∘ e) := rfl
-
 theorem tE_rl (e : P ≃ Q) (E : Fin n → Fin n → Module.End ℂ M) (a b : Fin n) (f : TV n M P) :
     tE Finset.univ E a b (rl e f) = rl e (tE Finset.univ E a b f) := by
   funext J

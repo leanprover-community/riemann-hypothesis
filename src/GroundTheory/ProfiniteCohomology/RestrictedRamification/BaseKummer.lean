@@ -19,8 +19,6 @@ universe u
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 section RootsMap
 
 variable {M N : Type*} [Field M] [Field N] (n : ℕ) [NeZero n]
@@ -114,7 +112,6 @@ variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)) (n : ℕ)
   [NeZero n] (hnS : ∀ v ∉ S, ((n : ℕ) : 𝓞 K.1) ∉ v.asIdeal)
 
-
 set_option maxHeartbeats 1600000 in
 include hnS in
 theorem bijective_gsRootsOmegaMor (v : S) : Function.Bijective (gsRootsOmegaMor S ιs n v).hom := by
@@ -196,7 +193,6 @@ theorem gsLocalRes_sUnitsToUnits_eq (v : S) (z : cohomology (galSUnitsMax K.1 �
 
 variable (ℓ : ℕ) (hℓ : ℓ.Prime)
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
-
 
 set_option maxHeartbeats 4000000 in
 include hℓ hS in

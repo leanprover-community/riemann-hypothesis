@@ -12,8 +12,6 @@ noncomputable section
 
 namespace GlobalTheory
 
-local notation "𝕢" => Periodic.qParam
-
 def modularJ (τ : ℍ) : ℂ := E₄ τ ^ 3 / discriminant τ
 
 lemma modularJ_def (τ : ℍ) : modularJ τ = E₄ τ ^ 3 / discriminant τ := rfl

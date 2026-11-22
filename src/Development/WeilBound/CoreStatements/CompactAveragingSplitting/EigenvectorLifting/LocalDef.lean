@@ -1,6 +1,6 @@
 module
 
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.CompDef
+public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.InertDef
 
 @[expose] public section
 

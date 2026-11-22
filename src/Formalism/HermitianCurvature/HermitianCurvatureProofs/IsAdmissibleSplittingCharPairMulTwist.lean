@@ -388,7 +388,6 @@ theorem sum4 {α β γ δ X : Type} [Fintype α] [Fintype β] [Fintype γ] [Fint
 
 theorem op_sum_apply {ι : Type} (s : Finset ι) (T : ι → (DQ P).Op) (f : SmQ P.r P.TT) :
     (∑ t ∈ s, T t) f = ∑ t ∈ s, T t f := LinearMap.sum_apply s T f
-theorem op_mul_apply (S T : (DQ P).Op) (f : SmQ P.r P.TT) : (S * T) f = S (T f) := rfl
 
 def actS {N : ℕ} (b : SlopeTestRemainingChoices (Fin N) (A P (DQ P))) (F : Ix (Fin N) × M.Ty P → SmQ P.r P.TT) :
     Ix (Fin N) × M.Ty P → SmQ P.r P.TT :=
@@ -1431,9 +1430,6 @@ theorem sum_snoc {M : Type*} [AddCommMonoid M] (f : Ix (Fin (N + 1)) → M) :
 def embM (M : SlopeTestRemainingChoices (Fin N) A) : SlopeTestRemainingChoices (Fin (N + 1)) A :=
   Matrix.of fun E E' => if E (Fin.last N) = E' (Fin.last N) then M (Fin.init E) (Fin.init E') else 0
 
-theorem embM_apply (M : SlopeTestRemainingChoices (Fin N) A) (E E' : Ix (Fin (N + 1))) :
-    embM M E E' = if E (Fin.last N) = E' (Fin.last N) then M (Fin.init E) (Fin.init E') else 0 := rfl
-
 theorem embM_snoc (M : SlopeTestRemainingChoices (Fin N) A) (e e' : Ix (Fin N)) (b b' : Fin 2) :
     embM M (Fin.snoc (α := fun _ => Fin 2) e b) (Fin.snoc (α := fun _ => Fin 2) e' b') = if b = b' then M e e' else 0 := by
   simp [embM_apply, Fin.init_snoc, Fin.snoc_last]
@@ -2335,8 +2331,6 @@ section Free
 
 variable {A : Type} [Ring A] {N : ℕ}
 
-local notation "sn" => Fin.snoc (α := fun _ => Fin 2)
-
 theorem eU_mul_snoc (i j : Fin 2) (X : SlopeTestRemainingChoices (Fin (N + 1)) A) (e e' : Ix (Fin N)) (b b' : Fin 2) :
     ((eU (Fin.last N) i j : SlopeTestRemainingChoices (Fin (N + 1)) A) * X) (sn e b) (sn e' b') = if b = i then X (sn e j) (sn e' b') else 0 := by
   rw [Matrix.mul_apply, sum_snoc]
@@ -2936,8 +2930,6 @@ section Core4
 
 variable {P : M.Par} {l : ℕ} {L : LevelData (A P (DQ P)) P.r}
 
-local notation "sn" => Fin.snoc (α := fun _ => Fin 2)
-
 theorem mem_lift_positions (w : List ℝ) (k : Fin w.length) : k.castSucc ∈ ((wordP w).map liftL).map Letter.intersection_update_fsHerm_neg_one := by
   rw [List.map_map]
   have := wordP_all_positions w k
@@ -3045,8 +3037,6 @@ theorem third_identity_frame_sum (hL : IsModelLevel P (DQ P) L) (hOK : P.OK)
 end CoreI3
 
 section Relabel
-
-local notation "sn" => Fin.snoc (α := fun _ => Fin 2)
 
 variable {N : ℕ}
 
@@ -3259,8 +3249,6 @@ noncomputable section
 section Diag
 
 variable {P : M.Par} {l : ℕ} {L : LevelData (A P (DQ P)) P.r}
-
-local notation "sn" => Fin.snoc (α := fun _ => Fin 2)
 
 theorem io_diag {S : Type} [Fintype S] [DecidableEq S] (x : A P (DQ P)) :
     (io x : SlopeTestRemainingChoices S (A P (DQ P))) = Matrix.diagonal fun _ => x := by
@@ -5233,8 +5221,6 @@ noncomputable section
 
 section Ent
 variable (P : M.Par)
-
-theorem kap_eq (f : M.Ty P → ℂ) : kap P (DQ P) f = Matrix.diagonal fun π => algebraMap ℂ (DQ P).Pr (f π) := rfl
 
 theorem algA_apply (c : ℂ) (π π' : M.Ty P) :
     (algebraMap ℂ (A P (DQ P)) c) π π' = if π = π' then algebraMap ℂ (DQ P).Pr c else 0 := by
@@ -7288,7 +7274,6 @@ theorem memDrbi : L.Drbi ∈ Subring.closure (FS L) :=
   Subring.list_prod_mem _ fun x hx => by obtain ⟨i, rfl⟩ := List.mem_ofFn.1 hx; exact memF L (m_cbi L i)
 theorem memD : L.D ∈ Subring.closure (FS L) := Subring.mul_mem _ (memDr L) (memF L (m_ζ L))
 theorem memDi : L.Di ∈ Subring.closure (FS L) := Subring.mul_mem _ (memF L (m_ζi L)) (memDri L)
-theorem memDb : L.Db ∈ Subring.closure (FS L) := Subring.mul_mem _ (memDrb L) (memF L (m_ζb L))
 theorem memDbi : L.Dbi ∈ Subring.closure (FS L) := Subring.mul_mem _ (memF L (m_ζbi L)) (memDrbi L)
 
 theorem comm_cl {z : A} (hz : ∀ x ∈ FS L, z * x = x * z) {y : A} (hy : y ∈ Subring.closure (FS L)) :
@@ -7574,7 +7559,6 @@ theorem SS_hyps (i : ℕ) (hi : i ∈ Set.Icc 1 (P.k - 1)) :
   · rw [hn, hzb, hgi]; exact h1
   · rw [hns, hz, hgi]; exact h2
 
-
 include hTT in
 theorem BB_la {β : A P (DQ P)} (hβ : β ∈ BB P L) (y : ℂ) : la L y * β = β * la L y := by
   have hle : BB P L ≤ Subalgebra.centralizer ℂ ({la L y} : Set (A P (DQ P))) := by
@@ -7590,7 +7574,6 @@ theorem BB_la {β : A P (DQ P)} (hβ : β ∈ BB P L) (y : ℂ) : la L y * β = 
   have := hle hβ
   rw [Subalgebra.mem_centralizer_iff] at this
   exact this _ rfl
-
 
 include hTT in
 theorem BB_lb {β : A P (DQ P)} (hβ : β ∈ BB P L) :
@@ -7714,7 +7697,6 @@ theorem frame_memB :
       · exact mul_mem (hxi Y) (insert_two_mem_bounded P L _ _ _ _ _ (Subalgebra.smul_mem _ h1 _) h0 h0 h1)
 
 end Frame
-
 
 open Classical in
 def deB (β : A P (DQ P)) : A P (DQ P) :=
@@ -12457,9 +12439,6 @@ theorem psnd_smul (z : ℂ) (x : (DQ P).Pr) : (z • x).2.unop = (starRingEnd �
   show x.2.unop * (algebraMap ℂ (DQ P).Op (starRingEnd ℂ z)) = _
   rw [← Algebra.commutes, Algebra.smul_def]
 theorem pfst_smul' (z : ℂ) (x : (DQ P).Pr) : (z • x).1 = z • x.1 := G.pfst_smul P z x
-theorem multiplierPair_fst (f g : SmQ P.r P.TT) : ((DQ P).fnP f g).1 = (DQ P).mulOp f := rfl
-theorem multiplierPair_snd (f g : SmQ P.r P.TT) : ((DQ P).fnP f g).2.unop = (DQ P).mulOp g := rfl
-theorem mulOp_apply (f g : SmQ P.r P.TT) : (DQ P).mulOp f g = f * g := rfl
 
 def asS (f : (DQ P).R) : SmQ P.r P.TT := f
 
@@ -15605,8 +15584,6 @@ noncomputable section
 
 variable {P : M.Par}
 
-def Good (ψ : ℝ → ℝ) : Prop := LE.SmoothLog ψ ∧ ∀ p, ∃ C, ∀ x, 0 < x → |LE.ld p ψ x| ≤ C
-
 theorem Fq_star (φ : ℝ → ℝ) : star (Fq P φ 0) = Fq P φ 0 := rfl
 
 variable {L : LevelData (A P (DQ P)) P.r} (hL : IsModelLevel P (DQ P) L) (hLaw : (DQ P).Laws P.TT)
@@ -16182,33 +16159,6 @@ open MeasureTheory ComplexConjugate
 noncomputable section
 
 variable {P : M.Par}
-
-theorem ipA_add_right {f g1 g2 : M.Ty P → SmQ P.r P.TT}
-    (h1 : ∀ π, Integrable (fun q => evQ P (f π) q * conj (evQ P (g1 π) q)) (mu0 P.r P.TT))
-    (h2 : ∀ π, Integrable (fun q => evQ P (f π) q * conj (evQ P (g2 π) q)) (mu0 P.r P.TT)) :
-    ipA P f (g1 + g2) = ipA P f g1 + ipA P f g2 := by
-  rw [ipA_eq, ipA_eq, ipA_eq, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun π _ => ?_
-  rw [← integral_add (h1 π) (h2 π)]
-  congr 1; funext q
-  show evQ P (f π) q * conj (evQ P (g1 π) q + evQ P (g2 π) q) = _
-  rw [map_add (f := _)]; ring
-
-theorem ipA_smul_right (c : ℂ) (f g : M.Ty P → SmQ P.r P.TT) :
-    ipA P f (fun π => c • g π) = conj c * ipA P f g := by
-  rw [ipA_eq, ipA_eq, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun π _ => ?_
-  rw [← integral_const_mul]
-  congr 1; funext q
-  show evQ P (f π) q * conj (c * evQ P (g π) q) = _
-  rw [map_mul]; ring
-
-theorem ipA_zero_right (f : M.Ty P → SmQ P.r P.TT) : ipA P f 0 = 0 := by
-  rw [ipA_eq]
-  refine Finset.sum_eq_zero fun π _ => ?_
-  have : (fun q => evQ P (f π) q * conj (evQ P ((0 : M.Ty P → SmQ P.r P.TT) π) q)) = fun _ => 0 := by
-    funext q; show _ * conj (0 : ℂ) = 0; simp
-  rw [this, integral_zero]
 
 variable {L : LevelData (A P (DQ P)) P.r} {j : M.Ty P → SmQ P.r P.TT}
 variable (hTTp : 0 < P.TT) (hL : IsModelLevel P (DQ P) L) (hLaw : (DQ P).Laws P.TT)

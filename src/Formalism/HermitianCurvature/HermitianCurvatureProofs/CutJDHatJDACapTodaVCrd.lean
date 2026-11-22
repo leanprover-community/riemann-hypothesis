@@ -26,10 +26,6 @@ def opE (l : Fin r) (i : Fin 6) : Module.End ℂ (WSm r X) where
   map_add' f g := Subtype.ext (linear_operators_holds r X l i f g 1 f.2 g.2).1
   map_smul' a f := Subtype.ext (linear_operators_holds r X l i f f a f.2 f.2).2
 
-theorem opL_three (l : Fin r) : opL (E := X) l 3 = pbOp l := rfl
-theorem opL_four (l : Fin r) : opL (E := X) l 4 = cbOp l := rfl
-theorem opL_five (l : Fin r) : opL (E := X) l 5 = cbiOp l := rfl
-
 def mulE (a : (Fin r → ℂ) → ℂ) (ha : ContDiffOn ℝ ∞ a (OmX r)) : Module.End ℂ (WSm r X) where
   toFun f := ⟨fun x => a x • (f : (Fin r → ℂ) → X) x,
     ⟨ha.smul (memW f.2).1, fun x hx => by simp [(memW f.2).2 x hx]⟩⟩

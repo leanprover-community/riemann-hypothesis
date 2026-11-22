@@ -13,7 +13,6 @@ open scoped ComplexConjugate ComplexOrder Real Classical
 
 namespace GlobalTheory.SW.Slab
 
-
 open Matrix Complex NumberField MeasureTheory in
 open scoped ComplexConjugate ComplexOrder Real Classical in
 theorem _root_.GlobalTheory.SW.Slab.exists_lminor_near {r : ℕ} (S : Matrix (Fin r) (Fin r) ℂ) :
@@ -34,7 +33,6 @@ theorem _root_.GlobalTheory.SW.Slab.exists_lminor_near {r : ℕ} (S : Matrix (Fi
   have h2 := (dist_pi_lt_iff (by norm_num : (0 : ℝ) < 1 / 2)).mp (h _ hd) i
   rw [dist_eq_norm] at h2
   exact h2
-
 
 open Matrix Complex NumberField MeasureTheory in
 open scoped ComplexConjugate ComplexOrder Real Classical in
@@ -263,12 +261,6 @@ private theorem measurePreserving_mul_left_of_normSq_det_eq_one {r : ℕ} (u : M
 open Matrix Complex NumberField MeasureTheory in
 open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
-private theorem mat_lmulC' (u : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) (τ : X.Ψ) :
-    _root_.ReciprocityTheory.ChartRestriction.G.FD.mat (X.lmulC u x) τ = u τ * _root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ := rfl
-
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem norm_sgnM_le_one (a b : Fin r) :
     ‖_root_.GlobalTheory.SW.sgnM X a b‖ ≤ 1 := by
   unfold _root_.GlobalTheory.SW.sgnM
@@ -277,7 +269,6 @@ private theorem norm_sgnM_le_one (a b : Fin r) :
     rw [Matrix.diagonal_apply_eq, _root_.GlobalTheory.SW.Slab.norm_sgn]
   · rw [Matrix.diagonal_apply_ne _ h]
     simp
-
 
 open Matrix Complex NumberField MeasureTheory in
 open scoped ComplexConjugate ComplexOrder Real Classical in

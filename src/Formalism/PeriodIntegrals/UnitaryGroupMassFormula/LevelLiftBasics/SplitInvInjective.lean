@@ -16,11 +16,6 @@ def splitInv (k i r' : ℕ) : Fin (2 * r' + k + 1) ⊕ Fin (2 * i) → Fin (2 * 
   | Sum.inl a => ⟨a.val + i, by omega⟩
   | Sum.inr b => ⟨if b.val < i then b.val else b.val + (2 * r' + k + 1), by split_ifs <;> omega⟩
 
-theorem splitInv_inl (k i r' : ℕ) (a : Fin (2 * r' + k + 1)) : (splitInv k i r' (Sum.inl a)).val = a.val + i := rfl
-
-theorem splitInv_inr (k i r' : ℕ) (b : Fin (2 * i)) :
-    (splitInv k i r' (Sum.inr b)).val = if b.val < i then b.val else b.val + (2 * r' + k + 1) := rfl
-
 theorem splitInv_injective (k i r' : ℕ) : Function.Injective (splitInv k i r') := by
   intro x y h
   have hv := congrArg Fin.val h

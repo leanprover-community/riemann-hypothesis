@@ -14,7 +14,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry�
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.LocalGlobalAboveL
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.RegularAlgebraicPurity
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HeckeLAdicParameterAbove
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HoweDualityGL
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.BernsteinUnitaryProductIrreducible
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsCellOfIsSubquotient
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HasFiniteLengthOfIsIrreducible
@@ -30,25 +29,6 @@ noncomputable section
 namespace GlobalTheory.NRows
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N GlobalTheory.RowCopy
-
-structure Hypotheses₂ : Prop where
-  bz : GlobalTheory.Published.BernsteinZelevinskyFiniteness
-  bern : GlobalTheory.Published.BernsteinUnitaryProductIrreducible
-  geo : GlobalTheory.Published.GeometricLemma
-  unl : GlobalTheory.Published.UnlinkedProductIrreducible
-  mp : GlobalTheory.Published.DepthZeroJacquetInjective
-  howe : GlobalTheory.Published.HoweDualityGL
-  js : GlobalTheory.Published.JacquetShalika
-  fin : GlobalTheory.Published.AutomorphicFormsFiniteGL
-  temp : GlobalTheory.Published.CohomologicalCsdTempered
-  gal : GlobalTheory.Published.GaloisRepOfPolarizedCuspidal
-  car : GlobalTheory.Published.LocalGlobalAboveL
-  clo : GlobalTheory.Published.RegularAlgebraicPurity
-  art : GlobalTheory.Published.GlobalArtinReciprocity
-  chA : GlobalTheory.Published.HeckeLAdicCharacterAbove
-  chP : GlobalTheory.Published.HeckeLAdicParameterAbove
-  berger : GlobalTheory.Published.DeRhamPotSemistable
-  cheb : GlobalTheory.Published.ChebotarevDegreeOne
 
 structure RowsB (D : D7) : Prop where
   rowSize : RowSize D
@@ -77,24 +57,6 @@ def GoodIdempotentReadsAsGoodTypeProjector {D : D7} {cf : Formalism.L2.Host.Char
     X.R.extV j (X.tupT μ) y = X.fn hμ j f →
       (D.ntypes.onMt μ (j.1 + 1) D.ntypes.e0 f = f ↔ GlobalTheory.DownLift.GoodVt X.R j (X.tupT μ) y)
 
-structure Tied (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) : Type 1 where
-  P : GlobalTheory.NPin.Pin hL D
-  X : GlobalTheory.NJoin.RealAt D P.cf P.C P.tp
-  agree : GlobalTheory.NJoin.Agree X P.M P.rep
-  e0read : GoodIdempotentReadsAsGoodTypeProjector X
-
-structure Named {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} (T : Tied hL D) : Prop where
-  hypO : SumRepresentations.hypO D
-  c1 : GlobalDatumCompatibility D
-  bc : SphericalInertData.Conclusion1 D
-  lam : LamUsed D
-  isot : SumRepresentations.adm8 D
-  ser : GlobalTheory.TypeLeaf.SerLoc D
-  typeNZ : ∀ j t, GlobalTheory.DownLift.TypeNZ T.X.R j t
-
-structure Inputs (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) : Type 1 extends toRowSideFamily : Tied hL D where
-  named : Named toRowSideFamily
-
 theorem LamUsed.at {D : D7} (h : LamUsed D) {μ} (hμ : μ = D.what₂.mu0 ∨ ∃ w, μ = D.what₂.muAt w) {j : ℕ}
     (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) : LamPos D μ j := by
   obtain ⟨k, rfl⟩ : ∃ k, j = k + 1 := ⟨j - 1, by omega⟩
@@ -111,21 +73,6 @@ namespace Inputs
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} (I : Inputs hL D)
 include I
-
-theorem hypO : SumRepresentations.hypO D := I.named.hypO
-
-theorem c1 : GlobalDatumCompatibility D := I.named.c1
-
-theorem bc : SphericalInertData.Conclusion1 D := I.named.bc
-
-theorem lam : LamUsed D := I.named.lam
-
-theorem isot : SumRepresentations.adm8 D := I.named.isot
-
-theorem ser : GlobalTheory.TypeLeaf.SerLoc D := I.named.ser
-
-theorem typeNZ : ∀ j t, GlobalTheory.DownLift.TypeNZ I.X.R j t := I.named.typeNZ
-
 
 end Inputs
 

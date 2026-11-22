@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsOrthFull
 public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PExactSequence
 public import GroundTheory.HeightsAndTheta.Heights.ArithDegreeExact
-public import GroundTheory.HeightsAndTheta.Heights.Slopes
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SlopeBoundComparableMetricStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.NormalizedDegreeFullRankSublatticeStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.NormalizedDegreeBoundedMapStatement

@@ -14,24 +14,6 @@ open scoped InnerProductSpace ComplexConjugate Matrix
 
 noncomputable section
 
-def eps (R : Type*) [CommRing R] (i : Fin 2) : Fin 2 → R := Pi.single i 1
-
-def SectionLocalEquation.Statement : Prop :=
-  ∀ (R : Type) [CommRing R] (a₁ a₂ b₁ b₂ : R),
-    (let S := Submodule.span R {eps R 0 + a₂ • eps R 1}
-     Function.Bijective (fun r : R => r • S.mkQ (eps R 1)) ∧
-       S.mkQ (eps R 0 + a₁ • eps R 1) = (a₁ - a₂) • S.mkQ (eps R 1)) ∧
-    (let S := Submodule.span R {b₂ • eps R 0 + eps R 1}
-     Function.Bijective (fun r : R => r • S.mkQ (eps R 0)) ∧
-       S.mkQ (b₁ • eps R 0 + eps R 1) = (b₁ - b₂) • S.mkQ (eps R 0) ∧
-       S.mkQ (eps R 0 + a₁ • eps R 1) = (1 - a₁ * b₂) • S.mkQ (eps R 0))
-
-def pauli : Fin 3 → Matrix (Fin 2) (Fin 2) ℂ :=
-  ![!![0, 1; 1, 0], !![0, -Complex.I; Complex.I, 0], !![1, 0; 0, -1]]
-
-def blochVector (e : EuclideanSpace ℂ (Fin 2)) : EuclideanSpace ℝ (Fin 3) :=
-  WithLp.toLp 2 fun i => (star (WithLp.ofLp e) ⬝ᵥ (pauli i *ᵥ WithLp.ofLp e)).re
-
 def kernelL (s : ℝ) : ℝ := (1 / 2) * Real.log ((1 - s) / 2)
 
 def gKernel (R : Type*) [CommRing R] (k : ℕ) : MvPolynomial (Fin 2) R :=

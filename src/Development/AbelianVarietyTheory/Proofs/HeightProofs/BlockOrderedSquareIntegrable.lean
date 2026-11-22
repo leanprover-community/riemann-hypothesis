@@ -32,9 +32,6 @@ theorem continuous_reixHom {a b : Type} [Fintype a] [Fintype b] [DecidableEq a] 
 def covU {e : Ix p q ≃ Fin n} {ε : Fin n → Bool} (h : BlockOrd e ε) (T : GrpData p q) : T.G →* Formalism.REAL.UJ ε :=
   ((Units.map (reixHom e)).comp T.cov).codRestrict (Formalism.REAL.UJ ε) fun x => h.cov_mem T x
 
-theorem umat_covU {e : Ix p q ≃ Fin n} {ε : Fin n → Bool} (h : BlockOrd e ε) (T : GrpData p q) (x : T.G) :
-    umat (covU h T x) = Matrix.reindex e e ((T.cov x : GL (Ix p q) ℂ) : Mat p q) := rfl
-
 theorem continuous_covU {e : Ix p q ≃ Fin n} {ε : Fin n → Bool} (h : BlockOrd e ε) (T : GrpData p q) :
     Continuous (covU h T) :=
   Continuous.subtype_mk (((continuous_reixHom e).units_map _).comp (continuous_fst.comp T.emb.continuous)) _

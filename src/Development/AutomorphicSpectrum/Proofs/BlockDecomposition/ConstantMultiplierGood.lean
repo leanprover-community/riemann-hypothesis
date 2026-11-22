@@ -20,9 +20,6 @@ variable {R R' : Type} [CommRing R] [CommRing R'] {ι : Type} [Fintype ι] [Deci
 
 def glEquiv (e : R ≃+* R') : GL ι R ≃* GL ι R' := Units.mapEquiv (RingEquiv.mapMatrix e).toMulEquiv
 
-theorem coe_glEquiv (e : R ≃+* R') (g : GL ι R) :
-    ((glEquiv e g : GL ι R') : Matrix ι ι R') = (g : Matrix ι ι R).map e := rfl
-
 theorem coe_glEquiv_inv (e : R ≃+* R') (g : GL ι R) :
     (((glEquiv e g)⁻¹ : GL ι R') : Matrix ι ι R') = ((g⁻¹ : GL ι R) : Matrix ι ι R).map e := by
   rw [← map_inv]; rfl

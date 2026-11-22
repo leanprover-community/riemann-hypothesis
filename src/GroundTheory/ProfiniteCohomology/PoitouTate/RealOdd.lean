@@ -18,8 +18,6 @@ open IsDedekindDomain NumberField CategoryTheory CategoryTheory.Limits MonoidalC
 
 attribute [local instance 2000] Rep.hV2
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
@@ -28,7 +26,6 @@ section OrderTwoOdd
 
 variable {F : Type} [Group F] [TopologicalSpace F] [IsTopologicalGroup F] [Fintype F] {n : ℕ}
   (hn : Odd n) (B : Rep.{0} (ULift.{0} ℤ) F) [IsDiscreteRep B] (hB : ∀ b : B, n • b = 0)
-
 
 include hn hB in
 theorem isZero_cohomology_of_card_two_of_odd [CompactSpace F] [TotallyDisconnectedSpace F]
@@ -49,7 +46,6 @@ theorem isZero_cohomology_of_card_two_of_odd [CompactSpace F] [TotallyDisconnect
       _ = 0 := by rw [hnx, mul_nsmul', h2x, nsmul_zero, sub_zero]
   rw [hz x, hz y]
 
-
 omit [TopologicalSpace F] [IsTopologicalGroup F] [IsDiscreteRep B] in
 include hn hB in
 theorem exists_norm_of_orderTwo_of_odd {c : F} (hG : ∀ g : F, g = 1 ∨ g = c) (hc : c ≠ 1) :
@@ -68,7 +64,6 @@ section Local
 variable {n : ℕ} (hn : Odd n) (A : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 ℚ̄ S)) [IsDiscreteRep A]
   (hA : ∀ a : A, n • a = 0)
 
-
 include hn hA in
 theorem isZero_cohomology_gsReal_of_odd (w : {v : InfinitePlace K.1 // v.IsReal}) (m : ℕ) :
     IsZero (cohomology (Rep.res (gsRealFamily S ιr w).toMonoidHom A) (m + 1)) := by
@@ -76,7 +71,6 @@ theorem isZero_cohomology_gsReal_of_odd (w : {v : InfinitePlace K.1 // v.IsReal}
     ?hcard m
   case hcard => exact card_realGal_eq_two w.1 w.2
   exact key
-
 
 omit [IsDiscreteRep A] in
 include hn hA in
@@ -89,7 +83,6 @@ theorem exists_norm_gsReal_of_odd (w : {v : InfinitePlace K.1 // v.IsReal}) :
   case hc => exact realConj_ne_one w.1 w.2
   exact key
 
-
 include hn hA in
 theorem bijective_tateForget_gs_of_odd (m : ℕ) :
     Function.Bijective (tateForget (gsFinFamily S ιs) (gsRealFamily S ιr) A
@@ -101,7 +94,6 @@ theorem bijective_tateForget_gs_of_odd (m : ℕ) :
     (fun w m => isZero_cohomology_gsReal_of_odd S ιr hn A hA w m)
     (fun w => exists_norm_gsReal_of_odd S ιr hn A hA w) m
   exact (ConcreteCategory.isIso_iff_bijective _).1 this
-
 
 include hn hA in
 theorem bijective_tateForget_gs_of_odd' {m : ℕ} (hm : 1 ≤ m) :
@@ -148,7 +140,6 @@ def gsOddTrace : tateCompactCohomologyRes (gsFinFamily S ιs) (gsRealFamily S ι
       (fun v => Rep.res (gsFinFamily S ιs v).toMonoidHom (gsRoots S N)) (fun _ => 𝟙 _)
       (fun w => Rep.res (gsRealFamily S ιr w).toMonoidHom (gsRoots S N)) (fun _ => 𝟙 _) 3).hom.toAddMonoidHom
 
-
 omit [Fintype S] [NeZero N] in
 include hodd in
 theorem gsReal_two_eq_zero_of_odd (w : {v : InfinitePlace K.1 // v.IsReal})
@@ -163,7 +154,6 @@ theorem gsOddTrace_apply (z : tateCompactCohomologyRes (gsFinFamily S ιs) (gsRe
           (fun v => Rep.res (gsFinFamily S ιs v).toMonoidHom (gsRoots S N)) (fun _ => 𝟙 _)
           (fun w => Rep.res (gsRealFamily S ιr w).toMonoidHom (gsRoots S N)) (fun _ => 𝟙 _) 3).hom z) :=
   rfl
-
 
 set_option maxHeartbeats 1000000 in
 theorem gsOddTrace_localToCompact
@@ -190,7 +180,6 @@ theorem gsOddTrace_localToCompact
     _ = ∑ v, gsLocalInvRootsQZ S ιs N v (ξ.1 v) + 0 := (add_zero _).symm
     _ = _ := congrArg (∑ v, gsLocalInvRootsQZ S ιs N v (ξ.1 v) + ·) h2.symm
 
-
 set_option maxHeartbeats 1000000 in
 include hS in
 theorem bijective_tateCompactDualityMap_gs_of_odd (M : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 ℚ̄ S))
@@ -203,7 +192,6 @@ theorem bijective_tateCompactDualityMap_gs_of_odd (M : Rep.{0} (ULift.{0} ℤ) (
   refine bijective_of_bijective_precomp _ _ (AddEquiv.ofBijective _ hf) (fun x y => ?_) hγ
   exact (gsOddTrace_apply S ιr ιs hS hodd _).trans (congrArg _ (tateForget_tateCompactCupRes
     (gsFinFamily S ιs) (gsRealFamily S ιr) (dualEvalPairing (gsRoots S N) M) _ y x))
-
 
 include hS hodd in
 theorem gsOddTatePoitouTateHypotheses [Nonempty S] :

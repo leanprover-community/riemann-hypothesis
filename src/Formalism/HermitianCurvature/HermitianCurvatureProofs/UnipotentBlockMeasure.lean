@@ -677,10 +677,6 @@ lemma hpow {b x c : ℝ} (hb : 1 < b) (hx0 : 0 ≤ x) (hx : x ≤ b ^ c) (n : �
       apply Real.exp_le_exp.mpr
       nlinarith
 
-lemma hk {c t m5 f : ℝ} (hc : 0 ≤ c) (hf : 0 ≤ f) (ht : t ≤ m5) : c * (f * t) ≤ c * (m5 * f) := by
-  rw [mul_comm m5 f]
-  exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ht hf) hc
-
 lemma core (A : ℕ) (CB CSt Cg CT : ℝ) (_hCB : 0 ≤ CB) (hCSt : 0 ≤ CSt) (hCg : 0 ≤ Cg) (hCT : 0 ≤ CT)
     (r f : ℕ) (b rd g TT cSt e1 m M : ℝ) (hm : m = 2 * (r : ℝ) + 2) (hM : M = m ^ 5 * f)
     (hf : 1 ≤ f) (hb : 16 ≤ b) (hrd0 : 0 < rd) (hrd : rd ≤ b) (hg1 : 1 ≤ g) (hg : g ≤ b ^ Cg)

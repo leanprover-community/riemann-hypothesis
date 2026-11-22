@@ -95,8 +95,6 @@ section Sum
 variable {n : ℕ} {V W : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
   [NormedAddCommGroup W] [InnerProductSpace ℂ W]
 
-local notation "𝐘" => WithLp 2 (V × W)
-
 def dsum : (Module.End ℂ V × Module.End ℂ W) →ₐ[ℂ] Module.End ℂ (WithLp 2 (V × W)) :=
   ((WithLp.linearEquiv 2 ℂ (V × W)).symm.conjAlgEquiv ℂ).toAlgHom.comp (LinearMap.prodMapAlgHom ℂ V W)
 

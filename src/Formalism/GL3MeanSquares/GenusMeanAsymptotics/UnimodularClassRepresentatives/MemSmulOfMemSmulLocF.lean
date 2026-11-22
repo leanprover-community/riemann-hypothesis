@@ -16,8 +16,6 @@ open LocalSpans idealPowerSpanBounds
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
 variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-
 theorem le_locF (𝔭 : Ideal (𝓞 F)) [𝔭.IsPrime] (L : Submodule (𝓞 K) V) : L ≤ locF 𝔭 L := fun x hx =>
   (mem_locF 𝔭 L x).2 ⟨1, fun h => (Ideal.ne_top_iff_one 𝔭).1 (Ideal.IsPrime.ne_top inferInstance) h,
     by simpa using hx⟩

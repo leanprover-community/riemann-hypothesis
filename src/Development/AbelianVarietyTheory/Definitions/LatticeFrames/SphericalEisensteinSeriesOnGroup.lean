@@ -31,8 +31,6 @@ def Lvl.K {V : HSp D} (l : Lvl V) : Subgroup (GA D V) := levelAll D.sp.cm.sig V.
 def Lvl.Good {V : HSp D} (l : Lvl V) : Prop :=
   Submodule.IsFullLattice D.host.E l.L ∧ (∀ v, IsSelfDualAt D.sp.cm.sig V.gram l.L v) ∧ IsMaj V l.c
 
-def Lvl.form {V : HSp D} (l : Lvl V) : Mx D V.rank V.rank := adj (l.c⁻¹).1 * (l.c⁻¹).1
-
 theorem Lvl.Good.isCompact_K {V : HSp D} {l : Lvl V} (h : l.Good) : IsCompact (l.K : Set (GA D V)) :=
   haveI := h.1
   isCompact_levelAll (isCMExt_host D) _ _ _
@@ -68,9 +66,6 @@ variable (θ : InfFam D) (τ : D.what₂.Tau)
 variable {θ} {V V₀ : HSp D} {r : ℕ} (ω : StdUnn.G D n →* Module.End ℂ (schwartzA θ V.rank n))
 
 variable (d : HypDec V V₀ r) (K : Subgroup (GA D V))
-
-def eisS (H : StdUnn.G D n → ℝ≥0) (Φ : schwartzA θ V.rank n) (g : StdUnn.G D n) : ℂ → ℂ :=
-  fun s => cosetSum (StdUnn.P D n) (StdUnn.GF D n) (StdUnn.sect ω H Φ s) g
 
 end Ops
 

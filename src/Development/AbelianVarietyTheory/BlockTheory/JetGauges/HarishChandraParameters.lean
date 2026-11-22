@@ -18,12 +18,8 @@ def grpK (ε : Fin n → Bool) : Set (Matrix (Fin n) (Fin n) ℂ) :=
 
 def root (a b : Fin n) : Fin n → ℝ := Pi.single a 1 - Pi.single b 1
 
-def posPairs (n : ℕ) : Finset (Fin n × Fin n) := Finset.univ.filter fun x => x.1 < x.2
-
 def cptPairs (ε : Fin n → Bool) : Finset (Fin n × Fin n) :=
   Finset.univ.filter fun x => x.1 < x.2 ∧ ε x.1 = ε x.2
-
-def rho (n : ℕ) : Fin n → ℝ := (1 / 2 : ℝ) • ∑ x ∈ posPairs n, root x.1 x.2
 
 def IsHCParam (μ : Fin n → ℝ) : Prop :=
   StrictAnti μ ∧ ∀ i, ∃ m : ℤ, μ i = (m : ℝ) + ((n : ℝ) - 1) / 2

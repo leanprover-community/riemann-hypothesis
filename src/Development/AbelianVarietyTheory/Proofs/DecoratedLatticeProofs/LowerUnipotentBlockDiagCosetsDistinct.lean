@@ -16,8 +16,6 @@ namespace GlobalTheory.CosetDistinct
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {A D : Type} [Fintype A] [DecidableEq A] [Fintype D] [DecidableEq D]
 
-local notation "E" m:arg => emb₂ k (Equiv.refl (A ⊕ D)) (1, m)
-
 theorem lowU_mul_lowU (a b : Matrix D A k) : (lowU a * lowU b : GL (A ⊕ D) k) = lowU (a + b) := by
   ext1; rw [Units.val_mul, val_lowU, val_lowU, val_lowU, fromBlocks_multiply]; simp [add_comm]
 

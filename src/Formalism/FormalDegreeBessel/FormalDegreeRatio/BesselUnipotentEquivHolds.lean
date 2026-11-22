@@ -64,9 +64,6 @@ theorem star_psi_inv (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) (hz : inWb k r 
 theorem coe_lmulEquiv (a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (ha : IsUnit a.det) :
     ⇑(lmulEquiv (k := k) (r := r) a ha) = lmulM a := rfl
 
-theorem of_lmulM (a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (x : Mt k r) :
-    Matrix.of (lmulM a x) = a * Matrix.of x := rfl
-
 end BesselUnipotentEquiv
 
 open BesselUnipotentEquiv in

@@ -43,8 +43,6 @@ theorem card_dc_congr {G G' : Type} [Group G] [Group G'] (φ : G ≃* G') (Γ K 
 def tfE (I : Formalism.MainNotions.S.AutInst) (hb : AdBridgeIso I) : I.Gf ≃* HA (Af I.F) I.cm.sig I.J :=
   MulEquiv.ofBijective (tfHom I hb) ⟨Bridge_tf_injective I hb, Bridge_tf_surjective I hb⟩
 
-theorem tfE_apply (I : Formalism.MainNotions.S.AutInst) (hb : AdBridgeIso I) (x : I.Gf) : tfE I hb x = tf I hb x := rfl
-
 theorem ratV_eq_swap (I : Formalism.MainNotions.S.AutInst) (w : Fin I.n → I.E) :
     ratV (F := I.F) (Af I.F) w = fun i => swapE I (Formalism.UG.inclE (F := I.F) (Af I.F) (w i)) := by
   funext i

@@ -118,8 +118,6 @@ def tau1 (t : φ.A) : φ.GG := ((1, 1), φ.iota t)
 
 def tau2 (t : φ.A) : φ.GG := ((-1, 1), φ.iota t)
 
-def TwoGroup : Prop := ∃ j : ℕ, φ.ord = 2 ^ j
-
 theorem iota_add (s t : φ.A) : φ.iota (s + t) = φ.iota s * φ.iota t := rfl
 
 theorem iota_zero : φ.iota 0 = 1 := rfl

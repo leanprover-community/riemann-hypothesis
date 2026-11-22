@@ -78,19 +78,4 @@ theorem dw_slTayHol {W : Opens (Tot I g)} {W₀ : Opens (Tot Empty g)}
   congr 1
   exact (Filter.EventuallyEq.iteratedFDeriv ℂ hev k).eq_of_nhds ▸ rfl
 
-theorem isTay_dw_lTensor : ∀ {I : Type} [Fintype I] [DecidableEq I] {g : ℕ} {R : Type}
-    [CommRing R] [Algebra ℂ R] (N : ℕ) (t : I → R) (W : Opens (Tot I g)) (W₀ : Opens (Tot Empty g)),
-    (∀ p ∈ W₀, (((0 : I → ℂ), p.2) : Tot I g) ∈ W) →
-    ∀ ρ : Hol W →+* R ⊗[ℂ] Hol W₀, IsTay N t ρ → ∀ (a : Fin g) (h : Hol W),
-      ρ (dw a h) = LinearMap.lTensor R (dw (W := W₀) a).toLinearMap (ρ h) := by
-  intro I _ _ g R _ _ N t W W₀ hW ρ hρ a h
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [isTay_expand hW hρ (dw a h), isTay_expand hW hρ h, map_sum]
-  refine Finset.sum_congr rfl fun k _ ↦ ?_
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
-  refine Finset.sum_congr rfl fun s _ ↦ ?_
-  rw [LinearMap.lTensor_tmul, ← dw_slTayHol hW a h k s]
-  rfl
-
 end GlobalTheory.AnPer

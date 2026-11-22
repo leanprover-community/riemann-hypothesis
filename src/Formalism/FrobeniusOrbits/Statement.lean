@@ -42,8 +42,6 @@ def cc (e : ℕ) : GG e := (c0, 1)
 
 def chD (e : ℕ) : GG e →* ℤˣ := (MonoidHom.snd ℤˣ ℤˣ).comp (MonoidHom.fst G0 (HGrp e))
 
-def chQ (e : ℕ) : GG e →* ℤˣ := (MonoidHom.fst ℤˣ ℤˣ).comp (MonoidHom.fst G0 (HGrp e))
-
 def Psi (e : ℕ) : Subgroup (GG e) := (chD e).ker
 
 theorem mem_Psi_iff {e : ℕ} (g : GG e) : g ∈ Psi e ↔ g.1.2 = 1 := by

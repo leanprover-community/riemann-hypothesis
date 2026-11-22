@@ -37,9 +37,6 @@ def psiZ : ReciprocityTheory.Gal.Z1 ρW →ₗ[O] coZ1s ρM where
   map_add' _ _ := by ext; simp
   map_smul' _ _ := by ext; simp
 
-theorem psiZ_apply (f : ReciprocityTheory.Gal.Z1 ρW) (g : G) :
-    (psiZ ρM ρW φ hφ f : G → M) g = φ.symm (f.1 g) := rfl
-
 def psi : ReciprocityTheory.Gal.H1 ρW →ₗ[O] H1z ρM :=
   Submodule.mapQ _ _ (psiZ ρM ρW φ hφ) (by
     intro f hf
@@ -332,7 +329,6 @@ def quotSL {R S : Type} [CommRing R] [CommRing S] (e : R ≃+* S) [RingHomInvPai
     obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective y
     rw [Algebra.smul_def, Algebra.smul_def, Ideal.Quotient.algebraMap_eq, Ideal.Quotient.algebraMap_eq, map_mul]
     rfl
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 theorem lenOlSelf {D : D7} (i : D.nd.Loc) : LenOlSelf i := by

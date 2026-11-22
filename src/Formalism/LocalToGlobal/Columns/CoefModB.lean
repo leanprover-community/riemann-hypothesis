@@ -116,12 +116,7 @@ section Triv
 
 variable {K : Type} [Field K]
 
-theorem pb_fockS_triv {σ : Type} (f g : MvPolynomial σ K) :
-    @fockS K _ starRingOfComm σ f g = fockB f g := rfl
-
 variable {ι : Type} [Fintype ι] {n : ℕ}
-
-theorem pb_extNorm_triv (lam : ι → DomWeight n) : @extNorm ι _ n K _ starRingOfComm lam = extNormB K lam := rfl
 
 theorem pb_gramTw_one (lam : ι → DomWeight n) : gramTw lam (fun _ : ι => (1 : Matrix (Fin n) (Fin n) K)) = 1 := by
   simp [gramTw]

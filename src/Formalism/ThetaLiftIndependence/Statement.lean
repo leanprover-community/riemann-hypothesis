@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import Formalism.HermitianLattices.StatementLat
-public import Formalism.HermitianLattices.StatementTheta
+public import Formalism.LatticeTheta.Statement
 public import Formalism.SatakeDualWeyl.Statement
 
 @[expose] public section
@@ -71,20 +71,5 @@ def ClassRepsDefinite : Prop :=
       (∃ s, IsClassReps h L s) ∧
       (∀ M ∈ Formalism.HermitianLatticesTheory.genus h L, ∃ n : ℕ, 0 < n ∧ latWt h M = (n : ℂ)⁻¹) ∧
       (∃ D : ℕ, 0 < D ∧ ∀ M ∈ Formalism.HermitianLatticesTheory.genus h L, ∃ z : ℤ, (D : ℂ) * latWt h M = z)
-
-def gaussOp {𝔽 V : Type*} [Field 𝔽] [Fintype 𝔽] [DecidableEq 𝔽] [AddCommGroup V] [Module ℂ V]
-    (ψ : AddChar 𝔽 ℂ) (ρ : 𝔽ˣ →* (V →ₗ[ℂ] V)) : V →ₗ[ℂ] V :=
-  ∑ c : 𝔽ˣ, ψ (c : 𝔽) • ρ c
-
-def gaussOpDual {𝔽 V : Type*} [Field 𝔽] [Fintype 𝔽] [DecidableEq 𝔽] [AddCommGroup V] [Module ℂ V]
-    (ψ : AddChar 𝔽 ℂ) (ρ : 𝔽ˣ →* (V →ₗ[ℂ] V)) : V →ₗ[ℂ] V :=
-  ∑ c : 𝔽ˣ, ψ (-(c : 𝔽)) • ρ c⁻¹
-
-def GaussOp : Prop :=
-  ∀ (𝔽 V : Type) [Field 𝔽] [Fintype 𝔽] [DecidableEq 𝔽] [AddCommGroup V] [Module ℂ V]
-    (ψ : AddChar 𝔽 ℂ) (ρ : 𝔽ˣ →* (V →ₗ[ℂ] V)), ψ ≠ 1 →
-    ∀ v : V, ∑ c : 𝔽ˣ, ρ c v = 0 →
-      gaussOp ψ ρ (gaussOpDual ψ ρ v) = (Fintype.card 𝔽 : ℂ) • v ∧
-      gaussOpDual ψ ρ (gaussOp ψ ρ v) = (Fintype.card 𝔽 : ℂ) • v
 
 end Formalism.ThetaLiftIndependence

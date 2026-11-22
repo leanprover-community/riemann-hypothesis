@@ -84,12 +84,6 @@ section FormalModule
 
 variable {A : Type*} [CommRing A]
 
-structure FormalModule (F : FormalGroup A) [F.IsComm] where
-
-  smul : A →+* GroundTheory.LocalField.FormalGroup.Hom (R := A) (F := F) (G := F)
-
-  linearCoeff_smul : ∀ a, PowerSeries.coeff 1 (smul a).toPowerSeries = a
-
 end FormalModule
 
 section LubinTate
@@ -263,10 +257,6 @@ noncomputable def lubinTateHom (hf : IsLubinTateSeries π f) (hg : IsLubinTateSe
   map_add := lubinTateHom_map_add hπ hf hg a
 
 variable (hf : IsLubinTateSeries π f) (hg : IsLubinTateSeries π g) (hh : IsLubinTateSeries π h)
-
-theorem lubinTateHom_toPowerSeries (a : A) :
-    (lubinTateHom hπ hf hg a).toPowerSeries = lubinTateLift hπ hf hg fun _ : Unit => a :=
-  rfl
 
 theorem isLubinTateLift_lubinTateHom (a : A) :
     IsLubinTateLift f g (PowerSeries.C a * PowerSeries.X) (lubinTateHom hπ hf hg a).toPowerSeries :=

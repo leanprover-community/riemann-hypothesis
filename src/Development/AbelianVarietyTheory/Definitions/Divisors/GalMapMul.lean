@@ -196,7 +196,6 @@ def freeGen (P : PSh) (U : Scheme.{0}) (x : P.obj (op U)) : Sec ((free R).obj P)
 def chainsXIso (E : Spc) (p : ℕ) : ((chains R).obj E).X (-(p : ℤ)) ≅ (free R).obj (E.obj (op (SimplexCategory.mk p))) :=
   ((chainsN R).obj E).extendXIso ComplexShape.embeddingDownNat (i := p) rfl
 
-
 variable {R} in
 def ev {E : Spc} {I : Cx R} {n : ℤ} (α : Cochain ((chains R).obj E) I n) (p : ℕ) (s : ℤ) (h : -(p : ℤ) + n = s) (U : Scheme.{0})
     (x : Sx E p U) : Sec (I.X s) U :=
@@ -204,15 +203,9 @@ def ev {E : Spc} {I : Cx R} {n : ℤ} (α : Cochain ((chains R).obj E) I n) (p :
 
 def ofRings (M : CommRingCat.{0} ⥤ ModuleCat.{1} (ULift.{1} R)) : Shv R := (presheafToSheaf _ _).obj (Scheme.Γ ⋙ M)
 
-
 variable {R} in
 def ofRings.sec (M : CommRingCat.{0} ⥤ ModuleCat.{1} (ULift.{1} R)) (U : Scheme.{0}) (x : M.obj Γ(U, ⊤)) : Sec (ofRings R M) U :=
   ((toSheafify Scheme.etaleTopology (Scheme.Γ ⋙ M)).app (op U)).hom x
-
-def const (M : Type) [AddCommGroup M] [Module R M] : Shv R :=
-  ofRings R ((Functor.const _).obj (ModuleCat.of (ULift.{1} R) (ULift.{1} M)))
-
-abbrev coef : Shv R := const R R
 
 def unitsF : CommRingCat.{0} ⥤ ModuleCat.{1} (ULift.{1} ℤ) where
   obj A := ModuleCat.of (ULift.{1} ℤ) (ULift.{1} (Additive Aˣ))
@@ -224,7 +217,6 @@ def unitsF : CommRingCat.{0} ⥤ ModuleCat.{1} (ULift.{1} ℤ) where
   map_comp _ _ := rfl
 
 def Gm : Shv ℤ := ofRings ℤ unitsF
-
 
 variable {R} in
 def restr {S : Type} [CommRing S] (φ : R →+* S) : Shv S ⥤ Shv R :=

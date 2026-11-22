@@ -48,7 +48,6 @@ def badBound (g f m N q : ℝ) : ℝ :=
   3 * f / g + 23 * f * Real.log g / Real.sqrt g + 2 * f * m * (1 / (4 * q) + (1 + Real.log N) / (g - 1)) +
     N / 2 * (7 / 8 : ℝ) ^ f + Real.exp (-(f / (10 * Real.log N)))
 
-
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in
 theorem _root_.GlobalTheory.BadShare.bb_iff {g N l : ℕ} :
@@ -62,15 +61,6 @@ theorem _root_.GlobalTheory.BadShare.bb_iff {g N l : ℕ} :
   · rintro ⟨hp, d, h1, h2, hq⟩
     exact ⟨d, h1, h2, hp, hq⟩
 
-theorem bb_of_dvd {g N l d : ℕ} (hl : l.Prime) (h1 : 1 ≤ d) (h2 : d ≤ N) (h0 : g ^ d - 1 ≠ 0) (h3 : l ∣ g ^ d - 1)
-    (h4 : g ^ d < l ^ 4) : BB g N l := by
-  haveI := Fact.mk hl
-  refine bb_iff.2 (Or.inr ⟨hl, d, h1, h2, h4.trans_le (Nat.pow_le_pow_right hl.pos ?_)⟩)
-  have hval : 1 ≤ padicValNat l (g ^ d - 1) := by
-    rw [Nat.padicValNat_def]
-    exact one_le_multiplicity_of_dvd h0 h3
-  omega
-
 section part
 variable {k : Type} [Field k] {l : ℕ}
 
@@ -79,7 +69,6 @@ variable (g : ℕ) [Fact g.Prime] in
 private theorem pow_eq_pow_of_modEq_orderOf' {G : Type*} [Monoid G] {x : G} {a b : ℕ}
     (h : a ≡ b [MOD orderOf x]) : x ^ a = x ^ b := by
   rw [← pow_mod_orderOf, show a % orderOf x = b % orderOf x from h, pow_mod_orderOf]
-
 
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in
@@ -131,7 +120,6 @@ private theorem primeToPart_pow_orderOf_div_prime_pow_eq_one {G : Type*} [Monoid
   conv_lhs => rw [← Nat.ordProj_mul_ordCompl_eq_self (orderOf x) l]
   exact mul_dvd_mul_right (dvd_mul_right _ _) _
 
-
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in
 variable {k : Type} [Field k] {l : ℕ} in
@@ -165,7 +153,6 @@ end part
 
 variable {g}
 
-
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in
 variable {g} in
@@ -193,7 +180,6 @@ private theorem isOfFinOrder_of_ne_zero_algebraicClosure_zmod {g : ℕ} [Fact g.
     ((u : IntermediateField.adjoin (ZMod g) {x}) : AlgebraicClosure (ZMod g))) hpow
   simpa [y] using this
 
-
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in
 variable {g} in
@@ -201,7 +187,6 @@ theorem _root_.GlobalTheory.BadShare.samePart_iff_of_ne_zero {l : ℕ} (hl : l.P
     (hy : y ≠ 0) : _root_.GlobalTheory.BadShare.SamePart l x y ↔ ∃ a : ℕ, x ^ (l ^ a) = y ^ (l ^ a) :=
   _root_.GlobalTheory.BadShare.samePart_iff hl (isOfFinOrder_of_ne_zero_algebraicClosure_zmod hx)
     (isOfFinOrder_of_ne_zero_algebraicClosure_zmod hy)
-
 
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in
@@ -219,7 +204,6 @@ theorem _root_.GlobalTheory.BadShare.rootsAvoid_iff {c : (ZMod g)ˣ} {f : (ZMod 
 theorem sqSet_eq_monicOf (N : ℕ) : sqSet g N =
     (Finset.univ.image fun c : Fin N → ZMod g => Formalism.CyclotomicNorms.monicOf c).filter fun f => Squarefree f ∧ f.coeff 0 ≠ 0 := rfl
 
-
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in
 variable {g} in
@@ -236,7 +220,6 @@ theorem _root_.GlobalTheory.BadShare.mem_sqSet {N : ℕ} {f : (ZMod g)[X]} :
     refine ⟨⟨fun i => f.coeff i, ?_⟩, hs, h0⟩
     rw [Fin.sum_univ_eq_sum_range (fun i => C (f.coeff i) * X ^ i) N, ← hd]
     exact hm.as_sum.symm
-
 
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in
@@ -271,7 +254,6 @@ theorem _root_.GlobalTheory.BadShare.good_iff {ι : Type} {m N : ℕ} {ch : ι �
     exact ⟨⟨hA, hS, fun l hl hB w => h2 w l hl hB, fun l hl hlg w j => (h3 w j).1 l hl hlg, hD, v, hv⟩,
       ⟨hA, hS, fun l hl hB w => h2 w l hl hB, fun l hl hlg w j => (h3 w j).2 l hl hlg, hD, v, hv⟩⟩
 
-
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in
 variable {g} in
@@ -279,7 +261,6 @@ theorem _root_.GlobalTheory.BadShare.mem_goodSet_iff_good {ι : Type} [Fintype �
     {F : ι → (ZMod g)[X]} : F ∈ _root_.GlobalTheory.BadShare.goodSet g N ch ↔ _root_.GlobalTheory.BadShare.Good g N ch F := by
   rw [_root_.GlobalTheory.BadShare.goodSet, Finset.mem_filter, Fintype.mem_piFinset]
   exact ⟨fun h => h.2, fun h => ⟨(_root_.GlobalTheory.BadShare.good_iff.1 h).1, h⟩⟩
-
 
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in
@@ -290,7 +271,6 @@ theorem _root_.GlobalTheory.BadShare.torusCard_irreducible {f : (ZMod g)[X]} (hf
   rw [UniqueFactorizationMonoid.normalizedFactors_irreducible hf, Multiset.map_singleton, Multiset.map_singleton,
     Multiset.prod_singleton, natDegree_eq_of_degree_eq degree_normalize]
 
-
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in
 variable {g} in
@@ -299,13 +279,11 @@ theorem _root_.GlobalTheory.BadShare.torusCard_mul {f h : (ZMod g)[X]} (hf : f �
   unfold _root_.GlobalTheory.BadShare.torusCard _root_.GlobalTheory.BadShare.degType
   rw [UniqueFactorizationMonoid.normalizedFactors_mul hf hh, Multiset.map_add (f := _), Multiset.map_add (f := _), Multiset.prod_add]
 
-
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in
 variable {g} in
 theorem _root_.GlobalTheory.BadShare.mass_nonneg (N : ℕ) (A : (ZMod g)[X] → Prop) : 0 ≤ _root_.GlobalTheory.BadShare.mass g N A :=
   Finset.sum_nonneg fun _ _ => inv_nonneg.mpr (Nat.cast_nonneg _)
-
 
 open Polynomial Classical in
 variable (g : ℕ) [Fact g.Prime] in

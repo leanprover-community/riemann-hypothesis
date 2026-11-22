@@ -122,20 +122,6 @@ theorem mv_deco {y : Ys X n} (p : PtY ST SG Q y) (d : DecoSet (E := X.E) (n := n
 variable {T : ℕ} {y : Ys X n} {β : Type} [Fintype β] [DecidableEq β] {Λ : β → LevFam X.E X.K n SG}
   {Θ : β → LevQFam X.E X.K n Q} {pref : DecoF X.E n ST SG Q → Prop}
 
-theorem up_deco (hT : (tdatY ST T y β Λ Θ pref).Tied T) (b : β) (p : PtY ST SG Q y) (P : ST) (x : Sp X.E n)
-    (hx : x ∈ p.1.1.deco.1.N) (hf : p.1.1.deco.1.f P x = 1) :
-    (p.mv (p.1.1.deco.up P (T : 𝓞 X.E) x)).1.1.deco = p.1.1.deco.up P (T : 𝓞 X.E) x := by
-  by_cases hc : (p.1.1.deco.1.up P (T : 𝓞 X.E) x).Ok
-  · apply mv_deco
-    have h1 := congrArg Deco.N (hT.up_deco b p P x hx hf)
-    refine Eq.trans h1 ?_
-    unfold DecoSet.up
-    rw [dif_pos hc]
-    rfl
-  · have h1 : p.1.1.deco.up P (T : 𝓞 X.E) x = p.1.1.deco := dif_neg hc
-    rw [h1]
-    exact congrArg (fun q : PtY ST SG Q y => q.1.1.deco) (dif_pos ⟨p.1.1.2, p.2⟩ : p.mv p.1.1.deco = _)
-
 theorem dia_deco (p : PtY ST SG Q y) (P : ST) (a : (Res P.1)ˣ) :
     (p.mv (DecoSet.dia1 P a p.1.1.deco)).1.1.deco = DecoSet.dia1 P a p.1.1.deco :=
   congrArg (fun q : PtY ST SG Q y => q.1.1.deco)

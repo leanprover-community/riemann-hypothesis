@@ -1,7 +1,6 @@
 module
 
 public import Formalism.QuotientMetricDivisors.TheoremDivIneqRows
-public import Formalism.LogFactorialIndices.SignedSubspaceIndex.SumInterlacedBoundFails
 public import Mathlib
 public import Formalism.LogFactorialIndices.StatementSize
 public import Formalism.LogFactorialIndices.StatementIdx

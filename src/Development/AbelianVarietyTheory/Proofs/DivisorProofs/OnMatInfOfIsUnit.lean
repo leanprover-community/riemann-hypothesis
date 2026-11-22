@@ -44,7 +44,6 @@ def IsKerOpInf {Z : Type} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
     (η : X → Z →L[ℝ] ℝ), IsRapidFInf ν k γ η ∧
       ∀ W, IsModGrowthInf W → ∀ z g, T W z g = ∫ x, k x * (𝐞 (η x z) : ℂ) * W (g * γ x) ∂ν
 
-
 variable (E) in
 def levSetInf (n r : ℕ) : Set (GL (Fin n) (Cinf E)) := {g | ∀ w, compGL w g ∈ levSet n r}
 
@@ -53,14 +52,12 @@ def rowCutInf (ρ : Fin n) (x : Matrix (Fin n) (Fin n) (Cinf E)) : Fin n → Cin
 def secMatInf (ρ : Fin n) (j : InfinitePlace E → Fin n) (v : Fin n → Cinf E) : Fin n → Fin n → Cinf E :=
   fun i l w => secMat ρ (j w) (fun l => v l w) i l
 
-
 open Classical in
 def onMatInf (W : GL (Fin n) (Cinf E) → ℂ) (x : Matrix (Fin n) (Fin n) (Cinf E)) : ℂ :=
   if h : IsUnit x then W h.unit else 0
 
 def smoothMatInf (α : (Fin n → Fin n → Cinf E) → ℂ) (W : GL (Fin n) (Cinf E) → ℂ) (g : GL (Fin n) (Cinf E)) : ℂ :=
   ∫ a : Fin n → Fin n → Cinf E, α a * onMatInf W ((g : Matrix (Fin n) (Fin n) (Cinf E)) * Matrix.of a)
-
 
 open Classical in
 def toGLInf (x : Matrix (Fin n) (Fin n) (Cinf E)) : GL (Fin n) (Cinf E) := if h : IsUnit x then h.unit else 1
@@ -89,13 +86,6 @@ theorem mem_levSetInf {r : ℕ} {g : GL (Fin n) (Cinf E)} : g ∈ levSetInf E n 
     refine ⟨fun j hj => ?_, ?_⟩
     · rw [compGL_apply, (h i hi).1 j hj]; rfl
     · rw [compGL_apply, (h i hi).2]; rfl
-
-theorem isKerOpInf_dirac (Z : Type) [NormedAddCommGroup Z] [NormedSpace ℝ Z] (h : GL (Fin n) (Cinf E)) :
-    IsKerOpInf (fun W (_ : Z) g => W (g * h)) := by
-  refine ⟨Unit, inferInstance, Measure.dirac (), inferInstance, fun _ => 1, fun _ => h, fun _ => 0,
-    ⟨measurable_const, fun _ _ => measurable_const, fun _ => measurable_const, fun _ => integrable_const _⟩,
-    fun W _ z g => ?_⟩
-  simp
 
 def LevRepInf (E : Type) [Field E] [NumberField E] (n r : ℕ) (lam : (GL (Fin n) (Cinf E) → ℂ) → ℂ) : Prop :=
   ∀ (Y : Type) [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y] (B : Y × (Fin n → Fin n → Cinf E) → ℂ),

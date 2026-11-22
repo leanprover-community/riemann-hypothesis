@@ -16,8 +16,6 @@ variable (E : Type) [Field E] [NumberField E] (j : ℕ)
 
 def oneInf : MatInf E j := fun _ a b => (1 : Matrix (Fin j) (Fin j) ℂ) a b
 
-theorem of_oneInf (w : InfinitePlace E) : Matrix.of (oneInf E j w) = 1 := rfl
-
 theorem detNorm_oneInf : 0 < detNorm E j (oneInf E j) := by
   unfold detNorm
   simp [of_oneInf]
@@ -37,9 +35,6 @@ def act (A : InfinitePlace E → Matrix (Fin j) (Fin j) ℂ) : VecInf E j →ₗ
   toFun x w := A w *ᵥ x w
   map_add' x y := by funext w; simp [Matrix.mulVec_add]
   map_smul' c x := by funext w; exact Matrix.mulVec_smul (A w) c (x w)
-
-theorem act_apply (A : InfinitePlace E → Matrix (Fin j) (Fin j) ℂ) (x : VecInf E j) (w : InfinitePlace E) :
-    act A x w = A w *ᵥ x w := rfl
 
 theorem act_act {A B : InfinitePlace E → Matrix (Fin j) (Fin j) ℂ} (h : ∀ w, A w * B w = 1) (x : VecInf E j) :
     act A (act B x) = x := by

@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Elementary
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Expand
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagBasic
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsComb
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.InhabitantsElem
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Inhabitants
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.JacobiTrudi
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Lattice

@@ -125,8 +125,6 @@ theorem posPart_length (a : List ℤ) : (PI.FJM.posPart a).length = a.length := 
 theorem negPart_length (b : List ℤ) : (PI.FJM.negPart b).length = b.length := by
   simp [PI.FJM.negPart]
 
-private theorem fin_rev_val {n : ℕ} (i : Fin n) : (Fin.rev i).val = n - (i.val + 1) := rfl
-
 private theorem varMat_apply_mem_supported {p q r s m k : ℕ} (ρ : Fin m → FockH1Action.Ix p q)
     (κ : Fin k → FockH1Action.Ix r s) (T : Set (FockH1Action.Ln p q r s)) (i : Fin m) (j : Fin k)
     (h : (ρ i, κ j) ∈ T) : PI.FJM.varMat ρ κ i j ∈ MvPolynomial.supported ℂ T := by

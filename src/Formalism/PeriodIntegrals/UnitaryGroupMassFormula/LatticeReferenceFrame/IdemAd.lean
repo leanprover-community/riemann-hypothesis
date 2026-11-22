@@ -29,8 +29,6 @@ def evA (v : HeightOneSpectrum (𝓞 F)) : Af F →+* v.adicCompletion F where
   map_zero' := rfl
   map_add' _ _ := rfl
 
-theorem evA_apply (v : HeightOneSpectrum (𝓞 F)) (a : Af F) : evA v a = a v := rfl
-
 theorem eq_of_evA {a b : Af F} (h : ∀ v, evA v a = evA v b) : a = b := by
   first
     | (ext v; exact h v)

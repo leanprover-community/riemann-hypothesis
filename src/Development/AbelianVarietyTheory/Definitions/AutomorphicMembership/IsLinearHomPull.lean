@@ -54,7 +54,6 @@ instance : AddCommGroup (Chr D) := inferInstanceAs (AddCommGroup D.X)
 
 instance : Module O (Chr D) := Module.compHom D.X (starRingEnd O)
 
-
 variable (D O) in
 def torAct : OAct O (splitTorus (Sp R) (Chr D)) := Diag.diagAct (Sp R) O (Chr D)
 
@@ -91,7 +90,6 @@ namespace Ray
 variable {oa : D.OAct O} (Y : Ray oa)
 
 def act : OAct O Y.H := ofRingAct Y.ρ
-
 
 variable (oa) in
 def actB : OAct O D.P.A := ofRingAct oa.onB.toRingAct
@@ -199,15 +197,6 @@ section Eig
 
 variable {R S O : Type} [CommRing R] [CommRing S] [CommRing O] (f : R →+* S)
   {G G' : Over (Sp R)} [GrpObj G] [IsCommMonObj G] [GrpObj G'] [IsCommMonObj G']
-
-abbrev LieAt (a : OAct O G) : Type := Lie (a.pullback (spMap f))
-
-def lieMap {a : OAct O G} {a' : OAct O G'} {φ : G ⟶ G'} (h : IsLinearHom a a' φ) : LieAt f a →ₗ[S] LieAt f a' :=
-  haveI := h.isMonHom
-  Lie.map _ _ ((Over.pullback (spMap f)).map φ)
-
-def tanPt {a : OAct O G} (v : LieAt f a) : Over.mk ((epsR S).hom ≫ spMap f) ⟶ G :=
-  HTLat.pushEquiv (isGrpPullback_pullback G (spMap f)) _ v.hom
 
 end Eig
 

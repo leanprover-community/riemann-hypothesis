@@ -50,8 +50,6 @@ def Wpt {d : ℕ} {X : Scheme.{0}} (v : WVec d X) : sch.obj X ⟶ Wsp d where
         exact ((WVec.map d g.unop).map_id ((WVec.map d f).obj v)).symm }
   naturality n m f := rfl
 
-theorem wpt_incl {d : ℕ} {X : Scheme.{0}} (v : WVec d X) : Wpt v ≫ Wincl d = Pj.pt v.1 := rfl
-
 def wvec1 {d : ℕ} {A : Type} [CommRing A] (x : Fin d → A) : WVec d (Spec (CommRingCat.of A)) :=
   ⟨vec1 x, by
     show IsUnit ((Scheme.ΓSpecIso (CommRingCat.of A)).inv.hom ((Fin.cons 1 x : Fin (d + 1) → A) 0))

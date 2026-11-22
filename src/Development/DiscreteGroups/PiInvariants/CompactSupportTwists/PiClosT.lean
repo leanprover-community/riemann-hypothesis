@@ -143,8 +143,6 @@ variable (D : Dom E n 0)
 def Tf (u : ℝ → ℂ) (F : L2 (latticeGL E n) (muG D)) : H E n 0 → ℂ :=
   fun x => lift (latticeGL E n) F x.1 * u (ldet x)
 
-theorem ldet_eq (x : H E n 0) : ldet x = lg x.1 := rfl
-
 theorem aesm_Tf (u : ℝ → ℂ) (hu : Continuous u) (F : L2 (latticeGL E n) (muG D)) :
     AEStronglyMeasurable (Tf D u F) D.ν := by
   have h1 : AEStronglyMeasurable (lift (latticeGL E n) F) (muG D) :=

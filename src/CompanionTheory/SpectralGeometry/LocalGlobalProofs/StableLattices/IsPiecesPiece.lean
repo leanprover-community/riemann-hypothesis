@@ -17,8 +17,6 @@ section Concrete
 variable {L V : Type} [NontriviallyNormedField L] [AddCommGroup V] [Module L V]
   {s : L →+* L} {h : V → V → L} {δ : L} {l : ℕ} {e f : Fin l → V} {W : Submodule L V}
 
-theorem hLin_apply (hh : IsHerm s h) (x y : V) : hLin hh x y = h x y := rfl
-
 theorem h_sub_right (hh : IsHerm s h) (x y z : V) : h x (y - z) = h x y - h x z :=
   map_sub (hLin hh x) y z
 

@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MultiplicationLatticeSecond
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.HomAppHomOfRestrictImage
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GradedLineBundleExists
 
 @[expose] public section

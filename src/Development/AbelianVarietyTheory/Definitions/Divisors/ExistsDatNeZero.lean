@@ -41,7 +41,6 @@ variable {X : Over (Sp R)} {K : Type}
 def Sm (W : K → X.left.Opens) {D : Type} [CommRing D] [Algebra R D] (x : Pt X D) : Prop :=
   ∃ i, ⊤ ≤ x.left ⁻¹ᵁ W i
 
-
 variable (X) in
 def whole : Unit → X.left.Opens := fun _ ↦ ⊤
 
@@ -75,7 +74,6 @@ def trivMap {D D' : Type} [CommRing D] [Algebra R D] [CommRing D'] [Algebra R D'
     trivAt x ⟶ trivAt (spOver φ ≫ x) := Thick.trivHom φ rfl
 
 def fv (f : Z1 (O (dp0 R) (X.hom ≫ 𝟙 _))) : Fn1 X := fun _ _ _ _ _ _ φ x ↦ ev f (trivMap φ x)
-
 
 open Classical in
 def evU {Y : Scheme.{0}} {D : Type} [CommRing D] (x : Sp D ⟶ Y) (U : Y.Opens) (a : Γ(Y, U)) : D :=
@@ -141,7 +139,6 @@ def cotPt : D →ₐ[R] (cotExt R D).C :=
 
 def cotSnd : (cotExt R D).C →ₗ[R] Cot R D := TrivSqZeroExt.sndHom R (Cot R D)
 
-
 variable {R D} in
 def cotVal {X : Over (Sp R)} (f : Z1 (O (dp0 R) (X.hom ≫ 𝟙 _))) (y : Pt X D) : Cot R D :=
   let y' : Pt X (cotExt R D).C := spOver (cotPt R D) ≫ y
@@ -177,22 +174,9 @@ def Dat.coc (n : ℕ) : G.A n ⊗[R] G.A n :=
 def Dat.om (n : ℕ) : Cot R (G.A n) :=
   cotVal d.f (t.y n) - dUnit (R := R) (d.h n)
 
-
 variable (t c) in
 def IsCan (x : G.RigExt) : Prop :=
   ∃ (d : Dat t c) (z : G.cocycles) (w : G.omega), (∀ n, z.1 n = d.coc n) ∧ (∀ n, w.1 n = d.om n) ∧ x = G.rigMk (z, w)
-
-def Dat.zero (t : G.TorsionTower A) : Dat t 0 where
-  f := 0
-  cl := map_zero _
-  g := fun _ _ _ _ _ ↦ 0
-  add := fun _ _ _ _ _ _ φ _ _ ↦ by
-    change (0 : _) - φ 0 = 0 - 0 - 0
-    simp
-  h := 0
-  res := fun n ↦ by
-    change (0 : _) = 0 - G.res n 0
-    simp
 
 end Can
 
@@ -202,7 +186,6 @@ variable {A B : Over (Sp R)} [GrpObj A] [GrpObj B]
 
 def ptV (v : epsR R ⟶ B) {D : Type} [CommRing D] [Algebra R D] (x : Pt A D) : Pt (A ⊗ B) (DualNumber D) :=
   lift (spOver (TrivSqZeroExt.inlAlgHom R D D) ≫ x) (spOver (EpsWeil.epsMap R D) ≫ v)
-
 
 variable (B) in
 def pt0 {D : Type} [CommRing D] [Algebra R D] (x : Pt A D) : Pt (A ⊗ B) D := lift x 1
@@ -221,7 +204,6 @@ def sndPull (u : Fn1 (A ⊗ B)) (v : epsR R ⟶ B) : Fn1 A := fun D _ _ D' _ _ �
   (u (DualNumber D) (DualNumber D') (epsHom φ) (ptV v x)).snd
 
 abbrev epsExt (R D : Type) [CommRing R] [CommRing D] [Algebra R D] : SqExt R := SqExt.ofModule R D D
-
 
 variable (B) in
 abbrev thickAt {D : Type} [CommRing D] [Algebra R D] (x : Pt A D) : Thick (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _) :=

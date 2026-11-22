@@ -6,7 +6,7 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFrame
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesAtBasePointStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointMapsToPointsStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.CoordinateRatioValueAtPointStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BaseFunctionValueAtPointStatement
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBlockDiagMapGenBlock
 
 @[expose] public section
 
@@ -40,18 +40,6 @@ theorem isValueAt_sum {α : Type} (S : Finset α) (f : α → Ω) (v : α → �
     rw [Finset.sum_insert ha, Finset.sum_insert ha]
     exact ValRing.isValueAt_add (h a (Finset.mem_insert_self a S))
       (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
-
-theorem isValueAt_valAt (hz : z ∈ mcPts (mCoordIdeal x)) {s : Ω} (hs : RegAt x (mCoordIdeal z) s) :
-    IsValueAt x s z (valAt x s z) := by
-  obtain ⟨v, hv⟩ := ValRing.exists_isValueAt hz hs
-  rw [valAt_eq hz hv]
-  exact hv
-
-theorem valAt_sum_mul (hz : z ∈ mcPts (mCoordIdeal x)) {α : Type} (S : Finset α) (f g : α → Ω)
-    (hf : ∀ i ∈ S, RegAt x (mCoordIdeal z) (f i)) (hg : ∀ i ∈ S, RegAt x (mCoordIdeal z) (g i)) :
-    valAt x (∑ i ∈ S, f i * g i) z = ∑ i ∈ S, valAt x (f i) z * valAt x (g i) z :=
-  valAt_eq hz (isValueAt_sum S _ _ fun i hi =>
-    isValueAt_mul (isValueAt_valAt hz (hf i hi)) (isValueAt_valAt hz (hg i hi)))
 
 end Values
 
@@ -107,75 +95,5 @@ theorem move_minor {κ : Type} [Fintype κ] {N : ℕ} (P : Finset (Fin N) → Pr
   rw [← Finset.sum_subset (Finset.subset_univ S) fun I' _ h => by
     rw [hμ I' fun hp => h ((hS I').2 hp), mul_zero], Finset.mul_sum, Finset.mul_sum]
   exact Finset.sum_congr rfl fun I' h => by rw [hA I' ((hS I').1 h)]; ring
-
-theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (K' : Type) [Fintype K'] (ι' : K' → Type) [∀ k, Fintype (ι' k)] (Φ' : Type) [Field Φ'] (y' : (Σ k, ι' k) → Φ') (M' : FlagModel y' Ψ N j) (Cv : FlagCover M' M) (z₁ : (Σ k, ι' k) → ℂ) (z₀ : (Σ k, ι k) → ℂ) (F' : FrameData ι' Ψ N M'.Ω M'.blk) (F : FrameData ι Ψ N M.Ω M.blk) (h : Ψ → Matrix (Fin N) (Fin N) ℂ) (p : Ψ × Fin N) (k : K), z₁ ∈ mcPts (mCoordIdeal y') → M'.IsFrame F' → M.IsFrame F → M'.GoodAt F' (mCoordIdeal (basePart M'.blk z₁)) → M.GoodAt F (mCoordIdeal (basePart M'.blk z₁ ∘ Cv.v)) → M'.IsFlagOf F' z₁ h → M.IsFlagOf F z₀ (fun τ => Cv.trans F' F (basePart M'.blk z₁) τ * h τ) → SameOrbit (basePart M.blk z₀) (basePart M'.blk z₁ ∘ Cv.v) → M.blk p = some k → ∃ (e : Φ') (s : ι k → Φ') (t : ℂ), e ≠ 0 ∧ t ≠ 0 ∧ ∀ m, transPt Cv ⟨k, m⟩ = e * s m ∧ IsValueAt y' (s m) z₁ (t * z₀ ⟨k, m⟩) := by
-  intro K _ ι _ Φ _ y Ψ _ _ N j M K' _ ι' _ Φ' _ y' M' Cv z₁ z₀ F' F h p k hz₁ hF' hF hG' hG hfl' hfl horb hp
-  set zb := basePart M'.blk z₁ with hzbdef
-  have hzb : zb ∈ mcPts (mCoordIdeal M'.x) := (GlobalTheory.T.flag_model_base_projection_points K' ι' Φ' y' Ψ N j M').1 z₁ hz₁
-  have hzv := GlobalTheory.T.flag_cover_base_point_maps_to_points K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv zb hzb
-  have hstep : IsProperStep N j p.2 := by
-    by_contra hn
-    rw [(M.blk_none p).2 hn] at hp
-    exact absurd hp (by simp)
-  obtain ⟨k', hk'⟩ : ∃ k', M'.blk p = some k' :=
-    Option.ne_none_iff_exists'.1 fun e => (M'.blk_none p).1 e hstep
-  obtain ⟨c', hc'⟩ := hz₁.1 k'
-  obtain ⟨hy0, hratio⟩ := GlobalTheory.T.coordinate_ratio_value_at_point K' ι' Φ' y' z₁ k' c' hz₁ hc'
-  have ch' : ∀ k, M'.x ⟨k, F'.c k⟩ ≠ 0 := fun k => coord_ne hzb (hG'.1 k)
-  have ch : ∀ k, M.x ⟨k, F.c k⟩ ≠ 0 := fun k => coord_ne hzv (hG.1 k)
-  obtain ⟨c, hc0, htr⟩ :=
-    GlobalTheory.T.flag_cover_frames_pullback K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv F' F hF' hF ch' ch p k k' hp hk'
-  obtain ⟨a', ha', hz1⟩ := hfl'.2.2 p k' hk'
-  obtain ⟨a, ha, hz0⟩ := hfl.2.2 p k hp
-  have hE := fun m m' =>
-    GlobalTheory.T.flag_cover_frames_at_base_point K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv zb F' F hzb hF' hF hG' hG p ⟨k, m⟩ ⟨k', m'⟩
-  have hmin := GlobalTheory.T.block_diagonal_minor_vanishing ℂ N j p.2 M.j_le
-  have hne : stepCols N j p.2 ≠ ∅ := stepCols_ne p.2 M.j_le
-  obtain ⟨cc, hcc, horbE⟩ := horb
-  have hval : ∀ s, valAt M.x s (basePart M.blk z₀) = valAt M.x s (zb ∘ Cv.v) := fun s => by
-    rw [horbE]
-    exact ((StepW.TorusAct.main _ _ _ M.x (zb ∘ Cv.v) cc hcc).2 hzv).2 s
-  have hμ : ∀ I, ¬ IsStepRows N j p.2 I → minorIJ (h p.1) I (stepCols N j p.2) = 0 := fun I hI =>
-    (hmin.2.1 (h p.1) I (hfl'.2.1 p.1).1 hI).resolve_right hne
-  have hAB : ∀ I I', IsStepRows N j p.2 I → IsStepRows N j p.2 I' →
-      ∑ m, valAt M'.x (F'.u' I ⟨k', m⟩) zb * valAt M'.x (F'.u ⟨k', m⟩ I') zb =
-        if I = I' then 1 else 0 := fun I I' hI hI' => by
-    rw [← valAt_sum_mul hzb Finset.univ _ _ (fun m _ => (hG'.2.1 ⟨k', m⟩ I).2)
-      (fun m _ => (hG'.2.1 ⟨k', m⟩ I').1), hF'.2.2.1 p k' hk' I I' hI hI']
-    have h3 := ValRing.regAt_valAt_ring _ _ _ M'.x zb hzb
-    split_ifs
-    · exact h3.2.2.2.1
-    · exact h3.2.2.1
-  have hread := read_minor (IsStepRows N j p.2) _ _ hAB _ hμ (fun m => z₁ ⟨k', m⟩) a' hz1
-  have key : ∀ m, ∑ m', valAt M'.x (coE Cv F' F p ⟨k, m⟩ ⟨k', m'⟩) zb * z₁ ⟨k', m'⟩ =
-      a' * ∑ I, valAt M.x (F.u ⟨k, m⟩ I) (zb ∘ Cv.v) *
-        minorIJ (Cv.trans F' F zb p.1 * h p.1) I (stepCols N j p.2) := fun m => by
-    simp only [fun m' => (hE m m').2, hmin.1]
-    exact move_minor (IsStepRows N j p.2) _ (fun I => by simp) _ _ _ _ hμ _ a' hread
-  refine ⟨c * y' ⟨k', c'⟩, fun m => ∑ m', algebraMap M'.Ω Φ' (coE Cv F' F p ⟨k, m⟩ ⟨k', m'⟩) *
-    (y' ⟨k', m'⟩ / y' ⟨k', c'⟩), a' / (a * z₁ ⟨k', c'⟩), mul_ne_zero hc0 hy0,
-    div_ne_zero ha' (mul_ne_zero ha hc'), fun m => ⟨?_, ?_⟩⟩
-  · show transPt Cv ⟨k, m⟩ = c * y' ⟨k', c'⟩ * ∑ m', algebraMap M'.Ω Φ' (coE Cv F' F p ⟨k, m⟩ ⟨k', m'⟩) *
-      (y' ⟨k', m'⟩ / y' ⟨k', c'⟩)
-    rw [htr m, mul_assoc]
-    congr 1
-    rw [Finset.mul_sum]
-    refine Finset.sum_congr rfl fun m' _ => ?_
-    field_simp
-  · have hv := isValueAt_sum Finset.univ
-      (fun m' => algebraMap M'.Ω Φ' (coE Cv F' F p ⟨k, m⟩ ⟨k', m'⟩) * (y' ⟨k', m'⟩ / y' ⟨k', c'⟩))
-      (fun m' => valAt M'.x (coE Cv F' F p ⟨k, m⟩ ⟨k', m'⟩) zb * ((z₁ ⟨k', c'⟩)⁻¹ * z₁ ⟨k', m'⟩))
-      fun m' _ => isValueAt_mul (GlobalTheory.T.base_function_value_at_point K' ι' Φ' y' Ψ N j M' z₁ _ hz₁ hzb (hE m m').1) (hratio m')
-    have e : ∑ m', valAt M'.x (coE Cv F' F p ⟨k, m⟩ ⟨k', m'⟩) zb * ((z₁ ⟨k', c'⟩)⁻¹ * z₁ ⟨k', m'⟩) =
-        a' / (a * z₁ ⟨k', c'⟩) * z₀ ⟨k, m⟩ := by
-      have e1 : ∑ m', valAt M'.x (coE Cv F' F p ⟨k, m⟩ ⟨k', m'⟩) zb * ((z₁ ⟨k', c'⟩)⁻¹ * z₁ ⟨k', m'⟩) =
-          (z₁ ⟨k', c'⟩)⁻¹ * ∑ m', valAt M'.x (coE Cv F' F p ⟨k, m⟩ ⟨k', m'⟩) zb * z₁ ⟨k', m'⟩ := by
-        rw [Finset.mul_sum]
-        exact Finset.sum_congr rfl fun m' _ => by ring
-      rw [e1, key m, hz0 m]
-      simp only [hval]
-      field_simp
-    rw [← e]
-    exact hv
 
 end GlobalTheory.CompanionTheory.Ar.PB.CovGraph.BStep

@@ -14,11 +14,4 @@ attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.PolDeg
 variable {R : Type} [CommRing R] [IsDomain R]
 
-def ofDeg (D : DegPre R) (hB : D.TauBimult) : Data R := Wit.ofDeg D hB
-
-theorem refines_ofDeg (D : DegPre R) (hB : D.TauBimult) :
-    Refines (ofDeg D hB) (RingHom.id R) D (AddEquiv.refl _) :=
-  Wit.refines_ofDeg D hB
-
-
 end GlobalTheory.PolDeg

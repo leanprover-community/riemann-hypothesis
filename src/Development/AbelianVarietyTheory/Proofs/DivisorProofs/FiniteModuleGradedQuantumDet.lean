@@ -52,12 +52,6 @@ theorem comm_qdet {n : ℕ} {E : Fin n → Fin n → A} {z : A} (h : ∀ a b, Co
   unfold Formalism.REAL.Tm
   exact Commute.add_right (GlobalTheory.CapHC.ite_algebraMap_comm _ _ _).symm (h _ _)
 
-theorem glComm {n : ℕ} {X : Fin n → Fin n → A} (hX : Formalism.REAL.GlRel X) {a b c d : Fin n} (hbc : b ≠ c)
-    (hda : d ≠ a) : Commute (X a b) (X c d) := by
-  have h := hX a b c d
-  rw [if_neg hbc, if_neg hda, sub_zero] at h
-  exact sub_eq_zero.1 h
-
 end Alg
 
 section Stab

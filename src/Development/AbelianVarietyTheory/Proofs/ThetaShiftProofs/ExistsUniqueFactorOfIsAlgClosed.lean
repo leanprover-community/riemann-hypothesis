@@ -41,8 +41,6 @@ end Algebra
 
 section Scheme
 
-local notation "specAlg(" K ", " L ")" => Spec.map (CommRingCat.ofHom (algebraMap K L))
-
 variable {K₀ K₁ L : Type u} [Field K₀] [Field K₁] [Field L]
   [Algebra K₀ K₁] [Algebra K₁ L] [Algebra K₀ L] [IsScalarTower K₀ K₁ L]
 

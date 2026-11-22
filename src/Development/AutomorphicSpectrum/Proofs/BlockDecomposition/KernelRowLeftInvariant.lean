@@ -23,9 +23,6 @@ def unitaryUnit {n : ℕ} (k : Matrix.unitaryGroup (Fin n) ℂ) : G n :=
     by have h : (k⁻¹ * k).1 = 1 := by rw [inv_mul_cancel]; rfl
        exact h⟩
 
-theorem unitaryUnit_inv_val {n : ℕ} (k : Matrix.unitaryGroup (Fin n) ℂ) :
-    ((unitaryUnit k)⁻¹ : G n).val = (k⁻¹).1 := rfl
-
 theorem inner_cls {n : ℕ} [MeasurableSpace (G n)] (μ : Measure (G n)) {V : Type} [NormedAddCommGroup V]
     [InnerProductSpace ℂ V] (f g : Mat n → V) (hf : MemLp (fun y : G n => f y.val) 2 μ)
     (hg : MemLp (fun y : G n => g y.val) 2 μ) :

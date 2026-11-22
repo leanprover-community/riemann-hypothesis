@@ -46,26 +46,6 @@ theorem tauEmb_ne_conj (Q : Par D) (hp : Q.PinHost) (t t' : D.what₂.Tau) :
   rw [hp.2.2.2 t'] at h2
   exact conj_cmHostRoot_ne_self Q.H h2
 
-theorem exists_tau (Q : Par D) (hp : Q.PinHost) (τ : D.host.E →+* ℂ) (hτ : InPsi Q.H τ) :
-    ∃ t : D.what₂.Tau, τ = DV.tauEmb D t := by
-  obtain ⟨g, hg⟩ := (factEmb D.R D.host).1.2 τ
-  by_cases hgP : g ∈ D.R.Psi
-  · obtain ⟨t, ht⟩ := (Formalism.L2.Geo.exists_tauEmb_iff D g).2 hgP
-    exact ⟨t, hg.symm.trans ht⟩
-  · exfalso
-    have h2 : g * D.R.cc ∈ D.R.Psi := by
-      by_contra h
-      exact hgP ((Formalism.L2.Geo.mem_Psi_iff_mul_cc_notMem g).2 h)
-    obtain ⟨t, ht⟩ := (Formalism.L2.Geo.exists_tauEmb_iff D (g * D.R.cc)).2 h2
-    have h3 : DV.tauEmb D t (Q.H.rt : D.host.E) = Q.H.rt0 := hp.2.2.2 t
-    rw [← ht, Formalism.L2.Geo.emb_mul_cc_comp, hg, RingHom.comp_apply] at h3
-    have h4 : τ (D.host.conj (Q.H.rt : D.host.E)) = star (τ (Q.H.rt : D.host.E)) := Formalism.MainNotions.WeightFamilies.emb_conj D τ _
-    have hτ' : τ (Q.H.rt : D.host.E) = Q.H.rt0 := hτ
-    apply conj_cmHostRoot_ne_self Q.H
-    calc star Q.H.rt0 = star (τ (Q.H.rt : D.host.E)) := by rw [hτ']
-      _ = τ (D.host.conj (Q.H.rt : D.host.E)) := h4.symm
-      _ = Q.H.rt0 := h3
-
 theorem wtA_tau (Q : Par D) (hp : Q.PinHost) {j : ℕ} (w : WeightFamilies.Wt D j) (t : D.what₂.Tau) (i : ℕ) :
     wtA w (DV.tauEmb D t, i) = ext0 (w.aP t) i := by
   classical

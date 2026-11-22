@@ -28,8 +28,6 @@ section Gen
 
 variable {F : Type} [Field F] [NumberField F]
 
-theorem ev_apply (v : HeightOneSpectrum (𝓞 F)) (x : Af F) : evalV F v x = x v := rfl
-
 theorem val_coe_one (t : 𝓞 F) (v : HeightOneSpectrum (𝓞 F)) (ht : t ∉ v.asIdeal) :
     Valued.v (algebraMap F (Af F) (t : F) v) = 1 := by
   rw [GlobalTheory.Ker.MovLev.val_coe]; exact v.intValuation_eq_one_iff.2 ht

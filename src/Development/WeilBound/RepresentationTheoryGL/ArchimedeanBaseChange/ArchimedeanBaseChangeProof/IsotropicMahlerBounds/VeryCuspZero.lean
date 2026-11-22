@@ -133,14 +133,9 @@ def IsRegEll (d : GL (Fin n) E) : Prop :=
 def RegSupp (φ : GA E n → ℂ) : Prop :=
   ∀ (d : GL (Fin n) E) (x : GA E n), φ (twConj (thetaA E n) x (ratGL E n d)) ≠ 0 → IsRegD d
 
-def kerTw (φ : GA E n → ℂ) (x y : GA E n) : ℂ := ∑ᶠ d : GL (Fin n) E, φ (x⁻¹ * ratGL E n d * thetaA E n y)
-
 def kerTw2 (φ : GA E a × GA E b → ℂ) (x y : GA E a × GA E b) : ℂ :=
   ∑ᶠ d : GL (Fin a) E × GL (Fin b) E,
     φ (x.1⁻¹ * ratGL E a d.1 * thetaA E a y.1, x.2⁻¹ * ratGL E b d.2 * thetaA E b y.2)
-
-def cutTr [MeasurableSpace (GA E n)] (μ : Measure (GA E n)) (F : Set (GA E n)) (τ : ℝ) (φ : GA E n → ℂ) : ℂ :=
-  ∫ x in F, chiT τ x * kerTw φ x x ∂μ
 
 def cutTr2 [MeasurableSpace (GA E a)] [MeasurableSpace (GA E b)] (μ₁ : Measure (GA E a)) (μ₂ : Measure (GA E b))
     (F₁ : Set (GA E a)) (F₂ : Set (GA E b)) (τ : ℝ) (φ : GA E a × GA E b → ℂ) : ℂ :=

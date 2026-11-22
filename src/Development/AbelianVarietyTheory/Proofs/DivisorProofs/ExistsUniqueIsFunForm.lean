@@ -31,8 +31,6 @@ theorem funNat_antitone (l : DomWeight n) : Antitone l.natW := fun _ _ h =>
 theorem funNat_last {m : ℕ} (l : DomWeight (m + 1)) : l.natW (Fin.last m) = 0 := by
   simp [DomWeight.natW, funDetShift_succ]
 
-theorem funDual_w (l : DomWeight n) (i : Fin n) : l.dual.w i = -l.w i.rev := rfl
-
 theorem funNat_dual {m : ℕ} (l : DomWeight (m + 1)) : l.dual.natW = nuDual l.natW := by
   funext i
   have h1 : l.w (Fin.last m) ≤ l.w i.rev := l.anti (Fin.le_last _)
@@ -491,7 +489,6 @@ theorem funEquiv_mem_nabStd (F : VV K σ) : F.1 ∈ nabStd K σ ↔ (funEquiv σ
 theorem funEquiv_mem_delStd (F : VV K σ) : F.1 ∈ delStd K σ ↔ (funEquiv σ F).1 ∈ delStd K fun τ => (σ τ).dual :=
   funEquiv_mem_iff σ _ _ (delStd_mem_VV σ)
     (fun τ => funMap_fwd _ _ (funPos_weyl _ (σ τ))) (fun τ => funMap_rev _ _ (funPos_weyl_rev _ (σ τ))) F
-
 
 omit [NumberField K] in
 theorem funForm : ∃ Φ : VV K σ ≃ₗ[K] VV K (fun τ => (σ τ).dual),

@@ -156,14 +156,6 @@ theorem isDiscreteValuationRing_stalk {X : Scheme.{u}} [IsNormalScheme X] [IsLoc
       (Ring.krullDimLE_one_iff_of_noZeroDivisors.mp h1 P hP.1 hP.2)⟩
   exact ((IsDiscreteValuationRing.TFAE (X.presheaf.stalk x) hf).out 1 4).mpr h3
 
-theorem isDiscreteValuationRing_stalk_iff {X : Scheme.{u}} [IsNormalScheme X]
-    [IsLocallyNoetherian X] {x : X} :
-    IsDiscreteValuationRing (X.presheaf.stalk x) ↔ Order.coheight x = 1 := by
-  refine ⟨fun h ↦ ?_, isDiscreteValuationRing_stalk⟩
-  have := IsDiscreteValuationRing.ringKrullDim_eq_one (X.presheaf.stalk x)
-  rw [ringKrullDim_stalk_eq_coheight] at this
-  exact_mod_cast this
-
 theorem eq_of_mem_irreducibleComponents_of_isDomain {X : Scheme.{u}} {x : X}
     [IsDomain (X.presheaf.stalk x)] {Z W : Set X} (hZ : Z ∈ irreducibleComponents X)
     (hW : W ∈ irreducibleComponents X) (hxZ : x ∈ Z) (hxW : x ∈ W) : Z = W := by
@@ -260,12 +252,10 @@ instance isClosedImmersion_component_ι (Z : irreducibleComponents X) :
     IsClosedImmersion (component Z).ι :=
   .of_isPreimmersion _ (by simpa using isClosed_component Z)
 
-
 variable (X) in
 theorem iSup_component : ⨆ Z : irreducibleComponents X, component Z = ⊤ :=
   eq_top_iff.mpr fun x _ ↦ Opens.mem_iSup.mpr
     ⟨⟨_, irreducibleComponent_mem_irreducibleComponents x⟩, mem_irreducibleComponent⟩
-
 
 variable (X) in
 theorem pairwise_disjoint_component :
@@ -274,14 +264,11 @@ theorem pairwise_disjoint_component :
   rw [← Opens.coe_disjoint]
   exact pairwiseDisjoint_irreducibleComponents X Z.2 W.2 (fun h ↦ hne (Subtype.ext h))
 
-
-
 variable (X) in
 theorem nonempty_isColimit_component :
     Nonempty (IsColimit (Cofan.mk X fun Z : irreducibleComponents X ↦ (component Z).ι)) :=
   nonempty_isColimit_cofanMk_of _ (by simpa using iSup_component (X := X))
     (by simpa [Function.onFun] using pairwise_disjoint_component (X := X))
-
 
 end Components
 

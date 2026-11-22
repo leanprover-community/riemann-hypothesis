@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsLevMove
 public import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.LevelGroupEqTopOfCoprime
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LevelActionOverlapLeSourceChart
 
 @[expose] public section
 

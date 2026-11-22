@@ -79,9 +79,6 @@ instance : SMul c.F (Rule Y Xc τ) := ⟨fun t s R _ j a => j t * s R j a⟩
 theorem Rule.add_apply (s s' : Rule Y Xc τ) (R : Type) [CommRing R] (j : c.F →+* R)
     (a : Framed Y Xc τ R j) : (s + s') R j a = s R j a + s' R j a := rfl
 
-theorem Rule.zero_apply (R : Type) [CommRing R] (j : c.F →+* R)
-    (a : Framed Y Xc τ R j) : (0 : Rule Y Xc τ) R j a = 0 := rfl
-
 theorem Rule.smul_apply (t : c.F) (s : Rule Y Xc τ) (R : Type) [CommRing R] (j : c.F →+* R)
     (a : Framed Y Xc τ R j) : (t • s) R j a = j t * s R j a := rfl
 
@@ -129,7 +126,6 @@ def flatCoord {g p q : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (z : Fin q ⊕ Fin
     (W : Fin q → Fin g → ℂ) (C : Fin q ⊕ Fin p → Fin p → ℂ) : ℂ :=
   Matrix.det (Matrix.of fun k => Sum.elim (fun b => -(Real.pi : ℂ) * hermForm Hm (W b) (z k)) (C k) :
     Matrix (Fin q ⊕ Fin p) (Fin q ⊕ Fin p) ℂ)
-
 
 open Classical in
 def IsHorizontal (sig : Rule Y Xc τ) : Prop :=

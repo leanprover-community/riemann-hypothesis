@@ -4,7 +4,6 @@ public import Mathlib
 public import Formalism.LocalToGlobal.Divisibility.Inputs
 public import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefUse
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefExample
 public import Formalism.QuotientMetricDivisors.ReductionLemmaZero
 public import Formalism.QuotientMetricDivisors.FinalW
 public import Formalism.QuotientMetricDivisors.SixthReductionExplicit
@@ -68,12 +67,6 @@ theorem La_nonneg : 0 ≤ R.La := by
 theorem Nn_ge : 1 ≤ R.Nn := by
   linarith [R.p1, R.p2, R.p6, R.p11, R.p14, R.p15, R.p16, R.p17, R.p18, R.p19, R.p20, R.p24, R.p25, R.p26, R.p27, R.p28,
     R.p29, R.p30, R.p31, R.p32, R.p33, R.p34, R.p35, R.p36, R.p37, R.p38, R.c1, R.c3, R.c4, R.c5]
-
-theorem La_eq : R.La = Real.log R.x + R.L + Real.log R.rd := by
-  have hx : 0 < R.x := R.x_pos
-  have hb : 0 < R.b := by rw [R.p4]; exact Real.exp_pos _
-  have hrd : 0 < R.rd := by linarith [R.p6]
-  rw [R.p9, R.p5, Real.log_mul (mul_pos hx hb).ne' hrd.ne', Real.log_mul hx.ne' hb.ne', R.p4, Real.log_exp]
 
 theorem unit_nonneg : 0 ≤ R.x ^ R.eps * (R.B0 + R.Nc) := by
   have hx : 0 ≤ R.x := le_of_lt R.x_pos
@@ -278,31 +271,6 @@ structure ChainTie {Df : DefSide Bs} {Dc : DefCols Df} {u : Dc.Mem} (ch : ColCha
 
 variable {Df : DefSide Bs} {Dc : DefCols Df} {u : Dc.Mem} {ch : ColChain Dc u} {Q : KerChain K}
 
-theorem ChainTie.chain (T : ChainTie ch Q) (x : Fin (ch.c 0) → K) :
-    T.coL ((chainMat ch.Kj ⟨Q.n + 1, by have := T.hmm; omega⟩).mulVec x) = Q.col (T.coF 0 (Nat.zero_le _) x) := by
-  have e : (chainMat ch.Kj ⟨Q.n + 1, by have := T.hmm; omega⟩).mulVec x =
-      (ch.Kj ⟨Q.n, by have := T.hmm; omega⟩).mulVec ((chainMat ch.Kj ⟨Q.n, by have := T.hmm; omega⟩).mulVec x) :=
-    (Matrix.mulVec_mulVec _ _ _).symm
-  have aux : ∀ i (h : i ≤ Q.n), T.coF i h
-      ((chainMat ch.Kj ⟨i, by have := T.hmm; omega⟩).mulVec x) =
-      Q.kk.colTo Q.hF i (T.coF 0 (Nat.zero_le _) x) := by
-    intro i
-    induction i with
-    | zero =>
-      intro h
-      simp [chainMat, Formalism.L2.Col.KerFam.colTo]
-    | succ i ih =>
-      intro h
-      have hi : i < Q.n := by omega
-      have ee : (chainMat ch.Kj ⟨i + 1, by have := T.hmm; omega⟩).mulVec x =
-          (ch.Kj ⟨i, by have := T.hmm; omega⟩).mulVec
-            ((chainMat ch.Kj ⟨i, by have := T.hmm; omega⟩).mulVec x) :=
-        (Matrix.mulVec_mulVec _ _ _).symm
-      rw [ee, T.kerF i hi, ih hi.le]
-      rfl
-  rw [e, T.kerC, aux Q.n le_rfl]
-  rfl
-
 theorem ChainTie.step_norm (T : ChainTie ch Q) (j : ℕ) (h : j < Q.n) (v : InfinitePlace K) (x : Fin (ch.c ⟨j, by have := T.hmm; omega⟩) → K) :
     ((Formalism.HermitianLatticesTheory.normAt (Pi.basisFun K (Fin (ch.c ⟨j + 1, by have := T.hmm; omega⟩))) (ch.X ⟨j + 1, by have := T.hmm; omega⟩) v
         ((ch.Kj ⟨j, by have := T.hmm; omega⟩).mulVec x) ^ 2 : ℝ) : ℂ) =
@@ -317,7 +285,6 @@ theorem ChainTie.cpl_norm (T : ChainTie ch Q) (v : InfinitePlace K) (x : Fin (ch
 
 def ChainTie.First (T : ChainTie ch Q) (f : (Fin (ch.c 0) → K) →ₗ[K] (Q.F 0).Forms) : Prop :=
   ∀ x, T.coF 0 (Nat.zero_le _) x = f x
-
 
 end Comparison₂
 
@@ -413,18 +380,6 @@ section Generic
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
   {Bs : DefBase K} {Df0 Df1 : DefSide Bs} {Dc : DefCols Df1} {Sp : SPer Dc} {N : IndefNum Bs}
-
-def DivClauses {Pl : Type} [Fintype Pl] [DecidableEq Pl] (P : IndefCore Df0 Df1 Dc Sp N) (R : RecNums Bs.J Pl)
-    (u : Dc.Mem) (Nu : Submodule (𝓞 K) (Fin (Dc.a u) → K)) (sg : HeightOneSpectrum (𝓞 K) → ℝ) : Prop :=
-  (∀ φ ∈ shiftLat Nu sg, P.cols.col.B u φ ∈ Formalism.HN.dualLat P.cols.RR) ∧
-  (∃ cu : InfinitePlace K → ℝ, (∀ v, 0 < cu v ∧
-      Formalism.HN.opNormAt (Pi.basisFun K (Fin (Dc.a u))) (Dc.Xc u) (Pi.basisFun K (Fin P.cols.D)).dualBasis
-        (Formalism.HN.dualFrame P.cols.XE) v (P.cols.col.B u) ^ 2 ≤ cu v) ∧
-    (1 / (Formalism.HN.nPl K : ℝ)) * ∑ v, Real.log (cu v) = R.hu - meanLog P.cols.κ) ∧
-  P.cols.muCC - meanLog P.cols.κ + R.hu - 2 * FoOf P ≤ R.rhs ∧
-  Formalism.HN.muDef (Pi.basisFun K (Fin (Dc.a u))) (Dc.Xc u) (shiftLat Nu sg) =
-    Formalism.HN.muDef (Pi.basisFun K (Fin (Dc.a u))) (Dc.Xc u) Nu +
-      2 * ∑ᶠ w : HeightOneSpectrum (𝓞 K), lw w * (shiftZ sg w : ℝ)
 
 theorem nK_of_cb {m : ℕ} {c : Fin (m + 1) → ℕ} {Xc : ∀ i, InfinitePlace K → Matrix (Fin (c i)) (Fin (c i)) ℂ}
     {Kj : ∀ j : Fin m, Matrix (Fin (c j.succ)) (Fin (c j.castSucc)) K} (D : CBData Xc Kj) (B : Fin m → InfinitePlace K → ℝ)
@@ -551,7 +506,6 @@ abbrev kerRec {Bs : DefBase X.K} {P : LevFam X.E X.K Rk.r Pr.vGs} {m2 : ℕ} (mu
     ∀ t x, ChKer W Ch sel (mu t) (cst t) (L t) P (wd x) m2 (b t x) (hY t x) :=
   fun t x => Formalism.L2.Ker.chKerC W Ch sel (mu t) (cst t) (L t) Am (wd x) m2 (b t x) (hY t x) P (hK t x)
 
-
 end ConcreteCol
 
 end Formalism.L2.DIV
@@ -560,11 +514,5 @@ namespace Formalism.L2.DIV.Inst
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2.Indef Formalism.L2.Indef.Examples₂ Formalism.L2.DIV
 open Formalism.LatticeIndexTer (ph)
-
-
-
-
-
-def kk : Fin 2 → K3 := ![2, 2⁻¹]
 
 end Formalism.L2.DIV.Inst

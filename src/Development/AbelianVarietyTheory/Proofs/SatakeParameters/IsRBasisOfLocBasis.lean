@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.IntegralJetEntries
+public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
+public import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 @[expose] public section
 

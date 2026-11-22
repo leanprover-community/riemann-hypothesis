@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Formalism.LocalToGlobal.ThresholdSelection
 public import Formalism.SharpRestriction.GlobalSchurBounds.MassRatioUnfoldedOfTheoremTwo
 public import Formalism.SharpRestriction.CuspSpanNormBounds.PExtra
 public import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeFamilyOfFormalDegreeInput

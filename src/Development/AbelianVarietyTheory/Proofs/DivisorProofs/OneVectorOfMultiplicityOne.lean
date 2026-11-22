@@ -19,7 +19,6 @@ section GroupAlgebra
 
 variable {K : Type} [Field K] [CharZero K] {G : Type} [Group G] [Fintype G]
 
-
 open Classical in
 def typeSum (P : Subgroup G) (ψ : P →* Kˣ) (χ : G → K) : K := ∑ h : P, χ (h : G) * (((ψ h)⁻¹ : Kˣ) : K)
 
@@ -36,8 +35,6 @@ theorem asAlg_eq_sum (r : Representation K G V) (a : MonoidAlgebra K G) (x : V) 
   conv_lhs => rw [eq_sum_single a]
   set_option synthInstance.maxHeartbeats 100000 in
     simp [map_sum, LinearMap.sum_apply]
-
-
 
 end Modules
 
@@ -120,10 +117,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
-
-def rowSub (R : RealDat D A Ks) (t : T) : Submodule D.what₂.LL (A.fam.amb.FR t) :=
-  (LinearMap.range (LinearMap.adjoint (Tw.map (twAt D.what₂.embLL A.v0) (R.Th t)))).comap
-    (Tw.semi (σ' := A.v0.embedding) (twAt D.what₂.embLL A.v0) R.emb0 (R.jX t))
 
 def GoodInduced (R : RealDat D A Ks) : Prop :=
   ∀ χ ∈ A.X, GlobalTheory.IndefiniteRowSideFullHecke.CuspidalInducedCharacter.IsCuspIndProdChar R.Pg D.R.r D.what₂.embLL fun g => χ (R.eG.symm g)

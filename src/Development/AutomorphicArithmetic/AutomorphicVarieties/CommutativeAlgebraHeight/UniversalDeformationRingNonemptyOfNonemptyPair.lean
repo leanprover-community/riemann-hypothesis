@@ -12,12 +12,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Commutative
 
 open TensorProduct IsLocalRing Polynomial UpperTheory.V.W UpperTheory.V.Alg UpperTheory.V.CA
 
-private structure COb (O : Type) [CommRing O] [IsLocalRing O] : Type 1 where
-  R : Type
-  [ring : CommRing R]
-  [alg : Algebra O R]
-  [co : IsCO O R]
-
 attribute [local instance] COb.ring COb.alg COb.co
 
 private theorem coprod_opt (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O]

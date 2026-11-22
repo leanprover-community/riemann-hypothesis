@@ -375,11 +375,6 @@ theorem ringHom_flat_of_square_of_isLocalHom [IsLocalRing B] [IsLocalRing B'] {�
   haveI : IsLocalHom (algebraMap B B') := ‹IsLocalHom β›
   exact Module.FaithfullyFlat.of_flat_of_isLocalHom
 
-theorem ringHom_faithfullyFlat_comp {f : A →+* B} {g : B →+* B'} (hf : f.FaithfullyFlat)
-    (hg : g.FaithfullyFlat) : (g.comp f).FaithfullyFlat := by
-  algebraize [f, g, g.comp f]
-  exact Module.FaithfullyFlat.trans A B B'
-
 end Descent
 
 end GlobalTheory

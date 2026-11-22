@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SubstCongrModPrimeOfIntegralDerivative
+public import Formalism.TorsionNormIteration.InverseIntegralClasses.SigmaNormLeOne
+public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EndOmega
 
 @[expose] public section

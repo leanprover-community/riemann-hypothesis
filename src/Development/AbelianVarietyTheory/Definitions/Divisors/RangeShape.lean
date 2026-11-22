@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import Formalism.RealPlaceAnalysis.SmoothOnGVIff
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PseudoCoefficientUpqTrivial
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MeasurableEmbeddingEquiv
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.DiscreteSeriesCharacter
 public import Development.AbelianVarietyTheory.Definitions.Divisors.TCoefMInMMul
 

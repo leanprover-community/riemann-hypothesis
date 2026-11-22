@@ -270,14 +270,8 @@ section B
 
 variable (k : Type*) {R P M : Type*} [CommRing k] [AddCommGroup M] [Module k M] {n : ℕ}
 
-theorem permTensor_apply_comp (σ : Equiv.Perm (Fin n)) (z : Tens R P M n) (g : Fin n → R × P) :
-    perm k σ z g = z (g ∘ σ) := rfl
-
 theorem permSecond_apply (σ : Equiv.Perm (Fin n)) (z : Tens R P M n) (g : Fin n → R × P) :
     permY k σ z g = z (fun s => ((g (σ s)).1, (g s).2)) := rfl
-
-theorem permFirst_apply (σ : Equiv.Perm (Fin n)) (z : Tens R P M n) (g : Fin n → R × P) :
-    permX k σ z g = z (fun s => ((g s).1, (g (σ s)).2)) := rfl
 
 theorem onModule_apply (T : Module.End k M) (z : Tens R P M n) (g : Fin n → R × P) :
     onM k T z g = T (z g) := rfl
@@ -645,9 +639,6 @@ theorem contract_apply_insertNth (j : Fin (n + 1)) (v : R × P) (z : Tens R P M 
 theorem contract_zero_apply_cons (v : R × P) (z : Tens R P M (n + 1)) (g : Fin n → R × P) :
     contr k 0 v z g = z (Fin.cons v g) := by
   rw [contract_apply_insertNth, Fin.insertNth_zero']
-
-theorem onModule_apply_eval (T : Module.End k M) (z : Tens R P M n) (g : Fin n → R × P) :
-    onM k T z g = T (z g) := rfl
 
 variable [DecidableEq R] [DecidableEq P]
 
@@ -1200,14 +1191,11 @@ section
 variable {k R P M : Type*} [CommRing k] [AddCommGroup M] [Module k M] {n : ℕ}
 
 theorem permOnTensor_apply (σ : Equiv.Perm (Fin n)) (z : Tens R P M n) (g) : perm k σ z g = z (g ∘ σ) := rfl
-theorem permSecond_apply_formula (σ : Equiv.Perm (Fin n)) (z : Tens R P M n) (g) :
-    permY k σ z g = z (fun s => ((g (σ s)).1, (g s).2)) := rfl
 theorem contract_apply_eq_insertNth (j : Fin (n + 1)) (v : R × P) (z : Tens R P M (n + 1)) (g) :
     contr k j v z g = z (j.insertNth v g) := rfl
 theorem contract_last_apply_snoc (v : R × P) (z : Tens R P M (n + 1)) (g) :
     contr k (Fin.last n) v z g = z (Fin.snoc g v) := by
   rw [contract_apply_eq_insertNth, Fin.insertNth_last']
-theorem onFactor_apply (T : Module.End k M) (z : Tens R P M n) (g) : onM k T z g = T (z g) := rfl
 
 variable [DecidableEq R] [DecidableEq P]
 

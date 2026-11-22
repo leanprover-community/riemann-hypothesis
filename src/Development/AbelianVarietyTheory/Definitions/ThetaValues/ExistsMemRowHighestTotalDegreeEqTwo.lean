@@ -16,17 +16,14 @@ section RowAdd
 
 variable [Fintype κ]
 
-
 open Classical in
 noncomputable def rowAdd (t : T) (r r' : Fin p ⊕ Fin q) (s : R) :
     Poly R T p q κ →ₐ[R] Poly R T p q κ :=
   bind₁ fun v => X v + ∑ k : κ, if v = (t, r', k) then C s * X (t, r, k) else 0
 
-
 open Classical in
 noncomputable def rowAddX (t : T) (a b : Fin p) (s : R) : Poly R T p q κ →ₐ[R] Poly R T p q κ :=
   bind₁ fun v => X v + ∑ k : κ, if v = xVar t b k then C s * X (xVar t a k) else 0
-
 
 open Classical in
 noncomputable def rowAddY (t : T) (a b : Fin q) (s : R) : Poly R T p q κ →ₐ[R] Poly R T p q κ :=
@@ -74,16 +71,6 @@ theorem rowAdd_X [DecidableEq T] (t t' : T) (r r' r'' : Fin p ⊕ Fin q) (s : R)
 @[simp] theorem rowAddY_X_self (t : T) (a b : Fin q) (s : R) (k : κ) :
     rowAddY t a b s (X (yVar t b k) : Poly R T p q κ) = X (yVar t b k) + C s * X (yVar t a k) :=
   rowAdd_X_self _ _ _ _ _
-
-theorem rowAddX_X_of_ne {t t' : T} (a : Fin p) {b b' : Fin p} (s : R) (k : κ)
-    (h : ¬ (t' = t ∧ b' = b)) :
-    rowAddX t a b s (X (xVar t' b' k) : Poly R T p q κ) = X (xVar t' b' k) :=
-  rowAdd_X_of_ne _ _ _ (by simpa using h)
-
-theorem rowAddY_X_of_ne {t t' : T} (a : Fin q) {b b' : Fin q} (s : R) (k : κ)
-    (h : ¬ (t' = t ∧ b' = b)) :
-    rowAddY t a b s (X (yVar t' b' k) : Poly R T p q κ) = X (yVar t' b' k) :=
-  rowAdd_X_of_ne _ _ _ (by simpa using h)
 
 theorem rowAdd_rowForm_self (t : T) (r r' : Fin p ⊕ Fin q) (s : R) (v : κ → R) :
     rowAdd t r r' s (rowForm t r' v) = rowForm t r' v + C s * rowForm t r v := by
@@ -236,7 +223,6 @@ end RowAdd
 
 section RowDegree
 
-
 open Classical in
 noncomputable def rowInd (t : T) (r : Fin p ⊕ Fin q) : Var T p q κ → ℕ :=
   rowWeight fun t' r' => if t' = t ∧ r' = r then 1 else 0
@@ -280,7 +266,6 @@ end RowDegree
 section Space
 
 variable [Fintype κ]
-
 
 variable (R) in
 noncomputable def rowHighest (c : T → Fin p → ℕ) (c' : T → Fin q → ℕ) :
@@ -345,7 +330,6 @@ theorem mem_rowHighest_iff_rowAdd : P ∈ rowHighest R c c' ↔ IsHarmonic P ∧
 theorem isHarmonic_of_mem_rowHighest (hP : P ∈ rowHighest R c c') : IsHarmonic P :=
   (mem_rowHighest_iff.1 hP).1
 
-
 theorem isWeightedHomogeneous_of_mem_rowHighest [Fintype T] {M : Type*} [AddCommMonoid M]
     (w : T → Fin p ⊕ Fin q → M) (hP : P ∈ rowHighest R c c') :
     IsWeightedHomogeneous (rowWeight w) P
@@ -360,7 +344,6 @@ theorem isHomogeneous_of_mem_rowHighest [Fintype T] (hP : P ∈ rowHighest R c c
   have := isWeightedHomogeneous_of_mem_rowHighest (fun _ _ => (1 : ℕ)) hP
   simp only [smul_eq_mul, mul_one, sum_partOf] at this
   exact this
-
 
 instance finite_rowHighest [Finite T] [IsNoetherianRing R] :
     Module.Finite R (rowHighest R c c' : Submodule R (Poly R T p q κ)) := by
@@ -383,14 +366,12 @@ theorem mem_rowHighest_of_rowWeight [Fintype T] (h : IsHarmonic P)
   · funext v; rw [rowInd_apply]; rfl
   · rcases r with a | b <;> simp
 
-
 variable (c c') in
 theorem minorProd_mem_rowHighest [Fintype T] {ε : T → Fin p → κ → R} {φ : T → Fin q → κ → R}
     (h : IsPerp ε φ) : minorProd c c' ε φ ∈ rowHighest R c c' :=
   mem_rowHighest_of_rowWeight (isHarmonic_minorProd c c' h)
     (fun w => minorProd_isWeightedHomogeneous w c c' ε φ)
     fun t _ _ hr _ => rowAdd_minorProd t hr _ c c' ε φ
-
 
 theorem colSubst_mem_rowHighest [Fintype κ'] [DecidableEq κ] {A : T → Matrix κ κ' R}
     {B : T → Matrix κ' κ R} (h : ∀ t, A t * B t = 1) (hP : P ∈ rowHighest R c c') :
@@ -403,7 +384,6 @@ theorem colSubst_mem_rowHighest [Fintype κ'] [DecidableEq κ] {A : T → Matrix
 theorem colAct_mem_rowHighest [DecidableEq κ] (g : T → GL κ R) (hP : P ∈ rowHighest R c c') :
     colAct R T p q κ g P ∈ rowHighest R c c' :=
   colSubst_mem_rowHighest (fun t => Units.inv_mul (g t)) hP
-
 
 theorem map_mem_rowHighest (f : R →+* S) (hP : P ∈ rowHighest R c c') :
     MvPolynomial.map f P ∈ rowHighest S c c' := by
@@ -434,7 +414,6 @@ theorem orbitSpan_le_rowHighest : orbitSpan R h c c' ≤ rowHighest R c c' := by
   refine Submodule.span_le.2 ?_
   rintro _ ⟨g, rfl⟩
   exact colAct_mem_rowHighest g (basePoly_mem_rowHighest h c c')
-
 
 include h in
 theorem rowHighest_ne_bot [Nontrivial R] :

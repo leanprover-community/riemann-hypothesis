@@ -245,8 +245,6 @@ variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {m : �
 
 theorem glT_val (g : GL (Fin m) L) : (glT g).1 = g.1ᵀ := rfl
 
-theorem antiG_val : (antiG L m).1 = antiJ L m := rfl
-
 def leftSum {ι : Type} [Fintype ι] (c : ι → ℂ) (U : ι → GL (Fin m) L) (t : GL (Fin m) L) : ℂ :=
   ∑ i, c i * (if t.1 * (U i).1 ∈ intMat L (Fin m) (Fin m) then 1 else 0)
 
@@ -352,7 +350,6 @@ private lemma antiJ_mul_mul_antiJ_apply (M : Matrix (Fin m) (Fin m) L) (r s : Fi
 end GlobalTheory.SphTheta.IntTranslate
 
 namespace GlobalTheory.SphTheta
-
 
 open IntTranslate in
 theorem sum_ordL_diag_eq_of_indicator : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L)

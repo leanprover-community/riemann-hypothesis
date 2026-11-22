@@ -43,8 +43,6 @@ def pr (a b : Fin n) : E n →L[ℝ] ℝ :=
   (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => ℝ) b).comp
     (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => Fin n → ℝ) a)
 
-theorem pr_apply (a b : Fin n) (w : E n) : pr a b w = w a b := rfl
-
 def Lc (q : E n) : E n →L[ℝ] ℂ := ∑ a, ∑ b, q a b • (Complex.ofRealCLM.comp (pr a b))
 
 theorem Lc_apply (q w : E n) : Lc q w = ((ip w q : ℝ) : ℂ) := by

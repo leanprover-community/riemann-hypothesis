@@ -13,7 +13,6 @@ section Act
 variable {V : Type} [AddCommGroup V] [Module ℂ V] {S : Type} [Fintype S] [DecidableEq S]
 
 theorem pr_add_fst (p q : Q.Pr V) : (p + q).1 = p.1 + q.1 := rfl
-theorem pr_mul_fst (p q : Q.Pr V) : (p * q).1 = p.1 * q.1 := rfl
 theorem pr_zero_fst : (0 : Q.Pr V).1 = 0 := rfl
 theorem pr_one_fst : (1 : Q.Pr V).1 = 1 := rfl
 

@@ -204,8 +204,6 @@ structure Hom (K : DCx.{w} R) (L : DCx.{w'} R') (σ : R →+* R') where
 
 variable {L : DCx.{w'} R'} {σ : R →+* R'}
 
-def Hom.row (φ : Hom K L σ) (q : ℕ) : Cx.Hom (K.row q) (L.row q) σ := ⟨fun p => φ.f p q, fun p => φ.ch p q⟩
-
 def Hom.col (φ : Hom K L σ) (p : ℕ) : Cx.Hom (K.col p) (L.col p) σ := ⟨fun q => φ.f p q, fun q => φ.cv p q⟩
 
 def Hom.tot (φ : Hom K L σ) : Cx.Hom K.tot L.tot σ where

@@ -20,7 +20,6 @@ section Defs
 
 variable {R : Ranks} {H : Host R}
 
-
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
 structure RestRows (rows₀ : Rows.Data R) where
@@ -223,7 +222,6 @@ def overRows (rows₀ : Rows.Data R) (r : RestRows rows₀) : Rows.Data R where
 
 variable {rows₀ : Rows.Data R}
 
-
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
 structure RestN (N₀ : NData R H rows₀) (what₂ : Rows.Data R) where
@@ -393,7 +391,6 @@ def overN (N₀ : NData R H rows₀) (what₂ : Rows.Data R) (r : RestN N₀ wha
   restN_card_levelGroup_eq := r.restN_card_levelGroup_eq
 
 variable [NumberField rows₀.LL] [StarRing rows₀.LL] {LL₀ : IntermediateField ℚ rows₀.LL} {N₀ : NData R H rows₀}
-
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
@@ -569,7 +566,6 @@ def overX (X₀ : NTw R H rows₀ LL₀ N₀) (what₂ : Rows.Data R) [NumberFie
 
 variable {X₀ : NTw R H rows₀ LL₀ N₀}
 
-
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
 structure RestY (Y₀ : NExp R H rows₀ LL₀ N₀ X₀) (what₂ : Rows.Data R) [NumberField what₂.LL] [StarRing what₂.LL]
@@ -637,7 +633,6 @@ def overY (Y₀ : NExp R H rows₀ LL₀ N₀ X₀) (what₂ : Rows.Data R) [Num
   eH_idem := r.eH_idem
 
 end Defs
-
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
@@ -1045,7 +1040,6 @@ theorem exists_restY {X₀ : NTw R H r₀ L₀ N₀} {x : RestX X₀ r L n} (Y�
 
 end Elim
 
-
 set_option maxRecDepth 100000 in
 theorem CopyTw.exists_rest {D D' : D7} {ι : D.what₂.LL →+* D'.what₂.LL} {e : ↥D'.LL0 ≃+* ↥D.LL0} (h : CopyTw D D' ι e) :
     ∃ r, D' = overD D r := by
@@ -1166,9 +1160,6 @@ theorem SameTwist.eq {A : Type} [CommGroup A] {t t' : Twist D A} (h : SameTwist 
   cases h1; cases h2; cases h3
   rfl
 
-theorem SameBase.refl {S T : HSp D} (B : Base S T) : SameBase B B :=
-  ⟨.rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .refl _, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl⟩
-
 theorem SameBase.eq {S T : HSp D} {B B' : Base S T} (h : SameBase B B') : B = B' := by
   obtain ⟨_, ⟨_, _, _, _, _, _, _, _, _, _⟩, ⟨_, _, _⟩, _, ⟨_, _, _, _, _, _⟩, _, _⟩ := B
   obtain ⟨_, ⟨_, _, _, _, _, _, _, _, _, _⟩, ⟨_, _, _⟩, _, ⟨_, _, _, _, _, _⟩, _, _⟩ := B'
@@ -1177,11 +1168,6 @@ theorem SameBase.eq {S T : HSp D} {B B' : Base S T} (h : SameBase B B') : B = B'
   dsimp only at *
   cases a0; cases a1; cases a2; cases a3; cases a4; cases a5; cases a6; cases a7; cases a8; cases a9; cases a10; cases a11; cases a12; cases a14; cases a15; cases a16; cases a17; cases a18; cases a19; cases a20; cases a21; cases a
   rfl
-
-theorem SameData.refl (ρ : Setup D.ntw) : SameData ρ ρ :=
-  ⟨.rfl, .rfl, .rfl, .rfl, .rfl, .rfl, fun _ _ hi _ _ hj _ => by cases hi; cases Fin.ext hj; exact .refl _, .rfl,
-    fun _ _ hi _ _ hj _ _ _ ht => by cases hi; cases Fin.ext hj; cases ht.eq; exact ⟨rfl, .rfl⟩, .rfl,
-    fun _ _ hi _ _ hj _ => by cases hi; cases Fin.ext hj; exact .rfl⟩
 
 theorem SameData.eq {ρ ρ' : Setup D.ntw} (h : SameData ρ ρ') : ρ = ρ' := by
   have hB : ρ.B = ρ'.B := funext fun i => funext fun j => funext fun b => (h.B i i .rfl j j rfl b).eq

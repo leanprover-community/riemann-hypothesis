@@ -67,8 +67,6 @@ variable {O : Type} [CommRing O] {B : Base O} {n : ℕ} {V : Type} [AddCommGroup
 private theorem phiIt_succ_lemma (i : ZMod n) (k : ℕ) (v : V) :
     L.phiIt i (k + 1) v = L.φ (i + ((k + 1 : ℕ) : ZMod n)) (L.phiIt i k v) := rfl
 
-private theorem phiIt_zero_lemma_2 (i : ZMod n) (v : V) : L.phiIt i 0 v = v := rfl
-
 theorem phiIt_zero (i : ZMod n) (k : ℕ) : L.phiIt i k 0 = 0 := by
   induction k with
   | zero => rfl

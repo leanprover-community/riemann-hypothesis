@@ -19,14 +19,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Steps
 
-def LiftAut : Prop :=
-  ∀ (D : D7) (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (Y : Formalism.L2.SG.Full.Full X) (w : D.what₂.Word)
-    (Λ : Submodule (𝓞 D.host.E) (VS D).V), Λ ∈ Y.what₂ w → ∀ γ : Gam X w,
-    ((((Y.cs w).h ((Y.cs w).base Λ) : X.B.I.Gf) * X.xu w)⁻¹ * (iotaF X w γ : X.B.I.Gf) *
-        (((Y.cs w).h ((Y.cs w).base Λ) : X.B.I.Gf) * X.xu w) ∈ X.B.I.Kset) →
-    ∃ β : (VS D).V ≃ₗ[D.host.E] (VS D).V, RatLink X (γ : X.B.I.GA) β ∧
-      β ∈ Formalism.L2.SG.Saturated.AutF Λ (lf D (X.Fu w))
-
 def AutFConjN : Prop :=
   ∀ (D : D7) (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T)
     (β : (VS D).V ≃ₗ[D.host.E] (VS D).V), β ∈ Formalism.L2.SG.Saturated.AutF Λ F →

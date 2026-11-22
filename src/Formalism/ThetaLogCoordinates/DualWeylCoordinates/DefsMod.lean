@@ -10,16 +10,6 @@ open MvPolynomial Finset
 
 namespace Formalism.InvariantFactorPaths.ColumnFamilies
 
-lemma genMat_map_eval {n : ℕ} {R : Type} [CommRing R] (f : ℤ →+* R) (g : Matrix (Fin n) (Fin n) R) :
-    (MvPolynomial.eval₂Hom f (fun ab : Fin n × Fin n => g ab.1 ab.2)).mapMatrix (genMat ℤ n) = g := by
-  ext a b
-  simp [genMat]
-
-def evGL {n : ℕ} {R : Type} [CommRing R] (g : GL (Fin n) R) : GLCoord ℤ n →+* R :=
-  IsLocalization.Away.lift (genMat ℤ n).det
-    (g := MvPolynomial.eval₂Hom (Int.castRingHom R) (fun ab : Fin n × Fin n => g.val ab.1 ab.2))
-    (by rw [RingHom.map_det, genMat_map_eval]; exact Matrix.isUnits_det_units g)
-
 lemma genMat_map_coord {n : ℕ} (F : Type) [CommRing F] :
     (MvPolynomial.map (Int.castRingHom F)).mapMatrix (genMat ℤ n) = genMat F n := by
   ext a b
@@ -30,14 +20,6 @@ def mapCoord {n : ℕ} (F : Type) [CommRing F] : GLCoord ℤ n →+* GLCoord F n
     (g := (algebraMap (MvPolynomial (Fin n × Fin n) F) (GLCoord F n)).comp (MvPolynomial.map (Int.castRingHom F)))
     (by rw [RingHom.comp_apply, RingHom.map_det, genMat_map_coord]
         exact IsLocalization.Away.algebraMap_isUnit _)
-
-structure GLMod (n : ℕ) where
-  ι : Type
-  [fi : Fintype ι]
-  [de : DecidableEq ι]
-  A : Matrix ι ι (GLCoord ℤ n)
-  mul : ∀ (R : Type) [CommRing R] (g h : GL (Fin n) R), A.map (evGL (g * h)) = A.map (evGL g) * A.map (evGL h)
-  one : ∀ (R : Type) [CommRing R], A.map (evGL (1 : GL (Fin n) R)) = 1
 
 attribute [instance] GLMod.fi GLMod.de
 
@@ -67,22 +49,6 @@ def brk {n : ℕ} [NeZero n] (mu : Fin n → ℤ) (I : TIdx mu) : GLCoord ℤ n 
 def StdT {n : ℕ} [NeZero n] {mu : Fin n → ℤ} (I : TIdx mu) : Prop :=
   ∀ (c : ↥(TCols mu)) (hc : (c : ℤ) + 1 ∈ TCols mu) (t : Fin n),
     ((I ⟨(c : ℤ) + 1, hc⟩).1.filter (· ≤ t)).card ≤ ((I c).1.filter (· ≤ t)).card
-
-def dMu {n : ℕ} [NeZero n] (mu : Fin n → ℤ) : ℕ := Nat.card {I : TIdx mu // StdT I}
-
-structure ColFam {n : ℕ} [NeZero n] (M : GLMod n) where
-  J : Type
-  [fJ : Fintype J]
-  [dJ : DecidableEq J]
-  mu : J → Fin n → ℤ
-  dom : ∀ j, Dominant (mu j)
-  ph : (j : J) → Matrix M.ι (TIdx (mu j)) ℤ
-  equiv : ∀ j, M.A * (ph j).map (Int.castRingHom _) = (ph j).map (Int.castRingHom _) * TMat (mu j)
-  indepP : ∀ (p : ℕ), p.Prime → ∀ nu : Fin n → ℤ,
-    LinearIndependent (ZMod p) (fun j : {j : J // mu j = nu} => fun i => ((ph j.1 i (canT (mu j.1)) : ℤ) : ZMod p))
-  indepQ : ∀ nu : Fin n → ℤ,
-    LinearIndependent ℚ (fun j : {j : J // mu j = nu} => fun i => ((ph j.1 i (canT (mu j.1)) : ℤ) : ℚ))
-  rank : Fintype.card M.ι = ∑ j, dMu (mu j)
 
 attribute [instance] ColFam.fJ ColFam.dJ
 

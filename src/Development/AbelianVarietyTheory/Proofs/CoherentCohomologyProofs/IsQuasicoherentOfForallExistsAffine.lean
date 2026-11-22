@@ -20,10 +20,6 @@ abbrev resAlgebra (h : V ≤ U) : Algebra Γ(X, U) Γ(X, V) :=
 abbrev resModule (h : V ≤ U) : Module Γ(X, U) Γ(F, V) :=
   Module.compHom Γ(F, V) (X.presheaf.map (homOfLE h).op).hom
 
-theorem resModule_smul (h : V ≤ U) (r : Γ(X, U)) (s : Γ(F, V)) :
-    letI := resModule F h
-    r • s = X.presheaf.map (homOfLE h).op r • s := rfl
-
 theorem res_isScalarTower (h : V ≤ U) :
     letI := resAlgebra h
     letI := resModule F h
@@ -179,7 +175,6 @@ theorem isLocalizedModule_resBasicOpen [F.IsQuasicoherent] (hU : IsAffineOpen U)
     IsLocalizedModule.Away f (resBasicOpen F f) :=
   (isQuasicoherent_restrict_fromSpec_iff F hU).mp inferInstance f
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem nonempty_presentation_Spec {R : CommRingCat.{u}} (M : (Spec R).Modules)
     [M.IsQuasicoherent] : Nonempty M.Presentation := by
@@ -208,7 +203,6 @@ theorem nonempty_presentation_restrict_ι (hU : IsAffineOpen U)
       Scheme.Modules.restrictFunctorCongr hU.isoSpec_hom_fromSpec
   exact ⟨SheafOfModules.Presentation.ofIsIso.{u, u, u} (iso.app F).hom
     (Scheme.Modules.presentationRestrict hU.isoSpec.hom P)⟩
-
 
 set_option backward.isDefEq.respectTransparency false in
 theorem isQuasicoherent_of_affineCover {ι : Type*} (𝒰 : ι → X.Opens) (hcov : IsOpenCover 𝒰)
@@ -241,7 +235,6 @@ theorem isQuasicoherent_iff_forall_affine :
   obtain ⟨_, ⟨U, hU, rfl⟩, hx, -⟩ :=
     X.isBasis_affineOpens.exists_subset_of_mem_open (Set.mem_univ x) isOpen_univ
   exact ⟨U, hU, hx, h U hU⟩
-
 
 set_option backward.isDefEq.respectTransparency false in
 theorem isQuasicoherent_of_restrict {ι : Type*} {Y : ι → Scheme.{u}} (g : ∀ i, Y i ⟶ X)

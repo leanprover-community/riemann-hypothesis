@@ -157,8 +157,6 @@ def hl (hh : IsHerm s h) (x : V) : V →ₗ[L] L where
   map_add' := hh.1 x
   map_smul' a y := by simpa using hh.2.1 a x y
 
-theorem hl_apply (hh : IsHerm s h) (x y : V) : hl hh x y = h x y := rfl
-
 theorem h_fe (hh : IsHerm s h) (hF : IsFrame h δ e f W) (i j : Fin l) :
     h (f i) (e j) = if i = j then s δ else 0 := by
   rw [hh.2.2.1 (e j) (f i), hF.2.2.1]

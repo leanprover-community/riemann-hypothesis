@@ -21,7 +21,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 noncomputable section
 namespace GlobalTheory.SplitDict
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
-local notation3 "L⁺" => NumberField.maximalRealSubfield L
 
 theorem under_w (s : SplitPlace L) : s.w.under (𝓞 L⁺) = s.v := by
   ext1
@@ -96,7 +95,6 @@ end GlobalTheory.SplitDict
 
 namespace GlobalTheory.SplitDict
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
-local notation3 "L⁺" => NumberField.maximalRealSubfield L
 
 theorem kappa_split (F : FinIso L n) (s : SplitPlace L) (i : s.v.adicCompletion L⁺ ≃+* s.w.adicCompletion L)
     (hic : Continuous i) (hi : ∀ x : L, i (s.i x) = algebraMap L (s.w.adicCompletion L) x) (z : AL L) :

@@ -41,10 +41,6 @@ def multiples (a : OAct O G) {v : epsR R ⟶ G} (hv : IsTangent v)
     simp only [Pts.hom_mk, RingHom.id_apply, Pts.hom_smul, Category.assoc, ha]
     rw [epsScale_mul_assoc, Algebra.smul_def, mul_comm])
 
-theorem hom_multiples (a : OAct O G) {v : epsR R ⟶ G} (hv : IsTangent v)
-    (ha : ∀ c, v ≫ a.act c = GrpTangent.epsScale (algebraMap O R c) ≫ v) (r : R) :
-    (multiples a hv ha r).hom = GrpTangent.epsScale r ≫ v := rfl
-
 omit [Algebra O R] in
 theorem pre_eq_zero_iff (a : OAct O G) (x : Pts a (epsR R)) :
     Pts.pre a (toUnit (epsR R) ≫ epsZero R) x = 0 ↔ IsTangent x.hom := by

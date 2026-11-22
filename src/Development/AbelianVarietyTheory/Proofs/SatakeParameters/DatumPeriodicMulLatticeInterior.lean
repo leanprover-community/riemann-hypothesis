@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.WeightedChainData
+public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 
 @[expose] public section
 

@@ -19,8 +19,6 @@ namespace GlobalTheory.GridParDCount
 
 variable (D : D7) (C : ℝ) (τ : D.what₂.Tau)
 
-local notation "Γ" => num D C τ
-
 theorem card_Ms_le {j : ℕ} (hj : j ≤ D.R.m) : ((Icc 1 j).biUnion (Γ).blockM).card = j * D.R.t := by
   rw [card_biUnion]
   · have : ∀ u ∈ Icc 1 j, ((Γ).blockM u).card = D.R.t := fun u _ => card_block _ _

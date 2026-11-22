@@ -3,7 +3,8 @@ module
 public import Mathlib
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.IsolateSpec
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
-public import Development.EtaleCohomology.EtaleTrace.LTransferCut
+public import Development.EtaleCohomology.EtaleTrace.LadicH0LocallyConstant
+public import Mathlib.AlgebraicGeometry.Morphisms.FlatRank
 
 @[expose] public section
 

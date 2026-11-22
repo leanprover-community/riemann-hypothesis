@@ -155,11 +155,6 @@ def E6 : Prop := ∀ (q : ℕ) [NeZero q] {X Z S : Scheme.{0}} (p : X ⟶ S) (ι
   (n < 2 * d - 1 → Function.Bijective (pull _ (sch.map U.ι) (tw q i) n)) ∧
   (n < 2 * d → Function.Injective (pull _ (sch.map U.ι) (tw q i) n))
 
-def E8 : Prop := ∀ (q : ℕ) [NeZero q] (k : Type) [Field k] [IsAlgClosed k], IsUnit (q : k) → ∀ {X : Scheme.{0}} [IsIntegral X]
-  (p : X ⟶ Spec (CommRingCat.of k)) [IsProper p] (d : ℕ) [SmoothOfRelativeDimension d p],
-  ∃ tr : Ht q (sch.obj X) (2 * d) d ≃+ ZMod q, ∀ (n i : ℤ) (φ : Ht q (sch.obj X) (2 * d - n) (d - i) →+ ZMod q),
-    ∃! a : Ht q (sch.obj X) n i, ∀ b, φ b = tr ((cup q a b).cast (by ring) (by ring))
-
 end GlobalTheory.EtC
 
 end

@@ -99,29 +99,6 @@ def Q (n : ℕ) : Subgroup (Mir k (n + 1)) := (Mir k n).comap (mirabolicProjecti
 def qProj (n : ℕ) : Q k n →* Mir k n :=
   ((mirabolicProjection k (n + 1)).comp (Q k n).subtype).codRestrict (Mir k n) (fun q => q.2)
 
-def qEntry (n : ℕ) (g : GL (Fin (n + 2)) k) : k :=
-  (g : Matrix (Fin (n + 2)) (Fin (n + 2)) k) (Fin.castSucc (Fin.last n)) (Fin.last (n + 1))
-
-theorem qEntry_mul (n : ℕ) (a b : Mir k (n + 1)) (ha : mirabolicProjection k (n + 1) a ∈ Mir k n) :
-    qEntry k n ((a : GL (Fin (n + 2)) k) * (b : GL (Fin (n + 2)) k)) =
-      qEntry k n (a : GL (Fin (n + 2)) k) + qEntry k n (b : GL (Fin (n + 2)) k) := by
-  have ha' : ∀ j : Fin (n + 1), ((a : GL (Fin (n + 2)) k) : Matrix (Fin (n + 2)) (Fin (n + 2)) k)
-      (Fin.castSucc (Fin.last n)) (Fin.castSucc j) = eLast k n j := fun j =>
-    congrFun ((mem_Mir_iff k _).1 ha) j
-  have hb : ((b : GL (Fin (n + 2)) k) : Matrix (Fin (n + 2)) (Fin (n + 2)) k) (Fin.last (n + 1)) (Fin.last (n + 1)) = 1 := by
-    have := congrFun ((mem_Mir_iff k _).1 b.2) (Fin.last (n + 1))
-    simpa [eLast] using this
-  simp only [qEntry, Units.val_mul, Matrix.mul_apply, Fin.sum_univ_castSucc (n := n + 1), ha', hb, mul_one]
-  simp [eLast, Pi.single_apply, add_comm]
-
-def qChar (ψ : AddChar k Circle) (n : ℕ) : Q k n →* ℂˣ where
-  toFun q := Circle.toUnits (ψ (qEntry k n ((q : Mir k (n + 1)) : GL (Fin (n + 2)) k)))
-  map_one' := by
-    simp [qEntry, one_apply, Fin.castSucc_ne_last]
-  map_mul' a b := by
-    simp only [Subgroup.coe_mul, qEntry_mul k n (a : Mir k (n + 1)) (b : Mir k (n + 1)) a.2, AddChar.map_add_eq_mul,
-      map_mul]
-
 end Alg
 
 section Rep
@@ -137,12 +114,10 @@ theorem levi_normalises (n : ℕ) (m : GL (Fin n) k) (u : MirUin k n) :
   rw [hv', glEmb_mul_unip', mul_inv_cancel_right]
   exact ⟨_, rfl⟩
 
-
 variable (k) in
 def psiMinus {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] (τ : Representation ℂ (Mir k n) V) :
     Representation ℂ (GL (Fin n) k) (TwJacquet τ (MirUin k n) 1) :=
   twAct τ (MirUin k n) 1 (levi k n) (levi_normalises n)
-
 
 theorem levi_stab (ψ : AddChar k Circle) (n : ℕ) (m : Mir k n) (u : MirUin k (n + 1)) :
     ∃ h : ((levi k (n + 1)).comp (Mir k n).subtype) m * (u : Mir k (n + 1)) *
@@ -161,26 +136,11 @@ theorem levi_stab (ψ : AddChar k Circle) (n : ℕ) (m : Mir k n) (u : MirUin k 
   simp only [toAdd_ofAdd]
   rw [mulVec_last_of_mem k _ m.2]
 
-
 variable (k) in
 def phiMinus (ψ : AddChar k Circle) {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
     (τ : Representation ℂ (Mir k (n + 1)) V) :
     Representation ℂ (Mir k n) (TwJacquet τ (MirUin k (n + 1)) (mirChar k ψ n)) :=
   twAct τ (MirUin k (n + 1)) (mirChar k ψ n) ((levi k (n + 1)).comp (Mir k n).subtype) (levi_stab ψ n)
-
-
-variable (k) in
-def qRep (ψ : AddChar k Circle) {n : ℕ} {W : Type} [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (Mir k n) W) :
-    Representation ℂ (Q k n) W where
-  toFun q := ((qChar k ψ n q : ℂˣ) : ℂ) • σ (qProj k n q)
-  map_one' := by simp
-  map_mul' a b := by
-    ext w
-    simp only [map_mul, Units.val_mul, Module.End.mul_apply, map_smul, smul_smul, LinearMap.smul_apply]
-    rw [mul_comm]
-
-
-
 
 variable (k) in
 structure MRep (n : ℕ) where
@@ -191,28 +151,23 @@ structure MRep (n : ℕ) where
 
 attribute [instance] MRep.acg MRep.mod
 
-
 variable (k) in
 def MRep.phiM (ψ : AddChar k Circle) {n : ℕ} (τ : MRep k (n + 1)) : MRep k n :=
   ⟨_, phiMinus k ψ τ.ρ⟩
-
 
 variable (k) in
 def iterPhi (ψ : AddChar k Circle) {n : ℕ} : (j : ℕ) → MRep k (n + j) → MRep k n
   | 0, τ => τ
   | j + 1, τ => iterPhi ψ j (MRep.phiM k ψ τ)
 
-
 variable (k) in
 def derivM (ψ : AddChar k Circle) {n : ℕ} (j : ℕ) (τ : MRep k (n + j)) :
     Representation ℂ (GL (Fin n) k) (TwJacquet (iterPhi k ψ j τ).ρ (MirUin k n) 1) :=
   psiMinus k (iterPhi k ψ j τ).ρ
 
-
 variable (k) in
 def resM {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin (n + 1)) k) V) : MRep k n :=
   ⟨V, π.comp (Mir k n).subtype⟩
-
 
 variable (k) in
 def deriv (ψ : AddChar k Circle) {n : ℕ} (j : ℕ) {V : Type} [AddCommGroup V] [Module ℂ V]

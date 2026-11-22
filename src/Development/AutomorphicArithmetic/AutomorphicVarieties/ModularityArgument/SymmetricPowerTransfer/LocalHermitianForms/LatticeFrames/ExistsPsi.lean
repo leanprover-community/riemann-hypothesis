@@ -14,7 +14,6 @@ open QuadraticAlgebra
 
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {Δ τ : K}
 
-
 variable (τ) in
 def Bf (τ c t : K) : K × Etau K τ →ₗ[K] K × Etau K τ →ₗ[K] K :=
   LinearMap.mk₂ K (fun v w => c * v.1 * w.1 + t * QuadraticAlgebra.trace (v.2 * star w.2))
@@ -30,9 +29,6 @@ def psi (s : K) (β : Etau K τ) : K × Etau K τ →ₗ[K] Etau K τ →ₗ[K] 
   LinearMap.mk₂ K (fun v y => s • (v.1 • ((ω - star ω) * y) + v.2 * β * star y))
     (fun a b w => by ext <;> simp <;> ring) (fun a b w => by ext <;> simp <;> ring)
     (fun a b w => by ext <;> simp <;> ring) (fun a b w => by ext <;> simp <;> ring)
-
-theorem psi_apply (s : K) (β : Etau K τ) (v : K × Etau K τ) (y : Etau K τ) :
-    psi s β v y = s • (v.1 • ((ω - star ω) * y) + v.2 * β * star y) := rfl
 
 theorem psi_anti {c t s ε : K} {β : Etau K τ} (hc : c = (τ ^ 2 - 4) * ε * s ^ 2) (hβ : QuadraticAlgebra.norm β * ε * s ^ 2 = 2 * t)
     (v w : K × Etau K τ) (y : Etau K τ) : ε • (psi s β v (psi s β w y) + psi s β w (psi s β v y)) = (2 * Bf τ c t v w) • y := by
@@ -99,10 +95,8 @@ theorem exists_psi {s : K} {β : Etau K τ} (hD : τ ^ 2 - 4 ≠ 0) (hs : s ≠ 
       2 * y * y' * ((hβ.unit⁻¹ : (Etau K τ)ˣ) : Etau K τ) * β * star b) * hk +
     (-2 * y * y' * star b) * hinv + b * htr - y' * hs1 - y * hs2
 
-
 variable (O) in
 def S0 (s : K) (β : Etau K τ) (Λ : Set (Etau K τ)) : Set (K × Etau K τ) := {v | ∀ y ∈ Λ, psi s β v y ∈ Λ}
-
 
 variable (O) in
 structure Uni (c t : K) (S : Set (K × Etau K τ)) : Prop where

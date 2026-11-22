@@ -47,7 +47,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.RealRec
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaLiftRowFiresOfWeakCharacterisation
 public import Formalism.LocalRingCardinality.NFLeTwoMulTSq
 public import Formalism.LocalRingCardinality.DataNChTie
-public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.NMjT
 public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.NHkRow
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatticeFamilyAdoptionFirst
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatticeFamilyAdoptionSecond

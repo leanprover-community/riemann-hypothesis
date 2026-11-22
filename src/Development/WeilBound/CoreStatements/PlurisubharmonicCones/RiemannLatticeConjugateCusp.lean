@@ -55,8 +55,6 @@ def conjL (f : Module.End ℂ (Fin g → ℂ)) : Module.End ℂ (Fin g → ℂ) 
   map_add' x y := by rw [star_add, map_add (f := _), star_add]
   map_smul' c x := by rw [star_smul, map_smul, star_smul, star_star, RingHom.id_apply]
 
-theorem conjL_apply (f : Module.End ℂ (Fin g → ℂ)) (x : Fin g → ℂ) : conjL f x = star (f (star x)) := rfl
-
 def conjB (ρ : 𝓞 E →+* Module.End ℂ (Fin g → ℂ)) : 𝓞 E →+* Module.End ℂ (Fin g → ℂ) where
   toFun a := conjL (ρ a)
   map_one' := LinearMap.ext fun x => by simp [conjL_apply]

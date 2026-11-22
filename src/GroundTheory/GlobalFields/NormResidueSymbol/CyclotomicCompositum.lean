@@ -16,8 +16,6 @@ namespace CyclotomicSymbol
 
 open FiniteSubfield
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 def compositum (K F : FiniteSubfield) : FiniteSubfield :=
   ⟨K.1 ⊔ F.1, inferInstance⟩
 
@@ -63,7 +61,6 @@ theorem mem_fixingSubgroup_iff_restrictNormal_eq_one (g : ℚ̄ ≃ₐ[ℚ] ℚ�
     rw [hg] at h1
     exact h1.symm
 
-
 variable [IsMulCommutative (F.1 ≃ₐ[ℚ] F.1)] in
 theorem commutator_mem_fixingSubgroup (a b : ℚ̄ ≃ₐ[ℚ] ℚ̄) :
     (a * b)⁻¹ * (b * a) ∈ F.1.fixingSubgroup := by
@@ -82,7 +79,6 @@ instance isMulCommutative_compositum :
   rw [← map_mul, ← map_mul, MonoidHom.eq_iff, ker_restrictHom, Subgroup.mem_subgroupOf,
     fixingSubgroup_compositum]
   exact ⟨Subtype.property _, commutator_mem_fixingSubgroup F _ _⟩
-
 
 omit [IsMulCommutative (F.1 ≃ₐ[ℚ] F.1)] in
 theorem restrictNormal_restrictHom (g : K.1.fixingSubgroup) :

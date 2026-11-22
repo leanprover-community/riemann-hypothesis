@@ -17,9 +17,6 @@ section Abstract
 
 variable {K E : Type} [Field K] [AddCommGroup E] [Module ℂ E]
 
-def HasRationalTest (σ : K →+* ℂ) (S : Set E) : Prop :=
-  ∃ (n : ℕ) (ψ : Fin n → (E →ₗ[ℂ] ℂ)), (∀ e : E, (∀ a, ψ a e = 0) → e = 0) ∧ ∀ e ∈ S, ∀ a, ∃ z : K, σ z = ψ a e
-
 end Abstract
 
 section Interface

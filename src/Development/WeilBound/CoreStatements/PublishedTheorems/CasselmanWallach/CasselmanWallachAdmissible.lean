@@ -1,7 +1,7 @@
 module
 
 public import Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.SmoothSeminormAndSobolevBounds
-public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.CasselmanWallachAdm
+public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.CasselmanWallachLift
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsClosedImageOfSobolevLower
 

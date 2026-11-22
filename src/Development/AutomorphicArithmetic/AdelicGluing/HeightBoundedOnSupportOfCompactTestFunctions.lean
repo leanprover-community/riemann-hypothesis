@@ -15,9 +15,6 @@ open UpperTheory.ConvolutionTheory.GM.TE
 section
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ} {v : Pl F}
 
-private theorem cmp_val (w : PlacesOver E v) (g : GL (Fin n) (CompletionsOver E v)) (i j : Fin n) :
-    (UpperTheory.ConvolutionTheory.GM.cmp w g).val i j = g.val i j w := rfl
-
 private theorem cmp_continuous (w : PlacesOver E v) :
     Continuous (UpperTheory.ConvolutionTheory.GM.cmp (n := n) w) := by
   have hv : Continuous fun g : GL (Fin n) (CompletionsOver E v) => (UpperTheory.ConvolutionTheory.GM.cmp w g).val := by

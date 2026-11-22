@@ -164,8 +164,6 @@ abbrev s5bV (E : Type) [Field E] [NumberField E] := EuclideanSpace ℂ (Infinite
 
 noncomputable def complexEmbeddingVector (a : E) : s5bV E := WithLp.toLp 2 (fun w => w.embedding a)
 
-lemma s5bSig_apply (a : E) (w : InfinitePlace E) : complexEmbeddingVector a w = w.embedding a := rfl
-
 lemma inner_complexPlaceSpace (x y : s5bV E) : inner ℝ x y = ∑ w, (conj (x w) * y w).re := by
   first
   | (simp only [PiLp.inner_apply, Complex.inner]; done)
@@ -410,7 +408,6 @@ private theorem two_mul_div_two_le_sqrt_mul_sqrt_mul_rpow (r D : ℝ) (hr : 0 < 
     field_simp
     ring
   nlinarith [hs0, hs2, hr]
-
 
 set_option maxHeartbeats 800000 in
 theorem coveringO_of_transference (hT : Transference) : CoveringO := by

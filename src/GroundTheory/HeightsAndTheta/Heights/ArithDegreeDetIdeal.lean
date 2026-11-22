@@ -33,10 +33,6 @@ def consZero (r : ℕ) : (Fin r → 𝓞 K) →ₗ[𝓞 K] (Fin (r + 1) → 𝓞
     refine Fin.cases ?_ (fun k ↦ ?_) i <;> simp
 
 omit [NumberField K] in
-theorem consZero_zero {r : ℕ} (y : Fin r → 𝓞 K) : consZero r y 0 = 0 := rfl
-
-
-omit [NumberField K] in
 theorem range_consZero (r : ℕ) :
     LinearMap.range (consZero (K := K) r) = LinearMap.ker (LinearMap.proj 0) := by
   ext x
@@ -47,7 +43,6 @@ theorem range_consZero (r : ℕ) :
     refine ⟨Fin.tail x, ?_⟩
     rw [← Fin.cons_self_tail x, hx]
     rfl
-
 
 omit [NumberField K] in
 theorem card_quotient_succ {r : ℕ} (E : Submodule (𝓞 K) (Fin (r + 1) → 𝓞 K)) :
@@ -84,7 +79,6 @@ theorem card_quotient_succ {r : ℕ} (E : Submodule (𝓞 K) (Fin (r + 1) → �
         rw [map_add (f := _), LinearMap.mem_ker.mp hk, add_zero]
     rw [← hker]
     exact Nat.card_congr (φ.quotKerEquivOfSurjective hφ).toEquiv
-
 
 omit [NumberField K] in
 theorem mul_le_detIdeal {r : ℕ} (E : Submodule (𝓞 K) (Fin (r + 1) → 𝓞 K)) :

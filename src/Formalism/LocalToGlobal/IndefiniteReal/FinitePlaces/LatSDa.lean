@@ -7,7 +7,7 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.VacExA
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceDualB
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ExistsNatSmulSingle
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LatticeVariant
+public import Mathlib
 
 @[expose] public section
 
@@ -82,11 +82,6 @@ theorem lsd_coordO : ∃ r : 𝓞 D.host.F, r ≠ 0 ∧ ∀ (x : 𝓞 D.host.E) 
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [map_zsmul, Finsupp.smul_apply, ← hy l, zsmul_eq_mul, zsmul_eq_mul]
   ring
-
-theorem lsd_spanDen {n : ℕ} (L : Submodule (𝓞 D.host.E) (Fin n → D.host.E))
-    (hL : Submodule.span D.host.E (L : Set (Fin n → D.host.E)) = ⊤) (x : Fin n → D.host.E) :
-    ∃ d : 𝓞 D.host.E, d ≠ 0 ∧ (d : D.host.E) • x ∈ L :=
-  _root_.UpperTheory.Reformulated.B.LatticeVariant.lsd_spanDen L hL x
 
 section Lat
 
@@ -186,7 +181,6 @@ theorem lsd_mem (hΛS : IsSelfDualC S ΛS) (hΛT : IsSelfDualC T ΛT) :
     · rw [if_neg (fun h => hj h.2), if_neg hj, mul_zero, TensorProduct.tmul_zero, mul_zero]
   · rw [if_neg (fun h => hi h.1), if_neg hi, mul_zero, zero_mul, TensorProduct.tmul_zero, mul_zero]
 
-
 open Formalism.IndefR.PHeisFC in
 theorem lsd_finPart_expand (z : AE D) :
     finPart D z = ∑ k, sndA D.host.F (cE D.host.F D.host.E z k) ⊗ₜ[D.host.F] Module.finBasis D.host.F D.host.E k := by
@@ -207,7 +201,6 @@ theorem lsdE_finPart (i : Fin T.rank) (j : Fin S.rank) (β : Af D.host.F) (e : D
   split_ifs
   · rfl
   · exact map_zero _
-
 
 set_option maxHeartbeats 1600000 in
 open Formalism.IndefR.PHeisFC in
@@ -328,7 +321,6 @@ theorem lsd_cE_of_inf (z : AE D) (hz : infPart D z = 0) (k : Fin (Module.finrank
   rw [lsd_fst, hz, map_zero, Finsupp.zero_apply]
   rfl
 
-
 set_option maxHeartbeats 1600000 in
 open Formalism.IndefR.PHeisFC in
 theorem lsd_decomp (Y : WO S T) (hY : ∀ i j, infPart D (Y i j) = 0) :
@@ -356,7 +348,6 @@ theorem lsdE_nsmul (N : ℕ) (i : Fin T.rank) (j : Fin S.rank) (β : Af D.host.F
   split_ifs
   · rw [key, VacEx.nsmul_pairA, nsmul_eq_mul, ← map_natCast (algebraMap D.host.F (Af D.host.F))]
   · rw [smul_zero]
-
 
 set_option maxHeartbeats 1600000 in
 open Formalism.IndefR.PHeisFC in
@@ -402,7 +393,6 @@ theorem lsd_fi : ∀ x ∈ latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT :
   | zero => intro i j; simp
   | add x y _ _ hx hy => intro i j; rw [Matrix.add_apply, map_add (f := _), hx, hy, add_zero]
   | neg x _ hx => intro i j; rw [Matrix.neg_apply, map_neg, hx, neg_zero]
-
 
 set_option maxHeartbeats 1600000 in
 open Formalism.IndefR.PHeisFC in

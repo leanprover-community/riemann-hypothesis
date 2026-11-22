@@ -223,9 +223,6 @@ def QQr (Y : ℂ) : M2 (A P) := !![t11 P Y, t12 P Y; t21 P Y, t22 P Y]
 def lA (Y : ℂ) : A P :=
   l0A P Y + ggiA P * ∑ j ∈ Icc 1 (P.k - 1), (kap P fun π => (Y + (rho P π j : ℂ))⁻¹) * SS P j
 
-def mA (Y : ℂ) : A P :=
-  m0A P Y + ggiA P * ∑ j ∈ Icc 1 (P.k - 1), (kap P fun π => (Y + (rho P π j : ℂ))⁻¹) * star (SS P j)
-
 def sgn (l : ℕ) : ℂ := (-1) ^ (P.k - l)
 
 def x0 (l : ℕ) (π : Ty P) (Y : ℂ) : ℂ := (-1) ^ (P.k - l) * ∏ i ∈ Icc 1 (P.k - 1), (Y + (rho P π i : ℂ))
@@ -240,14 +237,6 @@ def startM (l : ℕ) : Start (A P) where
   xi Y := kap P fun π => (x0 P l π Y)⁻¹
   ee := eeA P
   inv := {Y | ∀ π, xC P π Y ≠ 0}
-
-def siteA (l : Fin P.r) : Site (A P) := ⟨pA P l, cA P l, ciA P l⟩
-
-def sitesFrom (i : ℕ) : List (Site (A P)) := ((List.ofFn (siteA P)).drop i).reverse
-
-def QQlev (l i : ℕ) (Y : ℂ) : M2 (A P) :=
-  (((sitesFrom P i).map fun σ => Ts σ (star Y)).prod)ᴴ * (startM P l).QQ Y *
-    ((sitesFrom P i).map fun σ => Ts σ Y).prod
 
 def CutWord {S : Type} (l : ℕ) (w : List (Letter ℂ S)) : Prop :=
   (w.map Letter.intersection_update_fsHerm_neg_one).Nodup ∧ (∀ a ∈ w, a.pt.im = 0 ∧ I.OnCut P.u P.u' l a.pt.re) ∧
@@ -325,8 +314,6 @@ def StarGens : Prop :=
     star (zA P) = zbA P ∧ star (ziA P) = zbiA P ∧ star (ggA P) = ggA P ∧ star (ggiA P) = ggiA P ∧
     star (nabA P) = nabsA P
 
-def LevelStar : Prop := ∀ (P : Par) (L : LevelData (A P) P.r), IsModelLevel P L → IsStarLevel L
-
 def TyInterlaces : Prop := ∀ P : Par, P.OK → ∀ π : Ty P, I.Interlaces P.k P.u P.u' (rho P π)
 
 def TyComplete : Prop :=
@@ -353,8 +340,6 @@ def WExact : Prop := ∀ P : Par, P.OK → ∀ π : Ty P, wNum P π = coordinate
 def InterlaceSignTwo : Prop :=
   ∀ (k : ℕ) (u u' ρ : ℕ → ℝ) (l : ℕ) (Y : ℝ), 1 ≤ l → l ≤ k → I.Interlaces k u u' ρ →
     I.OnCut u u' l Y → ∀ e ∈ ({-2, 2} : Finset ℝ), 0 < (-1 : ℝ) ^ (k - l) * I.xpoly k ρ (Y + e)
-
-def SSScalar : Prop := ∀ (P : Par) (l : ℕ) (w : Pr P.r), Commute (SS P l) (sc P w)
 
 def SSShift : Prop :=
   ∀ (P : Par) (l : ℕ) (f g : Ty P → ℂ), (∀ π π', Up P l π π' → g π' = f π) →
@@ -383,86 +368,14 @@ def Curvature : Prop :=
   ∀ P : Par, nabsA P * nabA P - nabA P * nabsA P =
     (kap P fun π => ((2 * aC P π * P.TT : ℝ) : ℂ)) * ggiA P * ggiA P
 
-def QQNormal : Prop :=
-  ∀ P : Par, P.OK → ∀ Y : ℂ, (∀ π, xC P π Y ≠ 0) →
-    t21 P Y = t22 P Y * lA P Y ∧ t12 P Y = t22 P Y * mA P Y ∧
-    ((∀ π, xC P π (Y + 1) ≠ 0) → t11 P Y =
-      qC P Y • (ggiA P * kap P fun π => (xC P π (Y + 1))⁻¹) + t22 P Y * mA P Y * lA P Y) ∧
-    (star Y = Y → mA P Y = star (lA P (Y - 1)))
-
-def QQHerm : Prop := ∀ P : Par, P.OK → ∀ Y : ℂ, (QQr P Y)ᴴ = QQr P (star Y)
-
 def QQRTTEntries : Prop :=
   ∀ P : Par, P.OK → ∀ (u v : ℂ) (i j k l : Fin 2),
     (u - v) • (QQr P u i j * QQr P v k l - QQr P v k l * QQr P u i j) =
       QQr P u k j * QQr P v i l - QQr P v k j * QQr P u i l
 
-def QQRTT : Prop := ∀ P : Par, P.OK → IsRTT (QQr P)
-
-def QQRTTOfEntries : Prop := QQRTTEntries → QQRTT
-
-def QQDet : Prop := ∀ P : Par, P.OK → IsDet (QQr P) (qC P)
-
-def T21Commute : Prop := ∀ P : Par, P.OK → ∀ u v : ℂ, Commute (t21 P u) (t21 P v)
-
-def QQLeading : Prop :=
-  ∀ P : Par, P.OK → ∃ a11 a12 a21 a22 : ℕ → A P, ∀ Y : ℂ,
-    t11 P Y = Y ^ (P.k + 1) • (1 : A P) + ∑ i ∈ range (P.k + 1), Y ^ i • a11 i ∧
-    t12 P Y = -(Y ^ P.k • zA P) + ∑ i ∈ range P.k, Y ^ i • a12 i ∧
-    t21 P Y = -(Y ^ P.k • zbA P) + ∑ i ∈ range P.k, Y ^ i • a21 i ∧
-    t22 P Y = Y ^ (P.k - 1) • ggA P + ∑ i ∈ range (P.k - 1), Y ^ i • a22 i
-
-def QQZeta : Prop :=
-  ∀ (P : Par) (Y : ℂ), t21 P Y * zA P - zA P * t21 P Y = -t22 P Y ∧
-    t11 P Y * zA P - zA P * t11 P Y = -t12 P Y ∧ Commute (t12 P Y) (zA P) ∧ Commute (t22 P Y) (zA P)
-
-def StartIsStart : Prop := ∀ P : Par, P.OK → ∀ l : ℕ, IsStart (startM P l).QQ (startM P l).q
-
-def StartIsStartAssemble : Prop := QQHerm → QQRTT → QQDet → StartIsStart
-
-def StartOK : Prop :=
-  ∀ P : Par, P.OK → ∀ (l : ℕ) (L : LevelData (A P) P.r), IsModelLevel P L → IsLevelStart L (startM P l)
-
-def StartAssemble : Prop := StartIsStart → T21Commute → SSScalar → SSShift → RhoUp → StartOK
-
-def SitesOKM : Prop := ∀ (P : Par) (l : ℕ), SitesOK (K := ℂ) (startM P l).QQ (sitesFrom P 0)
-
-def ChainM : Prop :=
-  ∀ (P : Par) (l : ℕ), (∀ Y, QQlev P l P.r Y = (startM P l).QQ Y) ∧
-    ∀ (i : Fin P.r) (Y : ℂ), QQlev P l i Y =
-      (Ts (siteA P i) (star Y))ᴴ * QQlev P l (i + 1) Y * Ts (siteA P i) Y
-
-def LowerCommutes : Prop :=
-  ∀ (P : Par) (l : ℕ) (i : Fin P.r), QQCommutes (K := ℂ) (QQlev P l (i + 1)) (siteA P i)
-
-def LowerStart : Prop := ∀ P : Par, P.OK → ∀ l i : ℕ, i ≤ P.r → IsStart (QQlev P l i) (qC P)
-
 def CutAdm : Prop :=
   I.InterlaceSign → I.QPositive → QPositiveShift → TyInterlaces → RealPoints →
   ∀ P : Par, P.OK → ∀ l, 1 ≤ l → l ≤ P.k → ∀ (S : Type) [Fintype S] [DecidableEq S]
     (w : List (Letter ℂ S)), CutWord P l w → admitted (startM P l) w
-
-def FrameConcl (P : Par) (l : ℕ) (L : LevelData (A P) P.r) {S : Type} [Fintype S] [DecidableEq S]
-    (w : List (Letter ℂ S)) : Prop :=
-  IsFrame L (ofWord L (startM P l) w) ∧
-  RRw (startM P l).QQ w = star (ofWord L (startM P l) w).F *
-    (wt L ^ w.length * (ofWord L (startM P l) w).c) * (ofWord L (startM P l) w).F ∧
-  (∀ Y, Reg w Y → (ofWord L (startM P l) w).F * TTw (startM P l).QQ w Y 1 1 =
-    io L.GG * (ofWord L (startM P l) w).x Y * (ofWord L (startM P l) w).F) ∧
-  (∀ Y ∈ (ofWord L (startM P l) w).inv, Y + 1 ∈ (ofWord L (startM P l) w).inv →
-    (ofWord L (startM P l) w).F * TTw (startM P l).QQ w Y 1 0 =
-      io L.GG * (ofWord L (startM P l) w).x Y * (io (L.l0 Y) + kapL L * (ofWord L (startM P l) w).ee Y) *
-        (ofWord L (startM P l) w).F) ∧
-  (ofWord L (startM P l) w).c = (Matrix.diagonal fun e => kap P fun π => cs (x0 P l π) (qC P) w e) ∧
-  ∀ (e : Ix S) (π : Ty P), Pos (cs (x0 P l π) (qC P) w e)
-
-def ModelFrame : Prop :=
-  ∀ P : Par, P.OK → ∀ l, 1 ≤ l → l ≤ P.k →
-    ∃ L : LevelData (A P) P.r, IsModelLevel P L ∧ IsStarLevel L ∧ IsLevelStart L (startM P l) ∧
-      ∀ (S : Type) [Fintype S] [DecidableEq S] (w : List (Letter ℂ S)), CutWord P l w → FrameConcl P l L w
-
-def ModelAssemble : Prop :=
-  I.InterlaceSign → I.QPositive → QPositiveShift → CPos → CPosCut → FrameAll → FrameWord → CDiag →
-  LevelExists → LevelStar → StartOK → TyInterlaces → RealPoints → CutAdm → ModelFrame
 
 end Formalism.FourierDecayAlt.M

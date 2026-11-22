@@ -21,8 +21,6 @@ open scoped Pointwise
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 section CoboundaryUnits
 
 variable {Kv Ωv : Type} [Field Kv] [Field Ωv] [Algebra Kv Ωv] [IsGalois Kv Ωv]
@@ -45,7 +43,6 @@ theorem cohomologyπ_galUnits_eq_zero_of_coboundary (z : cocycles (galUnits.{0} 
     rfl
   rw [hzw]
   exact cohomologyπ_toCycles _ 1 2 _
-
 
 omit [IsGalois Kv Ωv] in
 theorem toMul_galUnitsZ_coboundary (σ : Gal(Ωv/Kv)) (a b c : Additive Ωvˣ) :
@@ -310,7 +307,6 @@ variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algeb
 
 open AdicLiesOver
 
-
 include v in
 theorem isMulCoboundary₂_of_valuation (he : w.asIdeal.ramificationIdx (𝓞 K) = 1)
     (α : MulAction.stabilizer Gal(L/K) w.asIdeal × MulAction.stabilizer Gal(L/K) w.asIdeal →
@@ -431,7 +427,6 @@ instance mulDistribMulAction_gal_units_finiteSubfield :
 def ordPlace (f : F.1ˣ) : ℤ :=
   -WithZero.log ((placeOfEmbedding ι F).1.valuation F.1 (f : F.1))
 
-
 set_option maxHeartbeats 2000000 in
 theorem placeDecompHom_surjective : Function.Surjective (placeDecompHom ι F) := by
   intro d
@@ -449,7 +444,6 @@ theorem placeDecompHom_surjective : Function.Surjective (placeDecompHom ι F) :=
       embedLevel_apply]
   rw [e, e, AlgEquiv.liftNormal_commutes, hτ, AlgEquiv.symm_apply_apply,
     decompositionAlgEquiv_algebraMap]
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 4000000 in
@@ -544,7 +538,6 @@ theorem ordComp_sub (y y' : Additive (compField ι F)ˣ) :
     ordComp ι F (y - y') = ordComp ι F y - ordComp ι F y' := by
   rw [sub_eq_add_neg, ordComp_add, ordComp_neg, ← sub_eq_add_neg]
 
-
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 4000000 in
 theorem ordComp_smul (γ : Gal(compField ι F/v.adicCompletion K.1)) (y : (compField ι F)ˣ) :
@@ -577,7 +570,6 @@ theorem ordComp_embedComp (f : F.1ˣ) :
 
 abbrev compDecomp : Gal(compField ι F/v.adicCompletion K.1) →* Gal(F.1/K.1) :=
   decompHom (v.adicCompletion K.1) (embedComp ι F)
-
 
 set_option maxHeartbeats 4000000 in
 theorem compDecomp_restrictNormalHom
@@ -629,7 +621,6 @@ theorem compCocycleFun_mem (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ) (hc : Is
     (c (compDecomp ι F g, compDecomp ι F (h * j)))
   exact congrArg Additive.ofMul (mm1.symm.trans (key.trans (mm2.trans (congrArg (· * _) s))))
 
-
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 4000000 in
 theorem exists_compCocycle_coboundary
@@ -672,7 +663,6 @@ theorem exists_compCocycle_coboundary
   rw [groupCohomology.H2π_eq_zero_iff] at hc'0
   exact hc'0
 
-
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 4000000 in
 theorem ordComp_coboundary_eq (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ)
@@ -713,7 +703,6 @@ theorem ordComp_coboundary_eq (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ)
     (ordComp_embedComp ι F _).trans (congrArg (fun p => ordPlace ι F (c p))
       (Prod.ext (compDecomp_restrictNormalHom ι F σ) (compDecomp_restrictNormalHom ι F τ)))
   rw [hmul, k1, k2]
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 theorem exists_ord_coboundary_of_mulCoboundary

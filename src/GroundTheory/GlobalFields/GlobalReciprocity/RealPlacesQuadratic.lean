@@ -12,8 +12,6 @@ open scoped GroundTheory.LocalField.Abstract
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 theorem eq_of_ker_le_of_natCard_le_two {A B : Type*} [Group A] [Group B] [Finite B]
     (hB : Nat.card B ≤ 2) {f g : A →* B} (hfg : f.ker ≤ g.ker) {y : A} (hy : g y ≠ 1) : f = g := by
   classical

@@ -93,7 +93,6 @@ structure OpRelX : Prop where
   rel2 : ∀ j i, A.act1 (fEl Nq (uV A.R) ^ E * (A.p.D.map (MvPolynomial.C : A.R →+* PUY A.R q n)).tr
     (twoPowerModulus E (ph j) (ta j) (uV A.R j) i (yV A.R j i))) = 0
 
-
 variable (b) in
 def OpAt (T : TWGrp G0) : Prop :=
   ∃ E : ℕ, ∀ N, ∃ A : OpMod b (T.h N) T.q N, OpRelX A (T.Nq N) (T.ph N) (T.ta N) E
@@ -181,33 +180,11 @@ section Ar
 variable {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
   {s : HidaSetting l L Ω} {V0 : s.Lev}
 
-def LevAt {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] {n : ℕ} {r : Resid V0.frame O n} {B : UniversalOrdinaryDeterminantRing r}
-    {J : Ideal B.B} {D : ℕ} (b : TWBase (pairOf B.u) J Empty D) : Prop :=
-  ∀ (V : s.Lev) (h : (globOf r V).Hom (globOf r V0)) (q : ℕ) (v : Fin q → Plc (Lp L)) (w : Fin q → Plc L)
-    (Bq : Fin q → ValuationSubring Ω), (∀ g, h.p (toGS Ω V.S' g) = toGS Ω V0.S' g) → Function.Injective v → (∀ j, v j ∉ s.S) →
-    V.S' = s.S ∪ Set.range v → (∀ j, IsPlaceOver (Bq j) (w j)) → (∀ j, IsPlaceOver (Bq j) (v j)) →
-    (∀ j, Dec (F := Lp L) (Bq j) ≤ (resP L Ω).range) → ∃ A : LevMod b h w, A.Classical
-
 variable {c : Coef l} {n : ℕ} {r : Resid V0.frame c.O n} (B : UniversalOrdinaryDeterminantRing r)
 
 def barPt (x : B.B →ₐ[c.O] c.O) : B.Pt := (Algebra.ofId c.O (Qbar l)).comp x
 
-def LevelX (J : Ideal B.B) : Prop :=
-  ∃ b : TWBase (pairOf B.u) J Empty (n * Module.finrank ℚ (Lp L)), LevAt b ∧ (∀ k, b.wt.γ k ∈ V0.frame.Iv (b.wt.v k)) ∧
-    ∀ (x : B.B →ₐ[c.O] c.O) (h : s.Wt n), (barPt B x).Arith h → CtrlH b x
-
 end Ar
-
-def HidaX : Prop :=
-  ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
-    (s : HidaSetting l L Ω) (V : s.Lev), V.S' = s.S → ∀ (c : Coef l) (n : ℕ), 1 ≤ n →
-    ∀ (r : Resid V.frame c.O n) (B : UniversalOrdinaryDeterminantRing r) (Λ : LamObj r) (ι : Qbar l ≃+* ℂ), ∃ J : Ideal B.B, B.PT ι J ∧ LevelX B J
-
-def HasOp : Prop :=
-  LocP → ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
-    (s : HidaSetting l L Ω) (V0 : s.Lev) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsCoef l O]
-    [Algebra ℤ_[l] O] (n : ℕ) (r : Resid V0.frame O n) (B : UniversalOrdinaryDeterminantRing r) (J : Ideal B.B) (D : ℕ)
-    (b : TWBase (pairOf B.u) J Empty D), LevAt b → ∀ T : TWGrp (globOf r V0), TWPl r T → OpAt b T
 
 def ordinaryHeckeAlgebraIntegral : Prop :=
   CohP → ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
@@ -217,18 +194,5 @@ def ordinaryHeckeAlgebraIntegral : Prop :=
     DetQ (globOf r V0).frame c.O (pushRep (algebraMap c.O (Qbar l)) y.ρ)
       (GeneralLinearGroup.map (algebraMap c.O (Qbar l)) y.P) (Set.range T.sg) →
     B1 y T (n * Module.finrank ℚ (Lp L) + n * T.q)
-
-def CoreO : Prop :=
-  ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
-    (s : HidaSetting l L Ω) (V0 : s.Lev) (c : Coef l) (n : ℕ) (r : Resid V0.frame c.O n) (B : UniversalOrdinaryDeterminantRing r) (J : Ideal B.B)
-    (y : Pt (globOf r V0).frame c.O n) (x : B.B →ₐ[c.O] c.O) (h : s.Wt n) (q : ℕ) (sg : Fin q → V0.frame.G₀)
-    (al : Fin q → Fin n → c.O), V0.S' = s.S → 1 ≤ n → LevelX B J → J ≤ RingHom.ker x → (barPt B x).Arith h →
-    B.u.Maps x.toRingHom (GDet.ofRep (mat y.ρ)) y.ψ → y.N4 V0.frame.D0 →
-    (∀ j, sg j ∈ V0.frame.G' ∧ Function.Injective (al j) ∧
-      (mat y.ρ (sg j)).charpoly = ∏ i, (Polynomial.X - Polynomial.C (al j i))) →
-    DetQ (globOf r V0).frame c.O (pushRep (algebraMap c.O (Qbar l)) y.ρ)
-      (GeneralLinearGroup.map (algebraMap c.O (Qbar l)) y.P) (Set.range sg) →
-    ∀ δ : B.B →ₗ[c.O] c.O, IsDer x δ → (∀ v i, ∀ g ∈ V0.frame.Iv v, δ (B.u.ψ v i g : B.Bˣ) = 0) →
-      ∀ g, δ (B.u.D.tr (MonoidAlgebra.single g 1)) = 0
 
 end UpperTheory.V.Th

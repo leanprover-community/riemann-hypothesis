@@ -1,6 +1,10 @@
 module
 
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsGaloisRepOfCuspidal
+public import Mathlib
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExponentAndTwistData
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CharpolyFinOne
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsOpenKerOfInfConn
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BijectiveCmType
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HeckeOpen
 

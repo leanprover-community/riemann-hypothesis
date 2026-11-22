@@ -38,7 +38,6 @@ def shA {l : Λ} {k k' : K.K} (h : K.le l k' k) : Hol (K.W k) →ₐ[ℂ] Hol (K
 
 theorem shA_apply {l : Λ} {k k' : K.K} (h : K.le l k' k) (x : Hol (K.W k)) : shA h x = sh h x := rfl
 
-
 variable (K) in
 structure DObj (η : Hol F.V →+* R) (M : Ideal R) : Type 1 where
 
@@ -59,12 +58,10 @@ instance : Category (K.DObj η M) where
   comp_id f := Subtype.ext (Category.comp_id _)
   assoc f f' f'' := Subtype.ext (Category.assoc _ _ _)
 
-
 variable (K η M) in
 @[reducible] def OD : K.DObj η M ⥤ CommAlgCat.{0} R where
   obj S := CommAlgCat.of _ S.T.C
   map f := CommAlgCat.ofHom { (f.1.φ : _ →+* _) with commutes' := f.2 }
-
 
 variable (K η M) in
 def perZD (q : Λ →+ R) : Z1 (K.OD η M) :=
@@ -72,10 +69,8 @@ def perZD (q : Λ →+ R) : Z1 (K.OD η M) :=
     change algebraMap _ S''.T.C (q (f.1.deg + f'.1.deg)) = f'.1.φ (algebraMap _ _ _) + algebraMap _ S''.T.C _
     rw [f'.2, map_add (f := _), map_add (f := _)]⟩
 
-
 variable (K η M) in
 def perClD (q : Λ →+ R) : CatCoh.H1 (K.OD η M) := H1.mk _ (K.perZD η M q)
-
 
 end Charts
 
@@ -134,53 +129,6 @@ end Theta
 section Inhabitants
 
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] {F : Fam I g Λ}
-
-def jetAt {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {W : Opens E} (v p : E) (hp : p ∈ W) :
-    Hol W →+* DualNumber ℂ where
-  toFun h := TrivSqZeroExt.inl (Hol.ev p hp h) + TrivSqZeroExt.inr (Hol.ev p hp (Hol.der v h))
-  map_one' := by simp
-  map_mul' x y := by
-    refine TrivSqZeroExt.ext ?_ ?_
-    · simp
-    · simp [Derivation.leibniz, mul_comm]
-  map_zero' := by simp
-  map_add' x y := by
-    refine TrivSqZeroExt.ext ?_ ?_ <;> simp
-
-def Charts.dualD (K : Charts F) (k : K.K) (v : I → ℂ) (p : Tot I g) (hp : p ∈ K.W k) :
-    K.DObj (jetAt v p.1 (K.base k p hp)) (Ideal.span {DualNumber.eps}) where
-  T :=
-    { k := k
-      C := DualNumber ℂ
-      alg := (jetAt v p.1 (K.base k p hp)).toAlgebra
-      J := Ideal.span {DualNumber.eps}
-      nil := ⟨2, by rw [Ideal.span_singleton_pow, sq, DualNumber.eps_mul_eps]; simp⟩
-      ρ := jetAt ((v, 0) : Tot I g) p hp
-      ρ_cst := fun f ↦ by
-        have e1 : Hol.ev p hp (K.cst k f) = Hol.ev p.1 (K.base k p hp) f := by
-          rw [Hol.ev_apply, Hol.ev_apply, K.fn_cst k f hp]
-        have e2 : Hol.ev p hp (Hol.der ((v, 0) : Tot I g) (K.cst k f)) =
-            Hol.ev p.1 (K.base k p hp) (Hol.der v f) := by
-          rw [Hol.ev_apply, Hol.ev_apply, Hol.fn_der _ _ (K.base k p hp)]
-          refine (Hol.fn_der_comap _ _ _ _ f hp).trans ?_
-          rw [fderiv_fst]; rfl
-        change (TrivSqZeroExt.inl _ + TrivSqZeroExt.inr _ : DualNumber ℂ) = TrivSqZeroExt.inl _ + TrivSqZeroExt.inr _
-        rw [e1, e2] }
-  alg := Algebra.id (DualNumber ℂ)
-  compat _ := rfl
-  mem _ h := h
-
-theorem Charts.dualD_J_ne_bot (K : Charts F) (k : K.K) (v : I → ℂ) (p : Tot I g) (hp : p ∈ K.W k) :
-    (K.dualD k v p hp).T.J ≠ ⊥ := by
-  intro h
-  have h' : (DualNumber.eps : DualNumber ℂ) = 0 := Ideal.span_singleton_eq_bot.1 h
-  simpa using congrArg TrivSqZeroExt.snd h'
-
-def Charts.Obj.toD {K : Charts F} (T : K.Obj) : K.DObj (RingHom.id _) ⊥ where
-  T := T
-  alg := T.alg
-  compat _ := rfl
-  mem d h := by rw [Ideal.mem_bot.1 h, map_zero]; exact T.J.zero_mem
 
 end Inhabitants
 

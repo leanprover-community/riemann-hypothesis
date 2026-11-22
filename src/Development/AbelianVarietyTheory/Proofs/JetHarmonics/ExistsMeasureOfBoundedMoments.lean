@@ -25,9 +25,6 @@ noncomputable def curryFirst {g : ℕ} (F : C(Fin (g + 1) → ℤ_[q], ℂ_[q]))
   ContinuousMap.curry (F.comp ⟨fun x : ℤ_[q] × (Fin g → ℤ_[q]) => Fin.cons x.1 x.2,
     Continuous.finCons continuous_fst continuous_snd⟩)
 
-theorem curryFirst_apply {g : ℕ} (F : C(Fin (g + 1) → ℤ_[q], ℂ_[q])) (t : ℤ_[q])
-    (a : Fin g → ℤ_[q]) : curryFirst F t a = F (Fin.cons t a) := rfl
-
 theorem norm_curryFirst_le {g : ℕ} (F : C(Fin (g + 1) → ℤ_[q], ℂ_[q])) :
     ‖curryFirst F‖ ≤ ‖F‖ := by
   rw [ContinuousMap.norm_le _ (norm_nonneg _)]

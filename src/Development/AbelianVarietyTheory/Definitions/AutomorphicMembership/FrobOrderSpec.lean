@@ -106,14 +106,8 @@ variable (D : D7) (sc : Scale) (Ce : ℝ)
   (ψ : ∀ u (w : D.what₂.places.Pl), GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w) →
     Formalism.L2.Herm.awayFrom₂ (Lc u) (D.what₂.places.resChar w) →* (ORec D w (frobOrder D (D.what₂.places.resChar w)))ˣ)
 
-def packAll : ∀ u (w : D.what₂.places.Pl) (_h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)),
-    LocPack D u (Lc u) (D.what₂.places.resChar w) :=
-  fun u w h => pack D u (Lc u) w h.2.1 (frobOrder_spec D h).1 (frobOrder_spec D h).2 (I u w h) (ψ u w h)
-
 variable (hd : ∀ u w h, ((packAll D Lc I ψ u w h).gat (rSc sc D.R.k (D.what₂.places.resChar w))
     (epSc D.R sc Ce (D.what₂.places.resChar w))).d = Module.finrank ℂ (D.mem u).A.Mu0)
-
-abbrev record : D7 := recG D sc Ce Lc (packAll D Lc I ψ) hd
 
 end Record
 

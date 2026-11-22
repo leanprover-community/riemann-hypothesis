@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.Int
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEqAtAllEmbeddings
 public import Formalism.LocalRingCardinality.DataParamsT
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso
 public import Development.AbelianVarietyTheory.Definitions.Divisors.WellChosen
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IntegralBound
@@ -27,7 +26,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagSpaceCom
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AsIdealSpMapClosedPoint
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VanBdLeSpace
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalFlagNonempty
-public import Development.AbelianVarietyTheory.Definitions.Divisors.P22
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsLogCanonicalMultipleCanonical
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DenseInterior

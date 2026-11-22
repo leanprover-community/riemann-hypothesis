@@ -26,8 +26,6 @@ def diagL (n : ℕ) : List (Fin n × Fin n) := (allL n).filter fun a => decide (
 
 def upL (n : ℕ) : List (Fin n × Fin n) := (allL n).filter fun a => decide (a.1 < a.2)
 
-theorem letters_eq_blocks : letters n = lowL n ++ diagL n ++ upL n := rfl
-
 theorem mem_allL (a : Fin n × Fin n) : a ∈ allL n := by
   simp only [allL, List.mem_flatMap, List.mem_map, List.mem_finRange, true_and]
   exact ⟨a.1, a.2, rfl⟩

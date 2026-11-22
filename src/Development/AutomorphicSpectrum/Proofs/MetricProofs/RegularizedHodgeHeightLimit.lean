@@ -91,9 +91,6 @@ theorem positionPot_ge (th Pn : LocPot X) (f : X → ℝ) {i : ℕ} {j : Fin e} 
 theorem add_ofFun_U (P : LocPot X) (u : X → ℝ) (x : X) :
     (P + LocPot.ofFun u).U x = P.U x ∩ Set.univ := rfl
 
-theorem add_ofFun_φ (P : LocPot X) (u : X → ℝ) (x y : X) :
-    (P + LocPot.ofFun u).φ x y = P.φ x y + u y := rfl
-
 end Slots
 
 section Vertical

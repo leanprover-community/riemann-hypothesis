@@ -18,8 +18,6 @@ section
 
 variable {K : Type} [Field K] [CharZero K]
 
-local notation "A2" => MvPowerSeries (Fin 2) K
-
 theorem triple_lintegral_eq (x : Fin 2) (f : PowerSeries K) :
     (at1 x f : A2) = PowerSeries.substAlgHom (PowerSeries.HasSubst.X x) f := by
   rw [PowerSeries.coe_substAlgHom]

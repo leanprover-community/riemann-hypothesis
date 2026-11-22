@@ -7,7 +7,6 @@ public import Mathlib
 open Function
 
 -- Mathlib now indexes multilinear maps by a ring homomorphism.
-local notation "MultilinearMap " "ℂ " M:max N:max => _root_.MultilinearMap (RingHom.id ℂ) M N
 
 namespace GlobalTheory.FactorwiseExtension
 

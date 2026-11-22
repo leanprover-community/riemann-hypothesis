@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LeviRep
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaIntegralIntegrable
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegrableZetaIntegrand
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnitaryAdmissibleMatrixCoefficient
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HermitianFormNormSqLeReMulReStatement

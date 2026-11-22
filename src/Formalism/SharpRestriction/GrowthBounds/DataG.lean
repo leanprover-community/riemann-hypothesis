@@ -127,9 +127,6 @@ def smul (γ : C.Γ) (L : P.Tup) : P.Tup :=
 
 def actX (γ : C.Γ) : P.Xsp →ₗ[Kf] P.Xsp := P.natAct fun v => C.act v γ
 
-def ActH : Prop := ∀ (γ : C.Γ) (L : P.Tup), P.IsLatTup L →
-  (P.Htup L).map ((C.actX γ).restrictScalars O) = P.Htup (C.smul γ L)
-
 def ActHW : Prop := ∀ (γ : C.Γ) (L : P.Tup), P.IsLatTup L →
   (P.HtupW L).map ((C.actX γ).restrictScalars O) = P.HtupW (C.smul γ L)
 
@@ -141,13 +138,7 @@ def funMod (Hv : P.Tup → Submodule O P.Xsp) : Submodule O (P.Tup → P.Xsp) :=
       ((C.χ γ : O) • ((C.actX γ).restrictScalars O)) ∘ₗ
         LinearMap.proj (R := O) (φ := fun _ : P.Tup => P.Xsp) L)
 
-def Mna : Submodule O (P.Tup → P.Xsp) := C.funMod P.Htup
-
 def M : Submodule O (P.Tup → P.Xsp) := C.funMod P.HtupW
-
-def dna : ℕ := Module.finrank O C.Mna
-
-def d : ℕ := Module.finrank O C.M
 
 def yv (v : Fin P.nV) (F : P.Tup → P.Xsp) : P.Tup → P.Xsp :=
   fun L => ((p : Kf) ^ P.ArV v) •

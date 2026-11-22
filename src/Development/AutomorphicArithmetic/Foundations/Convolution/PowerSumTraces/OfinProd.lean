@@ -29,17 +29,6 @@ def FixLev : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure] (P : Finset (Pl K))
     (U : ∀ v : Pl K, Subgroup (Gw n v)), fixF μ (levOn P U) = sphOff μ P ⊓ ⨅ v ∈ P, fixL μ v (U v)
 
-def OfinProd : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
-    (mf : Measure (AdelicGLn.FiniteAdelicGL K n)) [mf.IsHaarMeasure], mf (AdelicGLn.integralFiniteGL K n) = 1 →
-    ∀ (r : ℕ) (w : Fin r → Pl K) [∀ i, MeasurableSpace (Gw n (w i))] [∀ i, BorelSpace (Gw n (w i))]
-      (m : ∀ i, Measure (Gw n (w i))) (φ : ∀ i, Gw n (w i) → ℂ) (T : Fin r → LL μ →L[ℂ] LL μ) (e : TF K n),
-      Function.Injective w → (∀ i, (m i).IsHaarMeasure ∧ m i (GLnLocal.integralGL ((w i).adicCompletion K) n) = 1) →
-      (∀ i, Test (φ i)) → (∀ i, IsOloc μ (w i) (m i) (φ i) (T i)) →
-      (∀ x, e x = if ∀ v ∉ Finset.univ.image w, finAt v (finEmb K n x) ∈ GLnLocal.integralGL (v.adicCompletion K) n then
-        ∏ i, φ i (finAt (w i) (finEmb K n x)) else 0) →
-      Ofin μ mf e = (List.ofFn T).prod ∘L prj (sphOff μ (Finset.univ.image w))
-
 def EigAdm : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (n : ℕ), 0 < n → ∀ (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
     (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (a : TI K n) (x : ℝ), x ≠ 0 → ∀ (P : Finset (Pl K))

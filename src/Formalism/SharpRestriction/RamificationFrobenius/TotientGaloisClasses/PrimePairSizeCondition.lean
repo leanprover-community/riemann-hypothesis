@@ -42,19 +42,6 @@ structure KSet where
   psK : Option PChar
   psK_spec : ∀ ψ, psK = some ψ → ψ ∈ KEPT ∧ ψ.χ.Odd ∧ ψ.IsReal
 
-structure HType extends KSet where
-  eps : ℝ
-  eps_pos : 0 < eps
-  eps_lt : eps < 1 / 52
-  J : ℕ
-  one_le_J : 1 ≤ J
-  P0 : ℕ
-  P0_pos : 0 < P0
-
-  t : ℝ → ℕ
-  Ct : ℝ
-  t_le : ∀ x : ℝ, 1 ≤ x → (t x : ℝ) ≤ x ^ Ct
-
 namespace HType
 
 variable (T : HType)

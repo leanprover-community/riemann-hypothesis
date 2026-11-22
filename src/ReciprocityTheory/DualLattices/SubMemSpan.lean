@@ -151,9 +151,6 @@ def mr (r : (R : Type u)) : LHom Dp.D Dp.D :=
      convert h1 using 1
      exact e.symm⟩⟩
 
-lemma mr_apply (r : (R : Type u)) (d : (Dp.D : Type u)) :
-    (Dp.mr r).1 d = Dp.σ.1 (Dp.π.1 d) + Dp.σ.1 r * (d - Dp.σ.1 (Dp.π.1 d)) := rfl
-
 lemma mr_π (r : (R : Type u)) (d : (Dp.D : Type u)) : Dp.π.1 ((Dp.mr r).1 d) = Dp.π.1 d := by
   simp [mr_apply, Dp.sect]
 

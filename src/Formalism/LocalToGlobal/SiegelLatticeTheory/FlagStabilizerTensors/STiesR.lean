@@ -2,7 +2,10 @@ module
 
 public import Mathlib
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.SpectralTiesReal
-public import Formalism.LocalToGlobal.ClassRec
+public import Formalism.LocalToGlobal.HilbertRowConditions.RowPin
+public import Formalism.LocalToGlobal.RatioJoints.CharacterProductEqOne
+public import Formalism.LocalToGlobal.UnitaryNorms.DatumS
+public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeilEq
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InstExists
 
 @[expose] public section
@@ -19,22 +22,5 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {K : MainNotions.G.Consts}
   {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl K Yd cX}
-
-structure STiesR (R : Formalism.L2.RecT ex) extends STies D where
-
-  tr : ∀ u, Formalism.L2.SG.ColDict.Transport X u ((R.T.cols.forms u).to0)
-  into : ∀ u, Formalism.L2.SG.ColDict.ColDictInto X (tr u) Y.hK
-  bij : ∀ u, Formalism.L2.SG.ColDict.ColDictBij X (tr u) Y.hK
-  lev : ∀ u, Formalism.L2.SG.ColDict.LevelMatch X (tr u) Y.hK
-
-  colPin : ∀ (hF : FinX Y) (u : D.what₂.Word) (x : D.s.Cu u),
-    Formalism.L2.SG.ColDict.colDict X (tr u) Y.hK (into u) (bij u) ((hI hF).eCu u x) = D.s_Cu u x
-
-  inst : X.B.I = Formalism.L2.SG.InstExistsPf.instOf D
-
-  G : Formalism.L2.SG.RowDict.GoodOp X
-  rowTie : ∀ hF : FinX Y, Formalism.L2.SG.RowDict.RowDictTie X G (hI hF).eHH
-
-  locTied : Formalism.L2.SG.Pf.LocCP.LocTied D
 
 end Formalism.L2.SG.SpectralTiesReal

@@ -96,18 +96,6 @@ namespace GlobalTheory.Published
 
 open GlobalTheory.ThetaMean
 
-def SiegelWeilAnisotropicUnitary : Prop :=
-  ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (A B : HSp D), 1 ≤ A.rank → 1 ≤ B.rank → IsAniso B →
-  ∀ (χB : (AE D)ˣ →* Circle) (ω : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ)),
-    IsWeilDatumO ψ (dblSp A) B 1 χB ω →
-  ∀ a : GL (Fin A.rank) (AE D), IsMaj A a → HasIwasawa D.sp.cm.sig (dblSp A).gram (Khat A a) →
-  ∀ (μ : Measure (WO A B)) (𝓨 : Set (WO A B)), IsCovolOne (ratL B A) μ 𝓨 →
-  ∀ ν : Measure (GA D B), ν.IsHaarMeasure →
-  ∀ f : WO (dblSp A) B → ℂ, IsThetaFunO ψ (dblSp A) B f → IsKFinVec ω (Khat A a) f →
-    (∀ g, Integrable (AutomorphicL2Unitary.descend (GQ B) fun h => thetaKO ω g h f) (autMeasure B ν)) ∧
-    Eis.EisValueAt A (flat A a (swSec A B ω μ 𝓨 f) (sZero A B)) (sZero A B)
-      ((if A.rank < B.rank then 1 else 2 : ℂ) • thetaMean ω ν f)
-
 end GlobalTheory.Published
 
 end

@@ -37,11 +37,6 @@ structure RecLawsH (rc : ∀ n, Irr k n → WD h) : Prop where
   sat : ∀ n (π : Irr k n) (α : Fin n → ℂˣ), HasSatake π.π α →
     (rc n π).frobEig = Finset.univ.val.map fun i => ((α i)⁻¹ : ℂˣ).1
 
-theorem Old.rlTwist {rc : ∀ n, Irr k n → WD h} (H : RecLaws rc) : ∀ n (χ : kˣ →* ℂˣ) (c : Irr k 1) (π π' : Irr k n),
-    GoodI π → Nonempty (c.π.Equiv (detRep (Fin 1) χ)) →
-    Nonempty (π'.π.Equiv (GlobalTheory.SmGL.twist π.π (detChar (Fin n) χ))) → rc n π' = (rc n π).lpChar (rc 1 c) :=
-  fun n χ c π π' _ => H.twist n χ c π π'
-
 end Laws
 
 end UpperTheory.One.M

@@ -82,13 +82,6 @@ theorem algTrace_of_isPushout {C C' : Type*} [CommRing C] [CommRing C'] [Algebra
     algTrace C C' (algebraMap B' C' b) = algebraMap B C (algTrace B B' b) :=
   projTrace_of_isBaseChange h.out _ _ fun x ↦ (map_mul (algebraMap B' C') b x).symm
 
-theorem algTrace_algebraMap_of_bijective (h : Function.Bijective (algebraMap B B')) (b : B) :
-    algTrace B B' (algebraMap B B' b) = b := by
-  let e := LinearEquiv.ofBijective (Algebra.linearMap B B') h
-  have : Module.Free B B' := .of_equiv e
-  rw [algTrace_eq_trace, ← Algebra.trace_eq_of_algEquiv (AlgEquiv.ofBijective (Algebra.ofId B B') h).symm]
-  simp
-
 end AlgTrace
 
 section Forms
@@ -360,7 +353,6 @@ def homOfAffine : G ⟶ F :=
 
 theorem homOfAffine_app (U : X.affineOpens) (x : Γ(G, U.1)) :
     (homOfAffine φ hφ).app U.1 x = φ U x := preHomOfAffine_app φ hφ U x
-
 
 omit φ hφ in
 theorem hom_ext_affine {a b : G ⟶ F}

@@ -94,7 +94,6 @@ theorem hTens_eq (Q : Matrix α α E) (w w' : Matrix α (ν ⊕ ν) E) :
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun j _ => by ring
 
-
 omit [DecidableEq α] in
 theorem form_mul (Q : Matrix α α E) (g : UG c (stdJ ν E)) (w w' : Matrix α (ν ⊕ ν) E) :
     form c Q (w * ((g : GL (ν ⊕ ν) E) : Matrix (ν ⊕ ν) (ν ⊕ ν) E)) (w' * ((g : GL (ν ⊕ ν) E) : Matrix (ν ⊕ ν) (ν ⊕ ν) E)) =
@@ -128,16 +127,13 @@ theorem form_swap (hc : ∀ z, c (c z) = z) {Q : Matrix α α E} (hQ : IsHerm c 
     Algebra.trace_eq_of_algEquiv (AlgEquiv.ofAlgHom c c (AlgHom.ext hc) (AlgHom.ext hc)) z
   rw [form, form, h, map_neg, ht, mul_neg]
 
-
 omit [DecidableEq α] in
 theorem form_left_left (Q : Matrix α α E) (x x' : Matrix α ν E) : form c Q (fromCols x 0) (fromCols x' 0) = 0 := by
   simp [form, hTens, stdJ, Fintype.sum_sum_type]
 
-
 omit [DecidableEq α] in
 theorem form_right_right (Q : Matrix α α E) (y y' : Matrix α ν E) : form c Q (fromCols 0 y) (fromCols 0 y') = 0 := by
   simp [form, hTens, stdJ, Fintype.sum_sum_type]
-
 
 end Group
 
@@ -174,9 +170,6 @@ def Heisenberg₂ {ψ : AddChar F ℂ} (hψ : Continuous ψ) (Q : Matrix α α E
   toFun φ := ⟨heisFun c ψ Q w φ, heisFun_mem c hψ Q w φ.2⟩
   map_add' φ φ' := Subtype.ext (funext fun x => mul_add _ _ _)
   map_smul' z φ := Subtype.ext (funext fun x => mul_left_comm _ _ _)
-
-theorem heis_apply {ψ : AddChar F ℂ} (hψ : Continuous ψ) (Q : Matrix α α E) (w : Matrix α (ν ⊕ ν) E)
-    (φ : SB (Matrix α ν E)) : (Heisenberg₂ c hψ Q w φ : Matrix α ν E → ℂ) = heisFun c ψ Q w φ := rfl
 
 end Local
 

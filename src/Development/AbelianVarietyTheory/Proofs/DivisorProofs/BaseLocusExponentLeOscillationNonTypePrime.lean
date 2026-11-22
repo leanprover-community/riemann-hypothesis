@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PolyBetween
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LocalValuationColumns
 public import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsIsNabUncond
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.StarRingExtOfStar
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsProductDataCopiesTrivialisationValuation

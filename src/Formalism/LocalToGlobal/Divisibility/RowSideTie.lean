@@ -235,7 +235,6 @@ structure ThTie {P0 : Subgroup G} {ψ0 : P0 →* D.what₂.LLˣ} {Zs : DefSub A.
     D.what₂.thetaP (tup t) ((i : ℕ) + 1) (D.what₂.jMt (tup t) ((i : ℕ) + 1) (eMt i t x)) =
       jW i ((S0.θ i t).mulVec ((lPrj D A P0 ψ0 Zs i t).mulVec x))
 
-
 open Classical in
 structure NumTie {P0 : Subgroup G} {ψ0 : P0 →* D.what₂.LLˣ} {Zs : DefSub A.fam.amb}
     (S0 : IndefData (A.side P0 ψ0 Zs)) (tup : T → D.what₂.Tup) : Prop where
@@ -259,32 +258,6 @@ structure ColTie {Ps : Subgroup G} {ψs : Ps →* D.what₂.LLˣ} {Zs : DefSub A
   Nu : ∀ u, HLatTie (D.div.Nu u) (NuC (wU u)) (Dc.Xc (wU u)) (eNu u)
 
   Bk : ∀ u x y, D.div.Bk u (eNu u x) (eRR y) = C.B (wU u) x y
-
-structure DivisionCompatible (P0 : Subgroup G) (ψ0 : P0 →* D.what₂.LLˣ) (Ps : Subgroup G) (ψs : Ps →* D.what₂.LLˣ)
-    (Zs : DefSub A.fam.amb) (S0 : IndefData (A.side P0 ψ0 Zs)) (S1 : IndefData (A.side Ps ψs Zs))
-    (X0 : Formalism.BasicNotions.BaseLevelRowSide D) {Dc : DefCols (A.side Ps ψs Zs)} {Sp : SPer Dc} (C : ColData Dc Sp S1)
-    (NuC : ∀ u, Submodule (𝓞 D.what₂.LL) (Fin (Dc.a u) → D.what₂.LL))
-    (I : DivisionCompatibilityData D A P0 ψ0 Ps ψs Zs S0 S1 X0 Dc) : Prop where
-
-  ranks : m = D.R.m ∧ A.r = D.R.r ∧ A.t = D.R.t
-
-  grp : GrpTie D A P0 ψ0 Ps ψs I.eG
-
-  tup : TupTie D A S0 I.tup
-
-  mu1 : S1.μ = S0.μ
-
-  sharp : RowSideTie D A (Formalism.BasicNotions.RowSide.sharp D) Ps ψs Zs S1 I.tup I.eRR I.jA
-
-  base : RowSideTie D A X0.s P0 ψ0 Zs S0 I.tup I.eRR0 I.jA0
-
-  mt : MtTie D A P0 ψ0 Zs I.tup I.eMt
-
-  th : ThTie D A S0 I.tup I.eMt I.jW
-
-  num : NumTie D A S0 I.tup
-
-  cols : ColTie D A C NuC I.wU I.eNu I.eRR
 
 end Fam
 

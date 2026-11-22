@@ -101,22 +101,10 @@ variable {D : D7} {X : Fields} (s : Seam D X)
 
 def Seam.oE : 𝓞 X.E ≃+* 𝓞 D.host.E := RingOfIntegers.mapRingEquiv s.iE
 
-theorem oE_symm_coe (r : 𝓞 D.host.E) : ((s.oE.symm r : 𝓞 X.E) : X.E) = s.iE.symm (r : D.host.E) := rfl
-
 def Seam.PrimeTo (I : Ideal (𝓞 D.host.E)) (P : HeightOneSpectrum (𝓞 X.E)) : Prop := ∃ t ∈ I, s.oE.symm t ∉ P.asIdeal
 
 theorem primeTo_top (P : HeightOneSpectrum (𝓞 X.E)) : s.PrimeTo ⊤ P :=
   ⟨1, Submodule.mem_top, by rw [map_one]; exact fun h => P.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h)⟩
-
-theorem primeTo_mono {I J : Ideal (𝓞 D.host.E)} (h : I ≤ J) {P : HeightOneSpectrum (𝓞 X.E)} (hI : s.PrimeTo I P) : s.PrimeTo J P := by
-  obtain ⟨t, ht, hn⟩ := hI
-  exact ⟨t, h ht, hn⟩
-
-theorem primeTo_half {P : HeightOneSpectrum (𝓞 X.E)} (h : s.PrimeTo (differentIdeal (𝓞 D.host.K) (𝓞 D.host.E)) P) : s.PrimeTo D.host.𝔟 P := by
-  refine primeTo_mono s ?_ h
-  have h1 : differentIdeal (𝓞 D.host.K) (𝓞 D.host.E) = D.host.𝔟 * (D.host.conj • D.host.𝔟) := D.host.𝔟_spec.1
-  rw [h1]
-  exact (Ideal.mul_le_left : D.host.𝔟 * (D.host.conj • D.host.𝔟) ≤ D.host.𝔟)
 
 theorem half_ne_bot (D : D7) : D.host.𝔟 ≠ ⊥ := by
   intro h
@@ -247,7 +235,6 @@ theorem mem_of_divs {A : Type} [CommRing A] [IsDedekindDomain A] {a : A} {P : He
   · exact hf.mem_toFinset.mp h
   · simp at h
 
-
 open Classical in
 theorem bad_gen (hPr : Pr.Ok) (u : Pr.Word) {P : HeightOneSpectrum (𝓞 X.E)} (hP : P ∈ Pr.vT u ∪ Pr.vGs) :
     ∃ (π : 𝓞 X.E) (p : ℕ), π ∈ P.asIdeal ∧ IsCoprime π (X.conjO π) ∧ π * X.conjO π = (p : 𝓞 X.E) ∧ p.Prime ∧
@@ -263,7 +250,6 @@ theorem bad_gen (hPr : Pr.Ok) (u : Pr.Word) {P : HeightOneSpectrum (𝓞 X.E)} (
         hPr.g_prime i, Or.inr ⟨i, rfl, rfl⟩⟩ : ∃ (π : 𝓞 X.E) (p : ℕ), π ∈ P.asIdeal ∧ IsCoprime π (X.conjO π) ∧ π * X.conjO π = (p : 𝓞 X.E) ∧ p.Prime ∧
       (p = Pr.T u ∧ π = Pr.piT u ∨ ∃ i, p = Pr.g i ∧ π = X.conjO (Pr.piG i)))
     exact h.elim (key 0) (key 1)
-
 
 open Classical in
 theorem tg_noConj (hPr : Pr.Ok) (u : Pr.Word) : ∀ P ∈ Pr.vT u ∪ Pr.vGs, conjPrime₂ P ∉ Pr.vT u ∪ Pr.vGs := by
@@ -353,7 +339,6 @@ theorem conjP_twice (P : HeightOneSpectrum (𝓞 X.E)) : conjPrime₂ (conjPrime
   ext r
   rw [mem_conjP, mem_conjP, cO_cO]
 
-
 open Classical in
 theorem sall_noConj (hX : X.AbelianUnramifiedExtensionConditions) (hPr : Pr.Ok) (hsel : IsSel X sel) (u : Pr.Word) (hT : Pr.T u ∈ S) (hg : ∀ i, Pr.g i ∈ S) :
     ∀ P ∈ Sall sel mu u, conjPrime₂ P ∉ Sall sel mu u := by
@@ -379,7 +364,6 @@ theorem sall_noConj (hX : X.AbelianUnramifiedExtensionConditions) (hPr : Pr.Ok) 
   · exact hmix P h h'
   · exact hmix (conjPrime₂ P) h' (by rw [conjP_twice]; exact h)
   · exact qe_noConj mu hX hsel P h h'
-
 
 open Classical in
 theorem sall_nat (hPr : Pr.Ok) (hsel : IsSel X sel) (u : Pr.Word) {P : HeightOneSpectrum (𝓞 X.E)} (hP : P ∈ Sall sel mu u) :

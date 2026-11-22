@@ -65,12 +65,6 @@ def DcosMul : Prop :=
       fun m => ((((iwGL a w).prod (iwGL b w)).relIndex ((GlobalTheory.LFun.KGL w (n := a)).prod (GlobalTheory.LFun.KGL w (n := b))) : ℕ) : ℂ)⁻¹ *
         (dcos a w (tdiag ϖ (x + x')) m.1 * dcos b w (tdiag ϖ (y + y')) m.2)
 
-def MatchLin : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n a b : ℕ) (w : Pl E) (μ : (w.adicCompletion E)ˣ →* ℂˣ)
-    (J : Type) [Fintype J] (c : J → ℂ) (f : J → UL n w → ℂ) (φ : J → GLw a w × GLw b w → ℂ),
-    (∀ j, Continuous (f j) ∧ HasCompactSupport (f j) ∧ Continuous (φ j) ∧ HasCompactSupport (φ j)) →
-    (∀ j, Match n a b w μ (f j) (φ j)) → Match n a b w μ (fun γ => ∑ j, c j * f j γ) (fun y => ∑ j, c j * φ j y)
-
 def CtMul : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n a : ℕ) (ha : a ≤ n) (w : Pl E), IsSplitAt w →
     ∀ μ : (w.adicCompletion E)ˣ →* ℂˣ, (∀ u : (w.adicCompletion E)ˣ, ordL (u : w.adicCompletion E) = 0 → μ u = 1) →

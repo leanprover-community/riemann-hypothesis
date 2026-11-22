@@ -209,19 +209,6 @@ section Dens
 
 variable {Ψ : Type} [Fintype Ψ] {j j' n : ℕ}
 
-theorem measurable_ballDens (q : Ψ × Fin j × Fin j' ≃ Fin n) : Measurable (ballDens q) := by
-  have hZ : ∀ τ, Continuous fun t : Fin n → ℂ => ballMat q t τ := fun τ =>
-    continuous_matrix fun a b => continuous_apply _
-  have hdet : ∀ τ, Measurable fun t : Fin n → ℂ =>
-      Real.log (1 - (ballMat q t τ)ᴴ * ballMat q t τ).det.re := fun τ =>
-    Real.measurable_log.comp (Complex.continuous_re.comp
-      (continuous_const.sub ((hZ τ).matrix_conjTranspose.matrix_mul (hZ τ))).matrix_det).measurable
-  have hpot : Measurable (ballPot q) := by
-    unfold ballPot
-    exact (Finset.measurable_sum _ fun τ _ => hdet τ).neg
-  unfold ballDens
-  exact Real.measurable_exp.comp (hpot.const_mul _)
-
 theorem ballDens_pos (q : Ψ × Fin j × Fin j' ≃ Fin n) (t : Fin n → ℂ) : 0 < ballDens q t := Real.exp_pos _
 
 end Dens

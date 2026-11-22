@@ -68,9 +68,6 @@ def swapProj (j : Fin (e + 1)) (Ψ' : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (
     (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (e + 1) → ℂ) :=
   (LinearMap.funLeft ℂ ℂ (Equiv.swap 0 j)) ∘ₗ Ψ'
 
-theorem swapProj_apply (j : Fin (e + 1)) (Ψ' : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (e + 1) → ℂ))
-    (w : ((k : K) → ι k) → ℂ) (i : Fin (e + 1)) : swapProj j Ψ' w i = Ψ' w (Equiv.swap 0 j i) := rfl
-
 theorem isGoodProj_swapProj {P : Ideal (MRing ι)} {Ψ' : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (e + 1) → ℂ)}
     (hΨ' : IsGoodProj P Ψ') (j : Fin (e + 1)) : IsGoodProj P (swapProj j Ψ') := by
   intro z hz h

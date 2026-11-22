@@ -22,9 +22,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
     {PD : PeriodData G Qp K₀ K B BdR}
 
-private lemma gammaA_apply_eq_gamma0 (W : LocWach PD LL O v n) (g : W.Gam) (a : LetA O n) (i : ZMod n) :
-    W.γA g a i = W.γ₀ g (a i) := rfl
-
 private lemma phiA_apply_eq_phi0_pred (W : LocWach PD LL O v n) (a : LetA O n) (i : ZMod n) :
     W.φA a i = W.φ₀ (a (i - 1)) := rfl
 

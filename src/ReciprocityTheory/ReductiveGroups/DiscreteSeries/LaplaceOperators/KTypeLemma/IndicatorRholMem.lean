@@ -77,10 +77,6 @@ def rOm (X : Matrix (Fin n) (Fin n) ℂ) : Module.End ℂ (cOm n) where
       rfl
     · rw [Set.indicator_of_notMem hz, Set.indicator_of_notMem hz, mul_zero]
 
-theorem rOm_apply (X : Matrix (Fin n) (Fin n) ℂ) (F : cOm n) :
-    ((rOm X F : cOm n) : Matrix (Fin n) (Fin n) ℂ → ℂ) =
-      (OmegaP n).indicator (Rhol X (F : Matrix (Fin n) (Fin n) ℂ → ℂ)) := rfl
-
 theorem rOm_sub (X Y : Matrix (Fin n) (Fin n) ℂ) : rOm (n := n) (X - Y) = rOm X - rOm Y := by
   refine LinearMap.ext fun F => Subtype.ext (funext fun z => ?_)
   simp only [LinearMap.sub_apply, Submodule.coe_sub, Pi.sub_apply, rOm_apply]

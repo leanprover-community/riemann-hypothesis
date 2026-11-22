@@ -14,9 +14,6 @@ open LocalSpans idealPowerSpanBounds localizedQuotients
 
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-local notation "jK" => algebraMap (𝓞 K) K
-
 structure IsUnif0 (𝔭 : Ideal (𝓞 F)) (π₀ s₀ : 𝓞 F) : Prop where
   mem : π₀ ∈ 𝔭
   notMem : π₀ ∉ 𝔭 ^ 2

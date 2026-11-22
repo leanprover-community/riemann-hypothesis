@@ -46,7 +46,6 @@ def SmoothR {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (f : M �
 def Holo {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (f : M → ℂ) : Prop :=
   ∀ e : OpenPartialHomeomorph M (V n), IsChart n z e → DifferentiableOn ℂ (f ∘ e.symm) e.target
 
-
 open scoped Classical in
 def d {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (j : Fin n) (f : M → ℂ) (x : M) :
     ℂ := by
@@ -54,7 +53,6 @@ def d {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (j : Fin n) (f 
   exact if h : ∃ e : OpenPartialHomeomorph M (V n), IsChart n z e ∧ x ∈ e.source then
     wd n j (f ∘ (Classical.choose h).symm) (z x)
   else 0
-
 
 open scoped Classical in
 def db {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (j : Fin n) (f : M → ℂ) (x : M) :
@@ -89,7 +87,6 @@ def VolAdditive {M : Type*} [MeasurableSpace M] (n : ℕ) (z : M → V n) : Prop
   ∀ ⦃f : ℕ → Set M⦄, (∀ i, MeasurableSet (f i)) → Pairwise (Function.onFun Disjoint f) →
     volFun n z (⋃ i, f i) = ∑' i, volFun n z (f i)
 
-
 open scoped Classical in
 def vol {M : Type*} [MeasurableSpace M] (n : ℕ) (z : M → V n) : Measure M := by
   classical
@@ -100,14 +97,6 @@ def vol {M : Type*} [MeasurableSpace M] (n : ℕ) (z : M → V n) : Measure M :=
 def wint {M : Type*} [MeasurableSpace M] (n : ℕ) (z : M → V n) (f : M → ℂ) (ph : M → ℝ) :
     ℝ≥0∞ :=
   ∫⁻ x, ENNReal.ofReal (‖f x‖ ^ 2 * Real.exp (-ph x)) ∂vol n z
-
-def jac {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (g : Fin n → M → ℂ) (x : M) : ℂ :=
-  (Matrix.of fun i k => d n z k (g i) x).det
-
-def VanishesBeyond {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (u : M → ℂ) (x : M)
-    (m : ℕ) : Prop :=
-  ∀ e : OpenPartialHomeomorph M (V n), IsChart n z e → x ∈ e.source →
-    ∀ k ≤ m, iteratedFDeriv ℂ k (u ∘ e.symm) (z x) = 0
 
 def IsBergmanProj {M : Type*} [TopologicalSpace M] [MeasurableSpace M] (n : ℕ) (z : M → V n)
     (ps : M → ℝ) (F0 F : M → ℂ) : Prop :=

@@ -1,7 +1,10 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LastSeesawDatumEqLatticePairOverVacuum
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ThetaSliceLineSumEqIntertwinerImageStatement
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LatticePairCharacterIndicatorTransformEqCosetIndStatement
+public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceDatumBoxTensorLineOverVacuumStatement
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsClopenIsCompactQLat
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.CombAtSingleZero
 
 @[expose] public section

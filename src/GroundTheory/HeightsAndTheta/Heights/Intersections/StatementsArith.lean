@@ -20,8 +20,6 @@ section Objects
 
 variable {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
 
-
-
 def IsClosedPt (Q : Ideal (MRing ι)) : Prop :=
   IsMultiProjPrime Q ∧ ringKrullDim (MRing ι ⧸ Q) = ((Fintype.card K : ℕ) : WithBot ℕ∞)
 
@@ -81,25 +79,6 @@ def PushforwardProjLineFlag.Statement : Prop := PFStatement
 end PF
 
 section Inhabitants
-
-theorem isMultiHomog_Xc (n : ℕ) (i : Fin n) : IsMultiHomog (Xc n i) (fun _ => 1) := by
-  intro m hm k
-  obtain ⟨⟩ := k
-  have hm' : m ∈ (X (⟨(), i⟩ : (_ : Unit) × Fin n) : MRing (PBlk n)).support := hm
-  rw [support_X, Finset.mem_singleton] at hm'
-  subst hm'
-  rw [Finset.sum_eq_single i]
-  · simp
-  · intro b _ hb
-    rw [Finsupp.single_apply, if_neg]
-    intro h
-    exact hb (sigma_mk_injective h).symm
-  · simp
-
-theorem isSectionOn_Xc (n : ℕ) (i : Fin n) : IsSectionOn ⊥ (fsLine n) (Xc n i) :=
-  ⟨fun _ => 1, fun _ => rfl, isMultiHomog_Xc n i, by
-    rw [Submodule.mem_bot]
-    exact X_ne_zero _⟩
 
 end Inhabitants
 

@@ -566,9 +566,6 @@ def cj (e : A ≃L[ℂ] A') (f : B ≃L[ℂ] B') : (A' →L[ℂ] B') →L[ℂ] (
   (ContinuousLinearMap.compL ℂ A B' B (f.symm : B' →L[ℂ] B)).comp
     ((ContinuousLinearMap.compL ℂ A A' B').flip (e : A →L[ℂ] A'))
 
-theorem cj_apply (e : A ≃L[ℂ] A') (f : B ≃L[ℂ] B') (T : A' →L[ℂ] B') (x : A) :
-    cj e f T x = f.symm (T (e x)) := rfl
-
 theorem leftGood_comp (T : A →L[ℂ] B) {f : ℂ → A} {a : ℝ} (h : LeftGood f a) :
     LeftGood (fun z => T (f z)) a := by
   refine ⟨T.differentiable.comp_differentiableOn h.1, fun b c hc => ?_⟩

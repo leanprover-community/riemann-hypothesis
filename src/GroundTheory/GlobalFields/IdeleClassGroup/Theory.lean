@@ -19,8 +19,6 @@ namespace IdeleClassLimit
 
 open FiniteSubfield RationalSymbol CyclotomicSymbol _root_.GroundTheory.Global.Cyclotomic
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 def rationals : FiniteSubfield :=
   ⟨⊥, inferInstance⟩
 

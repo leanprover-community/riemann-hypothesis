@@ -26,10 +26,6 @@ def HasJumps (χ : ↥(GK K) →* (↥(OL LL))ˣ) (f : (↥K.1 →ₐ[ℚ_[l]] �
 
 variable {P K LL}
 
-theorem charL_val (χ : ↥(GK K) →* (↥(OL LL))ˣ) (g : ↥(GK K)) :
-    ((Formalism.MainNotions.tableLineDegreeTwo.charL (LL := ↥LL.1) χ g : (↥LL.1)ˣ) : ↥LL.1) =
-      algebraMap ↥(OL LL) ↥LL.1 ((χ g : (↥(OL LL))ˣ) : ↥(OL LL)) := rfl
-
 theorem isJumpV_of_multV_ne {V : Type} [AddCommGroup V] [Module ↥LL.1 V] [Module ℚ_[l] V]
     [IsScalarTower ℚ_[l] ↥LL.1 V] (ρ : Representation ↥LL.1 ↥(GK K) V)
     (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1) (b : ℤ) (h : multV (P.PD K) ρ τ b ≠ 0) :
@@ -125,7 +121,6 @@ theorem hasJumps_prod (hT : LocTied l P AI)
     · simp [h]
 
 end GlobalTheory.CrysCharJumps
-
 
 open GlobalTheory.CrysCharJumps Classical in
 theorem GlobalTheory.CrysCharJumps.adm20_of_fonOf :

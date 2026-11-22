@@ -26,10 +26,6 @@ def pairC {K : Type} [Field K] [NumberField K] {a D : ℕ} (v : InfinitePlace K)
     (B : (Fin a → K) →ₗ[K] Module.Dual K (Fin D → K)) (x : Fin a → ℂ) (y : Fin D → ℂ) : ℂ :=
   ∑ i, ∑ k, x i * y k * v.embedding (B (Pi.single i 1) (Pi.single k 1))
 
-def chainFun {m : ℕ} {C : Fin (m + 1) → Type} (Kj : ∀ j : Fin m, C j.castSucc → C j.succ) :
-    ∀ i : Fin (m + 1), C 0 → C i :=
-  Fin.induction (motive := fun i => C 0 → C i) id (fun j f => Kj j ∘ f)
-
 def chainMat {R : Type} [Semiring R] {m : ℕ} {c : Fin (m + 1) → ℕ}
     (Kj : ∀ j : Fin m, Matrix (Fin (c j.succ)) (Fin (c j.castSucc)) R) :
     ∀ i : Fin (m + 1), Matrix (Fin (c i)) (Fin (c 0)) R :=

@@ -22,8 +22,6 @@ open GlobalTheory.HolDict.ShortVec (intRing)
 section
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-local notation "𝔸" => Af F
-
 theorem tmul_mem {x : E} (hx : IsIntegral ℤ x) {a : 𝔸} (ha : a ∈ intRing F) :
     x ⊗ₜ[F] a ∈ Formalism.L2.Herm.intAf F E := by
   have e1 : x ⊗ₜ[F] a = (x ⊗ₜ[F] (1 : 𝔸)) * ((1 : E) ⊗ₜ[F] a) := by

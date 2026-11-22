@@ -48,29 +48,12 @@ def Tcrit (u : D.what₂.Word) (τ : D.what₂.Tau) : ℝ :=
 
 def Tr (u : D.what₂.Word) : ℝ := ((D.mem u).A.T : ℝ)
 
-def tV (u u' : D.what₂.Word) (τ : D.what₂.Tau) : ℝ :=
-  Real.sqrt (Tcrit D u τ * Tcrit D u' τ / (Tr D u * Tr D u'))
-
-
 open Classical in
 def aEff (u : D.what₂.Word) (τ : D.what₂.Tau) : ℝ :=
   if IsTop D τ then uOne D u τ 1 * bTop D τ / ((D.R.k : ℝ) * D.s.Del) else uOne D u τ 1 - vOne D τ 1
 
 def gaG : ℝ :=
   ∏ᶠ p ∈ typedPl D, ∏ i ∈ Finset.Icc 1 D.R.k, ((Ideal.absNorm p.asIdeal : ℝ) ^ i - 1)
-
-
-open Classical in
-def genScal (u u' : D.what₂.Word) : ℝ :=
-  (∏ᶠ p ∈ typedPl D, (1 + 3 / (Ideal.absNorm p.asIdeal : ℝ))) * gaG D *
-    (∑' P : D.s.Pair u u',
-      if Formalism.MainNotions.S.scalarP D.s P ∧
-          D.s.Gterm (D.s.pfst P) ≠ 0 ∧ D.s.Gterm (D.s.psnd P) ≠ 0
-      then D.s.pval P else 0).re
-
-def IsSat {u u' : D.what₂.Word} (Φ : Set (D.s.Term u u')) : Prop :=
-  Φ = famG D.s ∨ Φ = famNG D.s ∨ Φ = {t | D.s.Gterm t = 0 ∧ ¬ D.s.isId t} ∨
-    Φ = {t | D.s.relevant t ∧ D.s.Gterm t = 0 ∧ ¬ D.s.isId t}
 
 def StandingNumericalData (C0 : ℝ) : Prop :=
   let k : ℝ := D.R.k
@@ -128,34 +111,8 @@ def StandingHypotheses (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT : ℝ) :
 
 open scoped nonZeroDivisors
 
-def eSum (Ce : ℝ) : ℝ :=
-  Ce * ∑' p : HeightOneSpectrum (𝓞 D.host.F),
-    (Ideal.absNorm p.asIdeal : ℝ) ^ (-((D.R.k : ℝ) - 2 * D.R.rS - 3))
-
 def ddE : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E :=
   ((Ideal.map (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)) (differentIdeal ℤ (𝓞 D.host.F)) :
     Ideal (𝓞 D.host.E)) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E)
-
-def gE : D.host.E := ((D.host.g 0 * D.host.g 1 : ℕ) : D.host.E)
-
-def IsLatGLOB (L : LatticeDataWithDual D) : Prop :=
-  ∀ i s : ℕ,
-    L.aaV i s = ddE D ^ (-((2 * ((D.R.rS : ℤ) + 1) - i - (i + s - 1)) + 1)) *
-      (FractionalIdeal.spanSingleton (𝓞 D.host.E)⁰ (gE D))⁻¹ ∧
-    L.aaP i s = ddE D ^ (-(2 * ((D.R.rS : ℤ) + 1) - i - (i + s - 1))) *
-      (FractionalIdeal.spanSingleton (𝓞 D.host.E)⁰ (gE D))⁻¹ ∧
-    L.ρ i s = rhoReal D i s
-
-def IsLocA (u u' : D.what₂.Word) (x : D.what₂.Tau → LocalDataRealPlace D) : Prop :=
-  ∀ τ, (x τ).lam = lamSH D.R (D.hc τ) ∧ (x τ).u = uS D u τ ∧ (x τ).u' = uS D u' τ
-
-def NA : ℝ := 4 * 5 * ((D.R.rS : ℝ) + 1)
-
-def ThA (CA : ℝ) (u u' : D.what₂.Word) (x : D.what₂.Tau → LocalDataRealPlace D) (L : LatticeDataWithDual D) : ℝ :=
-  ThS D CA CA (NA D) (Tr D u) (Tr D u') (gE D) x L
-
-def IsLocC (u u' : D.what₂.Word) (l : ℕ) (x : D.what₂.Tau → LocalDataRealPlace D) : Prop :=
-  IsLocA D u u' x ∧ ∀ τ, (x τ).a = 5 / 2 - vOne D τ l ∧ (x τ).b = (D.s.Del : ℝ) / 2 - vOne D τ l ∧
-    (x τ).a1 = 5 / 2 - vOne D τ l ∧ (x τ).b1 = NA D ^ 3 - vOne D τ l
 
 end Formalism.MainNotions.S

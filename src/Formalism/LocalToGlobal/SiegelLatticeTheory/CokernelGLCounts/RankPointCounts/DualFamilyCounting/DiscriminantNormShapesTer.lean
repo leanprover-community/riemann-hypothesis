@@ -19,8 +19,6 @@ open Formalism.HermitianLattices.Ext.L3 Formalism.HermitianLattices.Ext.L3.ideal
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
   [Fact (IsFixF K F)] {m : ℕ}
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-
 theorem exists_inv_unit {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {b : 𝓞 F} (hb : b ∉ 𝔭) (k : ℕ) :
     ∃ g : 𝓞 K ⧸ extP K 𝔭 ^ k, g * Ideal.Quotient.mk (extP K 𝔭 ^ k) (ι b) = 1 := by
   obtain ⟨y, i, hi, hyi⟩ := h𝔭.exists_inv hb
@@ -34,7 +32,6 @@ theorem exists_inv_unit {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {b : �
   have h : Ideal.Quotient.mk (extP K 𝔭 ^ k) (ι y) * Ideal.Quotient.mk (extP K 𝔭 ^ k) (ι b) = 1 - Ideal.Quotient.mk (extP K 𝔭 ^ k) (ι i) := by
     rw [← map_mul, ← map_mul, eq_sub_iff_add_eq, ← map_add (f := _), ← map_add (f := _), hyi, map_one, map_one]
   rw [mul_assoc, h, ← hu, Units.inv_mul]
-
 
 open Classical in
 def gQ (K : Type) {F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F]

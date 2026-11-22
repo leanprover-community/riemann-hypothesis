@@ -63,8 +63,4 @@ variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMF
   {r : Resid V0.frame O n} {B : UniversalOrdinaryDeterminantRing r} {J : Ideal B.B} {D : ℕ} {b : TWBase (pairOf B.u) J Empty D}
   {V : s.Lev} {h : (globOf r V).Hom (globOf r V0)} {q : ℕ} {w : Fin q → Plc L}
 
-def LocOk (A : LevMod b h w) (x δ : ∀ j, ((w j).adicCompletion L)ˣ) (ph ta : Fin q → (globOf r V).G₀) : Prop :=
-  ∃ ι : Qbar l ≃+* ℂ, (∀ m : A.P, (∀ y : LevPt A ι, y.sp m = 0) → m = 0) ∧ ∀ (y : LevPt A ι) j,
-    LocRel l (x j) (δ j) (y.σ j).ρ ((mat y.rep (ph j)).map ι) ((mat y.rep (ta j)).map ι)
-
 end UpperTheory.V.Pa.Lev

@@ -28,10 +28,6 @@ open Matrix TensorProduct NumberField IsDedekindDomain Formalism.UG Formalism.UG
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {m n : ℕ}
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-local notation "ι" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 theorem approx_of_mem_genGrp {Λ : Submodule (𝓞 E) (Fin n → E)} {Λ' : Submodule (𝓞 E) (Fin m → E)}
     {β : GL (Fin n) 𝒜} {β' : GL (Fin m) 𝒜} (hβ : IsFrame β Λ) (hβ' : IsFrame β' Λ')
     {H : Submodule (𝓞 E) (Matrix (Fin m) (Fin n) E)} (hH : ∀ x ∈ H, ∀ y ∈ Λ, x *ᵥ y ∈ Λ')

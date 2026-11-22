@@ -27,8 +27,6 @@ def Wfrac (l : ℕ) [Fact l.Prime] : Subalgebra ℚ_[l] ℂ_[l] :=
 
 def Wint (l : ℕ) [Fact l.Prime] : Set ℂ_[l] := {x | x ∈ Wfrac l ∧ ‖x‖ ≤ 1}
 
-def rho (l : ℕ) : ℝ := 1 / ((l : ℝ) ^ 2 - 1)
-
 def expS (K : Type*) [Field K] [CharZero K] {τ : Type*} (f : MvPowerSeries τ K) : MvPowerSeries τ K :=
   PowerSeries.subst f (PowerSeries.exp K)
 
@@ -143,21 +141,6 @@ def beSum (be : MvPowerSeries (ZMod L.d) ℂ_[L.l]) :
     MvPowerSeries.subst (fun s : ZMod L.d =>
       (MvPowerSeries.X (s, a, b) : MvPowerSeries (ZMod L.d × Fin L.N0 × Fin L.N1) ℂ_[L.l])) be
 
-def B0 (ep : ℂ_[L.l]) (be : MvPowerSeries (ZMod L.d) ℂ_[L.l]) : Prop :=
-  ∃ sg : ℂ_[L.l], (sg = 1 ∨ sg = -1) ∧
-    ∃ U : MvPowerSeries (ZMod L.d × Fin L.N0 × Fin L.N1) ℂ_[L.l],
-      (∀ m, ‖MvPowerSeries.coeff m U‖ ≤ 1) ∧
-      L.Tht ep = U * MvPowerSeries.subst (jetLogG L.l L.d (β := Fin L.N0 × Fin L.N1))
-        (expS ℂ_[L.l] (sg • L.beSum be))
-
-def AdmB : Prop :=
-  ∃ ep : ℂ_[L.l], ‖ep‖ = 1 ∧ ∃ be : MvPowerSeries (ZMod L.d) ℂ_[L.l],
-    L.B0 ep be ∧ B1 L.l L.d be ∧ B2 L.l L.d be ∧ B3 L.l L.d be ∧ B4 L.l L.d be
-
-def HidaSetting (a : ℝ) : Prop :=
-  (L.l : ℝ) ≤ a ∧ (∀ s, ((L.nu s).cells.card : ℝ) ≤ a) ∧
-    2 * Real.logb L.l a + 2 ≤ (L.N0 : ℝ) - 1
-
 end Loc
 
 structure Loc1 where
@@ -198,14 +181,6 @@ def B0 (ep0 : ℂ_[L.l]) (be : MvPowerSeries (ZMod 2) ℂ_[L.l]) : Prop :=
 def AdmB : Prop :=
   ∃ ep0 : ℂ_[L.l], ‖ep0‖ = 1 ∧ ∃ be : MvPowerSeries (ZMod 2) ℂ_[L.l],
     L.B0 ep0 be ∧ B1 L.l 2 be ∧ B2 L.l 2 be ∧ B3 L.l 2 be ∧ B4 L.l 2 be
-
-def HidaSetting (a : ℝ) : Prop :=
-  (L.l : ℝ) ≤ a ∧ (L.nu.cells.card : ℝ) ≤ a
-
-def ThmOne (C : ℝ) : Prop :=
-  ∀ a : ℝ, L.HidaSetting a →
-    KvalGe L.N0 L.N1 L.l (fun _ : ZMod 1 => L.nu) L.Th
-      (rho L.l * (L.nu.cells.card : ℝ) - C * ((L.N0 : ℝ) * L.N1 * (Real.logb L.l a + 1)))
 
 end Loc1
 

@@ -178,7 +178,6 @@ theorem nonempty_equiv_multiProd_one {π : Representation ℂ (GL n k) V} (hπ :
 
 end Invariance
 
-
 variable (k) in
 abbrev IrrGL : Type 1 := Σ n : ℕ, IrrCl (GL (Fin n) k)
 
@@ -189,14 +188,12 @@ abbrev rep (x : IrrGL (k := k)) : Representation ℂ (GL (Fin x.1) k) x.2.rep.V 
 def of {N : ℕ} (π : Representation ℂ (GL (Fin N) k) V) (hs : IsSmooth π) (hi : π.IsIrreducible) : IrrGL (k := k) :=
   ⟨N, (⟨V, π, hs, hi⟩ : IrrRep _).cl⟩
 
-
 omit [ValuativeRel k] [IsNonarchimedeanLocalField k] in
 theorem of_eq_of {N : ℕ} {π : Representation ℂ (GL (Fin N) k) V} {hs : IsSmooth π} {hi : π.IsIrreducible}
     {σ : Representation ℂ (GL (Fin N) k) W} {hs' : IsSmooth σ} {hi' : σ.IsIrreducible} :
     of π hs hi = of σ hs' hi' ↔ Nonempty (π.Equiv σ) := by
   simp only [IrrGL.of, Sigma.mk.inj_iff, heq_eq_eq, true_and]
   exact IrrRep.cl_eq_iff
-
 
 omit [ValuativeRel k] [IsNonarchimedeanLocalField k] in
 @[simp] theorem of_rep (x : IrrGL (k := k)) : of x.rep x.2.rep.smooth x.2.rep.irr = x := Sigma.ext rfl (heq_of_eq (IrrCl.cl_rep _))
@@ -508,8 +505,6 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 
 def msupp (𝔪 : Multiset (Segment k)) : Multiset (IrrGL (k := k)) := 𝔪.bind Segment.ms
 
-def Unlinked (𝔪 𝔫 : Multiset (Segment k)) : Prop := ∀ Δ ∈ 𝔪, ∀ Δ' ∈ 𝔫, ¬ Δ.Linked Δ'
-
 def IsOrderedForm (Δ : Fin h → Segment k) (𝔪 : Multiset (Segment k)) : Prop :=
   Finset.univ.val.map Δ = 𝔪 ∧ ∀ i j, i < j → ¬ (Δ i).Precedes (Δ j)
 
@@ -535,7 +530,6 @@ def spehFactor (x : IrrGL (k := k)) (d : ℕ) (i : Fin d) : IrrGL (k := k) := x.
 
 def IsSpeh (x : IrrGL (k := k)) (d : ℕ) (π : Representation ℂ (GL (Fin N) k) V) : Prop :=
   ∃ hd : ∑ a, (spehFactor x d a).1 = N, IsCosocle π (prodIrr (spehFactor x d) hd)
-
 
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 theorem unipB_mul_apply (u v : unipB k (Fin N)) {i j : Fin N} (hij : (j : ℕ) = i + 1) :
@@ -588,10 +582,6 @@ section Equiv
 variable {π : Representation ℂ (GL (Fin N) k) V} {σ : Representation ℂ (GL (Fin N) k) W} {Δ : Segment k}
   {𝔪 : Multiset (Segment k)}
 
-theorem IsZSeg.of_equiv (h : IsZSeg Δ π) (φ : π.Equiv σ) : IsZSeg Δ σ := by
-  obtain ⟨hd, hs⟩ := h
-  exact ⟨hd, hs.of_equiv φ (Representation.Equiv.refl _)⟩
-
 theorem IsLSeg.of_equiv (h : IsLSeg Δ π) (φ : π.Equiv σ) : IsLSeg Δ σ := by
   obtain ⟨hd, hs⟩ := h
   exact ⟨hd, hs.of_equiv φ (Representation.Equiv.refl _)⟩
@@ -605,19 +595,10 @@ theorem IsLSeg.unique (h : IsLSeg Δ π) (h' : IsLSeg Δ σ) : Nonempty (σ.Equi
   obtain ⟨hd', hs'⟩ := h'
   exact IsCosocle.unique hs hs'
 
-theorem IsZSeg.hasSupport (h : IsZSeg Δ π) : HasSupport π Δ.ms := by
-  obtain ⟨hd, hs⟩ := h
-  exact ⟨Δ.len, Δ.term, rfl, hs.1, fun a => ⟨(Δ.isCusp_term a).1, (Δ.term a).2.rep.irr, (Δ.isCusp_term a).2⟩,
-    stdBlocks _ hd, hs.isSubquotient⟩
-
 theorem IsLSeg.hasSupport (h : IsLSeg Δ π) : HasSupport π Δ.ms := by
   obtain ⟨hd, hs⟩ := h
   exact ⟨Δ.len, Δ.term, rfl, hs.1, fun a => ⟨(Δ.isCusp_term a).1, (Δ.term a).2.rep.irr, (Δ.isCusp_term a).2⟩,
     stdBlocks _ hd, hs.isSubquotient⟩
-
-theorem IsZSeg.deg_eq (h : IsZSeg Δ π) : Δ.deg = N := by
-  obtain ⟨hd, -⟩ := h
-  exact Δ.sum_term_fst.symm.trans hd
 
 theorem IsLSeg.deg_eq (h : IsLSeg Δ π) : Δ.deg = N := by
   obtain ⟨hd, -⟩ := h
@@ -658,13 +639,6 @@ def segProdEquiv (Δ : Segment k) (hd : ∑ a, (Δ.term a).1 = N) :
     (multiProd (stdBlocks (fun _ : Fin Δ.len => Δ.d) hd) (segTerm Δ.start.rep.ρ Δ.len)).Equiv (prodIrr Δ.term hd) :=
   multiProdEquiv _ fun _ => Δ.first.twEquiv _ (isSmoothChar_absPow _)
 
-theorem IsZSeg.cl_eq {Z : ∀ Δ : Segment k, IrrCl (GL (Fin (Δ.len * Δ.d)) k)} (hZ : IsSegmentClass k Z) {Δ : Segment k}
-    {π : IrrRep (GL (Fin (Δ.len * Δ.d)) k)} (h : IsZSeg Δ π.ρ) : π.cl = Z Δ := by
-  obtain ⟨hd, hs⟩ := h
-  obtain ⟨f, hf, -⟩ := hs.2
-  refine ((hZ Δ Δ.start.rep (IrrCl.cl_rep _) (stdBlocks (fun _ => Δ.d) hd) π).1).2
-    ⟨(segProdEquiv Δ hd).symm.toIntertwiningMap.comp f, fun a b hab => hf ?_⟩
-  exact EquivLike.injective (segProdEquiv Δ hd).symm hab
 private theorem nonempty_equiv_prodIrr_fin_one (x : Fin 1 → IrrGL (k := k)) (y : IrrGL (k := k)) (hx : x 0 = y)
     (hd : ∑ a, (x a).1 = y.1) : Nonempty (y.rep.Equiv (prodIrr x hd)) := by
   obtain rfl : x = fun _ => y := funext fun a => by rw [Subsingleton.elim a 0, hx]
@@ -786,12 +760,6 @@ theorem embeds_detRep_segment {χ : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) {l :
   have h2 : z • F0 = z' • F0 := congrArg Subtype.val (show z • F0' = z' • F0' from h)
   exact smul_left_injective ℂ hF0ne h2
 
-theorem IsZSeg.equiv_detRep {χ : kˣ →* ℂˣ} {hχ : IsSmoothChar χ} {l : ℕ} {hl : 0 < l}
-    {π : Representation ℂ (GL (Fin N) k) V} (h : IsZSeg (Segment.ofChar χ hχ l hl) π) :
-    Nonempty ((detRep (Fin N) (χ * absPow k (((l : ℂ) - 1) / 2))).Equiv π) := by
-  obtain ⟨hd, hs⟩ := h
-  exact hs.equiv_of_embeds (isIrreducible_ofChar _) (embeds_detRep_segment hχ hl hd)
-
 theorem hasSupport_detRep {χ : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) {l : ℕ} (hl : 0 < l) :
     HasSupport (detRep (Fin l) (χ * absPow k (((l : ℂ) - 1) / 2))) (Segment.ofChar χ hχ l hl).ms := by
   have hd : ∑ a, ((Segment.ofChar χ hχ l hl).term a).1 = l := (Segment.sum_term_fst _).trans (mul_one l)
@@ -800,46 +768,10 @@ theorem hasSupport_detRep {χ : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) {l : ℕ
     fun a => ⟨((Segment.ofChar χ hχ l hl).isCusp_term a).1, (((Segment.ofChar χ hχ l hl).term a)).2.rep.irr,
       ((Segment.ofChar χ hχ l hl).isCusp_term a).2⟩, stdBlocks _ hd, IsSubquotient.of_injective f hf⟩
 
-theorem single_precedes (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ) :
-    (Segment.single _ (IrrGL.isCusp_ofChar χ hχ)).Precedes (.single _ ((IrrGL.isCusp_ofChar χ hχ).nu 1)) ∧
-      ¬ (Segment.single _ ((IrrGL.isCusp_ofChar χ hχ).nu 1)).Precedes (.single _ (IrrGL.isCusp_ofChar χ hχ)) := by
-  have hc := IrrGL.isCusp_ofChar χ hχ
-  have hne : IrrGL.ofChar χ hχ ≠ (IrrGL.ofChar χ hχ).nu 1 := by
-    intro h
-    have h0 := (IrrGL.nu_ofChar_inj χ hχ (s := 0) (t := 1)).1 (by simpa using h)
-    norm_num at h0
-  refine ⟨⟨⟨⟨Segment.ofFirst (IrrGL.ofChar χ hχ) hc 2 (by norm_num), ?_⟩, ?_, ?_⟩, 1, one_pos, ?_⟩, ?_⟩
-  · ext y
-    rw [Segment.mem_carrier, Segment.carrier_single, Segment.carrier_single]
-    simp only [Segment.first_ofFirst, Segment.len_ofFirst, Set.mem_union, Set.mem_singleton_iff]
-    constructor
-    · rintro ⟨a, ha, rfl⟩
-      interval_cases a
-      · left
-        simp
-      · right
-        simp
-    · rintro (rfl | rfl)
-      · exact ⟨0, by norm_num, by simp⟩
-      · exact ⟨1, by norm_num, by simp⟩
-  · rw [Segment.carrier_single, Segment.carrier_single, Set.singleton_subset_singleton]
-    exact hne
-  · rw [Segment.carrier_single, Segment.carrier_single, Set.singleton_subset_singleton]
-    exact fun h => hne h.symm
-  · show (IrrGL.ofChar χ hχ).nu 1 = (IrrGL.ofChar χ hχ).nu ((1 : ℕ) : ℂ)
-    simp
-  · rintro ⟨-, j, hj, h⟩
-    change IrrGL.ofChar χ hχ = ((IrrGL.ofChar χ hχ).nu 1).nu ((j : ℕ) : ℂ) at h
-    rw [IrrGL.nu_nu] at h
-    have h0 := (IrrGL.nu_ofChar_inj χ hχ (s := 0) (t := 1 + j)).1 (by push_cast; simpa using h)
-    have : (0 : ℝ) ≤ j := Nat.cast_nonneg j
-    linarith
-
 theorem isSpeh_one (x : IrrGL (k := k)) : IsSpeh x 1 x.rep := by
   have h0 : spehFactor x 1 (0 : Fin 1) = x := by simp [spehFactor]
   have hd : ∑ a : Fin 1, (spehFactor x 1 a).1 = x.1 := by simp [spehFactor]
   obtain ⟨e⟩ := nonempty_equiv_prodIrr_fin_one (spehFactor x 1) x h0 hd
   exact ⟨hd, (isCosocle_self x.2.rep.irr).of_equiv (.refl _) e⟩
-
 
 end GlobalTheory.LocGL

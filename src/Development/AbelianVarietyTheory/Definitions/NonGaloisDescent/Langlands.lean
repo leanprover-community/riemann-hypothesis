@@ -22,49 +22,6 @@ def segSum (rc : IrrGL (k := w.adicCompletion E) → WD h) (l : List (Segment (w
   sumList (l.map fun Δ =>
     ((rc Δ.first).lpTw (((Δ.len : ℝ) - 1) / 2)).lpChar (WD.lpSp (h := h) Δ.len))
 
-structure LawsMin (a : Weil h →* (w.adicCompletion E)ˣ) (ha : IsLocalArtin h a)
-    (e : AddChar (w.adicCompletion E) Circle → WD h → ℂˣ) (rc : IrrGL (k := w.adicCompletion E) → WD h) : Prop where
-
-  bij : Function.Bijective rc
-
-  dim : ∀ x, (rc x).lpDim = x.1
-
-  one : ∀ χ hχ, rc (.ofChar χ hχ) = WD.lpOfChar h (χ.comp a) (ha.smooth hχ)
-
-  eps : ∀ ψ : AddChar (w.adicCompletion E) Circle, Continuous ψ → ψ ≠ 1 →
-    ∀ (m : ℕ) (π : IrrRep (GL (Fin (m + 1)) (w.adicCompletion E))) (τ : IrrRep (GL (Fin m) (w.adicCompletion E))),
-      IsCuspidal π.ρ → HasPairEps ψ π.ρ τ.ρ (e ψ ((rc (cls π)).lpChar (rc (cls τ))))
-
-  cusp : ∀ x, x.IsCusp ↔ IsIrrWD (rc x)
-
-  langlands : ∀ (l : List (Segment (w.adicCompletion E))) (x : IrrGL (k := w.adicCompletion E)),
-    IsL (l : Multiset (Segment (w.adicCompletion E))) x.rep → rc x = segSum rc l
-
-structure LawsLit (a : Weil h →* (w.adicCompletion E)ˣ) (ha : IsLocalArtin h a)
-    (e : AddChar (w.adicCompletion E) Circle → WD h → ℂˣ) (rc : IrrGL (k := w.adicCompletion E) → WD h) : Prop
-    extends LawsMin a ha e rc where
-
-  twist : ∀ x χ hχ, rc (x.tw χ hχ) = (rc x).lpChar (rc (.ofChar χ hχ))
-
-  central : ∀ (x : IrrGL (k := w.adicCompletion E)) ω, HasCentralChar x.rep ω →
-    ∀ σ, ((rc x).eig σ).prod = (ω (a σ) : ℂ)
-
-  dual : ∀ (n : ℕ) (π π' : IrrRep (GL (Fin n) (w.adicCompletion E))), Nonempty (π'.ρ.Equiv (contra π.ρ)) →
-    rc (cls π') = (rc (cls π)).lpDual
-
-variable (h) in
-def IsRecLit (rc : IrrGL (k := w.adicCompletion E) → WD h) : Prop :=
-  ∃ (a : Weil h →* (w.adicCompletion E)ˣ) (ha : IsLocalArtin h a) (ε : EpsFamily A),
-    IsDeligneEps ε ∧ LawsLit a ha (ε E w h) rc
-
-theorem Laws.toLit {a : Weil h →* (w.adicCompletion E)ˣ} {ha : IsLocalArtin h a} {ε : EpsFamily A}
-    {rc : IrrGL (k := w.adicCompletion E) → WD h} (H : Laws a ha ε rc) : LawsLit a ha (ε E w h) rc :=
-  { bij := H.bij, dim := H.dim, one := H.one, eps := H.eps, cusp := H.cusp, langlands := H.langlands,
-    twist := H.twist, central := H.central, dual := H.dual }
-
-theorem IsRec.toLit {rc : IrrGL (k := w.adicCompletion E) → WD h} (H : IsRec h rc) : IsRecLit h rc :=
-  let ⟨a, ha, ε, hε, H⟩ := H; ⟨a, ha, ε, hε, H.toLit⟩
-
 section Transport
 
 def RepRel {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -82,7 +39,6 @@ def WeilRel (φ : Ω ≃+* Ω') (σ : Weil h) (σ' : Weil h') : Prop :=
 def WDRel (φ : Ω ≃+* Ω') (y : WD h) (y' : WD h') : Prop :=
   ∃ (n : ℕ) (b : WDRep h (Fin n → ℂ)) (b' : WDRep h' (Fin n → ℂ)), WD.mk b = y ∧ WD.mk b' = y' ∧
     b.N = b'.N ∧ ∀ (σ : Weil h) (σ' : Weil h'), WeilRel φ σ σ' → b.ρ σ = b'.ρ σ'
-
 
 variable (A A' w w') in
 structure PlaceIso (φ : Ω ≃+* Ω') (j : E →+* E') (i : w.adicCompletion E ≃+* w'.adicCompletion E') : Prop where

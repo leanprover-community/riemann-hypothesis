@@ -40,10 +40,6 @@ section Sc
 
 variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
 
-structure Sc (Φ : PDF R C) (Λ : Type) [CommRing Λ] where
-  ρ : ∀ T : C, Λ →+* Φ.A.obj T
-  nat : ∀ {T T' : C} (φ : T ⟶ T') (a : Λ), (Φ.A.map φ).hom (ρ T a) = ρ T' a
-
 variable {Φ : PDF R C} {Λ : Type} [CommRing Λ]
 
 end Sc

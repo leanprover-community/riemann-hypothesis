@@ -19,8 +19,6 @@ open TensorProduct GlobalTheory.InertUmax GlobalTheory.SplitLift
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
-local notation3 "L⁺" => NumberField.maximalRealSubfield L
-
 theorem exists_imag (L : Type) [Field L] [NumberField L] [IsCMField L] :
     ∃ δ : L, IsCMField.complexConj L δ = -δ ∧ δ ≠ 0 := by
   obtain ⟨y, hy⟩ := DFunLike.ne_iff.mp (IsCMField.complexConj_ne_one L)

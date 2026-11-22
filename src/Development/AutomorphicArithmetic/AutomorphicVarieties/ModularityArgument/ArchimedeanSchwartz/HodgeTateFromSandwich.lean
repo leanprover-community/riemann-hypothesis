@@ -17,14 +17,6 @@ attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 namespace UpperTheory.V.Z.Inf
 
-def LocDual : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] (n : ℕ), 1 ≤ n → ∀ (v : HeightOneSpectrum (𝓞 K)) (V : Type) [AddCommGroup V] [Module ℂ V]
-    (π : Representation ℂ (GL (Fin n) (v.adicCompletion K)) V), π.IsIrreducible → IsAdmissible π →
-    ∀ (ξ : V) (ℓ : Module.Dual ℂ V), ℓ ∈ smoothVectors (Representation.dual π) →
-    ∀ Φ : Matrix (Fin n) (Fin n) (v.adicCompletion K) → ℂ, IsSchwartzBruhat Φ →
-    ∃ (N D : ℂ → ℂ) (c : ℝ), IsExp N ∧ IsExp D ∧ D ≠ 0 ∧ ∀ s : ℂ, s.re < -c →
-      zetaIntegral (localHaar n v) Φ (fun g => Parabolic.matrixCoeff (F := v.adicCompletion K) π ξ ℓ g⁻¹) (1 - s) * D s = N s
-
 def LocUnr : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (n : ℕ), 1 ≤ n → ∀ (v : HeightOneSpectrum (𝓞 K)) (V : Type) [AddCommGroup V] [Module ℂ V]
     (π : Representation ℂ (GL (Fin n) (v.adicCompletion K)) V), π.IsIrreducible → IsAdmissible π →

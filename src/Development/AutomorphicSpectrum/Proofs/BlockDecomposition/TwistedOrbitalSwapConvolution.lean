@@ -29,8 +29,6 @@ open scoped Pointwise
 
 variable {H : Type} [Group H]
 
-local notation "sw" => MulEquiv.toMonoidHom (MulEquiv.prodComm : H × H ≃* H × H)
-
 theorem relIndex_sq (A B : Subgroup H) :
     (A.prod A).relIndex (B.prod B) = A.relIndex B * A.relIndex B := by
   unfold Subgroup.relIndex

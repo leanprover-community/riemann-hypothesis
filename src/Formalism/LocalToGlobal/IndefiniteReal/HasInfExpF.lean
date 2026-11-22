@@ -55,10 +55,6 @@ section Kap
 
 variable {N : Type*} [AddCommGroup N] [Module ℂ N]
 
-def IsKap {Tup Sig : Type*} (m : ℕ) (dnup : Tup → N →ₗ[ℂ] N) (partE : Sig → Submodule ℂ N)
-    (lam : Tup → ℕ → Sig → ℝ) (κ : ℝ) : Prop :=
-  ∀ μ σ, ∀ x ∈ partE σ, dnup μ x = ((κ * ∏ j ∈ Finset.Icc 1 m, lam μ j σ : ℝ) : ℂ) • x
-
 end Kap
 
 section Bu
@@ -81,10 +77,8 @@ open scoped TensorProduct
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
   {Tau : Type} [Fintype Tau] (tauE : Tau → (E →+* ℂ)) (xi0 : E)
 
-
 variable (F) in
 def intAfF : Set (Af F) := {a | ∀ v : HeightOneSpectrum (𝓞 F), evalV F v a ∈ v.adicCompletionIntegers F}
-
 
 variable (F E) in
 def intAEF : AddSubgroup (Af F ⊗[F] E) :=

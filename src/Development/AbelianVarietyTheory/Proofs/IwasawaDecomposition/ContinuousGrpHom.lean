@@ -42,9 +42,6 @@ def grpHom (e : Fin P ⊕ Fin Q ≃ Fin P' ⊕ Fin Q') (h : AntiIso e) : UpqT P 
       Matrix.submatrix_mul_equiv, hg])
   f'
 
-theorem mat_grpHom (e : Fin P ⊕ Fin Q ≃ Fin P' ⊕ Fin Q') (h : AntiIso e) (g : UpqT P Q) :
-    (grpHom e h g).mat = g.mat.submatrix e.symm e.symm := rfl
-
 theorem mat_injective : Function.Injective (UpqT.mat : UpqT P Q → _) :=
   (GlobalTheory.UpqTopology.upq_lcsc P Q).2.2.2.2.2.injective
 

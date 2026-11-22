@@ -87,9 +87,6 @@ theorem scalar_mem_idS {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : Gr
   intro w hw
   exact v_triple_le h (e1 w hw) (hy w hw) (hz' w)
 
-theorem toEAf_pair {D : D7} (α : Formalism.L2.Herm.Af D.host.F) (x : D.host.E) :
-    toEAf D (pairA D.host.F 0 α ⊗ₜ[D.host.F] x) = x ⊗ₜ[D.host.F] α := rfl
-
 theorem map_toEAf_smul {D : D7} {m n : ℕ} (e : AE D) (X : Mx D m n) :
     (e • X).map (toEAf D) = toEAf D e • X.map (toEAf D) := by
   ext i j

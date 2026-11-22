@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AutomorphicSpectrum.PublishedTheorems.Metrics₂.PoincareLelong
 public import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesExact
 public import Development.AutomorphicSpectrum.Statements.MetricStatements.AgreementIffGuarded
@@ -64,7 +63,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LogMeanShares.LogMeanStatements.HSClaim
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SpecFirstDetFormNeZero
 public import Formalism.LocalToGlobal.IndefiniteReal.ConcretePkgSpec
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.ExampleSatisfiesConditionsAtFive
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.ONLeaves
@@ -77,7 +75,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.ZeroPartEigenvalueConventio
 public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.SlopeBoundSingleLiftOfDefinitions
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.SlopeBoundOfConditionsWithErrorForFrames
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ModelSmall
 public import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.NefRR

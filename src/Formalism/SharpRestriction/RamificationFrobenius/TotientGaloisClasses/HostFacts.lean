@@ -3,7 +3,7 @@ module
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.SplitK
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.ExistsOpenNormalOrderOf
+public import Mathlib
 
 @[expose] public section
 
@@ -152,10 +152,6 @@ theorem not_dvd_condN_of_inert {p : ℕ} (hp : p.Prime) (h2 : p ≠ 2) (hj : jac
       jacobiSym.zero_left H.d_prime.one_lt] at hj
     norm_num at hj
 
-
-
-
-
 theorem psAt_of_coprime {p : ℕ} (h : Nat.Coprime p H.condN) :
     H.psAt p = (((H.art (ZMod.unitOfCoprime p h)).1.1 : ℤˣ) : ℤ) := by
   unfold HostRaw.psAt
@@ -175,12 +171,10 @@ theorem odd_of_coprime {p : ℕ} (h : Nat.Coprime p H.condN) : p % 2 = 1 := by
   have h2p : 2 ∣ p := by omega
   exact (Nat.Prime.coprime_iff_not_dvd Nat.prime_two).1 (Nat.Coprime.coprime_dvd_left h2p h) H.two_dvd_condN
 
-
 variable {H} in
 theorem PsQ.psAt_eq (hP : H.PsQ) {p : ℕ} (h : Nat.Coprime p H.condN) : H.psAt p = jacobiSym (-(H.q : ℤ)) p := by
   rw [H.psAt_of_coprime h, hP, jacobi_neg_recip H.q_mod_four (H.odd_of_coprime h)]
   exact jacobi_congr ((H.val_unitOfCoprime h).of_dvd H.q_dvd_condN)
-
 
 theorem sqd_mem_K : H.sqd ∈ H.K := IntermediateField.mem_adjoin_simple_self ℚ H.sqd
 
@@ -209,9 +203,6 @@ theorem finrank_K : Module.finrank ℚ H.K = 2 := by
     have hd : (0 : ℚ) < H.d := by exact_mod_cast H.d_prime.pos
     linarith
   omega
-
-theorem gal_comm (σ τ : H.E ≃ₐ[ℚ] H.E) : σ * τ = τ * σ :=
-  H.gal.injective (by rw [map_mul, map_mul, mul_comm])
 
 theorem gal_conj : H.gal H.conj = φ.cc := H.gal.apply_symm_apply φ.cc
 

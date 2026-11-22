@@ -67,8 +67,6 @@ theorem low_entries {k : ℕ} {M : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) �
   · simpa [Matrix.J, Matrix.mul_apply, Fintype.sum_sum_type, Matrix.one_apply, hij] using e2
   · simpa [Matrix.J] using e1
 
-theorem eJ_apply (j i l : Fin g) : eJ j i l = if j = i ∧ j = l then 1 else 0 := rfl
-
 theorem sum_eJ (j i : Fin g) (x : Fin g → ℤ) :
     ∑ l, eJ j i l * x l = if i = j then x j else 0 := by
   simp only [eJ_apply]
@@ -129,10 +127,6 @@ def rkU (u v : Fin g → ℤ) (h : v ⬝ᵥ u = 0) : (Matrix (Fin g) (Fin g) ℤ
 
 theorem rkU_val (u v : Fin g → ℤ) (h : v ⬝ᵥ u = 0) :
     ((rkU u v h : (Matrix (Fin g) (Fin g) ℤ)ˣ) : Matrix (Fin g) (Fin g) ℤ) = 1 + vecMulVec u v := rfl
-
-theorem rkU_inv_val (u v : Fin g → ℤ) (h : v ⬝ᵥ u = 0) :
-    (((rkU u v h)⁻¹ : (Matrix (Fin g) (Fin g) ℤ)ˣ) : Matrix (Fin g) (Fin g) ℤ) =
-      1 - vecMulVec u v := rfl
 
 theorem spDiag_rk_mul_inr (u v : Fin g → ℤ) (h : v ⬝ᵥ u = 0)
     (M : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℤ) (i : Fin g) (p : Fin g ⊕ Fin g) :

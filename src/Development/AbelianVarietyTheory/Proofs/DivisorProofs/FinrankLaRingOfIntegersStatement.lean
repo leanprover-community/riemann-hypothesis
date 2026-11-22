@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankLaRingOfIntegers
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSplittingFw
 
 @[expose] public section

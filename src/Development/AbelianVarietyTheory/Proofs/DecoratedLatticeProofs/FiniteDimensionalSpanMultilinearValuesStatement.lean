@@ -1,13 +1,10 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FiniteDimensionalSpanMultilinearValues
 
 @[expose] public section
 
 -- Interpret the original scalar argument as the identity ring homomorphism.
-local notation:max "MultilinearMap" R:max M:max N:max =>
-  _root_.MultilinearMap (RingHom.id R) M N
 
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.finiteDimensional_span_multilinear_values' : ∀ {ι : Type} [Fintype ι] (E : ι → Type) [∀ i, AddCommGroup (E i)] [∀ i, Module ℂ (E i)] (F : Type) [AddCommGroup F] [Module ℂ F] (T : MultilinearMap ℂ E F) (W : ∀ i, Submodule ℂ (E i)), (∀ i, FiniteDimensional ℂ (W i)) → FiniteDimensional ℂ (Submodule.span ℂ {f | ∃ v : ∀ i, E i, (∀ i, v i ∈ W i) ∧ f = T v}) := by

@@ -564,9 +564,6 @@ namespace Formalism.MainNotions.Gaps.EtaleWeightGaps.Num
 
 alias parA_of := Pm.parA_of
 alias domAt_of := Pm.domAt_of
-alias growthZero_le_thirty_zBase := Pm.growthZero_le_thirty_zBase
-alias growthZero_nonneg := Pm.growthZero_nonneg
-alias PO_le := Pm.PO_le
 
 end Formalism.MainNotions.Gaps.EtaleWeightGaps.Num
 

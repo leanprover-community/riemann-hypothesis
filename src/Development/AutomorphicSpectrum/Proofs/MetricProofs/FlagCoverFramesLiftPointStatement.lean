@@ -7,7 +7,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFrame
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesAtBasePointStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointMapsToPointsStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.CoordinateRatioValueAtPointStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BaseFunctionValueAtPointStatement
 
 @[expose] public section
 

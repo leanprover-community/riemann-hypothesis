@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColsReTo0S
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
 public import Formalism.LocalRingCardinality.DataTies
-public import Formalism.LocalRingCardinality.SpanPowerMembership.RankRecordRowDimensionZero
 public import Formalism.LocalRingCardinality.SpanPowerMembership.SignSplitEquivInl
 public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
 

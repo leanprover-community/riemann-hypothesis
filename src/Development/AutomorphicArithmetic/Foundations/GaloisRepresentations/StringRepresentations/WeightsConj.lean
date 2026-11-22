@@ -1,7 +1,11 @@
 module
 
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.GaloisRepOfPolarizedPair
-public import Development.AutomorphicArithmetic.ThetaCorrespondence.CuspidalSupport.CuspOfCq
+public import Mathlib
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.DualIsConjByOne
+public import Development.WeilBound.CoreStatements.AutomorphicKernels.LocalGlobalCompatibility.TemperedLocalGlobal.LocalGlobalOfIwahori
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.PstAndWdAtOfIsRegAlg
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RankOneUnitary
+public import Development.AutomorphicArithmetic.ThetaCorrespondence.CuspidalSupport.GaloisStatementWeakOfFull
 
 @[expose] public section
 
@@ -17,15 +21,6 @@ namespace UpperTheory.GalN
 section Local
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
-
-def SplW (c : G E Ω → ℂ) (t : ℕ) (y : WD h) : Prop :=
-  ∃ a b : WD h, y = a.lpSum b ∧ b.lpDim = t ∧ b.mono0 ∧ ∀ σ ∈ Ine (F := E) A, b.inePol σ = (X - C (c σ)) ^ t
-
-structure Aw (x y : WD h) : Prop where
-  pol : ∀ g : ↥(Weil h), x.charPol g = y.charPol g
-  n0 : y.mono0 → x = y
-  spl : ∀ (u : WD h) (c : G E Ω → ℂ) (t : ℕ), ∀ γ ∈ Ine (F := E) A,
-    ((y.lpSum u).inePol γ).rootMultiplicity (c γ) ≤ t → SplW c t (y.lpSum u) → SplW c t (x.lpSum u)
 
 structure Ab (x y : WD h) : Prop where
   dim : x.lpDim = y.lpDim

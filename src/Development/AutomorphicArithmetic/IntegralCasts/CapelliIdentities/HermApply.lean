@@ -26,10 +26,6 @@ private noncomputable def herm {V : Type} [AddCommGroup V] [Module ℂ V]
     (by intro a v w; simp only [map_smul, map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul,
           RingHom.id_apply, map_mul, Complex.conj_conj]; ring)
 
-private lemma herm_apply {V : Type} [AddCommGroup V] [Module ℂ V]
-    (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ) (c : ℂ) (v w : V) :
-    herm B c v w = c * B v w + starRingEnd ℂ c * starRingEnd ℂ (B w v) := rfl
-
 end UpperTheory.Reformulated.B.Yoa6.Helpers
 
 open UpperTheory.Reformulated.B.Yoa6.Helpers in

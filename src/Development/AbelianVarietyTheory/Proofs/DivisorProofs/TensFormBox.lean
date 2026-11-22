@@ -2,7 +2,50 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.WeilRepresentationExists
+public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.GreenSeriesSt
+public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.PrimesInProgressionNonempty
+public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.BlockTriangularOfSubOne
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.BernsteinUnitaryProductIrreducible
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsCellOfIsSubquotient
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HasFiniteLengthOfIsIrreducible
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.CuspDiscreteDecompositionOfTraceClass
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsFactorisationCuspidal
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.WeilSiegelFormulaUnitary
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.SiegelWeilAnisotropicUnitary
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.LowerLiftsZeroOfWittIdxEqZero
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RegularisedSiegelWeilFirstTerm
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.EisRegularAtOfEisPoleLE
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.LabesseWaldspurger
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MeasurableEmbeddingEquiv
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.DiscreteSeriesCharacter
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.BorelCasselman
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RadfordShufflePolynomialHolds
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HeckeLPartialContinuationHolds
+public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.LogDerOne
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.IsIrrKSubOfIsKTypeOf
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.DiscreteSeriesLowestKTypeOfClassification
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HolomorphicDiscreteSeries
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.BesselFormsTrivialNeBot
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.IrreducibleDistinctUnitary
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.KudlaSplittingSplitUnitary
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.MetaplecticRepresentation
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam
+public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.ExistsMemIdealInvariants
+public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.HermitianHassePrincipleHolds
+public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.PlaneFormNondegenerate
+public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.FormalDegreeCompactDualIff
+public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.ThetaRationalInvarianceHolds
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.DiscreteSeriesHermitianUniqueOfClassification
+public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DiscreteSeriesCoverExistsIff
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsGrowthSobNeTopOfIsAutFunSm
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HoweDualityUnitary
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HoweDualityReal
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsSmoothModerateOfIsAutFunSm
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsParahoricVec
 public import Development.AbelianVarietyTheory.Definitions.Divisors.RankEqCardIffExistsFrameMatrixFirstColumnBlock
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDiagonalLagrangianInvariantForm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicHeisenbergActsByLocalSchrodinger
@@ -19,56 +62,7 @@ noncomputable section
 
 namespace GlobalTheory.MixedForm
 
-def tensForm {k κ κ' : Type} (l₁ : ((κ → k) → ℂ) →ₗ[ℂ] ℂ) (l₂ : ((κ' → k) → ℂ) →ₗ[ℂ] ℂ) : ((κ ⊕ κ' → k) → ℂ) →ₗ[ℂ] ℂ where
-  toFun f := l₁ fun x₁ => l₂ fun x₂ => f (Sum.elim x₁ x₂)
-  map_add' f g := by
-    rw [← map_add (f := _)]; congr 1; funext x₁; rw [Pi.add_apply, ← map_add (f := _)]; rfl
-  map_smul' c f := by
-    rw [RingHom.id_apply, ← map_smul]; congr 1; funext x₁; rw [Pi.smul_apply, ← map_smul]; rfl
-
-theorem tensForm_box {k κ κ' : Type} (l₁ : ((κ → k) → ℂ) →ₗ[ℂ] ℂ) (l₂ : ((κ' → k) → ℂ) →ₗ[ℂ] ℂ)
-    (φ₁ : (κ → k) → ℂ) (φ₂ : (κ' → k) → ℂ) : tensForm l₁ l₂ (boxFun φ₁ φ₂) = l₁ φ₁ * l₂ φ₂ := by
-  have e : (fun x₁ => l₂ fun x₂ => boxFun φ₁ φ₂ (Sum.elim x₁ x₂)) = l₂ φ₂ • φ₁ := by
-    funext x₁
-    have : (fun x₂ => boxFun φ₁ φ₂ (Sum.elim x₁ x₂)) = φ₁ x₁ • φ₂ := by funext x₂; rfl
-    rw [this, map_smul, Pi.smul_apply, smul_eq_mul, smul_eq_mul, mul_comm]
-  change l₁ _ = _
-  rw [e, map_smul, smul_eq_mul, mul_comm]
-
 variable {F : Type} [Field F] [NumberField F] {κ : Type}
-
-def repl (v : Pl (F := F)) (y : κ → AF F) (x : κ → Fv F v) : κ → AF F :=
-  fun i => y i - liftV v (evFin F v (y i)) + liftV v (x i)
-
-def proj (v : Pl (F := F)) (φ₀ : (κ → Fv F v) → ℂ) (l : ((κ → Fv F v) → ℂ) →ₗ[ℂ] ℂ) : Module.End ℂ ((κ → AF F) → ℂ) where
-  toFun Φ y := φ₀ (fun i => evFin F v (y i)) * l fun x => Φ (repl v y x)
-  map_add' Φ Ψ := by
-    funext y
-    rw [Pi.add_apply, ← mul_add, ← map_add (f := _)]; rfl
-  map_smul' c Φ := by
-    funext y
-    rw [RingHom.id_apply, Pi.smul_apply, smul_eq_mul, mul_left_comm, ← smul_eq_mul c, ← map_smul]; rfl
-
-theorem proj_apply (v : Pl (F := F)) (φ₀ : (κ → Fv F v) → ℂ) (l : ((κ → Fv F v) → ℂ) →ₗ[ℂ] ℂ) (Φ : (κ → AF F) → ℂ)
-    (y : κ → AF F) : proj v φ₀ l Φ y = φ₀ (fun i => evFin F v (y i)) * l fun x => Φ (repl v y x) := rfl
-
-theorem evFin_repl (v : Pl (F := F)) (y : κ → AF F) (x : κ → Fv F v) (i : κ) : evFin F v (repl v y x i) = x i := by
-  simp [repl, evFin_liftV]
-
-theorem proj_tens (v : Pl (F := F)) (φ₀ : (κ → Fv F v) → ℂ) (l : ((κ → Fv F v) → ℂ) →ₗ[ℂ] ℂ) (φ : (κ → Fv F v) → ℂ)
-    (r : (κ → AF F) → ℂ) (hr : ∀ x z, At (evFin F v) z → r (x + z) = r x) :
-    proj v φ₀ l (tens (evFin F v) φ r) = l φ • tens (evFin F v) φ₀ r := by
-  funext y
-  have e : (fun x => tens (evFin F v) φ r (repl v y x)) = r y • φ := by
-    funext x
-    have h1 : repl v y x = y + fun i => liftV v (x i - evFin F v (y i)) := by
-      funext i; simp only [repl, Pi.add_apply, map_sub]; ring
-    have h2 : r (repl v y x) = r y := by
-      rw [h1]; exact hr _ _ fun u hu => funext fun i => at_liftV v _ u hu
-    simp only [tens, evFin_repl, h2, Pi.smul_apply, smul_eq_mul, mul_comm]
-  rw [proj_apply, e, map_smul]
-  simp only [tens, Pi.smul_apply, smul_eq_mul]
-  ring
 
 end GlobalTheory.MixedForm
 

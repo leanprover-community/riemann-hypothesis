@@ -16,9 +16,6 @@ namespace Formalism.L2.FormalSeriesBounds.RF
 
 open Formalism.IncomingBounds Formalism.L2.Pj
 
-abbrev IIof {T Orb : Type} {d : ℕ} (r : T → ℕ) (tau : Orb → Fin 2 → ZMod d → T) (o : Orb) (g : Fin 2) : Type :=
-  Σ t : ZMod d, Fin (r (tau o g t))
-
 section Defs
 
 variable {C : Type} [Field C] {V : VF C} {d : ℕ} [NeZero d] {Orb : Type} [Fintype Orb]

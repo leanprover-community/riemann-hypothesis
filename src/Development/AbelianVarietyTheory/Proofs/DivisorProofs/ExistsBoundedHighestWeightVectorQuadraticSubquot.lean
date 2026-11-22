@@ -40,9 +40,6 @@ def resA (h' : Stab act N') : Mat p q →ₗ[ℂ] Module.End ℂ N' where
     ext x
     simp [LinearMap.restrict_apply]
 
-theorem resA_coe (h' : Stab act N') (Z : Mat p q) (x : N') :
-    ((resA act N' h' Z x : N') : V) = act Z x := rfl
-
 abbrev below : Submodule ℂ N' := N.comap N'.subtype
 
 theorem le_comap_resA (h : Stab act N) (h' : Stab act N') (Z : Mat p q) :
@@ -136,7 +133,6 @@ theorem rel_negT {ι : Type} {G : ι → ι → Module.End ℂ V}
 end GlobalTheory.HoweR.SubQuot
 
 namespace GlobalTheory.HoweR
-
 
 open SubQuot in
 theorem exists_hwSub_of_quadMod : ∀ (p q : ℕ) (α β α' β' : ℂ), ∃ B : ℚ, ∀ (V : Type) [AddCommGroup V] [Module ℂ V]

@@ -111,11 +111,6 @@ def coreOfInjective {𝕜 V W : Type*} [RCLike 𝕜] [AddCommGroup V] [Module �
   smul_left x y r := by simp only [map_smul, inner_smul_left]
   definite x h := hf (by rw [map_zero]; exact inner_self_eq_zero.mp h)
 
-theorem coreOfInjective_inner {𝕜 V W : Type*} [RCLike 𝕜] [AddCommGroup V] [Module 𝕜 V]
-    [NormedAddCommGroup W] [InnerProductSpace 𝕜 W] (f : V →ₗ[𝕜] W)
-    (hf : Function.Injective f) (x y : V) :
-    (coreOfInjective f hf).inner x y = inner 𝕜 (f x) (f y) := rfl
-
 section Examples
 
 variable (K : Type*) [Field K] [NumberField K]
@@ -202,31 +197,6 @@ def HermitianBundle.standard (n : ℕ) : HermitianBundle K :=
   ⟨Fin n → 𝓞 K, HermitianMetric.standard K (Fin n)⟩
 
 end Examples
-
-abbrev GaussianField : Type := CyclotomicField 4 ℚ
-
-def ratIntegers : HermitianBundle ℚ := HermitianBundle.integers ℚ
-
-def ratStandard (n : ℕ) : HermitianBundle ℚ := HermitianBundle.standard ℚ n
-
-def gaussianIntegers : HermitianBundle GaussianField := HermitianBundle.integers GaussianField
-
-def gaussianStandard (n : ℕ) : HermitianBundle GaussianField :=
-  HermitianBundle.standard GaussianField n
-
-theorem HermitianMetric.standard_inner_single (K : Type*) [Field K] [NumberField K] (n : ℕ)
-    (σ : K →+* ℂ) (i : Fin n) :
-    ((HermitianMetric.standard K (Fin n)).form σ).inner (1 ⊗ₜ Pi.single i 1) (1 ⊗ₜ Pi.single i 1)
-      = 1 := by
-  rw [HermitianMetric.standard_inner, Finset.sum_eq_single i]
-  · simp only [standardCoord_tmul, Pi.single_eq_same, map_one]
-    show starRingEnd ℂ (1 * 1) * (1 * 1) = 1
-    simp
-  · intro j _ hj
-    simp [standardCoord_tmul, Pi.single_eq_of_ne hj]
-  · simp
-
-def ratEmbedding : ℚ →+* ℂ := Rat.castHom ℂ
 
 end
 

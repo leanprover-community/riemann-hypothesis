@@ -82,8 +82,6 @@ def utr {k : ℕ} (u : Matrix.unitaryGroup (Fin k) ℂ) : Matrix.unitaryGroup (F
     rw [Matrix.transpose_mul, Matrix.transpose_one] at h
     exact h⟩
 
-theorem utr_utr {k : ℕ} (u : Matrix.unitaryGroup (Fin k) ℂ) : utr (utr u) = u := rfl
-
 variable [Fintype ι] {X : Type} [AddCommGroup X] [Module ℂ X] [FiniteDimensional ℂ X]
 
 theorem mem_of_intertwiner (hnm : n ≤ m) {π : ι → Matrix.unitaryGroup (Fin m) ℂ → Module.End ℂ X} (hπ : IrrFam π)
@@ -243,7 +241,6 @@ theorem exists_trilinear {G H S P Ds : Type} [MeasurableSpace H] [AddCommGroup S
     rw [← map_smul]; congr 1; funext h; simp [mul_left_comm]
 
 variable {D : D7}
-
 
 set_option maxHeartbeats 800000 in
 theorem ioExists_definite {V W : HSp D} {S S' : D.what₂.Tau → SPar} (M : DSModel V S) (M' : DSModel W S')

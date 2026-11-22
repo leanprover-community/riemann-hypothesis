@@ -82,8 +82,6 @@ theorem le_one_iff_frac {R K : Type*} [CommRing R] [IsDedekindDomain R] [Field K
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
-local notation3 "L⁺" => NumberField.maximalRealSubfield L
-
 theorem exists_approx (v : HeightOneSpectrum (𝓞 L⁺)) (y d : v.adicCompletion L⁺) (hd : d ≠ 0) :
     ∃ a : L⁺, Valued.v (y - algebraMap L⁺ (v.adicCompletion L⁺) a) < Valued.v d := by
   have hU : IsOpen {z : v.adicCompletion L⁺ | Valued.v (z - y) < Valued.v d} := by

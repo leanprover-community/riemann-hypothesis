@@ -23,7 +23,6 @@ open GlobalTheory.HeightCounting GlobalTheory.Mem.R3.Tr
 noncomputable section
 namespace GlobalTheory.LayerMove
 
-
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
 structure Mv (D : D7) : Type 1 where
@@ -97,8 +96,6 @@ def Mv.cf (cf : CharFrame D) : CharFrame m.D :=
     isDel' := (by with_unfolding_all exact (cf.isDel' :)) }
 
 def Mv.ch (C : NChoice D) : NChoice m.D := { C with }
-
-def Mv.xd (x : ThData D) : ThData m.D := { x with }
 
 def Mv.tp {cf : CharFrame D} {C : NChoice D} (tp : TupTied D cf C) : TupTied m.D (m.cf cf) (m.ch C) :=
   { xi := (by with_unfolding_all exact (tp.xi :))

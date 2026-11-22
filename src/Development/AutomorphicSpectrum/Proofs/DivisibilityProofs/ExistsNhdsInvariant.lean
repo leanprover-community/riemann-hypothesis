@@ -108,8 +108,6 @@ section Pure
 
 attribute [local instance] Classical.propDecidable
 
-local notation "pureT" => GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure
-
 open GlobalTheory.AdelicU (evFin)
 
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
@@ -127,102 +125,10 @@ theorem finite_mulSupport
     exact Set.indicator_of_mem (show (fun i => evFin F w (x i)) ∈ {x : κ → Fv F w | ∀ i, x i ∈ w.adicCompletionIntegers F} from h3) 1
   exact Filter.eventually_cofinite.1 h
 
-theorem pure_update
-    (hv : ∀ᶠ w in cofinite, vac w = Set.indicator {x | ∀ i, x i ∈ w.adicCompletionIntegers F} 1)
-    {φ : ∀ w : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F), (κ → Fv F w) → ℂ} (hφ : ∀ᶠ w in cofinite, φ w = vac w)
-    (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (ψ : (κ → Fv F v) → ℂ) (f : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F κ) (x : κ → AF F) :
-    pureT f (Function.update φ v ψ) x =
-      ψ (fun i => evFin F v (x i)) * pureT f (Function.update φ v 1) x := by
-  classical
-  have hφ1 : ∀ᶠ w in cofinite, Function.update φ v 1 w = vac w := by
-    filter_upwards [hφ, Filter.eventually_cofinite_ne v] with w h1 h2
-    rw [Function.update_of_ne h2, h1]
-  have h1 := finite_mulSupport hv hφ1 x
-  set t : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F) → ℂ := fun w => if w = v then ψ (fun i => evFin F v (x i)) else 1 with ht
-  have hts : (Function.mulSupport t).Finite := (Set.finite_singleton v).subset fun w hw => by
-    by_contra h
-    exact hw (ite_eq_right h)
-  have key : (fun w => Function.update φ v ψ w fun i => evFin F w (x i)) =
-      fun w => t w * Function.update φ v 1 w fun i => evFin F w (x i) := by
-    funext w
-    by_cases h : w = v
-    · subst h
-      simp [ht]
-    · simp [ht, h]
-  unfold GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure
-  rw [key, finprod_mul_distrib hts h1, finprod_eq_single t v fun w hw => ite_eq_right hw]
-  simp only [ht, ite_true]
-  ring
-
 theorem piK_repl (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (x : κ → AF F) (y : κ → Fv F v) :
     (fun i => evFin F v (repl v x y i)) = y := by
   change piK v (finPart x - epsK v (piK v (finPart x)) + epsK v y) = y
   simp [piK_epsK]
-
-theorem pure_repl
-    {φ : ∀ w : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F), (κ → Fv F w) → ℂ}
-    (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (f : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F κ) (x : κ → AF F) (y : κ → Fv F v) :
-    pureT f (Function.update φ v 1) (repl v x y) = pureT f (Function.update φ v 1) x := by
-  classical
-  unfold GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure
-  congr 1
-  refine finprod_congr fun w => ?_
-  by_cases h : w = v
-  · subst h
-    simp
-  · rw [Function.update_of_ne h]
-    congr 1
-    funext i
-    change Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F w ((x i).2 - GlobalTheory.AdelicU.singleFin v _ + GlobalTheory.AdelicU.singleFin v _) = _
-    rw [map_add (f := _), map_sub, GlobalTheory.AdelicU.evalV_singleFin_ne h, GlobalTheory.AdelicU.evalV_singleFin_ne h]
-    simp
-    rfl
-
-theorem opL_pure
-    (hv : ∀ᶠ w in cofinite, vac w = Set.indicator {x | ∀ i, x i ∈ w.adicCompletionIntegers F} 1)
-    {φ : ∀ w : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F), (κ → Fv F w) → ℂ} (hφ : ∀ᶠ w in cofinite, φ w = vac w)
-    (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (A : ((κ → Fv F v) → ℂ) →ₗ[ℂ] ((κ → Fv F v) → ℂ)) (f : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F κ) :
-    opL v A (pureT f φ) = pureT f (Function.update φ v (A (φ v))) := by
-  classical
-  funext x
-  have hs : (fun y => pureT f φ (repl v x y)) = pureT f (Function.update φ v 1) x • φ v := by
-    funext y
-    have h := pure_update hv hφ v (φ v) f (repl v x y)
-    rw [Function.update_eq_self, piK_repl, pure_repl] at h
-    rw [h]
-    simp [mul_comm]
-  change A (fun y => pureT f φ (repl v x y)) (piK v (finPart x)) = _
-  rw [hs, map_smul, pure_update hv hφ v (A (φ v)) f x]
-  simp only [Pi.smul_apply, smul_eq_mul]
-  rw [mul_comm]
-  rfl
-
-theorem pure_update_mem
-    (hv : ∀ᶠ w in cofinite, vac w = Set.indicator {x | ∀ i, x i ∈ w.adicCompletionIntegers F} 1)
-    {φ : ∀ w : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F), (κ → Fv F w) → ℂ} (hφ : ∀ᶠ w in cofinite, φ w = vac w)
-    (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (f : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F κ) (L : Submodule ℂ ((κ → AF F) → ℂ))
-    {S : Set ((κ → Fv F v) → ℂ)} (hS : ∀ ψ ∈ S, pureT f (Function.update φ v ψ) ∈ L) {ψ : (κ → Fv F v) → ℂ}
-    (hψ : ψ ∈ Submodule.span ℂ S) : pureT f (Function.update φ v ψ) ∈ L := by
-  have e : ∀ ψ, pureT f (Function.update φ v ψ) =
-      fun x => ψ (fun i => evFin F v (x i)) * pureT f (Function.update φ v 1) x :=
-    fun ψ => funext (pure_update hv hφ v ψ f)
-  induction hψ using Submodule.span_induction with
-  | mem ψ h => exact hS ψ h
-  | zero =>
-    rw [e]
-    convert L.zero_mem using 1
-    funext x
-    simp only [Pi.zero_apply, zero_mul]
-  | add a b _ _ ha hb =>
-    rw [e] at ha hb ⊢
-    convert L.add_mem ha hb using 1
-    funext x
-    simp [add_mul]
-  | smul c a _ ha =>
-    rw [e] at ha ⊢
-    convert L.smul_mem c ha using 1
-    funext x
-    simp [mul_assoc]
 
 end Pure
 

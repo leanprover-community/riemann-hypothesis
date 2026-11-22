@@ -64,14 +64,6 @@ theorem orthSum_apply (V W : HSpace E) (x y : V.V × W.V) :
 
 theorem gram_hneg (V : HSpace E) : (hneg V).gram = -V.gram := rfl
 
-theorem frame_hsum_inl (V W : HSpace E) (i : Fin V.rank) :
-    (hsum V W).frame (finSumFinEquiv (.inl i)) = (V.frame i, 0) := by
-  simp [Module.Basis.prod_apply]
-
-theorem frame_hsum_inr (V W : HSpace E) (i : Fin W.rank) :
-    (hsum V W).frame (finSumFinEquiv (.inr i)) = (0, W.frame i) := by
-  simp [Module.Basis.prod_apply]
-
 theorem gram_hsum (V W : HSpace E) : (hsum V W).gram = blkMat finSumFinEquiv V.gram W.gram := by
   ext i j
   obtain ⟨a, rfl⟩ := finSumFinEquiv.surjective i
@@ -97,9 +89,6 @@ theorem frameLat_hsum (V W : HSpace E) : frameLat (hsum V W) = sumLat finSumFinE
   conv_lhs => rw [← pairVec_eta finSumFinEquiv w]
   rw [sum_pairVec_frame]
   exact Submodule.mem_prod
-
-theorem isLattice_frameLat (V : HSpace E) : Submodule.IsLattice E (frameLat V) :=
-  Submodule.IsLattice.of_fg E (frameLat_fg V)
 
 theorem isIsomEmb_inl (V W : HSpace E) : HSpace.IsIsomEmb V (hsum V W) (LinearMap.inl E V.V W.V) := by
   intro x y

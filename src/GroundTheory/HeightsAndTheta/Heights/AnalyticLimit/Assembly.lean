@@ -6,8 +6,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCEqZeroOfEvent
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Objects
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.ConvergenceRate
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ProjectiveLinePartitionContinuousCoe
-public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Telescoping
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.EnergyStep
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PPolyMaxLowerBound

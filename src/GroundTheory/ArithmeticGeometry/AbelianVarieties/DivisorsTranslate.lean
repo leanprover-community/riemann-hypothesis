@@ -41,7 +41,6 @@ theorem map_genericPoint_eq (ψ : W.toAffine.FunctionField →ₐ[F] W.toAffine.
     ∃ h, Point.map ψ (genericPoint W) = .some (ψ (genX W)) (ψ (genY W)) h :=
   ⟨_, rfl⟩
 
-
 omit [DecidableEq F] in
 theorem algHom_ext_gen {L : Type*} [Field L] [Algebra F L]
     {ψ₁ ψ₂ : W.toAffine.FunctionField →ₐ[F] L} (hx : ψ₁ (genX W) = ψ₂ (genX W))
@@ -57,7 +56,6 @@ theorem algHom_ext_gen {L : Type*} [Field L] [Algebra F L]
 
 variable [W.IsElliptic]
 
-
 omit [DecidableEq F] in
 theorem algHom_eq_of_map_genericPoint
     {ψ₁ ψ₂ : W.toAffine.FunctionField →ₐ[F] W.toAffine.FunctionField}
@@ -70,7 +68,6 @@ theorem algHom_eq_of_map_genericPoint
 omit [DecidableEq F] in
 theorem map_id_genericPoint :
     Point.map (AlgHom.id F W.toAffine.FunctionField) (genericPoint W) = genericPoint W := rfl
-
 
 omit [DecidableEq F] [W.IsElliptic] in
 theorem exists_algebraMap_eq_of_isAlgebraic [IsAlgClosed F] {u : W.toAffine.FunctionField}
@@ -162,9 +159,6 @@ theorem translate_comp_translate_neg (R : W.toAffine.Point) :
 theorem translate_translate_neg (R : W.toAffine.Point) (f : W.toAffine.FunctionField) :
     translate W R (translate W (-R) f) = f :=
   DFunLike.congr_fun (translate_comp_translate_neg W R) f
-
-local notation "ι" => algebraMap F (WeierstrassCurve.Affine.FunctionField
-  (WeierstrassCurve.toAffine W))
 
 omit [DecidableEq F] [IsAlgClosed F] [W.IsElliptic] in
 theorem valuationInfty_genX : valuationInfty W (genX W) = exp 2 := by

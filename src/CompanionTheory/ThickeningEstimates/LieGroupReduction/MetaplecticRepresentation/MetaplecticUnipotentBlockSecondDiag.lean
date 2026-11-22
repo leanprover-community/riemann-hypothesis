@@ -105,9 +105,6 @@ theorem loQ_nn (S : Matrix l l ℝ) (t : ℝ) (s : Mat l) : loQ (nn S t * s) = l
   ext a b
   simp [loQ, nn, Matrix.mul_apply, Fintype.sum_sum_type, Matrix.one_apply]
 
-theorem tc_apply (M : Matrix l l ℝ) (x : Eu l) (a : l) :
-    Matrix.toEuclideanCLM (𝕜 := ℝ) (n := l) M x a = ∑ b, M a b * x b := rfl
-
 theorem metaplectic_unipotent_block_first_diag (S : Matrix l l ℝ) (t : ℝ) : bl Sum.inl Sum.inl (nn S t) = 1 := by
   ext x a
   simp [bl_apply, nn, Matrix.one_apply]

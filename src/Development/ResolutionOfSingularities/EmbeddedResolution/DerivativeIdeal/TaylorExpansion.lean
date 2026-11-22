@@ -146,10 +146,6 @@ private theorem factorial_inv_mul_choose {S' : Type*} [CommRing S'] [Algebra ℚ
   have h2 := congrArg (algebraMap ℚ S') key
   simpa only [map_mul, map_natCast] using h2
 
-private theorem coeff_eq {A' R' S' : Type*} [CommRing A'] [CommRing R'] [CommRing S']
-    [Algebra A' R'] [Algebra ℚ S'] (σ : R' →+* S') (D : Derivation A' R' R') (i : ℕ) (f : R') :
-    coeff σ D i f = algebraMap ℚ S' ((i.factorial : ℚ)⁻¹) * σ ((⇑D)^[i] f) := rfl
-
 theorem truncatedSeries_mul (σ : R →+* S) (D : Derivation A R R) (β : S) (N : ℕ) (f g : R) :
     truncatedSeries σ D β N (f * g) =
       ∑ j ∈ Finset.range N,
@@ -287,46 +283,6 @@ theorem truncatedSeries_mul_sub_mem (σ : R →+* S) (D : Derivation A R R) (β 
   rw [truncatedSeries_mul σ D β N f g, hf, hg]
   exact sum_convolution_sub_mul_mem β N J hβ (fun i => coeff σ D i f)
     (fun i => coeff σ D i g)
-
-theorem mk_truncatedSeries_one (σ : R →+* S) (D : Derivation A R R) (β : S) (N : ℕ)
-    (J : Ideal S) (hN : 1 ≤ N) :
-    Ideal.Quotient.mk J (truncatedSeries σ D β N 1) = 1 := by
-  have h1 : D 1 = 0 := by simp
-  rw [truncatedSeries_of_deriv_eq_zero σ D β N hN 1 h1]
-  simp
-
-theorem mk_truncatedSeries_mul (σ : R →+* S) (D : Derivation A R R) (β : S) (N : ℕ)
-    (J : Ideal S) (hβ : β ^ N ∈ J) (f g : R) :
-    Ideal.Quotient.mk J (truncatedSeries σ D β N (f * g)) =
-      Ideal.Quotient.mk J (truncatedSeries σ D β N f) *
-        Ideal.Quotient.mk J (truncatedSeries σ D β N g) := by
-  have h : truncatedSeries σ D β N (f * g)
-      - truncatedSeries σ D β N f * truncatedSeries σ D β N g ∈ J :=
-    truncatedSeries_mul_sub_mem σ D β N J hβ f g
-  have h2 : Ideal.Quotient.mk J (truncatedSeries σ D β N (f * g))
-      = Ideal.Quotient.mk J (truncatedSeries σ D β N f * truncatedSeries σ D β N g) :=
-    Ideal.Quotient.eq.mpr h
-  rw [h2, map_mul]
-
-theorem mk_truncatedSeries_zero (σ : R →+* S) (D : Derivation A R R) (β : S) (N : ℕ)
-    (J : Ideal S) :
-    Ideal.Quotient.mk J (truncatedSeries σ D β N 0) = 0 := by
-  rw [truncatedSeries_zero, map_zero]
-
-theorem mk_truncatedSeries_add (σ : R →+* S) (D : Derivation A R R) (β : S) (N : ℕ)
-    (J : Ideal S) (f g : R) :
-    Ideal.Quotient.mk J (truncatedSeries σ D β N (f + g)) =
-      Ideal.Quotient.mk J (truncatedSeries σ D β N f) +
-        Ideal.Quotient.mk J (truncatedSeries σ D β N g) := by
-  rw [truncatedSeries_add, map_add (f := _)]
-
-def truncatedSeriesRingHom (σ : R →+* S) (D : Derivation A R R) (β : S) (N : ℕ) (J : Ideal S)
-    (hN : 1 ≤ N) (hβ : β ^ N ∈ J) : R →+* S ⧸ J :=
-  { toFun := fun f => Ideal.Quotient.mk J (truncatedSeries σ D β N f)
-    map_one' := mk_truncatedSeries_one σ D β N J hN
-    map_mul' := mk_truncatedSeries_mul σ D β N J hβ
-    map_zero' := mk_truncatedSeries_zero σ D β N J
-    map_add' := mk_truncatedSeries_add σ D β N J }
 
 @[simp]
 theorem truncatedSeriesRingHom_apply (σ : R →+* S) (D : Derivation A R R) (β : S) (N : ℕ) (J : Ideal S)

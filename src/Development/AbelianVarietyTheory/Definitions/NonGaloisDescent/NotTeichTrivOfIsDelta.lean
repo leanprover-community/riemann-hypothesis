@@ -31,9 +31,6 @@ theorem isUnitAt_of_pow_eq_one {E : Type} [Field E] [NumberField E] {w : HeightO
 
 namespace TeichTriv
 
-theorem of_unr (h : ∀ w, OverP H H.pde w ∨ OverP H H.pde' w → χ.UnrAt w) : TeichTriv H χ :=
-  fun w hw x hx => h w hw x (isUnitAt_of_pow_eq_one hx)
-
 end TeichTriv
 
 end Host

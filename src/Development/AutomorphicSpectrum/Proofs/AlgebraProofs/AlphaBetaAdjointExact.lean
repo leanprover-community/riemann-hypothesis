@@ -20,9 +20,6 @@ open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ Reciprocity
 
 variable {R : Type} [CommRing R] {d : ℕ}
 
-local notation "P₀" => pt R (n := 2) d 0
-local notation "P₁" => pt R (n := 2) d 1
-
 theorem cz_pair {n : ℕ} {a b : Pt R n d} (ha : ∀ i, constantCoeff (a i) = 0)
     (hb : ∀ i, constantCoeff (b i) = 0) : CZ ![a, b] := by
   intro j i

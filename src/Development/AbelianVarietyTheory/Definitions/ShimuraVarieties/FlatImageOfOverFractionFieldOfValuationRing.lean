@@ -59,7 +59,6 @@ theorem isIntegral_of_schemeDominant (d : T' ⟶ T) [IsSchemeTheoreticallyDomina
   have : IrreducibleSpace T := (irreducibleSpace_def T).mpr h
   exact isIntegral_of_irreducibleSpace_of_isReduced T
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem eq_zero_of_mul_eq_zero_of_flat {S : Scheme.{u}} [IsAffine S] (s : T ⟶ S) [Flat s]
     (V : T.Opens) (r : Γ(S, ⊤)) (hr : r ∈ nonZeroDivisors Γ(S, ⊤)) (a : Γ(T, V))
@@ -77,7 +76,6 @@ theorem eq_zero_of_mul_eq_zero_of_flat {S : Scheme.{u}} [IsAffine S] (s : T ⟶ 
     (show s.appLE ⊤ V he r * a = 0 from h)
   rw [map_mul, map_zero, ← CommRingCat.comp_apply, Scheme.Hom.appLE_map] at h'
   simpa [Algebra.smul_def, RingHom.algebraMap_toAlgebra] using h'
-
 
 set_option backward.isDefEq.respectTransparency false in
 theorem flat_of_schemeDominant_of_torsionFree_flat {O : CommRingCat.{u}}
@@ -184,9 +182,6 @@ instance isIso_closureToClosed (g : W ⟶ Z) (i : Z ⟶ P) [IsClosedImmersion i]
     [IsSchemeTheoreticallyDominant g] (h : g ≫ i = j) : IsIso (closureToClosed j g i h) :=
   IsClosedImmersion.isIso_of_ker_eq j.imageι i _ (closureToClosed_comp j g i h)
     (by simp [← h, ker_comp_of_schemeDominant])
-
-theorem isIso_imageι_iff : IsIso j.imageι ↔ IsSchemeTheoreticallyDominant j := by
-  rw [Scheme.isIso_subschemeι_iff_eq_bot, isSchemeTheoreticallyDominant_iff]
 
 theorem isOpenImmersion_toImage [IsImmersion j] [QuasiCompact j] : IsOpenImmersion j.toImage :=
   inferInstance
@@ -336,7 +331,6 @@ theorem lift_fst : lift f₁ f₂ u φ h t₁ t₂ ht d w h₁ h₂ ≫ fst f₁
 
 theorem lift_snd : lift f₁ f₂ u φ h t₁ t₂ ht d w h₁ h₂ ≫ snd f₁ f₂ u φ h = t₂ := by
   rw [← ι_snd, lift_ι_assoc, pullback.lift_snd]
-
 
 include ht d w h₁ h₂ in
 include ht h₁ h₂ in

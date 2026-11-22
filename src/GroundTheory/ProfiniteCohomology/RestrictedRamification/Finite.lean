@@ -100,8 +100,6 @@ theorem finite_cohomology_of_res_top {H : Type} [Group H] [TopologicalSpace H] [
 
 end ULiftLinear
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
 
 theorem exists_isPrimitiveRoot_maxUnramifiedOutside (d : ℕ) (hd0 : d ≠ 0)

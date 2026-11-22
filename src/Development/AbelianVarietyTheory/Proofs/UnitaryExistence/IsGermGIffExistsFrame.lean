@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.PrimitiveGermFrames
+public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.JetChartLaws
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsChartIff
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc

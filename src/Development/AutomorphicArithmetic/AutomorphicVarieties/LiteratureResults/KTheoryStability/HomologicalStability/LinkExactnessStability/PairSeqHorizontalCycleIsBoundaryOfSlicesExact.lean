@@ -21,9 +21,6 @@ theorem pair_injective (w : List W) : Function.Injective (fun l : List V => (l, 
 def proj (w : List W) (x : List V × List W →₀ ℤ) : List V →₀ ℤ :=
   Finsupp.comapDomain (fun l : List V => (l, w)) x (pair_injective w).injOn
 
-theorem proj_apply (w : List W) (x : List V × List W →₀ ℤ) (l : List V) :
-    proj w x l = x (l, w) := rfl
-
 def incl (w : List W) : (List V →₀ ℤ) →ₗ[ℤ] (List V × List W →₀ ℤ) :=
   Finsupp.lmapDomain ℤ ℤ (fun l : List V => (l, w))
 

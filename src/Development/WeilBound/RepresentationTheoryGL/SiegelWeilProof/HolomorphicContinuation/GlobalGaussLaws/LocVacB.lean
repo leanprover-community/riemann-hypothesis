@@ -15,8 +15,6 @@ variable {n : ℕ}
 
 theorem mR_mul (g h : GR n) : mR (g * h) = mR g * mR h := rfl
 
-theorem mR_one : mR (1 : GR n) = 1 := rfl
-
 theorem inG_mR (g : GR n) : InG (mR g) := g.2
 
 theorem neg_one_blocks : (-1 : M2 n) = fromBlocks (-1) 0 0 (-1) := by

@@ -208,20 +208,6 @@ theorem push_mul (f g : A ⟶ B) [IsMonHom f] [IsMonHom g] [IsMonHom (f * g)] :
 theorem push_congr {f g : A ⟶ B} [IsMonHom f] [IsMonHom g] (e : f = g) : push κ t f = push κ t g := by
   subst e; rfl
 
-def ringAct [IsCommMonObj A] {O : Type} [Ring O] (a : ReciprocityTheory.ChartRestriction.G.Out.RingAct A O) :
-    O →+* Module.End R (Crys κ t A) :=
-  RingHom.mk'
-    { toFun x := haveI := a.hom x; push κ t (a.act x)
-      map_one' := haveI := a.hom 1; (push_congr κ t a.map_one).trans (push_id κ t)
-      map_mul' x y := by
-        haveI := a.hom
-        exact (push_congr κ t (a.map_mul x y)).trans (push_comp κ t _ _) }
-    fun x y ↦ by
-      haveI := a.hom
-      have e : a.act (x + y) = a.act x * a.act y := a.map_add x y
-      haveI : IsMonHom (a.act x * a.act y) := e ▸ a.hom _
-      exact (push_congr κ t e).trans (push_mul κ t _ _)
-
 variable {O : Type} [CommRing O] (a : OAct O A)
 
 def act : O →+* Module.End R (Crys κ t A) :=
@@ -377,7 +363,6 @@ theorem push_mem_Fil (f : A ⟶ B) [IsMonHom f] {h : HdR A} (hh : h ∈ Fil A) :
   rw [e']
   exact hh _ hg'
 
-
 omit [GrpObj A] in
 theorem pt_w {D : Type} [CommRing D] [Algebra R D] (v : Over.mk (spMap (algebraMap R D)) ⟶ A) :
     v.left ≫ A.hom ≫ 𝟙 _ = spMap (algebraMap R D) := by
@@ -387,11 +372,9 @@ theorem pt_w {D : Type} [CommRing D] [Algebra R D] (v : Over.mk (spMap (algebraM
 def tanVal {A : Over (Sp R)} (v : epsR R ⟶ A) : Form (A.hom ≫ 𝟙 _) →ₗ[R] R :=
   TrivSqZeroExt.sndHom R R ∘ₗ (SqExt.dual R).val v.left (pt_w v) ∘ₗ (Form _).subtype
 
-
 omit [GrpObj A] in
 theorem tanVal_apply (v : epsR R ⟶ A) (f : Form (A.hom ≫ 𝟙 _)) :
     tanVal v f = TrivSqZeroExt.snd (R := R) ((SqExt.dual R).val v.left (pt_w v) f.1) := rfl
-
 
 omit [GrpObj A] in
 theorem tanVal_epsScale (r : R) (v : epsR R ⟶ A) (f : Form (A.hom ≫ 𝟙 _)) :
@@ -415,7 +398,6 @@ theorem tanVal_one (f : Form (A.hom ≫ 𝟙 _)) : tanVal (1 : epsR R ⟶ A) f =
     rfl
   rw [tanVal_apply, SqExt.val_const (SqExt.dual R) η[A].left hx _ _ hy f]
   rfl
-
 
 omit [GrpObj A] [GrpObj B] in
 theorem tanVal_comp (v : epsR R ⟶ A) (g : A ⟶ B)
@@ -577,7 +559,6 @@ theorem IsLieImage.sub_mem {h h' : HdR A} {v : epsR R ⟶ A} (e : IsLieImage h v
   intro f hf
   rw [LinearMap.sub_apply, e.2 f hf, e'.2 f hf, sub_self]
 
-
 variable (A) in
 def LieExact : Prop :=
   (∀ h : HdR A, ∃! v, IsLieImage h v) ∧ ∀ v : epsR R ⟶ A, IsTangent v → ∃ h, IsLieImage h v
@@ -686,10 +667,8 @@ end Lift
 
 section KS
 
-
 variable (R) in
 abbrev epsRed : Sp R ⟶ Sp (DualNumber R) := spMap (TrivSqZeroExt.fstHom R R R).toRingHom
-
 
 variable (R) in
 def epsDP : DividedPowers (RingHom.ker (TrivSqZeroExt.fstHom R R R).toRingHom) :=
@@ -697,7 +676,6 @@ def epsDP : DividedPowers (RingHom.ker (TrivSqZeroExt.fstHom R R R).toRingHom) :
 
 variable {A : Over (Sp R)} [GrpObj A] {A' : Over (Sp (DualNumber R))} [GrpObj A']
   {i : A.left ⟶ A'.left}
-
 
 variable (A) in
 theorem constMor : GrpMor (dp0 R) (𝟙 _) A (epsDP R) (epsRed R) A (algebraMap R (DualNumber R)) (𝟙 _)
@@ -744,7 +722,6 @@ theorem IsKSValue.smul {f : HdR A} {v : epsR R ⟶ A} (e : IsKSValue h f v) (r :
   rw [LinearMap.smul_apply, hdk, LinearMap.smul_apply, LinearMap.smul_apply, smul_eq_mul,
     smul_eq_mul, smul_eq_mul]
   ext <;> simp
-
 
 variable (h) in
 def KSRegular : Prop := ∀ f ∈ Fil A, ∃! v, IsKSValue h f v
@@ -853,10 +830,6 @@ theorem IsPolForm.pull {L : LB A.left} {ψ : LinearMap.BilinForm R (Crys κ t A)
       rw [wedgeForm_apply, wedgeForm_apply, map_sum]
     refine Finset.sum_congr rfl fun k _ ↦ ?_
     rw [hx (a k), hy (b k), hx (b k), hy (a k), map_sub, map_mul, map_mul]
-
-def eig {O : Type} [CommRing O] (κ : DividedPowers I) (t : S ⟶ Sp R) {A : Over S} [GrpObj A]
-    (a : OAct O A) (τ : O →+* R) : Submodule R (Crys κ t A) :=
-  ⨅ x : O, LinearMap.ker (act κ t a x - τ x • (1 : Module.End R (Crys κ t A)))
 
 def IsAdjointFor {O : Type} [CommRing O] (a : OAct O A) (c : O → O)
     (ψ : LinearMap.BilinForm R (Crys κ t A)) : Prop :=

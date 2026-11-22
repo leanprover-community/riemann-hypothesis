@@ -19,17 +19,9 @@ section PD
 
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
-local notation "𝒪" => normInteger K
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "θ" => fontaineTheta 𝒪 p
-local notation "φ" => WittVector.frobeniusEquiv p 𝒪♭
-local notation "𝔭₀" => Ideal.span {(p : ACrisZero K p)}
-local notation "𝔭" => Ideal.span {(p : ACris K p)}
 
 theorem dpow_zero_right {n : ℕ} (hn : n ≠ 0) : dpow n (0 : AInf K p) = 0 := by
   rw [dpow, map_zero, zero_pow hn, mul_zero]
-
 
 variable (K p) in
 def pdIdeal : Ideal (AInf K p) where
@@ -73,9 +65,6 @@ theorem one_add_pow_sub_one_mem_pdIdeal {z : AInf K p} (hz : z ∈ pdIdeal K p) 
 
 def dpowJ {x : AInf K p} (hx : x ∈ pdIdeal K p) (n : ℕ) : ACrisZero K p :=
   ⟨dpow n x, hx n⟩
-
-theorem coe_dpowJ {x : AInf K p} (hx : x ∈ pdIdeal K p) (n : ℕ) : (dpowJ hx n : 𝔸) = dpow n x :=
-  rfl
 
 def logTermJ {x : AInf K p} (hx : x ∈ pdIdeal K p) (n : ℕ) : ACrisZero K p :=
   (-1) ^ n * (n.factorial : ACrisZero K p) * dpowJ hx (n + 1)
@@ -219,11 +208,6 @@ section Theta
 
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p] [CharZero K]
-local notation "𝒪" => normInteger K
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "θ" => fontaineTheta 𝒪 p
-local notation "𝔭" => Ideal.span {(p : ACris K p)}
 
 theorem thetaZero_logTermJ_zero {x : AInf K p} (hx : x ∈ pdIdeal K p) :
     thetaZero (K := K) (p := p) (logTermJ hx 0) = θ x := by

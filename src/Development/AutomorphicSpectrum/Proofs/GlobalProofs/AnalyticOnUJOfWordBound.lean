@@ -18,8 +18,6 @@ open Topology Filter
 
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.HCA.AnalyticWords
 
-local notation "Jε" => ReciprocityTheory.ChartRestriction.DS.Jm
-
 variable {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
 def projJ (ε : Fin n → Bool) (Y : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ :=

@@ -19,9 +19,6 @@ private theorem sand_unit_one {E : Type} [Field E] [NumberField E] {a : ℕ} (k 
   rw [mul_one]
   exact k.2.2)
 
-private theorem sand_unit_hv {E : Type} [Field E] [NumberField E] {a : ℕ} (k : Kinf E a) (X : Herm E a) :
-    sand (Unitary.toUnits k) (hv X) = hv (adHerm k X) := rfl
-
 theorem UpperTheory.V.Lit.Dr.corrCochain :
     CorrCochain := by
   intro E _ _ _ a U Ξ q α w h

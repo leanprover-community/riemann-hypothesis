@@ -58,9 +58,6 @@ def schwartzMapSliceSumElim (c : ι → mixedSpace K) (φ : 𝓢((ι ⊕ κ) →
     𝓢(κ → mixedSpace K, ℂ) :=
   SchwartzMap.compCLM ℝ (sumElim_hasTemperateGrowth c) (sumElim_upper c) φ
 
-theorem schwartzMapSliceSumElim_apply (c : ι → mixedSpace K) (φ : 𝓢((ι ⊕ κ) → mixedSpace K, ℂ))
-    (u : κ → mixedSpace K) : schwartzMapSliceSumElim c φ u = φ (Sum.elim c u) := rfl
-
 theorem finiteSchwartzBruhatPi_sumElim_mem {g : ((ι ⊕ κ) → 𝔸ᶠ[K]) → ℂ} (hg : g ∈ finiteSchwartzBruhatPi K)
     (c : ι → 𝔸ᶠ[K]) : (fun v : κ → 𝔸ᶠ[K] ↦ g (Sum.elim c v)) ∈ finiteSchwartzBruhatPi K := by
   rw [mem_finiteSchwartzBruhatPi] at hg ⊢

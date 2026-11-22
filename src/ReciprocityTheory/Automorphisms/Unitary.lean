@@ -49,8 +49,6 @@ end General
 
 variable (L : Type*) [Field L] [NumberField L] [IsCMField L]
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 abbrev AFplus : Type _ := FiniteAdeleRing (𝓞 L⁺) L⁺
 
 abbrev AL : Type _ := L ⊗[L⁺] AFplus L
@@ -88,7 +86,6 @@ noncomputable def evalAt (v : HeightOneSpectrum (𝓞 L⁺)) : AFplus L →ₐ[L
 
 noncomputable def compAt (v : HeightOneSpectrum (𝓞 L⁺)) : AL L →+* L ⊗[L⁺] v.adicCompletion L⁺ :=
   (Algebra.TensorProduct.map (AlgHom.id L⁺ L) (evalAt L v)).toRingHom
-
 
 variable {L} in
 noncomputable def SplitPlace.proj (s : SplitPlace L) : AL L →+* s.v.adicCompletion L⁺ :=
@@ -140,21 +137,13 @@ noncomputable def Umax (n : ℕ) : Subgroup (GA L n) where
     simp only [InvMemClass.coe_inv, h1, conjT, Matrix.transpose_apply, Matrix.map_apply]
     exact conjAL_mem_ALint L (ha j i)
 
-
 variable {L} in
 noncomputable def SplitPlace.loc (s : SplitPlace L) (n : ℕ) :
     GA L n →* GL (Fin n) (s.v.adicCompletion L⁺) :=
   (Matrix.GeneralLinearGroup.map s.proj).comp (GA L n).subtype
 
-
 variable {L} in
 def TrivOutside {n : ℕ} (T : Set (HeightOneSpectrum (𝓞 L⁺))) (x : GA L n) : Prop :=
   ∀ v, v ∉ T → (x.1 : Matrix (Fin n) (Fin n) (AL L)).map (compAt L v) = 1
-
-
-variable {L} in
-noncomputable def Level {n : ℕ} {ι : Type*} (s : ι → SplitPlace L)
-    (H : ∀ a, Subgroup (GL (Fin n) ((s a).v.adicCompletion L⁺))) : Subgroup (GA L n) :=
-  Umax L n ⊓ ⨅ a, (H a).comap (SplitPlace.loc (s a) n)
 
 end ReciprocityTheory.Aut

@@ -21,16 +21,8 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.Indef
 
 variable {D : D7}
 
-abbrev typePl (pb : Fin 2 → 𝓞 D.host.E) : Finset (Pl D.host.E) := primesOf (pb 0 * pb 1)
-
 instance finite_kP (w : Pl D.host.E) : Finite (kP w) :=
   Ideal.finiteQuotientOfFreeOfNeBot w.asIdeal w.ne_bot
-
-
-variable (D) in
-def badPl : Finset (HeightOneSpectrum (𝓞 D.host.F)) := primesOf ((D.host.g 0 * D.host.g 1 : ℕ) : 𝓞 D.host.F)
-
-abbrev Model (D : D7) (j : ℕ) : Type 1 := DSModel (D.sp.W j) (parW (D.sp.W j) (Formalism.L2.NTheta.wtOf D (D.sp.W j)))
 
 section Spaces
 

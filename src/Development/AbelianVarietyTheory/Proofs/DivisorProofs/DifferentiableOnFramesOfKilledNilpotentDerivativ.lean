@@ -57,8 +57,6 @@ variable {E : Type} [Field E] {Ψ : Finset (E →+* ℂ)} {r : ℕ}
 
 def oneFr (Ψ : Finset (E →+* ℂ)) (r : ℕ) : Frame Ψ r := fun _ => (1 : Matrix (Fin r) (Fin r) ℂ)
 
-theorem rmul_apply (x y : Frame Ψ r) (τ : Ψ) (a c : Fin r) : rmul x y τ a c = ∑ k, x τ a k * y τ k c := rfl
-
 theorem rmul_assoc (x y z : Frame Ψ r) : rmul (rmul x y) z = rmul x (rmul y z) := by
   funext τ
   exact Matrix.mul_assoc (mat x τ) (mat y τ) (mat z τ)
@@ -83,8 +81,6 @@ def mulL (Ψ : Finset (E →+* ℂ)) (r : ℕ) : Frame Ψ r →L[ℝ] Frame Ψ r
         (fun t x y => by funext τ a c; simp [rmul_apply, Finset.mul_sum, mul_assoc])
         (fun x y y' => by funext τ a c; simp [rmul_apply, mul_add, Finset.sum_add_distrib])
         (fun t x y => by funext τ a c; simp [rmul_apply, Finset.mul_sum, mul_left_comm]))
-
-theorem mulL_apply (x y : Frame Ψ r) : mulL Ψ r x y = rmul x y := rfl
 
 open scoped Matrix.Norms.Operator in
 theorem hasStrict_exp_entry (a c : Fin r) :
@@ -118,10 +114,6 @@ def projU (Ψ : Finset (E →+* ℂ)) (r p : ℕ) : Frame Ψ r →L[ℝ] Frame �
         funext τ a b
         simp only [Pi.smul_apply, Complex.real_smul, map_mul, Complex.conj_ofReal, RingHom.id_apply]
         split_ifs <;> ring }
-
-theorem projU_apply (p : ℕ) (W : Frame Ψ r) (τ : Ψ) (a b : Fin r) : projU Ψ r p W τ a b =
-    if b < a then W τ a b else
-      if a < b then -((sgn p a : ℝ) : ℂ) * ((sgn p b : ℝ) : ℂ) * (starRingEnd ℂ) (W τ b a) else 0 := rfl
 
 theorem sgn_mul_self (p a : ℕ) : ((sgn p a : ℝ) : ℂ) * ((sgn p a : ℝ) : ℂ) = 1 := by
   unfold sgn; split_ifs <;> simp

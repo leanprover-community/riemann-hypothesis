@@ -64,8 +64,6 @@ def VVsub (P : PolAV S) (N m : ℕ) (T : Over S) :
     Submodule Γ(T.left, ⊤) (∀ j, Γ((T ⊗ P.A).left, (LPow P.A P.L N T).U j)) :=
   Submodule.span _ {f | ∃ h : f ∈ SecM P.A P.L N T, InVV P N m (SecM.toSec P.A ⟨f, h⟩)}
 
-abbrev de (P : PolAV S) (T : Over S) : Type := Module.Dual Γ(T.left, ⊤) (SecM P.A P.L 1 T)
-
 abbrev mulA (n : ℕ) : A ⟶ A := 𝟙 A ^ n
 
 theorem rigT_le (L : LB A.left) {T : Over S} (j : Fin 1 → L.ι) :
@@ -102,15 +100,6 @@ def IsTorsFrame (P : PolAV S) (rig : LB.Gen (P.L.pull (eSec P.A))) (n : ℕ) {T 
       α.IsGen ∧ IsNormMul P.A P.L rig n α ∧
       LB.Gen.Corr P.L _ _ _ _ (powFrame P.A P.L x τ ((n : ℤ) ^ 2))
         (LB.mulGen P.L _ _ _ _ (LB.pullGen P.L _ _ α x.left) (rigT P.A P.L rig T 1))
-
-def IsThetaFrame (P : PolAV S) (rig : LB.Gen (P.L.pull (eSec P.A))) (k : ℤ) {T : Over S}
-    (θ : ThetaGrp P.A P.L k T)
-    (τ : LB.Gen (LB.LinComb P.L (Y := T.left) (K := Fin 1) (fun _ => θ.pt.left) (fun _ => k))) :
-    Prop :=
-  τ.IsGen ∧
-    LB.Gen.Corr P.L _ _ _ _ (LB.mulGen P.L _ _ _ _ (LB.pullGen P.L _ _ θ.φ (ptSecT P.A 1).left) τ)
-      (rigT P.A P.L rig T k)
-
 
 def EvValSt : Prop :=
   ∀ (P : PolAV S) (N : ℕ) {T : Over S} (z : T ⟶ P.A)

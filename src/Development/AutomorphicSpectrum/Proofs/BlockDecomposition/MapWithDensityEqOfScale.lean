@@ -53,9 +53,6 @@ noncomputable def conjCE (N : Subgroup Q) [N.Normal] (g : Q) : N ≃ₜ* N where
     have : Continuous fun u : N => g⁻¹ * (u : Q) * g⁻¹⁻¹ := by fun_prop
     exact this
 
-theorem conjCE_coe (N : Subgroup Q) [N.Normal] (g : Q) (u : N) :
-    ((conjCE N g u : N) : Q) = g * u * g⁻¹ := rfl
-
 theorem conjCE_mul (N : Subgroup Q) [N.Normal] (g h : Q) :
     conjCE N (g * h) = (conjCE N h).trans (conjCE N g) := by
   ext u

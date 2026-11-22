@@ -40,8 +40,6 @@ section Crystal
 
 variable {R : Type} [CommRing R] {A : Over (Sp R)} [GrpObj A] {g : ℕ}
 
-theorem fst_surj : Function.Surjective (fstHom R R R).toRingHom := fun r ↦ ⟨TrivSqZeroExt.inl r, rfl⟩
-
 variable {d d' : Crys (epsDP R) (DeRham.epsRed R) A} {f f' k k' : HdR A}
 
 variable [IsCommMonObj A] {O : Type} [CommRing O] {a : OAct O A} (hL : LieExact A)

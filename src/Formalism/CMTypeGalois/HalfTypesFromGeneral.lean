@@ -4,7 +4,6 @@ public import Formalism.CMTypeGalois.CMTypeFrobenius.MQGalois
 public import Formalism.CMTypeGalois.CMTypeFrobenius.MQKummer
 public import Formalism.CMTypeGalois.StatementField
 public import Mathlib
-public import Formalism.StatementCM
 
 @[expose] public section
 

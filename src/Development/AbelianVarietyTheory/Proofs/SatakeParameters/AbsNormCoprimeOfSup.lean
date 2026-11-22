@@ -304,9 +304,6 @@ section FrGlue
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-local notation "𝒜" => E ⊗[F] Af F
-local notation "ιA" => inclE (F := F) (E := E) (Af F)
-
 theorem mem_hatL_incl {L : Submodule (𝓞 E) (Fin n → E)} {l : Fin n → E} (hl : l ∈ L) :
     (fun i => ιA (l i)) ∈ hatL (F := F) L :=
   Submodule.subset_span ⟨l, hl, rfl⟩

@@ -90,10 +90,6 @@ theorem TwMap.comp {B : UniversalOrdinaryDeterminantRing r} {R R' : Type} [CommR
     (h : TwMap B f₀ f γ) (e : R →+* R') : TwMap B (e.comp f₀) (e.comp f) (pushCh e γ) :=
   ⟨fun g i hi => by simp [h.1 g i hi], fun v i g => by simp [h.2 v i g]⟩
 
-theorem TwMap.trans {B : UniversalOrdinaryDeterminantRing r} {R : Type} [CommRing R] {f₀ f₁ f₂ : B.B →+* R} {γ γ' : F.G₀ →* Rˣ}
-    (h : TwMap B f₀ f₁ γ) (h' : TwMap B f₁ f₂ γ') : TwMap B f₀ f₂ (γ * γ') :=
-  ⟨fun g i hi => by rw [h'.1 g i hi, h.1 g i hi]; simp [mul_pow]; ring, fun v i g => by rw [h'.2 v i g, h.2 v i g]; simp [mul_assoc]⟩
-
 end UpperTheory.V.Ws.H5
 
 end

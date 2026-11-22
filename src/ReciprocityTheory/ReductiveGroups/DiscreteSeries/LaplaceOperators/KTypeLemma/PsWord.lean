@@ -20,10 +20,6 @@ namespace PsW
 
 variable {n : ℕ}
 
-local notation "𝕄" => Fin n → Fin n → ℂ
-local notation "MM" => Matrix (Fin n) (Fin n) ℂ
-local notation "WW" => (𝕄 × 𝕄) × 𝕄
-
 def mmul (A B : 𝕄) : 𝕄 := Matrix.of A * Matrix.of B
 
 lemma contDiff_mmul {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X] {f g : X → 𝕄}

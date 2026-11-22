@@ -25,7 +25,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsMi
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsFundCycleBaseChange
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PRadicalBaseChange
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormExtend
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormReduced
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormBaseChange
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormAssoc
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormCycleAdd
@@ -50,11 +49,9 @@ public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PConeDimOfChowForm
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChowFormExists
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PConeDimComponent
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SpecFirstDetFormNeZero
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Characterised
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsIncIdealNeBotDim
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PSpecFirstMemIncIdeal
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.IsMultiHomogOfIsChowForm
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.GaussNormEqCoeffGaussNorm
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeMeetNull
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConePtsIntegral
@@ -125,7 +122,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPosPartL
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PWeierstrassPolynomialDivision
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PWeightedAreaFormula
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanObjects
-public import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.PConstants
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshBasic
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPolydiscSubmean
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AssemblyBase
@@ -141,7 +137,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechDouble
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsMemSupport
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechHdegOfSub
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationPoint
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsCycleSplitSmall
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCycleSplit
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.LengthQuotientEqLengthH0
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationRestrict
@@ -150,9 +145,7 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AssemblyBase
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PIdealTwistFamily
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PTildeVanish
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.BaseComap
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.NefGenericDVRSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsFieldSubalgebraSelf
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsAmpleBaseLocalizationEq
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PDegZeroLocalRing
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PRestrLenRestrict
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSectionCountDropFiltFinite
@@ -190,7 +183,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZC
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZFamily
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PZChartLocal
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PZChartSmul
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.DataHodge
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PBdPtsNull
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
@@ -212,8 +204,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.GenericComplexP
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Metric
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorPos
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorSmooth
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ThreeLeLevel
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.GaussCM
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.IsFrameOverLine
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.CardZBasisEqMulFinrank
@@ -263,7 +253,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsMuS
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PNormalisationModelLocalizationX
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFS
-public import GroundTheory.HeightsAndTheta.Heights.ThetaKeyFormula.RigSymFormTauINontrivial
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PRestrictQuotX
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PSectionNormSqExtensionX
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PSegreFlagCutDivisorX

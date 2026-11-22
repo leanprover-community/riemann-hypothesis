@@ -1,7 +1,6 @@
 module
 
 public import Formalism.FockGram.StatementFock
-public import Formalism.FockGram.FockGramProofs.FockSesq
 public import Formalism.FockGram.FockGramProofs.SubIndexNorm
 public import Mathlib
 public import Formalism.FockGram.FockGramProofs.CovolGram

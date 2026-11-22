@@ -79,8 +79,6 @@ private structure TwOk (s : B.Tw) (w : G) : Prop where
 
 private def sgm (s : B.Tw) (w : G) : G →* G := (MulAut.conj w).toMonoidHom.comp s.θ.toMonoidHom
 
-private theorem sgm_apply (s : B.Tw) (w g : G) : sgm s w g = w * s.θ g * w⁻¹ := rfl
-
 variable {s : B.Tw} {w : G}
 
 private theorem sgm_sgm (h : TwOk s w) (g : G) : sgm s w (sgm s w g) = g := by

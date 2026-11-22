@@ -14,9 +14,6 @@ private def UpperTheory.Reformulated.B.ShiftMap.shift {G H : Type} [Group G] [Gr
     ext φ z
     simp [LinearMap.funLeft, mul_assoc]
 
-private lemma UpperTheory.Reformulated.B.ShiftMap.shift_apply {G H : Type} [Group G] [Group H] (p : G →* H)
-    (g : G) (φ : H → ℂ) (z : H) : UpperTheory.Reformulated.B.ShiftMap.shift p g φ z = φ ((p g)⁻¹ * z) := rfl
-
 theorem UpperTheory.Reformulated.B.ShiftMap.finite_translates_matrix_coefficient :
     ∀ (G H : Type) [inst : Group G] [inst_1 : TopologicalSpace G] [IsTopologicalGroup G]
     [inst_3 : Group H] [inst_4 : TopologicalSpace H] [IsTopologicalGroup H] (p : G →* H),

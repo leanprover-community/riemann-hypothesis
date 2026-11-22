@@ -24,9 +24,4 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.LineNorm
 
-private theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  rw [← Spec.map_comp]
-  rfl
-
 end GlobalTheory.LineNorm

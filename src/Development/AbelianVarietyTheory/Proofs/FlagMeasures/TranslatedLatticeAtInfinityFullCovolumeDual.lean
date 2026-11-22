@@ -167,9 +167,6 @@ def mix [_root_.NumberField.IsTotallyComplex E] : (Fin j → mixedEmbedding.mixe
     exact absurd w.2 (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex w.1))
   right_inv _ := rfl
 
-theorem mix_apply [_root_.NumberField.IsTotallyComplex E] (x : Fin j → mixedEmbedding.mixedSpace E) (w : InfinitePlace E) (a : Fin j) :
-    mix E j x w a = (x a).2 ⟨w, IsTotallyComplex.isComplex w⟩ := rfl
-
 def ratB : Basis (Σ _ : Fin j, Free.ChooseBasisIndex ℤ (𝓞 E)) ℚ (Fin j → E) :=
   Pi.basis fun _ => integralBasis E
 

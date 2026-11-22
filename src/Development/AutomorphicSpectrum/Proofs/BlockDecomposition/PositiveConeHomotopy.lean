@@ -125,10 +125,6 @@ def trL : (V →L[ℂ] V) →L[ℝ] ℂ :=
     Module.Finite.equiv (LinearMap.toContinuousLinearMap : (V →ₗ[ℂ] V) ≃ₗ[ℂ] V →L[ℂ] V)
   (LinearMap.toContinuousLinearMap (trC (V := V))).restrictScalars ℝ
 
-theorem trL_apply (X : V →L[ℂ] V) : trL X = LinearMap.trace ℂ V (X : V →ₗ[ℂ] V) := rfl
-
-theorem trC_apply (X : V →L[ℂ] V) : trC X = trL X := rfl
-
 theorem trC_mul_comm (X Y : V →L[ℂ] V) : trC (X * Y) = trC (Y * X) :=
   LinearMap.trace_mul_comm ℂ (X : V →ₗ[ℂ] V) (Y : V →ₗ[ℂ] V)
 

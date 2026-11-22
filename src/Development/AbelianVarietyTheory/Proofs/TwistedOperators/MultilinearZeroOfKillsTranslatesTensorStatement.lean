@@ -1,15 +1,13 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultilinearZeroOfKillsTranslatesTensor
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IrreducibleUnitaryVectorDensityStatement
 
 @[expose] public section
 
 open scoped InnerProductSpace
 -- `MultilinearMap` now takes the scalar ring hom explicitly.  Preserve the
 -- older `MultilinearMap R M N` spelling used by the statement in this file.
-local notation "MultilinearMap " "ℂ " M:max N:max =>
-  _root_.MultilinearMap (RingHom.id ℂ) M N
 
 namespace GlobalTheory.DensityMultiPlace
 

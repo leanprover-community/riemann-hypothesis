@@ -57,11 +57,6 @@ theorem conj_form {H : Matrix n n ℂ} (hH : H.IsHermitian) (v w : n → ℂ) :
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   rw [← hH.apply a b]; simp; ring
 
-theorem form_mulVec (K : Matrix n n ℂ) (A : Matrix n m ℂ) (B : Matrix n l ℂ) (u : m → ℂ)
-    (w : l → ℂ) : form K (A *ᵥ u) (B *ᵥ w) = u ⬝ᵥ (Aᵀ * K * Bᴴᵀ) *ᵥ star w := by
-  rw [form, star_mulVec, ← mulVec_transpose, ← vecMul_transpose, ← dotProduct_mulVec]
-  simp only [mulVec_mulVec, Matrix.mul_assoc]
-
 theorem posDef_iff {H : Matrix n n ℂ} :
     H.PosDef ↔ H.IsHermitian ∧ ∀ v, v ≠ 0 → 0 < form H v v := by
   constructor
@@ -171,11 +166,6 @@ theorem gnorm_mulVec_le (hH : H.PosDef) (hK : K.PosSemidef) (T : Matrix n m ℂ)
   · have hp := gnorm_pos hH hv
     rw [← div_le_iff₀ hp]
     exact le_csInf (exists_bound hH hK T) fun C hC => (div_le_iff₀ hp).2 (hC.2 v)
-
-theorem opNorm_le_iff (hH : H.PosDef) (hK : K.PosSemidef) {T : Matrix n m ℂ} {C : ℝ} :
-    opNorm H K T ≤ C ↔ 0 ≤ C ∧ ∀ v, gnorm K (T *ᵥ v) ≤ C * gnorm H v :=
-  ⟨fun h => ⟨(opNorm_nonneg H K T).trans h, fun v => (gnorm_mulVec_le hH hK T v).trans
-    (mul_le_mul_of_nonneg_right h (gnorm_nonneg _ _))⟩, fun h => opNorm_le_of_bound h.1 h.2⟩
 
 theorem opNorm_add_le (hH : H.PosDef) (hK : K.PosSemidef) (S T : Matrix n m ℂ) :
     opNorm H K (S + T) ≤ opNorm H K S + opNorm H K T :=
@@ -303,94 +293,7 @@ section Blocks
 
 variable [DecidableEq m] [DecidableEq l]
 
-def subGram (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix m m ℂ := H.toBlocks₁₁
-
-def quotGram (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix l l ℂ :=
-  H.toBlocks₂₂ - H.toBlocks₂₁ * H.toBlocks₁₁⁻¹ * H.toBlocks₁₂
-
-def orthCoeff (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix m l ℂ := H.toBlocks₁₁ᵀ⁻¹ * H.toBlocks₂₁ᵀ
-
-
-variable (m l) in
-def incl : Matrix (m ⊕ l) m ℂ := fromRows 1 0
-
-
-variable (m l) in
-def quotMap : Matrix l (m ⊕ l) ℂ := fromCols 0 1
-
-def orthLift (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix (m ⊕ l) l ℂ := fromRows (-orthCoeff H) 1
-
-def orthProj (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix m (m ⊕ l) ℂ := fromCols 1 (orthCoeff H)
-
-def blockQS (T : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix l m ℂ :=
-  quotMap (m := m) (l := l) * T * incl (m := m) (l := l)
-
 variable {H : Matrix (m ⊕ l) (m ⊕ l) ℂ}
-
-theorem blockQS_eq (T : Matrix (m ⊕ l) (m ⊕ l) ℂ) : blockQS T = T.toBlocks₂₁ := by
-  conv_lhs => rw [← fromBlocks_toBlocks T]
-  simp [blockQS, quotMap, incl, fromCols_mul_fromBlocks, fromCols_mul_fromRows]
-
-theorem quotMap_mul_orthLift (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) :
-    quotMap (m := m) (l := l) * orthLift H = 1 := by
-  simp [quotMap, orthLift, fromCols_mul_fromRows]
-
-theorem orthLift_transpose_mul (hu : IsUnit (subGram H).det) :
-    (orthLift H)ᵀ * H = fromCols 0 (quotGram H) := by
-  have h : (orthLift H)ᵀ = fromCols (-(H.toBlocks₂₁ * H.toBlocks₁₁⁻¹)) 1 := by
-    simp [orthLift, orthCoeff, transpose_fromRows, transpose_nonsing_inv]
-  rw [h]
-  conv_lhs => rhs; rw [← fromBlocks_toBlocks H]
-  rw [fromCols_mul_fromBlocks]
-  congr 1
-  · rw [Matrix.neg_mul, nonsing_inv_mul_cancel_right H.toBlocks₁₁ _ hu]; simp
-  · rw [quotGram]; simp [sub_eq_neg_add]
-
-theorem form_orthLift (hu : IsUnit (subGram H).det) (q q' : l → ℂ) :
-    form H (orthLift H *ᵥ q) (orthLift H *ᵥ q') = form (quotGram H) q q' := by
-  rw [form_mulVec, orthLift_transpose_mul hu, form]
-  simp [orthLift, conjTranspose_fromRows_eq_fromCols_conjTranspose, transpose_fromCols,
-    fromCols_mul_fromRows]
-
-theorem det_eq_det_subGram_mul (hu : IsUnit (subGram H).det) :
-    H.det = (subGram H).det * (quotGram H).det := by
-  letI : Invertible H.toBlocks₁₁ := invertibleOfIsUnitDet _ hu
-  conv_lhs => rw [← fromBlocks_toBlocks H]
-  rw [det_fromBlocks₁₁, invOf_eq_nonsing_inv]; rfl
-
-theorem isUnit_det_quotGram (h : IsUnit H.det) (hu : IsUnit (subGram H).det) :
-    IsUnit (quotGram H).det := isUnit_of_mul_isUnit_right (det_eq_det_subGram_mul hu ▸ h)
-
-
-omit [Fintype m] [Fintype l] [DecidableEq m] [DecidableEq l] in
-theorem isHermitian_subGram (h : H.IsHermitian) : (subGram H).IsHermitian := h.submatrix Sum.inl
-
-
-omit [Fintype m] [Fintype l] [DecidableEq m] [DecidableEq l] in
-theorem conjTranspose_toBlocks₁₂ (h : H.IsHermitian) : H.toBlocks₁₂ᴴ = H.toBlocks₂₁ := by
-  ext i j; exact h.apply _ _
-
-
-omit [Fintype l] [DecidableEq l] in
-theorem isHermitian_quotGram (h : H.IsHermitian) : (quotGram H).IsHermitian := by
-  have h1 : H.toBlocks₁₁.IsHermitian := isHermitian_subGram h
-  have h2 : H.toBlocks₂₂.IsHermitian := h.submatrix Sum.inr
-  rw [quotGram, ← conjTranspose_toBlocks₁₂ h]
-  refine h2.sub ?_
-  rw [IsHermitian, conjTranspose_mul, conjTranspose_mul, conjTranspose_conjTranspose, h1.inv.eq,
-    Matrix.mul_assoc]
-
-
-omit [DecidableEq m] [DecidableEq l] in
-theorem posDef_subGram (h : H.PosDef) : (subGram H).PosDef :=
-  h.submatrix Sum.inl_injective
-
-theorem posDef_quotGram (h : H.PosDef) : (quotGram H).PosDef := by
-  have hu : IsUnit (subGram H).det := (isUnit_iff_isUnit_det _).1 (posDef_subGram h).isUnit
-  refine posDef_iff.2 ⟨isHermitian_quotGram h.isHermitian, fun q hq => ?_⟩
-  rw [← form_orthLift hu]
-  refine (posDef_iff.1 h).2 _ fun h0 => hq ?_
-  rw [← one_mulVec q, ← quotMap_mul_orthLift H, ← mulVec_mulVec, h0, mulVec_zero]
 
 end Blocks
 

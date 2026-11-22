@@ -2,8 +2,8 @@ module
 
 public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.TransPtBase
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointRegularStatement
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorOfRegularMatrixValueStatement
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointRegular
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorIJMap
 
 @[expose] public section
 

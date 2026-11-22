@@ -44,11 +44,6 @@ theorem secondCountable_Ev : SecondCountableTopology (Fv F v ⊗[F] E) :=
   haveI := PI.UnitaryGroupMassFormula.LocJacTyp.BM.secondCountable_Fv v
   (coordEv (E := E) v).toHomeomorph.isEmbedding.secondCountableTopology
 
-theorem isOpenUnits_Ev : IsOpenUnits (Fv F v ⊗[F] E) :=
-  haveI := isModuleTopology_Ev (E := E) v
-  haveI := isTopologicalRing_Ev (E := E) v
-  GlobalTheory.GaugeEx.isOpenUnits_of_basis (basisEv v)
-
 attribute [local instance] isTopologicalRing_Ev t2Space_Fv_tensor locallyCompactSpace_Ev secondCountable_Ev isOpenUnits_Ev
 
 theorem distribHaarChar_Ev (u : (Fv F v ⊗[F] E)ˣ) :

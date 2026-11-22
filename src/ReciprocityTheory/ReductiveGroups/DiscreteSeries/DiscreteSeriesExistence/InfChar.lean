@@ -351,9 +351,6 @@ theorem icxGood_list {ι : Type*} (A : ι → Module.End ℂ (smD ε (rreg ε)))
       simp only [List.map_cons, List.prod_cons, List.foldr_cons, Module.End.mul_apply]
       exact hAB i _ _ (icxGood_list A B hAB L x Φ hx)
 
-private theorem S7_EabV_eq_REAL_EabV (a b : Fin n) (Ψ : Matrix (Fin n) (Fin n) ℂ → E) :
-    S7.EabV ε a b Ψ = Formalism.REAL.EabV ε a b Ψ := rfl
-
 theorem icxGood_tm {x : smD ε (rreg ε)} {Φ : Matrix (Fin n) (Fin n) ℂ → E} (hx : IcxGood ε φ x Φ)
     (u u' : ℂ) (hu : u = u') (a b : Fin n) :
     IcxGood ε φ (Formalism.REAL.Tm (smE ε (rreg ε)) u a b x) (Formalism.QuantumDeterminants.Top (Formalism.REAL.EabV ε) u' a b Φ) := by

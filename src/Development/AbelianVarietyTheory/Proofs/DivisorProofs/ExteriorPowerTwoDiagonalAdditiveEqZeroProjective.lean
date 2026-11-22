@@ -45,9 +45,6 @@ noncomputable def wedgeBil {M : Type} [AddCommGroup M] [Module R M] :
         simpa using (exteriorPower.ιMulti R 2).toMultilinearMap.cons_smul ![x] c y
       rw [h (c • y) x, h y x, h1, smul_neg])
 
-theorem wedgeBil_apply {M : Type} [AddCommGroup M] [Module R M] (x y : M) :
-    wedgeBil x y = exteriorPower.ιMulti R 2 ![x, y] := rfl
-
 theorem lowerWedge_sub_flip :
     lowerWedge (R := R) (I := I) - lowerWedge.flip = wedgeBil (M := I →₀ R) := by
   ext i j
@@ -82,9 +79,6 @@ noncomputable def crossWedge :
   map_eq_zero_of_eq' := by
     intro v i j h hij
     fin_cases i <;> fin_cases j <;> simp_all
-
-theorem crossWedge_apply (v : Fin 2 → (I →₀ R) × (I →₀ R)) :
-    crossWedge v = lowerWedge (v 0).1 (v 1).2 - lowerWedge (v 1).1 (v 0).2 := rfl
 
 noncomputable def crossWedgeLin : ⋀[R]^2 ((I →₀ R) × (I →₀ R)) →ₗ[R] ⋀[R]^2 (I →₀ R) :=
   exteriorPower.alternatingMapLinearEquiv crossWedge

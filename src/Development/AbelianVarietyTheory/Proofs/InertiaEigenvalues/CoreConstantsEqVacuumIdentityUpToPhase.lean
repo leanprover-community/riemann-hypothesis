@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ChartInd
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SqNormIntegralFundamentalDomainEqL2NormSq
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ApplyAddInfRat
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RationalSourceActsOnOrientedThetaBySubstitution
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsApplyPvNeZero
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ReadsExistsUniqueTheta
 
 @[expose] public section

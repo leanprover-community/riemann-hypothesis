@@ -39,7 +39,6 @@ theorem exists_biinvariant (h : f ∈ SB G) :
 
 variable [MeasurableSpace G] {μ : Measure G}
 
-
 omit [IsTopologicalGroup G] in
 theorem conv_eq_zero {y : G} (h : y ∉ tsupport f * tsupport f') : conv μ f f' y = 0 := by
   have : ∀ x, f x * f' (x⁻¹ * y) = 0 := fun x => by
@@ -93,7 +92,6 @@ section Type_
 
 variable {G Q W : Type} [Group G] [Group Q] [AddCommGroup W] [Module ℂ W] [MeasurableSpace G] (μ : Measure G)
   {K : Subgroup G} (r : K →* Q) (τ : Representation ℂ Q W)
-
 
 open Classical in
 def typeIdem : G → ℂ := fun g =>
@@ -201,37 +199,9 @@ def IsUnitEquiv (π : H →* (V →L[ℂ] V)) (π' : H →* (W →L[ℂ] W)) : P
 
 variable [MeasurableSpace H]
 
-def IsTempered (μ : Measure H) (π : H →* (V →L[ℂ] V)) : Prop :=
-  ∃ v : V, v ≠ 0 ∧ ∀ ε : ℝ, 0 < ε → Integrable (fun g => ‖⟪v, π g v⟫_ℂ‖ ^ (2 + ε)) μ
-
 variable [CompleteSpace V] [CompleteSpace W]
 
-def IsCharFn (ι : H →* Matrix n n ℂ) (μ : Measure H) (π : H →* (V →L[ℂ] V)) (Θ : H → ℂ) : Prop :=
-  LocallyIntegrable Θ μ ∧ (∀ s, IsRegSS (ι s) → ContinuousAt Θ s) ∧
-    ∀ f ∈ CcMat ι, HasTrace (repOp π μ f) (∫ g, f g * Θ g ∂μ)
-
-structure IsPseudoCoeff (ι : H →* Matrix n n ℂ) (μ : Measure H) (D : H →* (V →L[ℂ] V)) (f : H → ℂ) : Prop where
-
-  mem : f ∈ CcMat ι
-
-  trace_self : HasTrace (repOp D μ f) 1
-
-  trace_other : ∀ (U : Type) [NormedAddCommGroup U] [InnerProductSpace ℂ U] [CompleteSpace U]
-    (π : H →* (U →L[ℂ] U)), IsUnitaryRep π → IsTopIrreducible π → IsTempered μ π → ¬ IsUnitEquiv π D →
-      HasTrace (repOp π μ f) 0
-
-  orb_noncompact : ∀ s, IsRegSS (ι s) → ¬ IsCompact (cent s : Set H) →
-    ∀ (dt : Measure (cent s)) [dt.IsHaarMeasure] [dt.IsMulRightInvariant], HasOrbInt μ s dt f 0
-
-  orb_compact : ∃ Θ, IsCharFn ι μ D Θ ∧ ∀ s, IsRegSS (ι s) → IsCompact (cent s : Set H) →
-    ∀ (dt : Measure (cent s)) [dt.IsHaarMeasure] [dt.IsMulRightInvariant],
-      HasOrbInt μ s dt f (conj (Θ s) / dt.real univ)
-
 variable {ι : H →* Matrix n n ℂ} {μ : Measure H} {π : H →* (V →L[ℂ] V)} [BorelSpace H]
-
-
-
-def circleMat : Circle →* Matrix (Fin 1) (Fin 1) ℂ := (Matrix.scalar (Fin 1)).toMonoidHom.comp Circle.coeHom
 
 end Real
 

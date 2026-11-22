@@ -98,8 +98,6 @@ abbrev BilinSp (D : ℕ) := (Fin D → ℂ) →L[ℝ] (Fin D → ℂ) →L[ℝ] 
 def evalL {D : ℕ} (x w : Fin D → ℂ) : BilinSp D →L[ℝ] ℝ :=
   (ContinuousLinearMap.apply ℝ ℝ w).comp (ContinuousLinearMap.apply ℝ ((Fin D → ℂ) →L[ℝ] ℝ) x)
 
-theorem evalL_apply {D : ℕ} (x w : Fin D → ℂ) (H : BilinSp D) : evalL x w H = H x w := rfl
-
 def hessEntry {D : ℕ} (a b : Fin D) : BilinSp D →L[ℝ] ℂ :=
   (1 / 4 : ℂ) • (Complex.ofRealCLM.comp
       (evalL (Pi.single a 1) (Pi.single b 1) +

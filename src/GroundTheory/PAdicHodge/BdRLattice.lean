@@ -46,19 +46,12 @@ namespace IsPerfectoidField
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [Fact p.Prime] [IsPerfectoidField K p] [CharZero K]
 
-local notation "𝒪" => normInteger K
-local notation "𝕎𝒪♭" => WittVector p (PreTilt 𝒪 p)
-local notation "θ" => fontaineTheta 𝒪 p
-local notation "𝔸" => Localization.Away (p : 𝕎𝒪♭)
-local notation "𝔹" => BDeRhamPlus 𝒪 p
-
 omit [CharZero K] in
 theorem eq_zero_of_forall_mem_span_p_pow {b : 𝒪} (h : ∀ M : ℕ, b ∈ span {(p : 𝒪) ^ M}) : b = 0 := by
   have := isAdicComplete (K := K) p
   refine IsHausdorff.haus (I := span {(p : 𝒪)}) inferInstance _ fun n => ?_
   rw [SModEq.zero, smul_eq_mul, mul_top, span_singleton_pow]
   exact h n
-
 
 omit [IsPerfectoidField K p] in
 theorem natCast_p_ne_zero : (p : 𝒪) ≠ 0 := by

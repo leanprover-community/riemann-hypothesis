@@ -124,7 +124,6 @@ theorem ringInverse_eq_infInv {x : InfiniteAdeleRing K} (hx : IsUnit x) : Ring.i
   have h2 := congrFun h1 w
   exact eq_inv_of_mul_eq_one_left h2
 
-
 variable (K n) in
 theorem isOpenEmbedding_val_infiniteAdelicGL :
     IsOpenEmbedding (Units.val : AdelicGLn.InfiniteAdelicGL K n → Matrix (Fin n) (Fin n) (InfiniteAdeleRing K)) := by
@@ -158,7 +157,6 @@ theorem isOpenEmbedding_val_infiniteAdelicGL :
     exact isOpen_iInter_of_finite fun w ↦
       isOpen_compl_singleton.preimage ((continuous_apply w).comp hdet)
 
-
 variable (K n) in
 def archEntries : Matrix (Fin n) (Fin n) (InfiniteAdeleRing K) ≃ₜ (Fin n × Fin n → mixedSpace K) where
   toFun x ij := GroundTheory.Global.homeomorphMixedSpace K (x ij.1 ij.2)
@@ -173,9 +171,6 @@ def archEntries : Matrix (Fin n) (Fin n) (InfiniteAdeleRing K) ≃ₜ (Fin n × 
     ((continuous_apply ij.2).comp (continuous_apply ij.1))
   continuous_invFun := continuous_pi fun i ↦ continuous_pi fun j ↦
     (GroundTheory.Global.homeomorphMixedSpace K).symm.continuous.comp (continuous_apply (i, j))
-
-theorem archSchwartz_eq (φ : 𝓢(Fin n × Fin n → mixedSpace K, ℂ))
-    (x : Matrix (Fin n) (Fin n) (InfiniteAdeleRing K)) : archSchwartz φ x = φ (archEntries K n x) := rfl
 
 theorem archAbsDet_pos (x : AdelicGLn.InfiniteAdelicGL K n) : 0 < archAbsDet x := by
   have hu : IsUnit (x : Matrix (Fin n) (Fin n) (InfiniteAdeleRing K)).det :=

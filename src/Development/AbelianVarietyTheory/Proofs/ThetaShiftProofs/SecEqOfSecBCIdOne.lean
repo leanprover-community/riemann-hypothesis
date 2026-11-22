@@ -37,10 +37,6 @@ theorem flat_of_field {K S : Type} [Field K] [CommRing S] (f : K →+* S) : f.Fl
   let _ := f.toAlgebra
   exact (inferInstance : Module.Flat K S)
 
-theorem appLE_id_apply {X : Scheme.{0}} (U : X.Opens) (h : U ≤ 𝟙 X ⁻¹ᵁ U) (r : Γ(X, U)) :
-    (Scheme.Hom.appLE (𝟙 X) U U h).hom r = r :=
-  GlobalTheory.Frames.ChgOf.appLE_id' U h r
-
 theorem sec_eq_of_secBC_id_one {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
     {l : Level H} {Xo : Moduli Dw l} {S : Type} [CommRing S] (x : Sp S ⟶ Xo.X) (s s' : LB.Sec (PPx x))
     (h : SecBC (RingHom.id S) 1 x x s s') (i : (PPx x).ι) : s'.f i = s.f i := by

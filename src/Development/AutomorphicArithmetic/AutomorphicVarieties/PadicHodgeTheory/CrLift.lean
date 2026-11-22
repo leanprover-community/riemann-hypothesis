@@ -9,9 +9,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeT
 
 open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg IsLocalRing Polynomial
 
-private theorem map_ofGL {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (h : GL (Fin 3) R) :
-    GG.map f (GG.ofGL h) = GG.ofGL (Matrix.GeneralLinearGroup.map f h) := rfl
-
 private theorem map_conjBy {G R S : Type} [Group G] [CommRing R] [CommRing S] (f : R →+* S) (h : GL (Fin 3) R)
     (r : G →* GG (m := 3) (R := R)) :
     (GG.map f).comp (conjBy h r) = conjBy (Matrix.GeneralLinearGroup.map f h) ((GG.map f).comp r) := by

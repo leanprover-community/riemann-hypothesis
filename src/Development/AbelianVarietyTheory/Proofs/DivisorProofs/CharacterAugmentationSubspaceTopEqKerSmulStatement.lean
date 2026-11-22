@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharacterAugmentationSubspaceTopEqKerSmul
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QActMSubAlgebraMap
 
 @[expose] public section

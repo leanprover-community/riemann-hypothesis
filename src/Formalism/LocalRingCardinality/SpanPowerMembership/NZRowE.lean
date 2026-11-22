@@ -1,7 +1,6 @@
 module
 
-public import Formalism.LocalRingCardinality.SpanPowerMembership.CodeRecordDiscriminantLevel
-public import Formalism.LocalRingCardinality.SpanPowerMembership.NZColC
+public import Formalism.SharpRestriction.InertJacobiLevels.HostFam
 public import Formalism.LocalRingCardinality.DataIdx
 public import Formalism.LocalRingCardinality.SpanPowerMembership.DivXExample
 public import Formalism.LocalRingCardinality.DataAmbForm
@@ -9,7 +8,7 @@ public import Formalism.LocalRingCardinality.DataKap
 public import Formalism.LocalRingCardinality.DataDIVDefs
 public import Formalism.LocalRingCardinality.DataRows
 public import Formalism.LocalRingCardinality.DataForms
-public import Formalism.LocalRingCardinality.SpanPowerMembership.NZRowC
+public import Formalism.LocalRingCardinality.DataBu
 public import Formalism.LocalRingCardinality.SpanPowerMembership.NZTypeH
 
 @[expose] public section

@@ -34,8 +34,6 @@ private def cp (τ : R →+* R) (c : Matrix (Fin n) (Fin n) R) : ℕ → Matrix 
   | 0 => 1
   | i + 1 => cp τ c i * c.map (τ ^ i)
 
-private theorem cp_zero (τ : R →+* R) (c : Matrix (Fin n) (Fin n) R) : cp τ c 0 = 1 := rfl
-
 private theorem cp_succ (τ : R →+* R) (c : Matrix (Fin n) (Fin n) R) (i : ℕ) :
     cp τ c (i + 1) = cp τ c i * c.map (τ ^ i) := rfl
 

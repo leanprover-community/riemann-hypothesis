@@ -101,11 +101,6 @@ theorem norm_sq_left_le {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [C
 def Tl {ι : Type} [DecidableEq ι] (l : List ι) : Finset (List ι) :=
   l.foldr (fun i T => T ∪ T.image (fun M => M ++ [i])) {[]}
 
-theorem Tl_nil {ι : Type} [DecidableEq ι] : Tl ([] : List ι) = {[]} := rfl
-
-theorem Tl_cons {ι : Type} [DecidableEq ι] (i : ι) (l : List ι) :
-    Tl (i :: l) = Tl l ∪ (Tl l).image (fun M => M ++ [i]) := rfl
-
 theorem marg_bound {ι : Type} [Fintype ι] [DecidableEq ι] (ε : ℝ) (c : ℝ≥0∞)
     (Gf : List ι → (ι → ℝ) → ℝ≥0∞) (hm : ∀ L, Measurable (Gf L))
     (K : Set (ι → ℝ))

@@ -13,8 +13,6 @@ open NumberField NumberField.InfinitePlace NumberField.InfinitePlace.Completion 
   GroundTheory.LocalField.Abstract IdeleGroup
 open scoped GroundTheory.LocalField.Abstract ComplexConjugate NumberField.LiesOver
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 section SqrtNegOne
@@ -182,7 +180,6 @@ theorem le_fixedSubfield_sup_maxCyclotomic :
   rw [hx']
   exact add_mem (le_sup_left (a := (fixedSubfield τ).1) s.2)
     (mul_mem (le_sup_right (a := (fixedSubfield τ).1) hI) (le_sup_left (a := (fixedSubfield τ).1) t.2))
-
 
 omit hτ hi hτi in
 theorem isReal_comap_fixedSubfield {w : InfinitePlace E.1}

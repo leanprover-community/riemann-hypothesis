@@ -92,7 +92,6 @@ theorem isUnit_mk_of_formallyUnramified {k A : Type*} [CommRing k] [CommRing A] 
   have h1 : c * Ideal.Quotient.mk I J = 1 := hgen.1 (hcoef.trans (one_smul _ _).symm)
   exact isUnit_iff_exists_inv.2 ⟨c, by rw [mul_comm]; exact h1⟩
 
-
 variable (p) in
 theorem resG_comp_algX {U V : Y.Opens} (h : V ≤ U) : (resG Y h).comp (algX p U) = algX p V := by
   ext a
@@ -101,10 +100,8 @@ theorem resG_comp_algX {U V : Y.Opens} (h : V ≤ U) : (resG Y h).comp (algX p U
   exact congrArg (fun φ : Γ(Sp k, ⊤) ⟶ Γ(Y, V) => φ.hom ((Scheme.ΓSpecIso (CommRingCat.of k)).inv.hom a))
     (Scheme.Hom.appLE_map p _ (homOfLE h).op)
 
-
 variable (p D) in
 abbrev FormsOn (U : Y.Opens) : Type := Forms (algX p U) D
-
 
 variable (p) in
 abbrev dOn {U : Y.Opens} (f : Fin D → Γ(Y, U)) : FormsOn p D U := dForm (algX p U) f
@@ -269,7 +266,6 @@ theorem res_ratio_mul (hω : IsFrame ω) (hω' : IsFrame ω') (hω'' : IsFrame �
 
 end IsFrame
 
-
 variable (p D) in
 theorem exists_isFrame [SmoothOfRelativeDimension D p] (x : Y) :
     ∃ (U : Y.Opens) (ω : FormsOn p D U), x ∈ U ∧ IsFrame ω := by
@@ -324,7 +320,6 @@ def ofFrames {ι : Type} (U : ι → Y.Opens) (ω : ∀ i, FormsOn p D (U i)) (h
   gen i := (h i).gen
   trans i j _ hW hi hj := (h i).resForm_eq_ratio_smul (h j) hW hi hj
 
-
 variable (p D) in
 def all : CanonLB p D :=
   ofFrames (ι := Σ U : Y.Opens, {ω : FormsOn p D U // IsFrame ω}) (fun a => a.1) (fun a => a.2.1)
@@ -344,10 +339,6 @@ theorem g_eq_ratio (i j : K.bundle.ι) : K.bundle.g i j = (K.isFrame i).ratio (K
 
 def coeff (i : K.bundle.ι) (h : V ≤ K.bundle.U i) : FormsOn p D V →ₗ[Γ(Y, V)] Γ(Y, V) :=
   (K.isFrame i).coeff h
-
-theorem coeff_eq_iff (i : K.bundle.ι) (h : V ≤ K.bundle.U i) {η : FormsOn p D V} {c : Γ(Y, V)} :
-    K.coeff i h η = c ↔ ∀ W : Y.Opens, IsAffineOpen W → ∀ hW : W ≤ V,
-      resForm hW η = resG Y hW c • resForm (hW.trans h) (K.om i) := (K.isFrame i).coeff_eq_iff h
 
 theorem coeff_smul_om (i : K.bundle.ι) (hV : IsAffineOpen V) (h : V ≤ K.bundle.U i)
     (η : FormsOn p D V) : K.coeff i h η • resForm h (K.om i) = η := (K.isFrame i).coeff_smul_resForm hV h η
@@ -418,13 +409,6 @@ theorem jacobian_mul_sub_mem (i : K.bundle.ι) (h : V ≤ K.bundle.U i) (I : Ide
     (u : Γ(Y, V)) (f : Fin D → Γ(Y, V)) (hf : ∀ a, f a ∈ I) :
     K.jacobian i h (fun a => u * f a) - u ^ D * K.jacobian i h f ∈ I := map_dForm_mul_sub_mem (K.coeff i h) I u f hf
 
-theorem jacobian_eq_det_mul (i : K.bundle.ι) (h : V ≤ K.bundle.U i) (f x : Fin D → Γ(Y, V))
-    (m : Matrix (Fin D) (Fin D) Γ(Y, V))
-    (e : ∀ a, dFun (algX p V) (f a) = ∑ b, m a b • dFun (algX p V) (x b)) :
-    K.jacobian i h f = m.det * K.jacobian i h x := by
-  change K.coeff i h (dForm _ f) = m.det * K.coeff i h (dForm _ x)
-  rw [dForm_eq_det_smul f x m e, map_smul, smul_eq_mul]
-
 theorem isUnit_jacobian_iff (i : K.bundle.ι) (hV : IsAffineOpen V) (h : V ≤ K.bundle.U i)
     (x : Fin D → Γ(Y, V)) : IsUnit (K.jacobian i h x) ↔ IsFrame (dOn p x) := by
   rw [← K.jacobian_smul_om i hV h x]
@@ -447,32 +431,6 @@ theorem VanishesAlong.appLE_resG {s : LB.Sec L} {y : T ⟶ Y} (hs : VanishesAlon
     (y.appLE V W e).hom (resG Y h (s.f j)) = 0 := by
   change (Y.presheaf.map (homOfLE h).op ≫ y.appLE V W e).hom (s.f j) = 0
   rw [Scheme.Hom.map_appLE, Scheme.Hom.appLE, CommRingCat.hom_comp, RingHom.comp_apply, hs j, map_zero]
-
-theorem vanishesAlong_iff_evalPt {R : Type} [CommRing R] (s : LB.Sec L) (y : Sp R ⟶ Y) (j : L.ι)
-    (h : ⊤ ≤ y ⁻¹ᵁ L.U j) : VanishesAlong s y ↔ evalPt y _ h (s.f j) = 0 := by
-  constructor
-  · intro hs
-    change ((y.app (L.U j) ≫ (Sp R).presheaf.map (homOfLE h).op) ≫
-      (Scheme.ΓSpecIso (CommRingCat.of R)).hom).hom (s.f j) = 0
-    simp only [CommRingCat.hom_comp, RingHom.comp_apply, hs j, map_zero]
-  · intro h0 j'
-    have hA : (y.appLE (L.U j) ⊤ h).hom (s.f j) = 0 := by
-      have e0 := h0
-      unfold evalPt at e0
-      rw [CommRingCat.hom_comp, RingHom.comp_apply] at e0
-      exact (Scheme.ΓSpecIso (CommRingCat.of R)).commRingCatIsoToRingEquiv.injective (e0.trans (map_zero _).symm)
-    have hO' : y ⁻¹ᵁ L.U j' ≤ y ⁻¹ᵁ (L.U j' ⊓ L.U j) := le_preimage_inf le_rfl (le_top.trans h)
-    have e2 : (y.appLE (L.U j' ⊓ L.U j) (y ⁻¹ᵁ L.U j') hO').hom (resG Y inf_le_right (s.f j)) = 0 := by
-      change (Y.presheaf.map (homOfLE inf_le_right).op ≫ y.appLE (L.U j' ⊓ L.U j) (y ⁻¹ᵁ L.U j') hO').hom
-        (s.f j) = 0
-      rw [Scheme.Hom.map_appLE, ← Scheme.Hom.appLE_map y h (homOfLE le_top).op, CommRingCat.hom_comp,
-        RingHom.comp_apply, hA, map_zero]
-    have e1 : (y.appLE (L.U j') (y ⁻¹ᵁ L.U j') le_rfl).hom (s.f j') =
-        (y.appLE (L.U j' ⊓ L.U j) (y ⁻¹ᵁ L.U j') hO').hom (resG Y inf_le_left (s.f j')) := by
-      change _ = (Y.presheaf.map (homOfLE inf_le_left).op ≫ y.appLE (L.U j' ⊓ L.U j) (y ⁻¹ᵁ L.U j') hO').hom
-        (s.f j')
-      rw [Scheme.Hom.map_appLE]
-    rw [Scheme.Hom.app_eq_appLE, e1, sec_rel s j' j inf_le_left inf_le_right le_rfl, map_mul, e2, mul_zero]
 
 theorem lbPow_U_le (n : ℕ) (j : (lbPow L n).ι) : (lbPow L n).U j ≤ L.U (j PUnit.unit) := by
   intro x hx
@@ -516,8 +474,6 @@ theorem isUnit_map_jacobian {R : Type*} [CommRing R] (i : K.bundle.ι) (hV : IsA
   exact hq.map (Ideal.Quotient.lift _ ψ fun x hx => hker hx)
 
 abbrev adj (L : LB Y) (n : ℕ) : LB Y := tens K.bundle (lbPow L n)
-
-theorem isLB_adj (hL : L.IsLB) (n : ℕ) : (K.adj L n).IsLB := isLB_tens K.isLB (LB.isLB_linComb hL _ _)
 
 def jacFun (s : Fin D → LB.Sec L) (i : K.bundle.ι) (j : L.ι) : Γ(Y, K.bundle.U i ⊓ L.U j) :=
   K.jacobian i inf_le_left fun a => resG Y inf_le_right ((s a).f j)
@@ -584,17 +540,6 @@ section Point
 
 variable {F : Type} [CommRing F]
 
-def jacVal (s : Fin D → LB.Sec L) (y : Sp F ⟶ Y) (i : K.bundle.ι) (j : L.ι)
-    (hi : ⊤ ≤ y ⁻¹ᵁ K.bundle.U i) (hj : ⊤ ≤ y ⁻¹ᵁ L.U j) : F :=
-  evalPt y (K.bundle.U i ⊓ L.U j) (le_preimage_inf hi hj) (K.jacFun s i j)
-
-theorem jacVal_eq (s : Fin D → LB.Sec L) (y : Sp F ⟶ Y) (i : K.bundle.ι) (j : L.ι)
-    (hi : ⊤ ≤ y ⁻¹ᵁ K.bundle.U i) (hj : ⊤ ≤ y ⁻¹ᵁ L.U j) (h₁ : V ≤ K.bundle.U i) (h₂ : V ≤ L.U j)
-    (hy : ⊤ ≤ y ⁻¹ᵁ V) : K.jacVal s y i j hi hj =
-      evalPt y V hy (K.jacobian i h₁ fun a => resG Y h₂ ((s a).f j)) := by
-  unfold jacVal
-  rw [← evalPt_res y (le_inf h₁ h₂) _ hy, K.resG_jacFun]
-
 end Point
 
 end CanonLB
@@ -602,13 +547,6 @@ end CanonLB
 namespace TopForm
 
 variable {p : Y ⟶ Sp k} {D : ℕ} {U V : Y.Opens}
-
-
-variable (p) in
-def jacOn (f : Fin (D + 1) → Γ(Y, U)) : FormsOn p D U := letI := (algX p U).toAlgebra; jac k f
-
-theorem jacOn_eq (f : Fin (D + 1) → Γ(Y, U)) : jacOn p f =
-    ∑ a : Fin (D + 1), ((-1 : Γ(Y, U)) ^ (a : ℕ) * f a) • dOn p fun b => f (a.succAbove b) := rfl
 
 @[simp] theorem resForm_jacOn (h : V ≤ U) (f : Fin (D + 1) → Γ(Y, U)) :
     resForm h (jacOn p f) = jacOn p fun a => resG Y h (f a) := by
@@ -618,42 +556,12 @@ theorem jacOn_eq (f : Fin (D + 1) → Γ(Y, U)) : jacOn p f =
   have : IsScalarTower k Γ(Y, U) Γ(Y, V) := IsScalarTower.of_algebraMap_eq' (resG_comp_algX p h).symm
   exact map_jac k Γ(Y, V) f
 
-theorem jacOn_mul (u : Γ(Y, U)) (f : Fin (D + 1) → Γ(Y, U)) :
-    jacOn p (fun a => u * f a) = u ^ (D + 1) • jacOn p f := by
-  let := (algX p U).toAlgebra
-  exact jac_mul k u f
-
 end TopForm
 
 namespace CanonLB
 
 variable {p : Y ⟶ Sp k} {D : ℕ} [SmoothOfRelativeDimension D p] (K : CanonLB p D) {L : LB Y}
   {V : Y.Opens}
-
-def jacSec (s : Fin (D + 1) → LB.Sec L) : LB.Sec (K.adj L (D + 1)) where
-  f c := K.coeff c.1 ((K.adj_U_le _ c).trans inf_le_left)
-    (jacOn p fun a => resG Y ((K.adj_U_le _ c).trans inf_le_right) ((s a).f (c.2 PUnit.unit)))
-  compat c c' := by
-    have l := K.adj_U_le _ c
-    have l' := K.adj_U_le _ c'
-    have l₁ := inf_le_inf (l.trans inf_le_left) (l'.trans inf_le_left)
-    have l₂ := inf_le_inf (l.trans inf_le_right) (l'.trans inf_le_right)
-    have h₂ := resG_tens_lbPow_g K.bundle (D + 1) c c' le_rfl l₁ l₂
-    rw [resG_self] at h₂
-    refine (K.resG_coeff _ _ _ _).trans (Eq.trans ?_
-      (congrArg₂ (· * ·) h₂.symm (K.resG_coeff _ _ _ _).symm))
-    rw [K.coeff_change c.1 c'.1 _ (l₁.trans inf_le_right), mul_assoc, ← smul_eq_mul (_ ^ _),
-      ← map_smul, resForm_jacOn, resForm_jacOn, ← jacOn_mul]
-    simp only [resG_resG, fun a => sec_rel (s a) _ _ (l₂.trans inf_le_left)
-      (l₂.trans inf_le_right) l₂]
-
-theorem resG_jacSec_f (s : Fin (D + 1) → LB.Sec L) (c : (K.adj L (D + 1)).ι)
-    (h : V ≤ (K.adj L (D + 1)).U c) (h₁ : V ≤ K.bundle.U c.1) (h₂ : V ≤ L.U (c.2 PUnit.unit)) :
-    resG Y h ((K.jacSec s).f c) =
-      K.coeff c.1 h₁ (jacOn p fun a => resG Y h₂ ((s a).f (c.2 PUnit.unit))) := by
-  change resG Y h (K.coeff c.1 _ (jacOn p fun a => resG Y _ ((s a).f (c.2 PUnit.unit)))) = _
-  rw [K.resG_coeff, resForm_jacOn]
-  simp only [resG_resG]
 
 end CanonLB
 
@@ -664,8 +572,6 @@ section AffineSpace
 open MvPolynomial
 
 variable (k) (D : ℕ)
-
-abbrev affStr : Sp (MvPolynomial (Fin D) k) ⟶ Sp k := spMap (algebraMap k _)
 
 instance smooth_affStr : SmoothOfRelativeDimension D (affStr k D) := by
   let P₀ : Algebra.Presentation k (MvPolynomial (Fin D) k) (Fin D) Empty :=
@@ -687,99 +593,6 @@ instance smooth_affStr : SmoothOfRelativeDimension D (affStr k D) := by
   exact RingHom.locally_of RingHom.isStandardSmoothOfRelativeDimension_respectsIso _
     ((RingHom.isStandardSmoothOfRelativeDimension_algebraMap D).2
       (P₂.isStandardSmoothOfRelativeDimension (by simp [Algebra.Presentation.dimension])))
-
-
-variable {k D} in
-def polyFn : MvPolynomial (Fin D) k →+* Γ(Sp (MvPolynomial (Fin D) k), ⊤) :=
-  (Scheme.ΓSpecIso (CommRingCat.of (MvPolynomial (Fin D) k))).inv.hom
-
-theorem polyFn_comp : (polyFn (k := k) (D := D)).comp (algebraMap k _) = algX (affStr k D) ⊤ := by
-  ext a
-  simp only [RingHom.comp_apply, polyFn, algX]
-  rw [show Scheme.Hom.appLE (affStr k D) ⊤ ⊤ _ = (affStr k D).appTop from (Scheme.Hom.app_eq_appLE _).symm]
-  exact congrArg (fun φ => φ.hom a)
-    (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom (algebraMap k (MvPolynomial (Fin D) k))))
-
-private theorem dFun_polyFn_eq_sum_pderiv (g : MvPolynomial (Fin D) k) :
-    dFun (algX (affStr k D) ⊤) (polyFn g) =
-      ∑ b, polyFn (pderiv b g) • dFun (algX (affStr k D) ⊤) (polyFn (X b)) := by
-  let _ := (algX (affStr k D) ⊤).toAlgebra
-  induction g using MvPolynomial.induction_on with
-  | C c =>
-    have e : polyFn (C c : MvPolynomial (Fin D) k) = algX (affStr k D) ⊤ c := by
-      rw [← polyFn_comp]
-      rfl
-    rw [e]
-    simp only [pderiv_C, map_zero, zero_smul, Finset.sum_const_zero]
-    exact (KaehlerDifferential.D k _).map_algebraMap c
-  | add p q hp hq =>
-    simp only [map_add (f := _), hp, hq, add_smul, Finset.sum_add_distrib]
-  | mul_X p i hp =>
-    have hl : dFun (algX (affStr k D) ⊤) (polyFn (p * X i)) =
-        polyFn p • dFun (algX (affStr k D) ⊤) (polyFn (X i)) +
-          polyFn (X i : MvPolynomial (Fin D) k) • dFun (algX (affStr k D) ⊤) (polyFn p) := by
-      rw [map_mul]
-      exact (KaehlerDifferential.D k _).leibniz _ _
-    rw [hl, hp, Finset.smul_sum]
-    simp only [Derivation.leibniz, pderiv_X, smul_eq_mul, map_add (f := _), map_mul, add_smul, mul_smul,
-      Finset.sum_add_distrib]
-    congr 1
-    simp [Pi.single_apply]
-
-theorem isFrame_dX : IsFrame (dOn (affStr k D) fun a => polyFn (X a)) := by
-  refine ⟨isAffineOpen_top _, ?_⟩
-  have hfg : IsFreeGen (MvPolynomial (Fin D) k) (dForm (algebraMap k (MvPolynomial (Fin D) k)) fun a => X a) := by
-    let Pinst : Algebra k (MvPolynomial (Fin D) k) → Prop := fun I =>
-      letI := I
-      IsFreeGen (MvPolynomial (Fin D) k) (exteriorPower.ιMulti (MvPolynomial (Fin D) k) D
-        fun a => KaehlerDifferential.D k (MvPolynomial (Fin D) k) (X a))
-    have hstd : Pinst inferInstance := by
-      have hb := isFreeGen_ιMulti (KaehlerDifferential.mvPolynomialBasis k (Fin D))
-      rw [show ⇑(KaehlerDifferential.mvPolynomialBasis k (Fin D)) =
-          fun a => KaehlerDifferential.D k (MvPolynomial (Fin D) k) (X a) from
-        funext fun a => by simp [KaehlerDifferential.mvPolynomialBasis_apply]] at hb
-      exact hb
-    have h : (inferInstance : Algebra k (MvPolynomial (Fin D) k)) =
-        (algebraMap k (MvPolynomial (Fin D) k)).toAlgebra := toAlgebra_algebraMap.symm
-    exact Eq.mp (congrArg Pinst h) hstd
-  have hρ : (polyFn (k := k) (D := D)).Etale := RingHom.Etale.of_bijective
-    (Scheme.ΓSpecIso (CommRingCat.of (MvPolynomial (Fin D) k))).commRingCatIsoToRingEquiv.symm.bijective
-  have := hfg.formMap hρ (polyFn_comp k D)
-  rw [formMap_dForm] at this
-  exact this
-
-def affineSpace : CanonLB (affStr k D) D :=
-  ofFrames (ι := PUnit) (fun _ => ⊤) (fun _ => dOn _ fun a => polyFn (X a))
-    (fun _ => isFrame_dX k D) iSup_const
-
-
-variable {k D} in
-theorem jacobian_affineSpace (f : Fin D → MvPolynomial (Fin D) k) :
-    (affineSpace k D).jacobian PUnit.unit le_rfl (fun a => polyFn (f a)) =
-      polyFn (Matrix.of fun a b => pderiv b (f a)).det := by
-  have hx : (affineSpace k D).jacobian PUnit.unit le_rfl (fun a => polyFn (X a)) = 1 := by
-    have := (affineSpace k D).coeff_om PUnit.unit le_rfl
-    rwa [resForm_self] at this
-  rw [(affineSpace k D).jacobian_eq_det_mul PUnit.unit le_rfl _ (fun a => polyFn (X a))
-    (polyFn.mapMatrix (Matrix.of fun a b => pderiv b (f a))) (fun a => dFun_polyFn_eq_sum_pderiv k D (f a)), hx, mul_one,
-    RingHom.map_det]
-  rfl
-
-
-variable {k D} in
-def polySec (f : MvPolynomial (Fin D) k) :
-    LB.Sec (Out.Inh.trivLB (Sp (MvPolynomial (Fin D) k))) :=
-  ⟨fun _ => polyFn f, fun _ _ => (one_mul _).symm⟩
-
-theorem jacVal_affineSpace {F : Type} [CommRing F] (φ : MvPolynomial (Fin D) k →+* F)
-    (f : Fin D → MvPolynomial (Fin D) k) :
-    (affineSpace k D).jacVal (fun a => polySec (f a)) (spMap φ) PUnit.unit PUnit.unit
-      le_rfl le_rfl = φ (Matrix.of fun a b => pderiv b (f a)).det := by
-  have h1 := (affineSpace k D).jacVal_eq (fun a => polySec (f a)) (spMap φ) PUnit.unit PUnit.unit le_rfl le_rfl
-    (V := ⊤) le_rfl le_rfl le_rfl
-  refine h1.trans ((congrArg (evalPt (spMap φ) ⊤ _) (congrArg ((affineSpace k D).jacobian PUnit.unit le_rfl)
-    (funext fun a => resG_self _ _))).trans ?_)
-  exact (congrArg _ (jacobian_affineSpace f)).trans (evalPt_spMap φ _)
 
 end AffineSpace
 

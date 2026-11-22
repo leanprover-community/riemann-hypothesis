@@ -18,8 +18,6 @@ open NormedSpace Filter Topology
 variable {𝔸 : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [CompleteSpace 𝔸] [FiniteDimensional ℝ 𝔸]
   {G : Subgroup 𝔸ˣ} {𝔤 : Submodule ℝ 𝔸} {d : ℕ}
 
-local notation "𝔢" => expPartialHomeomorph ℝ 𝔸
-
 noncomputable def psi (b : Module.Basis (Fin d) ℝ 𝔤) (x : E d) (Y : 𝔤) : E d :=
   (coordEquiv b).symm (subspaceProj 𝔤 ((𝔢).symm (exp ((coordEquiv b x : 𝔤) : 𝔸) * exp (Y : 𝔸))))
 

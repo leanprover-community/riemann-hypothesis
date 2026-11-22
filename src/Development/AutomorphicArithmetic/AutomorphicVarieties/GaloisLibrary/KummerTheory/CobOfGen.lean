@@ -1,7 +1,7 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.Mk0IdMapCongr
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CoboundaryOfGenerator
+public import Mathlib
 
 @[expose] public section
 

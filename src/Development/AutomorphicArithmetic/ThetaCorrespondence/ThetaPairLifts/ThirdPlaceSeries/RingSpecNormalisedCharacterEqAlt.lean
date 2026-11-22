@@ -1,6 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.EMtLevel
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.ValLeOneOfIsIntegral
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.GlobalDatumRegularityOfTypesCompatibility
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.Choice
+public import Formalism.LocalToGlobal.LocalInduction.BridgeInd
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NGalTied
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NGalLinkChar

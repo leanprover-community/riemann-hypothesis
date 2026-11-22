@@ -76,19 +76,6 @@ def CasCentral : Prop :=
     (∀ c d, Cas E * E c d = E c d * Cas E) ∧
     (∀ c d, ε c = ε d → CasK ε E * E c d = E c d * CasK ε E)
 
-def tens {V W : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] {n : ℕ}
-    (E : Fin n → Fin n → Module.End ℂ V) (F : Fin n → Fin n → Module.End ℂ W) :
-    Fin n → Fin n → Module.End ℂ (V ⊗[ℂ] W) :=
-  fun a b => TensorProduct.map (E a b) LinearMap.id + TensorProduct.map LinearMap.id (F a b)
-
-def Om {V W : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] {n : ℕ}
-    (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ V)
-    (F : Fin n → Fin n → Module.End ℂ W) : Module.End ℂ (V ⊗[ℂ] W) :=
-  ∑ a, ∑ b, if ε a = ε b then TensorProduct.map (E a b) (F b a) else 0
-
-def adj {n : ℕ} (a b : Fin n) : Module.End ℂ (Matrix (Fin n) (Fin n) ℂ) :=
-  LinearMap.mulLeft ℂ (Matrix.single a b (1 : ℂ)) - LinearMap.mulRight ℂ (Matrix.single a b (1 : ℂ))
-
 def OmEigen : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ) (a b : Fin n), a ≠ b →
     ((nsq (lam + rhoN ε - rhoC ε + root a b + rhoC ε) - nsq (rhoC ε)) - (n : ℝ) -
@@ -109,9 +96,5 @@ def GrowthIter : Prop :=
 def TaylorRadius : Prop :=
   ∀ (C m t : ℝ), 0 ≤ C → 0 ≤ m → 0 ≤ t → C * t * Real.exp 1 < 1 →
     Summable (fun k : ℕ => (C * t) ^ k * (m + k) ^ k / (k.factorial : ℝ))
-
-def volU : ℕ → ℝ
-  | 0 => 1
-  | i + 1 => volU i * (2 * Real.pi ^ (i + 1) / (i.factorial : ℝ))
 
 end Formalism.REAL

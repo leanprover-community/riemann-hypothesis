@@ -70,10 +70,6 @@ def bcO {A A' : Type} [CommRing A] [Algebra S A] [CommRing A'] [Algebra T A'] (b
     congr 1
     simp only [ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp, hA])
 
-theorem bcO_left {A A' : Type} [CommRing A] [Algebra S A] [CommRing A'] [Algebra T A'] (bA : A →+* A')
-    (hA : bA.comp (algebraMap S A) = (algebraMap T A').comp f) :
-    (bcO f x0 bA hA).left = Spec.map (CommRingCat.ofHom bA) := rfl
-
 theorem nat_over {A A' B B' : Type} [CommRing A] [Algebra S A] [CommRing A'] [Algebra T A'] [CommRing B]
     [Algebra S B] [CommRing B'] [Algebra T B'] (bA : A →+* A') (hA : bA.comp (algebraMap S A) = (algebraMap T A').comp f)
     (bB : B →+* B') (hB : bB.comp (algebraMap S B) = (algebraMap T B').comp f)

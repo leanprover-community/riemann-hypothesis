@@ -5,7 +5,6 @@ public import Formalism.LocalRingCardinality.HostCls
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PolyBetween
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LocalValuationColumns
 public import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaExponentsDominantLastEntryOneDegreeStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuotientWeightGapBounds
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LengthUnitSizeBounds

@@ -45,14 +45,6 @@ def IsKFinVec {S T : HSp D} (om : GA D S × GA D T →* Module.End ℂ (WO S T �
     (φ : WO S T → ℂ) : Prop :=
   FiniteDimensional ℂ (Submodule.span ℂ {f : WO S T → ℂ | ∃ k ∈ K, f = om (k, 1) φ})
 
-def IsSmoothOn (V : HSp D) (Φ : GA D V → ℂ) : Prop :=
-  Continuous Φ ∧
-  (∃ U : Subgroup (GA D V), IsOpen (U : Set (GA D V)) ∧ ∀ k ∈ U, k ∈ GfC V → ∀ g, Φ (g * k) = Φ g) ∧
-  ∀ θ : InfFam D, IsInfFam θ →
-    ∀ (k : ℕ) (τs : Fin k → D.what₂.Tau) (Xs : Fin k → Matrix (Fin V.rank) (Fin V.rank) ℂ),
-      (∀ i, Xs i ∈ lieAt V (τs i)) → ∀ g,
-        ContDiff ℝ ∞ fun t : Fin k → ℝ => Φ (g * (List.ofFn fun i => oneP θ V (τs i) (Xs i) (t i)).prod)
-
 section Clauses
 
 variable (ψ : AddChar (AF D.host.F) ℂ) (A B : HSp D) (χB : (AE D)ˣ →* Circle)
@@ -70,30 +62,12 @@ def ThetaClause : Prop :=
 
 variable (ν : Measure (WO A B)) (𝓕 : Set (WO A B))
 
-def SectionClause : Prop :=
-  ∀ φ, IsThetaFunO ψ (dblSp A) B φ →
-    IntegrableOn (fun w => φ (lagr A B w)) 𝓕 ν ∧
-    (∀ h : GA D B, evZero A B ν 𝓕 (omh (1, h) φ) = evZero A B ν 𝓕 φ) ∧
-    (∀ (p : siegel A) (g : GA D (dblSp A)), swSec A B omh ν 𝓕 φ (p * g) =
-      (χB⁻¹ (aP A p) : Circle) * npow (absA D (aP A p)) (sZero A B + (A.rank : ℂ) / 2) * swSec A B omh ν 𝓕 φ g) ∧
-    IsSmoothOn (dblSp A) (swSec A B omh ν 𝓕 φ) ∧
-    ∀ a : GL (Fin A.rank) (AE D), IsMaj A a → IsKFinVec omh (Khat A a) φ →
-      swSec A B omh ν 𝓕 φ ∈ degPS A a χB⁻¹ (sZero A B)
-
 def CoefClause : Prop :=
   ∀ f₁ f₂, IsThetaFunO ψ A B f₁ → IsThetaFunO ψ A B f₂ →
     evZero A B ν 𝓕 (delta A B f₁ f₂) = ip A B ν 𝓕 f₁ f₂ ∧
     ∀ g : GA D A, swSec A B omh ν 𝓕 (delta A B f₁ f₂) (io A (g, 1)) = ip A B ν 𝓕 (om (g, 1) f₁) f₂
 
 end Clauses
-
-def DoublingIso (D : D7) : Prop :=
-  ∀ (ψ : AddChar (AF D.host.F) ℂ) (A B : HSp D) (χA χB : (AE D)ˣ →* Circle)
-    (om : GA D A × GA D B →* Module.End ℂ (WO A B → ℂ)), IsWeilDatumO ψ A B χA χB om →
-    ∃ omh : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ),
-      IsWeilDatumO ψ (dblSp A) B 1 χB omh ∧ ThetaClause ψ A B χB om omh ∧
-      AllSome (fun m : Measure (WO A B) × Set (WO A B) => IsCovolOne (ratL B A) m.1 m.2) fun m =>
-        SectionClause ψ A B χB omh m.1 m.2 ∧ CoefClause ψ A B om omh m.1 m.2
 
 section Basic₂
 

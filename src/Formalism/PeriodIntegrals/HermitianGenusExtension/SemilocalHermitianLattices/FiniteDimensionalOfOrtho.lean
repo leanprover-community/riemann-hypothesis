@@ -20,9 +20,6 @@ def stdForm (K : Type) [Field K] [StarRing K] (n : ℕ) :
     (fun x y y' => by simp [mul_add, Finset.sum_add_distrib])
     (fun c x y => by simp [Finset.mul_sum, mul_left_comm])
 
-theorem stdForm_apply (K : Type) [Field K] [StarRing K] (n : ℕ) (x y : Fin n → K) :
-    stdForm K n x y = ∑ i, star (x i) * y i := rfl
-
 theorem stdForm_isSymm (K : Type) [Field K] [StarRing K] (n : ℕ) : (stdForm K n).IsSymm := by
   refine ⟨fun x y => ?_⟩
   simp [stdForm_apply, mul_comm, starRingEnd_apply]

@@ -113,38 +113,6 @@ theorem adToCls_injective : Function.Injective (adToCls hc n ST SG H) := by
     obtain ⟨γ, k, -, -, e⟩ := rlc_rel_of_orbit hc n ST SG H a ha.symm
     exact (rlc_mk_eq hc n ST SG H γ k e).symm
 
-theorem decoOf_ptOf (hS : DecoPtSurj hc n ST SG) (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) :
-    decoOf ST SG (ptOf hc n ST SG d : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) = d := by
-  have hex : ∃ x : UAd hc n, decoOf ST SG (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) = d := by
-    obtain ⟨q, hq⟩ := hS d
-    induction q using QuotientGroup.induction_on with
-    | H x => exact ⟨x, by rw [← decoPt_mk hc n ST SG x]; exact hq⟩
-  unfold ptOf
-  rw [dite_eq_left hex]
-  exact hex.choose_spec
-
-theorem adToCls_adClsOf (hS : DecoPtSurj hc n ST SG) (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) :
-    adToCls hc n ST SG H (adClsOf hc n ST SG H d) = decoCls n ST SG H d := by
-  unfold adClsOf
-  rw [adToCls_mk, decoOf_ptOf hc n ST SG hS]
-
-theorem levU_y_bij (hS : DecoPtSurj hc n ST SG) (s : DecoCl n ST SG H → DecoSet (E := E) (n := n) (ST := ST) (SG := SG))
-    (hs : ∀ c, decoCls n ST SG H (s c) = c) :
-    Function.Bijective (fun c : DecoCl n ST SG H =>
-      (Quotient.mk'' (ptOf hc n ST SG (s c)) : Formalism.UG.ClassSet
-        ((Formalism.UG.ratPts hc.sig (1 : Matrix (Fin n) (Fin n) E) (FiniteAdeleRing (𝓞 F) F)).subgroupOf
-          (Formalism.UG.UPts hc.sig (1 : Matrix (Fin n) (Fin n) E) (FiniteAdeleRing (𝓞 F) F)))
-        ((levU hc n ST SG H).subgroupOf (Formalism.UG.UPts hc.sig (1 : Matrix (Fin n) (Fin n) E) (FiniteAdeleRing (𝓞 F) F))))) := by
-  have hinv : ∀ c, adToCls hc n ST SG H (adClsOf hc n ST SG H (s c)) = c := fun c => by
-    rw [adToCls_adClsOf hc n ST SG H hS, hs]
-  constructor
-  · intro c c' h
-    have h' : adClsOf hc n ST SG H (s c) = adClsOf hc n ST SG H (s c') := h
-    rw [← hinv c, ← hinv c', h']
-  · intro q
-    refine ⟨adToCls hc n ST SG H q, ?_⟩
-    exact adToCls_injective hc n ST SG H (hinv _)
-
 theorem rlc_ratHom_stabRat (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) (a : MulAction.stabilizer (UF E n × H) d) :
     ratHom hc n (stabRat hc n ST SG H d a) = a.1.1 :=
   (ratEquiv hc n).apply_symm_apply a.1.1
@@ -476,17 +444,6 @@ theorem decoRaw_carries {x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)} (hx :
   intro z
   exact Formalism.UG.P.span_recovery_of_integral_adelic_approx Formalism.UG.P.integral_adele_approximation_holds F E (Fin n) (baseLb E n ST) (baseLb_fin n ST)
     (baseLb_span n ST) x z
-
-theorem levU_y_lat (hS : DecoPtSurj hc n ST SG) (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) (x : Fin n → E ⊗[F] FiniteAdeleRing (𝓞 F) F) :
-    x ∈ Formalism.UG.latS (F := F) (FiniteAdeleRing (𝓞 F) F)
-      (Formalism.UG.tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (Formalism.UG.intOE E) (Formalism.UG.intAd F)) d.1.L ↔
-    ((((ptOf hc n ST SG d : GL (Fin n) (E ⊗[F] FiniteAdeleRing (𝓞 F) F)))⁻¹ : GL (Fin n) (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) :
-      Matrix (Fin n) (Fin n) (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) *ᵥ x ∈
-      Formalism.UG.latS (F := F) (FiniteAdeleRing (𝓞 F) F)
-        (Formalism.UG.tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (Formalism.UG.intOE E) (Formalism.UG.intAd F)) (baseLb E n ST) := by
-  have h := decoRaw_carries hc n ST SG (ptOf hc n ST SG d).2 x
-  rw [← rlc_decoOf_val hc n ST SG (ptOf hc n ST SG d).2, decoOf_ptOf hc n ST SG hS] at h
-  exact h
 
 end Hat
 

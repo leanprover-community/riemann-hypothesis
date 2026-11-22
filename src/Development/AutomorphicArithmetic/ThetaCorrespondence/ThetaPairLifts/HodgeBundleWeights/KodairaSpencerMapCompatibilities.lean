@@ -3,7 +3,7 @@ module
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.TamagawaNumberSpecialUnitary
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentDerivationAffineChart
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.Hypotheses2
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentDerivationAffineChartStatement
+public import Mathlib
 
 @[expose] public section
 

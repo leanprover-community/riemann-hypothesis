@@ -62,9 +62,6 @@ def GammaProduct : Prop :=
   ∀ (K : Type) [Field K] [Fintype K] (k : ℕ),
     Nat.card (GL (Fin k) K) = Nat.card (upUniG K k) * ∏ i ∈ Icc 1 k, (Fintype.card K ^ i - 1)
 
-def PrimeTail : Prop :=
-  ∀ (s N : ℕ), 2 ≤ s → ∑ l ∈ Icc 2 N, ((l : ℝ) ^ s)⁻¹ ≤ 3 * ((2 : ℝ) ^ s)⁻¹
-
 def lead {A : Type} [CommRing A] {r : ℕ} (M : Matrix (Fin r) (Fin r) A) (l : ℕ) (hl : l ≤ r) : A :=
   (M.submatrix (Fin.castLE hl) (Fin.castLE hl)).det
 

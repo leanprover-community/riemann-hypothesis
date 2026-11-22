@@ -136,11 +136,6 @@ def toUnitK (r : R) (hr : r ≠ 0) : (FractionRing R)ˣ :=
   Units.mk0 (algebraMap R (FractionRing R) r)
     ((map_ne_zero_iff _ (IsFractionRing.injective R (FractionRing R))).2 hr)
 
-structure IsOverPrime (R : Type) [CommRing R] [IsLocalRing R] (p : ℕ) : Prop where
-  prime : p.Prime
-  ne_zero : (p : R) ≠ 0
-  mem : (p : R) ∈ maximalIdeal R
-
 section DVR
 
 variable [IsDiscreteValuationRing R]
@@ -153,8 +148,6 @@ theorem ord_vw_uniformiser {ϖ : R} (h0 : ϖ ≠ 0) (h : maximalIdeal R = Ideal.
     IsDedekindDomain.HeightOneSpectrum.intValuation_singleton _ h0 h]
   simp
 
-def ramIdx {p : ℕ} (hp : IsOverPrime R p) : ℤ := (ord_vw R).toFun (toUnitK (p : R) hp.ne_zero)
-
 end DVR
 
 section Normed
@@ -163,12 +156,6 @@ variable [IsLocalRing R] {F : Type} [NormedField F]
 
 variable {φ : FractionRing R →+* F}
 
-
 end Normed
-
-theorem isOverPrime_padicInt (p : ℕ) [hp : Fact p.Prime] : IsOverPrime ℤ_[p] p := by
-  refine ⟨hp.out, Nat.cast_ne_zero.2 hp.out.ne_zero, ?_⟩
-  rw [PadicInt.maximalIdeal_eq_span_p]
-  exact Ideal.mem_span_singleton_self _
 
 end GlobalTheory.IndefiniteRowSideFullHecke.GeneratorValues

@@ -19,8 +19,6 @@ open AutomorphicForm RightCosetSpace
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => Reduction.rationalGLOne (K := K) (n := n)
-
 def cuspQuot {φ : AdelicGLn.AdelicGL K n → ℂ} (hφ : IsLeftInvariant φ) :
     RightCosetSpace Γ₁ → ℂ :=
   Quotient.lift (fun y : Reduction.normOneGL (K := K) (n := n) => φ y) fun a b hab => by

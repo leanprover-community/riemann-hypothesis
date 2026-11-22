@@ -96,14 +96,6 @@ structure KsIso (ι : LL →+* LL') (eK : Ks ≃+* Ks') (γ : G ≃* G') (A : Ar
 
 namespace KsIso
 
-def refl (A : Arith.FormsL LL Ks WL W G) : KsIso (RingHom.id LL) (RingEquiv.refl Ks) (MulEquiv.refl G) A A where
-  φ := AddEquiv.refl _
-  alg _ := rfl
-  smul _ _ := rfl
-  mk_iff _ := Iff.rfl
-  rho _ _ _ := Iff.rfl
-  chi _ := rfl
-
 variable {ι : LL →+* LL'} {eK : Ks ≃+* Ks'} {γ : G ≃* G'} {A : Arith.FormsL LL Ks WL W G} {A' : Arith.FormsL LL' Ks' WL' W' G'}
 
 def trans {ι' : LL' →+* LL''} {eK' : Ks' ≃+* Ks''} {γ' : G' ≃* G''} {A'' : Arith.FormsL LL'' Ks'' WL'' W'' G''}
@@ -174,23 +166,6 @@ variable {Ks L0 : Type} [Field L0] [NumberField L0] [Field Ks] [NumberField Ks] 
   {WL : Type} [AddCommGroup WL] [Module L0 WL] [Module Ks WL] [IsScalarTower Ks L0 WL] [Module (𝓞 Ks) WL]
   [IsScalarTower (𝓞 Ks) Ks WL]
   {W : (L0 →+* ℂ) → Type} [∀ σ, NormedAddCommGroup (W σ)] [∀ σ, InnerProductSpace ℂ (W σ)] {G : Type} [Group G]
-
-def KsIso.bc (A : Arith.FormsL L0 Ks WL W G) :
-    KsIso (algebraMap L0 L) (RingEquiv.refl Ks) (MulEquiv.refl G) A (NX.BC.bc L A) where
-  φ := (NX.BC.wkE L A).toAddEquiv
-  alg c := IsScalarTower.algebraMap_apply Ks L0 L c
-  smul c x := (NX.BC.wkE L A).map_smul c x
-  mk_iff x :=
-    ⟨fun ⟨_, h⟩ => ⟨(NX.BC.wkE L A x).2, fun lp y => (NX.BC.bc_nrm_wkE L A lp y x).trans_le (h lp y)⟩,
-      fun ⟨_, h⟩ => ⟨x.2, fun lp y => (NX.BC.bc_nrm_wkE L A lp y x).symm.trans_le (h lp y)⟩⟩
-  rho g x y := by
-    change _ ↔ (NX.BC.bc L A).ρ g (NX.BC.incl Ks L0 L WL x) = NX.BC.incl Ks L0 L WL y
-    rw [NX.BC.bc_rho_incl, (NX.BC.incl_injective Ks L0 L WL).eq_iff]
-  chi _ := rfl
-
-theorem KsIso.bc_j (A : Arith.FormsL L0 Ks WL W G) (σ : L →+* ℂ) (x : A.WK) :
-    (NX.BC.bc L A).j σ ((KsIso.bc L A).φ x : NX.BC.BCW Ks L0 L WL) = A.j (σ.comp (algebraMap L0 L)) x :=
-  NX.BC.bc_j_incl L A σ x
 
 end BC
 
@@ -400,28 +375,6 @@ structure CopyTw (D D' : D7) (ι : D.what₂.LL →+* D'.what₂.LL) (e : ↥D'.
 
 namespace CopyTw
 
-theorem refl (D : D7) : CopyTw D D (RingHom.id _) (RingEquiv.refl _) :=
-  { GlobalTheory.TwistChoice.SameExport.refl D with
-    sp := HEq.rfl
-    Tau := rfl
-    eTau := HEq.rfl
-    hc := HEq.rfl
-    embLL _ := rfl
-    LL0 _ := rfl
-    emb0 _ _ h _ := by cases h; rfl
-    emb0b _ _ h _ := by cases h; rfl
-    inW1 _ _ h := by cases h; rfl
-    delta := HEq.rfl
-    B := HEq.rfl
-    acgB := HEq.rfl
-    modB := HEq.rfl
-    Theta := HEq.rfl
-    hk := HEq.rfl
-    Bsup := HEq.rfl
-    embB := HEq.rfl
-    thU := HEq.rfl
-    delU := HEq.rfl }
-
 variable {D D' : D7} {ι : D.what₂.LL →+* D'.what₂.LL} {e : ↥D'.LL0 ≃+* ↥D.LL0} (h : CopyTw D D' ι e)
 include h
 
@@ -455,7 +408,6 @@ def oEquiv : D.ntw.O i ≃+* D'.ntw.O i' :=
   ringCast (heq_ring h.Tw_eq h.set.O h.set.crO hi).1 (heq_ring h.Tw_eq h.set.O h.set.crO hi).2
 
 theorem frac_heq (x : FractionRing (D.ntw.O i)) : HEq (fracEquiv (h.oEquiv hi) x) x := fracEquiv_ringCast_heq _ _ x
-
 
 include hi in
 theorem sideEmb_heq (b : Bool) (x : ↥D'.LL0) : HEq (sideEmb D.ntw i b (e x)) (sideEmb D'.ntw i' b x) :=
@@ -534,10 +486,6 @@ def IsCoef (X : RealSide D)
   ∃ gramR c0R, Bridge.FamTie X.R.B X.R.pl (X.R.Sb : Set (Pl D.host.E)) X.R.Q (labLL D) (fun τ => Bridge.lamRdef (Ptw D) τ)
     (fun j τ => Bridge.lamLdef (Vc D j).rank ((j : ℕ) + 1) τ) gramR c0R c0L
 
-theorem exists_isCoef (X : RealSide D) : ∃ c0L, IsCoef X c0L :=
-  let ⟨g, c, c0L, h⟩ := X.char.fam.tie
-  ⟨c0L, g, c, h⟩
-
 theorem sign_at_base_place_eq_embedding (X : RealSide D) : sg0 D X.A3.A = D.what₂.embLL := sgAt_mk _ X.R.hv0
 
 structure RealMove (X : RealSide D) (X' : RealSide D') (ι : D.what₂.LL →+* D'.what₂.LL) : Type where
@@ -598,55 +546,11 @@ structure RealMove (X : RealSide D) (X' : RealSide D') (ι : D.what₂.LL →+* 
 
 namespace RealMove
 
-def refl (X : RealSide D) : RealMove X X (RingHom.id _) where
-  eK := RingEquiv.refl _
-  γ := MulEquiv.refl _
-  forms j j' h := Fin.ext h ▸ KsIso.refl (X.R.FW j)
-  Pg := HEq.rfl
-  eG _ := HEq.rfl
-  cG := HEq.rfl
-  P0 _ := Iff.rfl
-  ψ0 g g' h := by cases Subtype.ext (a1 := g) (a2 := g') h; rfl
-  ψ := HEq.rfl
-  θ := HEq.rfl
-  eta := HEq.rfl
-  mu0 _ := HEq.rfl
-  Cmu0 _ _ h := by cases Fin.ext h; rfl
-  delAt _ := HEq.rfl
-  Q _ t P h _ := ⟨t, P, h, HEq.rfl⟩
-  ΛV _ _ h := by cases Fin.ext h; rfl
-  ΛW _ _ h := by cases Fin.ext h; rfl
-  βV _ _ h := by cases Fin.ext h; rfl
-  βW _ _ h := by cases Fin.ext h; rfl
-  BV _ _ h := by cases Fin.ext h; rfl
-  vacP _ _ h := by cases Fin.ext h; rfl
-  MW _ _ h := by cases Fin.ext h; exact .refl _
-  v₀ _ _ h := by
-    cases Fin.ext h
-    intro τ τ' hτ
-    cases eq_of_heq hτ
-    rfl
-  read _ _ h _ := by
-    cases Fin.ext h
-    intro v v' hv g g' hg
-    have hv' : v = v' := funext fun τ => Subtype.ext (eq_of_heq (hv τ τ HEq.rfl))
-    cases hv'
-    cases eq_of_heq hg
-    rfl
-  io := by
-    obtain ⟨c, hc⟩ := exists_isCoef X
-    refine ⟨c, c, hc, hc, fun j j' h u u' hu F F' hF => ?_⟩
-    cases Fin.ext h
-    obtain rfl : u = u' := funext fun τ => Subtype.ext (Subtype.ext (eq_of_heq (hu τ τ HEq.rfl)))
-    obtain rfl : F = F' := Subtype.ext ((MvPolynomial.map_id _).symm.trans (eq_of_heq hF))
-    rfl
-
 variable {X : RealSide D} {X' : RealSide D'} {ι : D.what₂.LL →+* D'.what₂.LL} (m : RealMove X X' ι)
 include m
 
 variable {e : ↥D'.LL0 ≃+* ↥D.LL0} (h : CopyTw D D' ι e)
 include h
-
 
 theorem cG_eG (g : X.Γ) : X'.cG (X'.R.eG (m.γ g)) = h.grpEquiv (X.cG (X.R.eG g)) := by
   have key : ∀ {R R' : Ranks} {H : Host R} {H' : Host R'} {P P' : Fin 2 → Type} {Q : Finset (Pl H.E)} {Q' : Finset (Pl H'.E)},

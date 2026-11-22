@@ -15,9 +15,6 @@ variable {K : Type*} [Field K] [NumberField K]
 
 section TotallyReal
 
-abbrev realEmb (hreal : ∀ w : InfinitePlace K, w.IsReal) (w : InfinitePlace K) : K →+* ℝ :=
-  embedding_of_isReal (hreal w)
-
 end TotallyReal
 
 section Form
@@ -41,7 +38,6 @@ theorem vecCoords_vecOfCoords (c : ι × κ → R) : vecCoords R b (vecOfCoords 
   rw [← Basis.equivFun_apply, LinearEquiv.apply_symm_apply]
 
 variable {H b}
-
 
 omit [NumberField K] in
 theorem hermTrace_eq_sum_traceGram (x y : ι → R ⊗[K] E) :

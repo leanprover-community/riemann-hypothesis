@@ -6,7 +6,7 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.NefFibOfIsNe
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FirstChernLeviEqConstant
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrictChernPart
 public import ReciprocityTheory.AnalyticForms.LeviForms.Energy
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ProdProofA
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.HomogeneousLiftHolomorphicOnSnd
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential

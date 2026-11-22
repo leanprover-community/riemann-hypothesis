@@ -49,10 +49,6 @@ theorem nrm_nonneg {I : Type} [Fintype I] (k : I → ℕ) (z : X I) : 0 ≤ nrm 
 
 variable {F I Gf : Type} [Field F] [Group Gf] [Fintype I] (D : Dat F I Gf)
 
-omit [Fintype I] in
-theorem op_apply {ι : Type} [Fintype ι] (a : ι → Gf) (f : X I × Gf → ℂ) (p : X I × Gf) :
-    Dat.Op a f p = ∑ i, f (p.1, p.2 * a i) := rfl
-
 theorem isForm_zero (k : I → ℕ) : D.IsForm k 0 := by
   refine ⟨fun _ => ⟨continuous_const, fun _ _ => holomorphic_on_half_plane_zero⟩, ?_, ?_, ?_⟩
   · intro γ z x

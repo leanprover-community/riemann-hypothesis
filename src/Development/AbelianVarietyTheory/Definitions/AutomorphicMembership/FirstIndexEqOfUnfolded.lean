@@ -266,42 +266,17 @@ theorem domPt_lact [Fintype Tau] (hp : X.p0 = r - j) (γ : GL (Fin r) E) {x : Fr
     simp [Matrix.add_mul, Matrix.mul_assoc, nonsing_inv_mul _ hu]
   rw [e1, e2, Matrix.mul_inv_rev, ← Matrix.mul_assoc, mul_nonsing_inv_cancel_right _ _ hu, moeb]
 
-def hodgeC (t : Tau) : ℝ := Real.pi * X.c (ι t)
-
-theorem hodgeC_pos (t : Tau) : 0 < hodgeC X ι t :=
-  mul_pos Real.pi_pos (mul_pos two_pos (norm_pos_iff.2 ((map_ne_zero _).2 X.ξ0_ne)))
-
 theorem psi_nonempty : Nonempty X.Ψ := by
   obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
   by_cases h : τ ∈ X.Ψ
   · exact ⟨⟨τ, h⟩⟩
   · exact ⟨⟨ComplexEmbedding.conjugate τ, by_contra fun h' => h ((X.cmType τ).2 h')⟩⟩
 
-theorem sum_nonempty {r j : ℕ} (hj : j ≤ r) (hr : 0 < r) : Nonempty (Fin j ⊕ Fin (r - j)) := ⟨idx hj ⟨0, hr⟩⟩
-
 section Models
 
 variable {Comp : Type} [Fintype Comp] [Fintype Tau] (Y : Comp → Data E r) (hr : 0 < r)
   (hp : ∀ k, (Y k).p0 = r - j) (κ : ∀ k, Tau ≃ (Y k).Ψ)
   (B : ∀ k, BdData Tau j (r - j) (gammaU (Y k) hj (κ k))) (s : Comp → Tau → ℂˣ)
-
-def cxOfModels : CxPkg Tau r j Comp where
-  Γ := fun k => gammaU (Y k) hj (κ k)
-  Γ_le := fun k => gammaU_le (Y k) hj (κ k) (hp k)
-  volC := fun k => covol (Y k)
-  volC_pos := fun k => covol_pos (Y k)
-  rfn := fun z => onQuot (B z.1).r z.2
-  rfn_ge := fun z => (B z.1).exp_le_r (Quot.out z.2).2
-  hLo := fun z => onQuot (fun w => eigLo (hodgeI (hodgeC (Y z.1) (κ z.1)) w) ((B z.1).met w)) z.2
-  hUp := fun z => onQuot (fun w => eigUp (hodgeI (hodgeC (Y z.1) (κ z.1)) w) ((B z.1).met w)) z.2
-  hLo_le := fun z =>
-    haveI : Nonempty Tau := (psi_nonempty (Y z.1)).map (κ z.1).symm
-    haveI := sum_nonempty hj hr
-    eigLo_pos (fun t => hodge_posDef (hodgeC_pos _ _ t) ((Quot.out z.2).2 t)) ((B z.1).met_posDef (Quot.out z.2).2)
-  connN := fun z => onQuot (connNorm (hodgeI (hodgeC (Y z.1) (κ z.1))) (B z.1).met (B z.1).beta) z.2
-  curvN := fun z => onQuot (curvNorm (hodgeI (hodgeC (Y z.1) (κ z.1))) (B z.1).beta) z.2
-  normDetInf := fun t z => onQuot
-    (fun w => detNorm (hodgeC (Y z.1) (κ z.1)) ((s z.1 t : ℂ) / (mat (x0F (Y z.1)) (κ z.1 t)).det) w t) z.2
 
 end Models
 
@@ -313,25 +288,11 @@ variable {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff
   (U : Unf Xo c σ r) (hU : IsUnf U) (e : Dw.p = j)
 
 include hU e in
-theorem le_of_isUnf : j ≤ r := by have := hU.1; omega
-
-include hU e in
 theorem first_index_eq_of_unfolded (k : U.Comp) : (U.X k).p0 = r - j := by
   have := hU.1; have := (hU.2.1 k).1; omega
 
-def cmEquiv (T : Tau ≃ {τ : E →+* ℂ // τ (H.rt : E) = H.rt0}) (k : U.Comp) : Tau ≃ (U.X k).Ψ :=
-  T.trans (Equiv.subtypeEquivRight fun τ => ((hU.2.1 k).2 τ).symm)
-
-def letterAt (hσ : GoodEmb c σ) :
-    {τ : E →+* ℂ // τ (H.rt : E) = H.rt0} ≃ {τ : E →+* ℂ // τ (H.rt : E) = H.rt0} :=
-  (Equiv.ofBijective _ (GlobalTheory.Relab.relab_good E H l c σ hσ).1).subtypeEquiv
-    fun τ => ((GlobalTheory.Relab.relab_good E H l c σ hσ).2.1 τ).symm
-
 variable [Fintype Tau] (hr : 0 < r) (T : Tau ≃ {τ : E →+* ℂ // τ (H.rt : E) = H.rt0})
   (B : ∀ k, BdData Tau j (r - j) (gammaU (U.X k) (le_of_isUnf U hU e) (cmEquiv U hU T k))) (s : U.Comp → Tau → ℂˣ)
-
-def cxTrue : CxPkg Tau r j U.Comp :=
-  cxOfModels (le_of_isUnf U hU e) U.X hr (first_index_eq_of_unfolded U hU e) (cmEquiv U hU T) B s
 
 end Moduli
 

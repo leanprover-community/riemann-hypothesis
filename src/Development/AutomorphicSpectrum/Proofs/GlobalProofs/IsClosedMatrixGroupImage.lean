@@ -34,9 +34,6 @@ def blk (e : n ⊕ n ≃ Fin m) : Matrix n n ℂ × Matrix n n ℂ →+* Matrix 
     rw [h]
     rfl
 
-theorem blk_apply (e : n ⊕ n ≃ Fin m) (a b : Matrix n n ℂ) :
-    blk e (a, b) = Matrix.reindex e e (Matrix.fromBlocks a 0 0 b) := rfl
-
 def unblk (e : n ⊕ n ≃ Fin m) (g : Matrix (Fin m) (Fin m) ℂ) : Matrix n n ℂ × Matrix n n ℂ :=
   ((Matrix.reindex e.symm e.symm g).toBlocks₁₁, (Matrix.reindex e.symm e.symm g).toBlocks₂₂)
 

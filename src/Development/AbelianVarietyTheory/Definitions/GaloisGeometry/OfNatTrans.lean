@@ -52,23 +52,6 @@ structure Mor (F : C ⥤ ModuleCat.{0} R) (F' : C' ⥤ ModuleCat.{0} R') (σ : R
 
 namespace Mor
 
-def id (F : C ⥤ ModuleCat.{0} R) : Mor F F (RingHom.id R) where
-  G := 𝟭 C
-  τ _ := LinearMap.id
-  nat _ _ := rfl
-
-def restrict (F : C ⥤ ModuleCat.{0} R) (G : C' ⥤ C) : Mor F (G ⋙ F) (RingHom.id R) where
-  G := G
-  τ _ := LinearMap.id
-  nat _ _ := rfl
-
-def ofNatTrans {F₁ : C ⥤ ModuleCat.{0} R} (α : F ⟶ F₁) : Mor F F₁ (RingHom.id R) where
-  G := 𝟭 C
-  τ T := (α.app T).hom
-  nat φ x := by
-    change ((F.map φ ≫ α.app _).hom) x = ((α.app _ ≫ F₁.map φ).hom) x
-    rw [α.naturality]
-
 variable (m : Mor F F' σ)
 
 def pullC (n : ℕ) : Cn F n →ₛₗ[σ] Cn F' n where

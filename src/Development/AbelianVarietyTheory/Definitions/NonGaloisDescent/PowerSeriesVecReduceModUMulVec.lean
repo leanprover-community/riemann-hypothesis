@@ -17,7 +17,6 @@ section Vecs
 
 variable {O K : Type} [CommRing O] [NormedField K] [Algebra O K] {a : ℕ} {ι : Type}
 
-
 variable (ι) in
 def vecs (B : Subalgebra O K⟦X⟧) : Submodule B (ι → K⟦X⟧) where
   carrier := {v | ∀ i, v i ∈ B}
@@ -54,7 +53,6 @@ def frobV (l : ℕ) [Fact l.Prime] : (ι → K⟦X⟧) →ₗ[K] (ι → K⟦X�
 
 @[simp] theorem frobV_apply (l : ℕ) [Fact l.Prime] (v : ι → K⟦X⟧) (i : ι) :
     frobV l v i = frob K l (v i) := rfl
-
 
 variable (K a) in
 def frobTot (l : ℕ) [Fact l.Prime] : (ZMod a → K⟦X⟧) →ₐ[K] (ZMod a → K⟦X⟧) :=
@@ -351,30 +349,6 @@ theorem app_mem_ext (F : Hom P Q) {B : Subalgebra O K⟦X⟧} (hB : A O K ≤ B)
   exact Q.mem_extc.2 ⟨_, fun i => Subalgebra.sum_mem _ fun j _ =>
     mul_mem (hB (frob_mem_A l (F.mem _ i j))) (hm j), rfl⟩
 
-
-variable (P) in
-def scalar (c : O) : Hom P P where
-  mat _ := algebraMap O K⟦X⟧ c • (1 : Matrix ι ι K⟦X⟧)
-  mem τ i j := by
-    rw [Matrix.smul_apply, Matrix.one_apply, smul_eq_mul]
-    split_ifs
-    · simp
-    · simp
-  comm τ := by
-    have : (algebraMap O K⟦X⟧ c • (1 : Matrix ι ι K⟦X⟧)).map (frob K l) =
-        algebraMap O K⟦X⟧ c • (1 : Matrix ι ι K⟦X⟧) := by
-      ext1 i j
-      rw [Matrix.map_apply, Matrix.smul_apply, Matrix.one_apply, algebraMap_eq_C]
-      split_ifs <;> simp
-    rw [this]
-    simp
-
-def comp (G : Hom Q T) (F : Hom P Q) : Hom P T where
-  mat τ := G.mat τ * F.mat τ
-  mem τ i j := Subalgebra.sum_mem _ fun k _ => mul_mem (G.mem τ i k) (F.mem τ k j)
-  comm τ := by
-    rw [Matrix.mul_assoc, F.comm, ← Matrix.mul_assoc, G.comm, Matrix.mul_assoc, Matrix.map_mul]
-
 end Hom
 
 end Hom
@@ -425,15 +399,12 @@ theorem invE_invL_S_le_RpiE : invE l e (invL l (S O K e)) ≤ RpiE O K l e :=
 
 variable {ι}
 
-
 variable (O) in
 def hatV (v : ι → K⟦X⟧) : ι → AhatE O K l e := fun i => hat O l e (v i)
-
 
 variable (O) in
 def hatSpan (N : Set (ι → K⟦X⟧)) : Submodule (Ahat O K l e) (ι → AhatE O K l e) :=
   Submodule.span _ (hatV O l e '' (N ∩ vecs ι (RpiE O K l e)))
-
 
 variable (O K ι) in
 def Mhatc : Submodule (Ahat O K l e) (ι → AhatE O K l e) := hatSpan O l e (Mc O K ι)
@@ -478,16 +449,11 @@ variable [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero e]
 def Eunit : (invE l e (A O K))ˣ :=
   (IsLocalization.Away.algebraMap_isUnit (S := invE l e (A O K)) (EIn l e (A O K))).unit
 
-
 variable {a} in
 def rankOne (j : ZMod a → ℤ) : PhiMod O K l e a Unit where
   mat τ := Units.map (Matrix.scalar Unit).toMonoidHom (Eunit O K l e ^ j τ)
 
 variable {O K l e a}
-
-theorem mx_rankOne {j : ZMod a → ℤ} {τ : ZMod a} {n : ℕ} (h : j τ = n) :
-    (rankOne O K l e j).mx τ () () = E K l e ^ n := by
-  simp [PhiMod.mx, rankOne, h, Matrix.diagonal_pow, Eunit]
 
 end RankOne
 

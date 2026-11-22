@@ -5,7 +5,7 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshRegMa
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasure
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.LogInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffOnFubiniStudyProfileInvNormSqFirst
 public import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 
 @[expose] public section

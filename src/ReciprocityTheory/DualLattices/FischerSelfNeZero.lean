@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.DualLattices.WtGtRowSubstXSub
+public import ReciprocityTheory.DualLattices.ConstantCoeffRowSubst
 
 @[expose] public section
 

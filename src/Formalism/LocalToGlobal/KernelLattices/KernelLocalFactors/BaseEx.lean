@@ -79,28 +79,6 @@ theorem conj_conj (x : H.E) : H.conj (H.conj x) = x := by
   apply H.φ₀.injective
   rw [phi_conj, phi_conj, Complex.conj_conj]
 
-theorem tr_pos (x : H.E) (hx : x ≠ 0) : 0 < Algebra.trace ℚ H.E (x * H.conj x) := by
-  have h := trace_eq_sum_embeddings (K := ℚ) (L := H.E) ℂ (x := x * H.conj x)
-  have h2 : ∀ σ : H.E →ₐ[ℚ] ℂ, σ (x * H.conj x) = ((Complex.normSq (σ x) : ℝ) : ℂ) := by
-    intro σ
-    have h3 := phi_conj H (σ : H.E →+* ℂ) x
-    rw [map_mul]
-    have h4 : σ (H.conj x) = conj (σ x) := h3
-    rw [h4, Complex.mul_conj]
-  rw [Finset.sum_congr rfl (fun σ _ => h2 σ), ← Complex.ofReal_sum] at h
-  have h5 : ((Algebra.trace ℚ H.E (x * H.conj x) : ℚ) : ℝ) = ∑ σ : H.E →ₐ[ℚ] ℂ, Complex.normSq (σ x) := by
-    apply Complex.ofReal_injective
-    rw [← h]
-    simp
-  have h6 : 0 < ∑ σ : H.E →ₐ[ℚ] ℂ, Complex.normSq (σ x) := by
-    have : Nonempty (H.E →ₐ[ℚ] ℂ) := ⟨(H.φ₀ : H.E →+* ℂ).toRatAlgHom⟩
-    apply Finset.sum_pos
-    · intro σ _
-      exact Complex.normSq_pos.mpr ((map_ne_zero σ).mpr hx)
-    · exact Finset.univ_nonempty
-  rw [← h5] at h6
-  exact_mod_cast h6
-
 theorem finrank_E_K : Module.finrank H.K H.E = 2 * R.ord := by
   have h1 := Module.finrank_mul_finrank ℚ H.K H.E
   rw [finrank_K H, H.finrank_cmField] at h1

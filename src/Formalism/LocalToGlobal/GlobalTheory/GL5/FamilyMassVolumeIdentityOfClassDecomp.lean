@@ -45,7 +45,6 @@ def hitEquiv {Γ K : Subgroup G} (gj : G) (δ : Γ) (k : K) :
   left_inv γ := by ext; simp
   right_inv γ := by ext; simp
 
-
 open Classical in
 theorem measure_fd_eq_sum {Γ K : Subgroup G} [Countable Γ] (μ : Measure G) [μ.IsMulLeftInvariant]
     (hK : MeasurableSet (K : Set G)) {ι : Type*} [Fintype ι] (g : ι → G)
@@ -209,15 +208,6 @@ open Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.Main
 open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-theorem mapAlg_mul {R A B : Type*} [CommSemiring R] [Semiring A] [Semiring B] [Algebra R A] [Algebra R B]
-    (φ : A →ₐ[R] B) {n : ℕ} (X Y : Matrix (Fin n) (Fin n) A) : (X * Y).map φ = X.map φ * Y.map φ := by
-  ext i j
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [Matrix.map_apply, Matrix.mul_apply, map_sum, map_mul]
-
-theorem mapAlg_one {R A B : Type*} [CommSemiring R] [Semiring A] [Semiring B] [Algebra R A] [Algebra R B]
-    (φ : A →ₐ[R] B) {n : ℕ} : (1 : Matrix (Fin n) (Fin n) A).map φ = 1 := Matrix.map_one _ (map_zero φ) (map_one φ)
 
 section Mats
 

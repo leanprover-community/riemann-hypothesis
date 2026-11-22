@@ -246,7 +246,6 @@ def glE (γ : GL (Fin n) E) : (Fin n → E) ≃ₗ[𝓞 E] (Fin n → E) :=
       show (γ⁻¹).1 *ᵥ (γ.1 *ᵥ x) = x
       rw [Matrix.mulVec_mulVec, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.one_mulVec])
 
-theorem glE_apply (γ : GL (Fin n) E) (x : Fin n → E) : glE γ x = γ.1 *ᵥ x := rfl
 theorem glE_symm_apply (γ : GL (Fin n) E) (x : Fin n → E) : (glE γ).symm x = (γ⁻¹).1 *ᵥ x := rfl
 theorem map_glE (γ : GL (Fin n) E) (L : Submodule (𝓞 E) (Fin n → E)) :
     L.map (glE γ : (Fin n → E) →ₗ[𝓞 E] (Fin n → E)) = mulLat γ.1 L := rfl
@@ -302,7 +301,6 @@ abbrev mov (K : ClsTied u i hi) (v : HeightOneSpectrum (𝓞 D.host.F)) (c : (D.
 abbrev dualV (K : ClsTied u i hi) (v : HeightOneSpectrum (𝓞 D.host.F)) :=
   latS (F := D.host.F) (v.adicCompletion D.host.F) (intV D.host.E v)
     (Submodule.span (𝓞 D.host.E) (dualSet (sigD D : D.host.E →+* D.host.E) (gramN D i hi) K.lev.Lb))
-
 
 set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 400000 in

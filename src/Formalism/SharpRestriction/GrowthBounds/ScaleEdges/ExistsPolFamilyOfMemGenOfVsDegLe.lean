@@ -90,8 +90,6 @@ section Ctx
 variable {p n' r K : ℕ} [Fact p.Prime] [NeZero n'] [NeZero r] [NeZero K] {O : Type} [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] [Algebra (WF p n') O] (X : Ctx p n' r K O)
 
-local notation "PP" => MvPolynomial (TV n' (r + K)) (KK O)
-
 theorem seg_SyS (hW1 : GeneratorSpanInclusion) (hW2 : GeneratorImageIsSymbol) (j : ℤ) (mg : ℤ → ℤ) (th o : ℤ → ℝ) (hmg : ∀ x, 0 ≤ mg x)
     {x : SegRing O r K} (hx : x ∈ XX' O r K X.Fr j mg th o) :
     MvPolynomial.map (algebraMap O (KK O)) (phSeg O K p X.Fr j x) ∈ X.SyS := by

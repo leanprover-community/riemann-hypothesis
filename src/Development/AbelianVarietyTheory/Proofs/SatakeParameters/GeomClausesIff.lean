@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.AssocSetApplyOfPointwise
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsMatrixForm
 public import Development.AbelianVarietyTheory.Definitions.Divisors.Subsingleton
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ToRepFam
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback

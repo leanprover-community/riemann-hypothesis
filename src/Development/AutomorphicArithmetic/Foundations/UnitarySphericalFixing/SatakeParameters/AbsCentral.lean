@@ -41,9 +41,6 @@ def FieldGT : Prop :=
 
 namespace Old
 
-theorem twist (H : Laws a ha ε rc) : ∀ x χ hχ, Good x → rc (x.tw χ hχ) = (rc x).lpChar (rc (.ofChar χ hχ)) :=
-  fun x χ hχ _ => H.twist x χ hχ
-
 end Old
 
 namespace New

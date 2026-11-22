@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures
 public import Formalism.FlagUnipotentLattices.CardSubmodulesAndLinearEquivBounds
-public import Formalism.FlagUnipotentLattices.HalfDifferenceL1Bound
 public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.SumComplexEmbeddingsEqSumInfinitePlace
 public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.LatticeSumBounds
 public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.SchurAverage

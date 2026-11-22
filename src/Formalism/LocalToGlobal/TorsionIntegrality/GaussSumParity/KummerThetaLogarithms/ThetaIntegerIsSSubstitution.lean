@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionHypothesesOfLevelOne
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.ThetaInZIsThetaLog
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementC
-public import Formalism.GaussJetBounds.StatementS
 public import Formalism.GaussJetBounds.OneLetterGauss
 public import Formalism.GaussJetBounds.GenLogInverse
 public import Formalism.GradedWeylDivisibility.FinalD

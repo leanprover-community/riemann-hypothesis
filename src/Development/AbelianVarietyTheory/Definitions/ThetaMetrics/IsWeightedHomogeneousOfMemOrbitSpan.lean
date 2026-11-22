@@ -117,17 +117,6 @@ noncomputable def minorProd [Fintype T] (c : T → Fin p → ℕ) (c' : T → Fi
 def IsPerp (ε : T → Fin p → κ → R) (φ : T → Fin q → κ → R) : Prop :=
   ∀ t a b, ε t a ⬝ᵥ φ t b = 0
 
-theorem laplacian_xForm_mul_yForm (t : T) (a : Fin p) (b : Fin q) (ε φ : κ → R) :
-    laplacian t a b (xForm t a ε * yForm t b φ : Poly R T p q κ) = C (ε ⬝ᵥ φ) := by
-  classical
-  have h1 (k : κ) : pderiv (yVar t b k) (xForm t a ε : Poly R T p q κ) = 0 := by
-    simp [xForm_apply, pderiv_X, Pi.single_apply]
-  have h2 (k : κ) : pderiv (yVar t b k) (yForm t b φ : Poly R T p q κ) = C (φ k) := by
-    simp [yForm_apply, pderiv_X, Pi.single_apply]
-  have h3 (k : κ) : pderiv (xVar t a k) (xForm t a ε : Poly R T p q κ) = C (ε k) := by
-    simp [xForm_apply, pderiv_X, Pi.single_apply]
-  simp [laplacian_apply, h1, h2, h3, dotProduct, mul_comm]
-
 theorem map_rowForm (f : R →+* S) (t : T) (r : Fin p ⊕ Fin q) (v : κ → R) :
     MvPolynomial.map f (rowForm t r v) = rowForm t r (f ∘ v) := by
   simp [rowForm_apply]
@@ -261,12 +250,10 @@ noncomputable def colSubst (A : T → Matrix κ κ' R) (B : T → Matrix κ' κ 
     | (t, Sum.inl a, k) => xForm t a (A t k)
     | (t, Sum.inr b, k) => yForm t b fun l => B t l k
 
-
 omit [Fintype κ] in
 @[simp] theorem colSubst_X_xVar (A : T → Matrix κ κ' R) (B : T → Matrix κ' κ R) (t : T) (a : Fin p)
     (k : κ) : colSubst A B (X (xVar t a k) : Poly R T p q κ) = xForm t a (A t k) := by
   simp [colSubst]
-
 
 omit [Fintype κ] in
 @[simp] theorem colSubst_X_yVar (A : T → Matrix κ κ' R) (B : T → Matrix κ' κ R) (t : T) (b : Fin q)
@@ -321,7 +308,6 @@ theorem colSubst_minorProd [Fintype T] (A : T → Matrix κ κ' R) (B : T → Ma
       (ringHom_yMinor (colSubst A B).toRingHom t i (φ t) (fun a => B t *ᵥ φ t a)
         fun a b => colSubst_yForm _ _ _ _ _)
 
-
 omit [Fintype κ] in
 theorem eval_colSubst (A : T → Matrix κ κ' R) (B : T → Matrix κ' κ R) (z : Var T p q κ' → R)
     (P : Poly R T p q κ) :
@@ -335,7 +321,6 @@ theorem eval_colSubst (A : T → Matrix κ κ' R) (B : T → Matrix κ' κ R) (z
     obtain ⟨t, a | b, k⟩ := v
     · rw [map_mul, map_mul, map_mul, hP, eval_X, colSubst_X_xVar, eval_xForm]; rfl
     · rw [map_mul, map_mul, map_mul, hP, eval_X, colSubst_X_yVar, eval_yForm, dotProduct_comm]; rfl
-
 
 omit [Fintype κ] in
 theorem colSubst_isWeightedHomogeneous {M : Type*} [AddCommMonoid M] (w : T → Fin p ⊕ Fin q → M)
@@ -400,12 +385,6 @@ noncomputable def colRep : Representation R (T → GL κ R) (Poly R T p q κ) wh
   toFun g := (colAct R T p q κ g).toLinearMap
   map_one' := by rw [map_one]; rfl
   map_mul' g h := by rw [map_mul]; rfl
-
-theorem colAct_xForm (g : T → GL κ R) (t : T) (a : Fin p) (ε : κ → R) :
-    colAct R T p q κ g (xForm t a ε) = xForm t a (covecAct (g t) ε) := colSubst_xForm _ _ _ _ _
-
-theorem colAct_yForm (g : T → GL κ R) (t : T) (b : Fin q) (φ : κ → R) :
-    colAct R T p q κ g (yForm t b φ) = yForm t b (vecAct (g t) φ) := colSubst_yForm _ _ _ _ _
 
 theorem colAct_minorProd [Fintype T] (g : T → GL κ R) (c : T → Fin p → ℕ) (c' : T → Fin q → ℕ)
     (ε : T → Fin p → κ → R) (φ : T → Fin q → κ → R) :
@@ -477,7 +456,6 @@ theorem colAct_mem_orbitSpan (g : T → GL (Fin n) R) {P : Poly R T p q (Fin n)}
   | zero => simp
   | add P Q _ _ hP hQ => rw [map_add (f := _)]; exact add_mem hP hQ
   | smul r P _ hP => rw [map_smul]; exact Submodule.smul_mem _ _ hP
-
 
 theorem map_basePoly (f : R →+* S) : MvPolynomial.map f (basePoly R h c c') = basePoly S h c c' := by
   rw [basePoly, map_minorProd, basePoly]

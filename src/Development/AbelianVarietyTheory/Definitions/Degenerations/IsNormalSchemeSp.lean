@@ -135,42 +135,5 @@ theorem isNormalScheme_sp (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClos
   exact @isIntegrallyClosed_of_isLocalization R ((Spec.structureSheaf R).presheaf.stalk x) _ _ (_) _ _
     (PrimeSpectrum.asIdeal x).primeCompl (Ideal.primeCompl_le_nonZeroDivisors _) h
 
-def Core.zero (U : (Sp ℤ).Opens) (hU : (U : Set (Sp ℤ)).Nonempty) : Core where
-  Z := Sp ℤ
-  π := 𝟙 _
-  flat := inferInstance
-  lft := inferInstance
-  qc := inferInstance
-  sep := inferInstance
-  normal := isNormalScheme_sp ℤ
-  U := U
-  ne := hU
-  g := 0
-  A := 𝟙_ (Over U.toScheme)
-  ab :=
-    { comm := inferInstance
-      smooth := inferInstanceAs (Smooth (𝟙 U.toScheme))
-      proper := inferInstanceAs (IsProper (𝟙 U.toScheme))
-      geomConnected := by
-        change GeometricallyConnected (𝟙 U.toScheme)
-        infer_instance }
-  dim := inferInstanceAs (SmoothOfRelativeDimension 0 (𝟙 U.toScheme))
-  P := 𝟙_ (Over (Sp ℤ))
-  intP := inferInstanceAs (IsIntegral (Sp ℤ))
-  proper := inferInstanceAs (IsProper (𝟙 (Sp ℤ)))
-  G := ⊤
-  a := U.ι ≫ (Sp ℤ).topIso.inv
-  cart := by
-    change IsPullback ((U.ι ≫ (Sp ℤ).topIso.inv) ≫ (⊤ : (Sp ℤ).Opens).ι) (𝟙 U.toScheme) (𝟙 (Sp ℤ)) U.ι
-    rw [Category.assoc, Scheme.toIso_inv_ι, Category.comp_id]
-    exact IsPullback.of_vert_isIso ⟨by simp⟩
-  e := (Sp ℤ).topIso.inv
-  e_sec := by
-    change (Sp ℤ).topIso.inv ≫ (⊤ : (Sp ℤ).Opens).ι ≫ 𝟙 (Sp ℤ) = _
-    simp
-  e_zero := by
-    change _ = 𝟙 U.toScheme ≫ U.ι ≫ (Sp ℤ).topIso.inv
-    simp
-
 end GlobalTheory.ZJ
 end

@@ -1,6 +1,6 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.QuotRepMk
+public import Mathlib
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.KatoUse
 
 @[expose] public section

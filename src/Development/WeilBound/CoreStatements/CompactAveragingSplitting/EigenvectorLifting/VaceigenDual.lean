@@ -90,8 +90,6 @@ theorem cA_cA (h : ∀ x, σ (σ x) = x) (x : AE F E) : cA σ (cA σ x) = x := b
   | tmul a e => simp [cA, h]
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
 
-theorem cA_incl (e : E) : cA σ (inclR (F := F) (AF F) e) = inclR (F := F) (AF F) (σ e) := rfl
-
 theorem trace_incl (e : E) : Algebra.trace (AF F) (AE F E) (inclR (F := F) (AF F) e) =
     algebraMap F (AF F) (Algebra.trace F E e) := by
   show Algebra.trace (AF F) (AF F ⊗[F] E) ((1 : AF F) ⊗ₜ[F] e) = _

@@ -18,12 +18,6 @@ variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAl
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
   {rc : IrrGL (k := w.adicCompletion E) → WD h}
 
-private theorem segmentV {a : Weil h →* (w.adicCompletion E)ˣ} {ha : IsLocalArtin h a} {ε : EpsFamily A}
-    (H : LawsV a ha ε rc) {Δ : Segment (w.adicCompletion E)} {x : IrrGL (k := w.adicCompletion E)}
-    (hx : IsLSeg Δ x.rep) :
-    rc x = ((rc Δ.first).lpTw (((Δ.len : ℝ) - 1) / 2)).lpChar (WD.lpSp (h := h) Δ.len) :=
-  (H.langlands [Δ] x hx.isL).trans (WD.lpSum_zero _)
-
 end UpperTheory.V.Z.Win.T2
 
 end

@@ -41,13 +41,6 @@ def QERing (A : Type u) [CommRing A] : Prop :=
   (∀ (B : Type u) [CommRing B] [Algebra A B] [Algebra.FiniteType A B],
     IsOpen {Q : PrimeSpectrum B | IsRegularLocalRing (Localization.AtPrime Q.asIdeal)})
 
-def QE (X : Scheme.{u}) : Prop := ∀ x : X, ∃ U : X.affineOpens, x ∈ U.1 ∧ QERing Γ(X, U.1)
-
-def FFinRes (X : Scheme.{u}) : Prop :=
-  ∀ (x : X) (p : ℕ) [Fact p.Prime] [CharP (X.residueField x) p], (frobenius (X.residueField x) p).Finite
-
-def Sing (X : Scheme.{u}) : Set X := {x | ¬ IsRegularLocalRing (X.presheaf.stalk x)}
-
 noncomputable def stalkId {X : Scheme.{u}} (I : X.IdealSheafData) (x : X) : Ideal (X.presheaf.stalk x) :=
   ⨆ (U : X.affineOpens) (hx : x ∈ U.1), Ideal.map (X.presheaf.germ U.1 x hx).hom (I.ideal U)
 

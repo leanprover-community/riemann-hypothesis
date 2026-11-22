@@ -61,15 +61,8 @@ theorem iota_surjective_spec :
   · intro h; simpa using p.asIdeal.sub_mem h hm
   · intro h; simpa using p.asIdeal.add_mem hm h
 
-theorem epsMul_fst {A : Type} [CommRing A] (c : A) (a : DualNumber A) : (epsMul c a).fst = a.fst := by
-  simp [epsMul]
-
 theorem epsMul_snd {A : Type} [CommRing A] (c : A) (a : DualNumber A) : (epsMul c a).snd = c * a.snd := by
   simp [epsMul]
-
-theorem dualMap_fst {A A' : Type} [CommRing A] [CommRing A'] (f : A →+* A') (a : DualNumber A) :
-    (dualMap f a).fst = f a.fst := by
-  simp [dualMap]
 
 theorem dualMap_snd {A A' : Type} [CommRing A] [CommRing A'] (f : A →+* A') (a : DualNumber A) :
     (dualMap f a).snd = f a.snd := by

@@ -274,7 +274,6 @@ noncomputable def Pt.map {Z Z' : Scheme.{0}} (a : Z' ⟶ Z) (y : Pt N Z) : Pt N 
     rw [pb_id_comp, pb_id_comp]
     exact y.compat' k i i' a W h h'
 
-
 variable (N) in
 noncomputable def genFunctor : Scheme.{0}ᵒᵖ ⥤ Type where
   obj Z := Pt N Z.unop
@@ -288,9 +287,6 @@ noncomputable def genFunctor : Scheme.{0}ᵒᵖ ⥤ Type where
     change pb _ _ _ _ _ = pb _ _ _ _ (pb _ _ _ _ (pb _ _ _ _ _))
     rw [pb_id_comp, pb_pb]
     rfl
-
-theorem genFunctor_map {Z Z' : Scheme.{0}} (a : Z' ⟶ Z) (y : Pt N Z) :
-    (genFunctor N).map a.op y = Pt.map a y := rfl
 
 theorem isSheaf_genFunctor : Presieve.IsSheaf Scheme.zariskiTopology (genFunctor N) := by
   rw [Precoverage.isSheaf_toGrothendieck_iff_of_isStableUnderBaseChange]
@@ -411,7 +407,6 @@ theorem isRepresentable_genFunctor [Fintype κ] (hN : ∀ k, (N k).IsLB) :
     exact ⟨j, Set.mem_iInter.2 hj⟩
 
 end GeneratorFunctor
-
 
 set_option backward.isDefEq.respectTransparency false in
 open GeneratorFunctor Opposite in

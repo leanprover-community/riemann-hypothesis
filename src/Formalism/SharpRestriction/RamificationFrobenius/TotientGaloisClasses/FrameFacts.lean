@@ -4,10 +4,9 @@ public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClas
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.CoprimeTwoPow
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Orbits
 public import Mathlib
-public import Formalism.FrobeniusOrbits.HostOrbitsPlaces
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.OrderOfSignGroupDvdTwo
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.CardExtendedGaloisGroup
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.ThickOrbit
+public import Formalism.FrobeniusOrbits.HostThickExists
 
 @[expose] public section
 

@@ -161,40 +161,6 @@ def pr : H1 D.ρA →ₗ[O] H1 D.ρTl' →ₗ[O] KO O :=
 
 end LatData
 
-structure PushData {O G VT VT' : Type u} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    [TopologicalSpace O] [TopologicalSpace (FractionRing O)]
-    [IsTopologicalAddGroup (FractionRing O)] [ContinuousSMul O (FractionRing O)]
-    [Group G] [TopologicalSpace G]
-    [AddCommGroup VT] [Module O VT] [TopologicalSpace VT] [IsTopologicalAddGroup VT]
-    [ContinuousSMul O VT]
-    [AddCommGroup VT'] [Module O VT'] [TopologicalSpace VT'] [IsTopologicalAddGroup VT']
-    [ContinuousSMul O VT'] (D : LatData O G VT VT') where
-  VY : Type u
-  VY' : Type u
-  [gY : AddCommGroup VY] [mY : Module O VY] [tY : TopologicalSpace VY]
-  [tgY : IsTopologicalAddGroup VY] [csY : ContinuousSMul O VY]
-  [gY' : AddCommGroup VY'] [mY' : Module O VY'] [tY' : TopologicalSpace VY']
-  [tgY' : IsTopologicalAddGroup VY'] [csY' : ContinuousSMul O VY']
-  ρY : Representation O G VY
-  ρY' : Representation O G VY'
-  bY : VY →ₗ[O] VY' →ₗ[O] FractionRing O
-  Y : Submodule O VY
-  stY : StableUnder ρY Y
-  eqY : EquivPair D.ε ρY ρY' bY
-  contY' : ContAction ρY'
-  contbY : Continuous fun p : VY × VY' => bY p.1 p.2
-  φ : Y →ₗ[O] VT ⧸ D.T
-  eqφ : EquivToQuot ρY D.ρT Y D.T φ
-  contφ : Continuous φ
-
-  HfVY : Submodule O (H1 ρY)
-
-  HfVY' : Submodule O (H1 ρY')
-
-  HfVL : Submodule O (H1 (ρY.prod D.ρT))
-
-  HfVLb : Submodule O (H1 (D.ρT'.prod ρY'))
-
 attribute [instance] PushData.gY PushData.mY PushData.tY PushData.tgY PushData.csY
   PushData.gY' PushData.mY' PushData.tY' PushData.tgY' PushData.csY'
 
@@ -208,8 +174,6 @@ variable {O G VT VT' : Type u} [CommRing O] [IsDomain O] [IsDiscreteValuationRin
     [ContinuousSMul O VT]
     [AddCommGroup VT'] [Module O VT'] [TopologicalSpace VT'] [IsTopologicalAddGroup VT']
     [ContinuousSMul O VT'] {D : LatData O G VT VT'} (E : PushData D)
-
-abbrev L : Submodule O (E.VY × VT) := fibre E.Y D.T E.φ
 
 end PushData
 

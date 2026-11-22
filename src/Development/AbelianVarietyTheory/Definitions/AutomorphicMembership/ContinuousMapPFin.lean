@@ -33,7 +33,6 @@ theorem fin_mul_inf {k x : UA E n} (hk : k ∈ finU (E := E) (n := n)) (hx : x �
   · simp only [Subgroup.coe_mul, map_mul, h1, one_mul, mul_one]
   · simp only [Subgroup.coe_mul, map_mul, h2, one_mul, mul_one]
 
-
 variable (E n) in
 def autU : Submodule ℂ (UA E n → ℂ) where
   carrier := {φ | IsAutFormU φ}
@@ -89,10 +88,8 @@ theorem RU_mem_autU (x : UA E n) (φ : UA E n → ℂ) (h : φ ∈ autU E n) : R
     refine ⟨_, Submodule.subset_span ⟨⟨x⁻¹ * k * x, Subgroup.Normal.conj_mem' inferInstance _ k.2 x⟩, rfl⟩, ?_⟩
     simp only [RU_RU, mul_assoc, mul_inv_cancel_left]
 
-
 variable (E n) in
 def autRep : Representation ℂ (UA E n) (autU E n) := sub (RU E n) (autU E n) RU_mem_autU
-
 
 variable (E n) in
 abbrev Wt : Type := InfinitePlace E → DomWeight n
@@ -103,11 +100,9 @@ theorem dual_dual (lam : DomWeight n) : lam.dual.dual = lam := by
   cases lam
   simp [DomWeight.dual]
 
-
 open Classical in
 def Wt.at (W : Wt E n) (τ : E →+* ℂ) : DomWeight n :=
   if (InfinitePlace.mk τ).embedding = τ then W (InfinitePlace.mk τ) else (W (InfinitePlace.mk τ)).dual
-
 
 omit [NumberField E] [IsCMField E] in
 @[simp] theorem Wt.at_embedding (W : Wt E n) (v : InfinitePlace E) : W.at v.embedding = W v := by
@@ -124,19 +119,7 @@ theorem Wt.at_conjugate (W : Wt E n) (τ : E →+* ℂ) : W.at (ComplexEmbedding
   · rw [if_pos h, if_neg (by rw [h]; exact (conjugate_ne τ).symm)]
   · rw [if_pos h, if_neg (by rw [h]; exact conjugate_ne τ), dual_dual]
 
-
 def Wt.ofFam (lam : (E →+* ℂ) → DomWeight n) : Wt E n := fun v => lam v.embedding
-
-theorem Wt.at_ofFam {lam : (E →+* ℂ) → DomWeight n} (h : ∀ τ, lam (ComplexEmbedding.conjugate τ) = (lam τ).dual)
-    (τ : E →+* ℂ) : (Wt.ofFam lam).at τ = lam τ := by
-  unfold Wt.at Wt.ofFam
-  rcases InfinitePlace.embedding_mk_eq τ with e | e
-  · rw [if_pos e, e]
-  · rw [if_neg (by rw [e]; exact conjugate_ne τ), e, h, dual_dual]
-
-def infW (W : Wt E n) (τ : E →+* ℂ) : Multiset ℂ := infOfWeight (W.at τ)
-
-
 
 def cAll : UA E n →* (InfinitePlace E → GL (Fin n) ℂ) := MonoidHom.pi fun v => cEmb v.embedding
 
@@ -192,7 +175,6 @@ theorem algForms.val_right {W : Wt E n} (f : algForms W) (g : UA E n) (x : infU 
 theorem algForms.val_algRep {W : Wt E n} (f : algForms W) (k : finU (E := E) (n := n)) (g : UA E n) :
     algForms.val (algRep W k f) g = algForms.val f (g * k) := rfl
 
-
 variable (E n) in
 @[ext] structure AutSub where
 
@@ -219,7 +201,6 @@ theorem isIrreducible_rep : π.rep.IsIrreducible := by
 
 def Iso : Prop := Nonempty (π.rep.Equiv π'.rep)
 
-
 variable (E n) in
 instance setoid : Setoid (AutSub E n) where
   r := Iso
@@ -227,7 +208,6 @@ instance setoid : Setoid (AutSub E n) where
 
 def finPart (W : Wt E n) : Submodule ℂ (algForms W) :=
   ⨅ v : W.Sp, π.V.comap ((LinearMap.applyₗ v).comp (algForms W).subtype)
-
 
 variable {π} in
 theorem mem_finPart {W : Wt E n} {f : algForms W} : f ∈ π.finPart W ↔ ∀ v, f.1 v ∈ π.V := Submodule.mem_iInf _
@@ -278,13 +258,9 @@ theorem IsLocComp.congr {w : HeightOneSpectrum (𝓞 E)} {σ σ' : SmIrr (GL (Fi
 
 end AutSub
 
-
 omit [IsCMField E] in
 theorem continuous_map_pFin : Continuous (GeneralLinearGroup.map (pFin E) : GA E n → GL (Fin n) (Af E)) :=
   Continuous.units_map _ (continuous_id.matrix_map continuous_snd)
-
-
-
 
 variable (E n) in
 def AU : Type := Quotient (AutSub.setoid E n)

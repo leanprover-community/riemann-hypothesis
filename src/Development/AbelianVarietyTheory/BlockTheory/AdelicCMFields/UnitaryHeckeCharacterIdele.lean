@@ -47,7 +47,6 @@ def conj [h : IsCMExtension F E] : E ≃ₐ[F] E :=
       rw [CMExtension.equivMaximalRealSubfield_apply] at this
       exact this }
 
-
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
 open scoped RestrictedProduct in
 variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] in
@@ -238,7 +237,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
 
 variable {E : Type} [Field E] [NumberField E]
 
-
 open scoped Classical in
 def localIdele (P : HeightOneSpectrum (𝓞 E)) : (P.adicCompletion E)ˣ →* Idele E :=
   Units.map ((MonoidHom.inr (InfiniteAdeleRing E) (FiniteAdeleRing (𝓞 E) E)).comp
@@ -246,7 +244,6 @@ def localIdele (P : HeightOneSpectrum (𝓞 E)) : (P.adicCompletion E)ˣ →* Id
         (fun v : HeightOneSpectrum (𝓞 E) => v.adicCompletionIntegers E) P x
       map_one' := RestrictedProduct.mulSingle_one _ _
       map_mul' := RestrictedProduct.mulSingle_mul _ _ })
-
 
 variable (E) in
 @[ext]
@@ -290,7 +287,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
   exact ⟨Units.mk0 _ hne, hv⟩
 
 namespace UnitaryHeckeChar
-
 
 open scoped Classical in
 def valueAt (χ : UnitaryHeckeChar E) (P : HeightOneSpectrum (𝓞 E)) : ℂ :=
@@ -490,7 +486,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
 
 namespace UnitaryHeckeChar
 
-
 variable (E) in
 def normPow (t : ℝ) : UnitaryHeckeChar E where
   toHom :=
@@ -522,7 +517,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
         RestrictedProduct.mulSingle_eq_of_ne _ _ hv, norm_one]
   rw [_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleNorm, MonoidHom.mul_apply, hinf, hfin, one_mul]
 
-
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
 open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
@@ -542,7 +536,6 @@ private theorem norm_uniformiser_eq_absNorm_inv {P : HeightOneSpectrum (𝓞 E)}
   rw [FinitePlace.norm_def, hϖ, WithZeroMulInt.toNNReal_neg_apply _ WithZero.exp_ne_zero]
   simp
 
-
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
 open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
@@ -554,14 +547,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
   show ((Circle.exp (t * Real.log (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleNorm (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.localIdele P ϖ))) : ℂ)) = _
   rw [_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.ideleNorm_localIdele, norm_uniformiser_eq_absNorm_inv hϖ,
     Real.log_inv, mul_neg, Circle.coe_exp]
-
-theorem exists_normPow_valueAt_eq_neg_one (P : HeightOneSpectrum (𝓞 E)) :
-    ∃ t : ℝ, (normPow E t).valueAt P = -1 := by
-  have h : (1 : ℝ) < Ideal.absNorm P.asIdeal := by
-    exact_mod_cast NumberField.HeightOneSpectrum.one_lt_absNorm P
-  refine ⟨-(Real.pi / Real.log (Ideal.absNorm P.asIdeal)), ?_⟩
-  rw [normPow_valueAt, neg_mul, neg_neg, div_mul_cancel₀ _ (Real.log_pos h).ne',
-    Complex.exp_pi_mul_I]
 
 end UnitaryHeckeChar
 

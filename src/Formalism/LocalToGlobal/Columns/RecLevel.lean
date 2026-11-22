@@ -113,15 +113,7 @@ abbrev DecoCl : Type := MulAction.orbitRel.Quotient (UF E n × H) (DecoSet (E :=
 
 def decoCls (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) : DecoCl n ST SG H := Quotient.mk (MulAction.orbitRel (UF E n × H) (DecoSet (E := E) (n := n) (ST := ST) (SG := SG))) d
 
-def ptOf (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) : UAd hc n :=
-  open Classical in
-  if h : ∃ x : UAd hc n, decoOf ST SG (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) = d then h.choose else 1
-
-def adClsOf (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) : AdCl hc n ST SG H := Quotient.mk'' (ptOf hc n ST SG d)
-
 def decoOfD (c : DiaG (E := E) (ST := ST)) (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) : DecoSet (E := E) (n := n) (ST := ST) (SG := SG) := (decoOf ST SG x).dia c
-
-def ptOfD (c : DiaG (E := E) (ST := ST)) (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) : UAd hc n := ptOf hc n ST SG (d.dia c⁻¹)
 
 def stabRat (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) : MulAction.stabilizer (UF E n × H) d →* URat hc n :=
   (ratEquiv hc n).symm.toMonoidHom.comp ((MonoidHom.fst (UF E n) H).comp (Subgroup.subtype _))
@@ -135,7 +127,6 @@ variable {E K : Type} [Field E] [NumberField E] [Field K] {r n : ℕ}
 def parFam (h : r ≤ n) (t s : ℕ) {SG : Finset (Pl E)} (P : LevFam E K r SG)
     (χ : ∀ w : SG, ℕ → (𝓞 E ⧸ w.1.asIdeal)ˣ →* Kˣ) : LevFam E K n SG := fun w =>
   ⟨HPar n (𝓞 E ⧸ w.1.asIdeal) h (List.replicate s t) (P w).H, lamPar h (List.replicate s t) (P w).lam (χ w)⟩
-
 
 open Classical in
 def parDat (h : r ≤ n) (t s : ℕ) {SG : Finset (Pl E)} (P : LevFam E K r SG)
@@ -164,26 +155,11 @@ theorem N_eq_blocks (R : Ranks) (j : ℕ) : R.N j = (R.k + j) + j * R.t := by
 
 instance neZeroN (R : Ranks) (j : ℕ) : NeZero (R.N j) := ⟨(R.N_pos j).ne'⟩
 
-def colLevS (Ch : Chars X Pr R.m) (j : ℕ) : LevFam X.E X.K (R.N j) Pr.vGs := fun w =>
-  if j + 1 < R.m then colLev Ch j w
-  else if j + 1 = R.m then
-    ⟨HX (𝓞 X.E ⧸ w.1.asIdeal) (R.N j) R.k R.t j ⊓ fixCol (R.N j) (𝓞 X.E ⧸ w.1.asIdeal) R.k,
-      (lamX (Ch.psi0 w) (extChi fun s => Ch.chi s w) (R.N j) R.k R.m R.t j).comp (Subgroup.inclusion inf_le_left)⟩
-  else
-    ⟨HXmsharp (𝓞 X.E ⧸ w.1.asIdeal) (R.N j) R.k R.r R.t R.m,
-      lamXmsharp (Ch.psi0 w) (extChi fun s => Ch.chi s w) (R.N j) R.k R.r R.t R.m⟩
-
 variable (hc : Formalism.BasicNotions.CMData X.F X.E) (Ch : Chars X Pr R.m)
-
 
 open Classical in
 def diaT (u : Pr.Word) : DiaG (E := X.E) (ST := Pr.vT u) := fun P =>
   if h : IsUnit (Ideal.Quotient.mk P.1.asIdeal (X.conjO (Pr.piT u))) then h.unit else 1
-
-def colDia (R : Ranks) (u : Pr.Word) (j : ℕ) : DiaG (E := X.E) (ST := Pr.vT u) := if j < R.m then 1 else diaT u
-
-def colPt (u : Pr.Word) (j : ℕ) (d : ColDeco X Pr u (R.N j)) : UAd hc (R.N j) :=
-  ptOfD hc (R.N j) (Pr.vT u) Pr.vGs (colDia R u j) d
 
 end Cols
 

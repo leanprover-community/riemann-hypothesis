@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.LocalToGlobal.ProjectiveLattices.AxHSup
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
-public import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.ChosenEqOfAllRules
 
 @[expose] public section
 

@@ -14,8 +14,6 @@ open CategoryTheory NumberField IsDedekindDomain IntermediateField GroundTheory.
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 theorem finite_setOf_nsmul_eq_zero_QZ {m : ℕ} (hm : m ≠ 0) : {q : QZ | m • q = 0}.Finite := by
   have hmk : ∀ (j : ℕ) (r : ℚ), j • QZ.mk r = QZ.mk (j * r) := by
     intro j r
@@ -69,7 +67,6 @@ theorem exists_place_above (ℓ : ℕ) (hℓ : ℓ.Prime) :
 
 variable (S : Set (HeightOneSpectrum (𝓞 K.1))) (ℓ : ℕ) (hℓ : ℓ.Prime)
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S) (ιs : LocalEmbeddings K)
-
 
 open Classical in
 include hℓ hS in

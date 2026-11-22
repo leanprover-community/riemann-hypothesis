@@ -29,10 +29,6 @@ def prodRep (ρ₁ : Representation ℂ M₁ V) (ρ₂ : Representation ℂ M₂
       _ = ρ₁ p.1 * (ρ₂ p.2 * ρ₁ q.1) * ρ₂ q.2 := by rw [hcomm]
       _ = ρ₁ p.1 * ρ₂ p.2 * (ρ₁ q.1 * ρ₂ q.2) := by simp only [mul_assoc]
 
-theorem prodRep_apply (ρ₁ : Representation ℂ M₁ V) (ρ₂ : Representation ℂ M₂ V) (hcomm)
-    (p : M₁ × M₂) (v : V) : prodRep ρ₁ ρ₂ hcomm p v = ρ₁ p.1 (ρ₂ p.2 v) :=
-  rfl
-
 section Existence
 
 variable {ρ₁ : Representation ℂ M₁ V} {ρ₂ : Representation ℂ M₂ V}

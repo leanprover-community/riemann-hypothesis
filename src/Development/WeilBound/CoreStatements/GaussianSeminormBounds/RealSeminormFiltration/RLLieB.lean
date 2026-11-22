@@ -101,25 +101,7 @@ theorem quad_eq {ι : Type} [Fintype ι] (X : Matrix (l ⊕ l) (l ⊕ l) ℝ) (u
   push_cast
   ring
 
-
-variable (l) in
-structure Meta : Type 1 where
-  G : Type
-  [grp : Group G]
-  [top : TopologicalSpace G]
-  pr : G →* Matrix.symplecticGroup l ℝ
-  om : G →* (Sch l →L[ℂ] Sch l)
-  quot : IsQuotientMap pr
-  sgn : ∀ g, pr g = 1 → om g = 1 ∨ om g = -1
-  cont : ∀ f, Continuous fun g => (om g f).toLp 2 volume
-  bdd : ∀ g, ∃ L : L2 l →L[ℂ] L2 l, ∀ f, (om g f).toLp 2 volume = L (f.toLp 2 volume)
-  cov : ∀ g w f, om g (rhoS w f) = rhoS ((pr g : Matrix (l ⊕ l) (l ⊕ l) ℝ) *ᵥ w) (om g f)
-  line : ∀ X ∈ LieAlgebra.Symplectic.sp l ℝ, ∃ γ : ℝ → G, Continuous γ ∧ γ 0 = 1 ∧ (∀ s t, γ (s + t) = γ s * γ t) ∧
-    (∀ t, (pr (γ t) : Matrix (l ⊕ l) (l ⊕ l) ℝ) = NormedSpace.exp (t • X)) ∧
-    ∀ f : Sch l, HasDerivAt (fun t => (om (γ t) f).toLp 2 volume) ((quad X f).toLp 2 volume) 0
-
 attribute [instance] Meta.grp Meta.top
-
 
 end PositivityTheory.RL.Up
 

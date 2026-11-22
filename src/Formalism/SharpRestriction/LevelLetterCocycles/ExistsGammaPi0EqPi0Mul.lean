@@ -22,8 +22,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 variable (W : LocWach PD LL O v n)
 
-local notation "ιE" => algebraMap (LetA O n) W.EE
-
 abbrev γL : Module.End O W.EE := (W.γE W.gam).toLinearMap
 
 def fac (e : ℕ) (i : ℤ) : Polynomial O :=

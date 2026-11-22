@@ -111,7 +111,6 @@ theorem FOrb_step (D : D7) (j p : ℕ) (z : Bool × HH D) (e : ℕ) : FOrb D j p
   rw [posPl_add, ZMod.val_add, ZMod.val_natCast, posPl_mod, ← posPl_add D p z s.val, posPl_mod, posPl_add,
     add_comm]
 
-
 open Classical in
 def FInert (D : D7) (j p : ℕ) : ℝ :=
   if IsResidueClassZero D p ∧ hP D p = 0 then ∑ τ : D.what₂.Tau, ((D.R.k : ℝ) - 1) * wj D j τ / ((p : ℝ) ^ 2 - 1)
@@ -124,7 +123,6 @@ def fockDeg (D : D7) (j : ℕ) : ℤ :=
   ∑ τ : D.what₂.Tau, ((∑ a, |D.what₂.kaBig j τ a|) + ∑ a, |D.what₂.kaSmall j τ a|)
 
 def FTypeG (D : D7) (j : ℕ) : ℝ := -((fockDeg D j : ℝ)) / 2
-
 
 open Classical in
 def FvalP {D : D7} (L : SizeData₂ D) (j p : ℕ) : ℝ :=
@@ -247,10 +245,6 @@ theorem Fval_conj {D : D7} (L : SizeData₂ D) (j : ℕ) (w : D.what₂.places.P
     Fval L j (D.what₂.places.conj w) = Fval L j w := by
   unfold Fval
   rw [resChar_conj]
-
-def FInertGe (D : D7) : Prop :=
-  ∀ j ∈ SizeData₂.lifts D, ∀ p : ℕ, p.Prime → (IsResidueClassZero D p ∨ IsSg D p) → (∀ τ : D.what₂.Tau, 0 ≤ wj D j τ) →
-    ∑ τ : D.what₂.Tau, ((D.R.k : ℝ) - 1) * wj D j τ / ((p : ℝ) ^ 2 - 1) ≤ FInert D j p
 
 end Formalism.BasicNotions
 

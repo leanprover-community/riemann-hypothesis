@@ -67,23 +67,6 @@ def dualSub {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E) (L 
 def LatT {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E) (q : ℕ) (L : Submodule (𝓞 E) S.V) : Prop :=
   (∀ x ∈ L, x ∈ dualSub S L) ∧ L.toAddSubgroup.relIndex (dualSub S L) = q
 
-def SameCls {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E) (M : ℕ) {n : ℕ}
-    (L L' : Submodule (𝓞 E) S.V) (e e' : Fin n → S.V) : Prop :=
-  ∃ γ : S.V ≃ₗ[E] S.V, (∀ x y, S.hT (γ x) (γ y) = S.hT x y) ∧ (∀ x, x ∈ L ↔ γ x ∈ L') ∧
-    ∀ a, ∃ z ∈ dualSub S L', γ (e a) - e' a = (M : E) • z
-
-def ClsTie (D : D7) (u : D.what₂.Word) : Prop :=
-  (∀ i ≤ D.R.m, (∀ c, LatT (D.sp.X i) (Tu D u ^ (2 * D.R.f)) (D.clsLat u i c)) ∧
-    ∃ e : (D.mem u).C.cls i → Fin (D.R.N i) → (D.sp.X i).V,
-      (∀ c a, e c a ∈ dualSub (D.sp.X i) (D.clsLat u i c)) ∧
-      ∀ c c', SameCls (D.sp.X i) (Tu D u * D.host.g 0 * D.host.g 1) (D.clsLat u i c) (D.clsLat u i c')
-        (e c) (e c') → c = c') ∧
-  ∃ LP : (D.fm u).clsP → Submodule (𝓞 D.host.E) D.sp.X'.V,
-    (∀ c, Submodule.IsLattice D.host.E (LP c) ∧ LatT D.sp.X' 1 (LP c)) ∧
-    ∃ e : (D.fm u).clsP → Fin (D.R.N D.R.m - 1) → D.sp.X'.V,
-      (∀ c a, e c a ∈ dualSub D.sp.X' (LP c)) ∧
-      ∀ c c', SameCls D.sp.X' (Tu D u * D.host.g 0 * D.host.g 1) (LP c) (LP c') (e c) (e c') → c = c'
-
 def adm3 (D : D7) : Prop := ∀ (u : D.what₂.Word) (c : (D.mem u).C.cls 0), Subsingleton ((D.mem u).C.stab 0 c)
 
 def aT (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) : ℝ := (lamCol D u τ 0 : ℝ)
@@ -91,61 +74,6 @@ def aT (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) : ℝ := (lamCol D u �
 def bT (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) : ℝ := -(lamCol D u τ (D.R.k - 1) : ℝ)
 
 def tops (D : D7) : Finset D.what₂.Tau := topsOf D.host D.eTau
-
-abbrev Gx (D : D7) (i : ℕ) : Type := D.what₂.Tau × Fin (D.R.N i) × Fin (D.R.N (i + 1))
-
-def Hherm (D : D7) (i : ℕ) (s : D.what₂.LL →+* ℂ) (z w : Gx D i → ℂ) : ℂ :=
-  ∑ g, z g * star (w g) / ((Real.pi * D.gx.Om g.1 s : ℝ) : ℂ)
-
-def Hq (D : D7) (i : ℕ) (s : D.what₂.LL →+* ℂ) (z : Gx D i → ℂ) : ℝ :=
-  ∑ g, ‖z g‖ ^ 2 / (Real.pi * D.gx.Om g.1 s)
-
-def dz (D : D7) (i : ℕ) (s : D.what₂.LL →+* ℂ) : MeasureTheory.Measure (Gx D i → ℂ) :=
-  ENNReal.ofReal (∏ g : Gx D i, (Real.pi * D.gx.Om g.1 s)⁻¹) • MeasureTheory.volume
-
-def dens (D : D7) (i : ℕ) (s : D.what₂.LL →+* ℂ) (Th : (Gx D i → ℂ) → ℂ) (z : Gx D i → ℂ) : ℝ :=
-  ‖Th z‖ ^ 2 * Real.exp (-Real.pi * Hq D i s z)
-
-def trans (D : D7) (i : ℕ) (s : D.what₂.LL →+* ℂ) (x : Gx D i → ℂ) (Th : (Gx D i → ℂ) → ℂ) :
-    (Gx D i → ℂ) → ℂ :=
-  fun z => Th (z - x) * Complex.exp (Real.pi * Hherm D i s z x - ((Real.pi * Hq D i s x / 2 : ℝ) : ℂ))
-
-structure Torus (D : D7) (i : ℕ) (s : D.what₂.LL →+* ℂ) where
-  La : AddSubgroup (Gx D i → ℂ)
-  F : Set (Gx D i → ℂ)
-  fund : MeasureTheory.IsAddFundamentalDomain La F (dz D i s)
-  covol : dz D i s F = 1
-  Hmin : ∀ y ∈ La, y ≠ 0 → ∃ β : D.host.E, β ≠ 0 ∧
-    (∀ a : 𝓞 D.host.E, ∃ n : ℤ, Algebra.trace ℚ D.host.E (β * (a : D.host.E)) = (n : ℚ)) ∧
-    Hq D i s y = 2 * ∑ τ : D.what₂.Tau, ‖D.host.emb (plc D τ) β‖
-
-def Torus.Admis {D : D7} {i : ℕ} {s : D.what₂.LL →+* ℂ} (T : Torus D i s) (Th : (Gx D i → ℂ) → ℂ) : Prop :=
-  Differentiable ℂ Th ∧ (∀ y ∈ T.La, ∀ z, dens D i s Th (z + y) = dens D i s Th z) ∧
-  MeasureTheory.IntegrableOn (dens D i s Th) T.F (dz D i s)
-
-def Torus.l2Sq {D : D7} {i : ℕ} {s : D.what₂.LL →+* ℂ} (T : Torus D i s) (Th : (Gx D i → ℂ) → ℂ) : ℝ :=
-  ∫ z in T.F, dens D i s Th z ∂(dz D i s)
-
-structure KerData (D : D7) (u : D.what₂.Word) where
-
-  embS : ∀ i (s : D.what₂.LL →+* ℂ), ((D.fm u).lat i).V →ₛₗ[s] ((D.mem u).C.cls i → (D.mem u).C.Y i → ℂ)
-
-  ipS : ∀ i (_s : D.what₂.LL →+* ℂ), (D.mem u).C.cls i →
-    (((D.mem u).C.Y i → ℂ) →ₗ⋆[ℂ] ((D.mem u).C.Y i → ℂ) →ₗ[ℂ] ℂ)
-  tor : ∀ i (s : D.what₂.LL →+* ℂ), (D.mem u).C.cls i → (D.mem u).C.cls (i + 1) → Torus D i s
-
-  Th : ∀ i (_s : D.what₂.LL →+* ℂ), (D.mem u).C.cls i → (D.mem u).C.cls (i + 1) → (Gx D i → ℂ) → ℂ
-
-  cf : ∀ i (_s : D.what₂.LL →+* ℂ), (D.mem u).C.cls i → (D.mem u).C.cls (i + 1) → (Gx D i →₀ ℕ) → ℂ
-  cf_sum : ∀ i < D.R.m, ∀ s L L' z, HasSum (fun e => cf i s L L' e * e.prod fun g n => z g ^ n) (Th i s L L' z)
-
-  e0 : ∀ i (_s : D.what₂.LL →+* ℂ), (D.mem u).C.cls i → (D.mem u).C.cls (i + 1) → (Gx D i → ℂ) → ℂ
-  initial_theta_admissible : ∀ i < D.R.m, ∀ s L L', (tor i s L L').Admis (e0 i s L L')
-
-  levelZeroComparison_norm : ∀ i < D.R.m, ∀ s L L', (D.fm u).thFree i s L L' ^ 2 = (tor i s L L').l2Sq (e0 i s L L')
-
-  Q : ∀ i (_s : D.what₂.LL →+* ℂ), (D.mem u).C.cls i → (D.mem u).C.cls (i + 1) →
-    ((D.fm u).lat i).V → ((D.fm u).lat (i + 1)).V → MvPolynomial (Gx D i) ℂ
 
 namespace KerData
 

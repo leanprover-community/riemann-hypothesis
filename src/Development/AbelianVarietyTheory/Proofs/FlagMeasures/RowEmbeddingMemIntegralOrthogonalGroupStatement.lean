@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowEmbeddingMemIntegralOrthogonalGroup
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsVolData
 
 @[expose] public section
 

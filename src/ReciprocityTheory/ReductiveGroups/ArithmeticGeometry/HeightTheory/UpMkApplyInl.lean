@@ -14,12 +14,6 @@ noncomputable def upMono (D N n n' : ℕ) : Finset (UXVar D N →₀ ℕ) :=
   ((Finset.univ : Finset (Fin (D + 2))).finsuppAntidiag n ×ˢ
     (Finset.univ : Finset (Option (Fin (D + 2) × Fin (N + 1)))).finsuppAntidiag n').image upMk
 
-theorem upMk_apply_inl {D N : ℕ} (ab : (Fin (D + 2) →₀ ℕ) × (Option (Fin (D + 2) × Fin (N + 1)) →₀ ℕ))
-    (p : Fin (D + 2) × Fin (N + 1)) : upMk ab (Sum.inl p) = ab.2 (some p) := rfl
-
-theorem upMk_apply_inr {D N : ℕ} (ab : (Fin (D + 2) →₀ ℕ) × (Option (Fin (D + 2) × Fin (N + 1)) →₀ ℕ))
-    (i : Fin (D + 2)) : upMk ab (Sum.inr i) = ab.1 i := rfl
-
 theorem mem_upMono {D N n n' : ℕ} {s : UXVar D N →₀ ℕ} :
     s ∈ upMono D N n n' ↔ xDeg s = n ∧ uDeg s ≤ n' := by
   classical

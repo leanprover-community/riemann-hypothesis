@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.QuotRepMk
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.KatoResAway
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.KatoEmbConj
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AdTransfer

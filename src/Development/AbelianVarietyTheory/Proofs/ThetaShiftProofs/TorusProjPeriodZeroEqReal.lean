@@ -185,8 +185,6 @@ def kappa : (Fin A.gB → ℂ) →ₗ[ℂ] (A.X →+ ℂ) where
 
 def torusProj : A.V →ₗ[ℂ] (A.X →+ ℂ) := LinearMap.fst ℂ _ _ + A.kappa ∘ₗ LinearMap.snd ℂ _ _
 
-theorem torusProj_def (v : A.V) : A.torusProj v = v.1 + A.kappa v.2 := rfl
-
 theorem torusProj_apply (v : A.V) (x : A.X) :
     A.torusProj v x = v.1 x + A.H v.2 (A.ct x) / (2 * Complex.I) := rfl
 
@@ -235,9 +233,6 @@ theorem torusProj_periodZero_eq_real (n : A.X →+ ℤ) (l : A.abelian₂) (x : 
 def BwMat (w : ℂ) : Matrix (Module.Free.ChooseBasisIndex ℤ A.X) (Module.Free.ChooseBasisIndex ℤ A.X) ℝ :=
   Matrix.of fun i j => A.Bw w (Module.Free.chooseBasis ℤ A.X i) (Module.Free.chooseBasis ℤ A.X j)
 
-theorem BwMat_apply (w : ℂ) (i j) :
-    A.BwMat w i j = A.Bw w (Module.Free.chooseBasis ℤ A.X i) (Module.Free.chooseBasis ℤ A.X j) := rfl
-
 theorem exists_BwMat_posDef : ∃ T₀ : ℝ, ∀ w : ℂ, T₀ < w.im → (A.BwMat w).PosDef := by
   classical
   let b := Module.Free.chooseBasis ℤ A.X
@@ -267,7 +262,6 @@ theorem map_eq_sum_repr {M : Type} [Ring M] (f : A.X →+ M) (y : A.X) :
   set_option synthInstance.maxHeartbeats 100000 in
     simp only [map_sum, map_zsmul, zsmul_eq_mul]
 
-
 open Classical in
 def dualForm (w : ℂ) : (A.X →+ ℂ) →ₗ[ℂ] (A.X →+ ℂ) →ₗ⋆[ℂ] ℂ :=
   LinearMap.mk₂'ₛₗ (RingHom.id ℂ) (starRingEnd ℂ)
@@ -276,7 +270,6 @@ def dualForm (w : ℂ) : (A.X →+ ℂ) →ₗ[ℂ] (A.X →+ ℂ) →ₗ⋆[ℂ
     (fun _ _ _ => by rw [map_smul, smul_dotProduct]; rfl)
     (fun _ _ _ => by rw [map_add (f := _), star_add, mulVec_add, dotProduct_add])
     (fun _ _ _ => by rw [map_smul, star_smul, mulVec_smul, dotProduct_smul]; rfl)
-
 
 open Classical in
 theorem dualForm_apply (w : ℂ) (r r' : A.X →+ ℂ) :
@@ -452,7 +445,6 @@ theorem periods_polarised :
     fun g k P hP => A.period_clauses h k (AddEquiv.refl _) P hP⟩
 
 end AnArc
-
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField in
 theorem AnArc.isPeriod {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} [StarRing (𝓞 E)]

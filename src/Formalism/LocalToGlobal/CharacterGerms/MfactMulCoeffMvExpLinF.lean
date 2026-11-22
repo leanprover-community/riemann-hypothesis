@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.IncomingBounds.StatementThmP
 public import Formalism.IncomingBounds.FlowDegreeBounds.ThmPExp
-public import Formalism.IncomingBounds.FlowDegreeBounds.Cayley
 
 @[expose] public section
 

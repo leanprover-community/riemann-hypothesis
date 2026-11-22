@@ -83,9 +83,6 @@ def IsBaseFrame (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (Λ : Submodule (𝓞
 def IsConjPl (PP PP' : Formalism.L2.DIV.Pl D.host.E) : Prop :=
   ∀ c ∈ PP.asIdeal, ∃ c' ∈ PP'.asIdeal, (c' : D.host.E) = star (c : D.host.E)
 
-def IsTypePlaces (gp : Fin 2 → ℕ) (pb : Fin 2 → 𝓞 D.host.E) (Pg : Finset (Formalism.L2.DIV.Pl D.host.E)) : Prop :=
-  Formalism.L2.DIV.IsTypeDatum gp pb ∧ Pg = Formalism.L2.DIV.primesOf (pb 0 * pb 1)
-
 def IsTwistPlaces (gp : Fin 2 → ℕ) (Q : Finset (Formalism.L2.DIV.Pl D.host.E)) : Prop :=
   ∀ PP ∈ Q, (∃ q : ℕ, q.Prime ∧ Nat.card (Formalism.L2.DIV.kP PP) = q ∧ (q : 𝓞 D.host.E) ∉ PP.asIdeal ^ 2 ∧ ∀ i, q ≠ gp i) ∧
     ∀ PP' ∈ Q, ¬ IsConjPl PP PP'
@@ -98,7 +95,6 @@ def IsLevelActionImage (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (L : Formalism
     (F F' : GA D V → ℂ) : Prop :=
   ∀ κ, IsLevelLift V β L g0 κ → ∀ h, F' h = (levChi V β (flagL L) κ)⁻¹ * F (h * κ)
 
-
 open Classical in
 def actG0 (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (L : Formalism.L2.DIV.LevDat D.host.E ℂ V.rank) (g0 : Formalism.L2.DIV.G0 L.Pg L.r)
     (F : GA D V → ℂ) : GA D V → ℂ :=
@@ -109,10 +105,6 @@ def actG0 (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (L : Formalism.L2.DIV.LevDa
 def IsPLevel (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (L : Formalism.L2.DIV.LevDat D.host.E ℂ V.rank) (P : Formalism.L2.DIV.LevelP L.Pg L.r ℂ)
     (F : GA D V → ℂ) : Prop :=
   HasType V β (flag1L L) F ∧ ∀ p : P.H, actG0 V β L p.1 F = fun h => ((P.chi p : ℂˣ) : ℂ) * F h
-
-def eAct (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (L : Formalism.L2.DIV.LevDat D.host.E ℂ V.rank)
-    (e : Formalism.L2.DIV.G0 L.Pg L.r →₀ ℂ) (F : GA D V → ℂ) : GA D V → ℂ :=
-  fun h => e.sum fun g c => c * actG0 V β L g F h
 
 def IsMinf {p q : ℕ} (m : Measure (UpqT p q)) : Prop :=
   m.IsHaarMeasure ∧ OmegaDensity m (minfDensity (p + q))

@@ -178,14 +178,6 @@ variable {D : D7} (O : Obj D)
 
 abbrev lev : LevelData D := O.ex.lev
 
-abbrev th : ThetaX D := O.ex.th
-
-abbrev cmp : LatCmp D := O.ex.cmp
-
-abbrev tw : TwForms D := O.ex.tw
-
-abbrev errX : ErrX D := O.ex.errX
-
 abbrev nch : NChoice D := O.ex.nch
 
 abbrev xd : ThData D := O.ex.xd
@@ -296,7 +288,6 @@ theorem NP_tr (Y : G.LatInst D) (u : D.what₂.Word) (w : D.what₂.places.Pl)
   rfl
 
 end Local
-
 
 set_option maxHeartbeats 800000 in
 theorem bk_tr (i : D.ntw.Tw) (s : D.ntw.Sig i) (k : ℕ) (ψ : BlochKatoReduction.Gen.GE D.nd →* (D.ntw.Ok i k)ˣ) :

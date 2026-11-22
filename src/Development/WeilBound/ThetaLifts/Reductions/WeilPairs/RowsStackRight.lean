@@ -182,11 +182,6 @@ def stackL : (Matrix (Fin nT) (Fin nS) E × Matrix (Fin nT) (Fin nS) E) →ₗ[�
     ext i j
     refine Fin.addCases (fun k => ?_) (fun k => ?_) i <;> simp [-Fin.natAdd_eq_addNat]
 
-theorem rowsL_apply {m : ℕ} (f : Fin nT → Fin m) (M : Matrix (Fin m) (Fin nS) E) (i j) : rowsL f M i j = M (f i) j := rfl
-
-theorem stackL_apply (p : Matrix (Fin nT) (Fin nS) E × Matrix (Fin nT) (Fin nS) E) (i j) :
-    stackL p i j = Fin.append (fun k => p.1 k j) (fun k => p.2 k j) i := rfl
-
 theorem rows_stack_left (p : Matrix (Fin nT) (Fin nS) E × Matrix (Fin nT) (Fin nS) E) :
     rowsL (Fin.castAdd nT) (stackL p) = p.1 := by
   ext i j

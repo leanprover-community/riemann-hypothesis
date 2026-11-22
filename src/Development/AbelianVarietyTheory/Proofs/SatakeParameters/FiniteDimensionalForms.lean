@@ -18,8 +18,6 @@ section General
 
 variable (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ)
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 theorem ALint_le : ReciprocityTheory.Aut.ALint L ≤ Formalism.MainNotions.S.IntAf (L⁺) L := by
   rw [ReciprocityTheory.Aut.ALint, Subring.closure_le]
   rintro x (⟨y, rfl⟩ | ⟨a, ha, rfl⟩)

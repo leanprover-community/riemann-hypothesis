@@ -89,9 +89,6 @@ variable {o Ω Li : Type} [CommRing o] [Field Ω] [Algebra o Ω] {R : Subalgebra
   {E : Type} [Field E] [NumberField E] {c : E ≃+* E} {p Rr N : ℕ} [AddCommGroup Li] [Module Ω Li]
   (D : HTChart R Ω c p Rr N (Module.Dual Ω Li)) (ρ : 𝓞 E →+* Module.End Ω Li)
 
-theorem mem_range_iff (x : Ω) : x ∈ (algebraMap R Ω).range ↔ x ∈ R :=
-  ⟨fun ⟨a, ha⟩ => ha ▸ a.2, fun h => ⟨⟨x, h⟩, rfl⟩⟩
-
 theorem mem_lat {V : Submodule Ω Li} {e : Li} :
     e ∈ HTL.latOn D V (algebraMap R Ω 1) (algebraMap R Ω).range ↔ e ∈ V ∧ ∀ u ∈ D.om', u e ∈ R :=
   ⟨fun h => ⟨h.1, fun u hu => by simpa [mem_range_iff] using h.2 u hu⟩,

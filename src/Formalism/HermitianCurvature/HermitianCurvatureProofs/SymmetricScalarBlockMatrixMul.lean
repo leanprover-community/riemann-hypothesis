@@ -628,9 +628,6 @@ theorem skewOf_coords {n : ℕ} (S : Matrix (Fin n) (Fin n) ℂ) (hS : Sᴴ = -S
 theorem wMat_mul_wMat_mul {m : Type*} (n : ℕ) (X : Matrix (Fin n) m ℂ) : G.wMat n * (G.wMat n * X) = X := by
   rw [← Matrix.mul_assoc, wMat_mul_self, Matrix.one_mul]
 
-theorem hpk_mul_hpk_mul {m : Type*} (k r : ℕ) (X : Matrix (Fin (2 * r + k + 1)) m ℂ) : Hpk k r * (Hpk k r * X) = X := by
-  rw [← Matrix.mul_assoc, hpk_sq, Matrix.one_mul]
-
 theorem rn_of (c : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) (S : Matrix (Fin j) (Fin j) ℂ) (hS : Sᴴ = -S) :
     Rn k j ρ (Matrix.of.symm c, skewCoords S) = blk3 1 (-(G.wMat j * cᴴ * Hpk k ρ))
       (G.wMat j * ((-(1 / 2 : ℂ)) • (cᴴ * Hpk k ρ * c) + S)) 0 1 c 0 0 1 := by

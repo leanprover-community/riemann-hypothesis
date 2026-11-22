@@ -15,9 +15,6 @@ noncomputable def actHom {k G : Type} [CommRing k] [Group G] (B : Rep k G) (g : 
   Rep.ofHom (X := B.V) (Y := B.V) (ρ := B.ρ) (σ := (Rep.res (MulAut.conj g).toMonoidHom B).ρ)
     ⟨B.ρ g, fun h => by ext x; simp [Rep.res]⟩
 
-lemma actHom_apply {k G : Type} [CommRing k] [Group G] (B : Rep k G) (g : G) (x : B) :
-    (actHom B g).hom x = B.ρ g x := rfl
-
 end GlobalTheory.HomStab.ConjMap
 
 open GlobalTheory.HomStab.ConjMap in

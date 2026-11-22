@@ -1,7 +1,10 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.CyclicBaseChangeC
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Hypotheses2
+public import Mathlib
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Brauer
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SemisimpleLevels.SsMonoOdd
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.CrystallineBaseChange.QuadBC0OfQuadBaseChange
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BcDefs
 
 @[expose] public section
@@ -22,17 +25,6 @@ def symSquareMatrixHom : Matrix (Fin 2) (Fin 2) R →* Matrix (Fin 3) (Fin 3) R 
   toFun g := !![g 0 0 ^ 2, g 0 0 * g 0 1, g 0 1 ^ 2;
     2 * g 0 0 * g 1 0, g 0 0 * g 1 1 + g 0 1 * g 1 0, 2 * g 0 1 * g 1 1;
     g 1 0 ^ 2, g 1 0 * g 1 1, g 1 1 ^ 2]
-  map_one' := by ext i j; fin_cases i <;> fin_cases j <;> simp
-  map_mul' g h := by
-    ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_succ] <;> ring
-
-def symCubeMatrixHom : Matrix (Fin 2) (Fin 2) R →* Matrix (Fin 4) (Fin 4) R where
-  toFun g := !![g 0 0 ^ 3, g 0 0 ^ 2 * g 0 1, g 0 0 * g 0 1 ^ 2, g 0 1 ^ 3;
-    3 * g 0 0 ^ 2 * g 1 0, g 0 0 ^ 2 * g 1 1 + 2 * g 0 0 * g 0 1 * g 1 0, 2 * g 0 0 * g 0 1 * g 1 1 + g 0 1 ^ 2 * g 1 0,
-      3 * g 0 1 ^ 2 * g 1 1;
-    3 * g 0 0 * g 1 0 ^ 2, 2 * g 0 0 * g 1 0 * g 1 1 + g 0 1 * g 1 0 ^ 2, g 0 0 * g 1 1 ^ 2 + 2 * g 0 1 * g 1 0 * g 1 1,
-      3 * g 0 1 * g 1 1 ^ 2;
-    g 1 0 ^ 3, g 1 0 ^ 2 * g 1 1, g 1 0 * g 1 1 ^ 2, g 1 1 ^ 3]
   map_one' := by ext i j; fin_cases i <;> fin_cases j <;> simp
   map_mul' g h := by
     ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_succ] <;> ring
@@ -73,11 +65,9 @@ def IsAlgChar (ι : Qbar l ≃+* ℂ) (κ : G F Ω →* (Qbar l)ˣ) : Prop :=
 def IsAutC [_root_.NumberField.IsTotallyComplex F] (ι : Qbar l ≃+* ℂ) (r : G F Ω →* GL (Fin n) (Qbar l)) : Prop :=
   ∃ π : CuspSub F n, (CG.mk π).IsRegAlg ∧ AttC ι r π
 
-
 omit [NumberField F] in
 def TypeAway (r : G F Ω →* GL (Fin n) (Qbar l)) (τ : Fin n → G F Ω →* (Qbar l)ˣ) : Prop :=
   ∀ A : ValuationSubring Ω, ¬ A.valuation (l : Ω) < 1 → IsDiagOn r (Ine (F := F) A) τ
-
 
 omit [NumberField F] in
 def OrdAt (r : G F Ω →* GL (Fin n) (Qbar l)) (m : Fin n → ℤ) (ψ : Fin n → G F Ω →* (Qbar l)ˣ) (A : ValuationSubring Ω) : Prop :=
@@ -85,7 +75,6 @@ def OrdAt (r : G F Ω →* GL (Fin n) (Qbar l)) (m : Fin n → ℤ) (ψ : Fin n 
     (∀ i (s : ↥(Dec (F := F) A)), (s : G F Ω) ∈ Ine (F := F) A → κ i s = cycBar F Ω l s ^ m i) ∧ ∀ i s, Cong (κ i s) (ψ i s)
 
 variable [CharZero Ω] [IsAlgClosure ℚ Ω]
-
 
 omit [NumberField F] [IsAlgClosure ℚ Ω] in
 def IsPair [CharZero F] (c : G ℚ Ω) (r : G F Ω →* GL (Fin n) (Qbar l)) (μ : G F Ω →* (Qbar l)ˣ) (P : GL (Fin n) (Qbar l)) : Prop :=
@@ -113,20 +102,9 @@ structure SlopeTestRemainingChoices (N w : ℕ) (θ : G ℚ Ω →* (Qbar l)ˣ) 
   pow : θ ^ l = 1
   mu : KillsMu w θ
 
-
 omit [IsAlgClosure ℚ Ω] in
 def SplitAt (N w : ℕ) (χ : G ℚ Ω →* (Qbar l)ˣ) : Prop :=
   KillsMu N χ ∧ ∀ s : G ℚ Ω, (∀ ζ : Ω, ζ ^ N = 1 → s ζ = ζ ^ w) → χ s = 1
-
-structure IsSeed {L : Type} [Field L] [NumberField L] [IsCMField L] [Algebra L Ω] (ι : Qbar l ≃+* ℂ) (c : G ℚ Ω)
-    (ψ τ : Fin n → G L Ω →* (Qbar l)ˣ) (m : Fin n → ℤ) (ka : G L Ω →* (Qbar l)ˣ) (r : G L Ω →* GL (Fin n) (Qbar l)) : Prop where
-  cont : Continuous r
-  irr : IsIrr r
-  pair : ∃ P : GL (Fin n) (Qbar l), (P : Matrix (Fin n) (Fin n) (Qbar l))ᵀ = P ∧ IsPair c r 1 P
-  res : ResSum r ψ
-  away : TypeAway r τ
-  above : ∀ A : ValuationSubring Ω, A.valuation (l : Ω) < 1 → OrdAt r m ψ A
-  aut : IsAutCsd ι (tw r ka)
 
 structure FieldPairCharacterTripleConditions (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K Ω] [Algebra L Ω] (c : G ℚ Ω)
     (N w : ℕ) (χ' η θ : G ℚ Ω →* (Qbar l)ˣ) (j : ℕ) : Prop where

@@ -89,12 +89,6 @@ structure IsPt (U : D.ULoc) (g₁ : G ℚ Ω) (r : G ℚ Ω →* GG (m := 3) (R 
 def IsExt {κ : Type} [CommRing κ] (r : G ℚ Ω →* GG (m := 3) (R := κ)) (W : G ℚ Ω →* GL (Fin 2) κ) : Prop :=
   (∀ g ∈ D.η.ker, (W g : Matrix (Fin 2) (Fin 2) κ) = corner (r g).mat) ∧ (W D.cc : Matrix (Fin 2) (Fin 2) κ).trace = 0
 
-def IsAutI [IsCMField K] (ι : Qbar l ≃+* ℂ) (r : G ℚ Ω →* GG (m := 3) (R := PadicAlgCl l)) (hr : HasMult D.η r) : Prop :=
-  Af.IsAutCsd ι (Af.tw (D.rhoK r hr) (cycBar K Ω l)⁻¹)
-
-def IsModular (_ : Dat Ω K c e ψ) (ι : Qbar l ≃+* ℂ) (W : G ℚ Ω →* GL (Fin 2) (PadicAlgCl l)) : Prop :=
-  ∃ f : Af.Newform (2 * e + 1), f.Att ι (Af.tw W (cycBar ℚ Ω l ^ (-(e : ℤ))))
-
 end Dat
 
 end UpperTheory.V.U3

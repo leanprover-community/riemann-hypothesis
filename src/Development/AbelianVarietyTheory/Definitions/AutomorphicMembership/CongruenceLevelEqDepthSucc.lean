@@ -140,11 +140,6 @@ theorem inv_mul_mem_prinCong (a k : GLint E N P) : a⁻¹ * k ∈ prinCong N P c
   rw [e, ← map_smul]
   exact (a⁻¹).2 _
 
-theorem mem_levCong_iff (k : GLint E N P) :
-    k ∈ (levCong hN P c l).H ↔ ∃ j ∈ (levRed P l).H,
-      ∀ x ∈ stdAt E N P, ((qOf P : E) ^ (c + 1))⁻¹ • (k.1 x - sumE hN j.1 1 x) ∈ stdAt E N P := by
-  simp only [mem_levCong, inv_mul_mem_prinCong, extI_val]
-
 theorem prinCong_le_levCong : prinCong N P (c + 1) ≤ (levCong hN P c l).H := le_sup_right
 
 theorem extI_mem_levCong (j : GLint E n P) : extI hN P j ∈ (levCong hN P c l).H ↔ j ∈ (levRed P l).H := by
@@ -164,12 +159,6 @@ theorem levCong_lam_extI {j : GLint E n P} (hk : extI hN P j ∈ (levCong hN P c
 theorem levCong_lam_prinCong {k : GLint E N P} (h : k ∈ prinCong N P (c + 1)) :
     (levCong hN P c l).lam ⟨k, prinCong_le_levCong hN c l h⟩ = 1 :=
   (levCong_lam hN c l _ (one_mem _) (by simpa using h)).trans (map_one _)
-
-theorem levCong_last {k : GLint E N P} (hk : k ∈ (levCong hN P c l).H) {x : Sp E N} (hx : x ∈ stdAt E N P) :
-    IntAt P (((qOf P : E) ^ (c + 1))⁻¹ * (k.1 x (Br.iL hN) - x (Br.iL hN))) := by
-  obtain ⟨j, -, h⟩ := (mem_levCong_iff hN c l k).1 hk
-  have := mem_stdAt.1 (h x hx) (Br.iL hN)
-  rwa [Pi.smul_apply, Pi.sub_apply, sumE_last, Units.val_one, one_mul] at this
 
 instance levCong_finiteIndex : (levCong hN P c l).H.FiniteIndex := Subgroup.finiteIndex_of_le (prinCong_le_levCong hN c l)
 
@@ -195,11 +184,9 @@ theorem N_succ_of_eq {j : ℕ} (h : j = R.m) : R.N j = (R.N R.m - 1) + 1 := h �
 
 def levGTop : LevFam X.E X.K (R.N R.m) Pr.vGs := fun w => levDiag (Nat.sub_le _ 1) (rowTyG Ch P w)
 
-
 variable (R) in
 def levQTop (c : ℕ) : LevQFam X.E X.K (R.N R.m) (QE sel (mu : Chr X.F X.E X.K)) := fun Q =>
   levCong (N_m_succ R) Q.1 c (rowTyQ R (mu : Chr X.F X.E X.K) (QE sel (mu : Chr X.F X.E X.K)) Q)
-
 
 open Classical in
 def topLevAt (c : ℕ) : TopLev X Pr R (QE sel (mu : Chr X.F X.E X.K)) where
@@ -209,10 +196,8 @@ def topLevAt (c : ℕ) : TopLev X Pr R (QE sel (mu : Chr X.F X.E X.K)) where
     else LevQFam.top X.E X.K (R.N j) _
   pref u j p := ∀ h : j = R.m, ∃ d : XPt Pr R sel mu, p = tilFr (N_succ_of_eq h) (Pr.piT u) d
 
-
 variable (R) in
 def topDep (M : ℕ) : ℕ := max (4 * R.m) (2 * R.m + 2 * M - 1)
-
 
 variable (R) in
 theorem topDep_succ (M : ℕ) : topDep R M + 1 = max (4 * R.m + 1) (2 * R.m + 2 * M) := by
@@ -220,10 +205,8 @@ theorem topDep_succ (M : ℕ) : topDep R M + 1 = max (4 * R.m + 1) (2 * R.m + 2 
   unfold topDep
   omega
 
-
 variable (R) in
 theorem topDep_succ_eq_default (M : ℕ) : topDep R M + 1 = (default : TopDepth R M).1 := topDep_succ R M
-
 
 variable (R) in
 theorem two_mul_le_topDep (M : ℕ) : 2 * M ≤ topDep R M := by
@@ -291,14 +274,10 @@ theorem levGTop_PsymF (w : Pr.vGs) : levGTop Ch (rPsymF Ch) w =
     ⟨HXmsym _ (R.N R.m) R.k R.r R.t R.m R.rS ((r_le_X' R).trans (Nat.sub_le _ 1)),
       lamXmsym (Ch.psi0 w) (chiAt Ch w) (R.N R.m) R.k R.r R.t R.m R.rS _⟩ := levGTop_eq Ch _ w
 
-
-
-
 variable {sel mu} in
 theorem extQ_mem_levQTop (c : ℕ) (a : GLQ X.E (R.N R.m - 1) (QE sel (mu : Chr X.F X.E X.K))) :
     extQ X.E (N_m_succ R) _ a ∈ (levQTop R sel mu c).grp ↔ a ∈ (levQX R sel mu).grp :=
   forall₂_congr fun Q _ => extI_mem_levCong (N_m_succ R) c _ (a Q)
-
 
 variable (R) in
 theorem levQTop_eq_topLevQ' {c c' : ℕ} (e : c + 1 = c') (hc : 0 < c') : levQTop R sel mu c = topLevQ R sel mu hc := by
@@ -314,48 +293,6 @@ section Ok
 
 variable (hPr : Pr.Ok) (hQ : ∀ (u : Pr.Word) (Q : QE sel (mu : Chr X.F X.E X.K)), Pr.piT u ∉ Q.1.asIdeal)
 include hPr hQ
-
-theorem topLevAt_ok (c : ℕ) : (topLevAt Ch sel mu P c).Ok := by
-  constructor
-  case idx => exact topLevAt_finiteIndex Ch sel mu P c
-  case root =>
-    intro j Q g
-    obtain ⟨m, h, h'⟩ := topLevAt_root Ch sel mu P c j Q
-    exact ⟨m, h, h' g⟩
-  case levG_top =>
-    intro a ha
-    rw [topLevAt_levG_m] at ha
-    obtain ⟨h, -, e⟩ := (mem_levGTop_grp Ch P a).1 ha
-    exact ⟨h, e⟩
-  case levQ_last =>
-    intro Q k hk x hx
-    rw [topLevAt_levQ_m] at hk
-    obtain ⟨g, -, e⟩ := sup_prinCong_le _ _ _ _ hk
-    have h2 := congrFun (redV_redGL k hx) (Br.iL (N_m_succ R))
-    rw [← e] at h2
-    refine h2.trans ?_
-    simp only [Matrix.mulVec, dotProduct, diagEmb_val]
-    have hh : ¬ (Br.iL (N_m_succ R)).1 < R.N R.m - 1 := lt_irrefl (R.N R.m - 1)
-    simp only [diagMat_of_not_left _ _ hh]
-    simp [Matrix.one_apply, redV]
-  case levQ_ini =>
-    intro Q k hk i
-    rw [topLevAt_levQ_m] at hk
-    obtain ⟨g, -, e⟩ := sup_prinCong_le _ _ _ _ hk
-    have h2 := congrFun (redV_redGL k (single_mem_stdAt (Br.iL (N_m_succ R)))) (Br.iC (N_m_succ R) i)
-    rw [← e, redV_single, Matrix.mulVec_single_one] at h2
-    refine h2.trans ?_
-    show diagMat _ _ _ _ _ = 0
-    have hh : ¬ (Br.iL (N_m_succ R)).1 < R.N R.m - 1 := lt_irrefl (R.N R.m - 1)
-    rw [diagMat_of_not_right _ _ hh, Matrix.one_apply_ne]
-    exact fun h => absurd (congrArg Fin.val h) i.2.ne
-  case pref_off => exact fun u j h p h' => absurd h' h
-  case pref_top =>
-    intro u p h
-    obtain ⟨d, rfl⟩ : ∃ d, p = tilF sel mu u d := h rfl
-    exact ⟨d.deco, tilF_deco sel mu hPr u (hQ u) d⟩
-
-theorem topLev_ok : (topLev Ch sel mu cst P).Ok := topLevAt_ok Ch sel mu P hPr hQ _
 
 end Ok
 

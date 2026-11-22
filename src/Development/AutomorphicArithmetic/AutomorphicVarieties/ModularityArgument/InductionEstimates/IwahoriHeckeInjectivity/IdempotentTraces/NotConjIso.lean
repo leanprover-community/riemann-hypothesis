@@ -6,7 +6,7 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSpl
 public import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.NormCharPowHolds
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.NormIff
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ExSummand
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.BaseChangeUnits.IndCOfIndComplex
+public import Mathlib
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PStringStepB
 
 @[expose] public section

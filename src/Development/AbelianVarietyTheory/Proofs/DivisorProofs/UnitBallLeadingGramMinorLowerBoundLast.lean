@@ -101,9 +101,6 @@ theorem entry_tdm {r : ℕ} (M : Matrix (Fin r) (Fin r) ℂ) (d : Fin r → ℂ)
 
 variable {p : ℕ} (X : Data E (p + 1))
 
-theorem nmat_eq (z : V (nd X)) (τ : X.Ψ) (a b : Fin (p + 1)) :
-    nmat X z τ a b = lowMat (zOf X z τ) a b := rfl
-
 theorem n_top (hp : X.p0 = p) (z : V (nd X)) (τ : X.Ψ) (i a : Fin p) :
     mat (nFrame X z) τ i.castSucc a.castSucc = lowMat (zOf X z τ) i.castSucc a.castSucc := by
   show (∑ c, zFrame X z τ i.castSucc c * leviFrame X z τ c a.castSucc) = _

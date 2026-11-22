@@ -1,6 +1,6 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGermLow
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGermParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSettingBis
 
 @[expose] public section

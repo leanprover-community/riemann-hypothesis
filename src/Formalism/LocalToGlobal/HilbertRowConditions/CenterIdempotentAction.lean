@@ -92,22 +92,6 @@ section Joint
 variable (D : D7) {Gp : Type} [Group Gp] [Fintype Gp] {Pl0 T : Type}
   (A : FamIn D.what₂.LL Gp Pl0 T D.R.m)
 
-structure BaseDivisionAmbientCompatibility (Y : DivX D) (p0 : BaseLevelRowSide D) (a0 : AmbForm D p0.s)
-    (P0 : Subgroup Gp) (ψ0 : P0 →* D.what₂.LLˣ) (Ps : Subgroup Gp) (ψs : Ps →* D.what₂.LLˣ)
-    (Zs : DefSub A.fam.amb) (S0 : IndefData (A.side P0 ψ0 Zs)) (S1 : IndefData (A.side Ps ψs Zs))
-    {Dc : DefCols (A.side Ps ψs Zs)} {Sp : SPer Dc} (C : ColData Dc Sp S1)
-    (NuC : ∀ u, Submodule (𝓞 D.what₂.LL) (Fin (Dc.a u) → D.what₂.LL))
-    (I : DivisionCompatibilityData D A P0 ψ0 Ps ψs Zs S0 S1 p0 Dc)
-    (JA : AmbIds D A p0.s a0 P0 ψ0 I.tup) (JM : MjHIds D A Y S0) : Prop where
-
-  div : DivisionCompatible D A P0 ψ0 Ps ψs Zs S0 S1 p0 C NuC I
-
-  amb0 : AmbTie D A p0.s a0 P0 ψ0 I.tup I.jA0 JA
-
-  mjH : MjHTie D A Y S0 I.jW JM
-
-  cen0 : CenTie D A p0.s P0 ψ0 I.eG I.tup I.jA0
-
 end Joint
 
 section Consistency
@@ -125,40 +109,6 @@ section Bundle
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D}
   {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC}
-
-structure FiniteGroupFamilyCharacterData (ex : Extra D L hT Gi Gl Kc Y cX) : Type 1 where
-
-  Gp : Type
-  [grp : Group Gp]
-  [fin : Fintype Gp]
-
-  Pl0 : Type
-  T : Type
-
-  A : FamIn D.what₂.LL Gp Pl0 T D.R.m
-
-  P0 : Subgroup Gp
-  ψ0 : P0 →* D.what₂.LLˣ
-  Ps : Subgroup Gp
-  ψs : Ps →* D.what₂.LLˣ
-
-  Zs : DefSub A.fam.amb
-
-  S0 : IndefData (A.side P0 ψ0 Zs)
-  S1 : IndefData (A.side Ps ψs Zs)
-
-  Dc : DefCols (A.side Ps ψs Zs)
-  Sp : SPer Dc
-  C : ColData Dc Sp S1
-  NuC : ∀ u, Submodule (𝓞 D.what₂.LL) (Fin (Dc.a u) → D.what₂.LL)
-
-  I : DivisionCompatibilityData D A P0 ψ0 Ps ψs Zs S0 S1 ex.p0 Dc
-
-  JA : AmbIds D A ex.p0.s ex.amb0 P0 ψ0 I.tup
-
-  JM : MjHIds D A Y S0
-
-  tied : BaseDivisionAmbientCompatibility D A Y ex.p0 ex.amb0 P0 ψ0 Ps ψs Zs S0 S1 C NuC I JA JM
 
 attribute [instance] FiniteGroupFamilyCharacterData.grp FiniteGroupFamilyCharacterData.fin
 

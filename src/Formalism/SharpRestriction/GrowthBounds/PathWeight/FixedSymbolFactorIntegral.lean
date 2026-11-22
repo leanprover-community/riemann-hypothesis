@@ -17,8 +17,6 @@ section SyLemmas
 variable {p n' r k : ℕ} [Fact p.Prime] [NeZero n'] {O : Type} [CommRing O] [IsDomain O] [Algebra (WF p n') O]
   (w : O) (Fr : Frames n' r) (Q : ℕ) (g : Matrix (Fin k) (Fin k) (WF p n'))
 
-local notation "PP" => MvPolynomial (TV n' k) (KK O)
-
 theorem hom_iff {R : Type*} [CommRing R] (P : MvPolynomial (TV n' k) R) (o : ℕ) :
     (∀ m ∈ P.support, normDeg r m = o) ↔ IsWeightedHomogeneous (normalVariableWeight n' k r) P o := by
   constructor
@@ -102,8 +100,6 @@ section Core
 
 variable {p n' r K : ℕ} [Fact p.Prime] [NeZero n'] [NeZero r] [NeZero K] {O : Type} [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] [Algebra (WF p n') O] (X : Ctx p n' r K O)
-
-local notation "PP" => MvPolynomial (TV n' (r + K)) (KK O)
 
 theorem fixed_symbol_factor_integral (c' : ℕ) : bc_IT X.Fr (X.fixedSymbolFactor c') := by
   have hn := X.hH.2.2.2.2

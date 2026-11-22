@@ -19,8 +19,6 @@ open AutomorphicForm RightCosetSpace Reduction
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => rationalGLOne (K := K) (n := n)
-
 def quotFun (F : normOneGL (K := K) (n := n) → ℂ) (hF : ∀ γ ∈ Γ₁, ∀ y, F (γ * y) = F y) :
     RightCosetSpace Γ₁ → ℂ :=
   Quotient.lift F fun a b hab => by
@@ -81,7 +79,6 @@ theorem IsContRep.translate {φ : Lp ℂ 2 (quotientMeasure Γ₁ μ)} {F : norm
   rw [hy1]
   exact hy2
 
-
 variable (μ) in
 theorem isContRep_rconv (f : CompactlySupportedContinuousMap (normOneGL (K := K) (n := n)) ℂ)
     (φ : Lp ℂ 2 (quotientMeasure Γ₁ μ)) :
@@ -107,7 +104,6 @@ theorem IsContRep.ae_eq_quotFun {φ : Lp ℂ 2 (quotientMeasure Γ₁ μ)} {F : 
 
 variable (μ)
 variable (ν : Measure (archGroup K n)) [ν.IsHaarMeasure]
-
 
 end CuspidalSpectrum
 

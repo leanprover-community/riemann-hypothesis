@@ -63,14 +63,6 @@ theorem valAt'_sec {M : LB X} (s : M.Sec) (i j : M.ι) (hi : ⊤ ≤ x ⁻¹ᵁ 
   rw [← valAt'_res x inf_le_left hij (s.f i), s.compat i j, valAt'_mul x hij,
     valAt'_res x inf_le_right hij]
 
-theorem valAt'_id_top (r : Γ(Sp ℂ, ⊤)) :
-    valAt' (𝟙 (Sp ℂ)) ⊤ r = (Scheme.ΓSpecIso (CommRingCat.of ℂ)).hom.hom r := by
-  have e : ∀ k, Scheme.Hom.appLE (𝟙 (Sp ℂ)) ⊤ ⊤ k = 𝟙 _ := fun k => by
-    rw [← Scheme.Hom.id_app]
-    exact (Scheme.Hom.app_eq_appLE (𝟙 (Sp ℂ)) (U := ⊤)).symm
-  rw [valAt', dite_eq_left (show ⊤ ≤ 𝟙 (Sp ℂ) ⁻¹ᵁ ⊤ from fun _ _ => trivial), valAt, e]
-  rfl
-
 end Values
 
 section Transport
@@ -85,7 +77,6 @@ theorem res_appLE (h : Z ⟶ Y) {U U' : Y.Opens} {V V' : Z.Opens} (hU : U' ≤ U
   congrArg (fun t : Γ(Y, U) ⟶ Γ(Z, V') => t.hom f)
     ((Scheme.Hom.appLE_map h e (homOfLE hV).op).trans
       (Scheme.Hom.map_appLE h e' (homOfLE hU).op).symm)
-
 
 omit [Unique K] in
 theorem wchart_le_of_comp {φ : Y ⟶ X} {ψ : Z ⟶ X} {h : Z ⟶ Y} (e : h ≫ φ = ψ) (j : K' → L.ι) :
@@ -133,20 +124,13 @@ section Fibre
 variable {A : Over (Sp ℂ)} [GrpObj A] {L : LB A.left} {g : ℕ} (u : HolUnif A L g)
   {T : Over (Sp ℂ)} (p : 𝟙_ (Over (Sp ℂ)) ⟶ T)
 
-
 variable (A) in
 def fibreIncl : A ⟶ T ⊗ A := lift (toUnit A ≫ p) (𝟙 A)
-
-
-
 
 def exAt (z : Fin g → ℂ) : Sp ℂ ⟶ (T ⊗ A).left := (lift p (u.ex z)).left
 
 theorem exAt_snd (z : Fin g → ℂ) : exAt u p z ≫ (snd T A).left = (u.ex z).left :=
   (Over.comp_left _ _ _ _ _).symm.trans (congrArg CommaMorphism.left (lift_snd p (u.ex z)))
-
-theorem exAt_fst (z : Fin g → ℂ) : exAt u p z ≫ (fst T A).left = p.left :=
-  (Over.comp_left _ _ _ _ _).symm.trans (congrArg CommaMorphism.left (lift_fst p (u.ex z)))
 
 theorem ex_fibreIncl (z : Fin g → ℂ) : (u.ex z).left ≫ (fibreIncl A p).left = exAt u p z := by
   rw [← Over.comp_left, fibreIncl, comp_lift, Category.comp_id, ← Category.assoc,
@@ -175,12 +159,6 @@ theorem exAt_hol (U : (T ⊗ A).left.Opens) (f : Γ((T ⊗ A).left, U)) :
   refine ⟨h.1, h.2.congr fun z _ => ?_⟩
   exact (valAt'_app (u.ex z).left (fibreIncl A p).left U f).symm
 
-theorem valAt'_liftFun {W : (T ⊗ A).left.Opens} {z : Fin g → ℂ} (hW : ⊤ ≤ exAt u p z ⁻¹ᵁ W)
-    (r : Γ(T.left, ⊤)) : valAt' (exAt u p z) W (liftFun A W r) = valAt' p.left ⊤ r := by
-  refine (valAt'_res (exAt u p z) (U := (fst T A).left ⁻¹ᵁ ⊤) le_top hW _).trans ?_
-  refine (valAt'_app (exAt u p z) (fst T A).left ⊤ r).trans ?_
-  rw [exAt_fst]
-
 theorem valAt'_LPow_g (k : ℤ) (j j' : Fin 1 → L.ι) (z : Fin g → ℂ)
     (hj : ⊤ ≤ exAt u p z ⁻¹ᵁ (LPow A L k T).U j) (hj' : ⊤ ≤ exAt u p z ⁻¹ᵁ (LPow A L k T).U j') :
     valAt' (exAt u p z) ((LPow A L k T).U j ⊓ (LPow A L k T).U j') ((LPow A L k T).g j j').val =
@@ -201,7 +179,6 @@ theorem fr_zpow_ne_zero {k : ℤ} {j : Fin 1 → L.ι} {z : Fin g → ℂ}
     (hj : ⊤ ≤ exAt u p z ⁻¹ᵁ (LPow A L k T).U j) (m : ℤ) : u.fr (j 0) z ^ m ≠ 0 :=
   zpow_ne_zero m (u.fr_ne _ z ((exAt_mem_chart_iff u p k j z).1 hj))
 
-
 variable {u p} in
 theorem IsFnAt.eq_div {k : ℤ} {s : LB.Sec (LPow A L k T)} {θ : (Fin g → ℂ) → ℂ}
     (h : IsFnAt u p k s θ) {j : Fin 1 → L.ι} {z : Fin g → ℂ}
@@ -219,7 +196,6 @@ theorem isFnAt_of_exists_chart {k : ℤ} {s : LB.Sec (LPow A L k T)} {θ : (Fin 
     ⟨(exAt_mem_chart_iff u p k j z).1 hj, (exAt_mem_chart_iff u p k j' z).1 hj'⟩)
   rw [valAt'_sec _ s j j' hj hj', valAt'_LPow_g u p k j j' z hj hj', e, hc, mul_zpow]
   ring
-
 
 variable {u p} in
 theorem IsFnAt.unique (hL : L.IsLB) {k : ℤ} {s : LB.Sec (LPow A L k T)}
@@ -248,32 +224,6 @@ variable {u p}
 
 variable (u p)
 
-theorem isFnAt_zero (k : ℤ) : IsFnAt u p k (H1.SectionArithmetic.secZero (LPow A L k T)) 0 := fun j z hj => by
-  rw [Pi.zero_apply, zero_mul, valAt'_eq_valHom _ hj]
-  exact map_zero _
-
-
-variable (A L) in
-def secOfFun (r : Γ(T.left, ⊤)) : LB.Sec (LPow A L 0 T) where
-  f j := liftFun A _ r
-  compat j j' := by
-    have : (LPow A L 0 T).g j j' = 1 := by
-      unfold LPow LB.LinComb
-      dsimp only
-      exact Finset.prod_eq_one fun _ _ => zpow_zero _
-    rw [this, Units.val_one, _root_.one_mul]
-    exact (res_liftHom A _ r).trans (res_liftHom A _ r).symm
-
-theorem isFnAt_secOfFun (r : Γ(T.left, ⊤)) :
-    IsFnAt u p 0 (secOfFun A L r) (fun _ => valAt' p.left ⊤ r) := fun j z hj => by
-  rw [zpow_zero, _root_.mul_one]
-  exact valAt'_liftFun u p hj r
-
-
-
-
-
-
 variable {u p}
 
 theorem mem_ptChart_iff {x : T ⟶ A} {z : Fin g → ℂ} (hx : p ≫ x = u.ex z) (j : Fin 1 → L.ι) :
@@ -282,11 +232,9 @@ theorem mem_ptChart_iff {x : T ⟶ A} {z : Fin g → ℂ} (hx : p ≫ x = u.ex z
   rw [← Over.comp_left, hx]
   rfl
 
-
 variable (u p) in
 theorem comp_one_eq_ex_zero : p ≫ (1 : T ⟶ A) = u.ex 0 := by
   rw [ex_zero, MonObj.comp_one]
-
 
 variable (p) in
 theorem valAt'_rigT {rig : LB.Gen (L.pull (eSec A))} (hrig : u.IsRig rig) (k : ℤ)
@@ -333,48 +281,10 @@ def basePt : 𝟙_ (Over (Sp ℂ)) ⟶ baseOver (Sp ℂ) := Over.homMk (𝟙 (Sp
 
 instance isIso_basePt : IsIso basePt := inferInstanceAs (IsIso (𝟙 (𝟙_ (Over (Sp ℂ)))))
 
-abbrev IsFnT (k : ℤ) (s : LB.Sec (LPow A L k (baseOver (Sp ℂ)))) (θ : (Fin g → ℂ) → ℂ) : Prop :=
-  IsFnAt u basePt k s θ
-
-abbrev constT (a : ℂ) : Γ((baseOver (Sp ℂ)).left, ⊤) :=
-  (Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom a
-
-abbrev numT (r : Γ((baseOver (Sp ℂ)).left, ⊤)) : ℂ :=
-  (Scheme.ΓSpecIso (CommRingCat.of ℂ)).hom.hom r
-
-theorem numT_constT (a : ℂ) : numT (constT a) = a :=
-  (Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv_hom_id_apply a
-
-theorem valAt'_basePt (r : Γ((baseOver (Sp ℂ)).left, ⊤)) : valAt' basePt.left ⊤ r = numT r :=
-  valAt'_id_top r
-
 variable {u}
 
 variable (u)
 
-theorem isFnT_zero (k : ℤ) :
-    IsFnT u k (H1.SectionArithmetic.secZero (LPow A L k (baseOver (Sp ℂ)))) 0 := isFnAt_zero u basePt k
-
-theorem isFnT_const (a : ℂ) : IsFnT u 0 (secOfFun A L (constT a)) (fun _ => a) := by
-  have h := isFnAt_secOfFun u basePt (constT a)
-  rwa [valAt'_basePt, numT_constT] at h
-
 end Base
-
-def zeroUnif : HolUnif (Inh.zeroPolAV (Sp ℂ)).A (Inh.zeroPolAV (Sp ℂ)).L 0 where
-  ex _ := 1
-  ex_add _ _ := (_root_.mul_one _).symm
-  ex_onto x := ⟨0, toUnit_unique _ _⟩
-  Λ := ⊤
-  ker _ := ⟨fun _ => trivial, fun _ => rfl⟩
-  discrete := inferInstance
-  full := by simp
-  hol _ _ := ⟨isOpen_discrete _, differentiableOn_const _⟩
-  fr _ _ := 1
-  fr_hol _ := differentiableOn_const _
-  fr_ne _ _ _ := one_ne_zero
-  fr_compat _ _ _ h := by
-    rw [valAt'_eq_valHom _ h, _root_.mul_one]
-    exact (map_one _).symm
 
 end GlobalTheory.ThetaFn

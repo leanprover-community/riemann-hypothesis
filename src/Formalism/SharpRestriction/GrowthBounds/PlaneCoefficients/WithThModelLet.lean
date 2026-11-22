@@ -46,8 +46,6 @@ theorem withTh_chainML (j i) : (withTh Dt th thL h).chainML j i = Dt.chainML j i
 
 theorem withTh_TSet (j i) : (withTh Dt th thL h).TSet j i = Dt.TSet j i := rfl
 
-theorem withTh_digOK (rho) : (withTh Dt th thL h).digOK rho = Dt.digOK rho := rfl
-
 theorem withTh_liftVar : (withTh Dt th thL h).liftVar = Dt.liftVar := by
   funext x
   obtain ⟨⟨j, l | m⟩, a⟩ := x <;> rfl

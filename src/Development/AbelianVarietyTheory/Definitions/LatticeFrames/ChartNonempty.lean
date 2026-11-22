@@ -33,9 +33,6 @@ theorem finM_one : finM V hn (1 : GA D V) = 1 := by
   simp only [finM, mt_one, finCongr_refl, Matrix.reindex_refl_refl]
   exact Matrix.map_one _ (map_zero _) (map_one _)
 
-theorem infM_eq (g : GA D V) (τ : D.what₂.Tau) :
-    infM θ V hn g τ = ((mt V g).map ((θ τ).comp (infPart D))).reindex (finCongr hn) (finCongr hn) := rfl
-
 theorem infM_mul (g h : GA D V) (τ : D.what₂.Tau) : infM θ V hn (g * h) τ = infM θ V hn g τ * infM θ V hn h τ := by
   subst hn
   simp only [infM_eq, mt_mul, finCongr_refl, Matrix.reindex_refl_refl]
@@ -91,8 +88,6 @@ theorem exists_dec (hy : Function.Surjective (fun c => (Quotient.mk'' (yc c) : C
   have := congrArg (fun x => x.1.1) hab
   simp only at this
   rw [e]; exact this
-
-
 
 end Gen
 

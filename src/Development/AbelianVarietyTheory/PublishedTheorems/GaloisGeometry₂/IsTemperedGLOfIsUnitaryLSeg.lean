@@ -17,11 +17,9 @@ namespace GlobalTheory.GKCoh
 
 variable {E : Type} [Field E] [NumberField E] {a : ℕ}
 
-
 variable (E a) in
 def regFun : Subalgebra ℂ (GL (Fin a) (Cinf E) → ℂ) :=
   Algebra.adjoin ℂ ({f | ∃ τ i j, f = fun y => coord τ (y.val i j)} ∪ {f | ∃ τ, f = fun y => (coord τ y.val.det)⁻¹})
-
 
 variable (E a) in
 structure AlgRep where
@@ -33,10 +31,8 @@ structure AlgRep where
   pos : 0 < d
   irred : ∀ W : Submodule ℂ (Fin d → ℂ), (∀ y, ∀ v ∈ W, mat y *ᵥ v ∈ W) → W = ⊥ ∨ W = ⊤
 
-
 open Classical in
 def extGL (f : GL (Fin a) (Cinf E) → ℂ) (x : Lie E a) : ℂ := if h : IsUnit (Matrix.of x) then f h.unit else 0
-
 
 omit [NumberField E] in
 theorem extGL_val (f : GL (Fin a) (Cinf E) → ℂ) (y : GL (Fin a) (Cinf E)) : extGL f (toL y.val) = f y := by
@@ -116,10 +112,7 @@ theorem mat_mul_dmat (Ξ : AlgRep E a) (y : GL (Fin a) (Cinf E)) (X : Matrix (Fi
   rw [Matrix.mul_apply, Matrix.mul_apply]
   exact h4.trans (Finset.sum_congr rfl fun l _ => mul_comm _ _)
 
-
-
 end AlgRep
-
 
 variable (E a) in
 abbrev Herm : Submodule ℝ (Matrix (Fin a) (Fin a) (Cinf E)) := selfAdjoint.submodule ℝ (Matrix (Fin a) (Fin a) (Cinf E))
@@ -227,49 +220,10 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.Gen
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] {N : ℕ}
 
-def IsTemperedGL (π : Representation ℂ (GL (Fin N) k) V) : Prop :=
-  ∃ (h : ℕ) (δ : Fin h → IrrGL (k := k)) (hd : ∑ i, (δ i).1 = N), (∀ i, IsUnitaryLSeg (δ i)) ∧ Nonempty (π.Equiv (prodIrr δ hd))
-
-theorem IsTemperedGL.of_equiv {π : Representation ℂ (GL (Fin N) k) V} {σ : Representation ℂ (GL (Fin N) k) W}
-    (H : IsTemperedGL π) (φ : π.Equiv σ) : IsTemperedGL σ := by
-  obtain ⟨h, δ, hd, h1, ⟨ψ⟩⟩ := H
-  exact ⟨h, δ, hd, h1, ⟨φ.symm.trans ψ⟩⟩
-
-theorem isTemperedGL_of_isUnitaryLSeg {δ : IrrGL (k := k)} (h : IsUnitaryLSeg δ) : IsTemperedGL δ.rep :=
-  ⟨1, fun _ => δ, by simp, fun _ => h, nonempty_equiv_prodIrr_one δ _⟩
-
-theorem isTemperedGL_detRep_one {χ : kˣ →* ℂˣ} (hs : IsSmoothChar χ) :
-    IsTemperedGL (detRep (Fin 1) χ) ↔ IsUnitarisable (detRep (Fin 1) χ) := by
-  constructor
-  · have key : ∀ (N : ℕ) (π : Representation ℂ (GL (Fin N) k) ℂ), N = 1 → IsTemperedGL π → IsUnitarisable π := by
-      rintro N π hN ⟨h, δ, hd, h1, ⟨φ⟩⟩
-      have hp : ∀ i, 1 ≤ (δ i).1 := fun i => by
-        obtain ⟨Δ, hΔ⟩ := (h1 i).1
-        exact hΔ.deg_eq ▸ Nat.mul_pos Δ.len_pos Δ.d_pos
-      have h2 : h ≤ 1 := by simpa [hd, hN] using Finset.sum_le_sum (s := Finset.univ) fun i _ => hp i
-      have h3 : h ≠ 0 := by rintro rfl; simp [hN] at hd
-      obtain rfl : h = 1 := by omega
-      obtain ⟨x, rfl⟩ : ∃ x, δ = fun _ => x := ⟨δ 0, funext fun i => congrArg δ (Subsingleton.elim _ _)⟩
-      obtain rfl : x.1 = N := by simpa using hd
-      obtain ⟨ψ⟩ := nonempty_equiv_prodIrr_one x hd
-      exact isUnitarisable_of_equiv (ψ.trans φ.symm) (h1 0).2
-    exact key 1 _ rfl
-  · intro hu
-    have hc := isCuspidal_detRep_one hs
-    let φ := IrrGL.equivOf (detRep (Fin 1) χ) hc.1 (isIrreducible_ofChar _)
-    exact (isTemperedGL_of_isUnitaryLSeg (isUnitaryLSeg_of_isCusp (IrrGL.isCusp_of.2 ⟨one_pos, hc⟩)
-      (isUnitarisable_of_equiv φ hu))).of_equiv φ.symm
-
 end GlobalTheory.LocGL
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.Published
-
-def CohomologicalCsdTempered : Prop :=
-  ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ), 2 ≤ n →
-    ∀ π : CuspSub L n, π.IsCsd → GKCoh.IsCohomological π →
-      ∀ (y : HeightOneSpectrum (𝓞 L)) (σ : SmIrr (GL (Fin n) (y.adicCompletion L))), π.IsLocComp y σ →
-        LocGL.IsTemperedGL σ.ρ
 
 end GlobalTheory.Published

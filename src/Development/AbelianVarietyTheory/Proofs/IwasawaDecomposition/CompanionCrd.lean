@@ -43,9 +43,6 @@ theorem std_of_gram (S : HSpace E) {m : ℕ} (h : S.rank = m) (hg : S.gram.reind
     smul_eq_mul, mul_ite, mul_one, mul_zero]
   simp [stdH, Crd.co, starRingEnd_apply]
 
-omit [NumberField E] in
-theorem hStd_eq_stdH (x y : Fin n → E) : hStd E n x y = stdH E n x y := rfl
-
 theorem mem_dual_crd (S : HSpace E) (co : S.V ≃ₗ[E] (Fin n → E)) (hco : ∀ x y, stdH E n (co x) (co y) = S.hT x y)
     (L : Submodule (𝓞 E) S.V) (b : S.V) :
     b ∈ Formalism.HermitianLatticesTheory.dual S.hT L ↔ co b ∈ Formalism.HermitianLatticesTheory.dual (hStd E n) (L.map ((co : S.V →ₗ[E] (Fin n → E)).restrictScalars (𝓞 E))) := by
@@ -86,7 +83,6 @@ theorem companion_crd (S : HSpace E) (co : S.V ≃ₗ[E] (Fin n → E)) (hco : �
 end Gen
 
 end GlobalTheory.Mem.Col2.MemLat
-
 
 set_option maxHeartbeats 1600000 in
 theorem GlobalTheory.Mem.Col2.TC.memLatAt_std : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)) (u : B.Word) (O : GL3Theta.LiftObj (I.rec7 l Z) ((I.rec7 l Z).mem u).C), (∀ i c, (O.lat i c).1 = ((I.stp u I.mu0 i).rep c).1.1.deco.1.N) → MemLatAt O (X.piT u) := by

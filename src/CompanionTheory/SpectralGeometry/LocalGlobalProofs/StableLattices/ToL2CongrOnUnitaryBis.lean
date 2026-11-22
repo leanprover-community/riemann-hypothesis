@@ -186,9 +186,6 @@ open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-local notation "signatureAdjoint(" ε ", " g ")" =>
-  Formalism.REAL.Jm ε * (g)ᴴ * Formalism.REAL.Jm ε
-
 theorem frechet (n : ℕ) (ε : Fin n → Bool) (X : GMod n) (c : X.V →ₗ[ℂ] (Matrix (Fin n) (Fin n) ℂ → ℂ))
     (hR : RightOK ε X c) (hC : ContOK ε X c) (u : X.V)
     (g : Matrix (Fin n) (Fin n) ℂ) (hg : Formalism.REAL.inUJ ε g) (η : ℝ) (hη : 0 < η) :

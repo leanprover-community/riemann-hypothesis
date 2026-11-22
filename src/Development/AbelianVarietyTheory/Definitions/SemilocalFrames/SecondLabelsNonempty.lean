@@ -14,10 +14,6 @@ open Formalism.BasicNotions
 
 def bx (x eps : ℝ) : ℝ := Real.exp (x ^ eps)
 
-def aC (x eps : ℝ) : ℝ := x ^ ((11 : ℝ) / 2) * bx x eps
-
-def bpC (x eps : ℝ) : ℝ := aC x eps / Real.exp (x ^ (eps / 3))
-
 variable (D : D7)
 
 def Top (τ : D.what₂.Tau) : Prop :=
@@ -51,7 +47,6 @@ structure Nodes (x eps : ℝ) : Prop where
   bm : ∀ τ, bLast D τ ≤ 2 * bFirst D τ
   top : ∀ τ, Top D τ → Real.sqrt (bx x eps) ≤ uFirst D τ ∧ uFirst D τ ≤ bx x eps ^ 2 ∧
     3 ≤ bFirst D τ + uLast D τ ∧ bFirst D τ / 2 ≤ -uLast D τ
-
 
 end GlobalTheory.Diag.PG
 

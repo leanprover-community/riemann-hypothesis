@@ -13,7 +13,6 @@ variable (C : Type) [CommRing C]
 
 abbrev P := ∀ p : PrimeSpectrum C, C ⧸ p.asIdeal
 
-
 open Classical in
 def e (c : C) : P C := fun p => if c ∈ p.asIdeal then 1 else 0
 
@@ -97,7 +96,6 @@ theorem approx (r : Ideal (D C)) [r.IsPrime] (s : D C) :
 
 section Loc
 variable (r : Ideal (D C)) [r.IsPrime]
-local notation "L" => Localization.AtPrime r
 
 theorem unit_of (x : D C) (hx : x ∉ r) : IsUnit (algebraMap (D C) L x) :=
   IsLocalization.map_units L (⟨x, hx⟩ : r.primeCompl)

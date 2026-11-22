@@ -53,7 +53,6 @@ theorem _root_.GlobalTheory.OrbitUnfold.setLIntegral_pull (g : H) (f : H → ℝ
   (measurePreserving_mul_left ν g).setLIntegral_comp_preimage_emb
     (measurableEmbedding_mulLeft g) f 𝓕
 
-
 open MeasureTheory Set in
 open scoped ENNReal Pointwise in
 variable {H : Type} [Group H] [MeasurableSpace H] [MeasurableMul H] {ν : Measure H}
@@ -98,10 +97,6 @@ open MeasureTheory Set in
 open scoped ENNReal Pointwise in
 variable {H : Type} [Group H] [MeasurableSpace H] [MeasurableMul H] {ν : Measure H}
   [ν.IsMulLeftInvariant] {Γ : Subgroup H} {Y : Type} [MulAction Γ Y] {𝓕 : Set H} in
-private theorem selfEquivSigmaOrbits_symm_mk {G X : Type} [Group G] [MulAction G X]
-    (ω : MulAction.orbitRel.Quotient G X) (x : MulAction.orbit G ω.out) :
-    (MulAction.selfEquivSigmaOrbits G X).symm ⟨ω, x⟩ = x := rfl
-
 
 open MeasureTheory Set in
 open scoped ENNReal Pointwise in

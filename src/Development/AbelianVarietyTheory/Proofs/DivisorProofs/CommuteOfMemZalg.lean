@@ -3,7 +3,7 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSquareIntegrableIffMemL2
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CentralNilGL
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.LanglandsSquareIntegrable
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsConstAlongSingleton
 
 @[expose] public section
 
@@ -285,9 +285,6 @@ def rmul (y : Lie E a) : Lie E a →L[ℝ] Lie E a :=
 
 omit [_root_.NumberField.IsTotallyComplex E] in
 theorem lmul_apply (x y : Lie E a) : lmul x y = mulL x y := rfl
-
-omit [_root_.NumberField.IsTotallyComplex E] in
-theorem rmul_apply (x y : Lie E a) : rmul y x = mulL x y := rfl
 
 omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
 theorem mulL_one (x : Lie E a) : mulL x (oneL E a) = x := Matrix.mul_one (Matrix.of x)

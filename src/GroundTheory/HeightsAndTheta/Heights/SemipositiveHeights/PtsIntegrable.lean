@@ -1,7 +1,14 @@
 module
 
 public import Mathlib
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterResExists
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterAlgRes
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterMinor
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.WMultA
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.DivSheaf
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ContinuousOnOfCharts
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.WChartsB
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.WChartsC
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ConeChart
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridge
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedE
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedG

@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegIdxOfIsStd
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentMulCutSubOneEntry
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstStandardPairMemberHasThetaFunction
@@ -27,8 +26,6 @@ namespace GlobalTheory.SndFrames
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle
 
 variable {D : D7}
-
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
 
 private theorem smul_mul_eq_of {n m p : Type} [Fintype m] {R : Type} [CommRing R] (c : R) (M : Matrix n m R)
     (N N' : Matrix m p R) (hM : c • M = M) (h : ∀ i j, c * N i j = c * N' i j) : M * N = M * N' := by
@@ -130,7 +127,6 @@ private theorem exists_unitFactor {e : AE D} (hE : toEAf D e * toEAf D e = toEAf
     rw [← Matrix.det_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.det_one]
   rw [idem_mul hE, hd, mul_one, sub_add_cancel]
 
-
 set_option maxHeartbeats 1000000 in
 private theorem unitChar_mul (ν : (AE D)ˣ →* Circle) {e : AE D} (hE : toEAf D e * toEAf D e = toEAf D e) {k : ℕ}
     (κ : GL (Fin k) (EAf D)) (x : (AE D)ˣ) (h1 : infPart D (x : AE D) = 1)
@@ -194,7 +190,6 @@ private theorem frMapAdj_pull (A' WW : HSp D) (βA βA' : GL (Fin A'.rank) (EAf 
   rw [← Matrix.mul_assoc (frMapAdj A' WW 1 1 y), key]
   simp only [Matrix.mul_assoc, Units.inv_mul, Matrix.mul_one]
   rw [← Matrix.mul_assoc βA'.val (βA'⁻¹).val, Units.mul_inv, Matrix.one_mul]
-
 
 set_option maxHeartbeats 1000000 in
 private theorem stdSnd_frames : ∀ {D : D7} (ν : (AE D)ˣ →* Circle) (e : AE D) (S : Finset (Formalism.L2.DIV.Pl D.host.E)), IsIdemSum e S →

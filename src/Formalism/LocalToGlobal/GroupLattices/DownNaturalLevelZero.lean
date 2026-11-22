@@ -46,9 +46,6 @@ def val : ∀ (i : ℕ) (hi : i ≤ D.R.m) (h : i = 0), ValTied u T.atT.eV i hi 
 def lv : ∀ (i : ℕ) (hi : i ≤ D.R.m), i = 0 → LvTied u T.atT i hi
   | 0, _, _ => T.lv0
 
-def fMe : ∀ (i : ℕ) (hi : i ≤ D.R.m) (h : i = 0) v, (T.cls i hi h).lev.fM (T.atT.eV v).1 (T.atT.eV v).2 ≃+ (D.mem u).A.Fv v
-  | 0, _, _ => T.fMe0
-
 theorem norm : ∀ (i : ℕ) (hi : i ≤ D.R.m) (h : i = 0), NormTie (T.val i hi h)
   | 0, _, _ => T.norm0
 
@@ -56,29 +53,6 @@ theorem bw : ∀ (i : ℕ) (hi : i ≤ D.R.m) (h : i = 0), BwTie T.atT (T.val i 
   | 0, _, _ => T.bw0
 
 end Forms0
-
-def FormsTied.to0 {D : D7} {u : D.what₂.Word} (T : FormsTied D u) : Forms0 D u where
-  atT := T.atT
-  cls0 := T.cls 0 (Nat.zero_le _)
-  val0 := T.val 0 (Nat.zero_le _)
-  gl := T.gl
-  gl_K := T.gl_K
-  glev0 := by
-    have h := T.glev 0 (Nat.zero_le _)
-    have hm := D.R.two_le_m
-    have e1 : aOf D.R 0 = D.R.k := by unfold aOf; rw [if_pos (by omega)]; rfl
-    have e2 : skipOf D.R 0 = D.R.k := by unfold skipOf; rw [if_pos (by omega)]
-    have e3 : fcOf D.R 0 = D.R.N 0 := fcOf_lt (by omega)
-    have e4 : decide (0 = D.R.m) = false := decide_eq_false (by omega)
-    rw [e1, e2, e3, e4] at h
-    exact h
-  lv0 := T.lv 0 (Nat.zero_le _)
-  fMe0 := T.fMe 0 (Nat.zero_le _)
-  fv0 := T.fv 0 (Nat.zero_le _)
-  up_natural_level_zero := T.upN 0 (Nat.zero_le _)
-  down_natural_level_zero := T.dnN 0 (Nat.zero_le _)
-  norm0 := T.norm 0 (Nat.zero_le _)
-  bw0 := T.bw 0 (Nat.zero_le _)
 
 def Joint0 {D : D7} (L0 : LevelData D) (u : D.what₂.Word) (T : Forms0 D u) : Prop :=
   SameCar (rank_eq_first_level D.R) (L0 u).Lb T.cls0.lev.Lb (L0 u).Uloc T.cls0.lev.Uloc (L0 u).U T.cls0.lev.U

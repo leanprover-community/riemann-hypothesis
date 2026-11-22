@@ -42,8 +42,6 @@ section Fields
 
 variable {K Ω : Type*} [Field K] [Field Ω] [Algebra K Ω]
 
-local notation "G" => Ω ≃ₐ[K] Ω
-
 def fixingOpenSubgroup (L : IntermediateField K Ω) [FiniteDimensional K L] : OpenSubgroup G :=
   ⟨L.fixingSubgroup, L.fixingSubgroup_isOpen⟩
 
@@ -91,8 +89,6 @@ section Units
 
 variable {K Ω : Type*} [Field K] [Field Ω] [Algebra K Ω] [IsGalois K Ω]
 
-local notation "G" => Ω ≃ₐ[K] Ω
-
 omit [IsGalois K Ω] in
 theorem mem_fixedModule_units_iff' (H : Subgroup G) (a : Ωˣ) :
     a ∈ fixedModule Ωˣ H ↔ ∀ σ ∈ H, σ (a : Ω) = a := by
@@ -119,7 +115,6 @@ def unitsEquivOfForall {k : Type*} [Field k] [Algebra k Ω] (H : Subgroup G)
   map_mul' a b := by
     ext
     rfl
-
 
 omit [IsGalois K Ω] in
 @[simp]
@@ -170,8 +165,6 @@ section Norm
 
 variable {K Ω : Type*} [Field K] [Field Ω] [Algebra K Ω] [IsGalois K Ω]
 
-local notation "G" => Ω ≃ₐ[K] Ω
-
 variable (L : IntermediateField K Ω)
 
 def restrictEmbedding (σ : G) : L →ₐ[K] Ω :=
@@ -181,7 +174,6 @@ omit [IsGalois K Ω] in
 @[simp]
 theorem restrictEmbedding_apply (σ : G) (x : L) : restrictEmbedding L σ x = σ x :=
   rfl
-
 
 omit [IsGalois K Ω] in
 theorem restrictEmbedding_eq_iff (σ τ : G) :
@@ -258,7 +250,6 @@ variable {K Ω : Type*} [Field K] [Field Ω] [Algebra K Ω] [IsGalois K Ω]
 variable (K' L' : Subgroup (Ω ≃ₐ[K] Ω)) {E F : IntermediateField K Ω} (hEF : E ≤ F)
   (hK : E.fixingSubgroup = K') (hL : F.fixingSubgroup = L')
 
-
 include hK hL in
 theorem normal_extendScalars [(L'.subgroupOf K').Normal] :
     Normal E (extendScalars hEF) := by
@@ -285,7 +276,6 @@ theorem normal_extendScalars [(L'.subgroupOf K').Normal] :
 instance isSeparable_extendScalars : Algebra.IsSeparable E (extendScalars hEF) :=
   have : Algebra.IsSeparable E Ω := Algebra.isSeparable_tower_top_of_isSeparable K E Ω
   Algebra.isSeparable_tower_bot_of_isSeparable E (extendScalars hEF) Ω
-
 
 omit [IsGalois K Ω] in
 theorem finiteDimensional_extendScalars [FiniteDimensional K F] :
@@ -362,7 +352,6 @@ def restrictEmbeddingRel (σ : K') : extendScalars hEF →ₐ[E] Ω :=
   ((IntermediateField.fixingSubgroupEquiv E ⟨σ, hK ▸ σ.2⟩ : Ω ≃ₐ[E] Ω) : Ω →ₐ[E] Ω).comp
     (extendScalars hEF).val
 
-
 omit [IsGalois K Ω] in
 include hL in
 theorem restrictEmbeddingRel_eq_iff (σ τ : K') :
@@ -405,7 +394,6 @@ noncomputable def cosetEmbeddingEquivRel : K' ⧸ L'.subgroupOf K' ≃ (extendSc
      fun τ => by
       obtain ⟨σ, rfl⟩ := restrictEmbeddingRel_surjective K' hEF hK τ
       exact ⟨(σ : K' ⧸ L'.subgroupOf K'), rfl⟩⟩
-
 
 include hK in
 theorem coe_norm_eq_algebraMap_norm [FiniteDimensional K F] [(L'.subgroupOf K').FiniteIndex]

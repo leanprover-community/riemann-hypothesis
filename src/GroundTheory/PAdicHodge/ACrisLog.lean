@@ -121,12 +121,6 @@ namespace ACris
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝒪" => normInteger K
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "θ" => fontaineTheta 𝒪 p
-local notation "𝔭" => Ideal.span {(p : ACris K p)}
-
 section Log
 
 omit [IsPerfectoidField K p] in
@@ -157,10 +151,6 @@ theorem algebraMap_p_mem : algebraMap (ACrisZero K p) (ACris K p) (p : ACrisZero
 
 def dpowZero {x : AInf K p} (hx : x ∈ RingHom.ker θ) (n : ℕ) : ACrisZero K p :=
   ⟨dpow n x, dpow_mem hx n⟩
-
-theorem coe_dpowZero {x : AInf K p} (hx : x ∈ RingHom.ker θ) (n : ℕ) :
-    (dpowZero hx n : 𝔸) = dpow n x :=
-  rfl
 
 def logTermZero {x : AInf K p} (hx : x ∈ RingHom.ker θ) (n : ℕ) : ACrisZero K p :=
   (-1) ^ n * (n.factorial : ACrisZero K p) * dpowZero hx (n + 1)
@@ -227,8 +217,6 @@ end Theta
 end Log
 
 section Divisibility
-
-local notation "φ" => WittVector.frobeniusEquiv p 𝒪♭
 
 theorem xi_sub_pow_mem (ε : 𝒪♭) :
     AInf.xi (K := K) ε - ((φ).symm (AInf.mu ε)) ^ (p - 1) ∈ Ideal.span {(p : AInf K p)} := by
@@ -313,7 +301,6 @@ theorem logTermZero_pred_eq {x : AInf K p} (hx : x ∈ RingHom.ker θ) {c : ACri
         rw [h2, factorial_mul_dpow, ← pow_succ', Nat.sub_add_cancel hp.out.one_le]
     _ = (p : 𝔸) * (algebraMap (AInf K p) 𝔸 x * ((-1) ^ (p - 1) * (c : 𝔸))) := by
         rw [hcc]; ring
-
 
 set_option maxHeartbeats 2000000 in
 theorem log_pow_mem {x : AInf K p} (hx : x ∈ RingHom.ker θ) {c : ACrisZero K p}

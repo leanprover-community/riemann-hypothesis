@@ -15,8 +15,6 @@ open CategoryTheory NumberField IsDedekindDomain IntermediateField GroundTheory.
 
 open scoped GroundTheory.LocalField.Abstract
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1))) (ιs : LocalEmbeddings K)
@@ -55,7 +53,6 @@ theorem exists_localGaloisCohomology_order {ℓ : ℕ} (hℓ : ℓ.Prime) (w : H
   · refine dvd_of_nsmul_mk_one_div_eq_zero hN ?_
     rw [← ht, ← AddMonoidHom.map_nsmul, hm, AddMonoidHom.map_zero]
 
-
 set_option maxHeartbeats 8000000 in
 include hℓ hS in
 theorem exists_char_order_gsDecomp (b : ℕ) :
@@ -89,7 +86,6 @@ theorem exists_char_order_gsDecomp (b : ℕ) :
       (gsLocalRes_eq_zero_iff S (ιs.fin v.1) v.2 (m • x')).2 hval
     rwa [map_nsmul, hloc] at hloc_zero
   · exact gvChar_decompHomS_eq_zero S (ιs.fin v.1) x' (ordEmbMor S (ιs.fin v.1) v.2) h hh
-
 
 set_option maxHeartbeats 4000000 in
 theorem char_eq_proj_nsmul_of_gsDecomp {ℓ : ℕ} (hℓ : ℓ.Prime) (b : ℕ)
@@ -134,7 +130,6 @@ theorem char_eq_proj_nsmul_of_gsDecomp {ℓ : ℕ} (hℓ : ℓ.Prime) (b : ℕ)
     exact Set.mem_univ _
   exact hg
 
-
 set_option maxHeartbeats 4000000 in
 include hℓ hS in
 theorem proj_unramifiedDegree_eq_zero_of_gsDecomp_eq_one (b : ℕ)
@@ -162,7 +157,6 @@ theorem proj_unramifiedDegree_eq_zero_of_gsDecomp_eq_one (b : ℕ)
   have h0 : z.val = 0 := Nat.eq_zero_of_dvd_of_lt hdvd hlt
   rw [hz]
   exact (ZMod.val_eq_zero z).1 h0
-
 
 set_option maxHeartbeats 4000000 in
 include hℓ hS in
@@ -213,7 +207,6 @@ theorem exists_hom_zmod_pow_rangeRestrict_gsDecomp
   · rw [hφ, hψ, hσ, toAdd_ofAdd, map_one]
     rfl
 
-
 set_option maxHeartbeats 4000000 in
 include hℓ hS in
 theorem exists_isPrimePowGenerator_gsDecomp :
@@ -248,7 +241,6 @@ instance isDiscreteRep_res_range_gsDecomp :
 instance totallyDisconnectedSpace_range_gsDecomp : TotallyDisconnectedSpace (gsDecomp K S ιs v).range :=
   have := galUnramifiedOutside_isProfinite (F := K.1) (Ω := ℚ̄) S
   inferInstance
-
 
 set_option maxHeartbeats 4000000 in
 include hℓ hS in

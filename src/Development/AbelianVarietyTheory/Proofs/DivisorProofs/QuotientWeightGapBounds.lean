@@ -4,12 +4,11 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PolyBetween
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LocalValuationColumns
 public import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.QuoIff
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedWeightEntriesSignsSizes
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedWeightGapsBlockAndBar
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LengthUnitSizeBounds
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightBoundHoldsStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightBoundHolds
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaExponentsDominantLastEntryOneDegreeStatement
 
 @[expose] public section

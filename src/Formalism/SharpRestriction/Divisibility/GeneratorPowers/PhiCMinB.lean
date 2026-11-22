@@ -31,11 +31,6 @@ theorem comp_fsmul (r : ℝ) (η : Y →ₗ[ℤ] ℝ) (σ : E →+* ℂ) (a : Y)
   simp only [comp, LinearMap.smul_apply, smul_eq_mul, Complex.ofReal_mul, Finset.mul_sum]
   exact Finset.sum_congr rfl fun i _ => by ring
 
-def compL (σ : E →+* ℂ) (a : Y) : (Y →ₗ[ℤ] ℝ) →ₗ[ℝ] ℂ where
-  toFun η := comp η σ a
-  map_add' η ζ := comp_fadd η ζ σ a
-  map_smul' r η := by rw [comp_fsmul, RingHom.id_apply, Complex.real_smul]
-
 theorem key_exp (u : 𝓞 E) (j : Free.ChooseBasisIndex ℤ (𝓞 E)) :
     ∑ i, (((RingOfIntegers.basis E).repr (RingOfIntegers.basis E i * u) j : ℤ) : E) * ed E i =
       ed E j * (u : E) := by
@@ -107,7 +102,6 @@ theorem comp_pre (η : Y →ₗ[ℤ] ℝ) (σ : E →+* ℂ) (u : 𝓞 E) (a : Y
   simp only [LinearMap.comp_apply, smulZ, LinearMap.coe_mk, AddHom.coe_mk]
   rw [smul_comm]
 
-
 variable (E) in
 def Pf (η ζ : Y →ₗ[ℤ] ℝ) (a c : Y) : ℝ :=
   (∑ σ : E →+* ℂ, (comp η σ a * conj (comp ζ σ c) + comp ζ σ a * conj (comp η σ c))).re
@@ -163,7 +157,6 @@ theorem Pf_bal (η ζ : Y →ₗ[ℤ] ℝ) (c c' : 𝓞 E) (h : (c' : E) = cj (c
   congr 1
   exact Finset.sum_congr rfl fun σ _ => by ring
 
-
 omit hcj in
 variable (E) in
 def PfB (η ζ : Y →ₗ[ℤ] ℝ) : Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ :=
@@ -185,9 +178,6 @@ def Pm : (Y →ₗ[ℤ] ℝ) →ₗ[ℝ] (Y →ₗ[ℤ] ℝ) →ₗ[ℝ] SymB cj
       show Pf E η (r • ζ) a c = r * Pf E η ζ a c
       rw [Pf_comm, Pf_fsmul, Pf_comm η ζ]))
 
-theorem Pm_apply (η ζ : Y →ₗ[ℤ] ℝ) (a c : Y) :
-    ((Pm hcj η ζ : SymB cj Y) : Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ) a c = Pf E η ζ a c := rfl
-
 theorem Pm_psd (η : Y →ₗ[ℤ] ℝ) (a : Y) :
     0 ≤ ((Pm hcj η η : SymB cj Y) : Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ) a a :=
   Pf_self_nonneg η a
@@ -208,7 +198,6 @@ theorem Pm_ne_zero {η : Y →ₗ[ℤ] ℝ} (hη : η ≠ 0) : Pm hcj η η ≠ 
   simp only [hc, Finset.sum_const_zero] at this
   simp only [LinearMap.zero_apply]
   exact_mod_cast this.symm
-
 
 omit hcj in
 theorem Pf_skew (θ : 𝓞 E) (hθ : ∀ σ : E →+* ℂ, star (σ (θ : E)) = -σ (θ : E))

@@ -27,8 +27,6 @@ theorem mulR_apply (c y : M2 n) : mulR c y = y * c := rfl
 
 def mulL (c : M2 n) : M2 n →L[ℂ] M2 n := (LinearMap.mulLeft ℂ c).toContinuousLinearMap
 
-theorem mulL_apply (c y : M2 n) : mulL c y = c * y := rfl
-
 theorem iterated_fderiv_right_translation {N : ℕ} (F : M2 n → ℂ) (U : Set (M2 n)) (hU : IsOpen U) (hF : ContDiffOn ℂ ∞ F U)
     (W : Fin (N + 1) → M2 n) (hW : ∀ a b, W a * W b = 0) (x : M2 n) (hx : x ∈ U) :
     fderiv ℂ (fun y => iteratedFDeriv ℂ N F y (fun i => y * W i.succ)) x (x * W 0) =
@@ -54,8 +52,6 @@ theorem iterated_fderiv_right_translation {N : ℕ} (F : M2 n → ℂ) (U : Set 
 def rit (F : M2 n → ℂ) : (N : ℕ) → (Fin N → M2 n) → M2 n → ℂ
   | 0, _ => F
   | N + 1, W => fun y => fderiv ℂ (rit F N (fun i => W i.succ)) y (y * W 0)
-
-theorem rit_zero (F : M2 n → ℂ) (W : Fin 0 → M2 n) : rit F 0 W = F := rfl
 
 theorem rit_succ (F : M2 n → ℂ) (N : ℕ) (W : Fin (N + 1) → M2 n) :
     rit F (N + 1) W = fun y => fderiv ℂ (rit F N (fun i => W i.succ)) y (y * W 0) := rfl

@@ -27,18 +27,6 @@ theorem smoothR_prod {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) 
     have h3 := SmoothR.mul n z _ _ h1 h2
     simpa [Finset.prod_insert ha] using h3
 
-theorem smoothR_sum {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) {ι : Type*}
-    (s : Finset ι) (f : ι → M → ℝ) (hf : ∀ i ∈ s, SmoothR n z (f i)) :
-    SmoothR n z (fun x => ∑ i ∈ s, f i x) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using smoothR_const n z 0
-  | @insert a s ha ih =>
-    have h1 := hf a (Finset.mem_insert_self a s)
-    have h2 := ih (fun i hi => hf i (Finset.mem_insert_of_mem hi))
-    have h3 := SmoothR.add n z _ _ h1 h2
-    simpa [Finset.sum_insert ha] using h3
-
 theorem exists_chart_bump {M : Type*} [TopologicalSpace M] [T2Space M] (n : ℕ) (z : M → V n)
     (hz : IsLocalHomeomorph z) (U : Set M) (hU : IsOpen U) (x : M) (hx : x ∈ U) :
     ∃ (e : OpenPartialHomeomorph M (V n)) (ψ : M → ℝ),
@@ -159,20 +147,6 @@ theorem exists_chart_partition {M : Type*} [TopologicalSpace M] [T2Space M] (n :
       simp only [Set.mem_setOf_eq] at hx'
       rw [hi, hx', sub_self]
     rw [h0, sub_zero]
-
-theorem exists_cutoff {M : Type*} [TopologicalSpace M] [T2Space M] (n : ℕ) (z : M → V n) (hz : IsLocalHomeomorph z) (K U : Set M) (hK : IsCompact K) (hU : IsOpen U) (hKU : K ⊆ U) :
-    ∃ η : M → ℝ, SmoothR n z η ∧ HasCompactSupport η ∧ tsupport η ⊆ U ∧
-      (∀ x, 0 ≤ η x ∧ η x ≤ 1) ∧ ∀ x ∈ K, η x = 1 := by
-  obtain ⟨N, e, χ, he, hs, hc, hts, h0, h1, hK1⟩ := exists_chart_partition n z hz K U hK hU hKU
-  have hS : tsupport (fun x => ∑ i, χ i x) ⊆ ⋃ i, tsupport (χ i) := by
-    refine closure_minimal ?_ (isClosed_iUnion_of_finite fun i => isClosed_tsupport _)
-    intro x hx
-    obtain ⟨i, _, hi⟩ := Finset.exists_ne_zero_of_sum_ne_zero hx
-    exact Set.mem_iUnion.2 ⟨i, subset_tsupport _ hi⟩
-  refine ⟨fun x => ∑ i, χ i x, smoothR_sum n z Finset.univ χ (fun i _ => hs i),
-    (isCompact_iUnion fun i => hc i).of_isClosed_subset (isClosed_tsupport _) hS,
-    hS.trans (Set.iUnion_subset fun i => (hts i).trans Set.inter_subset_right),
-    fun x => ⟨Finset.sum_nonneg (fun i _ => h0 i x), h1 x⟩, hK1⟩
 
 end
 

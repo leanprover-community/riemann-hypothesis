@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.AdjKltOfLtDisc
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DOnEqZeroOfEqOne
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsLocModelIsPrimeOf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NotDominatesTopPlace

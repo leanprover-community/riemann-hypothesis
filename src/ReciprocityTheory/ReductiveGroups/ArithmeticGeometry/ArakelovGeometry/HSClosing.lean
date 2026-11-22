@@ -10,22 +10,6 @@ namespace ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
 open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.GeometryOfNumbersTheory MvPolynomial MeasureTheory Module Filter Asymptotics
 
-structure GDatum (D : ℕ) : Type 1 where
-
-  Ω : Type
-  [fieldΩ : Field Ω]
-  [charΩ : CharZero Ω]
-
-  κ : Type
-  [fintypeκ : Fintype κ]
-
-  x : Ix κ → Ω
-
-  m : ConeMetric (C := ℂ) (ι := Ix κ)
-
-  μ : Measure (Ix κ → ℂ)
-  good : IsGood D x m μ
-
 attribute [instance] GDatum.fieldΩ GDatum.charΩ GDatum.fintypeκ
 
 def IsInvMat {J : Type} [Fintype J] (A : Matrix J J ℚ) : Prop :=

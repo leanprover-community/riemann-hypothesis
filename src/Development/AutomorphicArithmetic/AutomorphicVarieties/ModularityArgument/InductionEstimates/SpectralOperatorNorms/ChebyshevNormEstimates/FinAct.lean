@@ -16,9 +16,6 @@ namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.FinA
 
 variable {K : Type} [Field K] [NumberField K]
 
-local notation "pf" => MultiplicityOne.finProj K (2 + 2)
-local notation "GF" => AdelicGLn.FiniteAdelicGL K (2 + 2)
-
 theorem bf_fin {β : ℝ → ℂ} (hβ : HasCompactSupport β) (f : G1 K (2 + 2) → ℂ) (g : G1 K (2 + 2)) :
     (Function.support fun q : Cos K => bf β f ((q.out : G1 K (2 + 2)) * g)).Finite := by
   obtain ⟨R, hR⟩ := hβ.isCompact.bddBelow

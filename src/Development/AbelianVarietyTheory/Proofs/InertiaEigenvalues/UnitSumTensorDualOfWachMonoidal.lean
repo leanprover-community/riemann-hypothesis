@@ -64,10 +64,6 @@ theorem tensorB_add (f g : V →ₗ[LL] V') (x : V ⊗[Qp] B) :
   | tmul v b => simp [CrystallineSubrepresentation.tensorB, add_tmul]
   | add a b ha hb => simp only [map_add (f := _), ha, hb]; abel
 
-theorem coe_DcrisMap {ρ : Representation LL G V} {ρ' : Representation LL G V'} {f : V →ₗ[LL] V'}
-    (hf : CrystallineSubrepresentation.IsEquivariant ρ ρ' f) (x : ↥(Dcris PD ρ)) :
-    (CrystallineSubrepresentation.DcrisMap PD hf x : V' ⊗[Qp] B) = CrystallineSubrepresentation.tensorB (Qp := Qp) (B := B) f x := rfl
-
 theorem isCrys_of_equiv {ρ : Representation LL G V} {ρ' : Representation LL G V'} (e : V ≃ₗ[LL] V')
     (he : ∀ g x, e (ρ g x) = ρ' g (e x)) (h : IsCrys PD ρ) : IsCrys PD ρ' := by
   have h1 : CrystallineSubrepresentation.IsEquivariant ρ ρ' e.toLinearMap := he
@@ -153,8 +149,6 @@ theorem isCrys_of_isSumLat {T T' T'' : LocLat G Qp LL O} (i : LatHom T.L T''.L)
     IsCrys PD T''.ρ :=
   isCrys_of_equiv PD (LinearEquiv.ofBijective (i.f.coprod i'.f) hs.1)
     (fun g x => by simp [Representation.prod, i.equiv, i'.equiv]) (isCrys_prod PD h h')
-
-
 
 variable {W : LocWach PD LL O v n} {RA RW : Type} [CommRing RA] [CommRing RW] [Algebra O RA]
     [Algebra O RW] {inclR : RA →ₐ[O] RW} {φR : RW →ₐ[O] RW} {gR : G → (RW →ₐ[O] RW)} {πA : RA}

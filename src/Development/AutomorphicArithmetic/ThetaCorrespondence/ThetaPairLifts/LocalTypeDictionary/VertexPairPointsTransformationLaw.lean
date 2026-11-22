@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.DiscreteSpectrumResidualClassification
 public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.StepUnfold
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairPtsClasses
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RowShiftTheta
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RowMapVUpdateZero

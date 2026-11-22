@@ -22,8 +22,6 @@ open GlobalTheory.SplitCharTrivial (cut cutH cut_val cT_add cT_smul rf tendsto_U
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable {n : ℕ} {c : E ≃ₐ[F] E} {J : Matrix (Fin n) (Fin n) E}
 
-local notation "σ" => (c : E →ₐ[F] E)
-
 section Char
 
 variable {ν : GAF (c : E →ₐ[F] E) J →* Circle}

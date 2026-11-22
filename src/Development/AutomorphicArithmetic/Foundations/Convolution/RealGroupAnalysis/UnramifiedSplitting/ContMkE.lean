@@ -19,8 +19,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 private abbrev Bx (F : Type) [Field F] [NumberField F] : Set (Fin 2 → A F) := Set.univ.pi fun _ => fundamentalSet F
 
-private theorem vn (q : A E) : (nU q).val = !![1, q; 0, 1] := rfl
-
 private theorem n_add (x y : A E) : gl (nU (x + y)) = gl (nU x) * gl (nU y) := by
   refine Units.ext ?_
   ext i j

@@ -61,12 +61,6 @@ def IsSplit (W : Flag n a) (x : Fin a → ℝ) (t : UJ ε) : Prop :=
   t ∈ flagM ε W ∧ (∀ i : Fin a, ∀ y ∈ W i.succ, uMat t *ᵥ y - (Real.exp (x i) : ℂ) • y ∈ W i.castSucc) ∧
     ∀ y : Fin n → ℂ, (∀ z ∈ W (Fin.last a), star z ⬝ᵥ (Jm ε *ᵥ y) = 0) → uMat t *ᵥ y - y ∈ W (Fin.last a)
 
-def pairing (j : Fin a → ℕ) (s : Fin a → ℂ) (x : Fin a → ℝ) : ℂ := ∑ i, (j i : ℂ) * s i * x i
-
-def rho (n : ℕ) (j : Fin a → ℕ) (i : Fin a) : ℂ := (n : ℂ) - 2 * ∑ l ∈ Iio i, (j l : ℂ) - j i
-
-def InChamber (x : Fin a → ℝ) : Prop := StrictAnti x ∧ ∀ i, 0 < x i
-
 variable {ε}
 
 def mats (S : Subgroup (UJ ε)) : Set (Matrix (Fin n) (Fin n) ℂ) := (fun g : UJ ε => uMat g) '' S
@@ -74,43 +68,6 @@ def mats (S : Subgroup (UJ ε)) : Set (Matrix (Fin n) (Fin n) ℂ) := (fun g : U
 section Induced
 
 variable {V H : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-
-def indFun (S : Subgroup (UJ ε)) (j : Fin a → ℕ) (W : Flag n a) (σ : Matrix (Fin n) (Fin n) ℂ → (V →L[ℂ] V))
-    (s : Fin a → ℂ) : Submodule ℂ (UJ ε → V) where
-  carrier := {f | ContinuousOn f S ∧ (∀ g ∉ S, f g = 0) ∧
-    ∀ u ∈ flagN ε W, ∀ m ∈ leviOne ε W, ∀ x t, IsSplit ε W x t → u ∈ S → m ∈ S → t ∈ S → ∀ g ∈ S,
-      f (u * m * t * g) = Complex.exp (pairing j (s + rho n j) x) • σ (uMat m) (f g)}
-  zero_mem' := ⟨continuousOn_const, fun _ _ => rfl, by simp⟩
-  add_mem' := fun {f f'} h h' => ⟨h.1.add h'.1, fun g hg => by simp [h.2.1 g hg, h'.2.1 g hg],
-    fun u hu m hm x t ht h1 h2 h3 g hg => by
-      simp [h.2.2 u hu m hm x t ht h1 h2 h3 g hg, h'.2.2 u hu m hm x t ht h1 h2 h3 g hg]⟩
-  smul_mem' := fun c f h => ⟨h.1.const_smul c, fun g hg => by simp [h.2.1 g hg],
-    fun u hu m hm x t ht h1 h2 h3 g hg => by
-      simp [h.2.2 u hu m hm x t ht h1 h2 h3 g hg, smul_comm c]⟩
-
-theorem indFun_mul_right {S : Subgroup (UJ ε)} {j : Fin a → ℕ} {W : Flag n a}
-    {σ : Matrix (Fin n) (Fin n) ℂ → (V →L[ℂ] V)} {s : Fin a → ℂ} {f : UJ ε → V} (h : f ∈ indFun S j W σ s) {y : UJ ε}
-    (hy : y ∈ S) : (fun g => f (g * y)) ∈ indFun S j W σ s :=
-  ⟨h.1.comp (continuous_mul_const y).continuousOn fun _ hg => S.mul_mem hg hy,
-    fun _ hg => h.2.1 _ fun e => hg ((S.mul_mem_cancel_right hy).1 e),
-    fun u hu m hm x t ht h1 h2 h3 g hg => by
-      simpa only [mul_assoc] using h.2.2 u hu m hm x t ht h1 h2 h3 _ (S.mul_mem hg hy)⟩
-
-def IsKFinFun (f : UJ ε → V) : Prop :=
-  FiniteDimensional ℂ (Submodule.span ℂ {φ : UJ ε → V | ∃ k ∈ KG ε, φ = fun g => f (g * k)})
-
-structure IsIndModel (S C : Subgroup (UJ ε)) (μ : Measure C) (F : Submodule ℂ (UJ ε → V))
-    (ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (ι : F →ₗ[ℂ] H) : Prop where
-
-  dense : DenseRange ι
-
-  norm_sq : ∀ f : F, ‖ι f‖ ^ 2 = ∫ k : C, ‖f.1 k‖ ^ 2 ∂μ
-
-  transl : ∀ y ∈ S, ∀ f f' : F, (∀ g, f'.1 g = f.1 (g * y)) → ρ (uMat y) (ι f) = ι f'
-
-def IsIrrTempered (M : Subgroup (UJ ε)) (σ : Matrix (Fin n) (Fin n) ℂ → (V →L[ℂ] V)) : Prop :=
-  Nontrivial V ∧ IsIrredOn (mats M) σ ∧ ∃ (h : IsURepOn (mats M) σ) (μ : Measure M), μ.IsHaarMeasure ∧
-    GlobalTheory.Orb.IsTempered μ (GlobalTheory.Orb.repVia h ((GlobalTheory.Orb.ujMat ε).comp M.subtype) fun g => ⟨g, g.2, rfl⟩)
 
 def IsKFinIn (M : Subgroup (UJ ε)) (σ : Matrix (Fin n) (Fin n) ℂ → (V →L[ℂ] V)) (v : V) : Prop :=
   ∃ U : Submodule ℂ V, FiniteDimensional ℂ U ∧ v ∈ U ∧ ∀ k ∈ KG ε ⊓ M, ∀ w ∈ U, σ (uMat k) w ∈ U
@@ -125,27 +82,6 @@ variable (ε) {H H' : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [No
 def IsAdmRep (π : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) : Prop :=
   Formalism.QuantumDeterminants.IsCRepOn (UJset ε) π ∧ (∀ v, ContinuousOn (fun g => π g v) (UJset ε)) ∧
     (∀ k ∈ Kset ε, ∀ v, ‖π k v‖ = ‖v‖) ∧ IsAdmissibleSub ε π ⊤
-
-def IsIrrAdm (π : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) : Prop :=
-  Nontrivial H ∧ IsAdmRep ε π ∧ IsIrredOn (UJset ε) π
-
-def groupRep {π : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (h : Formalism.QuantumDeterminants.IsCRepOn (UJset ε) π) :
-    UJ ε →* (H →L[ℂ] H) where
-  toFun g := π (uMat g)
-  map_one' := h.1
-  map_mul' g g' := h.2 _ g.2 _ g'.2
-
-def IsFactor (ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (Z Y : Submodule ℂ H)
-    (π : Matrix (Fin n) (Fin n) ℂ → (H' →L[ℂ] H')) : Prop :=
-  IsGKSub ε ρ Z ∧ IsGKSub ε ρ Y ∧ Z ≤ Y ∧ ∃ T : H →ₗ[ℂ] H', Y.map T = kFinVec ε π ∧ (∀ w ∈ Y, T w = 0 ↔ w ∈ Z) ∧
-    (∀ k ∈ Kset ε, ∀ w ∈ Y, T (ρ k w) = π k (T w)) ∧ ∀ X ∈ lieSet ε, ∀ w ∈ Y, T (dRep ρ X w) = dRep π X (T w)
-
-def mult (ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (π : Matrix (Fin n) (Fin n) ℂ → (H' →L[ℂ] H')) : ℕ∞ :=
-  ⨆ (r : ℕ) (_ : ∃ Z Y : Fin r → Submodule ℂ H, (∀ i, IsFactor ε ρ (Z i) (Y i) π) ∧ ∀ i l, i < l → Y i ≤ Z l),
-    (r : ℕ∞)
-
-def HasFiniteLength (ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) : Prop :=
-  ∃ l : ℕ, ∀ (r : ℕ) (Y : Fin (r + 1) → Submodule ℂ H), (∀ i, IsGKSub ε ρ (Y i)) → StrictMono Y → r ≤ l
 
 end Admissible
 section Opposite
@@ -178,7 +114,6 @@ end Opposite
 section Structure
 
 variable {j : Fin a → ℕ} {W : Flag n a}
-
 
 variable (ε) in
 theorem KG_eq : (KG ε : Set (UJ ε)) = maxK ε := by
@@ -346,11 +281,6 @@ theorem existsUnique_isSplit (hW : IsIsoFlag ε j W) (x : Fin a → ℝ) : ∃! 
       ((leviSub ε W).inv_mem h1.1) (by rw [mul_inv_cancel]; exact (compactSub ε).one_mem)
   exact ⟨t, ht, fun t' h => mul_right_cancel ((one t' h).trans (one t ht).symm)⟩
 
-theorem IsSplit.opp (hW : IsIsoFlag ε j W) {x : Fin a → ℝ} {t : UJ ε} (ht : IsSplit ε W x t) :
-    IsSplit ε (opp ε W) (-x) t := by
-  obtain ⟨t', h1, h2⟩ := exists_isSplit hW x
-  rwa [(existsUnique_isSplit hW x).unique ht h1]
-
 theorem exists_leviOne_mul (hW : IsIsoFlag ε j W) (hj : ∀ i, 1 ≤ j i) {l : UJ ε} (hl : l ∈ flagM ε W) :
     ∃ m ∈ leviOne ε W, ∃ x t, IsSplit ε W x t ∧ l = m * t := by
   have hp : ∀ i, 0 < detOn (uMat l) (W i) := fun i => detOn_pos fun y hy => (hl i y hy).1
@@ -436,14 +366,12 @@ section Model
 
 variable {j : Fin a → ℕ} {W : Flag n a}
 
-
 variable (ε W) in
 def parab : Subgroup (UJ ε) where
   carrier := {g | ∀ i, ∀ y ∈ W i, uMat g *ᵥ y ∈ W i}
   one_mem' := fun i y hy => by simpa [uMat_one] using hy
   mul_mem' := fun {g h} hg hh i y hy => by rw [uMat_mul, ← mulVec_mulVec]; exact hg i _ (hh i y hy)
   inv_mem' := fun {g} hg i => inv_keeps (uMat_inv_mul g) _ (hg i)
-
 
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] {σ : Matrix (Fin n) (Fin n) ℂ → (V →L[ℂ] V)}
 
@@ -473,127 +401,25 @@ theorem mats_top : mats (⊤ : Subgroup (UJ ε)) = UJset ε := by
   ext g
   exact ⟨fun ⟨y, _, h⟩ => h ▸ y.2, fun h => let ⟨y, hy, _⟩ := GlobalTheory.RealIwasawa.exists_uMat g h; ⟨y, trivial, hy⟩⟩
 
-theorem IsIndModel.isCRepOn (h : IsIndModel S C μ F ρ ι) (hR : ∀ f ∈ F, ∀ y ∈ S, (fun g => f (g * y)) ∈ F) :
-    Formalism.QuantumDeterminants.IsCRepOn (mats S) ρ := by
-  refine ⟨ContinuousLinearMap.ext fun v => ?_, ?_⟩
-  · exact h.dense.induction_on v (isClosed_eq (by fun_prop) (by fun_prop)) fun f => h.transl 1 S.one_mem f f (by simp)
-  · rintro _ ⟨y, hy, rfl⟩ _ ⟨z, hz, rfl⟩
-    refine ContinuousLinearMap.ext fun v => h.dense.induction_on v (isClosed_eq (by fun_prop) (by fun_prop)) fun f => ?_
-    rw [ContinuousLinearMap.comp_apply, h.transl z hz f ⟨_, hR _ f.2 z hz⟩ fun _ => rfl,
-      h.transl y hy _ ⟨_, hR _ f.2 _ (S.mul_mem hy hz)⟩ fun _ => by simp [mul_assoc]]
-    exact h.transl _ (S.mul_mem hy hz) _ _ fun _ => rfl
-
-theorem IsIndModel.unique [CompleteSpace H] [CompleteSpace H'] (h : IsIndModel S C μ F ρ ι)
-    (h' : IsIndModel S C μ F ρ' ι') (hR : ∀ f ∈ F, ∀ y ∈ S, (fun g => f (g * y)) ∈ F) :
-    ∃ U : H ≃ₗᵢ[ℂ] H', (∀ f, U (ι f) = ι' f) ∧ ∀ g ∈ mats S, ∀ v, U (ρ g v) = ρ' g (U v) := by
-  have hn : ∀ f, ‖ι' (LinearEquiv.refl ℂ F f)‖ = ‖ι f‖ := fun f =>
-    (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).1 ((h'.norm_sq f).trans (h.norm_sq f).symm)
-  have e := (LinearEquiv.refl ℂ F).extendOfIsometry_eq ι ι' h.dense h'.dense hn
-  refine ⟨_, e, ?_⟩
-  rintro _ ⟨y, hy, rfl⟩ v
-  refine h.dense.induction_on v (isClosed_eq (by fun_prop) (by fun_prop)) fun f => ?_
-  rw [h.transl y hy f ⟨_, hR _ f.2 y hy⟩ fun _ => rfl, e, e]
-  exact (h'.transl y hy _ _ fun _ => rfl).symm
-
 theorem leviOne_zero {j : Fin 0 → ℕ} {W : Flag n 0} (hW : IsIsoFlag ε j W) : leviOne ε W = ⊤ := by
   have h : ∀ i, W i = ⊥ := fun i => by rw [Fin.eq_zero i, hW.1]
   exact eq_top_iff.2 fun g _ => ⟨fun i y hy => by rw [h] at hy ⊢; simp_all, fun i => by rw [h, detOn_bot]⟩
 
 end Models
 
-
-variable (ε) in
-structure Datum where
-
-  a : ℕ
-
-  j : Fin a → ℕ
-
-  W : Flag n a
-
-  flag : IsIsoFlag ε j W
-
-  pos : ∀ i, 1 ≤ j i
-
-  V : Type
-  [nacg : NormedAddCommGroup V]
-  [ips : InnerProductSpace ℂ V]
-  [cs : CompleteSpace V]
-
-  σ : Matrix (Fin n) (Fin n) ℂ → (V →L[ℂ] V)
-
-  temp : IsIrrTempered (leviOne ε W) σ
-
-  s : Fin a → ℂ
-
 attribute [instance] Datum.nacg Datum.ips Datum.cs
-
-
-variable (ε) in
-def IsMinimalFlag {b : ℕ} (W₀ : Flag n b) : Prop :=
-  IsIsoFlag ε (fun _ => 1) W₀ ∧ ∀ (b' : ℕ) (W' : Flag n b'), IsIsoFlag ε (fun _ => 1) W' → b' ≤ b
-
 
 namespace Datum
 
 variable (D : Datum ε)
 
-abbrev M : Subgroup (UJ ε) := leviOne ε D.W
-
-abbrev fns : Submodule ℂ (UJ ε → D.V) := indFun ⊤ D.j D.W D.σ D.s
-
-abbrev dualFns : Submodule ℂ (UJ ε → D.V) := indFun ⊤ D.j D.W D.σ (-star D.s)
-
-abbrev oppFns : Submodule ℂ (UJ ε → D.V) := indFun ⊤ D.j (opp ε D.W) D.σ (-D.s)
-
-abbrev Nbar : Set (UJ ε) := flagN ε (opp ε D.W)
-
-def Positive : Prop := InChamber fun i => (D.s i).re
-
-def IsStandard {b : ℕ} (W₀ : Flag n b) : Prop := (∀ i, D.W i ∈ Set.range W₀) ∧ D.Positive
-
-def Equiv (D' : Datum ε) : Prop :=
-  ∃ e : D.a = D'.a, (∀ i, D.W i = D'.W (Fin.cast (congrArg (· + 1) e) i)) ∧ (∀ i, D.s i = D'.s (Fin.cast e i)) ∧
-    ∃ U : D.V ≃ₗᵢ[ℂ] D'.V, ∀ m ∈ D.M, ∀ v, U (D.σ (uMat m) v) = D'.σ (uMat m) (U v)
-
-def IsIntegral (ν : Measure (UJ ε)) (f h : UJ ε → D.V) : Prop :=
-  ∀ x v, IsKFinIn D.M D.σ v → Integrable (fun u => ⟪v, f (u * x)⟫_ℂ) ν ∧ ⟪v, h x⟫_ℂ = ∫ u, ⟪v, f (u * x)⟫_ℂ ∂ν
-
 end Datum
 
-
-variable (ε) in
-structure IndModule extends Datum ε where
-
-  H : Type
-  [hacg : NormedAddCommGroup H]
-  [hips : InnerProductSpace ℂ H]
-  [hcs : CompleteSpace H]
-
-  ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)
-
-  ι : toDatum.fns →ₗ[ℂ] H
-
-  model : IsIndModel ⊤ (KG ε) (muK ε) toDatum.fns ρ ι
-
 attribute [instance] IndModule.hacg IndModule.hips IndModule.hcs
-
-theorem IndModule.isCRepOn (I : IndModule ε) : Formalism.QuantumDeterminants.IsCRepOn (UJset ε) I.ρ :=
-  mats_top ▸ I.model.isCRepOn fun _ hf _ hy => indFun_mul_right hf hy
-
-def IndModule.rep (I : IndModule ε) : UJ ε →* (I.H →L[ℂ] I.H) := groupRep ε I.isCRepOn
-
-def IndModule.intKer (I : IndModule ε) (ν : Measure (UJ ε)) : Set I.H :=
-  {w | ∃ f : I.fns, IsKFinFun f.1 ∧ I.ι f = w ∧ I.IsIntegral ν f.1 0}
 
 section Characters
 
 variable (ε)
-
-theorem isIrrAdm_det : IsIrrAdm ε fun g => g.det • (1 : ℂ →L[ℂ] ℂ) :=
-  have h := isURepOn_det (H := ℂ) ε
-  ⟨inferInstance, ⟨h.1, h.2.2, fun k hk => h.2.1 k (mem_UJset_of_mem_Kset hk), (isGKSub_det ε ⊤).2⟩,
-    fun S _ _ => eq_bot_or_eq_top S⟩
 
 end Characters
 

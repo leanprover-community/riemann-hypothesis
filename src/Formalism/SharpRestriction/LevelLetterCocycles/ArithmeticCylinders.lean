@@ -16,29 +16,6 @@ open scoped ComplexOrder
 
 variable (D : D7)
 
-def PointsLemma : Prop :=
-  Disjoint (Formalism.CyclotomicNorms.BB D.R.r (D.host.g 0)) (Formalism.CyclotomicNorms.BB D.R.r (D.host.g 1)) →
-  ∀ σ : D.what₂.FT, D.nd.goodRow σ →
-    (∀ (k : Fin 2) (v : D.nd.PlG k),
-      Formalism.MainNotions.N.TameGen D.nd (D.nd.plOm.1 (D.naut.plGw k v)) (D.ntypes.tg k v)) →
-    D.ntypes.cuspidal σ ∧ ∀ w : D.what₂.places.Pl,
-      haveI : Fact (D.what₂.places.resChar w).Prime := ⟨D.what₂.places.resChar_prime w⟩
-      Formalism.CyclotomicNorms.IrredOn (D.ntypes.rbar σ w) ⊤ ∧
-      (∀ k : Fin 2, D.what₂.places.resChar w ∉ Formalism.CyclotomicNorms.BB D.R.r (D.host.g k) →
-        ∀ (Hs : Subgroup (G D.host.E D.nd.Om)) [Hs.Normal], IsOpen (Hs : Set (G D.host.E D.nd.Om)) →
-          Group.IsSolvable (G D.host.E D.nd.Om ⧸ Hs) →
-          (∀ u ∈ placesOver D.host.E (D.host.g k), Ine (F := D.host.E) (D.nd.plOm.1 u) ≤ Hs) →
-          Formalism.CyclotomicNorms.IrredOn (D.ntypes.rbar σ w) Hs) ∧
-      (∀ k : Fin 2, D.what₂.places.resChar w ≠ D.host.g k →
-        haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-        ∀ (v : D.nd.PlG k) (j : Fin D.R.m) (u : (ZMod (D.host.g k))ˣ),
-          u = D.nd.chiT k v j ∨ u = (D.nd.chiT k v j)⁻¹ →
-          ¬ (Matrix.charpoly ((D.ntypes.rbar σ w (D.ntypes.tg k v) : GL (Fin D.R.r) _) :
-              Matrix (Fin D.R.r) (Fin D.R.r) _)).IsRoot
-            (D.ntypes.iota k v w (Formalism.CyclotomicNorms.primeToPart (D.what₂.places.resChar w)
-              (algebraMap (ZMod (D.host.g k)) (Formalism.CyclotomicNorms.Fbar (D.host.g k))
-                ((u : ZMod (D.host.g k)))))))
-
 def TheoremThreePrime : Prop :=
   Disjoint (Formalism.CyclotomicNorms.BB D.R.r (D.host.g 0)) (Formalism.CyclotomicNorms.BB D.R.r (D.host.g 1)) →
   ∀ (i : D.nd.Loc) (Sig : List (Formalism.BasicNotions.Part D.naut.CG)),

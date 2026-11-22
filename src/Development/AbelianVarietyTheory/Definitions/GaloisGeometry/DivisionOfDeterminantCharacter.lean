@@ -28,42 +28,6 @@ def Lacunary (J : Finset ℤ) : Prop :=
   ∀ A B : Finset ℤ, A ⊆ J → B ⊆ J → Disjoint A B → A.Nonempty → B.Nonempty →
     (B.card : ℤ) * A.sum id ≠ (A.card : ℤ) * B.sum id
 
-theorem lacunary_of_growth {J : Finset ℤ} (hpos : ∀ x ∈ J, 0 < x) (hg : ∀ x ∈ J, ∀ y ∈ J, x < y → (J.card : ℤ) * x < y) :
-    Lacunary J := by
-  classical
-  have key : ∀ A B : Finset ℤ, A ⊆ J → B ⊆ J → B.Nonempty → ∀ m ∈ A, (∀ b ∈ B, b < m) →
-      (A.card : ℤ) * B.sum id < (B.card : ℤ) * A.sum id := by
-    intro A B hA hB hBn m hm hlt
-    have h1 : m ≤ A.sum id := Finset.single_le_sum (f := id) (fun x hx => (hpos x (hA hx)).le) hm
-    have hc : (A.card : ℤ) ≤ J.card := by exact_mod_cast Finset.card_le_card hA
-    have h2 : ∑ b ∈ B, (A.card : ℤ) * b < ∑ _b ∈ B, m := by
-      refine Finset.sum_lt_sum_of_nonempty hBn fun b hb => ?_
-      have := hg b (hB hb) m (hA hm) (hlt b hb)
-      have := mul_le_mul_of_nonneg_right hc (hpos b (hB hb)).le
-      linarith
-    rw [← Finset.mul_sum, Finset.sum_const, nsmul_eq_mul] at h2
-    have h3 : (B.card : ℤ) * m ≤ B.card * A.sum id := mul_le_mul_of_nonneg_left h1 (by positivity)
-    exact lt_of_lt_of_le h2 h3
-  intro A B hA hB hd hAn hBn
-  have hne : (A ∪ B).Nonempty := hAn.mono Finset.subset_union_left
-  have hmax : ∀ x ∈ A ∪ B, x ≤ (A ∪ B).max' hne := fun x hx => Finset.le_max' _ _ hx
-  rcases Finset.mem_union.1 (Finset.max'_mem _ hne) with hm | hm
-  · refine (key A B hA hB hBn _ hm fun b hb => lt_of_le_of_ne (hmax b (Finset.mem_union_right _ hb)) ?_).ne'
-    intro e
-    exact Finset.disjoint_left.1 hd hm (e ▸ hb)
-  · refine (key B A hB hA hAn _ hm fun b hb => lt_of_le_of_ne (hmax b (Finset.mem_union_left _ hb)) ?_).ne
-    intro e
-    exact Finset.disjoint_left.1 hd hb (e ▸ hm)
-
-theorem not_lacunary_three (k : ℤ) : ¬ Lacunary ({k, k + 1, k + 2} : Finset ℤ) := by
-  intro h
-  have h02 : k ≠ k + 2 := by omega
-  refine h {k, k + 2} {k + 1} ?_ ?_ ?_ (by simp) (by simp) ?_
-  · intro x; simp only [Finset.mem_insert, Finset.mem_singleton]; omega
-  · intro x; simp only [Finset.mem_insert, Finset.mem_singleton]; omega
-  · simp only [Finset.disjoint_singleton_right, Finset.mem_insert, Finset.mem_singleton]; omega
-  · rw [Finset.sum_pair h02, Finset.card_pair h02]; simp; ring
-
 def wtJumps {a : ℕ} (lam : DomWeight a) : Finset ℤ :=
   Finset.univ.image fun k : Fin a => ((k : ℕ) : ℤ) - lam.w k
 

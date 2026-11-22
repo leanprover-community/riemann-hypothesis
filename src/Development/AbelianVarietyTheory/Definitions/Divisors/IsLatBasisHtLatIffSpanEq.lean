@@ -21,7 +21,6 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Rosat
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsBoxSecPowExt
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.RosatiAdjPow
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomogeneousCompIdeal
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsLimDeg
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAdicCompleteDualNumber
 
 @[expose] public section

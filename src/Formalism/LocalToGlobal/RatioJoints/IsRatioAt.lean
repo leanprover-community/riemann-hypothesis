@@ -1,6 +1,20 @@
 module
 
-public import Formalism.LocalToGlobal.ThetaChr
+public import Formalism.LocalToGlobal.UnitaryNorms.CharGal
+public import Formalism.LocalToGlobal.HermitianForms.TiedTwSame
+public import Formalism.LocalToGlobal.HermitianForms.TiedTwJ
+public import Formalism.LocalToGlobal.HermitianColumns.TiedQCHost
+public import Formalism.LocalToGlobal.JointCharacters.SameChr
+public import Formalism.LocalToGlobal.HilbertRowConditions.KaTiedIffKapDef
+public import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.TwoPowS0EqTwoPartModulus
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.HeckeStdTwOfStd
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.RingSpecSidedEmbeddingFixedField
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.ValLeOneOfIsIntegral
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.GlobalDatumRegularityOfTypesCompatibility
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.RingHomOfBaseOrderToFraction
+public import Formalism.LocalToGlobal.NormalizedHeckeFactors.Choice
+public import Formalism.LocalToGlobal.LocalInduction.BridgeInd
 public import Formalism.LocalToGlobal.JointCharacters.LocEMulLocE
 
 @[expose] public section

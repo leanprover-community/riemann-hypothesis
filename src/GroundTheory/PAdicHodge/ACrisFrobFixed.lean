@@ -21,11 +21,6 @@ section General
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "𝒪♭" => PreTilt (normInteger K) p
-local notation "θ" => fontaineTheta (normInteger K) p
-local notation "φ" => WittVector.frobeniusEquiv p 𝒪♭
-
 theorem exists_dpow_frobenius_eq_p_mul {x : AInf K p} (hx : x ∈ RingHom.ker θ) {n : ℕ}
     (hn : n ≠ 0) : ∃ z ∈ ACrisZero K p, dpow n (φ x) = (p : 𝔸) * z := by
   obtain ⟨y, hy⟩ := exists_frobenius_eq x
@@ -85,7 +80,6 @@ theorem of_eq_algebraMap (t : ACrisZero K p) :
       algebraMap (ACrisZero K p) (ACris K p) t :=
   rfl
 
-
 set_option maxHeartbeats 1600000 in
 theorem exists_eq_add_p_pow_mul (k : ℕ) (y : ACris K p) :
     ∃ yk : ACrisZero K p, ∃ z : ACris K p,
@@ -103,7 +97,6 @@ theorem exists_eq_add_p_pow_mul (k : ℕ) (y : ACris K p) :
   refine ⟨yk, z, ?_⟩
   rw [← of_eq_algebraMap, mul_comm (_ ^ k) z, hz]
   exact (add_sub_cancel _ _).symm
-
 
 set_option maxHeartbeats 1600000 in
 theorem exists_phi_eq (y : ACris K p) :
@@ -124,7 +117,6 @@ theorem exists_phi_eq (y : ACris K p) :
     map_natCast, hw, mul_add]
   ring
 
-
 omit [CharZero K] in
 theorem phi_iterate_algebraMap (n : ℕ) (w : AInf K p) :
     (phi (K := K) (p := p))^[n] (algebraMap (AInf K p) (ACris K p) w) =
@@ -133,7 +125,6 @@ theorem phi_iterate_algebraMap (n : ℕ) (w : AInf K p) :
   | zero => rfl
   | succ n ih =>
     rw [Function.iterate_succ_apply', ih, phi_algebraMap, pow_succ', RingAut.mul_apply]
-
 
 set_option maxHeartbeats 1600000 in
 theorem exists_phi_iterate_eq (n : ℕ) (y : ACris K p) :
@@ -201,7 +192,6 @@ theorem thetaField_iota (y : ACris K p) :
     change IsPerfectoidField.thetaBDeRhamPlusField p (iota K p (_root_.AdicCompletion.of _ _ a)) = _
     rw [iota_of, thetaField_toBDeRhamPlus, theta_of, coe_thetaZero])
   exact congrArg Subtype.val (RingHom.congr_fun hF y)
-
 
 set_option maxHeartbeats 1600000 in
 theorem exists_theta_eq_sum_of_phi_iterate {y : ACris K p} {N : ℕ} (hN : 1 ≤ N)

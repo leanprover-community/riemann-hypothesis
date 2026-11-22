@@ -343,89 +343,6 @@ theorem cons_map {τ : Type*} {A : Type*} {B : Type*} [CommRing A] [CommRing B] 
   funext i
   fin_cases i <;> rfl
 
-theorem exists_FK : ∃ F : FormalGroup Univ.K₀, F.toPowerSeries = fgl Univ.WK := by
-  obtain ⟨_, _, _, _, hGc, hX, hY⟩ := formal_group_chord Univ.K₀ Univ.WK
-  have hlog := log_fgl Univ.WK
-  have hE := formal_exponential_spec Univ.K₀ Univ.WK
-  have hLs : PowerSeries.HasSubst (logSer Univ.WK) :=
-    PowerSeries.HasSubst.of_constantCoeff_zero (formal_logarithm_spec Univ.K₀ Univ.WK).1
-  have hhs : ∀ a b : MvPowerSeries (Fin 3) Univ.K₀, MvPowerSeries.constantCoeff a = 0 →
-      MvPowerSeries.constantCoeff b = 0 → MvPowerSeries.HasSubst ![a, b] := fun a b ha hb =>
-    MvPowerSeries.hasSubst_of_constantCoeff_zero fun i => by
-      fin_cases i
-      · exact ha
-      · exact hb
-  have hadd : ∀ a b : MvPowerSeries (Fin 3) Univ.K₀, MvPowerSeries.constantCoeff a = 0 →
-      MvPowerSeries.constantCoeff b = 0 →
-      (logSer Univ.WK).subst (MvPowerSeries.subst ![a, b] (fgl Univ.WK)) =
-        (logSer Univ.WK).subst a + (logSer Univ.WK).subst b := by
-    intro a b ha hb
-    have hab := hhs a b ha hb
-    have h := congrArg (MvPowerSeries.subst ![a, b]) hlog
-    rw [mvsubst_psubst (PowerSeries.HasSubst.of_constantCoeff_zero hGc) hab, ← MvPowerSeries.coe_substAlgHom hab,
-      map_add, MvPowerSeries.coe_substAlgHom hab,
-      mvsubst_psubst (PowerSeries.HasSubst.of_constantCoeff_zero (MvPowerSeries.constantCoeff_X 0)) hab,
-      mvsubst_psubst (PowerSeries.HasSubst.of_constantCoeff_zero (MvPowerSeries.constantCoeff_X 1)) hab,
-      MvPowerSeries.subst_X hab, MvPowerSeries.subst_X hab] at h
-    simpa only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] using h
-  have hcs : ∀ a b : MvPowerSeries (Fin 3) Univ.K₀, MvPowerSeries.constantCoeff a = 0 →
-      MvPowerSeries.constantCoeff b = 0 →
-      MvPowerSeries.constantCoeff (MvPowerSeries.subst ![a, b] (fgl Univ.WK)) = 0 := fun a b ha hb => by
-    rw [Formalism.G.LogP.constantCoeff_subst_of_zero _ (fun i => by
-      fin_cases i
-      · exact ha
-      · exact hb)]
-    exact hGc
-  have hinj : ∀ u v : MvPowerSeries (Fin 3) Univ.K₀, MvPowerSeries.constantCoeff u = 0 →
-      MvPowerSeries.constantCoeff v = 0 → (logSer Univ.WK).subst u = (logSer Univ.WK).subst v → u = v := by
-    intro u v hu hv huv
-    have hu' := PowerSeries.HasSubst.of_constantCoeff_zero hu
-    have hv' := PowerSeries.HasSubst.of_constantCoeff_zero hv
-    calc u = PowerSeries.subst u (X : Univ.K₀⟦X⟧) := (PowerSeries.subst_X hu').symm
-      _ = PowerSeries.subst u (PowerSeries.subst (logSer Univ.WK) (expSer Univ.WK)) := by rw [hE.2.2.2.1]
-      _ = PowerSeries.subst (PowerSeries.subst u (logSer Univ.WK)) (expSer Univ.WK) :=
-          PowerSeries.subst_comp_subst_apply hLs hu' _
-      _ = PowerSeries.subst (PowerSeries.subst v (logSer Univ.WK)) (expSer Univ.WK) := by
-          rw [show PowerSeries.subst u (logSer Univ.WK) = PowerSeries.subst v (logSer Univ.WK) from huv]
-      _ = PowerSeries.subst v (PowerSeries.subst (logSer Univ.WK) (expSer Univ.WK)) :=
-          (PowerSeries.subst_comp_subst_apply hLs hv' _).symm
-      _ = v := by rw [hE.2.2.2.1, PowerSeries.subst_X hv']
-  have c0 : MvPowerSeries.constantCoeff (MvPowerSeries.X 0 : MvPowerSeries (Fin 3) Univ.K₀) = 0 :=
-    MvPowerSeries.constantCoeff_X _
-  have c1 : MvPowerSeries.constantCoeff (MvPowerSeries.X 1 : MvPowerSeries (Fin 3) Univ.K₀) = 0 :=
-    MvPowerSeries.constantCoeff_X _
-  have c2 : MvPowerSeries.constantCoeff (MvPowerSeries.X 2 : MvPowerSeries (Fin 3) Univ.K₀) = 0 :=
-    MvPowerSeries.constantCoeff_X _
-  refine ⟨{
-    toPowerSeries := fgl Univ.WK
-    zero_constantCoeff := hGc
-    lin_coeff_X := hX
-    lin_coeff_Y := hY
-    assoc := ?_ }, rfl⟩
-  apply hinj _ _ (hcs _ _ (hcs _ _ c0 c1) c2) (hcs _ _ c0 (hcs _ _ c1 c2))
-  rw [hadd _ _ (hcs _ _ c0 c1) c2, hadd _ _ c0 c1, hadd _ _ c0 (hcs _ _ c1 c2), hadd _ _ c1 c2, add_assoc]
-
-def FZ : FormalGroup Univ.Z := by
-  obtain ⟨_, _, _, _, hcc, hX, hY⟩ := formal_group_chord Univ.Z Univ.W₀
-  refine {
-    toPowerSeries := fgl Univ.W₀
-    zero_constantCoeff := hcc
-    lin_coeff_X := hX
-    lin_coeff_Y := hY
-    assoc := ?_ }
-  obtain ⟨F, hF⟩ := exists_FK
-  apply Univ.mv_map_injective Univ.ι Univ.ι_injective
-  have h := F.assoc
-  rw [hF, ← Fgl1.fgl_WK] at h
-  rw [MvPowerSeries.map_subst
-      (MvPowerSeries.HasSubst.cons_subst_zero_left (0 : Fin 3) 1 2 hcc),
-    MvPowerSeries.map_subst
-      (MvPowerSeries.HasSubst.cons_subst_zero_right (0 : Fin 3) 1 2 hcc),
-    cons_map, cons_map, MvPowerSeries.map_subst MvPowerSeries.HasSubst.X_X,
-    MvPowerSeries.map_subst MvPowerSeries.HasSubst.X_X, cons_map, cons_map]
-  simp only [MvPowerSeries.map_X]
-  exact h
-
 variable {R : Type u} [CommRing R] (W : WeierstrassCurve R)
 
 theorem fgl_symm : fgl W = (fgl W).subst
@@ -562,17 +479,6 @@ theorem formal_group_logarithm : FglLog.{u} := by
     PowerSeries.HasSubst.of_constantCoeff_zero (formal_group_chord K W).2.2.2.2.1
   have hL : PowerSeries.HasSubst (logSer W) := PowerSeries.HasSubst.of_constantCoeff_zero (Fgl2.formal_logarithm_spec K W).1
   rw [← Fgl2.log_fgl W, ← PowerSeries.subst_comp_subst_apply hL hF, hE.2.2.2.1, PowerSeries.subst_X hF]
-
-theorem formal_group_group_law : FglGroup.{u} := by
-  intro R _ W
-  have he : (Fgl2.FZ.map (Univ.φ_of W)).toPowerSeries = fgl W := (Fgl1.fgl_univ W).symm
-  refine ⟨Fgl2.FZ.map (Univ.φ_of W), he, ?_⟩
-  have hs := Fgl2.fgl_symm W
-  constructor
-  rw [he]
-  first
-  | exact hs
-  | exact hs.symm
 
 theorem formal_group_inverse : FglInv.{u} := by
   intro R _ W

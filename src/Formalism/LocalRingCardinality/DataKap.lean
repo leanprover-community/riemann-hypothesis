@@ -180,8 +180,6 @@ end RowSide
 
 def kapSharp (D : D7) : ℝ := (RowSide.sharp D).kapOf D.what₂.ft
 
-def BaseLevelRowSide.kap0 {D : D7} (X : BaseLevelRowSide D) : ℝ := X.s.kapOf D.what₂.ft0
-
 def DV.KapRBase {D : D7} (X : DivX D) : Prop := X.kapR D.what₂.embLL = kapSharp D
 
 end Formalism.BasicNotions

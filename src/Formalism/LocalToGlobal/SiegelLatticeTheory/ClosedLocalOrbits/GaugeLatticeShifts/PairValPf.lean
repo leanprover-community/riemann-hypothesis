@@ -539,31 +539,11 @@ theorem nlam_frame (Λ : Submodule (𝓞 E) S.V) {T : E} (F : LFlag S r T) {s : 
         Finset.mem_univ, if_true]
       abel
 
-theorem zhat_move {T T' : E} (F : LFlag S r T) (F' : LFlag S r T') {s : S.V ≃ₗ[E] S.V}
-    (hs : s ∈ Formalism.HermitianLatticesTheory.isom S.hT) {uu u' : Matrix (Fin (r + 1)) (Fin (r + 1)) E}
-    (h1 : ∀ b, s (frame F b) = ∑ c, uu c b • frame F c) (h2 : ∀ b, s (frame F' b) = ∑ c, u' c b • frame F' c) :
-    ZhatL F F' = uu.conjTranspose * ZhatL F F' * u' := by
-  ext a b
-  have hiso : S.hT (s (frame F a)) (s (frame F' b)) = S.hT (frame F a) (frame F' b) := hs _ _
-  have lhs : ZhatL F F' a b = S.hT (frame F a) (frame F' b) := rfl
-  rw [lhs, ← hiso, h1, h2]
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ₂, map_smul, Matrix.mul_apply,
-    Matrix.conjTranspose_apply, smul_eq_mul, Finset.mul_sum, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => ?_
-  simp only [show ∀ x y, ZhatL F F' x y = S.hT (frame F x) (frame F' y) from fun _ _ => rfl, starRingEnd_apply,
-    RingHom.id_apply]
-  ring
-
 end Frame
 
 section Big
 
 variable {K : Type} [Field K] {N : ℕ}
-
-theorem det_loUni {L : Matrix (Fin N) (Fin N) K} (h : IsLoUni L) : L.det = 1 := by
-  rw [Matrix.det_of_isLowerTriangular L (fun i j hij => (h i j).1 hij)]
-  exact Finset.prod_eq_one fun i _ => (h i i).2 rfl
 
 theorem ptMat_sq (p : Point K N) :
     ptMat p * ptMat p = Matrix.diagonal (fun i : Fin N => pv p.1 i * pv p.1 (fσ p i)) := by

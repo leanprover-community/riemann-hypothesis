@@ -22,11 +22,6 @@ variable {p : ℕ} [hp : Fact p.Prime] (D : D7) (u : D.what₂.Word) (h : D.R.MA
   (I : LocId Lc p (nOrb (zPsi D.R.toFrame h)) (WQ p (orderOf (zPsi D.R.toFrame h))) (QQ p (orderOf (zPsi D.R.toFrame h))))
   (ψ : Formalism.L2.Herm.awayFrom₂ Lc p →* (OL p (orderOf (zPsi D.R.toFrame h)) L)ˣ) (e : ℕ)
 
-def cembCL : CEmbC (gatL D u h L h5 h2 he r Lc I ψ e) where
-  toCEmb := cembL D u h L h5 h2 he r Lc I ψ e
-  rd := fun _ => rdW p (orderOf (zPsi D.R.toFrame h))
-  compat := compat_L D u h L h5 h2 he r Lc I ψ e
-
 variable (c : ℕ) (hc : CloudBound D u c)
   (Lv : Levels (fillsL D u h L h5 h2 he r Lc I ψ e c hc)) (Ch : Chain Lv)
   (hr1 : 1 ≤ r) (hr2 : 2 * r ≤ D.R.k) (hfin : ∀ j c', (Lv.lev j c').FinClasses) (hst : FinStab Lv)

@@ -241,11 +241,6 @@ theorem compL_diagL {O : Type} [CommRing O] [StarRing O] (B : FB S d O) (w0 : O)
   simp only [ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ.pt, MvPowerSeries.subst_X hE]
   rw [log_expPhi B.G uvec ε hinv i, log_expPhi_act B.G uvec ε hinv a ha l]
 
-def qT (cc : Fin d → Fin d → S) (u : Lt1 Dw → Fin d → S) (t : Fin 1 × Fin (dL Dw) → S) (i l : Fin d)
-    (ℓ ℓ' : Lt1 Dw) : MvPowerSeries (Fin 1 × Fin (dL Dw)) S :=
-  MvPowerSeries.C (cc i l * u ℓ i * u ℓ' l * t (0, ltIdx Dw ℓ')) *
-    (MvPowerSeries.X ((0 : Fin 1), ltIdx Dw ℓ) * MvPowerSeries.X ((0 : Fin 1), ltIdx Dw ℓ'))
-
 def qβ (cc : Fin d → Fin d → S) (u : Lt1 Dw → Fin d → S) (t : Fin 1 × Fin (dL Dw) → S) :
     Matrix (Fin (dL Dw)) (Fin (dL Dw)) S :=
   fun p p' => ∑ i, ∑ l, cc i l * u ((ltIdx Dw).symm p) i * u ((ltIdx Dw).symm p') l * t (0, p')

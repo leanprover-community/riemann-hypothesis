@@ -23,8 +23,6 @@ abbrev blk (R : Ranks) : Fin R.nV → Fin (R.t + 1) := blkG R.r R.t
 
 def repX : GE N →* (N.X i → MatN N i) := MonoidHom.pi fun x => rO N i r x
 
-theorem repX_apply (γ : GE N) (x : N.X i) : repX N r γ x = rO N i r x γ := rfl
-
 def NormAt : Prop :=
   (∀ g a b, blk R a ≠ blk R b → rO N i r π g a b = 0) ∧
   (∀ g (c : Fin R.t), rO N i r π g (Fin.natAdd R.r c) (Fin.natAdd R.r c) =
@@ -57,8 +55,6 @@ theorem e_of_bd (M : MatN N i) (hM : ∀ a b, blk R a ≠ blk R b → M a b = 0)
 section Mk
 
 variable (g0 : GE N) (eB e₁ X0 : N.X i → MatN N i)
-
-abbrev Pf : N.X i → Polynomial (N.O i) := fun x => blockPoly (eB x) (X0 x)
 
 variable (hfin : Finite (SplitPts R.t (Pf N eB X0))) (π' : SplitPts R.t (Pf N eB X0))
 

@@ -16,14 +16,6 @@ open NumberField IsDedekindDomain MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped nonZeroDivisors ComplexOrder
 
-theorem key_formula_link : KeyCoreLink := by
-  intro h
-  obtain ⟨κ, h1, h2, h3, h4⟩ := h
-  refine ⟨κ, h1, h2, ?_, h4.2⟩
-  intro R K _ _ _ _ _ _ _ x xK hpb
-  obtain ⟨u, hu, -⟩ := h3 R K x xK hpb
-  exact ⟨u, hu⟩
-
 section Core
 
 end Core

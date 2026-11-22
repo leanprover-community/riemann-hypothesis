@@ -18,9 +18,6 @@ theorem resG_resG {X : Scheme.{0}} {U V T : X.Opens} (h : V ≤ U) (h' : T ≤ V
   rw [← CommRingCat.comp_apply, ← Functor.map_comp]
   rfl
 
-theorem res_val {X : Scheme.{0}} {U V : X.Opens} (h : V ≤ U) (u : Γ(X, U)ˣ) :
-    (res h u).val = resG X h u.val := rfl
-
 theorem resG_dlog {Z : Scheme.{0}} {W₀ : Z.Opens} {d : ∀ O : Z.Opens, Γ(Z, O) → Γ(Z, O)} (hd : IsField W₀ d)
     {P A T : Z.Opens} (hA : A ≤ W₀) (hTA : T ≤ A) (hAP : A ≤ P) (u : Γ(Z, P)ˣ) :
     resG Z hTA (d A (resG Z hAP u.val) * resG Z hAP u⁻¹.val) =

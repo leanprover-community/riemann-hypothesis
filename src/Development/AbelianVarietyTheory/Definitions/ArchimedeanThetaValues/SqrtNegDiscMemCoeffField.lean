@@ -12,12 +12,10 @@ namespace GlobalTheory.HostModel
 
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-
 open NumberField in
 theorem _root_.GlobalTheory.HostModel.isPrimitiveRoot_zeta {n : ℕ} (hn : 0 < n) : IsPrimitiveRoot (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.zeta n) n := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.zeta
   exact Complex.isPrimitiveRoot_exp n hn.ne'
-
 
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} in
@@ -33,7 +31,6 @@ lemma _root_.GlobalTheory.HostModel.zeta_mul_pow {n m : ℕ} (hn : 0 < n) (hm : 
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} in
 theorem _root_.GlobalTheory.HostModel.zeta_mem_coeff_of_dvd {l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H} (c : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Coeff l) {a : ℕ} (h : a ∣ l.M') : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.zeta a ∈ c.F := by
@@ -41,15 +38,10 @@ theorem _root_.GlobalTheory.HostModel.zeta_mem_coeff_of_dvd {l : _root_.Reciproc
   rw [hk]
   exact pow_mem c.zeta_mem k
 
-theorem zeta_M_mem_coeff {l : Level H} (c : Coeff l) : zeta l.M ∈ c.F :=
-  zeta_mem_coeff_of_dvd c (Nat.dvd_lcm_left l.M l.A)
-
-
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} in
 theorem _root_.GlobalTheory.HostModel.zeta_A_mem_coeff {l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H} (c : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Coeff l) : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.zeta l.A ∈ c.F :=
   _root_.GlobalTheory.HostModel.zeta_mem_coeff_of_dvd c (by unfold _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level.M'; exact Nat.dvd_lcm_right _ _)
-
 
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} in
@@ -57,9 +49,6 @@ theorem _root_.GlobalTheory.HostModel.sqrtNegDisc_mem_coeffField {l : _root_.Rec
   apply c.le
   unfold _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.KA
   exact IntermediateField.subset_adjoin _ _ (Set.mem_insert _ _)
-
-def coeff (l : Level H) : Coeff l := LevelExist.minCoeff l
-
 
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} in

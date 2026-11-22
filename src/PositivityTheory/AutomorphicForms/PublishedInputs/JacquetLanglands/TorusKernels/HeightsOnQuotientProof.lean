@@ -49,8 +49,6 @@ theorem fac (g : GL (Fin 2) ℝ) (z : P) (a b : ℝ) :
   rw [e, im_smul, norm_div, div_pow, abs_div, abs_mul, Complex.normSq_eq_norm_sq,
     abs_of_nonneg (sq_nonneg ‖den g z.1‖), div_div_div_cancel_right₀ hn.ne', mul_div_assoc]
 
-theorem r_apply (v : I) (γ : GL (Fin 2) F) (i j : Fin 2) : (D.r v γ) i j = D.σ v (γ i j) := rfl
-
 theorem r_det (v : I) (γ : GL (Fin 2) F) : (D.r v γ).val.det = D.σ v γ.val.det := by
   rw [RingHom.map_det]
   rfl

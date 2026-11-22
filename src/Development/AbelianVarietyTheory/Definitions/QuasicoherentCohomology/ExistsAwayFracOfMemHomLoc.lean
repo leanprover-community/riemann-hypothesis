@@ -553,9 +553,6 @@ abbrev grH [LinearOrder ι] (n : ℤ) (p : ℕ) : ModuleCat.{u} R := (grCech ι 
 
 variable {ι}
 
-theorem res_grCube (n : ℤ) {s t : Finset ι} (h : s ⊆ t) :
-    Cube.res (grCube ι ℳ n) h = homLocRes ℳ h n := rfl
-
 def grCubeShiftIso (d n : ℤ) : grCube ι (grShift ℳ d) n ≅ grCube ι ℳ (n + d) :=
   Cube.isoMk (fun s => LinearEquiv.ofEq _ _ (homLoc_grShift ℳ d s n)) fun _ _ => rfl
 
@@ -581,14 +578,6 @@ theorem grCubeMap_congr {f g : M →ₗ[MvPolynomial ι R] N} (hf : IsGradedMap 
 
 variable [LinearOrder ι]
 
-variable (ℳ) in
-theorem grCech_eq (n : ℤ) : grCech ι ℳ n = cechComplex (grCube ι ℳ n) := rfl
-
-variable (ℳ) in
-theorem grCech_d (n : ℤ) (p : ℕ) :
-    (grCech ι ℳ n).d p (p + 1) = ModuleCat.ofHom (Cube.d (grCube ι ℳ n) (p + 1)) :=
-  cechComplex_d _ p
-
 def grCechMap {f : M →ₗ[MvPolynomial ι R] N} (hf : IsGradedMap ℳ 𝒩 f) (n : ℤ) :
     grCech ι ℳ n ⟶ grCech ι 𝒩 n := cechComplexMap (grCubeMap hf n)
 
@@ -601,8 +590,6 @@ theorem isIso_grCechMap [Decomposition ℳ] [Decomposition 𝒩] {f : M →ₗ[M
     (h₂ : ∀ (i : ι) y, ∃ k : ℕ, (X i : MvPolynomial ι R) ^ k • y ∈ LinearMap.range f) (n : ℤ) :
     IsIso (grCechMap hf n) :=
   isIso_cechComplexMap _ fun _ ⟨i, hi⟩ => homLocMap_bijective_of_X hf hi (h₁ i) (h₂ i) n
-
-
 
 variable (ι ℳ) in
 def grAug (n : ℤ) : ℳ n →ₗ[R] grH ι ℳ n 0 :=
@@ -718,7 +705,6 @@ def grCubePiIso (n : ℤ) : grCube ι (grPi ℳ) n ≅ Cube.directSum fun k => g
 
 variable [LinearOrder ι]
 
-
 variable [Finite ι]
 
 theorem cubeComplex_grPi_exactAt_iff (n : ℤ) (p : ℕ) :
@@ -738,11 +724,6 @@ variable {ι : Type} {R : Type u} [CommRing R]
 theorem xProd_smul_injective (s : Finset ι) :
     Function.Injective fun p : MvPolynomial ι R => xProd R s • p :=
   (IsRegular.prod fun _ _ => MvPolynomial.isRegular_X).left
-
-variable (ι R) in
-theorem operatorsCommute_id :
-    OperatorsCommute (ι := ι) (R := R) (A := fun _ => R) fun _ _ => LinearMap.id :=
-  fun _ _ _ _ => rfl
 
 end Examples
 

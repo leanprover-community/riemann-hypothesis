@@ -161,14 +161,6 @@ variable [Fintype κ]
 
 end Columns
 
-noncomputable def blockPoly (R : Type*) [CommRing R] [Fintype T] (c : T → Fin p → ℕ)
-    (c' : T → Fin q → ℕ) (col : T → (i : Fin p) → Fin (i.val + 1) → κ)
-    (col' : T → (i : Fin q) → Fin (i.val + 1) → κ) : Poly R T p q κ :=
-  ∏ t : T, ((∏ i : Fin p, (Matrix.of fun a b : Fin (i.val + 1) =>
-      (X (xVar t (lead i a) (col t i b)) : Poly R T p q κ)).det ^ c t i) *
-    ∏ i : Fin q, (Matrix.of fun a b : Fin (i.val + 1) =>
-      (X (yVar t (lead i a) (col' t i b)) : Poly R T p q κ)).det ^ c' t i)
-
 section Subst
 
 variable [Fintype κ] [Fintype κ']
@@ -264,14 +256,6 @@ end Subst
 section Action
 
 variable [Fintype κ] [DecidableEq κ]
-
-theorem laplacian_colAct (g : T → GL κ R) (t : T) (a : Fin p) (b : Fin q) (P : Poly R T p q κ) :
-    laplacian t a b (colAct R T p q κ g P) = colAct R T p q κ g (laplacian t a b P) :=
-  laplacian_colSubst_of_mul_eq_one _ _ (Units.inv_mul (g t)) a b P
-
-theorem IsHarmonic.colAct (g : T → GL κ R) {P : Poly R T p q κ} (hP : IsHarmonic P) :
-    IsHarmonic (colAct R T p q κ g P) := fun t a b => by
-  rw [laplacian_colAct, hP, map_zero]
 
 end Action
 

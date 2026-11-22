@@ -2,7 +2,10 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsUniqueLiesUnder
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAlgAtlasAtlasOf
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LinearIndependentOfCutSec
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RingKrullDimRingOfIntegers
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GrNormPosOfBasis
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HalfWeightLocPot
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
@@ -21,12 +24,9 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PushAFinsumInter
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Pullback
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Measure
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AtlasIndep
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Degree
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ProjectiveLinePartitionContinuousCoe
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FirstChernLeviEqConstant
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 
@@ -58,9 +58,6 @@ def tAtlas (A : FinHolAtlas e X) (h : X ≃ₜ X') : FinHolAtlas e X' where
       ext y; simp
     rw [e₁, e₂]
     exact A.holo j k
-
-theorem tAtlas_symm (A : FinHolAtlas e X) (h : X ≃ₜ X') (j : Fin (tAtlas A h).n) (y : Fin e → ℂ) :
-    ((tAtlas A h).chart j).symm y = h ((A.chart j).symm y) := rfl
 
 end Atlas
 

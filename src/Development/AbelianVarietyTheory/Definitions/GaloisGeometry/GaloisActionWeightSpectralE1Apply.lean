@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IndEtOfForallFinset
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ReductionUniformizerPoint
 
 @[expose] public section
 
@@ -18,9 +17,6 @@ namespace GlobalTheory.EtC.WSS
 open GlobalTheory.EtC GlobalTheory.Strata
 
 variable (l : ℕ) [Fact l.Prime]
-
-def castHQ {E : Spc} {n i n' i' : ℤ} (hn : n = n') (hi : i = i') : HQ l E n i ≃ₗ[ℚ_[l]] HQ l E n' i' := by
-  subst hn; subst hi; exact LinearEquiv.refl _ _
 
 theorem pullHQ_map_id (E : Spc) (n i : ℤ) : pullHQ l (𝟙 E) n i = LinearMap.id := by
   unfold pullHQ; rw [pullHl_id]; exact LinearMap.baseChange_id
@@ -37,12 +33,7 @@ open GlobalTheory.EtC GlobalTheory.Strata
 
 variable (l : ℕ) [Fact l.Prime]
 
-def idx (m : ℕ) (a : ℤ) : Finset ℕ := (Finset.range m).filter fun s => -a ≤ (s : ℤ) ∧ a + 2 * (s : ℤ) < m
-
 variable {ι : Type} [Fintype ι] [LinearOrder ι] {Z : Scheme.{0}} (J : ι → Z.IdealSheafData)
-
-def res (t : ℕ) (n i : ℤ) : HQ l (sch.obj (Ystr J t)) n i →ₗ[ℚ_[l]] HQ l (sch.obj (Ystr J (t + 1))) n i :=
-  ∑ j : Fin (t + 2), ((-1 : ℚ_[l]) ^ (j : ℕ)) • pullHQ l (sch.map (δ J t j)) n i
 
 end GlobalTheory.EtC.WSS
 

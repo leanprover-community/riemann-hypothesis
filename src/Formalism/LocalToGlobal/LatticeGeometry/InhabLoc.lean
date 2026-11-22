@@ -73,7 +73,6 @@ theorem le_choose_two (r : ℕ) : r - 1 ≤ r * (r - 1) / 2 := by
 theorem flDim_eq (f r : ℕ) : f * (r * (r - 1) / 2) - f * (r - 1) + f * (r - 1) = f * (r * (r - 1) / 2) :=
   Nat.sub_add_cancel (Nat.mul_le_mul_left _ (le_choose_two r))
 
-
 open Matrix in
 theorem pd_of_int {Y : Type} [AddCommGroup Y] (β : Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ)
     (hsymm : ∀ a b, β a b = β b a) (hint : ∀ a b, ∃ z : ℤ, β a b = z) (hpos : ∀ a, a ≠ 0 → 0 < β a a)
@@ -214,7 +213,6 @@ theorem trZ_self_nonneg (k : ℕ) (a : Fin k → 𝓞 D.host.E) : 0 ≤ trZ D k 
 
 theorem trZ_zero_rank (a b : Fin 0 → 𝓞 D.host.E) : trZ D 0 a b = 0 := by
   simp [trZ]
-
 
 open Classical in
 def pU (p : ℕ) (c : CF p) : (c.C)ˣ := if h : (p : c.C) = 0 then 1 else Units.mk0 (p : c.C) h
@@ -513,7 +511,6 @@ variable (D : D7) (r j p : ℕ) (c : CF p) (ρ : ℕ)
   Pm_tail := fun d τ i _ _ => le_trans (neg_le_abs _)
     (abs_le_pmM D d (r + j) τ _ (Finset.Icc_subset_Icc (by omega) (by omega)))
 
-
 open Classical in
 @[reducible] def locBT (hp : 2 ≤ p ∨ ρ = 0) (hd : ρ * (2 * D.R.f) ≤ D.R.f * r) :
     BoundaryLocalData.LocB D (locT D r j p c ρ) where
@@ -626,29 +623,6 @@ open Classical in
     simp
 
 end Model
-
-def rhoJ (r p : ℕ) : ℕ := if 2 ≤ r ∧ 2 ≤ p then 1 else 0
-
-theorem rhoJ_p (r p : ℕ) : 2 ≤ p ∨ rhoJ r p = 0 := by
-  unfold rhoJ
-  split_ifs with h
-  · exact Or.inl h.2
-  · exact Or.inr rfl
-
-theorem rhoJ_dim (f r p : ℕ) : rhoJ r p * (2 * f) ≤ f * r := by
-  unfold rhoJ
-  split_ifs with h
-  · nlinarith [h.1]
-  · simp
-
-def junkLocalData (D : D7) (r j p : ℕ) : ModuliIntegralCharts.Loc D r j p := locT D r j p (cfJunk p) (rhoJ r p)
-
-def exJunk (D : D7) (r j p : ℕ) : ModuliIntegralCharts.ExtA D (junkLocalData D r j p) := extT D r j p (cfJunk p) (rhoJ r p)
-
-def junkLocBAll (D : D7) (r j p : ℕ) : BoundaryLocalData.LocB D (junkLocalData D r j p) :=
-  locBT D r j p (cfJunk p) (rhoJ r p) (rhoJ_p r p) (rhoJ_dim D.R.f r p)
-
-def junkLocB (D : D7) (r j p : ℕ) (_hp : p.Prime) : BoundaryLocalData.LocB D (junkLocalData D r j p) := junkLocBAll D r j p
 
 section Facts
 

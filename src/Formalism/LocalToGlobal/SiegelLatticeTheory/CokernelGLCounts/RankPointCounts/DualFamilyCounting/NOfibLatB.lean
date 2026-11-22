@@ -23,8 +23,6 @@ open Alg LatA
 
 variable {D : D7} {X : HidaSetting D} {u : D.what₂.Word} {n : (VS D).V ≃ₗ[D.host.E] (VS D).V}
 
-local notation "FI" => FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E
-
 private def starStable (I : FI) : Prop := ∀ x ∈ I, star x ∈ I
 
 private theorem starStable_one : starStable (1 : FI) := by
@@ -115,7 +113,6 @@ theorem inv_up (X0 : Matrix (Fin D.R.rS) (Fin D.R.rS) D.host.E) (hup : ∀ b a, 
   exact h
 
 end LatB
-
 
 open LatB LatA Alg in
 theorem dictLatB_holds : DictLatB := by

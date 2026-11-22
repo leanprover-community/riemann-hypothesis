@@ -48,15 +48,7 @@ section Pullback
 variable (S : Type*) [Semiring S] {Y Y' Y'' : Type*} [AddCommGroup Y] [AddCommGroup Y']
   [AddCommGroup Y''] (A : Type*) [AddCommGroup A] [Module S A]
 
-def pullback (f : Y →ₗ[ℤ] Y') : Bil Y' A →ₗ[S] Bil Y A where
-  toFun b := b.compl₁₂ f f
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
-
 variable {S A}
-
-
-
 
 end Pullback
 
@@ -119,12 +111,6 @@ def lift : symForms S Y A ≃ₗ[S] (SymSq Y →ₗ[ℤ] A) where
   left_inv b := by ext; rfl
   right_inv l := hom_ext fun _ _ => rfl
 
-private theorem lift_mk (b : symForms S Y A) (y y' : Y) :
-    lift S Y A b (mk y y') = (b : Bil Y A) y y' := rfl
-
-private theorem lift_symm_apply (l : SymSq Y →ₗ[ℤ] A) (y y' : Y) :
-    ((lift S Y A).symm l : Bil Y A) y y' = l (mk y y') := rfl
-
 noncomputable def basis {ι : Type*} (e : Module.Basis ι ℤ Y) : Module.Basis (Sym2 ι) ℤ (SymSq Y) :=
   .ofRepr <| LinearEquiv.ofLinearMap
     (lift ℤ Y (Sym2 ι →₀ ℤ)
@@ -157,8 +143,6 @@ theorem finrank_eq [Module.Finite ℤ Y] [Module.Free ℤ Y] :
   classical
   rw [Module.finrank_eq_card_basis (basis (Module.Free.chooseBasis ℤ Y)), Sym2.card,
     Module.finrank_eq_card_chooseBasisIndex]
-
-
 
 end SymSq
 
@@ -197,19 +181,6 @@ def balForms : Submodule S (Bil Y A) where
   smul_mem' s b hb := ⟨Submodule.smul_mem _ s hb.1, fun a y y' => by
     simp only [LinearMap.smul_apply, hb.2 a y y']⟩
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 variable (O Y) in
 def balRel : Submodule ℤ (SymSq Y) :=
   saturation (Submodule.span ℤ
@@ -226,8 +197,6 @@ namespace BalSq
 
 variable (O) in
 def mk : Bil Y (BalSq O Y) := SymSq.mk.compr₂ (balRel O Y).mkQ
-
-theorem mk_apply (y y' : Y) : mk O y y' = (balRel O Y).mkQ (SymSq.mk y y') := rfl
 
 variable (O Y) in
 theorem mk_mem_balForms : mk O ∈ balForms ℤ O Y (BalSq O Y) :=
@@ -260,17 +229,13 @@ def lift [Module.IsTorsionFree ℤ A] : balForms S O Y A ≃ₗ[S] (BalSq O Y �
   left_inv b := by ext; rfl
   right_inv l := hom_ext fun _ _ => rfl
 
-
 end BalSq
-
 
 end Balanced
 
 section Level
 
 variable {Y Y' : Type*} [AddCommGroup Y] [AddCommGroup Y']
-
-
 
 end Level
 

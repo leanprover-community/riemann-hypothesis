@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Formalism.LocalToGlobal.IndefiniteReal.CxPassSk
+public import Formalism.LocalToGlobal.IndefiniteReal.CxPass
+public import Formalism.LocalToGlobal.IndefiniteReal.LevelAmbTransfer
 public import Formalism.LocalToGlobal.IndefiniteReal.TraceOfDiag
 public import Formalism.LocalToGlobal.GlobalTheory.DivPassageP
 public import Formalism.LocalToGlobal.GlobalTheory.PassageBaseSymmetricLevels

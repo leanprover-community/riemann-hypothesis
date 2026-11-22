@@ -1,8 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LocStOfLoc
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsFiniteQCHomModOfExact
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PushInvertibleModelOfIso
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LinearIndependentFlagVec
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FinrankEqZeroIff
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
@@ -13,7 +12,6 @@ public import ReciprocityTheory.GaloisValuations.GlobalB
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartRootsHolds
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUniquePoint
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartCocycleHolds
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalSystemBasesNonempty
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartFlagBaseHolds
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsIvDOfDefinite
@@ -21,7 +19,6 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsProperToroidalModelStructureMap
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GradedLineBundleExists
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyOfModToModIso
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsFramedPointChangedByLetters
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 public import Formalism.LocalToGlobal.ProjectiveLattices.VAtVNeBot
@@ -46,7 +43,8 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsArc
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsAbsoluteValueOfIsDiscreteValuationRing
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PullbackAndTensorModule
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RestrictionPoincareBundle
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CmHostUnitAddConjEqOne
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsUniqueTransUnit
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.InjectiveOfFlatLocal
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RankOneBaseWeightEqCmTheta
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsGrpPullbackAbVarModel
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ThetaGrpActsLinearly
@@ -73,18 +71,28 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAdicColimi
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsLinearHomPull
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ApolarMonomial
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsTangentEquiv
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PairVEqZeroOfMemLieSpan
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.EpsZeroCompOfIsTanAtG
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIsoToBidualOfLocalFrames
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AppLESecEpsZeroEpsFn
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentSurjective
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsExtendResidue
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsKitWithKitWith
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LinearIndependentOfCutSec
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RingKrullDimRingOfIntegers
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GeoTiedPGraft
+public import Formalism.SharpRestriction.Divisibility.LocalNonemptiness.WeightFamilies
+public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.ExampleSatisfiesConditionsAtFive
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsProvisionalDivX
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AevalFirstChernSurjective
+public import Development.AbelianVarietyTheory.BlockTheory.CMModuli.RelativeGroupHatForm
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ScaleZeroComp
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AbsLogGrNormSubLe
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DividesOfNormBoundedPoints
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ToroidalCompactificationData
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.HodgeGramEqRiemann
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAlgAtlasAtlasOf
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JEvExists
 public import Formalism.LocalToGlobal.ProjectiveLattices.RecCond
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.MumfordProportionality
-public import Development.AbelianVarietyTheory.Statements.HeightBoundStatement.HTBoundSt
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AdmissibleRepresentationFactorisation
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LevelLabelExtendsOfOrthogonalToExtended
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AllStepsHoldOfHasDR
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LineModel
@@ -124,13 +132,11 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Point
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLeftInverseOfFibrewiseInjective
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLatticeCoordinatesStep
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSectionOfIsIsoRestrict
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsPrincipalMapDifferent
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.LieImgIffIsLieCombStatement
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueConstantTangentVectorsAlongArcStatement
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsChartOfIsLocalRing
 public import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.ExistsIsComplEigenSubOfValuationRing
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.DetCondTensorDefinite
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsClosedFlagsIff
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RingKrullDimQuotientEqOfMemMinimalPrimes
 public import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.IsLocallyConstantRankAtStalkEigenSub
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsFlagFrame
@@ -162,24 +168,5 @@ set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.WeilTorsChar
-
-theorem exists_mulEquiv_points {S S' : Scheme.{0}} (f : S' ⟶ S) (G : Over S) (G' : Over S') [GrpObj G] [GrpObj G']
-    (φ : G'.left ⟶ G.left) (h : IsGrpPullback G' G f φ) (T : Over S') :
-    ∃ Φ : (T ⟶ G') ≃* (Over.mk (T.hom ≫ f) ⟶ G), ∀ x, (Φ x).left = x.left ≫ φ := by
-  let F : (T ⟶ G') → (Over.mk (T.hom ≫ f) ⟶ G) := fun x =>
-    Over.homMk (x.left ≫ φ) (by
-      change (x.left ≫ φ) ≫ G.hom = T.hom ≫ f
-      rw [Category.assoc, h.1.w, ← Category.assoc, Over.w x])
-  let I : (Over.mk (T.hom ≫ f) ⟶ G) → (T ⟶ G') := fun y =>
-    Over.homMk (h.1.lift y.left T.hom (Over.w y)) (h.1.lift_snd _ _ _)
-  refine ⟨⟨⟨F, I, fun x => ?_, fun y => ?_⟩, fun x y => ?_⟩, fun _ => rfl⟩
-  · apply Over.OverMorphism.ext
-    apply h.1.hom_ext
-    · exact h.1.lift_fst _ _ _
-    · exact (h.1.lift_snd _ _ _).trans (Over.w x).symm
-  · apply Over.OverMorphism.ext
-    exact h.1.lift_fst _ _ _
-  · apply Over.OverMorphism.ext
-    exact (h.2 T x y (F x) (F y) rfl rfl).symm
 
 end GlobalTheory.WeilTorsChar

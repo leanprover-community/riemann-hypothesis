@@ -56,8 +56,6 @@ def SG : Subgroup (Formalism.REAL.UJ ε) where
   inv_mem' {a} ha := Formalism.L2.SG.RealObj.InfCut.inS_inv _ _ (Formalism.MainNotions.S.uMat a) (Formalism.MainNotions.S.uMat a⁻¹)
     (Formalism.L2.SG.RealObj.InfCut.uMat_inv_mul' a) ha
 
-theorem coe_SG : (SG ε e z : Set (Formalism.REAL.UJ ε)) = SLoc ε e z := rfl
-
 theorem continuous_uMat : Continuous (fun g : Formalism.REAL.UJ ε => Formalism.MainNotions.S.uMat g) :=
   ((Formalism.REAL.uJEmb n ε).1).continuous
 

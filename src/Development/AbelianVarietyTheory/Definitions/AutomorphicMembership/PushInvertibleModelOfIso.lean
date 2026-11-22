@@ -2,8 +2,12 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MultiplicationLatticeSecond
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ThetaSqMulSqrtEtaSq
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyOfModToModIso
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.FamUnit
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.FamHomogOfHomog
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ThetaKeyRuleValuationUnitOfFunctorialStatement
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.KeyFormulaPowAndDegree
+public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.NonemptyRingHomComplex
+public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.KeyFormulaAndKeyCore
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsChartOfIsLocalRing
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsIsGenOfUniqueFactorizationMonoid
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsRefinementOfIsLimit
@@ -34,25 +38,7 @@ section Transport
 
 variable (Y : Model Xo c β) {X : Scheme.{0}} (π : X ⟶ Y.X) [IsIso π]
 
-def genInv : pullback Y.s (spMap β) ⟶ pullback (π ≫ Y.s) (spMap β) :=
-  pullback.map _ _ _ _ (inv π) (𝟙 _) (𝟙 _) (by simp) (by simp)
-
 instance isIso_genInv : IsIso (genInv Y π) := by unfold genInv; infer_instance
-
-theorem genInv_fst : genInv Y π ≫ pullback.fst _ _ ≫ π = pullback.fst _ _ := by
-  rw [genInv, pullback.lift_fst_assoc, Category.assoc, IsIso.inv_hom_id, Category.comp_id]
-
-theorem genInv_snd : genInv Y π ≫ pullback.snd _ _ = pullback.snd _ _ := by
-  rw [genInv, pullback.lift_snd, Category.comp_id]
-
-theorem exists_sabMap_genInv {t : SAB H X} (m : SABMap t Y.t π) :
-    ∃ n : SABMap Y.oF.t t ((Y.jQ ≫ genInv Y π) ≫ pullback.fst _ _), n.φ ≫ m.φ = Y.m.φ := by
-  have e : ((Y.jQ ≫ genInv Y π) ≫ pullback.fst _ _) ≫ π = Y.jQ ≫ pullback.fst _ _ := by
-    simp only [Category.assoc, genInv_fst]
-  obtain ⟨n', hn'⟩ : ∃ n' : SABMap Y.oF.t Y.t (((Y.jQ ≫ genInv Y π) ≫ pullback.fst _ _) ≫ π), n'.φ = Y.m.φ := by
-    rw [e]; exact ⟨Y.m, rfl⟩
-  obtain ⟨n, hn⟩ := sabCancel pullCubCancel E H _ _ _ _ _ _ _ _ m n'
-  exact ⟨n, hn.symm.trans hn'⟩
 
 @[reducible] def modelOfIso (hn : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme X) (t : SAB H X) (m : SABMap t Y.t π) :
     Model Xo c β where
@@ -84,53 +70,14 @@ theorem exists_sabMap_genInv {t : SAB H X} (m : SABMap t Y.t π) :
     · rintro ⟨x, hx⟩
       exact ⟨x, (genInv Y π).homeomorph.injective ((Scheme.Hom.comp_apply _ _ _).symm.trans hx)⟩
 
-theorem pushInvertible_modelOfIso (hn : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme X) (t : SAB H X) (m : SABMap t Y.t π)
-    (hD : GlobalTheory.Models.IsDedFrac β) (hY : PushInvertible Y.t.G Y.t.PP.L) : PushInvertible t.G t.PP.L := by
-  obtain ⟨l₁, l₂, l₃, -, -⟩ := GlobalTheory.firstFiveLaws
-  let C := modelOfIso Y π hn t m
-  exact GlobalTheory.PushInv.pushInvertible_of_model l₁ l₂ l₃ E H Dw l _ _ _ _ _ _ Y.oF _ β
-    ⟨C.X, C.s, C.normal, C.proj, C.flat, C.jQ, C.jQ_over, C.jQ_open, C.jQ_dense, C.t, C.m, C.ab_gen⟩ hD
-    ((GlobalTheory.AbLocusPull.abLocus_sections_pull _ _ π Y.t.G t.G m.φ Y.t.semi m.cart).2 _ _ Y.t.PP.isLB t.PP.isLB
-      (GlobalTheory.LN.GenericPoint.lbIso_of_sabMap m) fun x => by
-        obtain ⟨V, hV, θ, hθ, -, nz⟩ := hY x
-        exact ⟨V, hV, θ, hθ, nz⟩)
-
 end Transport
 
 variable {Y : Model Xo c β}
-
-def pushMod {X : Scheme.{0}} (t : SAB H X) : X.Modules := (Scheme.Modules.pushforward t.G.hom).obj (toMod t.PP.L)
-
-def keyUnit (k : ℕ) (M M' : GChart Y) : Γ(Y.X, M.U ⊓ M'.U)ˣ :=
-  (thUnit M M')⁻¹ ^ (2 * k) * detChg M.toMChart M'.toMChart ^ k
-
-theorem thRat_pow_mul_keyUnit (k : ℕ) (M M' : GChart Y) :
-    thRat M M' ^ (2 * k) * (keyUnit k M M').val = (detChg M.toMChart M'.toMChart).val ^ k := by
-  have : thUnit M M' ^ (2 * k) * keyUnit k M M' = detChg M.toMChart M'.toMChart ^ k := by
-    simp only [keyUnit, inv_pow, mul_inv_cancel_left]
-  simpa only [Units.val_mul, Units.val_pow_eq_pow_val, GlobalTheory.FlagMod.thUnit_val] using congrArg Units.val this
-
-def keyLB (Y : Model Xo c β) (k : ℕ) : LB Y.X := ⟨GChart Y, fun M => M.U, keyUnit k⟩
-
-theorem gm_keyUnit (k : ℕ) (M M' : GChart Y) (y : Y.X) :
-    gm (𝟙 Y.X) y _ (keyUnit k M M') =
-      (gm (𝟙 Y.X) y _ (thUnit M M'))⁻¹ ^ (2 * k) * gm (𝟙 Y.X) y _ (detChg M.toMChart M'.toMChart) ^ k := by
-  rw [keyUnit, map_mul, map_pow, map_pow, map_inv]
 
 section Cover
 
 variable [IsNoetherianRing O] (hP : PushInvertible Y.t.G Y.t.PP.L)
 include hP
-
-theorem isLB_keyLB (k : ℕ) : (keyLB Y k).IsLB := by
-  refine GlobalTheory.LBLimit.isLB_of_germs _ (GlobalTheory.FlagMod.exists_gChart hP) fun a b d y ha hb hd => ?_
-  have e₁ : gm (𝟙 Y.X) y _ (thUnit a b) * gm (𝟙 Y.X) y _ (thUnit b d) = gm (𝟙 Y.X) y _ (thUnit a d) :=
-    gm_cocycle (GlobalTheory.FlagMod.isLB_pushPP hP) (𝟙 Y.X) y ha hb hd
-  have e₂ : gm (𝟙 Y.X) y _ (detChg a.toMChart b.toMChart) * gm (𝟙 Y.X) y _ (detChg b.toMChart d.toMChart) =
-      gm (𝟙 Y.X) y _ (detChg a.toMChart d.toMChart) :=
-    gm_cocycle (GlobalTheory.FlagMod.isLB_detLie hP) (𝟙 Y.X) y (i := a.toMChart) (j := b.toMChart) (k := d.toMChart) ha hb hd
-  refine (congrArg₂ (· * ·) (gm_keyUnit k a b y) (gm_keyUnit k b d y)).trans (Eq.trans ?_ (gm_keyUnit k a d y).symm)
-  rw [← e₁, ← e₂, mul_inv, mul_pow, mul_pow, _root_.mul_mul_mul_comm]
 
 end Cover
 
@@ -162,66 +109,10 @@ variable (ct : At S κ p)
 instance isNoetherianRing_base : IsNoetherianRing (ct.Xm.i.c.V ct.W) :=
   GlobalTheory.ModelPresentation.isNoetherianRing_place _ _ ct.hp.ne_zero ct.hW
 
-theorem pushInvertible : PushInvertible ct.Xm.t.G ct.Xm.t.PP.L :=
-  haveI := ct.B.iso none
-  pushInvertible_modelOfIso (ct.Y ct.Xm.i) ct.Xm.π (@GlobalTheory.IsNormalScheme.pred _ ct.Xm.normal) ct.Xm.t ct.Xm.tMap
-    ((GlobalTheory.CoeffRings.coeff_isDedFrac _ A.H _ ct.Xm.i.c).2.2.2 p ct.W ct.hp ct.hW).1
-    ((S.sys.clauses p ct.W ct.hp ct.hW).1.1 ct.Xm.i).2.2.1
-
-abbrev KeyChart : Type := GChart ct.base
-
-def keyL (c : ℕ) : LB ct.Xm.X := keyLB ct.base c
-
-theorem isLB_keyL (c : ℕ) : (ct.keyL c).IsLB := isLB_keyLB (Y := ct.base) ct.pushInvertible c
-
-def ofModIso {Z : ct.Mdl} {F : Z.X.Modules} (h : GlobalTheory.VB.IsVB F 1) : (Z.ofMod F).toMod ≅ F :=
-  haveI := h.isFiniteQC
-  (GlobalTheory.ModelPresentation.nonempty_ofMod_toMod_iso _ _ _ _ p ct.W ct.hp ct.hW _ _ Z F).some
-
-def piPP : ct.Sh ct.Xm := ct.Xm.ofMod (pushMod ct.Xm.t)
-
-def keySh (c : ℕ) : ct.Sh ct.Xm := ct.Xm.ofMod (toMod (ct.keyL c))
-
-def keyIso (c : ℕ) : (ct.keySh c).toMod ≅ toMod (ct.keyL c) := ct.ofModIso (GlobalTheory.VB.isVB_toMod (ct.isLB_keyL c))
-
-theorem isInv_keySh (c : ℕ) : ct.IsInv (ct.keySh c) :=
-  (GlobalTheory.VB.isVB_toMod (ct.isLB_keyL c)).of_iso (ct.keyIso c).symm
-
 variable {ct}
-
-def keyGen (c : ℕ) (M : ct.KeyChart) : Γ((ct.keySh c).toMod, M.U) :=
-  (ct.keyIso c).inv.app M.U (GlobalTheory.LB.chartSec (ct.isLB_keyL c) M)
-
-theorem isFrame_keyGen (c : ℕ) (M : ct.KeyChart) : GlobalTheory.LB.IsFrame (keyGen c M) :=
-  (GlobalTheory.LB.isFrame_chartSec (ct.isLB_keyL c) M).app (ct.keyIso c).symm
-
-def keyCoef {c : ℕ} {V : ct.Xm.X.Opens} (s : Γ((ct.keySh c).toMod, V)) (M : ct.KeyChart) : Γ(ct.Xm.X, V ⊓ M.U) :=
-  GlobalTheory.LB.coord ((ct.keyIso c).hom.app V s) M
-
-def keyMk (c : ℕ) {V : ct.Xm.X.Opens} (f : ∀ M : ct.KeyChart, Γ(ct.Xm.X, V ⊓ M.U)) (hf : f ∈ secOn (ct.keyL c) V) :
-    Γ((ct.keySh c).toMod, V) :=
-  (GlobalTheory.LB.appLinearEquiv (ct.keyIso c) V).symm (GlobalTheory.LB.mkSec f hf)
-
-theorem keyCoef_keyMk (c : ℕ) {V : ct.Xm.X.Opens} (f : ∀ M : ct.KeyChart, Γ(ct.Xm.X, V ⊓ M.U))
-    (hf : f ∈ secOn (ct.keyL c) V) : keyCoef (keyMk c f hf) = f :=
-  congrArg GlobalTheory.LB.coord ((GlobalTheory.LB.appLinearEquiv (ct.keyIso c) V).apply_symm_apply _)
-
-def HasKeyValues {c : ℕ} (val : GlobalTheory.KeyCl.Rule) (s : ct.Sec (ct.keySh c)) : Prop :=
-  ∀ (M : ct.KeyChart) (K : Type) [Field K] [CharZero K] (z : Sp K ⟶ ct.Xm.X) (hz : ⊤ ≤ z ⁻¹ᵁ (ct.Xm.genO ⊓ M.U))
-    (x : KeyIn K), KeyAt M z (GlobalTheory.FlagMod.le_preimage_mono inf_le_right hz) x → ev z _ hz (keyCoef s M) = val K x
 
 variable (ct)
 
-
-open Classical in
-def pbKF {g c : ℕ} (kf : KF g c) : ct.Sec (ct.keySh c) :=
-  if h : ∃ s : ct.Sec (ct.keySh c), HasKeyValues kf.coef s then h.choose else 0
-
 end At
-
-def keyTrue (ct : At S κ p) : KeySt ct where
-  piPP := ct.piPP
-  keySh := ct.keySh
-  keySh_inv _ := ct.isInv_keySh
 
 end GlobalTheory.LocM

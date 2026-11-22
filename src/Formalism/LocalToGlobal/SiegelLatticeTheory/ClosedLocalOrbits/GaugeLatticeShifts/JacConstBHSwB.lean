@@ -45,22 +45,12 @@ def uWb (k r : ℕ) : Submodule ℝ (Mat k r) where
     refine ⟨(uH k r).smul_mem c hX.1, fun i j h => ?_⟩
     simp [hX.2 i j h]
 
-def tv (k r : ℕ) (c : Fin r → ℂ) (i : Fin (2 * r + k + 1)) : ℂ :=
-  if h : i.val < r then c ⟨i.val, h⟩
-  else if h2 : i.val ≤ r + k then 1
-  else (star (c ⟨2 * r + k - i.val, by have := i.isLt; omega⟩))⁻¹
-
-def tM (k r : ℕ) (c : Fin r → ℂ) : Mat k r := Matrix.diagonal (tv k r c)
-
 def dv (k r : ℕ) (x : Fin r → ℂ) (i : Fin (2 * r + k + 1)) : ℂ :=
   if h : i.val < r then x ⟨i.val, h⟩
   else if h2 : i.val ≤ r + k then 0
   else -star (x ⟨2 * r + k - i.val, by have := i.isLt; omega⟩)
 
 def tD (k r : ℕ) (x : Fin r → ℂ) : Mat k r := Matrix.diagonal (dv k r x)
-
-def Phi (k r : ℕ) (X : Mat k r) (x : Fin r → ℂ) (Z X' : Mat k r) : Mat k r :=
-  w0B k r * NormedSpace.exp X * w0B k r * tM k r (1 + x) * NormedSpace.exp Z * NormedSpace.exp (-X')
 
 def LmL (k r : ℕ) : (Mat k r × (Fin r → ℂ) × Mat k r × Mat k r) →ₗ[ℝ] Mat k r where
   toFun p := w0B k r * p.1 * w0B k r + tD k r p.2.1 + p.2.2.1 - p.2.2.2

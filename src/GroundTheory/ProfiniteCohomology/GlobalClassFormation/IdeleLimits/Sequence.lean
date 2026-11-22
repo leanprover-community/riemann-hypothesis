@@ -15,8 +15,6 @@ noncomputable section
 
 namespace IdeleLimit
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 def unitsIncl (F : FiniteSubfield) : F.1ˣ →* ℚ̄ˣ :=
   Units.map F.1.val.toRingHom.toMonoidHom
 

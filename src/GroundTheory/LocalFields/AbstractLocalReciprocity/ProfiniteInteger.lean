@@ -13,8 +13,6 @@ def profiniteIntegers : Subring (∀ n : ℕ+, ZMod n) :=
 
 abbrev ProfiniteInteger : Type := profiniteIntegers
 
-@[inherit_doc] scoped notation "ℤ̂" => ProfiniteInteger
-
 theorem mem_profiniteIntegers {x : ∀ n : ℕ+, ZMod n} :
     x ∈ profiniteIntegers ↔
       ∀ (m n : ℕ+) (h : (m : ℕ) ∣ n), ZMod.castHom h (ZMod m) (x n) = x m := by

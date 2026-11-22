@@ -18,9 +18,6 @@ variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarT
 
 variable {𝔭 : Ideal (𝓞 F)} {A : Submodule (𝓞 K) V}
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-local notation "κ" => algebraMap (𝓞 K) K
-
 theorem congrP_iff_inI {k : ℕ} {a b : K} : CongrP 𝔭 k a b ↔ InI 𝔭 k (a - b) := Iff.rfl
 
 theorem inI_int (h𝔭 : 𝔭.IsMaximal) {k : ℕ} {z : 𝓞 K} : InI 𝔭 k (κ z) ↔ z ∈ extP K 𝔭 ^ k := by

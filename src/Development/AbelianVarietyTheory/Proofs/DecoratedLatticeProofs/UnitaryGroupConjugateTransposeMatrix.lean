@@ -86,8 +86,6 @@ def conjEquiv (I : AutInst) : Gal(I.E/I.F) :=
     (AlgHom.ext fun x => by show star (star x) = x; exact star_star x)
     (AlgHom.ext fun x => by show star (star x) = x; exact star_star x)
 
-theorem conjEquiv_apply (I : AutInst) (x : I.E) : conjEquiv I x = I.cm.sig x := rfl
-
 theorem hatL_selfDual (I : AutInst) : GlobalTheory.ParahoricLift.HatSelfDual I.cm.sig I.J I.L := by
   have hJ : ∀ a b, I.cm.sig (I.J b a) = I.J a b := fun a b => by
     have := congrFun (congrFun I.J_herm a) b

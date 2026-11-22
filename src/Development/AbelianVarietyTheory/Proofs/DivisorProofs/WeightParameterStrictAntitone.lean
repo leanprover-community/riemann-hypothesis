@@ -3,12 +3,11 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StrictAntiOfStep
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightBoundHoldsStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightBoundHolds
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HostBoundHolds
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ShiftedWeightsDominantOfGapsStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BarGapParameterInequalityStatement
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso
 public import Development.AbelianVarietyTheory.Definitions.Divisors.WellChosen
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IntegralBound

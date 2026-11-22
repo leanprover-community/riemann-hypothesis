@@ -4,7 +4,6 @@ public import Mathlib
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThClassPins
 public import Formalism.LocalToGlobal.ProjectiveLattices.LiftLaSpec
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.LevelCarrying
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LevelActionOverlapLeSourceChart
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointBaseChangeUniqueReflIff
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSabCancel
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsReducedIsNormalSchemeIsLocallyNoetherianOfSmoo

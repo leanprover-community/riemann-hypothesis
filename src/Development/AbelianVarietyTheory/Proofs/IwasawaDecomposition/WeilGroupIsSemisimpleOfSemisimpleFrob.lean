@@ -12,32 +12,6 @@ namespace GlobalTheory.WeilDeligne.FrobSemisimple
 
 variable {V : Type*} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
 
-theorem minpoly_eval_zero_ne_zero {f : End ℂ V} (hf : IsUnit f) : (minpoly ℂ f).eval 0 ≠ 0 := by
-  intro h0
-  have h1 : f.HasEigenvalue 0 := End.hasEigenvalue_iff_isRoot.mpr h0
-  exact spectrum.zero_notMem ℂ hf (End.hasEigenvalue_iff_mem_spectrum.mp h1)
-
-theorem isSemisimple_of_pow {g : End ℂ V} (hg : IsUnit g) {m : ℕ} (hm : 0 < m)
-    (hs : (g ^ m).IsSemisimple) : g.IsSemisimple := by
-  have hsep : (minpoly ℂ (g ^ m)).Separable :=
-    PerfectField.separable_iff_squarefree.mpr hs.minpoly_squarefree
-  have h0 := minpoly_eval_zero_ne_zero (hg.pow m)
-  set p := minpoly ℂ (g ^ m) with hp
-  refine End.isSemisimple_of_squarefree_aeval_eq_zero (p := expand ℂ m p)
-    (Separable.squarefree ?_) ?_
-  · rw [Separable, derivative_expand]
-    refine IsCoprime.mul_right (IsCoprime.map hsep (expand ℂ m).toRingHom)
-      (IsCoprime.mul_right ?_ (IsCoprime.pow_right ?_))
-    · have : IsUnit ((m : ℕ) : ℂ[X]) := by
-        rw [← C_eq_natCast]
-        exact isUnit_C.mpr (Ne.isUnit (Nat.cast_ne_zero.mpr hm.ne'))
-      exact (isCoprime_mul_unit_left_right this _ 1).mpr isCoprime_one_right |>.of_mul_right_left
-    · refine ((irreducible_X.coprime_iff_not_dvd).mpr ?_).symm
-      rw [X_dvd_iff, coeff_zero_eq_eval_zero, expand_eval, zero_pow hm.ne']
-      exact h0
-  · rw [expand_aeval]
-    exact minpoly.aeval ℂ _
-
 end GlobalTheory.WeilDeligne.FrobSemisimple
 
 namespace GlobalTheory.WeilDeligne
@@ -98,7 +72,6 @@ private theorem isSemisimple_of_isUnit_of_pow_isSemisimple {V : Type*} [AddCommG
   apply Module.End.isSemisimple_of_squarefree_aeval_eq_zero hP.squarefree
   rw [expand_aeval]
   exact minpoly.aeval ℂ (f ^ m)
-
 
 open NumberField IsDedekindDomain Polynomial Module in
 theorem _root_.GlobalTheory.WeilDeligne.isSemisimple_of_isSemisimple_frob :

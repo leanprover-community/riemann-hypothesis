@@ -67,8 +67,6 @@ def cplxMap (g : Mat n) : Mat n →ₗ[ℂ] Mat n where
   map_add' X Y := by simp [Matrix.mul_add, Matrix.add_mul]
   map_smul' c X := by simp [Matrix.mul_smul, Matrix.smul_mul]
 
-theorem cplxMap_apply (g X : Mat n) : cplxMap g X = g * X * gᴴ := rfl
-
 theorem hOf_realMap (g : Mat n) (v : Fin n × Fin n → ℝ) : hOf (realMap g v) = g * hOf v * gᴴ :=
   hOf_re _ (conj_herm g _ (hOf_herm v))
 

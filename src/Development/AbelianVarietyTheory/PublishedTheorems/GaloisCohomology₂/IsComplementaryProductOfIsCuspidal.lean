@@ -74,9 +74,6 @@ theorem isUnitarisable_of_equiv {G : Type} [Group G] {π : Representation ℂ G 
   rw [e, e, h3]
   rfl
 
-theorem isUnitaryLSeg_of_isCusp {ρ : IrrGL (k := k)} (hρ : ρ.IsCusp) (hu : IsUnitarisable ρ.rep) : IsUnitaryLSeg ρ :=
-  ⟨⟨_, (single_spec hρ).2.1⟩, hu⟩
-
 end GlobalTheory.GenericUnitary
 
 namespace GlobalTheory.Published

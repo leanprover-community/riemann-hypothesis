@@ -63,18 +63,6 @@ theorem multIn_eq_zero_iff : multIn π ρ U = 0 ↔ homIn π ρ U = ⊥ := Submo
 theorem multIn_lt_aleph0_iff : multIn π ρ U < Cardinal.aleph0 ↔ FiniteDimensional ℂ (homIn π ρ U) :=
   Module.rank_lt_aleph0_iff
 
-
-variable (π) in
-def homInEquiv (hU : IsSubrep ρ U) : homIn π ρ U ≃ₗ[ℂ]
-    ContIntertwiningMap (.ofMonoidHom π : ContRepresentation ℂ G H) (.ofMonoidHom hU.rep : ContRepresentation ℂ G U) where
-  toFun T := ⟨T.1.codRestrict U T.2.1, fun g => ContinuousLinearMap.ext fun x => Subtype.ext (T.2.2 g x)⟩
-  invFun f := ⟨U.subtypeL ∘L f.toContinuousLinearMap, fun x => (f.toContinuousLinearMap x).2,
-    fun g x => congrArg Subtype.val (DFunLike.congr_fun (f.isIntertwining' g) x)⟩
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
-  left_inv _ := rfl
-  right_inv _ := rfl
-
 theorem multIn_rep (hU : IsSubrep ρ U) : multIn π hU.rep ⊤ = multIn π ρ U :=
   LinearEquiv.rank_eq
     { toFun := fun T => ⟨U.subtypeL ∘L T.1, fun x => (T.1 x).2, fun g x => congrArg Subtype.val (T.2.2 g x)⟩
@@ -94,11 +82,6 @@ theorem UEquiv.trans (h : UEquiv π ρ) (h' : UEquiv ρ ρ') : UEquiv π ρ' :=
   let ⟨e, he⟩ := h
   let ⟨e', he'⟩ := h'
   ⟨e.trans e', fun g x => by simp [he, he']⟩
-
-theorem UEquiv.comp (h : UEquiv π ρ) (j : G' →* G) : UEquiv (π.comp j) (ρ.comp j) := h.imp fun _ he g => he (j g)
-
-theorem isSubrep_comp {j : G' →* G} (hj : Function.Surjective j) : IsSubrep (ρ.comp j) U ↔ IsSubrep ρ U :=
-  and_congr_right fun _ => (hj.forall (p := fun g => ∀ v ∈ U, ρ g v ∈ U)).symm
 
 theorem UEquiv.isTopIrreducible (h : UEquiv π ρ) (hπ : IsTopIrreducible π) : IsTopIrreducible ρ := by
   obtain ⟨e, he⟩ := h
@@ -138,25 +121,19 @@ theorem isSubrep_isoPart : IsSubrep ρ (isoPart π ρ U) :=
       ((Submodule.isClosed_topologicalClosure _).preimage (ρ g).continuous)
       (fun T hT x => show ρ g (T x) ∈ _ from hT.2 g x ▸ apply_mem_isoPart hT _) hv⟩
 
-theorem IsIsotypic.refl (π : G →* (H →L[ℂ] H)) : IsIsotypic π π :=
-  eq_top_iff.2 fun x _ => apply_mem_isoPart (T := .id ℂ H) (mem_homIn_top.2 fun _ _ => rfl) x
-
 theorem IsIsotypic.homIn_ne_bot [Nontrivial K] (h : IsIsotypic π ρ) : homIn π ρ ⊤ ≠ ⊥ := fun e =>
   (top_ne_bot (α := Submodule ℂ K)) (le_bot_iff.1 (h ▸ isoPart_le (by simp) fun T hT x => by
     rw [e, Submodule.mem_bot] at hT; simp [hT]))
 
-
 open Classical in
 def unitVec (H : Type) [NormedAddCommGroup H] : H :=
   if h : ∃ x : H, ‖x‖ = 1 then h.choose else 0
-
 
 variable (H) in
 theorem norm_unitVec [Nontrivial H] : ‖unitVec H‖ = 1 := by
   have h : ∃ x : H, ‖x‖ = 1 := exists_norm_eq H zero_le_one
   rw [unitVec, dite_eq_left h]
   exact h.choose_spec
-
 
 variable (H K) in
 def beForm : (H →L[ℂ] K) →ₗ[ℂ] (H →L[ℂ] K) →ₛₗ[starRingEnd ℂ] ℂ :=
@@ -178,18 +155,10 @@ theorem inner_map_map (hρ : IsUnitaryRep ρ) (g : G) (x y : K) : ⟪ρ g x, ρ 
 theorem isUnitaryRep_comp [TopologicalSpace G'] (hρ : IsUnitaryRep ρ) {j : G' →* G} (hj : Continuous j) :
     IsUnitaryRep (ρ.comp j) := ⟨fun g => hρ.norm_apply (j g), fun v => (hρ.continuous_apply v).comp hj⟩
 
-theorem IsIrrUnitary.comp [TopologicalSpace G'] (hπ : IsIrrUnitary π) {j : G' →* G} (hc : Continuous j)
-    (hj : Function.Surjective j) : IsIrrUnitary (π.comp j) :=
-  ⟨hπ.complete, isUnitaryRep_comp hπ.unitary hc, hπ.irred.1, fun W hW => hπ.irred.2 W ((isSubrep_comp hj).1 hW)⟩
-
 theorem isIrrUnitary_rep [CompleteSpace K] (hρ : IsUnitaryRep ρ) (hW : IsIrredSubrep ρ W) : IsIrrUnitary hW.1.rep :=
   ⟨hW.1.completeSpace, hW.1.isUnitaryRep hρ, hW.1.isIrredSubrep_iff.1 hW⟩
 
-theorem isIrrUnitary_charRep {χ : G →* Circle} (hχ : Continuous χ) : IsIrrUnitary (charRep χ) :=
-  ⟨inferInstance, isUnitaryRep_charRep hχ, inferInstance, fun W _ => eq_bot_or_eq_top W⟩
-
 variable [CompleteSpace K]
-
 
 omit [TopologicalSpace G] in
 theorem inner_eq_be_of_norm [CompleteSpace H] (h1 : ∀ g x, ‖π g x‖ = ‖x‖) (h2 : IsTopIrreducible π)
@@ -255,7 +224,6 @@ theorem uEquiv_of_multIn_ne_zero (hπ : IsIrrUnitary π) (hρ : IsIrrUnitary ρ)
   obtain ⟨e, he, h2⟩ := isCopy_iff.1 hW
   exact ⟨.ofSurjective e (LinearMap.range_eq_top.1 (h2.trans h1)), he⟩
 
-
 theorem inner_eq_zero_of_not_uEquiv (hπ : IsIrrUnitary π) (hπ' : IsIrrUnitary π') (hρ : IsUnitaryRep ρ)
     (h : ¬ UEquiv π π') (hT : T ∈ homIn π ρ U) {S : H' →L[ℂ] K} (hS : S ∈ homIn π' ρ U') (x : H) (y : H') :
     ⟪S y, T x⟫_ℂ = 0 := by
@@ -266,14 +234,6 @@ theorem inner_eq_zero_of_not_uEquiv (hπ : IsIrrUnitary π) (hπ' : IsIrrUnitary
       ContinuousLinearMap.adjoint_inner_right, hT.2, hS.2, hρ.inner_apply_left]
   rw [multIn_eq_zero_iff.1 (not_not.1 (mt (uEquiv_of_multIn_ne_zero hπ hπ') h)), Submodule.mem_bot] at h1
   rw [← ContinuousLinearMap.adjoint_inner_right, show S.adjoint (T x) = 0 from DFunLike.congr_fun h1 x, inner_zero_right]
-
-theorem IsIsotypic.uEquiv [Nontrivial K] (hπ : IsIrrUnitary π) (hπ' : IsIrrUnitary π') (hρ : IsUnitaryRep ρ)
-    (h : IsIsotypic π ρ) (h' : IsIsotypic π' ρ) : UEquiv π π' := by
-  by_contra hn
-  refine h'.homIn_ne_bot (eq_bot_iff.2 fun S hS => ContinuousLinearMap.ext fun y => ?_)
-  have : isoPart π ρ ⊤ ≤ (ℂ ∙ S y)ᗮ := isoPart_le (Submodule.isClosed_orthogonal _) fun T hT x =>
-    Submodule.mem_orthogonal_singleton_iff_inner_right.2 (inner_eq_zero_of_not_uEquiv hπ hπ' hρ hn hT hS x y)
-  exact inner_self_eq_zero.1 (Submodule.mem_orthogonal_singleton_iff_inner_right.1 (this (h.ge Submodule.mem_top)))
 
 end Hom
 
@@ -298,14 +258,10 @@ instance (R : IrrU G) : CompleteSpace R.H := R.isIrr.complete
 
 instance (R : IrrU G) : Nontrivial R.H := R.isIrr.irred.1
 
-def IrrU.ofChar (χ : G →* Circle) (hχ : Continuous χ) : IrrU G := ⟨ℂ, charRep χ, isIrrUnitary_charRep hχ⟩
-
-
 variable (G) in
 instance IrrU.setoid : Setoid (IrrU G) where
   r R R' := UEquiv R.π R'.π
   iseqv := ⟨fun _ => .refl _, .symm, .trans⟩
-
 
 variable (G) in
 def UDual : Type 1 := Quotient (IrrU.setoid G)
@@ -320,17 +276,6 @@ theorem IrrU.cl_eq_iff {R R' : IrrU G} : R.cl = R'.cl ↔ UEquiv R.π R'.π := Q
 
 variable {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
 
-def UDual.multIn (c : UDual G) (ρ : G →* (K →L[ℂ] K)) (U : Submodule ℂ K) : Cardinal := AutMult.multIn c.rep.π ρ U
-
-theorem IrrU.cl_ofChar_inj {χ ψ : G →* Circle} (hχ : Continuous χ) (hψ : Continuous ψ) :
-    (IrrU.ofChar χ hχ).cl = (IrrU.ofChar ψ hψ).cl ↔ χ = ψ := by
-  refine ⟨fun h => ?_, by rintro rfl; rfl⟩
-  obtain ⟨e, he⟩ : UEquiv (charRep χ) (charRep ψ) := IrrU.cl_eq_iff.1 h
-  ext g
-  have h1 : e ((χ g : ℂ) • (1 : ℂ)) = (ψ g : ℂ) • e 1 := he g 1
-  rw [map_smul] at h1
-  exact smul_left_injective ℂ (e.map_ne_zero_iff.2 one_ne_zero) h1
-
 end Dual
 
 section Alg
@@ -340,18 +285,12 @@ variable {G G' V W X H : Type} [Group G] [Group G'] [AddCommGroup V] [Module ℂ
 
 abbrev toRep (π : G →* (H →L[ℂ] H)) : Representation ℂ G H := (ContRepresentation.ofMonoidHom π).toRepresentation
 
-def Contains (τ : Representation ℂ G V) (ρ : Representation ℂ G W) : Prop := ∃ f : τ.IntertwiningMap ρ, f ≠ 0
-
 def isoPartAlg (σ : Representation ℂ G V) (ρ : Representation ℂ G W) : Submodule ℂ W :=
   ⨆ f : σ.IntertwiningMap ρ, LinearMap.range f.toLinearMap
 
 def IsIsotypicAlg (σ : Representation ℂ G V) (ρ : Representation ℂ G W) : Prop := isoPartAlg σ ρ = ⊤
 
 variable {τ : Representation ℂ G X} {σ : Representation ℂ G V} {ρ : Representation ℂ G W}
-
-theorem contains_iff : Contains τ ρ ↔ ∃ f : X →ₗ[ℂ] W, f ≠ 0 ∧ ∀ g x, f (τ g x) = ρ g (f x) :=
-  ⟨fun ⟨f, h⟩ => ⟨f.toLinearMap, fun e => h (Representation.IntertwiningMap.ext e), f.isIntertwining⟩,
-    fun ⟨f, h, e⟩ => ⟨f.intertwiningMap_of_isIntertwiningMap _ _ e, fun e' => h (congrArg (·.toLinearMap) e')⟩⟩
 
 end Alg
 

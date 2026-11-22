@@ -1,6 +1,8 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CountI
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.GdOfHost
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.OrbFacts
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.OrbSum
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.PZeroLe
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CountZ
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CountVs

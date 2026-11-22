@@ -149,7 +149,6 @@ section PairAlg
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
 
 theorem mkPair_mul_mkPair (a a' b b' : Module.End ℂ V) : mkP a a' * mkP b b' = mkP (a * b) (b' * a') := rfl
-theorem mkPair_sub_mkPair (a a' b b' : Module.End ℂ V) : mkP a a' - mkP b b' = mkP (a - b) (a' - b') := rfl
 theorem star_mkPair (a a' : Module.End ℂ V) : star (mkP a a') = mkP a' a := rfl
 theorem algebraMap_Pr (w : ℂ) :
     algebraMap ℂ (Pr V) w = mkP (algebraMap ℂ _ w) (algebraMap ℂ _ (star w)) := rfl
@@ -985,7 +984,6 @@ theorem FFl_smul {J : Mx k r → (Wq →L[ℂ] Wp)} (hJ : J ∈ FFl k r z z' π 
 theorem FFl_zero : (0 : Mx k r → (Wq →L[ℂ] Wp)) ∈ FFl k r z z' π π' i D :=
   ⟨smooth_zero, fun _ _ _ _ => by simp, fun _ _ _ _ => by simp, fun _ _ _ _ _ _ => by simp⟩
 
-
 variable (k r z z' π π' i D) in
 def FFV : Submodule ℂ (Mx k r → (Wq →L[ℂ] Wp)) where
   carrier := {J | J ∈ FFl k r z z' π π' i D ∧ ∀ g, g ∉ Glev k r i ∩ D → J g = 0}
@@ -1000,7 +998,6 @@ theorem FFV_ext {Φ Ψ : FFV k r z z' π π' i D}
   by_cases hg : g ∈ Glev k r i ∩ D
   · exact h g hg
   · rw [Φ.2.2 g hg, Ψ.2.2 g hg]
-
 
 open Classical in
 def cutV (hD : IsDom k r z z' i D) (J : Mx k r → (Wq →L[ℂ] Wp)) (hJ : J ∈ FFl k r z z' π π' i D) :
@@ -1603,11 +1600,6 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
 
 def UU (Dc : (Fin r → ℂ) → Set (Mx k r)) : Set (XX k r) := {x | x.1 ∈ OmX r ∧ x.2 ∈ Dc x.1}
 
-
-
-
-
-
 theorem sf_slice {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {Φ : Fn k r E}
     (h : SmoothFam k r i (UU Dc) Φ) {c : Fin r → ℂ} (hc : c ∈ OmX r) : SmoothLev k r i (Dc c) (Φ c) := by
   rintro g₀ ⟨hg, hD⟩
@@ -1659,9 +1651,6 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
 
 theorem inv_mul_uh {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : g⁻¹ * g = 1 :=
   Matrix.nonsing_inv_mul _ (WeylGroupFacts.isUnit_of_uh hg)
-
-theorem mul_inv_uh {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : g * g⁻¹ = 1 :=
-  Matrix.mul_nonsing_inv _ (WeylGroupFacts.isUnit_of_uh hg)
 
 theorem glev_inv {i : Fin (r + 1)} {g : Mx k r} (hg : g ∈ Glev k r i) : g⁻¹ ∈ Glev k r i := by
   refine ⟨WeylGroupFacts.uh_inv hg.1, fun a ha => ⟨?_, ?_⟩⟩

@@ -3,7 +3,8 @@ module
 public import Development.AutomorphicArithmetic.ThickFrames.MarkedLow
 public import Formalism.LocalToGlobal.GlobalTheory.IsResidueClassZero
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ExplicitFormulaErrorOfHostConditions
-public import Development.AutomorphicArithmetic.ThickFrames.topsFrame
+public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
+public import Development.AutomorphicArithmetic.ThickFrames.topsGroup
 
 @[expose] public section
 

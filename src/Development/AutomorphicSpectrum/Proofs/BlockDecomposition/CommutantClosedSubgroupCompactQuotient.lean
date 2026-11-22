@@ -25,8 +25,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Anisotropic
 variable {K E : Type} [Field K] [NumberField K] [CommRing E] [Algebra K E] [Algebra.IsQuadraticExtension K E]
 variable {ι : Type} [Fintype ι] [DecidableEq ι] (H : Matrix ι ι E)
 
-local notation "𝒩'" => Fintype.card (ι × Fin (Module.finrank K E))
-
 def ratCent {m : Type} (S : m → Matrix ι ι (K ⊗[K] E)) : Subgroup (GL ι (K ⊗[K] E)) where
   carrier := {g | ∀ k, (g : Matrix ι ι (K ⊗[K] E)) * S k = S k * g}
   one_mem' k := by simp

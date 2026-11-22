@@ -19,14 +19,6 @@ attribute [local instance] MvPolynomial.gradedAlgebra
 
 noncomputable section
 
-structure ProjScheme (A : Type u) [CommRing A] (N : ℕ) where
-
-  X : Scheme.{u}
-
-  ι : X ⟶ projectiveSpace A N
-
-  isClosedImmersion : IsClosedImmersion ι
-
 attribute [instance] ProjScheme.isClosedImmersion
 
 namespace ProjScheme

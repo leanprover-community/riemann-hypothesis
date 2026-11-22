@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StrictHenselianAcyclic
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTypeGroupBlockLift
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.OExt
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.GoodIdempotentFixesOfOnlySeriesOfLabelActs
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.CMTypeEmbeddings
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsCellOfIsSubquotient
@@ -38,24 +37,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
   GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-structure PrN : Prop where
-  what₂ : GlobalTheory.NRows.Hypotheses₂
-  decay : GlobalTheory.Published.CuspRapidDecay
-  hc : GlobalTheory.Published.HarishChandraFinite
-  greenC : GlobalTheory.Published.GreenCuspidal
-  green : GlobalTheory.GLq.Green
-  zel : GlobalTheory.Published.ZelevinskyPolynomialRing
-  dz : GlobalTheory.Published.DepthZeroInertia
-  ray : GlobalTheory.Published.RayClassFieldSt
-  rayF : GlobalTheory.NT.RayField
-  rayA : GlobalTheory.Published.RayCharacterArtin
-  bc : GlobalTheory.Published.BaseChangeDefiniteUnitary
-  ds : GlobalTheory.Published.DiscreteSpectrumGL
-  gen : GlobalTheory.Published.GenericUnitaryDualGL
-  std : GlobalTheory.Published.StandardCosocleGL
-  cheb : GlobalTheory.TwSys.Cheb
-  howe : GlobalTheory.Hk3.HoweUnram
 
 structure SerN : Prop where
   rat : GlobalTheory.IndefiniteRowSideFullHecke.RationalRayLevels.SeriesRat

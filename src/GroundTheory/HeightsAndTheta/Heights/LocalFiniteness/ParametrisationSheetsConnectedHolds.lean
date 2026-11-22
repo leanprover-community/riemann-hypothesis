@@ -30,7 +30,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PIdealTwistF
 public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AlgebraMapMemChartRingLine
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.NefGenericDVRSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.FiniteHZeroOfExact
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PQuotSectionsFinite
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PQuotTrans

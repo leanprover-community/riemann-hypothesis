@@ -124,12 +124,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
 variable [StarRing (𝓞 E)] {l : Level H} {c : Coeff l} {p q : ℕ}
 
-def Readable (o : abelian₂.LamObj c p q) : Prop :=
-  abelian₂.IsFibreOf o.AΨ o.xΨ (abelian₂.gmap o.K₁) o.φΨg ∧ abelian₂.IsFibreOf o.A' o.x' (abelian₂.gmap o.K₁) o.φ'g ∧
-    (∀ i, IsMonHom (o.φΨ i)) ∧ (∀ i, IsMonHom (o.φ' i)) ∧
-    (∀ i (a : 𝓞 E), o.oaΨ.act a ≫ o.φΨ i = o.φΨ i ≫ o.oa.act a) ∧
-    ∀ i (a : 𝓞 E), o.oa'.act a ≫ o.φ' i = o.φ' i ≫ o.oa.act a
-
 variable (hs : ∀ a : 𝓞 E, star a = H.bar a) (o : abelian₂.LamObj c p q) (h : Readable o)
 
 end Main

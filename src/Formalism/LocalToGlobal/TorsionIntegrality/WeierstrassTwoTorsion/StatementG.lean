@@ -35,10 +35,6 @@ def FglSum : Prop :=
   ∀ (K : Type u) [Field K] (W : WeierstrassCurve K),
     Formalism.ELL.ChordAt W (wSer W) U₁ U₂ (fgl W)
 
-def FglGroup : Prop :=
-  ∀ (R : Type u) [CommRing R] (W : WeierstrassCurve R),
-    ∃ F : FormalGroup R, F.toPowerSeries = fgl W ∧ F.IsComm
-
 def FglLog : Prop :=
   ∀ (K : Type u) [Field K] [CharZero K] (W : WeierstrassCurve K),
     (logSer W).subst (fgl W) = (logSer W).subst (U₁ : MvPowerSeries (Fin 2) K)

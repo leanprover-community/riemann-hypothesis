@@ -19,10 +19,6 @@ open _root_.WittVector Laurent ACris
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p] [CharZero K]
 
-local notation "𝒪" => normInteger K
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "θ" => fontaineTheta 𝒪 p
-
 theorem exists_approx (a : ACris K p) (N : ℕ) :
     ∃ c : ACrisZero K p, a - algebraMap _ (ACris K p) c ∈ Ideal.span {(p : ACris K p) ^ N} := by
   obtain ⟨c, hc⟩ := Ideal.Quotient.mk_surjective
@@ -124,7 +120,6 @@ theorem exists_iotaQ_ne_zero {a : ACris K p} (ha : a ≠ 0) : ∃ m, iotaQ K p (
   · rw [← iotaQ_compat (Nat.zero_le 1), RingHom.comp_apply, h 0, map_zero]
   · exact h m
 
-
 set_option maxHeartbeats 1600000 in
 theorem exists_lower_bound {a : ACris K p} (ha : a ≠ 0) :
     ∃ (B : ℝ) (N₀ : ℕ), 0 < B ∧ ∀ N ≥ N₀, ∀ c : ACrisZero K p,
@@ -202,7 +197,6 @@ theorem exists_lower_bound {a : ACris K p} (ha : a ≠ 0) :
     rw [← pow_add]; congr 1; omega
   rw [hiota, hmk, hpN]
   ring
-
 
 set_option maxHeartbeats 1600000 in
 theorem exists_stable {a : ACris K p} (ha : a ≠ 0) :

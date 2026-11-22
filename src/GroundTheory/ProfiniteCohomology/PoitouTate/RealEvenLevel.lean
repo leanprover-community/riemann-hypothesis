@@ -17,8 +17,6 @@ noncomputable section
 
 attribute [local instance 2000] Rep.hV2
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 section Algebra
 
 theorem bijective_of_surjective_of_surjective_dual {A : Type*} [AddCommGroup A] {n : ℕ} [NeZero n]
@@ -53,7 +51,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   {n : ℕ} [NeZero n] {D : Rep (ULift.{0} ℤ) G} [IsDiscreteRep D] (hD : ∀ d : D, n • d = 0)
   [IsDiscreteRep (dualRep D (zmodRep.{0} G n))]
 
-
 omit [TopologicalSpace G] [IsTopologicalGroup G] [NeZero n] [IsDiscreteRep D]
   [IsDiscreteRep (dualRep D (zmodRep.{0} G n))] in
 theorem tensorHom_zmodDualIso_inv_dualEvalPairing :
@@ -61,7 +58,6 @@ theorem tensorHom_zmodDualIso_inv_dualEvalPairing :
       (𝟙 D ⊗ₘ 𝟙 (zmodRep.{0} G n)) ≫ zmodMulPairingRight n D hD := by
   rw [← tensorHom_zmodDualIso_zmodMulPairingRight D hD, ← Category.assoc,
     MonoidalCategory.tensorHom_comp_tensorHom, Iso.inv_hom_id, Category.comp_id]
-
 
 omit [NeZero n] in
 theorem compactZmodDualityMap_eq_compactDualityMap {m r s : ℕ}
@@ -95,7 +91,6 @@ variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1))) [Fintype 
   {N : ℕ} [NeZero N] (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((N : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
   (hK : Odd N ∨ IsTotallyComplex K.1)
 
-
 set_option synthInstance.maxHeartbeats 400000 in
 include hS in
 theorem bijective_gs_compactZmodDualityMap_of_duality {r s : ℕ} (h : r + s = 3) :
@@ -107,7 +102,6 @@ theorem bijective_gs_compactZmodDualityMap_of_duality {r s : ℕ} (h : r + s = 3
   exact bijective_compactZmodDualityMap_of_compactDualityMap (gsFinFamily S ιs) (nsmul_gsRoots S N) _ h
     (poitouTate_duality_gs S ιs hS hK (zmodRep.{0} (galUnramifiedOutside K.1 ℚ̄ S) N)
       (nsmul_zmodRep_eq_zero _ N) h)
-
 
 include hS in
 theorem bijective_gsCompactInv_of_duality [Nonempty S] :
@@ -122,7 +116,6 @@ theorem bijective_gsCompactInv_of_duality [Nonempty S] :
     ((bijective_gs_compactZmodDualityMap_of_duality S ιs hS hK (show 0 + 3 = 3 from rfl)).2.comp
       (zmodH0Class_surjective (H := galUnramifiedOutside K.1 ℚ̄ S) (n := N)))
 
-
 include hS in
 theorem gsLevelBijective_gsCompactInv [Nonempty S] :
     GsLevelBijective (gsCompactInv S ιs N hK (subsingleton_cohomology_three_gsRoots S hS hK)) :=
@@ -135,7 +128,6 @@ section OpenSubgroup
 variable {K L : FiniteSubfield} [Fact (K ≤ L)] (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
   (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S) (n : ℕ) [NeZero n]
-
 
 set_option maxHeartbeats 3200000 in
 theorem bijective_compactZmodDualityMap_gsOpenSubgroup_of_surjective

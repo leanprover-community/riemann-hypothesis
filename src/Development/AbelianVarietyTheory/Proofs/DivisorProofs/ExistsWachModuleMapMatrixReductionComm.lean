@@ -45,9 +45,6 @@ def incHom (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] 
   map_zero' := by simpa using (pi0Subst_laws_hold l O).2.2.1 0
   map_add' := (pi0Subst_laws_hold l O).1
 
-theorem incHom_apply (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] (y : O⟦X⟧) :
-    incHom l O y = inc l O y := rfl
-
 theorem map_one_add_X_smul {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) {m : ℕ} (D : Mx R⟦X⟧ m m) :
     (1 + (X : R⟦X⟧) • D).map (PowerSeries.map f) = 1 + (X : S⟦X⟧) • D.map (PowerSeries.map f) := by
   ext i j
@@ -185,7 +182,6 @@ theorem red_frob (hl : l ≠ 2) (hred : ∀ z : ℤ_[l], red (algebraMap ℤ_[l]
     exact (hred' (A (i - 1) m k)).2 _ (hY m k)
   rw [← hYr, ← Matrix.map_mul, hM, Matrix.map_mul]
 
-
 omit [Algebra ℤ_[l] F] in
 theorem red_gam (hl : l ≠ 2) (γ : W.Gam) (u : ℤ_[l]) (un : O⟦X⟧) (hun : IsUn l O u un)
     (hγ : ∀ a, W.γ₀ γ a = act l O u a) (g : LatHom T.L T'.L) (D : ZMod f → Mx O⟦X⟧ n n)
@@ -236,7 +232,6 @@ theorem charP_residueField_of_irreducible {l : ℕ} [Fact l.Prime] (LL : FinExt 
     rw [heq, PadicInt.maximalIdeal_eq_span_p]
     exact Ideal.mem_span_singleton_self _
   simpa using hmem
-
 
 set_option maxHeartbeats 1000000 in
 theorem exists_mapMat_redHom : ∀ {l : ℕ} [Fact l.Prime] {P : LocPrime l} (H : LocHW l P) (K LL : FinExt l) (hA : CaseA K LL) (T T' : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (n n' : ℕ) (γ : (H.W K 1 LL hA.2.2).Gam) (b : Module.Basis (Fin n) (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) ↥((H.W K 1 LL hA.2.2).N T)) (b' : Module.Basis (Fin n') (LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K))) ↥((H.W K 1 LL hA.2.2).N T')) (N : Lat (ZMod (Module.finrank ℚ_[l] ↥(K0 K))) n ↥(OL LL)) (N' : Lat (ZMod (Module.finrank ℚ_[l] ↥(K0 K))) n' ↥(OL LL)) (u : ℤ_[l]) (un : PowerSeries ↥(OL LL)) (g : LatHom T.L T'.L), IsCrys (P.PD K) T.ρ → IsCrys (P.PD K) T'.ρ → IsFrame (H.W K 1 LL hA.2.2) T γ b N → IsFrame (H.W K 1 LL hA.2.2) T' γ b' N' → ((H.W K 1 LL hA.2.2).χΓ γ : ↥(OL LL)) = algebraMap ℤ_[l] ↥(OL LL) u → IsUn l ↥(OL LL) u un → ∃ A : ZMod (Module.finrank ℚ_[l] ↥(K0 K)) → Mx (PowerSeries ↥(OL LL)) n' n, IsMapMat (H.W K 1 LL hA.2.2) g b b' A ∧ ∀ i, RedHom l ((PowerSeries.map (residue ↥(OL LL))) un) ((N.P i).map (PowerSeries.map (residue ↥(OL LL)))) ((N.D i).map (PowerSeries.map (residue ↥(OL LL)))) ((N'.P i).map (PowerSeries.map (residue ↥(OL LL)))) ((N'.D i).map (PowerSeries.map (residue ↥(OL LL)))) ((A i).map (PowerSeries.map (residue ↥(OL LL)))) ((A (i - 1)).map (PowerSeries.map (residue ↥(OL LL)))) := by

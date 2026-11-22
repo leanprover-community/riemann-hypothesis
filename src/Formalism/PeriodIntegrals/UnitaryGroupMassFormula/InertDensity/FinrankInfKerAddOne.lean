@@ -23,9 +23,6 @@ def sig (q : ℕ) (hq : q ≠ 0) (hadd : ∀ a b : L, (a + b) ^ q = a ^ q + b ^ 
   map_zero' := zero_pow hq
   map_add' := hadd
 
-theorem sig_apply (q : ℕ) (hq : q ≠ 0) (hadd : ∀ a b : L, (a + b) ^ q = a ^ q + b ^ q) (a : L) :
-    sig q hq hadd a = a ^ q := rfl
-
 section
 variable {n : ℕ} {q : ℕ} {M : Matrix (Fin n) (Fin n) L}
 

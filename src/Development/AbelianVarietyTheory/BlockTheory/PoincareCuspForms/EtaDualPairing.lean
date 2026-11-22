@@ -54,12 +54,6 @@ theorem red_sqZero (R : LAlg R₀) : (red R).SqZero := by
     have key : ∀ b : DualNumber R, TrivSqZeroExt.fst (b * DualNumber.eps) = 0 := fun b => by simp
     exact key a
 
-def onePlusEta (R : LAlg R₀) (a : R) : (dual R)ˣ where
-  val := 1 + eta R * (incl R).1 a
-  inv := 1 - eta R * (incl R).1 a
-  val_inv := by linear_combination (-((incl R).1 a) ^ 2) * eta_mul_eta R
-  inv_val := by linear_combination (-((incl R).1 a) ^ 2) * eta_mul_eta R
-
 variable (B : BX R₀)
 
 end GlobalTheory.IndefiniteRowSideFullHecke.EtaDualPairing

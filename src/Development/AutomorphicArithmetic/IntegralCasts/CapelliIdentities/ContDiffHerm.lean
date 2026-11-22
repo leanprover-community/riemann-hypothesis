@@ -20,9 +20,6 @@ noncomputable def Hpk (k r : ℕ) : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k
 noncomputable def inLie (k r : ℕ) (X : Mat k r) : Prop :=
   X.conjTranspose * Hpk k r + Hpk k r * X = 0
 
-theorem aux4 (n : ℕ) : IsTopologicalRing (Matrix (Fin n) (Fin n) ℂ) :=
-  inferInstance
-
 noncomputable def RdV.{u_1} {n : ℕ} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℂ E]
     (X : Matrix (Fin n) (Fin n) ℂ) (f : Matrix (Fin n) (Fin n) ℂ → E)
     (g : Matrix (Fin n) (Fin n) ℂ) : E :=
@@ -56,9 +53,6 @@ noncomputable def qminorOp.{u_1} {n : ℕ} {E : Type u_1} [NormedAddCommGroup E]
     ((Equiv.Perm.sign σ : ℤ) : ℂ) •
       (List.ofFn fun k : Fin t => Top Eop (u - (k : ℂ)) (a (σ k)) (b k)).foldr
         (fun T h => T h) f
-
-theorem aux12 : (1 + 1).AtLeastTwo :=
-  ⟨by decide⟩
 
 noncomputable def hpart1 {n : ℕ} (H Z : Matrix (Fin n) (Fin n) ℂ) :
     Matrix (Fin n) (Fin n) ℂ :=

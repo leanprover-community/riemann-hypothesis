@@ -122,7 +122,6 @@ def invariantGoodPart : Submodule K (Fin (B.nV ℓ) → K) := B.inV0 ℓ B.ZH
 def resSet (X : Finset (G → K)) : Set (Pl0 → K[X]) :=
   {Sg | (∀ P0, P0 ∉ Set.range B.pl → Sg P0 = 1) ∧ B.inV0 (Lvl.full X) (B.partF Sg) ≠ ⊥}
 
-
 open Classical in
 def ixFin (X : Finset (G → K)) : Finset (Pl0 → K[X]) :=
   if h : (B.resSet X).Finite then h.toFinset else ∅
@@ -273,9 +272,6 @@ structure Ok (s : ℕ) : Prop where
 
   lifts : ∀ j t, (F.L j t).Ok s
 
-def IsType (B : BlockDat K G Pl0) (f : (Pl0 → K[X]) → Pl0 → K[X]) (x : B.Pl × ℕ → K) : Prop :=
-  ∃ Sg ∈ (F.R F.μ0).ixFin F.X, B.HasRes (f Sg) x
-
 def TypesSep : Prop :=
   ∀ Sg ∈ (F.R F.μ0).ixFin F.X, ∀ Sg' ∈ (F.R F.μ0).ixFin F.X, Sg ≠ Sg' →
     ∀ j, ∃ P : (F.L j F.μ0).Pl, F.tr j Sg ((F.L j F.μ0).pl P) ≠ F.tr j Sg' ((F.L j F.μ0).pl P)
@@ -286,7 +282,6 @@ section Side
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : DefBase K} (Df : DefSide Bs)
 
-
 open Classical in
 def locBasisOf {D : ℕ} (L : Submodule (𝓞 K) (Fin D → K)) (w : HeightOneSpectrum (𝓞 K)) :
     Fin D → Fin D → K :=
@@ -296,7 +291,6 @@ def ebOf (t : Bs.Tup) (w : HeightOneSpectrum (𝓞 K)) : Fin (Df.dQ t) → Fin (
   locBasisOf (Df.abelian₂ t) w
 
 def GmOf (t : Bs.Tup) (w : HeightOneSpectrum (𝓞 K)) : K := Df.Gm (ebOf Df) t w
-
 
 open Classical in
 def partPr (t : Bs.Tup) (p : Bs.Ix) : Matrix (Fin (Df.dQ t)) (Fin (Df.dQ t)) K :=

@@ -57,7 +57,3 @@ theorem one_tmul_injective (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [Alg
 
 end GlobalTheory.TContInj
 
-theorem GlobalTheory.TContInj.main : ∀ (l : ℕ) [Fact l.Prime] (LL : FinExt l) (T : QLat LL), Function.Injective (fun x : ↥T.L.T => (1 : OB l ↥(OL LL)) ⊗ₜ[↥(OL LL)] x) := by
-  intro l _ LL T
-  haveI : Module.Free (↥(OL LL)) ↥T.L.T := T.L.free
-  exact GlobalTheory.TContInj.one_tmul_injective l ↥(OL LL) ↥T.L.T

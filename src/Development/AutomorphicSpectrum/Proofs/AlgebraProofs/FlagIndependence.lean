@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBundles
-public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XSFlagindep
+public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSegreFlagClosureBirational
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.VerticalDivisorsCommute
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PairNumberPullbackStatement
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsHeckeCorrespondenceOnIntegralShimuraModelStatement

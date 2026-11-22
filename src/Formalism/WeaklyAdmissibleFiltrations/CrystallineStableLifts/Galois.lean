@@ -22,8 +22,6 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
     {ρ : Representation LL G V}
 
-theorem cob_apply_galois (x : V) (g : G) : cob ρ x g = ρ g x - x := rfl
-
 variable [TopologicalSpace G] [TopologicalSpace V] [IsTopologicalAddGroup V]
     [ContinuousConstSMul LL V]
 

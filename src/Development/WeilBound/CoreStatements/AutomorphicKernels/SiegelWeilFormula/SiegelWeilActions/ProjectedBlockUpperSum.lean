@@ -106,9 +106,6 @@ theorem eps_mulE (R : RD d) : ((R.ε : ℤ) : E) * ((R.ε : ℤ) : E) = 1 := by
 
 theorem eA_eq (R : RD d) : eA R = ((R.ε : ℤ) : AE F E) := map_intCast _ _
 
-theorem cA_eA (R : RD d) : cA σ (eA R) = eA R := by
-  rw [eA_eq]; exact map_intCast _ _
-
 theorem sB_i0i0 (b : Fin L.n → AE F E) : sB R L b L.i₀ L.i₀ = 0 := by
   simp [sB, Matrix.sum_apply, Matrix.add_apply, Matrix.single_apply, fun j => (ComplexParameterFamilyContinuity.em_ne L j), fun j => (ComplexParameterFamilyContinuity.em_ne L j).symm]
 

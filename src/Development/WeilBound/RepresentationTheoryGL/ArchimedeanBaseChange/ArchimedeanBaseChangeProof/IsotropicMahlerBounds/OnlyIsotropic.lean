@@ -71,7 +71,6 @@ def sJoin {m : ℕ} (e e' : Fin m → SignType) : Fin m → SignType :=
 
 def PosFam {m : ℕ} (y : (Fin m → SignType) → ℝ) : Prop := y 0 = 0 ∧ ∀ e e', y (sMeet e e') + y (sJoin e e') ≤ y e + y e'
 
-
 open Classical in
 def gamOn {m : ℕ} (S : Finset (Fin m → SignType) → Prop) (y : (Fin m → SignType) → ℝ) (a : Fin m → ℝ) : ℝ :=
   ∑ s ∈ (Finset.univ : Finset (Finset (Fin m → SignType))).filter
@@ -104,12 +103,6 @@ def LocVanish : Prop := ∀ (n : ℕ) [MeasurableSpace (GL (Fin n) ℂ)] [BorelS
 def cutTerm {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} [MeasurableSpace (GA E n)] (μ : Measure (GA E n))
     (τ : ℝ) (φ : GA E n → ℂ) (d : GL (Fin n) E) : ℂ :=
   quotIntegral μ (ratCent d) Measure.count fun x => chiT τ x * φ (twConj (thetaA E n) x (ratGL E n d))
-
-def Unfold : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) [MeasurableSpace (GA E n)]
-  [BorelSpace (GA E n)] (μ : Measure (GA E n)) [μ.IsHaarMeasure] (F : Set (GA E n)) (τ : ℝ) (φ : GA E n → ℂ),
-    IsFundamentalDomain (ratGL E n).range F μ → IsTest φ →
-    (Function.support fun c : TwClass E n => cutTerm μ τ φ (Quot.out c)).Finite ∧
-      cutTr μ F τ φ = ∑ᶠ c : TwClass E n, cutTerm μ τ φ (Quot.out c)
 
 def EllTerm : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ), ∃ C : ℝ, ∀ (τ : ℝ) (x : GA E n)
   (d : GL (Fin n) E), IsRegEll d → C * (1 + logSize (twConj (thetaA E n) x (ratGL E n d))) ≤ τ → x ∈ cutSet E n τ

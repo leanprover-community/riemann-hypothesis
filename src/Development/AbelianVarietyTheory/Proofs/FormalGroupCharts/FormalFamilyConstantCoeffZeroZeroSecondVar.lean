@@ -149,8 +149,6 @@ theorem ez_dx (j a : Fin d) :
   rw [h, pderiv_X]
   simp [Pi.single_apply]
 
-theorem ez_dy (c b : Fin d) : ev (n := 1) ![pt k d 0, 0] (pderiv (R := k) ((1 : Fin 2), b) (G.F c)) = Jac G c b := rfl
-
 theorem om_key (i a b : Fin d) :
     ∑ j, Jac G j b * pderiv (R := k) ((0 : Fin 1), a) (Om G i j) = ∑ c, pderiv (R := k) ((0 : Fin 1), c) (Om G i a) * Jac G c b := by
   have hQ := congrArg (fun g => ev (n := 1) ![pt k d 0, 0] (pderiv (R := k) ((0 : Fin 2), a) g)) (om_Q G i b)

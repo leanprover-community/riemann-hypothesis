@@ -3,7 +3,7 @@ module
 public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsHermRingRat
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NonemptyAlgHomOfNotIsField
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TensorFieldOrSplitIdempotent
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousSingleV
 
 @[expose] public section
 

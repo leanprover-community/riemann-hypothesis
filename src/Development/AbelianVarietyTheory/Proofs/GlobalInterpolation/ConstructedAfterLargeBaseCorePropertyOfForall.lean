@@ -65,7 +65,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RowHIn
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LPrjSurjective
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WorkingFamClassCopiesEqFrozen
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RealTiedSetDiv
-public import Formalism.LocalToGlobal.ThresholdSelection
 public import Formalism.SharpRestriction.CuspSpanNormBounds.PExtra
 public import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeFamilyOfFormalDegreeInput
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UniqGapOfUniq

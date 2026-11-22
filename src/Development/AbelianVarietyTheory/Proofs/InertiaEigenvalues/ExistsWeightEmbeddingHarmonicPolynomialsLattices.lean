@@ -155,29 +155,6 @@ theorem mem_coefLat_iff {D : D7} {S T : HSp D} (B : Base S T) {K : Type} [Field 
     P ∈ B.coefLat σ emb O h ↔
       P ∈ harm T.rank B.w B.F.BS ∧ harmFn T.rank B.w B.F.BS P ∈ coefLatFn σ emb O B.w.lam (B.latAt h) := Iff.rfl
 
-private theorem span_dualFr_eq_top {K : Type} [Field K] [NumberField K] {n : ℕ}
-    (M : Submodule (𝓞 K) (Fin n → K)) (hM : M.FG) :
-    Submodule.span K (dualFr M : Set (Fin n → K)) = ⊤ := by
-  rw [eq_top_iff]
-  intro x _
-  obtain ⟨s, hs⟩ := hM
-  obtain ⟨d, hdmem⟩ := IsLocalization.exist_integer_multiples
-    (nonZeroDivisors (𝓞 K)) s (fun y => x ⬝ᵥ y)
-  have hdx : (d : 𝓞 K) • x ∈ dualFr M := by
-    intro y hy
-    rw [← hs] at hy
-    induction hy using Submodule.span_induction with
-    | mem y hy =>
-      rw [smul_dotProduct]
-      exact Submodule.mem_one.2 (hdmem y hy)
-    | zero => simp
-    | add y z _ _ hy hz => rw [dotProduct_add]; exact add_mem hy hz
-    | smul a y _ hy => rw [dotProduct_smul]; exact Submodule.smul_mem _ _ hy
-  have hd0 := (IsFractionRing.injective (𝓞 K) K).ne (nonZeroDivisors.ne_zero d.2)
-  have hx := (Submodule.span K (dualFr M : Set (Fin n → K))).smul_mem
-    (algebraMap (𝓞 K) K d)⁻¹ (Submodule.subset_span hdx)
-  rwa [← algebraMap_smul K (d : 𝓞 K) x, smul_smul, inv_mul_cancel₀ hd0, one_smul] at hx
-
 theorem exists_wtMap : ∀ (D : D7) (S T : HSp D) (B : GlobalTheory.ExportSeries.Base S T), B.Good → ∀ (n : ℕ) (hF : D.host.F = maximalRealSubfield D.host.E) (P : principalLevelFrame.RowPsi S n), IdFrame hF P → ∀ (hn : S.rank = n) (K₀ : Type) [Field K₀] (R : Type) [CommRing R] [IsDomain R] (e : FractionRing R →+* ℂ) (f : K₀ →+* FractionRing R) (s : ↥D.LL0 →+* K₀), (∀ x, e (f (s x)) = embLL0 D x) → IsCoefRing (embLL0 D) (labLL0 D) (e.comp (algebraMap R (FractionRing R))).range → ∀ (W₀ : Type) [AddCommGroup W₀] [Module K₀ W₀] (ρ₀ : Representation K₀ (ReciprocityTheory.Aut.GQ D.host.E n) W₀) (lam : D.what₂.Tau → DomWeight n), (∀ τ a, (lam τ).w (Fin.cast hn a) = (B.w.lam τ).w a) → ∀ T₀ : W₀ ≃ₗ[K₀] VV K₀ lam, (∀ (γ : ReciprocityTheory.Aut.GQ D.host.E n) (γ₀ : GL (Fin n) D.host.E), (((γ : GAf D.host.E n) : GL (Fin n) (ReciprocityTheory.Aut.AL D.host.E)) : Matrix (Fin n) (Fin n) (ReciprocityTheory.Aut.AL D.host.E)) = (γ₀ : Matrix (Fin n) (Fin n) D.host.E).map Algebra.TensorProduct.includeLeftRingHom → ∀ x, T₀ (ρ₀ γ x) = rhoVr (fun τ => s.comp (labLL0 D τ)) lam γ₀ (T₀ x)) → ∀ (W : Type) [AddCommGroup W] [Module (FractionRing R) W] (ρ : Representation (FractionRing R) (ReciprocityTheory.Aut.GQ D.host.E n) W), (∃ (ι : Type) (_ : Fintype ι) (_ : DecidableEq ι) (b₀ : Module.Basis ι K₀ W₀) (b₁ : Module.Basis ι (FractionRing R) W), ∀ γ : ReciprocityTheory.Aut.GQ D.host.E n, LinearMap.toMatrix b₁ b₁ (ρ γ) = (LinearMap.toMatrix b₀ b₀ (ρ₀ γ)).map f) → ∃ ω : W →ₛₗ[e] PolF D T.rank S.rank, WtMap B (frameEquiv P) R e ρ ω := by
   intro D S T B hB n hF P hP hn K₀ _ R _ _ e f s hs hc W₀ _ _ ρ₀ lam hlam T₀ hT₀ W _ _ ρ hW
   subst hn

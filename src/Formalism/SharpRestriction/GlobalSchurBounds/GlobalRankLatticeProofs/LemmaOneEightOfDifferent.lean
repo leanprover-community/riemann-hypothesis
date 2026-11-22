@@ -28,8 +28,6 @@ namespace PolarisationData
 
 variable (D : D7)
 
-local notation "FI" => FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E
-
 theorem galE_conj : D.host.galE D.host.conj = D.R.cc := by
   show D.host.gal (D.host.gal.symm _) = _
   exact MulEquiv.apply_symm_apply _ _

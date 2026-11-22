@@ -31,13 +31,6 @@ section Vectors
 
 variable {G X H : Type} [Group G] [AddCommGroup X] [Module ℂ X] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
-def kFinVec (ρ : Representation ℂ G X) (K : Subgroup G) : Submodule ℂ X where
-  carrier := {x | ∃ W : Submodule ℂ X, FiniteDimensional ℂ W ∧ ∀ k ∈ K, ρ k x ∈ W}
-  zero_mem' := ⟨⊥, inferInstance, fun k _ => by simp⟩
-  add_mem' := fun ⟨W, _, h⟩ ⟨W', _, h'⟩ =>
-    ⟨W ⊔ W', inferInstance, fun k hk => by rw [map_add (f := _)]; exact Submodule.add_mem_sup (h k hk) (h' k hk)⟩
-  smul_mem' := fun c _ ⟨W, hW, h⟩ => ⟨W, hW, fun k hk => by rw [map_smul]; exact W.smul_mem c (h k hk)⟩
-
 variable [TopologicalSpace G] [IsTopologicalGroup G]
 
 theorem isSmooth_smoothRep (ρ : Representation ℂ G X) : IsSmooth (smoothRep ρ) := fun v => by
@@ -121,42 +114,6 @@ theorem IsFactorisation.eventually_fixed (h : IsFactorisation σ J δ ξ π B) (
     (Sum.inr_injective.tendsto_cofinite.eventually (h.fixed (ofFin σ J g))).mono fun v hv =>
       (congrArg (δ (.inr v) · _) (proj_ofFin σ J v g)).symm.trans hv
 
-theorem IsFactorisation.apply_embPl [DecidableEq (Formalism.MainNotions.SchurIrreducible.Pl F)] (h : IsFactorisation σ J δ ξ π B) {y : ∀ v, Hs v}
-    (hy : Restr ξ y) (v : Formalism.MainNotions.SchurIrreducible.Pl F) (g : GPl σ J v) :
-    π (embPl σ J v g) (B y) = B (Function.update y v (δ v g (y v))) := by
-  rw [h.apply_pure _ _ hy]
-  congr 1
-  funext u
-  by_cases e : u = v
-  · subst e; simp
-  · simp [projPl_embPl_ne σ J e, e]
-
-theorem IsFactorisation.hasCompPl (h : IsFactorisation σ J δ ξ π B) (v : Formalism.MainNotions.SchurIrreducible.Pl F) :
-    HasCompPl σ J v (δ v) π := by
-  classical
-  refine eq_top_iff.2 (h.dense.ge.trans
-    (Submodule.topologicalClosure_minimal _ (Submodule.span_le.2 ?_) isSubrep_isoPart.1))
-  rintro _ ⟨y, hy, rfl⟩
-  have hr := SmallThetaModules.restr_update hy v
-  have h0 : B (Function.update y v 0) = 0 := h.ext fun z hz => by simp [h.inner_update hy hz]
-  let T : Hs v →ₗ[ℂ] H :=
-    { toFun := fun x => B (Function.update y v x)
-      map_add' := fun a b => by simpa using h.pure_update hy v 1 a b
-      map_smul' := fun c a => by simpa [h0] using h.pure_update hy v c a 0 }
-  have hT : ∀ x, ‖T x‖ ≤ √‖∏ᶠ (u) (_ : u ≠ v), ⟪y u, y u⟫_ℂ‖ * ‖x‖ := fun x => by
-    have e := h.inner_update hy (hr x) v x
-    rw [Function.update_self, finprod_congr fun u => finprod_congr fun hu : u ≠ v => by
-      rw [Function.update_of_ne hu]] at e
-    have e' := congrArg norm e
-    rw [norm_mul, inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K] at e'
-    refine le_of_sq_le_sq (le_of_eq ?_) (by positivity)
-    rw [mul_pow, Real.sq_sqrt (norm_nonneg _), mul_comm]
-    simpa [T] using e'
-  have := apply_mem_isoPart (π := δ v) (ρ := π.comp (embPl σ J v)) (U := ⊤) (T := T.mkContinuous _ hT)
-    (mem_homIn_top.2 fun g x => by
-      simpa [T] using (h.apply_embPl (hr x) v g).symm) (y v)
-  simpa [T] using this
-
 end Places
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -183,16 +140,11 @@ def finLoc (v : HeightOneSpectrum (𝓞 D.host.F)) : GfC V →* Gv V v := (proj 
 def archInf (w : InfinitePlace D.host.F) : Gw V w →* GinfC V :=
   (embW V w).codRestrict _ fun x => mem_infPts.2 (projFin_embArch _ _ w x)
 
-def infArch (w : InfinitePlace D.host.F) : GinfC V →* Gw V w := (projArch D.sp.cm.sig V.gram w).comp (GinfC V).subtype
-
 def toFin : GA D V →* GfC V :=
   ((ofFin D.sp.cm.sig V.gram).comp (projFin _ _)).codRestrict _ fun _ => mem_finPts.2 (projInf_ofFin _ _ _)
 
 def toInf : GA D V →* GinfC V :=
   ((ofInf D.sp.cm.sig V.gram).comp (projInf _ _)).codRestrict _ fun _ => mem_infPts.2 (projFin_ofInf _ _ _)
-
-def KOff (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) : Subgroup (GfC V) :=
-  (levelOff D.sp.cm.sig V.gram (frameLat V) S).subgroupOf (GfC V)
 
 variable {V}
 
@@ -233,10 +185,6 @@ def HasArchComp (w : InfinitePlace D.host.F) (δ : Gw V w →* (X →L[ℂ] X)) 
 def FinHasLocComp {Y : Type} [AddCommGroup Y] [Module ℂ Y] (v : HeightOneSpectrum (𝓞 D.host.F))
     (σv : Representation ℂ (Gv V v) Y) (σ : Representation ℂ (GfC V) W) : Prop := IsIsotypicAlg σv (σ.comp (locFin V v))
 
-abbrev IsFinFactorisation {N : HeightOneSpectrum (𝓞 D.host.F) → Type} [∀ v, AddCommGroup (N v)] [∀ v, Module ℂ (N v)]
-    (σs : ∀ v, Representation ℂ (Gv V v) (N v)) (s : ∀ v, N v) (σ : Representation ℂ (GfC V) W) : Prop :=
-  IsRestrTensorAlg (finLoc V) σs s σ
-
 variable {V}
 
 theorem isIrrUnitary_dsRep (M : DSModel V S) (τ : D.what₂.Tau) : IsIrrUnitary (dsRep M τ) :=
@@ -244,25 +192,18 @@ theorem isIrrUnitary_dsRep (M : DSModel V S) (τ : D.what₂.Tau) : IsIrrUnitary
 
 def HasDSComp (M : DSModel V S) (π : GA D V →* (H →L[ℂ] H)) : Prop := ∀ τ, HasArchComp V (placeOf D τ) (dsRep M τ) π
 
-def IsDSTensor (M : DSModel V S) (δ : GinfC V →* (X →L[ℂ] X)) : Prop :=
-  ∃ B, IsRestrTensor (fun τ => infArch V (placeOf D τ)) (dsRep M) 0 δ B
-
-
 open Classical in
 def homDS (M : DSModel V S) (ρ : GA D V →* (H →L[ℂ] H)) (U : Submodule ℂ H) :
     Submodule ℂ (ContinuousMultilinearMap ℂ M.H H) := homPi (fun τ => embW V (placeOf D τ)) (dsRep M) ρ U
-
 
 open Classical in
 def homFinDS (σ : Representation ℂ (GfC V) W) (M : DSModel V S) (ρ : GA D V →* (H →L[ℂ] H)) (U : Submodule ℂ H) :
     Submodule ℂ (W →ₗ[ℂ] ContinuousMultilinearMap ℂ M.H H) :=
   homTensorPi (GfC V).subtype (fun τ => embW V (placeOf D τ)) σ (dsRep M) ρ U
 
-
 open Classical in
 def IsCopyFinDS (σ : Representation ℂ (GfC V) W) (M : DSModel V S) (ρ : GA D V →* (H →L[ℂ] H)) (U : Submodule ℂ H) :
     Prop := IsTensorCopyPi (GfC V).subtype (fun τ => embW V (placeOf D τ)) σ (dsRep M) ρ U
-
 
 open Classical in
 theorem mem_homDS {θ : InfF D} (hθ : IsInfFam θ) {M : DSModel V S} {ρ : GA D V →* (H →L[ℂ] H)} {U : Submodule ℂ H}
@@ -277,14 +218,6 @@ theorem mem_homDS {θ : InfF D} (hθ : IsInfFam θ) {M : DSModel V S} {ρ : GA D
 variable {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℂ Y] {πf : GfC V →* (Y →L[ℂ] Y)}
   {πi : GinfC V →* (X →L[ℂ] X)} {π ρ : GA D V →* (H →L[ℂ] H)} {U : Submodule ℂ H}
 
-def finPart (δ : GinfC V →* (X →L[ℂ] X)) (hU : IsSubrep ρ U) :
-    Representation ℂ (GfC V) (homIn δ (ρ.comp (GinfC V).subtype) U) :=
-  PRep.sub (postRep X (ρ.comp (GfC V).subtype)) _ fun g T hT => ⟨fun x => hU.2 g _ (hT.1 x), fun k x =>
-    (congrArg (ρ g) (hT.2 k x)).trans (DFunLike.congr_fun (((commute_inf_fin k g).map ρ).eq.symm) (T x))⟩
-
-abbrev finPartSm (δ : GinfC V →* (X →L[ℂ] X)) (hU : IsSubrep ρ U) :
-    Representation ℂ (GfC V) (smoothPart (finPart δ hU)) := smoothRep (finPart δ hU)
-
 def finPartDS (M : DSModel V S) (hU : IsSubrep ρ U) : Representation ℂ (GfC V) (homDS M ρ U) :=
   PRep.sub (postRepPi M.H (ρ.comp (GfC V).subtype)) _ fun g T hT => ⟨fun x => hU.2 g _ (hT.1 x), fun τ k x =>
     (congrArg (ρ g) (hT.2 τ k x)).trans
@@ -292,8 +225,6 @@ def finPartDS (M : DSModel V S) (hU : IsSubrep ρ U) : Representation ℂ (GfC V
 
 abbrev finPartDSSm (M : DSModel V S) (hU : IsSubrep ρ U) : Representation ℂ (GfC V) (smoothPart (finPartDS M hU)) :=
   smoothRep (finPartDS M hU)
-
-abbrev finRes (π : GA D V →* (H →L[ℂ] H)) : Representation ℂ (GfC V) H := toRep (π.comp (GfC V).subtype)
 
 end Components
 

@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.SharpRestriction.SmoothDesignExistence.AdmissibleTopsMertens
 public import Formalism.LocalToGlobal.GroupLattices.LinkGConcreteNoKer
-public import Formalism.LocalToGlobal.ClassRec
 public import Formalism.LocalToGlobal.TieTwRecOf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.JoinSISel
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered

@@ -189,10 +189,6 @@ theorem finiteDimensional_Kloc (ι : Ω →+* PadicAlgCl p) : FiniteDimensional 
   exact FiniteDimensional.of_injective (IntermediateField.inclusion hle).toLinearMap
     (IntermediateField.inclusion_injective hle)
 
-theorem isAlgClosure_Kloc (ι : Ω →+* PadicAlgCl p) : IsAlgClosure (Kloc F ι) (PadicAlgCl p) := by
-  exact ⟨inferInstance, inferInstance⟩
-
-
 variable (F) in
 include F in
 theorem denseRange (ι : Ω →+* PadicAlgCl p) : DenseRange ι := by

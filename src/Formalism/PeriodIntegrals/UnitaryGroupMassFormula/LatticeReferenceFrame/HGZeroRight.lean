@@ -14,8 +14,6 @@ namespace PI.ScRefExists.WB
 
 variable (I : Formalism.MainNotions.S.AutInst)
 
-theorem hG_def (x y : Fin I.n → I.E) : hG I x y = ∑ i, ∑ j, star (x i) * I.J i j * y j := rfl
-
 theorem hG_add_right (x y z : Fin I.n → I.E) : hG I x (y + z) = hG I x y + hG I x z := by
   simp only [hG_def, Pi.add_apply, mul_add, Finset.sum_add_distrib]
 
@@ -25,13 +23,6 @@ theorem hG_smul_right (c : I.E) (x y : Fin I.n → I.E) : hG I x (c • y) = c *
   ring
 
 theorem hG_zero_right (x : Fin I.n → I.E) : hG I x 0 = 0 := by simp [hG_def]
-
-theorem hG_sum_right {ι : Type*} (s : Finset ι) (x : Fin I.n → I.E) (y : ι → Fin I.n → I.E) :
-    hG I x (∑ t ∈ s, y t) = ∑ t ∈ s, hG I x (y t) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp [hG_zero_right]
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, hG_add_right, ih]
 
 theorem J_entry (i j : Fin I.n) : star (I.J j i) = I.J i j := by
   have h := congrFun (congrFun I.J_herm i) j

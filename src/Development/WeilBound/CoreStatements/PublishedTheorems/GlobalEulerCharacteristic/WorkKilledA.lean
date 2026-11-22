@@ -15,8 +15,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.GEN.W_killed_a
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable def resTo {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1))) (K' : FiniteSubfield) [Fact (K ≤ K')]
     (hK' : ∀ x : K'.1, algebraMap K'.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S)
     (M : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 ℚ̄ S)) :

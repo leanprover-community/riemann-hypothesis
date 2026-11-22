@@ -1202,9 +1202,6 @@ variable {z' ν' : Fin (2 * r + k + 1) → ℂ} {s : ℝ}
 theorem herm_neg_right {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (u w : Fin m → ℂ) : herm H u (-w) = -herm H u w := by
   simp [herm]
 
-theorem herm_neg_left {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (u w : Fin m → ℂ) : herm H (-u) w = -herm H u w := by
-  simp [herm, Matrix.mulVec_neg]
-
 theorem herm_rsmul_left {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (a : ℝ) (u w : Fin m → ℂ) :
     herm H (a • u) w = (a : ℂ) * herm H u w := by
   rw [← B2x4.herm_smul_left]; congr 1
@@ -1509,7 +1506,6 @@ theorem reflection_commutes_m0_mulVec (v : Fin (2 * r + k + 1) → ℂ) : Wb (m�
   rw [Matrix.mulVec_add, Matrix.mulVec_add, Matrix.mulVec_sum, Matrix.mulVec_sum, Wb_add, Wb_add, Wb_sum, Wb_sum]
   simp only [Matrix.mulVec_smul, hme, hms, Wb_smul, Wb_ee, Wb_es, smul_zero, Finset.sum_const_zero, zero_add]
   exact Wb_of_inWb (m0_mulVec_mem_orthogonal m₀ hmU hme hms hW)
-
 
 include hmU hme hms in
 theorem orthoProj_m0_intertwine {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hz' : inWb k r z') (μ : ℝ) (hμ : μ ≠ 0)
@@ -3536,7 +3532,6 @@ theorem rhoF_unique (x : C2.Lstidx w → ℂ) {ρ : B.Mat k r} (hρ : ρ ∈ C6.
     (hu : C2.uMap k r D.z ρ = (low w x)ᴴ) : ρ = rhoF D γ w x :=
   hG.inj hρ (rhoF_spec D hγ hd hG x).1 (by rw [hu, (rhoF_spec D hγ hd hG x).2])
 
-
 omit hγ hd hG in
 def phi0 (w : Equiv.Perm (Fin (r + 1))) (x : Mt k r) : C2.Lstidx w → ℂ :=
   fun q => conj (C2.uMap k r D.z (Matrix.of x) q.1.2 q.1.1)
@@ -4037,7 +4032,6 @@ omit D in
 theorem ee_sum_lo (t : Fin r → ℂ) (c0 : Fin r) : (∑ c, t c • DF.ee k r c) (eI k r c0) = t c0 := by
   simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, DF.ee, bvec, Pi.single_apply, DF.eI_inj]
   simp
-
 
 omit D in
 theorem mem_N (M : B.Mat k r) (hM : M ∈ UH (Hpk k r)) (U : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ)

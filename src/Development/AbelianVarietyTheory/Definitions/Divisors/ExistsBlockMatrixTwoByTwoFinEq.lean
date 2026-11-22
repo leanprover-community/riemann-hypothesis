@@ -36,12 +36,6 @@ theorem cT_blk4 (τ : A →+* A) (a b c d : Matrix (Fin n) (Fin n) A) :
 theorem cT_zero' (τ : A →+* A) : cT τ (0 : Matrix (Fin n) (Fin n) A) = 0 := by
   ext i j; simp [cT]
 
-theorem cT_one' (τ : A →+* A) : cT τ (1 : Matrix (Fin n) (Fin n) A) = 1 := by
-  ext i j; by_cases h : i = j <;> simp [cT, Matrix.one_apply, h, eq_comm]
-
-theorem cT_neg_one (τ : A →+* A) : cT τ (-1 : Matrix (Fin n) (Fin n) A) = -1 := by
-  ext i j; by_cases h : i = j <;> simp [cT, Matrix.one_apply, h, eq_comm]
-
 theorem upperLeft_blockMatrix (a b c d : Matrix (Fin n) (Fin n) A) : StdUnn.blkA (StdUnn.blk4 a b c d) = a := by
   simp [StdUnn.blkA, StdUnn.blk4, Matrix.submatrix_submatrix, Matrix.toBlocks_fromBlocks₁₁]
 
@@ -61,7 +55,6 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] 
 
 def matR (g : HA R σ Q) : Matrix (Fin (n + n)) (Fin (n + n)) (R ⊗[F] E) := (matHom R σ Q g).1
 
-
 variable {R σ} in
 theorem ext_matR {g h : HA R σ Q} (e : matR R σ g = matR R σ h) : g = h :=
   matHom_injective R σ Q (Units.ext e)
@@ -79,32 +72,8 @@ theorem JR_eq (hQ : Q = StdUnn.blk4 0 1 (-1) 0) : JR (F := F) R Q = StdUnn.blk4 
   · rw [Matrix.map_neg _ (map_neg _), Matrix.map_one _ (map_zero _) (map_one _)]
   · exact Matrix.map_zero _ (map_zero _)
 
-def mkPt (M N : Matrix (Fin (n + n)) (Fin (n + n)) (R ⊗[F] E)) (h1 : M * N = 1) (h2 : N * M = 1)
-    (h : cT (sigR R σ) M * JR R Q * M = JR R Q) : HA R σ Q := ⟨⟨M, N, h1, h2⟩, h⟩
-
-
-variable {R σ} in
-theorem cT_herm (b : HermR R σ n) : cT (sigR R σ) b.1 = b.1 := by
-  ext i j; exact b.2 i j
-
 variable (hQ : Q = StdUnn.blk4 0 1 (-1) 0)
 include hQ
-
-def nLoc (b : HermR R σ n) : HA R σ Q :=
-  mkPt R σ (StdUnn.blk4 1 b.1 0 1) (StdUnn.blk4 1 (-b.1) 0 1)
-    (by simp [StdUnn.Model.submatrix_fromBlocks_mul, StdUnn.Model.block_matrix_one])
-    (by simp [StdUnn.Model.submatrix_fromBlocks_mul, StdUnn.Model.block_matrix_one])
-    (by rw [JR_eq R hQ, cT_blk4, cT_one', cT_zero', cT_herm]
-        simp [StdUnn.Model.submatrix_fromBlocks_mul])
-
-def wLoc : HA R σ Q :=
-  mkPt R σ (StdUnn.blk4 0 1 (-1) 0) (StdUnn.blk4 0 (-1) 1 0)
-    (by simp [StdUnn.Model.submatrix_fromBlocks_mul, StdUnn.Model.block_matrix_one])
-    (by simp [StdUnn.Model.submatrix_fromBlocks_mul, StdUnn.Model.block_matrix_one])
-    (by rw [JR_eq R hQ, cT_blk4, cT_one', cT_zero', cT_neg_one]
-        simp [StdUnn.Model.submatrix_fromBlocks_mul, StdUnn.Model.block_matrix_one])
-
-theorem mat_nLoc (b : HermR R σ n) : matR R σ (nLoc R σ hQ b) = StdUnn.blk4 1 b.1 0 1 := rfl
 
 theorem mat_wLoc : matR R σ (wLoc R σ hQ) = StdUnn.blk4 0 1 (-1) 0 := rfl
 
@@ -181,28 +150,7 @@ section More
 variable {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {n : ℕ}
   {Q : Matrix (Fin (n + n)) (Fin (n + n)) E}
 
-
-variable {R σ} in
-theorem cT_cT (hσ : ∀ x, σ (σ x) = x) (M : Matrix (Fin n) (Fin n) (R ⊗[F] E)) :
-    cT (sigR R σ) (cT (sigR R σ) M) = M := by
-  ext i j; simp [cT, sigR_invol hσ]
-
-def mLoc (hσ : ∀ x, σ (σ x) = x) (hQ : Q = StdUnn.blk4 0 1 (-1) 0) (a : GL (Fin n) (R ⊗[F] E)) : HA R σ Q :=
-  have e1 : cT (sigR R σ) a.1 * cT (sigR R σ) (a⁻¹).1 = 1 := by rw [← cT_mul, Units.inv_mul, cT_one']
-  have e2 : cT (sigR R σ) (a⁻¹).1 * cT (sigR R σ) a.1 = 1 := by rw [← cT_mul, Units.mul_inv, cT_one']
-  have e3 : cT (sigR R σ) (cT (sigR R σ) (a⁻¹).1) * a.1 = 1 := by rw [cT_cT hσ, Units.inv_mul]
-  mkPt R σ (StdUnn.blk4 a.1 0 0 (cT (sigR R σ) (a⁻¹).1)) (StdUnn.blk4 (a⁻¹).1 0 0 (cT (sigR R σ) a.1))
-    (by simp [StdUnn.Model.submatrix_fromBlocks_mul, StdUnn.Model.block_matrix_one, e2, -Matrix.coe_units_inv])
-    (by simp [StdUnn.Model.submatrix_fromBlocks_mul, StdUnn.Model.block_matrix_one, e1, -Matrix.coe_units_inv])
-    (by rw [JR_eq R hQ, cT_blk4, cT_zero']
-        simp [StdUnn.Model.submatrix_fromBlocks_mul, e1, e3, -Matrix.coe_units_inv])
-
-theorem mat_mLoc (hσ : ∀ x, σ (σ x) = x) (hQ : Q = StdUnn.blk4 0 1 (-1) 0) (a : GL (Fin n) (R ⊗[F] E)) :
-    matR R σ (mLoc R σ hσ hQ a) = StdUnn.blk4 a.1 0 0 (cT (sigR R σ) (a⁻¹).1) := rfl
-
 variable {R' : Type} [CommRing R'] [Algebra F R']
-
-
 
 variable (hQ : Q = StdUnn.blk4 0 1 (-1) 0)
 include hQ
@@ -308,20 +256,7 @@ abbrev IsIwasawaUp : Prop := IsIwasawa (ν.comp (aUp R σ Q)) K
 
 def hgtUp : HA R σ Q → ℝ≥0 := iwAbs (ν.comp (aUp R σ Q)) K
 
-def psUp [TopologicalSpace R] (μ : (R ⊗[F] E)ˣ →* Circle) (s : ℂ) : Submodule ℂ (HA R σ Q → ℂ) :=
-  indSpace (ν.comp (aUp R σ Q)) K (μ.comp (aUp R σ Q)) (s + (n : ℂ) / 2)
-
 def sphUp (s : ℂ) : HA R σ Q → ℂ := fun g => npow (hgtUp R σ Q ν K g) (s + (n : ℂ) / 2)
-
-
-variable {Q} in
-def intwLoc [TopologicalSpace R] (hQ : Q = StdUnn.blk4 0 1 (-1) 0) (db : Measure (HermR R σ n)) (f : ℂ → HA R σ Q → ℂ)
-    (s : ℂ) (g : HA R σ Q) : ℂ := ∫ b, f s (wLoc R σ hQ * nLoc R σ hQ b * g) ∂db
-
-
-variable {Q} in
-def IntwConv [TopologicalSpace R] (hQ : Q = StdUnn.blk4 0 1 (-1) 0) (db : Measure (HermR R σ n)) (f : ℂ → HA R σ Q → ℂ)
-    (s : ℂ) (g : HA R σ Q) : Prop := Integrable (fun b => f s (wLoc R σ hQ * nLoc R σ hQ b * g)) db
 
 variable {R σ Q ν K}
 
@@ -423,7 +358,6 @@ theorem isCompact_KUpFin (v : HeightOneSpectrum (𝓞 F)) : IsCompact (KUpFin σ
 
 variable (hc : IsCMExt F E σ) (hI : ∀ g : GAd σ Q, ∃ p : upperParabolic (AF F) σ Q, ∃ k ∈ KUpAd σ Q, g = p * k)
 
-
 include hI in
 theorem isIwasawaUp_fin_of (v : HeightOneSpectrum (𝓞 F)) : IsIwasawaUp _ σ Q (absEv F E v) (KUpFin σ Q v) :=
   isIwasawaUp_of_isCompact (continuous_absEv v) (isCompact_KUpFin v) (exists_mul_fin hI v)
@@ -440,7 +374,6 @@ variable (D : D7) (n : ℕ)
 
 theorem Jst_eq : StdUnn.Jst D n = StdUnn.blk4 0 1 (-1) 0 := rfl
 
-
 variable {D n} in
 theorem matR_adele (g : StdUnn.G D n) : matR (AF D.host.F) D.sp.cm.sig g = StdUnn.mat g := rfl
 
@@ -452,8 +385,6 @@ theorem exists_mul_adele (g : StdUnn.G D n) : ∃ p : upperParabolic (AF D.host.
 theorem isIwasawaUp_fin (v : HeightOneSpectrum (𝓞 D.host.F)) :
     IsIwasawaUp _ D.sp.cm.sig (StdUnn.Jst D n) (absEv D.host.F D.host.E v) (KUpFin _ _ v) :=
   isIwasawaUp_fin_of (exists_mul_adele D n) v
-
-
 
 variable {D n}
 

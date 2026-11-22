@@ -71,10 +71,6 @@ def stepAct (A : KAct ε X) (z : ℂ) : KAct ε (step X z) where
   bdd := stepRho_bdd A z
   fin := stepRho_fin A z
 
-theorem stepCoef_apply' (z : ℂ) (c : X.V →ₗ[ℂ] (Matrix (Fin n) (Fin n) ℂ → ℂ)) (j : Fin n) (u : (step X z).V)
-    (g : Matrix (Fin n) (Fin n) ℂ) :
-    stepCoef X z c j u g = ∑ i, g j i * c ((sv u) i) g := rfl
-
 theorem rightEq_step (A : KAct ε X) {I : Type} {c : CoefFam X I} (hc : RightEq A c) (z : ℂ) :
     RightEq (stepAct A z) (X := step X z) (fun p : I × Fin n => stepCoef X z (c p.1) p.2) := by
   intro p u g k

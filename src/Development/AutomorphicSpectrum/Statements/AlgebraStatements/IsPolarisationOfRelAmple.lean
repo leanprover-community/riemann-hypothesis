@@ -68,19 +68,6 @@ theorem isPolarisation_of_relAmple {A B : Over S} [GrpObj A] [GrpObj B] {P : LB 
     sqToBase, pull_lam, lift_fst, lift_snd, cls_pull hL, lam_pull_of_isGrpPullback h]
   rfl
 
-theorem isPolarisation_id (Q : Out.PolAV S) : IsPolarisation Q.A Q.A (abelian₂ Q.A Q.L) (𝟙 _) := by
-  have hΛ : (abelian₂ Q.A Q.L).IsLB := LB.isLB_linComb Q.isLB _ _
-  refine isPolarisation_of_relAmple hΛ inferInstance Q.isLB Q.ample ((cls_eq_iff hΛ (pull_isLB hΛ _)).1 ?_)
-  rw [cls_ev hΛ, evc, Category.comp_id, lift_fst_snd, Over.id_left, pull_id]
-
-theorem hyp_elliptic (hD : GlobalTheory.Published.DualAbelianScheme) {R : Type} [CommRing R] [IsNoetherianRing R]
-    (W : WeierstrassCurve R) [W.IsElliptic] :
-    let E := GlobalTheory.WeierstrassCurve.ellPolAV W
-    E.g = 1 ∧ IsAbelianScheme E.A ∧ IsDual E.A E.A (abelian₂ E.A E.L) ∧ IsPolarisation E.A E.A (abelian₂ E.A E.L) (𝟙 _) := by
-  intro E
-  exact ⟨rfl, E.isAb, GlobalTheory.PerfectDual.isDual_of_isPerfect hD _ _ E.isAb E.isAb E.smoothDim E.smoothDim
-    (isPerfect_ell W), isPolarisation_id E⟩
-
 theorem isLocalRing_integers {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [CommRing R] [Algebra R C]
     (hv : v.Integers R) : IsLocalRing R :=
   haveI : IsDomain R := Function.Injective.isDomain (algebraMap R C) hv.hom_inj

@@ -33,10 +33,6 @@ open Module TensorProduct Coalgebra Bialgebra WithConv
 
 variable {k H : Type} [Field k] [CommRing H] [HopfAlgebra k H]
 
-noncomputable def inv (D : H →ₗ[k] k) : H →ₗ[k] H :=
-  (TensorProduct.rid k H).toLinearMap ∘ₗ D.lTensor H ∘ₗ comul
-
-
 end Hopf
 
 section Coef
@@ -45,7 +41,6 @@ open TensorProduct TrivSqZeroExt
 variable {k : Type} [Field k] {r : ℕ} {B : Type} [CommRing B] [Algebra k B]
 
 abbrev Sq (k : Type) [Field k] (r : ℕ) : Type := TrivSqZeroExt k (Fin r → k)
-
 
 variable (k r B) in
 noncomputable def c0 : B ⊗[k] Sq k r →ₐ[k] B :=
@@ -103,8 +98,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 namespace PositivityTheory.Xgn.JetKernelRank
 
 noncomputable section
-
-local notation "hm" φ:max => Formalism.L2.Pj.homAt (𝟙 (Sp _)) φ
 
 section Pair
 open ReciprocityTheory.ChartRestriction.G.DVR
@@ -330,7 +323,6 @@ theorem flat_surj [IsAlgClosed k] [Module.Finite k A] [IsMonHom f] (hA : IsAbeli
   have := GlobalTheory.flat_and_surjective_of_isFinite_grpEnd k G f
   exact ⟨this.1, this.2, inferInstance⟩
 
-
 end Ker
 
 section Eval
@@ -391,13 +383,11 @@ theorem span_sq {I : Type} (c : I → R) (hc : ∀ i j, c i * c j = 0) : Ideal.s
   rintro _ ⟨_, ⟨i, rfl⟩, _, ⟨j, rfl⟩, rfl⟩
   exact hc i j
 
-
 variable (k) in
 def th1 {d : ℕ} (m : ℕ) (a : Fin d → R) (ha : ∀ i j, a i * a j = 0) : Jet k (Fin 1 × Fin d) (m + 1) →ₐ[k] R :=
   liftJet (aeval fun q => a q.2) (by
     simp only [aeval_X]
     exact le_bot_iff.1 ((Ideal.pow_le_pow_right (by omega)).trans (span_sq _ fun i j => ha _ _).le))
-
 
 variable (k) in
 def th2 {d : ℕ} (a b : Fin d → R) (ha : ∀ i j, a i * a j = 0) (hb : ∀ i j, b i * b j = 0) :

@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.MatrixExponentialEntries
+public import Formalism.PeriodIntegrals.CapelliEig
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ProjExists
 
 @[expose] public section
@@ -54,29 +54,6 @@ def DegUpper : Prop := ForDS fun m ε _ B _ _ _ π => ∀ d, IsFdeg (muG ε) π 
 def DegRatio : Prop := ForPair fun n _ ε lam ε' _ _ _ _ _ _ _ _ π σ => (∃ d', IsFdeg (muG ε') σ d') ∧ ∃ d, IsFdeg (muG ε) π d ∧
   ∀ (s : Fin (n + 1)) (K : Type) [NormedAddCommGroup K] [InnerProductSpace ℂ K] (ρ : Mat (n + 1) → (K →L[ℂ] K)),
     IsDS ε (lam - Pi.single s 1) ρ → ∃ ds, IsFdeg (muG ε) ρ ds ∧ d ≤ 2 ^ n * ds
-
-def RankOne : Prop := ∀ (n : ℕ) (e : Option (Fin n) ≃ Fin (n + 1)) (ε : Fin (n + 1) → Bool) (ε' : Fin n → Bool), Signs e ε ε' →
-  ∀ (H H' : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] [NormedAddCommGroup H'] [InnerProductSpace ℂ H']
-    [CompleteSpace H'] (π : Mat (n + 1) → (H →L[ℂ] H)) (σ : Mat n → (H' →L[ℂ] H')) (d : ℝ) (w : H') (j : H' →L[ℂ] H) (P : H →L[ℂ] H'),
-    IsURepOn (UJset ε) π → IsURepOn (UJset ε') σ → IsIrredOn (UJset ε') σ → IsFdeg (muG ε') σ d → ‖w‖ = 1 →
-    Integrable (fun h => ⟪w, σ (umat h) w⟫_ℂ) (muG ε') → IsProj e ε' π σ j P →
-    (∀ x y, (d : ℂ) * ∫ h, star ⟪w, σ (umat h) w⟫_ℂ * ⟪y, π (embH e (umat h)) x⟫_ℂ ∂muG ε' = ⟪y, j w⟫_ℂ * ⟪j w, x⟫_ℂ) ∧
-    ∀ v, Integrable (fun h => ⟪v, π (embH e (umat h)) v⟫_ℂ) (muG ε') → ∀ a b,
-      ∫ h, star ⟪v, π (embH e (umat h)) v⟫_ℂ * ⟪b, σ (umat h) a⟫_ℂ ∂muG ε' = ⟪P v, a⟫_ℂ * ⟪b, P v⟫_ℂ / (d : ℂ)
-
-structure TensDat (m : ℕ) (H : Type) where
-
-  K : Fin m → Type
-  [nK : ∀ s, NormedAddCommGroup (K s)]
-  [iK : ∀ s, InnerProductSpace ℂ (K s)]
-
-  ρ : ∀ s, Mat m → (K s →L[ℂ] K s)
-
-  ep : Fin m → ℝ
-
-  io : ∀ s, K s → Fin m → H
-
-  pr : ∀ s, (Fin m → H) → K s
 
 attribute [instance] TensDat.nK TensDat.iK
 

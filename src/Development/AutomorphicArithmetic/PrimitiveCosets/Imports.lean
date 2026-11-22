@@ -1,7 +1,8 @@
 module
 
 public import Development.AutomorphicArithmetic.PrimitiveCosets.CoreAtH
-public import Development.AutomorphicArithmetic.PrimitiveCosets.LevelFamily
+public import Development.AutomorphicArithmetic.PrimitiveCosets.GChiEq
+public import Development.AutomorphicArithmetic.PrimitiveCosets.GzEq
 public import Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.ZeroFreeOfRpowWindow
 
 @[expose] public section

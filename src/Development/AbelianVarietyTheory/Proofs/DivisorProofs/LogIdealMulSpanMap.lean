@@ -133,8 +133,6 @@ theorem embInd (G : HTGroup p) {ι : Type} [Fintype ι] (f : Module.Basis ι ℚ
 def shA (G : HTGroup p) : G.C →+ G.C :=
   (MulOpposite.opAddEquiv.symm.toAddMonoidHom).comp G.star.toAddMonoidHom
 
-theorem shA_apply (G : HTGroup p) (x : G.C) : shA G x = sh G x := rfl
-
 theorem sh_smul (G : HTGroup p) (z : G.F) (y : G.C) :
     sh G (z • y) = IsCMField.complexConj G.F z • sh G y := by
   rw [Algebra.smul_def, Algebra.smul_def]

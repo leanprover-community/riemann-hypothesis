@@ -45,8 +45,6 @@ variable {σ : Type}
 
 def pd (i : σ) : Module.End ℂ (MvPolynomial σ ℂ) := (pderiv i : Derivation ℂ (MvPolynomial σ ℂ) _).toLinearMap
 
-theorem pd_apply (i : σ) (f : MvPolynomial σ ℂ) : pd i f = pderiv i f := rfl
-
 theorem pd_comm (i j : σ) : pd i * pd j = pd j * pd i := by
   classical
   apply LinearMap.ext

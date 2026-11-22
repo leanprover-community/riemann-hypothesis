@@ -13,8 +13,6 @@ noncomputable section
 
 namespace GlobalTheory
 
-local notation "e[" t "]" => Complex.exp (2 * (π : ℂ) * Complex.I * ((t : ℝ) : ℂ))
-
 private theorem norm_latticeFourier_phase (t : ℝ) : ‖e[t]‖ = 1 := by
   rw [Complex.norm_exp]
   simp
@@ -38,7 +36,6 @@ theorem summable_lattice_exp_neg_mul_norm_sq {a : ℝ} (ha : 0 < a) :
   change _ = _ * ‖(x : E)‖⁻¹ ^ (2 * k)
   rw [mul_pow, ← pow_mul, inv_pow]
   field_simp
-
 
 omit [NormedSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem exp_neg_mul_norm_add_sq_le {a R : ℝ} (ha : 0 ≤ a) (x : E) {u : E} (hu : ‖u‖ ≤ R) :
@@ -65,7 +62,6 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDim
   {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
   (L : Submodule ℤ E) [DiscreteTopology L] [IsZLattice ℝ L]
 
-
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
   [NormedSpace ℂ V] [DiscreteTopology L] [IsZLattice ℝ L] in
 theorem continuous_tsum_lattice_translate [CompleteSpace V] {f : E → V} (hc : Continuous f)
@@ -78,7 +74,6 @@ theorem continuous_tsum_lattice_translate [CompleteSpace V] {f : E → V} (hc : 
       fun x v hv ↦ h x v (mem_ball_zero_iff.1 hv).le
   exact this.continuousAt (Metric.isOpen_ball.mem_nhds (by simp))
 
-
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
   [NormedSpace ℂ V] [DiscreteTopology L] [IsZLattice ℝ L] in
 theorem periodic_tsum_lattice_translate (f : E → V) {z : E} (hz : z ∈ L) :
@@ -89,7 +84,6 @@ theorem periodic_tsum_lattice_translate (f : E → V) {z : E} (hz : z ∈ L) :
   simp only [Equiv.coe_addRight, Submodule.coe_add]
   congr 1
   abel
-
 
 omit [NormedSpace ℂ V] in
 theorem integrable_of_lattice_translate_dominated {f : E → V} (hc : Continuous f)
@@ -173,7 +167,6 @@ theorem tsum_poisson_lattice [CompleteSpace V] {f : E → V} (hc : Continuous f)
       (ZLattice.covolume L)⁻¹ • ∑' y : dualLattice L, e[⟪(y : E), u⟫] • 𝓕 f y := by
   rw [← (hasSum_poisson_lattice L hc hdom hs u).tsum_eq, tsum_const_smul'']
 
-
 omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 theorem norm_cexp_neg_pi_mul_norm_sq_add (b : ℂ) (w v : E) :
     ‖Complex.exp (-π * b * ‖v‖ ^ 2 + 2 * π * Complex.I * ⟪w, v⟫)‖ =
@@ -181,7 +174,6 @@ theorem norm_cexp_neg_pi_mul_norm_sq_add (b : ℂ) (w v : E) :
   rw [Complex.norm_exp]
   congr 1
   simp [← Complex.ofReal_pow]
-
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 theorem norm_cexp_neg_pi_mul_norm_sq_div (b : ℂ) (v : E) :
@@ -208,14 +200,12 @@ theorem fourier_cexp_neg_pi_mul_norm_sq_add {b : ℂ} (hb : 0 < b.re) (w y : E) 
   · congr 1
     field_simp
 
-
 omit [MeasurableSpace E] [BorelSpace E] [IsZLattice ℝ L] in
 theorem summable_norm_lattice_cexp_gaussian {b : ℂ} (hb : 0 < b.re) (w u : E) :
     Summable fun x : L ↦ ‖Complex.exp (-π * b * ‖(x : E) + u‖ ^ 2 +
       2 * π * Complex.I * ⟪w, (x : E) + u⟫)‖ := by
   simp only [norm_cexp_neg_pi_mul_norm_sq_add]
   exact summable_lattice_exp_neg_mul_norm_add_sq L (mul_pos Real.pi_pos hb) u
-
 
 omit [MeasurableSpace E] [BorelSpace E] [IsZLattice ℝ L] in
 theorem summable_norm_lattice_cexp_gaussian_div {b : ℂ} (hb : 0 < b.re) (w : E) :
@@ -277,7 +267,6 @@ theorem poisson_gaussian_lattice {t : ℝ} (ht : 0 < t) (u : E) :
     simp only [inner_zero_left, Complex.ofReal_zero, mul_zero, add_zero, sub_zero] at h3
     push_cast
     exact h3
-
 
 theorem poisson_gaussian_lattice_cos {t : ℝ} (ht : 0 < t) (u : E) :
     (Summable fun y : dualLattice L ↦

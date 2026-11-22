@@ -93,7 +93,6 @@ def dualToCartierDual :
     Rep.res ψ.toMonoidHom (dualRep D M) ⟶ cartierDual F Fsep (Rep.res ψ.toMonoidHom M) :=
   resDualPost ψ.toMonoidHom D M _ ρ
 
-
 omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [IsTopologicalGroup G]
   [IsDiscreteRep D] [IsDiscreteRep M] in
 theorem bijective_dualToCartierDual {n : ℕ} [NeZero n] (hn : (n : F) ≠ 0)
@@ -120,7 +119,6 @@ theorem bijective_dualToCartierDual {n : ℕ} [NeZero n] (hn : (n : F) ≠ 0)
           Nat.card_le_card_of_injective _ (bijective_toDualDual hD hM).1
       _ ≤ Nat.card (dualRep D M) := card_dualRep_le hD
 
-
 omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [IsSepClosure F Fsep]
   [IsTopologicalGroup G] [IsDiscreteRep D] [IsDiscreteRep M] [Finite M] in
 theorem tensorHom_dualToCartierDual_cartierPairing :
@@ -132,7 +130,6 @@ theorem tensorHom_dualToCartierDual_cartierPairing :
   | zero => simp only [map_zero]
   | tmul a f => rfl
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
-
 
 omit [Finite M] in
 theorem localDualityPairing_dualToCartierDual [Finite M] {r s : ℕ} (h : r + s = 2)
@@ -175,8 +172,6 @@ theorem bijective_localInvPairing {n : ℕ} [NeZero n] (hn : (n : F) ≠ 0) (hD 
 end Abstract
 
 section GS
-
-local notation "ℚ̄" => AlgebraicClosure ℚ
 
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))

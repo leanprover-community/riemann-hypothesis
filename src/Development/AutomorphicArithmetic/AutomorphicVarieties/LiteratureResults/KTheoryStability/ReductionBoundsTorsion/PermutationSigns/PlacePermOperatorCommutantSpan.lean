@@ -27,7 +27,6 @@ theorem tp_sum {K : Type} [Fintype K] [DecidableEq K] (M : K → Matrix ι ι �
   refine Finset.sum_congr rfl fun f _ => ?_
   rw [Finset.prod_mul_distrib]
 
-
 open MvPolynomial in
 def polyOf {K : Type} [Fintype K] (φ : Matrix (Fin q → ι) (Fin q → ι) ℂ →ₗ[ℂ] ℂ)
     (M : K → Matrix ι ι ℂ) : MvPolynomial K ℂ :=
@@ -70,9 +69,6 @@ end Poly
 section GlobalTheory
 
 variable {W : Type} [Fintype W] [DecidableEq W] {m q : ℕ}
-
-theorem blk_apply (d : W → Matrix (Fin m) (Fin m) ℂ) (x y : Ix W m) :
-    blk d x y = if x.1 = y.1 then d x.1 x.2 y.2 else 0 := rfl
 
 theorem blk_add (d e : W → Matrix (Fin m) (Fin m) ℂ) : blk (d + e) = blk d + blk e := by
   ext x y; simp only [blk_apply, Matrix.add_apply, Pi.add_apply]; split_ifs <;> simp
@@ -318,7 +314,6 @@ theorem sum_perm_mt (x : Fin q → Matrix ι ι ℂ) (I J : Fin q → ι)
     exact ⟨funext fun i => (h i).1, funext fun i => (h i).2⟩
   · rintro ⟨h1, h2⟩ i
     exact ⟨congrFun h1 i, congrFun h2 i⟩
-
 
 open MvPolynomial in
 theorem sym_zero (φ : Matrix (Fin q → ι) (Fin q → ι) ℂ →ₗ[ℂ] ℂ) (x : Fin q → Matrix ι ι ℂ)

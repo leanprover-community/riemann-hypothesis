@@ -222,7 +222,6 @@ theorem Iso.dual {a : WDRep h V} {b : WDRep h V'} (hab : a.Iso b) : a.dual.Iso b
   obtain ⟨e, h1, h2⟩ := hab.symm
   exact ⟨e.dualMap, fun σ f => by ext; simp [h1], fun f => by ext; simp [h2]⟩
 
-
 variable (h) in
 def ofChars {ι : Type*} [Finite ι] (χ : ι → Weil h →* ℂˣ) (hχ : ∀ i, IsSmooth (χ i)) :
     WDRep h (ι → ℂ) where
@@ -245,7 +244,6 @@ def ofChars {ι : Type*} [Finite ι] (χ : ι → Weil h →* ℂˣ) (hχ : ∀ 
 @[simp] theorem ofChars_N {ι : Type*} [Finite ι] (χ : ι → Weil h →* ℂˣ)
     (hχ : ∀ i, IsSmooth (χ i)) : (ofChars (h := h) χ hχ).N = 0 := rfl
 
-
 variable (h) in
 def diag {ι : Type*} [Finite ι] (c : ι → ℂˣ) : WDRep h (ι → ℂ) :=
   ofChars (h := h) (fun i => unrChar h (c i)) fun _ => isSmooth_unrChar h _
@@ -256,10 +254,8 @@ def diag {ι : Type*} [Finite ι] (c : ι → ℂˣ) : WDRep h (ι → ℂ) :=
 
 @[simp] theorem diag_N {ι : Type*} [Finite ι] (c : ι → ℂˣ) : (diag (h := h) c).N = 0 := rfl
 
-
 variable (w) in
 def spEig (n : ℕ) (i : Fin n) : ℂˣ := qPow w (((i : ℕ) : ℝ) - ((n : ℝ) - 1) / 2)
-
 
 variable (h) in
 def sp (n : ℕ) : WDRep h (Fin n → ℂ) where
@@ -283,23 +279,6 @@ def sp (n : ℕ) : WDRep h (Fin n → ℂ) where
     (sp (h := h) n).ρ σ = diagEnd fun i => (spEig (w := w) n i : ℂ) ^ deg σ := diag_ρ _ _
 
 @[simp] theorem sp_N (n : ℕ) : (sp (h := h) n).N = shiftEnd n := rfl
-
-def ofMatrix {ι : Type*} [Fintype ι] [DecidableEq ι] (ρ : Weil h →* GL ι ℂ) (N : Matrix ι ι ℂ)
-    (smooth : IsSmooth ρ)
-    (semisimple : ∀ σ, End.IsSemisimple (Matrix.toLin' (ρ σ : Matrix ι ι ℂ)))
-    (nilpotent : IsNilpotent N)
-    (comm : ∀ σ, (ρ σ : Matrix ι ι ℂ) * N = ((normV w : ℕ) : ℂ) ^ deg σ • (N * ρ σ)) :
-    WDRep h (ι → ℂ) where
-  ρ := ((Matrix.toLinAlgEquiv' : Matrix ι ι ℂ ≃ₐ[ℂ] End ℂ (ι → ℂ)) :
-    Matrix ι ι ℂ →* End ℂ (ι → ℂ)).comp ((Units.coeHom _).comp ρ)
-  N := Matrix.toLin' N
-  smooth := smooth.of_le fun σ hσ => by simp [hσ]
-  semisimple := semisimple
-  nilpotent := nilpotent.map (Matrix.toLinAlgEquiv' : Matrix ι ι ℂ ≃ₐ[ℂ] End ℂ (ι → ℂ))
-  comm σ := by
-    have := congrArg (Matrix.toLinAlgEquiv' : Matrix ι ι ℂ ≃ₐ[ℂ] End ℂ (ι → ℂ)) (comm σ)
-    rw [map_mul, map_smul, map_mul] at this
-    exact this
 
 def toGL {ι : Type*} [Fintype ι] [DecidableEq ι] (a : WDRep h (ι → ℂ)) : Weil h →* GL ι ℂ :=
   (((LinearMap.toMatrixAlgEquiv' : End ℂ (ι → ℂ) ≃ₐ[ℂ] Matrix ι ι ℂ) :
@@ -355,11 +334,6 @@ theorem map_N_eigenspace (a : WDRep h V) {φ : Weil h} (hφ : deg φ = 1) {α : 
 
 theorem unr_diag {ι : Type*} [Finite ι] (c : ι → ℂˣ) : (diag (h := h) c).Unr :=
   ⟨rfl, fun σ => LinearMap.ext fun v => funext fun i => by simp⟩
-
-theorem tempered_sp (n : ℕ) : (sp (h := h) n).Tempered := fun φ hφ => by
-  rw [sp_ρ, sp_N, hφ]
-  refine isPurePair_diagEnd_shiftEnd (by exact_mod_cast one_lt_normV w) _ fun i => ?_
-  rw [zpow_one, spEig, norm_qPow]
 
 end WDRep
 
@@ -444,26 +418,21 @@ def lpDual (x : WD h) : WD h :=
 @[simp] theorem lpDual_mk (a : WDRep h V) : lpDual (mk a) = mk a.dual :=
   sound (iso_std a).dual.symm
 
-
 variable (h) in
 def lpZero : WD h := mk (WDRep.diag (h := h) (ι := Fin 0) fun i => i.elim0)
-
 
 variable (h) in
 def lpOfChar (χ : Weil h →* ℂˣ) (hχ : IsSmooth χ) : WD h :=
   mk (WDRep.ofChars (h := h) (ι := Fin 1) (fun _ => χ) fun _ => hχ)
-
 
 open Classical in
 def unitOf (z : ℂ) : ℂˣ := if hz : z = 0 then 1 else Units.mk0 z hz
 
 theorem coe_unitOf {z : ℂ} (hz : z ≠ 0) : (unitOf z : ℂ) = z := by simp [unitOf, hz]
 
-
 open Classical in
 variable (h) in
 def lpUnr (m : Multiset ℂ) : WD h := mk (WDRep.diag (h := h) fun i : m.ToType => unitOf (i : ℂ))
-
 
 variable (h) in
 def lpSp (n : ℕ) : WD h := mk (WDRep.sp (h := h) n)
@@ -505,7 +474,6 @@ def frobEig (x : WD h) : Multiset ℂ := eig x (frob h)
 
 @[simp] theorem frobEig_mk (a : WDRep h V) : frobEig (mk a) = (a.ρ (frob h)).charpoly.roots :=
   eig_mk _ _
-
 
 open Classical in
 noncomputable def inePol (x : WD h) (σ : G E Ω) : ℂ[X] := by
@@ -565,11 +533,6 @@ theorem frobEig_diag {ι : Type*} [Fintype ι] (c : ι → ℂˣ) :
 
 @[simp] theorem lpDim_lpSp (n : ℕ) : lpDim (lpSp (h := h) n) = n := by simp [lpSp]
 
-theorem tempered_lpSp (n : ℕ) : tempered (lpSp (h := h) n) := (tempered_mk _).mpr (WDRep.tempered_sp (h := h) n)
-
-theorem not_mono0_lpSp {n : ℕ} (hn : 2 ≤ n) : ¬ mono0 (lpSp (h := h) n) :=
-  fun h0 => shiftEnd_ne_zero hn ((monodromyZero_ofWeilDeligneRepClass_iff _).mp h0)
-
 theorem _root_.GlobalTheory.WeilDeligne.WDRep.Tempered.norm_eq_one {a : WDRep h V} (ha : a.Tempered)
     (hN : a.N = 0) {φ : Weil h} (hφ : deg φ = 1) : absSpace (a.ρ φ) 1 = ⊤ := by
   obtain ⟨h1, h2⟩ := ha φ hφ
@@ -628,7 +591,6 @@ end WD
 section Examples
 
 variable (h : IsPlaceOver A w)
-
 
 end Examples
 

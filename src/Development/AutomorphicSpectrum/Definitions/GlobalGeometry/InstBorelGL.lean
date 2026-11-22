@@ -41,29 +41,11 @@ instance instMeasGL {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalR
 instance instBorelGL {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] (n : ℕ) :
     BorelSpace (GL (Fin n) K) := ⟨rfl⟩
 
-def omegaS {a : ℕ} {m : Type} [Fintype m] (χ : Fˣ →* ℂˣ) (nrm : AbsoluteValue F ℝ) (g : GL (Fin a) F)
-    (Φ : Matrix m (Fin a) F → ℂ) : Matrix m (Fin a) F → ℂ :=
-  fun x => ((χ (Matrix.GeneralLinearGroup.det g) : ℂˣ) : ℂ) *
-    (((nrm ((Matrix.GeneralLinearGroup.det g : Fˣ) : F)) ^ ((Fintype.card m : ℝ) / 2) : ℝ) : ℂ) *
-    Φ (x * (g : Matrix (Fin a) (Fin a) F))
-
 end Base
 
 section Local
 
 variable {F : Type} [Field F]
-
-def chi0 (δ : Fˣ →* ℂˣ) (x : F) : ℂ :=
-  open Classical in if h : x = 0 then 0 else ((δ (Units.mk0 x h) : ℂˣ) : ℂ)
-
-def bAA {r d c : ℕ} (x : Matrix (Fin (r + d)) (Fin (r + c)) F) : Matrix (Fin r) (Fin r) F :=
-  x.submatrix (Fin.castAdd d) (Fin.castAdd c)
-def bAD {r d c : ℕ} (x : Matrix (Fin (r + d)) (Fin (r + c)) F) : Matrix (Fin r) (Fin c) F :=
-  x.submatrix (Fin.castAdd d) (Fin.natAdd r)
-def bDA {r d c : ℕ} (x : Matrix (Fin (r + d)) (Fin (r + c)) F) : Matrix (Fin d) (Fin r) F :=
-  x.submatrix (Fin.natAdd r) (Fin.castAdd c)
-def bDD {r d c : ℕ} (x : Matrix (Fin (r + d)) (Fin (r + c)) F) : Matrix (Fin d) (Fin c) F :=
-  x.submatrix (Fin.natAdd r) (Fin.natAdd r)
 
 variable (O : Subring F) (ϖ : F) (nrm : AbsoluteValue F ℝ)
 
@@ -81,22 +63,6 @@ section More
 variable {F : Type} [Field F]
 
 def Mint (O : Subring F) (c : ℕ) : Set (GL (Fin c) F) := {g | IsInt O (g : Matrix (Fin c) (Fin c) F)}
-
-def pEl {r c : ℕ} (m₁ : GL (Fin r) F) (B : Matrix (Fin r) (Fin c) F) (m₂ : GL (Fin c) F) : GL (Fin (r + c)) F where
-  val := Matrix.reindex finSumFinEquiv finSumFinEquiv
-    (Matrix.fromBlocks (m₁ : Matrix (Fin r) (Fin r) F) B 0 (m₂ : Matrix (Fin c) (Fin c) F))
-  inv := Matrix.reindex finSumFinEquiv finSumFinEquiv
-    (Matrix.fromBlocks ((m₁⁻¹ : GL (Fin r) F) : Matrix (Fin r) (Fin r) F)
-      (-(((m₁⁻¹ : GL (Fin r) F) : Matrix (Fin r) (Fin r) F) * B * ((m₂⁻¹ : GL (Fin c) F) : Matrix (Fin c) (Fin c) F))) 0
-      ((m₂⁻¹ : GL (Fin c) F) : Matrix (Fin c) (Fin c) F))
-  val_inv := by
-    simp only [Matrix.reindex_apply, Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply, Matrix.mul_neg,
-      ← Matrix.mul_assoc, Units.mul_inv, Matrix.one_mul, Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add,
-      neg_add_cancel, neg_zero, Matrix.fromBlocks_one, Matrix.submatrix_one_equiv]
-  inv_val := by
-    simp only [Matrix.reindex_apply, Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply, Matrix.neg_mul,
-      Matrix.mul_assoc, Units.inv_mul, Matrix.mul_one, Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add,
-      add_neg_cancel, neg_zero, Matrix.fromBlocks_one, Matrix.submatrix_one_equiv]
 
 def UnrChar (nrm : AbsoluteValue F ℝ) (q : ℕ) {c : ℕ} (χ : Fin c → F → ℂ) (α : Fin c → ℂ) : Prop :=
   (∀ i, α i ≠ 0) ∧ ∀ i (x : F) (e : ℤ), nrm x = (q : ℝ) ^ (-e) → χ i x = α i ^ e

@@ -37,8 +37,6 @@ variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberFi
 variable [Fact (IsFixF K F)]
 variable {m : Type} [Fintype m] [DecidableEq m]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-
 abbrev fm {A : Type*} [CommRing A] [StarRing A] (H : Matrix m m A) (x y : m → A) : A :=
   star x ⬝ᵥ (H *ᵥ y)
 

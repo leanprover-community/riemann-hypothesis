@@ -30,7 +30,6 @@ def PvG (res : ∀ v : A.vT, 𝓞 D.host.E →+* A.Fv v) (v : A.vT) : Ideal (�
 
 instance (res : ∀ v : A.vT, 𝓞 D.host.E →+* A.Fv v) (v : A.vT) : (PvG res v).IsPrime := RingHom.ker_isPrime _
 
-
 set_option maxHeartbeats 1000000 in
 structure LevelCompatibleLattices (T : ℕ) (res : ∀ v : A.vT, 𝓞 D.host.E →+* A.Fv v) (i : ℕ) (hi : i ≤ D.R.m)
     (lat : C.cls i → Submodule (𝓞 D.host.E) (Fin (D.R.N i) → D.host.E)) where
@@ -54,7 +53,6 @@ variable {M} {T : ℕ} {res : ∀ v : A.vT, 𝓞 D.host.E →+* A.Fv v} {i : ℕ
   {lat : C.cls i → Submodule (𝓞 D.host.E) (Fin (D.R.N i) → D.host.E)} {bad : Set (HeightOneSpectrum (𝓞 D.host.F))}
   {Ch : Type} {chOf : C.cls i → Ch}
 
-
 set_option maxHeartbeats 1000000 in
 def FvTieG (L : LevelCompatibleLattices M T res i hi lat)
     (eV : A.vT ≃ {v : HeightOneSpectrum (𝓞 D.host.F) // (T : 𝓞 D.host.F) ∈ v.asIdeal})
@@ -66,7 +64,6 @@ def FvTieG (L : LevelCompatibleLattices M T res i hi lat)
       latS (F := D.host.F) ((eV v).1.adicCompletion D.host.F) (intV D.host.E (eV v).1)
         (Submodule.span (𝓞 D.host.E) (dualSet (sigD D : D.host.E →+* D.host.E) (gramN D i hi) (K β).lev.Lb))),
     M.fv i v c.1 (L.pr v c.1 z) = fMe β v ((K β).lev.fT (eV v).1 (eV v).2 ⟨_, hz⟩)
-
 
 set_option maxHeartbeats 1000000 in
 def UpNatTieG (L : LevelCompatibleLattices M T res i hi lat) (eY : C.Y i ≃ Fr D i hi)
@@ -90,7 +87,6 @@ def UpNatTieG (L : LevelCompatibleLattices M T res i hi lat) (eY : C.Y i ≃ Fr 
       ∀ (h : C.Y i → ℂ) s s', IsTr (atInf (embT D) γ.1.1) (eY s') (eY s) →
         M.upT i v c.1 (L.pr v c.1 z) h s = ((((K β).lev.chi κ)⁻¹ : ℂˣ) : ℂ) * h s'
 
-
 set_option maxHeartbeats 1000000 in
 def DnNatTieG (L : LevelCompatibleLattices M T res i hi lat) (eY : C.Y i ≃ Fr D i hi)
     (eV : A.vT ≃ {v : HeightOneSpectrum (𝓞 D.host.F) // (T : 𝓞 D.host.F) ∈ v.asIdeal})
@@ -111,7 +107,6 @@ def DnNatTieG (L : LevelCompatibleLattices M T res i hi lat) (eY : C.Y i ≃ Fr 
 
 variable (M)
 
-
 open Classical in
 def BwTieG (T : ℕ) (res : ∀ v : A.vT, 𝓞 D.host.E →+* A.Fv v) {i : ℕ} {hi : i ≤ D.R.m} (eY : C.Y i ≃ Fr D i hi)
     (lat : C.cls i → Submodule (𝓞 D.host.E) (Fin (D.R.N i) → D.host.E)) : Prop :=
@@ -127,19 +122,6 @@ def BwTieG (T : ℕ) (res : ∀ v : A.vT, 𝓞 D.host.E →+* A.Fv v) {i : ℕ} 
 end Gen
 
 variable {inQ : D.what₂.Tup → HeightOneSpectrum (𝓞 D.host.F) → Prop}
-
-
-set_option maxHeartbeats 4000000 in
-structure TwistedLevelData {Tw : TwForms D} {T : Formalism.L2.Herm.TwChTied D inQ} {F : ∀ u, FormsTied D u} (W : TwFormsTied D Tw T F) where
-  lv : ∀ u μ, μ ≠ D.what₂.mu0 → ∀ i, 1 ≤ i → ∀ hm : i ≤ D.R.m,
-    LevelCompatibleLattices (Tw.fm u μ) (D.mem u).A.T ((W.atT u μ).res (F u).atT) i hm (fun c => latCrd D i hm (T.lat u μ i c))
-  fMe : ∀ u μ hμ i h1 hm β v, (W.ch u μ hμ i h1 hm β).lev.fM (((W.atT u μ).eV (F u).atT) v).1 (((W.atT u μ).eV (F u).atT) v).2 ≃+
-    (Tw.A u μ).Fv v
-  fv : ∀ u μ hμ i h1 hm, FvTieG (lv u μ hμ i h1 hm) ((W.atT u μ).eV (F u).atT) (W.ch u μ hμ i h1 hm) (fMe u μ hμ i h1 hm)
-  upN : ∀ u μ hμ i h1 hm, UpNatTieG (lv u μ hμ i h1 hm) (twY T F u μ i hm) ((W.atT u μ).eV (F u).atT) (W.ch u μ hμ i h1 hm)
-  dnN : ∀ u μ hμ i h1 hm, DnNatTieG (lv u μ hμ i h1 hm) (twY T F u μ i hm) ((W.atT u μ).eV (F u).atT) (W.ch u μ hμ i h1 hm)
-  bw : ∀ u μ, μ ≠ D.what₂.mu0 → ∀ i, 1 ≤ i → ∀ hm : i ≤ D.R.m,
-    BwTieG (Tw.fm u μ) (D.mem u).A.T ((W.atT u μ).res (F u).atT) (twY T F u μ i hm) (fun c => latCrd D i hm (T.lat u μ i c))
 
 end Formalism.L2.Forms
 

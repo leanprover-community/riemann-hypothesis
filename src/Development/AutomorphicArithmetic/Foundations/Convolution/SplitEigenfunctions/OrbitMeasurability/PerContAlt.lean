@@ -24,14 +24,6 @@ private theorem continuous_em : Continuous (em E) := by
     continuous_id.matrix_map AdeleBaseChange.continuous_adeleMap
   exact Continuous.units_map _ hM
 
-private theorem secondCountable_gl : SecondCountableTopology (GL (Fin 2) (A E)) := by
-  haveI : SecondCountableTopology (A E) := GroundTheory.Automorphic.secondCountableTopology_adeleRing E
-  haveI : SecondCountableTopology (Matrix (Fin 2) (Fin 2) (A E)) :=
-    inferInstanceAs (SecondCountableTopology (Fin 2 → Fin 2 → A E))
-  haveI : SecondCountableTopology (Matrix (Fin 2) (Fin 2) (A E))ᵐᵒᵖ :=
-    MulOpposite.opHomeomorph.symm.isEmbedding.secondCountableTopology
-  exact Units.isEmbedding_embedProduct.secondCountableTopology
-
 private theorem continuous_inner (M : Meas ℚ) {f : GL (Fin 2) (A E) → ℂ} (hf : Continuous f)
     (hb : ∀ C : Set (GL (Fin 2) (A E)), IsCompact C → ∃ B : ℝ, ∀ g : G1 ℚ, ∀ k ∈ C, ‖f (em E (gl g) * k)‖ ≤ B) :
     Continuous fun k : GL (Fin 2) (A E) => ∫ g in M.D, f (em E (gl g) * k) ∂M.μ := by

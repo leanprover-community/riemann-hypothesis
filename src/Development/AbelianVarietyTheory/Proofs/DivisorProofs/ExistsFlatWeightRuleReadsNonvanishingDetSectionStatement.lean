@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFlatWeightRuleReadsNonvanishingDetSection
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReadsZero
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsHorizontalGeneratorOfCharts
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactification
 

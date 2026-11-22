@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.TieTest
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SlopeTestRemainingChoicesAlt
 public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaEV0EqICPqRows
 public import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
 public import Formalism.LocalToGlobal.IndefiniteReal.CxPassRep

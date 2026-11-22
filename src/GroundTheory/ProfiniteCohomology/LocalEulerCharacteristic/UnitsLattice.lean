@@ -20,45 +20,9 @@ variable (E F : Type*) [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarc
   [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [Algebra E F] [ValuativeExtension E F] [FiniteDimensional E F]
 
-noncomputable abbrev integerAction : MulSemiringAction (F ≃ₐ[E] F) 𝒪[F] where
-  smul σ x := integerAlgEquivLocal σ x
-  one_smul x := by ext; rfl
-  mul_smul σ τ x := by ext; rfl
-  smul_zero σ := map_zero (integerAlgEquivLocal σ)
-  smul_add σ := map_add (integerAlgEquivLocal σ)
-  smul_one σ := map_one (integerAlgEquivLocal σ)
-  smul_mul σ := map_mul (integerAlgEquivLocal σ)
-
 attribute [local instance] integerAction
 
 variable {E F}
-
-theorem coe_integer_smul (σ : F ≃ₐ[E] F) (x : 𝒪[F]) : ((σ • x : 𝒪[F]) : F) = σ (x : F) :=
-  rfl
-
-theorem coe_integerUnits_smul (σ : F ≃ₐ[E] F) (u : 𝒪[F]ˣ) :
-    ((σ • u : 𝒪[F]ˣ) : 𝒪[F]) = σ • (u : 𝒪[F]) :=
-  rfl
-
-theorem smul_mem_maximalIdeal (σ : F ≃ₐ[E] F) {x : 𝒪[F]} (hx : x ∈ 𝓂[F]) : σ • x ∈ 𝓂[F] := by
-  rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff] at hx ⊢
-  intro h
-  apply hx
-  have := h.map (MulSemiringAction.toRingHom (F ≃ₐ[E] F) 𝒪[F] σ⁻¹)
-  simpa [MulSemiringAction.toRingHom_apply, smul_smul] using this
-
-theorem smul_mem_maximalIdeal_pow (σ : F ≃ₐ[E] F) {k : ℕ} {x : 𝒪[F]} (hx : x ∈ 𝓂[F] ^ k) :
-    σ • x ∈ 𝓂[F] ^ k := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible 𝒪[F]
-  obtain ⟨a, rfl⟩ := (mem_maximalIdeal_pow_iff hϖ).mp hx
-  rw [smul_mul', smul_pow']
-  exact Ideal.mul_mem_right _ _
-    (Ideal.pow_mem_pow (smul_mem_maximalIdeal σ (uniformizer_mem_maximalIdeal hϖ)) k)
-
-theorem smul_mem_unitFiltration (σ : F ≃ₐ[E] F) {k : ℕ} {u : 𝒪[F]ˣ}
-    (hu : u ∈ unitFiltration F k) : σ • u ∈ unitFiltration F k := by
-  rw [mem_unitFiltration, coe_integerUnits_smul, ← smul_one σ, ← smul_sub]
-  · exact smul_mem_maximalIdeal_pow σ hu
 
 end Galois
 
@@ -81,29 +45,13 @@ variable (E F : Type*) [Field E] [ValuativeRel E] [TopologicalSpace E]
 
 attribute [local instance] integerAction
 
-noncomputable abbrev unitFiltrationAction (k : ℕ) :
-    MulDistribMulAction (F ≃ₐ[E] F) (unitFiltration F k) where
-  smul σ u := ⟨σ • (u : 𝒪[F]ˣ), smul_mem_unitFiltration σ u.2⟩
-  one_smul u := Subtype.ext (one_smul _ (u : 𝒪[F]ˣ))
-  mul_smul σ τ u := Subtype.ext (mul_smul σ τ (u : 𝒪[F]ˣ))
-  smul_mul σ u v := Subtype.ext (smul_mul' σ (u : 𝒪[F]ˣ) v)
-  smul_one σ := Subtype.ext (smul_one σ)
-
-
 variable {F} in
 noncomputable def maxPow (F : Type*) [Field F] [ValuativeRel F] (k : ℕ) : AddSubgroup 𝒪[F] :=
   (𝓂[F] ^ k).toAddSubgroup
 
-noncomputable abbrev maxPowAction (k : ℕ) : DistribMulAction (F ≃ₐ[E] F) (maxPow F k) :=
-  subgroupDistribMulAction (maxPow F k) fun σ _ hx ↦ smul_mem_maximalIdeal_pow σ hx
-
 attribute [local instance] unitFiltrationAction maxPowAction
 
 variable {E F}
-
-theorem coe_maxPow_smul (σ : F ≃ₐ[E] F) {k : ℕ} (x : maxPow F k) :
-    ((σ • x : maxPow F k) : 𝒪[F]) = σ • (x : 𝒪[F]) :=
-  rfl
 
 variable {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ) {p : ℕ} {e : ℕ} {ε : 𝒪[F]ˣ}
   (hpe : (p : 𝒪[F]) = ϖ ^ e * ε)
@@ -207,19 +155,6 @@ theorem unitToModN_eq_zero_iff (hp : p.Prime) {k : ℕ} (hk : e + 1 ≤ k)
       Units.val_pow_eq_pow_val] at hyp ⊢
     exact hyp.symm
 
-
-omit hϖ hpe in
-variable (ϖ) in
-theorem unitToModN_smul (hϖ : Irreducible ϖ) (hpe : (p : 𝒪[F]) = ϖ ^ e * ε) {k : ℕ}
-    (hk : e ≤ k) (σ : F ≃ₐ[E] F) (u : Additive (unitFiltration F k)) :
-    unitToModN hϖ hpe hk (σ • u) =
-      modNRep (F ≃ₐ[E] F) (maxPow F k) p σ (unitToModN hϖ hpe hk u) := by
-  rw [unitToModN_apply, unitToModN_apply, modNRep_mk]
-  congr 1
-  ext
-  rw [coe_maxPow_smul, smul_sub, smul_one]
-  rfl
-
 end Filtration
 
 section Lattice
@@ -227,16 +162,9 @@ section Lattice
 variable {E F : Type*} [Field E] [ValuativeRel E] [Field F] [ValuativeRel F] [Algebra E F]
   [FiniteDimensional E F]
 
-
 variable (E) in
 noncomputable def normalSub (θ : F) : AddSubgroup 𝒪[F] :=
   (normalLattice (1 : 𝒪[E]) θ 0).toAddSubgroup.comap (𝒪[F].subtype : 𝒪[F] →+* F).toAddMonoidHom
-
-omit [FiniteDimensional E F] in
-theorem mem_normalSub {θ : F} {x : 𝒪[F]} :
-    x ∈ normalSub E θ ↔ (x : F) ∈ normalLattice (1 : 𝒪[E]) θ 0 :=
-  Iff.rfl
-
 
 omit [ValuativeRel F] [FiniteDimensional E F] in
 theorem normalLattice_zero_eq (π : 𝒪[E]) (θ : F) :
@@ -253,69 +181,22 @@ variable [TopologicalSpace E] [IsNonarchimedeanLocalField E] [TopologicalSpace F
 
 attribute [local instance] integerAction
 
-noncomputable abbrev normalSubAction (θ : F) : DistribMulAction (F ≃ₐ[E] F) (normalSub E θ) :=
-  subgroupDistribMulAction (normalSub E θ) fun σ x hx ↦ by
-    rw [mem_normalSub, coe_integer_smul]
-    exact algEquiv_mem_normalLattice 1 θ σ hx
-
 attribute [local instance] normalSubAction
-
-theorem coe_normalSub_smul {θ : F} (σ : F ≃ₐ[E] F) (x : normalSub E θ) :
-    (((σ • x : normalSub E θ) : 𝒪[F]) : F) = σ ((x : 𝒪[F]) : F) :=
-  rfl
 
 variable {θ : F} (hθ : LinearIndependent E fun σ : F ≃ₐ[E] F ↦ σ θ)
   (hθO : ∀ σ : F ≃ₐ[E] F, σ θ ∈ 𝒪[F])
 
 omit [TopologicalSpace E] [IsNonarchimedeanLocalField E] [TopologicalSpace F]
   [IsNonarchimedeanLocalField F] in
-include hθO in
-theorem sum_smul_mem_integer (c : (F ≃ₐ[E] F) → 𝒪[E]) : ∑ σ, c σ • σ θ ∈ 𝒪[F] := by
-  refine sum_mem fun σ _ ↦ ?_
-  rw [integer_smul_eq]
-  exact mul_mem ((algebraMap_mem_integer_iff E F (c σ)).mpr (c σ).2) (hθO σ)
-
-noncomputable def normalSubOfCoeff : ((F ≃ₐ[E] F) → 𝒪[E]) →+ normalSub E θ where
-  toFun c := ⟨⟨∑ σ, c σ • σ θ, sum_smul_mem_integer hθO c⟩, sum_smul_mem_normalLattice c⟩
-  map_zero' := by ext; simp
-  map_add' c d := by ext; simp [add_smul, Finset.sum_add_distrib]
 
 omit [TopologicalSpace E] [IsNonarchimedeanLocalField E] [TopologicalSpace F]
   [IsNonarchimedeanLocalField F] in
-theorem coe_normalSubOfCoeff (c : (F ≃ₐ[E] F) → 𝒪[E]) :
-    ((normalSubOfCoeff hθO c : 𝒪[F]) : F) = ∑ σ, c σ • σ θ :=
-  rfl
 
 omit [TopologicalSpace E] [IsNonarchimedeanLocalField E] [TopologicalSpace F]
   [IsNonarchimedeanLocalField F] in
-include hθ in
-theorem normalSubOfCoeff_bijective : Function.Bijective (normalSubOfCoeff hθO) := by
-  constructor
-  · intro c d h
-    have := congrArg (fun x : normalSub E θ ↦ ((x : 𝒪[F]) : F)) h
-    exact coeff_injective θ hθ this
-  · intro x
-    obtain ⟨c, hc⟩ := (mem_normalLattice_iff 1 θ).mp (mem_normalSub.mp x.2)
-    refine ⟨c, ?_⟩
-    ext
-    rw [coe_normalSubOfCoeff, ← hc]
-    simp
-
-noncomputable def normalSubEquiv : ((F ≃ₐ[E] F) → 𝒪[E]) ≃+ normalSub E θ :=
-  AddEquiv.ofBijective (normalSubOfCoeff hθO) (normalSubOfCoeff_bijective hθ hθO)
 
 omit [TopologicalSpace E] [IsNonarchimedeanLocalField E] [TopologicalSpace F]
   [IsNonarchimedeanLocalField F] in
-theorem normalSubEquiv_apply (c : (F ≃ₐ[E] F) → 𝒪[E]) :
-    normalSubEquiv hθ hθO c = normalSubOfCoeff hθO c :=
-  rfl
-
-theorem smul_normalSubOfCoeff (τ : F ≃ₐ[E] F) (c : (F ≃ₐ[E] F) → 𝒪[E]) :
-    τ • normalSubOfCoeff hθO c = normalSubOfCoeff hθO (fun σ ↦ c (τ⁻¹ * σ)) := by
-  ext
-  rw [coe_normalSub_smul, coe_normalSubOfCoeff, coe_normalSubOfCoeff]
-  have := algEquiv_smul_sum (1 : 𝒪[E]) θ τ 0 c
-  simpa using this
 
 end Lattice
 

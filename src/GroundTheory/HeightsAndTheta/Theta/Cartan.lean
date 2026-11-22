@@ -13,10 +13,6 @@ open scoped Matrix.Norms.L2Operator MatrixOrder ComplexOrder
 
 variable {p q : ℕ}
 
-local notation "𝔐" => Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ
-local notation "J" => indefJ p q
-local notation "G" => indefiniteUnitaryGroup p q
-
 theorem mul_indefJ_mul_conjTranspose {g : 𝔐} (hg : gᴴ * J * g = J) : g * J * gᴴ = J := by
   have h1 : (J * gᴴ * J) * g = 1 := by
     calc (J * gᴴ * J) * g = J * (gᴴ * J * g) := by simp only [Matrix.mul_assoc]

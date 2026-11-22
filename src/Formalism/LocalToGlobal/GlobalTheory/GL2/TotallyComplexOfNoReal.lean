@@ -5,7 +5,7 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.FirstClaimLemmaTwoFou
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Principal
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.SplitK
-public import Formalism.UnipotentAdelicQuotients.ClassNumberQuad
+public import Mathlib
 
 @[expose] public section
 

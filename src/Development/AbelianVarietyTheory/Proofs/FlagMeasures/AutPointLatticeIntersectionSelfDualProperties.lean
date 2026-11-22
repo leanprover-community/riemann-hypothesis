@@ -25,10 +25,6 @@ open Formalism.UG Formalism.UG.P IsDedekindDomain
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-local notation "ι" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 theorem exists_approx (c : 𝓞 F) (hc : c ≠ 0) (a : 𝒜) :
     ∃ x : E, ∃ w ∈ 𝒮, a = ι x + levelafC E c * w := by
   obtain ⟨d, hd, hda⟩ := levelaf_denom (E := E) a

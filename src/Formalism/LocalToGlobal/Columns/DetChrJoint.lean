@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Formalism.LocalToGlobal.Columns.RecChainUnfOne
 public import Formalism.LocalToGlobal.Columns.ColumnsProofs.ChainCounts
 public import Formalism.LocalToGlobal.Columns.HeckeExHost
 public import Formalism.LocalToGlobal.Columns.ChainInstY

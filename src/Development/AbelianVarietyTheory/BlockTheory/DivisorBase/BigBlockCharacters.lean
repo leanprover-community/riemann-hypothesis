@@ -75,14 +75,8 @@ section Prime
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-def SplitInK (H : Host E) (p : ℕ) : Prop := (H.d : ZMod p) ≠ 0 ∧ IsSquare (-(H.d : ZMod p))
-
-def InertInK (H : Host E) (p : ℕ) : Prop := ¬ IsSquare (-(H.d : ZMod p))
-
 variable {H : Host E} {l : Level H} (c : Coeff l) {T : CDVR} (io : c.F →+* T.Fr) {p : ℕ} [Fact p.Prime]
   (X : ValExt T p)
-
-def embX (τ : E →+* ℂ) : 𝓞 E →+* X.C := X.ιF.comp (io.comp (embK c τ))
 
 end Prime
 

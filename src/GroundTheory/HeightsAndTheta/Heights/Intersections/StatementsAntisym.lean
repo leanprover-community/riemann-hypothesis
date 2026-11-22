@@ -20,63 +20,7 @@ section HidaSetting
 
 variable {ι ν κ : Type} [Fintype ι] [Fintype ν] [Fintype κ]
 
-def IsEEMetric (G : ((Σ k, T.yyIdx ι ν κ k) → ℂ) → Matrix κ κ ℂ) : Prop :=
-  (∀ z, (G z).PosDef) ∧
-  (∀ z z' : (Σ k, T.yyIdx ι ν κ k) → ℂ, (∀ i : ι, z ⟨.base, i⟩ = z' ⟨.base, i⟩) →
-      (∀ l : ν, z ⟨.det, l⟩ = z' ⟨.det, l⟩) → G z = G z') ∧
-  (∀ (c : T.YBlk → ℂ) (z : (Σ k, T.yyIdx ι ν κ k) → ℂ), (∀ k, c k ≠ 0) →
-      G (fun p => c p.1 * z p) = G z) ∧
-  ∀ m n : κ, ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z => G z m n) {z | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0}
-
 end HidaSetting
-
-structure ProjectiveLineBundle (D : ℕ) where
-
-  Ω : Type
-  [fieldΩ : Field Ω]
-
-  ι : Type
-
-  ν : Type
-
-  κ : Type
-  [finι : Fintype ι]
-  [finν : Fintype ν]
-  [finκ : Fintype κ]
-
-  E : Type
-  [acgE : AddCommGroup E]
-  [modE : Module Ω E]
-
-  Φ : Type
-  [fieldΦ : Field Φ]
-  [algΦ : Algebra Ω Φ]
-  x : ι → Ω
-  B : ChartBundle ℤ x 2 E
-  e : Module.Basis (Fin 2) Ω E
-  φ : κ → E →ₗ[Ω] Ω
-  δ : ν → Ω
-  a : Fin 2 → Φ
-  dualSec : T.IsTwistedDualSec B φ
-  dualGen : T.IsTwistedDualGen B φ
-  detGen : T.IsTwistedDetGen B e δ
-  chart : ∃ i, x i ≠ 0
-  indep : AlgebraicIndependent Ω a
-  arithYY : IsArithVar (T.yyIdeal x δ e φ (a 0)) (D + 1)
-  arithWW : IsArithVar (T.wwIdeal x δ e φ (a 0) (a 1)) (D + 2)
-
-  G : ((Σ k, T.yyIdx ι ν κ k) → ℂ) → Matrix κ κ ℂ
-  metric : IsEEMetric G
-  n : ℕ
-
-  g : MRing (T.wwIdx ι ν κ)
-
-  h : MRing (T.wwIdx ι ν κ)
-  g_deg : IsMultiHomog g (T.wwDeg n 1)
-  h_deg : IsMultiHomog h (T.wwDeg (n + 3) 0)
-  h_nmem : h ∉ T.wwIdeal x δ e φ (a 0) (a 1)
-  quot : aeval (T.wwCoord x δ e φ (a 0) (a 1)) g =
-    T.diagSec a * aeval (T.wwCoord x δ e φ (a 0) (a 1)) h
 
 attribute [instance] ProjectiveLineBundle.fieldΩ ProjectiveLineBundle.finι ProjectiveLineBundle.finν ProjectiveLineBundle.finκ ProjectiveLineBundle.acgE ProjectiveLineBundle.modE
   ProjectiveLineBundle.fieldΦ ProjectiveLineBundle.algΦ
@@ -84,8 +28,6 @@ attribute [instance] ProjectiveLineBundle.fieldΩ ProjectiveLineBundle.finι Pro
 namespace ProjectiveLineBundle
 
 variable {D : ℕ} (S : ProjectiveLineBundle D)
-
-abbrev WIdx : T.WBlk → Type := T.wwIdx S.ι S.ν S.κ
 
 end ProjectiveLineBundle
 

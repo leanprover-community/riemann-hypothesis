@@ -16,10 +16,6 @@ namespace GroundTheory.PAdicHodge
 
 variable {p : ℕ} [Fact p.Prime]
 
-local notation "𝔹" => BDeRhamPlus (normInteger ℂ_[p]) p
-local notation "𝔹dR" => BDeRham (normInteger ℂ_[p]) p
-local notation "Fil" => IsPerfectoidField.fil ℂ_[p] p
-
 section Algebra
 
 variable (p) in
@@ -157,8 +153,6 @@ variable {V : Type*} [AddCommGroup V] [Module ℚ_[p] V]
 
 variable [FiniteDimensional ℚ_[p] K] [FiniteDimensional ℚ_[p] V]
 
-
-
 end DeRham
 
 section Filtration
@@ -168,17 +162,11 @@ variable (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (V : Type*) [AddCommGrou
 
 variable {K V}
 
-
 variable [FiniteDimensional ℚ_[p] V]
 
 variable (ρ : Representation ℚ_[p] Gal(PadicAlgCl p/K) V)
 
-
-
-
 variable [FiniteDimensional ℚ_[p] K]
-
-
 
 end Filtration
 

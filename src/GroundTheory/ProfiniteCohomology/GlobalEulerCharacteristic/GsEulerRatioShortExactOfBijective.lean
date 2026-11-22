@@ -76,7 +76,6 @@ theorem eulerChar_mul_eq_mul_card_ker (hS : S.ShortExact)
   rw [eulerChar_mul_eq_mul_card_range_δ hS,
     card_range_eq_card_ker_of_exact (cohomology_exact₁ hS 2 3 rfl)]
 
-
 omit [TopologicalSpace G] [IsTopologicalGroup G] [IsDiscreteRep S.X₁] [IsDiscreteRep S.X₂]
   [IsDiscreteRep S.X₃] in
 theorem card_X₂_eq_of_shortExact (hS : S.ShortExact) [Finite S.X₂] :
@@ -123,8 +122,6 @@ end Kernels
 
 section GS
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 theorem ratio_mul_eq {a b c nA nB nC PA PB PC κ : ℚ} (r : ℕ) (hPA : PA ≠ 0) (hPB : PB ≠ 0)
     (hPC : PC ≠ 0) (hn : nB = nA * nC) (hχ : a * c = b * κ) (hP : PA * PC = PB * κ) :
     b * nB ^ r / PB = a * nA ^ r / PA * (c * nC ^ r / PC) := by
@@ -163,7 +160,6 @@ theorem gsReal_card_mul_eq (hT : T.ShortExact) [Finite T.X₁] [Finite T.X₂] [
       (gsRealH0Card S T.X₃ ιr v : ℚ) := gsReal_eulerChar_eq_card_cohomology_zero S ιr T.X₃ v
   exact ((congrArg₂ (· * ·) e1 e3).symm.trans h).trans (congrArg (· * _) e2)
 
-
 omit [IsDiscreteRep T.X₁] [IsDiscreteRep T.X₂] [IsDiscreteRep T.X₃] in
 theorem gsRealRes_cohomologyMap {A B : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 ℚ̄ S)}
     [IsDiscreteRep A] [IsDiscreteRep B] (f : A ⟶ B) (n : ℕ) (x : cohomology A n)
@@ -182,7 +178,6 @@ theorem gsRealRes_cohomologyMap {A B : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOut
     (continuous_toMonoidHom _) g n).hom x)
     (Category.id_comp ((Rep.resFunctor (gsRealFamily S ιr v).toMonoidHom).map f))
   exact (h1.trans c1).trans (h2.trans c2).symm
-
 
 open scoped Classical in
 theorem gsEulerRatio_shortExact [Finite S] (hT : T.ShortExact) [Finite T.X₂]
@@ -223,7 +218,6 @@ theorem gsEulerRatio_shortExact [Finite S] (hT : T.ShortExact) [Finite T.X₂]
     exact congrArg (_ * ·) ((Nat.cast_prod _ _).symm.trans (congrArg Nat.cast hker.symm))
   exact ratio_mul_eq (Fintype.card (InfinitePlace K.1)) hPA hPB hPC (by exact_mod_cast hcard)
     hglob hprod
-
 
 open scoped Classical in
 theorem gsEulerRatio_shortExact_of_bijective [Finite S] (hT : T.ShortExact) [Finite T.X₂]

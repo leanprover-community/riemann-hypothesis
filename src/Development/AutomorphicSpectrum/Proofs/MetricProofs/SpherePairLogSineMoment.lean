@@ -192,10 +192,6 @@ theorem ker_crd (p : S2 × S2) : ker (crd p.1, crd p.2) = wwLogWeight p := by
     simp [crd, PiLp.inner_apply, mul_comm]
   simp only [ker, wwLogWeight, h]
 
-theorem pp_eq (Q : MvPolynomial (Fin 2) ℝ) :
-    pp (fun p : S2 × S2 => crd p.1) (fun p => crd p.2) Q =
-      aeval ![dotPoly (Prod.fst : S2 × S2 → S2), dotPoly Prod.snd] Q := rfl
-
 theorem ell_moment (ℓ : MvPolynomial (Fin 3) ℝ →ₗ[ℝ] ℝ) (Q : MvPolynomial (Fin 2) ℝ) :
     ℓ (momentPoly (sphereMeasure.prod sphereMeasure) wwLogWeight
         (aeval ![dotPoly (Prod.fst : S2 × S2 → S2), dotPoly Prod.snd] Q)) =

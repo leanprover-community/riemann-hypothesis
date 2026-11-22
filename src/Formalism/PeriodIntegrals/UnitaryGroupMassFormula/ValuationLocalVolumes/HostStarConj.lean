@@ -65,8 +65,6 @@ theorem host_star_conj : Formalism.BasicNotions.bridge_star := by
   change H.φ₀ (NumberField.IsCMField.complexConj H.E x) = H.φ₀ (H.conj x)
   rw [NumberField.IsCMField.complexEmbedding_complexConj, Formalism.HC.HostAx.conjE_apply]
 
-theorem sig_apply (a : X.B.I.E) : X.B.I.cm.sig a = star a := rfl
-
 theorem hE_crdOf (x y : (VS D).V) :
     hE X.B.I.cm.sig X.B.I.J (crdOf X.B.I X.ιE X.bas x) (crdOf X.B.I X.ιE X.bas y) =
       X.ιE.symm ((VS D).hT x y) := by

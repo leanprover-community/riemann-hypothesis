@@ -44,11 +44,6 @@ theorem HostVal.log_cond_le_three {s : Scale} {C8 : ℝ} {R : Ranks} {H : Host R
 theorem HostVal.modRow {s : Scale} {C8 : ℝ} {R : Ranks} {H : Host R} (h : HostVal s C8 H) : ModRow s H.condN H.d :=
   modRow_host H h.log_cond_le_three
 
-def QDChoice : Prop :=
-  ∀ eps : ℝ, 0 < eps → eps < 1 / 52 → ∃ C5 x0 : ℝ, 0 < C5 ∧ ∀ x ≥ x0, ∀ n : ℕ, 1 ≤ n → (n : ℝ) ≤ 2 * x ^ (2 + 8 * eps) →
-    ∃ q d : ℕ, Rowq x eps n q d ∧ QDq x eps C5 q d ∧ Boxq x eps q d
-
-
 open Classical in
 def NormPrimes : Prop :=
   ∀ eps : ℝ, 0 < eps → eps < 1 / 52 → ∃ x0 : ℝ, ∀ (s : Scale) (R : Ranks) (N d : ℕ), s.eps = eps → x0 ≤ s.x → RankVal s R →
@@ -63,7 +58,6 @@ def LevelPrime : Prop :=
     ∃ T : ℕ, T.Prime ∧ Ts ≤ (T : ℝ) ∧ (T : ℝ) ≤ (1 + 1 / ((R.f : ℝ) * R.k)) * Ts ∧ NormOne d (N * (g0 * g1) ^ 2) T
 
 def SmallPrimeOne : Prop := ∃ A : ℝ, 1 ≤ A ∧ ∀ M : ℕ, 2 ≤ M → ∃ p : ℕ, p.Prime ∧ p % M = 1 ∧ (p : ℝ) ≤ (M : ℝ) ^ A
-
 
 end GlobalTheory.EX
 

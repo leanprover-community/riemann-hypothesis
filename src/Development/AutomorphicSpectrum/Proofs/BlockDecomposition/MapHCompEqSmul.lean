@@ -33,19 +33,6 @@ theorem mapH_comp_eq_smul {K L : Cx.{1} W} (φ : Cx.Hom K L (RingHom.id W)) (ψ 
   obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ u
   exact congrArg Submodule.Quotient.mk (Subtype.ext (h z.1))
 
-theorem kill (l : ℕ) (K : Cx.{1} W) (j n : ℕ) (x : (qsys l K j).M n) : ((l : W) ^ n) • x = 0 := by
-  change ((l : W) ^ n) • (x : (quo l K n).H j) = 0
-  obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-  have hz : ((l : W) ^ n) • z = 0 := by
-    refine Subtype.ext ?_
-    change ((l : W) ^ n) • z.1 = 0
-    obtain ⟨w, hw⟩ := Submodule.Quotient.mk_surjective _ z.1
-    rw [← hw]
-    change Submodule.Quotient.mk (((l : W) ^ n) • w) = 0
-    exact (Submodule.Quotient.mk_eq_zero _).2 ⟨w, rfl⟩
-  rw [← Submodule.Quotient.mk_smul, hz]
-  rfl
-
 end GlobalTheory.CompanionTheory.LsRho
 
 end

@@ -8,7 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.CuspWeightInte
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspVolumeLeftStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspVolumeRightStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspVolumeMiddleStatement
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ThreeLeLevel
 
 @[expose] public section
 

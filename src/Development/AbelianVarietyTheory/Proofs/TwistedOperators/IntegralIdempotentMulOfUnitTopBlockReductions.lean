@@ -21,8 +21,6 @@ namespace GlobalTheory.HalfUnit
 
 variable {D : D7}
 
-local notation "SI" => Formalism.L2.Herm.intAf D.host.F D.host.E
-
 def liftI {b a : ℕ} (N : Matrix (Fin b) (Fin a) (EAf D)) (h : IsIntM N) : Matrix (Fin b) (Fin a) SI :=
   Matrix.of fun i j => ⟨N i j, h i j⟩
 

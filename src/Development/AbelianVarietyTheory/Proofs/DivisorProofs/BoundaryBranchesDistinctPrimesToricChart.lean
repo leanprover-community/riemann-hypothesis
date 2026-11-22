@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FromBaseAlt
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.BlowPolSt
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PolynomialSupportHolds
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DegenerationDataCoordsNeZeroLatticesIsomorphic
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsGoodIntegral

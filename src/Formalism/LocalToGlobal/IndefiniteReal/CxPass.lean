@@ -26,20 +26,9 @@ section Prims
 
 variable (A : FamIn K G Pl0 T m) (X : CxData A.fam.amb)
 
-def GUnit (gE : Representation ℂ G X.EE) : Prop := ∀ (g : G) (x y : X.EE), ⟪gE g x, gE g y⟫_ℂ = ⟪x, y⟫_ℂ
-
-def GEquiv (gE : Representation ℂ G X.EE) : Prop :=
-  ∀ t (g : G) (x : A.fam.amb.FR t), X.Θ t (X.jR t (A.fam.amb.opR t (Sum.inr g) x)) = gE g (X.Θ t (X.jR t x))
-
 variable {P1 : Subgroup G} {ψ1 : P1 →* Kˣ}
     {Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)} {Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs)}
     {Zsc : DefSub A.fam.amb → IndefScale A.fam.base}
-
-def PrincipalInjectiveCommonRange : Prop :=
-  Function.Injective (X.iC (crdOf A ⊥ 1 P1 ψ1 Dc Sp Zsc) false A.fam.base.μ0) ∧
-    ∀ t, Function.Injective (X.iC (crdOf A ⊥ 1 P1 ψ1 Dc Sp Zsc) false t) ∧
-      LinearMap.range (X.iC (crdOf A ⊥ 1 P1 ψ1 Dc Sp Zsc) false t) =
-        LinearMap.range (X.iC (crdOf A ⊥ 1 P1 ψ1 Dc Sp Zsc) false A.fam.base.μ0)
 
 end Prims
 

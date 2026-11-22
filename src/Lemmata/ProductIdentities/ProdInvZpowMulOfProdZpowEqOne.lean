@@ -6,23 +6,6 @@ public import Mathlib
 
 namespace Bl.ProductIdentities
 
-private lemma prod_erase_one_perm_apply_eq_zero {n : Type} [Fintype n] [DecidableEq n] (σ : Equiv.Perm n) (hσ : σ ≠ 1)
-    (k : n) : ∏ j ∈ Finset.univ.erase k, (1 : Matrix n n ℂ) (σ j) j = 0 := by
-  have hex : ∃ j, j ≠ k ∧ σ j ≠ j := by
-    by_contra h
-    simp only [not_exists, not_and, not_not] at h
-    apply hσ
-    ext x
-    simp only [Equiv.Perm.coe_one, id_eq]
-    by_cases hx : x = k
-    · subst hx
-      by_contra hk
-      exact hk (σ.injective (h (σ x) hk))
-    · exact h x hx
-  obtain ⟨j, hjk, hj⟩ := hex
-  apply Finset.prod_eq_zero (i := j) (Finset.mem_erase.mpr ⟨hjk, Finset.mem_univ _⟩)
-  simp [hj]
-
 theorem goal1 :
   ∀ {n : Type} [inst : Fintype.{0} n] [inst_1 : DecidableEq.{1} n] (A : Real → Matrix.{0, 0, 0} n n Complex)
   (A' : Matrix.{0, 0, 0} n n Complex),

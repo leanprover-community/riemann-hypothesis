@@ -84,7 +84,6 @@ section Tens
 
 variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-local notation "𝔸" => FiniteAdeleRing (𝓞 F) F
 local notation "𝒜" => E ⊗[F] 𝔸
 
 attribute [local instance] Algebra.TensorProduct.rightAlgebra
@@ -196,8 +195,6 @@ section Alg
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 variable (hc : Formalism.BasicNotions.CMData F E) (n : ℕ) [NeZero n] (ST SG : Finset (Pl E))
-
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
 
 theorem rlt_inv_eq {u : GL (Fin n) 𝒜} (hu : u ∈ UAd hc n) :
     ((u⁻¹ : GL (Fin n) 𝒜) : Matrix (Fin n) (Fin n) 𝒜) =

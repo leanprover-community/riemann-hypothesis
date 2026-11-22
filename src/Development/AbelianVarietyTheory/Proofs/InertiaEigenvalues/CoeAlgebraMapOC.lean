@@ -38,9 +38,6 @@ def zOC (l : ℕ) [Fact l.Prime] : ℤ_[l] →+* OC l :=
 
 scoped instance algOC : Algebra ℤ_[l] (OC l) := (zOC l).toAlgebra
 
-theorem coe_algebraMap_OC (x : ℤ_[l]) :
-    ((algebraMap ℤ_[l] (OC l) x : OC l) : PadicComplex l) = zC x := rfl
-
 abbrev OCO (LL : FinExt l) : Type := OC l ⊗[ℤ_[l]] ↥(OL LL)
 
 def gRA {P : LocPrime l} (AI : LocAinf l P) (LL : FinExt l) (g : GQ l) : RA LL →ₐ[↥(OL LL)] RA LL :=

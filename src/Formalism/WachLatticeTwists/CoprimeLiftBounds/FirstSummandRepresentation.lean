@@ -61,10 +61,4 @@ def FirstSummandSubmodule (O : Type*) [CommRing O] [Algebra O A] (e₁ : A) : Su
 
 end Lattices
 
-def FirstSummandRepresentation : Prop :=
-  ∀ (O A T' G : Type*) [CommRing O] [Ring A] [Algebra O A] [CommRing T'] [Algebra T' A] [Group G]
-    (r : G →* A) (χ : G →* T'ˣ) (e₁ : A) (ε : G →* Oˣ),
-    ∃ ρ₁ : Representation O G (FirstSummandSubmodule O e₁), ∀ g b, ((ρ₁ g b : FirstSummandSubmodule O e₁) : A) =
-      ((ε g : Oˣ) : O) • (((χ g : T'ˣ) : T') • ((b : A) * r g⁻¹))
-
 end Formalism.RepresentationBoundsCohomology.BR

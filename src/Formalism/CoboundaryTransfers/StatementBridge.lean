@@ -1,7 +1,7 @@
 module
 
 public import Formalism.CoboundaryTransfers.StatementAPI
-public import Formalism.WachModuleLifts.StatementW
+public import Mathlib
 public import Formalism.LagrangeIdealLifts.Statement
 public import Formalism.FrobeniusContraction.Statement
 
@@ -26,35 +26,7 @@ end CL
 
 section CLback
 
-def Base.QLin {O A : Type} [CommRing O] [CommRing A] [Algebra O A] (B : Base O A) : Prop :=
-  B.Q = B.X + (B.p : A)
-
 variable {p : ℕ} [Fact p.Prime] {A : Type} [CommRing A] [Algebra ℤ_[p] A]
-
-def toCL (B : Base ℤ_[p] A) (hp : B.p = p) (hq : B.QLin) (hφ : B.PhiX (p - 1)) :
-    CL.W.Base p A where
-  φA := B.φ
-  γA := B.γ
-  π₀ := B.X
-  q := B.Q
-  hq := by simpa [Base.QLin, hp] using hq
-  hφ := hφ
-  comm := B.comm
-
-def WachMod.toCL {B : Base ℤ_[p] A} {M : ℕ} {D : Type} [AddCommGroup D] [Module A D]
-    [Module ℤ_[p] D] [IsScalarTower ℤ_[p] A D] (W : WachMod B M D) (hp : B.p = p)
-    (hq : B.QLin) (hφ : B.PhiX (p - 1)) : CL.W.WachMod (toCL B hp hq hφ) M D where
-  N := W.N
-  φ := W.φ
-  γ := W.γ
-  φ_smul := W.φ_smul
-  γ_smul := W.γ_smul
-  comm := W.comm
-  π₀_inj := W.X_inj
-  q_bij := W.Q_bij
-  φ_N := W.φ_N
-  γ_N := W.γ_N
-  γ_qN := W.γ_QN
 
 end CLback
 

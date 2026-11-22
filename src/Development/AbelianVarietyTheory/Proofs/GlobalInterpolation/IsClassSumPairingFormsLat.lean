@@ -3,7 +3,8 @@ module
 public import Mathlib
 public import Formalism.LocalRingCardinality.DataAmbForm
 public import Formalism.LocalRingCardinality.DataKerP
-public import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.ColumnAvoidanceConditions
+public import Formalism.SharpRestriction.Divisibility.LiftErrorLocal
+public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MinkowskiBoundComapLattice
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeExtensionAlongFieldEmbeddingDuals
 public import Formalism.LocalToGlobal.Columns.ToHLat
@@ -244,9 +245,6 @@ open GlobalTheory.TestLat.Compare
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
   (P : LevFam X.E X.K R.r Pr.vGs)
-
-def dualVal (SG : Finset (HeightOneSpectrum (𝓞 X.E))) : CoefPk X (R.N R.m - 1) (DecoSet (E := X.E) (n := R.N R.m - 1) (ST := ∅) (SG := SG)) :=
-  roundPk X W.sgTrue fun d => d.1.N
 
 @[reducible] def dualGSD : GSD X.K := formGSD (dualVal W (rowSG Pr sel mu)) (rowTy Ch sel mu P)
 

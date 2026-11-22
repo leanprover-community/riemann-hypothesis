@@ -7,7 +7,6 @@ public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PointHeight
 public import Development.AbelianVarietyTheory.Definitions.Divisors.BlockSphereMeanLinForm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinSubstLinSubst
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaussAbsEqISup
 
 @[expose] public section
 

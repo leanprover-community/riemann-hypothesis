@@ -20,77 +20,7 @@ namespace GlobalTheory.SS
 section
 variable {R K : Type} [CommRing R] [Field K] [Algebra R K] {A A' : Over (Sp K)}
 
-theorem Model.isPullback_j (M : Model R A) :
-    IsPullback M.j A.hom M.Y.hom (spMap (algebraMap R K)) := by
-  refine IsPullback.of_iso (IsPullback.of_hasPullback M.Y.hom (spMap (algebraMap R K)))
-    ((Over.forget _).mapIso M.e) (Iso.refl _) (Iso.refl _) (Iso.refl _) ?_ ?_ (by simp) (by simp)
-  · have : M.e.hom.left ≫ M.e.inv.left = 𝟙 _ := by rw [← Over.comp_left, M.e.hom_inv_id]; rfl
-    simp [Model.j, reassoc_of% this]
-  · have := Over.w M.e.hom
-    simpa using this.symm
-
-theorem Model.quasiCompact_j (M : Model R A) : QuasiCompact M.j :=
-  MorphismProperty.of_isPullback M.isPullback_j.flip inferInstance
-
 variable [IsDomain R] [IsFractionRing R K]
-
-theorem Model.dominant_j (M : Model R A) : IsSchemeTheoreticallyDominant M.j := by
-  have := schemeTheoreticallyDominant_fractionField R K
-  have := M.smooth
-  exact IsSchemeTheoreticallyDominant.of_isPullback M.isPullback_j.flip
-
-theorem Model.hom_ext_of_flat (M : Model R A) {P X : Scheme.{0}} (p : P ⟶ M.Y.left) [Flat p]
-    (s : X ⟶ Sp R) [IsSeparated s] {a b : P ⟶ X} (hab : a ≫ s = b ≫ s)
-    (h : pullback.fst p M.j ≫ a = pullback.fst p M.j ≫ b) : a = b := by
-  have := M.dominant_j
-  have := M.quasiCompact_j
-  have : IsSchemeTheoreticallyDominant (pullback.fst p M.j) :=
-    IsSchemeTheoreticallyDominant.of_isPullback (IsPullback.of_hasPullback p M.j).flip
-  have : IsSeparated (Over.mk s).hom := ‹_›
-  have := over_ext_of_schemeTheoreticallyDominant (Y := Over.mk (a ≫ s)) (X := Over.mk s)
-    (pullback.fst p M.j) (a := Over.homMk a rfl) (b := Over.homMk b hab.symm) h
-  exact congr(($this).left)
-
-
-omit [IsDomain R] [IsFractionRing R K] in
-theorem Extends.comp_eq {M : Model R A} {N : Model R A'} {f : A ⟶ A'} {U : M.Y.left.Opens}
-    {g : U.toScheme ⟶ N.Y.left} (h : Extends M N f U g) {W : Scheme.{0}} (u : W ⟶ U.toScheme)
-    (v : W ⟶ A.left) (e : u ≫ U.ι = v ≫ M.j) : u ≫ g = v ≫ f.left ≫ N.j := by
-  have P := isPullback_morphismRestrict M.j U
-  rw [← P.lift_fst u v e, Category.assoc, h.2, P.lift_snd_assoc]
-
-theorem exists_glue (M : Model R A) (N : Model R A') (f : A ⟶ A') (U : M.Y.left → M.Y.left.Opens)
-    (g : ∀ y, (U y).toScheme ⟶ N.Y.left) (hU : ∀ y, y ∈ U y) (hg : ∀ y, Extends M N f (U y) (g y)) :
-    ∃ G : M.Y ⟶ N.Y, M.j ≫ G.left = f.left ≫ N.j ∧ ∀ y, (U y).ι ≫ G.left = g y := by
-  have := N.sep
-  have hc : TopologicalSpace.IsOpenCover U := by
-    rw [TopologicalSpace.IsOpenCover, eq_top_iff]
-    intro y _
-    exact TopologicalSpace.Opens.mem_iSup.2 ⟨y, hU y⟩
-  let 𝒰 := M.Y.left.openCoverOfIsOpenCover U hc
-  have hgl : ∀ x y, pullback.fst (U x).ι (U y).ι ≫ g x = pullback.snd (U x).ι (U y).ι ≫ g y := by
-    intro x y
-    refine M.hom_ext_of_flat (pullback.fst (U x).ι (U y).ι ≫ (U x).ι) N.Y.hom ?_ ?_
-    · rw [Category.assoc, Category.assoc, (hg x).1, (hg y).1, pullback.condition_assoc]
-    · rw [← Category.assoc, ← Category.assoc,
-        (hg x).comp_eq _ (pullback.snd _ M.j) (by rw [Category.assoc]; exact pullback.condition),
-        (hg y).comp_eq _ (pullback.snd _ M.j)
-          (by rw [Category.assoc, ← pullback.condition (f := (U x).ι)]; exact pullback.condition)]
-  obtain ⟨G, hG⟩ : ∃ G : M.Y.left ⟶ N.Y.left, ∀ y, (U y).ι ≫ G = g y :=
-    ⟨𝒰.glueMorphisms g hgl, fun y => 𝒰.ι_glueMorphisms g hgl y⟩
-  refine ⟨Over.homMk G (𝒰.hom_ext _ _ fun y : M.Y.left => ?_), ?_, hG⟩
-  · change (U y).ι ≫ G ≫ N.Y.hom = (U y).ι ≫ M.Y.hom
-    rw [← Category.assoc, hG, (hg y).1]
-  · refine Scheme.Cover.hom_ext (𝒰.pullback₁ M.j) _ _ fun y : M.Y.left => ?_
-    change pullback.fst M.j (U y).ι ≫ M.j ≫ G = pullback.fst M.j (U y).ι ≫ f.left ≫ N.j
-    rw [pullback.condition_assoc, hG]
-    exact (hg y).comp_eq _ _ pullback.condition.symm
-
-theorem ext_unique (M : Model R A) (N : Model R A') {a b : M.Y ⟶ N.Y}
-    (h : M.j ≫ a.left = M.j ≫ b.left) : a = b := by
-  have := M.dominant_j
-  have := N.sep
-  exact over_ext_of_schemeTheoreticallyDominant M.j h
 
 end
 
@@ -139,7 +69,6 @@ private lemma comp_eq_of_extends_of_genericFibre_comm {M : _root_.GlobalTheory.S
   have hP := isPullback_morphismRestrict M.j U
   have h2 := hg.2
   rw [← hP.lift_fst t s hts.symm, Category.assoc, h2, ← Category.assoc, hP.lift_snd]
-
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 open scoped CategoryTheory.Obj in

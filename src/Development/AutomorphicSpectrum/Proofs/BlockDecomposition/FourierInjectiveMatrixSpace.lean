@@ -19,9 +19,6 @@ noncomputable def entries (m n : ℕ) :
       left_inv := fun _ => rfl
       right_inv := fun _ => rfl }
 
-theorem entries_apply (m n : ℕ) (u : Fin m → Fin n → ℂ) (p : Fin m × Fin n) :
-    entries m n u p = u p.1 p.2 := rfl
-
 theorem pairing {m n : ℕ} {s : ℂ} (hs : s ≠ 0) (w : EuclideanSpace ℂ (Fin m × Fin n))
     (v : Fin m → Fin n → ℂ) :
     (s * Matrix.trace ((Matrix.of fun a j => -(w (a, j)) / conj s)ᴴ * Matrix.of v)).re =

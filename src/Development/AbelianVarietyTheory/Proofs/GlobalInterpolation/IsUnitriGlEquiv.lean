@@ -55,10 +55,6 @@ def glEquiv (k : ℕ) {A B : Type} [CommRing A] [CommRing B] (e : A ≃+* B) :
     GL (Fin k) A ≃* GL (Fin k) B :=
   Units.mapEquiv (e.mapMatrix (m := Fin k)).toMulEquiv
 
-theorem glEquiv_apply (k : ℕ) {A B : Type} [CommRing A] [CommRing B] (e : A ≃+* B)
-    (x : GL (Fin k) A) (i j : Fin k) :
-    (glEquiv k e x : Matrix (Fin k) (Fin k) B) i j = e ((x : Matrix (Fin k) (Fin k) A) i j) := rfl
-
 theorem isUnitri_glEquiv (k : ℕ) {A B : Type} [CommRing A] [CommRing B] (e : A ≃+* B)
     (x : GL (Fin k) A) :
     IsUnitri (x : Matrix (Fin k) (Fin k) A) ↔

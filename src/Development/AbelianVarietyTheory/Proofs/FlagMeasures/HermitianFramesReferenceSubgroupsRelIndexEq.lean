@@ -60,8 +60,6 @@ noncomputable def sumDiv : S.V × S.V →+ S.V :=
   (algebraMap F E S.th⁻¹ • (LinearMap.id : S.V →ₗ[E] S.V)).toAddMonoidHom.comp
     (AddMonoidHom.fst S.V S.V + AddMonoidHom.snd S.V S.V)
 
-theorem sumDiv_apply (p : S.V × S.V) : sumDiv S p = algebraMap F E S.th⁻¹ • (p.1 + p.2) := rfl
-
 theorem th_mul : algebraMap F E S.th * algebraMap F E S.th⁻¹ = 1 := by
   rw [← map_mul, mul_inv_cancel₀ (th_ne S), map_one]
 

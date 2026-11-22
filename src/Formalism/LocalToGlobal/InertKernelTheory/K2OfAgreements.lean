@@ -15,54 +15,9 @@ namespace Formalism.L2.KerInert.K2
 
 variable {p : ℕ} [Fact p.Prime]
 
-structure RecSide {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) where
-
-  Kr : Type
-  [fieldKr : Field Kr]
-
-  ι : Kr →+* Y.Kc
-
-  Ψ : ℕ → Type
-  [acgΨ : ∀ j, AddCommGroup (Ψ j)]
-  [modΨ : ∀ j, Module Kr (Ψ j)]
-
-  Φ : ℕ → Type
-
-  emb : ∀ j, Φ j → Ψ j
-
-  cmp : ∀ j, Φ j → X.Fm j
-
-  K : ∀ j, Ψ j → Ψ (j + 1)
-
-  KL : ∀ j, Φ j → Φ (j + 1)
-
-  Cl : ℕ → Type
-  [finCl : ∀ j, Fintype (Cl j)]
-
-  ns : ∀ j, Cl j → ℕ
-
-  E : ∀ j, Cl j → Φ j → Ψ (j + 1)
-
-  Sh : ∀ j, Set (Φ j)
-
-  Rd : ∀ j, X.Lv.comp (j + 1) → (X.Pj (j + 1)).Tup → Ψ (j + 1) →ₛₗ[ι] XspC (X.Pj (j + 1)) Y.Kc
-
-  e : ∀ j, ↥(Y.Rep j) ≃ Cl j
-
-  Sr : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (X.ZA j) Y.Kc
-
 attribute [instance] RecSide.fieldKr RecSide.acgΨ RecSide.modΨ RecSide.finCl
 
 variable {X : Sys p} {Y : Pend X}
-
-def TieChain (R : RecSide X Y) : Prop :=
-  ∀ j < X.mm, ∀ x : R.Φ j, X.Kz j (R.cmp j x) = R.cmp (j + 1) (R.KL j x)
-
-def TieDel (R : RecSide X Y) : Prop :=
-  ∀ j < X.mm, ∃ cK : Y.Kc, cK ∈ Y.Oc ∧ cK⁻¹ ∈ Y.Oc ∧ cK ≠ 0 ∧
-    ∀ (La : ↥(Y.Rep j)), ∀ x ∈ R.Sh j, ∀ (c' : X.Lv.comp (j + 1)) (L' : (X.Pj (j + 1)).Tup), (X.Pj (j + 1)).IsLatTup L' →
-      R.Rd j c' L' (R.E j (R.e j La) x) = cK • Y.DelF j (R.cmp j x La.1.1 La.1.2) (R.Sr j La.1 (c', L'))
-
 
 def KerOfSmul : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (X : Sys p) (Y : Pend X) (j : ℕ) (La : X.Lt j) (La' : X.Lt (j + 1))
@@ -80,7 +35,6 @@ variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G
 def SharpQ (t : KerEntTied ex) (Tw : TwForms D) (u : D.what₂.Word) (μ : D.what₂.Tup) (i : ℕ)
     (x : ((Tw.fm u μ).lat i).V) (Q : (D.chTw u μ).cls i → MvPolynomial (GL3Theta.FrV D (D.R.N i)) ℂ) : Prop :=
   (∀ c, Q c ∈ WtPol ℂ (nuT D u i)) ∧ ∀ c, (D.chTw u μ).sharp i ((Tw.fm u μ).emb i x c) = frPoly (t.O u μ) i (Q c)
-
 
 open Classical in
 def qOf (t : KerEntTied ex) (Tw : TwForms D) (u : D.what₂.Word) (μ : D.what₂.Tup) (i : ℕ) (x : ((Tw.fm u μ).lat i).V) :

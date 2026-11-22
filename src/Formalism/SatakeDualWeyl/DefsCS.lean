@@ -32,10 +32,6 @@ section Glob
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-local notation "ιA" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 theorem incl_int (b : 𝓞 E) : ιA (algebraMap (𝓞 E) E b) ∈ 𝒮 := by
   have := Formalism.UG.P.levelaf_tmul_mem (F := F) (E := E) b (one_mem (intAd F))
   exact this

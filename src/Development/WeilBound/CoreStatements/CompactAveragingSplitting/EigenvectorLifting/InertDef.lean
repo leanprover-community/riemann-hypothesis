@@ -1,7 +1,7 @@
 module
 
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.FinSplit
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ComplementaryThetaInert
+public import Mathlib
 
 @[expose] public section
 
@@ -42,11 +42,9 @@ def latW (W : Spc F E d) (v : Pl F) : AddSubgroup (Fin d → AE F E) :=
   AddSubgroup.closure {z | ∃ a : AF F, At (evFin F v) a ∧ evFin F v a ∈ v.adicCompletionIntegers F ∧
     ∃ y ∈ W.L, z = fun i => a • inclR (F := F) (AF F) (y i)}
 
-
 variable (σ) in
 def KAt (W : Spc F E d) (v : Pl F) : Set (UA σ W.J) :=
   {k | k ∈ UAt σ W (evFin F v) ∧ ∀ y ∈ latW W v, mat k *ᵥ y ∈ latW W v ∧ mat k⁻¹ *ᵥ y ∈ latW W v}
-
 
 variable (σ) in
 structure IsLagAt (W : Spc F E d) (v : Pl F) {m : ℕ} (Cy : Matrix (Fin d) (Fin m) (AE F E)) : Prop where
@@ -55,12 +53,10 @@ structure IsLagAt (W : Spc F E d) (v : Pl F) {m : ℕ} (Cy : Matrix (Fin d) (Fin
   iso : Cyᵀ * incM F W.J * Cy.map (cA σ) = 0
   free : ∀ t : Fin m → AE F E, At (evFin F v) t → Cy *ᵥ t = 0 → t = 0
 
-
 variable (σ) in
 def IsAdaptedAt (W : Spc F E d) (v : Pl F) {m : ℕ} (Cy : Matrix (Fin d) (Fin m) (AE F E)) : Prop :=
   ∃ Cx : Matrix (Fin d) (Fin m) (AE F E), IsLagAt σ W v Cx ∧
     ∀ y ∈ latW W v, ∃ s t : Fin m → AE F E, Cy *ᵥ s ∈ latW W v ∧ Cx *ᵥ t ∈ latW W v ∧ y = Cy *ᵥ s + Cx *ᵥ t
-
 
 variable (σ) in
 def PAt (W : Spc F E d) (v : Pl F) {m : ℕ} (Cy : Matrix (Fin d) (Fin m) (AE F E)) : Set (UA σ W.J) :=
@@ -85,10 +81,6 @@ def Iwasawa : Prop := AllPairs fun {F E} _ _ _ _ _ {σ _ d} _ _ W _ _ v => Even 
     ∀ c : UA σ W.J → ℂ, (∀ k ∈ KAt σ W v, ∀ k' ∈ KAt σ W v, c (k * k') = c k * c k') →
       (∀ k ∈ KAt σ W v, k ∈ PAt σ W v Cy → c k = 1) → ∀ k ∈ KAt σ W v, c k = 1
 
-def EvLine : Prop := AllPairs fun {F E} _ _ _ _ _ {σ n d} B _ W M _ v => ∀ (m : ℕ) (Cy : Matrix (Fin d) (Fin m) (AE F E)),
-  IsLagAt σ W v Cy → ∀ l l' : Fn F n d v →ₗ[ℂ] ℂ, IsEvAt M B.ψ v Cy l → IsEvAt M B.ψ v Cy l' → (∃ φ ∈ SB _, l φ ≠ 0) →
-    ∃ c : ℂ, ∀ φ ∈ SB _, l' φ = c * l φ
-
 def EvVac : Prop := AllPairs fun {F E} _ _ _ _ _ {σ n d} B _ W M _ v => (∃ w, Formalism.UG.IsInertAt F E v w) →
   ∀ (m : ℕ) (Cy : Matrix (Fin d) (Fin m) (AE F E)), IsLagAt σ W v Cy → IsAdaptedAt σ W v Cy →
     ∃ l : Fn F n d v →ₗ[ℂ] ℂ, IsEvAt M B.ψ v Cy l ∧ l (M.vac v) ≠ 0
@@ -99,14 +91,5 @@ def VacEigen : Prop := AllPairs fun {F _} _ _ _ _ _ {σ _ _} _ _ W M om v => ∀
 def InertOf : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E),
     B.IsGood σ → ∀ v : Pl F, IsEmpty (E →ₐ[F] Fv F v) → ∃ w, Formalism.UG.IsInertAt F E v w
-
-def CoinvEmbeds : Prop :=
-  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (a a' : ℕ)
-    (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →
-    ∀ v w, Formalism.UG.IsInertAt F E v w → v ∉ X.T → ∀ (m : ℕ) (Cy : Matrix (Fin (a + a')) (Fin m) (AE F E)), IsLagAt σ G.W v Cy →
-      (∀ l, IsEvAt G.M B.ψ v Cy l → (∃ φ ∈ SB _, l φ ≠ 0) → ∀ φ ∈ SB _, φ ∈ augAt om v ↔
-        ∀ h ∈ UAt σ G.W (evFin F v), ∀ φ₁, Acts (evFin F v) (om (1, h)) φ φ₁ → l φ₁ = 0) ∧
-      ∀ l, IsEvAt G.M' B.ψ v Cy l → (∃ φ ∈ SB _, l φ ≠ 0) → ∀ φ ∈ SB _, φ ∈ augAt om' v ↔
-        ∀ h ∈ UAt σ G.W (evFin F v), ∀ φ₁, Acts (evFin F v) (om' (1, h)) φ φ₁ → l φ₁ = 0
 
 end PositivityTheory.ThK

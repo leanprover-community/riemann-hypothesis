@@ -41,11 +41,6 @@ structure VolU (D : D7) (ρ : ℕ) where
 
 def IsContAut (V : HSp D) (φ : GA D V → ℂ) : Prop := (∀ γ ∈ GQ V, ∀ g, φ (γ * g) = φ g) ∧ Continuous φ
 
-structure IsThetaFam (ψ : AddChar (AF D.host.F) ℂ) (S L : HSp D) (Y : GA D S → WO S L → ℂ) : Prop where
-  theta : ∀ h, IsThetaFunO ψ S L (Y h)
-  cont : Continuous fun p : GA D S × WO S L => Y p.1 p.2
-  left : ∀ γ ∈ GQ S, ∀ h w, Y (γ * h) w = Y h (w ⬝ mt S γ)
-
 structure BesLev (D : D7) (ρ : ℕ) where
   V : HSp D
   V₀ : HSp D

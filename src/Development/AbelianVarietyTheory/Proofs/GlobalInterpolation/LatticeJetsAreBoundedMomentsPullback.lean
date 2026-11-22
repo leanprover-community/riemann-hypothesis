@@ -16,8 +16,6 @@ namespace GlobalTheory.MomN
 private def zcRing (q : ℕ) [Fact q.Prime] : ℤ_[q] →+* ℂ_[q] :=
   (algebraMap ℚ_[q] ℂ_[q]).comp PadicInt.Coe.ringHom
 
-private theorem zc_eq (q : ℕ) [Fact q.Prime] (a : ℤ_[q]) : zc a = zcRing q a := rfl
-
 private theorem isUnit_of_coprime (q : ℕ) [hq : Fact q.Prime] (s : ℕ) (h : Nat.Coprime s q) : IsUnit (s : ℤ_[q]) := by
   refine PadicInt.isUnit_iff.2 (le_antisymm (PadicInt.norm_le_one _) (not_lt.1 fun hlt => ?_))
   have h1 : ‖((s : ℤ) : ℤ_[q])‖ < 1 := by simpa using hlt

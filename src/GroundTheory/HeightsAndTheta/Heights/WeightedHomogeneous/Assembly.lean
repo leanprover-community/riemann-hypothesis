@@ -1,8 +1,6 @@
 module
 
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Objects
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Examples
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.DualModel
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Reading
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PChartLatSection
@@ -25,7 +23,6 @@ public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Statement
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.StatementsConeTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.ContractRelevant
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.VarsSubsetRangeBlockIncl
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Points

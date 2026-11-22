@@ -21,14 +21,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi
 
 variable {S : Scheme.{0}}
 
-structure PowerDatum (j : ℕ) (G' G : Over S) [GrpObj G'] [GrpObj G] where
-
-  pr : Fin j → (G' ⟶ G)
-
-  isMonHom : ∀ i, IsMonHom (pr i)
-
-  bij : ∀ T : Over S, Function.Bijective (fun (x : T ⟶ G') (i : Fin j) => x ≫ pr i)
-
 attribute [instance] PowerDatum.isMonHom
 
 section Power
@@ -36,7 +28,6 @@ section Power
 variable (G : Over S)
 
 variable [GrpObj G]
-
 
 end Power
 

@@ -21,11 +21,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 def IsLevi (d : SD σ) (x : d.G) : Prop :=
   ∃ t u : GL (Fin d.n) (AE F E), inFrame d.b x = Matrix.fromBlocks t.1 0 0 u.1
 
-def WhitAt (d : SD σ) (Φ : d.Fn) (x : d.G) : Prop :=
-  ∀ nb lam 𝓖, CoefData (σ := σ) (Y := d.Y) d.b nb lam 𝓖 → ∀ ε w, d.IsW ε w → ∀ T, IsND T →
-    HolValueAt (fun z => ∫ β, flat d.a (d.sec0 Φ) (s0 d.m d.n) z (w * nb β * x) * d.B.ψ (-d.tt (T.1.1 * β.1)) ∂lam)
-      (s0 d.m d.n) (d.orb T (d.om x Φ))
-
 def IsPureT {d : SD σ} (R : RD d) (Φ : d.Fn) : Prop :=
   ∃ (P : InfinitePlace F → PX d.m d.n)
     (g : ∀ v : HeightOneSpectrum (𝓞 F), (Fin d.m × Fin d.n × Fin 2 → v.adicCompletion F) → ℂ),

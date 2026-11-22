@@ -115,14 +115,6 @@ theorem succMinOf_image {W : Type*} [AddCommGroup W] [Module K W] {M : W → ℝ
     succMinOf K M (f '' S) i = succMinOf K N S i := by
   rw [succMinOf, succMinRadii_image f hf hM, succMinOf]
 
-theorem succMinOf_const_mul {c : ℝ} (hc : 0 < c) :
-    succMinOf K (fun x => c * N x) S i = c * succMinOf K N S i := by
-  have : succMinRadii K (fun x => c * N x) S i = c • succMinRadii K N S i := by
-    ext r
-    rw [Set.mem_smul_set_iff_inv_smul_mem₀ hc.ne']
-    simp only [mem_succMinRadii_iff, smul_eq_mul, le_inv_mul_iff₀ hc, mul_zero]
-  rw [succMinOf, this, Real.sInf_smul_of_nonneg hc.le, succMinOf, smul_eq_mul]
-
 theorem succMinOf_mem (hfin : ∀ R, {x | x ∈ S ∧ N x ≤ R}.Finite)
     (hi : (i : Cardinal) ≤ Module.rank K (span K S)) :
     succMinOf K N S i ∈ succMinRadii K N S i := by
@@ -146,11 +138,6 @@ theorem succMinOf_pos (hfin : ∀ R, {x | x ∈ S ∧ N x ≤ R}.Finite)
     (hi : (i : Cardinal) ≤ Module.rank K (span K S)) : 0 < succMinOf K N S i := by
   obtain ⟨-, v, hv, hS⟩ := mem_succMinRadii_iff.1 (succMinOf_mem hfin hi)
   exact (hN _ (hS ⟨0, h1⟩).1 (hv.ne_zero _)).trans_le (hS ⟨0, h1⟩).2
-
-theorem succMinOf_one_le {x : V} (hx : x ∈ S) (h0 : x ≠ 0) (hN : 0 ≤ N x) :
-    succMinOf K N S 1 ≤ N x :=
-  succMinOf_le_of_linearIndependent (v := fun _ : Unit => x)
-    (linearIndependent_unique_iff.2 h0) (by simp) hN (fun _ => hx) (fun _ => le_rfl)
 
 theorem le_succMinOf_of_forall {a : ℝ} (h : ∀ x ∈ S, x ≠ 0 → a ≤ N x) (h1 : 1 ≤ i)
     (hi : (i : Cardinal) ≤ Module.rank K (span K S)) : a ≤ succMinOf K N S i :=
@@ -223,9 +210,6 @@ theorem succMin_pos_of_isZLattice [FiniteDimensional ℝ E] [DiscreteTopology L]
     (h1 : 1 ≤ i) (hi : i ≤ finrank ℝ E) : 0 < succMin L i :=
   succMin_pos h1 (by rwa [finrank_span_of_isZLattice])
 
-theorem minNorm_le_norm {x : E} (hx : x ∈ L) (h0 : x ≠ 0) : minNorm L ≤ ‖x‖ :=
-  succMinOf_one_le hx h0 (norm_nonneg x)
-
 theorem le_minNorm {a : ℝ} (hL : L ≠ ⊥) (h : ∀ x ∈ L, x ≠ 0 → a ≤ ‖x‖) : a ≤ minNorm L :=
   le_succMinOf_of_forall h le_rfl (one_le_rank_span_of_ne_bot hL)
 
@@ -252,24 +236,6 @@ instance instIsZLatticeInSpan [DiscreteTopology L] : IsZLattice ℝ (inSpan L) :
 theorem succMin_inSpan (L : Submodule ℤ E) (i : ℕ) : succMin (inSpan L) i = succMin L i :=
   succMin_comap_linearIsometry (span ℝ (L : Set E)).subtypeₗᵢ
     (fun x hx => ⟨⟨x, subset_span hx⟩, rfl⟩) i
-
-theorem smul_eq_map (c : ℝ) (L : Submodule ℤ E) :
-    c • L = L.map ((c • LinearMap.id : E →ₗ[ℝ] E).restrictScalars ℤ) := rfl
-
-theorem mem_smul_iff_inv_smul_mem {c : ℝ} (hc : c ≠ 0) {x : E} : x ∈ c • L ↔ c⁻¹ • x ∈ L := by
-  rw [← SetLike.mem_coe, Submodule.coe_pointwise_smul, Set.mem_smul_set_iff_inv_smul_mem₀ hc,
-    SetLike.mem_coe]
-
-theorem succMin_smul {c : ℝ} (hc : c ≠ 0) (L : Submodule ℤ E) (i : ℕ) :
-    succMin (c • L) i = |c| * succMin L i := by
-  rw [succMin, succMin, ← succMinOf_const_mul (abs_pos.2 hc)]
-  have h : ((c • L : Submodule ℤ E) : Set E) = (c • LinearMap.id : E →ₗ[ℝ] E) '' (L : Set E) := rfl
-  rw [h]
-  exact succMinOf_image (M := fun x : E => ‖x‖) (N := fun x : E => |c| * ‖x‖)
-    (c • LinearMap.id : E →ₗ[ℝ] E) (smul_right_injective E hc) (fun x _ => by simp [norm_smul])
-
-theorem minNorm_smul {c : ℝ} (hc : c ≠ 0) (L : Submodule ℤ E) :
-    minNorm (c • L) = |c| * minNorm L := succMin_smul hc L 1
 
 end Normed
 
@@ -302,18 +268,6 @@ theorem inner_innerDualBasis {ι : Type*} [Finite ι] [DecidableEq ι] (b : Basi
 theorem dualLattice_span_basis {ι : Type*} [Finite ι] [DecidableEq ι] (b : Basis ι ℝ E) :
     dualLattice (span ℤ (Set.range b)) = span ℤ (Set.range (innerDualBasis b)) :=
   LinearMap.BilinForm.dualSubmodule_span_of_basis _ _ b
-
-theorem dualLattice_smul {c : ℝ} (hc : c ≠ 0) (L : Submodule ℤ E) :
-    dualLattice (c • L) = c⁻¹ • dualLattice L := by
-  ext y
-  rw [mem_smul_iff_inv_smul_mem (inv_ne_zero hc), inv_inv, mem_dualLattice, mem_dualLattice]
-  constructor
-  · intro h x hx
-    have := h (c • x) (Submodule.smul_mem_pointwise_smul _ _ _ hx)
-    rwa [real_inner_smul_left, ← real_inner_smul_right] at this
-  · intro h x hx
-    have := h _ ((mem_smul_iff_inv_smul_mem hc).1 hx)
-    rwa [real_inner_smul_left, real_inner_smul_right, inv_mul_cancel_left₀ hc] at this
 
 variable [FiniteDimensional ℝ E] (L) [DiscreteTopology L] [IsZLattice ℝ L]
 
@@ -361,9 +315,6 @@ theorem covolume_mul_covolume_dualLattice :
   rw [hL, dualLattice_span_basis, covolume_span_basis o, covolume_span_basis o, ← abs_mul,
     det_mul_det_innerDualBasis, abs_one]
 
-theorem covolume_dualLattice : ZLattice.covolume (dualLattice L) = (ZLattice.covolume L)⁻¹ :=
-  eq_inv_of_mul_eq_one_right (covolume_mul_covolume_dualLattice L)
-
 end Dual
 
 section Quadratic
@@ -371,11 +322,6 @@ section Quadratic
 open scoped InnerProductSpace
 
 variable {V : Type*} [AddCommGroup V] [Module ℝ V]
-
-def succMinQuad (Q : QuadraticForm ℝ V) (L : Submodule ℤ V) (i : ℕ) : ℝ :=
-  succMinOf ℝ (fun x => √(Q x)) (L : Set V) i
-
-def QuadSpace (Q : QuadraticForm ℝ V) (_hQ : Q.PosDef) : Type _ := V
 
 namespace QuadSpace
 
@@ -395,28 +341,6 @@ variable {Q Q' : QuadraticForm ℝ V} {L L' : Submodule ℤ V} {i j : ℕ}
 end Quadratic
 
 section Examples
-
-theorem mem_one_real_iff {x : ℝ} : x ∈ (1 : Submodule ℤ ℝ) ↔ ∃ m : ℤ, (m : ℝ) = x := by
-  simp [Submodule.mem_one]
-
-theorem minNorm_one_real : minNorm (1 : Submodule ℤ ℝ) = 1 := by
-  have h1 : (1 : ℝ) ∈ (1 : Submodule ℤ ℝ) := mem_one_real_iff.2 ⟨1, by simp⟩
-  refine le_antisymm (by simpa using minNorm_le_norm h1 one_ne_zero) (le_minNorm ?_ ?_)
-  · exact (Submodule.ne_bot_iff _).2 ⟨1, h1, one_ne_zero⟩
-  · intro x hx h0
-    obtain ⟨m, rfl⟩ := mem_one_real_iff.1 hx
-    rw [Real.norm_eq_abs]
-    exact_mod_cast Int.one_le_abs (by exact_mod_cast h0)
-
-theorem dualLattice_one_real : dualLattice (1 : Submodule ℤ ℝ) = 1 := by
-  ext y
-  rw [mem_dualLattice, mem_one_real_iff]
-  constructor
-  · intro h
-    simpa using h 1 (mem_one_real_iff.2 ⟨1, by simp⟩)
-  · rintro ⟨m, rfl⟩ x hx
-    obtain ⟨k, rfl⟩ := mem_one_real_iff.1 hx
-    exact ⟨m * k, by simp⟩
 
 end Examples
 

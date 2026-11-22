@@ -4,7 +4,9 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.InjectiveOfSmulMemRange
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PrismaticDieudonnePerfd
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SettingInhabited
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PrismaticDieudonneAt
+public import Development.AbelianVarietyTheory.Definitions.Divisors.XiMulNu
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZeta
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqZeroOfCobOneEqZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FontaineAinfLocalDomainXiAdicOrder
 
 @[expose] public section
@@ -19,37 +21,6 @@ namespace GlobalTheory.CompanionTheory.Published
 
 open GlobalTheory GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta
 
-def PrismaticDieudonneIntegersAt {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
-    [IsAdicComplete (span {(p : O)}) O] (ε : PreTilt O p) (h0 : zeta ε 0 = 1) : Prop :=
-  ∃ (M : PDivGroup p O → ModuleCat.{0} (Ainf p O))
-    (map : ∀ G H : PDivGroup p O, (G ⟶ H) →+ (M H →ₗ[Ainf p O] M G))
-    (φ : ∀ G : PDivGroup p O, M G →ₛₗ[(frobenius : Ainf p O →+* Ainf p O)] M G)
-    (lie : ∀ G : PDivGroup p O, M G →ₛₗ[fontaineTheta O p] G.dual.Lie)
-    (du : ∀ G : PDivGroup p O, M G.dual ≃ₗ[Ainf p O] Module.Dual (Ainf p O) (M G))
-    (l : M (PDivGroup.mu p O)) (e : M (const p O)),
-    (∀ G : PDivGroup p O, Module.Projective (Ainf p O) (M G) ∧ Module.Finite (Ainf p O) (M G) ∧
-      (∀ q, Module.rankAtStalk (R := Ainf p O) (M G) q = G.height) ∧
-      (∀ m, ∃ n, φ G n = frobenius (xi ε) • m) ∧
-      Function.Surjective (lie G) ∧ (∀ m, lie G m = 0 ↔ ∃ n, φ G m = frobenius (xi ε) • n) ∧
-      map G G (𝟙 G) = LinearMap.id) ∧
-    (∀ (G H K : PDivGroup p O) (f : G ⟶ H) (g : H ⟶ K), map G K (f ≫ g) = map G H f ∘ₗ map H K g) ∧
-    (∀ (G H : PDivGroup p O) (f : G ⟶ H) (m : M H),
-      map G H f (φ H m) = φ G (map G H f m) ∧
-      lie G (map G H f m) = lieMap H.dual G.dual (dualHom G H f) (lie H m) ∧
-      ∀ x : M G.dual, du H (map H.dual G.dual (dualHom G H f) x) m = du G x (map G H f m)) ∧
-    Function.Bijective (LinearMap.toSpanSingleton (Ainf p O) _ l) ∧
-    Function.Bijective (LinearMap.toSpanSingleton (Ainf p O) _ e) ∧
-    φ _ l = frobenius (xi ε) • l ∧ φ _ e = e ∧
-    map _ _ (epsHom (zeta ε) h0 (zeta_succ_pow ε)) l = Sandwich.mu ε • e ∧
-    du (PDivGroup.mu p O) e l = 1
-
-def PrismaticDieudonneIntegers : Prop :=
-  ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
-    (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C], v.Integers O →
-    ∀ [Fact ¬IsUnit (p : O)] [IsAdicComplete (span {(p : O)}) O] (ε : PreTilt O p)
-      (hε : IsPrimitiveRoot (root ε).untilt p),
-      PrismaticDieudonneIntegersAt ε (GlobalTheory.Dieudonne.untilt_root_zero hε)
-
 end GlobalTheory.CompanionTheory.Published
 
 namespace GlobalTheory.CompanionTheory.Ar.Prism
@@ -62,7 +33,6 @@ open GlobalTheory.Dieudonne GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairi
 
 variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
   [IsAdicComplete (span {(p : O)}) O]
-
 
 omit [IsAdicComplete (span {(p : O)}) O] in
 theorem frobenius_ofPadic_eq (c : ℤ_[p]) :

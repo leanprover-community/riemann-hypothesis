@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SkewLatticeInverseDifferentPowCovolume
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsVolData
 
 @[expose] public section
 

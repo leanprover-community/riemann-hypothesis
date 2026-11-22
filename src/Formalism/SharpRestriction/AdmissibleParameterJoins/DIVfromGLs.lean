@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLl
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLm
-public import Formalism.SharpRestriction.GlobalSchurBounds.WachTwistLocalTheory
 public import Formalism.SharpRestriction.GlobalSchurBounds.JointsF
 public import Formalism.LocalRingCardinality.IntCastDvdOfDvdIntegers
 

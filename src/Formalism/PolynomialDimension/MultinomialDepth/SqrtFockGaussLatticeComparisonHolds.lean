@@ -732,7 +732,6 @@ theorem harQuot_of (H1 : HarProj) (H2 : GaussProj) : HarQuot := by
 
 end Har4
 
-theorem fockGaussLatticeComparison_holds : FockGaussXY := Har4.fockGaussLatticeComparison_holds
 theorem gaussLemmaPairing_holds : GaussLemmaH := Har4.gaussLemmaPairing_holds
 theorem isotypicLattice_holds : LevelLattice := Har4.isotypicLattice_holds
 theorem gaussLatticeProjection_holds : GaussProj := Har4.gaussProj_of fockLatticeProjection_holds

@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRham
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRhamMap
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Embedding
-public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Section
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Action
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.MapEqPadicPowCyclotomicCharacter
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Comparison
@@ -15,11 +14,6 @@ public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods
 
 namespace LogSeriesAlt
 section
-structure IsCrisDR (l : ℕ) [Fact l.Prime] (f : (Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l)) →+* (Reformulated.AutPerF.BdR l ↥(PadicComplexInt l))) : Prop where
-  on0 : ∀ a : ↥(Reformulated.AutPerF.acrisZero l ↥(PadicComplexInt l)), f (((algebraMap (Reformulated.AutPerF.Acris l ↥(PadicComplexInt l)) (Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))).comp (algebraMap ↥(Reformulated.AutPerF.acrisZero l ↥(PadicComplexInt l)) (Reformulated.AutPerF.Acris l ↥(PadicComplexInt l)))) a) = ((algebraMap (Reformulated.AutPerF.BdRPlus l ↥(PadicComplexInt l)) (Reformulated.AutPerF.BdR l ↥(PadicComplexInt l))).comp (algebraMap (Reformulated.AutPerF.AinfInv l ↥(PadicComplexInt l)) (Reformulated.AutPerF.BdRPlus l ↥(PadicComplexInt l)))) (a : (Reformulated.AutPerF.AinfInv l ↥(PadicComplexInt l)))
-  bdd : ∀ n : ℕ, ∃ N : ℕ, ∀ x : (Reformulated.AutPerF.Acris l ↥(PadicComplexInt l)), ∃ (y : (Reformulated.AutPerF.BdRPlus l ↥(PadicComplexInt l))) (a : (Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))),
-    f (algebraMap ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))) x) = algebraMap ((Reformulated.AutPerF.BdRPlus l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.BdR l ↥(PadicComplexInt l))) y ∧
-      Reformulated.AutPerF.BdRPlus.eval l ↥(PadicComplexInt l) n (((l : ℕ) : (Reformulated.AutPerF.BdRPlus l ↥(PadicComplexInt l))) ^ N * y) = Ideal.Quotient.mk _ (algebraMap ((Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.AinfInv l ↥(PadicComplexInt l))) a)
 
 namespace Bridge.CrisIncl.LogSeriesLemmas
 

@@ -7,7 +7,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceEle
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceElementsActByGelfandValues
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TracedQminorComatrixTruncatedInverseStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QdetPolyMapMonicStatement
-public import Development.WeilBound.CoreStatements.SatakeConjugation.CapEqQdet
 
 @[expose] public section
 

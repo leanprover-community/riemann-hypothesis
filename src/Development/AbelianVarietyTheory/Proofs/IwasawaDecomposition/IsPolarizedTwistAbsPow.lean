@@ -124,21 +124,6 @@ theorem loc_of_isAbsPow {ν : HChar E} {s : ℝ} (hν : ν.IsAbsPow s) (w : Heig
 
 variable [_root_.NumberField.IsTotallyComplex E] (hL : GlobalTheory.Published.LocalLanglandsGL) (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL)
 
-
-
-include hF in
-theorem exists_hasSat (π : CG E a) (h : IsPlaceOver A w) (hu : (locPar hL π h).unr) :
-    ∃ B : Multiset ℂˣ, π.HasSat w B ∧ (locPar hL π h).frobEig = B.map fun b => ((b⁻¹ : ℂˣ) : ℂ) := by
-  induction π using Quotient.inductionOn with | _ π =>
-  obtain ⟨σ, hσ, -⟩ := LocEx.exists_isLocComp hF E a π w
-  have e : locPar hL (Quotient.mk _ π) h = _ := locPar_mk hL hσ h
-  rw [e] at hu
-  obtain ⟨α, hα⟩ := exists_hasSatake_of_unr (isRec_locRec hL h) hu
-  refine ⟨Finset.univ.val.map α, hasSatGL_locRep hσ (GlobalTheory.LFun.SatCompare.hasSatGL_of_hasSatakeGL
-    ((GlobalTheory.LGrp.SatakeCompare.hasSatakeGL_iff _ _ _ _ _).2 ⟨α, rfl, hα⟩)), ?_⟩
-  rw [e, rec_eq_diag (isRec_locRec hL h) hα, WD.frobEig_diag, Multiset.map_map]
-  rfl
-
 end Local
 
 section Polar
@@ -235,7 +220,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N} {l : ℕ} [Fact l.Prime]
 
-
 variable (N) in
 def FrobFam (ι : Qbar l ≃+* ℂ) (f : PlE H → ℂ[X]) : Prop :=
   ∃ F : Qbar l → G H.E N.Om → Qbar l, (∀ z, Continuous (F z)) ∧
@@ -273,7 +257,6 @@ theorem FrobFam.eq_of_split (hC : GlobalTheory.Published.ChebotarevDegreeOne) {f
   refine Polynomial.funext fun z => ?_
   obtain ⟨z, rfl⟩ := ι.surjective z
   rw [← a _ σ (N.plOm.2 w) hσ, ← a' _ σ (N.plOm.2 w) hσ, hF]
-
 
 variable (A ι) in
 def CuspFam : Prop := ∀ (a : ℕ), 1 ≤ a → ∀ π : A.CG a, A.csd π → ∀ s : ℝ, GlobalTheory.GalOfCusp.RegAlgShift A π s →
@@ -328,15 +311,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) {D : D7} {T : WDTie D.nd D.naut}
   (C : CGTrue hL D T)
-
-
-include hF in
-theorem readsCusp : haveI := host_isCMField D.host; ReadsCusp D.naut fun a π => (C.e a π).1 := by
-  have := host_isCMField D.host
-  refine ⟨fun a _ => Subtype.val_injective.comp (C.e a).injective, fun a π _ => (C.e a π).2, fun a π w _ hu => ?_⟩
-  rw [T.frobEig w _ hu, C.loc]
-  exact exists_hasSat hL hF _ _ (by have e := (T.unr w _).1 hu; rwa [C.loc] at e)
-
 
 end True
 

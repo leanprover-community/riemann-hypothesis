@@ -17,8 +17,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Published
 
-def RosatiTracePosSt : Prop := RosatiPositiveSt
-
 namespace RosatiTracePosSt
 
 open GlobalTheory.ThetaDetCompare GlobalTheory.ThetaCoord

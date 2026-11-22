@@ -118,20 +118,6 @@ lemma flag_nilp_all {m N : ℕ} (g : Matrix (Fin N) (Fin N) ℂ) (v : Fin m → 
   have e : m = (m - (a.val + 1)) + (a.val + 1) := by omega
   rw [e, pow_add, ← mulVec_mulVec, flag_nilp g v hv a, mulVec_zero]
 
-lemma conj_pow {N : ℕ} (A G Gi : Matrix (Fin N) (Fin N) ℂ) (h1 : Gi * G = 1) (h2 : G * Gi = 1) :
-    ∀ p : ℕ, (Gi * A * G) ^ p = Gi * A ^ p * G := by
-  intro p
-  induction p with
-  | zero => simp [h1]
-  | succ p ih =>
-    rw [pow_succ, ih, pow_succ]
-    calc
-      Gi * A ^ p * G * (Gi * A * G) = Gi * A ^ p * (G * Gi) * A * G := by
-        simp only [Matrix.mul_assoc]
-      _ = Gi * (A ^ p * A) * G := by
-        rw [h2]
-        simp only [Matrix.mul_one, Matrix.mul_assoc]
-
 lemma fvec_lt (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
     fvec k r z ⟨a.val, by omega⟩ = bvec (eI k r a) := by
   unfold fvec; rw [dite_eq_left a.isLt]

@@ -196,10 +196,6 @@ private noncomputable def mv {u : HeightOneSpectrum (𝓞 E)} (ψ : u.adicComple
     simp only [MulMemClass.coe_mul, map_mul]
     exact LinearMap.toMatrix_mul e _ _
 
-private theorem mv_apply {u : HeightOneSpectrum (𝓞 E)} (ψ : u.adicCompletion E →+* ℂ) (lam : DomWeight n) {d : ℕ}
-    (e : Module.Basis (Fin d) ℂ (nablaSq ℂ n lam)) (g : finU (E := E) (n := n)) :
-    mv ψ lam e g = LinearMap.toMatrix e e (GlobalTheory.Branching.sqRep ℂ n lam (GeneralLinearGroup.map ψ (cLoc u g.1))) := rfl
-
 private theorem expand {V : Type} [Fintype V] {W : V → Type} [∀ v, AddCommGroup (W v)] [∀ v, Module ℂ (W v)]
     {N : Type} [AddCommGroup N] [Module ℂ N] {d : V → ℕ} (f : (∀ v, W v) →ₘₗ[ℂ] N)
     (e : ∀ v, Module.Basis (Fin (d v)) ℂ (W v)) (T : ∀ v, W v →ₗ[ℂ] W v) (i : ∀ v, Fin (d v)) :

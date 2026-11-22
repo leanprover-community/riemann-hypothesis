@@ -77,19 +77,6 @@ theorem local_flatness_results (h : Loc) : Loc8 := {
   tKP3 := Joints.restriction_dimension_holds
   tRES := CountingStatementReduction.residue_division_transfer }
 
-def LocalDataSystem {D : D7} {L : SizeData₂ D} (X : Inst D L) (Y : LatInst D) (low : D.what₂.Word → D.what₂.places.Pl → ℝ) : Prop :=
-  ∀ hT : GatTies D, LatTied hT X Y → ∀ (u : D.what₂.Word) (w : D.what₂.places.Pl)
-    (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)),
-    ∃ (_ : Fact (D.what₂.places.resChar w).Prime) (std : _) (vp : _) (unif : _) (eO : _) (eO_spec : _) (dG : _)
-      (dG_spec : _) (om : _) (Y5 : FormalGroupSystem.Pend (FormalGroupSystem.Sys.mk (D.gat u w hg) (Y.Fl u w hg) (Y.Lv u w hg)
-        (Y.Ch u w hg) std vp unif eO eO_spec dG dG_spec om)),
-      (FormalGroupSystem.adm1 D → FormalGroupSystem.adm6 D _ Y5 → FormalGroupSystem.admitted D _ Y5) ∧
-      ∃ Fn : Fin (D.gat u w hg).P.nV → ℕ → ℝ,
-        (∀ v, v ∉ (reps X (D.what₂.places.resChar w)).image (Y.vOf u w hg) → ∀ j < D.R.m, Y5.LowAt j v (Fn v (j + 1))) ∧
-        low u w ≤ (∑ j ∈ Finset.Icc 1 D.R.m,
-          ∑ v ∈ Finset.univ \ (reps X (D.what₂.places.resChar w)).image (Y.vOf u w hg), Fn v j) -
-            ∑ j ∈ Finset.range D.R.m, (dG j : ℝ)
-
 theorem hypIAt_ev {eps : ℝ} (Fm : FamP eps) (hLa : 0 < Fm.GK.La) (hCN : CornerGLContinuity.FamilyWindowLogBound Fm) :
     Ev Fm fun x i => Joints.HypIAt (Fm.D x i) (Fm.L x i) (Fm.Gx x i) Fm.GK := by
   obtain ⟨i0⟩ := Fm.Ix_zero
@@ -115,16 +102,6 @@ theorem hypIAt_ev {eps : ℝ} (Fm : FamP eps) (hLa : 0 < Fm.GK.La) (hCN : Corner
   obtain ⟨_, _, _, _, _, _, hLaG⟩ := Fm.fills x hx1 i w
   intro p hc hp0 t0 ht0
   exact ⟨a31.1, a31.2.2 _ hc.2.2.2.1, ZetaZeros p hc hp0 t0 ht0, windows_of Fm.GK (Fm.params x hx1 i) hLaG p t0⟩
-
-structure Fam {eps : ℝ} (Fm : FamP eps) : Prop where
-
-  gatE : Ev Fm fun x i => TrivialStabiliserFiniteClasses (Fm.D x i)
-
-  stdSub : Ev Fm fun x i => Joints.StdSubAt (Fm.D x i)
-
-  localSystemLowTerm : Ev Fm fun x i => LocalDataSystem (Fm.Gx x i) (Fm.Gy x i) (AuxBlock8.lowU (Fm.D x i))
-
-  localSystemSizeLowTerm : Ev Fm fun x i => LocalDataSystem (Fm.Gx x i) (Fm.Gy x i) (lowFE (Fm.L x i))
 
 section NoKer
 

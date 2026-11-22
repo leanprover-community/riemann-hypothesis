@@ -207,9 +207,6 @@ namespace GlobalTheory.FrameIdeal
 
 variable {D : D7}
 
-local notation "σA" => Formalism.UG.sigR D.sp.cm.sig (Formalism.L2.Herm.Af D.host.F)
-local notation "ιA" => Formalism.UG.inclE (F := D.host.F) (Formalism.L2.Herm.Af D.host.F)
-
 def frameGram (T : HSp D) (β : GL (Fin T.rank) (Lev.EAf D)) : Matrix (Fin T.rank) (Fin T.rank) (Lev.EAf D) :=
   Formalism.UG.cT σA β.1 * T.gram.map ιA * β.1
 

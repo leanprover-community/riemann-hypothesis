@@ -50,7 +50,6 @@ theorem grpScheme_square_hom_ext_fst_snd {f g : ⋀[R]^2 M →ₗ[R] N}
   rw [hv]
   exact h _ _
 
-
 variable (R M) in
 def wB : M →ₗ[R] M →ₗ[R] ⋀[R]^2 M :=
   LinearMap.mk₂ R (fun a b ↦ exteriorPower.ιMulti R 2 ![a, b])
@@ -115,13 +114,11 @@ section Coh
 
 variable {R : Type} [CommRing R] {C : Type} [Category.{0} C] {F : C ⥤ CommAlgCat.{0} R}
 
-
 variable (F) in
 def fn2 : cechDeRhamTotalCocyclesTwo F →ₗ[R] Z2 F where
   toFun c := ⟨c.1.1, (mem_cechDeRhamTotalCocyclesTwo_iff.1 c.2).1⟩
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
-
 
 variable (F) in
 def rho : Hyp2 F →ₗ[R] H2 F :=
@@ -152,8 +149,6 @@ theorem key_D (hs : Function.Surjective (toO F)) (f : C1 F) (hf : f ∈ Z1 F) :
 
 def cl (hcl : Closed1 F = ⊤) : Glob1 F →ₗ[R] cechDeRhamTotalCocyclesOne F :=
   formZZ F ∘ₗ LinearMap.codRestrict (Closed1 F) LinearMap.id (fun w ↦ by rw [hcl]; trivial)
-
-theorem cl_coe (hcl : Closed1 F = ⊤) (w : Glob1 F) : (cl hcl w).1 = (0, w.1) := rfl
 
 def Lc (hcl : Closed1 F = ⊤) (τ : H1 F →ₗ[R] cechDeRhamTotalCocyclesOne F) : H1 F ⊗[R] Glob1 F →ₗ[R] cechDeRhamTotalCocyclesTwo F :=
   TensorProduct.lift ((cupZZ F).compl₁₂ τ (cl hcl))
@@ -313,7 +308,6 @@ theorem inj_N (hs : Function.Surjective (toO F)) (hcl : Closed1 F = ⊤) (c : To
   rw [map_sub, hβc, sub_zero, h] at h2
   exact h2
 
-
 set_option maxHeartbeats 1000000 in
 theorem surj_step (hcl : Closed1 F = ⊤) (τ : H1 F →ₗ[R] cechDeRhamTotalCocyclesOne F)
     (hτ : ∀ v, H1.mk F (cechDeRhamTotalCocyclesOne.fn F (τ v)) = v) (mu : Z1 F ⊗[R] Glob1 F →ₗ[R] A1 F)
@@ -367,7 +361,6 @@ theorem surj_step (hcl : Closed1 F = ⊤) (τ : H1 F →ₗ[R] cechDeRhamTotalCo
     rw [← e]
     exact add_rearr c b1 _ b2
   rw [e3, map_add (f := _), map_add (f := _), map_add (f := _), e1, e2, add_zero, add_zero, add_comm]
-
 
 set_option maxHeartbeats 1000000 in
 theorem wedgeHyp_of (hproj : Module.Projective R (H1 F)) (hcl : Closed1 F = ⊤)

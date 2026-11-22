@@ -38,10 +38,6 @@ theorem isLatticeEmb_subtype {Λ : Submodule (𝓞 K) (Fin r → K)} (hΛ : IsLa
     IsLatticeEmb Λ.subtype :=
   ⟨Λ.injective_subtype, by rwa [Submodule.range_subtype]⟩
 
-theorem isLatticeEmb_of_span [Module.Finite (𝓞 K) M] {φ : M →ₗ[𝓞 K] (Fin r → K)}
-    (hi : Function.Injective φ) (hs : Submodule.span K (Set.range φ) = ⊤) : IsLatticeEmb φ :=
-  ⟨hi, by rw [LinearMap.range_eq_map]; exact Module.Finite.fg_top.map _, hs⟩
-
 namespace IsLatticeEmb
 
 variable {φ : M →ₗ[𝓞 K] (Fin r → K)}

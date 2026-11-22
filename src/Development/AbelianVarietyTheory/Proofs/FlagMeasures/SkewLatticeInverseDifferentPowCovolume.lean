@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ImV
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ProdFundamentalDomainOfExtensionStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AddFundamentalDomainMeasureEqOfCountableStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsFundamentalDomainSndOfTwoSmulMemStatement

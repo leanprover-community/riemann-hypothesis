@@ -129,18 +129,6 @@ section Examples
 
 variable {K : Type*} [DecidableEq K] {ι : K → Type*}
 
-theorem isMultiProjPrime_bot {R : Type*} [CommRing R] [IsDomain R] [∀ k, Nonempty (ι k)] :
-    IsMultiProjPrime (⊥ : Ideal (MRing ι R)) := by
-  refine ⟨Ideal.isPrime_bot, ?_, ?_⟩
-  · intro f hf b
-    rw [Ideal.mem_bot] at hf ⊢
-    simp [hf]
-  · intro k
-    refine ⟨Classical.arbitrary _, ?_⟩
-    rw [Ideal.mem_bot]
-    exact X_ne_zero _
-
-
 omit [DecidableEq K] in
 theorem divCycle_one {R : Type*} [CommRing R] (P : Ideal (MRing ι R)) (W : Ideal (MRing ι R)) :
     divCycle P 1 W = 0 := by
@@ -151,21 +139,6 @@ theorem divCycle_one {R : Type*} [CommRing R] (P : Ideal (MRing ι R)) (W : Idea
   have : P ⊔ Ideal.span {(1 : MRing ι R)} = ⊤ := by
     rw [Ideal.span_singleton_one, sup_top_eq]
   exact hW.ne_top (top_le_iff.mp (this ▸ h.1.2))
-
-theorem isModelOver_projectiveSpace {O : Type*} [CommRing O] [IsDomain O]
-    [IsDiscreteValuationRing O] (n : ℕ) :
-    IsModelOver (⊥ : Ideal (MRing (fun _ : Unit => Fin (n + 1)) O)) n := by
-  refine ⟨isMultiProjPrime_bot, ?_, ?_⟩
-  · ext a
-    simp only [Ideal.mem_comap, Ideal.mem_bot, C_eq_zero]
-  · rw [ringKrullDim_eq_of_ringEquiv (RingEquiv.quotientBot _),
-      MvPolynomial.ringKrullDim_of_isNoetherianRing_of_finite, IsDiscreteValuationRing.ringKrullDim_eq_one]
-    have hc : Nat.card ((_ : Unit) × Fin (n + 1)) = n + 1 := by
-      rw [Nat.card_eq_fintype_card, Fintype.card_sigma]
-      simp
-    rw [hc, Fintype.card_unit]
-    norm_cast
-    omega
 
 end Examples
 

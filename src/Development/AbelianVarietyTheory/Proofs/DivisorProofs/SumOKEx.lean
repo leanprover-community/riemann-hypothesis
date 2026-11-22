@@ -315,7 +315,6 @@ section Abstract
 variable {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ] {A : ι → Type} [∀ j, AddCommGroup (A j)]
   {B : κ → Type} [∀ i, AddCommGroup (B i)]
 
-
 open Classical in
 theorem sum_reps_eq (SA : ∀ j, A j → Prop) (SB : ∀ i, B i → Prop) (BA : ∀ j, A j → Prop) (BB : ∀ i, B i → Prop)
     (hSA : ∀ j a b, SA j a → SA j b → SA j (a - b)) (hSB : ∀ i a b, SB i a → SB i b → SB i (a - b))
@@ -388,7 +387,6 @@ theorem exists_idemSum_locPl' {μ₀ : T} (hL : L.Is μ₀) (G : GridData L sc) 
     | exact GlobalTheory.ParahoricLift.exists_isIdemAt fun h => (hL.Q_pl t w b).2 w b ((GlobalTheory.IdemSupport.isConjPl_iff _ _).2 h)
     | exact GlobalTheory.ParahoricLift.exists_isIdemAt fun h => (hL.Q_pl t w b).2 w b ((GlobalTheory.IdemSupport.isConjPl_iff _ _).1 h)
 
-
 variable (G) in
 def finDatOf (t : T) (p : Pair T) {e : AE D} (he : IsIdemSum e (locPl G t)) (f : WO (G.pS p) (G.pT p) → ℂ)
     (hf : IsSBHalf e (latO (G.pS p) (G.pT p) (G.latS p : Set _) (G.latT p : Set _) fun _ => True) f) : FinDatum G t p :=
@@ -450,24 +448,6 @@ section Lat
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
-theorem isLattice_top (G : GridData L sc) {j : ℕ} (hj : j ≤ D.R.m) : Submodule.IsLattice D.host.E (G.Λ (.top j)) :=
-  (G.isV (X := .top j) hj fun _ e => by cases e).sd.1
-
-theorem isLattice_grid_succ (G : GridData L sc) {i : ℕ} (hi : i + 1 ≤ D.R.m) :
-    Submodule.IsLattice D.host.E (G.Λ (.grid (i + 1) D.R.m)) :=
-  (G.isV (X := .grid (i + 1) D.R.m) ⟨hi, le_rfl⟩ fun j e => by injection e with h1; omega).sd.1
-
-theorem isLattice_X {μ₀ : T} (hL : L.Is μ₀) : Submodule.IsLattice D.host.E L.ΛX := by
-  obtain ⟨c, hc⟩ := hL.βX
-  obtain ⟨h1, h2⟩ := GlobalTheory.ParahoricLift.base_lattice hc
-  exact Submodule.IsLattice.of_fg D.host.E h1
-
-theorem isLattice_grid_zero {μ₀ : T} (hL : L.Is μ₀) (G : GridData L sc) :
-    Submodule.IsLattice D.host.E (G.Λ (.grid 0 D.R.m)) := by
-  have key : ∀ X : LSp D, X = ⟨D.sp.X', L.ΛX⟩ → Submodule.IsLattice D.host.E X.lat := by
-    rintro _ rfl; exact isLattice_X hL
-  exact key (columnBlock L D.R.m) (colY_m L)
-
 theorem isFullLattice_top (G : GridData L sc) {j : ℕ} (hj : j ≤ D.R.m) :
     Submodule.IsFullLattice D.host.E (G.Λ (.top j)) :=
   GlobalTheory.ProjXCols.selfDual_isFullLattice _ _
@@ -523,7 +503,6 @@ end SBs
 section Main
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
-
 
 set_option maxHeartbeats 1000000 in
 theorem GridChoice.exists_isCosExpansion {μ₀ : T} (hL : L.Is μ₀) (S : GridChoice W U) (t : T) (Φ : G.Datum)

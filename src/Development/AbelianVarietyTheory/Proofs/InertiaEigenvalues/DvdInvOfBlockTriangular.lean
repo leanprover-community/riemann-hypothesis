@@ -23,21 +23,6 @@ def UpperUnip (α : O) (u : Matrix (Fin n) (Fin n) O) : Prop :=
 def LowerUnip (β : O) (l : Matrix (Fin n) (Fin n) O) : Prop :=
   ∀ i j, (i < j → l i j = 0) ∧ (i = j → l i j = 1) ∧ (j < i → β ∣ l i j)
 
-theorem Shape.mul {α β : O} {x y : Matrix (Fin n) (Fin n) O} (hx : Shape α β x)
-    (hy : Shape α β y) : Shape α β (x * y) := by
-  intro i j
-  refine ⟨fun h => ?_, fun h => ?_⟩
-  · rw [Matrix.mul_apply]
-    refine Finset.dvd_sum fun k _ => ?_
-    rcases lt_or_ge i k with hk | hk
-    · exact ((hx i k).1 hk).mul_right _
-    · exact ((hy k j).1 (hk.trans_lt h)).mul_left _
-  · rw [Matrix.mul_apply]
-    refine Finset.dvd_sum fun k _ => ?_
-    rcases lt_or_ge k i with hk | hk
-    · exact ((hx i k).2 hk).mul_right _
-    · exact ((hy k j).2 (h.trans_le hk)).mul_left _
-
 theorem dvd_inv_of_blockTriangular {ι : Type} [LinearOrder ι] (b : Fin n → ι) (γ : O)
     (g : GL (Fin n) O) (hg : ∀ i j, b j < b i → γ ∣ (g : Matrix (Fin n) (Fin n) O) i j) :
     ∀ i j, b j < b i → γ ∣ ((g⁻¹ : GL (Fin n) O) : Matrix (Fin n) (Fin n) O) i j := by
@@ -170,9 +155,6 @@ theorem isUnit_diag [IsLocalRing O] {α β : O} (hβ : ¬ IsUnit β) {g : Matrix
 
 def flip (g : Matrix (Fin n) (Fin n) O) : Matrix (Fin n) (Fin n) O :=
   g.submatrix Fin.revPerm Fin.revPerm
-
-theorem flip_apply (g : Matrix (Fin n) (Fin n) O) (i j : Fin n) :
-    flip g i j = g i.rev j.rev := rfl
 
 theorem flip_flip (g : Matrix (Fin n) (Fin n) O) : flip (flip g) = g := by
   ext i j; simp [flip_apply]

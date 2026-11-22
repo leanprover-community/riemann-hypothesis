@@ -36,15 +36,6 @@ section Hypotheses
 variable {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [Algebra S Ω] {N : ℕ} {x : Fin (N + 1) → Ω}
   {E : Type v} [AddCommGroup E] [Module Ω E] [Module S E] [IsScalarTower S Ω E]
 
-
-variable (S x E) in
-def FinGradedSub.zero : FinGradedSub (S := S) (x := x) E where
-  piece _ := ⊥
-  smul_mem _ _ _ m _ hm := by
-    rw [Submodule.mem_bot] at hm ⊢
-    rw [hm, smul_zero]
-  fg := ⟨0, Fin.elim0, Fin.elim0, fun j => j.elim0, fun _ => bot_le⟩
-
 variable (k : Type u) [Field k]
 
 end Hypotheses

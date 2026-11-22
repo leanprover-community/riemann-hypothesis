@@ -50,9 +50,6 @@ def regKer {G : Type} [Group G] [Fintype G] (Y : G → ℂ) :
   map_one' := by ext a z; simp [LinearMap.funLeft]
   map_mul' g h := by ext a z; simp [LinearMap.funLeft, mul_assoc]
 
-theorem regKer_apply {G : Type} [Group G] [Fintype G] (Y : G → ℂ) (g : G) (a : LinearMap.ker (convL Y))
-    (z : G) : ((regKer Y g a : LinearMap.ker (convL Y)) : G → ℂ) z = (a : G → ℂ) (z * g) := rfl
-
 theorem kills_iff_conv : ∀ (G : Type) [Group G] [Finite G] (φ Y : G → ℂ), IsChar ℂ ℂ Y →
     (Kills φ Y ↔ ∃ h : G → ℂ, ∀ x, φ x = ∑ᶠ y, Y y * h (y⁻¹ * x)) := by
   intro G _ _ φ Y hY

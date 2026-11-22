@@ -148,19 +148,8 @@ def KFin (π : T.G → H →L[ℂ] H) (x : H) : Prop :=
 def IsDer (π : T.G → H →L[ℂ] H) (X : Mat p q) (x y : H) : Prop :=
   X ∈ upq p q ∧ HasDerivAt (fun t : ℝ => π (T.expt (t • X)) x) y 0
 
-def IsDerC (π : T.G → H →L[ℂ] H) (Z : Mat p q) (x y : H) : Prop :=
-  ∃ y₁ y₂, IsDer T π ((1 / 2 : ℂ) • (Z + conjR Z)) x y₁ ∧
-    IsDer T π ((1 / (2 * Complex.I)) • (Z - conjR Z)) x y₂ ∧ y = y₁ + Complex.I • y₂
-
 def Smooth (π : T.G → H →L[ℂ] H) (x : H) : Prop :=
   ∃ W : Submodule ℂ H, x ∈ W ∧ ∀ w ∈ W, ∀ X ∈ upq p q, ∃ y ∈ W, IsDer T π X w y
-
-def CasEig (π : T.G → H →L[ℂ] H) (x : H) (c : ℂ) : Prop :=
-  ∃ y z : Ix p q → Ix p q → H, (∀ a b, IsDerC T π (Eab b a) x (y a b) ∧
-    IsDerC T π (Eab a b) (y a b) (z a b)) ∧ ∑ a, ∑ b, z a b = c • x
-
-def UgSpan (π : T.G → H →L[ℂ] H) (u : H) : Set H :=
-  {w | ∀ W : Submodule ℂ H, u ∈ W → (∀ w' ∈ W, ∀ X y, IsDer T π X w' y → y ∈ W) → w ∈ W}
 
 def opE (π : T.G → H →L[ℂ] H) (e : T.G → ℂ) (x : H) : H := ∫ g, e g • π g x ∂T.haar
 
@@ -518,18 +507,6 @@ namespace TPar
 
 variable {D : D7} (P : TPar D)
 
-def ofWord (D : D7) (w : D.what₂.Word) (eta : D.what₂.Tau → ℚ)
-    (h : ∀ τ, eta τ = 1 / 2 ∨ eta τ = -(1 / 2)) : TPar D where
-  t := D.R.t
-  t_odd := D.R.t_odd
-  t_ge := D.R.rank_add_five_le
-  u := fun τ => (D.hcW w τ).u
-  v := fun τ => (D.hcW w τ).v
-  b := fun τ => (D.hcW w τ).b
-  e := fun τ => (D.hcW w τ).e
-  eta := eta
-  eta_half := h
-
 def Interlace : Prop :=
   ∀ τ, (∀ i : Fin (D.R.k - 1), P.v τ i < P.u τ ⟨i.1, by omega⟩ ∧ P.u τ ⟨i.1 + 1, by omega⟩ < P.v τ i) ∧
     (∀ (h : 0 < D.R.k) (h' : 0 < D.R.m), -P.b τ ⟨0, h'⟩ < P.u τ ⟨D.R.k - 1, by omega⟩) ∧
@@ -546,11 +523,6 @@ def Dpar (j : ℕ) (τ : D.what₂.Tau) : SPar :=
     (block (-P.e τ i) P.t).image fun x => (x, true))).image
       fun x => (x.1 + (if Odd j then P.eta τ else 0), x.2)
 
-def Xpar (j : ℕ) (τ : D.what₂.Tau) : SPar :=
-  (Finset.univ.image fun i : Fin D.R.k => (P.u τ i, true)) ∪
-  ((Finset.univ.filter fun i : Fin D.R.m => i.1 < j).biUnion fun i =>
-    (block (-P.e τ i) (P.t + 1)).image fun x => (x, true))
-
 end TPar
 
 end TH
@@ -559,10 +531,6 @@ open TH
 
 def TH.HaarCd (D : D7) (A : TH.ProvA) : Prop :=
   ∀ p q, Measure.map (A.grp p q).covU (A.grp p q).haar = D.cd.cd p q
-
-def TH.parIdx (q : ℝ) (r s : ℕ) : ℝ :=
-  q ^ (r * s) * (∏ i ∈ Finset.Icc 1 (r + s), (1 - q ^ (-(i : ℤ)))) /
-    ((∏ i ∈ Finset.Icc 1 r, (1 - q ^ (-(i : ℤ)))) * ∏ i ∈ Finset.Icc 1 s, (1 - q ^ (-(i : ℤ))))
 
 structure ThetaX (D : D7) : Type 1 where
 

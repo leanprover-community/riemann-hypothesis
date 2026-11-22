@@ -41,9 +41,6 @@ noncomputable def quadComplexEquiv : QuadraticAlgebra R a 0 ≃+* ℂ where
     · simp
     · simp [add_mul]
 
-theorem quadComplexEquiv_apply (z : QuadraticAlgebra R a 0) :
-    quadComplexEquiv φ ha z = ⟨φ z.re, φ z.im * Real.sqrt (-φ a)⟩ := rfl
-
 theorem quadComplexEquiv_star (z : QuadraticAlgebra R a 0) :
     quadComplexEquiv φ ha (star z) = starRingEnd ℂ (quadComplexEquiv φ ha z) := by
   apply Complex.ext
@@ -70,16 +67,13 @@ theorem two_ne_zero_of_infinitePlace (w : InfinitePlace K) : (2 : K) ≠ 0 := by
   rw [map_ofNat, map_zero] at this
   exact two_ne_zero this
 
-
 omit [Algebra.IsQuadraticExtension K E] in
 variable (E) in
 def IsNonsplitAt (w : InfinitePlace K) : Prop := IsField (w.Completion ⊗[K] E)
 
-
 variable (K E) in
 noncomputable def quadD (w : InfinitePlace K) : K :=
   (exists_algEquiv_quadraticAlgebra K E (two_ne_zero_of_infinitePlace w)).choose
-
 
 variable (K E) in
 noncomputable def quadPsi (w : InfinitePlace K) : E ≃ₐ[K] QuadraticAlgebra K (quadD K E w) 0 :=
@@ -134,7 +128,6 @@ theorem realPlaceD_neg (hE : IsNonsplitAt E w) : realPlaceD (E := E) hw < 0 := b
   apply hne'
   calc ω + c = (y * (ω - c)) * (ω + c) := by rw [mul_comm y, hy, one_mul]
     _ = 0 := by rw [mul_assoc, hprod, mul_zero]
-
 
 omit [Algebra.IsQuadraticExtension K E] in
 theorem isNonsplitAt_of_algEquiv {d : K} (ψ : E ≃ₐ[K] QuadraticAlgebra K d 0)

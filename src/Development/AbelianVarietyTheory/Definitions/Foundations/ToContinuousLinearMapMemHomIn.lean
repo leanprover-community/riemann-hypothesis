@@ -28,31 +28,8 @@ section Two
 variable {G G₁ G₂ H H₁ H₂ : Type} [Group G] [Group G₁] [Group G₂] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] [NormedAddCommGroup H₂] [InnerProductSpace ℂ H₂]
 
-def IsTensorMap (p₁ : G →* G₁) (p₂ : G →* G₂) (π₁ : G₁ →* (H₁ →L[ℂ] H₁)) (π₂ : G₂ →* (H₂ →L[ℂ] H₂))
-    (π : G →* (H →L[ℂ] H)) (J : H₁ ⊗[ℂ] H₂ →ₗᵢ[ℂ] H) : Prop :=
-  DenseRange J ∧ ∀ g x y, π g (J (x ⊗ₜ y)) = J (π₁ (p₁ g) x ⊗ₜ π₂ (p₂ g) y)
-
-
-variable (H₁ H₂) in
-abbrev HTensor : Type := Completion (H₁ ⊗[ℂ] H₂)
-
-def hTensor (p₁ : G →* G₁) (p₂ : G →* G₂) (π₁ : G₁ →* (H₁ →L[ℂ] H₁)) (π₂ : G₂ →* (H₂ →L[ℂ] H₂)) :
-    G →* (HTensor H₁ H₂ →L[ℂ] HTensor H₁ H₂) where
-  toFun g := (TensorProduct.mapL (π₁ (p₁ g)) (π₂ (p₂ g))).completion
-  map_one' := ContinuousLinearMap.ext fun z => Completion.induction_on z
-    (isClosed_eq (ContinuousLinearMap.continuous _) continuous_id) fun a => by
-      rw [ContinuousLinearMap.completion_apply_coe, map_one, map_one, map_one, map_one]
-      exact congrArg _ (by simp [ContinuousLinearMap.one_def])
-  map_mul' g h := ContinuousLinearMap.ext fun z => Completion.induction_on z
-    (isClosed_eq (ContinuousLinearMap.continuous _) (ContinuousLinearMap.continuous _)) fun a => by
-      simp only [map_mul, TensorProduct.mapL_mul, mul_apply_eq_comp, ContinuousLinearMap.completion_apply_coe]
-
 variable {p₁ : G →* G₁} {p₂ : G →* G₂} {π₁ : G₁ →* (H₁ →L[ℂ] H₁)} {π₂ : G₂ →* (H₂ →L[ℂ] H₂)} {π : G →* (H →L[ℂ] H)}
   {J : H₁ ⊗[ℂ] H₂ →ₗᵢ[ℂ] H}
-
-theorem hTensor_coe (g : G) (a : H₁ ⊗[ℂ] H₂) :
-    hTensor p₁ p₂ π₁ π₂ g a = TensorProduct.mapL (π₁ (p₁ g)) (π₂ (p₂ g)) a :=
-  ContinuousLinearMap.completion_apply_coe _ a
 
 end Two
 
@@ -87,71 +64,12 @@ theorem restr_self {M : ι → Type} (ξ : ∀ i, M i) : Restr ξ ξ := by simp 
 variable {p : ∀ i, G →* Γ i} {δ : ∀ i, Γ i →* (Hs i →L[ℂ] Hs i)} {ξ y y' : ∀ i, Hs i} {π : G →* (H →L[ℂ] H)}
   {B : (∀ i, Hs i) → H}
 
-theorem IsRestrTensor.finite_mulSupport (h : IsRestrTensor p δ ξ π B) (hy : Restr ξ y) (hy' : Restr ξ y') :
-    (Function.mulSupport fun i => ⟪y' i, y i⟫_ℂ).Finite :=
-  ((Set.Finite.union hy hy').union h.unit).subset fun i hi => by
-    by_contra hn
-    simp only [Set.mem_union, Set.mem_ofPred_eq, Set.mem_compl_iff, not_or, not_not] at hn
-    exact hi (by beta_reduce; rw [hn.1.1, hn.1.2, inner_self_eq_norm_sq_to_K, hn.2]; simp)
-
-theorem IsRestrTensor.ext (h : IsRestrTensor p δ ξ π B) {v w : H} (e : ∀ y, Restr ξ y → ⟪B y, v⟫_ℂ = ⟪B y, w⟫_ℂ) :
-    v = w := by
-  have : (Submodule.span ℂ {v | ∃ y, Restr ξ y ∧ v = B y}).topologicalClosure ≤ (ℂ ∙ (v - w))ᗮ :=
-    Submodule.topologicalClosure_minimal _ (Submodule.span_le.2 (by
-      rintro _ ⟨y, hy, rfl⟩
-      exact Submodule.mem_orthogonal_singleton_iff_inner_left.2 (by rw [inner_sub_right, e y hy, sub_self])))
-      (Submodule.isClosed_orthogonal _)
-  exact sub_eq_zero.1 (inner_self_eq_zero.1
-    (Submodule.mem_orthogonal_singleton_iff_inner_left.1 (this (h.dense.ge Submodule.mem_top))))
-
-theorem IsRestrTensor.inner_update [DecidableEq ι] (h : IsRestrTensor p δ ξ π B) (hy : Restr ξ y) (hy' : Restr ξ y')
-    (i : ι) (x : Hs i) :
-    ⟪B y', B (Function.update y i x)⟫_ℂ = ⟪y' i, x⟫_ℂ * ∏ᶠ (j) (_ : j ≠ i), ⟪y' j, y j⟫_ℂ := by
-  rw [h.inner_pure _ _ (restr_update hy i x) hy',
-    ← mul_finprod_cond_ne i (h.finite_mulSupport (restr_update hy i x) hy'), Function.update_self]
-  congr 1
-  exact finprod_congr fun j => finprod_congr fun hj => by rw [Function.update_of_ne hj]
-
-theorem IsRestrTensor.pure_update [DecidableEq ι] (h : IsRestrTensor p δ ξ π B) (hy : Restr ξ y) (i : ι) (c : ℂ)
-    (a b : Hs i) : B (Function.update y i (c • a + b)) = c • B (Function.update y i a) + B (Function.update y i b) :=
-  h.ext fun z hz => by
-    simp only [inner_add_right, inner_smul_right, h.inner_update hy hz]
-    ring
-
-def restrRep (p : ∀ i, G →* Γ i) (σ : ∀ i, Representation ℂ (Γ i) (N i)) (s : ∀ i, N i)
-    (h : ∀ g, ∀ᶠ i in cofinite, σ i (p i g) (s i) = s i) : Representation ℂ G (RTens s) :=
-  let a : G → AdmFun s → AdmFun s := fun g l => ⟨fun i => l.1 i ∘ₗ σ i (p i g),
-    (Set.Finite.union l.2 (h g)).subset fun i hi => by
-      by_contra hn
-      simp only [Set.mem_union, Set.mem_ofPred_eq, Set.mem_compl_iff, not_or, not_not] at hn
-      exact hi ((congrArg (l.1 i) hn.2).trans hn.1)⟩
-  { toFun := fun g => (LinearMap.funLeft ℂ ℂ (a g)).restrict (p := RTens s) (q := RTens s) fun _ hz =>
-      (Submodule.span_le (p := (RTens s).comap (LinearMap.funLeft ℂ ℂ (a g)))).2 (by
-        rintro _ ⟨y, hy, rfl⟩
-        exact Submodule.subset_span ⟨_, restr_map (f := fun i => σ i (p i g)) (h g) hy, rfl⟩) hz
-    map_one' := LinearMap.ext fun z => Subtype.ext (funext fun l => congrArg z.1 (Subtype.ext (funext fun i => by
-      simp only [a, map_one]; rfl)))
-    map_mul' := fun g g' => LinearMap.ext fun z => Subtype.ext (funext fun l => congrArg z.1 (Subtype.ext
-      (funext fun i => by simp only [a, map_mul]; rfl))) }
-
-def IsRestrTensorAlg (p : ∀ i, G →* Γ i) (σ : ∀ i, Representation ℂ (Γ i) (N i)) (s : ∀ i, N i)
-    (ρ : Representation ℂ G W) : Prop :=
-  (∀ᶠ i in cofinite, s i ≠ 0) ∧
-    ∃ h : ∀ g, ∀ᶠ i in cofinite, σ i (p i g) (s i) = s i, Nonempty (ρ.Equiv (restrRep p σ s h))
-
 end Many
 
 section Mixed
 
 variable {G G₁ G₂ H K W : Type} [Group G] [Group G₁] [Group G₂] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   [NormedAddCommGroup K] [InnerProductSpace ℂ K] [AddCommGroup W] [Module ℂ W]
-
-
-variable (H) in
-def postRep (ρ : G →* (K →L[ℂ] K)) : Representation ℂ G (H →L[ℂ] K) where
-  toFun g := (ContinuousLinearMap.compL ℂ H K K (ρ g)).toLinearMap
-  map_one' := by ext; simp
-  map_mul' a b := by ext; simp
 
 variable {j₁ : G₁ →* G} {j₂ : G₂ →* G} {σ : Representation ℂ G₁ W} {δ : G₂ →* (H →L[ℂ] H)} {ρ : G →* (K →L[ℂ] K)}
   {U U' : Submodule ℂ K} {T : W →ₗ[ℂ] (H →L[ℂ] K)}
@@ -199,7 +117,6 @@ def homPi (e : ∀ i, Γ i →* G) (δ : ∀ i, Γ i →* (Hs i →L[ℂ] Hs i))
   zero_mem' := ⟨fun _ => U.zero_mem, fun i g y => by simp⟩
   smul_mem' := fun c _ h => ⟨fun y => U.smul_mem c (h.1 y), fun i g y => by simp [h.2 i g y]⟩
 
-
 variable (Hs) in
 def postRepPi (ρ : G →* (K →L[ℂ] K)) : Representation ℂ G (ContinuousMultilinearMap ℂ Hs K) where
   toFun g := (ContinuousLinearMap.compContinuousMultilinearMapL ℂ Hs K K (ρ g)).toLinearMap
@@ -225,11 +142,9 @@ variable {j : G₁ →* G} {e : ∀ i, Γ i →* G} {σ : Representation ℂ G�
   {ρ : G →* (K →L[ℂ] K)} {U U' : Submodule ℂ K} {Φ Φ' : ContinuousMultilinearMap ℂ Hs K}
   {T : W →ₗ[ℂ] ContinuousMultilinearMap ℂ Hs K}
 
-
 omit [Fintype ι] in
 theorem mem_homPi : Φ ∈ homPi e δ ρ U ↔
     (∀ y, Φ y ∈ U) ∧ ∀ i g y, Φ (Function.update y i (δ i g (y i))) = ρ (e i g) (Φ y) := Iff.rfl
-
 
 omit [Fintype ι] in
 theorem mem_homTensorPi : T ∈ homTensorPi j e σ δ ρ U ↔ (∀ w y, T w y ∈ U) ∧
@@ -238,16 +153,13 @@ theorem mem_homTensorPi : T ∈ homTensorPi j e σ δ ρ U ↔ (∀ w y, T w y �
   ⟨fun h => ⟨fun w => (h.1 w).1, fun g w y => DFunLike.congr_fun (h.2 g w) y, fun i g w => (h.1 w).2 i g⟩,
     fun h => ⟨fun w => ⟨h.1 w, fun i g => h.2.2 i g w⟩, fun g w => ContinuousMultilinearMap.ext (h.2.1 g w)⟩⟩
 
-
 omit [Fintype ι] in
 theorem homTensorPi_mono (h : U ≤ U') : homTensorPi j e σ δ ρ U ≤ homTensorPi j e σ δ ρ U' :=
   fun _ hT => ⟨fun w => ⟨fun y => h ((hT.1 w).1 y), (hT.1 w).2⟩, hT.2⟩
 
-
 omit [Fintype ι] in
 theorem multTensorPi_congr {W' : Type} [AddCommGroup W'] [Module ℂ W'] {σ' : Representation ℂ G₁ W'} (f : σ.Equiv σ') :
     multTensorPi j e σ δ ρ U = multTensorPi j e σ' δ ρ U := rank_homInto_congr f _ _
-
 
 omit [Fintype ι] in
 theorem toContinuousLinearMap_mem_homIn (h : Φ ∈ homPi e δ ρ U) (y : ∀ i, Hs i) (i : ι) :
@@ -310,24 +222,6 @@ theorem bePi_self_pos (hδ : ∀ i, IsIrrUnitary (δ i)) (hρ : IsUnitaryRep ρ)
     rw [inner_eq_bePi hδ hρ h h, bePi, e, inner_zero_left, zero_mul]))
 
 end MixedPi
-
-theorem isRestrTensor_charRep {ι G : Type} {Γ : ι → Type} [Group G] [∀ i, Group (Γ i)] (p : ∀ i, G →* Γ i)
-    (χ : ∀ i, Γ i →* Circle) (ψ : G →* Circle) (h : ∀ g, ∀ᶠ i in cofinite, χ i (p i g) = 1)
-    (hψ : ∀ g, (ψ g : ℂ) = ∏ᶠ i, (χ i (p i g) : ℂ)) :
-    IsRestrTensor p (fun i => charRep (χ i)) (fun _ => 1) (charRep ψ) (fun y => ∏ᶠ i, y i) := by
-  refine ⟨Eventually.of_forall (fun _ => norm_one), ?_, ?_, ?_, ?_⟩
-  · intro g
-    exact (h g).mono fun i hi => by simp [charRep, hi]
-  · intro y y' hy hy'
-    have h' : (Function.mulSupport fun i => conj (y' i)).Finite := Set.Finite.subset hy' fun i hi e => hi (by simp [e])
-    simp only [RCLike.inner_apply]
-    rw [finprod_mul_distrib hy h', map_finprod _ hy']
-  · exact eq_top_iff.2 (le_trans (fun z _ => by
-      simpa using Submodule.smul_mem _ z (Submodule.subset_span (s := {v : ℂ | ∃ y : ι → ℂ, Restr (fun _ => 1) y ∧
-        v = ∏ᶠ i, y i}) ⟨_, restr_self _, finprod_one.symm⟩)) (Submodule.le_topologicalClosure _))
-  · intro g y hy
-    change (ψ g : ℂ) * ∏ᶠ i, y i = ∏ᶠ i, (χ i (p i g) : ℂ) * y i
-    rw [finprod_mul_distrib (Set.Finite.subset (h g) fun i hi e => hi (by simp [show χ i (p i g) = 1 from e])) hy, hψ]
 
 end GlobalTheory.AutMult
 

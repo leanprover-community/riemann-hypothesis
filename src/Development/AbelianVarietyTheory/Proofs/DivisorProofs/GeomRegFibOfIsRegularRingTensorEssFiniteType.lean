@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinalTheorems
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinTypeQE
 
 @[expose] public section
 

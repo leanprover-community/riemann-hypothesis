@@ -157,8 +157,6 @@ section Series
 
 open MvPowerSeries
 
-local notation:max "pderiv" r:arg i:arg => MvPowerSeries.pderiv (R := r) i
-
 variable {R : Type} [CommRing R] {σ : Type}
 
 theorem eqn_sub {A : Type} [CommRing A] {W : WeierstrassCurve A} {u₀ w₀ u₁ w₁ : A}
@@ -492,8 +490,6 @@ section Model
 
 open PowerSeries GlobalTheory.MomOne
 open scoped ComplexConjugate BigOperators Topology
-
-local notation:max "derivative" r:arg => PowerSeries.derivative (R := r)
 
 def anRing : Subring (ℂ → ℂ) where
   carrier := {f | AnalyticAt ℂ f 0}

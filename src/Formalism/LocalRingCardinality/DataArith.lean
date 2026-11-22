@@ -21,18 +21,7 @@ variable {R : Type} [CommRing R] [IsDedekindDomain R] {L : Type} [Field L] [Alge
 
 def vAdd (w : HeightOneSpectrum R) (x : L) : ℤ := - WithZero.log (w.valuation L x)
 
-def idxW {n : Type} [Fintype n] [DecidableEq n] (w : HeightOneSpectrum R) (γ : Matrix n n L) : ℤ :=
-  vAdd w γ.det
-
 end Val
-
-def bridge_ccb_unit : Prop :=
-  ∀ (R L : Type) [CommRing R] [IsDedekindDomain R] [Field L] [Algebra R L] [IsFractionRing R L]
-    (w : HeightOneSpectrum R) (x : L), x ≠ 0 → (w.valuation L x = 1 ↔ vAdd w x = 0)
-
-def bridge_ccb_integral : Prop :=
-  ∀ (R L : Type) [CommRing R] [IsDedekindDomain R] [Field L] [Algebra R L] [IsFractionRing R L]
-    (w : HeightOneSpectrum R) (x : L), w.valuation L x ≤ 1 ↔ 0 ≤ vAdd w x
 
 section Places
 
@@ -43,23 +32,11 @@ def lw (w : HeightOneSpectrum (𝓞 K)) : ℝ :=
 
 def eWL (w : HeightOneSpectrum (𝓞 K)) : ℕ := w.asIdeal.ramificationIdx ℤ
 
-def unitRule (w : HeightOneSpectrum (𝓞 K)) (y : ℝ) : ℝ := (eWL K w : ℝ) * y
-
-def sizeOfVal (w : HeightOneSpectrum (𝓞 K)) (y : ℝ) : ℝ := 2 * lw K w * y
-
 end Places
 
 def bridge_unit_rule : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (l : ℕ) (w : HeightOneSpectrum (𝓞 K)), l.Prime →
     ((l : 𝓞 K) ∈ w.asIdeal) → vAdd w ((l : ℕ) : K) = (eWL K w : ℤ)
-
-
-open scoped Classical in
-open Classical in
-def FactUnitNormalisation : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] (p : ℕ), p.Prime →
-    (∑ᶠ w : HeightOneSpectrum (𝓞 K),
-        if ((p : 𝓞 K) ∈ w.asIdeal) then 2 * lw K w * (eWL K w : ℝ) else 0) = 2 * Real.log p
 
 structure HLat (K : Type) [Field K] [NumberField K] [StarRing K] where
   V : Type
@@ -114,15 +91,6 @@ def bridge_dual_mu : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] [StarRing K] [_root_.NumberField.IsTotallyComplex K] (A : HLat K),
     A.Good → 0 < A.rank → A.muMinDual = - A.muMax
 
-def bridge_ccb_dual : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] (V W : Type) [AddCommGroup V] [Module K V]
-    [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [AddCommGroup W] [Module K W] [Module (𝓞 K) W]
-    [IsScalarTower (𝓞 K) K W] (A : Submodule (𝓞 K) V) (N : Submodule (𝓞 K) W)
-    (B : W →ₗ[K] Module.Dual K V),
-    (∃ β : N →ₗ[𝓞 K] Module.Dual (𝓞 K) A,
-        ∀ (φ : N) (F : A), algebraMap (𝓞 K) K (β φ F) = B (φ : W) (F : V)) ↔
-      N.map (B.restrictScalars (𝓞 K)) ≤ Formalism.HN.dualLat A
-
 section Frame
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {Words : Type} [Fintype Words]
@@ -172,24 +140,11 @@ def cc : Submodule (𝓞 K) (Module.Dual K D.RR.V) := D.RR.dualL
 
 def d (u : Words) : ℕ := dU D.Nu u
 
-def R : ℕ := Rsum D.Nu
-
-def s : ℝ := sFrame D.Nu D.h
-
 def AllGood : Prop := D.RR.Good ∧ ∀ u, (D.Nu u).Good
 
 def OneMapIntoCC : Prop := ∀ u, (D.Nu u).L.map ((D.Bk u).restrictScalars (𝓞 K)) ≤ D.cc
 
 end DivData
-
-def RankBoundMonotoneInDimension : Prop :=
-  ∀ (a q η : ℝ) (D Dall : ℕ), 0 < D → D ≤ Dall → 0 ≤ η →
-    a ≤ (1 + η) * q ^ 2 / (Dall : ℝ) → a ≤ (1 + η) * q ^ 2 / (D : ℝ)
-
-def FactHHcc : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] [StarRing K] [_root_.NumberField.IsTotallyComplex K] (Words : Type)
-    [Fintype Words] (D : DivData K Words), D.RR.Good → 0 < D.RR.rank →
-    D.s - D.RR.muMinDual ≤ D.HH
 
 def bSize (x ε : ℝ) : ℝ := Real.exp (x ^ ε)
 
@@ -199,9 +154,5 @@ def rankBudget (R : Ranks) (x ε : ℝ) : ℝ := (R.n : ℝ) * x ^ (-ε)
 
 def budgetNc (R : Ranks) (x ε : ℝ) (T2card : ℕ) : ℝ :=
   (T2card : ℝ) * R.k * bSize x ε * x ^ ε / ((R.n : ℝ) * rankBudget R x ε)
-
-def FactNc : Prop :=
-  ∀ (R : Ranks) (x ε : ℝ) (T2card : ℕ), 0 < x →
-    budgetNc R x ε T2card = (T2card : ℝ) * R.k * bSize x ε * x ^ (2 * ε) / ((R.n : ℝ) ^ 2)
 
 end Formalism.BasicNotions

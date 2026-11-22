@@ -1,6 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.ArcLineFunctions.ArcDatumIsArcPointBasis
+public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.ArcLineFunctions.FunDef
+public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.QatOfBridge
+public import Formalism.LocalToGlobal.ProjectiveLattices.XcLat
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigidArc
 public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
 
 @[expose] public section
@@ -75,10 +78,5 @@ namespace Formalism.L2.Pj.QAt
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.BasicNotions ReciprocityTheory.ChartRestriction.G.FreeQuotientRank
 
 variable {D : D7} {T : Core D}
-
-theorem hcomp (j : ℕ) (K₁ : Type) [Field K₁] [Algebra T.Q.c.F K₁] (a : T.Q.c.F) :
-    algebraMap T.Q.c.F (ArcS (T.Q.Dw j) K₁) a =
-      algebraMap (MvPolynomial (ArcLt (T.Q.Dw j)) (LaurentSeries K₁)) (ArcS (T.Q.Dw j) K₁)
-        (algebraMap T.Q.c.F (MvPolynomial (ArcLt (T.Q.Dw j)) (LaurentSeries K₁)) a) := rfl
 
 end Formalism.L2.Pj.QAt

@@ -59,9 +59,6 @@ private lemma one_lt_eV : (1 : WithZero (Multiplicative ℤ)) < eV⁻¹ := by
 private lemma psi_add {F : Type} [Field F] [NumberField F] (x y : A F) : ψ (x + y) = ψ x * ψ y := by
   simp [ψ, (adelicChar F).map_add_eq_mul]
 
-private lemma cp_rt {K : Type} [Field K] [NumberField K] (v : P K) (x : K) :
-    cp v (rt x) = algebraMap K (Kv v) x := rfl
-
 private lemma key {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] (D : Dat F E) (W : Weil D) (v : P F) (hG : Gd D.δ v)
     (a : Kv v) (φ : S4 F) (hfix : ∀ c, IsInt c → W.Om (nU (sg v (a * c))) φ = φ) (u t : A F)

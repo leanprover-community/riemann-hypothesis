@@ -122,11 +122,6 @@ private def qD : Matrix (Fin 2) (Fin 2) (Lsq K Δ) →ₗ[K] (Fin 4 → K) where
   map_smul' c x := by
     ext i; fin_cases i <;> simp
 
-private theorem pD_apply (x : Fin 4 → K) : pD Δ x = !![⟨x 0, x 1⟩, ⟨x 2, x 3⟩; ⟨-x 2, x 3⟩, ⟨x 0, -x 1⟩] := rfl
-
-private theorem qD_apply (M : Matrix (Fin 2) (Fin 2) (Lsq K Δ)) :
-    qD Δ M = ![(M 0 0).re, (M 0 0).im, (M 0 1).re, (M 0 1).im] := rfl
-
 private def nD (x : Fin 4 → K) : K := x 0 ^ 2 - Δ * x 1 ^ 2 + x 2 ^ 2 - Δ * x 3 ^ 2
 
 private theorem qp (x : Fin 4 → K) : qD Δ (pD Δ x) = x := by

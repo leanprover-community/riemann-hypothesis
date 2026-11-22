@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Theta.LieCoordinates.SecondKindStatements
+public import GroundTheory.AutomorphicForms.RealGroupsLie
 
 @[expose] public section
 

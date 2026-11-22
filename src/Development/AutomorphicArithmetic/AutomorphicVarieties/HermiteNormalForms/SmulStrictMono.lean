@@ -88,8 +88,6 @@ variable {L N}
 
 def minVec (h : HS L N) : Set (Lat L N) := {y | q h y = 1}
 
-def face (M : Set (Lat L N)) : Set (HS L N) := {h | h ∈ Ry L N ∧ M ⊆ minVec h}
-
 def toL (y : Lat L N) : Fin N → L := fun a => (y a : L)
 
 def spanL (M : Set (Lat L N)) : Submodule L (Fin N → L) := Submodule.span L (toL '' M)
@@ -98,16 +96,9 @@ def Spans (M : Set (Lat L N)) : Prop := spanL M = ⊤
 
 variable (L N)
 
-def WR : Set (HS L N) := {h | h ∈ Ry L N ∧ Spans (minVec h)}
-
-def Cell : Type := {F : Set (HS L N) // F.Nonempty ∧ ∃ M, Spans M ∧ F = face M}
-
 instance : PartialOrder (Cell L N) := Subtype.partialOrder _
 
 variable {L N}
-
-def carrier (h : HS L N) (hh : h ∈ WR L N) : Cell L N :=
-  ⟨face (minVec h), ⟨h, hh.1, subset_rfl⟩, minVec h, hh.2, rfl⟩
 
 theorem smul_lat (g : Gm L N) (y : Lat L N) :
     g • y = (g : Matrix (Fin N) (Fin N) (𝓞 L)) *ᵥ y := rfl
@@ -157,17 +148,9 @@ theorem smul_mem_Ry (g : Gm L N) {h : HS L N} (hh : h ∈ Ry L N) : g • h ∈ 
 
 variable (L N)
 
-def Simp (p : ℕ) : Type := {s : Fin (p + 1) → Cell L N // StrictMono s}
-
 variable {L N}
 
-def Simp.del {p : ℕ} (i : Fin (p + 2)) (s : Simp L N (p + 1)) : Simp L N p :=
-  ⟨fun j => s.1 (i.succAbove j), s.2.comp (Fin.strictMono_succAbove i)⟩
-
 variable (L N)
-
-def bd (p : ℕ) : (Simp L N (p + 1) →₀ ℤ) →ₗ[ℤ] (Simp L N p →₀ ℤ) :=
-  ∑ i : Fin (p + 2), (-1 : ℤ) ^ (i : ℕ) • Finsupp.lmapDomain ℤ ℤ (Simp.del i)
 
 def I0 : ℕ := absD L ^ N * dd L N ^ dd L N
 

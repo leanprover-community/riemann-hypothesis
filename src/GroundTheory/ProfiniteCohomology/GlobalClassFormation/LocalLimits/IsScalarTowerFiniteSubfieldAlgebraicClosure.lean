@@ -18,8 +18,6 @@ open CategoryTheory IsDedekindDomain NumberField IntermediateField GroundTheory.
 
 open scoped TensorProduct Pointwise
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 section Idempotents
@@ -52,7 +50,6 @@ theorem exists_unique_map_single_one_eq_one (φ : (∀ i, A i) →+* R) :
   have := congrArg φ h0
   rw [map_mul, map_zero, hj, (hidem i).resolve_left hi, one_mul] at this
   exact one_ne_zero this
-
 
 omit [Fintype ι] [IsDomain R] in
 theorem map_eq_map_single_of_map_single_one {φ : (∀ i, A i) →+* R} {i : ι}
@@ -132,7 +129,6 @@ theorem pi_single_algebraMap_eq {w : PlacesOver F.1 v} [DecidableEq (PlacesOver 
   · subst hu
     simp
   · simp [hu]
-
 
 open Classical in
 def completionEmbedding :

@@ -10,7 +10,8 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HostPrimeSplitti
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
 public import Formalism.LocalToGlobal.UnitaryNorms.RealPl
-public import Formalism.LocalToGlobal.Columns.CyclotomicIsCyclotomicExtension
+public import Formalism.LocalToGlobal.Columns.BaseHost
+public import Formalism.LocalToGlobal.Columns.NonDeg
 
 @[expose] public section
 

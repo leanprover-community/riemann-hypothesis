@@ -296,15 +296,6 @@ theorem Xm_apply (m : ℕ) (p : XY m) (i j : Fin (m + 1)) :
 theorem Xm_strict (m : ℕ) (p : XY m) : IsStrictUpper (Xm m p) :=
   G6.isStrictUpper_strictUpper _
 
-theorem Bm_apply (m : ℕ) (p : XY m) (i : Fin (m + 1)) : Bm m p i = triXY p.1 p.2 i.succ (Fin.last (m + 1)) :=
-  rfl
-
-theorem rm_apply (m : ℕ) (p : XY m) (k : Fin m) : rm m p k = triXY p.1 p.2 0 k.succ.castSucc :=
-  rfl
-
-theorem sm_apply (m : ℕ) (p : XY m) : sm m p = triXY p.1 p.2 0 (Fin.last (m + 1)) :=
-  rfl
-
 theorem tri_cases (m : ℕ) (a b : Fin (m + 2)) :
     (∀ (x : Fin (m + 1) → ℂ) (y : UT (m + 2) → ℂ), triXY x y a b = 0) ∨
     (∃ k, ∀ (x : Fin (m + 1) → ℂ) (y : UT (m + 2) → ℂ), triXY x y a b = x k) ∨
@@ -831,9 +822,6 @@ theorem normSq_inv_cast (c : ℂ) : (((‖c‖ ^ 2)⁻¹ : ℝ) : ℂ) = c⁻¹ 
   have h : c⁻¹ * (starRingEnd ℂ) c⁻¹ = ((Complex.normSq c⁻¹ : ℝ) : ℂ) := Complex.mul_conj _
   show _ = c⁻¹ * (starRingEnd ℂ) c⁻¹
   rw [h, Complex.normSq_inv, Complex.normSq_eq_norm_sq]
-
-theorem psi_eq (β w : ℂ) :
-    psi β w = (fun r : ℝ => Complex.exp (Complex.I * (r : ℂ))) ((Complex.reCLM : ℂ →L[ℝ] ℝ) (β * w)) := rfl
 
 theorem card_range_inf_torsion_le_index_pow (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m q : ℕ) (β D : ℂ) (tt : E → ℂ)
     (xx : E → Fin (m + 1) → ℂ) (yy : E → UT (m + 2) → ℂ) (u : E) (Q W : ℝ)

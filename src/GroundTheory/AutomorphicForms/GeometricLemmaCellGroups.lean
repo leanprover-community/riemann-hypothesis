@@ -25,7 +25,6 @@ section PermConj
 
 variable {β : Fin n → ℕ} (w : Equiv.Perm (Fin n))
 
-
 variable (F β) in
 def permConj : blockUpper F n (β ∘ w) →* blockUpper F n β where
   toFun x := ⟨permGL F w * x * (permGL F w)⁻¹, (conj_permGL_mem_blockUpper_iff w).2 x.2⟩
@@ -38,7 +37,6 @@ theorem coe_permConj (x : blockUpper F n (β ∘ w)) :
       permGL F w * x * (permGL F w)⁻¹ := rfl
 
 variable {W : Type*} [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (levi F n β) W)
-
 
 variable (β) in
 def cellRep : Representation ℂ (blockUpper F n (β ∘ w)) W :=
@@ -90,11 +88,9 @@ theorem conj_mem_cellUnipotent {b a : GL (Fin n) F} (hb : b ∈ cellLeviParaboli
 
 variable {W : Type*} [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (levi F n β) W)
 
-
 variable (β γ w) in
 def cellRepA : Representation ℂ (cellUnipotent F β γ w) W :=
   (cellRep β w σ).comp (Subgroup.inclusion cellUnipotent_le_blockUpper)
-
 
 variable (β γ w) in
 def cellRepM : Representation ℂ (cellLeviParabolic F β γ w) W :=
@@ -351,10 +347,6 @@ def cellCoinvAction (b : cellLeviParabolic F β γ w) :
       have := congrArg (fun T : Module.End ℂ W => T v) (cellRepM_mul_cellRepA σ b a)
       simp only [Module.End.mul_apply] at this
       rw [this, Representation.Coinvariants.mk_self_apply]
-
-theorem cellCoinvAction_mk (b : cellLeviParabolic F β γ w) (v : W) :
-    cellCoinvAction σ b (Representation.Coinvariants.mk _ v) =
-      Representation.Coinvariants.mk _ (cellRepM β γ w σ b v) := rfl
 
 def cellCoinvRep : Representation ℂ (cellLeviParabolic F β γ w)
     (Representation.Coinvariants (cellRepA β γ w σ)) where

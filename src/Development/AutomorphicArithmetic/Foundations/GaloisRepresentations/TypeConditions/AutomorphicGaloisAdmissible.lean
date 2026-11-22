@@ -146,9 +146,6 @@ def AutomorphicGaloisAdmissible : Prop :=
           ∀ τ, InducesW N i τ w → (A.jumpsW i ρ τ).map (fun n : ℤ => (n : ℂ)) =
             (A.infG χ ((A.iotaQC i).toRingHom.comp τ)).map (fun z => -(z + (s : ℂ))))
 
-def NcPt (i : N.Loc) (x : N.X i) (w : PlE H) : Prop :=
-  ∃ P Pa, A.ptV i P = some x ∧ IsBCV N A i P Pa ∧ Nc N A (isoLoc N A Pa w)
-
 variable {N A}
 
 theorem weakA' (h : AutomorphicGaloisAdmissible N A) : AutomorphicGaloisAdmissible N A := h

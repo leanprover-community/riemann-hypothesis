@@ -11,7 +11,10 @@ public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProof
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.FiltrationBotHolds
 public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProofs.ResInto
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.DischargeHeightBound
-public import Formalism.MahlerMeasure.FinalT
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.BadCrit
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.GamDeg
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.GamLead
+public import Formalism.MahlerMeasure.CoarseLevelSlackInequalities
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.WeightSpaceDimensionMonotone
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.SmithZp
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.TheoremM

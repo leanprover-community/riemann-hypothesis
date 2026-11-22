@@ -12,8 +12,6 @@ open Formalism.UG
 
 variable {G : Type} [Group G] (K : Subgroup G)
 
-private lemma smul_quotient_mk (g x : G) : (g • (x : G ⧸ K)) = ((g * x : G) : G ⧸ K) := rfl
-
 private lemma subgroup_smul_quotient_mk (k : K) (x : G) : (k • (x : G ⧸ K)) = (((k : G) * x : G) : G ⧸ K) := rfl
 
 theorem stabilizer_coset_eq (s : G) :

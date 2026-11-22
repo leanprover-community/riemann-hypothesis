@@ -4,9 +4,7 @@ public import Mathlib
 public import ReciprocityTheory.Hypotheses.GalCoh
 public import ReciprocityTheory.GaloisValuations.ArithOfA
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CardDualZmodModuleEqCard
-public import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.ScaledValuations.ValuationApplyLtOneIff
 public import ReciprocityTheory.GaloisValuations.GlobalB
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.CocyclesCyclotomicFinrankThree
 
 @[expose] public section
 

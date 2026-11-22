@@ -20,17 +20,12 @@ def polyDiff (p : Fin n → ℂ) : MvPolynomial (Fin n) ℂ →ₗ[ℂ] (Fin n �
   map_add' f g := by ext j; simp
   map_smul' c f := by ext j; simp
 
-theorem polyDiff_apply (p : Fin n → ℂ) (f : MvPolynomial (Fin n) ℂ) (j : Fin n) :
-    polyDiff p f j = eval p (pderiv j f) := rfl
-
 def dotForm : (Fin n → ℂ) →ₗ[ℂ] Module.Dual ℂ (Fin n → ℂ) :=
   LinearMap.mk₂ ℂ (fun w v => ∑ j, w j * v j)
     (fun w w' v => by simp [add_mul, Finset.sum_add_distrib])
     (fun c w v => by simp [mul_assoc, Finset.mul_sum])
     (fun w v v' => by simp [mul_add, Finset.sum_add_distrib])
     (fun c w v => by simp [mul_left_comm, Finset.mul_sum])
-
-theorem dotForm_apply (w v : Fin n → ℂ) : dotForm w v = ∑ j, w j * v j := rfl
 
 theorem mem_polyTangent_iff (S : Set (MvPolynomial (Fin n) ℂ)) (p v : Fin n → ℂ) :
     v ∈ polyTangent S p ↔ ∀ q ∈ S, dotForm (polyDiff p q) v = 0 := Iff.rfl

@@ -95,57 +95,8 @@ def gatTiesG : GatTies (recG D sc Ce Lc X hd) where
 
 variable (L : SizeData₂ (recG D sc Ce Lc X hd)) (P : ParameterChoice' (recG D sc Ce Lc X hd) L)
 
-def fillsG (u : D.what₂.Word) (w : D.what₂.places.Pl) (h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) :
-    Fills ((recG D sc Ce Lc X hd).gat u w h) :=
-  fillsRec D u _ (X u w h).hS (rSc sc D.R.k (D.what₂.places.resChar w)) (Lc u) (X u w h).I (X u w h).ψ
-    (repP (Lc u) _) (epSc D.R sc Ce (D.what₂.places.resChar w)) (cRec L) ⟨(cloudBound L P u).top, (cloudBound L P u).off, (cloudBound L P u).fill⟩
-
-
 def levTieG (u : D.what₂.Word) (w : D.what₂.places.Pl) (h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) :
     Formalism.L2.Herm.GLevTie (Lc u) ((recG D sc Ce Lc X hd).gat u w h) :=
   gatRecP_lev D u _ (X u w h).hS _ (Lc u) (X u w h).I (X u w h).ψ _
-
-theorem std_of_fills {p : ℕ} (G : GAtP p) (Fl : Fills G) (v : Fin G.P.nV) (hr : 1 ≤ G.P.r) (h2r : 2 * G.P.r ≤ G.P.m + 1)
-    (hm : 1 ≤ Fl.mm) :
-    Formalism.MainNotions.FormalGroupSystem.Std p (G.P.n' v) G.P.m Fl.t Fl.mm Fl.c G.P.r (Fl.TT v) (Fl.a v) (Fl.b v) (G.P.lam0 v) (Fl.w v) :=
-  { prime := (G.P.setting v).prime
-    five_le := (G.P.setting v).five_le
-    two_le := (G.P.setting v).two_le
-    even := (G.P.setting v).even
-    r_pos := hr
-    two_r := h2r
-    m_pos := hm
-    base := Fl.base v
-    dom := G.P.dom v
-    w_low := fun s => ⟨le_trans (le_max_left _ _) (Fl.w_ge v s), le_trans (le_max_right _ _) (Fl.w_ge v s)⟩
-    w_mono := fun s l h1 _ => Fl.w_mono v s l h1 }
-
-theorem one_le_rSc (k p : ℕ) : 1 ≤ rSc sc k p := by
-  unfold rSc rG
-  split_ifs <;> omega
-
-theorem two_rSc_le (k p : ℕ) (h : 2 * rG sc ≤ k) : 2 * rSc sc k p ≤ k := by
-  unfold rSc
-  split_ifs
-  · exact h
-  · unfold rG at h
-    omega
-
-theorem stdG (h2r : 2 * rG sc ≤ D.R.k) (u : D.what₂.Word) (w : D.what₂.places.Pl)
-    (h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (v : Fin ((recG D sc Ce Lc X hd).gat u w h).P.nV) :
-    Formalism.MainNotions.FormalGroupSystem.Std (D.what₂.places.resChar w) (((recG D sc Ce Lc X hd).gat u w h).P.n' v) ((recG D sc Ce Lc X hd).gat u w h).P.m
-      (fillsG D sc Ce Lc X hd L P u w h).t (fillsG D sc Ce Lc X hd L P u w h).mm (fillsG D sc Ce Lc X hd L P u w h).c
-      ((recG D sc Ce Lc X hd).gat u w h).P.r ((fillsG D sc Ce Lc X hd L P u w h).TT v) ((fillsG D sc Ce Lc X hd L P u w h).a v)
-      ((fillsG D sc Ce Lc X hd L P u w h).b v) (((recG D sc Ce Lc X hd).gat u w h).P.lam0 v)
-      ((fillsG D sc Ce Lc X hd L P u w h).w v) := by
-  refine std_of_fills _ _ v ?_ ?_ ?_
-  · exact one_le_rSc sc _ _
-  · have h1 := two_rSc_le sc D.R.k (D.what₂.places.resChar w) h2r
-    have h2 := D.R.m_add_three_le_k
-    show 2 * rSc sc D.R.k (D.what₂.places.resChar w) ≤ D.R.k - 1 + 1
-    omega
-  · have := D.R.two_le_m
-    show 1 ≤ D.R.m
-    omega
 
 end Formalism.L2.G

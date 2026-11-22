@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstStan
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsFinCombOfIsThetaAt
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.TwistPlacesOffPrimeQZero
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BottomExistsIntegrable
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DictAt
 public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.ThetaIntegralsAgree
@@ -40,8 +39,6 @@ namespace GlobalTheory.BottomFinComb
 open StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle
 
 variable {D : D7}
-
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
 
 theorem eToEAf_mem (α : 𝓞 D.host.E) : eToEAf D (α : D.host.E) ∈ OO := (oToS D.host.F D.host.E α).2
 
@@ -96,7 +93,6 @@ theorem rightBlock_shift {k d : ℕ} (a : ℕ) {Y Y' Z : Matrix (Fin k) (Fin d) 
   · exact h _ _
   · rw [mul_zero, add_zero]
 
-
 set_option maxHeartbeats 1000000 in
 theorem stdSnd_shift {ν : (AE D)ˣ →* Circle} {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e S)
     {I : Ideal (𝓞 D.host.E)} {n₀ n c : ℕ} (hn₀ : ((n₀ : ℕ) : 𝓞 D.host.E) ∈ I)
@@ -135,7 +131,6 @@ theorem stdSnd_shift {ν : (AE D)ˣ →* Circle} {e : AE D} {S : Finset (Pl D.ho
     rw [h, Nat.cast_mul n₀]
     ring
   · rw [if_neg hcnd, if_neg fun h' => hcnd ⟨hh.1 h'.1, hint.1 h'.2.1, hid.1 h'.2.2⟩]
-
 
 set_option maxHeartbeats 1000000 in
 theorem stdSnd_isSB {ν : (AE D)ˣ →* Circle} (hν : Continuous ν) {e : AE D} {S : Finset (Pl D.host.E)}
@@ -180,7 +175,6 @@ end GlobalTheory.BottomFinComb
 namespace GlobalTheory.BottomFinComb
 
 open StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle
-
 
 set_option maxHeartbeats 1000000 in
 theorem finVec_isFinComb : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {i j : Fin D.R.m}

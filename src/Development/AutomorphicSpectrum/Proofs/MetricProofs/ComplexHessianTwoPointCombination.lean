@@ -27,9 +27,6 @@ noncomputable section
 def selL {D E : ℕ} (σ : Fin E → Fin D) : (Fin D → ℂ) →L[ℂ] (Fin E → ℂ) :=
   ContinuousLinearMap.pi fun a => ContinuousLinearMap.proj (σ a)
 
-theorem selL_apply {D E : ℕ} (σ : Fin E → Fin D) (z : Fin D → ℂ) (a : Fin E) :
-    selL σ z a = z (σ a) := rfl
-
 theorem jacC_selL {D E : ℕ} (σ : Fin E → Fin D) (z : Fin D → ℂ) :
     ReciprocityTheory.AnForm.A.jacC (selL σ) z = Matrix.of fun a k => if σ a = k then (1 : ℂ) else 0 := by
   ext a k
@@ -99,17 +96,6 @@ theorem selA_eq_cons {d : ℕ} (c : Fin (d + 2)) (z : Fin (d + 2) → ℂ) :
 
 theorem selT_eq_tail {d : ℕ} (z : Fin (d + 2) → ℂ) :
     selL selT z = Fin.tail (Fin.tail z) := rfl
-
-theorem blk_zero_zero {d : ℕ} (e : ℂ) (B : Matrix (Fin d) (Fin d) ℂ) : blk e B 0 0 = e := rfl
-
-theorem blk_zero_succ {d : ℕ} (e : ℂ) (B : Matrix (Fin d) (Fin d) ℂ) (q : Fin d) :
-    blk e B 0 q.succ = 0 := rfl
-
-theorem blk_succ_zero {d : ℕ} (e : ℂ) (B : Matrix (Fin d) (Fin d) ℂ) (p : Fin d) :
-    blk e B p.succ 0 = 0 := rfl
-
-theorem blk_succ_succ {d : ℕ} (e : ℂ) (B : Matrix (Fin d) (Fin d) ℂ) (p q : Fin d) :
-    blk e B p.succ q.succ = B p q := rfl
 
 theorem blk_assemble {d : ℕ} (T₀ T₁ T₂ : Matrix (Fin (d + 2)) (Fin (d + 2)) ℂ) (e₀ e₁ s t v : ℂ)
     (B₀ B₁ C : Matrix (Fin d) (Fin d) ℂ)

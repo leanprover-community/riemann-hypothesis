@@ -1,7 +1,9 @@
 module
 
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.BesselOrbitConvolutions.BesselNonvanishingReduction
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.VanishingOfL2Equivariant
+public import Mathlib
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ZeroOfAe
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.L2NormScaling
 
 @[expose] public section
 

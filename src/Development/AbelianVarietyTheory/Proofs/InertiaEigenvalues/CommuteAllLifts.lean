@@ -2,13 +2,12 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.OffRange
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnivSupOfIsotypicPartsInternalDirectSum
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.HeckePin
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ZeroDegreeOfPinFor
 public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.ExistsIsHeckeSetting
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffHeckePolyOfComplex
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BaseEmbeddingReadingEvalAdelicFunction
-public import Formalism.SharpRestriction.LevelLetterCocycles.LatticeVariant
+public import Formalism.SharpRestriction.LevelLetterCocycles.ExistsIdealDenominator
 
 @[expose] public section
 

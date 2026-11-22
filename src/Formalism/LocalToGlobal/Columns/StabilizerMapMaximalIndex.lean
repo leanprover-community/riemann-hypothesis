@@ -3,8 +3,7 @@ module
 public import Formalism.LocalToGlobal.Columns.DilYStab
 public import Formalism.LocalToGlobal.Columns.HeckeSpCount
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PenultimateKernelDiamondInvariant
-public import Formalism.LocalToGlobal.Columns.WithTopLevGTop
-public import Formalism.LocalToGlobal.Columns.StabMapRLInjective
+public import Formalism.LocalToGlobal.Columns.RecChainCUnfPol
 
 @[expose] public section
 

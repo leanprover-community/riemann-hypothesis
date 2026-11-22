@@ -19,8 +19,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Flat.KerGeom
 
 open PositivityTheory.Xgn.JetKernelRank Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1.GermD ReciprocityTheory.ChartRestriction.G.DVR TensorProduct Algebra.TensorProduct TrivSqZeroExt
 
-local notation "hm" φ:max => Formalism.L2.Pj.homAt (𝟙 (Sp _)) φ
-
 theorem ker_data (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)]
     (hs : ∀ a : 𝓞 E, star a = H.bar a) (k : Type) [Field k] [IsAlgClosed k] (t : SAB H (Sp k))
     (hpr : IsProper t.G.hom) (hK : Out.KTriv t.G t.PP.L) (d : ℕ) (g : GermAt t (𝟙 (Sp k)) d) (a : 𝓞 E)
@@ -171,7 +169,6 @@ theorem assemble {k H : Type} [Field k] [CommRing H] [HopfAlgebra k H] {V V' : T
   · conv_rhs => rw [← bU.sum_equivFun u, ← bV.sum_equivFun z]
     set_option synthInstance.maxHeartbeats 100000 in
       simp only [Module.Basis.constr_apply_fintype, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, hP]
-
 
 open Algebra.TensorProduct in
 theorem exists_hopf {k : Type} [Field k] {G : Over (Sp k)} [GrpObj G] [IsCommMonObj G] {f : G ⟶ G} [IsMonHom f]

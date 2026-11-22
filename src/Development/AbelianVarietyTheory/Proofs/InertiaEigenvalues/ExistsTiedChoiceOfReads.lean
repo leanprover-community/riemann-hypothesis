@@ -165,8 +165,6 @@ theorem ReadsAt.of_pair (hG : IsGalois ℚ ↥D.LL0) {i : D.ntw.Tw} {b : Bool} {
   · exact ⟨b, h.of_overOne h'⟩
   · exact ⟨!b, (h.conj hG).of_overOne h'⟩
 
-abbrev Pass (D : D7) : Type := (∀ (i : D.ntw.Tw) (j : ℕ) (b : Bool), Finset (D.nexp.Dat i j b)) × Finset (TwPack D)
-
 variable {D₀ D₁ : D7} {E₀ : IntegralHeckeForms.XD D₀} {E₁ : IntegralHeckeForms.XD D₁} {E : IntegralHeckeForms.XD D}
 
 end GlobalTheory.TwistChoice

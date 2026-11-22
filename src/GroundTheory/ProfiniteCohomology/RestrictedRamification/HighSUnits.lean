@@ -13,8 +13,6 @@ open CategoryTheory Limits NumberField IsDedekindDomain GroundTheory.Global
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 theorem exists_coprime_nsmul_of_primary_eq_zero {M : Type*} [AddCommGroup M] {ℓ : ℕ} (hℓ : ℓ.Prime)
     (hM : ∀ y : M, ∀ k : ℕ, ℓ ^ k • y = 0 → y = 0) {x : M} (hx : IsOfFinAddOrder x) :
     ∃ m : ℕ, m.Coprime ℓ ∧ m • x = 0 := by
@@ -29,7 +27,6 @@ theorem exists_coprime_nsmul_of_primary_eq_zero {M : Type*} [AddCommGroup M] {�
 variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1))) (ιs : LocalEmbeddings K) {ℓ : ℕ}
   (hℓ : ℓ.Prime) (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
   (hD : ∀ p : ℕ, 2 ≤ p → ∀ x : cohomology (gsDiv K S ιs QZ) p, ∀ k : ℕ, ℓ ^ k • x = 0 → x = 0)
-
 
 include hℓ hD in
 theorem eq_zero_of_pow_nsmul_cohomology_gsDiv_int {q : ℕ} (hq : 3 ≤ q) (x : cohomology (gsDiv K S ιs ℤ) q)
@@ -71,7 +68,6 @@ theorem eq_zero_of_pow_nsmul_cohomology_galUnitsModSUnits {q : ℕ} (hq : 3 ≤ 
     (fun r => exists_coprime_smul_cohomology_eq_zero (picInfRep K S ιs) ℓ
       (exists_coprime_smul_picInfRep K S ιs ℓ hℓ hS) p r) k hx
 
-
 include hℓ hS hD in
 theorem isIsoModCoprime_sUnitsToUnits {r : ℕ} (hr : 4 ≤ r) :
     IsIsoModCoprime ℓ (cohomologyMap (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) r).hom.toAddMonoidHom := by
@@ -104,7 +100,6 @@ def sUnitsInfl (r : ℕ) : cohomology (galSUnitsMax K.1 ℚ̄ S) r →+ cohomolo
 theorem sUnitsInfl_apply (r : ℕ) (y : cohomology (galSUnitsMax K.1 ℚ̄ S) r) :
     sUnitsInfl K S r y = gsUnitsInfl K S r ((cohomologyMap (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) r).hom y) :=
   rfl
-
 
 end
 

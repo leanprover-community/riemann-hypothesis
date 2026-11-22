@@ -16,8 +16,6 @@ variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberFi
 variable [Fact (IsFixF K F)]
 variable {m : Type} [Fintype m] [DecidableEq m]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-
 theorem finite_vec {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) (k : ℕ) :
     Finite (m → 𝓞 K ⧸ extP K 𝔭 ^ k) := by
   haveI := finite_quot (K := K) h𝔭 k

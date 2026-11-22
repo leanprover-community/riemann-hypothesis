@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KerAffineHilbertTensorToSubschemeSectionsRestric
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfSecAlgTop
 
 @[expose] public section

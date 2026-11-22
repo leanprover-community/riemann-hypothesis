@@ -41,24 +41,6 @@ structure ExpRel {D : D7} (L : LocAll (lay0 D)) (X : NExpTied D) (X' : NExpTied 
   reads : ∀ i j b k Q ψ h1 h2 hA e (V : Type) [AddCommGroup V] [Module ℂ V] r,
     Reads X i j b k Q ψ h1 h2 hA e V r → Reads X' i j b k Q ψ h1 h2 hA e V r
 
-structure StA (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) (cf : CharFrame D) (rep : D.what₂.FT → NG.FinTyp D.host.E D.R.r) : Type 1 where
-  host : HostTied D
-  jE : D.host.E →+* Qb
-  frame : ∀ x, jE x = host.fr.j x
-  A : SideA D cf jE
-  cg : CGTrue hL D A.wdT
-  au : AUTrue hL D A.wdT A.au
-  row : RowTrue hL D rep (fun σ w => A.wdT.e w (A.row.locR σ w)) A.row.satR
-  fr : OmFrame D
-  fr_jE : fr.jE = jE
-  pht : PhtOn A.wd fr fun _ _ _ _ => True
-  depth : RowDepth D rep
-  elem : Elem D
-  val : ValLL0 D cf
-  labc : LabConj D A.wdT
-  zeta : ∀ k, haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩; A.grp.ζ k = (GlobalTheory.Mem.TypePl.labDat (D.host.g k)).gen
-  omax : Function.Injective D.what₂.OtoLL ∧ ∃ F : Subfield D.what₂.LL, ∀ x, x ∈ D.what₂.OtoLL.range ↔ x ∈ F ∧ IsIntegral ℤ x
-
 section Rows
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
@@ -82,45 +64,11 @@ variable {Y cG}
 
 abbrev InRat.S (n : InRat Y cG) : RatDat D.ntw := ratDatR R cG n.kKs n.hk
 
-structure SettingsFormsState (a : StA hL D cf (repOf Y)) (n : InRat Y cG)
-    (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) : Type 1 where
-  Bs : SideB D cf a.A.row (lowAll D) Pq n.S n.In.hL n.In.eig n.In.θ
-  Sb_le : ∀ i, n.In.Sb ⊆ D.ntw.S0 i
-  rootsOfUnityRing_le_wittIntegers : ∀ i, OverSet D (D.ntw.S0 i) (insert (D.ntw.l i) (lowAll D))
-  lam : ∃ Z : GlobalTheory.LamTie.LamDat D, Z.Ok ∧ Z.Teich ∧ Z.C = cf ∧ Z.q0 = AbsolutelyIrreducibleSpan.q0 D ∧ GlobalTheory.LamTie.IsLamTieFull D.ntw Z
-
 variable (g : GlobalTheory.RealGeo.GeoHalf C R.toRealDat fun _ => 1)
-
-structure SeriesState (a : StA hL D cf (repOf Y)) (n : InRat Y cG) (PV : ∀ i : Fin D.R.m, principalLevelFrame.RowPsi (Vc D i) D.R.nV)
-    (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) : Type 1 extends SettingsFormsState a n Pq where
-  YS : NExpRealS R cG n.S
-  eF : YS.eF = Bs.eF
-  fi : ∀ i x, HEq ((YS.fi i).e x) x
-  ser : SerAt YS g.v₀ Bs.exp PV cf Pq
-  tau : TauTrue Bs.exp
-
-structure ModuliPointsState (a : StA hL D cf (repOf Y)) (n : InRat Y cG) (PV : ∀ i : Fin D.R.m, principalLevelFrame.RowPsi (Vc D i) D.R.nV)
-    (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) : Type 1 extends SeriesState g a n PV Pq where
-  geo : Nonempty (GlobalTheory.GeoTie.ThetaTie YS g.fw D.nth)
 
 variable {g}
 
-structure StC {a : StA hL D cf (repOf Y)} {n : InRat Y cG} {xi : D.what₂.Tup → HChar D.host.E}
-    {Q : D.what₂.places.Pl → Finset (PlE D.host)} (m : InMt Y cf xi Q)
-    {Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host} (b : ModuliPointsState g a n m.ad.PV Pq)
-    (k : D.what₂.places.Pl → ℕ) (psi : D.what₂.places.Pl → HChar D.host.E) : Type 1 where
-  ch : NChoice D
-  tp : TupTied D cf ch
-  xi_eq : tp.xi = xi
-  psi_eq : tp.psi = psi
-  Q_eq : ch.Q = Q
-  k_eq : ∀ w, TwistedAt D w → ch.k' w = k w
-  side : ChoiceSide D cf m.M b.Bs.exp ch tp
-  ok : ∀ w, TwistedAt D w → IntegralHeckeForms.TwOK (ch.twI w) (ch.k' w) (ch.Q w) ((ch.psi' w).comp (D.ntw.art (ch.twI w) (ch.Q w)))
-  th : EMtTheta Y b.YS ch
-
 end Rows
-
 
 end GlobalTheory.HeightCounting
 

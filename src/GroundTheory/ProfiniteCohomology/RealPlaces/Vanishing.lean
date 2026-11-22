@@ -16,8 +16,6 @@ attribute [local instance 2000] Rep.hV2
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
@@ -39,7 +37,6 @@ theorem subsingleton_gsTateCompactCohomology {n : ℕ} (hn : n ≠ 0)
   ⟨fun x y => (gsTateCompactCohomology_eq_zero S ιr ιs hn hS M hM hr x).trans
     (gsTateCompactCohomology_eq_zero S ιr ιs hn hS M hM hr y).symm⟩
 
-
 set_option maxHeartbeats 32000000 in
 theorem injective_gsRealRes_of_four_le {n : ℕ} (hn : n ≠ 0)
     (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((n : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
@@ -58,7 +55,6 @@ theorem injective_gsRealRes_of_four_le {n : ℕ} (hn : n ≠ 0)
       (fun v => Rep.res (gsFinFamily S ιs' v).toMonoidHom M) (fun _ => 𝟙 _)
       (fun w => Rep.res (gsRealFamily S ιr w).toMonoidHom M) (fun _ => 𝟙 _) p
       (gsTateCompactCohomology_eq_zero S ιr ιs' hn hS M hM hr))
-
 
 set_option maxHeartbeats 32000000 in
 theorem surjective_gsRealRes_of_three_le {n : ℕ} (hn : n ≠ 0)

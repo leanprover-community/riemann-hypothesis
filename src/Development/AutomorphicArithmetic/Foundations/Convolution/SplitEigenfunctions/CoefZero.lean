@@ -20,8 +20,6 @@ namespace UpperTheory.ConvolutionTheory.RankTwoDescent.VanishingCoefficients
 
 variable {E : Type} [Field E] [NumberField E]
 
-private theorem vn (q : A E) : (nU q).val = !![1, q; 0, 1] := rfl
-
 private theorem n_add (x y : A E) : gl (nU (x + y)) = gl (nU x) * gl (nU y) := by
   refine Units.ext ?_
   ext i j

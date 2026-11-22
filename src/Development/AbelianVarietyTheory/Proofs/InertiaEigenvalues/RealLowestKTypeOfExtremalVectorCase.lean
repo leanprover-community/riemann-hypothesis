@@ -125,11 +125,6 @@ def thR (hω : IsWeilDatumO ψ V W χV χW ω) (h1 : μ 𝓕 = 1) {M : DSModel W
     rw [J.map_update_smul, map_smul]
     exact thetaInner_smul_right _ _ _ _ _
 
-theorem thR_apply (hω : IsWeilDatumO ψ V W χV χW ω) (h1 : μ 𝓕 = 1) {M : DSModel W S'}
-    (J : (∀ ρ, lowT M ρ) →ₘₗ[ℂ] (WO V W → ℂ)) (hJ : ∀ v, IsThetaFunO ψ V W (J v))
-    (f : WO V W → ℂ) (hf : IsThetaFunO ψ V W f) (v : ∀ ρ, lowT M ρ) (g : GA D W) :
-    thR hω h1 J hJ f hf v g = thetaIP μ 𝓕 f (ω (1, g) (J v)) := rfl
-
 def thL (hω : IsWeilDatumO ψ V W χV χW ω) (h1 : μ 𝓕 = 1) {M : DSModel W S'}
     (J : (∀ ρ, lowT M ρ) →ₘₗ[ℂ] (WO V W → ℂ)) (hJ : ∀ v, IsThetaFunO ψ V W (J v))
     (f : WO V W → ℂ) (hf : IsThetaFunO ψ V W f) : (∀ ρ, lowT M ρ) →ₘₗ[ℂ] (GA D W → ℂ) where
@@ -143,11 +138,6 @@ def thL (hω : IsWeilDatumO ψ V W χV χW ω) (h1 : μ 𝓕 = 1) {M : DSModel W
     simp only [Pi.smul_apply, smul_eq_mul]
     rw [J.map_update_smul, thetaInner_smul_left, star_mul', star_star]
 
-theorem thL_apply (hω : IsWeilDatumO ψ V W χV χW ω) (h1 : μ 𝓕 = 1) {M : DSModel W S'}
-    (J : (∀ ρ, lowT M ρ) →ₘₗ[ℂ] (WO V W → ℂ)) (hJ : ∀ v, IsThetaFunO ψ V W (J v))
-    (f : WO V W → ℂ) (hf : IsThetaFunO ψ V W f) (v : ∀ ρ, lowT M ρ) (g : GA D W) :
-    thL hω h1 J hJ f hf v g = star (thetaIP μ 𝓕 (J v) (ω (1, g) f)) := rfl
-
 end GlobalTheory.RawLift.RealLowRed
 
 namespace GlobalTheory.RawLift.RealLowRed
@@ -156,7 +146,6 @@ open Formalism.IndefR.FWT
 
 variable {D : D7} {V W : HSp D} {S' : D.what₂.Tau → SPar} {ψ : AddChar (AF D.host.F) ℂ} {χV χW : (AE D)ˣ →* Circle}
   {ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)} {μ : Measure (WO V W)} {𝓕 : Set (WO V W)}
-
 
 open Classical in
 set_option maxHeartbeats 4000000 in

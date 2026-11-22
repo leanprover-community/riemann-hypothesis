@@ -180,9 +180,6 @@ end
 def toG0 (L : ℕ) (M : M2) (h1 : M.det = 1) (h2 : (L : ℤ) ∣ M 1 0) : Gamma0 L :=
   ⟨⟨M, h1⟩, Gamma0_mem.2 ((ZMod.intCast_zmod_eq_zero_iff_dvd _ _).2 h2)⟩
 
-theorem coe_to_gamma0 (L : ℕ) (M : M2) (h1 : M.det = 1) (h2 : (L : ℤ) ∣ M 1 0) :
-    (((toG0 L M h1 h2 : Gamma0 L) : SL(2, ℤ)) : M2) = M := rfl
-
 theorem gamma0_lowerLeft_dvd_level {L : ℕ} (γ : Gamma0 L) : (L : ℤ) ∣ ((γ : SL(2, ℤ)) : M2) 1 0 :=
   (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).1 (Gamma0_mem.1 γ.2)
 

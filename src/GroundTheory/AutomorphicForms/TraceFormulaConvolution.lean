@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import GroundTheory.AutomorphicForms.QuotientKernel
-public import GroundTheory.AutomorphicForms.TraceStrongLimit
+public import GroundTheory.AutomorphicForms.TraceNormComp
 public import GroundTheory.AutomorphicForms.HilbertSchmidtKernel
 public import GroundTheory.AutomorphicForms.LocallyConstantCompact
 

@@ -2,7 +2,8 @@ module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.WeightedGaugeFactors.FactsDS
 public import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.EClose
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LocQuad1GHolds
+public import Mathlib
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.FinOfWeil
 
 @[expose] public section
 

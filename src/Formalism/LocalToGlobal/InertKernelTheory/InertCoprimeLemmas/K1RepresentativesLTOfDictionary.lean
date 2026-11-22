@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepLt
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepFrame
-public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepTwLat
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepAsm
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepScal
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepDataRec

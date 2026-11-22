@@ -24,8 +24,6 @@ namespace GlobalTheory.ParaOpp
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
-local notation3 "L⁺" => NumberField.maximalRealSubfield L
-
 theorem algHom_eq_or_conj {F : Type} [Field F] [Algebra L⁺ F] (φ ψ : L →ₐ[L⁺] F) :
     φ = ψ ∨ ∀ x, φ x = ψ (IsCMField.complexConj L x) := by
   have cc : ∀ x : L, IsCMField.complexConj L (IsCMField.complexConj L x) = x :=

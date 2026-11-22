@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntersectionFormPicardDoubleSpace
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsDominantOfSection
 
 @[expose] public section

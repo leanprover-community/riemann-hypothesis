@@ -71,7 +71,6 @@ theorem t2Space_tensorProduct_finiteExtension [TopologicalSpace R] [IsTopologica
   let e := (Algebra.TensorProduct.basis R (Module.finBasis F E)).equivFun
   T2Space.of_injective_continuous e.injective (IsModuleTopology.continuous_of_linearMap e.toLinearMap)
 
-
 omit [FiniteDimensional F E] in
 def extUnit (j : R →ₗ[F] R') (hj : ∀ a b, j (a * b) = j a * j b) : (R ⊗[F] E)ˣ →* (R' ⊗[F] E)ˣ :=
   Units.map
@@ -94,7 +93,6 @@ theorem continuous_extUnit [TopologicalSpace R] [IsTopologicalRing R] [Topologic
     (j : R →ₗ[F] R') (hj : ∀ a b, j (a * b) = j a * j b) (hc : Continuous j) : Continuous (extUnit (E := E) j hj) :=
   haveI := isTopologicalRing_tens (F := F) (E := E) (R := R')
   Continuous.units_map _ (continuous_const.add (GlobalTheory.AutFunCompare.continuous_tensNU j hj hc))
-
 
 omit [FiniteDimensional F E] in
 def conjUnit (σ : E →ₐ[F] E) : (R ⊗[F] E)ˣ →* (R ⊗[F] E)ˣ := Units.map (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR R σ).toMonoidHom
@@ -129,11 +127,6 @@ theorem absEv_conjUnit (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) (x 
 theorem absEw_conjUnit (σ : E →ₐ[F] E) (w : InfinitePlace F) (x : (w.Completion ⊗[F] E)ˣ) :
     absEw F E w (conjUnit σ x) = absEw F E w x := congrArg (fun y => ‖y‖₊ ^ w.mult) (norm_sigR σ x.1)
 
-theorem absEv_algebraMap (v : HeightOneSpectrum (𝓞 F)) (a : (Fv F v)ˣ) :
-    absEv F E v (Units.map (algebraMap (Fv F v) (Fv F v ⊗[F] E)).toMonoidHom a) = ‖a.1‖₊ ^ Module.finrank F E := by
-  change ‖Algebra.norm (Fv F v) (algebraMap (Fv F v) (Fv F v ⊗[F] E) a.1)‖₊ = _
-  rw [Algebra.norm_algebraMap, Module.finrank_baseChange, nnnorm_pow]
-
 theorem algebraMap_norm_eq {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {R : Type} [CommRing R] [Algebra F R] (x : R ⊗[F] E) :
     algebraMap R (R ⊗[F] E) (Algebra.norm R x) = x * Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR R σ x := by
   classical
@@ -161,10 +154,8 @@ theorem absEw_eq_sq {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {w : InfinitePlace
     Algebra.TensorProduct.algebraMap_apply, infEmb_tmul, map_one, mul_one]
   exact NNReal.eq ((InfinitePlace.Completion.isometry_extensionEmbedding w).norm_map_of_map_zero (map_zero _) _).symm
 
-
 variable (F E) in
 def unitFin (v : HeightOneSpectrum (𝓞 F)) : (AF F ⊗[F] E)ˣ →* (Fv F v ⊗[F] E)ˣ := Units.map (compFin F E v).toMonoidHom
-
 
 variable (F E) in
 def unitInf (w : InfinitePlace F) : (AF F ⊗[F] E)ˣ →* (w.Completion ⊗[F] E)ˣ := Units.map (compInf F E w).toMonoidHom
@@ -190,7 +181,6 @@ theorem finite_mulSupport_absEv (x : (AF F ⊗[F] E)ˣ) :
     (Function.mulSupport fun v => absEv F E v (unitFin F E v x)).Finite :=
   (Filter.eventually_cofinite.1 ((Algebra.norm (AF F) x.1).2.2.and (Algebra.norm (AF F) x⁻¹.1).2.2)).subset
     fun _ hv h => hv (absEv_unitFin_eq_one h.1 h.2)
-
 
 variable (F E) in
 def absE : (AF F ⊗[F] E)ˣ →* ℝ≥0 where
@@ -287,10 +277,8 @@ theorem inFin_mul (v : HeightOneSpectrum (𝓞 F)) (a b : Fv F v) : inFin v (a *
 theorem inInf_mul (w : InfinitePlace F) (a b : w.Completion) : inInf w (a * b) = inInf w a * inInf w b :=
   Prod.ext (GlobalTheory.AutFunCompare.sgW_mul w a b) (mul_zero _).symm
 
-
 variable (F E) in
 def ideleAt (v : HeightOneSpectrum (𝓞 F)) : (Fv F v ⊗[F] E)ˣ →* (AF F ⊗[F] E)ˣ := extUnit (inFin v) (inFin_mul v)
-
 
 variable (F E) in
 def ideleAtInf (w : InfinitePlace F) : (w.Completion ⊗[F] E)ˣ →* (AF F ⊗[F] E)ˣ := extUnit (inInf w) (inInf_mul w)
@@ -335,9 +323,6 @@ theorem unitInf_ideleAtInf_ne {w u : InfinitePlace F} (h : u ≠ w) (x : (w.Comp
 
 def charAt (μ : (AF F ⊗[F] E)ˣ →* Circle) (v : HeightOneSpectrum (𝓞 F)) : (Fv F v ⊗[F] E)ˣ →* Circle :=
   μ.comp (ideleAt F E v)
-
-def charAtInf (μ : (AF F ⊗[F] E)ˣ →* Circle) (w : InfinitePlace F) : (w.Completion ⊗[F] E)ˣ →* Circle :=
-  μ.comp (ideleAtInf F E w)
 
 end Comp
 

@@ -14,9 +14,6 @@ namespace UpperTheory.ConvolutionTheory.R2.G.similitudePositivity
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (D : Dat F E)
 
-local notation "ι" => AdeleBaseChange.adeleMap F E
-local notation "BB" => AdeleBaseChange.adeleBasis (K := F) (L := E) (Dat.b D)
-
 private theorem basis0 : BB 0 = 1 := by
   rw [AdeleBaseChange.adeleBasis_apply, D.b0, map_one]
 

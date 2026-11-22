@@ -23,9 +23,6 @@ namespace GlobalTheory.SplitAdjBound
 
 variable {D : D7}
 
-theorem cA_tmul_pair (α : Af D.host.F) (m : D.host.E) :
-    cA D (pairA D.host.F 0 α ⊗ₜ[D.host.F] m) = pairA D.host.F 0 α ⊗ₜ[D.host.F] star m := rfl
-
 theorem tmul_eq_mul (x : AF D.host.F) (m : D.host.E) :
     (x ⊗ₜ[D.host.F] m : AE D) = algebraMap (AF D.host.F) (AE D) x * incA D m := by
   change _ = (x ⊗ₜ[D.host.F] (1 : D.host.E)) * ((1 : AF D.host.F) ⊗ₜ[D.host.F] m)

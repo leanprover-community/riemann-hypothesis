@@ -18,9 +18,6 @@ namespace GroundTheory.PAdicHodge
 
 variable {p : ℕ} [Fact p.Prime]
 
-local notation "𝔹" => BDeRhamPlus (normInteger ℂ_[p]) p
-local notation "𝔹dR" => BDeRham (normInteger ℂ_[p]) p
-
 theorem algebraMap_tBdR_ne_zero : algebraMap 𝔹 𝔹dR (tBdR p) ≠ 0 :=
   IsPerfectoidField.algebraMap_ne_zero_of_maximalIdeal_eq_span maximalIdeal_eq_span_tBdR
 

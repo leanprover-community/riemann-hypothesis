@@ -151,9 +151,6 @@ def applyHom (Th : MvPowerSeries (Lt × Fin N0 × Fin N1) ℂ_[l]) :
   map_zero' := by simp [applyAt0]
   map_add' := applyAt0_add l Th
 
-theorem applyHom_apply (Th : MvPowerSeries (Lt × Fin N0 × Fin N1) ℂ_[l]) (P : MvPolynomial (XZ Lt N0 N1) ℤ) :
-    applyHom l Th P = applyAt0 N0 N1 l Th P := rfl
-
 theorem applyAt0_monomial (Th : MvPowerSeries (Lt × Fin N0 × Fin N1) ℂ_[l]) (μ : XZ Lt N0 N1 →₀ ℕ) (c : ℤ) :
     applyAt0 N0 N1 l Th (MvPolynomial.monomial μ c) = applyTerm l Th μ c := by
   rw [applyAt0_eq_sum_of_subset l Th _ _ MvPolynomial.support_monomial_subset]

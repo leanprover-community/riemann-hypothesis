@@ -1,7 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.FnDefC
-public import Formalism.LocalToGlobal.ProjectiveLattices.NrmTieDef
+public import Formalism.LocalToGlobal.ProjectiveLattices.SupPTGePf
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveOpen
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompSplitPfB
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompSplitPfD
@@ -111,18 +111,6 @@ section Core
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.Gaps.EtaleWeightGaps CompSplitPfB
 
 variable {D : D7} {Tc : Core D} (hL : LawsCore Tc) (j : ℕ)
-
-
-variable {j} in
-def CompOf (cm : ∀ σ : Tc.Q.c.F →+* ℂ, (Tc.U j σ).Comp → Comp (Tc.Q.Xo j) Tc.Q.c) : Prop :=
-  ∀ (σ : Tc.Q.c.F →+* ℂ) (k : (Tc.U j σ).Comp) (x : ((Tc.U j σ).X k).dom) (q : PrimeSpectrum (CAt σ)),
-    cspB_lift ((Tc.U j σ).un k x).x ((Tc.U j σ).un k x).x_over q ∈
-      ((cm σ k : Comp (Tc.Q.Xo j) Tc.Q.c) : Set ((Tc.Q.Xo j).XF Tc.Q.c))
-
-def ptAt (hj : InR D j) (hA : AllTest (Tc.Q.Xo j) Tc.Q.c) (hB : ∀ σ, GoodEmb Tc.Q.c σ → BCEx (Tc.Q.Xo j) Tc.Q.c σ)
-    (h : GenFrEx (Tc.Q.Xo j) Tc.Q.c) (hb : CBaseEx (Tc.Q.Xo j) Tc.Q.c h) (Z : Comp (Tc.Q.Xo j) Tc.Q.c)
-    (P : Om Z →+* ℂ) (sg : Tc.Q.c.F →+* ℂ) (hP : sgOf P = sg) : SupPtAt j (goodOf Tc.Q.c sg) :=
-  hP ▸ nrmTieDefPt hL j hj hA hB h hb Z P
 
 end Core
 

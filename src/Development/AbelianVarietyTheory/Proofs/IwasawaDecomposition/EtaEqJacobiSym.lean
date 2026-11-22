@@ -45,8 +45,6 @@ section CM
 
 variable (K : Type) [Field K] [NumberField K] [IsCMField K]
 
-local notation3 "K⁺" => maximalRealSubfield K
-
 theorem frob_eq
     (hunr : ∀ P : Ideal (𝓞 K), P.IsPrime → P ≠ ⊥ →
       ¬ ∀ x : 𝓞 K, IsCMField.complexConj K • x - x ∈ P)
@@ -119,7 +117,6 @@ theorem card_aboveF {L : Type} [Field L] [NumberField L] (F : Type) [Field F] [N
   · rintro ⟨h1, h2⟩
     exact ⟨⟨Q, h1, Ideal.ne_bot_of_liesOver_of_ne_bot v.ne_bot Q⟩,
       HeightOneSpectrum.ext h2.over.symm, rfl⟩
-
 
 open Classical in
 theorem eta_eq_jacobiSym : ∀ (R : Ranks) (H : Formalism.BasicNotions.Host R) (v : HeightOneSpectrum (𝓞 H.F)),

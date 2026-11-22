@@ -23,8 +23,6 @@ def cfL (π : G →* (H →L[ℂ] H)) (w : H) : H →ₗ[ℂ] (G → ℂ) where
   map_add' a b := by funext g; simp [cf]
   map_smul' c a := by funext g; simp [cf]
 
-lemma cfL_apply (π : G →* (H →L[ℂ] H)) (w v : H) : cfL π w v = cf π v w := rfl
-
 lemma inner_pi (π : G →* (H →L[ℂ] H)) (hiso : ∀ g v, ‖π g v‖ = ‖v‖) (g : G) (x y : H) :
     ⟪π g x, π g y⟫_ℂ = ⟪x, y⟫_ℂ := by
   let L : H →ₗᵢ[ℂ] H := { toLinearMap := (π g).toLinearMap, norm_map' := hiso g }

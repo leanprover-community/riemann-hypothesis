@@ -28,16 +28,8 @@ section Type_
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
   {St : Type} {wt : St → Plc L} {At : St → ValuationSubring Ω} (ht : ∀ u, IsPlaceOver (At u) (wt u))
 
-
 variable (n wt) in
 abbrev KT : Subgroup (GV n wt) := Subgroup.pi Set.univ fun u => KO ((wt u).adicCompletion L) (Fin n)
-
-def IsType {m : ℕ} (τ₀ : KT n wt →* GL (Fin m) ℂ) (χ : ∀ u, Fin n → Ine (F := L) (At u) →* ℂˣ) : Prop :=
-  IsOpen (τ₀.ker : Set (KT n wt)) ∧
-  ∀ (M : Type) [AddCommGroup M] [Module ℂ M] [Nontrivial M] (ρ : Representation ℂ (GV n wt) M) (σ : ∀ u, SmIrr (GLw n (wt u))),
-    (∀ u, IsoSum (M := M) (by classical exact ρ.comp (MonoidHom.mulSingle (fun u => GLw n (wt u)) u)) ⊤ (σ u)) →
-    ((∃ F : Fin m → M, F ≠ 0 ∧ ∀ (k : KT n wt) i, ∑ j, τ₀ k i j • ρ k (F j) = F i) ↔
-      ∀ u rc, IsRec (ht u) rc → IsTypeWD (ht u) (χ u) (rc (algNorm (σ u))))
 
 end Type_
 
@@ -67,7 +59,6 @@ abbrev Ga : Type := (away l L n).range
 
 variable {l L}
 
-
 open Classical in
 def cmp (w : Plc L) : Ga l L n →* GLw n w :=
   if h : ((l : ℕ) : 𝓞 L) ∉ w.asIdeal then
@@ -87,7 +78,6 @@ def toKT : Ub n s →* KT n (wt s) :=
 
 def locA (w : Plc L) : Subgroup (Ub n s) :=
   ⨅ (w' : Plc L) (_ : w'.under (𝓞 (Lp L)) ≠ w.under (𝓞 (Lp L))), ((cmp n w').comp (Ub n s).subtype).ker
-
 
 open Classical in
 def sec (w : Plc L) : GLw n w →* Ub n s :=
@@ -148,13 +138,7 @@ def hset (τ₀ : KT n (wt s) →* GL (Fin m) c.O) : HSet L Ω l n c where
 
 variable (r : Resid V.frame c.O n) (ι : Qbar l ≃+* ℂ)
 
-def TypeFor (τ₀ : KT n (wt s) →* GL (Fin m) c.O) : Prop :=
-  ∀ t, r.IsTeich t → IsType (fun u : s.St => s.hw u)
-    ((Matrix.GeneralLinearGroup.map (ι.toRingHom.comp (algebraMap c.O (Qbar l)))).comp τ₀)
-    fun u i => W.pushCh (ι.toRingHom.comp (algebraMap c.O (Qbar l))) ((t i).comp (V.pr.comp (Ine (F := L) (s.A u)).subtype))
-
 variable (τ₀ : KT n (wt s) →* GL (Fin m) c.O)
-
 
 variable {r} in
 def IsTheta (Λ : LamObj r) (θ : (hset Q τ₀).X.I.T →* Λ.Λˣ) : Prop :=
@@ -174,23 +158,6 @@ structure IsRes (a : (hset Q τ₀).Op → c.O) : Prop where
 def HasWt (s : HidaSetting l L Ω) (π : CuspSub L n) (lam : Wt L l n) : Prop :=
   ∀ (v : Vl l L) (j : W.Emb l (s.w v.1)), π.HasInfChar (ι.toRingHom.comp (j.1.comp (algebraMap L _)))
     (infOfWeight (lam (j.1.comp (algebraMap L _))).dual)
-
-def PUHt (ρ : G L Ω →* GL (Fin n) (Qbar l)) : Prop := ∃ HT, Af.HasHT ρ HT
-
-structure PU (lam : Wt L l n) (ρ : V.frame.G₀ →* GL (Fin n) (Qbar l)) : Prop where
-  form : ∃ P, V.frame.IsForm c.O n ρ P
-  type : ∀ t, r.IsTeich t → ∀ u : s.St, ∃ g : GL (Fin n) (Qbar l), ∀ x ∈ V.frame.Iu u,
-    ((g * ρ x * g⁻¹ : GL (Fin n) (Qbar l)) : Matrix (Fin n) (Fin n) (Qbar l)) =
-      Matrix.diagonal fun i => algebraMap c.O (Qbar l) (t i x)
-  cusp : Af.IsIrr ρ → ∃ π : CuspSub L n, (CG.mk π).IsRegAlg ∧ GlobalTheory.ContraPair.DualIsConj π ∧ Af.AttC ι (ρ.comp V.pr) π ∧ HasWt ι s π lam
-  aut : ∃ σ : Submodule ℂ (UA L n → ℂ), IsAutRepU σ ∧ (∀ w, IsSplitAt w → ∀ τ : SmIrr (GLw n w),
-      IsCompAlong σ (locU n w) ((cLoc w).comp (locU n w).subtype) τ.ρ → Af.LocGlob ι (ρ.comp V.pr) w τ) ∧
-    (∀ y : Emb l (fun v : V.frame.Vl => s.w v.1), HasWeightAt σ (ι.toRingHom.comp y.res) (lam y.res).dual) ∧
-    (∀ w : Plc L, w.under (𝓞 (Lp L)) ∉ V.S' → IsUnramU σ w) ∧
-    (∀ w, IsSplitAt w → ∃ τ : SmIrr (GLw n w), IsCompAlong σ (locU n w) ((cLoc w).comp (locU n w).subtype) τ.ρ) ∧
-    ∃ τ : SmIrr (GLw n (s.w s.v0)), IsCompAlong σ (locU n (s.w s.v0)) ((cLoc (s.w s.v0)).comp (locU n (s.w s.v0)).subtype) τ.ρ ∧
-      fixd τ.ρ (Kc _ n 1) ≠ ⊥
-  ht : PUHt (ρ.comp V.pr)
 
 def infRep (lam : Wt L l n) :
     Representation ℂ (UA L n) (⨂[ℂ] e : Emb l (fun v : V.frame.Vl => s.w v.1), nablaSq ℂ n (lam e.res)) :=
@@ -213,21 +180,7 @@ def YOf (ξ : GV n (fun v : V.frame.Vl => s.w v.1) →* GL (Fin d) ℂ) (σ : Su
 
 variable {r} (B : UniversalOrdinaryDeterminantRing r) (Λ : LamObj r)
 
-structure HD : Type where
-  m : ℕ
-  τ₀ : KT n (wt s) →* GL (Fin m) c.O
-  type : TypeFor r ι τ₀
-  θ : (hset Q τ₀).X.I.T →* Λ.Λˣ
-  theta : IsTheta Q τ₀ Λ θ
-  isWt : (hset Q τ₀).IsWt θ
-  a : (hset Q τ₀).Op → c.O
-  res : IsRes Q r τ₀ a
-
 variable {Q ι Λ} (R : HD Q ι Λ) (K : (hset Q R.τ₀).Lev)
-
-abbrev HD.M := (hset Q R.τ₀).MK R.θ R.a K
-
-def HD.IsJ (J : Ideal B.B) : Prop := (hset Q R.τ₀).IsJ R.θ R.a K B.u.D B.u.ψ (Λ.toPair B.u) J
 
 def WtOf (h : s.Wt n) (lam : Wt L l n) : Prop :=
   ∀ (v : Vl l L) (j : Fin n) (τ : W.Emb l (s.w v.1)), htW lam j (τ.1.comp (algebraMap L _)) = h v j τ

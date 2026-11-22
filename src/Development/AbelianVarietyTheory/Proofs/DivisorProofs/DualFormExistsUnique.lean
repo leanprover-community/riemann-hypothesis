@@ -49,8 +49,6 @@ def riemannClL (ξ : E) : E →ₗ[ℚ] Coh E where
 
 theorem riemannClL_apply (ξ x : E) : riemannClL ξ x = riemannCl ξ x := rfl
 
-theorem riemannCl_apply (ξ x y : E) : riemannCl ξ x y = (riemann ξ x y : ℂ) := rfl
-
 def gram (ξ : E) : Matrix (Fin (Module.finrank ℚ E)) (Fin (Module.finrank ℚ E)) ℚ :=
   LinearMap.toMatrix₂ (Module.finBasis ℚ E) (Module.finBasis ℚ E) (riemannBil ξ)
 

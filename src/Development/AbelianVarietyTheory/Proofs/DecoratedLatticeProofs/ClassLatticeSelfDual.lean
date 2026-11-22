@@ -12,7 +12,7 @@ public import Formalism.QuotientMetricDivisors.ReductionLemmaZero
 public import Formalism.QuotientMetricDivisors.FinalW
 public import Formalism.LocalToGlobal.Divisibility.FramesLemmas
 public import Formalism.LocalRingCardinality.DataArith
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HtPsiLeIffExists
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointLatticeIntersectionSelfDualProperties
 
 @[expose] public section

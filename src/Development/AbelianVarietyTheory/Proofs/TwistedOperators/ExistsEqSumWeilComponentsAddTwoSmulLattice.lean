@@ -90,12 +90,6 @@ private theorem af_ext_of_fstA_sndA {F : Type} [Field F] [NumberField F] {x y : 
     (h1 : fstA F x = fstA F y) (h2 : sndA F x = sndA F y) : x = y :=
   Prod.ext h1 h2
 
-private theorem fstA_pairA_twisted_operators {F : Type} [Field F] [NumberField F] (a : Ainf F) (b : Af F) :
-    fstA F (pairA F a b) = a := rfl
-
-private theorem sndA_pairA_twisted_operators {F : Type} [Field F] [NumberField F] (a : Ainf F) (b : Af F) :
-    sndA F (pairA F a b) = b := rfl
-
 theorem one_sub_sum_idem (P : Finset (Place D)) (hP : P.toRight = Finset.univ) :
     1 - ∑ p ∈ P, idem D p = algebraMap (AF D.host.F) (AE D)
       (pairA D.host.F 0 (1 - ∑ v ∈ P.toLeft, singleV D.host.F v 1)) := by

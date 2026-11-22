@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FgInfRestrictScalarsOfIntegers
 
 @[expose] public section
 
@@ -40,20 +39,4 @@ theorem exists_smul_mem_of_mem_span_val {C : Type} [Field C] {v : Valuation C NN
     · exact ⟨1, one_ne_zero, by simp [hd]⟩
     · exact ⟨a / d, div_ne_zero ha hd, by rw [smul_smul, div_mul_cancel₀ _ hd]; exact hx⟩
 
-theorem latIn_isLattice : ∀ (C : Type) [Field C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] (hv : v.Integers O) (V : Type) [AddCommGroup V] [Module C V] [Module O V] [IsScalarTower O C V] (L : Submodule O V) (U : Submodule C V), L.FG → U ≤ Submodule.span C (L : Set V) → (latIn L U).IsLattice C := by
-  intro C _ v O _ _ hv V _ _ _ _ L U hL hU
-  have hfg := GlobalTheory.CompanionTheory.Ar.HT.fg_inf_restrictScalars_of_integers C v O hv V L U hL
-  refine ⟨?_, ?_⟩
-  · have hinj : Function.Injective (U.subtype.restrictScalars O) := Subtype.val_injective
-    apply Submodule.fg_of_fg_map_injective (U.subtype.restrictScalars O) hinj
-    convert hfg using 1
-    ext x
-    constructor
-    · rintro ⟨y, hy, rfl⟩
-      exact ⟨hy, y.2⟩
-    · rintro ⟨h1, h2⟩
-      exact ⟨⟨x, h2⟩, h1, rfl⟩
-  · intro s hs hli
-    letI : IsFractionRing O C := hv.isFractionRing
-    exact (LinearIndependent.iff_fractionRing _ _).mp hli
 end GlobalTheory.CompanionTheory.Ar.HT

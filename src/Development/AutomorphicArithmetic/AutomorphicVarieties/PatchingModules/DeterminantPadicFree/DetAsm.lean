@@ -53,7 +53,6 @@ private theorem mp_od (hf : Function.Injective f) {M : Matrix (Fin n) (Fin n) A}
 
 variable {g : ℕ} (P Q : Matrix (Fin n) (Fin n) (DD A g)) (c : A)
 
-private theorem eta_add : etaM (P + Q) = etaM P + etaM Q := rfl
 private theorem eta_neg : etaM (-P) = -etaM P := rfl
 private theorem eta_sub : etaM (P - Q) = etaM P - etaM Q := (rfl)
 private theorem eta_tr : etaM Pᵀ = (etaM P)ᵀ := rfl
@@ -65,7 +64,6 @@ private theorem eta_C : etaM ((DD.C c : DD A g) • P) = c • etaM P := by
   ext i j
   simp [etaM, ha, he, hp, hq]
 private theorem eta_smul : etaM (c • P) = c • etaM P := eta_C P c
-private theorem ep_add (j) : ep'M j (P + Q) = ep'M j P + ep'M j Q := rfl
 private theorem ep_neg (j) : ep'M j (-P) = -ep'M j P := rfl
 private theorem ep_sub (j) : ep'M j (P - Q) = ep'M j P - ep'M j Q := (rfl)
 private theorem ep_tr (j) : ep'M j Pᵀ = (ep'M j P)ᵀ := rfl

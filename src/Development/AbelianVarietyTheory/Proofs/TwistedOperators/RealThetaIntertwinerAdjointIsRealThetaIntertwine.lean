@@ -31,27 +31,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.Inde
 
 variable {D : D7}
 
-
-def QHalfL {T : Type} (L : LevCh D T) : Prop :=
-  ∀ t, ∀ PP ∈ L.Q t, ∀ PP' ∈ L.Q t, (∃ p : ℕ, p.Prime ∧ (p : 𝓞 D.host.E) ∈ PP.asIdeal ∧ (p : 𝓞 D.host.E) ∈ PP'.asIdeal) →
-    PP.asIdeal.comap (algebraMap (𝓞 D.host.K) (𝓞 D.host.E)) = PP'.asIdeal.comap (algebraMap (𝓞 D.host.K) (𝓞 D.host.E))
-
-def QGuardL {T : Type} (L : LevCh D T) : Prop :=
-  QHalfL L ∧ ∀ t, ∀ PP ∈ L.Q t, ((D.host.QS * D.host.q * Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal
-
-structure SameDesign {T : Type} (L L' : LevCh D T) : Prop where
-  C : L'.C = L.C
-  xiH : L'.xiH = L.xiH
-  mu0 : L'.mu0 = L.mu0
-  eta : L'.eta = L.eta
-  xi : L'.xi = L.xi
-  Pg : L'.Pg = L.Pg
-  chi : L'.chi = L.chi
-  ΛY : L'.ΛY = L.ΛY
-  βY : L'.βY = L.βY
-  ΛW : L'.ΛW = L.ΛW
-  βW : L'.βW = L.βW
-
 section Fam
 
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} (A : FamIn D.what₂.LL G Pl0 T D.R.m)
@@ -61,8 +40,6 @@ variable {A}
 variable {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
 end Fam
-
-
 
 end GlobalTheory.CompanionTheory.Pins
 

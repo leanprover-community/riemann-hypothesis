@@ -23,11 +23,9 @@ def G (y : ℝ) : ℝ :=
 def sumLamChi {N : ℕ} (χ : DirichletCharacter ℂ N) (y : ℝ) : ℂ :=
   ∑ n ∈ Finset.Icc 1 ⌊y⌋₊, (abelian₂ n : ℂ) * χ (n : ZMod N) * ((max (y / n - 1) 0 : ℝ) : ℂ)
 
-
 open Classical in
 def gChi {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (y : ℝ) : ℂ :=
   if χ = 1 then ((G y : ℝ) : ℂ) else sumLamChi χ y + (y : ℂ) * logDerivativeAtOne χ
-
 
 open Classical in
 def psi0 {N : ℕ} (χ : DirichletCharacter ℂ N) (u : ℝ) : ℂ :=
@@ -58,12 +56,6 @@ def chDir (d : ℕ) : ℕ → ℂ := kron (-(d : ℤ))
 def psDir (q : ℕ) : ℕ → ℂ := kron (-(q : ℤ))
 
 def chi8 : ℕ → ℂ := kron 2
-
-def chi0 (q d : ℕ) : Fin 4 → ℕ → ℂ
-  | 0 => fun _ => 1
-  | 1 => chDir d
-  | 2 => psDir q
-  | 3 => fun a => chDir d a * psDir q a
 
 def IsCharED (D : D7) {N : ℕ} (χ : DirichletCharacter ℂ N) : Prop :=
   χ.IsPrimitive ∧ ∃ ψ : D.R.GG →* ℂˣ, ∀ (a : ℕ) (h : a.Coprime D.host.condN),

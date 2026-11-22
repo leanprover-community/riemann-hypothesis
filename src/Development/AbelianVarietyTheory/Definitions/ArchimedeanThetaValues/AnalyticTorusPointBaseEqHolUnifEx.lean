@@ -2,7 +2,8 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ArcDictExpZeroSection
-public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsPrimitiveRootArcRoot
+public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ToMatrixTrFormBaseChange
+public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.SqrtNegDiscMemCoeffField
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ExistsChartComplexPoint
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemRangeCompIffOfIsClosedImmersion
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
@@ -19,125 +20,7 @@ section Model
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H}
 
-
-variable (l) in
-def splitArc : letI := H.starRing; AnArc (𝓞 E) :=
-  letI := H.starRing
-  { gB := 0
-    abelian₂ := ⊥
-    discrete := inferInstance
-    full := Subsingleton.elim _ _
-    Hm := 0
-    Hm_herm := Matrix.isHermitian_zero
-    Hm_pos := fun z hz => absurd (Subsingleton.elim _ _) hz
-    Ef := 0
-    Ef_eq := fun l m => by simp [hermForm]
-    Ef_bij := ⟨fun _ _ _ => Subsingleton.elim _ _, fun _ => ⟨0, Subsingleton.elim _ _⟩⟩
-    chi := fun _ => 1
-    chi_norm := fun _ => norm_one
-    chi_add := fun l m => by simp [hermForm]
-    chi_neg := fun _ => rfl
-    F := { toFun := fun _ => 0
-           map_one' := Subsingleton.elim _ _
-           map_mul' := fun _ _ => Subsingleton.elim _ _
-           map_zero' := rfl
-           map_add' := fun _ _ => Subsingleton.elim _ _ }
-    F_mem := fun a l _ => Subsingleton.elim (α := Fin 0 → ℂ) _ _
-    F_adj := fun a z w => by simp [hermForm]
-    X := 𝓞 E
-    ct := 0
-    ct_smul := fun _ _ => Subsingleton.elim _ _
-    T := 0
-    T_symm := fun _ _ => rfl
-    T_adj := fun _ _ _ => rfl
-    psi := fun _ => 1
-    psi_neg := fun _ => rfl
-    psi_add := fun _ _ => by simp
-    be := arcForm l
-    be_symm := fun y z => congrArg ((2 * l.M' : ℤ) * ·) (trForm_symm H y z)
-    be_pos := fun y hy => mul_pos (mul_pos two_pos (Int.natCast_pos.2 (LevelExist.M'_pos l))) (trForm_pos H hy)
-    be_adj := fun a y z => congrArg ((2 * l.M' : ℤ) * ·) (trForm_adj H a y z)
-    be_even := fun y => ⟨l.M' * trForm H y y, mul_assoc _ _ _⟩ }
-
-theorem isTangent_zero (v : epsR ℂ ⟶ (zeroPolAV (Sp ℂ)).A) : IsTangent v := by
-  have h : v.left = spMap (algebraMap ℂ (DualNumber ℂ)) := (Category.comp_id _).symm.trans (Over.w v)
-  have h' : η[(zeroPolAV (Sp ℂ)).A].left = 𝟙 (Sp ℂ) :=
-    (Category.comp_id _).symm.trans (Over.w η[(zeroPolAV (Sp ℂ)).A])
-  unfold IsTangent
-  rw [h, h']
-  refine (Spec.map_comp _ _).symm.trans ?_
-  exact Spec.map_id _
-
-theorem isDiff_zero {O : Type} [CommRing O] [StarRing O] (A : AnArc O) [IsEmpty (Fin A.gB)] (w : Fin A.gB → ℂ)
-    (v : epsR ℂ ⟶ (zeroPolAV (Sp ℂ)).A) : (zeroUnif A).IsDiff w v := by
-  intro U h f
-  have hv : v.left ≫ 𝟙 (Sp ℂ) = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w v
-  obtain rfl : w = 0 := Subsingleton.elim _ _
-  rw [map_zero]
-  have hf : f = constFn (𝟙 (Sp ℂ)) U (valAt' (𝟙 (Sp ℂ)) U f) := by
-    refine ComplexPoints.eq_of_valAt'_eq (𝟙 (Sp ℂ)) _ _ _ fun x hx hU => ?_
-    obtain rfl : x = 𝟙 _ := (Category.comp_id _).symm.trans hx
-    exact (valAt'_constFn _ _ (Category.comp_id _) _ _ hU).symm
-  have e := GlobalTheory.Points.valR_constFn_of_over (𝟙 (Sp ℂ)) (algebraMap ℂ (DualNumber ℂ)) v.left hv U h (valAt' (𝟙 (Sp ℂ)) U f)
-  have e' := (congrArg (valR v.left U) hf).trans e
-  unfold valR at e'
-  rw [dif_pos h] at e'
-  exact (congrArg TrivSqZeroExt.snd e').trans rfl
-
 variable (c : Coeff l) (bF : c.F →+* ℂ) [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ]
-
-def model : letI := H.starRing; GtAn (arcIn c ℂ bF) :=
-  letI := H.starRing
-  letI : IsEmpty (Fin (splitArc l).gB) := inferInstanceAs (IsEmpty (Fin 0))
-  let d := dict (splitArc l) (fun _ => 1) (fun _ => by simp [splitArc]) (polar_one_smul ℂ)
-  { star_eq := rfl
-    A := splitArc l
-    ε := LinearEquiv.refl _ _
-    be_eq := fun _ _ => rfl
-    gB_eq := rfl
-    u := zeroUnif (splitArc l)
-    lam := rfl
-    ah := d.isAH
-    rig := d.isRig
-    tan := ⟨fun v _ => ⟨0, isDiff_zero (splitArc l) 0 v, fun _ _ => Subsingleton.elim _ _⟩,
-      fun w => ⟨toUnit _, ⟨isTangent_zero _, isDiff_zero (splitArc l) w _⟩, fun _ _ => toUnit_unique _ _⟩⟩
-    pow := fun n => by
-      have hθ : ∀ θ, (zeroUnif (splitArc l)).IsThetaFn (splitArc l).Hm (fun m => (splitArc l).chi ⟨m.1, m.2⟩) n θ :=
-        fun θ => ⟨(mem_Theta (splitArc l) n 0 θ).1, fun m z => by
-          have := (mem_Theta (splitArc l) n 0 θ).2 ⟨m.1, m.2⟩ z
-          rw [map_zero, AnArc.H_zero_left, mul_zero, Complex.exp_zero, _root_.mul_one] at this
-          exact this⟩
-      have key : ∀ s θ, (zeroUnif (splitArc l)).IsFnPow n s θ ↔
-          valAt' (𝟙 (Sp ℂ)) _ (s.f fun _ => PUnit.unit) = θ 0 := fun s θ =>
-        ⟨fun h => (h (fun _ => PUnit.unit) 0 (wchart_triv _ _).ge).trans (by simp [zeroUnif]), fun h j z _ => by
-          obtain rfl : z = 0 := Subsingleton.elim (α := Fin 0 → ℂ) _ _
-          exact h.trans (by simp [zeroUnif])⟩
-      refine ⟨fun s => ⟨fun _ => _, ⟨hθ _, (key _ _).2 rfl⟩, fun θ h => funext fun z => ?_⟩, fun θ _ => ?_⟩
-      · obtain rfl : z = 0 := Subsingleton.elim (α := Fin 0 → ℂ) _ _
-        exact ((key _ _).1 h.2).symm
-      · have hc : ∀ i, valAt' (𝟙 (Sp ℂ)) ((lbPow (zeroPolAV (Sp ℂ)).L n).U i) (constFn (𝟙 (Sp ℂ)) _ (θ 0)) = θ 0 :=
-          fun i => valAt'_constFn _ _ (Category.comp_id _) _ _ (wchart_triv _ _).ge
-        refine ⟨⟨fun i => constFn (𝟙 (Sp ℂ)) _ (θ 0), fun i i' => ?_⟩, (key _ _).2 (hc _), ?_⟩
-        · obtain rfl : i = i' := funext fun _ => rfl
-          erw [linComb_triv_g]
-          exact (_root_.one_mul _).symm
-        · rintro ⟨f, hf⟩ h
-          congr 1
-          funext i
-          refine ComplexPoints.eq_of_valAt'_eq (𝟙 (Sp ℂ)) _ _ _ fun x hx _ => ?_
-          obtain rfl : x = 𝟙 _ := (Category.comp_id _).symm.trans hx
-          exact ((key _ _).1 h).trans (hc _).symm
-    act := fun _ _ => toUnit_unique _ _
-    ct := fun _ => toUnit_unique _ _
-    psi := fun x => by
-      refine (congrArg₂ (· / ·) (d.psi_val x _ le_top) (frameProd_zeroUnif (splitArc l) _ _ _)).trans ?_
-      change (1 : ℂ) * (1 : ℂ)⁻¹ / 1 = 1
-      simp
-    ex0 := d.ex₀
-    ex0_b := d.ex₀_b_left
-    arcDict_expZero_section := fun v x => by
-      refine (congrArg₂ (· / ·) (valAt'_gv_unitOn _ (wchart_triv _ _).ge) (frameProd_zeroUnif (splitArc l) _ _ _)).trans ?_
-      exact div_one _ }
 
 end Model
 
@@ -148,7 +31,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} [StarRi
   [Algebra (FractionRing ℂ) ℂ] {b : O →+* ℂ} {a : ArcIn D l β ℂ b} (Λ : GtAn a)
 
 open FrameValue
-
 
 include Λ in
 theorem isScalarTower : IsScalarTower ℂ (FractionRing ℂ) ℂ := by
@@ -424,13 +306,6 @@ theorem analyticTorusPoint_surjective : Function.Surjective Λ.ex0 := by
   obtain ⟨x, rfl⟩ := Λ.ε.surjective x
   exact corr_of_genVal (u := Λ.u) a.D₀.P.isLB ((Λ.ex0 _).isGen _) (g.isGen _) (isLift_gt Λ (w, z) x) (hl x)
     (fun _ => rfl) ((Λ.arcDict_expZero_section _ x).trans (congrArg Units.val (DFunLike.congr_fun hw (Multiplicative.ofAdd x))))
-
-theorem rep_iff (k : ℕ) (p : Out.QkPt a.D₀ (FractionRing ℂ) k) (la : Λ.A.La) :
-    Λ.Rep k p la ↔ ∃ q : Out.QkPt a.D₀ ℂ k, QkExt (algebraMap _ ℂ) p q ∧ q.y = Λ.ε la.y ∧
-      q.g = Λ.ex0 ((k : ℂ)⁻¹ • Λ.A.P0 la) := by
-  obtain ⟨q, hq, hu⟩ := TorusExt.existsUnique_qkExt a.bimult (algebraMap (FractionRing ℂ) ℂ)
-    (RingHom.ext fun _ => rfl) p
-  exact ⟨fun h => ⟨q, hq, h q hq⟩, fun ⟨q', hq', h⟩ q'' hq'' => (hu _ hq'').trans (hu _ hq').symm ▸ h⟩
 
 end General
 

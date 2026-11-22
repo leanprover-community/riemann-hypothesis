@@ -140,9 +140,6 @@ def rowEqM (r t : ℕ) : Matrix (Fin r ⊕ Fin t) (Fin r) F ≃ᵐ Matrix (Fin (
     refine Measurable.of_eval fun i => ?_
     exact measurable_pi_apply _
 
-omit [Field F] in
-theorem rowEqM_apply {r t : ℕ} (x : Matrix (Fin r ⊕ Fin t) (Fin r) F) : rowEqM r t x = rowEq r t x := rfl
-
 variable [TopologicalSpace F] [IsTopologicalRing F]
 
 omit [IsTopologicalRing F] in

@@ -23,7 +23,6 @@ variable {WL : Type} [AddCommGroup WL] [Module LL WL] [Module Ks WL] [IsScalarTo
 variable {W : (LL →+* ℂ) → Type} [∀ σ, NormedAddCommGroup (W σ)] [∀ σ, InnerProductSpace ℂ (W σ)]
 variable {G G' : Type} [Group G] [Fintype G] [Group G'] [Fintype G']
 
-
 end Clause
 
 section Forms
@@ -43,10 +42,6 @@ variable {κ κ' : Type} [CommRing κ] [CommRing κ'] {r : ℕ}
 
 end Local
 
-structure PlaceIso (D : D7) (Pg : Finset (Pl D.host.E)) where
-  pl : TypePl D ≃ ↥Pg
-  iso : ∀ v : TypePl D, ZMod (D.host.g v.1) ≃+* kP (pl v).1
-
 namespace PlaceIso
 
 variable {D : D7} {Pg : Finset (Pl D.host.E)} (P : PlaceIso D Pg) {LL : Type} [Field LL]
@@ -63,7 +58,6 @@ variable {T : Core D} (hb : ∀ k, ((D.host.g k : ℕ) : 𝓞 D.host.K) ∈ (T.p
 include hb
 
 end Places
-
 
 open GlobalTheory.MemN.TypesInhab in
 theorem goodSeriesIdempotent_central_idempotent (D : D7) :

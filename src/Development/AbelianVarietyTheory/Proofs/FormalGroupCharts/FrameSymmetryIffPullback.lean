@@ -114,10 +114,6 @@ theorem formEq_swap {B : Scheme.{0}} (G : Over B) [GrpObj G] [IsCommMonObj G] {T
   rw [_root_.mul_comm b a]
   exact congrArg _ (mul_left_comm _ _ _)
 
-theorem jetMap_mk {R : Type} [CommRing R] {κ κ' : Type} {m : ℕ} (φ : κ → MvPolynomial κ' R) (hφ : ∀ i, φ i ∈ orig R κ')
-    (p : MvPolynomial κ R) :
-    jetMap (m := m) φ hφ (Ideal.Quotient.mk _ p) = Ideal.Quotient.mk _ (MvPolynomial.aeval φ p) := rfl
-
 theorem swap_jpt {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X0 : Scheme.{0}} (t : SAB H X0)
     {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) (d : ℕ) (x : ∀ m, jOG x0 d m 1 ⟶ t.G) (m : ℕ)
     (φ : Fin 2 → Fin d → MvPolynomial (Fin 2 × Fin d) S) (i k : Fin 2) (h : φ i = fun j => X (k, j)) :

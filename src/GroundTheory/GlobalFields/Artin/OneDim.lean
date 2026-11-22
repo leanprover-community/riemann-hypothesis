@@ -27,9 +27,6 @@ section CharField
 variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
   [IsGalois K L] (χ : Gal(L/K) →* ℂˣ)
 
-abbrev charField : IntermediateField K L :=
-  fixedField χ.ker
-
 end CharField
 
 section Hecke
@@ -51,7 +48,6 @@ theorem IsArithFrobAt.eq_of_inertia_eq_bot {R S : Type*} [CommRing R] [CommRing 
 variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
   [IsGalois K L] (χ : Gal(L/K) →* ℂˣ) (v : HeightOneSpectrum (𝓞 K))
   (w : HeightOneSpectrum (𝓞 L)) [w.asIdeal.LiesOver v.asIdeal]
-
 
 end Places
 

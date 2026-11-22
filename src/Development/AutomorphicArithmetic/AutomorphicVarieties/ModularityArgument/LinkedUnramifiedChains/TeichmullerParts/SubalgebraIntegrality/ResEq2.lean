@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.TeichmullerParts.HodgeTateFromSandwich
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LaArtinLit
 
 @[expose] public section
 
@@ -20,11 +19,5 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 set_option synthInstance.maxHeartbeats 200000
 
 namespace UpperTheory.V.Z.J.D
-
-private def resEquiv {G V V' : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V']
-    {ρ : Representation ℂ G V} {ρ' : Representation ℂ G V'} (K : Subgroup G) (e : ρ.Equiv ρ') :
-    Representation.Equiv (ρ.comp K.subtype) (ρ'.comp K.subtype) :=
-  Representation.Equiv.mk e.toLinearEquiv fun g => LinearMap.ext fun v =>
-    Representation.IntertwiningMap.isIntertwining _ _ e.toIntertwiningMap (g : G) v
 
 end UpperTheory.V.Z.J.D

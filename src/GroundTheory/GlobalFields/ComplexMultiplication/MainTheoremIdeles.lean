@@ -20,8 +20,6 @@ noncomputable section
 
 variable {K : Type} [Field K] [NumberField K]
 
-local notation "𝓘" => (FractionalIdeal (𝓞 K)⁰ K)ˣ
-
 namespace Modulus
 
 def ofNat (m : ℕ) (hm : m ≠ 0) : Modulus K where
@@ -124,7 +122,6 @@ theorem exists_eq_diagonal_mul_mul_finiteEmbedding (m : ℕ) (hm : m ≠ 0) (σ 
 variable {m : ℕ} {hm : m ≠ 0} {s : IdeleGroup K} {x : Kˣ} {u : IdeleGroup K}
   {𝔭 : HeightOneSpectrum (𝓞 K)} {π : (𝔭.adicCompletion K)ˣ}
 
-
 omit [Algebra K ℂ] in
 theorem inv_smul_eq_of_eq (hu : u ∈ (Modulus.ofNat m hm).congruenceSubgroup)
     (hπ : toFractionalIdeal (finiteEmbedding 𝔭 π) = primeIdealUnit 𝔭)
@@ -135,7 +132,6 @@ theorem inv_smul_eq_of_eq (hu : u ∈ (Modulus.ofNat m hm).congruenceSubgroup)
   have hπ' : (finiteEmbedding 𝔭 π)⁻¹ • 𝔞 = (primeIdealUnit 𝔭)⁻¹ * 𝔞 := by
     rw [IdeleGroup.smul_def, map_inv, hπ]
   rw [hs, mul_inv, mul_inv, mul_smul, mul_smul, hπ', hu', map_inv]
-
 
 omit [Algebra K ℂ] in
 theorem smulQuotient_inv_mk_of_eq (h𝔭 : (m : 𝓞 K) ∉ 𝔭.asIdeal)

@@ -24,7 +24,6 @@ section Lattice
 
 variable (E : Type) [Field E] {X : Type} [AddCommGroup X] [Module (𝓞 E) X]
 
-
 end Lattice
 
 section Phi
@@ -139,11 +138,6 @@ def rankOne (η : Module.Dual (𝓞 E) X) (τ : E →+* ℂ) : Bil X :=
     (fun a c c' => by simp [mul_add])
     (fun k a c => by simp [mul_add, mul_left_comm])
 
-omit [IsCMField E] in
-theorem rankOne_apply (η : Module.Dual (𝓞 E) X) (τ : E →+* ℂ) (a c : X) :
-    rankOne E η τ a c = (τ (η a : E) * starRingEnd ℂ (τ (η c : E))).re := rfl
-
-
 theorem bar_outer {n : ℕ} (x x' : Fin n → X) (η η' : Module.Dual (𝓞 E) X) :
     bar E (outer E x x' η η') = outer E x' x η' η := by
   have := bar_bar E
@@ -178,14 +172,6 @@ theorem exists_admissible (hS : IsBalancedSpace E S) :
   exact LinearMap.ext fun a => LinearMap.congr_fun this a
 
 end Phi
-
-abbrev FormSpaces : Type 1 :=
-  ∀ (E : Type) [Field E] [NumberField E] (_ : E → E) (Y : Type) [AddCommGroup Y] [Module (𝓞 E) Y],
-    Submodule ℝ (Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ)
-
-abbrev FormValues (S : FormSpaces) : Type 1 :=
-  ∀ (E : Type) [Field E] [NumberField E] (cj : E → E) (Y : Type) [AddCommGroup Y] [Module (𝓞 E) Y],
-    S E cj Y → ℝ
 
 section Clauses
 

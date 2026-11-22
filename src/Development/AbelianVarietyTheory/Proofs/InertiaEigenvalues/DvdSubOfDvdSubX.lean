@@ -10,9 +10,6 @@ open PowerSeries
 
 namespace GlobalTheory.NB.LT
 
-def F (R : Type) [CommRing R] (l : ℕ) : Polynomial R :=
-  Polynomial.X * (Polynomial.X + Polynomial.C (l : R)) ^ (l - 1)
-
 abbrev EE (R : Type) [CommRing R] (l : ℕ) : Type :=
   AdicCompletion (Ideal.span {(l : Localization.Away (X : R⟦X⟧))}) (Localization.Away (X : R⟦X⟧))
 
@@ -39,7 +36,6 @@ private lemma order_map_toNat_eq_natDegree_of_isDistinguishedAt {I : Ideal R} {p
   rw [← this]
   simp
 
-
 open PowerSeries in
 variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in
 theorem _root_.GlobalTheory.NB.LT.exists_poly_mod [Nontrivial R] {I : Ideal R} [IsAdicComplete I R] {p : Polynomial R}
@@ -55,7 +51,6 @@ theorem _root_.GlobalTheory.NB.LT.exists_poly_mod [Nontrivial R] {I : Ideal R} [
   have hlt := hd.degree_lt
   rw [order_map_toNat_eq_natDegree_of_isDistinguishedAt H hI] at hlt
   rwa [Polynomial.degree_eq_natDegree (Polynomial.Monic.ne_zero H.monic)]
-
 
 open PowerSeries in
 variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in
@@ -105,7 +100,6 @@ private lemma X_pow_dvd_sub_aeval_trunc (ρ : R⟦X⟧ →ₐ[R] R⟦X⟧) (hρ 
     rw [← _root_.GlobalTheory.NB.LT.algHom_coe ρ, ← map_sub, hg, map_mul]
   rw [e, map_pow]
   exact (pow_dvd_pow_of_dvd hρ n).mul_right _
-
 
 open PowerSeries in
 variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in

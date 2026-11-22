@@ -21,8 +21,6 @@ namespace GlobalTheory.CompanionTheory.RSLift
 set_option linter.unusedSectionVars false
 set_option linter.unnecessarySimpa false
 
-local notation "𝔸f" => FiniteAdeleRing (𝓞 ℚ) ℚ
-
 variable (N : ℕ) [NeZero N]
 
 theorem levelIdeal_sub_int {x : 𝔸f} (hx : x ∈ levelIdeal N) : x ∈ integralFiniteAdeles (𝓞 ℚ) ℚ := by
@@ -123,7 +121,6 @@ theorem chi_ne {s : SL(2, ℤ)} (hs : s ∈ Gamma0 N) : χ ((s 1 1 : ℤ) : ZMod
     rw [h0] at this
     simpa using this
   exact ((IsUnit.of_mul_eq_one _ (by rw [mul_comm]; exact hd')).map χ).ne_zero
-
 
 variable (N) in
 def decU (g : AdelicGL ℚ 2) : FiniteAdelicGL ℚ 2 :=

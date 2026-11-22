@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.IsMultiHomogOfIsChowForm
+public import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PAffineChartTrdeg
 

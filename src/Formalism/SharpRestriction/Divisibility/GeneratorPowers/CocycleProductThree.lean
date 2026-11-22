@@ -56,12 +56,6 @@ theorem comp_thφ {T T' : Over Xo.X} (f : T' ⟶ T) (xs : Fin 3 → (T ⟶ Xo.un
   simp only [thφ]
   rw [← Over.comp_left, comp_psum_lemma]
 
-private theorem padd_eq_lemma_2 {T : Over Xo.X} (a b : T ⟶ Xo.univ.t.G) :
-    padd Xo.univ.t.G a b = a * b := rfl
-
-private theorem pzero_eq_lemma_3 (T : Over Xo.X) : pzero Xo.univ.t.G T = 1 := rfl
-
-
 set_option maxHeartbeats 800000 in
 theorem prod_cφ2 {T : Over Xo.X} {U : Type} [CommGroup U] (h : (T.left ⟶ Xo.univ.t.G.left) → U)
     (xs : Fin 2 → (T ⟶ Xo.univ.t.G)) :
@@ -85,7 +79,6 @@ theorem prod_cφ2 {T : Over Xo.X} {U : Type} [CommGroup U] (h : (T.left ⟶ Xo.u
   try simp only [zpow_one, zpow_neg, zpow_neg_one]
   rw [mul_assoc (h (Over.Hom.left (1 : T ⟶ Xo.univ.t.G))),
     mul_assoc (h (Over.Hom.left (1 : T ⟶ Xo.univ.t.G))), mul_assoc (h (xs 0 * 1).left)⁻¹]
-
 
 set_option maxHeartbeats 800000 in
 theorem cocycle_product_three {T : Over Xo.X} {U : Type} [CommGroup U] (h : (T.left ⟶ Xo.univ.t.G.left) → U)

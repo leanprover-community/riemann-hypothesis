@@ -15,8 +15,6 @@ section Local
 
 variable {m n : ℕ}
 
-local notation "EE" => (Fin m → Fin n → ℂ)
-
 theorem isSch_add' {f g : EE → ℂ} (hf : IsSch f) (hg : IsSch g) : IsSch (fun u => f u + g u) := by
   obtain ⟨S, rfl⟩ := hf
   obtain ⟨T, rfl⟩ := hg

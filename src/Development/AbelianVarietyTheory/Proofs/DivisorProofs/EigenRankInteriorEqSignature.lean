@@ -5,7 +5,8 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasRigidChart
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactificationBis
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EigRank
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSplitting
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLieFrames
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SplitKOfIsAlgClosed
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GrNormPosOfBasis
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsStalkFactor
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeB

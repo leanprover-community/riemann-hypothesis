@@ -17,8 +17,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibl
 
 variable {l : ℕ} [Fact l.Prime]
 
-def cZero (l : ℕ) (m : ℕ) (U : Finset ℤ) : ℕ := 2 + ∑ u ∈ U, (m + padicValInt l u)
-
 theorem finiteDimensional_Ks (K : FinExt l) (s : ℕ) : FiniteDimensional ℚ_[l] ↥(Ks K s) := by
   classical
   haveI : FiniteDimensional ℚ_[l] ↥K.1 := K.2
@@ -57,7 +55,6 @@ section Hyp
 variable {K LL : FinExt l}
 
 variable {P : LocPrime l} (AI : LocAinf l P)
-
 
 end Hyp
 

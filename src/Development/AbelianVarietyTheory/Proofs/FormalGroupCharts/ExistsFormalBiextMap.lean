@@ -88,12 +88,6 @@ theorem nc_law (G : FGLaw R d) : NoConst G.F := G.const
 theorem nc_act {O : Type} [CommRing O] {G : FGLaw R d} (A : OAct O G) (a : O) :
     NoConst (A.act a) := A.const a
 
-local macro "map_formal_series" h:ident : tactic =>
-  `(tactic|
-    simp (disch := solve | apply_rules [nc_zero, nc_pt, nc_comp1, nc_addOf, nc_law, nc_act])
-      only [FGLaw.add, map_ev1, map_ev2, map_ev3, mapPt_zero, mapPt_pt, mapPt_comp1,
-        mapPt_addOf, map_X, map_one, map_mul] at $h:ident)
-
 def mapLaw (G : FGLaw R d) : FGLaw k d where
   F := mapPt f G.F
   const i := by simp [mapPt, G.const i]

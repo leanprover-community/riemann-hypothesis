@@ -15,45 +15,12 @@ section General
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-theorem complexConj_eq_neg_of_sq_eq_neg {x : E} {n : ℕ} (hx : x ^ 2 = -(n : E)) : IsCMField.complexConj E x = -x := by
-  let φ : E →+* ℂ := Classical.choice inferInstance
-  apply φ.injective
-  rw [IsCMField.complexEmbedding_complexConj, map_neg]
-  have h : φ x ^ 2 = -(n : ℂ) := by rw [← map_pow, hx, map_neg, map_natCast]
-  have hre := congrArg Complex.re h
-  have him := congrArg Complex.im h
-  simp only [sq, Complex.mul_re, Complex.mul_im, Complex.neg_re, Complex.neg_im, Complex.natCast_re,
-    Complex.natCast_im, neg_zero] at hre him
-  have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
-  have h0 : (φ x).re = 0 := by
-    by_contra hne
-    have hi : (φ x).im = 0 := by
-      have : (φ x).re * (φ x).im = 0 := by linarith
-      exact (mul_eq_zero.1 this).resolve_left hne
-    rw [hi] at hre
-    have := mul_self_pos.2 hne
-    linarith
-  apply Complex.ext <;> simp [h0]
-
-
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 omit [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.HostModel.coe_sq_eq_neg {x : 𝓞 E} {n : ℕ} (hx : x ^ 2 = -(n : 𝓞 E)) : (x : E) ^ 2 = -(n : E) := by
   have h := congrArg (fun y : 𝓞 E => (y : E)) hx
   simpa using h
-
-theorem sub_complexConj_eq_of_two_mul {w x : 𝓞 E} {n : ℕ} (hx : x ^ 2 = -(n : 𝓞 E)) (hw : 2 * w = 1 + x) :
-    w - IsCMField.ringOfIntegersComplexConj E w = x := by
-  have hx' : IsCMField.ringOfIntegersComplexConj E x = -x := by
-    apply RingOfIntegers.ext
-    have h : (x : E) ^ 2 = -(n : E) := coe_sq_eq_neg hx
-    exact complexConj_eq_neg_of_sq_eq_neg h
-  have h := congrArg (IsCMField.ringOfIntegersComplexConj E) hw
-  rw [map_mul, map_add (f := _), map_one, hx', map_ofNat] at h
-  apply mul_left_cancel₀ (two_ne_zero : (2 : 𝓞 E) ≠ 0)
-  linear_combination hw - h
-
 
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
@@ -100,29 +67,14 @@ instance isCMField_cyclotomicField21 : IsCMField E21 := IsCyclotomicExtension.Ra
 
 def primitiveRootCyclotomicField21 : 𝓞 E21 := (IsCyclotomicExtension.zeta_spec 21 ℚ E21).toInteger
 
-theorem isPrimitiveRoot_primitiveRootCyclotomicField21 : IsPrimitiveRoot primitiveRootCyclotomicField21 21 :=
-  (IsCyclotomicExtension.zeta_spec 21 ℚ E21).toInteger_isPrimitiveRoot
-
-theorem sum_zeta21_pow_multiples_of_three_eq_zero : 1 + primitiveRootCyclotomicField21 ^ 3 + primitiveRootCyclotomicField21 ^ 6 + primitiveRootCyclotomicField21 ^ 9 + primitiveRootCyclotomicField21 ^ 12 + primitiveRootCyclotomicField21 ^ 15 + primitiveRootCyclotomicField21 ^ 18 = 0 := by
-  have h : IsPrimitiveRoot (primitiveRootCyclotomicField21 ^ 3) 7 := isPrimitiveRoot_primitiveRootCyclotomicField21.pow (by norm_num) (by norm_num)
-  have h2 := h.geom_sum_eq_zero (by norm_num)
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero] at h2
-  linear_combination h2
-
 def halfSqrtNegSeven : 𝓞 E21 := 1 + primitiveRootCyclotomicField21 ^ 3 + primitiveRootCyclotomicField21 ^ 6 + primitiveRootCyclotomicField21 ^ 12
 
 def sqrtNegSeven : 𝓞 E21 := 2 * halfSqrtNegSeven - 1
-
-theorem halfSqrtNegSeven_quadratic : halfSqrtNegSeven ^ 2 - halfSqrtNegSeven + 2 = 0 := by
-  have h := isPrimitiveRoot_primitiveRootCyclotomicField21.pow_eq_one
-  unfold halfSqrtNegSeven
-  linear_combination 2 * sum_zeta21_pow_multiples_of_three_eq_zero + primitiveRootCyclotomicField21 ^ 3 * h
 
 open NumberField in
 private theorem isPrimitiveRoot_hostModel_primitiveRoot21 :
     IsPrimitiveRoot _root_.GlobalTheory.HostModel.primitiveRootCyclotomicField21 21 :=
   (IsCyclotomicExtension.zeta_spec 21 ℚ _root_.GlobalTheory.HostModel.E21).toInteger_isPrimitiveRoot
-
 
 open NumberField in
 theorem _root_.GlobalTheory.HostModel.sqrtNegSeven_sq : _root_.GlobalTheory.HostModel.sqrtNegSeven ^ 2 = -((7 : ℕ) : 𝓞 _root_.GlobalTheory.HostModel.E21) := by
@@ -176,7 +128,6 @@ private theorem isUnit_one_sub_of_isPrimitiveRoot_twentyOne {R : Type*} [CommRin
   rw [Polynomial.eval_mul, Polynomial.eval_one_cyclotomic_not_prime_pow hnpp] at h1
   simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C] at h1
   exact IsUnit.of_mul_eq_one _ h1
-
 
 open NumberField in
 theorem _root_.GlobalTheory.HostModel.unramified_E21_over_maximalRealSubfield : Algebra.Unramified (𝓞 (maximalRealSubfield _root_.GlobalTheory.HostModel.E21)) (𝓞 _root_.GlobalTheory.HostModel.E21) := by
@@ -256,9 +207,5 @@ def host : Host E21 where
     ring
 
 @[simp] theorem host_d : host.d = 7 := rfl
-
-theorem finrank_rat_E21_eq_twelve : Module.finrank ℚ E21 = 12 := by
-  rw [IsCyclotomicExtension.finrank E21 (Polynomial.cyclotomic.irreducible_rat (n := 21) (by norm_num))]
-  decide
 
 end GlobalTheory.HostModel

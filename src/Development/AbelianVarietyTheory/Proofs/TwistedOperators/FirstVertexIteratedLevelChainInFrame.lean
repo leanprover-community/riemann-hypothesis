@@ -53,10 +53,6 @@ private lemma wt_stdOrd_ixZero {k : Type} [Field k] (t : Type) {κ l : ℕ} (ϖ 
     rfl
 
 open MeasureTheory ValuativeRel Matrix Topology in
-private lemma typeFrame_ord {k : Type} [Field k] {ι n : Type} [Fintype n] [DecidableEq n] {c : ℕ} (ϖ : kˣ)
-    (o : ι ≃ n ⊕ Fin c) : (_root_.GlobalTheory.StepData.typeFrame ϖ o).ord = o := rfl
-
-open MeasureTheory ValuativeRel Matrix Topology in
 private lemma read_apply_eq_stdOrd_mul_wt {k : Type} [Field k] (t : Type) [Fintype t] [DecidableEq t] {κ l : ℕ} (ϖ : kˣ)
     (H : 0 + l = l) (x : GL (_root_.GlobalTheory.StepData.XIx (Fin κ) t 0 ⊕ Fin l) k) (r r' : Fin κ ⊕ Fin l) :
     (_root_.GlobalTheory.FirstVertexFrame.read t ϖ H x : Matrix (Fin κ ⊕ Fin l) (Fin κ ⊕ Fin l) k) r r' =
@@ -84,11 +80,6 @@ private lemma coe_embX_eq_fromBlocks {k : Type} [Field k] {n : Type} [Fintype n]
       Matrix.fromBlocks (g : Matrix n n k) 0 0 1 := by
   unfold _root_.GlobalTheory.RootEx.embX
   simp
-
-open MeasureTheory ValuativeRel Matrix Topology in
-private lemma stdOrd_ixZero_inl (t : Type) {κ l : ℕ} (H : 0 + l = l) (i : Fin κ) :
-    _root_.GlobalTheory.StepData.stdOrd (Fin κ) t 0 l H (_root_.GlobalTheory.StepData.ixZero _ t (Sum.inl i)) =
-      Sum.inl (_root_.GlobalTheory.FirstVertexFrame.epsEquiv κ t i) := rfl
 
 open MeasureTheory ValuativeRel Matrix Topology in
 private lemma read_embX_eq_embX_reGL_symm {k : Type} [Field k] (t : Type) [Fintype t] [DecidableEq t] {κ l : ℕ} (ϖ : kˣ)
@@ -226,7 +217,6 @@ private lemma simpleSum_read_eq_mul_simpleSum {k : Type} [Field k] (t : Type) [F
     field_simp
     ring
   · simp
-
 
 open MeasureTheory ValuativeRel Matrix Topology in
 theorem _root_.GlobalTheory.FirstVertexFrame.firstVertex_typeChain : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]

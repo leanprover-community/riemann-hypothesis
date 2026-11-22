@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.DualLattices.UnramifiedCokernelLowerBoundStatement
-public import ReciprocityTheory.DualLattices.MapSmulOneMulVec
 
 @[expose] public section
 

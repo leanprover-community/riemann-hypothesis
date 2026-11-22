@@ -1,7 +1,7 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.FirstMinimumPos
+public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.GROWCountStatement
 
 @[expose] public section
 
@@ -13,19 +13,12 @@ noncomputable section
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-def Rel (X : Data E r) (x x' : X.dom) : Prop :=
-  ∃ γ ∈ X.Γ, ∃ b ∈ Bor X.Ψ r, (x' : Frame X.Ψ r) = lact γ (rmul (x : Frame X.Ψ r) b)
-
-def Yq (X : Data E r) : Type := Quot (Rel X)
-
 instance instTopYq (X : Data E r) : TopologicalSpace (Yq X) :=
   inferInstanceAs (TopologicalSpace (Quot (Rel X)))
 
 instance instMeasYq (X : Data E r) : MeasurableSpace (Yq X) := borel (Yq X)
 
 instance instBorelYq (X : Data E r) : BorelSpace (Yq X) := ⟨rfl⟩
-
-def q (X : Data E r) : X.dom → Yq X := Quot.mk _
 
 abbrev Ent (X : Data E r) : Type := X.Ψ × {p : Fin r × Fin r // p.2 < p.1}
 
@@ -44,9 +37,6 @@ def IsStrictDom (X : Data E r) (la : Wt X.Ψ r) : Prop :=
     (∀ i j : Fin r, (i : ℕ) < X.p0 → X.p0 ≤ (j : ℕ) → la τ i < la τ j)
 
 variable (X : Data E r) [T2Space (Yq X)] [SecondCountableTopology (Yq X)]
-
-def lift (A : WeightedAtlas (nd X) (Yq X) X.dom (Wt X.Ψ r)) (y : Yq X) : Frame X.Ψ r :=
-  cpt X (A.pick y).1 (A.chart (A.pick y) y)
 
 end
 

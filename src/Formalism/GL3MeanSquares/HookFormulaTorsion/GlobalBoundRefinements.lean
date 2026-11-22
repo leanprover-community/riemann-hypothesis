@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.GL3MeanSquares.InvNormSqConjRatioPowIdentities
-public import Formalism.GL3MeanSquares.HookFormulaTorsion.PrimesInProgressionCountLowerBound
 public import Formalism.GL3MeanSquares.ConcavityEquidistribution
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.SumWeightsOverPrimeLeHalfDegree
 public import Formalism.GL3MeanSquares.FourierTransformKernelSurjective

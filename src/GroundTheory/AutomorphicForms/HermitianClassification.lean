@@ -1,9 +1,8 @@
 module
 
 public import Mathlib
-public import GroundTheory.AutomorphicForms.HermitianDisc
 public import GroundTheory.AutomorphicForms.HermitianWitt
-public import GroundTheory.AutomorphicForms.UnitarySplit
+public import GroundTheory.AutomorphicForms.UnitaryGroupScheme
 public import GroundTheory.AutomorphicForms.HermitianSpaces
 public import GroundTheory.LocalFields.HerbrandLocal
 public import GroundTheory.LocalFields.FiniteExtension

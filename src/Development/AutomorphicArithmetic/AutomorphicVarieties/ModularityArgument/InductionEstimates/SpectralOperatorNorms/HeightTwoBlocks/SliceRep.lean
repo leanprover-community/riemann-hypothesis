@@ -11,12 +11,6 @@ open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg
 open scoped ENNReal NumberField.AdeleRing InnerProductSpace ComplexConjugate
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
-private theorem finFd {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (G1 K n)) [μ.IsHaarMeasure] :
-    IsFiniteMeasure (fd μ) := by
-  have h := (isFiniteMeasure_quotientMeasure (K := K) (n := n) μ).measure_univ_lt_top
-  rw [quotientMeasure_univ μ (isFundamentalDomain_fundamentalDomain _ μ)] at h
-  exact ⟨by rwa [Measure.restrict_apply_univ]⟩
-
 private theorem orth {K : Type} [Field K] [NumberField K] {n : ℕ} {μ : Measure (G1 K n)} {v w : L2 μ}
     {φ ψ : G1 K n → ℂ} (hv : Reps μ v φ) (hw : Reps μ w ψ) :
     ∫ m, conj (φ m) * ψ m ∂fd μ = ⟪v, w⟫_ℂ := by

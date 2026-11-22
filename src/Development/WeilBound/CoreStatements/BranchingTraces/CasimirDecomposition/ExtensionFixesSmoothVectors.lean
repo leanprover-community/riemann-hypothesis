@@ -220,9 +220,6 @@ private theorem sn_one_ext1_eq_norm_dsigW (T : URep k r) {x : T.R.H} (hx : x ∈
   show ‖PI.UpqRep.dsigW T.R.σ W (ext1 T x () : T.R.H)‖ = _
   rw [extendHalfPlane_coe_point T hx]
 
-private theorem sn_nil_eq_sum_norm (U : URep k r) (w : M (vr k r true, U)) :
-    CompanionTheory.Zuck.sn (vr k r true, U) [] w = ∑ c, ‖(w c : U.R.H)‖ := rfl
-
 theorem invForm {U T T' : URep k r} {P : Mx k r} (hP : IsCayleyU k r ε P) (i : M (one T) →ₗ[ℂ] M (vr k r true, U))
     (i' : M (one T') →ₗ[ℂ] M (vr k r true, U)) (hi : IsHom (one T) (vr k r true, U) i)
     (hi' : IsHom (one T') (vr k r true, U) i') :

@@ -29,10 +29,6 @@ def coordL (R : Type) [CommRing R] [Algebra F R] (M : ℕ) {d : ℕ} (b : Module
   (LinearEquiv.piCongrRight fun _ => (Algebra.TensorProduct.basis R b).equivFun).trans
     (LinearEquiv.curry R R (Fin M) (Fin d)).symm
 
-theorem coordL_apply (R : Type) [CommRing R] [Algebra F R] (M : ℕ) {d : ℕ} (b : Module.Basis (Fin d) F E)
-    (x : Fin M → R ⊗[F] E) (p : Fin M × Fin d) :
-    coordL R M b x p = (Algebra.TensorProduct.basis R b).repr (x p.1) p.2 := rfl
-
 theorem trace_expand [FiniteDimensional F E] (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {d : ℕ}
     (b : Module.Basis (Fin d) F E) (u v : R ⊗[F] E) (e : E) :
     Algebra.trace R (R ⊗[F] E) (sigR R σ u * inclR R e * v) =

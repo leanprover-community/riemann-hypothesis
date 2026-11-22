@@ -121,8 +121,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.InertPlaceSetting
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {σ : L →+* L} {n q : ℕ} {ϖ : L}
 
-local notation "⟪" x "⟫" => (((x : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L)
-
 theorem unif_ne_zero (hU : IsUnramInv ϖ σ q) : ϖ ≠ 0 := by
   intro h
   have := hU.2.2.2.1

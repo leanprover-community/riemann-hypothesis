@@ -1,7 +1,11 @@
 module
 
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.StatementF
-public import Formalism.MahlerMeasure.FinalT
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.BadCrit
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.MeanGam
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.GamDeg
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.GamLead
+public import Formalism.MahlerMeasure.CoarseLevelSlackInequalities
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.WeightSpaceDimensionMonotone
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.SmithZp
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.TheoremM

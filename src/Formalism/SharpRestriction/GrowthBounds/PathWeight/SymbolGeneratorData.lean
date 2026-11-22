@@ -95,8 +95,6 @@ section Conc
 variable {p n' r K : ℕ} [Fact p.Prime] [NeZero n'] [NeZero r] [NeZero K] {O : Type} [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] [Algebra (WF p n') O] (X : Ctx p n' r K O)
 
-local notation "AA" => MvPolynomial (TV n' (r + K)) O
-
 def Ctx.SS : Subalgebra O AA := supported O (bc_St X.Fr (r + K))
 
 def Ctx.DsO (s : ℤ) : AA := (topPairingMatrix p O X.Fr X.hH.2.2.1 s).det

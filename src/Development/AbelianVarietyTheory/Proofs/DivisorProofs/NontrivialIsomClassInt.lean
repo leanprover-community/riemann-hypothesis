@@ -279,10 +279,8 @@ theorem Isometric.dual (h : L.Isometric M) : L.dual.Isometric M.dual :=
     (isometric_tens_assoc _ _ _).trans <| ((Isometric.refl _).tens ((h.symm.tens_right _).trans
       ((isometric_tens_comm _ _).trans L.isometric_dual_tens))).trans (isometric_tens_triv _)
 
-
 variable (p) in
 def isometrySetoid : Setoid (HermLB p) := ⟨Isometric, Isometric.refl, Isometric.symm, Isometric.trans⟩
-
 
 variable (p) in
 def IsomClass : Type 1 := Quotient (isometrySetoid p)
@@ -320,9 +318,6 @@ theorem Isometric.pow (h : L.Isometric M) (m : ℕ) : (L.pow m).Isometric (M.pow
 def IsomClass.pull (π : Y ⟶ X) (hπ : π ≫ p = q) : IsomClass p →+ IsomClass q :=
   AddMonoidHom.mk' (Quotient.map (fun L => L.pull π hπ) fun _ _ h => Isometric.pull h π hπ)
     (by rintro ⟨L⟩ ⟨M⟩; exact icls_eq_iff.2 (isometric_pull_tens L M π hπ))
-
-theorem icls_pull (L : HermLB p) (π : Y ⟶ X) (hπ : π ≫ p = q) :
-    (L.pull π hπ).icls = IsomClass.pull π hπ L.icls := rfl
 
 end HermLB
 

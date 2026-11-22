@@ -100,8 +100,6 @@ def barEquiv (h : KTie R M τ l c b true e u) : kfin M τ ≃ₛₗ[starRingEnd 
     ({ toFun := u, map_add' := h.add, map_smul' := fun z x => by simpa [cjc] using h.smul z x } :
       kfin M τ →ₛₗ[starRingEnd ℂ] R.HK.V) h.bij
 
-theorem barEquiv_apply (h : KTie R M τ l c b true e u) (v) : barEquiv h v = u v := rfl
-
 def linEquiv (h : KTie R M τ l c b false e u) : kfin M τ ≃ₗ[ℂ] R.HK.V :=
   LinearEquiv.ofBijective
     ({ toFun := u, map_add' := h.add, map_smul' := fun z x => by simpa [cjc] using h.smul z x } :

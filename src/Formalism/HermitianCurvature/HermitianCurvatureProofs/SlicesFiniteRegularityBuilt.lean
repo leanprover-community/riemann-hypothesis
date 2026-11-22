@@ -830,11 +830,6 @@ theorem deg_linV (k r : ℕ) (e i : Fin (2 * r + k + 1)) : (linV k r e i).totalD
   refine (MvPolynomial.totalDegree_mul _ _).trans ?_
   simp only [MvPolynomial.totalDegree_C, MvPolynomial.totalDegree_X, zero_add, le_refl]
 
-theorem vars_inl {N : ℕ} (g : Matrix (Fin N) (Fin N) ℂ) (x : Fin N × Fin N) : vars g (Sum.inl x) = g x.1 x.2 := rfl
-
-theorem vars_inr {N : ℕ} (g : Matrix (Fin N) (Fin N) ℂ) (x : Fin N × Fin N) :
-    vars g (Sum.inr x) = star (g x.1 x.2) := rfl
-
 theorem eval_linA (k r : ℕ) (e c : Fin (2 * r + k + 1)) (g : Mat k r) :
     eval (vars g) (linA k r e c) = herm (Hpk k r) (g *ᵥ bvec c) (bvec e) := by
   simp only [linA, MvPolynomial.eval_sum, MvPolynomial.eval_mul, MvPolynomial.eval_C, MvPolynomial.eval_X,
@@ -964,14 +959,12 @@ theorem eval_qAV (k r m : ℕ) (hm : m ≤ r) (B : Fin m → Fin (2 * r + k + 1)
   ext a l
   simp [eval_linV k r _ _ g hg]
 
-
 open Classical in
 def aaFS (k j ρ m : ℕ) (hm : m ≤ j + ρ) (u : ℂ) (L : FS k (j + ρ)) : FS k (j + ρ) :=
   (Finset.univ : Finset (Fin m → Fin (2 * (j + ρ) + k + 1))).toList.flatMap fun c =>
     if StrictMono c then
       (qmFS k j ρ m u (C3.xR k (j + ρ) m hm) c L).map (fun e => (mulSC (qAA k (j + ρ) m hm c, 0, 0) e.1, e.2))
     else []
-
 
 open Classical in
 def avFS (k j ρ m : ℕ) (hm : m ≤ j + ρ) (ell : ℂ) (L : FS k (j + ρ)) : FS k (j + ρ) :=

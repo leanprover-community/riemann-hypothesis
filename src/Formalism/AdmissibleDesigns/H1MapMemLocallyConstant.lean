@@ -243,9 +243,6 @@ def PsiJ (j : ι) : QZ l →ₗ[ℤ_[l]] KO O :=
     rw [iotaK_alg, ← map_mul, Submodule.Quotient.mk_eq_zero]
     exact Submodule.mem_one.mpr ⟨_, rfl⟩)
 
-theorem PsiJ_mk (j : ι) (x : ℚ_[l]) :
-    PsiJ l O b j (QZ.mk l x) = Submodule.Quotient.mk (iotaK l O x * algebraMap O (FractionRing O) (b j)) := rfl
-
 def Psi : (ι → QZ l) →ₗ[ℤ_[l]] KO O := ∑ j, (PsiJ l O b j).comp (LinearMap.proj j)
 
 theorem Psi_apply (v : ι → QZ l) : Psi l O b v = ∑ j, PsiJ l O b j (v j) := by

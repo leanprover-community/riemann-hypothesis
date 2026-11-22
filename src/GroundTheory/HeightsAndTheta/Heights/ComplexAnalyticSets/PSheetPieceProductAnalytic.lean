@@ -20,8 +20,6 @@ namespace SheetPieceProductAnalytic
 def tailL (d : ℕ) : (Fin (d + 1) → ℂ) →L[ℂ] (Fin d → ℂ) :=
   ContinuousLinearMap.pi fun i => ContinuousLinearMap.proj i.succ
 
-theorem tailL_apply {d : ℕ} (p : Fin (d + 1) → ℂ) (i : Fin d) : tailL d p i = p i.succ := rfl
-
 theorem tailL_cons {d : ℕ} (a : ℂ) (y : Fin d → ℂ) : tailL d (Fin.cons a y) = y := by
   ext i
   simp [tailL_apply]
@@ -188,7 +186,6 @@ theorem isBounded_prodFn {σ : Type} [Fintype σ] {X : Set (σ → ℂ)} {w : σ
     _ ≤ C ^ N := pow_le_pow_right₀ (le_max_left _ _) hcardle
 
 end SheetPieceProductAnalytic
-
 
 open SheetPieceProductAnalytic in
 theorem SheetPieceProductAnalytic.proof (hsec : UnbranchedFibreSections.Statement) :

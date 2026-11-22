@@ -134,7 +134,6 @@ noncomputable def fromSpecCompletedStalk (X : Scheme.{u}) (x : X) :
     (AdicCompletion (maximalIdeal (X.presheaf.stalk x)) (X.presheaf.stalk x)))) ≫
     X.fromSpecStalk x
 
-
 omit [IsLocalRing R] in
 theorem existsUnique_factor_completedStalk (I : Ideal R) [IsAdicComplete I R]
     {f : Spec (.of R) ⟶ X} {x : X}
@@ -149,7 +148,6 @@ theorem existsUnique_factor_completedStalk (I : Ideal R) [IsAdicComplete I R]
   constructor
   · intro h; rw [h]; rfl
   · intro h; exact congr($(Spec.map_injective h).hom)
-
 
 omit [IsLocalRing R] in
 theorem existsUnique_factor_completedStalk' (I : Ideal R) [IsAdicComplete I R]
@@ -212,10 +210,6 @@ theorem IsAdicFamily.of_le {X : Scheme.{u}} {f : ∀ n : ℕ, Spec (.of (R ⧸ I
   induction n, h using Nat.le_induction with
   | base => rw [adicLevelMap_self, Category.id_comp]
   | succ n h ih => rw [← ih, ← hf n, adicLevelMap_comp_assoc]
-
-theorem IsAdicFamily.comp {X Y : Scheme.{u}} {f : ∀ n : ℕ, Spec (.of (R ⧸ I ^ (n + 1))) ⟶ X}
-    (hf : IsAdicFamily I f) (p : X ⟶ Y) : IsAdicFamily I fun n => f n ≫ p :=
-  fun n => by rw [← Category.assoc, hf n]
 
 variable [IsLocalRing R]
 
@@ -311,8 +305,6 @@ theorem existsUnique_over_of_isAdicFamily [IsAdicComplete I R] {X S : Scheme.{u}
   rw [← Category.assoc, hg, hs]
 
 variable (I)
-
-
 
 end Limit
 

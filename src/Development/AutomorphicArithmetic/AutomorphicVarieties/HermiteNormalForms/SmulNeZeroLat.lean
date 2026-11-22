@@ -61,8 +61,6 @@ instance : MulAction (Gm L N) (Vx L N) where
 
 variable {L N}
 
-theorem Vx.smul_val (g : Gm L N) (v : Vx L N) : (g • v).1 = g • v.1 := rfl
-
 theorem smul_mem_simp (g : Gm L N) {n : ℕ} {t : Fin n → Vx L N}
     (ht : t ∈ ConeExtensionAcyclic.simp (qc L N) (Psd L N) n) :
     (fun j => g • t j) ∈ ConeExtensionAcyclic.simp (qc L N) (Psd L N) n := by

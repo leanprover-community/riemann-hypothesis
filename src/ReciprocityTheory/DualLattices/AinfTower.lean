@@ -1,7 +1,8 @@
 module
 
 public import ReciprocityTheory.DualLattices.AinfFacts
-public import ReciprocityTheory.DualLattices.ThmAFull
+public import ReciprocityTheory.DualLattices.OneAddPowOfSq
+public import ReciprocityTheory.DualLattices.SmallLevelClassSet
 
 @[expose] public section
 

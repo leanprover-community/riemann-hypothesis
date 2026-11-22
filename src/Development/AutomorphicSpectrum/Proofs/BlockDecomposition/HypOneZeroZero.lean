@@ -18,14 +18,9 @@ section Entries
 
 variable {K : Type} [Zero K] [One K] {M : ℕ} (A : Matrix (Fin M) (Fin M) K)
 
-theorem hypOne_zero_zero : hypOne A 0 0 = 0 := rfl
-theorem hypOne_zero_one : hypOne A 0 1 = 1 := rfl
-theorem hypOne_one_zero : hypOne A 1 0 = 1 := rfl
 theorem hypOne_one_one : hypOne A 1 1 = 0 := rfl
 theorem hypOne_zero_rest (j : Fin M) : hypOne A 0 j.succ.succ = 0 := rfl
 theorem hypOne_one_rest (j : Fin M) : hypOne A 1 j.succ.succ = 0 := rfl
-theorem hypOne_rest_zero (i : Fin M) : hypOne A i.succ.succ 0 = 0 := rfl
-theorem hypOne_rest_one (i : Fin M) : hypOne A i.succ.succ 1 = 0 := rfl
 theorem hypOne_rest_rest (i j : Fin M) : hypOne A i.succ.succ j.succ.succ = A i j := rfl
 
 end Entries

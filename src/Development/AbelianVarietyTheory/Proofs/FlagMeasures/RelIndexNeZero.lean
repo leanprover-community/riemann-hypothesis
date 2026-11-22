@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesU
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.InvVolMulPosLeConj
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsIntSmulLe
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ImportsBisTer
 
 @[expose] public section
 
@@ -18,16 +17,6 @@ namespace GlobalTheory.DegCnt.Unimod
 
 variable {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
-
-theorem exists_mul_mem {A : Submodule (𝓞 K) V} (hA : Submodule.span K (A : Set V) = ⊤) (x : V) :
-    ∃ N : ℤ, N ≠ 0 ∧ N • x ∈ A := by
-  first
-  | exact @_root_.GlobalTheory.IntMulIntegral.main
-  | exact _root_.GlobalTheory.IntMulIntegral.main
-  | (apply _root_.GlobalTheory.IntMulIntegral.main <;> assumption)
-  | (intros; apply _root_.GlobalTheory.IntMulIntegral.main <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.IntMulIntegral.main <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.IntMulIntegral.main ..)
 
 theorem exists_mul_le {A : Submodule (𝓞 K) V} (hA : Submodule.span K (A : Set V) = ⊤)
     {B : Submodule (𝓞 K) V} (hB : B.FG) : ∃ N : ℤ, N ≠ 0 ∧ ∀ x ∈ B, N • x ∈ A := by

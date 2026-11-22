@@ -165,17 +165,7 @@ section Cov
 variable {O K V I : Type} [CommRing O] [Field K] [Algebra O K]
   [AddCommGroup V] [Module K V] [Module O V] [IsScalarTower O K V]
 
-abbrev hAlg (O : Type) {K V I : Type} [CommRing O] [Field K] [Algebra O K] [AddCommGroup V] [Module K V]
-    [Module O V] [IsScalarTower O K V] (op : I → End K V) : Subalgebra O (End K V) :=
-  Algebra.adjoin O (Set.range op)
-
-def hGen (O : Type) {K V I : Type} [CommRing O] [Field K] [Algebra O K] [AddCommGroup V] [Module K V]
-    [Module O V] [IsScalarTower O K V] (op : I → End K V) (i : I) : hAlg O op :=
-  ⟨op i, Algebra.subset_adjoin ⟨i, rfl⟩⟩
-
 variable {op : I → End K V}
-
-def sysOf (ψ : hAlg O op →ₐ[O] O) : I → K := fun i => pt ψ (hGen O op i)
 
 variable [IsLocalRing O]
 
@@ -187,8 +177,6 @@ open TensorProduct
 
 variable {K V I : Type} [Field K] [AddCommGroup V] [Module K V]
 variable (L : Type) [Field L] [Algebra K L]
-
-def opL (op : I → End K V) (i : I) : End L (L ⊗[K] V) := (op i).baseChange L
 
 variable {L} {op : I → End K V}
 
@@ -359,7 +347,6 @@ variable {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
 
 def DecoSet.heckeSet (P : Ideal (𝓞 E)) (i : ℕ) (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) : Set (DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) :=
   {d' | IsHeckeNbr P i d.1.N d'.1.N ∧ d'.1.f = d.1.f ∧ d'.1.be = d.1.be}
-
 
 open Classical in
 def DecoSet.heckeNb (P : Ideal (𝓞 E)) (i : ℕ) (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) : Finset (DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) :=

@@ -34,7 +34,6 @@ def EigFrame.Tri {Z : Model Xo c β} {R R' : Type} [CommRing R] [CommRing R'] {�
   x' = spMap ψ ≫ x ∧ φ' = ψ.comp φ ∧ ∀ τ i, ∃ cf : Fin (Dw.mult τ) → R', cf i = t τ i ∧ (∀ k, i < k → cf k = 0) ∧
     IsCombAtG Z.t x' (fun k => spMap (dualMap ψ) ≫ f.v τ k) cf (g.v τ i)
 
-
 attribute [local instance] Over.cartesianMonoidalCategory in
 open MonObj in
 theorem isCombAtG_single {X0 : Scheme.{0}} (t : SAB H X0) {R : Type} [CommRing R] (x : Sp R ⟶ X0) {m : ℕ}
@@ -72,18 +71,6 @@ theorem isCombAtG_single {X0 : Scheme.{0}} (t : SAB H X0) {R : Type} [CommRing R
   rw [this]
   show spMap (epsMul ((Pi.single j 1 : Fin m → R) j)) ≫ v j = _
   rw [Pi.single_eq_same, h1, Category.id_comp]
-
-theorem EigFrame.tri_refl {Z : Model Xo c β} {R : Type} [CommRing R] {φ : c.F →+* R} {x : Sp R ⟶ Z.X}
-    (f : EigFrame Z φ x) : f.Tri (RingHom.id R) f 1 := by
-  have h1 : spMap (dualMap (RingHom.id R)) = 𝟙 _ := by
-    rw [← Spec.map_id]
-    congr 1
-    ext r <;> simp [dualMap]
-  have h2 : spMap (RingHom.id R) = 𝟙 _ := Spec.map_id _
-  refine ⟨by rw [h2, Category.id_comp], rfl, fun τ i => ⟨Pi.single i 1, by simp,
-    fun k hk => Pi.single_eq_of_ne hk.ne' _, ?_⟩⟩
-  simp only [h1, Category.id_comp]
-  exact isCombAtG_single Z.t x (f.tan τ) i
 
 variable {F : Type} [Field F]
 
@@ -128,15 +115,12 @@ def Carries {k : Type} [Field k] {φ : c.F →+* k} {x : Sp k ⟶ Z.X} (p : Sp k
     (t' : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → kˣ),
     p = spMap ψ ≫ stalkPt C.Y y ∧ f.Tri (algebraMap (C.Y.X.presheaf.stalk y) C.Y.X.functionField) C.f0 t ∧ f.Tri ψ g t'
 
-def Ybd : C.Y.Cl := C.Y.supp C.bd
-
 def LEx : (Ix Dw → ℤ) →+ C.Y.Dv where
   toFun ex := -∑ x : (Σ τ : E →+* ℂ, Fin (Dw.mult τ)), ex (some x) • C.gr x.1 x.2
   map_zero' := by simp
   map_add' a b := by simp [add_smul, Finset.sum_add_distrib, add_comm]
 
 def Lw (la : GlobalTheory.AllWt.Weight Dw) : C.Y.Dv := C.LEx (GlobalTheory.AllWt.exOf Dw la 0)
-
 
 end FlagCpt
 
@@ -183,8 +167,5 @@ theorem KeySec.pow_mem (κ : KeySec Xo c) (m : ℕ) :
     rw [pow_succ, h]; exact GlobalTheory.AllWt.mul_mem_secZ ih κ.mem
 
 end Free
-
-abbrev FinalTheorems.Flag {D : D7} {A : Amb D} {N j : ℕ} {S : Sig A N j} {κ : Lv A} (s : FinalTheorems S κ) : Type :=
-  FlagTor s.T.Z κ.e (s.U κ.σ₀)
 
 end GlobalTheory.ShFam

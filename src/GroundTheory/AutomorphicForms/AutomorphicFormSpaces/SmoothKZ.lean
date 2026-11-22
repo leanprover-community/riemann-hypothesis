@@ -84,7 +84,6 @@ theorem IsAutomorphicForm.isSmoothKZ {φ : AdelicGLn.AdelicGL K n → ℂ} (hφ 
     IsSmoothKZ φ :=
   (isAutomorphicForm_iff.1 hφ).1
 
-
 variable (K n) in
 def smoothKZ : Submodule ℂ (AdelicGLn.AdelicGL K n → ℂ) where
   carrier := {φ | IsSmoothKZ φ}
@@ -201,11 +200,6 @@ theorem IsSmoothKZ.uAction {φ : AdelicGLn.AdelicGL K n → ℂ} (hφ : IsSmooth
     IsSmoothKZ (AutomorphicForm.uAction u ⟨φ, hφ.isSmooth.1⟩ : AdelicGLn.AdelicGL K n → ℂ) :=
   ⟨IsLeftInvariant.uAction hφ.isLeftInvariant u, hφ.isSmooth_uAction u,
     hφ.isKFinite_uAction u, hφ.isZFinite.uAction u⟩
-
-theorem IsSmoothKZ.rightTranslate_infEmb {φ : AdelicGLn.AdelicGL K n → ℂ} (hφ : IsSmoothKZ φ)
-    {a : archGroup K n} (ha : a ∈ archCompact K n) : IsSmoothKZ (rightTranslate (infEmb K n a) φ) :=
-  ⟨hφ.isLeftInvariant.translate _, hφ.isSmooth.rightTranslate_infEmb a,
-    hφ.isKFinite.rightTranslate_of_mem_maxCompact ha, hφ.isZFinite.map_rtInf a⟩
 
 end AutomorphicForm
 

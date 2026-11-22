@@ -28,10 +28,6 @@ def secOver (S : Type*) [CommRing S] {K : Type*} [Fintype K] {ι : K → Type*} 
     (Subalgebra.toSubmodule (chartRingOver S y c)).comap
       (LinearMap.mulRight S (∏ k, y ⟨k, c k⟩ ^ (-n k)))
 
-def secMOver (S : Type*) [CommRing S] {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
-    {Ω : Type*} [Field Ω] [Algebra S Ω] (y : (Σ k, ι k) → Ω) (d : K → ℕ) : Submodule S Ω :=
-  Submodule.span S {s | ∃ g : MRingOver S ι, IsMultiHomog g d ∧ aeval y g = s}
-
 def GeneratesOver (S : Type*) [CommRing S] {K : Type*} [Fintype K] {ι : K → Type*} {Ω : Type*} [Field Ω]
     [Algebra S Ω] {ι' : Type*} [Fintype ι'] (y : (Σ k, ι k) → Ω) (n : K → ℤ) (x' : ι' → Ω) : Prop :=
   ∀ c : ∀ k, ι k, (∀ k, y ⟨k, c k⟩ ≠ 0) → ∃ u : ι' → Ω, (∀ j, u j ∈ chartRingOver S y c) ∧

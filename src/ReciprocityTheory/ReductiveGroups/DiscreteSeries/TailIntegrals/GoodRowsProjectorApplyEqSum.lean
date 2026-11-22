@@ -66,11 +66,6 @@ theorem dot_lift_lift (u v : Fin (2 * r' + k + 1) → ℂ) :
   rw [sum_split k r']
   simp
 
-private theorem e0_mp_eq_zero (j : Fin (2 * r' + k + 1)) : e0 k r' (mp k r' j) = 0 := by
-  rw [goodRowsProjector_apply_eq_sum, if_neg]
-  simp only [mp]
-  omega
-
 private theorem es0_mp_eq_zero (j : Fin (2 * r' + k + 1)) : es0 k r' (mp k r' j) = 0 := by
   have hj := j.isLt
   rw [last_basis_apply, if_neg]

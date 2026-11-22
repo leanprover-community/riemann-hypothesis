@@ -15,9 +15,6 @@ abbrev cz {ι : Type*} (c : ι → ℤ) : ι → ℝ := fun i => (c i : ℝ)
 abbrev mz {ι : Type*} [Fintype ι] [DecidableEq ι] (U : Matrix ι ι ℤ) : Matrix ι ι ℝ :=
   (Int.castRingHom ℝ).mapMatrix U
 
-theorem mz_apply {ι : Type*} [Fintype ι] [DecidableEq ι] (U : Matrix ι ι ℤ) (i j : ι) :
-    mz U i j = (U i j : ℝ) := rfl
-
 def Dual {ι : Type*} [Fintype ι] [DecidableEq ι] (G : Matrix ι ι ℝ) (δ : ℝ) : Prop :=
   ∀ c : ι → ℤ, c ≠ 0 → δ ≤ cz c ⬝ᵥ (G⁻¹ *ᵥ cz c)
 

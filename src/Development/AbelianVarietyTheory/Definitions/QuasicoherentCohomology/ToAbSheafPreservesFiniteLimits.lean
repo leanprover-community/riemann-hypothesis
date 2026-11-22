@@ -15,7 +15,6 @@ namespace GlobalTheory
 
 variable {X : Scheme.{u}}
 
-
 variable (X) in
 def toAbSheaf : X.Modules ⥤ Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u} :=
   SheafOfModules.toSheaf X.ringCatSheaf
@@ -92,11 +91,6 @@ instance linearModules : Linear Γ(X, ⊤) X.Modules where
     rw [Category.assoc, Category.assoc, smulHom_comp]
   comp_smul F G H φ r ψ := (Category.assoc _ _ _).symm
 
-lemma smul_hom_def {F G : X.Modules} (r : Γ(X, ⊤)) (φ : F ⟶ G) : r • φ = φ ≫ smulHom G r := rfl
-
-lemma smulHom_eq_smul_id (F : X.Modules) (r : Γ(X, ⊤)) : smulHom F r = r • 𝟙 F :=
-  (Category.id_comp _).symm
-
 @[reducible] def addCommGroupOfAction {A M : Type*} [CommRing A] (inst : AddCommGroup M)
     (ρ : A →+* AddMonoid.End M) : AddCommGroup M :=
   { inst with
@@ -142,7 +136,6 @@ instance instModule : Module R (WithAction ρ) where
   zero_smul x := by
     change ρ (algebraMap R A 0) x = _
     rw [map_zero, map_zero]; rfl
-
 
 variable {R} in
 lemma toBase_smul (r : R) (x : WithAction ρ) :
@@ -215,18 +208,10 @@ lemma map_add_apply (f g : F ⟶ G) (x : F.H' n U) :
 lemma map_zero_apply (x : F.H' n U) : map (0 : F ⟶ G) n U x = 0 := by
   simp only [map, Functor.map_zero]; rfl
 
-lemma res_id_apply (x : F.H' n U) : res F n (𝟙 U) x = x := by
-  simp only [res, op_id, CategoryTheory.Functor.map_id]; rfl
-
-lemma res_comp_apply (i : V ⟶ U) (j : W ⟶ V) (x : F.H' n U) :
-    res F n (j ≫ i) x = res F n j (res F n i x) := by
-  simp only [res, op_comp, Functor.map_comp]; rfl
-
 lemma res_map_apply (f : F ⟶ G) (i : V ⟶ U) (x : F.H' n U) :
     res G n i (map f n U x) = map f n V (res F n i x) :=
   (ConcreteCategory.congr_hom
     (((Sheaf.cohomologyPresheafFunctor J n).map f).naturality i.op) x).symm
-
 
 variable (F n U) in
 def endAction : End F →+* AddMonoid.End (F.H' n U) where

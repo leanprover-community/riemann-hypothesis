@@ -1,10 +1,8 @@
 module
 
 public import Mathlib
-public import Formalism.LocalToGlobal.KernelLattices.DeterminantCokernelCount.JetMomEquiv
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.VacuumEntireAndNormalizedJetsAlgebraic
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TranslateMomentsAll
-public import Formalism.LocalToGlobal.KernelLattices.DeterminantCokernelCount.JetMomTA
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PThIndep
 public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsTraceNorm

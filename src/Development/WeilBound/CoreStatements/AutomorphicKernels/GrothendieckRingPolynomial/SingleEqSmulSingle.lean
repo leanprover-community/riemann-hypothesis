@@ -116,8 +116,6 @@ def cm (x y : IrrGL (k := k)) : GrothGL k := cl0 (prod₂ (IrrGL.rep x) (IrrGL.r
 
 theorem mulR_eq (a b : GrothGL k) : mulR a b = bil cm a b := rfl
 
-theorem sg_eq (x : IrrGL (k := k)) : sg x = Finsupp.single x 1 := rfl
-
 theorem mulR_add (a b c : GrothGL k) : mulR a (b + c) = mulR a b + mulR a c := bil_add_right _ a b c
 
 theorem add_mulR (a b c : GrothGL k) : mulR (a + b) c = mulR a c + mulR b c := bil_add_left _ a b c

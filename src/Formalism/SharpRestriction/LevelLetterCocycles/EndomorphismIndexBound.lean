@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DecompositionData
-public import Formalism.CharacterColumnKernels.Assemble
 public import Formalism.CharacterColumnKernels.Statement
 public import Formalism.CharacterColumnKernels.IdempotentNormalForms.CharacterColumnKernelsOfBlockChiCOfBlockChiOne
 public import Formalism.TruncatedSeriesCounting.TruncatedSeriesProofs.LemmaDetPoly
@@ -138,8 +137,6 @@ variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {X : T
 
 def actK : T →ₐ[O] Module.End (FractionRing O) (TensorProduct O (FractionRing O) M) :=
   (Module.End.baseChangeHom O (FractionRing O) M).comp act
-
-theorem actK_apply (f : T) : actK T act f = (act f).baseChange (FractionRing O) := rfl
 
 theorem heckeEig_eq (x : X) :
     heckeEig T act x = Vx T (actK T act).toRingHom x := by

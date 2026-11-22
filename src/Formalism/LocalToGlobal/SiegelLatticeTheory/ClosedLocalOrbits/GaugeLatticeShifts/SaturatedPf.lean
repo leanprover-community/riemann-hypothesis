@@ -116,7 +116,6 @@ theorem Xflag_mapL (F : LFlag S r T) (j : ℕ) :
   rw [span_image_E, Set.image_image]
 
 theorem zt_mapL (F : LFlag S r T) : (mapL β hβ F).zt = β F.zt := rfl
-theorem z_mapL (F : LFlag S r T) : (mapL β hβ F).fl.z = β F.fl.z := rfl
 
 theorem XLam_mapL (Λ : Submodule (𝓞 E) S.V) (F : LFlag S r T) :
     XLam (Formalism.HermitianLatticesTheory.gmap β Λ) (mapL β hβ F) = Formalism.HermitianLatticesTheory.gmap β (XLam Λ F) := by

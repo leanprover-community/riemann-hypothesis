@@ -19,73 +19,6 @@ def opWord (D : Λ → B) (w : List Λ) : B := (w.map D).prod
 @[simp] theorem opWord_cons (D : Λ → B) (l : Λ) (w : List Λ) :
     opWord D (l :: w) = D l * opWord D w := by simp [opWord]
 
-theorem opWord_append (D : Λ → B) (w w' : List Λ) :
-    opWord D (w ++ w') = opWord D w * opWord D w' := by simp [opWord]
-
-theorem opWord_perm {D : Λ → B} (hD : ∀ l l', Commute (D l) (D l')) {w w' : List Λ}
-    (h : w.Perm w') : opWord D w = opWord D w' := by
-  induction h with
-  | nil => rfl
-  | cons l _ ih => simp [ih]
-  | swap l l' w => simp only [opWord_cons, ← mul_assoc, (hD l l').eq]
-  | trans _ _ h₁ h₂ => exact h₁.trans h₂
-
-def IsOrderingRule (ord : (Λ →₀ ℕ) → List Λ) : Prop :=
-  ∀ α, (ord α : Multiset Λ) = Finsupp.toMultiset α
-
-theorem isOrderingRule_toList :
-    IsOrderingRule (fun α : Λ →₀ ℕ => (Finsupp.toMultiset α).toList) :=
-  fun _ => Multiset.coe_toList _
-
-noncomputable def opPoly (D : Λ → B) (ord : (Λ →₀ ℕ) → List Λ) : MvPolynomial Λ R →ₗ[R] B :=
-  (MvPolynomial.basisMonomials Λ R).constr R (fun α => opWord D (ord α))
-
-theorem opPoly_monomial (D : Λ → B) (ord : (Λ →₀ ℕ) → List Λ) (α : Λ →₀ ℕ) (c : R) :
-    opPoly D ord (MvPolynomial.monomial α c) = c • opWord D (ord α) := by
-  have h : MvPolynomial.monomial α c = c • MvPolynomial.basisMonomials Λ R α := by
-    simp [MvPolynomial.smul_monomial]
-  rw [h, map_smul, opPoly, Module.Basis.constr_basis]
-
-theorem opPoly_mul_of_commute {D : Λ → B} (hD : ∀ l l', Commute (D l) (D l'))
-    {ord : (Λ →₀ ℕ) → List Λ} (h : IsOrderingRule ord) (P Q : MvPolynomial Λ R) :
-    opPoly D ord (P * Q) = opPoly D ord P * opPoly D ord Q := by
-  induction P using MvPolynomial.induction_on' with
-  | add p q hp hq => simp only [add_mul, map_add (f := _), hp, hq]
-  | monomial α a =>
-    induction Q using MvPolynomial.induction_on' with
-    | add p q hp hq => simp only [mul_add, map_add (f := _), hp, hq]
-    | monomial β b =>
-      have hp : (ord (α + β)).Perm (ord α ++ ord β) := by
-        rw [← Multiset.coe_eq_coe, ← Multiset.coe_add, h, h, h, map_add (f := _)]
-      rw [MvPolynomial.monomial_mul, opPoly_monomial, opPoly_monomial, opPoly_monomial,
-        opWord_perm hD hp, opWord_append, smul_mul_smul_comm]
-
-theorem IsOrderingRule.ord_zero {ord : (Λ →₀ ℕ) → List Λ} (h : IsOrderingRule ord) :
-    ord 0 = [] := by
-  have := h 0
-  simpa using this
-
-theorem IsOrderingRule.ord_single {ord : (Λ →₀ ℕ) → List Λ} (h : IsOrderingRule ord) (l : Λ) :
-    ord (single l 1) = [l] := by
-  have := h (single l 1)
-  rw [Finsupp.toMultiset_single, one_smul] at this
-  exact List.perm_singleton.mp (Multiset.coe_eq_coe.mp this)
-
-theorem opPoly_C (D : Λ → B) {ord : (Λ →₀ ℕ) → List Λ} (h : IsOrderingRule ord) (c : R) :
-    opPoly D ord (MvPolynomial.C c) = algebraMap R B c := by
-  rw [MvPolynomial.C_apply, opPoly_monomial, h.ord_zero, opWord_nil, Algebra.algebraMap_eq_smul_one]
-
-theorem opPoly_X (D : Λ → B) {ord : (Λ →₀ ℕ) → List Λ} (h : IsOrderingRule ord) (l : Λ) :
-    opPoly D ord (MvPolynomial.X l : MvPolynomial Λ R) = D l := by
-  rw [MvPolynomial.X, opPoly_monomial, h.ord_single]
-  simp
-
-noncomputable def commEval (D : Λ → B) (hD : ∀ l l', Commute (D l) (D l')) :
-    MvPolynomial Λ R →ₐ[R] B :=
-  AlgHom.ofLinearMap (opPoly D fun α => (Finsupp.toMultiset α).toList)
-    (by rw [← MvPolynomial.C_1, opPoly_C D isOrderingRule_toList, map_one])
-    (opPoly_mul_of_commute hD isOrderingRule_toList)
-
 @[simp] theorem commEval_X (D : Λ → B) (hD : ∀ l l', Commute (D l) (D l')) (l : Λ) :
     commEval D hD (MvPolynomial.X l : MvPolynomial Λ R) = D l :=
   opPoly_X D isOrderingRule_toList l
@@ -104,8 +37,6 @@ section Constant
 open MvPolynomial
 
 variable {R σ Λ : Type*} [CommRing R]
-
-def multiFactorial (α : σ →₀ ℕ) : ℕ := α.prod fun _ n => n.factorial
 
 end Constant
 

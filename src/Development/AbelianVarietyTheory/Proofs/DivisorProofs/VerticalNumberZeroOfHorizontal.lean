@@ -95,10 +95,6 @@ noncomputable def kRec (G : ∀ a b n : ℕ, bo a b ⟶ bo n n)
     (fun n K a b => H a b (n + 1) (fun a' b' => G a b (n + 1) ≫ awO (n + 1) a' b' - idO a b a' b' -
       ∑ x ∈ antidiagonal n, dT a b x.1 x.2 ≫ K x.1 x.2 a' b')) n
 
-theorem kRec_zero (G : ∀ a b n : ℕ, bo a b ⟶ bo n n)
-    (H : ∀ a b k : ℕ, (∀ a' b' : ℕ, bo a b ⟶ bo a' b') → (∀ a' b' : ℕ, bo a b ⟶ bo a' b')) (a b a' b' : ℕ) :
-    kRec G H 0 a b a' b' = 0 := rfl
-
 end GlobalTheory.EZ.HTot
 
 namespace GlobalTheory.EZ.HTot

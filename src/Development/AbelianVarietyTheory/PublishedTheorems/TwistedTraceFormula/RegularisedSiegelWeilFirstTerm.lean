@@ -106,24 +106,6 @@ variable (b : GL (Fin T.rank) (AE D))
 
 def rhoH (T : HSp D) (r : ℕ) : ℝ := ((T.rank : ℝ) - r) / 2
 
-def sphericalSection (s : ℂ) : GA D T → ℂ := fun h => npow (iwAbs (absDet d) (Kmax T b) h) (s + rhoH T r)
-
-def sphericalEisenstein (h : GA D T) : ℂ → ℂ := fun s => cosetSum (stab d) (GQ T) (sphericalSection d b s) h
-
-def EisensteinRegularAt (s₀ : ℂ) (k : ℕ) : Prop :=
-  ∃ (ε : ℝ) (A : ℂ → GA D T → ℂ), 0 < ε ∧
-    (∀ s ∈ Metric.ball s₀ ε, s ≠ s₀ → ∀ h, A s h = (s - s₀) ^ k * cont (sphericalEisenstein d b h) s) ∧
-    (∀ h, DifferentiableOn ℂ (A · h) (Metric.ball s₀ ε)) ∧
-    ContinuousOn (fun x : ℂ × GA D T => A x.1 x.2) (Metric.ball s₀ ε ×ˢ Set.univ) ∧
-    ∃ (C : ℝ) (N : ℕ), ∀ s ∈ Metric.ball s₀ ε, ∀ h, ‖A s h‖ ≤ C * Grow.height T h ^ N
-
-def eisensteinResidue : ℂ := laurent (sphericalEisenstein d b 1) (rhoH T r) (-1)
-
-def EisensteinContinues : Prop :=
-  (∀ s : ℂ, rhoH T r < s.re → ∀ h, CosetConv (stab d) (GQ T) (sphericalSection d b s) h) ∧ (∀ h, Continues (sphericalEisenstein d b h)) ∧
-    (∀ s₀, ∃ k, EisensteinRegularAt d b s₀ k) ∧ eisensteinResidue d b ≠ 0 ∧
-    ∀ h, PoleLE (sphericalEisenstein d b h) (rhoH T r) 1 ∧ ResidueAt (sphericalEisenstein d b h) (rhoH T r) (eisensteinResidue d b)
-
 end SlopeTestRemainingChoices
 
 section Schwartz
@@ -145,14 +127,6 @@ theorem ikeda_apply (ψ : AddChar (AF D.host.F) ℂ) {t : ℕ} (d : HypDec T T' 
 
 variable (θ : InfFam D) (τ : D.what₂.Tau)
 
-def centreAct (T : HSp D) (p : MvPolynomial ℕ ℂ) (f : GA D T → ℂ) : GA D T → ℂ := polyAct (gelf θ T τ) p f
-
-def omCentreS (p : MvPolynomial ℕ ℂ) (φ : WO S T → ℂ) : WO S T → ℂ :=
-  fun w => centreAct θ τ S p (fun g => om (g, 1) φ w) 1
-
-def omCentreT (p : MvPolynomial ℕ ℂ) (φ : WO S T → ℂ) : WO S T → ℂ :=
-  fun w => centreAct θ τ T p (fun h => om (1, h) φ w) 1
-
 end Schwartz
 
 section Integrals
@@ -160,34 +134,7 @@ section Integrals
 variable {S T T₀ : HSp D} {r : ℕ} (ψ : AddChar (AF D.host.F) ℂ) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ))
   (m : Measure (GA D T))
 
-def ThetaPairConv (φ : WO S T → ℂ) (E : GA D T → ℂ) (g : GA D S) : Prop :=
-  Integrable (descend (GQ T) fun h => thetaKO om g h φ * E h) (autMeasure T m)
-
-def thetaPair (φ : WO S T → ℂ) (E : GA D T → ℂ) (g : GA D S) : ℂ :=
-  ⨍ q, descend (GQ T) (fun h => thetaKO om g h φ * E h) q ∂autMeasure T m
-
-def thetaInt (φ : WO S T → ℂ) : GA D S → ℂ := thetaPair om m φ 1
-
 variable (θ : InfFam D) (τ : D.what₂.Tau) (d : HypDec T T₀ r) (b : GL (Fin T.rank) (AE D))
-
-def IsRegElt (zG zH : MvPolynomial ℕ ℂ) (P : Polynomial ℂ) : Prop :=
-  (∀ φ, IsThetaFunO ψ S T φ → omCentreS om θ τ zG φ = omCentreT om θ τ zH φ) ∧
-  (∀ φ, IsThetaFunO ψ S T φ → ∀ g, Grow.RapidDec T fun h => thetaKO om g h (omCentreT om θ τ zH φ)) ∧
-  (∀ s, centreAct θ τ T zH (sphericalSection d b s) = P.eval s • sphericalSection d b s) ∧ P ≠ 0
-
-def regInt (zH : MvPolynomial ℕ ℂ) (P : Polynomial ℂ) (φ : WO S T → ℂ) (g : GA D S) : ℂ → ℂ :=
-  fun s => (eisensteinResidue d b * P.eval s)⁻¹ * thetaPair om m (omCentreT om θ τ zH φ) (fun h => sphericalEisenstein d b h s) g
-
-def RegIntProps (zH : MvPolynomial ℕ ℂ) (P : Polynomial ℂ) (φ : WO S T → ℂ) : Prop :=
-  IsThetaFunO ψ S T (omCentreT om θ τ zH φ) ∧ ∀ g,
-    Continues (regInt om m θ τ d b zH P φ g) ∧ PoleLE (regInt om m θ τ d b zH P φ g) (rhoH T r) 1 ∧
-    ∀ (s : ℂ) (E : GA D T → ℂ), (∀ h, HolValueAt (sphericalEisenstein d b h) s (E h)) →
-      ThetaPairConv om m (omCentreT om θ τ zH φ) E g ∧
-      (P.eval s ≠ 0 → HolValueAt (regInt om m θ τ d b zH P φ g) s
-        ((eisensteinResidue d b * P.eval s)⁻¹ * thetaPair om m (omCentreT om θ τ zH φ) E g))
-
-def regRes (zH : MvPolynomial ℕ ℂ) (P : Polynomial ℂ) (φ : WO S T → ℂ) : GA D S → ℂ :=
-  fun g => laurent (regInt om m θ τ d b zH P φ g) (rhoH T r) (-1)
 
 end Integrals
 
@@ -197,35 +144,6 @@ namespace GlobalTheory.Published
 
 open GlobalTheory.RegSW
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVec)
-
-def RegularisedSiegelWeilFirstTerm : Prop :=
-  ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V T T' : HSp D) (t : ℕ) (d : HypDec T T' t),
-    T.rank + T'.rank = 2 * V.rank → T'.rank < T.rank → 0 < T'.rank →
-  ∀ (χ : (AE D)ˣ →* Circle) (ω : GA D (dblSp V) × GA D T →* Module.End ℂ (WO (dblSp V) T → ℂ))
-    (ω' : GA D (dblSp V) × GA D T' →* Module.End ℂ (WO (dblSp V) T' → ℂ)),
-    IsWeilDatumO ψ (dblSp V) T 1 χ ω → IsWeilDatumO ψ (dblSp V) T' 1 χ ω' →
-  ∀ (a : GL (Fin V.rank) (AE D)) (b : GL (Fin T.rank) (AE D)), IsMaj V a → IsMaj T b →
-    HasIwasawa D.sp.cm.sig (dblSp V).gram (Khat V a) → HasIw d (Kmax T b) →
-  ∀ (μ₀ : Measure (WO V T)) (𝓕₀ : Set (WO V T)), IsCovolOne (ratL T V) μ₀ 𝓕₀ →
-  ∀ (μ₁ : Measure (Mx D t (dblSp V).rank)) (𝓕₁ : Set (Mx D t (dblSp V).rank)), IsCovolOne (ratMx D _ _) μ₁ 𝓕₁ →
-  ∀ (ν : Measure (Kmax T b)), ν.IsHaarMeasure → IsProbabilityMeasure ν →
-  ∀ (m : Measure (GA D T')), m.IsHaarMeasure →
-    (∀ φ, IsThetaFunO ψ (dblSp V) T φ → IsThetaFunO ψ (dblSp V) T (projK ω ν φ) ∧
-      IsThetaFunO ψ (dblSp V) T' (ikeda ψ d μ₁ 𝓕₁ φ)) ∧
-    (∀ φ, IsThetaFunO ψ (dblSp V) T φ → IsKFinVec ω (Khat V a) φ →
-      EisPoleLE V (flat V a (swSec V T ω μ₀ 𝓕₀ φ) (sZero V T)) (sZero V T) 1) ∧
-    (IsAniso T' → (∀ φ', IsThetaFunO ψ (dblSp V) T' φ' → ∀ g, ThetaPairConv ω' m φ' 1 g) ∧
-      ∃ κ : ℂ, κ ≠ 0 ∧ ∀ φ, IsThetaFunO ψ (dblSp V) T φ → IsKFinVec ω (Khat V a) φ →
-        EisCoeffAt V (flat V a (swSec V T ω μ₀ 𝓕₀ φ) (sZero V T)) (sZero V T) (-1)
-          (κ • thetaInt ω' m (ikeda ψ d μ₁ 𝓕₁ (projK ω ν φ)))) ∧
-    ∀ (T₀ : HSp D) (r' : ℕ) (d₀ : HypDec T' T₀ r'), IsAniso T₀ → 0 < r' →
-    ∀ b' : GL (Fin T'.rank) (AE D), IsMaj T' b' → HasIw d₀ (Kmax T' b') → ∀ θ : InfFam D, IsInfFam θ →
-      EisensteinContinues d₀ b' ∧ (∀ τ, ∃ zG zH P, IsRegElt ψ ω' θ τ d₀ b' zG zH P) ∧
-      ∃ κ : ℂ, κ ≠ 0 ∧ ∀ τ zG zH P, IsRegElt ψ ω' θ τ d₀ b' zG zH P →
-        (∀ φ', IsThetaFunO ψ (dblSp V) T' φ' → RegIntProps ψ ω' m θ τ d₀ b' zH P φ') ∧
-        ∀ φ, IsThetaFunO ψ (dblSp V) T φ → IsKFinVec ω (Khat V a) φ →
-          EisCoeffAt V (flat V a (swSec V T ω μ₀ 𝓕₀ φ) (sZero V T)) (sZero V T) (-1)
-            (κ • regRes ω' m θ τ d₀ b' zH P (ikeda ψ d μ₁ 𝓕₁ (projK ω ν φ)))
 
 end GlobalTheory.Published
 

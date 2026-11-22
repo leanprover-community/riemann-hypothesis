@@ -452,9 +452,6 @@ theorem exists_mem_sh (y : Fin n → k⸨X⸩) : ∃ s, y ∈ sh s (piLat k n) :
 def semiOp (σ : k⸨X⸩ →ₐ[k] k⸨X⸩) (H : Matrix (Fin n) (Fin n) k⸨X⸩) : (Fin n → k⸨X⸩) →ₗ[k] (Fin n → k⸨X⸩) :=
   ((Matrix.toLin' H).restrictScalars k) ∘ₗ (lin σ).compLeft (Fin n)
 
-theorem semiOp_apply (σ : k⸨X⸩ →ₐ[k] k⸨X⸩) (H : Matrix (Fin n) (Fin n) k⸨X⸩) (y : Fin n → k⸨X⸩) (i : Fin n) :
-    semiOp σ H y i = ∑ m, H i m * σ (y m) := rfl
-
 theorem semi_semiOp (σ : k⸨X⸩ →ₐ[k] k⸨X⸩) (H : Matrix (Fin n) (Fin n) k⸨X⸩) : Semi σ (semiOp σ H) := by
   intro a x
   funext i

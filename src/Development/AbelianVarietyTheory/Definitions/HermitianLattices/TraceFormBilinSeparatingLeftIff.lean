@@ -39,14 +39,6 @@ theorem herm_eq_dotProduct (G : Matrix (Fin r) (Fin r) E) (x y : Fin r → E) :
     herm G x y = x ⬝ᵥ G *ᵥ fun b => cc (y b) := by
   simp [herm, dotProduct, mulVec, Finset.mul_sum, mul_assoc]
 
-theorem herm_mulVec {s : ℕ} (G : Matrix (Fin r) (Fin r) E) (γ : Matrix (Fin r) (Fin s) E)
-    (x y : Fin s → E) : herm G (γ *ᵥ x) (γ *ᵥ y) = herm (γᵀ * G * γ.map cc) x y := by
-  have h : (fun b => cc ((γ *ᵥ y) b)) = γ.map cc *ᵥ fun b => cc (y b) := by
-    funext b
-    simp [mulVec, dotProduct, cc_sum]
-  rw [herm_eq_dotProduct, herm_eq_dotProduct, h, ← mulVec_mulVec, ← mulVec_mulVec,
-    dotProduct_mulVec x, vecMul_transpose]
-
 def IsConjAdj (B : LinearMap.BilinForm ℚ (Fin r → E)) : Prop :=
   ∀ (a : E) (x y : Fin r → E), B (a • x) y = B x (cc a • y)
 
@@ -133,7 +125,6 @@ def skewGram (ξ0 : E) (B : LinearMap.BilinForm ℚ (Fin r → E)) : Matrix (Fin
   Matrix.of fun a b =>
     (-ξ0)⁻¹ * traceRep (B.flip (Pi.single b 1) ∘ₗ LinearMap.single ℚ (fun _ : Fin r => E) a)
 
-
 omit [IsCMField E] in
 theorem trace_skewGram {ξ0 : E} (h0 : ξ0 ≠ 0) (B : LinearMap.BilinForm ℚ (Fin r → E))
     (a b : Fin r) (t : E) :
@@ -175,7 +166,6 @@ theorem skewGram_herm {ξ0 : E} (h0 : ξ0 ≠ 0) (hξ : cc ξ0 = -ξ0)
 theorem skewGram_det_ne_zero_iff {ξ0 : E} (h0 : ξ0 ≠ 0) {B : LinearMap.BilinForm ℚ (Fin r → E)}
     (hB : IsConjAdj B) : (skewGram ξ0 B).det ≠ 0 ↔ B.Nondegenerate := by
   rw [← traceFormBilin_nondegenerate_iff h0, traceFormBilin_skewGram h0 hB]
-
 
 section Integral
 

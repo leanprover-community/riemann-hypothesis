@@ -59,10 +59,6 @@ structure WtNum (PP : ℝ) : Prop where
     PP * lenT p i PP * D.R.r * (D.R.f : ℝ) ^ 2 * (D.R.m : ℝ) ^ 2 * D.R.k * dimFlag (dat p i) ≤ h0 ∧
     ∀ u1, (wtsAt p i PP h0 S eta u1).Hyp
 
-def HostN (M : ℝ) : Prop := Lifts fun Fm x _ ι _ _ PP A => HostNum (Fm.D x ι) (Fm.L x ι) PP A M
-
-def WtN : Prop := Lifts fun _ _ _ _ p i PP _ => WtNum p i PP
-
 end GlobalTheory.CovTop
 
 end

@@ -19,9 +19,6 @@ section Lattice
 
 variable {D : D7}
 
-def StabLat (V : HSp D) (κ : GA D V) : Prop :=
-  κ ∈ GfC V ∧ gLat V κ = (latHat V : Set (Fin V.rank → Af D.host.F ⊗[D.host.F] D.host.E))
-
 def LevAgrees (V : HSp D) {La : Type} [AddCommGroup La] [Module (𝓞 D.host.E) La]
     (ι : La →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E)) (M : ℕ) (Mh : Ideal (𝓞 D.host.E)) (κ : GA D V)
     (lev : La →ₗ[𝓞 D.host.E] La) : Prop :=
@@ -41,12 +38,10 @@ section Statement
 
 variable {D : D7} (T : CoreJ D) (hT : LawsJ T) (j : ℕ) (hj : InR D j) (σ : T.Q.c.F →+* ℂ) (hσ : GoodEmb T.Q.c σ)
 
-
 include hT hj hσ in
 theorem dict_mem_dom (h : GA D (T.V j σ)) : (T.dict j σ h).2 ∈ ((T.U j σ).X (T.dict j σ h).1).dom := by
   obtain ⟨_, _, _, hd⟩ := hT.dictU j hj σ hσ
   exact hd.2.2.2.1 h
-
 
 end Statement
 

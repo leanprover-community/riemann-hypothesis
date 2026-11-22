@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.AdelicGaussians.UpperRightUnipotentInvariance
+public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.AdFormOf
 public import GroundTheory.AutomorphicForms.CompactAbelianCharacters
 
 @[expose] public section

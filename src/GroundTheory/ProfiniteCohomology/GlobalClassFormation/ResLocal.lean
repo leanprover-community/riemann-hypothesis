@@ -11,8 +11,6 @@ namespace GroundTheory.ProfCoh
 
 open CategoryTheory NumberField IntermediateField GroundTheory.Global FiniteSubfield
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 section Res
@@ -122,7 +120,6 @@ variable {K E : FiniteSubfield} [Fact (K ≤ E)]
   (hL : ∀ l ∈ L, ∃ y : Ew, e (algebraMap Ew Ωw y) = l)
   (ιK : ℚ̄ →ₐ[K.1] Ωv) (ιE : ℚ̄ →ₐ[E.1] Ωw) (hι : ∀ x, e (ιE x) = ιK x)
 
-
 include hι in
 theorem unitsLocalRes_unitsResField (n : ℕ) (x : cohomology (unitsLimitRep K) n) :
     (unitsLocalRes Ew ιE n).hom ((unitsResField K E n).hom x) =
@@ -149,7 +146,6 @@ theorem unitsLocalRes_unitsResField (n : ℕ) (x : cohomology (unitsLimitRep K) 
         e.symm (ιK ((Additive.toMul (a : Additive ℚ̄ˣ) : ℚ̄ˣ) : ℚ̄))
       rw [← hι, RingEquiv.symm_apply_apply]
   exact (congrArg (fun φ => φ.hom x) h)
-
 
 include hL hι in
 theorem unitsLocalRes_unitsResField_eq_zero (n : ℕ) (x : cohomology (unitsLimitRep K) n)

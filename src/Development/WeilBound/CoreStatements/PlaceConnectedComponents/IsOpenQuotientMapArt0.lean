@@ -211,29 +211,6 @@ theorem art0_unif_iff (hA : IsPlaceOver A v) (g : Gab E Ω) :
     · rw [map_mul, map_mul, map_inv, map_inv, e]
       group
 
-theorem isGlobalArtin_inv : IsGlobalArtin (art0 E Ω)⁻¹ := by
-  refine ⟨(Homeomorph.inv (Gab E Ω)).isOpenQuotientMap.comp (isOpenQuotientMap_art0 E Ω),
-    ?_, ?_, ?_, ?_⟩
-  · rw [← ker_art0 E Ω]
-    ext x
-    simp only [MonoidHom.mem_ker, MonoidHom.inv_apply, inv_eq_one]
-  · intro v A hA g
-    simp only [MonoidHom.inv_apply, inv_eq_iff_eq_inv]
-    rw [art0_unit_iff hA, Subgroup.inv_mem_iff]
-    rfl
-  · intro v A hA g
-    simp only [MonoidHom.inv_apply, map_inv, inv_eq_iff_eq_inv]
-    exact art0_unif_iff hA _
-  · intro v A hA
-    rw [← closure_range_eq hA]
-    congr 1
-    ext g
-    constructor
-    · rintro ⟨x, rfl⟩
-      exact ⟨x⁻¹, by simp⟩
-    · rintro ⟨x, rfl⟩
-      exact ⟨x⁻¹, by simp⟩
-
 end PositivityTheory.FamInh
 
 end

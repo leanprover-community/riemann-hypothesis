@@ -338,14 +338,6 @@ def RowStepsC : Prop :=
 
 def TRExistsC : Prop := ∀ (D : D7) (X : HidaSetting D), X.LevelSubgroupCharacter → ∃ TR : TypedRed X, ∀ v, TR.psi0 v ≠ 1
 
-def LocC : Prop :=
-  ∀ D : D7, ∃ (δ : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, (D.s.atP p).Fp)
-    (M : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, Formalism.MainNotions.S.Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),
-    (∀ p, Formalism.MainNotions.S.LocalSplitGroups.Agree δ M p) ∧
-    ∀ (p : Formalism.MainNotions.S.LocalSplitGroups.PlF D) (i : Fin 2), ((D.host.g i : ℕ) : 𝓞 D.host.F) ∈ p.asIdeal →
-      δ p = (D.s.atP p).ιF (((D.host.g 0 : ℕ) : D.host.F) * ((D.host.g 1 : ℕ) : D.host.F) /
-        ((D.host.g i : ℕ) : D.host.F))
-
 section R0
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)

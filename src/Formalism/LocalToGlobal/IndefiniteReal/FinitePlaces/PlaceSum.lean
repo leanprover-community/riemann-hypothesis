@@ -26,10 +26,6 @@ theorem psi_neg_one (ψ : AddChar (AF D.host.F) ℂ) {a : AF D.host.F} (h : ψ a
 
 variable (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D)
 
-theorem heisO_zero (f : WO S T → ℂ) : heisO ψ S T 0 f = f := by
-  funext w
-  simp [heisO, symplOH, symplO_zero_right]
-
 end Formalism.IndefR.Fin
 
 end

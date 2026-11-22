@@ -85,7 +85,6 @@ theorem lowering_operator_relation_holomorphic {k c} {ω : HChar F} (h : IsOfFin
     smul_eq_mul, Submodule.coe_zero, Pi.zero_apply] at h0 h1 h2
   linear_combination (1 / 2 : ℂ) * h0 + (1 / 2 : ℂ) * h2 - (Complex.I / 2) * h1 - ((k v : ℂ) / 2 * φ.1 g) * Complex.I_mul_I
 
-
 open Classical in
 def E (v : InfinitePlace F) (i j : Fin 2) : TR.Lie F 2 := TR.toL (Matrix.single i j (Pi.single v (1 : ℝ) : TR.Rinf F))
 
@@ -96,7 +95,6 @@ theorem Eop_val (v : InfinitePlace F) (i j : Fin 2) (φ : TR.Sm F 2) (g : GA F 2
 
 def pP (t : ℂ) (ht : t.im ≠ 0) : P := ⟨t, ht⟩
 
-
 def yU (z : X (InfinitePlace F)) : (TR.Rinf F)ˣ where
   val v := (z v).1.im
   inv v := ((z v).1.im)⁻¹
@@ -106,8 +104,6 @@ def yU (z : X (InfinitePlace F)) : (TR.Rinf F)ˣ where
 def xR (z : X (InfinitePlace F)) : TR.Rinf F := fun v => (z v).1.re
 
 def A (z : X (InfinitePlace F)) : GL (Fin 2) (TR.Rinf F) := aff (yU z) (xR z)
-
-theorem A_val (z : X (InfinitePlace F)) : (A z).val = !![fun v => (z v).1.im, fun v => (z v).1.re; 0, 1] := rfl
 
 theorem gv_A (z : X (InfinitePlace F)) (v : InfinitePlace F) : gv v (A z) • iP = z v := by
   apply Subtype.ext

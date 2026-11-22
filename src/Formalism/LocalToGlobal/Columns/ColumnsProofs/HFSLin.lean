@@ -224,10 +224,6 @@ def lift (φ : S.EqFun) : S'.EqFun :=
     show b.j ((φ : S.D → S.V) (b.eD (g • d))) = S'.ρ g (b.j ((φ : S.D → S.V) (b.eD d)))
     rw [b.eD_smul, φ.2 (b.eG g), b.rho]⟩
 
-theorem lift_apply (φ : S.EqFun) (d' : S'.D) :
-    ((b.lift φ : S'.EqFun) : S'.D → S'.V) d' = b.j ((φ : S.D → S.V) (b.eD d')) :=
-  rfl
-
 theorem lift_add (φ ψ : S.EqFun) : b.lift (φ + ψ) = b.lift φ + b.lift ψ :=
   Subtype.ext (funext fun d' => by simp only [lift_apply, Submodule.coe_add, Pi.add_apply, map_add (f := _)])
 
@@ -306,7 +302,6 @@ theorem sum_lift_coordForm (φ : S'.EqFun) : ∑ k, F.e k • b.lift (b.coordFor
   simp only [Submodule.coe_smul, Pi.smul_apply, lift_apply]
   show ∑ k, F.e k • b.j (b.coord F k ((φ : S'.D → S'.V) (b.eD.symm (b.eD d')))) = _
   rw [Equiv.symm_apply_apply, b.sum_coord]
-
 
 include F in
 theorem mem_span_lift (φ : S'.EqFun) : φ ∈ Submodule.span L (Set.range b.lift) := by

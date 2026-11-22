@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicSpectrum.Definitions.MembershipCriteria.ExistsHarrisTaylorObjectOfLevelLift
+public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 
 @[expose] public section
 

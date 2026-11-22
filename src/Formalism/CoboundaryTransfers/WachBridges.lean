@@ -5,7 +5,7 @@ public import Formalism.CoboundaryTransfers.GammaStableTransfers.GammaStableOfGa
 public import Formalism.CoboundaryTransfers.GammaStableTransfers.DiffOneSmulOfTower
 public import Formalism.CoboundaryTransfers.GammaStableTransfers.TorsionKilledCriterionHolds
 public import Formalism.CoboundaryTransfers.StatementBridge
-public import Formalism.WachModuleLifts.StatementW
+public import Mathlib
 public import Formalism.LagrangeIdealLifts.Statement
 public import Formalism.FrobeniusContraction.Statement
 public import Formalism.CoboundaryTransfers.GammaStableTransfers.Transfer

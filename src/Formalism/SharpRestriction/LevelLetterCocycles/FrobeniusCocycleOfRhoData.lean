@@ -25,10 +25,6 @@ def mapZ (F : LatHom T₁.L T₂.L) : ↥(W.wachCocyclesDelta T₁) →ₗ[O] �
   (((W.map F).restrictScalars O).prodMap ((W.map F).restrictScalars O)).restrict
     (fun w hw => map_mem_Z1DΔ F ⟨w, hw⟩)
 
-theorem mapZ_coe (F : LatHom T₁.L T₂.L) (w : ↥(W.wachCocyclesDelta T₁)) :
-    (mapZ F w : W.DD T₂ × W.DD T₂) =
-      (W.map F (w : W.DD T₁ × W.DD T₁).1, W.map F (w : W.DD T₁ × W.DD T₁).2) := rfl
-
 def ZfDN (F : LatHom T₁.L T₂.L) : Submodule O (W.DD T₁ × W.DD T₁) :=
   ((latticeFiniteCohomology PD T₁.L).comap (W.clK T₁) ⊓
     LinearMap.eqLocus (F.H1map.comp (W.clK T₁)) ((W.clK T₂).comp (mapZ F))).map (W.wachCocyclesDelta T₁).subtype

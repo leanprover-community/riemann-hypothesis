@@ -24,10 +24,6 @@ instance Coef.finite_residue {l : ℕ} [Fact l.Prime] (c : Coef l) : Finite (Res
   haveI : Finite (ResidueField ℤ_[l]) := Finite.of_equiv _ (PadicInt.residueField (p := l)).symm.toEquiv
   exact Module.finite_of_finite (ResidueField ℤ_[l])
 
-class CFin (O : Type) [CommRing O] [IsLocalRing O] : Prop where
-  complete : IsAdicComplete (maximalIdeal O) O
-  fin : Finite (ResidueField O)
-
 attribute [instance] CFin.complete CFin.fin
 
 end UpperTheory.V.UnitaryThreeInertia

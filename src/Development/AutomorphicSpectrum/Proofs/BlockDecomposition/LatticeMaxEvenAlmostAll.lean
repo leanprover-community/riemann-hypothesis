@@ -157,18 +157,4 @@ end GlobalTheory.CompanionTheory.KFin.AE
 
 namespace GlobalTheory.CompanionTheory.KFin.AE
 
-theorem exists_lattice_maxEven_adapted : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {r : ℕ} {X Y : Matrix (Fin n) (Fin r) E}, IsCMExt F E σ → IsHermND σ J → IsWittFrame σ J X Y → ∃ (L : Submodule (𝓞 E) (Fin n → E)) (_ : Submodule.IsLattice E L), ∀ᶠ v in Filter.cofinite, IsMaxEven (sigR (Fv F v) σ) (intLoc F E v) (hR (Fv F v) σ J) (latLoc F L v) ∧ IsAdapted (intLoc F E v) (hR (Fv F v) σ J) (colV v X) (colV v Y) (latLoc F L v) := by
-  intro F E _ _ _ _ _ σ n J r X Y hcm hJ _hW
-  have hσ : ∀ e, σ (σ e) = e := fun e => by
-    obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-    exact τ.injective (by rw [hcm.2.2.2, hcm.2.2.2, star_star])
-  refine ⟨stdLattice E n, isLattice_stdLattice.toIsLattice, ?_⟩
-  filter_upwards [Filter.eventually_all.2 fun i => Filter.eventually_all.2 fun j => eventually_one_tmul_mem_intLoc (F := F) (J i j),
-    Filter.eventually_all.2 fun i => Filter.eventually_all.2 fun j => eventually_one_tmul_mem_intLoc (F := F) (J⁻¹ i j),
-    eventually_one_tmul_mem_intLoc (F := F) (2⁻¹ : E),
-    Filter.eventually_all.2 fun i => Filter.eventually_all.2 fun a => eventually_one_tmul_mem_intLoc (F := F) (X a i),
-    Filter.eventually_all.2 fun i => Filter.eventually_all.2 fun a => eventually_one_tmul_mem_intLoc (F := F) (Y a i)]
-    with v h1 h2 h3 h4 h5
-  exact isMaxEven_isAdapted_std hσ hJ h1 h2 h3 (colV v X) (colV v Y) h4 h5
-
 end GlobalTheory.CompanionTheory.KFin.AE

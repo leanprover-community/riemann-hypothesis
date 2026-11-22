@@ -41,9 +41,6 @@ variable {σ ν K}
 
 theorem hgtH_pos (g : HA R σ Q) : 0 < hgtH σ Q ν K g := hgtOf_pos g
 
-theorem flatH_apply (Φ : HA R σ Q → ℂ) (s₀ s : ℂ) (g : HA R σ Q) :
-    flatH σ Q ν K Φ s₀ s g = Φ g * npow (hgtH σ Q ν K g) (s - s₀) := rfl
-
 @[simp] theorem flatH_self (Φ : HA R σ Q → ℂ) (s₀ : ℂ) : flatH σ Q ν K Φ s₀ s₀ = Φ := flatSec_self Φ s₀
 
 variable [TopologicalSpace R]
@@ -59,7 +56,6 @@ theorem zetaH_eq (h : Q = dblGram finSumFinEquiv J) (m : Measure (HA R σ J)) (�
 theorem zetaConvH_iff (h : Q = dblGram finSumFinEquiv J) (m : Measure (HA R σ J)) (Φ : HA R σ Q → ℂ)
     (c : HA R σ J → ℂ) :
     ZetaConvH σ h m Φ c ↔ Integrable (fun g => Φ (ioH R σ h (g, 1)) * starRingEnd ℂ (c g)) m := Iff.rfl
-
 
 omit [TopologicalSpace R] in
 theorem abs_detH (hν : ∀ x, ν (conjUnit σ x) = ν x) {m : ℕ} {J : Matrix (Fin m) (Fin m) E} (hJ : J.det ≠ 0)
@@ -157,20 +153,12 @@ abbrev hgtAd : GAd σ Q → ℝ≥0 := hgtH σ Q (absE F E) (KAd σ Q L a)
 abbrev degPSFin (μ : (Fv F v ⊗[F] E)ˣ →* Circle) (s : ℂ) : Submodule ℂ (GLoc σ Q v → ℂ) :=
   degPSH σ Q (absEv F E v) (KFin σ Q L v) μ s
 
-abbrev degPSArch (μ : (w.Completion ⊗[F] E)ˣ →* Circle) (s : ℂ) : Submodule ℂ (GArch σ Q w → ℂ) :=
-  degPSH σ Q (absEw F E w) (KArch σ Q w b) μ s
-
 abbrev degPSAd (μ : (AF F ⊗[F] E)ˣ →* Circle) (s : ℂ) : Submodule ℂ (GAd σ Q → ℂ) :=
   degPSH σ Q (absE F E) (KAd σ Q L a) μ s
-
-abbrev flatArch (Φ : GArch σ Q w → ℂ) (s₀ s : ℂ) : GArch σ Q w → ℂ := flatH σ Q (absEw F E w) (KArch σ Q w b) Φ s₀ s
 
 abbrev flatAd (Φ : GAd σ Q → ℂ) (s₀ s : ℂ) : GAd σ Q → ℂ := flatH σ Q (absE F E) (KAd σ Q L a) Φ s₀ s
 
 variable {Q} (h : Q = dblGram finSumFinEquiv J) {X : Type} [NormedAddCommGroup X] [InnerProductSpace ℂ X]
-
-def zetaArch (m : Measure (GArch σ J w)) (Φ : GArch σ Q w → ℂ) (s₀ s : ℂ) (π : GArch σ J w → X → X) (x y : X) : ℂ :=
-  zetaH σ h m (flatArch σ Q w b Φ s₀ s) (coef π x y)
 
 end Defs
 
@@ -184,8 +172,6 @@ theorem apply_rat_mul {μ : (AF F ⊗[F] E)ˣ →* Circle} (hμ : ∀ x : Eˣ, �
   obtain ⟨x, hx⟩ := exists_aH_eq_of_mem_ratPts ⟨γ, hγ⟩ hγ'
   have := (mem_degPSH.1 hΦ).1 ⟨γ, hγ⟩ g
   rwa [hx, hμ, absE_inclR, one_npow, Circle.coe_one, one_mul, one_mul] at this
-
-
 
 theorem isCompact_KArch (hc : IsCMExt F E σ) (w : InfinitePlace F) (b : GL (Fin n) (w.Completion ⊗[F] E)) :
     IsCompact (KArch σ Q w b : Set (GArch σ Q w)) := Frames.isCompact_stabArch hc Q w _
@@ -261,7 +247,6 @@ abbrev aP : siegel V →* (AE D)ˣ := aH _ D.sp.cm.sig (dblSp V).gram
 
 abbrev detA : GA D V →* (AE D)ˣ := detH _ D.sp.cm.sig V.gram
 
-
 variable (D) in
 abbrev absA : (AE D)ˣ →* ℝ≥0 := absE D.host.F D.host.E
 
@@ -281,12 +266,6 @@ abbrev degPS (μ : (AE D)ˣ →* Circle) (s : ℂ) : Submodule ℂ (GA D (dblSp 
 abbrev flat (Φ : GA D (dblSp V) → ℂ) (s₀ s : ℂ) : GA D (dblSp V) → ℂ :=
   flatAd D.sp.cm.sig (dblSp V).gram (frameLat V) a Φ s₀ s
 
-abbrev zetaA (m : Measure (GA D V)) (Φ : GA D (dblSp V) → ℂ) (s₀ s : ℂ) (c : GA D V → ℂ) : ℂ :=
-  zetaH D.sp.cm.sig (gram_hdbl V) m (flat V a Φ s₀ s) c
-
-abbrev ZetaConvA (m : Measure (GA D V)) (Φ : GA D (dblSp V) → ℂ) (s₀ s : ℂ) (c : GA D V → ℂ) : Prop :=
-  ZetaConvH D.sp.cm.sig (gram_hdbl V) m (flat V a Φ s₀ s) c
-
 section Local
 
 variable (v : HeightOneSpectrum (𝓞 D.host.F)) (w : InfinitePlace D.host.F)
@@ -295,12 +274,6 @@ variable (v : HeightOneSpectrum (𝓞 D.host.F)) (w : InfinitePlace D.host.F)
 abbrev Gv : Type := GLoc D.sp.cm.sig V.gram v
 
 abbrev Gw : Type := GArch D.sp.cm.sig V.gram w
-
-abbrev degPSw (μ : (AE D)ˣ →* Circle) (s : ℂ) : Submodule ℂ (Gw (dblSp V) w → ℂ) :=
-  degPSArch D.sp.cm.sig (dblSp V).gram w (bc (compInf _ _ w) a) (charAtInf μ w) s
-
-abbrev Zw (m : Measure (Gw V w)) (Φ : Gw (dblSp V) w → ℂ) (s₀ s : ℂ) (π : Gw V w → X → X) (x y : X) : ℂ :=
-  zetaArch D.sp.cm.sig w (bc (compInf _ _ w) a) (gram_hdbl V) m Φ s₀ s π x y
 
 end Local
 
@@ -364,22 +337,6 @@ theorem comp_conjUnit_eq_inv {μ : (AE D)ˣ →* Circle} {k : ℕ} (h : ResEta D
   exact congrArg μ (Units.ext (algebraMap_norm_eq (isCMExt_host D) x.1).symm)
 
 end Record
-
-theorem exists_leviH {R : Type} [CommRing R] [Algebra F R] {σ : E →ₐ[F] E} (hσ : ∀ x, σ (σ x) = x)
-    {Q : Matrix (Fin (n + n)) (Fin (n + n)) E} (h : Q = dblGram finSumFinEquiv J) (hJ : IsHermND σ J)
-    (α : GL (Fin n) (R ⊗[F] E)) : ∃ p : siegelH R σ Q, (p : HA R σ Q) ∈ leviH R σ Q ∧
-      leviOf finSumFinEquiv (matHom R σ Q) p = α ∧ aH R σ Q p = Matrix.GeneralLinearGroup.det α := by
-  letI : Invertible (2 : F) := invertibleOfNonzero two_ne_zero
-  letI : Invertible (2 : R ⊗[F] E) := (Invertible.map (algebraMap F (R ⊗[F] E)) 2).copy _ (map_ofNat _ 2).symm
-  obtain ⟨β, hβ⟩ := exists_leviElt_mem_UJ finSumFinEquiv (σ := Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR R σ) (sigR_invol hσ)
-    (J := JR R J) (by ext i j; exact congrArg (fun x => (1 : R) ⊗ₜ[F] x) (hJ.1 i j)) (isUnit_det_JR hJ.2) α
-  rw [← JR_dblGram, ← h] at hβ
-  obtain ⟨g, hg⟩ : ∃ g : HA R σ Q, matHom R σ Q g = leviElt finSumFinEquiv (α, β) := ⟨⟨_, hβ⟩, rfl⟩
-  have h1 : g ∈ siegelH R σ Q := Subgroup.mem_comap.2 (hg ▸ leviElt_mem_diag finSumFinEquiv (α, β))
-  have e : leviOf finSumFinEquiv (matHom R σ Q) ⟨g, h1⟩ = α :=
-    Units.ext (by rw [val_leviOf, hg, leviMat_leviElt])
-  exact ⟨⟨g, h1⟩, ⟨h1, Subgroup.mem_comap.2 (hg ▸ leviElt_mem_anti finSumFinEquiv (α, β))⟩, e,
-    by rw [aH, aOf, MonoidHom.comp_apply, e]⟩
 
 end GlobalTheory.Doubling
 

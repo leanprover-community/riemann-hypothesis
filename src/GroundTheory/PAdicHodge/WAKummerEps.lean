@@ -18,11 +18,6 @@ section Cp
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-local notation "𝒪" => normInteger ℂ_[p]
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "𝕎𝒪♭" => WittVector p 𝒪♭
-local notation "𝔹" => BDeRhamPlus 𝒪 p
-local notation "𝔪" => maximalIdeal 𝔹
 local notation "φi" => RingEquiv.symm (_root_.frobeniusEquiv 𝒪♭ p)
 
 local instance instNeZeroPowPrime (n : ℕ) : NeZero (p ^ n) := ⟨pow_ne_zero n hp.out.ne_zero⟩
@@ -41,7 +36,6 @@ theorem untilt_iterate_ofCompatible (y : ℕ → 𝒪) (hy : ∀ n, y (n + 1) ^ 
     rw [PreTilt.coeff_iterate_frobeniusEquiv_symm, IsPerfectoidField.coeff_ofCompatible,
       IsPerfectoidField.coeff_ofCompatible]
   rw [e, IsPerfectoidField.untilt_ofCompatible, zero_add]
-
 
 omit hp in
 theorem pow_eq_pow_of_mod_eq {M : Type*} [Monoid M] {ζ : M} {N u v : ℕ} (hζ : ζ ^ N = 1)

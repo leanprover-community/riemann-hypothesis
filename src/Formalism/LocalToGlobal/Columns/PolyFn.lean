@@ -30,8 +30,6 @@ def evFr (G : ι → Matrix (Fin n) (Fin n) ℂ) (sh : ι → ℤ) (s : K →+* 
 
 def deFr {G : ι → Matrix (Fin n) (Fin n) ℂ} (y : Frames G) (τ : ι) : ℂ := (y.1 τ).det
 
-def stdFr : Frames (fun _ : ι => (1 : Matrix (Fin n) (Fin n) ℂ)) := ⟨fun _ => 1, fun _ => by simp⟩
-
 theorem mapS_apply {σ : Type} (s : K →+* ℂ) (P : MvPolynomial σ K) : mapS s P = MvPolynomial.map s P := rfl
 
 theorem mapS_injective {σ : Type} (s : K →+* ℂ) : Function.Injective (mapS (σ := σ) s) := fun P Q h => MvPolynomial.map_injective s s.injective h

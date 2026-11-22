@@ -1,6 +1,7 @@
 module
 
-public import Formalism.EllipticTorsion.JetsCube
+public import Mathlib
+public import Formalism.EllipticTorsion.Statement
 public import Formalism.FormalGroupLog.FormalGroupLogProofs.ConstantCoeffSubstOfZero
 
 @[expose] public section

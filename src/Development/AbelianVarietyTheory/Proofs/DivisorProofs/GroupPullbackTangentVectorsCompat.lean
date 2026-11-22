@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StepLatZero
+public import Development.AbelianVarietyTheory.Definitions.Divisors.SemiposAtOfPositive
+public import Development.AbelianVarietyTheory.Definitions.Divisors.TorusExt
 public import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.WitnessIsFormalParam
 
 @[expose] public section

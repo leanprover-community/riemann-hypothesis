@@ -1,7 +1,7 @@
 module
 
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutSer
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.HermitianFormRealCoordinateMatrixHermitianDetNeZ
+public import Mathlib
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairData.StandardTraceAddCharIsStandardCharOfAdmissibleCM
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnfoldPoincareSeriesLatticeFourierStatement
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumOpTransversal
@@ -94,13 +94,6 @@ theorem ratWF_injective (C : Ctx σ B JS JT ξ₀ θ ι) :
 def ratEquivF (C : Ctx σ B JS JT ξ₀ θ ι) : Matrix (Fin nT) (Fin nS) E ≃ ratLF F E nS nT :=
   Equiv.ofBijective (fun y => ⟨ratWF y, y, rfl⟩)
     ⟨fun _ _ h => ratWF_injective C (congrArg Subtype.val h), by rintro ⟨_, y, rfl⟩; exact ⟨y, rfl⟩⟩
-
-theorem coe_ratEquivF (C : Ctx σ B JS JT ξ₀ θ ι) (y : Matrix (Fin nT) (Fin nS) E) :
-    (ratEquivF C y : WOF F E nS nT) = ratWF y := rfl
-
-theorem piWA_apply (x : WOF F E nS nT) : piWA θ x = piWF θ x := rfl
-
-theorem iotaA_apply (v : IxF F nS nT → ℂ) : iotaA (nS := nS) (nT := nT) ι v = iotaVF ι v := rfl
 
 theorem serF_eq (C : Ctx σ B JS JT ξ₀ θ ι) (a : IxF F nS nT → ℂ) (x : WOF F E nS nT) :
     serF σ JS JT ξ₀ B θ ι s Λ w a x = ∑' y : Matrix (Fin nT) (Fin nS) E,
@@ -207,7 +200,6 @@ theorem gam_periodic {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [
     rw [smul_sub, sub_eq_add_neg, H.add_left, H.neg_left, e2, mul_inv_cancel₀ (H.ne_zero _ _)]
   rw [H.add_right, H.iso hA (A.smul_mem r (e1 ▸ A.add_mem hy (A.sub_mem hc' hc))) hc, mul_one, e1, smul_add,
     H.add_left, e3, mul_one]
-
 
 variable (σ JS JT ξ₀) in
 def gaussQF (ψ : AddChar (AF F) ℂ) (Λ : Submodule (𝓞 E) (Matrix (Fin nT) (Fin nS) E)) (w : 𝓞 E)

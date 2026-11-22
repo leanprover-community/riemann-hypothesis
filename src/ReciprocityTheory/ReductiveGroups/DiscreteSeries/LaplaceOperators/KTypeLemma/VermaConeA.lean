@@ -303,16 +303,6 @@ def vcIter (A : Module.End ℂ U) (θ : ℕ → ℂ) (k0 : ℕ) : ℕ → Module
   | 0 => 1
   | i + 1 => (A - θ (k0 + i) • 1) * vcIter A θ k0 i
 
-theorem vcIter_maps (A : Module.End ℂ U) (θ : ℕ → ℂ) (F : ℕ → Submodule ℂ U)
-    (hstep : ∀ k, ∀ x ∈ F k, A x - θ k • x ∈ F (k + 1)) (k0 : ℕ) :
-    ∀ i, ∀ x ∈ F k0, vcIter A θ k0 i x ∈ F (k0 + i) := by
-  intro i x hx
-  induction i with
-  | zero => simpa [vcIter] using hx
-  | succ i ih =>
-    simpa only [vcIter, mul_apply_eq_comp, LinearMap.sub_apply, LinearMap.smul_apply,
-      one_apply_eq_self, Nat.add_assoc] using hstep (k0 + i) _ ih
-
 theorem vcIter_eig (A : Module.End ℂ U) (θ : ℕ → ℂ) (k0 : ℕ) {x : U} {t : ℂ} (hx : A x = t • x) :
     ∀ i, vcIter A θ k0 i x = (∏ i' ∈ range i, (t - θ (k0 + i'))) • x
   | 0 => by simp [vcIter]

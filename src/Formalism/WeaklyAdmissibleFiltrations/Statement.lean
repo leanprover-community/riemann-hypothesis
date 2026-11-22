@@ -11,31 +11,10 @@ namespace Formalism.WeaklyAdmissibleFiltrations
 
 open Module TensorProduct
 
-structure FilPhi (LL : Type) [Field LL] (D : Type) [AddCommGroup D] [Module LL D]
-    (n : ℕ) (Emb : Type) [Fintype Emb] where
-  letter : Emb → ZMod n
-  e : ℕ
-  fiber : ∀ i : ZMod n, (Finset.univ.filter fun τ => letter τ = i).card = e
-  Dl : ZMod n → Submodule LL D
-  internal : DirectSum.IsInternal Dl
-  φ : D ≃ₗ[LL] D
-  φ_Dl : ∀ i, (Dl i).map (φ : D →ₗ[LL] D) = Dl (i + 1)
-  Fil : Emb → ℤ → Submodule LL D
-  Fil_le : ∀ τ a, Fil τ a ≤ Dl (letter τ)
-  Fil_anti : ∀ τ a, Fil τ (a + 1) ≤ Fil τ a
-  lo : ℤ
-  hi : ℤ
-  lo_le : lo ≤ hi
-  Fil_lo : ∀ τ a, a ≤ lo → Fil τ a = Dl (letter τ)
-  Fil_hi : ∀ τ a, hi ≤ a → Fil τ a = ⊥
-
 namespace FilPhi
 
 variable {LL : Type} [Field LL] {D : Type} [AddCommGroup D] [Module LL D] [FiniteDimensional LL D]
   {n : ℕ} {Emb : Type} [Fintype Emb] (F : FilPhi LL D n Emb)
-
-def IsSub (D' : Submodule LL D) : Prop :=
-  (∀ x ∈ D', F.φ x ∈ D') ∧ D' = ⨆ i, (D' ⊓ F.Dl i)
 
 end FilPhi
 
@@ -400,16 +379,6 @@ def charRep (χ : G →* LLˣ) : Representation LL G LL where
   toFun g := ((χ g : LLˣ) : LL) • LinearMap.id
   map_one' := by ext; simp
   map_mul' g h := by ext; simp [mul_comm]
-
-def IsTwist (χ : G →* LLˣ) (L : Lattice (O := O) ρ) (L' : Lattice (O := O) ρ') : Prop :=
-  ∃ e : V ≃ₗ[LL] V', (∀ g x, ρ' g (e x) = ((χ g : LLˣ) : LL) • e (ρ g x)) ∧
-    L.T.map ((e : V →ₗ[LL] V').restrictScalars O) = L'.T
-
-def IsDualLat (L : Lattice (O := O) ρ) (L' : Lattice (O := O) ρ') (P : V →ₗ[LL] V' →ₗ[LL] LL) :
-    Prop :=
-  (∀ g x y, P (ρ g x) (ρ' g y) = P x y) ∧ (∀ x, (∀ y, P x y = 0) → x = 0) ∧
-    (∀ y, (∀ x, P x y = 0) → y = 0) ∧ finrank LL V = finrank LL V' ∧
-    ∀ y, y ∈ L'.T ↔ ∀ x ∈ L.T, ∃ a : O, P x y = algebraMap O LL a
 
 variable [TopologicalSpace G] [TopologicalSpace V] [ContinuousAdd V] [ContinuousConstSMul LL V]
     [TopologicalSpace V'] [ContinuousAdd V'] [ContinuousConstSMul LL V']

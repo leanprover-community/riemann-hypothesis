@@ -38,26 +38,6 @@ def DSExhaust : Prop :=
       (∀ a b, a < b → ε (s a) = ε (s b) → s a < s b) ∧
       IsDS (ε ∘ s) mu (fun g => σ (g.submatrix s.symm s.symm))
 
-def DiscreteSpectrumKFiniteDecomposition : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (f : Matrix (Fin n) (Fin n) ℂ → ℂ), SmoothOnG ε f → IsBiKFin ε f → IsZFinite ε f →
-    MemLp (fun g : UJ ε => f (umat g)) 2 (muG ε) →
-    ∃ (N : ℕ) (H : Fin N → Type) (_ : ∀ i, NormedAddCommGroup (H i)) (_ : ∀ i, InnerProductSpace ℂ (H i))
-      (σ : ∀ i, Matrix (Fin n) (Fin n) ℂ → (H i →L[ℂ] H i)) (u v : ∀ i, H i),
-      (∀ i, IsSqIntIrr ε (σ i) ∧ IsKFin ε (σ i) (u i) ∧ IsKFin ε (σ i) (v i)) ∧
-      ∀ g ∈ UJset ε, f g = ∑ i, ⟪v i, σ i g (u i)⟫_ℂ
-
-def CartanInt : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (q : ℕ) (a b : Fin q → Fin n), q = rkR ε → Function.Injective a → Function.Injective b →
-    (∀ i, ε (a i) = true ∧ ε (b i) = false) →
-    ∃ c : ENNReal, c ≠ 0 ∧ c ≠ ⊤ ∧ ∀ F : Matrix (Fin n) (Fin n) ℂ → ENNReal, Measurable (fun g : UJ ε => F (umat g)) →
-      ∫⁻ g : UJ ε, F (umat g) ∂(muG ε) =
-        c * ∫⁻ t in {t : Fin q → ℝ | Antitone t ∧ ∀ i, 0 ≤ t i},
-          (∫⁻ k₁ : KG ε, ∫⁻ k₂ : KG ε,
-            F (toMK k₁ * NormedSpace.exp (∑ i, (t i : ℂ) • (Matrix.single (a i) (b i) (1 : ℂ) + Matrix.single (b i) (a i) (1 : ℂ))) * toMK k₂)
-              ∂(muK ε) ∂(muK ε)) *
-          ENNReal.ofReal ((∏ i, ∏ j ∈ univ.filter (fun j => i < j), (Real.sinh (t i - t j) * Real.sinh (t i + t j)) ^ 2) *
-            ∏ i, Real.sinh (2 * t i) * Real.sinh (t i) ^ (2 * (n - 2 * q)))
-
 def PhiTri : Prop :=
   ∀ (n : ℕ) (lam : Fin n → ℝ) (c z c' : Matrix (Fin n) (Fin n) ℂ), IsLo c → IsUp c' → (∀ l, c l l ≠ 0 ∧ c' l l ≠ 0) → z ∈ Omega n →
     c * z * c' ∈ Omega n ∧ Phi lam (c * z * c') = (∏ l, (c l l * c' l l) ^ (-(muInt lam l))) * Phi lam z

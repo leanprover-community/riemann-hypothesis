@@ -64,7 +64,6 @@ theorem hom_ext_of_dominant {W X Y Z : Scheme.{u}} {f g : X ⟶ Y} (s : Y ⟶ Z)
 
 variable {U S : Scheme.{u}} (j : U ⟶ S) [QuasiCompact j] [IsSchemeTheoreticallyDominant j]
 
-
 variable {j} in
 theorem over_hom_ext_of_isPullback {X Y : Over S} [Flat X.hom] [IsSeparated Y.hom] {X' : Scheme.{u}}
     {φ : X' ⟶ X.left} {p : X' ⟶ U} (h : IsPullback φ p X.hom j) {f g : X ⟶ Y}
@@ -93,7 +92,6 @@ theorem isIso_of_pullback {X Y : Over S} [Flat X.hom] [IsSeparated X.hom] [Flat 
     (hf : (Over.pullback j).map f = e.hom) (hg : (Over.pullback j).map g = e.inv) : IsIso f :=
   ⟨g, comp_eq_id_of_pullback j e f g hf hg⟩
 
-
 variable {j} in
 theorem comp_eq_id_of_isPullback {X Y : Over S} [Flat X.hom] [IsSeparated X.hom] [Flat Y.hom] [IsSeparated Y.hom]
     {X' Y' : Over U} {φ : X'.left ⟶ X.left} {ψ : Y'.left ⟶ Y.left}
@@ -107,7 +105,6 @@ theorem comp_eq_id_of_isPullback {X Y : Over S} [Flat X.hom] [IsSeparated X.hom]
   · refine over_hom_ext_of_isPullback hY ?_
     rw [Over.comp_left, ← Category.assoc, ← hg, Category.assoc, ← hf, ← Category.assoc, ← Over.comp_left,
       e.inv_hom_id, Over.id_left, Over.id_left, Category.id_comp, Category.comp_id]
-
 
 variable {j} in
 theorem isIso_of_isPullback {X Y : Over S} [Flat X.hom] [IsSeparated X.hom] [Flat Y.hom] [IsSeparated Y.hom]
@@ -138,11 +135,6 @@ theorem isMonHom_of_pullback {G H : Over S} [MonObj G] [MonObj H] [Flat G.hom] [
     rw [Functor.obj.μ_def, Functor.obj.μ_def, Functor.LaxMonoidal.μ_natural_assoc, Category.assoc,
       cancel_epi] at h
     rw [Functor.map_comp, Functor.map_comp, h]
-
-theorem mapGrp_map_injective (G H : Grp (Over S)) [Flat G.X.hom] [IsSeparated H.X.hom] :
-    Function.Injective ((Over.pullback j).mapGrp.map : (G ⟶ H) → _) := fun f g h => by
-  ext1
-  exact pullback_map_injective j G.X H.X (congrArg (fun z => z.hom.hom) h)
 
 end GlobalTheory.ExtUnique
 
@@ -191,23 +183,6 @@ theorem existsUnique_oAct_of_isGrpPullback {O : Type} [CommRing O] {G : Over S} 
     rfl
   · exact over_hom_ext_of_isPullback hG.1 ((hb x).symm.trans (hf x))
 
-
-variable (j) in
-theorem existsUnique_oAct_pullback {O : Type} [CommRing O] {G : Over S} [GrpObj G] [IsCommMonObj G] [Flat G.hom]
-    [IsSeparated G.hom] (i : OAct O ((Over.pullback j).obj G))
-    (hi : ∀ x, ∃ f : G ⟶ G, (Over.pullback j).map f = i.act x) :
-    ∃! a : OAct O G, OAct.pullback j G a = i := by
-  obtain ⟨a, ha, hu⟩ := existsUnique_oAct_of_isGrpPullback (isGrpPullback_pullback G j) i fun x => by
-    obtain ⟨f, hf⟩ := hi x
-    exact ⟨f, by rw [← hf, pullback_map_left_fst]⟩
-  refine ⟨a, oAct_ext fun x => ?_, fun b hb => hu b fun x => ?_⟩
-  · apply Over.OverMorphism.ext
-    apply pullback.hom_ext
-    · exact (pullback_map_left_fst j _).trans (ha x).symm
-    · exact (Over.w _).trans (Over.w _).symm
-  · rw [← hb]
-    exact pullback_map_left_fst j _
-
 theorem flat_and_isSeparated_of_isSemiAbelian {S : Scheme.{u}} (G : Over S) [GrpObj G] (h : IsSemiAbelian G) :
     Flat G.hom ∧ IsSeparated G.hom := by
   have := h.smooth
@@ -227,52 +202,5 @@ end GlobalTheory.ExtUnique
 namespace GlobalTheory
 
 open ExtUnique
-
-theorem extension_unique :
-    (∀ (S : Scheme.{0}) [IsReduced S] [IsLocallyNoetherian S] (U : S.Opens), Dense (U : Set S) →
-      QuasiCompact U.ι ∧ IsSchemeTheoreticallyDominant U.ι) ∧
-    (∀ (R K : Type) [CommRing R] [CommRing K] [Algebra R K] [IsFractionRing R K],
-      QuasiCompact (Spec.map (CommRingCat.ofHom (algebraMap R K))) ∧
-        IsSchemeTheoreticallyDominant (Spec.map (CommRingCat.ofHom (algebraMap R K)))) ∧
-    ∀ (U S : Scheme.{0}) (j : U ⟶ S) [QuasiCompact j] [IsSchemeTheoreticallyDominant j],
-      ((∀ (X Y : Over S) [Flat X.hom] [IsSeparated Y.hom] (f g : X ⟶ Y),
-          (Over.pullback j).map f = (Over.pullback j).map g → f = g) ∧
-        ∀ (X Y : Over S) [Flat X.hom] [IsSeparated Y.hom] (X' : Scheme.{0}) (φ : X' ⟶ X.left) (p : X' ⟶ U),
-          IsPullback φ p X.hom j → ∀ f g : X ⟶ Y, φ ≫ f.left = φ ≫ g.left → f = g) ∧
-      ((∀ (G H : Over S) [GrpObj G] [GrpObj H] [Flat G.hom] [IsSeparated H.hom] (f : G ⟶ H),
-          IsMonHom ((Over.pullback j).map f) → IsMonHom f) ∧
-        ∀ (G H : Over S) [GrpObj G] [GrpObj H] [Flat G.hom] [IsSeparated H.hom] (G' H' : Over U) [GrpObj G']
-          [GrpObj H'] (φ : G'.left ⟶ G.left) (ψ : H'.left ⟶ H.left),
-          IsGrpPullback G' G j φ → IsGrpPullback H' H j ψ → ∀ (f' : G' ⟶ H') (f : G ⟶ H), IsMonHom f' →
-          f'.left ≫ ψ = φ ≫ f.left → IsMonHom f) ∧
-      (∀ (G H : Grp (Over S)) [Flat G.X.hom] [IsSeparated H.X.hom],
-          Function.Injective ((Over.pullback j).mapGrp.map : (G ⟶ H) → _)) ∧
-      ((∀ (O : Type) [CommRing O] (G : Over S) [GrpObj G] [IsCommMonObj G] [Flat G.hom] [IsSeparated G.hom]
-          (i : OAct O ((Over.pullback j).obj G)), (∀ x, ∃ f : G ⟶ G, (Over.pullback j).map f = i.act x) →
-          ∃! a : OAct O G, OAct.pullback j G a = i) ∧
-        ∀ (O : Type) [CommRing O] (G : Over S) [GrpObj G] [Flat G.hom] [IsSeparated G.hom] (G' : Over U)
-          [GrpObj G'] (φ : G'.left ⟶ G.left), IsGrpPullback G' G j φ → ∀ i : OAct O G',
-          (∀ x, ∃ f : G ⟶ G, (i.act x).left ≫ φ = φ ≫ f.left) →
-          ∃! a : OAct O G, ∀ x, (i.act x).left ≫ φ = φ ≫ (a.act x).left) ∧
-      ((∀ (X Y : Over S) [Flat X.hom] [IsSeparated X.hom] [Flat Y.hom] [IsSeparated Y.hom]
-          (e : (Over.pullback j).obj X ≅ (Over.pullback j).obj Y) (f : X ⟶ Y) (g : Y ⟶ X),
-          (Over.pullback j).map f = e.hom → (Over.pullback j).map g = e.inv →
-          IsIso f ∧ f ≫ g = 𝟙 X ∧ g ≫ f = 𝟙 Y) ∧
-        ∀ (X Y : Over S) [Flat X.hom] [IsSeparated X.hom] [Flat Y.hom] [IsSeparated Y.hom] (X' Y' : Over U)
-          (φ : X'.left ⟶ X.left) (ψ : Y'.left ⟶ Y.left), IsPullback φ X'.hom X.hom j →
-          IsPullback ψ Y'.hom Y.hom j → ∀ (e : X' ≅ Y') (f : X ⟶ Y) (g : Y ⟶ X),
-          e.hom.left ≫ ψ = φ ≫ f.left → e.inv.left ≫ φ = ψ ≫ g.left →
-          IsIso f ∧ f ≫ g = 𝟙 X ∧ g ≫ f = 𝟙 Y) :=
-  ⟨fun _ _ _ U hU => dense_open U hU, fun R K _ _ _ _ => spec_fractionRing R K, fun _ _ j _ _ =>
-    ⟨⟨fun X Y _ _ _ _ h => pullback_map_injective j X Y h,
-      fun _ _ _ _ _ _ _ h _ _ e => over_hom_ext_of_isPullback h e⟩,
-    ⟨fun _ _ _ _ _ _ f h => isMonHom_of_pullback j f h,
-      fun _ _ _ _ _ _ _ _ _ _ _ _ hG hH f' f _ e => isMonHom_of_isGrpPullback hG hH f' f e⟩,
-    fun G H _ _ => mapGrp_map_injective j G H,
-    ⟨fun _ _ _ _ _ _ _ i hi => existsUnique_oAct_pullback j i hi,
-      fun _ _ _ _ _ _ _ _ _ hG i hi => existsUnique_oAct_of_isGrpPullback hG i hi⟩,
-    ⟨fun _ _ _ _ _ _ e f g hf hg => ⟨isIso_of_pullback j e f g hf hg, comp_eq_id_of_pullback j e f g hf hg⟩,
-      fun _ _ _ _ _ _ _ _ _ _ hX hY e f g hf hg =>
-        ⟨isIso_of_isPullback hX hY e f g hf hg, comp_eq_id_of_isPullback hX hY e f g hf hg⟩⟩⟩⟩
 
 end GlobalTheory

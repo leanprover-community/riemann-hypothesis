@@ -143,16 +143,6 @@ def ConjInvariant : Prop := ConjCompat T.A
 
 def NormsLe : Prop := ∀ (k : Fin T.n) (σ : F →+* ℂ), T.normAt σ (T.w.col k) ≤ T.abelian₂
 
-def IntGenerates : Prop := ∀ u ∈ T.lattice, u ∈ Submodule.span ℤ (Set.range T.w.col)
-
-structure ShortGenerators : Prop where
-
-  int : T.IntGenerates
-
-  le : T.NormsLe
-
-  one_le : 1 ≤ T.abelian₂
-
 def IsHeight (h : ℝ) : Prop :=
   ∃ (d : ℕ) (f : MvPolynomial (Fin (T.D + 1) × Fin T.N) F), 0 < d ∧ IsChowForm T.imageIdeal T.D d f ∧
     ((T.D : ℝ) + 1) * d * h = formHeight d T.w T.A f
@@ -219,20 +209,6 @@ structure IsGeometric : Prop where
 
   bd_ne : T.bd ≠ ⊤
 
-structure IsBirationalOffBoundary : Prop where
-
-  birational : T.Birational
-
-  noContract : T.NoContract T.bd
-
-  one_le : 1 ≤ T.j₀
-
-  th_ne : T.th ≠ 0
-
-  th_vanish : ∀ y ∈ T.bd, y ∉ nonzeroLocus T.th
-
-def theta (h : ℝ) : ℝ := T.n * T.D * T.j₀ * T.del * (2 + |h| + Real.log T.abelian₂)
-
 def InOpen (E : Type) [Field E] [Algebra F E] (I : (T.toLinSys.baseChange E).Y.IdealSheafData) : Prop :=
   ∀ y ∈ I.support, T.toLinSys.bcFst E y ∈ T.U
 
@@ -248,37 +224,9 @@ theorem IsGoodSection.finite_geomPts {T : Tuple F} {E : Type} [Field E] [Algebra
 
 end Tuple
 
-abbrev projTuple (M : ℕ) : Tuple ℚ where
-  toLinSys := projSys ℚ M
-  n := M + 1
-  w := 1
-  A _ := 1
-  abelian₂ := 1
-  bd := (ProjSpace.chart ℚ M (Fin.last M)).compl
-  j₀ := 1
-  th := secToPow (ProjSpace.coord ℚ M (Fin.last M)) 1
-
 namespace projTuple
 
 variable (M : ℕ)
-
-theorem spans : (projTuple M).Spans := top_le_iff.1 fun u _ => by
-  rw [pi_eq_sum_univ' u]
-  refine Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, ?_⟩)
-  funext j
-  simp [Matrix.one_apply, Pi.single_apply]
-
-theorem shortGenerators : (projTuple M).ShortGenerators := by
-  refine ⟨fun u hu => ?_, fun k σ => ?_, le_rfl⟩
-  · induction hu using Submodule.span_induction with
-    | mem _ h => exact Submodule.subset_span h
-    | zero => exact zero_mem _
-    | add a b _ _ ha hb => exact add_mem ha hb
-    | smul c a _ ha =>
-      obtain ⟨z, rfl⟩ := Rat.ringOfIntegersEquiv.symm.surjective c
-      rw [eq_intCast Rat.ringOfIntegersEquiv.symm z, Int.cast_smul_eq_zsmul]
-      exact Submodule.smul_mem _ _ ha
-  · simp [HermSys.normAt, frameNorm, Matrix.one_apply, apply_ite]
 
 end projTuple
 

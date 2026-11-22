@@ -136,10 +136,6 @@ def indMap (e : (Σ a, m a) ≃ n) {ρ : Representation ℂ (Levi k m) V} {τ : 
     apply Subtype.ext; apply Subtype.ext; funext g
     exact map_smulₛₗ φ c (f.1.1 g)
 
-theorem indMap_apply (e : (Σ a, m a) ≃ n) {ρ : Representation ℂ (Levi k m) V} {τ : Representation ℂ (Levi k m) W}
-    (φ : V →ₛₗ[starRingEnd ℂ] W) (hφ : ∀ g v, φ (ρ g v) = τ g (φ v)) (f : IndSp e ρ) (g : GL n k) :
-    (indMap e φ hφ f).1.1 g = φ (f.1.1 g) := rfl
-
 theorem conjEquiv_parInd (e : (Σ a, m a) ≃ n) (ρ : Representation ℂ (Levi k m) V)
     (τ : Representation ℂ (Levi k m) W) (h : ConjEquiv ρ τ) : ConjEquiv (parInd e ρ) (parInd e τ) := by
   obtain ⟨φ, hφ, heq⟩ := h

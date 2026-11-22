@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.CovolumeGram
-public import GroundTheory.HeightsAndTheta.Heights.HermitianEuclidean
 public import GroundTheory.HeightsAndTheta.Heights.ArithDegreeExact
 
 @[expose] public section

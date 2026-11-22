@@ -1,7 +1,8 @@
 module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.MainSup
-public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.CountHypothesesIffText
+public import Formalism.SharpRestriction.GlobalSchurBounds.AdmittedWeylDimension
+public import Formalism.SharpRestriction.CuspSpanNormBounds.StandingHypothesesHoldFamily
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.SfromGLu
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLz
 

@@ -32,7 +32,6 @@ theorem PtsOver.t2Space [T1Space C] (p : X ⟶ S) [IsSeparated p] (s : Sp C ⟶ 
   rw [show h ∘ PtsOver.map (pullback.diagonal p) hd s = fun x => (x, x) from funext key] at hc
   rwa [← Set.range_diag]
 
-
 omit [TopologicalSpace C] [IsTopologicalRing C] [IsLocalRing C] [IsOpenUnits C] in
 def PtsOver.baseChangeEquiv {P : Scheme.{0}} {g : P ⟶ X} {q : P ⟶ Sp C} {p : X ⟶ S} {s : Sp C ⟶ S}
     (hP : IsPullback g q p s) : Pts q ≃ PtsOver p s where
@@ -62,7 +61,6 @@ theorem exists_isClosedEmbedding_of_affine [T1Space C] {A : CommRingCat.{0}} (q 
   refine ⟨n, _, isClosedEmbedding_coord (A := A) (id_eq_spMap_algebraMap C) (fun i => f (MvPolynomial.X i)) ?_⟩
   exact (congrArg (fun g : MvPolynomial (Fin n) C →ₐ[C] A => Function.Surjective g)
     (MvPolynomial.aeval_unique f)).mp hf
-
 
 omit [IsTopologicalRing C] [IsOpenUnits C] [TopologicalSpace C] in
 theorem mem_range_map_fromSpec (p : X ⟶ S) (s : Sp C ⟶ S) {U : X.Opens} (hU : IsAffineOpen U) (x : PtsOver p s)
@@ -94,19 +92,7 @@ theorem PtsOver.secondCountableTopology [T1Space C] [SecondCountableTopology C] 
     (U := fun i => (𝒰.f i).opensRange) (fun i => isAffineOpen_opensRange _) 𝒰.iSup_opensRange
   exact (PtsOver.baseChangeHomeomorph (IsPullback.of_hasPullback p s)).symm.secondCountableTopology
 
-
-open scoped MonObj in
-theorem continuousMul_over (A : Over (Sp C)) [MonObj A] : ContinuousMul (𝟙_ (Over (Sp C)) ⟶ A) where
-  continuous_mul := (continuous_over_comp (μ[A])).comp (tensorHomeomorph A A).symm.continuous
-
-
-open scoped MonObj in
-theorem isTopologicalGroup_over (A : Over (Sp C)) [GrpObj A] : IsTopologicalGroup (𝟙_ (Over (Sp C)) ⟶ A) := {
-  toContinuousMul := continuousMul_over A
-  continuous_inv := continuous_over_comp (GrpObj.inv (X := A)) }
-
 variable {R : Type} [CommRing R] {N : ℕ}
-
 
 omit [TopologicalSpace C] [IsTopologicalRing C] [IsLocalRing C] [IsOpenUnits C] in
 theorem le_pt_preimage_chart_iff (c : R →+* C) (v : Fin (N + 1) → C) (hv : Ideal.span (Set.range v) = ⊤)
@@ -117,7 +103,6 @@ theorem le_pt_preimage_chart_iff (c : R →+* C) (v : Fin (N + 1) → C) (hv : I
     rfl
   rw [hchart, top_le_iff]
   rw [← Ideal.span_singleton_eq_top, ← Set.range_const (ι := Unit), ← iSup_spOpen_eq_top_iff, iSup_const]
-
 
 omit [TopologicalSpace C] [IsTopologicalRing C] [IsLocalRing C] [IsOpenUnits C] in
 theorem valR_pt_ratio (c : R →+* C) (v : Fin (N + 1) → C) (hv : Ideal.span (Set.range v) = ⊤)
@@ -148,16 +133,9 @@ def projPt (c : R →+* C) (v : Unimodular C N) : PtsOver (PSpace.str R N) (spMa
     ext1
     exact RingHom.ext fun r => MvPolynomial.eval₂Hom_C c v.1 r⟩
 
-
 omit [TopologicalSpace C] [IsTopologicalRing C] [IsOpenUnits C] in
 theorem projPt_surjective (c : R →+* C) : Function.Surjective (projPt (N := N) c) := fun x =>
   (exists_eq_pt c x.1 x.2).elim fun v h => h.elim fun hv e => ⟨⟨v, hv⟩, Subtype.ext e.symm⟩
-
-
-omit [TopologicalSpace C] [IsTopologicalRing C] [IsLocalRing C] [IsOpenUnits C] in
-theorem projPt_eq_iff (c : R →+* C) (v w : Unimodular C N) :
-    projPt c v = projPt c w ↔ ∃ u : Cˣ, w.1 = u • v.1 :=
-  Subtype.ext_iff.trans (pt_eq_pt_iff c v.2 w.2)
 
 theorem continuous_projPt (c : R →+* C) : Continuous (projPt (N := N) c) := by
   have hs : ∀ i, Subring.closure (Set.range (constFn (PSpace.str R N) (chart R N i)) ∪
@@ -221,6 +199,5 @@ section Sphere
 variable {𝕜 : Type} [RCLike 𝕜] {R : Type} [CommRing R] {N : ℕ}
 
 end Sphere
-
 
 end GlobalTheory.Points

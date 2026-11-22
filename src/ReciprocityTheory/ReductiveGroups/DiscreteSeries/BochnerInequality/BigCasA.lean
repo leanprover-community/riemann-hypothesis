@@ -29,9 +29,6 @@ theorem ofCoords_apply {X : Type*} [AddCommGroup X] [Module ℂ X] (k : ℕ)
     (f : (Fin k → Fin n × Fin n) → (X →ₗ[ℂ] M)) (x : X) (κ : Fin k → Fin n × Fin n) :
     (ofCoords k f x) κ = f κ x := rfl
 
-theorem mAct_apply (k : ℕ) (a b : Fin n) (F : Big n k M) (κ : Fin k → Fin n × Fin n) :
-    mAct E k a b F κ = E a b (F κ) := rfl
-
 theorem factorAd_apply (k : ℕ) (i : Fin k) (a b : Fin n) (F : Big n k M) (κ : Fin k → Fin n × Fin n) :
     factorAd k i a b F κ =
       (if (κ i).1 = a then F (Function.update κ i (b, (κ i).2)) else 0) -

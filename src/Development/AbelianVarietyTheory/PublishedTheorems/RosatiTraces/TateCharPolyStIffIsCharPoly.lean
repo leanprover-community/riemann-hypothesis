@@ -16,8 +16,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Published
 
-def TateCharPolySt : Prop := EndCharPolySt
-
 end GlobalTheory.Published
 
 namespace GlobalTheory.TateCharPoly

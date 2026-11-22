@@ -170,9 +170,6 @@ def coordL (T : Tor D) {a d r : ℕ} (b : Fin r → Matrix (Fin d) (Fin a) D.hos
       map_add' := fun x y => by simp [coordB, add_mul, Finset.sum_add_distrib]
       map_smul' := fun c x => by simp [coordB, Finset.mul_sum, mul_assoc] }
 
-theorem coordL_apply (T : Tor D) {a d r : ℕ} (b : Fin r → Matrix (Fin d) (Fin a) D.host.E) (j : Fin r)
-    (z : VC D a d) : coordL T b j z = coordB D T b j z := rfl
-
 theorem coordL_embV (h : TraceMapNormalisation D) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) {a d r : ℕ}
     {b : Fin r → Matrix (Fin d) (Fin a) D.host.E} (hb : Orthonormal D b) (j k : Fin r) :
     coordL (tor0 D cc δ) b j (embV D (tor0 D cc δ) (b k)) = if k = j then 1 else 0 := by

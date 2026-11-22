@@ -136,14 +136,6 @@ def frStart : List (ℂ × ℕ) → ℕ → ℕ
   | [], _ => 0
   | (_, s) :: bs, p => if p < s then 0 else s + frStart bs (p - s)
 
-theorem frStart_le : ∀ (bs : List (ℂ × ℕ)) (p : ℕ), frStart bs p ≤ p
-  | [], p => Nat.zero_le p
-  | (t, s) :: bs, p => by
-    simp only [frStart]
-    split_ifs with h
-    · exact Nat.zero_le p
-    · have := frStart_le bs (p - s); omega
-
 theorem blockIdx_eq_iff : ∀ (bs : List (ℂ × ℕ)) (a b : ℕ), a < b →
     (blockIdx bs a = blockIdx bs b ↔ frStart bs b ≤ a)
   | [], a, b, _ => by simp [blockIdx, frStart]

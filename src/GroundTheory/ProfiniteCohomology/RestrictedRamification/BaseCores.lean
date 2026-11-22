@@ -25,7 +25,6 @@ variable {k G : Type u} [CommRing k] [Group G] (U : Subgroup G) [U.FiniteIndex] 
 
 attribute [local instance] Subgroup.fintypeQuotientOfFiniteIndex
 
-
 open Classical in
 def coindTracePreimage (a : A) : Rep.coind U.subtype (Rep.res U.subtype A) :=
   ⟨fun g => if g ∈ U then A.ρ g a else 0, fun u g => by
@@ -133,8 +132,6 @@ end Cores
 section GS
 
 open IsDedekindDomain NumberField GroundTheory.Global
-
-local notation "ℚ̄" => AlgebraicClosure ℚ
 
 theorem surjective_gs_compactCores_three (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
     (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))

@@ -225,22 +225,6 @@ theorem mem_nabla_iff [IsDomain R] [Infinite R] {la : Fin N → ℕ} {f : Pol N 
 
 end Ring
 
-def width (la : Fin N → ℕ) : ℕ := Finset.univ.sup la
-
-def colLen (la : Fin N → ℕ) (c : ℕ) : ℕ := (Finset.univ.filter fun i => c < la i).card
-
-theorem colLen_le (la : Fin N → ℕ) (c : ℕ) : colLen la c ≤ N :=
-  (Finset.card_filter_le _ _).trans (by simp)
-
-abbrev Tableau (la : Fin N → ℕ) : Type := (c : Fin (width la)) → Fin (colLen la c) → Fin N
-
-def IsStandard {la : Fin N → ℕ} (T : Tableau la) : Prop :=
-  (∀ c, StrictMono (T c)) ∧
-    ∀ (c c' : Fin (width la)), c ≤ c' → ∀ (p : ℕ) (h : p < colLen la c) (h' : p < colLen la c'),
-      T c ⟨p, h⟩ ≤ T c' ⟨p, h'⟩
-
-def canon (la : Fin N → ℕ) : Tableau la := fun c => Fin.castLE (colLen_le la c)
-
 def extremal (la : Fin N → ℕ) (R : Type) [CommRing R] : Pol N R := hw R le_rfl la
 
 section Ring
@@ -566,9 +550,6 @@ theorem continuous_of_span_dual {V T : Type*} [NormedAddCommGroup V] [NormedSpac
 def evSpace (la : Fin N → ℕ) (y : Matrix (Fin N) (Fin N) ℂ) : Module.Dual ℂ (Space la) :=
   (evalAt y).toLinearMap ∘ₗ (nabla la ℂ).subtype ∘ₗ (toSpace la).symm.toLinearMap
 
-theorem evSpace_toSpace (y : Matrix (Fin N) (Fin N) ℂ) (f : nabla la ℂ) :
-    evSpace la y (toSpace la f) = evalAt y f.1 := rfl
-
 theorem span_evSpace : Submodule.span ℂ (Set.range fun g : UN N => evSpace la g.1) = ⊤ := by
   refine Submodule.span_eq_top_of_ne_zero fun z hz => ?_
   obtain ⟨f, rfl⟩ := (toSpace la).surjective z
@@ -686,7 +667,6 @@ theorem rho_mem_locP (w : HeightOneSpectrum (𝓞 K)) {g : Matrix (Fin N) (Fin N
   rw [baseChange_rho, hA, hp, rho_smul, LinearMap.map_smul_of_tower, mul_smul, ← map_pow,
     IsScalarTower.algebraMap_smul]
   rfl
-
 
 omit [NumberField K] in
 theorem mem_colLat_iff (B : GL (Fin N) K) (x : Fin N → K) :

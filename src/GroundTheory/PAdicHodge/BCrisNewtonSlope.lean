@@ -18,8 +18,6 @@ open _root_.WittVector Laurent Filter Topology
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝔸" => Localization.Away (p : AInf K p)
-
 theorem norm_coeffB_toB_le_one (z : 𝔸) (n : ℤ) : ‖(teichLift K p).coeffB (toB K p z) n‖ ≤ 1 := by
   obtain ⟨M, x, h⟩ := exists_toB_mul z
   rw [TeichLift.coeffB_eq _ h]

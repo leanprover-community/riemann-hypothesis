@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.IsProbabilityMeasureSphereLaw
 public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PDiagonalChange
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.MahlerMul
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SphereMean

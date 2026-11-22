@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HypothesesX
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CenUsedOfCenReal
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.BuiltEx
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.GaloisSideTwistedSelmerAuxiliaryPrimes
@@ -85,11 +84,6 @@ theorem third_place_fixed_alt (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (hP 
 end GlobalTheory.HeightCounting.Up.IntegralCoefficientPinning
 namespace GlobalTheory.HeightCounting.Up.IntegralCoefficientPinning
 open GlobalTheory.HeightCounting.Fin3 GlobalTheory.HeightCounting.Up.RealOfReading
-set_option maxHeartbeats 4000000 in
-theorem readCoefField_eq_cfL_of_moved_copy_coherent : ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → _root_.GlobalTheory.NRows.GeometricGaloisRepCompatibility → AllSt fun _ _ _ _ _ _ x => ∀ (l : _root_.GlobalTheory.HeightCounting.Up.StrictHenselianAcyclicLevel hL x) (big : (Dof x).what₂.places.Pl → Finset ℂ) (L : LocAll (lay0 (Dof x))), _root_.GlobalTheory.CoefDuty.BuiltAlt l.a.A l.mt.M l.c.ch l.c.tp.tup big L → SumRepresentations.hypO (withLoc L) → ∀ (m : Moved (GlobalTheory.HeightCounting.Fin3.oL x L)), m.Copy → m.Coh → ∀ (s : Side0 (GlobalTheory.HeightCounting.Fin3.oL x L)) (r : ReadPk m s), r.Pin → m.z.R.C = cfD x L := by
-  intro hL _ _
-  refine StepW.of_all fun K B f T w _ _ _ P x l big L hB hO m _ _ s r _ => ?_
-  exact m.z.lev.C
 
 -- Compare the data fields after identifying the stage indices.
 private theorem mtReal_heq {D D' : D7} (hD : D = D')

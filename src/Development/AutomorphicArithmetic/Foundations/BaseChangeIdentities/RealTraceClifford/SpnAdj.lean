@@ -17,12 +17,6 @@ open Formalism.REAL (GlRel IsWeight KHighest Cas)
 section
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] {J : Type} [Fintype J] [DecidableEq J]
 
-private theorem mt_ap (M : Matrix J J ℂ) (x : Ten J V) (j : J) :
-    (UpperTheory.RealTr.mt V M x).ofLp j = ∑ k, M j k • x.ofLp k := rfl
-
-private theorem lf_ap (T : Module.End ℂ V) (x : Ten J V) (j : J) :
-    (lf J T x).ofLp j = T (x.ofLp j) := rfl
-
 private theorem mt_mul (M N : Matrix J J ℂ) : UpperTheory.RealTr.mt V (M * N) = UpperTheory.RealTr.mt V M * UpperTheory.RealTr.mt V N := by
   refine LinearMap.ext fun x => PiLp.ext fun j => ?_
   simp only [Module.End.mul_apply, mt_ap, Matrix.mul_apply, Finset.sum_smul, Finset.smul_sum, smul_smul]

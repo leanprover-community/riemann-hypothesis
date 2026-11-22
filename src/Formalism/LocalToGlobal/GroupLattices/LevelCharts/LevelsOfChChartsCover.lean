@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.LevelsOfCh
+public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteCompG
 
 @[expose] public section
 

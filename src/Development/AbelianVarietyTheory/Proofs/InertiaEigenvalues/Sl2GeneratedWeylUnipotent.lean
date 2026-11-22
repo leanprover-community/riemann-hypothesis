@@ -26,8 +26,6 @@ theorem exists_unif (F : Type) [NontriviallyNormedField F] [IsUltrametricDist F]
 
 variable {F : Type} [Field F]
 
-theorem nS_coe (z : F) : ((nS z : SpecialLinearGroup (Fin 2) F) : Matrix (Fin 2) (Fin 2) F) = !![1, z; 0, 1] := rfl
-
 theorem wS_coe : ((wS F : SpecialLinearGroup (Fin 2) F) : Matrix (Fin 2) (Fin 2) F) = !![0, 1; -1, 0] := rfl
 
 theorem wS_inv_coe :
@@ -87,7 +85,6 @@ theorem eq_top_of (H : Subgroup (SpecialLinearGroup (Fin 2) F)) (hw : wS F ∈ H
   · exact key g hc
 
 end GlobalTheory.JR.SLGen
-
 
 open GlobalTheory.JR.SLGen in
 theorem GlobalTheory.JR.sl2_closure_weyl_unipotent_eq_top :

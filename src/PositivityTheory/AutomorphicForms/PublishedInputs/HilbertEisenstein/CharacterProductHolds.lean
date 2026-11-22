@@ -17,8 +17,6 @@ open L4 GroundTheory.Automorphic.GodementSection
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
-theorem pLoc_apply (w : HeightOneSpectrum (𝓞 F)) (x : Af F) : pLoc F w x = x w := rfl
-
 theorem loc_eq (ω : HChar F) (v : HeightOneSpectrum (𝓞 F)) (a : (v.adicCompletion F)ˣ) :
     ((ω.loc v a : ℂˣ) : ℂ) = ((ω.1 (finiteEmbedding v a) : ℂˣ) : ℂ) := by
   unfold HChar.loc

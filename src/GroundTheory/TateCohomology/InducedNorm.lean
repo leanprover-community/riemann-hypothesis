@@ -62,15 +62,9 @@ end Criterion
 
 section Tensor
 
-
 omit [Fintype G] in
 noncomputable def coeffOneProj : MonoidAlgebra k G →ₗ[k] MonoidAlgebra k G :=
   MonoidAlgebra.lsingle 1 ∘ₗ Finsupp.lapply 1 ∘ₗ (MonoidAlgebra.coeffLinearEquiv k).toLinearMap
-
-
-omit [Fintype G] in
-theorem coeffOneProj_apply (x : MonoidAlgebra k G) :
-    coeffOneProj x = MonoidAlgebra.single 1 (x.coeff 1) := rfl
 
 variable (B : Rep.{u} k G)
 

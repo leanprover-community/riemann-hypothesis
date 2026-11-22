@@ -43,14 +43,6 @@ instance : Module (𝓞 E) (Lat ρ g) :=
 
 variable {ρ g}
 
-theorem smul_apply (a : 𝓞 E) (x : Lat ρ g) (i : Fin r) : (a • x) i = ∑ j, ρ a i j • x j := rfl
-
-theorem add_apply (x y : Lat ρ g) (i : Fin r) : (x + y) i = x i + y i := rfl
-
-theorem zsmul_apply (n : ℤ) (x : Lat ρ g) (i : Fin r) : (n • x) i = n • x i := rfl
-
-theorem neg_apply (x : Lat ρ g) (i : Fin r) : (-x) i = -x i := rfl
-
 variable (ρ g)
 
 def coordEquiv : Lat ρ g ≃ₗ[ℤ] (Fin r × (Fin g ⊕ Fin g) → ℤ) where
@@ -108,14 +100,9 @@ def cx : Lat ρ g →ₗ[ℤ] Lat ρ g where
     show -(n * (x i).1 k) = n * -(x i).1 k
     ring
 
-theorem cx_apply (x : Lat ρ g) (i : Fin r) : cx ρ g x i = ((x i).2, -(x i).1) := rfl
-
 def act (a : 𝓞 E) : Lat ρ g →ₗ[ℤ] Lat ρ g := (DistribSMul.toAddMonoidHom (Lat ρ g) a).toIntLinearMap
 
 theorem act_apply (a : 𝓞 E) (x : Lat ρ g) : act ρ g a x = a • x := rfl
-
-theorem basis_repr (x : Lat ρ g) (p : Fin r × (Fin g ⊕ Fin g)) :
-    (basis ρ g).repr x p = Sum.elim (x p.1).1 (x p.1).2 p.2 := rfl
 
 theorem basis_apply (p : Fin r × (Fin g ⊕ Fin g)) (i : Fin r) :
     basis ρ g p i = (fun k => Pi.single (M := fun _ => ℤ) p 1 (i, Sum.inl k),

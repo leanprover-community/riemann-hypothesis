@@ -148,10 +148,6 @@ def galMap (ψ : F ≃+* F') (e : L ≃+* L')
     change e (σ (e.symm (algebraMap F' L' x))) = _
     rw [symm_compat ψ e he, σ.commutes, he, RingEquiv.apply_symm_apply])
 
-theorem galMap_apply (ψ : F ≃+* F') (e : L ≃+* L')
-    (he : ∀ x, e (algebraMap F L x) = algebraMap F' L' (ψ x)) (σ : Gal(L/F)) (y : L') :
-    galMap ψ e he σ y = e (σ (e.symm y)) := rfl
-
 def galEquiv (ψ : F ≃+* F') (e : L ≃+* L')
     (he : ∀ x, e (algebraMap F L x) = algebraMap F' L' (ψ x)) : Gal(L/F) ≃* Gal(L'/F') where
   toFun := galMap ψ e he

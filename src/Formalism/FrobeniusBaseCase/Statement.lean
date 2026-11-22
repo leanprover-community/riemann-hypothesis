@@ -12,14 +12,6 @@ noncomputable section
 
 open Classical
 
-def rho (l : ℕ) : ℝ := 1 / ((l : ℝ) ^ 2 - 1)
-
-def sg (l i : ℕ) : ℝ := 3 / (8 * (l : ℝ) ^ i)
-
-def del (l i : ℕ) : ℝ := 1 / (8 * (l : ℝ) ^ i)
-
-def r1 (l i : ℕ) : ℝ := rho l + 1 / (2 * (l : ℝ) ^ i)
-
 def Kn (i : ℕ) : ℕ := (i + 1) / 2
 
 def s0 (i : ℕ) : ℕ := (i - 1) / 2

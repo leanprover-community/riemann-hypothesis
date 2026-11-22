@@ -135,24 +135,12 @@ theorem BaseChange_of : BaseChange := by
 section helpers
 variable {C D : CommRingCat.{0}} (g : C ⟶ D) {J : Type} [HasWidePushout C (fun _ : J => D) (fun _ => g)]
 
-theorem ιd (j : J) {X : CommRingCat.{0}} (f : C ⟶ X) (fs : J → (D ⟶ X)) (w : ∀ j, g ≫ fs j = f) :
-    WidePushout.ι (fun _ : J => g) j ≫ WidePushout.desc f fs w = fs j :=
-  WidePushout.ι_desc (arrows := fun _ => g) (f := f) (fs := fs) (w := w) j
-
 theorem hd {X : CommRingCat.{0}} (f : C ⟶ X) (fs : J → (D ⟶ X)) (w : ∀ j, g ≫ fs j = f) :
     WidePushout.head (fun _ : J => g) ≫ WidePushout.desc f fs w = f :=
   WidePushout.head_desc (arrows := fun _ => g) (f := f) (fs := fs) (w := w)
 
 theorem ar (j : J) : g ≫ WidePushout.ι (fun _ : J => g) j = WidePushout.head (fun _ : J => g) :=
   WidePushout.arrow_ι (arrows := fun _ : J => g) j
-
-theorem ιd_assoc (j : J) {X Y : CommRingCat.{0}} (f : C ⟶ X) (fs : J → (D ⟶ X)) (w : ∀ j, g ≫ fs j = f) (h : X ⟶ Y) :
-    WidePushout.ι (fun _ : J => g) j ≫ WidePushout.desc f fs w ≫ h = fs j ≫ h := by
-  rw [← Category.assoc, ιd]
-
-theorem hd_assoc {X Y : CommRingCat.{0}} (f : C ⟶ X) (fs : J → (D ⟶ X)) (w : ∀ j, g ≫ fs j = f) (h : X ⟶ Y) :
-    WidePushout.head (fun _ : J => g) ≫ WidePushout.desc f fs w ≫ h = f ≫ h := by
-  rw [← Category.assoc, hd]
 
 end helpers
 

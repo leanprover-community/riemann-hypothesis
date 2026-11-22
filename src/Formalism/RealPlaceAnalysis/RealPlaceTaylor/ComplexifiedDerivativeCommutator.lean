@@ -17,8 +17,6 @@ def mulRightRealCLM {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) :
     Matrix (Fin n) (Fin n) ℂ →L[ℝ] Matrix (Fin n) (Fin n) ℂ :=
   LinearMap.toContinuousLinearMap (LinearMap.mulRight ℝ X)
 
-lemma mulRightCLM_apply {n : ℕ} (X h : Matrix (Fin n) (Fin n) ℂ) : mulRightRealCLM X h = h * X := rfl
-
 lemma withTop_enat_infty_add_one_le_infty : (∞ : WithTop ℕ∞) + 1 ≤ ∞ := by simp
 
 theorem rdSmooth_of (h : RdExt) : RdSmooth := by

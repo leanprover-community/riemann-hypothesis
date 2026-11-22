@@ -120,15 +120,6 @@ namespace GlobalTheory.LevPrimeMid
 
 variable {D : D7}
 
-theorem lastKer_isLattice {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : Type}
-    (q : Unif k) (L : Submodule 𝒪[k] (n → k)) [L.IsLattice k] : (lastKer L).IsLattice k := by
-  rw [GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData.lastKer_eq q]
-  refine Submodule.IsLattice.of_fg k ?_
-  refine (((Submodule.IsLattice.fg k L |>.map _).sup (Submodule.fg_span_singleton _)).sup
-      (Submodule.fg_span ?_)).sup (Submodule.fg_span ?_)
-  · exact ((Set.finite_le_nat 1).image (avec k n 1)).subset fun _ ⟨i, _, _, h, e⟩ => ⟨i, h, e.symm⟩
-  · exact ((Set.finite_le_nat 1).image (q.inv • avec k n 1 ·)).subset fun _ ⟨i, _, h, e⟩ => ⟨i, h, e.symm⟩
-
 end GlobalTheory.LevPrimeMid
 
 namespace GlobalTheory.LevPrimeMid

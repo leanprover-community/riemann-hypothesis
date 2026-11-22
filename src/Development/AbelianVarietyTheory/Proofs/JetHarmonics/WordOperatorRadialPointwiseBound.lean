@@ -118,8 +118,6 @@ theorem fst_mul (a b : RA P Bs) (Φ : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π') :
 theorem fst_add (a b : RA P Bs) (Φ : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π') :
     (a + b).1 Φ = a.1 Φ + b.1 Φ := rfl
 
-theorem fst_zero (Φ : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π') : (0 : RA P Bs).1 Φ = 0 := rfl
-
 theorem fst_one (Φ : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π') : (1 : RA P Bs).1 Φ = Φ := rfl
 
 theorem fst_smul (c : ℂ) (a : RA P Bs) (Φ : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π') :

@@ -21,16 +21,12 @@ section alg
 
 variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {D : Set (Q.Mx k r)}
 
-
 variable (E) in
 abbrev SB (hD : IsOpen D) : Subalgebra ℂ (Module.End ℂ (VS k r 0 D E)) :=
   Algebra.adjoin ℂ (Set.range fun pq : Fin (2 * r + k + 1) × Fin (2 * r + k + 1) => (PBG.E0 (E := E) hD pq.1 pq.2))
 
 def EB (hD : IsOpen D) (p q : Fin (2 * r + k + 1)) : SB E hD :=
   ⟨PBG.E0 hD p q, Algebra.subset_adjoin ⟨(p, q), rfl⟩⟩
-
-theorem EB_val (hD : IsOpen D) (p q : Fin (2 * r + k + 1)) :
-    ((EB (E := E) hD p q : SB E hD) : Module.End ℂ (VS k r 0 D E)) = PBG.E0 hD p q := rfl
 
 theorem EB_gl (hD : IsOpen D) : GlRel (EB (E := E) hD) := by
   intro a b c d

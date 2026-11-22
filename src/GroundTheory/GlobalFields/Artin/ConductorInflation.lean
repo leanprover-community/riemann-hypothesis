@@ -1,7 +1,9 @@
 module
 
 public import Mathlib
-public import GroundTheory.GlobalFields.Artin.Conductor
+public import GroundTheory.GlobalFields.TateThesis.ChebotarevAbelian
+public import GroundTheory.LocalFields.DifferentGalois
+public import GroundTheory.LocalFields.ConductorMatch
 public import GroundTheory.GlobalFields.Artin.InflationTower
 public import GroundTheory.LocalFields.LowerIndexQuotient
 public import GroundTheory.LocalFields.IntermediateField
@@ -37,23 +39,6 @@ section Tower
 
 variable (v : HeightOneSpectrum (𝓞 K)) (u : HeightOneSpectrum (𝓞 F)) (w : HeightOneSpectrum (𝓞 L))
   [u.asIdeal.LiesOver v.asIdeal] [w.asIdeal.LiesOver u.asIdeal] [w.asIdeal.LiesOver v.asIdeal]
-
-theorem completionMap_completionMap (a : v.adicCompletion K) :
-    SemiLocal.completionMap u w (SemiLocal.completionMap v u a) =
-      SemiLocal.completionMap v w a := by
-  have h := (HeightOneSpectrum.denseRange_algebraMap K v).equalizer
-    ((SemiLocal.continuous_completionMap u w).comp (SemiLocal.continuous_completionMap v u))
-    (SemiLocal.continuous_completionMap v w) (funext fun x ↦ ?_)
-  · exact congrFun h a
-  · simp only [Function.comp_apply, SemiLocal.completionMap_algebraMap]
-    rw [IsScalarTower.algebraMap_apply K F (u.adicCompletion F),
-      SemiLocal.completionMap_algebraMap, IsScalarTower.algebraMap_apply F L (w.adicCompletion L),
-      IsScalarTower.algebraMap_apply K L (w.adicCompletion L),
-      ← IsScalarTower.algebraMap_apply K F L]
-
-theorem isScalarTower_adicCompletion :
-    IsScalarTower (v.adicCompletion K) (u.adicCompletion F) (w.adicCompletion L) :=
-  IsScalarTower.of_algebraMap_eq fun a ↦ (completionMap_completionMap v u w a).symm
 
 attribute [local instance] isScalarTower_adicCompletion
 

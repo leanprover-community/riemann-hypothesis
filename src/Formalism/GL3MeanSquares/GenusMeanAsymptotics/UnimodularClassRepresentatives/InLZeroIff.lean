@@ -17,9 +17,6 @@ open LocalSpans idealPowerSpanBounds localizedQuotients
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
 variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-local notation "κ" => algebraMap (𝓞 K) K
-
 def InI (𝔭 : Ideal (𝓞 F)) (k : ℕ) (a : K) : Prop :=
   ∃ t : 𝓞 F, t ∉ 𝔭 ∧ ∃ z ∈ extP K 𝔭 ^ k, κ z = κ (ι t) * a
 

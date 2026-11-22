@@ -34,18 +34,12 @@ section Contradiction
 
 variable {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
 
-local notation "𝒪" => normInteger ℂ_[p]
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "φi" => RingEquiv.symm (_root_.frobeniusEquiv 𝒪♭ p)
-
 theorem gal_smul_untilt_iterate_of_eq_mul {ε x : 𝒪♭} (hε : PreTilt.untilt ε = 1)
     {σ : Gal(PadicAlgCl p/K)} {a : ℤ_[p]} (h : tiltGal σ x = x * epsPow hε a) (m : ℕ) :
     σ • ((PreTilt.untilt (φi^[m] x) : 𝒪) : ℂ_[p]) = ((PreTilt.untilt (φi^[m] x) : 𝒪) : ℂ_[p]) *
       ((PreTilt.untilt (φi^[m] ε) : 𝒪) : ℂ_[p]) ^ (PadicInt.toZModPow m a).val := by
   rw [← coe_untilt_iterate_tiltGal, h, iterate_frobSymm_mul, map_mul, untilt_iterate_epsPow,
     MulMemClass.coe_mul, SubmonoidClass.coe_pow]
-
-
 
 end Contradiction
 

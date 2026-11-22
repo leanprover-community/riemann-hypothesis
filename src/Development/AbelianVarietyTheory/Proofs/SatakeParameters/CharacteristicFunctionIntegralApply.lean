@@ -178,10 +178,6 @@ def omSub : G →* Module.End ℂ ↥(OmSub om fV yv νV 𝓕V νW 𝓕W ψ ω) 
   map_one' := by ext φ : 1; apply Subtype.ext; simp
   map_mul' p q := by ext φ : 1; apply Subtype.ext; simp [map_mul]
 
-theorem omSub_apply (q : G) (φ : ↥(OmSub om fV yv νV 𝓕V νW 𝓕W ψ ω)) :
-    ((omSub om fV yv νV 𝓕V νW 𝓕W ψ ω q φ : ↥(OmSub om fV yv νV 𝓕V νW 𝓕W ψ ω)) :
-      TauV →ₗ[ℂ] (WO V W → ℂ)) = valAct1 ω q φ := rfl
-
 theorem good_of_mem {φ} (hφ : φ ∈ OmSub om fV yv νV 𝓕V νW 𝓕W ψ ω) : Good om fV yv νV 𝓕V νW 𝓕W φ := by
   simpa using (hφ 1).2
 
@@ -306,51 +302,6 @@ def kUnit {D : D7} {V : Formalism.BasicNotions.TH.HSp D} {S : D.what₂.Tau → 
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {P : Pin hL D} {X : GlobalTheory.NJoin.RealAt D P.cf P.C P.tp}
 
-def eWloc (A : GlobalTheory.NJoin.Agree X P.M P.rep) (i : D.nd.Loc) (j : Fin D.R.m) (hj : j.1 + 1 = D.nd.j i)
-    (hμ : Formalism.IndefR.RecTie.Used0 D (D.nd.mu i)) : (X.R.cV j).W ≃ₗ[ℂ] (P.M.loc i).wt.W := by
-  have key : ∀ (k : ℕ) (hk : j.1 + 1 = k) (p1 : 1 ≤ k) (p2 : k ≤ D.R.m),
-      (X.R.cV j).W ≃ₗ[ℂ] (P.M (D.nd.mu i) k p1 p2).wt.W := by
-    rintro k rfl p1 p2
-    exact A.eW _ hμ j
-  exact key _ hj _ _
-
-def fV (A : GlobalTheory.NJoin.Agree X P.M P.rep) (i : D.nd.Loc) (j : Fin D.R.m) (hj : j.1 + 1 = D.nd.j i)
-    (hμ : Formalism.IndefR.RecTie.Used0 D (D.nd.mu i)) :
-    ↥(NG.AFall D.host.E D.R.nV (P.M.loc i).wt.ρ) →ₗ[ℂ] (Formalism.L2.Theta.GA D (Vc D j) → (X.R.cV j).W) :=
-  (X.R.cV j).ext ∘ₗ
-    { toFun := fun F k => (eWloc A i j hj hμ).symm
-        ((F : GAf D.host.E D.R.nV → (P.M.loc i).wt.W) (A.a j * preF (A.PV j) k))
-      map_add' := fun F F' => by funext k; simp
-      map_smul' := fun c F => by funext k; simp }
-
-def eC {j : Fin D.R.m} {j' : ℕ} {hj : j.1 + 1 = j'} {Y : RowMod D P.rep j'} (hc : GlobalTheory.NJoin.IsCanon X j hj Y) :
-    Y.A →ₗ[ℂ] Formalism.IndefR.Mult.MMap (X.R.MW j (sg0 D X.A)) :=
-  Classical.choose hc
-
-def cC {j : Fin D.R.m} {j' : ℕ} {hj : j.1 + 1 = j'} {Y : RowMod D P.rep j'} (hc : GlobalTheory.NJoin.IsCanon X j hj Y) : ℝ :=
-  Classical.choose (Classical.choose_spec hc)
-
-def yv {j : Fin D.R.m} {j' : ℕ} {hj : j.1 + 1 = j'} {Y : RowMod D P.rep j'} (hc : GlobalTheory.NJoin.IsCanon X j hj Y) :
-    ↥Y.C →ₗ[ℂ] (Formalism.L2.Theta.GA D (Wc D j) → ℂ) :=
-  LinearMap.applyₗ (PiTensorProduct.map (fun τ => (lowT (X.R.MW j (sg0 D X.A)) τ).subtype)
-      (kUnit (X.R.MW j (sg0 D X.A)))) ∘ₗ
-    (PiTensorProduct.lift : Formalism.IndefR.Mult.MMap (X.R.MW j (sg0 D X.A)) ≃ₗ[ℂ] _).toLinearMap ∘ₗ eC hc ∘ₗ Y.C.subtype
-
-def omStd (A : GlobalTheory.NJoin.Agree X P.M P.rep) (j : Fin D.R.m) (t : X.T) :
-    GAf D.host.E D.R.nV × GAf D.host.E D.R.r →* Module.End ℂ (WO (Vc D j) (Wc D j) → ℂ) :=
-  (X.R.ωP j t).comp ((A.PV j).ψ.prodMap (X.PW j).ψ)
-
-def OmI (A : GlobalTheory.NJoin.Agree X P.M P.rep) (i : D.nd.Loc) (j : Fin D.R.m) (hj : j.1 + 1 = D.nd.j i)
-    {Y : RowMod D P.rep (D.nd.j i)} (hc : GlobalTheory.NJoin.IsCanon X j hj Y) (hμ : Formalism.IndefR.RecTie.Used0 D (D.nd.mu i)) :
-    Submodule ℂ ((X.R.cV j).W →ₗ[ℂ] (WO (Vc D j) (Wc D j) → ℂ)) :=
-  OmSub (X.R.ωP j (X.tupT (D.nd.mu i))) (fV A i j hj hμ) (yv hc) (X.R.νV j (X.tupT (D.nd.mu i)))
-    (X.R.fdV j (X.tupT (D.nd.mu i))) (X.R.νW j) (X.R.fdW j) X.R.ψ
-    (omStd A j (X.tupT (D.nd.mu i)))
-
-def phi0 (j : Fin D.R.m) (t : X.T) : (X.R.cV j).W →ₗ[ℂ] (WO (Vc D j) (Wc D j) → ℂ) :=
-  pureTensorO X.R.ψ X.R.θ (Vc D j) (Wc D j) (fun _ => 1) (cart (X.R.MW j (sg0 D X.A))) (X.R.BV j)
-    (onb (X.R.MW j (sg0 D X.A))) (X.R.vP j t) ∘ₗ X.R.ioP j (kUnit (X.R.MW j (sg0 D X.A)))
-
 end GlobalTheory.ThetaTri
 
 end
@@ -445,12 +396,6 @@ namespace GlobalTheory.ThetaTri
 open MeasureTheory Formalism.IndefR.Datum Formalism.IndefR.Links GlobalTheory.ThetaLoc
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {P : Pin hL D} {X : GlobalTheory.NJoin.RealAt D P.cf P.C P.tp}
-
-def lamL (A : GlobalTheory.NJoin.Agree X P.M P.rep) (i : D.nd.Loc) (j : Fin D.R.m) (hj : j.1 + 1 = D.nd.j i)
-    {Y : RowMod D P.rep (D.nd.j i)} (hc : GlobalTheory.NJoin.IsCanon X j hj Y) (hμ : Formalism.IndefR.RecTie.Used0 D (D.nd.mu i)) :
-    ↥(OmI A i j hj hc hμ) →ₗ[ℂ] ↥(NG.AFall D.host.E D.R.nV (P.M.loc i).wt.ρ) →ₗ[ℂ] ↥Y.C →ₗ⋆[ℂ] ℂ :=
-  lam (X.R.ωP j (X.tupT (D.nd.mu i))) (fV A i j hj hμ) (yv hc) (X.R.νV j (X.tupT (D.nd.mu i)))
-    (X.R.fdV j (X.tupT (D.nd.mu i))) (X.R.νW j) (X.R.fdW j) (cC hc : ℂ) X.R.ψ (omStd A j (X.tupT (D.nd.mu i)))
 
 end GlobalTheory.ThetaTri
 

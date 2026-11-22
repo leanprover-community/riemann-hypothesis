@@ -186,9 +186,6 @@ def consRowMatrix {R : Type*} {r : ℕ} (u : Fin (r + 1) → R) (Y : Matrix (Fin
 lemma s5bCons_zero {R : Type*} {r : ℕ} (u : Fin (r + 1) → R) (Y : Matrix (Fin r) (Fin (r + 1)) R)
     (j : Fin (r + 1)) : consRowMatrix u Y 0 j = u j := rfl
 
-lemma s5bCons_succ {R : Type*} {r : ℕ} (u : Fin (r + 1) → R) (Y : Matrix (Fin r) (Fin (r + 1)) R)
-    (a : Fin r) (j : Fin (r + 1)) : consRowMatrix u Y a.succ j = Y a j := rfl
-
 lemma det_consRow {R : Type*} [CommRing R] {r : ℕ} (Y : Matrix (Fin r) (Fin (r + 1)) R)
     (u : Fin (r + 1) → R) :
     (consRowMatrix u Y).det = ∑ b, u b * cofVec Y b := by

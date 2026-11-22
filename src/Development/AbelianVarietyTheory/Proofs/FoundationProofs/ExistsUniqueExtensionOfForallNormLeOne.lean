@@ -94,7 +94,6 @@ theorem exists_padic_point_norm_lt (m : Ideal A) [m.IsMaximal] (hp : (p : A) ∈
   rw [norm_mul]
   exact mul_lt_of_lt_one_left (norm_pos_iff.mpr hb') hψm
 
-
 omit [IsDomain A] [CharZero A] [Algebra.FiniteType ℤ A] in
 theorem isUnit_val_comp_of_ne_zero {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
     (y : A →+* integralClosure ℤ_[p] K) {a : A} (h : y a ≠ 0) :
@@ -134,7 +133,6 @@ theorem exists_padic_point_one_lt_norm (m : Ideal A) [m.IsMaximal] (hp : (p : A)
   by_contra hn
   exact absurd h3 (not_lt.mpr (mul_le_of_le_one_left (norm_nonneg _) (not_lt.mp hn)))
 
-
 omit [IsDomain A] [CharZero A] [Algebra.FiniteType ℤ A] [IsLocalization.Away a S] in
 theorem algebraMap_mem_range_atPrime_iff (a : A) [IsLocalization.Away a S] (m : Ideal A) [m.IsPrime]
     (L : Type*) [CommRing L] [Algebra A L] [IsLocalization.AtPrime L m]
@@ -165,15 +163,11 @@ theorem algebraMap_mem_range_atPrime_iff (a : A) [IsLocalization.Away a S] (m : 
     rw [e, IsScalarTower.algebraMap_apply A L F s, ← map_mul, IsScalarTower.algebraMap_apply A L F b]
     exact congrArg _ (IsLocalization.mk'_spec' L b (⟨s, hs⟩ : m.primeCompl))
 
-
 end Affine
 
 section Scheme
 
 open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite
-
-local notation "genericPt(" p ", " K ", " y ")" =>
-  Spec.map (CommRingCat.ofHom (algebraMap (integralClosure ℤ_[p] K) K)) ≫ y
 
 theorem top_le_preimage_iff_genericPoint_mem {O K : Type} [CommRing O] [IsDomain O] [Field K]
     [Algebra O K] [FaithfulSMul O K] {Z : Scheme.{0}} (y : Spec (.of O) ⟶ Z) (U : Z.Opens) :
@@ -339,7 +333,6 @@ theorem exists_germToFunctionField_eq_of_frequently_norm_le_one {U : Z.Opens} [N
   obtain ⟨K, hK, hle, H'⟩ := h p K₀
   obtain ⟨y, hy, h1, h2, h3⟩ := H K hle
   exact absurd (H' y hy (h1 ▸ hxW) (h1 ▸ hxU) h2) (not_le.mpr h3)
-
 
 end Scheme
 

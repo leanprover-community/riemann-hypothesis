@@ -1,8 +1,6 @@
 module
 
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Objects
-public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Examples
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.DualModel
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Reading
 
@@ -47,20 +45,6 @@ theorem exists_int_smul_mem_latticeDual {m : ℕ} (L : Submodule (𝓞 K) (Fin m
     exact ((IsIntegralClosure.isIntegral_iff (R := ℤ) (A := 𝓞 K)).mpr ⟨c, rfl⟩).mul hx
 
 variable {r N : ℕ}
-
-theorem exists_int_comb {F : HermLattice K (r + 1)} {φ : Fin (N + 1) → Fin (r + 1) → K}
-    (hφ : IsDualBasis F.lattice φ) (v : Fin (r + 1) → K) :
-    ∃ D : ℤ, D ≠ 0 ∧ ∃ c : Fin (N + 1) → ℤ, ∑ b, c b • φ b = D • v := by
-  obtain ⟨D, hD, hmem⟩ := exists_int_smul_mem_latticeDual F.lattice F.fg v
-  have h : D • v ∈ Submodule.span ℤ (Set.range φ) := by rw [hφ.span_eq]; exact hmem
-  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℤ).mp h
-  exact ⟨D, hD, c, hc⟩
-
-
-
-
-
-
 
 end
 

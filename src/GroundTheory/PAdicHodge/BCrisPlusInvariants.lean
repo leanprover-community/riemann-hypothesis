@@ -19,11 +19,6 @@ namespace ACris
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-local notation "𝒪" => normInteger ℂ_[p]
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "𝔹" => BDeRhamPlus 𝒪 p
-local notation "φW" => WittVector.frobeniusEquiv p 𝒪♭
-
 section Teichmuller
 
 omit hp in
@@ -230,7 +225,6 @@ theorem exists_root_of_aeval_eq_zero {Q : ℚ_[p][X]} (hQ : Q.Monic) {z : 𝔹} 
   simp only [Function.comp_apply, eval₂_sub, eval₂_X, eval₂_C] at hr0
   exact ⟨r, hr, sub_eq_zero.1 hr0⟩
 
-
 set_option maxHeartbeats 1600000 in
 theorem mem_unramifiedClosure_of_iotaPlus_eq {x : BCrisPlus ℂ_[p] p} {β : PadicAlgCl p}
     (hx : iotaPlus ℂ_[p] p x = algClToBdR p β) : β ∈ unramifiedClosure p := by
@@ -345,7 +339,6 @@ theorem bCrisPlus_fixed (x : BCrisPlus ℂ_[p] p) (hx : ∀ σ : Gal(PadicAlgCl 
   obtain ⟨k, hk⟩ := bDeRhamPlus_fixed K (iotaPlus ℂ_[p] p x) fun σ => by
     rw [← iotaPlus_gal_smul, hx σ]
   exact ⟨k, ⟨k.2, mem_unramifiedClosure_of_iotaPlus_eq hk.symm⟩, hk.symm⟩
-
 
 omit [FiniteDimensional ℚ_[p] K] in
 theorem exists_bCrisPlus_fixed {k : PadicAlgCl p} (hk : k ∈ maxUnramified p K) :

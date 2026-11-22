@@ -16,9 +16,6 @@ variable {k : Type*} [Field k]
 
 def cj {n n' : Type*} (σ : k ≃+* k) (X : Matrix n n' k) : Matrix n' n k := (X.map σ).transpose
 
-theorem cj_apply {n n' : Type*} (σ : k ≃+* k) (X : Matrix n n' k) (i : n') (j : n) :
-    cj σ X i j = σ (X j i) := rfl
-
 theorem cj_mul {n n' n'' : Type*} [Fintype n'] (σ : k ≃+* k) (X : Matrix n n' k)
     (Y : Matrix n' n'' k) : cj σ (X * Y) = cj σ Y * cj σ X := by
   ext i j

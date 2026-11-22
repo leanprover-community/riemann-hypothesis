@@ -80,32 +80,4 @@ theorem card_mPiece_top (a : K → ℕ) : Nat.card (mPiece (⊤ : Ideal (MRing �
   have : Subsingleton (MRing ι ⧸ (⊤ : Ideal (MRing ι))) := Ideal.Quotient.subsingleton_iff.2 rfl
   exact Nat.card_eq_one_iff_unique.2 ⟨inferInstance, ⟨0⟩⟩
 
-theorem card_mPiece_chain (a : K → ℕ) : ∀ (N : ℕ) (F : Fin (N + 1) → Ideal (MRing ι))
-    (f : Fin N → MRing ι) (c : Fin N → K → ℕ) (q : Fin N → Ideal (MRing ι)),
-    IsMultiHomogIdeal (F 0) → F (Fin.last N) = ⊤ →
-    (∀ j : Fin N, IsMultiHomog (f j) (c j) ∧ F j.succ = F j.castSucc ⊔ Ideal.span {f j} ∧
-      ∀ g, g ∈ q j ↔ g * f j ∈ F j.castSucc) →
-    (∀ j k, c j k ≤ a k) →
-    Nat.card (mPiece (F 0) a) = ∏ j, Nat.card (mPiece (q j) (a - c j)) := by
-  intro N
-  induction N with
-  | zero =>
-    intro F f c q h0 hlast hj ha
-    have : F 0 = ⊤ := hlast
-    rw [this, card_mPiece_top, Fin.prod_univ_zero]
-  | succ N ih =>
-    intro F f c q h0 hlast hj ha
-    have htail := ih (fun j => F j.succ) (fun j => f j.succ) (fun j => c j.succ)
-      (fun j => q j.succ)
-      (isMultiHomogIdeal_chain h0 (fun j => ⟨(hj j).1, (hj j).2.1⟩) 1)
-      (by simpa [Fin.succ_last] using hlast)
-      (fun j => by
-        have h := hj j.succ
-        rwa [← Fin.succ_castSucc] at h)
-      (fun j => ha j.succ)
-    obtain ⟨h1, h2, h3⟩ := hj 0
-    rw [Fin.castSucc_zero] at h2 h3
-    rw [card_mPiece_step h0 h1 h3 (ha 0), ← h2, Fin.prod_univ_succ, mul_comm]
-    rw [htail]
-
 end ReciprocityTheory.ChartRestriction.G.ArakelovGeometry

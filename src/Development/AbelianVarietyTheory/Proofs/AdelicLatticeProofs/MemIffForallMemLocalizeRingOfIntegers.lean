@@ -23,13 +23,11 @@ variable {O K : Type*} [CommRing O] [IsDomain O] [Field K] [Algebra O K] [IsFrac
   {V : Type*} [AddCommGroup V] [Module K V] [Module O V] [Module A V] [IsScalarTower O K V]
   [IsScalarTower A K V] [IsScalarTower O A V]
 
-
 omit [IsDomain O] [IsScalarTower O A K] [IsScalarTower A K V] [Algebra A K] in
 theorem exists_smul_mem {N : Submodule A V} (hN : Submodule.span K (N : Set V) = ⊤) (x : V) :
     ∃ d ∈ O⁰, d • x ∈ N :=
   (mem_span_localization_iff K O⁰ (N.restrictScalars O) x).1 (by
     rw [Submodule.coe_restrictScalars, hN]; trivial)
-
 
 omit [IsDomain O] [IsScalarTower O A K] [IsScalarTower A K V] [Algebra A K] in
 theorem exists_smul_mem_of_finite {N : Submodule A V} (hN : Submodule.span K (N : Set V) = ⊤)
@@ -44,7 +42,6 @@ theorem exists_smul_mem_of_finite {N : Submodule A V} (hN : Submodule.span K (N 
     · rw [mul_smul]; exact N.smul_of_tower_mem d h'
     · rw [mul_comm, mul_smul]; exact N.smul_of_tower_mem e (h x hx)
 
-
 omit [IsDomain O] [IsScalarTower O A K] [IsScalarTower A K V] [Algebra A K] in
 theorem exists_smul_le {M N : Submodule A V} (hM : M.FG)
     (hN : Submodule.span K (N : Set V) = ⊤) : ∃ d ∈ O⁰, ∀ x ∈ M, d • x ∈ N := by
@@ -56,8 +53,6 @@ theorem exists_smul_le {M N : Submodule A V} (hM : M.FG)
   | zero => simp
   | add x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
   | smul a x _ hx => rw [smul_comm]; exact N.smul_mem a hx
-
-
 
 end Denominators
 
@@ -237,8 +232,6 @@ theorem algebraMap_mem_adicCompletionIntegers_iff (x : K) :
 
 variable [Fintype ι] [DecidableEq ι]
 
-
-
 variable {v}
 
 end Completion
@@ -267,10 +260,6 @@ theorem mem_iff_forall_mem_localize_ringOfIntegers {K V : Type*} [Field K] [Numb
 open ReciprocityTheory.ChartRestriction.G.FD
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
-
-def conjPlace (v : HeightOneSpectrum (𝓞 E)) : HeightOneSpectrum (𝓞 E) :=
-  v.comap (IsCMField.ringOfIntegersComplexConj E : 𝓞 E →+* 𝓞 E)
-    (IsCMField.ringOfIntegersComplexConj E).surjective
 
 def hermPairing (G : Matrix (Fin r) (Fin r) E) :
     (Fin r → E) →ₗ[E] (Fin r → E) →ₛₗ[(IsCMField.complexConj E : E →+* E)] E :=

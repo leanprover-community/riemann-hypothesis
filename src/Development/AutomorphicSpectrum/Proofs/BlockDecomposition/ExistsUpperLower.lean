@@ -37,10 +37,6 @@ theorem one_cc {n : ℕ} (i j : Fin n) :
       = (1 : Matrix (Fin n) (Fin n) R) i j := by
   simp [Matrix.one_apply]
 
-theorem one_cl {n : ℕ} (i : Fin n) :
-    (1 : Matrix (Fin (n + 1)) (Fin (n + 1)) R) i.castSucc (Fin.last n) = 0 :=
-  Matrix.one_apply_ne (Fin.castSucc_lt_last i).ne
-
 theorem one_lc {n : ℕ} (i : Fin n) :
     (1 : Matrix (Fin (n + 1)) (Fin (n + 1)) R) (Fin.last n) i.castSucc = 0 :=
   Matrix.one_apply_ne (Fin.castSucc_lt_last i).ne'

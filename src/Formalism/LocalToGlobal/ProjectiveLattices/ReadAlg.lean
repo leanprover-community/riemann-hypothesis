@@ -60,8 +60,6 @@ def cvalR (σ : K →+* ℂ) : CAt σ →+* ℂ := RingHom.id ℂ
 
 def toCAt (σ : K →+* ℂ) (z : ℂ) : CAt σ := z
 
-theorem cvalR_algebraMap (σ : K →+* ℂ) (t : K) : cvalR σ (algebraMap K (CAt σ) t) = σ t := rfl
-
 theorem linIndep_alg_pts [CharZero K] {Kb : Type} [Field Kb] [IsAlgClosed Kb] [Algebra K Kb] [Normal K Kb] (p : TRing K) {m : ℕ} (a : Fin m → p.R)
     (ha : LinearIndependent K a) (v : Fin m → Kb)
     (h : ∀ φ : p.R →ₐ[K] Kb, ∑ i, v i * φ (a i) = 0) : v = 0 := by

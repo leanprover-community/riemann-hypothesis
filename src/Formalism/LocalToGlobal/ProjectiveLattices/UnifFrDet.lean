@@ -37,10 +37,6 @@ theorem conjEmb_conjEmb (τ : E →+* ℂ) : conjEmb (conjEmb τ) = τ := by
   ext x
   simp [ReciprocityTheory.ChartRestriction.G.Geo.Tor.conjEmb]
 
-theorem conjEmb_eq (τ : E →+* ℂ) : conjEmb τ = ComplexEmbedding.conjugate τ := by
-  ext x
-  simp [ReciprocityTheory.ChartRestriction.G.Geo.Tor.conjEmb, NumberField.ComplexEmbedding.conjugate_coe_eq]
-
 end Mat
 
 section Fam

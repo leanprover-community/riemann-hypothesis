@@ -4,7 +4,9 @@ public import Mathlib
 public import Formalism.LocalToGlobal.KernelLattices.ColInst
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.JetStepEqZeroExample
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.TwistedStartColumnReading
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.SpKerColToEqColCpl
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormMapOfFinOrder
+public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.IntegralGLSuccEmbeddingMemParahoricTimesPrincipa
 public import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.BadPrimesPeriodBound
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SubDSharpInDeg
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDivLatticeQuotient
@@ -97,7 +99,6 @@ theorem locTop_den (hm : R.m = m2 + 2) (hc : cst.Ok) {P : rowSG Pr sel mu} {y : 
     rw [hk, add_comm, pow_add, mul_assoc]
     exact (intAt_pow (intAt_nat _) _).mul h3
 
-
 open Classical in
 theorem locTop_add (hm : R.m = m2 + 2) (hc : cst.Ok) {P : rowSG Pr sel mu} (hD : P.1 ∉ Pr.vGs → 2 * cst.M ≤ cst.D P)
     (y : HomE X.E (R.N (m2 + 1)) (R.N R.m)) {z : HomE X.E (R.N (m2 + 1)) (R.N R.m)} {y' : Sp X.E (R.N (m2 + 1))}
@@ -125,25 +126,12 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Ch : Ch
   {A : Amb X} {u : Pr.Word} {m2 : ℕ} {b : L.β (m2 + 1)} {hY : YbHyp (R := R) sel mu cst L u m2 b}
   {P : LevFam X.E X.K R.r Pr.vGs} {c : TopDepth R cst.M} {G : ChGlob X R.m}
 
-
-variable (A) in
-def twThPt (i j : ℕ) (e : j = i + 1) (β : (twFam W Ch sel mu cst L u m2 b hY P c i).β) (β' : (twFam W Ch sel mu cst L u m2 b hY P c j).β)
-    (d : (twFam W Ch sel mu cst L u m2 b hY P c i).D β) (d' : (twFam W Ch sel mu cst L u m2 b hY P c j).D β') :
-    VCx X.Tau (R.N i) (R.N j) → ℂ :=
-  A.thDat (Sall sel mu u) (cAof sel mu cst) (cBof sel mu cst u) (levPt i β d).deco.1.N (levPt j β' d').deco.1.N (twXi i j e β β' d d')
-
 section Pt
 
 variable (i j : ℕ) (e : j = i + 1) (β : (twFam W Ch sel mu cst L u m2 b hY P c i).β) (β' : (twFam W Ch sel mu cst L u m2 b hY P c j).β)
   (d : (twFam W Ch sel mu cst L u m2 b hY P c i).D β) (d' : (twFam W Ch sel mu cst L u m2 b hY P c j).D β')
 
 end Pt
-
-theorem twThPt_top (e : R.m = m2 + 1 + 1) (h : m2 + 1 = m2 + 1) (h' : R.m = R.m) (d : (ybCpl W sel mu cst L u m2 b hY).Pts)
-    (p' : TopPt R sel mu u) :
-    twThPt (Ch := Ch) (P := P) (c := c) A (m2 + 1) R.m e (.cpl h) (.top h') d p' =
-      A.thDat (Sall sel mu u) (cAof sel mu cst) (cBof sel mu cst u) d.1.1.deco.1.N p'.deco.1.N
-        (XiTop Ch sel mu cst m2 d.1.1 d.1.2 p') := rfl
 
 section Vec
 
@@ -152,35 +140,17 @@ include hPr hL h0
 
 end Vec
 
-abbrev twSec (i : ℕ) (x : (twFam W Ch sel mu cst L u m2 b hY P c i).Cl) : (twFam W Ch sel mu cst L u m2 b hY P c i).D x.1 :=
-  ((twFam W Ch sel mu cst L u m2 b hY P c i).mem x.1).outSec.rep x.2
-
 section Def
 
 variable (chi : ∀ n : ℕ, Submodule (𝓞 X.E) (Sp X.E n) → ℂ) (hX : X.Ok) (hm : R.m = m2 + 2) (hF : ∀ j, (chF W sel mu L u j).Ok)
   (hK : TwEquiv W Ch sel mu cst L A u m2 b hY P c) (hρ : RhoUnit Ch sel mu cst A.σ₀ chi)
 
-def twTh : (twSrc chi hX hm hF hK hρ).ThFam := fun i x x' => twThPt A i (i + 1) rfl x.1 x'.1 (twSec i x) (twSec (i + 1) x')
-
-def twChain : ColumnChain R X.Tau (W.hc u) := (twSrc chi hX hm hF hK hρ).chainTh A.σ₀ (W.hc u) A.cD (twTh chi hX hm hF hK hρ)
-
 end Def
-
-
-variable (W sel mu cst A u) in
-def TwJets : Prop :=
-  ∀ i < R.m, JetsRatDeg A (R.N i) (R.N (i + 1)) (Sall sel mu u) (cAof sel mu cst * cBof sel mu cst u) fun τ => ∑ a, (W.nuW u (i + 1) τ).w a
 
 section Laws
 
 variable {chi : ∀ n : ℕ, Submodule (𝓞 X.E) (Sp X.E n) → ℂ} {hX : X.Ok} {hm : R.m = m2 + 2} {hF : ∀ j, (chF W sel mu L u j).Ok}
   {hK : TwEquiv W Ch sel mu cst L A u m2 b hY P c} {hρ : RhoUnit Ch sel mu cst A.σ₀ chi}
-
-theorem twChain_unf (i : ℕ) (x : (twFam W Ch sel mu cst L u m2 b hY P c i).Cl) (x' : (twFam W Ch sel mu cst L u m2 b hY P c (i + 1)).Cl)
-    (Q : Formalism.L2.DIV.Pol ℂ X.Tau (R.N i)) (y' : ChSrc.Fr X A.σ₀ (R.N (i + 1))) :
-    (twChain chi hX hm hF hK hρ).unf i x x' (fun y : ChSrc.Fr X A.σ₀ (R.N i) => MvPolynomial.eval (fun v => y.1 v.1 v.2.1 v.2.2) Q) y' =
-      ∑ q ∈ (derPol A.cD Q y'.1).support, AddMonoidAlgebra.coeff (derPol A.cD Q y'.1) q * derivAt0 (twTh chi hX hm hF hK hρ i x x') q :=
-  (twSrc chi hX hm hF hK hρ).chainTh_unf A.σ₀ (W.hc u) A.cD _ i x x' Q y'
 
 variable (hT : 0 < Pr.T u) (hχ : ChiSplit chi A) (hs : ∀ i < R.m, A.ESmooth (R.N i) (R.N (i + 1))) (hJ : TwJets W sel mu cst A u)
 include hT hχ hs hJ

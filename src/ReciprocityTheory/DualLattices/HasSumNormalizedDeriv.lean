@@ -10,8 +10,6 @@ open scoped Real Manifold Topology
 
 namespace ReciprocityTheory.PGsh
 
-local notation "𝕢" => Periodic.qParam
-
 lemma qParam_one_pow_eq_cexp (z : ℂ) (m : ℕ) :
     𝕢 1 z ^ m = cexp (2 * π * I * m * z) := by
   rw [Periodic.qParam, ← Complex.exp_nat_mul]

@@ -18,8 +18,6 @@ noncomputable section
 
 namespace CyclotomicLayer
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 theorem degreeMod_eq_one_of_mem_fixingSubgroup (q : Nat.Primes) (a : ℕ) {σ : Gal(ℚ̄/ℚ)}
     (hσ : σ ∈ (rootsOfUnityField ((q : ℕ) ^ (a + unitsLevel (q : ℕ)))).fixingSubgroup) :
     degreeMod (primePowPNat (q : ℕ) a) σ = 1 := by

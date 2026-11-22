@@ -14,8 +14,6 @@ noncomputable section
 
 variable {n : ℕ}
 
-local notation "𝔼" => EuclideanSpace ℝ (Fin n)
-
 def tupleOp (m : ℕ) (a : (k : ℕ) → (Fin k → Fin n) → 𝔼 → ℂ) (u : 𝔼 → ℂ) (x : 𝔼) : ℂ :=
   ∑ k ∈ range (m + 1), ∑ J : Fin k → Fin n, a k J x * pdT J u x
 

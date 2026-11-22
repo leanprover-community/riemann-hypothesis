@@ -25,9 +25,6 @@ noncomputable def conjSch {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] 
     rw [e, LinearIsometryEquiv.norm_iteratedFDeriv_comp_left]
     exact hC x
 
-theorem conjSch_apply {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] (f : SchwartzMap V ℂ) (x : V) :
-    conjSch f x = star (f x) := rfl
-
 theorem star_mem_schA {F : Type} [Field F] [NumberField F] (κ : Type) [Fintype κ] :
     ∀ Φ ∈ schA F κ, (fun x => star (Φ x)) ∈ schA F κ := by
   intro Φ hΦ

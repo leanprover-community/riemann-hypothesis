@@ -25,7 +25,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormAss
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormCycleAdd
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormCycleSmul
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.RenameProdMapMul
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSpecFirstSwapMahler
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeLogBound
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.OfLeaves
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaInj
@@ -90,7 +89,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDominant
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteGermProjectionCover
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFsLogSmul
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPlaneSliceMass
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PPointLine
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PGermFiniteProjection
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHolomorphicFibreInfinite

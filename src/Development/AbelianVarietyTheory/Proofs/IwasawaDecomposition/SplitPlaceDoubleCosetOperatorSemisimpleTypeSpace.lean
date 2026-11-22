@@ -40,8 +40,6 @@ theorem eq_smul_of_normal {M : Type} [AddCommGroup M] [Module ℂ M] (B : M →�
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
-local notation3 "L⁺" => NumberField.maximalRealSubfield L
-
 theorem rt_mem_all {a : NG.AlgWt L n} (h : GAf L n) {f : GAf L n → a.W} (hf : f ∈ NG.AFall L n a.ρ) :
     NG.rt L n h f ∈ NG.AFall L n a.ρ := by
   obtain ⟨N, hN, h2⟩ := hf.2

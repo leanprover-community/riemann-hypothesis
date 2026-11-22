@@ -21,8 +21,6 @@ theorem IsRelParam.notMem_sq (h : IsRelParam b t) (i : Fin m) : t i ∉ maximalI
   have := h.mem_of_mem_sq (Pi.single i 1) (by simpa [Pi.single_apply] using hi) i
   simp at this
 
-theorem IsRelParam.ne_zero (h : IsRelParam b t) (i : Fin m) : t i ≠ 0 := fun h0 => h.notMem_sq i (h0 ▸ zero_mem _)
-
 theorem IsRelParam.eq_of_dvd (h : IsRelParam b t) {i j : Fin m} (hd : t i ∣ t j) : i = j := by
   by_contra hne
   obtain ⟨c, hc⟩ := hd
@@ -35,7 +33,6 @@ end Param
 section Local
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] {m : ℕ}
-
 
 end Local
 

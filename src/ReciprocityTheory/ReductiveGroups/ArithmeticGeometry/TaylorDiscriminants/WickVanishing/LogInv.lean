@@ -51,35 +51,6 @@ theorem formalGroupLaw_ev_x_zero (i : Fin d) : ev (n := 1) ![pt k d 0, 0] (G.F i
 
 open scoped MvPowerSeries.WithPiTopology
 
-local macro "prove_ev_chain_rule " k:ident a:ident ha:term:max f:term:max v:term:max : term =>
-  `(by
-    classical
-    let : UniformSpace $k := ⊥
-    let family := fun p : _ × _ => $a p.1 p.2
-    change pderiv $v (subst family $f) = ∑ p, subst family (pderiv p $f) * pderiv $v (family p)
-    have hsubst := continuous_subst (R := $k) (CZ.hasSubst (show CZ $a from $ha))
-    have hderiv {σ : Type} (i : σ) : Continuous (pderiv (R := $k) i) := by
-      apply continuous_pi
-      intro e
-      change Continuous (fun g => coeff e (pderiv i g))
-      simp only [coeff_pderiv]
-      exact (WithPiTopology.continuous_coeff $k _).mul continuous_const
-    refine congrFun (WithPiTopology.denseRange_toMvPowerSeries.equalizer
-      ((hderiv $v).comp hsubst) (continuous_finsetSum _ fun p _ =>
-        (hsubst.comp (hderiv p)).mul continuous_const) ?_) $f
-    funext q
-    change pderiv $v (subst family (q : MvPowerSeries _ $k)) =
-      ∑ p, subst family (pderiv p (q : MvPowerSeries _ $k)) * pderiv $v (family p)
-    simp only [pderiv_coe, subst_coe]
-    induction q using MvPolynomial.induction_on with
-    | C c => simp
-    | add q r hq hr => simp only [map_add, hq, hr, add_mul, Finset.sum_add_distrib]
-    | mul_X q p hq =>
-      rw [map_mul, MvPolynomial.aeval_X, Derivation.leibniz, hq, smul_eq_mul, smul_eq_mul,
-        Finset.mul_sum]
-      simp [Pi.single_apply, apply_ite (MvPolynomial.aeval family), add_mul,
-        Finset.sum_add_distrib, mul_assoc])
-
 theorem pderiv_ev_zero {m n : ℕ} {a : Fin m → Pt k n d} (ha : CZ a) (f : PS k m d) (v : Fin n × Fin d)
     (h : ∀ j i, pderiv (R := k) v (a j i) = 0) : pderiv (R := k) v (ev a f) = 0 := by
   have hchain : pderiv v (ev a f) =

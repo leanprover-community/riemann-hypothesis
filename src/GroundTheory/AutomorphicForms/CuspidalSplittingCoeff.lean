@@ -33,7 +33,6 @@ def HasCentralChar (ρ : Representation ℂ (GL (Fin n) F) U) (ω : GL (Fin n) F
 
 variable {ρ : Representation ℂ (GL (Fin n) F) U} {ω : GL (Fin n) F → ℂ}
 
-
 omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 theorem HasCentralChar.mul (h : HasCentralChar ρ ω) {u : U} (hu : u ≠ 0)
     {z z' : GL (Fin n) F} (hz : z ∈ Subgroup.center (GL (Fin n) F))
@@ -42,13 +41,11 @@ theorem HasCentralChar.mul (h : HasCentralChar ρ ω) {u : U} (hu : u ≠ 0)
   rw [map_mul, Module.End.mul_apply, h z' hz', map_smul, h z hz, smul_smul] at h1
   exact (smul_left_injective ℂ hu h1).symm.trans (mul_comm _ _)
 
-
 omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 theorem HasCentralChar.one (h : HasCentralChar ρ ω) {u : U} (hu : u ≠ 0) : ω 1 = 1 := by
   have h1 : ω 1 • u = (1 : ℂ) • u := by
     rw [one_smul, ← h 1 (Subgroup.one_mem _) u, map_one, Module.End.one_apply]
   exact smul_left_injective ℂ hu h1
-
 
 omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 theorem HasCentralChar.inv_mul (h : HasCentralChar ρ ω) {u : U} (hu : u ≠ 0)
@@ -66,7 +63,6 @@ omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 theorem mem_centerSup {K : Subgroup (GL (Fin n) F)} {x : GL (Fin n) F} :
     x ∈ centerSup K ↔ ∃ z ∈ Subgroup.center (GL (Fin n) F), ∃ k ∈ K, z * k = x :=
   Subgroup.mem_sup_of_normal_left
-
 
 omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 theorem rightInv_centerSup {X : Type*} {K : Subgroup (GL (Fin n) F)} {Φ : GL (Fin n) F → X}
@@ -101,7 +97,6 @@ def coeffSum (K : Subgroup (GL (Fin n) F)) (f : Module.Dual ℂ V) (u : U) (w : 
 
 variable {π ρ} {K : Subgroup (GL (Fin n) F)} {f : Module.Dual ℂ V} {u : U}
   {ω : GL (Fin n) F → ℂ}
-
 
 omit [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 theorem coeffSum_summand_rightInv (hωπ : HasCentralChar π ω) (hωρ : HasCentralChar ρ ω)
@@ -158,7 +153,6 @@ theorem coeffSum_smul (c : ℂ) (w : V) :
   dsimp only
   rw [map_smul, map_smul, smul_eq_mul, mul_smul]
 
-
 include hπ hsc hKo hωπ hωρ hω hf hu in
 theorem coeffSum_act (x : GL (Fin n) F) (w : V) :
     coeffSum π ρ K f u (π x w) = ρ x (coeffSum π ρ K f u w) := by
@@ -181,10 +175,6 @@ def coeffMap : Representation.IntertwiningMap π ρ where
   map_add' := coeffSum_add hπ hsc hKo hf
   map_smul' := coeffSum_smul hπ hsc hKo hf
   isIntertwining' x := LinearMap.ext fun w => coeffSum_act hπ hsc hKo hωπ hωρ hω hf hu x w
-
-theorem coeffMap_apply (w : V) :
-    coeffMap hπ hsc hKo hωπ hωρ hω hf hu w = coeffSum π ρ K f u w := rfl
-
 
 omit hωπ hωρ hω hu in
 include hπ hsc hKo hf in

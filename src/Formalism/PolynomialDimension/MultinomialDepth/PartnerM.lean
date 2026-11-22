@@ -19,8 +19,6 @@ variable {K V ι : Type*} [Field K] [AddCommGroup V] [Module K V] [LinearOrder �
 def lcomp (φ : ι → V →ₗ[K] V) (l : List ι) : V →ₗ[K] V :=
   l.foldr (fun i acc => φ i ∘ₗ acc) LinearMap.id
 
-theorem lcomp_nil (φ : ι → V →ₗ[K] V) : lcomp φ [] = LinearMap.id := rfl
-
 theorem lcomp_cons (φ : ι → V →ₗ[K] V) (i : ι) (l : List ι) : lcomp φ (i :: l) = φ i ∘ₗ lcomp φ l := rfl
 
 theorem lcomp_keep (φ : ι → V →ₗ[K] V) (C : Set V) :
@@ -1117,7 +1115,6 @@ open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
 section Comp
 variable {K σ : Type} [Field K]
-
 
 open Classical in
 noncomputable def compP (Pr : (σ →₀ ℕ) → Prop) (x : MvPolynomial σ K) : MvPolynomial σ K :=

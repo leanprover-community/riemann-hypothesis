@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.FinCorePf
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.BasisChangePf
-public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsIsUnitEvalOfMapResidueNeZero
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ResidueNormValuationSubringEqZeroIff
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosurePadicInt
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.SummableNormBoundedSeries
@@ -48,12 +47,6 @@ theorem hasSum_discEval (f : O⟦X⟧) :
   · simp
   · simp [PowerSeries.coeff_X, hn]
 
-theorem norm_discEval_le_one [IsUltrametricDist K] (f : O⟦X⟧) : ‖discEval i hi ht f‖ ≤ 1 := by
-  rw [← (hasSum_discEval i hi ht f).tsum_eq]
-  refine IsUltrametricDist.norm_tsum_le_of_forall_le fun n => ?_
-  rw [norm_mul, norm_pow]
-  exact mul_le_one₀ (hi _) (by positivity) (pow_le_one₀ (norm_nonneg _) ht.le)
-
 end Series
 
 section Away
@@ -75,17 +68,11 @@ section Value
 variable [NormedField K] [CompleteSpace K] (i : O →+* K) (hi : ∀ x, ‖i x‖ ≤ 1) (hπ : i π ≠ 0)
   {t : K} (ht0 : t ≠ 0) (ht : ‖t‖ < 1)
 
-noncomputable def discEvalAway : A →+* K :=
-  IsLocalization.Away.lift (PowerSeries.C π * PowerSeries.X : O⟦X⟧) (g := discEval i hi ht) (by
-    rw [isUnit_iff_ne_zero, map_mul, discEval_C, discEval_X]
-    exact mul_ne_zero hπ ht0)
-
 @[simp] theorem discEvalAway_algebraMap (f : O⟦X⟧) :
     discEvalAway π A i hi hπ ht0 ht (algebraMap O⟦X⟧ A f) = discEval i hi ht f :=
   IsLocalization.Away.lift_eq _ _ f
 
 variable {π A}
-
 
 end Value
 
@@ -288,7 +275,6 @@ section Finite
 
 variable {O : Type*} [CommRing O] [Algebra ℤ_[p] O] (i : O →+* ℂ_[p]) (hi : ∀ x, ‖i x‖ ≤ 1)
 
-
 include hi in
 theorem map_algebraMap_padicInt (z : ℤ_[p]) :
     i (algebraMap ℤ_[p] O z) = algebraMap ℚ_[p] ℂ_[p] z :=
@@ -369,7 +355,6 @@ theorem finiteDimensional_genField {T : Set ℂ_[p]} (hT : T.Finite) :
 
 variable (L : IntermediateField ℚ_[p] (PadicAlgCl p)) [FiniteDimensional ℚ_[p] L]
 
-
 omit [Module.Finite ℤ_[p] O] in
 theorem finite_of_intEmb_eq {j : O →+* integralClosure ℤ_[p] L} (hj : ∀ a, intEmb L (j a) = i a) :
     j.Finite := by
@@ -394,8 +379,6 @@ theorem norm_map_eq_one_iff (hinj : Function.Injective i) (x : O) : ‖i x‖ = 
   have := isLocalHom_of_intEmb_eq i hi _ hinj hj
   rw [← hj, ← isUnit_iff_norm, isUnit_map_iff]
 
-
-
 end Finite
 
 theorem exists_injective_norm_le_one (O : Type*) [CommRing O] [IsDomain O] [Algebra ℤ_[p] O]
@@ -410,57 +393,21 @@ variable {O : Type*} [CommRing O] (i : O →+* ℂ_[p]) (hi : ∀ x, ‖i x‖ �
   (A : Type*) [CommRing A] [Algebra O⟦X⟧ A]
   [IsLocalization.Away (PowerSeries.C π * PowerSeries.X : O⟦X⟧) A]
 
-def IsDiscPoint (L : IntermediateField ℚ_[p] (PadicAlgCl p)) {t : ℂ_[p]} (ht0 : t ≠ 0)
-    (ht : ‖t‖ < 1) (ev : O⟦X⟧ →+* integralClosure ℤ_[p] L) (evA : A →+* L) : Prop :=
-  (∀ f, intEmb L (ev f) = discEval i hi ht f) ∧
-    ∀ f, fieldEmb L (evA f) = discEvalAway π A i hi hπ ht0 ht f
-
-
 end Points
 
 section Frames
 
 open MvPolynomial
 
-
-variable (p) in
-def algInt : Subring ℂ_[p] where
-  carrier := {x | x ∈ algField p ∧ ‖x‖ ≤ 1}
-  mul_mem' ha hb := ⟨mul_mem ha.1 hb.1, by
-    rw [norm_mul]; exact mul_le_one₀ ha.2 (norm_nonneg _) hb.2⟩
-  one_mem' := ⟨one_mem _, norm_one.le⟩
-  add_mem' ha hb := ⟨add_mem ha.1 hb.1,
-    (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ha.2 hb.2)⟩
-  zero_mem' := ⟨zero_mem _, by simp⟩
-  neg_mem' ha := ⟨neg_mem ha.1, by rw [norm_neg]; exact ha.2⟩
-
 variable {O : Type*} [CommRing O] (i : O →+* ℂ_[p]) (hi : ∀ x, ‖i x‖ ≤ 1) {π : O} (hπ : i π ≠ 0)
   {A : Type*} [CommRing A] [Algebra O⟦X⟧ A]
   [IsLocalization.Away (PowerSeries.C π * PowerSeries.X : O⟦X⟧) A]
   {ι : Type} [Fintype ι] {n : ι → Type} [∀ s, Fintype (n s)] [∀ s, DecidableEq (n s)]
 
-def BoundedOnFrames (F : MvPolynomial (EntryIndex n n) A) : Prop :=
-  ∀ t ∈ algField p, ∀ (ht0 : t ≠ 0) (ht : ‖t‖ < 1) (g : ∀ s, GL (n s) (algInt p)),
-    ‖eval₂ (discEvalAway π A i hi hπ ht0 ht)
-      (entries fun s => (g s : Matrix (n s) (n s) (algInt p)).map (algInt p).subtype) F‖ ≤ 1
-
 variable {i hi hπ} {F : MvPolynomial (EntryIndex n n) A}
-
-theorem boundedOnFrames_map (F₀ : MvPolynomial (EntryIndex n n) O⟦X⟧) :
-    BoundedOnFrames i hi hπ (map (algebraMap O⟦X⟧ A) F₀) := by
-  intro t _ ht0 ht g
-  rw [eval₂_map, eval₂_eq]
-  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun μ _ => ?_
-  rw [norm_mul, RingHom.comp_apply, discEvalAway_algebraMap, norm_prod]
-  refine mul_le_one₀ (norm_discEval_le_one i hi ht _)
-    (Finset.prod_nonneg fun _ _ => norm_nonneg _)
-    (Finset.prod_le_one₀ (fun _ _ => norm_nonneg _) fun k _ => ?_)
-  rw [norm_pow]
-  exact pow_le_one₀ (norm_nonneg _) ((g k.1).1 k.2.1 k.2.2).2.2
 
 end Frames
 
 end Padic
-
 
 end GlobalTheory.DiscEval

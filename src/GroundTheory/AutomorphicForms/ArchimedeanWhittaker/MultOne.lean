@@ -1,7 +1,9 @@
 module
 
 public import Mathlib
-public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.Weights
+public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ContinuousMultilinearOfFiniteDimensional
+public import GroundTheory.AutomorphicForms.HarishChandraRegularity
+public import GroundTheory.AutomorphicForms.RealGroupsKAK
 
 @[expose] public section
 
@@ -92,26 +94,6 @@ theorem eq_algebraMap_of_commute [Nontrivial V] {S : Set (V →L[ℂ] V)}
     _ = cfc (fun _ : ℝ => c) A := cfc_congr fun x hx => hsub hx hc
     _ = algebraMap ℝ _ c := cfc_const c A hsa
 
-theorem eq_smul_one_of_commute [Nontrivial V] {S : Set (V →L[ℂ] V)}
-    (hirr : ∀ W : Submodule ℂ V, IsClosed (W : Set V) → (∀ s ∈ S, ∀ v ∈ W, s v ∈ W) →
-      W = ⊥ ∨ W = ⊤)
-    (hstar : ∀ s ∈ S, star s ∈ S) (hcomm : ∀ s ∈ S, ∀ t ∈ S, Commute s t)
-    {T : V →L[ℂ] V} (hT : T ∈ S) : ∃ c : ℂ, T = c • (1 : V →L[ℂ] V) := by
-  have hre : ∀ s ∈ S, Commute (ℜ T : V →L[ℂ] V) s := by
-    intro s hs
-    rw [realPart_apply_coe]
-    exact ((hcomm T hT s hs).add_left (hcomm _ (hstar T hT) s hs)).smul_left _
-  have him : ∀ s ∈ S, Commute (ℑ T : V →L[ℂ] V) s := by
-    intro s hs
-    rw [imaginaryPart_apply_coe]
-    exact (((hcomm T hT s hs).sub_left (hcomm _ (hstar T hT) s hs)).smul_left _).smul_left _
-  obtain ⟨a, ha⟩ := eq_algebraMap_of_commute hirr (ℜ T).2 hre
-  obtain ⟨b, hb⟩ := eq_algebraMap_of_commute hirr (ℑ T).2 him
-  refine ⟨a + I * b, ?_⟩
-  conv_lhs => rw [← realPart_add_I_smul_imaginaryPart T, ha, hb]
-  rw [Algebra.algebraMap_eq_smul_one, Algebra.algebraMap_eq_smul_one, ← Complex.coe_smul,
-    ← Complex.coe_smul, smul_smul, ← add_smul]
-
 end Schur
 
 end GroundTheory.Automorphic.ArchWhittaker
@@ -124,122 +106,9 @@ open scoped Matrix.Norms.L2Operator Real InnerProductSpace ComplexConjugate Comp
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
-theorem topologicalClosure_span_orbit {G : Type*} [Group G] [TopologicalSpace G]
-    {ρ : UnitaryRep G H} (hρ : ρ.IsIrreducible) {x : H} (hx : x ≠ 0) :
-    (Submodule.span ℂ (range fun g => ρ g x)).topologicalClosure = ⊤ := by
-  set U := (Submodule.span ℂ (range fun g => ρ g x)).topologicalClosure with hU
-  have hinv : ρ.IsInvariant U := by
-    intro g v hv
-    have hle : Submodule.span ℂ (range fun g => ρ g x) ≤ U.comap ((ρ g : H →L[ℂ] H) : H →ₗ[ℂ] H) := by
-      rw [Submodule.span_le]
-      rintro _ ⟨h, rfl⟩
-      simp only [SetLike.mem_coe, Submodule.mem_comap, ContinuousLinearMap.coe_coe]
-      rw [← UnitaryRep.map_mul_apply]
-      exact Submodule.le_topologicalClosure _ (Submodule.subset_span ⟨g * h, rfl⟩)
-    have hcl : IsClosed ((U.comap ((ρ g : H →L[ℂ] H) : H →ₗ[ℂ] H) : Submodule ℂ H) : Set H) :=
-      (Submodule.isClosed_topologicalClosure _).preimage (ρ g).continuous
-    exact Submodule.topologicalClosure_minimal _ hle hcl hv
-  rcases hρ.2 U (Submodule.isClosed_topologicalClosure _) hinv with h | h
-  · exfalso; apply hx
-    have : x ∈ U := Submodule.le_topologicalClosure _ (Submodule.subset_span ⟨1, by simp⟩)
-    rw [h, Submodule.mem_bot] at this
-    exact this
-  · exact h
-
-theorem eq_zero_of_forall_inner_map {G : Type*} [Group G] [TopologicalSpace G]
-    {ρ : UnitaryRep G H} (hρ : ρ.IsIrreducible) {x y : H} (hx : x ≠ 0)
-    (h : ∀ g, ⟪y, ρ g x⟫_ℂ = 0) : y = 0 := by
-  have htop := topologicalClosure_span_orbit hρ hx
-  have hle : Submodule.span ℂ (range fun g => ρ g x) ≤ (ℂ ∙ y)ᗮ := by
-    rw [Submodule.span_le]
-    rintro _ ⟨g, rfl⟩
-    rw [SetLike.mem_coe, Submodule.mem_orthogonal_singleton_iff_inner_right]
-    exact h g
-  have hcl := Submodule.topologicalClosure_minimal _ hle (Submodule.isClosed_orthogonal _)
-  rw [htop] at hcl
-  have hy : y ∈ (ℂ ∙ y)ᗮ := hcl Submodule.mem_top
-  rw [Submodule.mem_orthogonal_singleton_iff_inner_right, inner_self_eq_zero] at hy
-  exact hy
-
 variable (σ : UnitaryRep FiltrationCocycleLiftCriterion H)
-
-theorem inner_map_kMat_of_mem {j : ℤ} {y : H} (hy : y ∈ weightSpace σ j) (θ : ℝ) (u : H) :
-    ⟪y, σ (kMat θ) u⟫_ℂ = chi j θ * ⟪y, u⟫_ℂ := by
-  rw [UnitaryRep.inner_map_right, kMat_inv, hy (-θ), inner_smul_left, conj_chi, neg_neg]
-
-theorem inner_wProj_of_mem {j : ℤ} {y : H} (hy : y ∈ weightSpace σ j) (u : H) :
-    ⟪y, wProj σ j u⟫_ℂ = ⟪y, u⟫_ℂ := by
-  rw [inner_wProj]
-  have : (fun θ : ℝ => chi j (-θ) * ⟪y, σ (kMat θ) u⟫_ℂ) = fun _ => ⟪y, u⟫_ℂ := by
-    funext θ
-    rw [inner_map_kMat_of_mem σ hy, ← mul_assoc, mul_comm (chi j (-θ)), chi_mul_chi_neg, one_mul]
-  rw [this, intervalIntegral.integral_const, sub_zero, Complex.real_smul, ← mul_assoc]
-  have hπ : ((2 * π : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (by positivity : (2 * π : ℝ) ≠ 0)
-  rw [inv_mul_cancel₀ hπ, one_mul]
-
-theorem wProj_add (j : ℤ) (x y : H) : wProj σ j (x + y) = wProj σ j x + wProj σ j y := by
-  simp only [wProj, map_add (f := _), smul_add]
-  rw [intervalIntegral.integral_add ((continuous_wIntegrand σ j x).intervalIntegrable _ _)
-    ((continuous_wIntegrand σ j y).intervalIntegrable _ _), smul_add]
-
-theorem wProj_smul (j : ℤ) (c : ℂ) (x : H) : wProj σ j (c • x) = c • wProj σ j x := by
-  simp only [wProj, map_smul, smul_comm _ c]
-  rw [intervalIntegral.integral_smul, smul_comm]
-
-noncomputable def wProjL (j : ℤ) : H →L[ℂ] H :=
-  LinearMap.mkContinuous
-    { toFun := wProj σ j
-      map_add' := wProj_add σ j
-      map_smul' := wProj_smul σ j } 1 (fun x => by simpa using norm_wProj_le σ j x)
-
-noncomputable def compr (j : ℤ) (g : FiltrationCocycleLiftCriterion) : weightSpace σ j →L[ℂ] weightSpace σ j :=
-  ((wProjL σ j).comp ((σ g).comp (weightSpace σ j).subtypeL)).codRestrict (weightSpace σ j)
-    (fun x => wProj_mem σ j _)
 
 @[simp] theorem coe_compr_apply (j : ℤ) (g : FiltrationCocycleLiftCriterion) (v : weightSpace σ j) :
     ((compr σ j g v : weightSpace σ j) : H) = wProj σ j (σ g v) := rfl
-
-theorem inner_compr (j : ℤ) (g : FiltrationCocycleLiftCriterion) (v w : weightSpace σ j) :
-    ⟪(w : H), (compr σ j g v : H)⟫_ℂ = ⟪(w : H), σ g v⟫_ℂ := by
-  rw [coe_compr_apply, inner_wProj_of_mem σ w.2]
-
-theorem inner_map_iotaG {j : ℤ} {x y : H} (hx : x ∈ weightSpace σ j) (hy : y ∈ weightSpace σ j)
-    (u : FiltrationCocycleLiftCriterion) : ⟪y, σ (iotaG u) x⟫_ℂ = ⟪y, σ u x⟫_ℂ := by
-  have key : ∀ (a b : ℝ) (D : FiltrationCocycleLiftCriterion), ⟪y, σ (kMat a * D * kMat b) x⟫_ℂ =
-      chi j a * chi j b * ⟪y, σ D x⟫_ℂ := by
-    intro a b D
-    rw [UnitaryRep.map_mul_apply, UnitaryRep.map_mul_apply, hx b, map_smul, map_smul,
-      inner_smul_right, inner_map_kMat_of_mem σ hy]
-    ring
-  obtain ⟨α, β, D, hD, rfl⟩ := exists_kak u
-  rw [iotaG_mul, iotaG_mul, iotaG_kMat, iotaG_kMat, hD, ← mul_assoc, key, key]
-  ring
-
-theorem inner_compr_compr (j : ℤ) (g h : FiltrationCocycleLiftCriterion) (v w : weightSpace σ j) :
-    ⟪(w : H), (compr σ j g (compr σ j h v) : H)⟫_ℂ = ((2 * π : ℝ)⁻¹ : ℂ) *
-      ∫ θ in (0 : ℝ)..(2 * π), chi j (-θ) * ⟪(w : H), σ (g * kMat θ * h) v⟫_ℂ := by
-  rw [inner_compr, coe_compr_apply, UnitaryRep.inner_map_right, inner_wProj]
-  congr 1
-  congr 1; funext θ
-  rw [UnitaryRep.inner_map_left, inv_inv, ← UnitaryRep.map_mul_apply, ← UnitaryRep.map_mul_apply,
-    mul_assoc]
-
-theorem compr_iotaG (j : ℤ) (g : FiltrationCocycleLiftCriterion) : compr σ j (iotaG g) = compr σ j g := by
-  ext1 v
-  apply ext_inner_left ℂ
-  intro w
-  rw [Submodule.coe_inner, Submodule.coe_inner, inner_compr, inner_compr,
-    inner_map_iotaG σ v.2 w.2]
-
-theorem compr_comm (j : ℤ) (g h : FiltrationCocycleLiftCriterion) : compr σ j g * compr σ j h = compr σ j h * compr σ j g := by
-  ext1 v
-  apply ext_inner_left ℂ
-  intro w
-  rw [Submodule.coe_inner, Submodule.coe_inner, ContinuousLinearMap.mul_apply,
-    ContinuousLinearMap.mul_apply, inner_compr_compr, ← compr_iotaG σ j h, ← compr_iotaG σ j g,
-    inner_compr_compr]
-  congr 1
-  congr 1; funext θ
-  rw [← inner_map_iotaG σ v.2 w.2 (g * kMat θ * h), iotaG_mul, iotaG_mul, iotaG_kMat, mul_assoc]
 
 end GroundTheory.Automorphic.ArchWhittaker

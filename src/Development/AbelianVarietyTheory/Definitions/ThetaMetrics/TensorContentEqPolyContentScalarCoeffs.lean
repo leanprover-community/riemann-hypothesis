@@ -36,10 +36,6 @@ theorem exists_mem_support_coeffSup_eq {c : ι →₀ M} (hc : c ≠ 0) :
     ∃ i ∈ c.support, coeffSup N c = N (c i) :=
   Finset.exists_mem_eq_sup _ (Finsupp.support_nonempty_iff.mpr hc) _
 
-theorem coeffSup_eq_zero_iff (h0 : N 0 = 0) {c : ι →₀ M} :
-    coeffSup N c = 0 ↔ ∀ i, N (c i) = 0 := by
-  simp only [← le_zero_iff, coeffSup_le_iff h0]
-
 theorem coeffSup_single (h0 : N 0 = 0) (i : ι) (a : M) :
     coeffSup N (Finsupp.single i a) = N a := by
   classical
@@ -131,9 +127,6 @@ theorem gaussValAlg_le_iff {f : AddMonoidAlgebra R G} {γ : Γ₀} :
     gaussValAlg v (AddMonoidAlgebra.single m a) = v a :=
   coeffSup_single v.map_zero m a
 
-theorem gaussValAlg_eq_zero_iff {f : AddMonoidAlgebra R G} :
-    gaussValAlg v f = 0 ↔ ∀ m, v (f.coeff m) = 0 := coeffSup_eq_zero_iff v.map_zero
-
 end MonoidAlgebra
 
 section Poly
@@ -143,17 +136,6 @@ open MvPolynomial
 variable {R S Γ₀ σ τ : Type*} [CommRing R] [CommRing S] [LinearOrderedCommMonoidWithZero Γ₀]
   (v : Valuation R Γ₀)
 
-def gaussVal : Valuation (MvPolynomial σ R) Γ₀ := gaussValAlg v
-
-theorem gaussVal_le_iff {f : MvPolynomial σ R} {γ : Γ₀} :
-    gaussVal v f ≤ γ ↔ ∀ m, v (AddMonoidAlgebra.coeff f m) ≤ γ := gaussValAlg_le_iff v
-
-theorem le_gaussVal (f : MvPolynomial σ R) (m : σ →₀ ℕ) : v (AddMonoidAlgebra.coeff f m) ≤ gaussVal v f :=
-  (gaussVal_le_iff v).mp le_rfl m
-
-theorem gaussVal_eq_zero_iff_forall {f : MvPolynomial σ R} :
-    gaussVal v f = 0 ↔ ∀ m, v (AddMonoidAlgebra.coeff f m) = 0 := gaussValAlg_eq_zero_iff v
-
 @[simp] theorem gaussVal_monomial (m : σ →₀ ℕ) (a : R) :
     gaussVal v (monomial m a) = v a := gaussValAlg_single v m a
 
@@ -162,30 +144,6 @@ theorem gaussVal_eq_zero_iff_forall {f : MvPolynomial σ R} :
 
 @[simp] theorem gaussVal_X (i : σ) : gaussVal v (X i : MvPolynomial σ R) = 1 :=
   (gaussVal_monomial v _ 1).trans v.map_one
-
-theorem gaussVal_supp :
-    (gaussVal v).supp = v.supp.map (C : R →+* MvPolynomial σ R) := by
-  ext f
-  rw [Valuation.mem_supp_iff, gaussVal_eq_zero_iff_forall, mem_map_C_iff]
-  simp only [Valuation.mem_supp_iff]
-
-theorem gaussVal_supp_eq_bot_of_supp (hv : v.supp = ⊥) :
-    (gaussVal (σ := σ) v).supp = ⊥ := by
-  rw [gaussVal_supp, hv, Ideal.map_bot]
-
-theorem gaussVal_sum_C_mul_X (s : Finset σ) (a : σ → R) :
-    gaussVal v (∑ i ∈ s, C (a i) * X i : MvPolynomial σ R) = s.sup fun i => v (a i) := by
-  classical
-  refine le_antisymm (Valuation.map_sum_le _ fun i hi => ?_) (Finset.sup_le fun i hi => ?_)
-  · rw [map_mul, gaussVal_C, gaussVal_X, mul_one]
-    exact Finset.le_sup (f := fun i => v (a i)) hi
-  · refine le_trans (le_of_eq ?_) (le_gaussVal v _ (Finsupp.single i 1))
-    rw [coeff_sum, Finset.sum_eq_single i]
-    · simp
-    · intro j _ hj
-      rw [coeff_C_mul, coeff_X, if_neg, mul_zero]
-      exact fun h => hj (Finsupp.single_left_injective one_ne_zero h)
-    · exact fun h => absurd hi h
 
 end Poly
 
@@ -215,12 +173,6 @@ open MvPolynomial
 variable {R Γ σ τ : Type*} [CommRing R] [LinearOrderedAddCommMonoidWithTop Γ]
   (v : AddValuation R Γ)
 
-def gaussAddVal : AddValuation (MvPolynomial σ R) Γ :=
-  AddValuation.ofValuation (gaussVal (AddValuation.toValuation v))
-
-theorem gaussAddVal_mul (f g : MvPolynomial σ R) :
-    gaussAddVal v (f * g) = gaussAddVal v f + gaussAddVal v g := AddValuation.map_mul _ f g
-
 @[simp] theorem gaussAddVal_C (a : R) : gaussAddVal v (C a : MvPolynomial σ R) = v a :=
   gaussVal_C (AddValuation.toValuation v) a
 
@@ -235,40 +187,10 @@ open MvPolynomial
 
 variable {R σ τ : Type*} [CommRing R]
 
-def absValuation [Nontrivial R] (a : AbsoluteValue R ℝ) (ha : IsNonarchimedean a) :
-    Valuation R ℝ≥0 where
-  toFun x := NNReal.mk (a x) (a.nonneg x)
-  map_zero' := NNReal.eq a.map_zero
-  map_one' := NNReal.eq a.map_one
-  map_mul' x y := NNReal.eq (a.map_mul x y)
-  map_add_le_max' x y := by
-    refine NNReal.coe_le_coe.mp ?_
-    rw [NNReal.coe_max]
-    exact ha x y
-
 @[simp] theorem coe_absValuation [Nontrivial R] (a : AbsoluteValue R ℝ) (ha : IsNonarchimedean a)
     (x : R) : (absValuation a ha x : ℝ) = a x := rfl
 
-theorem absValuation_supp [Nontrivial R] (a : AbsoluteValue R ℝ) (ha : IsNonarchimedean a) :
-    (absValuation a ha).supp = ⊥ := by
-  ext x
-  rw [Valuation.mem_supp_iff, ← NNReal.coe_eq_zero, coe_absValuation, a.eq_zero, Ideal.mem_bot]
-
-def valuationAbs (v : Valuation R ℝ≥0) (hv : v.supp = ⊥) : AbsoluteValue R ℝ where
-  toFun x := v x
-  map_mul' x y := by simp
-  nonneg' x := NNReal.coe_nonneg _
-  eq_zero' x := by
-    rw [NNReal.coe_eq_zero, ← Valuation.mem_supp_iff, hv, Ideal.mem_bot]
-  add_le' x y := by
-    have h : (v (x + y) : ℝ) ≤ max (v x : ℝ) (v y) := by exact_mod_cast v.map_add x y
-    exact h.trans (max_le_add_of_nonneg (NNReal.coe_nonneg _) (NNReal.coe_nonneg _))
-
 variable [Nontrivial R] (a : AbsoluteValue R ℝ) (ha : IsNonarchimedean a)
-
-def gaussAbs : AbsoluteValue (MvPolynomial σ R) ℝ :=
-  valuationAbs (gaussVal (absValuation a ha))
-    (gaussVal_supp_eq_bot_of_supp _ (absValuation_supp a ha))
 
 variable {K : Type*} [Field K] (a : AbsoluteValue K ℝ) (ha : IsNonarchimedean a)
 
@@ -284,12 +206,7 @@ open MvPolynomial Module
 variable {R Γ₀ ι κ σ : Type*} [CommRing R] [LinearOrderedCommMonoidWithZero Γ₀]
   (v : Valuation R Γ₀) {M N : Type*} [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
 
-def basisVal (b : Basis ι R M) (x : M) : Γ₀ := coeffSup v (b.repr x)
-
 variable (b : Basis ι R M)
-
-theorem basisVal_le_iff {x : M} {γ : Γ₀} : basisVal v b x ≤ γ ↔ ∀ i, v (b.repr x i) ≤ γ :=
-  coeffSup_le_iff v.map_zero
 
 end Content
 
@@ -323,17 +240,6 @@ variable {R Γ ι κ σ : Type*} [CommRing R] [LinearOrderedAddCommMonoidWithTop
 section
 
 variable {M : Type*} [AddCommGroup M] [Module R M] (b : Basis ι R M)
-
-def basisAddVal (x : M) : Γ :=
-  OrderDual.ofDual (Multiplicative.toAdd (basisVal (AddValuation.toValuation v) b x))
-
-theorem le_basisAddVal_iff {x : M} {γ : Γ} :
-    γ ≤ basisAddVal v b x ↔ ∀ i, γ ≤ v (b.repr x i) :=
-  basisVal_le_iff (AddValuation.toValuation v) b (γ := Multiplicative.ofAdd (OrderDual.toDual γ))
-
-theorem basisAddVal_eq_inf_univ [Fintype ι] (x : M) :
-    basisAddVal v b x = Finset.univ.inf fun i => v (b.repr x i) :=
-  eq_of_forall_le_iff fun γ => by simp [le_basisAddVal_iff]
 
 end
 

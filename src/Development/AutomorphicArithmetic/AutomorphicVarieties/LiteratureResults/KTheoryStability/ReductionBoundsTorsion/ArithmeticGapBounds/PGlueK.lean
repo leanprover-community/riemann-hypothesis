@@ -33,10 +33,6 @@ theorem coe_qel (π : 𝓞 L) (hπ : π ≠ 0) :
   · have hi' : ¬ (i : ℕ) < 1 := by omega
     simp [hi, hi']
 
-theorem coe_toK_toGL (a : Matrix.SpecialLinearGroup (Fin N) (𝓞 L)) :
-    ((toK L N (Matrix.SpecialLinearGroup.toGL a) : GK L N) : Matrix (Fin N) (Fin N) L) =
-      ((iO L N a : Matrix.SpecialLinearGroup (Fin N) L) : Matrix (Fin N) (Fin N) L) := rfl
-
 theorem mem_Hq_iff (π : 𝓞 L) (hπ : π ≠ 0) (h : Gm L N) :
     h ∈ Hq L N π hπ ↔ ∃ δ : Gm L N, qel L N π hπ * toK L N h = toK L N δ * qel L N π hπ := by
   constructor

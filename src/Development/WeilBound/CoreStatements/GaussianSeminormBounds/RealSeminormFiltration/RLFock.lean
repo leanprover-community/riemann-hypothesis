@@ -371,8 +371,6 @@ variable [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] (μ : Meas
 
 def sq2 : ℂ →L[ℝ] ℂ →L[ℝ] ℂ := (ContinuousLinearMap.mul ℝ ℂ).comp (conjCLE : ℂ →L[ℝ] ℂ)
 
-theorem sq2_apply (a b : ℂ) : sq2 a b = star a * b := rfl
-
 theorem integrable_ip (f g : 𝓢(V, ℂ)) : Integrable (fun x => star (f x) * g x) μ :=
   (SchwartzMap.bilinLeftCLM sq2 g.hasTemperateGrowth f).integrable
 
@@ -870,7 +868,6 @@ theorem evI_add (a b : AF F) : evI F (a + b) = evI F a + evI F b := map_add (Inf
 
 theorem evI_mul (a b : AF F) : evI F (a * b) = evI F a * evI F b := map_mul (InfiniteAdeleRing.ringEquiv_mixedSpace F) _ _
 
-
 variable (F) in
 def evIh : AF F →+* mixedEmbedding.mixedSpace F :=
   (InfiniteAdeleRing.ringEquiv_mixedSpace F).toRingHom.comp (RingHom.fst _ _)
@@ -969,7 +966,6 @@ section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {α β κ : Type} [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β] [Fintype κ] {P Q R S : ℕ}
-
 
 variable (F κ) in
 def trB : (κ → mixedEmbedding.mixedSpace F) →ₗ[ℝ] ((κ → mixedEmbedding.mixedSpace F) →L[ℝ] ℝ) :=

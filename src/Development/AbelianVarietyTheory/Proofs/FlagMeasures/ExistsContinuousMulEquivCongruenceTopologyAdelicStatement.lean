@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsContinu
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ExistsReduction
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.TopfBasis
 public import Development.AbelianVarietyTheory.Definitions.Foundations.CdScaleTieIff
 
 @[expose] public section

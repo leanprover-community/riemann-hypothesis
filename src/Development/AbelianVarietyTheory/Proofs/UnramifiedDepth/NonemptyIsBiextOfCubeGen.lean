@@ -207,8 +207,6 @@ private theorem bx_val {X : Scheme.{0}} {L : LB X} {K : Type} [Fintype K] {φ : 
   refine (val_pull hJ _ _ _).trans ?_
   rw [← Over.comp_left, comp_lift, comp_lift, ha, hb, hc]
 
-private theorem bx_padd {T : Over S} (a b : T ⟶ A) : padd A a b = a * b := rfl
-
 private theorem bx_exist (hG : Out.GlobalFnsSt) (hA : IsAbelianScheme A) {P : LB (A ⊗ A).left} (hP : P.IsLB)
     (θ : LB.Gen (Theta (A ⊗ A) P)) (hθ : θ.IsGen)
     (a : (P.pull (lift (1 : A ⟶ A) (𝟙 A)).left).Gen) (ha : a.IsGen)

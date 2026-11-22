@@ -4,7 +4,6 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharacterInvariantAdelicFormEqMulEvalZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicSchwartzPointValuesAdmittedStatement
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsCompactIsOpenUnitsAt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtendByZeroMemSchA
@@ -12,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProductFunct
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicThetaDistributionSumProductFunction
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicSchwartzConjMem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTopologicalRingAdeleE
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzTensorLeftFactor
 
 @[expose] public section
 

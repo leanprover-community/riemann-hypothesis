@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.HeckeActMem
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Actions
 public import Formalism.SatakeDualWeyl.Statement
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Heckebasic
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
@@ -25,7 +24,6 @@ public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Ipindep
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelv
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelvsplit
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.LinSubstIsHomogeneous
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureConjugationInvariant
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureExists
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Spherical
@@ -38,7 +36,6 @@ public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Transport
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Upqcpt
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.DualWeylModuleStable
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Wlocal
-public import Formalism.SatakeDualWeyl.NablaRepApply
 public import Formalism.SatakeDualWeyl.DualWeylRepApply
 
 @[expose] public section
@@ -343,7 +340,6 @@ theorem InclInj : Formalism.UG.InclInj := by
   exact congrArg (fun u : GL n (TensorProduct F E R) => (u : Matrix n n (TensorProduct F E R)) i j) hgh
 theorem SigExists : Formalism.UG.SigExists := Formalism.UG.P.signature_exists
 theorem SphericalExists : Formalism.UG.SphericalExists := Formalism.UG.P.exists_spherical_function
-theorem SplitIso : Formalism.UG.SplitIso := Formalism.UG.P.split_unitary_group_iso
 theorem StabFinite : Formalism.UG.StabFinite := Formalism.UG.P.UG_stabilizer_finite
 theorem StabStd : Formalism.UG.StabStd := by
   intro A R _ _ _ n _ _ hι

@@ -18,9 +18,6 @@ def bl (i j : l → l ⊕ l) : Matrix (l ⊕ l) (l ⊕ l) ℝ →ₗ[ℝ] (Eu l 
   map_add' g h := by rw [← map_add (f := _)]; rfl
   map_smul' c g := by rw [RingHom.id_apply, ← map_smul]; rfl
 
-theorem bl_apply (i j : l → l ⊕ l) (g : Matrix (l ⊕ l) (l ⊕ l) ℝ) (x : Eu l) (a : l) :
-    bl i j g x a = ∑ b, g (i a) (j b) * x b := rfl
-
 theorem pPart_mulVec (g : Matrix (l ⊕ l) (l ⊕ l) ℝ) (w : l ⊕ l → ℝ) :
     pPart (g *ᵥ w) = bl Sum.inl Sum.inl g (pPart w) + bl Sum.inl Sum.inr g (qPart w) := by
   ext a

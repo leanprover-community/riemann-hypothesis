@@ -56,12 +56,6 @@ theorem rename_eq_symm_comp_C :
   rw [← joinPolyEquiv_comp_rename, ← RingHom.comp_assoc]
   ext x <;> simp
 
-set_option hygiene false in
-local notation "ψ" => joinPolyEquiv (R := R) (ι := ι)
-
-set_option hygiene false in
-local notation "ε" => rename (R := R) (liftVar (ι := ι) ptIdx)
-
 theorem joinPolyEquiv_rename (x : MRing ι R) : joinPolyEquiv (ε x) = Polynomial.C x :=
   RingHom.congr_fun joinPolyEquiv_comp_rename x
 
@@ -159,7 +153,6 @@ theorem multAt_map_rename (P Q : Ideal (MRing ι R)) [Q.IsPrime] (hPQ : P ≤ Q)
   exact congrArg ENat.toNat key
 
 end JoinDivCycle
-
 
 open JoinDivCycle in
 theorem JoinDivCycle.proof : JoinDivCycle.Statement := by

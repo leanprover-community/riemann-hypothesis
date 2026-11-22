@@ -34,9 +34,6 @@ def embPlace : (F →+* ℝ) ≃ {w : InfinitePlace F // IsReal w} where
       ext x; simp
     simp only [this, mk_embedding]
 
-theorem embPlace_symm_apply (w : {w : InfinitePlace F // IsReal w}) :
-    (embPlace.symm w : F →+* ℝ) = embedding_of_isReal w.2 := rfl
-
 instance isEmpty_complex : IsEmpty {w : InfinitePlace F // IsComplex w} :=
   ⟨fun w => not_isReal_iff_isComplex.2 w.2 (IsTotallyReal.isReal w.1)⟩
 

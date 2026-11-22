@@ -175,9 +175,6 @@ theorem comm_aYb_bTss (s : Fin (mdim k r l.succ)) (v : ℂ) :
   unfold bTss
   exact ((Commute.one_right _).smul_right v).sub_right this.symm
 
-local notation "U" => uC k r l.succ Y - 1
-local notation "mm" => ((mdim k r l.succ - 1 : ℕ) : ℂ)
-
 theorem bordered_sum_first_term :
     (∑ s : Fin (mdim k r l.succ), ∑ t : Fin (mdim k r l.succ),
       ((((-1 : ℤ) ^ ((s : ℕ) + (t : ℕ)) : ℤ) : ℂ) * xv k r z' l.succ t) •

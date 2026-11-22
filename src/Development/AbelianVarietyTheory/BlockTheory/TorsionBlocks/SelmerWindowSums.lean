@@ -17,7 +17,6 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 
 variable {l : ℕ} [Fact l.Prime]
 
-
 open TensorProduct in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.SelmerFiniteUnramified.finKs (K : _root_.Formalism.BasicNotions.Loc.FinExt l) (s : ℕ) :
@@ -81,7 +80,6 @@ variable [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
 
 end Generic
 
-
 open TensorProduct in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.SelmerFiniteUnramified.cyc_mem (P : _root_.Formalism.BasicNotions.LocPrime l) (K LL : _root_.Formalism.BasicNotions.Loc.FinExt l) (g : ↥(_root_.Formalism.BasicNotions.Loc.GK K)) :
@@ -102,31 +100,7 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.SelmerFiniteUnramified.cy
   unfold _root_.Formalism.BasicNotions.Loc.OL
   exact (integralClosure ℤ_[l] LL).algebraMap_mem _
 
-def negTwist (P : LocPrime l) (K LL : FinExt l) (e : ℕ) : ↥(GK K) →* (↥LL.1)ˣ :=
-  ((cycLL (P.PD K) ↥LL.1)⁻¹) ^ e
-
-theorem negTwist_mem (P : LocPrime l) (K LL : FinExt l) (e : ℕ) (g : ↥(GK K)) :
-    ((negTwist P K LL e g : (↥LL.1)ˣ) : ↥LL.1) ∈ OL LL := by
-  have : negTwist P K LL e g = (cycLL (P.PD K) ↥LL.1 g⁻¹) ^ e := by
-    simp [negTwist]
-  rw [this, Units.val_pow_eq_pow_val]
-  exact Subalgebra.pow_mem _ (cyc_mem P K LL _) e
-
-def tateLat (P : LocPrime l) (K LL : FinExt l) (e : ℕ) :
-    Lattice (O := ↥(OL LL)) (charRep (negTwist P K LL e)) :=
-  charLat Subtype.val_injective _ fun g => ⟨⟨_, negTwist_mem P K LL e g⟩, rfl⟩
-
-def wittFixedFrobeniusPow (K : FinExt l) : Set (Ainf l) :=
-  {a | (WittVector.frobenius : Ainf l →+* Ainf l)^[Module.finrank ℚ_[l] ↥(K0 K)] a = a}
-
 variable {P : LocPrime l} (AI : LocAinf l P)
-
-def piS (s : ℕ) : Ainf l := WittVector.teichmuller l (AI.εroot s) - 1
-
-def ringAs (K : FinExt l) (s : ℕ) : Subring (Ainf l) :=
-  ⨅ m : ℕ, ((Subring.closure (insert (piS AI s) (wittFixedFrobeniusPow K))).map
-      (Ideal.Quotient.mk (Ideal.span {piS AI s ^ m}))).comap
-    (Ideal.Quotient.mk (Ideal.span {piS AI s ^ m}))
 
 abbrev Lat (K LL : FinExt l) : Type 1 := LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)
 

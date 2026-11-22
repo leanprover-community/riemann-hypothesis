@@ -41,16 +41,12 @@ section dx
 def mulL (X : Mat k r) : Mat k r →L[ℝ] Mat k r :=
   LinearMap.toContinuousLinearMap (LinearMap.mulLeft ℝ X)
 
-theorem mulL_apply (X x : Mat k r) : mulL X x = X * x := rfl
-
 def mulLL : Mat k r →L[ℝ] (Mat k r →L[ℝ] Mat k r) :=
   LinearMap.toContinuousLinearMap
     { toFun := mulL
       map_add' := fun a b => by ext1 x; simp [mulL_apply, Matrix.add_mul]
       map_smul' := fun c a => by
         ext1 x; simp [mulL_apply] }
-
-theorem mulLL_apply (X x : Mat k r) : mulLL X x = X * x := rfl
 
 def DX (X : Mat k r) (Φ : Mat k r → ℂ) : Mat k r → ℂ := fun x => fderiv ℝ Φ x (-(X * x))
 

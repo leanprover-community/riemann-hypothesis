@@ -42,8 +42,6 @@ theorem det_one_add_sub_mem {R : Type*} [CommRing R] {n : Type*} [Fintype n] [De
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
   [Fact (IsFixF K F)] {m : ℕ}
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-
 private theorem mem_pow_vF_not_mem_pow_vF_succ {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {x : 𝓞 F} (hx : x ≠ 0) :
     x ∈ 𝔭 ^ vF 𝔭 x ∧ x ∉ 𝔭 ^ (vF 𝔭 x + 1) := by
   have hbdd : BddAbove {e : ℕ | x ∈ 𝔭 ^ e} := by

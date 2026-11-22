@@ -102,27 +102,8 @@ def FreeA (T : LocLat G Qp LL O) (S : Submodule (LetA O n) (W.DD T)) : Prop :=
   ∃ (r : ℕ) (b : Fin r → W.DD T), (∀ j, b j ∈ S) ∧
     ∀ x ∈ S, ∃! a : Fin r → LetA O n, x = ∑ j, a j • b j
 
-def IsTensLat (T T' T'' : LocLat G Qp LL O) (b : T.V →ₗ[LL] T'.V →ₗ[LL] T''.V) : Prop :=
-  Function.Bijective (TensorProduct.lift b) ∧
-    (∀ g x y, T''.ρ g (b x y) = b (T.ρ g x) (T'.ρ g y)) ∧
-    T''.L.T = Submodule.span O {z | ∃ x ∈ T.L.T, ∃ y ∈ T'.L.T, z = b x y}
-
 def wachFree (T : LocLat G Qp LL O) : Prop :=
   W.N T = ⨆ i, W.Nl T i ∧ ∀ i, (FreeLetter W) T (W.Nl T i) i
-
-def wachDual (T T' : LocLat G Qp LL O) (P : T.V →ₗ[LL] T'.V →ₗ[LL] LL) : Prop :=
-  IsDualLat T.L T'.L P →
-    ∃ β : W.DD T →ₗ[W.EE] W.DD T' →ₗ[W.EE] W.EE, Function.Bijective β.flip ∧
-      (∀ x y, β (W.φD T x) (W.φD T' y) = W.φE (β x y)) ∧
-      (∀ g x y, β (W.γD T g x) (W.γD T' g y) = W.γE g (β x y)) ∧
-      ∀ y, y ∈ W.N T' ↔ ∀ x ∈ W.N T, β x y ∈ Set.range (algebraMap (LetA O n) W.EE)
-
-def wachTensor (T T' T'' : LocLat G Qp LL O) (b : T.V →ₗ[LL] T'.V →ₗ[LL] T''.V) : Prop :=
-  IsTensLat T T' T'' b →
-    ∃ β : W.DD T →ₗ[W.EE] W.DD T' →ₗ[W.EE] W.DD T'', Function.Bijective (TensorProduct.lift β) ∧
-      (∀ x y, β (W.φD T x) (W.φD T' y) = W.φD T'' (β x y)) ∧
-      (∀ g x y, β (W.γD T g x) (W.γD T' g y) = W.γD T'' g (β x y)) ∧
-      W.N T'' = Submodule.span (LetA O n) {w | ∃ x ∈ W.N T, ∃ y ∈ W.N T', w = β x y}
 
 def p2 (T : LocLat G Qp LL O) : Prop :=
   (∀ g, ∀ x ∈ W.N T, W.γD T g x ∈ W.N T) ∧
@@ -262,37 +243,6 @@ def SSEig (T : LocLat G Qp LL O) (S₁ S₂ : Submodule (LetA O n) (W.DD T)) (C 
 
 def DInv (T : LocLat G Qp LL O) (x : W.DD T) : Prop := ∀ δ ∈ W.DelF, W.γD T δ x = x
 
-def IsExp (T : LocLat G Qp LL O) (i : ZMod n) (ζ : LL) (x : W.DD T) (f : ℤ → T.V ⊗[Qp] BdR) : Prop :=
-  (∃ m : ℤ, ∀ k < m, f k = 0) ∧ ∃ (a : LetA O n) (h : a • x ∈ W.N T), W.lev i ζ a ≠ 0 ∧
-    ∀ k : ℤ, W.levN T i ζ ⟨a • x, h⟩ k = ∑ᶠ j : ℕ, PowerSeries.coeff j (W.lev i ζ a) • f (k - j)
-
-def consT (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop) (T : LocLat G Qp LL O) : Prop :=
-  (∀ i : ℕ, ∀ x ∈ W.N T,
-    W.γ T (W.X ^ i • x) - ((uU W : O) ^ i) • (W.X ^ i • x) ∈ aN W T (W.X ^ (i + 1))) ∧
-  (∀ y : ℕ, 1 ≤ y → SSEig W T (invN W T (W.Q ^ y)) (W.N T)
-    {c | ∃ a ∈ Jumps (PD := PD) T, ∃ j : ℕ, 1 ≤ j ∧ j ≤ y ∧ c = (uU W) ^ (-(a + j))}) ∧
-  SSEig W T (W.N T) (aN W T W.Q) {c | ∃ a ∈ Jumps (PD := PD) T, c = (uU W) ^ (-a)} ∧
-  (W.s = 1 → ∀ (π' : LetA O n) (E : ZMod n → Polynomial O),
-    wachRingRelations W (finrank K₀ K) ((PD.p - 1) / finrank K₀ K) π' E →
-    ∀ (y : ℕ) (x : W.DD T), DInv W T x → Eat E π' ^ y • x ∈ W.N T →
-      ∃ x', DInv W T x' ∧ Eat E π' ^ y • x' ∈ W.N T ∧ W.γ T x - x - π' • x' ∈ W.N T) ∧
-  (W.s = 1 → ∀ (π' : LetA O n) (E : ZMod n → Polynomial O),
-    wachRingRelations W (finrank K₀ K) ((PD.p - 1) / finrank K₀ K) π' E →
-    ∀ (i : ZMod n) (ζ : LL) (τ : K →ₐ[Qp] LL), Pt i ζ τ →
-      PowerSeries.constantCoeff (W.lev i ζ π') ≠ 0 ∧
-      (E i).eval₂ (algebraMap O LL) (PowerSeries.constantCoeff (W.lev i ζ π')) = 0 ∧
-      (∀ m m' : ℤ, m ≠ m' → (uU W) ^ m ≠ (uU W) ^ m') ∧
-      ∀ (x x' : W.DD T) (f f' : ℤ → T.V ⊗[Qp] BdR), π' • x' = W.γ T x - x →
-        IsExp W T i ζ x f → IsExp W T i ζ x' f' →
-        (∀ d₀ : T.V ⊗[Qp] BdR, (∀ k, f k ∈ Submodule.span LL {d₀}) →
-          ∀ k, f' k ∈ Submodule.span LL {d₀}) ∧
-        ∀ m : ℤ, (∀ k < m, f k = 0) → (∀ k < m, f' k = 0) ∧
-          PowerSeries.constantCoeff (W.lev i ζ π') • f' m =
-            (algebraMap O LL (((uU W) ^ m : Oˣ) : O) - 1) • f m) ∧
-  (W.s = 1 → finrank K₀ K = 1 →
-    let c : ℤ → LL := fun x => (algebraMap O LL (((uU W) ^ (-x) : Oˣ) : O) - 1) / (-(PD.p : LL))
-    c 0 = 0 ∧ ∀ x y : ℤ, v (c x - c y) = v (((x - y : ℤ) : LL)))
-
 def p2a (T : LocLat G Qp LL O) : Prop :=
   Function.Surjective (W.cl T) ∧
     ∀ w : ↥(W.divisibleCocycles T), W.cl T w = 0 ↔
@@ -335,13 +285,6 @@ def wachLengthLatticeMap {T₁ T₂ : LocLat G Qp LL O} (π : LatHom T₁.L T₂
 
 variable (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop)
 
-def WachFreeDualTensor : Prop :=
-  (∀ T : LocLat G Qp LL O, IsCrys PD T.ρ → wachFree W T) ∧
-  (∀ (T T' : LocLat G Qp LL O) (P : T.V →ₗ[LL] T'.V →ₗ[LL] LL), IsCrys PD T.ρ → IsCrys PD T'.ρ →
-    wachDual W T T' P) ∧
-  (∀ (T T' T'' : LocLat G Qp LL O) (b : T.V →ₗ[LL] T'.V →ₗ[LL] T''.V),
-    IsCrys PD T.ρ → IsCrys PD T'.ρ → IsCrys PD T''.ρ → wachTensor W T T' T'' b)
-
 def P2W : Prop := ∀ T : LocLat G Qp LL O, IsCrys PD T.ρ → p2 W T
 
 def P3W : Prop := ∀ T : LocLat G Qp LL O, IsCrys PD T.ρ → p3 W T
@@ -363,8 +306,6 @@ def WachMaxJumpBound : Prop :=
   ∀ (T : LocLat G Qp LL O) (M h : ZMod n → ℕ), IsCrys PD T.ρ → JumpsLet W T M h → p8 W T (mx M)
 
 def P9W : Prop := ∀ T : LocLat G Qp LL O, IsCrys PD T.ρ → p9 W T
-
-def ConsW : Prop := ∀ T : LocLat G Qp LL O, IsCrys PD T.ρ → consT W Pt T
 
 def HerrComplexFirstProperty : Prop := ∀ T : LocLat G Qp LL O, IsCrys PD T.ρ → p2a W T ∧ p2aK W T
 
@@ -442,11 +383,6 @@ def ptK (LT : LocTheory) (HW : HWOf LT) {l : ℕ} [Fact l.Prime] {K : FinExt l} 
   ∃ τs : ↥(Ks K s) →ₐ[ℚ_[l]] ↥LL.1, (HW l).IsPt h i ζ τs ∧
     ∀ (x : ↥K.1) (y : ↥(Ks K s)), (y : Om l) = (x : Om l) → τ x = τs y
 
-def p1L (LT : LocTheory) (HW : HWOf LT) (AI : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l))
-    (_F : FonOf LT AI HW) : Prop :=
-  ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
-    WachFreeDualTensor ((HW l).W K s LL h)
-
 def p2L (LT : LocTheory) (HW : HWOf LT) (AI : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l))
     (_F : FonOf LT AI HW) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
@@ -486,11 +422,6 @@ def p9L (LT : LocTheory) (HW : HWOf LT) (AI : ∀ (l : ℕ) [Fact l.Prime], LocA
     (_F : FonOf LT AI HW) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     P9W ((HW l).W K s LL h)
-
-def consL (LT : LocTheory) (HW : HWOf LT) (AI : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l))
-    (_F : FonOf LT AI HW) : Prop :=
-  ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
-    ConsW ((HW l).W K s LL h) (ptK LT HW h)
 
 def p2aL (LT : LocTheory) (HW : HWOf LT) (AI : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l))
     (_F : FonOf LT AI HW) : Prop :=
@@ -564,8 +495,6 @@ def Pr2b (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.lo
 def Pr2c (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := p2cL D.loc HW D.locA F
 
 def Pr2d (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := p2dL D.loc HW D.locA F
-
-def cons (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := consL D.loc HW D.locA F
 
 def prop2 (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := prop2L D.loc HW D.locA F
 

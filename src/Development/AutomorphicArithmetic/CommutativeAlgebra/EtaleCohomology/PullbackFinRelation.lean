@@ -2,7 +2,7 @@ module
 
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.GalAwayCongr
 public import GroundTheory.PAdicHodge.FontaineLemmaInvariants
-public import GroundTheory.PAdicHodge.UnramifiedFrob
+public import Mathlib
 public import GroundTheory.PAdicHodge.BCrisEigenWitt
 
 @[expose] public section
@@ -155,9 +155,6 @@ private theorem wexp {k : Type} [Field k] [CharP k l] [PerfectRing k l] (τ : Wi
   exact absurd h1 (not_le.2 hn)
 
 end
-
-local notation "hE" => (untilt_epsilon (p := l))
-local notation "hZ" => (untilt_frobeniusEquiv_symm_epsilon_ne_one (p := l))
 
 variable (l) in
 private def fB : Acris l →+* ACris.BCris (untilt_epsilon (p := l)) :=

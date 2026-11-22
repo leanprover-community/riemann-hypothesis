@@ -27,9 +27,6 @@ def rowZ (γ : SL(2, ℤ)) : ℤ × ℤ ≃ ℤ × ℤ where
     · simp only; linear_combination x.1 * h
     · simp only; linear_combination x.2 * h
 
-theorem rowZ_apply (γ : SL(2, ℤ)) (x : ℤ × ℤ) :
-    rowZ γ x = (x.1 * γ 0 0 + x.2 * γ 1 0, x.1 * γ 0 1 + x.2 * γ 1 1) := rfl
-
 theorem rowZ_add_smul (γ : SL(2, ℤ)) (x v : ℤ × ℤ) (r : ℤ) :
     rowZ γ (x + r • v) = rowZ γ x + r • rowZ γ v := by
   simp only [rowZ_apply, Prod.fst_add, Prod.snd_add, Prod.smul_fst, Prod.smul_snd, smul_eq_mul,

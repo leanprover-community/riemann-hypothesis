@@ -27,9 +27,6 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E]
 def g1 (x : E) (hx : x ≠ 0) : GL (Fin 1) E :=
   Matrix.GeneralLinearGroup.mkOfDetNeZero (Matrix.of fun _ _ => x) (by rw [Matrix.det_fin_one]; exact hx)
 
-theorem scalar_matrix_apply (x : E) (hx : x ≠ 0) (i j : Fin 1) :
-    ((g1 x hx : GL (Fin 1) E) : Matrix (Fin 1) (Fin 1) E) i j = x := rfl
-
 theorem tuple_action_scalar_eq_mul (R : Type) [CommRing R] [Algebra F R] (x : E) (hx : x ≠ 0) :
     actTup R (bc (inclR R) (g1 x hx)) =
       fun (X : Fin 1 → Fin 1 → R ⊗[F] E) a i => inclR R x * X a i := by

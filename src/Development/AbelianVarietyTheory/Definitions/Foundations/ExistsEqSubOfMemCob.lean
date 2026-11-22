@@ -65,22 +65,11 @@ theorem norm_lamv_le_one {m : ℕ} {s : G ℚ Ω} (hs : cycMod ℚ Ω l m s = 1)
   rw [ha, IsScalarTower.algebraMap_apply ℤ_[l] ℚ_[l] (Qbar l), norm_algebraMap']
   exact a.2
 
-def cob (c : Coef l) (A : ValuationSubring Ω) (j : Ω →+* Qbar l) : Submodule c.O (G ℚ Ω → Qbar l) :=
-  Submodule.span c.O {f | ∃ w ∈ A, f = fun s : G ℚ Ω => j (s w) - j w}
-
 section Cob
 
 variable {c : Coef l} {A : ValuationSubring Ω} {j : Ω →+* Qbar l}
 
-theorem sub_mem_cob {w : Ω} (hw : w ∈ A) : (fun s : G ℚ Ω => j (s w) - j w) ∈ cob c A j :=
-  Submodule.subset_span ⟨w, hw, rfl⟩
-
 end Cob
-
-def HTCoIn (c : Coef l) (A : ValuationSubring Ω) (j : Ω →+* Qbar l) (Z : ∀ r : ℕ, G ℚ Ω → (ZMod (l ^ r))ˣ → Qbar l)
-    (m c₀ : ℕ) (y : (ZMod (l ^ m))ˣ) (h : Qbar l) : Prop :=
-  ReciprocityTheory.Neutral.Cmp.Compat l A j ∧ ∃ f ∈ cob c A j, ∀ s ∈ Ine (F := ℚ) A, cycMod ℚ Ω l m s = 1 →
-    Cg (m - c₀) (Z m s y) (h * lamv l m s + f s)
 
 section Co
 
@@ -90,10 +79,6 @@ variable {c : Coef l} {A : ValuationSubring Ω} {j : Ω →+* Qbar l} {Z Z' : �
 namespace HTCoIn
 
 end HTCoIn
-
-theorem htCoIn_lamv (hj : ReciprocityTheory.Neutral.Cmp.Compat l A j) {f : G ℚ Ω → Qbar l} (hf : f ∈ cob c A j) (m c₀ : ℕ)
-    (y : (ZMod (l ^ m))ˣ) (h : Qbar l) : HTCoIn c A j (fun r s _ => h * lamv l r s + f s) m c₀ y h :=
-  ⟨hj, f, hf, fun _ _ _ => by simp [Cg]⟩
 
 end Co
 

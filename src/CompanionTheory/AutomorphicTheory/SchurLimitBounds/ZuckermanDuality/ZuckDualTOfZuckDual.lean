@@ -47,16 +47,6 @@ def ZuckDualT (t : ∀ n : ℕ, (Fin n → Bool) → ℝ) : Prop :=
     IsHCParam μ → IsDS ε μ σ → ∀ h : ℝ, PI.ZuckTensor.GapAtLeast ε μ h → t n ε + 1 < h →
       Nonempty (PI.ZuckTensor.TensorDSd n ε μ H σ)
 
-theorem zuckT_of_zuck (h : PI.ZuckTensor.Zuck) : ZuckT fun _ _ => 0 := by
-  intro n ε μ H _ _ _ σ hμ hσ g hg hlt
-  obtain ⟨X, -⟩ := h n ε μ H σ hμ hσ ⟨g, by simpa using hlt, hg⟩
-  exact ⟨X⟩
-
-theorem zuckDualT_of_zuckDual (h : PI.ZuckTensor.ZuckDual) : ZuckDualT fun _ _ => 0 := by
-  intro n ε μ H _ _ _ σ hμ hσ g hg hlt
-  obtain ⟨X, -⟩ := h n ε μ H σ hμ hσ ⟨g, by simpa using hlt, hg⟩
-  exact ⟨X⟩
-
 def KDecay (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (A h : ℝ) : Prop :=
   ∀ (μ : Fin (2 * r + k + 1) → ℝ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (σ : B.Mat k r → (H →L[ℂ] H)), IsHCParam μ → IsDSHpk k r ε μ σ → PI.ZuckTensor.GapAtLeast ε μ h →

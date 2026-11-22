@@ -139,8 +139,6 @@ theorem eventually_coe_mem_localIdeal {I : FractionalIdeal (𝓞 K)⁰ K} (hI : 
 
 namespace IdeleGroup
 
-local notation "𝓘" => (FractionalIdeal (𝓞 K)⁰ K)ˣ
-
 theorem valued_eq_exp_neg_ord (v : HeightOneSpectrum (𝓞 K)) (s : IdeleGroup K) :
     Valued.v ((s : 𝔸[K]).2 v) = exp (-ord v s) := by
   rw [ord, neg_neg, exp_log (valued_ne_zero v s)]

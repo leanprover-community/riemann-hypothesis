@@ -8,7 +8,7 @@ public import Development.AutomorphicArithmetic.CharacterBoxes.Imports
 public import Development.AutomorphicArithmetic.CharacterBoxes.PairHyp
 public import Development.AutomorphicArithmetic.MeanSquareBounds.pairEx
 public import Development.AutomorphicArithmetic.CoprimeRanks.AdmChi
-public import Development.AutomorphicArithmetic.CoprimeRanks.FieldAny
+public import Mathlib
 
 @[expose] public section
 

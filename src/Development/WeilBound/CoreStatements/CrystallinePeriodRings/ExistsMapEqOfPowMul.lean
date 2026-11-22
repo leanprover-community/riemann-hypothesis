@@ -122,8 +122,6 @@ end Abstract
 
 variable (l : ℕ) [Fact l.Prime]
 
-local notation "Acris" => ACris.ACris ℂ_[l] l
-
 def cD : Acris →+* Per6.BdR l := (algebraMap (Per6.BdRp l) (Per6.BdR l)).comp (ACris.iota ℂ_[l] l)
 
 theorem cD_injective : Function.Injective (cD l) :=
@@ -165,7 +163,6 @@ theorem cB_isFrac : IsFrac (Per6.cB l) (l : Acris) (Per6.tA l) := loc2_isFrac
 
 theorem isUnit_cB_l : IsUnit (Per6.cB l (l : Acris)) := (cB_isFrac l).1
 
-
 variable {l} in
 theorem bcris_surj (x : Per6.Bcris l) : ∃ (m n : ℕ) (y : Acris),
     Per6.cB l (l : Acris) ^ m * Per6.cB l (Per6.tA l) ^ n * x = Per6.cB l y :=
@@ -205,7 +202,6 @@ theorem kur_eq : MaximalUnramifiedExtension l = unramifiedClosure l := by
   rw [Nat.coprime_comm, (Fact.out : l.Prime).coprime_iff_not_dvd]
 
 def oD : Om l →+* Per6.BdR l := algClToBdRField l
-
 
 variable {l} in
 theorem exists_iota_eq (y : ACris.BCrisPlus ℂ_[l] l) : ∃ (k : ℕ) (a : Acris),
@@ -268,7 +264,6 @@ theorem tiltInv_tiltMap (x : OCb l) : tiltInv l (Per6.tiltMap l x) = x :=
 def tiltEquiv : OCb l ≃+* PreTilt ↥(normInteger ℂ_[l]) l :=
   RingEquiv.ofRingHom (Per6.tiltMap l) (tiltInv l) (RingHom.ext (tiltMap_tiltInv l))
     (RingHom.ext (tiltInv_tiltMap l))
-
 
 variable {l} in
 def galT (g : GQ l) : OCb l →+* OCb l :=

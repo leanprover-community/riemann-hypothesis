@@ -21,7 +21,6 @@ set_option linter.unusedSectionVars false
 
 variable {K : Type*} [Field K] [NumberField K] {ι : Type*} [Fintype ι]
 
-
 variable (K) in
 abbrev BIdx : Type _ := Free.ChooseBasisIndex ℤ (𝓞 K)
 
@@ -78,7 +77,6 @@ theorem infiniteTrace_algebraMap_mul_ofCoord (q : K) (t : BIdx K → ℝ) :
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [mul_smul_comm, map_smul, latticeBasis_apply, ← map_mul,
     GroundTheory.Global.mixedTrace_mixedEmbedding, smul_eq_mul]
-
 
 variable (K) in
 def traceDualBasis : Basis (BIdx K) ℚ K :=
@@ -245,11 +243,9 @@ theorem IsIntegralPeriodic.integrand_finite {f : (ι → 𝔸[K]) → ℂ} (hf :
     exact adelicChar_pair_finiteAdeleInr hξ fun i => neg_mem (hz i)
   rw [hf.finite x z hz, pair_add, neg_add, AddChar.map_add_eq_mul, h1, mul_one]
 
-
 variable (K ι) in
 def infDomain : Set (ι → InfiniteAdeleRing K) :=
   Set.univ.pi fun _ => GroundTheory.Global.fundamentalSetInfinite K
-
 
 variable (K ι) in
 def finDomain : Set (ι → FiniteAdeleRing (𝓞 K) K) :=
@@ -332,15 +328,11 @@ def coordEquiv : (ι × BIdx K → ℝ) ≃+ (ι → InfiniteAdeleRing K) where
     funext i
     exact ofCoord_add (fun j => s (i, j)) (fun j => t (i, j))
 
-theorem coordEquiv_apply (t : ι × BIdx K → ℝ) (i : ι) :
-    coordEquiv t i = ofCoord fun j => t (i, j) := rfl
-
 theorem continuous_coordEquiv : Continuous (coordEquiv (K := K) (ι := ι)) :=
   continuous_pi fun i => continuous_ofCoord.comp (continuous_pi fun j => continuous_apply (i, j))
 
 theorem continuous_coordEquiv_symm : Continuous (coordEquiv (K := K) (ι := ι)).symm :=
   continuous_pi fun p => (continuous_apply p.2).comp (continuous_coordOf.comp (continuous_apply p.1))
-
 
 variable (K ι) in
 def cube : Set (ι × BIdx K → ℝ) := {t | ∀ p, t p ∈ Ico (0 : ℝ) 1}

@@ -15,13 +15,6 @@ open scoped ENNReal
 
 noncomputable section
 
-def AreaLinear.Statement : Prop :=
-  ∀ (k m : ℕ) (L : EuclideanSpace ℝ (Fin k) →ₗ[ℝ] EuclideanSpace ℝ (Fin m)),
-    Function.Injective L → ∀ A : Set (EuclideanSpace ℝ (Fin k)),
-      μH[(k : ℝ)] (L '' A) =
-        ENNReal.ofReal (√(LinearMap.det (LinearMap.adjoint L ∘ₗ L))) * μH[(k : ℝ)] A
-
-
 def realGraphPt {k m : ℕ} (F : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin m))
     (x : EuclideanSpace ℝ (Fin k)) : EuclideanSpace ℝ (Fin k ⊕ Fin m) :=
   WithLp.toLp 2 (Sum.elim (fun i => x i) (fun i => F x i))

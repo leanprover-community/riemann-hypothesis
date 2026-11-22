@@ -4,7 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.InhabitedCha
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChartNormAlgClosed
 public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SpecFirstDetFormNeZero
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.GaussNormEqCoeffGaussNorm
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChartGram
@@ -28,8 +27,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PVertPointNagat
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Imports
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveSectionQuotLocal
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveVertPointLength
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivPushA
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.KerEqBotOfCoord
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun

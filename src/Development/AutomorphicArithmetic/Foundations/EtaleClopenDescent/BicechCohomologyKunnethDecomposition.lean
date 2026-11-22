@@ -244,11 +244,9 @@ theorem mem_coch {F : Finset ι → Submodule k E} {a : Finset ι → E} : a ∈
     · simpa using h0
     · simpa [hs] using h s
 
-
 variable (k ι E) in
 def prL (c : ℕ) : (Finset ι → E) →ₗ[k] (Finset ι → E) :=
   LinearMap.pi fun s => if s.card = c then LinearMap.proj s else 0
-
 
 variable (k ι E) in
 def sgL : (Finset ι → E) →ₗ[k] (Finset ι → E) :=
@@ -370,8 +368,6 @@ theorem phi_Dt [Fintype ι] [Fintype κ] (μ : E →ₗ[k] E' →ₗ[k] E'') (A 
 def rL (F : Finset ι → Submodule k E) (I : Finset ι) : coch F →ₗ[k] F I :=
   LinearMap.codRestrict (F I) (LinearMap.proj I ∘ₗ (coch F).subtype) fun a => (mem_coch.1 a.2).2 I
 
-theorem rL_val (F : Finset ι → Submodule k E) (I : Finset ι) (a : coch F) : (rL F I a : E) = a.1 I := rfl
-
 theorem single_mem_coch (F : Finset ι → Submodule k E) {I : Finset ι} (h : I.Nonempty) (x : F I) :
     (LinearMap.single k (fun _ : Finset ι => E) I ∘ₗ (F I).subtype) x ∈ coch F := by
   refine mem_coch.2 ⟨?_, fun s => ?_⟩
@@ -382,7 +378,6 @@ theorem single_mem_coch (F : Finset ι → Submodule k E) {I : Finset ι} (h : I
     · subst h'
       exact x.2
     · exact zero_mem _
-
 
 open Classical in
 def iL (F : Finset ι → Submodule k E) (I : Finset ι) : F I →ₗ[k] coch F :=

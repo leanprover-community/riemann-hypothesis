@@ -58,12 +58,6 @@ noncomputable def shear {m : ℕ} (b d : Fin m → Fin n → E) (hdb : ∀ i j, 
   left_inv v := by simp [hf_add_l, hf_sum_l, hf_smul_l, hdb]
   right_inv v := by simp [hf_sub_l, hf_sum_l, hf_smul_l, hdb]
 
-theorem shear_apply {m : ℕ} (b d : Fin m → Fin n → E) (hdb : ∀ i j, hf L Hm (d i) (b j) = 0)
-    (v : Fin n → E) : shear L Hm b d hdb v = v + ∑ j, hf L Hm v (b j) • d j := rfl
-
-theorem shear_symm_apply {m : ℕ} (b d : Fin m → Fin n → E) (hdb : ∀ i j, hf L Hm (d i) (b j) = 0)
-    (v : Fin n → E) : (shear L Hm b d hdb).symm v = v - ∑ j, hf L Hm v (b j) • d j := rfl
-
 theorem shear_mem_isomG {Hm : Matrix (Fin n) (Fin n) E} (h : IsHerm L Hm) {m : ℕ}
     (b c d : Fin m → Fin n → E) (hdb : ∀ i j, hf L Hm (d i) (b j) = 0)
     (hdd : ∀ i j, hf L Hm (d i) (d j) = 0)

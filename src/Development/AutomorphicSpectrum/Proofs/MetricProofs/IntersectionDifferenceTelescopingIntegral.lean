@@ -19,7 +19,6 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.Tele
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-
 open Classical in
 def ratioWt (A B : HermLine ι) (z : (Σ k, ι k) → ℂ) : ℝ :=
   if ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0 then Real.log (A.h z) - Real.log (B.h z) else 0
@@ -52,9 +51,6 @@ theorem ratioWt_smooth {A B : HermLine ι} (hA : IsSmoothHerm A) (hB : IsSmoothH
 
 def wtLine {A B : HermLine ι} (hab : A.a = B.a) : HermLine ι :=
   HermLine.ofWeight (ratioWt A B) fun c z hc => ratioWt_smul hab c z hc
-
-theorem wtLine_h {A B : HermLine ι} (hab : A.a = B.a) (z : (Σ k, ι k) → ℂ) :
-    (wtLine hab).h z = Real.exp (-ratioWt A B z) := rfl
 
 theorem wtLine_smooth {A B : HermLine ι} (hab : A.a = B.a) (hA : IsSmoothHerm A) (hB : IsSmoothHerm B) :
     IsSmoothHerm (wtLine hab) :=
@@ -140,7 +136,6 @@ theorem toEnd_succAbove {D : ℕ} (r : Fin (D + 1)) (i : Fin D) : toEnd r (r.suc
 end GlobalTheory.CompanionTheory.Ar.PB.Tele
 
 namespace GlobalTheory.CompanionTheory.Ar.PB
-
 
 open Tele in
 theorem num_sub_num : Inputs → ∀ (II : IntersectionSystem), IsFullIntersectionSystem II → ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (D : ℕ) (σ : Type) [Fintype σ] (S : AnSys D σ) (P : Ideal (MRing ι)) (Re : Realis S P) (t t' : ℝ) (w : Fin (D + 1) → σ), 0 < t → t ≤ S.t₀ → 0 < t' → t' ≤ S.t₀ → Re.num II t w - Re.num II t' w = ∑ r : Fin (D + 1), mInt S.A (fun i => S.potT (w (r.succAbove i)) (if r.succAbove i < r then t else t')) (fun x => S.phT (w r) t x - S.phT (w r) t' x) := by

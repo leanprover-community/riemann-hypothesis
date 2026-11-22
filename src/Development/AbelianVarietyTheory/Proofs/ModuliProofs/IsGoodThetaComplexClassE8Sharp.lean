@@ -95,8 +95,6 @@ def omegaBil (h : ℕ) : LinearMap.BilinForm ℤ (Fin h ⊕ Fin h → ℤ) :=
       simp only [omegaStd, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
       exact Finset.sum_congr rfl fun i _ => by ring)
 
-theorem omegaBil_apply {h : ℕ} (x y : Fin h ⊕ Fin h → ℤ) : omegaBil h x y = omegaStd x y := rfl
-
 theorem exists_tensor_form (h : ℕ) (G : Matrix (Fin 8) (Fin 8) ℤ) :
     ∃ EF : LinearMap.BilinForm ℤ (Fin 8 → (Fin h ⊕ Fin h → ℤ)),
       ∀ x y, EF x y = ∑ u, ∑ v, G u v * omegaStd (x u) (y v) := by

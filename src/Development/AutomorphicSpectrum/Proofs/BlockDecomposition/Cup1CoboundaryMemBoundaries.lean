@@ -93,8 +93,6 @@ theorem val_dl {n : ℕ} (i : Fin (n + 1 + 1)) (t : Fin (n + 1)) :
   · exact absurd h₂ h₁
   · rfl
 
-theorem cst_apply {n : ℕ} (m : ℕ) (i : Fin (n + 1)) (t : Fin (m + 1)) : cst m i t = i := rfl
-
 theorem coboundary_cup1 (n : ℕ) {x : Cn F 1} (hx : dn F 1 x = 0) (z : Cn F n) :
     dn F (n + 1) (cup1 F n x z) = -cup1 F (n + 1) x (dn F n z) := by
   let E : Fin 3 →o Fin (n + 3) := (Fin.castLEOrderEmb (by omega)).toOrderHom

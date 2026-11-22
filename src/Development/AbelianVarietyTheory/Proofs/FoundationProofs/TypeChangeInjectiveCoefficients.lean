@@ -443,9 +443,6 @@ theorem kog_tors {k : ℕ} (x : KOG O k) : ∃ d : O, d ≠ 0 ∧ d • x = 0 :=
   rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero]
   exact ⟨u, funext hu⟩
 
-theorem pushKO_mk (g : O →+* O') (hg : Function.Injective g) {k : ℕ} (v : Fin k → FractionRing O) :
-    pushKO g hg k (Submodule.Quotient.mk v) = Submodule.Quotient.mk fun j => fracMap g hg (v j) := rfl
-
 theorem pushKO_comp' {O₀ : Type} [CommRing O₀] [IsDomain O₀] (f : O₀ →+* O) (hf : Function.Injective f)
     (g : O →+* O') (hg : Function.Injective g) {k : ℕ} (x : KOG O₀ k) :
     pushKO (g.comp f) (hg.comp hf) k x = pushKO g hg k (pushKO f hf k x) := by

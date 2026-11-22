@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThProps
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThGerm
 public import Formalism.LocalToGlobal.ProjectiveLattices.CuspFree
-public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.ShortRuleRepresentationChange
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.MultAddMultConjugate
 public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.NormFactorThetaValue
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsMulMemOfMemSpan

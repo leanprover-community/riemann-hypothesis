@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SegreJoin
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.NefGenericDVRSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideLast
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTailBis
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTailTer

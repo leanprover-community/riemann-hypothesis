@@ -25,9 +25,6 @@ variable {n : ℕ}
 def actP (g : GL (Fin (n + 1)) k) (p : Mx k n × Vc k n) : Mx k n × Vc k n :=
   (cj g⁻¹ p.1, (g : Matrix (Fin (n + 1)) (Fin (n + 1)) k)ᵀ *ᵥ p.2)
 
-theorem cj_apply (g : GL (Fin (n + 1)) k) (x : Mx k n) :
-    cj g x = (g : Matrix (Fin (n + 1)) (Fin (n + 1)) k) * x * ((g⁻¹ : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) := rfl
-
 theorem cj_one (x : Mx k n) : cj (1 : GL (Fin (n + 1)) k) x = x := by
   simp [cj_apply]
 

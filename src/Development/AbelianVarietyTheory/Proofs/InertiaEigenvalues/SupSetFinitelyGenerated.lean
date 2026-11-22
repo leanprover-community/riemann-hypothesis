@@ -50,7 +50,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSabMapO
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsPolAVGenericFibre
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsReducedAlgebraOfSmoothOfIsNoetherianRing
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TestObj
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsQProjOverOfIsIso
 
 @[expose] public section

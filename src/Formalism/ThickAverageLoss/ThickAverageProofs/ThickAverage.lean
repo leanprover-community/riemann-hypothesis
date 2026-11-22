@@ -1,6 +1,5 @@
 module
 
-public import Formalism.JacobiWeightFamilies.Statement
 public import Formalism.StatementU
 public import Formalism.ThickAverageLoss.PartnersToFactorsAt
 

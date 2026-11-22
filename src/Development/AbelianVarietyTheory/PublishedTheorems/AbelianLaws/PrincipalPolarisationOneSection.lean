@@ -21,4 +21,3 @@ end principalPolarisationOneSection
 
 end GlobalTheory.Published
 
-abbrev GlobalTheory.AbLaw.principalPolarisationOneSection : Prop := GlobalTheory.Published.principalPolarisationOneSection

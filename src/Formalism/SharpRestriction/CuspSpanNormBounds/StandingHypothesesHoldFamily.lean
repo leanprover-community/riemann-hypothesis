@@ -7,14 +7,10 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.AdmissibleBoundsFrom
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusProjectedBounds
 public import Formalism.SharpRestriction.CuspSpanNormBounds.PExtra
 public import Formalism.SharpRestriction.CuspSpanNormBounds.ThresholdCubicInequalitySignPattern
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
 public import Formalism.SharpRestriction.ParConsts
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalDataRealPlace
-public import Formalism.SharpRestriction.CuspSpanNormBounds.IsGramNorm
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PSDKOnOfPSDK
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyBlockLiftEstimate
 public import Formalism.SharpRestriction.ParamsHeightRankConstant
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEstimateTheorem
 public import Formalism.SharpRestriction.CuspSpanNormBounds.OnePlaceEstimates
 public import Formalism.FormalDegreeBessel.FinalIO
 public import Formalism.SharpRestriction.CuspSpanNormBounds.ThinScalesBound
@@ -559,7 +555,6 @@ theorem scL_eq (x : ℝ) (hx1 : Fm.x1 < x) (i : Fm.Ix x) : (Fm.L x i).sc.L = (x 
   rw [Fm.L_x x i hx1, Fm.L_eps, ← Real.rpow_natCast, ← Real.rpow_mul hxpos]
   congr 1; push_cast; ring
 
-
 include Fm in
 theorem ev_y (Y0 : ℝ) : ∃ x4 : ℝ, ∀ x ≥ x4, Y0 ≤ x ^ (eps / 8) :=
   Filter.eventually_atTop.1
@@ -630,7 +625,6 @@ theorem isTop_iff (τ : D.what₂.Tau) : IsTop D τ ↔ (D.eTau τ : D.R.GG) ∈
 variable (L : SizeData₂ D)
 
 theorem Sc_eq' : L.Sc = 4 * (D.R.k : ℝ) * (D.s.Del : ℝ) := by rw [L.Sc_eq]; ring
-
 
 include L in
 theorem data1 (τ : D.what₂.Tau) (l : ℕ) (h1 : 1 ≤ l) (h2 : l ≤ D.R.k - 1) :
@@ -714,7 +708,6 @@ theorem w''_le_a : L.sc.w'' D.R.n ≤ L.sc.a := by
 
 variable (P : ParameterChoice' D L)
 
-
 include P in
 theorem data3 (u : D.what₂.Word) (τ : D.what₂.Tau) :
     4 * (D.R.k : ℝ) * (D.s.Del : ℝ) ≤ uOne D u τ 1 - vOne D τ 1 := by
@@ -739,7 +732,6 @@ theorem data3 (u : D.what₂.Word) (τ : D.what₂.Tau) :
     push_cast at this
     exact this
 
-
 include P in
 theorem data4 (u : D.what₂.Word) (τ : D.what₂.Tau) (ht : ¬ IsTop D τ) :
     uOne D u τ 1 - vOne D τ 1 ≤ 8 * (D.R.k : ℝ) * (D.s.Del : ℝ) := by
@@ -761,7 +753,6 @@ theorem uOne_last (u : D.what₂.Word) (τ : D.what₂.Tau) :
   rw [← e] at h
   rw [h, D.hcW_last u τ hk]
 
-
 include P in
 theorem data5 (u : D.what₂.Word) (τ : D.what₂.Tau) (ht : ¬ IsTop D τ) :
     uOne D u τ D.R.k = vOne D τ (D.R.k - 1) - 1 / 2 := by
@@ -772,7 +763,6 @@ theorem data5 (u : D.what₂.Word) (τ : D.what₂.Tau) (ht : ¬ IsTop D τ) :
   rw [← e] at hv
   rw [uOne_last u τ, hv, P.uk_extreme τ (by omega) (fun h => ht ((isTop_iff τ).2 h))]
   push_cast; ring
-
 
 include P in
 theorem data6 (τ : D.what₂.Tau) (ht : IsTop D τ) :
@@ -889,7 +879,6 @@ theorem wj_ge (τ : D.what₂.Tau) (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) :
     · exact (L.win_thin j h1 h2 τ ⟨(D.eTau τ).2, ht, hk⟩).1
 
 variable (P : ParameterChoice' D L)
-
 
 include P in
 theorem bOne_ge (hx2 : 2 ≤ L.sc.x) (τ : D.what₂.Tau) (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) :
@@ -1130,7 +1119,6 @@ theorem max_power_le_half_width (SzK : SizeK L) (SzW : SizeW L) (Cl : ℝ) (hCl0
 
 variable (P : ParameterChoice' D L)
 
-
 include P in
 theorem first_node_le_b_cubed (SzK : SizeK L) (h2 : 2 ≤ XX L) (h3 : 5 / szTh L ≤ XX L) (u : D.what₂.Word) (τ : D.what₂.Tau) :
     uOne D u τ 1 ≤ L.sc.b ^ (3 : ℝ) := by
@@ -1167,7 +1155,6 @@ theorem first_node_le_b_cubed (SzK : SizeK L) (h2 : 2 ≤ XX L) (h3 : 5 / szTh L
     have hbb : 0 ≤ L.sc.b ^ 2 := by positivity
     linarith
 
-
 include P in
 theorem count_power_le_discriminant (Cl : ℝ) (hCl0 : 0 < Cl) (hClC : Cl ≤ P.CCount) :
     ((D.R.k : ℝ) * D.R.f * L.sc.L) ^ Cl ≤ (D.s.Del : ℝ) := by
@@ -1189,7 +1176,6 @@ theorem count_power_le_discriminant (Cl : ℝ) (hCl0 : 0 < Cl) (hClC : Cl ≤ P.
         Real.rpow_le_rpow_of_exponent_le (le_trans h1 h2) hClC
     _ ≤ _ := P.Del_count
 
-
 include P in
 theorem node_gaps_large (SzNo : SizeNodes L) (Cl : ℝ) (hCl : Cl ≤ XX L) (τ : D.what₂.Tau) (j : ℕ) (h1 : 1 ≤ j)
     (h2 : j + 1 ≤ D.R.m) :
@@ -1205,7 +1191,6 @@ theorem node_gaps_large (SzNo : SizeNodes L) (Cl : ℝ) (hCl : Cl ≤ XX L) (τ 
   unfold LevelStarExponents.h0 at a
   unfold XX at c
   linarith
-
 
 include P in
 theorem type_prime_size_bounds (i : Fin 2) :
@@ -1228,7 +1213,6 @@ end Hyp3
 section Hyp4
 
 variable {D : D7} (L : SizeData₂ D) (P : ParameterChoice' D L)
-
 
 include P in
 theorem row_parameter_gaps_large (Cl : ℝ) (hClG : Cl ≤ P.Cgap) (τ : D.what₂.Tau) (i : Fin D.R.r) (h : i.1 + 1 < D.R.r) :
@@ -1520,8 +1504,6 @@ structure CountingConstants where
   c : ℝ
   cb : ℝ
 
-def gcOf {eps : ℝ} (Fm : FamP eps) (C0 : ℝ) : AdmissibleBoundsFromSource.GivC := ⟨C0, Fm.CYL + 1, 1 / 4, 3, 1 / 2, Fm.CTu⟩
-
 def linkThresholds (ca : List ℝ → AdmissibleBoundsFromSource.AdmC) (c30 : List ℝ → CountingConstants) : TransportedAlt :=
   ⟨0, fun _ => 0, fun l => max (ca l).CE (ca l).CN + 1,
     fun l => max 2 (max (2 * (c30 (l.take 16)).C) (8 * l.getD 17 0))⟩
@@ -1547,8 +1529,6 @@ end ClosedForm
 section All
 
 variable {eps : ℝ} (Fm : FamP eps)
-
-def gS (C0 : ℝ) (h1 : 1 ≤ C0) : UniformConstantsAndStatements.Given := ⟨C0, Fm.CYL + 1, 1 / 4, 3, 1 / 2, Fm.CTu, h1, by norm_num, by norm_num⟩
 
 end All
 

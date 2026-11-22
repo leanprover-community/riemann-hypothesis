@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalHaar
-public import GroundTheory.AutomorphicForms.MultiplicityOne.FiniteAdelicDistribution
+public import GroundTheory.AutomorphicForms.WhittakerLocal
 
 @[expose] public section
 

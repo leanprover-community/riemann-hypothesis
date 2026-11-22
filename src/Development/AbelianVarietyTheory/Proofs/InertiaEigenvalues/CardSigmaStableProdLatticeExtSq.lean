@@ -346,8 +346,6 @@ def sigmaSL {K : UQ} (B : InvAlg K) : B.A →ₛₗ[conjO K] B.A where
     rw [Algebra.smul_def, Algebra.smul_def, map_mul, IsScalarTower.algebraMap_apply K.O K.E B.A,
       IsScalarTower.algebraMap_apply K.O K.E B.A (conjO K o), B.σ_alg, algebraMap_conjO]
 
-theorem sigmaSL_apply {K : UQ} (B : InvAlg K) (a : B.A) : sigmaSL B a = B.σ a := rfl
-
 theorem card_sigma_stable_ext_sq : ∀ (K : UQ) (B₁ B₂ : InvAlg K), B₁.σ B₁.g = B₁.g → B₂.σ B₂.g = B₂.g →
     ∀ (M₁ : Submodule K.O B₁.A) (M₂ : Submodule K.O B₂.A), M₁ ∈ B₁.Lin → M₂ ∈ B₂.Lin →
     Nat.card {M : Submodule K.O (B₁.A × B₂.A) // ((∀ y ∈ M, (B₁.g, B₂.g) * y ∈ M) ∧

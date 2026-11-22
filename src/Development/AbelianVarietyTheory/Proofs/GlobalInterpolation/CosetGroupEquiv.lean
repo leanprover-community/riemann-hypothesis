@@ -60,9 +60,6 @@ section Obj
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 
-theorem stabHat_eq (hc : CMData F E) (S : HSpace E) (N : Submodule (𝓞 E) S.V) :
-    CosetGroupMembership.stabHat hc S N = ClassesDoubleCosets.stabHat hc S N := rfl
-
 theorem stabHat0_eq {R : Ranks} (sp : Spaces R F E) (N : Submodule (𝓞 E) (sp.X 0).V) :
     CosetGroupMembership.stabHat0 sp N = (levelAfL sp.cm.sig sp.gram0 (sp.crdLat0 N)).subgroupOf
       (UPts sp.cm.sig sp.gram0 (FiniteAdeleRing (𝓞 F) F)) := by

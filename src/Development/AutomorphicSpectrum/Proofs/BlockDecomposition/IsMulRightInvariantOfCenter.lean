@@ -21,8 +21,6 @@ namespace GlobalTheory.CompanionTheory.QuotVan
 
 variable {n : ℕ}
 
-local notation "θc" => thetaR (starRingEnd ℂ) n
-
 theorem isMulRightInvariant_of_center {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G]
     (hG : ∀ Δ : G →* ℝ≥0, (∀ g, (∀ h, g * h = h * g) → Δ g = 1) → ∀ g, Δ g = 1)
@@ -201,9 +199,6 @@ section Levi
 
 variable {n : ℕ}
 
-local notation "Mx" => Matrix (Fin n) (Fin n) ℂ
-local notation "Sb" => Submodule ℂ (Fin n → ℂ)
-
 open GlobalTheory.CompanionTheory.FlagCent (mem_img_iff)
 
 theorem mulVec_inv_mulVec (g : GL (Fin n) ℂ) (y : Fin n → ℂ) :
@@ -332,9 +327,6 @@ namespace GlobalTheory.CompanionTheory.QuotVan
 section Decomp
 
 variable {n : ℕ}
-
-local notation "Mx" => Matrix (Fin n) (Fin n) ℂ
-local notation "Sb" => Submodule ℂ (Fin n → ℂ)
 
 private theorem eq_zero_of_mulVec {M : Mx} (h : ∀ y, M *ᵥ y = 0) : M = 0 :=
   Matrix.ext_iff_mulVec.mpr fun y => by simpa only [Matrix.zero_mulVec] using h y

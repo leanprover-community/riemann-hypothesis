@@ -59,16 +59,10 @@ def Dlin (ε : Fin m → Bool) : (Fin m → Fin n → ℂ) ≃L[ℝ] (Fin m → 
     (by ext u a j <;> simp [sgn] <;> split_ifs <;> simp)
     (by ext u a j <;> simp [sgn] <;> split_ifs <;> simp)).toContinuousLinearEquiv
 
-theorem Dlin_apply (ε : Fin m → Bool) (u : Fin m → Fin n → ℂ) (a : Fin m) (j : Fin n) :
-    Dlin ε u a j = sgn ε a * u a j := rfl
-
 def Mt (ε : Fin m → Bool) (t : ℝ) (ht : t ≠ 0) : (Fin m → Fin n → ℂ) ≃L[ℝ] V m n :=
   ((Dlin ε).trans Lc).trans
     (LinearEquiv.smulOfNeZero ℝ (V m n) (-t / Real.pi)
       (div_ne_zero (neg_ne_zero.2 ht) Real.pi_pos.ne')).toContinuousLinearEquiv
-
-theorem Mt_apply (ε : Fin m → Bool) (t : ℝ) (ht : t ≠ 0) (u : Fin m → Fin n → ℂ) :
-    Mt ε t ht u = (-t / Real.pi) • Lc (Dlin ε u) := rfl
 
 theorem re_trace_eq (ε : Fin m → Bool) (u y : Fin m → Fin n → ℂ) :
     (((Matrix.of u)ᴴ * Matrix.diagonal (sgn ε) * Matrix.of y).trace).re = inner ℝ (Lc y) (Lc (Dlin ε u)) := by

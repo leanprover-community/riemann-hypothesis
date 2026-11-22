@@ -183,9 +183,6 @@ def sliceML (ψ : ∀ σ, Module.Dual ℂ (M σ)) (τ : ι) : (∀ σ, M σ) →
         Function.update_of_ne (Ne.symm h), Function.update_of_ne (Ne.symm h), map_smul,
         smul_eq_mul, mul_assoc, mul_smul]
 
-theorem sliceML_apply (ψ : ∀ σ, Module.Dual ℂ (M σ)) (τ : ι) (t : ∀ σ, M σ) :
-    sliceML ψ τ t = (∏ σ ∈ Finset.univ.erase τ, ψ σ (t σ)) • t τ := rfl
-
 theorem apply_lift_sliceML (ψ : ∀ σ, Module.Dual ℂ (M σ)) (τ : ι) (χ : Module.Dual ℂ (M τ))
     (y : PiTensorProduct ℂ M) :
     χ (PiTensorProduct.lift (sliceML ψ τ) y) =

@@ -65,17 +65,6 @@ theorem toPi_E (a i j : ι) (x : N) : U.toPi a (U.E i j x) = Pi.single i (U.toPi
 
 end MatrixUnits
 
-def stdUnits (M : Type*) [AddCommGroup M] [Module R M] : MatrixUnits R (ι → M) ι where
-  E i j := LinearMap.single R (fun _ => M) i ∘ₗ LinearMap.proj j
-  mul_eq i j k l := by
-    ext x m
-    by_cases h : j = k
-    · subst h; simp [Pi.single_apply]
-    · simp [h, Pi.single_apply]
-  sum_diag := by
-    ext x m
-    simp [LinearMap.sum_apply, Finset.sum_apply, Pi.single_apply]
-
 end GlobalTheory.Morita
 
 namespace GlobalTheory.Morita
@@ -116,11 +105,6 @@ section extend
 
 variable {σ : R →+* R}
 
-def extend (a : ι) (F₀ : U.corner a →ₛₗ[σ] U.corner a) : N →ₛₗ[σ] N where
-  toFun x := ∑ i, U.E i a (F₀ (U.toPi a x i))
-  map_add' x y := by simp [Finset.sum_add_distrib]
-  map_smul' r x := by simp [Finset.smul_sum]
-
 end extend
 
 end GlobalTheory.Morita.MatrixUnits
@@ -141,6 +125,5 @@ namespace GlobalTheory.Morita
 
 variable {R : Type*} [CommRing R] {N : Type*} [AddCommGroup N] [Module R N]
   {ι : Type*} [Fintype ι] [DecidableEq ι]
-
 
 end GlobalTheory.Morita

@@ -238,14 +238,6 @@ def ptWeightFrom (k r : ℕ) (T T' : ℝ) : ℕ → List (ℂ × ℕ) → ℝ
 
 def ptWeight (k r : ℕ) (T T' : ℝ) {i : ℕ} (p : Point ℂ i) : ℝ := ptWeightFrom k r T T' 0 p.1
 
-def PtLastOk (r : ℕ) (T T' : ℝ) (p : Point ℂ (r + 1)) : Prop :=
-  ∀ t : ℂ, p.1.getLast? = some (t, 1) → T * T' < Complex.normSq t
-
-def beS {n k : ℕ} (κ : ℝ) (r : ℕ) (lam : Fin n → ℝ) (T T' : ℝ) (u u' : Fin k → ℝ) (Y : ℝ) : ℝ :=
-  κ ^ (-(1 + 2 * (r : ℤ))) *
-    Real.sqrt ‖Formalism.QuantumDeterminants.capP (fun s => (lam s : ℂ)) (Y : ℂ) * Formalism.QuantumDeterminants.capP (fun s => (lam s : ℂ)) ((Y : ℂ) + 1) /
-      Formalism.QuantumDeterminants.qPoly T T' u u' (Y : ℂ)‖
-
 def InterlaceS {k n : ℕ} (hkn : k ≤ n) (u : Fin k → ℝ) (lam : Fin n → ℝ) : Prop :=
   (∀ (i : ℕ) (hi : i + 1 < k),
     lam ⟨i, by omega⟩ < u ⟨i, by omega⟩ ∧ u ⟨i + 1, hi⟩ < lam ⟨i, by omega⟩) ∧
@@ -335,34 +327,7 @@ def Kmat (u u' : Word) : s.Cu u' →L[ℂ] s.Cu u :=
   haveI := FiniteDimensional.complete ℂ s.HH
   (((c0 s u * c0 s u') ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) • ((ContinuousLinearMap.adjoint (s.Pu u)).comp (s.Pu u'))
 
-def KExpansion (u u' : Word) : Prop := HasSum (fun t => s.aTerm u u' t) (Kmat s u u')
-
-def KAbsConv (u u' : Word) : Prop := Summable (fun t => ‖s.aTerm u u' t‖)
-
 def KOf (u u' : Word) (Φ : Set (s.Term u u')) : s.Cu u' →L[ℂ] s.Cu u := ∑' t : Φ, s.aTerm u u' t.1
-
-def RelevantZeroGramTerms {u u' : Word} : Set (s.Term u u') := {t | s.relevant t ∧ s.Gterm t = 0 ∧ ¬ s.FeqF t}
-
-def famNG {u u' : Word} : Set (s.Term u u') := {t | ¬ s.isId t ∧ s.Gterm t ≠ 0 ∧ ¬ s.generic t}
-
-def famG {u u' : Word} : Set (s.Term u u') := {t | ¬ s.isId t ∧ s.Gterm t ≠ 0 ∧ s.generic t}
-
-def loopP {u u' : Word} (p : s.Pair u u') : Prop :=
-  s.Gterm (s.pfst p) ≠ 0 ∧ s.Gterm (s.psnd p) ≠ 0 ∧
-    (2 ≤ s.s0 p ∨ (s.generic (s.pfst p) ∧ s.generic (s.psnd p) ∧ s.s0 p = 1 ∧ ¬ s.scalarPair p))
-
-def scalarP {u u' : Word} (p : s.Pair u u') : Prop :=
-  s.generic (s.pfst p) ∧ s.generic (s.psnd p) ∧ s.s0 p = 1 ∧ s.scalarPair p
-
-def pairsIn {u u' : Word} (Φ : Set (s.Term u u')) : Set (s.Pair u u') := {p | s.pfst p ∈ Φ ∧ s.psnd p ∈ Φ}
-
-def K2 (u u' : Word) : s.Cu u' →L[ℂ] s.Cu u := KOf s u u' (RelevantZeroGramTerms s)
-
-def IdCellDiag (u : Word) : Prop :=
-  HasSum (fun t : {t : s.Term u u // s.isId t} => s.aTerm u u t.1) (ContinuousLinearMap.id ℂ (s.Cu u))
-
-def IdCellOff (u u' : Word) : Prop :=
-  HasSum (fun t : {t : s.Term u u' // s.isId t} => s.aTerm u u' t.1) 0
 
 end Kernel
 
@@ -488,33 +453,14 @@ variable (D : Formalism.BasicNotions.D7)
 
 def KD (u u' : D.what₂.Word) : D.s.Cu u' →L[ℂ] D.s.Cu u := Kmat D.s u u'
 
-def ramCu (u : D.what₂.Word) : Submodule ℂ (D.s.Cu u) :=
-  Submodule.comap ((D.s_Cu u : D.s.Cu u →ₗ[ℂ] (D.mem u).A.Mu0))
-    (Submodule.comap (D.mem u).A.Mu0.subtype (D.mem u).A.Mram)
-
-def PiU (u : D.what₂.Word) : D.s.Cu u →L[ℂ] D.s.Cu u :=
-  haveI := FiniteDimensional.complete ℂ (ramCu D u)
-  (ramCu D u).subtypeL.comp (ramCu D u).orthogonalProjectionOnto
-
 def hsSqD (u u' : D.what₂.Word) : ℝ := hsNormSq (KD D u u')
 
 end KernelD
-
-def LocBessel.beta {k r : ℕ} (L : LocBessel k r) (μsec : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ)
-    (F F' : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (L.Wq →L[ℂ] L.Wp)) : ℂ :=
-  ∫ p : (Fin r → ℂ) × ℂ, (Formalism.QuantumDeterminants.bcWeight k r (Formalism.QuantumDeterminants.Tz k r L.z) (Formalism.QuantumDeterminants.Tz k r L.z') p : ℂ) *
-    hsInner (L.J F (Formalism.QuantumDeterminants.bigCell k r p.1 (μsec p.2))) (L.J F' (Formalism.QuantumDeterminants.bigCell k r p.1 (μsec p.2)))
 
 def capC {k r : ℕ} {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V] (Y : ℂ)
     (F : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → V) :
     Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → V :=
   Formalism.QuantumDeterminants.capelliH (Formalism.QuantumDeterminants.Hpk k r) (Y + ((2 * r + k : ℕ) : ℂ) / 2) F
-
-def brkW {n : ℕ} (lam : Fin n → ℝ) (Ys : List ℝ) : ℝ :=
-  (Ys.map fun Y => ‖Formalism.QuantumDeterminants.capP (fun s => (lam s : ℂ)) (Y : ℂ)‖).prod
-
-def IsCutoff (χ : ℝ → ℝ) : Prop :=
-  ContDiff ℝ ∞ χ ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ (∀ x ≤ 1 / 2, χ x = 0) ∧ ∀ x, 1 ≤ x → χ x = 1
 
 def IsKFinCoefH {k r : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     {Wp Wq : Type*} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp]

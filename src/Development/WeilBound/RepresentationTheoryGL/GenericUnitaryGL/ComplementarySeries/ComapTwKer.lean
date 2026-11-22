@@ -65,7 +65,6 @@ end Abstract
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-
 variable (k) in
 def Q (ψ : AddChar k Circle) {n : ℕ} : (j : ℕ) → (τ : MRep k (n + j)) →
     τ.V →ₗ[ℂ] TwJacquet (iterPhi k ψ j τ).ρ (MirUin k n) 1
@@ -96,7 +95,6 @@ theorem ker_Q (ψ : AddChar k Circle) {n : ℕ} : ∀ (j : ℕ) (τ : MRep k (n 
     have e2 := Submodule.ext_iff.1 (ker_Q ψ j (MRep.phiM k ψ τ))
       ((twKer τ.ρ (MirUin k (n + j + 1)) (mirChar k ψ (n + j))).mkQ v)
     exact e2
-
 
 variable (k) in
 def E {n : ℕ} : (j : ℕ) → GL (Fin n) k →* Mir k (n + j)
@@ -160,9 +158,6 @@ theorem emb_val {n t N : ℕ} (h : n + t = N) (g : GL (Fin n) k × GL (Fin t) k)
       fromBlocks (g.1 : Matrix (Fin n) (Fin n) k) 0 0 (g.2 : Matrix (Fin t) (Fin t) k) a b := by
   rw [val_emb₂]
   simp [Matrix.reindex_apply]
-
-theorem stdSum_inj {n t N : ℕ} (h : n + t = N) {a b : Fin n ⊕ Fin t} : stdSum h a = stdSum h b ↔ a = b :=
-  (stdSum h).injective.eq_iff
 
 theorem one_std {n t N : ℕ} (h : n + t = N) (a b : Fin n ⊕ Fin t) :
     (1 : Matrix (Fin N) (Fin N) k) (stdSum h a) (stdSum h b) = (1 : Matrix (Fin n ⊕ Fin t) (Fin n ⊕ Fin t) k) a b := by
@@ -236,7 +231,6 @@ theorem mem_of_inU {g : GL (Fin N) k} (H : InU (n := n) g) : g ∈ unipRad k (tw
         (by rw [one_std]; simp [Matrix.one_apply])
 
 end Blocks
-
 
 variable (k) in
 def Q' (ψ : AddChar k Circle) {n t N : ℕ} (h : n + t = N) {V : Type} [AddCommGroup V] [Module ℂ V]

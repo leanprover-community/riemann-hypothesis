@@ -23,8 +23,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
 
-local notation "ιE" => algebraMap (LetA O n) W.EE
-
 theorem inId_sub {a : ZMod n} {e : ℕ} {α : ℕ → ℤ} {f g : W.EE} (hf : InId W a e α f)
     (hg : InId W a e α g) : InId W a e α (f - g) := by
   have := inId_add W hf (inId_smul W hg (-1))

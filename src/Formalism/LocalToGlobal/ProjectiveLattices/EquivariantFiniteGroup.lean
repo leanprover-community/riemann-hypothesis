@@ -52,8 +52,6 @@ def holSub (X : Comp → Data E r) (la : ∀ c, Wt (X c).Ψ r) : Submodule ℂ (
 theorem holCusp_mem_holSub (X : Comp → Data E r) (la : ∀ c, Wt (X c).Ψ r) {P : FDSec X}
     (h : IsHolCusp X la P) : P ∈ holSub X la := Submodule.subset_span h
 
-def dmet (n f r : ℕ) : ℝ := Real.exp ((n : ℝ) * f * r * (-(1 / 2) * Real.log (2 * Real.pi)) / 2)
-
 theorem supN_nonneg (X : Comp → Data E r) (la : ∀ c, Wt (X c).Ψ r) (P : FDSec X) : 0 ≤ supN X la P := ENNReal.toReal_nonneg
 
 variable (V : HSp D)
@@ -68,11 +66,6 @@ def onQ : (GA D V → ℂ) →ₗ[ℂ] (AutQ V → ℂ) where
   toFun φ := fun q => φ q.out
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
-
-def SS {X : Comp → Data E r} (la : ∀ c, Wt (X c).Ψ r) (dict : GA D V → Σ c, Frame (X c).Ψ r)
-    (mu : GA D V → ℂ) : Submodule ℂ (Lp ℂ 2 (muQ1 V)) :=
-  Submodule.span ℂ {F | ∃ P : FDSec X, IsHolCusp X la P ∧
-    ∃ h : MemLp (onQ V (adel V dict mu P)) 2 (muQ1 V), F = h.toLp _}
 
 variable {K : Type} [Field K] {C : Type} [AddCommGroup C] [Module K C] (σ : K →+* ℂ)
 
@@ -147,9 +140,6 @@ def DictIsUnif {X : Comp → Data E r} (dict : GA D V → Σ c, Frame (X c).Ψ r
     ∀ g g', (∃ γ' ∈ (X (dict g).1).Γ, dict g' = ⟨(dict g).1, lact γ' (dict g).2⟩) →
       ∃ γ ∈ GQ V, ∃ k ∈ Kf, g' = γ * g * k
 
-def repOf {X : Comp → Data E r} (dict : GA D V → Σ c, Frame (X c).Ψ r) (c : Comp) : GA D V :=
-  Classical.epsilon fun g => (dict g).1 = c
-
 def MuUnit {X : Comp → Data E r} (dict : GA D V → Σ c, Frame (X c).Ψ r) (mu : GA D V → ℂ) : Prop :=
   (∀ g g', mu (g * g') = mu g * mu g') ∧ (∀ g, ‖mu g‖ = 1) ∧ (∀ γ ∈ GQ V, mu γ = 1) ∧
     ∀ g τ i, ‖dmin (X (dict g).1).Gm (dict g).2 τ i‖ = 1
@@ -187,10 +177,5 @@ theorem L2Norm_le_sup_norm {X : Comp → Data E r} (la : ∀ c, Wt (X c).Ψ r) (
     rwa [ENNReal.toReal_ofReal h0] at h2
   have := Lp.norm_le_of_ae_bound hC hb
   simpa [l2NormAlt, measureUnivNNReal] using this
-
-def EquivariantFiniteGroup {X : Comp → Data E r} (rd : C →ₛₗ[σ] FDSec X) (dict : GA D V → Σ c, Frame (X c).Ψ r)
-    (mu : GA D V → ℂ) {G0 : Type} [Group G0] (ρ : G0 →* (C →ₗ[K] C)) (chi : G0 →* Kˣ) (ℓ : G0 → GA D V) :
-    Prop :=
-  ∀ g f x, adel V dict mu (rd (ρ g f)) x = σ ((chi g : Kˣ) : K) * adel V dict mu (rd f) (x * ℓ g)
 
 end Formalism.L2.Pj

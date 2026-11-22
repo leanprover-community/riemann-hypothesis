@@ -86,32 +86,6 @@ section Gm
 
 variable {B C : Type} [CommRing B] [Algebra O B] [CommRing C] [Algebra O C]
 
-def gmCoord (z : SpAlg O B ⟶ Gm (Sp O)) : B := Diag.charVal z (ULift.up 1)
-
-theorem gmCoord_comp (φ : B →ₐ[O] C) (z : SpAlg O B ⟶ Gm (Sp O)) :
-    gmCoord (spOver φ ≫ z) = φ (gmCoord z) :=
-  (Diag.left_eq_iff (φ : B →+* C) (Over.w (spOver φ)).symm (spOver φ ≫ z) z).1 rfl _
-
-def gmCoordHom : (SpAlg O B ⟶ Gm (Sp O)) →* B where
-  toFun := gmCoord
-  map_one' := Diag.charVal_one _
-  map_mul' x y := Diag.charVal_mul x y _
-
-theorem gmCoord_ext {x y : SpAlg O B ⟶ Gm (Sp O)} (h : gmCoord x = gmCoord y) : x = y := by
-  let f : (SpAlg O B ⟶ Gm (Sp O)) → (Multiplicative ℤ →* Bˣ) := fun z => MonoidHom.toHomUnits
-    { toFun := fun k => Diag.charVal z (ULift.up k.toAdd)
-      map_one' := Diag.charVal_zero z
-      map_mul' := fun k l => Diag.charVal_add z ⟨k.toAdd⟩ ⟨l.toAdd⟩ }
-  have e : f x = f y := MonoidHom.ext_mint (Units.ext h)
-  exact Diag.charVal_ext fun k =>
-    congrArg (fun g : Multiplicative ℤ →* Bˣ => (g (Multiplicative.ofAdd k.down) : B)) e
-
-
-variable (O) in
-def gmPoint (u : Bˣ) : SpAlg O B ⟶ Gm (Sp O) :=
-  Diag.ofVal _ ((Units.coeHom B).comp ((zpowersHom Bˣ u).comp
-    (AddMonoidHom.toMultiplicative (AddEquiv.ulift : ULift.{0} ℤ ≃+ ℤ).toAddMonoidHom)))
-
 @[simp] theorem gmCoord_gmPoint (u : Bˣ) : gmCoord (gmPoint O u) = u :=
   (Diag.charVal_ofVal _ _).trans (congrArg Units.val (zpow_one u))
 
@@ -144,37 +118,6 @@ section Mu
 
 variable (p O) [Fact p.Prime]
 
-def muIncl (n : ℕ) : SpAlg O ((mu p O).A n) ⟶ Gm (Sp O) :=
-  gmPoint O (Units.ofPowEqOne (muT O (p ^ n)) (p ^ n) (muT_pow_self O _) (NeZero.ne _))
-
-
-variable {p O} in
-theorem gmCoord_muIncl {n : ℕ} {B : Type} [CommRing B] [Algebra O B]
-    (φ : (mu p O).A n →ₐ[O] B) : gmCoord (spOver φ ≫ muIncl p O n) = φ (muT O (p ^ n)) := by
-  rw [gmCoord_comp, muIncl, gmCoord_gmPoint]; rfl
-
-def muTower : (mu p O).TorsionTower (Gm (Sp O)) where
-  y := muIncl p O
-  mul n B _ _ φ ψ := gmCoord_ext <| by
-    refine Eq.trans ?_ (map_mul gmCoordHom _ _).symm
-    exact (gmCoord_muIncl _).trans ((convMul_apply_groupLike φ ψ (isGroupLikeElem_muT O _)).trans
-      (congrArg₂ (· * ·) (gmCoord_muIncl _) (gmCoord_muIncl _)).symm)
-  inj n B _ _ φ ψ h := mu_algHom_ext
-    ((gmCoord_muIncl φ).symm.trans ((congrArg gmCoord h).trans (gmCoord_muIncl ψ)))
-  surj n B _ _ z hz := by
-    have h : gmCoord z ^ p ^ n = 1 :=
-      (map_pow gmCoordHom z _).symm.trans ((congrArg gmCoordHom hz).trans (map_one _))
-    exact ⟨muPoint O _ h, gmCoord_ext ((gmCoord_muIncl _).trans (muPoint_muT _ h))⟩
-  res n := gmCoord_ext <| by
-    rw [gmCoord_muIncl, muIncl, gmCoord_gmPoint]
-    exact muRes_muT p O n
-
-
-variable {p O} in
-theorem gmCoord_muTower {n : ℕ} {B : Type} [CommRing B] [Algebra O B]
-    (φ : (mu p O).A n →ₐ[O] B) :
-    gmCoord (spOver φ ≫ (muTower p O).y n) = φ (muT O (p ^ n)) := gmCoord_muIncl φ
-
 end Mu
 
 namespace TorsionTower
@@ -187,7 +130,6 @@ variable (t : G.TorsionTower A) (n : ℕ) (B : Type) [CommRing B] [Algebra O B]
 
 def pts : WithConv (G.A n →ₐ[O] B) →* (SpAlg O B ⟶ A) :=
   MonoidHom.mk' (fun φ => spOver φ.ofConv ≫ t.y n) (t.mul n B)
-
 
 variable {B} in
 @[simp] theorem pts_apply (φ : WithConv (G.A n →ₐ[O] B)) :
@@ -203,7 +145,6 @@ theorem exists_iff (z : SpAlg O B ⟶ A) :
   refine ⟨?_, t.surj n B z⟩
   rintro ⟨φ, rfl⟩
   rw [← ofConv_toConv φ, ← pts_apply, ← map_pow, G.pts_pow_self, map_one]
-
 
 theorem y_pow : t.y n ^ p ^ n = 1 :=
   (t.exists_iff n _).1 ⟨AlgHom.id O _, by rw [spOver_id, Category.id_comp]⟩
@@ -224,10 +165,6 @@ theorem mulBy_y (k : ℕ) :
   have h := map_pow (t.pts n (G.A n)) (toConv (AlgHom.id O _)) k
   rw [pts_apply, pts_apply, ← comp_mulBy_pts, ofConv_toConv, spOver_id, Category.id_comp] at h
   exact h
-
-theorem mulP_y : spOver (G.mulP n : G.A n →ₐ[O] G.A (n + 1)) ≫ t.y n = t.y (n + 1) ^ p := by
-  rw [← t.res n, ← Category.assoc, spOver_comp, ← t.mulBy_y, ← G.mulP_comp_res]
-  rfl
 
 end Basic
 
@@ -439,7 +376,6 @@ end BaseChange
 
 section Lie
 
-
 variable (O) in
 def _root_.GlobalTheory.PDiv.epsTo (B : Type) [CommRing B] [Algebra O B] :
     DualNumber O →ₐ[O] DualNumber B :=
@@ -453,10 +389,8 @@ def _root_.GlobalTheory.PDiv.epsTo (B : Type) [CommRing B] [Algebra O B] :
 @[simp] theorem _root_.GlobalTheory.PDiv.snd_epsTo (B : Type) [CommRing B] [Algebra O B]
     (z : DualNumber O) : (epsTo O B z).snd = algebraMap O B z.snd := zero_add _
 
-
 variable (p O) in
 abbrev _root_.GlobalTheory.PDiv.ModPow (n : ℕ) : Type := O ⧸ Ideal.span {(p : O) ^ n}
-
 
 variable (p) in
 abbrev _root_.GlobalTheory.PDiv.epsRedPow {A : Over (Sp O)} (n : ℕ) (v : epsR O ⟶ A) :
@@ -525,20 +459,11 @@ theorem lieCorr_zero : t.LieCorr 0 1 :=
     ⟨(1 : WithConv (G.A n →ₐ[O] DualNumber (ModPow p O n))).ofConv, (_root_.map_one (t.pts n _)).trans (MonObj.comp_one _).symm, fun w a _ => by
       rw [LinearMap.zero_apply, map_zero]; rfl⟩⟩
 
-theorem LieCorr.map [Fact p.Prime] (h : t.LieCorr x v) (f : A ⟶ A₁) [IsMonHom f] :
-    t₁.LieCorr (lieMap G H (t.map t₁ f) x) (v ≫ f) := by
-  refine ⟨GrpTangent.isTangent_comp h.1 f, fun n => ?_⟩
-  obtain ⟨ψ, h1, h2⟩ := h.2 n
-  refine ⟨ψ.comp ((t.map t₁ f).app n : H.A n →ₐ[O] G.A n), ?_, fun w a ha => ?_⟩
-  · rw [← spOver_comp, Category.assoc, map_y, ← Category.assoc, h1, Category.assoc]
-  · exact h2 _ _ (by rw [omegaMap_val, ← ha, cotMap_d]; rfl)
-
 theorem LieCorr.unique_left [IsHausdorff (Ideal.span {(p : O)}) O] (h : t.LieCorr x v)
     (h' : t.LieCorr x' v) : x = x' :=
   LinearMap.ext fun w => sub_eq_zero.1 <| IsHausdorff.haus' (I := Ideal.span {(p : O)}) _ fun n => by
     rw [SModEq.zero, smul_eq_mul, Ideal.mul_top, Ideal.span_singleton_pow, ← Ideal.Quotient.eq,
       (t.lieCorr_iff h.1 x).1 h, (t.lieCorr_iff h.1 x').1 h']
-
 
 variable (t) in
 theorem tanDer_succ (hv : IsTangent v) (n : ℕ) (w : Cot O (G.A (n + 1))) (c : O)
@@ -563,7 +488,6 @@ theorem tanDer_succ (hv : IsTangent v) (n : ℕ) (w : Cot O (G.A (n + 1))) (c : 
   rw [cotMap_d, tanDer_d]
   exact ((congrArg TrivSqZeroExt.snd (DFunLike.congr_fun e a)).trans
     ((snd_epsTo ..).trans (congrArg π hc.symm))).symm
-
 
 variable (t) in
 theorem existsUnique_lieCorr [IsAdicComplete (Ideal.span {(p : O)}) O] (hv : IsTangent v) :

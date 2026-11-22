@@ -39,10 +39,6 @@ def preC (Y : Module.End K V) : Module.End K (V →ₗ[K] W) where
   map_add' := by intro φ ψ; ext x; simp
   map_smul' := by intro c φ; ext x; simp
 
-theorem postC_apply (X : Module.End K W) (φ : V →ₗ[K] W) (x : V) : postC X φ x = X (φ x) := rfl
-
-theorem preC_apply (Y : Module.End K V) (φ : V →ₗ[K] W) (x : V) : preC (W := W) Y φ x = φ (Y x) := rfl
-
 theorem postC_pow_apply (X : Module.End K W) (i : ℕ) (φ : V →ₗ[K] W) (x : V) :
     ((postC X) ^ i) φ x = (X ^ i) (φ x) := by
   induction i generalizing φ with

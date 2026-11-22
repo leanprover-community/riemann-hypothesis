@@ -31,7 +31,6 @@ structure Irr (n : ℕ) : Type 1 where
 
 attribute [instance] Irr.acg Irr.mod
 
-
 variable {k} in
 def Irr.ofDet (n : ℕ) (χ : kˣ →* ℂˣ) (h : IsSmoothChar χ) : Irr k n where
   V := ℂ
@@ -39,19 +38,13 @@ def Irr.ofDet (n : ℕ) (χ : kˣ →* ℂˣ) (h : IsSmoothChar χ) : Irr k n wh
   smooth := (isSmooth_ofChar_iff _).2 h.detChar
   irr := isIrreducible_ofChar _
 
-
 instance (n : ℕ) : Inhabited (Irr k n) := ⟨Irr.ofDet n 1 (isSmoothChar_of_isUnram fun _ _ => rfl)⟩
-
 
 variable {k} in
 @[reducible] def Irr.toIrrRep {n : ℕ} (π : Irr k n) : IrrRep (GL (Fin n) k) := ⟨π.V, π.π, π.smooth, π.irr⟩
 
-
 variable {k} in
 @[reducible] def Irr.ofIrrRep {n : ℕ} (σ : IrrRep (GL (Fin n) k)) : Irr k n := ⟨σ.V, σ.ρ, σ.smooth, σ.irr⟩
-
-
-
 
 def TameSplit : Prop := ∀ (r t : ℕ) (χ : kˣ →* ℂˣ) (π : Irr k (r + t)) (v : π.V), IsSmoothChar χ → IsTame χ →
   ¬ IsUnram χ → v ≠ 0 → IsParahoricVec χ π.π v →
@@ -63,19 +56,6 @@ variable {k} {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [
 
 def speh (a : WD h) (d : ℕ) : WD h :=
   (List.range d).foldr (fun j acc => (a.lpTw (((d : ℝ) - 1) / 2 - j)).lpSum acc) (WD.lpZero (h := h))
-
-structure RecLaws (rc : ∀ n, Irr k n → WD h) : Prop where
-  dim : ∀ n π, (rc n π).lpDim = n
-  iso : ∀ n (π π' : Irr k n), rc n π = rc n π' ↔ Nonempty (π.π.Equiv π'.π)
-  prod : ∀ r t (σ : Irr k r) (τ : Irr k t) (π : Irr k (r + t)), Nonempty (π.π.Equiv (prod₂ σ.π τ.π)) →
-    rc (r + t) π = (rc r σ).lpSum (rc t τ)
-  det : ∀ t (χ : kˣ →* ℂˣ) (c : Irr k 1) (τ : Irr k t), Nonempty (c.π.Equiv (detRep (Fin 1) χ)) →
-    Nonempty (τ.π.Equiv (detRep (Fin t) χ)) → rc t τ = speh (rc 1 c) t
-  twist : ∀ n (χ : kˣ →* ℂˣ) (c : Irr k 1) (π π' : Irr k n), Nonempty (c.π.Equiv (detRep (Fin 1) χ)) →
-    Nonempty (π'.π.Equiv (twist π.π (detChar (Fin n) χ))) → rc n π' = (rc n π).lpChar (rc 1 c)
-  sph : ∀ n (π : Irr k n), (rc n π).unr ↔ IsSpherical π.π
-  sat : ∀ n (π : Irr k n) (α : Fin n → ℂˣ), HasSatake π.π α →
-    (rc n π).frobEig = Finset.univ.val.map fun i => ((α i)⁻¹ : ℂˣ).1
 
 end Local
 
@@ -105,8 +85,6 @@ structure ReadAt (T : WDTie N A) (i : N.Loc) (w : PlE H) : Type 1 where
 abbrev Reading (T : WDTie N A) : Type 1 := ∀ (i : N.Loc) (w : PlE H), IsSplitPl H w → ReadAt T i w
 
 variable {T : WDTie N A} (S : Reading T)
-
-def Laws : Prop := ∀ i w hw, RecLaws (S i w hw).rc
 
 def RowUnit : Prop := ∀ i w hw σ, what₂.isot (N.j i) σ ≠ ⊥ → IsUnitarisable ((S i w hw).row σ).π
 

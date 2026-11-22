@@ -95,21 +95,11 @@ theorem sumS_fg (A : Fin r → FractionalIdeal (𝓞 K)⁰ K) (e : Fin r → V) 
     exact Submodule.mem_iSup_of_mem a ⟨x, hx, rfl⟩
   exact (Submodule.fg_iSup _ fun a => ((A a).fg_of_isNoetherianRing le_rfl).map _).of_le this
 
-omit [StarRing K] in
-theorem mem_span_sumS {A : Fin r → FractionalIdeal (𝓞 K)⁰ K} (hA : ∀ a, A a ≠ 0) (e : Fin r → V) (a : Fin r) :
-    e a ∈ Submodule.span K (sumS A e : Set V) := by
-  obtain ⟨x, hx, h0⟩ := FractionalIdeal.exists_ne_zero_mem_isInteger (hA a)
-  have h1 : algebraMap (𝓞 K) K x ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).2 hx
-  have := Submodule.smul_mem (Submodule.span K (sumS A e : Set V)) (algebraMap (𝓞 K) K x)⁻¹
-    (Submodule.subset_span (Submodule.subset_span ⟨a, _, h0, rfl⟩))
-  rwa [inv_smul_smul₀ h1] at this
-
 structure IsHypFrame (h : V →ₗ⋆[K] V →ₗ[K] K) (e f : Fin r → V) : Prop where
   symm : h.IsSymm
   ee : ∀ a b, h (e a) (e b) = 0
   ff : ∀ a b, h (f a) (f b) = 0
   ef : ∀ a b, h (e a) (f b) = if a = b then 1 else 0
-
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar in
 theorem hypFrame (D : D7) : IsHypFrame (hS D).hT D.sp.hypE D.sp.hypF :=
@@ -398,7 +388,6 @@ theorem mem_genus_of_unimodular {Λ : LatV D} (h1 : Submodule.IsLattice D.host.E
     (locDual (𝓞 D.host.E) D.host.E (hS D).V (hS D).hT (hS D).herm star_algebraMap_ringOfIntegers_mem_range M hM).2.1
   exact GlobalTheory.Mass.UnimodLoc.exists_isom_of_isUnimodularAt _ _ _ D.sp.cm.cmUnram (hS D).herm (hS D).nondeg _ _
     hfull0 hfull P hP (k _ (hS D).standardTuple_isLattice.fg (hS D).baseLattice_isUnimodular P hP) (k _ h1.fg h2 P hP)
-
 
 open Matrix in
 open scoped ENNReal in

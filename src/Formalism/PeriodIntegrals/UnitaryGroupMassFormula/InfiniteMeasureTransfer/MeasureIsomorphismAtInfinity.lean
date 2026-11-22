@@ -23,8 +23,6 @@ abbrev hmI (g : HI I) : Matrix (Fin I.n) (Fin I.n) (TI I) :=
 def matI : HI I →* GL (Fin I.n) (TI I) :=
   (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.HR (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Ainf I.F) I.cm.sig I.J).subtype
 
-theorem matI_apply (g : HI I) : ((matI I g : GL (Fin I.n) (TI I)) : Matrix _ _ _) = hmI I g := rfl
-
 theorem thI_mem (g : HI I) (v : InfinitePlace I.F) :
     Formalism.REAL.inUJ (I.ε v) ((I.P v)⁻¹ * (hmI I g).map (thI I v) * I.P v) := by
   have hg : Formalism.UG.cT (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Ainf I.F) I.cm.sig) (hmI I g) *

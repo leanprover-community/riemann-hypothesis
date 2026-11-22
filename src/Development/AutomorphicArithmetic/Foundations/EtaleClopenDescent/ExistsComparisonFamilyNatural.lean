@@ -282,12 +282,6 @@ variable {Z : Scheme.{0}} [IsIntegral Z] (p : Z ⟶ Sp ℂ) [Smooth p] [inst : A
 theorem cechOpen_eq (s : Finset ι) : cechOpen ⊤ U s = s.inf U := by
   rw [cechOpen_eq_inf, top_inf_eq]
 
-theorem gm_inj (hinst : inst = ffAlg p) (hU : IsAffCover p U B) (a : ℕ) (s : Finset ι)
-    (hs : s.Nonempty) : letI := algΓ p; Function.Injective (gm p hinst hU a s) := by
-  letI := algΓ p
-  rw [gm_pos hinst hU a hs]
-  exact (germ_inj_range hinst hU a hs (cechOpen_eq s) _ _).1
-
 theorem gm_range (hinst : inst = ffAlg p) (hU : IsAffCover p U B) (a : ℕ) (s : Finset ι)
     (hs : s.Nonempty) :
     letI := algΓ p; LinearMap.range (gm p hinst hU a s) = omB ℂ Z.functionField (B s) a := by
@@ -295,28 +289,7 @@ theorem gm_range (hinst : inst = ffAlg p) (hU : IsAffCover p U B) (a : ℕ) (s :
   rw [gm_pos hinst hU a hs]
   exact (germ_inj_range hinst hU a hs (cechOpen_eq s) _ _).2
 
-theorem gm_res (hinst : inst = ffAlg p) (hU : IsAffCover p U B) (a : ℕ) (s t : Finset ι) (h : s ⊆ t)
-    (hs : s.Nonempty) (y) : letI := algΓ p
-    gm p hinst hU a t (Cube.res (cechCube ℂ (Omega p a) ⊤ U) h y) = gm p hinst hU a s y := by
-  letI := algΓ p
-  rw [gm_pos hinst hU a hs, gm_pos hinst hU a (hs.mono h)]
-  exact GlobalTheory.T.genericGerm_differentialForm_restrict_affineOpen Z p hinst a _ _ _ _ _ _ _ y
-
 variable [LinearOrder ι] [Fintype ι]
-
-def cube (hinst : inst = ffAlg p) (hU : IsAffCover p U B) (a b : ℕ) :
-    letI := algΓ p
-    (cechComplex (cechCube ℂ (Omega p a) ⊤ U)).homology b ≃ₗ[ℂ]
-      (GlobalTheory.PD.cech fun I => omB ℂ Z.functionField (B I) a).H (b : ℤ) :=
-  letI := algΓ p
-  Classical.choose (GlobalTheory.T.cechHomologyEquivFamAlt ℂ ι (DR ℂ Z.functionField)
-    (fun I => omB ℂ Z.functionField (B I) a) (cechCube ℂ (Omega p a) ⊤ U) (gm p hinst hU a)
-    (gm_inj p hinst hU a) (gm_range p hinst hU a) (gm_res p hinst hU a) b)
-
-def cmp (hinst : inst = ffAlg p) (hU : IsAffCover p U B) (a b : ℕ) :
-    hodgeH p a b ≃ₗ[ℂ] (GlobalTheory.PD.cech fun I => omB ℂ Z.functionField (B I) a).H b :=
-  letI := algΓ p
-  (cechHEquivCoh ℂ hU.cover (cover_biInf hU) (Omega p a) b).symm ≪≫ₗ cube p hinst hU a b
 
 end Cmp
 
@@ -369,7 +342,6 @@ theorem cechOpen_le (f : Z' ⟶ Z) (τ : κ → ι) (hτ : ∀ i, U' i ≤ f ⁻
   refine Finset.le_inf fun i hi => ?_
   obtain ⟨j, hj, rfl⟩ := Finset.mem_image.1 hi
   exact (Finset.inf_le hj).trans (hτ j)
-
 
 set_option maxHeartbeats 800000 in
 theorem gm_pull (hinst : inst = ffAlg p) (hinst' : inst' = ffAlg p') (hU : IsAffCover p U B)
@@ -740,7 +712,6 @@ private theorem mapDR_eq_semiHom_mDR (K L : Type) [Field K] [Field L] [Algebra �
     rw [kaehlerDifferential_map_eq_semiHom_m1]
   | mul x y hx hy => rw [map_mul, map_mul, hx, hy]
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-
 
 set_option maxHeartbeats 800000 in
 theorem gm_trace (hc : c ≫ p = p') (hinst : inst = ffAlg p) (hinst' : inst' = ffAlg p')

@@ -18,8 +18,6 @@ namespace GlobalTheory.Dec.PsiEig
 
 variable {n : ℕ}
 
-local notation "Mt" => Matrix (Fin n) (Fin n) ℂ
-
 section Linfty
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
   Matrix.linftyOpNormedSpace

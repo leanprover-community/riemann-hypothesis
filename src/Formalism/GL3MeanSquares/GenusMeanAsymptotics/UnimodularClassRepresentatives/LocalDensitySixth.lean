@@ -17,8 +17,6 @@ variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberFi
 variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 variable {κ : Type} [Fintype κ] [DecidableEq κ]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-
 abbrev spanO (b : Basis κ K V) : Submodule (𝓞 K) V := Submodule.span (𝓞 K) (Set.range b)
 
 def bO (b : Basis κ K V) : Basis κ (𝓞 K) (spanO b) :=

@@ -19,7 +19,4 @@ def quotOrder (π : T →* H) (A : Subalgebra R (T → R)) : Subalgebra R (H →
 def muOrder (R : Type) [CommRing R] (T : Type) [CommGroup T] : Subalgebra R (T → R) :=
   Algebra.adjoin R {f | ∃ χ : T →* Rˣ, f = fun t => ((χ t : Rˣ) : R)}
 
-def dualOrder (A : Subalgebra R (T → R)) : Subalgebra R ((T →* Rˣ) → R) :=
-  Algebra.adjoin R {g | ∃ l : A →ₗ[R] R, ∀ (χ : T →* Rˣ) (h : (fun t => ((χ t : Rˣ) : R)) ∈ A), g χ = l ⟨_, h⟩}
-
 end GlobalTheory.CompanionTheory.Ar.BT

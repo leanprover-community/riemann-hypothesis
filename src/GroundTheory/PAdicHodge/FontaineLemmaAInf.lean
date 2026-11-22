@@ -17,11 +17,6 @@ open _root_.WittVector
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝒪" => normInteger K
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "φ" => WittVector.frobeniusEquiv p 𝒪♭
-local notation "θ" => fontaineTheta 𝒪 p
-
 theorem fontaineTheta_frobenius_pow_succ_xi {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1) (n : ℕ) :
     θ ((φ ^ (n + 1)) (xi ε)) = p := by
   set_option synthInstance.maxHeartbeats 100000 in
@@ -44,7 +39,6 @@ theorem natCast_ne_zero {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1)
   apply norm_natCast_ne_zero hε hζ
   have h2 : ((p : 𝒪) : K) = (p : K) := by simp
   rw [← h2, h, ZeroMemClass.coe_zero, norm_zero]
-
 
 variable (K p) in
 noncomputable def kerThetaFrob : Ideal (AInf K p) :=

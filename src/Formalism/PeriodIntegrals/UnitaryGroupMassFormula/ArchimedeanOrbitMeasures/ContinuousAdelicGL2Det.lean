@@ -15,8 +15,6 @@ section Chart
 
 variable {P Q : ℕ}
 
-local notation "Mat" => Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ
-
 theorem chart_units (G Y : Mat) (h : G * ((1 + 1) - Y) = (1 + 1) + Y) :
     (G + 1) * ((1 + 1) - Y) = (4 : ℂ) • (1 : Mat) ∧ IsUnit (G + 1).det ∧
       IsUnit ((1 + 1) - Y).det := by

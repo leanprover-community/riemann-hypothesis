@@ -23,85 +23,15 @@ namespace QuasiCharacter
 
 variable {K}
 
-def circleToUnits : Circle →ₜ* ℂˣ where
-  toMonoidHom := Circle.toUnits
-  continuous_toFun := Units.continuous_iff.2 ⟨continuous_subtype_val, by
-    refine (continuous_subtype_val.inv₀ fun z : Circle ↦ z.coe_ne_zero).congr fun z ↦ ?_
-    change ((z : ℂ))⁻¹ = ((Circle.toUnits z)⁻¹ : ℂˣ).val
-    rw [Units.val_inv_eq_inv_val]
-    rfl⟩
-
-def ofUnitary : HeckeCharacter K →* QuasiCharacter K where
-  toFun χ := circleToUnits.comp χ
-  map_one' := by
-    ext c
-    simp
-  map_mul' χ χ' := by
-    ext c
-    simp
-
 @[simp]
 theorem ofUnitary_apply (χ : HeckeCharacter K) (c : IdeleClassGroup K) :
     ((ofUnitary χ c : ℂˣ) : ℂ) = χ c :=
-  rfl
-
-theorem ofUnitary_injective : Function.Injective (ofUnitary (K := K)) := by
-  intro χ χ' h
-  ext c
-  have := congrArg (fun ψ : QuasiCharacter K ↦ ((ψ c : ℂˣ) : ℂ)) h
-  simpa using this
-
-theorem norm_ofUnitary (χ : HeckeCharacter K) (c : IdeleClassGroup K) :
-    ‖((ofUnitary χ c : ℂˣ) : ℂ)‖ = 1 := by
-  rw [ofUnitary_apply, Circle.norm_coe]
-
-theorem continuous_units_mk0 {X : Type*} [TopologicalSpace X] {f : X → ℂ} (hf : Continuous f)
-    (h : ∀ x, f x ≠ 0) : Continuous fun x ↦ Units.mk0 (f x) (h x) := by
-  refine Units.continuous_iff.2 ⟨hf, ?_⟩
-  have e : (fun x ↦ ((Units.mk0 (f x) (h x))⁻¹ : ℂˣ).val) = fun x ↦ (f x)⁻¹ := by
-    funext x
-    rw [Units.val_inv_eq_inv_val, Units.val_mk0]
-  rw [e]
-  exact hf.inv₀ h
-
-theorem continuous_ideleModule_val :
-    Continuous fun c : IdeleClassGroup K ↦ (IdeleClassGroup.ideleModule K c : ℝ) :=
-  continuous_subtype_val.comp (IdeleClassGroup.continuous_ideleModule K)
-
-def modulePow (s : ℂ) : QuasiCharacter K where
-  toFun c := Units.mk0 (Complex.exp (s * Real.log (IdeleClassGroup.ideleModule K c : ℝ)))
-    (Complex.exp_ne_zero _)
-  map_one' := by
-    ext
-    simp
-  map_mul' c d := by
-    ext
-    simp only [map_mul, Positive.val_mul, Units.val_mk0, Units.val_mul]
-    rw [Real.log_mul (IdeleClassGroup.ideleModule K c).2.ne' (IdeleClassGroup.ideleModule K d).2.ne',
-      Complex.ofReal_add, mul_add, Complex.exp_add]
-  continuous_toFun := continuous_units_mk0
-    (Complex.continuous_exp.comp (continuous_const.mul (Complex.continuous_ofReal.comp
-      (continuous_ideleModule_val.log fun c ↦ (IdeleClassGroup.ideleModule K c).2.ne'))))
-    fun _ ↦ Complex.exp_ne_zero _
-
-theorem modulePow_apply (s : ℂ) (c : IdeleClassGroup K) :
-    ((modulePow s c : ℂˣ) : ℂ) = Complex.exp (s * Real.log (IdeleClassGroup.ideleModule K c : ℝ)) :=
   rfl
 
 @[simp]
 theorem modulePow_zero : modulePow (0 : ℂ) = (1 : QuasiCharacter K) := by
   ext c
   simp [modulePow_apply]
-
-theorem modulePow_add (s t : ℂ) :
-    modulePow (s + t) = (modulePow s * modulePow t : QuasiCharacter K) := by
-  ext c
-  simp only [modulePow_apply, ContinuousMonoidHom.mul_apply, Units.val_mul, add_mul, Complex.exp_add]
-
-theorem norm_modulePow_ofReal (σ : ℝ) (c : IdeleClassGroup K) :
-    ‖((modulePow (σ : ℂ) c : ℂˣ) : ℂ)‖ = (IdeleClassGroup.ideleModule K c : ℝ) ^ σ := by
-  rw [modulePow_apply, ← Complex.ofReal_mul, Complex.norm_exp_ofReal,
-    Real.rpow_def_of_pos (IdeleClassGroup.ideleModule K c).2, mul_comm]
 
 variable (ψ : QuasiCharacter K)
 

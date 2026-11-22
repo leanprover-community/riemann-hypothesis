@@ -18,10 +18,6 @@ namespace ACris
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-local notation "𝒪" => normInteger ℂ_[p]
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "𝔭" => Ideal.span {(p : ACris ℂ_[p] p)}
-
 theorem exists_untilt_eq_of_cp (π : 𝒪) : ∃ x : 𝒪♭, PreTilt.untilt x = π := by
   have hp0 : 0 < p := hp.out.pos
   let root : 𝒪 → 𝒪 := fun z =>
@@ -94,9 +90,6 @@ theorem exists_phi_eq_p_mul_theta_eq (c : 𝒪) :
 
 section Plus
 
-local notation "𝔹" => BDeRhamPlus 𝒪 p
-local notation "θdR" => IsPerfectoidField.thetaBDeRhamPlusField (K := ℂ_[p]) p
-
 set_option maxHeartbeats 1600000 in
 theorem phiPlus_eq_of_mul_eq {y : (BCrisPlus ℂ_[p] p)} {a : ACris ℂ_[p] p} {k m : ℕ}
     (hy : y * (p : (BCrisPlus ℂ_[p] p)) ^ k = algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p) a)
@@ -106,7 +99,6 @@ theorem phiPlus_eq_of_mul_eq {y : (BCrisPlus ℂ_[p] p)} {a : ACris ℂ_[p] p} {
   rw [map_mul, map_pow, map_natCast, phiPlus_algebraMap, ha, map_mul, map_pow, map_natCast,
     ← hy] at h
   exact (isUnit_p_bCrisPlus.pow k).mul_right_cancel (by rw [h]; ring)
-
 
 set_option maxHeartbeats 1600000 in
 theorem exists_phiPlus_eq_theta_eq (c : ℂ_[p]) :
@@ -136,7 +128,6 @@ theorem exists_phiPlus_eq_theta_eq (c : ℂ_[p]) :
   rw [hc'']
   ring
 
-
 set_option maxHeartbeats 1600000 in
 theorem exists_phiPlus_eq_pow_theta_eq {m : ℕ} (hm : 1 ≤ m) (c : ℂ_[p]) :
     ∃ y : (BCrisPlus ℂ_[p] p), phiPlus ℂ_[p] p y = (p : (BCrisPlus ℂ_[p] p)) ^ m * y ∧ θdR (iotaPlus ℂ_[p] p y) = c := by
@@ -162,13 +153,11 @@ theorem iotaPlus_periodTPlus : iotaPlus ℂ_[p] p (periodTPlus hε) = fontaineT 
   rw [periodTPlus, iotaPlus_algebraMap]
   exact iota_periodT hε
 
-
 include hζ in
 theorem mem_span_fontaineT_of_theta_eq_zero {r : 𝔹} (hr : θdR r = 0) :
     r ∈ Ideal.span {fontaineT ε hε} := by
   rw [← maximalIdeal_eq_span_fontaineT hε hζ, IsPerfectoidField.maximalIdeal_bDeRhamPlus]
   exact hr
-
 
 set_option maxHeartbeats 1600000 in
 include hζ in

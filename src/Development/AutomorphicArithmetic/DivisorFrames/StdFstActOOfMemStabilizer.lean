@@ -17,8 +17,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle
 
 variable {D : D7}
 
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
-
 private theorem isIntM_mul {b a c : ℕ} {N : Matrix (Fin b) (Fin a) (Lev.EAf D)} {κ : Matrix (Fin a) (Fin c) (Lev.EAf D)}
     (hN : IsIntM N) (hκ : IsIntM κ) : IsIntM (N * κ) := fun i j => by
   rw [Matrix.mul_apply]

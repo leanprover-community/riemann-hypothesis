@@ -161,11 +161,6 @@ theorem hom_app_res {F F' : X.Modules} (φ : F ⟶ F') {U V : X.Opens} (h : V �
     φ.app V (F.presheaf.map (homOfLE h).op s) = F'.presheaf.map (homOfLE h).op (φ.app U s) :=
   congr($(φ.mapPresheaf.naturality (homOfLE h).op) s)
 
-def homAppLinear {F F' : X.Modules} (φ : F ⟶ F') (U : X.Opens) : Γ(F, U) →ₗ[Γ(X, U)] Γ(F', U) where
-  toFun := φ.app U
-  map_add' := map_add _
-  map_smul' := φ.app_smul
-
 variable (f : X ⟶ Y) (F : X.Modules) (G : Y.Modules) {U U' : X.Opens} {V V' : Y.Opens}
 
 abbrev appLEAlgebra (e : U ≤ f ⁻¹ᵁ V) : Algebra Γ(Y, V) Γ(X, U) :=
@@ -257,7 +252,6 @@ section SpecCase
 
 variable {R S : CommRingCat.{u}} (φ : R ⟶ S)
 
-
 set_option backward.isDefEq.respectTransparency false in
 def pushforwardSpecΓIso :
     moduleSpecΓFunctor (R := S) ⋙ ModuleCat.restrictScalars φ.hom ≅
@@ -279,7 +273,6 @@ def pushforwardSpecΓIso :
         refine h₂.trans (Eq.trans ?_ congr((Spec.map φ).app ⊤ $h₁).symm)
         exact congr($(Scheme.ΓSpecIso_inv_naturality φ) r) }) fun _ ↦ rfl
 
-
 set_option backward.isDefEq.respectTransparency false in
 def tildePullbackIso :
     ModuleCat.extendScalars φ.hom ⋙ tilde.functor S ≅
@@ -300,7 +293,6 @@ theorem tildePullbackIso_hom_app_toOpen (M : ModuleCat.{u} R) (m : M) :
     (pushforwardSpecΓIso φ))
     (tilde.adjunction.comp (Scheme.Modules.pullbackPushforwardAdjunction (Spec.map φ))) M
   exact congr($this m)
-
 
 set_option backward.isDefEq.respectTransparency false in
 def tildeIsoPullback (M : (Spec R).Modules) [M.IsQuasicoherent] :
@@ -367,7 +359,6 @@ theorem restrictPullbackIso_hom_app_unit (G : Y.Modules) (V : Y.Opens) (s : Γ(G
     ((Scheme.Modules.pullbackPushforwardAdjunction f).comp (Scheme.Modules.restrictAdjunction j)) G
   exact congr(($this).app V s)
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem restrictPullbackIso_hom_app_pullbackSections (G : Y.Modules) {V : Y.Opens} {V' : Y'.Opens}
     {U' : X'.Opens} (hV : i ''ᵁ V' ≤ V) (e' : U' ≤ p ⁻¹ᵁ V') (e : j ''ᵁ U' ≤ f ⁻¹ᵁ V)
@@ -415,7 +406,6 @@ theorem exists_affine_pair (x : X) {W : X.Opens} (hx : x ∈ W) :
 
 variable [G.IsQuasicoherent]
 
-
 set_option backward.isDefEq.respectTransparency false in
 instance isQuasicoherent_pullback : ((Scheme.Modules.pullback f).obj G).IsQuasicoherent := by
   refine isQuasicoherent_of_forall_exists_affine _ fun x ↦ ?_
@@ -424,7 +414,6 @@ instance isQuasicoherent_pullback : ((Scheme.Modules.pullback f).obj G).IsQuasic
   exact (SheafOfModules.isQuasicoherent (Spec Γ(X, U)).ringCatSheaf).prop_of_iso
     ((restrictPullbackIso (IsAffineOpen.SpecMap_appLE_fromSpec f hV hU e)).app G)
     (isQuasicoherent_pullback_Spec (f.appLE V U e) (G.restrict hV.fromSpec))
-
 
 set_option backward.isDefEq.respectTransparency false in
 theorem isBaseChange_pullbackSections (hU : IsAffineOpen U) (hV : IsAffineOpen V)
@@ -511,7 +500,6 @@ theorem epi_of_locally_app_surjective (φ : F ⟶ F')
   rw [← ht]
   exact congr(($e).app (𝒰 i) t)
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem app_surjective_of_epi_of_isAffineOpen (φ : F ⟶ F') [Epi φ] [F.IsQuasicoherent]
     [F'.IsQuasicoherent] {U : X.Opens} (hU : IsAffineOpen U) :
@@ -535,36 +523,6 @@ theorem app_surjective_of_epi_of_isAffineOpen (φ : F ⟶ F') [Epi φ] [F.IsQuas
   rwa [fromSpec_image_top hU] at h₆
 
 variable (f : X ⟶ Y)
-
-theorem injective_of_isBaseChange_of_flat {A B M M' N N' : Type*} [CommRing A] [CommRing B]
-    [Algebra A B] [Module.Flat A B] [AddCommGroup M] [Module A M] [AddCommGroup M'] [Module A M']
-    [AddCommGroup N] [Module A N] [Module B N] [IsScalarTower A B N] [AddCommGroup N']
-    [Module A N'] [Module B N'] [IsScalarTower A B N'] {l : M →ₗ[A] N} {l' : M' →ₗ[A] N'}
-    (hl : IsBaseChange B l) (hl' : IsBaseChange B l') (a : M →ₗ[A] M') (b : N →ₗ[B] N')
-    (hab : ∀ m, b (l m) = l' (a m)) (ha : Function.Injective a) : Function.Injective b := by
-  have : b ∘ₗ hl.equiv.toLinearMap = hl'.equiv.toLinearMap ∘ₗ a.baseChange B := by
-    ext m
-    simp [hab]
-  have h : Function.Injective (b ∘ₗ hl.equiv.toLinearMap) := by
-    rw [this]
-    exact hl'.equiv.injective.comp (Module.Flat.lTensor_preserves_injective_linearMap a ha)
-  exact Function.Injective.of_comp_right h hl.equiv.surjective
-
-theorem mono_pullback_map [Flat f] {G G' : Y.Modules} (φ : G ⟶ G') [Mono φ] [G.IsQuasicoherent]
-    [G'.IsQuasicoherent] : Mono ((Scheme.Modules.pullback f).map φ) := by
-  refine mono_of_locally_app_injective _ fun W x hx ↦ ?_
-  obtain ⟨U, V, hU, hV, hxU, hle, e⟩ := exists_affine_pair f x hx
-  refine ⟨U, hxU, hle, ?_⟩
-  letI := appLEAlgebra f e
-  letI := appLEModule f ((Scheme.Modules.pullback f).obj G) e
-  haveI := appLE_isScalarTower f ((Scheme.Modules.pullback f).obj G) e
-  letI := appLEModule f ((Scheme.Modules.pullback f).obj G') e
-  haveI := appLE_isScalarTower f ((Scheme.Modules.pullback f).obj G') e
-  haveI : Module.Flat Γ(Y, V) Γ(X, U) := f.flat_appLE hV hU e
-  exact injective_of_isBaseChange_of_flat (isBaseChange_pullbackSections f G hU hV e)
-    (isBaseChange_pullbackSections f G' hU hV e) (homAppLinear φ V)
-    (homAppLinear ((Scheme.Modules.pullback f).map φ) U)
-    (pullback_map_app_pullbackSections f φ e) (app_injective_of_mono φ V)
 
 end Exact
 

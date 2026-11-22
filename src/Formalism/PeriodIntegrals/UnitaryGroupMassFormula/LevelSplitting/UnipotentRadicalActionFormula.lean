@@ -37,8 +37,6 @@ def sL (D : Dat A n r) (half : A) (y : Fin r → n → A) : (n → A) →ₗ[A] 
 def tV (D : Dat A n r) (half : A) (y : Fin r → n → A) (v : n → A) : n → A :=
   ∑ a, D.h (D.e a) v • uv D half y a - ∑ b, D.h (y b) v • D.e b
 
-private theorem hLap_lemma (D : Dat A n r) (x v : n → A) : D.hL x v = D.h x v := rfl
-
 theorem sL_apply (D : Dat A n r) (half : A) (y : Fin r → n → A) (v : n → A) :
     sL D half y v = v + ∑ a, D.h (D.e a) v • uv D half y a - ∑ b, D.h (y b) v • D.e b := by
   simp only [sL, LinearMap.sub_apply, LinearMap.add_apply, LinearMap.id_apply,

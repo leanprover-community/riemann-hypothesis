@@ -15,7 +15,6 @@ public import Formalism.LocalToGlobal.KernelLattices.TopLawQ
 public import Formalism.LocalToGlobal.KernelLattices.ColInst
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 public import Formalism.LocalToGlobal.Columns.ChainInstY
-public import Formalism.LocalToGlobal.Columns.WithTopLevGTop
 
 @[expose] public section
 

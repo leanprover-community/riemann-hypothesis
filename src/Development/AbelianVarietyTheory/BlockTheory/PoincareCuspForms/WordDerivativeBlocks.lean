@@ -19,9 +19,6 @@ variable {Λ W : Type} [NormedAddCommGroup W] [NormedSpace ℂ W]
 def wordDeriv (dir : Λ → W) (l : List Λ) (F : W → ℂ) (p : W) : ℂ :=
   iteratedFDeriv ℂ l.length F p fun j => dir (l.get j)
 
-def applyAt (dir : Λ → W) (P : MvPolynomial Λ ℂ) (F : W → ℂ) (p : W) : ℂ :=
-  ∑ μ ∈ P.support, P.coeff μ * wordDeriv dir (Finsupp.toMultiset μ).toList F p
-
 theorem iteratedFDeriv_directions_comp_perm_of_analyticAt (dir : Λ → W) {F : W → ℂ} {p : W} (hF : AnalyticAt ℂ F p)
     {k : ℕ} (u v : Fin k → Λ) (σ : Equiv.Perm (Fin k)) (h : u = v ∘ σ) :
     iteratedFDeriv ℂ k F p (fun j => dir (u j)) = iteratedFDeriv ℂ k F p (fun j => dir (v j)) := by
@@ -72,45 +69,6 @@ section Columns
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
 end Columns
-
-def gDim (f r : ℕ) : ℕ := f * r
-
-def bigR (rd : ℝ) : ℝ := rd ^ 7
-
-def dStar (f m : ℕ) : ℕ := 2 * f * m
-
-def omStar (f : ℕ) (rd : ℝ) : ℝ := 2 * (f : ℝ) ^ ((3 : ℝ) / 2) * rd
-
-def thSq (f : ℕ) (rd : ℝ) (q : ℕ) (R₀ : ℝ) : ℝ := f * R₀ ^ 2 * bigR rd ^ 3 / q
-
-def bZero (rd : ℝ) (q : ℕ) (R₀ : ℝ) : ℝ := q / (R₀ ^ 2 * bigR rd ^ 4)
-
-def tZero (rd : ℝ) (q : ℕ) (R₀ : ℝ) : ℝ := q * bZero rd q R₀
-
-def mOne (f m : ℕ) (rd : ℝ) : ℝ := 90 * (m : ℝ) ^ 2 * (dStar f m : ℝ) ^ 2 * rd
-
-structure Params {ι : Type} (dim : ι → ℕ) (f r : ℕ) (rd : ℝ) (D n : ℕ) where
-  q : ℕ
-  R₀ : ℝ
-  m : ℕ
-  one_le_m : 1 ≤ m
-  min_dim_le : ∃ s, dim s ≤ m
-  m_pow_le : m ^ 4 ≤ f
-  f_sq_le : (f : ℝ) ^ 2 ≤ rd
-  sixteen_le : 16 ≤ rd
-  two_le_fr : 2 ≤ f * r
-  three_le_q : 3 ≤ q
-  one_le_D : 1 ≤ D
-  one_le_n : 1 ≤ n
-  R₀_pos : 0 < R₀
-  R₀_sq : max (270 : ℝ) (90 * ((gDim f r : ℝ) + D)) ≤ R₀ ^ 2
-  threshold_lt : (dStar f m : ℝ) ^ 2 * omStar f rd * thSq f rd q R₀ < 1
-  one_le_bZero : 1 ≤ bZero rd q R₀
-  mOne_le : mOne f m rd ≤ (q : ℝ) / 2
-  D_le_q : D ≤ q
-  tZero_ge_log : 4 * (D : ℝ) * (7 + Real.log ((q : ℝ) * D)) + (dStar f m : ℝ) + 1 ≤ tZero rd q R₀
-  tZero_ge_rank : (gDim f r : ℝ) * Real.log 2 + 2 * (dStar f m : ℝ) + 3 +
-    ((D : ℝ) + 1) * ((r : ℝ) * Real.log r + 3 * r + 3) ≤ tZero rd q R₀
 
 namespace Params
 

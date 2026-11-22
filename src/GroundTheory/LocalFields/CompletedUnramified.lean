@@ -94,8 +94,6 @@ section DVR
 
 variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
 
-local notation "𝔅" => AdicCompletion (maximalIdeal R) R
-
 variable (R) in
 theorem algebraMap_adicCompletion_injective : Function.Injective (algebraMap R 𝔅) :=
   AdicCompletion.of_injective _ _
@@ -103,11 +101,6 @@ theorem algebraMap_adicCompletion_injective : Function.Injective (algebraMap R �
 theorem maximalIdeal_adicCompletion_eq_span {ϖ : R} (hϖ : Irreducible ϖ) :
     maximalIdeal 𝔅 = Ideal.span {algebraMap R 𝔅 ϖ} := by
   rw [AdicCompletion.maximalIdeal_eq_map, hϖ.maximalIdeal_eq, Ideal.map_span, Set.image_singleton]
-
-theorem eq_zero_of_forall_mem_maximalIdeal_pow {x : 𝔅} (h : ∀ n, x ∈ maximalIdeal 𝔅 ^ n) :
-    x = 0 :=
-  IsHausdorff.haus' (I := maximalIdeal 𝔅) x fun n ↦ by
-    simpa only [SModEq.zero, smul_eq_mul, Ideal.mul_top] using h n
 
 theorem exists_eq_unit_mul_pow_adicCompletion {ϖ : R} (hϖ : Irreducible ϖ) {x : 𝔅} (hx : x ≠ 0) :
     ∃ (n : ℕ) (u : 𝔅ˣ), x = u * algebraMap R 𝔅 ϖ ^ n :=
@@ -174,8 +167,6 @@ end DVR
 section Automorphism
 
 variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
-
-local notation "𝔅" => AdicCompletion (maximalIdeal R) R
 
 theorem maximalIdeal_le_comap_ringEquiv (θ : R ≃+* R) :
     maximalIdeal R ≤ (maximalIdeal R).comap (θ : R →+* R) := by
@@ -353,8 +344,6 @@ variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchi
   (Ω : Type*) [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
   [Algebra K Ω] [ValuativeExtension K Ω] [Algebra.IsAlgebraic K Ω] [HasUnramifiedRoots K Ω]
 
-local notation "𝔼" => maximalUnramifiedExtension K Ω
-
 abbrev CompletedUnramifiedIntegers : Type _ :=
   AdicCompletion (maximalIdeal 𝒪[maximalUnramifiedExtension K Ω]) 𝒪[maximalUnramifiedExtension K Ω]
 
@@ -367,12 +356,6 @@ theorem algebraMap_integer_completedUnramifiedIntegers_injective :
     Function.Injective (algebraMap 𝒪[𝔼] 𝔹) :=
   algebraMap_adicCompletion_injective _
 
-theorem algebraMap_completedUnramifiedIntegers_injective :
-    Function.Injective (algebraMap 𝒪[K] 𝔹) := by
-  rw [IsScalarTower.algebraMap_eq 𝒪[K] 𝒪[𝔼] 𝔹]
-  exact (algebraMap_integer_completedUnramifiedIntegers_injective K Ω).comp
-    (algebraMap_integer_injective K 𝔼)
-
 theorem map_maximalIdeal_completedUnramifiedIntegers :
     (maximalIdeal 𝒪[K]).map (algebraMap 𝒪[K] 𝔹) = maximalIdeal 𝔹 := by
   rw [IsScalarTower.algebraMap_eq 𝒪[K] 𝒪[𝔼] 𝔹, ← Ideal.map_map, map_maximalIdeal_integer,
@@ -380,15 +363,6 @@ theorem map_maximalIdeal_completedUnramifiedIntegers :
 
 instance isLocalHom_algebraMap_completedUnramifiedIntegers : IsLocalHom (algebraMap 𝒪[K] 𝔹) :=
   isLocalHom_algebraMap_of_map_maximalIdeal (map_maximalIdeal_completedUnramifiedIntegers K Ω)
-
-theorem irreducible_algebraMap_completedUnramifiedIntegers_iff (π : 𝒪[K]) :
-    Irreducible (algebraMap 𝒪[K] 𝔹 π) ↔ Irreducible π := by
-  refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
-  · refine irreducible_iff.mpr ⟨fun hu ↦ h.not_isUnit (hu.map _), fun a b hab ↦ ?_⟩
-    rw [hab, map_mul] at h
-    exact (h.isUnit_or_isUnit rfl).imp (isUnit_of_map_unit _ _) (isUnit_of_map_unit _ _)
-  · rw [IsScalarTower.algebraMap_apply 𝒪[K] 𝒪[𝔼] 𝔹]
-    exact irreducible_algebraMap_adicCompletion (irreducible_algebraMap_uniformizer h)
 
 def residueFieldCompletedUnramifiedIntegersEquiv :
     ResidueField 𝒪[𝔼] ≃+* ResidueField 𝔹 :=
@@ -412,9 +386,6 @@ section Frobenius
 variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   (Ω : Type*) [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
   [Algebra K Ω] [ValuativeExtension K Ω] [Algebra.IsAlgebraic K Ω] [HasUnramifiedRoots K Ω]
-
-local notation "𝔼" => maximalUnramifiedExtension K Ω
-local notation "𝔹" => CompletedUnramifiedIntegers K Ω
 
 def completedUnramifiedAlgEquiv : (𝔼 ≃ₐ[K] 𝔼) →* (𝔹 ≃ₐ[𝒪[K]] 𝔹) :=
   adicCompletionAlgEquiv.comp (integerAlgEquivOfIsAlgebraic K 𝔼)
@@ -454,26 +425,6 @@ theorem residue_completedFrobenius (x : 𝔹) :
     residue_eq_zero_iff, ← map_pow, ← map_sub, AdicCompletion.maximalIdeal_eq_map]
   exact Ideal.mem_map_of_mem _ (frobenius_integer_sub_pow_mem_maximalIdeal r)
 
-theorem mem_range_algebraMap_iff_completedFrobenius (b : 𝔹) :
-    b ∈ (algebraMap 𝒪[K] 𝔹).range ↔ completedFrobenius K Ω b = b :=
-  have := isAdicComplete_integer K
-  mem_range_algebraMap_iff_fixed (map_maximalIdeal_completedUnramifiedIntegers K Ω)
-    (completedFrobenius K Ω).toAlgHom (residue_completedFrobenius) b
-
-variable (K Ω) in
-theorem completedUnramifiedIntegers_spec :
-    IsDiscreteValuationRing 𝔹 ∧ IsAdicComplete (maximalIdeal 𝔹) 𝔹 ∧
-      Function.Injective (algebraMap 𝒪[K] 𝔹) ∧
-      (maximalIdeal 𝒪[K]).map (algebraMap 𝒪[K] 𝔹) = maximalIdeal 𝔹 ∧
-      (∀ π : 𝒪[K], Irreducible (algebraMap 𝒪[K] 𝔹 π) ↔ Irreducible π) ∧
-      IsAlgClosed (ResidueField 𝔹) ∧ Algebra.IsAlgebraic 𝓀[K] (ResidueField 𝔹) ∧
-      (∀ x : 𝔹, residue 𝔹 (completedFrobenius K Ω x) = residue 𝔹 x ^ Nat.card 𝓀[K]) ∧
-      (∀ b : 𝔹, completedFrobenius K Ω b = b ↔ b ∈ (algebraMap 𝒪[K] 𝔹).range) :=
-  ⟨inferInstance, inferInstance, algebraMap_completedUnramifiedIntegers_injective K Ω,
-    map_maximalIdeal_completedUnramifiedIntegers K Ω,
-    irreducible_algebraMap_completedUnramifiedIntegers_iff K Ω, inferInstance, inferInstance,
-    residue_completedFrobenius, fun b ↦ (mem_range_algebraMap_iff_completedFrobenius b).symm⟩
-
 end Frobenius
 
 section Finite
@@ -481,9 +432,6 @@ section Finite
 variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   (Ω : Type*) [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
   [Algebra K Ω] [ValuativeExtension K Ω] [Algebra.IsAlgebraic K Ω] [HasUnramifiedRoots K Ω]
-
-local notation "𝔼" => maximalUnramifiedExtension K Ω
-local notation "𝔹" => CompletedUnramifiedIntegers K Ω
 
 def integerToCompleted {L : IntermediateField K Ω} (h : L ≤ 𝔼) : 𝒪[L] →ₐ[𝒪[K]] 𝔹 :=
   (IsScalarTower.toAlgHom 𝒪[K] 𝒪[𝔼] 𝔹).comp (integerInclusion h)
@@ -507,9 +455,6 @@ variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchi
   {Ω : Type*} [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
   [Algebra K Ω] [ValuativeExtension K Ω] [Algebra.IsAlgebraic K Ω] [HasUnramifiedRoots K Ω]
   [IsGalois K Ω]
-
-local notation "𝔼" => maximalUnramifiedExtension K Ω
-local notation "𝔹" => CompletedUnramifiedIntegers K Ω
 
 theorem maximalUnramifiedExtensionFrobenius_inclusion {L : IntermediateField K Ω}
     (hL : IsUnramifiedSubextension L) (y : L) :

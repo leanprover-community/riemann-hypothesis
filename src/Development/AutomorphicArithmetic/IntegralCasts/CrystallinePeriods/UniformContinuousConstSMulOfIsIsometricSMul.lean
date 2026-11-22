@@ -15,9 +15,6 @@ universe u v
 class IsUnitBall {C : Type u} [NormedField C] (O : ValuationSubring C) : Prop where
   mem_iff : ∀ x : C, x ∈ O ↔ ‖x‖ ≤ 1
 
-def unitBall (C : Type u) [NormedField C] [IsUltrametricDist C] : ValuationSubring C :=
-  (NormedField.valuation (K := C)).valuationSubring
-
 namespace IsUnitBall
 
 variable {C : Type u} [NormedField C] (O : ValuationSubring C) [IsUnitBall O]
@@ -111,9 +108,6 @@ instance [IsAlgClosed C] : IsAlgClosed (FractionRing O) :=
 @[simp] theorem awayEquiv_algebraMap [CharZero C] [NeZero p] (x : O) :
     awayEquiv O p (algebraMap O _ x) = (x : C) := (awayEquiv O p).commutes x
 
-
-
-
 section Action
 
 variable (G : Type v) [Monoid G] [MulSemiringAction G C] [IsIsometricSMul G C]
@@ -121,7 +115,6 @@ variable (G : Type v) [Monoid G] [MulSemiringAction G C] [IsIsometricSMul G C]
 omit hp in
 theorem norm_smul_eq (g : G) (x : C) : ‖g • x‖ = ‖x‖ := by
   simpa using (isometry_smul C g).dist_eq x 0
-
 
 omit hp in
 instance : MulSemiringAction G O where
@@ -132,7 +125,6 @@ instance : MulSemiringAction G O where
   smul_add g x y := Subtype.ext (smul_add g (x : C) y)
   smul_one g := Subtype.ext (smul_one g)
   smul_mul g x y := Subtype.ext (smul_mul' g (x : C) y)
-
 
 end Action
 
@@ -148,7 +140,6 @@ variable (G : Type v) [Monoid G] (E : Type u) [NormedField E] [MulSemiringAction
 instance (priority := 100) uniformContinuousConstSMul_of_isIsometricSMul :
     UniformContinuousConstSMul G E :=
   ⟨fun g => (isometry_smul E g).uniformContinuous⟩
-
 
 open UniformSpace in
 instance completionMulSemiringAction : MulSemiringAction G (Completion E) where
@@ -202,8 +193,6 @@ section CK
 
 variable (K : Type u) [NontriviallyNormedField K] [IsUltrametricDist K] [CompleteSpace K]
 
-def AlgCl : Type u := AlgebraicClosure K
-
 namespace AlgCl
 
 instance : Field (AlgCl K) := inferInstanceAs (Field (AlgebraicClosure K))
@@ -214,10 +203,6 @@ instance : NontriviallyNormedField (AlgCl K) := spectralNorm.nontriviallyNormedF
 instance : NormedAlgebra K (AlgCl K) := spectralNorm.normedAlgebra K (AlgCl K)
 
 end AlgCl
-
-abbrev GalK : Type u := AlgCl K ≃ₐ[K] AlgCl K
-
-abbrev CK : Type u := UniformSpace.Completion (AlgCl K)
 
 namespace CK
 
@@ -230,8 +215,6 @@ instance : NontriviallyNormedField (CK K) where
 instance : IsUltrametricDist (CK K) := IsUltrametricDist.of_normedAlgebra K
 
 end CK
-
-abbrev OCK : ValuationSubring (CK K) := unitBall (CK K)
 
 end CK
 

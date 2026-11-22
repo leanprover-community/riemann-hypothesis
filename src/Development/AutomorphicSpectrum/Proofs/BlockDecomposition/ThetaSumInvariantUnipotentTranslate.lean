@@ -42,13 +42,4 @@ theorem psi_unip_rat {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F �
   rw [h, ht, halfTr_incA]
   exact hψ.2.2.1 _
 
-theorem theta_unip : ∀ (D : D7) (n : ℕ) (V : HSp D) ψ χ θ μ ω, HidaSetting D n V ψ χ θ μ ω →
-    ∀ (g : G D n) (b : Matrix (Fin n) (Fin n) D.host.E), mat g = blk4 1 (b.map (incA D)) 0 1 →
-    ∀ Φ : schwartzA θ V.rank n,
-      ∑' ξ : Matrix (Fin V.rank) (Fin n) D.host.E, (ω g Φ).1 (ξ.map (incA D)) =
-        ∑' ξ : Matrix (Fin V.rank) (Fin n) D.host.E, Φ.1 (ξ.map (incA D)) := by
-  intro D n V ψ χ θ μ ω hS g b hg Φ
-  refine tsum_congr fun ξ => ?_
-  rw [hS.2.2.2.2.2.2.2.unip g (b.map (incA D)) hg Φ (ξ.map (incA D)), psi_unip_rat hS.2.2.1, one_mul]
-
 end GlobalTheory.CompanionTheory.ThetaInv

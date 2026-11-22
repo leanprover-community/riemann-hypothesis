@@ -136,9 +136,6 @@ noncomputable def finRep (π : Formalism.L2.NG.FinTyp L n) : Representation ℂ 
     ext f x
     simp [LinearMap.restrict_apply, Formalism.IndefR.principalLevelFrame.rt_rt]
 
-theorem finRep_coe (π : Formalism.L2.NG.FinTyp L n) (h : Formalism.AUTREP.GAf L n) (f : π.S) :
-    ((finRep π h f : π.S) : Formalism.AUTREP.GAf L n → ℂ) = Formalism.L2.NG.rt L n h f := rfl
-
 theorem finRep_irr (π : Formalism.L2.NG.FinTyp L n) :
     ∀ W : Submodule ℂ π.S, (∀ g, ∀ x ∈ W, finRep π g x ∈ W) → W = ⊥ ∨ W = ⊤ := by
   intro W hW

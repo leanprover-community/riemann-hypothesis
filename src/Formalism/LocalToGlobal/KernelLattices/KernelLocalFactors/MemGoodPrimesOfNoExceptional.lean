@@ -22,7 +22,6 @@ section Copy
 variable {X : Fields} {Pr : Primes X} (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S)
 
-
 theorem prod_mul_eq_of_forall_cross_mul_eq {ι K : Type} [Fintype ι] [CommRing K] (a b y z : ι → K) (φ : K) (h : ∀ i, a i * z i = b i * y i) :
     (∏ i, a i) * (φ * ∏ i, z i) = (∏ i, b i) * (φ * ∏ i, y i) := by
   have h2 : ∏ i, (a i * z i) = ∏ i, (b i * y i) := Finset.prod_congr rfl (fun i _ => h i)
@@ -131,7 +130,6 @@ theorem ftY_move2 (hcst : cst.Ok) (w : rowSG Pr sel mu) (hw : w.1 ∈ Pr.vGs) {n
     rw [e0, mul_add, hcst.psi_add w _ _ hA hB, hcst.psi_int w _ hζe, mul_one]
   · rw [if_neg (fun h => hη (hcond.1 h)), if_neg hη]
 
-
 open Classical in
 theorem ybSet_props2 {n : ℕ} {N : Submodule (𝓞 X.E) (Sp X.E n)} {Y : Set (Sp X.E n)} (hY : Y ∈ ybSet sel mu cst N)
     (w : rowSG Pr sel mu) (hw : w.1 ∈ Pr.vGs) :
@@ -225,20 +223,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
 
-def TopLaw (P : LevFam X.E X.K R.r Pr.vGs) (m2 : ℕ) (b : L.β (m2 + 1)) : Prop :=
-  ∀ (w : rowSG Pr sel mu) (hw : w.1 ∈ Pr.vGs) (h : ↥(L.levG (m2 + 1) b ⟨w.1, hw⟩).H)
-    (h₁ : GLG (E := X.E) (n := R.N R.m - 1) (SG := rowSG Pr sel mu)) (hh₁ : h₁ w ∈ ((rowTy Ch sel mu P).inv w).H)
-    (κ : ↥(GLint X.E (R.N (m2 + 1)) w.1)) (κr : ↥(GLint X.E (R.N R.m - 1) w.1)) (κt : ↥(GLint X.E (R.N R.m) w.1)),
-    (∀ x ∈ stdAt X.E (R.N (m2 + 1)) w.1, redV w.1 (κ.1 x) = (h.1⁻¹).1.mulVec (redV w.1 x)) →
-    (∀ x ∈ stdAt X.E (R.N R.m - 1) w.1, redV w.1 (κr.1 x) = ((h₁ w)⁻¹).1.mulVec (redV w.1 x)) →
-    (∀ x ∈ stdAt X.E (R.N R.m) w.1, redV w.1 (κt.1 x) = ((extGH (N_m_succ R) h₁ w)⁻¹).1.mulVec (redV w.1 x)) →
-    ∀ y : HomE X.E (R.N (m2 + 1)) (R.N R.m - 1),
-      rhoS Ch sel mu (m2 + 1) w (LinearEquiv.det κ.1 : X.Eˣ) * rhoT Ch sel mu (m2 + 1) w (LinearEquiv.det κt.1 : X.Eˣ) *
-          PhiTop Ch mu cst.sharp m2 w.1 (κr.1.symm.toLinearMap ∘ₗ y ∘ₗ κ.1.toLinearMap ∘ₗ
-            LinearMap.funLeft X.E X.E (Fin.castAdd (cOf R (m2 + 1)))) =
-        (((((rowTy Ch sel mu P).inv w).lam ⟨h₁ w, hh₁⟩)⁻¹ : X.Kˣ) : X.K) * ((((L.levG (m2 + 1) b ⟨w.1, hw⟩).lam h)⁻¹ : X.Kˣ) : X.K) *
-          PhiTop Ch mu cst.sharp m2 w.1 (y ∘ₗ LinearMap.funLeft X.E X.E (Fin.castAdd (cOf R (m2 + 1))))
-
 end Top
 
 section Inv3
@@ -246,8 +230,6 @@ section Inv3
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) {u : Pr.Word}
-
-
 
 end Inv3
 

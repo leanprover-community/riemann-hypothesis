@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.LinkMin
 public import Formalism.SharpRestriction.GlobalSchurBounds.IntegralityOfRationalityLocal
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.RamifiedLatticeOfRankSlopeLength
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.SecondBranchInclLengthOfLengths
 
 @[expose] public section

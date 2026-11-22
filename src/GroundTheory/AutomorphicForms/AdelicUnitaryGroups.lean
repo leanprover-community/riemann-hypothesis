@@ -93,10 +93,6 @@ def unitaryCongr (e : R ≃ₐ[K] S) (he : Continuous e) (he' : Continuous e.sym
     simp only [← Subgroup.coe_inv, ← map_inv]
     exact hm.comp (Units.continuous_val.comp (continuous_subtype_val.comp continuous_inv))
 
-theorem unitaryCongr_apply (e : R ≃ₐ[K] S) (he : Continuous e) (he' : Continuous e.symm)
-    (g : unitaryPoints K E H R) :
-    unitaryCongr H e he he' g = unitaryMap K E H e.toAlgHom g := rfl
-
 end Congr
 
 variable [NumberField K]

@@ -15,12 +15,6 @@ open scoped CategoryTheory.Obj
 
 namespace PositivityTheory.HtPt.Ml
 
-theorem spMap_field_pt {R K : Type} [CommRing R] [Field K] (δ : R →+* K) (z : Sp K) :
-    (spMap δ z).asIdeal = RingHom.ker δ := by
-  have hz : z.asIdeal = ⊥ := Ideal.eq_bot_of_prime _ (h := z.2)
-  show Ideal.comap δ z.asIdeal = _
-  rw [hz]; rfl
-
 theorem preimm_frac {O F : Type} [CommRing O] [Field F] (β : O →+* F)
     (h : letI := β.toAlgebra; IsFractionRing O F) : IsPreimmersion (spMap β) := by
   letI := β.toAlgebra
@@ -72,64 +66,5 @@ theorem lift_generic_point : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
     simpa [Model.j] using hw
   refine ⟨IsOpenImmersion.lift Y.jQ y1 hr, ?_⟩
   simp [Model.j, hy1]
-
-theorem generic_max {X : Type} [TopologicalSpace X] [T0Space X] {v v' : X} (h : v ∈ genericPoints X)
-    (hs : v' ⤳ v) : v' = v := by
-  have h1 : closure {v} ⊆ closure {v'} := specializes_iff_closure_subset.1 hs
-  have h2 : closure {v'} ⊆ closure {v} := h.2 isIrreducible_singleton.closure h1
-  exact (hs.antisymm (specializes_iff_closure_subset.2 h2)).eq
-
-theorem mem_of_dense_of_max {X : Type} [TopologicalSpace X] [TopologicalSpace.NoetherianSpace X] [QuasiSober X]
-    {U : Set X} (ho : IsOpen U) (hd : Dense U) {z : X} (hz : ∀ z', z' ⤳ z → z' = z) : z ∈ U := by
-  have hC := irreducibleComponent_mem_irreducibleComponents z
-  obtain ⟨o, hoo, ⟨u, hu⟩, hoC⟩ :=
-    TopologicalSpace.NoetherianSpace.exists_isOpen_nonempty_subset_irreducibleComponent _ hC
-  obtain ⟨w, hwo, hwU⟩ := hd.inter_open_nonempty o hoo ⟨u, hu⟩
-  have hg := hC.1.isGenericPoint_genericPoint_closure
-  rw [(isClosed_of_mem_irreducibleComponents _ hC).closure_eq] at hg
-  have hgz : hC.1.genericPoint = z := hz _ (hg.specializes mem_irreducibleComponent)
-  have hzw : z ⤳ w := hgz ▸ hg.specializes (hoC hwo)
-  exact hzw.mem_open ho hwU
-
-private theorem isLocallyNoetherian_of_closedImmersion_pSpace (O F : Type) [CommRing O] [Field F] (β : O →+* F) (X : Scheme.{0}) (s : X ⟶ Sp O)
-    (hp : IsProjOver s) : TopologicalSpace.NoetherianSpace ↥(pullback (C := Scheme.{0}) s (spMap β)) := by
-  haveI : IsProper s := projProper O X s hp
-  haveI : IsLocallyNoetherian (pullback s (spMap β)) :=
-    LocallyOfFiniteType.isLocallyNoetherian (pullback.snd s (spMap β))
-  haveI : CompactSpace ↥(pullback (C := Scheme.{0}) s (spMap β)) :=
-    QuasiCompact.compactSpace_of_compactSpace (pullback.snd s (spMap β))
-  haveI : IsNoetherian (pullback s (spMap β)) := {}
-  infer_instance
-
-theorem generic_points_range : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β), IsDomain O → (letI := β.toAlgebra; IsFractionRing O c.F) → genericPoints Y.X ⊆ Set.range Y.j := by
-  intro E _ _ _ H D l Xo c O _ β Y hO h v hv
-  haveI : IsPreimmersion (spMap β) := preimm_frac β h
-  haveI := Y.flat
-  haveI := Y.jQ_open
-  haveI := isLocallyNoetherian_of_closedImmersion_pSpace O c.F β Y.X Y.s Y.proj
-  have hβ : Function.Injective β := by
-    letI := β.toAlgebra
-    haveI := h
-    exact IsFractionRing.injective O c.F
-  let z0 : Sp c.F := IsLocalRing.closedPoint c.F
-  have hgen : (spMap β z0).asIdeal = ⊥ := by
-    rw [spMap_field_pt]
-    exact (RingHom.injective_iff_ker_eq_bot β).mp hβ
-  have hle : (spMap β z0).asIdeal ≤ (Y.s v).asIdeal := by
-    rw [hgen]
-    exact bot_le
-  have hspec : spMap β z0 ⤳ Y.s v := (PrimeSpectrum.le_iff_specializes _ _).mp hle
-  obtain ⟨v', hv'v, hv'⟩ := Flat.generalizingMap Y.s hspec
-  rw [generic_max hv hv'v] at hv'
-  obtain ⟨q, hq, -⟩ := Scheme.Pullback.exists_preimage_pullback v z0 hv'
-  have hqmax : ∀ q', q' ⤳ q → q' = q := by
-    intro q' hq'
-    apply (pullback.fst Y.s (spMap β)).isEmbedding.injective
-    rw [hq]
-    exact generic_max hv (hq ▸ hq'.map (pullback.fst Y.s (spMap β)).continuous)
-  obtain ⟨w, hw⟩ := mem_of_dense_of_max Y.jQ.isOpenEmbedding.isOpen_range Y.jQ_dense hqmax
-  refine ⟨w, ?_⟩
-  rw [← hq, ← hw]
-  simp [Model.j]
 
 end PositivityTheory.HtPt.Ml

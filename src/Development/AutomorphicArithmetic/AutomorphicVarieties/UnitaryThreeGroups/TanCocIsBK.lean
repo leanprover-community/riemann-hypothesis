@@ -83,10 +83,6 @@ private theorem sndM_J (F : R →ₐ[O] DualNumber κ) : sndM F (Jmat R 3) = 0 :
 
 private theorem fstM_J (F : R →ₐ[O] DualNumber κ) : fstM F (Jmat R 3) = Jmat κ 3 := Jmat_map _ 3
 
-private theorem sndM_tr (F : R →ₐ[O] DualNumber κ) (X : Matrix (Fin 3) (Fin 3) R) : sndM F Xᵀ = (sndM F X)ᵀ := rfl
-
-private theorem fstM_tr (F : R →ₐ[O] DualNumber κ) (X : Matrix (Fin 3) (Fin 3) R) : fstM F Xᵀ = (fstM F X)ᵀ := rfl
-
 private theorem sndM_inv (F : R →ₐ[O] DualNumber κ) (a : GL (Fin 3) R) :
     sndM F ((a⁻¹ : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) =
       -(fstM F ((a⁻¹ : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) * sndM F (a : Matrix (Fin 3) (Fin 3) R) *

@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ModVec
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ProjCont
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ProjHA
 
 @[expose] public section
 

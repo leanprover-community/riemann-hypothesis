@@ -249,9 +249,6 @@ def eD (n : ℕ) : ((Fin 1 → Fin n → ℂ) × (Fin n → Fin 1 → ℂ)) × (
         (MeasurableEquiv.piCongrRight fun _ => MeasurableEquiv.funUnique (Fin 1) ℂ))).trans
       (MeasurableEquiv.prodCongr (MeasurableEquiv.refl _) (shearU n)))
 
-theorem eD_apply (n : ℕ) (q : ((Fin 1 → Fin n → ℂ) × (Fin n → Fin 1 → ℂ)) × (G.UT n → ℂ)) :
-    eD n q = (q.1.1 0, q.2, G.upper q.2 *ᵥ fun i => q.1.2 i 0) := rfl
-
 theorem eD_mp (n : ℕ) : MeasurePreserving (eD n) volume (volume.prod (volume.prod volume)) := by
   have s1 : SigmaFinite (volume : Measure (Fin 1 → Fin n → ℂ)) := inferInstance
   have s2 : SigmaFinite (volume : Measure (Fin n → Fin 1 → ℂ)) := inferInstance

@@ -23,30 +23,8 @@ variable {J : Type} [Fintype J] {D : ℕ}
 abbrev pts (P : Ideal (MvPolynomial J ℤ)) : Set (J → ℂ) :=
   conePts (Int.castRingHom ℂ) P
 
-def coneOver (U : Set (Fin D → ℂ)) (γ : (Fin D → ℂ) → J → ℂ) : Set (J → ℂ) :=
-  {z | ∃ y ∈ U, ∃ c : ℂ, c ≠ 0 ∧ z = c • γ y}
-
-def IsParam (P : Ideal (MvPolynomial J ℤ)) (U : Set (Fin D → ℂ)) (γ : (Fin D → ℂ) → J → ℂ) :
-    Prop :=
-  IsOpen U ∧ AnalyticOnNhd ℂ γ U ∧ (∀ y ∈ U, γ y ∈ pts P) ∧
-    ∃ (O : Set (J → ℂ)) (q : (J → ℂ) → Fin D → ℂ), IsOpen O ∧ AnalyticOnNhd ℂ q O ∧
-      O ∩ pts P = coneOver U γ ∧ (∀ z ∈ O, ∀ c : ℂ, c ≠ 0 → c • z ∈ O ∧ q (c • z) = q z) ∧
-      ∀ y ∈ U, q (γ y) = y
-
-def IsSmoothPts (P : Ideal (MvPolynomial J ℤ)) (D : ℕ) : Prop :=
-  ∀ z ∈ pts P, ∃ T : Submodule ℂ (J → ℂ),
-    (∀ w, w ∈ T ↔ IsConeTangent (Int.castRingHom ℂ) P z w) ∧ finrank ℂ T = D + 1
-
 def IsDegZero (g : (J → ℂ) → ℝ) : Prop :=
   ∀ (c : ℂ) (z : J → ℂ), c ≠ 0 → g (c • z) = g z
-
-def IsVolumeOn (P : Ideal (MvPolynomial J ℤ)) (D : ℕ) (μ : Measure (J → ℂ)) : Prop :=
-  IsProbabilityMeasure μ ∧ μ (pts P)ᶜ = 0 ∧
-    ∀ (U : Set (Fin D → ℂ)) (γ : (Fin D → ℂ) → J → ℂ), IsParam P U γ →
-      ∃ ν : (Fin D → ℂ) → ℝ, ContDiffOn ℝ 1 ν U ∧ (∀ y ∈ U, 0 < ν y) ∧
-        ∀ g : (J → ℂ) → ℝ, Measurable g → IsDegZero g → (∀ z, 0 ≤ g z) →
-          ∫⁻ z in coneOver U γ, ENNReal.ofReal (g z) ∂μ =
-            ∫⁻ y in U, ENNReal.ofReal (g (γ y) * ν y)
 
 def conjPt (z : J → ℂ) : J → ℂ := fun i => starRingEnd ℂ (z i)
 
@@ -60,14 +38,6 @@ def IsSecBasis (x : J → Ω) (n : ℕ) {r : ℕ} (b : Fin r → MvPolynomial J 
   (∀ k, ∃ f : MvPolynomial J ℤ, f.IsHomogeneous n ∧ b k = map (Int.castRingHom ℚ) f) ∧
     LinearIndependent ℤ (fun k => aeval x (b k)) ∧
     Submodule.span ℤ (Set.range fun k => aeval x (b k)) = sec ℤ x n
-
-
-open Classical in
-def chi (x : J → Ω) (m : ConeMetric (C := ℂ) (ι := J)) (μ : Measure (J → ℂ)) (n : ℕ) : ℝ := by
-  classical
-  exact if h : ∃ p : (Σ r : ℕ, Fin r → MvPolynomial J ℚ), IsSecBasis x n p.2 then
-    l2Degree (K := ℚ) (fun _ => m) (fun _ => μ) n h.choose.2
-  else 0
 
 def matAct (A : Matrix J J ℚ) (x : J → Ω) : J → Ω :=
   fun i => ∑ j, (A i j : Ω) * x j
@@ -106,17 +76,6 @@ variable {Ω : Type*} [Field Ω] [CharZero Ω]
 
 def top (I : AllFam) (x : Ix κ → Ω) (m : ConeMetric (C := ℂ) (ι := Ix κ)) (D : ℕ) : ℝ :=
   I Unit (GlobalTheory κ) (coordIdeal ℤ x) (D + 1) fun _ => HermLine.ofCone m
-
-structure IsGood (D : ℕ) (x : Ix κ → Ω) (m : ConeMetric (C := ℂ) (ι := Ix κ))
-    (μ : Measure (Ix κ → ℂ)) :
-    Prop where
-  arith : IsArithVar (ι := GlobalTheory κ) (coordIdeal ℤ x) (D + 1)
-  indep : LinearIndependent ℚ x
-  smooth : IsSmoothPts (coordIdeal ℤ x) D
-  semipos : IsSemipositiveOn m (Int.castRingHom ℂ) (coordIdeal ℤ x) (pts (coordIdeal ℤ x))
-  conjM : IsConjInvariant m
-  conjMu : μ.map conjPt = μ
-  vol : IsVolumeOn (coordIdeal ℤ x) D μ
 
 end Top
 

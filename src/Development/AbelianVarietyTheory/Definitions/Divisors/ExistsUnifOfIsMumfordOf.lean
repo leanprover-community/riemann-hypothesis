@@ -117,9 +117,6 @@ def IsMumfordOf [IsLocalRing R] (ξ : Sp R ⟶ S) (Q : Data R) : Prop :=
       ∃ (G' : Over (Sp R')) (_ : GrpObj G') (_ : IsCommMonObj G') (π : G'.left ⟶ G.left) (A : PolAV (Sp (FractionRing R')))
         (U : Unif (maximalIdeal R') D A G'), IsUnifOf F j e (spMap ρ ≫ ξ) π U
 
-
-
-
 variable {F j e} in
 theorem IsMumfordOf.unif [IsLocalRing R] {ξ : Sp R ⟶ S} {Q : Data R} (h : IsMumfordOf F j e ξ Q) :
   ∀ (R' : Type) [CommRing R'] [IsDomain R'] [IsLocalRing R'] (ρ : R →+* R'), IsCN R' → Function.Injective ρ → ρ.Finite →
@@ -227,59 +224,6 @@ theorem refines_ofDeg (D : DegPre R) (hB : D.TauBimult) : Refines (ofDeg D hB) (
       eq_inv_of_mul_eq_one_left ((gm_cocycle D.P.isLB q z (hJ' q) (hJ q) (hJ' q)).trans (gm_self D.P.isLB q z (hJ' q)))
     refine (Finset.prod_congr rfl fun k _ => congrArg (· ^ negε k) (inv (𝟙 _ ≫ _))).trans ?_
     exact prod_neg_lamPts _ _ (fun q => gm q z _ (D.P.L.g (J q) (J' q)))
-
-
-open InhTate in
-def tate (k : ℤ) : Data InhTate.R where
-  B := P0.A
-  comm := P0.isAb.comm
-  isAb := P0.isAb
-  g := P0.g
-  smoothDim := P0.smoothDim
-  M := ⟨P0.L, tatePre.rig, P0.isLB, tatePre.rig_gen⟩
-  cub := tatePre.cub
-  ample := P0.ample
-  ktriv := P0.ktriv
-  X := ℤ
-  c := tatePre.c
-  c_add := tatePre.c_add
-  tau a b := cg _ _ (pi0 ^ (k * a * b))
-  tau_gen a b := cg_isGen _ _ _
-  tau_symm a b z J hJ := (gm_res _ z _ (hJ.mem _ _) _).trans
-    ((congrArg (fun l : ℤ => gm (𝟙 _) z ⊤ (pi0 ^ l)) (mul_right_comm k a b)).trans (gm_res _ z _ (hJ.mem _ _) _).symm)
-  tau_add a a' b z J hJ := by
-    refine (congrArg₂ (· * ·) (gm_res _ z _ (hJ.mem _ _) _) ((gm_res _ z _ (hJ.mem _ _) _).trans (map_one _))).trans
-      (Eq.trans ?_ (congrArg₂ (· * ·) (gm_res _ z _ (hJ.mem _ _) _) (gm_res _ z _ (hJ.mem _ _) _)).symm)
-    rw [_root_.mul_one, ← map_mul, ← zpow_add, mul_add, add_mul]
-
-
-
-open InhTate in
-theorem not_isPos_tate_zero : ¬ (tate 0).IsPos (maximalIdeal (PowerSeries ℚ)) := fun h => by
-  obtain ⟨r, hr, k, hk, u, -, hu⟩ := h (1 : ℤ) (one_ne_zero (α := ℤ))
-  let J : ((TK InhTate.R).left ⟶ (tate 0).B.left) → (tate 0).M.L.ι := fun _ => PUnit.unit
-  have hJ : ∀ z, Good (tate 0).M.L z J := fun _ _ => trivial
-  have hle : (⊤ : (Sp InhTate.R).Opens) ≤ (LB.LinComb (tate 0).M.L (lamPts ((tate 0).c (1 : ℤ)) ((tate 0).c (1 : ℤ))) negε).U
-      (fun _ => PUnit.unit) := fun _ _ => Set.mem_iInter.2 fun _ => trivial
-  let a : Γ(Sp InhTate.R, ⊤)ˣ := res hle (u.s fun _ => PUnit.unit)
-  have key : (1 : Γ((TK InhTate.R).left, ⊤)ˣ) = unitOn k * pullTop (jK InhTate.R) a := unit_ext fun z _ => by
-    have h₁ := hu z J (hJ z)
-    have h₂ : val ((tate 0).tau (1 : ℤ) (1 : ℤ)) (𝟙 _) z J = gm (𝟙 _) z ⊤ 1 := gm_res _ z _ ((hJ z).mem _ _) _
-    have h₃ : val u (toUnit (TK InhTate.R)).left z J = gm (𝟙 _) z ⊤ (pullTop (jK InhTate.R) a) := by
-      refine (gm_res _ z hle trivial _).symm.trans (Eq.trans ?_ (gm_pull (𝟙 _) (jK InhTate.R) z ⊤ trivial a).symm)
-      rfl
-    rw [map_mul, ← h₂, h₁, h₃]
-  let x : InhTate.R := (Scheme.ΓSpecIso (CommRingCat.of InhTate.R)).hom.hom a.val
-  have hx : IsUnit x := a.isUnit.map _
-  have nat := congrArg (fun g => g.hom a.val)
-    (Scheme.ΓSpecIso_naturality (CommRingCat.ofHom (algebraMap InhTate.R (FractionRing InhTate.R))))
-  have e := congrArg (fun v => (Scheme.ΓSpecIso (CommRingCat.of (FractionRing InhTate.R))).hom.hom v.val) key
-  have e' : algebraMap InhTate.R (FractionRing InhTate.R) 1 = algebraMap InhTate.R (FractionRing InhTate.R) (r * x) := by
-    rw [map_one, map_mul, ← hk]
-    refine (map_one _).symm.trans (e.trans ((map_mul _ _ _).trans (congrArg₂ (· * ·) ?_ nat)))
-    exact (Scheme.ΓSpecIso (CommRingCat.of (FractionRing InhTate.R))).inv_hom_id_apply k.val
-  exact (mem_maximalIdeal r).1 hr (IsUnit.of_mul_eq_one x (IsFractionRing.injective _ _ e').symm)
-
 
 end Wit
 

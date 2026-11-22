@@ -23,9 +23,6 @@ def NrmDelta : Prop := ∀ (R : Type) [CommRing R] {E : Spc} {I : Cx R} {n m : �
 
 def up {X U : Scheme.{0}} {p q : ℕ} (x : Sx (sch.obj X) p U) : Sx (sch.obj X) q U := x
 
-theorem face_sch {X U : Scheme.{0}} {p : ℕ} (x : Sx (sch.obj X) (p + 1) U) (i : Fin (p + 2)) :
-    ((sch.obj X).δ i).app (op U) x = up x := rfl
-
 theorem altsum (k : ℕ) : ∑ i : Fin k, (-1 : ℤ) ^ (i : ℕ) = if Even k then 0 else 1 := by
   rw [Fin.sum_univ_eq_sum_range (fun i => (-1 : ℤ) ^ i) k]
   induction k with

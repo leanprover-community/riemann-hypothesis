@@ -26,11 +26,6 @@ theorem bdd_const (x : C) : Bdd V (fun _ => x) := by
   obtain ⟨K, hK⟩ := exists_ge (V := V) x
   exact ⟨K, fun _ => hK⟩
 
-theorem Bdd.add {s t : ℕ → C} (hs : Bdd V s) (ht : Bdd V t) : Bdd V (fun n => s n + t n) := by
-  obtain ⟨K, hK⟩ := hs
-  obtain ⟨L, hL⟩ := ht
-  exact ⟨min K L, fun n => ((hK n).mono (min_le_left _ _)).add ((hL n).mono (min_le_right _ _))⟩
-
 theorem Bdd.mul {s t : ℕ → C} (hs : Bdd V s) (ht : Bdd V t) : Bdd V (fun n => s n * t n) := by
   obtain ⟨K, hK⟩ := hs
   obtain ⟨L, hL⟩ := ht

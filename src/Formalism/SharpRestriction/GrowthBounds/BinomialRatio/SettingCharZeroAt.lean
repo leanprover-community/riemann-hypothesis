@@ -1,6 +1,7 @@
 module
 
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.DualLat
+public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.PairLift
+public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideFinal
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSidePos
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.TransposeWordsProofs.WeylFormNondegenerateGlobal
 

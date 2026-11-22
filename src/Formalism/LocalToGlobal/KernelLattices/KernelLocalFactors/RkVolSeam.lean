@@ -1,6 +1,5 @@
 module
 
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.RkVolKerStd
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.BaseEx
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdOK
@@ -135,23 +134,11 @@ theorem opM_smul (e : D.host.E) (w : ℂ) (v : Formalism.L2.Ker.Cd.TaylorLogMetr
   show Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ e * (w * v τ i j) = w * (Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ e * v τ i j)
   ring
 
-theorem emV_smulE (e : D.host.E) (A : Matrix (Fin b) (Fin a) D.host.E) : emV (e • A) = opM e (emV A) := by
-  funext τ i j
-  show Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (e * A i j) = _
-  rw [map_mul]
-  rfl
-
 theorem emV_smulO (r : 𝓞 D.host.E) (A : Matrix (Fin b) (Fin a) D.host.E) : emV (r • A) = opM (r : D.host.E) (emV A) := by
   funext τ i j
   show Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (r • A i j) = _
   rw [Algebra.smul_def, map_mul]
   rfl
-
-theorem phi_smulE (δ : ℂ) (e : X.E) (x : HomE X.E a b) : phi s δ (e • x) = opM (s.iE e) (phi s δ x) := by
-  funext τ i j
-  show δ * Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (s.iE (e * x (Pi.single j 1) i)) = Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (s.iE e) * (δ * _)
-  rw [map_mul, map_mul]
-  ring
 
 theorem phi_smulO (δ : ℂ) (r : 𝓞 X.E) (x : HomE X.E a b) : phi s δ (r • x) = opM (s.iE (r : X.E)) (phi s δ x) := by
   funext τ i j
@@ -159,8 +146,6 @@ theorem phi_smulO (δ : ℂ) (r : 𝓞 X.E) (x : HomE X.E a b) : phi s δ (r •
   rw [Algebra.smul_def, map_mul, map_mul]
   show δ * (Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (s.iE (r : X.E)) * _) = _
   ring
-
-theorem phi_eq (δ : ℂ) (x : HomE X.E a b) : phi s δ x = δ • emV (mat s x) := rfl
 
 end Maps
 
@@ -302,127 +287,9 @@ theorem phi_per : imS s cc δ N N' = Formalism.L2.Ker.Cd.TaylorLogMetric.La D (F
 
 end Per
 
-theorem embH_iff (hok : s.Ok) (δ : ℂ) {a b : ℕ} (x : HomE X.E a b) (z : DVar X.Tau a b → ℂ) :
-    embH (X.embC s.σ₀) δ x = flat X.Tau a b z ↔ phi s δ x = s.flatV a b z := by
-  constructor
-  · intro h
-    funext τ i j
-    have h1 := congrFun (congrFun (congrFun h (s.iT.symm τ)) i) j
-    have h2 : δ * s.σ₀ (X.emb (s.iT.symm τ) (x (Pi.single j 1) i)) = z (s.iT.symm τ, i, j) := h1
-    rw [hok.1, Equiv.apply_symm_apply] at h2
-    exact h2
-  · intro h
-    funext τ i j
-    have h1 := congrFun (congrFun (congrFun h (s.iT τ)) i) j
-    have h2 : δ * Formalism.L2.Ker.Cd.TaylorLogMetric.embT D (s.iT τ) (s.iE (x (Pi.single j 1) i)) = z (s.iT.symm (s.iT τ), i, j) := h1
-    rw [← hok.1, Equiv.symm_apply_apply] at h2
-    exact h2
-
-theorem lamTie : LamTie := by
-  intro D X s cc δ B χ cD a b N N' hok
-  ext z
-  have h1 : z ∈ lamF (ambOf s B χ cD) N N' ↔ ∃ x ∈ perO (aaX s cc) N N', embH (X.embC s.σ₀) δ x = flat X.Tau a b z := Iff.rfl
-  have h2 : z ∈ s.laF B.tor (s.lat N) (s.lat N') ↔ s.flatV a b z ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D (Formalism.L2.Ker.Cd.TaylorLogMetric.tor0 D cc δ) (s.lat N) (s.lat N') := Iff.rfl
-  rw [h1, h2, ← phi_per]
-  constructor
-  · rintro ⟨x, hx, h⟩
-    exact ⟨x, hx, (embH_iff s hok δ x z).1 h⟩
-  · rintro ⟨x, hx, h⟩
-    exact ⟨x, hx, (embH_iff s hok δ x z).2 h⟩
-
 section Frame
 
 variable {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (χ : Formalism.L2.Ker.Cd.TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ)
-
-def unitM {a b : ℕ} (e : D.host.E) (β : Fin b) (α : Fin a) : Matrix (Fin b) (Fin a) D.host.E :=
-  fun i j => if i = β ∧ j = α then e else 0
-
-theorem unitM_mulVec {a b : ℕ} (e : D.host.E) (β : Fin b) (α : Fin a) (y : Fin a → D.host.E) :
-    (unitM e β α).mulVec y = fun i => if i = β then e * y α else 0 := by
-  funext i
-  show ∑ j, (if i = β ∧ j = α then e else 0) * y j = _
-  by_cases hi : i = β
-  · simp [hi]
-  · simp [hi]
-
-theorem flatV_vecE (hok : s.Ok) {a b : ℕ} (n : ℕ) (ω : ℂ) (r : X.E) (β : Fin b) (α : Fin a) :
-    s.flatV a b (ω • ((n : ℂ) • vecE s.σ₀ r β α)) = ω • emV (unitM ((n : D.host.E) * s.iE r) β α) := by
-  funext τ i j
-  show ω * ((n : ℂ) * (if i = β ∧ j = α then s.σ₀ (X.emb (s.iT.symm τ) r) else 0)) =
-    ω * Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (if i = β ∧ j = α then (n : D.host.E) * s.iE r else 0)
-  by_cases h : i = β ∧ j = α
-  · rw [ite_eq_left h, ite_eq_left h, hok.1, Equiv.apply_symm_apply, map_mul, map_natCast]
-  · rw [ite_eq_right h, ite_eq_right h, map_zero, mul_zero]
-
-theorem inMul_std (hok : s.Ok) {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b)) (p : ℕ) [hp : Fact p.Prime]
-    (hN : s.StdAtP p N) (hN' : s.StdAtP p N') :
-    ∃ n₀ : ℕ, ¬ p ∣ n₀ ∧ ∀ (r : 𝓞 X.E) (β : Fin b) (α : Fin a),
-      InMul B.L (lamF (ambOf s B χ cD) N N') ((n₀ : ℂ) • vecE (ambOf s B χ cD).σ₀ (r : X.E) β α) := by
-  obtain ⟨s₁, hs₁, -, h1b⟩ := hN
-  obtain ⟨s₂, hs₂, h2a, -⟩ := hN'
-  refine ⟨s₂ * s₁, ?_, ?_⟩
-  · intro h
-    rcases (Nat.Prime.dvd_mul hp.out).1 h with h | h
-    · exact (Nat.Prime.coprime_iff_not_dvd hp.out).1 hs₂.symm h
-    · exact (Nat.Prime.coprime_iff_not_dvd hp.out).1 hs₁.symm h
-  · intro r β α ω hω
-    rw [lamTie D X s cc δ B χ cD a b N N' hok]
-    show s.flatV a b (ω • (((s₂ * s₁ : ℕ) : ℂ) • vecE s.σ₀ (r : X.E) β α)) ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D (Formalism.L2.Ker.Cd.TaylorLogMetric.tor0 D cc δ) (s.lat N) (s.lat N')
-    rw [flatV_vecE s hok]
-    refine AddSubgroup.subset_closure ⟨ω, (Formalism.L2.Ker.Cd.IntegralLatticeDensity.SO.mem_iff B ω).1 hω, _,
-      Submodule.subset_span ⟨1, Formalism.L2.Ker.Cd.IntegralLatticeDensity.SO.int_mem_inverse_half_different isIntegral_one, _, Submodule.subset_span ?_, (one_smul _ _).symm⟩, rfl⟩
-    intro y hy
-    rw [unitM_mulVec]
-    obtain ⟨r', hr'⟩ := (s.int_iff (r : X.E)).2 ⟨r, rfl⟩
-    have hy1 := h1b y hy
-    unfold Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL at hy1
-    rw [Submodule.mem_pi] at hy1
-    obtain ⟨u, hu⟩ := Submodule.mem_one.1 (hy1 α (Set.mem_univ _))
-    have hv : (fun i => if i = β then s.iE (r : X.E) * ((s₁ : D.host.E) * y α) else 0 : Fin b → D.host.E) ∈ Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b := by
-      unfold Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL
-      rw [Submodule.mem_pi]
-      intro i _
-      by_cases hi : i = β
-      · rw [ite_eq_left hi]
-        refine Submodule.mem_one.2 ⟨r' * u, ?_⟩
-        rw [map_mul, hr', hu]
-        rfl
-      · rw [ite_eq_right hi]
-        exact zero_mem _
-    have h3 := h2a _ hv
-    have e : (fun i => if i = β then ((s₂ * s₁ : ℕ) : D.host.E) * s.iE (r : X.E) * y α else 0 : Fin b → D.host.E) =
-        (s₂ : D.host.E) • (fun i => if i = β then s.iE (r : X.E) * ((s₁ : D.host.E) * y α) else 0 : Fin b → D.host.E) := by
-      funext i
-      by_cases hi : i = β
-      · simp only [Pi.smul_apply, ite_eq_left hi, smul_eq_mul]
-        push_cast
-        ring
-      · simp only [Pi.smul_apply, ite_eq_right hi, smul_zero]
-    rw [e]
-    exact h3
-
-theorem embC_injective (hok : s.Ok) : Function.Injective (X.embC (ambOf s B χ cD).σ₀) := by
-  intro τ τ' h
-  apply s.iT.injective
-  apply embInj D
-  apply RingHom.ext
-  intro y
-  have h1 := congrArg (fun f : X.E →+* ℂ => f (s.iE.symm y)) h
-  have h2 : s.σ₀ (X.emb τ (s.iE.symm y)) = s.σ₀ (X.emb τ' (s.iE.symm y)) := h1
-  rw [hok.1, hok.1, RingEquiv.apply_symm_apply] at h2
-  exact h2
-
-theorem thF_eq {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b)) :
-    Formalism.L2.AlgTh.thF (ambOf s B χ cD) N N' = fun z => B.eNat χ a b (s.lat N) (s.lat N') (s.flatV a b z) := rfl
-
-theorem frame_std (hF : Formalism.L2.AlgTh.KerFrame) (hok : s.Ok) {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b))
-    (p : ℕ) [Fact p.Prime] (ι : ℂ ≃+* ℂ_[p]) (hN : s.StdAtP p N) (hN' : s.StdAtP p N')
-    (hdisc : ¬ (p : ℤ) ∣ NumberField.discr X.E) (hc : ∀ τ, ‖ι (cD τ)‖ ≤ 1) :
-    ∃ (J : Type) (_ : Fintype J) (v : J → DVar X.Tau a b → ℂ) (M : J → DVar X.Tau a b → ℂ_[p]),
-      (∀ j, InMul B.L (lamF (ambOf s B χ cD) N N') (v j)) ∧ (∀ j k, ‖M j k‖ ≤ 1) ∧
-      ∀ i k, Formalism.L2.Th1.GD.frameM (ι : ℂ →+* ℂ_[p]) v M i k = if i = k then ι ((ambOf s B χ cD : Amb X).cD k.1) else 0 :=
-  hF X (ambOf s B χ cD) a b N N' B.L p ι hdisc (embC_injective s B χ cD hok) (fun τ => hc (s.iT τ))
-    (inMul_std s B χ cD hok N N' p hN hN')
 
 end Frame
 

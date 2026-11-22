@@ -36,9 +36,6 @@ theorem Q_swap_iff (L : TV n M (Fin m) →ₗ[ℂ] ℂ) {p q : Fin m} (h : p ≠
   rw [Equiv.Perm.sign_swap h]
   simp
 
-theorem pm_top (σ : Equiv.Perm (Fin m)) (top : Fin n) (g : TV n M (Fin m)) :
-    pm σ g (fun _ => top) = g (fun _ => top) := rfl
-
 theorem Q_adj (E : Fin n → Fin n → Module.End ℂ M) (ℓ : M →ₗ[ℂ] ℂ) (top : Fin n) (col : Fin m → ℕ)
     (hmono : Monotone col) (hc : ∀ i j : Fin m, Commute (xJ E i) (xJ E j))
     (hP : ∀ i j : Fin m, (i : ℕ) + 1 = j →

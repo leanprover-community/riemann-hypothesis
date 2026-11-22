@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import Formalism.QuotientMetricDivisors.RatHermLcvTwist
-public import Formalism.QuotientMetricDivisors.DualMu
+public import Formalism.HarderNarasimhan.QuotRealize
 public import Formalism.QuotientMetricDivisors.StatementK
 public import Formalism.MirabolicMackeyTheory.StatementT
 

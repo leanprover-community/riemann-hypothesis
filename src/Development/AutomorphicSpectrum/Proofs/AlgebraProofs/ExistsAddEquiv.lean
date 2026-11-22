@@ -62,8 +62,6 @@ abbrev trL (R C : Type) [Field C] [CommRing R] [Algebra R C] {X N : Type} [AddCo
     [AddCommGroup N] (e : N ≃+ X) : (X → C) ≃ₗ[R] (N → C) :=
   LinearEquiv.funCongrLeft R C e.toEquiv
 
-theorem trL_apply (f : X → C) : trL R C e f = f ∘ e := rfl
-
 include e in
 theorem comp_symm (f : N → C) : (f ∘ e.symm) ∘ e = f := by
   ext x; simp

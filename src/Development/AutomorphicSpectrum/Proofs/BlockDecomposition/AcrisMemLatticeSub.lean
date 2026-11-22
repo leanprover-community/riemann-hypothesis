@@ -63,8 +63,6 @@ end Abstract
 
 variable (l : ℕ) [Fact l.Prime]
 
-local notation "𝔸" => Localization.Away (l : AInf ℂ_[l] l)
-
 theorem mem_adjoin_dpow {s : 𝔸} (hs : s ∈ ACris.ACrisZero ℂ_[l] l) :
     s ∈ Algebra.adjoin (AInf ℂ_[l] l) (Set.range fun n : ℕ => ACris.dpow n (xi0 l)) := by
   rw [← ACris.acrisZero_eq_adjoin ker_theta0]; exact hs
@@ -83,7 +81,6 @@ theorem pk_toB_mem (k M : ℕ) {s : 𝔸} (hs : s ∈ ACris.ACrisZero ℂ_[l] l)
     (toBDeRhamPlus (normInteger ℂ_[l]) l) (pk l k) (fk l k) (pk_toB_algebraMap l k) (xi0 l)
     (Fact.out : l.Prime).ne_zero M (fun n => ACris.dpow n (xi0 l))
     (factorial_mul_dpow_xi l) (mem_adjoin_dpow l hs)
-
 
 set_option maxHeartbeats 800000 in
 theorem cris_in (l : ℕ) [Fact l.Prime] (M k : ℕ) (c : Acris l) :

@@ -27,13 +27,9 @@ theorem sum_neg_one_pow (p : ℕ) : ∑ i : Fin (p + 2), (-1 : ℤ) ^ (i : ℕ) 
 
 variable {R : Type} [CommRing R]
 
-theorem face_sch {X U : Scheme.{0}} {p : ℕ} (x : Sx (sch.obj X) (p + 1) U) (i : Fin (p + 2)) : x.face i = x := rfl
-
 theorem res_comp {F : Shv R} {W V U : Scheme.{0}} (g : W ⟶ V) (f : V ⟶ U) (z : Sec F U) :
     Sec.res g (Sec.res f z) = Sec.res (g ≫ f) z := by
   simp [Sec.res]
-
-theorem map_id' {F : Shv R} {U : Scheme.{0}} (y : Sec F U) : Sec.map (𝟙 F) y = y := rfl
 
 theorem map_units_smul {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} (u : ℤˣ) (y : Sec F U) :
     Sec.map φ (u • y) = u • Sec.map φ y := by
@@ -73,7 +69,6 @@ theorem ev_δ_sch {X : Scheme.{0}} {I : Cx R} {n k : ℤ} (hk : n + 1 = k)
 end GlobalTheory.EtC.SchCls
 
 namespace GlobalTheory.EtC
-
 
 open GlobalTheory.EtC.SchCls in
 theorem sch_cls_cocycle_sec : ∀ (R : Type) [CommRing R] (X : Scheme.{0}) (I : Cx R) (m n k : ℤ),

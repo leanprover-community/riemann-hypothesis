@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.UnipotentAdelicQuotients.CuspEllipticValues
-public import Development.AbelianVarietyTheory.BlockTheory.IrreducibleCharacters.CuspidalCharacters
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CentralIdempotentIrreducibleCharacterProps
 
 @[expose] public section

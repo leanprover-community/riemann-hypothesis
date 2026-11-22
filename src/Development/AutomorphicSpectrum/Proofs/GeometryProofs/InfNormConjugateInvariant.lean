@@ -35,8 +35,6 @@ theorem spMap_spMap_assoc {A B C : Type} [CommRing A] [CommRing B] [CommRing C] 
 theorem spMap_idR (A : Type) [CommRing A] : spMap (RingHom.id A) = 𝟙 _ :=
   Spec.map_id (CommRingCat.of A)
 
-theorem algebraMap_dual (a : R) : algebraMap R (DualNumber R) a = TrivSqZeroExt.inl a := rfl
-
 theorem dualMap_comp_algebraMap (f : R →+* R) :
     (dualMap f).comp (algebraMap R (DualNumber R)) = (algebraMap R (DualNumber R)).comp f := by
   ext a <;> simp [dualMap, algebraMap_dual]
@@ -140,7 +138,6 @@ theorem isEigFrame_tr {O : Type} [CommRing O] (act : OAct O G) (f : R →+* R) (
 end GlobalTheory.CompanionTheory.Ar.Flat.ConjPt
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat
-
 
 open ConjPt in
 theorem hasInfNorm_conj : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (U : Set (Xo.XF c)) (τ : E →+* ℂ) (φ : FrameFn Xo c) (s : c.F →+* ℂ) (t : ℝ), IsLineFn U τ φ → HasInfNorm U τ φ s t → HasInfNorm U τ φ ((starRingEnd ℂ).comp s) t := by

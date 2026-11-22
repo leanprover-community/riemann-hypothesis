@@ -188,8 +188,6 @@ def lawOf : FGLaw R d where
         t.hFi, t.h1, t.h2, t.hs, t.had, FGLaw.add, ]
     exact B.G.assoc i
 
-theorem lawOf_F : (lawOf t hφ).F = t.FT := rfl
-
 def actOf : OAct O (lawOf t hφ) where
   act := t.actT
   const := t.hAc hφ
@@ -217,8 +215,6 @@ def actOf : OAct O (lawOf t hφ) where
       [map_mul, map_one, map_X, map_ev' φ, mV_cons, mV_nil, mapPoint_pt, mapPoint_zero, mapPoint_comp1 φ, mapPoint_addOf φ, t.hF, t.hA,
         t.hFi, t.h1, t.h2, t.hs, t.had, FGLaw.add, lawOf_F, ]
     exact B.A.one_act
-
-theorem actOf_act : (actOf t hφ).act = t.actT := rfl
 
 def fbOf : FB R d O where
   G := lawOf t hφ

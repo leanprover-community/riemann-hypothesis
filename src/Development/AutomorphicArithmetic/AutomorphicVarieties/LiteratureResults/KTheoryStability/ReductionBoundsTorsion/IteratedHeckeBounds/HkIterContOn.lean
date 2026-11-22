@@ -111,9 +111,6 @@ theorem pb_contOn {q : ℕ} (g : Gp L N) {ω : Form (HS L N) q} (hω : Continuou
   exact ((ContinuousAlternatingMap.compContinuousLinearMapCLM (actL g)).continuous.comp_continuousOn
     (hω.comp (actL g).continuous.continuousOn hmaps)).congr fun _ _ => rfl
 
-theorem intS_eq {q : ℕ} (ω : Form (HS L N) q) (y : Fin (q + 1) → HS L N) :
-    intS ω y = ∫ t in sx q, ω (pt y t) fun j => y j.succ - y 0 := rfl
-
 theorem intS_pb {q : ℕ} (g : Gp L N) (ω : Form (HS L N) q) (y : Fin (q + 1) → HS L N) :
     intS (pb g ω) y = intS ω fun j => actL g (y j) := by
   set_option synthInstance.maxHeartbeats 100000 in

@@ -22,8 +22,6 @@ variable {K : Type} [Field K] (O : ValuationSubring K) {Γ : Type} [Group Γ] {n
 def actL (M : Matrix (Fin n) (Fin n) K) : (Fin n → K) →ₗ[O] (Fin n → K) :=
   (Matrix.mulVecLin M).restrictScalars O
 
-theorem actL_apply (M : Matrix (Fin n) (Fin n) K) (v : Fin n → K) : actL O M v = M *ᵥ v := rfl
-
 def lat (ρ : Γ →* GL (Fin n) K) (S : Finset Γ) : Submodule O (Fin n → K) :=
   Submodule.span O (Set.range fun p : S × Fin n =>
     ((ρ p.1.1 : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) *ᵥ (Pi.single p.2 1 : Fin n → K))

@@ -8,7 +8,6 @@ open MvPolynomial Cardinal
 
 namespace GlobalTheory.GaloisDescent
 
-
 open MvPolynomial Cardinal in
 theorem _root_.GlobalTheory.GaloisDescent.exists_ringEquiv_of_isTranscendenceBasis {F F' L L' ι κ : Type*} [Field F] [Field F']
     [Field L] [Field L'] [Algebra F L] [Algebra F' L'] [IsAlgClosed L] [IsAlgClosed L']
@@ -55,20 +54,6 @@ theorem exists_algEquiv_extend {K F L : Type*} [Field K] [Field F] [Field L] [Al
   congr 1
   exact τ.commutes k
 
-theorem exists_algEquiv_apply_eq_add_one {K L : Type*} [Field K] [Field L] [Algebra K L]
-    [IsAlgClosed L] {x : L} (hx : Transcendental K x) : ∃ σ : L ≃ₐ[K] L, σ x = x + 1 := by
-  have h1 : AlgebraicIndepOn K id ({x} : Set L) :=
-    algebraicIndependent_unique_type_iff.2 hx
-  obtain ⟨s, hxs, hs⟩ := exists_isTranscendenceBasis_superset h1
-  let e : MvPolynomial s K ≃ₐ[K] MvPolynomial s K :=
-    AlgEquiv.ofAlgHom (aeval fun i => X i + 1) (aeval fun i => X i - 1)
-      (by ext i : 1; simp) (by ext i : 1; simp)
-  obtain ⟨σ, hσ⟩ := exists_ringEquiv_of_isTranscendenceBasis hs hs e.toRingEquiv
-  refine ⟨AlgEquiv.ofRingEquiv (f := σ) fun k => ?_, ?_⟩
-  · simpa [e] using hσ (C k)
-  · simpa [e] using hσ (X ⟨x, hxs rfl⟩)
-
-
 open MvPolynomial Cardinal in
 theorem _root_.GlobalTheory.GaloisDescent.mem_range_algebraMap_of_forall_algEquiv {K L : Type*} [Field K] [Field L] [Algebra K L]
     [PerfectField K] [IsAlgClosed L] (x : L) (hx : ∀ σ : L ≃ₐ[K] L, σ x = x) :
@@ -106,13 +91,11 @@ theorem _root_.GlobalTheory.GaloisDescent.mem_range_algebraMap_of_forall_algEqui
     rw [hτx] at h2
     simp at h2
 
-
 open MvPolynomial Cardinal in
 theorem _root_.GlobalTheory.GaloisDescent.complex_mem_range_of_forall_algEquiv {K : Type*} [Field K] [Algebra K ℂ] (x : ℂ)
     (hx : ∀ σ : ℂ ≃ₐ[K] ℂ, σ x = x) : x ∈ Set.range (algebraMap K ℂ) := by
   haveI : CharZero K := RingHom.charZero (algebraMap K ℂ)
   exact _root_.GlobalTheory.GaloisDescent.mem_range_algebraMap_of_forall_algEquiv x hx
-
 
 open MvPolynomial Cardinal in
 theorem _root_.GlobalTheory.GaloisDescent.exists_complex_ringEquiv_comp_eq {K : Type} [Field K] [Countable K] (f g : K →+* ℂ) :

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RecTExists
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RecTExistsIff
 public import CompanionTheory.EightfoldTheory.ZeroLevelTheory.LocalLanglands.Imports
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Nontrivial
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FinIso
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingSpecNormalisedCharacterEq
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSplitAtOfIsSplitPl
@@ -27,10 +26,6 @@ open GlobalTheory.CuspRep GlobalTheory.HeightCounting
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.RecT
-
-abbrev RecFam : Type 1 :=
-  ∀ {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {A : ValuationSubring Ω}
-    {w : HeightOneSpectrum (𝓞 E)} (h : IsPlaceOver A w), IrrGL (k := w.adicCompletion E) → WD h
 
 set_option synthInstance.maxHeartbeats 400000
 

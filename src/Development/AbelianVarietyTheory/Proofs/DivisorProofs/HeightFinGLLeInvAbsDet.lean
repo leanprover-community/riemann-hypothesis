@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.LocPoly
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RealCusp
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaPair
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixAdelic
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Height
 

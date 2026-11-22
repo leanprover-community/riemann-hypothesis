@@ -28,8 +28,6 @@ variable {D : D7}
 
 theorem cj_id_cj_id {X : Type} (f : X → ℂ) : cj id (cj id f) = f := cj_cj id id (fun _ => rfl) f
 
-theorem cj_id_apply {X : Type} (f : X → ℂ) (x : X) : cj id f x = starRingEnd ℂ (f x) := rfl
-
 theorem hecke_inv {χ : (AE D)ˣ →* Circle} (h : IsHeckeChar D χ) : IsHeckeChar D χ⁻¹ :=
   ⟨(h.1.inv : Continuous fun x => (χ x)⁻¹), fun x => by rw [MonoidHom.inv_apply, h.2 x, inv_one]⟩
 

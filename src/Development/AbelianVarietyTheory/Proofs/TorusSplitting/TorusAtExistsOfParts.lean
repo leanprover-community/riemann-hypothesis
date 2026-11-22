@@ -27,10 +27,6 @@ theorem _root_.GlobalTheory.TorusAtAssembly.im_Hf_add_right (x y z : EuclideanSp
     (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf x (y + z)).im = (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf x y).im + (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf x z).im := by
   simp [_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf, mul_add, Finset.sum_add_distrib]
 
-theorem im_Hf_neg_left (x z : EuclideanSpace ℂ ι) :
-    (Hf (-x) z).im = -(Hf x z).im := by
-  simp [Hf, Finset.sum_neg_distrib]
-
 open NumberField in
 variable {ι : Type} [Fintype ι] in
 theorem _root_.GlobalTheory.TorusAtAssembly.im_Hf_swap (x y : EuclideanSpace ℂ ι) :
@@ -104,7 +100,6 @@ section Build
 variable [IsCMField E] {dim : (E →+* ℂ) → ℕ}
   {b : Module.Basis (Fin (2 * Fintype.card (Idx dim))) ℝ (Vsp dim)} {w w' : 𝓞 E}
 
-
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] in
 variable [IsCMField E] {dim : (E →+* ℂ) → ℕ}
@@ -169,7 +164,6 @@ noncomputable def torus (r : ℕ)
 end Build
 
 end TorusAtAssembly
-
 
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] in

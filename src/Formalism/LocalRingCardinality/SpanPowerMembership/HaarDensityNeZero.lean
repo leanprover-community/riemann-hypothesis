@@ -15,8 +15,6 @@ open scoped ENNReal NNReal Matrix.Norms.Operator
 
 variable (P Q : ℕ)
 
-local notation "J" => Formalism.UG.Jpq P Q
-
 def matHom : UpqT P Q →* MM P Q where
   toFun := UpqT.mat
   map_one' := rfl

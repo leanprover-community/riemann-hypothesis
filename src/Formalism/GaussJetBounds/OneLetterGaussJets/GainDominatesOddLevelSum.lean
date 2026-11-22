@@ -17,13 +17,11 @@ public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
 public import Formalism.GaussJetBounds.StatementM
 public import Formalism.GaussJetBounds.GaussJetProofs.FrameA
 public import Formalism.GaussJetBounds.GaussJetProofs.Generic
-public import Formalism.GaussJetBounds.StatementS
 public import Formalism.GaussJetBounds.StatementU
 public import Formalism.GaussJetBounds.OneLetterGauss
 public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.GaussJetBounds.GaussJetProofs.OrbMul
 public import Formalism.GaussJetBounds.StatementQ
-public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffQuadSer
 public import Formalism.GaussJetBounds.StatementN
 public import Formalism.GaussJetBounds.MonoShapeTop
 public import Formalism.GaussJetBounds.GaussJetProofs.NormDetLeOneOfEntries

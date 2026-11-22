@@ -29,24 +29,6 @@ def JFOK (F : Mx P.k P.r → (Wq →L[ℂ] Wp)) : Prop :=
 def IsRadJF (F : Mx P.k P.r → (Wq →L[ℂ] Wp)) (Φ : RadSp P.k P.r z z' π π') : Prop :=
   ∀ x ∈ DomR P.k P.r z z', (Φ : Fn P.k P.r (Wq →L[ℂ] Wp)) x.1 x.2 = resG P.k P.r (Fin.last P.r) (B.JF D F) x.1 x.2
 
-inductive HerGen : Fin (P.r + 1) → RadSp P.k P.r z z' π π' → Prop
-  | jf (F : Mx P.k P.r → (Wq →L[ℂ] Wp)) (Φ : RadSp P.k P.r z z' π π') :
-      JFOK P z z' F → IsRadJF P z z' π π' D F Φ → HerGen 0 Φ
-  | slice (l : Fin P.r) (w : List (Letter ℂ S)) (a b : Ix S) (Φ : RadSp P.k P.r z z' π π') :
-      WordOK P z z' π π' st l0 w → HerGen l.castSucc Φ → HerGen l.succ ((bTl L l w a b).1 Φ)
-  | waveC (l : Fin P.r) (w : List (Letter ℂ S)) (s : ℂ) (Wv Wv' : Module.End ℂ (RadSp P.k P.r z z' π π'))
-      (a b : Ix S) (Φ : RadSp P.k P.r z z' π π') :
-      WordOK P z z' π π' st l0 w → multiplicationOperator Wv (fun c' _ => fsv s (c' l)) → multiplicationOperator Wv' (fun c' _ => fsv (-s) (c' l)) →
-      HerGen l.castSucc Φ → HerGen l.castSucc ((Vw (mkP Wv Wv') s w a b).1 Φ)
-  | waveZ (w : List (Letter ℂ S)) (s : ℂ) (Wv Wv' : Module.End ℂ (RadSp P.k P.r z z' π π'))
-      (a b : Ix S) (Φ : RadSp P.k P.r z z' π π') :
-      WordOK P z z' π π' st l0 w → multiplicationOperator Wv (fun _ g => fsv s (zeta P.k P.r z z' g)) →
-      multiplicationOperator Wv' (fun _ g => fsv (-s) (zeta P.k P.r z z' g)) →
-      HerGen (Fin.last P.r) Φ → HerGen (Fin.last P.r) ((Vw (mkP Wv Wv') s w a b).1 Φ)
-
-def herK (i : Fin (P.r + 1)) : Submodule ℂ (RadSp P.k P.r z z' π π') :=
-  Submodule.span ℂ {Φ | HerGen S P z z' π π' L st l0 D i Φ}
-
 variable (K : Fin (P.r + 1) → Submodule ℂ (RadSp P.k P.r z z' π π'))
 
 def TopTwistDens : Prop :=

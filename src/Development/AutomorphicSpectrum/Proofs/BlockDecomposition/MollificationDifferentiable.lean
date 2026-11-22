@@ -19,8 +19,6 @@ variable {n : ℕ}
 def rmul (w : Mat n) : CLof (Mat n) (Mat n) :=
   LinearMap.toContinuousLinearMap (LinearMap.mulRight ℝ w)
 
-theorem rmul_apply (w z : Mat n) : rmul w z = z * w := rfl
-
 def rmulLin : Mat n →ₗ[ℝ] CLof (Mat n) (Mat n) where
   toFun := rmul
   map_add' a b := by
@@ -59,7 +57,6 @@ theorem exists_compact_support {K B : Set (Mat n)} (hK : IsCompact K) (hKs : K �
     · simp
 
 end GlobalTheory.CompanionTheory.PresSobA.MolDiff
-
 
 open GlobalTheory.CompanionTheory.PresSobA.MolDiff in
 theorem GlobalTheory.CompanionTheory.PresSobA.mol_differentiableAt :

@@ -13,18 +13,6 @@ open Formalism.IndefR.Bridge
 def LocSplit {G : Type} [Group G] (J L : Subgroup G) : Prop :=
   ∀ k ∈ J, ∃ k₁ ∈ J, ∃ k₂ ∈ J, k₁ ∈ L ∧ k = k₁ * k₂ ∧ ∀ l ∈ L, Commute k₂ l
 
-theorem locSplit_prod_left {G H : Type} [Group G] [Group H] (A : Subgroup G) (B : Subgroup H) :
-    LocSplit (A.prod B) ((⊤ : Subgroup G).prod ⊥) := by
-  intro k hk
-  refine ⟨(k.1, 1), Subgroup.mem_prod.2 ⟨(Subgroup.mem_prod.1 hk).1, B.one_mem⟩, (1, k.2),
-    Subgroup.mem_prod.2 ⟨A.one_mem, (Subgroup.mem_prod.1 hk).2⟩,
-    Subgroup.mem_prod.2 ⟨Subgroup.mem_top _, Subgroup.one_mem _⟩, ?_, ?_⟩
-  · ext <;> simp
-  · intro l hl
-    have hl2 : l.2 = 1 := Subgroup.mem_bot.1 (Subgroup.mem_prod.1 hl).2
-    show (1, k.2) * l = l * (1, k.2)
-    ext <;> simp [hl2]
-
 section Operators
 
 variable {G Γ : Type} [Group G] [Group Γ] (ι : Γ →* G)

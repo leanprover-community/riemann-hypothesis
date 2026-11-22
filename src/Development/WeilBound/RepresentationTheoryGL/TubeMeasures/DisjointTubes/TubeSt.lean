@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.WeilBound.RepresentationTheoryGL.TubeMeasures.DisjointTubes.MassLev2
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PermMMulTranspose
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.OneMeasureSizes
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.UnifOfSpaceEq
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DefiniteBound
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EmbGLMemRealSU

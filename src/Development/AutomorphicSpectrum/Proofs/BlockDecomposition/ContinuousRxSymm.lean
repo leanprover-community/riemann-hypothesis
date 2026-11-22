@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.DictInf
 public import Formalism.LocalToGlobal.ProjectiveLattices.UnramBridgeHolds
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ContinuesConst
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EisensteinIsotropicLine
 public import Development.AbelianVarietyTheory.Definitions.Foundations.AnalyticOnNhdTsumNpow
 public import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.SiegelEisensteinContinuationOfDoublingMethod
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MixSDblDecZero
@@ -138,9 +137,6 @@ theorem sigR_sigR (z : AE D) : sigR (AF D.host.F) D.sp.cm.sig (sigR (AF D.host.F
     change a ⊗ₜ[D.host.F] D.sp.cm.sig (D.sp.cm.sig e) = _
     rw [sig_sig]
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-
-theorem sigR_inclR (x : D.host.E) :
-    sigR (AF D.host.F) D.sp.cm.sig (inclR (AF D.host.F) x) = inclR (AF D.host.F) (D.sp.cm.sig x) := rfl
 
 theorem Jst_map : (GlobalTheory.StdUnn.Jst D n).map D.sp.cm.sig = GlobalTheory.StdUnn.Jst D n := by
   ext i j

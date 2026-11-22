@@ -28,11 +28,6 @@ section Frame
 variable {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]
 
-structure LinOn (w : HeightOneSpectrum (𝓞 K)) (N : Submodule (𝓞 K) V) {A : Type} [AddCommGroup A]
-    [Module (𝓞 K ⧸ w.asIdeal) A] (g : V → A) : Prop where
-  add : ∀ x ∈ N, ∀ y ∈ N, g (x + y) = g x + g y
-  smul : ∀ (a : 𝓞 K), ∀ x ∈ N, g (a • x) = Ideal.Quotient.mk w.asIdeal a • g x
-
 namespace LinOn
 
 variable {w : HeightOneSpectrum (𝓞 K)} {N : Submodule (𝓞 K) V} {A : Type} [AddCommGroup A]
@@ -58,15 +53,7 @@ section Mass
 
 variable (E : Type) [Field E] [NumberField E] [StarRing E] (n : ℕ)
 
-abbrev UniLat : Type :=
-  {N : Submodule (𝓞 E) (Sp E n) // Submodule.IsLattice E N ∧ IsUnimodular (hStd E n) N}
-
 variable {E n}
-
-theorem gmap_unimodular {g : Sp E n ≃ₗ[E] Sp E n} (hg : g ∈ UF E n) {N : Submodule (𝓞 E) (Sp E n)}
-    (hN : IsUnimodular (hStd E n) N) : IsUnimodular (hStd E n) (gmap g N) := by
-  unfold Formalism.HermitianLatticesTheory.IsUnimodular at *
-  rw [dual_gmap g hg, hN]
 
 instance : MulAction (UF E n) (UniLat E n) where
   smul g N := ⟨gmap g.1 N.1, gmap_lattice g.1 N.1 N.2.1, gmap_unimodular g.2 N.2.2⟩
@@ -78,20 +65,7 @@ instance : MulAction (UF E n) (UniLat E n) where
 
 variable (E n)
 
-abbrev autU (N : UniLat E n) : Subgroup (UF E n) := MulAction.stabilizer (UF E n) N
-
 variable {E n}
-
-theorem finite_autU (hE : PosStar E) (N : UniLat E n) : Finite (autU E n N) := by
-  have hA := final_autFinite E (Sp E n) (hStd E n) hStd_isSymm (hStd_pos hE) N.1
-    (hcnt_isFullLattice_of_unimodular N.2.1 N.2.2)
-  have : Finite {g : Sp E n ≃ₗ[E] Sp E n | g ∈ isom (hStd E n) ∧ gmap g N.1 = N.1} := hA
-  refine Finite.of_injective
-    (fun a : autU E n N => (⟨a.1.1, a.1.2, congrArg Subtype.val a.2⟩ :
-      {g : Sp E n ≃ₗ[E] Sp E n | g ∈ isom (hStd E n) ∧ gmap g N.1 = N.1})) ?_
-  intro a b hab
-  exact Subtype.ext (Subtype.ext (show a.1.1 = b.1.1 from
-    congrArg (fun g : {g : Sp E n ≃ₗ[E] Sp E n | g ∈ isom (hStd E n) ∧ gmap g N.1 = N.1} => g.1) hab))
 
 end Mass
 
@@ -104,9 +78,6 @@ end MassGenus
 section Count
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
-
-def DecoSet.lat (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) : UniLat E n := ⟨d.1.N, d.2.lat, d.2.uni⟩
-
 
 end Count
 
@@ -126,10 +97,6 @@ end FormCount
 
 section IdxQ
 
-theorem card_res {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) :
-    Nat.card (𝓞 E ⧸ w.asIdeal) = Ideal.absNorm w.asIdeal := by
-  exact (Ideal.absNorm_eq_natCard w.asIdeal).symm
-
 end IdxQ
 
 section Cols
@@ -138,8 +105,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
 
 theorem rankN_zero (R : Ranks) : R.N 0 = R.k := by
   simp [Ranks.N]
-
-
 
 variable (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
@@ -163,8 +128,6 @@ section Rows
 open Finset Formalism.LogVandermondeBounds.StandardLattice
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks}
-
-
 
 variable (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 

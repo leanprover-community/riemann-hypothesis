@@ -1,6 +1,6 @@
 module
 
-public import Development.EtaleCohomology.EtaleSheaves.PropertyDescent.BaseChange
+public import Development.EtaleCohomology.EtaleSheaves.LeafDescendChainPf
 
 @[expose] public section
 

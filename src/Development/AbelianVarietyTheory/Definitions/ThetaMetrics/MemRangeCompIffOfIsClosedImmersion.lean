@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HasArcDataIff
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.LiftChartIdeal
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjHyp
 
 @[expose] public section
 
@@ -270,7 +270,6 @@ theorem PtsOver.isEmbedding_map {S : Scheme.{0}} {p : X ⟶ S} {q : Y ⟶ S} (g 
   IsEmbedding.of_comp (PtsOver.continuous_map g hg s) continuous_subtype_val
     (H.comp IsEmbedding.subtypeVal)
 
-
 omit [TopologicalSpace C] in
 theorem PtsOver.range_map {S : Scheme.{0}} {p : X ⟶ S} {q : Y ⟶ S} (g : X ⟶ Y) (hg : g ≫ q = p)
     (s : Sp C ⟶ S) : Set.range (PtsOver.map g hg s) =
@@ -282,7 +281,6 @@ theorem PtsOver.range_map {S : Scheme.{0}} {p : X ⟶ S} {q : Y ⟶ S} (g : X �
   · rintro ⟨x, hx⟩
     have hx' : x ≫ g = y.1 := hx
     exact ⟨⟨x, by rw [← hg, ← Category.assoc, hx', y.2]⟩, Subtype.ext hx'⟩
-
 
 omit [TopologicalSpace C] in
 theorem range_comp_of_isOpenImmersion (j : X ⟶ Y) [IsOpenImmersion j] :
@@ -486,7 +484,6 @@ theorem isEmbedding_comp_of_isClosedImmersion (i : X ⟶ Y) [IsClosedImmersion i
   simp only [valR_comp] at h3
   exact h3
 
-
 omit [TopologicalSpace C] [IsTopologicalRing C] [IsLocalRing C] [IsOpenUnits C] in
 theorem mem_range_comp_iff_of_isClosedImmersion (i : X ⟶ Y) [IsClosedImmersion i] {V : Y.Opens}
     (hV : IsAffineOpen V) (y : Sp C ⟶ Y) (hy : ⊤ ≤ y ⁻¹ᵁ V) :
@@ -650,7 +647,6 @@ abbrev ptsEquivAlgHom {C : Type} [CommRing C] (A : Type) [CommRing A] [Algebra C
     Pts (spMap (algebraMap C A)) ≃ (A →ₐ[C] C) :=
   ptsOverEquivAlgHom A (id_eq_spMap_algebraMap C)
 
-
 variable {A} in
 theorem range_coord {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) {σ : Type*} (a : σ → A)
     (ha : Function.Surjective (MvPolynomial.aeval (R := R) a)) :
@@ -669,13 +665,11 @@ theorem range_coord {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) {σ : 
 
 variable [TopologicalSpace C] [IsTopologicalRing C] [IsLocalRing C] [IsOpenUnits C]
 
-
 open CommRingCat.HomTopology in
 theorem isEmbedding_ptsOverEquivAlgHom {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) :
     IsEmbedding fun x : PtsOver (spMap (algebraMap R A)) t => (ptsOverEquivAlgHom A ht x : A → C) :=
   ((CommRingCat.HomTopology.isEmbedding_hom (CommRingCat.of C) (CommRingCat.of A)).comp
     (specHomeomorph C (CommRingCat.of A)).isEmbedding).comp IsEmbedding.subtypeVal
-
 
 variable {A} in
 theorem isEmbedding_coord {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) {σ : Type*} (a : σ → A)
@@ -692,7 +686,6 @@ theorem isEmbedding_coord {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) 
     simp only [Function.comp_apply]
     rw [← MvPolynomial.comp_aeval, AlgHom.comp_apply, hq]
 
-
 variable {A} in
 theorem isClosedEmbedding_coord [T1Space C] {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) {σ : Type*}
     (a : σ → A) (ha : Function.Surjective (MvPolynomial.aeval (R := R) a)) :
@@ -708,38 +701,6 @@ theorem isClosedEmbedding_coord [T1Space C] {t : Sp C ⟶ Sp R} (ht : t = spMap 
     fun_prop
   exact isClosed_singleton.preimage this
 
-
-omit [TopologicalSpace C] [IsTopologicalRing C] [IsLocalRing C] [IsOpenUnits C] in
-theorem aeval_mk_X {σ : Type} (I : Ideal (MvPolynomial σ R)) (q : MvPolynomial σ R) :
-    MvPolynomial.aeval (fun i => Ideal.Quotient.mk I (MvPolynomial.X i)) q = Ideal.Quotient.mk I q := by
-  have : MvPolynomial.aeval (fun i => Ideal.Quotient.mk I (MvPolynomial.X i)) = Ideal.Quotient.mkₐ R I := by
-    ext i
-    simp
-  rw [this]
-  rfl
-
-def zeroSetHomeomorph {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) {σ : Type}
-    (I : Ideal (MvPolynomial σ R)) :
-    PtsOver (spMap (algebraMap R (MvPolynomial σ R ⧸ I))) t ≃ₜ
-      {z : σ → C | ∀ q ∈ I, MvPolynomial.aeval z q = 0} :=
-  have ha : Function.Surjective
-      (MvPolynomial.aeval (R := R) fun i => Ideal.Quotient.mk I (MvPolynomial.X i)) := fun u => by
-    obtain ⟨q, rfl⟩ := Ideal.Quotient.mk_surjective u
-    exact ⟨q, aeval_mk_X I q⟩
-  (isEmbedding_coord ht _ ha).toHomeomorph.trans (Homeomorph.setCongr (by
-    rw [range_coord ht _ ha]
-    simp only [aeval_mk_X, Ideal.Quotient.eq_zero_iff_mem]))
-
-def affineSpaceHomeomorph {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) (σ : Type) :
-    PtsOver (spMap (algebraMap R (MvPolynomial σ R))) t ≃ₜ (σ → C) :=
-  have ha : Function.Surjective (MvPolynomial.aeval (R := R) (MvPolynomial.X : σ → MvPolynomial σ R)) :=
-    fun q => ⟨q, MvPolynomial.aeval_X_left_apply q⟩
-  (isEmbedding_coord ht _ ha).toHomeomorphOfSurjective (by
-    rw [← Set.range_eq_univ, range_coord ht _ ha, Set.eq_univ_iff_forall]
-    intro z q hq
-    rw [MvPolynomial.aeval_X_left_apply] at hq
-    rw [hq, map_zero])
-
 end Algebra
 
 section OverCat
@@ -747,7 +708,6 @@ section OverCat
 open MonoidalCategory CartesianMonoidalCategory
 
 variable {C : Type} [CommRing C] [TopologicalSpace C]
-
 
 omit [TopologicalSpace C] in
 abbrev overPt {A : Over (Sp C)} (x : 𝟙_ (Over (Sp C)) ⟶ A) : Sp C ⟶ A.left := x.left
@@ -818,12 +778,6 @@ def conjHomeomorph (X : Scheme.{0}) : (Sp ℂ ⟶ X) ≃ₜ (Sp ℂ ⟶ X) :=
 
 theorem valR_conjHomeomorph (x : Sp ℂ ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) (f : Γ(X, U)) :
     valR (conjHomeomorph X x) U f = starRingEnd ℂ (valR x U f) := valR_spMap_comp _ x U h f
-
-def PtsOver.conjHomeomorph {S : Scheme.{0}} (p : X ⟶ S) (s : Sp ℂ ⟶ S) :
-    PtsOver p s ≃ₜ PtsOver p (spMap (starRingEnd ℂ) ≫ s) :=
-  (Points.conjHomeomorph X).subtype fun x => by
-    rw [conjHomeomorph_apply, Category.assoc]
-    exact (Points.conjHomeomorph S).injective.eq_iff.symm
 
 theorem germ_stalkClosedPointTo_eq_valMap {C : Type} [CommRing C] [IsLocalRing C] (x : Sp C ⟶ X)
     (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) :

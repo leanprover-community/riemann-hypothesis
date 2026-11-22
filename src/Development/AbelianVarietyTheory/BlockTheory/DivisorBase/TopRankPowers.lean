@@ -16,13 +16,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.RadicalPowers
 
-def CplxEq {K V : Type} [Field K] [AddCommGroup V] [Module K V] (σ : K →+* ℂ) {m m' : ℕ}
-    (c : Fin m → ℂ) (v : Fin m → V) (c' : Fin m' → ℂ) (v' : Fin m' → V) : Prop :=
-  letI := σ.toAlgebra
-  (∑ i, c i ⊗ₜ[K] v i : ℂ ⊗[K] V) = ∑ k, c' k ⊗ₜ[K] v' k
-
-def cD (D : ℕ) : ℝ := 2 ^ (D + 1) * Real.pi ^ D / (D - 1).factorial
-
 section OneField
 
 variable {K : Type} [Field K] [NumberField K]
@@ -56,7 +49,6 @@ end Data
 end OneField
 
 variable {F : Type} [Field F] [NumberField F] (X : Data F)
-
 
 variable (E : Type) [Field E] [NumberField E] [Algebra F E]
 

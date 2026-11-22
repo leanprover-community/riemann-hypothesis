@@ -82,9 +82,6 @@ theorem rdz_dz_eq (f : ℂ → E) (τ : ℂ) :
     PBP.dz f τ = (1 / 2 : ℂ) • (fderiv ℝ f τ 1 + (-Complex.I) • fderiv ℝ f τ Complex.I) := by
   simp only [PBP.dz, neg_smul, sub_eq_add_neg]
 
-theorem rdz_dzb_eq (f : ℂ → E) (τ : ℂ) :
-    PBP.dzb f τ = (1 / 2 : ℂ) • (fderiv ℝ f τ 1 + Complex.I • fderiv ℝ f τ Complex.I) := rfl
-
 theorem rdz_H_eq {j : ℕ} (κ : ℂ → MJ j → E) (c s : ℂ) (τ₀ : ℂ) (Z₀ : MJ j)
     (hd : DifferentiableAt ℝ (rdzK κ) (τ₀, Z₀)) :
     c • (fderiv ℝ (fun τ : ℂ => κ τ Z₀) τ₀ 1 + s • fderiv ℝ (fun τ : ℂ => κ τ Z₀) τ₀ Complex.I) =

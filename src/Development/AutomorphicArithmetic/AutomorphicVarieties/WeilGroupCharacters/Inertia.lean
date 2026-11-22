@@ -25,32 +25,10 @@ structure LocAb (l : ℕ) [Fact l.Prime] (G : Type) [Group G] [TopologicalSpace 
   b_open : IsOpen (b.ker : Set G)
   b_mu : ∀ g ∈ muG l G, (b g : TopologicalAbelianization G) = QuotientGroup.mk' _ g
 
-structure DetObj (O : Type) [CommRing O] [IsLocalRing O] {n : ℕ} {G : Type} [Group G] [TopologicalSpace G]
-    (Dbar : GDet n (ResidueField O) G) : Type 1 where
-  R : Type
-  [ring : CommRing R]
-  [alg : Algebra O R]
-  [co : IsCO O R]
-  D : GDet n R G
-  cont : D.IsCont (maximalIdeal R)
-  red : D.map (res O R : R →+* ResidueField O) = Dbar
-  univ : ∀ (R' : Type) [CommRing R'] [Algebra O R'] [IsCO O R'] (D' : GDet n R' G), D'.IsCont (maximalIdeal R') →
-    D'.map (res O R' : R' →+* ResidueField O) = Dbar → ∃! f : R →ₐ[O] R', D.map (f : R →+* R') = D'
-
 attribute [instance] DetObj.ring DetObj.alg DetObj.co
 
 variable {l : ℕ} [Fact l.Prime] {F : GFrame l} {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] {n : ℕ}
   (r : Resid F O n)
-
-structure LamTObj : Type 1 where
-  Λ : Type
-  [ring : CommRing Λ]
-  [alg : Algebra O Λ]
-  [co : IsCO O Λ]
-  ψ : ∀ v, Fin n → F.Gv v →* Λˣ
-  psi : ∀ v i, r.IsPsi v i (ψ v i)
-  univ : ∀ (R : Type) [CommRing R] [Algebra O R] [IsCO O R] (ψ' : ∀ v, Fin n → F.Gv v →* Rˣ),
-    (∀ v i, r.IsPsi v i (ψ' v i)) → ∃! f : Λ →ₐ[O] R, ∀ v i, pushCh (f : Λ →+* R) (ψ v i) = ψ' v i
 
 attribute [instance] LamTObj.ring LamTObj.alg LamTObj.co
 

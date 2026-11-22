@@ -87,12 +87,6 @@ def om' {r : ℕ} (f f' : Fin (r + 1) → V) : V :=
 def om {r : ℕ} (f f' : Fin (r + 1) → V) : V :=
   ∑ a, M.L.cj ((H.Zhat f f').adjugate (Fin.last r) a) • f a
 
-def NGrp (abelian₂ : Submodule M.L.O V) {r : ℕ} (f : Fin (r + 1) → V) : Set (V ≃ₗ[E] V) :=
-  {n | (∀ x y, H.h (n x) (n y) = H.h x y) ∧ (n : V → V) '' (abelian₂ : Set V) = abelian₂ ∧
-    (∀ a : Fin r, n (f a.castSucc) - f a.castSucc ∈
-      Submodule.span E ((fun b : Fin r => f b.castSucc) '' {b | b < a})) ∧
-    ∀ v ∈ H.perp (H.X f), n v - v ∈ H.X f}
-
 end HermSp
 
 structure Term (V : Type) [AddCommGroup V] [Module E V] (M : Model F E) (r : ℕ) where
@@ -165,9 +159,6 @@ def Respects {r : ℕ} (t₁ t₂ : Term V M r) (φ : H.Wb t₁.f ≃ₗ[E] H.Wb
   φ' '' H.Lset t₁.abelian₂ t₁.f' = H.Lset t₂.abelian₂ t₂.f' ∧
   H.SendsTo φ'.toLinearMap 1 1 (t₁.f' (Fin.last r)) (t₂.f' (Fin.last r)) ∧
   ∀ g, M.split = some g → Prod.map φ' φ '' H.iotaGraph g t₁ = H.iotaGraph g t₂
-
-def IsScalarPair {r : ℕ} (t₁ t₂ : Term V M r) : Prop :=
-  ∃ φ φ', H.Ident t₁ t₂ φ φ' ∧ H.Respects t₁ t₂ φ φ'
 
 def dens (ϖ : 𝒪[F]) (abelian₂ : Submodule M.L.O V) {ι : Type} [Fintype ι] (G₀ : Matrix ι ι E) : ℝ :=
   (Nat.card (Set.range fun v : {v : ι → V // H.Prim abelian₂ v ∧ ∀ a b,

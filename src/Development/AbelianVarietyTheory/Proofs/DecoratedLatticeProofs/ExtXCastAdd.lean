@@ -67,8 +67,6 @@ def eX : A ≃ Fin N :=
         have := m.isLt
         omega)
 
-theorem eX_val (a : A) : ((eX e hcc he a : Fin N) : ℕ) = (e (Sum.inl a)).val := rfl
-
 end Num
 
 section Ext

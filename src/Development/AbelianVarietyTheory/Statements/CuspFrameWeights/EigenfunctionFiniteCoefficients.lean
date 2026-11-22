@@ -33,13 +33,6 @@ def StrictLow : Prop :=
         ∀ (μ : Fin n → ℝ) (S : Submodule ℂ H), IsKTypeOf ε σ μ S → μ ≠ lowK ε lam →
           vNormSq ε (lowK ε lam) < vNormSq ε μ
 
-def EigenfunctionFiniteCoefficients : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (χ : Fin n → ℂ) (f : Matrix (Fin n) (Fin n) ℂ → ℂ), IsZEigen ε χ f → IsBiKFin ε f →
-    MemLp (fun g : UJ ε => f (umat g)) 2 (muG ε) →
-    ∃ (N : ℕ) (H : Fin N → Type) (_ : ∀ i, NormedAddCommGroup (H i)) (_ : ∀ i, InnerProductSpace ℂ (H i))
-      (σ : ∀ i, Matrix (Fin n) (Fin n) ℂ → (H i →L[ℂ] H i)) (u v : ∀ i, H i),
-      (∀ i, IsSqIntIrr ε (σ i)) ∧ ∀ g ∈ UJset ε, f g = ∑ i, ⟪v i, σ i g (u i)⟫_ℂ
-
 def FormulaGap : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), IsHCParam lam → IsDS ε lam σ →
     ∀ h : ℝ, GapAtLeast ε lam h → 120 * (n : ℝ) * ((rkR ε : ℕ) : ℝ) ^ ((3 : ℝ) / 2) ≤ h → ∀ w, IsHighestUnit ε lam σ w →

@@ -24,8 +24,6 @@ def RowSizeLe : Prop := ∀ (i : N.Loc) (σ : what₂.FT), what₂.isot (N.j i) 
 def HeckeSplitOne : Prop := ∀ χ χ' : A.CG 1,
   (∀ᶠ w in Filter.cofinite, IsSplitPl H w → A.locG χ w = A.locG χ' w) → χ = χ'
 
-def Tempered : Prop := ∀ (a : ℕ) (π : A.CG a), A.csd π → A.ralg π → ∀ w, A.tempered (A.locG π w)
-
 def ThetaOne : Prop := ∀ (i : N.Loc) (σ : what₂.FT), what₂.isot (N.j i) σ ≠ ⊥ → ∃ P, thetaOf N A i σ P
 
 def Pairs (i : N.Loc) (σ : what₂.FT) (P : A.AV i) : Prop :=

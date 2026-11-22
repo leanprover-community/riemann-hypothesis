@@ -129,20 +129,9 @@ def Presents.ofSurjective {X : Scheme.{0}} {s : X ⟶ Sp R} {i : X₀ ⟶ X} (hi
     (red : ∀ U, spMap (S.p U) ≫ y U = affPt s₀ U.unop ≫ i) : S.Presents s i :=
   ⟨y, isOpen, base, nat, red, S.cover_of_surjective hi y red⟩
 
-
 include hI in
 theorem surjective_spMap_p (U : AffOp X₀) : Surjective (spMap (S.p U)) :=
   surjective_spMap_sqZero (S.p U) (S.surj U) (map_sq hI _) fun b hb ↦ (S.ker U b).1 hb
-
-
-include hI in
-theorem Presents.surjective {X : Scheme.{0}} {s : X ⟶ Sp R} {i : X₀ ⟶ X} (P : S.Presents s i) : Surjective i := by
-  refine ⟨fun x ↦ ?_⟩
-  obtain ⟨U, q, rfl⟩ := P.cover x
-  obtain ⟨q₀, rfl⟩ := (S.surjective_spMap_p hI U).surj q
-  refine ⟨affPt s₀ U.unop q₀, ?_⟩
-  have := congrArg (fun f : Sp (Sec s₀ U.unop.1) ⟶ X ↦ f q₀) (P.red U)
-  simpa only [Scheme.Hom.comp_apply] using this.symm
 
 structure LocIso where
 
@@ -158,10 +147,6 @@ structure IsTheta (I : Ideal R) {B B₀ B' : Type} [CommRing B] [Algebra R B] [C
   smul : ∀ b w, θ (p b • w) = α b * θ w
   der : ∀ b, θ (D R₀ B₀ (p b)) = α b - β b
   mem : ∀ w, θ w ∈ I.map (algebraMap R B')
-
-theorem isTheta_zero (I : Ideal R) {B B₀ B' : Type} [CommRing B] [Algebra R B] [CommRing B₀] [Algebra R₀ B₀]
-    [CommRing B'] [Algebra R B'] (p : B →+* B₀) (α : B →ₐ[R] B') : IsTheta (R₀ := R₀) I p α α 0 :=
-  ⟨fun _ _ ↦ by simp, fun _ ↦ by simp, fun _ ↦ by simp⟩
 
 def Sys.LocIso.IsDefect {S S' : Sys I π s₀} (Φ : S.LocIso S')
     (θ : ∀ (U V : AffOp X₀) (_ : U ⟶ V), Ω[Sec s₀ U.unop.1⁄R₀] →+ S'.F.obj V) : Prop :=
@@ -212,15 +197,6 @@ theorem smooth_sec_affine [Smooth s] (U : X.affineOpens) : Algebra.Smooth R (Sec
   have h : Smooth (affPt s U ≫ s) := inferInstance
   rw [affPt_w] at h
   exact RingHom.smooth_algebraMap.1 ((HasRingHomProperty.Spec_iff (P := @Smooth)).1 h)
-
-def Sys.self [Smooth s] : Sys (⊥ : Ideal R) (RingHom.id R) s where
-  F := OAff s
-  p _ := RingHom.id _
-  semi _ := fun _ _ ↦ rfl
-  nat _ _ := rfl
-  surj _ := Function.surjective_id
-  ker U b := by simp [Ideal.map_bot]
-  smooth U := smooth_sec_affine s U.unop
 
 end Self
 

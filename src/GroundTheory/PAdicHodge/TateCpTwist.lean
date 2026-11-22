@@ -61,9 +61,6 @@ noncomputable def cpTwistMap (j : ℤ) (σ : Gal(PadicAlgCl p/K)) : ℂ_[p] →L
     rw [gal_smul_smul_intermediateField, RingHom.id_apply, mul_smul_comm]
   cont := continuous_const.mul (continuous_const_smul σ)
 
-theorem cpTwistMap_apply (j : ℤ) (σ : Gal(PadicAlgCl p/K)) (x : ℂ_[p]) :
-    cpTwistMap K j σ x = twistScalar K j σ * (σ • x) := rfl
-
 noncomputable def cpTwistRep (j : ℤ) : ContRepresentation K Gal(PadicAlgCl p/K) ℂ_[p] :=
   .ofMonoidHom
     { toFun := cpTwistMap K j

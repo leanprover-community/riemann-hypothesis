@@ -119,7 +119,6 @@ variable {k r : ℕ}
 section Lev
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {i : Fin (r + 1)} {D : Set (Mx k r)}
 
-
 open Classical in
 def cut0 (i : Fin (r + 1)) (D : Set (Mx k r)) : (Mx k r → E) →ₗ[ℂ] (Mx k r → E) where
   toFun := fun f g => if g ∈ Glev k r i ∩ D then f g else 0
@@ -761,20 +760,6 @@ theorem IntQ.smul {T : Module.End ℂ V₀} {T' : Module.End ℂ V₁} (h : IntQ
   show ρ (s • T F) = s • T' (ρ F)
   rw [map_smul, h2 F hF]
 
-theorem IntQ.neg {T : Module.End ℂ V₀} {T' : Module.End ℂ V₁} (h : IntQ ρ VL T T') : IntQ ρ VL (-T) (-T') := by
-  obtain ⟨h1, h2⟩ := h
-  refine And.intro (fun F hF => VL.neg_mem (h1 F hF)) (fun F hF => ?_)
-  show ρ (-T F) = -T' (ρ F)
-  rw [map_neg, h2 F hF]
-
-theorem IntQ.sub {T S : Module.End ℂ V₀} {T' S' : Module.End ℂ V₁} (h : IntQ ρ VL T T') (h' : IntQ ρ VL S S') :
-    IntQ ρ VL (T - S) (T' - S') := by
-  obtain ⟨h1, h2⟩ := h
-  obtain ⟨h1', h2'⟩ := h'
-  refine And.intro (fun F hF => VL.sub_mem (h1 F hF) (h1' F hF)) (fun F hF => ?_)
-  show ρ (T F - S F) = T' (ρ F) - S' (ρ F)
-  rw [map_sub, h2 F hF, h2' F hF]
-
 theorem int_one : IntQ ρ VL 1 1 := by
   refine And.intro (fun F hF => hF) (fun F _ => ?_)
   rfl
@@ -1199,13 +1184,6 @@ theorem IntJ.add {T S : Module.End ℂ V₀} {T' S' : Module.End ℂ V₁} (h : 
   show ρ (T J₀ + S J₀) = T' (ρ J₀) + S' (ρ J₀)
   rw [map_add (f := _), h2, h2']
 
-theorem IntJ.neg {T : Module.End ℂ V₀} {T' : Module.End ℂ V₁} (h : IntJ ρ VL J₀ T T') :
-    IntJ ρ VL J₀ (-T) (-T') := by
-  obtain ⟨h1, h2⟩ := h
-  refine And.intro (VL.neg_mem h1) ?_
-  show ρ (-T J₀) = -T' (ρ J₀)
-  rw [map_neg, h2]
-
 theorem IntJ.sub {T S : Module.End ℂ V₀} {T' S' : Module.End ℂ V₁} (h : IntJ ρ VL J₀ T T')
     (h' : IntJ ρ VL J₀ S S') : IntJ ρ VL J₀ (T - S) (T' - S') := by
   obtain ⟨h1, h2⟩ := h
@@ -1429,20 +1407,17 @@ theorem int_C (hW : WeylLevelElementFacts) (hEP : EabPres) (hQ : QMinorLeftH) (h
     IntQ (rho E hW l hD.1) (VLeft z l.castSucc hD.1) (qminor (E0 E l.castSucc hD.1) (v0 k l) (v0 k l) u)
       (mB E l.succ (ho1 l hD.1) id id u) := int_minor hW hEP hQ hD id id u
 
-
 variable (E l) in
 def bE1 (hD : IsOpen D) (z z' : Fin (2 * r + k + 1) → ℂ) (u : ℂ) : Module.End ℂ (sfData E l.succ (ho1 l hD)).V :=
   mB E l.succ (ho1 l hD) id id (u - 1) * bTee E l hD u -
     ∑ w : Fin (mdim k r l.succ), ∑ x : Fin (mdim k r l.succ), ((((-1 : ℤ) ^ ((w : ℕ) + (x : ℕ)) : ℤ)) : ℂ) •
       (scaledRowVectorOperator E l hD z w * mB E l.succ (ho1 l hD) (skip1 w) (skip1 x) (u - 2) * (xv k r z' l.succ x • 1))
 
-
 variable (E l) in
 def borderedMinorLastColumn (hD : IsOpen D) (z z' : Fin (2 * r + k + 1) → ℂ) (u : ℂ) : Module.End ℂ (sfData E l.succ (ho1 l hD)).V :=
   bTss E l hD (u - (mdim k r l.succ : ℂ)) * mB E l.succ (ho1 l hD) id id u -
     ∑ w : Fin (mdim k r l.succ), ∑ x : Fin (mdim k r l.succ), ((((-1 : ℤ) ^ ((w : ℕ) + (x : ℕ)) : ℤ)) : ℂ) •
       (scaledColumnVectorOperator E l hD z x * mB E l.succ (ho1 l hD) (skip1 w) (skip1 x) u * (xbv k r z' l.succ w • 1))
-
 
 variable (E l) in
 def doubleRemovedMinorTerm (hD : IsOpen D) (z z' : Fin (2 * r + k + 1) → ℂ) (u : ℂ) : Module.End ℂ (sfData E l.succ (ho1 l hD)).V :=
@@ -1451,7 +1426,6 @@ def doubleRemovedMinorTerm (hD : IsOpen D) (z z' : Fin (2 * r + k + 1) → ℂ) 
       (scaledRowVectorOperator E l hD z w * scaledColumnVectorOperator E l hD z x *
         mB E l.succ (ho1 l hD) (skip2 (min w w') (max w w')) (skip2 (min x x') (max x x')) (u - 2) *
         ((xv k r z' l.succ x' * xbv k r z' l.succ w') • 1)) else 0
-
 
 variable (E l) in
 def capelliDetFirstFactorOrder (hD : IsOpen D) (z z' : Fin (2 * r + k + 1) → ℂ) (u : ℂ) : Module.End ℂ (sfData E l.succ (ho1 l hD)).V :=
@@ -1463,7 +1437,6 @@ def capelliDetFirstFactorOrder (hD : IsOpen D) (z z' : Fin (2 * r + k + 1) → �
       (scaledRowVectorOperator E l hD z w * mB E l.succ (ho1 l hD) (skip1 w) (skip1 x) (u - 2) *
         bTss E l hD (u - (mdim k r l.succ : ℂ) - 1) * (xv k r z' l.succ x • 1)))
   - doubleRemovedMinorTerm E l hD z z' u
-
 
 variable (E l) in
 def capelliDetSecondFactorOrder (hD : IsOpen D) (z z' : Fin (2 * r + k + 1) → ℂ) (u : ℂ) : Module.End ℂ (sfData E l.succ (ho1 l hD)).V :=
@@ -2146,12 +2119,6 @@ section TForm
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {l : Fin r} {D : Set (Mx k r)}
   (hD : IsOpen D) (z z' : Fin (2 * r + k + 1) → ℂ) (Y : ℂ)
 
-local notation "ho" => ho1 l hD
-local notation "tt" => tB E l.succ (ho1 l hD) z z' Y
-local notation "Ci" => mulB E l.succ (ho1 l hD) (aCi k l)
-local notation "Cbi" => mulB E l.succ (ho1 l hD) (aCbi k l)
-local notation "uu" => uC k r l.castSucc Y
-
 theorem signed_sum_mulB_mB_eq_neg_tt_zero_one (A X : Module.End ℂ (sfData E l.succ ho).V) :
     (∑ w : Fin (mdim k r l.succ), ∑ x : Fin (mdim k r l.succ), ((((-1 : ℤ) ^ ((w : ℕ) + (x : ℕ)) : ℤ)) : ℂ) •
       (A * mulB E l.succ ho (aYb z l.succ w) * mB E l.succ ho (skip1 w) (skip1 x) (uu - 2) * X *
@@ -2375,10 +2342,6 @@ section Keys
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {l : Fin r} {D : Set (Mx k r)}
   (hD : IsOpen D) (z z' : Fin (2 * r + k + 1) → ℂ) (Y : ℂ)
 
-local notation "tt" => tB E l.succ (ho1 l hD) z z' Y
-local notation "mm" => mulB E l.succ (ho1 l hD)
-local notation "uu" => uC k r l.castSucc Y
-
 theorem stp_keys :
     mm (aG k l) * capelliDetSecondFactorOrder E l hD z z' uu =
       (bTss E l hD Y * (tt 0 0 * bTee E l hD Y + tt 0 1 * mm (aCi k l)) +
@@ -2435,10 +2398,6 @@ variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {z z' : Fin (2 * 
   {J : Mx k r → E} (hs : SmoothLev k r l.castSucc D J) (hl : LeftEq k r z l.castSucc D J)
   (hr : RightEq k r z' l.castSucc D J) (Y : ℂ) {c : Fin r → ℂ} (hc : c ∈ OmX r) {g : Mx k r}
   (hg : g ∈ Glev k r l.succ) (hgD : g ∈ Dc1 l D c)
-
-local notation "mm" => mulB E l.succ (ho1 l (And.left hD))
-local notation "uu" => uC k r l.castSucc Y
-local notation "ev" => evP (ho1 l (And.left hD)) (rho E (Rules.w R) l (And.left hD) (J0 (And.left hD) hs)) c g
 
 include hz hz' hl hr hc hg hgD in
 theorem tL_zero_zero_w1_mul_eq_capelliDet (hB : BorderFull) :

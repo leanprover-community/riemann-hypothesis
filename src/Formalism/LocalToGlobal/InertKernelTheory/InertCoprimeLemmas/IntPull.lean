@@ -505,9 +505,6 @@ def PQK {N N' : ℕ} (P : Matrix (Fin N') (Fin N') D.host.E) (Q : Matrix (Fin N)
   map_add' B C := by rw [Matrix.mul_add, Matrix.add_mul]
   map_smul' c B := by rw [Matrix.mul_smul, Matrix.smul_mul]; rfl
 
-theorem PQK_apply {N N' : ℕ} (P : Matrix (Fin N') (Fin N') D.host.E) (Q : Matrix (Fin N) (Fin N) D.host.E)
-    (B : Matrix (Fin N') (Fin N) D.host.E) : PQK P Q B = P * B * Q := rfl
-
 theorem homL_map {N N' : ℕ} (P : Matrix (Fin N') (Fin N') D.host.E) (Q : Matrix (Fin N) (Fin N) D.host.E)
     (L1 L2 : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (L1' L2' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E))
     (h : ∀ A : Matrix (Fin N') (Fin N) D.host.E, (∀ x ∈ L1, A.mulVec x ∈ L1') → ∀ x ∈ L2, (P * A * Q).mulVec x ∈ L2') :

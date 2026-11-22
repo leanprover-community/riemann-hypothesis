@@ -18,16 +18,6 @@ section Poly
 
 variable {A : Type u} [CommRing A]
 
-theorem eq_C_of_derivative_eq_zero (h : ∀ n : ℕ, IsUnit ((n : A) + 1)) {f : Polynomial A}
-    (hf : Polynomial.derivative f = 0) : f = Polynomial.C (f.coeff 0) := by
-  ext n
-  rcases n with _ | n
-  · simp
-  · have h1 := Polynomial.coeff_derivative f n
-    rw [hf, Polynomial.coeff_zero] at h1
-    rw [Polynomial.coeff_C_succ]
-    exact (h n).mul_left_eq_zero.1 h1.symm
-
 end Poly
 
 variable {p : ℕ} [Fact p.Prime]
@@ -50,7 +40,6 @@ theorem Acris.logTeich_padicPow (η : tateModule p R) (a : ℤ_[p]) :
   rw [hη', Acris.logTeich_mul, Acris.logTeich_pow, Acris.logTeich_pow, ha, Nat.cast_pow]
   ring
 
-
 theorem Bcris.algebraMap_padicInt (a : ℤ_[p]) :
     algebraMap ℚ_[p] (Bcris p R) a =
       algebraMap (Acris p R) _ (algebraMap ℤ_[p] (Acris p R) a) :=
@@ -61,7 +50,6 @@ section Good
 variable [IsDomain R] [ValuationRing R] [IsAlgClosed (FractionRing R)] [CharZero R]
 
 variable (p R)
-
 
 variable {p R}
 
@@ -74,12 +62,6 @@ open Polynomial
 variable [IsDomain R] [CharZero R] [ValuationRing R]
 
 variable [IsAlgClosed (FractionRing R)]
-
-
-
-
-variable (p R) in
-def u : Bst p R := logFlat (pflat (p := p) (R := R))
 
 end Bst
 

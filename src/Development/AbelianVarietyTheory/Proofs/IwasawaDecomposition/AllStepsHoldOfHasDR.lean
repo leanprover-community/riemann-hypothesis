@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.EpsZeroCompOfIsTanAtG
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsIvDOfDefinite
-public import Development.AbelianVarietyTheory.Statements.HeightBoundStatement.HTBoundSt
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LineModel
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsTransitionUnique
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ObjMapUniqueOfIsDominant

@@ -2,9 +2,7 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChernPartOverProperClosedEqZero
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsFlagBundleRankOne
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsFlagModelHermSum
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OfSwap2
 
 @[expose] public section

@@ -21,8 +21,6 @@ variable {n : ℕ}
 
 namespace Ps1
 
-local notation "𝕄" => Fin n → Fin n → ℂ
-
 lemma contDiffAt_zpow {f : 𝕄 → ℂ} {x : 𝕄}
     (hf : ContDiffAt ℂ 1 f x) (hx : f x ≠ 0) (m : ℤ) : ContDiffAt ℂ 1 (fun y => f y ^ m) x := by
   obtain ⟨k, rfl | rfl⟩ := Int.eq_nat_or_neg m

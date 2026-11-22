@@ -21,7 +21,6 @@ theorem hom_pos {H : Type} [Group H] (δ : H →* ℝ≥0) (p : H) : 0 < δ p :=
 
 def IsIwasawa : Prop := (∀ g : G, ∃ p : P, ∃ k ∈ K, g = p * k) ∧ ∀ p : P, (p : G) ∈ K → δ p = 1
 
-
 open Classical in
 def iwAbs (g : G) : ℝ≥0 := by
   classical
@@ -67,7 +66,6 @@ theorem iwAbs_right (g : G) {k : G} (hk : k ∈ K) : iwAbs (δ := δ) (K := K) (
 end IsIwasawa
 
 variable [TopologicalSpace G] [IsTopologicalGroup G]
-
 
 omit [IsTopologicalGroup G] in
 theorem triv_of_isCompact (hP : IsClosed (P : Set G)) (hδ : Continuous δ) (hK : IsCompact (K : Set G)) (p : P)
@@ -222,8 +220,6 @@ end Induced
 section ZetaNonvanishing₂
 
 variable {H : Type} {X : Type} [NormedAddCommGroup X] [InnerProductSpace ℂ X]
-
-def coef (π : H → X → X) (x y : X) : H → ℂ := fun g => inner ℂ y (π g x)
 
 variable [MeasurableSpace H] (m : Measure H)
 

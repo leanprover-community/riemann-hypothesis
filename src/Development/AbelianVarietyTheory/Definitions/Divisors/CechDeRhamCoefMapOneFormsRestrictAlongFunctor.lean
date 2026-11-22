@@ -74,10 +74,6 @@ def pullTot2 : Tot2 F →ₛₗ[σ] Tot2 F' where
 section
 variable {T T' T'' : C'} (φ : T ⟶ T') (ψ : T' ⟶ T'')
 
-theorem pullTot1_f (c : Tot1 F) : (pullTot1 m c).1 T T' φ = m.α T' (c.1 _ _ (m.G.map φ)) := rfl
-
-theorem pullTot1_ω (c : Tot1 F) (T : C') : (pullTot1 m c).2 T = q1 m T (c.2 _) := rfl
-
 theorem cechDeRhamPullbackTotalDegreeTwo_function_part (c : Tot2 F) :
     (pullTot2 m c).1 T T' T'' φ ψ = m.α T'' (c.1 _ _ _ (m.G.map φ) (m.G.map ψ)) := rfl
 
@@ -117,8 +113,6 @@ def pullZZ2 : cechDeRhamTotalCocyclesTwo F →ₛₗ[σ] cechDeRhamTotalCocycles
     · simp only [pullTot2_η, pullTot2_a]
       rw [cechDeRhamTotalCocyclesTwo.two c (m.G.map φ), map_add (f := _), qOm_pOm, qOm_dOne]
     · rw [pullTot2_η, ← qOm_dTwo, cechDeRhamTotalCocyclesTwo.closed c, map_zero]
-
-theorem coe_pullZZ1 (c : cechDeRhamTotalCocyclesOne F) : (pullZZ1 m c).1 = pullTot1 m c.1 := rfl
 
 theorem coe_pullZZ2 (c : cechDeRhamTotalCocyclesTwo F) : (pullZZ2 m c).1 = pullTot2 m c.1 := rfl
 
@@ -242,60 +236,8 @@ section Initial
 
 variable (R B : Type) [CommRing R] [CommRing B] [Algebra R B]
 
-def exact1 : Submodule R (LinearMap.ker (dOne R B)) :=
-  (LinearMap.range (D R B).toLinearMap).comap (LinearMap.ker (dOne R B)).subtype
-
-abbrev AlgebraFirstDeRham : Type := LinearMap.ker (dOne R B) ⧸ exact1 R B
-
 variable {R B} {C : Type u} [Category.{v} C] {F : C ⥤ CommAlgCat.{0} R}
   (e : ∀ T : C, B →ₐ[R] F.obj T) (he : ∀ ⦃T T' : C⦄ (φ : T ⟶ T') (b : B), mp F φ (e T b) = e T' b)
-
-def coneForm : LinearMap.ker (dOne R B) →ₗ[R] Closed1 F where
-  toFun ω := ⟨⟨fun T ↦ (SemiHom.of_algHom (e T)).m1 ω.1, fun T T' φ ↦
-    (SemiHom.oneFormMap_comp_oneFormMap _ _ _ (he φ) _).symm⟩, fun T ↦ by
-      change dOne R _ ((SemiHom.of_algHom (e T)).m1 ω.1) = 0
-      rw [← SemiHom.mOm_dOne, show dOne R B ω.1 = 0 from ω.2, map_zero]⟩
-  map_add' a b := Subtype.ext (Subtype.ext (funext fun T ↦ map_add _ _ _))
-  map_smul' r a := Subtype.ext (Subtype.ext (funext fun T ↦ (SemiHom.of_algHom (e T)).m1.map_smulₛₗ r a.1))
-
-theorem coneForm_apply (ω : LinearMap.ker (dOne R B)) (T : C) :
-    (coneForm e he ω).1.1 T = (SemiHom.of_algHom (e T)).m1 ω.1 := rfl
-
-def coneMap : AlgebraFirstDeRham R B →ₗ[R] Hyp1 F :=
-  Submodule.liftQ _ (ofForm F ∘ₗ coneForm e he) (by
-    rintro ω ⟨b, hb⟩
-    refine ofForm_eq_zero.2 ⟨fun T ↦ e T b, fun T T' φ ↦ (he φ b).symm, fun T ↦ ?_⟩
-    rw [coneForm_apply, show ω.1 = D R B b from hb.symm, SemiHom.m1_D]; rfl)
-
-theorem coneMap_mk (ω : LinearMap.ker (dOne R B)) :
-    coneMap e he (Submodule.Quotient.mk ω) = ofForm F (coneForm e he ω) := rfl
-
-theorem coneMap_bijective {T₀ : C} (h : Limits.IsInitial T₀) (hb : Function.Bijective (e T₀)) :
-    Function.Bijective (coneMap e he) := by
-  let i := (AlgEquiv.ofBijective _ hb).symm.toAlgHom
-  have hi : ∀ b, i (e T₀ b) = b := (AlgEquiv.ofBijective _ hb).symm_apply_apply
-  have hi' : ∀ b, e T₀ (i b) = b := (AlgEquiv.ofBijective _ hb).apply_symm_apply
-  constructor
-  · rw [injective_iff_map_eq_zero]
-    intro c hc
-    obtain ⟨ω, rfl⟩ := Submodule.Quotient.mk_surjective _ c
-    obtain ⟨g, -, hg⟩ := ofForm_eq_zero.1 hc
-    refine (Submodule.Quotient.mk_eq_zero _).2 ⟨i (g T₀), ?_⟩
-    have := congrArg (SemiHom.of_algHom i).m1 (hg T₀)
-    rw [SemiHom.m1_D, coneForm_apply] at this
-    exact this.trans ((SemiHom.oneFormMap_comp_oneFormMap _ _ (SemiHom.of_algHom (AlgHom.id R B)) (fun b ↦ hi b) _).trans
-      (SemiHom.oneFormMap_eq_self_of_id _ (fun _ ↦ rfl) _))
-  · intro c
-    have hc : c ∈ Fil1 F := H1.eq_zero_of_isInitial F h _
-    rw [Fil1_eq_range] at hc
-    obtain ⟨ω, rfl⟩ := hc
-    refine ⟨Submodule.Quotient.mk ⟨(SemiHom.of_algHom i).m1 (ω.1.1 T₀), ?_⟩, ?_⟩
-    · rw [LinearMap.mem_ker, ← SemiHom.mOm_dOne, ω.2 T₀, map_zero]
-    · rw [coneMap_mk]
-      refine congrArg _ (Subtype.ext (Subtype.ext (funext fun T ↦ ?_)))
-      rw [coneForm_apply, ω.1.2 (h.to T)]
-      exact SemiHom.oneFormMap_comp_oneFormMap _ _ (semiHom_mp F (h.to T))
-        (fun b ↦ ((he (h.to T) (i b)).symm.trans (congrArg _ (hi' b)))) _
 
 end Initial
 

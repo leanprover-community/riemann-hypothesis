@@ -86,9 +86,6 @@ section Arch
 variable {E I : Type} [Field E] [NumberField E] [Fintype I] {τ : I → (E →+* ℂ)}
 
 omit [NumberField E] [Fintype I] in
-theorem ringHom_app (x : E) (i : I) : Pi.ringHom τ x i = τ i x := rfl
-
-omit [NumberField E] [Fintype I] in
 theorem exists_norm_eq (hτ : Function.Surjective fun i => InfinitePlace.mk (τ i)) (φ : E →+* ℂ) :
     ∃ i, ∀ x, ‖φ x‖ = ‖τ i x‖ := by
   obtain ⟨i, hi⟩ := hτ (InfinitePlace.mk φ)
@@ -117,7 +114,6 @@ theorem exists_basis [_root_.NumberField.IsTotallyComplex E] (hτ : Function.Bij
       Fintype.card_of_bijective hτ, InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces,
       IsTotallyComplex.nrRealPlaces_eq_zero, zero_add, smul_eq_mul, mul_comm]
   exact ⟨basisOfLinearIndependentOfCardEqFinrank hli hcard, fun k => by simp⟩
-
 
 omit [NumberField E] in
 theorem abs_det_eq_one {n : ℕ} {J G : Matrix (Fin n) (Fin n) (I → ℂ)} (hJ : IsUnit J.det)

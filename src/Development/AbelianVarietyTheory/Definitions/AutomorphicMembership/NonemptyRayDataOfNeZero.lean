@@ -142,19 +142,6 @@ theorem exists_inv {M : ℕ} (q : (rayCon K M).Quotient) : IsUnit q := by
   rw [Ideal.span_singleton_one, Ideal.top_mul, mul_one, ← mul_assoc, hα,
     Ideal.span_singleton_mul_span_singleton, mul_comm α β]
 
-theorem ne_bot_of_cop {M : ℕ} (hM : 2 ≤ M) {I : Ideal (𝓞 K)} (h : IsCoprime I (Ideal.span {(M : 𝓞 K)})) : I ≠ ⊥ := by
-  rintro rfl
-  have htop : Ideal.span {(M : 𝓞 K)} = ⊤ := by
-    rw [Ideal.isCoprime_iff_add, Ideal.add_eq_sup, bot_sup_eq, Ideal.one_eq_top] at h
-    exact h
-  have h1 := congrArg Ideal.absNorm htop
-  rw [Ideal.absNorm_span_singleton, Ideal.absNorm_top, ← map_natCast (algebraMap ℤ (𝓞 K)) M,
-    Algebra.norm_algebraMap, Int.natAbs_pow, Int.natAbs_natCast] at h1
-  rcases Nat.pow_eq_one.mp h1 with h2 | h2
-  · omega
-  · exact (Module.finrank_pos (R := ℤ) (M := 𝓞 K)).ne' h2
-
-
 open Classical in
 def rcl (M : ℕ) (I : Ideal (𝓞 K)) : (rayCon K M).Quotient :=
   by
@@ -241,67 +228,6 @@ theorem cls_span {a : 𝓞 K} (ha : a ≠ 0) (h : a - 1 ∈ Ideal.span {(M : �
   refine (D.cls_eq_one_iff hcop (by rwa [Ne, Ideal.span_singleton_eq_bot])).mpr
     ⟨1, a, one_ne_zero, ha, by simp, h, ?_⟩
   rw [Ideal.span_singleton_one, Ideal.top_mul]
-
-
-theorem card_eq_classNumber (D : RayData K 1) : Fintype.card D.G = classNumber K := by
-  classical
-  have htop : Ideal.span {((1 : ℕ) : 𝓞 K)} = ⊤ := by
-    rw [Nat.cast_one, Ideal.span_singleton_one]
-  have hcop : ∀ I : Ideal (𝓞 K), IsCoprime I (Ideal.span {((1 : ℕ) : 𝓞 K)}) := fun I => by
-    rw [htop, ← Ideal.one_eq_top]
-    exact isCoprime_one_right
-  have hmod : ∀ x : 𝓞 K, x ∈ Ideal.span {((1 : ℕ) : 𝓞 K)} := fun x => by
-    rw [htop]
-    exact Submodule.mem_top
-  have heq : ∀ (I J : Ideal (𝓞 K)) (hI : I ≠ ⊥) (hJ : J ≠ ⊥),
-      D.cls I = D.cls J ↔ ClassGroup.mk0 ⟨I, mem_nonZeroDivisors_of_ne_zero hI⟩ =
-        ClassGroup.mk0 ⟨J, mem_nonZeroDivisors_of_ne_zero hJ⟩ := by
-    intro I J hI hJ
-    rw [D.cls_eq I J (hcop I) (hcop J) hI hJ, ClassGroup.mk0_eq_mk0_iff]
-    constructor
-    · rintro ⟨a, b, ha, hb, -, -, h⟩
-      exact ⟨a, b, ha, hb, h⟩
-    · rintro ⟨a, b, ha, hb, h⟩
-      exact ⟨a, b, ha, hb, hmod _, hmod _, h⟩
-  choose r hr using D.cls_surj
-  let f : D.G → ClassGroup (𝓞 K) := fun c =>
-    ClassGroup.mk0 ⟨r c, mem_nonZeroDivisors_of_ne_zero (hr c).2.1⟩
-  have hf : Function.Bijective f := by
-    constructor
-    · intro c c' h
-      rw [← (hr c).2.2, ← (hr c').2.2]
-      exact (heq _ _ (hr c).2.1 (hr c').2.1).mpr h
-    · intro x
-      obtain ⟨⟨J, hJ⟩, rfl⟩ := ClassGroup.mk0_surjective x
-      have hJ' : J ≠ ⊥ := nonZeroDivisors.ne_zero hJ
-      exact ⟨D.cls J, (heq _ _ (hr _).2.1 hJ').mp (hr _).2.2⟩
-  rw [NumberField.classNumber]
-  exact Fintype.card_of_bijective hf
-
-theorem cls_two_ne_one (D : RayData ℚ 5) : D.cls (Ideal.span {2}) ≠ 1 := by
-  have hcop : IsCoprime (Ideal.span {(2 : 𝓞 ℚ)}) (Ideal.span {((5 : ℕ) : 𝓞 ℚ)}) := by
-    rw [Ideal.isCoprime_iff_exists]
-    refine ⟨2 * (-2), Ideal.mul_mem_right _ _ (Ideal.mem_span_singleton_self 2),
-      ((5 : ℕ) : 𝓞 ℚ) * 1, Ideal.mul_mem_right _ _ (Ideal.mem_span_singleton_self _), ?_⟩
-    push_cast
-    ring
-  have h2 : Ideal.span {(2 : 𝓞 ℚ)} ≠ ⊥ := by
-    rw [Ne, Ideal.span_singleton_eq_bot]
-    exact two_ne_zero
-  intro h
-  obtain ⟨a, b, -, -, ha1, hb1, hab⟩ := (D.cls_eq_one_iff hcop h2).mp h
-  rw [Ideal.span_singleton_mul_span_singleton, Ideal.span_singleton_eq_span_singleton] at hab
-  have hab' := hab.map Rat.ringOfIntegersEquiv
-  rw [map_mul, map_ofNat] at hab'
-  have ha5 : (5 : ℤ) ∣ Rat.ringOfIntegersEquiv a - 1 := by
-    have hd := map_dvd Rat.ringOfIntegersEquiv (Ideal.mem_span_singleton.mp ha1)
-    rw [map_natCast, map_sub, map_one] at hd
-    exact_mod_cast hd
-  have hb5 : (5 : ℤ) ∣ Rat.ringOfIntegersEquiv b - 1 := by
-    have hd := map_dvd Rat.ringOfIntegersEquiv (Ideal.mem_span_singleton.mp hb1)
-    rw [map_natCast, map_sub, map_one] at hd
-    exact_mod_cast hd
-  rcases Int.associated_iff.mp hab' with h' | h' <;> omega
 
 end RayData
 

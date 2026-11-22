@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.StepUnfold
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.RationalRowTestKernel
 public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAtOfSteps
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TermVolumeClassSum

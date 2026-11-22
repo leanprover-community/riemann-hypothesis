@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApp
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GapAtLeast
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.BottomMinor
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.HeckeCharacterParameters
-public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.EulerProductSatake
 
 @[expose] public section
 

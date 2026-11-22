@@ -16,9 +16,6 @@ noncomputable def contr (v : V ⊗[ℂ] W) : Module.Dual ℂ V →ₗ[ℂ] W whe
   map_add' l m := by simp [LinearMap.rTensor_add]
   map_smul' c l := by simp [LinearMap.rTensor_smul]
 
-theorem contr_apply (v : V ⊗[ℂ] W) (l : Module.Dual ℂ V) :
-    contr v l = TensorProduct.lid ℂ W (LinearMap.rTensor W l v) := rfl
-
 theorem contr_tmul (a : V) (b : W) (l : Module.Dual ℂ V) : contr (a ⊗ₜ[ℂ] b) l = l a • b := by
   simp [contr_apply]
 

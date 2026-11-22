@@ -59,9 +59,6 @@ section Cutoff
 
 variable {D : ℕ}
 
-theorem chartCutoff_apply (k : ℕ) (y : Fin D → ℂ) :
-    chartCutoff k y = Real.smoothTransition (2 - (∑ i, ‖y i‖ ^ 2) / ((k : ℝ) + 1) ^ 2) := rfl
-
 theorem contDiff_chartCutoff (k : ℕ) (m : ℕ) : ContDiff ℝ m (chartCutoff (D := D) k) := by
   have hs : ContDiff ℝ m fun y : Fin D → ℂ => ∑ i, ‖y i‖ ^ 2 :=
     ContDiff.sum fun i _ => (contDiff_norm_sq ℝ).comp (contDiff_apply ℝ (fun _ => ℂ) i)

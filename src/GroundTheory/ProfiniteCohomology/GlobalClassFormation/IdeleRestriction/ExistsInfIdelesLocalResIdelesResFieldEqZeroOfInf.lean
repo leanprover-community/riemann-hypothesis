@@ -16,8 +16,6 @@ open CategoryTheory NumberField IntermediateField GroundTheory.Global FiniteSubf
 
 open scoped NumberField.LiesOver NumberField.AdeleRing DirectSum
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 section Res
@@ -46,7 +44,6 @@ variable {K E : FiniteSubfield} [Fact (K ≤ E)]
   (fE : Rep.res (globalDecomp Ew ιE) (limitRep E) ⟶ galUnitsZ Ew Ωw)
   (hf : ∀ z : IdeleLimit, e ((Additive.toMul (fE.hom (Additive.ofMul z)) : Ωwˣ) : Ωw) =
     ((Additive.toMul (fK.hom (Additive.ofMul z)) : Ωvˣ) : Ωv))
-
 
 include hι hf in
 theorem cohomologyMapAlong_globalDecomp_idelesResField (n : ℕ) (y : cohomology (limitRep K) n) :
@@ -88,7 +85,6 @@ section Finite
 
 variable {v : HeightOneSpectrum (𝓞 K.1)}
 
-
 set_option maxHeartbeats 2000000 in
 theorem idelesProj_eq_of_algebraMap (w : PlacesOver E.1 v) (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure (v.adicCompletion K.1))
     (ιE : ℚ̄ →ₐ[E.1] AlgebraicClosure (w.1.adicCompletion E.1))
@@ -126,7 +122,6 @@ end Finite
 section Infinite
 
 variable {v : InfinitePlace K.1}
-
 
 set_option maxHeartbeats 2000000 in
 theorem infIdelesProj_eq_of_algebraMap (w : v.placesOver E.1) (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure v.Completion)
@@ -170,7 +165,6 @@ theorem infIdelesProj_eq_of_algebraMap (w : v.placesOver E.1) (ι : ℚ̄ →ₐ
 end Infinite
 
 section Places
-
 
 set_option maxHeartbeats 4000000 in
 variable (v) in
@@ -237,7 +231,6 @@ theorem exists_idelesLocalRes_idelesResField_eq_zero_of_placeOfEmbedding (v : He
       ((idelesLocalRes ι 2).hom y)) = 0
   rw [h0, map_zero]
 
-
 set_option maxHeartbeats 4000000 in
 theorem exists_infIdelesLocalRes_idelesResField_eq_zero_of_infPlaceOfEmbedding {v : InfinitePlace K.1}
     (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure v.Completion) (y : cohomology (limitRep K) 2)
@@ -293,7 +286,6 @@ theorem exists_infIdelesLocalRes_idelesResField_eq_zero_of_infPlaceOfEmbedding {
 end Places
 
 section Main
-
 
 set_option maxHeartbeats 4000000 in
 theorem idelesResField_eq_zero (ι : LocalEmbeddings K) (y : cohomology (limitRep K) 2)

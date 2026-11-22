@@ -21,8 +21,6 @@ theorem hcMultDS : Formalism.MainNotions.BridgeCPX.HCMultDS :=
 
 theorem hcAdmDS : Formalism.MainNotions.BridgeCPX.HCAdmDS := hcAdmDS_of hcMultDS
 
-theorem kFinSmooth : Formalism.MainNotions.LowestKTypeMultiplicity.KFinSmooth := kFinSmooth_of hcMultDS
-
 theorem kFinSmooth' : Formalism.MainNotions.DiscreteSeriesInnerProducts.KFinSmooth := kFinSmooth_of' hcMultDS
 
 end Formalism.L2.SG.Pf.admitted

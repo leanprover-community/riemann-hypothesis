@@ -20,9 +20,6 @@ namespace GlobalTheory.PtExt.CupA
 
 variable {R : Type} [CommRing R] {A B : Over (Sp R)} [GrpObj A] [GrpObj B]
 
-theorem spOver_left {D D' : Type} [CommRing D] [Algebra R D] [CommRing D'] [Algebra R D'] (φ : D →ₐ[R] D') :
-    (spOver (R := R) φ).left = spMap (φ : D →+* D') := rfl
-
 theorem pointWithZeroSecondCoord_left_comp_fst {D : Type} [CommRing D] [Algebra R D] (x : Pt A D) :
     (pt0 B x).left ≫ (fst A B).left = x.left := by
   rw [← Over.comp_left]; unfold pt0; rw [lift_fst]
@@ -179,7 +176,6 @@ theorem alg {D D' : Type} [CommRing D] [Algebra R D] [CommRing D'] [Algebra R D'
   rw [key, TrivSqZeroExt.snd_sub, TrivSqZeroExt.snd_sub, snd_epsHom', TrivSqZeroExt.inl_mul_inr,
     TrivSqZeroExt.snd_inr, smul_eq_mul, map_sub, map_mul, AlgHom.commutes, Algebra.smul_def, map_neg]
   linear_combination (algebraMap R D' t) * hAa
-
 
 open Classical in
 def kFn (m₁ : IsMor (dp0 R) (A.hom ≫ 𝟙 _) (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _) (RingHom.id R) (fst A B).left)

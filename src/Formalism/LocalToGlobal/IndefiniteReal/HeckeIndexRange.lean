@@ -28,30 +28,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable (D : Formalism.BasicNotions.D7) {G : Type} [Group G] [Fintype G] {Pl0 I0 Ty T : Type} {m : ℕ}
 
-def heckeIndexRange {P Q : Type} (n : ℕ) (tyOk : ℕ → Ty → Prop) : (P × ℕ) ⊕ (Q × Ty) → Prop :=
-  Sum.elim (fun i => 1 ≤ i.2 ∧ i.2 ≤ n) (fun i => tyOk n i.2)
-
-structure FamReal3K {K : Type} [Field K] [NumberField K] [StarRing K] (σ : K →+* ℂ) (A3 : FamIn3 K G Pl0 I0 Ty T m)
-    (tyOk : ℕ → Ty → Prop) (cR : CoefDat D D.sp.X') (cL : ∀ i : Fin m, CoefDat D (D.sp.V ((i : ℕ) + 1)))
-    (lR : ∀ t, LevEnv D D.sp.X' ((A3.A.ok t × ℕ) ⊕ (A3.okI t × Ty)))
-    (lL : ∀ (i : Fin m) t, LevEnv D (D.sp.V ((i : ℕ) + 1)) ((A3.A.ok t × ℕ) ⊕ (A3.okI t × Ty))) where
-
-  R : ∀ t, SideRealG (ratF D.sp.X') (envOf cR (lR t)) σ (A3.A.MtildeCSD t) (A3.A.leftGroupActionRight t)
-    (Sum.elim (A3.A.heckeR t) (A3.heckeRI t)) (heckeIndexRange D.sp.X'.rank tyOk)
-
-  L : ∀ (i : Fin m) t, SideRealG (ratF (D.sp.V ((i : ℕ) + 1))) (envOf (cL i) (lL i t)) σ (A3.A.MtCSD i t)
-    (A3.A.leftGroupActionLift i t) (Sum.elim (A3.A.heckeL i t) (A3.heckeLI i t)) (heckeIndexRange (D.sp.V ((i : ℕ) + 1)).rank tyOk)
-
-  rankR : D.sp.X'.rank = A3.A.r + m * A3.A.t
-
-  rankL : ∀ i : Fin m, (D.sp.V ((i : ℕ) + 1)).rank = A3.A.r + A3.A.t
-
-abbrev FamReal3 (A3 : FamIn3 D.what₂.LL G Pl0 I0 Ty T m) (tyOk : ℕ → Ty → Prop) (cR : CoefDat D D.sp.X')
-    (cL : ∀ i : Fin m, CoefDat D (D.sp.V ((i : ℕ) + 1)))
-    (lR : ∀ t, LevEnv D D.sp.X' ((A3.A.ok t × ℕ) ⊕ (A3.okI t × Ty)))
-    (lL : ∀ (i : Fin m) t, LevEnv D (D.sp.V ((i : ℕ) + 1)) ((A3.A.ok t × ℕ) ⊕ (A3.okI t × Ty))) :=
-  FamReal3K D D.what₂.embLL A3 tyOk cR cL lR lL
-
 variable {D} {A3 : FamIn3 D.what₂.LL G Pl0 I0 Ty T m} {tyOk : ℕ → Ty → Prop} {cR : CoefDat D D.sp.X'}
   {cL : ∀ i : Fin m, CoefDat D (D.sp.V ((i : ℕ) + 1))}
   {lR : ∀ t, LevEnv D D.sp.X' ((A3.A.ok t × ℕ) ⊕ (A3.okI t × Ty))}

@@ -17,9 +17,6 @@ section Grp
 
 variable {F : Type} [Field F] [NumberField F] {v : HeightOneSpectrum (𝓞 F)} {n : ℕ}
 
-local notation "Kv" => v.adicCompletion F
-local notation "Ov" => v.adicCompletionIntegers F
-
 def qbInt (A : Matrix (Fin n) (Fin n) Kv) : Prop := ∀ i j, A i j ∈ Ov
 
 def qbDiv (c : Kv) (A : Matrix (Fin n) (Fin n) Kv) : Prop := ∀ i j, ∃ z ∈ Ov, A i j = c * z

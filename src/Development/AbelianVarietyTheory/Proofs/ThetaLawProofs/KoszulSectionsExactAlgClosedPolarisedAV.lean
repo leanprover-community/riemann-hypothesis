@@ -112,8 +112,6 @@ def pwMk (l : ℤ) (y : ∀ k : L.ι, Γ(X, V ⊓ L.U k))
       rs X hi (y i) = rs X hij (L.g i j ^ l).val * rs X hj (y j)) : SecOn (pw L l) V :=
   GlobalTheory.LB.mkSec (L := pw L l) y fun i j => hy i j _ _ _ _
 
-theorem co_pwMk (y : ∀ k : L.ι, Γ(X, V ⊓ L.U k)) (hy) (k : L.ι) : co (pwMk l y hy) k = y k := rfl
-
 def mulEq (s : LB.Sec (pw L n)) (h : l' = l + n) (V : X.Opens) :
     SecOn (pw L l) V →ₗ[Γ(X, V)] SecOn (pw L l') V where
   toFun x := pwMk l' (fun k => rs X inf_le_right (sf s k) * co x k) fun i j O hi hj hij => by
@@ -403,7 +401,6 @@ theorem cut_global {K : Type} [Field K] (p : X ⟶ Sp K) [IsSeparated p] (hp : L
 end GlobalTheory.KosField
 
 namespace GlobalTheory
-
 
 open KosField in
 theorem koszul_sections_exact_field : Out.Laws → ∀ (K : Type) [Field K] [IsAlgClosed K] (x : KeyIn K) (n l : ℕ) (s : Fin x.P.g → RR x n) (b : ∀ j, Fin ((l - j * n) ^ x.P.g) → RR x (l - j * n)) (m) (c : x.P.A.left → x.P.L.ι), 1 ≤ n → x.P.g * n < l → FinZ x s → (∀ j ≤ x.P.g, IsBasis x (b j)) → IsMul x l s b m → (∀ y, y ∈ x.P.L.U (c y)) → (∀ v : KIx x.P.g 0 (fun j => (l - j * n) ^ x.P.g) → K, (kosD m (fun _ => 0)).mulVec v = 0 → ∃ w, ∀ p, p.1 ≠ ∅ → v (.inl p) = (kosD (d := 0) m (fun _ => 0)).mulVec w (.inl p)) ∧ (∀ a : ∀ y : x.P.A.left, x.P.A.left.presheaf.stalk y, ∃ sg : RR x l, ∀ y, (∀ i, y ∉ Out.nonzeroLocus (s i)) → gs (𝟙 _) y (x.P.L.U (c y)) (sg.f (c y)) - a y ∈ Ideal.span (Set.range fun i => gs (𝟙 _) y (x.P.L.U (c y)) ((s i).f (c y)))) ∧ ∀ sg : RR x l, (∀ y, (∀ i, y ∉ Out.nonzeroLocus (s i)) → gs (𝟙 _) y (x.P.L.U (c y)) (sg.f (c y)) ∈ Ideal.span (Set.range fun i => gs (𝟙 _) y (x.P.L.U (c y)) ((s i).f (c y)))) → ∃ ta : Fin x.P.g → RR x (l - 1 * n), ∀ c', (show Γ(x.P.A.left, x.P.L.U c') from sg.f c') = ∑ i, (show Γ(x.P.A.left, x.P.L.U c') from (s i).f c') * (show Γ(x.P.A.left, x.P.L.U c') from (ta i).f c') := by

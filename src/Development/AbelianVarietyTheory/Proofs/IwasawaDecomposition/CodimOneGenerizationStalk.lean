@@ -2,7 +2,8 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StalkGenerizationGermCompat
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.BlowPolSt
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SysExOfPol
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SumMulEqZeroOfSumToReal
 
 @[expose] public section
 

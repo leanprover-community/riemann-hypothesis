@@ -105,14 +105,12 @@ theorem nrm_algEquiv (σ : Ω ≃ₐ[K] Ω) (x : Ω) : nrm K (σ x) = nrm K x :=
   letI := normedField K
   exact (spectralNorm_eq_of_equiv σ x).symm
 
-
 variable [ValuativeRel Ω] [ValuativeExtension K Ω]
 
 theorem nrm_le_nrm_iff (x y : Ω) : nrm K x ≤ nrm K y ↔ x ≤ᵥ y :=
   (vle_iff_spectralNorm_le (K := K) x y).symm
 
 variable [TopologicalSpace Ω] [IsValuativeTopology Ω]
-
 
 end Nrm
 
@@ -130,34 +128,6 @@ section Tower
 variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   (Ω : Type*) [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
   [Algebra K Ω] [ValuativeExtension K Ω] [Algebra.IsAlgebraic K Ω] (p : ℕ)
-
-structure NormTower where
-
-  E : ℕ → IntermediateField K Ω
-  mono : Monotone E
-  finiteDimensional : ∀ n, FiniteDimensional K (E n)
-
-  T : ℕ → Finset Gal(Ω/K)
-  fix : ∀ n, ∀ σ ∈ T n, ∀ x ∈ E n, σ x = x
-  prod_mem : ∀ n, ∀ y ∈ E (n + 1), (∏ σ ∈ T n, σ y) ∈ E n
-
-  k : ℕ → ℕ
-  card_alt : ∀ n, (T n).card = p ^ k n
-  frequently_ne_zero : ∀ n, ∃ m, n ≤ m ∧ k m ≠ 0
-
-  c : ℝ
-  c_nonneg : 0 ≤ c
-  c_lt_one : c < 1
-  step : ∀ n, ∀ σ ∈ T n, ∀ x ∈ E (n + 1), nrm K (σ x - x) ≤ c * nrm K x
-  prime : p.Prime
-  nrm_p_lt_one : nrm K (p : Ω) < 1
-
-  value : ℕ → ℝ
-  value_pos : ∀ n, 0 < value n
-  value_lt_one : ∀ n, value n < 1
-  exists_value : ∀ n, ∃ π ∈ E n, nrm K π = value n
-  value_zpow : ∀ n, ∀ y ∈ E n, y ≠ 0 → ∃ j : ℤ, nrm K y = value n ^ j
-  value_succ : ∀ n, value (n + 1) ^ (p ^ k n) = value n
 
 namespace NormTower
 

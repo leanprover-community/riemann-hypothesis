@@ -564,26 +564,6 @@ variable {A K : Type} [CommRing A] [IsDedekindDomain A] [Field K] [Algebra A K] 
   {O Kf Fn : Type} [CommRing O] [Field Kf] [Algebra O Kf] [AddCommGroup Fn] [Module Kf Fn] [Module O Fn]
   [IsScalarTower O Kf Fn] (φ : K →+* Kf) (cmp : V →+ Fn)
 
-abbrev locW : Subalgebra A K := Localization.subalgebra.ofField K _ w.asIdeal.primeCompl_le_nonZeroDivisors
-
-include b in
-theorem cmp_expand (hs : ∀ a x, cmp (a • x) = φ a • cmp x) (x : V) :
-    cmp x = ∑ a, φ (b.repr x a) • cmp (b a) := by
-  conv_lhs => rw [← b.sum_repr x]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]
-  exact Finset.sum_congr rfl fun a _ => hs _ _
-
-theorem cmp_inj (hs : ∀ a x, cmp (a • x) = φ a • cmp x) (hli : LinearIndependent Kf (fun a => cmp (b a))) :
-    Function.Injective cmp := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro x hx
-  rw [cmp_expand b φ cmp hs x] at hx
-  have h := Fintype.linearIndependent_iff.1 hli _ hx
-  apply b.repr.injective
-  ext a
-  simpa using h a
-
 theorem descent (hφ : ∀ x : K, w.valuation K x ≤ 1 ↔ φ x ∈ Set.range (algebraMap O Kf))
     (hs : ∀ a x, cmp (a • x) = φ a • cmp x) (hli : LinearIndependent Kf (fun a => cmp (b a)))
     (Lat : Submodule A V) (hfg : Lat.FG) (v : V) (hv : cmp v ∈ Submodule.span O (cmp '' (Lat : Set V))) :
@@ -1490,7 +1470,6 @@ theorem eventually_large_scale_bound {eps : ℝ} (Fm : FamP eps) : Ev Fm fun x i
   rw [h5, Real.rpow_one] at h4
   rw [Real.rpow_neg hx0.le, one_div]
   exact inv_anti₀ (by norm_num) h4
-
 
 theorem windows_of (K : Consts) (P : ParameterChoice' D L) (hLa : La K L.sc = L.LaG) (p : ℕ) (t0 : HH D) :
     ∀ s ∈ topsPos D p t0, wPos D p t0 (aL L) s ∈ winA D L.sc ∧ wPos D p t0 (bL L) s ∈ winB D K L.sc := by

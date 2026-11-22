@@ -16,8 +16,6 @@ open Formalism Formalism.D5
 section
 variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H]
 
-def sg : E0 × H := ((0, 1), 0)
-
 def sgc0 : E0 × H := ((1, 0), 0)
 
 def partner (t : H) (g : E0 × H) : E0 × H := cconj + g + topPl t
@@ -47,20 +45,6 @@ structure ArithData (H : Type) [AddCommGroup H] [Fintype H] [DecidableEq H] wher
 
 section
 variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H]
-
-structure HostFacts (D : ArithData H) : Prop where
-  first_prime_prime : D.q1.Prime
-  d_prime : D.d.Prime
-  first_prime_ne_two : D.q1 ≠ 2
-  d_ne_two : D.d ≠ 2
-  firstPrime_ne_secondPrime : D.q1 ≠ D.d
-
-  unram : ∀ p : ℕ, p.Prime → p ≠ 2 → p ≠ D.q1 → p ≠ D.d → D.inertia p = ⊥
-
-  split_inertia : ∀ p : ℕ, (p = 2 ∨ p = D.q1) → ∀ x ∈ D.inertia p, InPhi x
-  split_frob : ∀ p : ℕ, (p = 2 ∨ p = D.q1) → InPhi (D.frob p)
-
-  inertia_d : ∀ x, x ∈ D.inertia D.d ↔ x = 0 ∨ x = sgc0
 
 def cosetMean (I : AddSubgroup (E0 × H)) (h : E0 × H) (ψ : AddChar (E0 × H) ℂ) : ℂ := by
   classical
@@ -98,11 +82,6 @@ def De (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (a : ℝ) (t : H)
   (1 / ((PhiSet (H := H)).card : ℂ)) * ∑ g ∈ univ.filter (fun g : E0 × H => ¬ InPhi g),
     ∑ ψ : AddChar (E0 × H) ℂ, starRingEnd ℂ (ψ g) * ((w (partner t g) : ℝ) : ℂ)
       * GPsi D ell ψ (a / w (partner t g))
-
-def AskMainBalance : Prop :=
-  ∀ (D : ArithData H), HostFacts D → ∀ (ell : AddChar (E0 × H) ℂ → ℂ) (a : ℝ) (t : H) (w : E0 × H → ℝ),
-    0 < a → (∀ ρ, InPhi ρ → 0 < w ρ) → ∀ N : ℕ, (∀ ρ, InPhi ρ → a / w ρ ≤ N) →
-      (ASK D N a t w : ℂ) - MAIN ell a w = De D ell a t w
 
 def PrimValPow : Prop :=
   ∀ (D : ArithData H) (ψ : AddChar (E0 × H) ℂ) (p i : ℕ), p.Prime → 1 ≤ i →

@@ -41,46 +41,10 @@ def IsGKHom {H₁ H₂ : Type} [NormedAddCommGroup H₁] [InnerProductSpace ℂ 
   (∀ k ∈ Kset ε, ∀ v w : kFinVec ε σ₁, (w : H₁) = σ₁ k v → (e w : H₂) = σ₂ k (e v)) ∧
     ∀ X ∈ lieSet ε, ∀ v w : kFinVec ε σ₁, (w : H₁) = dRep σ₁ X v → (e w : H₂) = dRep σ₂ X (e v)
 
-theorem isAdmissibleSub_of_finiteDimensional (ε : Fin n → Bool) (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H))
-    (V : Submodule ℂ H) [FiniteDimensional ℂ V] : IsAdmissibleSub ε σ V :=
-  fun _ => Submodule.finiteDimensional_of_le (sSup_le fun _ hS => hS.1)
-
 section
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
 
-theorem contDiff_det_expProd {k : ℕ} (Xs : Fin k → Matrix (Fin n) (Fin n) ℂ) :
-    ContDiff ℝ ∞ fun t : Fin k → ℝ => ((List.ofFn fun i => NormedSpace.exp (t i • Xs i)).prod).det := by
-  have he : ∀ a b, ContDiff ℝ ∞ fun t : Fin k → ℝ =>
-      ((List.ofFn fun i => NormedSpace.exp (t i • Xs i)).prod) a b := fun a b =>
-    (LinearMap.toContinuousLinearMap (Matrix.entryLinearMap ℝ ℂ a b)).contDiff.comp
-      (GlobalTheory.GardingVec.contDiff_expProd Xs)
-  simp only [Matrix.det_apply']
-  exact ContDiff.sum fun s _ => contDiff_const.mul (contDiff_prod fun i _ => he _ _)
-
 end
-
-theorem isURepOn_det (ε : Fin n → Bool) : IsURepOn (UJset ε) (fun g => g.det • (1 : H →L[ℂ] H)) := by
-  refine ⟨⟨by simp, fun a _ b _ => by ext; simp [smul_smul, mul_comm]⟩, fun g hg v => ?_, fun v => ?_⟩
-  · have h1 : ‖g.det‖ = 1 := by simpa using (GlobalTheory.Published.det_isURepOn ε).1.2.1 g hg 1
-    simp [norm_smul, h1]
-  · have : Continuous fun g : Matrix (Fin n) (Fin n) ℂ => g.det • v :=
-      (continuous_id.matrix_det).smul continuous_const
-    simpa using this.continuousOn
-
-theorem isGKSub_det (ε : Fin n → Bool) (V : Submodule ℂ H) [FiniteDimensional ℂ V] :
-    IsGKSub ε (fun g => g.det • (1 : H →L[ℂ] H)) V ∧ IsAdmissibleSub ε (fun g => g.det • (1 : H →L[ℂ] H)) V := by
-  have hK : IsKStableOn ε (fun g => g.det • (1 : H →L[ℂ] H)) V := fun g _ v hv => V.smul_mem _ hv
-  refine ⟨⟨fun v _ k Xs _ => ?_, fun v hv => ⟨V, inferInstance, hv, hK⟩, hK, fun X _ v hv => ?_⟩,
-    isAdmissibleSub_of_finiteDimensional _ _ _⟩
-  · exact (contDiff_det_expProd Xs).smul contDiff_const
-  · have h1 : ContDiff ℝ ∞ fun t : ℝ => (NormedSpace.exp (t • X)).det := by
-      have := (contDiff_det_expProd (fun _ : Fin 1 => X)).comp
-        (contDiff_pi.2 fun _ => contDiff_id : ContDiff ℝ ∞ fun (t : ℝ) (_ : Fin 1) => t)
-      simpa [Function.comp_def] using this
-    have h2 := ((h1.differentiable (by simp)) 0).hasDerivAt.smul_const v
-    have h3 : dRep (fun g => g.det • (1 : H →L[ℂ] H)) X v = _ := h2.deriv
-    rw [h3]
-    exact V.smul_mem _ hv
 
 theorem mem_UJset_of_mem_Kset {ε : Fin n → Bool} {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) :
     k ∈ UJset ε := by

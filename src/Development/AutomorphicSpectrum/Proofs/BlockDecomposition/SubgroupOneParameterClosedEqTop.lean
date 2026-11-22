@@ -37,8 +37,6 @@ def packGL : (ι → GL n ℂ) →* GL n (ι → ℂ) where
     show packM (fun w => ((g * h) w).val) = packM _ * packM _
     rw [← packM_mul]; congr 1
 
-theorem packGL_val (g : ι → GL n ℂ) : (packGL g).val = packM fun w => (g w).val := rfl
-
 theorem packGL_inv_val (g : ι → GL n ℂ) : (packGL g)⁻¹.val = packM fun w => (g w)⁻¹.val := rfl
 
 theorem packGL_surjective : Function.Surjective (packGL : (ι → GL n ℂ) → GL n (ι → ℂ)) := by

@@ -290,12 +290,6 @@ theorem sg_erase (i : Ix n) {j : Ix n} {A : Finset (Ix n)} (h : j ∈ A) :
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem ann_apply (i : Ix n) (x : Cr n V) (A : Finset (Ix n)) :
-    annR i x A = if i ∈ A then 0 else sgR i A • x (insert i A) := rfl
-
-theorem cre_apply (i : Ix n) (x : Cr n V) (A : Finset (Ix n)) :
-    creR i x A = if i ∈ A then sgR i A • x (A.erase i) else 0 := rfl
-
 theorem ann_ann (i j : Ix n) : (annR i * annR j + annR j * annR i : Module.End ℂ (Cr n V)) = 0 := by
   refine LinearMap.ext fun x => funext fun A => ?_
   simp only [LinearMap.add_apply, Module.End.mul_apply, Pi.add_apply, LinearMap.zero_apply, Pi.zero_apply,
@@ -354,8 +348,6 @@ theorem ann_cre (i j : Ix n) :
     ← add_smul]
   have : sgR i A * (-tw i j * sgR j A) + sgR j A * (tw i j * sgR i A) = 0 := by ring
   rw [this, zero_smul]
-
-theorem lift_apply (T : V →ₗ[ℂ] V) (x : Cr n V) (A : Finset (Ix n)) : liftR n T x A = T (x A) := rfl
 
 theorem lift_ann (T : Module.End ℂ V) (i : Ix n) :
     Commute (liftR n T : Module.End ℂ (Cr n V)) (annR i) := by

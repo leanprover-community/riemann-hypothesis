@@ -49,14 +49,7 @@ variable (p : ℕ) {O : Type} [CommRing O]
 
 variable {p} {A : Over (Sp O)} [GrpObj A]
 
-
 end Levels
-
-abbrev Family (p : ℕ) : Type 1 :=
-  ∀ ⦃R : Type⦄ [CommRing R], IsAdicComplete (Ideal.span {(p : R)}) R →
-    ∀ ⦃A : Over (Sp R)⦄ [GrpObj A],
-      IsAbelianScheme A → (∃ g : ℕ, SmoothOfRelativeDimension g A.hom) →
-      ∀ ⦃G : PDivGroup p R⦄, G.TorsionTower A → (primDR A ≃ₗ[R] G.RigExt)
 
 variable {p : ℕ} (E : Family p)
 

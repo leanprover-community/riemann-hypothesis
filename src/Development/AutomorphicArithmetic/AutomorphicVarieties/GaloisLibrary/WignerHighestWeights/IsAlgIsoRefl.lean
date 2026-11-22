@@ -68,21 +68,15 @@ section Hol
 
 variable {N : Type} [AddCommGroup N] [Module ℂ N] [Module ℝ N] [IsScalarTower ℝ ℂ N]
 
-
 omit [NumberField E] in
 def eL (L : Lie E a →ₗ[ℝ] N) (τ : E →+* ℂ) (i j : Fin a) : N :=
   (1 / 2 : ℂ) • (L (toL (Matrix.single i j (atEmb τ 1))) - Complex.I • L (toL (Matrix.single i j (atEmb τ Complex.I))))
-
 
 omit [NumberField E] in
 def hol (τ : E →+* ℂ) (L : Lie E a →ₗ[ℝ] N) : Matrix (Fin a) (Fin a) ℂ →ₗ[ℂ] N where
   toFun x := ∑ i, ∑ j, x i j • eL L τ i j
   map_add' x y := by simp [add_smul, Finset.sum_add_distrib]
   map_smul' c x := by simp [Finset.smul_sum, mul_smul]
-
-omit [NumberField E] [IsScalarTower ℝ ℂ N] in
-theorem hol_apply (τ : E →+* ℂ) (L : Lie E a →ₗ[ℝ] N) (x : Matrix (Fin a) (Fin a) ℂ) :
-    hol τ L x = ∑ i, ∑ j, x i j • eL L τ i j := rfl
 
 omit [NumberField E] [IsScalarTower ℝ ℂ N] in
 theorem hol_single (τ : E →+* ℂ) (L : Lie E a →ₗ[ℝ] N) (i j : Fin a) : hol τ L (Matrix.single i j 1) = eL L τ i j := by
@@ -95,11 +89,9 @@ theorem dualE_eq (Ξ : AlgRep E a) (τ : E →+* ℂ) (i j : Fin a) :
   simp only [GlobalTheory.WignerGL.dualE, GlobalTheory.WignerGL.dualS, eL, Matrix.transpose_smul, Matrix.transpose_sub]
   module
 
-
 omit [NumberField E] in
 def IsLieHom {A : Type} [Ring A] [Module ℝ A] (L : Lie E a →ₗ[ℝ] A) : Prop :=
   ∀ X Y : Matrix (Fin a) (Fin a) (Cinf E), L (toL X) * L (toL Y) - L (toL Y) * L (toL X) = L (toL (X * Y - Y * X))
-
 
 omit [NumberField E] in
 def hp : Lie E a →ₗ[ℝ] Herm E a where
@@ -116,7 +108,6 @@ def hp : Lie E a →ₗ[ℝ] Herm E a where
 omit [NumberField E] in
 theorem hp_val (X : Matrix (Fin a) (Fin a) (Cinf E)) : (hp (toL X)).1 = (1 / 2 : ℝ) • (X + star X) := rfl
 
-
 omit [NumberField E] in
 def brH (Z : Matrix (Fin a) (Fin a) (Cinf E)) (hZ : star Z = -Z) (Y : Herm E a) : Herm E a :=
   ⟨Z * Y.1 - Y.1 * Z, by
@@ -130,7 +121,6 @@ section Complex
 variable {M : Type} [AddCommGroup M] [Module ℂ M] [Module ℝ M] [IsScalarTower ℝ ℂ M]
   (κ : Kinf E a → Module.End ℂ M) (L : Lie E a →ₗ[ℝ] Module.End ℂ M)
 
-
 omit [NumberField E] in
 def InfEq {q : ℕ} (ω : Herm E a [⋀^Fin q]→ₗ[ℝ] M) : Prop :=
   ∀ (Z : Matrix (Fin a) (Fin a) (Cinf E)) (hZ : star Z = -Z) (Y : Fin q → Herm E a),
@@ -139,7 +129,6 @@ def InfEq {q : ℕ} (ω : Herm E a [⋀^Fin q]→ₗ[ℝ] M) : Prop :=
 def SepDer : Prop :=
   ∀ (k : ℝ → Kinf E a) (Z : Matrix (Fin a) (Fin a) (Cinf E)), k 0 = 1 → HasDerivAt (fun t => toL (k t).1) (toL Z) 0 →
     ∀ m' : M, m' ≠ 0 → ∃ l : M →ₗ[ℂ] ℂ, l m' ≠ 0 ∧ ∀ m, HasDerivAt (fun t => l (κ (k t) m)) (l (L (toL Z) m)) 0
-
 
 omit [NumberField E] in
 structure IsRetr (α : (Lie E a →ₗ[ℝ] M) →ₗ[ℝ] M) : Prop where
@@ -175,11 +164,6 @@ def lieB (π : CuspSub E a) (Ξ : AlgRep E a) : Lie E a →ₗ[ℝ] Module.End �
     refine TensorProduct.ext' fun v w => ?_
     simp only [LinearMap.smul_apply, LinearMap.lTensor_tmul, TensorProduct.smul_tmul',
       algebraMap_smul ℂ c v]
-
-theorem lieA_apply (π : CuspSub E a) (Ξ : AlgRep E a) (X : Lie E a) : lieA π Ξ X = (lieOp π X).rTensor _ := rfl
-
-theorem lieB_apply (π : CuspSub E a) (Ξ : AlgRep E a) (X : Lie E a) :
-    lieB π Ξ X = (Matrix.toLin' (Ξ.dmat X)).lTensor _ := rfl
 
 theorem lieA_commute (π : CuspSub E a) (Ξ : AlgRep E a) (X Y : Lie E a) : Commute (lieA π Ξ X) (lieB π Ξ Y) :=
   TensorProduct.ext' fun _ _ => rfl

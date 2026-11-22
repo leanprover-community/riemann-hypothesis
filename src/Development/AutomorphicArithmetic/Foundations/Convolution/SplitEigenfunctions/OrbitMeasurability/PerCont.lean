@@ -1,7 +1,7 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SplitEigenfunctions.ThetaLiftEqAnisotropicPart
-public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.CuspRegions.CarrierEq
+public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.DefsObj
 
 @[expose] public section
 

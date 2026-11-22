@@ -19,8 +19,6 @@ def pr₁ : S →+* E₁ := (RingHom.fst E₁ E₂).comp (s : S →+* E₁ × E�
 
 def pr₂ : S →+* E₂ := (RingHom.snd E₁ E₂).comp (s : S →+* E₁ × E₂)
 
-theorem pr₁_apply (x : S) : pr₁ s x = (s x).1 := rfl
-
 theorem pr₂_apply (x : S) : pr₂ s x = (s x).2 := rfl
 
 theorem mat_ext {m n : Type} {A B : Matrix m n S} (h1 : A.map (pr₁ s) = B.map (pr₁ s))

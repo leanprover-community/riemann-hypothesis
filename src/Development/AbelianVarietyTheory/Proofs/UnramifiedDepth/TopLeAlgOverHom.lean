@@ -22,11 +22,7 @@ namespace GlobalTheory.AddCurve
 section Rings
 variable (R : Type) [CommRing R] (l : ℕ)
 
-abbrev Tr : Type := AdjoinRoot (Polynomial.X ^ l : Polynomial R)
-
 variable {R l}
-
-def cf (n : ℕ) : Tr R l →ₗ[R] R := (Polynomial.lcoeff R n).comp (AdjoinRoot.modByMonicHom (Polynomial.monic_X_pow l))
 
 variable (R l)
 

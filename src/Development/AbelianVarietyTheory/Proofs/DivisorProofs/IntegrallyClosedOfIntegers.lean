@@ -32,7 +32,6 @@ section Fin
 
 variable {R : Type*} [Semiring R]
 
-
 variable (R) in
 def appendEquiv (m n : ℕ) : ((Fin m → R) × (Fin n → R)) ≃ₗ[R] (Fin (m + n) → R) where
   toFun x := Fin.append x.1 x.2
@@ -43,13 +42,6 @@ def appendEquiv (m n : ℕ) : ((Fin m → R) × (Fin n → R)) ≃ₗ[R] (Fin (m
     funext i; refine Fin.addCases (fun i => ?_) (fun j => ?_) i <;> simp
   left_inv x := by simp
   right_inv z := Fin.append_castAdd_natAdd
-
-theorem appendEquiv_apply {m n : ℕ} (x : (Fin m → R) × (Fin n → R)) :
-    appendEquiv R m n x = Fin.append x.1 x.2 := rfl
-
-theorem appendEquiv_symm_apply {m n : ℕ} (z : Fin (m + n) → R) :
-    (appendEquiv R m n).symm z = (fun i => z (Fin.castAdd n i), fun j => z (Fin.natAdd m j)) :=
-  rfl
 
 theorem append_eq_zero_iff {m n : ℕ} (x : Fin m → R) (y : Fin n → R) :
     Fin.append x y = 0 ↔ x = 0 ∧ y = 0 :=
@@ -94,7 +86,6 @@ section Groups
 variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] {G G₁ G₂ : PDivGroup p O}
   (i₁ : G₁ ⟶ G) (i₂ : G₂ ⟶ G) (q₁ : G ⟶ G₁) (q₂ : G ⟶ G₂)
 
-
 include i₁ i₂ in
 theorem exists_tateSplit (h₁ : i₁ ≫ q₁ = 𝟙 _) (h₂ : i₂ ≫ q₂ = 𝟙 _) (h₁₂ : i₁ ≫ q₂ = 0)
     (h₂₁ : i₂ ≫ q₁ = 0) (h : q₁ ≫ i₁ + q₂ ≫ i₂ = 𝟙 _) :
@@ -110,7 +101,6 @@ theorem exists_tateSplit (h₁ : i₁ ≫ q₁ = 𝟙 _) (h₂ : i₂ ≫ q₂ =
       have := LinearMap.congr_fun (congrArg (tateMap G G O) h) x
       rwa [map_add, LinearMap.add_apply, tateMap_comp, tateMap_comp, tateMap_id] at this),
     fun _ => rfl, fun _ _ => rfl⟩
-
 
 include i₁ i₂ in
 theorem exists_lieSplit (h₁ : i₁ ≫ q₁ = 𝟙 _) (h₂ : i₂ ≫ q₂ = 𝟙 _) (h₁₂ : i₁ ≫ q₂ = 0)
@@ -133,7 +123,6 @@ theorem exists_lieSplit (h₁ : i₁ ≫ q₁ = 𝟙 _) (h₂ : i₂ ≫ q₂ = 
       have := LinearMap.congr_fun (congrArg (lieMap G G) h) x
       rw [map_add (f := _), lieMap_comp, lieMap_comp, lieMap_id] at this; exact this),
     fun _ => rfl⟩
-
 
 include i₁ i₂ in
 theorem exists_omegaDualSplit (h₁ : i₁ ≫ q₁ = 𝟙 _) (h₂ : i₂ ≫ q₂ = 𝟙 _) (h₁₂ : i₁ ≫ q₂ = 0)
@@ -185,7 +174,6 @@ theorem exists_filSplit (hb : ∀ x y, D.bb (Fin.append x y) = Fin.append (D₁.
      map_smul' := fun _ _ => rfl
      left_inv := fun z => Subtype.ext Fin.append_castAdd_natAdd
      right_inv := fun w => by ext i <;> simp }, fun _ _ => rfl⟩
-
 
 variable (D₁ D₂) in
 def quotProj : (Fin (h₁ + h₂) → O) →ₗ[O] ((Fin h₁ → O) ⧸ D₁.Fil) × ((Fin h₂ → O) ⧸ D₂.Fil) :=

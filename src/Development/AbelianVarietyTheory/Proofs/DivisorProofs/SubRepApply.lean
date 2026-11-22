@@ -17,9 +17,6 @@ def subRep (π : Representation k Γ V) (S : Submodule k V) (hS : Stab π S) : R
   map_one' := by ext x; simp
   map_mul' g h := by ext x; simp
 
-theorem subRep_apply (π : Representation k Γ V) (S : Submodule k V) (hS : Stab π S) (g : Γ) (x : S) :
-    ((subRep π S hS g x : S) : V) = π g x := rfl
-
 def quotRep (π : Representation k Γ V) (S : Submodule k V) (hS : Stab π S) : Representation k Γ (V ⧸ S) where
   toFun g := S.mapQ S (π g) (hS g)
   map_one' := by

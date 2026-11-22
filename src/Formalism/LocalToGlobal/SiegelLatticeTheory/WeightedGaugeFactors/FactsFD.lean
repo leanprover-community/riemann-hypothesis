@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.SzHypFD
 public import Formalism.LocalRingCardinality.DataTies
-public import Formalism.LocalRingCardinality.SpanPowerMembership.RankRecordRowDimensionZero
 public import Formalism.LocalRingCardinality.SpanPowerMembership.SignSplitEquivInl
 public import Formalism.LocalRingCardinality.SpanPowerMembership.HaarDensityNeZero
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.NumericSettingWithGapSatisfiable

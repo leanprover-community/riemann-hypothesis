@@ -1,6 +1,5 @@
 module
 
-public import Formalism.LocalToGlobal.GaloisLevelStructure.LinkChar
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NGalTied
 

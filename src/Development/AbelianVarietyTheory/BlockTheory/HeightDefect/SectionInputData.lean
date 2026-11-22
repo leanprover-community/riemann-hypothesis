@@ -35,61 +35,6 @@ theorem isSecZ_wtZ (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (f : Rul Xo c) :
   · rintro ⟨h1, h2⟩
     exact ⟨h1, fun p t y y' hb => by rw [key]; exact h2 p t y y' hb⟩
 
-
-variable (Xo c) in
-structure Input : Type where
-
-  D : ℕ
-  N : ℕ
-  T : ℕ
-  i : ℕ
-  g0 : ℕ
-
-  cc : ℝ
-
-  wL : WTZ E
-  wF : WTZ E
-  wde : WTZ E
-
-  Mr : Set (Rul Xo c)
-
-  w : Fin (N + 1) → Rul Xo c
-  jc : Comp Xo c → Fin (N + 1)
-
-  np : ℕ
-  thp : Fin np → Rul Xo c
-
-  n0 : ℕ
-  th0 : Fin n0 → Rul Xo c
-
-  nk : ℕ
-  thk : Fin nk → Rul Xo c
-
-  et : Rul Xo c
-  ta1 : Rul Xo c
-  ta2 : Rul Xo c
-
-  nu : IsDedekindDomain.HeightOneSpectrum (𝓞 c.F) → ℝ
-
-  ip : (c.F →+* ℂ) → (∀ Z : Comp Xo c, AC Z) → (∀ Z : Comp Xo c, AC Z) → ℂ
-
-  wsize : WTZ E → ℝ
-  DF : ℝ
-  cNu : ℝ
-  cQuot : ℝ
-  cLow : ℝ
-  cLow' : ℝ
-  cDim : ℝ
-  cGen : ℝ
-  crystallineInclusion : ℝ
-  cEta : ℝ
-  cBase : ℝ
-  cBase' : ℝ
-  cRank : ℝ
-  cField : ℝ
-  f : ℝ
-  r : ℝ
-
 namespace Input
 
 variable (I : Input Xo c)

@@ -74,12 +74,6 @@ theorem hasSum_C (c u : ℂ) :
     (fun n hn => by simp [PowerSeries.coeff_C, hn])
   simpa using this
 
-theorem hasSum_X (u : ℂ) :
-    HasSum (fun n => PowerSeries.coeff n (PowerSeries.X : ℂ⟦X⟧) * u ^ n) u := by
-  have := hasSum_single (f := fun n => PowerSeries.coeff n (PowerSeries.X : ℂ⟦X⟧) * u ^ n) 1
-    (fun n hn => by simp [PowerSeries.coeff_X, hn])
-  simpa using this
-
 @[simp] theorem sum_C (c u : ℂ) : sum (PowerSeries.C c) u = c := (hasSum_C c u).tsum_eq
 
 @[simp] theorem sum_zero_right (f : ℂ⟦X⟧) : sum f 0 = PowerSeries.constantCoeff f := by
@@ -96,9 +90,6 @@ def discSeries (ε : ℝ) : Subalgebra ℂ ℂ⟦X⟧ where
 theorem mem_discSeries {ε : ℝ} {f : ℂ⟦X⟧} : f ∈ discSeries ε ↔ ConvergesOn ε f := Iff.rfl
 
 theorem discSeries_anti : Antitone discSeries := fun _ _ h _ hf => ConvergesOn.mono hf h
-
-theorem X_mem_discSeries (ε : ℝ) : (PowerSeries.X : ℂ⟦X⟧) ∈ discSeries ε :=
-  fun u _ => (hasSum_X u).summable
 
 def evalDisc (ε : ℝ) (u₀ : ℂ) (h : ‖u₀‖ < ε) : discSeries ε →ₐ[ℂ] ℂ where
   toFun f := sum f u₀
@@ -233,8 +224,6 @@ theorem mem_range_germ {F : ℂ → ℂ} :
   · intro h
     exact ⟨⟨taylor F, (taylor_spec h).1⟩, Germ.coe_eq.2 (taylor_spec h).2⟩
 
-def u : convSeries := ⟨PowerSeries.X, discSeries_le_convSeries one_pos (X_mem_discSeries 1)⟩
-
 theorem isUnit_iff {f : convSeries} : IsUnit f ↔ PowerSeries.constantCoeff (f : ℂ⟦X⟧) ≠ 0 := by
   constructor
   · intro h
@@ -248,70 +237,8 @@ theorem isUnit_iff {f : convSeries} : IsUnit f ↔ PowerSeries.constantCoeff (f 
     filter_upwards [(analyticAt_sum f.2).continuousAt.eventually_ne h0] with v hv
     simp [hv]
 
-def evalZero : convSeries →ₐ[ℂ] ℂ where
-  __ := PowerSeries.constantCoeff.comp convSeries.val.toRingHom
-  commutes' c := by simp
-
 @[simp] theorem evalZero_apply (f : convSeries) :
     evalZero f = PowerSeries.constantCoeff (f : ℂ⟦X⟧) := rfl
-
-theorem eventually_sum_eval (P : Polynomial convSeries) (a : convSeries) :
-    ∀ᶠ v in 𝓝 (0 : ℂ), sum (P.eval a : convSeries) v =
-      ∑ i ∈ Finset.range (P.natDegree + 1), sum (P.coeff i : convSeries) v * sum a v ^ i := by
-  have h : germ (P.eval a) = ((fun v => ∑ i ∈ Finset.range (P.natDegree + 1),
-      sum (P.coeff i : convSeries) v * sum a v ^ i : ℂ → ℂ) : Germ (𝓝 (0 : ℂ)) ℂ) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [Polynomial.eval_eq_sum_range, map_sum]
-    simp only [map_mul, map_pow, germ_apply]
-    have := map_sum (Germ.coeRingHom (R := ℂ) (𝓝 (0 : ℂ)))
-      (fun i => sum (P.coeff i : convSeries) * sum a ^ i) (Finset.range (P.natDegree + 1))
-    simp only [map_mul, map_pow, Germ.coe_coeRingHom] at this
-    rw [← this]
-    apply Germ.coe_eq.2
-    filter_upwards [] with v
-    simp
-  exact Germ.coe_eq.1 h
-
-theorem exists_isRoot (P : Polynomial convSeries) (z₀ : ℂ)
-    (h₀ : (P.map (evalZero : convSeries →+* ℂ)).eval z₀ = 0)
-    (h₁ : (P.map (evalZero : convSeries →+* ℂ)).derivative.eval z₀ ≠ 0) :
-    ∃ a : convSeries, P.IsRoot a ∧ evalZero a = z₀ := by
-  set F : ℂ × ℂ → ℂ := fun p =>
-    ∑ i ∈ Finset.range (P.natDegree + 1), sum (P.coeff i : convSeries) p.1 * p.2 ^ i with hF
-  have hFa : AnalyticAt ℂ F (0, z₀) := by
-    refine Finset.analyticAt_fun_sum _ fun i _ => AnalyticAt.mul ?_ (analyticAt_snd.pow i)
-    exact AnalyticAt.comp (g := sum (P.coeff i : convSeries)) (f := Prod.fst)
-      (analyticAt_sum (P.coeff i).2) analyticAt_fst
-  have hF0 : ∀ z, F (0, z) = (P.map (evalZero : convSeries →+* ℂ)).eval z := by
-    intro z
-    rw [Polynomial.eval_map, Polynomial.eval₂_eq_sum_range]
-    simp [hF]
-  have hc : ContDiffAt ℂ ω F (0, z₀) := hFa.contDiffAt
-  have hinv : (fderiv ℂ F (0, z₀) ∘L .inr ℂ ℂ ℂ).IsInvertible := by
-    refine ⟨ContinuousLinearEquiv.unitsEquivAut ℂ (Units.mk0 _ h₁), ?_⟩
-    have h2 : HasFDerivAt (fun z : ℂ => F (0, z)) (fderiv ℂ F (0, z₀) ∘L .inr ℂ ℂ ℂ) z₀ :=
-      HasFDerivAt.comp (g := F) (f := fun z : ℂ => ((0 : ℂ), z)) z₀
-        hFa.differentiableAt.hasFDerivAt (hasFDerivAt_prodMk_right (0 : ℂ) z₀)
-    have h3 := ((P.map (evalZero : convSeries →+* ℂ)).hasDerivAt z₀).hasFDerivAt
-    simp only [hF0] at h2
-    rw [h2.unique h3]
-    ext
-    simp
-  have hω : (ω : WithTop ℕ∞) ≠ 0 := by simp
-  have hg : AnalyticAt ℂ (hc.implicitFunction hω hinv) 0 :=
-    (hc.contDiffAt_implicitFunction hω hinv).analyticAt
-  have hg0 : hc.implicitFunction hω hinv 0 = z₀ := hc.implicitFunction_apply_self hω hinv
-  have hge := hc.eventually_apply_implicitFunction hω hinv
-  obtain ⟨ha, hsum⟩ := taylor_spec hg
-  refine ⟨⟨_, ha⟩, germ_injective ?_, ?_⟩
-  · rw [map_zero, germ_apply, ← Germ.coe_zero, Germ.coe_eq]
-    filter_upwards [eventually_sum_eval P ⟨_, ha⟩, hsum, hge] with v h1 h2 h3
-    rw [h1]
-    simp only [h2]
-    rw [hF0, h₀] at h3
-    exact h3
-  · rw [evalZero_apply, ← sum_zero_right]
-    exact hsum.self_of_nhds.trans hg0
 
 def puncturedDisc (ε : ℝ) : Set ℂ := ball 0 ε \ {0}
 
@@ -444,15 +371,6 @@ theorem single_mul_coe_mem_puncturedRing {ε : ℝ} {g : ℂ⟦X⟧} (m : ℤ) :
 theorem mem_puncturedRing_iff_powerSeriesPart {ε : ℝ} {f : ℂ⸨X⸩} :
     f ∈ puncturedRing ε ↔ f.powerSeriesPart ∈ discSeries ε := by
   rw [← single_mul_coe_mem_puncturedRing f.order, f.single_order_mul_powerSeriesPart]
-
-def evalAt (ε : ℝ) (u₀ : ℂ) (h : u₀ ∈ puncturedDisc ε) : puncturedRing ε →ₐ[ℂ] ℂ where
-  toFun f := lsum f u₀
-  map_one' := by simpa using lsum_single 0 1 u₀
-  map_mul' f g := (hasSum_mul_laurent (mem_puncturedDisc.1 h).1 (f.2 u₀ h) (g.2 u₀ h)).tsum_eq
-  map_zero' := by simp [lsum]
-  map_add' f g := by
-    simpa [lsum, add_mul] using (f.2 u₀ h).tsum_add (g.2 u₀ h)
-  commutes' c := lsum_algebraMap c u₀
 
 theorem lsum_eq {ε : ℝ} {f : ℂ⸨X⸩} (hf : f ∈ puncturedRing ε) {v : ℂ} (hv : v ∈ puncturedDisc ε) :
     lsum f v = v ^ f.order * sum f.powerSeriesPart v := by

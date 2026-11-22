@@ -13,18 +13,6 @@ noncomputable section
 
 section Auxiliary
 
-theorem ennreal_add_sq_le (a b : ℝ≥0∞) : (a + b) ^ 2 ≤ 2 * a ^ 2 + 2 * b ^ 2 := by
-  rcases eq_or_ne a ∞ with rfl | ha
-  · simp
-  rcases eq_or_ne b ∞ with rfl | hb
-  · simp
-  lift a to NNReal using ha
-  lift b to NNReal using hb
-  norm_cast
-  rw [← NNReal.coe_le_coe]
-  push_cast
-  nlinarith [sq_nonneg ((a : ℝ) - b)]
-
 theorem ennreal_mul_le_sq_add_sq (a b : ℝ≥0∞) : a * b ≤ a ^ 2 + b ^ 2 := by
   rcases le_total a b with h | h
   · calc a * b ≤ b * b := by gcongr
@@ -78,7 +66,6 @@ theorem tsum_enorm_sq_eq_adjoint {ι κ : Type*} (b : HilbertBasis ι 𝕜 H)
         rw [← adjoint_inner_left, enorm_inner_comm]
     _ = ∑' j, ‖(T†) (c j)‖ₑ ^ 2 := by
         congr 1; ext j; exact (enorm_sq_eq_tsum b _).symm
-
 
 variable (𝕜 H) in
 def stdHilbertBasis : HilbertBasis (exists_hilbertBasis 𝕜 H).choose 𝕜 H :=
@@ -145,14 +132,6 @@ theorem hsNormSq_zero : hsNormSq (0 : H →L[𝕜] K) = 0 := by
 theorem hsNormSq_smul (c : 𝕜) (T : H →L[𝕜] K) : hsNormSq (c • T) = ‖c‖ₑ ^ 2 * hsNormSq T := by
   simp only [hsNormSq, smul_apply, enorm_smul, mul_pow, ENNReal.tsum_mul_left]
 
-theorem hsNormSq_add_le (S T : H →L[𝕜] K) :
-    hsNormSq (S + T) ≤ 2 * hsNormSq S + 2 * hsNormSq T := by
-  simp only [hsNormSq, ← ENNReal.tsum_mul_left, ← ENNReal.tsum_add]
-  refine ENNReal.tsum_le_tsum fun i => ?_
-  calc ‖(S + T) _‖ₑ ^ 2 ≤ (‖S _‖ₑ + ‖T _‖ₑ) ^ 2 := by
-        gcongr; exact enorm_add_le _ _
-    _ ≤ _ := ennreal_add_sq_le _ _
-
 theorem hsNormSq_comp_left_le (A : K →L[𝕜] L) (T : H →L[𝕜] K) :
     hsNormSq (A.comp T) ≤ ‖A‖ₑ ^ 2 * hsNormSq T := by
   simp only [hsNormSq, ← ENNReal.tsum_mul_left, comp_apply]
@@ -175,25 +154,6 @@ theorem IsHilbertSchmidt.comp_left {T : H →L[𝕜] K} (hT : IsHilbertSchmidt T
 theorem IsHilbertSchmidt.comp_right {T : K →L[𝕜] L} (hT : IsHilbertSchmidt T) (B : H →L[𝕜] K) :
     IsHilbertSchmidt (T.comp B) :=
   (hsNormSq_comp_right_le T B).trans_lt (ENNReal.mul_lt_top (by simp) hT)
-
-
-variable (𝕜 H K) in
-def hilbertSchmidt : Submodule 𝕜 (H →L[𝕜] K) where
-  carrier := {T | IsHilbertSchmidt T}
-  add_mem' {S T} hS hT := by
-    refine (hsNormSq_add_le S T).trans_lt ?_
-    exact ENNReal.add_lt_top.2 ⟨ENNReal.mul_lt_top (by simp) hS, ENNReal.mul_lt_top (by simp) hT⟩
-  zero_mem' := by
-    show hsNormSq (0 : H →L[𝕜] K) < ∞
-    simp [hsNormSq_zero]
-  smul_mem' c T hT := by
-    show hsNormSq (c • T) < ∞
-    rw [hsNormSq_smul]
-    exact ENNReal.mul_lt_top (by simp) hT
-
-theorem IsHilbertSchmidt.add {S T : H →L[𝕜] K} (hS : IsHilbertSchmidt S)
-    (hT : IsHilbertSchmidt T) : IsHilbertSchmidt (S + T) :=
-  (hilbertSchmidt (𝕜 := 𝕜) (H := H) (K := K)).add_mem hS hT
 
 theorem IsHilbertSchmidt.hasSum_norm_sq {T : H →L[𝕜] K} (hT : IsHilbertSchmidt T) {ι : Type*}
     (b : HilbertBasis ι 𝕜 H) : HasSum (fun i => ‖T (b i)‖ ^ 2) (hsNorm T ^ 2) := by

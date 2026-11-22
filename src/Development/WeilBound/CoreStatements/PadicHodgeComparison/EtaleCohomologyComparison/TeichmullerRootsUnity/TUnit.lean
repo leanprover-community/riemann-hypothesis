@@ -21,30 +21,10 @@ variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
 
 abbrev phiH (P : PAlg l ⥤ Type) (n j : ℕ) : MH P n j → MH P n j := (phiMor P n).pull j
 
-
 variable (l) in
 def tA : Acris l := ACris.periodT (untilt_epsilon (p := l))
 
-
-def galA (g : K.fixingSubgroup) : Acris l →+* Acris l := ACris.galCris (IntermediateField.fixingSubgroupEquiv K g)
-
-
-structure PBg (l : ℕ) [Fact l.Prime] {A Γ : Type} [CommRing A] (t : A) (φA : A →+* A) (σA : Γ → (A →+* A)) (z : ℤ_[l] →+* A) : Type 1 where
-  C : Type
-  [ring : CommRing C]
-  [alg : Algebra ℚ_[l] C]
-  c : A →+* C
-  φ : C →ₐ[ℚ_[l]] C
-  σ : Γ → (C →ₐ[ℚ_[l]] C)
-  t_unit : IsUnit (c t)
-  loc : ∀ x : C, ∃ (r : ℕ) (a : A), c t ^ r * x = c a
-  ker : ∀ a : A, c a = 0 → ∃ r : ℕ, t ^ r * a = 0
-  φ_c : ∀ a, φ (c a) = c (φA a)
-  σ_c : ∀ g a, σ g (c a) = c (σA g a)
-  z_c : ∀ x : ℤ_[l], algebraMap ℚ_[l] C x = c (z x)
-
 attribute [instance] PBg.ring PBg.alg
-
 
 abbrev MuMor (r : Res l K) (M : Model l K) (n : ℕ) :=
   CH.Mor (Wc.OM l (B.schFn M.p) r.ρ n) (B.Oc (B.schFn M.p) (okToOC l K) true n) r.w

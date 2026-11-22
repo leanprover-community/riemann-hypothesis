@@ -29,9 +29,6 @@ def innerSmulRightR {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] 
       calc ‖⟪x, w⟫_ℂ‖ * ‖e‖ ≤ (‖x‖ * ‖w‖) * ‖e‖ := by gcongr
         _ = ‖e‖ * ‖x‖ * ‖w‖ := by ring)
 
-theorem innerSmulRightR_apply {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] (e x : V) :
-    innerSmulRightR e x = (innerSL ℂ x).smulRight e := rfl
-
 theorem adjoint_eq_sum {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
     [FiniteDimensional ℂ V] [CompleteSpace V] (B : V →L[ℂ] V) :
     ContinuousLinearMap.adjoint B =

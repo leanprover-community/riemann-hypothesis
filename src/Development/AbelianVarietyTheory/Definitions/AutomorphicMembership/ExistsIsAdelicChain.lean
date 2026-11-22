@@ -51,23 +51,6 @@ def toMM (t : T) (j : ℕ) : R.CC t j →ₗ[ℂ] MMap (R.MY j) :=
 
 def lvlPart (P : LevelP R.Pg D.R.r ℂ) (t : T) (j : ℕ) : Submodule ℂ (R.CC t j) := (multAt R P t j).comap (toMM R t j)
 
-def ipCC (t : T) (j : ℕ) (U U' : R.CC t j) : ℂ := ipM (R.MY j) (R.νY t j) (R.fdY t j) (toMM R t j U) (toMM R t j U')
-
-def topLift (t : T) : (R.HX t).H →ₗ[ℂ] R.CC t (D.R.m - 1) := R.ioX t ∘ₗ (R.cX.toMap R.prX ∘ₗ (R.HX t).e).rangeRestrict
-
-def botLift (t : T) : R.CC t 1 →ₗ[ℂ] MMap (R.MY 0) := postOn (R.MY 0) R.e0 ∘ₗ toMM R t 0 ∘ₗ R.ioY t 0
-
-theorem toMM_injective (t : T) (j : ℕ) : Function.Injective (toMM R t j) :=
-  (PiTensorProduct.lift.symm : (SmT (R.MY j) →ₗ[ℂ] (GA D (Yc D j) → ℂ)) ≃ₗ[ℂ] MMap (R.MY j)).injective.comp Subtype.val_injective
-
-theorem range_toMM (t : T) (j : ℕ) : LinearMap.range (toMM R t j) = multAt R R.triv t j := by
-  ext X
-  constructor
-  · rintro ⟨U, rfl⟩
-    exact (mem_multT R.θ (R.MY j) _ _ _).1 U.2
-  · intro hX
-    exact ⟨⟨PiTensorProduct.lift X, Submodule.mem_map_of_mem hX⟩, PiTensorProduct.lift.symm_apply_apply X⟩
-
 theorem multAt_le (P : LevelP R.Pg D.R.r ℂ) (t : T) (j : ℕ) : multAt R P t j ≤ multAt R R.triv t j :=
   mult_anti _ _ (principal_le_level (R.βY j) (R.datYt t j R.triv) P)
 
@@ -97,33 +80,10 @@ def famCast (Sp : ℕ → Type) [∀ j, NormedAddCommGroup (Sp j)] [∀ j, Inner
     Sp i ≃ₗᵢ[ℂ] Sp j := by
   subst h; exact LinearIsometryEquiv.refl ℂ _
 
-def multCast (μ : D.what₂.Tup) {i j : ℕ} (h : i = j) : S.Mult μ i ≃ₗᵢ[ℂ] S.Mult μ j := famCast (S.Mult μ) h
-
-def topEquiv (μ : D.what₂.Tup) : S.Mult μ (D.R.m - 1 + 1) ≃ₗᵢ[ℂ] S.Amb μ := (multCast S μ (pred_m_add_one D)).trans (S.multTop μ)
-
 end Side
 
 variable {R : RealDat D A Ks} {F : Face D A} {tup : T → D.what₂.Tup} {b : Bool} {EE : Type} [NormedAddCommGroup EE]
   [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE] {S : RowSide D EE}
-
-
-set_option genInjectivity false in
-set_option genSizeOfSpec false in
-structure MultTie (Y : SideTie R F tup b S) where
-
-  eM : ∀ t j, S.Mult (tup t) j →ₗ[ℂ] R.CC t j
-
-  eM_zero : ∀ t x, toMM R t 0 (eM t 0 x) = R.HE.e (Y.eE (S.multZero (tup t) x))
-
-  eM_range : ∀ t j, 0 < j → j < D.R.m → LinearMap.range (eM t j) = lvlPart R (R.levR F b) t j
-
-  eM_inner : ∀ t j, 0 < j → j < D.R.m → ∀ x y, ipCC R t j (eM t j x) (eM t j y) = ((RealDat.nP F b : ℝ) : ℂ) * ⟪x, y⟫_ℂ
-
-  io_zero : ∀ t x, toMM R t 0 (eM t 0 (S.io (tup t) 0 x)) = botLift R t (eM t 1 x)
-
-  io_mid : ∀ t j, 0 < j → j + 1 < D.R.m → ∀ x, eM t j (S.io (tup t) j x) = R.ioY t j (eM t (j + 1) x)
-
-  io_top : ∀ t x, eM t (D.R.m - 1) (S.io (tup t) (D.R.m - 1) x) = topLift R t (Y.eA t (topEquiv S (tup t) x))
 
 section Inhabitant
 
@@ -140,29 +100,9 @@ theorem haar_chain (hY : R.models_νY) (hY' : R.models_νY') (t : T) (j : ℕ) (
   · obtain rfl : j = D.R.m - 1 := by omega
     exact ⟨(hY' t).1.1, (hY' t).2⟩
 
-
-set_option genInjectivity false in
-set_option genSizeOfSpec false in
-structure HChain (m : ℕ) (E B : Type) [NormedAddCommGroup E] [InnerProductSpace ℂ E] [NormedAddCommGroup B]
-    [InnerProductSpace ℂ B] where
-
-  Sp : ℕ → Type
-  [nSp : ∀ j, NormedAddCommGroup (Sp j)]
-  [iSp : ∀ j, InnerProductSpace ℂ (Sp j)]
-  [fSp : ∀ j, FiniteDimensional ℂ (Sp j)]
-
-  bot : Sp 0 ≃ₗᵢ[ℂ] E
-
-  top : Sp m ≃ₗᵢ[ℂ] B
-
-  io : ∀ j, Sp (j + 1) →ₗ[ℂ] Sp j
-
 attribute [instance] HChain.nSp HChain.iSp HChain.fSp
 
-
 end Inhabitant
-
-def MultTied {X0 : BaseLevelRowSide D} (Y : RowsTie R F X0) : Prop := Function.Surjective Y.tup ∧ Nonempty (MultTie Y.sharp)
 
 theorem isMultiplicityInner_mul_inner {V : HSp D} {Sp : D.what₂.Tau → SPar} {M : DSModel V Sp} {μ : Measure (GA D V)} {𝓕 : Set (GA D V)}
     {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (e : H →ₗ[ℂ] MMap M) {d : ℂ} (hd : d ≠ 0)
@@ -195,7 +135,6 @@ theorem isMultiplicityInner_mul_inner {V : HSp D} {Sp : D.what₂.Tau → SPar} 
 namespace MultTie
 
 variable {Y : SideTie R F tup b S} (M : MultTie Y)
-
 
 end MultTie
 

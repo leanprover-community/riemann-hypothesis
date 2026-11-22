@@ -18,7 +18,6 @@ variable {k G : Type u} [CommRing k] [Group G] [TopologicalSpace G] [IsTopologic
 
 section ResLE
 
-
 omit [IsTopologicalGroup G] in
 theorem continuous_subgroup_inclusion {U V : Subgroup G} (h : V ≤ U) :
     Continuous (Subgroup.inclusion h) :=
@@ -29,7 +28,6 @@ variable (A : Rep.{u} k G)
 def resResHom {U V : Subgroup G} (h : V ≤ U) :
     Rep.res (Subgroup.inclusion h) (Rep.res U.subtype A) ⟶ Rep.res V.subtype A :=
   Rep.ofHom ⟨LinearMap.id, fun _ => rfl⟩
-
 
 variable [IsDiscreteRep A]
 
@@ -65,14 +63,6 @@ structure PreClassFormation (C : Rep.{u} k G) [IsDiscreteRep C] where
 structure ClassFormation (C : Rep.{u} k G) [IsDiscreteRep C] extends PreClassFormation C where
 
   inv_bijective : ∀ U : OpenSubgroup G, Function.Bijective (inv U)
-
-structure ClassFormationAt (P : Set Nat.Primes) (C : Rep.{u} k G) [IsDiscreteRep C]
-    extends PreClassFormation C where
-
-  inv_injective : ∀ U : OpenSubgroup G, Function.Injective (inv U)
-
-  primaryComponent_le_range : ∀ (U : OpenSubgroup G), ∀ p ∈ P,
-    ∀ x ∈ AddCommMonoid.primaryComponent QZ (p : ℕ), x ∈ (inv U).range
 
 namespace PreClassFormation
 

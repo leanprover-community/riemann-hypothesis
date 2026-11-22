@@ -33,7 +33,6 @@ def IsHom (A B : Ob k G) (f : (Fin A.m → k) →ₗ[k] (Fin B.m → k)) : Prop 
       map_one' := by ext; simp
       map_mul' := fun g h => by ext; simp [mul_smul, Module.End.mul_eq_comp, mul_assoc, mul_comm, mul_left_comm] }
 
-
 open scoped LaurentSeries PowerSeries in
 variable {k G : Type} [Field k] [Group G] in
 theorem _root_.GlobalTheory.Models.exists_ob {M : Type} [AddCommGroup M] [Module k M]
@@ -196,18 +195,6 @@ theorem herrD_apply {m : ℕ} (D : ModPG R n (Vc k m)) (x : ZMod n → Vc k m) :
     herrD D x = (fun i => D.φ i (x (i - 1)) - x i, fun i => D.γ i (x i) - x i) := rfl
 
 theorem herrB_eq_range {m : ℕ} (D : ModPG R n (Vc k m)) : herrB D = LinearMap.range (herrD D) := rfl
-
-structure ModData (k G : Type) [Field k] [Group G] (n : ℕ) where
-
-  T : Ob k G
-
-  ω : G →* kˣ
-
-  Base : ∀ A : Ob k G, Lats k n A.m → Prop
-
-  Nstd : Lats k n T.m
-
-  Nχ : ℤ → Lats k n 1
 
 namespace Law
 variable (F : DFun R n G) {r : ℕ} (Dt : TopData n r) (Y : ModData k G n)

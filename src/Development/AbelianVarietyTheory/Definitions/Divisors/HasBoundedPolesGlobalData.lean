@@ -83,7 +83,6 @@ def baseChange : Tuple E where
   j₀ := T.j₀
   th := GlobalTheory.chartSec (chartPullZPow (GlobalTheory.chartPullPull T.L (T.bcFst E)) T.j₀) T.th
 
-
 variable {T} in
 theorem IsGeometric.baseChange (h : T.IsGeometric) : (T.baseChange E).IsGeometric := by
   refine ⟨h.alg.baseChange E, fun e => h.bd_ne (top_le_iff.1 fun y _ => ?_)⟩
@@ -91,7 +90,6 @@ theorem IsGeometric.baseChange (h : T.IsGeometric) : (T.baseChange E).IsGeometri
   have : Surjective (T.bcFst E) := MorphismProperty.of_isPullback (T.isPullback_baseChange E).flip this
   obtain ⟨z, rfl⟩ := (T.bcFst E).surjective y
   exact e.ge (Set.mem_univ z)
-
 
 variable {T} in
 theorem IsGeometric.nonempty_U (h : T.IsGeometric) : (T.U : Set T.Y).Nonempty :=
@@ -218,7 +216,6 @@ abbrev SecOn (j : ℕ) : Type := sectionsOnClosedSubscheme G.str (tw G.L₂ G.L 
 
 variable {G s} (hs : G.IsGood s)
 
-
 include hs in
 theorem IsGood.suppIn_e : SuppIn (nonzeroLocus G.e) (G.ideal s) := fun y hy => G.U_le (hs.inU y hy)
 
@@ -294,7 +291,6 @@ theorem extSpace_global (j : ℕ) : extSpace (G.toExt E j) (G.global j) = (G.bas
   rw [global, LinearMap.coe_range, ← Set.range_comp, ← Set.range_comp]
   exact congrArg _ (funext fun f => restr_pullChart _ _ _ _ _ _ f)
 
-
 variable {G E} in
 theorem isGood_baseChange_iff {s : Fin G.D → Fin G.N → E} : (G.baseChange E).IsGood s ↔ G.IsGoodSection E s :=
   ⟨fun h => ⟨⟨h.finite, h.etale⟩, h.inU⟩, fun h => ⟨h.finiteEtale.finite, h.finiteEtale.etale, h.inOpen⟩⟩
@@ -339,39 +335,6 @@ namespace Geo
 
 variable {F : Type} [Field F] [NumberField F] (G : Geo F)
 
-structure Positivity : Prop where
-
-  bir : G.IsBirationalOffBoundary
-
-  nef : IsNef F G.LA
-
-  big : IsBig F G.LA
-
-def logRho (C h : ℝ) : ℝ := Real.log G.abelian₂ + C * Real.log (G.theta h)
-
-def g : ℝ := ((G.D : ℝ) + 1) * (Real.log G.n + 1) / 2 + 1
-
-def Ra (a : ℕ) : ℕ := (a + G.D - 1).choose (G.D - 1)
-
-def globalData (T : ℕ) (hT : G.D + 1 ≤ T) : Data F where
-  toGeo := G
-  T := T
-  le_T := hT
-  V := G.global
-  global_le _ _ := le_rfl
-  V_zero := rfl
-  M j := Submodule.span (𝓞 F) (Set.range (Module.finBasis F (G.global j)))
-  full _ := isFull_span _
-  nm j := ofBasis (Module.finBasis F (G.global j))
-  conjInv _ := isConjInv_ofBasis _
-  beta := 1
-  LamD := 1
-  LamT := 1
-  J := 1
-  one_le_beta := le_rfl
-  one_le_LamD := le_rfl
-  one_le_LamT := le_rfl
-
 end Geo
 
 namespace Data
@@ -381,10 +344,6 @@ variable {F : Type} [Field F] [NumberField F] (X : Data F)
 instance finiteDimensional (j : ℕ) : FiniteDimensional F (X.V j) := (X.full j).finiteDimensional
 
 theorem latRank_M (j : ℕ) : latRank F (X.M j) = Module.finrank F (X.V j) := (X.full j).latRank_eq
-
-def HasBoundedPoles : Prop :=
-  ∀ j ≤ X.T, ∃ (P : LB X.Y) (hP : P.IsLB) (t : P.Sec) (ht : X.U ≤ nonzeroLocus t),
-    X.V j ≤ polar X.str (X.adj j) hP (X.isLB_adj j) t ht
 
 def degM (j : ℕ) : ℝ := deg (X.nm j) (X.M j)
 
@@ -436,11 +395,7 @@ def ShortFamily (j : ℕ) (Λ : ℝ) : Prop :=
 
 def d : ℕ := latRank F (X.M X.T)
 
-def a₀ : ℕ := X.T - X.D - 1
-
 def R : ℕ := (X.T - 1).choose X.D
-
-def z : ℝ := 1 - X.R * X.del / X.d
 
 theorem d_eq_finrank : X.d = Module.finrank F (X.V X.T) := (X.full _).latRank_eq
 
@@ -456,123 +411,13 @@ theorem MulStable.mem (h : X.MulStable) {j : ℕ} (hj : j < X.T) (u : Fin X.N �
 
 end Data
 
-theorem Geo.hasBoundedPoles_globalData {F : Type} [Field F] [NumberField F] (G : Geo F) {T : ℕ} (hT : G.D + 1 ≤ T) :
-    (G.globalData T hT).HasBoundedPoles := fun _ _ =>
-  ⟨_, LB.isLB_div G.isLBA (isLB_tw G.isLB₂ G.isLB _), G.e, G.U_le, range_restr_le_polar _ _ _ _⟩
-
-theorem Geo.shortFamily_globalData {F : Type} [Field F] [NumberField F] (G : Geo F) {T : ℕ} (hT : G.D + 1 ≤ T)
-    (j : ℕ) : (G.globalData T hT).ShortFamily j 1 := by
-  have e := (G.globalData T hT).latRank_M j
-  exact ⟨Module.finBasis F (G.global j) ∘ Fin.cast e,
-    fun i => Submodule.subset_span (M := G.global j) ⟨_, rfl⟩,
-    (Module.finBasis F (G.global j)).linearIndependent.comp _ (Fin.cast_injective e),
-    fun i σ => (nrm_ofBasis _ σ _).le⟩
-
 namespace Proj
 
 open ProjSpace
 
 variable (F : Type) [Field F] [NumberField F] (M : ℕ)
 
-abbrev tuple : Tuple F where
-  toLinSys := projSys F M
-  n := M + 1
-  w := 1
-  A _ := 1
-  abelian₂ := 1
-  bd := (chart F M (Fin.last M)).compl
-  j₀ := 1
-  th := secToPow (coord F M (Fin.last M)) 1
-
-theorem U_eq : (tuple F M).U = nonzeroLocus (coord F M (Fin.last M)) :=
-  (Opens.compl_compl _).trans (nonzeroLocus_coord F M _).symm
-
-theorem isAlgebraicData (hM : 1 ≤ M) : (tuple F M).IsAlgebraicData :=
-  ⟨projSys.isVariety F M hM, projSys.indep F M, top_le_iff.1 fun u _ => by
-    rw [pi_eq_sum_univ' u]
-    refine Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, funext fun j => ?_⟩)
-    simp [Matrix.one_apply, Pi.single_apply], projSys.basePointFree F M⟩
-
-abbrev bundleA : LB (PSpace F M) := tens (O1 F M) (tw (O1 F M) (O1 F M) M)
-
-theorem isLB_bundleA : (bundleA F M).IsLB := isLB_tens (O1_isLB F M) (isLB_tw (O1_isLB F M) (O1_isLB F M) M)
-
-theorem exists_e : ∃ e : (LB.div (bundleA F M) (tw (O1 F M) (O1 F M) M)).Sec,
-    nonzeroLocus e = nonzeroLocus (coord F M (Fin.last M)) :=
-  have h := isLB_tw (O1_isLB F M) (O1_isLB F M) M
-  exists_sec_nonzeroLocus_eq_of_lbIso (LB.isLB_div (isLB_bundleA F M) h) (O1_isLB F M)
-    ((cls_eq_iff (LB.isLB_div (isLB_bundleA F M) h) _).1 (by rw [cls_div (isLB_bundleA F M) h, cls_tens (O1_isLB F M) h, add_sub_cancel_right])) _
-
 variable {M} (hM : 1 ≤ M)
-
-def geo : Geo F where
-  toTuple := tuple F M
-  geom := ⟨isAlgebraicData F M hM, fun h => (h.ge (Set.mem_univ (projSys.gen F M))) (projSys.gen_mem F M _)⟩
-  herm σ := by simp
-  conj σ x := by simp [frameNorm]
-  K := CanonLB.all _ _
-  L₂ := O1 F M
-  isLB₂ := O1_isLB F M
-  N₂ := M + 1
-  b₂ := coord F M
-  n₂ := M + 1
-  w₂ := 1
-  A₂ _ := 1
-  alg₂ := isAlgebraicData F M hM
-  herm₂ σ := by simp
-  conj₂ σ x := by simp [frameNorm]
-  LA := bundleA F M
-  isLBA := isLB_bundleA F M
-  e := (exists_e F M).choose
-  U_le := ((U_eq F M).trans (exists_e F M).choose_spec.symm).le
-
-theorem hasNonzeroSec_pow (M n : ℕ) : HasNonzeroSec (lbPow (O1 F M) n) :=
-  lineBundleHasNonzeroSection_of_globalSectionsDim_pos (k := F) (by rw [sectionDim_twistingSheaf_pow]; exact Nat.choose_pos (by omega))
-
-theorem positivity : (geo F hM).Positivity := by
-  have hl : nonzeroLocus (tuple F M).th = chart F M (Fin.last M) :=
-    (nonzeroLocus_secToPow _ le_rfl).trans (nonzeroLocus_coord F M (Fin.last M))
-  have := (geo F hM).isIntegral
-  have hc : cls _ (isLB_bundleA F M) = cls _ (isLB_lbPow (O1_isLB F M) (M + 2)) := by
-    rw [cls_tens (O1_isLB F M) (isLB_tw (O1_isLB F M) (O1_isLB F M) M),
-      cls_tens (O1_isLB F M) (Twist.isLB_lbZPow (O1_isLB F M) M), cls_lbZPow (O1_isLB F M), cls_lbPow (O1_isLB F M)]
-    module
-  have key : IsNef F (bundleA F M) ∧ IsBig F (bundleA F M) :=
-    ⟨((isNef_twistingSheaf F M).pow (isAmple_projective_O_one F M) _).of_cls_eq _ hc,
-      (@IsBig.pow _ _ _ _ _ this _ (algebraMap_top_eq F M) (isProjOver_str F M) (isBig_twistingSheaf F M) _
-        (by omega)).of_cls_eq _ hc⟩
-  rw [← projSys.algebraΓ_eq] at key
-  refine ⟨⟨projSys.birational F M, projSys.noContract F M _, le_rfl, fun h => ?_, fun y hy => hl ▸ hy⟩, key.1, key.2⟩
-  have := hl.ge (projSys.gen_mem F M _)
-  rw [show (tuple F M).th = 0 from h] at this
-  exact nonzeroLocus_secZero.le this
-
-
-omit hM in
-theorem cls_adj {Y : Scheme.{0}} {K L : LB Y} (hK : K.IsLB) (hL : L.IsLB) (M j : ℕ) (h₁ h₂ h₃) :
-    cls (tw (tens K (tens L (tw L L M))) L j) h₁ = cls (tens K (lbPow L (M + 1))) h₂ + cls (lbPow L (j + 1)) h₃ := by
-  have h := isLB_tens hL (isLB_tw hL hL M)
-  rw [cls_tens (isLB_tens hK h) (Twist.isLB_lbZPow hL j), cls_tens hK h, cls_tens hL (isLB_tw hL hL M),
-    cls_tens hL (Twist.isLB_lbZPow hL M), cls_tens hK (isLB_lbPow hL _), cls_lbZPow hL, cls_lbZPow hL, cls_lbPow hL,
-    cls_lbPow hL]
-  module
-
-theorem finrank_global_pos (j : ℕ) : 0 < Module.finrank F ((geo F hM).global j) := by
-  have hO := O1_isLB F M
-  let G := geo F hM
-  obtain ⟨c, hc⟩ := exists_chart (G.K.isLB_adj hO (M + 1)) (projSys.gen F M)
-  have h₁ : HasNonzeroSec (G.K.adj (O1 F M) (M + 1)) := ⟨G.K.jacSec (coord F M), sec_ne_zero_of_mem
-    ((isUnit_ger_iff _ hc).1 ((@isUnit_jacSec_coord F _ M G.smooth G.K c).map _))⟩
-  obtain ⟨s, hs⟩ := HasNonzeroSec.of_cls_eq_add (X := G.Y) h₁ (hasNonzeroSec_pow F M (j + 1)) (G.isLB_adj j)
-    (G.K.isLB_adj hO _) (isLB_lbPow hO _) (cls_adj G.K.isLB hO M j _ _ _)
-  refine Module.finrank_pos_iff_exists_ne_zero.2 ⟨⟨_, H0.ofSec _ ⊤ s, rfl⟩, fun h => hs ?_⟩
-  exact H0.bijective_ofSec_top.1 ((G.restr_injective _ ((congrArg Subtype.val h).trans (map_zero _).symm)).trans
-    (map_zero _).symm)
-
-def data (T : ℕ) (hT : M + 1 ≤ T) : Data F := (geo F hM).globalData T hT
-
-theorem d_pos (T : ℕ) (hT : M + 1 ≤ T) : 0 < (data F hM T hT).d :=
-  (finrank_global_pos F hM T).trans_eq (data F hM T hT).d_eq_finrank.symm
 
 end Proj
 

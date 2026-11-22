@@ -25,7 +25,6 @@ section Alg
 
 variable {L : Type} [Field L] [NumberField L] {l : ℕ} [Fact l.Prime] (n : ℕ) {V : Type} [Fintype V] (S : V → Plc L)
 
-
 omit [Fintype V] in
 abbrev GV : Type := ∀ v : V, GLw n (S v)
 
@@ -41,12 +40,10 @@ def eV (v : V) (i : Fin n) (y : Uo ((S v).adicCompletion L)) : (iwS n S).T := by
     · rw [Pi.mulSingle_eq_of_ne h]
       exact (glIwa ((S v').adicCompletion L) n).T.one_mem⟩
 
-
 omit [Fintype V] in
 def alV (v : V) (j : ℕ) : GV n S := by
   classical
   exact Pi.mulSingle v (al ((S v).adicCompletion L) n j)
-
 
 omit [Fintype V] in
 variable (l) in
@@ -54,10 +51,8 @@ abbrev Emb : Type := Σ v : V, W.Emb l (S v)
 
 variable {n S}
 
-
 omit [Fintype V] in
 def Emb.res (e : Emb l S) : L →+* Qbar l := e.2.1.comp (algebraMap L _)
-
 
 variable (S) in
 def algRep (ι : Qbar l ≃+* ℂ) (lam : Wt L l n) :
@@ -191,31 +186,6 @@ def atV (d : ℕ) (v : H.V) : Representation ℂ (GLw n (H.Sl v)) (Fin H.m → H
   exact (H.X.rpF ℂ d H.m).comp (MonoidHom.mulSingle (fun v : H.V => GLw n (H.Sl v)) v)
 
 def atW (d : ℕ) (w : Plc L) : Representation ℂ (GLw n w) (Fin H.m → H.X.Fn ℂ d) := (H.X.raF d (H.τC ι)).comp (H.sec w)
-
-structure Part (lam : Wt L l n) {d : ℕ} (ξ : GV n H.Sl →* GL (Fin d) ℂ) : Type 1 where
-  Y : Submodule ℂ (Fin H.m → H.X.Fn ℂ d)
-  le : Y ≤ H.Big ι ξ
-  ne : Y ≠ ⊥
-  σl : ∀ v : H.V, SmIrr (GLw n (H.Sl v))
-  isoL : ∀ v, IsoSum (H.atV d v) Y (σl v)
-  σq : ∀ q : H.Q, SmIrr (GLw n (H.wq q))
-  isoQ : ∀ q : H.Q, IsoSum (H.atW ι d (H.wq q)) Y (σq q)
-  a : H.Wp → ℕ → ℂ
-  a_zero : ∀ w, a w 0 = 1
-  sph : ∀ (w : H.Wp) j, ∀ F ∈ Y, sphOp (H.atW ι d w.1) j F = a w j • F
-  r : H.Gq →* GL (Fin n) (Qbar l)
-  cont : Continuous r
-  ss : IsSSRep r
-  frob : ∀ (w : H.Wp) (B : ValuationSubring Ω) (σ : G L Ω), IsPlaceOver B w.1 → IsFrob B (normV w.1) σ →
-    (r (H.prj σ⁻¹) : Matrix (Fin n) (Fin n) (Qbar l)).charpoly.map ι.toRingHom = heckePol n (normV w.1) (a w)
-  atL : ∀ v, AtL ι (H.ovr v) (r.comp (H.dec v)) lam (σl v)
-  atQ : ∀ (q : H.Q) (B : ValuationSubring Ω) (h : IsPlaceOver B (H.wq q)) (rc : IrrGL (k := (H.wq q).adicCompletion L) → WD h), IsRec h rc →
-    Lev.WO ι (r.comp H.prj) (rc (algNorm (σq q)))
-
-def Aut (P : Wt L l n → (H.Gq →* GL (Fin n) (Qbar l)) → Prop) : Prop :=
-  ∀ lam ∈ H.admitted, ∀ (d : ℕ) (ξ : GV n H.Sl →* GL (Fin d) ℂ), IsAlgWt ι lam ξ → ∀ F ∈ H.Big ι ξ,
-    (∃ K, F ∈ fixd (H.X.raF d (H.τC ι)) (H.lev K)) → (∃ e, F ∈ fixd (H.X.rpF ℂ d H.m) (H.X.I.I1 e)) →
-    F ∈ ⨆ Y : {Y : H.Part ι lam ξ // P lam Y.r}, Y.1.Y
 
 def lowVal (lam : Wt L l n) (v : H.V) (j : ℕ) : ℂ :=
   ι (∏ i ∈ Finset.univ.filter fun i : Fin n => (i : ℕ) < j,

@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DiscreteSpanOfLinIndep
-public import Formalism.GelfandTransference.EnergyIdentity
 public import Mathlib
 
 @[expose] public section

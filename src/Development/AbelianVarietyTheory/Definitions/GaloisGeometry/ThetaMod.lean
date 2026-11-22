@@ -18,39 +18,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-
-set_option synthInstance.maxHeartbeats 400000 in
-structure Pin (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) where
-  cf : CharFrame D
-  C : NChoice D
-  tp : TupTied D cf C
-  chr : NCharTied D cf C tp
-  val : ValLL0 D cf
-  Q_eq : ∀ i, D.nd.Q i = C.Q (D.nd.w i)
-  T : WDTie D.nd D.naut
-  lab : LabTrue D T
-  cg : CGTrue hL D T
-  M : MtFam D
-  H : HeckeOpen D M tp.tup
-  au : AUTrue hL D T H.au
-  rep : D.what₂.FT → NG.FinTyp D.host.E D.R.r
-  rep_inj : ∀ σ σ', (rep σ).Iso (rep σ') → σ = σ'
-  row : ∀ i, RowTrue hL D rep (fun σ w => T.e w (D.naut.locW i σ w)) (D.naut.satW i)
-  locW_eq : ∀ i i' σ w, D.naut.locW i σ w = D.naut.locW i' σ w
-  jE : D.host.E →+* Qb
-  ty : TypesOpen D jE
-  wd : WDSide D T
-  wdOf : ∀ (i : D.nd.Loc) a (r : Formalism.ConjugateSelfDual.G D.host.E D.nd.Om →* GL (Fin a) (Qbar (D.nd.l i))) w,
-    D.naut.wdOf i r w = wd.wdOf (D.nd.l i) (D.naut.iotaQC i) r w ∧
-    (D.naut.IsCrysW i r w ↔ wd.IsCrysW (D.nd.l i) (D.naut.iotaQC i) r w) ∧
-    (D.naut.IsPotCrysW i r w ↔ wd.IsPotCrysW (D.nd.l i) (D.naut.iotaQC i) r w) ∧
-    (D.naut.IsdRW i r w ↔ wd.IsdRW (D.nd.l i) (D.naut.iotaQC i) r w) ∧
-    ∀ τ, D.naut.jumpsW i r τ = wd.jumpsW (D.nd.l i) (D.naut.iotaQC i) r τ
-
-def rcAt (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) (w : PlE D.host) (n : ℕ) (π : Irr (w.adicCompletion D.host.E) n) :
-    GlobalTheory.WeilDeligne.WD (E := D.host.E) (A := D.nd.plOm.1 w) (w := w) (D.nd.plOm.2 w) :=
-  GlobalTheory.CuspRep.ParLaws.locRec hL (D.nd.plOm.2 w) (GlobalTheory.LocLanglands.cls π.toIrrRep)
-
 def IsComp {E : Type} [Field E] [NumberField E] (χ : HChar E) (w : HeightOneSpectrum (𝓞 E))
     (ξ : (w.adicCompletion E)ˣ →* ℂˣ) : Prop :=
   IsSmoothChar ξ ∧ ∀ x : Eˣ, ξ (Units.map (algebraMap E (w.adicCompletion E)).toMonoidHom x) = χ.locK w x

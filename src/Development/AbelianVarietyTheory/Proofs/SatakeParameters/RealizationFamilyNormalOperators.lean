@@ -40,9 +40,6 @@ def rtr (φ : H →* G) (W : Type) [AddCommGroup W] [Module ℂ W] : H →* Modu
   map_one' := by ext F h; simp [LinearMap.funLeft]
   map_mul' a b := by ext F h; simp [LinearMap.funLeft, mul_assoc]
 
-theorem rtr_apply (φ : H →* G) {W : Type} [AddCommGroup W] [Module ℂ W] (γ : H) (F : G → W) (h : G) :
-    rtr φ W γ F h = F (h * φ γ) := rfl
-
 theorem isDC_image [DecidableEq G] (φ : H →* G) (J : Subgroup G) (L : Subgroup H) (K : Set H)
     (hK : ∀ g, g ∈ K ↔ g ∈ L ∧ φ g ∈ J)
     (hsp : ∀ k ∈ J, ∃ k₁ ∈ J, ∃ k₂ ∈ J, k₁ ∈ L.map φ ∧ k = k₁ * k₂ ∧ ∀ l ∈ L.map φ, Commute k₂ l)

@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.LocalToGlobal.ProjectiveLattices.AxHLAM
-public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.FrameNormRestrictedDensity
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConjCmHostRootNeSelf
 
 @[expose] public section

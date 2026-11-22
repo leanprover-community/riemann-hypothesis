@@ -20,10 +20,6 @@ open GlobalTheory.WpFam
 
 namespace GlobalTheory.HilbFam
 
-theorem famGL_coe_redGL (N : ℕ) (γ : SL(2, ℤ)) :
-    ((redGL N γ : GL (Fin 2) (ZMod N)) : Matrix (Fin 2) (Fin 2) (ZMod N)) =
-      (γ : Matrix (Fin 2) (Fin 2) ℤ).map (Int.cast : ℤ → ZMod N) := rfl
-
 theorem famGL_vmul_gact (N : ℕ) (y : Fin 2 → ZMod N) (α : GL (Fin 2) (ZMod N)) (γ : SL(2, ℤ)) :
     vmul y (gact N 1 α γ) = vact N (vmul y α) γ := by
   rw [gact_one, vact, vmul, vmul, vmul, Matrix.vecMul_vecMul, Units.val_mul]

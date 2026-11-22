@@ -18,10 +18,6 @@ attribute [local instance] MvPolynomial.algebraMvPolynomial
 
 variable {K : Type} [Field K] [NumberField K] {m : ℕ}
 
-local notation "φ" => (MvPolynomial.map (algebraMap (𝓞 K) K) :
-  MvPolynomial (Fin m) (𝓞 K) →+* MvPolynomial (Fin m) K)
-local notation "CC" => (C : 𝓞 K →+* MvPolynomial (Fin m) (𝓞 K))
-
 theorem disjoint_of_bot {W : Ideal (MvPolynomial (Fin m) (𝓞 K))} (h : W.comap CC = ⊥) :
     Disjoint (((nonZeroDivisors (𝓞 K)).map CC : Submonoid _) : Set (MvPolynomial (Fin m) (𝓞 K))) W := by
   rw [Set.disjoint_left]

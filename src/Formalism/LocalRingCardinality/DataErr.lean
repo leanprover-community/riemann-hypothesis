@@ -40,13 +40,11 @@ structure ErrX (D : D7) where
 def tauLL (D : D7) (τ : D.what₂.Tau) (x : D.host.E) : D.what₂.LL :=
   D.embE (D.host.sigmaOf (D.eTau τ : D.R.GG) x)
 
-
 open scoped TensorProduct in
 def PiGLevel (D : D7) (lev : LevelData D) (X : ErrX D) : Prop :=
   letI := D.host.cmStar
   ∀ u (i : Fin 2) (v : HeightOneSpectrum (𝓞 D.host.F)) (h : (D.host.g i : 𝓞 D.host.F) ∈ v.asIdeal),
     Valued.v (((lev u).splitG i v h) ((D.host.conj (X.piG i : D.host.E)) ⊗ₜ[D.host.F] (1 : v.adicCompletion D.host.F))).1 < 1
-
 
 open scoped TensorProduct in
 def PiTLevel (D : D7) (lev : LevelData D) (X : ErrX D) : Prop :=
@@ -55,7 +53,6 @@ def PiTLevel (D : D7) (lev : LevelData D) (X : ErrX D) : Prop :=
     (z : D.host.E ⊗[D.host.F] (X.vPl u v).adicCompletion D.host.F) =
       ((X.piT u : 𝓞 D.host.E) : D.host.E) ⊗ₜ[D.host.F] (1 : (X.vPl u v).adicCompletion D.host.F) →
     ∀ y : (lev u).fM (X.vPl u v) (X.norm_mem_place_ideal u v), z • y = 0
-
 
 def SeenDef (D : D7) (X : ErrX D) : Prop :=
   ∀ u (w : D.what₂.places.Pl), D.what₂.places.resChar w = (D.mem u).A.T →
@@ -91,7 +88,6 @@ def EatG {D : D7} (L : SizeData₂ D) (X : ErrX D) (c : ErrC) (i : Fin 2) (u : D
   FTypeG D j + vNN X i u j w +
     c.g * (D.R.f : ℝ) * (Nm D ^ 2 + (D.R.m : ℝ) ^ 2 * L.etaSz)
 
-
 open Classical in
 def Wtau (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) : ℕ :=
   (Finset.range (D.R.m + 1)).sup fun i => Finset.univ.sup fun a : Fin (D.R.N i) =>
@@ -104,7 +100,6 @@ def EatT (D : D7) (u : D.what₂.Word) (w : D.what₂.places.Pl) : ℝ :=
       ((topsOf D.host D.eTau).card : ℝ) * ((D.R.t : ℝ) + 1) * ((D.R.m : ℝ) + 1) / 4
   else 0
 
-
 open Classical in
 def ctD (D : D7) (u : D.what₂.Word) (j : ℕ) (t : HH D) : ℝ :=
   nuAbs D u j (tauPl D (false, t)) -
@@ -114,24 +109,18 @@ def ctD (D : D7) (u : D.what₂.Word) (j : ℕ) (t : HH D) : ℝ :=
 def EatD (D : D7) (j : ℕ) : ℝ :=
   FRamD D j + (Finset.univ.sup' ⟨D.u₀, Finset.mem_univ _⟩ fun u : D.what₂.Word => ∑ t : HH D, ctD D u j t) / 2
 
-def exch (D : D7) : ℝ := (D.R.f : ℝ) * D.R.k * Nm D
-
 def EatC {D : D7} (L : SizeData₂ D) (c : ErrC) (j p : ℕ) : ℝ :=
   c.dig * (D.R.f : ℝ) * Nm D ^ 2 * Real.logb p L.sc.a +
     (∑ τ : D.what₂.Tau, wj D j τ) / ((p : ℝ) ^ 2 - 1)
 
-
 open Classical in
 def kindA (D : D7) (p : ℕ) : Finset (Bool × HH D) := Finset.univ.filter fun z => ¬ IsSg D p ∧ z.1 = false
-
 
 open Classical in
 def kindBC (D : D7) (p : ℕ) : Finset (Bool × HH D) := Finset.univ.filter fun z => IsSg D p ∨ z.1 = true
 
-
 open Classical in
 def topsBC (D : D7) (p : ℕ) : Finset (Bool × HH D) := (kindBC D p).filter fun z => IsTopPl D z
-
 
 open Classical in
 def EatX {D : D7} (L : SizeData₂ D) (c : ErrC) (j p : ℕ) : ℝ :=
@@ -151,7 +140,6 @@ def EatI {D : D7} (L : SizeData₂ D) (K : Consts) (c : ErrC) (j p : ℕ) : ℝ 
     (K.dl1 * ((kindBC D p).card : ℝ) * Nm D ^ 2 * Real.logb p (2 * L.sc.a) +
       K.dl2 * ((topsBC D p).card : ℝ) * Real.logb p (2 * L.sc.a) ^ 2) +
     EatX L c j p
-
 
 open Classical in
 def Eval {D : D7} (L : SizeData₂ D) (X : ErrX D) (K : Consts) (c : ErrC) (u : D.what₂.Word) (j : ℕ)

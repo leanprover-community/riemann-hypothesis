@@ -62,7 +62,6 @@ theorem Induces.hom_local (h : Induces emb v) : IsLocalHom h.hom := by
 variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
   {W : Type} [AddCommGroup W] [Module (FractionRing O') W] [Module O' W] [IsScalarTower O' (FractionRing O') W]
 
-
 omit [IsScalarTower (𝓞 K) K V] in
 theorem relLength_read (h : Induces emb v) (rd : V →ₛₗ[emb] W) {ι : Type} [Fintype ι] (b : Module.Basis ι K V)
     (hli : LinearIndependent (FractionRing O') fun a => rd (b a)) :
@@ -131,7 +130,6 @@ theorem relLength_read (h : Induces emb v) (rd : V →ₛₗ[emb] W) {ι : Type}
   · rw [← addVal_algebraMap O', map_natCast (algebraMap (Ow v) O')]
   · rw [hsp, hsp, relLength_map_of_injective g hinj]
     exact length_baseChange_subquotient_dvr (Ow v) O' _ _
-
 
 variable [StarRing K]
 
@@ -219,7 +217,6 @@ def Reads (e : V →ₗ[K] V) (Θ Θψ : Submodule (𝓞 K) V) (rd : V →ₛₗ
     Submodule.span O' (incl Y i j b O' k '' ⋃ a ∈ SgJ Y E i j b, Y.thPsi i j b k Q φ a)
 
 variable {Y E i j b k Q φ O'}
-
 
 omit [IsDomain O'] [IsDiscreteValuationRing O'] [NumberField K] in
 theorem Reads.comap {V' : Type} [AddCommGroup V'] [Module K V'] [Module (𝓞 K) V'] [IsScalarTower (𝓞 K) K V']
@@ -411,8 +408,6 @@ theorem isLatIn_eTh {I : TwIn D} {i : D.ntw.Tw} (h : I.Ok i) {j : ℕ} (hj : j �
   exact Submodule.fg_span ((I.S i j b).finite_toSet.image _)
 
 theorem succ_mem_Icc (ι : Fin D.R.m) : (ι : ℕ) + 1 ∈ Finset.Icc 1 D.R.m := Finset.mem_Icc.2 ⟨Nat.le_add_left _ _, ι.2⟩
-
-abbrev Twist (i : D.ntw.Tw) : Type := Σ (Q : Finset (PlE D.host)) (k : ℕ), D.ntw.RCG i Q →* (D.ntw.Ok i k)ˣ
 
 theorem exists_leafTW1_of_twGoodAt (A : FamIn D.what₂.LL Γ Pl0 T0 D.R.m) (c : NChoice D) (I : TwIn D) (hG : TwGoodAt D c I)
     (O : OnObj S P oc) (ι : Bs.J → Fin D.R.m) (hι : Function.Injective ι) (hM : GoodPartLattice O) (hΘ : ThetaFullRank O)

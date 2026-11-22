@@ -32,8 +32,6 @@ def q : D2 →+* DualNumber ℂ where
   map_zero' := by ext <;> simp
   map_add' a b := by ext <;> simp <;> ring
 
-theorem algebraMap_doubleDual_apply (a : ℂ) : algebraMap ℂ D2 a = TrivSqZeroExt.inl (TrivSqZeroExt.inl a) := rfl
-
 theorem q_snd (a : D2) : (q a).snd = (r1 a).snd + (r2 a).snd := by
   simp [q, r1, r2, dualMap]
 

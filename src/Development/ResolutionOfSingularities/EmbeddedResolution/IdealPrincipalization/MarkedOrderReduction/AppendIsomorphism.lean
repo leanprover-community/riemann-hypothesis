@@ -29,14 +29,6 @@ private noncomputable def appendSchemeAtIsoOfLengthLt {X : Scheme.{u}} (s : Blow
   eqToIso (append_schemeAt_eq_right_of_pos s t₁ hj hij) ≪≫ e j hjl ≪≫
     (eqToIso (append_schemeAt_eq_right_of_pos s t₂ hj hij)).symm
 
-private theorem appendObjIsoRight_hom {X : Scheme.{u}} (s : BlowupSequenceData X)
-    (t₁ t₂ : BlowupSequenceData (s.obj s.length))
-    (e : ∀ i : ℕ, i ≤ t₁.length → (t₁.obj i ≅ t₂.obj i))
-    (j i : ℕ) (hij : i = s.length + j) (hj : 0 < j) (hjl : j ≤ t₁.length) :
-    (appendSchemeAtIsoOfLengthLt s t₁ t₂ e j i hij hj hjl).hom =
-      eqToHom (append_schemeAt_eq_right_of_pos s t₁ hj hij) ≫ (e j hjl).hom ≫
-        eqToHom (append_schemeAt_eq_right_of_pos s t₂ hj hij).symm := rfl
-
 private theorem appendObjIsoRight_congr {X : Scheme.{u}} (s : BlowupSequenceData X)
     (t₁ t₂ : BlowupSequenceData (s.obj s.length))
     (e : ∀ i : ℕ, i ≤ t₁.length → (t₁.obj i ≅ t₂.obj i))

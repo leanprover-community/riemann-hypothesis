@@ -17,11 +17,6 @@ section Loc
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
-theorem umat_mem (g : Formalism.REAL.UJ ε) : umat g ∈ UJset ε := g.2
-
-theorem continuous_umat : Continuous (fun g : Formalism.REAL.UJ ε => umat g) :=
-  Units.continuous_val.comp continuous_subtype_val
-
 theorem mul_star_eq (z : ℂ) : z * star z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
   have : star z = (starRingEnd ℂ) z := rfl
   rw [this, Complex.mul_conj, Complex.normSq_eq_norm_sq]
@@ -45,18 +40,6 @@ theorem schur_abs {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {d : ℝ
       push_cast
       rfl
     exact_mod_cast h2
-
-theorem fdegOf_eq {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {d : ℝ}
-    (hd : IsFdeg (Formalism.REAL.muG ε) σ d) {w : H} (hw : ‖w‖ = 1) : fdegOf (Formalism.REAL.muG ε) σ w = d := by
-  unfold fdegOf
-  have h := (schur_abs hd w w).2
-  have h' : ∫ g : Formalism.REAL.UJ ε, ‖coefOn σ w w g‖ ^ 2 ∂(Formalism.REAL.muG ε) = 1 / d := by
-    have : (fun g : Formalism.REAL.UJ ε => ‖coefOn σ w w g‖ ^ 2) = fun g : Formalism.REAL.UJ ε => ‖⟪w, σ (umat g) w⟫_ℂ‖ ^ 2 := rfl
-    rw [this, h, hw]
-    norm_num
-  rw [h', hw]
-  have := hd.1
-  field_simp
 
 end Loc
 

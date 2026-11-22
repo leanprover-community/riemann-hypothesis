@@ -70,7 +70,6 @@ variable {S} in
 theorem Sec.exists_mv (s : S.Sec) (d : S.D) : ∃ g : S.G, g • s.rep (S.cls d) = d := by
   exact (S.cls_eq_iff d (s.rep (S.cls d))).1 (s.spec _).symm
 
-
 variable {S} in
 def Sec.mv (s : S.Sec) (d : S.D) : S.G := (s.exists_mv d).choose
 
@@ -85,10 +84,8 @@ structure Ok : Prop where
   del_smul : ∀ (g : S.G) (d : S.D), S.Del (g • d) = (S.Del d).map ((S.ρ g).restrictScalars (𝓞 K))
   inv : ∀ (g : S.G) (x y : S.V), S.pair (S.ρ g x) (S.ρ g y) = S.pair x y
 
-
 variable {S} in
 @[reducible] def Ok.fintypeCl (h : S.Ok) : Fintype S.Cl := @Fintype.ofFinite _ h.fin_orb
-
 
 variable {S} in
 @[reducible] def Ok.fintypeStab (h : S.Ok) (d : S.D) : Fintype (MulAction.stabilizer S.G d) :=
@@ -124,12 +121,6 @@ def intOf (N : S.D → Submodule (𝓞 K) S.V) : Submodule (𝓞 K) S.EqFun wher
 def intNab : Submodule (𝓞 K) S.EqFun := S.intOf S.Nab
 
 def intDel : Submodule (𝓞 K) S.EqFun := S.intOf S.Del
-
-theorem mem_intNab (φ : S.EqFun) : φ ∈ S.intNab ↔ ∀ d, (φ : S.D → S.V) d ∈ S.Nab d := by
-  exact Iff.rfl
-
-theorem mem_intDel (φ : S.EqFun) : φ ∈ S.intDel ↔ ∀ d, (φ : S.D → S.V) d ∈ S.Del d := by
-  exact Iff.rfl
 
 @[reducible] def toCSDOf (h : S.Ok) (s : S.Sec) : CSD K where
   Cl := S.Cl
@@ -328,7 +319,6 @@ theorem ofMap_op_apply (tr : S'.G →* S.G) (p : S'.D → S.D) (T : S.V →ₗ[K
   rw [Finsupp.sum_single_index]
   simp
 
-
 open Classical in
 def ofNbr (tr : S'.G →* S.G) (nb : S'.D → Finset S.D) (T : S.V →ₗ[K] S'.V)
     (hn : ∀ g d' d, tr g • d ∈ nb (g • d') ↔ d ∈ nb d') (hT : ∀ g x, T (S.ρ (tr g) x) = S'.ρ g (T x)) :
@@ -481,16 +471,6 @@ def csOf (h : S.Ok) (s : S.Sec) {M : Type} [AddCommGroup M] [Module K M] (F : S.
 
 end GSD
 
-structure BiPair (S S' : GSD K) where
-
-  tr : S'.G →* S.G
-
-  p : S'.D → S.D
-
-  B : S.V →ₗ[K] S'.V →ₗ[K] K
-  hp : ∀ (g : S'.G) (d' : S'.D), p (g • d') = tr g • p d'
-  inv : ∀ (g : S'.G) (x : S.V) (y : S'.V), B (S.ρ (tr g) x) (S'.ρ g y) = B x y
-
 namespace BiPair
 
 variable {S S' : GSD K} (P : BiPair S S')
@@ -547,12 +527,7 @@ def Ok : Prop := ∀ b, (F.mem b).Ok
 
 abbrev Forms : Type := ∀ b, (F.mem b).EqFun
 
-def intNab : Submodule (𝓞 K) F.Forms := Submodule.pi Set.univ fun b => (F.mem b).intNab
-
-def intDel : Submodule (𝓞 K) F.Forms := Submodule.pi Set.univ fun b => (F.mem b).intDel
-
 abbrev Cl : Type := Σ b, (F.mem b).Cl
-
 
 variable {F} in
 @[reducible] def Ok.fintypeCl (h : F.Ok) : Fintype F.Cl :=
@@ -575,28 +550,10 @@ variable {F} in
 
 @[reducible] def toCSD (h : F.Ok) : CSD K := F.toCSDOf h fun b => (F.mem b).outSec
 
-def resOf (h : F.Ok) (s : ∀ b, (F.mem b).Sec) : F.Forms ≃ₗ[K] (F.toCSDOf h s).Forms :=
-  (LinearEquiv.piCongrRight fun b => (F.mem b).resOf (h b) (s b)).trans
-    { toFun := fun f => ⟨fun c => (f c.1).1 c.2, fun c γ => (f c.1).2 c.2 γ⟩
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl
-      invFun := fun f b => ⟨fun c => f.1 ⟨b, c⟩, fun c γ => f.2 ⟨b, c⟩ γ⟩
-      left_inv := fun _ => rfl
-      right_inv := fun _ => rfl }
-
-theorem resOf_apply (h : F.Ok) (s : ∀ b, (F.mem b).Sec) (φ : F.Forms) (c : F.Cl) :
-    (F.resOf h s φ).1 c = ((φ c.1 : (F.mem c.1).EqFun) : F.D c.1 → F.V) ((s c.1).rep c.2) := rfl
-
-def ipOf (h : F.Ok) (s : ∀ b, (F.mem b).Sec) (φ ψ : F.Forms) : K :=
-  ∑ b, (F.mem b).ipOf (h b) (s b) (φ b) (ψ b)
-
 abbrev Mat (F F' : GFam K) : Type := ∀ (b : F.β) (b' : F'.β), ClsKer (F.mem b) (F'.mem b')
 
 def Mat.opOf {F F' : GFam K} (M : Mat F F') (h : F.Ok) (s : ∀ b, (F.mem b).Sec) : F.Forms →ₗ[K] F'.Forms :=
   LinearMap.pi fun b' => ∑ b, ((M b b').opOf (h b) (s b)) ∘ₗ (LinearMap.proj b)
-
-def Mat.atReps {F F' : GFam K} (M : Mat F F') (s : ∀ b, (F.mem b).Sec) (s' : ∀ b', (F'.mem b').Sec) :
-    F.Cl → F'.Cl → (F.V →ₗ[K] F'.V) := fun c c' => (M c.1 c'.1).k ((s c.1).rep c.2) ((s' c'.1).rep c'.2)
 
 end GFam
 

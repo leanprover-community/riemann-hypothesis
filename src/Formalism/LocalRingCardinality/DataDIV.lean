@@ -256,13 +256,7 @@ namespace DV
 abbrev KW (p : ℕ) [Fact p.Prime] : Type :=
   FractionRing (WittVector p (AlgebraicClosure (ZMod p)))
 
-def sgF (p : ℕ) [Fact p.Prime] : KW p ≃+* KW p :=
-  WittVector.FractionRing.frobenius p (AlgebraicClosure (ZMod p))
-
 abbrev Emb (D : D7) (p : ℕ) [Fact p.Prime] : Type := D.host.E →+* KW p
-
-def phiPow (D : D7) {p : ℕ} [Fact p.Prime] (n : ℕ) (τ : Emb D p) : Emb D p :=
-  ((sgF p : KW p →+* KW p) ^ n).comp τ
 
 def cEmb (D : D7) {p : ℕ} [Fact p.Prime] (τ : Emb D p) : Emb D p :=
   τ.comp (D.host.conj : D.host.E →+* D.host.E)
@@ -303,12 +297,6 @@ structure FPair (Z : ITh) (r : ℕ) where
 
   hx : ∀ i, Z.c1 (x' i) = Z.c1 (x i) - Z.cD (Dv i)
 
-def Gk (Z : ITh) (k : ℕ) (y y' : Z.Ch) : Z.Ch :=
-  ∑ a ∈ Finset.range k, y ^ a * y' ^ (k - 1 - a)
-
-def ck {Z : ITh} {r : ℕ} (P : FPair Z r) (k : ℕ) (Q : Z.Ch) : ℚ :=
-  ∑ i, Z.capDeg (P.Dv i) (Gk Z k (Z.c1 (P.x i)) (Z.c1 (P.x' i)) * Q)
-
 structure Mdl (D : D7) (p : ℕ) [Fact p.Prime] (N : ℕ) (rk : Emb D p → ℕ) where
 
   Z : ITh
@@ -340,23 +328,8 @@ def rkOf {D : D7} {p : ℕ} [Fact p.Prime] (Ps : Set (Emb D p)) (N j : ℕ) (τ 
 section Glob
 variable (D : D7)
 
-abbrev EmbC : Type := D.what₂.Tau ⊕ D.what₂.Tau
-
-def toGG : EmbC D → D.R.GG
-  | Sum.inl τ => ((D.eTau τ : D.R.Psi) : D.R.GG)
-  | Sum.inr τ => ((D.eTau τ : D.R.Psi) : D.R.GG) * D.R.cc
-
-
-open Classical in
-def ofGG (g : D.R.GG) : EmbC D :=
-  if h : g ∈ D.R.Psi then Sum.inl (D.eTau.symm ⟨g, h⟩)
-  else if h' : g * D.R.cc ∈ D.R.Psi then
-    Sum.inr (D.eTau.symm ⟨g * D.R.cc, h'⟩)
-  else Sum.inl (D.eTau.symm 1)
-
 def tauEmb (τ : D.what₂.Tau) : D.host.E →+* ℂ :=
   D.host.emb ((D.eTau τ : D.R.Psi) : D.R.GG)
-
 
 open Classical in
 def frobG (p : ℕ) : D.R.GG :=
@@ -364,27 +337,9 @@ def frobG (p : ℕ) : D.R.GG :=
       [P.LiesOver (Ideal.span {(p : ℤ)})], IsArithFrobAt ℤ (D.host.sigmaOf g) P
   then h.choose else 1
 
-def frobEmb (p n : ℕ) (σ : EmbC D) : EmbC D := ofGG D (toGG D σ * frobG D p ^ n)
-
 variable (N : ℕ)
 
-def pk (τ : D.what₂.Tau) (k : ℕ) : MvPolynomial (Rt D.what₂.Tau N) ℝ := ∑ i : Fin N, X (τ, i) ^ k
-
-def chTot (k : ℕ) : MvPolynomial (Rt D.what₂.Tau N) ℝ :=
-  C ((Nat.factorial k : ℝ)⁻¹) * ∑ τ : D.what₂.Tau, ∑ i : Fin N, (X (τ, i) ^ k + (-X (τ, i)) ^ k)
-
-def collapse : MvPolynomial (Vm D.what₂.Tau N) ℝ →ₐ[ℝ] MvPolynomial (Rt D.what₂.Tau N) ℝ :=
-  aeval (fun v => match v with
-    | Sum.inl (_, x) => X x
-    | Sum.inr (_, k) => chTot D N k)
-
 variable {D N}
-
-def chLie (j : ℕ) (k : ℕ) : EmbC D → MvPolynomial (Rt D.what₂.Tau N) ℝ
-  | Sum.inl τ => C ((Nat.factorial k : ℝ)⁻¹) *
-      ∑ i ∈ univ.filter (fun i : Fin N => (i : ℕ) < j), X (τ, i) ^ k
-  | Sum.inr τ => C ((Nat.factorial k : ℝ)⁻¹) *
-      ∑ i ∈ univ.filter (fun i : Fin N => j ≤ (i : ℕ)), (-X (τ, i)) ^ k
 
 variable (D N)
 
@@ -532,12 +487,6 @@ structure DivX (D : D7) : Type 1 where
   surfFpCh2 : SurfFp → ℝ
 
 attribute [instance] DivX.finQ DivX.compFin DivX.plpFin
-
-def DV.HidaSetting (D : D7) (XD : DivX D) (S : letI := D.host.cmStar; HSpace D.host.E) (κ : XD.Lev) : Prop :=
-  letI := D.host.cmStar
-  2 ≤ S.rank ∧ S.SigOK ∧
-  (∀ τ : D.what₂.Tau, S.sig (DV.tauEmb D τ) = ((XD.shv S κ).j, (XD.shv S κ).N - (XD.shv S κ).j)) ∧
-  2 < D.R.f * ((XD.shv S κ).N - 1)
 
 end Formalism.BasicNotions
 

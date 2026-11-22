@@ -14,19 +14,6 @@ namespace GlobalTheory.Glob.IntegralWittCoefficients
 
 open NumberField Formalism.BasicNotions Classical Formalism.MainNotions.TaylorLogMetric
 
-def Wp (p : ℕ) [Fact p.Prime] : Subring ℂ_[p] :=
-  (Subring.closure {ζ : ℂ_[p] | ∃ n : ℕ, 0 < n ∧ Nat.Coprime n p ∧ ζ ^ n = 1}).topologicalClosure
-
-def hP {p : ℕ} [Fact p.Prime] {ι : Type*} [Fintype ι] (x y : ι → ℂ_[p] × ℂ_[p]) : ℂ_[p] × ℂ_[p] :=
-  ∑ k, x k * (y k).swap
-
-structure G1 (p : ℕ) [Fact p.Prime] where
-  lam : Qbar →+* ℂ_[p]
-  abelian₂ : AddSubgroup ℂ
-  C : WeierstrassCurve.VariableChange ℂ_[p]
-  wq : PowerSeries ℂ_[p]
-  ex : PowerSeries ℂ_[p]
-
 namespace G1
 
 variable {p : ℕ} [Fact p.Prime] (g : G1 p)

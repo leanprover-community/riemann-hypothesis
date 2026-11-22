@@ -15,8 +15,6 @@ open CategoryTheory NumberField IsDedekindDomain GroundTheory.Global
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   {L : FiniteSubfield} [Fact (K ≤ L)]
   (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S)
@@ -73,7 +71,6 @@ theorem finrank_eq_sum_index_mackeySubgroup (v : {v : InfinitePlace K.1 // v.IsR
   rw [Finset.prod_congr rfl fun d _ => hs d, Finset.prod_pow_eq_pow_sum] at hM
   exact Nat.pow_right_injective le_rfl hM
 
-
 open scoped Classical in
 theorem index_mackeySubgroup_realFamily (v : {v : InfinitePlace K.1 // v.IsReal})
     (d : MackeyDoubleCoset (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))
@@ -87,7 +84,6 @@ theorem index_mackeySubgroup_realFamily (v : {v : InfinitePlace K.1 // v.IsReal}
   · rw [eq_bot_of_ne_top_realGal v _ h, Subgroup.index_bot, Nat.card_eq_fintype_card,
       card_realGal_eq_two v.1 v.2]
 
-
 open scoped Classical in
 theorem finrank_mul_card_real_eq_sum_index :
     Module.finrank K.1 L.1 * Nat.card {v : InfinitePlace K.1 // v.IsReal} =
@@ -98,7 +94,6 @@ theorem finrank_mul_card_real_eq_sum_index :
           (gsRealFamily S ιr p.1).toMonoidHom p.2.out).index := by
   rw [Fintype.sum_sigma, Finset.sum_congr rfl fun v _ => (finrank_eq_sum_index_mackeySubgroup S hL ιr v).symm,
     Finset.sum_const, Finset.card_univ, smul_eq_mul, Nat.card_eq_fintype_card, mul_comm]
-
 
 open scoped Classical in
 theorem sum_index_eq_card_top_add :

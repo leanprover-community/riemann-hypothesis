@@ -63,8 +63,6 @@ def pull (a : FG M Y) (h : Y' ⟶ Y) : FG M Y' :=
 
 def pow (a : FG M Y) (n : ℕ) : FG M Y := Nat.rec one (fun _ b => b.mul a) n
 
-theorem pow_zero' (a : FG M Y) : a.pow 0 = one := rfl
-
 theorem pow_succ' (a : FG M Y) (n : ℕ) : a.pow (n + 1) = (a.pow n).mul a := rfl
 
 variable (U : Type) [CommGroup U]

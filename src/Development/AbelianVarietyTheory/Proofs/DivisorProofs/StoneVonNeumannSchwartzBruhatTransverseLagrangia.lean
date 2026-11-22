@@ -70,9 +70,6 @@ def toCirc (ψ0 : AddChar k ℂ) (hc : ∀ x : k, (∀ y ∈ 𝒪[k], ψ0 (x * y
   map_zero_eq_one' := by ext; simp
   map_add_eq_mul' a b := by ext; exact AddChar.map_add_eq_mul ψ0 a b
 
-theorem toCirc_apply {ψ0 : AddChar k ℂ} (hc : ∀ x : k, (∀ y ∈ 𝒪[k], ψ0 (x * y) = 1) ↔ x ∈ 𝒪[k])
-    (x : k) : (toCirc ψ0 hc x : ℂ) = ψ0 x := rfl
-
 theorem toCirc_cont {ψ0 : AddChar k ℂ} (hc : ∀ x : k, (∀ y ∈ 𝒪[k], ψ0 (x * y) = 1) ↔ x ∈ 𝒪[k])
     (h : Continuous ψ0) : Continuous (toCirc ψ0 hc) :=
   Continuous.subtype_mk h _

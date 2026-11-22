@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsFinitePadicSpanOfPowPMulMem
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ApplyEqOfMemAdjoin
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsTopWTopWOfExists
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AlgebraMapZpInjective

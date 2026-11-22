@@ -99,9 +99,6 @@ def resRPfLogD (D : Derivation K R R) : Rˣ →* Multiplicative R where
     simp only [mul_inv_rev, Units.val_mul, Derivation.leibniz, smul_eq_mul]
     linear_combination ((((v⁻¹ : Rˣ)) : R) * D (v : R)) * hu + ((((u⁻¹ : Rˣ)) : R) * D (u : R)) * hv
 
-theorem resRPfLogD_apply (D : Derivation K R R) (u : Rˣ) :
-    Multiplicative.toAdd (resRPfLogD D u) = (((u⁻¹ : Rˣ)) : R) * D (u : R) := rfl
-
 theorem resRPf_logD (t : Fin (n + 1) → Rˣ) (D : Derivation K R R) (m : Fin (n + 1) → ℤ) :
     (((∏ j, t j ^ m j)⁻¹ : Rˣ) : R) * D (tpow t m) =
       ∑ j, m j • ((((t j)⁻¹ : Rˣ) : R) * D (t j : R)) := by

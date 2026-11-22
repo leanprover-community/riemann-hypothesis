@@ -10,16 +10,6 @@ noncomputable section
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.NodalSeriesPeriods
 
-abbrev Qbar : Type := ↥(algebraicClosure ℚ ℂ)
-
-abbrev Place (p : ℕ) [Fact p.Prime] : Type := Qbar →+* ℂ_[p]
-
-abbrev incl (p : ℕ) [Fact p.Prime] : 𝓞_ℂ_[p] →+* ℂ_[p] := algebraMap 𝓞_ℂ_[p] ℂ_[p]
-
-def IsModel {p : ℕ} [Fact p.Prime] (E : WeierstrassCurve ℂ_[p]) (W : WeierstrassCurve 𝓞_ℂ_[p])
-    (C : WeierstrassCurve.VariableChange ℂ_[p]) : Prop :=
-  C • E = W.map (incl p) ∧ IsUnit W.Δ
-
 section Expansion
 
 variable {A : Type} [CommRing A] (W : WeierstrassCurve A)

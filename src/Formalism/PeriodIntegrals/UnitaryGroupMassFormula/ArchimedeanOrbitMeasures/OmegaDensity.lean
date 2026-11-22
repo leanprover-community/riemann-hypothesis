@@ -39,28 +39,4 @@ def lieU (P Q : ℕ) : Submodule ℝ (Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q)
 
 instance (P Q : ℕ) : MeasurableSpace (lieU P Q) := borel (lieU P Q)
 
-def entries {P Q : ℕ} (Z : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) :
-    (Fin P ⊕ Fin Q) × (Fin P ⊕ Fin Q) → ℂ := fun ij => Z ij.1 ij.2
-
-def IsOmegaLeb {P Q : ℕ} (lam : Measure (lieU P Q)) : Prop :=
-  lam.IsAddHaarMeasure ∧
-    ((lam.prod lam).map (fun ab : lieU P Q × lieU P Q =>
-      entries ((ab.1 : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) +
-        Complex.I • (ab.2 : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ)))) = volume
-
-def ballU (P Q : ℕ) (r : ℝ) : Set (lieU P Q) :=
-  {X | ∑ i, ∑ j, ‖(X : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) i j‖ < r}
-
-def OmegaDensity {P Q : ℕ} (μ : Measure (UpqT P Q)) (c : ENNReal) : Prop :=
-  ∃ lam : Measure (lieU P Q), IsOmegaLeb lam ∧
-    Tendsto (fun r : ℝ => μ {g | ∃ X ∈ ballU P Q r, UpqT.mat g =
-      NormedSpace.exp (X : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ)} /
-      lam (ballU P Q r)) (𝓝[>] 0) (𝓝 c)
-
-structure CDHaar where
-  cd : ∀ P Q : ℕ, Measure (UpqT P Q)
-  haar : ∀ P Q, (cd P Q).IsHaarMeasure
-  prob : ∀ N, IsProbabilityMeasure (cd N 0)
-  trick : ∀ P Q, ∃ c : ENNReal, c ≠ 0 ∧ c ≠ ⊤ ∧ OmegaDensity (cd P Q) c ∧ OmegaDensity (cd (P + Q) 0) c
-
 end HcS.BasicNotions

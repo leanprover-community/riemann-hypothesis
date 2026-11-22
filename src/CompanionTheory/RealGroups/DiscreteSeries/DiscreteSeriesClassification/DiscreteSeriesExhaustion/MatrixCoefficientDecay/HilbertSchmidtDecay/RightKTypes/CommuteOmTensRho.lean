@@ -118,12 +118,8 @@ theorem tensRho_compat (A : KAct ε X) (k : S7.KG ε) (a b : Fin n) (u : Fin n �
 
 def sv {z : ℂ} (u : (step X z).V) : Fin n → X.V := (show stepSub X z from u).1
 
-theorem sv_smul {z : ℂ} (c : ℂ) (u : (step X z).V) : sv (c • u) = c • sv u := rfl
-
 theorem sv_sum {z : ℂ} {ι : Type} (s : Finset ι) (f : ι → (step X z).V) : sv (∑ i ∈ s, f i) = ∑ i ∈ s, sv (f i) := by
   exact Submodule.coe_sum (stepSub X z) f s
-
-theorem sv_E {z : ℂ} (a b : Fin n) (u : (step X z).V) : sv ((step X z).E a b u) = tensE X a b (sv u) := rfl
 
 theorem sv_inj {z : ℂ} {u v : (step X z).V} (h : sv u = sv v) : u = v := by
   exact Subtype.ext h

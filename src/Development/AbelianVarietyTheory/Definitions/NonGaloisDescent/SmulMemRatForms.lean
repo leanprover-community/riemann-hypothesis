@@ -106,7 +106,6 @@ abbrev Pts (j : ℕ) : Type := PtC (T0.Q.Xo j) T0.Q.c (embC YS iC b)
 
 def kurAt : Subfield (FractionRing (D.ntw.O i)) := (kurC (embC YS iC b)).comap iC
 
-
 variable {iC b} in
 def valAt (j : Fin D.R.m) (z : FrC YS iC b ((j : ℕ) + 1)) : NX.Fm S i ((j : ℕ) + 1) b →+ ℂ_[D.ntw.l i] :=
   TensorProduct.liftAddHom (R := S.Ks) (M := NX.KB S i b) (N := NX.FmK S ((j : ℕ) + 1))
@@ -142,22 +141,6 @@ theorem valAt_smul (j : Fin D.R.m) (z : FrC YS iC b ((j : ℕ) + 1)) (a : Fracti
 
 def wtChar (κj : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ) {j : ℕ} {φ : T0.Q.c.F →+* ℂ_[D.ntw.l i]} (t : Ix (T0.Q.Dw j) → (PAt φ)ˣ) :
     ℂ_[D.ntw.l i] := toCp φ (wchar (ex (T0.Q.Dw j) κj n) t)
-
-theorem valAt_frBor (j : Fin D.R.m) {z z' : FrC YS iC b ((j : ℕ) + 1)} {t : Ix (T0.Q.Dw ((j : ℕ) + 1)) → (PAt (embC YS iC b))ˣ}
-    (h : FrBor t z z') (x : NX.Fm S i ((j : ℕ) + 1) b) :
-    valAt YS fw j z' x = wtChar (wtA (κ j)) (κ j).n t * valAt YS fw j z x := by
-  have hL := (GlobalTheory.Reg.evLaws_genFr_nonempty_comp _ _ _ _ (T0.Q.Xo ((j : ℕ) + 1)) T0.Q.c).1
-  have key : ∀ x : NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1),
-      valAt YS fw j z' x = wtChar (wtA (κ j)) (κ j).n t * valAt YS fw j z x := fun x => by
-    induction x using TensorProduct.induction_on with
-    | zero => exact (map_zero _).trans ((congrArg _ (map_zero _)).trans (mul_zero _)).symm
-    | add x y hx hy => exact (map_add _ _ _).trans (by rw [hx, hy, ← mul_add]; exact congrArg _ (map_add _ _ _).symm)
-    | tmul a f =>
-      rw [valAt_tmul, valAt_tmul, valC, hL.wt _ _ _ (cuspOf_mem_sec YS fw j f) _ t z z' (hL.test _ _) (hL.test _ _) h, map_mul,
-        mul_left_comm]
-      rfl
-  exact key x
-
 
 variable (S) in
 def ratForms (j : ℕ) (b : Bool) (L : Subfield (FractionRing (D.ntw.O i))) : AddSubgroup (NX.Fm S i j b) :=
@@ -213,7 +196,6 @@ def HeckeGeo : Prop :=
 
 def HeckeStable : Prop := ∀ k P, HkIdx i k P → ∀ (z : Pts YS iC b ((j : ℕ) + 1)) (C : HkKer P.asIdeal (charAt P) k z.1),
   ∃ z' : Pts YS iC b ((j : ℕ) + 1), IsHkQuot P.asIdeal (charAt P) k z.1 C z'.1
-
 
 omit j in
 def KerCard (j k : ℕ) (P : PlE D.host) (n : ℕ) : Prop :=

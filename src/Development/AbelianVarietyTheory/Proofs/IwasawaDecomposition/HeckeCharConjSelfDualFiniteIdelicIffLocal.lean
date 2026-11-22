@@ -15,8 +15,6 @@ namespace GlobalTheory.CuspRep.CsdFin
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
-local notation "𝐜" => AlgEquiv.toRingEquiv (IsCMField.complexConj L)
-
 theorem loc_of_idelic (χ : HChar L)
     (h : ∀ u : (Af L)ˣ, χ.1 (finId L (Units.map (conjFin 𝐜).toMonoidHom u)⁻¹) = χ.1 (finId L u))
     {w w' : HeightOneSpectrum (𝓞 L)} (hc : GlobalTheory.Mem.Chr.ConjPl 𝐜 w w') (k : Lˣ) :
@@ -46,7 +44,6 @@ theorem idelic_of_loc (χ : HChar L)
   exact (eq_inv_of_mul_eq_one_left h3).symm
 
 end GlobalTheory.CuspRep.CsdFin
-
 
 open GlobalTheory.CuspRep.CsdFin in
 theorem GlobalTheory.CuspRep.csdFin_iff : ∀ {R : Formalism.BasicNotions.Ranks} (H : Formalism.BasicNotions.Host R) (χ : HChar H.E), haveI := host_isCMField H;

@@ -121,10 +121,6 @@ def rectangle (r a : ℕ) : Fin r → ℕ := fun _ => a
 def hookShape (r k l : ℕ) : Fin r → ℕ :=
   fun i => if (i : ℕ) = 0 then k - l else if (i : ℕ) ≤ l then 1 else 0
 
-def DividedDifferenceOfVandermonde.Statement : Prop :=
-  ∀ f N : ℕ, dividedDifference f N (blockVandermonde f N) =
-    algebraMap ℚ (FractionRing (RootRing f N)) ((N.factorial : ℚ) ^ f)
-
 def LemmaA.Statement : Prop :=
   ∀ f N : ℕ, ∃ c : ℚ, c ≠ 0 ∧
     (∀ H : RootRing f N, H.IsHomogeneous (topDegree f N) →

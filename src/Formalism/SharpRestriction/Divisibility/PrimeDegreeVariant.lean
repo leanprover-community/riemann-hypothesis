@@ -141,7 +141,6 @@ def eS (T : GoodSet K G) (s : T.S) : MonoidAlgebra K G :=
 
 def eG (T : GoodSet K G) : MonoidAlgebra K G := ∑ s, eS T s
 
-
 open Classical in
 def eps (P : Pair K G) : MonoidAlgebra K G :=
   ((Nat.card P.H : ℕ) : K)⁻¹ • ∑ x : G, if h : x ∈ P.H then
@@ -154,15 +153,6 @@ def M1 (T : GoodSet K G) (P0 : Pair K G) : Prop := ∀ s, nS T P0 s = 1
 
 variable (A : HLat K) (ρ : Representation K G A.V)
 
-def cutE (e : Module.End K A.V) (M : Submodule (𝓞 K) A.V) : Submodule (𝓞 K) A.V :=
-  M ⊓ (LinearMap.range e).restrictScalars (𝓞 K)
-
-def dimE (e : Module.End K A.V) : ℕ := Module.finrank K (LinearMap.range e)
-
-def degL (M : Submodule (𝓞 K) A.V) : ℝ := (Formalism.HN.rkK M : ℝ) * Formalism.HN.muDef A.b A.X M
-
-def muMaxL (M : Submodule (𝓞 K) A.V) : ℝ := Formalism.HN.muMaxDef A.b A.X M
-
 end Abstract
 
 section Lemma2
@@ -170,9 +160,6 @@ section Lemma2
 open NumberField IsDedekindDomain
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
-
-def DegreeKernelLowerBound (A : HLat K) (e : Module.End K A.V) (n : ℕ) : Prop :=
-  degL A A.L - (dimE A (1 - e) : ℝ) * (muMaxL A A.L + 2 * Real.log (n : ℝ)) ≤ degL A (cutE A e A.L)
 
 end Lemma2
 
@@ -185,27 +172,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] 
 end Lemma4
 
 section Lemma8
-
-structure GMap (K : Type) [Field K] (σ : K →+* ℂ) (G : Type) [Group G] [Fintype G] (T : GoodSet K G)
-    (EE : Type) [AddCommGroup EE] [Module ℂ EE] (ρE : Representation ℂ G EE) where
-  VK : Type
-  [acgK : AddCommGroup VK]
-  [modK : Module K VK]
-  [fdK : FiniteDimensional K VK]
-  rhoK : Representation K G VK
-  V : Type
-  [acgV : AddCommGroup V]
-  [modV : Module ℂ V]
-  rho : Representation ℂ G V
-
-  j : VK →ₛₗ[σ] V
-  j_indep : ∀ (n : ℕ) (b : Fin n → VK), LinearIndependent K b → LinearIndependent ℂ (fun i => j (b i))
-  j_span : Submodule.span ℂ (Set.range j) = ⊤
-  j_eq : ∀ g x, j (rhoK g x) = rho g (j x)
-
-  good : rhoK.asAlgebraHom (eG T) = 1
-  io : V →ₗ[ℂ] EE
-  io_eq : ∀ g x, io (rho g x) = ρE g (io x)
 
 attribute [instance] GMap.acgK GMap.modK GMap.fdK GMap.acgV GMap.modV
 
@@ -246,22 +212,6 @@ theorem tens_mul (a b : ∀ i, MonoidAlgebra ℂ (G i)) :
   refine Finset.sum_congr rfl fun h _ => ?_
   rw [← Finset.prod_mul_distrib]
   rfl
-
-theorem tens_one : tens (fun i => (1 : MonoidAlgebra ℂ (G i))) = 1 := by
-  classical
-  ext g
-  rw [tens_coeff]
-  simp only [MonoidAlgebra.one_def, MonoidAlgebra.coeff_single, Finsupp.single_apply]
-  rw [Finset.prod_boole]
-  simp [funext_iff, eq_comm]
-
-theorem sum_tens {P : ι → Type} [∀ i, Fintype (P i)] [DecidableEq ι]
-    (E : ∀ i, P i → MonoidAlgebra ℂ (G i)) :
-    ∑ p : ∀ i, P i, tens (fun i => E i (p i)) = tens (fun i => ∑ q, E i q) := by
-  ext g
-  rw [tens_coeff, MonoidAlgebra.coeff_sum, Finsupp.finsetSum_apply]
-  simp only [tens_coeff, MonoidAlgebra.coeff_sum, Finsupp.finsetSum_apply]
-  rw [Finset.prod_univ_sum, Fintype.piFinset_univ]
 
 variable [DecidableEq ι]
 
@@ -309,7 +259,6 @@ theorem mapDomain_mulSingle (i : ι) (a : MonoidAlgebra ℂ (G i)) :
 
 variable {P : ι → Type} [∀ i, Fintype (P i)]
 
-
 open Classical in
 def eGood (E : ∀ i, P i → MonoidAlgebra ℂ (G i)) (good : (∀ i, P i) → Prop) :
     MonoidAlgebra ℂ (∀ i, G i) :=
@@ -330,56 +279,11 @@ open NumberField IsDedekindDomain
 
 attribute [local instance] finiteLevelGroupFintype
 
-structure GSp (D : D7) where
-  V : Type
-  [nacg : NormedAddCommGroup V]
-  [ips : InnerProductSpace ℂ V]
-  [fd : FiniteDimensional ℂ V]
-  lat : Rows.OLat D.what₂.O (D.what₂.embLL.comp D.what₂.OtoLL) V
-  act : Representation ℂ (G0g D.nd) V
-
 attribute [instance] GSp.nacg GSp.ips GSp.fd
-
-structure Prov (D : D7) (X : BaseLevelRowSide D) where
-
-  T : GoodSet D.what₂.LL (G0g D.nd)
-
-  T_e : ∀ g, (eG T).coeff g = ((D.nexp.eLL0 g : ↥D.LL0) : D.what₂.LL)
-
-  psi0 : D.nexp.U →* (D.what₂.LL)ˣ
-
-  Ps : Pair D.what₂.LL (G0g D.nd)
-
-  EEK : Type
-  [nacgEE : NormedAddCommGroup EEK]
-  [ipsEE : InnerProductSpace ℂ EEK]
-  [fdEE : FiniteDimensional ℂ EEK]
-
-  sK : RowSide D EEK
-
-  actEE : Representation ℂ (G0g D.nd) EEK
-
-  actAmb : ∀ μ, Representation ℂ (G0g D.nd) (sK.Amb μ)
-
-  cen_tie : ∀ μ z, sK.cen μ z = (actAmb μ).asAlgebraHom (z : MonoidAlgebra ℂ (G0g D.nd))
-
-  MtK : D.what₂.Tup → ℕ → GSp D
-
-  MjK : ℕ → GSp D
-
-  thK : ∀ μ j, (MtK μ j).V →ₗ[ℂ] (MjK j).V
-
-  rho : Representation D.what₂.LL (G0g D.nd) sK.RR.V
-
-  j0 : X.principalHermitianLattice.V →ₗ[D.what₂.LL] sK.RR.V
-
-  js : D.div.RR.V →ₗ[D.what₂.LL] sK.RR.V
 
 attribute [instance] Prov.nacgEE Prov.ipsEE Prov.fdEE
 
 variable {D : D7} {X : BaseLevelRowSide D}
-
-def Prov.P0 (Y : Prov D X) : Pair D.what₂.LL (G0g D.nd) := ⟨D.nexp.U, Y.psi0⟩
 
 def Conclusion0 (D : D7) : Prop :=
   ∀ Y : ℝ, (∀ i, (D.host.g i : ℝ) ≤ 2 * Y) → lam0 D ≤ 2 * (D.R.f : ℝ) * (D.R.r : ℝ) ^ 2 * Real.log (2 * Y)
@@ -407,22 +311,6 @@ theorem monicOf_inj {K : Type} [Field K] {N : ℕ} (a b : Fin N → K)
     Polynomial.coeff_C_mul_X_pow, Fin.val_inj] at hc
   simpa [i.isLt.ne, Finset.sum_ite_eq, Finset.sum_ite_eq'] using hc
 
-theorem ESer_sum (D : D7) (kv : Σ k : Fin 2, D.nd.PlG k) : ∑ p, ESer D kv p = 1 := by
-  classical
-  obtain ⟨S, hS, hsum⟩ := D.ntypes.eSer_sum kv.1
-  rw [← hsum]
-  have himg : ∑ p, ESer D kv p =
-      ∑ f ∈ Finset.univ.image (fun p : Fin D.R.r → ZMod (D.host.g kv.1) => Formalism.CyclotomicNorms.monicOf p),
-        D.ntypes.eSer kv.1 f := by
-    rw [Finset.sum_image fun a _ b _ h => monicOf_inj a b h]
-    rfl
-  rw [himg]
-  symm
-  refine Finset.sum_subset (fun f hf => ?_) fun f _ hf => ?_
-  · obtain ⟨hm, hd, -⟩ := (hS f).1 hf
-    exact Finset.mem_image.2 ⟨_, Finset.mem_univ _, Formalism.CyclotomicNorms.Sqf.monicOf_coeffs f hm hd⟩
-  · exact D.ntypes.eSer_zero _ _ fun hh => hf ((hS f).2 hh)
-
 theorem e0_eq (D : D7) [DecidableEq (Σ k : Fin 2, D.nd.PlG k)] : D.ntypes.e0 = eGood (ESer D) (goodVec D) := by
   classical
   ext g
@@ -445,7 +333,6 @@ theorem atPlace_eq (D : D7) [DecidableEq (Σ k : Fin 2, D.nd.PlG k)] (k : Fin 2)
 
 end Ten
 
-
 end GoodType
 
 theorem sharp_downTo (D : D7) (μ : D.what₂.Tup) (j : ℕ) :
@@ -458,16 +345,7 @@ theorem sharp_downTo (D : D7) (μ : D.what₂.Tup) (j : ℕ) :
     rw [ih]
     all_goals rfl
 
-def frg (D : D7) : ℝ := (D.R.f : ℝ) * D.R.r / (min (D.host.g 0) (D.host.g 1) : ℕ)
-
-def LabTie (Y : Prov D X) (lab : Y.T.S → ∀ k : Fin 2, D.nd.PlG k → Polynomial (ZMod (D.host.g k))) : Prop :=
-  ∀ s (g : G0g D.nd), D.what₂.embLL ((eS Y.T s).coeff g) =
-    ∏ kv : (Σ k : Fin 2, D.nd.PlG k), (D.ntypes.eSer kv.1 (lab s kv.1 kv.2)).coeff (g kv)
-
 def LevelRatioBound (D : D7) : Prop := 4 * D.R.f * D.R.r ≤ min (D.host.g 0) (D.host.g 1)
-
-def LatticeChainWithoutLast (Y : Prov D X) : Prop :=
-  ∀ lab, LabTie Y lab → ∀ s, D.ntypes.goodTuple (lab s) → nS Y.T Y.P0 s = 1
 
 end Record
 

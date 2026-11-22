@@ -27,11 +27,7 @@ section Metrizable
 variable [SecondCountableTopology C] [MeasurableSpace C] [BorelSpace C]
   (μ : Measure C) [μ.IsHaarMeasure]
 
-def transl (h : C) : Lp ℂ 2 μ →L[ℂ] Lp ℂ 2 μ :=
-  (Lp.compMeasurePreservingₗᵢ ℂ (fun x => h * x) (measurePreserving_mul_left μ h)).toContinuousLinearMap
-
 variable (ψ : C(C, ℝ))
-
 
 end Metrizable
 
@@ -44,8 +40,6 @@ theorem exists_char_ne {x y : C} (hxy : x ≠ y) : ∃ χ : C →ₜ* Circle, χ
   rw [map_mul, map_inv, h, mul_inv_cancel]
 
 def charCM (χ : C →ₜ* Circle) : C(C, ℂ) := ⟨fun x => (χ x : ℂ), continuous_subtype_val.comp χ.continuous⟩
-
-theorem charCM_apply (χ : C →ₜ* Circle) (x : C) : charCM χ x = (χ x : ℂ) := rfl
 
 theorem charCM_mul (χ χ' : C →ₜ* Circle) : charCM (χ * χ') = charCM χ * charCM χ' := by
   ext x

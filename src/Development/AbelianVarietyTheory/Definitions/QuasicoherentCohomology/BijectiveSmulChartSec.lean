@@ -93,7 +93,6 @@ def secGroup (V : X.Opens) : AddSubgroup (∀ i, Γ(X, V ⊓ L.U i)) where
   zero_mem' := fun i j => by simp only [Pi.zero_apply, map_zero, mul_zero]
   neg_mem' := fun {s} hs i j => by simp only [Pi.neg_apply, map_neg, hs i j, mul_neg]
 
-
 variable {L} in
 theorem secOn_rel {V : X.Opens} {s : ∀ i, Γ(X, V ⊓ L.U i)} (hs : s ∈ secOn L V) (i j : L.ι)
     {W : X.Opens} (hi : W ≤ V ⊓ L.U i) (hj : W ≤ V ⊓ L.U j) (hij : W ≤ L.U i ⊓ L.U j) :
@@ -191,7 +190,6 @@ def mkSec {V : X.Opens} (f : ∀ i, Γ(X, V ⊓ L.U i)) (hf : f ∈ secOn L V) :
 
 @[ext] theorem sec_ext {V : X.Opens} {s t : Γ(toMod L, V)} (h : ∀ i, coord s i = coord t i) :
     s = t := Subtype.ext (funext h)
-
 
 variable (L) in
 def secOnEquiv (V : X.Opens) : Γ(toMod L, V) ≃ secOn L V where
@@ -296,7 +294,6 @@ def ofSec (s : LB.Sec L) (V : X.Opens) : Γ(toMod L, V) :=
     (toMod L).presheaf.map (homOfLE h).op (ofSec s V) = ofSec s W :=
   sec_ext fun i => by rw [coord_map, coord_ofSec, resG_resG, coord_ofSec]
 
-
 variable (L) in
 def globalEquiv : Γ(toMod L, ⊤) ≃ₗ[Γ(X, ⊤)] LB.Sec L where
   toFun s := ⟨fun i => resG X (le_inf le_top le_rfl) (coord s i), fun i j => by
@@ -396,7 +393,6 @@ def chartIso (hL : L.IsLB) (i : L.ι) :
     unitMod (L.U i).toScheme ≅ (toMod L).restrict (L.U i).ι :=
   Descent.freeIso (Descent.bijective_smul_stalk (bijective_smul_chartSec hL i))
 
-
 set_option backward.isDefEq.respectTransparency false in
 def chartOverIso (hL : L.IsLB) (i : L.ι) :
     SheafOfModules.free (R := X.ringCatSheaf.over (L.U i)) PUnit.{1} ≅ (toMod L).over (L.U i) :=
@@ -407,7 +403,6 @@ def chartOverIso (hL : L.IsLB) (i : L.ι) :
     e.inverse.mapIso ((Scheme.Modules.overFunctorEquiv (L.U i)).app (toMod L)).symm ≪≫
       (e.unitIso.app ((toMod L).over (L.U i))).symm
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem isIso_ofEpi_π.{v, u} {C : Type u} [Category.{v} C] {J : GrothendieckTopology C}
     {R : Sheaf J RingCat.{0}} [HasWeakSheafify J AddCommGrpCat.{0}]
@@ -416,7 +411,6 @@ theorem isIso_ofEpi_π.{v, u} {C : Type u} [Category.{v} C] {J : GrothendieckTop
     IsIso ((SheafOfModules.free.generatingSections I).ofEpi e.hom).π := by
   rw [SheafOfModules.GeneratingSections.ofEpi_π, SheafOfModules.free.generatingSections_π]
   exact inferInstanceAs (IsIso (𝟙 (SheafOfModules.free I) ≫ e.hom))
-
 
 set_option backward.isDefEq.respectTransparency false in
 def generatorsOfIso {F : X.Modules} {ι : Type} {U : ι → X.Opens} (hU : ⨆ i, U i = ⊤)
@@ -429,7 +423,6 @@ def generatorsOfIso {F : X.Modules} {ι : Type} {U : ι → X.Opens} (hU : ⨆ i
     exact hU
   generators i := (SheafOfModules.free.generatingSections PUnit.{1}).ofEpi (e i).hom
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem isLocallyFree_of_iso {F : X.Modules} {ι : Type} {U : ι → X.Opens} (hU : ⨆ i, U i = ⊤)
     (e : ∀ i, SheafOfModules.free (R := X.ringCatSheaf.over (U i)) PUnit.{1} ≅ F.over (U i)) :
@@ -440,7 +433,6 @@ theorem isLocallyFree_of_iso {F : X.Modules} {ι : Type} {U : ι → X.Opens} (h
 
 theorem isLocallyFree_toMod (hL : L.IsLB) : (toMod L).IsLocallyFree :=
   (isLocallyFree_of_iso hL.cover (chartOverIso hL)).1
-
 
 set_option backward.isDefEq.respectTransparency false in
 theorem isQuasicoherent_toMod (hL : L.IsLB) : (toMod L).IsQuasicoherent :=
@@ -547,13 +539,6 @@ theorem mulFun_map (hL : L.IsLB) (hM : M.IsLB) (w : LB.Sec (LB.div M L)) {V W : 
 def homOfSec (hL : L.IsLB) (hM : M.IsLB) (w : LB.Sec (LB.div M L)) : toMod L ⟶ toMod M :=
   homOfLinear (mulLinear hL hM w) (mulFun_map hL hM w)
 
-theorem coord_homOfSec_app (hL : L.IsLB) (hM : M.IsLB) (w : LB.Sec (LB.div M L)) {V : X.Opens}
-    (s : Γ(toMod L, V)) (p : M.ι) (q : L.ι) {W : X.Opens}
-    (hp : W ≤ V ⊓ M.U p) (hq : W ≤ V ⊓ L.U q) (h : W ≤ M.U p ⊓ L.U q) :
-    resG X hp (coord ((homOfSec hL hM w).app V s) p) =
-      resG X h (homCoord w p q) * resG X hq (coord s q) :=
-  coord_mulFun hL hM w s p q hp hq h
-
 theorem mulFun_mulFun (hL : L.IsLB) (hM : M.IsLB) (w : LB.Sec (LB.div M L))
     (w' : LB.Sec (LB.div L M))
     (h : ∀ p q, homCoord w p q * resG X (le_inf inf_le_right inf_le_left) (homCoord w' q p) = 1)
@@ -589,11 +574,6 @@ theorem coord_isoOfGen_hom_app (hL : L.IsLB) (hM : M.IsLB) (w : LB.Iso L M) (hw 
       resG X h ((show Γ(X, M.U p ⊓ L.U q)ˣ from w.s (p, q)) : Γ(X, M.U p ⊓ L.U q)) *
         resG X hq (coord s q) :=
   coord_mulFun hL hM _ s p q hp hq h
-
-theorem nonempty_iso_of_lbIso (hL : L.IsLB) (hM : M.IsLB) (h : LBIso L M) :
-    Nonempty (toMod L ≅ toMod M) :=
-  let ⟨w, hw⟩ := h
-  ⟨isoOfGen hL hM w hw⟩
 
 end Hom
 
@@ -669,7 +649,6 @@ theorem pull_inf_le (V : X.Opens) (j : (L.pull f).ι) :
     f ⁻¹ᵁ V ⊓ (L.pull f).U j ≤ f ⁻¹ᵁ (V ⊓ L.U (j PUnit.unit)) :=
   inf_le_inf_left _ (pull_U_le f j)
 
-
 variable (L) in
 def pullSec (V : X.Opens) :
     Γ(toMod L, V) →ₛₗ[(f.app V).hom] Γ(toMod (L.pull f), f ⁻¹ᵁ V) where
@@ -720,7 +699,6 @@ theorem globalEquiv_pullSec_f (s : LB.Sec L) (j : (L.pull f).ι) :
     (coord (pullSec L f ⊤ (ofSec s ⊤)) j) = _
   rw [coord_pullSec, resG_appLE, coord_ofSec, appLE_resG]
 
-
 variable (L) in
 def toPushforward : toMod L ⟶ (Scheme.Modules.pushforward f).obj (toMod (L.pull f)) :=
   homOfLinear (G := (Scheme.Modules.pushforward f).obj (toMod (L.pull f)))
@@ -732,7 +710,6 @@ def toPushforward : toMod L ⟶ (Scheme.Modules.pushforward f).obj (toMod (L.pul
 
 theorem toPushforward_app (V : X.Opens) (s : Γ(toMod L, V)) :
     (toPushforward L f).app V s = pullSec L f V s := rfl
-
 
 variable (L) in
 def pullbackHom : (Scheme.Modules.pullback f).obj (toMod L) ⟶ toMod (L.pull f) :=
@@ -769,40 +746,6 @@ theorem twoChart_isLB {U₀ U₁ : X.Opens} (h : U₀ ⊔ U₁ = ⊤) (u : Γ(X,
     · exact ((mul_comm _ _).trans (aux _ _)).trans (map_one _).symm
     · exact (congrArg (· * _) (map_one _)).trans (one_mul _)
     · exact (congrArg (· * _) (map_one _)).trans (one_mul _)
-
-theorem mem_secOn_twoChart {U₀ U₁ : X.Opens} (u : Γ(X, U₀ ⊓ U₁)ˣ) (V : X.Opens)
-    (a : Γ(X, V ⊓ U₀)) (b : Γ(X, V ⊓ U₁)) :
-    (fun i : Bool => match i with | true => a | false => b) ∈ secOn (twoChart U₀ U₁ u) V ↔
-      resG X (inf_le_left : V ⊓ U₀ ⊓ U₁ ≤ V ⊓ U₀) a =
-        resG X (inf_le_inf_right _ inf_le_right) (u : Γ(X, U₀ ⊓ U₁)) *
-          resG X (inf_le_inf_right _ inf_le_left) b := by
-  refine ⟨fun h => h true false, fun h => ?_⟩
-  rintro (_ | _) (_ | _)
-  · change resG X _ b = resG X _ 1 * resG X _ b
-    rw [map_one, one_mul]
-  · have l : V ⊓ U₁ ⊓ U₀ ≤ V ⊓ U₀ ⊓ U₁ := (inf_right_comm _ _ _).le
-    have e := congrArg (resG X l) h
-    simp only [map_mul, resG_resG] at e
-    change resG X (inf_le_left : V ⊓ U₁ ⊓ U₀ ≤ V ⊓ U₁) b =
-      (res (inf_le_inf_right _ inf_le_right : V ⊓ U₁ ⊓ U₀ ≤ U₁ ⊓ U₀)
-        (res (le_inf inf_le_right inf_le_left) u)⁻¹).val *
-          resG X (inf_le_inf_right _ inf_le_left : V ⊓ U₁ ⊓ U₀ ≤ V ⊓ U₀) a
-    rw [e, map_inv, Semi.LB.res_res, ← val_res, Units.inv_mul_cancel_left]
-  · exact h
-  · change resG X _ a = resG X _ 1 * resG X _ a
-    rw [map_one, one_mul]
-
-theorem twoChart_isGen {U₀ U₁ : X.Opens} (u : Γ(X, U₀ ⊓ U₁)ˣ) (a : Γ(X, U₀)ˣ) (b : Γ(X, U₁)ˣ)
-    (h : res inf_le_left a = u * res inf_le_right b) :
-    LB.Gen.IsGen (L := twoChart U₀ U₁ u)
-      ⟨fun i : Bool => match i with | true => a | false => b⟩ := by
-  rintro (_ | _) (_ | _)
-  · exact (one_mul _).symm
-  · have e := congrArg (res (le_inf inf_le_right inf_le_left : U₁ ⊓ U₀ ≤ U₀ ⊓ U₁)) h
-    rw [map_mul, Semi.LB.res_res, Semi.LB.res_res] at e
-    exact eq_inv_mul_of_mul_eq e.symm
-  · exact h
-  · exact (one_mul _).symm
 
 end LB
 

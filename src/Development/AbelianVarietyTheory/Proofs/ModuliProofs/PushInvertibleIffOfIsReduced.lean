@@ -62,13 +62,6 @@ def objOfSABMap (o : Obj D l b s) {t' : SAB H S'} (m : SABMap t' o.t f) : Obj D 
 def objMapOfSABMap (o : Obj D l b s) {t' : SAB H S'} (m : SABMap t' o.t f) : ObjMap (objOfSABMap o m) o f :=
   ⟨m, fun _ => secPull_left m.cart _, fun _ => secPull_left m.cart _⟩
 
-theorem sec_eq_secPull {t : SAB H S} {t' : SAB H S'} (m : SABMap t' t f) {e : 𝟙_ (Over S) ⟶ t.G}
-    {e' : 𝟙_ (Over S') ⟶ t'.G} (h : e'.left ≫ m.φ = f ≫ e.left) : e' = secPull m.cart e := by
-  apply Over.OverMorphism.ext
-  apply m.cart.1.hom_ext
-  · exact h.trans (secPull_left m.cart _).symm
-  · rw [Over.w, Over.w]
-
 end Obj
 
 section Model

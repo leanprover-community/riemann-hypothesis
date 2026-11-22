@@ -56,8 +56,6 @@ theorem mat_ext {n : ℕ} {M N : Matrix (Fin n) (Fin n) (AfE F E)} (h : ∀ w, M
 
 variable [StarRing E] (hc : CMData F E)
 
-local notation "σ" => Formalism.UG.sigR hc.sig (FiniteAdeleRing (𝓞 F) F)
-
 theorem map_cT_dev {n : ℕ} {P w : HeightOneSpectrum (𝓞 E)} (h : conjPrime₂ w ≠ P) (A : Matrix (Fin n) (Fin n) (P.adicCompletion E)) :
     (cT σ (1 + dev F P A)).map (adAt F w) = 1 := by
   have key : ∀ x, adAt F w (σ (sng F P x)) = 0 := fun x => by

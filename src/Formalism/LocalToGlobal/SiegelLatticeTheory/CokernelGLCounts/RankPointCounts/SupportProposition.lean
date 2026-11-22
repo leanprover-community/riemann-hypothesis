@@ -2,7 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.SupportG
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SupportLoc
-public import Formalism.LocalToGlobal.UnitaryNorms.CharRat
+public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
 
 @[expose] public section

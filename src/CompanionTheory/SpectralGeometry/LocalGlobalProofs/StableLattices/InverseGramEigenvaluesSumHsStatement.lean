@@ -44,7 +44,3 @@ theorem GlobalTheory.T.inverse_gram_eigenvalues_sum_hs (n : ℕ) (ε : Fin n →
     rw [hs_j_right, hs_j_left, hs_ct]
   rw [hre, ← Formalism.REAL.f1auxiliary_hs_eq, hhs]
 
-theorem GlobalTheory.CompanionTheory.UGeo.specpos_inv_eigenvalues (n : ℕ) (ε : Fin n → Bool)
-    (g : S7.UJ ε) (hT : ((S7.toM g⁻¹)ᴴ * S7.toM g⁻¹).IsHermitian) :
-    (∀ i, 0 < hT.eigenvalues i) ∧ ∑ i, hT.eigenvalues i = Formalism.REAL.hs (S7.toM g) :=
-  GlobalTheory.T.inverse_gram_eigenvalues_sum_hs n ε g hT

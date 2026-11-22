@@ -13,9 +13,6 @@ abbrev Sg {R : Type} [CommRing R] (X : Shv R) : Cx R := (HomologicalComplex.sing
 
 variable {R : Type} [CommRing R] (K : Cx R) (F : Shv R) (n : ℤ)
 
-theorem coe_sub' {K L : Cx R} {m : ℤ} (a b : Cocycle K L m) :
-    ((a - b : Cocycle K L m) : Cochain K L m) = (a : Cochain K L m) - (b : Cochain K L m) := rfl
-
 theorem coe_zero' {K L : Cx R} {m : ℤ} : ((0 : Cocycle K L m) : Cochain K L m) = 0 := rfl
 
 theorem res_zero (q : ℤ) (hq : q < 0) : IsZero ((res R F).X q) := by

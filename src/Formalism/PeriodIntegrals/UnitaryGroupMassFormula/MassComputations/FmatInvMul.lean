@@ -92,69 +92,6 @@ end Grp
 
 variable {D : Formalism.BasicNotions.D7} (X : HidaSetting D)
 
-theorem sig_eq : (starRingEnd X.B.I.E) = (X.B.I.cm.sig : X.B.I.E →+* X.B.I.E) := by
-  first
-  | rfl
-  | exact RingHom.ext fun _ => rfl
-
-theorem hA_e_f (a b : Fin D.R.rS) :
-    hA X.B.I (incl X.B.I (X.eR a)) (incl X.B.I (X.fR b)) = if a = b then 1 else 0 := by
-  rw [hA_incl, sig_eq]
-  have h := MassDataLevelSSteps.FrameW.hE_crdOf X (X.eX a) (X.fY b)
-  change Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.hE X.B.I.cm.sig X.B.I.J
-    (crdOf X.B.I X.ιE X.bas (X.eX a)) (crdOf X.B.I X.ιE X.bas (X.fY b))) = _
-  rw [h, X.ef]
-  split_ifs <;> simp
-
-theorem hA_f_e (b a : Fin D.R.rS) :
-    hA X.B.I (incl X.B.I (X.fR b)) (incl X.B.I (X.eR a)) = if b = a then 1 else 0 := by
-  rw [hA_incl, sig_eq]
-  have h := MassDataLevelSSteps.FrameW.hE_crdOf X (X.fY b) (X.eX a)
-  change Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.hE X.B.I.cm.sig X.B.I.J
-    (crdOf X.B.I X.ιE X.bas (X.fY b)) (crdOf X.B.I X.ιE X.bas (X.eX a))) = _
-  rw [h, ← LinearMap.isSymm_def.1 (VS D).herm (X.eX a) (X.fY b), X.ef]
-  by_cases hab : a = b
-  · subst hab; simp
-  · simp [hab, Ne.symm hab]
-
-theorem key {c d : ℕ} (hfL : ∀ b, (c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • incl X.B.I (X.fR b) ∈ X.B.I.Lf)
-    (hec : ∀ b, (c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (X.e0 b - incl X.B.I (X.eR b)) ∈ mL X.B.I X.B.g)
-    {s : Set (Fin D.R.rS)} {w : VA X.B.I}
-    (hw : w ∈ Submodule.span (X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) ((fun b => incl X.B.I (X.eR b)) '' s))
-    (hdw : (d : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • w ∈ X.B.I.Lf) :
-    ((c * d * c : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • w ∈
-      Submodule.span (IntAf X.B.I.F X.B.I.E) (X.e0 '' s) ⊔ mL X.B.I X.B.g := by
-  classical
-  obtain ⟨l, hls, rfl⟩ := (Finsupp.mem_span_image_iff_linearCombination _).1 hw
-  have hsum : Finsupp.linearCombination (X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) (fun b => incl X.B.I (X.eR b)) l =
-      ∑ b, l b • incl X.B.I (X.eR b) := by
-    rw [Finsupp.linearCombination_apply, Finsupp.sum_fintype]
-    intro i; exact zero_smul _ _
-  rw [hsum] at hdw ⊢
-  have hcoef : ∀ b, ((c * d : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) * l b ∈ IntAf X.B.I.F X.B.I.E := by
-    intro b
-    have h := hA_int X.B.I _ (hfL b) _ hdw
-    rw [hA_nat_left, hA_smul_right, hA_sum_right] at h
-    simp only [hA_smul_right, hA_f_e, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ,
-      if_true] at h
-    convert h using 1
-    push_cast; ring
-  rw [Finset.smul_sum]
-  refine Submodule.sum_mem _ fun b _ => ?_
-  by_cases hb : l b = 0
-  · rw [hb, zero_smul, smul_zero]; exact zero_mem _
-  have hbs : b ∈ s := hls (Finsupp.mem_support_iff.2 hb)
-  have heq : ((c * d * c : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (l b • incl X.B.I (X.eR b)) =
-      (((c * d : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) * l b) • ((c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • X.e0 b) -
-      (((c * d : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) * l b) •
-        ((c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (X.e0 b - incl X.B.I (X.eR b))) := by
-    rw [← smul_sub, ← smul_sub, sub_sub_cancel]
-    simp only [smul_smul]
-    congr 1; push_cast; ring
-  rw [heq]
-  refine sub_mem (Submodule.mem_sup_left ?_) (Submodule.mem_sup_right (sm X.B.I (hcoef b) (hec b)))
-  exact sm X.B.I (hcoef b) (sm X.B.I (natCast_int X.B.I c) (Submodule.subset_span ⟨b, hbs, rfl⟩))
-
 theorem mults (u : D.what₂.Word) : ∃ c : ℕ, Nat.Coprime c X.B.g ∧
     (∀ b, (c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (X.e0 b - incl X.B.I (X.eR b)) ∈ mL X.B.I X.B.g) ∧
     (∀ b, (c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (X.f0 b - incl X.B.I (X.fR b)) ∈ mL X.B.I X.B.g) ∧

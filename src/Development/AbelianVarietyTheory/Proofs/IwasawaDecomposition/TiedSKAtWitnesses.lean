@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TiedS
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsDetLiftLocal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LowerMapTie
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LowerMapTwGen
-public import Formalism.LocalToGlobal.HilbertRowConditions.RowPinMin
 
 @[expose] public section
 

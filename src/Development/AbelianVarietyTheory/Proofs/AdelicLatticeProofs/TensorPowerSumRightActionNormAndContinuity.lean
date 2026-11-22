@@ -34,14 +34,6 @@ private lemma nsq_eq_sum_sum_norm_sq_components {ι : Type} [Fintype ι] {m : �
 
 open Matrix in
 open scoped Kronecker ComplexOrder TensorProduct in
-private lemma act_apply_eq_vecMul_tpow {ι : Type} [Fintype ι] {m : ℕ}
-    (d : Fin m → ℕ) (v : _root_.GlobalTheory.ClassFin.TIdx ι d → ℂ) (y : Matrix ι ι ℂ) (i : Fin m)
-    (a : Fin (d i) → ι) :
-    _root_.GlobalTheory.ClassFin.act d v y ⟨i, a⟩ =
-      ((fun b => v ⟨i, b⟩) ᵥ* _root_.GlobalTheory.ClassFin.tpow (d i) y) a := rfl
-
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma sum_norm_sq_vecMul_eq_of_mul_conjTranspose_eq_one {κ : Type} [Fintype κ] [DecidableEq κ] (w : κ → ℂ)
     (M : Matrix κ κ ℂ) (hM : M * Mᴴ = 1) : ∑ c, ‖(w ᵥ* M) c‖ ^ 2 = ∑ a, ‖w a‖ ^ 2 := by
   have key : ∀ x : κ → ℂ, ((∑ c, ‖x c‖ ^ 2 : ℝ) : ℂ) = x ⬝ᵥ star x := by
@@ -81,7 +73,6 @@ private lemma norm_tpow_apply_le_pow_of_forall_norm_le {ι : Type} (n : ℕ) (y 
   calc ∏ k, ‖y (a k) (b k)‖ ≤ ∏ _k : Fin n, B :=
         Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _) fun k _ => hy _ _
     _ = B ^ n := by simp
-
 
 open Matrix in
 open scoped Kronecker ComplexOrder TensorProduct in

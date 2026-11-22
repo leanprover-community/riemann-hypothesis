@@ -4,7 +4,6 @@ public import Mathlib
 public import Formalism.LocalToGlobal.Columns.HeckeInertComm
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PatchAtSelf
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSmulMemOfIsLattice
 
 @[expose] public section
 
@@ -48,11 +47,6 @@ private theorem infinite_places (E : Type) [Field E] [NumberField E] :
   obtain ⟨Q, hQ, hl⟩ := Ideal.exists_maximal_ideal_liesOver_of_isIntegral (S := 𝓞 E) v.asIdeal
   exact ⟨⟨Q, hQ.isPrime, Ideal.ne_bot_of_liesOver_of_ne_bot v.ne_bot Q⟩,
     HeightOneSpectrum.ext hl.over.symm⟩
-
-theorem exists_smul_mem_lattice {E : Type} [Field E] [NumberField E] {n : ℕ}
-    (B : Submodule (𝓞 E) (Sp E n)) (hB : Submodule.IsFullLattice E B) (x : Sp E n) :
-    ∃ r ∈ nonZeroDivisors (𝓞 E), r • x ∈ B :=
-  _root_.GlobalTheory.SmulMemOfIsLattice.exists_smul_mem_of_isLattice B hB x
 
 theorem exists_pow_smul_le_of_localization_eq {E : Type} [Field E] [NumberField E] {n : ℕ}
     (P : HeightOneSpectrum (𝓞 E)) (A B : Submodule (𝓞 E) (Sp E n)) (hA : A.FG)

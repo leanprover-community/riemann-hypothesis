@@ -51,20 +51,9 @@ def indForms (h : ∑ i, n i = N) (π : ∀ i, CuspSub E (n i)) : Submodule ℂ 
   smul_mem' z _ h1 := ⟨fun u hu g => congrArg (z • ·) (h1.1 u hu g), Submodule.smul_mem _ z h1.2.1,
     Submodule.smul_mem _ z h1.2.2.1, fun k g => Submodule.smul_mem _ z (h1.2.2.2 k g)⟩
 
-def IsQuotOf (V I : Submodule ℂ (Sm E N)) : Prop :=
-  ∃ f : Sm E N →ₗ[ℂ] Sm E N, I.map f = V ∧ ∀ o, ∀ φ ∈ I, f (act o φ) = act o (f φ)
-
-def IsIsoGL (V V' : Submodule ℂ (Sm E N)) : Prop :=
-  ∃ T : V ≃ₗ[ℂ] V', ∀ (o : Op E N) (φ ψ : V), ψ.1 = act o φ.1 → (T ψ).1 = act o (T φ).1
-
 def spehExp (d : ℕ) (i : Fin d) : ℝ := ((d : ℝ) - 1) / 2 - (i : ℕ)
 
-def IsSpehOf (V : Submodule ℂ (Sm E N)) (π : CuspSub E a) (d : ℕ) : Prop :=
-  ∃ (h : ∑ _ : Fin d, a = N) (ν : Fin d → HChar E), (∀ i, (ν i).IsAbsPow (spehExp d i + a * spehExp d i)) ∧
-    IsQuotOf V (indForms h fun i => π.twist (ν i))
-
 def IsNormalised (π : CuspSub E a) : Prop := ∀ φ ∈ π.V, ∀ t g, φ.1 (splitCentre E a t * g) = φ.1 g
-
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField in
 structure HasSpehComp (V : Submodule ℂ (Sm E N)) (π : CuspSub E a) (d : ℕ) : Prop where
@@ -72,10 +61,6 @@ structure HasSpehComp (V : Submodule ℂ (Sm E N)) (π : CuspSub E a) (d : ℕ) 
   loc : ∀ w σ σ', π.IsLocComp w σ → IsLocCompGL V w σ' →
     GlobalTheory.LocGL.IsSpeh (GlobalTheory.LocGL.IrrGL.of σ.ρ σ.smooth σ.irred) d σ'.ρ
   inf : ∀ τ, ∃ m, π.HasInfChar τ m ∧ HasInfCharGL V τ (GlobalTheory.SphGal.spehInf d m)
-
-theorem IsSpehOf.mul_eq {V : Submodule ℂ (Sm E N)} {π : CuspSub E a} (h : IsSpehOf V π d) : d * a = N := by
-  obtain ⟨h, -⟩ := h
-  simpa using h
 
 theorem mul_spehExp (a d : ℕ) (i : Fin d) : a * spehExp d i = (modExp (fun _ : Fin d => Fin a) i : ℝ) / 2 := by
   have h1 : Finset.univ.filter (fun b => i < b) = Finset.Ioi i := by ext; simp
@@ -144,24 +129,6 @@ end GlobalTheory.DiscSpec
 namespace GlobalTheory.Published
 
 open GlobalTheory.DiscSpec
-
-def DiscreteSpectrumGL : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (N : ℕ), 1 ≤ N →
-    (∀ V : Submodule ℂ (Sm E N), IsDiscrete V →
-      ∃ (a d : ℕ) (π : CuspSub E a), π.IsUnitary ∧ IsNormalised π ∧ IsSpehOf V π d) ∧
-    (∀ (a d : ℕ) (π : CuspSub E a), d * a = N → IsNormalised π →
-      ∃! V : Submodule ℂ (Sm E N), IsDiscrete V ∧ IsSpehOf V π d) ∧
-    (∀ V : Submodule ℂ (Sm E N), IsDiscrete V → ∀ (a d a' d' : ℕ) (π : CuspSub E a) (π' : CuspSub E a'),
-      IsNormalised π → IsNormalised π' → IsSpehOf V π d → IsSpehOf V π' d' →
-        d = d' ∧ (⟨a, CG.mk π⟩ : Σ b, CG E b) = ⟨a', CG.mk π'⟩) ∧
-    (∀ V V' : Submodule ℂ (Sm E N), IsDiscrete V → IsDiscrete V' → IsIsoGL V V' → V = V') ∧
-    ∀ V : Submodule ℂ (Sm E N), IsDiscrete V → ∀ (a d : ℕ) (π : CuspSub E a),
-      IsNormalised π → IsSpehOf V π d → HasSpehComp V π d
-
-theorem DiscreteSpectrumGL.iso (H : DiscreteSpectrumGL) {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
-    {N a d : ℕ} (hN : 1 ≤ N) {V : Submodule ℂ (Sm E N)} (hV : IsDiscrete V) {π π' : CuspSub E a} (h : IsNormalised π)
-    (h' : IsNormalised π') (e : IsSpehOf V π d) (e' : IsSpehOf V π' d) : π.Iso π' :=
-  Quotient.exact (eq_of_heq (Sigma.mk.inj ((H E N hN).2.2.1 V hV a d a d π π' h h' e e').2).2)
 
 end GlobalTheory.Published
 

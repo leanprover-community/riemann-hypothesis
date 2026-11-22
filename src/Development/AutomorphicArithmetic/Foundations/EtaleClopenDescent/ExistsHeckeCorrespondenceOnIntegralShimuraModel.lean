@@ -105,9 +105,6 @@ private def ofR {t : S ⟶ Sp R'} {s : S ⟶ Sp R} (h : t ≫ spMap φ = s) (o :
   eta_ker := o.eta_ker
   geom k _ _ x β hx := o.geom k x (β.comp φ) (by rw [← h, ← Category.assoc, hx, sp_comp])
 
-local macro "cp " m:term:max : term =>
-  `(⟨($m).φ, ($m).φ₂, ($m).cart, ($m).sq, ($m).act, ($m).pol, ($m).eta⟩)
-
 private theorem mem_basicOpen {X T : Scheme.{0}} (g : T ⟶ X) (hu : IsUnit ((p : ℕ) : Γ(T, ⊤))) (z : T) :
     g z ∈ X.basicOpen ((p : ℕ) : Γ(X, ⊤)) := by
   have h : g ⁻¹ᵁ X.basicOpen ((p : ℕ) : Γ(X, ⊤)) = ⊤ := by

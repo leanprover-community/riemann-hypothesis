@@ -64,7 +64,6 @@ def thTj (μ : D.what₂.Tup) (j : ℕ) : Submodule (𝓞 D.what₂.LL) (X.MjH j
 def IjIdx (μ : D.what₂.Tup) (j : ℕ) (w : D.what₂.places.Pl) : ℤ :=
   Formalism.HermitianLatticesTheory.lidx (D.plEq w).asIdeal (X.MjH j).L (thTj X μ j)
 
-
 variable (D) in
 def jwIdx (μ : D.what₂.Tup) (j : ℕ) (w : D.what₂.places.Pl) : ℤ :=
   Formalism.HermitianLatticesTheory.lidx (D.plEq w).asIdeal (TjL D μ j) (TjDual D μ j)
@@ -85,86 +84,19 @@ open NumberField IsDedekindDomain Formalism.BasicNotions
 
 variable (D : D7)
 
-def HermRat : Prop :=
-  ∀ μ j, 1 ≤ j → j ≤ D.R.m → ∀ x y : D.what₂.MtL μ j,
-    ∃ c : D.what₂.LL, D.what₂.embLL c = inner ℂ (D.what₂.jMt μ j x) (D.what₂.jMt μ j y)
-
 def Z0 (μ : D.what₂.Tup) (j : ℕ) : Submodule ℂ (D.what₂.Mt μ j) :=
   (LinearMap.ker (D.what₂.thetaP μ j))ᗮ ⊓ LinearMap.range (D.what₂.eMt μ j)
 
-
-open Classical in
-def hLL (μ : D.what₂.Tup) (j : ℕ) (x y : D.what₂.MtL μ j) : D.what₂.LL :=
-  if h : ∃ c : D.what₂.LL, D.what₂.embLL c = inner ℂ (D.what₂.jMt μ j x) (D.what₂.jMt μ j y) then h.choose else 0
-
-def gramDet (μ : D.what₂.Tup) (j : ℕ) {n : ℕ} (b : Fin n → D.what₂.MtL μ j) : D.what₂.LL :=
-  (Matrix.of fun i k => hLL D μ j (b i) (b k)).det
-
-def IsLocBasis {V : Type} [AddCommGroup V] [Module D.what₂.LL V] [Module (𝓞 D.what₂.LL) V]
-    (A : Submodule (𝓞 D.what₂.LL) V) (w : D.what₂.places.Pl) {n : ℕ} (b : Fin n → V) : Prop :=
-  LinearIndependent D.what₂.LL b ∧
-    Formalism.HermitianLatticesTheory.loc (K := D.what₂.LL) (D.plEq w).asIdeal (Submodule.span (𝓞 D.what₂.LL) (Set.range b)) =
-      Formalism.HermitianLatticesTheory.loc (K := D.what₂.LL) (D.plEq w).asIdeal A
-
-def FactGram : Prop :=
-  HermRat D → ∀ μ j w, 1 ≤ j → j ≤ D.R.m → (TjL D μ j).FG →
-    ∀ (n : ℕ) (b : Fin n → D.what₂.MtL μ j), IsLocBasis D (TjL D μ j) w b →
-      vAdd (D.plEq w) (gramDet D μ j b) = - jwIdx D μ j w
-
 variable {D} (X : DivX D)
-
-def ThetaRat : Prop :=
-  ∀ μ j, 1 ≤ j → j ≤ D.R.m → ∀ x : D.what₂.MtL μ j,
-    ∃ y, X.jM j y = D.what₂.thetaP μ j (D.what₂.jMt μ j x)
 
 theorem jM_inj (j : ℕ) : Function.Injective (X.jM j) :=
   inj_of_li D.what₂.embLL (X.jM j) (X.MjH j).b (X.jM_basis j).1
-
-def thetaL (μ : D.what₂.Tup) (j : ℕ)
-    (h : ∀ x : D.what₂.MtL μ j, ∃ y, X.jM j y = D.what₂.thetaP μ j (D.what₂.jMt μ j x)) :
-    D.what₂.MtL μ j →ₗ[D.what₂.LL] (X.MjH j).V :=
-  descend (D.what₂.jMt μ j) (X.jM j) (jM_inj X j) (D.what₂.thetaP μ j) h
-
-theorem thetaL_spec (μ : D.what₂.Tup) (j : ℕ)
-    (h : ∀ x : D.what₂.MtL μ j, ∃ y, X.jM j y = D.what₂.thetaP μ j (D.what₂.jMt μ j x)) (x : D.what₂.MtL μ j) :
-    X.jM j (thetaL X μ j h x) = D.what₂.thetaP μ j (D.what₂.jMt μ j x) :=
-  descend_spec (D.what₂.jMt μ j) (X.jM j) (jM_inj X j) (D.what₂.thetaP μ j) h x
-
-theorem thImg_eq_map (μ : D.what₂.Tup) (j : ℕ)
-    (h : ∀ x : D.what₂.MtL μ j, ∃ y, X.jM j y = D.what₂.thetaP μ j (D.what₂.jMt μ j x))
-    (A : Submodule (𝓞 D.what₂.LL) (D.what₂.MtL μ j)) :
-    thImg X μ j A = A.map ((thetaL X μ j h).restrictScalars (𝓞 D.what₂.LL)) := by
-  ext y
-  constructor
-  · rintro ⟨x, hx, hy⟩
-    exact ⟨x, hx, jM_inj X j (by rw [hy]; exact thetaL_spec X μ j h x)⟩
-  · rintro ⟨x, hx, rfl⟩
-    exact ⟨x, hx, thetaL_spec X μ j h x⟩
-
-def FactStepBz : Prop :=
-  ThetaRat X → ∀ μ j w, 1 ≤ j → j ≤ D.R.m →
-    ∀ (n : ℕ) (b : Fin n → D.what₂.MtL μ j) (b0 : Fin n → D.what₂.MtL D.what₂.mu0 j)
-      (Z : Matrix (Fin n) (Fin n) D.what₂.LL),
-      IsLocBasis D (TjL D μ j) w b → IsLocBasis D (TjL D D.what₂.mu0 j) w b0 →
-      LinearIndependent ℂ (fun k => D.what₂.thetaP D.what₂.mu0 j (D.what₂.jMt D.what₂.mu0 j (b0 k))) →
-      Submodule.span ℂ (Set.range fun k => D.what₂.thetaP D.what₂.mu0 j (D.what₂.jMt D.what₂.mu0 j (b0 k))) = ⊤ →
-      LinearIndependent ℂ (fun k => D.what₂.thetaP μ j (D.what₂.jMt μ j (b k))) →
-      (∀ i, D.what₂.thetaP μ j (D.what₂.jMt μ j (b i)) =
-        ∑ k, D.what₂.embLL (Z k i) • D.what₂.thetaP D.what₂.mu0 j (D.what₂.jMt D.what₂.mu0 j (b0 k))) →
-      vAdd (D.plEq w) Z.det = IjIdx X μ j w - IjIdx X D.what₂.mu0 j w
 
 end Formalism.BasicNotions.Idx
 
 namespace Formalism.BasicNotions
 
 open NumberField IsDedekindDomain
-
-def bridge_lidx_det : Prop :=
-  ∀ (K V : Type) [Field K] [NumberField K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
-    [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (w : HeightOneSpectrum (𝓞 K)) (A B : Submodule (𝓞 K) V)
-    (γ : V ≃ₗ[K] V), Submodule.IsFullLattice K A →
-    Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (A.map ((γ : V →ₗ[K] V).restrictScalars (𝓞 K))) = Formalism.HermitianLatticesTheory.localization₂ w.asIdeal B →
-    Formalism.HermitianLatticesTheory.lidx w.asIdeal A B = vAdd w (LinearMap.det (γ : V →ₗ[K] V))
 
 end Formalism.BasicNotions
 
@@ -199,7 +131,6 @@ def IsLatIn {R W : Type} [CommRing R] [AddCommGroup W] [Module R W] (M V : Submo
 
 end NForms
 
-
 set_option synthInstance.maxHeartbeats 400000 in
 def NChoice.thPe (D : D7) (c : NChoice D) (w : D.what₂.places.Pl) (j : ℕ) :
     FractionRing (c.Oe w) ⊗[D.ntw.Ok (c.twI w) (c.k' w)]
@@ -209,14 +140,6 @@ def NChoice.thPe (D : D7) (c : NChoice D) (w : D.what₂.places.Pl) (j : ℕ) :
       (FractionRing (c.Oe w)) (FractionRing (c.Oe w)) (D.nexp.Fm (c.twI w) j (c.sd w))).toLinearMap ∘ₗ
     (D.nexp.thP (c.twI w) j (c.sd w) (c.k' w) (c.Q w) ((c.psi' w).comp (D.ntw.art (c.twI w) (c.Q w)))).baseChange
       (FractionRing (c.Oe w))
-
-
-set_option synthInstance.maxHeartbeats 400000 in
-def NChoice.toFracE (D : D7) (c : NChoice D) (w : D.what₂.places.Pl) (j : ℕ) :
-    c.Oe w ⊗[D.ntw.O (c.twI w)] D.nexp.Fm (c.twI w) j (c.sd w) →ₗ[D.ntw.O (c.twI w)]
-      FractionRing (c.Oe w) ⊗[D.ntw.O (c.twI w)] D.nexp.Fm (c.twI w) j (c.sd w) :=
-  ((Algebra.linearMap (c.Oe w) (FractionRing (c.Oe w))).restrictScalars (D.ntw.O (c.twI w))).rTensor _
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 theorem NChoice.thPe_one (D : D7) (c : NChoice D) (w : D.what₂.places.Pl) (j : ℕ)
@@ -234,34 +157,11 @@ theorem NChoice.thPe_one (D : D7) (c : NChoice D) (w : D.what₂.places.Pl) (j :
     simp [Algebra.smul_def]
   | add x y hx hy => rw [TensorProduct.tmul_add, map_add (f := _), hx, hy, map_add (f := _)]
 
-
-set_option synthInstance.maxHeartbeats 400000 in
-structure NMj (D : D7) (X : DivX D) (c : NChoice D) where
-
-  eMj : ∀ w j, (X.MjH j).V →+ (c.Oe w ⊗[D.ntw.O (c.twI w)] D.nexp.Fm (c.twI w) j (c.sd w))
-
-  eMj_smul : ∀ w j (a : D.what₂.LL) (r : c.Oe w) (x : (X.MjH j).V),
-    c.embW w a = algebraMap (c.Oe w) (FractionRing (c.Oe w)) r →
-    eMj w j (a • x) = r • eMj w j x
-
-  eMj_li : ∀ w j, D.what₂.muAt w ≠ D.what₂.mu0 → 1 ≤ j → j ≤ D.R.m →
-    LinearIndependent (c.Oe w) (fun a => eMj w j ((X.MjH j).b a))
-
-  eMj_lat : ∀ w j, D.what₂.muAt w ≠ D.what₂.mu0 → 1 ≤ j → j ≤ D.R.m →
-    NForms.IsLatIn (Submodule.span (c.Oe w) (eMj w j '' ((X.MjH j).L : Set (X.MjH j).V)))
-      (((NForms.V0 D (c.twI w) j (c.sd w)).restrictScalars (D.ntw.O (c.twI w))).baseChange (c.Oe w))
-
-  eMj_th : ∀ w j, D.what₂.muAt w ≠ D.what₂.mu0 → 1 ≤ j → j ≤ D.R.m → ∀ x ∈ Idx.TjV D (D.what₂.muTw w) j, ∀ y : (X.MjH j).V,
-    X.jM j y = D.what₂.thetaP (D.what₂.muTw w) j (D.what₂.jMt (D.what₂.muTw w) j x) →
-    NChoice.toFracE D c w j (eMj w j y) = NChoice.thPe D c w j (c.eMt w j x)
-
 namespace NMj
 
 variable {D : D7} {X : DivX D} {c : NChoice D} (T : NMj D X c)
 
-
 end NMj
-
 
 end Formalism.BasicNotions
 

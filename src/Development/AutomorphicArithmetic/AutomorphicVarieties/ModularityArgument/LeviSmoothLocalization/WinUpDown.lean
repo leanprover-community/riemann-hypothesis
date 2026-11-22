@@ -21,7 +21,6 @@ section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-
 variable (k) in
 def unif : kˣ := Classical.epsilon fun p : kˣ => ValuativeRel.valuation k (p : k) < 1 ∧
   ∀ x : k, ValuativeRel.valuation k x < 1 → ValuativeRel.valuation k x ≤ ValuativeRel.valuation k (p : k)
@@ -168,8 +167,5 @@ def SphUnl : Prop :=
 def WinSph : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (n : ℕ), 1 ≤ n → ∀ (π : CuspSub K n) (t : ℝ) v, WinAt π t v →
     (∀ s, SuppAt π v s → ∀ ξ ∈ chars s, IsUnram ξ) → ∃ B, (CG.mk π).HasSat v B
-
-def lin {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ξ : kˣ →* ℂˣ) : ℂ[X] :=
-  if IsUnram ξ then 1 - C ((ξ (unif k) : ℂˣ) : ℂ) * X else 1
 
 end UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter

@@ -12,9 +12,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
 open IsLocalRing
 
-theorem DerivationMinorOfDetection.polyOriginIdeal_isPrime : polyOriginIdeal.IsPrime :=
-  polyOriginIdeal_isMaximal.isPrime
-
 attribute [local instance] DerivationMinorOfDetection.polyOriginIdeal_isPrime
 
 def DerivationMinorOfDetection.Statement : Prop :=

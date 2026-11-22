@@ -20,9 +20,6 @@ def coordSum (b : Module.Basis ι R O) (j : N →ₗ[R] N') : (ι → N) →ₗ[
   map_add' x y := by simp [Finset.sum_add_distrib]
   map_smul' r x := by simp [Finset.smul_sum, smul_comm r]
 
-theorem coordSum_apply (b : Module.Basis ι R O) (j : N →ₗ[R] N') (x : ι → N) :
-    coordSum b j x = ∑ i, b i • j (x i) := rfl
-
 theorem isBaseChange_iff_coordSum (b : Module.Basis ι R O) (j : N →ₗ[R] N') :
     IsBaseChange O j ↔ Function.Bijective (coordSum b j) := by
   classical
@@ -177,12 +174,10 @@ theorem coordSum_mem_locSel (hb : IsBaseChange O j) (𝒟 : Set (Subgroup G)) (x
   rw [forall_comm]
   exact imp_congr_right fun _ => exists_cob_iff ρ ρ' j hj U b hb (fun u => u.1 ∈ D) fun i => (z i).1
 
-
 omit [Fintype ι] in
 theorem isBaseChange_h1Map [Module.Free R O] [Module.Finite R O] [DiscreteTopology M'] (hb : IsBaseChange O j) :
     IsBaseChange O (h1Map ρ ρ' j hj U) :=
   isBaseChange_h1Map' ρ ρ' j hj U (Module.Free.chooseBasis R O) hb
-
 
 omit [Fintype ι] in
 theorem isBaseChange_selMap [Module.Free R O] [Module.Finite R O] [DiscreteTopology M'] (hb : IsBaseChange O j)

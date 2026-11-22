@@ -33,9 +33,6 @@ noncomputable def R (T : J → Module.End ℂ V) (hT : ∀ i j, T i * T j = T j 
     (j : J) : Module.End ℂ (E T s) :=
   (T j).restrict (mapsTo_E T hT s j)
 
-lemma R_apply (T : J → Module.End ℂ V) (hT : ∀ i j, T i * T j = T j * T i) (s : J → ℂ)
-    (j : J) (x : E T s) : ((R T hT s j x : E T s) : V) = T j x := rfl
-
 lemma R_comm (T : J → Module.End ℂ V) (hT : ∀ i j, T i * T j = T j * T i) (s : J → ℂ)
     (i j : J) : Commute (R T hT s i) (R T hT s j) := by
   show R T hT s i * R T hT s j = R T hT s j * R T hT s i

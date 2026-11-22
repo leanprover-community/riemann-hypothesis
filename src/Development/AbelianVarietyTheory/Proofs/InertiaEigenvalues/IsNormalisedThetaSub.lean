@@ -70,7 +70,6 @@ variable {E : Type} [Field E] [NumberField E] {a : ℕ}
 
 def invL (x : Lie E a) : Lie E a := toL (Matrix.of x)⁻¹
 
-
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra in
 theorem invL_smooth : (∀ x ∈ invSet E a, ContDiffAt ℝ ∞ invL x) ∧
     HasFDerivAt (invL : Lie E a → Lie E a) (-ContinuousLinearMap.id ℝ _) (oneL E a) := by
@@ -141,7 +140,6 @@ theorem continuous_conjAd : Continuous (conjAd E) := by
       (continuous_apply w)
   exact ((continuous_infEq E).comp (continuous_star.comp h)).prodMap (continuous_conjFin _)
 
-
 variable (E a) in
 def thetaA : GA E a →* GA E a := thetaGL a (conjAd E)
 
@@ -185,7 +183,6 @@ theorem chart_theta (φ : GA E a → ℂ) (g : GA E a) {x : Lie E a} (hx : x ∈
 theorem theta_mem_Sm {φ : GA E a → ℂ} (hφ : φ ∈ Sm E a) : (fun g => φ (thetaA E a g)) ∈ Sm E a := fun g =>
   ((hφ (thetaA E a g)).comp (fun x hx => (adjL.contDiff.contDiffAt.comp x (invL_smooth.1 x hx)).contDiffWithinAt)
     fun _ hx => (chart_theta φ g hx).2).congr fun _ hx => (chart_theta φ g hx).1
-
 
 variable (E a) in
 def pull : Sm E a ≃ₗ[ℂ] Sm E a where
@@ -287,7 +284,6 @@ theorem Zalg_pull {z : Module.End ℂ (Sm E a)} (hz : z ∈ Zalg E a) :
     obtain ⟨x', h1, h2⟩ := hx
     obtain ⟨y', h3, h4⟩ := hy
     exact ⟨x' * y', mul_mem h1 h3, fun φ => by simp [h2, h4]⟩
-
 
 omit [IsCMField E] in
 theorem height_theta (y : GL (Fin a) (Cinf E)) : height (thetaGL a (starRingEnd (Cinf E)) y) = height y := by
@@ -394,7 +390,6 @@ theorem blockMap_mem_ratN (h : r + s = a) {x : BlockIx a r → Ad E} (hx : x ∈
 
 end Block
 
-
 open MeasureTheory in
 theorem isCuspidal_pull {φ : GA E a → ℂ} (hφ : IsCuspidal φ) : IsCuspidal fun g => φ (thetaA E a g) := by
   intro r h0 h1 _ _ μ 𝓕 hμ hF g
@@ -443,10 +438,6 @@ def thetaSub (π : CuspSub E a) : CuspSub E a where
       exact hs _ _ hφ
     have e := Submodule.map_comap_eq_of_surjective (f := (pull E a).toLinearMap) (pull E a).surjective W
     exact h.imp (fun h => by rw [← e, h, Submodule.map_bot]) fun h => by rw [← e, h]
-
-theorem thetaSub_thetaSub (π : CuspSub E a) : thetaSub (thetaSub π) = π := CuspSub.ext <| by
-  ext φ
-  exact ⟨fun ⟨_, ⟨ψ, h, rfl⟩, e⟩ => e ▸ (pull_pull ψ).symm ▸ h, fun h => ⟨_, ⟨φ, h, rfl⟩, pull_pull φ⟩⟩
 
 theorem thetaSub_twist (π : CuspSub E a) (χ : HChar E) : thetaSub (π.twist χ) = (thetaSub π).twist (thetaChar χ) :=
   CuspSub.ext <| by
@@ -516,128 +507,13 @@ section Levi
 
 variable {R : Type} [CommRing R] {d N : ℕ}
 
-theorem blocks_val (h : ∑ _ : Fin d, a = N) (b : Fin d) (i : Fin a) :
-    (stdBlocks (fun _ : Fin d => a) h ⟨b, i⟩ : ℕ) = b * a + i := by
-  rw [stdBlocks_val]; simp
-
-theorem blocks_rev (h : ∑ _ : Fin d, a = N) (b : Fin d) (i : Fin a) :
-    (stdBlocks (fun _ : Fin d => a) h ⟨b, i⟩).rev = stdBlocks (fun _ : Fin d => a) h ⟨b.rev, i.rev⟩ := by
-  have h1 : d * a = N := by simpa using h
-  have h2 : (b.rev : ℕ) + b + 1 = d := by have := b.2; rw [Fin.val_rev]; omega
-  have h3 : (b.rev : ℕ) * a + b * a + a = N := by rw [← h1]; conv_rhs => rw [← h2]; ring_nf
-  have := i.2
-  refine Fin.ext ?_
-  rw [Fin.val_rev, blocks_val, blocks_val, Fin.val_rev (i := i)]
-  omega
-
-theorem blocks_sign (h : ∑ _ : Fin d, a = N) (b : Fin d) (i j : Fin a) :
-    (-1 : R) ^ ((stdBlocks (fun _ : Fin d => a) h ⟨b, i⟩ : ℕ) + stdBlocks (fun _ : Fin d => a) h ⟨b, j⟩) =
-      (-1) ^ ((i : ℕ) + j) := by
-  rw [blocks_val, blocks_val, show b * a + i + (b * a + j) = 2 * (b * a) + (i + j) by ring, pow_add, pow_mul]
-  simp
-
-theorem thetaGL_leviEmb (h : ∑ _ : Fin d, a = N) (c : R →+* R) (m : Fin d → GL (Fin a) R) :
-    thetaGL N c (leviEmb R (stdBlocks (fun _ : Fin d => a) h) m) =
-      leviEmb R (stdBlocks (fun _ : Fin d => a) h) fun b => thetaGL a c (m b.rev) := by
-  have entry_same (g : Fin d → GL (Fin a) R) (b : Fin d) (i j : Fin a) :
-      (leviEmb R (stdBlocks (fun _ : Fin d => a) h) g).val
-        (stdBlocks (fun _ : Fin d => a) h ⟨b, i⟩) (stdBlocks (fun _ : Fin d => a) h ⟨b, j⟩) =
-      (g b).val i j := by
-    simp [leviEmb, Matrix.blockDiagonal'_apply_eq]
-  have entry_ne (g : Fin d → GL (Fin a) R) {b b' : Fin d} (hne : b ≠ b') (i j : Fin a) :
-      (leviEmb R (stdBlocks (fun _ : Fin d => a) h) g).val
-        (stdBlocks (fun _ : Fin d => a) h ⟨b, i⟩) (stdBlocks (fun _ : Fin d => a) h ⟨b', j⟩) = 0 := by
-    simp [leviEmb, Matrix.blockDiagonal'_apply', hne]
-  ext i j
-  obtain ⟨⟨b, i⟩, rfl⟩ := (stdBlocks (fun _ : Fin d => a) h).surjective i
-  obtain ⟨⟨b', j⟩, rfl⟩ := (stdBlocks (fun _ : Fin d => a) h).surjective j
-  rw [thetaGL_apply, blocks_rev, blocks_rev, ← map_inv]
-  by_cases e : b = b'
-  · subst e
-    rw [entry_same, entry_same, thetaGL_apply, blocks_sign]
-    rfl
-  · rw [entry_ne _ e, entry_ne _ (fun e' => e (Fin.rev_injective e').symm), map_zero, mul_zero]
-
-theorem thetaGL_mem_unipRad (h : ∑ _ : Fin d, a = N) (c : R →+* R) {u : GL (Fin N) R}
-    (hu : u ∈ unipRad R (stdBlocks (fun _ : Fin d => a) h)) :
-    thetaGL N c u ∈ unipRad R (stdBlocks (fun _ : Fin d => a) h) := by
-  obtain ⟨h1, h2⟩ := mem_unipRad.1 (inv_mem hu)
-  refine mem_unipRad.2 ⟨mem_parab_iff.2 fun b b' i j e => ?_, fun b i j => ?_⟩
-  · rw [thetaGL_apply, blocks_rev, blocks_rev, mem_parab_iff.1 h1 _ _ _ _ (Fin.rev_lt_rev.2 e), map_zero, mul_zero]
-  · rw [thetaGL_apply, blocks_rev, blocks_rev, h2, blocks_sign]
-    by_cases e : i = j
-    · subst e
-      rw [Matrix.one_apply_eq, Matrix.one_apply_eq, map_one, mul_one, Even.neg_one_pow ⟨_, rfl⟩]
-    · rw [Matrix.one_apply_ne e, Matrix.one_apply_ne (fun e' => e (Fin.rev_injective e').symm), map_zero, mul_zero]
-
 end Levi
-
-theorem pull_mem_indForms {d N : ℕ} (h : ∑ _ : Fin d, a = N) (ρ : Fin d → CuspSub E a) {φ : Sm E N}
-    (hφ : φ ∈ indForms h ρ) : pull E N φ ∈ indForms h fun i => thetaSub (ρ i.rev) := by
-  refine ⟨fun u hu g => ?_, level_pull hφ.2.1, kfin_pull hφ.2.2.1, fun k g => ?_⟩
-  · rw [pull_apply, map_mul]
-    exact hφ.1 _ (thetaGL_mem_unipRad h _ hu) _
-  · have key : (tensorForms ρ).map (LinearMap.funLeft ℂ ℂ fun (m : Fin d → GA E a) b => thetaA E a (m b.rev)) ≤
-        tensorForms fun i => thetaSub (ρ i.rev) := by
-      rw [tensorForms, Submodule.map_span_le]
-      rintro _ ⟨ψ, rfl⟩
-      exact Submodule.subset_span ⟨fun i => ⟨_, _, (ψ i.rev).2, rfl⟩, funext fun m =>
-        Fintype.prod_equiv Fin.revPerm _ _ fun i => by
-          obtain ⟨i, rfl⟩ := Fin.rev_surjective i
-          change (ψ i.rev).1.1 (thetaA E a (m i.rev.rev)) = (ψ i.rev.rev.rev).1.1 (thetaA E a (m i.rev.rev))
-          rw [Fin.rev_rev]⟩
-    convert key ⟨_, hφ.2.2.2 (PhiK E N * k * (PhiK E N)⁻¹) (thetaGL N (cFin E) g), rfl⟩ using 2 with m
-    rw [pull_apply, map_mul, map_mul, thetaA_infGL, thetaA_finGL, ← toUnits_conj_PhiK, thetaA, thetaGL_leviEmb]
-    rfl
-
-theorem map_pull_indForms {d N : ℕ} (h : ∑ _ : Fin d, a = N) (ρ : Fin d → CuspSub E a) :
-    (indForms h fun i => thetaSub (ρ i.rev)).map (pull E N).toLinearMap = indForms h ρ := by
-  refine le_antisymm ?_ fun φ hφ => ⟨_, pull_mem_indForms h ρ hφ, pull_pull φ⟩
-  rintro _ ⟨φ, hφ, rfl⟩
-  have h1 := pull_mem_indForms h _ hφ
-  simp only [Fin.rev_rev, thetaSub_thetaSub] at h1
-  exact h1
 
 theorem isNormalised_thetaSub {π : CuspSub E a} (h : IsNormalised π) : IsNormalised (thetaSub π) := by
   rintro _ ⟨φ, hφ, rfl⟩ t g
   change φ.1 (thetaA E a _) = φ.1 (thetaA E a g)
   rw [map_mul, thetaA_splitCentre, h φ hφ]
 
-theorem isSpehOf_thetaSub {N d : ℕ} {V : Submodule ℂ (Sm E N)} (hV : _root_.GlobalTheory.CuspRep.IsStable V) (hc : IsCsdGL V) {π : CuspSub E a}
-    (h : IsSpehOf V π d) : IsSpehOf V (thetaSub π) d := by
-  obtain ⟨h, ν, hν, f, hf, hf'⟩ := h
-  obtain ⟨T, hT⟩ := hc
-  obtain ⟨S, hS⟩ := LinearMap.exists_extend (V.subtype ∘ₗ T.toLinearMap)
-  have hS' : ∀ φ : V, S φ.1 = (T φ).1 := LinearMap.congr_fun hS
-  have hI := map_pull_indForms h fun i => π.twist (ν i)
-  simp only [thetaSub_twist] at hI
-  refine ⟨h, fun i => thetaChar (ν i.rev), fun i => ?_, S ∘ₗ f ∘ₗ (pull E N).toLinearMap, ?_, fun o φ hφ => ?_⟩
-  · convert isAbsPow_thetaChar (hν i.rev) using 1
-    have e : spehExp d i.rev = -spehExp d i := by
-      have := i.2
-      simp only [spehExp, Fin.val_rev]
-      rw [Nat.cast_sub (by omega)]
-      push_cast
-      ring
-    rw [e]
-    ring
-  · rw [Submodule.map_comp, Submodule.map_comp, hI, hf]
-    refine le_antisymm ?_ fun φ hφ => ⟨_, (T.symm ⟨φ, hφ⟩).2, by rw [hS', T.apply_symm_apply]⟩
-    rintro _ ⟨φ, hφ, rfl⟩
-    exact hS' ⟨φ, hφ⟩ ▸ (T _).2
-  · have h1 : pull E N φ ∈ indForms h fun i => π.twist (ν i) := hI ▸ ⟨φ, hφ, rfl⟩
-    have h2 : f (pull E N φ) ∈ V := hf ▸ ⟨_, h1, rfl⟩
-    change S (f (pull E N (act o φ))) = act o (S (f (pull E N φ)))
-    rw [pull_act, hf' _ _ h1, hS' ⟨_, h2⟩, hS' ⟨_, hV _ _ h2⟩]
-    exact hT o _ _ rfl
-
 end GlobalTheory.ThetaPull
-
-theorem GlobalTheory.DiscSpec.isCsd_of_isSpehOf (H : GlobalTheory.Published.DiscreteSpectrumGL) {E : Type} [Field E] [NumberField E]
-    [IsCMField E] {N a d : ℕ} (hN : 1 ≤ N) {V : Submodule ℂ (GlobalTheory.CuspRep.Sm E N)} (hV : GlobalTheory.UnitaryBC.IsDiscrete V)
-    (hc : GlobalTheory.UnitaryBC.IsCsdGL V) {π : GlobalTheory.CuspRep.CuspSub E a} (hπ : GlobalTheory.DiscSpec.IsNormalised π)
-    (h : GlobalTheory.DiscSpec.IsSpehOf V π d) : π.IsCsd :=
-  GlobalTheory.ThetaPull.isCsd_of_iso (H.iso hN hV (GlobalTheory.ThetaPull.isNormalised_thetaSub hπ) hπ
-    (GlobalTheory.ThetaPull.isSpehOf_thetaSub hV.stable hc h) h)
 
 end

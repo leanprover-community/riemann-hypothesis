@@ -103,9 +103,6 @@ def blockCoordEquiv (B n : ℕ) : (Fin B → EuclideanSpace ℂ (Fin n)) ≃ₗ[
   (LinearEquiv.piCongrRight fun _ => WithLp.linearEquiv 2 ℂ (Fin n → ℂ)).trans
     (LinearEquiv.curry ℂ ℂ (Fin B) (Fin n)).symm
 
-theorem blockCoordEquiv_apply {B n : ℕ} (y : Fin B → EuclideanSpace ℂ (Fin n)) (p : Fin B × Fin n) :
-    blockCoordEquiv B n y p = WithLp.ofLp (y p.1) p.2 := rfl
-
 theorem ae_toSphere (B n : ℕ) (a : Fin B → ℕ) (F : MvPolynomial (Fin B × Fin n) ℂ)
     (hF0 : F ≠ 0) (hF : IsMultiHomogeneous a F) :
     ∀ᵐ z ∂(Measure.pi fun _ : Fin B => (volume : Measure (EuclideanSpace ℂ (Fin n))).toSphere),

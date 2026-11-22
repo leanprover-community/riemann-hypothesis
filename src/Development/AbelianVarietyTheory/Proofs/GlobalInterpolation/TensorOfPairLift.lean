@@ -54,7 +54,6 @@ public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SymInt
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.WittPNe
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FinalTheorems
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideEdge
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.DualLat
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSidePos
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SettingCharZeroAt
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SettingCZ

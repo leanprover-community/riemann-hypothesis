@@ -25,27 +25,21 @@ theorem mem_of_eig {T : Module.End ℂ (Fin (m + 1) → X.V)} {μ : ℂ} {f : Fi
 theorem Pr_mem (hS : ScalChar X χ) (f : Fin (m + 1) → X.V) : Pr X χ s f ∈ stepSub X (χ s) :=
   mem_of_eig (om_Pr hS f)
 
-
 variable (X) in
 def y1 : Module.End ℂ (Fin (m + 1) → Fin (m + 1) → X.V) := LinearMap.pi fun c => (om X).comp (LinearMap.proj c)
-
 
 variable (X) in
 def y2 : Module.End ℂ (Fin (m + 1) → Fin (m + 1) → X.V) :=
   LinearMap.pi fun a => -∑ c, (tensE X a c).comp (LinearMap.proj c)
 
-
 variable (X) in
 def eta : X.V →ₗ[ℂ] (Fin (m + 1) → Fin (m + 1) → X.V) := LinearMap.pi fun c => LinearMap.single ℂ (fun _ => X.V) c
-
 
 variable (X) in
 def psi : (Fin (m + 1) → Fin (m + 1) → X.V) →ₗ[ℂ] X.V where
   toFun H := ∑ c, H c c
   map_add' H K := by simp [Finset.sum_add_distrib]
   map_smul' r H := by simp [Finset.smul_sum]
-
-theorem left_casimir_apply (H : Fin (m + 1) → Fin (m + 1) → X.V) (c : Fin (m + 1)) : y1 X H c = om X (H c) := rfl
 
 theorem right_casimir_apply (H : Fin (m + 1) → Fin (m + 1) → X.V) (a : Fin (m + 1)) :
     y2 X H a = -∑ c, tensE X a c (H c) := by

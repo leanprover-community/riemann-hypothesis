@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ExistsReduction
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.TopfBasis
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsCuspHom
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
 public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.DiscreteSpectrumKFiniteDecomposition

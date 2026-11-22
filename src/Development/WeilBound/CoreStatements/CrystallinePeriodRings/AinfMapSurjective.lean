@@ -13,32 +13,6 @@ open GroundTheory.PAdicHodge Formalism Formalism.BasicNotions Formalism.BasicNot
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem galT_coeff (g : GQ l) (x : OCb l) (n : ℕ) (y : OC l)
-    (h : PreTilt.coeff n x = Ideal.Quotient.mk (Ideal.span {((l : ℕ) : OC l)}) y) :
-    ∃ y' : OC l, (y' : ℂ_[l]) = actC l g (y : ℂ_[l]) ∧
-      PreTilt.coeff n (galT g x) = Ideal.Quotient.mk (Ideal.span {((l : ℕ) : OC l)}) y' := by
-  refine ⟨(Per6.intEquiv l).symm (integerMap (galCp (Per6.toBot g) : ℂ_[l] →+* ℂ_[l])
-    (AInf.norm_galCp_toRingHom (Per6.toBot g)) (Per6.intEquiv l y)), rfl, ?_⟩
-  have h1 := frob_coeff_tiltMap x n y h
-  have h2 : PreTilt.coeff n (galT g x) = (Per6.modPEquiv l).symm
-      (modPMap (galCp (Per6.toBot g) : ℂ_[l] →+* ℂ_[l]) (AInf.norm_galCp_toRingHom (Per6.toBot g))
-        (PreTilt.coeff n (Per6.tiltMap l x))) := rfl
-  rw [h2, h1, modPMap_mk]
-  rfl
-
-theorem galT_ext {g : GQ l} {x z : OCb l}
-    (h : ∀ (n : ℕ) (y : OC l),
-      PreTilt.coeff n x = Ideal.Quotient.mk (Ideal.span {((l : ℕ) : OC l)}) y →
-      ∃ y' : OC l, (y' : ℂ_[l]) = actC l g (y : ℂ_[l]) ∧
-        PreTilt.coeff n z = Ideal.Quotient.mk (Ideal.span {((l : ℕ) : OC l)}) y') :
-    galT g x = z := by
-  refine Perfection.ext fun n => ?_
-  obtain ⟨y, hy⟩ := Ideal.Quotient.mk_surjective (PreTilt.coeff n x)
-  obtain ⟨y₁, h₁, e₁⟩ := galT_coeff g x n y hy.symm
-  obtain ⟨y₂, h₂, e₂⟩ := h n y hy.symm
-  have : y₁ = y₂ := Subtype.ext (h₁.trans h₂.symm)
-  exact e₁.trans (this ▸ e₂.symm)
-
 theorem ιCD_aB (a : Ainf l) :
     ιCD l (Per6.aB l a) = algebraMap (Per6.BdRp l) (Per6.BdR l) (Per6.aD l a) := by
   rw [frob_aB_apply, ιCD_cB, cD_apply, ACris.iota_algebraMap]
@@ -78,8 +52,6 @@ theorem aB_act (g : GQ l) (a : Ainf l) :
     rw [AInf.gal_smul_coeff]
     exact tiltMap_tiltInv l _
   rw [frob_aB_apply, frob_aB_apply, σB_cB, h, ← ACris.gal_smul_algebraMap, ACris.gal_smul_def]
-
-theorem tiltMap_εO : Per6.tiltMap l (εO l) = epsilon l := tiltMap_tiltInv l _
 
 theorem fil_nat (b : Per6.BdRp l) (n : ℕ) :
     algebraMap (Per6.BdRp l) (Per6.BdR l) b ∈ Per6.FilD l n ↔ b ∈ RingHom.ker (Per6.θD l) ^ n := by

@@ -33,16 +33,12 @@ theorem quotient_integral_of_subsingleton {G : Type} [Group G] [MeasurableSpace 
 section
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {σ : ℕ} {S : Dbl2 ψ σ}
 
-theorem conv_nil' {G : Type} [Monoid G] : conv ([] : List (G →₀ ℂ)) = Finsupp.single 1 1 := rfl
-
 theorem aconv_singleton' {G : Type} [AddMonoid G] (c : G →₀ ℂ) : aconv [c] = c := by
   simp only [aconv, List.foldr_cons, List.foldr_nil]
   conv_rhs => rw [← Finsupp.sum_single c]
   refine Finsupp.sum_congr fun g _ => ?_
   rw [Finsupp.sum_single_index (by simp)]
   simp
-
-theorem aconv_nil' {G : Type} [AddMonoid G] : aconv ([] : List (G →₀ ℂ)) = Finsupp.single 0 1 := rfl
 
 theorem comb_single_zero' (S' T : HSp D) (u : WO S' T → ℂ) :
     comb ψ S' T (Finsupp.single 0 1) u = u := by

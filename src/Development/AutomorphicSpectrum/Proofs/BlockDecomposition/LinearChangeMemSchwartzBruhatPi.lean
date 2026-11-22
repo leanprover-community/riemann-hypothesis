@@ -31,9 +31,6 @@ def mulVecCLE (M : GL ι (mixedSpace k)) : (ι → mixedSpace k) ≃L[ℝ] (ι �
       right_inv := fun u ↦ by
         simp only [mulVec_mulVec, Units.mul_inv, one_mulVec] }
 
-theorem mulVecCLE_apply (M : GL ι (mixedSpace k)) (u : ι → mixedSpace k) :
-    mulVecCLE M u = (M : Matrix ι ι (mixedSpace k)) *ᵥ u := rfl
-
 def mulVecHomeo (M : GL ι 𝔸ᶠ[k]) : (ι → 𝔸ᶠ[k]) ≃ₜ (ι → 𝔸ᶠ[k]) where
   toFun u := (M : Matrix ι ι 𝔸ᶠ[k]) *ᵥ u
   invFun u := ((M⁻¹ : GL ι 𝔸ᶠ[k]) : Matrix ι ι 𝔸ᶠ[k]) *ᵥ u

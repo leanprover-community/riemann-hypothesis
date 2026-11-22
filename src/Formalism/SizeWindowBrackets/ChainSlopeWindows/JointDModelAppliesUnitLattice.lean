@@ -3,8 +3,10 @@ module
 public import Formalism.SizeWindowBrackets.FrameTraceRatioFinEquiv
 public import Formalism.HarderNarasimhan.ShiftInvariance
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.TraceConjTransposeMulSelf
-public import Formalism.SizeWindowBrackets.SlopeExcessBoundExponentZero
-public import Formalism.SizeWindowBrackets.RealSlopeBoundsSplit
+public import Mathlib.Data.Real.Basic
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Algebra.Order.Field.Basic
+public import Mathlib.Data.Finset.Lattice.Fold
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.NormNum

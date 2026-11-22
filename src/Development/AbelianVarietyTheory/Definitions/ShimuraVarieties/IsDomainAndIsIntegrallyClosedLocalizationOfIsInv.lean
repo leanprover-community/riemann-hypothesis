@@ -56,7 +56,6 @@ theorem isIntegrallyClosed_of_injective_of_dvd {R S : Type*} [CommRing R] [CommR
   have : algebraMap R (FractionRing R) b ≠ 0 := by simpa using hb0
   rw [map_mul, mul_div_cancel_left₀ _ this]
 
-
 variable (G A) in
 theorem isDomain_and_isIntegrallyClosed_localization_of_isInvariant (B : Type*) [CommRing B]
     [Algebra B A] [FaithfulSMul B A] [SMulCommClass G B A] [Algebra.IsInvariant B A G]
@@ -544,33 +543,6 @@ theorem IsFreeAction.of_isAlgClosed {ρ : G →* Aut X}
   h (AlgebraicClosure k) (Spec.map (CommRingCat.ofHom (algebraMap k _)) ≫ x) g
     (by rw [Category.assoc, hx])
 
-theorem IsFreeAction.of_equivariant {ρ : G →* Aut X} (h : IsFreeAction ρ) {ρ' : G →* Aut Y}
-    (p : Y ⟶ X) (hp : ∀ g, (ρ' g).asIso.hom ≫ p = p ≫ (ρ g).asIso.hom) : IsFreeAction ρ' := fun k _ x g hx ↦
-  h k (x ≫ p) g (by rw [Category.assoc, ← hp, reassoc_of% hx])
-
-theorem isFreeAction_specAction_iff (A : Type u) [CommRing A] [MulSemiringAction G A] :
-    IsFreeAction (specAction G A) ↔ IsFreeRingAction G A := by
-  constructor
-  · intro h
-    refine (FreeQuotient.isFreeRingAction_iff_inertia_eq_bot G A).mpr fun P hP ↦ ?_
-    rw [Subgroup.eq_bot_iff_forall]
-    intro g hg
-    let := Ideal.Quotient.field P
-    refine inv_eq_one.mp (h (A ⧸ P) (Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk P))) g⁻¹ ?_)
-    rw [specAction_hom, ← Spec.map_comp, inv_inv]
-    congr 1
-    ext a
-    exact Ideal.Quotient.eq.mpr (AddSubgroup.mem_inertia.mp hg a)
-  · intro h k _ x g hx
-    obtain ⟨φ, rfl⟩ := Spec.map_surjective x
-    rw [specAction_hom, ← Spec.map_comp, Spec.map_inj] at hx
-    by_contra hg
-    have := h g⁻¹ (by simpa using hg)
-    refine RingHom.ker_ne_top φ.hom (top_le_iff.mp ?_)
-    rw [← this, Ideal.span_le]
-    rintro _ ⟨a, rfl⟩
-    exact (RingHom.sub_mem_ker_iff _).mpr congr($hx a)
-
 theorem specAction_fromSpec (ρ : G →* Aut X) {U : X.Opens} (hU : IsAffineOpen U)
     (hst : ∀ g, U ≤ (ρ g).asIso.hom ⁻¹ᵁ U) (g : G) :
     (letI := sectionsAction ρ U hst;
@@ -634,23 +606,6 @@ theorem etale_of_isFreeAction : Etale π := by
   obtain ⟨_, _, _⟩ := h.isInvariant W
   rw [Scheme.Hom.appLE_eq_app]
   exact FreeQuotient.etale Γ(Y, W) (hρ.isFreeRingAction (hW.preimage π) (h.preimage_le W))
-
-theorem finrank_of_isFreeAction (y : Y) : π.finrank y = Nat.card G := by
-  have := h.isFinite_of_isFreeAction hρ
-  have := h.etale_of_isFreeAction hρ
-  obtain ⟨_, ⟨W, hW, rfl⟩, hy, -⟩ :=
-    Y.isBasis_affineOpens.exists_subset_of_mem_open (Set.mem_univ y) isOpen_univ
-  have hW : IsAffineOpen W := hW
-  let := sectionsAction ρ _ (h.preimage_le W)
-  let := (π.app W).hom.toAlgebra
-  obtain ⟨_, _, _⟩ := h.isInvariant W
-  have hf := hρ.isFreeRingAction (hW.preimage π) (h.preimage_le W)
-  obtain ⟨_, _⟩ := FreeQuotient.finite_and_projective Γ(Y, W) hf
-  obtain ⟨z, rfl⟩ : y ∈ Set.range hW.fromSpec := by rwa [hW.range_fromSpec]
-  rw [← Scheme.Hom.finrank_of_isPullback _ _ _ _
-    (isPullback_fromSpec_app π hW (hW.preimage π)),
-    ← FreeQuotient.rankAtStalk_eq_card Γ(Y, W) hf z]
-  exact Scheme.Hom.finrank_SpecMap_algebraMap Γ(Y, W) Γ(X, π ⁻¹ᵁ W) _
 
 end IsAffineQuotient
 
@@ -762,11 +717,6 @@ theorem pullbackAction_fst (g : G) :
 theorem pullbackAction_snd (g : G) :
     (pullbackAction ρ f hf t g).asIso.hom ≫ pullback.snd f t = pullback.snd f t :=
   (pullback.lift_snd ..).trans (Category.comp_id _)
-
-theorem isPullback_pullbackMap (π : X ⟶ Y) (q : Y ⟶ S) (hq : π ≫ q = f) :
-    IsPullback (pullback.fst f t)
-      (pullback.map f t q t π (𝟙 _) (𝟙 _) (by simp [hq]) (by simp)) π (pullback.fst q t) :=
-  .of_bot (by simpa [hq] using IsPullback.of_hasPullback f t) (by simp) (.of_hasPullback q t)
 
 variable {ρ f} [Finite G] {π : X ⟶ Y} (h : IsAffineQuotient ρ π) (q : Y ⟶ S) (hq : π ≫ q = f)
 include h

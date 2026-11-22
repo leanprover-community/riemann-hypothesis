@@ -53,21 +53,6 @@ def embPsi : Psi H → E →+* c.F := fun τ => embF c τ.1
 
 variable {a : (E →+* ℂ) × ℕ → ℕ} (ha : IsPartFam Dw a) (d : Psi H → ℤ)
 
-abbrev CoefSp : Type := VV c.F (lamP Dw n ha d)
-
-def coefRep : GL (Fin n) E →* Module.End c.F (CoefSp Dw c n ha d) :=
-  rhoVr (embPsi c) (lamP Dw n ha d)
-
-
-open Classical in
-def coefAct (γ : Matrix (Fin n) (Fin n) E) : CoefSp Dw c n ha d →ₗ[c.F] CoefSp Dw c n ha d :=
-  if h : IsUnit γ then coefRep Dw c n ha d h.unit else 0
-
-theorem coefAct_coe (g : GL (Fin n) E) :
-    coefAct Dw c n ha d (g : Matrix (Fin n) (Fin n) E) = coefRep Dw c n ha d g := by
-  unfold coefAct
-  rw [dite_eq_left g.isUnit, IsUnit.unit_of_val_units]
-
 def vacChar (γ : Matrix (Fin n) (Fin n) E) : c.F := ∏ τ : Psi H, embPsi c τ γ.det ^ (-(d τ))
 
 theorem natW_anti {N : ℕ} (lam : DomWeight N) : Antitone lam.natW := by
@@ -75,7 +60,6 @@ theorem natW_anti {N : ℕ} (lam : DomWeight N) : Antitone lam.natW := by
   have := lam.anti hij
   unfold DomWeight.natW
   exact Int.toNat_le_toNat (by omega)
-
 
 end GlobalTheory.IndefiniteRowSideFullHecke.CoefficientSpaceWeights
 

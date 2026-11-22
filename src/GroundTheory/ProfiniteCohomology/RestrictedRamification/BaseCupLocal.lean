@@ -111,8 +111,6 @@ end Bock
 
 section Inv
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable (F E : Type) [Field F] [Field E] [Algebra F E]
 
 def galUnitsToZ : uliftIntToIntRep (galUnits.{0} F E) ⟶ galUnitsZ F E :=
@@ -138,33 +136,6 @@ theorem localInvU_eq (v : HeightOneSpectrum (𝓞 K.1)) :
 
 variable (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
-
-theorem localInvU_cohomologyMapAlong_gsUnitsLocalMor (v : S)
-    (x : cohomology (galUnits K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) 2) :
-    localInvU (v : HeightOneSpectrum (𝓞 K.1)) ((cohomologyMapAlong (gsFinFamily S ιs v).toMonoidHom
-      (continuous_toMonoidHom _) (gsUnitsLocalMor S ιs v) 2).hom x) =
-      placeInv (K := K) (.inr (v : HeightOneSpectrum (𝓞 K.1)))
-        ((gsLocalRes S (ιs v) 2).hom (cohomologyULiftIntAddEquiv _ 2 x)) := by
-  refine (DFunLike.congr_fun (localInvU_eq (v : HeightOneSpectrum (𝓞 K.1))) _).trans ?_
-  refine (AddMonoidHom.comp_apply _ _ _).trans ?_
-  refine Eq.trans ?_ (placeInv_inr_apply _ _).symm
-  refine congrArg (brauerInvZOfIsSepClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)
-    (AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))) ?_
-  refine (AddMonoidHom.comp_apply _ _ _).trans ?_
-  exact cohomologyMap_uliftInt_cohomologyMapAlong_of (gsFinFamily S ιs v).toMonoidHom (continuous_toMonoidHom _)
-    (gsUnitsLocalMor S ιs v) (galUnitsToZ _ _) (embUnitsMorZ S (ιs v)) (fun _ => rfl) 2 x
-
-theorem localInvU_cohomologyMapAlong_gsSUnitsLocalMor (v : S)
-    (y : cohomology (galSUnitsMax K.1 ℚ̄ S) 2) :
-    localInvU (v : HeightOneSpectrum (𝓞 K.1)) ((cohomologyMapAlong (gsFinFamily S ιs v).toMonoidHom
-      (continuous_toMonoidHom _) (gsSUnitsLocalMor S ιs v) 2).hom y) =
-      placeInv (K := K) (.inr (v : HeightOneSpectrum (𝓞 K.1)))
-        ((gsLocalRes S (ιs v) 2).hom (cohomologyULiftIntAddEquiv _ 2
-          ((cohomologyMap (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) 2).hom y))) := by
-  exact (congrArg (localInvU (v : HeightOneSpectrum (𝓞 K.1)))
-    (cohomologyMapAlong_cohomologyMap_apply (gsFinFamily S ιs v).toMonoidHom (continuous_toMonoidHom _)
-      (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) (gsUnitsLocalMor S ιs v) 2 y).symm).trans
-    (localInvU_cohomologyMapAlong_gsUnitsLocalMor S ιs v _)
 
 theorem two_nsmul_placeInv_inl (v : InfinitePlace K.1) (y : localGaloisCohomology K 2 (.inl v)) :
     2 • placeInv (.inl v) y = 0 := by

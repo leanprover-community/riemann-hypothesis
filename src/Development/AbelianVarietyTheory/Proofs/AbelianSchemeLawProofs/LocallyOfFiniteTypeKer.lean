@@ -195,10 +195,6 @@ theorem weil_skew_natural (P : PolAV S) (k : ℕ) (T : Over S) :
 def halves (g : ℕ) : Fin g ⊕ Fin g ≃ Fin (2 * g) :=
   finSumFinEquiv.trans (finCongr (two_mul g).symm)
 
-theorem halves_inl (g : ℕ) (i : Fin g) : (halves g (.inl i) : ℕ) = i := rfl
-
-theorem halves_inr (g : ℕ) (i : Fin g) : (halves g (.inr i) : ℕ) = g + i := rfl
-
 theorem stdForm_single (g : ℕ) (i j : Fin g ⊕ Fin g) :
     stdForm (Pi.single i 1) (Pi.single j 1) = stdSymp g (halves g i) (halves g j) := by
   rcases i with i | i <;> rcases j with j | j <;> have := i.2 <;> have := j.2 <;>

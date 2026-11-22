@@ -98,8 +98,6 @@ section Glob
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
-local notation3 "L⁺" => NumberField.maximalRealSubfield L
-
 open ReciprocityTheory.Aut
 
 theorem conj_entry (x : GA L n) (i j : Fin n) :

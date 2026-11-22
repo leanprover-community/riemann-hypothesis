@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RbUVal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.FerreroWashington
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.QuadraticExtensions.CardClDual
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.QuadraticExtensions.MuIff
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.QuadraticExtensions.LevChar
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.PullOnto

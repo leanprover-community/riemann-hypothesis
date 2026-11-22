@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.RealisedChainTorusEq
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
 public import Formalism.SharpRestriction.FamCore
 public import Formalism.LocalRingCardinality.SpanPowerMembership
 public import Formalism.LocalRingCardinality.DataKerI
@@ -14,14 +14,12 @@ public import Formalism.CyclotomicNorms.StatementT
 public import Formalism.LocalRingCardinality.SpanPowerMembership.EntPlNonempty
 public import Formalism.LocalRingCardinality.Lemmas
 public import Formalism.LocalRingCardinality.DataTies
-public import Formalism.LocalRingCardinality.SpanPowerMembership.RankRecordRowDimensionZero
 public import Formalism.LocalRingCardinality.SpanPowerMembership.SignSplitEquivInl
 public import Formalism.SharpRestriction.InertJacobiLevels.ExtraTheta
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
 public import Formalism.SharpRestriction.Divisibility.InnerProductFormulaField
 public import Formalism.LocalRingCardinality.DataKerP
 public import Formalism.LocalRingCardinality.DataLatDefs
-public import Formalism.LocalRingCardinality.SpanPowerMembership.ClassRecordRowDimensionZero
 public import Formalism.SharpRestriction.InertJacobiLevels.ExtraVal
 public import Formalism.LocalRingCardinality.DataNChTie
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExistsHomOfBasis
@@ -30,8 +28,6 @@ public import Formalism.LocalRingCardinality.PrincipalHermitianLattice
 public import Formalism.LocalRingCardinality.DataDIVDefs
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleClassGroupCardPos
 public import Formalism.LocalRingCardinality.DataNChoice
-public import Formalism.SharpRestriction.InertJacobiLevels.ExtraNum
-public import Formalism.SharpRestriction.InertJacobiLevels.ExtraGat
 public import Formalism.LocalRingCardinality.DataMink
 public import Formalism.LocalRingCardinality.DataIdx
 public import Formalism.LocalRingCardinality.SpanPowerMembership.DivXExample
@@ -39,17 +35,15 @@ public import Formalism.LocalRingCardinality.DataAmbForm
 public import Formalism.LocalRingCardinality.DataKap
 public import Formalism.LocalRingCardinality.DataRows
 public import Formalism.LocalRingCardinality.DataForms
-public import Formalism.LocalRingCardinality.SpanPowerMembership.NZRowC
 public import Formalism.LocalRingCardinality.SpanPowerMembership.NZLevD
 public import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsLat
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.OperatorsPreserveLattices
 public import Formalism.SharpRestriction.GrowthBounds.DataGChain
-public import Formalism.LocalRingCardinality.SpanPowerMembership.GatSetting
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.DeterminantTwistRowActionMem
 public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.JOInjective
-public import Formalism.SharpRestriction.InertJacobiLevels.ExtraGatC
+public import Formalism.LocalRingCardinality.SpanPowerMembership.GatTies
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRealPD
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NStageTrivialCharacterCoeffEq

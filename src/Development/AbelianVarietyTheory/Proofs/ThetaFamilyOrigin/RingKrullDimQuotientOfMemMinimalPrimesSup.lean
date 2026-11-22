@@ -21,7 +21,6 @@ def gradedQuotPiece (J : Ideal T) (n : ℤ) : Submodule K (T ⧸ J) :=
 theorem gradedQuotPiece_natCast (J : Ideal T) (n : ℕ) :
     gradedQuotPiece 𝒜 J n = (𝒜 n).map (Ideal.Quotient.mkₐ K J).toLinearMap := rfl
 
-
 open Classical in
 noncomputable def gradedQuotHilbertPoly (J : Ideal T) : ℚ[X] :=
   if h : ∃ P, IsHilbertPoly (gradedQuotPiece 𝒜 J) P then h.choose else 0
@@ -507,7 +506,6 @@ theorem one_le_gradedQuotDeg {P : Ideal T} [P.IsPrime] (hI : P.IsHomogeneous �
   rw [hD]
   exact_mod_cast h1
 
-
 omit hx [GradedAlgebra 𝒜] in
 theorem ringKrullDim_quotient_of_mem_minimalPrimes_sup {P Q : Ideal T} [P.IsPrime] {r : ℕ}
     (hr : ringKrullDim (T ⧸ P) = (r + 1 : ℕ)) {f : T} (hfP : f ∉ P)
@@ -556,18 +554,11 @@ theorem gradedQuotDeg_bot_le {r : ℕ} {c : ℚ}
 
 end GradedBezout
 
-
 section PolynomialRing
 
 attribute [local instance] MvPolynomial.gradedAlgebra
 
 open MvPolynomial
-
-theorem finite_adjoin_range_X (ι : Type*) :
-    Module.Finite (Algebra.adjoin K (Set.range (MvPolynomial.X : ι → MvPolynomial ι K)))
-      (MvPolynomial ι K) :=
-  Module.Finite.of_surjective (Algebra.linearMap _ _) fun p =>
-    ⟨⟨p, by rw [adjoin_range_X]; trivial⟩, rfl⟩
 
 end PolynomialRing
 

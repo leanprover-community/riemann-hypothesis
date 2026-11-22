@@ -33,7 +33,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.TaylorLogMetric
 public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Columns
-public import Formalism.SharpRestriction.Divisibility.PrinLevClass
 public import Formalism.SharpRestriction.LevelLetterCocycles.AlignN
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.DGamMink
 public import Formalism.SharpRestriction.SmoothDesignExistence.DesignExistsDes

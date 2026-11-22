@@ -37,8 +37,6 @@ def hermLin (n : ℕ) : Vr n →ₗ[ℝ] Matrix (Fin n) (Fin n) ℂ where
 
 def hermL (n : ℕ) : Vr n →L[ℝ] Matrix (Fin n) (Fin n) ℂ := LinearMap.toContinuousLinearMap (hermLin n)
 
-theorem hermL_apply (x : Vr n) : hermL n x = herm x := rfl
-
 theorem herm_zero : herm (0 : Vr n) = 0 := by
   ext i j; simp [herm]
 

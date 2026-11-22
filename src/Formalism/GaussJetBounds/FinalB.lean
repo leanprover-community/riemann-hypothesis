@@ -1,13 +1,11 @@
 module
 
-public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffQuadSer
 public import Formalism.GaussJetBounds.StatementN
 public import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
 public import Formalism.GaussJetBounds.GenLogInverse
 public import Formalism.GaussJetBounds.MonoShapeTop
 public import Formalism.GaussJetBounds.GaussJetProofs.NormDetLeOneOfEntries
 public import Formalism.GaussJetBounds.GaussJetProofs.ThmAOp
-public import Formalism.GaussJetBounds.GaussJetProofs.FirstRowMinorDegreeLeOne
 public import Formalism.GaussJetBounds.StatementQ
 public import Formalism.GaussJetBounds.StatementP
 public import Formalism.GaussJetBounds.GaussJetProofs.GField

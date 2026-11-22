@@ -23,19 +23,6 @@ def wtOfN (N : ℕ) (w : WeightFamilies.Wt D j) (τ : D.what₂.Tau) (i : Fin N)
     -(w.aM τ (Fin.rev ⟨i.1 - (D.R.sigW j).1, h'⟩) : ℤ) - ((w.n / 2 : ℕ) : ℤ)
   else 0
 
-def wtOf (w : WeightFamilies.Wt D j) : D.what₂.Tau → Fin D.R.r → ℤ := wtOfN D.R.r w
-
-theorem wtOf_eq_kapW (w : WeightFamilies.Wt D j) (hP : ∀ τ i, (w.aP τ i : ℤ) = D.what₂.kaBig j τ i)
-    (hM : ∀ τ c, (w.aM τ c : ℤ) = -D.what₂.kaSmall j τ (Fin.rev c)) (hn : w.n = D.R.nV) :
-    wtOf w = DV.kapW D j := by
-  funext τ i
-  simp only [wtOf, wtOfN, DV.kapW, hP, hM, hn, Fin.rev_rev]
-  split_ifs <;> ring
-
-theorem wt_ext {w w' : WeightFamilies.Wt D j} (h1 : w.aP = w'.aP) (h2 : w.aM = w'.aM) (h3 : w.n = w'.n) :
-    w = w' := by
-  cases w; cases w'; cases h1; cases h2; cases h3; rfl
-
 instance instAddCommSemigroupWt : AddCommSemigroup (WeightFamilies.Wt D j) where
   add := WeightAlgebra.wadd
   add_assoc _ _ _ := wt_ext (funext fun _ => funext fun _ => Nat.add_assoc _ _ _)
@@ -186,160 +173,16 @@ variable {D : D7} {G : DV.Geo D.what₂.LL} {NW : ℕ → ℕ} {CompW : ℕ → 
   {algW : ∀ j, AlgPkg G D.what₂.Tau (NW j) (CompW j)} {PtY : ℕ → ℕ → Type}
   (P : FormsPkg D G NW CompW algW PtY)
 
-abbrev FnT (_P : FormsPkg D G NW CompW algW PtY) (j : ℕ) : Type := ∀ c : CompW j, G.Fn ((algW j).Yv c)
-
 instance (j : ℕ) : Algebra P.KO (P.FnT j) :=
   RingHom.toAlgebra ((algebraMap D.what₂.LL (∀ c : CompW j, G.Fn ((algW j).Yv c))).comp P.kL)
 
-theorem FnT_smul_apply {j : ℕ} (a : P.KO) (f : P.FnT j) (c : CompW j) :
-    (a • f) c = P.kL a • f c := by
-  rw [Algebra.smul_def a f, Algebra.smul_def (P.kL a) (f c)]; rfl
-
-abbrev Coef (j : ℕ) : Type := P.KO × P.FnT j
-
-abbrev Amb (j : ℕ) : Type := AddMonoidAlgebra (P.Coef j) (WithZero (WeightFamilies.Wt D j))
-
-def tup (j : ℕ) (w : WeightFamilies.Wt D j) : P.Cusp j w →ₗ[P.KO] P.Coef j where
-  toFun F := (0, fun c => P.cmp j w c F)
-  map_add' F F' := Prod.ext (by simp) (funext fun c => by
-    change P.cmp j w c (F + F') = P.cmp j w c F + P.cmp j w c F'
-    exact map_add (P.cmp j w c) F F')
-  map_smul' a F := Prod.ext (by simp) (funext fun c => by
-    change P.cmp j w c (a • F) = (a • (fun c => P.cmp j w c F : P.FnT j)) c
-    rw [FnT_smul_apply, LinearMap.map_smulₛₗ])
-
-theorem tup_mul {j : ℕ} {w w' : WeightFamilies.Wt D j} (F : P.Cusp j w) (F' : P.Cusp j w') :
-    P.tup j w F * P.tup j w' F' = P.tup j (w + w') (P.mulC j w w' F F') := by
-  refine Prod.ext (zero_mul (0 : P.KO)) (funext fun c => ?_)
-  change P.cmp j w c F * P.cmp j w' c F' = P.cmp j (WeightAlgebra.wadd w w') c (P.mulC j w w' F F')
-  rw [P.cmp_mul]
-
-def Vm (j : ℕ) (m : WithZero (WeightFamilies.Wt D j)) : Submodule P.KO (P.Coef j) :=
-  WithZero.recZeroCoe (motive := fun _ => Submodule P.KO (P.Coef j))
-    (LinearMap.range (Algebra.linearMap P.KO (P.Coef j))) (fun w => LinearMap.range (P.tup j w)) m
-
-theorem mem_Vm_zero {j : ℕ} (r : P.Coef j) : r ∈ P.Vm j 0 ↔ ∃ a : P.KO, algebraMap P.KO (P.Coef j) a = r :=
-  Iff.rfl
-
-theorem mem_Vm_coe {j : ℕ} (w : WeightFamilies.Wt D j) (r : P.Coef j) :
-    r ∈ P.Vm j (w : WithZero (WeightFamilies.Wt D j)) ↔ ∃ F, P.tup j w F = r := Iff.rfl
-
-theorem Vm_mul {j : ℕ} {m n : WithZero (WeightFamilies.Wt D j)} {r s : P.Coef j} (hr : r ∈ P.Vm j m)
-    (hs : s ∈ P.Vm j n) : r * s ∈ P.Vm j (m + n) := by
-  induction m using WithZero.recZeroCoe with
-  | zero =>
-    obtain ⟨a, rfl⟩ := (P.mem_Vm_zero r).mp hr
-    rw [zero_add, ← Algebra.smul_def]
-    exact Submodule.smul_mem _ a hs
-  | coe u =>
-    obtain ⟨F, rfl⟩ := (P.mem_Vm_coe u r).mp hr
-    induction n using WithZero.recZeroCoe with
-    | zero =>
-      obtain ⟨b, rfl⟩ := (P.mem_Vm_zero s).mp hs
-      rw [add_zero, mul_comm, ← Algebra.smul_def]
-      exact Submodule.smul_mem _ b hr
-    | coe v =>
-      obtain ⟨F', rfl⟩ := (P.mem_Vm_coe v s).mp hs
-      rw [← WithZero.coe_add, P.tup_mul]
-      exact ⟨_, rfl⟩
-
-def FormsS (j : ℕ) : Subalgebra P.KO (P.Amb j) where
-  carrier := {x | ∀ m, x.coeff m ∈ P.Vm j m}
-  mul_mem' := fun {x y} hx hy m => by
-    classical
-    rw [AddMonoidAlgebra.coeff_mul]
-    refine Submodule.finsuppSum_mem _ _ _ _ fun m₁ _ => Submodule.finsuppSum_mem _ _ _ _ fun m₂ _ => ?_
-    split_ifs with h
-    · subst h; exact P.Vm_mul (hx m₁) (hy m₂)
-    · exact zero_mem _
-  add_mem' := fun {x y} hx hy m => by
-    rw [AddMonoidAlgebra.coeff_add, Finsupp.add_apply]; exact add_mem (hx m) (hy m)
-  algebraMap_mem' := fun a m => by
-    classical
-    rw [AddMonoidAlgebra.coe_algebraMap, Function.comp_apply, AddMonoidAlgebra.coeff_single,
-      Finsupp.single_apply]
-    split_ifs with h
-    · subst h; exact ⟨a, rfl⟩
-    · exact zero_mem _
-
-def cf (j : ℕ) (m : WithZero (WeightFamilies.Wt D j)) : P.FormsS j →ₗ[P.KO] P.Coef j where
-  toFun x := (x : P.Amb j).coeff m
-  map_add' x y := by simp
-  map_smul' a x := by simp
-
-theorem cf_apply {j : ℕ} (m : WithZero (WeightFamilies.Wt D j)) (x : P.FormsS j) : P.cf j m x = (x : P.Amb j).coeff m := rfl
-
-def incS (j : ℕ) (w : WeightFamilies.Wt D j) : P.Cusp j w →ₗ[P.KO] P.FormsS j where
-  toFun F := ⟨AddMonoidAlgebra.single (w : WithZero (WeightFamilies.Wt D j)) (P.tup j w F), fun m => by
-    classical
-    rw [AddMonoidAlgebra.coeff_single, Finsupp.single_apply]
-    split_ifs with h
-    · subst h; exact ⟨F, rfl⟩
-    · exact zero_mem _⟩
-  map_add' F F' := by
-    apply Subtype.ext
-    simp [AddMonoidAlgebra.single_add]
-  map_smul' a F := by
-    apply Subtype.ext
-    simp [AddMonoidAlgebra.smul_single]
-
-theorem incS_coe {j : ℕ} {w : WeightFamilies.Wt D j} (F : P.Cusp j w) :
-    (P.incS j w F : P.Amb j) = AddMonoidAlgebra.single (w : WithZero (WeightFamilies.Wt D j)) (P.tup j w F) := rfl
-
-open Classical in
-theorem cf_incS {j : ℕ} (m : WithZero (WeightFamilies.Wt D j)) {w : WeightFamilies.Wt D j} (F : P.Cusp j w) :
-    P.cf j m (P.incS j w F) = if (w : WithZero (WeightFamilies.Wt D j)) = m then P.tup j w F else 0 := by
-  classical
-  rw [cf_apply, incS_coe, AddMonoidAlgebra.coeff_single, Finsupp.single_apply]
-
-theorem exists_Fof {j : ℕ} (w : WeightFamilies.Wt D j) (x : P.FormsS j) :
-    ∃ F, P.tup j w F = (x : P.Amb j).coeff (w : WithZero (WeightFamilies.Wt D j)) :=
-  (P.mem_Vm_coe w _).mp (x.2 (w : WithZero (WeightFamilies.Wt D j)))
-
-def Fof {j : ℕ} (w : WeightFamilies.Wt D j) (x : P.FormsS j) : P.Cusp j w := Classical.choose (P.exists_Fof w x)
-
-def scal {j : ℕ} (x : P.FormsS j) : P.KO := ((x : P.Amb j).coeff 0).1
-
-theorem scal_add {j : ℕ} (x y : P.FormsS j) : P.scal (x + y) = P.scal x + P.scal y := by
-  simp [scal]
-
-theorem scal_smul {j : ℕ} (a : P.KO) (x : P.FormsS j) : P.scal (a • x) = a * P.scal x := by
-  simp [scal]
-
-theorem scal_incS {j : ℕ} {w : WeightFamilies.Wt D j} (F : P.Cusp j w) : P.scal (P.incS j w F) = 0 := by
-  have h := P.cf_incS 0 F
-  rw [if_neg (WithZero.coe_ne_zero)] at h
-  rw [scal, ← cf_apply, h]; rfl
-
 variable {j : ℕ}
 
-def vAtS (la : HeightOneSpectrum (𝓞 P.KO)) (y : P.Pt j la) (x : P.FormsS j) : EReal :=
-  min (vEK la (P.scal x)) (⨅ w, P.vAtC j la y w (P.Fof w x))
-
 variable (la : HeightOneSpectrum (𝓞 P.KO)) (y : P.Pt j la)
-
-def Forms (j : ℕ) : Type := P.FormsS j
 
 instance instCommRingForms (j : ℕ) : CommRing (P.Forms j) := (P.FormsS j).toCommRing
 
 instance instAlgForms (j : ℕ) : Algebra P.KO (P.Forms j) := (P.FormsS j).algebra
-
-def amb (x : P.Forms j) : P.Amb j := (x : P.FormsS j).1
-
-theorem amb_injective : Function.Injective (P.amb (j := j)) := fun _ _ h => Subtype.ext h
-
-def inc (j : ℕ) (w : WeightFamilies.Wt D j) : P.Cusp j w →ₗ[P.KO] P.Forms j where
-  toFun F := (P.incS j w F : P.FormsS j)
-  map_add' F F' := P.amb_injective (by
-    change ((P.incS j w (F + F') : P.FormsS j) : P.Amb j) = (P.incS j w F : P.Amb j) + (P.incS j w F' : P.Amb j)
-    rw [map_add (f := _)]; rfl)
-  map_smul' a F := P.amb_injective (by
-    change ((P.incS j w (a • F) : P.FormsS j) : P.Amb j) = a • (P.incS j w F : P.Amb j)
-    rw [map_smul]; rfl)
-
-
-def vAt (la : HeightOneSpectrum (𝓞 P.KO)) (y : P.Pt j la) (x : P.Forms j) : EReal :=
-  P.vAtS la y (x : P.FormsS j)
 
 end FormsPkg
 

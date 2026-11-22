@@ -583,33 +583,11 @@ def LemmaEFromSteps : Prop :=
   Constants → ReduceToBoxes → GridConvergence → ConstSign → BoxesFit → ClaimAll → StepClaim → ClaimInduction →
   BoxLimitFromClaim → LimitB → LimitA → CutoffLimitInL2 → PairLimit → InterpolationCoefficientsInL2 → Leibniz → CutBound → LemmaE
 
-structure EP (B : Base) where
-
-  R : Type
-  [fR : Fintype R]
-
-  ι : Type
-  [fι : Fintype ι]
-
-  u : Fn B R
-
-  gw : Fn B R → Fn B ι
-
-  dw : B.Ω → ι → ℝ
-
-  Cw : Fn B R → Fn B R
-
 attribute [instance] EP.fR EP.fι
 
 namespace EP
 
 variable {B : Base} (X : EP B)
-
-def Meas : Prop :=
-  (∀ a, Measurable fun ω => X.u ω a) ∧ (∀ a, Measurable fun ω => X.Cw X.u ω a) ∧ (∀ i, Measurable fun ω => X.dw ω i) ∧
-    ∀ p i, Measurable fun ω => dS B X.gw X.u p ω i
-
-def CoefInt : Prop := ∀ q : ℕ, Integrable (sq B X.dw (dS B X.gw X.u q)) B.μ
 
 end EP
 

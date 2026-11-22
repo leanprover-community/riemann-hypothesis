@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnramifiedUniformisationPolarisedTriple
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.BlowPolSt
 
 @[expose] public section
 

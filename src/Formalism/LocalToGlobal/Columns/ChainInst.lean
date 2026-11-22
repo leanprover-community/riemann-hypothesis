@@ -3,7 +3,7 @@ module
 public import Mathlib
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Formalism.LocalToGlobal.Columns.NonDeg
-public import Formalism.LocalToGlobal.Columns.CyclotomicIsCyclotomicExtension
+public import Formalism.LocalToGlobal.Columns.BaseHost
 public import Formalism.LocalToGlobal.Columns.AtTOwedC
 
 @[expose] public section

@@ -28,14 +28,11 @@ def lift (M : Model σ X W) (om : Rep σ X W) (Φ : Fn F n d) (φ : UA σ X.J �
 
 def mc (M : Model σ X W) (φ : UA σ X.J → ℂ) (g : UA σ X.J) : ℂ := pet M.μ M.dom (fun y => φ (y * g)) φ
 
-
 variable (σ X) in
 def gInf : Subgroup (UA σ X.J) := Subgroup.closure (UAt σ X (evI F))
 
-
 variable (σ X) in
 def gAt (S : Finset (Pl (F := F))) : Subgroup (UA σ X.J) := ⨆ v ∈ S, locGrp σ X v
-
 
 variable (σ X) in
 def gOff (S : Finset (Pl (F := F))) : Subgroup (UA σ X.J) :=
@@ -58,7 +55,6 @@ end Gen
 section CM
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
-
 
 variable (E) in
 abbrev cj : E →ₐ[maximalRealSubfield E] E := (IsCMField.complexConj E).toAlgHom
@@ -101,19 +97,6 @@ structure IsLift {n d : ℕ} (B : Base (maximalRealSubfield E) E) (χX χW : Chr
 
 end CM
 
-def TLift : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (B : Base (maximalRealSubfield E) E), B.IsGood (cj E) →
-    ∀ (n : ℕ), 1 ≤ n → ∀ X : Spc (maximalRealSubfield E) E n, X.J = 1 → X.IsHerm (cj E) B n 0 →
-    ∃ d₀ : ℕ, ∀ d, d₀ ≤ d → ∀ (W : Spc (maximalRealSubfield E) E d) (δ : E), W.J = δ • (1 : Matrix (Fin d) (Fin d) E) →
-      W.IsSkew (cj E) B d 0 → ∀ (χX χW : Chr (maximalRealSubfield E) E) (mX mW : InfinitePlace (maximalRealSubfield E) → ℤ),
-      IsHecke (maximalRealSubfield E) E χX → IsHecke (maximalRealSubfield E) E χW →
-      ResEtaPow (Units.map (algebraMap (maximalRealSubfield E) (AF (maximalRealSubfield E))).toMonoidHom).range χX n →
-      ResEtaPow (Units.map (algebraMap (maximalRealSubfield E) (AF (maximalRealSubfield E))).toMonoidHom).range χW d →
-      HasExp B.emb χX mX → HasExp B.emb χW mW →
-      ∀ (U : Submodule ℂ (GlobalTheory.UnitaryBC.UA E n → ℂ)) (lam : InfinitePlace (maximalRealSubfield E) → DomWeight n),
-        GlobalTheory.UnitaryBC.IsAutRepU U → (∀ w, GlobalTheory.UnitaryBC.HasWeightAt U (B.emb w).1 (lam w)) →
-        (∀ w k, (d : ℤ) + mW w ≤ 2 * (lam w).w k) → ∃ U' : Submodule ℂ (GlobalTheory.UnitaryBC.UA E d → ℂ), IsLift B χX χW mX mW lam U U'
-
 def IsFin {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ}
     {X : Spc F E n} {W : Spc F E d} (M : Model σ X W) (φ : ∀ v : Pl (F := F), (Fin n × Fin d → Fv F v) → ℂ) : Prop :=
   (∀ v, φ v ∈ SB (Fin n × Fin d → Fv F v)) ∧ ∀ᶠ v in cofinite, φ v = M.vac v
@@ -121,17 +104,6 @@ def IsFin {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Alge
 def BrEx : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (X : Spc (maximalRealSubfield E) E n) (δ : E), δ ≠ 0 →
     X.J = δ • (1 : Matrix (Fin n) (Fin n) E) → ∃ e, IsBr X e
-
-def Datum : Prop :=
-  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d)
-    (M : Model σ X W) (χX χW : Chr F E) (om : Rep σ X W), IsPair B M χX χW om n 0 d 0 → 1 ≤ n →
-    ∀ K a (e : UA σ X.J × UA σ X.J →* G2 σ X), IsStab2 B K → IsHgt K a → (∀ g g', IsEmb g g' (e (g, g'))) →
-    ∀ ν, @Measure.IsAddHaarMeasure _ _ _ (borel _) ν → ∀ S : Finset (Pl (F := F)), UnrOff χW (S : Set (Pl (F := F))) →
-    ∀ (H : Pl (F := F) → Subgroup (UA σ X.J)) φ, IsFin M φ → (∀ v ∈ S, IsBump B M om v (H v) (φ v)) → (∀ v ∉ S, φ v = M.vac v) →
-    ∀ f₀ ∈ M.Pol B.ψ B.emb, f₀ ≠ 0 → coef om ν (pure f₀ φ) 1 ≠ 0 ∧
-      ∀ x ∈ gInf σ X, ∀ b ∈ gAt σ X S, ∀ c ∈ gOff σ X S, (b ∉ ⨆ v ∈ S, H v → coef om ν (pure f₀ φ) (x * b * c) = 0) ∧
-        ∃ s : ℂ, ‖s‖ = a (e (c, 1)) ^ ((d : ℝ) / 2) ∧ (IntAll c → s = 1) ∧
-          ∀ x' ∈ gInf σ X, ∀ b' ∈ ⨆ v ∈ S, H v, coef om ν (pure f₀ φ) (x' * b' * c) = s * coef om ν (pure f₀ φ) x'
 
 def AbsNe : Prop :=
   ∀ (A B C : Type) [MeasurableSpace A] [MeasurableSpace B] [MeasurableSpace C] (μA : Measure A) (μB : Measure B) (μC : Measure C)

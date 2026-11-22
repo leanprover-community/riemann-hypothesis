@@ -47,11 +47,6 @@ theorem fm_one : fm F (1 : Matrix (Fin n) (Fin n) E) = 1 :=
 
 variable [NumberField E]
 
-def Rel (c : E ≃ₐ[F] E) (L : Submodule (𝓞 E) (Fin n → E)) (N : ℕ) (g g' : GL (Fin n) (RA F E)) : Prop :=
-  ∃ (γ : GL (Fin n) E) (k : GL (Fin n) (RA F E)), IsUnE c 1 γ.1 ∧ (IsUnA c 1 k.1 ∧
-    ∀ z ∈ hat F (L : Set (Fin n → E)), ∃ w ∈ hat F (L : Set (Fin n → E)), k.1 *ᵥ z - z = N • w) ∧
-    g.1 = fm F γ.1 * g'.1 * k.1
-
 def Bd (L : Submodule (𝓞 E) (Fin n → E)) (a : 𝓞 E) (M : Matrix (Fin n) (Fin n) (RA F E)) : Prop :=
   ∀ z ∈ hat F (L : Set (Fin n → E)),
     ((1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ[F] (a : E) : RA F E) • (M *ᵥ z) ∈ hat F (L : Set (Fin n → E))

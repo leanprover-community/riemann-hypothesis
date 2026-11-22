@@ -14,8 +14,6 @@ open scoped GroundTheory.LocalField.Abstract
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 namespace FiniteSubfield
 
 abbrev openSubgroup (F : FiniteSubfield) : OpenSubgroup (ℚ̄ ≃ₐ[ℚ] ℚ̄) :=

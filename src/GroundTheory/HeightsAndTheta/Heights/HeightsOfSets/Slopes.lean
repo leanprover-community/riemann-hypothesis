@@ -63,45 +63,6 @@ structure HermitianExtension (E' E E'' : HermitianBundle K) where
     (E''.metric.form σ).inner (proj.lTensor (ComplexAt σ) x) (proj.lTensor (ComplexAt σ) y) =
       (E.metric.form σ).inner x y
 
-abbrev firstIncl (K : Type*) [Field K] : 𝓞 K →ₗ[𝓞 K] (Fin 2 → 𝓞 K) :=
-  LinearMap.single (𝓞 K) (fun _ : Fin 2 ↦ 𝓞 K) 0
-
-
-
-
-
-
-
-
-variable (K) in
-def standardFlag : Fin 3 → Submodule (𝓞 K) (HermitianBundle.standard K 2).carrier :=
-  ![⊥, LinearMap.range (firstIncl K), ⊤]
-
-theorem standardFlag_monotone : Monotone (standardFlag (K := K)) := by
-  intro i j hij
-  fin_cases i <;> fin_cases j <;> simp_all [standardFlag]
-
-theorem standardFlag_saturated (i : Fin 3) :
-    (HermitianBundle.standard K 2).Saturated (standardFlag (K := K) i) := by
-  intro a x ha hx
-  change Fin 2 → 𝓞 K at x
-  fin_cases i
-  · change x ∈ (⊥ : Submodule (𝓞 K) (Fin 2 → 𝓞 K))
-    change a • x ∈ (⊥ : Submodule (𝓞 K) (Fin 2 → 𝓞 K)) at hx
-    rw [Submodule.mem_bot] at hx ⊢
-    exact (smul_eq_zero.mp hx).resolve_left ha
-  · change x ∈ LinearMap.range (firstIncl K)
-    change a • x ∈ LinearMap.range (firstIncl K) at hx
-    obtain ⟨b, hb⟩ := hx
-    have h1 : (a • x) 1 = 0 := by rw [← hb]; simp
-    rw [Pi.smul_apply, smul_eq_mul] at h1
-    have hx1 : x 1 = 0 := (mul_eq_zero.mp h1).resolve_left ha
-    refine ⟨x 0, funext fun i ↦ ?_⟩
-    fin_cases i
-    · simp
-    · simp [hx1]
-  · exact Submodule.mem_top
-
 end
 
 end GroundTheory.Heights₂.Heights

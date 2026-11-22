@@ -29,17 +29,11 @@ variable (hg : ∀ a, D.host.g a ≠ 0) (hpg : ∀ a, Nat.Coprime p (D.host.g a)
   (Cb : ∀ i, i < D.R.m → Type) [∀ i hi, Finite (Cb i hi)]
   (Sx : ∀ i (hi : i < D.R.m), Cb i hi → StepX I (OL p (orderOf (zPsi D.R.toFrame h)) L)ˣ (D.mem u).A.T D.R.f (i + 1))
 
-abbrev levelsL : Levels (fillsL D u h L h5 h2 he r Lc I ψ e c hc) :=
-  levelsRec D u h (settingOL p (orderOf (zPsi D.R.toFrame h)) L h5 h2 he) r Lc I ψ (repP Lc p) e c hc hg hpg Cb Sx
-
 variable (Ch : Chain (levelsL D u h L h5 h2 he r Lc I ψ e c hc hg hpg Cb Sx))
   (hr1 : 1 ≤ r) (hr2 : 2 * r ≤ D.R.k)
   (hfin : ∀ j c', ((levelsL D u h L h5 h2 he r Lc I ψ e c hc hg hpg Cb Sx).lev j c').FinClasses)
   (hst : FinStab (levelsL D u h L h5 h2 he r Lc I ψ e c hc hg hpg Cb Sx))
   {g : Formalism.MainNotions.GL3Theta.G1 p} (hLT : LTIso g)
-
-abbrev sysRec : Sys p :=
-  sysL D u h L h5 h2 he r Lc I ψ e c hc (levelsL D u h L h5 h2 he r Lc I ψ e c hc hg hpg Cb Sx) Ch hr1 hr2 hfin
 
 end Record4
 

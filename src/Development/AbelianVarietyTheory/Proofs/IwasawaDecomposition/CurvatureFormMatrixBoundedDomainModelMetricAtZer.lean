@@ -22,9 +22,6 @@ variable {ι : Type} [Fintype ι] {p q n : ℕ} (h : Fintype.card (ι × Fin p �
 def flatCoordinateMatrixBlock (u : ReciprocityTheory.L2DbarEstimates.V n) : Matrix (Fin p) (Fin q) ℂ :=
   Formalism.DegreeFormula.unflat (GlobalTheory.UnifDens.flatL h u) τ
 
-theorem block_reshape_apply (u : ReciprocityTheory.L2DbarEstimates.V n) (i : Fin p) (b : Fin q) :
-    flatCoordinateMatrixBlock h τ u i b = u (Fintype.equivFinOfCardEq h (τ, i, b)) := rfl
-
 theorem flatCoordinateMatrixBlock_entry_eq_proj (i : Fin p) (b : Fin q) :
     (fun u => flatCoordinateMatrixBlock h τ u i b) = fun u => EuclideanSpace.proj (𝕜 := ℂ) (Fintype.equivFinOfCardEq h (τ, i, b)) u :=
   rfl

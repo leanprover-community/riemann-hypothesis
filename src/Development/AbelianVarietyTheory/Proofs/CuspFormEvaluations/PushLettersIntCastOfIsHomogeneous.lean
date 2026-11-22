@@ -84,7 +84,6 @@ theorem basisComponent_mem_rowHighest (b : Module.Basis ι R S) (i : ι) {P : Po
     simp only [map_smul, ← map_intCast (algebraMap R S), ← map_rowAdd] at this
     rw [← basisComponent_sum b J (fun j => rowAdd t r r' (s : R) (basisComponent b j P)) hi, this]
 
-
 variable (R S c c') in
 theorem span_map_rowHighest [Module.Free R S] :
     Submodule.span S (MvPolynomial.map (algebraMap R S) ''
@@ -116,7 +115,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {K : Type*} [Field K
 theorem herm_one_eq_sum (x y : Fin n → E) : herm 1 x y = ∑ k, x k * cc (y k) := by
   simp [herm, Matrix.one_apply]
 
-
 variable (p q) in
 noncomputable def symO (τ : T → E →+* K) (Λ : Submodule (𝓞 E) (Fin n → E)) :
     Subalgebra (𝓞 K) (Poly K T p q (Fin n)) :=
@@ -124,34 +122,12 @@ noncomputable def symO (τ : T → E →+* K) (Λ : Submodule (𝓞 E) (Fin n �
     ({P | ∃ t a, ∃ v ∈ Λ, P = xForm t a fun k => τ t (v k)} ∪
       {P | ∃ t b, ∃ v ∈ Λ, P = yForm t b fun k => τ t (cc (v k))})
 
-noncomputable def Ha (τ : T → E →+* K) (c : T → Fin p → ℕ) (c' : T → Fin q → ℕ)
-    (Λ : Submodule (𝓞 E) (Fin n → E)) : Submodule (𝓞 K) (Poly K T p q (Fin n)) :=
-  (rowHighest (R := K) c c').restrictScalars (𝓞 K) ⊓ Subalgebra.toSubmodule (symO p q τ Λ)
-
 variable (τ : T → E →+* K) {c : T → Fin p → ℕ} {c' : T → Fin q → ℕ}
   {Λ Λ' : Submodule (𝓞 E) (Fin n → E)} {P : Poly K T p q (Fin n)}
 
-
-
-
-
-
-
-
-
-
-
-
-
 variable [NumberField K]
 
-
 variable [Fintype T]
-
-
-
-
-
 
 end Lattice
 

@@ -173,11 +173,6 @@ theorem SelfDual.eq_of_test {V : Type} [AddCommGroup V] [TopologicalSpace V]
     exact_mod_cast h7
   rw [e, h6, one_smul]
 
-def IsContDensity {V X Y : Type} [MeasurableSpace V] [TopologicalSpace X] [MeasurableSpace X]
-    (μ : Measure V) (f : V → Y) (ι : X → Y) (ν : Measure X) (Φ : V → ℂ) (g : X → ℂ) : Prop :=
-  Continuous g ∧ ∀ S : Set X, IsCompact S →
-    ∫ v in f ⁻¹' (ι '' S), Φ v ∂μ = ∫ b in S, g b ∂ν
-
 def IsContDensityOn {V X Y : Type} [MeasurableSpace V] [TopologicalSpace X] [MeasurableSpace X]
     (μ : Measure V) (f : V → Y) (ι : X → Y) (ν : Measure X) (B : Set X) (Φ : V → ℂ) (g : X → ℂ) :
     Prop :=
@@ -235,7 +230,6 @@ def evalV (v : HeightOneSpectrum (𝓞 F)) : Af F →ₐ[F] Fv F v :=
     classical
     exact { RestrictedProduct.evalRingHom (fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletion F) v with
       commutes' := fun _ => rfl }
-
 
 open Classical in
 def singleV (v : HeightOneSpectrum (𝓞 F)) (y : Fv F v) : Af F :=

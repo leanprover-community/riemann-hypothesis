@@ -22,10 +22,6 @@ def fac (P : Weyl.Pre a) (N : ℕ) (τ : E →+* ℂ) : GL (Fin a) (Cinf E) →*
       Matrix.mul_smul, smul_smul, mul_comm]
 
 omit [NumberField E] in
-theorem fac_apply (P : Weyl.Pre a) (N : ℕ) (τ : E →+* ℂ) (y : GL (Fin a) (Cinf E)) (i j : Fin P.d) :
-    fac P N τ y i j = (coord τ y.val.det)⁻¹ ^ N * P.mat (y.val.map (coord τ)) i j := rfl
-
-omit [NumberField E] in
 theorem isReg_fac (P : Weyl.Pre a) (N : ℕ) (τ : E →+* ℂ) : IsReg (fac P N τ) := fun i j => by
   obtain ⟨p, hp⟩ := P.poly i j
   have h1 : ∀ q : MvPolynomial (Fin a × Fin a) ℂ, (fun y : GL (Fin a) (Cinf E) =>

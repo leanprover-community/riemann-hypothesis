@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.ChainTwMain
-public import Formalism.LocalToGlobal.Columns.WithTopLevGTop
 public import Formalism.LocalToGlobal.Columns.ChainTwZero
 public import Formalism.LocalToGlobal.Columns.ChainTwPsi
 public import Formalism.LocalToGlobal.Columns.ChainTwAn

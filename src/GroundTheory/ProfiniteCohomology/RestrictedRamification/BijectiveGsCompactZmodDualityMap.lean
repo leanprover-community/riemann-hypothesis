@@ -15,15 +15,12 @@ open IsDedekindDomain NumberField CategoryTheory GroundTheory.Global
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1))) [Fintype S] [Nonempty S]
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
   (n : ℕ) [NeZero n] (ℓ k : ℕ) (hℓ : ℓ.Prime) (hnk : n = ℓ ^ k)
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
   (hμ : ∀ ζ : ℚ̄, ζ ^ n = 1 → ζ ∈ K.1) (hodd : Odd n ∨ IsTotallyComplex K.1)
   (h3 : Subsingleton (cohomology (gsRoots S n) 3))
-
 
 include ℓ k hℓ hnk hS hμ in
 theorem BaseDualityHypotheses.of_gs
@@ -56,7 +53,6 @@ theorem BaseDualityHypotheses.of_gs
       swap yc xc := congrArg (gsCompactInv S ιs n hodd h3)
         (compactCupRes_zmodMulPairingRight_swap (gsFinFamily S ιs) (gsRoots S n) (nsmul_gsRoots S n)
           (_root_.GroundTheory.ProfCoh.localToCompact_two_surjective S ιs n h3) yc xc) }
-
 
 include ℓ k hℓ hnk hS hμ in
 theorem bijective_gs_compactZmodDualityMap

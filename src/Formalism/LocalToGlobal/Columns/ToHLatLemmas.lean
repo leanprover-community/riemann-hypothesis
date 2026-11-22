@@ -9,7 +9,7 @@ public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ClassSumDu
 public import Formalism.LocalToGlobal.Columns.AtTRank
 public import Formalism.LocalToGlobal.Columns.RowFormsGood
 public import Formalism.LocalToGlobal.Columns.ColFormsLemmas
-public import Formalism.LocalToGlobal.Columns.BaseInst
+public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleWeightMiddleEntries
 
 @[expose] public section
 
@@ -36,11 +36,6 @@ theorem thl_majAt_coord (b : Basis (Fin n) K V) (X : InfinitePlace K → Matrix 
     (v : InfinitePlace K) (x y : V) :
     majAt b X v x y = majAt (Pi.basisFun K (Fin n)) X v (b.equivFun x) (b.equivFun y) := by
   simp only [majAt, thl_fcoord_coord b X v]
-
-theorem thl_normAt_coord (b : Basis (Fin n) K V) (X : InfinitePlace K → Matrix (Fin n) (Fin n) ℂ)
-    (v : InfinitePlace K) (x : V) :
-    normAt b X v x = normAt (Pi.basisFun K (Fin n)) X v (b.equivFun x) := by
-  simp only [normAt, thl_fcoord_coord b X v]
 
 end Coord
 
@@ -106,28 +101,12 @@ theorem PosH.sub_norm {h : S.Ok} (hp : S.PosH h) (U : Submodule K S.EqFun) (v : 
 
 variable (S)
 
-def isoHc (h : S.Ok) (L : Submodule (𝓞 K) S.EqFun) : Formalism.L2.GlobalTheoryTheory.HLatOps.Iso (S.toH h L) (S.toHc h L) where
-  e := S.hCoord h
-  map_L := rfl
-  norm := fun v x => by
-    show normAt (Pi.basisFun K (Fin (S.hDim h))) (stdFrame (S.hGram h)) v (S.hCoord h x) =
-      normAt (S.hB h) (stdFrame (S.hGram h)) v x
-    rw [thl_normAt_coord (S.hB h), hB_equivFun]
-
 theorem isLattice_of_map (h : S.Ok) (L : Submodule (𝓞 K) S.EqFun)
     (hL : Submodule.IsLattice K (L.map ((S.hCoord h).toLinearMap.restrictScalars (𝓞 K)))) :
     Submodule.IsLattice K L := by
   exact Submodule.IsLattice.of_fg K
     (Submodule.fg_of_fg_map_injective ((S.hCoord h).toLinearMap.restrictScalars (𝓞 K))
       (S.hCoord h).injective hL.fg)
-
-theorem intDel_isLattice (h : S.Ok) (hD : ∀ d, Submodule.IsLattice K (S.Del d)) :
-    Submodule.IsLattice K S.intDel := by
-  apply S.isLattice_of_map h
-  rw [show S.intDel.map ((S.hCoord h).toLinearMap.restrictScalars (𝓞 K)) = (S.toCSD h).delLat from
-    S.map_intDel h S.outSec]
-  let _ : Fintype S.Cl := h.fintypeCl
-  exact ValuationLatticeField.valLatF_isLattice _ (S.toCSD h).I_injective _ fun c => hD _
 
 theorem intNab_isLattice (h : S.Ok) (hD : ∀ d, Submodule.IsLattice K (S.Nab d)) :
     Submodule.IsLattice K S.intNab := by
@@ -301,8 +280,6 @@ theorem pairAt_of_rat (v : InfinitePlace K) (x y : S.V) (hx : ∀ i, S.bV.repr x
 
 def evRep (h : S.Ok) : S.EqFun →ₗ[K] (S.Cl → S.V) := (S.toCSD h).Forms.subtype ∘ₗ (S.res h).toLinearMap
 
-theorem evRep_apply (h : S.Ok) (φ : S.EqFun) (c : S.Cl) : S.evRep h φ c = (φ : S.D → S.V) (S.outSec.rep c) := rfl
-
 theorem evRep_injective (h : S.Ok) : Function.Injective (S.evRep h) :=
   (Submodule.injective_subtype _).comp (S.res h).injective
 
@@ -426,7 +403,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
 
 theorem colPosH (u : Pr.Word) (j : ℕ) : (colGSD W Ch u j).PosH (colOk W Ch hX u j) :=
   (colRat W Ch hX u j).posH (colOk W Ch hX u j)
-
 
 theorem latH_maj (u : Pr.Word) (j : ℕ) (v : InfinitePlace X.K) (φ ψ : ColV W Ch u j) :
     majAt (latH W Ch hX u j).b (latH W Ch hX u j).X v φ ψ = (colGSD W Ch u j).ipAt (colOk W Ch hX u j) v φ ψ :=

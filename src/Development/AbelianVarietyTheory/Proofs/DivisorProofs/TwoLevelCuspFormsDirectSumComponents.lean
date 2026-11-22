@@ -40,9 +40,6 @@ def cut (M : TwoLevels E r U C) (c : C) : (C → M.dom → ℂ) →ₗ[ℂ] (C �
     funext c' x
     by_cases h : c' = c <;> simp [h]
 
-theorem cut_apply (M : TwoLevels E r U C) (c : C) (v : C → M.dom → ℂ) (c' : C) :
-    cut M c v c' = if c' = c then v c' else 0 := rfl
-
 theorem cutF_mem_SS (M : TwoLevels E r U C) (la : Wt M.Ψ r) (c : C) {F : C → Frame M.Ψ r → ℂ}
     (hF : F ∈ M.SS la) : (fun c' => if c' = c then F c' else 0) ∈ M.SS la := by
   intro c'
@@ -133,7 +130,6 @@ theorem pullRep_onComp (M : TwoLevels E r U C) (la : Wt M.Ψ r) (ρ : Representa
     exact (onComp M (g⁻¹ • c)).smul_mem t (ihx hx')
 
 end GlobalTheory.ShareOn.Decomp
-
 
 open GlobalTheory.ShareOn.Decomp in
 theorem GlobalTheory.ShareOn.cusp_decomp : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (U C : Type) [Group U] [Finite C]

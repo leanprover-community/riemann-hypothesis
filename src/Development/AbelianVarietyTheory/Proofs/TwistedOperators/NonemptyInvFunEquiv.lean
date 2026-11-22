@@ -38,13 +38,6 @@ theorem Iso.comp {ρ : Representation ℂ G V} {σ : Representation ℂ G W} (h 
   obtain ⟨e, he⟩ := h
   exact ⟨e, fun g x => he (f g) x⟩
 
-theorem Iso.twist {ρ : Representation ℂ G V} {σ : Representation ℂ G W} (h : Iso ρ σ) (χ : G →* ℂˣ) :
-    Iso (twist χ ρ) (twist χ σ) := by
-  obtain ⟨e, he⟩ := h
-  refine ⟨e, fun g x => ?_⟩
-  change e ((χ g : ℂ) • ρ g x) = (χ g : ℂ) • σ g (e x)
-  rw [map_smul, he]
-
 theorem Iso.tprod {V' W' : Type} [AddCommGroup V'] [Module ℂ V'] [AddCommGroup W'] [Module ℂ W']
     {ρ : Representation ℂ G V} {σ : Representation ℂ G W} {ρ' : Representation ℂ G V'} {σ' : Representation ℂ G W'}
     (h : Iso ρ σ) (h' : Iso ρ' σ') : Iso (ρ.tprod ρ') (σ.tprod σ') := by

@@ -29,9 +29,6 @@ def ringOf {T : Scheme.{0}} {n : ℕ} (g : T ⟶ Sp (MvPolynomial (Fin n) Rg)) :
 def cstT {T : Scheme.{0}} (t : T ⟶ Sp Rg) : Rg →+* Γ(T, ⊤) :=
   t.appTop.hom.comp (Scheme.ΓSpecIso (CommRingCat.of Rg)).inv.hom
 
-theorem ringOf_X {T : Scheme.{0}} {n : ℕ} (g : T ⟶ Sp (MvPolynomial (Fin n) Rg)) (k : Fin n) :
-    ringOf g (MvPolynomial.X k) = coord g k := rfl
-
 def expand (mA mB : ℕ) (F : MvPolynomial (Fin mB) Rg) :
     MvPolynomial (Fin mA) (MvPolynomial (Fin (mA * mB)) Rg) :=
   MvPolynomial.eval₂ (MvPolynomial.C.comp MvPolynomial.C)

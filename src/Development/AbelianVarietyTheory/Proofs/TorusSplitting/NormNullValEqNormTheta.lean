@@ -40,8 +40,6 @@ def nv : ((Sp ℂ).presheaf.stalk cpt)ˣ →* ℝ where
   map_one' := by simp
   map_mul' u v := by simp
 
-theorem nv_apply (u : ((Sp ℂ).presheaf.stalk cpt)ˣ) : nv u = ‖ev u.val‖ := rfl
-
 theorem nv_zpow (u : ((Sp ℂ).presheaf.stalk cpt)ˣ) (k : ℤ) : nv (u ^ k) = nv u ^ k := by
   have := congrArg Units.val (map_zpow nv.toHomUnits u k)
   rw [Units.val_zpow_eq_zpow_val] at this
@@ -213,7 +211,6 @@ theorem core {S : Scheme.{0}} {A : Over S} [GrpObj A] [IsCommMonObj A] (L : RigL
 end GlobalTheory.NullNorm
 
 namespace GlobalTheory
-
 
 open NullNorm in
 theorem norm_nullVal_eq_norm_theta : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (Fu : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) ty) (i : Fin Fu.n) (Pm : (Fu.Di i).La →+ (Fin g → ℂ)) (Hm : Matrix (Fin g) (Fin g) ℂ) (χl : (Fin g → ℂ) → ℂ) (fr : Xo.univ.t.PP.L.ι → (Fin g → ℂ) → ℂ) (θ : (Fin g → ℂ) → ℂ) (y : FrPt Xo c (CAt σ)), IsPeriod (Fu.Di i) ty Pm → AHFrame Fu i Pm Hm χl fr → y.x = Fu.u i Pm → IsFnOf Fu i Pm fr y.x y.s θ → ∀ (N : ℕ), Odd N → ∀ (p : ptO Xo y.x ⟶ Xo.univ.t.G) (z : Fin g → ℂ) (w : CAt σ), p ^ (N ^ 2) = 1 → p.left = (Fu.ex i Pm z).left → IsNullVal Xo c N y p w → ‖toC w‖ = ‖θ ((N : ℂ) • z)‖ * Real.exp (-(Real.pi / 2) * (hermForm Hm ((N : ℂ) • z) ((N : ℂ) • z)).re) := by

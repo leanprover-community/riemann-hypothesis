@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MeasurableCuspWeightFamily
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 
 @[expose] public section

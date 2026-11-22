@@ -47,8 +47,6 @@ variable {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] (e 
 
 abbrev vmE (n : ℕ) : (Fin n → K') ≃+ (Fin n → K) := AddEquiv.piCongrRight fun _ : Fin n => e.toAddEquiv
 
-theorem vmE_apply (n : ℕ) (x : Fin n → K') (a : Fin n) : vmE e n x a = e (x a) := rfl
-
 theorem vmE_smul (n : ℕ) (r : 𝓞 K') (x : Fin n → K') :
     vmE e n (r • x) = RingOfIntegers.mapRingEquiv e r • vmE e n x :=
   funext fun i => GlobalTheory.IdealTransport.map_smul_int e r (x i)

@@ -119,10 +119,6 @@ theorem d_F (h : PS k 1 d) (v : Fin 2 × Fin d) :
   rw [pderiv_ev (czFF (G := G)), Fintype.sum_prod_type, Fin.sum_univ_one]
   rfl
 
-theorem ez_Ar (j c : Fin d) : ev (n := 1) ![pt k d 0, 0] (Ar G j c) = Jac G j c := rfl
-
-theorem ez_dF (c b : Fin d) : ev (n := 1) ![pt k d 0, 0] (pderiv (R := k) ((1 : Fin 2), b) (G.F c)) = Jac G c b := rfl
-
 theorem coeff_F_y (c i : Fin d) : coeff (Finsupp.single ((1 : Fin 2), i) 1) (G.F c) = if c = i then 1 else 0 := by
   have ha : CZ (![0, pt k d 0] : Fin 2 → Pt k 1 d) := CZ.cons cc_zero (CZ.cons (cc_pt 0) CZ.nil)
   have h := congrArg (pderiv (R := k) ((0 : Fin 1), i)) (G.unit c)

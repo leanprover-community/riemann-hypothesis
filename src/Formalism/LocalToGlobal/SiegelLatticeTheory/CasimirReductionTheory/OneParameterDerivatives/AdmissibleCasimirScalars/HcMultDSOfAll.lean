@@ -48,9 +48,6 @@ theorem hcMultDS_of_all (h0 : SmoothVectorsDense) (h1 : CalculusOnSmoothVectors)
 
 theorem hcAdmDS_of (h : HCMultDS) : HCAdmDS := HCAdmDS_of_mult h
 
-theorem kFinSmooth_of (h : HCMultDS) : Formalism.MainNotions.LowestKTypeMultiplicity.KFinSmooth :=
-  fun _ _ _ _ _ _ _ _ _ _ hσ _ hv => kfin_smoothVec (HCAdmDS_of_mult h) hσ hv
-
 theorem kFinSmooth_of' (h : HCMultDS) : Formalism.MainNotions.DiscreteSeriesInnerProducts.KFinSmooth :=
   fun _ _ _ _ _ _ _ _ _ hσ _ hv => kfin_smoothVec (HCAdmDS_of_mult h) hσ hv
 

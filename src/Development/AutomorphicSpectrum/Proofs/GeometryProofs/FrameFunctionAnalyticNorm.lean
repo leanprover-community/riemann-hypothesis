@@ -17,7 +17,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctio
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicChartNearPointStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentOpenStalksDomainStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValueLocallyRegularFunctionStatement
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentPointValueHolomorphicStatement
 
 @[expose] public section
 

@@ -38,8 +38,6 @@ def adjF (s : V →ₗ⋆[K] V →ₗ[K] K) : V →ₗ⋆[K] V →ₗ[K] K :=
     (fun x x' y => by simp) (fun c x y => by simp [starRingEnd_apply]) (fun x y y' => by simp)
     (fun c x y => by simp [starRingEnd_apply])
 
-theorem adjF_apply (s : V →ₗ⋆[K] V →ₗ[K] K) (x y : V) : adjF s x y = star (s y x) := rfl
-
 def symF : (V →ₗ⋆[K] V →ₗ[K] K) →+ (V →ₗ⋆[K] V →ₗ[K] K) where
   toFun s := s + adjF s
   map_zero' := by

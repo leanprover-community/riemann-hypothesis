@@ -28,11 +28,6 @@ theorem piScalarRight_baseChange_funPermRep {G X : Type*} [Group G] [MulAction G
 def logLatticeProdMap : logLattice L × ℤ →ₗ[ℤ] (InfinitePlace L → ℝ) :=
   (logLattice L).subtype.coprod (LinearMap.toSpanSingleton ℤ (InfinitePlace L → ℝ) 1)
 
-omit [NumberField L] in
-theorem logLatticeProdMap_apply (m : logLattice L) (n : ℤ) :
-    logLatticeProdMap (m, n) = (m : InfinitePlace L → ℝ) + n • (1 : InfinitePlace L → ℝ) :=
-  rfl
-
 omit [NumberField K] [NumberField L] in
 theorem logLatticeProdMap_comm (g : L ≃ₐ[K] L) (x : logLattice L × ℤ) :
     logLatticeProdMap (((logLatticeRep (K := K) (L := L)).prod
@@ -134,7 +129,6 @@ theorem cycHerbrand_logLatticeRep_mul_card {σ : L ≃ₐ[K] L} (hσ : ∀ g, g 
       (hasHerbrandQuotient_cycSubOne_of_finite _ hσ), cycHerbrand_trivial_int]
 
 variable [IsGalois K L]
-
 
 open scoped Classical in
 theorem cycHerbrand_unitsRep {σ : L ≃ₐ[K] L} (hσ : ∀ g, g ∈ Subgroup.zpowers σ) :

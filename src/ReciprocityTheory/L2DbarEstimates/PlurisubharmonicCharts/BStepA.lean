@@ -36,61 +36,10 @@ theorem bsA_g_nsmul (la : La) (k : ℕ) {i j : ι} {y : Y} (hi : y ∈ (A.chart 
   | zero => rw [zero_nsmul, pow_zero]; exact bsA_g_zero A hi hj
   | succ k ih => rw [succ_nsmul, A.g_add _ _ i j y hi hj, ih, pow_succ]
 
-theorem bsA_ph_zero {i : ι} {y : Y} (hi : y ∈ (A.chart i).source) : A.ph 0 i y = 0 := by
-  have h := A.ph_add 0 0 i y hi
-  rw [add_zero] at h
-  linarith
-
-theorem bsA_ph_nsmul (la : La) (k : ℕ) {i : ι} {y : Y} (hi : y ∈ (A.chart i).source) :
-    A.ph (k • la) i y = k * A.ph la i y := by
-  induction k with
-  | zero => rw [zero_nsmul, bsA_ph_zero A hi]; simp
-  | succ k ih => rw [succ_nsmul, A.ph_add _ _ i y hi, ih]; push_cast; ring
-
-theorem bsA_ph_sub (la mu : La) {i : ι} {y : Y} (hi : y ∈ (A.chart i).source) :
-    A.ph (la - mu) i y = A.ph la i y - A.ph mu i y := by
-  have h := A.ph_add (la - mu) mu i y hi
-  rw [sub_add_cancel] at h
-  linarith
-
 theorem bsA_tr_of_isSecOn {la : La} {U : Set Y} {a : ι → Y → ℂ} (h : A.IsSecOn la U a) :
     bsTr A la U a := by
   unfold WeightedAtlas.IsSecOn at h
   exact h.2
-
-theorem bsA_isSecOn_mono {la : La} {U V : Set Y} {a : ι → Y → ℂ} (h : A.IsSecOn la U a)
-    (hVU : V ⊆ U) : A.IsSecOn la V a := by
-  unfold WeightedAtlas.IsSecOn at h ⊢
-  exact And.intro (fun i => (h.1 i).mono (fun v hv => ⟨hv.1, hVU hv.2⟩))
-    (fun i j y hy => h.2 i j y (hVU hy))
-
-theorem bsA_tr_mul {la mu : La} {U : Set Y} {a b : ι → Y → ℂ} (ha : bsTr A la U a)
-    (hb : bsTr A mu U b) : bsTr A (la + mu) U (fun i y => a i y * b i y) := by
-  unfold bsTr at ha hb ⊢
-  intro i j y hy hi hj
-  show a i y * b i y = A.g (la + mu) i j y * (a j y * b j y)
-  rw [ha i j y hy hi hj, hb i j y hy hi hj, A.g_add la mu i j y hi hj]
-  ring
-
-theorem bsA_tr_pow {la : La} {U : Set Y} {a : ι → Y → ℂ} (ha : bsTr A la U a) (k : ℕ) :
-    bsTr A (k • la) U (fun i y => a i y ^ k) := by
-  unfold bsTr at ha ⊢
-  intro i j y hy hi hj
-  show a i y ^ k = A.g (k • la) i j y * a j y ^ k
-  rw [ha i j y hy hi hj, bsA_g_nsmul A la k hi hj, mul_pow]
-
-theorem bsA_tr_ratio {la : La} {U : Set Y} {a b : ι → Y → ℂ} (ha : bsTr A la U a)
-    (hb : bsTr A la U b) {i j : ι} {y : Y} (hy : y ∈ U) (hi : y ∈ (A.chart i).source)
-    (hj : y ∈ (A.chart j).source) : a i y / b i y = a j y / b j y := by
-  unfold bsTr at ha hb
-  rw [ha i j y hy hi hj, hb i j y hy hi hj, mul_div_mul_left _ _ (A.g_ne la i j y hi hj)]
-
-theorem bsA_ne_of_tr {la : La} {U : Set Y} {a : ι → Y → ℂ} (ha : bsTr A la U a) {i j : ι}
-    {y : Y} (hy : y ∈ U) (hi : y ∈ (A.chart i).source) (hj : y ∈ (A.chart j).source)
-    (h : a j y ≠ 0) : a i y ≠ 0 := by
-  unfold bsTr at ha
-  rw [ha i j y hy hi hj]
-  exact mul_ne_zero (A.g_ne la i j y hi hj) h
 
 theorem bsA_nsq_chart {la : La} {U : Set Y} {a : ι → Y → ℂ} (ha : bsTr A la U a) {i : ι} {y : Y}
     (hy : y ∈ U) (hi : y ∈ (A.chart i).source) :
@@ -134,11 +83,6 @@ theorem bsA_nsq_cont {la : La} {a : ι → Y → ℂ} (ha : A.IsSec la a) : Cont
   refine (hc.continuousAt hs).congr ?_
   filter_upwards [hs] with z hz
   exact (bsA_nsq_chart A htr (Set.mem_univ z) hz).symm
-
-theorem bsA_sqn_cont {la : La} {N : ℕ} {w : Fin N → ι → Y → ℂ} (hw : ∀ k, A.IsSec la (w k)) :
-    Continuous (A.sqn la w) := by
-  show Continuous (fun y => ∑ k, A.nsq la (w k) y)
-  exact continuous_finsetSum _ (fun k _ => bsA_nsq_cont A (hw k))
 
 theorem bsA_nsq_nonneg (la : La) (a : ι → Y → ℂ) (y : Y) : 0 ≤ A.nsq la a y := by
   unfold WeightedAtlas.nsq

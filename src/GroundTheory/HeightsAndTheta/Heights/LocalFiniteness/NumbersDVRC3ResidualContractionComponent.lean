@@ -18,13 +18,11 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.JInvariant
 public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialConstantField
 public import GroundTheory.GlobalFields.AnalyticClassNumber.DirichletHeckeCorrespondence
 public import GroundTheory.GlobalFields.Artin.OneDim
-public import GroundTheory.GlobalFields.Artin.Series
 public import GroundTheory.GlobalFields.ExistenceTheorem.ExistsIsAbelianGaloisRangeIdeleClassNormEqOfFini
 public import GroundTheory.GlobalFields.NormResidueSymbol.RestrictNormalInfiniteLocalSymbol
 public import GroundTheory.GlobalFields.Artin.Places
 public import GroundTheory.GlobalFields.Artin.InflationTower
 public import GroundTheory.GlobalFields.AnalyticClassNumber.HeckeContinued
-public import GroundTheory.LocalFields.BrauerInductionClifford
 public import GroundTheory.GlobalFields.TateThesis.FiniteOrderParams
 public import GroundTheory.GlobalFields.TateThesis.DedekindZetaContinuation
 public import GroundTheory.LocalFields.DifferentGalois

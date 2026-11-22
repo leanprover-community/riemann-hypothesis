@@ -263,7 +263,6 @@ theorem mem_perf {R E : Type} [CommRing R] [CommRing E] {j : E →+* R} {φ : R 
     {hφ : ∀ e, ∃ e', φ (j e) = j e'} {p : ℕ} {x : R} (n k : ℕ) (e : E) (h : φ^[n] x = j e ^ k) :
     x ∈ perf j φ hφ p := ⟨n, e ^ k, 0, by rw [h, map_pow, mul_zero, add_zero]⟩
 
-
 set_option synthInstance.maxHeartbeats 200000 in
 set_option maxHeartbeats 1000000 in
 theorem approx (hG : Good K s LL) (I : IoS AI R) (hW : IoW I) (y : RW LL) (hy : FixH AI K y) (m : ℕ) :
@@ -310,16 +309,5 @@ theorem vec (hG : Good K s LL) (I : IoS AI R) (hW : IoW I) (d : ℕ) (Pm : Matri
     (fun y hy m => approx hG I hW y ((mem_fixSub_iff _).1 hy) m) f3
     (padic_closed (I.ioE : R.EE →+* RW LL) l1 l2 hs (complete R (P.PD_p K))) d Pm).2 z
     (fun i => (mem_fixSub_iff _).2 (hz i)) h
-
-set_option synthInstance.maxHeartbeats 200000 in
-theorem main : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (K : FinExt l) (s : ℕ) (LL : FinExt l), Good K s LL → ∀ (Γ : GamS P K s LL) (R : WSer Γ) (I : IoS AI R), IoW I → ∀ (p q : ℕ) (A : Matrix (Fin p) (Fin p) R.EE) (A' : Matrix (Fin q) (Fin q) R.EE) (Y : Matrix (Fin p) (Fin q) R.EE) (U : Matrix (Fin p) (Fin q) (RW LL)), IsUnit A → IsUnit A' → (∀ i j, FixH AI K (U i j)) → A.map I.ioE * U.map (φRW LL) = U * A'.map I.ioE + Y.map I.ioE → ∀ i j, U i j ∈ Set.range I.ioE := by
-  intro l _ P AI K s LL hG Γ R I hW p q A A' Y U _ hA' hU h i j
-  obtain ⟨C, hC⟩ := hA'.exists_right_inv
-  let σ := (finProdFinEquiv : Fin p × Fin q ≃ Fin (p * q)).symm
-  obtain ⟨e, he⟩ := vec hG I hW (p * q) (fun a b => A (σ a).1 (σ b).1 * C (σ b).2 (σ a).2)
-    (fun a => U (σ a).1 (σ a).2) (fun a => hU _ _) (fun a => ⟨_,
-      matrix_eq (I.ioE : R.EE →+* RW LL) (φRW LL : RW LL →+* RW LL) A A' C Y U hC h σ a⟩) (σ.symm (i, j))
-  rw [σ.apply_symm_apply] at he
-  exact ⟨e, he.symm⟩
 
 end GlobalTheory.HWL.Rational

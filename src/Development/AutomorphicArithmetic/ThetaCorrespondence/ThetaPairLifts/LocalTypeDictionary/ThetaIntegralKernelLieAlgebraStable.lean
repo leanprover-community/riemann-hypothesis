@@ -5,7 +5,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegIdxOfIsStd
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.AuxiliaryPrimeNeTypePrime
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlkGLMem
@@ -55,7 +54,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DixmierCo
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LsumMapDomainSome
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FinFLin
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaIntegralsOfMinguez
-public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HypothesesAbsDet
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilConvergenceOfSiegelSet
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TripleMatchExistence
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsFundamentalDomain

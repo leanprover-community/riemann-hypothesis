@@ -263,10 +263,6 @@ def mixedMulLeft (u : (mixedSpace K)ˣ) : mixedSpace K ≃L[ℝ] mixedSpace K :=
       left_inv := fun x ↦ Units.inv_mul_cancel_left u x
       right_inv := fun x ↦ Units.mul_inv_cancel_left u x }
 
-theorem mixedMulLeft_apply (u : (mixedSpace K)ˣ) (x : mixedSpace K) :
-    mixedMulLeft u x = (u : mixedSpace K) * x :=
-  rfl
-
 theorem comp_smul_mem_schwartzBruhat (a : IdeleGroup K) {F : 𝔸[K] → ℂ}
     (hF : F ∈ schwartzBruhat K) : (fun x ↦ F (a • x)) ∈ schwartzBruhat K := by
   induction hF using Submodule.span_induction with

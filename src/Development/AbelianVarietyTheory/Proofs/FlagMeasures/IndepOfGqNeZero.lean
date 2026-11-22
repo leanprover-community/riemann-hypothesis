@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DiagMemCongruencePairs
+public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FrameLats
 
 @[expose] public section
 

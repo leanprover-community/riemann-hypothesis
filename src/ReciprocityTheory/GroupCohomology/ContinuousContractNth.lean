@@ -147,16 +147,6 @@ def IsCoind (U : Subgroup G) (M : TRep R U) (C : TRep R G) (ev : Pair C M) : Pro
     (∀ c g, j c g = ev.u (C.rho g c)) ∧
     ∀ f : C(G, M.V), (∀ (x : U) g, f (x * g) = M.rho x (f g)) → f ∈ Set.range j
 
-structure SelData (M : TRep R G) (ι : Type u) where
-  D : ι → Type u
-  [grp : ∀ v, Group (D v)]
-  [top : ∀ v, TopologicalSpace (D v)]
-  [tgrp : ∀ v, IsTopologicalGroup (D v)]
-  φ : ∀ v, D v →* G
-  φ_cont : ∀ v, Continuous (φ v)
-  U : ι → Cx R
-  j : ∀ v, Cx.Hom (U v) (M.res (φ v) (φ_cont v)).coch
-
 attribute [instance] SelData.grp SelData.top SelData.tgrp
 
 namespace SelData

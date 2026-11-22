@@ -81,8 +81,6 @@ def PhiL (g : Matrix ι ι ℂ) : (Sg ι A B → ℂ) →ₗ[ℝ] (Sg ι A B →
       rw [Complex.real_smul, Complex.real_smul]
       ring
 
-theorem PhiL_apply (g : Matrix ι ι ℂ) (z : Sg ι A B → ℂ) : PhiL g z = Phi g z := rfl
-
 theorem map_PhiL (U : Matrix ι ι ℂ) (hU1 : star U * U = 1) (hU2 : U * star U = 1) :
     Measure.map (PhiL (A := A) (B := B) U) volume = volume := by
   set L := PhiL (A := A) (B := B) U

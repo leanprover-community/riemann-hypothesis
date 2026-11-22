@@ -7,7 +7,6 @@ public import Formalism.LocalRingCardinality.Lemmas
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PlaceCharacterEqReferenceIff
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ClassPresExtMemExtBijIsom
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefUse
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefExample
 public import Formalism.LocalToGlobal.Divisibility.FramesLemmas
 public import Formalism.QuotientMetricDivisors.FinalW
 public import Formalism.HarderNarasimhan.StatementPl

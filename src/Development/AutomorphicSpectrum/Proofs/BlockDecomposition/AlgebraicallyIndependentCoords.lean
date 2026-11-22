@@ -21,8 +21,6 @@ def shiftE {d : ℕ} (D : ℕ) (α : Fin d →₀ ℕ) : Fin (d + 1) →₀ ℕ 
 
 theorem shiftE_zero {d : ℕ} (D : ℕ) (α : Fin d →₀ ℕ) : shiftE D α 0 = D - α.degree := rfl
 
-theorem shiftE_succ {d : ℕ} (D : ℕ) (α : Fin d →₀ ℕ) (k : Fin d) : shiftE D α k.succ = α k := rfl
-
 def homogP {K : Type} [Field K] {d : ℕ} (D : ℕ) (P : MvPolynomial (Fin d) K) : MvPolynomial (Fin (d + 1)) K :=
   ∑ α ∈ P.support, monomial (shiftE D α) (AddMonoidAlgebra.coeff P α)
 

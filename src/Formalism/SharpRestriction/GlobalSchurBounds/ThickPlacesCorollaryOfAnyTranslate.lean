@@ -1006,29 +1006,6 @@ namespace Formalism.MainNotions.StandardLattice
 
 open NumberField Formalism.BasicNotions Finset
 
-structure ColCount (D : D7) (u : D.what₂.Word) where
-
-  ι : Type
-  [fι : Fintype ι]
-
-  Γ : ι → Type
-  [grp : ∀ i, Group (Γ i)]
-  [fin : ∀ i, Fintype (Γ i)]
-
-  Y : Type
-  [fY : Fintype Y]
-  [act : ∀ i, MulAction (Γ i) Y]
-
-  mass_eq : massI D D.R.k = ∑ i, ((Fintype.card (Γ i) : ℝ))⁻¹
-
-  card_Y : (Fintype.card Y : ℝ) =
-    idxPi D (D.host.g 0) (D.host.g 1) * (((D.mem u).A.T : ℝ) ^ D.R.k - 1) ^ D.R.f
-
-  cls_eq : (D.mem u).C.cls 0 ≃ Σ i, MulAction.orbitRel.Quotient (Γ i) Y
-
-  stab_eq : ∀ i (y : Y), MulAction.stabilizer (Γ i) y ≃*
-    (D.mem u).C.stab 0 (cls_eq.symm ⟨i, Quotient.mk'' y⟩)
-
 attribute [instance] ColCount.fι ColCount.grp ColCount.fin ColCount.fY ColCount.act
 
 end Formalism.MainNotions.StandardLattice

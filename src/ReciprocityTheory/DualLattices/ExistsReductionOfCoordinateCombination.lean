@@ -45,22 +45,6 @@ lemma comp_mem (H : HodgeTateDatum p g v R O σ cp) (a : O) {f : Nb p g → C} (
 
 variable {G : Type} [CommGroup G] [Fintype G] (β : G → O)
 
-private lemma smul_cancel_lemma {S K : Type*} [CommRing S] [Field K] [Algebra S K]
-    (hinj : Function.Injective (algebraMap S K)) {ι κ : Type*} {M : Matrix ι κ S} (hM : M ≠ 0)
-    {a b : S} (h : a • M = b • M) : a = b := by
-  obtain ⟨x, y, hxy⟩ : ∃ x y, M x y ≠ 0 := by
-    by_contra hc
-    push_neg at hc
-    exact hM (Matrix.ext fun x y => by simpa using hc x y)
-  have h2 : a * M x y = b * M x y := by
-    have := congrFun (congrFun h x) y
-    simpa only [Matrix.smul_apply, smul_eq_mul] using this
-  have h3 : algebraMap S K (a - b) * algebraMap S K (M x y) = 0 := by
-    rw [← map_mul, sub_mul, h2, sub_self, map_zero]
-  rcases mul_eq_zero.mp h3 with h4 | h4
-  · exact sub_eq_zero.mp (hinj (by rw [h4, map_zero]))
-  · exact absurd (hinj (by rw [h4, map_zero])) hxy
-
 end Lift
 
 end ReciprocityTheory.PGsh.Up

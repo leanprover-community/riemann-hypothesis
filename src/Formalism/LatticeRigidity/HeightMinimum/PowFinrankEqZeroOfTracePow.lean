@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Formalism.GelfandTransference.EnergyIdentity
 
 @[expose] public section
 

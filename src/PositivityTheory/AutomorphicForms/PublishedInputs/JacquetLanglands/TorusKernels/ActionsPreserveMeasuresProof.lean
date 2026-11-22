@@ -28,9 +28,6 @@ theorem countable_PG (F : Type) [Field F] [Countable F] : Countable (PG F) := by
     Function.Injective.countable (f := fun g : GL (Fin 2) F => (g : Matrix (Fin 2) (Fin 2) F)) fun a b h => Units.ext h
   exact QuotientGroup.mk_surjective.countable
 
-theorem smulX {F I Gf : Type} [Field F] [Group Gf] (D : Dat F I Gf) (g : GL (Fin 2) F) (z : D.Xs) :
-    ((g : PG F) • z) = (fun v => D.r v g • z v : I → P) := rfl
-
 end UpperTheory.Esk.ActionsPreserveMeasuresLemmas
 
 open UpperTheory.Esk.ActionsPreserveMeasuresLemmas in

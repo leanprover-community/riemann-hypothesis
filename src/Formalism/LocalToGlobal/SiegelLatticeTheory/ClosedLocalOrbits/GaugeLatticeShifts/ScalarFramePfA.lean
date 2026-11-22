@@ -21,11 +21,6 @@ variable {M : Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] (H : Loc.H
 
 theorem h_swap (x y : V) : H.h x y = M.L.cj (H.h y x) := H.h_herm y x
 
-def hl (y : V) : V →ₗ[E] E where
-  toFun x := H.h x y
-  map_add' x x' := H.h_add_left x x' y
-  map_smul' a x := by simp only [H.h_smul_left, smul_eq_mul, RingHom.id_apply]
-
 theorem h_add_right (x y y' : V) : H.h x (y + y') = H.h x y + H.h x y' := by
   rw [h_swap H x (y + y'), H.h_add_left, map_add (f := _), ← h_swap H x y, ← h_swap H x y']
 

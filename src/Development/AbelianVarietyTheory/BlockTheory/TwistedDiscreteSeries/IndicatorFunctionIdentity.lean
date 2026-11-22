@@ -180,53 +180,11 @@ theorem valuation_det_of_fix (L : Submodule 𝒪[k] (n → k)) [L.IsFullLattice 
 
 variable {V' V : Type} [AddCommGroup V'] [Module ℂ V'] [AddCommGroup V] [Module ℂ V]
 
-def IsEquivTheta (μ : kˣ →* ℂˣ) (π' : Representation ℂ (GL n' k) V') (π : Representation ℂ (GL n k) V)
-    (θ : V' →ₗ[ℂ] SB (Matrix n n' k) →ₗ[ℂ] V) : Prop :=
-  ∀ (g : GL n' k) (h : GL n k) (v : V') (Ψ Ψ' : SB (Matrix n n' k)),
-    Ψ'.1 = om μ g h Ψ.1 → θ (π' g v) Ψ' = π h (θ v Ψ)
-
 variable {μ : kˣ →* ℂˣ} {π' : Representation ℂ (GL n' k) V'} {π : Representation ℂ (GL n k) V}
   {θ : V' →ₗ[ℂ] SB (Matrix n n' k) →ₗ[ℂ] V}
-
-theorem theta_mem (hμ : IsUnram μ) (hθ : IsEquivTheta μ π' π θ) (P₀ : Pair k n') (Q₀ : Pair k n) (v : V') :
-    θ v (phiOneSB P₀ Q₀) ∈ levelVec π Q₀ := by
-  change ∀ h : GL n k, h • Q₀ = Q₀ → π h (θ v (phiOneSB P₀ Q₀)) = θ v (phiOneSB P₀ Q₀)
-  intro h hh
-  have hv : valuation k ((Matrix.GeneralLinearGroup.det h : kˣ) : k) = 1 :=
-    valuation_det_of_fix Q₀.lat (by rw [← Pair.smul_lat, hh])
-  have hfun : (phiOneSB P₀ Q₀).1 = om μ 1 h (phiOneSB P₀ Q₀).1 := by
-    funext x
-    have e1 : phiOne P₀ Q₀ x = phiOne P₀ Q₀ ((h⁻¹ : GL n k).val * x * (1 : GL n' k).val) := by
-      rw [← phiOne_smul (1 : GL n' k) h, one_smul, hh]
-    change phiOne P₀ Q₀ x = om μ 1 h (phiOne P₀ Q₀) x
-    rw [e1]
-    simp only [om, map_one, Units.val_one, hμ _ hv, inv_one, nabs_one, nabs_eq_one_of_valuation_eq_one hv,
-      Real.one_rpow, Complex.ofReal_one, one_mul]
-  have h1 := hθ 1 h v _ _ hfun
-  simpa using h1.symm
-
-def kerVec (hμ : IsUnram μ) (hθ : IsEquivTheta μ π' π θ) (P₀ : Pair k n') (Q₀ : Pair k n) :
-    levelVec π' P₀ →ₗ[ℂ] levelVec π Q₀ :=
-  LinearMap.codRestrict _ (θ.flip (phiOneSB P₀ Q₀) ∘ₗ (levelVec π' P₀).subtype)
-    fun v => theta_mem hμ hθ P₀ Q₀ v.1
-
-def K (hμ : IsUnram μ) (hθ : IsEquivTheta μ π' π θ) (P₀ : Pair k n') (Q₀ : Pair k n) :
-    EqForm π' →ₗ[ℂ] EqForm π :=
-  (evalEquiv π Q₀).symm.toLinearMap ∘ₗ kerVec hμ hθ P₀ Q₀ ∘ₗ (evalEquiv π' P₀).toLinearMap
-
-theorem K_apply (hμ : IsUnram μ) (hθ : IsEquivTheta μ π' π θ) (P₀ : Pair k n') (Q₀ : Pair k n) (φ : EqForm π')
-    (h : GL n k) : (K hμ hθ P₀ Q₀ φ).1 (h • Q₀) = π h (θ (φ.1 P₀) (phiOneSB P₀ Q₀)) := by
-  change formOf π Q₀ (kerVec hμ hθ P₀ Q₀ (evalEquiv π' P₀ φ)) (h • Q₀) = _
-  rw [formOf_smul]
-  rfl
-
 
 open Classical in
 def midInd (q : Unif k) (L : Submodule 𝒪[k] (n' → k)) (e₁ : n' → k) (Q : Pair k n) (x : Matrix n n' k) : ℂ :=
   if (∀ y ∈ L, x *ᵥ y ∈ Q.lat) ∧ Q.HasVal (x *ᵥ (q.1 • e₁)) 1 then 1 else 0
-
-
-def scal (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (t : ℕ) : ℂ :=
-  (((resCard k : ℝ) ^ (((t : ℝ) + 1) / 2) : ℝ) : ℂ)
 
 end GlobalTheory.IndefiniteRowSideFullHecke.IndicatorFunctionIdentity

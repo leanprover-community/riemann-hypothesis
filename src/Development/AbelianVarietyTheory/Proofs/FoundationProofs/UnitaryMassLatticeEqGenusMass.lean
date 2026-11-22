@@ -20,7 +20,6 @@ namespace GlobalTheory.Mass.Genus
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-
 omit [NumberField F] [Algebra F E] in
 theorem exists_den (Λ N : Submodule (𝓞 E) (Fin n → E)) (hΛ : Λ.FG)
     (hN : Submodule.span E (N : Set (Fin n → E)) = ⊤) : ∃ m : ℤ, m ≠ 0 ∧ ∀ x ∈ Λ, m • x ∈ N := by
@@ -75,11 +74,6 @@ theorem exists_over (v : HeightOneSpectrum (𝓞 F)) :
   rw [(RingHom.injective_iff_ker_eq_bot _).1 (FaithfulSMul.algebraMap_injective (𝓞 F) (𝓞 E))]
   exact bot_le
 
-local notation "𝔸" => FiniteAdeleRing (𝓞 F) F
-local notation "𝒜" => E ⊗[F] 𝔸
-local notation "ιA" => inclE (F := F) (E := E) 𝔸
-local notation "𝓛" => latS (F := F) 𝔸 (tensInt (F := F) 𝔸 (intOE E) (intAd F))
-
 theorem eps_glob {Λ : Submodule (𝓞 E) (Fin n → E)} (hΛ : Module.Finite (𝓞 E) Λ)
     (hsp : Submodule.span E (Λ : Set (Fin n → E)) = ⊤) (g : GL (Fin n) 𝒜) (e : 𝒜) (u : Fin n → 𝒜) :
     e • u ∈ 𝓛 (globLat g Λ) ↔ e • ((g⁻¹).1 *ᵥ u) ∈ 𝓛 Λ := by
@@ -121,7 +115,6 @@ theorem eps_congr (v : HeightOneSpectrum (𝓞 F)) {g h : GL (Fin n) 𝒜}
     afsplit_decomp] at this
   exact this
 
-
 omit [NumberField F] [NumberField E] in
 theorem fixed_mem (σ : E →ₐ[F] E) (hr : Module.finrank F E = 2) (hne : ∃ z, σ z ≠ z) (e : E) (he : σ e = e) :
     ∃ a : F, algebraMap F E a = e := by
@@ -136,9 +129,6 @@ theorem fixed_mem (σ : E →ₐ[F] E) (hr : Module.finrank F E = 2) (hne : ∃ 
 
 variable {σ : E →ₐ[F] E} (hs : ∀ e, (σ : E →+* E) ((σ : E →+* E) e) = e) {J : Matrix (Fin n) (Fin n) E}
   {Λ : Submodule (𝓞 E) (Fin n → E)}
-
-local notation "Γ" => Subgroup.subgroupOf (ratPts σ J 𝔸) (UPts σ J 𝔸)
-local notation "𝒦" => Subgroup.subgroupOf (levelAfL σ J Λ) (UPts σ J 𝔸)
 
 theorem globLat_mem_genus (hfix : ∀ e : E, σ e = e → ∃ a : F, algebraMap F E a = e) (hne : ∃ z, σ z ≠ z)
     (hJ : IsHerm (σ : E →+* E) J) (hdet : J.det ≠ 0) (hΛ : Module.Finite (𝓞 E) Λ)
@@ -300,7 +290,6 @@ theorem card_stabAt (hΛ : Module.Finite (𝓞 E) Λ) (hsp : Submodule.span E (�
 
 end GlobalTheory.Mass.Genus
 
-
 open GlobalTheory.Mass.Genus Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes in
 theorem GlobalTheory.Mass.classMass_lattice_eq_genus_mass {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] {σ : E →ₐ[F] E} {M : ℕ} {J : Matrix (Fin M) (Fin M) E} (hσ : IsCMExt F E σ) (hJ : IsHermND σ J)
@@ -358,7 +347,6 @@ theorem GlobalTheory.Mass.classMass_lattice_eq_genus_mass {F E : Type} [Field F]
     rw [← DoubleCoset.out_eq' c]
     refine (hmk _ _).2 ?_
     simpa only [hgN] using h
-
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes in
 theorem GlobalTheory.Mass.unitaryMass_lattice_eq_genus_mass {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]

@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Formalism.AdicCompletionExports.NonnegativeDivisors.Statement
+public import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
+public import Formalism.QuotientMetricDivisors.SixthReductionExplicit
 
 @[expose] public section
 

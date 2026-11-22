@@ -35,9 +35,6 @@ def sglB (I : Fin n') (J : Fin n) :
   map_add' _ _ := by ext; simp only [Matrix.of_apply, Matrix.add_apply]; split_ifs <;> simp
   map_smul' _ _ := by ext; simp only [Matrix.of_apply, Matrix.smul_apply, RingHom.id_apply]; split_ifs <;> simp
 
-theorem entB_apply (I : Fin n') (J : Fin n) (A : Matrix (Fin N') (Fin N) D.host.E) (u : Fin m') (v : Fin m) :
-    entB (D := D) eR eC I J A u v = A (eR.symm (I, u)) (eC.symm (J, v)) := rfl
-
 theorem sglB_apply (I : Fin n') (J : Fin n) (A : Matrix (Fin m') (Fin m) D.host.E) (a : Fin N') (c : Fin N) :
     sglB (D := D) eR eC I J A a c = if (eR a).1 = I ∧ (eC c).1 = J then A (eR a).2 (eC c).2 else 0 := rfl
 
@@ -155,9 +152,6 @@ def prjB (I : Fin n') (J : Fin n) : VC D N N' →+ VC D m m' where
   toFun z := fun τ u v => z τ (eR.symm (I, u)) (eC.symm (J, v))
   map_zero' := rfl
   map_add' _ _ := rfl
-
-theorem prjB_apply (I : Fin n') (J : Fin n) (z : VC D N N') (τ : D.what₂.Tau) (u : Fin m') (v : Fin m) :
-    prjB (D := D) eR eC I J z τ u v = z τ (eR.symm (I, u)) (eC.symm (J, v)) := rfl
 
 theorem prjB_La (T : Tor D) (I : Fin n') (J : Fin n) (x : VC D N N')
     (hx : x ∈ La D T (Formalism.MainNotions.StandardLatticesGL3.stdL D N) (Formalism.MainNotions.StandardLatticesGL3.stdL D N')) :

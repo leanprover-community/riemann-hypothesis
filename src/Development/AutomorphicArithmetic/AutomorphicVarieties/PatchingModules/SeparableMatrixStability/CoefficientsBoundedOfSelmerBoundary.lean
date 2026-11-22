@@ -45,8 +45,6 @@ private theorem ar_family {A M M' S : Type} [CommRing A] [IsNoetherianRing A]
       exact Ideal.mul_mem_right _ _ ha
   exact hle (hc m h0)
 
-private theorem dd_smul {A : Type} [CommRing A] {g : ℕ} (c : A) (y : DD A g) : c • y = DD.C c * y := rfl
-
 private theorem dd_finite (A : Type) [CommRing A] [IsNoetherianRing A] (g : ℕ) : Module.Finite A (DD A g) := by
   let f : DD A g →ₗ[A] A × (Fin g → A) × (Fin g → A) × A :=
     { toFun := DD.equiv

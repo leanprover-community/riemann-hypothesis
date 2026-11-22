@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFinitePresentationModelOfIsColimit
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsZModTorsorIff
 
 @[expose] public section

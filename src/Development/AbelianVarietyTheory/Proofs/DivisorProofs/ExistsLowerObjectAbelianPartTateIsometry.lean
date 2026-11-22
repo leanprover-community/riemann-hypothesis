@@ -291,11 +291,8 @@ theorem ev_eta {D : Datum H} (l : Level H) {k : Type} [Field k] {Q : Type} [Grou
   conv_rhs => rw [h1]
   exact (GlobalTheory.CM.RationalTorsion.ev_add_smul I hM _ _).symm
 
-theorem zeta_val (l : Level H) : ((baseKA l).ζ : ℂ) = zeta l.A := by simp [baseKA]
-
 theorem toUnit_left {S : Scheme.{0}} (T : Over S) : (toUnit T).left = T.hom :=
   (Category.comp_id _).symm.trans (Over.w (toUnit T))
-
 
 set_option maxHeartbeats 1000000 in
 theorem exists_lowObj : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} (Xo : Moduli Dw l)

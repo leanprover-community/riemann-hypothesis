@@ -23,9 +23,6 @@ def J : 𝓞 F := ⟨B.i, B.integral_i⟩
 
 def mk4 (v : ℤ × ℤ × ℤ × ℤ) : 𝓞 F := v.1 + v.2.1 * B.W + v.2.2.1 * B.J + v.2.2.2 * (B.W * B.J)
 
-theorem coe_W : algebraMap (𝓞 F) F B.W = B.w := rfl
-theorem coe_J : algebraMap (𝓞 F) F B.J = B.i := rfl
-
 theorem W_sq : B.W * B.W = B.W - m := RingOfIntegers.ext (by
   simpa only [RingOfIntegers.coe_eq_algebraMap, map_mul, map_sub, map_natCast, coe_W] using B.w_sq)
 
@@ -121,7 +118,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 def mat (w : 𝓞 E) (v : ℤ × ℤ × ℤ × ℤ) : Matrix (Fin 2) (Fin 2) (𝓞 E) :=
   !![v.1 + v.2.1 * w, -(v.2.2.1 + v.2.2.2 * w); v.2.2.1 + v.2.2.2 * w, v.1 + v.2.1 * w]
-
 
 set_option maxHeartbeats 1600000 in
 theorem exists_pairHost {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) :

@@ -27,9 +27,6 @@ def front (N k s : ℕ) (h : k + s ≤ N) : Equiv.Perm (Fin N) where
     simp only
     split_ifs <;> omega
 
-theorem front_val (N k s : ℕ) (h : k + s ≤ N) (a : Fin N) :
-    ((front N k s h a : Fin N) : ℕ) = if (a : ℕ) < k then s + a else if (a : ℕ) < k + s then a - k else a := rfl
-
 theorem phI_front (N k s : ℕ) (h : k + s ≤ N) (a b : Fin N) :
     phI k s 0 (front N k s h a) (front N k s h b) ↔ (a : ℕ) < b ∧ ¬ ((a : ℕ) < k ∧ (b : ℕ) = k) := by
   simp only [phI, IsW, Fin.lt_def, front_val]

@@ -88,23 +88,4 @@ theorem eq_one_of_coprime {A B : AbVar K} (f : A ⟶ B) (hf : IsIsogeny f) (m : 
   calc x = (x ≫ q.hom) ≫ (inv q).hom := by rw [Category.assoc, hqq, Category.comp_id]
     _ = 1 := by rw [hy, MonObj.one_comp]
 
-theorem kernel_killed_of_deg_ne_zero (K : Type) [Field K] (A B : AbVar K) (f : A ⟶ B) (hf : IsIsogeny f)
-    (hd : ((deg f : ℕ) : K) ≠ 0) :
-    ∃ n : ℕ, (n : K) ≠ 0 ∧ ∀ (T : Over (Sp K)) (x : T ⟶ A.X), x ≫ f.hom = 1 → x ^ n = 1 := by
-  obtain ⟨n0, hn0, hkill⟩ := KerKill.kernel_killed K A B f hf.1
-  obtain ⟨p, hp⟩ := CharP.exists K
-  rcases CharP.char_is_prime_or_zero K p with hpp | hp0
-  · obtain ⟨k, M, hM, rfl⟩ := Nat.exists_eq_pow_mul_and_not_dvd hn0.ne' p hpp.ne_one
-    refine ⟨M, ?_, ?_⟩
-    · rwa [Ne, CharP.cast_eq_zero_iff K p]
-    · intro T x hx
-      have hpd : ¬ p ∣ deg f := by rwa [Ne, CharP.cast_eq_zero_iff K p] at hd
-      refine eq_one_of_coprime f hf (p ^ k) (pow_pos hpp.pos k)
-        (Nat.Coprime.pow_left k ((Nat.Prime.coprime_iff_not_dvd hpp).2 hpd)) (x ^ M) ?_ ?_
-      · rw [MonObj.pow_comp, hx, one_pow]
-      · rw [← pow_mul, mul_comm]; exact hkill T x hx
-  · subst hp0
-    haveI : CharZero K := CharP.charP_to_charZero K
-    exact ⟨n0, by exact_mod_cast hn0.ne', hkill⟩
-
 end GlobalTheory.AV.KerInv

@@ -14,7 +14,6 @@ noncomputable section
 
 namespace LocalQuantumDet
 
-
 def orderedTermProduct {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → Fin n → A) (arg : Fin n → ℂ)
     (σ τ : Equiv.Perm (Fin n)) : A :=
   (List.ofFn fun k : Fin n => Tm E (arg k) (σ k) (τ k)).prod
@@ -297,7 +296,6 @@ theorem quantumDet_neg_transpose {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (
   rw [← h1, h2, h3, h4, h5, smul_comm, Algebra.smul_def ((-1 : ℂ) ^ n)]
   simp
 
-
 end LocalQuantumDet
 
 namespace GlobalTheory.CompanionTheory.TensStep
@@ -447,9 +445,6 @@ def colOp (M : Fin n → Fin n → Module.End ℂ V) : Module.End ℂ (Fin n →
   map_add' u v := by funext i; simp [sum_add_distrib]
   map_smul' c u := by funext i; simp [smul_sum]
 
-theorem colOp_apply (M : Fin n → Fin n → Module.End ℂ V) (w : Fin n → V) (i : Fin n) :
-    colOp M w i = ∑ j, M i j (w j) := rfl
-
 theorem colOp_mul (M N : Fin n → Fin n → Module.End ℂ V) :
     colOp M * colOp N = colOp (fun a d => ∑ b, M a b * N b d) := by
   refine LinearMap.ext fun w => funext fun i => ?_
@@ -466,9 +461,6 @@ def diagHom : Module.End ℂ V →ₐ[ℂ] Module.End ℂ (Fin n → V) where
   commutes' c := LinearMap.ext fun w => funext fun i => by
     show (algebraMap ℂ (Module.End ℂ V) c) (w i) = (algebraMap ℂ (Module.End ℂ (Fin n → V)) c) w i
     simp
-
-theorem diagHom_apply (T : Module.End ℂ V) (w : Fin n → V) (i : Fin n) :
-    diagHom T w i = T (w i) := rfl
 
 theorem colOp_eq_sum (M : Fin n → Fin n → Module.End ℂ V) :
     colOp M = ∑ a, ∑ b, diagHom (M a b) * eOp V a b := by

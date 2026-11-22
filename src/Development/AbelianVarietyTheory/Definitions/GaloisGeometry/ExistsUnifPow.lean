@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.MemberChainFormsLevelPrimeEqMember
-public import Formalism.LocalToGlobal.UnitaryNorms.CharRat
 public import Formalism.SharpRestriction.GrowthBounds.ChartRank.HypTwA
 public import Formalism.SharpRestriction.GrowthBounds.ChartRank.HypChi
 

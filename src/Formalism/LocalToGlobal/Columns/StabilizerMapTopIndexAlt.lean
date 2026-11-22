@@ -1,6 +1,6 @@
 module
 
-public import Formalism.LocalToGlobal.Columns.RecChainYKmap
+public import Mathlib
 public import Formalism.LocalToGlobal.Columns.StabilizerMapMaximalIndex
 
 @[expose] public section

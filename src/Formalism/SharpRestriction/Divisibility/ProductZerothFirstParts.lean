@@ -252,16 +252,6 @@ def ThmOne (C : ℝ) : Prop :=
 
 end Loc1
 
-structure Prov (D : Formalism.BasicNotions.D7) where
-
-  nu : ∀ i : D.jet.Sit, ZMod (D.jet.loc i).d → YoungDiagram
-  nu_rows : ∀ i s, (nu i s).colLen 0 ≤ (D.jet.loc i).N0
-
-  TT : ∀ i : D.jet.Sit, Finset (ZMod (D.jet.loc i).d)
-
-  nu1 : D.jet.Sit1 → YoungDiagram
-  oneLetterPartitionColumnBound : ∀ i, (nu1 i).colLen 0 ≤ (D.jet.loc1 i).N0
-
 theorem N_pred_lt (R : Formalism.BasicNotions.Ranks) (j : ℕ) (h : 1 ≤ j) : R.N (j - 1) < R.N j := by
   obtain ⟨i, rfl⟩ : ∃ i, j = i + 1 := ⟨j - 1, by omega⟩
   simp only [Formalism.BasicNotions.Ranks.N, Nat.add_sub_cancel]
@@ -276,9 +266,6 @@ section OneRecord
 variable (D : Formalism.BasicNotions.D7) (X : Prov D)
 
 end OneRecord
-
-abbrev ProvF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Type :=
-  ∀ x (_ : Fm.x1 < x) (i : Fm.Ix x), Prov (Fm.D x i)
 
 section Family
 

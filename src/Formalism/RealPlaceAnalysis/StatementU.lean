@@ -21,10 +21,6 @@ def KindA {V : Type*} [AddCommGroup V] [Module ℂ V] {n : ℕ} (ε : Fin n → 
   KHighest ε E (LamOf ε lam) u ∧ Cas E u = ((cvalR ε lam : ℝ) : ℂ) • u ∧
     FiniteDimensional ℂ (kSpan ε E u)
 
-def Regime {n : ℕ} (ε : Fin n → Bool) (lam : Fin n → ℝ) (g : ℝ) : Prop :=
-  (∀ a b : Fin n, a < b → ε a ≠ ε b → g ≤ lam a - lam b) ∧
-    (n : ℝ) ^ 3 + 2 < 2 * g ∧ 2 * (n : ℝ) < g
-
 def pfil {V : Type*} [AddCommGroup V] [Module ℂ V] {n : ℕ} (ε : Fin n → Bool)
     (E : Fin n → Fin n → Module.End ℂ V) (u : V) (j : ℕ) : Submodule ℂ V :=
   Submodule.span ℂ {x | ∃ w : List (Fin n × Fin n), w.length ≤ j ∧ (∀ p ∈ w, ε p.1 ≠ ε p.2) ∧

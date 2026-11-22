@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JetsInIffStepField
 public import Formalism.SharpRestriction.Divisibility.LiftErrorLocal
 public import Formalism.LocalRingCardinality.DataAmbForm
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HtPsiLeIffExists
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsOkPins
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LevelNotMemRowSG
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SingleMemIdAt

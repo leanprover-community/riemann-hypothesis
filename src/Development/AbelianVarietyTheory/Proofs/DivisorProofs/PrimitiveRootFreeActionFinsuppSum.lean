@@ -15,9 +15,6 @@ namespace GlobalTheory.EtC.FreeActSum
 def rootUnit {q : ℕ} [NeZero q] {A : Type} [CommRing A] (ζ : Prim q A) : Aˣ :=
   Units.ofPowEqOne ζ.1 q ((GlobalTheory.EtC.PrimBasic.prim_basic q A).1 ζ) (NeZero.ne q)
 
-lemma rootUnit_val {q : ℕ} [NeZero q] {A : Type} [CommRing A] (ζ : Prim q A) :
-    ((rootUnit ζ : Aˣ) : A) = ζ.1 := rfl
-
 lemma orderOf_rootUnit {q : ℕ} [NeZero q] {A : Type} [CommRing A] [Nontrivial A] (ζ : Prim q A) :
     orderOf (rootUnit ζ) = q := by
   rw [orderOf_eq_iff (NeZero.pos q)]

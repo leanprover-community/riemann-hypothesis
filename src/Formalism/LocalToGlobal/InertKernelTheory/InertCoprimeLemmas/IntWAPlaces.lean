@@ -29,8 +29,6 @@ def cj (E : Type) [Field E] [StarRing E] : 𝓞 E →+* 𝓞 E := RingOfIntegers
 def phi (E : Type) [Field E] [StarRing E] : 𝓞 (fixF E) →+* 𝓞 E :=
   RingOfIntegers.mapRingHom (algebraMap (fixF E) E)
 
-theorem phi_coe (a : 𝓞 (fixF E)) : ((phi E a : 𝓞 E) : E) = ((a : fixF E) : E) := rfl
-
 theorem lift_fixed (w : 𝓞 E) (hw : star (w : E) = w) : ∃ r : 𝓞 (fixF E), phi E r = w := by
   let f : fixF E := ⟨(w : E), hw⟩
   have hf : IsIntegral ℤ f := by
@@ -463,7 +461,6 @@ theorem local_step {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
 end Formalism.L2.KerInert.WAP
 
 namespace Formalism.L2.KerInert
-
 
 open WAP in
 theorem weak_approximation_places : WAPlaces := by

@@ -8,16 +8,13 @@ public import GroundTheory.AutomorphicForms.MeasuresGL
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.EulerProducts.GenStable
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.GammaZeroLevelMembership
 public import GroundTheory.GlobalFields.CompletionAtPlace
-public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.AdelicGaussians.UpperRightUnipotentInvariance
 public import GroundTheory.GlobalFields.AnalyticClassNumber.DirichletHeckeCorrespondence
 public import GroundTheory.GlobalFields.Artin.OneDim
-public import GroundTheory.GlobalFields.Artin.Series
 public import GroundTheory.GlobalFields.ExistenceTheorem.ExistsIsAbelianGaloisRangeIdeleClassNormEqOfFini
 public import GroundTheory.GlobalFields.NormResidueSymbol.RestrictNormalInfiniteLocalSymbol
 public import GroundTheory.GlobalFields.Artin.Places
 public import GroundTheory.GlobalFields.Artin.InflationTower
 public import GroundTheory.GlobalFields.AnalyticClassNumber.HeckeContinued
-public import GroundTheory.LocalFields.BrauerInductionClifford
 public import GroundTheory.GlobalFields.TateThesis.FiniteOrderParams
 public import GroundTheory.GlobalFields.TateThesis.DedekindZetaContinuation
 public import GroundTheory.LocalFields.DifferentGalois
@@ -62,12 +59,6 @@ namespace UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.Ad
 section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-private theorem unr_mul {a b : kˣ →* ℂˣ} (ha : IsUnram a) (hb : IsUnram b) : IsUnram (a * b) := fun x hx => by
-  rw [MonoidHom.mul_apply, ha x hx, hb x hx, one_mul]
-
-private theorem unr_inv {a : kˣ →* ℂˣ} (ha : IsUnram a) : IsUnram a⁻¹ := fun x hx => by
-  rw [MonoidHom.inv_apply, ha x hx, inv_one]
 
 end Loc
 

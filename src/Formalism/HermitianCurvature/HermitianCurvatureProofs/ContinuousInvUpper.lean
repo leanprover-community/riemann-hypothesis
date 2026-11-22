@@ -56,13 +56,6 @@ theorem card_UT (n : ℕ) : Fintype.card (UT n) = ∑ i ∈ Finset.range n, i :=
   simp_rw [this]
   exact Fin.sum_univ_eq_sum_range (fun i => i) n
 
-theorem symm_castSucc {n : ℕ} (i : Fin n) :
-    finSumFinEquiv.symm (i.castSucc : Fin (n + 1)) = Sum.inl i :=
-  finSumFinEquiv_symm_apply_castAdd (n := 1) i
-
-theorem symm_last (n : ℕ) : finSumFinEquiv.symm (Fin.last n : Fin (n + 1)) = Sum.inr (0 : Fin 1) :=
-  finSumFinEquiv_symm_apply_natAdd (m := n) (0 : Fin 1)
-
 theorem blk_cc {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) (e : ℂ) (i j : Fin n) :
     blk A b a e i.castSucc j.castSucc = A i j := by
   simp [blk, symm_castSucc]

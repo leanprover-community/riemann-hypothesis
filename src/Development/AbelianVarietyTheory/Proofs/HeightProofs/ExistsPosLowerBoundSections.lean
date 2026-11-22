@@ -4,7 +4,6 @@ public import Mathlib
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveOpen
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.BigStatementPfB
-public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.FullTranscendenceDegree
 public import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsCuspRestrictComp
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.EvaluationLawsGenericFramesAtlasHold

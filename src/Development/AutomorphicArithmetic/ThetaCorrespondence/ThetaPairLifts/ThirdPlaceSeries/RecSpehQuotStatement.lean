@@ -1,6 +1,6 @@
 module
 
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalLanglandsSpehProductStatement
+public import Mathlib
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RecSpehQuot
 public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.IsRecTOfIsRec

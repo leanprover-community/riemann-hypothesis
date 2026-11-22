@@ -21,9 +21,6 @@ private lemma actF_tmul (a b : F) (v : V) (v' : V') :
 private noncomputable def Ph (ψ : V →ₗ[F] F) (ψ' : V' →ₗ[F] F) : V ⊗[ℂ] V' →ₗ[ℂ] F ⊗[ℂ] F :=
   TensorProduct.map (ψ.restrictScalars ℂ) (ψ'.restrictScalars ℂ)
 
-private lemma Ph_tmul (ψ : V →ₗ[F] F) (ψ' : V' →ₗ[F] F) (a : V) (b : V') :
-    Ph ψ ψ' (a ⊗ₜ b) = ψ a ⊗ₜ ψ' b := rfl
-
 private lemma Ph_act (ψ : V →ₗ[F] F) (ψ' : V' →ₗ[F] F) (s : F ⊗[ℂ] F) (t : V ⊗[ℂ] V') :
     Ph ψ ψ' (actF F V V' s t) = s * Ph ψ ψ' t := by
   induction s using TensorProduct.induction_on with

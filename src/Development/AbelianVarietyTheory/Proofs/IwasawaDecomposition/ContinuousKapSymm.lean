@@ -121,13 +121,6 @@ structure IsoMat (V V' : HSp D) where
 
 namespace IsoMat
 
-def refl (V : HSp D) : IsoMat V V where
-  P := 1
-  Q := 1
-  PQ := Matrix.one_mul 1
-  QP := Matrix.one_mul 1
-  gram := by rw [cT_one, Matrix.one_mul, Matrix.mul_one]
-
 variable {V V' : HSp D} (I : IsoMat V V')
 
 def symm : IsoMat V' V where

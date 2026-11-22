@@ -38,8 +38,6 @@ theorem dx_eq (P Q : ℕ) : ActionCoordinates.dx P Q = PerpendicularEmbedding.dx
 
 theorem cM_eq (M : ℕ) : ActionCoordinates.cM M = ENNReal.ofReal (PerpendicularEmbedding.cM M) := rfl
 
-theorem act_eq (g : UpqT P Q) (x : PerpendicularEmbedding.Sp P Q) : ActionCoordinates.act g x = PerpendicularEmbedding.act g x := rfl
-
 theorem isPerpFrame_iff (x₀ : PerpendicularEmbedding.Sp P Q) (A : Matrix (Fin P ⊕ Fin Q) (Fin P' ⊕ Fin Q') ℂ)
     (j : UpqT P' Q' → UpqT P Q) :
     ActionCoordinates.IsPerpFrame x₀ (Matrix.toLin' A) j ↔ PerpendicularEmbedding.IsPerpEmb x₀ A j := by

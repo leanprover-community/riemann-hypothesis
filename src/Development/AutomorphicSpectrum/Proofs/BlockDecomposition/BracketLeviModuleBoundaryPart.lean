@@ -74,12 +74,6 @@ variable {V : Type} [AddCommGroup V] [Module ℂ V]
 theorem annq_apply (i : Lt n) (x : Cq n V) (A : Finset (Lt n)) :
     annq i x A = if i ∈ A then 0 else sgL i A • x (insert i A) := rfl
 
-theorem creq_apply (i : Lt n) (x : Cq n V) (A : Finset (Lt n)) :
-    creq i x A = if i ∈ A then sgL i A • x (A.erase i) else 0 := rfl
-
-theorem liftq_apply (T : Module.End ℂ V) (x : Cq n V) (A : Finset (Lt n)) :
-    liftq n T x A = T (x A) := rfl
-
 theorem annq_annq (i j : Lt n) : (annq i * annq j + annq j * annq i : Module.End ℂ (Cq n V)) = 0 := by
   refine LinearMap.ext fun x => funext fun A => ?_
   simp only [LinearMap.add_apply, Module.End.mul_apply, Pi.add_apply, LinearMap.zero_apply, Pi.zero_apply,

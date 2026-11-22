@@ -59,15 +59,6 @@ structure HeckeAll {Bs : DefBase K} (cf : ConvFace Bs) {Df : DefSide Bs} (S : In
 
   eigW : ∀ j c, S.Wp j c = ⨅ T, LinearMap.ker (hW j T - cf.ev c T • LinearMap.id)
 
-structure IndefPkg2 {Bs : DefBase K} (A : DefAmb Bs) (fc : DefSub A → DefFace Bs) (cf : ConvFace Bs) (C CH : ℝ)
-    extends IndefPkg A fc C CH where
-
-  conv : IndefConv Bs toIndefPkg.core.base.μ cf
-
-  heckeB : HeckeAll cf toIndefPkg.core.base.toIndefData
-
-  heckeC : HeckeAll cf toIndefPkg.core.cols.toIndefData
-
 namespace IndefPkg2
 
 variable {Bs : DefBase K} {A : DefAmb Bs} {fc : DefSub A → DefFace Bs} {cf : ConvFace Bs} {C CH : ℝ}

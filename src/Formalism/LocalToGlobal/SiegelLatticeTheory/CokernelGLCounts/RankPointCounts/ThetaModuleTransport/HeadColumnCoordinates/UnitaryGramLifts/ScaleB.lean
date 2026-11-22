@@ -72,9 +72,6 @@ def mbEqv (Z Z' : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (h : ∀ i (a : Fin r), 
     MbMod Z ≃ₗ[R] MbMod Z' :=
   Submodule.quotEquivOfEq _ _ (headCols_eq_of Z Z' h).symm
 
-theorem mbEqv_mk (Z Z' : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (h) (v : Fin (r + 1) → R) :
-    mbEqv Z Z' h (Submodule.Quotient.mk v) = Submodule.Quotient.mk v := rfl
-
 theorem card_isoMbe_lastCol (Z₁ Z₂ : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (δ c : R) (hδ : IsUnit δ) :
     Nat.card (IsoMbe Z₁ Z₂) =
       Nat.card (IsoMbe (Z₁ * dlast r δ + Matrix.of fun a b => if a = Fin.last r ∧ b = Fin.last r then c else 0)
@@ -110,9 +107,6 @@ def mbRowEqv (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (D Dinv : Matrix (Fin (r
         exact ⟨a, by funext i; simp [Matrix.mulVec, dotProduct, Matrix.mul_apply]⟩
       · rintro ⟨a, rfl⟩
         exact ⟨_, ⟨a, rfl⟩, by funext i; simp [Matrix.mulVec, dotProduct, Matrix.mul_apply]⟩)
-
-theorem mbRowEqv_mk (Z D Dinv : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (h1 h2) (v : Fin (r + 1) → R) :
-    mbRowEqv Z D Dinv h1 h2 (Submodule.Quotient.mk v) = Submodule.Quotient.mk (D.mulVec v) := rfl
 
 theorem card_isoMbe_lastRow (Z₁ Z₂ : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (δ δi : R) (hδ : δ * δi = 1) :
     Nat.card (IsoMbe Z₁ Z₂) = Nat.card (IsoMbe (dlast r δ * Z₁) (dlast r δ * Z₂)) := by

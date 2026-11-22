@@ -19,9 +19,6 @@ def toCircle {k : Type} [AddMonoid k] (ψ : AddChar k ℂ) (hn : ∀ t, ‖ψ t�
   map_zero_eq_one' := Circle.ext (by simp)
   map_add_eq_mul' a b := Circle.ext (AddChar.map_add_eq_mul ψ a b)
 
-theorem coe_toCircle {k : Type} [AddMonoid k] (ψ : AddChar k ℂ) (hn : ∀ t, ‖ψ t‖ = 1) (t : k) :
-    ((toCircle ψ hn t : Circle) : ℂ) = ψ t := rfl
-
 section General
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 

@@ -14,10 +14,6 @@ namespace GlobalTheory.LatAdLoc
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 
-local notation "𝔸" => FiniteAdeleRing (𝓞 F) F
-local notation "𝒮" => tensInt (F := F) 𝔸 (intOE E) (intAd F)
-local notation "ι" => inclE (F := F) (E := E) 𝔸
-
 theorem latAd_eq_globLat {N : ℕ} (x : GL (Fin N) (E ⊗[F] 𝔸)) (Lb : Submodule (𝓞 E) (Fin N → E)) :
     latAd x Lb = Formalism.UG.CS.globLat x Lb :=
   Submodule.span_eq (Formalism.UG.CS.globLat x Lb)

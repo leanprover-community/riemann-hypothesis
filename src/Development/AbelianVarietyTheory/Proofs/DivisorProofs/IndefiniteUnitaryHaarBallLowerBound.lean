@@ -20,9 +20,6 @@ def phiL {n : ℕ} (ι : K →ₐ[k] B) (E : Fin n → Fin n → B) :
   map_add' M N := by simp [add_mul, Finset.sum_add_distrib]
   map_smul' c M := by simp [Finset.smul_sum, smul_mul_assoc]
 
-theorem phiL_apply {n : ℕ} (ι : K →ₐ[k] B) (E : Fin n → Fin n → B) (M) :
-    phiL ι E M = ∑ a, ∑ b, ι (M a b) * E a b := rfl
-
 theorem core {n : ℕ} (ι : K →ₐ[k] B) (E : Fin n → Fin n → B)
     (hc : ∀ z x, Commute (ι z) x)
     (hE : ∀ a b c d, E a b * E c d = if b = c then E a d else 0)

@@ -30,8 +30,6 @@ theorem secondSplitCoord_smul (c : FpX X p) (t : TpX X p) : th2 X p θ (c • t)
   rw [map_smul]
   rfl
 
-theorem osmul_eq (c : OpX X p) (t : TpX X p) : c • t = (c : FpX X p) • t := rfl
-
 theorem th_incl (e : X.B.I.E) : θ (inclR (FpX X p) e) = (iota1 X p θ e, iota2 X p θ e) := rfl
 
 theorem first_raising_mem_equivariant (h : UnitElt X p θ) (l : Fin X.B.I.n → X.B.I.E) (hl : l ∈ X.B.I.L) :

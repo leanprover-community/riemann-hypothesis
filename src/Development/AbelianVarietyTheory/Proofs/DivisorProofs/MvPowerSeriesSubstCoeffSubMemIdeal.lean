@@ -46,41 +46,4 @@ theorem order_monoProd_sub {R σ τ : Type} [CommRing R] (u l : σ → MvPowerSe
   push_cast
   exact this
 
-theorem subst_coeff_sub_mem : ∀ {B Q σ τ : Type} [CommRing B] [CommRing Q] [Algebra B Q] [Fintype σ]
-    (N : Ideal B) (u ℓ : σ → MvPowerSeries τ B), (∀ s, constantCoeff (u s) = 0) →
-    (∀ s (β : τ →₀ ℕ), β.degree ≤ 1 → coeff β (u s) = coeff β (ℓ s)) →
-    ∀ (m : ℕ) (c : MvPowerSeries σ Q), (∀ α : σ →₀ ℕ, α.degree < m → ∃ b ∈ N, coeff α c = algebraMap B Q b) →
-    ∀ (w : τ →₀ ℕ), w.degree = m →
-      ∃ r ∈ N, coeff w (subst (up Q u) c) - coeff w (subst (up Q ℓ) c) = algebraMap B Q r := by
-  intro B Q σ τ _ _ _ _ N u ℓ hu hl m c hc w hw
-  have hℓ : ∀ s, constantCoeff (ℓ s) = 0 := fun s => by
-    rw [← coeff_zero_eq_constantCoeff_apply, ← hl s 0 (by simp), coeff_zero_eq_constantCoeff_apply,
-      hu s]
-  have hul : ∀ s, (2 : ℕ∞) ≤ (u s - ℓ s).order := fun s =>
-    nat_le_order (n := 2) fun β hβ => by
-      rw [map_sub, hl s β (by omega), sub_self]
-  have hU : HasSubst (up Q u) := hasSubst_of_constantCoeff_zero fun s => by
-    simp [up, hu s]
-  have hL : HasSubst (up Q ℓ) := hasSubst_of_constantCoeff_zero fun s => by
-    simp [up, hℓ s]
-  rw [coeff_subst hU, coeff_subst hL,
-    ← finsum_sub_distrib (coeff_subst_finite hU c w) (coeff_subst_finite hL c w)]
-  refine finsum_induction (fun x : Q => ∃ r ∈ N, x = algebraMap B Q r) ⟨0, N.zero_mem, by simp⟩
-    (fun x y ⟨r, hr, hx⟩ ⟨t, ht, hy⟩ => ⟨r + t, N.add_mem hr ht, by rw [hx, hy, map_add (f := _)]⟩)
-    fun α => ?_
-  have hprod : ∀ v : σ → MvPowerSeries τ B, (α.prod fun s e => up Q v s ^ e) =
-      map (algebraMap B Q) (α.prod fun s e => v s ^ e) := by
-    intro v
-    simp only [up, Finsupp.prod, map_prod, map_pow]
-  rw [hprod u, hprod ℓ, coeff_map, coeff_map, smul_eq_mul, smul_eq_mul, ← mul_sub, ← map_sub,
-    ← map_sub]
-  by_cases h : α.degree < m
-  · obtain ⟨b, hb, hcb⟩ := hc α h
-    exact ⟨b * _, N.mul_mem_right _ hb, by rw [hcb, map_mul]⟩
-  · have h0 : coeff w ((α.prod fun s e => u s ^ e) - α.prod fun s e => ℓ s ^ e) = 0 := by
-      refine coeff_of_lt_order (lt_of_lt_of_le ?_ (order_monoProd_sub u ℓ hu hℓ hul α))
-      have : w.degree ≤ α.degree := by omega
-      exact_mod_cast Nat.lt_succ_of_le this
-    exact ⟨0, N.zero_mem, by rw [h0, map_zero, mul_zero]⟩
-
 end GlobalTheory.SubstMod

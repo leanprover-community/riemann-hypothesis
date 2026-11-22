@@ -37,13 +37,4 @@ theorem cls_eq_ofChar (χ : (w.adicCompletion E)ˣ →* ℂˣ) (c : Irr (w.adicC
     ext; simp [Matrix.GeneralLinearGroup.scalar]
   exact ⟨h3 ▸ h1.comp _ h2, congrArg (Sigma.mk 1) (IrrRep.cl_eq_iff.2 ⟨φ⟩)⟩
 
-theorem IsRec.recUnit {rc : IrrGL (k := w.adicCompletion E) → WD h} (H : IsRec h rc) :
-    RecUnit fun _ (π : Irr (w.adicCompletion E) _) => rc (cls (toIrrRep π)) := by
-  obtain ⟨a, ha, ε, -, H⟩ := H
-  intro χ c hu hc g α hα
-  obtain ⟨hχ, e⟩ := cls_eq_ofChar χ c hc
-  simp only [e, H.one, eig_lpOfChar, Multiset.mem_singleton] at hα
-  rw [hα]
-  exact hu _
-
 end GlobalTheory.LocLanglands

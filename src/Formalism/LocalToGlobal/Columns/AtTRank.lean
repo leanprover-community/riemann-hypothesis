@@ -16,11 +16,8 @@ namespace RamFun
 variable {K : Type} [Field K] {ι : Type} [Fintype ι] [DecidableEq ι] {G : ι → Type} [∀ i, CommGroup (G i)]
   [∀ i, Fintype (G i)] {M : Type} [AddCommGroup M] [Module K M]
 
-
 variable (K M) in
 def trl (b : ∀ i, G i) : Module.End K ((∀ i, G i) → M) := LinearMap.funLeft K M fun c => b * c
-
-theorem trl_apply (b : ∀ i, G i) (F : (∀ i, G i) → M) (c : ∀ i, G i) : trl K M b F c = F (b * c) := rfl
 
 theorem trl_one : trl K M (1 : ∀ i, G i) = 1 := by
   refine LinearMap.ext fun F => funext fun c => ?_
@@ -37,14 +34,11 @@ theorem trl_comm (b b' : ∀ i, G i) : Commute (trl K M b) (trl K M b') := by
   show trl K M b * trl K M b' = trl K M b' * trl K M b
   rw [trl_mul, trl_mul, mul_comm]
 
-
 variable (K M) in
 def nmF (i : ι) : Module.End K ((∀ i, G i) → M) := ∑ g : G i, trl K M (Pi.mulSingle i g)
 
-
 variable (K M G) in
 def ramFun : Submodule K ((∀ i, G i) → M) := ⨅ i, LinearMap.ker (nmF K M (G := G) i)
-
 
 variable (K M G) in
 def offAlg (i : ι) : Submodule K (Module.End K ((∀ i, G i) → M)) :=
@@ -146,7 +140,6 @@ section Proj
 variable {K : Type} [Field K] [CharZero K] {ι : Type} [Fintype ι] [DecidableEq ι] {G : ι → Type}
   [∀ i, CommGroup (G i)] [∀ i, Fintype (G i)] {M : Type} [AddCommGroup M] [Module K M]
 
-
 variable (K M G) in
 def eF (i : ι) : Module.End K ((∀ i, G i) → M) := 1 - ((Fintype.card (G i) : K)⁻¹) • nmF K M i
 
@@ -163,7 +156,6 @@ theorem eF_mem_offAlg {i j : ι} (h : j ≠ i) : eF K G M j ∈ offAlg K G M i :
 
 theorem nmF_comm_eF (i j : ι) : Commute (nmF K M (G := G) i) (eF K G M j) :=
   (Commute.one_right _).sub_right ((nmF_comm i j).smul_right _)
-
 
 variable (K M G) in
 def eL (l : List ι) : Module.End K ((∀ i, G i) → M) := (l.map (eF K G M)).prod
@@ -247,9 +239,6 @@ section ColsRank
 open NumberField IsDedekindDomain Formalism.BasicNotions
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-
-
-
 
 end ColsRank
 

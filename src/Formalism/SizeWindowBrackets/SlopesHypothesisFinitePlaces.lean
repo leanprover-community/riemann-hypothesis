@@ -2,7 +2,10 @@ module
 
 public import Mathlib
 public import Formalism.HarderNarasimhan.StatementPl
-public import Formalism.SizeWindowBrackets.RealSlopeBoundsSplit
+public import Mathlib.Data.Real.Basic
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Algebra.Order.Field.Basic
+public import Mathlib.Data.Finset.Lattice.Fold
 
 @[expose] public section
 
@@ -15,16 +18,6 @@ namespace Formalism.LFunctionChainParameters.slopeLatticeData
 open Formalism.HN
 
 abbrev FinPl (K : Type) [Field K] [NumberField K] := {p : Ideal (𝓞 K) // p.IsMaximal}
-
-def idealPow {K : Type} [Field K] [NumberField K] (n : FinPl K →₀ ℤ) :
-    FractionalIdeal (nonZeroDivisors (𝓞 K)) K :=
-  n.prod fun w k => ((w.1 : FractionalIdeal (nonZeroDivisors (𝓞 K)) K)) ^ k
-
-
-def modLat {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V]
-    [Module (𝓞 K) V] (σ : FinPl K →₀ ℤ) (N : Submodule (𝓞 K) V) : Submodule (𝓞 K) V :=
-  Formalism.HermitianLatticesTheory.idealSmul ((idealPow (-σ) : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) :
-    Submodule (𝓞 K) K) N
 
 def lenAt {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module (𝓞 K) V]
     (w : FinPl K) (A B : Submodule (𝓞 K) V) : ℕ∞ :=

@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IsInertiaInfiniteCyclotomic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteCohomology
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.TypeConj
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.RtBasic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.RtPoints
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoEvLow

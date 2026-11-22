@@ -117,16 +117,6 @@ section Position
 
 variable {Pr : Primes X} {u : Pr.Word} {SG : Finset (HeightOneSpectrum (𝓞 X.E))} {n : ℕ}
 
-theorem moveHyp_of_notMem (hPr : Pr.Ok) (h : ∀ w ∈ SG, (Pr.T u : 𝓞 X.E) ∉ w.asIdeal) (P : Pr.vT u) :
-    MoveHyp (Pr.vT u) SG P := by
-  refine ⟨(moveHyp_of_ok hPr u P).ne, (moveHyp_of_ok hPr u P).st, fun w => ⟨fun e => ?_, fun e => ?_⟩⟩
-  · apply h w.1 w.2
-    rw [e]
-    exact T_mem hPr u P
-  · apply h w.1 w.2
-    rw [e, mem_conjP, map_natCast]
-    exact T_mem hPr u P
-
 theorem above_finite_nonempty (hX : X.Ok) (hPr : Pr.Ok) {P : Pr.vT u} (hP : MoveHyp (Pr.vT u) SG P)
     (d' : DecoSet (E := X.E) (n := n) (ST := Pr.vT u) (SG := SG)) :
     {d₁ : DecoSet (E := X.E) (n := n) (ST := Pr.vT u) (SG := SG) | d'.1.IsUp P (Pr.T u : 𝓞 X.E) d₁.1}.Finite ∧
@@ -146,7 +136,6 @@ theorem below_finite_nonempty (hX : X.Ok) (hPr : Pr.Ok) {P : Pr.vT u} (hP : Move
   exact ⟨d.dnSet_finite P hP.ne _, d.dnSet_nonempty P hP (T_unif hX hPr u P).1 (T_unif hX hPr u P).2⟩
 
 end Position
-
 
 variable {sel u} in
 theorem T_notMem_rowSG (hPr : Pr.Ok) (hsel : IsSel X sel) (hT : Pr.T u ∈ S) :
@@ -177,7 +166,6 @@ theorem T_notMem_rowSG (hPr : Pr.Ok) (hsel : IsSel X sel) (hT : Pr.T u ∈ S) :
       exact hT
     · simp at h
 
-
 namespace Hyp
 
 variable {Z : Dat} {H : D7} {s : Seam H Z.X} {cc : Ideal (𝓞 H.host.K)} {δ : ℂ} {χ : TaylorLogMetric.IdE H → ℂ} {cD : H.what₂.Tau → ℂ}
@@ -191,6 +179,5 @@ theorem g_mem (h : Hyp Z s cc δ χ cD sel S mu cst u) (k : Fin 2) : Z.Pr.g k �
   fin_cases k <;> simp [hostS]
 
 end Hyp
-
 
 end GlobalTheory.KerT

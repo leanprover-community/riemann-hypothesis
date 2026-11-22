@@ -272,14 +272,6 @@ theorem exists_pullGen (hL : D.toPre.P.L.IsLB) (oa : D.toPre.OAct O) (w0 : O)
   have c5 := corr_mulGen_one r
   exact corr_trans hL c1 (corr_trans hL c2 (corr_trans hL c3 c5))
 
-private lemma res_res_lemma {Y : Scheme.{0}} {U W Z : Y.Opens} (h₁ : W ≤ U) (h₂ : Z ≤ W) (x : Γ(Y, U)ˣ) :
-    res h₂ (res h₁ x) = res (h₂.trans h₁) x := by
-  ext
-  simp only [res, Units.coe_map, MonoidHom.coe_coe]
-  rw [← RingHom.comp_apply, ← CommRingCat.hom_comp, ← Functor.map_comp]
-  rfl
-
-
 section PullFam
 
 variable (hL : D.toPre.P.L.IsLB) (oa : D.toPre.OAct O) (w0 : O)
@@ -318,7 +310,6 @@ lemma pullProd_sameSum (χ : D.toPre.X) (β : D.toPre.X) (hβ : star a • χ = 
       ∑ x : Fin 4, if DegPre.famφ D.toPre F (star a • χ) x = ψ then DegPre.famε (k * N) x else 0
   rw [Finset.sum_eq_zero (fun x _ => hz x), add_zero]
 
-
 open scoped Classical in
 def pullSecs (s : Fam D.toPre F k) (β : D.toPre.X) :
     LB.Sec (LB.LinComb D.toPre.P.L (DegPre.famφ D.toPre F β) (DegPre.famε (k * N))) :=
@@ -355,7 +346,6 @@ lemma shape_secRel {Y : Scheme.{0}} {U₁ U₂ U₃ W V₂ O : Y.Opens} (hW : W 
   simp only [rs_rs_eq_rs_trans, rs_mul'] at e2
   rw [mul_comm]
   exact e2.symm
-
 
 variable {D F} in
 lemma secRel_pullSecs (hL : D.toPre.P.L.IsLB) (oa : D.toPre.OAct O) (w0 : O)

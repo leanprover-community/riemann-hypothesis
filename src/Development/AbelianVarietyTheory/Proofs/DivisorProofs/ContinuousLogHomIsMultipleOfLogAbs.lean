@@ -1,9 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToGAdMat
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ModulusOfNormEqAbs
 public import GroundTheory.GlobalFields.Adele.BaseChange
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.BaseChange

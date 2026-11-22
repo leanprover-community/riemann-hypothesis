@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.FormalGroupReduction
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.FormalGroupFiltration
 public import GroundTheory.LocalFields.FormalGroups.Basics
 
 @[expose] public section

@@ -57,9 +57,6 @@ def Cen (z : X) : Prop := (∀ g, z * g = g * z) ∧ T.L.pr z = 1
 
 end TyLev
 
-def hop {Γ H V : Type} [Group Γ] [Group H] [AddCommGroup V] [Module ℂ V] (ι : Γ →* H) (K : Subgroup H) (ξ : Representation ℂ Γ V)
-    (F : H → ℂ) : Module.End ℂ (forms ι K ξ) := if h : ∃ T, IsHecke ι K ξ F T then h.choose else 0
-
 def TfAdm : Prop := ∀ (X M : Type) [Group X] [Group M] (T : TyLev X M) (h : X), T.L.pr h = 1 →
   T.admitted (T.tf h) ∧ (∀ k (hk : k ∈ T.K) g, T.tf h (k * g) = (((T.ψ ⟨T.L.pr k, T.fact.2 k hk⟩)⁻¹ : ℂˣ) : ℂ) * T.tf h g ∧
     T.tf h (g * k) = (((T.ψ ⟨T.L.pr k, T.fact.2 k hk⟩)⁻¹ : ℂˣ) : ℂ) * T.tf h g)

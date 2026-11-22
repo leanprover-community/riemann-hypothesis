@@ -95,9 +95,6 @@ def mulOp {N : ℕ} (f : GA E N → ℂ) (hf : f ∈ Sm E N) : Sm E N →ₗ[ℂ
     show f x * (c * φ.1 x) = c * (f x * φ.1 x)
     ring)
 
-theorem mulOp_val {N : ℕ} (f : GA E N → ℂ) (hf : f ∈ Sm E N) (φ : Sm E N) :
-    (mulOp f hf φ).1 = fun x => f x * φ.1 x := rfl
-
 theorem mulOp_mulChi {N : ℕ} (f : GA E N → ℂ) (hf : f ∈ Sm E N) (χ : HChar E) (ψ : Sm E N) :
     mulOp f hf (mulChi N χ ψ) = mulChi N χ (mulOp f hf ψ) := Subtype.ext (funext fun x => by
   show f x * (mulChi N χ ψ).1 x = (mulChi N χ (mulOp f hf ψ)).1 x
@@ -142,9 +139,6 @@ theorem lev_mul_cf_int {r s : ℕ} (k : Kinf E (r + s)) (g : GL (Fin (r + s)) (A
           rfl
   rw [h1, ← mul_assoc, ← mul_assoc, hv, mul_assoc (unip v), ← map_mul]
   rfl
-
-theorem act_fin_apply' {N : ℕ} (g : GL (Fin N) (Af E)) (φ : Sm E N) (x : GA E N) :
-    (act (.fin g) φ).1 x = φ.1 (x * finGL E N g) := rfl
 
 theorem mult_operator_shifts_twist {N : ℕ} (b : Tr E N) : ∀ (α β : ℕ → ℂ), (b.AllLeaves fun _ V => _root_.GlobalTheory.CuspRep.IsStable V) →
     ∀ φ ∈ (b.addTw α).space, mulOp (mult b fun i => β i - α i) (mult_mem_Sm b _) φ ∈ (b.addTw β).space := by

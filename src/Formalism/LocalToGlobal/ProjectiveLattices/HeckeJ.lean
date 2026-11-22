@@ -1,6 +1,7 @@
 module
 
-public import Formalism.LocalToGlobal.ProjectiveLattices.BaseEmbeddingInclusion
+public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
+public import Formalism.LocalToGlobal.IndefiniteReal.GramCEqTranspose
 
 @[expose] public section
 

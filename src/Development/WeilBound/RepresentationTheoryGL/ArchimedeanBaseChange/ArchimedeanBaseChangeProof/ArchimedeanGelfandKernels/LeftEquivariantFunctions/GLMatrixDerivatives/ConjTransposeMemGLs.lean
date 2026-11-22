@@ -50,9 +50,6 @@ theorem tw_val (x d : G n) : ((tw x d : G n) : Mat n) = (x : Mat n)⁻¹ * d * (
 def trL (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V] : (V →L[ℂ] V) →ₗ[ℂ] ℂ :=
   (LinearMap.trace ℂ V).comp (ContinuousLinearMap.coeLM ℂ)
 
-theorem trL_apply {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V] (A : V →L[ℂ] V) :
-    trL V A = LinearMap.trace ℂ V (A : V →ₗ[ℂ] V) := rfl
-
 theorem trL_cont (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V] : Continuous (trL V) :=
   LinearMap.continuous_of_finiteDimensional _
 

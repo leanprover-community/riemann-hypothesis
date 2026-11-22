@@ -145,15 +145,6 @@ theorem wmp_isHeckeNbr_symm {P : HeightOneSpectrum (𝓞 E)} {i : ℕ} {N N₁ :
   · rw [wmp_card_quot, ← wmp_relIndex_inf_eq hN hN₁ hu hu₁ hB, ← wmp_card_quot, inf_comm,
       Nat.card_congr e.toEquiv, Nat.card_fun, Nat.card_eq_fintype_card (α := Fin i), Fintype.card_fin, card_quot_conjP]
 
-theorem wmp_hStd_osmul_right (u z : Sp E n) (s : 𝓞 E) :
-    hStd E n u (s • z) = algebraMap (𝓞 E) E s * hStd E n u z := by
-  rw [← algebraMap_smul E s z, map_smul, smul_eq_mul]
-
-theorem wmp_hStd_osmul_left (u z : Sp E n) (s : 𝓞 E) :
-    hStd E n (s • u) z = algebraMap (𝓞 E) E (cO E s) * hStd E n u z := by
-  rw [← algebraMap_smul E s u, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, algebraMap_cO]
-  rfl
-
 theorem wmp_exists_unif (P : HeightOneSpectrum (𝓞 E)) :
     ∃ a ∈ P.asIdeal, ∃ c : 𝓞 E, c ∉ P.asIdeal ∧ ∀ p ∈ P.asIdeal, ∃ t : 𝓞 E, c * p = a * t := by
   first | exact Bl.general_b_fact_right_more.goal1 .. | (apply Bl.general_b_fact_right_more.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_right_more.goal1 <;> assumption) | (apply @Bl.general_b_fact_right_more.goal1 <;> assumption) | (intros; apply @Bl.general_b_fact_right_more.goal1 <;> assumption) | (apply @Bl.general_b_fact_right_more.goal1 <;> first | assumption | infer_instance) | exact @Bl.general_b_fact_right_more.goal1 E ‹_› ‹_› ‹_› P | exact @Bl.general_b_fact_right_more.goal1 E ‹_› ‹_› ‹_› | exact @Bl.general_b_fact_right_more.goal1 E ‹_› ‹_› | exact @Bl.general_b_fact_right_more.goal1 E ‹_› | exact @Bl.general_b_fact_right_more.goal1 E

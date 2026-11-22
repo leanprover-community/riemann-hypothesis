@@ -30,10 +30,6 @@ theorem sum_ite_val {n : ℕ} (m : ℕ) (g : ℕ → ℂ) :
     rintro rfl
     exact h j.2
 
-theorem posIx_inl (i : Fin p) : posIx (Sum.inl i : Ix p q) = i := rfl
-
-theorem posIx_inr (j : Fin q) : posIx (Sum.inr j : Ix p q) = j := rfl
-
 theorem aOf_apply (h : ℕ → ℝ) (a b : Ix p q) :
     aOf p q h a b = if a.isLeft = b.isLeft then 0
       else if posIx a = posIx b then ((h (posIx a) : ℝ) : ℂ) else 0 := by

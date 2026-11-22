@@ -204,7 +204,6 @@ theorem integrable_of_lintegral_eq_one {α : Type} [MeasurableSpace α] {μ : Me
 
 variable [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G] [BorelSpace G]
 
-
 open GlobalTheory.Tw in
 theorem IsQuotIntL1.cutoff [SFinite μG] [μG.IsMulLeftInvariant] [SFinite μR] [μR.IsInvInvariant]
     (h : IsQuotIntL1 μR μG f z) {β : G → ℝ≥0} (hβ : IsCosetCutoff R μR β) :
@@ -250,7 +249,6 @@ theorem IsQuotIntL1.unique (hR : IsClosed (R : Set G)) (h : IsQuotIntL1 μR μG 
   have : LocallyCompactSpace R := hR.locallyCompactSpace
   have : SecondCountableTopology R := TopologicalSpace.Subtype.secondCountableTopology (R : Set G)
   rw [(h.cutoff hβ).2, (h'.cutoff hβ).2]
-
 
 open GlobalTheory.Tw in
 theorem isQuotIntL1_iff (hR : IsClosed (R : Set G)) (hm : Measurable f) :
@@ -363,29 +361,8 @@ def UnifModGrowth (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E 
 
 variable {V W}
 
-theorem modGrowth_iff_exp {f : GA D V → X} : ModGrowth V f ↔ ∃ A, ModGrowthExp V A f := exists_comm
-
 theorem nonneg_of_growth {f : GA D V → X} {C : ℝ} {A : ℕ} (h : ∀ g, ‖f g‖ ≤ C * height V g ^ A) : 0 ≤ C := by
   simpa using (norm_nonneg _).trans (h 1)
-
-theorem ModGrowthExp.mono {f : GA D V → X} {A B : ℕ} (h : ModGrowthExp V A f) (hAB : A ≤ B) : ModGrowthExp V B f := by
-  obtain ⟨C, hC⟩ := h
-  exact ⟨C, fun g => (hC g).trans
-    (mul_le_mul_of_nonneg_left (pow_le_pow_right₀ (one_le_height V g) hAB) (nonneg_of_growth hC))⟩
-
-theorem ModGrowthExp.add {f f' : GA D V → X} {A : ℕ} (h : ModGrowthExp V A f) (h' : ModGrowthExp V A f') :
-    ModGrowthExp V A (f + f') := by
-  obtain ⟨C, hC⟩ := h
-  obtain ⟨C', hC'⟩ := h'
-  exact ⟨C + C', fun g => (norm_add_le _ _).trans (by rw [add_mul]; exact add_le_add (hC g) (hC' g))⟩
-
-theorem ModGrowthExp.mul {f f' : GA D V → ℂ} {A B : ℕ} (h : ModGrowthExp V A f) (h' : ModGrowthExp V B f') :
-    ModGrowthExp V (A + B) (f * f') := by
-  obtain ⟨C, hC⟩ := h
-  obtain ⟨C', hC'⟩ := h'
-  refine ⟨C * C', fun g => ?_⟩
-  rw [Pi.mul_apply, norm_mul, pow_add, mul_mul_mul_comm]
-  exact mul_le_mul (hC g) (hC' g) (norm_nonneg _) ((norm_nonneg _).trans (hC g))
 
 theorem norm_le_quotHeight_pow {f : GA D V → X} (hf : ∀ γ ∈ GQ V, ∀ g, f (γ * g) = f g) {C : ℝ} {A : ℕ}
     (h : ∀ g, ‖f g‖ ≤ C * height V g ^ A) (g : GA D V) : ‖f g‖ ≤ C * 2 ^ A * quotHeight V g ^ A := by
@@ -401,16 +378,6 @@ theorem ModGrowth.of_le {Y : Type} [NormedAddCommGroup Y] {f : GA D V → X} {f'
   obtain ⟨C, A, hC⟩ := h
   exact ⟨C, A, fun g => (hle g).trans (hC g)⟩
 
-theorem ModGrowth.add {f f' : GA D V → X} (h : ModGrowth V f) (h' : ModGrowth V f') : ModGrowth V (f + f') := by
-  obtain ⟨A, hA⟩ := modGrowth_iff_exp.1 h
-  obtain ⟨B, hB⟩ := modGrowth_iff_exp.1 h'
-  exact modGrowth_iff_exp.2 ⟨max A B, (hA.mono (le_max_left _ _)).add (hB.mono (le_max_right _ _))⟩
-
-theorem ModGrowth.mul {f f' : GA D V → ℂ} (h : ModGrowth V f) (h' : ModGrowth V f') : ModGrowth V (f * f') := by
-  obtain ⟨A, hA⟩ := modGrowth_iff_exp.1 h
-  obtain ⟨B, hB⟩ := modGrowth_iff_exp.1 h'
-  exact modGrowth_iff_exp.2 ⟨A + B, hA.mul hB⟩
-
 theorem ModGrowth₂.right {f : GA D V → GA D W → X} (h : ModGrowth₂ V W f) (g : GA D V) : ModGrowth W (f g) := by
   obtain ⟨C, A, hC⟩ := h
   exact ⟨C * height V g ^ A, A, fun h => by rw [mul_assoc, ← mul_pow]; exact hC g h⟩
@@ -421,15 +388,6 @@ def RapidDec (Φ : GA D V → X) : Prop :=
   (∀ γ ∈ GQ V, ∀ g, Φ (γ * g) = Φ g) ∧ Continuous Φ ∧ ∀ N : ℕ, ∃ C : ℝ, ∀ g, ‖Φ g‖ * quotHeight V g ^ N ≤ C
 
 def decaySize (N : ℕ) (Φ : GA D V → X) : ℝ≥0∞ := ⨆ g, ENNReal.ofReal (‖Φ g‖ * quotHeight V g ^ N)
-
-theorem rapidDec_exp_neg : RapidDec V fun g => (Real.exp (-quotHeight V g) : ℂ) := by
-  refine ⟨fun γ hγ g => by simp only [quotHeight_left V hγ],
-    Complex.continuous_ofReal.comp (Real.continuous_exp.comp (continuous_quotHeight V).neg),
-    fun N => ⟨N.factorial, fun g => ?_⟩⟩
-  have h := Real.pow_div_factorial_le_exp _ (quotHeight_pos V g).le N
-  rw [div_le_iff₀ (by positivity)] at h
-  rw [Complex.norm_real, Real.norm_of_nonneg (Real.exp_pos _).le, Real.exp_neg, inv_mul_le_iff₀ (Real.exp_pos _)]
-  exact h
 
 variable {V}
 
@@ -523,17 +481,6 @@ theorem RapidDec.integrableOn {Φ : GA D V → ℂ} (h : RapidDec V Φ) {μ : Me
   exact Measure.integrableOn_of_bounded hS h.continuous.aestronglyMeasurable (Eventually.of_forall hC)
 
 end Unitary
-
-theorem isQuotIntL1_bot {G : Type} [Group G] [MeasurableSpace G] {μG : Measure G} {f : G → ℂ} {z : ℂ} :
-    IsQuotIntL1 (R := ⊥) (Measure.dirac 1) μG f z ↔ Integrable f μG ∧ z = ∫ g, f g ∂μG := by
-  have e : ∀ (F : G → ℂ) (h : G), (fun r : (⊥ : Subgroup G) => F (r * h)) = fun _ => F h := fun F h =>
-    funext fun r => by rw [Subsingleton.elim r 1]; simp
-  constructor
-  · rintro ⟨F, h1, -, h3, h4⟩
-    obtain rfl : f = F := funext fun h => by simp [h3, e]
-    exact ⟨h1, h4⟩
-  · rintro ⟨h1, h2⟩
-    exact ⟨f, h1, fun h => by rw [e]; exact integrable_const _, fun h => by simp [e], h2⟩
 
 end GlobalTheory.Grow
 

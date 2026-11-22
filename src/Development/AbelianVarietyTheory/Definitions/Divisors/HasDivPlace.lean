@@ -3,7 +3,9 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NotCompactOfMEqOne
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne
-public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.IsPrimeToPLat
+public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsDimEqOne
+public import Development.AbelianVarietyTheory.Definitions.Divisors.RedSurjective
+public import Development.AbelianVarietyTheory.Definitions.Divisors.TorsionTowersOfDivisibleGroup
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ConnectedSpaceSpecOfIsLocalRing
 
 @[expose] public section
@@ -58,15 +60,6 @@ structure Link (D : Datum p) (G : HTGroup p) where
     ∀ v : InfinitePlace G.F,
       ((if v.embedding (e D.ω) = D.ρc then -Complex.I else Complex.I) • (G.gram v * G.psiR v J)).PosDef
 
-def HasDivPlace (G : HTGroup p) : Prop :=
-  ∃ w : HeightOneSpectrum (𝓞 G.F), (p : 𝓞 G.F) ∉ w.asIdeal ∧
-    ∀ x : w.adicCompletion G.F ⊗[G.F] G.C, x ≠ 0 → IsUnit x
-
-def RegAf (G : HTGroup p) (ga : G.GAf) : Prop :=
-  ∃ v : AwayP p, ∀ x y : v.1.adicCompletion ℚ ⊗[ℚ] G.C,
-    Commute x ((ubcMap (AfP.eval v) ga).1.1 : v.1.adicCompletion ℚ ⊗[ℚ] G.C) →
-    Commute y ((ubcMap (AfP.eval v) ga).1.1 : v.1.adicCompletion ℚ ⊗[ℚ] G.C) → Commute x y
-
 def IsIntAf (a : AfP p) : Prop := ∀ v : AwayP p, AfP.eval v a ∈ v.1.adicCompletionIntegers ℚ
 
 def LaHat (D : Datum p) : AddSubgroup (AfP p ⊗[ℚ] VQ D) :=
@@ -108,51 +101,10 @@ section Points
 
 variable {D : Datum p} {R : Type} [CommRing R] {b : Base D R} {k : Type} [Field k] {β : R →+* k} {N N' : ℕ}
 
-abbrev TIso (o : Obj b N (spMap β)) : Type :=
-  TateIsoO D k (Over.mk (𝟙 (Sp k)) ⟶ o.A) (fun c g => g ≫ o.act.act c)
-    (fun n g g' z => Out.WeilIs o.A (o.P.pull (lift (𝟙 o.A) (𝟙 o.A)).left) n g g' (unitOn z))
-
 variable {G : HTGroup p} (L : Link D G)
 
 variable [CharP k p] [PerfectRing k p]
 
-def Compat (b : Base D R) (β : R →+* k) (red : (Obar p).toSubring →+* k) : Prop :=
-  WittVector.constantCoeff (GlobalTheory.IsogParam.zpW p k L.ρp) = β b.ρ ∧
-    ∀ (i : Fin D.a) (c : 𝓞 D.F) (z : (Obar p).toSubring), (z : PadicAlgCl p) = G.emb (L.w i) (L.e c) →
-      red z = β (b.t i c)
-
-structure Frame (T : Theory p) (red : (Obar p).toSubring →+* k) (r : ℕ) (H : PDivGroup p k) (act : D.O → (H ⟶ H))
-    (rat : ℤ → (H ⟶ H) → Prop) (d : (w : Fin G.m) → GL (Fin G.n) (KQ p (G.Fw w) r)) where
-
-  io : GlobalTheory.LKLoc.intR p (Q0 p) r →+* WittVector p k
-  io_red : ∀ (a : GlobalTheory.LKLoc.intR p (Q0 p) r) (z : (Obar p).toSubring),
-    (z : PadicAlgCl p) = ((a : Qr p r) : PadicAlgCl p) → WittVector.constantCoeff (io a) = red z
-
-  sp : ∀ w, D.O →+* Matrix (Fin D.m) (Fin D.m) (intKQ p (G.Fw w) r)
-  sp_F : ∀ w (c : 𝓞 D.F), (sp w (algebraMap (𝓞 D.F) D.O c)).map (intKQ p (G.Fw w) r).subtype =
-    Matrix.scalar (Fin D.m) (inclK p (G.Fw w) r (G.embW w (L.e c)))
-
-  B : ∀ w, Matrix (Fin D.m) (Fin G.n) (intKQ p (G.Fw w) r) →+ T.M H
-  B_smul : ∀ w (a : GlobalTheory.LKLoc.intR p (Q0 p) r) (a' : intKQ p (G.Fw w) r), (a' : KQ p (G.Fw w) r) = inclQ p (G.Fw w) r a →
-    ∀ X, B w (a' • X) = io a • B w X
-  B_act : ∀ w c X, T.map (act c) (B w X) = B w ((sp w c)ᵀ * X)
-  B_span : Submodule.span (WittVector p k) (⋃ w, Set.range (B w)) =
-    LinearMap.ker (T.map (act (algebraMap (𝓞 D.F) D.O D.ω)) - GlobalTheory.IsogParam.zpW p k L.ρp • LinearMap.id)
-  B_rat : ∀ w m ψ X, rat m ψ → T.map ψ (B w X) = m • (fun x => T.F H x)^[r] (B w X)
-  B_F : ∀ w X, ∃ Y : Matrix (Fin D.m) (Fin G.n) (intKQ p (G.Fw w) r), Y.map (intKQ p (G.Fw w) r).subtype =
-    HMul.hMul (α := Matrix (Fin D.m) (Fin G.n) (KQ p (G.Fw w) r)) (β := Matrix (Fin G.n) (Fin G.n) (KQ p (G.Fw w) r))
-      ((X.map (intKQ p (G.Fw w) r).subtype).map (sigKQ p (G.Fw w) r)) ((d w)⁻¹).val ∧ T.F H (B w X) = B w Y
-
 end Points
-
-structure Setup {D : Datum p} {G : HTGroup p} (L : Link D G) {R : Type} [CommRing R] (b : Base D R)
-    (β : R →+* AlgebraicClosure (ZMod p)) (red : (Obar p).toSubring →+* AlgebraicClosure (ZMod p)) (N r : ℕ) : Prop where
-  simple : D.IsSimple
-  div : HasDivPlace G
-  three : 3 ≤ N
-  cop : N.Coprime p
-  pos : 0 < r
-  rat : ∀ x, β x ^ p ^ r = β x
-  compat : Compat L b β red
 
 end GlobalTheory.LKGeo

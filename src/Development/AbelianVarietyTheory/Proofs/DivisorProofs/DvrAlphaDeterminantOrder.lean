@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IotaScalarOne
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.QuotientEigenDifference
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SandwichMaps
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EigenspacesOfRingHomsIndependent
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AinfIsDomainMuNeZero
 public import ReciprocityTheory.DualLattices.SmallLevelClassSet
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SandwichDatumScalarAction

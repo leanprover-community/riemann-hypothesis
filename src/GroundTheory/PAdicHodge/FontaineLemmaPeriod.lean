@@ -70,12 +70,6 @@ end NumberTheory
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝒪♭" => PreTilt (normInteger K) p
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "θ" => fontaineTheta (normInteger K) p
-local notation "𝔭" => Ideal.span {(p : ACris K p)}
-local notation "φ" => WittVector.frobeniusEquiv p 𝒪♭
-
 theorem dpow_p_pow_succ (x : AInf K p) (j : ℕ) :
     dpow p x ^ (j + 1) =
       ((∏ i ∈ Finset.range j, ((i + 2) * p).choose p : ℕ) : 𝔸) * dpow ((j + 1) * p) x := by
@@ -156,7 +150,6 @@ theorem exists_mu_pow_eq_pow_mem {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1)
 theorem mem_jacobson_of_pow_mem {x : ACris K p} {m : ℕ} (h : x ^ m ∈ 𝔭) :
     x ∈ (⊥ : Ideal (ACris K p)).jacobson :=
   Ideal.isRadical_jacobson ⊥ ⟨m, IsAdicComplete.le_jacobson_bot _ h⟩
-
 
 set_option maxHeartbeats 1600000 in
 theorem exists_periodT_eq_mu_mul_unit {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1)

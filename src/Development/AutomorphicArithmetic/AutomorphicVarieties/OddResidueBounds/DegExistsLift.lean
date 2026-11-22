@@ -1,7 +1,8 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.OddResidueBounds.ZeroMemUnrHom
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CMFieldExponentialBounds.compsup
+public import Mathlib
+public import Development.AutomorphicArithmetic.QuadraticCharacters.GaussRoot
 
 @[expose] public section
 

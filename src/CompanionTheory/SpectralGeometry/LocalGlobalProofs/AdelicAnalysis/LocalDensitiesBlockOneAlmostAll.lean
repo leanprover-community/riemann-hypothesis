@@ -21,18 +21,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.SW.GoodStep
 
-theorem blockOne_zero_zero {K : Type} [Zero K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K) :
-    blockOne t A 0 0 = t := rfl
-
-theorem blockOne_zero_succ {K : Type} [Zero K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K) (j : Fin M) :
-    blockOne t A 0 j.succ = 0 := rfl
-
-theorem blockOne_succ_zero {K : Type} [Zero K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K) (i : Fin M) :
-    blockOne t A i.succ 0 = 0 := rfl
-
-theorem blockOne_succ_succ {K : Type} [Zero K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K) (i j : Fin M) :
-    blockOne t A i.succ j.succ = A i j := rfl
-
 theorem det_blockOne {K : Type} [CommRing K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K) :
     (blockOne t A).det = t * A.det := by
   have hs : (blockOne t A).submatrix Fin.succ (Fin.succAbove 0) = A := by

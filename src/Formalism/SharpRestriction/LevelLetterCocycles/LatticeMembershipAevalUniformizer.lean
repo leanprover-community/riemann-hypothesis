@@ -22,9 +22,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
 
-local notation "ιE" => algebraMap (LetA O n) W.EE
-local notation "aev" => Polynomial.aeval (AlgHom.toLinearMap (W.γE W.gam) : Module.End O W.EE)
-
 theorem uniformizer_isUnit_etale (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP W) : IsUnit (ιE W.π₀) := by
   obtain ⟨w, hw⟩ := hR.2.2.1
   rw [hw, map_mul, map_pow]

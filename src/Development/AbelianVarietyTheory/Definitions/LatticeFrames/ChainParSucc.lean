@@ -29,7 +29,6 @@ structure Com (D : D7) where
   P : LevelP Pg D.R.r ℂ
   chi : ℕ → ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ
 
-
 open Classical in
 def Com.S (c : Com D) : Finset (HeightOneSpectrum (𝓞 D.host.F)) := c.Pg.image fun PP => (_root_.IsDedekindDomain.HeightOneSpectrum.under (𝓞 D.host.F) PP)
 
@@ -222,10 +221,6 @@ def UpNe (D : D7) : Prop := ForStep D fun c k s _ p => ∀ (u : s.CC c) B, IsPar
 def StepUp (D : D7) : Prop := ForStep D fun c k s s' p => ∀ ipD ip ipD' ip', IsMet c s ipD ip → IsMet c s' ipD' ip' →
   ∀ (u : s.CC c) B, IsPar u B → LNe c (c.chT (k + 1)) B →
     ∃ x : s'.CC c, (∀ y, ip' y x = ip (p.io y) u) ∧ IsPar x (stepPar (c.chS (k + 1)) (c.chT (k + 1)) D.R.t B)
-
-def ChainL (D : D7) : Prop := ∀ c : Com D, c.Is → ∀ B : GlobalTheory.LFun.Fam D.host.E,
-  GlobalTheory.LFun.Bounded (GlobalTheory.LFun.above D.host.E (c.S : Set (HeightOneSpectrum (𝓞 D.host.F)))) B D.R.r (((D.R.r : ℝ) - 1) / 2) →
-  ∀ k < D.R.m, LNe c (c.chT (k + 1)) (chainPar c B k)
 
 theorem chainPar_succ (c : Com D) (B : GlobalTheory.LFun.Fam D.host.E) (k : ℕ) :
     chainPar c B (k + 1) = stepPar (c.chS (k + 1)) (c.chT (k + 1)) D.R.t (chainPar c B k) := rfl

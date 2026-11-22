@@ -26,7 +26,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeKrullDi
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeLocalMass
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMeetNull
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.SpecFirstDetFormNeZero
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.GaussNormEqCoeffGaussNorm
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChartGram
@@ -54,7 +53,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PMahlerAvera
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PMahlerIntegrand
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PMinimalPrimeComap
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PNormOfDividedFormSep
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.IsMultiHomogOfIsChowForm
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsIncidenceZeroLocus
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormExtend
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PRadicalBaseChange
@@ -65,13 +63,11 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PPolyLocalGe
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PImageDimLe
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBadSetSmaller
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.HeightCoheightQuotient
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PProperSymm
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LowerBoundConditional
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.HeightMul
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.MahlerMul
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ContinuousHermNormGroup
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSpecFirstSwapMahler
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSphereMeanFubini
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSphereMeanLinearBall
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTangentJacCompress
@@ -125,7 +121,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PVeroneseGramMo
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PVeroneseMonoBasis
 public import GroundTheory.HeightsAndTheta.Heights.HermitianLattice
 public import GroundTheory.HeightsAndTheta.Heights.ComplexPoints
-public import GroundTheory.HeightsAndTheta.Heights.FinrankFibreAtOfIsInvertibleSheaf
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.PSpaceFinite
 public import GroundTheory.HeightsAndTheta.Heights.FubiniStudyMetric
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheafAlt
@@ -220,16 +215,17 @@ public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.IsFlagIntegral
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.AltCoeff
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Expand
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.RestAt
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.IndefiniteTreeX
+public import Formalism.HarderNarasimhan.Statement
+public import Formalism.LatticeSlopes.LatticeSlopesProofs.DegQuot
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RegularLocalRegularSequence.ExistsIsRegularOfListEqMaximalIdeal
+public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransferenceMinima
 public import GroundTheory.GlobalFields.AnalyticClassNumber.DirichletHeckeCorrespondence
 public import GroundTheory.GlobalFields.Artin.OneDim
-public import GroundTheory.GlobalFields.Artin.Series
 public import GroundTheory.GlobalFields.ExistenceTheorem.ExistsIsAbelianGaloisRangeIdeleClassNormEqOfFini
 public import GroundTheory.GlobalFields.NormResidueSymbol.RestrictNormalInfiniteLocalSymbol
 public import GroundTheory.GlobalFields.Artin.Places
 public import GroundTheory.GlobalFields.Artin.InflationTower
 public import GroundTheory.GlobalFields.AnalyticClassNumber.HeckeContinued
-public import GroundTheory.LocalFields.BrauerInductionClifford
 public import GroundTheory.GlobalFields.TateThesis.FiniteOrderParams
 public import GroundTheory.GlobalFields.TateThesis.DedekindZetaContinuation
 public import GroundTheory.LocalFields.DifferentGalois
@@ -281,8 +277,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PInvertibleProduc
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLelongWeightDiff
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLocalGenFamily
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLocallyPrincipalCoprimeField
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivPushA
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.KerEqBotOfCoord
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun

@@ -75,10 +75,6 @@ def coneF {G₁ G₂ : B.Etale ⥤ Scheme.{0}} (F : G₁ ⟶ G₂) (q : ℕ) : B
     simp only [rmap, Functor.map_comp]
     exact mappingCone.map_comp _ _ _ _ _ _ _ _ _
 
-theorem id_left' (U : B.Etale) : (𝟙 U : U ⟶ U).left = 𝟙 U.left := rfl
-
-theorem comp_left' {U V W : B.Etale} (a : U ⟶ V) (b : V ⟶ W) : (a ≫ b).left = a.left ≫ b.left := rfl
-
 def gY {Y : Scheme.{0}} (p : Y ⟶ B) : B.Etale ⥤ Scheme.{0} where
   obj U := YU p U
   map a := resY p a

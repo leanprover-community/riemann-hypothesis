@@ -73,23 +73,11 @@ theorem opM_smul (e : D.host.E) (w : ℂ) (v : TaylorLogMetric.VC D a b) : opM e
   show TaylorLogMetric.embT D τ e * (w * v τ i j) = w * (TaylorLogMetric.embT D τ e * v τ i j)
   ring
 
-theorem emV_smulE (e : D.host.E) (A : Matrix (Fin b) (Fin a) D.host.E) : emV (e • A) = opM e (emV A) := by
-  funext τ i j
-  show TaylorLogMetric.embT D τ (e * A i j) = _
-  rw [map_mul]
-  rfl
-
 theorem emV_smulO (r : 𝓞 D.host.E) (A : Matrix (Fin b) (Fin a) D.host.E) : emV (r • A) = opM (r : D.host.E) (emV A) := by
   funext τ i j
   show TaylorLogMetric.embT D τ (r • A i j) = _
   rw [Algebra.smul_def, map_mul]
   rfl
-
-theorem phi_smulE (δ : ℂ) (e : X.E) (x : HomE X.E a b) : phi s δ (e • x) = opM (s.iE e) (phi s δ x) := by
-  funext τ i j
-  show δ * TaylorLogMetric.embT D τ (s.iE (e * x (Pi.single j 1) i)) = TaylorLogMetric.embT D τ (s.iE e) * (δ * _)
-  rw [map_mul, map_mul]
-  ring
 
 theorem phi_smulO (δ : ℂ) (r : 𝓞 X.E) (x : HomE X.E a b) : phi s δ (r • x) = opM (s.iE (r : X.E)) (phi s δ x) := by
   funext τ i j
@@ -97,8 +85,6 @@ theorem phi_smulO (δ : ℂ) (r : 𝓞 X.E) (x : HomE X.E a b) : phi s δ (r •
   rw [Algebra.smul_def, map_mul, map_mul]
   show δ * (TaylorLogMetric.embT D τ (s.iE (r : X.E)) * _) = _
   ring
-
-theorem phi_eq (δ : ℂ) (x : HomE X.E a b) : phi s δ x = δ • emV (mat s x) := rfl
 
 end Maps
 
@@ -349,9 +335,6 @@ theorem embC_injective (hok : s.Ok) : Function.Injective (X.embC (ambOf s B χ c
   have h2 : s.σ₀ (X.emb τ (s.iE.symm y)) = s.σ₀ (X.emb τ' (s.iE.symm y)) := h1
   rw [hok.1, hok.1, RingEquiv.apply_symm_apply] at h2
   exact h2
-
-theorem thF_eq {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b)) :
-    Formalism.L2.AlgTh.thF (ambOf s B χ cD) N N' = fun z => B.eNat χ a b (s.lat N) (s.lat N') (s.flatV a b z) := rfl
 
 theorem frame_std (hF : Formalism.L2.AlgTh.KerFrame) (hok : s.Ok) {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b))
     (p : ℕ) [Fact p.Prime] (ι : ℂ ≃+* ℂ_[p]) (hN : s.StdAtP p N) (hN' : s.StdAtP p N')

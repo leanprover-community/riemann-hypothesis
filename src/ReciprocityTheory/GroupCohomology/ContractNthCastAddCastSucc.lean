@@ -133,7 +133,6 @@ theorem cupProduct_continuous {M N P : TRep R G} (b : Pairing M N P) (p q : ℕ)
         f' fun j => g (Fin.natAdd p j)))
         (hpr.prodMk (hf'.comp (continuous_pi fun j => continuous_apply _)))))
 
-theorem cochain_add_val (M : TRep R G) (n : ℕ) (x y : M.coch.X n) : (x + y).1 = x.1 + y.1 := rfl
 theorem cochain_smul_val (M : TRep R G) (n : ℕ) (r : R) (x : M.coch.X n) : (r • x).1 = r • x.1 := rfl
 theorem cochain_zero_val (M : TRep R G) (n : ℕ) : (0 : M.coch.X n).1 = 0 := rfl
 

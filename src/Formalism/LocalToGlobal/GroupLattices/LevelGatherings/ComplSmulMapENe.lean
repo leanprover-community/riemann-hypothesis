@@ -72,9 +72,6 @@ variable (F : Type) [Field F] [NumberField F] (E : Type) [Field E] [Algebra F E]
 def secU (w : HeightOneSpectrum (𝓞 F)) : UPts σE J (w.adicCompletion F) →* UPts σE J (FiniteAdeleRing (𝓞 F) F) :=
   ((sec F E w).comp (UPts σE J (w.adicCompletion F)).subtype).codRestrict _ (fun X => sec_mem_UPts F E w σE J X.2)
 
-theorem secU_val (w : HeightOneSpectrum (𝓞 F)) (X : UPts σE J (w.adicCompletion F)) :
-    (secU F E σE J w X : GL n (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) = sec F E w (X : GL n (E ⊗[F] w.adicCompletion F)) := rfl
-
 variable {κ : Type} [Fintype κ] [DecidableEq κ] (S : κ → HeightOneSpectrum (𝓞 F)) (hS : Function.Injective S)
 
 def secAll : (∀ v : κ, UPts σE J ((S v).adicCompletion F)) →* UPts σE J (FiniteAdeleRing (𝓞 F) F) :=

@@ -75,15 +75,6 @@ abbrev DegData.OAct (O : Type) [Ring O] [StarRing O] {R : Type} [CommRing R] [Is
 
 namespace Inh
 
-def zeroOAct (O : Type) [Ring O] [StarRing O] (S : Scheme.{0}) : (zeroPolAV S).OAct O where
-  act := fun _ => 𝟙 _
-  hom := fun _ => inferInstance
-  map_one := rfl
-  map_mul := fun _ _ => (Category.id_comp _).symm
-  map_add := fun _ _ => toUnit_unique _ _
-  rosati := fun _ _ => ⟨⊤, trivial, ⟨fun _ => 1⟩, by
-    intro i j; erw [linComb_triv_g, _root_.one_mul]; dsimp only; repeat erw [map_one]⟩
-
 end Inh
 
 end ReciprocityTheory.ChartRestriction.G.Out

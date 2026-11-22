@@ -15,8 +15,6 @@ public import Formalism.SharpRestriction.Divisibility.WeightThresholdDefs
 public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
 public import Formalism.LocalRingCardinality.DataParams₂
 public import Formalism.DegreeFormula.FlagDegFormula
-public import Formalism.SharpRestriction.Divisibility.LatticeTransfer
-public import Formalism.SharpRestriction.Divisibility.PrinLevClass
 public import Formalism.LocalRingCardinality.HeightBoundGeFourthPowerRank
 
 @[expose] public section
@@ -63,32 +61,6 @@ open Formalism.ShimuraLimitIdentity (Pol Sh Tot psumAt Kills)
 variable {D : D7} {G : DV.Geo D.what₂.LL} {Lev : Type}
   {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg} {w : Dat D Lev}
 
-structure ExtensionData (U : ShimU D G jC ng w) where
-
-  Xb : U.Comp → G.Var
-
-  PtX : U.Comp → Type
-
-  bdX : ∀ c, PtX c → Prop
-
-  htX : ∀ c, G.Adl (Xb c) → PtX c → ℝ
-
-  degX : ∀ c, G.Adl (Xb c) → ℝ
-
-  semiposX : ∀ c, G.Adl (Xb c) → Prop
-  nefFibX : ∀ c, G.Adl (Xb c) → Prop
-  ampleX : ∀ c, G.Adl (Xb c) → Prop
-
-  muC : ℝ → ℝ → ℝ → ∀ c, G.Adl (Xb c)
-
-  arLim : ℝ → U.Comp → ℝ
-
-  degMu : U.Comp → ℝ
-
-  meanU : U.Comp → ℝ
-
-  fdeg : ℝ
-
 section Props
 
 variable (U : ShimU D G jC ng w) (X : ExtensionData U)
@@ -98,7 +70,6 @@ end Props
 section Assembly
 
 variable (U : ShimU D G jC ng w)
-
 
 end Assembly
 

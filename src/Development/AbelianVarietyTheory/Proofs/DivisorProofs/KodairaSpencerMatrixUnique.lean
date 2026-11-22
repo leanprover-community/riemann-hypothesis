@@ -2,7 +2,20 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsUniqueIsTanFrameOfIsEmpty
-public import Development.AbelianVarietyTheory.Definitions.Divisors.P22
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DenseInterior
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.VolGe
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.VolHomog
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EmbGLMemRealSU
+public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.NonemptyAlgHomOfIsRayOfDvd
+public import Development.AbelianVarietyTheory.PublishedTheorems.WeberRayClassFields.WeberRayFieldSt
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
+public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.GreenSeriesSt
+public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.BlockTriangularOfSubOne
+public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.MumfordProportionality
+public import Development.AbelianVarietyTheory.PublishedTheorems.ThetaCharacteristics.ThetaCharZero
+public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.WeylDualWeylLatticesAgreeOfLowestAlcove
+public import Development.AbelianVarietyTheory.PublishedTheorems.AbelianLaws.PrincipalPolarisationOneSection
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WedgeOrdVpBaseChangeOfNeBot
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeG
 
@@ -65,7 +78,6 @@ theorem isDPMorphism_red : IsDPMorphism (epsDP R) (dp0 R) (TrivSqZeroExt.fstHom 
     · have e : (epsDP R).dpow (n + 1 + 1) a = 0 := squareZeroDividedPowers_dpow _ (by omega) a
       rw [e, map_zero]
 
-
 variable (A : Over (Sp R)) [GrpObj A] in
 theorem redMor : GrpMor (epsDP R) (epsRed R) A (dp0 R) (𝟙 _) A (TrivSqZeroExt.fstHom R R R).toRingHom (𝟙 _)
     (Over.Hom.left (𝟙 A)) :=
@@ -105,7 +117,6 @@ theorem constMor_surjective (P : AbelianDeRham) {A : Over (Sp R)} [GrpObj A] {g 
   | tmul r c =>
     rw [liftSemi_tmul, liftSemi_tmul, map_smul,
       ← GrpMor.pull_pull (bcMor hφ) (liftMor (epsDP R) hic) (constMor A) (fun _ => rfl) (by simpa using e1) c]
-
 
 set_option maxHeartbeats 1000000 in
 theorem IsKSValue.unique (P : AbelianDeRham) {A : Over (Sp R)} [GrpObj A] {A' : Over (Sp (DualNumber R))} [GrpObj A']
@@ -160,7 +171,6 @@ section Frame
 variable {y : FrPt Xo c K} {B : Over (Sp K)} [GrpObj B] [IsCommMonObj B] {ρ : B.left ⟶ Xo.univ.t.G.left}
   (hρ : IsGrpPullback B Xo.univ.t.G y.x ρ)
 
-
 include hρ in
 theorem exists_sub_mem_Fil (hL : LieExact B) {vb : (Σ σ : E →+* ℂ, Fin (Dw.mult σ)) → (epsR K ⟶ B)}
     {kb : (Σ σ : E →+* ℂ, Fin (Dw.mult σ)) → HdR B} (hv : ∀ k, pushHom hρ (epsR K) (vb k) = tv (fullB y k))
@@ -184,7 +194,6 @@ theorem exists_sub_mem_Fil (hL : LieExact B) {vb : (Σ σ : E →+* ℂ, Fin (Dw
   rw [← ha, tv_mkT] at ew
   obtain rfl := push_inj hρ ew
   exact hh.sub_mem hw
-
 
 include hρ in
 theorem coef_unique {τ : E →+* ℂ} {u : Fin (Dw.mult τ) → (epsR K ⟶ B)}
@@ -307,12 +316,5 @@ theorem IsKS.unique (P : AbelianDeRham) {Φ : Finset (E →+* ℂ)} {y : FrPt Xo
   have c₁ := ArcQ.NormalForm.isLieComb_baseChange hφ (u := fun i => tv' (ub τ.1 i)) (fun _ => htv _) (htv w₁) hc₁
   simp only [et, ew, Algebra.algebraMap_self, RingHom.id_apply] at c₁
   exact congrFun (coef_unique hρ (fun i => hvs ⟨τ.1, i⟩) c₁ hc₂) s
-
-theorem isKS_unique : GlobalTheory.CovTop.Hypotheses₂ → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
-    (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (K : Type) [Field K]
-    [Algebra c.F K] (y : FrPt Xo c K) (x' : Sp (DualNumber K) ⟶ Xo.X), 1 ≤ Dw.p + Dw.q → GlobalTheory.FlagTan.IsTanX y x' →
-    ∀ M M' : GlobalTheory.FlagTan.HIx Dw (GlobalTheory.FlagTan.psiSet H) → K, GlobalTheory.FlagTan.IsKS (GlobalTheory.FlagTan.psiSet H) y x' M →
-      GlobalTheory.FlagTan.IsKS (GlobalTheory.FlagTan.psiSet H) y x' M' → M = M' :=
-  fun Pr _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ h h' => IsKS.unique Pr.p5 h h'
 
 end GlobalTheory.FlagTan

@@ -786,13 +786,6 @@ section Core
 
 variable {L : SizeData₂ D} {j : ℕ} {ρ : D.what₂.Tau}
 
-lemma cloudJumpSet_true : cloudT D true j ρ = cloudJ D j ρ := rfl
-lemma jd_cloudT_f : cloudT D false j ρ = reflS D (cloudJ D j ρ) := rfl
-lemma lowJumpSet_true : lowT D true j ρ = lowJ D j ρ := rfl
-lemma jd_lowT_f : lowT D false j ρ = reflS D (lowJ D j ρ) := rfl
-lemma jumpUnion_true : JW D true j ρ = cloudJ D j ρ ∪ lowJ D j ρ := rfl
-lemma jd_JW_f : JW D false j ρ = reflS D (cloudJ D j ρ) ∪ reflS D (lowJ D j ρ) := rfl
-
 lemma one_le_jump_parameter (F : JFacts L j ρ) : (1 : ℚ) ≤ D.R.t := by exact_mod_cast F.t_pos
 
 lemma jumpCount_t_add_one_lt_size (F : JFacts L j ρ) : (D.R.t : ℚ) + 1 < sz D j ρ := by

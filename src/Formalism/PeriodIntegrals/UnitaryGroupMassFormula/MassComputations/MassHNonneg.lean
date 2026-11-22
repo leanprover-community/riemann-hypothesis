@@ -1,7 +1,7 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.StabFiniteOf
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.MassUnfoldHolds
+public import Mathlib
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.ContinuousSplitA
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.CountableRatOf
 

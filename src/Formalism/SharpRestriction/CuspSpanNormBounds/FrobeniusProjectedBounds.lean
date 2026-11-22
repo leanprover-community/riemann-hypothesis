@@ -24,15 +24,9 @@ variable (D : D7)
 
 def kR : ℝ := D.R.k
 
-def mR : ℝ := D.R.m
-
 def fR : ℝ := D.R.f
 
-def rR : ℝ := D.R.rS
-
 def nR : ℝ := D.R.r
-
-def du (u : D.what₂.Word) : ℝ := D.duS u
 
 def Dall : ℝ := D.what₂.Dall
 
@@ -60,12 +54,6 @@ def Hyp (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : ℝ) : Pr
 section Statements
 
 variable (D : D7) (large₂ : SizeData₂ D) (X : TermTie D) (C' Cl Cg cb Cu cT CT C0 : ℝ)
-
-def adm5 (c C : ℝ) : Prop := Hyp D large₂ C' Cl Cg cb Cu cT CT C0 →
-  ∀ u u' : D.what₂.Word, hsNormSq (KOf D.s u u' (famNG D.s)) ≤
-    (Real.exp (-(c * kR D * fR D * Real.log (kR D))) +
-      (2 : ℝ) ^ (-(kR D - 2 * rR D - 5)) * Real.exp (C * mR D ^ 5 * fR D * large₂.sc.L)) *
-      (du D u * du D u') / Dst D
 
 def adm7 (c : ℝ) : Prop := Hyp D large₂ C' Cl Cg cb Cu cT CT C0 →
   |Dall D - Dst D| ≤ Real.exp (-(c * nR D * fR D * Real.log (nR D))) * Dst D

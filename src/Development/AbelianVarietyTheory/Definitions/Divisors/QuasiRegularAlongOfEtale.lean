@@ -28,7 +28,6 @@ section Fil
 
 variable {p : Y ⟶ Sp k} {B : LB Y} {O O' : Y.Opens} {I : Y.IdealSheafData} {a b : ℕ}
 
-
 variable (I a) in
 def VanishesTo (f : H0 p B O) : Prop :=
   ∀ y ∈ I.support, ∀ hy i hi, germ i y hy hi f ∈ stalkId I y ^ a
@@ -67,15 +66,6 @@ theorem VanishesTo.restr {f : H0 p B O} (h : VanishesTo I a f) (e : O' ≤ O) :
   rw [germ_restr]
   exact h y hs _ i hi
 
-theorem VanishesTo.mul {P N : LB Y} (C : ProdChart P B N) {σ : H0 p P O} {f : H0 p B O}
-    (hσ : VanishesTo I a σ) (hf : VanishesTo I b f) : VanishesTo I (a + b) (C.mul σ f) :=
-  vanishesTo_of_exists fun y hs hy => by
-    obtain ⟨t, ha, hb, hc⟩ := C.cover y
-    refine ⟨_, hc, ?_⟩
-    rw [C.germ_mul σ f t y hy ha hb hc, pow_add]
-    exact Ideal.mul_mem_mul (hσ y hs hy _ ha) (hf y hs hy _ hb)
-
-
 variable (I O) in
 def SuppIn : Prop := ∀ y ∈ I.support, y ∈ O
 
@@ -86,7 +76,6 @@ theorem SuppIn.le (h : SuppIn O I) : ⊤ ≤ I.subschemeι ⁻¹ᵁ O := fun z _
 theorem vanishesTo_restr_iff (h : SuppIn O' I) (e : O' ≤ O) {f : H0 p B O} :
     VanishesTo I a (restr e f) ↔ VanishesTo I a f :=
   ⟨fun hf y hs _ i hi => germ_restr e i y (h y hs) hi f ▸ hf y hs (h y hs) i hi, (·.restr e)⟩
-
 
 variable (p B O I a) in
 def filTop : Submodule k (H0 p B O) where
@@ -100,7 +89,6 @@ def filTop : Submodule k (H0 p B O) where
 
 @[simp] theorem mem_filTop {f : H0 p B O} : f ∈ filTop p B O I a ↔ VanishesTo I a f := Iff.rfl
 
-
 variable (I a) in
 def Fil (V : Submodule k (H0 p B O)) : Submodule k (H0 p B O) := V ⊓ filTop p B O I a
 
@@ -113,8 +101,6 @@ theorem Fil_le : Fil I a V ≤ V := inf_le_left
 theorem Fil_le_filTop : Fil I a V ≤ filTop p B O I a := inf_le_right
 
 theorem Fil_anti (e : a ≤ b) : Fil I b V ≤ Fil I a V := fun _ h => ⟨h.1, VanishesTo.mono h.2 e⟩
-
-
 
 variable (p I B) in
 abbrev sectionsOnClosedSubscheme : Type := H0 (I.subschemeι ≫ p) (B.pull I.subschemeι) ⊤
@@ -142,7 +128,6 @@ theorem resTo_eq_zero_iff (h : SuppIn O I) {f : H0 p B O} : resTo h f = 0 ↔ Va
   · have := hf _ (ι_mem_support I z) (h _ (ι_mem_support I z)) _ (mem_pull.1 hz.2)
     rw [pow_one, ← ker_stalkMap] at this
     exact ((germ_resTo h j z hz.2 f).trans this).trans (map_zero (germ j z (Opens.mem_top z) hz.2)).symm
-
 
 variable (p I) in
 def secOn (σ : LB.Sec B) : sectionsOnClosedSubscheme p B I := resTo suppIn_top (H0.ofSec p ⊤ σ)
@@ -288,7 +273,6 @@ section Alg
 variable {R S : Type*} [CommRing R] [CommRing S] {ι : Type} [Finite ι] {φ : R →+* S} {x : ι → R}
   {a : ℕ} {f f' : R} {γ γ' : MonoDeg ι a → S}
 
-
 variable (φ x f γ) in
 def LeadAt : Prop := ∃ m : MonoDeg ι a → R, (∀ α, φ (m α) = γ α) ∧
   f - ∑ α, monoVal x α.1 * m α ∈ Ideal.span (Set.range x) ^ (a + 1)
@@ -407,7 +391,6 @@ theorem hasLead_zero_iff (hM : M.IsLB) :
   obtain ⟨j, hj⟩ := exists_chart hL ((cutIdeal hL s).subschemeι z)
   exact ⟨twIdx l i j, _, (key z i j hi hj).1 (e z i j hi hj)⟩
 
-
 variable (hL s hO h) in
 theorem hasLead_sum (hM : M.IsLB) (m : MonoDeg ι a → H0 p (tw M L n) O) :
     HasLead hL s hO h (∑ α, mulMono hM hL s α h (m α)) fun α => resTo hO (m α) :=
@@ -416,7 +399,6 @@ theorem hasLead_sum (hM : M.IsLB) (m : MonoDeg ι a → H0 p (tw M L n) O) :
       simp only [LeadIn, map_sum, germ_mulMono hM hL s _ h _ i j _ _ hi hj]
     exact (congrArg (LeadAt _ _ _) (funext fun α =>
       (germ_resTo hO (fun _ => twIdx n i j) z _ (m α)).symm)).mp (leadAt_sum _)
-
 
 variable (hL s) in
 def QuasiRegularAlong : Prop :=
@@ -428,7 +410,6 @@ theorem HasLead.unique (hM : M.IsLB) (hq : QuasiRegularAlong hL s) (e : HasLead 
   obtain ⟨j, hj⟩ := exists_chart hL ((cutIdeal hL s).subschemeι z)
   exact ⟨fun _ => twIdx n i j, _, congrFun (LeadAt.unique (hq _ (ι_mem_support _ z) j hj)
     ((ker_stalkMap _ z).trans (stalkId_cutIdeal hL s j _ hj)).ge (e z i j hi hj) (e' z i j hi hj)) α⟩
-
 
 variable (hO h) in
 theorem exists_hasLead (hM : M.IsLB) (hq : QuasiRegularAlong hL s)
@@ -471,7 +452,6 @@ theorem exists_hasLead (hM : M.IsLB) (hq : QuasiRegularAlong hL s)
   exact ⟨_, _, hi t hz, hj t hz, (congrArg (LeadAt _ _ _) (funext fun α =>
     ((hc' α t z hz).trans (ger_appLE _ _ _ _ _)).symm)).mp (key t z hz)⟩
 
-
 variable (hO h) in
 def lead (hM : M.IsLB) (hq : QuasiRegularAlong hL s) : filTop p (tw M L l) O (cutIdeal hL s) a →ₗ[k]
     (MonoDeg ι a → sectionsOnClosedSubscheme p (tw M L n) (cutIdeal hL s)) where
@@ -503,20 +483,7 @@ theorem germ_dsOn (z : (cutIdeal hL s).subscheme) (i : K.bundle.ι) (j : L.ι)
       ((cutIdeal hL s).subschemeι.stalkMap z).hom (ger _ (memInf hi hj) (K.jacFun s i j)) :=
   (germ_ofSec _ _ _ _ _).trans (ger_appLE _ _ z _ _)
 
-theorem valOn_dsOn {R : Type} [CommRing R] (x : Sp R ⟶ (cutIdeal hL s).subscheme) (i : K.bundle.ι)
-    (j : L.ι) (hi : ⊤ ≤ (x ≫ (cutIdeal hL s).subschemeι) ⁻¹ᵁ K.bundle.U i)
-    (hj : ⊤ ≤ (x ≫ (cutIdeal hL s).subschemeι) ⁻¹ᵁ L.U j)
-    (h : ⊤ ≤ (x ≫ (cutIdeal hL s).subschemeι) ⁻¹ᵁ (tw K.bundle L D).U (twIdx D i j)) :
-    valOn x (twIdx D i j) h (dsOn K hL s) =
-      K.jacVal s (x ≫ (cutIdeal hL s).subschemeι) i j hi hj := by
-  have h' : ⊤ ≤ x ⁻¹ᵁ ((tw K.bundle L D).pull (cutIdeal hL s).subschemeι).U fun _ => twIdx D i j :=
-    fun z hz => mem_pull.2 (h hz)
-  refine (val_ofSec x _ _ h' _).trans ?_
-  exact congrArg (fun g => (g ≫ (Scheme.ΓSpecIso (CommRingCat.of R)).hom).hom (K.jacFun s i j))
-    (Scheme.Hom.appLE_comp_appLE x _ _ _ ⊤ _ h')
-
 variable (hS : Etale ((cutIdeal hL s).subschemeι ≫ p))
-
 
 include hS in
 theorem nowhereZero_dsOn : NowhereZero (dsOn K hL s) := nowhereZero_of_exists fun z _ => by
@@ -524,7 +491,6 @@ theorem nowhereZero_dsOn : NowhereZero (dsOn K hL s) := nowhereZero_of_exists fu
   obtain ⟨j, hj⟩ := exists_chart hL ((cutIdeal hL s).subschemeι z)
   exact ⟨fun _ => twIdx D i j, _, (congrArg IsUnit (germ_dsOn K hL s z i j hi hj)).mpr
     ((isUnit_ger_jacFun hL K s inferInstance (ι_mem_support _ z) i j _).map _)⟩
-
 
 omit K in
 include hS in
@@ -564,7 +530,6 @@ theorem resTo_mulE (hO : SuppIn O (cutIdeal hL s)) (h : n + D = l)
   rw [mulE, resTo_mul, resTo_ofSec]
   rfl
 
-
 variable (n) in
 def mulEDs : sectionsOnClosedSubscheme p (tw B L n) (cutIdeal hL s) ≃ₗ[k]
     sectionsOnClosedSubscheme p (tw (tens K.bundle A) L n) (cutIdeal hL s) :=
@@ -590,24 +555,6 @@ theorem germ_mulEDs (g : sectionsOnClosedSubscheme p (tw B L n) (cutIdeal hL s))
         (mem_pull.2 (mem_tw_U.2 ⟨hi, hj⟩)) _ _).trans
           (congrArg (· * _) (germ_dsOn K hL s z i j hi hj))))
 
-theorem valOn_mulEDs {R : Type} [CommRing R] (g : sectionsOnClosedSubscheme p (tw B L n) (cutIdeal hL s))
-    (x : Sp R ⟶ (cutIdeal hL s).subscheme) (i : K.bundle.ι) (a : A.ι) (b : B.ι) (j : L.ι)
-    (hi : ⊤ ≤ (x ≫ (cutIdeal hL s).subschemeι) ⁻¹ᵁ K.bundle.U i)
-    (hj : ⊤ ≤ (x ≫ (cutIdeal hL s).subschemeι) ⁻¹ᵁ L.U j)
-    (h₁ : ⊤ ≤ (x ≫ (cutIdeal hL s).subschemeι) ⁻¹ᵁ
-      (tw (tens K.bundle A) L n).U (twIdx (M := tens K.bundle A) n (i, a) j))
-    (h₂ : ⊤ ≤ (x ≫ (cutIdeal hL s).subschemeι) ⁻¹ᵁ (LB.div A (tw B L D)).U (a, twIdx D b j))
-    (h₃ : ⊤ ≤ (x ≫ (cutIdeal hL s).subschemeι) ⁻¹ᵁ (tw B L n).U (twIdx n b j)) :
-    valOn x (twIdx (M := tens K.bundle A) n (i, a) j) h₁ (mulEDs K hL hA hB s hS n e he g) =
-      evalPt (x ≫ (cutIdeal hL s).subschemeι) _ h₂ (e.f (a, twIdx D b j)) *
-        K.jacVal s (x ≫ (cutIdeal hL s).subschemeι) i j hi hj * valOn x (twIdx n b j) h₃ g := by
-  rw [mul_assoc]
-  exact (valOn_mul (quotChart K.isLB hA hB hL rfl) _ _ (i, a, b, j) x h₂
-    (fun z hz => mem_tw_U.2 ⟨⟨hi hz, (h₃ hz).1⟩, hj hz⟩) h₁).trans
-    (congrArg₂ (· * ·) (valOn_secOn x _ _ e) ((valOn_mul (adjChart K.isLB hB hL rfl) _ g (i, b, j) x
-      (fun z hz => mem_tw_U.2 ⟨hi hz, hj hz⟩) h₃ _).trans
-        (congrArg (· * _) (valOn_dsOn K hL s x i j hi hj _))))
-
 theorem mulEDs_mulSecOn (w : L.Sec) (h : n + 1 = l) (g : sectionsOnClosedSubscheme p (tw B L n) (cutIdeal hL s)) :
     mulEDs K hL hA hB s hS l e he (mulSecOn hB hL w h g) =
       mulSecOn (isLB_tens K.isLB hA) hL w h (mulEDs K hL hA hB s hS n e he g) :=
@@ -623,7 +570,6 @@ theorem mulEDs_mulSecOn (w : L.Sec) (h : n + 1 = l) (g : sectionsOnClosedSubsche
       (congrArg (_ * ·) (germ_mulEDs K hL hA hB s hS e he _ z i a b j hi ha hb hj))
 
 variable (hO : SuppIn O (cutIdeal hL s))
-
 
 variable (n) in
 def Res : H0 p (tw (tens K.bundle A) L n) O →ₗ[k] sectionsOnClosedSubscheme p (tw B L n) (cutIdeal hL s) :=
@@ -657,7 +603,6 @@ theorem Res_eq_zero_iff (m : H0 p (tw (tens K.bundle A) L n) O) :
     Res K hL hA hB s hS n e he hO m = 0 ↔ VanishesTo (cutIdeal hL s) 1 m := by
   rw [Res_eq_iff, map_zero, resTo_eq_zero_iff]
 
-
 variable (p B) in
 abbrev SymTarget (a : ℕ) (n : ℤ) : Type := MonoDeg (Fin D) a → sectionsOnClosedSubscheme p (tw B L n) (cutIdeal hL s)
 
@@ -687,7 +632,6 @@ theorem sym_eq_zero_iff (f : Fil (cutIdeal hL s) a V) :
     (isLB_tens K.isLB hA)]
   exact iff_of_eq (congrArg _ (funext fun _ => map_zero _))
 
-
 theorem sym_sum (m : MonoDeg (Fin D) a → H0 p (tw (tens K.bundle A) L n) O)
     (f : Fil (cutIdeal hL s) a V) (hf : f.1 = ∑ α, mulMono (isLB_tens K.isLB hA) hL s α h (m α)) :
     sym K hL hA hB s hS e he hO h V f = fun α => Res K hL hA hB s hS n e he hO (m α) := by
@@ -703,7 +647,6 @@ theorem sym_mulMono (α : MonoDeg (Fin D) a) (m : H0 p (tw (tens K.bundle A) L n
       (fun _ => map_zero _) α m β
   · rw [hf, Finset.sum_eq_single α (fun β _ hβ => by rw [Pi.single_eq_of_ne hβ, map_zero])
       (by simp), Pi.single_eq_same]
-
 
 end Symbol
 
@@ -791,15 +734,6 @@ theorem germ_pullChart (a : ChartPull B' B r) (hq : r ≫ p = q ≫ spMap φ) (h
       (r.stalkMap z).hom (germ (a.idx i) (r z) (h hz) (a.le i hi) f) :=
   germ_pullChartFun a h f i z hz hi
 
-theorem VanishesTo.pullChart {I : Y.IdealSheafData} {J : T.IdealSheafData} {n : ℕ} {f : H0 p B O}
-    (hf : VanishesTo I n f) (a : ChartPull B' B r) (hq : r ≫ p = q ≫ spMap φ) (h : W ≤ r ⁻¹ᵁ O)
-    (hI : ∀ z, (stalkId I (r z)).map (r.stalkMap z).hom ≤ stalkId J z) :
-    VanishesTo J n (pullChart a hq h f) := fun z _ hz i hi => by
-  rw [germ_pullChart]
-  refine Ideal.pow_right_mono (hI z) n ?_
-  rw [← Ideal.map_pow]
-  exact Ideal.mem_map_of_mem _ (vanishesTo_iff_forall.1 hf _ _ _ _)
-
 end BaseChange
 
 namespace AffineExample
@@ -807,126 +741,6 @@ namespace AffineExample
 open MvPolynomial CanonLB
 
 variable {D : ℕ}
-
-abbrev triv (k : Type) [CommRing k] (D : ℕ) : LB (Sp (MvPolynomial (Fin D) k)) := Out.Inh.trivLB _
-
-theorem isLB_triv : (triv k D).IsLB :=
-  ⟨iSup_const (ι := PUnit), fun _ => map_one _, fun _ _ _ => by
-    exact (congrArg₂ (· * ·) (map_one _) (map_one _)).trans ((mul_one _).trans (map_one _).symm)⟩
-
-theorem bijective_polyFn : Function.Bijective (polyFn (k := k) (D := D)) :=
-  ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of (MvPolynomial (Fin D) k))).inv
-
-abbrev ideal (g : Fin D → MvPolynomial (Fin D) k) : (Sp (MvPolynomial (Fin D) k)).IdealSheafData :=
-  cutIdeal isLB_triv fun a => polySec (g a)
-
-theorem ideal_top (g : Fin D → MvPolynomial (Fin D) k) :
-    (ideal g).ideal ⟨⊤, isAffineOpen_top _⟩ = (Ideal.span (Set.range g)).map polyFn := by
-  rw [ideal_cutIdeal _ _ _ PUnit.unit le_rfl, Ideal.map_span, ← Set.range_comp]
-  exact congrArg (fun f => Ideal.span (Set.range f)) (funext fun _ => resG_self _ _)
-
-theorem vanishesTo_iff (g : Fin D → MvPolynomial (Fin D) k) (a : ℕ) (f : MvPolynomial (Fin D) k) :
-    VanishesTo (ideal g) a (H0.ofSec (affStr k D) ⊤ (polySec f)) ↔
-      f ∈ Ideal.span (Set.range g) ^ a := by
-  rw [← Ideal.comap_map_of_bijective _ bijective_polyFn (I := _ ^ a), Ideal.mem_comap,
-    Ideal.map_pow, ← ideal_top]
-  refine Iff.trans ?_ (mem_ideal_iff_ger (ideal g ^ a) ⟨⊤, isAffineOpen_top _⟩ _).symm
-  simp only [vanishesTo_iff_forall, germ_ofSec, stalkId_pow]
-  exact ⟨fun h y hy => h y hy PUnit.unit hy, fun h y hy _ _ => h y hy⟩
-
-theorem isIso_of_span {g : Fin D → MvPolynomial (Fin D) k}
-    (hg : Ideal.span (Set.range g) = Ideal.span (Set.range X)) :
-    IsIso ((ideal g).subschemeι ≫ affStr k D) := by
-  have hk (f : MvPolynomial (Fin D) k) :
-      ((ideal g).subschemeι.app ⊤).hom (polyFn f) = 0 ↔ constantCoeff f = 0 := by
-    rw [← RingHom.mem_ker, (ideal g).ker_subschemeι_app ⟨⊤, isAffineOpen_top _⟩, ideal_top, hg,
-      ← Ideal.mem_comap, Ideal.comap_map_of_bijective _ bijective_polyFn, ← pow_one (Ideal.span _)]
-    refine (mem_pow_idealOfVars_iff' 1 f).trans ?_
-    simp [constantCoeff_eq, Finsupp.degree_eq_zero_iff]
-  have hk' (f f' : MvPolynomial (Fin D) k) : ((ideal g).subschemeι.app ⊤).hom (polyFn f) =
-      ((ideal g).subschemeι.app ⊤).hom (polyFn f') ↔ constantCoeff f = constantCoeff f' := by
-    rw [← sub_eq_zero, ← map_sub, ← map_sub, hk, map_sub, sub_eq_zero]
-  have he (c : k) : (((ideal g).subschemeι ≫ affStr k D).appTop).hom
-      ((Scheme.ΓSpecIso (CommRingCat.of k)).inv.hom c) =
-        ((ideal g).subschemeι.app ⊤).hom (polyFn (C c)) :=
-    congrArg ((ideal g).subschemeι.app ⊤).hom (congrArg (fun q => CommRingCat.Hom.hom q c)
-      (Scheme.ΓSpecIso_inv_naturality
-        (CommRingCat.ofHom (algebraMap k (MvPolynomial (Fin D) k))))).symm
-  have : IsAffine (ideal g).subscheme := isAffine_of_isAffineHom (ideal g).subschemeι
-  suffices IsIso ((ideal g).subschemeι ≫ affStr k D).appTop from
-    (MorphismProperty.arrow_mk_iso_iff (MorphismProperty.isomorphisms _)
-      (arrowIsoSpecΓOfIsAffine _)).mpr (inferInstanceAs (IsIso (Spec.map _)))
-  rw [ConcreteCategory.isIso_iff_bijective, ← Function.Bijective.of_comp_iff _
-    (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of k)).inv)]
-  refine ⟨fun c c' e => ?_, fun b => ?_⟩
-  · simpa using (hk' _ _).1 ((he c).symm.trans (e.trans (he c')))
-  · obtain ⟨b, rfl⟩ := (ideal g).subschemeι_app_surjective ⟨⊤, isAffineOpen_top _⟩ b
-    obtain ⟨f, rfl⟩ := bijective_polyFn.2 b
-    exact ⟨constantCoeff f, (he _).trans ((hk' _ _).2 (by simp))⟩
-
-theorem etale_of_span {g : Fin D → MvPolynomial (Fin D) k}
-    (hg : Ideal.span (Set.range g) = Ideal.span (Set.range X)) :
-    Etale ((ideal g).subschemeι ≫ affStr k D) :=
-  have := isIso_of_span hg
-  inferInstance
-
-def funSec {N : LB Y} (h : ∀ y i j, y ∈ N.U i → y ∈ N.U j → tr N y i j = 1) (f : Γ(Y, ⊤)) :
-    N.Sec where
-  f _ := resG Y le_top f
-  compat i j := fun_ext_ger fun y hy => by
-    rw [map_mul, ← val_tr, h y i j hy.1 hy.2, Units.val_one, one_mul, ger_resG, ger_resG, ger_resG,
-      ger_resG]
-
-theorem tr_triv (y) (i j : (triv k D).ι) : tr (triv k D) y i j = 1 := map_one _
-
-theorem mem_tw_triv (n : ℤ) (y : Sp (MvPolynomial (Fin D) k)) :
-    y ∈ (tw (triv k D) (triv k D) n).U (twIdx n PUnit.unit PUnit.unit) :=
-  mem_tw_U.2 ⟨trivial, trivial⟩
-
-def one : (LB.div (triv k D) (tw (triv k D) (triv k D) D)).Sec :=
-  funSec (fun y i j hi hj => by
-    rw [tr_div _ _ y hi hj, tr_tens _ _ y hi.2 hj.2, tr_zpow _ _ y hi.2.2 hj.2.2]
-    simp only [tr_triv, one_zpow, mul_one, inv_one]) 1
-
-theorem suppIn_one (I) : SuppIn (nonzeroLocus (one (k := k) (D := D))) I := fun y _ =>
-  (isUnit_ger_iff (i := (PUnit.unit, twIdx D PUnit.unit PUnit.unit)) _
-    (memInf (Opens.mem_top y) (mem_tw_triv D y))).1 ((isUnit_one.map _).map _)
-
-def form (n : ℤ) (f : MvPolynomial (Fin D) k) :
-    H0 (affStr k D) (tw (tens (affineSpace k D).bundle (triv k D)) (triv k D) n) ⊤ :=
-  H0.ofSec _ ⊤ (funSec (fun y i j hi hj => by
-    rw [tr_tens _ _ y hi hj, tr_tens _ _ y hi.1 hj.1, tr_zpow _ _ y hi.2 hj.2,
-      show tr (affineSpace k D).bundle y i.1.1 j.1.1 = 1 from
-        gm_self (affineSpace k D).isLB (𝟙 _) y hi.1.1]
-    simp only [tr_triv, one_zpow, mul_one]) (polyFn f))
-
-theorem det_mul_valOn_Res {R : Type} [CommRing R] {g : Fin D → MvPolynomial (Fin D) k}
-    (hS : Etale ((ideal g).subschemeι ≫ affStr k D)) (n : ℤ) (f : MvPolynomial (Fin D) k)
-    (x : Sp R ⟶ (ideal g).subscheme) (φ : MvPolynomial (Fin D) k →+* R)
-    (hx : x ≫ (ideal g).subschemeι = spMap φ) :
-    φ (Matrix.of fun a b => pderiv b (g a)).det *
-      valOn x (twIdx n PUnit.unit PUnit.unit) (fun _ _ => mem_tw_triv _ _)
-        (Res (affineSpace k D) isLB_triv isLB_triv isLB_triv _ hS n one (suppIn_one _) suppIn_top
-          (form n f)) = φ f := by
-  have h₁ : ∀ y, y ∈ (tw (tens (affineSpace k D).bundle (triv k D)) (triv k D) n).U
-      (twIdx (M := tens (affineSpace k D).bundle (triv k D)) n (PUnit.unit, PUnit.unit) PUnit.unit) :=
-    fun _ => mem_tw_U.2 ⟨⟨trivial, trivial⟩, trivial⟩
-  have e := valOn_mulEDs (affineSpace k D) isLB_triv isLB_triv isLB_triv _ hS one (suppIn_one _)
-    (Res _ isLB_triv isLB_triv isLB_triv _ hS n one (suppIn_one _) suppIn_top (form n f)) x
-    PUnit.unit PUnit.unit PUnit.unit PUnit.unit le_top le_top (fun _ _ => h₁ _)
-    (fun _ _ => memInf (Opens.mem_top _) (mem_tw_triv D _))
-    (fun _ _ => mem_tw_triv _ _)
-  rw [mulEDs_Res] at e
-  replace e := (valOn_resTo _ _ _ _ le_top _).symm.trans e
-  have key (y : Sp R ⟶ Sp (MvPolynomial (Fin D) k)) (hy : y = spMap φ) :
-      (affineSpace k D).jacVal (fun a => polySec (g a)) y PUnit.unit PUnit.unit le_top le_top =
-        φ (Matrix.of fun a b => pderiv b (g a)).det ∧ evalPt y ⊤ le_top (polyFn f) = φ f := by
-    subst hy
-    exact ⟨jacVal_affineSpace k D φ g, evalPt_spMap φ f⟩
-  refine Eq.trans ?_ ((e.symm.trans ((val_ofSec _ _ _ _ _).trans
-    (evalPt_res _ le_top le_top _ _))).trans (key _ hx).2)
-  exact congrArg (· * _) ((key _ hx).1.symm.trans ((one_mul _).symm.trans
-    (congrArg (· * _) ((congrArg _ (map_one _)).trans (map_one _)).symm)))
 
 end AffineExample
 

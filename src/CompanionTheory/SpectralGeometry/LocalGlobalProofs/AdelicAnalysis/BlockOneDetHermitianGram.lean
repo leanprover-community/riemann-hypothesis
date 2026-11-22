@@ -14,11 +14,7 @@ section Entries
 
 variable {K : Type} [Zero K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K)
 
-theorem blockOne_zero_zero : blockOne t A 0 0 = t := rfl
-
 theorem blockOne_zero_succ (j : Fin M) : blockOne t A 0 j.succ = 0 := rfl
-
-theorem blockOne_succ_zero (i : Fin M) : blockOne t A i.succ 0 = 0 := rfl
 
 theorem blockOne_succ_succ (i j : Fin M) : blockOne t A i.succ j.succ = A i j := rfl
 

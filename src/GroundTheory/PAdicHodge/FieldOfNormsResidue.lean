@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import GroundTheory.PAdicHodge.FieldOfNormsDef
+public import GroundTheory.PAdicHodge.FieldOfNormsRam
+public import GroundTheory.LocalFields.ExamplesCharZero
 
 @[expose] public section
 

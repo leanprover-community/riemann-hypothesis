@@ -56,9 +56,6 @@ def actEquiv (γ : GQ W) :
       (by rw [← Matrix.toLin'_mul, gqMat_inv_mul, Matrix.toLin'_one]))
     (LinearEquiv.refl _ _)
 
-theorem actEquiv_apply (γ : GQ W) (y : (Fin W.rank → D.host.E) × (Fin W.rank → D.host.E)) :
-    actEquiv W γ y = (gqMat W γ *ᵥ y.1, y.2) := rfl
-
 theorem isotropic_mulVec (γ : GQ W) (x x' : Fin W.rank → D.host.E) :
     star (gqMat W γ *ᵥ x) ⬝ᵥ W.gram *ᵥ (gqMat W γ *ᵥ x') = star x ⬝ᵥ W.gram *ᵥ x' := by
   rw [Matrix.star_mulVec, Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, Matrix.vecMul_vecMul,

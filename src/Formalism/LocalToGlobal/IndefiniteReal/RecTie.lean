@@ -376,44 +376,6 @@ structure RecTied (D : D7) (X0 : BaseLevelRowSide D) (C : ChainReal D) (Ish : Ro
 
   col : ColTieR C K
 
-structure LatReal (D : D7) (C : ChainReal D) (L : LiftReal D C) where
-
-  Ks : Type
-  [fKs : Field Ks]
-  [nKs : NumberField Ks]
-  [aKs : Algebra Ks D.what₂.LL]
-
-  WL : ℕ → Type
-  [acgW : ∀ j, AddCommGroup (WL j)]
-  [mLL : ∀ j, Module D.what₂.LL (WL j)]
-  [mKs : ∀ j, Module Ks (WL j)]
-  [tKs : ∀ j, IsScalarTower Ks D.what₂.LL (WL j)]
-  [mO : ∀ j, Module (𝓞 D.what₂.LL) (WL j)]
-  [tO : ∀ j, IsScalarTower (𝓞 D.what₂.LL) D.what₂.LL (WL j)]
-  [mOK : ∀ j, Module (𝓞 Ks) (WL j)]
-  [tOK : ∀ j, IsScalarTower (𝓞 Ks) Ks (WL j)]
-
-  Wσ : ℕ → (D.what₂.LL →+* ℂ) → Type
-  [nW : ∀ j σ, NormedAddCommGroup (Wσ j σ)]
-  [iW : ∀ j σ, InnerProductSpace ℂ (Wσ j σ)]
-
-  G0 : Type
-  [gG : Group G0]
-  [fG : Fintype G0]
-
-  A : ∀ j, Arith.FormsL D.what₂.LL Ks (WL j) (Wσ j) G0
-
-  J0 : Subgroup G0
-  lam0 : J0 →* D.what₂.LLˣ
-
-  eC : G0 → D.what₂.LL
-
-  eG : G0 ≃* Formalism.BasicNotions.G0g D.nd
-
-  jL : ∀ j : Fin D.R.m, (A (j + 1)).Wgood J0 lam0 eC →ₛₗ[D.what₂.embLL] D.what₂.Mj (j + 1)
-
-  eWc : ∀ i : Fin D.R.m, Wσ (i + 1) D.what₂.embLL →ₗ[ℂ] L.AmbW i
-
 attribute [instance] LatReal.fKs LatReal.nKs LatReal.aKs LatReal.acgW LatReal.mLL LatReal.mKs LatReal.tKs LatReal.mO
   LatReal.tO LatReal.mOK LatReal.tOK LatReal.nW LatReal.iW LatReal.gG LatReal.fG
 

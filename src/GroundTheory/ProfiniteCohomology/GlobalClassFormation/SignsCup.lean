@@ -16,8 +16,6 @@ open scoped NumberField.LiesOver
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : GroundTheory.Global.FiniteSubfield}
 
 section Norms
@@ -122,7 +120,6 @@ theorem apply_sqrtNegOne_eq_or (σ : ℚ̄ ≃ₐ[ℚ] ℚ̄) : σ sqrtNegOne = 
   · exact Or.inl (sub_eq_zero.1 h)
   · exact Or.inr (eq_neg_of_add_eq_zero_left h)
 
-
 open Classical in
 def iCharFun (K : GroundTheory.Global.FiniteSubfield) (g : Additive K.1.fixingSubgroup) : QZ :=
   if ((Additive.toMul g : K.1.fixingSubgroup) : ℚ̄ ≃ₐ[ℚ] ℚ̄) sqrtNegOne = sqrtNegOne then 0 else QZ.mk (1 / 2)
@@ -163,7 +160,6 @@ theorem continuous_iCharFun : Continuous (iCharFun K) := by
     apply iCharFun_congr
     rw [Subgroup.coe_mul, Subgroup.coe_inv, mul_smul, inv_smul_eq_iff] at hh
     exact hh
-
 
 variable (K) in
 def iChar : Additive K.1.fixingSubgroup →ₜ+ QZ where
@@ -246,7 +242,6 @@ theorem placeInv_brauerLocal_globalCupClass_iChar_of_isComplex (v : InfinitePlac
   have h := infAlgClosure_mem_range_norm_of_isComplex v hv
     (Units.map (algebraMap K.1 v.Completion : K.1 →* v.Completion) a)
   rwa [Units.coe_map, MonoidHom.coe_coe] at h
-
 
 open Classical in
 theorem placeInv_brauerLocal_globalCupClass_iChar (v : InfinitePlace K.1) :

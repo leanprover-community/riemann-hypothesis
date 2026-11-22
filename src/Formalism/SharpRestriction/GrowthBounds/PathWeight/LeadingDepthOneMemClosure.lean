@@ -62,8 +62,6 @@ section Mon
 variable {p n' r K : ℕ} [Fact p.Prime] [NeZero n'] [NeZero r] [NeZero K] {O : Type} [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] [Algebra (WF p n') O] (X : Ctx p n' r K O)
 
-local notation "PP" => MvPolynomial (TV n' (r + K)) (KK O)
-
 theorem mn_label_le (mon : Fin n' × Fin (r + K) →₀ ℕ) (hmon : IsLabel p X.Fr mon) (s : Fin n') (hs : s ∈ X.Fr.TT)
     (c : Fin (r + K)) : mon (s, c) ≤ X.Q := by
   have hr : 1 ≤ r := by have := X.hH.2.1; omega

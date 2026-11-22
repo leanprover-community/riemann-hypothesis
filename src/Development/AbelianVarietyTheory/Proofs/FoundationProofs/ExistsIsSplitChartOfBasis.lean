@@ -147,7 +147,6 @@ theorem Tj_shift_self (O : Subring K) (ϖ : Kˣ) (g : GL (Fin n) K) :
   refine if_congr ?_ rfl rfl
   simp only [e, mul_right_inj]
 
-
 include hO in
 theorem Tj_invT (ϖ : Kˣ) {j : ℕ} (hj : j ≤ n) (g : GL (Fin n) K) :
     Tj ℂ n O' (c ϖ) j (invT c n g) = Tj ℂ n O ϖ (n - j) (dGL n ϖ n * g) := by
@@ -183,7 +182,6 @@ include hc in
 theorem map_mem_Ov_iff (a : w.adicCompletion E) : c a ∈ Ov E w' ↔ a ∈ Ov E w := by
   change Valued.v (c a) ≤ 1 ↔ Valued.v a ≤ 1
   rw [hc]
-
 
 include hc in
 theorem isSatVecGL_invT (hq : qV E w' = qV E w) {ρ : Representation ℂ (GL (Fin n) (w.adicCompletion E)) V} {x : V}
@@ -370,15 +368,6 @@ theorem isParamVec_conj (hE : IsCMExt F E σ) (hJ : IsHermND σ J) (hL : IsSelfD
   rcases hx with ⟨hv, e, he, hx⟩ | ⟨hw, -⟩
   · obtain ⟨c, hc, hq, -, he'⟩ := exists_conj_chart hE hJ hL hne h h' he
     exact Or.inl ⟨hv, _, he', isSatVecGL_invT c hc hq hx⟩
-  · exact absurd (isSplit_of_ne hne h h') (not_isSplit_of_isInertAt hw)
-
-theorem hasParam_conj (hE : IsCMExt F E σ) (hJ : IsHermND σ J) (hL : IsSelfDualAt σ J L v) (hne : w ≠ w')
-    (h : w.under (𝓞 F) = v) (h' : w'.under (𝓞 F) = v) (hρ : HasParam σ J L h ρ B) :
-    HasParam σ J L h' ρ (B.map (·⁻¹)) := by
-  obtain ⟨x, hx⟩ := hρ.exists_vec
-  rcases isParamVec_conj hE hJ hL hne h h' hx with ⟨hv, e, he, hx'⟩ | ⟨hw, -⟩
-  · exact Or.inl ⟨hv, e, he, (Submodule.ne_bot_iff _).2 ⟨x, hx'.2.1, hx'.1⟩, fun y hy h0 =>
-      (isParamVec_conj hE hJ hL hne h h' (hρ.isParamVec ((mem_fixed_comp_symm e he.2).1 hy) h0)).isSatVecGL hv he⟩
   · exact absurd (isSplit_of_ne hne h h') (not_isSplit_of_isInertAt hw)
 
 theorem eq_map_inv_of_isParamVec (hE : IsCMExt F E σ) (hJ : IsHermND σ J) (hL : IsSelfDualAt σ J L v) (hne : w ≠ w')

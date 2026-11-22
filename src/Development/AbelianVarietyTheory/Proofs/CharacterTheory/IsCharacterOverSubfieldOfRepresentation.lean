@@ -17,9 +17,6 @@ def transportRep (ρ : Representation K G V) (e : V ≃ₗ[K] W) : Representatio
   map_one' := by ext w; simp
   map_mul' a b := by ext w; simp
 
-theorem transportRep_apply (ρ : Representation K G V) (e : V ≃ₗ[K] W) (g : G) (w : W) :
-    transportRep ρ e g w = e (ρ g (e.symm w)) := rfl
-
 theorem character_transportRep [FiniteDimensional K V] [FiniteDimensional K W]
     (ρ : Representation K G V) (e : V ≃ₗ[K] W) (g : G) :
     (transportRep ρ e).character g = ρ.character g :=

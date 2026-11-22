@@ -22,8 +22,6 @@ namespace GlobalTheory.UnitaryEmbeddingLattice
 
 variable {D : D7} {Y V : HSp D}
 
-local notation "inc" => (Formalism.UG.inclE (F := D.host.F) (Formalism.L2.Herm.Af D.host.F))
-
 def phiRow (d : HermitianOrthogonalExtensionData Y V 1 1) : Matrix (Fin 1) (Fin V.rank) D.host.E :=
   Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) d.a * V.gram
 
@@ -85,7 +83,6 @@ theorem incl_vec_mem {n : ℕ} {L : Submodule (𝓞 D.host.E) (Fin n → D.host.
     (fun i => inc (v i)) ∈ Formalism.L2.Herm.hatL (F := D.host.F) L :=
   Submodule.subset_span ⟨v, hv, rfl⟩
 
-
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 1000000 in
 theorem mulVec_mem_of {m n : ℕ} (M : Matrix (Fin m) (Fin n) D.host.E) (L : Submodule (𝓞 D.host.E) (Fin n → D.host.E))
@@ -120,8 +117,6 @@ namespace GlobalTheory.UnitaryEmbeddingLattice
 
 variable {D : D7} {Y V : HSp D}
 
-local notation "inc" => (Formalism.UG.inclE (F := D.host.F) (Formalism.L2.Herm.Af D.host.F))
-
 theorem mulVec_incl {m n : ℕ} (M : Matrix (Fin m) (Fin n) D.host.E) (v : Fin n → D.host.E) :
     M.map inc *ᵥ (fun i => inc (v i)) = fun i => inc ((M *ᵥ v) i) := by
   funext i
@@ -151,7 +146,6 @@ theorem lat_mem_Q (d : HermitianOrthogonalExtensionData Y V 1 1) (Λ : Lat Y) {v
   obtain ⟨o, ho⟩ := (FractionalIdeal.mem_one_iff _).1 (hu 0)
   exact ⟨o, ho⟩
 
-
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 2000000 in
 theorem gen_props (d : HermitianOrthogonalExtensionData Y V 1 1) (Λ : Lat Y) (x : GA D Y) (y : Fin V.rank → D.host.E)
@@ -180,7 +174,6 @@ theorem gen_props (d : HermitianOrthogonalExtensionData Y V 1 1) (Λ : Lat Y) (x
     rw [Matrix.mulVec_mulVec, row_ex _ _ _ hφP, mulVec_incl] at h2
     obtain ⟨o, ho⟩ := (GlobalTheory.NormSum.AdLattice.incl_mem_iff _).1 ((GlobalTheory.CongStdLoc.mem_hatL_std_iff _).1 h2 0)
     exact Submodule.mem_one.2 ⟨o, ho⟩
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 1000000 in

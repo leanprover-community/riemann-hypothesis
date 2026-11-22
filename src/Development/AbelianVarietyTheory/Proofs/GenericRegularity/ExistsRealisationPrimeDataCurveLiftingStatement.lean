@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsRealisationPrimeDataCurveLifting
+public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FiniteDimensionalOfModel
 public import Formalism.LocalToGlobal.ProjectiveLattices.RegXInst
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveLocInst
 public import Formalism.LocalToGlobal.ProjectiveLattices.LocRingPf

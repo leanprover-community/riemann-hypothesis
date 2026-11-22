@@ -24,7 +24,6 @@ structure New (D : D7) : Type 1 where
 
 def reD (D : D7) (Z : New D) : D7 := GlobalTheory.EX.OB.setDiv (reS D Z.Z) Z.N Z.h
 
-
 set_option maxHeartbeats 4000000 in
 def SameForms0LevelsAndValues {D : D7} (Z : New D) (F : ∀ u, Forms0 D u) (F' : ∀ u, Forms0 (reD D Z) u) : Prop :=
   ∀ u : D.what₂.Word, (F' u).cls0.lev = (F u).cls0.lev ∧ (F' u).cls0.y = (F u).cls0.y ∧ (F' u).val0.eY = (F u).val0.eY
@@ -33,10 +32,7 @@ variable {D : D7} (Z : New D)
 
 def wd (u : D.what₂.Word) : (reD D Z).what₂.Word := u
 
-def New.self (D : D7) : New D := ⟨SNew.self D, fun u => (D.div.Nu u).L, D.div.h⟩
-
 def New.ofDiv (D : D7) (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h : D.what₂.Word → ℝ) : New D := ⟨SNew.self D, N, h⟩
-
 
 set_option maxHeartbeats 4000000 in
 def reX (X : HidaSetting D) : HidaSetting (reD D Z) := { X with }

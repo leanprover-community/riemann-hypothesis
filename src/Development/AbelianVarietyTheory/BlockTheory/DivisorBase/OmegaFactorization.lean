@@ -28,7 +28,6 @@ def latM (𝔞 : Frac F) : FractionalIdeal (𝓞 F)⁰ F :=
 
 def nrm (𝔞 : Frac F) : ℝ := (FractionalIdeal.absNorm (𝔞 : FractionalIdeal (𝓞 F)⁰ F) : ℝ)
 
-
 open NumberField Complex in
 open scoped nonZeroDivisors ContDiff in
 variable (F : Type) [Field F] [NumberField F] in
@@ -39,7 +38,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.latM_e
   unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.latM
   rw [FractionalIdeal.dual_eq_mul_inv ℤ ℚ, coeIdeal_differentIdeal ℤ ℚ F (𝓞 F), inv_inv,
     Units.val_inv_eq_inv_val]
-
 
 open NumberField Complex in
 open scoped nonZeroDivisors ContDiff in
@@ -112,7 +110,6 @@ def HasExpansion (𝔞 𝔟 : Frac F) (k : ℕ) (g : (Emb F → ℂ) → ℂ) : 
       (cK F k : ℂ) * g z / (omegaFactor 𝔞 : ℂ) ^ k =
         (2 : ℂ)⁻¹ ^ Module.finrank ℚ F * Z (1 - (k : ℂ)) + ∑' c, qClass 𝔞 𝔟 k z c
 
-
 open Classical in
 def wirt {Φ : Type} [Fintype Φ] (τ : Φ) (bar : Bool) (g : (Φ → ℂ) → ℂ) : (Φ → ℂ) → ℂ := by
   classical
@@ -122,8 +119,6 @@ def wirt {Φ : Type} [Fintype Φ] (τ : Φ) (bar : Bool) (g : (Φ → ℂ) → �
 def wirtWord {Φ : Type} [Fintype Φ] (ws : List (Φ × Bool)) (g : (Φ → ℂ) → ℂ) : (Φ → ℂ) → ℂ := by
   classical
   exact ws.foldr (fun w h => wirt w.1 w.2 h) g
-
-theorem wirtWord_nil {Φ : Type} [Fintype Φ] (g : (Φ → ℂ) → ℂ) : wirtWord [] g = g := rfl
 
 theorem wirtWord_cons {Φ : Type} [Fintype Φ] (w : Φ × Bool) (ws : List (Φ × Bool)) (g : (Φ → ℂ) → ℂ) :
     wirtWord (w :: ws) g = wirt w.1 w.2 (wirtWord ws g) := rfl
@@ -139,7 +134,6 @@ def HeckeWeightTwo : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F], 2 ≤ Module.finrank ℚ F → ∀ 𝔞 𝔟 : Frac F,
     ∃ G : ℂ → (Emb F → ℂ) → ℂ, IsContinuation 𝔞 𝔟 G ∧
       DifferentiableOn ℂ (G 0) (upperHalf F) ∧ HasExpansion 𝔞 𝔟 2 (G 0)
-
 
 open NumberField Complex in
 open scoped nonZeroDivisors ContDiff in
@@ -166,7 +160,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.prod_e
       exact ⟨hφ.embedding, by ext y; simp [ComplexEmbedding.IsReal.coe_embedding_apply]⟩
   rw [h2, h3]
 
-
 open NumberField Complex in
 open scoped nonZeroDivisors ContDiff in
 variable (F : Type) [Field F] [NumberField F] in
@@ -188,7 +181,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.eisTer
   rcases (abs_eq zero_le_one).mp hn with h | h <;> rw [h] <;>
     simp [hk.neg_pow, inv_neg, norm_neg]
 
-
 open NumberField Complex in
 open scoped nonZeroDivisors ContDiff in
 variable (F : Type) [Field F] [NumberField F] in
@@ -204,7 +196,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.eisCla
   obtain ⟨ε, h1, h2⟩ := hrel
   have hp : p.1 = (((ε : 𝓞 F) : F) * q.1.1, ((ε : 𝓞 F) : F) * q.1.2) := Prod.ext h1 h2
   rw [hp, _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.eisTerm_unit hk]
-
 
 open NumberField Complex in
 open scoped nonZeroDivisors ContDiff in
@@ -225,7 +216,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.qClass
     rw [h1, map_mul, Rat.cast_mul, abs_mul, ← Rat.cast_abs, hu, Rat.cast_one, one_mul]
   unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.qTerm
   rw [hn, hmul]
-
 
 open NumberField Complex in
 open scoped nonZeroDivisors ContDiff in

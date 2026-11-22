@@ -127,12 +127,10 @@ def mk : ↥(I ^ a • ⊤ : Submodule R M) →ₗ[R] powGr I M a := Submodule.m
 
 theorem mk_surjective : Function.Surjective (mk I M a) := Submodule.mkQ_surjective _
 
-
 variable {I M a} in
 theorem mk_eq_zero (x : ↥(I ^ a • ⊤ : Submodule R M)) :
     mk I M a x = 0 ↔ (x : M) ∈ (I ^ (a + 1) • ⊤ : Submodule R M) :=
   Submodule.Quotient.mk_eq_zero _
-
 
 theorem pow_succ_smul_le : (I ^ (a + 1) • ⊤ : Submodule R M) ≤ I ^ a • ⊤ :=
   Submodule.smul_mono_left (Ideal.pow_le_pow_right (Nat.le_succ a))
@@ -146,26 +144,14 @@ theorem isTorsionBySet : Module.IsTorsionBySet R (powGr I M a) I := by
 
 instance module : Module (R ⧸ I) (powGr I M a) := (isTorsionBySet I M a).module
 
-
 instance isScalarTower {A : Type*} [Semiring A] [SMul A R] [IsScalarTower A R R] [Module A M]
     [IsScalarTower A R M] : IsScalarTower A (R ⧸ I) (powGr I M a) where
   smul_assoc s r x := by
     obtain ⟨r, rfl⟩ := Ideal.Quotient.mk_surjective r
     exact smul_assoc s r x
 
-
-variable {M} in
-def map {N : Type*} [AddCommGroup N] [Module R N] (g : M →ₗ[R] N) :
-    powGr I M a →ₗ[R ⧸ I] powGr I N a :=
-  LinearMap.extendScalarsOfSurjective Ideal.Quotient.mk_surjective <|
-    Submodule.mapQ _ _
-      (g.restrict fun _ hx => Submodule.smul_top_le_comap_smul_top (I ^ a) g hx)
-      fun _ hx => Submodule.smul_top_le_comap_smul_top (I ^ (a + 1)) g hx
-
-
 def toQuot : powGr I M a →ₗ[R] M ⧸ (I ^ (a + 1) • ⊤ : Submodule R M) :=
   Submodule.mapQ _ _ (Submodule.subtype _) le_rfl
-
 
 variable {I M a} in
 @[simp] theorem toQuot_mk (x : ↥(I ^ a • ⊤ : Submodule R M)) :
@@ -177,7 +163,6 @@ theorem toQuot_injective : Function.Injective (toQuot (I := I) (M := M) (a := a)
   obtain ⟨x, rfl⟩ := mk_surjective I M a x
   rwa [toQuot_mk, Submodule.Quotient.mk_eq_zero, ← mk_eq_zero] at hx
 
-
 variable {I a} in
 def mulElem (r : R) (hr : r ∈ I ^ a) : (M ⧸ (I • ⊤ : Submodule R M)) →ₗ[R ⧸ I] powGr I M a :=
   LinearMap.extendScalarsOfSurjective Ideal.Quotient.mk_surjective <|
@@ -187,12 +172,6 @@ def mulElem (r : R) (hr : r ∈ I ^ a) : (M ⧸ (I • ⊤ : Submodule R M)) →
         change r • x ∈ (I ^ (a + 1) • ⊤ : Submodule R M)
         rw [pow_succ, mul_smul]
         exact Submodule.smul_mem_smul hr hx
-
-
-variable {I M a} in
-theorem mulElem_mk (r : R) (hr : r ∈ I ^ a) (x : M) :
-    mulElem M r hr (Submodule.Quotient.mk x) =
-      mk I M a ⟨r • x, Submodule.smul_mem_smul hr trivial⟩ := rfl
 
 end powGr
 
@@ -232,14 +211,6 @@ theorem monoToPowGr_mk (f : ι → R) (a : ℕ) (c : MonoDeg ι a → M) :
   ext
   simp
 
-
-variable (M) in
-theorem monoToPowGr_surjective (f : ι → R) (a : ℕ) : Function.Surjective (monoToPowGr M f a) := by
-  intro x
-  obtain ⟨⟨x, hx⟩, rfl⟩ := powGr.mk_surjective _ M a x
-  obtain ⟨c, rfl⟩ := (mem_pow_smul_top_iff f a x).mp hx
-  exact ⟨_, monoToPowGr_mk f a c⟩
-
 theorem monoToPowGr_injective_iff (f : ι → R) (a : ℕ) :
     Function.Injective (monoToPowGr M f a) ↔ ∀ c : MonoDeg ι a → M,
       ∑ α, monoVal f α.1 • c α ∈ (Ideal.span (Set.range f) ^ (a + 1) • ⊤ : Submodule R M) →
@@ -258,11 +229,6 @@ theorem monoToPowGr_injective_iff (f : ι → R) (a : ℕ) :
 theorem isQuasiRegularSeq_iff_injective (f : ι → R) :
     IsQuasiRegularSeq M f ↔ ∀ a, Function.Injective (monoToPowGr M f a) :=
   forall_congr' fun a => (monoToPowGr_injective_iff f a).symm
-
-theorem isQuasiRegularSeq_iff_bijective (f : ι → R) :
-    IsQuasiRegularSeq M f ↔ ∀ a, Function.Bijective (monoToPowGr M f a) :=
-  (isQuasiRegularSeq_iff_injective f).trans <| forall_congr' fun a =>
-    ⟨fun h => ⟨h, monoToPowGr_surjective M f a⟩, fun h => h.1⟩
 
 theorem isQuasiRegularSeq_self_iff (f : ι → R) :
     IsQuasiRegularSeq R f ↔ ∀ (a : ℕ) (p : MvPolynomial ι R), p.IsHomogeneous a →
@@ -304,11 +270,6 @@ theorem isQuasiRegularSeq_self_iff (f : ι → R) :
     simpa only [hco] using hc
 
 namespace IsQuasiRegularSeq
-
-noncomputable def powGrEquiv {f : ι → R} (h : IsQuasiRegularSeq M f) (a : ℕ) :
-    (MonoDeg ι a → M ⧸ (Ideal.span (Set.range f) • ⊤ : Submodule R M)) ≃ₗ[R ⧸
-      Ideal.span (Set.range f)] powGr (Ideal.span (Set.range f)) M a :=
-  LinearEquiv.ofBijective (monoToPowGr M f a) ((isQuasiRegularSeq_iff_bijective f).mp h a)
 
 theorem comp_equiv {κ : Type*} [Finite κ] {f : ι → R} (h : IsQuasiRegularSeq M f) (e : κ ≃ ι) :
     IsQuasiRegularSeq M (f ∘ e) := by
@@ -355,17 +316,6 @@ end Quasi
 section Basis
 
 variable {R : Type*} [CommRing R] {ι : Type*} [Finite ι]
-
-noncomputable def quotSMulTopEquivQuot (I : Ideal R) :
-    (R ⧸ (I • ⊤ : Submodule R R)) ≃ₗ[R ⧸ I] R ⧸ I :=
-  LinearEquiv.extendScalarsOfSurjective Ideal.Quotient.mk_surjective <|
-    Submodule.quotEquivOfEq _ _ (by simp)
-
-noncomputable def IsQuasiRegularSeq.powGrBasis {f : ι → R} (h : IsQuasiRegularSeq R f) (a : ℕ) :
-    Module.Basis (MonoDeg ι a) (R ⧸ Ideal.span (Set.range f))
-      (powGr (Ideal.span (Set.range f)) R a) :=
-  Module.Basis.ofEquivFun <| (h.powGrEquiv a).symm ≪≫ₗ
-    LinearEquiv.piCongrRight fun _ => quotSMulTopEquivQuot _
 
 end Basis
 
@@ -503,24 +453,6 @@ noncomputable instance MonoDeg.unique (ι : Type*) [Unique ι] (a : ℕ) : Uniqu
     obtain ⟨α, rfl⟩ := α
     ext
     simp [Finsupp.degree_eq_sum]
-
-theorem isQuasiRegularSeq_singleton_iff {M : Type*} [AddCommGroup M] [Module R M] (x : R) :
-    IsQuasiRegularSeq M ![x] ↔
-      ∀ (a : ℕ) (m m' : M), x ^ a • m = x ^ (a + 1) • m' → ∃ m'', m = x • m'' := by
-  have hI : Ideal.span (Set.range ![x]) = Ideal.span {x} := by simp
-  have hm : ∀ (y : R) (m : M), m ∈ (Ideal.span {y} • ⊤ : Submodule R M) ↔ ∃ m', m = y • m' := by
-    intro y m
-    simp [Submodule.ideal_span_singleton_smul, Submodule.mem_smul_pointwise_iff_exists, eq_comm]
-  have hv : ∀ a, monoVal ![x] (default : MonoDeg (Fin 1) a).1 = x ^ a :=
-    fun a => monoVal_single _ _ _
-  simp only [IsQuasiRegularSeq, hI, Ideal.span_singleton_pow, hm, Fintype.sum_unique, hv,
-    Unique.forall_iff]
-  exact ⟨fun h a m m' hm => h a (fun _ => m) ⟨m', hm⟩, fun h a c ⟨m', hm⟩ => h a _ m' hm⟩
-
-theorem isQuasiRegularSeq_singleton {M : Type*} [AddCommGroup M] [Module R M] {x : R}
-    (hx : IsSMulRegular M x) : IsQuasiRegularSeq M ![x] :=
-  (isQuasiRegularSeq_singleton_iff x).mpr fun a _ m' h =>
-    ⟨m', hx.pow a (by simpa only [pow_succ, mul_smul] using h)⟩
 
 end Examples
 

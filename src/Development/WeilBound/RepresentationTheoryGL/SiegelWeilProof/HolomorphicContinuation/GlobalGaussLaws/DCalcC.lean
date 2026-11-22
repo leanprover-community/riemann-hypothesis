@@ -16,8 +16,6 @@ open DCalcH DCalcBH
 
 variable {m n : ℕ}
 
-theorem mR_one : mR (1 : GR n) = 1 := rfl
-
 theorem cnt_add (ε : Fin m → Bool) : cnt ε true + cnt ε false = m := by
   unfold cnt
   rw [Finset.card_filter, Finset.card_filter, ← Finset.sum_add_distrib]

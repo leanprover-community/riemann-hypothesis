@@ -1,7 +1,36 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.VolGe
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EmbGLMemRealSU
+public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.NonemptyAlgHomOfIsRayOfDvd
+public import Development.AbelianVarietyTheory.PublishedTheorems.WeberRayClassFields.WeberRayFieldSt
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
+public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.GreenSeriesSt
+public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.BlockTriangularOfSubOne
+public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.MumfordProportionality
+public import Development.AbelianVarietyTheory.PublishedTheorems.ThetaCharacteristics.ThetaCharZero
+public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.WeylDualWeylLatticesAgreeOfLowestAlcove
+public import Development.AbelianVarietyTheory.PublishedTheorems.AbelianLaws.PrincipalPolarisationOneSection
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CanonicalOfAbelianDeRham
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsHorizontalGeneratorOfCharts
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactification
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.InjectiveOfSmulMemRange
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZeta
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqZeroOfCobOneEqZero
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.KawamataViehweg
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsAlgClosedBaseChange
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.L2ExtensionLogCanonical
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SmallSecTensTriv
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsMultiHomogeneousFixFirstBlock
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ResidueDegreeOfIsClosedImmersion
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.TopSelfEqLengthOfSmooth
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SerreHolomorphicSections
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsLogCanonicalMultipleCanonical
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.TateUnramifiedOfTorsionUnramified
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.FormalAlgebraisation
+public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbelianDieudonne
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HtValOnSubset
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SpecialFibreUnits
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.HodgeTateKernel
@@ -23,32 +52,13 @@ attribute [local instance] algPadicInt algPadicField towerPadic factPadic Global
 
 namespace GlobalTheory.FlatModel
 
-def IsTest (p : ℕ) [Fact p.Prime] {X : Scheme.{0}} (Xw : X.Opens) (yb : Sp 𝓞_ℂ_[p] ⟶ X) : Prop :=
-  (∃ (T : CDVR) (kO : T.V →+* 𝓞_ℂ_[p]) (yT : Sp T.V ⟶ X), T.FinRes ∧ Function.Injective kO ∧ spMap kO ≫ yT = yb) ∧
-    Set.range (spMap (algebraMap 𝓞_ℂ_[p] ℂ_[p]) ≫ yb) ⊆ Xw
-
-def GeomIrr {V : Type} [CommRing V] {X : Scheme.{0}} (s : X ⟶ Sp V) (Xw : X.Opens) : Prop :=
-  ∀ (k : Type) [Field k] (f : V →+* k), Function.Injective f → IrreducibleSpace ↑(pullback (Xw.ι ≫ s) (spMap f))
-
-
 section Minors
 
 variable {R V J : Type} [CommRing R] [CommRing V] {N g m : ℕ}
 
-def pairDet (h U : Fin m → Fin g → R) : R := (Matrix.of fun k k' : Fin m => ∑ b, h k' b * U k b).det
-
-def covec (β : V →+* R) (T : J → Fin N → V) (h : Fin N → Fin g → R) (I : Fin m → J) : Fin m → Fin g → R :=
-  fun k b => ∑ a, β (T (I k) a) * h a b
-
 end Minors
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-
-def embV {l : Level H} (c : Coeff l) (W : ValuationSubring ℂ) (σ : E →+* ℂ) : 𝓞 E →+* c.V W :=
-  (embK c σ).codRestrict (c.V W).toSubring fun a => by
-    obtain ⟨y, hy⟩ := IsIntegrallyClosed.isIntegral_iff (R := c.V W) (K := c.F).1
-      ((map_isIntegral_int (embK c σ) (RingOfIntegers.isIntegral a)).tower_top)
-    exact hy ▸ y.2
 
 section Lie
 
@@ -61,126 +71,21 @@ def EigRowsAt {S : Type} [CommRing S] (x : Sp S ⟶ X) (σ : 𝓞 E →+* S) (e 
     (U : Fin m → Fin g → S) : Prop :=
   ∀ k u, IsCombAtG t x e (U k) u → IsEigG t σ u
 
-def EigAt {S : Type} [CommRing S] (x : Sp S ⟶ X) (σ : 𝓞 E →+* S) (e : Fin g → (Sp (DualNumber S) ⟶ t.G.left))
-    (U : Fin g → Fin g → S) : Prop :=
-  EigRowsAt t x σ e U ∧
-    ∀ w v, IsCombAtG t x e w v → IsEigG t σ v → ((discr E : ℤ) : S) • w ∈ Submodule.span S (Set.range U)
-
 def bcV {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) (e : Fin g → (Sp (DualNumber R) ⟶ t.G.left)) :
     Fin g → (Sp (DualNumber S) ⟶ t.G.left) := fun i => spMap (dualMap φ) ≫ e i
 
-def EigFam {R : Type} [CommRing R] (x : Sp R ⟶ X) (σ : 𝓞 E →+* R) (e : Fin g → (Sp (DualNumber R) ⟶ t.G.left))
-    (U : Fin g → Fin g → R) : Prop :=
-  ∀ (S : Type) [CommRing S] (φ : R →+* S), EigAt t (spMap φ ≫ x) (φ.comp σ) (bcV t φ e) fun k b => φ (U k b)
-
 end Lie
-
-abbrev Ind (Dw : Datum H) (τ : E →+* ℂ) : Type := Fin (Dw.mult τ) ⊕ Fin (Dw.mult (conjEmb τ))
-
 
 section Model
 
 variable {l l' : Level H} {Xo : Moduli Dw l} {Xo' : Moduli Dw l'} {c : Coeff l} {c' : Coeff l'} {W : ValuationSubring ℂ}
   (Y : Model Xo' c' (c'.V W).subtype) (r : Xo'.XF c' ⟶ Xo.XF c) (ν : SABMap Y.oF.t Xo.univ.t (r ≫ pullback.fst _ _))
 
-def OverIncl (hle : c.F ≤ c'.F) : Prop :=
-  r ≫ pullback.snd _ _ = pullback.snd _ _ ≫ spMap (IntermediateField.inclusion hle).toRingHom
-
-def IsCover (hle : c.F ≤ c'.F) (Z : Comp Xo c) (la : HeightOneSpectrum (𝓞 c.F)) (p : ℕ) (Xw : Y.X.Opens) : Prop :=
-  OverIncl r hle ∧ (∀ x : c.F, (x : ℂ) ∈ W ↔ la.valuation c.F x ≤ 1) ∧ (p : ℂ) ∈ W.nonunits ∧
-  (p : c'.F) ∈ (c'.V W).nonunits ∧ (Xw : Set Y.X) ⊆ Set.range Y.j ∧ Xw ≤ Y.X.basicOpen (p : Γ(Y.X, ⊤)) ∧
-  (∀ z, Y.j z ∈ Xw → r z ∈ (Z : Set (Xo.XF c))) ∧ GeomIrr Y.s Xw ∧
-  ∀ (k : Type) [Field k] [IsAlgClosed k] (fK : c'.F →+* k) (x : Sp k ⟶ Xo.XF c),
-    x ≫ pullback.snd _ _ = spMap (fK.comp (IntermediateField.inclusion hle).toRingHom) →
-    Set.range x ⊆ (Z : Set (Xo.XF c)) →
-    ∃ yy : Sp k ⟶ Xo'.XF c', yy ≫ pullback.snd _ _ = spMap fK ∧ yy ≫ r = x ∧ Set.range (yy ≫ Y.j) ⊆ Xw
-
-def GVal (τ : E →+* ℂ) (f : Rul Xo c) {k : Type} [Field k] [Algebra c.F k] (yy : Sp k ⟶ Xo'.XF c') {g : ℕ}
-    (e : Fin g → (Sp (DualNumber k) ⟶ Y.t.G.left)) (U₁ : Fin (Dw.mult τ) → Fin g → k)
-    (U₂ : Fin (Dw.mult (conjEmb τ)) → Fin g → k) (fv : k) : Prop :=
-  ∀ y : FrPt Xo c k, Tested y → GlobalTheory.AllWt.ptF y = yy ≫ r →
-    ∀ (w₁ : Fin (Dw.mult τ) → (Sp (DualNumber k) ⟶ Y.oF.t.G.left))
-      (w₂ : Fin (Dw.mult (conjEmb τ)) → (Sp (DualNumber k) ⟶ Y.oF.t.G.left))
-      (g₁ : Matrix (Fin (Dw.mult τ)) (Fin (Dw.mult τ)) k)
-      (g₂ : Matrix (Fin (Dw.mult (conjEmb τ))) (Fin (Dw.mult (conjEmb τ))) k),
-      (∀ i, IsCombAtG Y.t (yy ≫ Y.j) e (U₁ i) (w₁ i ≫ Y.m.φ)) → (∀ i, IsCombAtG Y.t (yy ≫ Y.j) e (U₂ i) (w₂ i ≫ Y.m.φ)) →
-      (∀ i, IsCombAt y.x (y.u τ) (g₁ i) (w₁ i ≫ ν.φ)) → (∀ i, IsCombAt y.x (y.u (conjEmb τ)) (g₂ i) (w₂ i ≫ ν.φ)) →
-      fv * g₁.det = g₂.det * evR Xo c f y
-
 variable {p : ℕ} [Fact p.Prime] [StarRing (𝓞 E)]
-
-
-variable (p E) in
-abbrev PtP : Type 1 := Point p (Valued.v : Valuation ℂ_[p] ℝ≥0) 𝓞_ℂ_[p] (𝓞 E)
-
-def PtOn (yb : Sp 𝓞_ℂ_[p] ⟶ Y.X) (yy : Sp ℂ_[p] ⟶ Xo'.XF c') (P : PtP E p) (π : P.G.left ⟶ Y.t.G.left)
-    (ψ : P.A.A.left ⟶ Y.oF.t.G.left) : Prop :=
-  spMap (algebraMap 𝓞_ℂ_[p] ℂ_[p]) ≫ yb = yy ≫ Y.j ∧ IsGrpPullback P.G Y.t.G yb π ∧
-    (∀ a, (P.oG.act a).left ≫ π = π ≫ (Y.t.act.act a).left) ∧ IsGrpPullback P.A.A Y.oF.t.G yy ψ ∧
-    ψ ≫ Y.m.φ = P.gen ≫ π ∧ LBIso P.A.L (Y.oF.t.PP.L.pull ψ)
-
-def ITie (P : PtP E p) {G : Scheme.{0}} (π : P.G.left ⟶ G) (x : LieG P.Gt) (u : Sp (DualNumber 𝓞_ℂ_[p]) ⟶ G) : Prop :=
-  ∃ xG : LieG P.G, Corr P x.1 xG.1 ∧ xG.1.left ≫ π = u
-
-def HTApprox (n : ℕ) (yy : Sp ℂ_[p] ⟶ Xo'.XF c') (P : PtP E p) (π : P.G.left ⟶ Y.t.G.left)
-    (ψ : P.A.A.left ⟶ Y.oF.t.G.left) {N g : ℕ} (a : Fin N → Dw.La)
-    (e : Fin g → (Sp (DualNumber 𝓞_ℂ_[p]) ⟶ Y.t.G.left)) (h : Fin N → Fin g → 𝓞_ℂ_[p]) : Prop :=
-  ∀ (m : Fin N) (t : P.T), (t.lev n).left ≫ ψ = yy ≫ (Y.oF.etaA (a m)).left → ∀ (k : Fin g) (x : LieG P.Gt),
-    ITie P π x (e k) → h m k - (P.al₀ t).1 x ∈ Ideal.span {(p : 𝓞_ℂ_[p]) ^ n}
 
 variable [Algebra c.F ℂ_[p]]
 
-def KapSpec (τ : E →+* ℂ) (f : Rul Xo c) (n : ℕ) {N : ℕ} (a : Fin N → Dw.La) (T S : Ind Dw τ → Fin N → c'.V W)
-    (yb : Sp 𝓞_ℂ_[p] ⟶ Y.X) (yy : Sp ℂ_[p] ⟶ Xo'.XF c') (P : PtP E p) (π : P.G.left ⟶ Y.t.G.left)
-    (ψ : P.A.A.left ⟶ Y.oF.t.G.left) (κ : ℂ_[p]) : Prop :=
-  ∀ (β : c'.V W →+* 𝓞_ℂ_[p]), yb ≫ Y.s = spMap β →
-  ∀ (g : ℕ) (e : Fin g → (Sp (DualNumber 𝓞_ℂ_[p]) ⟶ Y.t.G.left)) (U₁ U₂ : Fin g → Fin g → 𝓞_ℂ_[p])
-    (h : Fin N → Fin g → 𝓞_ℂ_[p]), IsTanBasis Y.t yb e → EigAt Y.t yb (β.comp (embV c' W τ)) e U₁ →
-    EigAt Y.t yb (β.comp (embV c' W (conjEmb τ))) e U₂ → HTApprox Y n yy P π ψ a e h →
-    (∃ (σ : Equiv.Perm (Ind Dw τ)) (K₁ : Fin (Dw.mult τ) → Fin g) (K₂ : Fin (Dw.mult (conjEmb τ)) → Fin g),
-      (p : ℝ)⁻¹ ^ n < ‖((pairDet (covec β T h (σ ∘ Sum.inl)) (U₁ ∘ K₁) *
-        pairDet (covec β S h (σ ∘ Sum.inr)) (U₂ ∘ K₂) : 𝓞_ℂ_[p]) : ℂ_[p])‖) ∧
-    ∀ (σ : Equiv.Perm (Ind Dw τ)) (K₁ : Fin (Dw.mult τ) → Fin g) (K₂ : Fin (Dw.mult (conjEmb τ)) → Fin g),
-      (p : ℝ)⁻¹ ^ n < ‖((pairDet (covec β T h (σ ∘ Sum.inl)) (U₁ ∘ K₁) *
-        pairDet (covec β S h (σ ∘ Sum.inr)) (U₂ ∘ K₂) : 𝓞_ℂ_[p]) : ℂ_[p])‖ →
-      ∀ fv : ℂ_[p], GVal Y r ν τ f yy (bcV Y.t (algebraMap 𝓞_ℂ_[p] ℂ_[p]) e) (fun k b => (U₁ (K₁ k) b : ℂ_[p]))
-        (fun k b => (U₂ (K₂ k) b : ℂ_[p])) fv →
-        ‖fv * ((Equiv.Perm.sign σ : ℤ) : ℂ_[p]) * (pairDet (covec β T h (σ ∘ Sum.inl)) (U₁ ∘ K₁) : 𝓞_ℂ_[p]) /
-          (pairDet (covec β S h (σ ∘ Sum.inr)) (U₂ ∘ K₂) : 𝓞_ℂ_[p]) - κ‖ < ‖κ‖
-
 end Model
-
-def HTLocSt : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H)
-    (l' : Level H) (Xo' : Moduli Dw l') (c' : Coeff l') (W : ValuationSubring ℂ) (Y : Model Xo' c' (c'.V W).subtype) (p : ℕ) [Fact p.Prime] (n : ℕ)
-    [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → (p : ℂ) ∈ W.nonunits → l'.A = p ^ n →
-    ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] (ξ : Sp R ⟶ Y.X),
-    ξ (⟨⊥, Ideal.isPrime_bot⟩ : PrimeSpectrum R) ∈ Set.range Y.j → ∀ (g : ℕ) (e : Fin g → (Sp (DualNumber R) ⟶ Y.t.G.left)),
-    IsTanBasis Y.t ξ e → ∀ (N : ℕ) (a : Fin N → Dw.La) (𝔭 : Ideal R), 𝔭.IsPrime →
-    ∃ (f : R) (h : Fin N → Fin g → Localization.Away f), f ∉ 𝔭 ∧
-      ∀ (φ : Localization.Away f →+* 𝓞_ℂ_[p]) (yy : Sp ℂ_[p] ⟶ Xo'.XF c') (P : PtP E p) (π : P.G.left ⟶ Y.t.G.left)
-        (ψ : P.A.A.left ⟶ Y.oF.t.G.left), PtOn Y (spMap (φ.comp (algebraMap R _)) ≫ ξ) yy P π ψ →
-        HTApprox Y n yy P π ψ a (bcV Y.t (φ.comp (algebraMap R _)) e) fun m k => φ (h m k)
-
-def GenSt : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H)
-    (l l' : Level H) (Xo : Moduli Dw l) (Xo' : Moduli Dw l') (c : Coeff l) (c' : Coeff l') (W : ValuationSubring ℂ)
-    (Y : Model Xo' c' (c'.V W).subtype) (r : Xo'.XF c' ⟶ Xo.XF c)
-    (ν : SABMap Y.oF.t Xo.univ.t (r ≫ pullback.fst _ _)) (hle : c.F ≤ c'.F)
-    (r₀ : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r₀) (x : ℝ), Laws U x →
-    ∀ (Z : Comp Xo c) (τ : Psi H) (s : ArchSec U x Z (flatWt Dw τ)) (la : HeightOneSpectrum (𝓞 c.F)) (p : ℕ)
-      (Xw : Y.X.Opens), p.Prime → IsCover Y r hle Z la p Xw →
-    ∀ (A : Type) [CommRing A] [IsDomain A] [IsIntegrallyClosed A] (ξ : Sp A ⟶ Y.X) (β : c'.V W →+* A),
-      IsOpenImmersion ξ → ξ ≫ Y.s = spMap β → IsUnit (p : A) → ξ (⟨⊥, Ideal.isPrime_bot⟩ : PrimeSpectrum A) ∈ Xw →
-    ∀ (g : ℕ) (e : Fin g → (Sp (DualNumber A) ⟶ Y.t.G.left)) (U₁ h₁ : Fin (Dw.mult τ.1) → Fin g → A)
-      (U₂ h₂ : Fin (Dw.mult (conjEmb τ.1)) → Fin g → A), IsTanBasis Y.t ξ e →
-      (∀ (S : Type) [CommRing S] (φ : A →+* S),
-        EigRowsAt Y.t (spMap φ ≫ ξ) (φ.comp (β.comp (embV c' W τ.1))) (bcV Y.t φ e) (fun k b => φ (U₁ k b)) ∧
-        EigRowsAt Y.t (spMap φ ≫ ξ) (φ.comp (β.comp (embV c' W (conjEmb τ.1)))) (bcV Y.t φ e) fun k b => φ (U₂ k b)) →
-      IsUnit (pairDet h₁ U₁) → IsUnit (pairDet h₂ U₂) →
-      ∃ f : Aˣ, ∀ (k : Type) [Field k] [Algebra c.F k] (φ : A →+* k) (yy : Sp k ⟶ Xo'.XF c'),
-        yy ≫ Y.j = spMap φ ≫ ξ →
-        GVal Y r ν τ.1 s.sig yy (bcV Y.t φ e) (fun k b => φ (U₁ k b)) (fun k b => φ (U₂ k b)) (φ f)
 
 section BaseChange
 
@@ -221,9 +126,6 @@ theorem bot_map [IsDomain R] [IsDomain S] {φ : R →+* S} (hφ : Function.Injec
   exact PrimeSpectrum.ext ((RingHom.injective_iff_ker_eq_bot φ).1 hφ)
 
 end BaseChange
-
-theorem coe_valued (p : ℕ) [Fact p.Prime] (x : ℂ_[p]) : ((Valued.v x : ℝ≥0) : ℝ) = ‖x‖ := by
-  rw [PadicComplex.norm_eq_norm, Valued.v.norm_def, (show Valuation.RankLeOne.hom' Valued.v = MonoidWithZeroHom.ValueGroup₀.embedding from rfl), Valuation.embedding_restrict]
 
 end GlobalTheory.FlatModel
 

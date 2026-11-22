@@ -123,10 +123,8 @@ namespace GlobalTheory.JSW.MirCinf
 
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 
-
 open Classical in
 def unitVecInf (j : Fin n) (w : InfinitePlace E) (z : ℂ) : Fin n → Cinf E := Pi.single j (Pi.single w z)
-
 
 variable (E n) in
 def dualVecInf : ((Fin n → Cinf E) →L[ℝ] ℝ) →L[ℝ] (Fin n → Cinf E) :=
@@ -141,9 +139,6 @@ def dualVecInf : ((Fin n → Cinf E) →L[ℝ] ℝ) →L[ℝ] (Fin n → Cinf E)
         simp only [ContinuousLinearMap.smul_apply, Pi.smul_apply, smul_eq_mul, Complex.ofReal_mul,
           RingHom.id_apply, Complex.real_smul]
         ring }
-
-theorem dualVecInf_apply (ζ : (Fin n → Cinf E) →L[ℝ] ℝ) (j : Fin n) (w : InfinitePlace E) :
-    dualVecInf E n ζ j w = (-(ζ (unitVecInf j w 1) : ℂ) + Complex.I * (ζ (unitVecInf j w Complex.I) : ℂ)) / 2 := rfl
 
 theorem eq_sum_unitVecInf (v : Fin n → Cinf E) :
     v = ∑ j, ∑ w, ((v j w).re • unitVecInf j w 1 + (v j w).im • unitVecInf j w Complex.I) := by

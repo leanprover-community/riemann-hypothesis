@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FormsOver
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingKrullDimIntegers
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ToroidalBoundaryMetricData
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsMoebZero
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PtEqOfPtOfFrameEq
@@ -67,71 +67,13 @@ variable {D : D7} {A : Amb D} {N j : ℕ} {S : Sig A N j} {κ : Lv A}
 
 instance FinalTheorems.smooth (s : FinalTheorems S κ) : SmoothOfRelativeDimension S.Dw.dim (genStr s.T.Z) := s.T.smooth
 
-abbrev ToroidalCompactificationData (s : FinalTheorems S κ) : Type := OddPrimesWithRootsOfUnity s.T.Z
-
-theorem Sig.mult_psi (S : Sig A N j) (L : CmList A) (t : D.what₂.Tau) : S.Dw.mult (L.ψ t).1 = j :=
-  (if_pos (L.ψ t).2).trans S.p_eq
-
-theorem Sig.mult_conj (S : Sig A N j) (L : CmList A) (t : D.what₂.Tau) : S.Dw.mult (conjEmb (L.ψ t).1) = N - j :=
-  (if_neg (GlobalTheory.AllWt.conj_not_mem (L.ψ t))).trans (by have := S.p_eq; have := S.rank_eq; omega)
-
 namespace FinalTheorems
 
 variable (s : FinalTheorems S κ) (L : CmList A) (k : s.Comp)
 
-abbrev fd : Data D.host.E N := (s.U κ.σ₀).X k
-
-
-include s in
-theorem j_le : j ≤ N := le_of_isUnf _ s.isUnf S.p_eq
-
-abbrev lab : D.what₂.Tau ≃ (s.fd k).Ψ := cmEquiv _ s.isUnf L.ψ k
-
-abbrev zOf (f : (s.fd k).dom) : Pt D.what₂.Tau j (N - j) := domPt (s.fd k) s.j_le (s.lab L k) f.1
-
-def framePt (f : (s.fd k).dom) : CxPts (genStr s.T.Z) κ.σ₀ := cxPt s.T.Z ((s.U κ.σ₀).un k f)
-
-def lieFrame (f : (s.fd k).dom) : EigFrame s.T.Z κ.σ₀ ((s.framePt k f).1 ≫ genι s.T.Z) :=
-  cxFrame s.T.Z ((s.U κ.σ₀).un k f)
-
-
-open Classical in
-def frameOver (z : Pt D.what₂.Tau j (N - j)) : (s.fd k).dom :=
-  if h : ∃ f, s.zOf L k f = z then h.choose else ⟨x0F _, IW.orth_mem_dom _ _ (isOrth_x0F _)⟩
-
-def toCpt (z : Pt D.what₂.Tau j (N - j)) : CxPts (genStr s.T.Z) κ.σ₀ := s.framePt k (s.frameOver L k z)
-
 end FinalTheorems
 
 variable {s : FinalTheorems S κ} (x : ToroidalCompactificationData s) (L : CmList A)
-
-def ToroidalCompactificationData.gramW (k : s.Comp) (f : (s.fd k).dom) (t : D.what₂.Tau) : Matrix (Fin j) (Fin j) ℂ :=
-  (x.gram (s.framePt k f) (s.lieFrame k f) (L.ψ t).1).submatrix
-    (Fin.cast (S.mult_psi L t).symm) (Fin.cast (S.mult_psi L t).symm)
-
-def ToroidalCompactificationData.gramOm (k : s.Comp) (f : (s.fd k).dom) (t : D.what₂.Tau) : Matrix (Fin (N - j)) (Fin (N - j)) ℂ :=
-  ((hodgeC (s.fd k) (s.lab L k) t : ℂ) ^ 2) •
-    (dualGram (x.gram (s.framePt k f) (s.lieFrame k f) (conjEmb (L.ψ t).1))).submatrix
-      (fun a => Fin.cast (S.mult_conj L t).symm a.rev) (fun a => Fin.cast (S.mult_conj L t).symm a.rev)
-
-def ToroidalCompactificationData.metW (k : s.Comp) (z : Pt D.what₂.Tau j (N - j)) (t : D.what₂.Tau) : Matrix (Fin j) (Fin j) ℂ :=
-  ((coW (s.fd k) s.j_le (s.frameOver L k z).1 (s.lab L k t))⁻¹)ᴴ * x.gramW L k (s.frameOver L k z) t *
-    (coW (s.fd k) s.j_le (s.frameOver L k z).1 (s.lab L k t))⁻¹
-
-def ToroidalCompactificationData.metOm (k : s.Comp) (z : Pt D.what₂.Tau j (N - j)) (t : D.what₂.Tau) : Matrix (Fin (N - j)) (Fin (N - j)) ℂ :=
-  ((coOm (s.fd k) s.j_le (s.frameOver L k z).1 (s.lab L k t))⁻¹)ᴴ * x.gramOm L k (s.frameOver L k z) t *
-    (coOm (s.fd k) s.j_le (s.frameOver L k z).1 (s.lab L k t))⁻¹
-
-structure IsBdOf (B : s.Bd L) : Prop where
-  m_eq : ∀ k, (B k).m = x.m
-  nrm : ∀ k i, ∀ z ∈ DomI D.what₂.Tau j (N - j), (B k).nrm i z = x.nrm κ.σ₀ (Fin.cast (m_eq k) i) (s.toCpt L k z)
-  kae : ∀ k W φ, IsPotential (manifold s.T.Z κ.σ₀) (x.kae κ.σ₀) W φ → ∀ z ∈ DomI D.what₂.Tau j (N - j),
-    s.toCpt L k z ∈ W → ∀ ξ, ((B k).kae z ξ ξ).re = ddc (φ ∘ s.toCpt L k) z ξ
-  cst : ∀ k, (B k).cst = x.cst
-  metW : ∀ k f t, (coW (s.fd k) s.j_le f.1 (s.lab L k t))ᴴ * (B k).metW (s.zOf L k f) t *
-    coW (s.fd k) s.j_le f.1 (s.lab L k t) = x.gramW L k f t
-  metOm : ∀ k f t, (coOm (s.fd k) s.j_le f.1 (s.lab L k t))ᴴ * (B k).metOm (s.zOf L k f) t *
-    coOm (s.fd k) s.j_le f.1 (s.lab L k t) = x.gramOm L k f t
 
 namespace IsBdOf
 

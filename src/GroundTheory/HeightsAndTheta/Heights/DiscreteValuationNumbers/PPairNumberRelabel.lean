@@ -26,8 +26,6 @@ variable {K₁ K₂ : Type} {ι₁ : K₁ → Type} {ι₂ : K₂ → Type} {R :
 
 abbrev ren : MRing ι₁ R ≃+* MRing ι₂ R := (renameEquiv R σ).toRingEquiv
 
-theorem ren_apply (f : MRing ι₁ R) : ren (R := R) σ f = rename σ f := rfl
-
 theorem map_rename_eq (I : Ideal (MRing ι₁ R)) :
     I.map (rename σ) = I.map (ren (R := R) σ : MRing ι₁ R →+* MRing ι₂ R) := rfl
 
@@ -112,14 +110,12 @@ section Numbers
 
 variable {K : Type*} [DecidableEq K] {ι : K → Type*}
 
-
 omit [DecidableEq K] in
 theorem diffStep_comm (a b : K → ℤ) (h : (K → ℤ) → ℤ) :
     diffStep a (diffStep b h) = diffStep b (diffStep a h) := by
   funext m
   simp only [diffStep, sub_right_comm m a b]
   ring
-
 
 omit [DecidableEq K] in
 theorem foldr_diffStep_perm {l₁ l₂ : List (K → ℤ)} (p : l₁.Perm l₂) (h : (K → ℤ) → ℤ) :
@@ -149,7 +145,6 @@ section DVR
 variable {K₁ K₂ : Type} [DecidableEq K₁] [DecidableEq K₂] {ι₁ : K₁ → Type} {ι₂ : K₂ → Type}
   {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   (e : K₁ ≃ K₂) (σ : (Σ k, ι₁ k) ≃ (Σ k, ι₂ k))
-
 
 omit [DecidableEq K₁] [DecidableEq K₂] in
 theorem specialIdeal_map (W : Ideal (MRing ι₁ O)) :
@@ -190,7 +185,6 @@ theorem classNum_map (hσ : ∀ v, (σ v).1 = e v.1) {S : Type*} (cls : S → K�
   rw [← Multiset.map_coe, Multiset.coe_toList, Multiset.coe_toList, Multiset.map_map]
   rfl
 
-
 omit [IsDomain O] [IsDiscreteValuationRing O] in
 theorem isMultiHomog_rename (hσ : ∀ v, (σ v).1 = e v.1) {f : MRing ι₁ O} {a : K₁ → ℕ}
     (h : IsMultiHomog f a) : IsMultiHomog (rename σ f) (a ∘ e.symm) := by
@@ -202,7 +196,6 @@ theorem isMultiHomog_rename (hσ : ∀ v, (σ v).1 = e v.1) {f : MRing ι₁ O} 
     simp only [Function.comp_apply, Equiv.symm_apply_apply]
     exact e.injective.extend_apply a 0 k₁
   rwa [hext] at h'
-
 
 omit [IsDomain O] [IsDiscreteValuationRing O] in
 theorem isModelOver_map [Fintype K₁] [Fintype K₂] (hσ : ∀ v, (σ v).1 = e v.1)
@@ -225,7 +218,6 @@ theorem isModelOver_map [Fintype K₁] [Fintype K₂] (hσ : ∀ v, (σ v).1 = e
     rw [← rename_mem_map_iff σ P (C c), rename_C]
   · rw [GroundTheory.Heights₂.Heights.Targets.ExistsUniqueRelabel.ringKrullDim_quot_map, hdim,
       Fintype.card_congr e]
-
 
 omit [IsDomain O] [IsDiscreteValuationRing O] in
 theorem isVerticalDivisor_map (hσ : ∀ v, (σ v).1 = e v.1) (P : Ideal (MRing ι₁ O)) (ϖ : O)

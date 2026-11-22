@@ -20,8 +20,6 @@ open Reduction AutomorphicForm RightCosetSpace CuspidalSpectrum
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => rationalGLOne (K := K) (n := n)
-
 variable (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 theorem exists_ae_eq_const_of_forall_eq {c : Lp ℂ 2 (quotientMeasure Γ₁ μ)}

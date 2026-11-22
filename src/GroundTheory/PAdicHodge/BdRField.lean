@@ -38,12 +38,6 @@ namespace IsPerfectoidField
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [Fact p.Prime] [IsPerfectoidField K p] [CharZero K]
 
-local notation "𝒪" => normInteger K
-local notation "𝔸" => Localization.Away (p : WittVector p (PreTilt 𝒪 p))
-local notation "𝔹" => BDeRhamPlus 𝒪 p
-local notation "𝔹dR" => BDeRham 𝒪 p
-local notation "J" => RingHom.ker (fontaineThetaInvertP 𝒪 p)
-
 theorem maximalIdeal_eq_span_of_ker_eq_span {a : 𝔸} (ha : J = span {a}) :
     maximalIdeal 𝔹 = span {toBDeRhamPlus 𝒪 p a} := by
   rw [← map_ker_fontaineThetaInvertP K p, ha, Ideal.map_span, Set.image_singleton]
@@ -201,7 +195,6 @@ theorem iSup_fil : ⨆ i, fil K p i = ⊤ := by
   rw [← ha, zpow_neg, zpow_natCast, mul_comm x, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero _ hne),
     one_mul]
 
-
 def filMk {π : 𝔹} (hπ : maximalIdeal 𝔹 = span {π}) (i : ℤ) : 𝔹 →ₗ[𝔹] fil K p i where
   toFun b := ⟨algebraMap 𝔹 𝔹dR π ^ i * algebraMap 𝔹 𝔹dR b, (mem_fil_iff hπ).2 ⟨b, rfl⟩⟩
   map_add' a b := Subtype.ext (by simp only [map_add (f := _), mul_add, Submodule.coe_add])
@@ -260,9 +253,6 @@ end IsPerfectoidField
 section Galois
 
 variable {p : ℕ} [Fact p.Prime] {L : IntermediateField ℚ_[p] (PadicAlgCl p)}
-
-local notation "𝔹" => BDeRhamPlus (normInteger ℂ_[p]) p
-local notation "𝔹dR" => BDeRham (normInteger ℂ_[p]) p
 
 def galBdRField (σ : Gal(PadicAlgCl p/L)) : 𝔹dR ≃+* 𝔹dR :=
   IsFractionRing.ringEquivOfRingEquiv (galBdR σ)

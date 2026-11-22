@@ -27,14 +27,6 @@ def ExtendEmb : Prop :=
   ∀ (M : IntermediateField ℚ ℂ), Algebra.IsAlgebraic ℚ M → ∀ ρ : M →ₐ[ℚ] ℂ,
     ∃ σ : ℂ ≃+* ℂ, ∀ x : M, σ (x : ℂ) = ρ x
 
-def CMConjSet (D : D7) : Prop :=
-  ∀ cc : Ideal (𝓞 D.host.K), cc ≠ ⊥ → ∀ (M : IntermediateField ℚ ℂ) [NumberField M]
-    (h : jL (lamOf D cc 1) ∈ M),
-    (∀ ρ : M →ₐ[ℚ] ℂ, ∃ 𝔟 : Ideal (𝓞 D.host.K), 𝔟 ≠ ⊥ ∧ ρ ⟨jL (lamOf D cc 1), h⟩ = jL (lamOf D 𝔟 1)) ∧
-    ∀ 𝔟 : Ideal (𝓞 D.host.K), 𝔟 ≠ ⊥ →
-      ((Finset.univ.filter fun ρ : M →ₐ[ℚ] ℂ => ρ ⟨jL (lamOf D cc 1), h⟩ = jL (lamOf D 𝔟 1)).card : ℝ) *
-        (Fintype.card (ClassGroup (𝓞 D.host.K)) : ℝ) = (Module.finrank ℚ M : ℝ)
-
 theorem uniqInv_of_lat (hL : LatOfDiscr) (hU : Uniformization) : UniqInv := by
   intro Λ Λ' hd h2 h3
   have hd0 : Formalism.MainNotions.TaylorLogMetric.g2 Λ ^ 3 - 27 * Formalism.MainNotions.TaylorLogMetric.g3 Λ ^ 2 ≠ 0 := hd

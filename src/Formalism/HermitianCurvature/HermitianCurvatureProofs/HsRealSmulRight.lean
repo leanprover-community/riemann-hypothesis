@@ -40,8 +40,6 @@ def hsB : (Wq →L[ℂ] Wp) →L[ℝ] (Wq →L[ℂ] Wp) →L[ℝ] ℂ :=
       map_add' := fun A A' => by ext C; simp [hsR, hs_add_left]
       map_smul' := fun r A => by ext C; simp [hsR, hs_real_smul_left, Complex.real_smul] }
 
-theorem hsB_apply (A C : Wq →L[ℂ] Wp) : hsB A C = B.hsInner A C := rfl
-
 theorem hs_sub_left (A A' C : Wq →L[ℂ] Wp) : B.hsInner (A - A') C = B.hsInner A C - B.hsInner A' C := by
   simp only [hsInner_eq_sum, ContinuousLinearMap.sub_apply, inner_sub_right, Finset.sum_sub_distrib]
 

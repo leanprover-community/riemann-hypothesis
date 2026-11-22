@@ -52,9 +52,6 @@ theorem la_stab {N N' : ℕ} (T : TaylorLogMetric.Tor D) {M : Submodule (𝓞 D.
   | add x y _ _ hx hy => rw [map_add (f := _)]; exact AddSubgroup.add_mem _ hx hy
   | neg x _ hx => rw [map_neg]; exact AddSubgroup.neg_mem _ hx
 
-theorem mulO_apply {N N' : ℕ} (r : D.host.E) (x : TaylorLogMetric.VC D N N') (τ : D.what₂.Tau) (i : Fin N') (j : Fin N) :
-    J.mulO N N' r x τ i j = TaylorLogMetric.embT D τ r * x τ i j := rfl
-
 theorem mulO_la {N N' : ℕ} (T : TaylorLogMetric.Tor D) (hT : ∀ τ x, T.emb τ x = TaylorLogMetric.embT D τ x)
     {M : Submodule (𝓞 D.host.E) (Fin N → D.host.E)} {M' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)}
     (r : 𝓞 D.host.E) {z : TaylorLogMetric.VC D N N'} (hz : z ∈ TaylorLogMetric.La D T M M') :
@@ -111,15 +108,6 @@ def colSw (N N' : ℕ) : TaylorLogMetric.VC D N N' →+ TaylorLogMetric.VC D N N
   toFun z := fun τ i j => z τ i (swp N j)
   map_zero' := rfl
   map_add' _ _ := rfl
-
-theorem rowP_apply {N N' : ℕ} (z : TaylorLogMetric.VC D N N') (τ : D.what₂.Tau) (i : Fin N') (j : Fin N) :
-    rowP N N' z τ i j = if i.val < N' / 2 then z τ i j else 0 := rfl
-theorem rowSw_apply {N N' : ℕ} (z : TaylorLogMetric.VC D N N') (τ : D.what₂.Tau) (i : Fin N') (j : Fin N) :
-    rowSw N N' z τ i j = z τ (swp N' i) j := rfl
-theorem colP_apply {N N' : ℕ} (z : TaylorLogMetric.VC D N N') (τ : D.what₂.Tau) (i : Fin N') (j : Fin N) :
-    colP N N' z τ i j = if j.val < N / 2 then z τ i j else 0 := rfl
-theorem colSw_apply {N N' : ℕ} (z : TaylorLogMetric.VC D N N') (τ : D.what₂.Tau) (i : Fin N') (j : Fin N) :
-    colSw N N' z τ i j = z τ i (swp N j) := rfl
 
 section Facts
 

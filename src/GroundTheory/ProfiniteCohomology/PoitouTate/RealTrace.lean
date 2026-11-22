@@ -18,8 +18,6 @@ open IsDedekindDomain NumberField CategoryTheory GroundTheory.Global
 
 attribute [local instance 2000] Rep.hV2
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
@@ -65,7 +63,6 @@ theorem gsRealInvRootsQZ_ptRes_eq (w : {v : InfinitePlace K.1 // v.IsReal}) (x :
         (.inl w.1)) :=
   (gsRealInvRootsQZ_ptRes S ιr N w x).trans (congrArg (placeInv (K := K) (.inl w.1))
     (realLocalEquiv_realUnitsRes S ιr (gsLocalEmbeddings S ιs) (by norm_num) w _).symm)
-
 
 omit [NeZero N] in
 theorem sum_placeInv_inr_add_sum_placeInv_inl [Fintype S] (ι : LocalEmbeddings K) (z : cohomology (unitsLimitRep K) 2)
@@ -120,7 +117,6 @@ def gsSumInvReal [Fintype S] : ptTLocal (gsFinFamily S ιs) (gsRealFamily S ιr)
     change ∑ v, gsLocalInvRootsQZ S ιs N v (ξ.1 v + η.1 v) + ∑ w, gsRealInvRootsQZ S ιr N w (ξ.2 w + η.2 w) = _
     simp only [map_add (f := _), Finset.sum_add_distrib]
     abel
-
 
 theorem gsSumInvReal_eq_zero_of [Fintype S] (ξ : ptTLocal (gsFinFamily S ιs) (gsRealFamily S ιr) (gsRoots S N) 2)
     (hξ : (ptTLocalToCompact (gsFinFamily S ιs) (gsRealFamily S ιr) (gsRoots S N) 2).hom ξ = 0) :

@@ -32,8 +32,6 @@ theorem eMat_surj (B : HSp D) {ρ : ℕ} (M : Matrix (Fin B.rank) (Fin ρ) D.hos
   choose e he using fun i => co_surj B (fun k => M k i)
   exact ⟨e, by funext k i; exact congrFun (he i) k⟩
 
-theorem sig_eq (a : D.host.E) : (D.sp.cm.sig : D.host.E →+* D.host.E) a = star a := rfl
-
 theorem cA_inc (a : D.host.E) : cA D (incA D a) = incA D (star a) := by
   simp [cA, incA, sigR, inclR]
   rfl
@@ -133,7 +131,6 @@ theorem mt_mul (B : HSp D) (g h : GA D B) : mt B (g * h) = mt B g * mt B h := by
   simp [Formalism.L2.Theta.mt]
 
 theorem mt_one (B : HSp D) : mt B 1 = 1 := by simp [Formalism.L2.Theta.mt]
-
 
 set_option maxHeartbeats 1000000 in
 theorem closure_prop (B : HSp D) {ρ : ℕ} (e : Fin ρ → B.V) (n : GA D B) (hn : n ∈ Subgroup.closure (NS B e)) :

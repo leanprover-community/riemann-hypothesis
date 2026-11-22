@@ -53,10 +53,6 @@ def modJet {V W : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [Normed
     W →ₗ⋆[ℂ] W →ₗ[ℂ] ℂ :=
   ((innerₛₗ ℂ).compl₂ (ew E l ∘ₗ j.toLinearMap)) ∘ₛₗ j.toLinearMap
 
-theorem modJet_apply {V W : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [NormedAddCommGroup W]
-    [InnerProductSpace ℂ W] (E : Fin n → Fin n → Module.End ℂ V) (j : W →ₗᵢ[ℂ] V) (l : List (Fin n × Fin n))
-    (y x : W) : modJet E j l y x = ⟪j y, ew E l (j x)⟫_ℂ := rfl
-
 section Rel
 
 variable {V W : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [NormedAddCommGroup W]

@@ -252,8 +252,6 @@ namespace Ranks
 
 variable (R : Ranks)
 
-def n : ℕ := R.ord
-
 def r : ℕ := R.k + R.m - 1
 
 def N (j : ℕ) : ℕ := R.k + j * (R.t + 1)

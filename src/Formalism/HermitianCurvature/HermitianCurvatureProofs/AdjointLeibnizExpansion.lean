@@ -54,8 +54,6 @@ theorem hsVec_surjective :
 def hsE : (Wq →L[ℂ] Wp) ≃ₗ[ℂ] PiLp 2 (fun _ : Fin (Module.finrank ℂ Wq) => Wp) :=
   LinearEquiv.ofBijective hsVecL ⟨hsVec_injective, hsVec_surjective⟩
 
-theorem hsE_apply (A : Wq →L[ℂ] Wp) : hsE A = hsVec A := rfl
-
 def hsAdj (B : (Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp)) : (Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp) :=
   LinearMap.toContinuousLinearMap ((hsE.symm.toLinearMap ∘ₗ
     LinearMap.adjoint (hsE.toLinearMap ∘ₗ B.toLinearMap ∘ₗ hsE.symm.toLinearMap)) ∘ₗ hsE.toLinearMap)

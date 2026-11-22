@@ -15,8 +15,6 @@ namespace GlobalTheory.FinTypCount
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
-local notation3 "L⁺" => maximalRealSubfield L
-
 theorem countable_field : Countable L :=
   (Module.finBasis ℚ L).equivFun.toEquiv.injective.countable
 
@@ -165,7 +163,6 @@ theorem countable_range_rt {f : GAf L n → ℂ} {N : ℕ} (hN : 0 < N)
 end GlobalTheory.FinTypCount
 
 namespace GlobalTheory
-
 
 open GlobalTheory.FinTypCount in
 theorem FinTyp.rank_le_aleph0 : ∀ {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}

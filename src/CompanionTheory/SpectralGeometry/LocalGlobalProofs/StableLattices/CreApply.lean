@@ -61,12 +61,6 @@ theorem sg_erase (i : NC ε) {j : NC ε} {A : Finset (NC ε)} (h : j ∈ A) :
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem ann_apply (i : NC ε) (x : Ch ε V) (A : Finset (NC ε)) :
-    ann i x A = if i ∈ A then 0 else sg i A • x (insert i A) := rfl
-
-theorem cre_apply (i : NC ε) (x : Ch ε V) (A : Finset (NC ε)) :
-    cre i x A = if i ∈ A then sg i A • x (A.erase i) else 0 := rfl
-
 theorem ann_ann (i j : NC ε) : (ann i * ann j + ann j * ann i : Module.End ℂ (Ch ε V)) = 0 := by
   refine LinearMap.ext fun x => funext fun A => ?_
   simp only [LinearMap.add_apply, Module.End.mul_apply, Pi.add_apply, LinearMap.zero_apply, Pi.zero_apply,

@@ -2,12 +2,10 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.QuoIff
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SlopeMaxSquaredBoundStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SlopeMaxSquaredBound
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MaxSlopeSqFieldExtensionLeComparableNormsStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSemilinearEmbSupLatticeOntoRealisationStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightBoundHoldsStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HostBoundHolds
 public import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.EqZeroOfPnorm
 

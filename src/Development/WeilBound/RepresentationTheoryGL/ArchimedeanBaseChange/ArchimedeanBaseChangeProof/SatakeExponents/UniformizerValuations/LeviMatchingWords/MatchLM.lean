@@ -33,12 +33,6 @@ def MatchLMId : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
 
 def MatchLMIdOf : Prop := IdemAlg → LocOk → MatchLMId
 
-def wordL (d : LocData E n) (a : ℕ) (ha : a ≤ n) (w : Pl E) (l : List (ℕ × Bool)) : LM d.kap a (n - a) :=
-  l.foldr (fun x L => (d.hL a ha w x.1 x.2).mul L) (d.eL a)
-
-def wordU (d : LocData E n) (w : Pl E) (l : List (ℕ × Bool)) : UL n w → ℂ :=
-  l.foldr (fun x f => PositivityTheory.Rg.BcB.F.Eig.lconv (d.hU w x.1) f) ((KL n w : Set (UL n w)).indicator 1)
-
 def MatchLMUnitOf : Prop := MB.MatchUnitI → MT.MatchSplit → IdemAlg → MatchLMUnit
 
 structure MOk (d : LocData E n) : Prop where

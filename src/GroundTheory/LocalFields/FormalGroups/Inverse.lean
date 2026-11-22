@@ -117,17 +117,6 @@ theorem subst_X_inv :
   rw [subst_eq_add_add_subst_higher F (hasSubst_pair hX hi)]
   linear_combination (-1 : MvPowerSeries Unit R) * this
 
-theorem eq_inv_of_subst_eq_zero {g : PowerSeries R} (hg : PowerSeries.constantCoeff g = 0)
-    (h : subst ![PowerSeries.X, g] F.toPowerSeries = (0 : PowerSeries R)) : g = inv F := by
-  have hX : constantCoeff (X () : MvPowerSeries Unit R) = 0 := by simp
-  have hg' : constantCoeff (g : MvPowerSeries Unit R) = 0 := hg
-  change subst ![X (), (g : MvPowerSeries Unit R)] F.toPowerSeries = 0 at h
-  rw [subst_eq_add_add_subst_higher F (hasSubst_pair hX hg')] at h
-  have hfix : invStep F g = g := by
-    rw [invStep_of_constantCoeff_eq_zero F hg']
-    linear_combination (-1 : MvPowerSeries Unit R) * h
-  exact (existsUnique_invStep F).unique hfix (invStep_inv F)
-
 theorem subst_subst_pair {σ : Type*} {g h : PowerSeries R} (hgh : HasSubst ![g, h])
     {x : MvPowerSeries σ R} (hx : PowerSeries.HasSubst x) (G : MvPowerSeries (Fin 2) R) :
     PowerSeries.subst x (subst ![g, h] G : PowerSeries R) =

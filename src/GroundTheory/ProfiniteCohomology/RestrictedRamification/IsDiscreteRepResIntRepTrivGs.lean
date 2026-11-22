@@ -15,8 +15,6 @@ attribute [local instance 2000] Rep.hV2
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1))) [Fintype S]
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
   {n : ℕ} [NeZero n] (hodd : Odd n ∨ IsTotallyComplex K.1)

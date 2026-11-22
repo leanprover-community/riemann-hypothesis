@@ -19,9 +19,6 @@ section General
 
 variable {N : ℕ}
 
-def hK (K : Matrix (Fin N) (Fin N) D.host.E) (x y : Mx D N 1) : AE D :=
-  ∑ a, ∑ b, cA D (y a 0) * incA D (K a b) * x b 0
-
 end General
 
 def WeilExistsO (D : D7) : Prop :=

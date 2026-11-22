@@ -119,18 +119,6 @@ namespace PosDatum
 
 variable {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
 
-def sym (d : BesselDatum A B ι) : PosDatum A B ι where
-  bes := d
-  n := 0
-  ε := Fin.elim0
-  split := fun a => a.elim0
-  apart := fun a => a.elim0
-  p := Fin.elim0
-  one_le := fun a => a.elim0
-  le_sym := fun a => a.elim0
-  m := fun a => a.elim0
-  haar := fun a => a.elim0
-
 def move (P : PosDatum A B ι) (b : (GA D B → ℂ) → ℂ) : (GA D B → ℂ) → ℂ :=
   (List.finRange P.n).foldr (fun a b' => P.bes.toPos (P.ε a) (P.m a) (P.p a) b') b
 
@@ -196,44 +184,11 @@ def memberDatum (D : D7) (u : D.what₂.Word) : BesselDatum (D.sp.X 0) (D.sp.Y 0
   θ := D.host.xi0
   θ_ne := embedding_xi_zero_ne_zero D
 
-theorem odd_codim {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V} (d : BesselDatum A B ι) : Odd (B.rank - A.rank) :=
-  ⟨d.ρ, by rw [d.rank_eq]; omega⟩
-
 def PlaceDivides (D : D7) (ε : AE D) (π : 𝓞 D.host.E) : Prop :=
   π ≠ 0 ∧ finPart D (ε * incA D (π : D.host.E)⁻¹) ∉ intAE D
 
 def IsNormGen (D : D7) (π : 𝓞 D.host.E) (p : ℕ) : Prop :=
   (π : D.host.E) ∈ D.host.K ∧ (π : D.host.E) * D.host.conj (π : D.host.E) = (p : D.host.E)
-
-structure BesselTied (D : D7) (X : ThetaX D) (T : ThetaTied D X) (Wl : WeilTied D X T)
-    (piT : D.what₂.Word → 𝓞 D.host.E) (piGbar : Fin 2 → 𝓞 D.host.E) where
-  piT_norm : ∀ u, IsNormGen D (piT u) (D.mem u).A.T
-  piGbar_norm : ∀ i, IsNormGen D (piGbar i) (D.host.g i)
-
-  dat : ∀ (A B : HSp D) (ι : A.V →ₗ[D.host.E] B.V), HSpace.IsIsomEmb A B ι → Odd (B.rank - A.rank) →
-    X.Pos A B ι → PosDatum A B ι
-
-  dat_surj : ∀ A B ι h h', Function.Surjective (dat A B ι h h')
-
-  per : ∀ (A B : HSp D) (ι : A.V →ₗ[D.host.E] B.V) (h : HSpace.IsIsomEmb A B ι) (h' : Odd (B.rank - A.rank))
-    (p : X.Pos A B ι), A.SigOK → ∀ μ 𝓕, IsVolPair D A μ 𝓕 →
-    ∀ ν 𝓝, (dat A B ι h h' p).bes.IsUnitPair ν 𝓝 →
-    ∀ s : GA D A → GA D B, (∀ g, EmbRel B A ι (s g) g) →
-    ∀ (σ : X.FJd A B ι) (φ : X.AF A) (F : X.cusp B),
-      (dat A B ι h h' p).bes.Converges Wl.ψ μ 𝓕 ν 𝓝 s (fun g => star (T.ev A φ g)) (T.ev B (F : X.AF B)) →
-      X.Bper A B ι p σ φ F = (T.petC A : ℂ) *
-        (dat A B ι h h' p).period Wl.ψ μ 𝓕 ν 𝓝 s (fun g => star (T.ev A φ g)) (T.ev B (F : X.AF B))
-
-  posSym : ∀ u, dat _ _ _ (memberDatum D u).isom (odd_codim (memberDatum D u)) (X.posSym u) =
-    PosDatum.sym (memberDatum D u)
-
-  pos_bessel_eq_memberDatum : ∀ u, (dat _ _ _ (memberDatum D u).isom (odd_codim (memberDatum D u)) (X.pos1 u)).bes = memberDatum D u
-
-  pos_bessel_p_eq_one : ∀ u a, (dat _ _ _ (memberDatum D u).isom (odd_codim (memberDatum D u)) (X.pos1 u)).p a = 1
-
-  pos_split_places : ∀ u ε, IsSplitIdem D ε →
-    ((∃ a, (dat _ _ _ (memberDatum D u).isom (odd_codim (memberDatum D u)) (X.pos1 u)).ε a = ε) ↔
-      (PlaceDivides D ε (piT u) ∨ ∃ i, PlaceDivides D ε (piGbar i)))
 
 def ConvergesDef (D : D7) : Prop :=
   ∀ (A B : HSp D) (ι : A.V →ₗ[D.host.E] B.V) (d : BesselDatum A B ι) (ψ : AddChar (AF D.host.F) ℂ),

@@ -115,8 +115,6 @@ namespace Formalism.FourierDecayAlt.P.Sz3
 
 open Finset Formalism.FourierDecayAlt.Sz
 
-noncomputable def hs (n : ℕ) : ℝ := ∑ d ∈ Ioc 0 n, 1 / (d : ℝ)
-
 end Formalism.FourierDecayAlt.P.Sz3
 
 namespace Formalism.FourierDecayAlt.P

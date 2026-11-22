@@ -16,9 +16,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 variable {l : ℕ} [Fact l.Prime]
 
-def intSub (LL : FinExt l) : Submodule ↥(OL LL) ↥LL.1 :=
-  LinearMap.range (Algebra.linearMap ↥(OL LL) ↥LL.1)
-
 theorem norm_chi_le_one (P : LocPrime l) (K : FinExt l) (g : ↥(GK K)) :
     ‖(((P.PD K).χ g : ℚ_[l]ˣ) : ℚ_[l])‖ ≤ 1 := by
   obtain ⟨a, ha, -⟩ := P.χQ_cyc (g : GQ l) 0 1 (by simp)

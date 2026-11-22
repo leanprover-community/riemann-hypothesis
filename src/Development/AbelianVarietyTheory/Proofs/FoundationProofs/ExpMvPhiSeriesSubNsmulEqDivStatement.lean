@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPa
 public import Formalism.PairingDivisors.StatementH
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DifferentiableSqTh
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExpMvNegLogMvMul
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralSubst
 
 @[expose] public section
 

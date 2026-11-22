@@ -64,7 +64,6 @@ theorem zcoord_formSection (p : polyGrading ι R n) (i : L.ι) :
   rw [← gammaCoord_polyToGamma R x hL, ← gammaOf_formSection, gammaRes_gammaOf,
     gammaCoord_gammaOf, sectionsOn.res_refl, LinearMap.id_apply]
 
-
 include hL in
 theorem eq_zero_of_gammaCoord {F : X.Modules} {V : X.Opens} {i : L.ι} (h : V ≤ L.U i)
     {y : GammaStar R x F V} (hy : y ∈ gammaGrading R x F V n)
@@ -123,7 +122,6 @@ theorem isAffineOpen_biInf_coord (s : Finset (Fin (N + 1))) (hs : s.Nonempty) :
     IsAffineOpen (⨅ i ∈ s, Out.nonzeroLocus (ProjSpace.coord R N i)) :=
   isAffineOpen_finset_biInf (fun i => by
     rw [nonzeroLocus_coord]; exact isAffineOpen_chart R N i) s hs
-
 
 variable {R N} in
 theorem chartEval_coord (i : Fin (N + 1)) {U : (PSpace R N).Opens} (h : U ≤ chart R N i)
@@ -213,7 +211,6 @@ def grHEquiv (n : ℤ) (p : ℕ) :
   ((HomologicalComplex.homologyFunctor _ _ p).mapIso (grCechIso R N n)).toLinearEquiv.trans
     (cechHEquivCoh R (iSup_nonzeroLocus_coord R N) (isAffineOpen_biInf_coord R N) _ p)
 
-
 variable {N} in
 theorem formSection_bijective (hN : 1 ≤ N) (n : ℤ) :
     Function.Bijective (formSection R (ProjSpace.coord R N) (O1_isLB R N) n) := by
@@ -228,88 +225,37 @@ theorem formSection_bijective (hN : 1 ≤ N) (n : ℤ) :
     funext (grHMap_grAug hφ n), h₁.of_comp_iff'] at h₃
   exact (GrSum.pieceEquiv _ n).symm.bijective.comp h₃
 
-
 variable {N} in
 def formsEquivSections (hN : 1 ≤ N) (n : ℤ) :
     polyGrading (Fin (N + 1)) R n ≃ₗ[R] sectionsOn (sheafO R N n) ⊤ :=
   .ofBijective _ (formSection_bijective R hN n)
-
 
 variable {N} in
 def formsEquivCohZero (hN : 1 ≤ N) (n : ℤ) :
     polyGrading (Fin (N + 1)) R n ≃ₗ[R] coh (sheafO R N n) 0 :=
   (formsEquivSections R hN n).trans (cohOn.zeroEquiv R _ ⊤).symm
 
-
-
-
-variable {R N} in
-theorem formSec_eq {n : ℕ} {f : MvPolynomial (Fin (N + 1)) R} (hf : f.IsHomogeneous n) :
-    ProjSpace.formSec n f hf =
-      Twist.formSec (ProjSpace.coord R N) (mem_polyGrading_natCast.2 hf) :=
-  zglobal_ext (L := O1 R N) (m := n) fun i => by
-    rw [zfun_formSec]
-    exact (formOn_eq_aeval (U := chart R N i) (hi := le_rfl) hf).trans
-      (chartEval_coord i le_rfl f).symm
-
 theorem subsingleton_coh (n : ℤ) {p : ℕ} (h0 : p ≠ 0) (hp : p ≠ N) :
     Subsingleton (coh (sheafO R N n) p) :=
   have := ModuleCat.subsingleton_of_isZero (isZero_grH_poly R N n h0 hp)
   (grHEquiv R N n p).symm.injective.subsingleton
-
 
 variable {N} in
 theorem nonempty_basis_coh_top (hN : 1 ≤ N) (n : ℤ) :
     Nonempty (Module.Basis (NegExp N n) R (coh (sheafO R N n) N)) :=
   (nonempty_basis_grH_top R N n hN).map fun b => b.map (grHEquiv R N n N)
 
-
-variable {N} in
-theorem subsingleton_coh_top (hN : 1 ≤ N) {n : ℤ} (hn : -(N : ℤ) ≤ n) :
-    Subsingleton (coh (sheafO R N n) N) :=
-  have ⟨b⟩ := nonempty_basis_coh_top R hN n
-  have := isEmpty_negExp N hn
-  b.repr.injective.subsingleton
-
-theorem subsingleton_coh_of_neg_le {n : ℤ} (hn : -(N : ℤ) ≤ n) {p : ℕ} (hp : 0 < p) :
-    Subsingleton (coh (sheafO R N n) p) := by
-  by_cases h : p = N
-  · subst h
-    exact subsingleton_coh_top R hp hn
-  · exact subsingleton_coh R N n hp.ne' h
-
-
 theorem nonempty_coh_zero_equiv (n : ℤ) : Nonempty (coh (sheafO R 0 n) 0 ≃ₗ[R] R) :=
   (nonempty_grH_zero_equiv R n).map (grHEquiv R 0 n 0).symm.trans
 
-theorem finite_free_coh (n : ℤ) (p : ℕ) :
-    Module.Finite R (coh (sheafO R N n) p) ∧ Module.Free R (coh (sheafO R N n) p) := by
-  by_cases hp : p ≠ 0 ∧ p ≠ N
-  · have := subsingleton_coh R N n hp.1 hp.2
-    exact ⟨inferInstance, inferInstance⟩
-  rcases Nat.eq_zero_or_pos N with rfl | hN
-  · obtain rfl : p = 0 := by tauto
-    obtain ⟨e⟩ := nonempty_coh_zero_equiv R n
-    exact ⟨.equiv e.symm, .of_equiv e.symm⟩
-  by_cases h0 : p = 0
-  · subst h0
-    obtain ⟨b⟩ := nonempty_basis_polyGrading R N n
-    exact ⟨.of_basis (b.map (formsEquivCohZero R hN n)),
-      .of_basis (b.map (formsEquivCohZero R hN n))⟩
-  · obtain rfl : p = N := by tauto
-    obtain ⟨b⟩ := nonempty_basis_coh_top R hN n
-    exact ⟨.of_basis b, .of_basis b⟩
-
 instance free_coh (n : ℤ) (p : ℕ) : Module.Free R (coh (sheafO R N n) p) :=
   (finite_free_coh R N n p).2
-
 
 variable {N} in
 theorem finrank_coh_zero [Nontrivial R] (hN : 1 ≤ N) (n : ℤ) :
     Module.finrank R (coh (sheafO R N n) 0) = (n + N).toNat.choose N := by
   obtain ⟨b⟩ := nonempty_basis_polyGrading R N n
   rw [Module.finrank_eq_nat_card_basis (b.map (formsEquivCohZero R hN n)), card_natVec N hN]
-
 
 variable {N} in
 theorem finrank_coh_top [Nontrivial R] (hN : 1 ≤ N) (n : ℤ) :
@@ -339,21 +285,6 @@ theorem chi_sheafO (n : ℤ) : chi k (sheafO k N n) = Ring.choose (n + N) N := b
     · have := subsingleton_coh k (N + 1) n (p := p + 1) (by omega)
         (by have := Finset.mem_range.1 hp; omega)
       simp [hdim_eq_zero_of_subsingleton]
-
-theorem chi_sheafO_eq_eval (n : ℤ) :
-    (chi k (sheafO k N n) : ℚ) = (Polynomial.preHilbertPoly ℚ N 0).eval (n : ℚ) := by
-  have e := congrArg (Int.cast : ℤ → ℚ) (Ring.factorial_nsmul_multichoose_eq_ascPochhammer (n + 1) N)
-  rw [Polynomial.ascPochhammer_smeval_eq_eval, nsmul_eq_mul] at e
-  have e' : (((ascPochhammer ℤ N).eval (n + 1) : ℤ) : ℚ) = (ascPochhammer ℚ N).eval ((n : ℚ) + 1) := by
-    rw [← ascPochhammer_map (Int.castRingHom ℚ), show (n : ℚ) + 1 = ((n + 1 : ℤ) : ℚ) by simp]
-    exact (Polynomial.eval_map_apply (Int.castRingHom ℚ) _).symm
-  rw [chi_sheafO, Ring.choose, add_sub_cancel_right, Polynomial.preHilbertPoly,
-    Polynomial.eval_smul, Polynomial.eval_comp]
-  have h : (N.factorial : ℚ) ≠ 0 := Nat.cast_ne_zero.2 N.factorial_ne_zero
-  simp only [Nat.cast_zero, map_zero, sub_zero, Polynomial.eval_add, Polynomial.eval_X,
-    Polynomial.eval_one, smul_eq_mul, ← e', ← e]
-  push_cast
-  field_simp
 
 end Field
 

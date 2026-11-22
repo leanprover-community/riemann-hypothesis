@@ -29,28 +29,6 @@ noncomputable def tsgPoly (D : ℕ) (κ : ℕ → ℝ) (P : ℝ[X]) : ℝ[X] :=
     if Odd n then C (((D : ℝ) + 1) * κ ((n + 1) / 2) / (((n + 1) / 2 : ℕ) : ℝ) * P.coeff n) * X ^ (n + 1)
     else 0
 
-structure FibreSquare (D : ℕ) where
-  V : Type u
-  [acgV : AddCommGroup V]
-  [modV : Module ℝ V]
-  VW : Type u
-  [acgW : AddCommGroup VW]
-  [modW : Module ℝ VW]
-  I : MultilinearMap (RingHom.id ℝ) (fun _ : Fin (D + 1) => V) ℝ
-  IW : MultilinearMap (RingHom.id ℝ) (fun _ : Fin (D + 2) => VW) ℝ
-  p₁ : V →ₗ[ℝ] VW
-  p₂ : V →ₗ[ℝ] VW
-  ξ : V
-  A : V
-  Φ : MultilinearMap (RingHom.id ℝ) (fun _ : Fin D => VW) ℝ
-  symm : IsSymmForm I
-  symmW : IsSymmForm IW
-  comp_right_eq_zero_alt : ∀ v : Fin (D + 2) → V, IW (fun j => p₂ (v j)) = 0
-  cons_comp_left : ∀ v : Fin (D + 1) → V, IW (Fin.cons (-(p₂ ξ)) (fun j => p₁ (v j))) = I v
-  base : p₁ A = p₂ A
-  diag : ∀ T : Fin D → VW,
-    IW (Fin.cons (p₁ ξ) (Fin.cons (p₁ ξ) T)) - IW (Fin.cons (p₂ ξ) (Fin.cons (p₂ ξ) T)) = Φ T
-
 attribute [instance] FibreSquare.acgV FibreSquare.modV FibreSquare.acgW FibreSquare.modW
 
 end ReciprocityTheory.ChartRestriction.G.AI

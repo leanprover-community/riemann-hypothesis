@@ -15,8 +15,6 @@ variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberFi
 variable {V : Type} [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-
 theorem ι_pow_smul (π : 𝓞 F) (r : ℕ) (w : V) :
     ι (π ^ r) • w = algebraMap F K (π : F) ^ r • w := by
   rw [← algebraMap_smul K (ι (π ^ r)) w]

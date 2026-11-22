@@ -16,8 +16,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Fo
 
 def wl (A B : ℂ) : ℂ →L[ℝ] ℂ := A • ContinuousLinearMap.id ℝ ℂ + B • Complex.conjCLE.toContinuousLinearMap
 
-theorem wl_apply (A B h : ℂ) : wl A B h = A * h + B * conj h := rfl
-
 section Slice
 
 variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp]

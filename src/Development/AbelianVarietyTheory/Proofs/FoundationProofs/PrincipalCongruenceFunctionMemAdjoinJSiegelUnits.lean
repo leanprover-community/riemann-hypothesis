@@ -84,8 +84,6 @@ theorem stab (X : Tower Ω ε) (M : ℕ) (γ : SL(2, ℤ)) {f : X.K} (hf : f ∈
 def rr (X : Tower Ω ε) (M : ℕ) (γ : SL(2, ℤ)) : FM X M →ₐ[Ω] FM X M :=
   ((rho X γ).toAlgHom.comp (FM X M).val).codRestrict (FM X M).toSubalgebra (fun x => stab X M γ x.2)
 
-theorem rr_apply (X : Tower Ω ε) (M : ℕ) (γ : SL(2, ℤ)) (x : FM X M) : ((rr X M γ x : FM X M) : X.K) = rho X γ x := rfl
-
 def rhoF (X : Tower Ω ε) (M : ℕ) : SL(2, ℤ) →* (FM X M ≃ₐ[Ω] FM X M) where
   toFun γ := AlgEquiv.ofAlgHom (rr X M γ) (rr X M γ⁻¹)
     (AlgHom.ext fun x => Subtype.ext (by

@@ -31,9 +31,6 @@ end Abstract
 
 variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
 
-local notation "ιB" =>
-  ACris.iotaB (untilt_epsilon (p := l)) untilt_frobeniusEquiv_symm_epsilon_ne_one
-
 set_option maxHeartbeats 1600000 in
 theorem iotaB_padic (q : ℚ_[l]) :
     ιB (algebraMap ℚ_[l] (ACris.BCris (untilt_epsilon (p := l))) q) = qQ l q :=

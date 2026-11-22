@@ -70,9 +70,6 @@ private theorem isQuad (D : Dat F E) : GlobalTheory.QNorm.IsQuad D.δ D.θ D.σ 
 
 variable (D : Dat F E) (v : P F) (w : P E) [hl : w.asIdeal.LiesOver v.asIdeal]
 
-local notation "ι" => completionMap v w
-local notation "θw" => algebraMap E (Kv w) D.θ
-
 private theorem notSq (hu : ∀ w' : P E, w'.asIdeal.LiesOver v.asIdeal → w' = w) :
     ¬ IsSquare (algebraMap F (Kv v) D.δ) := by
   intro h

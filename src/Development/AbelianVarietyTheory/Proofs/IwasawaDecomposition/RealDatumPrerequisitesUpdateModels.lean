@@ -18,19 +18,6 @@ open scoped TensorProduct InnerProductSpace
 namespace GlobalTheory.Mem.KeepRef
 
 -- Compare the already elaborated predicate types in the kernel.
-open Lean Elab Tactic in
-local elab "exact_by_kernel " term:term : tactic =>
-  closeMainGoalUsing `exact_by_kernel fun target _ => do
-    let value ← elabTerm term none
-    Term.synthesizeSyntheticMVarsNoPostponing
-    let value ← instantiateMVars value
-    let actual ← instantiateMVars (← Meta.inferType value)
-    let target ← instantiateMVars target
-    let lctx ← instantiateLCtxMVars (← getLCtx)
-    match Kernel.isDefEq (← getEnv) lctx actual target with
-    | .ok true => pure value
-    | .ok false => throwError "expected{indentExpr target}\nbut the term has type{indentExpr actual}"
-    | .error e => throwKernelException e
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -104,7 +91,6 @@ theorem realDatum_isUpdate_first_models (R : RealDat D A Ks) : ∀ R' HX HV HE H
   · refine Or.inr ⟨HX, HV, HE, HW, gE, gW, jX, jV, νY, fdY, ν0, fd0, νX, fdX, νV, fdV, νW, fdW, BV, ?_⟩
     exact_by_kernel (Eq.refl (R.upd1 HX HV HE HW gE gW jX jV νY fdY ν0 fd0 νX fdX νV fdV νW fdW BV))
 
-
 set_option maxHeartbeats 4000000 in
 theorem exists_models (hI : Inputs D) (hX : IdemClass A) {F : Face D A} (hL : LiftsAt D A Ks F) (R : RealDat D A Ks) (h : R.Pre0 F) :
     ∃ HX HV HE gE jX jV νY fdY ν0 fd0 νX fdX νV fdV, ∀ R2 : RealDat D A Ks,
@@ -123,7 +109,6 @@ theorem exists_models (hI : Inputs D) (hX : IdemClass A) {F : Face D A} (hL : Li
   · refine ⟨HX, HV, HE, gE, jX, jV, νY, fdY, ν0, fd0, νX, fdX, νV, fdV, ?_⟩
     rintro _ rfl
     exact_by_kernel m'
-
 
 set_option maxHeartbeats 4000000 in
 theorem exists_at (hI : Inputs D) {F : Face D A} (hF : SeedFacts D A Ks F) (R : RealDat D A Ks) (h : R.Pre0 F)
@@ -179,7 +164,6 @@ theorem exists_at (hI : Inputs D) {F : Face D A} (hF : SeedFacts D A Ks F) (R : 
     refine (orZero_exists (PG R i th)).elim ?_
     intro g hg
     exact ⟨ω, v, H₀, j₀, ν₀, fd₀, th, g, hω', hv, m1, m2, m3, hth, hg, fun e => absurd e ht⟩
-
 
 set_option maxHeartbeats 4000000 in
 theorem exists_thPW_keep (hI : Inputs D) (hX : IdemClass A) {F : Face D A} (hL : LiftsAt D A Ks F) (hF : SeedFacts D A Ks F)
@@ -241,7 +225,6 @@ theorem exists_thPW_keep (hI : Inputs D) (hX : IdemClass A) {F : Face D A} (hL :
 theorem realDatum_thetaPairWeil_update_third {R : RealDat D A Ks} (a : R.IsThPW) (ωY ωX vac vacX vY vX ItY ItX ioY ioX Th) :
     (R.upd3 ωY ωX vac vacX vY vX ItY ItX ioY ioX Th).IsThPW :=
   ⟨a.ωP, a.vP, a.pt_theta, a.ioP, a.thF, a.thG⟩
-
 
 set_option maxHeartbeats 4000000 in
 theorem exists_weak_keep (hI : Inputs D) (hX : IdemClass A) {F : Face D A} (hL : LiftsAt D A Ks F) (hF : SeedFacts D A Ks F)

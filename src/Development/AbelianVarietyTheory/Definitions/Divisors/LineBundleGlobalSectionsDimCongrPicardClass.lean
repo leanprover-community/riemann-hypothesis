@@ -26,7 +26,6 @@ section Defs
 
 variable (k : Type) [Field k] {X : Scheme.{0}} [Algebra k Γ(X, ⊤)]
 
-
 variable (X) in
 def strHom : X ⟶ Sp k := X.toSpecΓ ≫ Spec.map (CommRingCat.ofHom (algebraMap k Γ(X, ⊤)))
 
@@ -80,7 +79,6 @@ theorem strHom_eq {f : X ⟶ Sp k}
     CommRingCat.hom_ext (RingHom.ext hf)
   rw [strHom, e, Spec.map_comp, ← Scheme.toSpecΓ_naturality_assoc,
     toSpecΓ_SpecMap_ΓSpecIso_inv, Category.comp_id]
-
 
 variable (k X) in
 theorem algebraMap_eq_strHom (r : k) :
@@ -273,7 +271,6 @@ theorem interNum_one_nonneg_of_sec (hH : IsAmpleLB H) (hd : topologicalKrullDim 
   rw [Pi.single_eq_same] at this
   exact ha this
 
-
 omit [IsIntegral C] in
 theorem interNum_one_of_cls_eq_add (hH : IsAmpleLB H) (hd : topologicalKrullDim C = 1)
     {A B : LB C} (hL : L.IsLB) (hA : A.IsLB) (hB : B.IsLB) (e : cls L hL = cls A hA + cls B hB) :
@@ -390,7 +387,6 @@ variable {k : Type} [Field k] {X Y : Scheme.{0}} [Algebra k Γ(X, ⊤)] {H L M N
 theorem IsNef.of_cls_eq (h : IsNef k M) (hL : L.IsLB) (e : cls L hL = cls M h.isLB) : IsNef k L :=
   ⟨hL, fun Z hZ => (h.2 Z hZ).trans_eq (interNumRed_one_congr hL h.isLB e Z).symm⟩
 
-
 variable (k X) in
 theorem isNef_triv : IsNef k (LB.triv X) :=
   ⟨LB.isLB_triv X, fun Z _ => (interNumRed_one_eq_zero (LB.isLB_triv X) rfl Z).ge⟩
@@ -486,18 +482,6 @@ theorem IsPsEff.exists_hasNonzeroSec [IsLocallyNoetherian X] (h : IsPsEff N) (hA
     cls_tens (isLB_dual hB.isLB) (isLB_lbPow hA.isLB q), cls_dual hB.isLB, cls_lbPow hA.isLB]
   module
 
-
-omit [IsIntegral X] in
-theorem IsPsEff.of_cls_eq (h : IsPsEff M) (hL : L.IsLB) (e : cls L hL = cls M h.isLB) :
-    IsPsEff L := by
-  obtain ⟨A, hA, hs⟩ := h.2
-  refine ⟨hL, A, hA, fun m hm => ?_⟩
-  obtain ⟨r, hr, hr'⟩ := hs m hm
-  exact ⟨r, hr, hr'.of_cls_eq (isLB_lbPow (isLB_tens (isLB_lbPow hL m) hA.isLB) r)
-    (isLB_lbPow (isLB_tens (isLB_lbPow h.1 m) hA.isLB) r)
-    (by rw [cls_lbPow_tens_lbPow hL hA.isLB, cls_lbPow_tens_lbPow h.1 hA.isLB, e])⟩
-
-
 theorem isPsEff_of_hasNonzeroSec_pow (hH : IsAmpleLB H) (hL : L.IsLB) {n : ℕ} (hn : 1 ≤ n)
     (h : HasNonzeroSec (lbPow L n)) : IsPsEff L := by
   obtain ⟨q, hq, hg⟩ := hH.exists_isGenerated_pow
@@ -508,40 +492,6 @@ theorem isPsEff_of_hasNonzeroSec_pow (hH : IsAmpleLB H) (hL : L.IsLB) {n : ℕ} 
   rw [cls_lbPow_tens_lbPow hL hH.isLB, cls_lbPow (isLB_lbPow hL n), cls_lbPow hL,
     cls_lbPow hg.isLB, cls_lbPow hH.isLB]
   module
-
-theorem HasNonzeroSec.isPsEff (h : HasNonzeroSec L) (hL : L.IsLB) (hH : IsAmpleLB H) :
-    IsPsEff L :=
-  isPsEff_of_hasNonzeroSec_pow hH hL le_rfl (h.pow hL 1)
-
-theorem IsGenerated.isPsEff (h : IsGenerated L) (hH : IsAmpleLB H) : IsPsEff L :=
-  h.hasNonzeroSec.isPsEff h.isLB hH
-
-theorem IsAmpleLB.isPsEff (h : IsAmpleLB A) : IsPsEff A :=
-  have ⟨_, hn, hg⟩ := h.exists_isGenerated_pow
-  isPsEff_of_hasNonzeroSec_pow h h.isLB hn hg.hasNonzeroSec
-
-theorem IsPsEff.of_cls_eq_add (hL : IsPsEff L) (hM : IsPsEff M) (hN : N.IsLB)
-    (e : cls N hN = cls L hL.isLB + cls M hM.isLB) : IsPsEff N := by
-  obtain ⟨A, hA, hs⟩ := hL.2
-  obtain ⟨B, hB, ht⟩ := hM.2
-  have hAB := isLB_tens hA.isLB hB.isLB
-  have hD := Semi.LB.isLB_div hAB hA.isLB
-  refine ⟨hN, tens A B, hA.tensor hB hAB ((cls_eq_zero_iff (Semi.LB.isLB_div hD hB.isLB)).1 ?_),
-    fun m hm => ?_⟩
-  · rw [cls_div hD hB.isLB, cls_div hAB hA.isLB, cls_tens hA.isLB hB.isLB]
-    abel
-  obtain ⟨r, hr, hr'⟩ := hs m hm
-  obtain ⟨q, hq, hq'⟩ := ht m hm
-  have h₁ := isLB_lbPow (isLB_tens (isLB_lbPow hL.1 m) hA.isLB) r
-  have h₂ := isLB_lbPow (isLB_tens (isLB_lbPow hM.1 m) hB.isLB) q
-  refine ⟨r * q, Nat.mul_pos hr hq, (hr'.pow h₁ q).of_cls_eq_add (hq'.pow h₂ r)
-    (isLB_lbPow (isLB_tens (isLB_lbPow hN m) hAB) _) (isLB_lbPow h₁ q) (isLB_lbPow h₂ r) ?_⟩
-  rw [cls_lbPow_tens_lbPow hN hAB, cls_lbPow h₁, cls_lbPow h₂, cls_lbPow_tens_lbPow hL.1 hA.isLB,
-    cls_lbPow_tens_lbPow hM.1 hB.isLB, cls_tens hA.isLB hB.isLB, e]
-  module
-
-theorem IsPsEff.tens (hL : IsPsEff L) (hM : IsPsEff M) : IsPsEff (tens L M) :=
-  hL.of_cls_eq_add hM (isLB_tens hL.isLB hM.isLB) rfl
 
 end PsEff
 
@@ -616,10 +566,6 @@ theorem IsBig.frequently_hasNonzeroSec (h : IsBig k L) :
   (hm.and_eventually (eventually_ge_atTop 1)).mono fun _ hm =>
     hasNonzeroSection_of_le_sectionBound hc hm.2 hm.1
 
-theorem IsBig.isPsEff [IsIntegral X] (h : IsBig k L) (hH : IsAmpleLB H) : IsPsEff L :=
-  have ⟨_, hm, hm'⟩ := (h.frequently_hasNonzeroSec.and_eventually (eventually_ge_atTop 1)).exists
-  isPsEff_of_hasNonzeroSec_pow hH h.1 hm' hm
-
 theorem IsBig.of_pow {n : ℕ} (h : IsBig k (lbPow L n)) (hL : L.IsLB) (hn : 1 ≤ n)
     (hfin : ∀ m : ℕ, Module.Finite k (coh (twist (structureModule X) (lbPow L m)) 0)) :
     IsBig k L := by
@@ -653,9 +599,6 @@ theorem IsBig.of_cls_eq_add (hA : IsBig k A) (hB : B.IsLB) (h : HasNonzeroSec B)
       (h.pow hB m) (hfin m)))⟩
   rw [cls_lbPow hN, cls_lbPow hA.1, cls_lbPow hB, e, nsmul_add]
 
-theorem IsBig.tens (hA : IsBig k A) (hB : B.IsLB) (h : HasNonzeroSec B) : IsBig k (tens A B) :=
-  hA.of_cls_eq_add hf hp hB h (isLB_tens hA.isLB hB) rfl
-
 theorem IsBig.pow (h : IsBig k L) {n : ℕ} (hn : 1 ≤ n) : IsBig k (lbPow L n) := by
   have := isNoetherian_of_isProjOver hp
   have hn' := isLB_lbPow h.1 n
@@ -669,10 +612,6 @@ theorem IsBig.pow (h : IsBig k L) {n : ℕ} (hn : 1 ≤ n) : IsBig k (lbPow L n)
   rw [cls_lbPow hn', cls_lbPow (isLB_lbPow h.1 m), cls_lbPow h.1, cls_lbPow h.1,
     Nat.add_sub_cancel]
   module
-
-theorem isBig_pow_iff (hL : L.IsLB) {n : ℕ} (hn : 1 ≤ n) : IsBig k (lbPow L n) ↔ IsBig k L :=
-  ⟨fun h => h.of_pow hL hn fun m => finite_coh_zero_twist_of_isProjOver hf hp (isLB_lbPow hL m),
-    fun h => h.pow hf hp hn⟩
 
 end Proj
 
@@ -695,49 +634,9 @@ theorem topologicalKrullDim_eq : topologicalKrullDim (PSpace k N) = N := by
   obtain ⟨i, hi⟩ := exists_mem_chart k N x
   exact ⟨_, (chart k N i).isOpen, hi, (hc i).le⟩
 
-theorem algebraMap_top_eq (r : k) : algebraMap k Γ(PSpace k N, ⊤) r =
-    (PSpace.str k N).appTop ((Scheme.ΓSpecIso (.of k)).inv r) := by
-  rw [algebraMap_sections_eq, Scheme.Hom.appTop, Scheme.Hom.app_eq_appLE]
-  rfl
-
 theorem isProjOver_str : IsProjOver (PSpace.str k N) :=
   have := isProper_str k N
   (isAmple_projective_O_one k N).isProjOver _
-
-theorem sectionDim_twistingSheaf_pow (m : ℕ) : lbH0 k (lbPow (O1 k N) m) = (m + N).choose N := by
-  have h := (chi_eq_hdim_zero k fun _ hp => ProjCoh.subsingleton_coh_of_neg_le k N (n := m)
-    (by omega) hp).symm.trans (ProjCoh.chi_sheafO k N m)
-  rw [← Nat.cast_add, Ring.choose_natCast] at h
-  exact Nat.cast_injective h
-
-theorem isNef_twistingSheaf : IsNef k (O1 k N) := (isAmple_projective_O_one k N).isNef
-
-theorem isBig_twistingSheaf : IsBig k (O1 k N) := by
-  refine (isBig_iff (algebraMap_top_eq k N) (isProjOver_str k N) (topologicalKrullDim_eq k N)).2
-    ⟨O1_isLB k N, (N.factorial : ℝ)⁻¹, by positivity, Frequently.of_forall fun m => ?_⟩
-  rw [sectionDim_twistingSheaf_pow, ← div_eq_inv_mul]
-  refine le_trans ?_ (Nat.pow_le_choose N (m + N))
-  gcongr
-  omega
-
-theorem triv_nef_not_big : IsNef k (LB.triv (PSpace k (N + 1))) ∧
-    IsPsEff (LB.triv (PSpace k (N + 1))) ∧ ¬ IsBig k (LB.triv (PSpace k (N + 1))) := by
-  refine ⟨isNef_triv k _, (isGenerated_triv _).isPsEff (isAmple_projective_O_one k _), fun h => ?_⟩
-  obtain ⟨-, c, hc, hm⟩ := (isBig_iff (algebraMap_top_eq k _) (isProjOver_str k _)
-    (topologicalKrullDim_eq k _)).1 h
-  have ht : Tendsto (fun m : ℕ => c * (m : ℝ) ^ (N + 1)) atTop atTop :=
-    ((tendsto_pow_atTop N.succ_ne_zero).comp tendsto_natCast_atTop_atTop).const_mul_atTop hc
-  obtain ⟨m, h₁, h₂⟩ := (hm.and_eventually (ht.eventually_gt_atTop 1)).exists
-  rw [lineBundleGlobalSectionsDim_congr_picardClass (isLB_lbPow h.1 m) (isLB_lbPow (O1_isLB k _) 0)
-    (by rw [cls_lbPow h.1, cls_lbPow (O1_isLB k _), cls_triv, zero_nsmul, nsmul_zero]),
-    sectionDim_twistingSheaf_pow, zero_add, Nat.choose_self, Nat.cast_one] at h₁
-  exact h₂.not_ge h₁
-
-theorem isCompleteCurve_top : IsCompleteCurve k (⊤ : Closeds (PSpace k 1)) :=
-  have := isProper_str k 1
-  (isCompleteCurve_iff (algebraMap_top_eq k 1)).2 ⟨IrreducibleSpace.isIrreducible_univ _,
-    (topologicalKrullDim_eq_of_isEmbedding Topology.IsEmbedding.id Set.range_id).trans
-      (topologicalKrullDim_eq k 1)⟩
 
 end ProjSpace
 

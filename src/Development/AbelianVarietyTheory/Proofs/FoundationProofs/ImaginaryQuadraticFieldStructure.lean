@@ -128,9 +128,6 @@ def blocks {N N' : ℕ} (c : Fin 4 → ℚ) :
     funext i j
     exact mul_smul_comm a _ (v i (cols N j).2)
 
-theorem blocks_apply {N N' : ℕ} (c : Fin 4 → ℚ) (v : Matrix (Fin N') (Fin N) D.host.E) (i j) :
-    blocks D c v i j = (c (cols N j).1 : D.host.E) * v i (cols N j).2 := rfl
-
 theorem hYY_blocks {N N' : ℕ} (c c' : Fin 4 → ℚ) (v w : Matrix (Fin N') (Fin N) D.host.E) :
     hYY D (blocks D c v) (blocks D c' w) = ((∑ k, c k * c' k : ℚ) : D.host.K) * hYY D v w := by
   unfold hYY

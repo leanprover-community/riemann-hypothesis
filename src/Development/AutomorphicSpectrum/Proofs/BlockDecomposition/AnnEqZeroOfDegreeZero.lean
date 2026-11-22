@@ -42,8 +42,6 @@ theorem ann_apply (i : Lt n) (x : Cq n V) (A : Finset (Lt n)) :
 theorem cre_apply (i : Lt n) (x : Cq n V) (A : Finset (Lt n)) :
     creq i x A = if i ∈ A then sgL i A • x (A.erase i) else 0 := rfl
 
-theorem lift_apply (T : V →ₗ[ℂ] W) (x : Cq n V) (A : Finset (Lt n)) : liftq n T x A = T (x A) := rfl
-
 end Basic
 
 section Car

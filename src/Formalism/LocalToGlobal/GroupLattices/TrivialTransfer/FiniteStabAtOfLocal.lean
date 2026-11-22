@@ -13,79 +13,11 @@ namespace Formalism.L2.G.Triv
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-local notation "𝔸" => FiniteAdeleRing (𝓞 F) F
-local notation "𝒜" => E ⊗[F] 𝔸
-local notation "𝒮" => tensInt (F := F) 𝔸 (intOE E) (intAd F)
-
 abbrev SV (E : Type) [Field E] [NumberField E] [Algebra F E] (v : HeightOneSpectrum (𝓞 F)) :
     Subring (E ⊗[F] v.adicCompletion F) :=
   tensInt (F := F) (v.adicCompletion F) (intOE E) (v.adicCompletionIntegers F).toSubring
 
 section Trace
-
-theorem T_mul (c : 𝔸) (z : 𝒜) : adelstabT (F := F) (E := E) (((1 : E) ⊗ₜ[F] c) * z) =
-    c * adelstabT (F := F) (E := E) z := by
-  induction z using TensorProduct.inductionOn with
-  | tmul e a =>
-    simp [adelstabT, Algebra.TensorProduct.tmul_mul_tmul]
-  | add x y hx hy => rw [mul_add, map_add (f := _), map_add (f := _), hx, hy, mul_add]
-
-theorem T_int (z : 𝒜) (hz : ∀ v, prV (E := E) v z ∈ SV E v) :
-    adelstabT (F := F) (E := E) z ∈ intAd F := by
-  intro v
-  have h1 := adelstabT_mem (afsplit_IE_int v _ (hz v))
-  rw [afsplit_decomp, afsplitEps, Algebra.TensorProduct.one_def, afsplitIE_tmul, T_mul] at h1
-  have h2 := h1 v
-  rw [afsplit_mul_apply, afsplitI_self, one_mul] at h2
-  exact h2
-
-theorem expand {ι : Type} [Fintype ι] [DecidableEq ι] (β : Module.Basis ι F E) (z : 𝒜) :
-    z = ∑ i, ((Algebra.traceForm F E).dualBasis (traceForm_nondegenerate F E) β i) ⊗ₜ[F]
-      adelstabT (F := F) (E := E) ((β i ⊗ₜ[F] (1 : 𝔸)) * z) := by
-  induction z using TensorProduct.inductionOn with
-  | tmul e a =>
-    have he := ((Algebra.traceForm F E).dualBasis (traceForm_nondegenerate F E) β).sum_repr e
-    simp only [LinearMap.BilinForm.dualBasis_repr_apply, Algebra.traceForm_apply] at he
-    conv_lhs => rw [← he]
-    rw [TensorProduct.sum_tmul]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul, TensorProduct.smul_tmul, mul_comm e (β i)]
-    simp [adelstabT]
-  | add x y hx hy =>
-    conv_lhs => rw [hx, hy]
-    rw [← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [mul_add, map_add (f := _), TensorProduct.tmul_add]
-
-theorem exists_den : ∃ d : ℤ, d ≠ 0 ∧ ∀ z : 𝒜, (∀ v, prV (E := E) v z ∈ SV E v) →
-    inclE (F := F) 𝔸 (d : E) * z ∈ 𝒮 := by
-  classical
-  let β₀ := Module.finBasis F E
-  obtain ⟨m₁, hm₁, hi₁⟩ := adelstabL_den (fun i => β₀ i)
-  have hu : ∀ _ : Fin (Module.finrank F E), IsUnit ((m₁ : ℤ) : F) := fun _ => (Int.cast_ne_zero.2 hm₁).isUnit
-  let β := β₀.isUnitSMul hu
-  have hβ : ∀ i, IsIntegral ℤ (β i) := by
-    intro i
-    have : β i = (m₁ : E) * β₀ i := by
-      rw [Module.Basis.isUnitSMul_apply, Algebra.smul_def, map_intCast]
-    rw [this]; exact hi₁ i
-  obtain ⟨m₂, hm₂, hi₂⟩ := adelstabL_den (fun i => (Algebra.traceForm F E).dualBasis (traceForm_nondegenerate F E) β i)
-  refine ⟨m₂, hm₂, fun z hz => ?_⟩
-  rw [expand β z, Finset.mul_sum]
-  refine sum_mem fun i _ => ?_
-  have ht : adelstabT (F := F) (E := E) ((β i ⊗ₜ[F] (1 : 𝔸)) * z) ∈ intAd F := by
-    refine T_int _ fun v => ?_
-    rw [map_mul]
-    refine mul_mem ?_ (hz v)
-    exact Subring.subset_closure (Or.inl ⟨⟨β i, ⟨⟨β i, hβ i⟩, rfl⟩⟩, rfl⟩)
-  have h1 : inclE (F := F) 𝔸 (m₂ : E) * ((Algebra.traceForm F E).dualBasis (traceForm_nondegenerate F E) β i ⊗ₜ[F]
-      adelstabT (F := F) (E := E) ((β i ⊗ₜ[F] (1 : 𝔸)) * z)) =
-      algebraMap (𝓞 E) E ⟨_, hi₂ i⟩ ⊗ₜ[F] adelstabT (F := F) (E := E) ((β i ⊗ₜ[F] (1 : 𝔸)) * z) := by
-    show ((m₂ : E) ⊗ₜ[F] (1 : 𝔸)) * _ = _
-    rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul]
-    rfl
-  rw [h1]
-  exact levelaf_tmul_mem _ ht
 
 end Trace
 
@@ -201,52 +133,6 @@ def latLoc (F : Type) [Field F] [NumberField F] [Algebra F E] (Λ : Submodule (�
       show prV (E := E) v ((s : E ⊗[F] FiniteAdeleRing (𝓞 F) F) * a i) = prV (E := E) v s * prV (E := E) v (a i)
       rw [map_mul]
     rw [this]; exact Submodule.smul_mem _ _ (ha v)
-
-theorem levelafC_int (m : ℤ) : levelafC E (m : 𝓞 F) = inclE (F := F) 𝔸 (m : E) := by
-  simp only [levelafC, inclE, map_intCast]
-  rw [← Algebra.TensorProduct.includeRight_apply, map_intCast]
-
-theorem finite_stabAt_of_local (σ : E →ₐ[F] E) (J : Matrix n n E)
-    (hτ : ∀ τ : E →+* ℂ, τ.comp (σ : E →+* E) = (starRingEnd ℂ).comp τ)
-    (hH : IsHerm (σ : E →+* E) J) (hdet : IsUnit J.det) (hdef : IsTotDef σ J)
-    (Λ : Submodule (𝓞 E) (n → E)) (hfin : Module.Finite (𝓞 E) Λ) (hspan : Submodule.span E (Λ : Set (n → E)) = ⊤)
-    (U : Subgroup (GL n 𝒜))
-    (hU : ∀ x ∈ U, ∀ v : HeightOneSpectrum (𝓞 F),
-      bc (prV (E := E) v) x ∈ stabGL (latS (F := F) (v.adicCompletion F) (SV E v) Λ))
-    (g : UPts σ J 𝔸) :
-    Finite (stabAt ((ratPts σ J 𝔸).subgroupOf (UPts σ J 𝔸)) (U.subgroupOf (UPts σ J 𝔸)) g) := by
-  obtain ⟨m₁, hm₁, h₁⟩ := den_lower Λ hspan
-  obtain ⟨m₂, hm₂, h₂⟩ := den_upper Λ hfin
-  obtain ⟨d, hd, h₃⟩ := exists_den (F := F) (E := E)
-  refine adelstab_core σ J hτ hH hdet hdef (latLoc F Λ) U ?_ (m₁ : 𝓞 F) ((d * m₂ : ℤ) : 𝓞 F) (Int.cast_ne_zero.2 hm₁)
-    (Int.cast_ne_zero.2 (mul_ne_zero hd hm₂)) ?_ ?_ g
-  · intro x hx y
-    have key : ∀ v : HeightOneSpectrum (𝓞 F), (fun i => prV (E := E) v (((x : Matrix n n 𝒜) *ᵥ y) i)) =
-        ((bc (prV (E := E) v) x : GL n (E ⊗[F] v.adicCompletion F)) : Matrix n n (E ⊗[F] v.adicCompletion F)) *ᵥ
-          fun i => prV (E := E) v (y i) := by
-      intro v
-      ext i
-      exact RingHom.map_mulVec (prV (E := E) v) (x : Matrix n n 𝒜) y i
-    constructor
-    · intro hy v
-      rw [key v]
-      exact (hU x hx v _).1 (hy v)
-    · intro hy v
-      have := hy v
-      rw [key v] at this
-      exact (hU x hx v _).2 this
-  · intro w hw v
-    have : (fun i => prV (E := E) v (levelafC E (m₁ : 𝓞 F) * w i)) =
-        fun i => inclE (F := F) (v.adicCompletion F) (m₁ : E) * prV (E := E) v (w i) := by
-      ext i
-      rw [levelafC_int, map_mul, afsplit_prV_inclE]
-    rw [this]
-    exact loc_lower Λ m₁ h₁ v _ fun i => afsplit_prV_int v _ (hw i)
-  · intro w hw i
-    rw [levelafC_int, Int.cast_mul, map_mul, mul_assoc]
-    refine h₃ _ fun v => ?_
-    rw [map_mul, afsplit_prV_inclE]
-    exact loc_upper Λ m₂ h₂ v _ (hw v) i
 
 end Lattice
 

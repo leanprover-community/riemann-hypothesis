@@ -18,7 +18,6 @@ section AlgCl
 
 variable (p : ℕ) [Fact p.Prime]
 
-local notation "𝔹" => BDeRhamPlus (normInteger ℂ_[p]) p
 local notation "𝔪" => maximalIdeal 𝔹
 
 instance isAdicComplete_maximalIdeal_bDeRhamPlus_padicComplex :
@@ -130,8 +129,6 @@ end AlgCl
 section Galois
 
 variable {p : ℕ} [Fact p.Prime] {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
-
-local notation "𝔹" => BDeRhamPlus (normInteger ℂ_[p]) p
 
 theorem gal_smul_padicIntToWitt (σ : Gal(PadicAlgCl p/K)) (x : ℤ_[p]) :
     σ • IsPerfectoidField.padicIntToWitt (K := ℂ_[p]) p x =

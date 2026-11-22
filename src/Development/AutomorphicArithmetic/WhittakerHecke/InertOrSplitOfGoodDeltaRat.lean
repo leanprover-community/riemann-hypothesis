@@ -20,9 +20,6 @@ open GroundTheory.Global.SemiLocal GroundTheory.Global.AdeleBaseChange UpperTheo
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable (D : Dat F E) (v : P F) (w : P E) [hl : w.asIdeal.LiesOver v.asIdeal]
 
-local notation "ι" => completionMap v w
-local notation "θw" => algebraMap E (Kv w) D.θ
-
 private theorem pow1 {x : WithZero (Multiplicative ℤ)} {n : ℕ} (hn : n ≠ 0) (h : x ^ n = 1) : x = 1 := by
   rcases lt_trichotomy x 1 with h1 | h1 | h1
   · exact absurd h (pow_lt_one' h1 hn).ne

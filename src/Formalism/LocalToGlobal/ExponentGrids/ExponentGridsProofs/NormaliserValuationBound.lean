@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.QuotientMetricDivisors.Complement2Normaliser
-public import Formalism.TranslateCocycles.StatementHC
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.SecondComplementParameterBounds
 
 @[expose] public section

@@ -18,7 +18,6 @@ open Formalism.REAL (GlRel)
 
 variable {n : ℕ}
 
-
 open Classical in
 def trOn {M : Type*} [AddCommGroup M] [Module ℂ M] (S : Submodule ℂ M) (f : M →ₗ[ℂ] M) : ℂ :=
   if h : ∀ x ∈ S, f x ∈ S then LinearMap.trace ℂ S (f.restrict h) else 0
@@ -29,24 +28,6 @@ def dualT (E : KMod n) (T : E.V →L[ℂ] E.V) : (E.V →L[ℂ] ℂ) →L[ℂ] (
 section U
 
 variable {U : Type} [NormedAddCommGroup U] [InnerProductSpace ℂ U] (π : G n →* (U →L[ℂ] U))
-
-def invSp (E : KMod n) : Submodule ℂ ((E.V →L[ℂ] ℂ) →L[ℂ] U) where
-  carrier := {t | IsInvT π E t}
-  add_mem' {a b} ha hb k ξ := by
-    simp only [ContinuousLinearMap.add_apply, map_add (f := _)]
-    rw [ha k ξ, hb k ξ]
-  zero_mem' k ξ := by simp
-  smul_mem' c a ha k ξ := by
-    simp only [ContinuousLinearMap.smul_apply, map_smul]
-    rw [ha k ξ]
-
-def flipU (E : KMod n) (A : U →L[ℂ] U) (T : E.V →L[ℂ] E.V) :
-    ((E.V →L[ℂ] ℂ) →L[ℂ] U) →ₗ[ℂ] ((E.V →L[ℂ] ℂ) →L[ℂ] U) where
-  toFun t := A.comp (t.comp (dualT E T))
-  map_add' x y := by simp [ContinuousLinearMap.add_comp, ContinuousLinearMap.comp_add]
-  map_smul' c x := by simp [ContinuousLinearMap.smul_comp]
-
-def trInv (E : KMod n) (A : U →L[ℂ] U) (T : E.V →L[ℂ] E.V) : ℂ := trOn (invSp π E) (flipU E A T)
 
 end U
 
@@ -129,7 +110,6 @@ def rhoU (lev : Fin n → ℕ) : Fin n → ℝ := fun a =>
   (((univ.filter fun b => lev a < lev b).card : ℝ) - ((univ.filter fun b => lev b < lev a).card : ℝ)) / 2
 
 def muQ (lam : Fin n → ℤ) (lev : Fin n → ℕ) : Fin n → ℝ := fun a => 2 * (lam a : ℝ) + 2 * rhoU lev a
-
 
 open Classical in
 def harmSet (lam : Fin n → ℤ) : Finset (Fin n → ℝ) :=

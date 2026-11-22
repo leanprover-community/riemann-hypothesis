@@ -13,11 +13,6 @@ namespace GlobalTheory.FlagMeas
 
 open Formalism.MainNotions.S GlobalTheory.Count
 
-def ResidueBound : Prop :=
-  ∀ (k : Type) [Field k] [NumberField k], 2 ≤ Module.finrank ℚ k →
-    dedekindZeta_residue k ≤ (Real.exp 1 * Real.log |(discr k : ℝ)| /
-      (2 * ((Module.finrank ℚ k : ℝ) - 1))) ^ (Module.finrank ℚ k - 1)
-
 def SameKindIsometric : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [StarRing E], Formalism.HermitianLatticesTheory.IsCMUnram E →
     ∀ (n : ℕ) (J J' : Matrix (Fin n) (Fin n) E), Jᴴ = J → J'ᴴ = J' → J.det ≠ 0 → J'.det ≠ 0 →

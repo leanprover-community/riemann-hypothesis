@@ -25,10 +25,6 @@ section Loc
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [MeasurableSpace F] [BorelSpace F]
 
-def dt (r r' : Fin 2 → F) : F := r 0 * r' 1 - r 1 * r' 0
-
-def m2 (ψ : AddChar F Circle) : Measure (Fin 2 → F) := Measure.pi fun _ => selfDualMeasure ψ
-
 def upm (ϖ : Fˣ) (b : F) : GL (Fin 2) F := uni2 b * dg2 ϖ 1
 
 def Reps (ϖ : Fˣ) (B : Finset F) : Prop :=
@@ -94,7 +90,6 @@ structure Om (N : ℕ) (χ : DirichletCharacter ℂ N) (ω : HeckeCharacter ℚ)
   val : ∀ (d : Afˣ) (n : ℤ), (∀ v, ord (lf v d : Qv v) = 0) →
     (∀ v, pOf v ∣ N → ((N : Qv v))⁻¹ * ((lf v d : Qv v) - n) ∈ 𝒪[Qv v]) →
     (ω.toIdele (IdeleGroup.ofFinite d) : ℂ) * χ (n : ZMod N) = 1
-
 
 open UpperHalfPlane in
 structure Lift (k N : ℕ) [NeZero N] (f : ℍ → ℂ) (ω : HeckeCharacter ℚ) (φ : G2 → ℂ) : Prop where

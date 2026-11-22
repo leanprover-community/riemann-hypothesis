@@ -10,7 +10,7 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsHenseli
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderEqOfLeStatement
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfSec
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfReg
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularAtBaseChangeStatement
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatBcPull
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsFinOpenSubBaseChangeStatement
 
 @[expose] public section

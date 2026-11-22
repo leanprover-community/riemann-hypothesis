@@ -124,12 +124,10 @@ theorem prod_refine_split (h : Refines β γ) (g : Fin n × Fin n → ℝ≥0) :
     intro ij _ h1 h2
     exact h1.ne h2.1
 
-
 variable (F n β γ) in
 def modularRefineLeft : leviPar F n β γ →* ℝ≥0 :=
   (modularCharacter : blockUpper F n γ →* ℝ≥0).comp
     (Subgroup.inclusion (leviPar_le_blockUpper_right F))
-
 
 variable (F n β γ) in
 def modularRefineRight : leviPar F n β γ →* ℝ≥0 :=
@@ -159,13 +157,11 @@ theorem modularCharacter_refine (h : Refines β γ) (q : leviPar F n β γ) :
   exact prod_refine_split h fun ij =>
     modulus ((uniformizer F : F) ^ μ ij.1) / modulus ((uniformizer F : F) ^ μ ij.2)
 
-
 variable (F n β γ) in
 def sqrtModularLeviPar : leviPar F n β γ →* ℂ where
   toFun q := ((NNReal.sqrt (modularCharacter q) : ℝ) : ℂ)
   map_one' := by simp
   map_mul' p q := by simp [NNReal.sqrt_mul]
-
 
 variable (F n β γ) in
 def invSqrtModularLeviPar : leviPar F n β γ →* ℂ where
@@ -215,7 +211,6 @@ section LeviJacquet
 
 variable {β γ : Fin n → ℕ} {W : Type*} [AddCommGroup W] [Module ℂ W]
 
-
 variable (F) in
 def Refines.leviToLeviPar (h : Refines β γ) : levi F n γ →* leviPar F n β γ :=
   Subgroup.inclusion (h.levi_le_leviPar F)
@@ -223,17 +218,12 @@ def Refines.leviToLeviPar (h : Refines β γ) : levi F n γ →* leviPar F n β 
 theorem Refines.coe_leviToLeviPar (h : Refines β γ) (m : levi F n γ) :
     ((h.leviToLeviPar F m : leviPar F n β γ) : GL (Fin n) F) = m := rfl
 
-
 variable (F) in
 def Refines.leviIncl (h : Refines β γ) : levi F n γ →* levi F n β :=
   Subgroup.inclusion (h.levi_le F)
 
-theorem Refines.coe_leviIncl (h : Refines β γ) (m : levi F n γ) :
-    ((h.leviIncl F m : levi F n β) : GL (Fin n) F) = m := rfl
-
 theorem Refines.continuous_leviIncl (h : Refines β γ) : Continuous (h.leviIncl F) :=
   continuous_subtype_val.subtype_mk _
-
 
 variable (β γ) in
 abbrev LeviJacquetModule (σ : Representation ℂ (levi F n β) W) : Type _ :=
@@ -330,10 +320,6 @@ def jacquetStagesMap (h : Refines β γ) :
       rw [jacquetRep_mk, hinv, one_smul, Representation.Coinvariants.lift_mk,
         Representation.Coinvariants.lift_mk]
       exact mk_apply_of_mem π _ hu v
-
-theorem jacquetStagesMap_mk_mk (h : Refines β γ) (v : V) :
-    jacquetStagesMap π h (Representation.Coinvariants.mk _ (Representation.Coinvariants.mk _ v)) =
-      Representation.Coinvariants.mk _ v := rfl
 
 def jacquetStagesLinearEquiv (h : Refines β γ) :
     LeviJacquetModule β γ (jacquetRep F n β π) ≃ₗ[ℂ] JacquetModule F n γ π :=

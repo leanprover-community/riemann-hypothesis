@@ -62,25 +62,6 @@ theorem blockScalar_central {c : k} (hc : c ≠ 0) (C : Fin s → ℕ) (m : Levi
     (m a).val * ((c ^ C a) • (1 : Matrix (Fin (d a)) (Fin (d a)) k))
   simp
 
-theorem leviEmb_blockScalar {n : ℕ} (e : (Σ a, Fin (d a)) ≃ Fin n) {c : k} (hc : c ≠ 0)
-    (C : Fin s → ℕ) : leviEmb k e (blockScalar hc C) = dia e hc C := by
-  refine Units.ext ?_
-  rw [dia_val]
-  ext i j
-  obtain ⟨⟨a, i'⟩, rfl⟩ := e.surjective i
-  obtain ⟨⟨b, j'⟩, rfl⟩ := e.surjective j
-  by_cases h : a = b
-  · subst h
-    rw [leviEmb_apply_same]
-    show ((c ^ C a) • (1 : Matrix (Fin (d a)) (Fin (d a)) k)) i' j' = _
-    by_cases h2 : i' = j'
-    · subst h2
-      simp
-    · rw [Matrix.smul_apply, one_apply_ne h2, smul_zero, diagonal_apply_ne]
-      simpa using h2
-  · rw [leviEmb_apply_ne k e _ h, diagonal_apply_ne]
-    exact fun h' => h (congrArg Sigma.fst (e.injective h'))
-
 theorem valuation_conj_le {c x : k} (hc : c ≠ 0) (hv : valuation k c ≤ 1) (hx : valuation k x ≤ 1)
     {A B N : ℕ} (h : A + N ≤ B) : valuation k ((c ^ A)⁻¹ * x * c ^ B) ≤ valuation k c ^ N := by
   obtain ⟨r, rfl⟩ := Nat.exists_eq_add_of_le h

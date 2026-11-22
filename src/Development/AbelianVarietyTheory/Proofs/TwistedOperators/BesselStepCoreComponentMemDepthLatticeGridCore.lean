@@ -19,8 +19,6 @@ namespace GlobalTheory.LatSandwich
 
 variable {D : D7}
 
-theorem incA_eq (e : D.host.E) : incA D e = (1 : AF D.host.F) ⊗ₜ[D.host.F] e := rfl
-
 theorem rat_mul_tmul_mul {k l m n : ℕ} (A : Matrix (Fin k) (Fin l) D.host.E) (X : Matrix (Fin l) (Fin m) D.host.E)
     (B : Matrix (Fin m) (Fin n) D.host.E) (p : AF D.host.F) :
     rat A ⬝ (Matrix.of fun i j => p ⊗ₜ[D.host.F] X i j : Mx D l m) ⬝ rat B =

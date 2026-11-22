@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Objects
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.UIObjects
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ProjectiveLinePartitionContinuousCoe
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
 
 @[expose] public section

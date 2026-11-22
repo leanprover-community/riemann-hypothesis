@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.Unif
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.ThetaInZIsThetaLog
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementG
 public import Formalism.GaussJetBounds.OneLetterGaussJets.OddLevelGainSum
-public import Formalism.GaussJetBounds.StatementS
 public import Formalism.GaussJetBounds.StatementU
 public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.UniformGaussModelCondition
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.HasCMByStable

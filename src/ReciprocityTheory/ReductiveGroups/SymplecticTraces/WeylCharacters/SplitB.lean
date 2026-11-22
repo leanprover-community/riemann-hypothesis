@@ -58,12 +58,6 @@ def tensorRightOperator : (F →L[ℂ] F) →L[ℂ] (E ⊗[ℂ] F →L[ℂ] E �
       map_add' := fun _ _ => mapL_add_right _ _ _
       map_smul' := fun _ _ => mapL_smul_right _ _ _ }
 
-theorem tensorLeftOperator_apply (A : E →L[ℂ] E) : (tensorLeftOperator : _ →L[ℂ] (E ⊗[ℂ] F →L[ℂ] E ⊗[ℂ] F)) A =
-    mapL A (1 : F →L[ℂ] F) := rfl
-
-theorem tensorRightOperator_apply (B : F →L[ℂ] F) : (tensorRightOperator : _ →L[ℂ] (E ⊗[ℂ] F →L[ℂ] E ⊗[ℂ] F)) B =
-    mapL (1 : E →L[ℂ] E) B := rfl
-
 theorem sp_mapL_split (A : E →L[ℂ] E) (B : F →L[ℂ] F) :
     mapL A B = mapL A (1 : F →L[ℂ] F) * mapL (1 : E →L[ℂ] E) B := by
   rw [← mapL_mul, mul_one, one_mul]
@@ -111,10 +105,6 @@ def sp_dτ (T1 : KType (fun _ : Fin (cnt ε true) => true) Λ1)
     abel
   map_smul' c X := by
     simp only [sp_sub_smul, map_smul, mapL_smul_left, mapL_smul_right, smul_add, RingHom.id_apply]
-
-theorem sp_dτ_apply (T1 : KType (fun _ : Fin (cnt ε true) => true) Λ1)
-    (T2 : KType (fun _ : Fin (cnt ε false) => true) Λ2) (X : Matrix (Fin n) (Fin n) ℂ) :
-    sp_dτ T1 T2 X = mapL (T1.dτ (sp_sub ε true X)) 1 + mapL 1 (T2.dτ (sp_sub ε false X)) := rfl
 
 theorem sp_curve_zero {X : Matrix (Fin n) (Fin n) ℂ} {γ : ℝ → KG ε}
     (hγ : ∀ t : ℝ, toMK (γ t) = NormedSpace.exp ((t : ℂ) • X)) : γ 0 = 1 :=

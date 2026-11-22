@@ -56,8 +56,6 @@ private theorem mem_SM {M : Matrix (Fin n) (Fin n) (DD X g)} :
 
 private def aM : Matrix (Fin n) (Fin n) (DD X g) →+* Matrix (Fin n) (Fin n) X := (DD.aug X g).toRingHom.mapMatrix
 
-private theorem aM_apply (M : Matrix (Fin n) (Fin n) (DD X g)) (i j) : aM M i j = (M i j).a := rfl
-
 private def pM (k : Fin g) : Matrix (Fin n) (Fin n) (DD X g) →+ Matrix (Fin n) (Fin n) X := (hE' k).mapMatrix
 
 private theorem pM_apply (k : Fin g) (M : Matrix (Fin n) (Fin n) (DD X g)) (i j) : pM k M i j = (M i j).ep' k := rfl

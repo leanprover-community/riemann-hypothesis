@@ -68,12 +68,6 @@ private theorem galoisBaseChangeSchemeAction_comp_snd {E : Type} [Field E] [Numb
   have : (gl r * (sZ D z * gl (cD (tau z) u)))⁻¹ * gl r = (gl (cD (tau z) u))⁻¹ * (sZ D z)⁻¹ := by group
   rw [this, D.act_mul, h0]
 
-private theorem pY_eq {E : Type} [Field E] [NumberField E] (D : Dat ℚ E) (z : ↥(IdeleGroup.normOneSubgroup E)) (p : G1 E × Orb D.δ) :
-    pY D (z, p) = D.act (gl p.1 * sZ D (z : IdeleGroup E))⁻¹ (rp p.2.1) := rfl
-
-private theorem el_eq {E : Type} [Field E] [NumberField E] (D : Dat ℚ E) (z : ↥(IdeleGroup.normOneSubgroup E)) (p : G1 E × Orb D.δ) :
-    el D (z, p) = gl p.1 * sZ D (z : IdeleGroup E) := rfl
-
 end UpperTheory.ConvolutionTheory.RankTwoDescent.Cp
 
 theorem UpperTheory.ConvolutionTheory.RankTwoDescent.Cp.zOne :

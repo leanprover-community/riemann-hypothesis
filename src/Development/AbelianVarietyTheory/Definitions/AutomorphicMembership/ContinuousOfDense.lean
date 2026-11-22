@@ -87,34 +87,9 @@ theorem isFockIsometry_embedding : IsFockIP (emb σ) := by
     rw [Pi.single_eq_same, if_pos rfl, RCLike.inner_apply, mul_comm, star_wt_mul, mfact_cast]
   · rw [Pi.single_eq_of_ne h, if_neg h, inner_zero_right]
 
-
-omit [DecidableEq σ] in
-def diag (c : (σ →₀ ℕ) → ℂ) (hc : ∀ α, ‖c α‖ = 1) : L2 σ →L[ℂ] L2 σ :=
-  lp.mapCLM 2 (fun α => c α • ContinuousLinearMap.id ℂ ℂ) zero_le_one fun α => by
-    simp [norm_smul, hc]
-
-
 omit [DecidableEq σ] in
 @[simp] theorem diag_apply (c : (σ →₀ ℕ) → ℂ) (hc : ∀ α, ‖c α‖ = 1) (x : L2 σ) (α : σ →₀ ℕ) :
     diag c hc x α = c α * x α := rfl
-
-
-omit [DecidableEq σ] in
-theorem norm_diag (c : (σ →₀ ℕ) → ℂ) (hc : ∀ α, ‖c α‖ = 1) (x : L2 σ) : ‖diag c hc x‖ = ‖x‖ := by
-  have hp : 0 < (2 : ENNReal).toReal := by norm_num
-  rw [lp.norm_eq_tsum_rpow hp, lp.norm_eq_tsum_rpow hp]
-  congr 1
-  refine tsum_congr fun α => ?_
-  rw [diag_apply, norm_mul, hc, one_mul]
-
-theorem diag_emb_monomial (c : (σ →₀ ℕ) → ℂ) (hc : ∀ α, ‖c α‖ = 1) (α : σ →₀ ℕ) (a : ℂ) :
-    diag c hc (emb σ (monomial α a)) = c α • emb σ (monomial α a) := by
-  ext β
-  rw [diag_apply, lp.coeFn_smul, Pi.smul_apply, smul_eq_mul, emb_monomial, lp.single_apply]
-  by_cases h : β = α
-  · subst h
-    rfl
-  · rw [Pi.single_eq_of_ne h, mul_zero, mul_zero]
 
 theorem continuous_of_dense {G H : Type*} [TopologicalSpace G] [NormedAddCommGroup H] [NormedSpace ℂ H]
     (π : G → H →L[ℂ] H) (hπ : ∀ g x, ‖π g x‖ = ‖x‖) {S : Set H} (hS : Dense S)

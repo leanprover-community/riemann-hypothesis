@@ -100,21 +100,10 @@ def IsTheta (ρ : Representation A (GL (Fin n) k) M) (C : Subgroup 𝓀[k]ˣ)
     (θ : (Fin n → kˣ) →* (Module.End A (fixd ρ (iwC k n C)))ˣ) : Prop :=
   ∀ t, Dom t → (θ t : Module.End A (fixd ρ (iwC k n C))) = hk ρ (iwC k n C) (diagT k (Fin n) t)
 
-
 variable (k) in
 def IsGenMod (C : Subgroup 𝓀[k]ˣ) (δ : kˣ) : Prop :=
   ∃ d : 𝒪[k]ˣ, Units.map (algebraMap 𝒪[k] k).toMonoidHom d = δ ∧
     Subgroup.zpowers (Units.map (residue 𝒪[k]).toMonoidHom d) ⊔ C = ⊤
-
-def LocRel (l : ℕ) (x δ : kˣ) {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V)
-    (P T : Matrix (Fin n) (Fin n) ℂ) : Prop :=
-  ∀ C : Subgroup 𝓀[k]ˣ, ellC l _ ≤ C → ∀ θ, IsTheta π C θ → ∀ χ : (Fin n → kˣ) →* ℂˣ,
-    (⨅ t, Module.End.maxGenEigenspace (θ t : Module.End ℂ (fixd π (iwC k n C))) (χ t : ℂ)) ≠ ⊥ →
-    ∀ α : Fin n → ℂ, (∀ i, α i = (resCard k : ℂ) ^ (i : ℕ) * χ (Pi.mulSingle i x)) →
-    P.charpoly = ∏ i, (Polynomial.X - Polynomial.C (α i)) ∧
-    ((∀ i i', i ≠ i' → α i ≠ α i' ∧ α i ≠ (resCard k : ℂ) * α i') → ∀ i,
-      (List.ofFn fun i' => if i' = i then 1 else P - α i' • (1 : Matrix (Fin n) (Fin n) ℂ)).prod *
-        (T - (χ (Pi.mulSingle i δ) : ℂ) • (1 : Matrix (Fin n) (Fin n) ℂ)) = 0)
 
 end Loc
 

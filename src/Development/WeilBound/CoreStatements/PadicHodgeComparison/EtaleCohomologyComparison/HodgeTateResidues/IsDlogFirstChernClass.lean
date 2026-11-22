@@ -62,9 +62,6 @@ theorem mk_add (a b : IdF A) {T : C} {x y : A.obj T} (hx : x ∈ a.S T) (hy : y 
 theorem mk_smul (a b : IdF A) {T : C} (r : R) {x : A.obj T} (hx : x ∈ a.S T) :
     r • sqMk a b x hx = sqMk a b (r • x) (Submodule.smul_of_tower_mem _ r hx) := rfl
 
-theorem map_mk (a b : IdF A) {T T' : C} (φ : T ⟶ T') {x : A.obj T} (hx : x ∈ a.S T) :
-    sqMap a b φ (sqMk a b x hx) = sqMk a b ((A.map φ).hom x) (a.map_mem φ hx) := rfl
-
 def MulOk.pair : CH.Pairing (sq a b) (sq a' b') (sq a'' b'') where
   μ T := LinearMap.mk₂ R (fun (x : sqM a b T) (y : sqM a' b' T) => h.mul x y)
     (fun x x' y => by
@@ -151,7 +148,6 @@ def smS {p : Y ⟶ Spec (CommRingCat.of K)} (u : X ⟶ Y) (hu : u ≫ p = q) :
 def pullH {p : Y ⟶ Spec (CommRingCat.of K)} (u : X ⟶ Y) (hu : u ≫ p = q) (a n : ℕ) : Hdg p a n →ₗ[K] Hdg q a n :=
   ((smS u hu).sq (a := thFil _ (a : ℤ)) (b := thFil _ ((a : ℤ) + 1)) (a' := thFil _ (a : ℤ)) (b' := thFil _ ((a : ℤ) + 1))
     (fun _ _ hx => hx) fun _ _ hx => hx).pull n
-
 
 variable (q) in
 def IsDlogFirstChernClass (D : E.LineData X) (x : Hdg q 1 2) : Prop :=

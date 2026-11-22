@@ -19,18 +19,6 @@ namespace GlobalTheory.CompanionTheory.PairMult.TopK
 
 variable {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem sgL_erase (l : Lt n) (B : Finset (Lt n)) : sgL l (B.erase l) = sgL l B := by
-  unfold sgL
-  congr 2
-  ext j
-  simp only [mem_filter, mem_erase]
-  constructor
-  · exact fun h => ⟨h.1.2, h.2⟩
-  · exact fun h => ⟨⟨fun e => by subst e; exact lt_irrefl _ h.2, h.1⟩, h.2⟩
-
-theorem sgL_sq (l : Lt n) (B : Finset (Lt n)) : sgL l B * sgL l B = 1 := by
-  unfold sgL; rw [← pow_add, ← two_mul, pow_mul]; simp
-
 theorem adC_diag_ne {p q : Fin n} (h : p ≠ q) (i : Pos n) : adC p q i i = 0 := by
   have h1 : ¬(q = i.1.1 ∧ i.1 = (p, i.1.2)) := fun e => h (by
     have := congrArg Prod.fst e.2

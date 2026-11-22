@@ -103,8 +103,6 @@ theorem herm_entry (i j : Fin X.B.I.n) : star (X.B.I.J i j) = X.B.I.J j i := by
   have h2 := congrFun (congrFun h j) i
   simpa only [Formalism.UG.cT, Matrix.map_apply, Matrix.transpose_apply, starRingEnd_apply] using h2
 
-theorem firstForm_apply (a b : Fin X.B.I.n) : J1 X p θ a b = iota1 X p θ (X.B.I.J a b) := rfl
-
 open scoped Matrix in
 theorem dual_gen (hθ : IsSplitEquiv X p θ) (l l' : Fin X.B.I.n → X.B.I.E) (hl : l ∈ X.B.I.L)
     (hl' : l' ∈ X.B.I.L) :

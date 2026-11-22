@@ -138,13 +138,6 @@ instance finite_negExp (N : ℕ) (n : ℤ) : Finite (NegExp N n) := by
     (fun a => ⟨⟨a.1, a.2.1⟩, Finset.filter_eq_self.2 fun i _ => a.2.2 i⟩) fun a b h => ?_
   exact Subtype.ext (congrArg (·.1.1) h)
 
-theorem isEmpty_negExp (N : ℕ) {n : ℤ} (hn : -(N : ℤ) ≤ n) : IsEmpty (NegExp N n) :=
-  ⟨fun a => by
-    have h := (negExpEquiv N n a).2
-    have : 0 ≤ ∑ i, ((negExpEquiv N n a).1 i : ℤ) :=
-      Finset.sum_nonneg fun i _ => Int.natCast_nonneg _
-    omega⟩
-
 theorem choose_eq_add (N : ℕ) (hN : 1 ≤ N) (n : ℤ) :
     Ring.choose (n + N) N = ((n + N).toNat.choose N : ℤ) + (-1) ^ N * (-n - 1).toNat.choose N := by
   rcases lt_or_ge (n + N) 0 with h | h

@@ -14,8 +14,6 @@ namespace UpperTheory.ConvolutionTheory.R2.Pp
 
 variable {F : Type} [Field F] [NumberField F]
 
-theorem vn (q : A F) : (nU q).val = !![1, q; 0, 1] := rfl
-
 theorem n_add (x y : A F) : gl (nU (x + y)) = gl (nU x) * gl (nU y) := by
   refine Units.ext ?_
   ext i j

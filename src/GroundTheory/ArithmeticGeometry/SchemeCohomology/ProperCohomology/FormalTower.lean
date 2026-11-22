@@ -30,12 +30,6 @@ private noncomputable def H.linearMapV436 {X : Scheme.{c236Scheme}}
     rw [H.smul_def, H.smul_def, ← Sheaf.H.map_comp_apply, ← Sheaf.H.map_comp_apply,
       ← modulesAbMap_comp, ← modulesAbMap_comp, smulHom_comp]
 
-private lemma H.linearMapV436_apply {X : Scheme.{c236Scheme}}
-    [HasExt.{c236Ext} (Sheaf (Opens.grothendieckTopology X.toTopCat) AddCommGrpCat.{c236Scheme})]
-    (A : Type*) [CommRing A] [Algebra A Γ(X, ⊤)]
-    {F G : X.Modules} (φ : F ⟶ G) (n : ℕ) (x : Sheaf.H.{c236Ext} (modulesAb F) n) :
-    H.linearMapV436 A φ n x = Sheaf.H.map.{c236Ext} (modulesAbMap φ) n x := rfl
-
 end
 
 open AlgebraicGeometry CategoryTheory Opposite TopologicalSpace Limits

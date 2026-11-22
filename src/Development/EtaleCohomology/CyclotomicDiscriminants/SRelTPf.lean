@@ -159,8 +159,6 @@ def tr : Representation k G (ZMod q → k) where
   map_one' := by ext; simp
   map_mul' a b := by ext; simp [add_assoc]
 
-theorem tr_apply (g : G) (F : ZMod q → k) (j : ZMod q) : tr k p g F j = F (j + Multiplicative.toAdd (p g)) := rfl
-
 def trIso (hp : Function.Surjective p) : Rep.of (tr k p) ≅ Rep.coind p.ker.subtype (Rep.trivial k p.ker k) :=
   Rep.mkIso <| .mk (LinearEquiv.ofBijective
     (LinearMap.codRestrict (Representation.coindV p.ker.subtype (Representation.trivial k p.ker k))

@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
-public import Development.AbelianVarietyTheory.BlockTheory.CMModuli.ExponentialDifferential
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThickTransComp
@@ -33,9 +32,6 @@ namespace GlobalTheory.KeyFormulaCompare
 section Unif
 
 variable {A : Over (Sp ℂ)} [GrpObj A] {L : LB A.left} {g : ℕ}
-
-def Same (u : HolUnif A L g) (F : Unif A L g) : Prop :=
-  F.exp = u.ex ∧ ∀ i z h, F.fr i z h = u.fr i z
 
 namespace Same
 
@@ -79,8 +75,6 @@ theorem det_ne_zero (x : KeyIn ℂ) (u : HolUnif x.P.A x.P.L x.P.g) (W : Matrix 
 end Principal
 
 section Clauses
-
-abbrev RuleIn : Type 1 := ∀ (K : Type) [Field K] [CharZero K], KeyIn K → Kˣ
 
 variable (κ : RuleIn)
 

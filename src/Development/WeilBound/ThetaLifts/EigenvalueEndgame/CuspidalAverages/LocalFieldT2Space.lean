@@ -34,7 +34,6 @@ theorem loc_neBot : NeBot (𝓝[≠] (0 : k)) := by
   rw [map_mul]
   exact mul_lt_of_lt_one_right (zero_lt_iff.2 hr) hp
 
-
 variable (k n d) in
 def intM : AddSubgroup (Matrix (Fin n) (Fin d) k) where
   carrier := {Y | ∀ a b, ValuativeRel.valuation k (Y a b) ≤ 1}
@@ -63,8 +62,6 @@ def colL (i : Fin d) (ρ : Fin d → k) : Matrix (Fin n) (Fin d) k →ₗ[k] Mat
   toFun Y := vecMulVec (fun a => Y a i) ρ
   map_add' Y Z := by ext a b; simp [vecMulVec_apply, add_mul]
   map_smul' c Y := by ext a b; simp [vecMulVec_apply, mul_assoc]
-
-theorem colL_apply (i : Fin d) (ρ : Fin d → k) (Y : Matrix (Fin n) (Fin d) k) (a b) : colL i ρ Y a b = Y a i * ρ b := rfl
 
 theorem colL_colL {i j : Fin d} {ρ ρ' : Fin d → k} (h : ρ' i = 0) (Y : Matrix (Fin n) (Fin d) k) : colL i ρ (colL j ρ' Y) = 0 := by
   ext a b; simp [colL_apply, h]

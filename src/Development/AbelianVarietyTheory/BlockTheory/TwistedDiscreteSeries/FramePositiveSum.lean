@@ -53,10 +53,6 @@ def superSum {F a : Type} [Field F] [Fintype a] (pos : a → ℕ) (M : Matrix a 
 
 def framePos (κ l : ℕ) : Fin κ ⊕ Fin l → ℕ := Sum.elim (fun i => i.val) (fun i => κ + i.val)
 
-def IsGenericLevel (ψ : AddChar k Circle) (ϖ : kˣ) {κ l : ℕ} (P : TypeDatum k (Fin κ ⊕ Fin l)) : Prop :=
-  (∀ g, g ∈ P.J ↔ ∃ gb, Reduces g gb ∧ IsUpperUnip (framePos κ l) gb.val) ∧
-    ∀ g : P.J, (P.lam g : ℂ) = ψ ((ϖ⁻¹ : kˣ) * superSum (framePos κ l) (g : GL (Fin κ ⊕ Fin l) k).val)
-
 def IsSymLevel (ψ : AddChar k Circle) (ϖ : kˣ) (ρ : ℕ) {κ l : ℕ} (P : TypeDatum k (Fin κ ⊕ Fin l)) : Prop :=
   (∀ g, g ∈ P.J ↔ ∃ u ∈ N 𝓀[k] (Fin κ) l (ρ + 1), ∃ γ : GL (Fin κ) 𝓀[k],
       IsUpperUnip Fin.val γ.val ∧ Reduces g (u * embX l γ)) ∧
@@ -129,86 +125,6 @@ def CosetMeasure : Prop :=
       ∀ (μG : Measure (GL (n ⊕ Fin c) k)), μG.IsHaarMeasure → ∀ f, IsCosetFn J h f → ∀ z : ℂ,
         IsQuotInt ν m μG 1 f z ↔ z = (((μG J).toReal / (volR ν m (Cgrp J h)).toReal : ℝ) : ℂ) * f h
 
-def VolumeCancels : Prop :=
-  ∀ (n : Type) [Fintype n] [DecidableEq n] (c : ℕ), 1 ≤ c →
-  ∀ (J : Subgroup (GL (n ⊕ Fin c) k)), IsCO J → ∀ (b h : GL (n ⊕ Fin c) k)
-    (m : Measure (GL n k)), m.IsHaarMeasure → ∀ (μG : Measure (GL (n ⊕ Fin c) k)), μG.IsHaarMeasure → μG J = 1 →
-    ∀ f, IsCosetFn J h f → ∃ z : ℂ, IsQuotInt ν (rescale ν b m) μG 1 f z ∧
-      (∀ z', IsQuotInt ν (rescale ν b m) μG 1 f z' → z' = z) ∧
-      (((m (prX (Cgrp J h))).toReal : ℝ) : ℂ) * z = (((volNat ν b (Cgrp J h))⁻¹ : ℝ) : ℂ) * f h
-
-def TargetLaw : Prop :=
-  ∀ (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c : ℕ), 1 ≤ c →
-  ∀ (μ : kˣ →* ℂˣ) (P' : Level (GL (n' ⊕ Fin (c + 1)) k)) (P : Level (GL (n ⊕ Fin c) k))
-    (Φ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ), Φ ∈ SB _ → IsCO P'.J → IsCO P.J → HasTypes μ P' P Φ →
-  ∀ h' h,
-    (∀ u ∈ N k n c 1, ∀ (g : GL n k) (hm : h⁻¹ * (u * embX c g) * h ∈ P.J),
-      om μ 1 g (flat ψ ν μ Φ h' h) =
-        ((ψ (simpleSum u) : ℂ) * (((P.lam ⟨_, hm⟩)⁻¹ : ℂˣ) : ℂ)) • flat ψ ν μ Φ h' h) ∧
-    (flat ψ ν μ Φ h' h ≠ 0 → ∃ χ : prX (Cgrp P.J h) →* ℂˣ, IsColChar ψ P h χ ∧ ∀ g : prX (Cgrp P.J h),
-      om μ 1 (g : GL n k) (flat ψ ν μ Φ h' h) = (χ g : ℂ) • flat ψ ν μ Φ h' h ∧
-      (∀ b, om μ 1 (g : GL n k) (xi ψ ν μ Φ P.J b h' h) = (χ g : ℂ) • xi ψ ν μ Φ P.J b h' h) ∧
-      ∀ (V' V : Type) [AddCommGroup V'] [Module ℂ V'] [AddCommGroup V] [Module ℂ V]
-        (π' : Representation ℂ (GL n' k) V') (π : Representation ℂ (GL n k) V)
-        (θ : V' →ₗ[ℂ] (Matrix n n' k → ℂ) →ₗ[ℂ] V),
-        (∀ γ' γ φ, ∀ Ξ ∈ SB (Matrix n n' k), θ (π' γ' φ) (om μ γ' γ Ξ) = π γ (θ φ Ξ)) →
-        ∀ φ, π g (θ φ (flat ψ ν μ Φ h' h)) = (χ g : ℂ) • θ φ (flat ψ ν μ Φ h' h))
-
-def SourceLaw : Prop :=
-  ∀ (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c : ℕ), 1 ≤ c →
-  ∀ (μ : kˣ →* ℂˣ) (P' : Level (GL (n' ⊕ Fin (c + 1)) k)) (P : Level (GL (n ⊕ Fin c) k))
-    (Φ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ), Φ ∈ SB _ → IsCO P'.J → IsCO P.J → HasTypes μ P' P Φ →
-  ∀ h' h, ∀ u ∈ N k n' (c + 1) 1, ∀ (g : GL n' k) (hm : h'⁻¹ * (u * embX (c + 1) g) * h' ∈ P'.J),
-    om μ g 1 (flat ψ ν μ Φ h' h) = ((ψ (simpleSum u) : ℂ)⁻¹ * (P'.lam ⟨_, hm⟩ : ℂ)) • flat ψ ν μ Φ h' h
-
-def ChainInvariant : Prop :=
-  ∀ (s : ℕ) (X : ℕ → Type) [∀ j, Fintype (X j)] [∀ j, DecidableEq (X j)] (Z : Type) [Fintype Z] [DecidableEq Z]
-    (T : Chain k s X Z), T.Regular → T.Laws →
-    (∀ j c (H : j + 1 + 1 + c = s) h' h h'', ∀ g ∈ prX (Cgrp (T.lev (j + 1) (c + 1 + 1) (by omega)).J h), ∀ x x',
-      om (T.mu (j + 1)) 1 g (T.entry ψ ν j (c + 1) (by omega) h' h) x *
-          om (T.mu (j + 1 + 1)) g 1 (T.entry ψ ν (j + 1) c H h h'') x' =
-        T.entry ψ ν j (c + 1) (by omega) h' h x * T.entry ψ ν (j + 1) c H h h'' x') ∧
-    ∀ h, ∀ u ∈ N k (X s) (0 + 1) 1, ∀ (g : GL (X s) k)
-      (hm : h⁻¹ * (u * embX (0 + 1) g) * h ∈ (T.lev s (0 + 1) rfl).J) (y : X (s + 1) → k),
-      om (T.mu (s + 1)) g 1 (fun x₀ => T.Psi h x₀ y) =
-        ((ψ (simpleSum u) : ℂ)⁻¹ * ((T.lev s (0 + 1) rfl).lam ⟨_, hm⟩ : ℂ)) • fun x₀ => T.Psi h x₀ y
-
-def ChainInvariantLast : Prop :=
-  ∀ (j : ℕ) (X : ℕ → Type) [∀ j, Fintype (X j)] [∀ j, DecidableEq (X j)] (Z : Type) [Fintype Z] [DecidableEq Z]
-    (T : Chain k (j + 1) X Z), T.Regular → T.Laws →
-    ∀ h' h, ∀ g ∈ prX (Cgrp (T.lev (j + 1) (0 + 1) rfl).J h), ∀ x x' y,
-      om (T.mu (j + 1)) 1 g (T.entry ψ ν j 0 rfl h' h) x * om (T.mu (j + 1 + 1)) g 1 (fun x₀ => T.Psi h x₀ y) x' =
-        T.entry ψ ν j 0 rfl h' h x * T.Psi h x' y
-
-def FirstVertex {s : ℕ} {X : ℕ → Type} [∀ j, Fintype (X j)] [∀ j, DecidableEq (X j)] {Z : Type} [Fintype Z]
-    [DecidableEq Z] (T : Chain k s X Z) (K₀ : Set (GL (X 0) k)) (lam : GL (X 0) k → ℂ) : Prop :=
-  (∀ c (H : 0 + c = s + 1),
-    (prX (Cgrp (T.lev 0 c H).J 1) : Set (GL (X 0) k)) = K₀ ∧
-    (∀ γ ∈ K₀, ∃ hm : embX c γ ∈ (T.lev 0 c H).J, ((T.lev 0 c H).lam ⟨_, hm⟩ : ℂ) = lam γ) ∧
-    ∃ χ : prX (Cgrp (T.lev 0 c H).J 1) →* ℂˣ, IsColChar ψ (T.lev 0 c H) 1 χ ∧
-      ∀ γ, (χ γ : ℂ) * lam (γ : GL (X 0) k) = 1) ∧
-  ∀ c (H : 0 + (c + 1) = s) h, ∀ γ ∈ K₀,
-    om (T.mu (0 + 1)) γ 1 (flat ψ ν (T.mu (0 + 1)) (T.Phi 0 (c + 1) H) 1 h) =
-      lam γ • flat ψ ν (T.mu (0 + 1)) (T.Phi 0 (c + 1) H) 1 h
-
-def FirstVertexChains : Prop :=
-  ∀ (s : ℕ) (t : Type) [Fintype t] [DecidableEq t],
-    (∀ (κ : ℕ) (ϖ : kˣ), IsUnif ϖ →
-      (∃ P : TypeDatum k (Fin κ ⊕ Fin (s + 1)), IsGenericLevel ψ ϖ P) ∧
-      (∀ ρ, s + 1 = 2 * ρ + 1 → ∃ P : TypeDatum k (Fin κ ⊕ Fin (s + 1)), IsSymLevel ψ ϖ ρ P) ∧
-      ∀ (P : TypeDatum k (Fin κ ⊕ Fin (s + 1))),
-        (IsGenericLevel ψ ϖ P ∨ ∃ ρ, s + 1 = 2 * ρ + 1 ∧ IsSymLevel ψ ϖ ρ P) →
-        ∀ (μ : ℕ → kˣ →* ℂˣ) (hμ : ∀ j, IsTame (μ j)),
-          FirstVertex ψ ν (typeChain t ϖ P μ hμ) (colGroup k κ t) (colChar ψ ϖ)) ∧
-    ∀ (κ : Type) [Fintype κ] [DecidableEq κ] (δ : kˣ →* ℂˣ) (hδ : IsTame δ) (η : ℕ → kˣ →* ℂˣ),
-      (∀ j, IsUnram (η j)) → FirstVertex ψ ν (twistChain s t κ δ hδ η) (KO k (XIx κ t 0)) fun _ => 1
-
 end Props
-
-def Statement : Prop :=
-  ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    [MeasurableSpace k] [BorelSpace k] (ψ : AddChar k Circle) (ν : Measure k), HasConductor ψ 1 → IsUnitVol ν →
-    StepWellDefined ψ ν ∧ ChainFinite ψ ν ∧ CosetMeasure ν ∧ VolumeCancels ν ∧ TargetLaw ψ ν ∧ SourceLaw ψ ν ∧
-      ChainInvariant ψ ν ∧ ChainInvariantLast ψ ν ∧ FirstVertexChains ψ ν
 
 end GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum

@@ -102,8 +102,6 @@ lemma mul_mem_Oh {x y : A F} (hx : x ∈ Oh F) (hy : y ∈ Oh F) : x * y ∈ Oh 
 def uF (c : F) (hc : c ≠ 0) : (A F)ˣ :=
   Units.map (algebraMap F (A F)).toMonoidHom (Units.mk0 c hc)
 
-lemma uF_val (c : F) (hc : c ≠ 0) : ((uF c hc : (A F)ˣ) : A F) = algebraMap F (A F) c := rfl
-
 def mulEquiv (a : (A F)ˣ) : A F ≃+ A F where
   toFun x := (a : A F) * x
   invFun x := ((a⁻¹ : (A F)ˣ) : A F) * x

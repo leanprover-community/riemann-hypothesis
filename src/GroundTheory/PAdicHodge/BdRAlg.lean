@@ -32,11 +32,6 @@ namespace IsPerfectoidField
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable (p : ℕ) [Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝒪" => normInteger K
-local notation "𝒪♭" => PreTilt 𝒪 p
-local notation "𝕎𝒪♭" => WittVector p 𝒪♭
-local notation "𝔹" => BDeRhamPlus 𝒪 p
-
 def padicIntToWitt : ℤ_[p] →+* 𝕎𝒪♭ :=
   (WittVector.map (ZMod.castHom (dvd_refl p) 𝒪♭)).comp (WittVector.equiv p).symm.toRingHom
 
@@ -71,9 +66,6 @@ end IsPerfectoidField
 section Cp
 
 variable (p : ℕ) [Fact p.Prime]
-
-local notation "𝒪" => normInteger ℂ_[p]
-local notation "𝔹" => BDeRhamPlus 𝒪 p
 
 theorem algebraMap_padicInt_mem_normInteger (x : ℤ_[p]) :
     algebraMap ℚ_[p] ℂ_[p] (x : ℚ_[p]) ∈ normInteger ℂ_[p] := by

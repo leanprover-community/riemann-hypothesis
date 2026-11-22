@@ -105,16 +105,6 @@ def Stab (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) (x : (AfP p ⊗[�
   {y : grp G β // a.1.1⁻¹ * toAfF G β x t hx y * a.1.1 ∈ Kf ∧ a.1.2⁻¹ * toP1 G β y * a.1.2 ∈ K' ∧
     FixL G v β y a.2.1}
 
-def cxSumAt (G : HTGroup p) (v : InfinitePlace G.F) (wt : Polynomial G.F → ℂ) (β : G.Cˣ)
-    (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G (AfP p) β x t) (Kf : Subgroup G.GAf) (f : G.GAf → ℂ)
-    (K' : Subgroup (Gr G 1)) (f' : Gr G 1 → ℂ) : ℂ :=
-  ∑ᶠ q : Pts G v β x t hx Kf K',
-    ((Nat.card (Stab G v β x t hx Kf K' (Quot.out q)) : ℕ) : ℂ)⁻¹ *
-      ∑ᶠ y : grp G β, if FixL G v β y (Quot.out q).2.1 then
-        f ((Quot.out q).1.1⁻¹ * toAfF G β x t hx y * (Quot.out q).1.1) *
-          f' ((Quot.out q).1.2⁻¹ * toP1 G β y * (Quot.out q).1.2) *
-          wt (minpoly G.F (((y : G.Cˣ × ℚˣ).1 : G.Cˣ) : G.C)) else 0
-
 structure Form (G : HTGroup p) where
 
   β : G.Cˣ
@@ -127,20 +117,10 @@ def Form.Rel {G : HTGroup p} (P Q : Form G) : Prop :=
 
 def FCls (G : HTGroup p) : Type := Quot (Form.Rel (G := G))
 
-def cxSum (G : HTGroup p) (v : InfinitePlace G.F) (wt : Polynomial G.F → ℂ) (P : Form G) (Kf : Subgroup G.GAf)
-    (f : G.GAf → ℂ) (K' : Subgroup (Gr G 1)) (f' : Gr G 1 → ℂ) : ℂ :=
-  cxSumAt G v wt P.β P.trivAf.choose P.trivAf.choose_spec.choose P.trivAf.choose_spec.choose_spec Kf f K' f'
-
-def cxTotal (G : HTGroup p) (v : InfinitePlace G.F) (wt : Polynomial G.F → ℂ) (Kf : Subgroup G.GAf)
-    (f : G.GAf → ℂ) (K' : Subgroup (Gr G 1)) (f' : Gr G 1 → ℂ) : ℂ :=
-  ∑ᶠ q : FCls G, cxSum G v wt (Quot.out q) Kf f K' f'
-
 def RegAf (G : HTGroup p) (g : G.GAf) : Prop :=
   ∃ w : AwayP p, ∀ a b : w.1.adicCompletion ℚ ⊗[ℚ] G.C,
     Commute a ((ubcMap (AfP.eval w) g).1.1 : w.1.adicCompletion ℚ ⊗[ℚ] G.C) →
     Commute b ((ubcMap (AfP.eval w) g).1.1 : w.1.adicCompletion ℚ ⊗[ℚ] G.C) → Commute a b
-
-def Form.one (G : HTGroup p) : Form G := ⟨1, sh_one_eq G, ⟨1, 1, by simp [Triv, inC]⟩, ⟨1, by simp [Triv, inC]⟩⟩
 
 theorem fixL_one (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) (z : Fin G.n → ℂ) : FixL G v β 1 z :=
   ⟨1, by simp [toV]⟩
@@ -154,8 +134,6 @@ def Stab.one (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) (x : (AfP p �
     (hx : Triv G (AfP p) β x t) (Kf : Subgroup G.GAf) (K' : Subgroup (Gr G 1)) (a : Dat G v β) :
     Stab G v β x t hx Kf K' a :=
   ⟨1, by simpa using Kf.one_mem, by simpa using K'.one_mem, fixL_one G v β _⟩
-
-
 
 theorem finitePlacesAway_nonempty (p : ℕ) [Fact p.Prime] : Nonempty (AwayP p) := by
   obtain ⟨q, hq, hqp⟩ := Nat.exists_infinite_primes (p+1)
@@ -175,6 +153,5 @@ theorem sigG_one (G : HTGroup p) (g : Gr G 1) : sigG G 1 g = g := by
     exact DFunLike.congr_fun (frobQ_degree_one p) ((g.1 : Matrix (Fin 1) (Fin 1) (Qr p 1)) i j)
   · show sigRes p (G.Fw i) G.n 1 (g.2 i) = g.2 i
     rw [sigRes_degree_one]; rfl
-
 
 end GlobalTheory.LKCx

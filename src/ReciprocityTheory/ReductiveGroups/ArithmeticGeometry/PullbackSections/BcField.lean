@@ -34,22 +34,6 @@ theorem bcPm_fst {S T : Type} [CommRing S] [CommRing T] (ψ : S →+* T) (x : Sp
 
 variable (Xo c)
 
-def BcGenSt : Prop :=
-  ∀ (p : TRing c.F) (T : Type) [Field T] [Algebra c.F T] (ψ : p.R →ₐ[c.F] T) (y : FrPt Xo c p.R),
-    ∃ s' : LB.Sec (PPx (spMap ψ.toRingHom ≫ y.x)),
-      (∀ (i : Fin 1 → Xo.univ.t.PP.L.ι)
-        (h : (PPx (spMap ψ.toRingHom ≫ y.x)).U i ≤ bcPm ψ.toRingHom y.x ⁻¹ᵁ (PPx y.x).U i),
-        ((bcPm ψ.toRingHom y.x).appLE _ _ h).hom (y.s.f i) = s'.f i) ∧
-      ∀ s'' : LB.Sec (PPx (spMap ψ.toRingHom ≫ y.x)), ∃! a : T,
-        ∀ i, s''.f i = scal (spMap ψ.toRingHom ≫ y.x) a i * s'.f i
-
-def BcLieSt : Prop :=
-  ∀ (p : TRing c.F) (T : Type) [Field T] [Algebra c.F T] (ψ : p.R →ₐ[c.F] T) (y : FrPt Xo c p.R)
-    (τ : E →+* ℂ) (w : Sp (DualNumber T) ⟶ Xo.univ.t.G.left),
-    IsTanAt (spMap ψ.toRingHom ≫ y.x) w → IsEigAt c τ w →
-    ∃! a : Fin (Dw.mult τ) → T,
-      IsCombAt (spMap ψ.toRingHom ≫ y.x) (fun i => spMap (dualMap ψ.toRingHom) ≫ y.u τ i) a w
-
 variable {Xo c}
 
 theorem dualMap_comp_alg {S T : Type} [CommRing S] [CommRing T] (ψ : S →+* T) :
@@ -88,7 +72,6 @@ theorem eig_bc {S T : Type} [CommRing S] [Algebra c.F S] [CommRing T] [Algebra c
   simp only [← Category.assoc, spMap_comp_spMap, dualMap_comp_epsMul, AlgHom.toRingHom_eq_coe,
     RingHom.coe_coe, AlgHom.commutes]
 
-
 variable (Xo c) in
 def BcGenRSt : Prop :=
   ∀ (p : TRing c.F) (T : Type) [CommRing T] [Algebra c.F T] (ψ : p.R →ₐ[c.F] T) (y : FrPt Xo c p.R),
@@ -98,7 +81,6 @@ def BcGenRSt : Prop :=
         ((bcPm ψ.toRingHom y.x).appLE _ _ h).hom (y.s.f i) = s'.f i) ∧
       ∀ s'' : LB.Sec (PPx (spMap ψ.toRingHom ≫ y.x)), ∃! a : T,
         ∀ i, s''.f i = scal (spMap ψ.toRingHom ≫ y.x) a i * s'.f i
-
 
 variable (Xo c) in
 def BcLieRSt : Prop :=

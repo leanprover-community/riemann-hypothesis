@@ -91,9 +91,6 @@ end Mat
 
 variable {D : D7} {V : HSp D}
 
-set_option quotPrecheck false in
-local notation "ρv" v => (Formalism.L2.Host.tauPl D).symm v
-
 structure FrA (V : HSp D) where
   e : ∀ ρ : D.what₂.Tau, Fin V.rank ≃ Fin (V.sig (tauE D ρ)).1 ⊕ Fin (V.sig (tauE D ρ)).2
   A : ∀ ρ : D.what₂.Tau, Matrix (Fin (V.sig (tauE D ρ)).1 ⊕ Fin (V.sig (tauE D ρ)).2) (Fin V.rank) ℂ

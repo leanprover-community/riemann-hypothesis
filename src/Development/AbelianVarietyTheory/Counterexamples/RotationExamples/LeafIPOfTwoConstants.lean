@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.FunctionalLowerBoundOfConditionsNumeric
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefExample
 public import Formalism.LocalToGlobal.IndefiniteReal.ConcretePkgSpec
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefUse
 public import Formalism.HarderNarasimhan.ShiftInvariance

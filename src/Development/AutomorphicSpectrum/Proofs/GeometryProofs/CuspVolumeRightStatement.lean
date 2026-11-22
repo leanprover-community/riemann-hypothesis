@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspVolumeRight
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ThreeLeLevel
 
 @[expose] public section
 

@@ -440,8 +440,6 @@ theorem liftMatrix_conjTranspose (M : M2 A) : (lift0 M : M2 (SlopeTestRemainingC
   ext1 i j
   exact io_star (M j i)
 
-theorem liftMatrix_transpose (M : M2 A) : (lift0 M : M2 (SlopeTestRemainingChoices S A))ᵀ = lift0 Mᵀ := rfl
-
 theorem transpose_mul_of_comm {B : Type} [Ring B] (M N : M2 B)
     (h : ∀ i j k l, Commute (M i j) (N k l)) : (M * N)ᵀ = Nᵀ * Mᵀ := by
   ext i j

@@ -609,8 +609,6 @@ def eF (I : AutInst) (g : ℕ) {r k : ℕ} (e0 f0 : Fin r → VA I) (z0 : VA I) 
   if x ∈ K2set I g e0 z0 bw then star (chi2f I ψ g e0 f0 z0 bw bwd x) / ((μf (K2set I g e0 z0 bw)).toReal : ℂ)
   else 0
 
-local notation "𝔢" => eF I g e0 f0 z0 bw bwd μf ψ
-
 variable (h : FrameOK I g e0 f0 z0 bw bwd ψ)
 include h
 

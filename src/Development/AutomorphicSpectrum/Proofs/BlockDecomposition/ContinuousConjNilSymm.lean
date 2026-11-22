@@ -197,8 +197,6 @@ def conjNil (q : GL (Fin n) ℂ) (W₁ W₂ : Submodule ℂ (Fin n → ℂ)) :
   AddMonoidHom.toAddEquiv (AddMonoidHom.mk' (cnF q W₁ W₂) (cnF_add q W₁ W₂))
     (AddMonoidHom.mk' (cnB q W₁ W₂) (cnB_add q W₁ W₂))
     (AddMonoidHom.ext fun X => cnB_cnF q W₁ W₂ X) (AddMonoidHom.ext fun Z => cnF_cnB q W₁ W₂ Z)
-theorem conjNil_val (q : GL (Fin n) ℂ) (W₁ W₂ : Submodule ℂ (Fin n → ℂ)) (X : nilrad W₁ W₂) :
-    (conjNil q W₁ W₂ X).1 = (q⁻¹ : GL (Fin n) ℂ).val * X.1 * q.val := rfl
 
 theorem continuous_conjNil (q : GL (Fin n) ℂ) (W₁ W₂ : Submodule ℂ (Fin n → ℂ)) :
     Continuous (conjNil q W₁ W₂) :=

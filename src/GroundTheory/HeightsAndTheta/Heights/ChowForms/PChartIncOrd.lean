@@ -123,9 +123,6 @@ theorem chartIncIdeal_le_ker : chartIncIdeal I t e ≤ RingHom.ker (back₀ I t 
 def back : ChartInc I t e →+* MvPolynomial (Fin e × Fin n) (ChartQ I t) :=
   Ideal.Quotient.lift (chartIncIdeal I t e) (back₀ I t e) fun _ ha => chartIncIdeal_le_ker I t e ha
 
-theorem back_mk (a : MvPolynomial (Fin n ⊕ Fin e × Fin n) F) :
-    back I t e (mkS I t e a) = back₀ I t e a := rfl
-
 def bwd : MvPolynomial (Fin e) (ChartInc I t e) →+* MvPolynomial (Fin e × Fin n) (ChartQ I t) :=
   eval₂Hom (back I t e) fun i => ∑ m, X (i, m) * C (mkQ I t (X m))
 

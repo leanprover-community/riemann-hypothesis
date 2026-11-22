@@ -16,8 +16,6 @@ open HermitianSublattices LocalSpans idealPowerSpanBounds localizedQuotients int
 
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
 
-local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
-
 def rd (K : Type) {F : Type} [Field K] [Field F] [Algebra F K] (𝔭 : Ideal (𝓞 F)) (k j : ℕ) :
     (𝓞 K ⧸ extP K 𝔭 ^ k) →+* (𝓞 K ⧸ extP K 𝔭 ^ (k - j)) :=
   Ideal.Quotient.factor (Ideal.pow_le_pow_right (Nat.sub_le k j))

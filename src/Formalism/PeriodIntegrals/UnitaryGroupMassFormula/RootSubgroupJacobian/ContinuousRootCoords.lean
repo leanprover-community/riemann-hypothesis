@@ -25,17 +25,6 @@ theorem mem_rootPat {p : Point ℂ (r + 1)} {i j : Fin (r + 1)} :
     (i, j) ∈ rootPat p ↔ i < j ∧ blockIdx p.1 i.val = blockIdx p.1 j.val := by
   simp only [rootPat, Finset.mem_filter, Finset.mem_univ, true_and]
 
-private theorem pv_cons_eq (t : ℂ) (s : ℕ) (bs : List (ℂ × ℕ)) (i : ℕ) :
-    pv ((t, s) :: bs) i = if i < s then s - 1 - i else s + pv bs (i - s) := rfl
-
-private theorem blockIdx_cons_eq (t : ℂ) (s : ℕ) (bs : List (ℂ × ℕ)) (i : ℕ) :
-    blockIdx ((t, s) :: bs) i = if i < s then 0 else 1 + blockIdx bs (i - s) := rfl
-
-private theorem ptEntry_cons_eq (t : ℂ) (s : ℕ) (bs : List (ℂ × ℕ)) (i j : ℕ) :
-    ptEntry ((t, s) :: bs) i j =
-      if i < s ∧ j < s then (if i + j + 1 = s then t else 0)
-      else if s ≤ i ∧ s ≤ j then ptEntry bs (i - s) (j - s) else 0 := rfl
-
 private theorem blockIdx_pv_eq : ∀ (bs : List (ℂ × ℕ)) (i : ℕ), i < (bs.map Prod.snd).sum →
     blockIdx bs (pv bs i) = blockIdx bs i
   | [], i, h => by simp at h

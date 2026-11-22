@@ -23,18 +23,6 @@ section Lin
 variable {W W₂ Z Z₂ : Type} [AddCommGroup W] [Module ℂ W] [AddCommGroup W₂] [Module ℂ W₂]
   [AddCommGroup Z] [Module ℂ Z] [AddCommGroup Z₂] [Module ℂ Z₂]
 
-private def sl (l : Z →ₗ[ℂ] ℂ) : W ⊗[ℂ] Z →ₗ[ℂ] W :=
-  (TensorProduct.rid ℂ W).toLinearMap ∘ₗ LinearMap.lTensor W l
-
-private def sr (l : W →ₗ[ℂ] ℂ) : W ⊗[ℂ] Z →ₗ[ℂ] Z :=
-  (TensorProduct.lid ℂ Z).toLinearMap ∘ₗ LinearMap.rTensor Z l
-
-private theorem sl_tmul (l : Z →ₗ[ℂ] ℂ) (w : W) (z : Z) : sl l (w ⊗ₜ[ℂ] z) = l z • w := by
-  simp [sl]
-
-private theorem sr_tmul (l : W →ₗ[ℂ] ℂ) (w : W) (z : Z) : sr l (w ⊗ₜ[ℂ] z) = l w • z := by
-  simp [sr]
-
 end Lin
 
 section Rep

@@ -24,8 +24,6 @@ noncomputable def hermRat (n : ℕ) : (Fin n → E) →ₗ[ℚ] (Fin n → E) �
     (fun c x y => by
       simp [DualFamily.herm_one_eq, Finset.smul_sum, cc, Rat.smul_def, mul_left_comm])
 
-theorem hermRat_apply {n : ℕ} (x y : Fin n → E) : hermRat n x y = herm 1 x y := rfl
-
 theorem exists_isometry {n : ℕ} {ι : Type} (b b' : Basis ι ℚ (Fin n → E))
     (h : ∀ i j, herm 1 (b' i) (b' j) = herm 1 (b i) (b j)) :
     ∃ γ : (Fin n → E) ≃ₗ[E] (Fin n → E), (∀ x y, herm 1 (γ x) (γ y) = herm 1 x y) ∧
@@ -110,7 +108,6 @@ theorem finite_linearMap {R M T : Type} [CommRing R] [AddCommGroup M] [Module R 
   exact (Pi.basisFun R (Fin m)).ext fun i => congrFun h i
 
 end SelfDualClasses
-
 
 open SelfDualClasses in
 theorem finite_classes_selfDual_of_selfDual (n : ℕ) :

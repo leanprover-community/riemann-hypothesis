@@ -44,8 +44,6 @@ variable {S S' : Scheme.{0}} {f : S' ⟶ S} {A : Over S} {A' : Over S'} [GrpObj 
 def sqMap (w : φ ≫ A.hom = A'.hom ≫ f) : (G2 A').left ⟶ (G2 A).left :=
   (lift (pushPt w (fst A' A')) (pushPt w (snd A' A'))).left
 
-theorem pushPt_left (w : φ ≫ A.hom = A'.hom ≫ f) {T : Over S'} (x : T ⟶ A') : (pushPt w x).left = x.left ≫ φ := rfl
-
 theorem pushPt_comp (w : φ ≫ A.hom = A'.hom ≫ f) {T U : Over S'} (g : T ⟶ U) (x : U ⟶ A') :
     pushPt w (g ≫ x) = (Over.homMk g.left (by
       show g.left ≫ U.hom ≫ f = T.hom ≫ f

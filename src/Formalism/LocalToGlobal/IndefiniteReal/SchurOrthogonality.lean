@@ -143,8 +143,6 @@ def piR (M : DSModel V S) (τ : D.what₂.Tau) : Gt V τ →* (M.H τ →L[ℂ] 
     rw [e, ContinuousLinearMap.mul_def]
     exact (M.ds τ).2.2.1.1.2 _ (conj_mem M τ (gm_mem a)) _ (conj_mem M τ (gm_mem b))
 
-theorem piR_apply (M : DSModel V S) (τ : D.what₂.Tau) (g : Gt V τ) : piR M τ g = M.rep τ (gm g) := rfl
-
 theorem piR_norm (M : DSModel V S) (τ : D.what₂.Tau) (g : Gt V τ) (x : M.H τ) : ‖piR M τ g x‖ = ‖x‖ :=
   (M.ds τ).2.2.1.2.1 _ (conj_mem M τ (gm_mem g)) x
 
@@ -319,11 +317,6 @@ variable (M : DSModel V S)
 
 variable (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
 
-
-
 variable {M θ} {J : Set (GA D V)} {χ : GA D V → ℂ} {μ : Measure (GA D V)} {𝓕 : Set (GA D V)}
-
-
-
 
 end Formalism.IndefR.SchurOrthogonalityAlt

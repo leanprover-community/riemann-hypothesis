@@ -76,41 +76,6 @@ attribute [instance] LevMod.ring LevMod.alg LevMod.co LevMod.algL LevMod.towO Le
 
 variable {b h w}
 
-structure LevPt (A : LevMod b h w) (ι : Qbar l ≃+* ℂ) : Type 1 where
-  θ : A.R →+* Qbar l
-  rep : (globOf r V).G₀ →* GL (Fin n) (Qbar l)
-  cont : Continuous rep
-  det : A.p.D.map θ = GDet.ofRep (mat rep)
-  Y : Type
-  [add : AddCommGroup Y]
-  [mod : Module ℂ Y]
-  π : Representation ℂ (GV n w) Y
-  sp : A.P →+ Y
-  sp_smul : ∀ (t : A.R) m, sp (t • m) = ι (θ t) • sp m
-  sp_act : ∀ g m, sp (A.ρ g m) = π g (sp m)
-  σ : ∀ j, SmIrr (GLw n (w j))
-  iso : ∀ j, IsoSum (π.comp (atJ n w j)) ⊤ (σ j)
-  lg : ∀ j (Bq : ValuationSubring Ω) (hB : IsPlaceOver Bq (w j)) (rc : IrrGL (k := (w j).adicCompletion L) → WD hB), IsRec hB rc →
-    UpperTheory.V.Lev.WO ι (rep.comp V.pr) (rc (algNorm (σ j)))
-
 attribute [instance] LevPt.add LevPt.mod
-
-def LevMod.Classical (A : LevMod b h w) : Prop :=
-  ∃ ι : Qbar l ≃+* ℂ, ∀ m : A.P, (∀ x : LevPt A ι, x.sp m = 0) → m = 0
-
-
-variable (B J) in
-def Level : Prop :=
-  ∃ b : TWBase (pairOf B.u) J Empty (n * Module.finrank ℚ (Lp L)),
-    ∀ (V : s.Lev) (h : (globOf r V).Hom (globOf r V0)) (q : ℕ) (v : Fin q → Plc (Lp L)) (w : Fin q → Plc L)
-      (Bq : Fin q → ValuationSubring Ω), (∀ g, h.p (toGS Ω V.S' g) = toGS Ω V0.S' g) → Function.Injective v → (∀ j, v j ∉ s.S) →
-      V.S' = s.S ∪ Set.range v → (∀ j, IsPlaceOver (Bq j) (w j)) → (∀ j, IsPlaceOver (Bq j) (v j)) →
-      (∀ j, Dec (F := Lp L) (Bq j) ≤ (resP L Ω).range) → ∃ A : LevMod b h w, A.Classical
-
-structure LocP : Prop where
-  ll : GlobalTheory.Published.LocalLanglandsGL
-  bz : GlobalTheory.Published.BernsteinZelevinskyFiniteness
-  gl : GlobalTheory.Published.GeometricLemma
-  tame : GlobalTheory.Published.TameLocal
 
 end UpperTheory.V.Pa

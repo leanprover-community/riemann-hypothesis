@@ -117,12 +117,6 @@ section act
 
 variable (P : M.Par)
 
-theorem fst_zero : (0 : (MA.DQ P).Pr).1 = 0 := rfl
-
-theorem fst_add (x y : (MA.DQ P).Pr) : (x + y).1 = x.1 + y.1 := rfl
-
-theorem fst_mul (x y : (MA.DQ P).Pr) : (x * y).1 = x.1 * y.1 := rfl
-
 def fstHom : (MA.DQ P).Pr →+ (MA.DQ P).Op where
   toFun := Prod.fst
   map_zero' := rfl

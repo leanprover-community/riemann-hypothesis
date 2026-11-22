@@ -224,8 +224,6 @@ noncomputable def coordL (j : Fin r) : VC D N N' →ₗ[ℂ] ℂ where
   map_add' z w := by simp [coordB, add_mul, Finset.sum_add_distrib]
   map_smul' a z := by simp [coordB, Finset.mul_sum, mul_assoc]
 
-theorem coordL_apply (j : Fin r) (z : VC D N N') : coordL T b j z = coordB D T b j z := rfl
-
 theorem coordL_coordV (j : Fin r) (k : D.what₂.Tau × Fin N' × Fin N) :
     coordL T b j (coordV D k) = (starRingEnd ℂ) (T.emb k.1 (b j k.2.1 k.2.2)) := by
   simp [coordL_apply, coordB, coordV, ite_and]

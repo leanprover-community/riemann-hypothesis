@@ -681,11 +681,6 @@ theorem exists_UJ {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) : ∃ γ : U
 
 variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
-def Cls (Hm Pc : Matrix (Fin n) (Fin n) ℂ) {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsURepOn (UJset ε) σ)
-    (w : H) (F : Matrix (Fin n) (Fin n) ℂ → V) : Prop :=
-  ∃ (ι : Type) (_ : Fintype ι) (x' x : ι → H) (c : ι → V), (∀ i, x' i ∈ Vsub ε hσ w) ∧ (∀ i, x i ∈ Vsub ε hσ w) ∧
-    ∀ g ∈ Formalism.QuantumDeterminants.UH Hm, F g = ∑ i, ⟪x' i, σ (cj Pc g) (x i)⟫_ℂ • c i
-
 end Model
 
 section Model2

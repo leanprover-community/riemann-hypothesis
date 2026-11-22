@@ -17,15 +17,6 @@ open scoped CategoryTheory.Obj
 noncomputable section
 namespace GlobalTheory.CM
 
-def TensorObjSt : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H)
-    (k : IntermediateField ℚ ℂ), FiniteDimensional ℚ k → D.p = 0 ∨ D.q = 0 →
-    ∃ (K₁ : IntermediateField ℚ ℂ) (_ : NumberField K₁) (hk : KA l ≤ K₁) (ω : 𝓞 K₁) (C : Ell H (𝓞 K₁) ω) (ε : ℤˣ)
-      (h : D.La → D.La → OK H) (T : PAT H (Sp (𝓞 K₁)))
-      (o : Obj D l (baseKA l) (spMap (IntermediateField.inclusion hk).toRingHom)),
-      k ≤ K₁ ∧ C.IsPrincipalAt ((algebraMap K₁ ℂ).comp (algebraMap (𝓞 K₁) K₁)) ∧
-      IsKForm D ε h ∧ Nonempty (IsTen C D h T) ∧ Nonempty (SABMap o.t T.t (spMap (algebraMap (𝓞 K₁) K₁)))
-
 def CMExistsSt : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l)
     (g : ℕ) (ty : Fin g → (E →+* ℂ)) (FU : FamilyUnif Xo (algebraMap (KA l) ℂ) ty) (i : Fin FU.n)

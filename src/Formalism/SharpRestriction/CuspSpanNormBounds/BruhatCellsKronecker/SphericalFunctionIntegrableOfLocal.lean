@@ -1,8 +1,11 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
-public import Formalism.FlagUnipotentLattices.HalfDifferenceL1Bound
-public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ExtensionInterSubspace
+public import Mathlib
+public import Formalism.LatticeRigidity.HeightMinimum.PowFinrankEqZeroOfTracePow
+public import Formalism.NormUnitaryBounds.DetPolynomialWeights.ShortIndependentVectorsOfDualMinimum
+public import Formalism.LatticeTheta.ThetaShiftInversion
+public import Formalism.HarderNarasimhan.ShiftInvariance
 
 @[expose] public section
 

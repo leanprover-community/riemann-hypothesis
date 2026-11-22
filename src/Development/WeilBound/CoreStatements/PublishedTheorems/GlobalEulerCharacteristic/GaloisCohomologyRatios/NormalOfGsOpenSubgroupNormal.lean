@@ -14,8 +14,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.GEN.X
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K L : FiniteSubfield} [Fact (K ≤ L)] {S : Set (HeightOneSpectrum (𝓞 K.1))} {ℓ : ℕ} [Fact ℓ.Prime]
   (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S)
 
@@ -87,7 +85,6 @@ theorem normal_of_gsOpenSubgroup_normal
     exact AlgEquiv.apply_symm_apply _ x⟩
   have := FiniteSubfield.isGalois_of_normal (F := K) (E := L)
   infer_instance
-
 
 open scoped Classical in
 theorem card_infinitePlace_eq (K : FiniteSubfield) : Fintype.card (InfinitePlace K.1) =

@@ -60,10 +60,6 @@ def zfnsA : Set (A P D) := {zA P D, ziA P D, zbA P D, zbiA P D, ggA P D, ggiA P 
 
 def sitesFromD (i : ℕ) : List (Site (A P D)) := ((List.ofFn (siteA P D)).drop i).reverse
 
-def QQlev (l i : ℕ) (Y : ℂ) : M2 (A P D) :=
-  (((sitesFromD P D i).map fun σ => Ts σ (star Y)).prod)ᴴ * (startM P D l).QQ Y *
-    ((sitesFromD P D i).map fun σ => Ts σ Y).prod
-
 theorem sites_eq : sites P D = sitesFromD P D 0 := by
   simp [sites, sitesFromD]
 
@@ -171,17 +167,6 @@ def QQDet : Prop := ∀ (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)], P.OK → 
 
 def T21Commute : Prop := ∀ (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)], P.OK → ∀ u v : ℂ, Commute (t21 P D u) (t21 P D v)
 
-def QQLeading : Prop :=
-  ∀ (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)], P.OK → ∃ a11 a12 a21 a22 : ℕ → A P D, ∀ Y : ℂ,
-    t11 P D Y = Y ^ (P.k + 1) • (1 : A P D) + ∑ i ∈ range (P.k + 1), Y ^ i • a11 i ∧
-    t12 P D Y = -(Y ^ P.k • zA P D) + ∑ i ∈ range P.k, Y ^ i • a12 i ∧
-    t21 P D Y = -(Y ^ P.k • zbA P D) + ∑ i ∈ range P.k, Y ^ i • a21 i ∧
-    t22 P D Y = Y ^ (P.k - 1) • ggA P D + ∑ i ∈ range (P.k - 1), Y ^ i • a22 i
-
-def QQZeta : Prop :=
-  ∀ (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)] (Y : ℂ), t21 P D Y * zA P D - zA P D * t21 P D Y = -t22 P D Y ∧
-    t11 P D Y * zA P D - zA P D * t11 P D Y = -t12 P D Y ∧ Commute (t12 P D Y) (zA P D) ∧ Commute (t22 P D Y) (zA P D)
-
 def StartIsStart : Prop := ∀ (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)], P.OK → ∀ l : ℕ, IsStart (startM P D l).QQ (startM P D l).q
 
 def StartIsStartAssemble : Prop := QQHerm → QQRTT → QQDet → StartIsStart
@@ -192,16 +177,6 @@ def StartOK : Prop :=
 def StartAssemble : Prop := StartIsStart → T21Commute → SSScalar → SSShift → RhoUp → StartOK
 
 def SitesOKM : Prop := ∀ (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)] (l : ℕ), SitesOK (K := ℂ) (startM P D l).QQ (sitesFromD P D 0)
-
-def ChainM : Prop :=
-  ∀ (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)] (l : ℕ), (∀ Y, QQlev P D l P.r Y = (startM P D l).QQ Y) ∧
-    ∀ (i : Fin P.r) (Y : ℂ), QQlev P D l i Y =
-      (Ts (siteA P D i) (star Y))ᴴ * QQlev P D l (i + 1) Y * Ts (siteA P D i) Y
-
-def LowerCommutes : Prop :=
-  ∀ (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)] (l : ℕ) (i : Fin P.r), QQCommutes (K := ℂ) (QQlev P D l (i + 1)) (siteA P D i)
-
-def LowerStart : Prop := ∀ (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)], P.OK → ∀ l i : ℕ, i ≤ P.r → IsStart (QQlev P D l i) (qC P)
 
 section Ops
 
@@ -1023,7 +998,6 @@ theorem gg_ggi : ggA P D * ggiA P D = 1 := by
   obtain ⟨-, -, -, -, -, -, h, -, -⟩ := levFns P D; exact h
 theorem ggi_gg : ggiA P D * ggA P D = 1 := by
   obtain ⟨-, -, -, -, -, -, -, h, -⟩ := levFns P D; exact h
-theorem nabla_zeta_comm : nabA P D * zA P D = zA P D * nabA P D + 1 := (levNab P D).1
 theorem nab_gg : nabA P D * ggA P D = ggA P D * nabA P D + zbA P D := by
   obtain ⟨-, -, -, -, h, -, -⟩ := levNab P D; exact h
 theorem nabs_gg : nabsA P D * ggA P D = ggA P D * nabsA P D - zA P D := by
@@ -2285,10 +2259,6 @@ theorem IsPoly.sub {f g : ℂ → B} (hf : IsPoly f) (hg : IsPoly g) : IsPoly fu
   obtain ⟨p, hp⟩ := hf; obtain ⟨q, hq⟩ := hg
   exact ⟨p - q, fun y => by show f y - g y = _; rw [hp, hq, map_sub]⟩
 
-theorem IsPoly.neg {f : ℂ → B} (hf : IsPoly f) : IsPoly fun y => -f y := by
-  obtain ⟨p, hp⟩ := hf
-  exact ⟨-p, fun y => by show -f y = _; rw [hp, map_neg]⟩
-
 theorem IsPoly.mul {f g : ℂ → B} (hf : IsPoly f) (hg : IsPoly g) : IsPoly fun y => f y * g y := by
   obtain ⟨p, hp⟩ := hf; obtain ⟨q, hq⟩ := hg
   exact ⟨p * q, fun y => by show f y * g y = _; rw [hp, hq, map_mul]⟩
@@ -3198,8 +3168,6 @@ theorem star_dA (u : ℂ) : star (dA P D (star u)) = dA P D u := by
   funext π
   have : star u + 1 = star (u + 1) := by simp
   rw [star_inv₀, this, star_xC]
-
-theorem star_lA (u : ℂ) : star (lA P D (star u)) = mt P D u := rfl
 
 theorem commutator_t22_m (u v : ℂ) (hu : Good P u) (hv : Good P v) :
     (u - v) • (t22 P D u * mt P D v - mt P D v * t22 P D u) = (mt P D u - mt P D v) * t22 P D u := by

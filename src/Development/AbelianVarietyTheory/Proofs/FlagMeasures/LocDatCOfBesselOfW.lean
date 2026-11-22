@@ -10,7 +10,7 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LoopBTheta
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.ChoiceFinal
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CoefWeightedLocUncond
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.InstFactDecLow
+public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DecLowAndKFinDecayOfGapOfDecAll
 
 @[expose] public section
 

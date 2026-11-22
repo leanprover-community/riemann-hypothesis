@@ -33,8 +33,6 @@ def vanishingForms (f : X ⟶ Sp R) {H : LB X} {m : ℕ} (s : Fin (m + 1) → H.
     Set (MvPolynomial (Fin (m + 1)) R) :=
   {F | F.IsHomogeneous d ∧ ∀ k, MvPolynomial.eval₂Hom (AbLaw.cst f (H.U k)) (fun j => (s j).f k) F = 0}
 
-abbrev epsRed (K : Type) [CommRing K] : DualNumber K →+* K := (TrivSqZeroExt.fstHom K K K).toRingHom
-
 end Defs
 
 section CutOut
@@ -149,7 +147,6 @@ variable {X Y Z : Scheme.{0}} (L : LB X) {K K' : Type} [Fintype K] [Fintype K'] 
   {φ' : K' → (Y ⟶ X)} {ε' : K' → ℤ} {t : LB.Gen (LB.LinComb L φ ε)} {t' : LB.Gen (LB.LinComb L φ' ε')}
 
 end Ones
-
 
 end Zero
 

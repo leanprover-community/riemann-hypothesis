@@ -23,9 +23,6 @@ private theorem vl (i : Fin 2) : ((finSumFinEquiv (Sum.inl i) : Fin (2 + 2)) : �
 
 private theorem vr (i : Fin 2) : ((finSumFinEquiv (Sum.inr i) : Fin (2 + 2)) : ℕ) = 2 + i := rfl
 
-private theorem blk_val' (x y : GL (Fin 2) R) :
-    (blk x y).val = Matrix.reindex finSumFinEquiv finSumFinEquiv (Matrix.fromBlocks x.val 0 0 y.val) := rfl
-
 private theorem blk_low (x y : GL (Fin 2) R) (i j : Fin (2 + 2)) (hi : 2 ≤ (i : ℕ)) (hj : (j : ℕ) < 2) :
     (blk x y).val i j = 0 := by
   obtain ⟨i, rfl⟩ := finSumFinEquiv.surjective i

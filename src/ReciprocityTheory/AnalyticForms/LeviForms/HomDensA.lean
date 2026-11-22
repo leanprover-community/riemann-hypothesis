@@ -93,9 +93,6 @@ theorem deriv2_re_eval_zero (D : ℂ[X]) :
 
 def cf {α β : Type*} (n : ℕ) (P : Matrix α β ℂ[X]) : Matrix α β ℂ := P.map fun p => p.coeff n
 
-theorem cf_apply {α β : Type*} (n : ℕ) (P : Matrix α β ℂ[X]) (i : α) (j : β) :
-    cf n P i j = (P i j).coeff n := rfl
-
 theorem cf_mul {α β γ : Type*} [Fintype β] (n : ℕ) (P : Matrix α β ℂ[X]) (Q : Matrix β γ ℂ[X]) :
     cf n (P * Q) = ∑ x ∈ Finset.HasAntidiagonal.antidiagonal n, cf x.1 P * cf x.2 Q := by
   ext i j
@@ -107,9 +104,6 @@ theorem cf_mapC_mul {α β γ : Type*} [Fintype β] (n : ℕ) (A : Matrix α β 
     (P : Matrix β γ ℂ[X]) : cf n (A.map C * P) = A * cf n P := by
   ext i j
   simp only [cf, Matrix.map_apply, Matrix.mul_apply, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul]
-
-theorem coeff_X_mul_C (a : ℂ) (n : ℕ) : (X * C a).coeff n = if n = 1 then a else 0 := by
-  rw [mul_comm, Polynomial.coeff_C_mul_X]
 
 theorem eq_X_sq_mul (q : ℂ[X]) (h0 : q.coeff 0 = 0) (h1 : q.coeff 1 = 0) :
     q = X ^ 2 * q.divX.divX := by

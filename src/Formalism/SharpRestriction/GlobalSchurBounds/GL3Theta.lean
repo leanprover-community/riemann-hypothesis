@@ -362,13 +362,6 @@ structure LiftObj (D : D7) {u : D.what₂.Word} (C : ColumnChain D.R D.what₂.T
   S : Finset ℕ
   Th : ∀ i, C.cls i → C.cls (i + 1) → VC D (D.R.N i) (D.R.N (i + 1)) → ℂ
 
-def liftTie (D : D7) (T : Tor D) (e : FamE D) {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)}
-    (O : LiftObj D C) (i : ℕ) : Prop :=
-  (∀ c c', IsKer D T e O.S (O.lat i c).1 (O.lat (i + 1) c').1 (O.Th i c c')) ∧
-  ∀ c c' (Q : MvPolynomial (FrV D (D.R.N i)) ℂ) (y' : C.Y (i + 1)),
-    C.unf i c c' (fun y => evFr D Q (O.frm i y)) y' =
-      applyAt0 D (polD D O.dgen Q (O.frm (i + 1) y')) (O.Th i c c')
-
 def LiftObj.IsMem {D : D7} {u : D.what₂.Word} (O : LiftObj D (D.mem u).C) : Prop :=
   letI := D.host.cmStar
   O.mt = D.muTil ∧ (∀ i c, O.dt i c = D.detCls u i c) ∧
@@ -405,15 +398,12 @@ def brRhoOf (D : D7) {u : D.what₂.Word} (C : ColumnChain D.R D.what₂.Tau (D.
         ‖lamC lam ((rhoOf D mt i t : ℂˣ) : ℂ)‖ = ∏ τ, nrmId D lam τ (idl (QuotientGroup.mk t)) ^ (-C.sSharp i τ) ∧
         ‖lamC lam ((rhoOf' D mt i t : ℂˣ) : ℂ)‖ = ∏ τ, nrmId D lam τ (idl (QuotientGroup.mk t)) ^ (C.sDiv i τ)
 
-
 open IsDedekindDomain in
 abbrev EP (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) : Type := P.adicCompletion D.host.E
-
 
 open IsDedekindDomain in
 def SplitP (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) : Prop :=
   ∃ a b : 𝓞 D.host.E, (b : D.host.E) = D.host.conj (a : D.host.E) ∧ a ∈ P.asIdeal ∧ b ∉ P.asIdeal
-
 
 open IsDedekindDomain in
 def EqOff (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) {N : ℕ}
@@ -421,12 +411,10 @@ def EqOff (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) {N : ℕ}
   ∃ m : ℕ, ∀ a b : 𝓞 D.host.E, (b : D.host.E) = D.host.conj (a : D.host.E) → a ∈ P.asIdeal ^ m →
     (∀ x ∈ L, (a * b) • x ∈ L₀) ∧ ∀ x ∈ L₀, (a * b) • x ∈ L
 
-
 open IsDedekindDomain in
 def EqOffSplit (D : D7) {N : ℕ} (L L₀ : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) : Prop :=
   ∃ a : 𝓞 D.host.E, a ≠ 0 ∧ (∀ Q : HeightOneSpectrum (𝓞 D.host.E), a ∈ Q.asIdeal → SplitP D Q) ∧
     (∀ x ∈ L, a • x ∈ L₀) ∧ ∀ x ∈ L₀, a • x ∈ L
-
 
 open IsDedekindDomain in
 def YP (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) {N N' : ℕ}
@@ -435,12 +423,10 @@ def YP (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) {N N' : ℕ}
   ((YYl D L L').toAddSubgroup.map
     ((algebraMap D.host.E (EP D P)).toAddMonoidHom.mapMatrix)).topologicalClosure
 
-
 open IsDedekindDomain in
 def volP {D : D7} {P : HeightOneSpectrum (𝓞 D.host.E)} {N N' : ℕ}
     (Y₀ Y₁ : AddSubgroup (Matrix (Fin N') (Fin N) (EP D P))) : ℝ :=
   ((Y₀.addSubgroupOf Y₁).index : ℝ) / ((Y₁.addSubgroupOf Y₀).index : ℝ)
-
 
 open IsDedekindDomain in
 def modelXi (D : D7) : Prop :=

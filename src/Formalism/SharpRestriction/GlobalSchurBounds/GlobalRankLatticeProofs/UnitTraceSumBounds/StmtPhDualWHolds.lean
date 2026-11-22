@@ -2,7 +2,7 @@ module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.CoefWfPhAt
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.TestVectorMemSchwartzBruhat
-public import Formalism.SharpRestriction.GlobalSchurBounds.StatementTranslationInvariantSeventh
+public import Mathlib
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.FglPtW
 
 @[expose] public section

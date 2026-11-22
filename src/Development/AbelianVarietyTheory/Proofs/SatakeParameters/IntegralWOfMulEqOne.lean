@@ -8,7 +8,8 @@ public import Formalism.LocalRingCardinality.DataKerI
 public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TauPlBijective
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralSubst
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcExp
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExpMvNegLogMvMul
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormPowDivFactorialLe
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PrimeOfLiesOver
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DatumCurveIntegralUnitDiscModel

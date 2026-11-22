@@ -82,54 +82,6 @@ theorem mem_Ut (i : ZMod n) {u : ℤ} (hu : u ∈ D.Ut i) : 1 ≤ u ∧ u ≤ (D
 
 end TopData
 
-def exData : TopData 2 2 where
-  h := fun _ => 60
-  η := fun _ => 10
-  ty := fun i => if i = 0 then LType.G else LType.Bd
-  w := fun i => if i = 0 then 1 else 58
-  t := 2
-  lows := fun i => if i = 0 then {7} else {52}
-  cloud := fun i => if i = 0 then {20} else {40}
-  two_le_h := fun _ => by norm_num
-  one_le_η := fun _ => by norm_num
-  one_le_letterBlockLength := by norm_num
-  card_eq := fun i => by split_ifs <;> simp
-  range := fun i u hu => by
-    split_ifs at hu <;> simp [mem_block] at hu <;> push_cast <;> omega
-  lowG := fun i hi u hu => by
-    split_ifs at hu hi
-    simp [mem_block] at hu; push_cast; omega
-  cloudG := fun i hi u hu => by
-    split_ifs at hu hi
-    simp at hu; push_cast; omega
-  lowBd := fun i hi u hu => by
-    split_ifs at hu hi
-    simp [mem_block] at hu; push_cast; omega
-  cloudBd := fun i hi u hu => by
-    split_ifs at hu hi
-    simp at hu; push_cast; omega
-
-theorem exData_sg (i : ZMod 2) : exData.sg 41 i = 1 := by
-  have h : ∑' j : ℕ, ((60 : ℕ) : ℝ) / ((41 : ℕ) : ℝ) ^ (j + 1) = 3 / 2 := by
-    have h1 : ∀ j : ℕ, ((60 : ℕ) : ℝ) / ((41 : ℕ) : ℝ) ^ (j + 1) = (60 / 41) * (1 / 41 : ℝ) ^ j := by
-      intro j; push_cast; rw [one_div, inv_pow]; field_simp; ring
-    simp_rw [h1]
-    rw [tsum_mul_left, tsum_geometric_of_lt_one (by norm_num) (by norm_num)]
-    norm_num
-  change ⌊∑' j : ℕ, ((60 : ℕ) : ℝ) / ((41 : ℕ) : ℝ) ^ (j + 1)⌋₊ = 1
-  rw [h, Nat.floor_eq_iff (by norm_num)]
-  norm_num
-
-theorem exData_T1_T2_T3_fortyOne : exData.T1 41 ∧ exData.T2 41 ∧ exData.T3 41 := by
-  refine ⟨fun i => ?_, fun i u hu β hβ => ?_, fun i u hu y h1 h2 h3 => ?_⟩
-  · rw [exData_sg]; simp [exData]
-  · rw [exData_sg]
-    simp only [exData, TopData.B] at hu hβ
-    split_ifs at hu hβ <;> simp [mem_block] at hu hβ <;> rw [lt_abs] <;> push_cast <;> omega
-  · rw [exData_sg] at h1 h2
-    simp only [exData, TopData.cloudRes] at hu h2 h3
-    split_ifs at hu h3 <;> simp at hu <;> simp only [Int.ModEq] at h3 <;> push_cast at h1 h2 h3 <;> omega
-
 section Ss
 
 variable {R : Type} [Ring R]
@@ -482,17 +434,6 @@ structure GalData (G : Type) [Group G] [TopologicalSpace G] (Qp LL O : Type) [Fi
   χ₁ : G →* Oˣ
   ε : G →* Oˣ
 
-def exGal (l : ℕ) [Fact l.Prime] : GalData ℤ_[l]ˣ ℚ_[l] ℚ_[l] ℤ_[l] where
-  lam := l
-  T₀ := charLat ℚ_[l] (IsFractionRing.injective ℤ_[l] ℚ_[l]) ((MonoidHom.id ℤ_[l]ˣ)⁻¹ ^ 7) (by
-    change Continuous fun g : ℤ_[l]ˣ => (((g⁻¹ ^ 7 : ℤ_[l]ˣ) : ℤ_[l]) : ℚ_[l])
-    have h1 : Continuous fun x : ℤ_[l] => (x : ℚ_[l]) := continuous_subtype_val
-    have h2 : Continuous fun g : ℤ_[l]ˣ => ((g⁻¹ ^ 7 : ℤ_[l]ˣ) : ℤ_[l]) :=
-      Units.continuous_val.comp (continuous_inv.pow 7)
-    exact h1.comp h2)
-  χ₁ := (MonoidHom.id _)⁻¹
-  ε := MonoidHom.id _
-
 namespace GalData
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp LL O : Type} [Field Qp] [Field LL]
@@ -557,9 +498,6 @@ def Admissible {M : Type} [AddCommGroup M] [Module O M] (π : Representation O G
       (∀ g x, p (latRep T.L g x) = π g (p x)) ∧ ∀ x, p x = 0 ↔ (x : T.V) ∈ L₂.T
 
 variable {PD emb Γ t Ut}
-
-theorem Full.withLat {T : LocLat G Qp LL O} (h : Full PD emb Γ t Ut T) (L : Lattice (O := O) T.ρ) :
-    Full PD emb Γ t Ut (withLat T L) := h
 
 theorem SumFull.withLat {μ : ℕ} {T : LocLat G Qp LL O} (h : SumFull PD emb Γ t Ut μ T)
     (L : Lattice (O := O) T.ρ) : SumFull PD emb Γ t Ut μ (withLat T L) := h

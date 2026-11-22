@@ -7,7 +7,7 @@ public import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselMode
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.MomSchurG
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.PeriodG
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.MomTie
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.AmpOrbClosed
+public import Mathlib
 public import Formalism.SharpRestriction.CuspSpanNormBounds.HCFiniteKMultiplicityGapped
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeGapDS
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.BesselSplit
@@ -16,7 +16,6 @@ public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.Smoo
 public import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.BesselModels.AtFormAdmOneOfSteps
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LocUniqGen
 public import Formalism.SharpRestriction.CuspSpanNormBounds.SchurRelationsDiscreteSeries
-public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AIsL
 public import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
 public import CompanionTheory.AutomorphicTheory.RankOneTori.KDense
 

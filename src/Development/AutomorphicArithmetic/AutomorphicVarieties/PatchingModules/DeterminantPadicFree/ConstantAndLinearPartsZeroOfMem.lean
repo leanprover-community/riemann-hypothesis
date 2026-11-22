@@ -16,8 +16,6 @@ section Comp
 
 variable {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {g n a : ℕ}
 
-private theorem alg_eq (c : A) : algebraMap A (DD X g) c = DD.C (algebraMap A X c) := rfl
-
 variable (P Q : Matrix (Fin n) (Fin n) (DD X g))
 
 variable (M : Matrix (Fin n) (Fin n) A) (K : Fin g → Matrix (Fin n) (Fin n) X)

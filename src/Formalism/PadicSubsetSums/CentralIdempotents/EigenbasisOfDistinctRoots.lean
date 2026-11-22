@@ -20,25 +20,6 @@ def PrimeToPartEndo : Prop :=
     primeToPart l (x * y) = primeToPart l x * primeToPart l y ∧
       φ (primeToPart l x) = primeToPart l (φ x)
 
-def PowPolyExists : Prop :=
-  ∀ (K L : Type) [Field K] [Fintype K] [Field L] [Algebra K L] [IsAlgClosed L] (f : K[X])
-    (a : ℕ), f.Monic →
-    ∃ f' : K[X], f'.Monic ∧ f'.aroots L = (f.aroots L).map (fun x => x ^ a)
-
-def ExcludedSimplify : Prop :=
-  ∀ (N : ℕ) (Y : ℝ), 1 ≤ N → 1 ≤ Y →
-    (3 * N + 1 : ℝ) * (1 + 2 * (N : ℝ) ^ 2 * (Y ^ ((3 : ℝ) / 4) + 1)) ≤
-      20 * (N : ℝ) ^ 3 * Y ^ ((3 : ℝ) / 4)
-
-def AdmissibleCount : Prop :=
-  ∀ (c₀ c X B h P A : ℝ), 0 < c₀ → (2 : ℝ) ^ 14 / c₀ ≤ c → 1 < X → Real.log X ≤ c →
-    0 < B → B ≤ 4 * c ^ 3 → 0 < h → h ≤ c ^ 3 →
-    c₀ * B ^ (-5 : ℤ) * X / (h * Real.log X) ≤ P → P ≤ 2 * A →
-    8 * c ^ (-20 : ℤ) * X ≤ A
-
-
-
-
 open Classical in
 def LemmaPSubSum : Prop :=
   ∀ N a : ℕ, 0 < a → a < N →
@@ -57,7 +38,6 @@ def eqvSpace {G V ι : Type} [Monoid G] [AddCommGroup V] [Module ℂ V] (ρ : Re
   smul_mem' := by
     intro a x hx u
     rw [map_smul, hx u, smul_comm]
-
 
 open Classical in
 def twistedIdem {G : Type} [Group G] [Fintype G] (J : Subgroup G) (χ : J →* ℂˣ) :
@@ -88,7 +68,6 @@ def besselSet (K : Type) [Field K] (s k N : ℕ) : Set (GL (Fin N) K) :=
     ∀ i j : Fin N, s ≤ (i : ℕ) → (i : ℕ) < s + k → (j : ℕ) = s + k →
       (u : Matrix (Fin N) (Fin N) K) i j = 0}
 
-
 open Classical in
 def besselChar {K : Type} [Field K] (ψ₀ : AddChar K ℂ) (s k N : ℕ) (u : GL (Fin N) K) : ℂ :=
   ψ₀ (∑ i : Fin N, ∑ j : Fin N,
@@ -103,7 +82,6 @@ def GelfandGraevMultOne : Prop :=
   ∀ (K V : Type) [Field K] [Fintype K] [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
     (N : ℕ) (ψ₀ : AddChar K ℂ) (ρ : Representation ℂ (GL (Fin N) K) V), ψ₀ ≠ 1 → IsIrr ρ →
     Module.finrank ℂ (besselSpace ρ ψ₀ 0 0) ≤ 1
-
 
 open Classical in
 def IrredCountUpperUnit : Prop :=
@@ -125,17 +103,14 @@ def ComparisonTransfer : Prop :=
     (∀ v t, (1 - 1 / g) * wU v t ≤ wJ v t) →
     ∑ x ∈ A, ∏ v, wJ v (x v) ≤ ∑ x ∈ A, ∏ v, wU v (x v) + (Fintype.card ι : ℝ) / g
 
-
 open Classical in
 def sqWeight {K : Type} [Field K] [Fintype K] (f : K[X]) : ℝ :=
   ((UniqueFactorizationMonoid.normalizedFactors f).map
     (fun P => ((Fintype.card K : ℝ) ^ P.natDegree - 1)⁻¹)).prod
 
-
 open Classical in
 def sqSet (K : Type) [Field K] [Fintype K] (N : ℕ) : Finset (Fin N → K) :=
   Finset.univ.filter (fun c => Squarefree (monicOf c) ∧ (monicOf c).coeff 0 ≠ 0)
-
 
 open Classical in
 def degType {K : Type} [Field K] (f : K[X]) : Multiset ℕ :=
@@ -148,8 +123,6 @@ def SqMassLower : Prop :=
   ∀ (K : Type) [Field K] [Fintype K] (N : ℕ), 1 ≤ N →
     1 - 2 / (Fintype.card K : ℝ) ≤ ∑ c ∈ sqSet K N, sqWeight (monicOf c)
 
-
-
 open Classical in
 def TypeWeightExact : Prop :=
   ∀ (K : Type) [Field K] [Fintype K] (N : ℕ) (n : ℕ → ℕ), ∑ d ∈ Finset.Icc 1 N, d * n d = N →
@@ -160,14 +133,12 @@ def TypeWeightExact : Prop :=
           (fun c => Irreducible (monicOf c) ∧ (monicOf c).coeff 0 ≠ 0)).card).choose (n d) : ℕ) : ℝ) /
           ((Fintype.card K : ℝ) ^ d - 1) ^ (n d)
 
-
 open Classical in
 def TypeSetWeight : Prop :=
   ∀ (K : Type) [Field K] [Fintype K] (N : ℕ) (A : Multiset ℕ → Prop),
     ∑ c ∈ (sqSet K N).filter (fun c => A (degType (monicOf c))), sqWeight (monicOf c) ≤
       (((Finset.univ : Finset (Equiv.Perm (Fin N))).filter
         (fun σ : Equiv.Perm (Fin N) => A σ.partition.parts)).card : ℝ) / (N.factorial : ℝ)
-
 
 open Classical in
 def SameFactorCount : Prop :=
@@ -178,7 +149,6 @@ def SameFactorCount : Prop :=
       ¬ Set.InjOn (primeToPart l) ((monicOf c).rootSet L))).card : ℝ) ≤
       (Fintype.card K : ℝ) ^ (3 * (δ : ℝ) / 4)
 
-
 open Classical in
 def CrossFactorCount : Prop :=
   ∀ (K L : Type) [Field K] [Fintype K] [Field L] [Algebra K L] [IsAlgClosed L] (δ l : ℕ)
@@ -188,7 +158,6 @@ def CrossFactorCount : Prop :=
       (monicOf c).coeff 0 ≠ 0 ∧ ∃ x ∈ (monicOf c).rootSet L, ∃ y ∈ P'.rootSet L,
         primeToPart l x = primeToPart l y)).card : ℝ) ≤
       (Fintype.card K : ℝ) ^ ((δ : ℝ) / 4)
-
 
 open Classical in
 def LocalEstimateII : Prop :=
@@ -209,7 +178,6 @@ def PrimePowerOrderCount : Prop :=
     ∑ l ∈ (g ^ δ - 1).primeFactors, l ^ padicValNat l (g ^ δ - 1) ≤
       δ * (g - 1) + (g ^ δ - 1) / (g - 1)
 
-
 open Classical in
 def LocalEstimateIII : Prop :=
   ∀ (K L : Type) [Field K] [Fintype K] [Field L] [Algebra K L] [IsAlgClosed L] (N q₁ d : ℕ)
@@ -220,13 +188,11 @@ def LocalEstimateIII : Prop :=
           primeToPart l x = primeToPart l (algebraMap K L (c₀ : K))), sqWeight (monicOf c) ≤
       1 / (4 * (min q₁ d : ℕ)) + (1 + Real.log N) / ((Fintype.card K : ℝ) - 1)
 
-
 open Classical in
 def LocalEstimateIV : Prop :=
   ∀ (K : Type) [Field K] [Fintype K] (N a : ℕ), 0 < a → a < N →
     ∑ c ∈ (sqSet K N).filter (fun c => ∃ h : K[X], h ∣ monicOf c ∧ h.natDegree = a),
       sqWeight (monicOf c) ≤ 7 / 8
-
 
 open Classical in
 def LocalEstimateV : Prop :=
@@ -234,7 +200,6 @@ def LocalEstimateV : Prop :=
     ∑ c ∈ (sqSet K N).filter (fun c => ¬ ∃ P : K[X], Irreducible P ∧ P ∣ monicOf c ∧
         P.natDegree.Prime ∧ N < 2 * P.natDegree ∧ P.natDegree + 3 ≤ N), sqWeight (monicOf c) ≤
       1 - 1 / (5 * Real.log N)
-
 
 open Classical in
 def PropW : Prop :=
@@ -258,11 +223,5 @@ def ShareFromCount : Prop :=
     0 ≤ PP₁ → PP₁ ≤ W₁ → 0 ≤ PP₂ → PP₂ ≤ W₂ → |Dall - Dstar| ≤ ε * Dstar →
     |D₁ - PP₁ * Dstar| ≤ ε * (PP₁ * Dstar) → |D₂ - PP₂ * Dstar| ≤ ε * (PP₂ * Dstar) →
     bad ≤ D₁ + D₂ → bad / Dall ≤ (1 + ε) / (1 - ε) * (W₁ + W₂)
-
-def BadRankUnion : Prop :=
-  ∀ (k V : Type) [Field k] [AddCommGroup V] [Module k V] [FiniteDimensional k V]
-    (p₁ p₂ : V →ₗ[k] V), p₁ ∘ₗ p₁ = p₁ → p₂ ∘ₗ p₂ = p₂ → p₁ ∘ₗ p₂ = p₂ ∘ₗ p₁ →
-    Module.finrank k (LinearMap.range (p₁ + p₂ - p₁ ∘ₗ p₂)) ≤
-      Module.finrank k (LinearMap.range p₁) + Module.finrank k (LinearMap.range p₂)
 
 end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility

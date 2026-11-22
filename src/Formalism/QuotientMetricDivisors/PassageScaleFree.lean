@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Formalism.QuotientMetricDivisors.DualMu
+public import Formalism.HarderNarasimhan.QuotRealize
 public import Formalism.QuotientMetricDivisors.StatementK
 
 @[expose] public section

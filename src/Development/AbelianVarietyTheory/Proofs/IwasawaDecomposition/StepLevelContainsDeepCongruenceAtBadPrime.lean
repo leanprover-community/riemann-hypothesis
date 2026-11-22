@@ -78,9 +78,6 @@ section Gen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-local notation "𝔸" => FiniteAdeleRing (𝓞 F) F
-local notation "𝒜" => E ⊗[F] 𝔸
-
 theorem inv_eq_cT (σ : E →ₐ[F] E) {n : ℕ} {u : GL (Fin n) 𝒜} (hu : u ∈ UPts σ (1 : Matrix (Fin n) (Fin n) E) 𝔸) :
     ((u⁻¹ : GL (Fin n) 𝒜) : Matrix (Fin n) (Fin n) 𝒜) =
       1 + cT (sigR σ 𝔸) ((u : Matrix (Fin n) (Fin n) 𝒜) - 1) := by

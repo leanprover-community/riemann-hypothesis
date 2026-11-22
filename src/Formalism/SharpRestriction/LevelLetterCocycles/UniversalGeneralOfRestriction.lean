@@ -2243,8 +2243,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
 
-local notation "ιE" => algebraMap (LetA O n) W.EE
-
 theorem sat_frac [IsDomain O] (hinj : Function.Injective (algebraMap O LL))
     (hR : Formalism.MainNotions.DeltaInvariantLattices.wachRingRelations W 1 (PD.p - 1) W.π₀
       (fun _ => Polynomial.X + Polynomial.C ((PD.p : ℕ) : O)))
@@ -2322,8 +2320,6 @@ def KillWinCore {PD : PeriodData G Qp K₀ K B BdR} (W : LocWach PD LL O v n) : 
             algebraMap (LetA O n) W.EE (letE c) * algebraMap O W.EE x)
 
 variable {PD : PeriodData G Qp K₀ K B BdR} (W : LocWach PD LL O v n)
-
-local notation "ιE" => algebraMap (LetA O n) W.EE
 
 theorem section_restriction_first [IsDomain O] [Fintype (K →ₐ[Qp] LL)] (hinj : Function.Injective (algebraMap O LL))
     (hO2 : ∀ x : LL, 0 ≤ v x → ∃ o : O, algebraMap O LL o = x) (hArc : ArcCore W)
@@ -2530,8 +2526,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR}
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
-
-local notation "ιE" => algebraMap (LetA O n) W.EE
 
 theorem section_restriction_second [IsDomain O] [Fintype (K →ₐ[Qp] LL)] (hinj : Function.Injective (algebraMap O LL))
     (hArc : ArcCore W)

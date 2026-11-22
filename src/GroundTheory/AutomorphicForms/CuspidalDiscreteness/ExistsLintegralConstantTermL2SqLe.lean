@@ -24,8 +24,6 @@ open Reduction AutomorphicForm RightCosetSpace
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => rationalGLOne (K := K) (n := n)
-
 theorem det_unipMatrix {r : ℕ} {R : Type*} [CommRing R] (X : UPos n r → R) :
     (unipMatrix X).det = 1 := by
   rw [Matrix.det_of_isUpperTriangular]

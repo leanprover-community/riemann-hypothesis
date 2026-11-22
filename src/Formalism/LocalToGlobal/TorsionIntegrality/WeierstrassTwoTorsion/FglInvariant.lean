@@ -16,7 +16,6 @@ theorem wpCleared : WpCleared.{u} := wpCleared_of expSpec wpODE
 theorem wpRecursion : WpRecursion.{u} := wpRecursion_of expSpec wpODE
 
 theorem fglLog : FglLog.{u} := formal_group_logarithm
-theorem fglGroup : FglGroup.{u} := formal_group_group_law
 theorem fglInv : FglInv.{u} := formal_group_inverse
 
 theorem zSerMap : ZSerMap.{u, v} := z_series_map

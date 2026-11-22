@@ -3,7 +3,8 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.TcoMem
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAffCoverSpec
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ToPtIdPtBijective
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FaceFaceApply
+public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CoeEqAlgebraMapZeroEquiv
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAffineOpenRingPolynomialEquiv
 
 @[expose] public section

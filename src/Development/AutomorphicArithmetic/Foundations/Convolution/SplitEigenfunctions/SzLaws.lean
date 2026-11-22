@@ -27,8 +27,6 @@ private theorem sZ_val (z : (A E)ˣ) :
   simp only [sZ, Units.val_mul, aE_val, dM_val]
   ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
 
-private theorem em_val (h : GL (Fin 2) (A ℚ)) (i j : Fin 2) : (em E h).val i j = am E (h.val i j) := rfl
-
 private theorem am_norm_mul (z : (A E)ˣ) :
     (z : A E) * D.bar z * am E (((ideleNorm ℚ E z)⁻¹ : (A ℚ)ˣ) : A ℚ) = 1 := by
   rw [← D.am_ideleNorm z, ← map_mul, Units.mul_inv, map_one]

@@ -69,8 +69,6 @@ end Loc2
 
 variable (l : ℕ) [Fact l.Prime]
 
-local notation "Acris" => ACris.ACris ℂ_[l] l
-
 def intEquiv : ↥(PadicComplexInt l) ≃+* ↥(normInteger ℂ_[l]) where
   toFun x := ⟨x.1, mem_normInteger.2 ((mem_padicComplexInt_iff x.1).1 x.2)⟩
   invFun x := ⟨x.1, (mem_padicComplexInt_iff x.1).2 (mem_normInteger.1 x.2)⟩

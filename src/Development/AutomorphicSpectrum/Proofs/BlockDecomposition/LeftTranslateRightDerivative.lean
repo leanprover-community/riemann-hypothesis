@@ -28,8 +28,6 @@ def lmul (x : Mat n) : Mat n →L[ℝ] Mat n :=
 def rmul (x : Mat n) : Mat n →L[ℝ] Mat n :=
   LinearMap.toContinuousLinearMap (LinearMap.mulRight ℝ x)
 
-theorem lmul_apply (x y : Mat n) : lmul x y = x * y := rfl
-
 theorem mul_mem_gls {x y : Mat n} (hx : x ∈ GLs n) (hy : y ∈ GLs n) : x * y ∈ GLs n := by
   simp only [GLs, Set.mem_setOf_eq, Matrix.det_mul] at *
   exact mul_ne_zero hx hy

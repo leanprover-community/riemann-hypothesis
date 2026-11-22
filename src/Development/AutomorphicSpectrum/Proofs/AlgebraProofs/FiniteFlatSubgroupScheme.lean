@@ -111,68 +111,6 @@ theorem exists_sp_iso (T : Over (Spec (CommRingCat.of R))) [IsAffine T.left] :
 variable {A : Over (Spec (CommRingCat.of R))} [GrpObj A] {B : Type} [CommRing B] [Algebra R B]
   {h : sp (R₀ := R) B ⟶ A}
 
-theorem affine_mono (H : IsFinFlatSub A B h) {T : Over (Spec (CommRingCat.of R))} [IsAffine T.left]
-    (a b : T ⟶ sp (R₀ := R) B) (hab : a ≫ h = b ≫ h) : a = b := by
-  obtain ⟨S, _, _, j, _⟩ := exists_sp_iso T
-  obtain ⟨φ, hφ⟩ := exists_eq_spMap (j ≫ a)
-  obtain ⟨φ', hφ'⟩ := exists_eq_spMap (j ≫ b)
-  have := H.mono S φ φ' (by rw [← hφ, ← hφ', Category.assoc, Category.assoc, hab])
-  rw [← cancel_epi j, hφ, hφ', this]
-
-theorem affine_mul (H : IsFinFlatSub A B h) {T : Over (Spec (CommRingCat.of R))} [IsAffine T.left]
-    (a b : T ⟶ sp (R₀ := R) B) : ∃ c : T ⟶ sp (R₀ := R) B, c ≫ h = (a ≫ h) * (b ≫ h) := by
-  obtain ⟨S, _, _, j, _⟩ := exists_sp_iso T
-  obtain ⟨φ, hφ⟩ := exists_eq_spMap (j ≫ a)
-  obtain ⟨φ', hφ'⟩ := exists_eq_spMap (j ≫ b)
-  obtain ⟨χ, hχ⟩ := H.mul S φ φ'
-  refine ⟨inv j ≫ spMap χ, ?_⟩
-  rw [Category.assoc, hχ, ← hφ, ← hφ', MonObj.comp_mul, Category.assoc, Category.assoc,
-    IsIso.inv_hom_id_assoc, IsIso.inv_hom_id_assoc]
-
-theorem affine_one (H : IsFinFlatSub A B h) {T : Over (Spec (CommRingCat.of R))} [IsAffine T.left] :
-    ∃ c : T ⟶ sp (R₀ := R) B, c ≫ h = 1 := by
-  obtain ⟨S, _, _, j, _⟩ := exists_sp_iso T
-  obtain ⟨χ, hχ⟩ := H.one S
-  exact ⟨inv j ≫ spMap χ, by rw [Category.assoc, hχ, MonObj.comp_one]⟩
-
-theorem affine_inv (H : IsFinFlatSub A B h) {T : Over (Spec (CommRingCat.of R))} [IsAffine T.left]
-    (a : T ⟶ sp (R₀ := R) B) : ∃ c : T ⟶ sp (R₀ := R) B, (c ≫ h) * (a ≫ h) = 1 := by
-  obtain ⟨S, _, _, j, _⟩ := exists_sp_iso T
-  obtain ⟨φ, hφ⟩ := exists_eq_spMap (j ≫ a)
-  obtain ⟨χ, hχ⟩ := H.inv S φ
-  refine ⟨inv j ≫ spMap χ, ?_⟩
-  rw [← hφ] at hχ
-  have := congrArg (inv j ≫ ·) hχ
-  simp only [MonObj.comp_mul, MonObj.comp_one, Category.assoc, IsIso.inv_hom_id_assoc] at this
-  simpa [Category.assoc] using this
-
-theorem mono_of_isFinFlatSub (H : IsFinFlatSub A B h) : Mono h := by
-  constructor
-  intro T a b hab
-  apply Over.OverMorphism.ext
-  refine Scheme.Cover.hom_ext T.left.affineCover _ _ fun i => ?_
-  let T' : Over (Spec (CommRingCat.of R)) := Over.mk (T.left.affineCover.f i ≫ T.hom)
-  let j : T' ⟶ T := Over.homMk (T.left.affineCover.f i) rfl
-  haveI : IsAffine T'.left := inferInstanceAs (IsAffine (T.left.affineCover.X i))
-  have := affine_mono H (j ≫ a) (j ≫ b) (by rw [Category.assoc, Category.assoc, hab])
-  exact congrArg (·.left) this
-
-theorem grpObj_of_isFinFlatSub (R : Type) [CommRing R] (A : Over (Spec (CommRingCat.of R))) [GrpObj A] (B : Type)
-    [CommRing B] [Algebra R B] (h : sp (R₀ := R) B ⟶ A) (H : IsFinFlatSub A B h) :
-    ∃ _ : GrpObj (sp (R₀ := R) B), IsMonHom h ∧ Mono h := by
-  have hmono := mono_of_isFinFlatSub H
-  haveI : IsAffine (sp (R₀ := R) B).left := inferInstanceAs (IsAffine (Spec _))
-  haveI : IsAffine (𝟙_ (Over (Spec (CommRingCat.of R)))).left :=
-    inferInstanceAs (IsAffine (Spec _))
-  haveI : IsAffine (sp (R₀ := R) B ⊗ sp (R₀ := R) B).left :=
-    inferInstanceAs (IsAffine (pullback (sp (R₀ := R) B).hom (sp (R₀ := R) B).hom))
-  obtain ⟨m, hm⟩ := affine_mul H (fst _ _) (snd _ _)
-  obtain ⟨e, he⟩ := affine_one H (T := 𝟙_ _)
-  obtain ⟨i, hi⟩ := affine_inv H (𝟙 _)
-  rw [Category.id_comp] at hi
-  obtain ⟨G, hG⟩ := exists_grpObj_of_mono h m e i hm he hi
-  exact ⟨G, hG, hmono⟩
-
 end Scheme
 
 end GlobalTheory.CompanionTheory.Ar.GR.SubGrp

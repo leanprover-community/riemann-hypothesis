@@ -95,20 +95,6 @@ def DjHyp (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (C0 C
   ∀ j, 0 ≤ Dj j ∧ 0 ≤ kT j ∧ GoodShare X.p (segForm O X.p X.m (X.seg C0 CE1 CE2 j))
     (segLat O X.p X.m (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (segAPlus X.TT X.aT j) (X.m0 Cm)) (Dj j) (kT j)
 
-def aux₃ (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Ct Cc : ℝ) : Prop :=
-  ∀ (X : Loc) [NeZero X.m] (W Qq O Kf : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq]
-    [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
-    (ι : Qq →+* Kf) (σ : Qq ≃+* Qq) (jO : W →+* O) (w : O),
-    UnramifiedQuadraticSetting X.p X.n' W Qq O Kf ι σ jO w → HI C0 CYb Cde Ck CD Cb X → CBound Cc X →
-    ∀ Dj kT : Fin (numSeg X.TT) → ℝ, DjHyp O C0 CE1 CE2 Cm X Dj kT →
-    4 * ((∑ j, Dj j) + 4 * X.kap0) < (X.c : ℝ) →
-    ∀ e : Edge W Qq (X.m + 1), IsEdge X.p X.n' 1 e →
-      RhoGE X.p (beHH (m := X.m) X.p X.TT X.aT X.bT)
-        (CCe X.p ι σ w X.TT X.aT X.bT ⌊X.t0 C0 Ct⌋₊ X.c e) (CCe' X.p ι σ w X.TT X.aT X.bT ⌊X.t0 C0 Ct⌋₊ X.c e)
-        ((∑ j, Dj j) + 4 * X.kap0)
-        ((1 - X.kapP C0 CE1 CE2 Cm Ckap - ∑ j, kT j) * (dimHH (m := X.m) Kf X.TT X.aT X.bT : ℝ) /
-          gaussianNumber (X.p ^ X.n') (X.m + 1))
-
 def PointsLemma (_D : Formalism.BasicNotions.D7) (C0 CE1 CE2 : ℝ) : Prop :=
   ∀ (X : Loc) [NeZero X.m] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     (j : Fin (numSeg X.TT)) (aT' : Fin X.n' → ℕ) (m : ℝ),
@@ -123,7 +109,6 @@ def dimMM {s : ℕ} (k : ℕ) (A0 : ℤ) (A C : Fin s → ℕ) : ℕ :=
   symDim k A0 * ∏ i, symDim k (A i) * symDim k (C i)
 
 def digitBlock {s r : ℕ} (rz ry : Fin s → Fin (r + 1) → ℕ) : SegBlock s r := ⟨rz, ry, 0, 0, 0, 0⟩
-
 
 open Classical in
 def rankOnDigits (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (C0 CE1 CE2 : ℝ) (X : Loc)

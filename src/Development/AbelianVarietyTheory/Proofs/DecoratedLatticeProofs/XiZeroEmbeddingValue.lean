@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JetsInIffStepField
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CevInjective
 public import Formalism.LocalToGlobal.Columns.ToHLat
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HtPsiLeIffExists
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsClassSumPairingOfIsFormsOf
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsOkPins
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EvLgCanonical

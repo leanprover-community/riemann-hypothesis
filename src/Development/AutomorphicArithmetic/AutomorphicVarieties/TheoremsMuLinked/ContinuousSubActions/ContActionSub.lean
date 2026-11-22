@@ -23,10 +23,6 @@ private def extRep {G A V : Type} [Group G] [CommRing A] [AddCommGroup V] [Modul
     refine LinearMap.ext fun x => ?_
     simp [hc, add_assoc, add_comm, add_left_comm]
 
-private theorem extRep_apply {G A V : Type} [Group G] [CommRing A] [AddCommGroup V] [Module A V]
-    (ρ : Representation A G V) (c : G → V) (hc : ∀ g h, c (g * h) = c g + ρ g (c h)) (g : G) (x : V × A) :
-    extRep ρ c hc g x = (ρ g x.1 + x.2 • c g, x.2) := rfl
-
 private theorem contAction_sub {G A V : Type} [Group G] [TopologicalSpace G] [CommRing A] [AddCommGroup V]
     [Module A V] [TopologicalSpace V] (ρ : Representation A G V) (h : ReciprocityTheory.Gal.ContAction ρ) (H : Subgroup G) :
     ReciprocityTheory.Gal.ContAction (ρ.comp H.subtype : Representation A H V) :=

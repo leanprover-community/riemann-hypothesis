@@ -27,9 +27,6 @@ section Compl
 variable {R : Type} [CommRing R] [IsDedekindDomain R] {L : Type} [Field L] [Algebra R L]
   [IsFractionRing R L] (w : HeightOneSpectrum R)
 
-local notation "Lw" => w.adicCompletion L
-local notation "Ow" => w.adicCompletionIntegers L
-
 lemma v_algebraMap (l : L) : Valued.v (algebraMap L Lw l) = w.valuation L l :=
   valuedAdicCompletion_eq_valuation' w l
 
@@ -183,7 +180,6 @@ lemma exists_e : ∃ e : ℕ, 0 < e ∧ ∀ x : L, valV Ow (kMap w x) = w.valuat
 end Compl
 
 end AdicCompl
-
 
 open AdicCompl in
 theorem locFld : Formalism.L2.PjFree.LocFld := by

@@ -19,14 +19,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
 def FrameOK (A : HLat K) : Prop := ∀ v, IsUnit (A.X v).det
 
-structure Iso (A B : HLat K) where
-
-  e : A.V ≃ₗ[K] B.V
-
-  map_L : A.L.map (e.toLinearMap.restrictScalars (𝓞 K)) = B.L
-
-  norm : ∀ v x, Formalism.HermitianLatticesTheory.normAt B.b B.X v (e x) = Formalism.HermitianLatticesTheory.normAt A.b A.X v x
-
 @[reducible] def withL (A : HLat K) (L' : Submodule (𝓞 K) A.V) : HLat K := { A with L := L' }
 
 @[reducible] def dual (A : HLat K) : HLat K where
@@ -49,7 +41,6 @@ def gramOf {V ι : Type} [AddCommGroup V] [Module K V] (b : Basis ι K V) (H : V
 def PosAt {V ι : Type} [AddCommGroup V] [Module K V] [Fintype ι] (b : Basis ι K V)
     (H : InfinitePlace K → V → V → ℂ) : Prop :=
   ∀ v, (gramOf b (H v)).PosDef
-
 
 open Classical in
 def frameOf {ι : Type} [Fintype ι] [DecidableEq ι] (G : Matrix ι ι ℂ) : Matrix ι ι ℂ :=
@@ -80,12 +71,6 @@ def frameOf {ι : Type} [Fintype ι] [DecidableEq ι] (G : Matrix ι ι ℂ) : M
   pull B (Module.finBasis K U) U.subtype
 
 end Defs
-
-def IsoWithL : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] [StarRing K] (A B : HLat K) (I : Iso A B)
-    (L' : Submodule (𝓞 K) A.V),
-    ∃ J : Iso (withL A L') (withL B (L'.map (I.e.toLinearMap.restrictScalars (𝓞 K)))),
-      ∀ x : A.V, (J.e x : B.V) = I.e x
 
 def FrameFree : Prop :=
   ∀ (K V ι κ : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
@@ -146,14 +131,6 @@ open TensorProduct
 
 variable (K' : Type) {K : Type} [Field K] [NumberField K] [StarRing K] [Field K'] [NumberField K']
   [StarRing K'] [Algebra K K']
-
-
-open Classical in
-def extFrame {ι : Type} (X : InfinitePlace K → Matrix ι ι ℂ) (v' : InfinitePlace K') :
-    Matrix ι ι ℂ :=
-  if v'.embedding.comp (algebraMap K K') = (v'.comap (algebraMap K K')).embedding then
-    X (v'.comap (algebraMap K K'))
-  else (X (v'.comap (algebraMap K K'))).map (starRingEnd ℂ)
 
 @[reducible] def baseChange (A : HLat K) : HLat K' :=
   letI mO : Module (𝓞 K') (K' ⊗[K] A.V) := Module.compHom _ (algebraMap (𝓞 K') K')

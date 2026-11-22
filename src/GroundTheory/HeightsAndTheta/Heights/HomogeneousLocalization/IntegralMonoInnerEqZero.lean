@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import GroundTheory.HeightsAndTheta.Heights.HermitianLattice
 public import GroundTheory.HeightsAndTheta.Heights.ComplexPoints
-public import GroundTheory.HeightsAndTheta.Heights.FinrankFibreAtOfIsInvertibleSheaf
 public import GroundTheory.HeightsAndTheta.Heights.FubiniStudy
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.PSpaceFinite
 public import GroundTheory.HeightsAndTheta.Heights.FubiniStudyMetric

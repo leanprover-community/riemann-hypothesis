@@ -5,7 +5,7 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JetsInIffStepField
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CevInjective
 public import Formalism.LocalToGlobal.Columns.ToHLat
-public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.HtPsiLeIffExists
+public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsTrueColsRowInt
 
 @[expose] public section

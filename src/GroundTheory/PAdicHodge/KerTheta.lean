@@ -72,9 +72,6 @@ namespace IsPerfectoidField
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable (p : ℕ) [Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝒪" => normInteger K
-local notation "𝒪♭" => PreTilt (normInteger K) p
-
 section Integers
 
 variable {p}
@@ -188,8 +185,6 @@ theorem untilt_ofCompatible (y : ℕ → 𝒪) (hy : ∀ n, y (n + 1) ^ p = y n)
     | succ n ih => rw [pow_succ', pow_mul, hy, ih]
   exact Perfection.teichmuller_spec fun n => ⟨y n, rfl, by rw [hpow n]; exact SModEq.refl _⟩
 
-local notation "φ" => RingEquiv.symm (frobeniusEquiv 𝒪♭ p)
-
 theorem dvd_of_norm_untilt_le {a b : 𝒪♭} (hb : b ≠ 0)
     (h : ‖((PreTilt.untilt a : 𝒪) : K)‖ ≤ ‖((PreTilt.untilt b : 𝒪) : K)‖) : b ∣ a := by
   have hbn : ∀ n, ((PreTilt.untilt (φ^[n] b) : 𝒪) : K) ≠ 0 := by
@@ -249,11 +244,6 @@ namespace IsPerfectoidField
 
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [Fact p.Prime] [IsPerfectoidField K p]
-
-local notation "𝒪" => normInteger K
-local notation "𝒪♭" => PreTilt (normInteger K) p
-local notation "𝕎𝒪♭" => WittVector p 𝒪♭
-local notation "θ" => fontaineTheta (normInteger K) p
 
 section Kernel
 
@@ -433,8 +423,6 @@ variable (K p) in
 theorem isPrincipal_ker_fontaineTheta : (RingHom.ker θ).IsPrincipal := by
   obtain ⟨ξ, hξ, h1⟩ := exists_mem_ker_fontaineTheta_isUnit_coeff_one K p
   exact ⟨⟨ξ, ker_fontaineTheta_eq_span hξ h1⟩⟩
-
-
 
 end Kernel
 

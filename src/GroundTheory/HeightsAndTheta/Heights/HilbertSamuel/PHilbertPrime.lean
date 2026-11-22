@@ -88,7 +88,6 @@ theorem walk_bound (g : (K → ℕ) → ℝ) (a₀ : ℕ) (B : ℝ) (hB : 0 ≤ 
 end Walk
 
 -- Mathlib represents ℤ-multilinear maps using the identity ring homomorphism.
-local notation:max "MultilinearMap" " ℤ" => _root_.MultilinearMap (RingHom.id ℤ)
 
 section Multilinear
 
@@ -137,16 +136,10 @@ def ofPositionAdditive {n : ℕ} (L : (Fin n → K → ℤ) → ℤ)
     exact φ.map_zsmul c x
 
 omit [Fintype K] [DecidableEq K] in
-theorem ofPositionAdditive_apply {n : ℕ} (L : (Fin n → K → ℤ) → ℤ) (hadd) (m : Fin n → K → ℤ) :
-    ofPositionAdditive L hadd m = L m := rfl
-
-
-omit [Fintype K] [DecidableEq K] in
 theorem vecCons_const_of_ne_zero {d : ℕ} (y x : K → ℤ) (k : Fin (d + 1)) (hk : k ≠ 0) :
     Matrix.vecCons y (fun _ : Fin d => x) k = x := by
   obtain ⟨k', rfl⟩ := Fin.exists_succ_eq.mpr hk
   simp
-
 
 omit [Fintype K] [DecidableEq K] in
 theorem multilinear_step {d : ℕ} (f : MultilinearMap ℤ (fun _ : Fin (d + 1) => K → ℤ) ℤ)

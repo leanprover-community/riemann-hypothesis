@@ -43,9 +43,6 @@ theorem consA_zero {M n : ℕ} (a : Fin 1 → Fin n → E) (Y : Fin n → Fin M 
     consA a Y 0 = Fin.cons 1 (Fin.cons 0 (fun _ => 0)) := by
   rw [← e0_cons]; rfl
 
-theorem consA_succ {M n : ℕ} (a : Fin 1 → Fin n → E) (Y : Fin n → Fin M → E) (j : Fin n) :
-    consA a Y j.succ = Fin.cons (a 0 j) (Fin.cons 0 (Y j)) := rfl
-
 theorem consA_mem (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fin M) (Fin M) E)
     (a : Fin 1 → Fin n → E) (Y : Fin n → Fin M → E) (hY : Y ∈ framesE σ J (0 : Matrix (Fin n) (Fin n) E)) :
     consA a Y ∈ framesOne σ J n := by

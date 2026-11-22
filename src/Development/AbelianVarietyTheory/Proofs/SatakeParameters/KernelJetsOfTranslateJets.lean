@@ -19,58 +19,9 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNoti
 
 section Integral
 
-theorem norm_le_one_of_isIntegral {C : Type} [NormedField C] [IsUltrametricDist C] {x : C}
-    (hx : @IsIntegral ℤ C _ _ (Ring.toIntAlgebra C) x) : ‖x‖ ≤ 1 := by
-  have h : x ∈ (NormedField.valuation (K := C)).integer :=
-    (Valuation.integer.integers (NormedField.valuation (K := C))).mem_of_integral hx.tower_top
-  rw [Valuation.mem_integer_iff, NormedField.valuation_apply] at h
-  exact_mod_cast h
-
 variable {p : ℕ} [Fact p.Prime] {lam : Qbar →+* ℂ_[p]}
 
-theorem intAt_iff {x : ℂ} : IntAt lam x ↔ ∃ h : x ∈ Qbar, ‖lam ⟨x, h⟩‖ ≤ 1 := by
-  unfold IntAt lamC
-  exact ⟨fun ⟨h, h1⟩ => ⟨h, by rwa [dite_eq_left h] at h1⟩, fun ⟨h, h1⟩ => ⟨h, by rwa [dite_eq_left h]⟩⟩
-
-theorem intAt_mul {x y : ℂ} (hx : IntAt lam x) (hy : IntAt lam y) : IntAt lam (x * y) := by
-  obtain ⟨h, h1⟩ := intAt_iff.1 hx
-  obtain ⟨h', h2⟩ := intAt_iff.1 hy
-  refine intAt_iff.2 ⟨mul_mem h h', ?_⟩
-  change ‖lam (⟨x, h⟩ * ⟨y, h'⟩)‖ ≤ 1
-  rw [map_mul, norm_mul]
-  exact mul_le_one₀ h1 (norm_nonneg _) h2
-
-theorem intAt_add {x y : ℂ} (hx : IntAt lam x) (hy : IntAt lam y) : IntAt lam (x + y) := by
-  obtain ⟨h, h1⟩ := intAt_iff.1 hx
-  obtain ⟨h', h2⟩ := intAt_iff.1 hy
-  refine intAt_iff.2 ⟨add_mem h h', ?_⟩
-  change ‖lam (⟨x, h⟩ + ⟨y, h'⟩)‖ ≤ 1
-  rw [map_add (f := _)]
-  exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le h1 h2)
-
-theorem intAt_of_isIntegral {x : ℂ} (hx : IsIntegral ℤ x) : IntAt lam x := by
-  have h : x ∈ Qbar := mem_algebraicClosure_iff'.2 hx.tower_top
-  refine intAt_iff.2 ⟨h, ?_⟩
-  have h1 : IsIntegral ℤ (⟨x, h⟩ : Qbar) :=
-    (isIntegral_algHom_iff ((algebraMap Qbar ℂ).toIntAlgHom) Subtype.val_injective).1 hx
-  exact norm_le_one_of_isIntegral (map_isIntegral_int lam h1)
-
-theorem intAt_sum {ι : Type} (s : Finset ι) (f : ι → ℂ) (h : ∀ i ∈ s, IntAt lam (f i)) : IntAt lam (∑ i ∈ s, f i) :=
-  Finset.sum_induction f (IntAt lam) (fun _ _ => intAt_add) (intAt_of_isIntegral isIntegral_zero) h
-
 end Integral
-
-theorem isIntegral_exp (k : ℤ) (x : ℝ) (n : ℕ) (hn : 0 < n) (m : ℤ) (h : (n : ℝ) * x = m) :
-    IsIntegral ℤ (Complex.exp ((k : ℂ) * ((Real.pi : ℂ) * Complex.I) * (x : ℂ))) := by
-  have h' : (n : ℂ) * (x : ℂ) = m := by exact_mod_cast h
-  refine IsIntegral.of_pow (n := 2 * n) (by omega) ?_
-  rw [← Complex.exp_nat_mul]
-  have : ((2 * n : ℕ) : ℂ) * ((k : ℂ) * ((Real.pi : ℂ) * Complex.I) * (x : ℂ)) =
-      ((k * m : ℤ) : ℂ) * (2 * Real.pi * Complex.I) := by
-    push_cast
-    linear_combination (2 * (k : ℂ) * ((Real.pi : ℂ) * Complex.I)) * h'
-  rw [this, Complex.exp_int_mul_two_pi_mul_I]
-  exact isIntegral_one
 
 variable {D : D7} {N N' : ℕ}
 

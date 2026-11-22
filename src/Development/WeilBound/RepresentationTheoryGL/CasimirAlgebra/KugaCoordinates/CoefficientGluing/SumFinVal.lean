@@ -17,9 +17,6 @@ section Tens
 
 variable {n : ℕ} {P : Type} [Fintype P] [DecidableEq P]
 
-theorem pm_apply' {M : Type} [AddCommGroup M] [Module ℂ M] (σ : Equiv.Perm P) (f : TV n M P) (I : P → Fin n) :
-    pm σ f I = f (I ∘ σ) := rfl
-
 theorem tE_diag_sum (S : Finset P) (f : TV n ℂ P) :
     ∑ i, tE S (0 : Fin n → Fin n → Module.End ℂ ℂ) i i f = (S.card : ℂ) • f := by
   funext I

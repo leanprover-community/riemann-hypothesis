@@ -32,10 +32,6 @@ def frobFun (hℓ : ∀ (p : parab k (stdBlocks n h)) (v : σ'.V),
       show ℓ (σ'.ρ (x * g) v) = ℓ (σ'.ρ x v)
       rw [map_mul, Module.End.mul_apply, hg'])⟩
 
-theorem frobFun_apply (hℓ : ∀ (p : parab k (stdBlocks n h)) (v : σ'.V),
-      ℓ (σ'.ρ p v) = ρ (leviProj k (stdBlocks n h) p) (ℓ v)) (v : σ'.V) (g : GL (Fin N) k) :
-    (frobFun hℓ v).1.1 g = ℓ (σ'.ρ g v) := rfl
-
 def frobMap (hℓ : ∀ (p : parab k (stdBlocks n h)) (v : σ'.V),
       ℓ (σ'.ρ p v) = ρ (leviProj k (stdBlocks n h) p) (ℓ v)) :
     σ'.ρ.IntertwiningMap (parInd (stdBlocks n h) (twist ρ (deltaHalf k fun i => Fin (n i))⁻¹)) where

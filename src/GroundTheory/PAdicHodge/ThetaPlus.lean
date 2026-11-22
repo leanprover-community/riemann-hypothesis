@@ -126,9 +126,6 @@ section General
 variable (R : Type*) [CommRing R] (p : ℕ) [Fact p.Prime] [Fact ¬IsUnit (p : R)]
   [IsAdicComplete (span {(p : R)}) R]
 
-local notation "𝕎R♭" => WittVector p (PreTilt R p)
-local notation "𝔸" => Localization.Away (p : 𝕎R♭)
-
 def toBDeRhamPlus : 𝔸 →+* BDeRhamPlus R p :=
   algebraMap 𝔸 (AdicCompletion (RingHom.ker (fontaineThetaInvertP R p)) 𝔸)
 
@@ -264,7 +261,6 @@ theorem toBDeRhamPlus_mem_span_pow_iff {ξ : 𝕎R♭}
     AdicCompletion.evalₐ_of, Ideal.Quotient.eq_zero_iff_mem, ker_fontaineThetaInvertP hξ,
     Ideal.span_singleton_pow, mem_span_singleton]
 
-
 omit [IsAdicComplete (span {(p : R)}) R] in
 theorem eq_zero_of_algebraMap_mul_eq_zero {x : 𝕎R♭} (hx : x ∈ nonZeroDivisors 𝕎R♭) {y : 𝔸}
     (h : algebraMap 𝕎R♭ 𝔸 x * y = 0) : y = 0 := by
@@ -361,11 +357,6 @@ namespace IsPerfectoidField
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable (p : ℕ) [Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝒪" => normInteger K
-local notation "𝕎𝒪♭" => WittVector p (PreTilt 𝒪 p)
-local notation "θ" => fontaineTheta 𝒪 p
-local notation "𝔹" => BDeRhamPlus 𝒪 p
-
 theorem isLocalization_away [CharZero K] : IsLocalization.Away (p : 𝒪) K := by
   rw [IsLocalization.Away, isLocalization_iff]
   have hp0 : (p : K) ≠ 0 := Nat.cast_ne_zero.mpr (Fact.out : p.Prime).ne_zero
@@ -425,12 +416,10 @@ theorem mem_nonZeroDivisors_of_ker_eq_span {ξ : 𝕎𝒪♭} (hξ : RingHom.ker
   rw [h₀, zero_coeff] at h1
   exact not_isUnit_zero h1
 
-
 variable (K p) in
 def kerThetaGenerator : 𝕎𝒪♭ :=
   haveI := isPrincipal_ker_fontaineTheta K p
   Submodule.IsPrincipal.generator (RingHom.ker θ)
-
 
 variable (K p) in
 theorem ker_fontaineTheta_eq_span_kerThetaGenerator : RingHom.ker θ = span {kerThetaGenerator K p} :=

@@ -1,6 +1,6 @@
 module
 
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjBCompl
+public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjHyp
 
 @[expose] public section
 

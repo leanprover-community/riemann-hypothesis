@@ -10,8 +10,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.GEN.X
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 theorem invariants_eq_of_pointwise {k V Γ₁ Γ₂ H : Type*} [CommRing k] [AddCommGroup V] [Module k V]
     [Group Γ₁] [Group Γ₂] [Group H] (ρ₁ : Representation k Γ₁ V) (ρ₂ : Representation k Γ₂ V)
     (f₁ : H →* Γ₁) (f₂ : H →* Γ₂) (h₁ : Function.Surjective f₁) (h₂ : Function.Surjective f₂)
@@ -46,7 +44,6 @@ theorem modNRep_actA_one_apply (g : galUnramifiedOutside K.1 ℚ̄ S) :
     (QuotientGroup.mk'_surjective _) (QuotientGroup.ker_mk' _).le (galSUnitsMax K.1 ℚ̄ S) 1 g y
   exact congrArg Submodule.Quotient.mk (h1.trans h2.symm)
 
-
 omit [Module.Finite (ZMod ℓ) M] in
 theorem nRep_gsRestrictGal (g : galUnramifiedOutside K.1 ℚ̄ S) :
     nRep hL hζ M hM (gsRestrictGal hL g) =
@@ -60,7 +57,6 @@ theorem nRep_gsRestrictGal (g : galUnramifiedOutside K.1 ℚ̄ S) :
   exact congrArg (quotientRep (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))
     (homRep (gsRootsZMod S ℓ) M)
     (homRep_ρ_of_mem (gsOpenSubgroup S hL) (gsRootsZMod S ℓ) M (roots_trivial hL hζ) hM)) h1
-
 
 omit [Module.Finite (ZMod ℓ) M] in
 theorem tprod_gsRestrictGal (g : galUnramifiedOutside K.1 ℚ̄ S) :

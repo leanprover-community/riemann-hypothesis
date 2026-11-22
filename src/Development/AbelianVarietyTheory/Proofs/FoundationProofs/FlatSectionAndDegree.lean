@@ -69,13 +69,6 @@ theorem isNormal_genFibre (Y : Model Xo c (RingHom.id c.F)) : Geo.Tor.IsNormalSc
   obtain ⟨h₁, h₂⟩ := Y.normal (pullback.fst Y.s (spMap (RingHom.id c.F)) x)
   exact ⟨e.symm.toMulEquiv.isDomain _, IsIntegrallyClosed.of_equiv e⟩
 
-theorem comb_one {R : Type} [CommRing R] {t : SAB H (Sp R)} {m : ℕ} {v : Fin m → (epsR R ⟶ t.G)}
-    (hv : ∀ i, IsTangent (v i)) (i : Fin m) : IsLieComb ((1 : Matrix (Fin m) (Fin m) R) i) v (v i) := by
-  have : (1 : Matrix (Fin m) (Fin m) R) i = Pi.single i 1 := by
-    ext k; simp [Matrix.one_apply, Pi.single_apply, eq_comm]
-  rw [this]
-  exact (LieComb.lieComb_algebra _ _ m v hv).2.2.2.1 i
-
 section Algebraic
 
 variable {L : Type} [Field L] [NumberField L] {j : c.F →+* L} {a : FramedFlatCoordinates.Framed Y U τ L j} {y : Sp L ⟶ Xo.XF c}

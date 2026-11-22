@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CharactersRestrictLinearToTraitUniformisation
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.BlowPolSt
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SysExOfPol
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PolarizationTransferModels
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFrameOfFreeSec

@@ -105,29 +105,11 @@ end InvFun
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) (φ : InvFun (𝓞 E))
   {X : Type} [AddCommGroup X] [Module (𝓞 E) X] [Module.Finite (𝓞 E) X] {m : ℕ}
 
-def IsPiece (N : ℕ) (γ : Fin m → LinearMap.BilinForm ℤ X) (ℓ : LinearMap.BilinForm ℤ X →ₗ[ℤ] ℤ) : Prop :=
-  (∀ i, (ℓ (γ i) : ℝ) = N * φ.evalZ (γ i)) ∧
-    ∀ β ∈ levelForms H 1 X, (∀ y, 0 ≤ β y y) → N * φ.evalZ β ≤ ℓ β
-
-def IsStrictAt (γ : Fin m → LinearMap.BilinForm ℤ X) : Prop :=
-  ∃ (N : ℕ) (ℓ : LinearMap.BilinForm ℤ X →ₗ[ℤ] ℤ), 0 < N ∧ IsPiece H φ N γ ℓ ∧
-    ∀ β ∈ levelForms H 1 X, (∀ y, 0 ≤ β y y) → N * φ.evalZ β = ℓ β →
-      ∃ (k : ℕ) (c : Fin m → ℕ), 0 < k ∧ k • β = ∑ i, c i • γ i
-
-
 end Inv
 
 section Ord
 
 variable {R : Type} [CommRing R]
-
-def OrdGe (h : R) (i : ℚ) (n : ℕ) (I₁ I₂ : Ideal R) : Prop :=
-  Ideal.span {h ^ (i.den * n)} * (I₂ ^ i.num.toNat * I₁ ^ (-i.num).toNat) ≤ I₁ ^ i.num.toNat * I₂ ^ (-i.num).toNat
-
-theorem ordGe_span_iff {h g₁ g₂ : R} {i : ℚ} {n : ℕ} : OrdGe h i n (Ideal.span {g₁}) (Ideal.span {g₂}) ↔
-    g₁ ^ i.num.toNat * g₂ ^ (-i.num).toNat ∣ h ^ (i.den * n) * (g₂ ^ i.num.toNat * g₁ ^ (-i.num).toNat) := by
-  simp only [OrdGe, Ideal.span_singleton_pow, Ideal.span_singleton_mul_span_singleton,
-    Ideal.span_singleton_le_span_singleton]
 
 end Ord
 
@@ -139,91 +121,12 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
 instance finite_pelUnif {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {t : SAB H (Sp R)} (P : PELUnif I t) :
     Module.Finite (𝓞 E) P.D.toPre.X := Module.Finite.of_restrictScalars_finite ℤ _ _
 
-theorem Mdl.isOpen_opn (Z : Mdl Y i₀) : IsOpen Z.opn := Z.cover ▸ isOpen_iUnion fun a => (Z.U a).1.isOpen
-
-def Mdl.bd (Z : Mdl Y i₀) : Closeds Z.X := ⟨Z.opnᶜ, Z.isOpen_opn.isClosed_compl⟩
-
 def idlAlong {X : Scheme.{0}} (I : X.IdealSheafData) {R : Type} [CommRing R] [IsLocalRing R] (ξ : Sp R ⟶ X) : Ideal R :=
   (FinalTheorems.stalkId I (ξ (closedPoint R))).map (Scheme.stalkClosedPointTo ξ).hom
-
-theorem stalkId_top {X : Scheme.{0}} (x : X) : FinalTheorems.stalkId (⊤ : X.IdealSheafData) x = ⊤ := by
-  obtain ⟨U, hU, hx, -⟩ := Opens.isBasis_iff_nbhd.1 X.isBasis_affineOpens (show x ∈ (⊤ : X.Opens) from trivial)
-  refine top_le_iff.1 (le_trans ?_ (le_iSup₂_of_le (⟨U, hU⟩ : X.affineOpens) hx le_rfl))
-  simp [Ideal.map_top]
-
-theorem idlAlong_top {X : Scheme.{0}} {R : Type} [CommRing R] [IsLocalRing R] (ξ : Sp R ⟶ X) : idlAlong ⊤ ξ = ⊤ := by
-  rw [idlAlong, stalkId_top, Ideal.map_top]
-
-def Mdl.IsToricChart (Z : Mdl Y i₀) {k : Type} [Field k] {m d : ℕ} (ξ : Sp (ChartRing k m d) ⟶ Z.X)
-    {t : SAB H (Sp (ChartRing k m d))} (P : PELUnif (maximalIdeal (ChartRing k m d)) t)
-    (γ : Fin m → levelForms H Z.i.l.M' P.D.toPre.X) : Prop :=
-  ξ (closedPoint _) ∈ Z.genO ∧
-  IsEtaleCompletion (Scheme.stalkClosedPointTo ξ).hom ∧
-  idlAlong (Scheme.IdealSheafData.vanishingIdeal Z.bd) ξ = Ideal.span {∏ i, bdParam k m d i} ∧
-  (∀ q : Sp (ChartRing k m d), ξ q ∈ Z.bd ↔ ∏ i, bdParam k m d i ∈ q.asIdeal) ∧
-  Nonempty (SABMap t (Y Z.i).t (ξ ≫ Z.π)) ∧ P.TorsionIso ∧
-  IsMonomial P.D.toPre (bdParam k m d) (fun i => γ i) ∧ IsPartOfBasis γ
-
-structure FanFun (Y : LocalSystem Xo p W) (i₀ i : Idx H p) : Type where
-
-  Z : Mdl Y i₀
-
-  lvl : Z.i = i
-
-  noFlag : ∀ σ, Z.ty σ = ∅
-
-  φ : InvFun (𝓞 E)
-
-  n : ℕ
-
-  n_pos : 0 < n
-
-  D₁ : Z.Idl
-
-  D₂ : Z.Idl
-
-  chart : ∀ x ∈ Z.genO, x ∈ Z.bd → ∃ (k : Type) (_ : Field k) (m d : ℕ) (ξ : Sp (ChartRing k m d) ⟶ Z.X)
-    (t : SAB H (Sp (ChartRing k m d))) (P : PELUnif (maximalIdeal (ChartRing k m d)) t)
-    (γ : Fin m → levelForms H Z.i.l.M' P.D.toPre.X) (a b : Fin m → ℕ),
-    ξ (closedPoint _) = x ∧ Z.IsToricChart ξ P γ ∧ φ.LinearOn (fun i => (γ i : LinearMap.BilinForm ℤ P.D.toPre.X)) ∧
-    idlAlong D₁.1 ξ = Ideal.span {∏ i, bdParam k m d i ^ a i} ∧
-    idlAlong D₂.1 ξ = Ideal.span {∏ i, bdParam k m d i ^ b i} ∧
-    ∀ i, (a i : ℝ) - b i = n * φ.evalZ (γ i : LinearMap.BilinForm ℤ P.D.toPre.X)
-
-structure PolData (Y : LocalSystem Xo p W) (i₀ i : Idx H p) : Type where
-
-  Z : Mdl Y i₀
-
-  lvl : Z.i = i
-
-  noFlag : ∀ σ, Z.ty σ = ∅
-
-  φ : InvFun (𝓞 E)
-
-  m' : ℕ
-
-  m'_pos : 0 < m'
-
-  D : Z.Idl
-
-  chart : ∀ x ∈ Z.genO, x ∈ Z.bd → ∃ (k : Type) (_ : Field k) (m d : ℕ) (ξ : Sp (ChartRing k m d) ⟶ Z.X)
-    (t : SAB H (Sp (ChartRing k m d))) (P : PELUnif (maximalIdeal (ChartRing k m d)) t)
-    (γ : Fin m → levelForms H Z.i.l.M' P.D.toPre.X) (a : Fin m → ℕ),
-    ξ (closedPoint _) = x ∧ Z.IsToricChart ξ P γ ∧ φ.LinearOn (fun i => (γ i : LinearMap.BilinForm ℤ P.D.toPre.X)) ∧
-    (∃ ℓ, IsPiece H φ m' (fun i => (γ i : LinearMap.BilinForm ℤ P.D.toPre.X)) ℓ) ∧
-    IsStrictAt H φ (fun i => (γ i : LinearMap.BilinForm ℤ P.D.toPre.X)) ∧
-    idlAlong D.1 ξ = Ideal.span {∏ i, bdParam k m d i ^ a i} ∧
-    ∀ i, (a i : ℝ) = m' * φ.evalZ (γ i : LinearMap.BilinForm ℤ P.D.toPre.X)
 
 namespace PolData
 
 variable {i : Idx H p} (d : PolData Y i₀ i)
-
-def π : d.Z.X ⟶ (Y i).X := d.Z.π ≫ eqToHom (congrArg (fun j => (Y j).X) d.lvl)
-
-theorem π_mem_iff (x : d.Z.X) : d.π x ∈ Set.range (Y i).j ↔ x ∈ d.Z.opn := by
-  obtain ⟨Z, rfl, _⟩ := d
-  simp [π, Pre.opn]
 
 end PolData
 
@@ -239,43 +142,15 @@ namespace PolData
 
 variable {Z₀ : Mdl Y i₀} [IsIso Z₀.π] (d : PolData Y i₀ Z₀.i)
 
-def ρ : d.Z.genO.toScheme ⟶ Z₀.X := d.Z.genO.ι ≫ d.π ≫ inv Z₀.π
-
 instance quasiCompact_ρ : QuasiCompact d.ρ := by
   have : IsAffineHom d.Z.genO.ι := by unfold Mdl.genO; infer_instance
   unfold ρ π
   infer_instance
-
-theorem ρ_mem_opn_iff (x : d.Z.genO.toScheme) : d.ρ x ∈ Z₀.opn ↔ d.Z.genO.ι x ∈ d.Z.opn := by
-  rw [← d.π_mem_iff]
-  change Z₀.π (d.ρ x) ∈ Set.range (Y Z₀.i).j ↔ _
-  rw [← Scheme.Hom.comp_apply]
-  simp [ρ, Category.assoc, Scheme.Hom.comp_apply]
-
-def idealQ : d.Z.genO.toScheme.IdealSheafData := d.D.1.comap d.Z.genO.ι
-
-def jIdl : Z₀.Idl :=
-  ⟨d.idealQ.map d.ρ, fun x hx => by
-    rw [Scheme.IdealSheafData.support_map] at hx
-    refine closure_minimal (t := Z₀.opnᶜ) ?_ Z₀.isOpen_opn.isClosed_compl hx
-    rintro _ ⟨y, hy, rfl⟩ h
-    rw [idealQ, Scheme.IdealSheafData.support_comap] at hy
-    exact d.D.2 _ hy ((d.ρ_mem_opn_iff y).1 h)⟩
 
 end PolData
 
 end Free
 
 variable {D : D7} {A : Amb D} {N j : ℕ} {S : Sig A N j} {κ : Lv A} {p : ℕ}
-
-abbrev At.PL (ct : At S κ p) : Type := FanFun ct.Y ⟨κ.l, κ.c, κ.good p ct.hp⟩ ct.Xm.i
-
-def At.phiAt (ct : At S κ p) (φ : ct.PL) {Z : ct.Mdl} (y : ct.Pt Z) : ℝ := φ.φ.eval (ct.Ylat y) (ct.dat y).beta
-
-abbrev At.IvD (ct : At S κ p) (b : Option ℕ) : Type := PolData ct.Y ⟨κ.l, κ.c, κ.good p ct.hp⟩ (ct.B.X b).i
-
-def At.jIdl (ct : At S κ p) (b : Option ℕ) (d : ct.IvD b) : ct.Idl (ct.B.X b) :=
-  haveI := ct.B.iso b
-  d.jIdl
 
 end GlobalTheory.LocM

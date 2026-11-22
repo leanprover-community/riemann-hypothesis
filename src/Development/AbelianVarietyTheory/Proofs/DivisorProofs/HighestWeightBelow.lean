@@ -126,8 +126,6 @@ open Finset
 
 variable (D : D7) (C : ℝ) (τ : D.what₂.Tau)
 
-local notation "Γ" => num D C τ
-
 theorem num_e {l : ℕ} (h1 : 1 ≤ l) (h2 : l ≤ D.R.m) : (((Γ).e l : ℤ) : ℚ) = (D.hc τ).e ⟨l - 1, by omega⟩ := by
   obtain ⟨l, rfl⟩ : ∃ l', l = l' + 1 := ⟨l - 1, by omega⟩
   exact GridData.extend_cast 1 (D.hc τ).e_int ⟨l, by omega⟩
@@ -304,8 +302,6 @@ section Grid
 open Finset
 
 variable (D : D7) (C : ℝ) (τ : D.what₂.Tau)
-
-local notation "Γ" => num D C τ
 
 theorem entries_shift (h : ℚ) (S : SPar) : entries (shift h S) = (entries S).image (· + h) := by
   simp only [GlobalTheory.SignedHC.entries, shift, image_image]
@@ -614,7 +610,6 @@ theorem rank_grid_lt {i : ℕ} (hi : i + 1 ≤ D.R.m) :
   rw [rank_grid G (i := i) (by omega), rank_grid G hi, e]
   omega
 
-
 variable (sc) in
 theorem step_top {j : ℕ} (hj : j + 1 ≤ D.R.m) (τ : D.what₂.Tau) (r : Fin (G.V (.top (j + 1))).rank) :
     (wt G (.top (j + 1)) τ).natW r = if h : r.1 < (G.V (.top j)).rank then
@@ -639,7 +634,6 @@ theorem step_top {j : ℕ} (hj : j + 1 ≤ D.R.m) (τ : D.what₂.Tau) (r : Fin 
     intro x hx y hy
     rw [add_zero]
     exact weightX_above D sc.cGap τ hj hx hy
-
 
 variable (sc) in
 theorem step_grid {i : ℕ} (hi : i + 1 ≤ D.R.m) (τ : D.what₂.Tau) (r : Fin (G.V (.grid (i + 1) D.R.m)).rank) :

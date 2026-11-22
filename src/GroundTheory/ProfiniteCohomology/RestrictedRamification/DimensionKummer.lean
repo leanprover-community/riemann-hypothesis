@@ -48,11 +48,8 @@ theorem eq_zero_h3_of_shortExact (hE : E.ShortExact) {ℓ : ℕ} (hℓ : ℓ.Pri
 
 end Abstract
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1))) (ℓ : ℕ) (hℓ : ℓ.Prime)
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
-
 
 set_option maxHeartbeats 1000000 in
 include hℓ hS in

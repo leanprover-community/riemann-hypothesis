@@ -459,21 +459,11 @@ def lamXm (ψ : AddChar κ K) (χ : ℕ → κˣ →* Kˣ) (n r t m : ℕ) : ↥
 
 variable (κ)
 
-def HXmsharp (n k r t m : ℕ) : Subgroup (GL (Fin n) κ) := HXm κ n r t m ⊓ fixCol n κ k
-
 variable {κ}
-
-def lamXmsharp (ψ : AddChar κ K) (χ : ℕ → κˣ →* Kˣ) (n k r t m : ℕ) : ↥(HXmsharp κ n k r t m) →* Kˣ :=
-  (lamXm ψ χ n r t m).comp (Subgroup.inclusion inf_le_left)
 
 variable (κ)
 
-abbrev HV (n r t : ℕ) : Subgroup (GL (Fin n) κ) := uniUT n κ r [t]
-
 variable {κ}
-
-def lamV (ψ : AddChar κ K) (χj : κˣ →* Kˣ) (n r t : ℕ) : ↥(HV κ n r t) →* Kˣ :=
-  lamGen ψ⁻¹ (fun _ => χj⁻¹) n r [t] (Finset.range (r - 1))
 
 variable (κ)
 

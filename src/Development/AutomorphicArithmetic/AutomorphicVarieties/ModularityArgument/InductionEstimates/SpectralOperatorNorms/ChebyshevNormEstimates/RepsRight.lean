@@ -89,8 +89,6 @@ theorem reps_right {v : L2 μ} {φ : G1 K n → ℂ} (hv : Reps μ v φ) (g : G1
 
 end Reps
 
-local notation "pf" => MultiplicityOne.finProj K n
-
 theorem coe_pf {k : AdelicGLn.FiniteAdelicGL K n} (hk : k ∈ AdelicGLn.integralFiniteGL K n) :
     ((pf k : G1 K n) : AdelicGLn.AdelicGL K n) = finEmb K n k := by
   rw [MultiplicityOne.finProj_of_mem (maxCompact_le_normOneGL (finEmb_mem_maxCompact hk))]
@@ -152,9 +150,6 @@ end UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.FinA
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.FinA
 
 variable {K : Type} [Field K] [NumberField K]
-
-local notation "pf" => MultiplicityOne.finProj K (2 + 2)
-local notation "GF" => AdelicGLn.FiniteAdelicGL K (2 + 2)
 
 noncomputable def dl (x : G1 K (2 + 2)) (h : GF) : ℝ := HH (x * pf h) - HH x
 

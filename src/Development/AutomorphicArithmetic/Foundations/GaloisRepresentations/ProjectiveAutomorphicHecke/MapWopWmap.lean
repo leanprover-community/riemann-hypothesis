@@ -65,9 +65,6 @@ end Words
 def Cert {F A J : Type*} [Field F] [Ring A] [Algebra F A] (T : J → A) (θ : J → F) (t : List J →₀ F) : Prop :=
   wop θ t = 1 ∧ IsIdempotentElem (wop T t) ∧ ∀ j, ∃ N : ℕ, (T j - algebraMap F A (θ j)) ^ N * wop T t = 0
 
-abbrev gen {F W J : Type*} [Field F] [AddCommGroup W] [Module F W] (T : J → End F W) (θ : J → F) : Submodule F W :=
-  ⨅ j, (T j).maxGenEigenspace (θ j)
-
 def ProjOne : Prop := ∀ (F : Type) [Field F] (A : Type u) [Ring A] [Algebra F A] [Module.Finite F A] (J : Type) (T : J → A),
   (∀ i j, Commute (T i) (T j)) → ∀ θ : J → F, ∃ t, Cert T θ t
 

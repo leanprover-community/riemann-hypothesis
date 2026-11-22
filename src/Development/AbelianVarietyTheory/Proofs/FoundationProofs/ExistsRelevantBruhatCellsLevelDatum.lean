@@ -135,9 +135,6 @@ def mono {N : ℕ} (σ : Equiv.Perm (Fin N)) (t : Fin N → F) (ht : ∀ b, t b 
     · intro x _ hx; simp [hx]
     · simp
 
-lemma mono_val {N : ℕ} (σ : Equiv.Perm (Fin N)) (t : Fin N → F) (ht : ∀ b, t b ≠ 0) (a b : Fin N) :
-    (mono σ t ht).val a b = if a = σ b then t b else 0 := rfl
-
 lemma mono_rel {N : ℕ} (σ : Equiv.Perm (Fin N)) (t : Fin N → F) (ht : ∀ b, t b ≠ 0) (u u' : GL (Fin N) F)
     (h : u * mono σ t ht = mono σ t ht * u') (c b : Fin N) : u.val (σ c) (σ b) * t b = t c * u'.val c b := by
   have := congrArg (fun x : GL (Fin N) F => x.val (σ c) b) h
@@ -149,8 +146,6 @@ def perm {k N : ℕ} (hk : k < N) {d : ℕ → F} (h : Good k d) : Equiv.Perm (F
       · have := sg_lt h hb; omega
       · rw [sg_ge d (not_lt.1 hb)]; exact b.2⟩)
     (Finite.injective_iff_bijective.1 fun a b hab => Fin.ext (sg_inj h (congrArg Fin.val hab)))
-
-lemma perm_val {k N : ℕ} (hk : k < N) {d : ℕ → F} (h : Good k d) (b : Fin N) : (perm hk h b : ℕ) = sg k d b := rfl
 
 def cell {k N : ℕ} (hk : k < N) {d : ℕ → F} (h : Good k d) : GL (Fin N) F :=
   mono (perm hk h) (fun b => d (st d b)) fun b => st_ne h b

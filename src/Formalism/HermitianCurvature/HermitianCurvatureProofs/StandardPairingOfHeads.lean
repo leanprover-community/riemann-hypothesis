@@ -11,11 +11,6 @@ namespace Formalism.FourierDecayAlt.P.PBO
 
 open Formalism.FourierDecayAlt
 
-def PStdOfHeads : Prop := KB.RadHead → KB.HeadTop → KB.PStd
-
-theorem pStdOfHeads : PStdOfHeads := fun hRH hHT =>
-  pStdOfParts hRH hHT Formalism.FourierDecayAlt.P.module_form_eq_radial_form_one Formalism.FourierDecayAlt.P.exists_zeta_normalized_haar
-
 theorem pStdCpt_of_heads (hP : P5.ThmPActualCpt) (hRH : KB.RadHead) (hHT : KB.HeadTop) :
     ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par) (p : KB.Pl P Wp Wq) (F)
@@ -30,4 +25,3 @@ theorem pStdCpt_of_heads (hP : P5.ThmPActualCpt) (hRH : KB.RadHead) (hHT : KB.He
 
 end Formalism.FourierDecayAlt.P.PBO
 
-theorem Formalism.FourierDecayAlt.P.standard_pairing_of_heads : Formalism.FourierDecayAlt.P.PBO.PStdOfHeads := Formalism.FourierDecayAlt.P.PBO.pStdOfHeads

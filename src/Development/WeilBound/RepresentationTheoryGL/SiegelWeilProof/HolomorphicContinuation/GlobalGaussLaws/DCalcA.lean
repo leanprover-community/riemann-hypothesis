@@ -84,10 +84,6 @@ theorem eval_hasDeriv (P : PX m n) (u : Fin m → Fin n → ℂ) (X : Fin n → 
           rw [Finset.sum_add_distrib, Finset.sum_mul, Finset.sum_ite_eq']
           simp
 
-theorem crd_false (v : Fin m → Fin n → ℂ) (a : Fin m) (j : Fin n) : crd v (a, j, false) = v a j := rfl
-
-theorem crd_true (v : Fin m → Fin n → ℂ) (a : Fin m) (j : Fin n) : crd v (a, j, true) = star (v a j) := rfl
-
 theorem evX_dil (c : ℝ) (X : Fin n → ℝ) (P : PX m n) (v : Fin m → Fin n → ℂ) :
     evX (dil c X P) v = ((m : ℂ) * ∑ j, (X j : ℂ)) * evX P v +
       ∑ k, evX (pderiv k P) v * ((X k.2.1 : ℂ) * crd v k) -

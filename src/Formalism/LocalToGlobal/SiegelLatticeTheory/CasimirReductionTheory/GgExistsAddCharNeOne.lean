@@ -24,7 +24,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassLand
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GGMirabolicBase
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
 
 @[expose] public section
 
@@ -84,17 +83,6 @@ theorem psi_eq_psiGen (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) :
   funext g
   simp only [Formalism.QuantumDeterminants.psi, psiGen, Formalism.QuantumDeterminants.ell, ellA, Finset.mul_sum]
 
-def BesselMultOne : Prop :=
-  ∀ (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (lam : Fin (2 * r + k + 1) → ℝ) (H : Type) [NormedAddCommGroup H]
-    [InnerProductSpace ℂ H] (σ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (H →L[ℂ] H))
-    (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) (u : Fin k → ℝ) (Wp : Type) [NormedAddCommGroup Wp]
-    [InnerProductSpace ℂ Wp] (π : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (Wp →L[ℂ] Wp)),
-    Formalism.QuantumDeterminants.IsHCParam lam → IsDSHpk k r ε lam σ → Formalism.QuantumDeterminants.inWb k r z → 0 < Formalism.QuantumDeterminants.Tz k r z →
-    (∀ a, c a ≠ 0) → IsHCTypeW k r z u π →
-    ∀ B₁ B₂ : H → Wp, IsBesselMapSm (k := k) (r := r) z (psiGen k r z c) σ π B₁ →
-      IsBesselMapSm (k := k) (r := r) z (psiGen k r z c) σ π B₂ →
-      ∃ a b : ℂ, (a ≠ 0 ∨ b ≠ 0) ∧ ∀ v ∈ smoothVecs (k := k) (r := r) σ, a • B₁ v + b • B₂ v = 0
-
 end BesselMultOne
 
 end BesselPart
@@ -104,16 +92,11 @@ section GlobalHyps
 open MeasureTheory NumberField IsDedekindDomain
 open scoped TensorProduct ENNReal Matrix
 
-def GFf (I : Formalism.MainNotions.S.AutInst) : Set I.Gf :=
-  {x | ∃ γ : GL (Fin I.n) I.E, γ ∈ Formalism.UG.UJ (starRingEnd I.E) I.J ∧
-    I.fmat x = (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (Formalism.UG.inclE (F := I.F) (Formalism.MainNotions.S.Af I.F))}
-
 section Herm
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E]
 
 end Herm
-
 
 end GlobalHyps
 
@@ -176,24 +159,6 @@ section GapStatementAlt
 open Formalism.MainNotions.S Formalism.MainNotions.CayleySignature
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-def GapStatementAt (C : ℝ) : Prop :=
-  ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) (u : Fin k → ℝ) (v : Fin (k - 1) → ℝ)
-    (b : Fin (2 * r + 2) → ℝ), RealPlaceNumericalSetting k r z c u v b → GapC C k r b →
-  ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (σ : Mat k r → (H →L[ℂ] H)),
-    IsDSHpk k r (eps48 k r) (lam48 k r v b) σ →
-  ∀ (Vp : Type) [NormedAddCommGroup Vp] [InnerProductSpace ℂ Vp] [FiniteDimensional ℂ Vp]
-    (π : Mat k r → (Vp →L[ℂ] Vp)), IsHCTypeW k r z u π →
-  ∀ w : H, IsLowUnitH k r (eps48 k r) (lam48 k r v b) σ w →
-  ∀ μG μS ν : Measure (Formalism.QuantumDeterminants.Mt k r),
-    IsHaarOn (Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) μG → IsHaarOn (Formalism.QuantumDeterminants.Sset k r z) μS →
-    IsQuotMeas μG μS ν →
-  ∃ W : Mat k r → Vp,
-    AEStronglyMeasurable (fun x => W (Matrix.of x)) μG ∧ AEStronglyMeasurable (fun x => W (Matrix.of x)) ν ∧
-    IsSPsiEquiv z (psiGen k r z c) π W ∧ l2SG ν W < ⊤ ∧ l2SG ν W ≠ 0 ∧
-    ∀ x ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r), rconv μG (eFun μG σ w) W x = W x
-
-def GapStatementAlt : Prop := GapStatementAt 0
 
 end GapStatementAlt
 

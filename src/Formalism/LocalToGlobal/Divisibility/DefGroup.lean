@@ -459,15 +459,6 @@ theorem redFn_frGL (β : GL (Fin n) (E ⊗[F] Af F)) (PP : Pl E) (y : GL (Fin n)
   show bc (resS F PP) (pullFr β ⟨frGL β y, ⟨y, rfl⟩⟩) = _
   rw [pullFr_frGL]
 
-theorem redFn_int (PP : Pl E) (g : GL (Fin n) (𝓞 E)) :
-    redFn (1 : GL (Fin n) (E ⊗[F] Af F)) PP (intGL F E n (bc (oToS F E) g)) = bc (Ideal.Quotient.mk PP.asIdeal) g := by
-  have h : intGL F E n (bc (oToS F E) g) = frGL 1 (bc (oToS F E) g) := by
-    simp [frGL]
-  rw [h, redFn_frGL]
-  apply Units.ext
-  ext i j
-  exact resS_oToS PP _
-
 def IsFrame (β : GL (Fin n) (E ⊗[F] Af F)) (Λ : Submodule (𝓞 E) (Fin n → E)) : Prop :=
   ∀ x : Fin n → E ⊗[F] Af F, x ∈ hatL (F := F) Λ ↔
     ∀ i, ((β⁻¹ : GL (Fin n) (E ⊗[F] Af F)) : Matrix (Fin n) (Fin n) (E ⊗[F] Af F)).mulVec x i ∈ intAf F E
@@ -542,7 +533,6 @@ section G0
 
 variable {E : Type} [Field E] [NumberField E]
 
-
 open Classical in
 def primesOf (a : 𝓞 E) : Finset (Pl E) :=
   if h : a = 0 then ∅ else
@@ -554,14 +544,6 @@ theorem mem_primesOf {a : 𝓞 E} {PP : Pl E} : PP ∈ primesOf a ↔ a ≠ 0 �
   split_ifs with h
   · simp [h]
   · simp [h, Ideal.dvd_span_singleton]
-
-structure IsTypeDatum [StarRing E] (gp : Fin 2 → ℕ) (pb : Fin 2 → 𝓞 E) : Prop where
-  prime : ∀ i, (gp i).Prime
-  ne : gp 0 ≠ gp 1
-  norm : ∀ i, (pb i : E) * star (pb i : E) = (gp i : E)
-  deg1 : ∀ i, ∀ PP : Pl E, pb i ∈ PP.asIdeal → Nat.card (kP PP) = gp i
-  unram : ∀ i, ∀ PP : Pl E, pb i ∈ PP.asIdeal → pb i ∉ PP.asIdeal ^ 2
-  split : ∀ i, ∀ PP : Pl E, pb i ∈ PP.asIdeal → ∀ c : 𝓞 E, (c : E) = star (pb i : E) → c ∉ PP.asIdeal
 
 abbrev G0 (Pg : Finset (Pl E)) (r : ℕ) : Type := ∀ PP : ↥Pg, GL (Fin r) (kP PP.1)
 
@@ -771,42 +753,6 @@ theorem Kg_le_lev {T : Finset (Pl E)} (hg : D.Pg ⊆ T) (hq : D.Q ⊆ T) : Kg hc
     show rTup β D x ∈ D.P.H
     rw [this]; exact Subgroup.one_mem _
 
-def datX (r t m : ℕ) (Pg Q : Finset (Pl E)) (P : LevelP Pg r LL) (χ : ℕ → ∀ PP : Pl E, (kP PP)ˣ →* LLˣ)
-    (ξ : ∀ PP : Pl E, (kP PP)ˣ →* LLˣ) : LevDat E LL (r + m * t) where
-  r := r
-  hr := Nat.le_add_right _ _
-  t := t
-  s := m
-  Pg := Pg
-  Q := Q
-  P := P
-  cg := χ
-  xq := fun PP => (ξ PP)⁻¹
-
-def datV (r t j : ℕ) (Pg Q : Finset (Pl E)) (P : LevelP Pg r LL) (χ : ℕ → ∀ PP : Pl E, (kP PP)ˣ →* LLˣ)
-    (ξ : ∀ PP : Pl E, (kP PP)ˣ →* LLˣ) : LevDat E LL (r + t) where
-  r := r
-  hr := Nat.le_add_right _ _
-  t := t
-  s := 1
-  Pg := Pg
-  Q := Q
-  P := P.conj
-  cg := fun _ PP => (χ j PP)⁻¹
-  xq := ξ
-
-abbrev levX (hc : CMData F E) (r t m : ℕ) (J : Matrix (Fin (r + m * t)) (Fin (r + m * t)) E)
-    (β : GL (Fin (r + m * t)) (E ⊗[F] Af F)) (Pg Q : Finset (Pl E)) (P : LevelP Pg r LL)
-    (χ : ℕ → ∀ PP : Pl E, (kP PP)ˣ →* LLˣ) (ξ : ∀ PP : Pl E, (kP PP)ˣ →* LLˣ) :
-    Subgroup (GL (Fin (r + m * t)) (E ⊗[F] Af F)) :=
-  lev hc J β (datX r t m Pg Q P χ ξ)
-
-abbrev levV (hc : CMData F E) (r t j : ℕ) (J : Matrix (Fin (r + t)) (Fin (r + t)) E)
-    (β : GL (Fin (r + t)) (E ⊗[F] Af F)) (Pg Q : Finset (Pl E)) (P : LevelP Pg r LL)
-    (χ : ℕ → ∀ PP : Pl E, (kP PP)ˣ →* LLˣ) (ξ : ∀ PP : Pl E, (kP PP)ˣ →* LLˣ) :
-    Subgroup (GL (Fin (r + t)) (E ⊗[F] Af F)) :=
-  lev hc J β (datV r t j Pg Q P χ ξ)
-
 end Lev
 
 section Cls
@@ -822,9 +768,6 @@ def rep (c : Cl hc J K) : UA hc J := Quotient.out c
 
 theorem mk_rep (c : Cl hc J K) : (Quotient.mk'' (rep c) : Cl hc J K) = c := Quotient.out_eq c
 
-def latAt (L : Submodule (𝓞 E) (Fin n → E)) (c : Cl hc J K) : Submodule (𝓞 E) (Fin n → E) :=
-  Formalism.UG.CS.globLat ((rep c : UA hc J) : GL (Fin n) (E ⊗[F] Af F)) L
-
 def conjIn (hc : CMData F E) (J : Matrix (Fin n) (Fin n) E) (y : GL (Fin n) (E ⊗[F] Af F)) :
     UR hc J →* GL (Fin n) (E ⊗[F] Af F) :=
   (MulAut.conj y⁻¹).toMonoidHom.comp ((bc (inclE (F := F) (Af F))).comp (UR hc J).subtype)
@@ -835,10 +778,6 @@ theorem conjIn_apply (y : GL (Fin n) (E ⊗[F] Af F)) (γ : UR hc J) :
 
 def Gam (c : Cl hc J K) : Subgroup (UR hc J) :=
   K.comap (conjIn hc J ((rep c : UA hc J) : GL (Fin n) (E ⊗[F] Af F)))
-
-def minkExp (N p : ℕ) : ℕ := ∑ i ∈ Finset.range (N + 1), N / (p ^ i * (p - 1))
-
-def minkNum (N : ℕ) : ℕ := ∏ p ∈ (Finset.range (N + 2)).filter Nat.Prime, p ^ minkExp N p
 
 end Cls
 

@@ -16,8 +16,6 @@ open CategoryTheory NumberField IsDedekindDomain GroundTheory.Global
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
   (ℓ : ℕ) [NeZero ℓ] (hℓS : ∀ v ∉ S, ((ℓ : ℕ) : 𝓞 K.1) ∉ v.asIdeal)
@@ -35,7 +33,6 @@ theorem gsRootsLocalUnitsMor_eq (v : S) :
       (Rep.resFunctor (gsFinFamily S ιs v).toMonoidHom).map
         (rootsOfUnityToSUnits S (maxUnramifiedOutside K.1 ℚ̄ S) ℓ) ≫ gsSUnitsLocalMor S ιs v :=
   (gsKummerLocalMap S ιs ℓ v).comm₁₂.symm
-
 
 include hℓS in
 theorem cohomologyMap_gsRootsLocalUnitsMor_injective (v : S) :
@@ -65,7 +62,6 @@ theorem cohomologyMap_gsRootsLocalUnitsMor_injective (v : S) :
   have hab' := (congrArg (fun φ => φ.hom a) e).symm.trans ((hab : _).trans (congrArg (fun φ => φ.hom b) e))
   exact h1 (h2 hab')
 
-
 include hℓS in
 theorem ptRes_eq_zero_iff (v : S) (x : cohomology (gsRoots S ℓ) 2) :
     ptRes (gsFinFamily S ιs) (gsRoots S ℓ) v 2 x = 0 ↔
@@ -94,7 +90,6 @@ theorem ptRes_eq_zero_iff (v : S) (x : cohomology (gsRoots S ℓ) 2) :
     exact cohomologyMap_gsRootsLocalUnitsMor_injective S ιs ℓ hℓS v ((key.trans h).trans (map_zero _).symm)
 
 variable {ℓ} (hℓ : ℓ.Prime)
-
 
 set_option maxHeartbeats 4000000 in
 omit [NeZero ℓ] in
@@ -130,7 +125,6 @@ theorem eq_zero_of_gsSUnitsLocalMor_eq_zero (hK : Odd ℓ ∨ IsTotallyComplex K
       rfl
     · exact brauerLocal_sUnitsBrauer_inr K S _ _ w hw
 
-
 include hℓS hℓ in
 theorem mem_ptSha_iff_cohomologyMap_eq_zero (hK : Odd ℓ ∨ IsTotallyComplex K.1)
     (x : cohomology (gsRoots S ℓ) 2) :
@@ -152,7 +146,6 @@ theorem mem_ptSha_iff_cohomologyMap_eq_zero (hK : Odd ℓ ∨ IsTotallyComplex K
   · intro hy
     funext v
     exact (ptRes_eq_zero_iff S ιs ℓ hℓS v x).2 ((congrArg _ hy).trans (map_zero _))
-
 
 end
 

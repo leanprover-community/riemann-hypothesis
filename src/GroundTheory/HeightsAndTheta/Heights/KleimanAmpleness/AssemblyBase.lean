@@ -27,7 +27,7 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PTwistSectio
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PProjDegreePositive
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PHilbertPositive
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PHilbertPoint
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleTwistGenerated
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PNefPlusAmple
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleCover
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleTwistLocal
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PGeneratedAmple

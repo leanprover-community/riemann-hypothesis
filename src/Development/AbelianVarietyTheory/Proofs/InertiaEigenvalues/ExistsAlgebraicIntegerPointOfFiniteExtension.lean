@@ -124,9 +124,6 @@ section Compl
 variable {R : Type} [CommRing R] [IsDedekindDomain R] {L : Type} [Field L] [Algebra R L]
   [IsFractionRing R L] (w : HeightOneSpectrum R)
 
-local notation "Lw" => w.adicCompletion L
-local notation "Ow" => w.adicCompletionIntegers L
-
 lemma v_algebraMap (l : L) : Valued.v (algebraMap L Lw l) = w.valuation L l :=
   valuedAdicCompletion_eq_valuation' w l
 
@@ -278,7 +275,6 @@ lemma exists_e : ∃ e : ℕ, 0 < e ∧ ∀ x : L, valV Ow (kMap w x) = w.valuat
       exact (valuation_liesOver (FractionRing Ow) w m x).symm⟩
 
 end Compl
-
 
 end CompletionHelpers
 

@@ -30,15 +30,11 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-abbrev FPl (D : D7) : Type := HeightOneSpectrum (𝓞 D.host.F)
-
 section Real
 
 variable {V : HSp D} {PS : D.what₂.Tau → SPar} (θ : InfFam D) (M : DSModel V PS)
 
 end Real
-
-
 
 end GlobalTheory.CompanionTheory.Ipf.Loc
 

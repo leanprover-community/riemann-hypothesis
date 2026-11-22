@@ -38,11 +38,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable (D : D7)
 
-def ScalRelD {u : D.what₂.Word} (u' : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
-    (Λ : Submodule (𝓞 D.host.E) (VS D).V)
-    (x y : {x : Carrier (PD D Λ (lf D F0) u') // Gval (lf D F0) x.1 ≠ 0}) : Prop :=
-  ScalRel Λ (gS D) D.R.k (lf D F0) x.1.1 y.1.1
-
 def BetaL (u u' : D.what₂.Word) : Prop :=
   (∀ i, 3 ≤ D.host.g i ∧ Unram D.host.E (D.host.g i)) →
   ∀ (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (Λ : Submodule (𝓞 D.host.E) (VS D).V),

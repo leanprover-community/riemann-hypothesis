@@ -21,20 +21,6 @@ def seqN (N : ℕ) (j : Ω →+* Qbar l) (φ : HahnSeries ℚ Ω) : ℕ → Qbar
 def FinSupp (lam : (ℕ → Qbar l) →ₗ[Qbar l] Qbar l) : Prop :=
   ∃ S : Finset ℕ, ∀ f : ℕ → Qbar l, (∀ s ∈ S, f s = 0) → lam f = 0
 
-def IsLamOf (X : Tower Ω ε) (A : ValuationSubring Ω) (N w : ℕ) (j : Ω →+* Qbar l) (pr : X.Fn l → Fin 2 → Qbar l)
-    (lam : (ℕ → Qbar l) →ₗ[Qbar l] Qbar l) : Prop :=
-  FinSupp lam ∧ ∃ (c : ℕ) (per : ℕ → Qbar l), (∀ n, ‖per n‖ = 1 ∧ Cg n (per (n + 1)) (per n)) ∧
-    ∀ (n : ℕ) (b : X.Fn l), b ∈ X.B N l w → ∀ φ : HahnSeries ℚ Ω, IsThB X A N l n b φ →
-      Cg (n - c) (lam (seqN N j φ)) (per n * pr b 1)
-
-
-def IsLamOfL (X : Tower Ω ε) (A : ValuationSubring Ω) (N w : ℕ) (j : Ω →+* Qbar l) (pr : X.Fn l → Fin 2 → Qbar l)
-    (lam : (ℕ → Qbar l) →ₗ[Qbar l] Qbar l) : Prop :=
-  FinSupp lam ∧ ∃ (c : ℕ) (per : ℕ → Qbar l), (∀ n, ‖per n‖ = 1 ∧ Cg n (per (n + 1)) (per n)) ∧
-    ∀ (n : ℕ), c ≤ n → ∀ (b : X.Fn l), b ∈ X.B N l w → ∀ φ : HahnSeries ℚ Ω, IsThB X A N l n b φ →
-      Cg (n - c) (lam (seqN N j φ)) (per n * pr b 1)
-
-
 theorem norm_l_pow (n : ℕ) : ‖((l : ℕ) : Qbar l) ^ n‖ = ((l : ℝ)⁻¹) ^ n := by
   have : ((l : ℕ) : Qbar l) = algebraMap ℚ_[l] (Qbar l) (l : ℚ_[l]) := by simp
   rw [norm_pow, this, norm_algebraMap', Padic.norm_p]
@@ -65,18 +51,6 @@ theorem cg_mul_left {k m : ℕ} (h : k ≤ m) {a x y : Qbar l} (ha : ‖a‖ ≤
     Cg (m - k) (a * x) (a * y) := by
   rw [cg_sub_iff h, ← mul_sub, norm_mul]
   exact mul_le_mul ha hxy (norm_nonneg _) (by positivity)
-
-theorem seqN_single {N : ℕ} (hN : N ≠ 0) (j : Ω →+* Qbar l) (s : ℕ) (a : Ω) :
-    seqN N j (HahnSeries.single ((s : ℚ) / N) a) = Pi.single s (j a) := by
-  funext t
-  have hN' : (N : ℚ) ≠ 0 := by exact_mod_cast hN
-  by_cases h : t = s
-  · subst h; simp [seqN]
-  · have : (t : ℚ) / N ≠ (s : ℚ) / N := fun e => h (by exact_mod_cast (div_left_inj' hN').1 e)
-    simp [seqN, HahnSeries.coeff_single_of_ne this, h]
-
-theorem finSupp_proj (s : ℕ) : FinSupp (LinearMap.proj (R := Qbar l) (φ := fun _ : ℕ => Qbar l) s) :=
-  ⟨{s}, fun f hf => hf s (Finset.mem_singleton_self s)⟩
 
 theorem FinSupp.smul {lam : (ℕ → Qbar l) →ₗ[Qbar l] Qbar l} (h : FinSupp lam) (a : Qbar l) : FinSupp (a • lam) := by
   obtain ⟨S, hS⟩ := h

@@ -16,8 +16,6 @@ open NumberField IntermediateField GroundTheory.Global GroundTheory.Global.SemiL
 
 open scoped NumberField.LiesOver
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 attribute [local instance] FiniteSubfield.isGalois_of_normal
@@ -78,7 +76,6 @@ end Finite
 section Infinite
 
 variable {v : InfinitePlace K.1} (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure v.Completion)
-
 
 omit [(E.1.fixingSubgroup.subgroupOf K.1.fixingSubgroup).Normal] [IsMulCommutative (E.1 ≃ₐ[K.1] E.1)] in
 theorem infCompletionEmbedding_localSymbol {b : v.Completionˣ}

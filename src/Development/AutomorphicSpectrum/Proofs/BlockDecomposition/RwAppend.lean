@@ -25,8 +25,6 @@ abbrev CLof (E F : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCo
 
 def expC (X : Mat n) (t : ℝ) : G n := (Matrix.isUnit_exp (t • X)).unit
 
-theorem expC_val (X : Mat n) (t : ℝ) : (expC X t).val = NormedSpace.exp (t • X) := rfl
-
 theorem expC_zero (X : Mat n) : expC X 0 = 1 := by
   apply Units.ext
   simp [expC_val]

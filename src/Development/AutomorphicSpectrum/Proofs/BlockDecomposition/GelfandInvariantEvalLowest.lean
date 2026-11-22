@@ -20,9 +20,6 @@ variable {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
 def dualFam (E : Fin n → Fin n → Module.End ℂ V) : Fin n → Fin n → Module.End ℂ (Module.Dual ℂ V) :=
   fun a b => (E b a).dualMap
 
-theorem dualFam_apply (E : Fin n → Fin n → Module.End ℂ V) (a b : Fin n) (φ : Module.Dual ℂ V) (v : V) :
-    dualFam E a b φ v = φ (E b a v) := rfl
-
 theorem glRel_dualFam {E : Fin n → Fin n → Module.End ℂ V} (hE : Formalism.REAL.GlRel E) :
     Formalism.REAL.GlRel (dualFam E) := by
   intro a b c d

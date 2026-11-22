@@ -30,8 +30,6 @@ def eDiag (L C : ℝ) : ℝ := 8 * Real.exp (-(C * mfL D L)) + 6 * Real.exp (-(k
 def RankMu : Prop :=
   (d0 D u : ℝ) = ((D.mem u).A.duStar : ℝ) * (((D.mem u).A.T : ℝ) ^ D.R.k - 1) ^ D.R.f
 
-def cK : ℝ := (c0 D.s u * c0 D.s u) ^ (-(1 / 2 : ℝ))
-
 namespace Pts
 
 variable (F : Pts)

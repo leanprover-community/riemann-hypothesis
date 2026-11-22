@@ -31,8 +31,6 @@ def sigR (hs : M.split = some g) : M.R →+* M.R where
   map_zero' := by apply Subtype.ext; simp
   map_add' a b := by apply Subtype.ext; simp
 
-theorem sigR_coe (hs : M.split = some g) (x : M.R) : ((sigR hs x : M.R) : E) = M.L.cj (x : E) := rfl
-
 theorem lift_eps_mem {T T' : F} (h : ∃ c : 𝒪[F], T - T' = (g.q : F) ^ 2 * c) : (T - T') / (g.q : F) ∈ 𝒪[F] := by
   obtain ⟨c, hc⟩ := h
   rw [hc, pow_two, mul_assoc, mul_div_cancel_left₀ _ (q_ne g)]

@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleChartLocalizationFiniteTypeFormallyUnramifi
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtChart
 
 @[expose] public section

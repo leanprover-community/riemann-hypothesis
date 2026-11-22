@@ -36,10 +36,6 @@ def blockParMk {R : Type} [CommRing R] {a b : ℕ}
         Matrix.fromBlocks_apply₂₁, Matrix.zero_apply]
     · exact absurd hj (by simp)⟩
 
-theorem blockParMk_val {R : Type} [CommRing R] {a b : ℕ}
-    (x : GL (Fin a) R × GL (Fin b) R × Matrix (Fin a) (Fin b) R) :
-    ((blockParMk x).1 : Matrix (Fin (a + b)) (Fin (a + b)) R) = blockMat x.1.1 x.2.2 x.2.1.1 := rfl
-
 theorem blockParMk_bijective {R : Type} [CommRing R] {a b : ℕ} :
     Function.Bijective (blockParMk (R := R) (a := a) (b := b)) := by
   constructor

@@ -15,9 +15,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Flat.ConjExp
 
 open Filter Topology GlobalTheory.CompanionTheory.Ar.Flat.Conj
 
-local notation "κ" => spMap (starRingEnd ℂ)
-local notation "δ" => spMap (dualMap (starRingEnd ℂ))
-
 section Points
 
 variable {A B C : Type} [CommRing A] [CommRing B] [CommRing C]

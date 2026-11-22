@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Formalism.LogVandermondeBounds.GaussOperatorProductFormula
+public import Formalism.LogVandermondeBounds.FinrankFiberSumZero
 
 @[expose] public section
 

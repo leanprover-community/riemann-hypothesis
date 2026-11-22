@@ -120,9 +120,6 @@ def cjE {d : Fin m → ℂ} (h : Uni d) : (Fin m → Fin m → ℂ) ≃ᵐ (Fin 
   measurable_toFun := measurable_cj d
   measurable_invFun := measurable_cj (star d)
 
-theorem of_cjE {d : Fin m → ℂ} (h : Uni d) (x : Fin m → Fin m → ℂ) :
-    Matrix.of (cjE h x) = cj d (Matrix.of x) := rfl
-
 def cjR (d : Fin m → ℂ) :
     EuclideanSpace ℝ (Fin m × Fin m × Bool) →ₗ[ℝ] EuclideanSpace ℝ (Fin m × Fin m × Bool) where
   toFun x := (WithLp.equiv 2 _).symm (realifyFun (cj d (unrealify x)))
@@ -445,8 +442,6 @@ theorem flagMat_cj {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (g : Mx k
 def turnB (w : ℂ) (bs : List (ℂ × ℕ)) : List (ℂ × ℕ) :=
   bs.foldr (fun b (F : ℂ → List (ℂ × ℕ)) w =>
     (w * (-Complex.I) ^ (b.2 - 1) * b.1, b.2) :: F (w * (-Complex.I) ^ (2 * b.2))) (fun _ => []) w
-
-theorem turnB_nil (w : ℂ) : turnB w [] = [] := rfl
 
 theorem turnB_cons (w t : ℂ) (s : ℕ) (bs : List (ℂ × ℕ)) :
     turnB w ((t, s) :: bs) = (w * (-Complex.I) ^ (s - 1) * t, s) :: turnB (w * (-Complex.I) ^ (2 * s)) bs := rfl

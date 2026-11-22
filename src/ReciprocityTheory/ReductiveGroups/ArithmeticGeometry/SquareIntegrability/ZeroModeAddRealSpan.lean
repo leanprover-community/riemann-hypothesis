@@ -67,10 +67,6 @@ theorem tb_int (hI : IsSplit P I) (n : Fin (Module.finrank ℝ (IR I)) → ℤ) 
   rw [Int.cast_smul_eq_zsmul]
   exact Submodule.smul_mem _ _ hmem
 
-theorem zmC_eq (hI : IsSplit P I) (s : (Fin 1 → Vsp X.dim) → ℂ) (n) (v : Vsp X.dim) :
-    zmC hI s n v = ∫ t in zmBox (Module.finrank ℝ (IR I)),
-      Complex.exp (-(2 * Real.pi * Complex.I * ∑ i, (n i : ℂ) * (t i : ℂ))) * zmG I s (v + tb hI t) := rfl
-
 theorem fib_continuous (hI : IsSplit P I) {s : (Fin 1 → Vsp X.dim) → ℂ} (hs : s ∈ X.Sec 1 1)
     (v : Vsp X.dim) : Continuous fun t : Fin (Module.finrank ℝ (IR I)) → ℝ => zmG I s (v + tb hI t) := by
   refine (zmG_continuous hs).comp (continuous_const.add ?_)

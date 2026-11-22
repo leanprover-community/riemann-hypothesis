@@ -82,13 +82,7 @@ def swapOm {S T S' T' : HSp D} (L : WO S' T' ≃ₗ[AE D] WO S T) (φ : GA D S' 
       simp
     simp only [LinearMap.coe_mk, AddHom.coe_mk, e, map_mul, Module.End.mul_apply, LinearEquiv.apply_symm_apply]
 
-theorem swapOm_apply {S T S' T' : HSp D} (L : WO S' T' ≃ₗ[AE D] WO S T) (φ : GA D S' →* GA D T)
-    (φ' : GA D T' →* GA D S) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (g : GA D S') (h : GA D T')
-    (F : WO S' T' → ℂ) : swapOm L φ φ' om (g, h) F = fun w => om (φ' h, φ g) (fun x => F (L.symm x)) (L w) :=
-  rfl
-
 end GlobalTheory.SwapWeil
-
 
 set_option maxHeartbeats 1600000 in
 open GlobalTheory.SwapWeil in

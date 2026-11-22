@@ -1,10 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ScholzeWeinsteinB
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
-public import Development.AbelianVarietyTheory.Definitions.Divisors.P22
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsHorizontalGeneratorOfCharts
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactification
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.InjectiveOfSmulMemRange
@@ -148,7 +145,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinearIndepe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AlCSurjectiveAndLinearIndependentBLie
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLieTieOfFrMap
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SandwichMaps
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EigenspacesOfRingHomsIndependent
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AinfIsDomainMuNeZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PadicRingHomEqCanonical
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsIsomComp

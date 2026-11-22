@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.Subsingleton
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ReductionUniformizerPoint
 
 @[expose] public section
 

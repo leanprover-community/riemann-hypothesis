@@ -167,10 +167,6 @@ def rmulHom (R : Type) {F E : Type} [Field F] [Field E] [Algebra F E] [CommRing 
     funext a i
     simp [GlobalTheory.CompanionTheory.SW.rmul, add_mul, Finset.sum_add_distrib])
 
-theorem rmulHom_apply (R : Type) {F E : Type} [Field F] [Field E] [Algebra F E] [CommRing R] [Algebra F R] {M n : ℕ}
-    (g : Matrix (Fin n) (Fin n) (R ⊗[F] E)) (X : Fin n → Fin M → R ⊗[F] E) :
-    rmulHom R g X = GlobalTheory.CompanionTheory.SW.rmul R X g := rfl
-
 def matCoords {K W : Type} [AddCommGroup K] [AddCommGroup W] (ε : K ≃+ W) (n : ℕ) :
     Matrix (Fin n) (Fin n) K ≃+ (Fin n → Fin n → W) where
   toFun X i j := ε (X i j)

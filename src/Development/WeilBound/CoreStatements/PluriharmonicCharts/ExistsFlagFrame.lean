@@ -39,43 +39,6 @@ theorem zpow_sum' {σ : Type} (S : Finset σ) {x : L} (hx : x ≠ 0) (n : σ →
 theorem chartMono_ne {z : (Σ k, ι k) → L} {c : ∀ k, ι k} (hc : ∀ k, z ⟨k, c k⟩ ≠ 0) (e : K → ℤ) :
     chartMono z c e ≠ 0 := Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (hc k)
 
-theorem chartMono_eDeg {z : (Σ k, ι k) → L} {c : ∀ k, ι k} (hc : ∀ k, z ⟨k, c k⟩ ≠ 0) (τ : Ψ) (a : Fin N) (k₀ : K) :
-    chartMono z c (eDeg M τ a k₀) * (z ⟨k₀, c k₀⟩ ^ 2 * ∏ i, chartMono z c (M.dy (τ, i)) ^ xiCoef τ a (τ, i)) = 1 := by
-  rw [← prod_xi_pair τ a fun p => chartMono z c (M.dy p)]
-  have e1 : ∏ p, chartMono z c (M.dy p) ^ xiCoef τ a p = ∏ k, z ⟨k, c k⟩ ^ ∑ p, xiCoef τ a p * M.dy p k := by
-    simp only [chartMono, ← Finset.prod_zpow]
-    rw [Finset.prod_comm]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    rw [zpow_sum' _ (hc k)]
-    exact Finset.prod_congr rfl fun p _ => by rw [← _root_.zpow_mul, mul_comm]
-  have e2 : z ⟨k₀, c k₀⟩ ^ 2 = ∏ k, z ⟨k, c k⟩ ^ (if k = k₀ then (2 : ℤ) else 0) := by
-    rw [Finset.prod_eq_single k₀ (fun k _ h => by rw [ite_eq_right h, zpow_zero]) (by simp), ite_eq_left rfl, zpow_ofNat]
-  rw [e1, e2, chartMono, ← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib]
-  refine Finset.prod_eq_one fun k _ => ?_
-  rw [← zpow_add₀ (hc k), ← zpow_add₀ (hc k), eDeg]
-  rw [show -(∑ p, xiCoef τ a p * M.dy p k) - (if k = k₀ then 2 else 0) + ((if k = k₀ then 2 else 0) +
-    ∑ p, xiCoef τ a p * M.dy p k) = 0 by ring, zpow_zero]
-
-theorem chartMono_dy (z : (Σ k, ι k) → L) (c : ∀ k, ι k) (p : Ψ × Fin N) :
-    chartMono z c (M.dy p) = (∏ k : NonPluckerBlocks M.blk, (z ⟨k.1, c k.1⟩ ^ M.b p k)⁻¹) *
-      (M.blk p).elim 1 fun k => z ⟨k, c k⟩ := by
-  rw [chartMono, ← Finset.prod_filter_mul_prod_filter_not Finset.univ (fun k => ∀ p', M.blk p' ≠ some k)]
-  congr 1
-  · rw [Finset.prod_subtype (p := fun k => ∀ p', M.blk p' ≠ some k) _ (by simp)]
-    refine Finset.prod_congr (by congr) fun k _ => ?_
-    rw [FlagModel.dy, dite_eq_left k.2, _root_.zpow_neg]
-  · cases hp : M.blk p with
-    | none =>
-      refine Finset.prod_eq_one fun k hk => ?_
-      rw [FlagModel.dy, dite_eq_right (Finset.mem_filter.1 hk).2, hp, ite_eq_right (by simp), zpow_zero]
-    | some k₁ =>
-      have hk₁ : ¬ ∀ p', M.blk p' ≠ some k₁ := fun h => h p hp
-      rw [Finset.prod_eq_single k₁ (fun k hk h => by
-        rw [FlagModel.dy, dite_eq_right (Finset.mem_filter.1 hk).2, hp, ite_eq_right (by simpa using h.symm), zpow_zero])
-        (fun h => (h (Finset.mem_filter.2 ⟨Finset.mem_univ k₁, hk₁⟩)).elim), FlagModel.dy, dite_eq_right hk₁, ite_eq_left hp,
-        zpow_one]
-      rfl
-
 theorem blk_some {i : Fin N} (τ : Ψ) (hi : IsProperStep N j i) : ∃ k, M.blk (τ, i) = some k :=
   Option.ne_none_iff_exists'.1 fun h => (M.blk_none _).1 h hi
 

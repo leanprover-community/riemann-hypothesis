@@ -47,8 +47,6 @@ theorem isBlockMap_xV : IsBlockMap (Sum.inl : K → K ⊕ (Ψ × Fin (D.N - 1)))
 def ofΩHom : Ω →+* Pl.ΩY :=
   (algebraMap (MvPolynomial (Ψ × Fin D.N × Fin D.N) Ω) Pl.ΩY).comp C
 
-theorem ofΩHom_apply (x : Ω) : Pl.ofΩHom x = Pl.ofΩ x := rfl
-
 theorem ofΩHom_injective : Function.Injective Pl.ofΩHom :=
   (IsFractionRing.injective (MvPolynomial (Ψ × Fin D.N × Fin D.N) Ω) Pl.ΩY).comp (C_injective _ _)
 

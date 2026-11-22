@@ -93,8 +93,6 @@ def finMap (ht : Γ.IsTorsionAlong G (𝟙 _) N i) (u : Γf.G ⟶ Γ.G) : Γf.G 
     simp only [Category.comp_id] at h
     simp [h, hu])
 
-theorem finMap_left (ht : Γ.IsTorsionAlong G (𝟙 _) N i) : (finMap ht u).left = u.left ≫ i := rfl
-
 theorem comp_finMap_mul (ht : Γ.IsTorsionAlong G (𝟙 _) N i) {Y : Over (Spec (CommRingCat.of R))}
     (a b : Y ⟶ Γf.G) : (a * b) ≫ finMap ht u = (a ≫ finMap ht u) * (b ≫ finMap ht u) := by
   ext1

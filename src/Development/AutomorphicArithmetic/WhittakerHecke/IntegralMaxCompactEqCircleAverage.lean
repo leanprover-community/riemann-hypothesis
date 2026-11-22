@@ -36,8 +36,6 @@ private theorem cont_re : Continuous UpperTheory.ConvolutionTheory.RankTwoDescen
 private noncomputable def reH : A ℚ →+* ℝ :=
   (Pi.evalRingHom (fun _ : InfinitePlace ℚ => ℝ) Rat.infinitePlace).comp (TR.pInf ℚ)
 
-private theorem re_eq (x : A ℚ) : UpperTheory.ConvolutionTheory.RankTwoDescent.re x = reH x := rfl
-
 private theorem cont_entry (i j : Fin 2) : Continuous fun k : G1 ℚ => k i j :=
   Matrix.SpecialLinearGroup.isClosedEmbedding_val.continuous.matrix_elem i j
 

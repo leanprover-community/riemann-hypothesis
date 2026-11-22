@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCombA
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ToOneSucc
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ValLastX
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ValQOfValQr
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsReindexIff
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.CombAtSingleZero
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsJointlySmoothBiThetaTwoVarCombination
 

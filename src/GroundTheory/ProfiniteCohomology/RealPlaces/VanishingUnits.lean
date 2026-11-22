@@ -13,8 +13,6 @@ open CategoryTheory NumberField IsDedekindDomain GroundTheory.Global
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))
@@ -70,7 +68,6 @@ theorem subsingleton_realLocal_of_odd (w : {v : InfinitePlace K.1 // v.IsReal}) 
   have := subsingleton_localGaloisCohomology_of_isReal_of_odd w.1 w.2 hn
   exact (realLocalEquiv w n).injective.subsingleton
 
-
 set_option maxHeartbeats 1000000 in
 theorem two_nsmul_realLocal (w : {v : InfinitePlace K.1 // v.IsReal}) {n : ℕ} (hn : 1 ≤ n)
     (t : cohomology (galUnits.{0} w.1.Completion (AlgebraicClosure w.1.Completion)) n) : 2 • t = 0 := by
@@ -112,7 +109,6 @@ theorem realLocalEquiv_realUnitsRes (ι : LocalEmbeddings K) {r : ℕ} (hr : 1 �
   exact (unitsLocalRes_sUnitsInfl S (ιr w) r y).trans
     (congrArg (realLocalEquiv w r) (congrArg (fun f => f.hom y) (realUnitsRes_eq S ιr r w).symm))
 
-
 set_option maxHeartbeats 1000000 in
 include h2S in
 theorem eq_zero_of_realUnitsRes_eq_zero {r : ℕ} (hr : 4 ≤ r) (y : cohomology (galSUnitsMax K.1 ℚ̄ S) r)
@@ -125,7 +121,6 @@ theorem eq_zero_of_realUnitsRes_eq_zero {r : ℕ} (hr : 4 ≤ r) (y : cohomology
     rw [sUnitsRealPrimaryEquiv_apply, realLocalEquiv_realUnitsRes S ιr (nonempty_localEmbeddings K).some (by omega) w y, h w, map_zero]
     rfl
   exact congrArg Subtype.val h0
-
 
 set_option maxHeartbeats 1000000 in
 include h2S in
@@ -140,7 +135,6 @@ theorem exists_realUnitsRes_eq {r : ℕ} (hr : 4 ≤ r)
   rw [sUnitsRealPrimaryEquiv_apply] at hy
   exact congrFun hy w
 
-
 set_option maxHeartbeats 1000000 in
 theorem realUnitsRes_tateToGlobal (n : ℕ) (x : unitsTateCohomology S ιr ιs (n + 1))
     (w : {v : InfinitePlace K.1 // v.IsReal}) :
@@ -151,7 +145,6 @@ theorem realUnitsRes_tateToGlobal (n : ℕ) (x : unitsTateCohomology S ιr ιs (
     (gsFinFamily S ιs) (gsRealFamily S ιr) (galSUnitsMax K.1 ℚ̄ S) (finUnits S) (finUnitsMor S ιs) realUnits
     (realUnitsMor S ιr) n) x)) w
 
-
 set_option maxHeartbeats 1000000 in
 include h2S in
 theorem exists_realUnitsRes_eq_of_three_le {m : ℕ} (hm : 3 ≤ m + 1)
@@ -160,7 +153,6 @@ theorem exists_realUnitsRes_eq_of_three_le {m : ℕ} (hm : 3 ≤ m + 1)
   rcases Nat.even_or_odd (m + 1) with he | ho
   · exact exists_realUnitsRes_eq S ιr h2S (r := m + 1) (by obtain ⟨j, hj⟩ := he; omega) t
   · exact ⟨0, fun w => @Subsingleton.elim _ (subsingleton_realLocal_of_odd w ho) _ _⟩
-
 
 set_option maxHeartbeats 2000000 in
 theorem tateGlobalToLocal_units_eq {m : ℕ} (hm : 3 ≤ m + 1)
@@ -173,7 +165,6 @@ theorem tateGlobalToLocal_units_eq {m : ℕ} (hm : 3 ≤ m + 1)
       (m + 1)).hom y = t.1 := funext fun v => @Subsingleton.elim _ (subsingleton_finLocal S v hm) _ _
   exact Prod.ext h1 (funext hy)
 
-
 include h2S in
 theorem exists_tateGlobalToLocal_eq {m : ℕ} (hm : 3 ≤ m + 1)
     (t : (∀ v : S, cohomology (finUnits S v) (m + 1)) ×
@@ -184,7 +175,6 @@ theorem exists_tateGlobalToLocal_eq {m : ℕ} (hm : 3 ≤ m + 1)
   (exists_realUnitsRes_eq_of_three_le S ιr h2S hm t.2).imp fun y hy =>
     tateGlobalToLocal_units_eq S ιr ιs hm t y hy
 
-
 set_option maxHeartbeats 1000000 in
 include h2S in
 theorem tateToGlobal_units_eq_zero {n : ℕ} (hn : 3 ≤ n) (x : unitsTateCohomology S ιr ιs (n + 1))
@@ -194,7 +184,6 @@ theorem tateToGlobal_units_eq_zero {n : ℕ} (hn : 3 ≤ n) (x : unitsTateCohomo
   refine eq_zero_of_realUnitsRes_eq_zero S ιr h2S (by omega) _ (k := k) ?_ fun w => ?_
   · rw [← map_nsmul, hk, map_zero]
   · exact realUnitsRes_tateToGlobal S ιr ιs n x w
-
 
 set_option maxHeartbeats 1000000 in
 include h2S in
@@ -210,7 +199,6 @@ theorem eq_zero_of_tateToGlobal_units_eq_zero {m : ℕ} (hm : 3 ≤ m + 1)
   exact hom_apply_hom_apply_of_comp_eq (tateGlobalToLocal_tateLocalToCompact (gsFinFamily S ιs)
     (gsRealFamily S ιr) (galSUnitsMax K.1 ℚ̄ S) (finUnits S) (finUnitsMor S ιs) realUnits
     (realUnitsMor S ιr) m) g
-
 
 include h2S in
 theorem eq_zero_unitsTateCohomology_of_two_pow_nsmul {r : ℕ} (hr : 4 ≤ r) (x : unitsTateCohomology S ιr ιs r)

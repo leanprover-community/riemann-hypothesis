@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SumExpSt
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumExactExponentsSmulMemLocalizedCoeffLatticeStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumExactExponentsSmulMemLocalizedCoeffLattice
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SplitOffBadOfSuppSplitOff
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.HighestWeightShiftEqDetMul
 public import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.RamBasic

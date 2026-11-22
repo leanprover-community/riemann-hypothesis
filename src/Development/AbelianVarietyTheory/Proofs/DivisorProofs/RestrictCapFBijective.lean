@@ -30,8 +30,6 @@ def NE.set (S : NE I) : Set I := (OrderDual.ofDual S).1
 
 theorem NE.le_iff {S T : NE I} : S ≤ T ↔ T.set ⊆ S.set := Iff.rfl
 
-theorem NE.set_inf (S T : NE I) : (S ⊓ T).set = S.set ∪ T.set := rfl
-
 theorem NE.nonempty (S : NE I) : S.set.Nonempty := (OrderDual.ofDual S).2
 
 def NE.single (i : I) : NE I := OrderDual.toDual ⟨{i}, Set.singleton_nonempty i⟩

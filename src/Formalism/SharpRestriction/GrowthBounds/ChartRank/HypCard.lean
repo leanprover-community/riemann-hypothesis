@@ -93,7 +93,6 @@ theorem fin_Fi (M : MemberForms D.what₂.LL D.what₂.embLL D.what₂.places D.
   rw [← (M.emb_basis i).2]
   exact FiniteDimensional.span_of_finite ℂ (Set.finite_range _)
 
-
 open Classical in
 def chs (S : StepIn M i hi G) : Finset S.Ch :=
   Finset.univ.image S.chOf ∪ Finset.univ.image fun a : G.comp => (S.eC.symm a).1
@@ -140,9 +139,6 @@ theorem finrank_Fi (S : StepIn M i hi G) : finrank ℂ (M.Fi i) = ∑ β ∈ chs
   have : Module.Finite ℂ ((β : chs S) → FiB S β.1) := Module.Finite.equiv (eF S)
   have : ∀ β : chs S, Module.Finite ℂ (FiB S β.1) := fun β => fin_fac (R := ℂ) (φ := fun β : chs S => FiB S β.1) β
   rw [(eF S).finrank_eq, Module.finrank_pi_fintype, Finset.sum_coe_sort (chs S) fun β => finrank ℂ (FiB S β)]
-
-def ChartRank (S : StepIn M i hi G) : Prop :=
-  ∀ β, finrank ℂ (FiB S β) = finrank G.O (gatCh G fun a : S.cmpt β => S.eC ⟨β, a⟩).M
 
 theorem card_le [IsFractionRing G.O G.Kf] [Module.Finite G.O G.M] (S : StepIn M i hi G) (e : D.what₂.LL →+* G.Kf)
     (H : ∀ β, S.Core e β) (hS : BlockRationalityField) (w : D.what₂.places.Pl) (hw : S.okW w) (hloc : S.ValIntJ e w) :

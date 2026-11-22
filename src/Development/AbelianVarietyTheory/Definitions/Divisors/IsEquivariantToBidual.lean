@@ -31,22 +31,7 @@ section Eigen
 variable {X Y : Scheme.{0}} {F G : X.Modules} {O : Type} [CommRing O] {ρ : O →+* End F}
   {ρ' : O →+* End G} (σ : O →+* Γ(X, ⊤))
 
-theorem isEquivariant_inv {φ : F ≅ G} (h : IsEquivariant ρ ρ' φ.hom) :
-    IsEquivariant ρ' ρ φ.inv := fun a => by
-  rw [Iso.comp_inv_eq, Category.assoc, h a, Iso.inv_hom_id_assoc]
-
 variable (ρ)
-
-theorem smul_eq_smulHom_comp (a : Γ(X, ⊤)) (φ : F ⟶ G) : a • φ = smulHom F a ≫ φ :=
-  (smul_hom_def a φ).trans (smulHom_comp a φ).symm
-
-theorem dualMap_smul (a : Γ(X, ⊤)) (φ : F ⟶ G) : dualMap (a • φ) = a • dualMap φ := by
-  rw [smul_eq_smulHom_comp, dualMap_comp, dualMap_smulHom]
-  rfl
-
-def dualQuotHom : dual (eigenQuot ρ σ) ⟶ eigen (dualAct ρ) σ :=
-  eigenLift (ρ := dualAct ρ) (σ := σ) (dualMap (eigenπ ρ σ)) fun a => by
-    rw [act_dualAct, ← dualMap_comp, act_eigenπ, dualMap_smul]
 
 instance isIso_dualQuotHom : IsIso (dualQuotHom ρ σ) := by
   refine Twist.isIso_of_bijective _ fun V => ⟨Function.Injective.of_comp
@@ -69,30 +54,6 @@ instance isIso_dualQuotHom : IsIso (dualQuotHom ρ σ) := by
     congr(($(eigenπ_desc ρ σ _ hl)).app W t), DualPull.toCut_app, ← dualApp_resM, resM_resM,
     resM_self]
   rfl
-
-def dualQuotIso : dual (eigenQuot ρ σ) ≅ eigen (dualAct ρ) σ := asIso (dualQuotHom ρ σ)
-
-theorem dualQuotIso_hom_ι :
-    (dualQuotIso ρ σ).hom ≫ eigenι _ _ =
-      dualMap (eigenπ ρ σ) := by
-  simp only [dualQuotIso, asIso_hom, dualQuotHom, eigenLift_ι]
-
-def pullbackQuotIso (f : Y ⟶ X) : eigenQuot (pullAct ρ f) (f.appTop.hom.comp σ) ≅
-    (Scheme.Modules.pullback f).obj (eigenQuot ρ σ) where
-  hom := eigenDesc ((Scheme.Modules.pullback f).map (eigenπ ρ σ)) fun a => by
-    rw [act_pullAct, ← Functor.map_comp, act_eigenπ, pullback_map_smul]; rfl
-  inv := adj f (eigenDesc ((Scheme.Modules.pullbackPushforwardAdjunction f).homEquiv _ _
-    (eigenπ (pullAct ρ f) (f.appTop.hom.comp σ))) fun a => by
-      rw [← Adjunction.homEquiv_naturality_left, smul_eq_smulHom_comp,
-        ← Adjunction.homEquiv_naturality_left, pullback_map_smulHom, ← smul_eq_smulHom_comp]
-      exact congrArg _ (act_eigenπ (pullAct ρ f) _ a))
-  hom_inv_id := by
-    rw [← cancel_epi (eigenπ _ _), eigenπ_desc_assoc, Category.comp_id, adj,
-      ← Adjunction.homEquiv_naturality_left_symm, eigenπ_desc, Equiv.symm_apply_apply]
-  inv_hom_id := by
-    rw [← cancel_epi ((Scheme.Modules.pullback f).map (eigenπ ρ σ)), ← Category.assoc, adj,
-      ← Adjunction.homEquiv_naturality_left_symm, eigenπ_desc, Equiv.symm_apply_apply, eigenπ_desc,
-      Category.comp_id]
 
 theorem hom_ext_of_isFrame {κ : Type} [Fintype κ] {e : κ → Γ(F, ⊤)} (he : IsFrame e)
     {φ ψ : F ⟶ G} (h : ∀ i, φ.app ⊤ (e i) = ψ.app ⊤ (e i)) : φ = ψ := by

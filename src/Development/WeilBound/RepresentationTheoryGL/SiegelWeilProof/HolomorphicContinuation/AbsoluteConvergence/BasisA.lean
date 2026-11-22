@@ -16,8 +16,6 @@ open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.AbsSt
 
 variable {n : ℕ}
 
-theorem mR_one : mR (1 : GR n) = 1 := rfl
-
 theorem continuous_mR : Continuous (fun g : GR n => mR g) := by
   unfold mR; fun_prop
 

@@ -88,8 +88,6 @@ def addRe {X : Type} [TopologicalSpace X] [AddCommGroup X] (e : κ' ≃ κ) : (�
 def reix {R : Type} (e : κ' ≃ κ) : ((κ → R) → ℂ) →ₗ[ℂ] ((κ' → R) → ℂ) :=
   LinearMap.funLeft ℂ ℂ (fun x : κ' → R => x ∘ e.symm)
 
-theorem reix_apply {R : Type} (e : κ' ≃ κ) (φ : (κ → R) → ℂ) (x : κ' → R) : reix e φ x = φ (x ∘ e.symm) := rfl
-
 theorem reix_symm_reix {R : Type} (e : κ' ≃ κ) (φ : (κ → R) → ℂ) : reix e.symm (reix e φ) = φ := by
   funext x; simp only [reix_apply, Equiv.symm_symm]; congr 1; funext i; simp
 

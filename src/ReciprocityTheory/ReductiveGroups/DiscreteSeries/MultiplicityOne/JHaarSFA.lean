@@ -95,10 +95,6 @@ instance : Mul (Aset U) := ⟨fun a b => ⟨(toM a * toM b : Mat k r), hU.out.mu
 instance : One (Aset U) := ⟨⟨(1 : Mat k r), hU.out.one_mem⟩⟩
 instance : Inv (Aset U) := ⟨fun a => ⟨((toM a)⁻¹ : Mat k r), hU.out.inv_mem _ a.2⟩⟩
 
-theorem toM_mul (a b : Aset U) : toM (a * b) = toM a * toM b := rfl
-theorem toM_one : toM (1 : Aset U) = 1 := rfl
-theorem toM_inv (a : Aset U) : toM a⁻¹ = (toM a)⁻¹ := rfl
-
 instance : Group (Aset U) where
   mul_assoc a b c := toM_inj (by simp only [toM_mul]; exact Matrix.mul_assoc _ _ _)
   one_mul a := toM_inj (by simp only [toM_mul, toM_one]; exact Matrix.one_mul _)

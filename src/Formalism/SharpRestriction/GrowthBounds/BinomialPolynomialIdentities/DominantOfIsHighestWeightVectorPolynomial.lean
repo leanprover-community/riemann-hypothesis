@@ -23,9 +23,6 @@ def glOperatorDerivation (F : Type) [Field F] {N m k : ℕ} (LL : Letters (Fin N
     (a b : Fin m) : Derivation F (MvPolynomial (Fin N × Fin k) F) (MvPolynomial (Fin N × Fin k) F) :=
   Derivation.mk' (glOpsE F LL S e a b) (fun f g => by rw [glOpsE_mul]; rfl)
 
-theorem glOperatorDerivation_apply (a b : Fin m) (f : MvPolynomial (Fin N × Fin k) F) :
-    glOperatorDerivation F LL S e a b f = glOpsE F LL S e a b f := rfl
-
 theorem glOperatorDerivation_lie_relation (he : Function.Injective e) (a b c d : Fin m) :
     ⁅glOperatorDerivation F LL S e a b, glOperatorDerivation F LL S e c d⁆ =
       (if b = c then glOperatorDerivation F LL S e a d else 0) - (if d = a then glOperatorDerivation F LL S e c b else 0) := by
@@ -196,7 +193,6 @@ theorem projectors_preserve_multidegree : ProjectorsPreserveMultidegree := by
   rw [polProj_of_mem B x hx] at h
   rw [← h]
   exact polProj_mem B _
-
 
 open Classical in
 def partialInverseOfEmbedding {m k : ℕ} (e : Fin m → Fin k) : Fin k → Option (Fin m) :=

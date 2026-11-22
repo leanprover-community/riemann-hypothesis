@@ -13,8 +13,6 @@ open scoped Pointwise
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 namespace FiniteSubfield
 
 variable (P : Ideal (𝓞 ℚ̄)) [P.IsPrime] (hP : P ≠ ⊥)
@@ -35,7 +33,6 @@ instance liesOver_placeBelow {F E : FiniteSubfield} [Fact (F ≤ E)] :
     rfl⟩
 
 variable {P}
-
 
 omit [P.IsPrime] in
 theorem comap_smul {F E : FiniteSubfield} [Fact (F ≤ E)]
@@ -92,7 +89,6 @@ theorem exists_placeBelow_eq (K : FiniteSubfield) (v : HeightOneSpectrum (𝓞 K
     apply v.ne_bot
     rw [← hQv, (show Ideal.under _ ⊥ = ⊥ from Ideal.comap_bot_of_injective _ hinj)]
   exact ⟨Q, hQ, hQ0, HeightOneSpectrum.ext hQv⟩
-
 
 include hP in
 theorem exists_liesOver_prime : ∃ p : ℕ, p.Prime ∧ P.LiesOver (Ideal.span {(p : ℤ)}) := by

@@ -12,7 +12,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightMinMaxFormula
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HSix
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.SumLogHeightUpperBound
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HSeven
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.CardEmbPos
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.NlNonnegFin
 
 @[expose] public section

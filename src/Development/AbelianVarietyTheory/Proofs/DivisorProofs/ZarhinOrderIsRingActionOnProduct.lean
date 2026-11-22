@@ -96,8 +96,6 @@ section Zob
 
 variable {S : Scheme.{0}} (A B : Over S) [GrpObj A] [GrpObj B] [IsCommMonObj A] [IsCommMonObj B]
 
-abbrev Mt := Matrix (Fin 4 ⊕ Fin 4) (Fin 4 ⊕ Fin 4) ℤ
-
 theorem mkZ_pa {T : Over S} (u : Fin 4 → (T ⟶ A)) (v : Fin 4 → (T ⟶ B)) (i : Fin 4) :
     mkZ A B u v ≫ pa A B i = u i := by
   simp only [mkZ, pa, lift_fst_assoc]

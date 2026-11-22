@@ -16,7 +16,6 @@ namespace UpperTheory.V.Z.Win
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
 
-
 omit [NumberField F] in
 def WitAQ (ι : Qbar l ≃+* ℂ) (r : G F Ω →* GL (Fin n) (Qbar l)) : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] [IsCMField K] [Algebra F K] [Algebra K Ω] [IsScalarTower F K Ω],
@@ -36,6 +35,5 @@ theorem guard_of (H : PlainRec) [IsCMField F] [IsAlgClosure F Ω] {ι : Qbar l �
     · exact Or.inl e)) σ hσ
 
 def ThruAway : Prop := PlainRec → Thru false
-def AIsoTwOf : Prop := FlagLaws → WinTw → AIsoTw
 
 end UpperTheory.V.Z.Win

@@ -83,7 +83,6 @@ theorem finRepCusp_mem_centralCuspForms (h : AdelicGLn.FiniteAdelicGL K n) {φ :
   rw [mul_assoc]
   exact hφ s _
 
-
 theorem exists_norm_le_of_mem_centralCuspForms {φ : cuspForms K n} (hφ : φ ∈ centralCuspForms K n) :
     ∃ C : ℝ, ∀ x, ‖(φ : AdelicGLn.AdelicGL K n → ℂ) x‖ ≤ C := by
   obtain ⟨C, hC⟩ := exists_norm_le_of_mem_cuspForms φ.2
@@ -138,8 +137,6 @@ theorem eq_zero_of_petersson_inner_self_eq_zero {φ : cuspForms K n} (hφ : φ �
     (h : inner ℂ (cuspToL2 μ φ) (cuspToL2 μ φ) = 0) : φ = 0 := by
   have h0 : cuspToL2 μ φ = 0 := inner_self_eq_zero.1 h
   exact injOn_cuspToL2 μ (hφ : _) (fun s x => rfl) (h0.trans (map_zero (cuspToL2 μ)).symm)
-
-local notation "Γ₁" => Reduction.rationalGLOne (K := K) (n := n)
 
 theorem petersson_inner_eq_integral_quotient (φ ψ : cuspForms K n) :
     inner ℂ (cuspToL2 μ φ) (cuspToL2 μ ψ) =

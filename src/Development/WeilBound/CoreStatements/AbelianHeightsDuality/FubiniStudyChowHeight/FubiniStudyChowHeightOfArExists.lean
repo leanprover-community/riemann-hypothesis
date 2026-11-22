@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.FubiniStudyChowHeight
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.ChowFormHeightOfArch
 public import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.IntegralOfLintegral
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MahlerSectionStatementHolds

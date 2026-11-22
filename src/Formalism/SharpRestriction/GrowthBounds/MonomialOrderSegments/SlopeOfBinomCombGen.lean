@@ -12,11 +12,6 @@ namespace Formalism.MainNotions.PlaneGram
 
 variable {K : Type} [Field K] (v : AddValuation K (WithTop ℚ)) {σ : Type}
 
-def Slope (TotallyRealRoots : ℕ → ((σ →₀ ℕ) → K) → Prop) (c : ℕ) (f : (σ →₀ ℕ) → K) : Prop :=
-  ∃ (ι : Type) (_ : Fintype ι) (lam : ι → K) (n : ι → ℕ) (b : ι → (σ →₀ ℕ) → K),
-    (∀ k, ((n k : ℕ) : WithTop ℚ) ≤ v (lam k ^ 6)) ∧ (∀ k, TotallyRealRoots (n k) (b k)) ∧
-    (∀ k α, 0 ≤ v (b k α)) ∧ ∀ α, (c : WithTop ℚ) ≤ v (f α - ∑ k, lam k * b k α)
-
 structure CostOK (TotallyRealRoots : ℕ → ((σ →₀ ℕ) → K) → Prop) : Prop where
   one : TotallyRealRoots 0 (fun _ => 1)
   mul : ∀ m n f g, TotallyRealRoots m f → TotallyRealRoots n g → TotallyRealRoots (m + n) (fun α => f α * g α)

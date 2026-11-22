@@ -25,7 +25,4 @@ def matRep {n : Type} [Fintype n] [DecidableEq n] (r : G →* GL n k) : Represen
 
 end Irr
 
-def subst {k n : Type} [CommRing k] [Fintype n] (A : Matrix n n k) : MvPolynomial n k →ₐ[k] MvPolynomial n k :=
-  MvPolynomial.aeval fun i => ∑ j, A j i • MvPolynomial.X j
-
 end UpperTheory.V.AlgebraTools

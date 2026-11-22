@@ -1,6 +1,6 @@
 module
 
-public import Formalism.WachLatticeTwists.HodgeTateChains.H2KilledByTateDuality
+public import Mathlib
 public import Formalism.WachLatticeTwists.CoprimeLiftBounds.StatBridgeChiOne
 public import Formalism.WachLatticeTwists.LatticeDualFibres.Statement
 
@@ -27,34 +27,7 @@ variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
 end Defs
 
-def HZeroHypotheses {ℓ : ℕ} [Fact ℓ.Prime] (D : InvariantsCohomologyData ℓ) (w : ℤ_[ℓ]ˣ) (m : ℕ) (U : Finset ℤ) : Prop :=
-  1 ≤ m ∧ (ℓ = 2 → 2 ≤ m) ∧ PadicInt.valuation ((w : ℤ_[ℓ]) - 1) = m ∧ 0 ∉ U ∧ U.Nonempty ∧
-  D.piece.Inputs w U 0 ∧ D.Union ∧ D.Flat ∧ D.LES ∧ D.Inv
-
-structure HZeroRowPlaceData (ℓ : ℕ) [Fact ℓ.Prime] (O : Type) [CommRing O] [IsDomain O]
-    [IsDiscreteValuationRing O] (d : Type) (Mrow : Type) [AddCommGroup Mrow] [Module O Mrow] where
-
-  D : InvariantsCohomologyData ℓ
-
-  N : Submodule O (d → KO O)
-  idn : D.M ≃+ N
-
-  Cs : Type
-  [gCs : AddCommGroup Cs]
-  [mCs : Module O Cs]
-  con : N →ₗ[O] Cs
-  inc : Mrow →ₗ[O] Cs
-
 attribute [instance] HZeroRowPlaceData.gCs HZeroRowPlaceData.mCs
-
-def HZeroTorsionLengthOnePlace : Prop :=
-  ∀ (ℓ : ℕ) [Fact ℓ.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    (d : Type) [Fintype d] (Mrow : Type) [AddCommGroup Mrow] [Module O Mrow]
-    (B : HZeroRowPlaceData ℓ O d Mrow) (w : ℤ_[ℓ]ˣ) (m : ℕ) (U : Finset ℤ),
-    HZeroHypotheses B.D w m U → Function.Injective B.inc →
-    Submodule.torsion O B.Cs ≤ LinearMap.range B.con →
-    ∃ H : Submodule O (d → KO O), (∀ x ∈ H, ((ℓ : O) ^ c0 ℓ m U) • x = 0) ∧
-      Module.length O (Submodule.torsion O Mrow) ≤ Module.length O H
 
 def StatBKbConv : Prop :=
   ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]

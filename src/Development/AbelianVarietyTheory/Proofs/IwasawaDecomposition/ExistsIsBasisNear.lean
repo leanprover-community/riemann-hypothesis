@@ -2,7 +2,9 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LinearIndependentVecC
-public import Formalism.LocalToGlobal.ProjectiveLattices.FrCovA
+public import Formalism.LocalToGlobal.ProjectiveLattices.LocFrLoc
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.GenBCFrameR
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Spread
 
 @[expose] public section
 

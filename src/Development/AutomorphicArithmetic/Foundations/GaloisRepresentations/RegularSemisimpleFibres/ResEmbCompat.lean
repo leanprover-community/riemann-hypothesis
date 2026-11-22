@@ -21,8 +21,6 @@ def hcL {F : Type} [Field F] (Y : List (Σ m : ℕ, GL (Fin m) F → ℂ)) : (n 
   List.rec (motive := fun _ => (n : ℕ) → GL (Fin n) F → ℂ) (fun _ _ => 1)
     (fun p Y ih n => hc p.1 (Y.map Sigma.fst).sum p.2 (ih (Y.map Sigma.fst).sum) n) Y
 
-theorem hcL_nil {F : Type} [Field F] (n : ℕ) : hcL ([] : List (Σ m : ℕ, GL (Fin m) F → ℂ)) n = fun _ => 1 := rfl
-
 theorem hcL_cons {F : Type} [Field F] (p : Σ m : ℕ, GL (Fin m) F → ℂ) (Y : List (Σ m : ℕ, GL (Fin m) F → ℂ)) (n : ℕ) :
     hcL (p :: Y) n = hc p.1 (Y.map Sigma.fst).sum p.2 (hcL Y (Y.map Sigma.fst).sum) n := rfl
 
@@ -38,15 +36,6 @@ def SuppAny : Prop :=
     ∀ τ τ', π.IsLocComp v τ → Y.π.IsLocComp w τ' → UpperTheory.Zero.LLC.DZ (IrrGL.of τ.ρ τ.smooth τ.irred) →
     ∀ f : ℕ, normV w = g ^ f → (∀ s, HasSupport τ.ρ s → ∀ y ∈ s, y.1 ∣ f) →
       ∃ ξ hξ, ToralOver h h' (IrrGL.of τ.ρ τ.smooth τ.irred) τ' ξ hξ
-
-def UnlinkedBC : Prop :=
-  ∀ (E Ω : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (n : ℕ), 0 < n →
-    ∀ (π : CuspSub E n) (Y : Pt E Ω n), Lifts (Pt.base Ω π) Y →
-    ∀ (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 E)) (w : HeightOneSpectrum (𝓞 Y.K)) (h : IsPlaceOver A v)
-      (h' : IsPlaceOver A w) (g : ℕ) [Fact g.Prime] (i : ℚ_[g] ≃+* v.adicCompletion E), Continuous i →
-    (∀ t ∈ Ine (F := E) A, UpperTheory.Gal.UnramifiedFromSplittingCriterion.Fixes Y.K t) →
-    ∀ τ τ', π.IsLocComp v τ → Y.π.IsLocComp w τ' → Mixed (IrrGL.of τ.ρ τ.smooth τ.irred) →
-    ∀ ξ hξ, ToralOver h h' (IrrGL.of τ.ρ τ.smooth τ.irred) τ' ξ hξ → GlobalTheory.RoadU.Unlinked (GlobalTheory.RoadU.chars ξ hξ)
 
 def LiftOk : Prop := ∀ (a : Lbl) (l : ℕ), l.Prime → a.Ok → (a.lift l).Ok ∧ (a.lift l).rk = a.rk
 

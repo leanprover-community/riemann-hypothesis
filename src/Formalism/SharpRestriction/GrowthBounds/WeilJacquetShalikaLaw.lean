@@ -45,11 +45,9 @@ theorem used_muAt (D : D7) (w : D.what₂.places.Pl) : DV.Used D (D.what₂.muAt
 
 variable {D : D7} {L : SizeData₂ D}
 
-
 open Classical in
 def gainS (X : Inst D L) (K : Consts) (p j : ℕ) : ℝ :=
   if (IsResidueClassZero D p ∨ IsSg D p) ∧ ¬ Exc D p then (if IsCs D p then 0 else gainP X K (aL L) (bL L) p j) else 0
-
 
 open Classical in
 def g0S (X : Inst D L) (K : Consts) (p j : ℕ) : ℝ :=
@@ -120,9 +118,6 @@ def IntegralKernelValuation (D : D7) (Dx : DivX D) (T : TwForms D) (sp : ℝ) : 
     ∀ μ, DV.Used D μ → μ ≠ D.what₂.mu0 → D.what₂.places.resChar w ∉ Dx.Qp μ →
       ∀ x ∈ ((T.fm u μ).lat i).L, ∃ y, (T.fm u μ).emb (i + 1) y = (D.chTw u μ).K i ((T.fm u μ).emb i x) ∧
         VGe D w ((T.fm u μ).lat (i + 1)).L y (-((if i = 0 then 1 - sp else 1) * vDG D u w))
-
-def KindA (D : D7) (L : SizeData₂ D) : Prop :=
-  ∀ j ∈ SizeData₂.lifts D, ∀ t : HH D, wPl D j (false, t) ≤ if t ∈ D.host.TT then 2 * L.sc.b' else 2 * L.sc.w'' D.R.n
 
 def LatticeGrowthAtPlace (X : Inst D L) (Y' : LatInst D) (K : Consts) (low : ℝ) (u : D.what₂.Word) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) : Prop :=

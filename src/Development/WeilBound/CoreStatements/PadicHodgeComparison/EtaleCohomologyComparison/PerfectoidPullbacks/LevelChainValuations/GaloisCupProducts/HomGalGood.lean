@@ -25,7 +25,6 @@ variable {m : ℕ} {L : Lev (per l K) m} (hL : L.Good) (g : K.fixingSubgroup) (M
 
 namespace GaloisEquivariantMaps
 
-
 open LevelPullbackIdentities in
 def etaGal (s : ℕ) (hQ : ∀ T, QB L M s T → QA L M s (((nmB M hL).mor 0).obj T)) :
     (nmS (nmGB hL g M) 1 s).o.G ⋙ (smB M s hL hQ).o.G ⟶ (smB M s hL hQ).o.G ⋙ (nmS (nmGA hL g M) l s).o.G where
@@ -52,18 +51,6 @@ theorem nmHO_nmGB_bMap (s : ℕ) (hQ : ∀ T, QB L M s T → QA L M s (((nmB M h
 
 variable (s : ℕ) (hQ : ∀ T, QB L M s T → QA L M s (((nmB M hL).mor 0).obj T))
   (rH : ∀ n j, M.Hc false n j →ₛₗ[L.lam] HM (QA L M s) none ((l : L.A) ^ n) j)
-
-theorem homGal_good_of_galRed (hr : GalRed hL g M s rH) : (homGal hL g M s hQ rH).Good :=
-  { ℓ := rfl
-    lam := hL.σ_lam g
-    ι := fun a => (hL.σ_ι g a).symm
-    o := hL.σB_K g
-    tS := fun n j x => ((M.galH false j (IntermediateField.fixingSubgroupEquiv K g)).comm n x).symm
-    r := hr
-    red := fun n j z => nmHM_redM _ l s none n j z
-    b := nmHO_nmGB_bMap hL g M s hQ
-    μ := fun j v => (nm_muB (nmGB hL g M) (Category.id_comp _) 1 s (hL.σB_K g) j v).trans
-      (congrArg _ (pullR_id' M.q j v)) }
 
 end
 

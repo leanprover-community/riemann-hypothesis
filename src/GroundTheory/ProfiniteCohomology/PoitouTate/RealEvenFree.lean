@@ -20,8 +20,6 @@ open IsDedekindDomain NumberField CategoryTheory GroundTheory.Global
 
 attribute [local instance 2000] Rep.hV2
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 theorem isTotallyComplex_of_sq_eq_neg_one {F : Type*} [Field F] (x : F) (hx : x ^ 2 = -1) :
     IsTotallyComplex F := by
   refine ⟨fun w => InfinitePlace.not_isReal_iff_isComplex.1 fun hw => ?_⟩
@@ -142,7 +140,6 @@ section Hypotheses
 variable [Fintype S] {N : ℕ} [NeZero N]
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((N : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S) (hev : Even N)
 
-
 set_option maxHeartbeats 1000000 in
 include hS in
 theorem surjective_of_localToCompact_two [hne : Nonempty S]
@@ -156,7 +153,6 @@ theorem surjective_of_localToCompact_two [hne : Nonempty S]
   exact surjective_of_ptTLocalToCompact_two (gsFinFamily S ιs) (gsRealFamily S ιr) (gsRoots S N) t
     (gsLocalInvRootsQZ S ιs N) (gsRealInvRootsQZ S ιr N) ht v η
     ((zmodToQZ_gsLocalInvRoots S ιs N v η).symm.trans (congrArg (zmodToQZ N) hη))
-
 
 omit [Fintype S] in
 include hS hev in
@@ -174,7 +170,6 @@ theorem isTotallyComplex_of_gsOpenSubgroup_le {L : FiniteSubfield} [Fact (K ≤ 
   apply Subtype.ext
   push_cast
   exact hz2
-
 
 omit [Fintype S] in
 include hS hev in

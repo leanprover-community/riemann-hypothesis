@@ -69,7 +69,6 @@ def coreResK (W : LocWach PD LL O v n) : Prop :=
     Formalism.MainNotions.DeltaInvariantLattices.res W.GKs T (W.clK T w) =
       W.cl T ⟨(w : W.DD T × W.DD T), invariant_cocycle_le_gamma_cocycle W h1 h2 T w.2⟩
 
-
 variable (PD LL O) in
 def coreJumps : Prop :=
   ∀ (T₀ T₁ T₂ : LocLat G Qp LL O) (ι : LatHom T₀.L T₁.L) (π : LatHom T₁.L T₂.L),
@@ -117,13 +116,5 @@ def admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf 
   adm1 D HW F ∧ adm2 D HW F ∧ adm3 D HW F Cm ∧ ArchimedeanSignatureMatching D HW F Cm ∧ adm5 D HW F ∧ adm6 D HW F ∧ adm7 D HW F ∧ adm8 D HW F ∧
     adm9 D HW F ∧ adm10 D HW F ∧ adm11 D HW F ∧ adm12 D HW F ∧ adm13 D HW F ∧ adm14 D HW F ∧ adm15 D HW F ∧ adm16 D HW F ∧
     adm17 D HW F ∧ adm18 D HW F ∧ adm19 D HW F ∧ adm20 D HW F ∧ adm21 D HW F ∧ adm22 D HW F ∧ adm23 D HW F
-
-def Conclusion1 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW F ∧ Formalism.MainNotions.LiftingTheory.WachKillsCaseB D HW F ∧ Formalism.MainNotions.LiftingTheory.WachKillsCaseA D HW F
-
-def Conclusion2 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (CA CB CK : ℝ) : Prop := Formalism.MainNotions.LiftingTheory.LiftTheoremAllCases D HW F CA CB CK
-
-def aux₃ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (CA CB CK : ℝ) : Prop := Conclusion1 D HW F ∧ Conclusion2 D HW F CA CB CK
-
-def Stmt (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (CA CB CK : ℝ) : Prop := admitted D HW F Cm → aux₃ D HW F CA CB CK
 
 end Formalism.MainNotions.CrystallineLiftingBounds

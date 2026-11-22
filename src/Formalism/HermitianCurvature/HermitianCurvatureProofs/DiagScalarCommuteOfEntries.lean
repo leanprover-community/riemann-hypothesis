@@ -13,8 +13,6 @@ section Basic
 
 variable {K A S : Type} [Field K] [Ring A] [Algebra K A] [Fintype S] [DecidableEq S]
 
-local notation "JJ" => (Formalism.YangianSpanCharacter.T.J (SlopeTestRemainingChoices S A))
-
 theorem ins_smul (a : S) (c : K) (M : M2 (SlopeTestRemainingChoices S A)) : ins a (c • M) = c • ins a M := by
   simp only [ins, Finset.smul_sum, Matrix.smul_apply, mul_smul_comm]
 
@@ -135,8 +133,6 @@ section Main
 
 variable {K A S : Type} [Field K] [StarRing K] [Ring A] [StarRing A] [Algebra K A] [StarModule K A]
   [Fintype S] [DecidableEq S]
-
-local notation "JJ" => (Formalism.YangianSpanCharacter.T.J (SlopeTestRemainingChoices S A))
 
 theorem alg_smul (c : K) (M : M2 (SlopeTestRemainingChoices S A)) : algebraMap K (SlopeTestRemainingChoices S A) c • M = c • M := by
   funext i j

@@ -122,9 +122,6 @@ noncomputable def perpEquiv {w : V} (hw : IsUnit (B.h w w)) : E × B.perp w ≃ 
     intro z
     simp
 
-theorem perpEquiv_apply {w : V} (hw : IsUnit (B.h w w)) (p : E × B.perp w) :
-    B.perpEquiv hw p = p.1 • w + (p.2 : V) := rfl
-
 theorem norm_perp {w v : V} (hv : B.h v w = 0) (a : E) :
     B.h (a • w + v) (a • w + v) = a * τ a * B.h w w + B.h v v := by
   have hwv : B.h w v = 0 := by rw [B.symm v w, hv, map_zero]

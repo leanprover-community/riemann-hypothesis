@@ -52,10 +52,4 @@ def wtM {Φ : Type} [Fintype Φ] (k : ℕ) (κ : Φ → ℕ) : ℕ := k * Fintyp
 def cmConst {Φ : Type} [Fintype Φ] (dF d : ℝ) (k : ℕ) (κ : Φ → ℕ) : ℝ :=
   dF ^ (((k : ℝ) - 1) / 2) * (∏ τ, Real.Gamma ((k : ℝ) + κ τ)) * (2 * Real.pi / Real.sqrt d) ^ absK κ
 
-def BB {Φ : Type} [Fintype Φ] (dF d : ℝ) (k : ℕ) (κ : Φ → ℕ) (p_power_smul_sub_sum LB : ℝ) (nff : ℕ) (SN : ℝ) : ℝ :=
-  (((k : ℝ) - 1) / 2) * Real.log dF + ∑ τ, Real.log (Real.Gamma ((k : ℝ) + κ τ))
-    + (absK κ : ℝ) * Real.log (2 * Real.pi)
-    + (((k : ℝ) * Fintype.card Φ + absK κ) / 2) * Real.log d
-    + ((wtM k κ : ℝ) / 2) * |p_power_smul_sub_sum| + LB + (wtM k κ : ℝ) * Real.log nff + 2 * SN
-
 end Formalism.PairingDivisionLocalBalance

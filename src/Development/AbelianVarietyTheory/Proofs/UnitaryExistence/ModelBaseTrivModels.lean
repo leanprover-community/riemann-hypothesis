@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.LocalToGlobal.ProjectiveLattices.CuspFree
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntegrableOnIntegrand
-public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.ModelFamilies
 
 @[expose] public section
 

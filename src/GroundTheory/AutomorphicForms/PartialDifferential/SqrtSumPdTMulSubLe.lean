@@ -15,8 +15,6 @@ noncomputable section
 
 variable {n : ℕ}
 
-local notation "𝔼" => EuclideanSpace ℝ (Fin n)
-
 theorem pd_mul {f g : 𝔼 → ℂ} (hf : ContDiff ℝ ∞ f) (hg : ContDiff ℝ ∞ g) (i : Fin n) :
     pd i (fun y ↦ f y * g y) = fun y ↦ pd i f y * g y + f y * pd i g y := by
   funext y

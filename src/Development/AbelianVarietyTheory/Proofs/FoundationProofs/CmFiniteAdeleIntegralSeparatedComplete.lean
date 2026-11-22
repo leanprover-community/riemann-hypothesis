@@ -19,9 +19,6 @@ open Formalism.UG Formalism.UG.P
 
 variable {E : Type} [Field E] [NumberField E]
 
-local notation "𝔸" => FiniteAdeleRing (𝓞 ℚ) ℚ
-local notation "𝒮" => tensInt (F := ℚ) 𝔸 (intOE E) (intAd ℚ)
-
 def ratBasis (E : Type) [Field E] [NumberField E] :
     Module.Basis (Fin (Module.finrank ℤ (𝓞 E))) ℚ E :=
   (Module.finBasis ℤ (𝓞 E)).localizationLocalization ℚ (nonZeroDivisors ℤ) E
@@ -109,7 +106,6 @@ theorem tensInt_separated_complete (E : Type) [Field E] [NumberField E] :
     obtain ⟨w, hw, h⟩ := main 1 one_pos
     rw [h]
     exact add_mem (hx 1) (nsmul_mem hw 1)
-
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.StandardLatticesGL3 in
 theorem integral_separated_complete : ∀ (D : D7), (∀ y : AE D, (∀ N : ℕ, 0 < N → ∃ w ∈ OhE D, y = (N : AE D) * w) → y = 0) ∧ ∀ x : ℕ → AE D, (∀ N, x N ∈ OhE D) → (∀ N m : ℕ, 0 < N → 0 < m → ∃ w ∈ OhE D, x (N * m) = x N + (N : AE D) * w) → ∃ y ∈ OhE D, ∀ N : ℕ, 0 < N → ∃ w ∈ OhE D, y = x N + (N : AE D) * w :=

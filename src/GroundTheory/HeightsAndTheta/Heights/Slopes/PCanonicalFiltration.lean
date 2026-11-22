@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import GroundTheory.HeightsAndTheta.Heights.Slopes
+public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.DegreeTopEqArithDegree
+public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.StatementsBundles
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Slopes
 
 @[expose] public section
@@ -86,21 +87,6 @@ theorem degree_le_of_le_of_rank_eq {G S : Submodule (𝓞 K) E.carrier} (hGS : G
   have hcard := Nat.card_le_card_of_injective φ hinj
   have hpos : 0 < Nat.card (G ⧸ Submodule.span (𝓞 K) (Set.range s)) := Nat.card_pos
   exact Real.log_le_log (by exact_mod_cast hpos) (by exact_mod_cast hcard)
-
-structure IsCanonicalFrom (F : Submodule (𝓞 K) E.carrier) {m : ℕ}
-    (f : Fin (m + 1) → Submodule (𝓞 K) E.carrier) : Prop where
-  bot : f 0 = F
-  top : f (Fin.last m) = ⊤
-  strictMono : StrictMono f
-  saturated : ∀ i, E.Saturated (f i)
-  semistable : ∀ (i : Fin m) (G : Submodule (𝓞 K) E.carrier), f i.castSucc < G → G ≤ f i.succ →
-    E.relSlope (f i.castSucc) G ≤ E.relSlope (f i.castSucc) (f i.succ)
-  anti : StrictAnti fun i : Fin m ↦ E.relSlope (f i.castSucc) (f i.succ)
-
-theorem isCanonicalFrom_bot_iff {m : ℕ} (f : Fin (m + 1) → Submodule (𝓞 K) E.carrier) :
-    IsCanonicalFrom E ⊥ f ↔ E.IsCanonicalFiltration f :=
-  ⟨fun h ↦ ⟨h.bot, h.top, h.strictMono, h.saturated, h.semistable, h.anti⟩,
-    fun h ↦ ⟨h.bot, h.top, h.strictMono, h.saturated, h.semistable, h.anti⟩⟩
 
 end CanonicalFiltration
 

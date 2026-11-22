@@ -39,8 +39,6 @@ private theorem sum_pi {m j : ℕ} (F : (Fin (m + 1) → ℕ) → ℂ) :
   · intro A _
     simp
 
-private theorem esymm_zero' (s : Multiset ℂ) : s.esymm 0 = 1 := by simp [Multiset.esymm]
-
 private theorem esymm_add' (s t : Multiset ℂ) (j : ℕ) :
     (s + t).esymm j = ∑ a ∈ Finset.range (j + 1), s.esymm a * t.esymm (j - a) :=
   _root_.UpperTheory.Reformulated.B.Qk43.esymm_add s t j

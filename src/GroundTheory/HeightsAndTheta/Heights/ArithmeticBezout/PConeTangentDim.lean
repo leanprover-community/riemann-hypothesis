@@ -25,9 +25,6 @@ def HermNorm.pointEquiv (h : HermNorm n) : EuclideanSpace ℂ (Fin n) ≃ₗ[ℂ
     (Matrix.toLinearEquiv' h.mat.transpose
       (Matrix.invertibleOfIsUnitDet _ (by rw [Matrix.det_transpose]; exact h.isUnit_det)))
 
-theorem HermNorm.pointEquiv_apply (h : HermNorm n) (y : EuclideanSpace ℂ (Fin n)) :
-    h.pointEquiv y = h.pointOf y := rfl
-
 theorem hausdorffMeasure_pointOf_preimage_null (h : HermNorm n) {d : ℝ} (hd : 0 ≤ d)
     {S : Set (EuclideanSpace ℂ (Fin n))} (hS : μH[d] S = 0) :
     μH[d] {y | WithLp.toLp 2 (h.pointOf y) ∈ S} = 0 := by

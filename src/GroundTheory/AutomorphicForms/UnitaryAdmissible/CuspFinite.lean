@@ -22,8 +22,6 @@ attribute [local instance 100] LieRing.ofAssociativeRing
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => rationalGLOne (K := K) (n := n)
-
 theorem aeval_laplacian_sliceL_eq_zero {ι : Type*} [Fintype ι]
     (b : Module.Basis ι ℝ (isExpLieAlgebra K n).lieSubalgebra) (P : Polynomial ℂ) {φ : cuspForms K n}
     (hφ : Polynomial.aeval (uActionCusp K n (laplacianU K n b)) P φ = 0) (g : AdelicGLn.AdelicGL K n) :

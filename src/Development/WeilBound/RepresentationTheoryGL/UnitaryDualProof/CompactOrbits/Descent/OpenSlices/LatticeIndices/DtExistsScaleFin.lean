@@ -68,8 +68,6 @@ theorem dt_exists_scale_fin {ι : Type*} [Fintype ι] (c : ι → k) :
       (Finset.single_le_sum (fun j _ => Nat.zero_le (N j)) (Finset.mem_univ i))
   exact mul_le_mul_left h1 _
 
-theorem dt_smul_coe_O (o : 𝒪[k]) (x : Matrix (Fin n) (Fin n) k) : o • x = (o : k) • x := rfl
-
 theorem det_transfer (Z : Subalgebra k (Matrix (Fin n) (Fin n) k))
     (F : Subalgebra.centralizer k (Z : Set (Matrix (Fin n) (Fin n) k)) →ₗ[k]
       Subalgebra.centralizer k (Z : Set (Matrix (Fin n) (Fin n) k)))

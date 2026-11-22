@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
-public import Formalism.TameInertiaTowers.CentralOrderTwo.OrderOfThreeUnitsTwoPow
 
 @[expose] public section
 

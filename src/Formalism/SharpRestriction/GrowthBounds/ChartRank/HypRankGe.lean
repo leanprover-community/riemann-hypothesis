@@ -168,9 +168,6 @@ theorem sum_le_finrank_FiB (S : StepIn M i hi G) (β : S.Ch) (hπ : FiBPi S β) 
     rw [← Module.finrank_pi_fintype ℂ]
     exact LinearMap.finrank_le_finrank_of_injective hψ
 
-def RankTie (S : StepIn M i hi G) (β : S.Ch) : Prop :=
-  KAat.CompInj (S.K β).lev (S.loc β) ∧ (∀ a, PStabEq.GamOnto (S.K β).lev (S.loc β) a) ∧ PStabEq.LocHypC (S.K β).lev (S.loc β)
-
 def RepOk (S : StepIn M i hi G) (β : S.Ch) (rep : {c // S.chOf c = β} → S.cmpt β × (Hc S β).P.Tup) : Prop :=
   ∀ c, ∃ (g : ∀ v, GL (Fin ((Hc S β).P.m + 1)) ((Hc S β).P.Qq v)) (γ₀ : GL (Fin (D.R.N i)) D.host.E) (κ₀ : (S.K β).lev.U),
     γ₀ ∈ UJ (sigD D : D.host.E →+* D.host.E) (gramN D i hi) ∧
@@ -213,7 +210,6 @@ theorem mk_eq_of (S : StepIn M i hi G) (β : S.Ch) {γ : GL (Fin (D.R.N i)) D.ho
   refine (@DoubleCoset.eq _ _ _ _ _ _).2 ⟨⟨_, PStabEq.bc_mem hγ⟩, Subgroup.mem_subgroupOf.2 ⟨γ, hγ, rfl⟩, ⟨_, PStabEq.U_le κ.2⟩,
     Subgroup.mem_subgroupOf.2 κ.2, Subtype.ext ?_⟩
   exact hx
-
 
 set_option maxHeartbeats 1000000 in
 theorem fiBPi (S : StepIn M i hi G) (β : S.Ch) : FiBPi S β := by

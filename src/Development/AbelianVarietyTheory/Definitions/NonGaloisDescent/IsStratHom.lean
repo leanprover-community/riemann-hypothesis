@@ -70,7 +70,6 @@ def prism : Obj l ↥(OL K) where
 
 def toP : bk.S ≃+* bk.prism.A := RingEquiv.refl _
 
-
 variable {bk} in
 def hf {B : Obj l ↥(OL K)} (f : Hom bk.prism B) : bk.S →+* B.A := f.f
 
@@ -237,19 +236,5 @@ structure Height {K : FinExt l} {bk : BK K} {d : ℕ} {ρ : ↥(GK K) → Matrix
   A' : Matrix (Fin d) (Fin d) bk.S
   A_mul : A * A' = bk.E ^ b • (1 : Matrix (Fin d) (Fin d) bk.S)
   φ : bk.ev bk.E ^ a • Y.map WittVector.frobenius = Y * A.map bk.ev
-
-def Strat.unit {K : FinExt l} (bk : BK K) (d : ℕ) : Strat bk d where
-  a := 0
-  b := 0
-  A := 1
-  A' := 1
-  A_mul := by simp
-  ε _ _ := 1
-  ε_refl _ := rfl
-  ε_trans _ _ _ := mul_one _
-  ε_nat k _ _ := Matrix.map_one _ (map_zero _) (map_one _)
-  ε_φ f g := by
-    rw [pow_zero, pow_zero, Matrix.map_one _ (map_zero _) (map_one _), Matrix.map_one _ (map_zero _) (map_one _),
-      Matrix.map_one _ (map_zero _) (map_one _)]
 
 end GlobalTheory.BSP

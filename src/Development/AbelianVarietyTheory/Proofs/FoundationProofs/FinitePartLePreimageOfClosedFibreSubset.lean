@@ -180,10 +180,6 @@ theorem mem_finitePart_of_eq_closedPoint (f : X ⟶ Spec R) [LocallyOfFiniteType
     (PrimeSpectrum.localization_away_comap_range (Localization.Away e) e).ge hey
   exact ⟨z, by simp [hz]⟩
 
-theorem preimage_finitePart_eq_top (f : X ⟶ Spec R) [LocallyOfFiniteType f] [LocallyQuasiFinite f]
-    (h : Y ⟶ X) [IsFinite (h ≫ f)] : h ⁻¹ᵁ finitePart f = ⊤ :=
-  preimage_eq_top_of_closedFibre_subset f _ (mem_finitePart_of_eq_closedPoint f) h
-
 variable (f : X ⟶ Spec R) [IsSeparated f] [LocallyOfFiniteType f] [QuasiCompact f]
   [LocallyQuasiFinite f]
 
@@ -209,24 +205,6 @@ end Henselian
 section Lift
 
 variable {R : CommRingCat.{u}} [HenselianLocalRing R] {X Y Z : Scheme.{u}}
-
-def finitePartLift (f : X ⟶ Spec R) [LocallyOfFiniteType f] [LocallyQuasiFinite f]
-    (h : Y ⟶ X) [IsFinite (h ≫ f)] : Y ⟶ finitePart f :=
-  IsOpenImmersion.lift (finitePart f).ι h (by
-    rintro _ ⟨y, rfl⟩
-    rw [Scheme.Opens.range_ι]
-    exact (preimage_finitePart_eq_top f h).ge (Set.mem_univ y))
-
-theorem finitePartLift_ι (f : X ⟶ Spec R) [LocallyOfFiniteType f] [LocallyQuasiFinite f]
-    (h : Y ⟶ X) [IsFinite (h ≫ f)] : finitePartLift f h ≫ (finitePart f).ι = h :=
-  IsOpenImmersion.lift_fac _ _ _
-
-theorem existsUnique_lift_finitePart (f : X ⟶ Spec R) [LocallyOfFiniteType f]
-    [LocallyQuasiFinite f] (g : Y ⟶ Spec R) [IsFinite g] (h : Y ⟶ X) (w : h ≫ f = g) :
-    ∃! l : Y ⟶ finitePart f, l ≫ (finitePart f).ι = h := by
-  subst w
-  exact ⟨finitePartLift f h, finitePartLift_ι f h, fun l hl ↦ by
-    rw [← cancel_mono (finitePart f).ι, hl, finitePartLift_ι]⟩
 
 end Lift
 

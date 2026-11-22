@@ -1,6 +1,9 @@
 module
 
-public import Formalism.LocalToGlobal.GaloisLevelStructure.NGalTied
+public import Formalism.LocalToGlobal.GaloisLevelStructure.TiedGal
+public import Formalism.LocalToGlobal.GaloisLevelStructure.TiedLevel
+public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAutLoc
+public import Formalism.LocalToGlobal.PlaceMapInjectivity.MapPlInjective
 public import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations
 
 @[expose] public section

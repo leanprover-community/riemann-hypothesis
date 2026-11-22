@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.HermitianLattices.StatementLat
 public import Formalism.HermitianLattices.DefsCS
-public import Formalism.GelfandTransference.EnergyIdentity
 
 @[expose] public section
 
@@ -20,15 +19,6 @@ variable {K V ι : Type*} [Field K] [NumberField K] [StarRing K] [AddCommGroup V
 
 def vecAt (b : Module.Basis ι K V) (v : InfinitePlace K) (x : V) : ι → ℂ :=
   fun i => v.embedding (b.repr x i)
-
-def gramAt (h : V →ₗ⋆[K] V →ₗ[K] K) (b : Module.Basis ι K V) (v : InfinitePlace K) :
-    Matrix ι ι ℂ :=
-  Matrix.of fun i j => v.embedding (h (b i) (b j))
-
-def IsFrame (h : V →ₗ⋆[K] V →ₗ[K] K) (b : Module.Basis ι K V) (v : InfinitePlace K)
-    (X : Matrix ι ι ℂ) : Prop :=
-  IsUnit X.det ∧ ∃ ε : ι → ℂ, (∀ i, ε i = 1 ∨ ε i = -1) ∧
-    X.conjTranspose * gramAt h b v * X = Matrix.diagonal ε
 
 def fcoord (b : Module.Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ) (v : InfinitePlace K)
     (x : V) : ι → ℂ :=
@@ -81,9 +71,6 @@ variable [Module (RingOfIntegers K) V] [IsScalarTower (RingOfIntegers K) K V]
 def idealSmul (I : Submodule (RingOfIntegers K) K) (L : Submodule (RingOfIntegers K) V) :
     Submodule (RingOfIntegers K) V :=
   Submodule.span (RingOfIntegers K) {z | ∃ a ∈ I, ∃ x ∈ L, z = a • x}
-
-def matAt (b : Module.Basis ι K V) (v : InfinitePlace K) (g : V →ₗ[K] V) : Matrix ι ι ℂ :=
-  (LinearMap.toMatrix b b g).map v.embedding
 
 end Maj
 

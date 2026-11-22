@@ -178,9 +178,6 @@ noncomputable def H.linearMap {F G : X.Modules} (φ : F ⟶ G) (n : ℕ) :
       Sheaf.H.map.{w'} (smulAbRingHom G r).asHom n (Sheaf.H.map.{w'} (modulesAbMap φ) n x)
     rw [← Sheaf.H.map_comp_apply, ← Sheaf.H.map_comp_apply, smulAbRingHom_comp]
 
-lemma H.linearMap_apply {F G : X.Modules} (φ : F ⟶ G) (n : ℕ) (x : Sheaf.H.{w'} (modulesAb F) n) :
-    H.linearMap A φ n x = Sheaf.H.map.{w'} (modulesAbMap φ) n x := rfl
-
 noncomputable def H.moduleFunctor (n : ℕ) : X.Modules ⥤ ModuleCat.{w'} A where
   obj F := ModuleCat.of A (Sheaf.H.{w'} (modulesAb F) n)
   map φ := ModuleCat.ofHom (H.linearMap A φ n)

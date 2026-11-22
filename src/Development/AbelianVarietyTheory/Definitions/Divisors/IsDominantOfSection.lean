@@ -64,68 +64,11 @@ def num {n : ℕ} (y : Fin n → CartierDiv W.Z) : ℤ :=
 
 def Small : Prop := topologicalKrullDim W.Z ≤ (Y.dim + 1 : ℕ)
 
-def triv (Y : Var F) : Dbl Y where
-  Z := Y.X
-  p₁ := 𝟙 _
-  p₂ := 𝟙 _
-  δ := 𝟙 _
-  str_eq := rfl
-  proj := by rw [Category.id_comp]; exact Y.isProjOver
-  closed := inferInstance
-  δ₁ := Category.id_comp _
-  δ₂ := Category.id_comp _
-  diag _ _ _ _ := ⟨_, rfl⟩
-
 end Dbl
 
 section Square
 
 open CategoryTheory.Limits
-
-def Dbl.prod (Y : Var F) : Dbl Y where
-  Z := pullback Y.str Y.str
-  integral := by
-    have : IsLocallyNoetherian Y.X := LocallyOfFiniteType.isLocallyNoetherian Y.str
-    exact GeometricallyIntegral.isIntegral_of_isLocallyNoetherian (pullback.fst Y.str Y.str)
-  p₁ := pullback.fst _ _
-  p₂ := pullback.snd _ _
-  δ := pullback.diagonal Y.str
-  str_eq := pullback.condition
-  proj := ProjSpace.isProjOver_pullback Y.isProjOver Y.isProjOver
-  closed := inferInstance
-  δ₁ := pullback.diagonal_fst _
-  δ₂ := pullback.diagonal_snd _
-  diag K _ w h := ⟨(w ≫ pullback.fst _ _) (IsLocalRing.closedPoint K), by
-    have e : (w ≫ pullback.fst _ _) ≫ pullback.diagonal Y.str = w := by
-      apply pullback.hom_ext <;> simp [h]
-    exact (Scheme.Hom.comp_apply _ _ _).symm.trans
-      (congrArg (fun u : Sp K ⟶ _ => u (IsLocalRing.closedPoint K)) e)⟩
-
-theorem Dbl.prod_dim (Y : Var F) : topologicalKrullDim (Dbl.prod Y).Z = (Y.dim + Y.dim : ℕ) := by
-  have h1 := smoothOfRelativeDimension_isStableUnderBaseChange.{0} Y.dim
-  have : SmoothOfRelativeDimension Y.dim (pullback.fst Y.str Y.str) :=
-    MorphismProperty.of_isPullback (P := @SmoothOfRelativeDimension Y.dim)
-      (IsPullback.of_hasPullback Y.str Y.str).flip Y.smooth
-  have : SmoothOfRelativeDimension (Y.dim + Y.dim) (pullback.fst Y.str Y.str ≫ Y.str) := inferInstance
-  have := SmoothOfRelativeDimension.smooth Y.dim (pullback.fst Y.str Y.str)
-  have : GeometricallyConnected (pullback.fst Y.str Y.str ≫ Y.str) := GeometricallyConnected.comp _ _
-  obtain ⟨V, e, hd, -⟩ := Var.exists_iso (pullback.fst Y.str Y.str ≫ Y.str) (Y.dim + Y.dim) (Dbl.prod Y).proj
-  rw [← hd, ← V.topologicalKrullDim_eq]
-  exact IsHomeomorph.topologicalKrullDim_eq _ e.hom.homeomorph.isHomeomorph
-
-theorem Dbl.prod_small (Y : Var F) (h : Y.dim ≤ 1) : (Dbl.prod Y).Small := by
-  unfold Dbl.Small
-  rw [Dbl.prod_dim]
-  exact_mod_cast (by omega : Y.dim + Y.dim ≤ Y.dim + 1)
-
-theorem Dbl.prod_ne (Y : Var F) (h : 0 < Y.dim) : (Dbl.prod Y).p₁ ≠ (Dbl.prod Y).p₂ := fun e => by
-  have e' : pullback.fst Y.str Y.str = pullback.snd Y.str Y.str := e
-  let i : pullback Y.str Y.str ≅ Y.X := ⟨pullback.fst _ _, pullback.diagonal Y.str,
-    by apply pullback.hom_ext <;> simp [← e'], pullback.diagonal_fst _⟩
-  have h2 := (IsHomeomorph.topologicalKrullDim_eq _ (Scheme.homeoOfIso i).isHomeomorph).trans Y.topologicalKrullDim_eq
-  have h3 := (Dbl.prod_dim Y).symm.trans h2
-  have : Y.dim + Y.dim = Y.dim := by exact_mod_cast h3
-  omega
 
 end Square
 
@@ -141,7 +84,6 @@ variable {ι : Type} {m : ι → ℕ}
 def AlmostLow (τ : ι) (a b : Fin (m τ)) {K : Type} [Field K] (C : Mat m K) : Prop :=
   (∀ σ, (C σ).det ≠ 0) ∧ C τ a b ≠ 0 ∧
     ∀ σ (i j : Fin (m σ)), i < j → ¬ ((⟨σ, i⟩ : Root m) = ⟨τ, a⟩ ∧ (⟨σ, j⟩ : Root m) = ⟨τ, b⟩) → C σ i j = 0
-
 
 open Classical in
 def shear (τ : ι) (a b : Fin (m τ)) {K : Type} [CommRing K] (t : K) : Mat m K := fun σ =>

@@ -15,7 +15,6 @@ open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV
 
 section Core
 
-
 open Classical in
 def ocbChiV {k : Type} [Field k] (χ : kˣ →* ℂˣ) (x : k) : ℂ := if h : x = 0 then 0 else ((χ (Units.mk0 x h) : ℂˣ) : ℂ)
 
@@ -26,7 +25,6 @@ def ocbAllow (k₀ m t N p p' : ℕ) : Prop :=
   if p' < k₀ then p < p' ∨ (k₀ ≤ p ∧ p < k₀ + (m / 2 - 1))
   else if p' < k₀ + m - 1 then (k₀ ≤ p ∧ p < p') ∨ (m / 2 < p' + 1 - k₀ ∧ p < k₀)
   else p < k₀ + m - 1 ∨ (p < N ∧ (p - (k₀ + m - 1)) / t ≤ (p' - (k₀ + m - 1)) / t)
-
 
 open Classical in
 def ocbPhiS {k : Type} [Field k] (ψ₀ : AddChar k ℂ) (χ : ℕ → kˣ →* ℂˣ) (k₀ m t j n' c n : ℕ) : Loc.SF k ℂ (n' + (c + 1)) (n + c) :=
@@ -126,18 +124,11 @@ def ocbNeAt (σ : X.K →+* ℂ) (i : ℕ) (P : HeightOneSpectrum (𝓞 X.E))
   @ocbNe (𝓞 X.E ⧸ P.asIdeal) (resField P) (resFintype P) (ocbPsiC Ch σ P) (ocbChiC Ch σ P) R.k R.m R.t (i + 1) (R.N i) (cOf R (i + 1))
     (R.N (i + 1)) hbar
 
-
 variable (R) in
 def ocbInAt (i : ℕ) (P : HeightOneSpectrum (𝓞 X.E))
     (hbar : (Fin (R.N (i + 1) + cOf R (i + 1)) → 𝓞 X.E ⧸ P.asIdeal) ≃ₗ[𝓞 X.E ⧸ P.asIdeal] (Fin (R.N (i + 1) + cOf R (i + 1)) → 𝓞 X.E ⧸ P.asIdeal)) :
     Prop :=
   @ocbIn (𝓞 X.E ⧸ P.asIdeal) (resField P) R.k R.m R.t (cOf R (i + 1)) (R.N (i + 1)) hbar
-
-def NonvanishingGivesLatticeRepresentative (m2 : ℕ) : Prop :=
-  OcbBase Ch sel mu cst m2 → ∀ i, i < m2 → ∀ P : rowSG Pr sel mu, P.1 ∈ Pr.vGs → ∀ h : AutY X R (i + 1),
-    FiniteSumNonzeroLargeDepth Ch sel mu cst i P 1 h →
-      ∃ ρ ∈ Loc.R1 X.E (R.N (i + 1)) (cOf R (i + 1)), ∃ h₀ ∈ stabL X.E _ (lamYat (Pr := Pr) (R := R) (i + 1) P.1),
-        h = ρ * h₀ ∧ FiniteSumNonzeroLargeDepth Ch sel mu cst i P 1 h₀
 
 def ReductionExistsInLatticeStabilizer (σ : X.K →+* ℂ) (m2 : ℕ) : Prop :=
   OcbBase Ch sel mu cst m2 → ∀ i, i < m2 → ∀ P : rowSG Pr sel mu, P.1 ∈ Pr.vGs →
@@ -167,7 +158,6 @@ def ocbXAllow (k₀ rS j t p p' : ℕ) : Prop :=
 def ocbXPat (k₀ rS j t : ℕ) (hbar : GL (Fin N) κ) : Prop :=
   (∀ p, p < k₀ + j → ocbM hbar p p = 1) ∧ ∀ p p', p < N → p' < N → p ≠ p' → ocbM hbar p p' ≠ 0 → ocbXAllow k₀ rS j t p p'
 
-
 open Classical in
 def ocbChiK (χ : κˣ →* Kˣ) (x : κ) : K := if h : IsUnit x then ((χ h.unit : Kˣ) : K) else 0
 
@@ -188,7 +178,6 @@ def OcbGrpGLoc (m2 : ℕ) : Prop :=
   OcbBase Ch sel mu cst m2 → ∀ j, j ≤ m2 + 1 → ∀ (w : {w // w ∈ Pr.vGs}) (hbar : GL (Fin (R.N j)) (𝓞 X.E ⧸ w.1.asIdeal)),
     (∃ g ∈ prCat (Pr := Pr) cst.sharp j w.1 (1 : AutY X R j),
       ∀ x ∈ stdAt X.E (R.N j) w.1, redV w.1 (g x) = hbar.1.mulVec (redV w.1 x)) ↔ ocbXPat R.k R.rS j R.t hbar
-
 
 open Classical in
 def OcbChrGLoc (m2 : ℕ) : Prop :=

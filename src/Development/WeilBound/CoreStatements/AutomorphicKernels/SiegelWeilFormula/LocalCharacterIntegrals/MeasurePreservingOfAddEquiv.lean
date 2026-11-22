@@ -51,12 +51,8 @@ theorem crd_eq_zero {a : Fv F v ⊗[F] E} : crd v a = 0 ↔ a = 0 := (bA E v).eq
 def crdM (p q : ℕ) : (Fin p → Fin q → Fv F v ⊗[F] E) ≃ₜ (Fin p → Fin q → Fin (Module.finrank F E) → Fv F v) :=
   Homeomorph.piCongrRight fun _ => Homeomorph.piCongrRight fun _ => (crdL v).toHomeomorph
 
-theorem crdM_apply (p q : ℕ) (x : Fin p → Fin q → Fv F v ⊗[F] E) : crdM v p q x = fun i j => crd v (x i j) := rfl
-
 def crdV (n : ℕ) : (Fin n → Fv F v ⊗[F] E) ≃ₜ (Fin n → Fin (Module.finrank F E) → Fv F v) :=
   Homeomorph.piCongrRight fun _ => (crdL v).toHomeomorph
-
-theorem crdV_apply (n : ℕ) (y : Fin n → Fv F v ⊗[F] E) : crdV v n y = fun i => crd v (y i) := rfl
 
 variable {v}
 

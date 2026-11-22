@@ -24,9 +24,6 @@ namespace GlobalTheory.CompanionTheory.Ar.LieRank
 
 variable {S : Scheme.{0}}
 
-theorem dualMap_apply {R R' : Type} [CommRing R] [CommRing R'] (c : R →+* R') (a : DualNumber R) :
-    dualMap c a = TrivSqZeroExt.inl (c a.fst) + TrivSqZeroExt.inr (c a.snd) := rfl
-
 theorem dualMap_comp_algebraMap {R R' : Type} [CommRing R] [CommRing R'] (c : R →+* R') :
     (dualMap c).comp (algebraMap R (DualNumber R)) = (algebraMap R' (DualNumber R')).comp c := by
   refine RingHom.ext fun r => ?_

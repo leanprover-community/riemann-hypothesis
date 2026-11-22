@@ -3,8 +3,7 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.StandingNumericalData
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalDataRealPlace
-public import Formalism.SharpRestriction.CuspSpanNormBounds.IsGramNorm
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PSDKOnOfPSDK
+public import Formalism.SharpRestriction.CuspSpanNormBounds.AuxiliarySlotStates
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FlagEEqHyperbolic
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LinQRawRange
@@ -37,21 +36,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : Formalism.BasicNotions.D7}
 
-def CNT {Y : TermTie D} {δ : ∀ p : PlF D, (D.s.atP p).Fp}
-    {M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep} {u u' : D.what₂.Word} (X : TermLoc D Y δ M u u') (c : ℝ) : Prop :=
-  0 < c ∧
-  ∀ w : Point D.host.E (D.R.rS + 1), Gpt (D.mem u).A.T (D.mem u').A.T w ≠ 0 →
-    {γ : D.s.Term u u' | D.s.generic γ ∧ D.s.ptOf γ = w}.Finite ∧
-    (¬ TotPos (Gpt (D.mem u).A.T (D.mem u').A.T w) → ∀ γ : D.s.Term u u', D.s.generic γ → D.s.ptOf γ ≠ w) ∧
-    ∀ _ : TotPos (Gpt (D.mem u).A.T (D.mem u').A.T w),
-    ∀ ϖ : ∀ p : PlF D, 𝒪[(D.s.atP p).Fp], (∀ p, Irreducible (ϖ p)) →
-    ∀ γ₀ : D.s.Term u u', D.s.generic γ₀ → Gpt (D.mem u).A.T (D.mem u').A.T (D.s.ptOf γ₀) ≠ 0 →
-      ∑' γ : {γ : D.s.Term u u' // D.s.generic γ ∧ D.s.ptOf γ = w ∧
-          kind (D.s.ptOf γ₀) = kind w ∧ ∀ p, thCls X γ p = thCls X γ₀ p},
-        (X.massT γ.1 : ℂ) * D.s.cTerm γ.1 =
-      (n0 c (D.mem u).A.T (D.mem u').A.T w : ℂ) * (densT X ϖ γ₀ : ℂ) *
-        BBG M δ (D.mem u).A.T (D.mem u').A.T w (kind (D.s.ptOf γ₀)) (thCls X γ₀) / autG M (thCls X γ₀)
-
 end Formalism.MainNotions.LocalBesselAndTopKernel.GLOB
 
 namespace Formalism.MainNotions.LocalBesselAndTopKernel.SW
@@ -79,25 +63,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def hyp (D : D7) (large₂ : SizeData₂ D) (C0 C' Cl Cg cb Cu cT CT : ℝ) : Prop :=
   StandingNumericalData D C0 ∧ StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT ∧ 1 ≤ C0
-
-
-open Classical in
-def gsFam (D : D7) (u u' : D.what₂.Word) : D.s.Pair u u' → ℂ := fun P =>
-  if scalarP D.s P ∧ D.s.Gterm (D.s.pfst P) ≠ 0 ∧ D.s.Gterm (D.s.psnd P) ≠ 0 then D.s.pval P else 0
-
-def Conclusion1 (D : D7) (CA CA' Ce : ℝ) : Prop :=
-  let N : ℝ := NA D
-  let r : ℝ := D.R.rS
-  ∀ u u' : D.what₂.Word, u ≠ u' → Summable (gsFam D u u') ∧
-  ∀ (x : D.what₂.Tau → LocalDataRealPlace D) (L : LatticeDataWithDual D),
-    IsLocA D u u' x → IsLatGLOB D L →
-    (∀ τ, IsCutS (uS D u τ) (uS D u' τ) (Set.Icc (x τ).a (x τ).b) ∧
-      CA * ((D.R.k : ℝ) * N * (r + 1) ^ 2 + N ^ 2 * (r + 1) ^ 2 + N ^ 3) ≤ (x τ).b - (x τ).a ∧
-      (x τ).a ≤ (x τ).a1 ∧ (x τ).b1 ≤ (x τ).b ∧ N ^ 3 / 2 ≤ (x τ).b1 - (x τ).a1) →
-    (r + 1) * (CA / ThA D CA u u' x L) ^ (D.R.f : ℝ) ≤ 1 → CA' ≤ ThA D CA u u' x L →
-    genScal D u u' ≤ (1 + CA * (r + 1) * (CA / ThA D CA u u' x L) ^ (D.R.f : ℝ)) * (1 + eSum D Ce) *
-      (∏ᶠ p ∈ typedPl D, (1 + 3 / (Ideal.absNorm p.asIdeal : ℝ))) *
-      (D.duS u : ℝ) * (D.duS u' : ℝ) / D.what₂.Dstar
 
 def projection_sandwich_lattice (D : D7) : Prop :=
   UnitaryVolumeMass.cTvA D

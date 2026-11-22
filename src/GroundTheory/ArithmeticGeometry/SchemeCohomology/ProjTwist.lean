@@ -26,7 +26,6 @@ def IsFraction (k : ℤ) {U : Opens (ProjectiveSpectrum.top 𝒜)} (f : ∀ x : 
   ∃ (i j : ℕ) (_ : (j : ℤ) = i + k) (r s : A) (_ : r ∈ 𝒜 j) (_ : s ∈ 𝒜 i)
     (s_nin : ∀ x : U, s ∉ x.1.asHomogeneousIdeal), ∀ x : U, f x = Localization.mk r ⟨s, s_nin x⟩
 
-
 variable (𝒜) in
 def isFractionPrelocal (k : ℤ) :
     PrelocalPredicate fun x : ProjectiveSpectrum.top 𝒜 => Loc 𝒜 x where
@@ -34,7 +33,6 @@ def isFractionPrelocal (k : ℤ) :
   res := by
     rintro V U i f ⟨a, b, hab, r, s, hr, hs, h, w⟩
     exact ⟨a, b, hab, r, s, hr, hs, (h <| i ·), (w <| i ·)⟩
-
 
 variable (𝒜) in
 def isLocallyFraction (k : ℤ) : LocalPredicate fun x : ProjectiveSpectrum.top 𝒜 => Loc 𝒜 x :=
@@ -103,7 +101,6 @@ theorem neg_mem' (k : ℤ) (U : Opens (ProjectiveSpectrum.top 𝒜)) (a : ∀ x 
   refine ⟨V, m, iV, i, j, hij, -r, s, neg_mem hr, hs, hsn, fun y => ?_⟩
   simp only [Pi.neg_apply, w y, Localization.neg_mk]
 
-
 variable (𝒜) in
 def twistSheafInType (k : ℤ) : Sheaf (Type u) (ProjectiveSpectrum.top 𝒜) :=
   subsheafToTypes (isLocallyFraction 𝒜 k)
@@ -120,7 +117,6 @@ instance (k : ℤ) (U : (Opens (ProjectiveSpectrum.top 𝒜))ᵒᵖ) :
     AddCommGroup ((twistSheafInType 𝒜 k).obj.obj U) :=
   (sectionsSubgroup k U.unop).toAddCommGroup
 
-
 open ProjectiveSpectrum in
 def toLocFun (U : Opens (ProjectiveSpectrum.top 𝒜)) :
     (ProjectiveSpectrum.Proj.structureSheaf 𝒜).obj.obj (op U) →+* (∀ x : U, Loc 𝒜 x.1) where
@@ -134,8 +130,6 @@ open ProjectiveSpectrum in
 instance (U : Opens (ProjectiveSpectrum.top 𝒜)) :
     Module ((ProjectiveSpectrum.Proj.structureSheaf 𝒜).obj.obj (op U)) (∀ x : U, Loc 𝒜 x.1) :=
   Module.compHom _ (toLocFun U)
-
-
 
 open ProjectiveSpectrum in
 def sectionsSubmodule (k : ℤ) (U : Opens (ProjectiveSpectrum.top 𝒜)) :
@@ -153,8 +147,6 @@ def sectionsSubmodule (k : ℤ) (U : Opens (ProjectiveSpectrum.top 𝒜)) :
     rw [e1, e2, HomogeneousLocalization.val_mk, Localization.mk_mul]
     rfl
 
-
-
 variable (𝒜) in
 def twistPresheafAb (k : ℤ) : (Opens (ProjectiveSpectrum.top 𝒜))ᵒᵖ ⥤ AddCommGrpCat.{u} where
   obj U := AddCommGrpCat.of ((twistSheafInType 𝒜 k).obj.obj U)
@@ -164,7 +156,6 @@ def twistPresheafAb (k : ℤ) : (Opens (ProjectiveSpectrum.top 𝒜))ᵒᵖ ⥤ 
       map_add' _ _ := rfl }
 
 end ProjTwist
-
 
 open ProjTwist in
 noncomputable def twistingSheaf (k : ℤ) : (Proj 𝒜).Modules where
@@ -188,9 +179,6 @@ lemma isLocallyFraction_val (s : Γ(twistingSheaf 𝒜 k, U)) :
 
 def mkSection (f : ∀ x : U, Loc 𝒜 x.1) (hf : (isLocallyFraction 𝒜 k).pred f) :
     Γ(twistingSheaf 𝒜 k, U) := ⟨f, hf⟩
-
-lemma val_smul (t : Γ(Proj 𝒜, U)) (s : Γ(twistingSheaf 𝒜 k, U)) (x : U) :
-    val (t • s) x = (t.1 x).val * val s x := rfl
 
 end ProjTwist
 

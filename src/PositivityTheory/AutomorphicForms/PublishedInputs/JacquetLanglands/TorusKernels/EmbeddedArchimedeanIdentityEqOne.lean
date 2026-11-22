@@ -19,9 +19,6 @@ private noncomputable def cR (i j : Fin 2) : (Fin 2 → Fin 2 → ℝ) →L[ℝ]
 private noncomputable def cC (i j : Fin 2) : (Fin 2 → Fin 2 → ℝ) →L[ℝ] ℂ :=
   Complex.ofRealCLM.comp (cR i j)
 
-private theorem cR_apply (i j : Fin 2) (x : Fin 2 → Fin 2 → ℝ) : cR i j x = x i j := rfl
-private theorem cC_apply (i j : Fin 2) (x : Fin 2 → Fin 2 → ℝ) : cC i j x = (x i j : ℂ) := rfl
-
 theorem key (k : ℕ) (F : ℂ → ℂ) (F' : ℂ) (hF : HasDerivAt F F' Complex.I) (x0 : Fin 2 → Fin 2 → ℝ)
     (h00 : x0 0 0 = 1) (h01 : x0 0 1 = 0) (h10 : x0 1 0 = 0) (h11 : x0 1 1 = 1) :
     ∃ L : (Fin 2 → Fin 2 → ℝ) →L[ℝ] ℂ,
@@ -50,7 +47,6 @@ theorem key (k : ℕ) (F : ℂ → ℂ) (F' : ℂ) (hF : HasDerivAt F F' Complex
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
-
 open Classical in
 def iv (v : InfinitePlace F) (y : Fin 2 → Fin 2 → ℝ) : TR.Lie F 2 := fun a b w => if w = v then y a b else 0
 
@@ -63,9 +59,6 @@ def ivL (v : InfinitePlace F) : (Fin 2 → Fin 2 → ℝ) →L[ℝ] TR.Lie F 2 :
       map_smul' := fun s x => by
         funext a b w
         by_cases h : w = v <;> simp [iv, h] }
-
-theorem ivL_apply (v : InfinitePlace F) (y : Fin 2 → Fin 2 → ℝ) : ivL v y = iv v y := rfl
-
 
 open Classical in
 def i0 (v : InfinitePlace F) : TR.Lie F 2 := fun a b w => if w = v then 0 else (1 : Matrix (Fin 2) (Fin 2) ℝ) a b
@@ -85,8 +78,6 @@ theorem map_embedded_archimedean_matrix (v : InfinitePlace F) (x : Fin 2 → Fin
   · subst h
     simp [i0, ivL_apply, iv]
   · simp [i0, ivL_apply, iv, h]
-
-theorem sv (i j a b : Fin 2) : (Matrix.of.symm (Matrix.single i j (1 : ℝ))) a b = if i = a ∧ j = b then 1 else 0 := rfl
 
 theorem at_point (hB : B1b) (k : InfinitePlace F → ℕ) (f : X (InfinitePlace F) × GF F → ℂ) (φ : GA F 2 → ℂ)
     (hφ : φ ∈ TR.Sm F 2) (hhol : ∀ x, SepHol fun z => f (z, x)) (hrel : Rel k f φ) (v : InfinitePlace F) (G : GA F 2) :

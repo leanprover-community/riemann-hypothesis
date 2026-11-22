@@ -43,8 +43,6 @@ def LevelsL (L : LevCh D T) (eG : G ≃* G0 L.Pg D.R.r) (F : Face D A3.A) : Prop
       ∀ g hg hg', (levPOf eG D.what₂.embLL (F.lvl true).P (F.lvl true).ψ).chi ⟨g, hg⟩ =
         (PsharpSym L.Pg D.R.r D.R.rS D.R.k ψ0).chi ⟨reord π g, hg'⟩
 
-def GrpAt (L : LevCh D T) (F : Face3 D A3) : Prop := ∃ eG : G ≃* G0 L.Pg D.R.r, RecL A3 L eG ∧ LevelsL A3 L eG F.lv2
-
 abbrev BType (L : LevCh D T) (cX : CoefA D.sp.X') (cV : ∀ i, CoefA (Vc D i)) (pl : Pl0 → Pl D.host.E) : Type :=
   Bridge.FamReal D A3.A cX.coef (fun i => (cV i).coef) (fun t => levEnvOf D.sp.X' L.βX (L.datXt t) pl (A3.A.ok t))
     (fun i t => levEnvOf (Vc D i) (L.βV i) (L.datVt i t) pl (A3.A.ok t))
@@ -78,14 +76,12 @@ structure BrgL (L : LevCh D T) (eG : G ≃* G0 L.Pg D.R.r) (cX : CoefA D.sp.X') 
 
 end Pieces
 
-
 variable (D) in
 def ModY : Prop :=
   (∀ j, Nonempty (DSModel (Yc D j) (parB (Ptw D) (min j D.R.m)))) ∧ Nonempty (DSModel D.sp.X' (parB (Ptw D) D.R.m))
 
 def ModWAt (σ0 : D.what₂.LL →+* ℂ) (MW : ∀ i σ, DSModel (Wc D i) (parAt (Wc D i) σ)) : Prop :=
   ∀ i τ a, (MW i σ0).ε τ a = decide ((a : ℕ) < ((Wc D i).sig (tauE D τ)).1)
-
 
 variable (D) in
 def VPos : Prop := ∀ i, (Vc D i).IsPosDef
@@ -99,11 +95,6 @@ def hZ (X : Type) [AddCommGroup X] [Module ℂ X] : HMod X where
 end Junk
 
 variable {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
-
-
-
-
-
 
 end Formalism.IndefR.Seed
 

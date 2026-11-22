@@ -620,9 +620,6 @@ variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableS
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 variable {H : HermSp M V} {r : ℕ} {P : FPair H r}
 
-def massS (R : Reps P) (d : Datum P) (S : Term V M r → Prop) : ℝ :=
-  ∑' t : {t // t ∈ R.RT d ∧ S t}, mu P t.1
-
 end NGAsm
 
 section NGAll

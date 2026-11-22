@@ -47,9 +47,6 @@ open _root_.WittVector Polynomial
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-local notation "𝔹" => BDeRhamPlus (normInteger ℂ_[p]) p
-local notation "𝔹dR" => BDeRham (normInteger ℂ_[p]) p
-
 variable {ε : PreTilt (normInteger ℂ_[p]) p} (hε : PreTilt.untilt ε = 1)
   (hζ : PreTilt.untilt ((_root_.frobeniusEquiv (PreTilt (normInteger ℂ_[p]) p) p).symm ε) ≠ 1)
 
@@ -62,7 +59,6 @@ theorem natCast_p_ne_zero_bdR : (p : 𝔹) ≠ 0 := by
   rw [← map_natCast (algebraMap ℚ_[p] 𝔹) p]
   exact fun h => (Nat.cast_ne_zero.2 hp.out.ne_zero : (p : ℚ_[p]) ≠ 0)
     ((algebraMap ℚ_[p] 𝔹).injective (by rw [h, map_zero]))
-
 
 set_option maxHeartbeats 1600000 in
 theorem exists_iotaB_mul_eq (u : BCris hε) : ∃ w s : ACris ℂ_[p] p, s ≠ 0 ∧
@@ -77,7 +73,6 @@ theorem exists_iotaB_mul_eq (u : BCris hε) : ∃ w s : ACris ℂ_[p] p, s ≠ 0
   have := congrArg (iota ℂ_[p] p) h0
   rw [map_mul, map_pow, map_pow, iota_periodT, map_natCast, map_zero] at this
   exact mul_ne_zero (pow_ne_zero _ (fontaineT_ne_zero hε hζ)) (pow_ne_zero _ natCast_p_ne_zero_bdR) this
-
 
 set_option maxHeartbeats 1600000 in
 theorem isACrisFraction_of_mem_fracBCris {y : PadicAlgCl p}
@@ -108,7 +103,6 @@ theorem mem_unramifiedClosure_of_mem_fracBCris {y : PadicAlgCl p}
 
 variable {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
 
-
 set_option maxHeartbeats 1600000 in
 theorem fracBCris_fixed [FiniteDimensional ℚ_[p] K] {x : 𝔹dR} (hx : x ∈ fracBCris hε hζ)
     (hfix : ∀ σ : Gal(PadicAlgCl p/K), σ • x = x) :
@@ -117,7 +111,6 @@ theorem fracBCris_fixed [FiniteDimensional ℚ_[p] K] {x : 𝔹dR} (hx : x ∈ f
   have e : x = algClToBdRField p (k : PadicAlgCl p) := hk.symm
   refine ⟨k, ⟨k.2, ?_⟩, e⟩
   exact mem_unramifiedClosure_of_mem_fracBCris hε hζ (e ▸ hx)
-
 
 end ACris
 

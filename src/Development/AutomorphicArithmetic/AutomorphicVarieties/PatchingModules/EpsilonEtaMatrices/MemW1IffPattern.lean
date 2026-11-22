@@ -38,8 +38,6 @@ private theorem sum_eta {ι : Type} (s : Finset ι) (f : ι → DD X g) : (∑ i
   | empty => simp
   | insert i s hi ih => simp [Finset.sum_insert hi, ih]
 
-private theorem alg_eq (c : A) : algebraMap A (DD X g) c = DD.C (algebraMap A X c) := rfl
-
 private theorem epM_mul_epM (Z Z' : Fin g → Matrix (Fin n) (Fin n) X) : DD.epM Z * DD.epM Z' = 0 := by
   ext a b <;> simp [Matrix.mul_apply, DD.epM, sum_a, sum_ep, sum_ep', sum_eta]
 

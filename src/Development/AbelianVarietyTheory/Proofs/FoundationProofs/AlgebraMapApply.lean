@@ -17,8 +17,6 @@ section Adele
 
 variable {F : Type} [Field F] [NumberField F]
 
-local notation "𝔸" => FiniteAdeleRing (𝓞 F) F
-
 theorem algebraMap_apply' (a : 𝓞 F) (w : HeightOneSpectrum (𝓞 F)) :
     algebraMap (𝓞 F) (FiniteAdeleRing (𝓞 F) F) a w =
       algebraMap (𝓞 F) (w.adicCompletion F) a := rfl
@@ -109,9 +107,6 @@ end Adele
 section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
-local notation "𝔸" => FiniteAdeleRing (𝓞 F) F
-local notation "ι" => inclE (F := F) (E := E) 𝔸
 
 theorem eps_eq (v : HeightOneSpectrum (𝓞 F)) :
     afsplitEps E v = (1 : E) ⊗ₜ[F] afsplitI v 1 := rfl

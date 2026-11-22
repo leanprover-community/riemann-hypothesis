@@ -21,7 +21,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RepresentedB
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsNefPow
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SemipositiveNonnegCombination
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NefFibOfIsNef
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SlopeTestRemainingChoices
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
 
 @[expose] public section

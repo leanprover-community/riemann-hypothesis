@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.Tor
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.InterNumDetNonposSplitTorus
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso
 public import Development.AbelianVarietyTheory.Definitions.Divisors.WellChosen
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IntegralBound
@@ -34,7 +33,6 @@ public import Formalism.LocalRingCardinality.DataParamsT
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SizeBoundsForFamily
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightParameterStrictAntitone
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatConstantBoundedByNine
-public import Development.AbelianVarietyTheory.Definitions.Divisors.P22
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsLogCanonicalMultipleCanonical
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GeometricallyConnectedOfIsIsoRestrict
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DenseInterior

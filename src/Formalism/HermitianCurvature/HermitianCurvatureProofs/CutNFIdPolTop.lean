@@ -1,6 +1,6 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFId
+public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimENF
 
 @[expose] public section
 

@@ -18,8 +18,6 @@ open GlobalTheory.Amp.Rad GlobalTheory.Amp.UEmb
 
 variable {k r : ℕ}
 
-theorem mI_eq (j : Fin (k + 1)) : mI k r j = wI k r j := rfl
-
 def rowAct (u : Matrix (Fin r) (Fin r) ℂ) (B : Fin r → Fin (k + 1) → ℂ) : Fin r → Fin (k + 1) → ℂ :=
   fun a j => ∑ c, star (u a c) * B c j
 

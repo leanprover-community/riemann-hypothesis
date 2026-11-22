@@ -209,9 +209,6 @@ theorem U_U (T : Tor D) (x t : VC D N N') (G : VC D N N' → ℂ) (z : VC D N N'
 
 variable (cc : Ideal (𝓞 D.host.K)) (δ : ℂ)
 
-theorem embV_apply (x : Matrix (Fin N') (Fin N) D.host.E) (τ i j) :
-    embV D (tor0 D cc δ) x τ i j = embT D τ (x i j) := rfl
-
 theorem sq_embV (hG : admG1 D) (x y : Matrix (Fin N') (Fin N) D.host.E) :
     sq (embV D (tor0 D cc δ) x) (embV D (tor0 D cc δ) y) =
       D.host.φ₀ ((hYY D x y : D.host.K) : D.host.E) := by
@@ -346,9 +343,6 @@ theorem exists_coords {x : VC D N N'} (hx : x ∈ sat (LaB D (tor0 D cc δ) b)) 
   refine ⟨fun j => (m : ℂ)⁻¹ * c j, fun j => ⟨m, hm, by simpa [hm'] using hc j⟩, ?_⟩
   simp only [mul_smul, ← Finset.smul_sum]
   rw [← e, ← Nat.cast_smul_eq_nsmul ℂ, inv_smul_smul₀ hm']
-
-theorem coordB_eq (T : Tor D) (j : Fin r) (z : VC D N N') :
-    coordB D T b j z = sq z (embV D T (b j)) := rfl
 
 theorem U_pullB (hG : admG1 D) (hb : OnB D b) (c : Fin r → ℂ) (g : ℂ → ℂ) (z : VC D N N') :
     U D (tor0 D cc δ) (∑ j, c j • embV D (tor0 D cc δ) (b j)) (pullB D (tor0 D cc δ) b g) z =

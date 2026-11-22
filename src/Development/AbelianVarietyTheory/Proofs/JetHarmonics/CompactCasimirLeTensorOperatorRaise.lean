@@ -25,10 +25,6 @@ def tensAct {V ι : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [Fint
     ext i
     simp [Finset.smul_sum, smul_smul, mul_comm]
 
-theorem tensAct_apply {V ι : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [Fintype ι]
-    (E : Module.End ℂ V) (A : Matrix ι ι ℂ) (x : PiLp 2 (fun _ : ι => V)) (i : ι) :
-    tensAct E A x i = E (x i) + ∑ j, A i j • x j := rfl
-
 def sumMap {V N ι : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [Fintype ι]
     [NormedAddCommGroup N] [InnerProductSpace ℂ N] (φ : ι → V →ₗ[ℂ] N) :
     PiLp 2 (fun _ : ι => V) →ₗ[ℂ] N where

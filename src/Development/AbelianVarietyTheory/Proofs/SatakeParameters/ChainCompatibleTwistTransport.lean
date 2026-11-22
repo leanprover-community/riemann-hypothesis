@@ -1,7 +1,8 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.ColumnAvoidanceConditions
+public import Formalism.SharpRestriction.Divisibility.LiftErrorLocal
+public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 
 @[expose] public section
 

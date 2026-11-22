@@ -28,13 +28,6 @@ lemma sqrt_mul_selfC (d : ℕ) : ((Real.sqrt d : ℝ) : ℂ) * ((Real.sqrt d : �
 lemma sqrt_pos' (d : ℕ) (hd : 0 < d) : 0 < Real.sqrt d :=
   Real.sqrt_pos.mpr (by exact_mod_cast hd)
 
-lemma conj_theta (b : ℤ) (d : ℕ) :
-    conj (cmTheta b d) = ((b : ℂ) - Complex.I * ((Real.sqrt d : ℝ) : ℂ)) / 2 := by
-  rw [cmTheta_eq_half_b_add_sqrt_half_I]
-  simp only [map_add (f := _), map_mul, Complex.conj_ofReal, Complex.conj_I]
-  push_cast
-  ring
-
 private theorem four_mul_a_mul_c_complex_of_int (a : ℕ) (b c : ℤ) (d : ℕ) (h : 4 * (a : ℤ) * c = b ^ 2 + d) :
     (4 : ℂ) * (a : ℂ) * (c : ℂ) = (b : ℂ) ^ 2 + (d : ℂ) := by
   have h' := congrArg (fun t : ℤ => (t : ℂ)) h
@@ -81,16 +74,6 @@ lemma mem_iff (a : ℕ) (b : ℤ) (d : ℕ) (ha : 0 < a) (hd : 0 < d) (z : ℂ) 
 end Cm1
 
 open Cm1
-
-theorem cm_theta_eq : CmThetaEq := by
-  intro a b c d h
-  have hs := Formalism.L2.Th1.F.Cm1.sqrt_mul_selfC d
-  have hc := _root_.Formalism.L2.Th1.F.Cm1.four_mul_a_mul_c_complex_of_int a b c d h
-  refine ⟨Formalism.L2.Th1.F.Cm1.theta_sq a b c d h, ?_, ?_⟩
-  · rw [Formalism.L2.Th1.F.Cm1.conj_theta]; unfold cmTheta; ring
-  · rw [Formalism.L2.Th1.F.Cm1.conj_theta]; unfold cmTheta
-    linear_combination (-(1 / 4 : ℂ) * ((Real.sqrt d : ℝ) : ℂ) ^ 2) * Complex.I_sq
-      + (1 / 4 : ℂ) * hs - (1 / 4 : ℂ) * hc
 
 theorem cm_stable : CmStable := by
   intro a b c d ha hd h m n z hz

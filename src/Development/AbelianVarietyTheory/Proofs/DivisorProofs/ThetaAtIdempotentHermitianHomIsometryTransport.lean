@@ -4,7 +4,6 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegIdxOfIsStd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HomMapApply
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousKapSymm
@@ -38,10 +37,6 @@ variable {S T S' T' : HSp D}
 
 private def rd (φ : WO S T ≃+ WO S' T') : (WO S T → ℂ) ≃ₗ[ℂ] (WO S' T' → ℂ) :=
   LinearEquiv.funCongrLeft ℂ ℂ φ.symm.toEquiv
-
-private theorem rd_apply (φ : WO S T ≃+ WO S' T') (f : WO S T → ℂ) (w : WO S' T') : rd φ f w = f (φ.symm w) := rfl
-
-private theorem rd_symm_apply (φ : WO S T ≃+ WO S' T') (g : WO S' T' → ℂ) (t : WO S T) : (rd φ).symm g t = g (φ t) := rfl
 
 private theorem rd_symm_rd (φ : WO S T ≃+ WO S' T') (g : WO S T → ℂ) : rd φ.symm (rd φ g) = g := by
   funext w; simp [rd_apply]

@@ -14,8 +14,6 @@ open scoped ENNReal NNReal
 
 variable (P Q : ℕ)
 
-local notation "J" => Formalism.UG.Jpq P Q
-
 abbrev MM : Type := Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ
 
 instance instBorelLie : BorelSpace (lieU P Q) := ⟨rfl⟩

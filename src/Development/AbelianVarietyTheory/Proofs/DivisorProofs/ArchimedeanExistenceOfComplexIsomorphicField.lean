@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.Degeneration
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianKeyValueAdaptedVectorsFieldIsoStatement
 public import Development.AbelianVarietyTheory.Definitions.Divisors.TanRel
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsPolAVSectionInverseImage
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbsoluteSiegel
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffTopMonEqZero
 
 @[expose] public section

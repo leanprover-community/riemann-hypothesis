@@ -39,14 +39,7 @@ end Ops
 section Chain
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {s κ : ℕ} (S : SymData k s κ) (t : Type) [Fintype t] [DecidableEq t]
 
-def SupportAt : Prop :=
-  ∀ j c (H : j + 1 + c = s) (p : ℕ), 1 ≤ p → p ≤ c + 1 → ∀ h : GL (XIx (Fin κ) t (j + 1) ⊕ Fin (c + 1)) k,
-    h ∈ stabLat ((S.T t).bas (j + 1) (c + 1) (by omega)) → ∀ x₀ e,
-      (S.T t).Phi j (c + 1) (by omega) ((h⁻¹).val * affPt p x₀ e) ≠ 0 →
-      ∃ r ∈ R k (XIx (Fin κ) t (j + 1)) (c + 1) p, ∃ u ∈ ((S.T t).lev (j + 1) (c + 1) (by omega)).J, h = r * u
-
 variable [MeasurableSpace k] [BorelSpace k] (ν : Measure k)
-
 
 open Classical in
 def PureCol : Prop :=
@@ -54,7 +47,6 @@ def PureCol : Prop :=
     flCol S.ψ ν (r + 1) ((S.T t).Phi j (c + 1) (by omega)) x =
       (C : ℂ) * (S.T t).entry S.ψ ν j c H 1 1 x.toCols₁ *
         (if (fun a => x a (Sum.inr ())) ∈ box (XIx (Fin κ) t (j + 1)) (S.ϖ ^ r)⁻¹ then 1 else 0)
-
 
 open Classical in
 def PureRow : Prop :=

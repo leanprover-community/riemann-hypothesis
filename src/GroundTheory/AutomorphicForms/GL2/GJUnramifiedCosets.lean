@@ -21,8 +21,6 @@ namespace Spherical
 variable {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   {n : ℕ}
 
-local notation "ϖ" => (GLnLocal.uniformizer F : F)
-
 variable (F) in
 def digitSum (m : ℕ) (a : Fin m → 𝓀[F]) : F :=
   ∑ t : Fin m, (residueLift F (a t) : F) * ϖ ^ (t : ℕ)
@@ -116,10 +114,8 @@ theorem eq_of_bdd_digitSum_sub (m : ℕ) {a b : Fin m → 𝓀[F]}
 
 abbrev UpperPairs (n : ℕ) : Type := {p : Fin n × Fin n // p.1 < p.2}
 
-
 variable (F) in
 abbrev NormalData (l : Fin n → ℕ) : Type _ := ∀ p : UpperPairs n, Fin (l p.1.1) → 𝓀[F]
-
 
 variable (F) in
 def normalMat (l : Fin n → ℕ) (c : NormalData F l) : Matrix (Fin n) (Fin n) F :=
@@ -148,7 +144,6 @@ theorem det_normalMat (l : Fin n → ℕ) (c : NormalData F l) :
 theorem det_normalMat_ne_zero (l : Fin n → ℕ) (c : NormalData F l) : (normalMat F l c).det ≠ 0 := by
   rw [det_normalMat]
   exact Finset.prod_ne_zero_iff.2 fun i _ => pow_ne_zero _ (Cartan.uniformizer_ne_zero F)
-
 
 variable (F) in
 def normalGL (l : Fin n → ℕ) (c : NormalData F l) : GL (Fin n) F :=
@@ -411,7 +406,6 @@ theorem normalGL_apply_mem (l : Fin n → ℕ) (c : NormalData F l) (i j : Fin n
   · rw [normalMat_of_gt l c hij]
     exact (𝒪[F]).zero_mem
 
-
 variable (F n) in
 def integralShell (k : ℕ) : Set (GL (Fin n) F) :=
   {g | (∀ i j, g i j ∈ 𝒪[F]) ∧ GodementJacquet.ordDet g = k}
@@ -503,7 +497,6 @@ theorem two_mul_sum_upperPairs_sub_rhoPair (l : Fin n → ℕ) :
 
 variable [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) F)]
   {μ : Measure (GL (Fin n) F)} [μ.IsHaarMeasure]
-
 
 variable (μ) in
 def integralHecke (k : ℕ) : SphericalHecke μ (F := F) (n := n) :=

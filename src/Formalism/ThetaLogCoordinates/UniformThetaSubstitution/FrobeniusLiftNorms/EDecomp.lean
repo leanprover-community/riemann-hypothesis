@@ -222,9 +222,6 @@ def tpS (TT : Finset (ZMod (2 * ν))) (ξ : ZMod (2 * ν) → Fin r0 → K) (x :
 
 def zlS (x : ZV ν r0 r1) : MvPowerSeries (TpV ν r1 ⊕ ZV ν r0 r1) K := MvPowerSeries.X (Sum.inr x)
 
-theorem zSub_eq (TT : Finset (ZMod (2 * ν))) (ξ : ZMod (2 * ν) → Fin r0 → K) (x : ZV ν r0 r1) :
-    zSub TT ξ x = zlS x + tpS TT ξ x := rfl
-
 theorem constantCoeff_zSub (TT : Finset (ZMod (2 * ν))) (ξ : ZMod (2 * ν) → Fin r0 → K)
     (x : ZV ν r0 r1) : MvPowerSeries.constantCoeff (zSub TT ξ x) = 0 := by
   rw [zSub, map_add (f := _), MvPowerSeries.constantCoeff_X, zero_add]
@@ -501,7 +498,6 @@ theorem low_order_second_sum_variant [NeZero ν] (p E : ℕ) (s : ZMod (2 * ν))
 end Rest
 
 end EDec
-
 
 open EDec in
 theorem decomposition_of_hh : HhDecomp := by

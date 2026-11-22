@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Formalism.PieriBlockIdeals.ParamsWindow
+public import Formalism.RankGapBounds.CloudMinFalse
 
 @[expose] public section
 

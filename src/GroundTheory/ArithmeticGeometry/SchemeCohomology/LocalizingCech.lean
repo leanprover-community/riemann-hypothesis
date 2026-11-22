@@ -16,7 +16,6 @@ universe u
 
 variable {X : TopCat.{u}} {P : (Opens X)ᵒᵖ ⥤ AddCommGrpCat.{u}} {R : Type u} [CommRing R]
 
-
 variable (P) in
 structure LocalizingAction (D : R → Opens X) where
 
@@ -72,9 +71,6 @@ def actC (r : R) (n : ℕ) : Cochain P U n →+ Cochain P U n where
   toFun σ i := A.act r _ (σ i)
   map_zero' := by funext i; exact map_zero _
   map_add' σ τ := by funext i; exact map_add _ _ _
-
-lemma actC_apply (r : R) (n : ℕ) (σ : Cochain P U n) (i : Fin (n + 1) → ι) :
-    actC A U r n σ i = A.act r _ (σ i) := rfl
 
 lemma d_actC (r : R) (n : ℕ) (σ : Cochain P U n) :
     d P U n (actC A U r n σ) = actC A U r (n + 1) (d P U n σ) := by
@@ -169,7 +165,6 @@ theorem exists_d_eq_pow_smul [Fintype ι] {n : ℕ} (σ : Cochain P (D ∘ h) (n
     rw [← Nat.sub_add_cancel (hM0 J), pow_add, A.act_mul, hM J, map_zero]
   rw [map_sub, sub_eq_zero, ← A.act_mul, ← pow_add] at hMJ
   exact hMJ
-
 
 include A in
 theorem cechAcyclic_of_localizingAction [Finite ι] (g : R) (hcov : ⨆ i, D (h i) = D g) :

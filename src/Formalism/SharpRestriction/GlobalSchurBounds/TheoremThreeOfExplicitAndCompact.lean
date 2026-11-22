@@ -12,11 +12,6 @@ namespace Formalism.MainNotions.StandardLattice
 open NumberField Formalism.BasicNotions Finset
 open scoped ENNReal
 
-def projection_sandwich_lattice (D : D7) : Prop :=
-  letI := D.host.cmStar
-  ∀ (W : HSpace D.host.E) (P Q : ℕ), W.SigOK → (∀ τ, W.sig τ = (P, Q)) → 3 ≤ W.rank →
-    ∀ s : Bool, (if s then 1 ≤ P else 1 ≤ Q) → ∃ x : W.V, W.hT x x = (if s then 1 else -1)
-
 section DS
 
 open Formalism.MainNotions.S MeasureTheory Matrix
@@ -47,8 +42,6 @@ def SigmaDegreeTwoSidedBoundOfGap (D : D7) : Prop :=
     (1 - ep0) * dimV (rowLam D ρ) ≤ D.dsig ρ ∧
     D.dsig ρ ≤ 4 * dTau (rowSgn D) (rowLam D ρ) *
       (3 * (pY D : ℝ) * (qY D : ℝ) * lamAbs (rowLam D ρ)) ^ (pY D * qY D)
-
-def DstarM (D : D7) : ℝ := DstarP D (D.host.g 0) (D.host.g 1) (massI D D.R.r) D.dsig
 
 def BaseVolumeEqualsMass (D : D7) : Prop := volY0 D = massI D D.R.r
 

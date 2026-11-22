@@ -84,9 +84,6 @@ def unipEquiv (h : Hyp ν u L D Λ E S) : L ≃ h.unipSubgroup :=
     ⟨fun _ _ hξη => Subtype.ext (h.injective (congrArg (fun x : h.unipSubgroup => ((x : Λ) : G)) hξη)),
       fun ⟨_, ξ, hξ, hξe⟩ => ⟨⟨ξ, hξ⟩, Subtype.ext (Subtype.ext hξe)⟩⟩
 
-theorem coe_unipEquiv (h : Hyp ν u L D Λ E S) (ξ : L) : (((h.unipEquiv ξ : h.unipSubgroup) : Λ) : G) = u ξ :=
-  rfl
-
 def latticeEquiv (h : Hyp ν u L D Λ E S) {q : G} (hq : q ∈ Λ) : L ≃ L where
   toFun η := ⟨S q (-η), h.mapsTo q hq _ (L.neg_mem η.2)⟩
   invFun ξ := ⟨-S q⁻¹ ξ, L.neg_mem (h.mapsTo q⁻¹ (inv_mem hq) _ ξ.2)⟩

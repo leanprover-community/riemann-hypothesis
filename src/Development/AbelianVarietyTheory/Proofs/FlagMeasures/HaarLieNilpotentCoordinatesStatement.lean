@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarLieNilpotentCoordinates
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NCoords
 
 @[expose] public section
 

@@ -34,8 +34,6 @@ private theorem val_pt {κ : Type} [Fintype κ] (wa wb : InfinitePlace E → Lis
   simp only [Arch.valW, Finset.prod_mul_distrib]
   linear_combination ((∏ v, zVal (wa v) (A.χa v)) * ∏ v, zVal (wb v) (A.χb v)) * h1
 
-private theorem zVal_nil {m : ℕ} (χ : Inf m) : zVal [] χ = 1 := rfl
-
 private theorem zVal_ite {m : ℕ} (c : Prop) [Decidable c] (L : List (Bool × ℕ)) (χ : Inf m) :
     zVal (if c then L else []) χ = if c then zVal L χ else 1 := by
   split_ifs <;> rfl

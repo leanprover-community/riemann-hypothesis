@@ -37,9 +37,4 @@ theorem IsDegZeroSmooth.mul {u v : ((Σ k, ι k) → ℂ) → ℝ} (hu : IsDegZe
 
 end
 
-def planeSq (z : (Σ k, PBlk 3 k) → ℂ) : ℝ := ∑ i : Fin 3, ‖z ⟨(), i⟩‖ ^ 2
-
-def planeBump (z : (Σ k, PBlk 3 k) → ℂ) : ℝ :=
-  Real.smoothTransition (4 * ‖z ⟨(), 0⟩‖ ^ 2 / planeSq z - 1)
-
 end GroundTheory.Heights₂.Heights

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SerFi
 public import Formalism.UnipotentAdelicQuotients.SiegelWeilUnitaryConvergent
 public import Formalism.LocalToGlobal.HilbertRowConditions.AllJoin
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.STiesR
-public import Formalism.LocalToGlobal.ThresholdSelection
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.WuDecayAll
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.RowsDef
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCountE

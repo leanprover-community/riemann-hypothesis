@@ -16,11 +16,6 @@ namespace GlobalTheory.BSP.DiscZero
 
 variable {l : ℕ} [hl : Fact l.Prime] {k : Type} [Field k] [CharP k l] [PerfectRing k l]
 
-local notation "𝕎k" => WittVector l k
-local notation "Pk" => PreDisc l (0 : WittVector l k) 1
-local notation "Dk" => Disc l (0 : WittVector l k) 1
-local notation "sI" => IsLocalization.Away.invSelf (S := PreDisc l (0 : WittVector l k) 1) (l : WittVector l k)
-
 omit [Field k] [CharP k l] [PerfectRing k l] in
 theorem l_pos : (0 : ℝ) < l := Nat.cast_pos.2 hl.out.pos
 
@@ -31,7 +26,6 @@ omit [CharP k l] [PerfectRing k l] in
 theorem l_mul_inv : (l : Pk) * sI = 1 := by
   rw [← map_natCast (algebraMap (𝕎k) (Pk)) l]
   exact IsLocalization.Away.mul_invSelf _
-
 
 omit [CharP k l] [PerfectRing k l] in
 theorem norm_l_mul (y : Pk) : ‖(l : Pk) * y‖ = ‖y‖ / l := by
@@ -251,7 +245,6 @@ theorem exists_of_norm_le (x : Dk) (hx : ‖x‖ ≤ 1) : ∃ w : 𝕎k, x = toD
   linarith [hb n]
 
 end GlobalTheory.BSP.DiscZero
-
 
 open GlobalTheory.BSP.DiscZero in
 theorem GlobalTheory.BSP.disc_zero_one : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K),

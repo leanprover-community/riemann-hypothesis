@@ -119,9 +119,6 @@ def postL (A₁ : Wp →L[ℂ] Wp) (A₂ : Wq →L[ℂ] Wq) : (Wq →L[ℂ] Wp) 
       map_add' := fun A B => by ext v; simp
       map_smul' := fun c A => by ext v; simp }
 
-theorem postL_apply (A₁ : Wp →L[ℂ] Wp) (A₂ : Wq →L[ℂ] Wq) (A : Wq →L[ℂ] Wp) :
-    postL A₁ A₂ A = A₁.comp (A.comp A₂) := rfl
-
 def mulLR (s s' : Mat k r) : Mat k r →L[ℝ] Mat k r :=
   LinearMap.toContinuousLinearMap ((LinearMap.mulLeft ℝ s).comp (LinearMap.mulRight ℝ s'))
 

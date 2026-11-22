@@ -14,14 +14,9 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-local notation "OO" p:max => (Valuation.valuationSubring (Valued.v : Valuation (PadicAlgCl p) NNReal))
-local notation "cPt" p:max => (IsLocalRing.closedPoint (OO p) : Sp (OO p))
-local notation "gPt" p:max => spMap (ValuationSubring.subtype (OO p))
-
 set_option backward.isDefEq.respectTransparency false
 
 namespace GlobalTheory
-
 
 open Polynomial in
 theorem exists_etale_int_surjective_of_finite_field (K : Type) [Field K] [Finite K] :

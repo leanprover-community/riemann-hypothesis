@@ -62,11 +62,6 @@ theorem uPow_neg_mul (n : ℤ) : (uPow (-n) : LaurentSeries R) * uPow n = 1 := b
   first | rw [neg_add_cancel] | rw [neg_add_self] | rw [add_left_neg]
   exact uPow_zero
 
-theorem uPow_mul_neg (n : ℤ) : (uPow n : LaurentSeries R) * uPow (-n) = 1 := by
-  rw [← uPow_add]
-  first | rw [add_neg_cancel] | rw [add_neg_self] | rw [add_right_neg]
-  exact uPow_zero
-
 theorem uPow_natCast (n : ℕ) : (uPow (n : ℤ) : LaurentSeries R) = toL (X ^ n) := by
   induction n with
   | zero => simp [uPow_zero]

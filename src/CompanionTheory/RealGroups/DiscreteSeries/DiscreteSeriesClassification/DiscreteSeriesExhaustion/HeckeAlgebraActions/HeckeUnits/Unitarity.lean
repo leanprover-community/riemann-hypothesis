@@ -1,7 +1,9 @@
 module
 
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.HeckeUnitTensors.OmegaProjectionScalarCharacter
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HeckeDualityFactsStatement
+public import Mathlib
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.InfinitesimalCharacterStatementStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HeckeNonVanishingStatement
 
 @[expose] public section
 
@@ -73,7 +75,6 @@ theorem coeY_mem_Isub
   rw [← e, aeval_CH, Om'_CH K hK, LinearMap.zero_apply, map_zero, zero_add, aeval_lin]
   exact aeval_mem_Isub B hI
 
-
 variable (χ s) in
 def phiB (hS : ScalChar X χ) : X.V →ₗ[ℂ] ↥(backSub (step X (χ s)) (χ s + 1)) :=
   (phi0 χ s hS).codRestrict (backSub (step X (χ s)) (χ s + 1)) fun v => mem_of_eig' (omega_projection_scalar_character hS v)
@@ -104,7 +105,6 @@ theorem phiB_surj (hS : ScalChar X χ) (hsimp : ∀ r, r ≠ s → χ r ≠ χ s
   change Pr X χ s (Pi.single c v) = coeY G c
   rw [← hv c]
   exact Pr_step hS hsimp _ (hom _ (show ↥(stepSub X (χ s)) from G c).2)
-
 
 variable (χ s) in
 def phiBk (hS : ScalChar X χ) (hB : BackStable) :
@@ -146,4 +146,3 @@ theorem unit_of_dualFacts (hDF : DualFacts) : Unit := by
 
 end CompanionTheory.RgExh.Hk.UnitB
 
-theorem unitarity : CompanionTheory.RgExh.Hk.Unit := CompanionTheory.RgExh.Hk.UnitB.unit_of_dualFacts GlobalTheory.T.HeckeDualityFacts

@@ -2,7 +2,7 @@ module
 
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.WRPres
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.WRWeyl
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.AdjointFunctionalHolds
+public import Mathlib
 public import Formalism.YangianSpanCharacter.StatementT
 
 @[expose] public section

@@ -97,9 +97,6 @@ theorem locSub_span (v : InfinitePlace E) (S : Set (Fin n → E)) :
   rintro _ ⟨x, hx, rfl⟩
   exact key x hx
 
-theorem locGL_val (v : InfinitePlace E) (d : GL (Fin n) E) :
-    (PositivityTheory.Rg.BcB.D4.locGL v d).val = d.val.map v.embedding := rfl
-
 theorem locSub_img (v : InfinitePlace E) (d : GL (Fin n) E) (U : Submodule E (Fin n → E)) :
     locSub v (img d U) = img (PositivityTheory.Rg.BcB.D4.locGL v d) (locSub v U) := by
   rw [img, img, locSub_eq, locSub_eq, Submodule.map_span, Submodule.map_coe, Set.image_image, Set.image_image]

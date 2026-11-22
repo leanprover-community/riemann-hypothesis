@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import Formalism.LocalToGlobal.Columns.CoefficientMapHeightBound
-public import Formalism.LocalToGlobal.Columns.FactorialSumLePowMulProd
+public import Formalism.LocalToGlobal.Columns.SliceIntegralDeltaNeBot
 public import Formalism.LocalToGlobal.Columns.CoefColLemmas
 
 @[expose] public section

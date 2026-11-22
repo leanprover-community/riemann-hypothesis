@@ -24,7 +24,6 @@ variable {H : Type} [Group H] [MeasurableSpace H] (T : Subgroup H) (dt : Measure
 def IsQuotMeasure (ν : Measure (Quot T)) : Prop :=
   ∀ f : H → ℝ≥0∞, Measurable f → ∫⁻ g, f g ∂dh = ∫⁻ q, ∫⁻ t : T, f (t * q.out) ∂dt ∂ν
 
-
 open Classical in
 def quotMeas : Measure (Quot T) := if h : ∃ ν, IsQuotMeasure T dt dh ν then h.choose else 0
 
@@ -39,7 +38,6 @@ theorem IsQuotMeasure.quotMeas {ν : Measure (Quot T)} (h : IsQuotMeasure T dt d
   have h' : ∃ ν, IsQuotMeasure T dt dh ν := ⟨ν, h⟩
   rw [Orb.quotMeas, dite_eq_left h']
   exact h'.choose_spec
-
 
 theorem measurable_descend {X : Type*} [MeasurableSpace X] {φ : H → X} (h : LeftInv T φ) (hm : Measurable φ) :
     Measurable (descend T φ) :=
@@ -87,7 +85,6 @@ theorem IsQuotMeasure.unique {ν ν' : Measure (Quot T)} (h : IsQuotMeasure T dt
 
 theorem IsQuotMeasure.eq_quotMeas {ν : Measure (Quot T)} (h : IsQuotMeasure T dt dh ν) : ν = Orb.quotMeas T dt dh :=
   h.unique hT h.quotMeas
-
 
 variable (dt dh) in
 theorem isQuotMeasure_quotMeas [SFinite dh] [dh.IsMulLeftInvariant] : IsQuotMeasure T dt dh (quotMeas T dt dh) := by
@@ -239,7 +236,6 @@ variable [IsTopologicalGroup H] [SecondCountableTopology H] [LocallyCompactSpace
   (h : ∀ x, e x ∈ T' ↔ x ∈ T) (hT : IsClosed (T : Set H)) (dt : Measure T) [dt.IsHaarMeasure]
   [dt.IsMulRightInvariant] (dh : Measure H) [SFinite dh] [dh.IsMulLeftInvariant]
 
-
 omit [SecondCountableTopology H] [LocallyCompactSpace H] [T2Space H] [SecondCountableTopology H']
   [LocallyCompactSpace H'] [T2Space H'] in
 instance isMulRightInvariant_map (μ : Measure H) [μ.IsMulRightInvariant] : (μ.map e).IsMulRightInvariant :=
@@ -251,7 +247,6 @@ instance isMulRightInvariant_map (μ : Measure H) [μ.IsMulRightInvariant] : (μ
     congr 1
     ext x
     simp⟩
-
 
 include hT in
 theorem quotMeas_map :
@@ -274,7 +269,6 @@ theorem quotMeas_map :
   simp only [map_mul]
   rfl
 
-
 omit [IsTopologicalGroup H] [SecondCountableTopology H] [LocallyCompactSpace H] [T2Space H] [IsTopologicalGroup H']
   [SecondCountableTopology H'] [LocallyCompactSpace H'] [T2Space H'] in
 theorem measurableEmbedding_quotMap : MeasurableEmbedding (quotMap e h) :=
@@ -285,7 +279,6 @@ theorem measurableEmbedding_quotMap : MeasurableEmbedding (quotMap e h) :=
       right_inv := fun q => Quotient.inductionOn q fun x => congrArg (mk T') (e.apply_symm_apply x)
       measurable_toFun := measurable_from_quotient.2 (measurable_mk.comp e.continuous.measurable)
       measurable_invFun := measurable_from_quotient.2 (measurable_mk.comp e.symm.continuous.measurable) }
-
 
 include hT in
 theorem hasQuotInt_map {φ : H' → ℂ} (hi : LeftInv T' φ) (c : ℂ) :
@@ -327,9 +320,6 @@ def orbInt (dh : Measure H) (γ : H) (dt : Measure (cent γ)) (f : H → ℂ) : 
 def HasOrbInt (dh : Measure H) (γ : H) (dt : Measure (cent γ)) (f : H → ℂ) (c : ℂ) : Prop :=
   HasQuotInt (cent γ) dt dh (conjFn γ f) c
 
-def wOrbInt (T : Subgroup H) (dt : Measure T) (dh : Measure H) (γ : H) (b f : H → ℂ) : ℂ :=
-  quotInt T dt dh fun x => b x * conjFn γ f x
-
 variable {dh : Measure H} {γ : H} {dt : Measure (cent γ)} {f f' : H → ℂ} {c c' : ℂ}
 
 theorem HasOrbInt.orbInt_eq (h : HasOrbInt dh γ dt f c) : orbInt dh γ dt f = c := h.2
@@ -343,12 +333,10 @@ theorem HasOrbInt.smul (h : HasOrbInt dh γ dt f c) (a : ℂ) : HasOrbInt dh γ 
 
 variable [TopologicalSpace H] [IsTopologicalGroup H] [T2Space H]
 
-
 omit [MeasurableSpace H] in
 theorem isClosed_cent (γ : H) : IsClosed (cent γ : Set H) := by
   rw [show (cent γ : Set H) = {t | t * γ = γ * t} from Set.ext fun _ => mem_cent]
   exact isClosed_eq (by fun_prop) (by fun_prop)
-
 
 omit [MeasurableSpace H] in
 theorem isProperOrbit_of_isClosed [LocallyCompactSpace H] [SecondCountableTopology H]
@@ -397,7 +385,6 @@ theorem hasOrbInt_of_finite [IsFiniteMeasure dt] (hf : Integrable (conjFn γ f) 
     HasOrbInt dh γ dt f ((∫ x, f (x⁻¹ * γ * x) ∂dh) / dt.real univ) :=
   hasQuotInt_of_finite (isClosed_cent γ) (leftInv_conjFn le_rfl f) hf
 
-
 omit [MeasurableSpace H] [IsTopologicalGroup H] [T2Space H] [LocallyCompactSpace H] [SecondCountableTopology H]
   [BorelSpace H] in
 def centEquiv {H' : Type} [Group H'] [TopologicalSpace H'] (e : H ≃ₜ* H') (γ : H) {γ' : H'} (h : e γ = γ') :
@@ -414,7 +401,6 @@ theorem hasOrbInt_map {H' : Type} [Group H'] [TopologicalSpace H'] [IsTopologica
     (fun x => by rw [mem_cent, mem_cent, ← h, ← map_mul, ← map_mul, e.injective.eq_iff])
     (isClosed_cent γ) dt dh (leftInv_conjFn le_rfl f) c
   rwa [e1] at this
-
 
 omit [MeasurableSpace H] [T2Space H] [LocallyCompactSpace H] [SecondCountableTopology H] [BorelSpace H] in
 def conjEquiv (g : H) : H ≃ₜ* H :=

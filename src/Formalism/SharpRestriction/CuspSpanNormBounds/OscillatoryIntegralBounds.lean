@@ -1,12 +1,8 @@
 module
 
-public import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalDataRealPlace
-public import Formalism.SharpRestriction.CuspSpanNormBounds.IsGramNorm
-public import Formalism.SharpRestriction.CuspSpanNormBounds.PSDKOnOfPSDK
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyBlockLiftEstimate
 public import Formalism.SharpRestriction.ParamsHeightRankConstant
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEstimateTheorem
 public import Formalism.SharpRestriction.ParConsts
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LeSCSCl
 public import Formalism.YangianSpanCharacter.YangianRelationFirst
@@ -30,7 +26,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerm
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LatticeRigidity.HeightMinimum.PackingCountGeometricMean
 public import Formalism.LatticeRigidity.HeightMinimum.PowFinrankEqZeroOfTracePow
-public import Formalism.GelfandTransference.EnergyIdentity
 public import Formalism.NormUnitaryBounds.DetPolynomialWeights.ShortIndependentVectorsOfDualMinimum
 public import Formalism.LatticeRigidity.StatementC
 
@@ -157,7 +152,6 @@ section Std
 variable (d : ℕ)
 
 variable {d}
-
 
 end Std
 
@@ -349,9 +343,6 @@ theorem bigCell_D (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (hz : inWb k 
   rw [herm_Hpk_wb k r _ z hz, wbPart_bigCell k r c μ z' hz', div_eq_iff hDr] at h
   rw [h, mul_comm]
 
-def IsPolyG {n : ℕ} (a : Matrix (Fin n) (Fin n) ℂ → ℂ) : Prop :=
-  ∃ P : MvPolynomial ((Fin n × Fin n) ⊕ (Fin n × Fin n)) ℂ, ∀ g, evG g P = a g
-
 namespace IsPolyG
 
 variable {n : ℕ}
@@ -441,8 +432,6 @@ noncomputable section
 namespace Formalism.MainNotions.InterlacingSignCuts.Gm
 
 open Formalism.MainNotions.S.UnitaryLevelOperators Formalism.FourierDecayAlt.G Formalism.FourierDecayAlt.P
-
-def LUs (s : ℕ) : Set (Msq s × Msq s) := {p | IsLowerUni (Matrix.of p.1) ∧ IsUpperUni (Matrix.of p.2)}
 
 end Formalism.MainNotions.InterlacingSignCuts.Gm
 

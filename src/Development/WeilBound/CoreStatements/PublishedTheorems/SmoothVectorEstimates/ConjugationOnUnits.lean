@@ -49,15 +49,12 @@ def conjL (A B : LieI ι a) : LieI ι a →L[ℝ] LieI ι a :=
     ((Matrix.ofLinearEquiv ℝ).symm.toLinearMap ∘ₗ LinearMap.mulLeft ℝ (Matrix.of A) ∘ₗ
       LinearMap.mulRight ℝ (Matrix.of B) ∘ₗ (Matrix.ofLinearEquiv ℝ).toLinearMap)
 
-theorem conjL_apply (A B Z : LieI ι a) : conjL A B Z = mulI A (mulI Z B) := rfl
-
 end Mat
 
 section Orb
 
 variable {ι : Type} [Fintype ι] {a : ℕ} {X : Type} [NormedAddCommGroup X] [NormedSpace ℂ X]
   (ρ : GL (Fin a) (ι → ℂ) →* (X →L[ℂ] X))
-
 
 open Classical in
 def opI (M : LieI ι a) : X →L[ℂ] X := if h : IsUnit (Matrix.of M) then ρ h.unit else 0

@@ -296,16 +296,6 @@ end Bcris
 
 def PFlat : Type u := {ϖ : Tilt p R // PreTilt.untilt ϖ = (p : R)}
 
-variable {p R} in
-def PFlat.twist (η : tateModule p R) (ϖ : PFlat p R) : PFlat p R :=
-  ⟨η.1 * ϖ.1, by rw [map_mul, ϖ.2, show PreTilt.untilt η.1 = 1 from η.2, one_mul]⟩
-
-def Bst.relations : Ideal (MvPolynomial (PFlat p R) (Bcris p R)) :=
-  span {f | ∃ (η : tateModule p R) (ϖ : PFlat p R), f = MvPolynomial.X (ϖ.twist η) -
-    (MvPolynomial.C (Bcris.logTeich η) + MvPolynomial.X ϖ)}
-
-def Bst : Type u := MvPolynomial (PFlat p R) (Bcris p R) ⧸ Bst.relations p R
-
 namespace Bst
 
 instance : CommRing (Bst p R) :=
@@ -317,42 +307,12 @@ instance : Algebra ℚ_[p] (Bst p R) :=
 instance : IsScalarTower ℚ_[p] (Bcris p R) (Bst p R) :=
   IsScalarTower.of_algebraMap_eq fun _ => rfl
 
-def mk : MvPolynomial (PFlat p R) (Bcris p R) →ₐ[Bcris p R] Bst p R :=
-  Ideal.Quotient.mkₐ (Bcris p R) (Bst.relations p R)
-
 variable {p R}
-
-theorem mk_eq_zero_iff (f : MvPolynomial (PFlat p R) (Bcris p R)) :
-    mk p R f = 0 ↔ f ∈ Bst.relations p R := Ideal.Quotient.eq_zero_iff_mem
-
-def logFlat (ϖ : PFlat p R) : Bst p R := mk p R (MvPolynomial.X ϖ)
-
-theorem logFlat_twist (η : tateModule p R) (ϖ : PFlat p R) :
-    logFlat (ϖ.twist η) = algebraMap _ _ (Bcris.logTeich η) + logFlat ϖ := by
-  rw [← sub_eq_zero, logFlat, logFlat, ← (mk p R).commutes, ← map_add (f := _), ← map_sub, mk_eq_zero_iff]
-  exact subset_span ⟨η, ϖ, rfl⟩
-
-def lift {B : Type*} [CommRing B] (f : Bcris p R →+* B) (l : PFlat p R → B)
-    (h : ∀ η ϖ, l (PFlat.twist η ϖ) = f (Bcris.logTeich η) + l ϖ) : Bst p R →+* B :=
-  Ideal.Quotient.lift (Bst.relations p R) (MvPolynomial.eval₂Hom f l) (by
-    intro a ha
-    refine (show Bst.relations p R ≤ RingHom.ker (MvPolynomial.eval₂Hom f l) from ?_) ha
-    rw [Bst.relations, Ideal.span_le]
-    rintro _ ⟨η, ϖ, rfl⟩
-    simp [RingHom.mem_ker, h])
 
 @[simp] theorem lift_algebraMap {B : Type*} [CommRing B] (f : Bcris p R →+* B) (l : PFlat p R → B)
     (h : ∀ η ϖ, l (PFlat.twist η ϖ) = f (Bcris.logTeich η) + l ϖ) (x : Bcris p R) :
     lift f l h (algebraMap _ _ x) = f x :=
   (Ideal.Quotient.lift_mk _ _ _).trans (MvPolynomial.eval₂Hom_C f l x)
-
-theorem hom_ext {B : Type*} [CommRing B] {f g : Bst p R →+* B}
-    (h₁ : ∀ x : Bcris p R, f (algebraMap _ _ x) = g (algebraMap _ _ x))
-    (h₂ : ∀ ϖ, f (logFlat ϖ) = g (logFlat ϖ)) : f = g :=
-  Ideal.Quotient.ringHom_ext (MvPolynomial.ringHom_ext h₁ h₂)
-
-
-
 
 end Bst
 

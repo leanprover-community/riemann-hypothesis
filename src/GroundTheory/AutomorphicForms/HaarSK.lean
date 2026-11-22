@@ -209,9 +209,6 @@ def translate (s₀ : S) (v : CompactlySupportedContinuousMap S ℝ) :
   continuous_toFun := v.continuous.comp (continuous_const.mul continuous_id)
   hasCompactSupport' := v.hasCompactSupport.comp_homeomorph (Homeomorph.mulLeft s₀)
 
-theorem translate_apply (s₀ : S) (v : CompactlySupportedContinuousMap S ℝ) (s : S) :
-    translate s₀ v s = v (s₀ * s) := rfl
-
 variable {mL : Measure (inter S K)} [LocallyCompactSpace S] [CompactSpace (inter S K)]
   [IsFiniteMeasure mL] [mL.IsMulLeftInvariant]
   {hS : IsClosed (S : Set G)} {hK : IsCompact (K : Set G)} {hSK : Surjective (mulMap S K)}

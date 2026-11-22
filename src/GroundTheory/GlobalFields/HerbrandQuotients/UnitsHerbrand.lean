@@ -150,12 +150,6 @@ def logLatticeRep : Representation ℤ (L ≃ₐ[K] L) (logLattice L) where
     change (m : InfinitePlace L → ℝ) ((g * h)⁻¹ • w) = (m : InfinitePlace L → ℝ) (h⁻¹ • g⁻¹ • w)
     rw [mul_inv_rev, mul_smul]
 
-omit [NumberField K] [NumberField L] in
-theorem coe_logLatticeRep (g : L ≃ₐ[K] L) (m : logLattice L) :
-    (logLatticeRep (K := K) (L := L) g m : InfinitePlace L → ℝ) =
-      funPermRep ℝ (L ≃ₐ[K] L) (InfinitePlace L) g m :=
-  rfl
-
 variable [FiniteDimensional K L]
 
 omit [NumberField K] in

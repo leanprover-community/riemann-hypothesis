@@ -41,15 +41,6 @@ def fv (f : C1 (OAff s)) {A B : Z.affineOpens} (h : B.1 ≤ A.1) : Γ(Z, B.1) :=
 
 def gv (g : C0 (OAff s)) (A : Z.affineOpens) : Γ(Z, A.1) := g (Opposite.op A)
 
-theorem fv_d0 (g : C0 (OAff s)) {A B : Z.affineOpens} (h : B.1 ≤ A.1) :
-    fv s (d0 (OAff s) g) h = gv s g B - resG Z h (gv s g A) := rfl
-
-theorem fv_add (f f' : C1 (OAff s)) {A B : Z.affineOpens} (h : B.1 ≤ A.1) :
-    fv s (f + f') h = fv s f h + fv s f' h := rfl
-
-theorem fv_smul (r : R) (f : C1 (OAff s)) {A B : Z.affineOpens} (h : B.1 ≤ A.1) :
-    fv s (r • f) h = (secMap s B.1).hom r * fv s f h := rfl
-
 theorem res_val (f : Z1 (OAff s)) {A B C : Z.affineOpens} (hBA : B.1 ≤ A.1) (hCB : C.1 ≤ B.1) :
     resG Z hCB (fv s f.1 hBA) = fv s f.1 (hCB.trans hBA) - fv s f.1 (A := B) hCB :=
   eq_sub_of_add_eq (f.2 (homOfLE hBA).op (homOfLE hCB).op).symm

@@ -47,8 +47,6 @@ theorem InNΔi_of_DL (T : LocLat G Qp LL O) (i : ZMod n) {x : W.DD T} (h : Forma
     (hN : x ∈ W.N T) : Formalism.MainNotions.LiftingTheory.InNΔi W T i x :=
   InNΔi_of W T i ⟨hN, h.2⟩ h.1
 
-theorem eY_eq (l y : ℕ) : Formalism.MainNotions.CrystallineLiftingInputs.eY l y = Ex l y := rfl
-
 theorem γsum (T : LocLat G Qp LL O) (K : ℕ) (a : ℕ → ℕ) (c : ℕ → W.DD T) :
     ∑ y ∈ Finset.range K, ((PD.p : ℕ) : O) ^ a y • (W.γ T (W.π₀ ^ y • c y) - W.π₀ ^ y • c y) =
       W.γ T (∑ y ∈ Finset.range K, W.π₀ ^ y • (((PD.p : ℕ) : O) ^ a y • c y)) -
@@ -206,7 +204,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR}
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
-
 
 include W in
 theorem l_ne : ((PD.p : ℕ) : O) ≠ 0 := by

@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.LocalToGlobal.ProjectiveLattices.RegPFree
 public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
-public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.OrderValuation
 public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
 public import Formalism.LocalToGlobal.ProjectiveLattices.UnitIndepOfCharts
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional

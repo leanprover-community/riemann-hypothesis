@@ -31,7 +31,6 @@ def HasLag (M : Model σ X W) (M₁ : Model σ X₁ W₁) (ψ : AddChar (AF F) �
 
 theorem alg_inj : Function.Injective (algebraMap F (AF F)) := NumberField.AdeleRing.algebraMap_injective (𝓞 F) F
 
-
 variable (F E) in
 def incL (α β : Type) : Matrix α β E →ₗ[F] Matrix α β (AE F E) :=
   (Algebra.TensorProduct.includeRight : E →ₐ[F] AE F E).toLinearMap.mapMatrix
@@ -43,8 +42,6 @@ theorem incL_inj {α β : Type} : Function.Injective (incL F E α β) := fun _ _
 
 theorem incM_mul {α β γ : Type} [Fintype β] (a : Matrix α β E) (b : Matrix β γ E) :
     incM F (a * b) = incM F a * incM F b := Matrix.map_mul
-
-theorem cA_incl (x : E) : cA σ (inclR (F := F) (AF F) x) = inclR (F := F) (AF F) (σ x) := rfl
 
 theorem incM_gram {m m₁ : ℕ} {J : Matrix (Fin m) (Fin m) E} {J₁ : Matrix (Fin m₁) (Fin m₁) E} {ι : Matrix (Fin m) (Fin m₁) E}
     (h : ιᵀ * J * ι.map σ = J₁) : (incM F ι)ᵀ * incM F J * (incM F ι).map (cA σ) = incM F J₁ := by
@@ -172,7 +169,6 @@ theorem hasLag_X {B : Base F E} (hB : B.IsGood σ) (M : Model σ X W) (M₁ : Mo
       ← Matrix.mulVec_transpose, orth_alt hH]
     simp
   · rw [hH.rank]; ring
-
 
 open scoped Classical in
 theorem proj_adm (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] (y : κ → AF F) :

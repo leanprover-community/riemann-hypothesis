@@ -124,8 +124,6 @@ theorem pow_mem_int {ϖ : L} (hϖ : Valued.v ϖ = WithZero.exp (-1 : ℤ)) (k : 
   show Valued.v (ϖ ^ k) ≤ 1
   rw [v_pow hϖ, ← WithZero.exp_zero, WithZero.exp_le_exp]; omega
 
-theorem zero_ne_last : (0 : Fin (N + 2)) ≠ Fin.last (N + 1) := last_ne_zero.symm
-
 theorem zero_ne_mid (j : Fin N) : (0 : Fin (N + 2)) ≠ mid j := (mid_ne_zero j).symm
 
 theorem last_ne_mid (j : Fin N) : Fin.last (N + 1) ≠ mid j := (mid_ne_last j).symm

@@ -78,13 +78,6 @@ theorem eStdBilin_bijective : Function.Bijective (eStdBilin g n) := by
   · simp [eStd_single_inl]
   · simp [eStd_single_inr]
 
-theorem nsmul_eq_zero_iff_castHom {r N : ℕ} [NeZero (r * N)] (a : ZMod (r * N)) :
-    r • a = 0 ↔ ZMod.castHom (dvd_mul_left N r) (ZMod N) a = 0 := by
-  have hr : r ≠ 0 := left_ne_zero_of_mul (NeZero.ne (r * N))
-  obtain ⟨k, rfl⟩ := ZMod.natCast_zmod_surjective a
-  rw [map_natCast, nsmul_eq_mul, ← Nat.cast_mul, ZMod.natCast_eq_zero_iff, ZMod.natCast_eq_zero_iff,
-    Nat.mul_dvd_mul_iff_left (Nat.pos_of_ne_zero hr)]
-
 end Form
 
 namespace ThetaSys
@@ -125,8 +118,6 @@ variable (S)
   rwa [h] at h1
 
 variable {S}
-
-
 
 variable (S)
 
@@ -202,7 +193,6 @@ namespace ThetaSys
 
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : ThetaSys o Ω)
 
-
 theorem exists_at_of_cen (M : RatModel o Ω) {U₀ : M.Z.Opens} (hle : S.R ≤ M.ringOn U₀) {z : M.Z} {p : ℕ} [Fact p.Prime]
     {y : Sp (OO p) ⟶ M.Z} (hc : M.Cen U₀ z y) :
     ∃ y₀ : S.R →+* PadicAlgCl p, S.At M y y₀ ∧ ∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1 := by
@@ -225,114 +215,16 @@ section Heisenberg
 
 variable {o : Type} [CommRing o] {N : ℕ} [NeZero N] (ψ : AddChar (ZMod N) o)
 
-def heisMat (h u v : ZMod N) : Matrix (ZMod N) (ZMod N) o :=
-  Matrix.of fun i j => if j = i + u then ψ (v * (i + h * u)) else 0
-
-theorem heisMat_mul {h : ZMod N} (hh : 2 * h = 1) (u v u' v' : ZMod N) :
-    heisMat ψ h u v * heisMat ψ h u' v' = ψ (h * (u * v' - v * u')) • heisMat ψ h (u + u') (v + v') := by
-  ext i k
-  rw [Matrix.mul_apply, Finset.sum_eq_single (i + u) (fun j _ hj => by simp [heisMat, hj]) (by simp)]
-  simp only [heisMat, Matrix.of_apply, if_true, Matrix.smul_apply, smul_eq_mul, add_assoc]
-  split_ifs
-  · rw [← AddChar.map_add_eq_mul, ← AddChar.map_add_eq_mul]
-    congr 1
-    linear_combination (-(u * v')) * hh
-  · simp
-
-
-omit [NeZero N] in
-theorem heisMat_zero_apply (h v i j : ZMod N) : heisMat ψ h 0 v i j = if j = i then ψ (v * i) else 0 := by
-  simp [heisMat]
-
-
 end Heisenberg
 
 section Inhabitants
 
 variable {o : Type} (Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [IsFractionRing o Ω]
 
-
-variable (o) in
-theorem exists_eq_div_bot (x : Ω) : ∃ a ∈ (⊥ : Subalgebra o Ω), ∃ b ∈ (⊥ : Subalgebra o Ω), x = a / b := by
-  obtain ⟨a, b, -, h⟩ := IsFractionRing.div_surjective o x
-  exact ⟨_, ⟨a, rfl⟩, _, ⟨b, rfl⟩, h.symm⟩
-
 variable {r N : ℕ} (hN : 2 ≤ N) (hr : 1 ≤ r) {ζ : o} (hζ : IsPrimitiveRoot ζ ((r * N) ^ 2))
   (hu : IsUnit ((r * N : ℕ) : o))
 
-def pointSys : ThetaSys o Ω where
-  g := 0
-  N := N
-  r := r
-  N_ge := hN
-  r_pos := hr
-  ζ := ζ
-  prim := hζ
-  unit := hu
-  J := Unit
-  ρ _ := 1
-  ρ_one _ _ := by convert rfl
-  ρ_mul _ _ := ⟨0, by simp⟩
-  ρ_add _ _ _ := by simp
-  th _ := 1
-  ev _ _ := 1
-  R := ⊥
-  fg := Subalgebra.fg_bot
-  frac := exists_eq_div_bot o Ω
-  th_mem _ := one_mem _
-  ev_mem _ _ := one_mem _
-  supp := by simp
-  th_ne := ⟨0, one_ne_zero⟩
-
 variable (hodd : Odd N) (ϖ : o) (hϖ : ϖ ≠ 0)
-
-def heisSys : ThetaSys o Ω :=
-  haveI : NeZero N := ⟨by omega⟩
-  haveI : NeZero (r * N) := ⟨Nat.mul_ne_zero (by omega) (by omega)⟩
-  have h1 : (ζ ^ (r ^ 2 * N)) ^ N = 1 := by
-    rw [← pow_mul, ← hζ.pow_eq_one]
-    congr 1
-    ring
-  have hh : 2 * ((N / 2 + 1 : ℕ) : ZMod N) = 1 := by
-    have : ((2 * (N / 2 + 1) : ℕ) : ZMod N) = ((N + 1 : ℕ) : ZMod N) := by
-      congr 1
-      have := Nat.odd_iff.1 hodd
-      omega
-    simpa using this
-  { g := 1
-    N := N
-    r := r
-    N_ge := hN
-    r_pos := hr
-    ζ := ζ
-    prim := hζ
-    unit := hu
-    J := ZMod N
-    ρ := fun a => heisMat (AddChar.zmodChar N h1) (N / 2 + 1 : ℕ)
-      (ZMod.castHom (dvd_mul_left N r) (ZMod N) (a (.inl 0))) (ZMod.castHom (dvd_mul_left N r) (ZMod N) (a (.inr 0)))
-    ρ_one := fun a ha => by
-      rw [(nsmul_eq_zero_iff_castHom _).1 (congrFun ha (.inl 0)), (nsmul_eq_zero_iff_castHom _).1 (congrFun ha (.inr 0))]
-      ext i j
-      simp [heisMat_zero_apply, Matrix.one_apply, eq_comm]
-    ρ_mul := fun a b => by
-      rw [heisMat_mul _ hh, AddChar.zmodChar_apply, ← pow_mul, Pi.add_apply, Pi.add_apply, map_add (f := _), map_add (f := _)]
-      exact ⟨_, rfl⟩
-    ρ_add := fun a b h => by
-      have h2 := (nsmul_eq_zero_iff_castHom _).1 h
-      rw [eStd, Fin.sum_univ_one, map_sub, map_mul, map_mul] at h2
-      rw [heisMat_mul _ hh, h2, mul_zero, AddChar.map_zero_eq_one, one_smul, Pi.add_apply, Pi.add_apply, map_add (f := _),
-        map_add]
-    th := fun x => algebraMap o Ω (ϖ ^ (x (.inl 0)).valMinAbs.natAbs ^ 2)
-    ev := fun _ j => algebraMap o Ω (ϖ ^ (r ^ 2 * N * j.valMinAbs.natAbs ^ 2))
-    R := ⊥
-    fg := Subalgebra.fg_bot
-    frac := exists_eq_div_bot o Ω
-    th_mem := fun _ => ⟨_, rfl⟩
-    ev_mem := fun _ _ => ⟨_, rfl⟩
-    supp := by
-      have h : algebraMap o Ω ϖ ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective o Ω)).2 hϖ
-      simp [h]
-    th_ne := ⟨0, by simp⟩ }
 
 section HeisTests
 
@@ -365,12 +257,10 @@ instance instIsDomain : IsDomain (AwayBase K n) := IsLocalization.isDomain_local
 instance instIsDedekindDomain : IsDedekindDomain (AwayBase K n) :=
   IsLocalization.isDedekindDomain _ (powers_le K n) _
 
-
 omit [NeZero n] in
 theorem finiteType : Algebra.FiniteType ℤ (AwayBase K n) :=
   Algebra.FiniteType.trans (S := 𝓞 K) inferInstance
     (IsLocalization.finiteType_of_monoid_fg (Submonoid.powers (n : 𝓞 K)) (AwayBase K n))
-
 
 omit [NumberField K] [NeZero n] in
 theorem isUnit_natCast : IsUnit (n : AwayBase K n) := by

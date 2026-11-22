@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecU
 public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.GlMapStandardLatticeEqIffMemGLintAdicStatement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.GlMapDiagUniformizerElementarySublatticeStatement
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ImportsMore
 
 @[expose] public section
 

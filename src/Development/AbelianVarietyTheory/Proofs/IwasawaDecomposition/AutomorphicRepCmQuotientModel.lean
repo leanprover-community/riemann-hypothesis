@@ -29,9 +29,6 @@ def conjRep (e : W ≃ₗ[ℂ] W') (ρ : Representation ℂ (GQ L n) W) : Repres
   map_one' := by ext x; simp
   map_mul' a b := by ext x; simp
 
-theorem conjRep_apply (e : W ≃ₗ[ℂ] W') (ρ : Representation ℂ (GQ L n) W) (γ : GQ L n) (x : W') :
-    conjRep e ρ γ x = e (ρ γ (e.symm x)) := rfl
-
 theorem conjRep_inter (e : W ≃ₗ[ℂ] W') (ρ : Representation ℂ (GQ L n) W) (γ : GQ L n) (x : W) :
     e (ρ γ x) = conjRep e ρ γ (e x) := by simp [conjRep_apply]
 

@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsBaseFrame
-public import Development.AbelianVarietyTheory.Definitions.Divisors.P22
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.DivSheafA
 
 @[expose] public section

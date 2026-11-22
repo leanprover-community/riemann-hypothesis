@@ -68,23 +68,6 @@ def InClosure {L Γ : Type} [Field L] [LinearOrderedCommGroupWithZero Γ] (v : V
 
 end Lat
 
-def DetIndex : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] (w : HeightOneSpectrum (𝓞 K)) (r : ℕ) (B B' : GL (Fin r) K)
-    (M' : Submodule (𝓞 K) (Fin r → K)) (i : Fin r) (q : K), q ≠ 0 →
-    localization₂ w.asIdeal M' = localization₂ w.asIdeal (Submodule.span (𝓞 K) (Set.range fun j : Fin r => fun α : Fin r =>
-      (if j = i then q else 1) * (B : Matrix (Fin r) (Fin r) K) α j)) →
-    IsBasisAt w M' B' →
-    w.valuation K (B' : Matrix (Fin r) (Fin r) K).det = w.valuation K (q * (B : Matrix (Fin r) (Fin r) K).det)
-
-def PointIntegral : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] (w : HeightOneSpectrum (𝓞 K)) (ι : Type) [Fintype ι] (a b : ℕ) (hab : a < b)
-    (lam : ι → DomWeight a) (lam' : ι → DomWeight b) (s s' : ι → ℤ) (n : ι → ℕ),
-    WtCompat hab lam lam' s s' n →
-    ∀ (M : ι → Submodule (𝓞 K) (Fin a → K)) (MW : ι → Submodule (𝓞 K) (Fin b → K))
-      (B : ι → GL (Fin a) K) (BW : ι → GL (Fin b) K), LatWithBasis w M B → LatWithBasis w MW BW →
-    ∀ ap : ι → Matrix (Fin a) (Fin b) K, (∀ τ, ∀ y ∈ MW τ, ap τ *ᵥ y ∈ localization₂ w.asIdeal (M τ)) →
-    ∀ F ∈ HAt w lam M, ∃ G ∈ HAt w lam' MW, jetOp lam lam' (ptTable ap) n F = detFac s s' B BW • G
-
 def ClosureIntegral : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (w : HeightOneSpectrum (𝓞 K))
     (L Γ : Type) [Field L] [LinearOrderedCommGroupWithZero Γ] (v : Valuation L Γ) (σ : K →+* L),

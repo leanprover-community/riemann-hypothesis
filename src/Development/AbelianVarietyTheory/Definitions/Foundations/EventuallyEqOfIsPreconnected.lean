@@ -130,12 +130,6 @@ theorem laurentConst_add (a : LaurentConst H s₀ c) (b : LaurentConst H' s₀ c
   simp only [Polynomial.eval_add]
   ring
 
-theorem laurentConst_const_mul (z : ℂ) (a : LaurentConst H s₀ c) : LaurentConst (fun s => z * H s) s₀ (z * c) := by
-  obtain ⟨p, hp, tp⟩ := a
-  refine ⟨Polynomial.C z * p, by simp [hp], (tp.const_mul z).congr fun s => ?_⟩
-  simp only [Polynomial.eval_mul, Polynomial.eval_C]
-  ring
-
 theorem laurentConst_unique (a : LaurentConst H s₀ c) (b : LaurentConst H s₀ c') : c = c' := by
   obtain ⟨q, hq, tq⟩ := b
   obtain ⟨p, hp, tp⟩ := a
@@ -213,10 +207,7 @@ def ValueAt (h : ℂ → ℂ) (s₀ c : ℂ) : Prop := ∃ H, IsExtAt h s₀ H �
 
 def HolValueAt (h : ℂ → ℂ) (s₀ c : ℂ) : Prop := ∃ H, IsExtAt h s₀ H ∧ AnalyticAt ℂ H s₀ ∧ H s₀ = c
 
-abbrev ResidueAt (h : ℂ → ℂ) (s₀ c : ℂ) : Prop := CoeffAt h s₀ (-1) c
-
 def PoleLE (h : ℂ → ℂ) (s₀ : ℂ) (k : ℕ) : Prop := ∃ H, IsExtAt h s₀ H ∧ ((-k : ℤ) : WithTop ℤ) ≤ meromorphicOrderAt H s₀
-
 
 open Classical in
 def laurent (h : ℂ → ℂ) (s₀ : ℂ) (n : ℤ) : ℂ := if e : ∃ c, CoeffAt h s₀ n c then e.choose else 0
@@ -228,9 +219,6 @@ theorem IsHolExt.isMerExt (a : IsHolExt h U H) : IsMerExt h U H := ⟨a.1, a.2.1
 theorem IsMerExt.isExtAt (a : IsMerExt h U H) (hs : s₀ ∈ U) : IsExtAt h s₀ H := ⟨U, hs, a⟩
 
 theorem isMerExt_univ : IsMerExt h univ H ↔ Meromorphic H ∧ EqRight H h := ⟨fun a => ⟨fun x => a.2.1 x (mem_univ x), a.2.2⟩, fun a => ⟨isRightDomain_univ, fun x _ => a.1 x, a.2⟩⟩
-
-theorem IsMerExt.eventuallyEq_of_isPreconnected (a : IsMerExt h U H) (e : U' ⊆ U) (hU : IsPreconnected U') (hσ : rightOf σ ⊆ U')
-    (b : MeromorphicOn H' U') (e' : EqRight H' h) (hs : s ∈ U') : H =ᶠ[𝓝[≠] s] H' := GlobalTheory.Cont.eventuallyEq_of_isPreconnected hU hσ (fun x hx => a.2.1 x (e hx)) b (a.2.2.trans e'.symm) hs
 
 namespace IsExtAt
 
@@ -447,37 +435,9 @@ theorem CoeffAt.congr (a : CoeffAt h s₀ n c) (e : EqRight h h') : CoeffAt h' s
   obtain ⟨H, ha, hc⟩ := a
   exact ⟨H, ha.congr e, hc⟩
 
-theorem ValueAt.congr (a : ValueAt h s₀ c) (e : EqRight h h') : ValueAt h' s₀ c := by
-  obtain ⟨H, ha, hc⟩ := a
-  exact ⟨H, ha.congr e, hc⟩
-
 theorem HolValueAt.congr (a : HolValueAt h s₀ c) (e : EqRight h h') : HolValueAt h' s₀ c := by
   obtain ⟨H, ha, han, hv⟩ := a
   exact ⟨H, ha.congr e, han, hv⟩
-
-theorem PoleLE.congr (a : PoleLE h s₀ k) (e : EqRight h h') : PoleLE h' s₀ k := by
-  obtain ⟨H, ha, hk⟩ := a
-  exact ⟨H, ha.congr e, hk⟩
-
-theorem CoeffAt.add (a : CoeffAt h s₀ n c) (b : CoeffAt h' s₀ n c') : CoeffAt (fun s => h s + h' s) s₀ n (c + c') := by
-  obtain ⟨H, ha, hca⟩ := a
-  obtain ⟨H', hb, hcb⟩ := b
-  refine ⟨fun s => H s + H' s, ha.add hb, ?_⟩
-  have := laurentConst_add hca hcb
-  unfold LaurentCoeff
-  simpa only [mul_add] using this
-
-theorem CoeffAt.const_mul (z : ℂ) (a : CoeffAt h s₀ n c) : CoeffAt (fun s => z * h s) s₀ n (z * c) := by
-  obtain ⟨H, ha, hca⟩ := a
-  refine ⟨fun s => z * H s, (isExtAt_const z s₀).mul ha, ?_⟩
-  have := laurentConst_const_mul z hca
-  unfold LaurentCoeff
-  simpa only [mul_left_comm] using this
-
-theorem ValueAt.add (a : ValueAt h s₀ c) (b : ValueAt h' s₀ c') : ValueAt (fun s => h s + h' s) s₀ (c + c') := by
-  obtain ⟨H, ha, hca⟩ := a
-  obtain ⟨H', hb, hcb⟩ := b
-  exact ⟨fun s => H s + H' s, ha.add hb, laurentConst_add hca hcb⟩
 
 theorem holValueAt_const (z s₀ : ℂ) : HolValueAt (fun _ => z) s₀ z := ⟨fun _ => z, isExtAt_const z s₀, analyticAt_const, rfl⟩
 

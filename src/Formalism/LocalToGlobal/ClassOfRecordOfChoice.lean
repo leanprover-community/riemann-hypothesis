@@ -1,7 +1,5 @@
 module
 
-public import Formalism.LocalToGlobal.ClassRec
-public import Formalism.LocalToGlobal.ThresholdSelection
 public import Formalism.SharpRestriction.LevelLetterCocycles.TwAllF
 public import Formalism.LocalToGlobal.GroupLattices.AdmissibleAtGeneratorPlaces
 public import Formalism.SharpRestriction.PageFix
@@ -77,12 +75,6 @@ def TwAllF {eps : ℝ} (Fm : FamP eps) : Prop :=
 def Duty {eps : ℝ} (Fm : FamP eps) : Prop :=
   PageFix Fm ∧ PageWin Fm ∧ Formalism.MainNotions.DIV.Align.SmallFirstModulusBelowScale Fm ∧ TameDistinctF Fm ∧ ChosenWall Fm ∧ TupUsedF Fm ∧ TwAllF Fm
 
-
-
-abbrev SelDH (𝒜 : FamClass) (sel : Formalism.L2.TSel 𝒜) :=
-  ∀ {eps : ℝ} (Fm : FamP eps) (hc : 𝒜 Fm) (x : ℝ) (hx : Fm.x1 < x) (h : (sel Fm hc).1 ≤ x) (i : Fm.Ix x),
-    {p : ℕ × ℕ // (Fm.D x i).s.Del = (p.1 : ℚ) ∧ (Fm.L x i).etaSz = ((Fm.D x i).R.m : ℝ) * (p.2 : ℝ)}
-
 theorem complement_two_of_items {eps : ℝ} {Fm : FamP eps} (h : Formalism.MainNotions.WeightDegreeSizes.FamilySecondComplementInputs Fm) : Formalism.MainNotions.LocalQuadraticParts.ComplementTwoFamily Fm := by
   obtain ⟨C, x0, h⟩ := Formalism.MainNotions.WeightDegreeSizes.secondComplement_family_of_inputs Fm h
   refine ⟨C, max x0 (Fm.x1 + 1), fun x hx i => h x (le_trans (le_max_left _ _) hx) ?_ i⟩
@@ -94,16 +86,7 @@ section ColChoice
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {Kc : MainNotions.G.Consts} {Y : DivX D}
   {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX}
 
-structure ColChoice (P : Formalism.L2.Rows.RowSideFamily ex) where
-  X : Formalism.L2.Col.Fields
-  e : X.Tau → (X.E →+* D.what₂.LL)
-  c : Formalism.L2.DIV.ColRec3 (Formalism.L2.DIV.fieldsLL D X e) P.A3 P.Ps P.ψs
-  Sp : ∀ Zs : Formalism.L2.Indef.DefSub P.A3.fam3.amb3, Formalism.L2.Indef.SPer (c.face Zs)
-  tie : Formalism.L2.DIV.ColTie3 P X e c Sp
-
 end ColChoice
-
-
 
 end Formalism.L2.Top3
 

@@ -164,16 +164,6 @@ theorem map_classifyingHom [W.IsElliptic] : universalCurve.map (classifyingHom W
   rw [universalCurve, WeierstrassCurve.map_map, classifyingHom, IsLocalization.Away.lift_comp,
     map_coeffHom]
 
-theorem eq_classifyingHom [W.IsElliptic] {φ : UniversalRing.{u} →+* R}
-    (h : universalCurve.map φ = W) : φ = classifyingHom W := by
-  have e := h.trans (map_classifyingHom W).symm
-  refine IsLocalization.ringHom_ext (.powers genericCurve.Δ)
-    (MvPolynomial.ringHom_ext (fun n => by simp) ?_)
-  rintro ⟨i⟩
-  fin_cases i
-  exacts [congrArg (·.a₁) e, congrArg (·.a₂) e, congrArg (·.a₃) e, congrArg (·.a₄) e,
-    congrArg (·.a₆) e]
-
 theorem isPullback_universalCurve [W.IsElliptic] :
     IsPullback (mapHom universalCurve (classifyingHom W) (map_classifyingHom W))
       (schemeOver W).hom (schemeOver universalCurve).hom
@@ -233,41 +223,7 @@ section BaseChange
 variable {R' : Type u} [CommRing R'] {W' : WeierstrassCurve R'} [W'.IsElliptic] (f : R →+* R')
   (h : W.map f = W')
 
-theorem mul_left_mapHom {T' : Over (Spec (.of R'))} {T : Over (Spec (.of R))}
-    (t : T'.left ⟶ T.left) {x' y' : T' ⟶ schemeOver W'} {x y : T ⟶ schemeOver W}
-    (hx : x'.left ≫ mapHom W f h = t ≫ x.left) (hy : y'.left ≫ mapHom W f h = t ≫ y.left) :
-    (x' * y').left ≫ mapHom W f h = t ≫ (x * y).left := by
-  have e : mapHom W f h ≫ mapHom universalCurve (classifyingHom W) (map_classifyingHom W) =
-      mapHom universalCurve (classifyingHom W') (map_classifyingHom W') := by
-    rw [mapHom_comp]
-    congr 1
-    exact eq_classifyingHom W' ((map_comp_eq (map_classifyingHom W) f).trans h)
-  refine (isPullback_universalCurve W).hom_ext ?_ ?_
-  · have e₁ := mul_left_mapHom_universal W (𝟙 T.left)
-      (x := pullbackPointEquiv (isPullback_universalCurve W) T x)
-      (y := pullbackPointEquiv (isPullback_universalCurve W) T y) (x' := x) (y' := y)
-      (Category.id_comp _).symm (Category.id_comp _).symm
-    have e₂ := mul_left_mapHom_universal W' t
-      (x := pullbackPointEquiv (isPullback_universalCurve W) T x)
-      (y := pullbackPointEquiv (isPullback_universalCurve W) T y) (x' := x') (y' := y')
-      (by rw [← e, reassoc_of% hx]; rfl) (by rw [← e, reassoc_of% hy]; rfl)
-    refine (Category.assoc _ _ _).trans ((congrArg (_ ≫ ·) e).trans (e₂.trans ?_))
-    exact ((Category.assoc _ _ _).trans (congrArg (t ≫ ·) (e₁.trans (Category.id_comp _)))).symm
-  · have w : ∀ z : T' ⟶ schemeOver W', (z.left ≫ mapHom W f h) ≫ (schemeOver W).hom =
-        T'.hom ≫ Spec.map (CommRingCat.ofHom f) := fun z =>
-      (Category.assoc _ _ _).trans ((congrArg (z.left ≫ ·) (mapHom_toSpec W f h)).trans
-        (Over.w_assoc z _))
-    rw [w, ← w x', hx, Category.assoc, Category.assoc, Over.w, Over.w]
-
 end BaseChange
-
-theorem isGrpPullback_mapHom {R R' : Type} [CommRing R] [CommRing R'] (W : WeierstrassCurve R)
-    [W.IsElliptic] {W' : WeierstrassCurve R'} [W'.IsElliptic] (f : R →+* R') (h : W.map f = W') :
-    ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsGrpPullback (schemeOver W') (schemeOver W)
-      (Spec.map (CommRingCat.ofHom f)) (mapHom W f h) :=
-  ⟨isPullback_mapHom W f h, fun T _ _ x₀ y₀ hx hy =>
-    ((mul_left_mapHom W f h (𝟙 T.left) (x := x₀) (y := y₀) (hx.symm.trans (Category.id_comp _).symm)
-      (hy.symm.trans (Category.id_comp _).symm)).trans (Category.id_comp _)).symm⟩
 
 section Ring
 
@@ -279,10 +235,6 @@ theorem one_eq_zeroOver : (1 : specOver R A ⟶ schemeOver W) = zeroOver W A :=
 theorem one_eq_ptOver :
     (1 : specOver R A ⟶ schemeOver W) = ptOver W ![0, 1, 0] (isUnimodularSol_zero _) :=
   (one_eq_zeroOver W).trans (zeroOver_eq_ptOver W A)
-
-theorem ptOver_inv (hP : IsUnimodularSol (W.baseChange A) P) :
-    (ptOver W P hP)⁻¹ = ptOver W ((W.baseChange A).toProjective.neg P) hP.neg := by
-  rw [Hom.inv_def, inv_eq_negOver, ptOver_negOver]
 
 theorem exists_ptOver_mul_ptOver_eq [IsLocalRing A] (hP : IsUnimodularSol (W.baseChange A) P)
     (hQ : IsUnimodularSol (W.baseChange A) Q) :
@@ -321,37 +273,6 @@ theorem ptOver_mul_ptOver (hP : IsUnimodularSol (W.baseChange A) P)
   rcases h' with rfl | rfl
   exacts [(h.baseChange g).add, (h.baseChange g).diag]
 
-theorem IsSumTriple.equation {V : WeierstrassCurve A} [V.IsElliptic] (h : IsSumTriple V P Q T)
-    (hP : IsUnimodularSol V P) (hQ : IsUnimodularSol V Q) : V.toProjective.Equation T := by
-  refine eq_zero_of_localization _ fun p _ => ?_
-  let g := algebraMap A (Localization.AtPrime p)
-  obtain ⟨S, hS, h', -⟩ := exists_ptOver_mul_ptOver_eq V (A := Localization.AtPrime p)
-    (hP.map g) (hQ.map g)
-  have hp : Proportional (g ∘ T) S := by
-    rcases h' with rfl | rfl
-    exacts [(h.map g).add, (h.map g).diag]
-  obtain ⟨i, v, hv⟩ := hS.exists_isUnit
-  have e : g ∘ T = ((g ∘ T) i * (v⁻¹ : (Localization.AtPrime p)ˣ)) • S := by
-    ext j
-    rw [Pi.smul_apply, smul_eq_mul, mul_right_comm, hp i j, ← hv, Units.mul_inv_cancel_right]
-  have h₀ : (V.toProjective.map g).Equation (g ∘ T) := by
-    have h₁ : MvPolynomial.eval₂ (RingHom.id _) S (V.map g).toProjective.polynomial = 0 :=
-      hS.equation
-    have h₂ := eval₂_smul_of_isHomogeneous (RingHom.id _) (isHomogeneous_polynomial (V.map g))
-      ((g ∘ T) i * (v⁻¹ : (Localization.AtPrime p)ˣ)) S
-    rw [← e, h₁, mul_zero] at h₂
-    exact h₂
-  rwa [WeierstrassCurve.Projective.Equation, WeierstrassCurve.Projective.map_polynomial,
-    MvPolynomial.eval_map, ← MvPolynomial.eval₂_comp] at h₀
-
-theorem ptOver_mul_self (hP : IsUnimodularSol (W.baseChange A) P)
-    (hT : IsUnimodularSol (W.baseChange A) T)
-    (h : Proportional T ((W.baseChange A).toProjective.dblXYZ P)) :
-    ptOver W P hP * ptOver W P hP = ptOver W T hT := by
-  refine ptOver_mul_ptOver W hP hP hT ⟨fun i j => ?_, (diagXYZ_self hP.equation).symm ▸ h⟩
-  rw [WeierstrassCurve.Projective.addXYZ_self]
-  fin_cases i <;> fin_cases j <;> simp
-
 end Ring
 
 section Field
@@ -372,11 +293,6 @@ theorem ofProjectivePoint_add (p q : (W.baseChange k).toProjective.Point) :
   refine Eq.trans ?_ ((fieldAdd_ptOver W hP' hQ' hS h').trans e.symm)
   rw [fieldAdd, projectivePointEquiv_symm_ptOver, projectivePointEquiv_symm_ptOver]
   rfl
-
-def projectivePointMulEquiv :
-    Multiplicative (W.baseChange k).toProjective.Point ≃* (specOver R k ⟶ schemeOver W) where
-  toEquiv := Multiplicative.toAdd.trans (projectivePointEquiv W k)
-  map_mul' p q := ofProjectivePoint_add W k p.toAdd q.toAdd
 
 variable [DecidableEq k]
 
@@ -403,16 +319,6 @@ variable [_root_.IsReduced R]
 end ReducedBase
 
 section Examples
-
-private def sampleCurve : WeierstrassCurve ℚ := ⟨0, 0, 1, -1, 0⟩
-
-private theorem sample_sol {a b : ℚ} (h : b ^ 2 + b = a ^ 3 - a) :
-    IsUnimodularSol (sampleCurve.baseChange ℚ) ![a, b, 1] :=
-  isUnimodularSol_some (by
-    rw [WeierstrassCurve.Affine.equation_iff]
-    simp only [sampleCurve, WeierstrassCurve.baseChange, WeierstrassCurve.map, map_zero, map_one,
-      map_neg]
-    linear_combination h)
 
 end Examples
 

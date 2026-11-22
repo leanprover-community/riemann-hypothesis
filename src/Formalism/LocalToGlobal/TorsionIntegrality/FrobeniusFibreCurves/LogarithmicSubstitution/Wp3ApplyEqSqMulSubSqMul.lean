@@ -65,8 +65,6 @@ section
 
 variable {K : Type} [Field K] [CharZero K]
 
-local notation "A3" => MvPowerSeries (Fin 3) K
-
 theorem pderiv_series_at_variable (i x : Fin 3) (f : PowerSeries K) :
     pd i (at1 x f : A3) = at1 x (dz f) * pd i (MvPowerSeries.X x : A3) := by
   show MvPowerSeries.pderiv (R := K) i (PowerSeries.subst (MvPowerSeries.X x : A3) f) =

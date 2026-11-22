@@ -1,6 +1,6 @@
 module
 
-public import Formalism.ZetaRealNonvanish
+public import Formalism.Statement
 
 @[expose] public section
 

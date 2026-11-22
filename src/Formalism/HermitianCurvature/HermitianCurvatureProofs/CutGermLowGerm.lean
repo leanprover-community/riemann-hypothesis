@@ -1,6 +1,5 @@
 module
 
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGermLow
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GermRateLowerBound
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormSumLeOfForm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGInt

@@ -3,7 +3,7 @@ module
 public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SExpDefs
 public import GroundTheory.AutomorphicForms.GL2.GodementSectionFactor
 public import GroundTheory.GlobalFields.TateThesis.RootNumberLocalPlace
-public import GroundTheory.LocalFields.LocalZetaGauss
+public import Mathlib
 public import GroundTheory.LocalFields.LocalZeta
 public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.ArchInt
 public import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.UnitaryTransvectionZeroSecondMemClosure

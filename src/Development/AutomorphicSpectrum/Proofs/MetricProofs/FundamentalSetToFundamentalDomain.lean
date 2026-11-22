@@ -130,7 +130,6 @@ end Orbit
 
 section Ball
 
-
 open scoped ComplexOrder in
 theorem isPreconnected_ballDom {Ψ : Type} [Fintype Ψ] {j j' n : ℕ} (q : Ψ × Fin j × Fin j' ≃ Fin n) :
     IsPreconnected (ballDom q) := by
@@ -205,8 +204,6 @@ section Dict
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
   [Module (𝓞 E) Λ] {Ψ : Type} [Fintype Ψ] {j j' n : ℕ} {F : UnivFam E Ψ j j' n g Λ}
 
-local notation "𝐯" => Pi.basisFun E (Fin (j + j'))
-
 theorem pi_mem_ball (Δ : GroupDict F) (a) : Δ.π a ∈ ballDom F.q := by
   rw [← Δ.π_range]
   exact ⟨a, rfl⟩
@@ -280,8 +277,6 @@ section Dict
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
   [Module (𝓞 E) Λ] {Ψ : Type} [Fintype Ψ] {j j' n : ℕ} {F : UnivFam E Ψ j j' n g Λ}
-
-local notation "𝐯" => Pi.basisFun E (Fin (j + j'))
 
 theorem exists_const_lintegral (Δ : GroupDict F) (μ : Measure (archUnitary Δ.h 𝐯)) [μ.IsHaarMeasure]
     (Γ : Subgroup (Λ ≃ₗ[𝓞 E] Λ)) (FF : Set (Fin n → ℂ)) (FD : Set (archUnitary Δ.h 𝐯)) (hΓ : F.IsArith Γ)

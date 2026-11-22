@@ -24,17 +24,12 @@ theorem assocDeg_pullDeg (a : K → ℤ) :
   funext k
   rcases k with k | k | k <;> rfl
 
-theorem assocVar_comp_liftVar :
-    assocVar (ι := ι) (ι' := ι') ι₂ ∘ liftVar ι' = liftVar (Sum.elim ι' ι₂) :=
-  rfl
-
 theorem pullDeg_sub (a b : K → ℤ) :
     pullDeg (K' := K') a - pullDeg (K' := K') b = pullDeg (K' := K') (a - b) := by
   funext k
   cases k <;> simp [pullDeg]
 
 end FlagModelJoinLeftAlt
-
 
 open FlagModelJoinLeftAlt in
 theorem FlagModelJoinLeftAlt.proof (hVert : JoinVerticalDivisor.Statement)

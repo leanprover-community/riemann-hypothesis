@@ -144,8 +144,6 @@ section LocalProjection
 
 open Formalism.UG.CS Formalism.UG.P Formalism.L2.GlobalTheoryTheory.Comp
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-
 variable {n : Type} [Fintype n] [DecidableEq n]
 variable (v : HeightOneSpectrum (𝓞 F))
 
@@ -334,14 +332,6 @@ theorem rlv_norm (A : AtTTied u) (v : (D.mem u).A.vT) (a : 𝓞 D.host.E) (ha : 
     exact RingHom.mem_ker.2 h
   rw [A.res_v v, hr, map_mul]
   exact mul_ne_zero hb' ha'
-
-
-
-
-
-
-
-
 
 end Tied
 

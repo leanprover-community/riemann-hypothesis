@@ -1,7 +1,6 @@
 module
 
 public import Mathlib
-public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GoodTowerRealConditions
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RootOriginWeightIdentityStatement
 public import Development.AutomorphicSpectrum.Statements.TowerExistence.GoodTowerExistsX

@@ -6,9 +6,10 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TestObj
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissiblePadicIntMaximalIdeal
-public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsPrimitiveRootArcRoot
+public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ToMatrixTrFormBaseChange
+public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.SqrtNegDiscMemCoeffField
+public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.PsiWeightZeroLinearCombination
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.OneAddZeta21PowSevenAddPowFourteenEqZero
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsGenRosati
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ObjIsAbelianSchemeDimRigidifiedSym
@@ -226,7 +227,6 @@ theorem existsUnique_twRel {O : Type} [CommRing O] {N : NumD O} {k : ℕ} (β : 
   rw [hp, mul_comm (β.be _ _), zpow_mul, zpow_natCast, h]
   exact (N.twist_τ β u _ z).symm
 
-
 open ReciprocityTheory.ChartRestriction.G.Out.InhTate GlobalTheory.ToricData in
 theorem isCoordPt_one_iff {S : Scheme.{0}} (P : PolAV S) (k : ℕ) {T : Over S} {I : Type} (x : I → (T ⟶ P.A))
     (v : I → Γ(T.left, ⊤)) :
@@ -272,20 +272,6 @@ section Toric
 variable {K : Type} [CommRing K] [IsDomain K] {X : Type} [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
   (q : X → (FractionRing K)ˣ) (he : ∀ y, q (-y) = q y) (hb : ∀ a a' b, polar q (a + a') b = polar q a b * polar q a' b)
   (F : Type) [Field F] [Algebra (FractionRing K) F]
-
-def toricNum : NumD F where
-  toNumB := NumB.triv PUnit fun _ => 1
-  X := X
-  c _ := 1
-  c_add _ _ := rfl
-  ψ y := Units.map (algebraMap (FractionRing K) F).toMonoidHom (q y)
-  even y := by
-    change _ * 1 = _
-    rw [he, _root_.mul_one]
-  bimult a a' b := by
-    change _ * 1 = _
-    have := congrArg (Units.map (algebraMap (FractionRing K) F).toMonoidHom) (hb a a' b)
-    simpa only [polar, map_mul, map_inv, _root_.mul_one, div_eq_mul_inv] using this
 
 end Toric
 

@@ -14,10 +14,6 @@ namespace UpperTheory.Lit.Drps.Kum
 
 variable {l : ℕ} [Fact l.Prime]
 
-local notation "𝒪" => normInteger ℂ_[l]
-local notation "𝒪♭" => PreTilt 𝒪 l
-local notation "φi" => RingEquiv.symm (_root_.frobeniusEquiv 𝒪♭ l)
-
 variable {P : Formalism.BasicNotions.LocPrime l} (AI : Formalism.BasicNotions.LocAinf l P)
 
 def zeta (n : ℕ) : 𝒪 := Formalism.Per6.intEquiv l (AI.ζ n)
@@ -57,7 +53,6 @@ theorem lRootInt_succ (m : ℕ) : lRootInt (l := l) (m + 1) ^ l = lRootInt m :=
   Subtype.ext (by
     show ((GlobalTheory.Pst.lRoot l (m + 1) : PadicAlgCl l) : ℂ_[l]) ^ l = ((GlobalTheory.Pst.lRoot l m : PadicAlgCl l) : ℂ_[l])
     rw [← GlobalTheory.Pst.lRoot_succ l m, coe_pow'])
-
 
 variable (l) in
 def lFlat : 𝒪♭ := IsPerfectoidField.ofCompatible l lRootInt lRootInt_succ

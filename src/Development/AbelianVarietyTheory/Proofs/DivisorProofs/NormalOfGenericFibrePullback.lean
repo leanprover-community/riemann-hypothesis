@@ -1,10 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ScholzeWeinsteinB
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsFlagBundleRankOne
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsFlagModelHermSum
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLieFrames
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.DualGramInterpGram
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TriIff

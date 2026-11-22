@@ -21,8 +21,6 @@ def boxL : (SB A) ⊗[ℂ] (SB B) →ₗ[ℂ] (A × B → ℂ) :=
     (fun _ _ _ => funext fun _ => mul_assoc _ _ _) (fun _ _ _ => funext fun _ => mul_add _ _ _)
     fun _ _ _ => funext fun _ => mul_left_comm _ _ _)
 
-theorem boxL_tmul (a : SB A) (b : SB B) : boxL (a ⊗ₜ[ℂ] b) = fun z => a.1 z.1 * b.1 z.2 := rfl
-
 theorem boxL_ker : LinearMap.ker (boxL (A := A) (B := B)) = ⊥ := by
   classical
   refine LinearMap.ker_eq_bot'.2 fun x hx => ?_

@@ -23,12 +23,9 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PushAFinsumInter
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Pullback
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Measure
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AtlasIndep
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Degree
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStudyRatioCompChart0
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ProjectiveLinePartitionContinuousCoe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedChernFormDensityPullbackMatchingCharts
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsClosedNullSetCharts
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsConjFsBasisOfUnitary
@@ -110,9 +107,6 @@ def pullChart (π : Y ⟶ X) [IsIso π] (hπ : π ≫ p = q) (c : AlgChart p σ 
     · intro v hv
       exact ⟨hv.1, (mem_ptsIn_preimage (m := ptMap (inv π) (inv_comp π hπ) σ)
         (f := inv π) (fun _ => rfl)).2 hv.2⟩
-
-theorem pullChart_symm (π : Y ⟶ X) [IsIso π] (hπ : π ≫ p = q) (c : AlgChart p σ D) (v : ReciprocityTheory.L2DbarEstimates.V D) :
-    (pullChart π hπ c).e.symm v = ptMap (inv π) (inv_comp π hπ) σ (c.e.symm v) := rfl
 
 end GlobalTheory.MixIso
 

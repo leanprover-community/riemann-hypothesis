@@ -13,8 +13,6 @@ open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalThe
 
 namespace PositivityTheory.RgUd.Form.LeviSmoothness.props
 
-theorem toUnits_val (z : Circle) : ((Circle.toUnits z : ℂˣ) : ℂ) = (z : ℂ) := rfl
-
 open PositivityTheory.RgUd.Form PositivityTheory.RgUd.Form.LeviSmoothness PositivityTheory.RgUd.Form.U.Atom
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

@@ -36,7 +36,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RowHIn
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LPrjSurjective
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TupAllUsedAtPart
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryHyperplaneVolumeRatioSiegelWeil
-public import Formalism.LocalToGlobal.ThresholdSelection
 public import Formalism.SharpRestriction.CuspSpanNormBounds.PExtra
 public import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeFamilyOfFormalDegreeInput
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UniqGapOfUniq

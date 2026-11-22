@@ -43,19 +43,6 @@ variable {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T} {P
 abbrev RdTw (x : St P) (N : TwNew (Dof x)) : Type 1 :=
   R3.Read (datTw x N).R.toRealDat (datTw x N).F.lv2 (sideTw x N).p0
 
-def jMtB (Y : RdTw x N) (μ h i y) : type_of% (x.r.Y.IL.jMt μ h i y).1 := (by with_unfolding_all exact ((Y.IL.jMt ((μ)) ((h)) ((i)) ((y))).1 : _))
-
-def mtAd (Y : RdTw x N) (H : ∀ μ h i y, (x.r.Y.IL.jMt μ h i y).1 = jMtB Y μ h i y) {M : MtFam (Dof x)} (a : MtAd x.r.Y M) :
-    MtAd Y ((fun μ j h1 h2 => { M μ j h1 h2 with })) where
-  PV i := ⟨(by with_unfolding_all exact ((a.PV ((i))).ψ : _)), (by with_unfolding_all exact ((a.PV ((i))).inj : _)), (by with_unfolding_all exact ((a.PV ((i))).into : _)), (by with_unfolding_all exact ((a.PV ((i))).onto : _))⟩
-  std := (by with_unfolding_all exact (a.std :))
-  eW := (by with_unfolding_all exact (a.eW :))
-  read μ h i y g := (by with_unfolding_all exact (((a.read ((by with_unfolding_all exact (μ :))) ((by with_unfolding_all exact (h :))) ((by with_unfolding_all exact (i :))) ((by with_unfolding_all exact (y :))) ((by with_unfolding_all exact (g :)))).trans
-    (congrFun (H ((by with_unfolding_all exact (μ :))) ((by with_unfolding_all exact (h :))) ((by with_unfolding_all exact (i :))) ((by with_unfolding_all exact (y :)))) ((by with_unfolding_all exact (((a.PV ((i))).ψ ((g))) : _))))) :))
-  rat := (by with_unfolding_all exact (a.rat :))
-  wt := (by with_unfolding_all exact (a.wt :))
-  id := (by with_unfolding_all exact (a.id :))
-
 def eWB (Y : RdTw x N) (i y) : type_of% (x.r.Y.mj.eW i y) := (by with_unfolding_all exact ((Y.mj.eW ((i)) ((y))) : _))
 
 theorem hkDat {Sb i k Q α Rr} (h : HkDat (datTw x N).R Sb i k Q α Rr) :
@@ -93,20 +80,6 @@ def inRat (Y : RdTw x N) (H : ∀ i y, x.r.Y.mj.eW i y = eWB Y i y) (n : InRat x
       Sb_le := (by with_unfolding_all exact (n.rat.Sb_le :))
       lvl := (by with_unfolding_all exact (n.rat.lvl :))
       psi := (by with_unfolding_all exact (n.rat.psi :)) }
-
-def inMt (Y : RdTw x N) (H : ∀ μ h i y, (x.r.Y.IL.jMt μ h i y).1 = jMtB Y μ h i y) (n : InMt x.r.Y (cfOf x) w.I.xi (QOf P)) :
-    InMt Y (⟨(cfOf x).P, (cfOf x).W, (cfOf x).mu0, (cfOf x).eta, (cfOf x).chiPsi, (cfOf x).del, (cfOf x).del', (cfOf x).isMu0, (cfOf x).isEta, (cfOf x).isChi, (cfOf x).isDel, (cfOf x).isDel'⟩) w.I.xi (QOf P) where
-  M := (fun μ j h1 h2 => { n.M μ j h1 h2 with })
-  ad := (by with_unfolding_all exact ((mtAd Y H n.ad) :))
-  mt :=
-    { prod := by with_unfolding_all exact n.mt.prod
-      para := by with_unfolding_all exact n.mt.para
-      uni := by with_unfolding_all exact n.mt.uni
-      hyp := by with_unfolding_all exact n.mt.hyp
-      wt := by with_unfolding_all exact n.mt.wt
-      rat := by with_unfolding_all exact n.mt.rat
-      int := by with_unfolding_all exact n.mt.int
-      full := by with_unfolding_all exact n.mt.full }
 
 end GlobalTheory.HeightCounting.Up.LiTw
 

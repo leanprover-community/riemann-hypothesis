@@ -28,17 +28,11 @@ def adm1 (C' Cl Cg cb Cu cT CT C0 Cn C1 C : ℝ) : Prop :=
 def adm2 (C' Cl Cg cb Cu cT CT C0 Cn C1 C : ℝ) : Prop :=
   UnitaryVolumeMass.stPTDl D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 C
 
-def adm3 (C' Cl Cg cb Cu cT CT C0 Cn C1 Cq C : ℝ) : Prop :=
-  UnitaryVolumeMass.stMOM D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 Cq C
-
 def adm5 (C' Cl Cg cb Cu cT CT C0 : ℝ) : Prop :=
   UnitaryVolumeMass.stTcritLow D large₂ C' Cl Cg cb Cu cT CT C0
 
 def adm9 (C' Cl Cg cb Cu cT CT C0 Cn C1 : ℝ) : Prop :=
   UnitaryVolumeMass.PieriNormDegreeFormula D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1
-
-def adm10 (C' Cl Cg cb Cu cT CT C0 Cn C1 C : ℝ) : Prop :=
-  UnitaryVolumeMass.FormalDegreeUnitStepRatio D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 C
 
 end admitted
 
@@ -53,12 +47,6 @@ def adm12 : Prop :=
   UnitaryVolumeMass.stWeyl D
 
 end Adm2
-
-def adm6 : Prop :=
-  UnitaryVolumeMass.stBRmult
-
-def adm7 : Prop :=
-  UnitaryVolumeMass.stBRhad
 
 section Conclusion₂
 
@@ -94,12 +82,6 @@ def aux₃ (C' Cl Cg cb Cu cT CT C0 A C1 Cpr C C2 Ch δ : ℝ) : Prop :=
   PrimeSumLogBound D large₂ C' Cl Cg cb Cu cT CT C0 A C1 ∧
   Conclusion5 D large₂ C' Cl Cg cb Cu cT CT C0 A C C2 Ch ∧ Conclusion6 D large₂ C' Cl Cg cb Cu cT CT C0 A C1 C δ ∧
   division_rows_rational_lattice D large₂ C' Cl Cg cb Cu cT CT C0 A C1 Cpr C Ch δ
-
-def admitted (C' Cl Cg cb Cu cT CT C0 Cn C1 Cq CPT CDl CMo hilbertNinetyConstant CS : ℝ) : Prop :=
-  adm1 D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 CPT ∧ adm2 D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 CDl ∧
-  adm3 D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 Cq CMo ∧ adm5 D large₂ C' Cl Cg cb Cu cT CT C0 ∧ adm6 ∧ adm7 ∧
-  adm9 D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 ∧ adm10 D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 hilbertNinetyConstant ∧
-  adm11 D large₂ C' Cl Cg cb Cu cT CT C0 C1 CS ∧ adm12 D
 
 def IntegralityFromMetric (C' Cl Cg cb Cu cT CT C0 C1 CS C : ℝ) : Prop :=
   adm11 D large₂ C' Cl Cg cb Cu cT CT C0 C1 CS → adm12 D → Conclusion1 D large₂ C' Cl Cg cb Cu cT CT C0 C1 C

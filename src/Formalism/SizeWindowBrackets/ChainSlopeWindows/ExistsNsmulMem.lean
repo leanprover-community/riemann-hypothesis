@@ -6,7 +6,10 @@ public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SizeMu
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.MuChar
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DualPl
-public import Formalism.SizeWindowBrackets.RealSlopeBoundsSplit
+public import Mathlib.Data.Real.Basic
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Algebra.Order.Field.Basic
+public import Mathlib.Data.Finset.Lattice.Fold
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.NormNum

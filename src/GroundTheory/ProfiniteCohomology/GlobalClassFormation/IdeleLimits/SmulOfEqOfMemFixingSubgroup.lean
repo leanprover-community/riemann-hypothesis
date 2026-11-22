@@ -12,8 +12,6 @@ namespace GroundTheory.ProfCoh
 
 open NumberField IntermediateField GroundTheory.Global GroundTheory.Global.AdeleBaseChange
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 noncomputable section
 
 namespace IdeleLimit
@@ -62,7 +60,6 @@ open FiniteSubfield
 instance : CommGroup IdeleLimit :=
   inferInstanceAs (CommGroup (DirectLimit (fun F : FiniteSubfield ↦ IdeleGroup F.1)
     (fun _ _ h ↦ ideleMap h)))
-
 
 set_option maxHeartbeats 1000000 in
 def of (F : FiniteSubfield) : IdeleGroup F.1 →* IdeleLimit where

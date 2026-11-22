@@ -15,8 +15,6 @@ section Upq
 
 variable (P Q : ℕ)
 
-local notation "Mat" => Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ
-
 theorem cT_eq (X : Mat) : HcS.UG.cT (starRingEnd ℂ) X = Xᴴ := by
   ext i j
   simp [HcS.UG.cT, Matrix.conjTranspose_apply, Complex.star_def]

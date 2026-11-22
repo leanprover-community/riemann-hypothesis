@@ -1,6 +1,5 @@
 module
 
-public import Formalism.JacobiWeightFamilies.Statement
 public import Formalism.StatementU
 public import Formalism.CorankShare.StatementFR
 public import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
@@ -52,10 +51,6 @@ variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H]
 def GC (Hs : CycHost H) (ψ : AddChar (E0 × H) ℂ) (y : ℝ) : ℂ :=
   if ψ = 0 then ((Gz y : ℝ) : ℂ) else
     (∑ n ∈ Icc 1 ⌊y⌋₊, (Λ n : ℂ) * Hs.cv ψ n * ((y / n - 1 : ℝ) : ℂ)) + (y : ℂ) * Hs.ell ψ
-
-def vonMangoldtClassSum (Hs : CycHost H) (g : E0 × H) (a w : ℝ) : ℝ :=
-  ((1 / (Fintype.card (E0 × H) : ℂ)) * ∑ ψ : AddChar (E0 × H) ℂ,
-    ψ (-g) * ∑ n ∈ Icc 1 ⌊a / w⌋₊, (Λ n : ℂ) * Hs.cv ψ n * ((a / n - w : ℝ) : ℂ)).re
 
 def balTop (Hs : CycHost H) (a : ℝ) (t : H) (w : E0 × H → ℝ) : ℝ :=
   ((1 / ((PhiSet (H := H)).card : ℂ)) * ∑ g ∈ univ.filter (fun g : E0 × H => ¬ InPhi (g + topPl t)),

@@ -26,17 +26,6 @@ open scoped InnerProductSpace
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-def DensAt (CV : ℕ) : Prop :=
-  ∀ (k r : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
-    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] (D : Formalism.FourierDecayAlt.B.RealPlaceData k r Wp Wq)
-    (A ε : ℝ) (mm : ℕ) (F' : Formalism.FourierDecayAlt.B.Mat k r → (Wq →L[ℂ] Wp)) (γ : Formalism.FourierDecayAlt.B.Mat k r)
-    (O : Formalism.FourierDecayAlt.C6.OrbData D γ),
-    1 ≤ r → 0 < ε → (r : ℝ) * Formalism.FourierDecayAlt.C6.AV CV r (2 * r + k + 1) ≤ A → Formalism.FourierDecayAlt.C6.mmV CV r ≤ mm →
-    Formalism.FourierDecayAlt.B.InCC A mm F' →
-    (∀ g ∈ Formalism.FourierDecayAlt.B.GV k r, F' g ≠ 0 → ε ≤ Gf k r D.z D.z' g) →
-    (∀ g ∈ Formalism.FourierDecayAlt.C6.bigPos D, Formalism.FourierDecayAlt.B.JF D F' g = 0) →
-    Formalism.FourierDecayAlt.C6.IsRelevant D γ → 0 < Gf k r D.z D.z' γ → O.J F' = 0
-
 def StandardBesselSetting : Prop :=
   ∀ (k0 r : ℕ) (L : LocBessel (k0 + 1) r) (μsec : GramWordSpace.Sec k0), L.c = cStd →
     IsSection (k0 + 1) r L.z L.z' μsec → L.κN ≠ 0 → L.κN ≠ ⊤ →
@@ -57,15 +46,6 @@ theorem settingTie : StandardBesselSetting := by
            haarW := Formalism.MainNotions.BridgeLemma₃.lbHaarUp_proved.1 _ _ _ _ L.hz.1 L.hz.2 L.hμW.1, haarN := hN
            haarW' := Formalism.MainNotions.BridgeLemma₃.lbHaarUp_proved.1 _ _ _ _ L.hz'.1 L.hz'.2 L.hμW'.1
            sec := hsec, χ_smooth := hχ1, χ_supp := hχ2, χ_int := hχ3 }, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
-
-def BigCellJ : Prop :=
-  ∀ (k r : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
-    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] (D : Formalism.FourierDecayAlt.B.RealPlaceData k r Wp Wq)
-    (A : ℝ) (mm : ℕ) (F : Formalism.FourierDecayAlt.B.Mat k r → (Wq →L[ℂ] Wp)),
-    (r = 0 ∨ 2 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 < A) → Formalism.FourierDecayAlt.B.InCC A mm F →
-    (∀ q : (Fin r → ℂ) × ℂ, (∀ i, q.1 i ≠ 0) → Tz k r D.z * Tz k r D.z' < Complex.normSq q.2 →
-      Formalism.FourierDecayAlt.B.JF D F (bigCell k r q.1 (D.μsec q.2)) = 0) →
-    ∀ g ∈ Formalism.FourierDecayAlt.C6.bigPos D, Formalism.FourierDecayAlt.B.JF D F g = 0
 
 theorem uw_inv {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hh : h ∈ UWset k r z) : h⁻¹ ∈ UWset k r z := by
@@ -432,19 +412,6 @@ theorem integrand_eq {k0 r : ℕ} (L : LocBessel (k0 + 1) r) (D : Formalism.Four
 def c3 : ℝ := Classical.choose Formalism.FourierDecayAlt.P.orbital_integral_converges
 
 def A0 (k r : ℕ) : ℝ := c3 * ((r : ℝ) + 1) ^ 2 * ((r : ℝ) * ((2 * r + k + 1 : ℕ) : ℝ) + 1)
-
-def TopLevelBesselStatement : Prop :=
-  ∀ (k0 r : ℕ) (L : LocBessel (k0 + 1) r) (Ds : Formalism.FourierDecayAlt.B.RealPlaceData (k0 + 1) r L.Wp L.Wq)
-    (ν' : Fin (2 * r + (k0 + 1) + 1) → ℂ) (m₀ : Formalism.FourierDecayAlt.B.Mat (k0 + 1) r),
-    L.c = cStd → 0 < L.κN → L.κN ≠ ⊤ → Ds.z = L.z → Ds.z' = L.z' → Ds.π = L.π → Ds.π' = L.π' →
-    Ds.μW = L.μW → Ds.μN = L.μN → Ds.μW' = L.μW' → Formalism.FourierDecayAlt.D.IsBaseFrame Ds ν' m₀ →
-    ∃ c : List ℕ → ℝ, (∀ s, 0 < c s) ∧
-      ∀ (F : ThB.Mx (k0 + 1) r → (L.Wq →L[ℂ] L.Wp)) (γ : Point ℂ (r + 1)), IsKFinCoefH L.σ F →
-        Formalism.FourierDecayAlt.B.InCC (A0 (k0 + 1) r) 1 F →
-        0 < ThB.Gpt (Tz (k0 + 1) r L.z) (Tz (k0 + 1) r L.z') γ → (∃ g, IsPtRep L γ g ∧ IsRelStab L g) →
-        ThB.orbSq L F γ = ENNReal.ofReal (c (γ.1.map Prod.snd) *
-          (Formalism.FourierDecayAlt.B.hsInner (Formalism.FourierDecayAlt.D.vecV Ds ν' m₀ F (γ.1.map Prod.swap))
-            (Formalism.FourierDecayAlt.D.vecV Ds ν' m₀ F (γ.1.map Prod.swap))).re)
 
 theorem ptEntry_swap (l : List (ℂ × ℕ)) (a b : ℕ) :
     Formalism.FourierDecayAlt.D.ptEntry (l.map Prod.swap) a b = ptEntry l a b := by
@@ -1242,44 +1209,14 @@ theorem K_finite_decay : CutKFin := by
   exact Classical.choose_spec Formalism.FourierDecayAlt.P.orbital_integral_converges (k0 + 1) r L.Wp L.Wq Ds g (wPt γ) (dPt γ) (A0 (k0 + 1) r) F hg
     hrel (dPt_ne γ) hZ hG le_rfl hdec
 
-
-
 section jc12
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 end jc12
 
-
 section HSadj
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
-
-def hsE : (Wq →L[ℂ] Wp) ≃ₗ[ℂ] PiLp 2 (fun _ : Fin (Module.finrank ℂ Wq) => Wp) where
-  toFun A := WithLp.toLp 2 fun i => A (stdOrthonormalBasis ℂ Wq i)
-  invFun v := LinearMap.toContinuousLinearMap ((stdOrthonormalBasis ℂ Wq).toBasis.constr ℂ (fun i => (WithLp.ofLp v) i))
-  map_add' A B := by ext i; simp
-  map_smul' c A := by ext i; simp
-  left_inv A := by
-    apply ContinuousLinearMap.coe_injective
-    refine (stdOrthonormalBasis ℂ Wq).toBasis.ext fun i => ?_
-    simp
-  right_inv v := by
-    ext i
-    simp
-
-theorem hsInner_hsE (A B : Wq →L[ℂ] Wp) : Formalism.FourierDecayAlt.B.hsInner A B = ⟪hsE B, hsE A⟫_ℂ := rfl
-
-def adjHS (T : (Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp)) : (Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp) :=
-  LinearMap.toContinuousLinearMap ((hsE.symm.toLinearMap) ∘ₗ
-    (LinearMap.adjoint (hsE.toLinearMap ∘ₗ T.toLinearMap ∘ₗ hsE.symm.toLinearMap)) ∘ₗ hsE.toLinearMap)
-
-theorem adjHS_spec (T : (Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp)) (A B : Wq →L[ℂ] Wp) :
-    Formalism.FourierDecayAlt.B.hsInner (T A) B = Formalism.FourierDecayAlt.B.hsInner A (adjHS T B) := by
-  rw [hsInner_hsE, hsInner_hsE]
-  have e1 : hsE (T A) = (hsE.toLinearMap ∘ₗ T.toLinearMap ∘ₗ hsE.symm.toLinearMap) (hsE A) := by simp
-  have e2 : hsE (adjHS T B) = LinearMap.adjoint (hsE.toLinearMap ∘ₗ T.toLinearMap ∘ₗ hsE.symm.toLinearMap) (hsE B) := by
-    simp [adjHS]
-  rw [e1, e2, LinearMap.adjoint_inner_left]
 
 end HSadj
 
@@ -1292,21 +1229,6 @@ end HSadj2
 section cellOp
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
-
-def cellTerms (w : List (Formalism.MainNotions.BridgeLemma₃.cal_Ix k r)) (a : Formalism.FourierDecayAlt.B.Mat k r → ((Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp))) :
-    List (Formalism.FourierDecayAlt.B.DTerm k r Wp Wq) :=
-  (Formalism.MainNotions.BridgeLemma₃.cal_expE w).attach.map fun cv =>
-    { coef := fun g => cv.1.1 • a g
-      coefAdj := fun g => adjHS (cv.1.1 • a g)
-      word := cv.1.2
-      word_lie := fun X hX => Formalism.MainNotions.BridgeLemma₃.cal_expE_lie w cv.1 cv.2 X hX
-      adj_id := by
-        intro x A B
-        exact adjHS_spec (cv.1.1 • a x) A B }
-
-def cellOp {N : ℕ} (ws : Fin N → List (Formalism.MainNotions.BridgeLemma₃.cal_Ix k r))
-    (a : Fin N → Formalism.FourierDecayAlt.B.Mat k r → ((Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp))) : Formalism.FourierDecayAlt.B.DiffOp k r Wp Wq :=
-  (List.finRange N).flatMap fun n => cellTerms (ws n) (a n)
 
 end cellOp
 
@@ -1326,16 +1248,6 @@ section zeroOp
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
-def zeroOp (o : ℕ) : Formalism.FourierDecayAlt.B.DiffOp k r Wp Wq :=
-  [{ coef := fun _ => 0
-     coefAdj := fun _ => 0
-     word := List.replicate o 0
-     word_lie := fun X hX => by
-       rw [List.eq_of_mem_replicate hX]
-       simp [Formalism.FourierDecayAlt.B.inLie]
-     adj_id := fun x A B => by simp [hsInner_hsE] }]
-
 end zeroOp
-
 
 end Formalism.MainNotions.BigCellDensity

@@ -16,8 +16,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke
 
 variable {n : ℕ}
 
-theorem root_eq (a b : Fin n) : PI.UpqRep.root a b = HarishChandraRootData.root a b := rfl
-
 theorem Kset_eq (ε : Fin n → Bool) : PI.UpqRep.Kset ε = HarishChandraRootData.grpK ε := by
   ext g
   simp only [PI.UpqRep.Kset, HarishChandraRootData.grpK, Set.mem_ofPred_eq, PI.UpqRep.Jm]

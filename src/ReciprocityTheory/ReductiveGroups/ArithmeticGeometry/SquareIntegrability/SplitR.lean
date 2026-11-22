@@ -17,8 +17,6 @@ section rk
 
 variable {dim : (E →+* ℂ) → ℕ}
 
-theorem rk_act_apply (α : 𝓞 E) (v : Vsp dim) (i : Idx dim) : act α v i = i.1 (α : E) * v i := rfl
-
 theorem rk_act_sum {J : Type} [Fintype J] (c : J → ℤ) (ω : J → 𝓞 E) (v : Vsp dim) :
     act (∑ j, c j • ω j) v = ∑ j, c j • act (ω j) v := by
   ext i
@@ -69,7 +67,6 @@ def rkP (τ : E →+* ℂ) : Vsp dim →ₗ[ℂ] (Fin (dim τ) → ℂ) where
   toFun v a := v ⟨τ, a⟩
   map_add' v w := by ext a; simp
   map_smul' c v := by ext a; simp
-
 
 open Classical in
 def rkQ (τ : E →+* ℂ) : (Fin (dim τ) → ℂ) →ₗ[ℂ] Vsp dim where

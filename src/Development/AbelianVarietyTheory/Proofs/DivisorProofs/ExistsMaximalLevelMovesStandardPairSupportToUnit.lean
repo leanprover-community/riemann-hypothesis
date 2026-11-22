@@ -137,9 +137,6 @@ set_option synthInstance.maxHeartbeats 400000
 
 variable {D : D7}
 
-local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
-local notation "σσ" => GlobalTheory.AdelicLatMove.cF D
-
 private def toE (D : D7) : Formalism.MainNotions.StandardLatticesGL3.AE D ≃+* EAf D :=
   (GlobalTheory.BotFormula.toAfE D).trans (Algebra.TensorProduct.comm D.host.F (Af D.host.F) D.host.E).toRingEquiv
 

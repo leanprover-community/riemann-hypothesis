@@ -242,22 +242,5 @@ theorem card_emb {l : ℕ} [Fact l.Prime] (K LL : Loc.FinExt l)
     exact ⟨τ.codRestrict LL.1.toSubalgebra (h τ), by ext x; rfl⟩
 
 -- The concrete local period data makes `Module` synthesis for `DdR` exceed the default budget.
-set_option synthInstance.maxHeartbeats 100000 in
-open Formalism.BasicNotions Formalism.WeaklyAdmissibleFiltrations in
-theorem finrank_DdR_local {l : ℕ} [Fact l.Prime] (P : LocPrime l) (K LL : Loc.FinExt l)
-    (h : ∀ (τ : ↥K.1 →ₐ[ℚ_[l]] Loc.Om l) (x : ↥K.1), τ x ∈ LL.1) {m : ℕ} (hm : 0 < m)
-    (ρ : Representation ↥LL.1 ↥(Loc.GK K) (Fin m → ↥LL.1))
-    (hρ : finrank ↥LL.1 ↥(DdR (P.PD K) ρ) = finrank ℚ_[l] ↥K.1 * m) (a : ℤ) :
-    finrank ↥LL.1 ↥(DdR (P.PD K) ρ) =
-      ∑ᶠ τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1, finrank ↥LL.1 ↥(DdRE (P.PD K) ρ τ) ∧
-    finrank ↥LL.1 ↥(DdR (P.PD K) ρ ⊓ FilV (P.PD K) (LL := ↥LL.1) (V := Fin m → ↥LL.1) a) =
-      ∑ᶠ τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1, finrank ↥LL.1 ↥(FildR (P.PD K) ρ τ a) := by
-  have hK : FiniteDimensional ℚ_[l] ↥K.1 := K.2
-  have hpos : 0 < finrank ↥LL.1 ↥(DdR (P.PD K) ρ) := by
-    rw [hρ]
-    exact Nat.mul_pos Module.finrank_pos hm
-  have hD : FiniteDimensional ↥LL.1 ↥(DdR (P.PD K) ρ) := FiniteDimensional.of_finrank_pos hpos
-  have hc := card_emb _ _ h
-  exact finrank_DdR_finsum (P.PD K) ρ hc a
 
 end GlobalTheory.DeRhamSplit

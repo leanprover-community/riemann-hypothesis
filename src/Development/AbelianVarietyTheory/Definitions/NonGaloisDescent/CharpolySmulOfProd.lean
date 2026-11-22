@@ -97,38 +97,7 @@ structure IsChars {i : X.Tw} {b : Bool} (ρ : Reading X i b) : Prop where
     (u = D.nd.chiT k v j ∨ u = (D.nd.chiT k v j)⁻¹) ∧
     ρ.toC ((X.chi1 i (j.1 + 1) b (D.ntypes.tg k v) : (X.O0 i)ˣ) : X.O0 i) = D.ntypes.teichC k (toFb D k u)
 
-structure IsTripleWith {i : X.Tw} {b : Bool} (ρ : Reading X i b) (s : X.Sig i) (σ : D.what₂.FT) (π : D.naut.CG D.R.r)
-    (r : GalE D →* GL (Fin D.R.r) (Qbar (X.l i))) (ν : GalE D →* (X.O0 i)ˣ) (w : D.what₂.places.Pl)
-    (red : Zbar (X.l i) →+* FbAt D w) : Prop where
-  good : D.nd.goodRow σ
-  occurs : D.what₂.isot (X.jS i s) σ ≠ ⊥
-  param : IsParam σ π
-  gal : IsGaloisRepOf D π (X.l i) ρ.ι r
-  shift : ∃ n, IsGal art ρ.κ ρ.ι (shiftChar C) n ν
-  rho : ∀ g, ((X.rhoS i s g : GL (Fin D.R.r) (X.O0 i)) : Matrix (Fin D.R.r) (Fin D.R.r) (X.O0 i)).map (toQ ρ.κ) =
-    toQ ρ.κ ((ν g : (X.O0 i)ˣ) : X.O0 i) •
-      ((r g : GL (Fin D.R.r) (Qbar (X.l i))) : Matrix (Fin D.R.r) (Fin D.R.r) (Qbar (X.l i)))
-  hecke : ∀ k P, k ≤ D.R.r → IsSplitPl D.host P → P ∉ X.S0 i → ∃ x : X.O0 i,
-    algebraMap (X.O0 i) (X.O i) x = X.hEig i s k P ∧ ρ.toC x = heckeVal (muBase C (X.l i) (jIdx s)) π k P
-  induces : ρ.Induces w
-  residual : IsResidual ρ.ι r σ w red
-
-def IsTripleAt {i : X.Tw} {b : Bool} (ρ : Reading X i b) (s : X.Sig i) : Prop :=
-  ∃ σ π r ν w red, IsTripleWith C art ρ s σ π r ν w red
-
-structure IsTripleFor (Y : NExp D.R D.host D.what₂ D.LL0 D.nd X) : Prop where
-  artin : IsGlobalArtin art
-  evidence : ∀ i, X.NonzeroIndexPlace i → ∀ b : Bool, ∃ ρ : Reading X i b, IsChars C art ρ ∧
-    ∀ s : X.Sig i, X.side i s = b → IsTripleAt C art ρ s
-  vec : ∀ i, X.NonzeroIndexPlace i → ∀ s : X.Sig i, Formalism.MainNotions.BlochKatoReduction.Gen.goodE Y i s
-  all : Y.sig_all
-
 end Comparison₂
-
-def IsTripleOf {X : NTw D.R D.host D.what₂ D.LL0 D.nd} (Y : NExp D.R D.host D.what₂ D.LL0 D.nd X) : Prop :=
-  ∃ (C : CharFrame D) (art : Ideles D.host.E →* Gab D.host.E D.nd.Om), IsTripleFor C art Y
-
-def IsTriple (D : D7) : Prop := IsTripleOf D.nexp
 
 section ReadingAPI
 

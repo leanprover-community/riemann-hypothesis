@@ -24,16 +24,6 @@ section Main
 
 variable {I : Type}
 
-structure D (S : Finset I) (G : I → Type) [∀ v, CommGroup (G v)] where
-  o : ∀ v, G v →* Multiplicative ℤ
-  ϖ : ∀ v, G v
-  H : ∀ v, Subgroup (G v)
-  R : ∀ v, Finset (G v)
-  hϖ : ∀ v ∈ S, (o v (ϖ v)).toAdd = 1
-  hH : ∀ v ∈ S, ∀ h ∈ H v, (o v h).toAdd = 0
-  hR1 : ∀ v ∈ S, ∀ y ∈ R v, 0 ≤ (o v y).toAdd ∧ (o v y).toAdd ≤ 1
-  hR2 : ∀ v ∈ S, ∀ u : G v, ∃! y, y ∈ R v ∧ ∃ s : G v, u / (y * s ^ 2) ∈ H v
-
 variable {S : Finset I} {G : I → Type} [∀ v, CommGroup (G v)]
 
 namespace D
@@ -41,7 +31,6 @@ namespace D
 variable (L : D S G)
 
 variable {L}
-
 
 variable {χ : (∀ v, Fin 3 → G v) → ℂ}
 

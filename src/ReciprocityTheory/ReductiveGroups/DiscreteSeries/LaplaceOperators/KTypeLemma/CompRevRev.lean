@@ -24,8 +24,6 @@ theorem sg_ne (ε : Fin n → Bool) (a : Fin n) : sg ε a ≠ 0 := by
   unfold sg
   split_ifs <;> norm_num
 
-theorem sg_comp (ε : Fin n → Bool) (a : Fin n) : sg (ε ∘ Fin.rev) a = sg ε (Fin.rev a) := rfl
-
 theorem sum_rev {X : Type*} [AddCommMonoid X] (f : Fin n → X) : ∑ a, f (Fin.rev a) = ∑ a, f a :=
   Equiv.sum_comp Fin.revPerm f
 

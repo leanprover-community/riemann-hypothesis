@@ -210,7 +210,6 @@ private def near (c : K) (h0 : c ≠ 0) (h1 : v c ≤ 1) : Subgroup Kˣ where
     simp only [Set.mem_setOf_eq] at *
     rwa [h, v.map_neg, map_mul, map_inv₀, v_eq_one v (ha.trans_le h1), inv_one, one_mul]
 
-private def near2 : Subgroup Kˣ := near v 2 two_ne_zero (v_two v)
 private def near4 : Subgroup Kˣ := near v 4 (by norm_num) (v_four v)
 
 private lemma mem_near4 {x : Kˣ} : x ∈ near4 v ↔ v ((x : K) - 1) < v 4 := Iff.rfl

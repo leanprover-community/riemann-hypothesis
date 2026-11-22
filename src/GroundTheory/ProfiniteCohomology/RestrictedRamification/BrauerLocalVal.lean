@@ -16,8 +16,6 @@ open CategoryTheory NumberField IsDedekindDomain IntermediateField GroundTheory.
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1))) {v : HeightOneSpectrum (𝓞 K.1)}
   (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure (v.adicCompletion K.1)) (hv : v ∉ S)
 
@@ -103,7 +101,6 @@ def unitOfMem {N : FiniteSubfield} (y : (maxUnramifiedOutside K.1 ℚ̄ S)ˣ)
   Units.mk0 ⟨(y : maxUnramifiedOutside K.1 ℚ̄ S), hy⟩ fun h =>
     y.ne_zero (Subtype.ext (congrArg Subtype.val h : ((y : maxUnramifiedOutside K.1 ℚ̄ S) : ℚ̄) =
       ((0 : N.1) : ℚ̄)))
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 4000000 in
@@ -253,7 +250,6 @@ theorem ordEmb_eq_ordPlace (N : FiniteSubfield) [Fact (K ≤ N)]
   have hu : (u : N.1) = ⟨(maxUnitsToUnits S y : ℚ̄), hy⟩ := Subtype.ext hyu.symm
   rw [ordEmb_apply, ordPlace, hu, hv', WithZero.log_exp, neg_neg]
 
-
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 4000000 in
 theorem coboundary_iff_of_level (N : FiniteSubfield) [Fact (K ≤ N)] [Normal K.1 N.1]
@@ -319,7 +315,6 @@ theorem coboundary_iff_of_level (N : FiniteSubfield) [Fact (K ≤ N)] [Normal K.
     apply Units.ext
     rw [ha u, ← hbc (u 0) (u 1)]
     rfl
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 4000000 in

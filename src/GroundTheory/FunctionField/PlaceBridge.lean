@@ -147,10 +147,6 @@ section RatFunc
 
 open scoped Polynomial
 
-
-
-
-
 end RatFunc
 
 section RingOfIntegers
@@ -160,56 +156,15 @@ open scoped Polynomial
 variable [IsFunctionField k K] [Algebra k[X] K] [Algebra (RatFunc k) K]
   [IsScalarTower k[X] (RatFunc k) K] [IsScalarTower k k[X] K] [FunctionField k K]
 
-
-
-
 end RingOfIntegers
 
 section Separating
 
 open scoped IntermediateField.algebraAdjoinAdjoin
 
-
-omit [Algebra k K] in
-theorem isPrincipalIdealRing_adjoin [Algebra k K] (t : K) :
-    IsPrincipalIdealRing (Algebra.adjoin k {t}) := by
-  refine IsPrincipalIdealRing.of_surjective
-    (Polynomial.aeval (R := k) (⟨t, Algebra.self_mem_adjoin_singleton k t⟩ : Algebra.adjoin k {t})) ?_
-  rintro ⟨y, hy⟩
-  rw [Algebra.adjoin_singleton_eq_range_aeval] at hy
-  obtain ⟨p, rfl⟩ := (AlgHom.mem_range _).1 hy
-  exact ⟨p, Subtype.ext (Polynomial.aeval_subalgebra_coe p _ _)⟩
-
 variable [IsFunctionField k K] (t : K) [Algebra.IsSeparable (IntermediateField.adjoin k {t}) K]
 
-theorem transcendental_of_isSeparable : Transcendental k t := by
-  intro ht
-  have : FiniteDimensional k (IntermediateField.adjoin k {t}) :=
-    IntermediateField.adjoin.finiteDimensional ht.isIntegral
-  have : Algebra.IsAlgebraic k (IntermediateField.adjoin k {t}) := Algebra.IsAlgebraic.of_finite _ _
-  have : Algebra.IsAlgebraic k K := Algebra.IsAlgebraic.trans k (IntermediateField.adjoin k {t}) K
-  have h := trdeg_eq_one (k := k) (K := K)
-  rw [trdeg_eq_zero] at h
-  exact zero_ne_one h
-
-theorem isDedekindDomain_closure_adjoin :
-    IsDedekindDomain (integralClosure (Algebra.adjoin k {t}) K) := by
-  have := isPrincipalIdealRing_adjoin (k := k) t
-  have := finiteDimensional_adjoin (transcendental_of_isSeparable (k := k) t)
-  set_option synthInstance.maxHeartbeats 200000 in
-    exact IsIntegralClosure.isDedekindDomain (Algebra.adjoin k {t}) (IntermediateField.adjoin k {t}) K _
-
-theorem isFractionRing_closure_adjoin :
-    IsFractionRing (integralClosure (Algebra.adjoin k {t}) K) K := by
-  have := finiteDimensional_adjoin (transcendental_of_isSeparable (k := k) t)
-  exact integralClosure.isFractionRing_of_finite_extension (A := Algebra.adjoin k {t})
-    (IntermediateField.adjoin k {t}) K
-
 attribute [local instance] isDedekindDomain_closure_adjoin isFractionRing_closure_adjoin
-
-
-
-
 
 end Separating
 

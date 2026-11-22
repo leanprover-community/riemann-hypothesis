@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
 public import Formalism.SharpRestriction.Divisibility.WeightFamilies
-public import Development.AbelianVarietyTheory.BlockTheory.JetGauges.TraceFormDualSystem
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsPosHermOfPositive
 
 @[expose] public section
@@ -52,20 +51,6 @@ theorem isBalancedSpace (h : IsConj cj) : IsBalancedSpace E (SymB cj Y) := by
       rw [hc, h c, IsCMField.coe_ringOfIntegersComplexConj]
     rw [hc']
     exact hb c x y
-
-
-variable (Y) in
-def formsEquiv (h : IsConj cj) : SymB cj Y ≃ₗ[ℝ] balancedForms E Y where
-  toFun β := ⟨AddMonoidHom.mk' (fun x => ((β : Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ) x).toAddMonoidHom)
-      (fun x x' => by ext y; simp),
-    ((isBalancedSpace h _).1 β.2).1, ((isBalancedSpace h _).1 β.2).2⟩
-  invFun β := ⟨LinearMap.mk₂ ℤ (fun x y => β.1 x y) (fun _ _ _ => by simp) (fun _ _ _ => by simp)
-      (fun _ _ _ => by simp) (fun _ _ _ => by simp),
-    (isBalancedSpace h _).2 ⟨β.2.1, β.2.2⟩⟩
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
-  left_inv _ := rfl
-  right_inv _ := rfl
 
 def Admissible (l : SymB cj Y →ₗ[ℝ] ℝ) : Prop :=
   (∀ β : SymB cj Y, (∀ a c, ∃ z : ℤ, (β : Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ) a c = z) → ∃ z : ℤ, l β = z) ∧

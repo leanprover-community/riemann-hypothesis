@@ -68,7 +68,6 @@ theorem cyclotomicFrobenius_iteratedVariable_eq_mul (s : ℕ) : phi0 l R (Xs l R
   rw [Qs, h]
   simp [Xs, ← pow_mul, mul_comm]
 
-
 variable {R} in
 def phiS (Fr : R →+* R) : R⟦X⟧ →+* R⟦X⟧ := (phi0 l R : R⟦X⟧ →+* R⟦X⟧).comp (PowerSeries.map Fr)
 
@@ -90,14 +89,12 @@ theorem constantCoeff_gam_X (c : ℤ_[l]) : constantCoeff (gam R c X) = 0 := by 
 theorem coeff_one_gam_X (c : ℤ_[l]) : coeff 1 (gam R c X) = algebraMap ℤ_[l] R c := by
   simp [Algebra.algebraMap_eq_smul_one, coeff_one]
 
-
 variable {R} in
 theorem map_binomialSeries {R' : Type} [CommRing R'] [Algebra ℤ_[l] R'] (h : R →+* R')
     (hh : ∀ z : ℤ_[l], h (algebraMap _ _ z) = algebraMap _ _ z) (c : ℤ_[l]) :
     PowerSeries.map h (binomialSeries R c) = binomialSeries R' c := by
   ext n
   simp [← Algebra.algebraMap_eq_smul_one, hh]
-
 
 variable {R} in
 theorem map_gam {R' : Type} [CommRing R'] [Algebra ℤ_[l] R'] (h : R →+* R')
@@ -167,7 +164,6 @@ theorem gam_binomialSeries (c c' : ℤ_[l]) :
   have h := congrArg (PowerSeries.map (algebraMap ℤ_[l] R)) key
   rwa [map_gam _ (fun _ => rfl), map_binomialSeries _ (fun _ => rfl),
     map_binomialSeries _ (fun _ => rfl)] at h
-
 
 variable {R} in
 theorem algHom_ext_X {f g : R⟦X⟧ →ₐ[R] R⟦X⟧} (h : f X = g X) (h0 : constantCoeff (f X) = 0) : f = g :=
@@ -246,8 +242,6 @@ def ofLoc : Localization.Away (X : R⟦X⟧) →+* completedLocalizedPowerSeries
 abbrev ιE : R⟦X⟧ →+* completedLocalizedPowerSeriesRing l R := algebraMap _ _
 
 theorem ofLoc_alg (a : R⟦X⟧) : ofLoc l R (algebraMap _ _ a) = ιE l R a := rfl
-
-theorem algebraMap_completedLocalization (r : R) : algebraMap R (completedLocalizedPowerSeriesRing l R) r = ιE l R (C r) := rfl
 
 theorem isUnit_ιE_X : IsUnit (ιE l R X) :=
   (IsLocalization.Away.algebraMap_isUnit (S := Localization.Away (X : R⟦X⟧)) X).map (ofLoc l R)
@@ -343,7 +337,6 @@ def liftE {B : Type} [CommRing B] [LComplete l B] (f : R⟦X⟧ →+* B) (hf : I
 
 variable [Fact l.Prime]
 
-
 variable (l R) in
 theorem isUnit_ιE_phi : IsUnit (ιE l R ((1 + X) ^ l - 1)) := by
   obtain ⟨r, hr⟩ := exists_add_pow_prime_eq (Fact.out : l.Prime) (1 : R⟦X⟧) X
@@ -356,7 +349,6 @@ def phiES (Fr : R →+* R) : completedLocalizedPowerSeriesRing l R →+* complet
 @[simp] theorem phiES_ιE (Fr : R →+* R) (a : R⟦X⟧) : phiES Fr (ιE l R a) = ιE l R (phiS l Fr a) :=
   liftE_ιE _ _ _
 
-
 variable (l R) in
 def completedLocalizedLinearFrobenius : completedLocalizedPowerSeriesRing l R →ₐ[R] completedLocalizedPowerSeriesRing l R where
   toRingHom := phiES (RingHom.id R)
@@ -365,11 +357,7 @@ def completedLocalizedLinearFrobenius : completedLocalizedPowerSeriesRing l R �
 @[simp] theorem completedLocalizedLinearFrobenius_comp (a : R⟦X⟧) : completedLocalizedLinearFrobenius l R (ιE l R a) = ιE l R (phi0 l R a) :=
   (phiES_ιE (RingHom.id R) a).trans (by simp [phiS])
 
-
-
-
 variable [Algebra ℤ_[l] R]
-
 
 variable (R) in
 def completedLocalizedGammaAction (c : ℤ_[l]ˣ) : completedLocalizedPowerSeriesRing l R →ₐ[R] completedLocalizedPowerSeriesRing l R where
@@ -381,7 +369,6 @@ def completedLocalizedGammaAction (c : ℤ_[l]ˣ) : completedLocalizedPowerSerie
 
 @[simp] theorem completedLocalizedGammaAction_comp (c : ℤ_[l]ˣ) (a : R⟦X⟧) :
     completedLocalizedGammaAction R c (ιE l R a) = ιE l R (gam R (c : ℤ_[l]) a) := liftE_ιE _ _ _
-
 
 variable (R) in
 def completedLocalizedGammaActionHom : ℤ_[l]ˣ →* (completedLocalizedPowerSeriesRing l R →ₐ[R] completedLocalizedPowerSeriesRing l R) where

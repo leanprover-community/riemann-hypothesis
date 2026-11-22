@@ -17,7 +17,6 @@ section RootsOfUnity
 
 variable {F : Type*} [NormedField F] [IsUltrametricDist F]
 
-
 omit [IsUltrametricDist F] in
 theorem norm_le_one_of_pow_eq_one {ζ : F} {n : ℕ} (hn : n ≠ 0) (h : ζ ^ n = 1) : ‖ζ‖ ≤ 1 := by
   by_contra hlt
@@ -63,11 +62,6 @@ namespace AInf
 
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
-
-local notation "𝒪♭" => PreTilt (normInteger K) p
-local notation "𝒪" => normInteger K
-local notation "φ" => WittVector.frobeniusEquiv p 𝒪♭
-local notation "θ" => fontaineTheta 𝒪 p
 
 def mu (ε : 𝒪♭) : AInf K p := teichmuller p ε - 1
 

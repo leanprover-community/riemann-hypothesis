@@ -187,14 +187,6 @@ structure SizeData₂ (D : D7) where
 
 namespace SizeData₂
 
-def AdmT {D : D7} (L : SizeData₂ D) (u : D.what₂.Word) (T : ℕ) : Prop :=
-  letI := D.host.cmStar
-  T.Prime ∧
-  (D.mem u).A.Tstar ≤ (T : ℝ) ∧ (T : ℝ) ≤ (1 + 1 / ((D.R.f : ℝ) * D.R.k)) * (D.mem u).A.Tstar ∧
-  (∃ π : 𝓞 D.host.E, (π : D.host.E) ∈ D.host.K ∧ (π : D.host.E) * D.host.conj (π : D.host.E) = (T : D.host.E) ∧
-    (π - 1) ∈ Ideal.span {((D.host.QS * D.host.q * D.host.d * (D.host.g 0 * D.host.g 1) ^ 2 : ℕ) : 𝓞 D.host.E)}) ∧
-  T ≠ D.host.pde ∧ T ≠ D.host.pde'
-
 def dZ0 {D : D7} (_L : SizeData₂ D) (j : ℕ) : ℕ := Module.finrank ℂ (D.what₂.Zj D.what₂.mu0 j)
 
 def zeroSpaceRankAtPlace {D : D7} (_L : SizeData₂ D) (j : ℕ) (w : D.what₂.places.Pl) : ℕ :=
@@ -210,7 +202,6 @@ def sz (w : D.what₂.places.Pl) (y : ℝ) : ℝ :=
   2 * lwP w * ((D.what₂.places.ramIdx w : ℝ) * y)
 
 def lifts (D : D7) : Finset ℕ := Finset.Icc 1 D.R.m
-
 
 open Classical in
 def gainD (j : ℕ) (w : D.what₂.places.Pl) : ℝ :=
@@ -252,15 +243,6 @@ def ZeroAbove : Prop := ∀ u, ∀ j ∈ lifts D, ∀ w, L.sc.X'' D.R.n < (D.wha
 def TuGe : Prop := ∀ u, L.sc.b ^ ((D.R.m : ℝ) / 2) ≤ ((D.mem u).A.T : ℝ)
 
 end SizeData₂
-
-structure Fam (eps : ℝ) where
-  D : ℝ → D7
-  L : ∀ x, SizeData₂ (D x)
-
-  x1 : ℝ
-  one_lt_family_threshold : 1 < x1
-  L_x : ∀ x, x1 < x → (L x).sc.x = x
-  L_eps : ∀ x, (L x).sc.eps = eps
 
 def FactEtaMean : Prop := ∀ (D : D7) [IsGalois ℚ D.what₂.LL] (l : ℕ), l.Prime →
   ∀ S : Finset D.what₂.places.Pl, (∀ w, w ∈ S ↔ D.what₂.places.resChar w = l) →

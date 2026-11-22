@@ -6,7 +6,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCoh
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ToH0BijectiveOfInitial
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartIsGood
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartBcOfNe
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmorFrFrame
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlatOfEtalePoly
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DividedPowerEnvelopeUniversal
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DividedPowerEnvelopeExpansion

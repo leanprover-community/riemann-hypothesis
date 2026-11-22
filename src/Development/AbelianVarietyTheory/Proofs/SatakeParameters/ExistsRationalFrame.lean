@@ -2,7 +2,6 @@ module
 
 public import Mathlib
 public import Formalism.LocalRingCardinality.DataKerI
-public import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.LatticeFramesPrimeToLevel
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InfDiagMulFinPartI
 
 @[expose] public section

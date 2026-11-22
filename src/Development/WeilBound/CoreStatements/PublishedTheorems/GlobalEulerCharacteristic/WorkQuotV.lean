@@ -10,8 +10,6 @@ namespace PositivityTheory.Lit1.GEN.QuotientActionGlobalEulerCharacteristic
 
 open W_killed_c
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 def addAct {G : Type} [Group G] (M : Rep.{0} (ULift.{0} ℤ) G) : G →* AddMonoid.End M where
   toFun g := (M.ρ g).toAddMonoidHom
   map_one' := by ext x; simp <;> rfl

@@ -4,7 +4,7 @@ public import Mathlib
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnifAt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceConjugationPropertiesCmField
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegralTwConjMemCentMul
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CellMulSimpleUIntegral
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConvUAbsU
 
 @[expose] public section
 

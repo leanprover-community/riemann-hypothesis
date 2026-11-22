@@ -9,8 +9,6 @@ namespace GlobalTheory
 
 open Finset
 
-local notation "MultilinearMap " R:arg M:arg N:arg => _root_.MultilinearMap (RingHom.id R) M N
-
 theorem multilinear_sum_eq_of_prod_fun_eq
     {ι κ : Type} [Fintype ι] {X : ι → Type} (V : ∀ l, Submodule ℂ (X l → ℂ))
     (Φ : MultilinearMap ℂ (fun l => V l) ℂ) (a : κ →₀ ℂ) (f g : κ → ∀ l, V l) :

@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import ReciprocityTheory.DualLattices.WFrobStatement
-public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ZmodPrimeSqLocal
+public import ReciprocityTheory.DualLattices.ATowerInh
 
 @[expose] public section
 

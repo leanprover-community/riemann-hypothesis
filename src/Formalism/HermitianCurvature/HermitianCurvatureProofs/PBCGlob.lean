@@ -36,8 +36,6 @@ def phi (Y : Finset H) (κ : H → H → ℂ) (K : Fin f → H × ℂ → H × �
 def phiR (Y : Finset H) (κ : H → H → ℂ) (U P Q : Fin f → H × ℂ → H × ℂ → ℂ) (x x' : crystallineComparison.V f) : ℂ :=
   phi Y κ U x x' - phi Y κ P x x' - conj (phi Y κ P x' x) + phi Y κ Q x x'
 
-def hd : (H × crystallineComparison.V f) ⊕ (H × crystallineComparison.V f) → H := Sum.elim (fun p => p.1) (fun p => p.1)
-
 end
 
 end Formalism.FourierDecayAlt.P.PBC

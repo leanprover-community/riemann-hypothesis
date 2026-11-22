@@ -89,67 +89,11 @@ theorem SL_heq (n : InRat x.r.Y x.m.z.cG) : HEq (ratL L n.S) (SL L n) := (HEq.re
 variable (l : LC hL x)
 
 -- Comparing the transported fields in the elaborator expands the localization data.
-open Lean Elab Tactic in
-local elab "exact_by_kernel " term:term : tactic =>
-  closeMainGoalUsing `exact_by_kernel fun target _ => do
-    let value ← elabTerm term none
-    let actual ← instantiateMVars (← Meta.inferType value)
-    let target ← instantiateMVars target
-    match Kernel.isDefEq (← getEnv) (← getLCtx) actual target with
-    | .ok true => pure value
-    | .ok false => throwError "expected{indentExpr target}\nbut the term has type{indentExpr actual}"
-    | .error error => throwError (error.toMessageData (← getOptions))
-
-set_option maxHeartbeats 8000000 in
-def ysL : NExpRealS (datL x L).R (datL x L).cG (SL L l.rat) := by
-  let Y : NExpRealS (datL x L).R (datL x L).cG (ratL L l.rat.S) := {
-    fi := by with_unfolding_all exact (l.b.YS.fi :)
-    geq := by with_unfolding_all exact (l.b.YS.geq :)
-    rho := by with_unfolding_all exact (l.b.YS.rho :)
-    chi := by with_unfolding_all exact (l.b.YS.chi :)
-    eF := by exact_by_kernel l.b.YS.eF
-    bsup := by exact_by_kernel l.b.YS.bsup
-    act := by exact_by_kernel l.b.YS.act }
-  with_unfolding_all exact (Y :)
-
-def hkH : NExpRealH x.m.z.R x.m.z.cG l.rat.S l.b.YS where
-  hL := l.rat.In.hL
-  hs := l.b.Bs.hs
-  cHk := fun i b k Q => algebraMap ((Dof x).ntw.O i) (FractionRing ((Dof x).ntw.O i)) (l.b.Bs.cHk i b Q) ^ k
-  cHk_zero := fun i b Q => pow_zero _
-  cHk_unit := fun i b Q =>
-    ((l.b.Bs.cHk i b Q).isUnit.map (algebraMap ((Dof x).ntw.O i) (FractionRing ((Dof x).ntw.O i)))).pow 1
-  cHk_pow := fun i b k Q => by simp only [pow_one]
-  hkEq := by rw [l.b.eF]; exact l.b.Bs.hkEq
-
-def hkHL : NExpRealH (datL x L).R (datL x L).cG (SL L l.rat) (ysL L l) := by
-  let Y : NExpRealS (datL x L).R (datL x L).cG (ratL L l.rat.S) := by
-    with_unfolding_all exact (ysL L l :)
-  let H : NExpRealH (datL x L).R (datL x L).cG (ratL L l.rat.S) Y := {
-    hL := by with_unfolding_all exact ((hkH l).hL :)
-    hs := by with_unfolding_all exact ((hkH l).hs :)
-    cHk := ((hkH l).cHk)
-    cHk_zero := ((hkH l).cHk_zero)
-    cHk_unit := ((hkH l).cHk_unit)
-    cHk_pow := ((hkH l).cHk_pow)
-    hkEq := by exact_by_kernel (hkH l).hkEq }
-  with_unfolding_all exact (H :)
 
 abbrev cfD (x : St P) (L : LocAll (lay0 (Dof x))) : CharFrame (DL x L) := TC.cf w.I w.l (oL x L).Z
 
 -- Keep the target indices on the constructors. Record updates can eta-reduce
 -- to the source with its original indices during elaboration.
-def chD : NChoice (DL x L) :=
-  let c := chL L l.c.ch
-  @NChoice.mk (DL x L) c.twI c.twI_l c.sd c.Q c.k' c.psi' c.Oe
-    c.crOe c.domOe c.dvrOe c.algOe c.algOOe c.towOe c.Oe_inj c.Oe_fin c.Oe_loc
-    c.embW c.embW_w c.eMt c.eMt_basis c.eMt_lat
-
-def tpD : TupTied (DL x L) (cfD x L) (chD L l) :=
-  let tp := tpL L l.c.tp
-  @TupTied.mk (DL x L) (cfD x L) (chD L l) tp.xi tp.xi_inj tp.xi_fin tp.xi_triv tp.xi_tame
-    tp.psi tp.trueColumnChoices_heckeChar_reference_eq_one tp.xi_star tp.xi_star' tp.xi_tw
-    tp.psi_is tp.psi_un
 
 def expD (X : NExpTied (withLoc L)) : NExpTied (DL x L) :=
   (DL_eq x L).symm ▸ X

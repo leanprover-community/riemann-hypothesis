@@ -8,7 +8,7 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticDat
 public import Formalism.LocalToGlobal.ProjectiveLattices.RecConj
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.QbridgeOfNumGood
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CmFamilyFunctionalsDetectLowCoefficients
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CmArcDatumFamilyFunctionalBoundedLinearOnCuspForStatement
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CmArcDatumFamilyFunctionalBoundedLinearOnCuspFor
 
 @[expose] public section
 

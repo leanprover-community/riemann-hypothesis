@@ -18,8 +18,6 @@ open _root_.WittVector Laurent ACris
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p] [CharZero K]
 
-local notation "𝔸" => Localization.Away (p : AInf K p)
-
 variable {ρ : ℝ}
 
 theorem gn_sum_lt (hρ0 : 0 < ρ) (hρ1 : ρ < 1) {ι : Type*} (s : Finset ι) (f : ι → 𝔸) {M : ℝ}
@@ -39,12 +37,6 @@ theorem sum_sub_sum_mem {R : Type*} [CommRing R] (I : Ideal R) (d : ℕ) (C : �
   rw [← Ideal.Quotient.eq]
   set_option synthInstance.maxHeartbeats 100000 in
     simp only [map_sum, map_mul, map_pow, Ideal.Quotient.eq.2 ha, Ideal.Quotient.eq.2 hb]
-
-theorem algebraMap_acrisZero_algebraMap (w : AInf K p) :
-    algebraMap (ACrisZero K p) (ACris K p) (algebraMap (AInf K p) (ACrisZero K p) w) =
-      algebraMap (AInf K p) (ACris K p) w :=
-  rfl
-
 
 set_option maxHeartbeats 4000000 in
 theorem false_of_dominant (hp0 : ‖(p : K)‖ ≤ ρ) (hρ1 : ρ < 1) {a b : ACris K p} {Na Nb : ℕ}

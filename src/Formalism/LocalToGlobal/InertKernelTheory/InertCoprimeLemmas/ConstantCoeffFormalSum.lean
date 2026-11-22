@@ -158,8 +158,6 @@ section Main
 
 variable {l : ℕ} [Fact l.Prime]
 
-local notation "lgC" => lgF ℂ_[l] l
-
 theorem mvExp_eq {σ : Type} (f : MvPowerSeries σ ℂ_[l]) : mvExp f = Formalism.HermitianLattices.ExpSeriesBivariate.expS f := rfl
 
 theorem map_expS {σ : Type} (g : MvPowerSeries σ (K0 l)) (hg : MvPowerSeries.constantCoeff g = 0) :
@@ -240,8 +238,6 @@ end Main
 section Coord
 
 variable {l : ℕ} [Fact l.Prime]
-
-local notation "lgC" => lgF ℂ_[l] l
 
 theorem lg_flin (hl : 2 ≤ l) {σ m : Type} [Fintype m] (c : m → ℂ_[l]) (v : m → MvPowerSeries σ ℂ_[l])
     (hv : ∀ k, MvPowerSeries.constantCoeff (v k) = 0) :

@@ -79,9 +79,6 @@ def toG (lt : LtN Dw n → FVar D m n) : MvPolynomial (LtN Dw n) c.F →+* MvPol
 
 variable {lt : LtN Dw n → FVar D m n}
 
-theorem toG_apply (P : MvPolynomial (LtN Dw n) c.F) :
-    toG c φ lt P = MvPolynomial.rename lt (MvPolynomial.map φ P) := rfl
-
 theorem toG_X (ℓ : LtN Dw n) : toG c φ lt (MvPolynomial.X ℓ) = MvPolynomial.X (lt ℓ) := by
   simp [toG_apply]
 

@@ -47,9 +47,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PNbarChartSem
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PNbarSemipos
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PModelLogIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PBoundaryNull
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ThreeLeLevel
-public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.GaussCM
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.DataHodge
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.IsFrameOverLine
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Values
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StNbarLeviChart

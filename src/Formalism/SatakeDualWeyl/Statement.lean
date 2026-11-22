@@ -137,13 +137,6 @@ def AMFK (k : Type) [CommRing k] {W : Type} [AddCommGroup W] [Module k W] (Γ K 
   add_mem' := by intro f f' hf hf' γ g κ; simp [hf γ g κ, hf' γ g κ]
   smul_mem' := by intro c f hf γ g κ; simp [hf γ g κ]
 
-def invSub {k : Type} [CommRing k] {W : Type} [AddCommGroup W] [Module k W] {Γ : Subgroup G}
-    (ρ : Representation k Γ W) (S : Set Γ) : Submodule k W where
-  carrier := {w | ∀ γ ∈ S, ρ γ w = w}
-  zero_mem' := by intro γ _; simp
-  add_mem' := by intro a b ha hb γ hγ; simp [ha γ hγ, hb γ hγ]
-  smul_mem' := by intro c a ha γ hγ; simp [ha γ hγ]
-
 def stabAt (Γ K : Subgroup G) (g : G) : Set Γ := {γ | g⁻¹ * (γ : G) * g ∈ K}
 
 def IsCommensurated (K : Subgroup G) : Prop :=
@@ -154,7 +147,6 @@ def IsBiInv {k : Type} (K : Subgroup G) (f : G → k) : Prop :=
 
 def FinDosetSupp {k : Type} [Zero k] (K : Subgroup G) (f : G → k) : Prop :=
   ∃ S : Finset G, ∀ g : G, f g ≠ 0 → ∃ s ∈ S, ∃ a b : K, g = (a : G) * s * b
-
 
 open Classical in
 def Hecke (k : Type) [CommRing k] (K : Subgroup G) : Submodule k (G → k) where
@@ -207,14 +199,6 @@ section Coeff
 
 variable (O : Type) [CommRing O] (n : Type) [Fintype n] [DecidableEq n]
 
-def linSubst (M : Matrix n n O) : MvPolynomial n O →ₐ[O] MvPolynomial n O :=
-  MvPolynomial.aeval (fun i => ∑ j, MvPolynomial.C (M i j) * MvPolynomial.X j)
-
-def polyAct (g : GL n O) : MvPolynomial n O →ₐ[O] MvPolynomial n O :=
-  linSubst O n ((g⁻¹ : GL n O) : Matrix n n O)
-
-def nabla (k : ℕ) : Submodule O (MvPolynomial n O) := MvPolynomial.homogeneousSubmodule n O k
-
 end Coeff
 
 def BCMem : Prop :=
@@ -243,13 +227,6 @@ def SplitIso : Prop :=
   ∀ (R : Type) [CommRing R] (n : Type) [Fintype n] [DecidableEq n] (J₁ : Matrix n n R),
     IsUnit J₁.det →
     ∃ e : UJ (swapR R) (splitJ J₁) ≃* GL n R, ∀ g, e g = bc (RingHom.fst R R) (g : GL n (R × R))
-
-def AMFDecomp : Prop :=
-  ∀ (G : Type) [Group G] (Γ K : Subgroup G) (k : Type) [CommRing k] (W : Type) [AddCommGroup W]
-    [Module k W] (ρ : Representation k Γ W) (s : ClassSet Γ K → G),
-    (∀ c, DoubleCoset.mk Γ K (s c) = c) →
-    ∃ e : AMF k Γ K ρ ≃ₗ[k] ((c : ClassSet Γ K) → invSub ρ (stabAt Γ K (s c))),
-      ∀ f c, (e f c : W) = (f : G → W) (s c)
 
 def AMFKFinite : Prop :=
   ∀ (G : Type) [Group G] (Γ K : Subgroup G) (k : Type) [CommRing k] [IsNoetherianRing k]
@@ -306,14 +283,6 @@ def GLintComm : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F))
     (n : ℕ), IsCommensurated (GLint (Fin n) (v.adicCompletionIntegers F).toSubring)
 
-def PolyActMul : Prop :=
-  ∀ (O : Type) [CommRing O] (n : Type) [Fintype n] [DecidableEq n] (g h : GL n O),
-    polyAct O n (g * h) = (polyAct O n g).comp (polyAct O n h) ∧ polyAct O n 1 = AlgHom.id O _
-
-def NablaStable : Prop :=
-  ∀ (O : Type) [CommRing O] (n : Type) [Fintype n] [DecidableEq n] (k : ℕ) (g : GL n O),
-    ∀ P ∈ nabla O n k, polyAct O n g P ∈ nabla O n k
-
 section More
 
 open NumberField IsDedekindDomain
@@ -348,11 +317,6 @@ def intAd (F : Type) [Field F] [NumberField F] : Subring (FiniteAdeleRing (𝓞 
 
 def intOE (E : Type) [Field E] [NumberField E] : Subring E := (algebraMap (𝓞 E) E).range
 
-def levelV [NumberField F] {E : Type} [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
-    (J : Matrix n n E) (v : HeightOneSpectrum (𝓞 F)) : Subgroup (GL n (E ⊗[F] v.adicCompletion F)) :=
-  level (sigR σ (v.adicCompletion F)) (J.map (inclE (F := F) (v.adicCompletion F)))
-    (stdLat (n := n) ↥(tensInt (F := F) (v.adicCompletion F) (intOE E) (v.adicCompletionIntegers F).toSubring))
-
 def levelAf [NumberField F] {E : Type} [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (J : Matrix n n E) : Subgroup (GL n (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) :=
   level (sigR σ (FiniteAdeleRing (𝓞 F) F)) (J.map (inclE (F := F) (FiniteAdeleRing (𝓞 F) F)))
@@ -381,8 +345,6 @@ def stabFun {A : Type} [CommRing A] {R : Type} [CommRing R] [Algebra R A] {M : T
     rw [← h1]
     congr 1; apply Subtype.ext
     simp [Matrix.mulVec_mulVec]
-
-def IsNeat {G : Type} [Group G] (Γ K : Subgroup G) : Prop := ∀ g : G, stabAt Γ K g = {1}
 
 def hActK {G₁ G₂ : Type} [Group G₁] [Group G₂] {k : Type} [CommRing k] {W : Type} [AddCommGroup W]
     [Module k W] (K₁ : Subgroup G₁) (f : G₁ → k) (φ : G₁ × G₂ → W) (g : G₁ × G₂) : W :=
@@ -442,14 +404,6 @@ def TjEq : Prop :=
 def TjIndep : Prop :=
   ∀ (L : Type) [Field L] (O : Subring L) (ϖ u : L) (k : Type) [CommRing k] (n j : ℕ),
     u ∈ O → u⁻¹ ∈ O → u ≠ 0 → Tj k n O (u * ϖ) j = Tj k n O ϖ j
-
-def SigConj : Prop :=
-  ∀ (n : Type) [Fintype n] [DecidableEq n] (J : Matrix n n ℂ) (p q : ℕ) (e : n ≃ Fin p ⊕ Fin q)
-    (P : GL (Fin p ⊕ Fin q) ℂ),
-    cT (starRingEnd ℂ) (P : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ) * J.reindex e e *
-      (P : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ) = Jpq p q →
-    ∀ g : GL (Fin p ⊕ Fin q) ℂ,
-      g ∈ UJ (starRingEnd ℂ) (J.reindex e e) ↔ P⁻¹ * g * P ∈ Upq p q
 
 def SigExists : Prop :=
   ∀ (n : Type) [Fintype n] [DecidableEq n] (J : Matrix n n ℂ),

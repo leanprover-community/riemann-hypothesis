@@ -18,9 +18,6 @@ theorem gpoly_eval_one (Λ : ℂ) : (gpoly Λ).eval 1 = Complex.normSq (1 - Λ) 
     Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im]
   ring
 
-theorem mapOp_apply {A : Type} (φ : A → A) (m : ℕ) (F : (Fin m → A) → ℝ) (y : Fin m → A) :
-    mapOp φ m F y = F fun i => φ (y i) := rfl
-
 theorem kill_one {A : Type} (φ : A → A) (m : ℕ) (E : (Fin m → A) → ℂ) (Λ z : ℂ)
     (hE : ∀ y, E (fun i => φ (y i)) = Λ * E y) :
     aeval (mapOp φ m) (gpoly Λ) (fun y => (z * E y).re) = 0 := by

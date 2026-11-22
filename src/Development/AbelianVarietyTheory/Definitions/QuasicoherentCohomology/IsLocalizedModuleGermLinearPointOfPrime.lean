@@ -59,12 +59,6 @@ theorem stalkLinear_zero (x : X) : stalkLinear (0 : F ⟶ G) x = 0 := by
   obtain ⟨V, hV, s, rfl⟩ := F.presheaf.exists_germ_eq t
   rw [stalkLinear_germ]; exact map_zero _
 
-def stalkLinearEquiv (e : F ≅ G) (x : X) :
-    (F.presheaf.stalk x :) ≃ₗ[X.presheaf.stalk x] (G.presheaf.stalk x :) :=
-  LinearEquiv.ofLinearMap (stalkLinear e.hom x) (stalkLinear e.inv x)
-    (by rw [← stalkLinear_comp, e.inv_hom_id, stalkLinear_id])
-    (by rw [← stalkLinear_comp, e.hom_inv_id, stalkLinear_id])
-
 theorem exact_iff_stalkLinear (S : ShortComplex X.Modules) :
     S.Exact ↔ ∀ x : X, Function.Exact (stalkLinear S.f x) (stalkLinear S.g x) := by
   rw [← SheafLES.exact_map_toAbSheaf_iff, TopCat.Sheaf.exact_iff_stalkFunctor_map_exact]

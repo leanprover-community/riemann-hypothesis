@@ -32,9 +32,6 @@ theorem trPair_cup {q : ℕ} {I J : Cx (ZMod q)} {k k' : ℤ} (h : k = k') (μ :
     (trPair h μ).cup E hw a b = Ht.cast hw h (μ.cup E rfl a b) := by
   subst h; subst hw; rfl
 
-theorem secMap_id {R : Type} [CommRing R] (K : Cx R) (s : ℤ) {U : Scheme.{0}} (x : Sec (K.X s) U) :
-    Sec.map (HomologicalComplex.Hom.f (𝟙 K) s) x = x := rfl
-
 theorem main : ∀ (q : ℕ) [NeZero q] (E : Spc) {n m k i j l : ℤ} (a : Ht q E n i) (b : Ht q E m j) (c : Ht q E k l),
     cup q (cup q a b) c = (cup q a (cup q b c)).cast (by ring) (by ring) := by
   intro q _ E n m k i j l a b c

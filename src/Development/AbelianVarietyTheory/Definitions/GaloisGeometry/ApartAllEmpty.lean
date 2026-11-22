@@ -28,9 +28,6 @@ def UsPl (d : ℕ) (w : HeightOneSpectrum (𝓞 E)) : Prop :=
 def ApartAll (S : Finset (HeightOneSpectrum (𝓞 E))) (w : HeightOneSpectrum (𝓞 E)) : Prop :=
   ∀ u ∈ S, Apart w u
 
-theorem apartAll_empty (w : HeightOneSpectrum (𝓞 E)) : ApartAll (∅ : Finset (HeightOneSpectrum (𝓞 E))) w :=
-  fun _ h => absurd h (Finset.notMem_empty _)
-
 end GlobalTheory.CongL
 
 end

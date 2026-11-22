@@ -78,13 +78,6 @@ theorem LiesOver.isLocalHom {w : Place k K'} {v : Place k K} (h : w.LiesOver v) 
   rw [map_inv₀, inv_le_one₀ (zero_lt_iff.2 ((Valuation.ne_zero_iff _).2 ha0))] at h1
   exact le_antisymm (v.ring.valuation_le_one a) h1
 
-theorem LiesOver.isScalarTower {w : Place k K'} {v : Place k K} (h : w.LiesOver v) :
-    let := h.algebra
-    IsScalarTower k v.ring w.ring := by
-  let := h.algebra
-  exact IsScalarTower.of_algebraMap_eq fun c =>
-    Subtype.ext (IsScalarTower.algebraMap_apply k K K' c)
-
 theorem _root_.GroundTheory.FunctionField.IsFunctionField.of_finiteDimensional [IsFunctionField k K]
     [FiniteDimensional K K'] : IsFunctionField k K' := by
   obtain ⟨y, hy, hfin⟩ := IsFunctionField.exists_transcendental_finiteDimensional (k := k) (K := K)
@@ -132,7 +125,6 @@ theorem LiesOver.isTorsionFree {w : Place k K'} {v : Place k K} (h : w.LiesOver 
   exact Module.isTorsionFree_iff_algebraMap_injective.2 fun a b hab =>
     Subtype.ext ((algebraMap K K').injective (congrArg Subtype.val hab))
 
-
 omit [IsScalarTower k K K'] in
 theorem LiesOver.valuation_algebraMap {w : Place k K'} {v : Place k K} (h : w.LiesOver v) (x : K) :
     letI := h.algebra
@@ -175,27 +167,6 @@ theorem LiesOver.ord_algebraMap {w : Place k K'} {v : Place k K} (h : w.LiesOver
   rw [v.valuation_eq_exp_neg_ord hx, w.valuation_eq_exp_neg_ord hx', ← WithZero.exp_nsmul,
     WithZero.exp_inj, nsmul_eq_mul, h.ramificationIdx'_eq] at h1
   linarith
-
-
-omit [IsFunctionField k K'] in
-theorem LiesOver.deg_mul_finrank {w : Place k K'} {v : Place k K} (h : w.LiesOver v) :
-    letI := h.algebra
-    letI := h.isLocalHom
-    v.deg * Module.finrank v.ResidueField w.ResidueField = w.deg := by
-  let := h.algebra
-  have := h.isLocalHom
-  have := h.isScalarTower
-  exact (letI : Module.Free v.ResidueField w.ResidueField := Module.Free.of_divisionRing _ _; Module.finrank_mul_finrank k v.ResidueField w.ResidueField)
-
-
-omit [IsFunctionField k K'] in
-theorem LiesOver.finrank_residueField {w : Place k K'} {v : Place k K} (h : w.LiesOver v) :
-    letI := h.algebra
-    letI := h.isLocalHom
-    Module.finrank v.ResidueField w.ResidueField = w.inertiaDeg v := by
-  let := h.algebra
-  have := h.isLocalHom
-  rw [inertiaDeg, ← h.deg_mul_finrank, Nat.mul_div_cancel_left _ v.deg_pos]
 
 end Degree
 

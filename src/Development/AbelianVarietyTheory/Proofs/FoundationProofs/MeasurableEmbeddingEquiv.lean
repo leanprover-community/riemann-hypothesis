@@ -30,13 +30,6 @@ theorem IsUnitEquiv.symm {π : H →* (V →L[ℂ] V)} {π' : H →* (W →L[ℂ
   obtain ⟨A, hA⟩ := h
   exact ⟨A.symm, fun g v => A.injective (by simp [hA])⟩
 
-theorem IsUnitEquiv.trans {U : Type} [NormedAddCommGroup U] [InnerProductSpace ℂ U] {π : H →* (V →L[ℂ] V)}
-    {π' : H →* (W →L[ℂ] W)} {π'' : H →* (U →L[ℂ] U)} (h : IsUnitEquiv π π') (h' : IsUnitEquiv π' π'') :
-    IsUnitEquiv π π'' := by
-  obtain ⟨A, hA⟩ := h
-  obtain ⟨B, hB⟩ := h'
-  exact ⟨A.trans B, fun g v => by simp [hA, hB]⟩
-
 variable [CompleteSpace V] [CompleteSpace W]
 
 theorem isRepOp_conj {π : H →* (V →L[ℂ] V)} {π' : H →* (W →L[ℂ] W)} (A : V ≃ₗᵢ[ℂ] W)
@@ -74,13 +67,6 @@ variable {H H' n V W : Type} [Group H] [Group H'] [TopologicalSpace H] [Topologi
 
 variable {e}
 
-theorem conj_symm (ha : IsUnit a) (hι : ∀ g, ι' (e g) = a * ι g * a⁻¹) (g : H') :
-    ι (e.symm g) = a⁻¹ * ι' g * a⁻¹⁻¹ := by
-  have hd := (Matrix.isUnit_iff_isUnit_det _).1 ha
-  obtain ⟨g, rfl⟩ := e.surjective g
-  rw [hι, e.symm_apply_apply, Matrix.nonsing_inv_nonsing_inv _ hd]
-  simp only [mul_assoc, Matrix.nonsing_inv_mul _ hd, Matrix.nonsing_inv_mul_cancel_left _ _ hd, mul_one]
-
 theorem comp_mem_ccMat (hι : ∀ g, ι' (e g) = a * ι g * a⁻¹) {f' : H' → ℂ} (h : f' ∈ CcMat ι') :
     f' ∘ e ∈ CcMat ι := by
   obtain ⟨hc, Φ, hΦ, hf⟩ := h
@@ -94,7 +80,6 @@ theorem isRegSS_conj_iff (ha : IsUnit a) (hι : ∀ g, ι' (e g) = a * ι g * a�
   rw [IsRegSS, IsRegSS, hι, Matrix.charpoly_mul_comm,
     Matrix.nonsing_inv_mul_cancel_left _ _ ((Matrix.isUnit_iff_isUnit_det _).1 ha)]
 
-
 variable (e) in
 theorem isCompact_cent_iff (s : H) : IsCompact (cent (e s) : Set H') ↔ IsCompact (cent s : Set H) := by
   rw [isCompact_iff_compactSpace, isCompact_iff_compactSpace]
@@ -105,67 +90,15 @@ variable [MeasurableSpace H] [BorelSpace H] [MeasurableSpace H'] [BorelSpace H']
 
 theorem measurableEmbedding_equiv : MeasurableEmbedding e := e.toHomeomorph.measurableEmbedding
 
-theorem map_symm_map (μ' : Measure H') : (μ'.map e.symm).map e = μ' := by
-  rw [Measure.map_map (map_continuous e).measurable (map_continuous e.symm).measurable]
-  convert Measure.map_id using 2
-  ext x; simp
-
 theorem repOp_map (π' : H' →* (V →L[ℂ] V)) (μ : Measure H) (f' : H' → ℂ) :
     repOp π' (μ.map e) f' = repOp (π'.comp (e : H →* H')) μ (f' ∘ e) :=
   repOp_congr fun T => forall_congr' fun v => and_congr (measurableEmbedding_equiv e).integrable_map_iff
     (by rw [(measurableEmbedding_equiv e).integral_map]; rfl)
 
-theorem isTempered_map_iff (π' : H' →* (V →L[ℂ] V)) (μ : Measure H) :
-    IsTempered (μ.map e) π' ↔ IsTempered μ (π'.comp (e : H →* H')) :=
-  exists_congr fun _ => and_congr_right fun _ => forall₂_congr fun _ _ =>
-    (measurableEmbedding_equiv e).integrable_map_iff
-
 variable {e} [CompleteSpace V]
-
-theorem IsCharFn.of_map (ha : IsUnit a) (hι : ∀ g, ι' (e g) = a * ι g * a⁻¹) {μ : Measure H}
-    {π' : H' →* (V →L[ℂ] V)} {Θ : H' → ℂ} (h : IsCharFn ι' (μ.map e) π' Θ) :
-    IsCharFn ι μ (π'.comp (e : H →* H')) (Θ ∘ e) := by
-  refine ⟨(locallyIntegrable_map_homeomorph e.toHomeomorph).1 h.1, fun s hs =>
-    ContinuousAt.comp (h.2.1 _ ((isRegSS_conj_iff ha hι s).2 hs)) (map_continuous e).continuousAt, fun f hf => ?_⟩
-  have := h.2.2 _ (comp_mem_ccMat (conj_symm ha hι) hf)
-  rw [repOp_map, (measurableEmbedding_equiv e).integral_map] at this
-  convert this using 2 <;> ext x <;> simp
 
 variable [IsTopologicalGroup H] [SecondCountableTopology H] [LocallyCompactSpace H] [T2Space H]
   [IsTopologicalGroup H'] [SecondCountableTopology H'] [LocallyCompactSpace H'] [T2Space H']
-
-theorem IsPseudoCoeff.of_map (ha : IsUnit a) (hι : ∀ g, ι' (e g) = a * ι g * a⁻¹) {μ : Measure H} [μ.IsHaarMeasure]
-    {D' : H' →* (V →L[ℂ] V)} {f' : H' → ℂ} (h : IsPseudoCoeff ι' (μ.map e) D' f') :
-    IsPseudoCoeff ι μ (D'.comp (e : H →* H')) (f' ∘ e) := by
-  obtain ⟨Θ, hΘ, hO⟩ := h.orb_compact
-  refine ⟨comp_mem_ccMat hι h.mem, repOp_map e D' μ f' ▸ h.trace_self, fun U _ _ _ π h1 h2 h3 h4 => ?_,
-    fun s hs hT dt _ _ => ?_, Θ ∘ e, hΘ.of_map ha hι, fun s hs hT dt _ _ => ?_⟩
-  · obtain ⟨π', rfl⟩ : ∃ π' : H' →* (U →L[ℂ] U), π = π'.comp (e : H →* H') :=
-      ⟨π.comp (e.symm : H' →* H), MonoidHom.ext fun x => by simp⟩
-    rw [← repOp_map]
-    refine h.trace_other U π' ⟨fun g v => ?_, fun v => ?_⟩ ⟨h2.1, fun S hS => h2.2 S ⟨hS.1, fun g => hS.2 _⟩⟩
-      ((isTempered_map_iff e π' μ).2 h3) fun ⟨A, hA⟩ => h4 ⟨A, fun g => hA _⟩
-    · simpa using h1.1 (e.symm g) v
-    · simpa [Function.comp_def] using (h1.2 v).comp (map_continuous e.symm)
-  · exact (hasOrbInt_map e rfl f' _).1.1 (h.orb_noncompact _ ((isRegSS_conj_iff ha hι s).2 hs)
-      (mt (isCompact_cent_iff e s).1 hT) _)
-  · have := hO _ ((isRegSS_conj_iff ha hι s).2 hs) ((isCompact_cent_iff e s).2 hT) (dt.map (centEquiv e s rfl))
-    rw [map_measureReal_apply (map_continuous _).measurable MeasurableSet.univ, preimage_univ] at this
-    exact (hasOrbInt_map e rfl f' _).1.1 this
-
-theorem IsPseudoCoeff.comp (ha : IsUnit a) (hι : ∀ g, ι' (e g) = a * ι g * a⁻¹) {μ' : Measure H'} [μ'.IsHaarMeasure]
-    {D' : H' →* (V →L[ℂ] V)} {f' : H' → ℂ} (h : IsPseudoCoeff ι' μ' D' f') :
-    IsPseudoCoeff ι (μ'.map e.symm) (D'.comp (e : H →* H')) (f' ∘ e) :=
-  IsPseudoCoeff.of_map ha hι (by rwa [map_symm_map])
-
-theorem isPseudoCoeff_map_iff (ha : IsUnit a) (hι : ∀ g, ι' (e g) = a * ι g * a⁻¹) {μ : Measure H} [μ.IsHaarMeasure]
-    {D' : H' →* (V →L[ℂ] V)} {f' : H' → ℂ} :
-    IsPseudoCoeff ι' (μ.map e) D' f' ↔ IsPseudoCoeff ι μ (D'.comp (e : H →* H')) (f' ∘ e) := by
-  refine ⟨IsPseudoCoeff.of_map ha hι, fun h => ?_⟩
-  convert h.comp (e := e.symm) (Matrix.isUnit_nonsing_inv_iff.2 ha) (conj_symm ha hι) using 1
-  · rfl
-  · exact MonoidHom.ext fun x => by simp
-  · ext x; simp
 
 end Transport
 
@@ -174,7 +107,6 @@ section Scaling
 variable {H n V W : Type} [Group H] [TopologicalSpace H] [Fintype n] [DecidableEq n] [NormedAddCommGroup V]
   [InnerProductSpace ℂ V] [NormedAddCommGroup W] [InnerProductSpace ℂ W] [MeasurableSpace H]
   {ι : H →* Matrix n n ℂ} {μ : Measure H} {c : ℝ≥0}
-
 
 variable [CompleteSpace V] [CompleteSpace W]
 
@@ -228,13 +160,6 @@ def frameEquiv (ρ : D.what₂.Tau) : GArch D.sp.cm.sig V.gram (placeOf D ρ) �
 
 theorem ujMat_frameEquiv_eq_conj (ρ : D.what₂.Tau) (g : GArch D.sp.cm.sig V.gram (placeOf D ρ)) :
     ujMat (M.ε ρ) (frameEquiv M ρ g) = M.fr ρ * matAt V ρ g * (M.fr ρ)⁻¹ := rfl
-
-theorem isPseudoCoeff_dsRep_iff (ρ : D.what₂.Tau) (μ : Measure (GArch D.sp.cm.sig V.gram (placeOf D ρ)))
-    [μ.IsHaarMeasure] (f : Formalism.REAL.UJ (M.ε ρ) → ℂ) : haveI := (M.ds ρ).1
-    IsPseudoCoeff (ujMat (M.ε ρ)) (μ.map (frameEquiv M ρ)) (ujRep (M.ds ρ).2.2.1) f ↔
-      IsPseudoCoeff (matAt V ρ) μ (dsRep M ρ) (f ∘ frameEquiv M ρ) :=
-  haveI := (M.ds ρ).1
-  isPseudoCoeff_map_iff (M.fr_unit ρ) (ujMat_frameEquiv_eq_conj M ρ)
 
 end Record
 

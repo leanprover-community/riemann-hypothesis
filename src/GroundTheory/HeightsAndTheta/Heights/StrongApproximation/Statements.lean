@@ -5,7 +5,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.StrongApproxi
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.StrongApproximation.LocGen
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.StrongApproximation.DenseRangeFiniteAdele
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.StrongApproximation.EichAlongSub
-public import GroundTheory.HeightsAndTheta.Theta.GaussianExample
+public import GroundTheory.AutomorphicForms.HermitianSpaces
 
 @[expose] public section
 
@@ -35,7 +35,6 @@ variable (E)
 def inclV (v : HeightOneSpectrum (𝓞 F)) : E →+* Kv E v :=
   (Algebra.TensorProduct.includeRight : E →ₐ[F] Kv E v).toRingHom
 
-
 variable (F) in
 def evalAt (v : HeightOneSpectrum (𝓞 F)) : FiniteAdeleRing (𝓞 F) F →ₐ[F] v.adicCompletion F where
   toFun a := a v
@@ -47,7 +46,6 @@ def evalAt (v : HeightOneSpectrum (𝓞 F)) : FiniteAdeleRing (𝓞 F) F →ₐ[
 
 def compAt (v : HeightOneSpectrum (𝓞 F)) : AE F E →+* Kv E v :=
   (Algebra.TensorProduct.map (evalAt F v) (AlgHom.id F E)).toRingHom
-
 
 open scoped Classical in
 variable (F) in
@@ -252,48 +250,9 @@ section Inhabitants
 
 open QuadraticAlgebra GroundTheory.Heights₂.Theta GroundTheory.Automorphic
 
-def placeOf (p : ℕ) (hp : p.Prime) : HeightOneSpectrum (𝓞 ℚ) where
-  asIdeal := Ideal.comap (Rat.ringOfIntegersEquiv : 𝓞 ℚ →+* ℤ) (Ideal.span {(p : ℤ)})
-  isPrime := by
-    have : (Ideal.span {(p : ℤ)}).IsPrime :=
-      (Ideal.span_singleton_prime (by exact_mod_cast hp.ne_zero)).2 (Nat.prime_iff_prime_int.1 hp)
-    exact Ideal.comap_isPrime _ _
-  ne_bot := by
-    intro h
-    have hmem : Rat.ringOfIntegersEquiv.symm (p : ℤ) ∈
-        Ideal.comap (Rat.ringOfIntegersEquiv : 𝓞 ℚ →+* ℤ) (Ideal.span {(p : ℤ)}) := by
-      rw [Ideal.mem_comap, RingEquiv.coe_toRingHom, RingEquiv.apply_symm_apply]
-      exact Ideal.mem_span_singleton_self (p : ℤ)
-    rw [h, Ideal.mem_bot] at hmem
-    have := congrArg Rat.ringOfIntegersEquiv hmem
-    rw [RingEquiv.apply_symm_apply, map_zero, Nat.cast_eq_zero] at this
-    exact hp.ne_zero this
-
-def v5 : HeightOneSpectrum (𝓞 ℚ) := placeOf 5 (by norm_num)
-
-@[instance_reducible] def topAE : TopologicalSpace (AE ℚ GaussQ) := moduleTopology (FiniteAdeleRing (𝓞 ℚ) ℚ) (AE ℚ GaussQ)
-
 attribute [local instance] topAE
 
-theorem isModuleTopology_AE : IsModuleTopology (FiniteAdeleRing (𝓞 ℚ) ℚ) (AE ℚ GaussQ) := ⟨rfl⟩
-
 attribute [local instance] isModuleTopology_AE
-
-theorem sigV_inclV (v : HeightOneSpectrum (𝓞 ℚ)) (x : GaussQ) :
-    sigV (conj ℚ GaussQ) v (inclV GaussQ v x) = inclV GaussQ v (conj ℚ GaussQ x) := by
-  simp [sigV, inclV, Algebra.TensorProduct.map_tmul]
-
-theorem sigA_inclA (x : GaussQ) :
-    sigA (conj ℚ GaussQ) (inclA ℚ GaussQ x) = inclA ℚ GaussQ (conj ℚ GaussQ x) := by
-  simp [sigA, inclA, Algebra.TensorProduct.map_tmul]
-
-theorem compAt_tmul (a : FiniteAdeleRing (𝓞 ℚ) ℚ) (y : GaussQ) :
-    compAt GaussQ v5 (a ⊗ₜ[ℚ] y) = a v5 ⊗ₜ[ℚ] y := rfl
-
-theorem singleV_tmul (x : v5.adicCompletion ℚ) (y : GaussQ) :
-    singleV GaussQ v5 (x ⊗ₜ[ℚ] y) = singleF ℚ v5 x ⊗ₜ[ℚ] y := rfl
-
-
 
 theorem inv_mem_SU {R : Type*} [CommRing R] (σ : R →+* R) {N : ℕ} (J : Matrix (Fin N) (Fin N) R)
     {a : Matrix (Fin N) (Fin N) R} (ha : a ∈ SU σ J) : a⁻¹ ∈ SU σ J := by

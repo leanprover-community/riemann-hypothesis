@@ -26,12 +26,10 @@ section Glue
 
 variable {E K : Type} [Field E] [NumberField E] [Field K] {n : ℕ}
 
-
 open Classical in
 abbrev uSG (SG Q : Finset (HeightOneSpectrum (𝓞 E))) : Finset (HeightOneSpectrum (𝓞 E)) := open Classical in SG ∪ Q
 
 variable {SG Q : Finset (HeightOneSpectrum (𝓞 E))}
-
 
 open Classical in
 def LevFam.glue (A : LevFam E K n SG) (B : LevFam E K n Q) : LevFam E K n (uSG SG Q) := fun w =>
@@ -44,7 +42,6 @@ theorem LevFam.glue_of_mem (A : LevFam E K n SG) (B : LevFam E K n Q) (w : uSG S
 open Classical in
 theorem LevFam.glue_of_not (A : LevFam E K n SG) (B : LevFam E K n Q) (w : uSG SG Q) (h : w.1 ∉ SG) :
     A.glue B w = B ⟨w.1, (Finset.mem_union.mp w.2).resolve_left h⟩ := dif_neg h
-
 
 variable (Q) in
 open Classical in
@@ -96,7 +93,6 @@ theorem LevFam.normBy (Λ : LevFam X.E X.K n SG) (a : GLG (E := X.E) (n := n) (S
     exact hf1 w
   · rw [LevFam.chr_apply, LevFam.chr_apply]
     exact Finset.prod_congr rfl fun w _ => hf2 w
-
 
 variable (X n ST SG) in
 def trF (V : Type) [AddCommGroup V] [Module X.K V] :
@@ -177,7 +173,6 @@ def IsSel (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) 
 
 variable {X}
 
-
 open Classical in
 def QE (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (ξ : Chr X.F X.E X.K) :
     Finset (HeightOneSpectrum (𝓞 X.E)) :=
@@ -206,14 +201,6 @@ def chiAt (w : {w // w ∈ Pr.vGs}) : ℕ → (𝓞 X.E ⧸ w.1.asIdeal)ˣ →* 
 
 def rP0 : LevFam X.E X.K R.r Pr.vGs := fun w => ⟨HU (𝓞 X.E ⧸ w.1.asIdeal) R.r, psiU (Ch.psi0 w) R.r⟩
 
-def rPsharp : LevFam X.E X.K R.r Pr.vGs := fun w =>
-  ⟨HU (𝓞 X.E ⧸ w.1.asIdeal) R.r ⊓ fixCol R.r (𝓞 X.E ⧸ w.1.asIdeal) R.k,
-    (psiU (Ch.psi0 w) R.r).comp (Subgroup.inclusion inf_le_left)⟩
-
-
-variable (X Pr R) in
-def rKg : LevFam X.E X.K R.r Pr.vGs := fun _ => ⟨⊥, 1⟩
-
 end RBlock
 
 section Types
@@ -227,18 +214,12 @@ def rowTyG (P : LevFam X.E X.K R.r Pr.vGs) : LevFam X.E X.K (R.N R.m - 1) Pr.vGs
 def rowTyK : LevFam X.E X.K (R.N R.m - 1) Pr.vGs := fun w =>
   ⟨HKJ (𝓞 X.E ⧸ w.1.asIdeal) (R.N R.m - 1) R.r R.t R.m, lamKJ (chiAt Ch w) (R.N R.m - 1) R.r R.t R.m⟩
 
-
 variable (R) in
 def rowTyQ (ξ : Chr X.F X.E X.K) (Q : Finset (HeightOneSpectrum (𝓞 X.E))) : LevFam X.E X.K (R.N R.m - 1) Q := fun P =>
   ⟨HQ (𝓞 X.E ⧸ P.1.asIdeal) (R.N R.m - 1) R.r (R.m * R.t), (lamQP ξ P.1 (R.N R.m - 1) R.r (R.m * R.t))⁻¹⟩
 
-def mtTyG (P : LevFam X.E X.K R.r Pr.vGs) (j : ℕ) : LevFam X.E X.K R.nV Pr.vGs := fun w =>
-  ⟨HPar R.nV (𝓞 X.E ⧸ w.1.asIdeal) (r_le_nV R) [R.t] (P w).H,
-    (lamPar (r_le_nV R) [R.t] (P w).lam fun _ => chiAt Ch w (j - 1))⁻¹⟩
-
 def mtTyK (j : ℕ) : LevFam X.E X.K R.nV Pr.vGs := fun w =>
   ⟨HKV (𝓞 X.E ⧸ w.1.asIdeal) R.nV R.r R.t, lamKV (chiAt Ch w (j - 1)) R.nV R.r R.t⟩
-
 
 variable (R) in
 def mtTyQ (ξ : Chr X.F X.E X.K) (Q : Finset (HeightOneSpectrum (𝓞 X.E))) : LevFam X.E X.K R.nV Q := fun P =>
@@ -251,7 +232,6 @@ section Forms
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
-
 variable (Pr) in
 abbrev rowSG : Finset (HeightOneSpectrum (𝓞 X.E)) := uSG Pr.vGs (QE sel (mu : Chr X.F X.E X.K))
 
@@ -260,9 +240,6 @@ def rowTy (P : LevFam X.E X.K R.r Pr.vGs) : LevFam X.E X.K (R.N R.m - 1) (rowSG 
 
 def rowTyKK : LevFam X.E X.K (R.N R.m - 1) (rowSG Pr sel mu) :=
   (rowTyK Ch).glue (rowTyQ R (mu : Chr X.F X.E X.K) (QE sel (mu : Chr X.F X.E X.K)))
-
-def mtTy (P : LevFam X.E X.K R.r Pr.vGs) (j : ℕ) : LevFam X.E X.K R.nV (rowSG Pr sel mu) :=
-  (mtTyG Ch P j).glue (mtTyQ R (mu : Chr X.F X.E X.K) (QE sel (mu : Chr X.F X.E X.K)))
 
 def mtTyKK (j : ℕ) : LevFam X.E X.K R.nV (rowSG Pr sel mu) :=
   (mtTyK Ch j).glue (mtTyQ R (mu : Chr X.F X.E X.K) (QE sel (mu : Chr X.F X.E X.K)))
@@ -283,9 +260,6 @@ abbrev MtildeV (P : LevFam X.E X.K R.r Pr.vGs) := (mtildeGSD W Ch sel mu P).EqFu
 
 def MtildeL (P : LevFam X.E X.K R.r Pr.vGs) : Submodule (𝓞 X.K) (mtildeGSD W Ch sel mu P).EqFun :=
   (mtildeGSD W Ch sel mu P).intNab
-
-def MtL (P : LevFam X.E X.K R.r Pr.vGs) (j : ℕ) : Submodule (𝓞 X.K) (mtGSD W Ch sel mu P j).EqFun :=
-  (mtGSD W Ch sel mu P j).intNab
 
 @[reducible] def MtildeKCSD (h : (mtildeKGSD W Ch sel mu).Ok) : CSD X.K := (mtildeKGSD W Ch sel mu).toCSD h
 
@@ -308,7 +282,6 @@ instance fintype_GLs (E : Type) [Field E] [NumberField E] (SG : Finset (HeightOn
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
-
 
 variable (Pr) in
 def unipotentGroupBlockEmbedding {r n : ℕ} (h : r ≤ n) : G0 X.E Pr.vGs r →* GLG (E := X.E) (n := n) (SG := rowSG Pr sel mu) :=

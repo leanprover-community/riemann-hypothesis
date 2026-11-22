@@ -71,9 +71,6 @@ def trip (ev it : Finset (m × m')) (hd : Disjoint ev it) (β : Matrix m m' k) :
     · exact continuous_const.add ((continuous_apply _).comp (continuous_fst.comp continuous_snd))
     · exact (continuous_apply _).comp continuous_fst
 
-theorem trip_apply (ev it : Finset (m × m')) (hd : Disjoint ev it) (β t : Matrix m m' k) :
-    trip ev it hd β t = toTrip ev it β t := rfl
-
 end Trip
 
 end GlobalTheory.FlatFactor.KerEngine

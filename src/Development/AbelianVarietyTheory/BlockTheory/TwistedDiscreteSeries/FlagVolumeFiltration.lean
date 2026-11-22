@@ -16,22 +16,8 @@ section Objects
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n n' : Type} {c : ℕ}
 
-
-variable (k n) in
-def flagSub (c i : ℕ) : Submodule 𝒪[k] (n ⊕ Fin c → k) where
-  carrier := {y | ∀ l : Fin c, i ≤ l.val → y (Sum.inr l) = 0}
-  zero_mem' _ _ := rfl
-  add_mem' h h' l hl := by simp [h l hl, h' l hl]
-  smul_mem' s y h l hl := by simp [h l hl]
-
-def latStep (L : Submodule 𝒪[k] (n ⊕ Fin c → k)) (i : ℕ) : Submodule 𝒪[k] (n ⊕ Fin c → k) :=
-  L ⊓ flagSub k n c i
-
 def interX (L : Submodule 𝒪[k] (n ⊕ Fin c → k)) : Submodule 𝒪[k] (n → k) :=
   L.comap (GlobalTheory.LatPair.inX k n c)
-
-def flagIn (c i : ℕ) (y : n ⊕ Fin i → k) : n ⊕ Fin c → k :=
-  Sum.elim (fun r => y (Sum.inl r)) fun l => if h : l.val < i then y (Sum.inr ⟨l.val, h⟩) else 0
 
 variable [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
 
@@ -46,16 +32,6 @@ section Statements
 variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c : ℕ) (q : Unif k)
 
-def DatumTranslate : Prop :=
-  ∀ (μ : kˣ →* ℂˣ) (P : Pair k n') (L'₀ : Submodule 𝒪[k] (n' ⊕ Fin (c + 1) → k)) [L'₀.IsLattice k]
-    (L₀ L : Submodule 𝒪[k] (n ⊕ Fin c → k)) [L₀.IsLattice k] (h' : GL (n' ⊕ Fin (c + 1)) k) (h : GL (n ⊕ Fin c) k),
-    h' • L'₀ = GlobalTheory.LatPair.gluedS q (c + 1) P.ker P.vec → h • L₀ = L → ∀ x,
-      GlobalTheory.LatPair.latInd (GlobalTheory.LatPair.gluedS q (c + 1) P.ker P.vec) L x =
-        (((μ (GeneralLinearGroup.det h'))⁻¹ : ℂˣ) : ℂ) * (μ (GeneralLinearGroup.det h) : ℂ) *
-          ((nabs k (GeneralLinearGroup.det h') ^ (-((Fintype.card n : ℝ) + c) / 2) : ℝ) : ℂ) *
-          ((nabs k (GeneralLinearGroup.det h) ^ (((Fintype.card n' : ℝ) + c + 1) / 2) : ℝ) : ℂ) *
-          om μ h' h (GlobalTheory.LatPair.latInd L'₀ L₀) x
-
 def OneOrbit : Prop :=
   (∀ (L₁ L₂ : Submodule 𝒪[k] (n → k)) (f₁ f₂ : n → k), IsGlue L₁ f₁ → IsGlue L₂ f₂ →
     ∃ g : GL n k, g • L₁ = L₂ ∧ g • f₁ - f₂ ∈ L₂) ∧
@@ -65,7 +41,6 @@ def OneOrbit : Prop :=
         h • L₀ = u • GlobalTheory.LatPair.gluedS q c L'' f'') ↔ InCoset L₀ h₀ h
 
 variable [MeasurableSpace k] [BorelSpace k] (ψ : AddChar k Circle) (ν : Measure k)
-
 
 end Statements
 

@@ -20,9 +20,6 @@ section Span
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p]
 
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "θ" => fontaineTheta (normInteger K) p
-
 def dpowSpan (ξ : AInf K p) : Submodule (AInf K p) 𝔸 :=
   Submodule.span (AInf K p) (Set.range fun n => dpow n ξ)
 
@@ -202,9 +199,6 @@ section Quot
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p] [CharZero K]
 
-local notation "𝔸" => Localization.Away (p : AInf K p)
-local notation "θ" => fontaineTheta (normInteger K) p
-
 variable (K p) in
 abbrev kerAway : Ideal 𝔸 := RingHom.ker (fontaineThetaInvertP (normInteger K) p)
 
@@ -318,8 +312,6 @@ section Iota
 
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 variable {p : ℕ} [hp : Fact p.Prime] [IsPerfectoidField K p] [CharZero K]
-
-local notation "𝔸" => Localization.Away (p : AInf K p)
 
 variable (K p) in
 def iotaZero (m : ℕ) : ACrisZero (K := K) (p := p) →+* acrisQ K p m :=

@@ -99,9 +99,6 @@ def diffS (f : SchwartzMap V ℂ) (y : V) : SchwartzMap V ℂ where
     obtain ⟨C, -, hC⟩ := diffFun_bound f k n 0
     exact ⟨C, fun x => by simpa using hC x y⟩
 
-theorem diffS_apply (f : SchwartzMap V ℂ) (y x : V) :
-    diffS f y x = f (x + y) * conj (f x) := rfl
-
 theorem seminorm_diffS_le (f : SchwartzMap V ℂ) (k n K : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ y : V,
       SchwartzMap.seminorm ℂ k n (diffS f y) ≤ C * ((1 + ‖y‖) ^ K)⁻¹ := by

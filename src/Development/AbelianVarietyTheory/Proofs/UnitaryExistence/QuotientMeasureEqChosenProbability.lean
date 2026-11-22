@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Formalism.LocalToGlobal.ProjectiveLattices.VolProofs
 public import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
-public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.AdelicQuotientMeasure
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.InfAdeleTensorBijective
 
@@ -43,7 +42,6 @@ section Transport
 variable {H H' : Type} [Group H] [Group H'] [TopologicalSpace H] [TopologicalSpace H']
   {Γ : Subgroup H} {Γ' : Subgroup H'} (e : H ≃ₜ* H') (he : ∀ g, e g ∈ Γ' ↔ g ∈ Γ)
 
-
 variable [MeasurableSpace H] [BorelSpace H] [MeasurableSpace H'] [BorelSpace H']
 
 end Transport
@@ -54,9 +52,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {G : Matri
   {H : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [MeasurableSpace H] [BorelSpace H]
   {Γ : Subgroup H}
 
-def IsHaarPair (Γ : Subgroup H) (p : Measure H × Set H) : Prop :=
-  p.1.IsHaarMeasure ∧ IsFundamentalDomain Γ p.2 p.1
-
 end Main
 
 section Split
@@ -64,10 +59,6 @@ section Split
 open scoped Matrix
 
 variable {R S ι : Type} [CommRing R] [CommRing S] (Φ : R ≃+* (ι → ℂ) × S) {n : ℕ}
-
-def compAt (w : ι) : R →+* ℂ := (Pi.evalRingHom _ w).comp ((RingHom.fst _ _).comp Φ.toRingHom)
-
-def compLast : R →+* S := (RingHom.snd _ _).comp Φ.toRingHom
 
 theorem continuous_map {R R' : Type} [CommRing R] [CommRing R'] [TopologicalSpace R] [TopologicalSpace R']
     {φ : R →+* R'} (h : Continuous φ) : Continuous (Matrix.GeneralLinearGroup.map (n := Fin n) φ) :=

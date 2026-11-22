@@ -16,8 +16,6 @@ open Matrix Formalism.UG
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {σ : L →+* L} {n : ℕ}
 
-local notation "⟪" x "⟫" => (((x : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L)
-
 theorem ext_mat {g h : GU σ n} (e : ⟪g⟫ = ⟪h⟫) : g = h := Subtype.ext (Units.ext e)
 
 theorem exists_conj_mem_K {ϖ : L} {q : ℕ} (hU : IsUnramInv ϖ σ q) {u : GU σ n} (hu : IsUnipU u) :

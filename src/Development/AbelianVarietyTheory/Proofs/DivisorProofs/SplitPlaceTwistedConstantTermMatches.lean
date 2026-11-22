@@ -297,9 +297,6 @@ theorem det_of_charpoly {k : Type} [Field k] {a : ℕ} (x : GL (Fin a) k) {Q : k
     x.val.det = (-1) ^ a * Q.coeff 0 := by
   rw [Matrix.det_eq_sign_charpoly_coeff, h, Fintype.card_fin]
 
-theorem prodMap_id_id {A B : Type} [Group A] [Group B] :
-    (MonoidHom.id A).prodMap (MonoidHom.id B) = MonoidHom.id (A × B) := rfl
-
 end GlobalTheory.BCT.SplitCtMatch
 
 namespace GlobalTheory.BCT.SplitCtMatch

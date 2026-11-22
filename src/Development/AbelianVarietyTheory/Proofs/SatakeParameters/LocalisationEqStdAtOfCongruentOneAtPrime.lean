@@ -20,8 +20,6 @@ namespace GlobalTheory.CongStdLoc
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] {N : ℕ}
 
-local notation "𝔸" => FiniteAdeleRing (𝓞 F) F
-
 def HP (P : HeightOneSpectrum (𝓞 E)) (L : Submodule (𝓞 E) (Fin N → E)) (z : Fin N → E ⊗[F] 𝔸) : Prop :=
   ∃ s : 𝓞 E, s ∉ P.asIdeal ∧ iA F E (algebraMap (𝓞 E) E s) • z ∈ Formalism.L2.Herm.hatL (F := F) L
 

@@ -161,8 +161,6 @@ noncomputable instance : Algebra K (ShuffleAlgebra K A) :=
   Algebra.ofModule (fun r x y => LinearMap.map_smul₂ (mulLin K) r x y)
     (fun r x y => (mulLin K x).map_smul r y)
 
-theorem word_nil : word K ([] : List A) = 1 := rfl
-
 theorem word_mul_word (u v : List A) :
     word K u * word K v = ((shuffle u v).map (word K)).sum := mulLin_word K u v
 

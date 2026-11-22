@@ -5,8 +5,6 @@ public import Formalism.GL3MeanSquares.PrimeCountAsymptoticInProgressions
 public import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
 public import Formalism.CyclotomicNorms.StatementI
 public import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExplZeta
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExplChi
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.LogDerOne
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ZeroCount
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Psi0ZeroFreeRegionBound

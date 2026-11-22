@@ -7,7 +7,7 @@ public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.Dua
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsBaseChangeGroupStatement
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfFin
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfFlat
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsDenominatorBtOrderStatement
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsDenominatorBtOrder
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsHenselianFlatOverPrimeStatement
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfDesc
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfTop

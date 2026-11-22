@@ -65,8 +65,6 @@ def μA (c : (R : Type u)) : (Dp.D : Type u) →ₐ[R₀] (Dp.D : Type u) where
   map_add' a b := by simp only [fμ, map_add (f := _)]; ring
   commutes' r := by simp [fμ]
 
-lemma μA_apply (c : (R : Type u)) (d : (Dp.D : Type u)) : Dp.μA c d = Dp.fμ c d := rfl
-
 lemma π_μA (c : (R : Type u)) (d : (Dp.D : Type u)) : Dp.π.1 (Dp.μA c d) = Dp.π.1 d := by
   simp [μA_apply, fμ, Dp.sect]
 

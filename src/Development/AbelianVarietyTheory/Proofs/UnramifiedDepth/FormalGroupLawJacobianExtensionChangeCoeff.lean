@@ -35,9 +35,6 @@ private lemma cc_sub {R : Type} [CommRing R] {m n d e : ℕ}
     (MvPowerSeries.hasSubst_of_constantCoeff_zero (a := fun q : Fin m × Fin d => a q.1 q.2)
       (fun q => ha q.1 q.2)) (fun q => ha q.1 q.2) hf
 
-private lemma ev_eq {R : Type} [CommRing R] {m n d : ℕ} (a : Fin m → Fin d → PS R n d) (f : PS R m d) :
-    ev a f = sub a f := rfl
-
 private lemma map_pt {R S : Type} [CommRing R] [CommRing S] (β : R →+* S) {n d : ℕ} (j : Fin n) (i : Fin d) :
     MvPowerSeries.map β (pt R d j i) = pt S d j i := by simp [pt]
 

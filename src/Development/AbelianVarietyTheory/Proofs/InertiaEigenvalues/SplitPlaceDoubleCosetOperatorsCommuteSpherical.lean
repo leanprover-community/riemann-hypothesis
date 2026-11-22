@@ -100,8 +100,6 @@ theorem gelfand_sub {G W : Type} [Group G] [AddCommGroup W] [Module ℂ W] (ρ :
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
-local notation3 "L⁺" => NumberField.maximalRealSubfield L
-
 def trivSub (n : ℕ) (T : Set (HeightOneSpectrum (𝓞 L⁺))) : Subgroup (GAf L n) where
   carrier := {x | TrivOutside T x}
   mul_mem' := by

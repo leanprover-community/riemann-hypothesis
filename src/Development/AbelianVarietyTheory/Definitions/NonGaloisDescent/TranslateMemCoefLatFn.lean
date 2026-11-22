@@ -231,25 +231,6 @@ theorem fockGL_mem_harmLat (hemb : ∀ τ, σ.comp (emb τ) = tauE D τ) (w : We
 
 end Coef
 
-def Weight.first (D : D7) (n : ℕ) (p q : D.what₂.Tau → ℕ) (c : D.what₂.Tau → ℤ) : Weight D n where
-  p := p
-  q := q
-  ap _ i := if i = 0 then 1 else 0
-  am _ _ := 0
-  c := c
-  lam τ := ⟨fun i => (if i.val = 0 then 1 else 0) + c τ, fun i j hij => by
-    have : i.val ≤ j.val := hij
-    dsimp only
-    split_ifs <;> omega⟩
-
-theorem Weight.first_good {p q : D.what₂.Tau → ℕ} (c : D.what₂.Tau → ℤ) (hp : ∀ τ, 0 < p τ) (h : ∀ τ, p τ + q τ ≤ n) :
-    (Weight.first D n p q c).Good := by
-  refine ⟨h, ?_⟩
-  intro τ i
-  have := hp τ
-  simp only [Weight.first]
-  split_ifs <;> omega
-
 end GlobalTheory.ExportSeries
 
 end

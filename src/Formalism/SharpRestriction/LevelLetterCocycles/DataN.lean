@@ -54,7 +54,6 @@ def TameGenAt {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] 
 def IsSplitPl {R : Ranks} (H : Host R) (v : HeightOneSpectrum (𝓞 H.E)) : Prop :=
   ∃ x : 𝓞 H.E, x ∈ v.asIdeal ∧ ∀ y : 𝓞 H.E, (y : H.E) = H.conj (x : H.E) → y ∉ v.asIdeal
 
-
 set_option synthInstance.maxHeartbeats 400000 in
 structure NData (R : Ranks) (H : Host R) (what₂ : Rows.Data R) where
 
@@ -188,9 +187,6 @@ namespace NData
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂)
 
-def ShaFin : Prop := ∀ (p : ℕ) [Fact p.Prime] (e : ℕ), 0 < e → e < R.t →
-  Formalism.GaloisCohomology.shaLen (N.ldat p) (e : ℤ) ≠ ⊤
-
 def EigSpan : Prop := ∀ i, ⨆ x, heckeEig (N.T i) (N.act i) x = ⊤
 
 def ZgoodSub : Prop := ∀ i, N.Zgood i ⊆ N.Z i
@@ -243,7 +239,6 @@ def RamExactly {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
     (φ : G E Ω →* A) (Q : Set (HeightOneSpectrum (𝓞 E))) : Prop :=
   ∀ v : HeightOneSpectrum (𝓞 E), ∀ A : ValuationSubring Ω, IsPlaceOver A v →
     ((∃ σ ∈ Ine (F := E) A, φ σ ≠ 1) ↔ v ∈ Q)
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 structure NTw (R : Ranks) (H : Host R) (what₂ : Rows.Data R) [NumberField what₂.LL] [StarRing what₂.LL]
@@ -428,16 +423,6 @@ namespace NTw
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} [NumberField what₂.LL] [StarRing what₂.LL]
   {LL0 : IntermediateField ℚ what₂.LL} {N : NData R H what₂} (X : NTw R H what₂ LL0 N)
 
-def sig_eig : Prop := ∀ i s, ∃ x : TensorProduct (X.O i) (FractionRing (X.O i)) (X.B i (X.jS i s) (X.side i s)), x ≠ 0 ∧
-    ∀ k P, 1 ≤ k → k ≤ R.r → IsSplitPl H P → P ∉ X.S0 i →
-      ((X.hk i (X.jS i s) (X.side i s) k P).lTensor (FractionRing (X.O i))) x =
-      algebraMap (X.O i) (FractionRing (X.O i)) (X.hEig i s k P) • x
-
-def TwCover : Prop := ∀ p : ℕ, p.Prime → ∀ w : HeightOneSpectrum (𝓞 ↥LL0), ((p : ℕ) : 𝓞 ↥LL0) ∈ w.asIdeal →
-  ∃ i, X.l i = p ∧ ∀ x : 𝓞 ↥LL0, x ∈ w.asIdeal ↔
-    ∃ y ∈ IsLocalRing.maximalIdeal (X.O0 i),
-      algebraMap (X.O0 i) (FractionRing (X.O0 i)) y = X.emb0 i (x : ↥LL0)
-
 def NonzeroIndexPlace (i : X.Tw) : Prop :=
   ∃ w' : what₂.places.Pl, what₂.muAt w' ≠ what₂.mu0 ∧ ∀ x : 𝓞 ↥LL0,
     (∃ y ∈ IsLocalRing.maximalIdeal (X.O0 i),
@@ -472,7 +457,6 @@ def heckePol {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H wha
 def SplitOut {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (i : N.Loc)
     (w : PlE H) : Prop :=
   IsSplitPl H w ∧ w ∉ placesOver H.E (N.l i) ∧ w ∉ N.S i ∧ w ∉ N.Q i
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 structure NAut {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) where
@@ -684,7 +668,6 @@ attribute [instance] NAut.finAV
 
 end Aut
 
-
 set_option synthInstance.maxHeartbeats 400000 in
 structure NBC {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} (A : NAut N) where
 
@@ -724,7 +707,6 @@ abbrev G0g {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what�
 
 abbrev DelQM {R : Ranks} (H : Host R) (l : ℕ) (Q : Finset (PlE H)) (M : ℕ) : Type :=
   ↥Q → ZMod (l ^ M)
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 structure NExp (R : Ranks) (H : Host R) (what₂ : Rows.Data R) [NumberField what₂.LL] [StarRing what₂.LL]
@@ -837,7 +819,6 @@ section Types
 open Polynomial
 
 abbrev Fb (l : ℕ) (hl : l.Prime) : Type := @Formalism.CyclotomicNorms.Fbar l ⟨hl⟩
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 structure NTypes {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} (A : NAut N) where
@@ -961,7 +942,6 @@ def IdempotentMatchesAction : Prop :=
 end NTypes
 
 end Types
-
 
 open scoped TensorProduct in
 set_option synthInstance.maxHeartbeats 400000 in

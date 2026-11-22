@@ -13,8 +13,6 @@ public import Formalism.EllipticTorsion.EllipticTorsionProofs.JetsTwo
 
 open PowerSeries
 
-local notation "cc" => MvPowerSeries.constantCoeff
-
 universe u
 
 noncomputable section

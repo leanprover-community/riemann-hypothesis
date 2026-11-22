@@ -40,10 +40,6 @@ theorem dvd_iff_map_eq {R : Type*} [CommRing R] {p q : Type*} (a : R) (A B : Mat
   | (intros; apply @_root_.GlobalTheory.DvdSubMapMk.dvd_sub_iff_map_mk_eq <;> first | assumption | infer_instance)
   | (intros; exact _root_.GlobalTheory.DvdSubMapMk.dvd_sub_iff_map_mk_eq ..)
 
-theorem map_smul_ringHom {R S : Type*} [CommRing R] [CommRing S] {p q : Type*} (f : R →+* S) (r : R)
-    (A : Matrix p q R) : (r • A).map f = f r • A.map f := by
-  ext i j; simp
-
 end GlobalTheory.BKLim.LimLink
 
 open GlobalTheory.BKLim.LimLink in

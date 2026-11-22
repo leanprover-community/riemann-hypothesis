@@ -151,10 +151,6 @@ def vmGen (a₀ : W →ₗ[ℂ] W) (Y : Matrix (Fin n) (Fin n) ℂ) :
     ext q
     simp [Finset.smul_sum, smul_smul, mul_comm]
 
-theorem vmGen_apply (a₀ : W →ₗ[ℂ] W) (Y : Matrix (Fin n) (Fin n) ℂ)
-    (G : PiLp 2 (fun _ : Fin n × Fin n => W)) (q : Fin n × Fin n) :
-    vmGen a₀ Y G q = (∑ d, Y d q.1 • G (d, q.2)) + (∑ c, star (Y c q.2) • G (q.1, c)) + a₀ (G q) := rfl
-
 theorem vmAct_hasDerivAt (τ : Matrix (Fin n) (Fin n) ℂ → (W →L[ℂ] W)) (h1 : τ 1 = 1)
     (a₀ : W →ₗ[ℂ] W) (Y : Matrix (Fin n) (Fin n) ℂ)
     (hd : ∀ v, HasDerivAt (fun t : ℝ => τ (NormedSpace.exp ((t : ℂ) • Y))ᴴ v) (a₀ v) 0)

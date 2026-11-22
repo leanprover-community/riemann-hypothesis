@@ -30,31 +30,7 @@ variable {p : ℕ} [Fact p.Prime] {C : Type} [Field C] {v : Valuation C ℝ≥0}
 def mapT (α : P.A.A ⟶ P'.A.A) [IsMonHom α] : P.T →ₗ[ℤ_[p]] P'.T :=
   Tate.map p (IndepPoint.ptsHom α _)
 
-theorem lev_mapT (α : P.A.A ⟶ P'.A.A) [IsMonHom α] (t : P.T) (n : ℕ) :
-    (mapT P P' α t).lev n = t.lev n ≫ α := rfl
-
-def mapV [Algebra ℤ_[p] C] (α : P.A.A ⟶ P'.A.A) [IsMonHom α] : P.V →ₗ[C] P'.V :=
-  (mapT P P' α).baseChange C
-
 variable [IsAlgClosed C] [CharZero C]
-
-def adjT (α : P.A.A ⟶ P'.A.A) [IsMonHom α] : P'.T →ₗ[ℤ_[p]] P.T :=
-  (LinearEquiv.ofBijective _ P.pairT_bijective).symm.toLinearMap ∘ₗ (mapT P P' α).dualMap ∘ₗ pairT P'.A P'.eps
-
-theorem pairT_adjT_left (α : P.A.A ⟶ P'.A.A) [IsMonHom α] (t : P'.T) (s : P.T) :
-    pairT P.A P.eps (adjT P P' α t) s = pairT P'.A P'.eps t (mapT P P' α s) :=
-  LinearMap.congr_fun ((LinearEquiv.ofBijective _ P.pairT_bijective).apply_symm_apply
-    ((mapT P P' α).dualMap (pairT P'.A P'.eps t))) s
-
-theorem pairT_mapT (α : P.A.A ⟶ P'.A.A) [IsMonHom α] (s : P.T) (t : P'.T) :
-    pairT P'.A P'.eps (mapT P P' α s) t = pairT P.A P.eps s (adjT P P' α t) := by
-  rw [← (isAlt_pairT P'.A P'.eps).neg_eq t, ← pairT_adjT_left, (isAlt_pairT P.A P.eps).neg_eq]
-
-def adjV [Algebra ℤ_[p] C] (α : P.A.A ⟶ P'.A.A) [IsMonHom α] : P'.V →ₗ[C] P.V :=
-  (adjT P P' α).baseChange C
-
-theorem adjV_tmul [Algebra ℤ_[p] C] (α : P.A.A ⟶ P'.A.A) [IsMonHom α] (c : C) (t : P'.T) :
-    adjV P P' α (c ⊗ₜ t) = c ⊗ₜ adjT P P' α t := rfl
 
 end General
 
@@ -102,13 +78,6 @@ instance (f : B.A ⟶ B'.A) [IsMonHom f] : IsMonHom (homC hv ε j o o' f) :=
 def homT (f : B.A ⟶ B'.A) [IsMonHom f] : (goodPoint hv ε j B o).T →ₗ[ℤ_[p]] (goodPoint hv ε j B' o').T :=
   mapT _ _ (homC hv ε j o o' f)
 
-def homV [Algebra ℤ_[p] C] (f : B.A ⟶ B'.A) [IsMonHom f] :
-    (goodPoint hv ε j B o).V →ₗ[C] (goodPoint hv ε j B' o').V :=
-  mapV _ _ (homC hv ε j o o' f)
-
-def homLie (f : B.A ⟶ B'.A) [IsMonHom f] (x : LieG (goodPoint hv ε j B o).Gt) : LieG (goodPoint hv ε j B' o').Gt :=
-  TorusTateLie.lieMap (homO hv ε j o o' f) x
-
 theorem lev_homT (f : B.A ⟶ B'.A) [IsMonHom f] (t : (goodPoint hv ε j B o).T) (n : ℕ) :
     (homT hv ε j o o' f t).lev n = t.lev n ≫ homC hv ε j o o' f := rfl
 
@@ -142,16 +111,6 @@ abbrev patT : letI := H.starRing; (patPoint hv ε i T).T →ₗ[ℤ_[ℓ]] (patP
   haveI : IsMonHom (C := Over (Sp (𝓞 K))) (M := T.pol.A) (N := T'.pol.A) f := hf.isMonHom
   homT (B := T.pol) (B' := T'.pol) hv ε (embO hv i) (patAct T) (patAct T') f
 
-abbrev patV [Algebra ℤ_[ℓ] C] : letI := H.starRing; (patPoint hv ε i T).V →ₗ[C] (patPoint hv ε i T').V :=
-  letI := H.starRing
-  haveI : IsMonHom (C := Over (Sp (𝓞 K))) (M := T.pol.A) (N := T'.pol.A) f := hf.isMonHom
-  homV (B := T.pol) (B' := T'.pol) hv ε (embO hv i) (patAct T) (patAct T') f
-
-abbrev patLie : letI := H.starRing; LieG (patPoint hv ε i T).Gt → LieG (patPoint hv ε i T').Gt :=
-  letI := H.starRing
-  haveI : IsMonHom (C := Over (Sp (𝓞 K))) (M := T.pol.A) (N := T'.pol.A) f := hf.isMonHom
-  homLie (B := T.pol) (B' := T'.pol) hv ε (embO hv i) (patAct T) (patAct T') f
-
 end Linear
 
 variable [NumberField K] {ρ : 𝓞 K} {σ₁ : K →+* ℂ} {p q : ℕ} (X : CMObj H K ρ σ₁ p q)
@@ -159,20 +118,6 @@ variable [NumberField K] {ρ : 𝓞 K} {σ₁ : K →+* ℂ} {p q : ℕ} (X : CM
 abbrev pointB : letI := H.starRing; Point ℓ v O (𝓞 E) := patPoint hv ε i X.B
 
 abbrev pointA (b : Bool) : letI := H.starRing; Point ℓ v O (𝓞 E) := patPoint hv ε i (X.A b)
-
-abbrev phiV [Algebra ℤ_[ℓ] C] (k : Fin p ⊕ Fin q) :
-    letI := H.starRing; (pointA hv ε i X k.isLeft).V →ₗ[C] (pointB hv ε i X).V := patV hv ε i (X.lin k)
-
-abbrev phiLie (k : Fin p ⊕ Fin q) :
-    letI := H.starRing; LieG (pointA hv ε i X k.isLeft).Gt → LieG (pointB hv ε i X).Gt := patLie hv ε i (X.lin k)
-
-abbrev phiVP [Algebra ℤ_[ℓ] C] (a : Fin p) :
-    letI := H.starRing; (pointA hv ε i X true).V →ₗ[C] (pointB hv ε i X).V :=
-  patV (T := X.A true) hv ε i (X.lin (Sum.inl a))
-
-abbrev phiVQ [Algebra ℤ_[ℓ] C] (b : Fin q) :
-    letI := H.starRing; (pointA hv ε i X false).V →ₗ[C] (pointB hv ε i X).V :=
-  patV (T := X.A false) hv ε i (X.lin (Sum.inr b))
 
 end Triples
 

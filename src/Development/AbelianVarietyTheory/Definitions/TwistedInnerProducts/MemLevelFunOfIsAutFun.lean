@@ -38,12 +38,6 @@ section Bases
 
 variable {k ι Y : Type} [Field k] [Fintype ι] [DecidableEq ι] [Fintype Y] [DecidableEq Y]
 
-def vec (β : LatFrame k ι Y) (i : ι) : Y → k := fun y => β.bas.val y (β.ord i)
-
-
-
-
-
 end Bases
 
 variable {D : D7} {v : HeightOneSpectrum (𝓞 D.host.F)}

@@ -26,10 +26,6 @@ def InteriorDichotomy.Statement : Prop :=
   ∀ C0 C1 C2 : ℝ, 0 ≤ C0 → 0 ≤ C1 → 0 ≤ C2 → ∃ C : ℝ,
     ∀ h hmu g fj La : ℝ, InteriorDichotomy.Hyp C0 C1 C2 h hmu g fj La → -(C * fj * La) ≤ hmu
 
-def AvoidMatrixLemma.Statement : Prop :=
-  ∀ a c N x : ℝ, 0 < a → 0 < c → 0 < N → 0 ≤ x →
-    -(a * log (c + 2 * a * N)) ≤ x / 2 - a * log (c + N * x)
-
 def firstMinimum {V : Type*} [NormedAddCommGroup V] (L : Submodule ℤ V) : ℝ :=
   sInf {x : ℝ | ∃ v ∈ L, v ≠ 0 ∧ ‖v‖ = x}
 

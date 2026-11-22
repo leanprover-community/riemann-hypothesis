@@ -12,13 +12,6 @@ open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Loc
 
 namespace Ysupp
 
-def ProdSupport : Prop :=
-  ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (c N : ℕ) (y : Fin c → IrrGL (k := k)) (hd : ∑ a, (y a).1 = N) (t : Fin c → Multiset (IrrGL (k := k))),
-    (∀ a, HasSupport (y a).rep (t a)) →
-    ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V),
-      π.IsIrreducible → IsSubquotient π (prodIrr y hd) → HasSupport π (∑ a, t a)
-
 def SubEmbedding : Prop :=
   ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (N : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V),

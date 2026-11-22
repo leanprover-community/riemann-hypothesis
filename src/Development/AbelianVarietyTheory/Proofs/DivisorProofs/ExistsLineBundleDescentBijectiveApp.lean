@@ -22,12 +22,6 @@ variable {Z Y : Scheme.{0}}
 
 def toZ (V : Z.Opens) {O : V.toScheme.Opens} (a : Γ(V.toScheme, O)ˣ) : Γ(Z, V.ι ''ᵁ O)ˣ := a
 
-theorem toZ_res (V : Z.Opens) {O O' : V.toScheme.Opens} (h : O' ≤ O) (a : Γ(V.toScheme, O)ˣ) :
-    toZ V (res h a) = res (V.ι.image_mono h) (toZ V a) := rfl
-
-theorem toZ_mul (V : Z.Opens) {O : V.toScheme.Opens} (a b : Γ(V.toScheme, O)ˣ) :
-    toZ V (a * b) = toZ V a * toZ V b := rfl
-
 theorem image_preimage_le' (V : Z.Opens) (O : Z.Opens) : V.ι ''ᵁ V.ι ⁻¹ᵁ O ≤ O :=
   Set.image_preimage_subset _ _
 

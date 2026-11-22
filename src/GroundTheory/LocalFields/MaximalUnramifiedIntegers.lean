@@ -80,8 +80,6 @@ variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchi
   {Ω : Type*} [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
   [Algebra K Ω] [ValuativeExtension K Ω] [Algebra.IsAlgebraic K Ω] [HasUnramifiedRoots K Ω]
 
-local notation "𝔼" => maximalUnramifiedExtension K Ω
-
 theorem exists_valuation_eq_algebraMap {x : Ω} (hx : x ∈ 𝔼) (hx0 : x ≠ 0) :
     ∃ a : K, a ≠ 0 ∧ valuation Ω x = valuation Ω (algebraMap K Ω a) := by
   obtain ⟨L, hL, hxL⟩ := mem_maximalUnramifiedExtension_iff.mp hx
@@ -103,13 +101,11 @@ theorem coe_algebraMap_integer_intermediateField (E : IntermediateField K Ω) (a
     (((algebraMap 𝒪[K] 𝒪[E] a : 𝒪[E]) : E) : Ω) = algebraMap K Ω (a : K) :=
   rfl
 
-
 omit [TopologicalSpace K] [IsNonarchimedeanLocalField K] [TopologicalSpace Ω]
   [IsValuativeTopology Ω] [Algebra.IsAlgebraic K Ω] [HasUnramifiedRoots K Ω] in
 theorem valuation_algebraMap_eq_one_iff (x : K) :
     valuation Ω (algebraMap K Ω x) = 1 ↔ valuation K x = 1 := by
   simpa using valuation_algebraMap_eq_iff (G := Ω) x 1
-
 
 omit [TopologicalSpace K] [IsNonarchimedeanLocalField K] [TopologicalSpace Ω]
   [IsValuativeTopology Ω] [Algebra.IsAlgebraic K Ω] [HasUnramifiedRoots K Ω] in
@@ -192,7 +188,6 @@ variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchi
   {L : Type*} [Field L] [ValuativeRel L] [Algebra K L] [ValuativeExtension K L]
   [Algebra.IsAlgebraic K L]
 
-
 variable (K L) in
 def integerAlgEquivOfIsAlgebraic : (L ≃ₐ[K] L) →* (𝒪[L] ≃ₐ[𝒪[K]] 𝒪[L]) where
   toFun ρ :=
@@ -222,8 +217,6 @@ section Frobenius
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {Ω : Type*} [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
   [Algebra K Ω] [ValuativeExtension K Ω] [Algebra.IsAlgebraic K Ω] [HasUnramifiedRoots K Ω]
-
-local notation "𝔼" => maximalUnramifiedExtension K Ω
 
 omit [TopologicalSpace Ω] [IsValuativeTopology Ω] [Algebra.IsAlgebraic K Ω] in
 instance isAlgebraic_maximalUnramifiedExtension : Algebra.IsAlgebraic K 𝔼 :=
@@ -328,7 +321,6 @@ theorem isAlgebraic_of_pow_card_pow_eq_self {y : k'} {n : ℕ} (hn : n ≠ 0)
   ⟨X ^ (Nat.card k ^ n) - X, X_pow_sub_X_ne_zero (Nat.one_lt_pow hn Finite.one_lt_card),
     by simp [hy]⟩
 
-
 omit [Algebra k k'] in
 theorem splits_X_pow_card_pow_sub_X_of_isPrimitiveRoot {m : ℕ} {ζ : k'}
     (hζ : IsPrimitiveRoot ζ (Nat.card k ^ m - 1)) :
@@ -382,8 +374,6 @@ section Residue
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {Ω : Type*} [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
   [Algebra K Ω] [ValuativeExtension K Ω] [Algebra.IsAlgebraic K Ω] [HasUnramifiedRoots K Ω]
-
-local notation "𝔼" => maximalUnramifiedExtension K Ω
 
 theorem exists_pow_card_pow_eq_self (y : 𝓀[𝔼]) :
     ∃ n : ℕ, n ≠ 0 ∧ y ^ (Nat.card 𝓀[K] ^ n) = y := by

@@ -14,8 +14,6 @@ section Ev
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-def Ev (P : ∀ x, Fm.x1 < x → Fm.Ix x → Prop) : Prop := ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ hx : Fm.x1 < x, ∀ i : Fm.Ix x, P x hx i
-
 variable {Fm}
 
 end Ev

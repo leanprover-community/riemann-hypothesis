@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneMemKAt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FromBlocksMem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsComplementaryAdelicSchwartzRestFunction
@@ -42,7 +41,6 @@ theorem blkN_eq (N : Matrix ι ι A) :
   simp [sub_eq_add_neg]
 
 -- Select matrix multiplication explicitly to avoid the `CStarMatrix` default instance.
-local infixl:70 " ⬝ₘ " => @HMul.hMul _ _ _ Matrix.instHMulOfFintypeOfMulOfAddCommMonoid
 
 theorem blkN_anti (N : Matrix ι ι A) : blkN N ⬝ₘ fromRows (1 : Matrix ι ι A) (-1) = fromRows 1 (-1) := by
   rw [blkN, fromBlocks_mul_fromRows]

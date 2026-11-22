@@ -21,7 +21,6 @@ section Fin
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
   {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-
 variable (E) in
 def PosStar : Prop := ∀ a : E, a ≠ 0 → 0 < Algebra.trace ℚ E (star a * a)
 
@@ -317,7 +316,6 @@ end Orbits
 section Glue
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
-
 
 variable (E) in
 def cO : 𝓞 E →+* 𝓞 E := RingOfIntegers.mapRingHom (starRingEnd E)
@@ -1431,14 +1429,6 @@ theorem Deco.up_act (d : Deco E n ST SG) {g : Sp E n ≃ₗ[E] Sp E n} (hg : g �
       rfl
   · rfl
 
-theorem Deco.IsUp.act {P : ST} {q : 𝓞 E} {d d' : Deco E n ST SG} (hdd : Deco.IsUp P q d d')
-    {g : Sp E n ≃ₗ[E] Sp E n} (hg : g ∈ UF E n) (h : GLG (E := E) (n := n) (SG := SG)) :
-    Deco.IsUp P q (d.act g h) (d'.act g h) := by
-  obtain ⟨x, hx, hfx, rfl⟩ := hdd
-  refine ⟨g x, Submodule.mem_map.mpr ⟨x, hx, rfl⟩, ?_, (Deco.up_act d hg h P q x).symm⟩
-  show d.f P (g.symm (g x)) = 1
-  rw [LinearEquiv.symm_apply_apply, hfx]
-
 theorem Deco.kerAt_act (d : Deco E n ST SG) (g : Sp E n ≃ₗ[E] Sp E n) (h : GLG (E := E) (n := n) (SG := SG)) (P : ST) :
     (d.act g h).kerAt P = gmap g (d.kerAt P) := by
   show Submodule.span (𝓞 E) {x | x ∈ gmap g d.N ∧ d.f P (g.symm x) = 0} =
@@ -1471,40 +1461,6 @@ theorem Deco.dn_act (d : Deco E n ST SG) {g : Sp E n ≃ₗ[E] Sp E n} (hg : g �
       simp [Deco.dn, Deco.act]
     · simp [Deco.dn, Deco.act, hQ]
   · rfl
-
-theorem Deco.IsDn.act {P : ST} {q : 𝓞 E} {d d' : Deco E n ST SG} (hdd : Deco.IsDn P q d d')
-    {g : Sp E n ≃ₗ[E] Sp E n} (hg : g ∈ UF E n) (h : GLG (E := E) (n := n) (SG := SG)) :
-    Deco.IsDn P q (d.act g h) (d'.act g h) := by
-  have hsm : ∀ (s : 𝓞 E) (v : Sp E n), g.symm (s • v) = s • g.symm v := fun s v =>
-    ((g.symm : Sp E n →ₗ[E] Sp E n).restrictScalars (𝓞 E)).map_smul s v
-  obtain ⟨h1, h2⟩ := hdd
-  refine ⟨?_, ?_⟩
-  · conv_lhs => rw [h1]
-    exact (Deco.dn_act d hg h P (d'.f P)).symm
-  · intro e he hfe
-    obtain ⟨y, hy, rfl⟩ := Submodule.mem_map.mp he
-    have hfe' : d.f P y = 1 := by
-      have h3 := hfe
-      simp only [Deco.act, LinearMap.restrictScalars_apply, LinearEquiv.coe_coe,
-        LinearEquiv.symm_apply_apply] at h3
-      exact h3
-    show d'.f P (g.symm (q • g y)) = 1
-    rw [hsm, LinearEquiv.symm_apply_apply]
-    exact h2 y hy hfe'
-
-theorem DecoSet.smul_mem_upSet (a : UF E n × GLG (E := E) (n := n) (SG := SG)) (P : ST) (q : 𝓞 E)
-    (d d' : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) : a • d' ∈ (a • d).upSet P q ↔ d' ∈ d.upSet P q := by
-  have key : ∀ (b : UF E n × GLG (E := E) (n := n) (SG := SG)) (e e' : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)), Deco.IsUp P q e.1 e'.1 →
-      Deco.IsUp P q (b • e).1 (b • e').1 := by
-    intro b e e' h
-    rw [DecoSet.smul_val, DecoSet.smul_val]
-    exact h.act b.1.2 b.2
-  constructor
-  · intro h
-    have h2 := key a⁻¹ _ _ h
-    rwa [inv_smul_smul, inv_smul_smul] at h2
-  · intro h
-    exact key a _ _ h
 
 theorem DecoSet.dnSet_finite (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) (P : ST) (hne : conjPrime₂ P.1 ≠ P.1) (q : 𝓞 E) :
     (d.dnSet P q).Finite := by

@@ -15,7 +15,6 @@ variable {k : Type*} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchi
 
 section Forms
 
-
 variable (k n) in
 abbrev Form (M : Type*) : Type _ := Pair k n → M
 
@@ -530,8 +529,6 @@ instance gluedLat_isLattice (q : Unif k) (c p : ℕ) (L : Submodule 𝒪[k] (n �
 instance gluedS_isLattice (q : Unif k) (c : ℕ) (L : Submodule 𝒪[k] (n → k)) [L.IsFullLattice k] (f : n → k) :
     (gluedS q c L f).IsFullLattice k := gluedLat_one q c L f ▸ inferInstance
 
-def Pair.glued (P : Pair k n) (q : Unif k) (c p : ℕ) : Submodule 𝒪[k] (n ⊕ Fin c → k) := gluedLat q c p P.ker P.vec
-
 variable [Fintype n] [DecidableEq n]
 
 theorem embX_smul_gluedLat (g : GL n k) (q : Unif k) (c p : ℕ) (L : Submodule 𝒪[k] (n → k)) (f : n → k) :
@@ -569,12 +566,6 @@ theorem exists_smul_lat (L L' : Submodule 𝒪[k] (n → k)) [L.IsFullLattice k]
     exact y.2
 
 variable {A : Type*} [AddCommGroup A] [Module ℂ A] (σ : Representation ℂ (GL n k) A)
-
-def sphVecs (L₀ : Submodule 𝒪[k] (n → k)) : Submodule ℂ A where
-  carrier := {v | ∀ g ∈ latStab L₀, σ g v = v}
-  add_mem' h h' g hg := by simp [h g hg, h' g hg]
-  zero_mem' g _ := by simp
-  smul_mem' c v h g hg := by simp [h g hg]
 
 variable {L₀ : Submodule 𝒪[k] (n → k)} [L₀.IsFullLattice k] (v : sphVecs σ L₀)
 

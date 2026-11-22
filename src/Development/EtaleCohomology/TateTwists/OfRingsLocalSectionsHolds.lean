@@ -20,7 +20,6 @@ theorem ι_comp_apply {X U : Scheme.{0}} (f : X ⟶ U) (W : X.Opens) (y : X) (h 
     (Scheme.Opens.ι W ≫ f) ⟨y, h⟩ = f y :=
   rfl
 
-
 omit [CommRing R] in
 theorem cov_pt {U : Scheme.{0}} (S : Sieve U) (hS : S ∈ Scheme.etaleTopology U) (u : U) :
     ∃ (V : Scheme.{0}) (j : V ⟶ U) (v : V), IsAffine V ∧ Etale j ∧ j v = u ∧ S.arrows j := by
@@ -36,18 +35,4 @@ theorem cov_pt {U : Scheme.{0}} (S : Sieve U) (hS : S ∈ Scheme.etaleTopology U
   · exact (ι_comp_apply (𝒰.f i) W y hyW).trans hy
   · exact S.downward_closed (hle _ _ (Presieve.ofArrows.mk i)) (Scheme.Opens.ι W)
 
-theorem loc_inj {U : Scheme.{0}} (m : M.obj Γ(U, ⊤)) (hm : ofRings.sec M U m = 0) (u : U) :
-    ∃ (V : Scheme.{0}) (j : V ⟶ U) (v : V),
-      IsAffine V ∧ Etale j ∧ j v = u ∧ (M.map j.appTop).hom m = 0 := by
-  have h0 : ConcreteCategory.hom ((toSheafify Scheme.etaleTopology (Scheme.Γ ⋙ M)).app (op U)) m =
-      ConcreteCategory.hom ((toSheafify Scheme.etaleTopology (Scheme.Γ ⋙ M)).app (op U)) 0 := by
-    rw [map_zero]; exact hm
-  obtain ⟨V, j, v, hV, hj, hv, hS⟩ := cov_pt _
-    (Presheaf.equalizerSieve_mem Scheme.etaleTopology
-      (toSheafify Scheme.etaleTopology (Scheme.Γ ⋙ M)) m 0 h0) u
-  refine ⟨V, j, v, hV, hj, hv, ?_⟩
-  have h1 : ConcreteCategory.hom ((Scheme.Γ ⋙ M).map j.op) m =
-      ConcreteCategory.hom ((Scheme.Γ ⋙ M).map j.op) 0 := hS
-  rw [map_zero] at h1
-  exact h1
 end LateralTheory.EtaleFoundations.OfRingsLoc

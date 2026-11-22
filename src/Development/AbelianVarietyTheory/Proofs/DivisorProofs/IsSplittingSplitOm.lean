@@ -24,29 +24,9 @@ theorem schr_schr [Invertible (2 : R)] (ψ : AddChar R ℂ) {κ : Type} [Fintype
   simp only [add_dotProduct, dotProduct_add]
   linear_combination (-(w.1 ⬝ᵥ w'.2)) * (mul_invOf_self (2 : R))
 
-
 variable {α β κ : Type}
 
-def flat (σ : κ ≃ α × β) : Matrix α β R ≃ₗ[R] (κ → R) where
-  toFun X k := X (σ k).1 (σ k).2
-  invFun u := of fun i j => u (σ.symm (i, j))
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
-  left_inv X := by ext i j; simp
-  right_inv u := by ext k; simp
-
 variable [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β] [Fintype κ]
-
-
-
-
-def dblNum (σ : κ ≃ α × β) : κ ⊕ κ ≃ α × (β ⊕ β) := (σ.sumCongr σ).trans (Equiv.prodSumDistrib α β β).symm
-
-omit [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β] [Fintype κ] in
-theorem flat_fromCols (σ : κ ≃ α × β) (X Y : Matrix α β R) :
-    flat (dblNum σ) (fromCols X Y) = Sum.elim (flat σ X) (flat σ Y) := by
-  funext k
-  cases k <;> rfl
 
 end GlobalTheory.WeilM
 

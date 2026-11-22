@@ -21,8 +21,6 @@ open Reduction AutomorphicForm RightCosetSpace
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-local notation "Γ₁" => rationalGLOne (K := K) (n := n)
-
 variable (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 theorem exists_norm_rconv_le_siegel_basic (f : CompactlySupportedContinuousMap (normOneGL (K := K) (n := n)) ℂ)

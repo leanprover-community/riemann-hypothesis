@@ -43,9 +43,6 @@ theorem glue_units {T : Scheme.{0}} {I : Type} (W : I → T.Opens) (hW : ∀ x :
 theorem val_res {X : Scheme.{0}} {U V : X.Opens} (h : V ≤ U) (u : Γ(X, U)ˣ) :
     (res h u).val = (X.presheaf.map (homOfLE h).op).hom u.val := rfl
 
-theorem val_pullU {X Y : Scheme.{0}} (f : Y ⟶ X) (U : X.Opens) (u : Γ(X, U)ˣ) :
-    (pullU f U u).val = (f.app U).hom u.val := rfl
-
 theorem res_res {X : Scheme.{0}} {U V W : X.Opens} (h₁ : W ≤ V) (h₂ : V ≤ U) (u : Γ(X, U)ˣ) :
     res h₁ (res h₂ u) = res (h₁.trans h₂) u := by
   apply Units.ext

@@ -28,11 +28,6 @@ theorem hasFiniteLength_jacU (hBZ : GlobalTheory.Published.BernsteinZelevinskyFi
 
 end JacquetFiniteLength₂
 
-theorem step_jacFin {n : ℕ} (G : Grp k n) : G.JacquetModuleFiniteProp := by
-  intro L V _ _ π hπ hirr
-  exact ⟨isSmooth_jacU G.e hπ,
-    JacquetFiniteLength₂.hasFiniteLength_jacU G L.loc.bz π hπ (hasFiniteLength_of_isIrreducible hirr)⟩
-
 end Grp
 
 end UpperTheory.TNZ

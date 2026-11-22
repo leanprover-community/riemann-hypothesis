@@ -105,9 +105,6 @@ def realCLE (P : Matrix (Fin D) (Fin D) ℂ) (hP : P.det ≠ 0) : (Fin D → ℂ
   letI := P.invertibleOfIsUnitDet (isUnit_iff_ne_zero.mpr hP)
   ((P.toLinearEquiv' this).restrictScalars ℝ).toContinuousLinearEquiv
 
-theorem realCLE_apply (P : Matrix (Fin D) (Fin D) ℂ) (hP : P.det ≠ 0) (y : Fin D → ℂ) :
-    realCLE P hP y = P *ᵥ y := rfl
-
 theorem fderiv_fderiv_comp_affine (φ : (Fin D → ℂ) → ℝ) (c : Fin D → ℂ) (L : (Fin D → ℂ) ≃L[ℝ] (Fin D → ℂ))
     (κ : ℝ) (z u v : Fin D → ℂ) :
     fderiv ℝ (fderiv ℝ fun y => φ (c + L y) + κ) z u v = fderiv ℝ (fderiv ℝ φ) (c + L z) (L u) (L v) := by

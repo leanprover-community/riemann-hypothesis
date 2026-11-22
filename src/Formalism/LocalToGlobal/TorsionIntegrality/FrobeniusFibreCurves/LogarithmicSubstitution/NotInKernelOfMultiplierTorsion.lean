@@ -129,8 +129,6 @@ section Main
 
 variable {L : PeriodPair} {ι : ℂ ≃+* ℂ_[2]} {W : WeierstrassCurve ℂ_[2]}
 
-local notation "π" => ptW 2 L ι W
-
 open Classical in
 theorem not_in_kernel_of_multiplier_torsion (h1 : TwoTorsionKernelUnique) (h2 : TorsBound) (h3 : KapNorm) (h4 : KappaSum)
     (hU : Unif 2 L ι W) (hW : IntCurve W) (ha1 : ‖W.a₁‖ = 1) (α : ℂ) (b : ℤ_[2]) (hα : α ≠ 0)

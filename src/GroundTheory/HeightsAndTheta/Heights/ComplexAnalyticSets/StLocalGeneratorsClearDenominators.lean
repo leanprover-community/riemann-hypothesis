@@ -12,9 +12,6 @@ namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
 open IsLocalRing
 
-theorem LocalGeneratorsClearDenominators.polyOriginIdeal_isPrime : polyOriginIdeal.IsPrime :=
-  polyOriginIdeal_isMaximal.isPrime
-
 attribute [local instance] LocalGeneratorsClearDenominators.polyOriginIdeal_isPrime
 
 def LocalGeneratorsClearDenominators.Statement : Prop :=

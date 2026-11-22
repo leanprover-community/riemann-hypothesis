@@ -1,7 +1,6 @@
 module
 
 public import Formalism.StatementOC
-public import Formalism.ZetaRealNonvanish
 
 @[expose] public section
 

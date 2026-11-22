@@ -10,8 +10,6 @@ namespace PositivityTheory.Lit1.GEN.W_endx
 
 open PositivityTheory.Lit1.GEN.W_killed_a
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 theorem mem_gsOpenSubgroup_placesOver_iff {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
     (K' L : FiniteSubfield) [Fact (K ≤ K')] [Fact (K ≤ L)] [Fact (K' ≤ L)]
     (hK' : ∀ x : K'.1, algebraMap K'.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S)

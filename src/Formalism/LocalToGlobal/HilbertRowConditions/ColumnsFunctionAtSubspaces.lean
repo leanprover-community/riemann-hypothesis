@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.HilbertRowConditions.RowPin
 public import Formalism.LocalToGlobal.IndefiniteForms.PairingConditionOfInverseMatrixIdentity
 public import Formalism.LocalToGlobal.Divisibility.DivisionCompatibleToSub2Indef2
-public import Formalism.LocalToGlobal.ClassSK
 public import Formalism.SharpRestriction.Divisibility.StatementFT.PeriodPointConditions
 public import Formalism.SharpRestriction.Divisibility.HookProducts.AdmPtTw
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
@@ -75,27 +74,6 @@ attribute [instance] RowSideFamily.grp RowSideFamily.fin
 
 variable {ex : Extra D L hT Gi Gl Kc Y cX}
 
-def cjS (b : Bool) : ℂ →+* ℂ := Formalism.IndefR.Links.cj b
-
-
-open Classical in
-structure RowSideDetermined (T : TiedDataSK ex) (P : RowSideFamily ex) : Prop where
-
-  lowerMap : ∀ u, LowerMapTieS (T.cols.forms u)
-
-  lowerMapTw : ∀ u μ (hμ : μ ≠ D.what₂.mu0) (_hw : ∃ w, μ = D.what₂.muAt w) (h1 : 1 ≤ D.R.m), LowerMapTieTw T u μ hμ h1
-
-  buDef : Formalism.BasicNotions.Rows.BuDefQ D.what₂
-
-  ambS : ∃ JA : AmbIds D P.A3.A (Formalism.BasicNotions.RowSide.sharp D) ex.amb P.Ps P.ψs P.I.tup,
-    AmbTie D P.A3.A (Formalism.BasicNotions.RowSide.sharp D) ex.amb P.Ps P.ψs P.I.tup P.I.jA JA
-
-  faces : ∃ (Dcf : ∀ Zs : DefSub P.A3.fam3.amb3, DefCols (P.A3.side3 P.Ps P.ψs Zs)) (Spf : ∀ Zs, SPer (Dcf Zs)),
-    Dcf P.Zs = P.Dc ∧ HEq (Spf P.Zs) P.Sp
-
-  gamDvd : (∀ (t : P.T) (c : (P.A3.A.fam.R t).S.Cl), Fintype.card ((P.A3.A.fam.R t).S.Gam c) ∣ (D.mem D.u₀).C.DGam) ∧
-    ∀ (j : Fin D.R.m) (t : P.T) (c : (P.A3.A.fam.L j t).S.Cl), Fintype.card ((P.A3.A.fam.L j t).S.Gam c) ∣ (D.mem D.u₀).C.DGam
-
 structure RowsHold0_3 (P : RowSideFamily ex) : Prop where
   zsSt : P.Zs.Stable
   zsBl : P.Zs.InBlock
@@ -104,7 +82,6 @@ structure RowsHold0_3 (P : RowSideFamily ex) : Prop where
   famSep : P.A3.fam3.TypesSep3
 
 def RowsHoldKap3 (P : RowSideFamily ex) : Prop := ∀ e : D.what₂.LL →+* ℂ, Y.kapR e = P.S1.κ (InfinitePlace.mk e)
-
 
 open Classical in
 def RowsHoldLam3 (P : RowSideFamily ex) : Prop :=

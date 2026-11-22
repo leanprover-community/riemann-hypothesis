@@ -93,8 +93,6 @@ noncomputable def iterD (m : ℕ) : (Fin m → Fin k) → (Fin m → Fin k) → 
   Nat.rec (motive := fun m => (Fin m → Fin k) → (Fin m → Fin k) → R → R) (fun _ _ P => P)
     (fun _ f ρ J P => d (ρ 0) (J 0) (f (Fin.tail ρ) (Fin.tail J) P)) m
 
-theorem iterD_zero (ρ J : Fin 0 → Fin k) (P : R) : iterD d 0 ρ J P = P := rfl
-
 theorem iterD_succ (m : ℕ) (ρ J : Fin (m + 1) → Fin k) (P : R) :
     iterD d (m + 1) ρ J P = d (ρ 0) (J 0) (iterD d m (Fin.tail ρ) (Fin.tail J) P) := rfl
 

@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.DiscreteSpectrumResidualClassification
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HypothesesX
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.GoodIdempotentFixesOfOnlySeriesOfLabelActs
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsUniqueVec
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow

@@ -60,17 +60,6 @@ def Nm (i : ℕ) (v : (D.mem u).A.vT) : Fn D u i →ₗ[ℂ] Fn D u i := ∑ a :
 def trp (i : ℕ) (v : (D.mem u).A.vT) : Fn D u i →ₗ[ℂ] Fn D u i :=
   (((D.mem u).A.T : ℂ) ^ (D.R.N i - 1))⁻¹ • (Eop D u i v ∘ₗ Uop D u i v)
 
-def FFop (i : ℕ) (v : (D.mem u).A.vT) : Fn D u i →ₗ[ℂ] Fn D u i :=
-  LinearMap.pi fun c => ∑ g ∈ Finset.univ.filter
-      (fun g : Module.Dual ((D.mem u).A.Fv v) ((D.fm u).lk i v c) => g ≠ 0),
-    ((D.mem u).A.psiT v (g ((D.fm u).te i v c))) • (((D.fm u).dnT i v c g).toLinearMap ∘ₗ LinearMap.proj ((D.fm u).dn i v c g))
-
-def Gs (i : ℕ) (v : (D.mem u).A.vT) : Fn D u i →ₗ[ℂ] Fn D u i :=
-  ∑ a : ((D.mem u).A.Fv v)ˣ, (D.mem u).A.psiT v (a : (D.mem u).A.Fv v) • dia D u i v a
-
-def GsD (i : ℕ) (v : (D.mem u).A.vT) : Fn D u i →ₗ[ℂ] Fn D u i :=
-  ∑ a : ((D.mem u).A.Fv v)ˣ, (D.mem u).A.psiT v (-(a : (D.mem u).A.Fv v)) • dia D u i v a⁻¹
-
 theorem dia_zero (v : (D.mem u).A.vT) (a : ((D.mem u).A.Fv v)ˣ) : dia D u 0 v a = (D.mem u).A.rhoT v a := by
   apply LinearMap.ext; intro φ; funext c
   rw [(D.fm u).rhoT_dil]; rfl
@@ -83,8 +72,6 @@ def MramI (i : ℕ) : Submodule ℂ (Fn D u i) := (D.fm u).Fi i ⊓ ⨅ v, Linea
 theorem MramI_zero : MramI D u 0 = (D.mem u).A.Mram := by
   simp only [MramI, Formalism.BasicNotions.ColumnsAtT.Mram, Nm_zero, (D.fm u).Fi_zero]
 
-def KT (i : ℕ) : Fn D u i →ₗ[ℂ] Fn D u (i + 1) := (D.mem u).C.Klin i
-
 def colT : Fn D u 0 → Fn D u D.R.m := (D.mem u).C.col
 
 abbrev Wt (τ : D.what₂.Tau) : ℕ := Wtau D u τ
@@ -94,9 +81,6 @@ def amax : ℤ := (tops D).fold max 0 (D.fm u).aTop
 abbrev VV (w : D.what₂.places.Pl) : Finset (D.mem u).A.vT := LT.VVT D u w
 
 abbrev Uprod (i : ℕ) (w : D.what₂.places.Pl) : Fn D u i →ₗ[ℂ] Fn D u i := LT.Uprod D u i w
-
-def FFall (i : ℕ) : Fn D u i →ₗ[ℂ] Fn D u i :=
-  (Finset.univ : Finset (D.mem u).A.vT).toList.foldr (fun v g => (FFop D u i v).comp g) LinearMap.id
 
 def Into {i j : ℕ} (w : D.what₂.places.Pl) (f : Fn D u i → Fn D u j)
     (A : Submodule (Ow D w) (Vl D u i)) (B : Submodule (Ow D w) (Vl D u j)) : Prop :=
@@ -125,132 +109,6 @@ def HidaSetting : Prop :=
     ∀ τ ∈ tops D, 0 ≤ (D.fm u).bTop τ
 
 def admS : Prop := (D.mem u).C.StabZero
-
-def TrIso : Prop :=
-  ∀ i, i ≤ D.R.m → ∀ v c, ∀ φ ∈ (D.fm u).Fi i, ∀ ψ ∈ (D.fm u).Fi i,
-    (∀ x : (D.fm u).lv i v c, (D.fm u).fv i v c x = 1 →
-      (D.fm u).ipV i c ((D.fm u).upT i v c x (φ ((D.fm u).up i v c x))) ((D.fm u).upT i v c x (ψ ((D.fm u).up i v c x))) =
-        (D.fm u).ipV i ((D.fm u).up i v c x) (φ ((D.fm u).up i v c x)) (ψ ((D.fm u).up i v c x))) ∧
-    (∀ g : Module.Dual ((D.mem u).A.Fv v) ((D.fm u).lk i v c), g ≠ 0 →
-      (D.fm u).ipV i c ((D.fm u).dnT i v c g (φ ((D.fm u).dn i v c g))) ((D.fm u).dnT i v c g (ψ ((D.fm u).dn i v c g))) =
-        (D.fm u).ipV i ((D.fm u).dn i v c g) (φ ((D.fm u).dn i v c g)) (ψ ((D.fm u).dn i v c g))) ∧
-    ∀ a : ((D.mem u).A.Fv v)ˣ,
-      (D.fm u).ipV i c ((D.fm u).dilT i v a c (φ ((D.fm u).dil i v a c))) ((D.fm u).dilT i v a c (ψ ((D.fm u).dil i v a c))) =
-        (D.fm u).ipV i ((D.fm u).dil i v a c) (φ ((D.fm u).dil i v a c)) (ψ ((D.fm u).dil i v a c))
-
-def DiaMul : Prop :=
-  ∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ (D.fm u).Fi i,
-    dia D u i v 1 φ = φ ∧ ∀ a b, dia D u i v (a * b) φ = dia D u i v a (dia D u i v b φ)
-
-def Conclusion1 : Prop :=
-  (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ (D.fm u).Fi i,
-    Uop D u i v φ ∈ (D.fm u).Fi i ∧ Dop D u i v φ ∈ (D.fm u).Fi i ∧ ∀ a, dia D u i v a φ ∈ (D.fm u).Fi i) ∧
-  (∀ i, i ≤ D.R.m → ∀ v v', v ≠ v' → ∀ φ ∈ (D.fm u).Fi i,
-    Uop D u i v (Uop D u i v' φ) = Uop D u i v' (Uop D u i v φ)) ∧
-  (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ (D.fm u).Fi i, ∀ ψ ∈ (D.fm u).Fi i,
-    (D.fm u).ipC i (Uop D u i v φ) ψ = (D.fm u).ipC i φ (Dop D u i v ψ)) ∧
-  (∀ i, i ≤ D.R.m → ∀ w, OverT D u w → (D.fm u).seenP w = true → ∀ v,
-    Into D u w (Uop D u i v) ((D.fm u).Bw i w v) ((D.fm u).S i w) ∧
-    Into D u w (Dop D u i v) ((D.fm u).S i w) ((D.fm u).Bw i w v)) ∧
-  (∀ i, i ≤ D.R.m → ∀ w, ¬ OverT D u w → ∀ v,
-    Into D u w (Uop D u i v) ((D.fm u).S i w) ((D.fm u).S i w) ∧ Into D u w (Dop D u i v) ((D.fm u).S i w) ((D.fm u).S i w)) ∧
-  (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ (D.fm u).Fi i, Dop D u i v (Uop D u i v φ) =
-    ((D.mem u).A.T : ℂ) ^ (D.R.N i - 1) • φ - ((D.mem u).A.T : ℂ) ^ (D.R.N i - 2) • Nm D u i v φ
-      + ((D.mem u).A.T : ℂ) ^ (D.R.N i - 2) • trp D u i v φ) ∧
-  (∀ v, ∀ x ∈ (D.fm u).ramSub,
-    (∃ y ∈ (D.fm u).ramSub, (D.fm u).emb 0 y = Uop D u 0 v ((D.fm u).emb 0 x)) ∧
-    (∃ y ∈ (D.fm u).ramSub, (D.fm u).emb 0 y = Dop D u 0 v ((D.fm u).emb 0 x)) ∧
-    ∀ a, ∃ y ∈ (D.fm u).ramSub, (D.fm u).emb 0 y = dia D u 0 v a ((D.fm u).emb 0 x)) ∧
-  (∀ w, ¬ OverT D u w → ∀ v,
-    Into D u w (Uop D u 0 v) (Sram D u w) (Sram D u w) ∧
-    Into D u w (Dop D u 0 v) (Sram D u w) (Sram D u w) ∧
-    ∀ a, Into D u w (dia D u 0 v a) (Sram D u w) (Sram D u w)) ∧
-  (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ MramI D u i,
-    Uop D u i v φ ∈ MramI D u i ∧ Dop D u i v φ ∈ MramI D u i ∧
-    (∀ a, dia D u i v a φ ∈ MramI D u i) ∧ trp D u i v φ = 0 ∧
-    Dop D u i v (Uop D u i v φ) = ((D.mem u).A.T : ℂ) ^ (D.R.N i - 1) • φ ∧
-    Uop D u i v (Dop D u i v φ) = ((D.mem u).A.T : ℂ) ^ (D.R.N i - 1) • φ)
-
-def Conclusion2 : Prop :=
-  ((D.mem u).A.du : ℚ) = (D.duS u : ℚ) * (1 - 1 / (((D.mem u).A.T : ℚ) - 1)) ^ D.R.f ∧
-  (D.fm u).ramLat.mu = ((D.fm u).lat 0).mu -
-    (D.R.f : ℝ) * Real.log (((D.mem u).A.T : ℝ) - 1) / (((D.mem u).A.T : ℝ) - 2) ∧
-  (D.fm u).ramLat.muMax ≤ ((D.fm u).lat 0).muMax ∧
-  (∀ w, OverT D u w → (D.fm u).seenP w = true → ∀ v,
-    (0 ≤ ((D.fm u).lam 0 ((D.fm u).tauOf w v)).detShift →
-      (D.fm u).S 0 w ≤ (D.fm u).Bw 0 w v ∧
-      (∃ n : ℕ, len D u w ((D.fm u).Bw 0 w v) ((D.fm u).S 0 w) = n ∧
-        (n : ℚ) = (D.what₂.places.ramIdx w : ℚ) *
-          ((D.duS u : ℚ) * (wsum ((D.fm u).lam 0 ((D.fm u).tauOf w v)) : ℚ) / (D.R.k : ℚ))) ∧
-      len D u w (Sram D u w) (imgL D u w (Uop D u 0 v) (Sram D u w)) ≤
-        len D u w ((D.fm u).Bw 0 w v) ((D.fm u).S 0 w) +
-          ((D.what₂.places.ramIdx w * ((D.R.k - 1) * D.duS u) : ℕ) : ℕ∞) +
-          len D u w (imgL D u w (Uop D u 0 v) (Sram D u w)) (Sram D u w)) ∧
-    (0 ≤ (D.fm u).bTop ((D.fm u).tauOf w v) →
-      tL D u w ((D.fm u).bTop ((D.fm u).tauOf w v)) ((D.fm u).S 0 w) ≤ (D.fm u).Bw 0 w v ∧
-      (∃ n : ℕ, len D u w ((D.fm u).Bw 0 w v) (tL D u w ((D.fm u).bTop ((D.fm u).tauOf w v)) ((D.fm u).S 0 w)) = n ∧
-        (n : ℚ) = (D.what₂.places.ramIdx w : ℚ) * ((D.duS u : ℚ) *
-          ((wsum ((D.fm u).lam 0 ((D.fm u).tauOf w v)) : ℚ) + (D.R.k : ℚ) * ((D.fm u).bTop ((D.fm u).tauOf w v) : ℚ)) /
-            (D.R.k : ℚ))) ∧
-      len D u w (Sram D u w)
-          (imgL D u w ((((D.mem u).A.T : ℂ) ^ (D.fm u).bTop ((D.fm u).tauOf w v)) • Uop D u 0 v) (Sram D u w)) ≤
-        len D u w ((D.fm u).Bw 0 w v) (tL D u w ((D.fm u).bTop ((D.fm u).tauOf w v)) ((D.fm u).S 0 w)) +
-          ((D.what₂.places.ramIdx w * ((D.R.k - 1) * D.duS u) : ℕ) : ℕ∞) +
-          len D u w (imgL D u w ((((D.mem u).A.T : ℂ) ^ (D.fm u).bTop ((D.fm u).tauOf w v)) • Uop D u 0 v) (Sram D u w))
-            (Sram D u w)))
-
-def IsBfam (i : ℕ) (w : D.what₂.places.Pl)
-    (BV : Finset (D.mem u).A.vT → Submodule (Ow D w) (Vl D u i)) : Prop :=
-  BV ∅ = (D.fm u).S i w ∧ (∀ v, BV {v} = (D.fm u).Bw i w v) ∧
-  (∀ V v, v ∈ V → Into D u w (Uop D u i v) (BV V) (BV (V.erase v)) ∧
-    Into D u w (Dop D u i v) (BV (V.erase v)) (BV V)) ∧
-  (∀ V v, v ∈ V → (D.fm u).tauOf w v ∉ tops D →
-    Into D u w (fun φ => tpow D u (2 * Wt D u ((D.fm u).tauOf w v) + D.R.t) • φ) (BV V) (BV (V.erase v)))
-
-def lossK (C : ℝ) : ℕ := ⌊∑ τ, (2 * (Wt D u τ : ℝ) + C * D.R.N D.R.m)⌋₊
-
-def PointsLemma (C : ℝ) : Prop :=
-  ∀ w, OverT D u w →
-    (∀ i, i < D.R.m →
-      ((D.fm u).seenP w = false →
-        Into D u w (fun φ => tpow D u (lossK D u C) • KT D u i φ) ((D.fm u).S i w) ((D.fm u).S (i + 1) w)) ∧
-      ((D.fm u).seenP w = true → ∃ BV, IsBfam D u (i + 1) w BV ∧
-        Into D u w (fun φ => tpow D u (lossK D u C) • KT D u i φ) ((D.fm u).S i w) (BV Finset.univ)) ∧
-      (∃ e1 : ℕ, (e1 : ℝ) ≤ 4 * ∑ τ, (Wt D u τ : ℝ) + C * D.R.f * D.R.N D.R.m ∧
-        Into D u w (fun φ => tpow D u e1 • Uprod D u (i + 1) w (KT D u i φ))
-          ((D.fm u).S i w) ((D.fm u).S (i + 1) w))) ∧
-    (∀ i, i ≤ D.R.m → (D.fm u).seenP w = true → ∀ v, (D.fm u).tauOf w v ∉ tops D →
-      Into D u w (fun φ => tpow D u (2 * Wt D u ((D.fm u).tauOf w v) + D.R.t) • φ) ((D.fm u).Bw i w v) ((D.fm u).S i w))
-
-def T4with (bd : D.what₂.places.Pl → (D.mem u).A.vT → ℝ) : Prop :=
-  ∀ i, i < D.R.m → ∀ v : (D.mem u).A.vT,
-    (∃ c : D.what₂.LL,
-      (∀ φ ∈ (D.fm u).Fi i, Uop D u (i + 1) v (KT D u i φ) =
-        D.what₂.embLL c • KT D u i (Uop D u i v φ)) ∧
-      (∀ σ : D.what₂.LL →+* ℂ, ‖σ c‖ = ((D.mem u).A.T : ℝ) ^ (((D.R.t : ℝ) + 1) / 2)) ∧
-      (∀ w, OverT D u w → ∃ n : ℤ, D.what₂.places.val w c = ((n : ℤ) : WithTop ℤ) ∧
-        |(n : ℝ)| ≤ (D.what₂.places.ramIdx w : ℝ) * bd w v)) ∧
-    (∀ a, ∀ φ ∈ (D.fm u).Fi i, KT D u i (dia D u i v a φ) = dia D u (i + 1) v a (KT D u i φ)) ∧
-    ∀ φ ∈ MramI D u i, KT D u i φ ∈ MramI D u (i + 1)
-
-def Conclusion4 (C : ℝ) : Prop :=
-  T4with D u (fun w v => (D.R.t : ℝ) + 1 + 2 * Wt D u ((D.fm u).tauOf w v) + C * D.R.N D.R.m)
-
-def LevelChainUOperatorCommutation : Prop :=
-  ∀ i, i < D.R.m → ∀ v : (D.mem u).A.vT, ∀ φ ∈ (D.fm u).Fi i,
-    Uop D u (i + 1) v (KT D u i φ) =
-      (((((D.mem u).A.T : ℝ) ^ (((D.R.t : ℝ) + 1) / 2) : ℝ)) : ℂ) • KT D u i (Uop D u i v φ)
-
-def Conclusion5 (C : ℝ) : Prop :=
-  ∀ w, OverT D u w →
-    Nlam D u w ≤ Sram D u w ∧
-    (∃ e : ℕ, (e : ℝ) ≤ D.R.m * (4 * ∑ τ, (Wt D u τ : ℝ) + C * D.R.f * D.R.N D.R.m) +
-        ∑ v ∈ VV D u w, ((D.R.t : ℝ) + 1 + 2 * Wt D u ((D.fm u).tauOf w v) + C * D.R.N D.R.m) *
-          ((D.R.m : ℝ) * (D.R.m + 1) / 2) ∧
-      Into D u w (fun φ => tpow D u e • colT D u φ) (Nlam D u w) ((D.fm u).S D.R.m w)) ∧
-    (∃ n : ℕ, len D u w (Sram D u w) (Nlam D u w) = n ∧
-      (n : ℝ) ≤ (D.what₂.places.ramIdx w : ℝ) * (D.R.m * D.duS u * ∑ v ∈ VV D u w,
-        ((amax D u : ℝ) / D.R.k + 2 * Wt D u ((D.fm u).tauOf w v) + D.R.k + (D.fm u).bTop ((D.fm u).tauOf w v))))
 
 def ETpi : ℝ :=
   2 * ∑ τ, (Wt D u τ : ℝ) + (D.R.f : ℝ) * D.R.N D.R.m +
@@ -288,18 +146,6 @@ def Conclusion6 : Prop :=
       (Formalism.HermitianLatticesTheory.majAt (D.fm u).ptLat.b (D.fm u).ptLat.X v ((D.fm u).PtL h x) ((D.fm u).PtL h x)).re ≤
         ptB D u * (Formalism.HermitianLatticesTheory.majAt ((D.fm u).lat D.R.m).b ((D.fm u).lat D.R.m).X v x x).re) ∧
   ∀ φ ∈ (D.fm u).Fi D.R.m, ((D.fm u).ipP (Pt D u φ) (Pt D u φ)).re ≤ ptB D u * ((D.fm u).ipC D.R.m φ φ).re
-
-def division_rows_rational_lattice : Prop :=
-  (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ MramI D u i, FFop D u i v φ = Dop D u i v (Gs D u i v φ)) ∧
-  (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ (D.fm u).Fi i,
-    Gs D u i v (GsD D u i v φ) = ((D.mem u).A.T : ℂ) • φ - Nm D u i v φ) ∧
-  (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ MramI D u i, FFop D u i v φ ∈ MramI D u i) ∧
-  (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ MramI D u i, ∀ ψ ∈ MramI D u i,
-    (D.fm u).ipC i (FFop D u i v φ) (FFop D u i v ψ) = ((D.mem u).A.T : ℂ) ^ D.R.N i * (D.fm u).ipC i φ ψ) ∧
-  (∀ i, i ≤ D.R.m → ∀ φ ∈ MramI D u i, ∀ ψ ∈ MramI D u i,
-    (D.fm u).ipC i (FFall D u i φ) (FFall D u i ψ) = ((D.mem u).A.T : ℂ) ^ (D.R.f * D.R.N i) * (D.fm u).ipC i φ ψ) ∧
-  (∀ i, i < D.R.m → ∀ v, ∃ c : ℂ, c ≠ 0 ∧ ∀ φ ∈ MramI D u i,
-    FFop D u (i + 1) v (KT D u i φ) = c • KT D u i (FFop D u i v φ))
 
 section Tensor
 
@@ -467,21 +313,5 @@ variable {D u}
 
 def ArchimedeanSignatureMatching (P : Pend D u) : Prop :=
   ∀ τ, Formalism.MainNotions.PrimeDegreeVariant.IsBr (Nm_succ D.R) (lamTr D u τ) (sgTr D u τ) (P.br τ)
-
-structure Th22 (D : D7) where
-  cc : Ideal (𝓞 D.host.K)
-  δ : ℂ
-  χ : Formalism.MainNotions.TaylorLogMetric.IdE D → ℂ
-  e : Formalism.MainNotions.TaylorLogMetric.FamE D
-  cc_curve : Formalism.MainNotions.TaylorLogMetric.IsCurveIdeal D cc
-  δ_delta : Formalism.MainNotions.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ
-  χ_chi : Formalism.MainNotions.TaylorLogMetric.IsChi D χ
-
-def Conclusion₂ (D : D7) (u : D.what₂.Word) (C : ℝ) : Prop :=
-  Conclusion1 D u ∧ Conclusion2 D u ∧ PointsLemma D u C ∧ Conclusion4 D u C ∧ Conclusion5 D u C ∧ Conclusion6 D u ∧ division_rows_rational_lattice D u ∧ LevelChainUOperatorCommutation D u ∧ Conclusion5Sharp D u
-
-def ConclusionOnFamily {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (C : ℝ) : Prop :=
-  ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (i : Fm.Ix x) (u : (Fm.D x i).what₂.Word),
-    HidaSetting (Fm.D x i) u → Conclusion₂ (Fm.D x i) u C
 
 end Formalism.MainNotions.product_first_zeroth_parts

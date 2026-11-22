@@ -4,7 +4,7 @@ public import Mathlib
 public import GroundTheory.PAdicHodge.FieldOfNormsTower
 public import GroundTheory.LocalFields.DifferentGalois
 public import GroundTheory.LocalFields.RamificationStructure
-public import GroundTheory.PAdicHodge.FieldOfNormsUpper
+public import GroundTheory.LocalFields.ConductorTransport
 
 @[expose] public section
 

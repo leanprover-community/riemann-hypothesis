@@ -194,9 +194,6 @@ def cl {E : Type*} [AddCommGroup E] [Module ℂ E] [Module ℝ E] [IsScalarTower
   map_add' x y := by rw [mul_add, add_smul]
   map_smul' s c := by rw [RingHom.id_apply, mul_smul_comm, smul_assoc]
 
-theorem cl_apply {E : Type*} [AddCommGroup E] [Module ℂ E] [Module ℝ E] [IsScalarTower ℝ ℂ E] (α : ℂ) (e : E)
-    (c : ℂ) : cl α e c = (α * c) • e := rfl
-
 end Closure
 
 end Formalism.FourierDecayAlt.P.NFRO

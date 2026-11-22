@@ -2,7 +2,6 @@ module
 
 public import Formalism.FlagUnipotentLattices.PairingOrthogonalComplement
 public import Mathlib
-public import Formalism.SobolevGaussianKernels.StatementEI
 public import Formalism.CorankShare.StatementFR
 
 @[expose] public section

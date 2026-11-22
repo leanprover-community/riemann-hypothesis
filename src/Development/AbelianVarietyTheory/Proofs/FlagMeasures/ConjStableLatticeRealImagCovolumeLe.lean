@@ -124,9 +124,6 @@ noncomputable def reImEquiv (ι κ : Type) [Fintype ι] [Fintype κ] :
       left_inv := fun p => rfl
       right_inv := fun z => rfl }
 
-theorem reImEquiv_apply {ι κ : Type} [Fintype ι] [Fintype κ] (p : (ι → κ → ℝ) × (ι → κ → ℝ))
-    (v : ι) (i : κ) : reImEquiv ι κ p v i = ⟨p.1 v i, p.2 v i⟩ := rfl
-
 theorem measurePreserving_reImEquiv (ι κ : Type) [Fintype ι] [Fintype κ] :
     MeasurePreserving (reImEquiv ι κ) (Measure.prod volume volume) volume := by
   have h1 := (volume_measurePreserving_arrowProdEquivProdArrow (κ → ℝ) (κ → ℝ) ι).symm

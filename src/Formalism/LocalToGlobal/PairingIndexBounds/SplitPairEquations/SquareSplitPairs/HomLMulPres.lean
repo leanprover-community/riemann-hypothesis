@@ -83,9 +83,6 @@ def phi {N N' : ℕ} (M : Matrix (Fin N') (Fin N') D.host.E) : TaylorLogMetric.V
   map_zero' := by funext τ i j; simp
   map_add' := by intro z w; funext τ i j; simp [mul_add, Finset.sum_add_distrib]
 
-theorem phi_apply {N N' : ℕ} (M : Matrix (Fin N') (Fin N') D.host.E) (z : TaylorLogMetric.VC D N N') (τ i j) :
-    phi M z τ i j = ∑ k, TaylorLogMetric.embT D τ (M i k) * z τ k j := rfl
-
 variable {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
 
 theorem phi_embV {N N' : ℕ} (M : Matrix (Fin N') (Fin N') D.host.E) (w : ℂ) (A : Matrix (Fin N') (Fin N) D.host.E) :

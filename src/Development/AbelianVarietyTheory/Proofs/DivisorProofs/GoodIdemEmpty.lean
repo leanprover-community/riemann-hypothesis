@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmall
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFinPt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormPeriodSq
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DetIdlVal

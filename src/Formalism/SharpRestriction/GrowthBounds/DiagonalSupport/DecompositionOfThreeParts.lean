@@ -190,11 +190,6 @@ theorem CoefGe.add {F G : MvPolynomial σ (KK O)} {t : ℝ} (hF : CoefGe p F t) 
   rw [MvPolynomial.coeff_add]
   exact geQ_add _ _ (hF mo) (hG mo)
 
-theorem CoefGe.zero (t : ℝ) : CoefGe p (0 : MvPolynomial σ (KK O)) t := by
-  intro mo
-  simp only [AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
-  exact geQ_zero t
-
 theorem CoefGe.sum {ι : Type*} (s : Finset ι) (f : ι → MvPolynomial σ (KK O)) {t : ℝ}
     (h : ∀ i ∈ s, CoefGe p (f i) t) : CoefGe p (∑ i ∈ s, f i) t := by
   intro mo

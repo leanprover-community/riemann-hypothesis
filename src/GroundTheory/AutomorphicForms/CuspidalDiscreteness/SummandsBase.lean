@@ -18,10 +18,6 @@ namespace BanachRep
 variable {G G' : Type*} [Group G] [TopologicalSpace G] [Group G'] [TopologicalSpace G']
   {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-def comp (π : BanachRep G E) (f : G' →* G) (hf : Continuous f) : BanachRep G' E where
-  toHom := π.toHom.comp f
-  continuous_orbit' v := (π.continuous_orbit v).comp hf
-
 end BanachRep
 
 namespace CuspidalSpectrum
@@ -29,7 +25,6 @@ namespace CuspidalSpectrum
 open AutomorphicForm
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
-
 
 variable (K n) in
 def archP : archGroup K n →* Reduction.normOneGL (K := K) (n := n) :=

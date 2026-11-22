@@ -24,7 +24,6 @@ instance (σ : K →+* ℂ) : Module.IsTorsionFree (𝓞 K) (ComplexAt σ) := by
 variable {E : Type*} [AddCommGroup E] [Module (𝓞 K) E] [Module.Finite (𝓞 K) E]
   [Module.Projective (𝓞 K) E]
 
-
 omit [Module.Projective (𝓞 K) E] in
 theorem finite_quotient_span {ι : Type*} [Fintype ι] {s : ι → E} (hs : LinearIndependent (𝓞 K) s)
     (hcard : Fintype.card ι = Module.finrank (𝓞 K) E) :
@@ -157,7 +156,6 @@ def degreeWith (h : HermitianMetric K E) {ι : Type*} [Fintype ι] [DecidableEq 
 
 section Index
 
-
 omit [NumberField K] [Module.Finite (𝓞 K) E] [Module.Projective (𝓞 K) E] in
 theorem card_quotient_range_comp {M : Type*} [AddCommGroup M] [Module (𝓞 K) M]
     (Φ : M →ₗ[𝓞 K] E) (hΦ : Function.Injective Φ) (g : M →ₗ[𝓞 K] M) :
@@ -215,7 +213,6 @@ theorem sum_log_norm_embedding (d : 𝓞 K) (hd : d ≠ 0) :
 section Degree
 
 variable (h : HermitianMetric K E)
-
 
 omit [NumberField K] [Module.Finite (𝓞 K) E] [Module.Projective (𝓞 K) E] in
 theorem linearCombination_comb {ι : Type*} [Fintype ι] (s : ι → E) (A : Matrix ι ι (𝓞 K)) :
@@ -295,7 +292,6 @@ theorem degreeWith_eq_of_linearIndependent {ι : Type*} [Fintype ι] [DecidableE
     exact ht.fintypeLinearCombination_injective (key2.trans (map_zero _).symm)
   rw [← degreeWith_comb h ht hcard D hD, hu2, ← hu1, degreeWith_comb h hs hcard A hA]
 
-
 omit [NumberField K] [Module.Projective (𝓞 K) E] in
 theorem exists_linearIndependent_fin :
     ∃ s : Fin (Module.finrank (𝓞 K) E) → E, LinearIndependent (𝓞 K) s := by
@@ -358,65 +354,7 @@ section Scale
 
 variable {V : Type*} [AddCommGroup V] [Module ℂ V]
 
-@[instance_reducible]
-def coreScale (hV : InnerProductSpace.Core ℂ V) (c : ℝ) (hc : 0 < c) :
-    InnerProductSpace.Core ℂ V where
-  inner x y := ((c ^ 2 : ℝ) : ℂ) * hV.inner x y
-  conj_inner_symm x y := by
-    rw [map_mul, Complex.conj_ofReal, hV.conj_inner_symm]
-  re_inner_nonneg x := by
-    change 0 ≤ Complex.re _
-    rw [Complex.re_ofReal_mul]
-    exact mul_nonneg (by positivity) (hV.re_inner_nonneg x)
-  add_left x y z := by
-    simp only [hV.add_left]
-    ring
-  smul_left x y r := by
-    simp only [hV.smul_left]
-    ring
-  definite x hx := by
-    have hc2 : ((c ^ 2 : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (pow_pos hc 2).ne'
-    exact hV.definite x ((mul_eq_zero.mp hx).resolve_left hc2)
-
-theorem coreScale_inner (hV : InnerProductSpace.Core ℂ V) (c : ℝ) (hc : 0 < c) (x y : V) :
-    (coreScale hV c hc).inner x y = ((c ^ 2 : ℝ) : ℂ) * hV.inner x y := rfl
-
 end Scale
-
-def HermitianMetric.scale (h : HermitianMetric K E) (c : ℝ) (hc : 0 < c) : HermitianMetric K E where
-  form σ := coreScale (h.form σ) c hc
-  form_conj σ x y := by
-    rw [coreScale_inner, coreScale_inner, h.form_conj, map_mul, Complex.conj_ofReal]
-
-theorem gramDet_scale (h : HermitianMetric K E) (c : ℝ) (hc : 0 < c) (σ : K →+* ℂ) {ι : Type*}
-    [Fintype ι] [DecidableEq ι] (s : ι → E) :
-    gramDet (h.scale c hc) σ s = c ^ (2 * Fintype.card ι) * gramDet h σ s := by
-  simp only [gramDet]
-  have : (gram ℂ fun i ↦ fibreVec (h.scale c hc) σ (s i)) =
-      ((c ^ 2 : ℝ) : ℂ) • gram ℂ fun i ↦ fibreVec h σ (s i) := by
-    ext i j
-    rfl
-  rw [this, det_smul, ← Complex.ofReal_pow, Complex.re_ofReal_mul, pow_mul]
-
-theorem arithDegree_scale (h : HermitianMetric K E) (c : ℝ) (hc : 0 < c) :
-    arithDegree (h.scale c hc) =
-      arithDegree h - Module.finrank (𝓞 K) E * Module.finrank ℚ K * Real.log c := by
-  obtain ⟨s, hs⟩ := exists_linearIndependent_fin (K := K) (E := E)
-  rw [arithDegree_eq (h.scale c hc) hs (Fintype.card_fin _), arithDegree_eq h hs (Fintype.card_fin _)]
-  simp only [degreeWith, gramDet_scale, Fintype.card_fin]
-  have hlog : ∀ σ : K →+* ℂ, Real.log (c ^ (2 * Module.finrank (𝓞 K) E) * gramDet h σ s) =
-      2 * Module.finrank (𝓞 K) E * Real.log c + Real.log (gramDet h σ s) := fun σ ↦ by
-    rw [Real.log_mul (pow_pos hc _).ne' (gramDet_pos h σ hs).ne', Real.log_pow]
-    push_cast; ring
-  simp only [hlog]
-  rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, NumberField.Embeddings.card,
-    nsmul_eq_mul]
-  ring
-
-theorem arithDegree_ratIntegers_scale (c : ℝ) (hc : 0 < c) :
-    arithDegree ((HermitianMetric.integers ℚ).scale c hc) = -Real.log c := by
-  rw [arithDegree_scale, arithDegree_integers, Module.finrank_self, Module.finrank_self]
-  simp
 
 end
 

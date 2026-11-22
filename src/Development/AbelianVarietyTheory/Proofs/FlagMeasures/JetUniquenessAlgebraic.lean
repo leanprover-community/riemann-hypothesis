@@ -64,9 +64,6 @@ private lemma update_castSucc_apply_last {X : Type*} {j : ℕ} (α : Fin (j + 1)
     Function.update α k.castSucc x (Fin.last j) = α (Fin.last j) :=
   Function.update_of_ne (Fin.castSucc_lt_last k).ne' x α
 
-private lemma fin_castSucc_apply_eq_init {X : Type*} {j : ℕ} (α : Fin (j + 1) → X) (k : Fin j) :
-    α k.castSucc = Fin.init α k := rfl
-
 theorem jm_deriv (E : Fin n → Fin n → Module.End ℂ V) (hE : GlRel E) (c d : Fin n) :
     ∀ (j : ℕ) (α : Fin j → Fin n × Fin n), E c d * jmW E α - jmW E α * E c d =
       ∑ i, ((if d = (α i).1 then jmW E (Function.update α i (c, (α i).2)) else 0) -

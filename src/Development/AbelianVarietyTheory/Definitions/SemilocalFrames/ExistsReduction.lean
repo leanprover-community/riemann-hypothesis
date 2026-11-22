@@ -30,10 +30,6 @@ def tensAlg {ι : Type} [Fintype ι] {G : ι → Type} [∀ i, Group (G i)] [∀
     (a : ∀ i, MonoidAlgebra ℂ (G i)) : MonoidAlgebra ℂ (∀ i, G i) :=
   MonoidAlgebra.ofCoeff (Finsupp.equivFunOnFinite.symm fun h : ∀ i, G i => ∏ i, (a i).coeff (h i))
 
-def IsSeries {Q Lab : Type} [Group Q] (z : Lab → MonoidAlgebra ℂ Q) : Prop :=
-  (∀ f, z f * z f = z f) ∧ (∀ f a, z f * a = a * z f) ∧ (∀ f f', f ≠ f' → z f * z f' = 0) ∧
-    ∃ T : Finset Lab, (∀ f, f ∉ T → z f = 0) ∧ ∑ f ∈ T, z f = 1
-
 def extId (I : AutInst) (𝔞 : Ideal (𝓞 I.E)) : Ideal (IntAf I.F I.E) :=
   Ideal.span {z : IntAf I.F I.E | ∃ a ∈ 𝔞, (z : TensorProduct I.F I.E (Af I.F)) = Formalism.UG.inclE (F := I.F) (Af I.F) (a : I.E)}
 
@@ -85,7 +81,6 @@ theorem fmat_mul (I : AutInst) (x y : I.Gf) : I.fmat (x * y) = I.fmat x * I.fmat
 
 theorem fmat_one (I : AutInst) : I.fmat 1 = 1 := rfl
 
-
 end Inhab
 
 open Inhab
@@ -111,9 +106,6 @@ theorem lift_of_notMem (μf : Measure I.Gf) (a : MonoidAlgebra ℂ Q) {x : I.Gf}
   simp [hx]
 
 end Red
-
-theorem tensAlg_coeff {ι : Type} [Fintype ι] {G : ι → Type} [∀ i, Group (G i)] [∀ i, Finite (G i)]
-    (a : ∀ i, MonoidAlgebra ℂ (G i)) (h : ∀ i, G i) : (tensAlg a).coeff h = ∏ i, (a i).coeff (h i) := rfl
 
 namespace Inhab
 
@@ -200,11 +192,9 @@ def residueEquiv : (𝓞 I.E ⧸ w.asIdeal) ≃+* ZMod p :=
   (Ideal.quotEquivOfEq (Ideal.ext fun a => (fr.r_psi a).symm)).trans
     (RingHom.quotientKerEquivOfSurjective (f := fr.r.comp (psi I.F I.E)) (ZMod.ringHom_surjective _))
 
-
 include fr in
 theorem absNorm_eq : Ideal.absNorm w.asIdeal = p := by
   rw [Ideal.absNorm_apply, Submodule.cardQuot_apply, Nat.card_congr fr.residueEquiv.toEquiv, Nat.card_zmod]
-
 
 include fr in
 theorem prime : p.Prime := by
@@ -220,8 +210,6 @@ theorem ker_r : RingHom.ker fr.r = extId I w.asIdeal := ker_eq_extId fr.prime.ne
 theorem c_eq_zero_iff (y : I.Lf) :
     fr.c y = 0 ↔ y ∈ extId I w.asIdeal • (⊤ : Submodule (IntAf I.F I.E) I.Lf) :=
   (fr.c_ker y).trans (Submodule.mem_smul_top_iff _ _ y).symm
-
-
 
 def ActsAs (x : I.Gf) (M : Matrix (Fin N) (Fin N) (ZMod p)) : Prop :=
   ∀ (y : I.Lf) (h : I.fmat x *ᵥ (y : Fin I.n → _) ∈ I.Lf), fr.c ⟨_, h⟩ = M *ᵥ fr.c y
@@ -362,29 +350,6 @@ theorem exists_choice (I : AutInst) (g : Fin 2 → ℕ) (hg : ∀ k, (g k).Prime
     rcases lt_or_gt_of_ne (hcne k u hu) with h | h
     · exact ⟨⟨cj u, hcm k u hu, by rw [hcc]; exact h⟩, Or.inr ((hconj _ _).2 (hcc u).symm)⟩
     · exact ⟨⟨u, hu, h⟩, Or.inl rfl⟩
-
-def negOne (I : AutInst) : I.Gf := ⟨-1, by
-  show cT (sigR I.cm.sig (Af I.F)) (Units.val (-1 : GL (Fin I.n) (I.E ⊗[I.F] Af I.F))) * _ *
-    Units.val (-1 : GL (Fin I.n) (I.E ⊗[I.F] Af I.F)) = _
-  have : cT (sigR I.cm.sig (Af I.F)) (-1 : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Af I.F)) = -1 := by
-    rw [cT, Matrix.map_neg _ (map_neg _), Matrix.transpose_neg]
-    exact congrArg Neg.neg (cT_one _)
-  rw [Units.val_neg, Units.val_one, this]
-  simp⟩
-
-theorem fmat_negOne (I : AutInst) : I.fmat (negOne I) = -1 := rfl
-
-theorem negOne_mem (I : AutInst) : negOne I ∈ I.Kset := fun y => by
-  show _ ↔ I.fmat (negOne I) *ᵥ y ∈ I.Lf
-  rw [fmat_negOne, Matrix.neg_mulVec, Matrix.one_mulVec, neg_mem_iff]
-
-theorem actsAs_negOne {I : AutInst} {N p : ℕ} {w : HeightOneSpectrum (𝓞 I.E)} (fr : PlFrame I N p w) :
-    fr.ActsAs (negOne I) (-1) := by
-  intro y hy
-  rw [Matrix.neg_mulVec, Matrix.one_mulVec, ← map_neg]
-  exact congrArg fr.c (Subtype.ext (by
-    show I.fmat (negOne I) *ᵥ (y : Fin I.n → _) = -(y : Fin I.n → _)
-    rw [fmat_negOne, Matrix.neg_mulVec, Matrix.one_mulVec]))
 
 end Inhab
 

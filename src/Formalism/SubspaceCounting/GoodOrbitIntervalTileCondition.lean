@@ -31,9 +31,6 @@ def GoodOrbitIntervalTileCondition (n : ℕ) (T : Finset ℕ) (L₂ K r u M₀ G
 def binUpper (G : ℕ) (δ : ℝ) (N : ℕ) : ℝ :=
   ∑ j ∈ Finset.Icc N G, (G.choose j : ℝ) * δ ^ j * (1 - δ) ^ (G - j)
 
-def markedBound (δ : ℝ) (r u : ℕ) : ℝ :=
-  ((1 - δ) ^ u) ^ (3 * r + 1) * (((u / 2 : ℕ) : ℝ) * δ * (1 - δ) ^ (u - 1)) ^ (3 * r)
-
 def MarkedRun : Prop :=
   ∀ (T : Finset ℕ) (r u s : ℕ), 1 ≤ u → Marked T r u s →
     ∃ f : Fin (3 * r) → ℕ, StrictMono f ∧

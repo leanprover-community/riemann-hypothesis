@@ -37,7 +37,6 @@ theorem t2AE (D : D7) : T2Space (AE D) := by
 
 theorem tagMx (D : D7) (ρ : ℕ) : IsTopologicalAddGroup (Mx D ρ ρ) := (lattice_Mx D ρ ρ).1
 theorem lcMx (D : D7) (ρ : ℕ) : LocallyCompactSpace (Mx D ρ ρ) := (lattice_Mx D ρ ρ).2.1
-theorem scMx (D : D7) (ρ : ℕ) : SecondCountableTopology (Mx D ρ ρ) := (lattice_Mx D ρ ρ).2.2.1
 theorem t2Mx (D : D7) (ρ : ℕ) : T2Space (Mx D ρ ρ) := (lattice_Mx D ρ ρ).2.2.2.1
 theorem borelMx (D : D7) (ρ : ℕ) : BorelSpace (Mx D ρ ρ) := ⟨rfl⟩
 theorem borelUX (D : D7) (ρ : ℕ) : BorelSpace (UX D ρ) := ⟨rfl⟩

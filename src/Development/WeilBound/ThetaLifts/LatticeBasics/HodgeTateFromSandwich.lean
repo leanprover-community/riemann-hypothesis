@@ -20,20 +20,12 @@ variable {Y : Spc F E n} {A : Spc F E m}
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-def SplitModel : Prop :=
-  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) (χX χW : Chr F E) (om : Rep σ X W) (r s r' s' : ℕ),
-    IsPair B M χX χW om r s r' s' → ∀ (v : Pl F) (t : E →ₐ[F] Fv F v), (∃ ι, M.IsLinW B.ψ t 1 1 ι) ∧ ∀ ι, M.IsLinW B.ψ t 1 1 ι →
-      ∀ g ∈ UAt σ X (evFin F v), ∀ h ∈ UAt σ W (evFin F v), ∀ (g₀ : GL (Fin n) (Fv F v)) (h₀ : GL (Fin d) (Fv F v)),
-        g₀.1 = (mat g).map (piW t) → h₀.1 = (mat h).map (piW t) → ∀ φ ∈ SB _, ∀ φ₁ ∈ SB _, Acts (evFin F v) (om (g, h)) φ φ₁ →
-          ι φ₁ = GlobalTheory.SplitFlip.omA (chrW χW t)⁻¹ (chrW χX t) g₀ h₀ (ι φ)
-
 def coef {n d : ℕ} {X : Spc F E n} {W : Spc F E d} (om : Rep σ X W) (ν : @Measure (Fin n × Fin d → AF F) (borel _)) (Φ : Fn F n d)
     (g : UA σ X.J) : ℂ := ∫ u, om (g, 1) Φ u * star (Φ u) ∂ν
 
 def zint {n d : ℕ} {X : Spc F E n} {W : Spc F E d} (om : Rep σ X W) (ν : @Measure (Fin n × Fin d → AF F) (borel _))
     (a : G2 σ X → ℝ) (e : UA σ X.J × UA σ X.J →* G2 σ X) (Φ : Fn F n d) (s : ℂ) (g : UA σ X.J) : ℂ :=
   (a (e (g, 1)) : ℂ) ^ (s - ((d : ℂ) - n) / 2) * coef om ν Φ g
-
 
 variable (σ Y) in
 def locGrp (v : Pl F) : Subgroup (UA σ Y.J) := Subgroup.closure (UAt σ Y (evFin F v))
@@ -46,7 +38,6 @@ def OffAt (v : Pl F) (g : UA σ Y.J) : Prop := (mat g).map (compFin F E v) = 1
 def IsSphAt (K : Subgroup (G2 σ Y)) (χ : Chr F E) (v : Pl F) (z : ℂ) (f : G2 σ Y → ℂ) : Prop :=
   ∀ p t, IsPar p t → At (evFin F v) (mat2 p - 1) → ∀ k ∈ K, At (evFin F v) (mat2 k - 1) →
     f (p * k) = (χ (Matrix.GeneralLinearGroup.det t) : ℂ) * ((absE F E (Matrix.GeneralLinearGroup.det t) : ℝ) : ℂ) ^ z
-
 
 open Classical in
 variable (E) in

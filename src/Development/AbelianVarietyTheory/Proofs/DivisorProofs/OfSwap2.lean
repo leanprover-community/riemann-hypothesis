@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsFlagBundleRankOne
+public import Development.AbelianVarietyTheory.Definitions.Divisors.SemiposAtOfPositive
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsFlagModelHermSum
 
 @[expose] public section

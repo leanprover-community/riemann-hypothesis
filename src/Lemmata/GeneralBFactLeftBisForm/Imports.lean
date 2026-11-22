@@ -5,7 +5,9 @@ public import Formalism.MahlerMeasure.CoarseLevelSlackInequalities
 public import Formalism.SharpRestriction.GrowthBounds.ObjSeg
 public import Formalism.SharpRestriction.GrowthBounds.ObjBridge
 public import Formalism.MahlerMeasure.WithMargin
-public import Formalism.MahlerMeasure.FinalT
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.BadCrit
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.GamDeg
+public import Formalism.MahlerMeasure.MahlerMeasureProofs.GamLead
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.SmithZp
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.TheoremM
 public import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
@@ -28,7 +30,6 @@ public import Formalism.ThetaLogCoordinates.FockResolutionOnto.FockMonomialProof
 public import Formalism.PolynomialDimension.ChainOrderLetters
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.SumFinsuppAntidiagEqSumPiFinset
 public import Formalism.FrobeniusOrbits.DiscrMaximalRealCyclotomic
-public import Formalism.FrobeniusOrbits.HostOrbitsPlaces
 public import Formalism.FrobeniusOrbits.HostDiffSupport
 public import Formalism.FrobeniusOrbits.HostThickExists
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
@@ -61,12 +62,6 @@ public import Formalism.FrobeniusOrbits.Statement
 public import Formalism.FormalDegreeBessel.StatementDS
 public import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.MeanGam
-public import Formalism.TameInertiaTowers.CentralOrderTwo.OrderOfThreeUnitsTwoPow
-public import Formalism.TameInertiaTowers.CentralOrderTwo.TwoAdic
-public import Formalism.TameInertiaTowers.CentralOrderTwo.MemDecompositionSubgroupIff
-public import Formalism.TameInertiaTowers.CentralOrderTwo.NegOneNeOneUnitsZmodFour
-public import Formalism.TameInertiaTowers.CentralOrderTwo.Groups
-public import Formalism.TameInertiaTowers.CentralOrderTwo.NormalOrderTwoCentral
 public import Formalism.TameInertiaTowers.CentralOrderTwo.Galois
 public import Formalism.TameInertiaTowers.CentralOrderTwo.ConjEqInvOfPowEqOne
 public import Formalism.FormalDegreeBessel.StatementBF

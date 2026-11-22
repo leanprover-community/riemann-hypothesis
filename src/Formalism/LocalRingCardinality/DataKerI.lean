@@ -70,7 +70,6 @@ def LevFree {D : D7} (Dx : DivX D) (u : D.what₂.Word) (μ : D.what₂.Tup) (w 
   D.what₂.places.resChar w ≠ (D.mem u).A.T ∧ D.what₂.places.resChar w ∉ ({D.host.g 0, D.host.g 1} : Finset ℕ) ∧
     D.what₂.places.resChar w ∉ Dx.Qp μ
 
-
 open Classical in
 def lamV {p : ℕ} [Fact p.Prime] (lam : (algebraicClosure ℚ ℂ) →+* ℂ_[p]) (x : ℂ) : ℂ_[p] :=
   if h : x ∈ algebraicClosure ℚ ℂ then lam ⟨x, h⟩ else 0
@@ -133,11 +132,6 @@ variable {D : D7} {Dx : DivX D} {Tw : TwForms D} (E : KerEnt D Dx Tw)
 def UnUnit : Prop :=
   ∀ u μ w, LevFree Dx u μ w → ∀ i, i < D.R.m → ∀ c c', ‖E.un u μ w i c c'‖ = 1
 
-def valS (u : D.what₂.Word) (μ : D.what₂.Tup) (w : D.what₂.places.Pl) (i : ℕ) (c : (D.chTw u μ).cls i) :
-    Set ((D.chTw u μ).Y i → ℂ) :=
-  E.ev u μ i c '' {v | ∀ J : KM.ColChoice (D.R.N i) (nuD D u i),
-    ‖E.prS u μ w i c v (MvPolynomial.map (Int.castRingHom _) (KM.nablaX (D.R.N i) (nuD D u i) J))‖ ≤ 1}
-
 end KerEnt
 
 def linAt {σ κ : Type*} [Fintype κ] {p : ℕ} [Fact p.Prime] (c : σ → κ → ℂ_[p]) (F : MvPowerSeries σ ℂ_[p]) :
@@ -158,7 +152,6 @@ def rhoMat {D : D7} {Gt : GatTies D} {c : LatCmp D} {Tw : TwForms D} {u : D.what
   (g ((posJ Gt u w h Fl j).symm τ).1).map fun y =>
     Kp.iK ((Fl.Pj j).ι ((posJ Gt u w h Fl j).symm τ).1
       ((((Fl.Pj j).σ ((posJ Gt u w h Fl j).symm τ).1) ^ ((posJ Gt u w h Fl j).symm τ).2.val) y))
-
 
 open Classical in
 def ThAtServed {D : D7} {Dx : DivX D} {Gt : GatTies D} {c : LatCmp D} {Tw : TwForms D} {u : D.what₂.Word}

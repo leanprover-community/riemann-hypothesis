@@ -56,9 +56,6 @@ section Cong
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-local notation "𝒜" => E ⊗[F] FiniteAdeleRing (𝓞 F) F
-local notation "ιA" => inclE (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F)
-
 theorem smul_mem_hatL (Λ : Submodule (𝓞 E) (Fin n → E)) {𝔪 : Ideal (𝓞 E)} {a : 𝓞 E} (ha : a ∈ 𝔪) {z : Fin n → 𝒜}
     (hz : z ∈ Formalism.L2.Herm.hatL (F := F) Λ) : ιA (algebraMap (𝓞 E) E a) • z ∈ Formalism.L2.Herm.hatL (F := F) (𝔪 • Λ) := by
   unfold Formalism.L2.Herm.hatL Formalism.UG.latS at hz ⊢

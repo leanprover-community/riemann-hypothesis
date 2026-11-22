@@ -15,8 +15,6 @@ attribute [local instance 2000] Rep.hV2
 
 noncomputable section
 
-local notation "ℚ̄" => AlgebraicClosure ℚ
-
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1))) [Fintype S]
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)) (n : ℕ)
   [NeZero n] (hnS : ∀ v ∉ S, ((n : ℕ) : 𝓞 K.1) ∉ v.asIdeal)
@@ -35,7 +33,6 @@ def gsLocalUnitsImage (ξ : ∀ v : S, cohomology (Rep.res (gsFinFamily S ιs v)
     cohomology (galUnits.{0, 0} ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1) (AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1))) 2 :=
   (cohomologyMap (gsRootsOmegaMor S ιs n v ≫ rootsOfUnityToUnits _ _ n) 2).hom (ξ v)
 
-
 set_option maxHeartbeats 1600000 in
 theorem zmodToQZ_gsCompactInv_localToCompact_eq_localInvU (hodd : Odd n ∨ IsTotallyComplex K.1)
     (h3 : Subsingleton (cohomology (gsRoots S n) 3))
@@ -46,7 +43,6 @@ theorem zmodToQZ_gsCompactInv_localToCompact_eq_localInvU (hodd : Odd n ∨ IsTo
   (congrArg (zmodToQZ n) ((gsCompactInv_localToCompact S ιs n hodd h3 ξ).trans (gsSumInvRoots_apply S ιs n ξ))).trans
     ((map_sum (zmodToQZ n) _ _).trans
       (Finset.sum_congr rfl fun v _ => zmodToQZ_gsLocalInvRoots_eq_localInvU S ιs n v (ξ v)))
-
 
 omit [Fintype S] in
 set_option maxHeartbeats 1600000 in
@@ -99,7 +95,6 @@ theorem nsmul_sum_map_sub {ι : Type*} (s : Finset ι) {M : ι → Type*} [∀ v
     (hb : ∀ v, n • F v (b v) = 0) : n • ∑ v ∈ s, F v (a v - b v) = 0 := by
   rw [Finset.smul_sum]
   exact Finset.sum_eq_zero fun v _ => by rw [map_sub, smul_sub, ha, hb, sub_zero]
-
 
 set_option maxHeartbeats 4000000 in
 theorem zmodToQZ_gsCompactInv_gsCupClass (ℓ k : ℕ) (hℓ : ℓ.Prime) (hnk : n = ℓ ^ k)

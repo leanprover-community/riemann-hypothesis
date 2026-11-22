@@ -19,9 +19,6 @@ private def colRep (ρ : Γ →* GL (Fin n) k) : Representation k Γ (Fin n → 
   map_one' := by ext; simp
   map_mul' g h := by ext; simp [Matrix.mulVecLin_mul]
 
-private theorem colRep_apply (ρ : Γ →* GL (Fin n) k) (g : Γ) (v : Fin n → k) :
-    colRep ρ g v = (ρ g).val.mulVec v := rfl
-
 private theorem isSSRep_iff (ρ : Γ →* GL (Fin n) k) : IsSSRep ρ ↔ (colRep ρ).IsSemisimpleRepresentation := by
   constructor
   · intro h

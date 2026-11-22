@@ -31,9 +31,6 @@ noncomputable def imForm {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) :
     (fun a b w => by simp [hermForm, Matrix.mulVec_add, dotProduct_add])
     (fun c a w => by simp [hermForm, Matrix.mulVec_smul, dotProduct_smul])
 
-theorem imForm_apply {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (z w : Fin g → ℂ) :
-    imForm Hm z w = (hermForm Hm z w).im := rfl
-
 theorem re_eq_imForm {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (z w : Fin g → ℂ) :
     (hermForm Hm z w).re = imForm Hm (Complex.I • z) w := by
   simp [imForm_apply, hermForm, smul_dotProduct]

@@ -239,62 +239,10 @@ theorem isInv_iff (X : Data E r) (u : Frame X.Ψ r → ℝ) : IsInv X u ↔ IsIn
     · simpa only [LeviTransfer.left_act_one] using h 1 X.Γ.one_mem x hx b hb
     · simpa only [ExtFPf.rmul_oneF] using h γ hγ x hx _ (ExtFPf.oneF_mem X)
 
-theorem mem_SS_iff (X : Data E r) (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) :
-    P ∈ X.SS la ↔ P ∈ X.SSgt la 0 := ⟨ss_sub_ssgt0 X la, fun h => h.1⟩
-
 theorem pnorm_nonneg (X : Data E r) (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) (x : Frame X.Ψ r) :
     0 ≤ X.pnorm la P x := by
   unfold Data.pnorm
   positivity
-
-theorem lower_iff (X : Data E r) (la : Wt X.Ψ r) {N : ℕ} (w : Fin N → Frame X.Ψ r → ℂ) (c : ℝ)
-    (ph : Frame X.Ψ r → ℝ) :
-    (∃ C : ℝ, ∀ x ∈ X.dom, Real.exp (-(C + c * ph x)) ≤ famNorm X la w x) ↔
-      ∃ K : ℝ, ∀ x ∈ X.dom, Real.exp (-(2 * c * ph x)) ≤ K * ∑ k, X.pnorm la (w k) x ^ 2 := by
-  have hs : ∀ x, 0 ≤ ∑ k, X.pnorm la (w k) x ^ 2 := fun x => by positivity
-  have he : ∀ C x, Real.exp (-(2 * c * ph x)) = Real.exp (2 * C) * Real.exp (-(C + c * ph x)) ^ 2 :=
-    fun C x => by rw [sq, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
-  constructor
-  · rintro ⟨C, h⟩
-    refine ⟨Real.exp (2 * C), fun x hx => ?_⟩
-    rw [he C]
-    exact mul_le_mul_of_nonneg_left ((Real.le_sqrt (Real.exp_pos _).le (hs x)).1 (h x hx))
-      (Real.exp_pos _).le
-  · rintro ⟨K, h⟩
-    refine ⟨K / 2, fun x hx => (Real.le_sqrt (Real.exp_pos _).le (hs x)).2 ?_⟩
-    have h1 := h x hx
-    rw [he (K / 2)] at h1
-    have h2 : K ≤ Real.exp (2 * (K / 2)) := by have := Real.add_one_le_exp (2 * (K / 2)); linarith
-    exact le_of_mul_le_mul_left (h1.trans (mul_le_mul_of_nonneg_right h2 (hs x))) (Real.exp_pos _)
-
-theorem upper_iff (X : Data E r) (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) {i : ℕ} (hi : 0 < i)
-    (ph : Frame X.Ψ r → ℝ) :
-    (∃ C : ℝ, ∀ x ∈ X.dom, X.pnorm la P x ≤ Real.exp (-(i * (ph x - C)))) ↔
-      ∃ K : ℝ, ∀ x ∈ X.dom, X.pnorm la P x ^ 2 ≤ K * Real.exp (-(2 * i * ph x)) := by
-  have he : ∀ C x, Real.exp (-(i * (ph x - C))) ^ 2 =
-      Real.exp (2 * i * C) * Real.exp (-(2 * i * ph x)) :=
-    fun C x => by rw [sq, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
-  have hi' : (0 : ℝ) < i := by exact_mod_cast hi
-  constructor
-  · rintro ⟨C, h⟩
-    refine ⟨Real.exp (2 * i * C), fun x hx => ?_⟩
-    rw [← he C]
-    exact pow_le_pow_left₀ (pnorm_nonneg X la P x) (h x hx) 2
-  · rintro ⟨K, h⟩
-    refine ⟨K / (2 * i), fun x hx => ?_⟩
-    refine (pow_le_pow_iff_left₀ (pnorm_nonneg X la P x) (Real.exp_pos _).le two_ne_zero).1 ?_
-    rw [he, mul_div_cancel₀ _ (by positivity)]
-    have h2 : K ≤ Real.exp K := by have := Real.add_one_le_exp K; linarith
-    exact (h x hx).trans (mul_le_mul_of_nonneg_right h2 (Real.exp_pos _).le)
-
-theorem bdd_of_upper (X : Data E r) (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) (i : ℕ)
-    {ph : Frame X.Ψ r → ℝ} (h0 : ∀ x ∈ X.dom, 0 ≤ ph x)
-    (h : ∃ C : ℝ, ∀ x ∈ X.dom, X.pnorm la P x ≤ Real.exp (-(i * (ph x - C)))) :
-    ∃ C : ℝ, ∀ x ∈ X.dom, X.pnorm la P x ≤ C := by
-  obtain ⟨C, h⟩ := h
-  refine ⟨Real.exp (i * C), fun x hx => (h x hx).trans (Real.exp_le_exp.2 ?_)⟩
-  have : 0 ≤ (i : ℝ) * ph x := mul_nonneg (Nat.cast_nonneg _) (h0 x hx)
-  linarith
 
 theorem card_pos {X : Data E r} (h : 2 ≤ nd X) : 0 < X.Ψ.card := by
   have : 0 < nd X := by omega

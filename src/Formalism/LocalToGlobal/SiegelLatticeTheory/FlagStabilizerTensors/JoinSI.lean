@@ -96,7 +96,6 @@ end Twist
 
 section SpOf
 
-
 open Formalism.IndefR.Cx in
 theorem inner_spOf {D : D7} {X : HidaSetting D} (s : Bool) {Bs : DefBase D.what₂.LL} {Df : DefSide Bs} (Dc : DefCols Df)
     (hK : X.LevelSubgroupCharacter) (Gd : GoodOp X) (wdD : Dc.Mem → D.what₂.Word) (pw : ∀ x, PerW X hK (wdD x))
@@ -108,7 +107,6 @@ theorem inner_spOf {D : D7} {X : HidaSetting D} (s : Bool) {Bs : DefBase D.what�
     funext i; exact Formalism.IndefR.Links.cj_cj s (c i)
   have h : (pw x).op (ramCrd (bR x) (cjVec s (Dc.a x) (cjv s c))) = (pw x).op (ramCrd (bR x) c) := by rw [hc]
   exact congrArg (fun w => Formalism.IndefR.Links.cj s ⟪Formalism.IndefR.Links.Tw.out v, w⟫_ℂ) h
-
 
 end SpOf
 
@@ -173,9 +171,6 @@ section Ties
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {Kc : MainNotions.G.Consts}
   {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX} {R : Formalism.L2.RecT ex}
 
-def jOf (S : Formalism.L2.SG.SpectralTiesReal.STiesR R) (hF : FinX S.Y) : D.what₂.EE ≃ₗᵢ[ℂ] EEC S.X S.G :=
-  Classical.choose (S.rowTie hF)
-
 end Ties
 
 section Real
@@ -183,40 +178,8 @@ section Real
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {Kc : MainNotions.G.Consts}
   {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX}
 
-abbrev cx {R : Formalism.L2.RecT ex} {P : Formalism.L2.Rows.RowSideFamily ex}
-    {Dcf : ∀ Zs : DefSub P.A3.fam3.amb3, DefCols (P.A3.side3 P.Ps P.ψs Zs)} {Spf : ∀ Zs, SPer (Dcf Zs)}
-    {Zscf : DefSub P.A3.fam3.amb3 → IndefScale P.A3.fam3.base3} {S : Formalism.L2.SG.SpectralTiesReal.STiesR R}
-    {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (Q : Formalism.IndefR.RealT R P Dcf Spf Zscf S Ks) :=
-  Q.Rl.toCx3 Q.F
-
 abbrev twQ (P : Formalism.L2.Rows.RowSideFamily ex) : Bool :=
   Formalism.IndefR.Links.twAt D.what₂.embLL P.A3.A.v0
-
-structure JoinSI (R : Formalism.L2.RecT ex) (S : Formalism.L2.SG.SpectralTiesReal.STiesR R) {P : Formalism.L2.Rows.RowSideFamily ex}
-    {Dcf : ∀ Zs : DefSub P.A3.fam3.amb3, DefCols (P.A3.side3 P.Ps P.ψs Zs)} {Spf : ∀ Zs, SPer (Dcf Zs)}
-    {Zscf : DefSub P.A3.fam3.amb3 → IndefScale P.A3.fam3.base3} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
-    (Q : Formalism.IndefR.RealT R P Dcf Spf Zscf S Ks) where
-
-  m : D.what₂.Word → (Q.F.fc (cx Q).zs).Dc.Mem
-
-  mPin : HEq m P.I.wU
-
-  cφ : ∀ u, D.what₂.Mu u ≃ₗ[ℂ] (Fin ((Q.F.fc (cx Q).zs).Dc.a (m u)) → ℂ)
-
-  cF : (Fin ((Q.F.fc (cx Q).zs).Df1.nV P.A3.fam3.base3.μ0) → ℂ) →ₗ[ℂ] D.what₂.Amb D.what₂.mu0
-
-  eR : D.what₂.EE →ₛₗ[Formalism.IndefR.Links.cj (twQ P)] (cx Q).EE
-
-  chainTie : ChainTieT (P := cx Q) (fc := Q.F.fc) (σ := D.what₂.embLL) (m := m) (cφ := cφ) (cF := cF)
-
-  v0Surjective : GoodPartHasComplexCoordinates (P := cx Q) (fc := Q.F.fc) (cF := cF)
-
-  rowTie : RowTieT (P := cx Q) (fc := Q.F.fc) (eV := Q.F.eV (cx Q).zs) (s := twQ P) (σ := D.what₂.embLL) (cF := cF) (eR := eR)
-
-  colNorm : ColNormT (P := cx Q) (fc := Q.F.fc) (s := twQ P) (m := m) (cφ := cφ)
-
-  pairTie : ∀ hF : FinX S.Y, PairTieT (X := S.X) (G := S.G) (j := jOf S hF) (Tr := S.tr) (hK := S.Y.hK) (Dt := S.Y.Dt)
-    (P := cx Q) (fc := Q.F.fc) (sEE := Q.sEE) (s := twQ P) (m := m) (cφ := cφ) (eR := eR)
 
 variable {R : Formalism.L2.RecT ex} {S : Formalism.L2.SG.SpectralTiesReal.STiesR R} {P : Formalism.L2.Rows.RowSideFamily ex}
   {Dcf : ∀ Zs : DefSub P.A3.fam3.amb3, DefCols (P.A3.side3 P.Ps P.ψs Zs)} {Spf : ∀ Zs, SPer (Dcf Zs)}

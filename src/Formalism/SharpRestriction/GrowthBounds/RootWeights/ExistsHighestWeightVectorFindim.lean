@@ -98,10 +98,6 @@ theorem complete_reducibility_findim (D : Formalism.BasicNotions.D7) (h2 : adm2 
   have := hc.sup_eq_top
   rwa [hbot, sup_bot_eq] at this
 
-private theorem restrictStableOperators_apply_coe {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V] (E : GLOps n K V)
-    (W : Submodule K V) (h : ∀ a b, ∀ x ∈ W, E a b x ∈ W) (a b : Fin n) (x : W) :
-    ((restrictStableOperators E W h a b x : W) : V) = E a b x := rfl
-
 private theorem mem_weightSp_restrict_iff {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V] (E : GLOps n K V)
     (W : Submodule K V) (h : ∀ a b, ∀ x ∈ W, E a b x ∈ W) (mu : Fin n → ℤ) (x : W) :
     x ∈ weightSp (restrictStableOperators E W h) mu ↔ (x : V) ∈ weightSp E mu := by

@@ -11,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.IsAbeli
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.RosatiAdjOfPoints
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ValuationCoeEqNorm
 public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.ExistsUniqueEqConstMulEllTheta
-public import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.HtCharOfIsUnit
 
 @[expose] public section
 
@@ -74,11 +73,7 @@ end Free
 
 abbrev OmC : Type := C ⊗[O] omega P.Gt
 
-def actOm : Λ →+* Module.End C P.OmC := baseChangeAction C (omegaAct P.oGt)
-
 def inclOm : omega P.Gt →ₗ[O] P.OmC := TensorProduct.mk O C _ 1
-
-def latOm : Submodule O P.OmC := LinearMap.range P.inclOm
 
 variable [Algebra ℤ_[p] C]
 
@@ -158,8 +153,6 @@ variable {J : Type} [DecidableEq J] {σ : J → Λ →+* O} (h : IsSplitting (em
 
 abbrev eigV (τ : Λ →+* O) : Submodule C P.V := eigenSub P.actV ((algebraMap O C).comp τ)
 
-abbrev eigOm (τ : Λ →+* O) : Submodule C P.OmC := eigenSub P.actOm ((algebraMap O C).comp τ)
-
 def latTQuot (i : J) : Submodule O P.V := eigQuotLat P.actV h i P.latT
 
 def latTSub (τ : Λ →+* O) : Submodule O P.V := eigSubLat P.actV ((algebraMap O C).comp τ) P.latT
@@ -210,7 +203,6 @@ theorem alC_inclT (x : O ⊗[ℤ_[p]] P.T) : P.alC (P.inclT x) = P.inclOm (P.al 
   | tmul c t =>
     rw [inclT_tmul, alC_tmul, al_tmul, inclOm, TensorProduct.mk_apply, TensorProduct.tmul_smul,
       TensorProduct.smul_tmul', Algebra.algebraMap_eq_smul_one]
-
 
 def evalAl (x : LieG P.Gt) : P.T →ₗ[ℤ_[p]] C :=
   (Algebra.linearMap O C ∘ₗ LinearMap.proj x ∘ₗ (omega P.Gt).subtype).restrictScalars ℤ_[p] ∘ₗ P.al₀
@@ -278,7 +270,6 @@ theorem wRec_le_latTSub (τ : Λ →+* O) : P.wRec τ ≤ P.latTSub τ :=
   (P.wRec_le τ).trans (eigSubLat_mono _ _ P.latLie_le_latT)
 
 variable {P} {N j : ℕ}
-
 
 end Point
 

@@ -423,45 +423,21 @@ theorem mapLeft_add (φ ψ : M →ₗ[O] M') :
 
 @[simp] theorem mapLeft_zero : h.mapLeft h' 0 = 1 := h.map_zero_left h' _
 
-def mapLeftIso (e : M ≃ₗ[O] M') : H ≅ H' where
-  hom := h.mapLeft h' e
-  inv := h'.mapLeft h e.symm
-  hom_inv_id := h.hom_ext fun m ↦ by simp
-  inv_hom_id := h'.hom_ext fun m ↦ by simp
-
 end MapLeft
 
 section MapRight
 
 variable (h : IsTensor H b G a M) (h' : IsTensor H' b' G' a' M) (h'' : IsTensor H'' b'' G'' a'' M)
 
-def mapRight {f : G ⟶ G'} (hf : IsLinearHom a a' f) : H ⟶ H' := h.map h' LinearMap.id hf
-
-theorem isLinearHom_mapRight {f : G ⟶ G'} (hf : IsLinearHom a a' f) :
-    IsLinearHom b b' (h.mapRight h' hf) :=
-  h.isLinearHom_map h' _ hf
-
 instance isMonHom_mapRight {f : G ⟶ G'} (hf : IsLinearHom a a' f) :
     IsMonHom (h.mapRight h' hf) :=
   (h.isLinearHom_mapRight h' hf).isMonHom
-
-theorem tmul_mapRight {f : G ⟶ G'} (hf : IsLinearHom a a' f) (m : M) :
-    h.tmul m ≫ h.mapRight h' hf = f ≫ h'.tmul m := by
-  simp [mapRight, tmul_map]
 
 end MapRight
 
 section Unique
 
 variable (h : IsTensor H b G a M) (h' : IsTensor H' b' G a M)
-
-def uniqueIso : H ≅ H' := h.mapLeftIso h' (LinearEquiv.refl O M)
-
-theorem isLinearHom_uniqueIso : IsLinearHom b b' (h.uniqueIso h').hom :=
-  h.isLinearHom_mapLeft h' _
-
-theorem tmul_uniqueIso_hom (m : M) : h.tmul m ≫ (h.uniqueIso h').hom = h'.tmul m :=
-  h.tmul_mapLeft h' _ m
 
 end Unique
 
@@ -521,51 +497,11 @@ theorem tmul_algAct (c : O') (m : M) : h.tmul m ≫ (h.algAct O').act c = h.tmul
   have := (h.algAct O').hom (algebraMap O O' c)
   exact h.hom_ext fun m ↦ by rw [tmul_algAct, algebraMap_smul, tmul_smul]
 
-
 variable (O') in
 theorem comapAct_algAct : comapAct (h.algAct O') (algebraMap O O') = b := by
   obtain ⟨act, _, _, _, _⟩ := b
   simp only [comapAct, OAct.mk.injEq]
   exact funext fun c ↦ h.algAct_algebraMap c
-
-
-variable (O') in
-def algEquiv (T : Over S) : M ⊗[O] Pts a T ≃ₗ[O'] Pts (h.algAct O') T where
-  toFun z := Pts.mk _ (h.equiv T z).hom
-  invFun y := (h.equiv T).symm (Pts.mk b y.hom)
-  map_add' z w := by ext; simp
-  map_smul' c z := by
-    have := (h.algAct O').hom c
-    apply Pts.ext
-    induction z with
-    | tmul m x => simp [smul_tmul', Category.assoc, tmul_algAct]
-    | add z w hz hw =>
-      simp only [Pts.hom_mk, RingHom.id_apply, Pts.hom_smul] at hz hw ⊢
-      simp only [smul_add, map_add (f := _), Pts.hom_add, hz, hw, MonObj.mul_comp]
-  left_inv z := by simp
-  right_inv y := by simp
-
-def trans {K : Over S} [GrpObj K] [IsCommMonObj K] {c : OAct O' K} {N : Type} [AddCommGroup N]
-    [Module O' N] [Module O N] [IsScalarTower O O' N]
-    (k : IsTensor K c H (h.algAct O') N) :
-    IsTensor K (comapAct c (algebraMap O O')) G a (N ⊗[O'] M) where
-  equiv T :=
-    { (AlgebraTensorModule.assoc O O' O' N M (Pts a T) ≪≫ₗ (h.algEquiv O' T).lTensor N ≪≫ₗ
-        k.equiv T).toAddEquiv with
-      map_smul' := fun r z ↦ by
-        rw [← algebraMap_smul O' r z]
-        exact map_smul (AlgebraTensorModule.assoc O O' O' N M (Pts a T) ≪≫ₗ
-          (h.algEquiv O' T).lTensor N ≪≫ₗ k.equiv T) _ _ }
-  natural {T T'} u z := by
-    change k.equiv T' ((h.algEquiv O' T').lTensor N (AlgebraTensorModule.assoc O O' O' N M _ _)) =
-      Pts.pre c u (k.equiv T ((h.algEquiv O' T).lTensor N
-        (AlgebraTensorModule.assoc O O' O' N M _ z)))
-    induction z with
-    | add z w hz hw => simp only [map_add (f := _), hz, hw]
-    | tmul w x =>
-      induction w with
-      | add v w hv hw => simp only [add_tmul, map_add (f := _), hv, hw]
-      | tmul n m => apply Pts.ext; simp [algEquiv]
 
 end Algebra
 
@@ -672,16 +608,6 @@ theorem isLinearPullback_pullback [IsCommMonObj G] (a : OAct O G) (f : S' ⟶ S)
     IsLinearPullback (a.pullback f G) a f (pullback.fst G.hom f) :=
   ⟨isGrpPullback_pullback G f, fun _ ↦ pullback.lift_fst _ _ _⟩
 
-theorem IsLinearPullback.of_iso {a₁ : OAct O G₁} {b₁ : OAct O H₁} {a : OAct O G} {f : S' ⟶ S}
-    {φ : G₁.left ⟶ G.left} (hφ : IsLinearPullback a₁ a f φ) (e : H₁ ≅ G₁)
-    (he : IsLinearHom b₁ a₁ e.hom) : IsLinearPullback b₁ a f (e.hom.left ≫ φ) := by
-  constructor
-  · have := he.1
-    exact ((isGrpPullback_of_iso e).comp hφ.1).congr (Category.id_comp f) rfl
-  · intro c
-    rw [Category.assoc, ← hφ.comm, ← Category.assoc, ← Category.assoc, ← Over.comp_left,
-      ← Over.comp_left, he.comm]
-
 def overBase (f : S' ⟶ S) {T T' : Over S'} (u : T' ⟶ T) :
     Over.mk (T'.hom ≫ f) ⟶ Over.mk (T.hom ≫ f) :=
   Over.homMk u.left (by
@@ -759,16 +685,6 @@ theorem pullback_mapLeft {H' : Over S} [GrpObj H'] [IsCommMonObj H'] {b' : OAct 
     (h.pullback f).mapLeft (h'.pullback f) l = (Over.pullback f).map (h.mapLeft h' l) :=
   (h.pullback f).hom_ext fun m ↦ by
     rw [tmul_mapLeft, pullback_tmul, pullback_tmul, ← Functor.map_comp, tmul_mapLeft]
-
-theorem exists_isLinearPullback (h : IsTensor H b G a M) (h₁ : IsTensor H₁ b₁ G₁ a₁ M)
-    (hφ : IsLinearPullback a₁ a f φ) :
-    ∃ ψ : H₁.left ⟶ H.left, IsLinearPullback b₁ b f ψ ∧
-      ∀ m : M, (h₁.tmul m).left ≫ ψ = φ ≫ (h.tmul m).left := by
-  let h₂ := h.baseChange hφ (isLinearPullback_pullback b f)
-  refine ⟨_, (isLinearPullback_pullback b f).of_iso (h₁.uniqueIso h₂)
-    (h₁.isLinearHom_uniqueIso h₂), fun m ↦ ?_⟩
-  rw [← Category.assoc, ← Over.comp_left, tmul_uniqueIso_hom]
-  exact h.baseChange_tmul hφ _ m
 
 end IsTensor
 
@@ -925,12 +841,10 @@ structure Summand (O : Type) [CommRing O] (M : Type) [AddCommGroup M] [Module O 
 
 variable {O : Type} [CommRing O] {M : Type} [AddCommGroup M] [Module O M]
 
-
 variable (O M) in
 theorem Summand.nonempty [Module.Finite O M] [Module.Projective O M] : Nonempty (Summand O M) := by
   obtain ⟨n, f, g, -, -, h⟩ := Module.Finite.exists_comp_eq_id_of_projective O M
   exact ⟨⟨n, g, f, h⟩⟩
-
 
 variable (O M) in
 def Summand.choose [Module.Finite O M] [Module.Projective O M] : Summand O M :=
@@ -1030,10 +944,6 @@ def retract (P : Summand O M) : Retract H (powObj G P.n) where
   r := (pow (powIsPowGrp G P.n) a).mapLeft h P.proj
   retract := by rw [← mapLeft_comp, P.proj_incl, mapLeft_id]
 
-theorem tmul_mapLeft_self (t : M →ₗ[O] O) {m : M} (hm : t m = 1) :
-    h.tmul m ≫ h.mapLeft (self a) t = 𝟙 G := by
-  rw [tmul_mapLeft, self_tmul, hm, a.one]
-
 variable [Module.Finite O M] [Module.Projective O M]
 include h
 
@@ -1051,14 +961,6 @@ theorem smooth [hG : Smooth G.hom] : Smooth H.hom :=
   h.property @Smooth inferInstance
     (fun h₁ h₂ _ ↦ GlobalTheory.Retract.smooth h₁ h₂) hG
 
-theorem quasiCompact [hG : QuasiCompact G.hom] : QuasiCompact H.hom :=
-  h.property @QuasiCompact inferInstance
-    (fun h₁ h₂ _ ↦ GlobalTheory.Retract.quasiCompact h₁ h₂) hG
-
-theorem isSeparated [hG : IsSeparated G.hom] : IsSeparated H.hom :=
-  h.property @IsSeparated inferInstance
-    (fun h₁ h₂ _ ↦ GlobalTheory.Retract.isSeparated h₁ h₂) hG
-
 theorem isProper [hG : IsProper G.hom] : IsProper H.hom :=
   h.property @IsProper inferInstance
     (fun h₁ h₂ _ ↦ GlobalTheory.Retract.isProper h₁ h₂) hG
@@ -1074,14 +976,6 @@ theorem isAbelianScheme (hG : IsAbelianScheme G) : IsAbelianScheme H := by
   have := hG.proper
   have := hG.geomConnected
   exact ⟨inferInstance, h.smooth, h.isProper, h.geometricallyConnected⟩
-
-theorem of_isSemiAbelian (hG : IsSemiAbelian G) :
-    Smooth H.hom ∧ IsSeparated H.hom ∧ QuasiCompact H.hom ∧ GeometricallyConnected H.hom := by
-  have := hG.smooth
-  have := hG.separated
-  have := hG.quasiCompact
-  have := hG.geomConnected
-  exact ⟨h.smooth, h.isSeparated, h.quasiCompact, h.geometricallyConnected⟩
 
 end IsTensor
 
@@ -1101,28 +995,6 @@ variable (K : Type) {E : Type} [Field K] [Field E] [NumberField K] [NumberField 
 end Ideals
 
 section Examples
-
-abbrev gmRat : Over (Spec (CommRingCat.of ℚ)) := splitTorusAff (CommRingCat.of ℚ) ℤ
-
-theorem gmRat_id_ne_one : (𝟙 gmRat : gmRat ⟶ gmRat) ≠ 1 := by
-  intro e
-  let φ : AddMonoidAlgebra ℚ ℤ →ₐ[ℚ] AddMonoidAlgebra ℚ ℤ := AddMonoidAlgebra.lift ℚ _ ℤ 1
-  let x : gmRat ⟶ gmRat := Over.homMk (Spec.map (CommRingCat.ofHom φ.toRingHom)) (by
-    change Spec.map _ ≫ Spec.map _ = Spec.map _
-    rw [← Spec.map_comp]
-    congr 1
-    exact CommRingCat.hom_ext φ.comp_algebraMap)
-  have hx : x = 𝟙 gmRat := by rw [← Category.comp_id x, e, MonObj.comp_one]
-  have h₁ : Spec.map (CommRingCat.ofHom φ.toRingHom) = Spec.map (𝟙 _) :=
-    (congrArg (fun y ↦ y.left) hx).trans (Spec.map_id _).symm
-  have h₂ := congrArg (fun g ↦ g.hom (AddMonoidAlgebra.single (1 : ℤ) (1 : ℚ)))
-    (Spec.map_injective h₁)
-  have h₃ : (1 : AddMonoidAlgebra ℚ ℤ) = AddMonoidAlgebra.single (1 : ℤ) (1 : ℚ) := by
-    refine Eq.trans ?_ h₂
-    change _ = φ (AddMonoidAlgebra.single (1 : ℤ) (1 : ℚ))
-    rw [AddMonoidAlgebra.lift_single, MonoidHom.one_apply, one_smul]
-  rw [AddMonoidAlgebra.one_def] at h₃
-  exact zero_ne_one (AddMonoidAlgebra.single_left_injective one_ne_zero h₃)
 
 end Examples
 

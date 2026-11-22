@@ -22,12 +22,6 @@ variable {p : ℕ} [Fact p.Prime] {σ ι : Type*}
 
 variable (δ : ι → MvPowerSeries σ ℂ_[p] →+ MvPowerSeries σ ℂ_[p])
 
-def Wd (l : List ι) (G : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] :=
-  l.foldr (fun j H => δ j H) G
-
-def Good (G : MvPowerSeries σ ℂ_[p]) : Prop :=
-  ∀ l : List ι, IsIntP (MvPowerSeries.constantCoeff (Wd δ l G))
-
 variable {δ}
 
 end Good

@@ -5,7 +5,6 @@ public import GroundTheory.FunctionField.PlaceDefs
 public import GroundTheory.FunctionField.PlaceBasic
 public import GroundTheory.FunctionField.Divisor
 public import GroundTheory.FunctionField.DivisorDegree
-public import GroundTheory.FunctionField.Repartition
 
 @[expose] public section
 
@@ -118,99 +117,7 @@ end Divisor
 
 open Divisor
 
-theorem bddAbove_range_deg_add_one_sub :
-    BddAbove (Set.range fun D : Divisor k K => deg D + 1 - (finrank k (L D) : ℤ)) := by
-  obtain ⟨γ, hγ⟩ := exists_bound_deg_sub_finrank_L (k := k) (K := K)
-  refine ⟨γ + 1, ?_⟩
-  rintro _ ⟨D, rfl⟩
-  have := hγ D
-  simp only
-  linarith
-
-
-variable (k K) in
-noncomputable def genusInt : ℤ :=
-  sSup (Set.range fun D : Divisor k K => deg D + 1 - (finrank k (L D) : ℤ))
-
-theorem le_genusInt (D : Divisor k K) : deg D + 1 - (finrank k (L D) : ℤ) ≤ genusInt k K :=
-  le_csSup bddAbove_range_deg_add_one_sub ⟨D, rfl⟩
-
-theorem exists_eq_genusInt : ∃ D : Divisor k K, deg D + 1 - (finrank k (L D) : ℤ) = genusInt k K := by
-  obtain ⟨D, hD⟩ := Int.csSup_mem (Set.range_nonempty _) (bddAbove_range_deg_add_one_sub (k := k) (K := K))
-  exact ⟨D, hD⟩
-
-theorem eq_genusInt_of_le {D E : Divisor k K}
-    (hD : deg D + 1 - (finrank k (L D) : ℤ) = genusInt k K) (h : D ≤ E) :
-    deg E + 1 - (finrank k (L E) : ℤ) = genusInt k K :=
-  le_antisymm (le_genusInt E) (by have := deg_sub_finrank_L_mono h; linarith)
-
-theorem finrank_L_zero_eq_one (hk : algebraicClosure k K = ⊥) :
-    finrank k (L (0 : Divisor k K)) = 1 := by
-  rw [finrank_L_zero, hk, IntermediateField.finrank_bot]
-
-theorem genusInt_nonneg (hk : algebraicClosure k K = ⊥) : 0 ≤ genusInt k K := by
-  have h := le_genusInt (0 : Divisor k K)
-  rw [finrank_L_zero_eq_one hk, map_zero] at h
-  simpa using h
-
-
-variable (k K) in
-noncomputable def genus : ℕ := (genusInt k K).toNat
-
-theorem genus_eq_genusInt (hk : algebraicClosure k K = ⊥) : (genus k K : ℤ) = genusInt k K :=
-  Int.toNat_of_nonneg (genusInt_nonneg hk)
-
 namespace Divisor
-
-theorem riemann_inequality (hk : algebraicClosure k K = ⊥) (D : Divisor k K) :
-    deg D + 1 - (genus k K : ℤ) ≤ finrank k (L D) := by
-  have := le_genusInt D
-  rw [← genus_eq_genusInt hk] at this
-  linarith
-
-theorem exists_mem_A (a : Repartition k K) : ∃ D : Divisor k K, a ∈ A D := by
-  classical
-  have hsupp : (Function.support fun v : Place k K => max (-v.ord (a v)) 0) ⊆
-      {v | a v ∉ v.ring} := by
-    intro v hv
-    rw [Function.mem_support] at hv
-    show a v ∉ v.ring
-    intro hmem
-    apply hv
-    by_cases h0 : a v = 0
-    · simp [h0]
-    · have := (v.ord_nonneg_iff h0).2 hmem
-      exact max_eq_right (by omega)
-  refine ⟨Finsupp.ofSupportFinite _ (a.finite_not_mem.subset hsupp), fun v => ?_⟩
-  rw [Finsupp.ofSupportFinite_coe]
-  by_cases h0 : a v = 0
-  · rw [h0, map_zero]; exact zero_le
-  · rw [v.valuation_eq_exp_neg_ord h0, WithZero.exp_le_exp]
-    exact le_max_left _ _
-
-theorem sup_principal_eq_top {E : Divisor k K}
-    (hE : deg E + 1 - (finrank k (L E) : ℤ) = genusInt k K) : A E ⊔ principal k K = ⊤ := by
-  rw [eq_top_iff]
-  intro a _
-  obtain ⟨Da, ha⟩ := exists_mem_A a
-  have hEE₁ : E ≤ E ⊔ Da := le_sup_left
-  have hE₁ := eq_genusInt_of_le hE hEE₁
-  have hrank := finrank_relSpace hEE₁
-  have := finiteDimensional_relSpace_of_le hEE₁
-  have h0 : finrank k (relSpace E (E ⊔ Da)) = 0 := by
-    have : (finrank k (relSpace E (E ⊔ Da)) : ℤ) = 0 := by rw [hrank]; linarith
-    exact_mod_cast this
-  have hbot : relSpace E (E ⊔ Da) = ⊥ := Submodule.finrank_eq_zero.1 h0
-  have haE₁ : a ∈ A (E ⊔ Da) := A_mono le_sup_right ha
-  have hmem : (A E ⊔ principal k K).mkQ a ∈ relSpace E (E ⊔ Da) :=
-    Submodule.mem_map_of_mem (Submodule.mem_sup_left haE₁)
-  rw [hbot, Submodule.mem_bot, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] at hmem
-  exact hmem
-
-theorem relSpace_sup_eq_top (D : Divisor k K) {E : Divisor k K}
-    (hE : deg E + 1 - (finrank k (L E) : ℤ) = genusInt k K) : relSpace D (D ⊔ E) = ⊤ := by
-  rw [relSpace, sup_principal_eq_top (eq_genusInt_of_le hE le_sup_right), Submodule.map_top,
-    Submodule.range_mkQ]
 
 instance finiteDimensional_quotient (D : Divisor k K) :
     FiniteDimensional k (Repartition k K ⧸ (A D ⊔ principal k K)) := by
@@ -219,19 +126,6 @@ instance finiteDimensional_quotient (D : Divisor k K) :
   have := finiteDimensional_relSpace_of_le (le_sup_left : D ≤ D ⊔ E)
   rw [h] at this
   exact Module.Finite.equiv Submodule.topEquiv
-
-noncomputable def indexOfSpeciality (D : Divisor k K) : ℕ :=
-  finrank k (Repartition k K ⧸ (A D ⊔ principal k K))
-
-theorem indexOfSpeciality_eq_genusInt (D : Divisor k K) :
-    (indexOfSpeciality D : ℤ) = finrank k (L D) - deg D - 1 + genusInt k K := by
-  obtain ⟨E, hE⟩ := exists_eq_genusInt (k := k) (K := K)
-  have h := relSpace_sup_eq_top D hE
-  have hr := finrank_relSpace (le_sup_left : D ≤ D ⊔ E)
-  rw [h, finrank_top] at hr
-  have hE' := eq_genusInt_of_le hE (le_sup_right : E ≤ D ⊔ E)
-  unfold indexOfSpeciality
-  linarith
 
 end Divisor
 

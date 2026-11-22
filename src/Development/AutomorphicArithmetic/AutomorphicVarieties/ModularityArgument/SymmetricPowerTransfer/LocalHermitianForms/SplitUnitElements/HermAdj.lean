@@ -12,12 +12,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 
 open QuadraticAlgebra Matrix UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc
 
-private theorem ofE_mul {K : Type} [Field K] {Δ τ : K} (x y : Etau K τ) : ofE Δ (x * y) = ofE Δ x * ofE Δ y := by
-  ext <;> simp [ofE]
-
-private theorem ofE_one {K : Type} [Field K] {Δ τ : K} : ofE Δ (1 : Etau K τ) = 1 := by
-  ext <;> simp [ofE, QuadraticAlgebra.re_one, QuadraticAlgebra.im_one]
-
 private theorem herm_adj {K : Type} [Field K] {Δ τ : K} (c : K) (m : EL Δ τ) (u : Etau K τ) (x : Sp Δ τ) (y : EL Δ τ) :
     herm c m x (0, ofE Δ (star u) * y) = herm c m (0, ofE Δ u * x.2) (0, y) := by
   have e : star (sigL (ofE Δ (star u) * y)) = ofE Δ u * star (sigL y) := by
@@ -25,7 +19,6 @@ private theorem herm_adj {K : Type} [Field K] {Δ τ : K} (c : K) (m : EL Δ τ)
   simp only [herm, e, star_zero, mul_zero, zero_add]
   congr 1
   ring
-
 
 set_option maxHeartbeats 800000 in
 theorem UpperTheory.V.Z.Sym.Loc.One.uniq :

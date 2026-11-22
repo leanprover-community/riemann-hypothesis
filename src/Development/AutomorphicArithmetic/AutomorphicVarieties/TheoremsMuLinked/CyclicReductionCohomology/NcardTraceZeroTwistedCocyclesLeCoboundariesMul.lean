@@ -186,9 +186,6 @@ private theorem dg_smul {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) 
   ext i j
   simp
 
-private theorem dg_tr {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) (Z : Matrix (Fin n) (Fin n) R) :
-    φ.mapMatrix Zᵀ = (φ.mapMatrix Z)ᵀ := rfl
-
 private theorem dgPhi_nat {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) (ρ : G → Matrix (Fin n) (Fin n) R)
     (e : G → R) (P : Matrix (Fin n) (Fin n) R) (cj : G → G) (sg : Fin q → G) (z : G → Matrix (Fin n) (Fin n) R) (i) :
     φ.mapMatrix (dgPhi ρ e P cj sg z i) =

@@ -121,8 +121,6 @@ end Local
 
 section Adelic
 
-local notation "𝔸" => FiniteAdeleRing (𝓞 ℚ) ℚ
-
 def pr (v : HeightOneSpectrum (𝓞 ℚ)) : ℕ := Rat.HeightOneSpectrum.natGenerator v
 
 theorem pr_prime (v : HeightOneSpectrum (𝓞 ℚ)) : (pr v).Prime := Rat.HeightOneSpectrum.prime_natGenerator v
@@ -151,9 +149,6 @@ theorem mkInt_apply (f h v) : mkInt f h v = f v := rfl
 theorem mkInt_mem (f h) : mkInt f h ∈ intAd ℚ := h
 
 variable {E : Type} [Field E] [NumberField E]
-
-local notation "𝒜" => E ⊗[ℚ] 𝔸
-local notation "𝒮" => tensInt (F := ℚ) 𝔸 (intOE E) (intAd ℚ)
 
 theorem ext_prV {x y : 𝒜} (h : ∀ v, prV (E := E) v x = prV (E := E) v y) : x = y :=
   sub_eq_zero.1 (afsplit_inj _ fun v => by rw [map_sub, h v, sub_self])
@@ -216,13 +211,11 @@ theorem exists_inv_one_add {s : 𝒜} (hs : s ∈ 𝒮) : ∃ t ∈ 𝒮, (1 + (
   rw [add_comm]
   exact congrArg Subtype.val ht
 
-
 open Classical in
 def idem (P : ℕ → Prop) : 𝔸 := mkInt (fun v => if P (pr v) then 1 else 0) fun v => by
   split_ifs
   · exact one_mem _
   · exact zero_mem _
-
 
 variable (E) in
 def eps (P : ℕ → Prop) : 𝒜 := (1 : E) ⊗ₜ[ℚ] idem P

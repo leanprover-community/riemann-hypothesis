@@ -32,7 +32,6 @@ def esIe (k r : ℕ) : Fin r ↪ Fin (2 * r + k + 1) :=
     have ha := a.isLt; have hb := b.isLt
     simp only [esI] at h1; omega)⟩
 
-theorem eIe_apply (k r : ℕ) (a : Fin r) : eIe k r a = eI k r a := rfl
 theorem esIe_apply (k r : ℕ) (a : Fin r) : esIe k r a = esI k r a := rfl
 theorem esI_val (k r : ℕ) (a : Fin r) : (esI k r a).val = 2 * r + k - a.val := rfl
 

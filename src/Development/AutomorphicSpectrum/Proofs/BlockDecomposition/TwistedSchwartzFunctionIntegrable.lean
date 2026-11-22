@@ -41,12 +41,6 @@ def flat (S : Type) [AddCommGroup S] [TopologicalSpace S] (n M : ℕ) :
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
 
-theorem projInf_flat_symm {n M : ℕ} (Y : Fin 1 → Fin (n * M) → AF F ⊗[F] E) :
-    projInf ((flat _ n M).symm Y) = (flat _ n M).symm (projInf Y) := rfl
-
-theorem projFin_flat_symm {n M : ℕ} (Y : Fin 1 → Fin (n * M) → AF F ⊗[F] E) :
-    projFin ((flat _ n M).symm Y) = (flat _ n M).symm (projFin Y) := rfl
-
 theorem isSchwartzBruhat_flat {n M : ℕ} {Φ : (Fin n → Fin M → AF F ⊗[F] E) → ℂ}
     (hΦ : GlobalTheory.Published.SiegelOneVector.IsSchwartzBruhat Φ) :
     GlobalTheory.Published.SiegelOneVector.IsSchwartzBruhat (Φ ∘ (flat _ n M).symm) := by

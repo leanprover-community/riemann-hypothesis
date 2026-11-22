@@ -107,25 +107,6 @@ variable {V V' : HSp D} {M : ℕ} {φ : GfC V ≃* GfC V'}
   {J' : Matrix (Fin V.rank) (Fin V'.rank) (Af D.host.F ⊗[D.host.F] D.host.E)} (h : Link V V' M φ J J')
 include h
 
-theorem symm : Link V' V M φ.symm J' J := by
-  refine ⟨h.rank.symm, h.h2, h.h1, ?_, ?_, h.loc', h.loc⟩
-  · intro g
-    have e := h.hc (φ.symm g)
-    rw [MulEquiv.apply_symm_apply] at e
-    have e' : finMat D.sp.cm.sig V'.gram (g : GA D V') * J = J * finMat D.sp.cm.sig V.gram (φ.symm g : GA D V) := e
-    have h1' : J * J' = 1 := h.h1
-    have h2' : J' * J = 1 := h.h2
-    show finMat D.sp.cm.sig V.gram (φ.symm g : GA D V) * J' = J' * finMat D.sp.cm.sig V'.gram (g : GA D V')
-    calc finMat D.sp.cm.sig V.gram (φ.symm g : GA D V) * J'
-        = (J' * J) * finMat D.sp.cm.sig V.gram (φ.symm g : GA D V) * J' := by rw [h2', Matrix.one_mul]
-      _ = J' * (J * finMat D.sp.cm.sig V.gram (φ.symm g : GA D V)) * J' := by simp only [Matrix.mul_assoc]
-      _ = J' * (finMat D.sp.cm.sig V'.gram (g : GA D V') * J) * J' := by rw [← e']
-      _ = J' * finMat D.sp.cm.sig V'.gram (g : GA D V') * (J * J') := by simp only [Matrix.mul_assoc]
-      _ = J' * finMat D.sp.cm.sig V'.gram (g : GA D V') := by rw [h1', Matrix.mul_one]
-  · intro f hf y
-    have h1' : J * J' = 1 := h.h1
-    rw [h.lat f hf (J'.mulVec y), Matrix.mulVec_mulVec, h1', Matrix.one_mulVec]
-
 theorem supp (f : Formalism.L2.Theta.AE D) (g : GfC V) : SuppF V f (g : GA D V) ↔ SuppF V' f (φ g : GA D V') := by
   have h1' : J * J' = 1 := h.h1
   have h2' : J' * J = 1 := h.h2

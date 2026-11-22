@@ -104,8 +104,6 @@ def padL (m : ℕ) : VC D N N' →ₗ[ℂ] VC D (N + m) N' where
     funext τ a i
     refine Fin.addCases (fun i => ?_) (fun i => ?_) i <;> simp
 
-theorem padL_apply (m : ℕ) (z : VC D N N') : padL D m z = pad D m z := rfl
-
 theorem pad_add (m : ℕ) (x y : VC D N N') : pad D m (x + y) = pad D m x + pad D m y := (padL D m).map_add x y
 
 theorem pad_smul (m : ℕ) (c : ℂ) (x : VC D N N') : pad D m (c • x) = c • pad D m x := (padL D m).map_smul c x

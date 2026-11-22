@@ -2,7 +2,7 @@ module
 
 public import Mathlib
 public import Formalism.LocalRingCardinality.SpanPowerMembership
-public import Formalism.LocalRingCardinality.SpanPowerMembership.RankRecordRowDimensionZero
+public import Formalism.SharpRestriction.InertJacobiLevels.HostFam
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SecondLabelsNonempty
 

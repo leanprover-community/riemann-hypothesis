@@ -143,8 +143,6 @@ instance : Bialgebra R (Ord h) :=
       simp [pair_map, pair_delta]
       simp [pair])
 
-theorem comul_eq (f : Ord h) : comul (R := R) f = delta h f := rfl
-
 theorem counit_eq (f : Ord h) : counit (R := R) f = ev h 1 f := rfl
 
 instance : HopfAlgebra R (Ord h) :=
