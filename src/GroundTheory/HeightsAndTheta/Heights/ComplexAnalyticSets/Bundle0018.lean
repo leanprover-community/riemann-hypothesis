@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Bundle000
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PProperSheetedFibreEsymm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
@@ -223,7 +222,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRegularSequenceLengthLeDim
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -281,7 +279,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSimpleRootBranch
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.ComplexSets
 
@@ -347,7 +344,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PTubeDeepWeightMass
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -468,7 +464,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFiniteFibreCentredEquation
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 

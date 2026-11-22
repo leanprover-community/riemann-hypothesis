@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0016
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsModelPtsIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -38,7 +37,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsRefAlongSheet
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -60,7 +58,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsSheetChartHolo
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 

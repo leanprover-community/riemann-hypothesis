@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PFibreClosedComponent
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -137,7 +136,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Statements
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 

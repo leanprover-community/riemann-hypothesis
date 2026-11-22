@@ -11,7 +11,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.Bundle0001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedGraphBihomog
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -193,7 +192,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PFsLineLevi
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

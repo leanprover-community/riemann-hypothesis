@@ -9,7 +9,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PRankOfSections
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -113,7 +112,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDegLTGrowth
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -129,7 +127,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDegreePositive
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -150,7 +147,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsEventualPolynomial
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -171,7 +167,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFiltrationHilbSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -207,7 +202,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPrimeZariskiDense
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

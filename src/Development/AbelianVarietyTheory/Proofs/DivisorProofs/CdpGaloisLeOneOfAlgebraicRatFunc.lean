@@ -14,7 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TsenAlgebrai
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory IntermediateField GroundTheory.ProfCoh
 

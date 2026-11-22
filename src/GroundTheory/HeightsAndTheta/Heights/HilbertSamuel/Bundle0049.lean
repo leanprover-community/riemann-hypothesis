@@ -17,7 +17,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0032
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLiftBirationalNef
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -105,7 +104,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PMetricChange
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -321,7 +319,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefAmpleFibre
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -468,7 +465,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsComplexGramMetricChange
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

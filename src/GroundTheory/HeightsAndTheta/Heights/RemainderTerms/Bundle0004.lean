@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Bundle0002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.NumStandardTableEqCardMonotone
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms.YoungDiagramCombinatorics
 
@@ -109,7 +108,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvAboveTopGeneral
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -150,7 +148,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvAtTop
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -181,7 +178,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvIdealComponent
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -219,7 +215,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvIdealRepresentation
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -271,7 +266,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvMonomialReduction
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -318,7 +312,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvPolynomialReduction
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -350,7 +343,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvStaircaseComponent
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -392,7 +384,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvStaircaseDegree
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -419,7 +410,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PHomogeneousComponentMul
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 

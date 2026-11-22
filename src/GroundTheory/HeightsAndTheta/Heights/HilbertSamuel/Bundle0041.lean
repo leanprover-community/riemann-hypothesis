@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0037
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AnResBridgeFlat
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -138,7 +137,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AnResBridgeIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -219,7 +217,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AnResBridgeSheet
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -395,7 +392,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.GeneratedModOfSubsingleton
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -447,7 +443,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ImportsBisAlt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0025
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PUpperNormalisation
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -226,7 +225,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGraphChangeOfModel
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -270,7 +268,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKoszulCech
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -367,7 +364,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlockArith
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -388,7 +384,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlockMeasure
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -427,7 +422,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlockMetric
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -453,7 +447,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlockVeronese
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

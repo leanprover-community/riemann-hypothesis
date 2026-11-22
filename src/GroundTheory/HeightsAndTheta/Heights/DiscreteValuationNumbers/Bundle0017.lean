@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Stat
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PIntNumPoint
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
@@ -246,7 +245,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PVocabMultiHomogIdeal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
@@ -285,7 +283,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ScaledRankOneLeStandardRankOne
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -423,7 +420,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagIndependence
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
 

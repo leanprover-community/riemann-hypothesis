@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Bund
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagBundleSectionForms
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
@@ -146,7 +145,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagLineSectionSplit
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
@@ -310,7 +308,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PJoinVariety
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
@@ -442,7 +439,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PLocalQuotFinsum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
 

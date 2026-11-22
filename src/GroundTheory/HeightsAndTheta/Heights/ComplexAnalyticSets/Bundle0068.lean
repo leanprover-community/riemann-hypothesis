@@ -19,7 +19,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Bundle005
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVanishNearPoint
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
@@ -73,7 +72,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarietyMassLower
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -141,7 +139,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarietySlabMeasure
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -284,7 +281,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PZeroSetOpenMass
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
@@ -362,7 +358,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PlaneIdealTwoOne
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
@@ -383,7 +378,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchAwayFromRim
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
@@ -407,7 +401,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StChartIntCountAdd
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -431,7 +424,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCurveBranchLength
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

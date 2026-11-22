@@ -75,7 +75,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0029
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.HilbertSamuelUnbranchedPartConnected
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_SemilocalFinite.{u} : GroundTheory.Heights₂.Heights.FieldNumbers.SemilocalFinite.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.FieldNumbers.SemilocalFinite.proof.{u} GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_SemilocalIntegral GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_LocalIntegralClosureFinite GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_DegZeroLocNoetherian
@@ -95,7 +94,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.RegularLocusIdentityHolds
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.GenericFibreRadicalAway : GroundTheory.Heights₂.Heights.GenericFibreRadicalAway.Statement :=
   @GroundTheory.Heights₂.Heights.GenericFibreRadicalAway.proof GroundTheory.Heights₂.Heights.AutoClose.GenericFibreRadical
@@ -121,7 +119,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.TargetsProjFullRankMeetsRegular
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartDivisorLength : GroundTheory.Heights₂.Heights.Targets.ChartDivisorLength.Statement :=
   @GroundTheory.Heights₂.Heights.Targets.ChartDivisorLength.proof GroundTheory.Heights₂.Heights.Targets.ChartSectionNotMem.proof GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartDivisorComponents GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartSectionLength

@@ -7,7 +7,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -180,7 +179,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PChartNormPtsA
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -243,7 +241,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsOrbitCompNonvanish
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

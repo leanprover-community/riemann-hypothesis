@@ -9,7 +9,6 @@ public import GroundTheory.FunctionField.PlaceBridge
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.CechSeparated
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

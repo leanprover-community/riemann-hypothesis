@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Bundle002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDerivationCotangentIndependent
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
@@ -101,7 +100,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteGermProjectionCover
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
@@ -146,7 +144,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteModuloEliminate
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
@@ -199,7 +196,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteModuloGeneralEquation
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
@@ -312,7 +308,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteProjHomInjective
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.ComplexSets
 
@@ -366,7 +361,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteProjectionCluster
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.ComplexSets
 

@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Bundle0003
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.DegPolynomialIsHomogeneous
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -105,7 +104,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagIntegralRealEqMulDdConst
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -265,7 +263,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.ImportsAlt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -307,7 +304,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCharacterAtIdentity
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -331,7 +327,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCardYoungCells
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -356,7 +351,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCellOfWordInj
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -393,7 +387,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCellOfWordMem
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -433,7 +426,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCellOfWordMono
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 

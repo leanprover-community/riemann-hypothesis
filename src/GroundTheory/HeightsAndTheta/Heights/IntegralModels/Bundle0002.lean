@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Bund
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.ChartGlueSat
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 
@@ -106,7 +105,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.IsIsoPullbackObjUnitToUnit
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
 

@@ -168,7 +168,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.BranchInverseOffHypersurfaceHolds
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.DivisorRegularGeneric : GroundTheory.Heights₂.Heights.DivisorRegularGeneric.Statement :=
   @GroundTheory.Heights₂.Heights.DivisorRegularGeneric.proof GroundTheory.Heights₂.Heights.AutoClose.FrameGraphGeneric
@@ -209,7 +208,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.FieldNumbersLocalIntegralClosureFinite
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_ConePolyLocalization.{u} : GroundTheory.Heights₂.Heights.FieldNumbers.ConePolyLocalization.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.FieldNumbers.ConePolyLocalization.proof.{u} GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_DegZeroLocLocal GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_ConeVarUnit GroundTheory.Heights₂.Heights.FieldNumbers.ConeVarSurj.proof GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_ConeVarInj
@@ -244,7 +242,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.ObjectsChowIntChowFormExists
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartSectionLength : GroundTheory.Heights₂.Heights.Targets.ChartSectionLength.Statement :=
   @GroundTheory.Heights₂.Heights.Targets.ChartSectionLength.proof GroundTheory.Heights₂.Heights.Targets.ChartConeComponent.proof GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartConeLength

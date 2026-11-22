@@ -10,7 +10,6 @@ public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChartTerm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -32,7 +31,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightPlaceCentredSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -51,7 +49,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightPtsIntegralPoints
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -70,7 +67,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCenterDivSuppLemmas
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -273,7 +269,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCenterLe
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -317,7 +312,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCenterMemIff
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -437,7 +431,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCenterZero
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

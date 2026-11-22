@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Bundle008
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimeGermProjectionStep
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
@@ -31,7 +30,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPuncturedBranchInOneBranch
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -54,7 +52,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPuncturedBranchSameOrder
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -75,7 +72,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPuncturedCurveDiscInverse
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -99,7 +95,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegRadialWeight
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -151,7 +146,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSameOrderBranchesMeet
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -172,7 +166,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceCMUnmixed
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -191,7 +184,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceLocalDimGeneral
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -208,7 +200,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceLocalDimUpperZariski
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -230,7 +221,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceUnmixedGeneral
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -256,7 +246,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StTransverseSliceGeneral
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -274,7 +263,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarLelongAnnulus
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

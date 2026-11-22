@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PPiQuotCokerFiniteLength
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -105,7 +104,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTrdegAdjoinLe
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -163,7 +161,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTrdegBaseAlgebraic
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -258,7 +255,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PZeroLocusDimH
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -391,7 +387,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.RenameProdMapMul
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

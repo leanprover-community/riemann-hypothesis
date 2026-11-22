@@ -6,7 +6,6 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.WeberFunctionAutom
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 namespace Elliptic

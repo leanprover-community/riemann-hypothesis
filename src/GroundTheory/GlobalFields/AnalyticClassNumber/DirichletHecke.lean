@@ -5,7 +5,6 @@ public import GroundTheory.GlobalFields.AnalyticClassNumber.DirichletHeckeLocal
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 

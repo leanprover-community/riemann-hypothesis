@@ -18,7 +18,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0076
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullSectionIntegral
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -225,7 +224,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSecMRankBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -375,7 +373,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ProjFrameGraphChart
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -453,7 +450,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsCharpolyRootLift
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

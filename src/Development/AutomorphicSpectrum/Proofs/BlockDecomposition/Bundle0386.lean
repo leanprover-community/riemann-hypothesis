@@ -31,7 +31,6 @@ public import GroundTheory.GlobalFields.KummerTheory.LocalIndexAtPlace
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CasimirEqOfSingularWeightVector
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

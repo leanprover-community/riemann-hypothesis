@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Bundle0002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechDSq
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -110,7 +109,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechFlat
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -240,7 +238,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCechTop
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -271,7 +268,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PGenerated
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -369,7 +365,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PGeneratedAmple
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -400,7 +395,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSerreTail
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

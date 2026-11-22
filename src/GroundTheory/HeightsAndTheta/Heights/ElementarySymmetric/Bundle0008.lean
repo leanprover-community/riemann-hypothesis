@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Bundle0031
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.GeneratedCechTieSt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -29,7 +28,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PSnapperQuotIsoX
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -51,7 +49,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StInterNumCut
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

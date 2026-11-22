@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0047
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocMaxIdeals
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -250,7 +249,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StSemilocChartRatio
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -276,7 +274,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocResidueDeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

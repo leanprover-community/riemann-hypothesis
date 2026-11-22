@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertR
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStdBasePtFree
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -146,7 +145,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStdImageBot
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -235,7 +233,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStdMetricPull
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -313,7 +310,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedDegree
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -334,7 +330,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopSimpleStacked
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -364,7 +359,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertPointLengthSteps
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

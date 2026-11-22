@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Bundle0002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -184,7 +183,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistTildeSt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -210,7 +208,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleDegreeSt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -232,7 +229,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleDimSt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -252,7 +248,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleHilbertSt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -278,7 +273,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmplePowSt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -298,7 +292,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleProductPosSt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -318,7 +311,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleSecsSt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -338,7 +330,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleSnapperSt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

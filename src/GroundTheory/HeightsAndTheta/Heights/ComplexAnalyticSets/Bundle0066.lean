@@ -17,7 +17,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Bundle005
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimitiveFormMinimalFactorPoints
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 
@@ -260,7 +259,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetOnlyNull
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -442,7 +440,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PStokesOnVariety
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

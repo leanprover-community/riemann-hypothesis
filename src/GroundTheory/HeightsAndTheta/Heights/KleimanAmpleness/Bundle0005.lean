@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0008
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationPoint
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -156,7 +155,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PTwistSections
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -388,7 +386,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsDegLocExact
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -418,7 +415,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsDegreePos
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

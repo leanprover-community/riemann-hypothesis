@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0030
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PVertRIndex
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -84,7 +83,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedGraph
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

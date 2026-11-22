@@ -142,7 +142,6 @@ end
 
 -- bundled from GroundTheory.GlobalFields.ComplexMultiplication.DegreeOneAutomorphismLift
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 

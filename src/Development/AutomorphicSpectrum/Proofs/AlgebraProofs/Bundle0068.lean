@@ -40,7 +40,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GaussianProjectionBallIndicatorStatement
 section
-set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
 
@@ -58,7 +57,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.RandomSetSumExpectationStatement
 section
-set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
 

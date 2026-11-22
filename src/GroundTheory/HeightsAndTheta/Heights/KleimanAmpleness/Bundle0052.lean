@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PCutRegular
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AltSumEqOfEventually
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -126,7 +125,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CechHcSubsingletonOfBlock
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -201,7 +199,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellPosExact
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -232,7 +229,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ChartRingOverOneBlockEqAlt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -369,7 +365,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.FinrankSectionsOverEqH0
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -429,7 +424,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraBis
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -447,7 +441,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsFurtherRest
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 

@@ -12,7 +12,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ReesSections
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 
@@ -214,7 +213,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.RelativeSerre
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

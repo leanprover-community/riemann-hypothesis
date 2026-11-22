@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0021
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PPFIntZero
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -136,7 +135,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PPFSecRed
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -226,7 +224,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PullBad
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -282,7 +279,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFHoriz
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

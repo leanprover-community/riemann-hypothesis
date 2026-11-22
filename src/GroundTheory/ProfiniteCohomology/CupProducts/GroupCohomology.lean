@@ -7,7 +7,6 @@ public import GroundTheory.TateCohomology.Bundle0003
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

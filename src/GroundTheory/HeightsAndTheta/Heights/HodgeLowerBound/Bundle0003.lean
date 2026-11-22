@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0019
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHoloInjDerivInj
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -34,7 +33,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.POmNPolyPencil
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -228,7 +226,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsGrassHeightE
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 

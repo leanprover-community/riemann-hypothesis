@@ -11,7 +11,6 @@ public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.Sieg
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSummableMajorantLatticeSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.EisRkNBound
 

@@ -26,7 +26,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0023
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.BergmanLerpSelf
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -97,7 +96,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PAmpleCountAlongMultiplesX
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -120,7 +118,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PNefBigCountAlongMultiples
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

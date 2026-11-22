@@ -24,7 +24,6 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Objects
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PGreenMassZero
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -183,7 +182,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PTailLogOfMassCharts
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 

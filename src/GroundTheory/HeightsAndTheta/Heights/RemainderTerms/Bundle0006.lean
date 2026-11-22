@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Bundle0001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestKSumBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -48,7 +47,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestPolynomialHomogeneous
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -87,7 +85,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestPrimeBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -115,7 +112,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestPrimeBoundOfFactor
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -198,7 +194,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSameFactorBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -357,7 +352,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSchurSignCoefficient
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -424,7 +418,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PVandermondeOfHomogeneous
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 

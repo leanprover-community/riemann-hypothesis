@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Bundle0001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PChartTorsion
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -169,7 +168,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PCodimOnePrimeAvoid
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -229,7 +227,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PFibreCompDim
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -310,7 +307,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PFibreCut
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 

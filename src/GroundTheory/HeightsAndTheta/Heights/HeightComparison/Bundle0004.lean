@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightObject
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitArchSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -28,7 +27,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCurve
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -44,7 +42,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitDegree
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -59,7 +56,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitDivVertical
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -76,7 +72,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitFiniteSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -98,7 +93,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightRecR
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

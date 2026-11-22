@@ -23,7 +23,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0019
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFlZArithVar
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -105,7 +104,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StNbarLeviChartReg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

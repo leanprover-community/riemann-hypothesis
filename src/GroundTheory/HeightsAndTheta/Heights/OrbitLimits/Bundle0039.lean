@@ -19,7 +19,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0038
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PChartDivisorComponents
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -236,7 +235,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PChartLatFull
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -324,7 +322,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveBoxCount
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -349,7 +346,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveBoxLattice
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

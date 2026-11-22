@@ -5,7 +5,6 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.AnalyticUniformiza
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open Complex Filter Topology Set WeierstrassCurve GroundTheory.Arith.Abelian
 open scoped PeriodPair

@@ -19,7 +19,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Bundle0028
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChartZeroTrdeg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -102,7 +101,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFiniteFibreDim
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -255,7 +253,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeKrullDimLe
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -267,7 +264,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeLocalMass
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -341,7 +337,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeTangentAverage
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -430,7 +425,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PLeadPlaneJac
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

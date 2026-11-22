@@ -20,7 +20,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0016
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsHorizontalImageZ
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -175,7 +174,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PConsequences
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -319,7 +317,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PPFVert
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -408,7 +405,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsMonoSemiPos
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -12,7 +12,6 @@ public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRi
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHFlProdLinear
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -248,7 +247,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHodgeFlagNeZero
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -373,7 +371,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.RingKrullDimLocalizationInt
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

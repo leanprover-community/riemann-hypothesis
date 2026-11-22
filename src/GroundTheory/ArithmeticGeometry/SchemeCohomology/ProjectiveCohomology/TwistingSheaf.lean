@@ -8,7 +8,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.Li
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

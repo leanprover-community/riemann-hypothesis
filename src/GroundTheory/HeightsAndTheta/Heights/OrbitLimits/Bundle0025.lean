@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0021
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PVarIntGraph
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -234,7 +233,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PtsPosDensMeasurable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -465,7 +463,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsLiftGraphMetric
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

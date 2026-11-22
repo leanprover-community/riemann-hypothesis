@@ -23,7 +23,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0019
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResolutionInterpIntegral
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -130,7 +129,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PScaledFSTopPos
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -260,7 +258,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PShiftNefBig
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

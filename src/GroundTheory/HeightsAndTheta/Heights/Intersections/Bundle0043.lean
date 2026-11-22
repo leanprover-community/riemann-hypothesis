@@ -19,7 +19,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0039
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsAbsIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -174,7 +173,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ProjectionPullbackZeroSetNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -418,7 +416,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StFibreOverFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -440,7 +437,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StValCentreZ
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -468,7 +464,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsEvalKerKrullDim
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

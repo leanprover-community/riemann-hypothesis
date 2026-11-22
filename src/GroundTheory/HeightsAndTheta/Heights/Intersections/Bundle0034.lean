@@ -17,7 +17,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0028
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreIsolFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -204,7 +203,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PSemiPosTwist
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -424,7 +422,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOver
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -469,7 +466,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFFibreBij
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

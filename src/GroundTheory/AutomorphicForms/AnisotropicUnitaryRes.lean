@@ -6,7 +6,6 @@ public import GroundTheory.AutomorphicForms.Bundle0018
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open Module Matrix TensorProduct
 

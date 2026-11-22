@@ -6,7 +6,6 @@ public import GroundTheory.AutomorphicForms.Bundle0023
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open Module Matrix TensorProduct NumberField IsDedekindDomain
 open scoped NumberField.AdeleRing

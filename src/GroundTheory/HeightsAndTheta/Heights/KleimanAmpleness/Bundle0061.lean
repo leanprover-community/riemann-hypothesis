@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsSumEqO
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistModNatMul
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -174,7 +173,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistSubEqChartSecOver
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -362,7 +360,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.XMemMIdealOverIff
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 

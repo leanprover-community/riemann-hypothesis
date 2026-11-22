@@ -103,7 +103,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmMemArchSmooth
 section
-set_option maxSynthPendingDepth 1
 
 open NumberField GlobalTheory.CuspRep GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.Reduction
 open IsDedekindDomain

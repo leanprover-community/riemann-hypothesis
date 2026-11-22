@@ -8,7 +8,6 @@ public import GroundTheory.AutomorphicForms.ReductionHeight
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Automorphic.GJGlobal.Modulus
 

@@ -6,7 +6,6 @@ public import GroundTheory.FunctionField.PlaceDefs
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory AlgebraicGeometry Order Topology
 

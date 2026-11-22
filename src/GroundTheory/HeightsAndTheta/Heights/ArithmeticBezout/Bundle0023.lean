@@ -25,7 +25,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Bundle001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.GaussNormEqCoeffGaussNorm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -63,7 +62,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.IsMultiHomogOfIsChowForm
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -99,7 +97,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.OfLeaves
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -117,7 +114,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaInjSet
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -238,7 +234,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaLocal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

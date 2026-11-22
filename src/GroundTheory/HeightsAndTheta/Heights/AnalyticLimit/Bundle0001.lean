@@ -11,7 +11,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.Bundle0001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.ConvergenceRate
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -123,7 +122,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.IntegrableOnTargetOfMIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -197,7 +195,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PKaehlerBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -361,7 +358,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StBoundingKaehler
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -384,7 +380,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaETailLog
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -430,7 +425,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StListMono
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 

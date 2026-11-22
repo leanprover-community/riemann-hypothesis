@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0012
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLatticeImageZLattice
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -77,7 +76,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PNumberFieldBoxCount
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -178,7 +176,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsFnDegRelDeg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -208,7 +205,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsInvertibleIndexMulSteps
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

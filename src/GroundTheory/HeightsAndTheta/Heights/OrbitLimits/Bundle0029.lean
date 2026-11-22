@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0024
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartSheetCompare
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -97,7 +96,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSheetLift
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

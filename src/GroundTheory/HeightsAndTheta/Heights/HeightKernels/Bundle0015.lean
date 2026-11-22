@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0014
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartDensityIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -161,7 +160,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartEnergy
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -269,7 +267,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartEnergyDiagonal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -468,7 +465,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PFsLineSemipositive
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

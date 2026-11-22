@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.TateCohomology.ConjAction
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -39,7 +38,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.DeltaMap
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -82,7 +80,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.DiagonalSuccIsoFreeInvSingle
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -189,7 +186,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.Induced
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -342,7 +338,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.PGroupFixed
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 

@@ -311,7 +311,6 @@ end
 
 -- bundled from GroundTheory.GlobalFields.ComplexMultiplication.WeberFunction
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 

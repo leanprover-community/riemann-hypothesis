@@ -50,7 +50,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedDensityNo
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.PointsIntegralIndependentOfMetric
 section
-set_option maxSynthPendingDepth 1
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology NumberField
 
@@ -195,7 +194,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.ProjChartSetEqSetChartSet
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

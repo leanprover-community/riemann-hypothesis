@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Bundle0003
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 

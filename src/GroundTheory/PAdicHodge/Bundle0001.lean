@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.PAdicHodge.LogPowSeries
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -143,7 +142,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.RobbaSeries
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -276,7 +274,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.SemilinearResidue
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.PAdicHodge
 
@@ -347,7 +344,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.SenTateCharQp
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

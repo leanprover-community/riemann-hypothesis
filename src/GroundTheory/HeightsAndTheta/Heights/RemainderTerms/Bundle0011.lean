@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Bundle0001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagSwapDivisible
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -83,7 +82,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagSymmetricMulAntisym
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -105,7 +103,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagVandermondeDvd
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -188,7 +185,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagVandermondeHomogeneous
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -211,7 +207,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFrobeniusCharacterFormula
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -275,7 +270,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PHookTableauCount
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -422,7 +416,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PLemmaA
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

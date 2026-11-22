@@ -11,7 +11,6 @@ public import GroundTheory.ArithmeticGeometry.EtaleCompletion.Bundle0001
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ChowMulti
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 
@@ -75,7 +74,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.PullbackUnit
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 
@@ -280,7 +278,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.QcqsPushforward
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

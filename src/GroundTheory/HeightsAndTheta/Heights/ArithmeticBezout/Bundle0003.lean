@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Bundle000
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogGaussNormSupportFinite
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -232,7 +231,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntCircle
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -440,7 +438,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsAreaFormulaInj
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -467,7 +464,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsAreaFormulaInjSet
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

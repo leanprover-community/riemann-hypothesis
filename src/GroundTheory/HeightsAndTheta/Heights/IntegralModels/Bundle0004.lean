@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.Bundle0003
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.PFiniteIntegralClosure
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 
@@ -34,7 +33,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.PHeightOneIntersection
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 
@@ -64,7 +62,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.PLatticesAgree
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 
@@ -138,7 +135,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.PMertensUpper
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 
@@ -229,7 +225,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.PSectionNef
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 
@@ -413,7 +408,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.StatementsKrullAkizuki
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 

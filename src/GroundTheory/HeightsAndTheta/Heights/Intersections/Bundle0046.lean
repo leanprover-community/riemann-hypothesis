@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0044
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogProdInt
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -119,7 +118,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.LiftZComponent
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -251,7 +249,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PCentreOverW
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -407,7 +404,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PEvalKerKrullDim
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -441,7 +437,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreDivSupp
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

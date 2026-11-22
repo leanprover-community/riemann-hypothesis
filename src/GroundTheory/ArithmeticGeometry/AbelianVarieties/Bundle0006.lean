@@ -28,7 +28,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.AbelianVarieties.TateCharpoly
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.Abelian
 

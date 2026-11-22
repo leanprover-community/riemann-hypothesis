@@ -19,7 +19,6 @@ public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Bundle0014
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.AssemblyPartial
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -46,7 +45,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PFreeParAlgIndep
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -200,7 +198,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSecPointSeparable
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 

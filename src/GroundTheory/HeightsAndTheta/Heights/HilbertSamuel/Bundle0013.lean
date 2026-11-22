@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Slopes
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHilbertIncrement
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -207,7 +206,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLattice
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

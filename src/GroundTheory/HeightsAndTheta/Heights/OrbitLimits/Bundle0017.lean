@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsMoriwak
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsSheetSimpleNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -39,7 +38,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsSumMeasurable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -61,7 +59,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartDim
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -81,7 +78,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartIntegral
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -109,7 +105,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartIntegralPoints
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -135,7 +130,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveCountLower
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -159,7 +153,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Stokes
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

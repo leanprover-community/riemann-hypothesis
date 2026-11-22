@@ -6,7 +6,6 @@ public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelConj
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 set_option synthInstance.maxSize 1000
 
 noncomputable section

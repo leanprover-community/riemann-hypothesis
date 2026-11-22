@@ -8,7 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Bundle00
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 open scoped Manifold ContDiff Topology
 open MeasureTheory Set GroundTheory.Automorphic
 open scoped Matrix.Norms.L2Operator

@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.Bundle0002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Bridge
 
@@ -119,7 +118,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.PPlacesRingQuot
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

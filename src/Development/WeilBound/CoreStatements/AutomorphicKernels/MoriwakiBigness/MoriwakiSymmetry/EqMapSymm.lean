@@ -7,7 +7,6 @@ public import Development.WeilBound.CoreStatements.AmpleLineBundles.ExistsPoints
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

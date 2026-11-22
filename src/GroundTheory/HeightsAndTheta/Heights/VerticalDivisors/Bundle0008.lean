@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Bundle0005
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSecBGeneric
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -134,7 +133,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSecLinNZD
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -194,7 +192,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PVertSpec
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -307,7 +304,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsChart
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -341,7 +337,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsChowNorm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 

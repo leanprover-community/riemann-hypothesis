@@ -7,7 +7,6 @@ public import GroundTheory.TateCohomology.Bundle0001
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 

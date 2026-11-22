@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0030
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsPosDensIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -86,7 +85,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PotFinCons
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

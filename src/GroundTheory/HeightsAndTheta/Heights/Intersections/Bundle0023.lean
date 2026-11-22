@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0014
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsPrimeSpanXb
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -72,7 +71,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.LogCardLocIdealUnitMul
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -281,7 +279,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PDeLeSemiPos
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -465,7 +462,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StFlagPivotIdentity
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

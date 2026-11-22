@@ -13,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Discret
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ActEqZeroOfMem
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

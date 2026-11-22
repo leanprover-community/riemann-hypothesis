@@ -6,7 +6,6 @@ public import GroundTheory.AutomorphicForms.GL2.GJGlobalDefs
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Theta
 

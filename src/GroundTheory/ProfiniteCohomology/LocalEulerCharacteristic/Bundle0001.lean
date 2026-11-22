@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.CoprimeRegular
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -122,7 +121,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.GroupStructureDefs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

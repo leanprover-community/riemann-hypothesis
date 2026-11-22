@@ -8,7 +8,6 @@ public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.ChiPSt
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

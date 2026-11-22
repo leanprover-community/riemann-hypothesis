@@ -213,7 +213,6 @@ public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PNormFormIrr
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.Inter_ChartSpecCount : GroundTheory.Heights₂.Heights.Inter.ChartSpecCount.Statement :=
   @GroundTheory.Heights₂.Heights.Inter.ChartSpecCount.proof GroundTheory.Heights₂.Heights.Inter.ChartPrimElt.proof GroundTheory.Heights₂.Heights.Inter.LocAwaySpec.proof

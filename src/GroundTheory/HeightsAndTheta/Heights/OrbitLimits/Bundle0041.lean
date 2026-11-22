@@ -24,7 +24,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0030
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PGoodChartDim
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -193,7 +192,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsIntegralSegreChartProj
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -278,7 +276,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartProjFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -371,7 +368,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveVertPointLengthSteps
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

@@ -12,7 +12,6 @@ public import GroundTheory.ProfiniteCohomology.GaloisModules.Discrete
 
 -- bundled from GroundTheory.ProfiniteCohomology.CohomologyTwoIntAddEquivQZSymmApply
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -45,7 +44,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.CyclicCupGaloisDefs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

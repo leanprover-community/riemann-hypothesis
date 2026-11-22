@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsComb
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCharacterBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -36,7 +35,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCfAtStair
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -130,7 +128,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCfBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -236,7 +233,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCfMonomialPsumOne
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -347,7 +343,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCfUpdateZero
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
@@ -403,7 +398,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCfVandermondePsumOne
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.RestTerms
 

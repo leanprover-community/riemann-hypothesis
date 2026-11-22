@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Bundle0012
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.FderivFderivLogRho
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HilbertSamuel
 
@@ -54,7 +53,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHilbertDimZero
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

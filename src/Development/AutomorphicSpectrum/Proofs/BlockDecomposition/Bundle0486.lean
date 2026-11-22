@@ -25,7 +25,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.Bundle0041
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmegaOperatorEqCasimirSum
 section
-set_option maxSynthPendingDepth 1
 open NumberField GlobalTheory.CuspRep GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.Reduction
 open scoped NumberField.AdeleRing
 

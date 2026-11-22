@@ -11,7 +11,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.AcyclicLeray
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 
@@ -175,7 +174,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.PullbackCoherent
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

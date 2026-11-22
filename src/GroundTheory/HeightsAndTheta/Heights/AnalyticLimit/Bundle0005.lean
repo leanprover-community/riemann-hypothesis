@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Bundle0007
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PListTailLog
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -89,7 +88,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PTailShift
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -261,7 +259,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StRegSectionParts
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -421,7 +418,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StatementsPullback
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 

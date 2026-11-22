@@ -25,7 +25,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperSect
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.MuFrameExists
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -47,7 +46,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.MuFrameNormIndep
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -69,7 +67,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.MuLineNormEq
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -91,7 +88,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PInterNumCut
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -128,7 +124,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PInterNumTieX
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -231,7 +226,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PInterSumTopVanish
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -288,7 +282,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PMixedTwistShift
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

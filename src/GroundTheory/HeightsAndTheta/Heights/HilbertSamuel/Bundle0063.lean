@@ -19,7 +19,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenTwistGenera
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHyperplaneRegularSection
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -200,7 +199,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PIsomInvariance
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -326,7 +324,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PKleimanNefF
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -470,7 +467,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedEffectiveSection
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

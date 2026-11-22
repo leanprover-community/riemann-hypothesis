@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Bundle0003
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmplePow
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -150,7 +149,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleSecs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -284,7 +282,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ResidOfMem
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 

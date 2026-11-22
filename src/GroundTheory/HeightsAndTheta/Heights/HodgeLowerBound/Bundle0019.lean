@@ -17,7 +17,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0013
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PParamImageNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -85,7 +84,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PProjSmoothAlong
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -198,7 +196,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PPtsMonoSemipos
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -272,7 +269,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PRegAboveWeight
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -329,7 +325,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PStokesLimitTTop
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -366,7 +361,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PStokesLimitTp
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -424,7 +418,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StNbarLeviChart
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

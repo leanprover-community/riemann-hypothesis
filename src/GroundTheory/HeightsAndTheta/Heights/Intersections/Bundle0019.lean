@@ -20,7 +20,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Bund
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.MultAtPosOfMemDivSupp
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -56,7 +55,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagDiv
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -114,7 +112,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagOrd
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -179,7 +176,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PHorizNotMem
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -241,7 +237,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingFrac
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -314,7 +309,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingLocal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -408,7 +402,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PProjBundleMultiHomogSpan
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -434,7 +427,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingChartLoc
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

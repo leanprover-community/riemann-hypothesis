@@ -15,7 +15,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

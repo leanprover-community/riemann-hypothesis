@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0011
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

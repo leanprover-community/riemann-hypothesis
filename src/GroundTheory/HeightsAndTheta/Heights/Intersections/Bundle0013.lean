@@ -10,7 +10,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ConservationDegreeFormOfExistence
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -163,7 +162,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.DeEqZeroOfSemiPosOff
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -227,7 +225,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ExMap
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -247,7 +244,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ExMapAlt
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -267,7 +263,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerBis
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -291,7 +286,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerExtra
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -312,7 +306,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerFurther
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -331,7 +324,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerMore
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -351,7 +343,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerRest
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -373,7 +364,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerSide
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -396,7 +386,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerTer
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -416,7 +405,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermTensor
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter
 

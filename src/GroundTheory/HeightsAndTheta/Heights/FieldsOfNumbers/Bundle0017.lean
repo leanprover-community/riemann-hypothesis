@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Bundle0011
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PFibreFinite
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -70,7 +69,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PFibreRelDim
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -124,7 +122,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PSemilocalFiniteRank
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -221,7 +218,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PSemilocalLength
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -298,7 +294,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsConeVarInj
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -324,7 +319,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsConeVarNumerator
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -359,7 +353,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsConeVarSurj
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -386,7 +379,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsConeVarUnit
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -413,7 +405,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegZeroLocLocalize
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -438,7 +429,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDegZeroLocUnits
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 

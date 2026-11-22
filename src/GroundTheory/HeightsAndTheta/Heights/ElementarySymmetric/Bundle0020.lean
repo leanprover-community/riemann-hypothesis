@@ -17,7 +17,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.Bundle0008
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PEulerVarX
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Swarm
 
@@ -31,7 +30,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PNbarLeviChartReg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -153,7 +151,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PRefChartDisc
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContracted
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PMChartTrdeg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -228,7 +227,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PSemilocalFinite
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -293,7 +291,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PSemilocalLengthSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -355,7 +352,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PSemilocalMaxIdeals
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 

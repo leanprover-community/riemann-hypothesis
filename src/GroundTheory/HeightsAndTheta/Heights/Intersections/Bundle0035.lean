@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0012
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PullWMemFibre
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -126,7 +125,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsBlockRatioAlg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -156,7 +154,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFFibreMult
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -180,7 +177,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocRing
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

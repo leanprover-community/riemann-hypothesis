@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Bundle0001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PGaussShell
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -93,7 +92,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PGaussShellSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -163,7 +161,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PGaussSqrt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -202,7 +199,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PGaussTermBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -271,7 +267,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PGaussTop
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -307,7 +302,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PRestCutPrimeEq
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -318,7 +312,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PRestCutTransportFirst
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -337,7 +330,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PSymplBoxVolume
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -370,7 +362,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PSymplCons
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -412,7 +403,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PSymplDetBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

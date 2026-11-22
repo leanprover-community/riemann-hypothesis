@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsLinea
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PAdjoinIndepRelfinrank
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -103,7 +102,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PChartPrimElt
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -170,7 +168,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PFIntZeroMixed
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -294,7 +291,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PFinrankAdjoinRange
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -331,7 +327,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PLinearQuotient
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -433,7 +428,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PLocAwaySpec
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

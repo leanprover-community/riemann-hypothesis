@@ -13,7 +13,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.Bundle0112
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

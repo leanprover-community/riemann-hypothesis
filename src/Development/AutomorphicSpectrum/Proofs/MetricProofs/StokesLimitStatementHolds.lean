@@ -24,7 +24,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedWei
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

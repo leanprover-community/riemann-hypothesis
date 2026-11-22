@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0009
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PVeroneseMonoBasis
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -91,7 +90,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsModulePieceHilbert
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

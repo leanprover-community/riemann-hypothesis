@@ -6,7 +6,6 @@ public import GroundTheory.PAdicHodge.ACrisGalois
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

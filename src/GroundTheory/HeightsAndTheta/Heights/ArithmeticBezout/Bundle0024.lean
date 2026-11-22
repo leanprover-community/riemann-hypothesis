@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsSectionOr
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChartNormAlgClosed
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -201,7 +200,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PSecRankSpecialize
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -328,7 +326,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsFormsThroughPoint
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -353,7 +350,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsIncIdealNeBotDim
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -376,7 +372,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsThroughPointIncIdeal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

@@ -13,7 +13,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsLast
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -76,7 +75,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerTail
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -97,7 +95,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsFieldIntersectionNoBlockFam
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -154,7 +151,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogFirstCoordinate
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -177,7 +173,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.LeOfHeightMapEqZero
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -243,7 +238,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.LeviOfRealSmulRight
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

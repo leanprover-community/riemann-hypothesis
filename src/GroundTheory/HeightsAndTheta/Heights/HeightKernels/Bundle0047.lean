@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0046
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedGraphHorizontal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -166,7 +165,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedGraphImage
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -356,7 +354,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsIntCoordChange
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

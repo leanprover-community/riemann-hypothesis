@@ -6,7 +6,6 @@ public import GroundTheory.AutomorphicForms.Bundle0024
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 open GlobalTheory.SmGL
 open GroundTheory.Automorphic.Parabolic (levi parabolicInd jacquetRep JacquetModule sqrtModular leviIncl cellLeviSub normInducing unipotentRadical leviPar normLeviParSqrtModular)
 open GroundTheory.Automorphic.Iwasawa (blockUpper)

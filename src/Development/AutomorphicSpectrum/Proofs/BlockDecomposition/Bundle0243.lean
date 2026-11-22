@@ -127,7 +127,6 @@ end
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsChowCoverIntegral
 section
 set_option autoImplicit false
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -17,7 +17,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Assembly
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FlagIndices
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -131,7 +130,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.GenericMinors
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -168,7 +166,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.RegWeightLevi
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

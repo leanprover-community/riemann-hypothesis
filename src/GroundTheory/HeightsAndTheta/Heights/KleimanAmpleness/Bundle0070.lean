@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHTheoremSA
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechDDeg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -62,7 +61,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechMapDeg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -79,7 +77,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHTheoremS
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

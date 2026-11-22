@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Bundle0021
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PLocalIntegralClosureFinite
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -69,7 +68,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PValuativeCentre
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 

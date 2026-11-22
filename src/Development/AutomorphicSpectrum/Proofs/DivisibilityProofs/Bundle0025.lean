@@ -190,7 +190,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagChainArithVariety
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

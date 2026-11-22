@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0021
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGridSeparation
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -127,7 +126,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHeightsirationalHilb
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -327,7 +325,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PHilbFnValueSpan
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

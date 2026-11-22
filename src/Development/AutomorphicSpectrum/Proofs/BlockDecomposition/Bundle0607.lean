@@ -271,7 +271,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SliceReducedAwayZariski
 section
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Heights.BranchOrder
 

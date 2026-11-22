@@ -37,7 +37,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.OfListTailLog
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -59,7 +58,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLemmaEEnergy
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -155,7 +153,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLemmaEScale
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -272,7 +269,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLemmaETailMass
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -327,7 +323,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLogNormSecIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 

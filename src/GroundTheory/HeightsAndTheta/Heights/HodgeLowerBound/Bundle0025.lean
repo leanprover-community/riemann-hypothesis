@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0022
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVerticalTwistGenDeg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -160,7 +159,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StAPrimeChartLevi
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -191,7 +189,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StChartVelLift
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0024
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LiftBlockSections
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -254,7 +253,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PFibreDegreeSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -459,7 +457,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StGoodChartZeroSet
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

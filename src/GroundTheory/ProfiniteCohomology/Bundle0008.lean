@@ -16,7 +16,6 @@ public import GroundTheory.ProfiniteCohomology.CupProducts.GroupCohomology
 
 -- bundled from GroundTheory.ProfiniteCohomology.CartierDualDefs
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -96,7 +95,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.ClassFormations
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -173,7 +171,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.CyclicCupProf
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

@@ -201,7 +201,6 @@ end
 
 -- bundled from GroundTheory.GlobalFields.ComplexMultiplication.DegreeOneAutomorphismPoints
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 
@@ -330,7 +329,6 @@ end
 
 -- bundled from GroundTheory.GlobalFields.ComplexMultiplication.MainTheoremPointHom
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 

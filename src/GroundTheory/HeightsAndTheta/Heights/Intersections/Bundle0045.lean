@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0037
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.AevalMemAdjoin
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -143,7 +142,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ContinuousMinorRatioLift
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -366,7 +364,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreRest
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -396,7 +393,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreSide
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -434,7 +430,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTer
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

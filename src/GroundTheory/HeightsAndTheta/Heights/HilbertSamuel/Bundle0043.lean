@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0038
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PAnResNullForm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -195,7 +194,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockGraphImage
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -272,7 +270,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockImageArith
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -471,7 +468,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChartLatRank
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

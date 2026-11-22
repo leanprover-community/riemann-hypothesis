@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIde
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.DataHodge
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -48,7 +47,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsLocalOrbitChart
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

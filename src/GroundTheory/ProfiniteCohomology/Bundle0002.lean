@@ -9,7 +9,6 @@ public import GroundTheory.ProfiniteCohomology.KummerBasic
 
 -- bundled from GroundTheory.ProfiniteCohomology.CharactersDefs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -53,7 +52,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.Factor
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

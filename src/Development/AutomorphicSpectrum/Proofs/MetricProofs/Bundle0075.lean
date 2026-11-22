@@ -23,7 +23,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.Bundle0047
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedWeightPshAndBounds
 section
-set_option maxSynthPendingDepth 1
 
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.ChartRestriction.G.Geo GroundTheory.Heights₂.Heights.LowerBoundFree
 

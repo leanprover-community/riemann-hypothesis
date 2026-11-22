@@ -5,7 +5,6 @@ public import GroundTheory.ProfiniteCohomology.PoitouTate.RealEvenTau
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

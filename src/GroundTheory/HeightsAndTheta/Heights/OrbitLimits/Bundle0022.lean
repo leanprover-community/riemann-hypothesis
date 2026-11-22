@@ -22,7 +22,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Bundle0004
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ContractMixedField
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -192,7 +191,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ImageArith
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -270,7 +268,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LiftBlockGraph
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -429,7 +426,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PChartDivisorLength
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

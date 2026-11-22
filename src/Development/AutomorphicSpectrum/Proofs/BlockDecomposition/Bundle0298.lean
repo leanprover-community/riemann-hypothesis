@@ -36,7 +36,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Homogene
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsPermBlockMatrix
 section
-set_option maxSynthPendingDepth 1
 open GlobalTheory.SmGL
 open GroundTheory.Automorphic.Parabolic (levi parabolicInd jacquetRep JacquetModule sqrtModular leviIncl cellLeviSub normInducing unipotentRadical)
 open GroundTheory.Automorphic.Iwasawa (blockUpper)
@@ -131,7 +130,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiltrationTransportEquiv
 section
-set_option maxSynthPendingDepth 1
 open GlobalTheory.SmGL
 open GroundTheory.Automorphic.Parabolic (levi parabolicInd jacquetRep JacquetModule sqrtModular leviIncl cellLeviSub normInducing unipotentRadical)
 open GroundTheory.Automorphic.Iwasawa (blockUpper)
@@ -447,7 +445,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSmoothCompContinuous
 section
-set_option maxSynthPendingDepth 1
 open GlobalTheory.SmGL
 open GroundTheory.Automorphic.Parabolic (levi parabolicInd jacquetRep JacquetModule sqrtModular leviIncl cellLeviSub normInducing unipotentRadical)
 open GroundTheory.Automorphic.Iwasawa (blockUpper)

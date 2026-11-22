@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0010
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PExistsUniqueRelabel
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -119,7 +118,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLelongWeightDiffLemmas
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -221,7 +219,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLelongWeightLimit
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

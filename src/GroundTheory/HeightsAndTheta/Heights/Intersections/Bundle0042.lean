@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Bundle0025
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PPFFibreBij
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -249,7 +248,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PPFFibreMult
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

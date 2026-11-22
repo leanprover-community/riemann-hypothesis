@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArith
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveVertPointChart
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -121,7 +120,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveVertPointMultChart
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -285,7 +283,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveVertPointSurj
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

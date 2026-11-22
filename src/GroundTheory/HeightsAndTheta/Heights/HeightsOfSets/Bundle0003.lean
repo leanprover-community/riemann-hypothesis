@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightObject
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.CoordCurveDegree
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -27,7 +26,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.CurveComplexPoint
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -45,7 +43,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.CurveIsOrbit
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -61,7 +58,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Imports
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HeightsSet
 

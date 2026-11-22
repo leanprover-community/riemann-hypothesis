@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Bundle0010
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCycleSplit
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -177,7 +176,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PFiniteSections
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -406,7 +404,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PInterNumPoint
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

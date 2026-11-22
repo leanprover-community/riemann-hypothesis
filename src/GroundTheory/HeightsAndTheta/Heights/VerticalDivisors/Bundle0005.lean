@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Bundle0002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsOrd
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -26,7 +25,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsSpecFirst
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 

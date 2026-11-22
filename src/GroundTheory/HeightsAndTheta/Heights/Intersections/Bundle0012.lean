@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0004
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -82,7 +81,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.LocRing
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -117,7 +115,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.NoCommonComponentCoordinatesPlane
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -175,7 +172,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PThmIMultilin
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -215,7 +211,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PWellDefined
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

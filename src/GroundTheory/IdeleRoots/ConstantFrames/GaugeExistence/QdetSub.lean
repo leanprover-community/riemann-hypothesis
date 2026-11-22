@@ -5,7 +5,6 @@ public import GroundTheory.IdeleRoots.ConstantFrames.GaugeExistence.RotationOfDi
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open Polynomial Formalism.REAL
 

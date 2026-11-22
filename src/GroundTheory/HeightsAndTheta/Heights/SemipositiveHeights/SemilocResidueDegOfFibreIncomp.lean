@@ -44,7 +44,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0048
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.ForSecondHalf
 

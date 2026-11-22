@@ -20,7 +20,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0015
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisAlt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -115,7 +114,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisExtra
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -227,7 +225,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisSide
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -257,7 +254,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisTer
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -300,7 +296,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreExtra
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -319,7 +314,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsHorizontalSpanXb
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -351,7 +345,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.MixedDiscEqZeroOfMulVec
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -418,7 +411,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PFlagMinorsTrdeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

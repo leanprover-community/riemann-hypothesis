@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.StrongApproximation.Statement
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PEichlerAtPlace
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -113,7 +112,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PEichlerDense
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -303,7 +301,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PLocalInClosure
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -362,7 +359,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PLocalRingHypotheses
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

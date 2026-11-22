@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0032
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.FibreDim
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -214,7 +213,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.FibreDimB
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

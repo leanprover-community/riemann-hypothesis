@@ -5,7 +5,6 @@ public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShal
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

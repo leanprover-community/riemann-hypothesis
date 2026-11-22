@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0044
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLiftModel
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -221,7 +220,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLocIdealKer
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -395,7 +393,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPerturbSemipos
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

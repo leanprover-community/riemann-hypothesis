@@ -5,7 +5,6 @@ public import GroundTheory.TateCohomology.Bundle0004
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory groupCohomology
 

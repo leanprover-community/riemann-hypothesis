@@ -5,7 +5,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.Bundle0002
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

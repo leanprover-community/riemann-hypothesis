@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0021
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagFormDiv
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -58,7 +57,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PFlagPivotAlgIndep
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -120,7 +118,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingChartLoc
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -210,7 +207,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PfAtZero
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -237,7 +233,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFIntZero
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -262,7 +257,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFSecRed
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

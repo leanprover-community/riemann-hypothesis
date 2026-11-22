@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0013
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreCoordGoodProj
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -200,7 +199,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PoincareLelongLimit
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -225,7 +223,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PoincareLelongRegularised
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -247,7 +244,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.SegreChartProjObjects
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -347,7 +343,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartSection
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -384,7 +379,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsIntegralProjIndep
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -406,7 +400,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsIntegralSegreChartProj
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -434,7 +427,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosPartProjIndep
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

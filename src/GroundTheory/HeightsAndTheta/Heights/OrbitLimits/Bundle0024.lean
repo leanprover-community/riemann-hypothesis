@@ -14,7 +14,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsIntegralProjIndep
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -102,7 +101,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsPosPartProjIndep
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -229,7 +227,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsSheetSimpleNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -292,7 +289,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartZeroSet
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -403,7 +399,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StGoodChartModel
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -440,7 +435,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSheetLift
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightLocalNormalIndex
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -23,7 +22,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightPlacesRing
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -47,7 +45,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightSubringPrimeMaximal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

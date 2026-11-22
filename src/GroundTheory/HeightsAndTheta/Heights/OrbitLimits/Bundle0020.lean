@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0017
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartConeComponent
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -49,7 +48,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartDivisor
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -82,7 +80,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartDivisorLength
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -109,7 +106,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartSectionLength
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -133,7 +129,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsGenericCount
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -156,7 +151,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosDensIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -178,7 +172,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosDensMeasurable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -201,7 +194,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosPartLocal
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -233,7 +225,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsSegreChartFibreSum
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -261,7 +252,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsSheetOnlyNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -283,7 +273,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartAbsIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -307,7 +296,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartProjFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

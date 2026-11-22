@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Bundle0013
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsFibreNonempty
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -33,7 +32,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsFibreRelDim
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -58,7 +56,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsLocalIntegralClosureFinite
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -89,7 +86,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalFinite
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -116,7 +112,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalIntegral
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -143,7 +138,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalLengthSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -231,7 +225,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalResidueLength
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 

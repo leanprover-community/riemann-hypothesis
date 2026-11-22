@@ -5,7 +5,6 @@ public import GroundTheory.PAdicHodge.NormalizedTrace
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.PAdicHodge
 

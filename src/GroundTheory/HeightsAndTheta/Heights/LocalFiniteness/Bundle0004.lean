@@ -51,7 +51,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0024
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.HilbertSamuelIrreducibleBasicOpenConnected
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_ConeLocalLength.{u} : GroundTheory.Heights₂.Heights.FieldNumbers.ConeLocalLength.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.FieldNumbers.ConeLocalLength.proof.{u} GroundTheory.Heights₂.Heights.FieldNumbers.LocalizedQuotientLength.proof GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_ConeLocalFlat
@@ -71,7 +70,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.TargetsCurveVertPointLength
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.CycleAverage : GroundTheory.Heights₂.Heights.CycleAverage.Statement :=
   @GroundTheory.Heights₂.Heights.CycleAverage.proof GroundTheory.Heights₂.Heights.AutoClose.ConeAverage

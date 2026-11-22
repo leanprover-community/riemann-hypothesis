@@ -10,7 +10,6 @@ public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.
 
 -- bundled from GroundTheory.AutomorphicForms.GeometricLemma
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

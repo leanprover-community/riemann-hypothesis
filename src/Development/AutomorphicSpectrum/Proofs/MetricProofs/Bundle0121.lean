@@ -168,7 +168,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.IsWeightedHomogeneousOfIsMultiHomog
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -344,7 +343,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalSectionOfPotentialOnModel
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

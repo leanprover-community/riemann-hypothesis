@@ -8,7 +8,6 @@ public import GroundTheory.ProfiniteCohomology.PoincareDuality.DeltaPairing
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

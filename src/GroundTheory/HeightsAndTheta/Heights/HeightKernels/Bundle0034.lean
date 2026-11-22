@@ -22,7 +22,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBounded
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartEnergySymm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -124,7 +123,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PGrassLinesProj
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -252,7 +250,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PSectionIndexNorm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

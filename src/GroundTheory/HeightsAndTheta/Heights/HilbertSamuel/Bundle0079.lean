@@ -25,7 +25,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0069
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AnResBridge
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -140,7 +139,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ExistsSmallOfArVolPPos
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -266,7 +264,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.H1VanishGeneratedOfLocalizedSubsingleton
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -429,7 +426,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGraphChangeOfModel
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

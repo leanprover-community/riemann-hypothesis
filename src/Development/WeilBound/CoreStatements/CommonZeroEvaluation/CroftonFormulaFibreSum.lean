@@ -13,7 +13,6 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.Bundle0069
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
 

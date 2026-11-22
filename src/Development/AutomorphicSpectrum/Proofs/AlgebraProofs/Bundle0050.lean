@@ -32,7 +32,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0097
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DualStackedExceptionalBase
 section
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
 

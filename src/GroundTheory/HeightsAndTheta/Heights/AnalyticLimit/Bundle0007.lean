@@ -8,7 +8,6 @@ public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PChartCont
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -44,7 +43,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PCoordDivDivisible
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -107,7 +105,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PHyperplaneDivisible
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -273,7 +270,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PIndicatorSmooth
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -313,7 +309,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLogNormHolo
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -375,7 +370,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PNormSqSmooth
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -394,7 +388,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PRegRCont
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -438,7 +431,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PRegYoDense
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 

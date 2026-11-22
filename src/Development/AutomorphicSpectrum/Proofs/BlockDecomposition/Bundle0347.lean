@@ -310,7 +310,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermAuxiliaryStatementA
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

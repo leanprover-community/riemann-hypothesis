@@ -11,7 +11,6 @@ public import GroundTheory.LocalFields.SeparableClosure
 
 -- bundled from GroundTheory.PAdicHodge.BCrisNewtonValue
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -155,7 +154,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.FieldOfNormsUpper
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

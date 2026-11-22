@@ -11,7 +11,6 @@ public import GroundTheory.TateCohomology.CoindOne
 
 -- bundled from GroundTheory.TateCohomology.Annihilation
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -69,7 +68,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.Characters
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -204,7 +202,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.CohTrivialBasic
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 

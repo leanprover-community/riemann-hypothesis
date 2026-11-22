@@ -5,7 +5,6 @@ public import GroundTheory.AutomorphicForms.Bundle0006
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Theta
 

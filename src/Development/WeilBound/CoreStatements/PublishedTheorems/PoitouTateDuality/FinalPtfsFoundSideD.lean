@@ -14,7 +14,6 @@ namespace PositivityTheory.Lit1.PTN
 
 attribute [local instance 2000] Rep.hV2
 
-set_option maxSynthPendingDepth 1
 
 theorem exists_cocycle_of_dn {k G : Type} [CommRing k] [Group G] [TopologicalSpace G]
     [IsTopologicalGroup G] (A : Rep.{0} k G) [IsDiscreteRep A] {R M : Type} [CommRing R]

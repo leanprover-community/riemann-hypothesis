@@ -8,7 +8,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Antisymmetric.PNefOnFibresRelabel
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -187,7 +186,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Antisymmetric.StatementsGluing
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

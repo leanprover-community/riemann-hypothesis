@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Bundle0001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.Assembly
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -68,7 +67,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartFirstGroupDvd
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -283,7 +281,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartNorm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

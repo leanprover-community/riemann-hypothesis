@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.Bundle001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PLiftGraphFactorX
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -20,7 +19,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StRefChartDisc
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

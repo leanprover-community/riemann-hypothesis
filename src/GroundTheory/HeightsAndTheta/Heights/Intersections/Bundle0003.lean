@@ -8,7 +8,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticInt
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PRankAdjoinFrac
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -141,7 +140,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PRankFracDegree
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -204,7 +202,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PRelAlgClosureFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -277,7 +274,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreLocal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

@@ -35,7 +35,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0024
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ContractMixed
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -193,7 +192,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CoordRatioDeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -216,7 +214,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.FibreMultiHomog
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -236,7 +233,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.GenFibreChartDeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -260,7 +256,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ImageArithClosed
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -272,7 +267,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PChartSectionLength
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -315,7 +309,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLelongChartLimit
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -415,7 +408,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLiftBlockDatum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -452,7 +444,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StGoodChartDim
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

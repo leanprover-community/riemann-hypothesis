@@ -6,7 +6,6 @@ public import GroundTheory.PowerSubgroups.CountableNeighbourhoods.Bundle0002
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

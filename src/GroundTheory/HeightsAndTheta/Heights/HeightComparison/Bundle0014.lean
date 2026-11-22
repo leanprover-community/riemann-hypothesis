@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.Bundle0007
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightAssemblyFull
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -57,7 +56,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCenterChart
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -201,7 +199,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitDegreeRatio
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

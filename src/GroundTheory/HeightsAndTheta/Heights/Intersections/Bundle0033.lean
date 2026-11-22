@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0031
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.KerIsMultiHomogIdeal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -208,7 +207,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PDeSlotAdd
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -365,7 +363,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PPFStep
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -462,7 +459,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingInj
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

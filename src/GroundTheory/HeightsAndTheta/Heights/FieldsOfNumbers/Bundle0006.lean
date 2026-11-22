@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Bundle0004
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PHilbExactDivide
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -210,7 +209,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PIntNumBase
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -377,7 +375,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PRenameIntNum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -453,7 +450,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsContractRelDimLe
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 

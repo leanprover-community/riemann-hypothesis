@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0011
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

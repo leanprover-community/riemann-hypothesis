@@ -5,7 +5,6 @@ public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.CompactC
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

@@ -263,7 +263,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionLocConstTrivial
 section
-set_option maxSynthPendingDepth 1
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology NumberField
 
@@ -315,7 +314,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.IsCxVarOfMemMinimalPrimesCxIdeal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Pub.CxComp
 

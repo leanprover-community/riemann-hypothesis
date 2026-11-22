@@ -6,7 +6,6 @@ public import GroundTheory.ProfiniteCohomology.PoitouTate.Abstract
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

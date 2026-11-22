@@ -30,7 +30,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0016
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PComponentsPairPoly
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -106,7 +105,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PConeComplexBaseChange
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -155,7 +153,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PFCoord
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -183,7 +180,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PMoriwakiBigCurve
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -232,7 +228,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PNefCountAlongMultiples
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -349,7 +344,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChart
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -449,7 +443,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PoincareLelongAlt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

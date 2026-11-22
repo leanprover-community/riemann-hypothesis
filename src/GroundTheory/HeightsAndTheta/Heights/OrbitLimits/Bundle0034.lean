@@ -28,7 +28,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0046
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ChartConeObjects
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -162,7 +161,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveCountObjects
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -267,7 +265,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveRatSectionSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -315,7 +312,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PFibreMultiHomog
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

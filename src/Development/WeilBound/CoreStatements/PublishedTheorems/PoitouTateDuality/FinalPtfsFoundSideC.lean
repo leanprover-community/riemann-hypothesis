@@ -14,7 +14,6 @@ namespace PositivityTheory.Lit1.PTN
 
 attribute [local instance 2000] Rep.hV2
 
-set_option maxSynthPendingDepth 1
 
 section Local
 

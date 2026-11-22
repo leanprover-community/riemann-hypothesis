@@ -11,7 +11,6 @@ public import ReciprocityTheory.ThetaQuasiPeriods.NormInvSmulMemSphere
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsChartIbpSteps
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -47,7 +46,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrassHeight
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -196,7 +194,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.ThetaGauss
 section
-set_option maxSynthPendingDepth 1
 
 open Matrix MeasureTheory Real
 open scoped MatrixOrder

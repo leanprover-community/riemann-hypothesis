@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0033
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullFormsGeneric
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -199,7 +198,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullGradedAlgebraic
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -392,7 +390,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PVeroneseGraphImage
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

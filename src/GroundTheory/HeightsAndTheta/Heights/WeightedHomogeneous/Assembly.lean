@@ -24,7 +24,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.MemMCoordIdealI
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

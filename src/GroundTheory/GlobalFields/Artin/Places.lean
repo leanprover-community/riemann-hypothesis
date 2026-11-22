@@ -5,7 +5,6 @@ public import GroundTheory.GlobalFields.Artin.LogCharpoly
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

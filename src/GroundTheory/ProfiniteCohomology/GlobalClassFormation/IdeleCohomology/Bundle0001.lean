@@ -11,7 +11,6 @@ public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomol
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomology.Infinite
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -239,7 +238,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleCohomology.Integral
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

@@ -259,7 +259,6 @@ section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
 
 set_option autoImplicit false
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.GE.PSupp
 

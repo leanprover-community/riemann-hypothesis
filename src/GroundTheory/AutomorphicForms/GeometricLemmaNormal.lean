@@ -9,7 +9,6 @@ public import GroundTheory.AutomorphicForms.GeometricLemmaCellSurjective
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

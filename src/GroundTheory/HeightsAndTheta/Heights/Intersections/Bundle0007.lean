@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Bund
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PChartRankAdjoin
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -128,7 +127,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.POrbitCompNonvanish
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -211,7 +209,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsArith
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -313,7 +310,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsLineFibre
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

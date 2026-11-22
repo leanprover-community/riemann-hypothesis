@@ -10,7 +10,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.Bundle0002
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.Cartan
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 
@@ -182,7 +181,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjSpace
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 
@@ -273,7 +271,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularCurve
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

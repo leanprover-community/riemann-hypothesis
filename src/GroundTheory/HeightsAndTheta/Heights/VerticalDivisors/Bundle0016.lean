@@ -29,7 +29,6 @@ public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSpecChartBa
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Assembly
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -110,7 +109,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSpecChart
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 

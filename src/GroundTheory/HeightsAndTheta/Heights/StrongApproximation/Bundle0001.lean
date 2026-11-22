@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.StrongApproximation.Statement
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PAENeighbourhoods
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -192,7 +191,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PAETopologicalRing
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -316,7 +314,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PClosureIsSubmonoid
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -387,7 +384,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PEDenseInAE
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -430,7 +426,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PHypPairExists
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -8,7 +8,6 @@ public import GroundTheory.FunctionField.ValuationAevalSubCoeffZeroLe
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.FunctionField
 

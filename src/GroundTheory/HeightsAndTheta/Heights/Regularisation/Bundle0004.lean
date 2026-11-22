@@ -13,7 +13,6 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshRegMa
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.ChartFun
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -52,7 +51,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.GlueCharts
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -238,7 +236,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.IsCompactImageClosureMid
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -312,7 +309,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PChartMollifiedBounds
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -423,7 +419,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PMaxOscillation
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 

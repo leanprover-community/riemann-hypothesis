@@ -5,7 +5,6 @@ public import GroundTheory.ProfiniteCohomology.ContinuousCochains
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

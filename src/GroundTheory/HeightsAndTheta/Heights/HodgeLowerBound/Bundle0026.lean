@@ -14,7 +14,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.HFl
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -61,7 +60,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PAPrimeChartMargin
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -175,7 +173,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PChartVelLift
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -325,7 +322,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PModelFibreFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -383,7 +379,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StAPrimeChartLeviLocal
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

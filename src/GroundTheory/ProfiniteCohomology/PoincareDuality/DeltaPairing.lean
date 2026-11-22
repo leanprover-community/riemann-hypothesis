@@ -6,7 +6,6 @@ public import GroundTheory.ProfiniteCohomology.CupProducts.Pairing
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

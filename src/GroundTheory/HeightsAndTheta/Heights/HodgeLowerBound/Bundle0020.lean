@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0013
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTopNMixedExpand
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -135,7 +134,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTpCuspIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -338,7 +336,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTpIntegrandLimit
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -452,7 +449,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StNbarSmooth
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

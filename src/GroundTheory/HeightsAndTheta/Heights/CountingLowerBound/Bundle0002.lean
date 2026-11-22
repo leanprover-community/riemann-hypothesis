@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Statements
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.PMinkowskiCovolumeBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBound
 
@@ -99,7 +98,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.PPackingCount
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBound
 
@@ -203,7 +201,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.PTailBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBound
 

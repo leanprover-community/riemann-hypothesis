@@ -12,7 +12,6 @@ public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
 
 -- bundled from GroundTheory.AutomorphicForms.GL2.GJLeviSupport
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

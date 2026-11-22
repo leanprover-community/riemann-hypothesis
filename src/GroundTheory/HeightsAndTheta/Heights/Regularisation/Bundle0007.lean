@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Bundle0004
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PChartLeviThGe
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Regular
 
@@ -195,7 +194,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PGlueRegularised
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 

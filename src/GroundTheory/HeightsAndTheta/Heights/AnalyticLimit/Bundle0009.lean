@@ -26,7 +26,6 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PGreenMassRepla
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.EnergyStep
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -165,7 +164,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PGreenMassReplaceKappa
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -370,7 +368,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PListProductMass
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 

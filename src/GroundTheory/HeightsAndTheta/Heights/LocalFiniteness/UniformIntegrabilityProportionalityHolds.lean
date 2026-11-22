@@ -227,7 +227,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0025
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_ChartDivisorComponents : GroundTheory.Heights₂.Heights.Targets.ChartDivisorComponents.Statement :=
   @GroundTheory.Heights₂.Heights.Targets.ChartDivisorComponents.proof GroundTheory.Heights₂.Heights.Targets.ChartSectionNotMem.proof

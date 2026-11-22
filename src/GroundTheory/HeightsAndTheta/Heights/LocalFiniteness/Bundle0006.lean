@@ -32,7 +32,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.Pullback
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.FieldNumbersSemilocalMaxIdeals
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_SemilocalMaxIdeals.{u} : GroundTheory.Heights₂.Heights.FieldNumbers.SemilocalMaxIdeals.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.FieldNumbers.SemilocalMaxIdeals.proof.{u} GroundTheory.Heights₂.Heights.FieldNumbers.FibreFinite.proof GroundTheory.Heights₂.Heights.FieldNumbers.FibreRelDim.proof GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_FibreNonempty GroundTheory.Heights₂.Heights.FieldNumbers.DegZeroLocUnits.proof GroundTheory.Heights₂.Heights.FieldNumbers.DegZeroLocSeparate.proof GroundTheory.Heights₂.Heights.FieldNumbers.DegZeroLocLocalize.proof GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_SemilocalResidueLength
@@ -43,7 +42,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.TargetsProjRegularDens
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.MahlerSectionOfConst : GroundTheory.Heights₂.Heights.MahlerSectionOfConst.Statement :=
   @GroundTheory.Heights₂.Heights.MahlerSectionOfConst.proof GroundTheory.Heights₂.Heights.AutoClose.DefectAverage GroundTheory.Heights₂.Heights.AutoClose.AdmissibleAENrm GroundTheory.Heights₂.Heights.BallVolume.proof

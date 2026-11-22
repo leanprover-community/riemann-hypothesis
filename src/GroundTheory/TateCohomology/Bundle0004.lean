@@ -9,7 +9,6 @@ public import GroundTheory.TateCohomology.Bundle0001
 
 -- bundled from GroundTheory.TateCohomology.CupConnecting
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -169,7 +168,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.CupFunctorial
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -240,7 +238,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.HerbrandTate
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -296,7 +293,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.UniquelyDivisible
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 

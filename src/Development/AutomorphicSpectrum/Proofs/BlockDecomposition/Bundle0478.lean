@@ -225,7 +225,6 @@ end
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CvecSurjective
 section
 set_option linter.unusedSectionVars false
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

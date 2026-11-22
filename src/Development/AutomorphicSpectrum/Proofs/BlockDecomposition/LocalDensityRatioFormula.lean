@@ -5,7 +5,6 @@ public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BaseO
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

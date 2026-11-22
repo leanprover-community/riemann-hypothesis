@@ -8,7 +8,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.StrongApproxi
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.POrthProjection
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -55,7 +54,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PPlaceMaps
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -285,7 +283,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PSAHolds
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -351,7 +348,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PSAOpenHolds
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

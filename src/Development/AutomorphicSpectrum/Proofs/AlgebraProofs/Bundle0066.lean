@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PLeadBlockGa
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AePolynomialNonvanishingRows
 section
-set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
 
@@ -102,7 +101,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FibreCountRotationInvariant
 section
-set_option maxSynthPendingDepth 1
 
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
@@ -263,7 +261,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FubiniStudyLogLeLogNorm
 section
-set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
 
@@ -278,7 +275,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GaussianMatrixMeasurePosFinite
 section
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Short.Crofton
 
@@ -366,7 +362,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GaussianProjectionBallIndicator
 section
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Short.Crofton
 

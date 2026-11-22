@@ -6,7 +6,6 @@ public import GroundTheory.ProfiniteCohomology.PoincarePairs.Natural
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

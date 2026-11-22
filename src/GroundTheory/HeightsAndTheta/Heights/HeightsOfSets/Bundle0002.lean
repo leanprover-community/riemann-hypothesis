@@ -8,7 +8,6 @@ public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.DenseHeight
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -162,7 +161,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FieldChange
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

@@ -8,7 +8,6 @@ public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PRefAlongSheet
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -141,7 +140,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PSheetChartHolo
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

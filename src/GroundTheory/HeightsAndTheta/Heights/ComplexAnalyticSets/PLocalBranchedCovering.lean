@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IrreducibleConn
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets
 

@@ -7,7 +7,6 @@ public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalDualityDefs
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

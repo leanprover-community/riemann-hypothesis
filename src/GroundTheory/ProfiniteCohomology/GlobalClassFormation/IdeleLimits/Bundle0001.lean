@@ -8,7 +8,6 @@ public import GroundTheory.GlobalFields.IdeleGroups.LocalHerbrandInfinite
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.LevelsTrans
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -56,7 +55,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.LocalTransition
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

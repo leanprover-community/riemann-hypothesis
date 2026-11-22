@@ -5,7 +5,6 @@ public import GroundTheory.AutomorphicForms.GL2.GJLeviZetaConv
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

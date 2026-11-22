@@ -7,7 +7,6 @@ public import GroundTheory.GlobalFields.TateThesis.Bundle0009
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.EisRk1Bound
 

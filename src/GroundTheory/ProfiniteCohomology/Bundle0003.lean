@@ -9,7 +9,6 @@ public import GroundTheory.ProfiniteCohomology.OfNatRelIndexSupAntitone
 
 -- bundled from GroundTheory.ProfiniteCohomology.BridgeDefs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -35,7 +34,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.IsProPGroupSubgroupIffIsPGroupMap
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

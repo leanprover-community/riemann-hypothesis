@@ -11,7 +11,6 @@ public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalClassFormation.ExistsUnitsToIdelesEqOfIdelesSumInvEqZero
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -158,7 +157,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleInvariants
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

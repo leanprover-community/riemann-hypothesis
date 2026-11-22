@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.IntegrableOfTen
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLemmaETruncMass
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -216,7 +215,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLemmaETruncTail
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 

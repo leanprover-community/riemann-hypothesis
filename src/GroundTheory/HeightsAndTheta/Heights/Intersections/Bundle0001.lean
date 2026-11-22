@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.CardLength
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -65,7 +64,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.LocQuotCard
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -137,7 +135,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PProjBundleMultiHomogGrad
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -179,7 +176,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StAdjoinIndepRelfinrank
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -202,7 +198,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StChartPrimElt
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -232,7 +227,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StChartSpecCount
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -262,7 +256,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StFinrankAdjoinRange
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -285,7 +278,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StIntClosureLocFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -306,7 +298,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StLocAwaySpec
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -331,7 +322,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StRankAdjoinFrac
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -357,7 +347,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StRankFracDegree
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -377,7 +366,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StRelAlgClosureFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -9,7 +9,6 @@ public import GroundTheory.TateCohomology.Bundle0001
 
 -- bundled from GroundTheory.TateCohomology.CupProduct
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -217,7 +216,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.HerbrandRep
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -241,7 +239,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.InducedNorm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 

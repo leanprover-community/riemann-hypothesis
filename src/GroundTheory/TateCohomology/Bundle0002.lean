@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.TateCohomology.ModuleHomologyData
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -180,7 +179,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.TateAddEquivAbelianizationTateClass
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 

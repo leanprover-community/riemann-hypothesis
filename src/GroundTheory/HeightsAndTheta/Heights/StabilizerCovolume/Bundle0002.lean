@@ -15,7 +15,6 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.Bundle00
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.BRegWeightLevi
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -59,7 +58,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.DifferentLatIndex
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -80,7 +78,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.PhiISemipositive
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0071
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PPFHoriz
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -223,7 +222,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsRegLimit
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -354,7 +352,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PRatioAlgDep
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

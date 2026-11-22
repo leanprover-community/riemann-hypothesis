@@ -77,7 +77,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.ToricVarieties.KrullDomain
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.Toric
 

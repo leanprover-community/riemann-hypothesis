@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0024
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PChartConeLength
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -234,7 +233,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PChartDehomIdeal
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -321,7 +319,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PConeRingLaurent
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -475,7 +472,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsChartLatFull
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

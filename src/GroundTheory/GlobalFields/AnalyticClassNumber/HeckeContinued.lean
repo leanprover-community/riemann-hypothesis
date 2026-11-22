@@ -6,7 +6,6 @@ public import GroundTheory.GlobalFields.TateThesis.Nonvanishing
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open NumberField InfinitePlace IsDedekindDomain MeasureTheory Complex Topology Filter Set
 open scoped NumberField.AdeleRing ComplexConjugate Real

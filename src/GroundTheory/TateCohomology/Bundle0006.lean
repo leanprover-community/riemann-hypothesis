@@ -13,7 +13,6 @@ public import GroundTheory.TateCohomology.TateLow
 
 -- bundled from GroundTheory.TateCohomology.CupGraded
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -103,7 +102,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.PGroupCohTrivial
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -161,7 +159,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.ResCores
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -219,7 +216,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.TateDeltaZero
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -271,7 +267,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.TateGroupIso
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 

@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ArtinCount
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -118,7 +117,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.PermLatticeCharacter
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -266,7 +264,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ShapiroDefs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

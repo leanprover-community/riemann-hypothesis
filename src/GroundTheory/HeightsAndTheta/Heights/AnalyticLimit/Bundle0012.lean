@@ -26,7 +26,6 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Bundle0009
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PListTailLogSmooth
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 
@@ -204,7 +203,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaETrunc
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit
 

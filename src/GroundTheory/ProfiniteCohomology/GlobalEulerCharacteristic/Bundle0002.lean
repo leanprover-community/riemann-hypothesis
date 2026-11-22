@@ -12,7 +12,6 @@ public import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsRep
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.PermLattice
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -165,7 +164,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.UnitsDefs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

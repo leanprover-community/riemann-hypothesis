@@ -14,7 +14,6 @@ public import GroundTheory.TateCohomology.InfRes
 
 -- bundled from GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolNorm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -255,7 +254,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.LocalClassFormation.OrderInfRes
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

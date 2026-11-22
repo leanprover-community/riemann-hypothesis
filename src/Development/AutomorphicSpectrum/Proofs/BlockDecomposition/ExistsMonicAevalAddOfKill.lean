@@ -19,7 +19,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Bundl
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open NumberField GlobalTheory.CuspRep GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.Reduction MeasureTheory PositivityTheory.Affgl
 open scoped NumberField.AdeleRing

@@ -5,7 +5,6 @@ public import GroundTheory.PAdicHodge.PerfectoidField
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

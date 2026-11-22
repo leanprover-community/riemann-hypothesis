@@ -7,7 +7,6 @@ public import GroundTheory.AutomorphicForms.LeviStagesExact
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

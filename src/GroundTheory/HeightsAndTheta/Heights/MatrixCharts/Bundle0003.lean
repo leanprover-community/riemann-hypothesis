@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Bundle0002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PAnalyticDerivBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -30,7 +29,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PGramEntryDeriv
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -138,7 +136,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PInvEntryBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -185,7 +182,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PInvEntryDeriv
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -279,7 +275,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PLogDetGramDeriv
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -393,7 +388,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PMatrixDetDeriv
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

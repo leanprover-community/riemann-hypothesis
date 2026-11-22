@@ -34,7 +34,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.Bundle020
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NatOfSimpleLoweringNilpotent
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

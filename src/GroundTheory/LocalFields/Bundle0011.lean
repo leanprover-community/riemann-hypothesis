@@ -92,7 +92,6 @@ end
 
 -- bundled from GroundTheory.LocalFields.WeilGroupDefs
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

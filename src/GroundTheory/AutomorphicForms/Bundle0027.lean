@@ -10,7 +10,6 @@ public import GroundTheory.AutomorphicForms.MacdonaldWhittaker
 
 -- bundled from GroundTheory.AutomorphicForms.FiniteLengthCuspidal
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

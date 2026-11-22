@@ -101,7 +101,6 @@ variable (Xo c)
 
 abbrev Rul : Type := Rules (K := c.F) (fun S _ _ => FrPt Xo c S)
 
-set_option maxSynthPendingDepth 1 in
 instance (priority := high) rulModule : Module c.F (Rul Xo c) :=
   inferInstance
 

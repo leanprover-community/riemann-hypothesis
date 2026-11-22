@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.FubiniLeviGen
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -85,7 +84,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

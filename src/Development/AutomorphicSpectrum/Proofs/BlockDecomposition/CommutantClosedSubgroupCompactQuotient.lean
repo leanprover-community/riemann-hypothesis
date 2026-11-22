@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Bundle029
 @[expose] public section
 
 set_option linter.unusedSectionVars false
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -43,7 +43,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Bund
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChernClassOnFlagPair
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -104,7 +103,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CroftonFormulaFibreSum
 section
-set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
 

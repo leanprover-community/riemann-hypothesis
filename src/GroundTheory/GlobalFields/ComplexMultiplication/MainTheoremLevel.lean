@@ -8,7 +8,6 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.Bundle0003
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 namespace Elliptic

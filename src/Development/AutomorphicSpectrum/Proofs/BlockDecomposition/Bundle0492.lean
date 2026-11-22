@@ -439,7 +439,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactHeightLowerBound
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

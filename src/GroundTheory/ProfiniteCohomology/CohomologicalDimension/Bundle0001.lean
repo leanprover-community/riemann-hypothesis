@@ -11,7 +11,6 @@ public import GroundTheory.ProfiniteCohomology.Bundle0003
 
 -- bundled from GroundTheory.ProfiniteCohomology.CohomologicalDimension.CdpOpenSubgroupLe
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -49,7 +48,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.CohomologicalDimension.NotDvdSuperIndexBotOfIsProPGroup
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

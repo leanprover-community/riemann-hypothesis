@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.IsOpenKappaOpe
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PPolyMaxLowerBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -190,7 +189,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.ToPotentialChartsChartFun
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Regular
 

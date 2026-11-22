@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.Bundle0002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.ComapEqMaximalIdeal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
 
@@ -55,7 +54,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.CpEqPrimeWeight
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
 
@@ -129,7 +127,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.FiniteTypeSectionsOfIsFiniteTypeOverZ
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
 
@@ -261,7 +258,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.IicEqRange
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
 
@@ -281,7 +277,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.ImportsAlt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
 
@@ -301,7 +296,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.PBlowUpChart
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 
@@ -357,7 +351,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.PDominatingDVR
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 

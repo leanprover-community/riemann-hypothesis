@@ -134,7 +134,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.RestrictedRamification.SPicDefs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -213,7 +212,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.RestrictedRamification.ValuationTransport
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

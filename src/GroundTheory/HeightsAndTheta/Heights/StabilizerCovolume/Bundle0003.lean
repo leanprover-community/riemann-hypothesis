@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.PDifferent
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.DiffLatFree
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -119,7 +118,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.PTorusIndex
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

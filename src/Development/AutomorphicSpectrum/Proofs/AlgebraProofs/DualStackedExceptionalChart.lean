@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedExc
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
 

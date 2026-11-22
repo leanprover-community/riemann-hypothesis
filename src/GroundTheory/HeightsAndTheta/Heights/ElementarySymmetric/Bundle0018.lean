@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.Bundle001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PBoundedSectionTransfer
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -63,7 +62,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PSectionNormSqExtensionX
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -75,7 +73,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StProjChartHolo
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

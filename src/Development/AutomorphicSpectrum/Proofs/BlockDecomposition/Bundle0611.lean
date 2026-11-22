@@ -458,7 +458,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GlobalFunctionalEquationH1
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

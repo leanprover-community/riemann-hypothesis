@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0007
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PChoice
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -199,7 +198,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSwap
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -235,7 +233,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsWellDefined
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

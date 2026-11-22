@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Bundle0012
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartFirstGroupPrime
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -105,7 +104,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartIncDomain
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -313,7 +311,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartLocDomain
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -410,7 +407,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PChowFormMultiHomog
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -426,7 +422,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartFirstGroupDvd
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

@@ -183,7 +183,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0015
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

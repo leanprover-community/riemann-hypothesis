@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.AutomorphicForms.AnisotropicRestrict
 section
-set_option maxSynthPendingDepth 1
 
 open Matrix TensorProduct
 
@@ -231,7 +230,6 @@ end
 
 -- bundled from GroundTheory.AutomorphicForms.CompactSelfAdjoint
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Automorphic.CompactSelfAdjoint
 

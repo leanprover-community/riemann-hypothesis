@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Bundle0002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -114,7 +113,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PFibreCompDimZ
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -250,7 +248,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIdealIndexPlaces
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -439,7 +436,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PPointHeightDegree
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

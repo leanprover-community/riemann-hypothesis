@@ -10,7 +10,6 @@ public import GroundTheory.PAdicHodge.GaloisOnCp
 
 -- bundled from GroundTheory.PAdicHodge.HighIndexSingleZeroOne
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -76,7 +75,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.LogMul
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -203,7 +201,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.SlopeCauchyBinet
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.PAdicHodge
 
@@ -344,7 +341,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.TateCpTwist
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.PAdicHodge
 

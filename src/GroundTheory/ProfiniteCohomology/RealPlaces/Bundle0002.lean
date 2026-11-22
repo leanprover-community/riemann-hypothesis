@@ -8,7 +8,6 @@ public import GroundTheory.ProfiniteCohomology.RealPlaces.ConeMap
 
 -- bundled from GroundTheory.ProfiniteCohomology.RealPlaces.InducedDropOut
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -166,7 +165,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.RealPlaces.VanishingCriterion
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

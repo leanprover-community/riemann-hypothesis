@@ -6,7 +6,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.InvertibleDual
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

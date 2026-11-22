@@ -44,7 +44,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MahlerSectionStatementHolds
 section
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Short
 

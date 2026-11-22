@@ -43,7 +43,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PSemilocalRes
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.KleimanNefBCut
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.ForSecondHalf
 
@@ -61,7 +60,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.NumericalSegre
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
 

@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.Bundle0001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightPlacesRingQuot
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -23,7 +22,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.PSubringPrimeMaximal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

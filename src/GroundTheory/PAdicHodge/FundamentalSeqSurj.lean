@@ -6,7 +6,6 @@ public import GroundTheory.PAdicHodge.Bundle0007
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

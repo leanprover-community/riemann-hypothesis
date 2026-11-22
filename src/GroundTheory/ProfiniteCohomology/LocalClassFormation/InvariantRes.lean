@@ -6,7 +6,6 @@ public import GroundTheory.Brauer.BaseChangeRestriction
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

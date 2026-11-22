@@ -17,7 +17,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0077
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockChiCovolume
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -131,7 +130,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockMeasureChange
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -351,7 +349,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCurvePointsFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -455,7 +452,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSecCochReduce
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

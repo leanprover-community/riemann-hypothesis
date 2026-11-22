@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.AutomorphicForms.GeometricLemmaOrbit
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

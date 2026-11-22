@@ -8,7 +8,6 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BasePairin
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

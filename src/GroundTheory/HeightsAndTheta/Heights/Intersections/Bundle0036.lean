@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0026
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.DetRestrictScalarsEqZero
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -136,7 +135,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsSheetPullW
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -373,7 +371,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsAlt
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -466,7 +463,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherRest
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

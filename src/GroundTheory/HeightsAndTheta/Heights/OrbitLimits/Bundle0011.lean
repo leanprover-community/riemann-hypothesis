@@ -17,7 +17,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0009
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ExistsUnique
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -42,7 +41,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.GeoNum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -140,7 +138,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Multilin
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -174,7 +171,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLelongPolyLimit
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -204,7 +200,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSymmRelabel
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -235,7 +230,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.SegreAssembly
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -256,7 +250,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StLelongWeightDiff
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

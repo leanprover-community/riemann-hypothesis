@@ -11,7 +11,6 @@ public import GroundTheory.ProfiniteCohomology.OfNatRelIndexSupAntitone
 
 -- bundled from GroundTheory.ProfiniteCohomology.Bridge
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -74,7 +73,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.EulerCharDefs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -103,7 +101,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.NotDvdSuperIndexIffMap
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

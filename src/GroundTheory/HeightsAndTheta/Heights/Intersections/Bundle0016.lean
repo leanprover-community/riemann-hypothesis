@@ -10,7 +10,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.RegLine
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -107,7 +106,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingLocal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -130,7 +128,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingPow
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -154,7 +151,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsAbsIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -176,7 +172,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsAddFirst
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -199,7 +194,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StRatioAlgDep
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -222,7 +216,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StSheetHessPSD
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -244,7 +237,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.TwoMemFunFieldSpecZ
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -267,7 +259,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.XcNotMemOfIsRelevant
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSegreBase
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.LocAtRatio
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -207,7 +206,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.MemMIdealOverIff
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -377,7 +375,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSegreFibresNef
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -416,7 +413,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RelDimMIdealOverEqTrdeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

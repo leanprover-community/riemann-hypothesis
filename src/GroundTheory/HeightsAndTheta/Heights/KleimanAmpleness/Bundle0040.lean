@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleAffine
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZExtend
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -153,7 +152,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZFamily
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

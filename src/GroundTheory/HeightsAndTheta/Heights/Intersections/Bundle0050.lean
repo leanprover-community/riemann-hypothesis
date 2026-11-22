@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Bundle0002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.Imports
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -121,7 +120,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PChartNormPts
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -210,7 +208,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocChartRatio
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -265,7 +262,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocIntegral
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -316,7 +312,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocLengthSum
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -425,7 +420,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StSemilocResidueAdjoin
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -454,7 +448,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StSemilocResidueFibreDim
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsFieldSubal
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 

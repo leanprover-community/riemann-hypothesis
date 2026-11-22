@@ -7,7 +7,6 @@ public import GroundTheory.ArithmeticGeometry.EtaleCompletion.ModulesPullback
 
 -- bundled from GroundTheory.ArithmeticGeometry.EtaleCompletion.PullbackAffine
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.Etale
 
@@ -240,7 +239,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.EtaleCompletion.QcohZariski
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.Etale
 

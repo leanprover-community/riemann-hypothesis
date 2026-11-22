@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0026
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.WhittakerFunctional
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -163,7 +162,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ZcombIsConjInvariantH
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

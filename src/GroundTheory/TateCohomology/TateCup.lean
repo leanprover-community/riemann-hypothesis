@@ -6,7 +6,6 @@ public import GroundTheory.TateCohomology.Bundle0009
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory MonoidalCategory Limits Rep
 

@@ -26,7 +26,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0024
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiProjPrimeImageZ
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -197,7 +196,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.OrderOfIntegral
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -297,7 +295,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PFlagPivotIdentity
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -418,7 +415,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ProofOfNoethPow
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -454,7 +450,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFVert
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

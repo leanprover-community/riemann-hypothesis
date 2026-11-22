@@ -9,7 +9,6 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.TorsionReduction
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 namespace Elliptic

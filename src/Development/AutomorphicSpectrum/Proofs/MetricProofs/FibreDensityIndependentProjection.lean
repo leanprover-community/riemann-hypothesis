@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsPosPartLocal
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

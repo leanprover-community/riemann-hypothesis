@@ -8,7 +8,6 @@ public import GroundTheory.ProfiniteCohomology.Bundle0001
 
 -- bundled from GroundTheory.ProfiniteCohomology.CompactSupportCohomology.HomologyMapPiLiftPiHomologyIsoHom
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -109,7 +108,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.CompactSupportCohomology.Pairing
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

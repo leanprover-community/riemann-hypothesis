@@ -5,7 +5,6 @@ public import GroundTheory.ProfiniteCohomology.PoincarePairs
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

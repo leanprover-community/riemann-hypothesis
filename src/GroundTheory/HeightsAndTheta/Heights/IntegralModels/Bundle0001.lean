@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.FiniteIntegralClosureCharP
 section
-set_option maxSynthPendingDepth 1
 
 open scoped nonZeroDivisors
 
@@ -213,7 +212,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.FiniteIntegralClosureLocal
 section
-set_option maxSynthPendingDepth 1
 
 open scoped nonZeroDivisors
 

@@ -7,7 +7,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffFubiniStud
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FourB
 

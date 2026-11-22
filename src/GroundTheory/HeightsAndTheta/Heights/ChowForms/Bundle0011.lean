@@ -13,7 +13,6 @@ public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothnes
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartDehomog
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -66,7 +65,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartHomogenise
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -141,7 +139,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartLocalOrder
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -278,7 +275,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PComponentOfIncIdeal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

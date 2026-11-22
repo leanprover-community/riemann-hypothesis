@@ -23,7 +23,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Bundle011
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.VarLelong
 

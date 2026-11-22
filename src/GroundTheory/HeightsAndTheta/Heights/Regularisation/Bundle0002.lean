@@ -9,7 +9,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.Bundle0001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.BoundedStatements
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -65,7 +64,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PCutoffs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -194,7 +192,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PKernelPositive
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -327,7 +324,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.StLogCoverDescent
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -349,7 +345,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.StatementsChartBounds
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -374,7 +369,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.StatementsTruncPsh
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -397,7 +391,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.StatementsTruncTransfer
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 

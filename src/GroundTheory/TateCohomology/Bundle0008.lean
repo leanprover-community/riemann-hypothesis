@@ -13,7 +13,6 @@ public import GroundTheory.TateCohomology.CoresRes
 
 -- bundled from GroundTheory.TateCohomology.CohTrivialPGroup
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -171,7 +170,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.CupTate
 section
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory MonoidalCategory groupCohomology
 
@@ -333,7 +331,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.SplittingModule
 section
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory Limits groupCohomology Rep
 
@@ -435,7 +432,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.TateResEqZeroOfNsmulEqZero
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 

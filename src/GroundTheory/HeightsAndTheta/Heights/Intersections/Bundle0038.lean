@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.RegularizedCurv
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PPFFibreSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -182,7 +181,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PRSlotAdd
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -337,7 +335,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PRegCurvBound
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -460,7 +457,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsLocRingDimOne
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

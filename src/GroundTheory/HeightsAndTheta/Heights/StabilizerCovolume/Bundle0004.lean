@@ -23,7 +23,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0019
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.PVerticalGenericDeg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NineStatements
 
@@ -75,7 +74,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.StMUcSmooth
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

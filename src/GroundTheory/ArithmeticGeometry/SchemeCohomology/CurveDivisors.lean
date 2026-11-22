@@ -6,7 +6,6 @@ public import GroundTheory.FunctionField.Divisor
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory AlgebraicGeometry Order Topology Module
 

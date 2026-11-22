@@ -5,7 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbe
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

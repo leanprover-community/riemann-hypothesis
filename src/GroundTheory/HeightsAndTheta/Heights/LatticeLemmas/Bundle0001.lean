@@ -9,7 +9,6 @@ public import GroundTheory.GlobalFields.LocalFieldAtPlace
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PBaseChange
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LatticeLemmas
 
@@ -105,7 +104,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PDiagonalChange
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LatticeLemmas
 
@@ -161,7 +159,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PExactSequence
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -231,7 +228,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PLocalChange
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LatticeLemmas
 
@@ -288,7 +284,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PLocalLatticeIndex
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LatticeLemmas
 
@@ -467,7 +462,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PSublattice
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LatticeLemmas
 

@@ -19,7 +19,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PStokesStep
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -192,7 +191,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTopNPoly
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -358,7 +356,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsBdPtsNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -382,7 +379,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsBoundaryNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -406,7 +402,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsDivisorPreimageNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -429,7 +424,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsModelLogIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -452,7 +446,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsMuHomDensityNonneg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 

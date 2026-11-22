@@ -7,7 +7,6 @@ public import GroundTheory.PAdicHodge.TiltValuation
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

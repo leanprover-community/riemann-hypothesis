@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0015
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.SpanSingletonEqRangeLsmul
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -59,7 +58,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsAbsMeasurable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -81,7 +79,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsMonoSemiPos
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -103,7 +100,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsRegLimit
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -125,7 +121,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StRegCurvBound
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -146,7 +141,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFStep
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -179,7 +173,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.TwoMemRegRingSpecZ
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

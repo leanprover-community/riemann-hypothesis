@@ -10,7 +10,6 @@ public import GroundTheory.TateCohomology.Bundle0002
 
 -- bundled from GroundTheory.TateCohomology.AugTrivial
 section
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory groupCohomology Rep
 
@@ -138,7 +137,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.PGroupCohTrivialInt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -288,7 +286,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.PullbackExtension
 section
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory
 

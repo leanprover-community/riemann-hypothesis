@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Bundle0002
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

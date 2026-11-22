@@ -5,7 +5,6 @@ public import GroundTheory.Brauer.TensorSimple
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Brauer
 

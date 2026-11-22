@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartIncO
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartMax
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -50,7 +49,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsDehomogOrd
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

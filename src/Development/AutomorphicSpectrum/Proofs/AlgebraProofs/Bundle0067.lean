@@ -7,7 +7,6 @@ public import Mathlib
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GaussianProjectionConeCoarea
 section
-set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
 
@@ -96,7 +95,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IsSigmaCompactConeInter
 section
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Short.Crofton
 
@@ -144,7 +142,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LogGapMeasurableScaleStable
 section
-set_option maxSynthPendingDepth 1
 
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
@@ -261,7 +258,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MahlerMeasureOfProduct
 section
-set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
 
@@ -297,7 +293,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MeasurableFibreCountOver
 section
-set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
 

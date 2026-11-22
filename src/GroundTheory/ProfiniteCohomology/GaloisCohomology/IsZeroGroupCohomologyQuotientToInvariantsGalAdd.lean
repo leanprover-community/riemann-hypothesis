@@ -7,7 +7,6 @@ public import GroundTheory.ProfiniteCohomology.GaloisCohomology.UnitsInflationCo
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

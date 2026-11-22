@@ -10,7 +10,6 @@ public import GroundTheory.TateCohomology.DimensionShift
 
 -- bundled from GroundTheory.TateCohomology.CohTrivial
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 
@@ -140,7 +139,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.CupTateNatural
 section
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory MonoidalCategory groupCohomology
 
@@ -169,7 +167,6 @@ end
 
 -- bundled from GroundTheory.TateCohomology.TateCupUnit
 section
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory MonoidalCategory
 

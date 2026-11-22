@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.Imports
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -48,7 +47,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.ImportsAlt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -74,7 +72,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PChowFormSection
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -195,7 +192,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PFGNullstellensatz
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -226,7 +222,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PIncIdealPrime
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -263,7 +258,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PIncidenceGeneric
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.ProfiniteCohomology.AdditiveHilbert
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -147,7 +146,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.FilteredHomology
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -296,7 +294,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.ProcyclicDefs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

@@ -7,7 +7,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.Bundle0001
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularSmooth
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 
@@ -125,7 +124,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularUFDSerre
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

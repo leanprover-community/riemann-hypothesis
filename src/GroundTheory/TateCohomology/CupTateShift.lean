@@ -7,7 +7,6 @@ public import GroundTheory.TateCohomology.TateLow
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory MonoidalCategory groupCohomology
 

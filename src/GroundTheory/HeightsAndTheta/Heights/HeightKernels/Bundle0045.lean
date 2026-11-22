@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0025
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStdBaseChange
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -95,7 +94,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualTopMetricChange
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

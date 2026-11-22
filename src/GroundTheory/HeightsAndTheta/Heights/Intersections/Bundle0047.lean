@@ -16,7 +16,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeome
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocLength
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -48,7 +47,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocRank
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -83,7 +81,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PValCentreZ
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -189,7 +186,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PWWArithVar
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -212,7 +208,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StSemilocRankFrac
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -242,7 +237,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ThmIExistsFamily
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

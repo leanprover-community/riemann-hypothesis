@@ -21,7 +21,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Bund
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ArIntMul
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -82,7 +81,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImageVarIdBotTwo
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -112,7 +110,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisMore
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -150,7 +147,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherMore
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -179,7 +175,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherTer
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -209,7 +204,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreTer
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -231,7 +225,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsHorizontalImageZIff
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -366,7 +359,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothMetricOfIsSmoothHerm
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -433,7 +425,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PBCMult
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

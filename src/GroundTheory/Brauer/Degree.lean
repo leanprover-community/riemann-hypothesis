@@ -6,7 +6,6 @@ public import GroundTheory.Brauer.IsBrauerEquivalentIffNonemptyAlgEquiv
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Brauer
 

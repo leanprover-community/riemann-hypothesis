@@ -9,7 +9,6 @@ public import GroundTheory.LocalFields.NormalLattice
 
 -- bundled from GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.Additive
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -172,7 +171,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.UnitsPower
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

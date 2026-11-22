@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0014
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.EventuallyInFrameDomain
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -206,7 +205,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsFlagGrassSteps
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -289,7 +287,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsHodgeFlagNeZero
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -309,7 +306,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsHodgeFlagRatioTrdeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

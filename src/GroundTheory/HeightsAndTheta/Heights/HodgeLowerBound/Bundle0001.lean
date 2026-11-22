@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.LoewnerDetBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -123,7 +122,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PLevelSetLocalInj
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -189,7 +187,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsHoloInjDerivInj
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

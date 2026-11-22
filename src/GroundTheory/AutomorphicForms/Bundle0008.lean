@@ -13,7 +13,6 @@ public import GroundTheory.AutomorphicForms.UnitaryRepresentations.Integrated
 
 -- bundled from GroundTheory.AutomorphicForms.CompactAbelianCharacters
 section
-set_option maxSynthPendingDepth 1
 
 open MeasureTheory Filter Topology Module End
 open scoped InnerProductSpace ComplexConjugate ENNReal

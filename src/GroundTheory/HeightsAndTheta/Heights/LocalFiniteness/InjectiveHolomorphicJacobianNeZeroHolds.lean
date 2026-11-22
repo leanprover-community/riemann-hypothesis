@@ -165,7 +165,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Bundle0008
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.FrameJacobianGeneric : GroundTheory.Heights₂.Heights.FrameJacobianGeneric.Statement :=
   @GroundTheory.Heights₂.Heights.FrameJacobianGeneric.proof GroundTheory.Heights₂.Heights.JacobianRankGeneric.proof GroundTheory.Heights₂.Heights.ConormalGenerationGeneric.proof

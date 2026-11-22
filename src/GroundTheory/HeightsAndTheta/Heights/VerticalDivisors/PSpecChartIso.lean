@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Bundle0009
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 

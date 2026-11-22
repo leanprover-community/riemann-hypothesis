@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsSectionOr
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PIncIdealDim
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -122,7 +121,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PLengthFiniteAlgebra
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -302,7 +300,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PSectionOrder
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -363,7 +360,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PSpecFirstNe
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -456,7 +452,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartFirstGroup
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

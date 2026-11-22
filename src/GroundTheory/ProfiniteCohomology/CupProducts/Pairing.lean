@@ -5,7 +5,6 @@ public import GroundTheory.ProfiniteCohomology.CupProducts.Bundle0001
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

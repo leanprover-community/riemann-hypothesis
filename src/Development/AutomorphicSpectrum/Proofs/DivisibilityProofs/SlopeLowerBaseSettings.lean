@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0014
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

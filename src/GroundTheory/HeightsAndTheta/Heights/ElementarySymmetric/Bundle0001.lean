@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PAntisymPerturbation
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -160,7 +159,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PAntisymStability
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

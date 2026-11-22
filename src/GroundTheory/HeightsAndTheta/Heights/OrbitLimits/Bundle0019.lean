@@ -17,7 +17,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0016
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsSumMeasurable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -168,7 +167,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartIntegral
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -259,7 +257,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartIntegralPoints
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -418,7 +415,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PtsIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -461,7 +457,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StChartDivisorComponents
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

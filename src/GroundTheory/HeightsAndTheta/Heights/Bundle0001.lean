@@ -31,7 +31,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KernelsLattice
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -122,7 +121,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KernelsMatrix
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -217,7 +215,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KernelsRest
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

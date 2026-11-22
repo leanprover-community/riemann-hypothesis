@@ -59,7 +59,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ResolutionExis
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.CxSheetSimpleNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

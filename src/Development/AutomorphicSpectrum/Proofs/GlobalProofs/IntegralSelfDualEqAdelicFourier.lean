@@ -18,7 +18,6 @@ open GroundTheory.Global GroundTheory.Automorphic.GJMatrix GroundTheory.Heights�
 open scoped NumberField.AdeleRing ENNReal NNReal SchwartzMap nonZeroDivisors Classical
 
 set_option synthInstance.maxSize 1000
-set_option maxSynthPendingDepth 1
 
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι]
 

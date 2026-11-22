@@ -8,7 +8,6 @@ public import GroundTheory.TateCohomology.InfRes
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0079
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockGraphDeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -115,7 +114,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockGraphFibreRatio
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -344,7 +342,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockResolutionDegreeIntegral
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

@@ -13,7 +13,6 @@ public import GroundTheory.ProfiniteCohomology.CoinducedModules.Acyclic
 
 -- bundled from GroundTheory.ProfiniteCohomology.RealPlaces.CupSequence
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -230,7 +229,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.RealPlaces.Induced
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

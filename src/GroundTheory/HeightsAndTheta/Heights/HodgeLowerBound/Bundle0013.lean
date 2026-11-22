@@ -28,7 +28,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0010
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.ChartVel
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -56,7 +55,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.ContDiffAtSqrtQuotNormSq
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -113,7 +111,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.GenMat0FrEqMap
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -156,7 +153,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.MCoordIdealGenericPointEq
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -197,7 +193,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFlagArithVar
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -314,7 +309,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHodgeFlagRatioTrdeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -369,7 +363,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHodgeFlagSpan
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

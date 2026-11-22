@@ -15,7 +15,6 @@ public import GroundTheory.PAdicHodge.TiltMap
 
 -- bundled from GroundTheory.PAdicHodge.FieldOfNormsTower
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -183,7 +182,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.TateNormalizedTrace
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.PAdicHodge
 
@@ -346,7 +344,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.TiltAlgebra
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

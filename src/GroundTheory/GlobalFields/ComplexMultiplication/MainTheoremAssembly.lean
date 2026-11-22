@@ -8,7 +8,6 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.AnalyticUniformiza
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 namespace Elliptic

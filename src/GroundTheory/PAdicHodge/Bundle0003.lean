@@ -15,7 +15,6 @@ public import GroundTheory.PAdicHodge.PerfectoidField
 
 -- bundled from GroundTheory.PAdicHodge.KerFontaineThetaCompFrobeniusEquivSymmPow
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -161,7 +160,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.SenTateCharClosure
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -362,7 +360,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.SlopeRobbaDegree
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

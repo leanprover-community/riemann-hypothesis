@@ -8,7 +8,6 @@ public import GroundTheory.ArithmeticGeometry.AbelianVarieties.Bundle0002
 
 -- bundled from GroundTheory.ArithmeticGeometry.AbelianVarieties.SingularCubic
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.Abelian
 

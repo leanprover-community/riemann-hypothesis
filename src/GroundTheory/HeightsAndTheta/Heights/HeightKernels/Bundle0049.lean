@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0048
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedExcChart
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -194,7 +193,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedExcReduced
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -291,7 +289,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PIntCoordGeoNum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

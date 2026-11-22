@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FactorialBounds.Statements
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FactorialBounds.PSlopeParameterChoice
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -108,7 +107,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FactorialBounds.PSupOfOrthonormalSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

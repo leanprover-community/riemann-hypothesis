@@ -244,7 +244,6 @@ end
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TorusSiegelHeightLowerBound
 section
 set_option linter.unusedSectionVars false
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -412,7 +411,6 @@ open Formalism.UG (cT)
 open scoped TensorProduct NNReal ENNReal NumberField.AdeleRing
 attribute [local instance] tensorTopology finite_of_isQuadraticExtension isModuleTopology_tensor isTopologicalRing_tensor
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

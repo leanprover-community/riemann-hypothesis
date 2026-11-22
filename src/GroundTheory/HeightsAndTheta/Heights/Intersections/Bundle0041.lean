@@ -18,7 +18,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherAlt
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -47,7 +46,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMore
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -98,7 +96,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreLast
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -124,7 +121,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsRest
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -159,7 +155,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagOrdOne
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -245,7 +240,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingDimOne
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -311,7 +305,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingIntClosure
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -361,7 +354,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -411,7 +403,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOverChart
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

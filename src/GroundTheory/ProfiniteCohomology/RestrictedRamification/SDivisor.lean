@@ -6,7 +6,6 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Bundle0001
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

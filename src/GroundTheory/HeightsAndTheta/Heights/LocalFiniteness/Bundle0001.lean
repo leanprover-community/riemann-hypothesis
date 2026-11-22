@@ -142,7 +142,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.Bundle000
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.NumbersDVRC3ResidualContractionComponent
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.Inter_R1Indep : GroundTheory.Heights₂.Heights.Inter.RegularityIndependence.Statement :=
   @GroundTheory.Heights₂.Heights.Inter.RegularityIndependence.of_remaining GroundTheory.Heights₂.Heights.AutoClose.Inter_R1RegMaxSurj
@@ -189,7 +188,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.ParametrisationSheetsConnectedHolds
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.FrameGraphGeneric : GroundTheory.Heights₂.Heights.FrameGraphGeneric.Statement :=
   @GroundTheory.Heights₂.Heights.FrameGraphGeneric.proof GroundTheory.Heights₂.Heights.AutoClose.FrameJacobianGeneric GroundTheory.Heights₂.Heights.FrameImplicitGraph.proof

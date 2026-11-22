@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.GeoNum
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualTopBasisChange
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -190,7 +189,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsIntCoordArInt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -221,7 +219,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsIntCoordGeoNum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

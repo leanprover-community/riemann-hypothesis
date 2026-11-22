@@ -17,7 +17,6 @@ public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturalit
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

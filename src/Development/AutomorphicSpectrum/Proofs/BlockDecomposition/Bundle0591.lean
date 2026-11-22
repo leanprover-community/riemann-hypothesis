@@ -44,7 +44,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.Bundle1363
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SliceBranchesHolds
 section
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.SliceBranch
 

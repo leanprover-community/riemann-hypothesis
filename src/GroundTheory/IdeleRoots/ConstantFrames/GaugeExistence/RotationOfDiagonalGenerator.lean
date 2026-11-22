@@ -8,7 +8,6 @@ public import Formalism.HermitianCurvature.Bundle0009
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open Matrix Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P.CutMP.Gauge Formalism.FourierDecayAlt.P.CutMP.Gauge.GC
 

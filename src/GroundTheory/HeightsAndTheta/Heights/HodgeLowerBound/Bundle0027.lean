@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.Bundle0005
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PAPrimeChartLevi
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -79,7 +78,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PAPrimeChartLeviLocal
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -7,7 +7,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.Bundle0005
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertP
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

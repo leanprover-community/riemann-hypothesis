@@ -6,7 +6,6 @@ public import GroundTheory.GlobalFields.GlobalArtinMap.Kernel
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

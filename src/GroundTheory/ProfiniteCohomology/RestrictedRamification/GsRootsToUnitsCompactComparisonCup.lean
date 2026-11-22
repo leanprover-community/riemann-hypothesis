@@ -9,7 +9,6 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseKummer
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

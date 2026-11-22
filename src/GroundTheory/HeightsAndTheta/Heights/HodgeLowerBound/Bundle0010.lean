@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0009
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFlagGrassPush
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -222,7 +221,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PPlueckerSpan
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -320,7 +318,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsBirationalRatioClosure
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -338,7 +335,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsFlagRatioTrdeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -357,7 +353,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsFnFieldTrdeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -375,7 +370,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsGenLeadMinorNeZero
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -392,7 +386,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsHodgeFlagMinorTrdeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -418,7 +411,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPivotMinorFlag
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -436,7 +428,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsRatioFieldSpan
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

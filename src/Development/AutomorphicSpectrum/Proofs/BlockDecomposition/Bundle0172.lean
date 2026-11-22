@@ -355,7 +355,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousAdeleWeight
 section
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.EpConvB
 

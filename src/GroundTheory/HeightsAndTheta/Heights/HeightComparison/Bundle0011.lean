@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.Bundle0005
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.PCentredPlacesFinite
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -44,7 +43,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.PLocalNormalIndex
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -124,7 +122,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitArchSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

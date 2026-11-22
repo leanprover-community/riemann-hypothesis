@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0012
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.JacMinorC
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter
 
@@ -257,7 +256,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalOfDimOne
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -465,7 +463,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StHorizNotMem
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

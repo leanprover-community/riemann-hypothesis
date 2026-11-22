@@ -42,7 +42,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArith
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.SetSegreConeSmul
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

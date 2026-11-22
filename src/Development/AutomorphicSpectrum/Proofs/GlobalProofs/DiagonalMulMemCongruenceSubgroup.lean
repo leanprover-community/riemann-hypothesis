@@ -14,7 +14,6 @@ public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.HasSumLo
 @[expose] public section
 
 set_option autoImplicit false
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

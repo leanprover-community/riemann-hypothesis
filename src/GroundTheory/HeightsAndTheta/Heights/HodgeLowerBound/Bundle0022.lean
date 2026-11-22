@@ -19,7 +19,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0019
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.ModelProjObjects
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -79,7 +78,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PBoundaryNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -98,7 +96,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PModelLogIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -195,7 +192,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PMuSheetLeviNonneg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -298,7 +294,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PNbarSmooth
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -404,7 +399,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.POmNVbInt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -420,7 +414,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StAPrimeChartMargin
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -448,7 +441,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StProjHoloLocal
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

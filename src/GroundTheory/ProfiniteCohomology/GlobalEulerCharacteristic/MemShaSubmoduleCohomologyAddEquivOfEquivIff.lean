@@ -10,7 +10,6 @@ public import GroundTheory.ProfiniteCohomology.PoitouTate.ZmodToQZCompactCohomol
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

@@ -14,7 +14,6 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingNoeth
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -110,7 +109,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingPow
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -267,7 +265,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PProjBundleFibre
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -364,7 +361,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsAddFirst
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

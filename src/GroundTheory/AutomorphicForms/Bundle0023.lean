@@ -8,7 +8,6 @@ public import GroundTheory.AutomorphicForms.Bundle0018
 
 -- bundled from GroundTheory.AutomorphicForms.AnisotropicHeight
 section
-set_option maxSynthPendingDepth 1
 
 open NumberField IsDedekindDomain Topology Set Matrix Filter
 open scoped NumberField.AdeleRing
@@ -230,7 +229,6 @@ end
 
 -- bundled from GroundTheory.AutomorphicForms.CuspidalSplittingCoeff
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

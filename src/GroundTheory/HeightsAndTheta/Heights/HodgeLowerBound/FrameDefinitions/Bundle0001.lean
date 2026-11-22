@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefiniti
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.EqZeroOfIsIsoSub
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -95,7 +94,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Values
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

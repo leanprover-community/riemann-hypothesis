@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FlagBundles.Statements
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FlagBundles.PGHatIdentity
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FlagBundles
 
@@ -161,7 +160,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FlagBundles.PGKernelIdentity
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FlagBundles
 
@@ -286,7 +284,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FlagBundles.PZonalKernel
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FlagBundles
 
@@ -359,7 +356,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FlagBundles.StatementsSphereLongitude
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FlagBundles
 
@@ -380,7 +376,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FlagBundles.StatementsZonalPairing
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FlagBundles
 
@@ -401,7 +396,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FlagBundles.StatementsZonalReduction
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FlagBundles
 

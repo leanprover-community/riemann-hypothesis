@@ -28,7 +28,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeome
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.GramAtLocalLog
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -123,7 +122,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PDiagFibreFubini
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -172,7 +170,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PDoubleCechX
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Swarm
 
@@ -186,7 +183,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PGeneratedCechTieX
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -325,7 +321,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PNefAddBlock
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

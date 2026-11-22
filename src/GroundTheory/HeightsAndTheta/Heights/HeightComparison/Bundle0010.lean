@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.Bundle0005
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitChartQuot
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -176,7 +175,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitChartTerm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -285,7 +283,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitLocalSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

@@ -17,7 +17,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsSegreChartFib
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

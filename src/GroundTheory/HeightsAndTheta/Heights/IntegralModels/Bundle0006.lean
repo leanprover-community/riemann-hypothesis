@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PSumCp
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.Assembly
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 
@@ -67,7 +66,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.PDominatingDVRScheme
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 

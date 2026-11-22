@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Bundle0012
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperHyperplane
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -155,7 +154,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperQuotAdd
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -385,7 +383,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepTwoReduce
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

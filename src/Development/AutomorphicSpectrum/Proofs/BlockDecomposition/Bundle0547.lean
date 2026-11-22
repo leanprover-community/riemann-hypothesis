@@ -24,7 +24,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsNorma
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RootNumberEqDifferentCoeff
 section
-set_option maxSynthPendingDepth 1
 
 open NumberField IsDedekindDomain GroundTheory.Global GroundTheory.Global.IdeleGroup
 open scoped nonZeroDivisors NNReal

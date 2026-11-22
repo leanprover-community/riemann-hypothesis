@@ -9,7 +9,6 @@ public import GroundTheory.AutomorphicForms.Iwasawa
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Automorphic
 

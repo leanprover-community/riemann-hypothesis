@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0005
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSmallGenTwist
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -259,7 +258,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSmallSectionsSeparated
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 
@@ -419,7 +417,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwistIntersection
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
 

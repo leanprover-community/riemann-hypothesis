@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FubiniStudyIntegral
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FlagBundles
 

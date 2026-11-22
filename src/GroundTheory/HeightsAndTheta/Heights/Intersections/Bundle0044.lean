@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0039
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreDivSupp
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -30,7 +29,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreIncomp
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -52,7 +50,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocLengthSum
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -88,7 +85,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocRankAdjoin
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

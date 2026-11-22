@@ -62,7 +62,6 @@ end
 
 -- bundled from GroundTheory.AutomorphicForms.AnisotropicOrbit
 section
-set_option maxSynthPendingDepth 1
 
 open NumberField IsDedekindDomain Topology Set Matrix
 open scoped NumberField.AdeleRing Pointwise
@@ -235,7 +234,6 @@ end
 
 -- bundled from GroundTheory.AutomorphicForms.CuspidalSplittingSums
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -325,7 +323,6 @@ end
 
 -- bundled from GroundTheory.AutomorphicForms.GeometricLemmaUnnormalized
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

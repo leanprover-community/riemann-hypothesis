@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0011
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsTpCuspIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -34,7 +33,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsTpIntegrandLimit
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -62,7 +60,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsVertFactorSmooth
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

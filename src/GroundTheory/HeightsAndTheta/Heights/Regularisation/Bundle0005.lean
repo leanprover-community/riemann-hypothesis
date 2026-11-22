@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Bundle0002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PChartComparison
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -207,7 +206,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PLogCoverDescent
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -388,7 +386,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PMollifierLowerBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 

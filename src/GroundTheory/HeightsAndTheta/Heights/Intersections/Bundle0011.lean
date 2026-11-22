@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.GeoNum
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsFunFieldMulEq
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -58,7 +57,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.LogNormDivSameOrbit
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -91,7 +89,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagPull
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -177,7 +174,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PGeoNumCut
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

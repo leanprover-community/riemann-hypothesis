@@ -4,7 +4,6 @@ public import Mathlib
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory MonoidalCategory Opposite TensorProduct
 

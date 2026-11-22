@@ -13,7 +13,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.BigLineBundleMoriwaki
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.ForSecondHalf
 
@@ -27,7 +26,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.MetricLocalB
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

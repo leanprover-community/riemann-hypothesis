@@ -25,7 +25,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Bundle0005
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.InhabitedChartFracSeparable
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -51,7 +50,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LengthLocalizedModuleQuotient
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -99,7 +97,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PChowFormBirationalAlgClosed
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -251,7 +248,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeChartArea
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -297,7 +293,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFibreDegree
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -419,7 +414,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConePtsIntegral
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -434,7 +428,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PIntChowFormExists
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

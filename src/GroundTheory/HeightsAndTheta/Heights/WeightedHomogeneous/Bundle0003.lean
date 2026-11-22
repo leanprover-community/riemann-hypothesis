@@ -16,7 +16,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticInt
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.DetGramLeProdNormSq
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -54,7 +53,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.ExistsOneBlockLinMonomial
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Close
 
@@ -76,7 +74,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Imports
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -87,7 +84,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.LiftOldChartMonomialMemPrimeCompl
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -177,7 +173,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PChartLatSection
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -201,7 +196,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PLineDegreeBundle
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Close
 
@@ -243,7 +237,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.POneBlockPoints
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -304,7 +297,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.StatementsConeTrdeg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -329,7 +321,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.StatementsPointHeight
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -378,7 +369,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.VarsSubsetRangeBlockIncl
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

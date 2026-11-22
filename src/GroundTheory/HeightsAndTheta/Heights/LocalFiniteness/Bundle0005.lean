@@ -36,7 +36,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Bundle0024
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.FieldNumbersSemilocalResidueLength
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_FibreNonempty.{u} : GroundTheory.Heights₂.Heights.FieldNumbers.FibreNonempty.Statement.{u} :=
   @GroundTheory.Heights₂.Heights.FieldNumbers.FibreNonempty.proof.{u} GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_SemilocalFiniteRank GroundTheory.Heights₂.Heights.AutoClose.FieldNumbers_DegZeroLocalRing
@@ -50,7 +49,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.TargetsProjGenericRank
 section
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.DefectAverage : GroundTheory.Heights₂.Heights.DefectAverage.Statement :=
   @GroundTheory.Heights₂.Heights.DefectAverage.proof GroundTheory.Heights₂.Heights.AutoClose.MahlerAverageSplit GroundTheory.Heights₂.Heights.AutoClose.CycleAverage

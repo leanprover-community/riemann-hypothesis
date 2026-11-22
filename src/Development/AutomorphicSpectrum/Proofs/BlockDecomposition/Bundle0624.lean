@@ -32,7 +32,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsHi
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanLocalGlobalDictionary
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

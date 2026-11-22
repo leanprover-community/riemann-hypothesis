@@ -7,7 +7,6 @@ public import GroundTheory.AutomorphicForms.Bundle0022
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open NumberField IsDedekindDomain Topology Filter Set Matrix
 open scoped NumberField.AdeleRing RestrictedProduct

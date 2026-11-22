@@ -238,7 +238,6 @@ public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Bundle0012
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 theorem GroundTheory.Heights₂.Heights.AutoClose.Targets_LiftGraphMetric : GroundTheory.Heights₂.Heights.Targets.LiftGraphMetric.Statement :=
   @GroundTheory.Heights₂.Heights.Targets.LiftGraphMetric.proof GroundTheory.Heights₂.Heights.Targets.LiftGraphFactor.closed

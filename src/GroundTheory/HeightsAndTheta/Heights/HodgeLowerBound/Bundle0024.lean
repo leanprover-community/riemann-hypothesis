@@ -17,7 +17,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Bundle001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PGrassHeightE
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -140,7 +139,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PModelFibreSumAeFibres
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -332,7 +330,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PNbarChartSemipos
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -365,7 +362,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PProjHoloLocal
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -468,7 +464,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsModelFibreFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

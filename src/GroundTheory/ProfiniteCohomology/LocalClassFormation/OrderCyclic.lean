@@ -9,7 +9,6 @@ public import GroundTheory.LocalFields.Bundle0007
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

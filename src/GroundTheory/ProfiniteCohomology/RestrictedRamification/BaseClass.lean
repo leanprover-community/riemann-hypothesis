@@ -12,7 +12,6 @@ public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.Bundle00
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

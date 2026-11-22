@@ -10,7 +10,6 @@ public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.Subsinglet
 
 -- bundled from GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.CohomologyMapTensorRightMorCompCohomologyConj
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -206,7 +205,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.VanishingCore
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

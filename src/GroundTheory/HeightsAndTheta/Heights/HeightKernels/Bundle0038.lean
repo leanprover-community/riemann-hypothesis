@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0035
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PSectionQuotLocal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -151,7 +150,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExcResidue
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

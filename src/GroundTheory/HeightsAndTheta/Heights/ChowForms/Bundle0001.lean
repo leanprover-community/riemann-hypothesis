@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsNormForm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -60,7 +59,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsNormOfDividedForm
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

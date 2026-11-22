@@ -24,7 +24,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0023
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CoordFibreDeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -48,7 +47,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LelongChartLimit
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -76,7 +74,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LelongSectionLimit
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -104,7 +101,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.MoriwakiBig
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -122,7 +118,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PAmpleCountAlongMultiples
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -166,7 +161,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PResAboveCover
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -300,7 +294,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegrePartition
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

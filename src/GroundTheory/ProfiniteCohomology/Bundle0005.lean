@@ -12,7 +12,6 @@ public import GroundTheory.TateCohomology.Bundle0003
 
 -- bundled from GroundTheory.ProfiniteCohomology.ColimitDefs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -144,7 +143,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.ColimitUnion
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -271,7 +269,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.CyclicCupDefs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

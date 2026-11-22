@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.StPuncturedExpOrder
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -26,7 +25,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.StRiemannSlices
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 

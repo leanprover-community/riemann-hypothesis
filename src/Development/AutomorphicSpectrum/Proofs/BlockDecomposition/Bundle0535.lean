@@ -123,7 +123,6 @@ open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary
 open GroundTheory.Automorphic
 open scoped ENNReal
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

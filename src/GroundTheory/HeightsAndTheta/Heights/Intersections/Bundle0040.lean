@@ -22,7 +22,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0036
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ChartCongr
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -139,7 +138,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.FunFieldExistsInv
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -267,7 +265,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBis
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -323,7 +320,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisRest
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -424,7 +420,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurther
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

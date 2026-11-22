@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSecIdealOfPrime
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
@@ -228,7 +227,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsFreeParAlgIndep
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 

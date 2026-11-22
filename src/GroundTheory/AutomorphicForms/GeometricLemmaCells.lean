@@ -6,7 +6,6 @@ public import GroundTheory.AutomorphicForms.Bundle0014
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

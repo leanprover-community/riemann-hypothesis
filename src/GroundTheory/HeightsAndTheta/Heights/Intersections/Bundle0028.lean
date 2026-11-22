@@ -24,7 +24,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0027
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.AnalyticResolutionHypothesesProjectiveLine
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -81,7 +80,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.CardLeRingKrullDim
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -217,7 +215,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsIntValuationLtOne
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -251,7 +248,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IdDeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -285,7 +281,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisFurther
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -351,7 +346,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherExtra
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -386,7 +380,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherFurther
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -418,7 +411,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalSpanTwo
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -449,7 +441,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsBlockGenFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

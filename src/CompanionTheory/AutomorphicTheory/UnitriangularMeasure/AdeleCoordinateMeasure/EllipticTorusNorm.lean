@@ -7,7 +7,6 @@ public import GroundTheory.GlobalFields.TateThesis.Bundle0006
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Automorphic
 

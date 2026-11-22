@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0037
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveVertPointLength
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -60,7 +59,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsSemiPosMassFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

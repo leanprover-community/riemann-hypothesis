@@ -9,7 +9,6 @@ public import GroundTheory.ArithmeticGeometry.AbelianVarieties.Supersingular
 
 -- bundled from GroundTheory.GlobalFields.ComplexMultiplication.HilbertClassField
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 namespace Elliptic
@@ -124,7 +123,6 @@ end
 
 -- bundled from GroundTheory.GlobalFields.ComplexMultiplication.MainTheoremFields
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 namespace Elliptic

@@ -11,7 +11,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.Na
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

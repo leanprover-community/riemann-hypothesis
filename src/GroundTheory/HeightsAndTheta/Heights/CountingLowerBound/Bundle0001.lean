@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Statements
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.PCuspWeightBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBound
 
@@ -62,7 +61,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.PInteriorDichotomy
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBound
 
@@ -112,7 +110,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.PMeanCountBound
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBound
 
@@ -273,7 +270,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.PMeanCuspWeight
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBound
 
@@ -338,7 +334,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.PMeanLogPlus
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBound
 
@@ -439,7 +434,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.PShortVectorsOrthogonal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBound
 

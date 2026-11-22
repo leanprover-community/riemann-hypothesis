@@ -73,7 +73,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableAbsFibreSumOfIsCxVar
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

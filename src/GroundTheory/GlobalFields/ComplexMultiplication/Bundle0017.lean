@@ -148,7 +148,6 @@ end
 
 -- bundled from GroundTheory.GlobalFields.ComplexMultiplication.MainTheoremLattice
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 namespace Elliptic

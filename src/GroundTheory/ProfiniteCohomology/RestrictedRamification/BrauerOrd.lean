@@ -8,7 +8,6 @@ public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.Splitting
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

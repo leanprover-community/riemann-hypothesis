@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.RegMaxReindex
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PBoundedChartComparison
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -253,7 +252,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PBoundedGlue
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 

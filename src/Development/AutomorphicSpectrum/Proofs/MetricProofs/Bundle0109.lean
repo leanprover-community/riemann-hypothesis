@@ -220,7 +220,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.VolumeModelCritChartEqZero
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

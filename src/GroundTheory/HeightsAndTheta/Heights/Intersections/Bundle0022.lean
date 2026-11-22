@@ -15,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Bundle000
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisLast
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -48,7 +47,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisTail
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -126,7 +124,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherBis
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -158,7 +155,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreAlt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -179,7 +175,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreBis
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -203,7 +198,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreFurther
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -224,7 +218,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreMore
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -246,7 +239,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsTerLast
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -265,7 +257,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogRenameCoordPow
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -434,7 +425,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PFlagArith
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

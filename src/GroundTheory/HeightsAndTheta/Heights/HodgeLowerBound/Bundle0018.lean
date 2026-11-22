@@ -18,7 +18,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0024
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PBdPtsNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -57,7 +56,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PBoundaryPtsNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -138,7 +136,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PDivisorPreimageNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -201,7 +198,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHodgeFlagRatioFieldEq
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -259,7 +255,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PMuHomDensityNonneg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -292,7 +287,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PMuRegSmooth
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -448,7 +442,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PPushDown
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 

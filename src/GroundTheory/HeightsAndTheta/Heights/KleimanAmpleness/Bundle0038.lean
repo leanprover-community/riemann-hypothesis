@@ -17,7 +17,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Bundle0031
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperSubquotFinite
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -144,7 +143,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepThreeOnWGen
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -353,7 +351,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSubFamilyTwistPow
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

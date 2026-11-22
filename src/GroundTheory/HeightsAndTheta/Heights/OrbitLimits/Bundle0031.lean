@@ -17,7 +17,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionLattice
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PGoodChartModel
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -116,7 +115,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PGoodChartZeroSet
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -270,7 +268,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLiftCountAlongMultiples
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

@@ -8,7 +8,6 @@ public import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

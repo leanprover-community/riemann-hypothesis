@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0005
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.CardZBasisEqMulFinrank
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -58,7 +57,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.TorusIndex
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

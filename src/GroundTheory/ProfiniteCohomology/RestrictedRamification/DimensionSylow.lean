@@ -9,7 +9,6 @@ public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishi
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

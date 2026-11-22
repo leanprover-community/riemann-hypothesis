@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenTwistGenera
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsAlgebraicAdjoin
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 
@@ -228,7 +227,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHFreeEmbed
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

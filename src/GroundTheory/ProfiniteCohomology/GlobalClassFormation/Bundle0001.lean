@@ -13,7 +13,6 @@ public import GroundTheory.LocalFields.LocalArtinBaseChange
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalClassFormation.CupDecomposition
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -95,7 +94,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalResKill
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

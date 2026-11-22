@@ -6,7 +6,6 @@ public import GroundTheory.TateCohomology.DimensionShift
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.GroupCoh
 

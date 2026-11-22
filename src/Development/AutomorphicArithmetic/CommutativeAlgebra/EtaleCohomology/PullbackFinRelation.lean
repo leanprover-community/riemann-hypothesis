@@ -7,7 +7,6 @@ public import GroundTheory.PAdicHodge.BCrisEigenWitt
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 set_option maxHeartbeats 1600000
 set_option synthInstance.maxHeartbeats 400000
 

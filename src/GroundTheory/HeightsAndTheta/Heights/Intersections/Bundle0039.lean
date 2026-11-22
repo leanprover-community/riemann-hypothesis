@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0035
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOverPt
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -51,7 +50,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsLocRingIntClosure
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -77,7 +75,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -102,7 +99,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocIntegral
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -126,7 +122,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocLength
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -161,7 +156,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsSemilocRank
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

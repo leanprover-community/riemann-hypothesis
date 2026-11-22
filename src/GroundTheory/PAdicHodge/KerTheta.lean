@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

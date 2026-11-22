@@ -217,7 +217,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdeleModuleBaseChangeSq
 section
-set_option maxSynthPendingDepth 1
 set_option synthInstance.maxSize 1000
 
 noncomputable section

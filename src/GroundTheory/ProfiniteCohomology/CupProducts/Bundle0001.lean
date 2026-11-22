@@ -9,7 +9,6 @@ public import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSeque
 
 -- bundled from GroundTheory.ProfiniteCohomology.CupProducts.CohomologyMapRightUnitorCupUnitClass
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -85,7 +84,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -190,7 +188,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.CupProducts.Functoriality
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

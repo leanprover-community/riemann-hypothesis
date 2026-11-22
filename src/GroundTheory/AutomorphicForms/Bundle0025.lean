@@ -10,7 +10,6 @@ public import GroundTheory.AutomorphicForms.MacdonaldHecke
 
 -- bundled from GroundTheory.AutomorphicForms.CuspidalSplitting
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

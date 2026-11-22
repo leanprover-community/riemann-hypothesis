@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocRankFra
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

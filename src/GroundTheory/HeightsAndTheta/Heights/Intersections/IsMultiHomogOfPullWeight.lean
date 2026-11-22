@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0001
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0009
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Counterexample
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -78,7 +77,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.ObjectsTied
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -95,7 +93,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PBirationalRatioClosure
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -164,7 +161,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFnFieldTrdeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -199,7 +195,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PGenLeadMinorNeZero
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -258,7 +253,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHodgeFlagArith
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -325,7 +319,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PPivotMinorFlag
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -343,7 +336,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PRatioFieldSpan
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -409,7 +401,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StNbarChartSemipos
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -449,7 +440,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsHermExtend
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

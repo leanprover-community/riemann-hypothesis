@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefiniti
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

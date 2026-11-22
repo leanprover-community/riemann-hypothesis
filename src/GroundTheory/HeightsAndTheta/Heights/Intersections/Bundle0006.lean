@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StChartScalingIndep
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -34,7 +33,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StFnDegAdjoin
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

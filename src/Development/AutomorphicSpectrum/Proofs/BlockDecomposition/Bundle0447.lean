@@ -26,7 +26,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalAlg
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LoweringWordsSpan
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

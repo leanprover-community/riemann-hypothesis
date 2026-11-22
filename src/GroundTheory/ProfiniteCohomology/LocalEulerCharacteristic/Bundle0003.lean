@@ -9,7 +9,6 @@ public import GroundTheory.LocalFields.LubinTateTorsion
 
 -- bundled from GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.ConjAction
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -134,7 +133,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.MainCount
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

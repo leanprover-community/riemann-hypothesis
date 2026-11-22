@@ -44,7 +44,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0004
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.Assembly
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -125,7 +124,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartDiffEnergy
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -259,7 +257,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartIbpCutoff
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

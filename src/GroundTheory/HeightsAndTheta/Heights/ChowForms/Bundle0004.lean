@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Bundle0002
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PLengthQuotientDet
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -63,7 +62,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PLocalMultOrd
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -193,7 +191,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PMinimalPrimeHomog
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -227,7 +224,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.POrdPolynomialLocalization
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -279,7 +275,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ChowForms.PProjNullstellensatz
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

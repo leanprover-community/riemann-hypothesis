@@ -22,7 +22,6 @@ public import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.Gene
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmallHeightVectorIsotropic
 section
 set_option linter.unusedSectionVars false
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

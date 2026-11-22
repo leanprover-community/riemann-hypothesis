@@ -13,7 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0004
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ArithVarZero
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -194,7 +193,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.EqZeroOfEventuallyEval
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -300,7 +298,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.FlagBundleSt
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -342,7 +339,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.FlagPivot
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -398,7 +394,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsBisBis
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -461,7 +456,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherTail
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

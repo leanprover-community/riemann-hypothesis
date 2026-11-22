@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Bundle0003
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.DegreeTopEqArithDegree
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -113,7 +112,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCurveComplexPoint
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -220,7 +218,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCurveDivVertical
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HeightsSet
 

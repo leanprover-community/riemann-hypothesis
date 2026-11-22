@@ -203,7 +203,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.PointsIntegralUniqueEmbedding
 section
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
 

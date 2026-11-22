@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Bounds
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PChartBounds
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -40,7 +39,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.MatrixCharts.StatementsBounds
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

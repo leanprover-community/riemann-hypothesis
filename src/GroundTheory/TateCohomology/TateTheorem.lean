@@ -10,7 +10,6 @@ public import GroundTheory.TateCohomology.CoresRes
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory Limits Rep
 

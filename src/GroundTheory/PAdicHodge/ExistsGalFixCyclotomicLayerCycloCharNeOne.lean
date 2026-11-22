@@ -7,7 +7,6 @@ public import GroundTheory.PAdicHodge.Bundle0004
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.PAdicHodge
 

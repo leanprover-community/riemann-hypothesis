@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0006
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherLast
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -38,7 +37,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsHomogeneousOfIsMultiHomogOne
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -212,7 +210,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogTwoXc
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -235,7 +232,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PChartScalingIndep
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -396,7 +392,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PFnDegAdjoin
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

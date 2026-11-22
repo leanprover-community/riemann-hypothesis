@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.Bundle0004
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.PKrullAkizuki
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 
@@ -73,7 +72,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.PKrullAkizukiQuotientLength
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 
@@ -139,7 +137,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.IntegralModels.PTorsionFreeQuotientLength
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Model
 

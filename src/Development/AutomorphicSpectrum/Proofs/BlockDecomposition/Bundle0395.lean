@@ -26,7 +26,6 @@ public import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.Gene
 section
 open NumberField IsDedekindDomain Representation Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.Published GlobalTheory.Published.PoitouTate
 open GroundTheory.ProfCoh GroundTheory.LocalField ValuativeRel CategoryTheory
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -337,7 +336,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LowSpanInfIdealLeSquareSpan
 section
-set_option maxSynthPendingDepth 1
 
 open GroundTheory.Automorphic.HarishChandra GlobalTheory.CompanionTheory.PresRho
 

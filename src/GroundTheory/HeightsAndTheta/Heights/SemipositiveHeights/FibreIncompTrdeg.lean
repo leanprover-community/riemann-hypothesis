@@ -5,7 +5,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticInt
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

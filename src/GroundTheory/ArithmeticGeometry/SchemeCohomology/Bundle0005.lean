@@ -11,7 +11,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjTwistLeray
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.CurveFunctionField
 section
-set_option maxSynthPendingDepth 1
 
 open CategoryTheory AlgebraicGeometry Order Topology
 
@@ -213,7 +212,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

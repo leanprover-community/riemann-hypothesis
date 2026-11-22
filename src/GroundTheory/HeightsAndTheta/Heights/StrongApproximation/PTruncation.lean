@@ -5,7 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.StrongApproximation.Statement
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

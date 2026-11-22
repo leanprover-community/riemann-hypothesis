@@ -7,7 +7,6 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.Bundle0002
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 open Complex Filter Topology Set WeierstrassCurve GroundTheory.Arith.Abelian
 open scoped PeriodPair

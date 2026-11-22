@@ -16,7 +16,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SetFibreFinite
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

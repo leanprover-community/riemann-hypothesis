@@ -131,7 +131,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartComponentsFiniteProjection
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -179,7 +178,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.MetricProofs.CxSimpleOfCount
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

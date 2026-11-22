@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0095
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
 

@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0077
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

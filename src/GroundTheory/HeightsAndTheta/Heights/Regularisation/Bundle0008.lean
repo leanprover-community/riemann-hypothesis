@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Bundle0004
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PTruncPsh
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 
@@ -113,7 +112,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Regularisation.PTruncTransfer
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Regular
 

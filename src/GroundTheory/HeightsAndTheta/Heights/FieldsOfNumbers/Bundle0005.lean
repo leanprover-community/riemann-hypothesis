@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContractedDim
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 
@@ -200,7 +199,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPolyOfDiffs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FieldNumbers
 

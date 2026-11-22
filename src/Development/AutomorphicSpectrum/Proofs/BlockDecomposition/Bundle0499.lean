@@ -30,7 +30,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Bundle04
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdeleBoundOfJointAnisotropic
 section
 set_option linter.unusedSectionVars false
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

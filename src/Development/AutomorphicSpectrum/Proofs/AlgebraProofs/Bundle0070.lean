@@ -38,7 +38,6 @@ public import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.IsEi
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CroftonFormulaOpenCone
 section
-set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
 

@@ -10,7 +10,6 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteComp
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

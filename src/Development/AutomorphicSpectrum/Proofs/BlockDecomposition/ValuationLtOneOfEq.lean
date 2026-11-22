@@ -14,7 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Bundl
 noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc ValuativeRel GroundTheory.LocalField GroundTheory.LocalField.FormalGroup GroundTheory.PAdicHodge
 open scoped GroundTheory.PAdicHodge.CyclNorms
-set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.LTHodge.CharEx
 

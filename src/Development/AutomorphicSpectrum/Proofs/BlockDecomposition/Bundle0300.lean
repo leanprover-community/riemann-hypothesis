@@ -15,7 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.E
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InductionReindexEquiv
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -448,7 +447,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviRefinementBlockOrder
 section
-set_option maxSynthPendingDepth 1
 open GlobalTheory.SmGL
 open GroundTheory.Automorphic.Parabolic (levi parabolicInd jacquetRep JacquetModule sqrtModular leviIncl cellLeviSub normInducing unipotentRadical leviPar normLeviParSqrtModular)
 open GroundTheory.Automorphic.Iwasawa (blockUpper)

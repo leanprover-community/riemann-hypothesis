@@ -31,7 +31,6 @@ public import Development.WeilBound.CoreStatements.FlagImmersions.Bundle0011
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagChainUnitLogIntegral
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

@@ -8,7 +8,6 @@ public import GroundTheory.PAdicHodge.BdRAlgCl
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

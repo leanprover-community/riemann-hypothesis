@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCurve
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCoordCurveDegree
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -253,7 +252,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCurveIsOrbit
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

@@ -176,7 +176,6 @@ end
 
 -- bundled from GroundTheory.GlobalFields.TateThesis.FiniteOrderParams
 section
-set_option maxSynthPendingDepth 1
 
 open Topology Filter NumberField IsDedekindDomain Function Complex
 open scoped NumberField.AdeleRing

@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.Bundle000
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFramePlaneGraph
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -86,7 +85,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StFrameImplicitGraph
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -111,7 +109,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StJacobianRankGeneric
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

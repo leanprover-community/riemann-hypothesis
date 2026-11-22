@@ -227,7 +227,6 @@ end
 
 -- bundled from GroundTheory.AutomorphicForms.FiniteLengthLattice
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

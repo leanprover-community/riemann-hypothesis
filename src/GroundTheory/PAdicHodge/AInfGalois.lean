@@ -9,7 +9,6 @@ public import GroundTheory.PAdicHodge.GaloisOnCp
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

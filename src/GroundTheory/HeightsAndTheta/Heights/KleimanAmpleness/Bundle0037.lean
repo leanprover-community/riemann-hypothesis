@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RestrictionB
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PProjDegreePositive
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 
@@ -252,7 +251,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PRestriction
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman
 

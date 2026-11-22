@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FlagBundles.ZonalPairingCalcu
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FlagBundles.PZonalBilinearFormula
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FlagBundles
 
@@ -53,7 +52,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FlagBundles.PZonalKernelPairing
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.FlagBundles
 

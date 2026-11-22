@@ -16,7 +16,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticInt
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreLocal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -213,7 +212,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PThmIUnique
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -370,7 +368,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ProjLineRankTwoPushforwardHypotheses
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -448,7 +445,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingFrac
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -469,7 +465,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StLocRingNoeth
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

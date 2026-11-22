@@ -7,7 +7,6 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomol
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ProjHom
 section
-set_option maxSynthPendingDepth 1
 
 open AlgebraicGeometry CategoryTheory Limits Opposite HomogeneousLocalization
 
@@ -219,7 +218,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.RestrictTensor
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

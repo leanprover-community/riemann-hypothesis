@@ -10,7 +10,6 @@ public import GroundTheory.FunctionField.DivisorDegree
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.FunctionField
 

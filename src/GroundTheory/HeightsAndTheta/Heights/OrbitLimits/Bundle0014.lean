@@ -19,7 +19,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Bundle0022
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ArithSystem
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -56,7 +55,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.BaseChangeMinimal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -104,7 +102,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.IsMultiHomogPlaneCoordinate
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -177,7 +174,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.SegreChartObjects
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -285,7 +281,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsBilinear
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -311,7 +306,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChart
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -341,7 +335,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreCoordGoodProj
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -361,7 +354,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegrePartition
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -382,7 +374,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsAmpleCountAlongMultiplesAmple
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -412,7 +403,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsLiftCountAlongMultiples
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

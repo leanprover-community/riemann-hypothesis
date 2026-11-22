@@ -12,7 +12,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticInt
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocResidueDeg
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -47,7 +46,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocResidueFibreDim
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -118,7 +116,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StSemilocResidueFrac
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

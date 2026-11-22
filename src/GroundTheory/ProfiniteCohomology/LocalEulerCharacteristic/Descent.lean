@@ -7,7 +7,6 @@ public import GroundTheory.ProfiniteCohomology.Shapiro
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

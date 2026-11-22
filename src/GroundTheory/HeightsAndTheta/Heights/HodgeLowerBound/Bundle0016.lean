@@ -16,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0030
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorPos
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -229,7 +228,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsMuSheetLeviNonneg
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -251,7 +249,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsOmNVbInt
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -277,7 +274,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsParamImageNull
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -298,7 +294,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsProjSmoothAlong
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -322,7 +317,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPtsMonoSemipos
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -352,7 +346,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPushDown
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -391,7 +384,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsRegAboveWeight
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -414,7 +406,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsTopNMixed
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

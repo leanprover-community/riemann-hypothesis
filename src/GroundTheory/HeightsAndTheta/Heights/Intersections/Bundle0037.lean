@@ -21,7 +21,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.Bundle0001
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsFurtherSide
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -53,7 +52,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreTail
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -80,7 +78,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.IntCastMemRegMaxAt
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -208,7 +205,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PBlockGenFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -351,7 +347,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PLocRingInj
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -429,7 +424,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PSheetHessPSD
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

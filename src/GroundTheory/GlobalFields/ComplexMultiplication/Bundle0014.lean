@@ -10,7 +10,6 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.TorsionReduction
 
 -- bundled from GroundTheory.GlobalFields.ComplexMultiplication.ReductionAtPoint
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
 

@@ -6,7 +6,6 @@ public import Mathlib
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularLocalDomain
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 
@@ -190,7 +189,6 @@ end
 
 -- bundled from GroundTheory.ArithmeticGeometry.SchemeCohomology.WeilDivisor
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Arith.SchemeCoh
 

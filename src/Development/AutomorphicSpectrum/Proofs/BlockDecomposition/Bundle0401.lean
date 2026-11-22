@@ -285,7 +285,6 @@ end
 
 -- bundled from Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeightVectorMemLowSpanSupVerma
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

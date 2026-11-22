@@ -18,7 +18,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorSm
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.PAPrimeLeviCharts
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -156,7 +155,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.PMUcSmooth
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

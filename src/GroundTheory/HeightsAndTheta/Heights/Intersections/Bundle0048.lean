@@ -18,7 +18,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0009
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.AevalNeZeroOfNotMem
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -116,7 +115,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsNormalise
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -234,7 +232,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsExtra
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -254,7 +251,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreOverFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -277,7 +273,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PSemilocRankAdjoin
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -414,7 +409,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PThmIExists
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -438,7 +432,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StChartNormPts
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

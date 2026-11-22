@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.Bundle0005
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PStokesLimit
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -96,7 +95,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsHodgeFlagRatioFieldEq
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -118,7 +116,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsHodgeFlagSpan
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -140,7 +137,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsMuMeasureLimit
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -162,7 +158,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsMuRegSmooth
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -187,7 +182,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsOmNPoly
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -212,7 +206,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPtsBddConv
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -253,7 +246,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsStokesLimitTTop
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -279,7 +271,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsStokesLimitTVb
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -304,7 +295,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsStokesStep
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -329,7 +319,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsTopNPoly
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 
@@ -350,7 +339,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsVertFactorPos
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

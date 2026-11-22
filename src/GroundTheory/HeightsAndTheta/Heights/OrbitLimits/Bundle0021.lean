@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPower
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartSheetCompare
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -34,7 +33,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartZeroSet
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -54,7 +52,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreSheetFormCompare
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -77,7 +74,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsLiftBlockDatum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

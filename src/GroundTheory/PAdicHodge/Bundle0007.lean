@@ -12,7 +12,6 @@ public import GroundTheory.PAdicHodge.FontaineLemmaInvariants
 
 -- bundled from GroundTheory.PAdicHodge.BCrisNewtonFrac
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -223,7 +222,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.FieldOfNormsAPF
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -292,7 +290,6 @@ end
 
 -- bundled from GroundTheory.PAdicHodge.GalSmulAlgebraMapPadicPlus
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

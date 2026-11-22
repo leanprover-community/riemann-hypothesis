@@ -8,7 +8,6 @@ public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.Bundle00
 
 -- bundled from GroundTheory.ProfiniteCohomology.CompactSupportCohomology.ConeMap
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -176,7 +175,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.CompactSupportCohomology.ConePairing
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

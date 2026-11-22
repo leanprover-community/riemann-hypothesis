@@ -12,7 +12,6 @@ public import GroundTheory.ProfiniteCohomology.ShapiroDefs
 
 -- bundled from GroundTheory.ProfiniteCohomology.Colimit
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 
@@ -133,7 +132,6 @@ end
 
 -- bundled from GroundTheory.ProfiniteCohomology.MackeyDefs
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.ProfCoh
 

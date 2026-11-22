@@ -26,7 +26,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Bundle009
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLelongSectionLimit
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -141,7 +140,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsGenericCount
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -253,7 +251,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsPosDensMeasurable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -405,7 +402,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartAbsIntegrable
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -452,7 +448,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsLiftGraphFactor
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 

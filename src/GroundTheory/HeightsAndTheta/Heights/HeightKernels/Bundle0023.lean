@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Bundle0022
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.PTelescope
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -96,7 +95,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsLineDegreeDual
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

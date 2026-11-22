@@ -71,7 +71,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.FubiniStudyChern
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 

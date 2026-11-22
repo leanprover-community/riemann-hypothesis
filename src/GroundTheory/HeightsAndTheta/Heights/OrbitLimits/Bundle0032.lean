@@ -30,7 +30,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0034
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ChangeOfModel
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -55,7 +54,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.MoriwakiHSClosed
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -69,7 +67,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PConeSliceIdeal
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -111,7 +108,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PConeVanishingHomog
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -156,7 +152,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLiftGraphFactor
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
 
@@ -367,7 +362,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsSemiPosMassFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 

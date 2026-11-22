@@ -14,7 +14,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsIsSheetFinZero
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -118,7 +117,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PIntClosureLocFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -201,7 +199,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PThmAExpand
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -371,7 +368,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.SameOrbitOneSpecZ
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -394,7 +390,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsDiagR
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

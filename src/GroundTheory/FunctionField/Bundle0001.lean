@@ -8,7 +8,6 @@ public import GroundTheory.FunctionField.PlaceBasic
 
 -- bundled from GroundTheory.FunctionField.Approximation
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.FunctionField
 

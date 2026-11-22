@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntis
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFlagImageGrass
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -235,7 +234,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFsInvPow
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -431,7 +429,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVandCount
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.LowerBoundFree
 

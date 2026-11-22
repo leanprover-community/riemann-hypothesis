@@ -14,7 +14,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Bundle0021
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PZeroSetNull
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 
@@ -61,7 +60,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.PtsIntegralLogNormRat
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -262,7 +260,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreIsolFinite
 section
-set_option maxSynthPendingDepth 1
 
 noncomputable section
 
@@ -293,7 +290,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFFibreSum
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Inter
 

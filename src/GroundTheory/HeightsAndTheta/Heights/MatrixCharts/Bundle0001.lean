@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Statements
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.MatrixCharts.BoundsY
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.MCBounds
 
@@ -164,7 +163,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.MatrixCharts.DetIneq
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.MCDet
 
@@ -256,7 +254,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PChartImagMean
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
@@ -271,7 +268,6 @@ end
 
 -- bundled from GroundTheory.HeightsAndTheta.Heights.MatrixCharts.StatementsCusp
 section
-set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
 
