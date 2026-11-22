@@ -4,7 +4,8 @@ noncomputable section
 
 open scoped Classical
 
-open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL ValuativeRel Matrix
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL ValuativeRel
+  Matrix
 
 namespace UpperTheory.TNZ
 
@@ -19,8 +20,8 @@ def Lv (ψ : 𝒪[k]ˣ →* ℂˣ) : Set ℕ :=
 
 theorem cond_eq (ψ : 𝒪[k]ˣ →* ℂˣ) : cond ψ = sInf (Lv ψ) := rfl
 
-theorem Lv_mono (ψ : 𝒪[k]ˣ →* ℂˣ) {c c' : ℕ} (h : c ≤ c') (hc : c ∈ Lv ψ) : c' ∈ Lv ψ :=
-  fun u hu => hc u (Ideal.pow_le_pow_right h hu)
+theorem Lv_mono (ψ : 𝒪[k]ˣ →* ℂˣ) {c c' : ℕ} (h : c ≤ c') (hc : c ∈ Lv ψ) : c' ∈ Lv ψ := fun u hu =>
+  hc u (Ideal.pow_le_pow_right h hu)
 
 theorem exists_level (μ : kˣ →* ℂˣ) (hμ : IsSmoothChar μ) : (Lv (res μ)).Nonempty := by
   have hopen : IsOpen (μ.ker : Set kˣ) := hμ
@@ -47,15 +48,16 @@ theorem exists_level (μ : kˣ →* ℂˣ) (hμ : IsSmoothChar μ) : (Lv (res μ
   have ht1 : valuation k (algebraMap 𝒪[k] k t) ≤ 1 := t.2
   have hv : valuation k (((u : 𝒪[k]) : k) - 1) < γ := by
     rw [e, map_mul, map_pow]
-    calc valuation k (algebraMap 𝒪[k] k ϖ) ^ c * valuation k (algebraMap 𝒪[k] k t)
+    calc
+      valuation k (algebraMap 𝒪[k] k ϖ) ^ c * valuation k (algebraMap 𝒪[k] k t)
         ≤ valuation k (algebraMap 𝒪[k] k ϖ) ^ c * 1 := by gcongr
       _ < γ := by rw [mul_one]; exact hc
   have hmem : unitIncl k u ∈ (Units.val ⁻¹' V : Set kˣ) := hγ hv
   rw [hV] at hmem
   exact (MonoidHom.mem_ker).mp hmem
 
-theorem max_mem (μ ν : kˣ →* ℂˣ) {c c' : ℕ} (hc : c ∈ Lv (res μ)) (hc' : c' ∈ Lv (res ν)) :
-    max c c' ∈ Lv (res (μ / ν)) := by
+theorem max_mem (μ ν : kˣ →* ℂˣ) {c c' : ℕ} (hc : c ∈ Lv (res μ)) (hc' : c' ∈ Lv (res ν))
+    : max c c' ∈ Lv (res (μ / ν)) := by
   intro u hu
   have h1 := hc u (Ideal.pow_le_pow_right (le_max_left c c') hu)
   have h2 := hc' u (Ideal.pow_le_pow_right (le_max_right c c') hu)
@@ -69,8 +71,8 @@ variable {n : ℕ} (G : Grp k n)
 theorem lv_a (a : Fin G.s) : cond (res (G.μ a)) ∈ Lv (res (G.μ a)) :=
   cond_mem _ (exists_level _ (G.smooth a))
 
-theorem lv_ab (a b : Fin G.s) :
-    max (cond (res (G.μ a))) (cond (res (G.μ b))) ∈ Lv (res (G.μ a / G.μ b)) :=
+theorem lv_ab (a b : Fin G.s)
+    : max (cond (res (G.μ a))) (cond (res (G.μ b))) ∈ Lv (res (G.μ a / G.μ b)) :=
   max_mem _ _ (lv_a G a) (lv_a G b)
 
 theorem cc_le (a b : Fin G.s) : cc G.μ a b ≤ max (cond (res (G.μ a))) (cond (res (G.μ b))) :=
@@ -80,7 +82,10 @@ theorem cc_mem (a b : Fin G.s) : cc G.μ a b ∈ Lv (res (G.μ a / G.μ b)) :=
   Nat.sInf_mem ⟨_, lv_ab G a b⟩
 
 theorem cond_le_sum (a : Fin G.s) : cond (res (G.μ a)) ≤ ∑ b, cond (res (G.μ b)) :=
-  Finset.single_le_sum (f := fun b => cond (res (G.μ b))) (fun _ _ => Nat.zero_le _) (Finset.mem_univ a)
+  Finset.single_le_sum
+    (f := fun b => cond (res (G.μ b)))
+    (fun _ _ => Nat.zero_le _)
+    (Finset.mem_univ a)
 
 theorem one_le_cc (a b : Fin G.s) (hab : a ≠ b) : 1 ≤ cc G.μ a b := by
   by_contra h0
@@ -97,8 +102,12 @@ end CharacterConductorBound
 
 theorem step_ccBound {n : ℕ} (G : Grp k n) : CompactConductorBoundProp G := by
   have hlev : G.lev = 1 + ∑ b, cond (res (G.μ b)) := rfl
-  refine ⟨fun a b hab => CharacterConductorBound.one_le_cc G a b hab, fun a b => ?_, fun a => ?_,
-    fun a b u hu => CharacterConductorBound.cc_mem G a b u hu⟩
+  refine ⟨
+    fun a b hab => CharacterConductorBound.one_le_cc G a b hab,
+    fun a b => ?_,
+    fun a => ?_,
+    fun a b u hu => CharacterConductorBound.cc_mem G a b u hu
+  ⟩
   · have h1 := CharacterConductorBound.cc_le G a b
     have h2 := CharacterConductorBound.cond_le_sum G a
     have h3 := CharacterConductorBound.cond_le_sum G b

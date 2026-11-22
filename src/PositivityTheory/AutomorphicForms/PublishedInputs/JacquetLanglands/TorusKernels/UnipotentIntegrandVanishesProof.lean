@@ -15,16 +15,17 @@ def large₂ {I : Type} [Fintype I] (y : I → Y1) : ℝ := ∑ v, Real.log |(y 
 theorem measurable_Lg {I : Type} [Fintype I] : Measurable (large₂ (I := I)) := by
   unfold large₂
   exact Finset.measurable_sum _ fun v _ =>
-    Real.measurable_log.comp (continuous_abs.measurable.comp (measurable_subtype_coe.comp (measurable_pi_apply v)))
+    Real.measurable_log.comp (continuous_abs.measurable.comp (measurable_subtype_coe.comp
+      (measurable_pi_apply v)))
 
-theorem pt_congr {a a' c c' : ℝ} (h1 : a = a') (h2 : c = c') (hc : c ≠ 0) (hc' : c' ≠ 0) :
-    pt a c hc = pt a' c' hc' := by
+theorem pt_congr {a a' c c' : ℝ} (h1 : a = a') (h2 : c = c') (hc : c ≠ 0) (hc' : c' ≠ 0)
+    : pt a c hc = pt a' c' hc' := by
   subst h1
   subst h2
   rfl
 
-theorem Lg_scl {I : Type} [Fintype I] (t : ℝ) (ht : 0 < t) (y : I → Y1) :
-    large₂ (fun v => scl t ht.ne' (y v)) = Fintype.card I * Real.log t + large₂ y := by
+theorem Lg_scl {I : Type} [Fintype I] (t : ℝ) (ht : 0 < t) (y : I → Y1)
+    : large₂ (fun v => scl t ht.ne' (y v)) = Fintype.card I * Real.log t + large₂ y := by
   have h : ∀ v, Real.log |t * (y v).1| = Real.log t + Real.log |(y v).1| := by
     intro v
     rw [abs_mul, abs_of_pos ht, Real.log_mul ht.ne' (abs_ne_zero.mpr (y v).2)]
