@@ -200,7 +200,6 @@ theorem exists_lift {y' : Ys X n} (hy : ∀ N, y.ys N = {∅}) {Λ₁ Λ₂ : Le
 
 end Points
 
-section Start
 
 variable {X : Fields} {n : ℕ} {ST SG Q Q' : Finset (HeightOneSpectrum (𝓞 X.E))} {T : ℕ}
   {y y' : Ys X n} {β β' : Type} {iβ : Fintype β} {jβ : DecidableEq β} {iβ' : Fintype β'} {jβ' : DecidableEq β'}
@@ -211,7 +210,6 @@ variable {X : Fields} {n : ℕ} {ST SG Q Q' : Finset (HeightOneSpectrum (𝓞 X.
 variable {σ lam} {e : ((stepY ST y β Λ Θ pref).Cl → Fr X.emb σ n → ℂ) ≃ₗ[ℂ]
     ((stepY ST y' β' Λ' Θ' pref').Cl → Fr X.emb σ n → ℂ)}
 
-end Start
 
 section Lattice
 
@@ -265,7 +263,6 @@ section Chains
 
 end Chains
 
-section Inputs
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks}
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
@@ -283,9 +280,7 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
 
 variable {sel mu cst L} {Cr : Chars X Pr R.m} {G : ChGlob X R.m} {m2 : ℕ}
 
-end Inputs
 
-section Main
 
 variable {D : D7} {u : D.what₂.Word} {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [StarRing E]
   {emb : D.what₂.Tau → E →+* D.what₂.LL} {Pr : Primes (fieldsOver D F E emb)} {u' : Pr.Word}
@@ -306,6 +301,5 @@ variable {Cr : Chars (fieldsOver D F E emb) Pr D.R.m} {sel : HeightOneSpectrum (
   {Z : FmIn (levelOn (X := fieldsOver D F E emb) sel mu cst L Tp u' (rho := rho) (rho' := rho') (jet := jet) (DG := DG)
     psi du Ds Ga) D.what₂.places} {hI hJ} {hQ : Q.Ok} {l lf hO}
 
-end Main
 
 end GlobalTheory.LvT.StartTie
