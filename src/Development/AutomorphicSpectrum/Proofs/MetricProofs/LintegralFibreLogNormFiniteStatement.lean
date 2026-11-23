@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.lintegral_fibre_logNorm_finite : ∀ (K : Type) [F
     (∀ k, A.a k = a k) → IsMultiHomog s a → s ∉ Q →
     ∫⁻ y, ENNReal.ofReal (∑ᶠ w ∈ setFibre (conePts Q) Ψ y,
       |setSheetDensity (conePts Q) Ψ (pot L) (logNormC A s) y w|) < ⊤ := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Pub.CxChart.logNorm_mass_lt_top | exact GlobalTheory.CompanionTheory.Ar.Pub.CxChart.logNorm_mass_lt_top | (intros; apply GlobalTheory.CompanionTheory.Ar.Pub.CxChart.logNorm_mass_lt_top <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Pub.CxChart.logNorm_mass_lt_top

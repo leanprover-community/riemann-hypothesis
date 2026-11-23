@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.chart_bundle_lattice_generators : ∀ (O : Type) [
       ∀ e ∈ L c, ∃ a : Fin n → Ω, (∀ k, a k ∈ chartRing O x c) ∧ e = ∑ k, a k • s k) →
     ∀ i j, x i ≠ 0 → x j ≠ 0 → ∀ e ∈ dotDual (chartRing O x i) (L i),
       ∃ m : ℕ, (x i / x j) ^ m • e ∈ dotDual (chartRing O x j) (L j) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.dotDual_overlap | exact GlobalTheory.CompanionTheory.Ar.Num.dotDual_overlap | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.dotDual_overlap <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.dotDual_overlap

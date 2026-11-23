@@ -43,5 +43,5 @@ section
 open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp
 
 theorem _root_.GlobalTheory.T.bigOn_canEx : _root_.GlobalTheory.BigOn.Exp.CanonicalExists := by
-  first | exact @_root_.GlobalTheory.BigOn.Exp.canEx_holds_alt | exact _root_.GlobalTheory.BigOn.Exp.canEx_holds_alt | (intros; apply _root_.GlobalTheory.BigOn.Exp.canEx_holds_alt <;> assumption)
+  exact @_root_.GlobalTheory.BigOn.Exp.canEx_holds_alt
 end

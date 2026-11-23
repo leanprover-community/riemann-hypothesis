@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.aux_statement_22 : CjEx → ∀ (E : Type) [Field 
       ((ratW a w.1 δ₁, ratW b w.1 δ₂),
         (ratW a w.1 (GeneralLinearGroup.map (IsCMField.complexConj E).toRingEquiv.toRingHom δ₁),
          ratW b w.1 (GeneralLinearGroup.map (IsCMField.complexConj E).toRingEquiv.toRingHom δ₂))) := by
-  first | exact @GlobalTheory.CompanionTheory.SplitIso.split_iso | exact GlobalTheory.CompanionTheory.SplitIso.split_iso | (intros; apply GlobalTheory.CompanionTheory.SplitIso.split_iso <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SplitIso.split_iso

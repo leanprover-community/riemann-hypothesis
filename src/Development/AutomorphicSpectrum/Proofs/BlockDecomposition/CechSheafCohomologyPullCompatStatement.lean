@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.cech_sheaf_cohomology_pull_compat : ∀ {X Y : Top
     (x : cechH S.X₁.obj V (m + 2)),
     cechHEquivStep U hS' hC' hI' m e' (cechPullH f α.τ₁.hom V U τ hτ (m + 2) x) =
       hPull f α.τ₁ (m + 2) (cechHEquivStep V hS hC hI m e x) := by
-  first | exact @GlobalTheory.CompanionTheory.CechStep.cechHEquivStep_pull | exact GlobalTheory.CompanionTheory.CechStep.cechHEquivStep_pull | (intros; apply GlobalTheory.CompanionTheory.CechStep.cechHEquivStep_pull <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CechStep.cechHEquivStep_pull

@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open GroundTheory.Automorphic.HarishChandra GlobalTheory.CompanionTheory.PresRho
 
 theorem _root_.GlobalTheory.T.simple_lowering_pow_mem_ideal : ∀ {n : ℕ} (i j : Fin n) (x : U n), (j : ℕ) = i + 1 → ∃ N : ℕ, e (j, i) ^ N * x ∈ Jp n := by
-  first | exact @GlobalTheory.CompanionTheory.PresRho.lower_locally_nilpotent | exact GlobalTheory.CompanionTheory.PresRho.lower_locally_nilpotent | (intros; apply GlobalTheory.CompanionTheory.PresRho.lower_locally_nilpotent <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PresRho.lower_locally_nilpotent

@@ -60,4 +60,4 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.hecke_character_eq_of_cofinite : ∀ (F : Type) [Field F] [NumberField F] (η η' : HChar F), (∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite, η.UnrAt v ∧ η'.UnrAt v ∧ η.val v = η'.val v) → η = η' := by
-  first | exact @GlobalTheory.HeckeMultOne.main | exact GlobalTheory.HeckeMultOne.main | (intros; apply GlobalTheory.HeckeMultOne.main <;> assumption)
+  exact @GlobalTheory.HeckeMultOne.main

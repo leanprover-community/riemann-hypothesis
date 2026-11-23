@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.restricted_product_mem_schwartz : ∀ (F : Type) [
     (∀ᶠ v in Filter.cofinite, φ v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1) →
     (fun y : κ → FiniteAdeleRing (𝓞 F) F => ∏ᶠ v, φ v fun i => Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F v (y i)) ∈
       GlobalTheory.WeilM.SB (κ → FiniteAdeleRing (𝓞 F) F) := by
-  first | exact @GlobalTheory.AdelicCoordSB.finprod_mem_SB | exact GlobalTheory.AdelicCoordSB.finprod_mem_SB | (intros; apply GlobalTheory.AdelicCoordSB.finprod_mem_SB <;> assumption)
+  exact @GlobalTheory.AdelicCoordSB.finprod_mem_SB

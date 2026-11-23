@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.full_torsion_pullback_points : ∀ (X X' : Scheme.
   (∀ (a a' : Over.mk ξ' ⟶ G') (c c' : Over.mk ξ ⟶ G), a.left ≫ φ = spMap i ≫ c.left → a'.left ≫ φ = spMap i ≫ c'.left → (a * a').left ≫ φ = spMap i ≫ (c * c').left) ∧
   (∀ (a a' : Over.mk ξ' ⟶ G') (c : Over.mk ξ ⟶ G), a.left ≫ φ = spMap i ≫ c.left → a'.left ≫ φ = spMap i ≫ c.left → a = a') ∧
   (∀ (a : Over.mk ξ' ⟶ G') (c c' : Over.mk ξ ⟶ G), a.left ≫ φ = spMap i ≫ c.left → a.left ≫ φ = spMap i ≫ c'.left → c = c') := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.TorsPull.torsion_of_pullback | exact GlobalTheory.CompanionTheory.Ar.TorsPull.torsion_of_pullback | (intros; apply GlobalTheory.CompanionTheory.Ar.TorsPull.torsion_of_pullback <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.TorsPull.torsion_of_pullback

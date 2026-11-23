@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.InertZeta
 
 theorem _root_.GlobalTheory.T.coset_injective : CosetInj := by
-  first | exact @GlobalTheory.CompanionTheory.InertZeta.cosetInj | exact GlobalTheory.CompanionTheory.InertZeta.cosetInj | (intros; apply GlobalTheory.CompanionTheory.InertZeta.cosetInj <;> assumption)
+  exact @GlobalTheory.CompanionTheory.InertZeta.cosetInj

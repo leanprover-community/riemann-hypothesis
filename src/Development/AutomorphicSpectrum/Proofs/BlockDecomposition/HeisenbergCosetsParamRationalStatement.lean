@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.heisenberg_cosets_param_rational : ∀ {D : D7} {n
       ∀ f : G D n → ℂ, LeftInv (P D n ⊓ GF D n) f → ∀ (l : ratHerm D ρ) u (y : G D n),
         term (P D n) (GF D n) f y (e (l, u)) =
           f (M.w * M.nzx l.1 0 * M.sh (u.2.map (incA D)) * M.emb (u.1.out : GF D p) * y) := by
-  first | exact @GlobalTheory.CompanionTheory.ZUnf.CellGlue.cell | exact GlobalTheory.CompanionTheory.ZUnf.CellGlue.cell | (intros; apply GlobalTheory.CompanionTheory.ZUnf.CellGlue.cell <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ZUnf.CellGlue.cell

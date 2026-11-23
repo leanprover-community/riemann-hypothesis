@@ -62,4 +62,4 @@ theorem _root_.GlobalTheory.T.lubin_tate_commuting_series_unique : ∀ {B : Type
       (∃ M : ℕ, 0 < M ∧ Near S ϖ (F 1) 1 (v 0 ^ M)) →
     ∀ Q ∈ S, (∀ n, ∃ a ∈ S, Q - ltIter ϖ q n (v n) = ϖ ^ (n + 1) * a) →
       (∀ n, EvalMod S F ϖ h φ (v n) (σ (v n)) 1) → ∀ m, EvalMod S F ϖ h φ Q (σ Q) m := by
-  first | exact @GlobalTheory.CompanionTheory.LTPer.evalMod_sigma_of_congr | exact GlobalTheory.CompanionTheory.LTPer.evalMod_sigma_of_congr | (intros; apply GlobalTheory.CompanionTheory.LTPer.evalMod_sigma_of_congr <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTPer.evalMod_sigma_of_congr

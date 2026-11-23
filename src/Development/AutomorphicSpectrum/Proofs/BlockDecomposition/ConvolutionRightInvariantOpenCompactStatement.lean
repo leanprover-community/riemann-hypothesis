@@ -47,4 +47,4 @@ open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary
 open scoped ContDiff
 
 theorem _root_.GlobalTheory.T.convolution_right_invariant_open_compact : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (μ : Measure (GA E a)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant] (U : Subgroup (GL (Fin a) (Af E))) (β : Lie E a → ℂ) (Fl : GA E a → ℂ) (u : GL (Fin a) (Af E)), u ∈ U → ∀ x : GA E a, convR μ (tst U β) Fl (x * finGL E a u) = convR μ (tst U β) Fl x := by
-  first | exact @GlobalTheory.CompanionTheory.SmoothRep.convR_tst_right_invariant | exact GlobalTheory.CompanionTheory.SmoothRep.convR_tst_right_invariant | (intros; apply GlobalTheory.CompanionTheory.SmoothRep.convR_tst_right_invariant <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SmoothRep.convR_tst_right_invariant

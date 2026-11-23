@@ -51,4 +51,4 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTh
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
 
 theorem _root_.GlobalTheory.T.haar_right_invariant_totally_complex : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (N : ℕ) [MeasurableSpace (GA E N)] [BorelSpace (GA E N)] (μ : Measure (GA E N)) [μ.IsHaarMeasure], μ.IsMulRightInvariant := by
-  first | exact @GlobalTheory.CompanionTheory.GAUnimod.isMulRightInvariant_haar_GA | exact GlobalTheory.CompanionTheory.GAUnimod.isMulRightInvariant_haar_GA | (intros; apply GlobalTheory.CompanionTheory.GAUnimod.isMulRightInvariant_haar_GA <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GAUnimod.isMulRightInvariant_haar_GA

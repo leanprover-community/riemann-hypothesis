@@ -66,4 +66,4 @@ theorem _root_.GlobalTheory.T.e8_fibration_algebraically_closed_field : ∀ (W :
     (∀ i i', Out.WeilIs P'.A P'.L (((l ^ j) ^ 2 : ℕ) : ℤ) (pt i) (pt i')
       (unitS (spMap k₀.subtype) bT.ζ ^ Out.stdSymp (8 * gQ) i i')) ∧
     ∀ (a : Fin 2) i, pt i ≫ act a = Out.linComb pt (fun i' => ((Mat a i' i : ZMod ((l ^ j) ^ 2))).val) := by
-  first | exact @GlobalTheory.Poinc.Sep.E8Fibration.Lab.exists_symplectic_labels | exact GlobalTheory.Poinc.Sep.E8Fibration.Lab.exists_symplectic_labels | (intros; apply GlobalTheory.Poinc.Sep.E8Fibration.Lab.exists_symplectic_labels <;> assumption)
+  exact @GlobalTheory.Poinc.Sep.E8Fibration.Lab.exists_symplectic_labels

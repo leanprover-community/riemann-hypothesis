@@ -50,4 +50,4 @@ theorem _root_.GlobalTheory.T.expansionPairing_invariant_innerVertex_level : ∀
     ∀ (x : ∀ j, FinPt G (.top j)) (y : ∀ i, FinPt G (.grid i D.R.m)) (i : ℕ) (hi : 0 < i) (him : i < D.R.m) (k : FinPt G (.grid i D.R.m)),
       finG (G.V (.grid i D.R.m)) k ∈ S.levRow t i him.le →
       pairPts S τ x (Function.update y i (y i * k)) (Ψ (x 0)) (F (Function.update y i (y i * k) 0)) = pairPts S τ x y (Ψ (x 0)) (F (y 0)) := by
-  first | exact @GlobalTheory.RowVertexInv.pairPts_update_row | exact GlobalTheory.RowVertexInv.pairPts_update_row | (intros; apply GlobalTheory.RowVertexInv.pairPts_update_row <;> assumption)
+  exact @GlobalTheory.RowVertexInv.pairPts_update_row

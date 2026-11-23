@@ -47,4 +47,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj GlobalTheory.CompanionTheory.Ar
 
 theorem _root_.GlobalTheory.T.isClopen_specializations_genPt : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) [IsLocallyNoetherian X], IsCptGen ξ → IsClopen {q : X | genPt ξ ⤳ q} := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.isClopen_setOf_genPt_specializes | exact GlobalTheory.CompanionTheory.Ar.isClopen_setOf_genPt_specializes | (intros; apply GlobalTheory.CompanionTheory.Ar.isClopen_setOf_genPt_specializes <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.isClopen_setOf_genPt_specializes

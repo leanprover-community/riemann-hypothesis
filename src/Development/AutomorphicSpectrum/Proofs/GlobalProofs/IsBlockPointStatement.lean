@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.parabolic_block_embedding_compact : ∀ (F E : Typ
       ∀ g : GAd σ J, ∃ u ∈ GlobalTheory.StdPar.unip σ J Xf S, u ∈ infPts σ J ∧ ∃ (y : GL (Fin d) (GlobalTheory.CuspRep.Cinf E)) (g₀ : GAd σ J),
         g = u * ι (GlobalTheory.CuspRep.infGL E d y) * g₀ ∧
         ∀ k : GlobalTheory.CuspRep.Kinf E d, g₀⁻¹ * ι (GlobalTheory.CuspRep.infGL E d (Unitary.toUnits k)) * g₀ ∈ K := by
-  first | exact @GlobalTheory.CompanionTheory.GoodPos.goodPos | exact GlobalTheory.CompanionTheory.GoodPos.goodPos | (intros; apply GlobalTheory.CompanionTheory.GoodPos.goodPos <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GoodPos.goodPos

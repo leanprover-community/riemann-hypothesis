@@ -49,4 +49,4 @@ theorem _root_.GlobalTheory.T.integral_mulVec_change_modulus : ∀ (k : Type) [F
   IsLocallyConstant F → HasCompactSupport F →
   @GlobalTheory.CompanionTheory.Rodier.smInt _ _ (borel _) _ _ (muD k n) (fun d => F ((w⁻¹ : GL (Fin n) k).1.mulVec d)) =
     ((dpow n 1 w : ℂˣ) : ℂ) • @GlobalTheory.CompanionTheory.Rodier.smInt _ _ (borel _) _ _ (muD k n) F := by
-  first | exact @GlobalTheory.CompanionTheory.BZPhiPG.Scale.smInt_subst | exact GlobalTheory.CompanionTheory.BZPhiPG.Scale.smInt_subst | (intros; apply GlobalTheory.CompanionTheory.BZPhiPG.Scale.smInt_subst <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BZPhiPG.Scale.smInt_subst

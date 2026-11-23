@@ -42,4 +42,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.unramified_quadratic_condition_one : PositivityTheory.SiegelWeilFormula.Gunr.Q1 := by
-  first | exact @GlobalTheory.CompanionTheory.ResidueInvolution.q1 | exact GlobalTheory.CompanionTheory.ResidueInvolution.q1 | (intros; apply GlobalTheory.CompanionTheory.ResidueInvolution.q1 <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ResidueInvolution.q1

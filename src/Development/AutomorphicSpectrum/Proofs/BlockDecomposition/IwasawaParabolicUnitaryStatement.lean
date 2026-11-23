@@ -51,4 +51,4 @@ open GlobalTheory.CompanionTheory.GLK (e1 e2 f1)
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem _root_.GlobalTheory.T.iwasawa_parabolic_unitary : ∀ (n : ℕ) (lev : Fin n → ℕ), Monotone lev → ∀ g ∈ GLs n, ∃ p ∈ GlobalTheory.CompanionTheory.ModelS.Pb lev, ∃ k : Matrix.unitaryGroup (Fin n) ℂ, g = p * k.1 := by
-  first | exact @GlobalTheory.CompanionTheory.ModelS.exists_Pb_mul_unitary | exact GlobalTheory.CompanionTheory.ModelS.exists_Pb_mul_unitary | (intros; apply GlobalTheory.CompanionTheory.ModelS.exists_Pb_mul_unitary <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ModelS.exists_Pb_mul_unitary

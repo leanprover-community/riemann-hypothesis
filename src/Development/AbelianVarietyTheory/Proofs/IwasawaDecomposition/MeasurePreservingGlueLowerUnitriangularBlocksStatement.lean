@@ -45,4 +45,4 @@ open ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.
 open scoped ComplexOrder ENNReal
 
 theorem _root_.GlobalTheory.T.measurePreserving_glueLowerUnitriangularBlocks : ∀ (r p q : ℕ) (e : Fin r ≃ Fin p ⊕ Fin q), IsBlockSL2Embedding e → MeasurePreserving (glue e) volume volume := by
-  first | exact @GlobalTheory.FlagFibre.measurePreserving_glue | exact GlobalTheory.FlagFibre.measurePreserving_glue | (intros; apply GlobalTheory.FlagFibre.measurePreserving_glue <;> assumption)
+  exact @GlobalTheory.FlagFibre.measurePreserving_glue

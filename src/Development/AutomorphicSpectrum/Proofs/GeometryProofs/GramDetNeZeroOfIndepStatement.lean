@@ -59,4 +59,4 @@ open GlobalTheory.CompanionTheory.Ar.RootHt GroundTheory.Heights₂.Heights
 
 theorem _root_.GlobalTheory.T.gram_det_ne_zero_of_indep : ∀ (L : Type) [Field L] [NumberField L] (B : HermitianBundle.{0} L) (σ : L →+* ℂ) (n : ℕ)
     (f : Fin n → B.carrier), LinearIndependent (𝓞 L) f → B.gramDet σ f ≠ 0 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.RootHt.gramDet_ne_zero_of_linearIndependent | exact GlobalTheory.CompanionTheory.Ar.RootHt.gramDet_ne_zero_of_linearIndependent | (intros; apply GlobalTheory.CompanionTheory.Ar.RootHt.gramDet_ne_zero_of_linearIndependent <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.RootHt.gramDet_ne_zero_of_linearIndependent

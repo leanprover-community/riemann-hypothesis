@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.PRep PositivityTheory.SphericalProduct
 
 theorem _root_.GlobalTheory.T.jacquet_projection_hecke_holds : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G], PositivityTheory.SphericalProduct.A2 G := by
-  first | exact @GlobalTheory.CompanionTheory.Cass.jacquet_projection_hecke_intertwines | exact GlobalTheory.CompanionTheory.Cass.jacquet_projection_hecke_intertwines | (intros; apply GlobalTheory.CompanionTheory.Cass.jacquet_projection_hecke_intertwines <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Cass.jacquet_projection_hecke_intertwines

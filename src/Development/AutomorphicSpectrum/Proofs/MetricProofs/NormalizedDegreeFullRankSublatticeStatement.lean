@@ -49,4 +49,4 @@ open GroundTheory.Heights₂.Heights NumberField TensorProduct ComplexAt GlobalT
 open scoped BigOperators ComplexOrder
 
 theorem _root_.GlobalTheory.T.normalized_degree_full_rank_sublattice : ∀ (K : Type) [Field K] [NumberField K] (E : HermitianBundle.{0} K) (F : Submodule (𝓞 K) E.carrier), E.rank F = Module.finrank (𝓞 K) E.carrier → E.normDegree F ≤ E.normDegree ⊤ ∧ ∀ d : ℤ, d ≠ 0 → (∀ x : E.carrier, d • x ∈ F) → E.normDegree ⊤ ≤ E.normDegree F + Module.finrank (𝓞 K) E.carrier * Real.log |(d : ℝ)| := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.IndexBound.full_sublattice_normDegree_bounds | exact GlobalTheory.CompanionTheory.Ar.IndexBound.full_sublattice_normDegree_bounds | (intros; apply GlobalTheory.CompanionTheory.Ar.IndexBound.full_sublattice_normDegree_bounds <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.IndexBound.full_sublattice_normDegree_bounds

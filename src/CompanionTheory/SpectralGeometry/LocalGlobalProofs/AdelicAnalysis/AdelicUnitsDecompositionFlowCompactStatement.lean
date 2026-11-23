@@ -48,4 +48,4 @@ open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberF
 open scoped TensorProduct ENNReal NNReal Matrix
 
 theorem _root_.GlobalTheory.T.adelic_units_decomposition_flow_compact : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ τ : Multiplicative ℝ →* (AF F ⊗[F] E)ˣ, IsFlow τ → ∃ ω : Set (AF F ⊗[F] E)ˣ, IsCompact ω ∧ ∀ a : (AF F ⊗[F] E)ˣ, ∃ (l : Eˣ) (a' : (AF F ⊗[F] E)ˣ) (c : (AF F ⊗[F] E)ˣ) (j : ℤ), (a' : AF F ⊗[F] E) = inclR (AF F) (l : E) ∧ c ∈ ω ∧ a = a' * τ (Multiplicative.ofAdd (j : ℝ)) * c := by
-  first | exact @GlobalTheory.CompanionTheory.SW.Fujisaki.units_decomp | exact GlobalTheory.CompanionTheory.SW.Fujisaki.units_decomp | (intros; apply GlobalTheory.CompanionTheory.SW.Fujisaki.units_decomp <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SW.Fujisaki.units_decomp

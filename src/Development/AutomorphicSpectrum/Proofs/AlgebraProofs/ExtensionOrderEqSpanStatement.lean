@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.Ar.BT TensorProduct
 
 theorem _root_.GlobalTheory.T.extension_order_eq_span : ∀ (R : Type) [CommRing R] (T : Type) [CommGroup T] (R' : Type) [CommRing R'] (φ : R →+* R') (A : Subalgebra R (T → R)) (g : T → R'), g ∈ extOrder φ A ↔ g ∈ Submodule.span R' {g : T → R' | ∃ f ∈ A, g = fun t => φ (f t)} := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.BT.ExtSpan.extOrder_eq_span | exact GlobalTheory.CompanionTheory.Ar.BT.ExtSpan.extOrder_eq_span | (intros; apply GlobalTheory.CompanionTheory.Ar.BT.ExtSpan.extOrder_eq_span <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.BT.ExtSpan.extOrder_eq_span

@@ -51,4 +51,4 @@ attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 theorem _root_.GlobalTheory.T.isClopen_unit_minor_set : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n d : ℕ),
     IsClopen (GlobalTheory.FullRankCoinv.UnitMinor.unitMinorSet k n d) := by
-  first | exact @GlobalTheory.FullRankCoinv.UnitMinor.isClopen_unitMinorSet | exact GlobalTheory.FullRankCoinv.UnitMinor.isClopen_unitMinorSet | (intros; apply GlobalTheory.FullRankCoinv.UnitMinor.isClopen_unitMinorSet <;> assumption)
+  exact @GlobalTheory.FullRankCoinv.UnitMinor.isClopen_unitMinorSet

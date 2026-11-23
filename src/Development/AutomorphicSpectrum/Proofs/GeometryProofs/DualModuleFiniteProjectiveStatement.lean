@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.dual_module_finite_projective : ∀ (R P : Type) [
   [Module (Localization.Away f) P] [IsScalarTower R (Localization.Away f) P] [Module.Finite (Localization.Away f) P]
   [Module.Projective (Localization.Away f) P],
   Module.Finite (Localization.Away f) (P →ₗ[R] Localization.Away f) ∧ Module.Projective (Localization.Away f) (P →ₗ[R] Localization.Away f) := by
-  first | exact @GlobalTheory.CompanionTheory.Ggeo.HomDual.finite_projective_hom | exact GlobalTheory.CompanionTheory.Ggeo.HomDual.finite_projective_hom | (intros; apply GlobalTheory.CompanionTheory.Ggeo.HomDual.finite_projective_hom <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ggeo.HomDual.finite_projective_hom

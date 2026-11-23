@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.closure_operator_facts : PositivityTheory.RgBcC.Fc.ClsFacts := by
-  first | exact @GlobalTheory.CompanionTheory.FcCls.clsFacts | exact GlobalTheory.CompanionTheory.FcCls.clsFacts | (intros; apply GlobalTheory.CompanionTheory.FcCls.clsFacts <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FcCls.clsFacts

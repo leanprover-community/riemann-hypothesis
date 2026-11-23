@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.theta_norm_in_period_coordinates : ∀ (g : ℕ) (
     ∀ (u₁ u₂ : Fin g → ℝ) (z : Fin g → ℂ),
       h.mulVec z = (periodMatrix X Y).mulVec (fun i => (u₁ i : ℂ)) + (fun i => (u₂ i : ℂ)) →
       ‖θ z‖ * Real.exp (-(Real.pi * ((1 : ℕ) : ℝ) / 2) * (hermForm Hm z z).re) = ‖κ‖ * thetaNorm X Y a c u₁ u₂ := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Nform.norm_mul_canTh | exact GlobalTheory.CompanionTheory.Ar.Nform.norm_mul_canTh | (intros; apply GlobalTheory.CompanionTheory.Ar.Nform.norm_mul_canTh <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Nform.norm_mul_canTh

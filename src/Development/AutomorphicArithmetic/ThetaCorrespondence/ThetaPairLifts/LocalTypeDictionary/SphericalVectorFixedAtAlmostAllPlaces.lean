@@ -63,7 +63,7 @@ theorem vacuum_fixed_at_cofinitely_many_places : _root_.GlobalTheory.FunPr.Theta
   intro _ F E _ _ _ _ _ σ B a a' G X om om' hT
   classical
   refine ⟨(bad_finite F).toFinset ∪ X.T, fun v hv k hk => ?_⟩
-  simp only [Finset.mem_union, Set.Finite.mem_toFinset, Set.mem_setOf_eq, not_or] at hv
+  simp only [Finset.mem_union, Set.Finite.mem_toFinset, Set.mem_ofPred_eq, not_or] at hv
   obtain ⟨⟨hd, h6⟩, hvT⟩ := hv
   have hψ := GlobalTheory.StdCharUnrF.psiUnr_of_not_le F B.ψ hT.base.std v hd
   obtain ⟨h2, h3⟩ := two_three_of_six v h6
@@ -90,5 +90,5 @@ theorem _root_.GlobalTheory.T.spherical_vector_fixed_at_almost_all_places : _roo
     (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ G.V G.W) (om' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ G.V' G.W), GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsTriple B G X om om' →
     ∃ S₀ : Finset (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)), ∀ v, v ∉ S₀ → ∀ k ∈ GlobalTheory.InertSph.KAt σ G.W v,
       GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Acts (GlobalTheory.AdelicU.evFin F v) (om (1, k)) (G.M.vac v) (G.M.vac v) := by
-  first | exact @_root_.GlobalTheory.LocVacFix.vacuum_fixed_at_cofinitely_many_places | exact _root_.GlobalTheory.LocVacFix.vacuum_fixed_at_cofinitely_many_places | (intros; apply _root_.GlobalTheory.LocVacFix.vacuum_fixed_at_cofinitely_many_places <;> assumption)
+  exact @_root_.GlobalTheory.LocVacFix.vacuum_fixed_at_cofinitely_many_places
 end

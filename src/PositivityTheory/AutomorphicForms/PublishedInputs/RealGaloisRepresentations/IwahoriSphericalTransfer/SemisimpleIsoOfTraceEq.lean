@@ -50,4 +50,4 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.semisimple_iso_of_trace_eq : ∀ (Γ k : Type) [Group Γ] [Field k] [CharZero k] (n : ℕ) (r r' : Γ →* GL (Fin n) k), IsSSRep r → IsSSRep r' → (∀ s, ((r s : GL (Fin n) k) : Matrix (Fin n) (Fin n) k).trace = ((r' s : GL (Fin n) k) : Matrix (Fin n) (Fin n) k).trace) → RepIso r r' := by
-  first | exact @GlobalTheory.TraceConj.main | exact GlobalTheory.TraceConj.main | (intros; apply GlobalTheory.TraceConj.main <;> assumption)
+  exact @GlobalTheory.TraceConj.main

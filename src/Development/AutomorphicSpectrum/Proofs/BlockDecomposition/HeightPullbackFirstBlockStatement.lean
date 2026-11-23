@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.height_pullback_first_block : ∀ (D : D7) (n ρ p
   (∀ (h : G D ρ) (a b c d : Mx D ρ ρ), mat h = blk4 a b c d →
     mat (ι h) = blk4 (bl hn a 0 0 1) (bl hn b 0 0 0) (bl hn c 0 0 0) (bl hn d 0 0 1)) →
   ∀ H : G D n → ℝ≥0, IsHt H → IsHt (fun h : G D ρ => H (ι h)) := by
-  first | exact @GlobalTheory.CompanionTheory.HtPull.isHt_blockPull | exact GlobalTheory.CompanionTheory.HtPull.isHt_blockPull | (intros; apply GlobalTheory.CompanionTheory.HtPull.isHt_blockPull <;> assumption)
+  exact @GlobalTheory.CompanionTheory.HtPull.isHt_blockPull

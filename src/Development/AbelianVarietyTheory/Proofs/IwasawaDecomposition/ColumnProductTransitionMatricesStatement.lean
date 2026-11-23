@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.exists_integral_dual_bases_columnMinors_weylLattic
       (∀ i, b i = ∑ J, Cm i J • GlobalTheory.WeylMinorDual.colProd ℤ N Y hY J) ∧
       (∀ i, ∑ J, B J i • GlobalTheory.WeylMinorDual.colProd ℤ N Y hY J = d i) ∧
       (∀ i, d i ∈ Formalism.GradedWeylDivisibility.weyl ℤ N N (le_refl N) (fun r : Fin N => Y.rowLen r)) := by
-  first | exact @GlobalTheory.WeylDualData.dual_data | exact GlobalTheory.WeylDualData.dual_data | (intros; apply GlobalTheory.WeylDualData.dual_data <;> assumption)
+  exact @GlobalTheory.WeylDualData.dual_data

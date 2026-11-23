@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
 
 theorem _root_.GlobalTheory.T.chart_unit_basic_open : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (M : PModel o x) (c : κ) (p : Cpt M.ξ) (U : M.X.Opens), InChart M.ξ x c p → p.1 ∈ U → ∃ f ∈ chRing o x c, unitAt M.ξ p f ∧ ∀ q : Cpt M.ξ, InChart M.ξ x c q → unitAt M.ξ q f → q.1 ∈ U := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.chRing_basicOpen_basis | exact GlobalTheory.CompanionTheory.Ar.chRing_basicOpen_basis | (intros; apply GlobalTheory.CompanionTheory.Ar.chRing_basicOpen_basis <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.chRing_basicOpen_basis

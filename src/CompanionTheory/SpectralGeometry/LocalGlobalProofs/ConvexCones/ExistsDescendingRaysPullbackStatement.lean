@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.exists_descending_rays_pullback : ∀ (O : Type) [
     ∀ i, 0 < t i → pull (CarDim.orad v : Submodule O X₀).mkQ (u i) = δ₀ i ∧ pullAdd f (u i) ∈ balForms bar X ∧
       (∀ y, 0 ≤ pullAdd f (u i) y y) ∧ (∀ (k : ℕ) (β' : LinearMap.BilinForm ℤ X), (k : ℤ) • β' = pullAdd f (u i) → k = 1) ∧
       ∀ lab : InvFun O, IsTwG w0 lab → lab.evalZ (pullAdd f (u i)) = lab.evalZ (δ₀ i) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fan.DescendingRaysPullback.exists_desc_rays_pullAdd | exact GlobalTheory.CompanionTheory.Ar.Fan.DescendingRaysPullback.exists_desc_rays_pullAdd | (intros; apply GlobalTheory.CompanionTheory.Ar.Fan.DescendingRaysPullback.exists_desc_rays_pullAdd <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fan.DescendingRaysPullback.exists_desc_rays_pullAdd

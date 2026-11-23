@@ -69,4 +69,4 @@ theorem _root_.GlobalTheory.T.tuple_archimedean_complex_coordinates : ∀ (F E :
     (∀ X, Φ X = tupC Θ X) ∧ Continuous Φ ∧ Continuous Φ.symm ∧
     ∀ μ : Measure (Fin n → Fin M → Ainf F ⊗[F] E), μ.IsAddHaarMeasure →
       (μ.map Φ).IsAddHaarMeasure ∧ ∀ g : (InfinitePlace F → Fin n → Fin M → ℂ) → ℂ, ∫ X, g (Φ X) ∂μ = ∫ Y, g Y ∂(μ.map Φ) := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.TupHaar.tup_coord_haar | exact GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.TupHaar.tup_coord_haar | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.TupHaar.tup_coord_haar <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.TupHaar.tup_coord_haar

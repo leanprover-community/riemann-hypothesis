@@ -47,4 +47,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance 100] LieRing.ofAssociativeRing
 
 theorem _root_.GlobalTheory.T.enveloping_map_surjective : ∀ (D : D7) (V : HSp D) (τ : D.what₂.Tau), Function.Surjective (GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.envOf V τ) := by
-  first | exact @GlobalTheory.EnvWords.envOf_surjective | exact GlobalTheory.EnvWords.envOf_surjective | (intros; apply GlobalTheory.EnvWords.envOf_surjective <;> assumption)
+  exact @GlobalTheory.EnvWords.envOf_surjective

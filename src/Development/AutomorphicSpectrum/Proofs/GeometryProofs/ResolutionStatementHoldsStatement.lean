@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo
 
 theorem _root_.GlobalTheory.T.resolution_statement_holds : ReciprocityTheory.ChartRestriction.G.Geo.ResBridgeStatement := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Link.resBridgeStatement_holds | exact GlobalTheory.CompanionTheory.Ar.Link.resBridgeStatement_holds | (intros; apply GlobalTheory.CompanionTheory.Ar.Link.resBridgeStatement_holds <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Link.resBridgeStatement_holds

@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.exists_affine_cover_cech_acyclic_of_fibAc_off_fini
     (hfib : ∀ (y : Sp k ⟶ T) (σ : X ⟶ Z), y ≫ b = 𝟙 _ → σ ≫ p = 𝟙 X → σ ≫ q = a ≫ y → y ∉ F → FibAc a (G.pull σ))
     (htot : FibAc (p ≫ a) G) (y₀ : Sp k ⟶ T) (σ₀ : X ⟶ Z) (hy : y₀ ≫ b = 𝟙 _) (h₁ : σ₀ ≫ p = 𝟙 X)
     (h₂ : σ₀ ≫ q = a ≫ y₀), ∃ (m : ℕ) (D : Fin m → X.Opens), (∀ i, IsAffineOpen (D i)) ∧ ⨆ i, D i = ⊤ ∧ (cechLB a (G.pull σ₀) D).Acyclic := by
-  first | exact @GlobalTheory.CompanionTheory.PointSurjectivity.exists_acyclic_cechLB_fibre | exact GlobalTheory.CompanionTheory.PointSurjectivity.exists_acyclic_cechLB_fibre | (intros; apply GlobalTheory.CompanionTheory.PointSurjectivity.exists_acyclic_cechLB_fibre <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PointSurjectivity.exists_acyclic_cechLB_fibre

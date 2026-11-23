@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.EGlue
 
 theorem _root_.GlobalTheory.T.convergence_infimum : GlobalTheory.CompanionTheory.EGlue.DiscInf → GlobalTheory.CompanionTheory.EGlue.TopInf → GlobalTheory.CompanionTheory.EGlue.ConvInf := by
-  first | exact @GlobalTheory.CompanionTheory.EGlue.ConvInfProof.convInf_of_discInf_topInf | exact GlobalTheory.CompanionTheory.EGlue.ConvInfProof.convInf_of_discInf_topInf | (intros; apply GlobalTheory.CompanionTheory.EGlue.ConvInfProof.convInf_of_discInf_topInf <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EGlue.ConvInfProof.convInf_of_discInf_topInf

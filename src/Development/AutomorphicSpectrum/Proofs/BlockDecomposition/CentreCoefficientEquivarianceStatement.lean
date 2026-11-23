@@ -48,4 +48,4 @@ open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.centre_coefficient_equivariance : ∀ {D : D7} {n ρ p : ℕ} {hn : ρ + p = n} (M : Maps D hn) (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ (b₀ : HermE D ρ) (F : G D n → ℂ), LeftInv (GF D n) F → ∀ (c : hermA D ρ) (h : G D n), zc M m ψ b₀ F (M.nzx c 0 * h) = chz ψ b₀ c * zc M m ψ b₀ F h := by
-  first | exact @GlobalTheory.CompanionTheory.ZcShift.zc_shift | exact GlobalTheory.CompanionTheory.ZcShift.zc_shift | (intros; apply GlobalTheory.CompanionTheory.ZcShift.zc_shift <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ZcShift.zc_shift

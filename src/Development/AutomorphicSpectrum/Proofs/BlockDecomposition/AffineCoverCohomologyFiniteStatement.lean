@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.affine_cover_cohomology_finite : ∀ {O : Type} [C
     {ι : Type} [Fintype ι] (U : ι → X.Opens) (hU : (⨆ α, U α) = ⊤) (ha : ∀ n (i : Fin (n + 1) → ι), IsAffineOpen (capO U i))
     (K : Cos.{1} O) (V : VB (fun W => ((Scheme.ΓSpecIso (CommRingCat.of O)).inv ≫ q.appLE ⊤ W le_top).hom) U K) (p : ℕ),
     Module.Finite O (K.cx.H p) := by
-  first | exact @GlobalTheory.CompanionTheory.VBGlue.finite_H_cx | exact GlobalTheory.CompanionTheory.VBGlue.finite_H_cx | (intros; apply GlobalTheory.CompanionTheory.VBGlue.finite_H_cx <;> assumption)
+  exact @GlobalTheory.CompanionTheory.VBGlue.finite_H_cx

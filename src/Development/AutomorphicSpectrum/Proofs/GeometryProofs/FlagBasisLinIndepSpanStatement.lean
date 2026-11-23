@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.flag_basis_lin_indep_span : ∀ (E : Type) [Field 
     (Ω : Type) [Field Ω] (K : Type) [Fintype K] (J : K → Type) (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y)
     (Fl : 𝔐.Flag) (t : CMType H ⊕ CMType H),
     LinearIndependent Ω (Fl.b t) ∧ Submodule.span Ω (Set.range (Fl.b t)) = 𝔐.Vgen t := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.HodgeModel.FlagBasis.flag_b_basis | exact GlobalTheory.CompanionTheory.Ar.Num.HodgeModel.FlagBasis.flag_b_basis | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.HodgeModel.FlagBasis.flag_b_basis <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.HodgeModel.FlagBasis.flag_b_basis

@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.unramified_character_local_GL : GlobalTheory.FunPr
     ∀ (ν α : (Fv F v)ˣ →* ℂˣ) (ι : ((Fin a' × Fin (a + a') → Fv F v) → ℂ) →ₗ[ℂ] (Matrix (Fin a') (Fin (a + a')) (Fv F v) → ℂ)),
     G.M'.IsLinBar B.ψ t 1 1 ι → (∀ g, ∀ φ ∈ SB (Fin a' × Fin (a + a') → Fv F v), ι (S g φ) = GlobalTheory.SplitFlip.omB ν α g 1 (ι φ)) →
     ∀ m : ℕ, 0 < m → ∀ r : ℝ, ((ν (unifAt v) : ℂ)) ^ m ≠ (r : ℂ) := by
-  first | exact @GlobalTheory.LinBarChar.unif_pow_ne_real | exact GlobalTheory.LinBarChar.unif_pow_ne_real | (intros; apply GlobalTheory.LinBarChar.unif_pow_ne_real <;> assumption)
+  exact @GlobalTheory.LinBarChar.unif_pow_ne_real

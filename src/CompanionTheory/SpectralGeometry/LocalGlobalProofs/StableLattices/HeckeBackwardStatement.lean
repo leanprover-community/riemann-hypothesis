@@ -45,4 +45,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.HeckeBackward : CompanionTheory.RgExh.Hk.Back := by
-  first | exact @GlobalTheory.CompanionTheory.RgExhHecke.BackProof.back | exact GlobalTheory.CompanionTheory.RgExhHecke.BackProof.back | (intros; apply GlobalTheory.CompanionTheory.RgExhHecke.BackProof.back <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgExhHecke.BackProof.back

@@ -44,4 +44,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.standard_section_good : PositivityTheory.RgEis.StdGood := by
-  first | exact @GlobalTheory.CompanionTheory.StdGoodAd.stdGood | exact GlobalTheory.CompanionTheory.StdGoodAd.stdGood | (intros; apply GlobalTheory.CompanionTheory.StdGoodAd.stdGood <;> assumption)
+  exact @GlobalTheory.CompanionTheory.StdGoodAd.stdGood

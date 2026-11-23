@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.fourierJacobiPhase_adjacentInnerSteps_invariant : 
     (Odd (Γ.m - 2 - j) → ∀ s : Fin (topRank Γ j), rowVar x' e' j s = rowVar x e j s) →
     (Odd (Γ.m - 2 - j) → ∀ r : Fin (topRank Γ (j + 1 + 1)), colVar x' e' ⟨j + 1, by omega⟩ r = colVar x e ⟨j + 1, by omega⟩ r) →
     phase x e = phase x' e' := by
-  first | exact @GlobalTheory.TopLevelInv.phase_eq_of_two_steps | exact GlobalTheory.TopLevelInv.phase_eq_of_two_steps | (intros; apply GlobalTheory.TopLevelInv.phase_eq_of_two_steps <;> assumption)
+  exact @GlobalTheory.TopLevelInv.phase_eq_of_two_steps

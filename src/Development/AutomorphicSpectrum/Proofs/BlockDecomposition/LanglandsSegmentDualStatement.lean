@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Seg
 
 theorem _root_.GlobalTheory.T.langlands_segment_dual : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hZ : GlobalTheory.Published.SegmentRepresentation), LSegDual k := by
-  first | exact @GlobalTheory.CompanionTheory.SegLDual.lSegDual | exact GlobalTheory.CompanionTheory.SegLDual.lSegDual | (intros; apply GlobalTheory.CompanionTheory.SegLDual.lSegDual <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SegLDual.lSegDual

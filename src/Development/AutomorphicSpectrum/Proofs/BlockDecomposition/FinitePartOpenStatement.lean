@@ -49,4 +49,4 @@ open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureThe
 open scoped TensorProduct ENNReal NNReal Matrix
 
 theorem _root_.GlobalTheory.T.finite_part_open : PositivityTheory.PfSWUS.SchInf.FinOpen := by
-  first | exact @GlobalTheory.CompanionTheory.SW.FinOpenGram.finOpen | exact GlobalTheory.CompanionTheory.SW.FinOpenGram.finOpen | (intros; apply GlobalTheory.CompanionTheory.SW.FinOpenGram.finOpen <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SW.FinOpenGram.finOpen

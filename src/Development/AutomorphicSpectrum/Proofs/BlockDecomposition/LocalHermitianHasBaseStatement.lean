@@ -47,4 +47,4 @@ open Formalism.UG (cT)
 open scoped TensorProduct
 
 theorem _root_.GlobalTheory.T.local_hermitian_has_base : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}, IsCMExt F E σ → ∀ (v : HeightOneSpectrum (𝓞 F)), HasBase (sigR (Fv F v) σ) (intLoc F E v) := by
-  first | exact @GlobalTheory.CompanionTheory.KFin.Base.hasBase_place | exact GlobalTheory.CompanionTheory.KFin.Base.hasBase_place | (intros; apply GlobalTheory.CompanionTheory.KFin.Base.hasBase_place <;> assumption)
+  exact @GlobalTheory.CompanionTheory.KFin.Base.hasBase_place

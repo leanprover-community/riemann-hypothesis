@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.hodge_flag_cm_type_degree : ∀ (E : Type) [Field 
     (S₀ : Finset ℕ) (T : LocPair J ℤ (CMType H × Fin (D.p + D.q))), Fl.TwoLevels S₀ T → ∀ p ∈ S, p ∉ S₀ →
     (∀ (s : CMType H ⊕ CMType H) (q : Cpt 𝔐.ξ), (∀ p' : ℕ, p'.Prime → ¬ InFibre 𝔐.ξ p' q) → 𝔐.HT p s q = 𝔐.dR s q) →
     ∀ s, IsLatFlagPair y (overPrime 𝔐.ξ p) (𝔐.dR s) (𝔐.HT p s) (Fl.b s) (labelPair D T s) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.TwoLevelLat.latFlagPair_of_twoLevels | exact GlobalTheory.CompanionTheory.Ar.TwoLevelLat.latFlagPair_of_twoLevels | (intros; apply GlobalTheory.CompanionTheory.Ar.TwoLevelLat.latFlagPair_of_twoLevels <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.TwoLevelLat.latFlagPair_of_twoLevels

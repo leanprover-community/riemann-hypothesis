@@ -52,4 +52,4 @@ open GlobalTheory.AscFin
 open GlobalTheory.CharXFB
 
 theorem _root_.GlobalTheory.T.psiE_off_S0_column_pair : All fun {D} _ _ {sc} {G} W _ => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m) (u : WO (G.V (.grid (2 * σ + 2 + 1) 0)) (G.V (.grid (2 * σ + 2) 0))), u ∈ latRow G (2 * σ + 2) → ∀ (p : Fin (σ + 1)) (v : GlobalTheory.FinPl.Pl D), v ∉ G.pl.S0 → psiE W.ψ (GlobalTheory.FinPlLoc.idem D (· = v) * (incA D D.host.xi0 * hA _ (ratV fun k => (G.colDec (2 * σ + 2) (by omega) h').a k (Fin.castLE (by omega) p)) (u *ᵥ ratV fun k => (G.colDec (2 * (σ + 1) + 1) (by omega) (by omega)).a k (Fin.castLE (by omega) p : Fin (2 * (σ + 1) + 1 - 1)).rev))) = 1 := by
-  first | exact @GlobalTheory.CharXFB.OffPl.psi_pair_trivial_off | exact GlobalTheory.CharXFB.OffPl.psi_pair_trivial_off | (intros; apply GlobalTheory.CharXFB.OffPl.psi_pair_trivial_off <;> assumption)
+  exact @GlobalTheory.CharXFB.OffPl.psi_pair_trivial_off

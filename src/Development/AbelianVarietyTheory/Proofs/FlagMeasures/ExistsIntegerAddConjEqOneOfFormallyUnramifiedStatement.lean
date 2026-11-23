@@ -55,4 +55,4 @@ open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.MainNotions.Glo
 open scoped TensorProduct ENNReal nonZeroDivisors Classical
 
 theorem _root_.GlobalTheory.T.exists_integer_add_conj_eq_one_of_formallyUnramified' : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → Algebra.FormallyUnramified (𝓞 F) (𝓞 E) → ∃ θ : 𝓞 E, (θ : E) + σ θ = 1 := by
-  first | exact @GlobalTheory.exists_integer_add_conj_eq_one_of_formallyUnramified | exact GlobalTheory.exists_integer_add_conj_eq_one_of_formallyUnramified | (intros; apply GlobalTheory.exists_integer_add_conj_eq_one_of_formallyUnramified <;> assumption)
+  exact @GlobalTheory.exists_integer_add_conj_eq_one_of_formallyUnramified

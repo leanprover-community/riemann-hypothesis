@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.rational_section_log_norm_on_sheet : ∀ (m : ℕ)
       eval z (map (Int.castRingHom ℂ) f) ≠ 0 → eval z (map (Int.castRingHom ℂ) g) ≠ 0 →
       y ∈ offSupp (i ≫ mpStr ℤ m n) σ₀ ((M.restr i).div hr) ∧
       GlobalTheory.Cartier.logNorm ((M.restr i).φ σ₀) r y = logNormRat A f g z := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.ArchEq.value_of_ne_zero | exact GlobalTheory.CompanionTheory.MixZ.ArchEq.value_of_ne_zero | (intros; apply GlobalTheory.CompanionTheory.MixZ.ArchEq.value_of_ne_zero <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MixZ.ArchEq.value_of_ne_zero

@@ -72,4 +72,4 @@ theorem _root_.GlobalTheory.T.pairing_on_rational_tuple_formula : ∀ (F E : Typ
     pairB σ J ψf (hermIn (Af F) σ n c) (fun a i => if a = c₀ ∧ i = i₀ then x else 0) (ratTuple J s ρ) =
       ψf (Algebra.trace (Af F) (Af F ⊗[F] E) (sigR (Af F) σ x * inclR (Af F)
         ((s : E) * ∑ a, c.1 a c₀ * algebraMap (𝓞 E) E (ρ i₀ a)))) := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.PairSingle.pair_single | exact GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.PairSingle.pair_single | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.PairSingle.pair_single <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.PairSingle.pair_single

@@ -44,4 +44,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
 
 theorem _root_.GlobalTheory.T.scalar_action_fifth_real : PositivityTheory.RgBcC.RealD.CapelliProductsScalar := by
-  first | exact @GlobalTheory.CompanionTheory.CapScal.capScal | exact GlobalTheory.CompanionTheory.CapScal.capScal | (intros; apply GlobalTheory.CompanionTheory.CapScal.capScal <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CapScal.capScal

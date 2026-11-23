@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Rg.Fl
 
 theorem _root_.GlobalTheory.T.SeparatedMovingStatement : StSepMove := by
-  first | exact @GlobalTheory.CompanionTheory.RgFl.stSepMove | exact GlobalTheory.CompanionTheory.RgFl.stSepMove | (intros; apply GlobalTheory.CompanionTheory.RgFl.stSepMove <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgFl.stSepMove

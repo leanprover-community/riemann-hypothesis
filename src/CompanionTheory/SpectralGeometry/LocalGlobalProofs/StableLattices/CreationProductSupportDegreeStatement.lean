@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.creation_product_support_degree : ∀ (n : ℕ) (V
     (∀ i ∈ l, P i) → SuppIn P x → Deg j x →
       SuppIn P (((l.map cre).prod : Module.End ℂ (Cn n V)) x) ∧
         Deg (j + l.length) (((l.map cre).prod : Module.End ℂ (Cn n V)) x) := by
-  first | exact @GlobalTheory.CompanionTheory.RgExh.suppIn_deg_cre_prod | exact GlobalTheory.CompanionTheory.RgExh.suppIn_deg_cre_prod | (intros; apply GlobalTheory.CompanionTheory.RgExh.suppIn_deg_cre_prod <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgExh.suppIn_deg_cre_prod

@@ -65,4 +65,4 @@ theorem _root_.GlobalTheory.T.chart_ideal_localization_map : ∀ (K : Type) [Fin
         (Set.range fun p : Σ k, J k => y p / y ⟨p.1, c p.1⟩)) →
     ∃ ψ : S →+* R, ∀ (G : MvPolynomial (Σ k, J k) ℚ) (s : S),
       (s : Ω) = aeval (fun p : Σ k, J k => y p / y ⟨p.1, c p.1⟩) G → ψ s = θ (map (algebraMap ℚ ℂ) G) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.ChartHom.exists_hom_chart | exact GlobalTheory.CompanionTheory.Ar.ChartHom.exists_hom_chart | (intros; apply GlobalTheory.CompanionTheory.Ar.ChartHom.exists_hom_chart <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.ChartHom.exists_hom_chart

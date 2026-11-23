@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.ThTot
 
 theorem _root_.GlobalTheory.T.fock_total_of_euclidean : EucTotal → FockTotal := by
-  first | exact @GlobalTheory.CompanionTheory.ThTot.fockTotal_of_eucTotal | exact GlobalTheory.CompanionTheory.ThTot.fockTotal_of_eucTotal | (intros; apply GlobalTheory.CompanionTheory.ThTot.fockTotal_of_eucTotal <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ThTot.fockTotal_of_eucTotal

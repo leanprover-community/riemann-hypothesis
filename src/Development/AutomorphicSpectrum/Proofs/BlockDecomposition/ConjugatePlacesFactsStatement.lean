@@ -44,4 +44,4 @@ import Mathlib.Topology.Sheaves.Init
 open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 
 theorem _root_.GlobalTheory.T.conjugate_places_facts : ConjPlaces := by
-  first | exact @GlobalTheory.CompanionTheory.ConjAtPlaces.conjPlaces | exact GlobalTheory.CompanionTheory.ConjAtPlaces.conjPlaces | (intros; apply GlobalTheory.CompanionTheory.ConjAtPlaces.conjPlaces <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ConjAtPlaces.conjPlaces

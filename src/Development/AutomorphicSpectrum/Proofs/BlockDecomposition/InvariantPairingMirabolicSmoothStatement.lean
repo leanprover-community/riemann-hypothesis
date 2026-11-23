@@ -62,4 +62,4 @@ theorem _root_.GlobalTheory.T.invariant_pairing_mirabolic_smooth : ∀ (k : Type
       (∀ (p : Mir k n) w w', B' (phiMinus k ψ T p w) (phiMinus k ψ⁻¹ T' p w') =
         ((detChar (Fin (n + 1)) (absPow k ((s + 1 : ℕ) : ℂ)) (p : GL (Fin (n + 1)) k) : ℂˣ) : ℂ) * B' w w') ∧
       (∀ w, w ≠ 0 → ∃ w', B' w w' ≠ 0) := by
-  first | exact @GlobalTheory.CompanionTheory.MirPair.pairing_phi | exact GlobalTheory.CompanionTheory.MirPair.pairing_phi | (intros; apply GlobalTheory.CompanionTheory.MirPair.pairing_phi <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MirPair.pairing_phi

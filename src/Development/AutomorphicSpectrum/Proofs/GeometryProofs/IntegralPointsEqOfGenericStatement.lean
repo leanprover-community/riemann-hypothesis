@@ -56,4 +56,4 @@ open GlobalTheory.CompanionTheory.Ar.Num.FamEx GlobalTheory.CompanionTheory.Ar.B
 
 
 theorem _root_.GlobalTheory.T.integral_points_eq_of_generic : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (κ : Type) (x : κ → Ω), CoordTie ℤ ξ x → ∀ c : κ, x c ≠ 0 → ∀ (B : Type) [CommRing B] [IsDomain B] [Algebra B Ω], Function.Injective (algebraMap B Ω) → (∀ c', x c' / x c ∈ (algebraMap B Ω).range) → ∀ z z' : Spec (CommRingCat.of B) ⟶ X, Spec.map (CommRingCat.ofHom (algebraMap B Ω)) ≫ z = ξ → Spec.map (CommRingCat.ofHom (algebraMap B Ω)) ≫ z' = ξ → z = z' := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.FamEx.coordTie_points_eq | exact GlobalTheory.CompanionTheory.Ar.Num.FamEx.coordTie_points_eq | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.FamEx.coordTie_points_eq <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.FamEx.coordTie_points_eq

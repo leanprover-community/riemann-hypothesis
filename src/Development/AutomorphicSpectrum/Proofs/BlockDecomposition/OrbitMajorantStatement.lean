@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.ThTot
 
 theorem _root_.GlobalTheory.T.orbit_majorant : OrbitMaj := by
-  first | exact @GlobalTheory.CompanionTheory.ThTot.orbitMaj | exact GlobalTheory.CompanionTheory.ThTot.orbitMaj | (intros; apply GlobalTheory.CompanionTheory.ThTot.orbitMaj <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ThTot.orbitMaj

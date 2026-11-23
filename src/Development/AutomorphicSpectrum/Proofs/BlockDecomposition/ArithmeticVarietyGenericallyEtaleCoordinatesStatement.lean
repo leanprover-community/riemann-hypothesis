@@ -59,4 +59,4 @@ open ReciprocityTheory.ChartRestriction.G.AI.I2 (IsRatSectionOn logNormRat)
 theorem _root_.GlobalTheory.T.arithmetic_variety_generically_etale_coordinates : ∀ (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp ℤ) (D : ℕ), GlobalTheory.IsArithVar p D →
     ∃ (U : X.Opens) (x : Fin D → Γ(X, U)), IsAffineOpen U ∧ genericPoint X ∈ U ∧
       (MvPolynomial.eval₂Hom (ReciprocityTheory.ChartRestriction.G.DVR.FlatBC.algX p U) x).Etale := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.GenericCoords.exists_etale_coords_int | exact GlobalTheory.CompanionTheory.MixZ.GenericCoords.exists_etale_coords_int | (intros; apply GlobalTheory.CompanionTheory.MixZ.GenericCoords.exists_etale_coords_int <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MixZ.GenericCoords.exists_etale_coords_int

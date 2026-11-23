@@ -44,4 +44,4 @@ import Mathlib.Topology.Sheaves.Init
 open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 
 theorem _root_.GlobalTheory.T.finite_support_of_size : MulF → MulI → SzFin → FinSupp := by
-  first | exact @GlobalTheory.CompanionTheory.WedgeSupport.finSupp_of_mul | exact GlobalTheory.CompanionTheory.WedgeSupport.finSupp_of_mul | (intros; apply GlobalTheory.CompanionTheory.WedgeSupport.finSupp_of_mul <;> assumption)
+  exact @GlobalTheory.CompanionTheory.WedgeSupport.finSupp_of_mul

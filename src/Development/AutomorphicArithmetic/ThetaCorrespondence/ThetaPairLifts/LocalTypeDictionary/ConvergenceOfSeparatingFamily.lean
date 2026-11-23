@@ -73,5 +73,5 @@ open GlobalTheory.SepRows
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.convergence_of_separating_family : _root_.GlobalTheory.FunPr.ThetaLocalInputs → RowTower → RowConv := by
-  first | exact @_root_.GlobalTheory.RowConvAll.separating_family_converges | exact _root_.GlobalTheory.RowConvAll.separating_family_converges | (intros; apply _root_.GlobalTheory.RowConvAll.separating_family_converges <;> assumption)
+  exact @_root_.GlobalTheory.RowConvAll.separating_family_converges
 end

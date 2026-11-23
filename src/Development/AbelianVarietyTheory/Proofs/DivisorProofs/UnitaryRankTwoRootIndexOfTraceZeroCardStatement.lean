@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open Formalism.UG GlobalTheory.SatakeWeyl
 
 theorem _root_.GlobalTheory.T.unitaryRankTwoRootIndex_of_traceZeroCard : GlobalTheory.SatakeWeyl.TraceZeroIndex → GlobalTheory.SatakeWeyl.IndexTwo := by
-  first | exact @GlobalTheory.SatakeWeyl.indexTwo_of_traceZeroIndex | exact GlobalTheory.SatakeWeyl.indexTwo_of_traceZeroIndex | (intros; apply GlobalTheory.SatakeWeyl.indexTwo_of_traceZeroIndex <;> assumption)
+  exact @GlobalTheory.SatakeWeyl.indexTwo_of_traceZeroIndex

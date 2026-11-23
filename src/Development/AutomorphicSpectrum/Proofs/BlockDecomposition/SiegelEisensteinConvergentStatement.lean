@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.siegel_eisenstein_convergent : ∀ (D : D7) (n : �
       φ (p * g) = (χ (Matrix.GeneralLinearGroup.det a) : ℂ) *
         npow (absA D (Matrix.GeneralLinearGroup.det a)) (s₁ + (n : ℂ) / 2) * φ g) →
     (n : ℝ) / 2 < s₁.re → ∀ g : G D n, CosetConv (P D n) (GF D n) φ g := by
-  first | exact @GlobalTheory.CompanionTheory.Godement.cosetConv_of_continuous_law | exact GlobalTheory.CompanionTheory.Godement.cosetConv_of_continuous_law | (intros; apply GlobalTheory.CompanionTheory.Godement.cosetConv_of_continuous_law <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Godement.cosetConv_of_continuous_law

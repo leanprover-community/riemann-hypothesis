@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.local_matrix_map_injective : ∀ (F E : Type) [Fie
     IsCMExt F E σ → ∀ (d : ℕ) (J : Matrix (Fin d) (Fin d) E), J.det ≠ 0 →
     ∀ (v : Pl (F := F)) (t : E →ₐ[F] Fv F v) (c : GL (Fin d) (Fv F v)),
     Set.InjOn (locMatD (σ := σ) (J := J) t c) (UDAt σ J (evFin F v)) := by
-  first | exact @GlobalTheory.DblScal.locMatD_injOn | exact GlobalTheory.DblScal.locMatD_injOn | (intros; apply GlobalTheory.DblScal.locMatD_injOn <;> assumption)
+  exact @GlobalTheory.DblScal.locMatD_injOn

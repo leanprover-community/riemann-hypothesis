@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Rg.Fl
 
 theorem _root_.GlobalTheory.T.FactorizationStatement : StFactor := by
-  first | exact @GlobalTheory.CompanionTheory.RgFl.stFactor | exact GlobalTheory.CompanionTheory.RgFl.stFactor | (intros; apply GlobalTheory.CompanionTheory.RgFl.stFactor <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgFl.stFactor

@@ -52,4 +52,4 @@ open GlobalTheory.CompanionTheory.GLK (e1 e2 f1)
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem _root_.GlobalTheory.T.gelfand_value_perm_invariant : ∀ (n : ℕ) (χ : Fin n → ℂ) (σ : Equiv.Perm (Fin n)) (k : ℕ), GlobalTheory.Dec.gelfVal (fun a => χ (σ a)) k = GlobalTheory.Dec.gelfVal χ k := by
-  first | exact @GlobalTheory.CompanionTheory.ModelS.gelfVal_perm | exact GlobalTheory.CompanionTheory.ModelS.gelfVal_perm | (intros; apply GlobalTheory.CompanionTheory.ModelS.gelfVal_perm <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ModelS.gelfVal_perm

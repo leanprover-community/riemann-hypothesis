@@ -108,7 +108,7 @@ theorem inG_mul {p : ℕ} {δ : F} (hδ0 : δ ≠ 0) {γ γ' : GL (Fin 2) F} (h 
 
 theorem inG_one (p : ℕ) (δ : F) : InG p δ 1 := by
   have h1 : PInt p (1 : F) := fun w _ => by rw [map_one]
-  have h0 : PInt p (0 : F) := fun w _ => by rw [map_zero]; exact zero_le'
+  have h0 : PInt p (0 : F) := fun w _ => by rw [map_zero]; exact zero_le
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩ <;> simp [h1, h0]
   · intro w _; simp
   · exact tp_one
@@ -243,4 +243,4 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open scoped Matrix
 
 theorem _root_.GlobalTheory.T.exists_inG_scalar_mul_and_abs_norm_det_mul_absF_eq : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (p : ℕ) [Fact p.Prime] (δ : F), IsDel p δ → (∀ γ γ' : GL (Fin 2) F, InG p δ γ → InG p δ γ' → InG p δ (γ * γ')) ∧ InG p δ 1 ∧ ∀ (y y' z : (Af F)ˣ) (γ : GL (Fin 2) F) (u : GL (Fin 2) (Af F)), AtP p δ y → AtP p δ y' → TP γ.val.det → u ∈ KLev F 2 1 → toFin γ * aff y 0 = Matrix.GeneralLinearGroup.scalar (Fin 2) z * aff y' 0 * u → ∃ (η : Fˣ) (r : ℚ), InG p δ (Matrix.GeneralLinearGroup.scalar (Fin 2) η * γ) ∧ 0 < r ∧ ‖(r : ℚ_[p])‖ = 1 ∧ |((Algebra.norm ℚ (Matrix.GeneralLinearGroup.scalar (Fin 2) η * γ).val.det : ℚ) : ℝ)| * absF y' = (r : ℝ) ^ 2 * absF y := by
-  first | exact @GlobalTheory.HilbertThetaSeries.CmpP.compare_at_p | exact GlobalTheory.HilbertThetaSeries.CmpP.compare_at_p | (intros; apply GlobalTheory.HilbertThetaSeries.CmpP.compare_at_p <;> assumption)
+  exact @GlobalTheory.HilbertThetaSeries.CmpP.compare_at_p

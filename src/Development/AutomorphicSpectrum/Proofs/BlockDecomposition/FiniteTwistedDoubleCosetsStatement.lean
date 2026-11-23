@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.finite_twisted_double_cosets : ∀ {H : Type} [Gro
     ∃ k ∈ K, (Quotient.out q * k)⁻¹ * (d * σ d') * MonoidHom.id H (Quotient.out q * k) ∈ C}.Finite) →
   {q : DoubleCoset.Quotient (twCent (swTw σ) (d, d') : Set (H × H)) (K.prod K : Set (H × H)) |
     ∃ k ∈ K.prod K, f ((Quotient.out q * k)⁻¹ * (d, d') * swTw σ (Quotient.out q * k)) ≠ 0}.Finite := by
-  first | exact @GlobalTheory.CompanionTheory.LocHypSplit.finite_doubleCosets_split | exact GlobalTheory.CompanionTheory.LocHypSplit.finite_doubleCosets_split | (intros; apply GlobalTheory.CompanionTheory.LocHypSplit.finite_doubleCosets_split <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LocHypSplit.finite_doubleCosets_split

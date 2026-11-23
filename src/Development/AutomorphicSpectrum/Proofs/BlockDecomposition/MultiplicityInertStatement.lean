@@ -41,4 +41,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 
 theorem _root_.GlobalTheory.T.multiplicity_inert : PositivityTheory.Rg.BcB.F.MLM.MuInert := by
-  first | exact @GlobalTheory.CompanionTheory.MuInertPlace.muInert | exact GlobalTheory.CompanionTheory.MuInertPlace.muInert | (intros; apply GlobalTheory.CompanionTheory.MuInertPlace.muInert <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MuInertPlace.muInert

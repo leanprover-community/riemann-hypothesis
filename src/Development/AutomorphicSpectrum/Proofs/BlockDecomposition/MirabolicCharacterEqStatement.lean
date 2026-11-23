@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.BZMir.Fun
 
 theorem _root_.GlobalTheory.T.mirabolic_character_eq : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.BZMir.Fun.MirCharEq k := by
-  first | exact @GlobalTheory.CompanionTheory.BZMir.mirChar_eq_thetaA_single | exact GlobalTheory.CompanionTheory.BZMir.mirChar_eq_thetaA_single | (intros; apply GlobalTheory.CompanionTheory.BZMir.mirChar_eq_thetaA_single <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BZMir.mirChar_eq_thetaA_single

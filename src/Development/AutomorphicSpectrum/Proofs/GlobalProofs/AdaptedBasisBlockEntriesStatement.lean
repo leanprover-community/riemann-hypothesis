@@ -64,4 +64,4 @@ theorem _root_.GlobalTheory.T.block_embedding_adapted_basis : ∀ (D : D7) [_roo
       (GlobalTheory.CuspRep.lieS D.host.E d i j (GlobalTheory.CuspRep.atEmb (tauE D τ) z) f).1 x =
         (GlobalTheory.Mem.RealTranslate.derEnd hθ τ (z • (C.1.map (tauE D τ) * Matrix.single p q 1 * (C.1.map (tauE D τ))⁻¹) -
           (starRingEnd ℂ z) • (C.1.map (tauE D τ) * Matrix.single p' q' 1 * (C.1.map (tauE D τ))⁻¹)) F).1 (ι x) := by
-  first | exact @GlobalTheory.CompanionTheory.BlockEntry.lieS_eq_derEnd | exact GlobalTheory.CompanionTheory.BlockEntry.lieS_eq_derEnd | (intros; apply GlobalTheory.CompanionTheory.BlockEntry.lieS_eq_derEnd <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BlockEntry.lieS_eq_derEnd

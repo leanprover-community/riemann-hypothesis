@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.derivation_vanishing_constants : ∀ (R : Type) [C
   ∀ D : Γ(G.left, V) →+ ℂ, (∀ r, D (GlobalTheory.CompanionTheory.Ar.Flat.ExpChart.cst G.hom V r) = 0) →
     (∀ f f', D (f * f') = valAt' (1 : Over.mk (spMap φ) ⟶ G).left V f * D f' + valAt' (1 : Over.mk (spMap φ) ⟶ G).left V f' * D f) →
     ∃! c : Fin g → ℂ, ∀ f, D f = ∑ a, c a * TrivSqZeroExt.snd (valR (spMap (dualMap φ) ≫ (M.pt (Pi.single a 1)).left) V f) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.ExpChart.lie_der_basis | exact GlobalTheory.CompanionTheory.Ar.Flat.ExpChart.lie_der_basis | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.ExpChart.lie_der_basis <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.ExpChart.lie_der_basis

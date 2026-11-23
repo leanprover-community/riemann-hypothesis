@@ -114,7 +114,7 @@ theorem cusp_forms_decompose_definite_unitary : _root_.GlobalTheory.FunPr.ThetaL
       (fun τ => ℓ a τ (J τ))).smulRight (fun x => F x (fun τ => k τ (J τ)))
   have hT : ∀ a (v : ∀ τ, N.M.sm τ) (x : GA D N.V), T a v x = ∑ J : (∀ τ, Fin (m τ)), (∏ τ, ℓ a τ (J τ) (v τ)) * F x (fun τ => k τ (J τ)) := by
     intro a v x
-    simp only [T, MultilinearMap.sum_apply, Finset.sum_apply, MultilinearMap.smulRight_apply,
+    simp only [T, _root_.sum_apply, Finset.sum_apply, MultilinearMap.smulRight_apply,
       MultilinearMap.compLinearMap_apply, MultilinearMap.mkPiAlgebra_apply, Pi.smul_apply, smul_eq_mul]
   have hMult : ∀ a, IsMultMap θ N.M ∅ 1 (T a) := by
     intro a
@@ -209,5 +209,5 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.Local
 theorem _root_.GlobalTheory.T.definite_unitary_cuspidal_decomposition : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ {D : D7} (θ : InfFam D) (N : GlobalTheory.Grid.Node D), IsInfFam θ → N.V.SigOK → N.V.IsDefinite →
     ∀ φ, GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.IsCuspOfType θ N φ →
       ∃ (n : ℕ) (F : Fin n → N.Cusp θ) (w : Fin n → SmT N.M), φ = ∑ i, (F i).1 (w i) := by
-  first | exact @_root_.GlobalTheory.DefiniteDecomp.cusp_forms_decompose_definite_unitary | exact _root_.GlobalTheory.DefiniteDecomp.cusp_forms_decompose_definite_unitary | (intros; apply _root_.GlobalTheory.DefiniteDecomp.cusp_forms_decompose_definite_unitary <;> assumption)
+  exact @_root_.GlobalTheory.DefiniteDecomp.cusp_forms_decompose_definite_unitary
 end

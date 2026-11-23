@@ -47,4 +47,4 @@ open NumberField MeasureTheory Topology Matrix GlobalTheory.AutomorphicL2Unitary
 open scoped ContDiff
 
 theorem _root_.GlobalTheory.T.test_function_continuous_compact_support : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (U : Subgroup (GL (Fin a) (Af E))), IsOpen (U : Set (GL (Fin a) (Af E))) → IsCompact (U : Set (GL (Fin a) (Af E))) → ∀ β : Lie E a → ℂ, IsTest β → Continuous (tst U β) ∧ HasCompactSupport (tst U β) := by
-  first | exact @GlobalTheory.CompanionTheory.SmoothRep.continuous_hasCompactSupport_tst | exact GlobalTheory.CompanionTheory.SmoothRep.continuous_hasCompactSupport_tst | (intros; apply GlobalTheory.CompanionTheory.SmoothRep.continuous_hasCompactSupport_tst <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SmoothRep.continuous_hasCompactSupport_tst

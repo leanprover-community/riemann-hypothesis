@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.InertZeta
 
 theorem _root_.GlobalTheory.T.pointwise_of_span_heisenberg : AddVec → Dual → SpanEq → Heis → Pointwise := by
-  first | exact @GlobalTheory.CompanionTheory.InertLen.pointwise | exact GlobalTheory.CompanionTheory.InertLen.pointwise | (intros; apply GlobalTheory.CompanionTheory.InertLen.pointwise <;> assumption)
+  exact @GlobalTheory.CompanionTheory.InertLen.pointwise

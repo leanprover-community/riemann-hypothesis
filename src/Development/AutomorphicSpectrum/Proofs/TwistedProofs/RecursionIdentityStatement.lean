@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.InertZeta
 
 theorem _root_.GlobalTheory.T.recursion_identity : Step := by
-  first | exact @GlobalTheory.CompanionTheory.InertLevi.step | exact GlobalTheory.CompanionTheory.InertLevi.step | (intros; apply GlobalTheory.CompanionTheory.InertLevi.step <;> assumption)
+  exact @GlobalTheory.CompanionTheory.InertLevi.step

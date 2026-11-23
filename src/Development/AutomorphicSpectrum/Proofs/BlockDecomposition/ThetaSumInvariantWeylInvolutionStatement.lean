@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.theta_sum_invariant_weyl_involution : ∀ (D : D7)
   ∀ Φ : schwartzA θ V.rank n,
     ∑' ξ : Matrix (Fin V.rank) (Fin n) D.host.E, (ω g Φ).1 (ξ.map (incA D)) =
       ∑' ξ : Matrix (Fin V.rank) (Fin n) D.host.E, Φ.1 (ξ.map (incA D)) := by
-  first | exact @GlobalTheory.CompanionTheory.ThetaPoisson.theta_weyl | exact GlobalTheory.CompanionTheory.ThetaPoisson.theta_weyl | (intros; apply GlobalTheory.CompanionTheory.ThetaPoisson.theta_weyl <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ThetaPoisson.theta_weyl

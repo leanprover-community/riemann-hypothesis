@@ -64,4 +64,4 @@ theorem _root_.GlobalTheory.T.uniform_bound_on_closed_cone : ∀ (K : Type) [Fin
     (∀ w x (c : K → ℂ), (∀ k, c k ≠ 0) → Bd w x → Bd (fun p => c p.1 * w p) x) →
     (∀ w₀ ∈ T, ∃ N ∈ 𝓝 w₀, ∃ C : ℝ, ∀ w ∈ N, ∀ x, Bd w x → |x| ≤ C) →
     ∃ C : ℝ, ∀ w x, Bd w x → |x| ≤ C := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.RootHt.bound_of_local_bounds_of_blockScale | exact GlobalTheory.CompanionTheory.Ar.RootHt.bound_of_local_bounds_of_blockScale | (intros; apply GlobalTheory.CompanionTheory.Ar.RootHt.bound_of_local_bounds_of_blockScale <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.RootHt.bound_of_local_bounds_of_blockScale

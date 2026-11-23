@@ -105,7 +105,7 @@ theorem hasDerivAt_thetaSum_along_line_y_direction : _root_.GlobalTheory.FunPr.T
       refine ((((ev _).tendsto g).comp hlim).mul_const (r x)).congr' (Filter.Eventually.of_forall fun t => ?_)
       simp only [Function.comp_apply, tens]
       rw [slope_def_module]
-      simp only [SchwartzMap.smul_apply, SchwartzMap.sub_apply, sub_zero, Complex.real_smul]
+      simp only [_root_.smul_apply, _root_.sub_apply, sub_zero, Complex.real_smul]
       ring
     have h3 : (fun t : ℝ => tens (evI F) (⇑(c t)) r x) =
         fun t => om (γ (Multiplicative.ofAdd t), 1) (tens (evI F) (⇑f) r) x := by
@@ -142,5 +142,5 @@ theorem _root_.GlobalTheory.T.thetaSum_differentiable_along_line : _root_.Global
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ActsD (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI F) (fun t => om (γ (Multiplicative.ofAdd t), 1)) f f₁ →
     ∀ u, HasDerivAt (fun t : ℝ => GlobalTheory.WeilM.thetaSum F (M.co.rho ψ u (om (γ (Multiplicative.ofAdd t), 1) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.tens (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI F) f r))))
       (GlobalTheory.WeilM.thetaSum F (M.co.rho ψ u (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.tens (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI F) f₁ r))) 0 := by
-  first | exact @_root_.GlobalTheory.ThetaLineDerY.hasDerivAt_thetaSum_along_line_y_direction | exact _root_.GlobalTheory.ThetaLineDerY.hasDerivAt_thetaSum_along_line_y_direction | (intros; apply _root_.GlobalTheory.ThetaLineDerY.hasDerivAt_thetaSum_along_line_y_direction <;> assumption)
+  exact @_root_.GlobalTheory.ThetaLineDerY.hasDerivAt_thetaSum_along_line_y_direction
 end

@@ -48,4 +48,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.UnitLemma Polynomial
 
 theorem _root_.GlobalTheory.T.relativeFundamentalLemmaCountIdentity_of_unitMatch : (∀ r : ℕ, GlobalTheory.JR.UnitMatch r) → CountIdentity := by
-  first | exact @GlobalTheory.CountId.countIdentity_of_unitMatch | exact GlobalTheory.CountId.countIdentity_of_unitMatch | (intros; apply GlobalTheory.CountId.countIdentity_of_unitMatch <;> assumption)
+  exact @GlobalTheory.CountId.countIdentity_of_unitMatch

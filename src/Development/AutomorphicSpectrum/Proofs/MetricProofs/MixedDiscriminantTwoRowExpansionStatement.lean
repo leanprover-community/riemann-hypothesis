@@ -65,4 +65,4 @@ theorem _root_.GlobalTheory.T.mixed_discriminant_two_row_expansion : ∀ (d : �
       ((d + 2).factorial : ℂ) * mdisc (fun r => blk ((u r 0 : ℂ) * e₀) (blk ((u r 1 : ℂ) * e₁)
         ((∑ i, ((u r 0 * n₀ i + u r 1 * n₁ i : ℝ) : ℂ) • T i) + ((v r : ℝ) : ℂ) • H))) =
       e₀ * e₁ * L (evalW n₀ n₁ (pderiv (some 1) (pderiv (some 0) (∏ r, rowW (u r) (v r))))) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.FibN.mdisc_extract_two | exact GlobalTheory.CompanionTheory.Ar.PB.FibN.mdisc_extract_two | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.FibN.mdisc_extract_two <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.FibN.mdisc_extract_two

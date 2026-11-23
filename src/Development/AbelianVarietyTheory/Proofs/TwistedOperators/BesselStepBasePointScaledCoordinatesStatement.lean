@@ -62,4 +62,4 @@ theorem _root_.GlobalTheory.T.besselStep_basePoint_scaled_coordinates : OnStd fu
   ∃ s t : Fin (σ + 1) → k, (∀ q, s q • (β.b' *ᵥ fun i => p.pr (xZero (F.dJ (σ + 1) h) i q)) = Pi.single (κ ⟨q.1, by omega⟩) 1) ∧
     (∀ q, t q • ((fun i => p.pr (cA D (xZero (F.dJ (σ + 1) h) i q))) ᵥ*
     ((G.V (.grid (2 * (σ + 1) + 1) 0)).gram.map (fun c => p.pr (incA D c)) * β.b)) = Pi.single (κ ⟨2 * (σ + 1) - 1 - q.1, by omega⟩) 1) := by
-  first | exact @GlobalTheory.FrameZero.xclauses | exact GlobalTheory.FrameZero.xclauses | (intros; apply GlobalTheory.FrameZero.xclauses <;> assumption)
+  exact @GlobalTheory.FrameZero.xclauses

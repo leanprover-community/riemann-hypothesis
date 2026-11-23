@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.adapted_basis_spans_eigenspace : ∀ (E : Type) [F
     IsAdapted ρH σ v w u → LinearIndependent K v → Module.finrank K (HT.eigSp ρH σ) = p + q →
     FiniteDimensional K (HT.eigSp ρH σ) →
     LinearIndependent K u ∧ Submodule.span K (Set.range u) = HT.eigSp ρH σ := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.adaptedFamily_isBasis | exact GlobalTheory.CompanionTheory.Ar.Flat.CPoint.adaptedFamily_isBasis | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.CPoint.adaptedFamily_isBasis <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.adaptedFamily_isBasis

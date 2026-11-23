@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.linear_model_unitary_conjugate : GlobalTheory.FunP
     ∀ (v : Pl (F := F)) (t : E →ₐ[F] Fv F v) (b : GL (Fin n) (Fv F v)) (c : GL (Fin d) (Fv F v)), ∀ ι, M.IsLinW B.ψ t b c ι →
     ∃ κ : UA σ W.J → ℂ, ∀ h ∈ UAt σ W (evFin F v), ∀ φ ∈ SB (Fin n × Fin d → Fv F v), ∀ φ₁ ∈ SB (Fin n × Fin d → Fv F v),
       Acts (evFin F v) (om (1, h)) φ φ₁ → ι φ₁ = κ h • fun Y => ι φ (Y * (GlobalTheory.SplitFlip.invT (locMat t c h)).val) := by
-  first | exact @GlobalTheory.LinWShape.shape_right | exact GlobalTheory.LinWShape.shape_right | (intros; apply GlobalTheory.LinWShape.shape_right <;> assumption)
+  exact @GlobalTheory.LinWShape.shape_right

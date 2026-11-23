@@ -60,4 +60,4 @@ theorem _root_.GlobalTheory.T.adapted_basis_block_entries : ∀ (D : D7) (θ : D
     (∀ a b : Fin V.rank, ((C.1.map (tauE D τ))⁻¹ * A * C.1.map (tauE D τ)) a b ≠ 0 →
       ∃ e : ℕ, (e = l ∨ e = l + d ∨ e + l + d = V.rank ∨ e + l = V.rank) ∧ a.val < e ∧ e ≤ b.val) →
     ∀ t : ℝ, oneP θ V τ A t ∈ unip D.sp.cm.sig V.gram X T := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UnipOne.oneP_mem_unip | exact GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UnipOne.oneP_mem_unip | (intros; apply GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UnipOne.oneP_mem_unip <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UnipOne.oneP_mem_unip

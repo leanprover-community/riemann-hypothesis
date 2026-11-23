@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.rationalForms_detTwist_mul_rational : GlobalTheory
       ∀ (δ : Formalism.L2.Host.HChar D.host.E) (δc : (AE D)ˣ →* Circle), IsTwist C.d.pd C.σ₂ δ δc →
       ∀ dd : GA D (Wc D i) → ℂ, MuVal (Wc D i) δc dd ∨ MuVal (Wc D i) δc⁻¹ dd →
       ∀ φ : GA D (Wc D i) → ℂ, IsRat T i hV C (κ i) φ → IsRat T i hV C (κ i) (fun g => dd g * φ g) := by
-  first | exact @GlobalTheory.TwistRat.isRat_twist | exact GlobalTheory.TwistRat.isRat_twist | (intros; apply GlobalTheory.TwistRat.isRat_twist <;> assumption)
+  exact @GlobalTheory.TwistRat.isRat_twist

@@ -50,4 +50,4 @@ open scoped ComplexOrder
 
 
 theorem _root_.GlobalTheory.T.exists_finite_frame_cover : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j n : ℕ) (M : FlagModel y Ψ N j) (Rb : AnLogRes (mCoordIdeal M.x) ⊤ n), ∃ (q : ℕ) (O : Fin q → Set Rb.X) (F : Fin q → FrameData ι Ψ N M.Ω M.blk), (∀ l, IsOpen (O l)) ∧ (∀ x, ∃ l, x ∈ O l) ∧ (∀ l, M.IsFrame (F l)) ∧ ∀ l, ∀ x ∈ closure (O l), M.GoodAt (F l) (mCoordIdeal (Rb.lift x x)) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.BMx.Frames.exists_finite_good_frames | exact GlobalTheory.CompanionTheory.Ar.PB.BMx.Frames.exists_finite_good_frames | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.BMx.Frames.exists_finite_good_frames <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.BMx.Frames.exists_finite_good_frames

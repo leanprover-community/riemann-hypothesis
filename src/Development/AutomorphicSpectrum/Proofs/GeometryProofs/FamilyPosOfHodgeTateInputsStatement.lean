@@ -52,4 +52,4 @@ open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundl
 
 
 theorem _root_.GlobalTheory.T.family_pos_of_hodge_tate_inputs : GlobalTheory.CompanionTheory.Ar.HT.FarguesHodgeTate → GlobalTheory.CompanionTheory.Ar.GR.QuotientByFiniteFlatStatement → GlobalTheory.CompanionTheory.Ar.GR.ZarhinStatement → GlobalTheory.CompanionTheory.Ar.GR.HodgeTateDatumStatement → GlobalTheory.CompanionTheory.Ar.GR.OrdinaryCurveStatement → GlobalTheory.CompanionTheory.Ar.Num.FamilyExistsPos := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.FamEx.familyExistsPos_holds | exact GlobalTheory.CompanionTheory.Ar.Num.FamEx.familyExistsPos_holds | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.FamEx.familyExistsPos_holds <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.FamEx.familyExistsPos_holds

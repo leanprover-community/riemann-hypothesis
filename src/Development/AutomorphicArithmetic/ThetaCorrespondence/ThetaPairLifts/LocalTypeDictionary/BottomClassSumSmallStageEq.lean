@@ -108,7 +108,7 @@ theorem classSum_smallStage : _root_.GlobalTheory.FunPr.ThetaLocalInputs → Glo
         Subtype.val '' {γ : GQ A' | (gx x)⁻¹ * (γ : GA D A') * gx x ∈
           ((Formalism.L2.DIV.St X.rA'.β).comap (Lev.finE A') : Subgroup (GA D A'))} := by
       ext γ
-      simp only [Set.mem_setOf_eq, Set.mem_image, Subtype.exists, exists_and_right, exists_eq_right]
+      simp only [Set.mem_ofPred_eq, Set.mem_image, Subtype.exists, exists_and_right, exists_eq_right]
       exact ⟨fun h => ⟨h.1, h.2⟩, fun ⟨h, h'⟩ => ⟨h, h'⟩⟩
     rw [him]
     exact h1.image _
@@ -159,5 +159,5 @@ theorem _root_.GlobalTheory.T.bottom_classSum_smallStage_eq : _root_.GlobalTheor
               X.I' W.ψ W.θ s (GlobalTheory.BotFormula.minorF ea ed T') g =
                 Ω₁ * ∑ᶠ x, ((GlobalTheory.NormSum.gam D (GlobalTheory.NormSum.intG D P'.a) x.out : ℂ))⁻¹ *
                   X.ker' W.ψ W.θ s (GlobalTheory.BotFormula.minorF ea ed T') g (gx x) := by
-  first | exact @_root_.GlobalTheory.BotClassSumSmall.classSum_smallStage | exact _root_.GlobalTheory.BotClassSumSmall.classSum_smallStage | (intros; apply _root_.GlobalTheory.BotClassSumSmall.classSum_smallStage <;> assumption)
+  exact @_root_.GlobalTheory.BotClassSumSmall.classSum_smallStage
 end

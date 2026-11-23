@@ -50,4 +50,4 @@ open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTh
 open GlobalTheory.CompanionTheory.Ar.RiemannLimit GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit
 
 theorem _root_.GlobalTheory.T.chartW_saturated_and_continuous_section : ∀ (n a g : ℕ) (Λ : Type) [AddCommGroup Λ] (L : Flat.LogPeriods n a g Λ) (bas : Module.Basis (Fin g ⊕ Fin g) ℤ Λ) (A T0 : (Fin n → ℂ) → Matrix (Fin g) (Fin g) ℂ) (B : Fin a → Matrix (Fin g) (Fin g) ℤ) (c ρ : ℝ), IsChart L bas A T0 B c ρ → (∀ (x : Λ) (k : ℤ), k ≠ 0 → k • x ∈ chartW bas B → x ∈ chartW bas B) ∧ (∀ x ∈ chartW bas B, ContinuousAt (chartS bas A T0 x) 0 ∧ ∀ w ∈ logCover L.a_le, chartS bas A T0 x (expCover a w) = L.P w x) ∧ Function.Injective (chartPer bas A T0 B) ∧ Submodule.span ℂ (Set.range (chartPer bas A T0 B)) = ⊤ := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit.noMonodromy_lattice | exact GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit.noMonodromy_lattice | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit.noMonodromy_lattice <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit.noMonodromy_lattice

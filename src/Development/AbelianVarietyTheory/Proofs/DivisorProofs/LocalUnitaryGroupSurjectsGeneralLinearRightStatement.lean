@@ -45,4 +45,4 @@ theorem _root_.GlobalTheory.T.local_unitary_group_surjects_general_linear_right 
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →
     ∀ v, X.Good v →
     ∀ (t : E →ₐ[F] Fv F v) (h' : GL (Fin (a + a')) (Fv F v)), ∃ h ∈ UAt σ G.W (evFin F v), (mat h).map (piW t) = h'.1 := by
-  first | exact @GlobalTheory.SkewLevi.surj_at_place | exact GlobalTheory.SkewLevi.surj_at_place | (intros; apply GlobalTheory.SkewLevi.surj_at_place <;> assumption)
+  exact @GlobalTheory.SkewLevi.surj_at_place

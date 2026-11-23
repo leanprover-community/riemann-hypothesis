@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.minor_ratio_regular_of_matrix_identity : ∀ {Ω :
     (hr : ∀ J : Fin r → Fin n, (A.submatrix J id).det / (A.submatrix J₀ id).det ∈ R),
     (C.submatrix J₀ id).det ≠ 0 ∧ (C.submatrix J₀ id).det ∈ R ∧ (C.submatrix J₀ id).det⁻¹ ∈ R ∧
       (A.submatrix J₀ id).det * T.det = a ^ r * (C.submatrix J₀ id).det := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm.minor_isUnit_of_leftInverse | exact GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm.minor_isUnit_of_leftInverse | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm.minor_isUnit_of_leftInverse <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm.minor_isUnit_of_leftInverse

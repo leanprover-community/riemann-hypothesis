@@ -45,4 +45,4 @@ open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroi
 
 theorem _root_.GlobalTheory.T.multiple_cells_among_polyhedral_fan : ∀ (O : Type) [CommRing O] [IsDedekindDomain O] [CharZero O] [Module.Finite ℤ O] (bar : O → O), CMOrd O bar → ∀ (q : ℕ) (φ : InvFun O),
     IsPolyFan bar q φ → ∀ M : ℕ, ∃ n : ℕ, MultCellsAmong bar q φ M n := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fan.MultipleCells.multCellsAmong_of_isPolyFan | exact GlobalTheory.CompanionTheory.Ar.Fan.MultipleCells.multCellsAmong_of_isPolyFan | (intros; apply GlobalTheory.CompanionTheory.Ar.Fan.MultipleCells.multCellsAmong_of_isPolyFan <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fan.MultipleCells.multCellsAmong_of_isPolyFan

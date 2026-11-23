@@ -90,9 +90,9 @@ theorem metaplectic_scalar_derivative_nonempty (hP : _root_.GlobalTheory.FunPr.T
   obtain ⟨f0, hf0⟩ := exists_schwartz_one l
   have hν0 : ν 0 = 1 := by
     have e := congrArg (fun g : Sch l => g 0) (hTν 0 f0)
-    simp only [hT0, LinearMap.id_apply, hγ0, map_one, SchwartzMap.smul_apply, smul_eq_mul, hf0] at e
+    simp only [hT0, LinearMap.id_apply, hγ0, map_one, smul_apply, smul_eq_mul, hf0] at e
     change 1 = ν 0 * (1 : Sch l →L[ℂ] Sch l) f0 0 at e
-    rw [ContinuousLinearMap.one_apply, hf0, mul_one] at e
+    rw [one_apply_eq_self, hf0, mul_one] at e
     exact e.symm
   have hνmul : ∀ s t, ν (s + t) = ν s * ν t := by
     intro s t
@@ -116,14 +116,14 @@ theorem metaplectic_scalar_derivative_nonempty (hP : _root_.GlobalTheory.FunPr.T
     exact h2
   have hcontS0 : ContinuousAt (fun t => omS (γ t) f0 0) 0 := (continuous_eval l 0).continuousAt.comp hcontS
   have hS00 : omS (γ 0) f0 0 ≠ 0 := by
-    rw [hγ0, map_one, ContinuousLinearMap.one_apply, hf0]
+    rw [hγ0, map_one, one_apply_eq_self, hf0]
     exact one_ne_zero
   have hνc : ContinuousAt ν 0 := by
     have hq : ContinuousAt (fun t => T t f0 0 / omS (γ t) f0 0) 0 :=
       (hTcont f0 0).continuousAt.div hcontS0 hS00
     refine hq.congr ?_
     filter_upwards [hcontS0.eventually_ne hS00] with t ht
-    rw [hTν, SchwartzMap.smul_apply, smul_eq_mul, mul_div_cancel_right₀ _ ht]
+    rw [hTν, smul_apply, smul_eq_mul, mul_div_cancel_right₀ _ ht]
   obtain ⟨a, ha⟩ := GlobalTheory.T.exists_hasDerivAt_zero_of_map_add_mul' ν hν0 hνmul hνc
   refine ⟨a, fun f => ?_⟩
   have hslope := hasDerivAt_iff_tendsto_slope_zero.1 ha
@@ -137,7 +137,7 @@ theorem metaplectic_scalar_derivative_nonempty (hP : _root_.GlobalTheory.FunPr.T
   refine hlim.congr fun t => ?_
   rw [hTν]
   ext x
-  simp only [SchwartzMap.add_apply, SchwartzMap.smul_apply, SchwartzMap.sub_apply, smul_eq_mul, Complex.real_smul]
+  simp only [add_apply, smul_apply, sub_apply, smul_eq_mul, Complex.real_smul]
   ring
 theorem lift_splits_locally : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (l : Type) [Fintype l] [DecidableEq l]
     (Z : Matrix (l ⊕ l) (l ⊕ l) ℝ), Z ∈ LieAlgebra.Symplectic.sp l ℝ →
@@ -168,5 +168,5 @@ theorem _root_.GlobalTheory.T.metaplectic_lift_scalar_derivative_eq : _root_.Glo
     (∀ (h : GlobalTheory.RealWeil.Sch l) (x : EuclideanSpace ℝ l), Continuous fun t => T t h x) →
     ∃ a : ℂ, ∀ f : GlobalTheory.RealWeil.Sch l,
       Filter.Tendsto (fun t : ℝ => t⁻¹ • (T t f - f)) (nhdsWithin 0 {0}ᶜ) (nhds (a • f + GlobalTheory.RealWeil.quad Z f)) := by
-  first | exact @_root_.GlobalTheory.MetaplecticScalarDeriv.lift_splits_locally | exact _root_.GlobalTheory.MetaplecticScalarDeriv.lift_splits_locally | (intros; apply _root_.GlobalTheory.MetaplecticScalarDeriv.lift_splits_locally <;> assumption)
+  exact @_root_.GlobalTheory.MetaplecticScalarDeriv.lift_splits_locally
 end

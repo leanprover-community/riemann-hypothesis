@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.adelic_schwartz_finite_pure_tensors : ∀ (F : Typ
       (∀ i v, φ i v ∈ SB (κ → Fv F v)) ∧
       (∀ i v, v ∉ T → φ i v = Set.indicator {x | ∀ j, x j ∈ v.adicCompletionIntegers F} 1) ∧
       Ψ = ∑ i, pure (f i) (φ i) := by
-  first | exact @GlobalTheory.SchADecomp.exists_sum_pure | exact GlobalTheory.SchADecomp.exists_sum_pure | (intros; apply GlobalTheory.SchADecomp.exists_sum_pure <;> assumption)
+  exact @GlobalTheory.SchADecomp.exists_sum_pure

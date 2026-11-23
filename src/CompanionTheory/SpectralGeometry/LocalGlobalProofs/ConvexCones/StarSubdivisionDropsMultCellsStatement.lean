@@ -49,4 +49,4 @@ theorem _root_.GlobalTheory.T.star_subdivision_drops_mult_cells : ∀ (O : Type)
     maxMult bar q φ ≤ M → MultCellsAmong bar q φ M (n + 1) →
     ∃ φ' lab' : InvFun O, IsPolyFan bar q φ' ∧ IsTwG w0 φ' ∧ IsTwG w0 lab' ∧ SimpLab bar q φ' lab' ∧
       Subordinate bar q φ' φ ∧ maxMult bar q φ' ≤ M ∧ MultCellsAmong bar q φ' M n := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fan.StarSubdivisionDropsCells.exists_star_drop_multCells | exact GlobalTheory.CompanionTheory.Ar.Fan.StarSubdivisionDropsCells.exists_star_drop_multCells | (intros; apply GlobalTheory.CompanionTheory.Ar.Fan.StarSubdivisionDropsCells.exists_star_drop_multCells <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fan.StarSubdivisionDropsCells.exists_star_drop_multCells

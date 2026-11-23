@@ -49,4 +49,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 theorem _root_.GlobalTheory.T.whittaker_nondegenerate_of_iwasawa : GlobalTheory.CompanionTheory.IwaAd.WhitKA → PositivityTheory.PfSWUS.WhitNDg := by
-  first | exact @GlobalTheory.CompanionTheory.IwaAd.iwaRedA | exact GlobalTheory.CompanionTheory.IwaAd.iwaRedA | (intros; apply GlobalTheory.CompanionTheory.IwaAd.iwaRedA <;> assumption)
+  exact @GlobalTheory.CompanionTheory.IwaAd.iwaRedA

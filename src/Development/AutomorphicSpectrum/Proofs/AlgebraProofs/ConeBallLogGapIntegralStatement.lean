@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.cone_ball_log_gap_integral : ∀ (n e : ℕ) (h : 
       (∫⁻ y in coneBall h W, logGap h u y ∂(Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ))).toReal =
         Real.log (h.norm u) * ((Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ)) (coneBall h W)).toReal -
           ∫ y in coneBall h W, fsLog h u (h.pointOf y) ∂(Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ)) := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.cone_ball_log_gap_integral | exact GlobalTheory.CompanionTheory.Relay.cone_ball_log_gap_integral | (intros; apply GlobalTheory.CompanionTheory.Relay.cone_ball_log_gap_integral <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.cone_ball_log_gap_integral

@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.general_linear_group_unimodular : PositivityTheory.RgBcC.Unimod := by
-  first | exact @GlobalTheory.CompanionTheory.GLUnimod.unimod | exact GlobalTheory.CompanionTheory.GLUnimod.unimod | (intros; apply GlobalTheory.CompanionTheory.GLUnimod.unimod <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GLUnimod.unimod

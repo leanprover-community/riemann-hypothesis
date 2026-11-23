@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.dehomogenized_eval_eq_ratio : ∀ (m : ℕ) (n : F
     ∀ (w : GlobalTheory.CxPts (mpStr ℤ m n) σ₀) (z : (Σ k, Bk n k) → ℂ), IsUnder w z → w ∈ ptsIn (mpStr ℤ m n) σ₀ (mchart c) →
     ev (mpStr ℤ m n) σ₀ (mchart c) (dehomog c f) w =
       eval z (map (Int.castRingHom ℂ) f) / ∏ k, z ⟨k, c k⟩ ^ a k := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.ev_dehomog_of_isUnder | exact GlobalTheory.CompanionTheory.MixZ.ev_dehomog_of_isUnder | (intros; apply GlobalTheory.CompanionTheory.MixZ.ev_dehomog_of_isUnder <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MixZ.ev_dehomog_of_isUnder

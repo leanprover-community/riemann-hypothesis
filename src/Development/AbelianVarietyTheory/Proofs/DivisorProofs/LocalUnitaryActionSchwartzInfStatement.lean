@@ -46,4 +46,4 @@ theorem _root_.GlobalTheory.T.local_unitary_action_schwartz_inf : GlobalTheory.F
     (∀ w, φ w ∈ SB (Fin a' × Fin (a + a') → Fv F w)) → (∀ᶠ w in Filter.cofinite, φ w = G.M'.vac w) →
     ∃ φ' : ∀ w : Pl (F := F), (Fin a' × Fin (a + a') → Fv F w) → ℂ, (∀ w, φ' w ∈ SB (Fin a' × Fin (a + a') → Fv F w)) ∧
       (∀ w, w ≠ v → φ' w = φ w) ∧ Acts (evFin F v) (om' (g, h)) (φ v) (φ' v) ∧ om' (g, h) (pure f φ) = pure f φ' := by
-  first | exact @GlobalTheory.PureStabOne.pure_stab_one | exact GlobalTheory.PureStabOne.pure_stab_one | (intros; apply GlobalTheory.PureStabOne.pure_stab_one <;> assumption)
+  exact @GlobalTheory.PureStabOne.pure_stab_one

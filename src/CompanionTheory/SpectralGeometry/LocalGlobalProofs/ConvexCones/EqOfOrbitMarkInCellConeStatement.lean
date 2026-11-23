@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.eq_of_orbit_mark_in_cell_cone : ∀ (O : Type) [Co
       ∀ β ∈ balForms bar X, (∀ y, 0 ≤ β y y) → ∀ β' ∈ balForms bar X, (∀ y, 0 ≤ β' y y) →
         (OrbMark.orbFun O w0 v).evalZ β = 1 → (OrbMark.orbFun O w0 v).evalZ β' = 1 →
         InRCone γ β → InRCone γ β' → β = β' := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fan.OrbitMarkUniqueInCell.eq_of_orbMark_of_inRCone_cell | exact GlobalTheory.CompanionTheory.Ar.Fan.OrbitMarkUniqueInCell.eq_of_orbMark_of_inRCone_cell | (intros; apply GlobalTheory.CompanionTheory.Ar.Fan.OrbitMarkUniqueInCell.eq_of_orbMark_of_inRCone_cell <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fan.OrbitMarkUniqueInCell.eq_of_orbMark_of_inRCone_cell

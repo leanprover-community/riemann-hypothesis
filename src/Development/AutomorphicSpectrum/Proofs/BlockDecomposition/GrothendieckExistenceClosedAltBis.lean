@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
 
 theorem _root_.GlobalTheory.T.geClosed_of_statement_bot : (∀ (R : Type) [CommRing R] [IsNoetherianRing R] (I : Ideal R), IsAdicComplete I R → ∀ (X : Scheme.{0}) [X.Over (Spec (.of R))] [IsSeparated (X ↘ Spec (.of R))] [LocallyOfFiniteType (X ↘ Spec (.of R))] [QuasiCompact (X ↘ Spec (.of R))], Statement I (⊥ : X.IdealSheafData)) → PositivityTheory.FormalThickening.GEClosed := by
-  first | exact @GlobalTheory.CompanionTheory.GE.Close.geClosed_of_statement | exact GlobalTheory.CompanionTheory.GE.Close.geClosed_of_statement | (intros; apply GlobalTheory.CompanionTheory.GE.Close.geClosed_of_statement <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GE.Close.geClosed_of_statement

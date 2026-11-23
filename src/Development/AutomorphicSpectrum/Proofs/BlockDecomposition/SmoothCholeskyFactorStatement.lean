@@ -55,4 +55,4 @@ open GlobalTheory.CompanionTheory.ConeHaar
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem _root_.GlobalTheory.T.smooth_positive_definite_sqrt : ∀ n : ℕ, ∃ σ₀ : Mat n → Mat n, ContDiffOn ℝ ∞ σ₀ {P | P.PosDef} ∧ ∀ P : Mat n, P.PosDef → σ₀ P * (σ₀ P)ᴴ = P := by
-  first | exact @GlobalTheory.CompanionTheory.ConeHaar.Chol.exists_smooth_section | exact GlobalTheory.CompanionTheory.ConeHaar.Chol.exists_smooth_section | (intros; apply GlobalTheory.CompanionTheory.ConeHaar.Chol.exists_smooth_section <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ConeHaar.Chol.exists_smooth_section

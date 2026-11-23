@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.wave_kernel_uniqueness : PositivityTheory.RgBcC.KerUniq := by
-  first | exact @GlobalTheory.CompanionTheory.KerUniq.main | exact GlobalTheory.CompanionTheory.KerUniq.main | (intros; apply GlobalTheory.CompanionTheory.KerUniq.main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.KerUniq.main

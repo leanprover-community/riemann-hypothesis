@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Rg.Fl
 
 theorem _root_.GlobalTheory.T.ArchimedeanPrincipalSeries : StArchPI := by
-  first | exact @GlobalTheory.CompanionTheory.ArchPI.archPI | exact GlobalTheory.CompanionTheory.ArchPI.archPI | (intros; apply GlobalTheory.CompanionTheory.ArchPI.archPI <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ArchPI.archPI

@@ -41,4 +41,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 
 theorem _root_.GlobalTheory.T.finite_conjugacy_exists : PositivityTheory.Rg.BcB.G8.Fin.CjEx := by
-  first | exact @GlobalTheory.CompanionTheory.CjEx.cjEx | exact GlobalTheory.CompanionTheory.CjEx.cjEx | (intros; apply GlobalTheory.CompanionTheory.CjEx.cjEx <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CjEx.cjEx

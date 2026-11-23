@@ -73,10 +73,10 @@ theorem split_vacuum_eigenvalue_eq_one : _root_.GlobalTheory.FunPr.ThetaLocalInp
     { carrier := {g | omd g S = S}
       one_mem' := by simp
       mul_mem' := fun {x y} hx hy => by
-        simp only [Set.mem_setOf_eq, map_mul, Module.End.mul_apply] at *
+        simp only [Set.mem_ofPred_eq, map_mul, Module.End.mul_apply] at *
         rw [hy, hx]
       inv_mem' := fun {x} hx => by
-        simp only [Set.mem_setOf_eq] at *
+        simp only [Set.mem_ofPred_eq] at *
         conv_lhs => rw [← hx]
         rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply] }
   have hD : ∀ p ∈ GlobalTheory.DblVac.KD σ G.V v, p ∈ GlobalTheory.DblVac.PDiag σ G.V → p ∈ H := fun p hp hpd => by
@@ -128,5 +128,5 @@ theorem _root_.GlobalTheory.T.split_vacuum_hecke_eigenvalue_eq_one : _root_.Glob
     ∀ (v : Pl F), Formalism.MainNotions.SchurIrreducible.IsSplit (E := E) v → v ∉ X.T → PsiUnr B.ψ v → (2 : 𝓞 F) ∉ v.asIdeal →
     G.M.vac v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1 →
     ∀ k ∈ GlobalTheory.InertSph.KAt σ G.V v, ∀ c : ℂ, Acts (evFin F v) (om (k, 1)) (G.M.vac v) (c • G.M.vac v) → c = 1 := by
-  first | exact @_root_.GlobalTheory.SplitVacV.split_vacuum_eigenvalue_eq_one | exact _root_.GlobalTheory.SplitVacV.split_vacuum_eigenvalue_eq_one | (intros; apply _root_.GlobalTheory.SplitVacV.split_vacuum_eigenvalue_eq_one <;> assumption)
+  exact @_root_.GlobalTheory.SplitVacV.split_vacuum_eigenvalue_eq_one
 end

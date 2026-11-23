@@ -58,6 +58,6 @@ section
 open GlobalTheory.CovTop GlobalTheory.BigTop
 
 theorem _root_.GlobalTheory.T.liftRational_of_prints : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → _root_.GlobalTheory.CovTop.LiftRational := by
-  first | exact @_root_.GlobalTheory.CovTop.covering_rational_of_local_traces_alt | exact _root_.GlobalTheory.CovTop.covering_rational_of_local_traces_alt | (intros; apply _root_.GlobalTheory.CovTop.covering_rational_of_local_traces_alt <;> assumption)
+  exact @_root_.GlobalTheory.CovTop.covering_rational_of_local_traces_alt
 end
 end

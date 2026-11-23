@@ -50,4 +50,4 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.model_fibres_power_free : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] [IsNoetherianRing O] (β : O →+* c.F) (Y : Model Xo c β), Dense (Set.range Y.j) → Y.SplitFibres → Y.N3 → ∀ (p : ℕ), p.Prime → ∀ z : Y.X, (p : Y.X.residueField z) = 0 → FibPF Y.t z := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.ModelFib.model_fibPF | exact GlobalTheory.CompanionTheory.Ar.ModelFib.model_fibPF | (intros; apply GlobalTheory.CompanionTheory.Ar.ModelFib.model_fibPF <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.ModelFib.model_fibPF

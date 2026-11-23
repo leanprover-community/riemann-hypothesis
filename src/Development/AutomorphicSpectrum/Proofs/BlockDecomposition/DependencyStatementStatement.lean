@@ -48,4 +48,4 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestric
 open GlobalTheory.AbLaw (rs)
 
 theorem _root_.GlobalTheory.T.dependency_statement : DepSt := by
-  first | exact @GlobalTheory.CompanionTheory.FewEq.depSt | exact GlobalTheory.CompanionTheory.FewEq.depSt | (intros; apply GlobalTheory.CompanionTheory.FewEq.depSt <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FewEq.depSt

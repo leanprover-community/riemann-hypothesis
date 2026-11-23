@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.RegSS
 
 theorem _root_.GlobalTheory.T.hermitianTraceForm_of_traceForm_perfect : GlobalTheory.RegSS.TracePerfect → GlobalTheory.RegSS.TraceClause := by
-  first | exact @GlobalTheory.RegSS.traceClause_of_tracePerfect | exact GlobalTheory.RegSS.traceClause_of_tracePerfect | (intros; apply GlobalTheory.RegSS.traceClause_of_tracePerfect <;> assumption)
+  exact @GlobalTheory.RegSS.traceClause_of_tracePerfect

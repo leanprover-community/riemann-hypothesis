@@ -58,4 +58,4 @@ open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory
 open ReciprocityTheory.AnForm (levi)
 
 theorem _root_.GlobalTheory.T.exists_smooth_conj_invariant_metric : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (a : K → ℤ), ∃ A : HermLine J, A.a = a ∧ IsSmoothHerm A ∧ IsConjInvariantH A := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.exists_smooth_conj_invariant_metric | exact GlobalTheory.CompanionTheory.Relay.exists_smooth_conj_invariant_metric | (intros; apply GlobalTheory.CompanionTheory.Relay.exists_smooth_conj_invariant_metric <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.exists_smooth_conj_invariant_metric

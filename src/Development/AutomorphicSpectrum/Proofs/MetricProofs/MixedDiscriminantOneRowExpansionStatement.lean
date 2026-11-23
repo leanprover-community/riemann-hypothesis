@@ -65,4 +65,4 @@ theorem _root_.GlobalTheory.T.mixed_discriminant_one_row_expansion : ∀ (d : �
       ((d + 1).factorial : ℂ) * mdisc (fun r => blk ((c r : ℂ) * e)
         ((∑ i, ((c r * n i : ℝ) : ℂ) • T i) + ((v r : ℝ) : ℂ) • H)) =
       e * L (evalW n n (pderiv (some 0) (∏ r, rowW ![c r, 0] (v r)))) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.FibN.extract_one | exact GlobalTheory.CompanionTheory.Ar.PB.FibN.extract_one | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.FibN.extract_one <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.FibN.extract_one

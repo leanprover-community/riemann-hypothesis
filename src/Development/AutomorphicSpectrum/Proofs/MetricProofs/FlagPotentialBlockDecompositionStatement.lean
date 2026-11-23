@@ -51,4 +51,4 @@ open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm 
 open scoped ComplexOrder Classical
 
 theorem _root_.GlobalTheory.T.flag_potential_block_decomposition : ∀ (N j : ℕ) (i : Fin N) (Pi G h : Matrix (Fin N) (Fin N) ℂ), j ≤ N → IsPeriodGram j Pi G → IsBlockDiag j G → G.PosDef → IsBlockDiag j h → h.det ≠ 0 → InFlagDomain N j (Pi * h) ∧ stepPot N j i (Pi * h) = blockPot j i G h + Real.log ‖detFac j i h‖ := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.stepPot_mul_eq_blockPot | exact GlobalTheory.CompanionTheory.Ar.PB.stepPot_mul_eq_blockPot | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.stepPot_mul_eq_blockPot <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.stepPot_mul_eq_blockPot

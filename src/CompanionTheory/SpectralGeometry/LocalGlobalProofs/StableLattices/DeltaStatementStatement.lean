@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Rg.FlB
 
 theorem _root_.GlobalTheory.T.DeltaStatement : StDelta := by
-  first | exact @GlobalTheory.CompanionTheory.RgFl.stDelta | exact GlobalTheory.CompanionTheory.RgFl.stDelta | (intros; apply GlobalTheory.CompanionTheory.RgFl.stDelta <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgFl.stDelta

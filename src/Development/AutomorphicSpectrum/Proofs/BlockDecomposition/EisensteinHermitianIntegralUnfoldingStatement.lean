@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.eisenstein_hermitian_integral_unfolding : ∀ (D :
     ∀ (b : HermE D r) (Φ : Mx D V.rank (r + s) → ℂ),
       ∫ t, ψ (halfTr (Matrix.trace (HMul.hMul (rat b.1) (inner V t t) : Mx D r r))) *
           Φ (HMul.hMul (colJoin (-t) (0 : Mx D V.rank s)) (rat a)) ∂μr = J ψ V μr (pull c Φ) b := by
-  first | exact @GlobalTheory.CompanionTheory.EisUnfold.NegStep.integral_colJoin_neg_eq_J | exact GlobalTheory.CompanionTheory.EisUnfold.NegStep.integral_colJoin_neg_eq_J | (intros; apply GlobalTheory.CompanionTheory.EisUnfold.NegStep.integral_colJoin_neg_eq_J <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EisUnfold.NegStep.integral_colJoin_neg_eq_J

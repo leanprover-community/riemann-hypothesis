@@ -53,4 +53,4 @@ open GlobalTheory.LiftLevel
 
 
 theorem _root_.GlobalTheory.T.incA_smul_mem_adelicCompletionMatrixGroup : ∀ (D : D7) (S T : HSp D) (Λ : Lt D.host.E S.rank) (L1 L2 : Lt D.host.E T.rank) (c : D.host.E), (∀ v ∈ L1, c • v ∈ L2) → ∀ u ∈ hatA S T (tens Λ L1), incA D c • u ∈ hatA S T (tens Λ L2) := by
-  first | exact @GlobalTheory.HatScalar.incA_smul_mem_hatA | exact GlobalTheory.HatScalar.incA_smul_mem_hatA | (intros; apply GlobalTheory.HatScalar.incA_smul_mem_hatA <;> assumption)
+  exact @GlobalTheory.HatScalar.incA_smul_mem_hatA

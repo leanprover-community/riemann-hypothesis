@@ -49,4 +49,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.WeilM Matrix
 
 theorem _root_.GlobalTheory.T.rank_chart_shear_invariance : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (R T D : Type) [Fintype R] [DecidableEq R] [Fintype T] [DecidableEq T] [Fintype D] [DecidableEq D], ∀ f ∈ SB (Matrix (R ⊕ T) D k), ∃ b : kˣ, ∀ (Y : Matrix (R ⊕ T) D k), ∀ c ∈ GlobalTheory.LocMod.Inhab.box T R b, f (GlobalTheory.RankChart.shear c Y) = f Y := by
-  first | exact @GlobalTheory.RankChart.sb_shear_invariant | exact GlobalTheory.RankChart.sb_shear_invariant | (intros; apply GlobalTheory.RankChart.sb_shear_invariant <;> assumption)
+  exact @GlobalTheory.RankChart.sb_shear_invariant

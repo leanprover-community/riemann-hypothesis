@@ -49,4 +49,4 @@ open GlobalTheory.LogPole
 open scoped Classical
 
 theorem _root_.GlobalTheory.T.kodaira_spencer_comparison : GlobalTheory.CovTop.Hypotheses₂ → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (TF : TorFlag Xo c), ∃ s : ℚ, s ≠ 0 ∧ KSCompare TF s := by
-  first | exact @GlobalTheory.LogPole.exists_ksCompare | exact GlobalTheory.LogPole.exists_ksCompare | (intros; apply GlobalTheory.LogPole.exists_ksCompare <;> assumption)
+  exact @GlobalTheory.LogPole.exists_ksCompare

@@ -47,4 +47,4 @@ open GlobalTheory.SmoothForms NumberField Matrix
 open scoped ContDiff Topology
 
 theorem _root_.GlobalTheory.T.shortLatticeVectorBoundedSize_of_orthogonalFrame : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], FrameSmall E → ShortSmall E := by
-  first | exact @GlobalTheory.SmoothForms.Short.shortSmall | exact GlobalTheory.SmoothForms.Short.shortSmall | (intros; apply GlobalTheory.SmoothForms.Short.shortSmall <;> assumption)
+  exact @GlobalTheory.SmoothForms.Short.shortSmall

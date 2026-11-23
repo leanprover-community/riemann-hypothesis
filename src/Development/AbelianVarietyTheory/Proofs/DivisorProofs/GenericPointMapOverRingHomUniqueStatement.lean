@@ -61,4 +61,4 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.TInj
 
 theorem _root_.GlobalTheory.T.genericPointMap_over_ringHom_unique : ∀ {R V : Type} [CommRing R] [IsDomain R] [CommRing V] [IsDomain V] (θ : R →+* V) (κ κ' : Sp (FractionRing V) ⟶ Sp (FractionRing R)), κ ≫ jK R = jK V ≫ spMap θ → κ' ≫ jK R = jK V ≫ spMap θ → κ = κ' := by
-  first | exact @GlobalTheory.TInj.genPt_map_unique | exact GlobalTheory.TInj.genPt_map_unique | (intros; apply GlobalTheory.TInj.genPt_map_unique <;> assumption)
+  exact @GlobalTheory.TInj.genPt_map_unique

@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Bmu
 
 theorem _root_.GlobalTheory.T.CartanDecomposition : CartanQ := by
-  first | exact @GlobalTheory.CompanionTheory.BesselCartan.cartanQ | exact GlobalTheory.CompanionTheory.BesselCartan.cartanQ | (intros; apply GlobalTheory.CompanionTheory.BesselCartan.cartanQ <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BesselCartan.cartanQ

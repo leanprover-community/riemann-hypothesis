@@ -76,4 +76,4 @@ theorem _root_.GlobalTheory.T.gauss_sum_quadratic_character_bound : ∀ (X : Typ
     (∀ x x' y, B (x + x') y = B x y * B x' y) → (∀ x y y', B x (y + y') = B x y * B x y') →
     ∀ x₀ : X, ‖∫ x in {y | y - x₀ ∈ L}, q x ∂m‖ ^ 2 ≤
       (m (L : Set X)).toReal * (m {y | y ∈ L ∧ ∀ l ∈ L, B l y = 1}).toReal := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.weyl_sq_compact_open | exact GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.weyl_sq_compact_open | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.weyl_sq_compact_open <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.weyl_sq_compact_open

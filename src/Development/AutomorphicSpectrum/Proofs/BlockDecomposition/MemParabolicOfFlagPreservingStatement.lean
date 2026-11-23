@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.mem_parabolic_of_flag_preserving : ∀ (D : D7) (V
     (hW : IsWittFrame D.sp.cm.sig V.gram X Y) (j : Fin r) (δ : GF V),
     (∀ l : Fin r, l ≤ j → ∃ b : Fin r → D.host.E, δ.1.1 *ᵥ (fun a => X a l) = X *ᵥ b ∧ ∀ m : Fin r, j < m → b m = 0) →
     δ ∈ (frameFlag (isIsoFrame_firstCols hW j)).parRat D.sp.cm := by
-  first | exact @GlobalTheory.CompanionTheory.RegInt.mem_parRat_frameFlag_firstCols | exact GlobalTheory.CompanionTheory.RegInt.mem_parRat_frameFlag_firstCols | (intros; apply GlobalTheory.CompanionTheory.RegInt.mem_parRat_frameFlag_firstCols <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RegInt.mem_parRat_frameFlag_firstCols

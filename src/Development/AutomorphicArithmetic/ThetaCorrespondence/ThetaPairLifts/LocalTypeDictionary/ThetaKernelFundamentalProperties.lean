@@ -76,5 +76,5 @@ end
 section
 
 theorem _root_.GlobalTheory.T.theta_kernel_fundamental_properties : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.ThK.ThetaBasic := by
-  first | exact @_root_.GlobalTheory.ThKBasic.theta_kernel_basic_properties | exact _root_.GlobalTheory.ThKBasic.theta_kernel_basic_properties | (intros; apply _root_.GlobalTheory.ThKBasic.theta_kernel_basic_properties <;> assumption)
+  exact @_root_.GlobalTheory.ThKBasic.theta_kernel_basic_properties
 end

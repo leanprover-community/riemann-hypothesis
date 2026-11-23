@@ -45,4 +45,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.dual_stacked_exceptional_leading_form : GroundTheory.Heights₂.Heights.DualStackedExcLeadForm.Statement := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Giv.LeadForm.dualStackedExcLeadForm | exact GlobalTheory.CompanionTheory.Ar.Giv.LeadForm.dualStackedExcLeadForm | (intros; apply GlobalTheory.CompanionTheory.Ar.Giv.LeadForm.dualStackedExcLeadForm <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Giv.LeadForm.dualStackedExcLeadForm

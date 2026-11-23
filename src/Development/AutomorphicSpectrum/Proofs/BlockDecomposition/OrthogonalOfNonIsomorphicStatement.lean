@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.orthogonal_of_non_isomorphic : ∀ (E : Type) [Fie
   (μ : Measure (GA E N)) [μ.IsHaarMeasure] (F : Set (GA E N)), IsFundamentalDomain (latticeGL E N) F μ →
   ∀ V V' : Submodule ℂ (Sm E N), IsDiscrete V → IsDiscrete V' → ¬ IsoV V V' →
     ∀ φ ∈ V, ∀ ψ ∈ V', ∫ x in F, φ.1 x * (starRingEnd ℂ) (ψ.1 x) ∂μ = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.FinDisc.integral_eq_zero_of_not_isoV | exact GlobalTheory.CompanionTheory.FinDisc.integral_eq_zero_of_not_isoV | (intros; apply GlobalTheory.CompanionTheory.FinDisc.integral_eq_zero_of_not_isoV <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FinDisc.integral_eq_zero_of_not_isoV

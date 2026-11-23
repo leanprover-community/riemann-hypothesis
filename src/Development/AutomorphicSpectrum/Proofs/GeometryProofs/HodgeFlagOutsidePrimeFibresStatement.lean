@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.hodge_flag_outside_prime_fibres : ∀ (E : Type) [
     (Ω : Type) [Field Ω] (K : Type) [Fintype K] (J : K → Type) (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y)
     (p : ℕ), p ∈ S → ∀ (s : CMType H ⊕ CMType H) (q : Cpt 𝔐.ξ), (∀ p' : ℕ, p'.Prime → ¬ InFibre 𝔐.ξ p' q) →
       𝔐.HT p s q = 𝔐.dR s q := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Top.HodgeModel.HtDr0.ht_eq_dR_of_not_inFibre | exact GlobalTheory.CompanionTheory.Ar.Top.HodgeModel.HtDr0.ht_eq_dR_of_not_inFibre | (intros; apply GlobalTheory.CompanionTheory.Ar.Top.HodgeModel.HtDr0.ht_eq_dR_of_not_inFibre <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Top.HodgeModel.HtDr0.ht_eq_dR_of_not_inFibre

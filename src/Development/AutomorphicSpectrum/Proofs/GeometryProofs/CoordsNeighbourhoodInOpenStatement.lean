@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.coords_neighbourhood_in_open : ∀ (X : Scheme.{0}
     (∀ q : X, genPt ξ ⤳ q) → CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) →
     ∀ (z₀ : Sp ℂ ⟶ X) (w₀ : (Σ k, J k) → ℂ) (U : X.Opens), CoordsAt ξ y z₀ w₀ → centre z₀ ∈ U →
       ∃ N ∈ 𝓝 w₀, ∀ (z : Sp ℂ ⟶ X) (w : (Σ k, J k) → ℂ), w ∈ N → CoordsAt ξ y z w → centre z ∈ U := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.open_near | exact GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.open_near | (intros; apply GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.open_near <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.open_near

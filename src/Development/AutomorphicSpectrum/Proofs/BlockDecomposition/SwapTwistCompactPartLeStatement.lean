@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.swap_twist_compact_part_le : ∀ {H : Type} [Group
   PositivityTheory.Rg.BcB.G8.Fin.Good (MonoidHom.id H) K (d * σ d') → ∀ y : H × H,
   twCent (swTw σ) (d, d') ⊓ (K.prod K).map (MulAut.conj y).toMonoidHom ≤ cptPart (twCent (swTw σ) (d, d')) ∧
     (twCent (swTw σ) (d, d') ⊓ (K.prod K).map (MulAut.conj y).toMonoidHom).relIndex (cptPart (twCent (swTw σ) (d, d'))) ≠ 0 := by
-  first | exact @GlobalTheory.CompanionTheory.SplitCpt.split_cpt | exact GlobalTheory.CompanionTheory.SplitCpt.split_cpt | (intros; apply GlobalTheory.CompanionTheory.SplitCpt.split_cpt <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SplitCpt.split_cpt

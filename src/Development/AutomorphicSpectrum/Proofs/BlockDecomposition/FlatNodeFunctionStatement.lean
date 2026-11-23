@@ -46,4 +46,4 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation Glob
 open scoped ContDiff
 
 theorem _root_.GlobalTheory.T.flat_node_function : ∀ {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {r s : ℕ} (e₁ : GA E r → ℂ) (e₂ : GA E s → ℂ), FlatFn e₁ → FlatFn e₂ → FlatFn (nodeFn e₁ e₂) := by
-  first | exact @GlobalTheory.CompanionTheory.LimV.NodeFlat.flatFn_nodeFn | exact GlobalTheory.CompanionTheory.LimV.NodeFlat.flatFn_nodeFn | (intros; apply GlobalTheory.CompanionTheory.LimV.NodeFlat.flatFn_nodeFn <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LimV.NodeFlat.flatFn_nodeFn

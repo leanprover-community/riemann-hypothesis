@@ -51,4 +51,4 @@ open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory
 open ReciprocityTheory.AnForm (levi)
 
 theorem _root_.GlobalTheory.T.hodge_metric_frame_properties : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) (Hd : HodgeData D), (∀ z ∈ mcPts (mCoordIdeal D.y), Nonempty (MuFrameAt Hd z)) ∧ (∀ z ∈ D.Xo, ∀ d : MuFrameAt Hd z, 0 < d.norm ∧ (muLine Hd).h z = d.norm) ∧ LogHom D Hd.aMu (phMu Hd) ∧ ConjOff D (phMu Hd) := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.hodge_metric_frame_properties | exact GlobalTheory.CompanionTheory.Relay.hodge_metric_frame_properties | (intros; apply GlobalTheory.CompanionTheory.Relay.hodge_metric_frame_properties <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.hodge_metric_frame_properties

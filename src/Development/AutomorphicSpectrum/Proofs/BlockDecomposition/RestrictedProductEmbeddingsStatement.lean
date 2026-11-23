@@ -75,4 +75,4 @@ theorem _root_.GlobalTheory.T.restricted_product_embeddings : ∀ {ι Γ : Type}
     (hKo : ∀ i, IsOpen (KH i : Set (Hl i))) (U : Subgroup Γ) (hU : IsOpen (U : Set Γ)),
     ∃ V : ∀ i, Subgroup (Hl i), (∀ i, IsOpen (V i : Set (Hl i))) ∧ (∀ i, V i ≤ KH i) ∧
       (∀ᶠ i in cofinite, V i = KH i) ∧ ∀ u, (∀ i, p i u ∈ V i) → u ∈ U := by
-  first | exact @GlobalTheory.CompanionTheory.FinActS.exists_local_levels_le_open | exact GlobalTheory.CompanionTheory.FinActS.exists_local_levels_le_open | (intros; apply GlobalTheory.CompanionTheory.FinActS.exists_local_levels_le_open <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FinActS.exists_local_levels_le_open

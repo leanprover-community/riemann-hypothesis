@@ -52,4 +52,4 @@ open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheo
 open scoped TensorProduct ENNReal NNReal
 
 theorem _root_.GlobalTheory.T.finite_adele_box_measure_product : ∀ (F : Type) [Field F] [NumberField F] (lam : ∀ v : HeightOneSpectrum (𝓞 F), Measure (Fv F v)), (∀ v, GlobalTheory.CompanionTheory.SW.IsStdV v (lam v)) → ∀ lf : Measure (Af F), lf.IsAddHaarMeasure → lf {x | ∀ v, x v ∈ v.adicCompletionIntegers F} = 1 → ∀ (S : Finset (HeightOneSpectrum (𝓞 F))) (A : ∀ v : HeightOneSpectrum (𝓞 F), Set (Fv F v)), (∀ v, MeasurableSet (A v)) → MeasurableSet (Coef.boxA S A) ∧ lf (Coef.boxA S A) = ∏ v ∈ S, lam v (A v) := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef.BoxMass.boxMass | exact GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef.BoxMass.boxMass | (intros; apply GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef.BoxMass.boxMass <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef.BoxMass.boxMass

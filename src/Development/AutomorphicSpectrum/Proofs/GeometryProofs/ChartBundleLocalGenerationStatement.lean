@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.chart_bundle_local_generation : ∀ (O : Type) [Co
         Submodule.span Ω (Set.range b) = ⊤ ∧ ∀ e : Fin r → Ω,
           ((∃ n : ℕ, f l ^ n • e ∈ dotDual (chartRing O x i) (B.lat i)) ↔
             ∃ a : Fin r → Ω, (∀ q, ∃ n : ℕ, f l ^ n * a q ∈ chartRing O x i) ∧ e = ∑ q, a q • b q) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.chartBundle_dotDual_localFrame | exact GlobalTheory.CompanionTheory.Ar.Num.chartBundle_dotDual_localFrame | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.chartBundle_dotDual_localFrame <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.chartBundle_dotDual_localFrame

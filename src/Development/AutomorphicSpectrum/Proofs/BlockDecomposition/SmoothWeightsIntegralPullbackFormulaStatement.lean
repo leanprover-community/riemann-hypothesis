@@ -70,4 +70,4 @@ theorem _root_.GlobalTheory.T.lintegral_indicator_mul_locDens_pullback_lt_top : 
     ∀ (j : Fin A.n) (K : Set (Fin D → ℂ)), K ⊆ (A.chart j).target → IsCompact K →
       ∫⁻ u in K \ (F ∘ (A.chart j).symm) ⁻¹' Z, S.indicator (fun y => ‖g y‖ₑ) (F ((A.chart j).symm u)) *
         ENNReal.ofReal |locDens A (fun _ => φ.locPot.pullback F hF) j u| < ⊤ := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.lintegral_logNorm_locDens_lt_top | exact GlobalTheory.CompanionTheory.MixZ.lintegral_logNorm_locDens_lt_top | (intros; apply GlobalTheory.CompanionTheory.MixZ.lintegral_logNorm_locDens_lt_top <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MixZ.lintegral_logNorm_locDens_lt_top

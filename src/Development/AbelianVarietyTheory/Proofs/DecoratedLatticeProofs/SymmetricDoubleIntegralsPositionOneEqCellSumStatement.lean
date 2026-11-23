@@ -71,4 +71,4 @@ theorem _root_.GlobalTheory.T.symmetricDoubleIntegrals_positionOne_eq_cellSum : 
     comb e₀ z = ((L₁.J.relIndex (KO k _) : ℂ) * (L₂.J.relIndex (KO k _) : ℂ))⁻¹ *
       ∑ γ ∈ A₁, ∑ β ∈ A₂, ((((m₁ (prX (Cgrp L₁.J γ))).toReal⁻¹ * (m₂ (prX (Cgrp L₂.J β))).toReal⁻¹ : ℝ) : ℂ) *
         comb (e₂ β) fun b => app (app T (xi ψ ν μ₁ P₁.1 L₁.J 1 α γ)) (xi ψ ν μ₂ P₂.1 L₂.J 1 γ β) (τ b F)) := by
-  first | exact @GlobalTheory.PosOne.comb_eq_sum_cells | exact GlobalTheory.PosOne.comb_eq_sum_cells | (intros; apply GlobalTheory.PosOne.comb_eq_sum_cells <;> assumption)
+  exact @GlobalTheory.PosOne.comb_eq_sum_cells

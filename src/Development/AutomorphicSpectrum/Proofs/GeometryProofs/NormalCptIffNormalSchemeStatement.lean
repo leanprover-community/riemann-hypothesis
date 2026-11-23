@@ -51,4 +51,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 
 theorem _root_.GlobalTheory.T.normal_cpt_iff_normal_scheme : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X), IsCptGen ξ → (∀ q : X, GlobalTheory.CompanionTheory.Ar.genPt ξ ⤳ q) → IsIntegral X ∧ (Flat.NormalCpt ξ ↔ IsNormalScheme X) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.XR.component_whole_isIntegral_and_normal | exact GlobalTheory.CompanionTheory.Ar.XR.component_whole_isIntegral_and_normal | (intros; apply GlobalTheory.CompanionTheory.Ar.XR.component_whole_isIntegral_and_normal <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.XR.component_whole_isIntegral_and_normal

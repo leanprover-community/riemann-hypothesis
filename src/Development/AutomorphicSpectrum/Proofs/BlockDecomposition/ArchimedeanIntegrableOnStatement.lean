@@ -44,4 +44,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 
 theorem _root_.GlobalTheory.T.archimedean_integrable_on : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement → GlobalTheory.CompanionTheory.MixZ.ArchIntegrableOn := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.archIntegrableOn_of_resK | exact GlobalTheory.CompanionTheory.MixZ.archIntegrableOn_of_resK | (intros; apply GlobalTheory.CompanionTheory.MixZ.archIntegrableOn_of_resK <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MixZ.archIntegrableOn_of_resK

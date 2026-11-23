@@ -43,5 +43,5 @@ section
 open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp
 
 theorem _root_.GlobalTheory.T.tuple_flat_estimate : _root_.GlobalTheory.BigOn.Exp.TupLe.FlatCondition := by
-  first | exact @_root_.GlobalTheory.BigOn.Exp.TupLe.flatSt_holds_alt | exact _root_.GlobalTheory.BigOn.Exp.TupLe.flatSt_holds_alt | (intros; apply _root_.GlobalTheory.BigOn.Exp.TupLe.flatSt_holds_alt <;> assumption)
+  exact @_root_.GlobalTheory.BigOn.Exp.TupLe.flatSt_holds_alt
 end

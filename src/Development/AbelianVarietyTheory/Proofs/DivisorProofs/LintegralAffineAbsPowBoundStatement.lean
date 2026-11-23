@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.lintegral_affine_abs_pow_bound : ∀ (k : Type) [F
     ∫⁻ x, (𝒪[k] : Set k).indicator (fun y => ENNReal.ofReal (if h : a * y + b = 0 then 0 else nabs k (Units.mk0 (a * y + b) h)) ^ s) x ∂μ ≤
       ENNReal.ofReal (if h : a = 0 then 0 else nabs k (Units.mk0 a h)) ^ s *
         (∫⁻ x, (𝒪[k] : Set k).indicator (fun y => ENNReal.ofReal (if h : y = 0 then 0 else nabs k (Units.mk0 y h)) ^ s) x ∂μ + μ (𝒪[k] : Set k)) := by
-  first | exact @GlobalTheory.KSplit.lintegral_absPow_affine_le | exact GlobalTheory.KSplit.lintegral_absPow_affine_le | (intros; apply GlobalTheory.KSplit.lintegral_absPow_affine_le <;> assumption)
+  exact @GlobalTheory.KSplit.lintegral_absPow_affine_le

@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
 
 theorem _root_.GlobalTheory.T.rat_product_formula : ∀ r : ℚ, r ≠ 0 → {p : Nat.Primes | Real.log ‖(r : ℂ_[p])‖ ≠ 0}.Finite ∧ Real.log ‖(r : ℂ)‖ + ∑ᶠ p : Nat.Primes, Real.log ‖(r : ℂ_[p])‖ = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fl.rat_product_formula_complex | exact GlobalTheory.CompanionTheory.Ar.Fl.rat_product_formula_complex | (intros; apply GlobalTheory.CompanionTheory.Ar.Fl.rat_product_formula_complex <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fl.rat_product_formula_complex

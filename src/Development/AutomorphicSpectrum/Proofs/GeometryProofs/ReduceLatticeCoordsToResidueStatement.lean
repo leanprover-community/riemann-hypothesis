@@ -63,4 +63,4 @@ theorem _root_.GlobalTheory.T.reduce_lattice_coords_to_residue : ∀ (E : Type) 
     Module.finrank Ω (HT.eigSp ρ σ) = n →
     LinearIndependent C (fun i k => ψ (x i k)) ∧
       Submodule.span C (Set.range fun i k => ψ (x i k)) = HT.eigSp ρC σC := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.EvalFrame.values_basis | exact GlobalTheory.CompanionTheory.Ar.Flat.CPoint.EvalFrame.values_basis | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.CPoint.EvalFrame.values_basis <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.EvalFrame.values_basis

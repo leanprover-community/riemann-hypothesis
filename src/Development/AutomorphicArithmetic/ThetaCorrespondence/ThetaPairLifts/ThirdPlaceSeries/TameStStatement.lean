@@ -45,5 +45,5 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open scoped TensorProduct
 
 theorem _root_.GlobalTheory.T.tame_at_of_small_at : _root_.GlobalTheory.ExpTie.InRangeAlt fun _ _ _ _ p j P _ w => SmallAt p j P w → TameAt p j w := by
-  first | exact @_root_.GlobalTheory.TameStab.tameSt_alt | exact _root_.GlobalTheory.TameStab.tameSt_alt | (intros; apply _root_.GlobalTheory.TameStab.tameSt_alt <;> assumption)
+  exact @_root_.GlobalTheory.TameStab.tameSt_alt
 end

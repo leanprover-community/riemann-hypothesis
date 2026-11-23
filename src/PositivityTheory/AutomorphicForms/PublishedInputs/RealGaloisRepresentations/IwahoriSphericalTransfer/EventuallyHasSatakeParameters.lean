@@ -45,4 +45,4 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.eventually_has_satake_parameters : AdmissibleReal → ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (a : ℕ) (π : TR.CuspSub F a), ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite, ∃ B, π.HasSat v B := by
-  first | exact @GlobalTheory.RealGal.SatAeProof.main | exact GlobalTheory.RealGal.SatAeProof.main | (intros; apply GlobalTheory.RealGal.SatAeProof.main <;> assumption)
+  exact @GlobalTheory.RealGal.SatAeProof.main

@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Rsw
 
 theorem _root_.GlobalTheory.T.theta_twist_identity : ThTwist := by
-  first | exact @GlobalTheory.CompanionTheory.ThTw.thTwist | exact GlobalTheory.CompanionTheory.ThTw.thTwist | (intros; apply GlobalTheory.CompanionTheory.ThTw.thTwist <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ThTw.thTwist

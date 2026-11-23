@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Rg.FlB
 
 theorem _root_.GlobalTheory.T.decomposition_of_frame_witt_torus : StFrame → StWitt → StTor → StDecomp := by
-  first | exact @GlobalTheory.CompanionTheory.FlDecomp.stDecomp_of_frame_witt_tor | exact GlobalTheory.CompanionTheory.FlDecomp.stDecomp_of_frame_witt_tor | (intros; apply GlobalTheory.CompanionTheory.FlDecomp.stDecomp_of_frame_witt_tor <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FlDecomp.stDecomp_of_frame_witt_tor

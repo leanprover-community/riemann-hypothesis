@@ -70,4 +70,4 @@ theorem _root_.GlobalTheory.T.sen_period_finite_extension : ∀ {l : ℕ} [Fact 
     ∀ (L : IntermediateField ℚ_[l] (Om l)) [FiniteDimensional ℚ_[l] ↥L],
       ((GroundTheory.PAdicHodge.cycloChar L) ''
         {σ : Gal(Om l/↥L) | ∀ w ∈ GroundTheory.PAdicHodge.unramifiedClosure l, σ w = w}).Infinite := by
-  first | exact @GlobalTheory.CompanionTheory.LTPer.cycloChar_inertia_image_infinite | exact GlobalTheory.CompanionTheory.LTPer.cycloChar_inertia_image_infinite | (intros; apply GlobalTheory.CompanionTheory.LTPer.cycloChar_inertia_image_infinite <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTPer.cycloChar_inertia_image_infinite

@@ -53,4 +53,4 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.Ch
 open GlobalTheory.ProjSpace GlobalTheory.QCoh.Qcqs GlobalTheory.Cartier GlobalTheory.CompanionTheory.FormalAlg
 
 theorem _root_.GlobalTheory.T.pullback_twist_iso_difference : ∀ {X Y : Scheme.{0}} (b : Y ⟶ X) (A C : LB X) (N : LB Y) (n : ℤ), A.IsLB → C.IsLB → N.IsLB → LBIso (A.pull b) (pw N n) → LBIso (C.pull b) (pw N (n + 1)) → LBIso N ((tw C A (-1)).pull b) := by
-  first | exact @GlobalTheory.CompanionTheory.FormalAlg.lbIso_pull_quot_of_consecutive_pw | exact GlobalTheory.CompanionTheory.FormalAlg.lbIso_pull_quot_of_consecutive_pw | (intros; apply GlobalTheory.CompanionTheory.FormalAlg.lbIso_pull_quot_of_consecutive_pw <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FormalAlg.lbIso_pull_quot_of_consecutive_pw

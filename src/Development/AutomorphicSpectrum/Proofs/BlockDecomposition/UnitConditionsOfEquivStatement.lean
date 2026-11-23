@@ -52,4 +52,4 @@ open scoped Classical
 theorem _root_.GlobalTheory.T.unit_conditions_of_equiv : ∀ {G G' : Type} [Group G] [TopologicalSpace G] [Group G'] [TopologicalSpace G'] (e : G ≃ₜ* G') (θ : G →* G) (θ' : G' →* G')
   (K : Subgroup G) (K' : Subgroup G') (d : G) (f : G → ℂ) (f' : G' → ℂ), (∀ x, e (θ x) = θ' (e x)) → (∀ x, x ∈ K ↔ e x ∈ K') →
   (∀ x, f x = f' (e x)) → UnitConds θ' K' (e d) f' → UnitConds θ K d f := by
-  first | exact @GlobalTheory.CompanionTheory.UnitTransport.unitConds_of_homeo | exact GlobalTheory.CompanionTheory.UnitTransport.unitConds_of_homeo | (intros; apply GlobalTheory.CompanionTheory.UnitTransport.unitConds_of_homeo <;> assumption)
+  exact @GlobalTheory.CompanionTheory.UnitTransport.unitConds_of_homeo

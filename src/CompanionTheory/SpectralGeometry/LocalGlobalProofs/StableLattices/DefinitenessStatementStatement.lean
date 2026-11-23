@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Rg.Fl
 
 theorem _root_.GlobalTheory.T.DefinitenessStatement : StDefinite := by
-  first | exact @GlobalTheory.CompanionTheory.DefiniteForm.stDefinite | exact GlobalTheory.CompanionTheory.DefiniteForm.stDefinite | (intros; apply GlobalTheory.CompanionTheory.DefiniteForm.stDefinite <;> assumption)
+  exact @GlobalTheory.CompanionTheory.DefiniteForm.stDefinite

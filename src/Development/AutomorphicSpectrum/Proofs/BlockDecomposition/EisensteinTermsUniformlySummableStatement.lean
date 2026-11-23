@@ -60,4 +60,4 @@ theorem _root_.GlobalTheory.T.eisenstein_terms_uniformly_summable : ∀ {D : D7}
     LeftInv (P D n ⊓ GF D n) f ∧
     (∀ q ∈ P D n, ∀ a : GL (Fin n) (AE D), blkA (mat q) = a.1 → Matrix.GeneralLinearGroup.det a = 1 → ∀ g, f (q * g) = f g) ∧
     ∀ C : Set (G D n), IsCompact C → ∃ u : Cosets (P D n) (GF D n) → ℝ, Summable u ∧ ∀ q, ∀ g ∈ C, ‖term (P D n) (GF D n) f g q‖ ≤ u q := by
-  first | exact @GlobalTheory.CompanionTheory.ZUnf.law_facts | exact GlobalTheory.CompanionTheory.ZUnf.law_facts | (intros; apply GlobalTheory.CompanionTheory.ZUnf.law_facts <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ZUnf.law_facts

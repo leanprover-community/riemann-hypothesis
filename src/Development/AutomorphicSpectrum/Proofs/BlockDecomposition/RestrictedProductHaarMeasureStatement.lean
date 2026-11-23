@@ -80,4 +80,4 @@ theorem _root_.GlobalTheory.T.restricted_product_haar_measure : ∀ {ι : Type} 
       (∀ i, Measurable (f i)) →
       ∫⁻ x, f₀ x.1 * ∏ i, f i (x.2 i) ∂P =
         (c : ℝ≥0∞) * ((∫⁻ x, f₀ x ∂m₀) * ∏ i, ∫⁻ x, f i x ∂(m i)) := by
-  first | exact @GlobalTheory.CompanionTheory.SW.FactS.OpenFactor.prod_factor_open | exact GlobalTheory.CompanionTheory.SW.FactS.OpenFactor.prod_factor_open | (intros; apply GlobalTheory.CompanionTheory.SW.FactS.OpenFactor.prod_factor_open <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SW.FactS.OpenFactor.prod_factor_open

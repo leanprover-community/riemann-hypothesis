@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Base1
 
 theorem _root_.GlobalTheory.T.local_density_ratio_formula : Ratio := by
-  first | exact @GlobalTheory.CompanionTheory.RatioBase.ratio | exact GlobalTheory.CompanionTheory.RatioBase.ratio | (intros; apply GlobalTheory.CompanionTheory.RatioBase.ratio <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RatioBase.ratio

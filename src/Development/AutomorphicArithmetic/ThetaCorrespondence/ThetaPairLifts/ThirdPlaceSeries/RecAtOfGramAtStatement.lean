@@ -43,5 +43,5 @@ section
 open GlobalTheory.CovTop GlobalTheory.BigTop
 
 theorem _root_.GlobalTheory.T.lift_recursion_of_gram_bound : _root_.GlobalTheory.CovTop.GramCondition → _root_.GlobalTheory.CovTop.LiftRecursive := by
-  first | exact @_root_.GlobalTheory.CovTop.liftRecursive_of_gram | exact _root_.GlobalTheory.CovTop.liftRecursive_of_gram | (intros; apply _root_.GlobalTheory.CovTop.liftRecursive_of_gram <;> assumption)
+  exact @_root_.GlobalTheory.CovTop.liftRecursive_of_gram
 end

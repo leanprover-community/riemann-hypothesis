@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.cup_list_representative_of_forms : ∀ {R : Type} 
     ∀ (w : Φ.A.obj E.D) (r : ℤ), r = m → ∀ x : CH.H (gr Fil r) m,
       CrystallineSemistableComparison.Pb.Rep (Fil r) (Fil (r + 1)) (fun u => (show Φ.A.obj (u.obj (Fin.last m)) from cupListC Φ.A ℓ u) * (Φ.A.map (σ _)).hom w) x →
       CrystallineSemistableComparison.Pb.Rep (Fil r) (Fil (r + 1)) (fun u => ∑ I : Fin m → Fin d, E.form σ I (w * ∏ k, c k (I k)) u) x := by
-  first | exact @GlobalTheory.CompanionTheory.CupRep.cup_rep | exact GlobalTheory.CompanionTheory.CupRep.cup_rep | (intros; apply GlobalTheory.CompanionTheory.CupRep.cup_rep <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CupRep.cup_rep

@@ -44,4 +44,4 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlin
 open NumberField Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta GlobalTheory.CompanionTheory.Hypotheses₂.Shintani
 
 theorem _root_.GlobalTheory.T.abel_continuation : AbelContinuation := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel.abelContinuation | exact GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel.abelContinuation | (intros; apply GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel.abelContinuation <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel.abelContinuation

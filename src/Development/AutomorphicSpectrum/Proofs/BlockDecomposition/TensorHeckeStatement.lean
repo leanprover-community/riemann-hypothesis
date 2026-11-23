@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 namespace PositivityTheory.Rg.BcB.F.Tail.PExp
 
 theorem _root_.GlobalTheory.T.tensor_hecke : PositivityTheory.Rg.BcB.F.Tail.PExp.TensHk := by
-  first | exact @GlobalTheory.CompanionTheory.TensHkSum.tensHk | exact GlobalTheory.CompanionTheory.TensHkSum.tensHk | (intros; apply GlobalTheory.CompanionTheory.TensHkSum.tensHk <;> assumption)
+  exact @GlobalTheory.CompanionTheory.TensHkSum.tensHk

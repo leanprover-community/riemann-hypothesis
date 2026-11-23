@@ -69,4 +69,4 @@ theorem _root_.GlobalTheory.T.lastRowVertex_adjacentSteps_translate_frames : ∀
         stepPt ((κ⁻¹).val * x₀) (φ₀ e₀) (.inr l) (.inl s) = stepPt x₀ e₀ (.inr l) (.inl s)) ∧
       (Odd c₀ → ∀ (r : Fin a₂) (i : Fin (c + 1)), i.val = c / 2 →
         stepPt (x₁ * κ.val) (φ₁ e₁) (.inl r) (.inr i) = stepPt x₁ e₁ (.inl r) (.inr i)) := by
-  first | exact @GlobalTheory.flatStep_vertex | exact GlobalTheory.flatStep_vertex | (intros; apply GlobalTheory.flatStep_vertex <;> assumption)
+  exact @GlobalTheory.flatStep_vertex

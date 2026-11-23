@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.finite_torsion_lattice_compact : ∀ (G : Type) [G
   (∀ x : G, Finite (Γ ⊓ K.map (MulAut.conj x).toMonoidHom : Subgroup G)) ∧
   Finite (Γ ⊓ cptPart T : Subgroup G) ∧
   Finite (DoubleCoset.Quotient (((Γ.subgroupOf T) : Subgroup T) : Set T) (((cptPart T).subgroupOf T : Subgroup T) : Set T)) := by
-  first | exact @GlobalTheory.CompanionTheory.CountClosedComm.main | exact GlobalTheory.CompanionTheory.CountClosedComm.main | (intros; apply GlobalTheory.CompanionTheory.CountClosedComm.main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CountClosedComm.main

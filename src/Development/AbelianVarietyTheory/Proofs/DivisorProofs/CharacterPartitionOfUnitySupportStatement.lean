@@ -50,4 +50,4 @@ theorem _root_.GlobalTheory.T.character_partition_of_unity_support : ∀ {F : Ty
       ∑ b ∈ s, c b * ψ (y ⬝ᵥ b) = 1 ∧
       ∀ x : κ → AF F, (fun i => (x i).2) ∈ C → (∀ k ∈ K, (fun i => (x i).2) ≠ (fun i => (y i).2) + k) →
         ∑ b ∈ s, c b * ψ (x ⬝ᵥ b) = 0 := by
-  first | exact @GlobalTheory.FinCharCut.fin_char_cut | exact GlobalTheory.FinCharCut.fin_char_cut | (intros; apply GlobalTheory.FinCharCut.fin_char_cut <;> assumption)
+  exact @GlobalTheory.FinCharCut.fin_char_cut

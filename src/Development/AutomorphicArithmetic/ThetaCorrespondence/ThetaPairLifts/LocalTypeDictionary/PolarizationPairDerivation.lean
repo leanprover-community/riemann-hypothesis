@@ -88,11 +88,11 @@ theorem polarization_pair_derivation (hP : _root_.GlobalTheory.FunPr.ThetaLocalI
     refine (hd.mul_const (r x)).congr_deriv ?_
     show _ = ((∑ i, c i • (Du i ∘ₗ Dv i) + c₀ • LinearMap.id : SInf F (Fin n × Fin d) →ₗ[ℂ] SInf F (Fin n × Fin d)) f) (fun i => evI F (x i)) * r x
     simp only [LinearMap.add_apply, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.comp_apply, LinearMap.id_apply,
-      SchwartzMap.add_apply, SchwartzMap.smul_apply, smul_eq_mul]
+      _root_.add_apply, _root_.smul_apply, smul_eq_mul]
     congr 2
     induction (Finset.univ : Finset (Fin m)) using Finset.induction_on with
     | empty => simp
-    | insert j s hj ih => rw [Finset.sum_insert hj, Finset.sum_insert hj, SchwartzMap.add_apply, ih]; simp
+    | insert j s hj ih => rw [Finset.sum_insert hj, Finset.sum_insert hj, _root_.add_apply, ih]; simp
 theorem exists_lie_derivative_model : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
     {a a' : ℕ} (B : Base F E) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W),
     IsTriple B G X om om' → ∀ γ ∈ Lines σ G.W,
@@ -119,5 +119,5 @@ theorem _root_.GlobalTheory.T.twist_lie_derivative_model : _root_.GlobalTheory.F
     IsTriple B G X om om' → ∀ γ ∈ Lines σ G.W,
     ∃ δ : SInf F (Fin a' × Fin (a + a')) →ₗ[ℂ] SInf F (Fin a' × Fin (a + a')), ∀ f ∈ G.M'.Pol B.ψ B.emb,
       δ f ∈ G.M'.Pol B.ψ B.emb ∧ ActsD (evI F) (fun t => om' (1, γ (Multiplicative.ofAdd t))) f (δ f) := by
-  first | exact @_root_.GlobalTheory.DerPol.exists_lie_derivative_model | exact _root_.GlobalTheory.DerPol.exists_lie_derivative_model | (intros; apply _root_.GlobalTheory.DerPol.exists_lie_derivative_model <;> assumption)
+  exact @_root_.GlobalTheory.DerPol.exists_lie_derivative_model
 end

@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
 
 theorem _root_.GlobalTheory.T.monomial_forms_basis : ∀ {K : Type} [Field K] {n d : ℕ} (a : ℕ), ∃ b : Module.Basis (Gam n d × {D : Finset (E n d) // D.card = a}) K (Om K (Lr K n d) a), ∀ p, b p = monW K p.1 p.2 := by
-  first | exact @GlobalTheory.CompanionTheory.SurjectionOntoH4.BasisW.monW_basis | exact GlobalTheory.CompanionTheory.SurjectionOntoH4.BasisW.monW_basis | (intros; apply GlobalTheory.CompanionTheory.SurjectionOntoH4.BasisW.monW_basis <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SurjectionOntoH4.BasisW.monW_basis

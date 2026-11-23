@@ -48,4 +48,4 @@ open scoped ComplexOrder Classical
 
 
 theorem _root_.GlobalTheory.T.flag_cover_frame_compatibility : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (K' : Type) [Fintype K'] (ι' : K' → Type) [∀ k, Fintype (ι' k)] (Φ' : Type) [Field Φ'] (y' : (Σ k, ι' k) → Φ') (M' : FlagModel y' Ψ N j) (Cv : FlagCover M' M) (b : (Σ k, baseIdx ι' M'.blk k) → ℂ) (F' : FrameData ι' Ψ N M'.Ω M'.blk) (F : FrameData ι Ψ N M.Ω M.blk), b ∈ mcPts (mCoordIdeal M'.x) → M'.IsFrame F' → M.IsFrame F → M'.GoodAt F' (mCoordIdeal b) → M.GoodAt F (mCoordIdeal (b ∘ Cv.v)) → ∀ τ, IsBlockDiag j (Cv.trans F' F b τ) ∧ (Cv.trans F' F b τ).det ≠ 0 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.trans_blockDiag_det | exact GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.trans_blockDiag_det | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.trans_blockDiag_det <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.trans_blockDiag_det

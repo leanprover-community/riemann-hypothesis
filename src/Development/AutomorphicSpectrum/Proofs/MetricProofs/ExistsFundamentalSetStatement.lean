@@ -46,4 +46,4 @@ open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheo
 open scoped ENNReal InnerProductSpace
 
 theorem _root_.GlobalTheory.T.exists_fundamental_set : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (Δ : GroupDict F) (Γ : Subgroup (Λ ≃ₗ[𝓞 E] Λ)), F.IsArith Γ → ∃ FF, F.IsFundSet Γ FF := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.exists_isFundSet | exact GlobalTheory.CompanionTheory.Ar.Cusp.exists_isFundSet | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.exists_isFundSet <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Cusp.exists_isFundSet

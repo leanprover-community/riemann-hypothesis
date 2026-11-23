@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.compact_span_finite_dim_stable : ∀ (E : Type) [F
     FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k => cptRep E a k φ)) →
     ∀ ψ ∈ Submodule.span ℂ (Set.range fun k => cptRep E a k φ),
       GlobalTheory.CompanionTheory.HCRep.liB Z ψ ∈ Submodule.span ℂ (Set.range fun k => cptRep E a k φ) := by
-  first | exact @GlobalTheory.CompanionTheory.HCRep.liB_skew_mem_span | exact GlobalTheory.CompanionTheory.HCRep.liB_skew_mem_span | (intros; apply GlobalTheory.CompanionTheory.HCRep.liB_skew_mem_span <;> assumption)
+  exact @GlobalTheory.CompanionTheory.HCRep.liB_skew_mem_span

@@ -45,4 +45,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open CrystallineSemistableComparison CrystallineSemistableComparison.Onto
 
 theorem _root_.GlobalTheory.T.affine_forms_of_form_uniqueness : CrystallineSemistableComparison.Onto.FormUniq → CrystallineSemistableComparison.Onto.AffOm := by
-  first | exact @GlobalTheory.CompanionTheory.AffOmP.affOm | exact GlobalTheory.CompanionTheory.AffOmP.affOm | (intros; apply GlobalTheory.CompanionTheory.AffOmP.affOm <;> assumption)
+  exact @GlobalTheory.CompanionTheory.AffOmP.affOm

@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.sheet_density_log_norm_formula : ∀ (m : ℕ) (n 
     IsRatSectionOn P A f g → ∀ᵐ v : Fin D → ℂ, ∀ w γ, IsSheet P Ψ v w γ →
       sheetDensity P Ψ (pot fun _ : Fin D => B) (logNormRat A f g) v w =
         logNormRat A f g (γ v) * maDensity (fun _ y' => Real.log (B.h (γ y'))) v := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.ArchEq.sheetDensity_eq_of_isSheet | exact GlobalTheory.CompanionTheory.MixZ.ArchEq.sheetDensity_eq_of_isSheet | (intros; apply GlobalTheory.CompanionTheory.MixZ.ArchEq.sheetDensity_eq_of_isSheet <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MixZ.ArchEq.sheetDensity_eq_of_isSheet

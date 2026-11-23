@@ -46,4 +46,4 @@ set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
 theorem _root_.GlobalTheory.T.graded_form_frame : GlobalTheory.CompanionTheory.GrForm.StFrame := by
-  first | exact @GlobalTheory.CompanionTheory.GrForm.stFrame | exact GlobalTheory.CompanionTheory.GrForm.stFrame | (intros; apply GlobalTheory.CompanionTheory.GrForm.stFrame <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GrForm.stFrame

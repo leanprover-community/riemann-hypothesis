@@ -52,4 +52,4 @@ open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheo
 open scoped TensorProduct ENNReal
 
 theorem _root_.GlobalTheory.T.hermitian_coordinates_measure_preserving : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [IsTopologicalRing R] [LocallyCompactSpace R] [SecondCountableTopology R] [T2Space R] [MeasurableSpace R] [BorelSpace R] (d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure R), lam.IsAddHaarMeasure → ∀ n : ℕ, (GlobalTheory.CompanionTheory.SW.coordHerm R σ b lam n).map (hCo R σ b) = Measure.pi fun _ : Idx n d => lam := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Coef.TestN.coordHerm_map_hCo | exact GlobalTheory.CompanionTheory.SiegelND.Coef.TestN.coordHerm_map_hCo | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Coef.TestN.coordHerm_map_hCo <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Coef.TestN.coordHerm_map_hCo

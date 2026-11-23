@@ -45,4 +45,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 
 theorem _root_.GlobalTheory.T.HTChartExists_holds : GlobalTheory.CompanionTheory.Ar.BT.HTChartExists := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.BT.ChartEx.htChartExists | exact GlobalTheory.CompanionTheory.Ar.BT.ChartEx.htChartExists | (intros; apply GlobalTheory.CompanionTheory.Ar.BT.ChartEx.htChartExists <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.BT.ChartEx.htChartExists

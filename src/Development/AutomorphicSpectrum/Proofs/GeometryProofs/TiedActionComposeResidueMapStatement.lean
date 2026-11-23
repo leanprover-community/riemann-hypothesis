@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.tied_action_compose_residue_map : ∀ (E : Type) [
     (ρK : 𝓞 E →+* Module.End K (Fin g → K)) (ρC : 𝓞 E →+* Module.End C (Fin g → C)),
     (∀ a i, ρ a (ℓ i) ∈ Submodule.span R' (Set.range ℓ)) → Tied ℓ ψ ρ ρK → Tied ℓ (j.comp ψ) ρ ρC →
     ∀ (a : 𝓞 E) (x : Fin g → K), ρC a (fun i => j (x i)) = fun i => j (ρK a x i) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.TiedMap.tied_map_comp | exact GlobalTheory.CompanionTheory.Ar.Flat.CPoint.TiedMap.tied_map_comp | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.CPoint.TiedMap.tied_map_comp <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.TiedMap.tied_map_comp

@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.chart_partial_eq_right_word : ∀ (n : ℕ) (V : T
     ContDiffOn ℝ ∞ f (GLs n) → ContDiffOn ℝ ∞ (fun t : Idx n → ℝ => f (1 + cm t)) {t | 1 + cm t ∈ GLs n} ∧
       ∀ (L : List (Idx n)) (t : Idx n → ℝ), 1 + cm t ∈ GLs n →
         pd L (fun t : Idx n → ℝ => f (1 + cm t)) t = Dw L f (1 + cm t) := by
-  first | exact @GlobalTheory.CompanionTheory.SobGL.Chart.chart_main | exact GlobalTheory.CompanionTheory.SobGL.Chart.chart_main | (intros; apply GlobalTheory.CompanionTheory.SobGL.Chart.chart_main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SobGL.Chart.chart_main

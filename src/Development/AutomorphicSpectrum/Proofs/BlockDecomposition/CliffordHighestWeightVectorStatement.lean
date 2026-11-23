@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.clifford_highest_weight_vector : ∀ {n : ℕ} (la
     IsCoreMod (infOf lam) E1 E2 σ A → ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (c : Fin n → Fin n → Matrix ι ι ℂ),
       IsCliff c → ∀ (τ : Fin n → ℝ) (x : ι → V), x ≠ 0 → Formalism.REAL.KHighest (fun _ => true) (yF (kF E1 E2) c) τ x →
         ∑ a, (m0 lam a) ^ 2 ≤ ∑ a, (τ a + rhoV n a) ^ 2 := by
-  first | exact @GlobalTheory.CompanionTheory.DiracK.dirac_ineq | exact GlobalTheory.CompanionTheory.DiracK.dirac_ineq | (intros; apply GlobalTheory.CompanionTheory.DiracK.dirac_ineq <;> assumption)
+  exact @GlobalTheory.CompanionTheory.DiracK.dirac_ineq

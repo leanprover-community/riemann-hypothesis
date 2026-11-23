@@ -48,4 +48,4 @@ open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberF
 open scoped TensorProduct ENNReal NNReal Matrix
 
 theorem _root_.GlobalTheory.T.unitary_action_preserves_haar_local : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [MeasurableSpace R] [BorelSpace R], IsLocR R → ∀ (n : ℕ) (μ : Measure (Fin n → Fin M → R ⊗[F] E)), μ.IsAddHaarMeasure → ∀ h : HA R σ J, μ.map (actW R σ J h) = μ := by
-  first | exact @GlobalTheory.CompanionTheory.SW.HInv.map_actW_eq | exact GlobalTheory.CompanionTheory.SW.HInv.map_actW_eq | (intros; apply GlobalTheory.CompanionTheory.SW.HInv.map_actW_eq <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SW.HInv.map_actW_eq

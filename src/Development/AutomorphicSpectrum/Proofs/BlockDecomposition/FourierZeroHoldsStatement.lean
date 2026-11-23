@@ -47,4 +47,4 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.fourier_zero_holds : PositivityTheory.PfSWUS.FourierZero := by
-  first | exact @GlobalTheory.CompanionTheory.FourierN.fourierZero | exact GlobalTheory.CompanionTheory.FourierN.fourierZero | (intros; apply GlobalTheory.CompanionTheory.FourierN.fourierZero <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FourierN.fourierZero

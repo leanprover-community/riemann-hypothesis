@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.M
 
 theorem _root_.GlobalTheory.T.word_occurs_product_interleave : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL), ∀ (x y : IrrGL (k := k)) (u v w : List (IrrGL (k := k))), (∀ c ∈ u, c.IsCusp) → (∀ c ∈ v, c.IsCusp) → Wd x.rep u → Wd y.rep v → Zc.Comb.Interleave u v w → Wd (prod₂ x.rep y.rep) w := by
-  first | exact @GlobalTheory.CompanionTheory.WordProd.wd_prod₂_of_interleave | exact GlobalTheory.CompanionTheory.WordProd.wd_prod₂_of_interleave | (intros; apply GlobalTheory.CompanionTheory.WordProd.wd_prod₂_of_interleave <;> assumption)
+  exact @GlobalTheory.CompanionTheory.WordProd.wd_prod₂_of_interleave

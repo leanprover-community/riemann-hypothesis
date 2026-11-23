@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.cech_refinement_cohomology_bijective : ∀ {O R : 
     (∀ r r' : ℤ, Function.Bijective (((incl h).sq (incl_fil h r) (incl_fil h r')).pull j)) ∧
     (∀ (r r' : Option ℤ) (c c' : R), Function.Bijective (((incl h).sq (incl_std h r c) (incl_std h r' c')).pull j)) ∧
     Function.Bijective ((incl h).o.pull j) := by
-  first | exact @GlobalTheory.CompanionTheory.NlZar.zariski_descent | exact GlobalTheory.CompanionTheory.NlZar.zariski_descent | (intros; apply GlobalTheory.CompanionTheory.NlZar.zariski_descent <;> assumption)
+  exact @GlobalTheory.CompanionTheory.NlZar.zariski_descent

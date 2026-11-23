@@ -50,4 +50,4 @@ open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheo
 open scoped TensorProduct ENNReal NNReal Topology
 
 theorem _root_.GlobalTheory.T.archimedean_haar_scaling_norm : ∀ (F : Type) [Field F] [NumberField F] (e : Ainf F ≃+* (InfinitePlace F → ℝ)), IsHomeomorph e → ∀ (lam : Measure (Ainf F)), lam.IsAddHaarMeasure → ∀ t : Ainf F, IsUnit t → lam.map (fun y => t * y) = (∏ w, ‖e t w‖₊)⁻¹ • lam := by
-  first | exact @GlobalTheory.CompanionTheory.HaarScale.unit_mul_map_haar | exact GlobalTheory.CompanionTheory.HaarScale.unit_mul_map_haar | (intros; apply GlobalTheory.CompanionTheory.HaarScale.unit_mul_map_haar <;> assumption)
+  exact @GlobalTheory.CompanionTheory.HaarScale.unit_mul_map_haar

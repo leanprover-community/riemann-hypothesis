@@ -50,4 +50,4 @@ open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTh
 open GlobalTheory.CompanionTheory.Ar.RiemannLimit GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit
 
 theorem _root_.GlobalTheory.T.exists_isKerProj' : ∀ (g : ℕ) (S : Matrix (Fin g) (Fin g) ℤ), ∃ Pr : Matrix (Fin g) (Fin g) ℝ, IsKerProj S Pr := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit.exists_isKerProj | exact GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit.exists_isKerProj | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit.exists_isKerProj <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Cusp.BoundaryLimit.exists_isKerProj

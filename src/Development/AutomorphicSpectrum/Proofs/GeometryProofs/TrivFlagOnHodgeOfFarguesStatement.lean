@@ -47,4 +47,4 @@ open GroundTheory.Heights₂.Heights.NumbersDVR (pointIdeal segreVec IsFlagFrame
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles (mseg fnField)
 
 theorem _root_.GlobalTheory.T.triv_flag_on_hodge_of_fargues : GlobalTheory.CompanionTheory.Ar.HT.FarguesHodgeTate → TrivFlagOnHodge := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.trivFlagOnHodge_of_fargues | exact GlobalTheory.CompanionTheory.Ar.Num.trivFlagOnHodge_of_fargues | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.trivFlagOnHodge_of_fargues <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.trivFlagOnHodge_of_fargues

@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
 
 theorem _root_.GlobalTheory.T.coordinate_projection_of_arith_system : ReciprocityTheory.ChartRestriction.G.Geo.ArithIntersectionSystemStatement → PFCoordStatement := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.coordinate_projection_of_arith_system | exact GlobalTheory.CompanionTheory.Relay.coordinate_projection_of_arith_system | (intros; apply GlobalTheory.CompanionTheory.Relay.coordinate_projection_of_arith_system <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.coordinate_projection_of_arith_system

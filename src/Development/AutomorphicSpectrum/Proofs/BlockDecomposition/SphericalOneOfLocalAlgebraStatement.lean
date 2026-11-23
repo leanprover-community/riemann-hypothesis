@@ -42,4 +42,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open PositivityTheory.Rg.BcB.F.Eig
 
 theorem _root_.GlobalTheory.T.spherical_one_of_local_algebra : LocAlg → SphOne := by
-  first | exact @GlobalTheory.CompanionTheory.SphLine.locAlg_sphOne | exact GlobalTheory.CompanionTheory.SphLine.locAlg_sphOne | (intros; apply GlobalTheory.CompanionTheory.SphLine.locAlg_sphOne <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SphLine.locAlg_sphOne

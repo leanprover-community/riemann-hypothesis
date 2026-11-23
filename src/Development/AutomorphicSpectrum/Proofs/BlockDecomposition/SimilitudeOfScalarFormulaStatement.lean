@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Base1
 
 theorem _root_.GlobalTheory.T.similitude_of_scalar_formula : Scal → Simil := by
-  first | exact @GlobalTheory.CompanionTheory.SW.BaseSimil.simil | exact GlobalTheory.CompanionTheory.SW.BaseSimil.simil | (intros; apply GlobalTheory.CompanionTheory.SW.BaseSimil.simil <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SW.BaseSimil.simil

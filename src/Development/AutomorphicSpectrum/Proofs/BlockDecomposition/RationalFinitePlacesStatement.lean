@@ -41,4 +41,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 
 theorem _root_.GlobalTheory.T.rational_finite_places : PositivityTheory.Rg.BcB.G8.Fin.RatFin := by
-  first | exact @GlobalTheory.CompanionTheory.RatFinG.ratFin | exact GlobalTheory.CompanionTheory.RatFinG.ratFin | (intros; apply GlobalTheory.CompanionTheory.RatFinG.ratFin <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RatFinG.ratFin

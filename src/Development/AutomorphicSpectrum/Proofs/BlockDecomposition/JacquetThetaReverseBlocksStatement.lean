@@ -49,4 +49,4 @@ theorem _root_.GlobalTheory.T.jacquet_theta_reverse_blocks : ∀ (k : Type) [Fie
     (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V),
     Nonempty ((jac (stdBlocks d hd) (π.comp (thetaW k N))).Equiv
       ((jac (stdBlocks (fun a => d (Fin.rev a)) hd') π).comp (thetaL d))) := by
-  first | exact @GlobalTheory.CompanionTheory.JacTheta.nonempty_jac_comp_thetaW | exact GlobalTheory.CompanionTheory.JacTheta.nonempty_jac_comp_thetaW | (intros; apply GlobalTheory.CompanionTheory.JacTheta.nonempty_jac_comp_thetaW <;> assumption)
+  exact @GlobalTheory.CompanionTheory.JacTheta.nonempty_jac_comp_thetaW

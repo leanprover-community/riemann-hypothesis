@@ -50,4 +50,4 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.pel_uniformised_geometric_free : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (t : SAB H (Sp R)) (_ : PELUnif (IsLocalRing.maximalIdeal R) t), GeomPF t (spMap (IsLocalRing.residue R)) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Unif.geomPF_closedPoint | exact GlobalTheory.CompanionTheory.Ar.Unif.geomPF_closedPoint | (intros; apply GlobalTheory.CompanionTheory.Ar.Unif.geomPF_closedPoint <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Unif.geomPF_closedPoint

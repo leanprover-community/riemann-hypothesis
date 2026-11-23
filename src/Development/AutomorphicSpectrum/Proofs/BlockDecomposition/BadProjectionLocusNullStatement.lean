@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.bad_projection_locus_null : ∀ (m : ℕ) (n : Fin
       IsGoodProj (ptIdeal (i (genericPoint X))) Ψ → ∀ c : GlobalTheory.AlgChart (i ≫ mpStr ℤ m n) σ₀ D,
         volume (c.e.target ∩ c.e.symm ⁻¹' {y | (∃ z, GlobalTheory.CompanionTheory.MixZ.ArchEq.Over i y z ∧ Ψ (segre z) 0 = 0) ∨
           ¬ GlobalTheory.CompanionTheory.MixZ.ArchEq.IsRegAt i Ψ c y}) = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.ArchEq.Crit.volume_chart_crit | exact GlobalTheory.CompanionTheory.MixZ.ArchEq.Crit.volume_chart_crit | (intros; apply GlobalTheory.CompanionTheory.MixZ.ArchEq.Crit.volume_chart_crit <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MixZ.ArchEq.Crit.volume_chart_crit

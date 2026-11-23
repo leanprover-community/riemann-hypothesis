@@ -50,4 +50,4 @@ theorem _root_.GlobalTheory.T.cyclic_vector_intertwiner_determined : ∀ {Γ : T
     ∀ (w₀ : A) (v : B) (i : A →L[ℂ] B), IsMap σ ρ i → (Submodule.span ℂ (Set.range fun x => σ x w₀)).topologicalClosure = ⊤ →
     ∀ (T : A →L[ℂ] A) (E : B →L[ℂ] B), (∀ x y, ⟪σ x w₀, T (σ y w₀)⟫_ℂ = star ⟪ρ x⁻¹ v, E (ρ y⁻¹ v)⟫_ℂ) →
     (∀ z, ‖⟪z, i w₀⟫_ℂ‖ ^ 2 / d ≤ (⟪z, E z⟫_ℂ).re) → ∀ a, ‖⟪v, i a⟫_ℂ‖ ^ 2 / d ≤ (⟪a, T a⟫_ℂ).re := by
-  first | exact @GlobalTheory.CompanionTheory.RgHeA.lower_bound_of_cyclic_coef | exact GlobalTheory.CompanionTheory.RgHeA.lower_bound_of_cyclic_coef | (intros; apply GlobalTheory.CompanionTheory.RgHeA.lower_bound_of_cyclic_coef <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgHeA.lower_bound_of_cyclic_coef

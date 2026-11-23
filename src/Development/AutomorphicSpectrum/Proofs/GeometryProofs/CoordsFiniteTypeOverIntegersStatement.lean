@@ -55,4 +55,4 @@ open scoped CategoryTheory.Obj
 theorem _root_.GlobalTheory.T.coords_finite_type_over_integers : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)]
     (y : (Σ k, J k) → Ω) (ξ : Sp Ω ⟶ X), (∀ q : X, genPt ξ ⤳ q) →
     CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) → LocallyOfFiniteType (toZ X) ∧ QuasiCompact (toZ X) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.TorusUnif.closure_finiteType_over_int | exact GlobalTheory.CompanionTheory.Ar.TorusUnif.closure_finiteType_over_int | (intros; apply GlobalTheory.CompanionTheory.Ar.TorusUnif.closure_finiteType_over_int <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.TorusUnif.closure_finiteType_over_int

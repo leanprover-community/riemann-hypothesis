@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.flat_descent_of_units : ∀ {P Q : Scheme.{0}} (f 
     Function.Injective (pullU f V) ∧ ∀ a : Γ(P, f ⁻¹ᵁ V)ˣ,
       (∀ (W : Scheme.{0}) (b c : W ⟶ P), b ≫ f = c ≫ f → ∀ w : W, f (b w) ∈ V →
         gm b w (f ⁻¹ᵁ V) a = gm c w (f ⁻¹ᵁ V) a) → ∃ s : Γ(Q, V)ˣ, pullU f V s = a := by
-  first | exact @GlobalTheory.CompanionTheory.FnDesc.units_descend | exact GlobalTheory.CompanionTheory.FnDesc.units_descend | (intros; apply GlobalTheory.CompanionTheory.FnDesc.units_descend <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FnDesc.units_descend

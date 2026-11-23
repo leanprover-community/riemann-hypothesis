@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Bmu
 
 theorem _root_.GlobalTheory.T.SpanGenerators : SpanG := by
-  first | exact @GlobalTheory.CompanionTheory.BmuSpan.spanG | exact GlobalTheory.CompanionTheory.BmuSpan.spanG | (intros; apply GlobalTheory.CompanionTheory.BmuSpan.spanG <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BmuSpan.spanG

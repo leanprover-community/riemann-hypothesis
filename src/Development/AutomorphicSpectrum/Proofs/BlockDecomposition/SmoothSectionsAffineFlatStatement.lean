@@ -51,4 +51,4 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.smooth_sections_affine_flat : ∀ (R : Type) [CommRing R] (X : Scheme.{0}) (s : X ⟶ Sp R), Smooth s →
     ∀ U : X.affineOpens, Module.Flat R (Sec s U.1) := by
-  first | exact @GlobalTheory.CompanionTheory.Axis.flat_sec_of_smooth | exact GlobalTheory.CompanionTheory.Axis.flat_sec_of_smooth | (intros; apply GlobalTheory.CompanionTheory.Axis.flat_sec_of_smooth <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Axis.flat_sec_of_smooth

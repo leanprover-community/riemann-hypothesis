@@ -64,4 +64,4 @@ open GlobalTheory
 
 theorem _root_.GlobalTheory.T.continuous_restrictScalarsHom_maximalRealSubfield : ∀ (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω],
     Continuous (AlgEquiv.restrictScalarsHom (maximalRealSubfield E) : G E Ω →* G (maximalRealSubfield E) Ω) := by
-  first | exact @GlobalTheory.restrictScalarsHom_maximalRealSubfield_continuous | exact GlobalTheory.restrictScalarsHom_maximalRealSubfield_continuous | (intros; apply GlobalTheory.restrictScalarsHom_maximalRealSubfield_continuous <;> assumption)
+  exact @GlobalTheory.restrictScalarsHom_maximalRealSubfield_continuous

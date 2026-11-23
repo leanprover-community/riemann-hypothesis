@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Bmu
 
 theorem _root_.GlobalTheory.T.LeviDecomposition : LeviQ := by
-  first | exact @GlobalTheory.CompanionTheory.BesselLevi.leviQ | exact GlobalTheory.CompanionTheory.BesselLevi.leviQ | (intros; apply GlobalTheory.CompanionTheory.BesselLevi.leviQ <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BesselLevi.leviQ

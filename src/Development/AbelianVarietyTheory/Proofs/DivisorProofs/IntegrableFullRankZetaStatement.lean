@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.integrable_full_rank_zeta : ∀ (k : Type) [Field 
     ∀ Ψ ∈ GlobalTheory.FullRankCoinv.fullRk k n d,
     ∀ Y : Matrix (Fin n) (Fin d) k, Integrable (fun g : GL (Fin n) k =>
       Ψ (g.val * Y) * (ν (gdet g) : ℂ) * apow (gdet g) ((Fintype.card (Fin d) : ℂ) / 2)) (haarVol (GlobalTheory.SplitWeil.KO k (Fin n))) := by
-  first | exact @GlobalTheory.FullRankCoinv.integrable_fibre_target | exact GlobalTheory.FullRankCoinv.integrable_fibre_target | (intros; apply GlobalTheory.FullRankCoinv.integrable_fibre_target <;> assumption)
+  exact @GlobalTheory.FullRankCoinv.integrable_fibre_target

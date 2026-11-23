@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open ResidueKilled.Tr
 
 theorem _root_.GlobalTheory.T.standard_section_exists : TStd := by
-  first | exact @GlobalTheory.CompanionTheory.StdChart.tStd | exact GlobalTheory.CompanionTheory.StdChart.tStd | (intros; apply GlobalTheory.CompanionTheory.StdChart.tStd <;> assumption)
+  exact @GlobalTheory.CompanionTheory.StdChart.tStd

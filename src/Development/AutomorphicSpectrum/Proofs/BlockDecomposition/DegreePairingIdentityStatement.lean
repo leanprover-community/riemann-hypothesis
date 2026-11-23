@@ -44,4 +44,4 @@ import Mathlib.Topology.Sheaves.Init
 open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 
 theorem _root_.GlobalTheory.T.degree_pairing_identity : WedgeF → WedgeI → MulF → MulI → PairF → PairI → SzFin → FinSupp → LogAbsBasic → ConjPlaces → DegBasisG → Radical → DegPairing := by
-  first | exact @GlobalTheory.CompanionTheory.DegPairingProof.degPairing_of | exact GlobalTheory.CompanionTheory.DegPairingProof.degPairing_of | (intros; apply GlobalTheory.CompanionTheory.DegPairingProof.degPairing_of <;> assumption)
+  exact @GlobalTheory.CompanionTheory.DegPairingProof.degPairing_of

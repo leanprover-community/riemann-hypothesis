@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.siegel_weil_convergent_range : ∀ (F E : Type) [F
   ∀ db : Measure (HermR (AF F) σ n), SdHerm F E σ (AF F) ψ n db →
   ∀ Φ : (Fin n → Fin M → AF F ⊗[F] E) → ℂ, GlobalTheory.Published.SiegelOneVector.IsSchwartzBruhat Φ →
     Integrable (starN σ J ψ dx Φ) db := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.integrable_starN | exact GlobalTheory.CompanionTheory.SiegelND.Integ.integrable_starN | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.integrable_starN <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.integrable_starN

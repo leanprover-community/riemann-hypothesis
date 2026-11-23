@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.semicharacter_theta_characteristic : ∀ (g : ℕ)
     (∀ l, χ l ^ 2 = 1) →
     ∃ a c : Fin g → ℝ, (∀ i, a i = 0 ∨ a i = 1 / 2) ∧ (∀ i, c i = 0 ∨ c i = 1 / 2) ∧
       ∀ x, χ x = GlobalTheory.CanTh.canMult a c (fun i => bs.repr x (Sum.inl i)) (fun i => bs.repr x (Sum.inr i)) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Nform.exists_half_canMult | exact GlobalTheory.CompanionTheory.Ar.Nform.exists_half_canMult | (intros; apply GlobalTheory.CompanionTheory.Ar.Nform.exists_half_canMult <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Nform.exists_half_canMult

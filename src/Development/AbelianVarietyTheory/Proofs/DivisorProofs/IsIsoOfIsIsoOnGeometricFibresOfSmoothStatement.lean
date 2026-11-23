@@ -54,4 +54,4 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
 theorem _root_.GlobalTheory.T.isIso_of_isIso_on_geometric_fibres_of_smooth : ∀ (T X Z : Scheme.{0}) (p : X ⟶ T) (q : Z ⟶ T) (h : X ⟶ Z) (hh : h ≫ q = p), Smooth p → Smooth q → (∀ s : T, ∃ (Ω : Type) (_ : Field Ω) (x : Sp Ω ⟶ T), s ∈ Set.range x ∧ IsIso (pullback.map p x q x h (𝟙 _) (𝟙 _) (by simp [hh]) (by simp))) → IsIso h := by
-  first | exact @GlobalTheory.Mum.isIso_of_isIso_fibres | exact GlobalTheory.Mum.isIso_of_isIso_fibres | (intros; apply GlobalTheory.Mum.isIso_of_isIso_fibres <;> assumption)
+  exact @GlobalTheory.Mum.isIso_of_isIso_fibres

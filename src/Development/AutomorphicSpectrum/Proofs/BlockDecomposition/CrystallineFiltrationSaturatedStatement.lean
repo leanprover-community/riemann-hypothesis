@@ -47,4 +47,4 @@ set_option backward.isDefEq.respectTransparency false
 open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
 
 theorem _root_.GlobalTheory.T.crystalline_filtration_saturated : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l) (r : ℕ) (z : A.Acr0), (l : A.Acr0) * z ∈ A.Fil0 r → z ∈ A.Fil0 r := by
-  first | exact @GlobalTheory.CompanionTheory.PerfFil.crystalline_filtration_l_saturated | exact GlobalTheory.CompanionTheory.PerfFil.crystalline_filtration_l_saturated | (intros; apply GlobalTheory.CompanionTheory.PerfFil.crystalline_filtration_l_saturated <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PerfFil.crystalline_filtration_l_saturated

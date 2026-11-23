@@ -62,4 +62,4 @@ theorem _root_.GlobalTheory.T.dvr_point_component_eigen_reduction : ∀ (E : Typ
       (∀ (a : Z.Ω) (h : a ∈ regAt (Z.ξ₀ ≫ Y.j) ⟨_, h₁⟩), a ∈ regAt (Z.ξ₀ ≫ Y.j) ⟨_, h₂⟩ →
         ψ ⟨a, h⟩ ∈ (algebraMap V K).range) ∧
       ∀ x : c.F, ∃ h : Z.inc x ∈ regAt (Z.ξ₀ ≫ Y.j) ⟨_, h₁⟩, ψ ⟨_, h⟩ = βK x := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.point_val | exact GlobalTheory.CompanionTheory.Ar.Flat.CPoint.point_val | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.CPoint.point_val <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.point_val

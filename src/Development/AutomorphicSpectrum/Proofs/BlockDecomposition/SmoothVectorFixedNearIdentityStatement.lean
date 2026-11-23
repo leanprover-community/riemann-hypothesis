@@ -47,4 +47,4 @@ open scoped TensorProduct
 
 theorem _root_.GlobalTheory.T.smooth_vector_fixed_near_identity : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (τ : MRep k (i + 1)) (σ : GRep k (t + 1)) (hτ : IsSmooth τ.ρ) (hσ : IsSmooth σ.ρ) (w : τ.V ⊗[ℂ] σ.V),
   ∃ O ∈ nhds (1 : Mir k ((i + 1) + t + 1)), ∀ h : HPG k (i + 1) (t + 1), ((h : Mir k ((i + 1) + (t + 1))) ∈ O) → sigX τ σ h w = w := by
-  first | exact @GlobalTheory.CompanionTheory.BZPhiPG.Onto.sigX_fix | exact GlobalTheory.CompanionTheory.BZPhiPG.Onto.sigX_fix | (intros; apply GlobalTheory.CompanionTheory.BZPhiPG.Onto.sigX_fix <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BZPhiPG.Onto.sigX_fix

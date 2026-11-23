@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.mirabolic_double_coset_dichotomy : ∀ (k : Type) 
     (∃ h ∈ MirabolicParabolic k m (j + 1), ∃ x : Mir k (m + j), g = h * embedding₂ k (m + j) x) ∨
     ∃ u : MirUin k (m + (j + 1)), ∃ hx : g * (u : Mir k (m + (j + 1))) * g⁻¹ ∈ MirabolicParabolic k m (j + 1),
       gpProj k m (j + 1) ⟨_, hx⟩ = 1 ∧ mirChar k ψ (m + j) u ≠ 1 := by
-  first | exact @GlobalTheory.CompanionTheory.LeibPhi.Dich.dichotomy | exact GlobalTheory.CompanionTheory.LeibPhi.Dich.dichotomy | (intros; apply GlobalTheory.CompanionTheory.LeibPhi.Dich.dichotomy <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LeibPhi.Dich.dichotomy

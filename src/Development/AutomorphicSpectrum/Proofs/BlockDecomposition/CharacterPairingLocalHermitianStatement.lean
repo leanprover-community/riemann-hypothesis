@@ -51,4 +51,4 @@ open GlobalTheory.CompanionTheory.Jp
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.character_pairing_local_hermitian : ∀ (D : D7) (n : ℕ) (v : Pl D) (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v) (ψ : AddChar (AF D.host.F) ℂ) (x : hermA D n), (∀ w i j, compInf D.host.F D.host.E w (x.1 i j) = 0) → (∀ v' ≠ v, ∀ i j, cv D v' (x.1 i j) = 0) → ∀ β : HermE D n, pch ψ x.1 (rat β.1) = psiV D.host.F ψ v (Matrix.trace (tauC τ x.1 * β.1.map τ)) := by
-  first | exact @GlobalTheory.CompanionTheory.Jp.SplitPair.pch_rat_split | exact GlobalTheory.CompanionTheory.Jp.SplitPair.pch_rat_split | (intros; apply GlobalTheory.CompanionTheory.Jp.SplitPair.pch_rat_split <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Jp.SplitPair.pch_rat_split

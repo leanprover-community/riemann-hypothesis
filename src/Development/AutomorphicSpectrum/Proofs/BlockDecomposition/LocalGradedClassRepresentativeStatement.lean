@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.local_graded_class_representative : ∀ {K : Type}
       CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {W}) r) (sFil (KS q s {W}) (r + 1)) (fun u => ∑ I : Idx m d, E.form σ I.1 (ε (y I)) u) c) ∧
     ∀ y : Idx m d → Γ(X, W),
       CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {W}) r) (sFil (KS q s {W}) (r + 1)) (fun u => ∑ I : Idx m d, E.form σ I.1 (ε (y I)) u) 0 → y = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.ConeLocal.loc_coef | exact GlobalTheory.CompanionTheory.ConeLocal.loc_coef | (intros; apply GlobalTheory.CompanionTheory.ConeLocal.loc_coef <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ConeLocal.loc_coef

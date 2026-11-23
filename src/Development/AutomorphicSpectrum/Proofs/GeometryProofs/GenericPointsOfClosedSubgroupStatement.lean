@@ -48,4 +48,4 @@ open GlobalTheory.CompanionTheory.Ar.BT ReciprocityTheory.ChartRestriction.G Rec
 open scoped CategoryTheory.Obj
 
 theorem _root_.GlobalTheory.T.generic_points_of_closed_subgroup : ∀ (R : Type) [CommRing R] [IsDomain R] (H : Type) [CommGroup H] (Γf : QFGroup R H) (A E : Over (Spec (CommRingCat.of R))) (a : A ⟶ Γf.G) (b : Γf.G ⟶ E) (e : 𝟙_ (Over (Spec (CommRingCat.of R))) ⟶ E), IsClosedImmersion a.left → IsPullback a (toUnit A) b e → ∀ g : A.left, (A.hom g).asIdeal = ⊥ → ∃ (κ : genPt R ⟶ A) (x : Spec (CommRingCat.of (FractionRing R))), κ.left x = g := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.BT.RatKer.exists_section_of_generic | exact GlobalTheory.CompanionTheory.Ar.BT.RatKer.exists_section_of_generic | (intros; apply GlobalTheory.CompanionTheory.Ar.BT.RatKer.exists_section_of_generic <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.BT.RatKer.exists_section_of_generic

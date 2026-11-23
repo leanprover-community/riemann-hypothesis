@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Rg.Fl
 
 theorem _root_.GlobalTheory.T.simple_of_commutative_statement : StComm → StSimple := by
-  first | exact @GlobalTheory.CompanionTheory.RgFl.stSimple_of_stComm | exact GlobalTheory.CompanionTheory.RgFl.stSimple_of_stComm | (intros; apply GlobalTheory.CompanionTheory.RgFl.stSimple_of_stComm <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgFl.stSimple_of_stComm

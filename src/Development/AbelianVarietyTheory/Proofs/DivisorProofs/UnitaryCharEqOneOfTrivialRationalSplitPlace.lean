@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.unitaryChar_eq_one_of_trivial_rational_splitPlace 
     B.IsGood σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J →
       ∀ ν : Formalism.IndefR.DatumF.GAF σ J →* Circle, Continuous ν → (∀ γ ∈ Formalism.IndefR.DatumF.GQF σ J, ν γ = 1) →
         (∀ e, Formalism.IndefR.DatumF.IsSplitIdemF σ e → ∀ g, Formalism.IndefR.DatumF.SuppAtF σ e J g → ν g = 1) → ∀ g, ν g = 1 := by
-  first | exact @PositivityTheory.ThKW.character_trivial_of_rational_split | exact PositivityTheory.ThKW.character_trivial_of_rational_split | (intros; apply PositivityTheory.ThKW.character_trivial_of_rational_split <;> assumption)
+  exact @PositivityTheory.ThKW.character_trivial_of_rational_split

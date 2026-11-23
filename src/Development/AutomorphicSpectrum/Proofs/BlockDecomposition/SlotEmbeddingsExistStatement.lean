@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.position_embeddings_exist : ∀ {E : Type} [Field 
         finH (e (.inl w) m) = (embW a w.1 m.1, embW b w.1 m.2)) ∧
       ∀ (w : {w // w ∈ S ∧ IsSplitAt w}) (m : GLw a w.1 × GLw b w.1),
         finH (e (.inr w) m) = (embT a w.1 m.1, embT b w.1 m.2) := by
-  first | exact @GlobalTheory.CompanionTheory.FinActS.exists_factorEmb | exact GlobalTheory.CompanionTheory.FinActS.exists_factorEmb | (intros; apply GlobalTheory.CompanionTheory.FinActS.exists_factorEmb <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FinActS.exists_factorEmb

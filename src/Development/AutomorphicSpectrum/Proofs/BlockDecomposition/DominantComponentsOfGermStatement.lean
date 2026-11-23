@@ -48,4 +48,4 @@ import Mathlib.Topology.Sheaves.Init
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets Topology Filter
 
 theorem _root_.GlobalTheory.T.dominant_components_of_germ : AnalyticGermComponents.Statement → OpenProjectionDominantComponents.Statement := by
-  first | exact @GlobalTheory.CompanionTheory.ComplexSets.openProjectionDominantComponents_of_analyticGermComponents | exact GlobalTheory.CompanionTheory.ComplexSets.openProjectionDominantComponents_of_analyticGermComponents | (intros; apply GlobalTheory.CompanionTheory.ComplexSets.openProjectionDominantComponents_of_analyticGermComponents <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ComplexSets.openProjectionDominantComponents_of_analyticGermComponents

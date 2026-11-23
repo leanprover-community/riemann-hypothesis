@@ -44,4 +44,4 @@ import Mathlib.Topology.Sheaves.Init
 open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 
 theorem _root_.GlobalTheory.T.size_basic_of_conj_places : SzFin → ConjPlaces → SizeBasic := by
-  first | exact @GlobalTheory.CompanionTheory.Size.sizeBasic | exact GlobalTheory.CompanionTheory.Size.sizeBasic | (intros; apply GlobalTheory.CompanionTheory.Size.sizeBasic <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Size.sizeBasic

@@ -53,4 +53,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.CxPts
 
 theorem _root_.GlobalTheory.T.smooth_scheme_decompose_relative_dimension : ∀ (X : Scheme.{0}) (s : X ⟶ Sp ℂ), Smooth s → ∃ W : ℕ → X.Opens, (∀ D, IsClosed (W D : Set X)) ∧ (∀ D, SmoothOfRelativeDimension D ((W D).ι ≫ s)) ∧ (⨆ D, W D) = ⊤ ∧ Pairwise fun D D' => W D ⊓ W D' = ⊥ := by
-  first | exact @GlobalTheory.CompanionTheory.Gaga.exists_clopen_smoothOfRelativeDimension | exact GlobalTheory.CompanionTheory.Gaga.exists_clopen_smoothOfRelativeDimension | (intros; apply GlobalTheory.CompanionTheory.Gaga.exists_clopen_smoothOfRelativeDimension <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Gaga.exists_clopen_smoothOfRelativeDimension

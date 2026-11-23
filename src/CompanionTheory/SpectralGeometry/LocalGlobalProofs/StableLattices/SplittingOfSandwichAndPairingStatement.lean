@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Rg.FlB
 
 theorem _root_.GlobalTheory.T.splitting_of_sandwich_and_pairing : StSandwich → StPairing → StSplit := by
-  first | exact @GlobalTheory.CompanionTheory.RgSplit.stSplit | exact GlobalTheory.CompanionTheory.RgSplit.stSplit | (intros; apply GlobalTheory.CompanionTheory.RgSplit.stSplit <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgSplit.stSplit

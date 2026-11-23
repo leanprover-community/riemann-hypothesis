@@ -83,7 +83,7 @@ theorem vacuum_fixed_by_split_spherical_left : _root_.GlobalTheory.FunPr.ThetaLo
     exact Ideal.dvd_iff_le.2 ((Ideal.span_singleton_le_iff_mem _).2 hv)
   refine ⟨X.T ∪ hfin1.toFinset ∪ hfin2.toFinset ∪ hfin3.toFinset, ?_⟩
   intro v hv _ k hk
-  simp only [Finset.mem_union, Set.Finite.mem_toFinset, Set.mem_setOf_eq, not_or, not_not] at hv
+  simp only [Finset.mem_union, Set.Finite.mem_toFinset, Set.mem_ofPred_eq, not_or, not_not] at hv
   obtain ⟨⟨⟨hvT, hstd⟩, hdiff⟩, h2⟩ := hv
   rcases GlobalTheory.LFun.InertChart.isSplit_or_isInertAt (GlobalTheory.SphOffFinite.isUnram_of_unramified hTr.base.unram v) with hs | ⟨w, hw⟩
   · have hψ := GlobalTheory.StdCharUnrF.psiUnr_of_not_le F B.ψ hTr.base.std v hdiff
@@ -116,5 +116,5 @@ theorem _root_.GlobalTheory.T.split_vprime_stabilizer_fixes_vacuum : _root_.Glob
     ∃ S : Finset (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)), ∀ v ∉ S, Nonempty (E →ₐ[F] Fv F v) →
       ∀ k ∈ GlobalTheory.InertSph.KAt σ G.V' v,
         GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Acts (GlobalTheory.AdelicU.evFin F v) (om' (k, 1)) (G.M'.vac v) (G.M'.vac v) := by
-  first | exact @_root_.GlobalTheory.SplitSphVPrimeStab.vacuum_fixed_by_split_spherical_left | exact _root_.GlobalTheory.SplitSphVPrimeStab.vacuum_fixed_by_split_spherical_left | (intros; apply _root_.GlobalTheory.SplitSphVPrimeStab.vacuum_fixed_by_split_spherical_left <;> assumption)
+  exact @_root_.GlobalTheory.SplitSphVPrimeStab.vacuum_fixed_by_split_spherical_left
 end

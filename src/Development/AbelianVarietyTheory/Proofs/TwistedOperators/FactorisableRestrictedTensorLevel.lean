@@ -104,7 +104,7 @@ theorem mem_closure_span_of_orthogonal [DecidableEq ι] [CompleteSpace H] (h : I
     have hf : ({i | y i ≠ ξ i} ∪ {i | ξ i ∈ U i}ᶜ).Finite := Set.Finite.union hy hξ
     rw [inner_zero_right, inner_eq_zero_symm]
     refine h3 hf.toFinset y hy fun i hi => ?_
-    simp only [Set.Finite.mem_toFinset, Set.mem_union, Set.mem_setOf_eq, Set.mem_compl_iff, not_or, not_not] at hi
+    simp only [Set.Finite.mem_toFinset, Set.mem_union, Set.mem_ofPred_eq, Set.mem_compl_iff, not_or, not_not] at hi
     exact hi.1 ▸ hi.2
   rwa [h4, add_zero]
 
@@ -151,7 +151,7 @@ theorem inner_eq_zero_of_fixed {Γ X H : Type} [Group Γ] [TopologicalSpace Γ] 
   rw [← ContinuousLinearMap.adjoint_inner_left]
   refine Submodule.inner_right_of_mem_orthogonal (mem_fixedSub.2 fun k hk => ext_inner_right ℂ fun z => ?_) hw
   obtain ⟨z, rfl⟩ : ∃ z', z = ρ k z' := ⟨ρ k⁻¹ z, by
-    rw [← ContinuousLinearMap.mul_apply, ← map_mul, mul_inv_cancel, map_one, ContinuousLinearMap.one_apply]⟩
+    rw [← mul_apply_eq_comp, ← map_mul, mul_inv_cancel, map_one, one_apply_eq_self]⟩
   rw [inner_map_map hρ, ContinuousLinearMap.adjoint_inner_left, ContinuousLinearMap.adjoint_inner_left, hT]
   conv_rhs => rw [← hx k hk, hτ]
 
@@ -166,7 +166,7 @@ theorem mem_closure_span_fixed : ∀ {F E : Type} [Field F] [NumberField F] [Fie
   haveI : ∀ v, CompleteSpace (fixedSub (R v).π (K v)) := fun v => (isClosed_fixedSub _ _).completeSpace_coe
   have hK : ∀ y : ∀ v, (R v).H, ∀ w, y (.inl w) ∈ fixedSub (R (.inl w)).π (K (.inl w)) := fun y w =>
     mem_fixedSub.2 fun k hk => by
-      rw [Subgroup.mem_bot.1 hk, map_one, ContinuousLinearMap.one_apply]
+      rw [Subgroup.mem_bot.1 hk, map_one, one_apply_eq_self]
   have key := mem_closure_span_of_orthogonal h (fun v => fixedSub (R v).π (K v)) ?_ x ?_
   · refine Submodule.topologicalClosure_mono (Submodule.span_mono ?_) key
     rintro _ ⟨y, hy, hyU, rfl⟩
@@ -183,7 +183,7 @@ theorem mem_closure_span_fixed : ∀ {F E : Type} [Field F] [NumberField F] [Fie
     · rw [hT, hT, h.apply_embPl (SmallThetaModules.restr_update hz v a), Function.update_self, Function.update_idem]
     · rcases v with v | v
       · intro k hk
-        rw [Subgroup.mem_bot.1 hk, map_one, map_one, ContinuousLinearMap.one_apply]
+        rw [Subgroup.mem_bot.1 hk, map_one, map_one, one_apply_eq_self]
       · exact hx v
 
 end GlobalTheory.FixedSpan

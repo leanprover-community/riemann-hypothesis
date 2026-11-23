@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Rg.FlB
 
 theorem _root_.GlobalTheory.T.WittStatement : StWitt := by
-  first | exact @GlobalTheory.CompanionTheory.FlWitt.stWitt | exact GlobalTheory.CompanionTheory.FlWitt.stWitt | (intros; apply GlobalTheory.CompanionTheory.FlWitt.stWitt <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FlWitt.stWitt

@@ -49,4 +49,4 @@ theorem _root_.GlobalTheory.T.continuous_open_cell_retraction : ∀ (k : Type) [
     ∀ (h : Mir k ((i + 1) + (t + 1))), h ∈ HPG k (i + 1) (t + 1) → ∀ (d : Fin (t + 1) → k) (m : Mir k (i + (t + 1)))
       (x : Mir k ((i + 1) + t + 1)), dEmb k i t d * wEl k i t * sO k i t m = h * wEl k i t * x →
       ∃ p ∈ parab k (ePG i (t + 1)), (m : GL (Fin (i + (t + 1) + 1)) k) = p * Θ x := by
-  first | exact @GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Proj.exists_parab_mul | exact GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Proj.exists_parab_mul | (intros; apply GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Proj.exists_parab_mul <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Proj.exists_parab_mul

@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Mass
 
 theorem _root_.GlobalTheory.T.counting_formula : TestEx → LSide → RSide → Cnt := by
-  first | exact @GlobalTheory.CompanionTheory.RgMass.cnt | exact GlobalTheory.CompanionTheory.RgMass.cnt | (intros; apply GlobalTheory.CompanionTheory.RgMass.cnt <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgMass.cnt

@@ -51,4 +51,4 @@ open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory
 open ReciprocityTheory.AnForm (levi)
 
 theorem _root_.GlobalTheory.T.regularized_levi_lower_bound_eventually : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) (Hd : HodgeData D) (M : XModel D) (w : ((Σ k, J k) → ℂ) → ℝ) (S' : BoundedRegularisationSetting M D.Xo Hd.aMu w), S'.IsTied → ∀ δ > (0 : ℝ), ∀ᶠ t' in 𝓝[>] (0 : ℝ), ∀ a, ∀ t : Fin D.n → ℂ, ‖t‖ ≤ 1 / 2 → ∀ v, -(δ * ‖v‖ ^ 2) ≤ levi (fun s : Fin D.n → ℂ => Real.log (S'.ref.h ((D.chart a).γ s)) + S'.bregWeight t' (M.proj ((D.chart a).γ s))) t v := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.regularized_levi_lower_bound_eventually | exact GlobalTheory.CompanionTheory.Relay.regularized_levi_lower_bound_eventually | (intros; apply GlobalTheory.CompanionTheory.Relay.regularized_levi_lower_bound_eventually <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.regularized_levi_lower_bound_eventually

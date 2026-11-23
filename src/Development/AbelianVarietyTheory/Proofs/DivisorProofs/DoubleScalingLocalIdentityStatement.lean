@@ -50,4 +50,4 @@ theorem _root_.GlobalTheory.T.double_scaling_local_identity : GlobalTheory.FunPr
       (dd : GlobalTheory.DblScal.DblCo σ X W) (omd : GlobalTheory.DblScal.DblRep σ (n := n) W),
       IsUSplitting (adeleClass F) B.ψ dd (actB (cA σ)) omd → GlobalTheory.DblScal.LocOps omd v →
       ∀ ιd, GlobalTheory.DblScal.IsLinD B.ψ dd t b c ιd → ∃ cd : GlobalTheory.DblScal.UD σ W.J → ℂ, GlobalTheory.DblScal.IsShapeD omd t c ιd cd := by
-  first | exact @GlobalTheory.DblShape.shape_dbl | exact GlobalTheory.DblShape.shape_dbl | (intros; apply GlobalTheory.DblShape.shape_dbl <;> assumption)
+  exact @GlobalTheory.DblShape.shape_dbl

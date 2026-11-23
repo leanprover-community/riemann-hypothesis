@@ -62,4 +62,4 @@ theorem _root_.GlobalTheory.T.isAffineHom_of_lift_translation_finiteIndex_lattic
     ∀ (L : LB A.left) (L' : LB B.left) (u : HolUnif A L g) (u' : HolUnif B L' g) (a : Fin g → ℂ) (N : ℕ),
     0 < N → u.Λ ≤ u'.Λ → (∀ x ∈ u'.Λ, N • x ∈ u.Λ) →
     ∀ ψ : A.left ⟶ B.left, ψ ≫ B.hom = A.hom → (∀ z, (u.ex z).left ≫ ψ = (u'.ex (z + a)).left) → IsAffineHom ψ := by
-  first | exact @GlobalTheory.LiftAffine.isAffineHom_of_lift | exact GlobalTheory.LiftAffine.isAffineHom_of_lift | (intros; apply GlobalTheory.LiftAffine.isAffineHom_of_lift <;> assumption)
+  exact @GlobalTheory.LiftAffine.isAffineHom_of_lift

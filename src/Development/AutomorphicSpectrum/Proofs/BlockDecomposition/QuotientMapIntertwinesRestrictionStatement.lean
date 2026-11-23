@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.quotient_map_intertwines_restriction : ∀ {G G' W
       ∃ h' ∈ H', ∃ κ' ∈ K', x = h' * κ') →
     (∃ K' ∈ 𝓝 (1 : G'), IsCompact K') →
     ∀ f : cIndSpace H σ, ∃ F : cIndSpace H' σ', ∀ x, F.1.1.1 x = q (f.1.1.1 (ι x)) := by
-  first | exact @GlobalTheory.CompanionTheory.LeibPhi.exists_cInd_restrict | exact GlobalTheory.CompanionTheory.LeibPhi.exists_cInd_restrict | (intros; apply GlobalTheory.CompanionTheory.LeibPhi.exists_cInd_restrict <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LeibPhi.exists_cInd_restrict

@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Rsw
 
 theorem _root_.GlobalTheory.T.fourier_jacobi_unfolding : ZUnfold := by
-  first | exact @GlobalTheory.CompanionTheory.ZUnf.zUnfold | exact GlobalTheory.CompanionTheory.ZUnf.zUnfold | (intros; apply GlobalTheory.CompanionTheory.ZUnf.zUnfold <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ZUnf.zUnfold

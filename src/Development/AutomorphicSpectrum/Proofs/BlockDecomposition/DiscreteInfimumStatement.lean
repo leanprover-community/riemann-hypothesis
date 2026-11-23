@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.EGlue
 
 theorem _root_.GlobalTheory.T.discrete_infimum : GlobalTheory.CompanionTheory.EGlue.DiscInf := by
-  first | exact @GlobalTheory.CompanionTheory.EGlue.discInf | exact GlobalTheory.CompanionTheory.EGlue.discInf | (intros; apply GlobalTheory.CompanionTheory.EGlue.discInf <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EGlue.discInf

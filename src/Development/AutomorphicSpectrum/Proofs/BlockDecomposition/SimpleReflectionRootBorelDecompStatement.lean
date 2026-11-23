@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.simple_reflection_root_borel_decomp : ∀ (L : Typ
     ∃ b : GU σ n, IsBorelU b ∧
       chiDeltaU q (fun k => (χ k : ℂ)) b = (((χ i : ℂ) / (χ j : ℂ)) / (q : ℂ) ^ 2) ^ (-ordL x) ∧
       sR σ hU.1 a h * uR σ hU.1 a h x = b * (sR σ hU.1 a h * uR σ hU.1 a h x⁻¹ * sR σ hU.1 a h) := by
-  first | exact @GlobalTheory.CompanionTheory.SwapFactor.sR_uR_factor | exact GlobalTheory.CompanionTheory.SwapFactor.sR_uR_factor | (intros; apply GlobalTheory.CompanionTheory.SwapFactor.sR_uR_factor <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SwapFactor.sR_uR_factor

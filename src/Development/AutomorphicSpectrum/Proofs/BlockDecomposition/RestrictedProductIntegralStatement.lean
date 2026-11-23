@@ -70,4 +70,4 @@ theorem _root_.GlobalTheory.T.restricted_product_integral : ∀ {ι Γ : Type} [
     (hfix : ∀ i, i ∉ l → (fun x => hint (KH i) fun m => f i m * g (x * e i m)) = g),
     hint K (fun x => (∏ᶠ i, f i (p i x)) * g x) =
       l.foldr (fun i g' x => hint (KH i) fun m => f i m * g' (x * e i m)) g 1 := by
-  first | exact @GlobalTheory.CompanionTheory.FinActCore.hint_prod_eq_foldr | exact GlobalTheory.CompanionTheory.FinActCore.hint_prod_eq_foldr | (intros; apply GlobalTheory.CompanionTheory.FinActCore.hint_prod_eq_foldr <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FinActCore.hint_prod_eq_foldr

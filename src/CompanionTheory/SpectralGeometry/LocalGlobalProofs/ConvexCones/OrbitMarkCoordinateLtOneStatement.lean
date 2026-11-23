@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.orbit_mark_coordinate_lt_one : ∀ (O : Type) [Com
     LinearIndependent ℤ δ → (∀ i, IsPrim bar (⟨δ i, h.mem i⟩ : balForms bar X)) →
     ∀ β ∈ balForms bar X, (∀ y, 0 ≤ β y y) → (OrbMark.orbFun O w0 v).evalZ β = 1 →
     ∀ c : Fin m → ℝ, (∀ i, 0 ≤ c i) → toReal β = ∑ i, c i • toReal (δ i) → ∀ i, c i < 1 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fan.OrbitMarkCoordinateBound.orbMark_coord_lt_one | exact GlobalTheory.CompanionTheory.Ar.Fan.OrbitMarkCoordinateBound.orbMark_coord_lt_one | (intros; apply GlobalTheory.CompanionTheory.Ar.Fan.OrbitMarkCoordinateBound.orbMark_coord_lt_one <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fan.OrbitMarkCoordinateBound.orbMark_coord_lt_one

@@ -67,4 +67,4 @@ theorem _root_.GlobalTheory.T.gram_det_change_of_basis : ∀ (V : Type) [AddComm
         ((Fin.snoc x xe : Fin (n + 1) → V) b)).det‖ - Real.log ‖(Matrix.of fun a b => core.inner (x a) (x b)).det‖) =
       Real.log ‖s‖ + (1 / 2) * (Real.log ‖(Matrix.of fun a b => core.inner (β a) (β b)).det‖ -
         Real.log ‖(Matrix.of fun a b : Fin n => core.inner (β a.castSucc) (β b.castSucc)).det‖) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.gram_quot | exact GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.gram_quot | (intros; apply GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.gram_quot <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.gram_quot

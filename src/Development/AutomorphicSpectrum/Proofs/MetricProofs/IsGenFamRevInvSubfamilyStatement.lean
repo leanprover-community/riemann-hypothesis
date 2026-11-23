@@ -50,4 +50,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.FMX GlobalTheory.CompanionTheory.Ar.FlagBun GlobalTheory.CompanionTheory.Ar.PB.FMX.GenFl
 
 theorem _root_.GlobalTheory.T.isGenFam_revInv_subfamily : ∀ (Ω G : Type) [Field Ω] [Field G] [Algebra Ω G] (S : Type) [Finite S] (r : S → ℕ) (u : ∀ s, Matrix (Fin (r s)) (Fin (r s)) G) (P : S → Prop) [DecidablePred P], IsGenFam Ω G u → IsGenFam Ω G (fun s => if P s then revInv (u s) else u s) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.FMX.GenFl.isGenFam_revInv_ite | exact GlobalTheory.CompanionTheory.Ar.PB.FMX.GenFl.isGenFam_revInv_ite | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.FMX.GenFl.isGenFam_revInv_ite <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.FMX.GenFl.isGenFam_revInv_ite

@@ -50,4 +50,4 @@ open ReciprocityTheory.ChartRestriction.G.Geo.ResK
 open GlobalTheory.ProjSpace GlobalTheory.Points GlobalTheory.TuplePoint GlobalTheory.CompanionTheory.Ar.SncRes
 
 theorem _root_.GlobalTheory.T.projective_point_coords_exist : ∀ (Ω : Type) [Field Ω] [CharZero Ω] (r : ℕ) (p : Sp Ω ⟶ PSpace ℚ r), ∃ (x' : Fin (r + 1) → Ω) (hx' : x' ≠ 0), p = point ℚ x' hx' := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.TupleCoords.exists_tuple_eq_point | exact GlobalTheory.CompanionTheory.Ar.TupleCoords.exists_tuple_eq_point | (intros; apply GlobalTheory.CompanionTheory.Ar.TupleCoords.exists_tuple_eq_point <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.TupleCoords.exists_tuple_eq_point

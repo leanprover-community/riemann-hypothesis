@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.mahler_minus_cone_integral_indep : ∀ (n e δ : �
   IsProjPrime W → IsChowForm W (e + 1) g → IsMultiHomog δ g → linForm u ∉ W → linForm u' ∉ W →
     mahler h e (specFirst g u) - coneIntegral h W e (fsLog h u) =
       mahler h e (specFirst g u') - coneIntegral h W e (fsLog h u') := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Short.Crofton.defect_eq_of_linForm_notMem | exact GlobalTheory.CompanionTheory.Ar.Short.Crofton.defect_eq_of_linForm_notMem | (intros; apply GlobalTheory.CompanionTheory.Ar.Short.Crofton.defect_eq_of_linForm_notMem <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Short.Crofton.defect_eq_of_linForm_notMem

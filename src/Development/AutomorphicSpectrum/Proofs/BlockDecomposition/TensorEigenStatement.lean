@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 namespace PositivityTheory.Rg.BcB.F.Tail.PExp
 
 theorem _root_.GlobalTheory.T.tensor_eigen : PositivityTheory.Rg.BcB.F.Tail.PExp.TensEig := by
-  first | exact @GlobalTheory.CompanionTheory.TensContr.tensEig | exact GlobalTheory.CompanionTheory.TensContr.tensEig | (intros; apply GlobalTheory.CompanionTheory.TensContr.tensEig <;> assumption)
+  exact @GlobalTheory.CompanionTheory.TensContr.tensEig

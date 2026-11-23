@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.pure_function_translate_ray_units : ∀ (F : Type)
       if ∀ v, v ∉ T → algebraMap F (Fv F v) (t : F) ∈ v.adicCompletionIntegers F then
         ENNReal.ofReal (phiA G a (fun _ => θ δ * algebraMap F (Ainf F) (t : F)) *
           ∏ v ∈ T, psiA S g a v (fun _ => algebraMap F (Fv F v) (t : F))) else 0 := by
-  first | exact @GlobalTheory.CompanionTheory.BasePsi.pure_term | exact GlobalTheory.CompanionTheory.BasePsi.pure_term | (intros; apply GlobalTheory.CompanionTheory.BasePsi.pure_term <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BasePsi.pure_term

@@ -52,4 +52,4 @@ open GlobalTheory.CompanionTheory.ColumnSplitting
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.joined_projection_formula : JnPi := by
-  first | exact @GlobalTheory.CompanionTheory.ColumnSplitting.jnPi_holds | exact GlobalTheory.CompanionTheory.ColumnSplitting.jnPi_holds | (intros; apply GlobalTheory.CompanionTheory.ColumnSplitting.jnPi_holds <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ColumnSplitting.jnPi_holds

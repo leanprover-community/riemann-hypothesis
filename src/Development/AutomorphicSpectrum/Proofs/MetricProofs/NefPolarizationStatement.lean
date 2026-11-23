@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
 
 theorem _root_.GlobalTheory.T.nef_polarization : NefPol := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.nefPol | exact GlobalTheory.CompanionTheory.Ar.PB.nefPol | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.nefPol <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.nefPol

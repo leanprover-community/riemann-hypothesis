@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.local_frame_taylor_class_eq : ∀ {K : Type} [Fiel
           (∑ i, E.form σ ![i] (Ring.inverse (ε (rs hVV g)) * p i (ε (rs hVV g))) u +
             (h (u.obj (Fin.last 1)) - ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom (h (u.obj 0)))) ∈
           (sFil (KS q s {V}) 2).S _ := by
-  first | exact @GlobalTheory.CompanionTheory.ConeLocal.DlogApprox.main | exact GlobalTheory.CompanionTheory.ConeLocal.DlogApprox.main | (intros; apply GlobalTheory.CompanionTheory.ConeLocal.DlogApprox.main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ConeLocal.DlogApprox.main

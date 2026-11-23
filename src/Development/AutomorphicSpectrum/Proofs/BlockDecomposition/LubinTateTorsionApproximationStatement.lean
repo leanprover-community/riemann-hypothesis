@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.lubin_tate_torsion_approximation : ∀ {B : Type} 
     ∀ (v : ℕ → B), (∀ n, v n ∈ S) → ∀ (w : ℕ → C), w 0 = 0 → (∀ n, w (n + 1) ^ q + θ ϖ * w (n + 1) = w n) →
       (∀ n, ‖θ (v n) - w n‖ ≤ ‖θ ϖ‖) →
     ∀ Q ∈ S, (∀ n, ∃ a ∈ S, Q - ltIter ϖ q n (v n) = ϖ ^ (n + 1) * a) → θ Q = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.LTPer.theta_eq_zero_of_congr_torsion | exact GlobalTheory.CompanionTheory.LTPer.theta_eq_zero_of_congr_torsion | (intros; apply GlobalTheory.CompanionTheory.LTPer.theta_eq_zero_of_congr_torsion <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTPer.theta_eq_zero_of_congr_torsion

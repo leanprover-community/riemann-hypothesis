@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.lbIso_pull_of_generator_ratio_eq : ∀ {Z P Q : Sc
         gm a w ((N.pull (g ≫ f)).U fun _ => i) (T.s fun _ => i) * (gm a w ((M.pull g).U fun _ => k) (τ.s fun _ => k))⁻¹ =
           gm b w ((N.pull (g ≫ f)).U fun _ => i) (T.s fun _ => i) * (gm b w ((M.pull g).U fun _ => k) (τ.s fun _ => k))⁻¹) →
       LBIso M (N.pull f) := by
-  first | exact @GlobalTheory.CompanionTheory.RigGlue.lbIso_of_same_descent | exact GlobalTheory.CompanionTheory.RigGlue.lbIso_of_same_descent | (intros; apply GlobalTheory.CompanionTheory.RigGlue.lbIso_of_same_descent <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RigGlue.lbIso_of_same_descent

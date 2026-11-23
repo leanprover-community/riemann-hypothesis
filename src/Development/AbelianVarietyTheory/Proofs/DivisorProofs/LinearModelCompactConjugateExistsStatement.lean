@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.linear_model_compact_conjugate_exists : GlobalTheo
     ∀ (v : Pl (F := F)) (t : E →ₐ[F] Fv F v) (b : GL (Fin n) (Fv F v)) (c : GL (Fin d) (Fv F v)), ∀ ι, M.IsLinW B.ψ t b c ι →
     ∃ κ : UA σ X.J → ℂ, ∀ g ∈ UAt σ X (evFin F v), ∀ φ ∈ SB (Fin n × Fin d → Fv F v), ∀ φ₁ ∈ SB (Fin n × Fin d → Fv F v),
       Acts (evFin F v) (om (g, 1)) φ φ₁ → ι φ₁ = κ g • fun Y => ι φ (((locMat t b g)⁻¹ : GL (Fin n) (Fv F v)).val * Y) := by
-  first | exact @GlobalTheory.ShapeUXBas.shapeX | exact GlobalTheory.ShapeUXBas.shapeX | (intros; apply GlobalTheory.ShapeUXBas.shapeX <;> assumption)
+  exact @GlobalTheory.ShapeUXBas.shapeX

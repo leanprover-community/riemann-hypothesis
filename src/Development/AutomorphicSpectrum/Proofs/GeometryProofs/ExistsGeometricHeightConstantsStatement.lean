@@ -43,4 +43,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp
 
 theorem _root_.GlobalTheory.T.exists_geometric_height_constants : Top.Given → Out.WeilSt → Fl.FlatDegree → ∃ Ch Cu : ℝ, NineGeoU Ch Cu := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.TopNine.nineGeoU_of_given | exact GlobalTheory.CompanionTheory.Ar.Cusp.TopNine.nineGeoU_of_given | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.TopNine.nineGeoU_of_given <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Cusp.TopNine.nineGeoU_of_given

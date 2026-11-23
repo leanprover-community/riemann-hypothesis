@@ -46,5 +46,5 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
 
 theorem _root_.GlobalTheory.T.cenLoc_zlStable_cenInt_at_members : ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL fun _ _ _ _ w Z _ _ t nch n c => CenLoc (w.D Z) c.a.all.gal.mt ∧ GlobalTheory.PendOf.ZLStable (w.D Z) ∧ GlobalTheory.PendOf.CenInt (w.D Z) := by
-  first | exact @_root_.GlobalTheory.CenAtLoc.cen_loc_zl_stable_cen_int | exact _root_.GlobalTheory.CenAtLoc.cen_loc_zl_stable_cen_int | (intros; apply _root_.GlobalTheory.CenAtLoc.cen_loc_zl_stable_cen_int <;> assumption)
+  exact @_root_.GlobalTheory.CenAtLoc.cen_loc_zl_stable_cen_int
 end

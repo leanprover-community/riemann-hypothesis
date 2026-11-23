@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.cohomology_restriction_between_stable_families : �
     (∀ r r' : ℤ, Function.Bijective (((incl h).sq (incl_fil h r) (incl_fil h r')).pull j)) ∧
     (∀ (r r' : Option ℤ) (c c' : R), Function.Bijective (((incl h).sq (incl_std h r c) (incl_std h r' c')).pull j)) ∧
     Function.Bijective ((incl h).o.pull j) := by
-  first | exact @GlobalTheory.CompanionTheory.ZarCosieve.main | exact GlobalTheory.CompanionTheory.ZarCosieve.main | (intros; apply GlobalTheory.CompanionTheory.ZarCosieve.main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ZarCosieve.main

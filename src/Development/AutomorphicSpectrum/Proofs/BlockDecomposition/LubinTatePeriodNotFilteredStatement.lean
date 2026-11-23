@@ -60,4 +60,4 @@ theorem _root_.GlobalTheory.T.lubin_tate_period_not_filtered : ∀ {l : ℕ} [Fa
         (((GroundTheory.PAdicHodge.cycloChar ⊥ (Formalism.Per6.toBot g) : ℤ_[l]ˣ) : ℤ_[l]) : ℚ_[l])) →
     ∀ t : (↥K.1 →ₐ[ℚ_[l]] Om l) → Formalism.Per6.BdRp l, (∀ μ, PrePer K χ μ (t μ)) →
       ∀ μ, (μ = K.1.val → t μ ∉ FB l 2) ∧ (μ ≠ K.1.val → t μ ∉ FB l 1) := by
-  first | exact @GlobalTheory.CompanionTheory.LTPer.exact_degrees_of_product | exact GlobalTheory.CompanionTheory.LTPer.exact_degrees_of_product | (intros; apply GlobalTheory.CompanionTheory.LTPer.exact_degrees_of_product <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTPer.exact_degrees_of_product

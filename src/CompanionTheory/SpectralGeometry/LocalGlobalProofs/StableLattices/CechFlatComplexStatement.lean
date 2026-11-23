@@ -47,4 +47,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.CechFlatComplex : CIFlat := by
-  first | exact @GlobalTheory.CompanionTheory.CIFlatPf.ciFlat | exact GlobalTheory.CompanionTheory.CIFlatPf.ciFlat | (intros; apply GlobalTheory.CompanionTheory.CIFlatPf.ciFlat <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CIFlatPf.ciFlat

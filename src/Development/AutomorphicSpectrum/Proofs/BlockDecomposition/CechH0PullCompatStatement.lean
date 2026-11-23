@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.cech_h0_pull_compat : ∀ {X Y : TopCat.{0}} (f : 
     {G : AbSheaf Y} {G' : AbSheaf X} (φ : G ⟶ (push f).obj G') (x : cechH G.obj V 0),
     (cechHZeroEquivH G' U hU : cechH G'.obj U 0 ≃+ Sheaf.H.{0} G' 0) (cechPullH f φ.hom V U τ hτ 0 x) =
       hPull f φ 0 ((cechHZeroEquivH G V hV : cechH G.obj V 0 ≃+ Sheaf.H.{0} G 0) x) := by
-  first | exact @GlobalTheory.CompanionTheory.CechZero.cechHZeroEquivH_pull | exact GlobalTheory.CompanionTheory.CechZero.cechHZeroEquivH_pull | (intros; apply GlobalTheory.CompanionTheory.CechZero.cechHZeroEquivH_pull <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CechZero.cechHZeroEquivH_pull

@@ -80,4 +80,4 @@ theorem _root_.GlobalTheory.T.mixedCoordinate_support_integral_at_level : ∀ {D
       ∀ (ξ : Matrix (Fin X.rank) (Fin r) D.host.E) (x : Mx D X.rank r),
         x.map (finPart D) = (ξ.map (incA D) : Mx D X.rank r).map (finPart D) → (_root_.I195MixedCoordinates_f893ad7fd8680f4ca1164b63.source d) X ψ μ' 𝓕' Ψ x 0 ≠ 0 →
         ∀ i j, IsIntegral ℤ (((M * n : ℕ) : D.host.E) * ξ i j) := by
-  first | exact @GlobalTheory.MixSupport.mixS_support_integral | exact GlobalTheory.MixSupport.mixS_support_integral | (intros; apply GlobalTheory.MixSupport.mixS_support_integral <;> assumption)
+  exact @GlobalTheory.MixSupport.mixS_support_integral

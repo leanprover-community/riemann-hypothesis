@@ -51,4 +51,4 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.proper_has_power_fns : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (k : Type) [Field k] [IsAlgClosed k] (tB : SAB H (Sp k)), IsProper tB.G.hom → PowFns tB := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Conj.ProperPowFns.powFns_of_proper_algClosed | exact GlobalTheory.CompanionTheory.Ar.Conj.ProperPowFns.powFns_of_proper_algClosed | (intros; apply GlobalTheory.CompanionTheory.Ar.Conj.ProperPowFns.powFns_of_proper_algClosed <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Conj.ProperPowFns.powFns_of_proper_algClosed

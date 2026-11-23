@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.smooth_weight_pullback_is_potential : ∀ {k : Typ
     [TopologicalSpace T] (A : FinHolAtlas D T) (F : T → GlobalTheory.CxPts q σ) (hF : Continuous F),
     (∀ (W : X.Opens) (f : Γ(X, W)), A.HoloOn (F ⁻¹' ptsIn q σ W) (ev q σ W f ∘ F)) →
     ∀ {B : LB X} (φ : GlobalTheory.Weight q σ B), φ.IsCInf → IsPotential A (φ.locPot.pullback F hF) := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.isPotential_pullback_locPot | exact GlobalTheory.CompanionTheory.MixZ.isPotential_pullback_locPot | (intros; apply GlobalTheory.CompanionTheory.MixZ.isPotential_pullback_locPot <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MixZ.isPotential_pullback_locPot

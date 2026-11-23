@@ -45,4 +45,4 @@ import Mathlib.Topology.Sheaves.Init
 open NumberField IsDedekindDomain GlobalTheory.CuspRep
 
 theorem _root_.GlobalTheory.T.exists_global_spherical_vector_of_satake_family : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (π : CuspSub E a) (S : Finset (HeightOneSpectrum (𝓞 E))) (B : HeightOneSpectrum (𝓞 E) → Multiset ℂˣ), (∀ w ∉ S, GlobalTheory.LFun.HasSatGL w (π.locRep w) (B w)) → ∃ φ ∈ π.V, φ ≠ 0 ∧ ∀ w ∉ S, ∀ k ∈ GlobalTheory.LFun.KGL w (n := a), act (.fin (locGL E a w k)) φ = φ := by
-  first | exact @GlobalTheory.JSW.SphVec.exists_sphVec_of_hasSat | exact GlobalTheory.JSW.SphVec.exists_sphVec_of_hasSat | (intros; apply GlobalTheory.JSW.SphVec.exists_sphVec_of_hasSat <;> assumption)
+  exact @GlobalTheory.JSW.SphVec.exists_sphVec_of_hasSat

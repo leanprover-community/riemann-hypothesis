@@ -52,4 +52,4 @@ open AlgebraicGeometry CategoryTheory NumberField MvPolynomial ReciprocityTheory
 open GroundTheory.Heights₂.Heights.NumbersDVR (pointIdeal segreVec IsFlagFrame IsFlagPair SameGenericFibre IsModelOver)
 
 theorem _root_.GlobalTheory.T.exists_isometric_herm_line : ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MvPolynomial (Σ k, ι k) ℤ)) (D : ℕ), IsArithVar P (D + 1) → ∀ (S : Finset Nat.Primes) (T : LocPair ι ℤ Unit), T.IsVertOff P S → ∀ A : HermLine ι, A.a = T.x () → IsSmoothHerm A → IsConjInvariantH A → ∃ A' : HermLine ι, IsSmoothHerm A' ∧ IsConjInvariantH A' ∧ T.IsIsometric P (fun _ => A) (fun _ => A') := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.twist_line | exact GlobalTheory.CompanionTheory.Ar.Num.twist_line | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.twist_line <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.twist_line

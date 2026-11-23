@@ -42,4 +42,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open PositivityTheory.Rg.BcB.F.Eig
 
 theorem _root_.GlobalTheory.T.split_dictionary_holds : SplitDict := by
-  first | exact @GlobalTheory.CompanionTheory.SplitPlace.splitDict | exact GlobalTheory.CompanionTheory.SplitPlace.splitDict | (intros; apply GlobalTheory.CompanionTheory.SplitPlace.splitDict <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SplitPlace.splitDict

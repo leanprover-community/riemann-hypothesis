@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.hermitian_line_metric_bound : ∀ (X : Scheme.{0})
       IsCls b₀ i e t → ValAt ξ z (t / gen y A.a e₀ c₀) u → u ≠ 0 → (gramAt h z v).det ≠ 0 →
       |(1 / 2) * (Real.log ‖(gramAt h z (Fin.snoc v ve : Fin (i + 1) → (epsAt z ⟶ G))).det‖ - Real.log ‖(gramAt h z v).det‖) -
         Real.log ‖u‖ - ∑ k, (A.a k : ℝ) * Real.log ‖w ⟨k, c₀ k⟩‖ + Real.log (A.h w)| ≤ C := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.arch_bound | exact GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.arch_bound | (intros; apply GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.arch_bound <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.arch_bound

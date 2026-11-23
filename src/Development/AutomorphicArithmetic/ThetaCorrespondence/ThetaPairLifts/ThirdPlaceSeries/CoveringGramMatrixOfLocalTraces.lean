@@ -59,6 +59,6 @@ section
 open GlobalTheory.CovTop GlobalTheory.BigTop
 
 theorem _root_.GlobalTheory.T.covering_gram_of_prints : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → _root_.GlobalTheory.CovTop.GramCondition := by
-  first | exact @_root_.GlobalTheory.CovTop.covering_gram_matrix_of_local_traces_alt | exact _root_.GlobalTheory.CovTop.covering_gram_matrix_of_local_traces_alt | (intros; apply _root_.GlobalTheory.CovTop.covering_gram_matrix_of_local_traces_alt <;> assumption)
+  exact @_root_.GlobalTheory.CovTop.covering_gram_matrix_of_local_traces_alt
 end
 end

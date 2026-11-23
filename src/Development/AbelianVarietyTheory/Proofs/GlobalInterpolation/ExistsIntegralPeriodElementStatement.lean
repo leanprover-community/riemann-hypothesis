@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.exists_integral_period_element : EquidistributedCo
         JacobiThetaHalfCharacteristic.IsPeriodLattice (lamConj M ρ (lamOf D cc δ)) ω₁ τ → ∀ a b : Fin 2, JacobiThetaHalfCharacteristic.IsEvenChar a b →
         JacobiThetaHalfCharacteristic.thetaChar a b (t ρ / ω₁) τ = 0 →
         ‖ρ X‖ = (‖JacobiThetaHalfCharacteristic.thetaChar a b 0 τ‖ / ‖ModularForm.eta τ‖) ^ 12 := by
-  first | exact @GlobalTheory.IntegralX.exists_integral_theta_ratio | exact GlobalTheory.IntegralX.exists_integral_theta_ratio | (intros; apply GlobalTheory.IntegralX.exists_integral_theta_ratio <;> assumption)
+  exact @GlobalTheory.IntegralX.exists_integral_theta_ratio

@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.parthasarathy_rao_varadarajan : ∀ n : ℕ, ∃ (
       v ∈ S → v ≠ 0 → Formalism.REAL.KHighest (fun _ => true) Kf (wtR ν) v →
       ∃ w : Equiv.Perm (Fin n), Antitone (fun a => wtR ν (w a) - rhoV n (w a)) ∧ ∃ x : ι → V, x ≠ 0 ∧
         Formalism.REAL.KHighest (fun _ => true) (yF Kf c) (fun a => wtR ν (w a) - rhoV n (w a)) x := by
-  first | exact @GlobalTheory.CompanionTheory.SpinPRV.spin_parthasarathy_rao_varadarajan | exact GlobalTheory.CompanionTheory.SpinPRV.spin_parthasarathy_rao_varadarajan | (intros; apply GlobalTheory.CompanionTheory.SpinPRV.spin_parthasarathy_rao_varadarajan <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SpinPRV.spin_parthasarathy_rao_varadarajan

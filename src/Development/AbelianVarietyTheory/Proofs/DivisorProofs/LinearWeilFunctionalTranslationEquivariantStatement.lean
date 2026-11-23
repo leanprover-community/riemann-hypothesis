@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.linear_weil_functional_translation_equivariant : G
       Acts (evFin F v) (om (1, h)) φ φ₁ → ∀ Y, ι φ₁ Y = c * ι φ (Y * (((mat h).map (piW t))⁻¹)ᵀ)) →
     ∃ β₀ : (Fv F v)ˣ →* ℂˣ, (∀ h ∈ UAt σ G.W (evFin F v), ∃ h' : GL (Fin (a + a')) (Fv F v), (mat h).map (piW t) = h'.1 ∧
       ∀ φ ∈ SB (Fin a × Fin (a + a') → Fv F v), ∀ φ₁ ∈ SB (Fin a × Fin (a + a') → Fv F v), Acts (evFin F v) (om (1, h)) φ φ₁ → ι φ₁ = GlobalTheory.SplitFlip.omA 1 β₀ 1 h' (ι φ)) := by
-  first | exact @GlobalTheory.LocalUnitSubgroupClosure.linear_weil_functional_character_weight_zero | exact GlobalTheory.LocalUnitSubgroupClosure.linear_weil_functional_character_weight_zero | (intros; apply GlobalTheory.LocalUnitSubgroupClosure.linear_weil_functional_character_weight_zero <;> assumption)
+  exact @GlobalTheory.LocalUnitSubgroupClosure.linear_weil_functional_character_weight_zero

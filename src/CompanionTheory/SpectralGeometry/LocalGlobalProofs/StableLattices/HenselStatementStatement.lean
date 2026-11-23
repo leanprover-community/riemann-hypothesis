@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Rg.FlB
 
 theorem _root_.GlobalTheory.T.HenselStatement : StHensel := by
-  first | exact @GlobalTheory.CompanionTheory.LocalHensel.stHensel_holds | exact GlobalTheory.CompanionTheory.LocalHensel.stHensel_holds | (intros; apply GlobalTheory.CompanionTheory.LocalHensel.stHensel_holds <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LocalHensel.stHensel_holds

@@ -52,4 +52,4 @@ open GlobalTheory.CompanionTheory.ColumnSplitting
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.continuous_orbital_integral_unipotent : IkSch → Dom → OrbFin → Shift → JnBl → Ext0 → ∀ (D : D7) (n t : ℕ) (B W : HSp D) (d : HypDec B W t) (hn : W.rank + t = n) (I : IkD d n) θ, IsInfFam θ → ∀ (x₀ : Matrix (Fin W.rank) (Fin W.rank) D.host.E), x₀.det ≠ 0 → ∀ Φ ∈ schwartzA θ B.rank n, Continuous (fun y : Mx D W.rank t => orb W I.m (ikp I fun X => Φ (mm X (bl hn 1 y 0 1))) (ext0 hn x₀)) := by
-  first | exact @GlobalTheory.CompanionTheory.ColumnSplitting.continuous_orb_shear | exact GlobalTheory.CompanionTheory.ColumnSplitting.continuous_orb_shear | (intros; apply GlobalTheory.CompanionTheory.ColumnSplitting.continuous_orb_shear <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ColumnSplitting.continuous_orb_shear

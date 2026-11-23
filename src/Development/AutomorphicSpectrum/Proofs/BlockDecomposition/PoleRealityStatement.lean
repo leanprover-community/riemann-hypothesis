@@ -44,4 +44,4 @@ import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaI
 open PositivityTheory.Rg.Rsw
 
 theorem _root_.GlobalTheory.T.pole_reality : PoleReal := by
-  first | exact @GlobalTheory.CompanionTheory.PoleBound.poleReal | exact GlobalTheory.CompanionTheory.PoleBound.poleReal | (intros; apply GlobalTheory.CompanionTheory.PoleBound.poleReal <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PoleBound.poleReal

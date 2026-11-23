@@ -49,4 +49,4 @@ open GlobalTheory.CompanionTheory.GodementH
 
 theorem _root_.GlobalTheory.T.left_invertible_exists_nonzero_minor : ∀ (R : Type) [CommRing R] [Nontrivial R] (ι : Type) [Fintype ι] [DecidableEq ι] (n : ℕ) (M : Matrix ι (Fin n) R) (L : Matrix (Fin n) ι R),
     L * M = 1 → ∃ f, mnr M f ≠ 0 := by
-  first | exact @GlobalTheory.CompanionTheory.GodementH.exists_mnr_ne_zero_of_left_inverse | exact GlobalTheory.CompanionTheory.GodementH.exists_mnr_ne_zero_of_left_inverse | (intros; apply GlobalTheory.CompanionTheory.GodementH.exists_mnr_ne_zero_of_left_inverse <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GodementH.exists_mnr_ne_zero_of_left_inverse

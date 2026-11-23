@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.InertZeta
 
 theorem _root_.GlobalTheory.T.smith_normal_form_exists : Smith := by
-  first | exact @GlobalTheory.CompanionTheory.InertSmith.smith | exact GlobalTheory.CompanionTheory.InertSmith.smith | (intros; apply GlobalTheory.CompanionTheory.InertSmith.smith <;> assumption)
+  exact @GlobalTheory.CompanionTheory.InertSmith.smith

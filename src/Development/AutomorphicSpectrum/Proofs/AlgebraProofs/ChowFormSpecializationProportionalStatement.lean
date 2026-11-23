@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.chow_form_specialization_proportional : ∀ (n e �
   (∀ x ∈ P, ∀ x' ∈ P, ∀ t : ℂ, x' = t • x → x' = x) →
   P.card = δ → eval (consGroup u₀ v) g ≠ 0 →
     ∃ c : ℂ, c ≠ 0 ∧ ∀ u : Fin n → ℂ, eval (consGroup u v) g = c * ∏ x ∈ P, ∑ j, u j * x j := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.chow_form_specialization_proportional | exact GlobalTheory.CompanionTheory.Relay.chow_form_specialization_proportional | (intros; apply GlobalTheory.CompanionTheory.Relay.chow_form_specialization_proportional <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.chow_form_specialization_proportional

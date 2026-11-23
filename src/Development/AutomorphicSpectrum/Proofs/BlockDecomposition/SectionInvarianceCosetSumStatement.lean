@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.section_invariance_coset_sum : PositivityTheory.Rg
     ∑' r : PositivityTheory.RgEis.Cos (Γ ⊓ Q) Γ, Complex.exp (s * ξ (PositivityTheory.RgEis.rep r * g)) •
         PositivityTheory.RgEis.eis (Γ ⊓ Q) K P c ρ Λ (PositivityTheory.RgEis.rep r * g) w =
       PositivityTheory.RgEis.eis Γ K P c ρ (fun x => Λ x + s * ξ x) g w := by
-  first | exact @GlobalTheory.CompanionTheory.RgEisCross.stage_eis | exact GlobalTheory.CompanionTheory.RgEisCross.stage_eis | (intros; apply GlobalTheory.CompanionTheory.RgEisCross.stage_eis <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgEisCross.stage_eis

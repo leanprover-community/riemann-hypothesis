@@ -67,4 +67,4 @@ theorem _root_.GlobalTheory.T.integrable_domCell_logNorm_chart : ∀ (K : Type) 
       (chartPot σ i N))) →
     Integrable (chartAbsDens J (chartProjMatrix σ Ψ)
       (chartWeight σ i ((domCell i).indicator (absLogNorm A s))) (chartPot σ i N)) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Pub.CxChart.integrable_chartAbsDens_cellWeight | exact GlobalTheory.CompanionTheory.Ar.Pub.CxChart.integrable_chartAbsDens_cellWeight | (intros; apply GlobalTheory.CompanionTheory.Ar.Pub.CxChart.integrable_chartAbsDens_cellWeight <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Pub.CxChart.integrable_chartAbsDens_cellWeight

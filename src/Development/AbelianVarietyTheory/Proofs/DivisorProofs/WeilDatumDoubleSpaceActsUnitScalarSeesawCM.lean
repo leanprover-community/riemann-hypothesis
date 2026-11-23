@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.weilDatum_doubleSpace_acts_unitScalar_seesaw_CM : 
       ∃ c : ℂ, ‖c‖ = 1 ∧ ∀ f₁ f₂ : Formalism.IndefR.DatumF.WOF F E nS nT → ℂ,
         Formalism.IndefR.DatumF.IsThetaFunOF σ JS JT ξ₀ B.ψ f₁ → Formalism.IndefR.DatumF.IsThetaFunOF σ JS JT ξ₀ B.ψ f₂ →
         ωd (1, hd) (GlobalTheory.DblTargetDelta.deltaT f₁ f₂) = c • GlobalTheory.DblTargetDelta.deltaT (ω (1, h) f₁) f₂ := by
-  first | exact @PositivityTheory.ThKW.weil_rep_unitary_pair_equivariant | exact PositivityTheory.ThKW.weil_rep_unitary_pair_equivariant | (intros; apply PositivityTheory.ThKW.weil_rep_unitary_pair_equivariant <;> assumption)
+  exact @PositivityTheory.ThKW.weil_rep_unitary_pair_equivariant

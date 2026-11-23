@@ -45,4 +45,4 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 open NumberField IsDedekindDomain Polynomial GlobalTheory.BCT PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.G8.G2
 
 theorem _root_.GlobalTheory.T.orbital_sign_almost_everywhere : KapOrbAE := by
-  first | exact @GlobalTheory.CompanionTheory.KapOrbAE.kapOrbAE | exact GlobalTheory.CompanionTheory.KapOrbAE.kapOrbAE | (intros; apply GlobalTheory.CompanionTheory.KapOrbAE.kapOrbAE <;> assumption)
+  exact @GlobalTheory.CompanionTheory.KapOrbAE.kapOrbAE

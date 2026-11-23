@@ -45,4 +45,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.RgEis PositivityTheory.RgEis.MG
 
 theorem _root_.GlobalTheory.T.unfolding_of_average : SecLaw → AvgMem → Unfold := by
-  first | exact @GlobalTheory.CompanionTheory.RgEisUnfold.unfold | exact GlobalTheory.CompanionTheory.RgEisUnfold.unfold | (intros; apply GlobalTheory.CompanionTheory.RgEisUnfold.unfold <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgEisUnfold.unfold

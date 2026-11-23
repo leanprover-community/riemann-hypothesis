@@ -46,4 +46,4 @@ open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.Inde
 open GlobalTheory.Doubling (absE)
 
 theorem _root_.GlobalTheory.T.eisenstein_half_holds : EisHalf := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelEisHalf.eisHalf | exact GlobalTheory.CompanionTheory.SiegelEisHalf.eisHalf | (intros; apply GlobalTheory.CompanionTheory.SiegelEisHalf.eisHalf <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelEisHalf.eisHalf

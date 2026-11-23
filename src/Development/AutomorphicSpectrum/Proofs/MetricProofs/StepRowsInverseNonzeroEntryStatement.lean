@@ -51,4 +51,4 @@ open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm 
 open scoped ComplexOrder Classical
 
 theorem _root_.GlobalTheory.T.step_rows_inverse_nonzero_entry : ∀ (L : Type) [Field L] (V : ValuationSubring L) (N j : ℕ) (i : Fin N) (H : Matrix (Fin N) (Fin N) L) (κ : Type) [Fintype κ] (u : κ → Finset (Fin N) → L) (u' : Finset (Fin N) → κ → L), j ≤ N → IsBlockDiag j H → (∀ a b, H a b ∈ V) → H.det ≠ 0 → (H.det)⁻¹ ∈ V → (∀ I m, u' I m ∈ V) → (∀ m I, u m I ∈ V) → (∀ I I', IsStepRows N j i I → IsStepRows N j i I' → ∑ m, u' I m * u m I' = if I = I' then 1 else 0) → ∃ m, (∑ I, u m I * minorIJ H I (stepCols N j i)) ≠ 0 ∧ (∑ I, u m I * minorIJ H I (stepCols N j i))⁻¹ ∈ V := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.UnitComb.unit_comb | exact GlobalTheory.CompanionTheory.Ar.PB.UnitComb.unit_comb | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.UnitComb.unit_comb <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.UnitComb.unit_comb

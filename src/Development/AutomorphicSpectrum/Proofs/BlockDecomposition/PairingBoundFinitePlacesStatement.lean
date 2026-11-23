@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open Matrix PositivityTheory.Rg.BcB.D1
 
 theorem _root_.GlobalTheory.T.pairing_bound_finite_places : MulF → PairF := by
-  first | exact @GlobalTheory.CompanionTheory.Wedge.pairF_of_mulF | exact GlobalTheory.CompanionTheory.Wedge.pairF_of_mulF | (intros; apply GlobalTheory.CompanionTheory.Wedge.pairF_of_mulF <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Wedge.pairF_of_mulF

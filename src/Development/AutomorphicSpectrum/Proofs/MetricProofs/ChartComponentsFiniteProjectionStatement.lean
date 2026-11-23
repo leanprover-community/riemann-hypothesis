@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.chartComponents_finite_projection : ∀ (K : Type)
     (∀ J ∈ chartComponents (conePts Q) σ i, ringKrullDim (MvPolynomial (Fin m) ℂ ⧸ J) = (e : ℕ)) →
     ∀ J ∈ chartComponents (conePts Q) σ i,
       GroundTheory.Heights₂.Heights.ComplexSets.IsFiniteProjection J (chartProjMatrix σ Ψ) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Pub.CxChart.FinProj.chartProj_finite | exact GlobalTheory.CompanionTheory.Ar.Pub.CxChart.FinProj.chartProj_finite | (intros; apply GlobalTheory.CompanionTheory.Ar.Pub.CxChart.FinProj.chartProj_finite <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Pub.CxChart.FinProj.chartProj_finite

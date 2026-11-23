@@ -64,4 +64,4 @@ theorem _root_.GlobalTheory.T.hodge_component_twist_lattice_compat : ∀ (E : Ty
       (∀ a v, φ (A.ρ (g.s a) v) = A'.ρ a (φ v)) →
       ∀ s s', A'.emb s' = (A.emb s).comp g.s.toRingHom → ∀ (q : Cpt A'.ξ) (h : genPt A.ξ ⤳ e.hom q.1) (v : A.Li),
         v ∈ A.V s ⟨e.hom q.1, h⟩ ↔ φ v ∈ A'.V s' q := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.CmpBund.bund | exact GlobalTheory.CompanionTheory.Ar.CmpBund.bund | (intros; apply GlobalTheory.CompanionTheory.Ar.CmpBund.bund <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.CmpBund.bund

@@ -50,4 +50,4 @@ theorem _root_.GlobalTheory.T.whittaker_kernel_pullback_jacquet : ∀ (k : Type)
     (whitKer ψ ![n, j + 1] (jac (stdBlocks ![n, j + 1] hd) π)).comap
         (Submodule.mkQ (twKer π (unipRad k (stdBlocks ![n, j + 1] hd)) 1)) =
       twKer π (derUnip k (n + j + 1) n) (derChar k ψ (n + j + 1) n) := by
-  first | exact @GlobalTheory.CompanionTheory.BZNuPair.DerComap.whitKer_jac_comap_eq_twKer_derUnip | exact GlobalTheory.CompanionTheory.BZNuPair.DerComap.whitKer_jac_comap_eq_twKer_derUnip | (intros; apply GlobalTheory.CompanionTheory.BZNuPair.DerComap.whitKer_jac_comap_eq_twKer_derUnip <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BZNuPair.DerComap.whitKer_jac_comap_eq_twKer_derUnip

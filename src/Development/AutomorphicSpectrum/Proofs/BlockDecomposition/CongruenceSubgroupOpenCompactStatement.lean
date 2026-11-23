@@ -53,4 +53,4 @@ open scoped TensorProduct
 
 theorem _root_.GlobalTheory.T.congruence_subgroup_open_compact : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (s : kˣ) (hs : ValuativeRel.valuation k (s : k) ≤ 1),
   IsOpen (GlobalTheory.CompanionTheory.BZPhiPG.Onto.congM k s hs n : Set (Mir k n)) ∧ IsCompact (GlobalTheory.CompanionTheory.BZPhiPG.Onto.congM k s hs n : Set (Mir k n)) := by
-  first | exact @GlobalTheory.CompanionTheory.BZPhiPG.Onto.congM_isOpen_isCompact | exact GlobalTheory.CompanionTheory.BZPhiPG.Onto.congM_isOpen_isCompact | (intros; apply GlobalTheory.CompanionTheory.BZPhiPG.Onto.congM_isOpen_isCompact <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BZPhiPG.Onto.congM_isOpen_isCompact

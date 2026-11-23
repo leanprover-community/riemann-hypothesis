@@ -42,5 +42,5 @@ import Mathlib.Tactic.NormNum.RealSqrt
 section
 
 theorem _root_.GlobalTheory.T.frame_aut_of_small_estimate : _root_.GlobalTheory.ExpTie.SmallnessCondition → _root_.GlobalTheory.FrameAut.AutStAlt := by
-  first | exact @_root_.GlobalTheory.FrameAut.frame_autSt_of_smallSt | exact _root_.GlobalTheory.FrameAut.frame_autSt_of_smallSt | (intros; apply _root_.GlobalTheory.FrameAut.frame_autSt_of_smallSt <;> assumption)
+  exact @_root_.GlobalTheory.FrameAut.frame_autSt_of_smallSt
 end

@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Base1
 
 theorem _root_.GlobalTheory.T.local_density_formula : Dens := by
-  first | exact @GlobalTheory.CompanionTheory.SW.RankOne.dens | exact GlobalTheory.CompanionTheory.SW.RankOne.dens | (intros; apply GlobalTheory.CompanionTheory.SW.RankOne.dens <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SW.RankOne.dens

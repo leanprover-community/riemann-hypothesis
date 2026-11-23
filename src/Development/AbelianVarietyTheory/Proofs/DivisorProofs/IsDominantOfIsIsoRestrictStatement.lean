@@ -60,4 +60,4 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.CechPic GlobalTheory.QCoh GlobalTheory.Discrepancy GlobalTheory.LogPair
 
 theorem _root_.GlobalTheory.T.isDominant_of_isIso_restrict' : ∀ (X Y : Scheme.{0}) [IsIntegral X] [IsIntegral Y] (s : Y ⟶ X) (U : X.Opens), (U : Set X).Nonempty → IsIso (s ∣_ U) → IsDominant s := by
-  first | exact @GlobalTheory.Discrepancy.isDominant_of_isIso_restrict | exact GlobalTheory.Discrepancy.isDominant_of_isIso_restrict | (intros; apply GlobalTheory.Discrepancy.isDominant_of_isIso_restrict <;> assumption)
+  exact @GlobalTheory.Discrepancy.isDominant_of_isIso_restrict

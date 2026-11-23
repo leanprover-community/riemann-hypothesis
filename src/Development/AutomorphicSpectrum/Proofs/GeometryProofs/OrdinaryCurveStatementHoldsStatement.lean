@@ -47,4 +47,4 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
 
 theorem _root_.GlobalTheory.T.ordinary_curve_statement_holds : GlobalTheory.CompanionTheory.Ar.GR.OrdinaryCurveStatement := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Link.ordinaryCurveStatement | exact GlobalTheory.CompanionTheory.Ar.Link.ordinaryCurveStatement | (intros; apply GlobalTheory.CompanionTheory.Ar.Link.ordinaryCurveStatement <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Link.ordinaryCurveStatement

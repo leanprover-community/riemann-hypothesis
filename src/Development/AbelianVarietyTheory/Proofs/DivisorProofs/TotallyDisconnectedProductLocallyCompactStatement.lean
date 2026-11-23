@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.totally_disconnected_product_locally_compact : ∀
     ∃ h : (Z → ℂ) →ₗ[ℂ] (Z' → ℂ), Set.BijOn h (GlobalTheory.WeilM.SB Z : Set (Z → ℂ)) (GlobalTheory.WeilM.SB Z' : Set (Z' → ℂ)) ∧
       ∀ a ∈ GlobalTheory.WeilM.SB P, ∀ b ∈ GlobalTheory.WeilM.SB Q,
         h (fun z => a (eZ z).1 * b (eZ z).2) = fun z' => f a (eZ' z').1 * g b (eZ' z').2 := by
-  first | exact @GlobalTheory.SBProdExt.exists_linear_bijOn_prod | exact GlobalTheory.SBProdExt.exists_linear_bijOn_prod | (intros; apply GlobalTheory.SBProdExt.exists_linear_bijOn_prod <;> assumption)
+  exact @GlobalTheory.SBProdExt.exists_linear_bijOn_prod

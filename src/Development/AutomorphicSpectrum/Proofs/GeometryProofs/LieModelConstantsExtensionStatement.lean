@@ -63,4 +63,4 @@ theorem _root_.GlobalTheory.T.lie_model_constants_extension : ∀ (E : Type) [Fi
     (∀ s, ((L s).pull ξ' f j).IsFlagVBOn Set.univ (b s)) →
     ∀ s, (M'.eigLat ρ' (((algebraMap Ω₀ Ω).comp cst).comp (labelEmb c s))).IsFlagVBOn
       {q | ∀ r : ℕ, r.Prime → ¬ InFibre ξ' r q} (b s) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.FlagStep.eigLat_isFlagVBOn_of_pull_char0 | exact GlobalTheory.CompanionTheory.Ar.FlagStep.eigLat_isFlagVBOn_of_pull_char0 | (intros; apply GlobalTheory.CompanionTheory.Ar.FlagStep.eigLat_isFlagVBOn_of_pull_char0 <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.FlagStep.eigLat_isFlagVBOn_of_pull_char0

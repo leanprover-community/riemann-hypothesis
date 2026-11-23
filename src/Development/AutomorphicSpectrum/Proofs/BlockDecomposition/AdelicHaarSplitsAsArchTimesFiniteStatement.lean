@@ -68,4 +68,4 @@ theorem _root_.GlobalTheory.T.adelic_haar_splits_as_arch_times_finite : ∀ (F E
     μ₁.IsAddHaarMeasure ∧ μ₂.IsAddHaarMeasure ∧ SFinite μ₁ ∧ SFinite μ₂ ∧ c ≠ ⊤ ∧
     MeasurableEmbedding (fun X : Fin n → Fin M → AF F ⊗[F] E => (projInf X, projFin X)) ∧
     dx.map (fun X => (projInf X, projFin X)) = c • μ₁.prod μ₂ := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.MapTup.map_tuple | exact GlobalTheory.CompanionTheory.SiegelND.Integ.MapTup.map_tuple | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.MapTup.map_tuple <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.MapTup.map_tuple

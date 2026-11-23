@@ -55,4 +55,4 @@ open GlobalTheory.CompanionTheory.LTPer.Tilt
 
 theorem _root_.GlobalTheory.T.teichmuller_character_eq_residue_lift : ∀ {l : ℕ} [Fact l.Prime] (q : ℕ), 2 ≤ q → l ∣ q → ∀ (x : Tl l) (y : Om l),
     x ^ q = x → y ^ q = y → sh x = omC y → tch l x = rB l y := by
-  first | exact @GlobalTheory.CompanionTheory.LTPer.Tilt.tch_eq_rB_of_sh_eq | exact GlobalTheory.CompanionTheory.LTPer.Tilt.tch_eq_rB_of_sh_eq | (intros; apply GlobalTheory.CompanionTheory.LTPer.Tilt.tch_eq_rB_of_sh_eq <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTPer.Tilt.tch_eq_rB_of_sh_eq

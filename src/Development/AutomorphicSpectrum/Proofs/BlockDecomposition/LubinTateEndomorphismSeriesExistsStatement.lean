@@ -57,4 +57,4 @@ open scoped Classical
 theorem _root_.GlobalTheory.T.lubin_tate_endomorphism_series_exists : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)), Irreducible π → ∀ a : ↥(OL K),
     ∃ φ : PowerSeries ↥(OL K), PowerSeries.constantCoeff φ = 0 ∧ PowerSeries.coeff 1 φ = a ∧
       PowerSeries.subst φ (ltSeries π) = PowerSeries.subst (ltSeries π) φ := by
-  first | exact @GlobalTheory.CompanionTheory.LTPer.exists_series_comm | exact GlobalTheory.CompanionTheory.LTPer.exists_series_comm | (intros; apply GlobalTheory.CompanionTheory.LTPer.exists_series_comm <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTPer.exists_series_comm

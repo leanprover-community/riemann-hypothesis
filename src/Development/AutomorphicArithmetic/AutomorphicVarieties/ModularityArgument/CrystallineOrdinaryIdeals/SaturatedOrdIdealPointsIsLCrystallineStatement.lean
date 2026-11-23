@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg IsLocalRing Polynomial Topology
 
 theorem _root_.GlobalTheory.T.saturatedOrdIdeal_points_isLCrystalline : LocalPublishedTheorems → ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] [IsAdicComplete (maximalIdeal O) O] (D : Dat3 l O) (U : _root_.UpperTheory.V.U3.Univ (_root_.UpperTheory.V.U3.GCond.noCondition O D.η D.Ψ)), GlobalTheory.OrdLoc.PtsCr D U (GlobalTheory.OrdLoc.IY D U) := by
-  first | exact @GlobalTheory.OrdLoc.ptsCr_IY | exact GlobalTheory.OrdLoc.ptsCr_IY | (intros; apply GlobalTheory.OrdLoc.ptsCr_IY <;> assumption)
+  exact @GlobalTheory.OrdLoc.ptsCr_IY

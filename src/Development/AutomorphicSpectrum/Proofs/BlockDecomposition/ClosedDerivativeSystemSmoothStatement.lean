@@ -49,4 +49,4 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 noncomputable section
 
 theorem _root_.GlobalTheory.T.closed_derivative_system_smooth : ∀ (n : ℕ) (V P : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] (o : P → Mat n → V) (d : (Bool × Fin n × Fin n) → P → P), (∀ v, ∀ z ∈ GLs n, DifferentiableAt ℝ (o v) z) → (∀ v p, ∀ z ∈ GLs n, Rd (bs p) (o v) z = o (d p v) z) → ∀ v, ContDiffOn ℝ ∞ (o v) (GLs n) := by
-  first | exact @GlobalTheory.CompanionTheory.PresSobA.contDiffOn_of_right_family | exact GlobalTheory.CompanionTheory.PresSobA.contDiffOn_of_right_family | (intros; apply GlobalTheory.CompanionTheory.PresSobA.contDiffOn_of_right_family <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PresSobA.contDiffOn_of_right_family

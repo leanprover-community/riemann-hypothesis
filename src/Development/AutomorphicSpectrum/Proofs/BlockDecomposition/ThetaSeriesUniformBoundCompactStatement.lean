@@ -49,4 +49,4 @@ theorem _root_.GlobalTheory.T.theta_series_uniform_bound_compact : ∀ (F : Type
     Continuous G → HasCompactSupport G → (∀ v ∈ S, Continuous (g v) ∧ HasCompactSupport (g v)) →
     ∀ D : Set (AF F)ˣ, IsCompact D → ∃ C : ℝ≥0, ∀ u ∈ D, ∀ δ : ℝ, 0 < δ →
       ENNReal.ofReal (δ ^ Module.finrank ℚ F) * th (PositivityTheory.Rg.Base1.pure S G g fun v => rv v 0) (u * r δ) ≤ C := by
-  first | exact @GlobalTheory.CompanionTheory.BasePsi.th_pure_rv_zero_bound | exact GlobalTheory.CompanionTheory.BasePsi.th_pure_rv_zero_bound | (intros; apply GlobalTheory.CompanionTheory.BasePsi.th_pure_rv_zero_bound <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BasePsi.th_pure_rv_zero_bound

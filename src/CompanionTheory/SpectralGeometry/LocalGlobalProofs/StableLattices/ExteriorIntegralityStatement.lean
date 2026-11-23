@@ -47,4 +47,4 @@ open CompanionTheory.Zuck BranchingSupport Matrix Finset
 open scoped InnerProductSpace Kronecker
 
 theorem _root_.GlobalTheory.T.ExteriorIntegrality : WedgeInt := by
-  first | exact @GlobalTheory.CompanionTheory.WedgeEmb.wedgeInt | exact GlobalTheory.CompanionTheory.WedgeEmb.wedgeInt | (intros; apply GlobalTheory.CompanionTheory.WedgeEmb.wedgeInt <;> assumption)
+  exact @GlobalTheory.CompanionTheory.WedgeEmb.wedgeInt

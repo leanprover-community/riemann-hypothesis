@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.exists_twisted_centre_set : ∀ (O : Type) [CommRi
           LinearIndependent ℤ δ → (∀ i, IsPrim bar (⟨δ i, h.mem i⟩ : balForms bar X)) →
           ∀ β ∈ balForms bar X, (∀ y, 0 ≤ β y y) → w.evalZ β = 1 →
           ∀ c : Fin m → ℝ, (∀ i, 0 ≤ c i) → toReal β = ∑ i, c i • toReal (δ i) → ∀ i, c i < 1) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fan.TwistedOrbitCentres.centres_exists | exact GlobalTheory.CompanionTheory.Ar.Fan.TwistedOrbitCentres.centres_exists | (intros; apply GlobalTheory.CompanionTheory.Ar.Fan.TwistedOrbitCentres.centres_exists <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fan.TwistedOrbitCentres.centres_exists

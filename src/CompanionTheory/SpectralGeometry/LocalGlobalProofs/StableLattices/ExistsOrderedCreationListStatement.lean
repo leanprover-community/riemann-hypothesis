@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.exists_ordered_creation_list : ∀ (n : ℕ) (ε :
     ∃ l : List (Pos n), l.Nodup ∧ (∀ i, i ∈ l ↔ i ∈ om ε ∧ i ∉ omU ε lev) ∧
       ∀ (pre : List (Pos n)) (f : Pos n) (post : List (Pos n)), l = pre ++ f :: post → ∀ e ∈ l, ∀ k : Pos n,
         adC e.1.1 e.1.2 f k ≠ 0 → k ∈ post := by
-  first | exact @GlobalTheory.CompanionTheory.RgClusterOrder.exists_inside_order | exact GlobalTheory.CompanionTheory.RgClusterOrder.exists_inside_order | (intros; apply GlobalTheory.CompanionTheory.RgClusterOrder.exists_inside_order <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgClusterOrder.exists_inside_order

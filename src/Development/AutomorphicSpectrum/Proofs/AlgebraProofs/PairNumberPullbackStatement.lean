@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.pair_number_pullback : GroundTheory.Heights₂.Heights.NumbersDVR.PairNumberPullback.Statement := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.PairNumberPullback.main | exact GlobalTheory.CompanionTheory.Ar.Num.PairNumberPullback.main | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.PairNumberPullback.main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.PairNumberPullback.main

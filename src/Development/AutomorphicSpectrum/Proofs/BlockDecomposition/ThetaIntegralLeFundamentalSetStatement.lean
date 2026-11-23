@@ -50,4 +50,4 @@ open GlobalTheory.SiegelFormula
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.theta_integral_le_fundamental_set : ∀ (D : D7) (V : HSp D) (ν : Measure (GA D V)), ν.IsHaarMeasure → ∀ {n : ℕ} (φ : Mx D V.rank n → ℂ), Continuous φ → ∀ S : Set (GA D V), MeasurableSet S → (∀ g, ∃ γ ∈ GQ V, γ * g ∈ S) → absThetaInt V ν φ ≤ ∫⁻ g in S, absTheta V φ g ∂ν := by
-  first | exact @GlobalTheory.CompanionTheory.WeilConv.absThetaInt_le_of_meets_orbits | exact GlobalTheory.CompanionTheory.WeilConv.absThetaInt_le_of_meets_orbits | (intros; apply GlobalTheory.CompanionTheory.WeilConv.absThetaInt_le_of_meets_orbits <;> assumption)
+  exact @GlobalTheory.CompanionTheory.WeilConv.absThetaInt_le_of_meets_orbits

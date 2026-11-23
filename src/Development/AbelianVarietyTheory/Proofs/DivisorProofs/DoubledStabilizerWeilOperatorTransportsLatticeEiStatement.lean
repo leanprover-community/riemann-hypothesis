@@ -64,4 +64,4 @@ theorem _root_.GlobalTheory.T.doubledStabilizer_weilOperator_transports_latticeE
       Acts (evFin F v) (dd.rho B.ψ (Matrix.fromCols w₁ᵀ w₂ᵀ)) φ₁
         (B.ψ (⅟(2 : AF F) * symp (_root_.Algebra.TensorProduct.map (_root_.AlgHom.id (AF F) (AF F)) σ) (inclR (F := F) (AF F) (θ : E)) ((_root_.Matrix.map · (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F))) G.W.J) (dbl ((_root_.Matrix.map · (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F))) G.V.J))
           (Matrix.fromCols w₁ᵀ w₂ᵀ) (Matrix.fromCols w₁ᵀ w₂ᵀ)) • φ₁)) := by
-  first | exact @GlobalTheory.DblVacTransport.transport | exact GlobalTheory.DblVacTransport.transport | (intros; apply GlobalTheory.DblVacTransport.transport <;> assumption)
+  exact @GlobalTheory.DblVacTransport.transport

@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Mass
 
 theorem _root_.GlobalTheory.T.similitude_invariance : Simil := by
-  first | exact @GlobalTheory.CompanionTheory.SW.MassSimil.simil | exact GlobalTheory.CompanionTheory.SW.MassSimil.simil | (intros; apply GlobalTheory.CompanionTheory.SW.MassSimil.simil <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SW.MassSimil.simil

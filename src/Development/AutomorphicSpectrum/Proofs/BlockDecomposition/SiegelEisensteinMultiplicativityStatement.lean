@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.siegel_eisenstein_multiplicativity : PositivityTheory.RgEis.SecLaw → PositivityTheory.RgEis.WallLaw → PositivityTheory.RgEis.Dict → PositivityTheory.RgEis.DictInf → PositivityTheory.RgEis.CMGood → PositivityTheory.RgEis.GrpTop → PositivityTheory.RgEis.BdetLaw → PositivityTheory.RgEis.ExtLaw → PositivityTheory.RgEis.ParLaw → PositivityTheory.RgEis.SgAll → SiegelEisensteinSeries.BRoad.SiegelMult := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelFrame.siegelMult_of | exact GlobalTheory.CompanionTheory.SiegelFrame.siegelMult_of | (intros; apply GlobalTheory.CompanionTheory.SiegelFrame.siegelMult_of <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelFrame.siegelMult_of

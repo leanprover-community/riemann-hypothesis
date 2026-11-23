@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.hodge_component_twist_automorphism : ∀ (E : Type
       (∀ v, (M₁.pt v).left ≫ k.φ = (A.M.pt v).left) ∧ (∀ v, ∃ w : epsAt (𝟙 (Sp Ω)) ⟶ tΩ.G, w.left ≫ m.φ = (M₁.pt v).left ∧ w.left ≫ mA'.φ = (A'.M.pt (φ v)).left) ∧ (∀ N, FullTorsion A.t.G A.ξ N → FullTorsion t.G A'.ξ N) ∧ (∀ (q : Cpt A'.ξ) (h : genPt A.ξ ⤳ e.hom q.1), regAt A'.ξ q = regAt A.ξ ⟨e.hom q.1, h⟩ ∧
         (M₁.lat q : Set A.Li) = A.M.lat ⟨e.hom q.1, h⟩ ∧
         ∀ N, (M₁.htOm t.PP.L N q : Set (Module.Dual Ω A.Li)) = A.M.htOm A.t.PP.L N ⟨e.hom q.1, h⟩) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.FrameRebase.tied_generic_fibre | exact GlobalTheory.CompanionTheory.Ar.FrameRebase.tied_generic_fibre | (intros; apply GlobalTheory.CompanionTheory.Ar.FrameRebase.tied_generic_fibre <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.FrameRebase.tied_generic_fibre

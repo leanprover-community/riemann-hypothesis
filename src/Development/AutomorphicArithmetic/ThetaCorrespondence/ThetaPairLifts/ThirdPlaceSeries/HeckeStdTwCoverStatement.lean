@@ -45,5 +45,5 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.heckeStdTw_cover' : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (P : _root_.GlobalTheory.NPin.CharacterChoiceData hL D), HeckeStdTw P.H.cover.B := by
-  first | exact @_root_.GlobalTheory.NPin.heckeStdTw_cover_alt | exact _root_.GlobalTheory.NPin.heckeStdTw_cover_alt | (intros; apply _root_.GlobalTheory.NPin.heckeStdTw_cover_alt <;> assumption)
+  exact @_root_.GlobalTheory.NPin.heckeStdTw_cover_alt
 end

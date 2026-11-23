@@ -78,7 +78,7 @@ theorem continuous_of_intertwining_operator (hP : _root_.GlobalTheory.FunPr.Thet
     have hdec : ∀ f : GlobalTheory.RealWeil.Sch l, f = f 0 • f0 := by
       intro f
       ext x
-      rw [hsub x, SchwartzMap.smul_apply, hf0, smul_eq_mul, mul_one]
+      rw [hsub x, _root_.smul_apply, hf0, smul_eq_mul, mul_one]
     have e : ⇑(T t) = fun f => f 0 • T t f0 := by
       funext f
       conv_lhs => rw [hdec f]
@@ -110,7 +110,7 @@ theorem continuous_of_intertwining_operator (hP : _root_.GlobalTheory.FunPr.Thet
       funext f
       have h1 := ha (omS g f)
       have e2 : omS g⁻¹ (omS g f) = f := by
-        rw [← ContinuousLinearMap.mul_apply, ← map_mul, inv_mul_cancel, map_one, ContinuousLinearMap.one_apply]
+        rw [← mul_apply_eq_comp, ← map_mul, inv_mul_cancel, map_one, one_apply_eq_self]
       simp only [LinearMap.comp_apply, ContinuousLinearMap.coe_coe, e2] at h1
       exact h1
     rw [e]
@@ -221,5 +221,5 @@ theorem _root_.GlobalTheory.T.archimedean_weil_representation_continuous : _root
       GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Acts (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI F) (om (1, γ (Multiplicative.ofAdd t))) ⇑f ⇑(T t f)) →
     (∀ s t (f : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F (Fin n × Fin d)), T (s + t) f = T s (T t f)) →
     (∀ f : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F (Fin n × Fin d), T 0 f = f) → ∀ t, Continuous (T t) := by
-  first | exact @_root_.GlobalTheory.ArchCont.continuous_weil_action_on_line | exact _root_.GlobalTheory.ArchCont.continuous_weil_action_on_line | (intros; apply _root_.GlobalTheory.ArchCont.continuous_weil_action_on_line <;> assumption)
+  exact @_root_.GlobalTheory.ArchCont.continuous_weil_action_on_line
 end

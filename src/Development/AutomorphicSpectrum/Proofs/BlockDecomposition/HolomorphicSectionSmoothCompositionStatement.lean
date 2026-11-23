@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.holomorphic_section_smooth_composition : ∀ {k : 
   {T : Set (ι → ℂ)} {s : (ι → ℂ) → CxPts p σ} {f : CxPts p σ → ℝ} {z₀ : ι → ℂ}, IsOpen T → ContinuousOn s T →
   (∀ (W : Y.Opens) (g : Γ(Y, W)), DifferentiableOn ℂ (CxPts.ev p σ W g ∘ s) (T ∩ s ⁻¹' ptsIn p σ W)) →
   z₀ ∈ T → CInfAt f (s z₀) → ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (f ∘ s) z₀ := by
-  first | exact @GlobalTheory.CompanionTheory.CxSmooth.contDiffAt_comp_of_cInfAt | exact GlobalTheory.CompanionTheory.CxSmooth.contDiffAt_comp_of_cInfAt | (intros; apply GlobalTheory.CompanionTheory.CxSmooth.contDiffAt_comp_of_cInfAt <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CxSmooth.contDiffAt_comp_of_cInfAt

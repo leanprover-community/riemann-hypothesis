@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.exists_matching_pieces_of_cell : ∀ (O : Type) [C
       ∀ c : Fin m → ℝ, (∀ j, 0 ≤ c j) → toReal β = ∑ j, c j • toReal (δ j) →
         (∀ i, 0 < t i → ∃ j, 0 < c j ∧ ∃ d : ℝ, 0 < d ∧ toReal (p i) = d • toReal (δ j)) ∧
         (∀ j, 0 < c j → ∃ i, 0 < t i ∧ ∃ d : ℝ, 0 < d ∧ toReal (p i) = d • toReal (δ j) ∧ c j = t i * d) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fan.MatchingPieces.exists_pieces_match | exact GlobalTheory.CompanionTheory.Ar.Fan.MatchingPieces.exists_pieces_match | (intros; apply GlobalTheory.CompanionTheory.Ar.Fan.MatchingPieces.exists_pieces_match <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fan.MatchingPieces.exists_pieces_match

@@ -44,4 +44,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
 
 theorem _root_.GlobalTheory.T.jumps_mem_box_neg_M_h : ∀ {n : ℕ} (W : WordData n), (∀ i, 0 ≤ W.sz i) → W.T1 → ∀ i, ∀ u ∈ W.J1 i, -(W.Mi i : ℤ) ≤ u ∧ u ≤ W.hi i := by
-  first | exact @GlobalTheory.HTW.WordData.jumps_mem_box | exact GlobalTheory.HTW.WordData.jumps_mem_box | (intros; apply GlobalTheory.HTW.WordData.jumps_mem_box <;> assumption)
+  exact @GlobalTheory.HTW.WordData.jumps_mem_box

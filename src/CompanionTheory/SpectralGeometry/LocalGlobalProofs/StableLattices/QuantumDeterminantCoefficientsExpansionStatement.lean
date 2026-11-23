@@ -58,4 +58,4 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.
 open GlobalTheory.CompanionTheory.RgCOBlock
 
 theorem _root_.GlobalTheory.T.quantum_determinant_coefficients_expansion : ∀ (W : Type) [AddCommGroup W] [Module ℂ W] (M : ℕ) (d : Fin M → ℕ) (X : ∀ i, Fin (d i) → Fin (d i) → Module.End ℂ W), (∀ i, GlRel (X i)) → (∀ i j, i ≠ j → ∀ p q r v, Commute (X i p q) (X j r v)) → ∃ c : Fin M → ℕ → Module.End ℂ W, (∀ i, c i (d i) = 1) ∧ (∀ i (u : ℂ), qdet (X i) u = ∑ j ∈ Finset.range (d i + 1), u ^ j • c i j) ∧ (∀ i, 1 ≤ d i → c i (d i - 1) = ∑ p, X i p p - (((d i : ℂ) * ((d i : ℂ) - 1) / 2)) • (1 : Module.End ℂ W)) ∧ ∀ i j a b, Commute (c i a) (c j b) := by
-  first | exact @GlobalTheory.CompanionTheory.RgCOBlock.capelli_coef_commute | exact GlobalTheory.CompanionTheory.RgCOBlock.capelli_coef_commute | (intros; apply GlobalTheory.CompanionTheory.RgCOBlock.capelli_coef_commute <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgCOBlock.capelli_coef_commute

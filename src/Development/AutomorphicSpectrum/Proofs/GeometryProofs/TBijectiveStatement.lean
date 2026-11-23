@@ -58,4 +58,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open scoped Matrix ComplexOrder
 
 theorem _root_.GlobalTheory.T.bijective_logPeriods_T : ∀ (n a g : ℕ) (Λ : Type) [AddCommGroup Λ] (L : Flat.LogPeriods n a g Λ) (i : Fin a), Function.Bijective (L.T i) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.MonodromyBij.T_bijective | exact GlobalTheory.CompanionTheory.Ar.Flat.MonodromyBij.T_bijective | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.MonodromyBij.T_bijective <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.MonodromyBij.T_bijective

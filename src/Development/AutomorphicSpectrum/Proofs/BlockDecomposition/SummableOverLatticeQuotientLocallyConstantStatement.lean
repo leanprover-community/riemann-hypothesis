@@ -73,4 +73,4 @@ theorem _root_.GlobalTheory.T.summable_over_lattice_quotient_locally_constant : 
     IsOpen (U : Set G) → IsCompact (U : Set G) → ∀ ι : H →+ G, (∀ g, ∃ h, g - ι h ∈ U) →
     ∀ f : G → ℂ, (∀ g, ∀ u ∈ U, f (g + u) = f g) →
     Summable (fun x : H ⧸ U.comap ι => ‖f (ι (Quotient.out x))‖) → Integrable f ν := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.integrable_of_summable_quotient_periodic | exact GlobalTheory.CompanionTheory.SiegelND.Integ.integrable_of_summable_quotient_periodic | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.integrable_of_summable_quotient_periodic <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.integrable_of_summable_quotient_periodic

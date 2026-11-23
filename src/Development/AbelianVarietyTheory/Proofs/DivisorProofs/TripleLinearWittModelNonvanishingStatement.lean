@@ -50,4 +50,4 @@ theorem _root_.GlobalTheory.T.triple_linear_witt_model_nonvanishing : GlobalTheo
       ∫⁻ x, ‖φ₁ x‖ₑ ^ 2 ∂μ = ∫⁻ x, ‖φ x‖ₑ ^ 2 ∂μ) →
     ∀ ν : @Measure (Matrix (Fin a) (Fin (a + a')) (Fv F v)) (borel _), @Measure.IsAddHaarMeasure _ _ _ (borel _) ν →
       ∫⁻ Y, ‖ι φ₁ Y‖ₑ ^ 2 ∂ν = ∫⁻ Y, ‖ι φ Y‖ₑ ^ 2 ∂ν := by
-  first | exact @GlobalTheory.LinearModelL2.linIso_lintegral_eq | exact GlobalTheory.LinearModelL2.linIso_lintegral_eq | (intros; apply GlobalTheory.LinearModelL2.linIso_lintegral_eq <;> assumption)
+  exact @GlobalTheory.LinearModelL2.linIso_lintegral_eq

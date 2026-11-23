@@ -52,4 +52,4 @@ open GlobalTheory.CompanionTheory.ColumnSplitting
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.zeta_polynomial_identity : ZpEq := by
-  first | exact @GlobalTheory.CompanionTheory.ColumnSplitting.zp_eq | exact GlobalTheory.CompanionTheory.ColumnSplitting.zp_eq | (intros; apply GlobalTheory.CompanionTheory.ColumnSplitting.zp_eq <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ColumnSplitting.zp_eq

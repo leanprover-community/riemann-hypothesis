@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.cocompact_normal_subgroup_descent_invariants : ∀
       ∀ φ : G → ℂ, GlobalTheory.AutomorphicL2Unitary.LeftInv Γ φ → Continuous φ → (∀ m ∈ N', ∀ g, φ (m * g) = φ g) →
       ∀ (μ : MeasureTheory.Measure V) (𝓕 : Set V), μ.IsAddHaarMeasure → MeasureTheory.IsAddFundamentalDomain Λ 𝓕 μ →
         ∀ x : G, ∫ v in 𝓕, φ (s v * x) ∂μ = μ.real 𝓕 • GlobalTheory.Cusp.constTermOn Γ N φ x := by
-  first | exact @GlobalTheory.Cusp.Shear.integral_section_eq_constTermOn | exact GlobalTheory.Cusp.Shear.integral_section_eq_constTermOn | (intros; apply GlobalTheory.Cusp.Shear.integral_section_eq_constTermOn <;> assumption)
+  exact @GlobalTheory.Cusp.Shear.integral_section_eq_constTermOn

@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
 
 theorem _root_.GlobalTheory.T.quasicoherent_sup_sections : ∀ {X : Scheme.{0}} {E : X.Modules}, E.IsQuasicoherent → ∀ (S T : Subobject E), (S : X.Modules).IsQuasicoherent → (T : X.Modules).IsQuasicoherent → ((S ⊔ T : Subobject E) : X.Modules).IsQuasicoherent ∧ ∀ V : X.Opens, IsAffineOpen V → secs (S ⊔ T) V = {x | ∃ s ∈ secs S V, ∃ t ∈ secs T V, x = s + t} := by
-  first | exact @GlobalTheory.CompanionTheory.GE.supsecs | exact GlobalTheory.CompanionTheory.GE.supsecs | (intros; apply GlobalTheory.CompanionTheory.GE.supsecs <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GE.supsecs

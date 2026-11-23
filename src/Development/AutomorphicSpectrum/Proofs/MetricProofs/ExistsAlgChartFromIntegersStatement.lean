@@ -49,4 +49,4 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.Points GlobalTheory.ArInt GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.ProjSpace GlobalTheory.CompanionTheory.Ar.BaseZ
 
 theorem _root_.GlobalTheory.T.exists_algChart_from_integers : ∀ (k : Type) [CommRing k] [IsDomain k] [CharZero k] [Module.Finite ℤ k] (X : Scheme.{0}) (p : X ⟶ Sp k) (t : X ⟶ Sp ℤ) (τ : ℤ →+* ℂ) (σ : k →+* ℂ) (D : ℕ) (c' : AlgChart t τ D), Nonempty (CxPts p σ) → ∃ c : AlgChart p σ D, c.e.source = sheet t τ ⁻¹' c'.e.source ∧ ∀ y ∈ c.e.source, c'.e (sheet t τ y) = c.e y := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.BaseZ.exists_chart_sheet | exact GlobalTheory.CompanionTheory.Ar.BaseZ.exists_chart_sheet | (intros; apply GlobalTheory.CompanionTheory.Ar.BaseZ.exists_chart_sheet <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.BaseZ.exists_chart_sheet

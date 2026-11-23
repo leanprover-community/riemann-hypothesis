@@ -45,4 +45,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.RgEis PositivityTheory.RgEis.MG
 
 theorem _root_.GlobalTheory.T.side_term_convergence : EpConv → TestSph → Lines → Term → SideConv := by
-  first | exact @GlobalTheory.CompanionTheory.RgEisSide.sideConv | exact GlobalTheory.CompanionTheory.RgEisSide.sideConv | (intros; apply GlobalTheory.CompanionTheory.RgEisSide.sideConv <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgEisSide.sideConv

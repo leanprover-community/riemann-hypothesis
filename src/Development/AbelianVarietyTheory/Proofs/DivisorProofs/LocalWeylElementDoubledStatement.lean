@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.local_weyl_element_doubled : ∀ {F E : Type} [Fie
         ((gd : GL (Fin n ⊕ Fin n) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))) : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))) = Matrix.fromBlocks (mat k) 0 0 1 →
         ((gd' : GL (Fin n ⊕ Fin n) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))) : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))) = Matrix.fromBlocks 1 0 0 (mat k) →
         w * gd * w = gd' := by
-  first | exact @GlobalTheory.DblDiag.swap_at_place | exact GlobalTheory.DblDiag.swap_at_place | (intros; apply GlobalTheory.DblDiag.swap_at_place <;> assumption)
+  exact @GlobalTheory.DblDiag.swap_at_place

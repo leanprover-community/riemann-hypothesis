@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Bmu
 
 theorem _root_.GlobalTheory.T.quotient_bound_of_factor_reduce_chart : Factor → Reduce → ChartExists → QBound := by
-  first | exact @GlobalTheory.CompanionTheory.BmuQBound.qBound | exact GlobalTheory.CompanionTheory.BmuQBound.qBound | (intros; apply GlobalTheory.CompanionTheory.BmuQBound.qBound <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BmuQBound.qBound

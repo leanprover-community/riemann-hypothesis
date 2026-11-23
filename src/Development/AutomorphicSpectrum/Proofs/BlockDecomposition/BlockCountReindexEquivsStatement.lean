@@ -52,4 +52,4 @@ open GroundTheory.Automorphic (permGL indRep)
 open DoubleCoset (doubleCoset)
 
 theorem _root_.GlobalTheory.T.block_count_reindex_equivs : ∀ {α β' : Type} [Fintype α] [LinearOrder α] [Fintype β'] [LinearOrder β'] {N : ℕ} {m : α → Type} {m' : β' → Type} (e : (Σ i, m i) ≃ Fin N) (e' : (Σ j, m' j) ≃ Fin N) (w : Equiv.Perm (Fin N)), ∃ (f : ∀ i, (Σ j, Fin ((Finset.univ.filter fun x : Fin N => blk e x = i ∧ blk e' (w.symm x) = j).card)) ≃ m i) (g : ∀ j, (Σ i, Fin ((Finset.univ.filter fun x : Fin N => blk e x = i ∧ blk e' (w.symm x) = j).card)) ≃ m' j), ∀ i j (t : Fin ((Finset.univ.filter fun x : Fin N => blk e x = i ∧ blk e' (w.symm x) = j).card)), w (e' ⟨j, g j ⟨i, t⟩⟩) = e ⟨i, f i ⟨j, t⟩⟩ := by
-  first | exact @GlobalTheory.CompanionTheory.Cell.cell_row_column_partitions | exact GlobalTheory.CompanionTheory.Cell.cell_row_column_partitions | (intros; apply GlobalTheory.CompanionTheory.Cell.cell_row_column_partitions <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Cell.cell_row_column_partitions

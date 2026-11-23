@@ -53,4 +53,4 @@ open GlobalTheory.UAut GlobalTheory.AdelicU GlobalTheory.SiegelSet
 
 theorem _root_.GlobalTheory.T.exists_adapted_witt_basis : ∀ (D : D7) (V : HSp D) (m : ℕ) (X Y : Matrix (Fin V.rank) (Fin m) D.host.E),
     IsWittFrame D.sp.cm.sig V.gram X Y → ∃ C : GL (Fin V.rank) D.host.E, GlobalTheory.BlockForms.IsAdapted D.sp.cm.sig V.gram X Y C := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.AdaptedBasis.exists_isAdapted | exact GlobalTheory.CompanionTheory.Hypotheses₂.AdaptedBasis.exists_isAdapted | (intros; apply GlobalTheory.CompanionTheory.Hypotheses₂.AdaptedBasis.exists_isAdapted <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Hypotheses₂.AdaptedBasis.exists_isAdapted

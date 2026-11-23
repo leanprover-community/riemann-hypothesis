@@ -50,4 +50,4 @@ open ReciprocityTheory.ChartRestriction.G.Geo (HermLine IsSmoothHerm IsArithVar 
 open NumberField
 
 theorem _root_.GlobalTheory.T.local_number_permutation_invariant : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (r : ℕ) (e : Equiv.Perm (Fin r)) (P : Ideal (MRing ι O)) (k : ℕ) (Q : List (K → ℤ)), (∀ (a : O) (x : Fin r → K → ℤ), laNum P a (x ∘ e) k Q = laNum P a x k Q) ∧ ∀ T : LocPair ι O (Fin r), (T.comp e).ck P k Q = T.ck P k Q := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.RootPerm.root_perm | exact GlobalTheory.CompanionTheory.Ar.Num.RootPerm.root_perm | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.RootPerm.root_perm <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.RootPerm.root_perm

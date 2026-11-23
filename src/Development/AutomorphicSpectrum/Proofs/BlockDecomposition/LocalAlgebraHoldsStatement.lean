@@ -42,4 +42,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open PositivityTheory.Rg.BcB.F.Eig
 
 theorem _root_.GlobalTheory.T.local_algebra_holds : LocAlg := by
-  first | exact @GlobalTheory.CompanionTheory.LocHecke.locAlg | exact GlobalTheory.CompanionTheory.LocHecke.locAlg | (intros; apply GlobalTheory.CompanionTheory.LocHecke.locAlg <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LocHecke.locAlg

@@ -47,4 +47,4 @@ set_option backward.isDefEq.respectTransparency false
 open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
 
 theorem _root_.GlobalTheory.T.quotient_maps_surjective_with_kernels : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l) (n : ℕ), Function.Surjective (A.uToQ n) ∧ RingHom.ker (A.uToQ n) = Ideal.span {(l : A.U) ^ n} ∧ Function.Surjective (A.uToPQ n) ∧ (n ≠ 0 → RingHom.ker (A.uToPQ n) = Ideal.span {(l : A.U)}) := by
-  first | exact @GlobalTheory.CompanionTheory.Untilt.uToQ_main | exact GlobalTheory.CompanionTheory.Untilt.uToQ_main | (intros; apply GlobalTheory.CompanionTheory.Untilt.uToQ_main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Untilt.uToQ_main

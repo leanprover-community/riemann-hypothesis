@@ -51,4 +51,4 @@ open MeasureTheory Matrix Filter Topology Formalism.QuantumDeterminants Formalis
 open scoped InnerProductSpace ENNReal
 
 theorem _root_.GlobalTheory.T.tendsto_ball_mean_bigCellWeight : ∀ (k r : ℕ), Tendsto (fun ρ : ℝ => (∫⁻ x in Metric.ball (fun _ => 1 : Fin r → ℂ) ρ, ENNReal.ofReal (Formalism.FourierDecayAlt.B2.cWeight k r x)) / volume (Metric.ball (0 : Fin r → ℂ) ρ)) (𝓝[>] 0) (𝓝 1) := by
-  first | exact @GlobalTheory.CellDens.tendsto_mean_cWeight | exact GlobalTheory.CellDens.tendsto_mean_cWeight | (intros; apply GlobalTheory.CellDens.tendsto_mean_cWeight <;> assumption)
+  exact @GlobalTheory.CellDens.tendsto_mean_cWeight

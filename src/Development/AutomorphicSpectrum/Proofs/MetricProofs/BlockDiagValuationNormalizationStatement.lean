@@ -51,4 +51,4 @@ open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm 
 open scoped ComplexOrder Classical
 
 theorem _root_.GlobalTheory.T.block_diag_valuation_normalization : ∀ (L : Type) [Field L] (V : ValuationSubring L) (N j : ℕ) (A : Matrix (Fin N) (Fin N) L), IsBlockDiag j A → A.det ≠ 0 → ∃ b : Matrix (Fin N) (Fin N) L, IsBlockDiag j b ∧ b.BlockTriangular id ∧ (∀ a, b a a ≠ 0) ∧ (∀ a c, (A * b) a c ∈ V) ∧ (A * b).det ≠ 0 ∧ ((A * b).det)⁻¹ ∈ V := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.IwBlock.main | exact GlobalTheory.CompanionTheory.Ar.PB.IwBlock.main | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.IwBlock.main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.IwBlock.main

@@ -62,4 +62,4 @@ open GlobalTheory.CompanionTheory.PointSurjectivity
 
 theorem _root_.GlobalTheory.T.affine_cover_separating_finite_closed_points : ∀ (X : Scheme.{0}) [CompactSpace X] (F : Set X) (hF : F.Finite) (hc : ∀ x ∈ F, IsClosed ({x} : Set X)), ∃ (r : ℕ) (V : Fin (r + 1) → X.Opens), (∀ j, IsAffineOpen (V j)) ∧ ⨆ j, V j = ⊤ ∧
       ∀ x ∈ F, ∀ i j, x ∈ V i → x ∈ V j → i = j := by
-  first | exact @GlobalTheory.CompanionTheory.CoverPoints.exists_affine_cover_finite_closed_points | exact GlobalTheory.CompanionTheory.CoverPoints.exists_affine_cover_finite_closed_points | (intros; apply GlobalTheory.CompanionTheory.CoverPoints.exists_affine_cover_finite_closed_points <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CoverPoints.exists_affine_cover_finite_closed_points

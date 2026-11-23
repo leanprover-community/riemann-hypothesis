@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.gl_relations_triangular_annihilation : ∀ (W Q : 
     ∀ W₀ : Set W, W₀ ⊆ Wn → (∀ v : ℂ, ∃ s : ℂ, ∀ F ∈ W₀, Formalism.REAL.qdet Xf v F = s • F) →
     ∀ (i : Fin c) (w : ℂ), ∃ q : Polynomial ℂ, q.Monic ∧ ∀ F ∈ W₀,
       L (Polynomial.aeval (Formalism.REAL.qdet (fun p q : Fin (n i) => Xf (GlobalTheory.SmGL.stdBlocks n h ⟨i, p⟩) (GlobalTheory.SmGL.stdBlocks n h ⟨i, q⟩)) w) q F) = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.Dblock.CentreManyBlocks.monic_relations_along_block | exact GlobalTheory.CompanionTheory.Dblock.CentreManyBlocks.monic_relations_along_block | (intros; apply GlobalTheory.CompanionTheory.Dblock.CentreManyBlocks.monic_relations_along_block <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Dblock.CentreManyBlocks.monic_relations_along_block

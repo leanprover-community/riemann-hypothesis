@@ -50,4 +50,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 
 theorem _root_.GlobalTheory.T.projective_over_coords_exist : ∀ (o : Type) [CommRing o] [IsNoetherianRing o] (X : Scheme.{0}) (s : X ⟶ Sp o), IsProjOver s → ∀ (Ω : Type) [Field Ω] [Algebra o Ω] (ξ : Sp Ω ⟶ X), IsCptGen ξ → ξ ≫ s = spMap (algebraMap o Ω) → ∃ (n : ℕ) (x : Fin n → Ω), CoordTie o ξ x := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.projective_over_coords_exist | exact GlobalTheory.CompanionTheory.Relay.projective_over_coords_exist | (intros; apply GlobalTheory.CompanionTheory.Relay.projective_over_coords_exist <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.projective_over_coords_exist

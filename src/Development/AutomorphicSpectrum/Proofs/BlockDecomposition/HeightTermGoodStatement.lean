@@ -45,4 +45,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.RgEis PositivityTheory.RgEis.MG
 
 theorem _root_.GlobalTheory.T.height_term_good : HGood := by
-  first | exact @GlobalTheory.CompanionTheory.RgEisHGood.hGood | exact GlobalTheory.CompanionTheory.RgEisHGood.hGood | (intros; apply GlobalTheory.CompanionTheory.RgEisHGood.hGood <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgEisHGood.hGood

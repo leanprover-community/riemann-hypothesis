@@ -66,4 +66,4 @@ theorem _root_.GlobalTheory.T.canonical_anticommutation_relations_consequence : 
     (∀ a b, L p q * L a b - L a b * L p q = (if q = a then L p b else 0) - (if b = p then L a q else 0)) →
     Commute (L p q + (∑ r, d p r * c q r - ∑ r, d r q * c r p))
       ((∑ a, ∑ b, L a b * c a b) + ∑ a, ∑ b, ∑ e, d a e * c b e * c a b) := by
-  first | exact @GlobalTheory.CompanionTheory.CliffordCoeff.commute_shifted_dirac | exact GlobalTheory.CompanionTheory.CliffordCoeff.commute_shifted_dirac | (intros; apply GlobalTheory.CompanionTheory.CliffordCoeff.commute_shifted_dirac <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CliffordCoeff.commute_shifted_dirac

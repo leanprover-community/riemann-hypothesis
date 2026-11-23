@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.heckeUl_semisimple_on_lOldSpace : ∀ (N l k : ℕ
       UlF (k : ℤ) l (⇑f₁ + ⇑f₂ ∣[(k : ℤ)] toGL (dg l 1)) = ⇑g₁ + ⇑g₂ ∣[(k : ℤ)] toGL (dg l 1)) ∧
     ∀ n : ℕ, (fun F => UlF (k : ℤ) l F - α • F)^[n] (⇑f₁ + ⇑f₂ ∣[(k : ℤ)] toGL (dg l 1)) = 0 →
       UlF (k : ℤ) l (⇑f₁ + ⇑f₂ ∣[(k : ℤ)] toGL (dg l 1)) = α • (⇑f₁ + ⇑f₂ ∣[(k : ℤ)] toGL (dg l 1)) := by
-  first | exact @GlobalTheory.OldSpace.ul_oldSpace | exact GlobalTheory.OldSpace.ul_oldSpace | (intros; apply GlobalTheory.OldSpace.ul_oldSpace <;> assumption)
+  exact @GlobalTheory.OldSpace.ul_oldSpace

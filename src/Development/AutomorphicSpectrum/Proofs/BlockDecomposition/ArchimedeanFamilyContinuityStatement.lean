@@ -49,4 +49,4 @@ open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureThe
 open scoped TensorProduct ENNReal NNReal Matrix
 
 theorem _root_.GlobalTheory.T.archimedean_family_continuity : PositivityTheory.PfSWUS.SchInf.FamCont := by
-  first | exact @GlobalTheory.CompanionTheory.PushFam.integrable_continuousAt_of_linear_push | exact GlobalTheory.CompanionTheory.PushFam.integrable_continuousAt_of_linear_push | (intros; apply GlobalTheory.CompanionTheory.PushFam.integrable_continuousAt_of_linear_push <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PushFam.integrable_continuousAt_of_linear_push

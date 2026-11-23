@@ -44,4 +44,4 @@ import Mathlib.Topology.Sheaves.Init
 open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 
 theorem _root_.GlobalTheory.T.log_abs_basic_facts : LogAbsBasic := by
-  first | exact @GlobalTheory.CompanionTheory.LogAbs.logAbsBasic | exact GlobalTheory.CompanionTheory.LogAbs.logAbsBasic | (intros; apply GlobalTheory.CompanionTheory.LogAbs.logAbsBasic <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LogAbs.logAbsBasic

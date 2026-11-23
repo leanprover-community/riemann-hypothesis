@@ -65,4 +65,4 @@ theorem _root_.GlobalTheory.T.unipotent_entries_field_degree : ∀ (Ω₀ Ω : T
       (Set.range fun q : Σ σ, Fin (r σ) × Fin (r σ) => u q.1 q.2.1 q.2.2)) Ω = 1 →
     IntermediateField.adjoin Ω₀
       (Set.range fun q : Σ σ, {lk : Fin (r σ) × Fin (r σ) // lk.2 < lk.1} => u q.1 q.2.1.1 q.2.1.2) = ⊤ := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.FlagStep.AdjoinLower.adjoin_lower_eq_top | exact GlobalTheory.CompanionTheory.Ar.FlagStep.AdjoinLower.adjoin_lower_eq_top | (intros; apply GlobalTheory.CompanionTheory.Ar.FlagStep.AdjoinLower.adjoin_lower_eq_top <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.FlagStep.AdjoinLower.adjoin_lower_eq_top

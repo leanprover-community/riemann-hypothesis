@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.formal_morphism_existence : GEClosed → IsoOfThic
     ∀ f : ∀ e, (Y e).left ⟶ Z.left,
       (∀ e, f e ≫ Z.hom = (Y e).hom ≫ thick R I e) → (∀ e, β e ≫ f (e + 1) = f e) →
       ∃ g : X ⟶ Z, ∀ e, b e ≫ g.left = f e := by
-  first | exact @GlobalTheory.CompanionTheory.MorphismAlgebraisation.exists_hom_of_thickenings | exact GlobalTheory.CompanionTheory.MorphismAlgebraisation.exists_hom_of_thickenings | (intros; apply GlobalTheory.CompanionTheory.MorphismAlgebraisation.exists_hom_of_thickenings <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MorphismAlgebraisation.exists_hom_of_thickenings

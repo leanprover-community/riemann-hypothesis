@@ -46,4 +46,4 @@ open scoped InnerProductSpace
 open GlobalTheory.SepReal
 
 theorem _root_.GlobalTheory.T.formalDegree_le_of_neighbourhoodVolume : LogNear → LieBound → VolBall → DegUpper := by
-  first | exact @GlobalTheory.SepReal.degUpper_of | exact GlobalTheory.SepReal.degUpper_of | (intros; apply GlobalTheory.SepReal.degUpper_of <;> assumption)
+  exact @GlobalTheory.SepReal.degUpper_of

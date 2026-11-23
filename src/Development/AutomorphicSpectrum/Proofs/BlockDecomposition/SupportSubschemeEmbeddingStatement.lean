@@ -46,4 +46,4 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InstAddCommGroup
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult GlobalTheory.SmGL.Exponents
 
 theorem _root_.GlobalTheory.T.support_subscheme_embedding : Ysupp.SubEmbedding := by
-  first | exact @GlobalTheory.CompanionTheory.SubEmb.subEmbedding | exact GlobalTheory.CompanionTheory.SubEmb.subEmbedding | (intros; apply GlobalTheory.CompanionTheory.SubEmb.subEmbedding <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SubEmb.subEmbedding

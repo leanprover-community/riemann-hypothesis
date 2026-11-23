@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.Ar.Crv
 
 theorem _root_.GlobalTheory.T.sub_degree_nonpos_trivial_lattice : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] (n : ℕ) (b : Module.Basis (Fin n) K V) (L : C.I → AddSubgroup V) (W : Submodule K V), (∀ i, IsLatOf C i b (L i)) → subDeg C L W ≤ 0 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Crv.subDeg_le_zero_of_trivial | exact GlobalTheory.CompanionTheory.Ar.Crv.subDeg_le_zero_of_trivial | (intros; apply GlobalTheory.CompanionTheory.Ar.Crv.subDeg_le_zero_of_trivial <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Crv.subDeg_le_zero_of_trivial

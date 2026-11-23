@@ -42,4 +42,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open PositivityTheory.Rg.BcB.F.Eig
 
 theorem _root_.GlobalTheory.T.diagonal_algebra_holds : DiagAlg := by
-  first | exact @GlobalTheory.CompanionTheory.BlockScalars.diagAlg | exact GlobalTheory.CompanionTheory.BlockScalars.diagAlg | (intros; apply GlobalTheory.CompanionTheory.BlockScalars.diagAlg <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BlockScalars.diagAlg

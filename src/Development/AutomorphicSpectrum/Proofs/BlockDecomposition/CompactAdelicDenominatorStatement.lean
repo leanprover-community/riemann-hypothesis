@@ -60,4 +60,4 @@ open NumberField IsDedekindDomain Matrix
 
 
 theorem _root_.GlobalTheory.T.compact_adelic_denominator : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (C : Set (Af F ⊗[F] E)), IsCompact C → ∃ d : ℕ, 0 < d ∧ ∀ x : E, (1 : Af F) ⊗ₜ[F] x ∈ C → ∃ y : 𝓞 E, (d : E) * x = y := by
-  first | exact @GlobalTheory.CompanionTheory.AdelicDenom.exists_denominator_of_isCompact | exact GlobalTheory.CompanionTheory.AdelicDenom.exists_denominator_of_isCompact | (intros; apply GlobalTheory.CompanionTheory.AdelicDenom.exists_denominator_of_isCompact <;> assumption)
+  exact @GlobalTheory.CompanionTheory.AdelicDenom.exists_denominator_of_isCompact

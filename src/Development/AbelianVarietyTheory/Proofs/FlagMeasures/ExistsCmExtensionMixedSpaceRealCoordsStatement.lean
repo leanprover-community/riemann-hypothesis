@@ -55,4 +55,4 @@ open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.MainNotions.Glo
 open scoped TensorProduct ENNReal nonZeroDivisors Classical
 
 theorem _root_.GlobalTheory.T.exists_cmExtension_mixedSpace_realCoords : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∃ e : mixedEmbedding.mixedSpace F ≃L[ℝ] (InfinitePlace E → ℝ), MeasurePreserving e volume volume ∧ ∀ y : F, e (mixedEmbedding F y) = reV (algebraMap F E y) := by
-  first | exact @GlobalTheory.SnMass.ReCoords.mixedSpace_reCoords | exact GlobalTheory.SnMass.ReCoords.mixedSpace_reCoords | (intros; apply GlobalTheory.SnMass.ReCoords.mixedSpace_reCoords <;> assumption)
+  exact @GlobalTheory.SnMass.ReCoords.mixedSpace_reCoords

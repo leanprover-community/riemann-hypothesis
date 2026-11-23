@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.linear_witt_model_unitary_action : GlobalTheory.Fu
     ∀ (v : Pl (F := F)) (t : E →ₐ[F] Fv F v) (b : GL (Fin n) (Fv F v)) (c : GL (Fin d) (Fv F v)), ∀ ι, M.IsLinW B.ψ t b c ι →
     ∀ g ∈ UAt σ X (evFin F v), ∀ h ∈ UAt σ W (evFin F v), ∀ φ ∈ SB (Fin n × Fin d → Fv F v), ∀ φ₁ ∈ SB (Fin n × Fin d → Fv F v),
       Acts (evFin F v) (om (g, h)) φ φ₁ → ι φ₁ = GlobalTheory.SplitFlip.omA (chrW χW t)⁻¹ (chrW χX t) (locMat t b g) (locMat t c h) (ι φ) := by
-  first | exact @GlobalTheory.KSplit.om_linW_split | exact GlobalTheory.KSplit.om_linW_split | (intros; apply GlobalTheory.KSplit.om_linW_split <;> assumption)
+  exact @GlobalTheory.KSplit.om_linW_split

@@ -60,4 +60,4 @@ theorem _root_.GlobalTheory.T.local_property_affine_ideal_criterion : ∀ (Y : S
         (P (Spec (CommRingCat.of R')) (Spec.map (CommRingCat.ofHom g) ≫ hU.fromSpec) ↔ I ≤ RingHom.ker g)) →
     ∀ (U : Y.Opens) (hU : IsAffineOpen U), ∃ J : Ideal Γ(Y, U), ∀ (R' : Type) [CommRing R'] (g : Γ(Y, U) →+* R'),
       (P (Spec (CommRingCat.of R')) (Spec.map (CommRingCat.ofHom g) ≫ hU.fromSpec) ↔ J ≤ RingHom.ker g) := by
-  first | exact @GlobalTheory.CompanionTheory.TrivLoc.Rep.exists_ideal_on_affine | exact GlobalTheory.CompanionTheory.TrivLoc.Rep.exists_ideal_on_affine | (intros; apply GlobalTheory.CompanionTheory.TrivLoc.Rep.exists_ideal_on_affine <;> assumption)
+  exact @GlobalTheory.CompanionTheory.TrivLoc.Rep.exists_ideal_on_affine

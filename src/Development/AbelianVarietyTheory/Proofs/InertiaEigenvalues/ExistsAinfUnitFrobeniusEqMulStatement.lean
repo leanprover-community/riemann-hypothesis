@@ -51,4 +51,4 @@ open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.Weakl
 open scoped Formalism.Per NNReal
 
 theorem _root_.GlobalTheory.T.exists_ainf_unit_frobenius_eq_mul : ∀ (l : ℕ) [Fact l.Prime] (ω : (Ainf l)ˣ), ∃ η : (Ainf l)ˣ, WittVector.frobenius (η : Ainf l) = ω * η := by
-  first | exact @GlobalTheory.Per.frobenius_eq_mul_solvable | exact GlobalTheory.Per.frobenius_eq_mul_solvable | (intros; apply GlobalTheory.Per.frobenius_eq_mul_solvable <;> assumption)
+  exact @GlobalTheory.Per.frobenius_eq_mul_solvable

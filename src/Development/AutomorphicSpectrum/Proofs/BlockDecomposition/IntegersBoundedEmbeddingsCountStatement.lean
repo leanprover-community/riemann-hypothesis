@@ -60,4 +60,4 @@ open GlobalTheory.CompanionTheory.GodementH
 theorem _root_.GlobalTheory.T.integers_bounded_embeddings_count : ∀ (E : Type) [Field E] [NumberField E], ∃ C : ℝ, 0 < C ∧ ∀ R : ℝ, 1 ≤ R →
     {β : 𝓞 E | ∀ τ : E →+* ℂ, ‖τ (β : E)‖ ≤ R}.Finite ∧
     (Set.ncard {β : 𝓞 E | ∀ τ : E →+* ℂ, ‖τ (β : E)‖ ≤ R} : ℝ) ≤ C * R ^ Module.finrank ℚ E := by
-  first | exact @GlobalTheory.CompanionTheory.IntegerCount.card_bounded_conjugates_le | exact GlobalTheory.CompanionTheory.IntegerCount.card_bounded_conjugates_le | (intros; apply GlobalTheory.CompanionTheory.IntegerCount.card_bounded_conjugates_le <;> assumption)
+  exact @GlobalTheory.CompanionTheory.IntegerCount.card_bounded_conjugates_le

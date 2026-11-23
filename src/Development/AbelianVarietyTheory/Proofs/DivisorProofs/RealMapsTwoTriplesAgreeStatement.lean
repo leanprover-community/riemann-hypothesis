@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.real_maps_two_triples_agree : GlobalTheory.FunPr.H
     (B : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E) (a a' : ℕ) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Geo σ a a') (Xa Xb : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars F E) oa oa' ob ob' R,
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsTriple B Γ Xa oa oa' → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsTriple B Γ Xb ob ob' →
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsRealMaps B Γ oa oa' R → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsRealMaps B Γ ob ob' R := by
-  first | exact @GlobalTheory.RealMapsChars.isRealMaps_of_sameExp | exact GlobalTheory.RealMapsChars.isRealMaps_of_sameExp | (intros; apply GlobalTheory.RealMapsChars.isRealMaps_of_sameExp <;> assumption)
+  exact @GlobalTheory.RealMapsChars.isRealMaps_of_sameExp

@@ -48,4 +48,4 @@ open scoped ComplexOrder Classical
 
 
 theorem _root_.GlobalTheory.T.flag_cover_base_point_in_points : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (K' : Type) [Fintype K'] (ι' : K' → Type) [∀ k, Fintype (ι' k)] (Φ' : Type) [Field Φ'] (y' : (Σ k, ι' k) → Φ') (M' : FlagModel y' Ψ N j) (Cv : FlagCover M' M) (zb : (Σ k, baseIdx ι' M'.blk k) → ℂ), zb ∈ mcPts (mCoordIdeal M'.x) → zb ∘ Cv.v ∈ mcPts (mCoordIdeal M.x) ∧ ∀ s : M.Ω, RegAt M.x (mCoordIdeal (zb ∘ Cv.v)) s → RegAt M'.x (mCoordIdeal zb) (Cv.φ s) ∧ valAt M'.x (Cv.φ s) zb = valAt M.x s (zb ∘ Cv.v) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.Pt.main | exact GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.Pt.main | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.Pt.main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.Pt.main

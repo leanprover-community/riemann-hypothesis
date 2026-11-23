@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.sphere_mean_normalized_groups : ∀ (n e : ℕ) (h
     Integrable (fun π : Fin (e + 1) → Fin n → ℂ => G (nrmGroups h e (coefRows h π))) (gaussM (e + 1) n) ∧
       ∫ π, G (nrmGroups h e (coefRows h π)) ∂(gaussM (e + 1) n) =
         (gaussM (e + 1) n Set.univ).toReal * sphereMean h e G := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.sphere_mean_normalized_groups | exact GlobalTheory.CompanionTheory.Relay.sphere_mean_normalized_groups | (intros; apply GlobalTheory.CompanionTheory.Relay.sphere_mean_normalized_groups <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.sphere_mean_normalized_groups

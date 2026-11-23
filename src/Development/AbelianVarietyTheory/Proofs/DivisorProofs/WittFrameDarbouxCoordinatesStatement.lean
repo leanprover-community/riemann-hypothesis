@@ -62,4 +62,4 @@ theorem _root_.GlobalTheory.T.witt_frame_darboux_coordinates : ∀ (F E : Type) 
         ∀ z : Matrix (Fin n) (Fin d) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)), co.e (mat a' * z) =
           (fun j => GlobalTheory.TorusTheta.infScale F (((blk j).elim 1 t)⁻¹) * (co.e z).1 j,
            fun j => GlobalTheory.TorusTheta.infScale F ((blk j).elim 1 t) * (co.e z).2 j) := by
-  first | exact @GlobalTheory.TorusAdapted.adapted_torus | exact GlobalTheory.TorusAdapted.adapted_torus | (intros; apply GlobalTheory.TorusAdapted.adapted_torus <;> assumption)
+  exact @GlobalTheory.TorusAdapted.adapted_torus

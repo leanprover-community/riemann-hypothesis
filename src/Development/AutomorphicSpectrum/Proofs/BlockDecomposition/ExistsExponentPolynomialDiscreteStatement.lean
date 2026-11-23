@@ -50,4 +50,4 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Au
 theorem _root_.GlobalTheory.T.exists_exponent_polynomial_discrete : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (N r : ℕ), 0 < r → r < N → ∃ D : ℕ, ∀ V : Submodule ℂ (Sm E N), IsDiscrete V →
   (∀ τ : E →+* ℂ, ∃ m, HasInfCharGL V τ m) → ∀ φ ∈ V, ∃ p : ℂ[X], p.Monic ∧ p.natDegree ≤ D ∧ An.Kill r φ.1 p ∧
     ∀ z, p.IsRoot z → ∃ c ∈ Exp r φ.1, z = Complex.exp c := by
-  first | exact @GlobalTheory.CompanionTheory.KillU.killU | exact GlobalTheory.CompanionTheory.KillU.killU | (intros; apply GlobalTheory.CompanionTheory.KillU.killU <;> assumption)
+  exact @GlobalTheory.CompanionTheory.KillU.killU

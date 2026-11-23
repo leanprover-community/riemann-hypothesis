@@ -68,4 +68,4 @@ theorem _root_.GlobalTheory.T.triple_local_gl_embedding_theta : GlobalTheory.Fun
       Acts (evFin F v) (omd gd') (boxFun φ₁ φ₂) (boxFun φ₁ (fun x =>
         ((ν (GlobalTheory.SplitFlip.gdet g) : ℂ) / starRingEnd ℂ (ν (GlobalTheory.SplitFlip.gdet g) : ℂ)) *
           starRingEnd ℂ (S g (fun y => starRingEnd ℂ (φ₂ y)) x))) := by
-  first | exact @GlobalTheory.DblSwap.diagR_acts | exact GlobalTheory.DblSwap.diagR_acts | (intros; apply GlobalTheory.DblSwap.diagR_acts <;> assumption)
+  exact @GlobalTheory.DblSwap.diagR_acts

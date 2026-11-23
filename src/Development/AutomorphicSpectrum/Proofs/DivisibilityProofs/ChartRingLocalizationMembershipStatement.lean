@@ -49,4 +49,4 @@ open ReciprocityTheory.ChartRestriction.G.Geo (HermLine IsSmoothHerm IsArithVar 
 open NumberField
 
 theorem _root_.GlobalTheory.T.chart_ring_localization_membership : ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (y : (Σ k, ι k) → Ω) (A : Type) [CommRing A] [Algebra A Ω], HasConstants ℤ A y → ∀ (m : Ideal A) [m.IsPrime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra A O] [IsLocalization.AtPrime O m] [Algebra O Ω] [IsScalarTower A O Ω] (c : ∀ k, ι k), segreVec y c ≠ 0 → ∀ t : Ω, t ∈ chartRing O (segreVec y) c ↔ ∃ s : A, s ∉ m ∧ algebraMap A Ω s * t ∈ chartRing ℤ (segreVec y) c := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.mem_chartRing_atPrime_iff | exact GlobalTheory.CompanionTheory.Ar.Num.mem_chartRing_atPrime_iff | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.mem_chartRing_atPrime_iff <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.mem_chartRing_atPrime_iff

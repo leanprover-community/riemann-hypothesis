@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.gelfand_eigenvalue_casimir_scalar : ∀ (D : D7) (
     Submodule.span ℂ (Set.range fun p : Fin V.rank × Fin V.rank => M p.1 p.2) = ⊤ → ∀ (c : ℕ → ℂ) (v : ℂ), ∃ s : ℂ,
       ∀ f : GlobalTheory.Mem.AutSpace.SmFun θ V, (∀ k, gelf θ V τ k f.1 = c k • f.1) →
         Formalism.REAL.qdet (fun i j => GlobalTheory.Mem.RealTranslate.derEnd hθ τ (M i j)) v f = s • f := by
-  first | exact @GlobalTheory.CompanionTheory.CoreGL.qdet_scalar_of_gelf | exact GlobalTheory.CompanionTheory.CoreGL.qdet_scalar_of_gelf | (intros; apply GlobalTheory.CompanionTheory.CoreGL.qdet_scalar_of_gelf <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CoreGL.qdet_scalar_of_gelf

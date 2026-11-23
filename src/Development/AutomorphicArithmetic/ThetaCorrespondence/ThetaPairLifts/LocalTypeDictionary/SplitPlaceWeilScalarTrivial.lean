@@ -68,10 +68,10 @@ theorem weil_scalar_eq_one_of_split : _root_.GlobalTheory.FunPr.ThetaLocalInputs
     { carrier := {g | omd g (GlobalTheory.InertDbl.dblFun Ψ) = GlobalTheory.InertDbl.dblFun Ψ}
       one_mem' := by simp
       mul_mem' := fun {x y} hx hy => by
-        simp only [Set.mem_setOf_eq, map_mul, Module.End.mul_apply] at *
+        simp only [Set.mem_ofPred_eq, map_mul, Module.End.mul_apply] at *
         rw [hy, hx]
       inv_mem' := fun {x} hx => by
-        simp only [Set.mem_setOf_eq] at *
+        simp only [Set.mem_ofPred_eq] at *
         conv_lhs => rw [← hx]
         rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply] }
   have hgen := (GlobalTheory.T.scalarSq_smul_matrix_supported_at_place) F E σ B a a' G X om om' hTr v hsp hψ h2 k hk
@@ -127,5 +127,5 @@ theorem _root_.GlobalTheory.T.split_place_weil_scalar_trivial : _root_.GlobalThe
     ∀ (v : Pl F), Formalism.MainNotions.SchurIrreducible.IsSplit (E := E) v → v ∉ X.T → PsiUnr B.ψ v → (2 : 𝓞 F) ∉ v.asIdeal →
     G.M'.vac v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1 →
     ∀ k ∈ GlobalTheory.InertSph.KAt σ G.W v, ∀ c : ℂ, Acts (evFin F v) (om' (1, k)) (G.M'.vac v) (c • G.M'.vac v) → c = 1 := by
-  first | exact @_root_.GlobalTheory.SplitScalar.weil_scalar_eq_one_of_split | exact _root_.GlobalTheory.SplitScalar.weil_scalar_eq_one_of_split | (intros; apply _root_.GlobalTheory.SplitScalar.weil_scalar_eq_one_of_split <;> assumption)
+  exact @_root_.GlobalTheory.SplitScalar.weil_scalar_eq_one_of_split
 end

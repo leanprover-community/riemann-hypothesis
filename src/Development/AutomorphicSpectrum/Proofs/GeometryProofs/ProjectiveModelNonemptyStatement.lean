@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
 
 theorem _root_.GlobalTheory.T.projective_model_nonempty : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω), (∃ c, x c ≠ 0 ∧ ∀ a : Ω, ∃ u ∈ chRing o x c, ∃ v ∈ chRing o x c, a = u / v) → Nonempty (PModel o x) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.nonempty_pModel_of_chart | exact GlobalTheory.CompanionTheory.Ar.nonempty_pModel_of_chart | (intros; apply GlobalTheory.CompanionTheory.Ar.nonempty_pModel_of_chart <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.nonempty_pModel_of_chart

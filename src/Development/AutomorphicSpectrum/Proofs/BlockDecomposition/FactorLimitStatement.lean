@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.EGlue
 
 theorem _root_.GlobalTheory.T.factor_limit : GlobalTheory.CompanionTheory.EGlue.ConvComp → GlobalTheory.CompanionTheory.EGlue.LimTrees → GlobalTheory.CompanionTheory.EGlue.LeafBound → GlobalTheory.CompanionTheory.EGlue.ConvInf → GlobalTheory.CompanionTheory.EGlue.InfOfEq → GlobalTheory.CompanionTheory.EGlue.CapEquiv → GlobalTheory.CompanionTheory.EGlue.MCloseFacts → GlobalTheory.CompanionTheory.EGlue.FactorLim := by
-  first | exact @GlobalTheory.CompanionTheory.EGlue.FactorLimProof.factorLim_of_parts | exact GlobalTheory.CompanionTheory.EGlue.FactorLimProof.factorLim_of_parts | (intros; apply GlobalTheory.CompanionTheory.EGlue.FactorLimProof.factorLim_of_parts <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EGlue.FactorLimProof.factorLim_of_parts

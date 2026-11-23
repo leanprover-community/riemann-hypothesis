@@ -45,4 +45,4 @@ import Mathlib.Topology.Sheaves.Init
 open NumberField IsDedekindDomain GlobalTheory.CuspRep Formalism.UG GlobalTheory.LFun Matrix
 
 theorem _root_.GlobalTheory.T.isCuspidal_of_isCuspForm' : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (φ : Sm E a), IsCuspForm φ → GroundTheory.Automorphic.AutomorphicForm.IsCuspidal (K := E) (n := a) φ.1 := by
-  first | exact @GlobalTheory.CuspRep.IsCuspForm.constantTerm_eq_zero | exact GlobalTheory.CuspRep.IsCuspForm.constantTerm_eq_zero | (intros; apply GlobalTheory.CuspRep.IsCuspForm.constantTerm_eq_zero <;> assumption)
+  exact @GlobalTheory.CuspRep.IsCuspForm.constantTerm_eq_zero

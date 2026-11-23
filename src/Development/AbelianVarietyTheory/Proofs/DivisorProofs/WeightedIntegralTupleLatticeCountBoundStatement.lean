@@ -49,4 +49,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 theorem _root_.GlobalTheory.T.weighted_integral_tuple_lattice_count_bound : ∀ (D : D7) (κ : Type) [Fintype κ] (L : ℕ), 0 < L → ∃ (N : ℕ) (C : ℝ), 0 ≤ C ∧ ∀ s : κ → ℝ, (∀ k, 0 < s k) → ∑' η : κ → D.host.E, {η : κ → D.host.E | ∀ k, IsIntegral ℤ ((L : D.host.E) * η k)}.indicator (fun η => ENNReal.ofReal (((1 + ∑ k, (∑ τ, ‖tauE D τ (η k)‖) / s k) ^ N)⁻¹)) η ≤ ENNReal.ofReal (C * ∏ k, max 1 (s k) ^ Module.finrank ℚ D.host.E) := by
-  first | exact @GlobalTheory.WeightedCount.weighted_count | exact GlobalTheory.WeightedCount.weighted_count | (intros; apply GlobalTheory.WeightedCount.weighted_count <;> assumption)
+  exact @GlobalTheory.WeightedCount.weighted_count

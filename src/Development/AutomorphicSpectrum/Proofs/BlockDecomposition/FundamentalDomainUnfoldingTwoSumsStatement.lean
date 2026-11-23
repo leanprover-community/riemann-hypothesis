@@ -87,4 +87,4 @@ theorem _root_.GlobalTheory.T.fundamental_domain_unfolding_two_sums : ∀ {A X Y
     (_ : ∀ y, y ≠ y0 → ∃ ν, ch ν ≠ 1 ∧ ∀ q, c q = y → ∀ b, F q (ν + b) = F q b),
     (∀ u, Integrable (F0 u) lam ∧ ∫ b, ‖F0 u b‖ ∂lam ≤ ∑' l : Λ, Um (e (l, u))) ∧
     HasSum (fun u => ∫ b, F0 u b * ch b ∂lam) (∫ b in 𝓖, (∑' q, F q b) * ch b ∂lam) := by
-  first | exact @GlobalTheory.CompanionTheory.UnfoldFam.unfold_fam | exact GlobalTheory.CompanionTheory.UnfoldFam.unfold_fam | (intros; apply GlobalTheory.CompanionTheory.UnfoldFam.unfold_fam <;> assumption)
+  exact @GlobalTheory.CompanionTheory.UnfoldFam.unfold_fam

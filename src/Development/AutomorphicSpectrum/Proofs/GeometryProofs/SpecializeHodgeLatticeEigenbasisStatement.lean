@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.specialize_hodge_lattice_eigenbasis : ∀ (E : Typ
     IsEval ℓ ψ ρH ρHC HL ev → (∀ e : E, ∃ h : σ e ∈ R', ψ ⟨σ e, h⟩ = σC e) → (∀ a, ∀ h ∈ HL, ρH a h ∈ HL) →
     IsAdapted ρH σ b₁ b₂ u → (∀ i, b₁ i = comb ℓ (x₁ i)) → (∀ i, b₂ i = comb ℓ (x₂ i)) →
     IsAdapted ρHC σC (fun i k => ψ (x₁ i k)) (fun i k => ψ (x₂ i k)) (fun i => ev ⟨u i, hu i⟩) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.isAdapted_eval | exact GlobalTheory.CompanionTheory.Ar.Flat.CPoint.isAdapted_eval | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.CPoint.isAdapted_eval <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.isAdapted_eval

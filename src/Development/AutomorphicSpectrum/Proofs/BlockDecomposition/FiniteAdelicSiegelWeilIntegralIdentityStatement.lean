@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.finite_adelic_siegel_weil_integral_identity : ∀ 
   ∀ ν : Measure (HermR (Af F) σ n), ν.IsAddHaarMeasure →
   ∀ Q : (Fin n → Fin M → Af F ⊗[F] E) → ℂ, IsSB Q →
     Integrable (starLoc (Af F) σ J (psiFin F ψ) μ Q) ν := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.integrable_starLoc_fin | exact GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.integrable_starLoc_fin | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.integrable_starLoc_fin <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.integrable_starLoc_fin

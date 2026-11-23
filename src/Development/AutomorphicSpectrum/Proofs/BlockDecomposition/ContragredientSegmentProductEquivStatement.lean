@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Seg
 
 theorem _root_.GlobalTheory.T.contragredient_segment_product_equiv : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k) {N : ℕ} (hd : ∑ a, (Δ.term a).1 = N), ∃ hd' : ∑ a, (dec (segDual Δ) a).1 = N, Nonempty ((contra (prodIrr Δ.term hd)).Equiv (prodIrr (dec (segDual Δ)) hd')) := by
-  first | exact @GlobalTheory.CompanionTheory.SegIncDual.contra_prodIrr_term | exact GlobalTheory.CompanionTheory.SegIncDual.contra_prodIrr_term | (intros; apply GlobalTheory.CompanionTheory.SegIncDual.contra_prodIrr_term <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SegIncDual.contra_prodIrr_term

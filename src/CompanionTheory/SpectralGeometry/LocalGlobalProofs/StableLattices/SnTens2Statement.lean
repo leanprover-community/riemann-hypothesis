@@ -47,4 +47,4 @@ open CompanionTheory.Zuck BranchingSupport Matrix Finset
 open scoped InnerProductSpace Kronecker
 
 theorem _root_.GlobalTheory.T.tensHom' : TensHom := by
-  first | exact @GlobalTheory.CompanionTheory.ZuckTensHom.tensHom | exact GlobalTheory.CompanionTheory.ZuckTensHom.tensHom | (intros; apply GlobalTheory.CompanionTheory.ZuckTensHom.tensHom <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ZuckTensHom.tensHom

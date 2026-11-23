@@ -64,4 +64,4 @@ theorem _root_.GlobalTheory.T.flag_pair_chart_bundle_compat : ∀ (O : Type) [Co
         C'.lat c = dotDual (chartRing O (segreVec y) c) (B'.lat c)) ∧
       IsFlagPair ϖ y C C' v v' (fun i => -x (Fin.rev i)) (fun i => -x' (Fin.rev i)) (fun i => g (Fin.rev i))
         (fun i => f (Fin.rev i)) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.HodgeModel.DualPair.dualPair | exact GlobalTheory.CompanionTheory.Ar.Num.HodgeModel.DualPair.dualPair | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.HodgeModel.DualPair.dualPair <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.HodgeModel.DualPair.dualPair

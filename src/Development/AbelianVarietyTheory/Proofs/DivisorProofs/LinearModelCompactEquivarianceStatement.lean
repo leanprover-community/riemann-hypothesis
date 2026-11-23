@@ -65,4 +65,4 @@ theorem _root_.GlobalTheory.T.linear_model_compact_equivariance : GlobalTheory.F
       ∀ h ∈ UAt σ W (evFin F v), ∀ gd : GlobalTheory.DblScal.UD σ W.J,
         ((gd : GL (Fin d ⊕ Fin d) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))) : Matrix (Fin d ⊕ Fin d) (Fin d ⊕ Fin d) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))) =
           Matrix.fromBlocks (mat h) 0 0 1 → κ h = cd gd := by
-  first | exact @GlobalTheory.DblScalBox.scal_diag_one | exact GlobalTheory.DblScalBox.scal_diag_one | (intros; apply GlobalTheory.DblScalBox.scal_diag_one <;> assumption)
+  exact @GlobalTheory.DblScalBox.scal_diag_one

@@ -53,4 +53,4 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Zelevin
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.M GlobalTheory.CompanionTheory.WordProd
 
 theorem _root_.GlobalTheory.T.interleaving_two_colour_embedding : ∀ {T : Type 1} {u v w : List T}, Zc.Comb.Interleave u v w → ∃ (r : Fin w.length → Fin 2) (σ₀ : Fin u.length ↪o Fin w.length) (σ₁ : Fin v.length ↪o Fin w.length), (∀ j, r j = 0 ↔ j ∈ Set.range σ₀) ∧ (∀ j, r j = 1 ↔ j ∈ Set.range σ₁) ∧ (∀ a, w.get (σ₀ a) = u.get a) ∧ (∀ a, w.get (σ₁ a) = v.get a) := by
-  first | exact @GlobalTheory.CompanionTheory.WordProd.Intl.interleave_embeddings | exact GlobalTheory.CompanionTheory.WordProd.Intl.interleave_embeddings | (intros; apply GlobalTheory.CompanionTheory.WordProd.Intl.interleave_embeddings <;> assumption)
+  exact @GlobalTheory.CompanionTheory.WordProd.Intl.interleave_embeddings

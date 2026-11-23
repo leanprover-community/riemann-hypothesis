@@ -59,4 +59,4 @@ open ReciprocityTheory.ChartRestriction.G.AI.I2 (IsRatSectionOn logNormRat)
 theorem _root_.GlobalTheory.T.chern_part_null_set_zero : ∀ {k : Type} [CommRing k] {X : Scheme.{0}} {q : X ⟶ Sp k} {σ : k →+* ℂ} {D : ℕ} {B : LB X} (φ : GlobalTheory.Weight q σ B)
     (ε : ℤˣ) (Z : Set (GlobalTheory.CxPts q σ)), MeasurableSet Z →
     (∀ c : GlobalTheory.AlgChart q σ D, volume (c.e.target ∩ c.e.symm ⁻¹' Z) = 0) → φ.chernPart D ε Z = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.chernPart_null_of_chart_null | exact GlobalTheory.CompanionTheory.MixZ.chernPart_null_of_chart_null | (intros; apply GlobalTheory.CompanionTheory.MixZ.chernPart_null_of_chart_null <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MixZ.chernPart_null_of_chart_null

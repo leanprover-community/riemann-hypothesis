@@ -46,5 +46,5 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
 
 theorem _root_.GlobalTheory.T.coefficient_duty_pin_at_each_member : ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL fun _ _ _ _ w Z _ _ t nch n c => _root_.GlobalTheory.CoefDuty.OPinAlt c.a := by
-  first | exact @_root_.GlobalTheory.HeightCounting.Up.oPin_at_mem | exact _root_.GlobalTheory.HeightCounting.Up.oPin_at_mem | (intros; apply _root_.GlobalTheory.HeightCounting.Up.oPin_at_mem <;> assumption)
+  exact @_root_.GlobalTheory.HeightCounting.Up.oPin_at_mem
 end

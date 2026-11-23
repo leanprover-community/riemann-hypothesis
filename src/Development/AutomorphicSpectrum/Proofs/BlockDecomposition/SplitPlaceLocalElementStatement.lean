@@ -51,4 +51,4 @@ open scoped Classical
 
 theorem _root_.GlobalTheory.T.split_place_local_element : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (w : Pl E) (δ : GL (Fin n) E), IsSplitAt w →
   ratW n w δ * thetaGL n (RingHom.id _) (ratW n w (GeneralLinearGroup.map (IsCMField.complexConj E).toRingEquiv.toRingHom δ)) = locEl n w δ := by
-  first | exact @GlobalTheory.CompanionTheory.NormSplit.ratW_mul_thetaGL | exact GlobalTheory.CompanionTheory.NormSplit.ratW_mul_thetaGL | (intros; apply GlobalTheory.CompanionTheory.NormSplit.ratW_mul_thetaGL <;> assumption)
+  exact @GlobalTheory.CompanionTheory.NormSplit.ratW_mul_thetaGL

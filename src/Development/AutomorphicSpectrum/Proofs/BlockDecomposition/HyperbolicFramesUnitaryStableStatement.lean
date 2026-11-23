@@ -49,4 +49,4 @@ open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.
 open GlobalTheory.CompanionTheory.SW.ThetaStage
 
 theorem _root_.GlobalTheory.T.hyperbolic_frames_unitary_stable : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → IsHermND σ (hypOne J) ∧ e0 E M ∈ framesE σ (hypOne J) (0 : Matrix (Fin 1) (Fin 1) E) ∧ ∀ (g : UJ (σ : E →+* E) (hypOne J)) (q : Fin 1 → Fin (M + 2) → E), q ∈ framesE σ (hypOne J) (0 : Matrix (Fin 1) (Fin 1) E) → gact σ g q ∈ framesE σ (hypOne J) (0 : Matrix (Fin 1) (Fin 1) E) := by
-  first | exact @GlobalTheory.CompanionTheory.WeilSiegel.HypStep.Unf.Basic.hypOne_basic | exact GlobalTheory.CompanionTheory.WeilSiegel.HypStep.Unf.Basic.hypOne_basic | (intros; apply GlobalTheory.CompanionTheory.WeilSiegel.HypStep.Unf.Basic.hypOne_basic <;> assumption)
+  exact @GlobalTheory.CompanionTheory.WeilSiegel.HypStep.Unf.Basic.hypOne_basic

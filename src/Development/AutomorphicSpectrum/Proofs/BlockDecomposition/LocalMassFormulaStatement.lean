@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Mass
 
 theorem _root_.GlobalTheory.T.local_mass_formula : LocMass := by
-  first | exact @GlobalTheory.CompanionTheory.SW.LocBin.locMass | exact GlobalTheory.CompanionTheory.SW.LocBin.locMass | (intros; apply GlobalTheory.CompanionTheory.SW.LocBin.locMass <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SW.LocBin.locMass

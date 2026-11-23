@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.local_binary_gram_density : ∀ (F E : Type) [Fiel
   IsGramFib (Fv F v) σ J 1 (coordW (Fv F v) b lam 1 2) (coordHerm (Fv F v) σ b lam 1) m →
   ContinuousOn (fun s : Fv F v => (m (hermScal (Fv F v) σ s) (latV b v)).toReal) {0}ᶜ ∧
   ∫ s, (m (hermScal (Fv F v) σ s) (latV b v)).toReal ∂lam = 1 := by
-  first | exact @GlobalTheory.CompanionTheory.SW.StdLat.fibre_masses_standard_lattice | exact GlobalTheory.CompanionTheory.SW.StdLat.fibre_masses_standard_lattice | (intros; apply GlobalTheory.CompanionTheory.SW.StdLat.fibre_masses_standard_lattice <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SW.StdLat.fibre_masses_standard_lattice

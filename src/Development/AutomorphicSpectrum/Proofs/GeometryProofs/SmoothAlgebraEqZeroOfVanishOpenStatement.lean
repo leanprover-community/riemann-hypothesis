@@ -59,4 +59,4 @@ open ReciprocityTheory.ChartRestriction.G.TB.ValAt ReciprocityTheory.ChartRestri
 open GlobalTheory.CompanionTheory.Ar.Flat.GagaC
 
 theorem _root_.GlobalTheory.T.smooth_algebra_eq_zero_of_vanish_open : ∀ (A : Type) [CommRing A] [IsDomain A] [Algebra ℂ A] (D : ℕ) [Algebra.IsStandardSmoothOfRelativeDimension D ℂ A] (O : Set (Fin D → ℂ)) (Ψ : (Fin D → ℂ) → (A →+* ℂ)) (f : Fin D → A) (a : A), IsOpen O → O.Nonempty → (∀ b ∈ O, (Ψ b).comp (algebraMap ℂ A) = RingHom.id ℂ ∧ ∀ i, Ψ b (f i) = b i) → (∀ b ∈ O, Ψ b a = 0) → a = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.GagaC.eq_zero_of_forall_points_eq_zero | exact GlobalTheory.CompanionTheory.Ar.Flat.GagaC.eq_zero_of_forall_points_eq_zero | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.GagaC.eq_zero_of_forall_points_eq_zero <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.GagaC.eq_zero_of_forall_points_eq_zero

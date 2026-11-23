@@ -50,4 +50,4 @@ open GlobalTheory.UU
 
 
 theorem _root_.GlobalTheory.T.cubical_weil_pairing_iso_invariant : ∀ (G : Over (Sp ℂ)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → TorusExtension G → ∀ (L₁ L₂ : RigLB G) (c₁ : CubicalStr G L₁) (c₂ : CubicalStr G L₂), LBIso L₁.L L₂.L → ∀ (N : ℕ) (x y : 𝟙_ (Over (Sp ℂ)) ⟶ G) (ζ : Γ(Sp ℂ, ⊤)ˣ), CubWeil c₁ N x y ζ → CubWeil c₂ N x y ζ := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.CubIso.cubWeil_of_lbIso | exact GlobalTheory.CompanionTheory.Ar.CubIso.cubWeil_of_lbIso | (intros; apply GlobalTheory.CompanionTheory.Ar.CubIso.cubWeil_of_lbIso <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.CubIso.cubWeil_of_lbIso

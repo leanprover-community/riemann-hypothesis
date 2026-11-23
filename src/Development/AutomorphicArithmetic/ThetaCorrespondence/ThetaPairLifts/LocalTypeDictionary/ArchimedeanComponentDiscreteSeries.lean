@@ -113,7 +113,7 @@ theorem exists_archimedean_component : _root_.GlobalTheory.FunPr.ThetaLocalInput
         rw [map_one]
         exact hVE f
       map_mul' := fun g h => ContinuousLinearMap.ext fun f => by
-        simp only [map_mul, ContinuousLinearMap.mul_apply, ContinuousLinearMap.comp_apply, hEV] }
+        simp only [map_mul, mul_apply_eq_comp, ContinuousLinearMap.comp_apply, hEV] }
   have hρ' : ∀ g f, ρ' g f = toV (ρ g (toE f)) := fun _ _ => rfl
   clear_value ρ'
   refine ⟨ρ', fun w => kk w / 2, fun g _ => ⟨fun u hu f f₁ hf h => ?_, fun ν hν f₁ f₂ => ?_⟩, fun L f => ?_,
@@ -229,5 +229,5 @@ theorem _root_.GlobalTheory.T.archimedean_component_discreteSeries : _root_.Glob
       ∀ γ ∈ RLines (σ := σ) JB, ∀ Y, IsGen τ C γ Y → ∀ (T : Tens F P Q R S) (L : SInf F κ →L[ℂ] ℂ),
         HasDerivAt (fun t : ℝ => L (ρ (γ (Multiplicative.ofAdd t)) (Φ T)))
           (L (Φ (sumPl (fun w => fockAct2 P Q R S (Y w) + (c₀ w * (Y w).trace) • 1) T))) 0 := by
-  first | exact @_root_.GlobalTheory.ArchRep.exists_archimedean_component | exact _root_.GlobalTheory.ArchRep.exists_archimedean_component | (intros; apply _root_.GlobalTheory.ArchRep.exists_archimedean_component <;> assumption)
+  exact @_root_.GlobalTheory.ArchRep.exists_archimedean_component
 end

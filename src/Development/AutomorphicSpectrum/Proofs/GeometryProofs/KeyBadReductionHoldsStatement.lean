@@ -50,4 +50,4 @@ open GroundTheory.Heights₂.Heights TensorProduct
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Sl
 
 theorem _root_.GlobalTheory.T.key_bad_reduction_holds : KeyBadSt := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Sl.KP.key_bad | exact GlobalTheory.CompanionTheory.Ar.Sl.KP.key_bad | (intros; apply GlobalTheory.CompanionTheory.Ar.Sl.KP.key_bad <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Sl.KP.key_bad

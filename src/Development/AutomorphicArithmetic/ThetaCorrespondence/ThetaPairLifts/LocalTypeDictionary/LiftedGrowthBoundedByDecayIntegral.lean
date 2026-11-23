@@ -88,13 +88,13 @@ theorem growthSize_lift_le_decayIntegral : _root_.GlobalTheory.FunPr.ThetaLocalI
     exact (GlobalTheory.Grow.norm_le_quotHeight_pow (hinv h) h1 g).trans_eq (by ring)
   refine ⟨(K * 2 ^ N).toNNReal, fun f => iSup_le fun h => ?_⟩
   have hg := pow_pos (GlobalTheory.Grow.height_pos (G.P i).V h) N
-  rw [ENNReal.ofReal_div_of_pos hg, ofReal_norm_eq_enorm]
+  rw [ENNReal.ofReal_div_of_pos hg, ofReal_norm]
   refine ENNReal.div_le_of_le_mul ((enorm_integral_le_lintegral_enorm _).trans ?_)
   rw [mul_right_comm, GlobalTheory.IndefiniteRowSideFullHecke.RapidDecayLift.decayInt]
   refine (lintegral_mono fun g => ?_).trans_eq
     (lintegral_const_mul' _ _ (ENNReal.mul_ne_top ENNReal.coe_ne_top ENNReal.ofReal_ne_top))
   have hq := (pow_pos (GlobalTheory.Grow.quotHeight_pos (G.P (i + 1)).V g) N).le
-  rw [← ofReal_norm_eq_enorm]
+  rw [← ofReal_norm]
   change ENNReal.ofReal _ ≤ ENNReal.ofReal (K * 2 ^ N) * _ * _
   rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity)]
   refine ENNReal.ofReal_le_ofReal ?_
@@ -113,5 +113,5 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 
 theorem _root_.GlobalTheory.T.lifted_growth_bounded_by_decay_integral : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (D : D7), GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.Sizes D → ∀ (G₀ : Type) [Group G₀] [Fintype G₀] (Pl0 T : Type) (A : FamIn D.what₂.LL G₀ Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (G : GlobalTheory.Grid.GridPre R), GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.RowBase R → G.Is → ∀ i, i < D.R.m → ∃ N : ℕ, ∀ Φ, IsThetaFunO R.ψ (GlobalTheory.Grid.neg (G.P (i + 1)).V) (G.P i).V Φ → ∃ C : NNReal, ∀ f : GA D (G.P (i + 1)).V → ℂ, GlobalTheory.Size.growthSize (G.P i).V N (fun h => ∫ g in (G.mP (i + 1)).fd, thetaKO (G.dn i).ω g h Φ * f g ∂(G.mP (i + 1)).ν) ≤ (C : ENNReal) * GlobalTheory.IndefiniteRowSideFullHecke.RapidDecayLift.decayInt (G.mP (i + 1)).ν (G.mP (i + 1)).fd N f := by
-  first | exact @_root_.GlobalTheory.DownLiftGrowth.growthSize_lift_le_decayIntegral | exact _root_.GlobalTheory.DownLiftGrowth.growthSize_lift_le_decayIntegral | (intros; apply _root_.GlobalTheory.DownLiftGrowth.growthSize_lift_le_decayIntegral <;> assumption)
+  exact @_root_.GlobalTheory.DownLiftGrowth.growthSize_lift_le_decayIntegral
 end

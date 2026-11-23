@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.exists_local_characters_linear_bar : GlobalTheory.
       (∀ h' : GL (Fin (a + a')) (Fv F v), ∃ h ∈ UAt σ G.W (evFin F v), ∀ φ ∈ SB (Fin a × Fin (a + a') → Fv F v),
         ∃ φ₁ ∈ SB (Fin a × Fin (a + a') → Fv F v), Acts (evFin F v) (om (1, h)) φ φ₁ ∧
           ι φ₁ = GlobalTheory.SplitFlip.omA ν₀ β₀ 1 h' (ι φ)) := by
-  first | exact @GlobalTheory.WeilLinA.localOps_eq_omA | exact GlobalTheory.WeilLinA.localOps_eq_omA | (intros; apply GlobalTheory.WeilLinA.localOps_eq_omA <;> assumption)
+  exact @GlobalTheory.WeilLinA.localOps_eq_omA

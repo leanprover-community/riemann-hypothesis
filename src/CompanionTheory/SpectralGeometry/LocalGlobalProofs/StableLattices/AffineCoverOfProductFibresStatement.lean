@@ -60,4 +60,4 @@ theorem _root_.GlobalTheory.T.affine_cover_of_product_fibres : ∀ {k : Type} [F
     ∃ (Y : Scheme.{0}) (π : Y ⟶ Z) (f : Y ⟶ Spec Γ(T, V)) (E : κ → Y.Opens),
       IsPullback π f q hV.fromSpec ∧ (∀ i, IsAffineOpen (E i)) ∧ ⨆ i, E i = ⊤ ∧
       Nonempty (cechLB (f ≫ hV.fromSpec ≫ b) (G.pull π) E ≅ cechLB (p ≫ a) G fun i => p ⁻¹ᵁ D i ⊓ q ⁻¹ᵁ V) := by
-  first | exact @GlobalTheory.CompanionTheory.PointSurjectivity.over_affineOpen_of_isPullback | exact GlobalTheory.CompanionTheory.PointSurjectivity.over_affineOpen_of_isPullback | (intros; apply GlobalTheory.CompanionTheory.PointSurjectivity.over_affineOpen_of_isPullback <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PointSurjectivity.over_affineOpen_of_isPullback

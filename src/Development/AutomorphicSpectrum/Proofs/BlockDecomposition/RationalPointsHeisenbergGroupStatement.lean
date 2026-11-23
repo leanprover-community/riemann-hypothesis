@@ -48,4 +48,4 @@ open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.rational_points_heisenberg_group : ∀ {D : D7} {n ρ p : ℕ} {hn : ρ + p = n} (M : Maps D hn), (∀ ξ : Matrix (Fin ρ) (Fin p) D.host.E, M.sh (GlobalTheory.CompanionTheory.FJE.rt ξ) ∈ GF D n) ∧ (∀ ξ : Matrix (Fin ρ) (Fin p) D.host.E, M.nzx 0 (GlobalTheory.CompanionTheory.FJE.rt ξ) ∈ GF D n) ∧ ∀ z ∈ ratHerm D ρ, M.nzx z 0 ∈ GF D n := by
-  first | exact @GlobalTheory.CompanionTheory.FJE.rat_maps_mem_GF | exact GlobalTheory.CompanionTheory.FJE.rat_maps_mem_GF | (intros; apply GlobalTheory.CompanionTheory.FJE.rat_maps_mem_GF <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FJE.rat_maps_mem_GF

@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.EGlue
 
 theorem _root_.GlobalTheory.T.topological_infimum : GlobalTheory.CompanionTheory.EGlue.TopInf := by
-  first | exact @GlobalTheory.CompanionTheory.EGlue.Gl0.topInf | exact GlobalTheory.CompanionTheory.EGlue.Gl0.topInf | (intros; apply GlobalTheory.CompanionTheory.EGlue.Gl0.topInf <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EGlue.Gl0.topInf

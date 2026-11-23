@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.InertZeta
 
 theorem _root_.GlobalTheory.T.heisenberg_matrix_facts : Heis := by
-  first | exact @GlobalTheory.CompanionTheory.InertHeis.Heisenberg₂ | exact GlobalTheory.CompanionTheory.InertHeis.Heisenberg₂ | (intros; apply GlobalTheory.CompanionTheory.InertHeis.Heisenberg₂ <;> assumption)
+  exact @GlobalTheory.CompanionTheory.InertHeis.Heisenberg₂

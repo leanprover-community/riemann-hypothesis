@@ -47,4 +47,4 @@ theorem _root_.GlobalTheory.T.linear_weil_functional_determined_by_unramified : 
     ∀ (t : E →ₐ[F] Fv F v) (ι : ((Fin a × Fin (a + a') → Fv F v) → ℂ) →ₗ[ℂ] (Matrix (Fin a) (Fin (a + a')) (Fv F v) → ℂ)), G.M.IsLinW B.ψ t 1 1 ι → ∀ β₀ : (Fv F v)ˣ →* ℂˣ, (∀ h ∈ UAt σ G.W (evFin F v), ∃ h' : GL (Fin (a + a')) (Fv F v), (mat h).map (piW t) = h'.1 ∧
       ∀ φ ∈ SB (Fin a × Fin (a + a') → Fv F v), ∀ φ₁ ∈ SB (Fin a × Fin (a + a') → Fv F v), Acts (evFin F v) (om (1, h)) φ φ₁ → ι φ₁ = GlobalTheory.SplitFlip.omA 1 β₀ 1 h' (ι φ)) →
     GlobalTheory.SmGL.IsSmoothChar β₀ ∧ GlobalTheory.SmGL.IsUnitaryChar β₀ := by
-  first | exact @GlobalTheory.WeilLinW.charW_smooth_unitary | exact GlobalTheory.WeilLinW.charW_smooth_unitary | (intros; apply GlobalTheory.WeilLinW.charW_smooth_unitary <;> assumption)
+  exact @GlobalTheory.WeilLinW.charW_smooth_unitary

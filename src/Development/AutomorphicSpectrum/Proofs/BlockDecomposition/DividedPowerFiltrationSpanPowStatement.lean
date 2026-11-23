@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open DividedPowers CrystallineSemistableComparison.Pb
 
 theorem _root_.GlobalTheory.T.divided_power_filtration_span_pow : ∀ {W B : Type} [CommRing W] [CommRing B] [Algebra ℚ B] (f : W →+* B) (ξ : W) (r : ℕ), pdP (Lat.γB f ξ) r = Ideal.span {f ξ ^ r} := by
-  first | exact @GlobalTheory.CompanionTheory.DPFiltration.pdP_γB | exact GlobalTheory.CompanionTheory.DPFiltration.pdP_γB | (intros; apply GlobalTheory.CompanionTheory.DPFiltration.pdP_γB <;> assumption)
+  exact @GlobalTheory.CompanionTheory.DPFiltration.pdP_γB

@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.hodge_component_twist_frame_compat : ∀ (E : Type
     x' ≫ pullback.fst _ _ = x ≫ pullback.fst _ _ ≫ Φ.hom → x' ≫ pullback.snd _ _ = x ≫ pullback.snd _ _ →
     A.cst = A'.cst → x ≫ pullback.snd _ _ = spMap A.cst → (∀ p ∈ S, A'.R p = A.R p) →
     ∀ z : Sp ℂ ⟶ A'.X, A'.Interior z ↔ A.Interior (z ≫ e.hom) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.TwistInterior.interior_iff | exact GlobalTheory.CompanionTheory.Ar.TwistInterior.interior_iff | (intros; apply GlobalTheory.CompanionTheory.Ar.TwistInterior.interior_iff <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.TwistInterior.interior_iff

@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.finite_dim_invariant_subspace_adjoint_pair : ∀ (
     (∀ i, ∀ t ∈ T, a i t ∈ T) → (∀ i, ∀ t ∈ T, b i t ∈ T) →
     (∀ i, ∀ t ∈ T, a i (D t) = D (a i t)) → (∀ i, ∀ t ∈ T, b i (D t) = D (b i t)) →
     y ∈ T → (∀ i, a i (D y) = 0) → ∃ y' ∈ T, (∀ i, a i y' = 0) ∧ D y' = D y := by
-  first | exact @GlobalTheory.CompanionTheory.FarReg.highest_preimage_of_stable | exact GlobalTheory.CompanionTheory.FarReg.highest_preimage_of_stable | (intros; apply GlobalTheory.CompanionTheory.FarReg.highest_preimage_of_stable <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FarReg.highest_preimage_of_stable

@@ -42,4 +42,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open GlobalTheory.SqTop
 
 theorem _root_.GlobalTheory.T.bottomPairs_exist_baseTuple : (∀ D, GlobalTheory.NormSum.Inp D) → BotEx := by
-  first | exact @GlobalTheory.SqTop.botEx_holds | exact GlobalTheory.SqTop.botEx_holds | (intros; apply GlobalTheory.SqTop.botEx_holds <;> assumption)
+  exact @GlobalTheory.SqTop.botEx_holds

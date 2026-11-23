@@ -48,4 +48,4 @@ open scoped TensorProduct
 
 
 theorem _root_.GlobalTheory.T.finite_jacquet_kernel_common_lattice : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) {X : Type} [AddCommGroup X] [Module ℂ X] (ρ : Representation ℂ (Multiplicative (Fin n → k)) X) (S : Set X), S.Finite → (∀ x ∈ S, x ∈ twKer ρ ⊤ 1) → ∃ c : k, c ≠ 0 ∧ ∀ x ∈ S, x ∈ twKer ρ (Lc n c) 1 := by
-  first | exact @GlobalTheory.CompanionTheory.BZPsiPG.FibKer.exists_Lc_finite_twKer | exact GlobalTheory.CompanionTheory.BZPsiPG.FibKer.exists_Lc_finite_twKer | (intros; apply GlobalTheory.CompanionTheory.BZPsiPG.FibKer.exists_Lc_finite_twKer <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BZPsiPG.FibKer.exists_Lc_finite_twKer

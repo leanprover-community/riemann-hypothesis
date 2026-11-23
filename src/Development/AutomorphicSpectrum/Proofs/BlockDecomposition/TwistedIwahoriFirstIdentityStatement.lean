@@ -45,4 +45,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.PRep GlobalTheory.SmGL ValuativeRel
 
 theorem _root_.GlobalTheory.T.twisted_iwahori_first_identity : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], PositivityTheory.Lbc.E1 k := by
-  first | exact @GlobalTheory.CompanionTheory.Lbc.Contraction.e1 | exact GlobalTheory.CompanionTheory.Lbc.Contraction.e1 | (intros; apply GlobalTheory.CompanionTheory.Lbc.Contraction.e1 <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Lbc.Contraction.e1

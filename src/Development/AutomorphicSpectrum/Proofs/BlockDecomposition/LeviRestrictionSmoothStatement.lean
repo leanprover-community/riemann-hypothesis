@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open NumberField GlobalTheory.CuspRep GlobalTheory.CompanionTheory.CTFin Matrix
 
 theorem _root_.GlobalTheory.T.levi_restriction_smooth : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (r s : ℕ) (F : GA E (r + s) → ℂ), F ∈ Sm E (r + s) → (fun m : GA E r => F (lev (Ad E) r s (m, 1))) ∈ Sm E r := by
-  first | exact @GlobalTheory.CompanionTheory.CTFin.Slice1.sm_lev_slice | exact GlobalTheory.CompanionTheory.CTFin.Slice1.sm_lev_slice | (intros; apply GlobalTheory.CompanionTheory.CTFin.Slice1.sm_lev_slice <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CTFin.Slice1.sm_lev_slice

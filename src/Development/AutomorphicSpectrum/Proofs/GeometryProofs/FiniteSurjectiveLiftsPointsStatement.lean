@@ -56,4 +56,4 @@ open scoped CategoryTheory.Obj
 
 theorem _root_.GlobalTheory.T.finite_surjective_lifts_points : ∀ (Z' Z : Scheme.{0}) (π : Z' ⟶ Z), IsFinite π → Surjective π → ∀ (L : Type) [Field L] (zZ : Sp L ⟶ Z),
     ∃ x : Sp (AlgebraicClosure L) ⟶ Z', x ≫ π = spMap (algebraMap L (AlgebraicClosure L)) ≫ zZ := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.TorusUnif.exists_lift_algClosure | exact GlobalTheory.CompanionTheory.Ar.TorusUnif.exists_lift_algClosure | (intros; apply GlobalTheory.CompanionTheory.Ar.TorusUnif.exists_lift_algClosure <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.TorusUnif.exists_lift_algClosure

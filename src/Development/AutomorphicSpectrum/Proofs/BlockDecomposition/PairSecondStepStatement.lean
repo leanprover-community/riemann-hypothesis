@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.EGlue
 
 theorem _root_.GlobalTheory.T.pair_second_step : GlobalTheory.CompanionTheory.EGlue.PairSlices → GlobalTheory.CompanionTheory.EGlue.PairStep₂ := by
-  first | exact @GlobalTheory.CompanionTheory.EGlue.pairStep₂ | exact GlobalTheory.CompanionTheory.EGlue.pairStep₂ | (intros; apply GlobalTheory.CompanionTheory.EGlue.pairStep₂ <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EGlue.pairStep₂

@@ -69,4 +69,4 @@ theorem _root_.GlobalTheory.T.measure_zero_set_avoided_by_holomorphic_map : ∀ 
     φ.chernPart D ε ≤ ∑ j, Measure.map (F ∘ (A.chart j).symm)
       ((volume.restrict (K j \ (F ∘ (A.chart j).symm) ⁻¹' Z)).withDensity fun u =>
         ENNReal.ofReal |locDens A (fun _ => φ.locPot.pullback F hF) j u|) := by
-  first | exact @GlobalTheory.CompanionTheory.ArchDom.chernPart_le_sum_map | exact GlobalTheory.CompanionTheory.ArchDom.chernPart_le_sum_map | (intros; apply GlobalTheory.CompanionTheory.ArchDom.chernPart_le_sum_map <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ArchDom.chernPart_le_sum_map

@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.congruence_subgroup_coset_decomposition : Ad3.R.C1 := by
-  first | exact @GlobalTheory.CompanionTheory.RankinStepC.c1 | exact GlobalTheory.CompanionTheory.RankinStepC.c1 | (intros; apply GlobalTheory.CompanionTheory.RankinStepC.c1 <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RankinStepC.c1

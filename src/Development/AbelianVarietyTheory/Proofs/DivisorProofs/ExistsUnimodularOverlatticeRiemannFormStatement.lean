@@ -64,4 +64,4 @@ theorem _root_.GlobalTheory.T.exists_unimodular_overlattice_riemannForm : ∀ (g
     ∃ (Λ₁ : Submodule ℤ (Fin g → ℂ)) (Ef : LinearMap.BilinForm ℤ Λ₁) (N : ℕ), Λ ≤ Λ₁ ∧ DiscreteTopology Λ₁ ∧
       Submodule.span ℝ (Λ₁ : Set (Fin g → ℂ)) = ⊤ ∧ (∀ a b : Λ₁, (Ef a b : ℝ) = (hermForm Hm a b).im) ∧
       Function.Bijective Ef ∧ 0 < N ∧ ∀ x ∈ Λ₁, N • x ∈ Λ := by
-  first | exact @GlobalTheory.Overlattice.exists_unimodular_overlattice | exact GlobalTheory.Overlattice.exists_unimodular_overlattice | (intros; apply GlobalTheory.Overlattice.exists_unimodular_overlattice <;> assumption)
+  exact @GlobalTheory.Overlattice.exists_unimodular_overlattice

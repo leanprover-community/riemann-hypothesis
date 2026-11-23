@@ -54,4 +54,4 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 
 theorem _root_.GlobalTheory.T.block_integral_iff : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n a b : ℕ) (h : a + b = n) (w : Pl E) (m : GLw a w × GLw b w) (X : Matrix (Fin a) (Fin b) (w.adicCompletion E)), IsInt w (blk h w m X).val ↔ IsInt w m.1.val ∧ IsInt w m.2.val ∧ IsInt w (m.1.val * X) := by
-  first | exact @GlobalTheory.CompanionTheory.CtS.isInt_blk_iff | exact GlobalTheory.CompanionTheory.CtS.isInt_blk_iff | (intros; apply GlobalTheory.CompanionTheory.CtS.isInt_blk_iff <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CtS.isInt_blk_iff

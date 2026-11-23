@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.weil_rep_bijection_schwartz : ∀ {k : Type} [Fiel
     (∀ C, ∀ x ∈ V, Tr C x ∈ V ∧ ι₁ (Tr C x) = (fun Y => ι₁ x (Y + C)) ∧ ι₂ (Tr C x) = fun Y => ι₂ x (Y + C)) →
     (∀ l, ∀ x ∈ V, Mu l x ∈ V ∧ ι₁ (Mu l x) = (fun Y => ψ0 (l Y) * ι₁ x Y) ∧ ι₂ (Mu l x) = fun Y => ψ0 (l Y) * ι₂ x Y) →
     ∃ c : ℂ, ∀ x ∈ V, ι₂ x = c • ι₁ x := by
-  first | exact @GlobalTheory.schur_heisenberg_linearModel_fintype | exact GlobalTheory.schur_heisenberg_linearModel_fintype | (intros; apply GlobalTheory.schur_heisenberg_linearModel_fintype <;> assumption)
+  exact @GlobalTheory.schur_heisenberg_linearModel_fintype

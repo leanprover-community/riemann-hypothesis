@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 namespace PositivityTheory.Rg.BcB.F.Tail.PExp
 
 theorem _root_.GlobalTheory.T.contraction_fixed : PositivityTheory.Rg.BcB.F.Tail.PExp.ContrFix := by
-  first | exact @GlobalTheory.CompanionTheory.RepTensor.contrFix | exact GlobalTheory.CompanionTheory.RepTensor.contrFix | (intros; apply GlobalTheory.CompanionTheory.RepTensor.contrFix <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RepTensor.contrFix

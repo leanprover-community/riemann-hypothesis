@@ -49,4 +49,4 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 
 theorem _root_.GlobalTheory.T.geometricallyConnected_of_commGroup_nsmul_surjective : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G], LocallyOfFiniteType G.hom → QuasiCompact G.hom → (∀ n : ℕ, n ≠ 0 → Surjective ((𝟙 G) ^ n : G ⟶ G).left) → GeometricallyConnected G.hom := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Approx.geometricallyConnected_of_surjective_pow | exact GlobalTheory.CompanionTheory.Ar.Approx.geometricallyConnected_of_surjective_pow | (intros; apply GlobalTheory.CompanionTheory.Ar.Approx.geometricallyConnected_of_surjective_pow <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Approx.geometricallyConnected_of_surjective_pow

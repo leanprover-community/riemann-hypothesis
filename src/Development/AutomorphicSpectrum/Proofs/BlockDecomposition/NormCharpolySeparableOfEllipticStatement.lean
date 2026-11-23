@@ -48,4 +48,4 @@ open scoped Classical
 
 theorem _root_.GlobalTheory.T.norm_charpoly_separable_of_elliptic : CjEx → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (w : Pl E) (δ : GL (Fin n) E), polE δ ∈ Ell E n →
   (nrmL n w (locEl n w δ)).val.charpoly.Separable := by
-  first | exact @GlobalTheory.CompanionTheory.SepLocEl.separable_charpoly_nrmL_locEl | exact GlobalTheory.CompanionTheory.SepLocEl.separable_charpoly_nrmL_locEl | (intros; apply GlobalTheory.CompanionTheory.SepLocEl.separable_charpoly_nrmL_locEl <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SepLocEl.separable_charpoly_nrmL_locEl

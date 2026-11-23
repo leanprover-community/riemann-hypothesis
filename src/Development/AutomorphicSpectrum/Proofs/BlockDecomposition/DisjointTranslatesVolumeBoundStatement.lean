@@ -71,4 +71,4 @@ theorem _root_.GlobalTheory.T.disjoint_translates_volume_bound : ∀ (G : Type) 
     ∀ (ι : Type) [Fintype ι] (f : ι → G), (∀ i, f i ∈ L) →
     (∀ i j u v, u ∈ S → v ∈ S → f i + u = f j + v → i = j) →
     (Fintype.card ι : ℝ≥0∞) * μ S ≤ μ (L : Set G) := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Count.card_mul_measure_le_of_disjoint_translates | exact GlobalTheory.CompanionTheory.SiegelND.Integ.Count.card_mul_measure_le_of_disjoint_translates | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.Count.card_mul_measure_le_of_disjoint_translates <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Count.card_mul_measure_le_of_disjoint_translates

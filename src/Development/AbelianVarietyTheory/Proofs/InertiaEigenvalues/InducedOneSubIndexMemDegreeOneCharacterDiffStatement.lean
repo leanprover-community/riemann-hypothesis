@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.BI GlobalTheory.BrauerZero
 
 theorem _root_.GlobalTheory.T.induced_one_sub_index_mem_degreeOneCharacterDiff : ∀ {G : Type} [Group G] [Finite G] (K : Subgroup G), (∀ a b : G, a * b * a⁻¹ * b⁻¹ ∈ K) → ind K (fun _ => (1 : ℂ)) - (fun _ => (K.index : ℂ)) ∈ D0 G := by
-  first | exact @GlobalTheory.BrauerZero.ind_one_sub_index_mem_D0 | exact GlobalTheory.BrauerZero.ind_one_sub_index_mem_D0 | (intros; apply GlobalTheory.BrauerZero.ind_one_sub_index_mem_D0 <;> assumption)
+  exact @GlobalTheory.BrauerZero.ind_one_sub_index_mem_D0

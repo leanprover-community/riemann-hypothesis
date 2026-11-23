@@ -50,4 +50,4 @@ open ReciprocityTheory.ChartRestriction.G.TB.ValAt ReciprocityTheory.ChartRestri
 open GlobalTheory.CompanionTheory.Ar.Flat.GagaC
 
 theorem _root_.GlobalTheory.T.overlapping_analytic_charts_ratio : ∀ (X : Scheme.{0}) (s : X ⟶ Sp ℂ) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (W U U' : X.Opens) (F : (Sp ℂ ⟶ X) → ℂ) (T T' : Ω) (d d' : ℕ) (B : Set (Fin d → ℂ)) (B' : Set (Fin d' → ℂ)) (Y : (Fin d → ℂ) → (Sp ℂ ⟶ X)) (Y' : (Fin d' → ℂ) → (Sp ℂ ⟶ X)) (H : (Fin d → ℂ) → ℂ) (H' : (Fin d' → ℂ) → ℂ) (b₁ : Fin d → ℂ) (b₂ : Fin d' → ℂ) (r : ℂ), IsCptGen ξ → HChart s ξ W U F T B Y H → HChart s ξ W U' F T' B' Y' H' → (∀ (q : X) (hq : genPt ξ ⤳ q), q ∈ U → q ∈ W → unitAt ξ ⟨q, hq⟩ T) → (∀ (q : X) (hq : genPt ξ ⤳ q), q ∈ U' → q ∈ W → unitAt ξ ⟨q, hq⟩ T') → b₁ ∈ B → b₂ ∈ B' → Y b₁ = Y' b₂ → ValAt ξ (Y b₁) (T' / T) r → H b₁ = r * H' b₂ := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.GagaC.Compare.eq_val_mul | exact GlobalTheory.CompanionTheory.Ar.Flat.GagaC.Compare.eq_val_mul | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.GagaC.Compare.eq_val_mul <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.GagaC.Compare.eq_val_mul

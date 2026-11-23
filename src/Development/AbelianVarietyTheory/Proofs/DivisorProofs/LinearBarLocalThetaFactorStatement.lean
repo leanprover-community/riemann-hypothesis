@@ -46,4 +46,4 @@ theorem _root_.GlobalTheory.T.linear_bar_local_theta_factor : GlobalTheory.FunPr
     ∀ φ ∈ SB (Fin a' × Fin (a + a') → Fv F v), ∀ φ₁ ∈ SB (Fin a' × Fin (a + a') → Fv F v),
     Acts (evFin F v) (om' (g, h)) φ φ₁ →
     ∃ (c : ℂ) (P : GL (Fin a') (Fv F v)) (Q : GL (Fin (a + a')) (Fv F v)), ∀ Y, ι φ₁ Y = c * ι φ (P.1 * Y * Q.1) := by
-  first | exact @GlobalTheory.OppLinOp.local_op_eq_smul | exact GlobalTheory.OppLinOp.local_op_eq_smul | (intros; apply GlobalTheory.OppLinOp.local_op_eq_smul <;> assumption)
+  exact @GlobalTheory.OppLinOp.local_op_eq_smul

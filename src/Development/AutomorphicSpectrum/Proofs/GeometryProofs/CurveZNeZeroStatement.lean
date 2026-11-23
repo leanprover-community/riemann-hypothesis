@@ -44,4 +44,4 @@ open Matrix GlobalTheory GlobalTheory.CM GlobalTheory.CompanionTheory.Ar GlobalT
 open scoped ComplexOrder
 
 theorem _root_.GlobalTheory.T.curve_z_ne_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (ρ : ℂ) (Z : Curve0 H ρ), Z.z ≠ 0 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fl.curve0_z_ne_zero | exact GlobalTheory.CompanionTheory.Ar.Fl.curve0_z_ne_zero | (intros; apply GlobalTheory.CompanionTheory.Ar.Fl.curve0_z_ne_zero <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fl.curve0_z_ne_zero

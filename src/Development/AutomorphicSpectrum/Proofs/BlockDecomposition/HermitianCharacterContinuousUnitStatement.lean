@@ -47,4 +47,4 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.hermitian_character_continuous_unit : ∀ (D : D7) (n : ℕ) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ β : PositivityTheory.GramSchwartzFunctions.HermE D n, Continuous (fun b : PositivityTheory.GramSchwartzFunctions.BC.hermA D n => ψ (-GlobalTheory.StdUnn.halfTr (Matrix.trace (HMul.hMul (β.1.map (incA D)) b.1 : Mx D n n)))) ∧ ∀ b : PositivityTheory.GramSchwartzFunctions.BC.hermA D n, ‖ψ (-GlobalTheory.StdUnn.halfTr (Matrix.trace (HMul.hMul (β.1.map (incA D)) b.1 : Mx D n n)))‖ = 1 := by
-  first | exact @GlobalTheory.CompanionTheory.CoefWeight.continuous_norm_coefChar | exact GlobalTheory.CompanionTheory.CoefWeight.continuous_norm_coefChar | (intros; apply GlobalTheory.CompanionTheory.CoefWeight.continuous_norm_coefChar <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CoefWeight.continuous_norm_coefChar

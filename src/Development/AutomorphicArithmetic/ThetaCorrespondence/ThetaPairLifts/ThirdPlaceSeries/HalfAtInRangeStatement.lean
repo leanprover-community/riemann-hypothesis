@@ -45,5 +45,5 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open scoped TensorProduct
 
 theorem _root_.GlobalTheory.T.inRange_halfAt_of_smallAt : _root_.GlobalTheory.ExpTie.InRangeAlt fun Fm x _ i p j P _ w => SmallAt p j P w → HalfAt (Fm.D x i) (Formalism.EigenvalueLevelCeiling.plc w) := by
-  first | exact @_root_.GlobalTheory.HalfLabels.halfAt_inRange_alt | exact _root_.GlobalTheory.HalfLabels.halfAt_inRange_alt | (intros; apply _root_.GlobalTheory.HalfLabels.halfAt_inRange_alt <;> assumption)
+  exact @_root_.GlobalTheory.HalfLabels.halfAt_inRange_alt
 end

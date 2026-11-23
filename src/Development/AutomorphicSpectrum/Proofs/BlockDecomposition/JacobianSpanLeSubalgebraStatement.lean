@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.jacobian_span_le_subalgebra : ∀ {K : Type} [Fiel
     (B : Subalgebra K Γ(X, V)), (B : Set Γ(X, V)) = Set.range (rs h) →
     ∀ {d m : ℕ} (D : Fin d → Derivation K Γ(X, V) Γ(X, V)) (κ : Fin m → Fin d),
     jacSpan h (RingHom.id _) (fun k => D k) κ ≤ jacS B D κ := by
-  first | exact @GlobalTheory.CompanionTheory.Cone.jacSpan_le_jacS | exact GlobalTheory.CompanionTheory.Cone.jacSpan_le_jacS | (intros; apply GlobalTheory.CompanionTheory.Cone.jacSpan_le_jacS <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Cone.jacSpan_le_jacS

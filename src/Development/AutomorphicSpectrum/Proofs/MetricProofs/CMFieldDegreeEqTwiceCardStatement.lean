@@ -48,4 +48,4 @@ open scoped ComplexOrder
 
 
 theorem _root_.GlobalTheory.T.CM_field_degree_eq_twice_card : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (σ : Ψ → (𝓞 E →+* ℂ)), IsCMFam σ → Module.finrank ℚ E = 2 * Fintype.card Ψ := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.CMRank.finrank_eq_two_mul_card | exact GlobalTheory.CompanionTheory.Ar.Cusp.CMRank.finrank_eq_two_mul_card | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.CMRank.finrank_eq_two_mul_card <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Cusp.CMRank.finrank_eq_two_mul_card

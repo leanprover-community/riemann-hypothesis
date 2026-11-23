@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open MvPolynomial MeasureTheory ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 ReciprocityTheory.AnForm.M GlobalTheory.CompanionTheory.Ar.Cmp GlobalTheory.CompanionTheory.Ar.PB Filter Topology
 
 theorem _root_.GlobalTheory.T.points_integrable_of_resolution_statement : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement → PtsIntegrableStatement := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Giv.ptsIntegrable_of_resK | exact GlobalTheory.CompanionTheory.Ar.Giv.ptsIntegrable_of_resK | (intros; apply GlobalTheory.CompanionTheory.Ar.Giv.ptsIntegrable_of_resK <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Giv.ptsIntegrable_of_resK

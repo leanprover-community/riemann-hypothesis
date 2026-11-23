@@ -49,4 +49,4 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 open scoped DirectSum
 
 theorem _root_.GlobalTheory.T.galois_unramified_outside_descends_finite : ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) (S : Finset (HeightOneSpectrum (𝓞 F))), ContainsAbove S l → ∃ (K : FiniteSubfield) (S' : Finset (HeightOneSpectrum (𝓞 K.1))), ContainsAbove S' l ∧ Nonempty (galUnramifiedOutside F Ω (S : Set (HeightOneSpectrum (𝓞 F))) ≃ₜ* Gs K S') := by
-  first | exact @GlobalTheory.CompanionTheory.GSCd.Transport.exists_gs_transport | exact GlobalTheory.CompanionTheory.GSCd.Transport.exists_gs_transport | (intros; apply GlobalTheory.CompanionTheory.GSCd.Transport.exists_gs_transport <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GSCd.Transport.exists_gs_transport

@@ -44,4 +44,4 @@ open Matrix GlobalTheory GlobalTheory.CM GlobalTheory.CompanionTheory.Ar GlobalT
 open scoped ComplexOrder
 
 theorem _root_.GlobalTheory.T.chowla_selberg_period : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [NeZero H.d] (χ : DirichletCharacter ℂ H.d), IsKroneckerChar χ → ∀ ρ : ℂ, ρ ^ 2 = -(H.d : ℂ) → ∃ (Z : Curve0 H ρ) (x : ℝ), Z.z ≠ 0 ∧ Z.C.HasPeriod x ∧ (x : ℂ) = (Real.eulerMascheroniConstant + Real.log (2 * Real.pi / √H.d) : ℝ) - deriv χ.LFunction 1 / χ.LFunction 1 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fl.exists_curve0_hasPeriod | exact GlobalTheory.CompanionTheory.Ar.Fl.exists_curve0_hasPeriod | (intros; apply GlobalTheory.CompanionTheory.Ar.Fl.exists_curve0_hasPeriod <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fl.exists_curve0_hasPeriod

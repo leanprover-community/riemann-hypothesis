@@ -48,4 +48,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 theorem _root_.GlobalTheory.T.lintegral_siegelTorusCone_modulus_lt_top : ∀ (F : Type) [Field F] [NumberField F] (m r n : ℕ) (c : ℝ), 0 < c → (r = 0 ∨ n + r < m) → ∫⁻ t in GlobalTheory.SiegelSet.cone r c, ENNReal.ofReal (∏ i, t i ^ (Module.finrank ℚ F * (2 * n))) * ENNReal.ofReal ((GlobalTheory.SiegelSet.modulus F m t * ∏ i, t i)⁻¹) < ⊤ := by
-  first | exact @GlobalTheory.SiegelSet.lintegral_cone_modulus_lt_top_of_witt | exact GlobalTheory.SiegelSet.lintegral_cone_modulus_lt_top_of_witt | (intros; apply GlobalTheory.SiegelSet.lintegral_cone_modulus_lt_top_of_witt <;> assumption)
+  exact @GlobalTheory.SiegelSet.lintegral_cone_modulus_lt_top_of_witt

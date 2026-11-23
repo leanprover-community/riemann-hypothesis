@@ -48,4 +48,4 @@ open scoped ComplexOrder
 
 
 theorem _root_.GlobalTheory.T.real_basis_from_lattice_basis : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (g N : ℕ) (σ : Ψ → (𝓞 E →+* ℂ)), IsCMFam σ → g = Fintype.card Ψ * N → ∀ (Λ : Type) [AddCommGroup Λ] (e : Λ →+ (Fin N → E)), (∀ v : Fin N → E, ∃ (k : ℕ) (x : Λ), k ≠ 0 ∧ e x = k • v) → ∀ lam : Module.Basis (Fin (2 * g)) ℤ Λ, ∃ bas : Module.Basis (Fin (2 * g)) ℝ (Ψ → Fin N → ℂ), ∀ k τ i, bas k τ i = embOf (σ τ) (e (lam k) i) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.Dict.exists_realBasis_of_latBasis | exact GlobalTheory.CompanionTheory.Ar.Cusp.Dict.exists_realBasis_of_latBasis | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.Dict.exists_realBasis_of_latBasis <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Cusp.Dict.exists_realBasis_of_latBasis

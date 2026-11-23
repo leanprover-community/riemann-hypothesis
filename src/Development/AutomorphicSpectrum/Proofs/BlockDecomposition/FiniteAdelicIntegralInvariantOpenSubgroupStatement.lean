@@ -70,4 +70,4 @@ theorem _root_.GlobalTheory.T.finite_adelic_integral_invariant_open_subgroup : �
     ∃ U : AddSubgroup (HermR (Af F) σ n), IsOpen (U : Set (HermR (Af F) σ n)) ∧
       IsCompact (U : Set (HermR (Af F) σ n)) ∧
       ∀ b, ∀ u ∈ U, starLoc (Af F) σ J (psiFin F ψ) μ Q (b + u) = starLoc (Af F) σ J (psiFin F ψ) μ Q b := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Period.starLoc_periodic | exact GlobalTheory.CompanionTheory.SiegelND.Integ.Period.starLoc_periodic | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.Period.starLoc_periodic <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Period.starLoc_periodic

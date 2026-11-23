@@ -51,4 +51,4 @@ open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory
 open ReciprocityTheory.AnForm (levi)
 
 theorem _root_.GlobalTheory.T.projection_of_chart_analytic : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) (M : XModel D) (a : Fin D.nCharts) (k : Fin M.atlas.n), ∀ t ∈ Metric.ball (0 : Fin D.n → ℂ) 1, M.proj ((D.chart a).γ t) ∈ (M.atlas.chart k).source → AnalyticAt ℂ (fun t' : Fin D.n → ℂ => M.atlas.chart k (M.proj ((D.chart a).γ t'))) t ∧ Function.Bijective (fderiv ℂ (fun t' : Fin D.n → ℂ => M.atlas.chart k (M.proj ((D.chart a).γ t'))) t) := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.projection_of_chart_analytic | exact GlobalTheory.CompanionTheory.Relay.projection_of_chart_analytic | (intros; apply GlobalTheory.CompanionTheory.Relay.projection_of_chart_analytic <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.projection_of_chart_analytic

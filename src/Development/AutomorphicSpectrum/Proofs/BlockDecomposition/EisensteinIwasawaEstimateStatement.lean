@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.SwEis
 
 theorem _root_.GlobalTheory.T.eisenstein_iwasawa_estimate : EIwa := by
-  first | exact @GlobalTheory.CompanionTheory.SwEisIwa.eIwa | exact GlobalTheory.CompanionTheory.SwEisIwa.eIwa | (intros; apply GlobalTheory.CompanionTheory.SwEisIwa.eIwa <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SwEisIwa.eIwa

@@ -56,4 +56,4 @@ open GlobalTheory.CompanionTheory.LTPer.Tilt
 
 theorem _root_.GlobalTheory.T.uniformizer_residue_field_finite_power : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)), Irreducible π →
     (Ideal.span {π}).IsMaximal ∧ Finite (↥(OL K) ⧸ Ideal.span {π}) ∧ ∃ f : ℕ, 0 < f ∧ qOf π = l ^ f := by
-  first | exact @GlobalTheory.CompanionTheory.LTPer.Tilt.resfield_of_irreducible | exact GlobalTheory.CompanionTheory.LTPer.Tilt.resfield_of_irreducible | (intros; apply GlobalTheory.CompanionTheory.LTPer.Tilt.resfield_of_irreducible <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTPer.Tilt.resfield_of_irreducible

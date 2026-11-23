@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.exists_affine_cover_cechLB_fibre_acyclic : ∀ {k 
     (hac : (cechLB f (G.pull π) D).Acyclic)
     (s : Sp k ⟶ Spec (CommRingCat.of R)) (σ : X ⟶ Z) (hs : s ≫ t ≫ b = 𝟙 _) (h₁ : σ ≫ p = 𝟙 X)
     (h₂ : σ ≫ q = a ≫ s ≫ t), ∃ D' : κ → X.Opens, (∀ i, IsAffineOpen (D' i)) ∧ ⨆ i, D' i = ⊤ ∧ (cechLB a (G.pull σ) D').Acyclic := by
-  first | exact @GlobalTheory.CompanionTheory.PointSurjFibre.cech_fibre_acyclic | exact GlobalTheory.CompanionTheory.PointSurjFibre.cech_fibre_acyclic | (intros; apply GlobalTheory.CompanionTheory.PointSurjFibre.cech_fibre_acyclic <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PointSurjFibre.cech_fibre_acyclic

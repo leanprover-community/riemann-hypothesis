@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open ReciprocityTheory.Ty.Fin
 
 theorem _root_.GlobalTheory.T.central_idempotent_properties : ReciprocityTheory.Ty.Fin.St.ZIdemFacts := by
-  first | exact @GlobalTheory.CompanionTheory.TyFin.zIdemFacts | exact GlobalTheory.CompanionTheory.TyFin.zIdemFacts | (intros; apply GlobalTheory.CompanionTheory.TyFin.zIdemFacts <;> assumption)
+  exact @GlobalTheory.CompanionTheory.TyFin.zIdemFacts

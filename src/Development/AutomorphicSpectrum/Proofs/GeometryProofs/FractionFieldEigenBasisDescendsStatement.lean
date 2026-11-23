@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.fraction_field_eigen_basis_descends : ∀ (E : Typ
     LinearIndependent C (fun i k => j (b i k)) ∧
       Submodule.span C (Set.range fun i k => j (b i k)) = HT.eigSp ρC (j.comp σ) ∧
       Submodule.span A (Set.range fun i k => j (b i k)) = HT.eigSub ρC (j.comp σ) (stdLat A C g) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.FlatEig.eigSub_baseChange | exact GlobalTheory.CompanionTheory.Ar.Flat.CPoint.FlatEig.eigSub_baseChange | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.CPoint.FlatEig.eigSub_baseChange <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.FlatEig.eigSub_baseChange

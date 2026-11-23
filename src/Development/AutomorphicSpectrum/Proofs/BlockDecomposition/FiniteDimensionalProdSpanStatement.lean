@@ -46,4 +46,4 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation Glob
 open scoped ContDiff
 
 theorem _root_.GlobalTheory.T.finiteDimensional_prodSpan : ∀ {A B : Type} (U₁ : Submodule ℂ (A → ℂ)) (U₂ : Submodule ℂ (B → ℂ)), FiniteDimensional ℂ U₁ → FiniteDimensional ℂ U₂ → FiniteDimensional ℂ (prodSpan U₁ U₂) := by
-  first | exact @GlobalTheory.CompanionTheory.LimV.finiteDimensional_prodSpan_of_fd | exact GlobalTheory.CompanionTheory.LimV.finiteDimensional_prodSpan_of_fd | (intros; apply GlobalTheory.CompanionTheory.LimV.finiteDimensional_prodSpan_of_fd <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LimV.finiteDimensional_prodSpan_of_fd

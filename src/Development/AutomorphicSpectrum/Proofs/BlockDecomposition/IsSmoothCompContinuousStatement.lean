@@ -54,4 +54,4 @@ open GroundTheory.Automorphic (permGL indRep)
 open DoubleCoset (doubleCoset)
 
 theorem _root_.GlobalTheory.T.isSmooth_comp_continuous : ∀ {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H] [TopologicalSpace H] [IsTopologicalGroup H] (ψ : H →* G), Continuous ψ → ∀ {W : Type} [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ G W), GlobalTheory.PRep.IsSmooth ρ → GroundTheory.Automorphic.IsSmooth (ρ.comp ψ) := by
-  first | exact @GlobalTheory.CompanionTheory.SmoothBridge.isSmooth_comp | exact GlobalTheory.CompanionTheory.SmoothBridge.isSmooth_comp | (intros; apply GlobalTheory.CompanionTheory.SmoothBridge.isSmooth_comp <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SmoothBridge.isSmooth_comp

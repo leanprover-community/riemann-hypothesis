@@ -49,4 +49,4 @@ open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm 
 open scoped ComplexOrder
 
 theorem _root_.GlobalTheory.T.monge_ampere_integral_congr_potentials : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] [CompactSpace X] [T2Space X] (A : FinHolAtlas e X) (U : Set X) (P Q : Fin e → LocPot X) (g g' : X → ℝ), IsNull A Uᶜ → (∀ i, SamePot A U (P i) (Q i)) → (∀ i, ∀ x ∈ U, IsTwiceDifferentiableAt A (Q i) x) → (∀ x ∈ U, g x = g' x) → mInt A P g = mInt A Q g' ∧ (MIntegrable A P g ↔ MIntegrable A Q g') := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.mInt_congr_samePot | exact GlobalTheory.CompanionTheory.Ar.PB.mInt_congr_samePot | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.mInt_congr_samePot <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.mInt_congr_samePot

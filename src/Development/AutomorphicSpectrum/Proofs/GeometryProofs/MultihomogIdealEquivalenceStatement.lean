@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open MvPolynomial
 
 theorem _root_.GlobalTheory.T.isMultiHomogIdeal_transfer : ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MvPolynomial (Σ k, ι k) ℤ)), ReciprocityTheory.ChartRestriction.G.Geo.IsMultiHomogIdeal P → GroundTheory.Heights₂.Heights.NumbersDVR.IsMultiHomogIdeal P := by
-  first | exact @GlobalTheory.CompanionTheory.Ggeo.CompMem.comp_mem | exact GlobalTheory.CompanionTheory.Ggeo.CompMem.comp_mem | (intros; apply GlobalTheory.CompanionTheory.Ggeo.CompMem.comp_mem <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ggeo.CompMem.comp_mem

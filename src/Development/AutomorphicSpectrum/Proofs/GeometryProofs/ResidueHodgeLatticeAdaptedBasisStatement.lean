@@ -75,4 +75,4 @@ theorem _root_.GlobalTheory.T.residue_hodge_lattice_adapted_basis : ∀ (E : Typ
     LinearIndependent C w → Submodule.span C (Set.range w) = HT.eigSp ρC σ' →
     Submodule.span A (Set.range w) = HT.eigSub ρC σ' (stdLat A C g) →
     ∃ ε : Aˣ, Ap.det * Q.det = algebraMap A C ε * gm * P.det := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.det_evaluated_frame | exact GlobalTheory.CompanionTheory.Ar.Flat.CPoint.det_evaluated_frame | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.CPoint.det_evaluated_frame <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.det_evaluated_frame

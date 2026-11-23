@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Base1
 
 theorem _root_.GlobalTheory.T.scalar_fibration_formula : Scal := by
-  first | exact @GlobalTheory.CompanionTheory.RgBase.ScalFib.scal | exact GlobalTheory.CompanionTheory.RgBase.ScalFib.scal | (intros; apply GlobalTheory.CompanionTheory.RgBase.ScalFib.scal <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgBase.ScalFib.scal

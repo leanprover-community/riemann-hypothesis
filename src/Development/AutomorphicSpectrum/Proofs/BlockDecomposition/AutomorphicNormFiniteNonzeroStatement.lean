@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.automorphic_norm_finite_nonzero : ∀ (E : Type) [
   (μ : Measure (GA E N)) [μ.IsHaarMeasure] (F : Set (GA E N)), IsFundamentalDomain (latticeGL E N) F μ →
   ∀ φ : Sm E N, IsAutForm φ → IsSqInt φ.1 → φ ≠ 0 →
     (∫⁻ x in F, ‖φ.1 x‖ₑ ^ 2 ∂μ) ≠ ⊤ ∧ (∫⁻ x in F, ‖φ.1 x‖ₑ ^ 2 ∂μ) ≠ 0 := by
-  first | exact @GlobalTheory.CompanionTheory.FinDisc.sqMass_ne_top_and_ne_zero | exact GlobalTheory.CompanionTheory.FinDisc.sqMass_ne_top_and_ne_zero | (intros; apply GlobalTheory.CompanionTheory.FinDisc.sqMass_ne_top_and_ne_zero <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FinDisc.sqMass_ne_top_and_ne_zero

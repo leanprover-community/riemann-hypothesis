@@ -60,4 +60,4 @@ theorem _root_.GlobalTheory.T.unitary_cell_block_normal_form : ∀ {K : Type} [F
       IsUnitary σ (blk4 0 1 (-1) 0) (blk4 (bl hn a₁ a₂ a₃ a₄) (bl hn b₁ b₂ b₃ b₄) (bl hn (-1) X 0 c') (bl hn Z Y W d')) ∧
       IsUnit (blk4 (bl hn a₁ a₂ a₃ a₄) (bl hn b₁ b₂ b₃ b₄) (bl hn (-1) X 0 c') (bl hn Z Y W d')).det ∧
       lowerC x = T₀ * bl hn (-1) X 0 c' ∧ GlobalTheory.CompanionTheory.RatPtsUnn.blkD x = T₀ * bl hn Z Y W d' := by
-  first | exact @GlobalTheory.CompanionTheory.ZUnf.rowReduce_lowerC | exact GlobalTheory.CompanionTheory.ZUnf.rowReduce_lowerC | (intros; apply GlobalTheory.CompanionTheory.ZUnf.rowReduce_lowerC <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ZUnf.rowReduce_lowerC

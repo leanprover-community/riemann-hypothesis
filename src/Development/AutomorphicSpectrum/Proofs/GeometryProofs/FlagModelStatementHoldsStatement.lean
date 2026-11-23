@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open GlobalTheory.CompanionTheory.Ar
 
 theorem _root_.GlobalTheory.T.FlagModelStatement_holds : FlagModelStatement := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.FlagModel.flagModel | exact GlobalTheory.CompanionTheory.Ar.FlagModel.flagModel | (intros; apply GlobalTheory.CompanionTheory.Ar.FlagModel.flagModel <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.FlagModel.flagModel

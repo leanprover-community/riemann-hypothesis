@@ -47,4 +47,4 @@ theorem _root_.GlobalTheory.T.exists_unramified_character_good : GlobalTheory.Fu
       ∀ ι, G.M'.IsLinBar B.ψ t 1 1 ι → ∀ g₀ : GL (Fin a') (Fv F v), ∃ g ∈ UAt σ G.V' (evFin F v),
         ∀ φ ∈ SB (Fin a' × Fin (a + a') → Fv F v), ∃ φ₁ ∈ SB (Fin a' × Fin (a + a') → Fv F v),
           Acts (evFin F v) (om' (g, 1)) φ φ₁ ∧ ι φ₁ = GlobalTheory.SplitFlip.omB ν₀ ν₀ g₀ 1 (ι φ) := by
-  first | exact @GlobalTheory.GoodPlaceAct.act_omB | exact GlobalTheory.GoodPlaceAct.act_omB | (intros; apply GlobalTheory.GoodPlaceAct.act_omB <;> assumption)
+  exact @GlobalTheory.GoodPlaceAct.act_omB

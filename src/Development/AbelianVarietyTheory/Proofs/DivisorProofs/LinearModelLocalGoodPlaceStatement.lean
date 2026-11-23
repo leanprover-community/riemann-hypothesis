@@ -66,4 +66,4 @@ theorem _root_.GlobalTheory.T.linear_model_local_good_place : ∀ (F E : Type) [
       ι ψ₁ = (fun Y => starRingEnd ℂ (ι (fun y => starRingEnd ℂ (φ₂ y)) (-Y))) →
       ι (fun y => starRingEnd ℂ (ψ₂ y)) = (fun Y => starRingEnd ℂ (ι φ₁ (-Y))) →
       Acts (evFin F v) (omd w) (boxFun φ₁ φ₂) (c • boxFun ψ₁ ψ₂) := by
-  first | exact @GlobalTheory.SwapActs.swap_acts_box | exact GlobalTheory.SwapActs.swap_acts_box | (intros; apply GlobalTheory.SwapActs.swap_acts_box <;> assumption)
+  exact @GlobalTheory.SwapActs.swap_acts_box

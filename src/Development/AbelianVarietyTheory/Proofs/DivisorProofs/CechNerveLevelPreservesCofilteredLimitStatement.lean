@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex TensorProduct GlobalTheory.EtC
 
 theorem _root_.GlobalTheory.T.cechNerve_level_preserves_cofiltered_limit : ∀ (I : Type) [SmallCategory I] [IsCofiltered I] (A : I ⥤ Arrow PSh) (cA : Cone A), IsLimit (Arrow.leftFunc.mapCone cA) → (∀ ⦃i j : I⦄ (f : i ⟶ j), IsIso (A.map f).right) → (∀ i, IsIso (cA.π.app i).right) → ∀ k : SimplexCategoryᵒᵖ, Nonempty (IsLimit (((evaluation _ PSh).obj k).mapCone (SimplicialObject.cechNerve.mapCone cA))) := by
-  first | exact @GlobalTheory.cech_level_limit | exact GlobalTheory.cech_level_limit | (intros; apply GlobalTheory.cech_level_limit <;> assumption)
+  exact @GlobalTheory.cech_level_limit

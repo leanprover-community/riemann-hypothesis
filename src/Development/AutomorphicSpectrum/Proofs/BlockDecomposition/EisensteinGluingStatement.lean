@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.SwEis
 
 theorem _root_.GlobalTheory.T.eisenstein_gluing : Glue := by
-  first | exact @GlobalTheory.CompanionTheory.PolyDenominator.glue | exact GlobalTheory.CompanionTheory.PolyDenominator.glue | (intros; apply GlobalTheory.CompanionTheory.PolyDenominator.glue <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PolyDenominator.glue

@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Bmu
 
 theorem _root_.GlobalTheory.T.ChartExistence : ChartExists := by
-  first | exact @GlobalTheory.CompanionTheory.ProdExChart.chartExists | exact GlobalTheory.CompanionTheory.ProdExChart.chartExists | (intros; apply GlobalTheory.CompanionTheory.ProdExChart.chartExists <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ProdExChart.chartExists

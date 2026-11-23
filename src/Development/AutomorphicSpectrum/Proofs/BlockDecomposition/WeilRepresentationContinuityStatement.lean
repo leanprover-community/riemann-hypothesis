@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.ThTot
 
 theorem _root_.GlobalTheory.T.weil_representation_continuity : WeilCont := by
-  first | exact @GlobalTheory.CompanionTheory.ThTot.weilCont | exact GlobalTheory.CompanionTheory.ThTot.weilCont | (intros; apply GlobalTheory.CompanionTheory.ThTot.weilCont <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ThTot.weilCont

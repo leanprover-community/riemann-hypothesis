@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.kernel_sum_bound_uniform : ∀ (E : Type) [Field E
     (∀ i, (∫⁻ x in F, ‖ψ i x‖ₑ ^ 2 ∂μ) = 1) →
     (∀ i j, i ≠ j → ∫ x in F, ψ i x * (starRingEnd ℂ) (ψ j x) ∂μ = 0) →
     ∑ i, ∫⁻ x in Ω, ‖ψ i x‖ₑ ^ 2 ∂μ ≤ B := by
-  first | exact @GlobalTheory.CompanionTheory.FinDisc.bessel_lintegral_le | exact GlobalTheory.CompanionTheory.FinDisc.bessel_lintegral_le | (intros; apply GlobalTheory.CompanionTheory.FinDisc.bessel_lintegral_le <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FinDisc.bessel_lintegral_le

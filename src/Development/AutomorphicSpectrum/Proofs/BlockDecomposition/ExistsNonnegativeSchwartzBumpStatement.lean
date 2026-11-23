@@ -61,4 +61,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 theorem _root_.GlobalTheory.T.exists_nonnegative_schwartz_bump : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] (N : Set (κ → AF F)), IsOpen N → ∀ z₀ ∈ N, ∃ Φ ∈ GlobalTheory.WeilM.schA F κ, (∀ z, 0 ≤ (Φ z).re ∧ (Φ z).im = 0) ∧ (∀ z, z ∉ N → Φ z = 0) ∧ 0 < (Φ z₀).re := by
-  first | exact @GlobalTheory.CompanionTheory.AdelicBump.exists_bump | exact GlobalTheory.CompanionTheory.AdelicBump.exists_bump | (intros; apply GlobalTheory.CompanionTheory.AdelicBump.exists_bump <;> assumption)
+  exact @GlobalTheory.CompanionTheory.AdelicBump.exists_bump

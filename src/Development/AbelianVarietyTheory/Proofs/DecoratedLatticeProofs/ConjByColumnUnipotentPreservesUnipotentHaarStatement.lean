@@ -69,4 +69,4 @@ open GlobalTheory.HaarR
 
 
 theorem _root_.GlobalTheory.T.conjByColumnUnipotent_preserves_unipotentHaar : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n] [DecidableEq n] (c ρ : ℕ) (h1 : 1 ≤ ρ) (h2 : ρ < c) (ν : Measure k), ν.IsAddHaarMeasure → ∀ β : n → k, (volN ν n c (ρ + 1)).map (cjE ρ h1 h2 β) = volN ν n c (ρ + 1) := by
-  first | exact @GlobalTheory.HaarR.map_volN_cjE | exact GlobalTheory.HaarR.map_volN_cjE | (intros; apply GlobalTheory.HaarR.map_volN_cjE <;> assumption)
+  exact @GlobalTheory.HaarR.map_volN_cjE

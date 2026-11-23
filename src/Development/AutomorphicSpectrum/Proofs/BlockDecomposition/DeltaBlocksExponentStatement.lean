@@ -42,4 +42,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 namespace PositivityTheory.Rg.BcB.F.Tail.PExp
 
 theorem _root_.GlobalTheory.T.delta_blocks_exponent : PositivityTheory.Rg.BcB.F.Tail.PExp.DlBridge := by
-  first | exact @GlobalTheory.CompanionTheory.DlBridgeAt.dlBridge | exact GlobalTheory.CompanionTheory.DlBridgeAt.dlBridge | (intros; apply GlobalTheory.CompanionTheory.DlBridgeAt.dlBridge <;> assumption)
+  exact @GlobalTheory.CompanionTheory.DlBridgeAt.dlBridge

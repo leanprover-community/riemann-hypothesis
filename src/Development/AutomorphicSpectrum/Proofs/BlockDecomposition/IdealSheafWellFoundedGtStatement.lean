@@ -49,4 +49,4 @@ import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalL
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
 
 theorem _root_.GlobalTheory.T.ideal_sheaf_well_founded_gt : ∀ {X : Scheme.{0}} [IsNoetherian X], WellFoundedGT X.IdealSheafData := by
-  first | exact @GlobalTheory.CompanionTheory.GE.idealSheafData_wellFoundedGT | exact GlobalTheory.CompanionTheory.GE.idealSheafData_wellFoundedGT | (intros; apply GlobalTheory.CompanionTheory.GE.idealSheafData_wellFoundedGT <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GE.idealSheafData_wellFoundedGT

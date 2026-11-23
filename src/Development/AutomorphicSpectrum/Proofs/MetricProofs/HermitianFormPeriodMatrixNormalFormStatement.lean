@@ -60,4 +60,4 @@ theorem _root_.GlobalTheory.T.hermitian_form_period_matrix_normal_form : ∀ (g 
       (∀ i, h.mulVec (v (Sum.inl i)) = Pi.single i 1) ∧
       (∀ i, h.mulVec (v (Sum.inr i)) = (periodMatrix X Y).mulVec (Pi.single i 1)) ∧
       (Matrix.of fun α β => (hermForm Hm (v α) (v β)).re) = siegelGram X Y := by
-  first | exact @GlobalTheory.CompanionTheory.NForm.normal_form_gram | exact GlobalTheory.CompanionTheory.NForm.normal_form_gram | (intros; apply GlobalTheory.CompanionTheory.NForm.normal_form_gram <;> assumption)
+  exact @GlobalTheory.CompanionTheory.NForm.normal_form_gram

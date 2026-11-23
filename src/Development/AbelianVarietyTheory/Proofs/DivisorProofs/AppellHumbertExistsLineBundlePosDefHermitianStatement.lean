@@ -63,4 +63,4 @@ theorem _root_.GlobalTheory.T.appellHumbert_exists_lineBundle_posDef_hermitian :
     (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm.mulVec (star z)).re) →
     (∀ l ∈ u₀.Λ, ∀ l' ∈ u₀.Λ, ∃ n : ℤ, (l ⬝ᵥ Hm.mulVec (star l')).im = n) →
     ∃ (M : LB A.left) (u : HolUnif A M g) (χ : u.Λ → ℂ), M.IsLB ∧ u.ex = u₀.ex ∧ u.IsAH Hm χ := by
-  first | exact @GlobalTheory.AHPos.exists_lb_of_posDef | exact GlobalTheory.AHPos.exists_lb_of_posDef | (intros; apply GlobalTheory.AHPos.exists_lb_of_posDef <;> assumption)
+  exact @GlobalTheory.AHPos.exists_lb_of_posDef

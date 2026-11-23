@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.archimedean_binary_gram_integral : ∀ (F E : Type
   ∀ θ : ℝ →+* Ainf F, Continuous θ → ∀ ε : ℝ, 0 < ε → ∀ (s : Ainf F) (φ : (Fin 1 → Fin 2 → Ainf F ⊗[F] E) → ℝ), Continuous φ →
   ENNReal.ofReal (ε ^ (4 * Module.finrank ℚ F)) * ∫⁻ X, ENNReal.ofReal (φ (PositivityTheory.Rg.Mass.dil θ ε X)) ∂(mi (hermScal (Ainf F) σ s)) =
     ENNReal.ofReal ((ε ^ 2) ^ Module.finrank ℚ F) * ∫⁻ X, ENNReal.ofReal (φ X) ∂(mi (hermScal (Ainf F) σ (θ (ε ^ 2) * s))) := by
-  first | exact @GlobalTheory.CompanionTheory.BinaryDil.dilation_inf_binary | exact GlobalTheory.CompanionTheory.BinaryDil.dilation_inf_binary | (intros; apply GlobalTheory.CompanionTheory.BinaryDil.dilation_inf_binary <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BinaryDil.dilation_inf_binary

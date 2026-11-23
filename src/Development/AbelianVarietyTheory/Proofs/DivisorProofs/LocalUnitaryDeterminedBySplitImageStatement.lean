@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.local_unitary_determined_by_split_image : ∀ (F E
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →
     ∀ v, X.Good v → ∀ (t : E →ₐ[F] Fv F v), ∀ h₁ ∈ UAt σ G.W (evFin F v), ∀ h₂ ∈ UAt σ G.W (evFin F v),
       (mat h₁).map (piW t) = (mat h₂).map (piW t) → h₁ = h₂ := by
-  first | exact @GlobalTheory.UnitaryInjAtPlace.eq_of_piW_eq | exact GlobalTheory.UnitaryInjAtPlace.eq_of_piW_eq | (intros; apply GlobalTheory.UnitaryInjAtPlace.eq_of_piW_eq <;> assumption)
+  exact @GlobalTheory.UnitaryInjAtPlace.eq_of_piW_eq

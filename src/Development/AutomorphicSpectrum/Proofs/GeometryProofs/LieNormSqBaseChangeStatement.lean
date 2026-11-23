@@ -46,4 +46,4 @@ open Matrix GlobalTheory GlobalTheory.CM GlobalTheory.CompanionTheory.Ar GlobalT
 open scoped ComplexOrder
 
 theorem _root_.GlobalTheory.T.lie_norm_sq_base_change : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (R R' : Type) [CommRing R] [CommRing R'] (ω : R) (ω' : R') (C : Ell H R ω) (C' : Ell H R' ω') (f : R →+* R') (φ : C'.P.A.left ⟶ C.P.A.left) (σ : R' →+* ℂ) (r : ℝ), EllMap C' C f φ → (IsLieNormSq C.P C.v (σ.comp f) r ↔ IsLieNormSq C'.P C'.v σ r) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fl.lieNormSq_baseChange | exact GlobalTheory.CompanionTheory.Ar.Fl.lieNormSq_baseChange | (intros; apply GlobalTheory.CompanionTheory.Ar.Fl.lieNormSq_baseChange <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fl.lieNormSq_baseChange

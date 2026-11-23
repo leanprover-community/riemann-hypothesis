@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open ResidueKilled.Tr
 
 theorem _root_.GlobalTheory.T.scalar_section_exists : TScal := by
-  first | exact @GlobalTheory.CompanionTheory.ScalWall.tScal | exact GlobalTheory.CompanionTheory.ScalWall.tScal | (intros; apply GlobalTheory.CompanionTheory.ScalWall.tScal <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ScalWall.tScal

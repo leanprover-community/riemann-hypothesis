@@ -55,4 +55,4 @@ open GlobalTheory.CompanionTheory.QKAvg
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.modularCharacter_adelic_GL_eq_one : ∀ (D : D7) (r : ℕ) [LocallyCompactSpace (GL (Fin r) (AE D))] (a : GL (Fin r) (AE D)), Measure.modularCharacterFun a = 1 := by
-  first | exact @GlobalTheory.CompanionTheory.GLUnimod.modularCharacterFun_GL_adele | exact GlobalTheory.CompanionTheory.GLUnimod.modularCharacterFun_GL_adele | (intros; apply GlobalTheory.CompanionTheory.GLUnimod.modularCharacterFun_GL_adele <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GLUnimod.modularCharacterFun_GL_adele

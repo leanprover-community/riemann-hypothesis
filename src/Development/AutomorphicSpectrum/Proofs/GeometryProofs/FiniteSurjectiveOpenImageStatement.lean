@@ -52,4 +52,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open scoped CategoryTheory.Obj
 
 theorem _root_.GlobalTheory.T.finite_surjective_open_image : ∀ (Z Z' : Scheme.{0}) [IsIntegral Z] [IsIntegral Z'] (π : Z' ⟶ Z), IsFinite π → Surjective π → ∀ V : Z'.Opens, (V : Set Z').Nonempty → ∃ U : Z.Opens, (U : Set Z).Nonempty ∧ π ⁻¹ᵁ U ≤ V := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Strat.preimage_le_of_finite_surjective | exact GlobalTheory.CompanionTheory.Ar.Strat.preimage_le_of_finite_surjective | (intros; apply GlobalTheory.CompanionTheory.Ar.Strat.preimage_le_of_finite_surjective <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Strat.preimage_le_of_finite_surjective

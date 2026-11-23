@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Mass
 
 theorem _root_.GlobalTheory.T.vector_length_formula_of_parts : CoCpt → LocMass → Prop1 := by
-  first | exact @GlobalTheory.CompanionTheory.Mass.One.vector_length_formula_up_to_constant | exact GlobalTheory.CompanionTheory.Mass.One.vector_length_formula_up_to_constant | (intros; apply GlobalTheory.CompanionTheory.Mass.One.vector_length_formula_up_to_constant <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Mass.One.vector_length_formula_up_to_constant

@@ -69,4 +69,4 @@ theorem _root_.GlobalTheory.T.triple_local_gl_embedding_integral : GlobalTheory.
     ∀ μ : @MeasureTheory.Measure ((Fin a' × Fin (a + a')) → Fv F v) (borel _), @MeasureTheory.Measure.IsAddHaarMeasure _ _ _ (borel _) μ →
       ∫ x, φ'' (Sum.elim x x) ∂μ =
         ((ν (GlobalTheory.SplitFlip.gdet g) : ℂ) / starRingEnd ℂ (ν (GlobalTheory.SplitFlip.gdet g) : ℂ)) * ∫ x, φ₁ x * φ₂ x ∂μ := by
-  first | exact @GlobalTheory.DblDiag.diag_integral | exact GlobalTheory.DblDiag.diag_integral | (intros; apply GlobalTheory.DblDiag.diag_integral <;> assumption)
+  exact @GlobalTheory.DblDiag.diag_integral

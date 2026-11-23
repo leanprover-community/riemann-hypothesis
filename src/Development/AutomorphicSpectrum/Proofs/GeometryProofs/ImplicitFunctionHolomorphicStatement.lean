@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.implicit_function_holomorphic : ∀ (n : ℕ) (I J
     (∀ p ∈ ball b₀ ε ×ˢ ball (Φ (b₀, x₀)) ε, (p.1, X p) ∈ Ω ∧ Φ (p.1, X p) = p.2 ∧
       ∀ v, fderiv ℂ (fun x => Φ (p.1, x)) (X p) v = 0 → v = 0) ∧
     ∀ b ∈ ball b₀ δ, ∀ x ∈ ball x₀ δ, (b, x) ∈ Ω ∧ Φ (b, x) ∈ ball (Φ (b₀, x₀)) ε ∧ X (b, Φ (b, x)) = x := by
-  first | exact @GlobalTheory.CompanionTheory.HoloChart.holomorphic_inverse_with_parameters | exact GlobalTheory.CompanionTheory.HoloChart.holomorphic_inverse_with_parameters | (intros; apply GlobalTheory.CompanionTheory.HoloChart.holomorphic_inverse_with_parameters <;> assumption)
+  exact @GlobalTheory.CompanionTheory.HoloChart.holomorphic_inverse_with_parameters

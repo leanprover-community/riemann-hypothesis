@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.minimal_generators_base_change : ∀ (R : Type) [C
         ∀ i, x i ∈ IsLocalRing.maximalIdeal R) →
       ∀ y : Fin r → S, ∑ i, c (t i) * y i ∈ (IsLocalRing.maximalIdeal R * I).map c →
         ∀ i, y i ∈ (IsLocalRing.maximalIdeal R).map c := by
-  first | exact @GlobalTheory.CompanionTheory.FewEq.minimal_generators_flat_independent | exact GlobalTheory.CompanionTheory.FewEq.minimal_generators_flat_independent | (intros; apply GlobalTheory.CompanionTheory.FewEq.minimal_generators_flat_independent <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FewEq.minimal_generators_flat_independent

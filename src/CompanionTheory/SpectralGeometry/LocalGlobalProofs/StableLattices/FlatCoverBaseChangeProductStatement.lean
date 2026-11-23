@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.flat_cover_base_change_product : ∀ (S : Scheme.{
     LocallyOfFinitePresentation q.left → Surjective q.left →
     Flat (lift (fst A X) (snd A X ≫ q)).left ∧ LocallyOfFinitePresentation (lift (fst A X) (snd A X ≫ q)).left ∧
       Surjective (lift (fst A X) (snd A X ≫ q)).left := by
-  first | exact @GlobalTheory.CompanionTheory.RigDesc.lift_fst_snd_comp_flat_lfp_surjective | exact GlobalTheory.CompanionTheory.RigDesc.lift_fst_snd_comp_flat_lfp_surjective | (intros; apply GlobalTheory.CompanionTheory.RigDesc.lift_fst_snd_comp_flat_lfp_surjective <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RigDesc.lift_fst_snd_comp_flat_lfp_surjective

@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.double_splitting_pair_identity : GlobalTheory.FunP
     (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) (χX χW : Chr F E) (om : Rep σ X W) (r s r' s' : ℕ), IsPair B M χX χW om r s r' s' →
     ∀ (dd : GlobalTheory.DblScal.DblCo σ X W) (omd : GlobalTheory.DblScal.DblRep σ (n := n) W),
       IsUSplitting (adeleClass F) B.ψ dd (actB (cA σ)) omd → ∀ v : Pl (F := F), GlobalTheory.DblScal.LocOps omd v := by
-  first | exact @GlobalTheory.DblScal.LocAt.locOps | exact GlobalTheory.DblScal.LocAt.locOps | (intros; apply GlobalTheory.DblScal.LocAt.locOps <;> assumption)
+  exact @GlobalTheory.DblScal.LocAt.locOps

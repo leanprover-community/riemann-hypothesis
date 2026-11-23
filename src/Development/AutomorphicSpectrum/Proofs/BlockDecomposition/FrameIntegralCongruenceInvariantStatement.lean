@@ -48,4 +48,4 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.frame_integral_congruence_invariant : ∀ (D : D7) (V : HSp D) (ν : Measure (GA D V)) (r : ℕ) (φ : Mx D V.rank r → ℂ) (β : HermE D r) (a : Matrix (Fin r) (Fin r) D.host.E), a.det ≠ 0 → IfrB V ν φ (GlobalTheory.CompanionTheory.WeilSiegel.Deg.congrH a β) = IfrB V ν (pull a φ) β := by
-  first | exact @GlobalTheory.CompanionTheory.WeilSiegel.Deg.ifrB_congrH | exact GlobalTheory.CompanionTheory.WeilSiegel.Deg.ifrB_congrH | (intros; apply GlobalTheory.CompanionTheory.WeilSiegel.Deg.ifrB_congrH <;> assumption)
+  exact @GlobalTheory.CompanionTheory.WeilSiegel.Deg.ifrB_congrH

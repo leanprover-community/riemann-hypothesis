@@ -50,4 +50,4 @@ open Matrix GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionT
 open scoped ComplexOrder
 
 theorem _root_.GlobalTheory.T.gram_determinant_log_different : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (I : Type) [Fintype I] [DecidableEq I] (x : I → D.La) (ℓ : Nat.Primes), IsLocBasis (𝓞 E) ℓ x → ∀ j : E →+* ℂ_[ℓ], Real.log ‖j (gramE D x).det‖ = -(Fintype.card I : ℝ) * logIdeal (j.comp (algebraMap (𝓞 E) E)) (differentIdeal ℤ (𝓞 E)) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fl.GramDet.log_norm_det_gramE | exact GlobalTheory.CompanionTheory.Ar.Fl.GramDet.log_norm_det_gramE | (intros; apply GlobalTheory.CompanionTheory.Ar.Fl.GramDet.log_norm_det_gramE <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fl.GramDet.log_norm_det_gramE

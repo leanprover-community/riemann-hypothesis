@@ -48,4 +48,4 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.hasProperSmoothDualRepresentative_noetherian_induction : ∀ (R : Type) [CommRing R] [Algebra.FiniteType ℤ R] (A : Over (Sp R)) [GrpObj A] (g : ℕ), IsAbelianScheme A → SmoothOfRelativeDimension g A.hom → (∀ J : Ideal R, J ≠ ⊥ → HasRep A g (Over.mk (spMap (Ideal.Quotient.mk J)))) → HasRep A g (𝟙_ _) := by
-  first | exact @GlobalTheory.DualCon.Step.step | exact GlobalTheory.DualCon.Step.step | (intros; apply GlobalTheory.DualCon.Step.step <;> assumption)
+  exact @GlobalTheory.DualCon.Step.step

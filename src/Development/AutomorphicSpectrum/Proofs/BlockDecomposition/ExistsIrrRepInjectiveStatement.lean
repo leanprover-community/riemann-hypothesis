@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.exists_injective_irreducible_subrepresentation : �
     (A : Representation ℂ (GL (Fin n) k) V) (A₀ : Representation ℂ (GL (Fin n) k) W),
     IsSmooth A → Nontrivial V → IsSubquotient A A₀ → HasFiniteLength A₀ →
     ∃ (S : IrrRep (GL (Fin n) k)) (f : S.ρ.IntertwiningMap A), Function.Injective f := by
-  first | exact @GlobalTheory.CompanionTheory.IrrSub.exists_irrRep_injective | exact GlobalTheory.CompanionTheory.IrrSub.exists_irrRep_injective | (intros; apply GlobalTheory.CompanionTheory.IrrSub.exists_irrRep_injective <;> assumption)
+  exact @GlobalTheory.CompanionTheory.IrrSub.exists_irrRep_injective

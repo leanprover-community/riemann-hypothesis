@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.projective_modules_glue_cover : ∀ (R E : Type) [
     [∀ i, IsScalarTower R (Localization.Away (f i)) (F i)] [∀ i, Module.Finite (Localization.Away (f i)) (F i)]
     [∀ i, Module.Projective (Localization.Away (f i)) (F i)] (φ : ∀ i, E →ₗ[R] F i),
     (∀ i, IsLocalizedModule (Submonoid.powers (f i)) (φ i)) → Module.Finite R E ∧ Module.Projective R E := by
-  first | exact @GlobalTheory.CompanionTheory.Ggeo.finite_projective_of_isLocalizedModule_cover | exact GlobalTheory.CompanionTheory.Ggeo.finite_projective_of_isLocalizedModule_cover | (intros; apply GlobalTheory.CompanionTheory.Ggeo.finite_projective_of_isLocalizedModule_cover <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ggeo.finite_projective_of_isLocalizedModule_cover

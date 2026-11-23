@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Base1
 
 theorem _root_.GlobalTheory.T.hasse_principle_hermitian : Hasse := by
-  first | exact @GlobalTheory.CompanionTheory.SW.BaseHasse.hasse | exact GlobalTheory.CompanionTheory.SW.BaseHasse.hasse | (intros; apply GlobalTheory.CompanionTheory.SW.BaseHasse.hasse <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SW.BaseHasse.hasse

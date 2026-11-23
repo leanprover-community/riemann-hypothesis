@@ -74,4 +74,4 @@ theorem _root_.GlobalTheory.T.theta_zero_divisor_jet_bound : ∀ (g : ℕ) (Λ :
       (∀ w : Fin g → ℂ, (m : ℂ) • w ∈ Λ → θ w ≠ 0 → ∃! i, w - r i ∈ Λ) →
       Nonempty Ix ∧ Fintype.card Ix ≤
         3 * {i | (1 / 4 : ℝ) ≤ Metric.infDist (L.symm (r i) i₀ + c₀) (Set.range ((↑) : ℤ → ℝ))}.ncard := by
-  first | exact @GlobalTheory.CompanionTheory.TorsOff.torsion_off_zeros | exact GlobalTheory.CompanionTheory.TorsOff.torsion_off_zeros | (intros; apply GlobalTheory.CompanionTheory.TorsOff.torsion_off_zeros <;> assumption)
+  exact @GlobalTheory.CompanionTheory.TorsOff.torsion_off_zeros

@@ -50,4 +50,4 @@ theorem _root_.GlobalTheory.T.double_scaling_iwasawa_decomposition : ∀ (F E : 
     (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) (χX χW : Chr F E) (om : Rep σ X W) (r s r' s' : ℕ), IsPair B M χX χW om r s r' s' →
     ∀ (v : Pl (F := F)) (t : E →ₐ[F] Fv F v) (c : GL (Fin d) (Fv F v)) (g : GL (Fin d ⊕ Fin d) (Fv F v)),
       ∃ p ∈ GlobalTheory.DblScal.UDAt σ W.J (evFin F v), GlobalTheory.DblScal.locMatD t c p = g := by
-  first | exact @GlobalTheory.DblSurj.exists_locMatD_eq | exact GlobalTheory.DblSurj.exists_locMatD_eq | (intros; apply GlobalTheory.DblSurj.exists_locMatD_eq <;> assumption)
+  exact @GlobalTheory.DblSurj.exists_locMatD_eq

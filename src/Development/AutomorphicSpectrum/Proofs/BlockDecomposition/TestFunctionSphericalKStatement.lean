@@ -45,4 +45,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.RgEis PositivityTheory.RgEis.MG
 
 theorem _root_.GlobalTheory.T.test_function_spherical_K : StdGood → BdetLaw → TestFun → TestK := by
-  first | exact @GlobalTheory.CompanionTheory.EisTestK.testK | exact GlobalTheory.CompanionTheory.EisTestK.testK | (intros; apply GlobalTheory.CompanionTheory.EisTestK.testK <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EisTestK.testK

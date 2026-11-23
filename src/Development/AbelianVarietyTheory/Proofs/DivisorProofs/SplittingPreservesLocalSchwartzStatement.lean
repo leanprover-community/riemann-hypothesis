@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.splitting_preserves_local_schwartz : ∀ {F : Type
       ∀ u, At (evFin F v) u → ∀ Φ ∈ SB (κ → Fv F v),
         S (schr (GlobalTheory.LatVac.psiAt ψ v) (GlobalTheory.LatVac.locCo dd v u) Φ) =
           schr (GlobalTheory.LatVac.psiAt ψ v) (GlobalTheory.LatVac.locCo dd v (act p u)) (S Φ) := by
-  first | exact @GlobalTheory.LocSplitOp.exists_locOp | exact GlobalTheory.LocSplitOp.exists_locOp | (intros; apply GlobalTheory.LocSplitOp.exists_locOp <;> assumption)
+  exact @GlobalTheory.LocSplitOp.exists_locOp

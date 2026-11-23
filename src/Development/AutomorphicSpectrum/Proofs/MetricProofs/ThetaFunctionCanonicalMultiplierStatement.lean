@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.theta_function_canonical_multiplier : ∀ (g : ℕ
       ∀ z, θ (z + lam) = GlobalTheory.CanTh.canMult a c m n *
         Complex.exp (Real.pi * hermForm Hm z lam + Real.pi / 2 * hermForm Hm lam lam) * θ z) →
     ∃ κ : ℂ, ∀ z, θ z = κ * GlobalTheory.CanTh.canTh τ a c (h.mulVec z) := by
-  first | exact @GlobalTheory.CompanionTheory.CanThLine.level_one_line | exact GlobalTheory.CompanionTheory.CanThLine.level_one_line | (intros; apply GlobalTheory.CompanionTheory.CanThLine.level_one_line <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CanThLine.level_one_line

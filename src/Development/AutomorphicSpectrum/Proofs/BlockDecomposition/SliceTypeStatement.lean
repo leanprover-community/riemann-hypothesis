@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.EGlue
 
 theorem _root_.GlobalTheory.T.slice_type : GlobalTheory.CompanionTheory.EGlue.SliceType := by
-  first | exact @GlobalTheory.CompanionTheory.EGlue.SliceTypePf.main | exact GlobalTheory.CompanionTheory.EGlue.SliceTypePf.main | (intros; apply GlobalTheory.CompanionTheory.EGlue.SliceTypePf.main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EGlue.SliceTypePf.main

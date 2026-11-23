@@ -46,4 +46,4 @@ theorem _root_.GlobalTheory.T.shintani_cone_decomposition : ∀ {F : Type} [Fiel
     ∃ (ι : Type) (_ : Fintype ι) (r : ι → ℕ) (v : ∀ c, Fin (r c) → F), (∀ c, 0 < r c) ∧
       (∀ c, LinearIndependent ℚ (v c)) ∧ (∀ c i, v c i ∈ P) ∧ (∀ c, openCone (v c) ⊆ C) ∧
       ∀ x ∈ C, ∃! c, x ∈ openCone (v c) := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones.tile_family_closed | exact GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones.tile_family_closed | (intros; apply GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones.tile_family_closed <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones.tile_family_closed

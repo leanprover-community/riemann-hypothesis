@@ -42,4 +42,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open PositivityTheory.Rg.BcB.F.Eig
 
 theorem _root_.GlobalTheory.T.level_exists_bis : LevelEx := by
-  first | exact @GlobalTheory.CompanionTheory.LevelU.levelEx | exact GlobalTheory.CompanionTheory.LevelU.levelEx | (intros; apply GlobalTheory.CompanionTheory.LevelU.levelEx <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LevelU.levelEx

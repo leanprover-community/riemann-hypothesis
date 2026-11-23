@@ -54,4 +54,4 @@ open GlobalTheory
 
 
 theorem _root_.GlobalTheory.T.closure_dim_iff_arithmetic_variety : ∀ (m : ℕ) (n : Fin (m + 1) → ℕ) (x : MP ℤ m n) (d : ℕ), CharZero ((MP ℤ m n).residueField x) → (topologicalKrullDim (closure ({x} : Set (MP ℤ m n))) = (d : ℕ) ↔ Geo.IsArithVar (ptIdeal x) d) := by
-  first | exact @GlobalTheory.CompanionTheory.MPDict.DimClosure.dim_closure_iff_isArithVar | exact GlobalTheory.CompanionTheory.MPDict.DimClosure.dim_closure_iff_isArithVar | (intros; apply GlobalTheory.CompanionTheory.MPDict.DimClosure.dim_closure_iff_isArithVar <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MPDict.DimClosure.dim_closure_iff_isArithVar

@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Mass
 
 theorem _root_.GlobalTheory.T.equidistribution : Equi := by
-  first | exact @GlobalTheory.CompanionTheory.Equi.equi | exact GlobalTheory.CompanionTheory.Equi.equi | (intros; apply GlobalTheory.CompanionTheory.Equi.equi <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Equi.equi

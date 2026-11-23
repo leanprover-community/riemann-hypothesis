@@ -45,4 +45,4 @@ theorem _root_.GlobalTheory.T.local_unitary_group_surjects_general_linear : Glob
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →
     ∀ v, X.Good v →
     ∀ (t : E →ₐ[F] Fv F v) (g' : GL (Fin a) (Fv F v)), ∃ g ∈ UAt σ G.V (evFin F v), (mat g).map (piW t) = g'.1 := by
-  first | exact @GlobalTheory.SurjAtPlaceV.surj_at_place | exact GlobalTheory.SurjAtPlaceV.surj_at_place | (intros; apply GlobalTheory.SurjAtPlaceV.surj_at_place <;> assumption)
+  exact @GlobalTheory.SurjAtPlaceV.surj_at_place

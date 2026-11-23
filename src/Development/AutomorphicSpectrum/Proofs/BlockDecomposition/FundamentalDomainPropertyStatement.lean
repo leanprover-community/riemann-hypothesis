@@ -52,4 +52,4 @@ open GlobalTheory.CompanionTheory.ColumnSplitting
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.fundamental_domain_property : Dom := by
-  first | exact @GlobalTheory.CompanionTheory.ColumnSplitting.dom | exact GlobalTheory.CompanionTheory.ColumnSplitting.dom | (intros; apply GlobalTheory.CompanionTheory.ColumnSplitting.dom <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ColumnSplitting.dom

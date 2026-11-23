@@ -60,4 +60,4 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.
 open GlobalTheory.CompanionTheory.RgCOBlock
 
 theorem _root_.GlobalTheory.T.finite_type_algebra_common_eigencharacter : ∀ (R : Type) [CommRing R] [Algebra ℂ R] [Algebra.FiniteType ℂ R] (W : Type) [AddCommGroup W] [Module ℂ W] [Module R W] [IsScalarTower ℂ R W] (t : W), t ≠ 0 → ∃ φ : R →ₐ[ℂ] ℂ, ∀ (r : R) (c : ℂ), r • t = c • t → φ r = c := by
-  first | exact @GlobalTheory.CompanionTheory.RgCOBlock.exists_character_of_smul_ne_zero | exact GlobalTheory.CompanionTheory.RgCOBlock.exists_character_of_smul_ne_zero | (intros; apply GlobalTheory.CompanionTheory.RgCOBlock.exists_character_of_smul_ne_zero <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgCOBlock.exists_character_of_smul_ne_zero

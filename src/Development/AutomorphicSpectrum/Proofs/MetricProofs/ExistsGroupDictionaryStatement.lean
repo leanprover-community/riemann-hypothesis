@@ -46,4 +46,4 @@ open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheo
 open scoped ENNReal InnerProductSpace
 
 theorem _root_.GlobalTheory.T.exists_group_dictionary : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (H : Host E) (F : UnivFam E Ψ j j' n g Λ), Nonempty (GroupDict F) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.Dict.groupDict_nonempty | exact GlobalTheory.CompanionTheory.Ar.Cusp.Dict.groupDict_nonempty | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.Dict.groupDict_nonempty <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Cusp.Dict.groupDict_nonempty

@@ -48,4 +48,4 @@ open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.
 open scoped TensorProduct
 
 theorem _root_.GlobalTheory.T.psi_preserves_isomorphism : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (A B : MRep k n), MIso A B → GIso (psiN A) (psiN B) := by
-  first | exact @GlobalTheory.CompanionTheory.LeibOrd.PsiIso.giso_psiN | exact GlobalTheory.CompanionTheory.LeibOrd.PsiIso.giso_psiN | (intros; apply GlobalTheory.CompanionTheory.LeibOrd.PsiIso.giso_psiN <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LeibOrd.PsiIso.giso_psiN

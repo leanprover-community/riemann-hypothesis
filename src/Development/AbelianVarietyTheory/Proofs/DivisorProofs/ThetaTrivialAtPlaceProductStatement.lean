@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.theta_trivial_at_place_product : GlobalTheory.FunP
     ∃ (f₂ : SInf F (Fin a' × Fin (a + a'))) (φ₂ : ∀ w : Pl (F := F), (Fin a' × Fin (a + a') → Fv F w) → ℂ),
       (∀ w, φ₂ w ∈ SB (Fin a' × Fin (a + a') → Fv F w)) ∧ (∀ᶠ w in Filter.cofinite, φ₂ w = G.M'.vac w) ∧ φ₂ v = φ v ∧
       om' (g, h) (pure f φ) = pure f₂ φ₂ := by
-  first | exact @GlobalTheory.PureAway.pure_away | exact GlobalTheory.PureAway.pure_away | (intros; apply GlobalTheory.PureAway.pure_away <;> assumption)
+  exact @GlobalTheory.PureAway.pure_away

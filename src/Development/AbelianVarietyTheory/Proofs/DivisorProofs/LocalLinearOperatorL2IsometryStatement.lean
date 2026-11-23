@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.local_linear_operator_l2_isometry : ∀ {F : Type}
     (∀ φ ∈ SB (κ → Fv F v), ∫⁻ y, ‖T φ y‖ₑ ^ 2 ∂μ = ∫⁻ y, ‖φ y‖ₑ ^ 2 ∂μ) →
     ∀ φ₁ ∈ SB (κ → Fv F v), ∀ φ₂ ∈ SB (κ → Fv F v),
       ∫ x, T φ₁ x * starRingEnd ℂ (T (fun y => starRingEnd ℂ (φ₂ y)) x) ∂μ = ∫ x, φ₁ x * φ₂ x ∂μ := by
-  first | exact @GlobalTheory.PolarSB.pairing_eq | exact GlobalTheory.PolarSB.pairing_eq | (intros; apply GlobalTheory.PolarSB.pairing_eq <;> assumption)
+  exact @GlobalTheory.PolarSB.pairing_eq

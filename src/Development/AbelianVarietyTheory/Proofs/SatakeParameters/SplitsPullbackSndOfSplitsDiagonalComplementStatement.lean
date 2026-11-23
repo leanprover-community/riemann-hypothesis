@@ -47,4 +47,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open CategoryTheory Limits AlgebraicGeometry
 
 theorem _root_.GlobalTheory.T.splits_pullbackSnd_of_splits_diagonalComplement : ∀ {Z X V : Scheme.{0}} (f : Z ⟶ X) [IsFinite f] [Etale f] (v : V ⟶ Z), GlobalTheory.EtC.Tr.Splits (GlobalTheory.EtC.Tr.diagComplHom f) v → GlobalTheory.EtC.Tr.Splits (pullback.snd f f) v := by
-  first | exact @GlobalTheory.EtC.Tr.splits_pullbackSnd_of_splits_diagComplHom | exact GlobalTheory.EtC.Tr.splits_pullbackSnd_of_splits_diagComplHom | (intros; apply GlobalTheory.EtC.Tr.splits_pullbackSnd_of_splits_diagComplHom <;> assumption)
+  exact @GlobalTheory.EtC.Tr.splits_pullbackSnd_of_splits_diagComplHom

@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.mixed_discriminant_linear_functional : ∀ (d : �
     ∃ L : MvPolynomial (Option (Fin 3)) ℝ →ₗ[ℝ] ℂ, ∀ (c : Fin d → Fin 3 → ℝ) (v : Fin d → ℝ),
       (d.factorial : ℂ) * mdisc (fun t => (∑ i, ((c t i : ℝ) : ℂ) • T i) + ((v t : ℝ) : ℂ) • H) =
         L (∏ t, (lin4 (c t) + C (v t) * X none)) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.FibN.MdiscPoly.exists_functional | exact GlobalTheory.CompanionTheory.Ar.PB.FibN.MdiscPoly.exists_functional | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.FibN.MdiscPoly.exists_functional <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.FibN.MdiscPoly.exists_functional

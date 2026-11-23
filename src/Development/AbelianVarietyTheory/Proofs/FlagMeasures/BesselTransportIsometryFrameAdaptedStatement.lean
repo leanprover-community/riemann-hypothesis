@@ -47,4 +47,4 @@ open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotio
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.bessel_transport_isometry_frame_adapted : ∀ (D : D7) (X : HidaSetting D) (θ : ℝ) (C : Choice X θ) (u : D.what₂.Word), GlobalTheory.SnMass.IsModelAt (Jc X) (Ac X C) ∧ GlobalTheory.SnMass.Adapted (Ac X C) (Pc X u) (fc X) (sc D) := by
-  first | exact @GlobalTheory.CovDom.ModelIso.model_adapted | exact GlobalTheory.CovDom.ModelIso.model_adapted | (intros; apply GlobalTheory.CovDom.ModelIso.model_adapted <;> assumption)
+  exact @GlobalTheory.CovDom.ModelIso.model_adapted

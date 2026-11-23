@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.chart_lift_tensor_compat : ∀ {l : ℕ} [Fact l.P
       (∀ f, ev cO.D cO.inV f = Ideal.Quotient.mk _ (e (1 ⊗ₜ f))) →
       ∀ (hT : Good (l := l) cO.D m) (σ : cL.D ⟶ GObj h cO.D m hT),
         (∀ i, σ.φ (cL.t i) = Ideal.Quotient.mk _ (cO.t i)) → Function.Bijective σ.φ := by
-  first | exact @GlobalTheory.CompanionTheory.DisoHm.cmp_bij | exact GlobalTheory.CompanionTheory.DisoHm.cmp_bij | (intros; apply GlobalTheory.CompanionTheory.DisoHm.cmp_bij <;> assumption)
+  exact @GlobalTheory.CompanionTheory.DisoHm.cmp_bij

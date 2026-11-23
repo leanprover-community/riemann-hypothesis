@@ -62,4 +62,4 @@ open GlobalTheory.CompanionTheory.Ar.Flat.CPoint
 theorem _root_.GlobalTheory.T.basis_of_submodule_iff_unique_coords : ∀ (K W : Type) [Field K] [AddCommGroup W] [Module K W] (S : Submodule K W) (n : ℕ) (b : Fin n → W),
     (LinearIndependent K b ∧ Submodule.span K (Set.range b) = S) ↔
       (∀ i, b i ∈ S) ∧ ∀ e ∈ S, ∃! x : Fin n → K, e = ∑ i, x i • b i := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.basis_iff_unique_combinations | exact GlobalTheory.CompanionTheory.Ar.Flat.CPoint.basis_iff_unique_combinations | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.CPoint.basis_iff_unique_combinations <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.basis_iff_unique_combinations

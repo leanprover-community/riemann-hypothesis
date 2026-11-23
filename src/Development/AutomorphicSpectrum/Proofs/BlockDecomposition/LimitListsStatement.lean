@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.EGlue
 
 theorem _root_.GlobalTheory.T.limit_lists : GlobalTheory.CompanionTheory.EGlue.ConvStrip → GlobalTheory.CompanionTheory.EGlue.ConvShift → GlobalTheory.CompanionTheory.EGlue.ConvComp → GlobalTheory.CompanionTheory.EGlue.LimLists := by
-  first | exact @GlobalTheory.CompanionTheory.EGlue.limLists | exact GlobalTheory.CompanionTheory.EGlue.limLists | (intros; apply GlobalTheory.CompanionTheory.EGlue.limLists <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EGlue.limLists

@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.coord_degree_bound_char_zero : ∀ (X : Scheme.{0}
           IsCls b₀ i e t → ValAt ξ (spMap (algebraMap (𝓞 L) L) ≫ z) (t / gen y a e₀ c₀) u → φ x = u) →
         ∀ v : FinitePlace L, (∀ x, v (φ x) ≤ (v (m : L))⁻¹ * locRatio a w c₀ v) ∧
           ∃ x, v (m : L) * locRatio a w c₀ v ≤ v (φ x) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.RootHt.FinLocal.coord_size | exact GlobalTheory.CompanionTheory.Ar.RootHt.FinLocal.coord_size | (intros; apply GlobalTheory.CompanionTheory.Ar.RootHt.FinLocal.coord_size <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.RootHt.FinLocal.coord_size

@@ -49,4 +49,4 @@ open Matrix GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionT
 open scoped ComplexOrder
 
 theorem _root_.GlobalTheory.T.sesq_sesquilinear_skew_hermitian : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H), (∀ (a : 𝓞 E) x y, Algebra.trace ℚ E ((a : E) * sesq D x y) = (D.EF (a • x) y : ℚ)) ∧ (∀ x x' y, sesq D (x + x') y = sesq D x y + sesq D x' y) ∧ (∀ x y y', sesq D x (y + y') = sesq D x y + sesq D x y') ∧ (∀ (a : 𝓞 E) x y, sesq D (a • x) y = a * sesq D x y) ∧ (∀ (a : 𝓞 E) x y, sesq D x (a • y) = IsCMField.complexConj E (a : E) * sesq D x y) ∧ (∀ x y, sesq D y x = -IsCMField.complexConj E (sesq D x y)) ∧ ∀ δ ∈ differentIdeal ℤ (𝓞 E), ∀ x y, ∃ b : 𝓞 E, (δ : E) * sesq D x y = b := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum | exact GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum | (intros; apply GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum

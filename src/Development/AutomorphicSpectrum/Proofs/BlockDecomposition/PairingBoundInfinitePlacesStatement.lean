@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open Matrix PositivityTheory.Rg.BcB.D1
 
 theorem _root_.GlobalTheory.T.pairing_bound_infinite_places : DetMono → PairI := by
-  first | exact @GlobalTheory.CompanionTheory.Wedge.pairI_of_detMono | exact GlobalTheory.CompanionTheory.Wedge.pairI_of_detMono | (intros; apply GlobalTheory.CompanionTheory.Wedge.pairI_of_detMono <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Wedge.pairI_of_detMono

@@ -52,4 +52,4 @@ open GlobalTheory.CompanionTheory.ColumnSplitting
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.abscissa_convergence_identity : AcEq := by
-  first | exact @GlobalTheory.CompanionTheory.ColumnSplitting.GramAct.acEq | exact GlobalTheory.CompanionTheory.ColumnSplitting.GramAct.acEq | (intros; apply GlobalTheory.CompanionTheory.ColumnSplitting.GramAct.acEq <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ColumnSplitting.GramAct.acEq

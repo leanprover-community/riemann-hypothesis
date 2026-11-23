@@ -64,4 +64,4 @@ theorem _root_.GlobalTheory.T.finite_local_orbital_integral_bounded : ∀ (F E :
     ∃ (C : ℝ) (t : F), t ≠ 0 ∧ ∀ c : hermE σ n,
       ‖starLoc (Af F) σ J (psiFin F ψ) μ Q (hermIn (Af F) σ n c)‖ ≤
         C * (delta (t • c).1 : ℝ) ^ (-((M : ℝ) / 2)) := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.finite_bound | exact GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.finite_bound | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.finite_bound <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.finite_bound

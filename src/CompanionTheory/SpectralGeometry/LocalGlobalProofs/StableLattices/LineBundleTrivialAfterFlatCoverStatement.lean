@@ -54,4 +54,4 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.line_bundle_trivial_after_flat_cover : ∀ {P : Scheme.{0}} (M : LB P), M.IsLB → ∃ (Z : Scheme.{0}) (g : Z ⟶ P),
     Flat g ∧ LocallyOfFinitePresentation g ∧ Surjective g ∧ Triv (M.pull g) := by
-  first | exact @GlobalTheory.CompanionTheory.RigCover.exists_flat_cover_triv | exact GlobalTheory.CompanionTheory.RigCover.exists_flat_cover_triv | (intros; apply GlobalTheory.CompanionTheory.RigCover.exists_flat_cover_triv <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RigCover.exists_flat_cover_triv

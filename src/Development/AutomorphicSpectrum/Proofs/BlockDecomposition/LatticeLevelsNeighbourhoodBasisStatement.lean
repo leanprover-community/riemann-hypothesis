@@ -69,4 +69,4 @@ theorem _root_.GlobalTheory.T.lattice_levels_neighbourhood_basis : ∀ (F E : Ty
     (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (n M : ℕ),
     ∀ U ∈ nhds (0 : Fin n → Fin M → Af F ⊗[F] E), ∃ N : ℕ, 0 < N ∧
       (latN b n M N : Set (Fin n → Fin M → Af F ⊗[F] E)) ⊆ U := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.latN_small | exact GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.latN_small | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.latN_small <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.latN_small

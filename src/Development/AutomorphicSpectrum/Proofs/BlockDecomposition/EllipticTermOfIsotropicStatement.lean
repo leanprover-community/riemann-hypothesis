@@ -45,4 +45,4 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 
 theorem _root_.GlobalTheory.T.elliptic_term_of_isotropic : OnlyIsotropic → EllTerm := by
-  first | exact @GlobalTheory.CompanionTheory.EllIso.ellTerm_of_onlyIsotropic | exact GlobalTheory.CompanionTheory.EllIso.ellTerm_of_onlyIsotropic | (intros; apply GlobalTheory.CompanionTheory.EllIso.ellTerm_of_onlyIsotropic <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EllIso.ellTerm_of_onlyIsotropic

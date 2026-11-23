@@ -486,7 +486,7 @@ theorem clause_bdd (hI : GlobalTheory.Grid.IsIntw θ M' M ω' pt It) (hA : AdjRe
     obtain ⟨c, hc⟩ := hI.bdd φ x
     refine ⟨|c|, fun u => ?_⟩
     have h1 := hc u
-    rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul, norm_mul, Complex.norm_real, norm_inv, hT, RCLike.norm_conj,
+    rw [_root_.smul_apply, smul_eq_mul, norm_mul, Complex.norm_real, norm_inv, hT, RCLike.norm_conj,
       Real.norm_of_nonneg (hN0 u)]
     rcases (hN0 u).eq_or_lt with e | e
     · rw [← e]; simp
@@ -507,7 +507,7 @@ theorem clause_bdd (hI : GlobalTheory.Grid.IsIntw θ M' M ω' pt It) (hA : AdjRe
       simp only [map_zero, norm_zero]
       positivity
     · have h1 := hC u fun τ => (v τ : M'.H τ)
-      rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul, norm_mul, Complex.norm_real, norm_inv, hT, RCLike.norm_conj,
+      rw [_root_.smul_apply, smul_eq_mul, norm_mul, Complex.norm_real, norm_inv, hT, RCLike.norm_conj,
         Real.norm_of_nonneg (hN0 u)] at h1
       set N := ∏ ρ, ‖(u ρ : M.H ρ)‖
       calc _ = N * (N⁻¹ * ‖ellT M' (fun τ => v τ) (inclT M' (It φ (PiTensorProduct.tprod ℂ u)))‖) := by field_simp
@@ -648,6 +648,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.PairLift
 theorem _root_.GlobalTheory.Adopt.realThetaIntertwiner_adjoint_isRealThetaIntertwiner : ∀ (D : D7) (V W : HSp D) (S S' : D.what₂.Tau → SPar) (M : DSModel V S) (M' : DSModel W S') (Z P : Type) [AddCommGroup P] [Module ℂ P] (θ : InfFam D) (ω : GA D V × GA D W →* Module.End ℂ (Z → ℂ)) (ω' : GA D W × GA D V →* Module.End ℂ (Z → ℂ)) (pt : P → Z → ℂ) (It : P →ₗ[ℂ] SmT M →ₗ[ℂ] SmT M') (Tp : P → SmT M' →ₗ[ℂ] SmT M), (∀ g h, ω' (h, g) = ω (g, h)) → GlobalTheory.Grid.IsIntw θ M' M ω' pt It → (∀ (p : P) (v : M.Vec) (w : M'.Vec), ellT M' (fun τ => w τ) (inclT M' (It p (PiTensorProduct.tprod ℂ v))) = starRingEnd ℂ (ellT M (fun τ => v τ) (inclT M (Tp p (PiTensorProduct.tprod ℂ w))))) → IsIntwF θ M M' ω pt Tp := by
-  first | exact @GlobalTheory.CompanionTheory.Ipf.Aut.Adj.isIntwF_adjoint | exact GlobalTheory.CompanionTheory.Ipf.Aut.Adj.isIntwF_adjoint | (intros; apply GlobalTheory.CompanionTheory.Ipf.Aut.Adj.isIntwF_adjoint <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ipf.Aut.Adj.isIntwF_adjoint
 
 end

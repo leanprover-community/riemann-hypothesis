@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.crystalline_cocycle_closed : ∀ {O : Type} [CommR
     (∀ T k, N ≤ k → ∀ x ∈ (G.obj T).J, (k.factorial : (G.obj T).B) * (G.obj T).δ.dpow (k + 1) x = 0) →
     (∀ Λ : B.CLift G D, CH.d _ 2 (Λ.coc c N) = 0) ∧
     ∀ (Λ Λ' : B.CLift G D) hz hz', (CH.cx _).cls (Λ.coc c N) hz = (CH.cx _).cls (Λ'.coc c N) hz' := by
-  first | exact @GlobalTheory.CompanionTheory.CocCls.coc_cls | exact GlobalTheory.CompanionTheory.CocCls.coc_cls | (intros; apply GlobalTheory.CompanionTheory.CocCls.coc_cls <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CocCls.coc_cls

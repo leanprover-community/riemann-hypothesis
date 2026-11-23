@@ -45,4 +45,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.RgEis PositivityTheory.RgEis.MG
 
 theorem _root_.GlobalTheory.T.principal_identity_assembly : EpMain → DGood → Master → SideOf → Term → ZetaK → SideUnfold → SideConv → ZetaOne → Core := by
-  first | exact @GlobalTheory.CompanionTheory.EisCore.wall_core | exact GlobalTheory.CompanionTheory.EisCore.wall_core | (intros; apply GlobalTheory.CompanionTheory.EisCore.wall_core <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EisCore.wall_core

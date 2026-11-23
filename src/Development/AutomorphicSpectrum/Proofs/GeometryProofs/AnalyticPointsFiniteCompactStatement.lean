@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.analytic_points_finite_compact : ∀ (X : Scheme.{
     (y : (Σ k, J k) → Ω) (ξ : Sp Ω ⟶ X), (∀ q : X, genPt ξ ⤳ q) →
     CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) → ∀ (Z' : Scheme.{0}) (f : Z' ⟶ XQ X), IsFinite f →
     @CompactSpace (Sp ℂ ⟶ Z') (anTop Z') := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.TorusUnif.compact_of_finite_generic | exact GlobalTheory.CompanionTheory.Ar.TorusUnif.compact_of_finite_generic | (intros; apply GlobalTheory.CompanionTheory.Ar.TorusUnif.compact_of_finite_generic <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.TorusUnif.compact_of_finite_generic

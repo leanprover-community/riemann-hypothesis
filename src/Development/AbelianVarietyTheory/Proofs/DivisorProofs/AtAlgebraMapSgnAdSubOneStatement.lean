@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 theorem _root_.GlobalTheory.T.realLift_parity : GlobalTheory.RealLift.Parity := by
-  first | exact @GlobalTheory.RealLift.even_im_hermitian_sub | exact GlobalTheory.RealLift.even_im_hermitian_sub | (intros; apply GlobalTheory.RealLift.even_im_hermitian_sub <;> assumption)
+  exact @GlobalTheory.RealLift.even_im_hermitian_sub

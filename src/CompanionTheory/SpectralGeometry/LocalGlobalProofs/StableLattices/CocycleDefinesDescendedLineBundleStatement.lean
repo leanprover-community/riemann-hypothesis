@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.cocycle_defines_descended_line_bundle : H90 → �
       ∀ (W : Scheme.{0}) (a b : W ⟶ Z) (hab : a ≫ h = b ≫ h) (w : W) (i : N.ι), h (a w) ∈ N.U i →
         gm a w ((N.pull h).U fun _ => i) (T.s fun _ => i) =
           gm (pullback.lift a b hab) w ⊤ hu.unit * gm b w ((N.pull h).U fun _ => i) (T.s fun _ => i) := by
-  first | exact @GlobalTheory.CompanionTheory.LbCocycle.exists_lb | exact GlobalTheory.CompanionTheory.LbCocycle.exists_lb | (intros; apply GlobalTheory.CompanionTheory.LbCocycle.exists_lb <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LbCocycle.exists_lb

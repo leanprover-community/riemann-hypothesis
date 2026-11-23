@@ -49,4 +49,4 @@ open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTh
 open scoped ContDiff
 
 theorem _root_.GlobalTheory.T.uniform_restriction_statement_holds : UnifRestrictStatement := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Giv.unifRestrict | exact GlobalTheory.CompanionTheory.Ar.Giv.unifRestrict | (intros; apply GlobalTheory.CompanionTheory.Ar.Giv.unifRestrict <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Giv.unifRestrict

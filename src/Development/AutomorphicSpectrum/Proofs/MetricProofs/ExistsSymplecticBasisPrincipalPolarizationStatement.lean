@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.exists_symplectic_basis_principal_polarization : �
     (∀ w : Fin g → ℂ, (∀ l : Λ, ∃ k : ℤ, (hermForm Hm w (l : Fin g → ℂ)).im = k) → w ∈ Λ) →
     ∃ bs : Module.Basis (Fin g ⊕ Fin g) ℤ Λ, ∀ α β,
       (hermForm Hm (bs α : Fin g → ℂ) (bs β : Fin g → ℂ)).im = Matrix.J (Fin g) ℝ α β := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Sl.SymplecticLattice.exists_symplectic_basis | exact GlobalTheory.CompanionTheory.Ar.Sl.SymplecticLattice.exists_symplectic_basis | (intros; apply GlobalTheory.CompanionTheory.Ar.Sl.SymplecticLattice.exists_symplectic_basis <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Sl.SymplecticLattice.exists_symplectic_basis

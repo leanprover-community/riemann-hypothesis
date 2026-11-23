@@ -91,5 +91,5 @@ section
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 theorem _root_.GlobalTheory.T.weil_lie_algebra_scalar_action : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.RealLift.DerEx → GlobalTheory.RealLift.VacLine → GlobalTheory.RealLift.LieScalar := by
-  first | exact @_root_.GlobalTheory.LieScal.lie_algebra_acts_by_scalar | exact _root_.GlobalTheory.LieScal.lie_algebra_acts_by_scalar | (intros; apply _root_.GlobalTheory.LieScal.lie_algebra_acts_by_scalar <;> assumption)
+  exact @_root_.GlobalTheory.LieScal.lie_algebra_acts_by_scalar
 end

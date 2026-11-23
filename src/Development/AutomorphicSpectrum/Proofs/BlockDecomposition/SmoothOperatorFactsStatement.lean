@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.smooth_operator_facts : PositivityTheory.RgBcC.Fc.SmoothOp := by
-  first | exact @GlobalTheory.CompanionTheory.FcSmooth.smoothOp | exact GlobalTheory.CompanionTheory.FcSmooth.smoothOp | (intros; apply GlobalTheory.CompanionTheory.FcSmooth.smoothOp <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FcSmooth.smoothOp

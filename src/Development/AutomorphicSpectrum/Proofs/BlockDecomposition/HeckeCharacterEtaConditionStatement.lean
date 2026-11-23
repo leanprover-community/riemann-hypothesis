@@ -44,4 +44,4 @@ import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaI
 open PositivityTheory.Rg.Rsw
 
 theorem _root_.GlobalTheory.T.hecke_character_eta_condition : HeckeEta := by
-  first | exact @GlobalTheory.CompanionTheory.HeckeEtaExist.heckeEta | exact GlobalTheory.CompanionTheory.HeckeEtaExist.heckeEta | (intros; apply GlobalTheory.CompanionTheory.HeckeEtaExist.heckeEta <;> assumption)
+  exact @GlobalTheory.CompanionTheory.HeckeEtaExist.heckeEta

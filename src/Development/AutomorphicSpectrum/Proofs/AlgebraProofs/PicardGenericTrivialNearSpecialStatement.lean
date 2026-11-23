@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.picard_generic_trivial_near_special : ∀ (C : Typ
     ∀ l : Pic (pullback A.hom (spMap (algebraMap R C))),
       ∃ V : A.left.Opens, (∃ y ∈ V, A.hom y = IsLocalRing.closedPoint R) ∧
         pull (pullback.fst A.hom (spMap (algebraMap R C)) ⁻¹ᵁ V).ι l = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.Zarhin.NearZero.near_zero | exact GlobalTheory.CompanionTheory.Hypotheses₂.Zarhin.NearZero.near_zero | (intros; apply GlobalTheory.CompanionTheory.Hypotheses₂.Zarhin.NearZero.near_zero <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Hypotheses₂.Zarhin.NearZero.near_zero

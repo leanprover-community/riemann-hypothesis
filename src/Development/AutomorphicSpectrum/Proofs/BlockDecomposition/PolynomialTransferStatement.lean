@@ -49,4 +49,4 @@ open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistable
 open GlobalTheory.CatH (face toLast)
 
 theorem _root_.GlobalTheory.T.polynomial_transfer : KH.PolyTf := by
-  first | exact @GlobalTheory.CompanionTheory.PolyTfCon.polyTf | exact GlobalTheory.CompanionTheory.PolyTfCon.polyTf | (intros; apply GlobalTheory.CompanionTheory.PolyTfCon.polyTf <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PolyTfCon.polyTf

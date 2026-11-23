@@ -46,4 +46,4 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.inv_place_norm_product_mem_coefficient_ring : ∀ (D : D7) (ρ : Setup D.ntw) (i : D.ntw.Tw) (b : Bool) (Q : Finset (Pl D.host.E)), Disjoint Q (D.ntw.S0 i) → ((normProd Q : ℕ) : ℂ)⁻¹ ∈ (ρ.eO i b).range := by
-  first | exact @GlobalTheory.NormUnit.normProd_inv_mem | exact GlobalTheory.NormUnit.normProd_inv_mem | (intros; apply GlobalTheory.NormUnit.normProd_inv_mem <;> assumption)
+  exact @GlobalTheory.NormUnit.normProd_inv_mem

@@ -63,4 +63,4 @@ theorem _root_.GlobalTheory.T.log_card_quotient_bound : ∀ (L : Type) [Field L]
     (∀ v : FinitePlace L, (∀ x, v (φ x) ≤ (v (m : L))⁻¹ * ρ v) ∧ ∃ x, v (m : L) * ρ v ≤ v (φ x)) →
     |Real.log (Nat.card (F₁ ⧸ (F₀ ⊔ Submodule.span (𝓞 L) {(s : Bc)}).comap F₁.subtype)) -
       ∑ᶠ v : FinitePlace L, (Real.log (ρ v) - Real.log (v (φ s)))| ≤ Module.finrank ℚ L * Real.log m := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.RootHt.log_index_le | exact GlobalTheory.CompanionTheory.Ar.RootHt.log_index_le | (intros; apply GlobalTheory.CompanionTheory.Ar.RootHt.log_index_le <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.RootHt.log_index_le

@@ -44,4 +44,4 @@ theorem _root_.GlobalTheory.T.augmentation_submodule_second_factor : GlobalTheor
     ∀ N : Submodule ℂ ((Fin a' × Fin (a + a') → Fv F v) → ℂ), augAt om' v ≤ N → N ≤ SB _ →
       (∀ h ∈ UAt σ G.W (evFin F v), ∀ φ ∈ N, ∀ φ₁ ∈ SB _, Acts (evFin F v) (om' (1, h)) φ φ₁ → φ₁ ∈ N) →
       N = augAt om' v ∨ N = SB _ := by
-  first | exact @GlobalTheory.IrrCoinvSmall.irr_small | exact GlobalTheory.IrrCoinvSmall.irr_small | (intros; apply GlobalTheory.IrrCoinvSmall.irr_small <;> assumption)
+  exact @GlobalTheory.IrrCoinvSmall.irr_small

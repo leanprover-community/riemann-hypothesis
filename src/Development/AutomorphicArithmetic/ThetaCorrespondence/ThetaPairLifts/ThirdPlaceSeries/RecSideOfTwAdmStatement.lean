@@ -43,5 +43,5 @@ section
 open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp
 
 theorem _root_.GlobalTheory.T.reciprocity_side_of_twAdm : _root_.GlobalTheory.BigOn.Exp.TwAdmAlt → _root_.GlobalTheory.BigOn.Exp.RecursiveSide := by
-  first | exact @_root_.GlobalTheory.BigOn.Exp.recSide_of_twAdm_alt | exact _root_.GlobalTheory.BigOn.Exp.recSide_of_twAdm_alt | (intros; apply _root_.GlobalTheory.BigOn.Exp.recSide_of_twAdm_alt <;> assumption)
+  exact @_root_.GlobalTheory.BigOn.Exp.recSide_of_twAdm_alt
 end

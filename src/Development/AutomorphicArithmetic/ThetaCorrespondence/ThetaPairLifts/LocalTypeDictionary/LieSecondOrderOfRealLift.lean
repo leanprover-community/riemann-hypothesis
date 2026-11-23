@@ -100,5 +100,5 @@ section
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 theorem _root_.GlobalTheory.T.real_lift_lie_second_order : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.RealLift.DerEx → GlobalTheory.RealLift.FockEx → GlobalTheory.RealLift.VacLine → GlobalTheory.RealLift.LieScalar → GlobalTheory.RealLift.LieSecond := by
-  first | exact @_root_.GlobalTheory.RealLift.LieSecondPf.lie_second_order_of_real_lift | exact _root_.GlobalTheory.RealLift.LieSecondPf.lie_second_order_of_real_lift | (intros; apply _root_.GlobalTheory.RealLift.LieSecondPf.lie_second_order_of_real_lift <;> assumption)
+  exact @_root_.GlobalTheory.RealLift.LieSecondPf.lie_second_order_of_real_lift
 end

@@ -61,4 +61,4 @@ open GlobalTheory.CompanionTheory.LTPer.Tilt
 
 theorem _root_.GlobalTheory.T.exists_galois_extension_of_embedding : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (μ : ↥K.1 →ₐ[ℚ_[l]] Om l),
     ∃ g : GQ l, ∀ x : ↥K.1, g (x : Om l) = μ x := by
-  first | exact @GlobalTheory.CompanionTheory.LTPer.Tilt.exists_gal_extending_embedding | exact GlobalTheory.CompanionTheory.LTPer.Tilt.exists_gal_extending_embedding | (intros; apply GlobalTheory.CompanionTheory.LTPer.Tilt.exists_gal_extending_embedding <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTPer.Tilt.exists_gal_extending_embedding

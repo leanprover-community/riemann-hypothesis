@@ -60,4 +60,4 @@ theorem _root_.GlobalTheory.T.local_chart_sheet_decomposition : ∀ (m : ℕ) (n
       ∀ ε : ℤˣ, (((Nh.restr i).φ σ₀).chernPart D ε).restrict e.source =
         ((volume.restrict e.target).withDensity fun v =>
           ENNReal.ofReal (((ε : ℤ) : ℝ) * maDensity (fun _ y' => Real.log (B.h (Γ y'))) v)).map e.symm := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.ArchEq.Dens.piece_density | exact GlobalTheory.CompanionTheory.MixZ.ArchEq.Dens.piece_density | (intros; apply GlobalTheory.CompanionTheory.MixZ.ArchEq.Dens.piece_density <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MixZ.ArchEq.Dens.piece_density

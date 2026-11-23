@@ -50,4 +50,4 @@ theorem _root_.GlobalTheory.T.linear_model_unitary_intertwines : GlobalTheory.Fu
       Acts (evFin F v) (om (g, 1)) φ φ₁ → ι φ₁ = κ g • fun Y => ι φ (((locMat t b g)⁻¹ : GL (Fin n) (Fv F v)).val * Y)) →
     ∀ g ∈ UAt σ X (evFin F v), κ g = (chrW χW t (GlobalTheory.SplitFlip.gdet (locMat t b g)) : ℂ) *
       GlobalTheory.SplitFlip.apow (GlobalTheory.SplitFlip.gdet (locMat t b g)) (-(d : ℂ) / 2) := by
-  first | exact @GlobalTheory.SplitScalX.scalar_left | exact GlobalTheory.SplitScalX.scalar_left | (intros; apply GlobalTheory.SplitScalX.scalar_left <;> assumption)
+  exact @GlobalTheory.SplitScalX.scalar_left

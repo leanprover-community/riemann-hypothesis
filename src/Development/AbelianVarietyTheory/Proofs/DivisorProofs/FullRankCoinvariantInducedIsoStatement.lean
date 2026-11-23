@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.full_rank_coinvariant_induced_iso : ∀ (k : Type)
       (∀ Ψ ∈ GlobalTheory.FullRankCoinv.fullRk k n d, Z Ψ = 0 → Ψ ∈ GlobalTheory.FullRankCoinv.augRk n d ν) ∧
       ∀ Ψ ∈ GlobalTheory.FullRankCoinv.fullRk k n d, ∀ h₀ : GL (Fin d) k,
         Z (fun Y => Ψ (Y * h₀.1)) = fun h => Z Ψ (h * h₀) := by
-  first | exact @GlobalTheory.FullRankCoinv.fibre_coinvariants | exact GlobalTheory.FullRankCoinv.fibre_coinvariants | (intros; apply GlobalTheory.FullRankCoinv.fibre_coinvariants <;> assumption)
+  exact @GlobalTheory.FullRankCoinv.fibre_coinvariants

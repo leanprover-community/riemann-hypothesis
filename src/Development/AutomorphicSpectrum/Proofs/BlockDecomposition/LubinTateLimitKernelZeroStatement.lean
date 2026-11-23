@@ -56,4 +56,4 @@ open scoped Classical
 theorem _root_.GlobalTheory.T.lubin_tate_limit_kernel_zero : ∀ {B : Type} [CommRing B] {S : Subring B} {F : ℕ → Ideal B} {ϖ : B} {C : Type} [NormedField C], PerEnv S F ϖ → ∀ (ϖ' : B), ϖ * ϖ' = 1 →
     ∀ (θ : B →+* C), (∀ x, θ x = 0 ↔ x ∈ F 1) → (∀ s ∈ S, ‖θ s‖ ≤ 1) → ‖θ ϖ‖ < 1 → ∀ (q : ℕ), 2 ≤ q →
     ∀ Q, θ Q = 0 → ∀ t, Tends S F ϖ (fun n => ϖ' ^ n * ltIter ϖ q n Q) t → θ t = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.LTPer.theta_period_eq_zero_of_theta_eq_zero | exact GlobalTheory.CompanionTheory.LTPer.theta_period_eq_zero_of_theta_eq_zero | (intros; apply GlobalTheory.CompanionTheory.LTPer.theta_period_eq_zero_of_theta_eq_zero <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTPer.theta_period_eq_zero_of_theta_eq_zero

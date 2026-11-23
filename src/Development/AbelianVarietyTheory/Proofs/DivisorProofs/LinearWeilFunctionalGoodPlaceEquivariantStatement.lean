@@ -46,4 +46,4 @@ theorem _root_.GlobalTheory.T.linear_weil_functional_good_place_equivariant : Gl
     ∀ v, X.Good v →
     ∀ (t : E →ₐ[F] Fv F v) (ι : ((Fin a × Fin (a + a') → Fv F v) → ℂ) →ₗ[ℂ] (Matrix (Fin a) (Fin (a + a')) (Fv F v) → ℂ)), G.M.IsLinW B.ψ t 1 1 ι → (∀ g ∈ UAt σ G.V (evFin F v), ∃ c : ℂ, ∀ φ ∈ SB (Fin a × Fin (a + a') → Fv F v), ∀ φ₁ ∈ SB (Fin a × Fin (a + a') → Fv F v),
       Acts (evFin F v) (om (g, 1)) φ φ₁ → ∀ Y, ι φ₁ Y = c * ι φ (((mat g).map (piW t))⁻¹ * Y)) := by
-  first | exact @GlobalTheory.ShapeUV.shapeV | exact GlobalTheory.ShapeUV.shapeV | (intros; apply GlobalTheory.ShapeUV.shapeV <;> assumption)
+  exact @GlobalTheory.ShapeUV.shapeV

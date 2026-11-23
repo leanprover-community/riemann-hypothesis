@@ -62,4 +62,4 @@ theorem _root_.GlobalTheory.T.archimedean_unitary_element_lift : ∀ (D : D7) (�
         (∀ i j, (∀ τ, (u τ * X.map (tauE D τ)) i j = 0) → (HMul.hMul U (GlobalTheory.SiegelSet.adMat D.host.F X) : Matrix (Fin m) (Fin m) (AF D.host.F ⊗[D.host.F] D.host.E)) i j = 0) ∧
         (matHom V g).1 = 1 + (HMul.hMul (GlobalTheory.SiegelSet.adMat D.host.F X) U : Matrix (Fin V.rank) (Fin V.rank) (AF D.host.F ⊗[D.host.F] D.host.E)) +
           (HMul.hMul W (GlobalTheory.SiegelSet.adMat D.host.F (Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) X * V.gram)) : Matrix (Fin V.rank) (Fin V.rank) (AF D.host.F ⊗[D.host.F] D.host.E)) := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.exists_adelic_of_real_comps | exact GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.exists_adelic_of_real_comps | (intros; apply GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.exists_adelic_of_real_comps <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.exists_adelic_of_real_comps

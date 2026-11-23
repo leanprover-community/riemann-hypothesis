@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.regular_function_continuous_at : ∀ (X : Scheme.{
       a ∈ regAt ξ ⟨centre z₀, h₀⟩ →
       ∃ φ : ((Σ k, J k) → ℂ) → ℂ, ContinuousAt φ w₀ ∧ ∃ N ∈ 𝓝 w₀, ∀ (z : Sp ℂ ⟶ X) (w : (Σ k, J k) → ℂ),
         w ∈ N → CoordsAt ξ y z w → ValAt ξ z a (φ w) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.val_near | exact GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.val_near | (intros; apply GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.val_near <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.val_near

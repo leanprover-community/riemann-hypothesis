@@ -47,4 +47,4 @@ theorem _root_.GlobalTheory.T.triple_local_unitary_action_preserves : GlobalTheo
     ∀ φ₁ ∈ SB (Fin a × Fin (a + a') → Fv F v), Acts (evFin F v) (om (1, h)) φ φ₁ →
     ∀ μ : @Measure (Fin a × Fin (a + a') → Fv F v) (borel _), @Measure.IsAddHaarMeasure _ _ _ (borel _) μ →
       ∫⁻ x, ‖φ₁ x‖ₑ ^ 2 ∂μ = ∫⁻ x, ‖φ x‖ₑ ^ 2 ∂μ := by
-  first | exact @GlobalTheory.LocalUnitaryL2.lintegral_eq | exact GlobalTheory.LocalUnitaryL2.lintegral_eq | (intros; apply GlobalTheory.LocalUnitaryL2.lintegral_eq <;> assumption)
+  exact @GlobalTheory.LocalUnitaryL2.lintegral_eq

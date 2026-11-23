@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.weil_schwartz_parabolic_equivariant : ∀ (D : D7)
     ∀ p ∈ P D n, ∀ a : GL (Fin n) (AE D), blkA (mat p) = a.1 → ∀ g,
       (ω (p * g) Φ).1 0 = (χ (Matrix.GeneralLinearGroup.det a) : ℂ) *
         npow (absA D (Matrix.GeneralLinearGroup.det a)) (s0 V n + (n : ℂ) / 2) * (ω g Φ).1 0 := by
-  first | exact @GlobalTheory.CompanionTheory.WeilLaw.weil_parabolic_law | exact GlobalTheory.CompanionTheory.WeilLaw.weil_parabolic_law | (intros; apply GlobalTheory.CompanionTheory.WeilLaw.weil_parabolic_law <;> assumption)
+  exact @GlobalTheory.CompanionTheory.WeilLaw.weil_parabolic_law

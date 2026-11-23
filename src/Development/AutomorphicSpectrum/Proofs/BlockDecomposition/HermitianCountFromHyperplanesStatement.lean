@@ -64,4 +64,4 @@ theorem _root_.GlobalTheory.T.hermitian_count_from_hyperplanes : ∀ (k : Type) 
     (B (∑ a ∈ Finset.univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1), w a)
        (∑ a ∈ Finset.univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1), w a)).re = A) →
   (Fintype.card k : ℝ) ^ n * c ≤ (Fintype.card k : ℝ) * A := by
-  first | exact @GlobalTheory.CompanionTheory.GapOpLower.lower_from_counts | exact GlobalTheory.CompanionTheory.GapOpLower.lower_from_counts | (intros; apply GlobalTheory.CompanionTheory.GapOpLower.lower_from_counts <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GapOpLower.lower_from_counts

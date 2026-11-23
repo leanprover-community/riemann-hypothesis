@@ -56,4 +56,4 @@ open Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open GlobalTheory.CompanionTheory.Ar.Num.FamEx GlobalTheory.CompanionTheory.Ar.BT
 
 theorem _root_.GlobalTheory.T.dot_dual_lattice_family : ∀ (O : Type) [CommRing O] (Ω : Type) [Field Ω] [Algebra O Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (r : ℕ) (Γ : (∀ k, J k) → AddSubgroup (Fin r → Ω)), IsLatFamily O y Γ → (∀ c, mseg y c ≠ 0 → LocFree (chartRing O (mseg y) c) r (Γ c)) → IsLatFamily O y (fun c => dotDual (chartRing O (mseg y) c) (Γ c)) ∧ ∀ c, mseg y c ≠ 0 → LocFree (chartRing O (mseg y) c) r (dotDual (chartRing O (mseg y) c) (Γ c)) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.FamEx.dotDual_latFamily | exact GlobalTheory.CompanionTheory.Ar.Num.FamEx.dotDual_latFamily | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.FamEx.dotDual_latFamily <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.FamEx.dotDual_latFamily

@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Rsw
 
 theorem _root_.GlobalTheory.T.spherical_bound_of_heights : HtExist → SphBound := by
-  first | exact @GlobalTheory.CompanionTheory.SphPole.sphBound_of_htExist | exact GlobalTheory.CompanionTheory.SphPole.sphBound_of_htExist | (intros; apply GlobalTheory.CompanionTheory.SphPole.sphBound_of_htExist <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SphPole.sphBound_of_htExist

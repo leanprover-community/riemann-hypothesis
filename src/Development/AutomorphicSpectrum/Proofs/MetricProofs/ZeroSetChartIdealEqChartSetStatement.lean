@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.zeroSet_chartIdeal_eq_chartSet : ∀ (K : Type) [F
     IsMultiHomogIdeal Q →
     GroundTheory.Heights₂.Heights.ComplexSets.zeroSet (GlobalTheory.CompanionTheory.Ar.Pub.CxChart.chartIdeal (conePts Q) σ i) =
       chartSet (conePts Q) σ i := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Pub.CxChart.zeroSet_chartIdeal_conePts | exact GlobalTheory.CompanionTheory.Ar.Pub.CxChart.zeroSet_chartIdeal_conePts | (intros; apply GlobalTheory.CompanionTheory.Ar.Pub.CxChart.zeroSet_chartIdeal_conePts <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Pub.CxChart.zeroSet_chartIdeal_conePts

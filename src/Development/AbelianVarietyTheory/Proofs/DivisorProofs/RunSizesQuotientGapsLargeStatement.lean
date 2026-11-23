@@ -60,4 +60,4 @@ theorem _root_.GlobalTheory.T.runSizes_quotientGaps_large : Closed FamHyp fun Fm
           min (LevelStarExponents.gapS (Fm.D x ι) (Fm.params x hx ι).Cgap) (LevelStarExponents.h0 (Fm.L x ι)) ∧
         ((G * (T + (Fm.D x ι).R.f * (Fm.D x ι).R.r.choose 2 + 1) : ℕ) : ℝ) + 22 * ((Fm.D x ι).R.f : ℝ) ^ 2 * ((Fm.D x ι).R.r : ℝ) ^ 4 +
           2 * (Fm.D x ι).R.r + 1 ≤ LevelStarExponents.h0 (Fm.L x ι) := by
-  first | exact @GlobalTheory.RunSizes.gaps_large | exact GlobalTheory.RunSizes.gaps_large | (intros; apply GlobalTheory.RunSizes.gaps_large <;> assumption)
+  exact @GlobalTheory.RunSizes.gaps_large

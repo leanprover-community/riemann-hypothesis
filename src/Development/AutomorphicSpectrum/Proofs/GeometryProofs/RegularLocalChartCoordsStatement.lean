@@ -73,4 +73,4 @@ theorem _root_.GlobalTheory.T.regular_local_chart_coords : ∀ (K : Type) [Finty
     ∃ (χ : SncChart P n Bd) (O : Set ((Σ k, J k) → ℂ)), IsOpen O ∧ w ∈ O ∧
       ∀ z ∈ O ∩ mcPts P, ∃ t : Fin n → ℂ, ‖t‖ ≤ 1 / 2 ∧ ∃ c' : K → ℂ, (∀ k, c' k ≠ 0) ∧
         z = torusSmul c' (χ.γ t) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.ChartParams.sncChart_of_regular_parameters | exact GlobalTheory.CompanionTheory.Ar.ChartParams.sncChart_of_regular_parameters | (intros; apply GlobalTheory.CompanionTheory.Ar.ChartParams.sncChart_of_regular_parameters <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.ChartParams.sncChart_of_regular_parameters

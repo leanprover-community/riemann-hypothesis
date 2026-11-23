@@ -47,4 +47,4 @@ open GroundTheory.Heights₂.Heights.NumbersDVR (pointIdeal segreVec IsFlagFrame
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles (mseg fnField)
 
 theorem _root_.GlobalTheory.T.model_on_hodge_from_family : GlobalTheory.CompanionTheory.Ar.Num.FamilyExistsPos → HodgeLatticeFlagBound := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.HodgeModel.model_on_hodge_of_family_pos | exact GlobalTheory.CompanionTheory.Ar.Num.HodgeModel.model_on_hodge_of_family_pos | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.HodgeModel.model_on_hodge_of_family_pos <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.HodgeModel.model_on_hodge_of_family_pos

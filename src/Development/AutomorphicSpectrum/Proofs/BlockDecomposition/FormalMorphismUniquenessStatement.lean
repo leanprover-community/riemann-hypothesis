@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.formal_morphism_uniqueness : ∀ (R : Type) [CommR
   ∀ (Y : ∀ e : ℕ, Over (Spec (CommRingCat.of (R ⧸ I ^ (e + 1))))) (b : ∀ e, (Y e).left ⟶ X.left),
     (∀ e, IsPullback (b e) (Y e).hom X.hom (thick R I e)) →
   ∀ g g' : X ⟶ Z, (∀ e, b e ≫ g.left = b e ≫ g'.left) → g = g' := by
-  first | exact @GlobalTheory.CompanionTheory.FormalUniq.eq_of_comp_thickenings_eq | exact GlobalTheory.CompanionTheory.FormalUniq.eq_of_comp_thickenings_eq | (intros; apply GlobalTheory.CompanionTheory.FormalUniq.eq_of_comp_thickenings_eq <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FormalUniq.eq_of_comp_thickenings_eq

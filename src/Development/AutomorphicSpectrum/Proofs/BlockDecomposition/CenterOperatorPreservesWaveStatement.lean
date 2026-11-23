@@ -50,4 +50,4 @@ open GlobalTheory.CompanionTheory.WaveMult
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem _root_.GlobalTheory.T.center_operator_preserves_wave : RCalc → ∀ (n : ℕ) (E : KMod n) (u : ℝ → Mat n → E.V) (w : List (Bool × ℕ)), IsWave E u → IsWave E (fun t => zOp w (u t)) := by
-  first | exact @GlobalTheory.CompanionTheory.WaveMult.WaveZ.isWave_zOp | exact GlobalTheory.CompanionTheory.WaveMult.WaveZ.isWave_zOp | (intros; apply GlobalTheory.CompanionTheory.WaveMult.WaveZ.isWave_zOp <;> assumption)
+  exact @GlobalTheory.CompanionTheory.WaveMult.WaveZ.isWave_zOp

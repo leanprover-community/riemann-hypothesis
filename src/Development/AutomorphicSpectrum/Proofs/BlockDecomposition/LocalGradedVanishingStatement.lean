@@ -48,4 +48,4 @@ open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistable
 open GlobalTheory.CatH (face toLast)
 
 theorem _root_.GlobalTheory.T.local_graded_vanishing : KH.LocGr := by
-  first | exact @GlobalTheory.CompanionTheory.LocGrStep.loc_gr | exact GlobalTheory.CompanionTheory.LocGrStep.loc_gr | (intros; apply GlobalTheory.CompanionTheory.LocGrStep.loc_gr <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LocGrStep.loc_gr

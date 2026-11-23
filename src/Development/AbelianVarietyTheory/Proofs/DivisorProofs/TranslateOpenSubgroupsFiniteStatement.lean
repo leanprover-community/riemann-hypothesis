@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.translate_open_subgroups_finite : ∀ (F : Type) [
         (1 : (κ → v.adicCompletion F) → ℂ) ∈ GlobalTheory.WeilM.SB (κ → v.adicCompletion F)) ∧
       ∀ᶠ v in Filter.cofinite, Set.indicator {x : κ → v.adicCompletion F | ∀ i, x i - Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F v (r i) ∈ B v}
         (1 : (κ → v.adicCompletion F) → ℂ) = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1 := by
-  first | exact @GlobalTheory.LocalBoxIndicator.indicator_box_translate | exact GlobalTheory.LocalBoxIndicator.indicator_box_translate | (intros; apply GlobalTheory.LocalBoxIndicator.indicator_box_translate <;> assumption)
+  exact @GlobalTheory.LocalBoxIndicator.indicator_box_translate

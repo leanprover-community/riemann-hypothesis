@@ -52,4 +52,4 @@ open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberF
 open scoped TensorProduct ENNReal NNReal Matrix Classical
 
 theorem _root_.GlobalTheory.T.idele_module_bounded_on_compact : ∀ (K : Type) [Field K] [NumberField K] (C : Set (AdeleRing (𝓞 K) K)), IsCompact C → ∃ R : ℝ, ∀ a : IdeleGroup K, (a : AdeleRing (𝓞 K) K) ∈ C → (IdeleGroup.ideleModule K a : ℝ) ≤ R := by
-  first | exact @GlobalTheory.CompanionTheory.IdeleModBdd.ideleModule_bounded_on_compact | exact GlobalTheory.CompanionTheory.IdeleModBdd.ideleModule_bounded_on_compact | (intros; apply GlobalTheory.CompanionTheory.IdeleModBdd.ideleModule_bounded_on_compact <;> assumption)
+  exact @GlobalTheory.CompanionTheory.IdeleModBdd.ideleModule_bounded_on_compact

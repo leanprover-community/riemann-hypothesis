@@ -50,4 +50,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
 
 theorem _root_.GlobalTheory.T.sqrt_discriminant_bounds_cm_field : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E), 1 ≤ Real.sqrt H.d ∧ Real.sqrt H.d ≤ rootDiscr E := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.sqrt_discriminant_bounds_cm_field | exact GlobalTheory.CompanionTheory.Relay.sqrt_discriminant_bounds_cm_field | (intros; apply GlobalTheory.CompanionTheory.Relay.sqrt_discriminant_bounds_cm_field <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.sqrt_discriminant_bounds_cm_field

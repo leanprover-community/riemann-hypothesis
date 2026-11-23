@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.rational_group_le_of_generators_mem : ∀ (D : D7)
   (∀ (g : G D n) (a : GL (Fin n) D.host.E), mat g = blk4 (a.1.map (incA D)) 0 0 (adj ((a⁻¹).1.map (incA D))) → g ∈ S) →
   (∀ (g : G D n) (b : Matrix (Fin n) (Fin n) D.host.E), mat g = blk4 1 (b.map (incA D)) 0 1 → g ∈ S) →
   (∀ g : G D n, mat g = blk4 0 1 (-1) 0 → g ∈ S) → GF D n ≤ S := by
-  first | exact @GlobalTheory.CompanionTheory.RatGen.GF_le_of_levi_unip_weyl | exact GlobalTheory.CompanionTheory.RatGen.GF_le_of_levi_unip_weyl | (intros; apply GlobalTheory.CompanionTheory.RatGen.GF_le_of_levi_unip_weyl <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RatGen.GF_le_of_levi_unip_weyl

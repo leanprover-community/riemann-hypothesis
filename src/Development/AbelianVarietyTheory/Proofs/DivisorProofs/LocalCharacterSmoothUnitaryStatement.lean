@@ -45,4 +45,4 @@ theorem _root_.GlobalTheory.T.local_character_smooth_unitary : GlobalTheory.FunP
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →
     ∀ v, X.Good v →
     ∀ t : E →ₐ[F] Fv F v, GlobalTheory.SmGL.IsSmoothChar (chrW X.ν t) ∧ GlobalTheory.SmGL.IsUnitaryChar (chrW X.ν t) := by
-  first | exact @GlobalTheory.ChrWSmooth.chrW_nu_smooth_unitary | exact GlobalTheory.ChrWSmooth.chrW_nu_smooth_unitary | (intros; apply GlobalTheory.ChrWSmooth.chrW_nu_smooth_unitary <;> assumption)
+  exact @GlobalTheory.ChrWSmooth.chrW_nu_smooth_unitary

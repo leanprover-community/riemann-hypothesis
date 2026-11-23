@@ -45,4 +45,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.SplitWeil ValuativeRel
 
 theorem _root_.GlobalTheory.T.l_one_satake_bound : PositivityTheory.SphericalProduct.LOneSat := by
-  first | exact @GlobalTheory.CompanionTheory.OneSat.lOneSat | exact GlobalTheory.CompanionTheory.OneSat.lOneSat | (intros; apply GlobalTheory.CompanionTheory.OneSat.lOneSat <;> assumption)
+  exact @GlobalTheory.CompanionTheory.OneSat.lOneSat

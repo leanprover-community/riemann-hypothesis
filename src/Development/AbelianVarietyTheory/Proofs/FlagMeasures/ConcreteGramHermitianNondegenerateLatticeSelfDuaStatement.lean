@@ -46,4 +46,4 @@ open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotio
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.concrete_gram_hermitian_nondegenerate_lattice_selfDual : ∀ (D : D7) (X : HidaSetting D), Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsHermND D.sp.cm.sig (Jc X) ∧ GlobalTheory.SgGlob.SelfDual (D.sp.cm.sig : D.host.E →+* D.host.E) (Jc X) (Lc X) := by
-  first | exact @GlobalTheory.CovDom.herm_selfDual | exact GlobalTheory.CovDom.herm_selfDual | (intros; apply GlobalTheory.CovDom.herm_selfDual <;> assumption)
+  exact @GlobalTheory.CovDom.herm_selfDual

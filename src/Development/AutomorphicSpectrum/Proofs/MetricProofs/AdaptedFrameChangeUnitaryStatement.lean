@@ -48,4 +48,4 @@ open scoped ComplexOrder
 
 
 theorem _root_.GlobalTheory.T.adapted_frame_change_unitary : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F) (R : RiemLat E g Λ) (A A' : Ψ → Matrix (Fin (j + j')) (Sg j j') ℂ), R.form = F.form → C.IsAdapted R A → (∀ τ, (A' τ)ᴴ * C.sgr τ * A' τ = sgI j j') → (C.IsAdapted R A' ↔ ∀ τ, (C.cinv (A τ) τ * A' τ)ᴴ * (C.cinv (A τ) τ * A' τ) = 1) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Change.isAdapted_iff_unitary | exact GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Change.isAdapted_iff_unitary | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Change.isAdapted_iff_unitary <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Change.isAdapted_iff_unitary

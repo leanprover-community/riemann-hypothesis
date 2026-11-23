@@ -46,4 +46,4 @@ open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotio
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.transport_real_points_bijective_multiplicative : ∀ (D : D7) (X : HidaSetting D) (θ : ℝ) (C : Choice X θ), (∀ x : InfinitePlace D.host.E → Formalism.QuantumDeterminants.Mt D.R.k D.R.rS, (∀ w, Matrix.of (x w) ∈ Formalism.QuantumDeterminants.Nset D.R.k D.R.rS) → ∃ g : X.B.I.Ginf, Gm D (trX X C g) = x) ∧ Function.Injective (fun g : X.B.I.Ginf => Gm D (trX X C g)) ∧ ∀ (s g : X.B.I.Ginf) (w : InfinitePlace D.host.E), Matrix.of (Gm D (trX X C (s * g)) w) = Matrix.of (Gm D (trX X C s) w) * Matrix.of (Gm D (trX X C g) w) := by
-  first | exact @GlobalTheory.CovDom.transport_real_points | exact GlobalTheory.CovDom.transport_real_points | (intros; apply GlobalTheory.CovDom.transport_real_points <;> assumption)
+  exact @GlobalTheory.CovDom.transport_real_points

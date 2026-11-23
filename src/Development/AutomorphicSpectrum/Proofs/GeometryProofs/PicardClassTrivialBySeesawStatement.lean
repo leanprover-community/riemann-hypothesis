@@ -48,4 +48,4 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.picard_class_trivial_by_seesaw : ∀ (k : Type) [Field k] [IsAlgClosed k] (G : Over (Sp k)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ (T : TorusExtension G) (Y : Over (Sp k)), Smooth Y.hom → GeometricallyConnected Y.hom → ∀ (y₀ : 𝟙_ (Over (Sp k)) ⟶ Y) (c : Pic (T.B ⊗ Y).left), pull (lift (fst G Y ≫ T.q) (snd G Y)).left c = 0 → pull (lift (𝟙 T.B) (toUnit T.B ≫ y₀)).left c = 0 → c = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.TorusPic.pic_inj | exact GlobalTheory.CompanionTheory.TorusPic.pic_inj | (intros; apply GlobalTheory.CompanionTheory.TorusPic.pic_inj <;> assumption)
+  exact @GlobalTheory.CompanionTheory.TorusPic.pic_inj

@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.pairing_twisted_determinant_subquotient : ∀ (k :
     (∀ g w w', B (S.ρ g w) (A' g w') = ((detChar (Fin n) (absPow k (s : ℂ)) g : ℂˣ) : ℂ) * B w w') → B ≠ 0 →
     ∃ Q : IrrRep (GL (Fin n) k), IsSubquotient Q.ρ A' ∧
       IrrGL.of Q.ρ Q.smooth Q.irr = (dualCl (IrrGL.of S.ρ S.smooth S.irr)).nu (s : ℂ) := by
-  first | exact @GlobalTheory.CompanionTheory.DualQuot.exists_subquotient_dual_nu | exact GlobalTheory.CompanionTheory.DualQuot.exists_subquotient_dual_nu | (intros; apply GlobalTheory.CompanionTheory.DualQuot.exists_subquotient_dual_nu <;> assumption)
+  exact @GlobalTheory.CompanionTheory.DualQuot.exists_subquotient_dual_nu

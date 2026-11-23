@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.exists_unramified_linear_bar_dual : GlobalTheory.F
       ∀ h₀ : GL (Fin (a + a')) (Fv F v), ∃ h ∈ UAt σ G.W (evFin F v), ∃ c : ℂ, c ≠ 0 ∧
         ∀ φ ∈ SB (Fin a' × Fin (a + a') → Fv F v), ∃ φ₁ ∈ SB (Fin a' × Fin (a + a') → Fv F v),
           Acts (evFin F v) (om' (1, h)) φ φ₁ ∧ ι φ₁ = c • fun Y => ι φ (Y * h₀.1) := by
-  first | exact @GlobalTheory.WeilTransfer.transfer | exact GlobalTheory.WeilTransfer.transfer | (intros; apply GlobalTheory.WeilTransfer.transfer <;> assumption)
+  exact @GlobalTheory.WeilTransfer.transfer

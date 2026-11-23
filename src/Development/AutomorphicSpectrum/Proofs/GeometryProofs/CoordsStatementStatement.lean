@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R ReciprocityTheory.ChartRestriction.G.Geo.ResK
 
 theorem _root_.GlobalTheory.T.coords_statement : ReciprocityTheory.ChartRestriction.G.Geo.ResK.CoordsStatement := by
-  first | exact @GlobalTheory.CompanionTheory.Geo.SncCoordsSide.coordsStatement_side | exact GlobalTheory.CompanionTheory.Geo.SncCoordsSide.coordsStatement_side | (intros; apply GlobalTheory.CompanionTheory.Geo.SncCoordsSide.coordsStatement_side <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Geo.SncCoordsSide.coordsStatement_side

@@ -64,4 +64,4 @@ theorem _root_.GlobalTheory.T.theta_function_canonical_form : ∀ (g : ℕ) (τ 
     (∀ Fd : Set (Fin g → ℂ), IsAddFundamentalDomain Λ Fd volume →
       b ^ 2 = (∫ w in Fd, (‖θ w‖ * Real.exp (-(Real.pi * ((1 : ℕ) : ℝ) / 2) * (hermForm Hm w w).re)) ^ 2) / (volume Fd).toReal) →
     b ^ 2 = ‖κ‖ ^ 2 * (Real.sqrt (2 ^ g * (τ.map Complex.im).det))⁻¹ := by
-  first | exact @GlobalTheory.CompanionTheory.Metric.mean_sq_fixes_norm_const | exact GlobalTheory.CompanionTheory.Metric.mean_sq_fixes_norm_const | (intros; apply GlobalTheory.CompanionTheory.Metric.mean_sq_fixes_norm_const <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Metric.mean_sq_fixes_norm_const

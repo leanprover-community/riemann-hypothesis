@@ -54,4 +54,4 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.Points GlobalTheory.ArInt GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.ProjSpace GlobalTheory.CompanionTheory.Ar.BaseZ
 
 theorem _root_.GlobalTheory.T.etale_polynomial_base_change_iff : ∀ (k A : Type) [CommRing k] [CommRing A] (N : ℕ), (Int.castRingHom (Localization.Away (N : k))).Etale → ∀ (φ : k →+* A), IsUnit (N : A) → ∀ (D : ℕ) (x : Fin D → A), (MvPolynomial.eval₂Hom φ x).Etale ↔ (MvPolynomial.eval₂Hom (Int.castRingHom A) x).Etale := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.EtaleCoord.etale_eval₂Hom_iff_int | exact GlobalTheory.CompanionTheory.Ar.EtaleCoord.etale_eval₂Hom_iff_int | (intros; apply GlobalTheory.CompanionTheory.Ar.EtaleCoord.etale_eval₂Hom_iff_int <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.EtaleCoord.etale_eval₂Hom_iff_int

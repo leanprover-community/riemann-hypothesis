@@ -57,4 +57,4 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
 
 theorem _root_.GlobalTheory.T.different_ideal_local_generator : ∀ (F : Type) [Field F] [NumberField F] (Ω : Type) [Field Ω] [CharZero Ω] (R : Subring Ω) [IsLocalRing R] (σ : 𝓞 F →+* Ω), (∀ a, σ a ∈ R) → ∃ d₀ ∈ differentIdeal ℤ (𝓞 F), σ d₀ ≠ 0 ∧ ∀ d ∈ differentIdeal ℤ (𝓞 F), σ d / σ d₀ ∈ R := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.differentIdeal_principal_in_localSubring | exact GlobalTheory.CompanionTheory.Ar.differentIdeal_principal_in_localSubring | (intros; apply GlobalTheory.CompanionTheory.Ar.differentIdeal_principal_in_localSubring <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.differentIdeal_principal_in_localSubring

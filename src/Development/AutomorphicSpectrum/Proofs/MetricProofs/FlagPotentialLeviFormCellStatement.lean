@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.flag_potential_levi_form_cell :
       levi (fun z : Pairs N → ℂ => stepPot N j i (cellMat N z)) 0 w =
         ∑ p : Pairs N, if min (r p.1.1) (r p.1.2) ≤ (i : ℕ) ∧ (i : ℕ) < max (r p.1.1) (r p.1.2)
           then (1 / 2 : ℝ) * ‖w p‖ ^ 2 else 0 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.levi_stepPot_cell | exact GlobalTheory.CompanionTheory.Ar.PB.levi_stepPot_cell | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.levi_stepPot_cell <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.levi_stepPot_cell

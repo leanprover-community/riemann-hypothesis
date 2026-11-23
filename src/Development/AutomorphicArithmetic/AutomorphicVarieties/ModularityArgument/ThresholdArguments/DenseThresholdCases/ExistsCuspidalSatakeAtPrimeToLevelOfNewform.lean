@@ -71,7 +71,7 @@ private theorem ev_not_mem' (N : ℕ) (hN : N ≠ 0) :
     rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
     exact_mod_cast hN
   refine Filter.eventually_cofinite.2 ((Ideal.finite_factors h0).subset fun w hw => ?_)
-  simp only [Set.mem_setOf_eq, not_not] at hw
+  simp only [Set.mem_ofPred_eq, not_not] at hw
   exact Ideal.dvd_span_singleton.2 hw
 private theorem normV_eq' (w : HeightOneSpectrum (𝓞 ℚ)) : normV w = Ideal.absNorm w.asIdeal := by
   rw [Ideal.absNorm_apply, Submodule.cardQuot_apply]; rfl
@@ -184,6 +184,6 @@ theorem _root_.GlobalTheory.T.exists_cuspidal_attached_satake_eq_hecke_poly_of_n
     ∃ π : TR.CuspSub ℚ 2, π.IsRegAlg ∧ AttR ι V π ∧ ∀ w : HeightOneSpectrum (𝓞 ℚ), ((l : ℕ) : 𝓞 ℚ) ∈ w.asIdeal →
       ∃ B, π.HasSat w B ∧
         ((algSat 2 l B).map fun b => Polynomial.X - Polynomial.C ((l : ℂ) ^ e * b)).prod = g.heckePoly l := by
-  first | exact @_root_.GlobalTheory.NewformAutAtL.exists_cuspidal_satake_prod_eq_hecke_poly_of_not_dvd_level | exact _root_.GlobalTheory.NewformAutAtL.exists_cuspidal_satake_prod_eq_hecke_poly_of_not_dvd_level | (intros; apply _root_.GlobalTheory.NewformAutAtL.exists_cuspidal_satake_prod_eq_hecke_poly_of_not_dvd_level <;> assumption)
+  exact @_root_.GlobalTheory.NewformAutAtL.exists_cuspidal_satake_prod_eq_hecke_poly_of_not_dvd_level
 end
 end

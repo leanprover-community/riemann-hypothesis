@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Seg
 
 theorem _root_.GlobalTheory.T.segment_jacquet_all : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hZ : GlobalTheory.Published.SegmentRepresentation), LSegJacquet k := by
-  first | exact @GlobalTheory.CompanionTheory.SegCoarse.lSegJacquet | exact GlobalTheory.CompanionTheory.SegCoarse.lSegJacquet | (intros; apply GlobalTheory.CompanionTheory.SegCoarse.lSegJacquet <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SegCoarse.lSegJacquet

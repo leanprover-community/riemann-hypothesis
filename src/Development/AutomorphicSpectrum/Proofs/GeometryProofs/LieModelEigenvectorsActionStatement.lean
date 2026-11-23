@@ -48,4 +48,4 @@ open Matrix GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionT
 open scoped ComplexOrder
 
 theorem _root_.GlobalTheory.T.lie_model_eigenvectors_action : ∀ (S : Scheme.{0}) (R : Type) [CommRing R] (G : Over S) [GrpObj G] (x : Sp R ⟶ S) (U : Type) [AddCommGroup U] [Module R U] (M : LieModel G x U), (∀ (n : ℕ) (c : Fin n → R) (u : Fin n → U) w, IsComb c (fun k => M.pt (u k)) w ↔ w = M.pt (∑ k, c k • u k)) ∧ ∀ (O : Type) [CommRing O] (act : OAct O G) (ρ : O →+* Module.End R U) (τ : O →+* R), M.IsActOf act.act ρ → (∀ u, IsEigVec act x τ (M.pt u) ↔ u ∈ eigSp ρ τ) ∧ ∀ (n : ℕ) (u : Fin n → U), IsEigFrame act x τ (fun k => M.pt (u k)) ↔ LinearIndependent R u ∧ Submodule.span R (Set.range u) = eigSp ρ τ := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fl.Bridge.comb_eig_frame | exact GlobalTheory.CompanionTheory.Ar.Fl.Bridge.comb_eig_frame | (intros; apply GlobalTheory.CompanionTheory.Ar.Fl.Bridge.comb_eig_frame <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fl.Bridge.comb_eig_frame

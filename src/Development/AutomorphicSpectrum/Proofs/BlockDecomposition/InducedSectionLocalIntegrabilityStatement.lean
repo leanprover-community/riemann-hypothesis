@@ -52,4 +52,4 @@ open GlobalTheory.CompanionTheory.ColumnSplitting
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.induced_section_local_integrability : IkLint := by
-  first | exact @GlobalTheory.CompanionTheory.ColumnSplitting.ikLint | exact GlobalTheory.CompanionTheory.ColumnSplitting.ikLint | (intros; apply GlobalTheory.CompanionTheory.ColumnSplitting.ikLint <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ColumnSplitting.ikLint

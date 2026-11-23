@@ -49,4 +49,4 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts
 
 theorem _root_.GlobalTheory.T.intersection_number_polynomial : ∀ (Y : Var ℂ) (Δ Δ₀ : Y.Dv), ∃ Q : Polynomial ℝ, ∀ m : ℕ, ((Y.inter fun _ => Δ + m • Δ₀ : ℤ) : ℝ) = Q.eval (m : ℝ) := by
-  first | exact @GlobalTheory.CompanionTheory.ChernPoly.inter_add_nsmul_polynomial | exact GlobalTheory.CompanionTheory.ChernPoly.inter_add_nsmul_polynomial | (intros; apply GlobalTheory.CompanionTheory.ChernPoly.inter_add_nsmul_polynomial <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ChernPoly.inter_add_nsmul_polynomial

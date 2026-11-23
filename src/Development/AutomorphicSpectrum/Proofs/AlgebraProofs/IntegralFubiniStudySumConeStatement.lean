@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.integral_fubini_study_sum_cone : ∀ (n e δ : ℕ
     Integrable (fsSum h u (coneSet h W)) (gaussM (e + 1) n) ∧
       ∫ π, fsSum h u (coneSet h W) π ∂(gaussM (e + 1) n) =
         (gaussM (e + 1) n Set.univ).toReal * coneIntegral h W e (fsLog h u) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Short.Crofton.fsSum_crofton | exact GlobalTheory.CompanionTheory.Ar.Short.Crofton.fsSum_crofton | (intros; apply GlobalTheory.CompanionTheory.Ar.Short.Crofton.fsSum_crofton <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Short.Crofton.fsSum_crofton

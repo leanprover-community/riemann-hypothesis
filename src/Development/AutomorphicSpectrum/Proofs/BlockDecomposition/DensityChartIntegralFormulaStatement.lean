@@ -79,4 +79,4 @@ theorem _root_.GlobalTheory.T.density_chart_integral_formula : ∀ {Y ι : Type}
     ∃ S : ι → Set Y, (∀ l, MeasurableSet (S l)) ∧ (∀ l, S l ⊆ (e l).source) ∧ Pairwise (Function.onFun Disjoint S) ∧
       ⋃ l, S l = G ∧ ∫ y in G, F y ∂μ 1 - ∫ y in G, F y ∂μ (-1) =
         ∫ v, ∑' l, ((e l) '' S l).indicator (fun v => F ((e l).symm v) * ρ l v) v := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.ArchEq.integral_pieces | exact GlobalTheory.CompanionTheory.MixZ.ArchEq.integral_pieces | (intros; apply GlobalTheory.CompanionTheory.MixZ.ArchEq.integral_pieces <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MixZ.ArchEq.integral_pieces

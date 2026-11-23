@@ -43,4 +43,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open GlobalTheory.IsoTriv
 
 theorem _root_.GlobalTheory.T.frameSeriesExpSum_of_actionLinear_logUnit : ActSt → UnitSt → FrameSt := by
-  first | exact @GlobalTheory.IsoTriv.frameSt_of | exact GlobalTheory.IsoTriv.frameSt_of | (intros; apply GlobalTheory.IsoTriv.frameSt_of <;> assumption)
+  exact @GlobalTheory.IsoTriv.frameSt_of

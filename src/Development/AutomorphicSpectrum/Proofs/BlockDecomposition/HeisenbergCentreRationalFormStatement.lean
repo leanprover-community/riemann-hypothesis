@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.heisenberg_centre_rational_form : ∀ {D : D7} {n 
     (∀ z h, M.nzx z 0 * M.emb h = M.emb h * M.nzx z 0) ∧
     ∀ l : ratHerm D ρ, M.nzx l.1 0 ∈ GF D n ∧ ∃ ζ : Matrix (Fin ρ) (Fin ρ) D.host.E,
       ζ.map (incA D) = l.1.1 ∧ mat (M.nzx l.1 0) = blk4 1 ((bl hn ζ 0 0 0).map (incA D)) 0 1 := by
-  first | exact @GlobalTheory.CompanionTheory.ZUnf.centre_nzx | exact GlobalTheory.CompanionTheory.ZUnf.centre_nzx | (intros; apply GlobalTheory.CompanionTheory.ZUnf.centre_nzx <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ZUnf.centre_nzx

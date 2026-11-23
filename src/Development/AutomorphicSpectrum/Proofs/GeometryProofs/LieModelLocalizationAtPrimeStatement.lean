@@ -68,4 +68,4 @@ theorem _root_.GlobalTheory.T.lie_model_localization_at_prime : ∀ (X : Scheme.
         ∃ (d : 𝓞 L) (n : ℕ) (x x' : B.carrier) (v : epsAt (spMap (algebraMap (𝓞 L) L) ≫ z) ⟶ G),
           d ∉ 𝔭 ∧ n ≠ 0 ∧ g x = algebraMap (𝓞 L) A d * u ∧ M.ValAt _ ((n : Ω) • e) v ∧
           (v.left ≫ (𝟙 G.left) = ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap (GlobalTheory.CompanionTheory.Ar.dualMap (algebraMap (𝓞 L) L)) ≫ (MB.pt x').left) ∧ (n : 𝓞 L) • x = d • x' := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.RootHt.FinLie.exists_integral_form | exact GlobalTheory.CompanionTheory.Ar.RootHt.FinLie.exists_integral_form | (intros; apply GlobalTheory.CompanionTheory.Ar.RootHt.FinLie.exists_integral_form <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.RootHt.FinLie.exists_integral_form

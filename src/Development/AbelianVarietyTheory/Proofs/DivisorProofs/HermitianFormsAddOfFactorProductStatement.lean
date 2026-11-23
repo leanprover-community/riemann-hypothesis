@@ -62,4 +62,4 @@ theorem _root_.GlobalTheory.T.hermitian_forms_add_of_factor_product : ∀ (g : �
     M₁.IsLB → M₂.IsLB → M₃.IsLB → u₂.ex = u₁.ex → u₃.ex = u₁.ex →
     IsFactorAH u₁ H₁ χ₁ → IsFactorAH u₂ H₂ χ₂ → IsFactorAH u₃ H₃ χ₃ → H₃ = H₁ + H₂ →
     LBIso (abelian₂ A M₂) (LB.div (abelian₂ A M₃) (abelian₂ A M₁)) := by
-  first | exact @GlobalTheory.TorusRM.lbIso_lam_of_add | exact GlobalTheory.TorusRM.lbIso_lam_of_add | (intros; apply GlobalTheory.TorusRM.lbIso_lam_of_add <;> assumption)
+  exact @GlobalTheory.TorusRM.lbIso_lam_of_add

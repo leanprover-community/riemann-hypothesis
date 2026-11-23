@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.ThTot
 
 theorem _root_.GlobalTheory.T.weil_representation_K_finite : WeilKFin := by
-  first | exact @GlobalTheory.CompanionTheory.ThTot.weilKFin | exact GlobalTheory.CompanionTheory.ThTot.weilKFin | (intros; apply GlobalTheory.CompanionTheory.ThTot.weilKFin <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ThTot.weilKFin

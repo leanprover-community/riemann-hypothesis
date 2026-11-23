@@ -70,4 +70,4 @@ theorem _root_.GlobalTheory.T.phase_continuous_unitary : ∀ (F E : Type) [Field
     (n : ℕ) (ψ : AddChar (AF F) ℂ), IsCharAF F ψ → ∀ (b : HermR (Af F) σ n),
     Continuous (phaseB σ J (psiFin F ψ) b) ∧ (∀ X, ‖phaseB σ J (psiFin F ψ) b X‖ = 1) ∧
     ∀ X, Continuous (pairB σ J (psiFin F ψ) b X) := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.phaseB_pairB_props | exact GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.phaseB_pairB_props | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.phaseB_pairB_props <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.phaseB_pairB_props

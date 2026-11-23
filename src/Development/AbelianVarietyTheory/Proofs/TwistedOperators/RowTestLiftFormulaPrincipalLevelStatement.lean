@@ -42,4 +42,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open GlobalTheory.RowClaim
 
 theorem _root_.GlobalTheory.T.rowTestLiftFormula_principalLevel : StepProj → StepFlip → StepUnfold → StepJets → ConstK → SumOKK → Formula2K := by
-  first | exact @GlobalTheory.RowClaim.FormulaTwo.formula2K | exact GlobalTheory.RowClaim.FormulaTwo.formula2K | (intros; apply GlobalTheory.RowClaim.FormulaTwo.formula2K <;> assumption)
+  exact @GlobalTheory.RowClaim.FormulaTwo.formula2K

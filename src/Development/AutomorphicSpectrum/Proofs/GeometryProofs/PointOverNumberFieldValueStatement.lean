@@ -51,4 +51,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open scoped ComplexOrder
 
 theorem _root_.GlobalTheory.T.point_over_number_field_value : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (F' : Type) [Field F'] [NumberField F'] (ψ : F' →+* Ω) (σ : F' →+* ℂ) (z : Spec (CommRingCat.of ℂ) ⟶ X) (w : (Σ k, J k) → ℂ), NormalCpt ξ → (CoordTie ℤ ξ fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) → CoordsAt ξ y z w → PtOver y ψ σ w → genPt ξ ⤳ centre z → ∀ a : F', ValAt ξ z (ψ a) (σ a) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.LiesOver.valAt_cst | exact GlobalTheory.CompanionTheory.Ar.Flat.LiesOver.valAt_cst | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.LiesOver.valAt_cst <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.LiesOver.valAt_cst

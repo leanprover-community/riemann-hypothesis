@@ -68,4 +68,4 @@ theorem _root_.GlobalTheory.T.theta_fourth_power_under_isogeny : ∀ (g : ℕ) (
     ∃ ψ : A.left ⟶ P.A.left, ψ ≫ P.A.hom = A.hom ∧ (∀ z, (u.ex z).left ≫ ψ = (u'.ex (z + a)).left) ∧
       ∀ x : A.left, ∃ (s : Out.H0 M 4) (V : P.A.left.Opens), x ∈ Out.nonzeroLocus s ∧ IsAffineOpen V ∧
         Out.nonzeroLocus s = ψ ⁻¹ᵁ V := by
-  first | exact @GlobalTheory.ThetaShift.exists_morphism_affine_cover | exact GlobalTheory.ThetaShift.exists_morphism_affine_cover | (intros; apply GlobalTheory.ThetaShift.exists_morphism_affine_cover <;> assumption)
+  exact @GlobalTheory.ThetaShift.exists_morphism_affine_cover

@@ -50,4 +50,4 @@ theorem _root_.GlobalTheory.T.exists_fock_functional_on_nablaX_products : ∀ (p
         Ψ (map (Int.castRingHom ℂ_[p]) (WeylLatticeDuality.nablaX N nu J)) =
           ∏ s, ((Formalism.GradedWeylDivisibility.fockQ (map (Int.castRingHom ℚ) (g s))
             (map (Int.castRingHom ℚ) (GlobalTheory.WeylMinorDual.colProd ℤ N (nu s) (hY s) (J s))) : ℚ) : ℂ_[p]) := by
-  first | exact @GlobalTheory.FockMinorFunctional.fock_functional_nablaX | exact GlobalTheory.FockMinorFunctional.fock_functional_nablaX | (intros; apply GlobalTheory.FockMinorFunctional.fock_functional_nablaX <;> assumption)
+  exact @GlobalTheory.FockMinorFunctional.fock_functional_nablaX

@@ -67,4 +67,4 @@ theorem _root_.GlobalTheory.T.hermitian_haar_splits_arch_times_finite : ∀ (F E
     ν₁.IsAddHaarMeasure ∧ ν₂.IsAddHaarMeasure ∧ SFinite ν₁ ∧ SFinite ν₂ ∧ c ≠ ⊤ ∧
     MeasurableEmbedding (fun b : HermR (AF F) σ n => (hermInf σ b, hermFin σ b)) ∧
     db.map (fun b => (hermInf σ b, hermFin σ b)) = c • ν₁.prod ν₂ := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.MapHerm.map_eq_smul_prod | exact GlobalTheory.CompanionTheory.SiegelND.Integ.MapHerm.map_eq_smul_prod | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.MapHerm.map_eq_smul_prod <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.MapHerm.map_eq_smul_prod

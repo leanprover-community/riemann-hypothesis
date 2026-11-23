@@ -129,7 +129,7 @@ theorem spherical_vacuum_fixed_off_finite_set : _root_.GlobalTheory.FunPr.ThetaL
     exact Ideal.dvd_iff_le.2 ((Ideal.span_singleton_le_iff_mem _).2 hv)
   refine ⟨X.T ∪ hfin1.toFinset ∪ hfin2.toFinset ∪ hfin3.toFinset, ?_⟩
   intro v hv k hk
-  simp only [Finset.mem_union, Set.Finite.mem_toFinset, Set.mem_setOf_eq, not_or, not_not] at hv
+  simp only [Finset.mem_union, Set.Finite.mem_toFinset, Set.mem_ofPred_eq, not_or, not_not] at hv
   obtain ⟨⟨⟨hvT, hstd⟩, hdiff⟩, h2⟩ := hv
   rcases GlobalTheory.LFun.InertChart.isSplit_or_isInertAt (isUnram_of_unramified hTr.base.unram v) with hs | ⟨w, hw⟩
   · have hψ := GlobalTheory.StdCharUnrF.psiUnr_of_not_le F B.ψ hTr.base.std v hdiff
@@ -158,5 +158,5 @@ theorem _root_.GlobalTheory.T.restricted_tensor_spherical_uniqueness_off_finite 
     (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ G.V G.W) (om' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ G.V' G.W), GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsTriple B G X om om' →
     ∃ S₀ : Finset (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)), ∀ v, v ∉ S₀ → ∀ k ∈ GlobalTheory.InertSph.KAt σ G.W v,
       GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Acts (GlobalTheory.AdelicU.evFin F v) (om' (1, k)) (G.M'.vac v) (G.M'.vac v) := by
-  first | exact @_root_.GlobalTheory.SphOffFinite.spherical_vacuum_fixed_off_finite_set | exact _root_.GlobalTheory.SphOffFinite.spherical_vacuum_fixed_off_finite_set | (intros; apply _root_.GlobalTheory.SphOffFinite.spherical_vacuum_fixed_off_finite_set <;> assumption)
+  exact @_root_.GlobalTheory.SphOffFinite.spherical_vacuum_fixed_off_finite_set
 end

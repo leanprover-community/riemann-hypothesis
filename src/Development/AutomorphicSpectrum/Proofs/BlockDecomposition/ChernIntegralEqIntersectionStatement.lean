@@ -50,4 +50,4 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts
 
 theorem _root_.GlobalTheory.T.chern_integral_eq_intersection : ∀ (Y : Var ℂ) (Δ : Y.Dv) (L : LB Y.X) (r : L.ι → Y.Fnˣ) (hL : L.IsLB) (n : ℕ) (b : Fin n → L.Sec) (hb : ⨆ j, nonzeroLocus (b j) = ⊤), Presents Δ L r → (Weight.fsBasis Y.str (RingHom.id ℂ) hL b hb 1 (by simp)).chernInt Y.dim Set.univ (fun _ => 1) = ((Y.inter fun _ => Δ : ℤ) : ℝ) := by
-  first | exact @GlobalTheory.CompanionTheory.ChernDegree.chernInt_fsBasis_eq_inter | exact GlobalTheory.CompanionTheory.ChernDegree.chernInt_fsBasis_eq_inter | (intros; apply GlobalTheory.CompanionTheory.ChernDegree.chernInt_fsBasis_eq_inter <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ChernDegree.chernInt_fsBasis_eq_inter

@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.exists_local_GL_embedding_unitary : ∀ (F E : Typ
     ∃ K : GL (Fin a') (Fv F v) →* UA σ G.V'.J, ∀ g, K g ∈ UAt σ G.V' (evFin F v) ∧
       (mat (K g)).map (piW t) = g.val ∧
       (mat (K g)).map (piW (t.comp σ)) = (G.V'.J.map t)⁻¹ * ((g⁻¹ : GL _ _).val)ᵀ * G.V'.J.map t := by
-  first | exact @GlobalTheory.LeviAtPlace.levi_at_place | exact GlobalTheory.LeviAtPlace.levi_at_place | (intros; apply GlobalTheory.LeviAtPlace.levi_at_place <;> assumption)
+  exact @GlobalTheory.LeviAtPlace.levi_at_place

@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.automorphic_function_restrict_block : ∀ (D : D7)
     IsWittFrame D.sp.cm.sig V.gram X Y → ∀ (l d : ℕ) (h : l + d ≤ m)
     (ι : GlobalTheory.CuspRep.GA D.host.E d →* GA D V), GlobalTheory.BlockForms.IsBlockEmb D.sp.cm.sig V.gram X Y h ι →
     ∀ F : GlobalTheory.Mem.AutSpace.SmFun θ V, (fun x => F.1 (ι x)) ∈ GlobalTheory.CuspRep.Sm D.host.E d := by
-  first | exact @GlobalTheory.CompanionTheory.CuspSmooth.mem_Sm_blockEmb_smFun | exact GlobalTheory.CompanionTheory.CuspSmooth.mem_Sm_blockEmb_smFun | (intros; apply GlobalTheory.CompanionTheory.CuspSmooth.mem_Sm_blockEmb_smFun <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CuspSmooth.mem_Sm_blockEmb_smFun

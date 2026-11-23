@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.exists_twisted_simplicial_star_label : ∀ (O : Ty
     IsPolyFan bar q φ → IsTwG w0 lab → SimpLab bar q φ lab → IsTwG w0 w → IsCentreSet bar q φ w →
     IsPolyFan bar q ψ' → Subordinate bar q ψ' φ → IsStarOf bar q φ w ψ' →
     ∃ lab' : InvFun O, IsTwG w0 lab' ∧ SimpLab bar q ψ' lab' := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fan.TwistedStarLabelling.exists_isTwG_simpLab_star | exact GlobalTheory.CompanionTheory.Ar.Fan.TwistedStarLabelling.exists_isTwG_simpLab_star | (intros; apply GlobalTheory.CompanionTheory.Ar.Fan.TwistedStarLabelling.exists_isTwG_simpLab_star <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fan.TwistedStarLabelling.exists_isTwG_simpLab_star

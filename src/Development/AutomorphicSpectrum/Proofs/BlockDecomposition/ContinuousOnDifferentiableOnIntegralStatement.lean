@@ -77,4 +77,4 @@ theorem _root_.GlobalTheory.T.continuousOn_differentiableOn_parameter_integral :
   (∀ z₀ ∈ U, ∀ t₀ : T, ∃ V ∈ 𝓝 z₀, ∃ N ∈ 𝓝 t₀, ∃ w : Y → ℝ, Integrable w μ ∧ ∀ z ∈ V, ∀ t ∈ N, ∀ y, ‖F z t y‖ ≤ w y) →
   ContinuousOn (fun u : ℂ × T => ∫ y, F u.1 u.2 y ∂μ) (U ×ˢ Set.univ) ∧
     ∀ t, DifferentiableOn ℂ (fun z => ∫ y, F z t y ∂μ) U := by
-  first | exact @GlobalTheory.CompanionTheory.Param.continuousOn_differentiableOn_integral | exact GlobalTheory.CompanionTheory.Param.continuousOn_differentiableOn_integral | (intros; apply GlobalTheory.CompanionTheory.Param.continuousOn_differentiableOn_integral <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Param.continuousOn_differentiableOn_integral

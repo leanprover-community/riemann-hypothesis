@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open Matrix PositivityTheory.Rg.BcB.D1
 
 theorem _root_.GlobalTheory.T.multiplicativity_finite_places : MulF := by
-  first | exact @GlobalTheory.CompanionTheory.WedgeMinor.mulF | exact GlobalTheory.CompanionTheory.WedgeMinor.mulF | (intros; apply GlobalTheory.CompanionTheory.WedgeMinor.mulF <;> assumption)
+  exact @GlobalTheory.CompanionTheory.WedgeMinor.mulF

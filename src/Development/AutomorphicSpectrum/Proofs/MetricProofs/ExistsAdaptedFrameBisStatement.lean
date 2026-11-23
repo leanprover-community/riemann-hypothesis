@@ -48,4 +48,4 @@ open scoped ComplexOrder
 
 
 theorem _root_.GlobalTheory.T.exists_adapted_frame_bis : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F) (R : RiemLat E g Λ), R.form = F.form → R.HasSig F.σ j j' → ∃ A, C.IsAdapted R A := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Adapted.exists_isAdapted | exact GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Adapted.exists_isAdapted | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Adapted.exists_isAdapted <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Adapted.exists_isAdapted

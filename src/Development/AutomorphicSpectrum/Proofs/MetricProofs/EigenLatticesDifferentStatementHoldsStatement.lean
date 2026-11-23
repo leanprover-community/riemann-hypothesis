@@ -46,4 +46,4 @@ import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.ThreeLeLevel
 open NumberField GroundTheory.Heights₂.Heights.NineStatements
 
 theorem _root_.GlobalTheory.T.eigen_lattices_different_statement_holds : GroundTheory.Heights₂.Heights.NineStatements.EigenLatDifferent.Statement := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.EigLat.eigenLat_eq_diffLat | exact GlobalTheory.CompanionTheory.Ar.EigLat.eigenLat_eq_diffLat | (intros; apply GlobalTheory.CompanionTheory.Ar.EigLat.eigenLat_eq_diffLat <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.EigLat.eigenLat_eq_diffLat

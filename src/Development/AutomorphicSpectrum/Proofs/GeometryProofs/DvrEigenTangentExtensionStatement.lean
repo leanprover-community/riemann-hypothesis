@@ -62,4 +62,4 @@ theorem _root_.GlobalTheory.T.dvr_eigen_tangent_extension : ∀ (V K : Type) [Co
     ∀ w, w ∈ Submodule.span V (Set.range b) ↔
       (∃ a : epsAt (𝟙 (Sp V)) ⟶ T, IsTanAt T (𝟙 _) a ∧ (ML.pt w).left ≫ φ₀ = spMap (dualMap (algebraMap V K)) ≫ a.left) ∧
         ∀ r, ρK r w = algebraMap V K (σV r) • w := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.EigLin.mem_span_iff | exact GlobalTheory.CompanionTheory.Ar.Flat.EigLin.mem_span_iff | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.EigLin.mem_span_iff <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.EigLin.mem_span_iff

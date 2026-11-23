@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.exists_open_subgroups_integers : ∀ (F : Type) [F
       (∀ v, (B v : Set (v.adicCompletion F)) ⊆ v.adicCompletionIntegers F) ∧
       (∀ᶠ v in Filter.cofinite, (B v : Set (v.adicCompletion F)) = v.adicCompletionIntegers F) ∧
       ∀ y u : κ → FiniteAdeleRing (𝓞 F) F, (∀ i v, Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F v (u i) ∈ B v) → g (y + u) = g y := by
-  first | exact @GlobalTheory.SBBox.exists_box_invariant | exact GlobalTheory.SBBox.exists_box_invariant | (intros; apply GlobalTheory.SBBox.exists_box_invariant <;> assumption)
+  exact @GlobalTheory.SBBox.exists_box_invariant

@@ -47,4 +47,4 @@ open CompanionTheory.Zuck BranchingSupport Matrix Finset
 open scoped InnerProductSpace Kronecker
 
 theorem _root_.GlobalTheory.T.CasimirSplitting : CasSplit := by
-  first | exact @GlobalTheory.CompanionTheory.ZuckCasSplit.casSplit | exact GlobalTheory.CompanionTheory.ZuckCasSplit.casSplit | (intros; apply GlobalTheory.CompanionTheory.ZuckCasSplit.casSplit <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ZuckCasSplit.casSplit

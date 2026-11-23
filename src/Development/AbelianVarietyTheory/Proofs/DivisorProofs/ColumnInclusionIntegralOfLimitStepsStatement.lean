@@ -43,4 +43,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open GlobalTheory.IsoTriv
 
 theorem _root_.GlobalTheory.T.columnInclusionIntegral_of_limitSteps : LimActSt → LimPtSt → LimFrameSt → InclSt := by
-  first | exact @GlobalTheory.IsoTriv.Incl.inclSt_of_lim | exact GlobalTheory.IsoTriv.Incl.inclSt_of_lim | (intros; apply GlobalTheory.IsoTriv.Incl.inclSt_of_lim <;> assumption)
+  exact @GlobalTheory.IsoTriv.Incl.inclSt_of_lim

@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
 
 theorem _root_.GlobalTheory.T.chart_prime_existsUnique_point : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (M : PModel o x) (c : κ), x c ≠ 0 → ∀ P : Ideal (chRing o x c), P.IsPrime → ∃! p : Cpt M.ξ, InChart M.ξ x c p ∧ ∀ u : chRing o x c, u ∈ P ↔ ¬ unitAt M.ξ p (u : Ω) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.chart_prime_point | exact GlobalTheory.CompanionTheory.Ar.chart_prime_point | (intros; apply GlobalTheory.CompanionTheory.Ar.chart_prime_point <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.chart_prime_point

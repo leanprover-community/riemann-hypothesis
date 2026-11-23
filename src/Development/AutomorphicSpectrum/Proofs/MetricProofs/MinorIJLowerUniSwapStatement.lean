@@ -49,4 +49,4 @@ open GlobalTheory.CompanionTheory.Ar.PB.WSq GlobalTheory.CompanionTheory.Ar.PB.W
 open GlobalTheory.CompanionTheory.Ar.PB.PFl
 
 theorem _root_.GlobalTheory.T.minorIJ_lowerUni_swap : ∀ (N : ℕ) (X : Matrix (Fin N) (Fin N) ℂ) (S : Finset (Fin N)) (a b : Fin N), IsLowerUni X → a ∉ S → b ∈ S → b < a → (∀ c ∈ S, c ≠ b → X c b = 0) → minorIJ X (insert a (S.erase b)) S = pSgn S a b * X a b ∧ pSgn S a b ≠ 0 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.PFl.MatRead.minor_replace | exact GlobalTheory.CompanionTheory.Ar.PB.PFl.MatRead.minor_replace | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.PFl.MatRead.minor_replace <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.PFl.MatRead.minor_replace

@@ -54,4 +54,4 @@ open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.T
 attribute [local instance] MvPolynomial.gradedAlgebra
 
 theorem _root_.GlobalTheory.T.algebraic_over_torus_of_integral : ∀ {K R : Type} [Field K] [CommRing R] [IsDomain R] [Algebra K R] {d : ℕ} (t : Fin d → Rˣ), (∀ r : R, IsIntegral (torusS K t Finset.univ) r) → Algebra.IsAlgebraic (Algebra.adjoin K (Set.range fun k => (t k : R))) R := by
-  first | exact @GlobalTheory.CompanionTheory.GeoTorus.isAlgebraic_of_integral_torusS | exact GlobalTheory.CompanionTheory.GeoTorus.isAlgebraic_of_integral_torusS | (intros; apply GlobalTheory.CompanionTheory.GeoTorus.isAlgebraic_of_integral_torusS <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GeoTorus.isAlgebraic_of_integral_torusS

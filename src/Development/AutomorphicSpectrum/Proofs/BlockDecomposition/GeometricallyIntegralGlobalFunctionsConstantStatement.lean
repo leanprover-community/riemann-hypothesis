@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.geometrically_integral_global_functions_constant :
       ∀ (R' : Type) [CommRing R'] (g : R →+* R') (X' : Scheme.{0}) (π : X' ⟶ X)
         (f' : X' ⟶ Spec (CommRingCat.of R')), IsPullback π f' f (Spec.map (CommRingCat.ofHom g)) → IsUnit (g r) →
         (Triv (M.pull π) ↔ I ≤ RingHom.ker g) := by
-  first | exact @GlobalTheory.CompanionTheory.TrivLoc.exists_ideal_near | exact GlobalTheory.CompanionTheory.TrivLoc.exists_ideal_near | (intros; apply GlobalTheory.CompanionTheory.TrivLoc.exists_ideal_near <;> assumption)
+  exact @GlobalTheory.CompanionTheory.TrivLoc.exists_ideal_near

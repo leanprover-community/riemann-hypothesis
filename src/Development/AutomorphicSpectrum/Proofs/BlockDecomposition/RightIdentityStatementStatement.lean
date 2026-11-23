@@ -44,4 +44,4 @@ import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaI
 open PositivityTheory.Rg.Rsw
 
 theorem _root_.GlobalTheory.T.right_identity_statement : RightId := by
-  first | exact @GlobalTheory.CompanionTheory.Dblock.rightId | exact GlobalTheory.CompanionTheory.Dblock.rightId | (intros; apply GlobalTheory.CompanionTheory.Dblock.rightId <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Dblock.rightId

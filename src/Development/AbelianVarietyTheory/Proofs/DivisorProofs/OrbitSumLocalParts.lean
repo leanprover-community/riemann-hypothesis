@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.orbit_sum_local_parts : ∀ (G : Type) [Group G] (
         (1 / (Nat.card (GlobalTheory.LKLoc.locPart H K (Quotient.out q)) : ℂ)) * F (QuotientGroup.mk (Quotient.out q)) =
       ∑ᶠ a : MulAction.orbitRel.Quotient H (G ⧸ K),
         (1 / (Nat.card (MulAction.stabilizer H (Quotient.out a)) : ℂ)) * F (Quotient.out a) := by
-  first | exact @GlobalTheory.FinTrace.sum_doubleCoset_eq_sum_orbit | exact GlobalTheory.FinTrace.sum_doubleCoset_eq_sum_orbit | (intros; apply GlobalTheory.FinTrace.sum_doubleCoset_eq_sum_orbit <;> assumption)
+  exact @GlobalTheory.FinTrace.sum_doubleCoset_eq_sum_orbit

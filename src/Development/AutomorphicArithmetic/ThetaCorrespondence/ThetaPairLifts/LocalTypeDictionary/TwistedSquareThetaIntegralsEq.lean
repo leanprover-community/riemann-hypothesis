@@ -86,5 +86,5 @@ end
 section
 
 theorem _root_.GlobalTheory.T.twisted_square_theta_integrals_eq : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching → GlobalTheory.SquareSt.ThetaIntegralsAgree := by
-  first | exact @_root_.GlobalTheory.SquareAgree.twisted_theta_integrals_agree | exact _root_.GlobalTheory.SquareAgree.twisted_theta_integrals_agree | (intros; apply _root_.GlobalTheory.SquareAgree.twisted_theta_integrals_agree <;> assumption)
+  exact @_root_.GlobalTheory.SquareAgree.twisted_theta_integrals_agree
 end

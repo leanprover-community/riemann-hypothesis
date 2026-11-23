@@ -50,4 +50,4 @@ open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.Cha
 open ReciprocityTheory.ChartRestriction.G.AI.I1 (IsBlockMap pullDeg)
 
 theorem _root_.GlobalTheory.T.unit_ratio_same_divisor_multiplicities : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MRing ι)) (f g : MRing ι), UnitRatio P f g → divSupp P f = divSupp P g ∧ ∀ W ∈ divSupp P f, multAt (P ⊔ Ideal.span {f}) W = multAt (P ⊔ Ideal.span {g}) W := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Cmp.unitRatio_divisor_cycle_eq | exact GlobalTheory.CompanionTheory.Ar.Cmp.unitRatio_divisor_cycle_eq | (intros; apply GlobalTheory.CompanionTheory.Ar.Cmp.unitRatio_divisor_cycle_eq <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Cmp.unitRatio_divisor_cycle_eq

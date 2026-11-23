@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.local_langlands_galois_compat : ∀ (E Ω : Type) 
     ∀ g : G E Ω, IsFrob (F := E) B (normV w) g →
       (r (g ^ (-1 : ℤ))).val.charpoly = (S.map fun z : ℂˣ =>
         Polynomial.X - Polynomial.C (ι.symm ((z : ℂ) * ((Ideal.absNorm w.asIdeal : ℕ) : ℂ) ^ ((-t : ℝ) : ℂ)))).prod := by
-  first | exact @GlobalTheory.GeomFrobChar.charpoly_geomFrob | exact GlobalTheory.GeomFrobChar.charpoly_geomFrob | (intros; apply GlobalTheory.GeomFrobChar.charpoly_geomFrob <;> assumption)
+  exact @GlobalTheory.GeomFrobChar.charpoly_geomFrob

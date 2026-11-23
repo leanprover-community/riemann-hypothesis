@@ -54,4 +54,4 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.tempered_direct_sum : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w) (x y : WD h), x.tempered → y.tempered → (x.lpSum y).tempered := by
-  first | exact @GlobalTheory.WeilDeligne.WD.tempered_lpSum | exact GlobalTheory.WeilDeligne.WD.tempered_lpSum | (intros; apply GlobalTheory.WeilDeligne.WD.tempered_lpSum <;> assumption)
+  exact @GlobalTheory.WeilDeligne.WD.tempered_lpSum

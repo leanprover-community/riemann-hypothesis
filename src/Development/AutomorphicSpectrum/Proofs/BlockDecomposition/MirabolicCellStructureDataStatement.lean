@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.mirabolic_cell_structure_data : ∀ (k : Type) [Fi
       IsCompact (L₁ : Set (Mir k ((i + 1) + t + 1))) → IsCompact (L₂ : Set (Mir k ((i + 1) + t + 1))) →
       ∃ L : Subgroup (Mir k ((i + 1) + t + 1)), L ≤ MirUin k ((i + 1) + t + 1) ∧ IsCompact (L : Set (Mir k ((i + 1) + t + 1))) ∧
         L₁ ≤ L ∧ L₂ ≤ L := by
-  first | exact @GlobalTheory.CompanionTheory.BZPhiPG.Grp.main | exact GlobalTheory.CompanionTheory.BZPhiPG.Grp.main | (intros; apply GlobalTheory.CompanionTheory.BZPhiPG.Grp.main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BZPhiPG.Grp.main

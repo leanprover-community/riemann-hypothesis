@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.lie_model_twisted_comparison : ∀ (E : Type) [Fie
     M.IsActOf t.act.act ρ → M'.IsActOf t'.act.act ρ' →
     (∀ v, ∃ w : epsAt (𝟙 (Sp Ω)) ⟶ tΩ.G, w.left ≫ m.φ = (M.pt v).left ∧ w.left ≫ m'.φ = (M'.pt (φ v)).left) →
     ∀ a v, φ (ρ (g.s a) v) = ρ' a (φ v) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.LieIntertwining.act_intertwine | exact GlobalTheory.CompanionTheory.Ar.LieIntertwining.act_intertwine | (intros; apply GlobalTheory.CompanionTheory.Ar.LieIntertwining.act_intertwine <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.LieIntertwining.act_intertwine

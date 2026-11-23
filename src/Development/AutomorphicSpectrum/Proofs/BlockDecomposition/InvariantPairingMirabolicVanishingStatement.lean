@@ -62,4 +62,4 @@ theorem _root_.GlobalTheory.T.invariant_pairing_mirabolic_vanishing : ∀ (k : T
       (∀ (g : GL (Fin (n + 1)) k) w w', B' (psiMinus k T g w) (psiMinus k T' g w') =
         ((detChar (Fin (n + 1)) (absPow k (s : ℂ)) g : ℂˣ) : ℂ) * B' w w') ∧
       (∀ w, w ≠ 0 → ∃ w', B' w w' ≠ 0) := by
-  first | exact @GlobalTheory.CompanionTheory.MirPsiPair.pair_psi | exact GlobalTheory.CompanionTheory.MirPsiPair.pair_psi | (intros; apply GlobalTheory.CompanionTheory.MirPsiPair.pair_psi <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MirPsiPair.pair_psi

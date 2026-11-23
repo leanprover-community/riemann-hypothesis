@@ -47,4 +47,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.CxPts
 
 theorem _root_.GlobalTheory.T.holomorphic_section_moderate_growth : ∀ (Y : Scheme.{0}) (p : Y ⟶ Sp ℂ), IsProper p → ∀ (B : LB Y), B.IsLB → ∀ s ∈ fibSec p (RingHom.id ℂ) B, (∀ j, ContinuousOn (s j) (ptsIn p (RingHom.id ℂ) (B.U j))) → ∀ (i : B.ι) (V : Y.Opens), IsAffineOpen V → V ≤ B.U i → ∃ (n : ℕ) (u : Fin n → Γ(Y, V)) (C : ℝ) (m : ℕ), ∀ y ∈ ptsIn p (RingHom.id ℂ) V, ‖s i y‖ ≤ C * (1 + ∑ l, ‖ev p (RingHom.id ℂ) V (u l) y‖) ^ m := by
-  first | exact @GlobalTheory.CompanionTheory.Gaga.continuous_section_polynomial_growth_of_isProper | exact GlobalTheory.CompanionTheory.Gaga.continuous_section_polynomial_growth_of_isProper | (intros; apply GlobalTheory.CompanionTheory.Gaga.continuous_section_polynomial_growth_of_isProper <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Gaga.continuous_section_polynomial_growth_of_isProper

@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.Rsw
 
 theorem _root_.GlobalTheory.T.height_functions_exist : HtExist := by
-  first | exact @GlobalTheory.CompanionTheory.HtEx.htExist | exact GlobalTheory.CompanionTheory.HtEx.htExist | (intros; apply GlobalTheory.CompanionTheory.HtEx.htExist <;> assumption)
+  exact @GlobalTheory.CompanionTheory.HtEx.htExist

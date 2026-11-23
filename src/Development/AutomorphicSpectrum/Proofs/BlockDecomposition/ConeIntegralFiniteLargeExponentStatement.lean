@@ -60,4 +60,4 @@ open GlobalTheory.SiegelSet GlobalTheory.CompanionTheory.RegInt
 
 theorem _root_.GlobalTheory.T.cone_integral_finite_large_exponent : ∀ (F : Type) [Field F] [NumberField F] (n r : ℕ) (c : ℝ), 0 < c → ∃ m₀ : ℕ, ∀ m : ℕ, m₀ ≤ m →
     ∫⁻ t in cone r c, ENNReal.ofReal (∏ i, (t i)⁻¹ ^ m) * ENNReal.ofReal ((modulus F n t * ∏ i, t i)⁻¹) < ⊤ := by
-  first | exact @GlobalTheory.CompanionTheory.ConeInt.lintegral_cone_lt_top | exact GlobalTheory.CompanionTheory.ConeInt.lintegral_cone_lt_top | (intros; apply GlobalTheory.CompanionTheory.ConeInt.lintegral_cone_lt_top <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ConeInt.lintegral_cone_lt_top

@@ -55,4 +55,4 @@ open GlobalTheory.CompanionTheory.LTPer.Tilt
 
 theorem _root_.GlobalTheory.T.teichmuller_fixed_point_approximation : ∀ {l : ℕ} [Fact l.Prime] (f : ℕ) (ρ : ℝ), 0 < f → ‖(l : ℂ_[l])‖ ≤ ρ → ρ < 1 → ∀ c : ℂ_[l],
     ‖c‖ ≤ 1 → ‖c ^ l ^ f - c‖ ≤ ρ → ∃ y : Tl l, y ^ l ^ f = y ∧ ‖sh y - c‖ ≤ ρ := by
-  first | exact @GlobalTheory.CompanionTheory.LTPer.Tilt.exists_fixed_near | exact GlobalTheory.CompanionTheory.LTPer.Tilt.exists_fixed_near | (intros; apply GlobalTheory.CompanionTheory.LTPer.Tilt.exists_fixed_near <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTPer.Tilt.exists_fixed_near

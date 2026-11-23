@@ -65,4 +65,4 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 
 theorem _root_.GlobalTheory.T.det_order_bounded_hecke_support : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (ϖ : w.adicCompletion E), IsUnifV E w ϖ → ∀ g : GL (Fin n) (w.adicCompletion E), IsInt w g.val → IsInt w (ϖ • (g⁻¹).val) → ∃ i ≤ n, ordL g.val.det = (i : ℤ) := by
-  first | exact @GlobalTheory.CompanionTheory.CtS.ordL_det_range | exact GlobalTheory.CompanionTheory.CtS.ordL_det_range | (intros; apply GlobalTheory.CompanionTheory.CtS.ordL_det_range <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CtS.ordL_det_range

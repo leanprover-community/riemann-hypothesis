@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.EGlue
 
 theorem _root_.GlobalTheory.T.closure_facts_alt : GlobalTheory.CompanionTheory.EGlue.MCloseFacts := by
-  first | exact @GlobalTheory.CompanionTheory.EGlue.mCloseFacts_holds | exact GlobalTheory.CompanionTheory.EGlue.mCloseFacts_holds | (intros; apply GlobalTheory.CompanionTheory.EGlue.mCloseFacts_holds <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EGlue.mCloseFacts_holds

@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.sobolev_operator_facts : PositivityTheory.RgBcC.Fc.SobOps := by
-  first | exact @GlobalTheory.CompanionTheory.SobOpsPf.sobOps | exact GlobalTheory.CompanionTheory.SobOpsPf.sobOps | (intros; apply GlobalTheory.CompanionTheory.SobOpsPf.sobOps <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SobOpsPf.sobOps

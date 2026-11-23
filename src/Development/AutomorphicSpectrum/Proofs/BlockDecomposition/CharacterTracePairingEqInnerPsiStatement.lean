@@ -72,4 +72,4 @@ theorem _root_.GlobalTheory.T.character_trace_pairing_eq_inner_psi : ∀ (F E : 
     psiFin F ψ (algebraMap F (Af F) (1 / 2) * Algebra.trace (Af F) (Af F ⊗[F] E)
       (Matrix.trace (((hermFin σ b : HermR (Af F) σ n) : Matrix (Fin n) (Fin n) (Af F ⊗[F] E)) *
         gramR (Af F) σ J (projFin X)))) := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Phase.adelic_phase_split | exact GlobalTheory.CompanionTheory.SiegelND.Integ.Phase.adelic_phase_split | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.Phase.adelic_phase_split <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Phase.adelic_phase_split

@@ -57,5 +57,5 @@ end
 section
 
 theorem _root_.GlobalTheory.T.twisted_theta_integral_converges : GlobalTheory.Published.SiegelSetUnitary → _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.SquareSt.WeilConvergence := by
-  first | exact @_root_.GlobalTheory.WeilConv.twisted_weil_representation_convergence | exact _root_.GlobalTheory.WeilConv.twisted_weil_representation_convergence | (intros; apply _root_.GlobalTheory.WeilConv.twisted_weil_representation_convergence <;> assumption)
+  exact @_root_.GlobalTheory.WeilConv.twisted_weil_representation_convergence
 end

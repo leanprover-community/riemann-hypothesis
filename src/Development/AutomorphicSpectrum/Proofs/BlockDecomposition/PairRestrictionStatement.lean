@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.EGlue
 
 theorem _root_.GlobalTheory.T.pair_restriction : GlobalTheory.CompanionTheory.EGlue.PairRestrict := by
-  first | exact @GlobalTheory.CompanionTheory.EGlue.pairRestrict_holds | exact GlobalTheory.CompanionTheory.EGlue.pairRestrict_holds | (intros; apply GlobalTheory.CompanionTheory.EGlue.pairRestrict_holds <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EGlue.pairRestrict_holds

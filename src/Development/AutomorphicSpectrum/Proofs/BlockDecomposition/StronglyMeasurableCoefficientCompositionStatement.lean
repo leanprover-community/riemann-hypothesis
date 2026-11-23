@@ -48,4 +48,4 @@ open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.stronglyMeasurable_coefficient_composition : ∀ {D : D7} {n ρ p : ℕ} {hn : ρ + p = n} (M : Maps D hn) (m : Meas D ρ p) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ (b₀ : HermE D ρ) (f : G D n → ℂ), Continuous f → ∀ {X : Type} [TopologicalSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (c : X → G D n), Continuous c → StronglyMeasurable fun v => Wz M m ψ b₀ f (c v) := by
-  first | exact @GlobalTheory.CompanionTheory.FJE.Wz_stronglyMeasurable | exact GlobalTheory.CompanionTheory.FJE.Wz_stronglyMeasurable | (intros; apply GlobalTheory.CompanionTheory.FJE.Wz_stronglyMeasurable <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FJE.Wz_stronglyMeasurable

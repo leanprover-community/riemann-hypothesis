@@ -98,5 +98,5 @@ section
 open GlobalTheory.SumSize GlobalTheory.RowClaim
 
 theorem _root_.GlobalTheory.T.finite_and_infinite_scalar_bounds : _root_.GlobalTheory.FunPr.ThetaLocalInputs → FinScalK ∧ InfScalK := by
-  first | exact @_root_.GlobalTheory.ScalAA.finScalK_and_infScalK_of_theta_inputs | exact _root_.GlobalTheory.ScalAA.finScalK_and_infScalK_of_theta_inputs | (intros; apply _root_.GlobalTheory.ScalAA.finScalK_and_infScalK_of_theta_inputs <;> assumption)
+  exact @_root_.GlobalTheory.ScalAA.finScalK_and_infScalK_of_theta_inputs
 end

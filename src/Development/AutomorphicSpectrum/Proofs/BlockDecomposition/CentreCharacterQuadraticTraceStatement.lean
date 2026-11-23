@@ -51,4 +51,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 theorem _root_.GlobalTheory.T.centre_character_quadratic_trace : ∀ (D : D7) (ρ p : ℕ) (ψ : AddChar (AF D.host.F) ℂ) (b₀ : HermE D ρ) (b : Mx D p p) (y : Mx D ρ p) (z₀ : hermA D ρ),
   z₀.1 = HMul.hMul (HMul.hMul y b : Mx D ρ p) (adj y) →
     chz ψ b₀ z₀ = ψ (halfTr (Matrix.trace (HMul.hMul b (pr b₀ y y) : Mx D p p))) := by
-  first | exact @GlobalTheory.CompanionTheory.ChzConj.chz_conj | exact GlobalTheory.CompanionTheory.ChzConj.chz_conj | (intros; apply GlobalTheory.CompanionTheory.ChzConj.chz_conj <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ChzConj.chz_conj

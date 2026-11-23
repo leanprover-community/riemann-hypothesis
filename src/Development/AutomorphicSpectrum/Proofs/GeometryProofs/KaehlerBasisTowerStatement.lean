@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.kaehler_basis_tower_alt : ∀ (R S T : Type) [Comm
     Submodule.span T (Set.range fun i => KaehlerDifferential.D S T (w i)) = ⊤ →
     LinearIndependent T (fun i => KaehlerDifferential.D R T (Fin.append (fun i => algebraMap S T (z i)) w i)) ∧
     Submodule.span T (Set.range fun i => KaehlerDifferential.D R T (Fin.append (fun i => algebraMap S T (z i)) w i)) = ⊤ := by
-  first | exact @GlobalTheory.CompanionTheory.KaehlerTower.kaehler_basis_tower | exact GlobalTheory.CompanionTheory.KaehlerTower.kaehler_basis_tower | (intros; apply GlobalTheory.CompanionTheory.KaehlerTower.kaehler_basis_tower <;> assumption)
+  exact @GlobalTheory.CompanionTheory.KaehlerTower.kaehler_basis_tower

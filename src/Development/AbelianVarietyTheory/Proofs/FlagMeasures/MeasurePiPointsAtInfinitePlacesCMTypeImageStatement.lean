@@ -46,4 +46,4 @@ open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotio
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.measurePi_pointsAtInfinitePlacesCMType_image : ∀ (D : D7) (S : Set (D.what₂.Tau → Formalism.QuantumDeterminants.Mt D.R.k D.R.rS)), Measure.pi (fun _ : InfinitePlace D.host.E => haarLie (Formalism.QuantumDeterminants.Nset D.R.k D.R.rS) 1) (Gm D '' S) = Measure.pi (fun _ : D.what₂.Tau => haarLie (Formalism.QuantumDeterminants.Nset D.R.k D.R.rS) 1) S := by
-  first | exact @GlobalTheory.CovDom.measure_Gm_image | exact GlobalTheory.CovDom.measure_Gm_image | (intros; apply GlobalTheory.CovDom.measure_Gm_image <;> assumption)
+  exact @GlobalTheory.CovDom.measure_Gm_image

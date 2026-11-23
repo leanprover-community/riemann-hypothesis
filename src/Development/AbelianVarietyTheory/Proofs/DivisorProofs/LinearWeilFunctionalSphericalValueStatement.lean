@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.linear_weil_functional_spherical_value : GlobalThe
       Acts (evFin F v) (om (g, 1)) φ φ₁ → ∀ Y, ι φ₁ Y = c * ι φ (((mat g).map (piW t))⁻¹ * Y)) →
     ∃ ν₀ : (Fv F v)ˣ →* ℂˣ, (∀ g ∈ UAt σ G.V (evFin F v), ∃ g' : GL (Fin a) (Fv F v), (mat g).map (piW t) = g'.1 ∧
       ∀ φ ∈ SB (Fin a × Fin (a + a') → Fv F v), ∀ φ₁ ∈ SB (Fin a × Fin (a + a') → Fv F v), Acts (evFin F v) (om (g, 1)) φ φ₁ → ι φ₁ = GlobalTheory.SplitFlip.omA ν₀ 1 g' 1 (ι φ)) := by
-  first | exact @GlobalTheory.SchurCharV.exists_char_of_schur | exact GlobalTheory.SchurCharV.exists_char_of_schur | (intros; apply GlobalTheory.SchurCharV.exists_char_of_schur <;> assumption)
+  exact @GlobalTheory.SchurCharV.exists_char_of_schur

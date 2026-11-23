@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.lie_metric_frame_projection_at : ∀ (X : Scheme.{
           Real.log ‖(gramAt h z v).det‖) =
         Real.log ‖s‖ + (1 / 2) * (Real.log ‖(gramAt h z fun l : Fin (i + 1) => B (Fin.castLE i.2 l)).det‖ -
           Real.log ‖(gramAt h z fun l : Fin i => B (Fin.castLE i.2.le l)).det‖) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.gram_val | exact GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.gram_val | (intros; apply GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.gram_val <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.gram_val

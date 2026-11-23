@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open CompanionTheory.Rg.Fl
 
 theorem _root_.GlobalTheory.T.IsomorphismStatement : StIso := by
-  first | exact @GlobalTheory.CompanionTheory.FactorIso.stIso | exact GlobalTheory.CompanionTheory.FactorIso.stIso | (intros; apply GlobalTheory.CompanionTheory.FactorIso.stIso <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FactorIso.stIso

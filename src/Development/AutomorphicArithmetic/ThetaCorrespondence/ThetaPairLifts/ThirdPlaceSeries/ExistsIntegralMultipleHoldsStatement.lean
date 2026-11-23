@@ -42,5 +42,5 @@ import Mathlib.Tactic.NormNum.RealSqrt
 section
 
 theorem _root_.GlobalTheory.T.scaling_function_bound' : _root_.GlobalTheory.BigTop.Fun.ScaleCondition := by
-  first | exact @_root_.GlobalTheory.BigTop.Fun.existsIntegralMultiple_holds_alt | exact _root_.GlobalTheory.BigTop.Fun.existsIntegralMultiple_holds_alt | (intros; apply _root_.GlobalTheory.BigTop.Fun.existsIntegralMultiple_holds_alt <;> assumption)
+  exact @_root_.GlobalTheory.BigTop.Fun.existsIntegralMultiple_holds_alt
 end

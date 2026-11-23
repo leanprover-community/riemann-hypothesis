@@ -55,4 +55,4 @@ open scoped Classical
 
 theorem _root_.GlobalTheory.T.exists_lubin_tate_character_unitary : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l), ∃ χ : ↥(GK K) →* (↥K.1)ˣ, IsLTChar K χ ∧
     Continuous (fun g => (((χ g : (↥K.1)ˣ) : ↥K.1) : Om l)) ∧ ∀ g, ‖(((χ g : (↥K.1)ˣ) : ↥K.1) : Om l)‖ = 1 := by
-  first | exact @GlobalTheory.CompanionTheory.LTHodge.exists_lubinTateChar | exact GlobalTheory.CompanionTheory.LTHodge.exists_lubinTateChar | (intros; apply GlobalTheory.CompanionTheory.LTHodge.exists_lubinTateChar <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTHodge.exists_lubinTateChar

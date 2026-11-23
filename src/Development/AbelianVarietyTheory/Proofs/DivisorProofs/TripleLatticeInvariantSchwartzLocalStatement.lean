@@ -46,4 +46,4 @@ theorem _root_.GlobalTheory.T.triple_lattice_invariant_schwartz_local : GlobalTh
     (∀ γ ∈ latAtV G.V' G.W w, ∀ c : ℂ, Acts (evFin F w) (G.M'.co.rho B.ψ γ) (G.M'.vac w) (c • G.M'.vac w) →
       Acts (evFin F w) (G.M'.co.rho B.ψ γ) g (c • g)) →
     ∃ r : ℂ, g = r • G.M'.vac w := by
-  first | exact @GlobalTheory.VacLine.eigen_line | exact GlobalTheory.VacLine.eigen_line | (intros; apply GlobalTheory.VacLine.eigen_line <;> assumption)
+  exact @GlobalTheory.VacLine.eigen_line

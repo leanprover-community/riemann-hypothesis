@@ -49,4 +49,4 @@ open ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnFor
 open scoped ContDiff
 
 theorem _root_.GlobalTheory.T.smooth_extension_across_closed_dense : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] (A : FinHolAtlas e X) (B : Set X) (u : X → ℝ), IsClosed B → Dense Bᶜ → (∀ x, ∃ (N : Set X) (E : X → ℝ), IsOpen N ∧ x ∈ N ∧ A.SmoothOn N E ∧ ∀ y ∈ N, y ∉ B → E y = u y) → ∃ u' : X → ℝ, A.Smooth u' ∧ ∀ y ∉ B, u' y = u y := by
-  first | exact @GlobalTheory.CompanionTheory.SmoothGlue.glue | exact GlobalTheory.CompanionTheory.SmoothGlue.glue | (intros; apply GlobalTheory.CompanionTheory.SmoothGlue.glue <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SmoothGlue.glue

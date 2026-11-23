@@ -46,4 +46,4 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ClozelP
 open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL MeasureTheory PositivityTheory.S2.Clozel
 
 theorem _root_.GlobalTheory.T.aux_statement_20 : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ), 1 ≤ a → ∀ π : CuspSub E a, (∀ τ : E →+* ℂ, ∃ m, π.HasInfChar τ m) → ∃ s : ℂ, GlobalTheory.DiscSpec.IsNormalised (π.twist (GlobalTheory.CuspRep.Model.absC E s)) := by
-  first | exact @GlobalTheory.CompanionTheory.Clozel.exists_twist_isNormalised | exact GlobalTheory.CompanionTheory.Clozel.exists_twist_isNormalised | (intros; apply GlobalTheory.CompanionTheory.Clozel.exists_twist_isNormalised <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Clozel.exists_twist_isNormalised

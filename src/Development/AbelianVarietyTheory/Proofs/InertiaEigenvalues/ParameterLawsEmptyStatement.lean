@@ -45,4 +45,4 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
 
 theorem _root_.GlobalTheory.T.parameter_laws_empty : PrN → ∀ hL : GlobalTheory.Published.LocalLanglandsGL, ∀ (D : D7) (cf : CharFrame D) rep Rw, IsEmpty D.nd.Loc → ParIn hL D cf rep Rw → ParLaws D := by
-  first | exact @GlobalTheory.ParLawsBare.main | exact GlobalTheory.ParLawsBare.main | (intros; apply GlobalTheory.ParLawsBare.main <;> assumption)
+  exact @GlobalTheory.ParLawsBare.main

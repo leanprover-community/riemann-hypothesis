@@ -67,4 +67,4 @@ theorem _root_.GlobalTheory.T.cm_galois_representation_of_polarizedCuspidal : Gl
           (∀ τ p, GlobalTheory.GalDef.IsRunAt (lam (ι.toRingHom.comp τ)) p t → bot τ = (p : ℤ) - GlobalTheory.GalDef.wAt (lam (ι.toRingHom.comp τ)) p) ∧
           GlobalTheory.GalDef.FrobSat ι π (-1) fun g =>
             (ρ g).val.charpoly * ∏ s, (Polynomial.X - Polynomial.C ((χ s g : (Qbar l)ˣ) : Qbar l)) := by
-  first | exact @GlobalTheory.GalAut.galoisRep_definiteUnitary | exact GlobalTheory.GalAut.galoisRep_definiteUnitary | (intros; apply GlobalTheory.GalAut.galoisRep_definiteUnitary <;> assumption)
+  exact @GlobalTheory.GalAut.galoisRep_definiteUnitary

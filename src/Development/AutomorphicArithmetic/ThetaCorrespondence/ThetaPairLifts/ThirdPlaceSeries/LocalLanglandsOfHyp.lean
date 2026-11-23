@@ -56,5 +56,5 @@ open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial Formalism.Conju
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.recTExists_of_published_inputs : _root_.UpperTheory.Zero.LLC.RecTExists → LocalConverseGL → DepthZeroInduction → BrauerDegreeZero → ChevalleyUnits → GlobalArtinReciprocity → LanglandsExhaustionGL → LanglandsMultisegments → StandardCosocleGL → ZelevinskyPolynomialRing → GeometricLemma → BernsteinZelevinskyFiniteness → _root_.UpperTheory.Zero.LLC.RecTExists := by
-  first | exact @_root_.UpperTheory.One.M.New.llOf_alt | exact _root_.UpperTheory.One.M.New.llOf_alt | (intros; apply _root_.UpperTheory.One.M.New.llOf_alt <;> assumption)
+  exact @_root_.UpperTheory.One.M.New.llOf_alt
 end

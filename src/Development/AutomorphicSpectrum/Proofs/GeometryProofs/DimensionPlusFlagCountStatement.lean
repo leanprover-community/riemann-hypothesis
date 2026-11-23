@@ -50,4 +50,4 @@ theorem _root_.GlobalTheory.T.dimension_plus_flag_count : ∀ (E : Type) [Field 
     (c : Coeff l) [Fintype (CMType H)] [Fintype (Σ s : CMType H ⊕ CMType H, {lk : Fin (labelRk D s) × Fin (labelRk D s) // lk.2 < lk.1})],
     D.dim + Fintype.card (Σ s : CMType H ⊕ CMType H, {lk : Fin (labelRk D s) × Fin (labelRk D s) // lk.2 < lk.1}) =
       Top.dimFl (CMType H) (D.p + D.q) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.FlagStep.dim_add_card_strictLower | exact GlobalTheory.CompanionTheory.Ar.FlagStep.dim_add_card_strictLower | (intros; apply GlobalTheory.CompanionTheory.Ar.FlagStep.dim_add_card_strictLower <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.FlagStep.dim_add_card_strictLower

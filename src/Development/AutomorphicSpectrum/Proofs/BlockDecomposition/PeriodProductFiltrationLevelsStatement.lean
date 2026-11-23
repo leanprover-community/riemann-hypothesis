@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.period_product_filtration_levels : ∀ {l : ℕ} [
     ∀ u : (Formalism.Per6.BdRp l)ˣ, ∏ μ ∈ s, t μ = GroundTheory.PAdicHodge.tBdR l * (u : Formalism.Per6.BdRp l) →
       thB l (t i₀) = 0 →
       ∀ μ ∈ s, (μ = i₀ → t μ ∉ FB l 2) ∧ (μ ≠ i₀ → t μ ∉ FB l 1) := by
-  first | exact @GlobalTheory.CompanionTheory.LTPer.prod_eq_t_mul_unit_count | exact GlobalTheory.CompanionTheory.LTPer.prod_eq_t_mul_unit_count | (intros; apply GlobalTheory.CompanionTheory.LTPer.prod_eq_t_mul_unit_count <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTPer.prod_eq_t_mul_unit_count

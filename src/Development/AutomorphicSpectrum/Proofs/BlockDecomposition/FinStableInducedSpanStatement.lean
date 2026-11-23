@@ -46,4 +46,4 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation Glob
 open scoped ContDiff
 
 theorem _root_.GlobalTheory.T.finStable_induced_span : ∀ {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {r s : ℕ} (U₁ : Submodule ℂ (Sm E r)) (U₂ : Submodule ℂ (Sm E s)), FinStable (indSpan U₁ U₂) := by
-  first | exact @GlobalTheory.CompanionTheory.LimV.indSpan_finStable | exact GlobalTheory.CompanionTheory.LimV.indSpan_finStable | (intros; apply GlobalTheory.CompanionTheory.LimV.indSpan_finStable <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LimV.indSpan_finStable

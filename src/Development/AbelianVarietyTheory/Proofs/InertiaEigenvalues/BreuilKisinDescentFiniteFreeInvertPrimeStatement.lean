@@ -46,4 +46,4 @@ import Mathlib.Topology.Sheaves.Init
 open PowerSeries GlobalTheory.BK
 
 theorem _root_.GlobalTheory.T.breuilKisinDescent_finite_free_invertPrime : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [CompleteSpace K] [Algebra O K] [IsUnitBall O K] (l e a : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι] [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero e] [NeZero a] [TameDescentExponentData K l e a] (η H : ℕ) (D : BKDat O K l e a ι η H), GlobalTheory.IndefiniteRowSideFullHecke.ImagePolynomialAction.FiniteFree D ∧ GlobalTheory.IndefiniteRowSideFullHecke.ImagePolynomialAction.Localisation D := by
-  first | exact @GlobalTheory.ZFin.finiteFree_and_localisation | exact GlobalTheory.ZFin.finiteFree_and_localisation | (intros; apply GlobalTheory.ZFin.finiteFree_and_localisation <;> assumption)
+  exact @GlobalTheory.ZFin.finiteFree_and_localisation

@@ -60,4 +60,4 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.C
 open CategoryTheory AlgebraicGeometry TensorProduct Opposite MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR MainStatements.Hodge GlobalTheory.CompanionTheory.HopfC
 
 theorem _root_.GlobalTheory.T.finite_functor_category_of_meet_lattice : ∀ {P : Type} [SemilatticeInf P] [Finite P] (p : ℕ), Finite (Fin (p + 1) ⥤ Pᵒᵖ) := by
-  first | exact @GlobalTheory.CompanionTheory.HopfC.finite_chains_semilattice | exact GlobalTheory.CompanionTheory.HopfC.finite_chains_semilattice | (intros; apply GlobalTheory.CompanionTheory.HopfC.finite_chains_semilattice <;> assumption)
+  exact @GlobalTheory.CompanionTheory.HopfC.finite_chains_semilattice

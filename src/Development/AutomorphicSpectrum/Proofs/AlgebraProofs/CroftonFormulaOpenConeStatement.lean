@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.crofton_formula_open_cone : ∀ (n e δ : ℕ) (h 
         cntOver (coneSet h W ∩ A) π (firstCoordVec (e + 1)) =
       gaussM (e + 1) n Set.univ *
         (Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ)) {y : EuclideanSpace ℂ (Fin n) | ‖y‖ < 1 ∧ y ∈ coneSet h W ∩ A} := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Short.Crofton.setCrofton | exact GlobalTheory.CompanionTheory.Ar.Short.Crofton.setCrofton | (intros; apply GlobalTheory.CompanionTheory.Ar.Short.Crofton.setCrofton <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Short.Crofton.setCrofton

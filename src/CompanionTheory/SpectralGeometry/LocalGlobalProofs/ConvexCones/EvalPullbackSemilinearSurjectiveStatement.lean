@@ -46,4 +46,4 @@ theorem _root_.GlobalTheory.T.eval_pullback_semilinear_surjective : ∀ (O : Typ
   ∀ {X Y : Type} [AddCommGroup X] [Module O X] [Module.Finite O X] [AddCommGroup Y] [Module O Y] [Module.Finite O Y]
     (τ : O ≃+* O), τ w0 = w0 → ∀ (f : X →+ Y), Function.Surjective f → (∀ (a : O) (x : X), f (a • x) = τ a • f x) →
     ∀ B : Y → Y → ℝ, φ.eval X (fun x y => B (f x) (f y)) = φ.eval Y B := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fan.SemilinearPullbackEval.eval_pull_semilinear_of_isTwG | exact GlobalTheory.CompanionTheory.Ar.Fan.SemilinearPullbackEval.eval_pull_semilinear_of_isTwG | (intros; apply GlobalTheory.CompanionTheory.Ar.Fan.SemilinearPullbackEval.eval_pull_semilinear_of_isTwG <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fan.SemilinearPullbackEval.eval_pull_semilinear_of_isTwG

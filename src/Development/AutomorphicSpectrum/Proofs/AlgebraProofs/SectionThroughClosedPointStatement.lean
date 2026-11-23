@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.section_through_closed_point : ∀ (R : Type) [Com
       ∃ s : 𝟙_ (Over (Sp R)) ⟶ X, s.left (IsLocalRing.closedPoint R) = z) ∧
     (∀ U : X.left.Opens, (∃ z ∈ U, X.hom z = IsLocalRing.closedPoint R) →
       ∃ s : 𝟙_ (Over (Sp R)) ⟶ X, s.left (IsLocalRing.closedPoint R) ∈ U) := by
-  first | exact @GlobalTheory.CompanionTheory.Sections.exists_section | exact GlobalTheory.CompanionTheory.Sections.exists_section | (intros; apply GlobalTheory.CompanionTheory.Sections.exists_section <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Sections.exists_section

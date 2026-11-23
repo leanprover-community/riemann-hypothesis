@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.reversed_dual_triangular : ∀ (Ω : Type) [Field 
     (∀ i j, w i ⬝ᵥ v j = if i = j.rev then 1 else 0) → (∀ i j, w' i ⬝ᵥ v' j = if i = j.rev then 1 else 0) →
     (∀ i j, i < j → w.repr (w' i) j = 0) →
     (∀ i j, i < j → v.repr (v' i) j = 0) ∧ ∀ i, v.repr (v' i) i * w.repr (w' i.rev) i.rev = 1 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.DualPair.dualRevTri | exact GlobalTheory.CompanionTheory.Ar.DualPair.dualRevTri | (intros; apply GlobalTheory.CompanionTheory.Ar.DualPair.dualRevTri <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.DualPair.dualRevTri

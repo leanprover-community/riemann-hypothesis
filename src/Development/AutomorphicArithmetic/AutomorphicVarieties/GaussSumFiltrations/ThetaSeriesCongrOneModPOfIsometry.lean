@@ -68,7 +68,7 @@ theorem th_congr_one : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F
   · subst hξ
     have hz : hfs.toFinset = {0} := by
       ext x
-      simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq, Finset.mem_singleton]
+      simp only [Set.Finite.mem_toFinset, Set.mem_ofPred_eq, Finset.mem_singleton]
       constructor
       · rintro ⟨-, hx⟩
         by_contra hne
@@ -84,12 +84,12 @@ theorem th_congr_one : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F
   · rw [if_neg hξ, sub_zero]
     apply _root_.GlobalTheory.T.norm_sum_free_orbits_le_inv_prime p ι (κ → F) (fun x => S.map Int.cast *ᵥ x) hfs.toFinset Φ
     · intro x hx
-      simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq] at hx ⊢
+      simp only [Set.Finite.mem_toFinset, Set.mem_ofPred_eq] at hx ⊢
       exact ⟨((hact x).2.2.2 _).2 hx.1, ((hQ x x).2).trans hx.2⟩
     · intro x _
       exact (hact x).1
     · intro x hx h
-      simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq] at hx
+      simp only [Set.Finite.mem_toFinset, Set.mem_ofPred_eq] at hx
       apply hξ
       rw [← hx.2, (hact x).2.1 h]
       simp [QF, BF]
@@ -104,4 +104,4 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open scoped Matrix
 
 theorem _root_.GlobalTheory.T.thetaSeries_congr_one_mod_p_of_isometry : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (p : ℕ) [Fact p.Prime] (ι : Qbar p ≃+* ℂ) (κ : Type) [Fintype κ] [DecidableEq κ] (G S : Matrix κ κ ℤ) (t : ℕ), LatD p G S t → ∀ Φ : (κ → F) → ℂ, Good ι S Φ → Small ι (p : ℝ)⁻¹ (th G Φ - 1) := by
-  first | exact @GlobalTheory.HilbertThetaSeries.th_congr_one | exact GlobalTheory.HilbertThetaSeries.th_congr_one | (intros; apply GlobalTheory.HilbertThetaSeries.th_congr_one <;> assumption)
+  exact @GlobalTheory.HilbertThetaSeries.th_congr_one

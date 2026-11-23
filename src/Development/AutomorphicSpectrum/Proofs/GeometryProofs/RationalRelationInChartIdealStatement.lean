@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.rational_relation_in_chart_ideal : ∀ (K : Type) 
     (y : (Σ k, J k) → Ω) (c : (k : K) → J k), (∀ k, y ⟨k, c k⟩ ≠ 0) → ∀ G : MvPolynomial (Σ k, J k) ℚ,
     aeval (fun p : Σ k, J k => y p / y ⟨p.1, c p.1⟩) G = (0 : Ω) →
     map (algebraMap ℚ ℂ) G ∈ ReciprocityTheory.AnForm.R.chartIdeal (pC (mCoordIdeal y)) c := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.ChartDehom.map_mem_chartIdeal | exact GlobalTheory.CompanionTheory.Ar.ChartDehom.map_mem_chartIdeal | (intros; apply GlobalTheory.CompanionTheory.Ar.ChartDehom.map_mem_chartIdeal <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.ChartDehom.map_mem_chartIdeal

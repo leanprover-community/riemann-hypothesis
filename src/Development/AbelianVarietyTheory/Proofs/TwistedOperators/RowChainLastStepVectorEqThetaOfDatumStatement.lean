@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.rowChain_last_step_vector_eq_theta_of_datum : ∀ 
     HEq g (R.vX t) → ∃ e' : AE D, IsIdemSum e' (GlobalTheory.FlipTop.topPl R.toLevCh t) ∧
       IsThetaAt ch.W.ψ (symplO _ _) (heisO ch.W.ψ _ _) e' (latO (ch.G.pS (.mu t 0 j)) (ch.G.pT (.mu t 0 j)) (ch.G.latS (.mu t 0 j) : Set _) (ch.G.latT (.mu t 0 j) : Set _) fun _ => True) 1 (ch.rm.vT 0 j)
         (GlobalTheory.FlipTop.topFn ch.S.B t e' j (GlobalTheory.FlipTop.rank_col ch.G (by omega)) (GlobalTheory.FlipTop.rank_col ch.G (by omega))) g := by
-  first | exact @GlobalTheory.FlipTopChain.last_step_theta | exact GlobalTheory.FlipTopChain.last_step_theta | (intros; apply GlobalTheory.FlipTopChain.last_step_theta <;> assumption)
+  exact @GlobalTheory.FlipTopChain.last_step_theta

@@ -53,4 +53,4 @@ open NumberField Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta 
 
 theorem _root_.GlobalTheory.T.analytic_continuation_from_strips : ∀ (S : ℂ → ℂ) (G : ℕ → ℂ → ℂ), (∀ k, DifferentiableOn ℂ (G k) {s | -(k : ℝ) < s.re}) →
   (∀ k s, 1 < s.re → G k s = S s) → ∃ T : ℂ → ℂ, Differentiable ℂ T ∧ ∀ (k : ℕ) (s : ℂ), -(k : ℝ) < s.re → T s = G k s := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel.Glue.entire_of_halfPlane_continuations | exact GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel.Glue.entire_of_halfPlane_continuations | (intros; apply GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel.Glue.entire_of_halfPlane_continuations <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel.Glue.entire_of_halfPlane_continuations

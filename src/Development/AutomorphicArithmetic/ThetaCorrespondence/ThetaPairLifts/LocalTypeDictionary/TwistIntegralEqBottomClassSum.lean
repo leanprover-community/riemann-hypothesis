@@ -131,7 +131,7 @@ theorem integral_eq_bottom_classSum : ∀ {D : D7} {T : Type} [Finite T] {L : Le
       Subtype.val '' {γ : GQ A' | (z l)⁻¹ * (γ : GA D A') * z l ∈ J} := by
     intro l
     ext γ
-    simp only [Set.mem_setOf_eq, Set.mem_image, Subtype.exists, exists_and_right, exists_eq_right]
+    simp only [Set.mem_ofPred_eq, Set.mem_image, Subtype.exists, exists_and_right, exists_eq_right]
     exact ⟨fun h => ⟨h.1, h.2⟩, fun ⟨h, h'⟩ => ⟨h, h'⟩⟩
   have hfin : ∀ l, {γ : GA D A' | γ ∈ GQ A' ∧ (z l)⁻¹ * γ * z l ∈ J}.Finite := fun l =>
     him l ▸ (hfinΓ l).image _
@@ -170,5 +170,5 @@ theorem _root_.GlobalTheory.T.twist_integral_eq_bottom_classSum : ∀ {D : D7} {
       (∀ l, 0 < w l) ∧ κ.IsMulLeftInvariant ∧ IsProbabilityMeasure κ ∧
       ∀ (t : T) (P : PolF D WW.rank A'.rank), ∀ h ∈ GfC WW,
         X.I' W.ψ W.θ t P h = (v : ℂ) * ∑ l, ((w l : ℂ))⁻¹ * ∫ g, X.ker' W.ψ W.θ t P h (z l * (g : GA D A')) ∂κ := by
-  first | exact @_root_.GlobalTheory.RowTest.BottomClassSum.integral_eq_bottom_classSum | exact _root_.GlobalTheory.RowTest.BottomClassSum.integral_eq_bottom_classSum | (intros; apply _root_.GlobalTheory.RowTest.BottomClassSum.integral_eq_bottom_classSum <;> assumption)
+  exact @_root_.GlobalTheory.RowTest.BottomClassSum.integral_eq_bottom_classSum
 end

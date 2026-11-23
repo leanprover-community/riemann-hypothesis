@@ -55,4 +55,4 @@ open GlobalTheory.CompanionTheory.Ar.Num.FamEx GlobalTheory.CompanionTheory.Ar.B
 
 
 theorem _root_.GlobalTheory.T.lie_model_base_change_span : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [Smooth G.hom] (R R' : Type) [CommRing R] [CommRing R'] (c : R →+* R') (x : Spec (CommRingCat.of R) ⟶ S) (E E' : Type) [AddCommGroup E] [Module R E] [AddCommGroup E'] [Module R' E'] (M : LieModel G x E) (M' : LieModel G (Spec.map (CommRingCat.ofHom c) ≫ x) E') (j : E → E'), (∀ e, (M'.pt (j e)).left = Spec.map (CommRingCat.ofHom (dualMap c)) ≫ (M.pt e).left) → Submodule.span R' (Set.range j) = ⊤ := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.LieSpan.span_range_pullback | exact GlobalTheory.CompanionTheory.Ar.LieSpan.span_range_pullback | (intros; apply GlobalTheory.CompanionTheory.Ar.LieSpan.span_range_pullback <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.LieSpan.span_range_pullback

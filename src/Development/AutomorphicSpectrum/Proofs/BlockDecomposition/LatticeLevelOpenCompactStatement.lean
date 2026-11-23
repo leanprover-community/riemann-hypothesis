@@ -69,4 +69,4 @@ theorem _root_.GlobalTheory.T.lattice_level_open_compact : ∀ (F E : Type) [Fie
     (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (n M N : ℕ), 0 < N →
     IsOpen (latN b n M N : Set (Fin n → Fin M → Af F ⊗[F] E)) ∧
     IsCompact (latN b n M N : Set (Fin n → Fin M → Af F ⊗[F] E)) := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.latN_isOpen_isCompact | exact GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.latN_isOpen_isCompact | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.latN_isOpen_isCompact <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Weyl.latN_isOpen_isCompact

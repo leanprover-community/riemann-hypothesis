@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.localization_sheaf_glue_modules : ∀ (R E : Type)
         res ⟨f j, j, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_left _ _) (w j)) →
       ∃ e, ∀ i, ρ ⟨f i, i, dvd_rfl⟩ e = w i) →
     ∀ i, IsLocalizedModule (Submonoid.powers (f i)) (ρ ⟨f i, i, dvd_rfl⟩) := by
-  first | exact @GlobalTheory.CompanionTheory.BasicCover.isLocalizedModule_of_basic_cover | exact GlobalTheory.CompanionTheory.BasicCover.isLocalizedModule_of_basic_cover | (intros; apply GlobalTheory.CompanionTheory.BasicCover.isLocalizedModule_of_basic_cover <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BasicCover.isLocalizedModule_of_basic_cover

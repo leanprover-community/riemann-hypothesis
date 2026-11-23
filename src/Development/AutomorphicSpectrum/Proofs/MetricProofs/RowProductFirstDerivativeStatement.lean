@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.row_product_first_derivative : ∀ (d k : ℕ), 1 
     evalW n n (pderiv (some 0) (∏ r : Fin (d + 1),
       rowW ![if (r : ℕ) < 2 * k - 1 then 1 else 0, 0] (if (r : ℕ) < 2 * k - 1 then 0 else 1))) =
     C (2 * (k : ℝ) - 1) * rename some (lin3 n ^ (2 * k - 2)) * X none ^ (d + 2 - 2 * k) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.FibN.evalW_pderiv_prod_rowW | exact GlobalTheory.CompanionTheory.Ar.PB.FibN.evalW_pderiv_prod_rowW | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.FibN.evalW_pderiv_prod_rowW <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.FibN.evalW_pderiv_prod_rowW

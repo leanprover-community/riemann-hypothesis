@@ -47,4 +47,4 @@ open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm 
 open scoped ComplexOrder Classical
 
 theorem _root_.GlobalTheory.T.flag_analytic_data_fubini_study : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (BM : BaseMetric M n), IsArithVar (mCoordIdeal y) (d + 2) → d + 1 = n + Fintype.card Ψ * (j.choose 2 + (N - j).choose 2) → bdry BM.s = ∅ → (∀ p, BM.hom p = fsHerm ι (M.dy p)) → ∃ FA : FlagAn BM d, ∀ p t, FA.Re.line (some p) t = fsHerm ι (M.dy p) := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.flag_analytic_data_fubini_study | exact GlobalTheory.CompanionTheory.Relay.flag_analytic_data_fubini_study | (intros; apply GlobalTheory.CompanionTheory.Relay.flag_analytic_data_fubini_study <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.flag_analytic_data_fubini_study

@@ -55,4 +55,4 @@ open PositivityTheory.RgTw (Mat G)
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem _root_.GlobalTheory.T.smooth_monotone_cutoff_exists : ∃ χ : ℝ → ℝ, ContDiff ℝ ∞ χ ∧ (∀ x, deriv χ x ≤ 0) ∧ (∀ x, 0 ≤ χ x) ∧ (∀ x, x ≤ 0 → χ x = 1) ∧ ∀ x, 1 ≤ x → χ x = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.SmoothCut.exists_smooth_antitone_cut | exact GlobalTheory.CompanionTheory.SmoothCut.exists_smooth_antitone_cut | (intros; apply GlobalTheory.CompanionTheory.SmoothCut.exists_smooth_antitone_cut <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SmoothCut.exists_smooth_antitone_cut

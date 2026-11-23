@@ -51,4 +51,4 @@ theorem _root_.GlobalTheory.T.highest_weight_vector_killed_by_raising : ∀ (n :
     (E : Fin n → Fin n → Module.End ℂ V) (γ : Fin n → ℝ) (u : V), KHighest ε E γ u →
     ∀ p q : Fin n, p < q → ε p = ε q → lev p = lev q →
       lF E p q (Pi.single (omU ε lev) u : Cn n V) = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.RgExh.lF_single_omU | exact GlobalTheory.CompanionTheory.RgExh.lF_single_omU | (intros; apply GlobalTheory.CompanionTheory.RgExh.lF_single_omU <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgExh.lF_single_omU

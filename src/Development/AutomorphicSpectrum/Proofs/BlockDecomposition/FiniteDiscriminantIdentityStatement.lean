@@ -44,4 +44,4 @@ open scoped Classical
 namespace PositivityTheory.Rg.BcB.SpectralAccumulation
 
 theorem _root_.GlobalTheory.T.finite_discriminant_identity : PositivityTheory.Rg.BcB.SpectralAccumulation.FinDisc := by
-  first | exact @GlobalTheory.CompanionTheory.FinDiscP.main | exact GlobalTheory.CompanionTheory.FinDiscP.main | (intros; apply GlobalTheory.CompanionTheory.FinDiscP.main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FinDiscP.main

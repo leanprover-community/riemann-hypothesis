@@ -44,4 +44,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.PairMult
 
 theorem _root_.GlobalTheory.T.pair_multiplicity_top_cycle : GlobalTheory.CompanionTheory.PairMult.TopCyc := by
-  first | exact @GlobalTheory.CompanionTheory.PairMult.TopCycQ.topCyc | exact GlobalTheory.CompanionTheory.PairMult.TopCycQ.topCyc | (intros; apply GlobalTheory.CompanionTheory.PairMult.TopCycQ.topCyc <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PairMult.TopCycQ.topCyc

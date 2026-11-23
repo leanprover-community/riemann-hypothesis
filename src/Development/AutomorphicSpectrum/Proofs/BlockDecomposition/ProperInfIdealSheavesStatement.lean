@@ -49,4 +49,4 @@ import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalL
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
 
 theorem _root_.GlobalTheory.T.proper_inf_ideal_sheaves : ∀ {X S : Scheme.{0}} (f : X ⟶ S) [IsSeparated f] [LocallyOfFiniteType f] (T₁ T₂ : X.IdealSheafData), IsProper (T₁.subschemeι ≫ f) → IsProper (T₂.subschemeι ≫ f) → IsProper ((T₁ ⊓ T₂).subschemeι ≫ f) := by
-  first | exact @GlobalTheory.CompanionTheory.GE.Union.isProper_inf | exact GlobalTheory.CompanionTheory.GE.Union.isProper_inf | (intros; apply GlobalTheory.CompanionTheory.GE.Union.isProper_inf <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GE.Union.isProper_inf

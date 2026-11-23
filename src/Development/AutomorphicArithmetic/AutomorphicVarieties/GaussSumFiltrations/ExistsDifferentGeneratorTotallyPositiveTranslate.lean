@@ -72,7 +72,7 @@ theorem finite_over (p : ℕ) (hp : p ≠ 0) :
     rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
     exact_mod_cast hp
   refine ⟨(Ideal.finite_factors h0).toFinset, fun w => ?_⟩
-  rw [Set.Finite.mem_toFinset, Set.mem_setOf_eq, Ideal.dvd_span_singleton]
+  rw [Set.Finite.mem_toFinset, Set.mem_ofPred_eq, Ideal.dvd_span_singleton]
 
 end GlobalTheory.HilbertThetaSeries.DelGen
 
@@ -114,4 +114,4 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open scoped Matrix
 
 theorem _root_.GlobalTheory.T.exists_different_generator_totallyPositive_translate : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (p : ℕ), p.Prime → (∃ δ : F, IsDel p δ) ∧ ∀ δ : F, IsDel p δ → ∀ y : (Af F)ˣ, ∃ ξ : Fˣ, TP (ξ : F) ∧ AtP p δ (Units.map (algebraMap F (Af F)).toMonoidHom ξ * y) := by
-  first | exact @GlobalTheory.HilbertThetaSeries.del_exists_and_move | exact GlobalTheory.HilbertThetaSeries.del_exists_and_move | (intros; apply GlobalTheory.HilbertThetaSeries.del_exists_and_move <;> assumption)
+  exact @GlobalTheory.HilbertThetaSeries.del_exists_and_move

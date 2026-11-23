@@ -49,4 +49,4 @@ open GlobalTheory.CompanionTheory.ConeHaar
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem _root_.GlobalTheory.T.cone_measure_congruence_invariant : ∀ (n : ℕ) (g : Mat n), g.det ≠ 0 → ∀ T : (Fin n × Fin n → ℝ) →ₗ[ℝ] (Fin n × Fin n → ℝ), (∀ v, hOf (T v) = g * hOf v * gᴴ) → LinearMap.det T = ‖g.det‖ ^ (2 * n) → Measure.map T (coneMeas n) = coneMeas n := by
-  first | exact @GlobalTheory.CompanionTheory.ConeHaar.map_coneMeas_eq | exact GlobalTheory.CompanionTheory.ConeHaar.map_coneMeas_eq | (intros; apply GlobalTheory.CompanionTheory.ConeHaar.map_coneMeas_eq <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ConeHaar.map_coneMeas_eq

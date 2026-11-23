@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.triple_local_gl_embedding_equivariant : ∀ (F E :
         ((((adeleClass F).modu (Units.map (Algebra.norm (AF F) : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E) →* AF F)
           (Matrix.GeneralLinearGroup.det ((K g : UA σ G.V'.J) : GL (Fin a') (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))))) : ℝ) ^
             ((Fintype.card (Fin (a + a')) : ℝ) / 2) : ℝ) : ℂ) = (((chrW X.ν t (GlobalTheory.SplitFlip.gdet g))⁻¹ : ℂˣ) : ℂ) ^ 2 := by
-  first | exact @GlobalTheory.SiegelValGood.siegel_factor_eq_sq | exact GlobalTheory.SiegelValGood.siegel_factor_eq_sq | (intros; apply GlobalTheory.SiegelValGood.siegel_factor_eq_sq <;> assumption)
+  exact @GlobalTheory.SiegelValGood.siegel_factor_eq_sq

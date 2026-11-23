@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.cocompact_normal_subgroup_fibration : ∀ (G : Typ
       (∀ v w, s (v + w) = s v * s w) → ∀ (μ : MeasureTheory.Measure V), μ.IsAddHaarMeasure →
       (((MeasureTheory.Measure.haar : MeasureTheory.Measure N').prod μ).map
         (GlobalTheory.Cusp.Shear.prodHomeo hle hs hsc hπc hπmul hπs hker)).IsHaarMeasure := by
-  first | exact @GlobalTheory.Cusp.Shear.isHaarMeasure_map_prodHomeo | exact GlobalTheory.Cusp.Shear.isHaarMeasure_map_prodHomeo | (intros; apply GlobalTheory.Cusp.Shear.isHaarMeasure_map_prodHomeo <;> assumption)
+  exact @GlobalTheory.Cusp.Shear.isHaarMeasure_map_prodHomeo

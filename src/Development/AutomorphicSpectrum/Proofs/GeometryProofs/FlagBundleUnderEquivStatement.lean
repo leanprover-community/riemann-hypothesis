@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.flag_bundle_under_equiv : ∀ (X X' : Scheme.{0}) 
     (L : Lat ξ E) (j : E →+ F) (Φ : F ≃ₗ[Ω] F') (T : Set (Cpt ξ')) (r : ℕ) (b : Fin r → F),
     (L.pull ξ' f j).IsFlagVBOn T b →
     (L.pull ξ' f (Φ.toLinearMap.toAddMonoidHom.comp j)).IsFlagVBOn T (fun k => Φ (b k)) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.FlagStep.isFlagVBOn_pull_map | exact GlobalTheory.CompanionTheory.Ar.FlagStep.isFlagVBOn_pull_map | (intros; apply GlobalTheory.CompanionTheory.Ar.FlagStep.isFlagVBOn_pull_map <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.FlagStep.isFlagVBOn_pull_map

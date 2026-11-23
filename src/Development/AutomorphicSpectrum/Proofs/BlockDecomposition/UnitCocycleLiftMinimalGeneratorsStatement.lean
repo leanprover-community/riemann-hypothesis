@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.unit_cocycle_lift_minimal_generators : ∀ (R : Ty
         ext s (IsLocalRing.maximalIdeal R) (V a ⊓ V c)) →
       ∃ (J : Ideal R) (y z : ∀ a, Γ(X, V a)), ¬ I ≤ J ∧ (∀ a, y a * z a - 1 ∈ ext s J (V a)) ∧
         ∀ a c, rs X inf_le_left (y a) - tr M V j hj a c * rs X inf_le_right (y c) ∈ ext s J (V a ⊓ V c) := by
-  first | exact @GlobalTheory.CompanionTheory.FewEq.exists_correction | exact GlobalTheory.CompanionTheory.FewEq.exists_correction | (intros; apply GlobalTheory.CompanionTheory.FewEq.exists_correction <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FewEq.exists_correction

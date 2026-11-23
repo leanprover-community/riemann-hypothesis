@@ -67,4 +67,4 @@ theorem _root_.GlobalTheory.T.kaehler_rank_localization_bound : ∀ (Ω₀ Ω : 
         ∀ q : Ideal S', q.IsPrime →
           ((∀ g ∈ bd.map (MvPolynomial.rename v), ∀ s : S', (s : Ω) = MvPolynomial.aeval r₁ g → s ∈ q) ↔
             ∃ i : Fin (e + r), (i : ℕ) < n' ∧ z' i ∈ q) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.LocalStep.local_step | exact GlobalTheory.CompanionTheory.Ar.LocalStep.local_step | (intros; apply GlobalTheory.CompanionTheory.Ar.LocalStep.local_step <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.LocalStep.local_step

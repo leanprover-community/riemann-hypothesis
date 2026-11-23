@@ -55,4 +55,4 @@ theorem _root_.GlobalTheory.T.cover_system_cech_pull_natural : ∀ {X Y : TopCat
     (hG : GoodAcyclic BY GoodY G) (hG' : GoodAcyclic BX GoodX G') (φ : G ⟶ (push f).obj G') (x : cechH G.obj V n),
     (cechHEquiv hCX U hU hUB n G' hG' : cechH G'.obj U n ≃+ Sheaf.H.{0} G' n) (cechPullH f φ.hom V U τ hτ n x) =
       hPull f φ n ((cechHEquiv hCY V hV hVB n G hG : cechH G.obj V n ≃+ Sheaf.H.{0} G n) x) := by
-  first | exact @GlobalTheory.CompanionTheory.CechLerayPull.cechHEquiv_pull | exact GlobalTheory.CompanionTheory.CechLerayPull.cechHEquiv_pull | (intros; apply GlobalTheory.CompanionTheory.CechLerayPull.cechHEquiv_pull <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CechLerayPull.cechHEquiv_pull

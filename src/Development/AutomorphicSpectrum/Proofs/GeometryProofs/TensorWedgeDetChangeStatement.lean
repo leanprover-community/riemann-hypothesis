@@ -52,4 +52,4 @@ open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory
 open scoped ComplexOrder
 
 theorem _root_.GlobalTheory.T.tensor_wedge_det_change : ∀ (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] (V : Ψ → Type) [∀ τ, AddCommGroup (V τ)] [∀ τ, Module Ω (V τ)] (n : ℕ) (e e' : ∀ τ, Fin n → V τ) (T : ∀ τ, Matrix (Fin n) (Fin n) Ω) (a a' : Ω), (∀ τ, LinearIndependent Ω (e τ)) → (∀ τ, Submodule.span Ω (Set.range (e τ)) = ⊤) → (∀ τ q, e' τ q = ∑ p, T τ p q • e τ p) → a • (PiTensorProduct.tprod Ω fun τ => exteriorPower.ιMulti Ω n (e τ) : PiTensorProduct Ω fun τ => ⋀[Ω]^n (V τ)) = a' • (PiTensorProduct.tprod Ω fun τ => exteriorPower.ιMulti Ω n (e' τ) : PiTensorProduct Ω fun τ => ⋀[Ω]^n (V τ)) → a = a' * ∏ τ, (T τ).det := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.TopWedge.eq_mul_prod_det | exact GlobalTheory.CompanionTheory.Ar.TopWedge.eq_mul_prod_det | (intros; apply GlobalTheory.CompanionTheory.Ar.TopWedge.eq_mul_prod_det <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.TopWedge.eq_mul_prod_det

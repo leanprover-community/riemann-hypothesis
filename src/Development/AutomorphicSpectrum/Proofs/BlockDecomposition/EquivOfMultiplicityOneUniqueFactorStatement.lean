@@ -50,4 +50,4 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Zelevin
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Seg
 
 theorem _root_.GlobalTheory.T.equiv_of_multiplicity_one_unique_factor : ∀ {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (T : Representation ℂ G W) (J : Representation ℂ G V), T.IsIrreducible → HasFiniteLength J → jhMult T J = 1 → (∀ (X : Type) [AddCommGroup X] [Module ℂ X] (ρ : Representation ℂ G X), ρ.IsIrreducible → IsSubquotient ρ J → Nonempty (ρ.Equiv T)) → Nonempty (J.Equiv T) := by
-  first | exact @GlobalTheory.CompanionTheory.FineStep.nonempty_equiv_of_jhMult_eq_one | exact GlobalTheory.CompanionTheory.FineStep.nonempty_equiv_of_jhMult_eq_one | (intros; apply GlobalTheory.CompanionTheory.FineStep.nonempty_equiv_of_jhMult_eq_one <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FineStep.nonempty_equiv_of_jhMult_eq_one

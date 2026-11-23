@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 namespace PositivityTheory.Rg.BcB.F.Tail.PExp
 
 theorem _root_.GlobalTheory.T.sub_eigen_tail_hecke : PositivityTheory.Rg.BcB.F.Tail.PExp.SubEig := by
-  first | exact @GlobalTheory.CompanionTheory.SubEigIrr.subEig | exact GlobalTheory.CompanionTheory.SubEigIrr.subEig | (intros; apply GlobalTheory.CompanionTheory.SubEigIrr.subEig <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SubEigIrr.subEig

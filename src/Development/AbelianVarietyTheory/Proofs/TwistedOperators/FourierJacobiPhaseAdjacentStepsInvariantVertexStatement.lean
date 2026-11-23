@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.fourierJacobiPhase_adjacentSteps_invariant_vertex 
             stepPt x₀ e₀ (.inl r) (.inr ⟨(c + 1) / 2, by omega⟩) else 0)) ∧
       (Odd (c + 1) → (∀ s : n₀, d₀ (.inr ⟨(c + 1) / 2, by omega⟩) (.inl s) = stepPt x₀ e₀ (.inr ⟨(c + 1) / 2, by omega⟩) (.inl s)) ∧
         ∀ r : n₂, d₁ (.inl r) (.inr ⟨c / 2, by omega⟩) = stepPt x₁ e₁ (.inl r) (.inr ⟨c / 2, by omega⟩)) := by
-  first | exact @GlobalTheory.PhaseStep.phase_step_inv | exact GlobalTheory.PhaseStep.phase_step_inv | (intros; apply GlobalTheory.PhaseStep.phase_step_inv <;> assumption)
+  exact @GlobalTheory.PhaseStep.phase_step_inv

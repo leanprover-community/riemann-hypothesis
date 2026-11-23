@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.star_subdivision_mult_le : ∀ (O : Type) [CommRin
       ∀ (X : Type) [AddCommGroup X] [Module O X] [Module.Finite O X] [Module.Projective O X],
         Module.finrank O X ≤ q → ∀ (m : ℕ) (δ : Fin m → LinearMap.BilinForm ℤ X), IsMultCell bar ψ' M δ →
           IsMultCell bar φ M δ ∧ ∀ β ∈ balForms bar X, (∀ y, 0 ≤ β y y) → InRCone δ β → w.evalZ β ≠ 1 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fan.StarMultiplicity.starMult | exact GlobalTheory.CompanionTheory.Ar.Fan.StarMultiplicity.starMult | (intros; apply GlobalTheory.CompanionTheory.Ar.Fan.StarMultiplicity.starMult <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fan.StarMultiplicity.starMult

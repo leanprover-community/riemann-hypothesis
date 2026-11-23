@@ -52,4 +52,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 theorem _root_.GlobalTheory.T.integrable_of_mem_schwartzA : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (m n : ℕ) (μ : Measure (Mx D m n)) [μ.IsAddHaarMeasure] (φ : Mx D m n → ℂ), φ ∈ schwartzA θ m n → Integrable φ μ := by
-  first | exact @GlobalTheory.CompanionTheory.WSum.integrable_schwartzA_haar | exact GlobalTheory.CompanionTheory.WSum.integrable_schwartzA_haar | (intros; apply GlobalTheory.CompanionTheory.WSum.integrable_schwartzA_haar <;> assumption)
+  exact @GlobalTheory.CompanionTheory.WSum.integrable_schwartzA_haar

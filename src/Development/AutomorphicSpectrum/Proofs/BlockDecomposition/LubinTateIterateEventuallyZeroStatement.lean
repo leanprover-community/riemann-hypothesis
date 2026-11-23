@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.lubin_tate_iterate_eventually_zero : ∀ {B : Type
     ∀ (θ : B →+* C), (∀ x, θ x = 0 ↔ x ∈ F 1) → (∀ s ∈ S, ‖θ s‖ ≤ 1) → ‖θ ϖ‖ < 1 → ∀ (q : ℕ), 2 ≤ q →
     ∀ Q ∈ S, (∃ M : ℕ, 0 < M ∧ Near S ϖ (F 1) 1 (Q ^ M)) →
       Tends S F ϖ (fun n => ϖ' ^ n * ltIter ϖ q n Q) 0 → ∃ n, ltIter ϖ q n Q = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.LTPer.exists_ltIter_eq_zero_of_tends | exact GlobalTheory.CompanionTheory.LTPer.exists_ltIter_eq_zero_of_tends | (intros; apply GlobalTheory.CompanionTheory.LTPer.exists_ltIter_eq_zero_of_tends <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTPer.exists_ltIter_eq_zero_of_tends

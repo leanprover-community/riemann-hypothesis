@@ -170,5 +170,5 @@ section
 open GlobalTheory.SumSize GlobalTheory.RowClaim
 
 theorem _root_.GlobalTheory.T.class_count_bound_archimedean : _root_.GlobalTheory.FunPr.ThetaLocalInputs → InfClassK := by
-  first | exact @_root_.GlobalTheory.ClassCount.archimedean_class_count_bound | exact _root_.GlobalTheory.ClassCount.archimedean_class_count_bound | (intros; apply _root_.GlobalTheory.ClassCount.archimedean_class_count_bound <;> assumption)
+  exact @_root_.GlobalTheory.ClassCount.archimedean_class_count_bound
 end

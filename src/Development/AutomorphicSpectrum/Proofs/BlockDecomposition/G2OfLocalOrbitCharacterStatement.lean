@@ -43,4 +43,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open NumberField IsDedekindDomain Polynomial GlobalTheory.BCT PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.G8.G2
 
 theorem _root_.GlobalTheory.T.globalComplexCoefficients_of_local_orbit_character : EllLocal → KapOrbAE → ChWMap → GlobalComplexCoefficients := by
-  first | exact @GlobalTheory.CompanionTheory.resultantFactorHypotheses.g2c | exact GlobalTheory.CompanionTheory.resultantFactorHypotheses.g2c | (intros; apply GlobalTheory.CompanionTheory.resultantFactorHypotheses.g2c <;> assumption)
+  exact @GlobalTheory.CompanionTheory.resultantFactorHypotheses.g2c

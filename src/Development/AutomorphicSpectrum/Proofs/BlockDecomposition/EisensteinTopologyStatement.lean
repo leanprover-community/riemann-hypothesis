@@ -43,4 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 open PositivityTheory.Rg.SwEis
 
 theorem _root_.GlobalTheory.T.eisenstein_topology : ETop := by
-  first | exact @GlobalTheory.CompanionTheory.SwEisTop.eTop | exact GlobalTheory.CompanionTheory.SwEisTop.eTop | (intros; apply GlobalTheory.CompanionTheory.SwEisTop.eTop <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SwEisTop.eTop

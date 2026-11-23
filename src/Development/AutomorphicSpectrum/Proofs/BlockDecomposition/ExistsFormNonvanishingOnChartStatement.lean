@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.exists_form_nonvanishing_on_chart : ∀ (m : ℕ) 
     (U : X.Opens), genericPoint X ∈ U → ∃ (j : Pol n) (a : Fin (m + 1) → ℕ), IsMultiHomog j a ∧
       j ∉ ptIdeal (i (genericPoint X)) ∧ ∀ (y : GlobalTheory.CxPts (i ≫ mpStr ℤ m n) σ₀) (z : (Σ k, Bk n k) → ℂ),
         GlobalTheory.CompanionTheory.MixZ.ArchEq.Over i y z → eval z (map (Int.castRingHom ℂ) j) ≠ 0 → y ∈ ptsIn (i ≫ mpStr ℤ m n) σ₀ U := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.ArchEq.exists_form_of_mem_open | exact GlobalTheory.CompanionTheory.MixZ.ArchEq.exists_form_of_mem_open | (intros; apply GlobalTheory.CompanionTheory.MixZ.ArchEq.exists_form_of_mem_open <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MixZ.ArchEq.exists_form_of_mem_open

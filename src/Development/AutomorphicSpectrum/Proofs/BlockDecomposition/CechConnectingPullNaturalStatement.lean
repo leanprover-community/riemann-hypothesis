@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.cech_connecting_pull_natural : ∀ {X Y : TopCat.{
     (x : cechH S.X₁.obj V 1),
     (cechHOneEquiv U hU hS' hC' hI' : cechH S'.X₁.obj U 1 ≃+ Sheaf.H.{0} S'.X₁ 1) (cechPullH f α.τ₁.hom V U τ hτ 1 x) =
       hPull f α.τ₁ 1 ((cechHOneEquiv V hV hS hC hI : cechH S.X₁.obj V 1 ≃+ Sheaf.H.{0} S.X₁ 1) x) := by
-  first | exact @GlobalTheory.CompanionTheory.CechOne.cechHOneEquiv_pull | exact GlobalTheory.CompanionTheory.CechOne.cechHOneEquiv_pull | (intros; apply GlobalTheory.CompanionTheory.CechOne.cechHOneEquiv_pull <;> assumption)
+  exact @GlobalTheory.CompanionTheory.CechOne.cechHOneEquiv_pull

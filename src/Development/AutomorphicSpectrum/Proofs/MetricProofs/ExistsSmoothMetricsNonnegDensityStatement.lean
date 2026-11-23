@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.exists_smooth_metrics_nonneg_density : ∀ (K : Ty
         (∀ (g : ((Σ k, ι k) → ℂ) → ℝ) y w, (∀ z, 0 ≤ g z) → 0 ≤ setSheetDensity S Ψ (pot N) g y w) ∧
         ∀ (g g' : ((Σ k, ι k) → ℂ) → ℝ) y w, (∀ z ∈ S, |g z| ≤ g' z) →
           |setSheetDensity S Ψ (pot L) g y w| ≤ 3 ^ e * setSheetDensity S Ψ (pot N) g' y w := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Pub.CxTwist.exists_dominating_twist | exact GlobalTheory.CompanionTheory.Ar.Pub.CxTwist.exists_dominating_twist | (intros; apply GlobalTheory.CompanionTheory.Ar.Pub.CxTwist.exists_dominating_twist <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Pub.CxTwist.exists_dominating_twist

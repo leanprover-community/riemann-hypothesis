@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.symplectic_isotropic_plane_vanishes_adelic : ∀ (
     (n d d₁ : ℕ) (JX : Matrix (Fin n) (Fin n) E) (JW : Matrix (Fin d) (Fin d) E) (H' : Plane E d d₁),
     form σ JW H'.x H'.x = 0 → ∀ u ∈ (iso0 n H' : Set (Matrix (Fin n) (Fin d) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)))),
       ∀ u' ∈ (iso0 n H' : Set (Matrix (Fin n) (Fin d) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)))), symp (_root_.Algebra.TensorProduct.map (_root_.AlgHom.id (AF F) (AF F)) σ) (-1) ((_root_.Matrix.map · (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F))) JX) ((_root_.Matrix.map · (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F))) JW) u u' = 0 := by
-  first | exact @GlobalTheory.MixedLagr.symplectic_isotropic_plane_vanishes | exact GlobalTheory.MixedLagr.symplectic_isotropic_plane_vanishes | (intros; apply GlobalTheory.MixedLagr.symplectic_isotropic_plane_vanishes <;> assumption)
+  exact @GlobalTheory.MixedLagr.symplectic_isotropic_plane_vanishes

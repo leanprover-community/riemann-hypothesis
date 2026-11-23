@@ -68,4 +68,4 @@ theorem _root_.GlobalTheory.T.local_embedding_range_eq_field : ∀ {l : ℕ} [Fa
     (w : HeightOneSpectrum (𝓞 E)) (φ : w.adicCompletion E →+* Om l), Continuous φ →
     (∀ y : E, φ (algebraMap E (w.adicCompletion E) y) = Bw.j (algebraMap E Ω y)) →
     Set.range φ = (Bw.Kw.1 : Set (Om l)) := by
-  first | exact @GlobalTheory.CompanionTheory.LTHodge.CompletionRange.range_eq_Kw | exact GlobalTheory.CompanionTheory.LTHodge.CompletionRange.range_eq_Kw | (intros; apply GlobalTheory.CompanionTheory.LTHodge.CompletionRange.range_eq_Kw <;> assumption)
+  exact @GlobalTheory.CompanionTheory.LTHodge.CompletionRange.range_eq_Kw

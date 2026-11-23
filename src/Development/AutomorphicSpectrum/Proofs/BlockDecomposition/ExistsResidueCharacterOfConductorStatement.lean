@@ -52,4 +52,4 @@ open GlobalTheory.CompanionTheory.Jp
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.exists_residue_character_of_conductor : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (v : Pl D), GoodPsi D ψ v → ∀ ϖ : Ov D v, Irreducible ϖ → ∀ w : (Lv D v)ˣ, (w : Lv D v) = algebraMap (Ov D v) (Lv D v) ϖ → ∃ ψ₀ : AddChar (kv D v) ℂ, ψ₀ ≠ 1 ∧ ∀ c : Ov D v, psiV D.host.F ψ v (((w⁻¹ : (Lv D v)ˣ) : Lv D v) * algebraMap (Ov D v) (Lv D v) c) = ψ₀ (IsLocalRing.residue (Ov D v) c) := by
-  first | exact @GlobalTheory.CompanionTheory.Jp.ResChar.main | exact GlobalTheory.CompanionTheory.Jp.ResChar.main | (intros; apply GlobalTheory.CompanionTheory.Jp.ResChar.main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Jp.ResChar.main

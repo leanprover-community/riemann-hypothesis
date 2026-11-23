@@ -49,4 +49,4 @@ open scoped ComplexOrder Classical
 open GlobalTheory.CompanionTheory.Ar.PB.WSq
 
 theorem _root_.GlobalTheory.T.flag_point_triangular_change_orbit : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (F : FrameData ι Ψ N M.Ω M.blk) (b : (Σ k, baseIdx ι M.blk k) → ℂ) (h B : Ψ → Matrix (Fin N) (Fin N) ℂ), (∀ τ', IsBlockDiag j (B τ') ∧ (B τ').BlockTriangular id ∧ (B τ').det ≠ 0) → SameOrbit (FC.flagPt M F b fun τ' => h τ' * B τ') (FC.flagPt M F b h) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.sameOrbit_flagPt_mul | exact GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.sameOrbit_flagPt_mul | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.sameOrbit_flagPt_mul <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.sameOrbit_flagPt_mul

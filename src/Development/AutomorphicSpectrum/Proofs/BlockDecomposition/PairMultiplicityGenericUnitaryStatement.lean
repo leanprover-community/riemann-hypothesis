@@ -44,4 +44,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.PairMult
 
 theorem _root_.GlobalTheory.T.pair_multiplicity_generic_unitary : GlobalTheory.CompanionTheory.PairMult.GenCOU2 := by
-  first | exact @GlobalTheory.CompanionTheory.PairMult.COU.genCOU2 | exact GlobalTheory.CompanionTheory.PairMult.COU.genCOU2 | (intros; apply GlobalTheory.CompanionTheory.PairMult.COU.genCOU2 <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PairMult.COU.genCOU2

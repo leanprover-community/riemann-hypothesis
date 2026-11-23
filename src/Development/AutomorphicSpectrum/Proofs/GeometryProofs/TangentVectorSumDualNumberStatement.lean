@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.tangent_vector_sum_dual_number : ∀ (S : Scheme.{
   ∀ φ ψ χ : Γ(G.left, U) →+* DualNumber C, (∀ a, (φ a).fst = u a) → (∀ a, (ψ a).fst = u a) → (∀ a, (χ a).fst = u a) →
     (∀ a, (χ a).snd = (φ a).snd + (ψ a).snd) →
     v.left = spMap φ ≫ hU.fromSpec → w.left = spMap ψ ≫ hU.fromSpec → (v * w).left = spMap χ ≫ hU.fromSpec := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.TanMul.mul_left_eq | exact GlobalTheory.CompanionTheory.Ar.TanMul.mul_left_eq | (intros; apply GlobalTheory.CompanionTheory.Ar.TanMul.mul_left_eq <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.TanMul.mul_left_eq

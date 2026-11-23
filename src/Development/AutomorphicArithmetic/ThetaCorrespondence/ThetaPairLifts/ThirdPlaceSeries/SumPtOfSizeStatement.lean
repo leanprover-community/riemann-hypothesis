@@ -43,5 +43,5 @@ section
 open GlobalTheory.RefSum GlobalTheory.CovTop GlobalTheory.BigTop
 
 theorem _root_.GlobalTheory.T.sum_pt_of_size : _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.RefSum.SumPtAlt := by
-  first | exact @_root_.GlobalTheory.RefSum.sumPt_of_size_alt | exact _root_.GlobalTheory.RefSum.sumPt_of_size_alt | (intros; apply _root_.GlobalTheory.RefSum.sumPt_of_size_alt <;> assumption)
+  exact @_root_.GlobalTheory.RefSum.sumPt_of_size_alt
 end

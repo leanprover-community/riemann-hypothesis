@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.continuous_unitaryGLBlockEmbedding_polynomial_entr
     ∀ (r : ℕ) (Xf Yf : Matrix (Fin n) (Fin r) E), IsWittFrame σ J Xf Yf →
     ∀ (l d : ℕ) (h : l + d ≤ r) (ι : GlobalTheory.CuspRep.GA E d →* GAd σ J), GlobalTheory.BlockForms.IsBlockEmb σ J Xf Yf h ι →
       Continuous ι := by
-  first | exact @GlobalTheory.BlockForms.isBlockEmb_continuous | exact GlobalTheory.BlockForms.isBlockEmb_continuous | (intros; apply GlobalTheory.BlockForms.isBlockEmb_continuous <;> assumption)
+  exact @GlobalTheory.BlockForms.isBlockEmb_continuous

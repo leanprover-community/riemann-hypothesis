@@ -48,4 +48,4 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.Kle
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Kleiman2
 
 theorem _root_.GlobalTheory.T.kleiman_genericPointSectionInput : GroundTheory.Heights₂.Heights.Kleiman.GenericPointSectionInput.Statement.{0, 0} := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput | exact GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput | (intros; apply GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.kleiman_genericPointSectionInput

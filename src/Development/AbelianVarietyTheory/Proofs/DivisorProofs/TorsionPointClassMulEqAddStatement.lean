@@ -67,4 +67,4 @@ theorem _root_.GlobalTheory.T.torsionPoint_class_mul_eq_add : ∀ {X' : Scheme.{
     (hQT : QT ≫ (torsion.ι G n).left = Q.left) (hRT : RT ≫ (torsion.ι G n).left = (P * Q).left) (x : Sp K)
     (cP cQ cR : M) (hcP : GlobalTheory.TorsSpec.ValAt G n ℓ w (PT x) cP) (hcQ : GlobalTheory.TorsSpec.ValAt G n ℓ w (QT x) cQ)
     (hcR : GlobalTheory.TorsSpec.ValAt G n ℓ w (RT x) cR), cR = cP + cQ := by
-  first | exact @GlobalTheory.TorsSpec.valAt_mul | exact GlobalTheory.TorsSpec.valAt_mul | (intros; apply GlobalTheory.TorsSpec.valAt_mul <;> assumption)
+  exact @GlobalTheory.TorsSpec.valAt_mul

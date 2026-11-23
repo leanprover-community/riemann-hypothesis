@@ -62,4 +62,4 @@ theorem _root_.GlobalTheory.T.hermitian_square_norm_gram : ∀ (L : Type) [Field
     (∀ a b, Γ a b = (B.metric.form σ).inner ((1 : GroundTheory.Heights₂.Heights.ComplexAt σ) ⊗ₜ[𝓞 L] ε a)
       ((1 : GroundTheory.Heights₂.Heights.ComplexAt σ) ⊗ₜ[𝓞 L] ε b)) → ∀ w : Fin n → ℂ,
     sqAt B σ (∑ a, GroundTheory.Heights₂.Heights.ComplexAt.ofComplex σ (w a) ⊗ₜ[𝓞 L] ε a) = (star w ⬝ᵥ (Γ *ᵥ w)).re := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.TorusUnif.sqAt_sum_eq_gram | exact GlobalTheory.CompanionTheory.Ar.TorusUnif.sqAt_sum_eq_gram | (intros; apply GlobalTheory.CompanionTheory.Ar.TorusUnif.sqAt_sum_eq_gram <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.TorusUnif.sqAt_sum_eq_gram

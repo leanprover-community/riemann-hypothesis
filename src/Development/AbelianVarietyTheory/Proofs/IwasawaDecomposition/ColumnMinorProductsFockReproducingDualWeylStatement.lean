@@ -48,4 +48,4 @@ theorem _root_.GlobalTheory.T.columnMinorProducts_fock_reproducing_dualWeyl : �
         Formalism.GradedWeylDivisibility.fockQ (GlobalTheory.WeylMinorDual.colProd ℚ N Y hY J) f • GlobalTheory.WeylMinorDual.colProd ℚ N Y hY J =
       Formalism.GradedWeylDivisibility.fockQ (Formalism.GradedWeylDivisibility.hw ℚ (le_refl N) (fun r : Fin N => Y.rowLen r))
         (Formalism.GradedWeylDivisibility.hw ℚ (le_refl N) (fun r : Fin N => Y.rowLen r)) • f := by
-  first | exact @GlobalTheory.WeylReproducingSym.reproducing_left | exact GlobalTheory.WeylReproducingSym.reproducing_left | (intros; apply GlobalTheory.WeylReproducingSym.reproducing_left <;> assumption)
+  exact @GlobalTheory.WeylReproducingSym.reproducing_left

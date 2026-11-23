@@ -59,4 +59,4 @@ open GlobalTheory.BadCount
 open scoped TensorProduct
 
 theorem _root_.GlobalTheory.T.sup_constant_log_bound : ∀ (D : D7) (M : ℕ) (Lb w : ℝ), 1 ≤ M → 1 ≤ Lb → Real.log M ≤ 30 * Lb → fieldSz D.host.E ≤ 3 * Lb → Real.log (D.R.f * D.R.r) ≤ Lb → 1 ≤ w → Real.log w ≤ 25 * Lb → 1 ≤ GlobalTheory.LevGeo.supConst D.host.E D.R.r D.host.d M w ∧ Real.log (GlobalTheory.LevGeo.supConst D.host.E D.R.r D.host.d M w) ≤ 4000 * ((D.R.f : ℝ) * D.R.r * Lb) ^ 3 := by
-  first | exact @GlobalTheory.ConstSzRows.supConst_size_rows | exact GlobalTheory.ConstSzRows.supConst_size_rows | (intros; apply GlobalTheory.ConstSzRows.supConst_size_rows <;> assumption)
+  exact @GlobalTheory.ConstSzRows.supConst_size_rows

@@ -48,4 +48,4 @@ open ReciprocityTheory.ChartRestriction.G.Geo (ChartBundle chartRing)
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles (mseg mcIdeal chartMon joinCoord bcCoord pullDeg liftVar fnField ck rootNum SameGeneric LatLE IsPull IsPullBC IsSubQuot QuotIso IsFrobPres FlagModel modelDeg)
 
 theorem _root_.GlobalTheory.T.dvr_bundle_statement_d : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (Ω : Type) [Field Ω] [Algebra O Ω] (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)], GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles.Bd.Statement.{0,0,0} O Ω ι := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.Constants.main | exact GlobalTheory.CompanionTheory.Ar.Num.Constants.main | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.Constants.main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.Constants.main

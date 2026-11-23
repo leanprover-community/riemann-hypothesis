@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.schwartz_height_majorant_integrable : ∀ (D : D7)
   ∀ H : G D n → ℝ≥0, IsHt H → (∃ C : Set (G D n), IsCompact C ∧ ∀ g, ∃ q ∈ P D n, ∃ c ∈ C, g = q * c) →
   ∀ Φ ∈ schwartzA θ ρ p, ∀ τ : ℝ, 0 ≤ τ → ∃ W : Mx D ρ p → ℝ, Integrable W m.μ ∧
     ∀ (x : G D n) (y : Mx D ρ p), (H (x * M.sh y) : ℝ) ^ τ * ‖Φ y‖ ≤ W y * (H x : ℝ) ^ τ := by
-  first | exact @GlobalTheory.CompanionTheory.ShearGrowth.height_shear_majorant | exact GlobalTheory.CompanionTheory.ShearGrowth.height_shear_majorant | (intros; apply GlobalTheory.CompanionTheory.ShearGrowth.height_shear_majorant <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ShearGrowth.height_shear_majorant

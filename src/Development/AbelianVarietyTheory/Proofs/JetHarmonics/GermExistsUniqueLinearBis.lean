@@ -50,4 +50,4 @@ open Formalism.MainNotions.ModuliIntegralCharts.H1.BoxTuple Formalism.MainNotion
 open ReciprocityTheory.ChartRestriction.G.TB (colM dAct)
 
 theorem _root_.GlobalTheory.T.germ_existsUnique_linear : AGermSt := by
-  first | exact @GlobalTheory.GermBasic.main | exact GlobalTheory.GermBasic.main | (intros; apply GlobalTheory.GermBasic.main <;> assumption)
+  exact @GlobalTheory.GermBasic.main

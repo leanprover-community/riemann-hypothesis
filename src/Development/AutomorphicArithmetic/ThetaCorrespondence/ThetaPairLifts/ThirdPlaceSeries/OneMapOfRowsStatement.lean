@@ -44,5 +44,5 @@ import Mathlib.Tactic.NormNum.RealSqrt
 section
 
 theorem _root_.GlobalTheory.T.oneMap_of_bundle_setAt_lin_inj_const_formula : _root_.GlobalTheory.BigTop.Fun.BundleCondition → _root_.GlobalTheory.BigTop.Fun.SettingAtPoint → GlobalTheory.RowClaim.LinK → GlobalTheory.RowClaim.InjK → GlobalTheory.RowClaim.ConstK → GlobalTheory.RowClaim.Formula2K → _root_.GlobalTheory.BigTop.Fun.LeafUniqueMap @GlobalTheory.BigTop.Fun.Comparison₂ := by
-  first | exact @_root_.GlobalTheory.BigTop.Fun.oneMap_of_bundle_setAt_kernel_conditions | exact _root_.GlobalTheory.BigTop.Fun.oneMap_of_bundle_setAt_kernel_conditions | (intros; apply _root_.GlobalTheory.BigTop.Fun.oneMap_of_bundle_setAt_kernel_conditions <;> assumption)
+  exact @_root_.GlobalTheory.BigTop.Fun.oneMap_of_bundle_setAt_kernel_conditions
 end

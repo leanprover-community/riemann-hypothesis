@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.sobolev_space_complete : ∀ (n : ℕ) [Measurable
     ∀ a : ℕ → Mat n → V, (∀ k, Sob μ (a k)) → (∀ w, CauchySeq fun k => cls μ (Rw w (a k))) →
     ∃ b : Mat n → V, Sob μ b ∧ (∀ w, Tendsto (fun k => cls μ (Rw w (a k))) atTop (𝓝 (cls μ (Rw w b)))) ∧
       ∀ g ∈ GLs n, Tendsto (fun k => a k g) atTop (𝓝 (b g)) := by
-  first | exact @GlobalTheory.CompanionTheory.SobComplete.sob_complete | exact GlobalTheory.CompanionTheory.SobComplete.sob_complete | (intros; apply GlobalTheory.CompanionTheory.SobComplete.sob_complete <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SobComplete.sob_complete

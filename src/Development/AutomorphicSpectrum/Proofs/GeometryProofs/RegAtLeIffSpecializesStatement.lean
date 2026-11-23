@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar NumberField
 
 theorem _root_.GlobalTheory.T.regAt_le_iff_specializes : ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (M : PModel o x) (p q : Cpt M.ξ), regAt M.ξ p ≤ regAt M.ξ q ↔ q.1 ⤳ p.1 := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.regAt_le_regAt_iff_specializes | exact GlobalTheory.CompanionTheory.Ar.regAt_le_regAt_iff_specializes | (intros; apply GlobalTheory.CompanionTheory.Ar.regAt_le_regAt_iff_specializes <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.regAt_le_regAt_iff_specializes

@@ -54,4 +54,4 @@ open GlobalTheory.CompanionTheory.MirPair
 
 
 theorem _root_.GlobalTheory.T.mirabolic_coefficient_continuous : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ} {V V' : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] (T : Representation ℂ (Mir k n) V) (B : V →ₗ[ℂ] V' →ₗ[ℂ] ℂ), IsSmooth T → ∀ (v : V) (v' : V'), Continuous (coef T B v v') := by
-  first | exact @GlobalTheory.CompanionTheory.MirPair.continuous_coef | exact GlobalTheory.CompanionTheory.MirPair.continuous_coef | (intros; apply GlobalTheory.CompanionTheory.MirPair.continuous_coef <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MirPair.continuous_coef

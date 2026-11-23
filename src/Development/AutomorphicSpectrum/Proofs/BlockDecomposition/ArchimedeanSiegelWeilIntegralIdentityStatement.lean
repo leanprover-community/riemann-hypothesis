@@ -68,4 +68,4 @@ theorem _root_.GlobalTheory.T.archimedean_siegel_weil_integral_identity : ∀ (F
   ∀ ν : Measure (HermR (Ainf F) σ n), ν.IsAddHaarMeasure →
   ∀ P : (Fin n → Fin M → Ainf F ⊗[F] E) → ℂ, GlobalTheory.Published.SiegelOneVector.IsSchwartzArch P →
     Integrable (starLoc (Ainf F) σ J (psiInf F ψ) μ P) ν := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.integrable_starLoc_inf | exact GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.integrable_starLoc_inf | (intros; apply GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.integrable_starLoc_inf <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.integrable_starLoc_inf

@@ -46,4 +46,4 @@ open scoped ENNReal NNReal Classical
 theorem _root_.GlobalTheory.T.finite_place_cutoff_continuous_compact_support : ∀ (F : Type) [Field F] [NumberField F] (S : Finset (HeightOneSpectrum (𝓞 F)))
     (g : ∀ v : HeightOneSpectrum (𝓞 F), Fv F v → ℝ) (a : (AF F)ˣ), (∀ v ∈ S, Continuous (g v) ∧ HasCompactSupport (g v)) →
     ∀ v : HeightOneSpectrum (𝓞 F), Continuous (psiA S g a v) ∧ HasCompactSupport (psiA S g a v) := by
-  first | exact @GlobalTheory.CompanionTheory.BasePsi.Test.psiA_isTest | exact GlobalTheory.CompanionTheory.BasePsi.Test.psiA_isTest | (intros; apply GlobalTheory.CompanionTheory.BasePsi.Test.psiA_isTest <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BasePsi.Test.psiA_isTest

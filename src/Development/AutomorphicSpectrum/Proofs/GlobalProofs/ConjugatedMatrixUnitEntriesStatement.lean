@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.adapted_basis_conjugate_zero_entries : ∀ (D : D7
     (∃ e : ℕ, (e = l ∨ e = l + d ∨ e + l + d = V.rank ∨ e + l = V.rank) ∧ p.val < e ∧ e ≤ q.val) →
     ((C.1.map (tauE D τ))⁻¹ * conjAt V τ (C.1.map (tauE D τ) * Matrix.single p q 1 * (C.1.map (tauE D τ))⁻¹) * C.1.map (tauE D τ)) a b ≠ 0 →
       ∃ e : ℕ, (e = l ∨ e = l + d ∨ e + l + d = V.rank ∨ e + l = V.rank) ∧ a.val < e ∧ e ≤ b.val := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.ConjAdapted.conj_strict | exact GlobalTheory.CompanionTheory.Hypotheses₂.ConjAdapted.conj_strict | (intros; apply GlobalTheory.CompanionTheory.Hypotheses₂.ConjAdapted.conj_strict <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Hypotheses₂.ConjAdapted.conj_strict

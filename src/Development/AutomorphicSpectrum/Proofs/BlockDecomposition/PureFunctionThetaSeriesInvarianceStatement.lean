@@ -50,4 +50,4 @@ theorem _root_.GlobalTheory.T.pure_function_theta_series_invariance : ∀ (F : T
     ∀ δ : ℝ, 0 < δ →
     {x : F | (∀ v, v ∉ T → algebraMap F (Fv F v) x ∈ v.adicCompletionIntegers F) ∧
       phiA G a (fun _ => θ δ * algebraMap F (Ainf F) x) * ∏ v ∈ T, psiA S g a v (fun _ => algebraMap F (Fv F v) x) ≠ 0}.Finite := by
-  first | exact @GlobalTheory.CompanionTheory.BasePsi.finite_contributing | exact GlobalTheory.CompanionTheory.BasePsi.finite_contributing | (intros; apply GlobalTheory.CompanionTheory.BasePsi.finite_contributing <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BasePsi.finite_contributing

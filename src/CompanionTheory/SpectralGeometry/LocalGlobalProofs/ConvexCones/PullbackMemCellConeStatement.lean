@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.pullback_mem_cell_cone : ∀ (O : Type) [CommRing 
   ∀ (m : ℕ) (δ : Fin m → LinearMap.BilinForm ℤ X), IsCell bar φ δ →
   ∀ c : Fin m → ℝ, (∀ j, 0 ≤ c j) → toReal β = ∑ j, c j • toReal (δ j) →
   ∀ i, 0 < t i → InRCone δ (pullAdd f (u i)) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Fan.PullbackInCellCone.inRCone_pullAdd_of_isCell | exact GlobalTheory.CompanionTheory.Ar.Fan.PullbackInCellCone.inRCone_pullAdd_of_isCell | (intros; apply GlobalTheory.CompanionTheory.Ar.Fan.PullbackInCellCone.inRCone_pullAdd_of_isCell <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Fan.PullbackInCellCone.inRCone_pullAdd_of_isCell

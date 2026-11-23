@@ -48,5 +48,5 @@ end
 section
 
 theorem _root_.GlobalTheory.T.twisted_thetaLift_cuspidal : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.LiftsCuspidal := by
-  first | exact @_root_.GlobalTheory.PairLift.thetaPairLift_cuspidal_of_hypotheses | exact _root_.GlobalTheory.PairLift.thetaPairLift_cuspidal_of_hypotheses | (intros; apply _root_.GlobalTheory.PairLift.thetaPairLift_cuspidal_of_hypotheses <;> assumption)
+  exact @_root_.GlobalTheory.PairLift.thetaPairLift_cuspidal_of_hypotheses
 end

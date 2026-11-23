@@ -48,4 +48,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 
 theorem _root_.GlobalTheory.T.holomorphic_family_of_homs : ∀ (k A : Type) [Field k] [CommRing A] [IsDomain A] [Algebra k A] (D : ℕ) [Algebra.IsStandardSmoothOfRelativeDimension D k A] (σ : k →+* ℂ) (ψ₀ : A →+* ℂ), ψ₀.comp (algebraMap k A) = σ → ∃ Ψ : (Fin D → ℂ) → (A →+* ℂ), IsHolPts (ball 0 1) Ψ ∧ Ψ 0 = ψ₀ ∧ (∀ z ∈ ball (0 : Fin D → ℂ) 1, (Ψ z).comp (algebraMap k A) = σ) ∧ ∀ a : A, (∀ z ∈ ball (0 : Fin D → ℂ) 1, Ψ z a = 0) → a = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.ChartRing.exists_polydisc_chart | exact GlobalTheory.CompanionTheory.ChartRing.exists_polydisc_chart | (intros; apply GlobalTheory.CompanionTheory.ChartRing.exists_polydisc_chart <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ChartRing.exists_polydisc_chart

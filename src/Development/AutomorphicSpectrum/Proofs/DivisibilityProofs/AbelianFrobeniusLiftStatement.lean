@@ -52,4 +52,4 @@ open ReciprocityTheory.ChartRestriction.G.Geo (HermLine IsSmoothHerm IsArithVar 
 open NumberField
 
 theorem _root_.GlobalTheory.T.abelian_frobenius_lift : ∀ (E : Type) [Field E] [NumberField E] [IsGalois ℚ E], (∀ a b : E ≃ₐ[ℚ] E, a * b = b * a) → ∀ p : ℕ, p.Prime → ∃ φ : E ≃ₐ[ℚ] E, ∀ (O : Type) [CommRing O] (n : Ideal O), n.IsPrime → (p : O) ∈ n → ∀ (τ : 𝓞 E →+* O) (x : 𝓞 E), τ (RingOfIntegers.mapRingEquiv φ.toRingEquiv x) - τ x ^ p ∈ n := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Num.exists_frobenius_all_primes | exact GlobalTheory.CompanionTheory.Ar.Num.exists_frobenius_all_primes | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.exists_frobenius_all_primes <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Num.exists_frobenius_all_primes

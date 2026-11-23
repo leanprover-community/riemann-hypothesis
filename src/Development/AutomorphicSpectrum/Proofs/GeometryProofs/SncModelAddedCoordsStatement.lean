@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.snc_model_added_coords : ∀ (X X' : Scheme.{0}) (
     AlgebraicIndependent Ω₀ u → IntermediateField.adjoin Ω₀ (Set.range u) = ⊤ →
     Cmp.IsSncModel y e bd →
     Cmp.IsSncModel (addY y x') (e + Fintype.card I) (bd.map (MvPolynomial.rename (addV J N))) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.SncPull.isSncModel_pull | exact GlobalTheory.CompanionTheory.Ar.SncPull.isSncModel_pull | (intros; apply GlobalTheory.CompanionTheory.Ar.SncPull.isSncModel_pull <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.SncPull.isSncModel_pull

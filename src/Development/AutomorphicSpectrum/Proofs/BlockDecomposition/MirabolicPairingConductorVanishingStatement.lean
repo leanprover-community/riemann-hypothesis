@@ -53,4 +53,4 @@ open GlobalTheory.CompanionTheory.MirPair
 
 
 theorem _root_.GlobalTheory.T.mirabolic_pairing_exists_eventual_value : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν : Measure k) [ν.IsAddHaarMeasure] (ψ : AddChar k Circle) (c : kˣ) {n : ℕ} {V V' : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] (T : Representation ℂ (Mir k (n + 1)) V) (T' : Representation ℂ (Mir k (n + 1)) V') (B : V →ₗ[ℂ] V' →ₗ[ℂ] ℂ) (s : ℕ), Continuous ψ → HasConductor ψ c → IsSmooth T → IsSmooth T' → TwInv T T' B s → ∀ (v : V) (v' : V'), ∃ A, EvVal ν ψ T B v v' A := by
-  first | exact @GlobalTheory.CompanionTheory.MirPair.exists_evVal | exact GlobalTheory.CompanionTheory.MirPair.exists_evVal | (intros; apply GlobalTheory.CompanionTheory.MirPair.exists_evVal <;> assumption)
+  exact @GlobalTheory.CompanionTheory.MirPair.exists_evVal

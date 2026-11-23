@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.complex_hessian_block_combination : ∀ (d : ℕ) 
     ContDiffAt ℝ 2 f (Fin.cons p y) → ContDiffAt ℝ 2 α y → hessC f (Fin.cons p y) = blk e B →
     hessC (fun z : Fin (d + 1) → ℂ => s * f z + v * α (Fin.tail z)) (Fin.cons p y) =
     blk ((s : ℂ) * e) ((s : ℂ) • B + (v : ℂ) • hessC α y) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.PB.FibN.hessC_row_fibre | exact GlobalTheory.CompanionTheory.Ar.PB.FibN.hessC_row_fibre | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.FibN.hessC_row_fibre <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.PB.FibN.hessC_row_fibre

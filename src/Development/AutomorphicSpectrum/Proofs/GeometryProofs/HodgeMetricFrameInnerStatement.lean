@@ -48,4 +48,4 @@ open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Sl
 
 
 theorem _root_.GlobalTheory.T.hodge_metric_frame_inner : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (L : Type) [Field L] [NumberField L] (D : PPData H L) (σ : L →+* ℂ) (a : D.Frame σ) (x y : D.B.carrier) (c c' : Fin D.g → ℂ), D.IsVec a x c → D.IsVec a y c' → ((D.B.metric.form σ).inner ((1 : ComplexAt σ) ⊗ₜ[𝓞 L] x) ((1 : ComplexAt σ) ⊗ₜ[𝓞 L] y) : ℂ) = Real.pi * a.herm c' c := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Sl.FrameGram.inner_eq_pi_herm | exact GlobalTheory.CompanionTheory.Ar.Sl.FrameGram.inner_eq_pi_herm | (intros; apply GlobalTheory.CompanionTheory.Ar.Sl.FrameGram.inner_eq_pi_herm <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Sl.FrameGram.inner_eq_pi_herm

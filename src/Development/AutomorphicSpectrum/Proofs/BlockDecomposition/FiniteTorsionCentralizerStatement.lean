@@ -54,4 +54,4 @@ open scoped ComplexOrder
 
 theorem _root_.GlobalTheory.T.finite_torsion_centralizer_alt : ∀ (E : Type) [Field E] [NumberField E] (n : ℕ) (N : GL (Fin n) E), N.val.charpoly.Separable →
   {g : GL (Fin n) E | g * N = N * g ∧ IsOfFinOrder g}.Finite := by
-  first | exact @GlobalTheory.CompanionTheory.TorCent.finite_torsion_centralizer | exact GlobalTheory.CompanionTheory.TorCent.finite_torsion_centralizer | (intros; apply GlobalTheory.CompanionTheory.TorCent.finite_torsion_centralizer <;> assumption)
+  exact @GlobalTheory.CompanionTheory.TorCent.finite_torsion_centralizer

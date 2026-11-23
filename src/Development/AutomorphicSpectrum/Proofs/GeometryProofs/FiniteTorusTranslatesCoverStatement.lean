@@ -61,4 +61,4 @@ theorem _root_.GlobalTheory.T.finite_torus_translates_cover : ∀ (K : Type) [Fi
     (∀ i, IsOpen (O i)) → (∀ z ∈ mcPts P, ∃ i, z ∈ O i) →
     ∃ (m : ℕ) (e : Fin m → C), ∀ z ∈ mcPts P, ∃ (a : Fin m) (c : K → ℂ), (∀ k, c k ≠ 0) ∧
       torusSmul c z ∈ O (e a) ∧ torusSmul c z ∈ mcPts P := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.ChartCover.mcPts_finite_cover_up_to_torus | exact GlobalTheory.CompanionTheory.Ar.ChartCover.mcPts_finite_cover_up_to_torus | (intros; apply GlobalTheory.CompanionTheory.Ar.ChartCover.mcPts_finite_cover_up_to_torus <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.ChartCover.mcPts_finite_cover_up_to_torus

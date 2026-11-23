@@ -64,4 +64,4 @@ theorem _root_.GlobalTheory.T.cover_restriction_base_change : ∀ {X Y : Scheme.
           (z.1 ⟨t.1.image τ, ht⟩ : sectionsOn F (cechOpen V U (t.1.image τ))))) →
     (∀ t : {s : Finset κ // s.card = n + 1}, (t.1.image τ).card ≠ n + 1 → z'.1 t = 0) →
     cechHEquivCohOn S hc' hG n (cechClass _ n z') = cohOn.pull hσ φ hW n (cechHEquivCohOn R hc hF n (cechClass _ n z)) := by
-  first | exact @GlobalTheory.CompanionTheory.AltCech.cechHEquivCohOn_altPull | exact GlobalTheory.CompanionTheory.AltCech.cechHEquivCohOn_altPull | (intros; apply GlobalTheory.CompanionTheory.AltCech.cechHEquivCohOn_altPull <;> assumption)
+  exact @GlobalTheory.CompanionTheory.AltCech.cechHEquivCohOn_altPull

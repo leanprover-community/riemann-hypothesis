@@ -67,4 +67,4 @@ theorem _root_.GlobalTheory.T.derivation_determines_chart : ∀ (R A : Type) [Co
     (∀ c, ∃ j, f j = t c) ∧
     ∀ b ∈ ball b₀ δ, ∀ χ : A →+* ℂ, χ.comp (algebraMap R A) = ψ b → (∀ j, ‖χ (f j) - χ₀ (f j)‖ < δ) →
       (fun c => χ (t c)) ∈ ball (0 : Fin g → ℂ) ε ∧ χ = Ψ b (fun c => χ (t c)) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.StdSmoothChart.exists_sections | exact GlobalTheory.CompanionTheory.Ar.StdSmoothChart.exists_sections | (intros; apply GlobalTheory.CompanionTheory.Ar.StdSmoothChart.exists_sections <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.StdSmoothChart.exists_sections

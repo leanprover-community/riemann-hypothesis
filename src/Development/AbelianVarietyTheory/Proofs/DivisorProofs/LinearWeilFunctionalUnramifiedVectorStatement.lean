@@ -46,4 +46,4 @@ theorem _root_.GlobalTheory.T.linear_weil_functional_unramified_vector : GlobalT
     ∀ v, X.Good v →
     ∀ (t : E →ₐ[F] Fv F v) (ι : ((Fin a × Fin (a + a') → Fv F v) → ℂ) →ₗ[ℂ] (Matrix (Fin a) (Fin (a + a')) (Fv F v) → ℂ)), G.M.IsLinW B.ψ t 1 1 ι → (∀ h ∈ UAt σ G.W (evFin F v), ∃ c : ℂ, ∀ φ ∈ SB (Fin a × Fin (a + a') → Fv F v), ∀ φ₁ ∈ SB (Fin a × Fin (a + a') → Fv F v),
       Acts (evFin F v) (om (1, h)) φ φ₁ → ∀ Y, ι φ₁ Y = c * ι φ (Y * (((mat h).map (piW t))⁻¹)ᵀ)) := by
-  first | exact @GlobalTheory.UnitWShape.shape | exact GlobalTheory.UnitWShape.shape | (intros; apply GlobalTheory.UnitWShape.shape <;> assumption)
+  exact @GlobalTheory.UnitWShape.shape

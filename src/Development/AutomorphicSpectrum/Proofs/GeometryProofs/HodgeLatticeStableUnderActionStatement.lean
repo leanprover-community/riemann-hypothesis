@@ -57,4 +57,4 @@ theorem _root_.GlobalTheory.T.hodge_lattice_stable_under_action : ∀ (E : Type)
     (HL : Submodule R (Vs × Module.Dual Ω Vs)),
     (∀ a y, (ρH a y).1 = ρ a y.1) → HodgeAt ρH HL ℓ t →
     (∀ i, t i ∈ HL) ∧ (∀ a, ∀ h ∈ HL, ρH a h ∈ HL) ∧ ∀ a i, ρ a (ℓ i) ∈ Submodule.span R (Set.range ℓ) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.hodgeAt_stable | exact GlobalTheory.CompanionTheory.Ar.Flat.CPoint.hodgeAt_stable | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.CPoint.hodgeAt_stable <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.hodgeAt_stable

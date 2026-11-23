@@ -49,4 +49,4 @@ theorem _root_.GlobalTheory.T.filtered_cohomology_restriction_bijective : ∀ {O
     {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I} (Q₀ : ObjectProperty (Thick (nlFun γ 0 X q κ))) (l s : ℕ)
     (hQ : (Q₀ = ⊤ ∧ l = 1) ∨ ∃ s', s ≤ s' ∧ Q₀ = TF l s') (𝒱 : Set X.Opens) (h : St (TF l s) 𝒱 ≤ St Q₀ 𝒱) (r r' : ℤ) (hr : r' ≤ s) (j : ℕ),
     Function.Bijective (((incl h).sq (incl_fil h r) (incl_fil h r')).pull j) := by
-  first | exact @GlobalTheory.CompanionTheory.PDTrunc.pull_incl_bijective | exact GlobalTheory.CompanionTheory.PDTrunc.pull_incl_bijective | (intros; apply GlobalTheory.CompanionTheory.PDTrunc.pull_incl_bijective <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PDTrunc.pull_incl_bijective

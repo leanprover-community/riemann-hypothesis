@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.gaussian_projection_cone_coarea : ∀ (n m : ℕ) 
         ∫⁻ y in coneSet h J ∩ A, g (linProj π y) * ENNReal.ofReal (coneJac h J π y) ∂(Measure.hausdorffMeasure ((2 * m : ℕ) : ℝ)) =
       (Measure.hausdorffMeasure ((2 * m : ℕ) : ℝ)) (Metric.ball (0 : EuclideanSpace ℂ (Fin m)) 1) *
         ∫⁻ w : EuclideanSpace ℂ (Fin m), cntOver (coneSet h J ∩ A) π w * g w := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Short.Crofton.coneArea_inter | exact GlobalTheory.CompanionTheory.Ar.Short.Crofton.coneArea_inter | (intros; apply GlobalTheory.CompanionTheory.Ar.Short.Crofton.coneArea_inter <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Short.Crofton.coneArea_inter

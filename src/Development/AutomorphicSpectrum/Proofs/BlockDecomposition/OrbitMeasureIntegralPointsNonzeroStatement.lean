@@ -52,4 +52,4 @@ open GlobalTheory.CompanionTheory.ColumnSplitting
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.orbit_measure_integral_points_nonzero : ∀ (D : D7) (n t : ℕ) (B W : HSp D) (d : HypDec B W t) (hn : W.rank + t = n) (I : IkD d n) (μ : Measure (Mx D W.rank t)), μ.IsAddHaarMeasure → ∀ x₀, ∃ S₀ : Finset (Pl D), ∀ S, S₀ ⊆ S → nuT hn I μ x₀ {z | IntOff S z.1 ∧ IntOff S z.2} ≠ 0 := by
-  first | exact @GlobalTheory.CompanionTheory.ColumnSplitting.nuT_intOff_ne_zero | exact GlobalTheory.CompanionTheory.ColumnSplitting.nuT_intOff_ne_zero | (intros; apply GlobalTheory.CompanionTheory.ColumnSplitting.nuT_intOff_ne_zero <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ColumnSplitting.nuT_intOff_ne_zero

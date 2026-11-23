@@ -47,4 +47,4 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open scoped ENNReal Classical
 
 theorem _root_.GlobalTheory.T.extVan_section_has_cusp_form_match : ∀ (D : D7) (T : Core D) (j : ℕ) (Y : Deep T j) (e : ℕ) (o : ℝ), Y.Good e o → 2 < Module.finrank ℚ D.host.E / 2 → ∀ (Z : Comp Y.d.Xo₂ Y.d.c₂) (TF : GlobalTheory.CompHS.TorFlag Y.d.Xo₂ Y.d.c₂) (u : GlobalTheory.AllWt.Weight (T.Q.Dw j)), ∀ f ∈ GlobalTheory.CompanionTheory.Ar.OntoDef.extVanZ TF.X (exOf (T.Q.Dw j) u 0), ∃ g ∈ cuspOn Y.U Z (wtOf (T.Q.Dw j) u 0), ∀ σ : Y.d.c₂.F →+* ℂ, GoodEmb Y.d.c₂ σ → ∀ w ∈ framesOn (Y.U σ) Z, rdU (Y.U σ) f w.1 w.2 = rdU (Y.U σ) g w.1 w.2 := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.extVan_section_has_cusp_form_match | exact GlobalTheory.CompanionTheory.Relay.extVan_section_has_cusp_form_match | (intros; apply GlobalTheory.CompanionTheory.Relay.extVan_section_has_cusp_form_match <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.extVan_section_has_cusp_form_match

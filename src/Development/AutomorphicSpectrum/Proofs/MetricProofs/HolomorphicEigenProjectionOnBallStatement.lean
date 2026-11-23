@@ -48,4 +48,4 @@ open scoped ComplexOrder
 
 
 theorem _root_.GlobalTheory.T.holomorphic_eigen_projection_on_ball : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F) (τ : Ψ) (y : Fin (j + j') → ℂ), DifferentiableOn ℂ (fun t => C.pPart (F.R t) τ y) (ballDom F.q) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Chart.pPart_differentiableOn | exact GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Chart.pPart_differentiableOn | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Chart.pPart_differentiableOn <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Chart.pPart_differentiableOn

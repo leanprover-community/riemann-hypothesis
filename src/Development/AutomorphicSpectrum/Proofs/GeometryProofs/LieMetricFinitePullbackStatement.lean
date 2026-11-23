@@ -59,4 +59,4 @@ theorem _root_.GlobalTheory.T.gram_matrix_continuous : ∀ (X : Scheme.{0}) (Ω 
       ∀ v : Fin r → (epsAt (zc ≫ ρ) ⟶ G), (∀ a, (v a).left = (Mz.pt ((Int.castAddHom ℂ).comp (β a)) ≫ u).left ≫ Φ) →
         H zc = RootHt.gramAt h (zc ≫ ρ) v) →
     @Continuous _ _ (anTop Z') _ H := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.TorusUnif.gramAt_continuous_anTop | exact GlobalTheory.CompanionTheory.Ar.TorusUnif.gramAt_continuous_anTop | (intros; apply GlobalTheory.CompanionTheory.Ar.TorusUnif.gramAt_continuous_anTop <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.TorusUnif.gramAt_continuous_anTop

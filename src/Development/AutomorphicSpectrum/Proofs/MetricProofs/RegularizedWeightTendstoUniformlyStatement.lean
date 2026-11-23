@@ -56,4 +56,4 @@ open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory
 open ReciprocityTheory.AnForm (levi)
 
 theorem _root_.GlobalTheory.T.regularized_weight_tendsto_uniformly : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (P : Ideal (ReciprocityTheory.ChartRestriction.G.Geo.MRing J)) (n : ℕ) (M : CxModel P n) (Xo : Set ((Σ k, J k) → ℂ)) (A : HermLine J) (S : LogLogRegularisationSetting M Xo A), S.IsTied → ∀ K' ⊆ S.R.Yo, IsCompact K' → TendstoUniformlyOn S.regWeight S.R.ph (𝓝[>] 0) K' := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Cusp.tendstoUniformlyOn_regWeight_of_isTied | exact GlobalTheory.CompanionTheory.Ar.Cusp.tendstoUniformlyOn_regWeight_of_isTied | (intros; apply GlobalTheory.CompanionTheory.Ar.Cusp.tendstoUniformlyOn_regWeight_of_isTied <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Cusp.tendstoUniformlyOn_regWeight_of_isTied

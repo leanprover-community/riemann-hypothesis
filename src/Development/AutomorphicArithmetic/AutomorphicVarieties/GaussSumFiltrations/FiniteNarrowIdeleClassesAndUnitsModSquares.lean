@@ -54,7 +54,7 @@ theorem exists_finset_mod_sq {G : Type} [CommGroup G] [Group.FG G] :
   classical
   let H : Subgroup G := (powMonoidHom 2 : G →* G).range
   have hfin : Finite (G ⧸ H) := by
-    apply CommGroup.finite_of_fg_torsion
+    apply CommGroup.finite_of_fg_isMulTorsion
     intro q
     obtain ⟨g, rfl⟩ := QuotientGroup.mk_surjective q
     refine (isOfFinOrder_iff_pow_eq_one).2 ⟨2, by norm_num, ?_⟩
@@ -165,4 +165,4 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open scoped Matrix
 
 theorem _root_.GlobalTheory.T.finite_narrowIdeleClasses_and_units_mod_squares : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F], (∃ Y : Finset (Af F)ˣ, ∀ z : (Af F)ˣ, ∃ y ∈ Y, ∃ (ξ : Fˣ) (u : (Af F)ˣ), TP (ξ : F) ∧ (∀ w, Valued.v (pLoc F w (u : Af F)) = 1) ∧ z = Units.map (algebraMap F (Af F)).toMonoidHom ξ * y * u) ∧ ∃ E : Finset (𝓞 F)ˣ, ∀ ε : (𝓞 F)ˣ, ∃ e ∈ E, ∃ η : (𝓞 F)ˣ, ε = e * η ^ 2 := by
-  first | exact @GlobalTheory.HilbertThetaSeries.NarrowCls.narrowClass_unitsSq_finite | exact GlobalTheory.HilbertThetaSeries.NarrowCls.narrowClass_unitsSq_finite | (intros; apply GlobalTheory.HilbertThetaSeries.NarrowCls.narrowClass_unitsSq_finite <;> assumption)
+  exact @GlobalTheory.HilbertThetaSeries.NarrowCls.narrowClass_unitsSq_finite

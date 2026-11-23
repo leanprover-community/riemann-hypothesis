@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.integral_density_independent_projection : ∀ (K :
     (∀ (c : K → ℂ) (z : (Σ k, ι k) → ℂ), (∀ k, c k ≠ 0) → g (fun p => c p.1 * z p) = g z) →
     ∫⁻ y, ENNReal.ofReal (cxPosDens (conePts Q) Ψ (pot L) g y) =
       ∫⁻ y, ENNReal.ofReal (cxPosDens (conePts Q) Ψ' (pot L) g y) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Pub.CxPosIndep.cx_posPart_indep | exact GlobalTheory.CompanionTheory.Ar.Pub.CxPosIndep.cx_posPart_indep | (intros; apply GlobalTheory.CompanionTheory.Ar.Pub.CxPosIndep.cx_posPart_indep <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Pub.CxPosIndep.cx_posPart_indep

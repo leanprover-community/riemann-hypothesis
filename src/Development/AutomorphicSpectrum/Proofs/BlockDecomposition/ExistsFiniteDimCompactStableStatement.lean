@@ -48,4 +48,4 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs Positivi
 open scoped GlobalTheory.CuspRep.CuspidalL2GL
 
 theorem _root_.GlobalTheory.T.exists_finite_dim_compact_stable : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N : ℕ) (V : Submodule ℂ (Sm E N)), IsDiscrete V → ∀ L : Subgroup (GL (Fin N) (Af E)), ∀ x ∈ V, (∀ u ∈ L, finRep E N u x = x) → ∃ A : Submodule ℂ (Sm E N), FiniteDimensional ℂ A ∧ x ∈ A ∧ (∀ a ∈ A, a ∈ V ∧ ∀ u ∈ L, finRep E N u a = a) ∧ (∀ k, ∀ a ∈ A, cptRep E N k a ∈ A) ∧ ∀ ℓ : Sm E N →ₗ[ℂ] ℂ, ∀ a ∈ A, Continuous fun k => ℓ (cptRep E N k a) := by
-  first | exact @GlobalTheory.CompanionTheory.FinDiscKfin.exists_kfin_subspace | exact GlobalTheory.CompanionTheory.FinDiscKfin.exists_kfin_subspace | (intros; apply GlobalTheory.CompanionTheory.FinDiscKfin.exists_kfin_subspace <;> assumption)
+  exact @GlobalTheory.CompanionTheory.FinDiscKfin.exists_kfin_subspace

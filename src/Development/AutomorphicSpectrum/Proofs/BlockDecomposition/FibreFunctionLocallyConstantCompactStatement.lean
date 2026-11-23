@@ -46,4 +46,4 @@ open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.
 open scoped TensorProduct
 
 theorem _root_.GlobalTheory.T.fibre_function_locally_constant_compact : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (τ : Representation ℂ (Mir k i) V) (σ : Representation ℂ (GL (Fin t) k) W), IsSmooth τ → IsSmooth σ → ∀ (f : cIndSpace (HPG k i t) (hRep τ σ)) (g : GL (Fin (i + t)) k), IsLocallyConstant (fibV f g) ∧ HasCompactSupport (fibV f g) := by
-  first | exact @GlobalTheory.CompanionTheory.BZPsiPG.FibCompact.fibV_main | exact GlobalTheory.CompanionTheory.BZPsiPG.FibCompact.fibV_main | (intros; apply GlobalTheory.CompanionTheory.BZPsiPG.FibCompact.fibV_main <;> assumption)
+  exact @GlobalTheory.CompanionTheory.BZPsiPG.FibCompact.fibV_main

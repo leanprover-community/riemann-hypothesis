@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.finrank_eigSp_eq_of_lattice_specialization : ∀ (
     (∀ a i, ρ a (ℓ i) ∈ Submodule.span R' (Set.range ℓ)) → Tied ℓ ψ ρ ρC →
     (∀ e : E, ∃ h : σ e ∈ R', ψ ⟨σ e, h⟩ = σC e) →
     Module.finrank C (HT.eigSp ρC σC) = Module.finrank Ω (HT.eigSp ρ σ) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.finrank_eigSp_eval | exact GlobalTheory.CompanionTheory.Ar.Flat.CPoint.finrank_eigSp_eval | (intros; apply GlobalTheory.CompanionTheory.Ar.Flat.CPoint.finrank_eigSp_eval <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.finrank_eigSp_eval

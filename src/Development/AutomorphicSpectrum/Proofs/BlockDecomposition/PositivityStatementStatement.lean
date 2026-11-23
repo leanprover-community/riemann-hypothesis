@@ -47,4 +47,4 @@ import Mathlib.Topology.Sheaves.Init
 open GlobalTheory.CompanionTheory.Jp
 
 theorem _root_.GlobalTheory.T.positivity_statement : GlobalTheory.CompanionTheory.Jp.JpPos := by
-  first | exact @GlobalTheory.CompanionTheory.Jp.Pos.jpPos | exact GlobalTheory.CompanionTheory.Jp.Pos.jpPos | (intros; apply GlobalTheory.CompanionTheory.Jp.Pos.jpPos <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Jp.Pos.jpPos

@@ -52,4 +52,4 @@ theorem _root_.GlobalTheory.T.double_scaling_local_equivariance : GlobalTheory.F
       ∀ ιd, GlobalTheory.DblScal.IsLinD B.ψ dd t b c ιd → ∀ cd, GlobalTheory.DblScal.IsShapeD omd t c ιd cd →
       ∃ χd : (Fv F v)ˣ → ℂ, ∀ p ∈ GlobalTheory.DblScal.UDAt σ W.J (evFin F v),
         cd p = χd (GlobalTheory.SplitFlip.gdet (GlobalTheory.DblScal.locMatD t c p)) := by
-  first | exact @GlobalTheory.DblScal.scalar_factors_through_det | exact GlobalTheory.DblScal.scalar_factors_through_det | (intros; apply GlobalTheory.DblScal.scalar_factors_through_det <;> assumption)
+  exact @GlobalTheory.DblScal.scalar_factors_through_det

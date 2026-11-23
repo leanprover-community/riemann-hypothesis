@@ -50,4 +50,4 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 noncomputable section
 
 theorem _root_.GlobalTheory.T.matrix_exp_curve_derivative : ∀ (n : ℕ) (X : Mat n), Continuous (expC X) ∧ ∀ t : ℝ, HasDerivAt (fun s : ℝ => (expC X s).val) ((expC X t).val * X) t := by
-  first | exact @GlobalTheory.CompanionTheory.PresSobA.ExpCurve.expC_continuous_hasDerivAt | exact GlobalTheory.CompanionTheory.PresSobA.ExpCurve.expC_continuous_hasDerivAt | (intros; apply GlobalTheory.CompanionTheory.PresSobA.ExpCurve.expC_continuous_hasDerivAt <;> assumption)
+  exact @GlobalTheory.CompanionTheory.PresSobA.ExpCurve.expC_continuous_hasDerivAt

@@ -58,4 +58,4 @@ theorem _root_.GlobalTheory.T.clopen_integrability_full_rank_orbit : ∀ (k : Ty
     (∀ Y, Ψ Y ≠ 0 → ∃ E ∈ s, E.val * Y ∈ S) →
     ∃ Φ ∈ GlobalTheory.FullRankCoinv.fullRk k n d, (∀ Y, Y ∉ S → Φ Y = 0) ∧ Ψ - Φ ∈ GlobalTheory.FullRankCoinv.augRk n d ν ∧
       ∀ Y, smallF (haarVol (GlobalTheory.SplitWeil.KO k (Fin n))) ν Φ Y = smallF (haarVol (GlobalTheory.SplitWeil.KO k (Fin n))) ν Ψ Y := by
-  first | exact @GlobalTheory.FullRankCoinv.Reduce.reduce_support | exact GlobalTheory.FullRankCoinv.Reduce.reduce_support | (intros; apply GlobalTheory.FullRankCoinv.Reduce.reduce_support <;> assumption)
+  exact @GlobalTheory.FullRankCoinv.Reduce.reduce_support

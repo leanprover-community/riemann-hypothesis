@@ -46,4 +46,4 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Out PositivityTheory.FormalThickening
 
 theorem _root_.GlobalTheory.T.grothendieck_existence_closed_proj : GEClosedProj := by
-  first | exact @GlobalTheory.CompanionTheory.GE.geClosedProj | exact GlobalTheory.CompanionTheory.GE.geClosedProj | (intros; apply GlobalTheory.CompanionTheory.GE.geClosedProj <;> assumption)
+  exact @GlobalTheory.CompanionTheory.GE.geClosedProj

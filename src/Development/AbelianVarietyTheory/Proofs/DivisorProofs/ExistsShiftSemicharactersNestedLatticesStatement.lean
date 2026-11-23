@@ -64,4 +64,4 @@ theorem _root_.GlobalTheory.T.exists_shift_semicharacters_nested_lattices : ∀ 
     (∀ l m : Λ₁, χ₁ (l + m) = χ₁ l * χ₁ m * Complex.exp (Real.pi * Complex.I * (hermForm Hm l m).im)) →
     ∃ a : Fin g → ℂ, ∀ l : Λ,
       χ l = χ₁ (Submodule.inclusion h l) * Complex.exp (2 * Real.pi * Complex.I * (hermForm Hm a l).im) := by
-  first | exact @GlobalTheory.SemicharShift.exists_shift_of_semichar | exact GlobalTheory.SemicharShift.exists_shift_of_semichar | (intros; apply GlobalTheory.SemicharShift.exists_shift_of_semichar <;> assumption)
+  exact @GlobalTheory.SemicharShift.exists_shift_of_semichar

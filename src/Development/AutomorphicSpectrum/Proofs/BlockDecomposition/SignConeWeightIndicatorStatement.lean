@@ -45,4 +45,4 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 
 theorem _root_.GlobalTheory.T.sign_cone_weight_indicator : ∀ m : ℕ, ∀ (y : (Fin m → SignType) → ℝ) a, PosFam y → gam y a = Set.indicator {a | ∀ e, sdot e a ≤ y e} 1 a := by
-  first | exact @GlobalTheory.CompanionTheory.ChainInd.gam_eq_indicator | exact GlobalTheory.CompanionTheory.ChainInd.gam_eq_indicator | (intros; apply GlobalTheory.CompanionTheory.ChainInd.gam_eq_indicator <;> assumption)
+  exact @GlobalTheory.CompanionTheory.ChainInd.gam_eq_indicator

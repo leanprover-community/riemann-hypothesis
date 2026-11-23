@@ -210,7 +210,7 @@ theorem IsPartMult.partialMultiplicity_decomposition (hPr : _root_.GlobalTheory.
   have hinj : ∀ F₁ ∈ Hs, ∀ F₂ ∈ Hs, F₁ p0 = F₂ p0 → F₁ = F₂ := by
     intro F₁ h₁ F₂ h₂ e
     have h3 : F₁ - F₂ ∈ Hs := Hs.sub_mem h₁ h₂
-    have := IsPartMult.eq_zero h3 hp0 hsimple (by rw [MultilinearMap.sub_apply, e, sub_self])
+    have := IsPartMult.eq_zero h3 hp0 hsimple (by rw [sub_apply, e, sub_self])
     exact sub_eq_zero.1 this
   set E := Hs.map (evAt p0) with hE
   have hEloc : IsLocSub θ M τ E := by
@@ -253,7 +253,7 @@ theorem IsPartMult.partialMultiplicity_decomposition (hPr : _root_.GlobalTheory.
     rw [h1]
     rfl
   · refine hinj _ hF _ (Hs.sum_mem fun m _ => hT'mem m (p m)) ?_
-    rw [MultilinearMap.sum_apply]
+    rw [sum_apply]
     simp only [hT'ev]
     exact hsum
 end GlobalTheory.CuspGKId
@@ -294,7 +294,7 @@ theorem mem_span_partialMultiplicity (hPr : _root_.GlobalTheory.FunPr.ThetaLocal
     refine ih.trans (Submodule.span_le.2 ?_)
     rintro y ⟨F, u, hF, rfl⟩
     obtain ⟨n, T, q, hT, hK, hL, hsum⟩ := _root_.GlobalTheory.CuspGKId.IsPartMult.partialMultiplicity_decomposition hPr hθ hA hAf hp0 hsimple hF hτ
-    rw [hsum, MultilinearMap.sum_apply]
+    rw [hsum, sum_apply]
     refine Submodule.sum_mem _ fun m _ => ?_
     have h1 : T m (q m) u = lam τ (u τ) • glue τ (T m) (p0 τ) (Function.update u τ (q m)) := by
       rw [glue_apply, Function.update_self, Function.update_idem, ← (hT m (q m)).other τ hτ u (u τ),
@@ -347,5 +347,5 @@ theorem _root_.GlobalTheory.T.cuspForm_gK_isotypic_decomposition : _root_.Global
     (S : D.what₂.Tau → SPar) (M : Formalism.IndefR.Mult.DSModel V S), IsInfFam (D := D) θ →
     ∀ A : Submodule ℂ (GA D V → ℂ), GlobalTheory.CuspGK.IsIrrGKSub θ M A → (∀ f ∈ A, GlobalTheory.CuspGK.IsKFinCuspOfType θ M f) →
     A ≤ GlobalTheory.CuspGK.multSpan θ M := by
-  first | exact @_root_.GlobalTheory.CuspGKId.le_multiplicitySpan_cuspForm | exact _root_.GlobalTheory.CuspGKId.le_multiplicitySpan_cuspForm | (intros; apply _root_.GlobalTheory.CuspGKId.le_multiplicitySpan_cuspForm <;> assumption)
+  exact @_root_.GlobalTheory.CuspGKId.le_multiplicitySpan_cuspForm
 end

@@ -49,4 +49,4 @@ theorem _root_.GlobalTheory.T.formal_degree_schur_lower_bound : ∀ {Γ : Type} 
     [InnerProductSpace ℂ B] [CompleteSpace B] (σ : Γ → (A →L[ℂ] A)) (ρ : Γ → (B →L[ℂ] B)) (d : ℝ) (hσ : IsU σ) (hρ : IsU ρ), IsFd ν σ d →
     ∀ w₀ : A, ‖w₀‖ = 1 → ∀ (hc : Integrable (fun g => star ⟪w₀, σ g w₀⟫_ℂ) ν) (i : A →L[ℂ] B), IsIsoMap σ ρ i → ∀ z : B,
     ‖⟪z, i w₀⟫_ℂ‖ ^ 2 / d ≤ (⟪z, coefOp ν ρ hρ (fun g => star ⟪w₀, σ g w₀⟫_ℂ) hc z⟫_ℂ).re := by
-  first | exact @GlobalTheory.CompanionTheory.RgHeA.avg_conj_coef_ge | exact GlobalTheory.CompanionTheory.RgHeA.avg_conj_coef_ge | (intros; apply GlobalTheory.CompanionTheory.RgHeA.avg_conj_coef_ge <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgHeA.avg_conj_coef_ge

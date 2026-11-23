@@ -56,4 +56,4 @@ theorem _root_.GlobalTheory.T.lattice_regular_at_local_point : ∀ (X : Scheme.{
     (z : Sp R ⟶ X) (h : genPt ξ ⤳ centre z) (ER : Type) [AddCommGroup ER] [Module R ER] (MR : LieModel G z ER)
     (f : Module.Dual Ω Li), IsCptGen ξ → (∀ e ∈ M.lat ⟨centre z, h⟩, f e ∈ regAt ξ ⟨centre z, h⟩) →
     ∃ g : ER →ₗ[R] R, ∀ (e : Li) (x : ER) (u : R), M.ValAt z e (MR.pt x) → ValAt ξ z (f e) u → g x = u := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.RootHt.exists_lieFunctional | exact GlobalTheory.CompanionTheory.Ar.RootHt.exists_lieFunctional | (intros; apply GlobalTheory.CompanionTheory.Ar.RootHt.exists_lieFunctional <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.RootHt.exists_lieFunctional

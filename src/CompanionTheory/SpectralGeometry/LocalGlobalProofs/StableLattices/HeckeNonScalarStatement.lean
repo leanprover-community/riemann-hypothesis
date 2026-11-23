@@ -45,4 +45,4 @@ import Mathlib.Topology.Sheaves.Init
 
 
 theorem _root_.GlobalTheory.T.HeckeNonScalar : CompanionTheory.RgExh.Hk.NonScal := by
-  first | exact @GlobalTheory.CompanionTheory.RgExhHecke.NonScalProof.nonScal | exact GlobalTheory.CompanionTheory.RgExhHecke.NonScalProof.nonScal | (intros; apply GlobalTheory.CompanionTheory.RgExhHecke.NonScalProof.nonScal <;> assumption)
+  exact @GlobalTheory.CompanionTheory.RgExhHecke.NonScalProof.nonScal

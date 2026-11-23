@@ -51,4 +51,4 @@ open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory
 open ReciprocityTheory.AnForm (levi)
 
 theorem _root_.GlobalTheory.T.exists_regularization_of_hodge_metric : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) (Hd : HodgeData D) (M : XModel D), ChartPsh D (phMu Hd) → ∃ S : LogLogRegularisationSetting M D.Xo (muLine Hd), S.IsTied := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.exists_regularization_of_hodge_metric | exact GlobalTheory.CompanionTheory.Relay.exists_regularization_of_hodge_metric | (intros; apply GlobalTheory.CompanionTheory.Relay.exists_regularization_of_hodge_metric <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Relay.exists_regularization_of_hodge_metric

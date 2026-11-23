@@ -65,4 +65,4 @@ theorem _root_.GlobalTheory.T.coarse_lipschitz_exponential_estimate : ∀ (G : T
     ∀ g : G, ∃ U ∈ 𝓝 g, ∃ u : PositivityTheory.RgEis.Cos Δ Γ → ℝ, Summable u ∧
       ∀ l : ℂ × ℂ, b ≤ l.1.re → l.1.re ≤ a → e₁ ≤ l.2.re → l.2.re ≤ e₂ → ∀ g' ∈ U, ∀ r,
         ‖Complex.exp (l.2 * ξ (PositivityTheory.RgEis.rep r * g')) • H l.1 (PositivityTheory.RgEis.rep r * g')‖ ≤ u r := by
-  first | exact @GlobalTheory.CompanionTheory.EisCross.dom | exact GlobalTheory.CompanionTheory.EisCross.dom | (intros; apply GlobalTheory.CompanionTheory.EisCross.dom <;> assumption)
+  exact @GlobalTheory.CompanionTheory.EisCross.dom

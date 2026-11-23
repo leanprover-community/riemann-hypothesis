@@ -54,4 +54,4 @@ theorem _root_.GlobalTheory.T.block_embedding_parabolic_compatibility : ∀ (F E
       GlobalTheory.BlockForms.IsBlockEmb σ J X Y h ι → k.val + 1 = l + d → 1 ≤ d →
       (∀ j : Fin r, l ≤ j.val → j.val + 1 < l + d → j ∉ T) → (l = 0 ∨ ∃ p ∈ T, p.val + 1 = l) →
       glPart σ J X Y T k = ι.range := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.BlockRange.glPart_eq_range | exact GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.BlockRange.glPart_eq_range | (intros; apply GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.BlockRange.glPart_eq_range <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.BlockRange.glPart_eq_range

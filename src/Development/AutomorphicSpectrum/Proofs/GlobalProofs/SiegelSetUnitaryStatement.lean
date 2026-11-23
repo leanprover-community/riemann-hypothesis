@@ -41,4 +41,4 @@ import Mathlib.Topology.Sheaves.Init
 @[expose] public section
 
 theorem _root_.GlobalTheory.T.siegel_set_unitary : GlobalTheory.Published.SiegelSetUnitary := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelRed.siegelSetUnitary | exact GlobalTheory.CompanionTheory.SiegelRed.siegelSetUnitary | (intros; apply GlobalTheory.CompanionTheory.SiegelRed.siegelSetUnitary <;> assumption)
+  exact @GlobalTheory.CompanionTheory.SiegelRed.siegelSetUnitary

@@ -63,4 +63,4 @@ theorem _root_.GlobalTheory.T.tensor_equiv_of_basis_extension : ∀ (Ω₀ Ω : 
     (∀ (n : ℕ) (b : Fin n → V), LinearIndependent Ω₀ b → LinearIndependent Ω fun k => j (b k)) →
     Submodule.span Ω (Set.range j) = ⊤ →
     ∃ Φ : TensorProduct Ω₀ Ω V ≃ₗ[Ω] V', ∀ e, Φ (TensorProduct.mk Ω₀ Ω V 1 e) = j e := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.FlagStep.exists_tensor_equiv_of_semilinear | exact GlobalTheory.CompanionTheory.Ar.FlagStep.exists_tensor_equiv_of_semilinear | (intros; apply GlobalTheory.CompanionTheory.Ar.FlagStep.exists_tensor_equiv_of_semilinear <;> assumption)
+  exact @GlobalTheory.CompanionTheory.Ar.FlagStep.exists_tensor_equiv_of_semilinear
