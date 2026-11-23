@@ -254,15 +254,12 @@ theorem integral_eq_sum_reps [MeasurableSpace V] [BorelSpace V] (m : Measure V) 
 
 end Reps
 
-section Abstract
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   [MeasurableSpace k] [BorelSpace k] {n : Type} [Fintype n] [DecidableEq n] {c p : ℕ}
   {ψ : AddChar k Circle} {ν : Measure k} {V : Type} [AddCommGroup V] [Module ℂ V]
   {ω : Representation ℂ (GL (n ⊕ Fin c) k) V} {l : V →ₗ[ℂ] ℂ} {v : V}
 
-end Abstract
 
-section Target
 open Unfolding
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   [MeasurableSpace k] [BorelSpace k] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
@@ -271,6 +268,5 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
   {σ : Representation ℂ (GL (n ⊕ Fin c) k) A} {π : Representation ℂ (GL n k) P}
   {π' : Representation ℂ (GL n' k) P'}
 
-end Target
 
 end GlobalTheory.RootEx.UniformLattices

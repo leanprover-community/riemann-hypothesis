@@ -78,7 +78,6 @@ structure SameDesign {T : Type} (L L' : LevCh D T) : Prop where
   ΛW : L'.ΛW = L.ΛW
   βW : L'.βW = L.βW
 
-section Fam
 
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} (A : FamIn D.what₂.LL G Pl0 T D.R.m)
 
@@ -86,7 +85,6 @@ variable {A}
 
 variable {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
-end Fam
 
 
 

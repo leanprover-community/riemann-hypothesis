@@ -45,13 +45,11 @@ namespace GlobalTheory.FlipPath
 
 variable {D : D7}
 
-section Local
 
 variable (e : AE D) (I : Ideal (𝓞 D.host.E)) (ν : (AE D)ˣ →* Circle)
 
 variable {e I}
 
-end Local
 
 theorem isSelfDualC_sgn (ε : Bool) {S : HSp D} {Λ : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)} (h : IsSelfDualC S Λ) :
     IsSelfDualC (sgn ε S) Λ := by
