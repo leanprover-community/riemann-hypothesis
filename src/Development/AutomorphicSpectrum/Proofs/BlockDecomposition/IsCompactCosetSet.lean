@@ -178,7 +178,7 @@ theorem isOpen_Lc (n : ℕ) (c : k) : IsOpen (Lc n c : Set (Multiplicative (Fin 
     ext y
     simp only [SetLike.mem_coe, mem_Lc, Set.mem_iInter, Set.mem_preimage]
   rw [hset]
-  have hO : IsOpen (𝒪[k] : Set k) := by exact Valuation.isOpen_integer
+  have hO : IsOpen (𝒪[k] : Set k) := Valuation.isOpen_integer
   exact isOpen_iInter_of_finite fun j =>
     hO.preimage (continuous_const.mul ((continuous_apply j).comp continuous_toAdd))
 

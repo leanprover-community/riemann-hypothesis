@@ -103,7 +103,7 @@ def singleBlowupSequenceData {X : Scheme.{u}} (Z : X.IdealSheafData) : BlowupSeq
   map := singleBlowupMap Z
   isoZero := Iso.refl X
   center := singleBlowupCenter Z
-  isBlowup := by exact isBlowupAlongIdealSheaf_singleBlowupMap Z
+  isBlowup := isBlowupAlongIdealSheaf_singleBlowupMap Z
 
 private theorem singleBlowupProj_succ {X : Scheme.{u}} (Z : X.IdealSheafData) (i : ℕ) :
     singleBlowupProj Z (i + 1) = singleBlowupMap Z i ≫ singleBlowupProj Z i := by
@@ -188,16 +188,16 @@ def ofSingleBlowup {k : Type u} [Field k] {X : Scheme.{u}}
   toBlowupSequenceData := singleBlowupSequenceData Z
   proj := singleBlowupProj Z
   proj_zero := rfl
-  proj_succ := by exact singleBlowupProj_succ Z
+  proj_succ := singleBlowupProj_succ Z
   ideal := singleBlowupResidualIdeal I Z m
   boundary := singleBlowupBoundary Z E
   ideal_zero := rfl
   boundary_zero := rfl
-  center_order := by exact singleBlowupCenter_support_subset_orderAtLeastLocus I Z m hord
-  center_smooth := by exact smooth_singleBlowupCenter_of_smooth Z hsm
-  center_snc := by exact hasStrictNormalCrossingsWith_singleBlowupCenter Z E hsnc
-  ideal_succ := by exact exceptionalIdeal_pow_mul_singleBlowupResidualIdeal_succ I Z m hdiv
-  boundary_succ := by exact singleBlowupBoundary_succ Z E
+  center_order := singleBlowupCenter_support_subset_orderAtLeastLocus I Z m hord
+  center_smooth := smooth_singleBlowupCenter_of_smooth Z hsm
+  center_snc := hasStrictNormalCrossingsWith_singleBlowupCenter Z E hsnc
+  ideal_succ := exceptionalIdeal_pow_mul_singleBlowupResidualIdeal_succ I Z m hdiv
+  boundary_succ := singleBlowupBoundary_succ Z E
 
 variable {k : Type u} [Field k] {X : Scheme.{u}} {p : X ⟶ Spec (CommRingCat.of k)}
   {I : X.IdealSheafData} {m : ℕ} {E : List X.IdealSheafData} {Z : X.IdealSheafData}

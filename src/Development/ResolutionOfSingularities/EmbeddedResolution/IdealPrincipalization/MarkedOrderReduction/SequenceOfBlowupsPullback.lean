@@ -1178,14 +1178,14 @@ def concat (s : BlowupSequenceData X) (t : BlowupSequenceData (s.obj s.length))
     SequenceOfBlowupsPullback φ (s'.append t').toSequenceOfBlowups (s.append t).toSequenceOfBlowups where
   idx := concatIndex s t s' t' c e
   map := concatMap s t s' t' c e
-  idx_length := by exact concatIndex_length_add_length s t s' t' c e
-  idx_lt := by exact concatIndex_lt_length_add_length s t s' t' c e
-  idx_strictMono := by exact concatIndex_lt_concatIndex_succ s t s' t' c e
-  isPullback := by exact isPullback_concatMap s t s' t' c e
-  step := by exact toSequenceOfBlowups_blowupMorphism_comp_concatMap s t s' t' c e
-  center_comap := by exact append_center_eq_comap_concatMap s t s' t' c e
-  center_ne_top := by exact append_center_ne_top s t s' t' c e
-  omitted := by exact append_projectionToBase_ne_of_forall_concatIndex_ne s t s' t' c e
+  idx_length := concatIndex_length_add_length s t s' t' c e
+  idx_lt := concatIndex_lt_length_add_length s t s' t' c e
+  idx_strictMono := concatIndex_lt_concatIndex_succ s t s' t' c e
+  isPullback := isPullback_concatMap s t s' t' c e
+  step := toSequenceOfBlowups_blowupMorphism_comp_concatMap s t s' t' c e
+  center_comap := append_center_eq_comap_concatMap s t s' t' c e
+  center_ne_top := append_center_ne_top s t s' t' c e
+  omitted := append_projectionToBase_ne_of_forall_concatIndex_ne s t s' t' c e
 
 end
 

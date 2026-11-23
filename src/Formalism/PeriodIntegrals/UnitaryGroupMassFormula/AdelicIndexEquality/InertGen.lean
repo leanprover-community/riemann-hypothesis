@@ -271,7 +271,7 @@ def gm (g : UJ σ J) : Matrix (Fin n) (Fin n) K := ((g : GL (Fin n) K) : Matrix 
 
 theorem gm_mul (g g' : UJ σ J) : gm σ J (g * g') = gm σ J g * gm σ J g' := rfl
 
-theorem H_gm (g : UJ σ J) (x y : Fin n → K) : H σ J (gm σ J g *ᵥ x) (gm σ J g *ᵥ y) = H σ J x y := by exact H_of_mem σ J g.1 g.2 x y
+theorem H_gm (g : UJ σ J) (x y : Fin n → K) : H σ J (gm σ J g *ᵥ x) (gm σ J g *ᵥ y) = H σ J x y := H_of_mem σ J g.1 g.2 x y
 
 def Rel (hσ : ∀ a, σ (σ a) = a) (hJ : cT σ J = J) (a : Fin n → K) (α : K) (hα : σ α * α = 1)
     (ha : H σ J a a ≠ 0) : UJ σ J :=
@@ -281,7 +281,7 @@ theorem gm_Rel (hσ : ∀ a, σ (σ a) = a) (hJ : cT σ J = J) (a : Fin n → K)
     (ha : H σ J a a ≠ 0) : gm σ J (Rel σ J hσ hJ a α hα ha) = Rm σ J a α := rfl
 
 theorem Rel_mem (hσ : ∀ a, σ (σ a) = a) (hJ : cT σ J = J) (a : Fin n → K) (α : K) (hα : σ α * α = 1)
-    (ha : H σ J a a ≠ 0) : Rel σ J hσ hJ a α hα ha ∈ S σ J := by exact Subgroup.subset_closure ⟨Pm σ J a, α, Pm_idem σ J a ha, hα, rfl⟩
+    (ha : H σ J a a ≠ 0) : Rel σ J hσ hJ a α hα ha ∈ S σ J := Subgroup.subset_closure ⟨Pm σ J a, α, Pm_idem σ J a ha, hα, rfl⟩
 
 theorem card_le {m : ℕ} (f : Fin m → Fin n → K)
     (hf : ∀ i, H σ J (f i) (f i) ≠ 0) (ho : ∀ i j, i ≠ j → H σ J (f i) (f j) = 0) : m ≤ n := by
@@ -500,7 +500,7 @@ theorem main (hσ : ∀ a, σ (σ a) = a) (hJ : cT σ J = J) (hdet : J.det ≠ 0
       exact (S σ J).mul_mem ((S σ J).inv_mem hR) hTS
 
 theorem mem_S (hσ : ∀ a, σ (σ a) = a) (hJ : cT σ J = J) (hdet : J.det ≠ 0) (h2 : (2 : K) ≠ 0)
-    (g : UJ σ J) : g ∈ S σ J := by exact main σ J hσ hJ hdet h2 n 0 Fin.elim0 (by simp) (fun i => i.elim0) (fun i => i.elim0) g (fun i => i.elim0)
+    (g : UJ σ J) : g ∈ S σ J := main σ J hσ hJ hdet h2 n 0 Fin.elim0 (by simp) (fun i => i.elim0) (fun i => i.elim0) g (fun i => i.elim0)
 
 end Gen
 

@@ -452,7 +452,7 @@ theorem exists_mem_opensRange_chart (y : finiteQuotient ρ) : ∃ U, y ∈ (char
   exact ⟨U, x, hx⟩
 
 theorem map_chart {U V : StableAffineOpens ρ} (f : U ⟶ V) :
-    (quotientDiagram ρ).map f ≫ chart ρ V = chart ρ U := by exact colimit.w (quotientDiagram ρ) f
+    (quotientDiagram ρ).map f ≫ chart ρ V = chart ρ U := colimit.w (quotientDiagram ρ) f
 
 theorem trans_toChart_chart {U V : StableAffineOpens ρ} (f : U ⟶ V) :
     (stableAffineCover ρ).trans f ≫ V.toChart ≫ chart ρ V = U.toChart ≫ chart ρ U := by
@@ -463,7 +463,7 @@ noncomputable def π : X ⟶ finiteQuotient ρ :=
   (stableAffineCover ρ).glueMorphismsOfLocallyDirected (fun U ↦ U.toChart ≫ chart ρ U)
     (trans_toChart_chart ρ)
 
-theorem fromSpec_π (U : StableAffineOpens ρ) : U.isAffineOpen.fromSpec ≫ π ρ = U.toChart ≫ chart ρ U := by exact Scheme.OpenCover.map_glueMorphismsOfLocallyDirected (stableAffineCover ρ) _ _ U
+theorem fromSpec_π (U : StableAffineOpens ρ) : U.isAffineOpen.fromSpec ≫ π ρ = U.toChart ≫ chart ρ U := Scheme.OpenCover.map_glueMorphismsOfLocallyDirected (stableAffineCover ρ) _ _ U
 
 theorem π_preimage_opensRange_chart (U : StableAffineOpens ρ) :
     π ρ ⁻¹ᵁ (chart ρ U).opensRange = U.toOpens := by

@@ -444,7 +444,7 @@ theorem bounds_fourth : BoundsIV := by
     rintro rfl
     simp [vw, FractionalIdeal.count_zero] at hv
   have hvJ : vw w (((ϖ ^ J : 𝓞 K)) : K) = J := by
-    have e : (((ϖ ^ J : 𝓞 K)) : K) = (ϖ : K) ^ J := by exact map_pow (algebraMap (𝓞 K) K) ϖ J
+    have e : (((ϖ ^ J : 𝓞 K)) : K) = (ϖ : K) ^ J := map_pow (algebraMap (𝓞 K) K) ϖ J
     unfold vw
     rw [e, ← FractionalIdeal.spanSingleton_pow, FractionalIdeal.count_pow]
     unfold vw at hv

@@ -176,7 +176,7 @@ lemma fh_conj (g : KG (fun _ : Fin k => true)) {Y : Matrix (Fin k) (Fin k) ℂ}
       NormedSpace.exp ((t : ℂ) • Y) := toMK_onepCurve _ hY
   have hKs : toMK g ∈ Formalism.REAL.Kset (fun _ : Fin k => true) := g.2
   have hun : star (toMK g) * toMK g = 1 := Matrix.mem_unitaryGroup_iff'.mp hKs.1
-  have hinv : toMK g * toMK g⁻¹ = 1 := by exact Units.mul_inv g.1.1
+  have hinv : toMK g * toMK g⁻¹ = 1 := Units.mul_inv g.1.1
   have hg : star (toMK g) = toMK g⁻¹ := by
     calc star (toMK g) = star (toMK g) * (toMK g * toMK g⁻¹) := by rw [hinv, Matrix.mul_one]
       _ = toMK g⁻¹ := by rw [← Matrix.mul_assoc, hun, Matrix.one_mul]

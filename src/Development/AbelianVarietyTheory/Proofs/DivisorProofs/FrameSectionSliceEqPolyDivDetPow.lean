@@ -107,7 +107,7 @@ theorem section_slice_eq_poly_div_det_pow :
   have htri : ReciprocityTheory.MultiplicativeHeights.IsTriEquivariant a h := by
     intro y b hy hb hbt
     let b' : Frame X.Ψ r := fun σ => if σ = τ then b else (1 : Matrix (Fin r) (Fin r) ℂ)
-    have hbτ : b' τ = b := by exact if_pos rfl
+    have hbτ : b' τ = b := if_pos rfl
     have hbσ : ∀ σ, σ ≠ τ → b' σ = (1 : Matrix (Fin r) (Fin r) ℂ) := fun σ hσ => by exact if_neg hσ
     have hb'B : b' ∈ Bor X.Ψ r := by
       intro σ

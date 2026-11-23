@@ -264,8 +264,8 @@ def toStrictPullbackSeq {X' X : Scheme.{u}} (g : X' ⟶ X) (d' : BlowupSequenceD
   comp := toSeqComparisonMap d' d c
   comp_zero := toSeqComparisonMap_zero_comp_isoObjZero c hzero
   pullback := isPullback_toSeqComparisonMap c hpb
-  length_eq := by exact toSequenceOfBlowups_length_eq_of_length_eq hlen
-  center_eq := by exact toSequenceOfBlowups_center_eq_comap_toSeqComparisonMap c hc
+  length_eq := toSequenceOfBlowups_length_eq_of_length_eq hlen
+  center_eq := toSequenceOfBlowups_center_eq_comap_toSeqComparisonMap c hc
 
 end BlowupSequenceData
 

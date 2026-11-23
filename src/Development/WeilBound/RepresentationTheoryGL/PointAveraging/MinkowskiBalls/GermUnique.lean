@@ -70,7 +70,7 @@ theorem vol_valSet [MeasurableSpace k] [BorelSpace k] (ν : Measure k) (hν : Is
     ν {y : k | valuation k (y - a) ≤ valuation k (c : k)} = ENNReal.ofReal (nabs k c) := by
   obtain ⟨hH, h1⟩ := hν
   haveI := hH
-  haveI : SecondCountableTopology k := by exact secondCountable k
+  haveI : SecondCountableTopology k := secondCountable k
   rw [valSet_eq, measure_preimage_add, ← distribHaarChar_mul, h1, mul_one, nabs, ENNReal.ofReal_coe_nnreal]
 
 variable {n r : ℕ}
@@ -97,7 +97,7 @@ theorem volM_ballM [MeasurableSpace k] [BorelSpace k] (ν : Measure k) (hν : Is
     volM ν (Fin n) (Fin r) (ballM c x₀) = ∏ _i : Fin n, ∏ _l : Fin r, ENNReal.ofReal (nabs k c) := by
   obtain ⟨hH, h1⟩ := hν
   haveI := hH
-  haveI : SecondCountableTopology k := by exact secondCountable k
+  haveI : SecondCountableTopology k := secondCountable k
   rw [volM, ballM_eq_pi]
   erw [Measure.pi_pi]
   refine Finset.prod_congr rfl fun i _ => ?_

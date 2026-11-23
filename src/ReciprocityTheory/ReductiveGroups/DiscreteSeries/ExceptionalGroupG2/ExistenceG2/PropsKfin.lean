@@ -43,11 +43,7 @@ open Finset Matrix
 namespace ReciprocityTheory.ChartRestriction.DS.G2
 variable {n : ℕ}
 
-section Helpers
 
-variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-
-end Helpers
 
 section Wt
 

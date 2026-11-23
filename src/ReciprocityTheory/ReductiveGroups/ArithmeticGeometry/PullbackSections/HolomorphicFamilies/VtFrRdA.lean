@@ -189,7 +189,7 @@ theorem vtf_twist {a b : ℤ} {ψ : Over.mk x0 ⊗ A ⟶ Over.mk x0 ⊗ A} {m : 
         calc _ = valAt' p (ψ.left ⁻¹ᵁ (LPow A L b (Over.mk x0)).U (fun _ => j 1))
               ((ψ.left.app _).hom (s.f (fun _ => j 1))) := by
               exact valAt'_res p (chart_le_pull A L ψ m hm j) hp _
-          _ = _ := by exact valAt'_comp p ψ.left _ _
+          _ = _ := valAt'_comp p ψ.left _ _
 
 end Rd
 

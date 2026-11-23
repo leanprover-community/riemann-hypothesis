@@ -57,7 +57,7 @@ def EqRight (H h : ℂ → ℂ) : Prop := ∃ σ, EqOn H h (rightOf σ)
 
 variable {σ τ : ℝ} {U U' : Set ℂ} {h h' H H' : ℂ → ℂ} {s s₀ c c' : ℂ} {n : ℤ} {k : ℕ}
 
-@[simp] theorem mem_rightOf : s ∈ rightOf σ ↔ σ < s.re := by exact Iff.rfl
+@[simp] theorem mem_rightOf : s ∈ rightOf σ ↔ σ < s.re := Iff.rfl
 
 theorem isOpen_rightOf (σ : ℝ) : IsOpen (rightOf σ) := isOpen_lt continuous_const Complex.continuous_re
 

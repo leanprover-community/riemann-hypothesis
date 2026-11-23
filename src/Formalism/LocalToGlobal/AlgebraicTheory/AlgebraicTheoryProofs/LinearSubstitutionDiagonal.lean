@@ -54,7 +54,7 @@ variable {V : Type*} [AddCommGroup V] [Module ℂ V]
 theorem mem_killIn {m : ℂ} {L M : AddSubgroup V} {y : V} : y ∈ killIn m L M ↔ y ∈ L ∧ m • y ∈ M := by
   exact Iff.rfl
 
-theorem natCast_smul (m : ℕ) (y : V) : ((m : ℂ)) • y = m • y := by exact Nat.cast_smul_eq_nsmul ℂ m y
+theorem natCast_smul (m : ℕ) (y : V) : ((m : ℂ)) • y = m • y := Nat.cast_smul_eq_nsmul ℂ m y
 
 theorem mem_of_coprime {Λ : AddSubgroup V} {m₁ m₂ : ℕ} (hcop : Nat.Coprime m₁ m₂) {w : V}
     (h1 : ((m₁ : ℂ)) • w ∈ Λ) (h2 : ((m₂ : ℂ)) • w ∈ Λ) : w ∈ Λ := by

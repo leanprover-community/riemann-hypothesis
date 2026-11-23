@@ -41,10 +41,6 @@ variable {ι : Type} [Fintype ι] [DecidableEq ι] {V W : ι → Type} [∀ i, A
 end Tensor
 theorem i_liescalar_alt : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.RealLift.DerEx → GlobalTheory.RealLift.VacLine → GlobalTheory.RealLift.LieScalar := _root_.GlobalTheory.T.weil_lie_algebra_scalar_action
 theorem lieSecond_of_lieScalar_of_vacLine : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.RealLift.DerEx → GlobalTheory.RealLift.FockEx → GlobalTheory.RealLift.VacLine → GlobalTheory.RealLift.LieScalar → GlobalTheory.RealLift.LieSecond := _root_.GlobalTheory.T.real_lift_lie_second_order
-section Helpers
-variable {ι : Type} [Fintype ι] [DecidableEq ι] {V W : ι → Type} [∀ i, AddCommGroup (V i)] [∀ i, Module ℂ (V i)]
-  [∀ i, AddCommGroup (W i)] [∀ i, Module ℂ (W i)]
-end Helpers
 section Exp
 variable {V V' Z : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V'] [AddCommGroup Z] [Module ℂ Z]
 end Exp

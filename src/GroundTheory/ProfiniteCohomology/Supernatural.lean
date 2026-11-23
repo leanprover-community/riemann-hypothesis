@@ -70,10 +70,10 @@ instance : Mul Supernatural := ⟨fun a b => mk fun p => a.exp p + b.exp p⟩
     (a * b).exp p = a.exp p + b.exp p := rfl
 
 instance : CommMonoid Supernatural where
-  mul_assoc a b c := by exact exp_ext fun p => add_assoc (a.exp p) (b.exp p) (c.exp p)
-  one_mul a := by exact exp_ext fun p => zero_add (a.exp p)
-  mul_one a := by exact exp_ext fun p => add_zero (a.exp p)
-  mul_comm a b := by exact exp_ext fun p => add_comm (a.exp p) (b.exp p)
+  mul_assoc a b c := exp_ext fun p => add_assoc (a.exp p) (b.exp p) (c.exp p)
+  one_mul a := exp_ext fun p => zero_add (a.exp p)
+  mul_one a := exp_ext fun p => add_zero (a.exp p)
+  mul_comm a b := exp_ext fun p => add_comm (a.exp p) (b.exp p)
 
 theorem dvd_iff_le {a b : Supernatural} : a ∣ b ↔ a ≤ b := by
   constructor

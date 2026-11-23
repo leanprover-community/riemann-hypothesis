@@ -84,9 +84,9 @@ theorem psiV_smul (c : D.host.E) (p : (VS D).V) : psiV X v (c • p) = embS D (X
 
 def psiHom : (VS D).V →+ (Fin X.B.I.n → ℂ) := AddMonoidHom.mk' (psiV X v) (psiV_add X v)
 
-theorem psiV_sum {ι : Type} (J : Finset ι) (f : ι → (VS D).V) : psiV X v (∑ i ∈ J, f i) = ∑ i ∈ J, psiV X v (f i) := by exact map_sum (psiHom X v) f J
+theorem psiV_sum {ι : Type} (J : Finset ι) (f : ι → (VS D).V) : psiV X v (∑ i ∈ J, f i) = ∑ i ∈ J, psiV X v (f i) := map_sum (psiHom X v) f J
 
-theorem psiV_zero : psiV X v 0 = 0 := by exact map_zero (psiHom X v)
+theorem psiV_zero : psiV X v 0 = 0 := map_zero (psiHom X v)
 
 theorem hJ_psiV (p q : (VS D).V) :
     hJ (X.B.I.ε v) (psiV X v p) (psiV X v q) = embS D (X.pl v) ((VS D).hT p q) :=

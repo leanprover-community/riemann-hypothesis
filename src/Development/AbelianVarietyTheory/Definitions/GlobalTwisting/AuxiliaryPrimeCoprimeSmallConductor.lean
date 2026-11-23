@@ -44,7 +44,7 @@ theorem auxiliaryPrime_coprime_smallConductor {R : Ranks} (H : Host R) : Nat.Cop
   exact h1.coprime_dvd_right ⟨H.q * H.d, by ring⟩
 
 def relevel {R : Ranks} (H : Host R) (hc : H.ccK = ⊤) (q0 : ℕ)
-    (hq : Nat.Coprime q0 H.QS := by exact GlobalTheory.EX.DC.auxiliaryPrime_coprime_smallConductor _) : Host R :=
+    (hq : Nat.Coprime q0 H.QS := GlobalTheory.EX.DC.auxiliaryPrime_coprime_smallConductor _) : Host R :=
   { H with
     levelPrimes := {H.g 0, H.g 1, H.pde, H.pde', q0}
     g_level := by intro i; fin_cases i <;> simp

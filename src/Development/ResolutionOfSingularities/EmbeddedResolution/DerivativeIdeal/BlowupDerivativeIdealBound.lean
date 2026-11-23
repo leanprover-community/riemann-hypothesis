@@ -357,7 +357,7 @@ theorem comap_derivIdealSheafIterate_le_exceptionalIdeal_pow_mul (k : Type u) [F
     exact hring
   · have : IsIso (AlgebraicGeometry.morphismRestrict π Z.support.compl) :=
       Blowup.blowupIsIsoOffCenter X X₁ π Z hπ
-    have hx : x ∈ π ⁻¹ᵁ Z.support.compl := by exact hxs
+    have hx : x ∈ π ⁻¹ᵁ Z.support.compl := hxs
     obtain ⟨V, hxV, hVW, heq⟩ :=
       exists_affineOpen_comap_derivIdealSheafIterate_eq k p π Z.support.compl x hx j I
     refine ⟨V, hxV, ?_⟩

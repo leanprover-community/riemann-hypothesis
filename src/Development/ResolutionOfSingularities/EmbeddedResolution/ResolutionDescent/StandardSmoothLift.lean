@@ -111,7 +111,7 @@ private theorem span_range_liftedRelation_eq_ker :
 noncomputable def liftedPresentation : Algebra.Presentation S (LiftedQuotient hsurj P) ι σ where
   toGenerators := liftedGenerators hsurj P
   relation := liftedRelation hsurj P
-  span_range_relation_eq_ker := by exact span_range_liftedRelation_eq_ker hsurj P
+  span_range_relation_eq_ker := span_range_liftedRelation_eq_ker hsurj P
 
 noncomputable def liftedPreSubmersivePresentation :
     Algebra.PreSubmersivePresentation S (LiftedQuotient hsurj P) ι σ where
@@ -144,7 +144,7 @@ noncomputable def liftedSubmersivePresentation :
     Algebra.PreSubmersivePresentation.comp
       (Algebra.PreSubmersivePresentation.localizationAway (S := LiftedAlgebra hsurj P)
         (liftedPreSubmersivePresentation hsurj P).jacobian) (liftedPreSubmersivePresentation hsurj P)
-  jacobian_isUnit := by exact isUnit_jacobian_localizationAway_comp hsurj P
+  jacobian_isUnit := isUnit_jacobian_localizationAway_comp hsurj P
 
 noncomputable def mvPolynomialToBaseChange :
     MvPolynomial ι R →ₐ[R] R ⊗[S] LiftedAlgebra hsurj P :=
@@ -257,11 +257,11 @@ private theorem mvPolynomialToBaseChange_section_algebraMap (r : R) :
 
 noncomputable def invBaseChangeHom : B →ₐ[R] R ⊗[S] LiftedAlgebra hsurj P where
   toFun b := mvPolynomialToBaseChange hsurj P (P.σ' b)
-  map_one' := by exact mvPolynomialToBaseChange_section_one hsurj P
-  map_mul' := by exact mvPolynomialToBaseChange_section_mul hsurj P
-  map_zero' := by exact mvPolynomialToBaseChange_section_zero hsurj P
-  map_add' := by exact mvPolynomialToBaseChange_section_add hsurj P
-  commutes' := by exact mvPolynomialToBaseChange_section_algebraMap hsurj P
+  map_one' := mvPolynomialToBaseChange_section_one hsurj P
+  map_mul' := mvPolynomialToBaseChange_section_mul hsurj P
+  map_zero' := mvPolynomialToBaseChange_section_zero hsurj P
+  map_add' := mvPolynomialToBaseChange_section_add hsurj P
+  commutes' := mvPolynomialToBaseChange_section_algebraMap hsurj P
 
 theorem invBaseChangeHom_aeval (q : MvPolynomial ι R) :
     invBaseChangeHom hsurj P (MvPolynomial.aeval P.val q) = mvPolynomialToBaseChange hsurj P q := by
@@ -385,7 +385,7 @@ noncomputable def liftedAlgebraHom : LiftedAlgebra hsurj P →ₐ[S] B :=
       (show IsUnit ((liftedQuotientHom hsurj P).toRingHom
         (liftedPreSubmersivePresentation hsurj P).jacobian) from
         by exact isUnit_liftedQuotientHom_jacobian hsurj P) : LiftedAlgebra hsurj P →+* B) with
-    commutes' := by exact awayLift_jacobian_algebraMap_eq hsurj P }
+    commutes' := awayLift_jacobian_algebraMap_eq hsurj P }
 
 theorem liftedAlgebraHom_algebraMap (x : LiftedQuotient hsurj P) :
     liftedAlgebraHom hsurj P (algebraMap (LiftedQuotient hsurj P) (LiftedAlgebra hsurj P) x) =

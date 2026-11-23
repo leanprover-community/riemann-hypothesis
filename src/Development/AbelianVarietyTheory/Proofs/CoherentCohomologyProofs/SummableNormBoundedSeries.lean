@@ -135,7 +135,7 @@ def boundedSeries (F : Type*) [NormedField F] [IsUltrametricDist F] : Subring F�
 variable {F : Type*} [NormedField F] [IsUltrametricDist F]
 
 theorem mem_boundedSeries {f : F⟦X⟧} :
-    f ∈ boundedSeries F ↔ ∃ B : ℝ, ∀ n, ‖coeff n f‖ ≤ B := by exact Iff.rfl
+    f ∈ boundedSeries F ↔ ∃ B : ℝ, ∀ n, ‖coeff n f‖ ≤ B := Iff.rfl
 
 theorem summable_norm_boundedSeries (f : boundedSeries F) {π : F} (hπ : ‖π‖ < 1) :
     Summable fun n => ‖coeff n (f : F⟦X⟧) * π ^ n‖ := by

@@ -157,11 +157,11 @@ theorem read_of_fits : ∀ (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B
         (congrArg (fun u => PiTensorProduct.lift ((m.z.R.HW i _).e u)) (hEW i v).symm)
     stable := fun μ => by exact (m.t.tA true μ).stable
     stable0 := fun μ => by exact (m.t.tA false μ).stable
-    eE := by exact eE
+    eE := eE
     eE_read := fun x => by
       change (m.t.ch true).jE x = _
       exact heE x
-    dall := by exact m.t.dall
+    dall := m.t.dall
     junk := fun μ h => iota_eq_zero _ m.y.hm μ ((m.t.ch true).junk μ fun h' => h ((hU μ).2 h'))
     cen0 := fun cG hk t => by
       exact (cen_of_tie ((m.t.tA false (m.y.tup t)).cast (m.t.hA false t)) (m.z.R.eG.trans cG) (fun z x => s.cen (m.y.tup t) z x)
@@ -170,7 +170,7 @@ theorem read_of_fits : ∀ (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B
       exact (cen_of_tie ((m.t.tA true (m.y.tup t)).cast (m.t.hA true t)) (m.z.R.eG.trans cG)
         (fun z x => o.N.ntypes.cenAmb (m.y.tup t) z x) ((hfits.cen _ (stdIso_of_keep m.z cG hk)).amb (m.y.tup t)))
     lam := hN.lam
-    occ := by exact hocc
+    occ := hocc
     kap := q.kap o.η o.hη o.V o.S o.N o.G
     bu := hN.bu
     ze := hN.ze }

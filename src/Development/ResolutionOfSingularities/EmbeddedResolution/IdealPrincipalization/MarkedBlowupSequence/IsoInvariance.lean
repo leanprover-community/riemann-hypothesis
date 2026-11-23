@@ -155,8 +155,8 @@ def EtaleChart.ofIso {k : Type u} [Field k] {X Y : Scheme.{u}}
     (q : Y ⟶ Spec (CommRingCat.of k)) (e : X ≅ Y) {U : Y.Opens} {m : ℕ}
     (c : EtaleChart q U m) : EtaleChart (e.hom ≫ q) ((Opens.map e.hom.base).obj U) m where
   map := e.hom.resLE U ((Opens.map e.hom.base).obj U) le_rfl ≫ c.map
-  comp_struct := by exact ofIso_map_comp_affineSpaceFinToSpec q e c
-  isEtale := by exact etale_resLE_comp_map_of_iso q e c
+  comp_struct := ofIso_map_comp_affineSpaceFinToSpec q e c
+  isEtale := etale_resLE_comp_map_of_iso q e c
 
 theorem EtaleChart.ofIso_coordIdeal {k : Type u} [Field k] {X Y : Scheme.{u}}
     (q : Y ⟶ Spec (CommRingCat.of k)) (e : X ≅ Y) {U : Y.Opens} {m : ℕ}

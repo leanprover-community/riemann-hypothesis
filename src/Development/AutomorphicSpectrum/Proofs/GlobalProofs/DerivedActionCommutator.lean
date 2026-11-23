@@ -83,7 +83,7 @@ theorem hasDerivAt_curve (z : Fin n → Fin n → ℂ) (X : Matrix (Fin n) (Fin 
 
 def one : Fin n → Fin n → ℂ := Matrix.of.symm (1 : Matrix (Fin n) (Fin n) ℂ)
 
-theorem of_one : Matrix.of (one (n := n)) = 1 := by exact Matrix.of.apply_symm_apply _
+theorem of_one : Matrix.of (one (n := n)) = 1 := Matrix.of.apply_symm_apply _
 
 section Smooth
 

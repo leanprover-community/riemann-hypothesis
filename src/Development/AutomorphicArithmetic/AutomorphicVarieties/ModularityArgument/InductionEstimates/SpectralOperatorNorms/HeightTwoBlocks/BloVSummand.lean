@@ -91,7 +91,7 @@ noncomputable def datB {n : ℕ} (d : Dat S n) (h2 : 2 ≤ d.len) : Datum E n wh
   two := h2
   d := fun j => (d.blo j).1
   pos := fun j => (d.blo j).2.pos
-  sum := by exact blo_sum d
+  sum := blo_sum d
   μ := fun j => mu1 E (d.blo j).1
   haar := fun _ => inferInstance
   V := fun j => bloV (d.blo j).2

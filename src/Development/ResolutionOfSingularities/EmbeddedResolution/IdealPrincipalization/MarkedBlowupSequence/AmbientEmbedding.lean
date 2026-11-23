@@ -175,7 +175,7 @@ def ambientEmbeddingZero {S X : Scheme.{u}} (ι : S ⟶ X)
     (s : BlowupSequenceData S) : AmbientEmbedding s 0 where
   ambient := X
   emb := s.isoZero.hom ≫ ι
-  emb_isClosedImmersion := by exact isClosedImmersion_isoObjZero_hom_comp ι s
+  emb_isClosedImmersion := isClosedImmersion_isoObjZero_hom_comp ι s
   isNoetherian_ambient_of_le_length := fun _ => inferInstance
 
 def ambientEmbeddingSucc (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})

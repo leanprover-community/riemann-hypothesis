@@ -62,7 +62,7 @@ theorem span_eq_top_of_unimodular (V : Formalism.BasicNotions.HSpace E)
 
 theorem isLattice_coordLat (V : Formalism.BasicNotions.HSpace E) (L : Submodule (𝓞 E) V.V)
     (h : Submodule.IsLattice E L)
-    (hu : Formalism.HermitianLatticesTheory.IsUnimodular V.hT L := by exact V.baseLattice_isUnimodular) :
+    (hu : Formalism.HermitianLatticesTheory.IsUnimodular V.hT L := V.baseLattice_isUnimodular) :
     ReciprocityTheory.MultiplicativeHeights.IsLattice (coordLat V L) := by
   refine ⟨h.fg.map _, ?_⟩
   have : (coordLat V L : Set (Fin V.rank → E)) = V.frame.equivFun.toLinearMap '' (L : Set V.V) := rfl

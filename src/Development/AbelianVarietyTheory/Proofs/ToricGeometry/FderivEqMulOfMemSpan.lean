@@ -96,7 +96,7 @@ theorem IsHolFamily.fderiv_eq_zero (h : IsHolFamily ex) {U V : X.Opens} (hU : Is
     (hz : ⊤ ≤ ex z ⁻¹ᵁ U) (hV : ⊤ ≤ ex z ⁻¹ᵁ V)
     (h0 : ∀ f : Γ(X, U), fderiv ℂ (fun w => valAt' (ex w) U f) z ξ = 0) (r : Γ(X, V)) :
     fderiv ℂ (fun w => valAt' (ex w) V r) z ξ = 0 := by
-  have pt : Sp ℂ := by exact IsLocalRing.closedPoint ℂ
+  have pt : Sp ℂ := IsLocalRing.closedPoint ℂ
   have hxU : (ex z).base pt ∈ U := hz (show pt ∈ (⊤ : (Sp ℂ).Opens) from trivial)
   have hxV : (ex z).base pt ∈ V := hV (show pt ∈ (⊤ : (Sp ℂ).Opens) from trivial)
   obtain ⟨f, hfV, hfx⟩ := hU.exists_basicOpen_le (V := V) ⟨(ex z).base pt, hxV⟩ hxU
@@ -284,7 +284,7 @@ theorem isAbelianScheme_and_dim : (∀ (K : Type) [Field K] (X : Scheme.{0}) (p 
   have hgc : GeometricallyConnected X.hom := geometricallyConnected_of_isAlgClosed X.hom
   have hAb : IsAbelianScheme X := ⟨hcomm, hsm, hprop, hgc⟩
   refine ⟨hAb, ?_⟩
-  have pt : Sp ℂ := by exact IsLocalRing.closedPoint ℂ
+  have pt : Sp ℂ := IsLocalRing.closedPoint ℂ
   have hall : ∀ q : Sp ℂ, q = pt := fun q => Subsingleton.elim _ _
   have : PreconnectedSpace X.left := inferInstance
   obtain ⟨n, hn⟩ := exists_dim_of_preconnected X.hom ((ex 0).left.base pt)

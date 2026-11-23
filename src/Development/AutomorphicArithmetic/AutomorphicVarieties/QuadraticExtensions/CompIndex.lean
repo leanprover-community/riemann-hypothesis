@@ -106,7 +106,7 @@ private theorem mem_galOf_iff_val_galChar_of_fixes_iff (Ω : Type) [Field Ω] [A
   haveI : Normal ℚ Ω := IsAlgClosure.normal ℚ Ω
   haveI : NeZero ((N : ℕ) : ℚ) := ⟨by exact_mod_cast NeZero.ne N⟩
   have hce0 := CyclotomicField.isCyclotomicExtension N ℚ
-  have hce : IsCyclotomicExtension {N} ℚ (CyclotomicField N ℚ) := by exact hce0
+  have hce : IsCyclotomicExtension {N} ℚ (CyclotomicField N ℚ) := hce0
   haveI : IsGalois ℚ (CyclotomicField N ℚ) := by
     exact IsCyclotomicExtension.isGalois {N} ℚ (CyclotomicField N ℚ)
   let ι : CyclotomicField N ℚ →ₐ[ℚ] Ω := (by

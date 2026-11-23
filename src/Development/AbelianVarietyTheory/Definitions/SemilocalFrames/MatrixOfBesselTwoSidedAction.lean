@@ -171,7 +171,7 @@ theorem invM_invM (x : Mt k r) (h : IsUnit (Matrix.of x : Mat k r).det) : invM (
   exact Matrix.nonsing_inv_nonsing_inv _ h
 
 theorem measurable_invM : Measurable (invM : Mt k r → Mt k r) := by
-  have hc : Continuous fun x : Mt k r => (Matrix.of x : Mat k r) := by exact continuous_id
+  have hc : Continuous fun x : Mt k r => (Matrix.of x : Mat k r) := continuous_id
   have hdet : Measurable fun x : Mt k r => ((Matrix.of x : Mat k r).det)⁻¹ :=
     hc.matrix_det.measurable.inv
   have hadj : ∀ i j, Measurable fun x : Mt k r => (Matrix.of x : Mat k r).adjugate i j :=

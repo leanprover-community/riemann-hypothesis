@@ -162,7 +162,7 @@ noncomputable def derivIdealSheaf (k : Type u) [CommRing k] [IsNoetherianRing k]
     (p : X ⟶ Spec (CommRingCat.of k)) [LocallyOfFiniteType p] (I : X.IdealSheafData) :
     X.IdealSheafData where
   ideal U := @derivIdeal k _ _ _ (sectionsAlgebra k p U.1) (I.ideal U)
-  map_ideal_basicOpen := by exact derivIdealSheaf_map_ideal_basicOpen k p I
+  map_ideal_basicOpen := derivIdealSheaf_map_ideal_basicOpen k p I
 
 @[simp] theorem derivIdealSheaf_ideal (k : Type u) [CommRing k] [IsNoetherianRing k]
     {X : Scheme.{u}} (p : X ⟶ Spec (CommRingCat.of k)) [LocallyOfFiniteType p]

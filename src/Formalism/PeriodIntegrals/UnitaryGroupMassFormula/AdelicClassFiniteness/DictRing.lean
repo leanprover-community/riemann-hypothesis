@@ -74,7 +74,7 @@ theorem int_mem (r : 𝓞 F) (v : HeightOneSpectrum (𝓞 F)) :
   exact v.valuation_le_one r
 
 theorem val_alg (v : HeightOneSpectrum (𝓞 F)) (x : F) :
-    Valued.v (algebraMap F (v.adicCompletion F) x) = v.valuation F x := by exact IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v x
+    Valued.v (algebraMap F (v.adicCompletion F) x) = v.valuation F x := IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v x
 
 theorem val_int (v : HeightOneSpectrum (𝓞 F)) (r : 𝓞 F) :
     Valued.v (algebraMap (𝓞 F) (v.adicCompletion F) r) = v.valuation F (algebraMap (𝓞 F) F r) := by

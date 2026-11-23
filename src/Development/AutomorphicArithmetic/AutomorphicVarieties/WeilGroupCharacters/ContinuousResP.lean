@@ -175,7 +175,7 @@ theorem continuous_resP : Continuous (resP L Ω) := Af.continuous_restrictScalar
 def HidaSetting.Lev.frame {s : HidaSetting l L Ω} (V : s.Lev) : GFrame l where
   Γ := GS Ω V.S'
   cpt := inferInstance
-  tdisc := by exact totDisc_quot _ (isClosed_NS Ω V.S')
+  tdisc := totDisc_quot _ (isClosed_NS Ω V.S')
   η := V.η
   η_open := V.η_open
   c := toGS Ω V.S' s.c

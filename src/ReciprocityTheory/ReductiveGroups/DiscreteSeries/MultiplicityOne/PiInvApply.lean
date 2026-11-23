@@ -262,7 +262,7 @@ lemma norm_C_le (D : RealPlaceData k r Wp Wp) {a b c d : Mat k r} (ha : a ∈ UW
 
 lemma aesm_pi (D : RealPlaceData k r Wp Wp) (hclW : IsClosed (UWset k r D.z)) :
     AEStronglyMeasurable (fun x : Mt k r => D.π (Matrix.of x)) D.μW := by
-  have hof : Continuous (⇑(Matrix.of : Mt k r ≃ Mat k r)) := by exact continuous_id
+  have hof : Continuous (⇑(Matrix.of : Mt k r ≃ Mat k r)) := continuous_id
   have h : ContinuousOn (fun x : Mt k r => D.π (Matrix.of x)) (Matrix.of ⁻¹' UWset k r D.z) :=
     D.π_cont.comp hof.continuousOn (Set.mapsTo_preimage _ _)
   have h2 := h.aestronglyMeasurable (μ := D.μW) (hclW.preimage hof).measurableSet

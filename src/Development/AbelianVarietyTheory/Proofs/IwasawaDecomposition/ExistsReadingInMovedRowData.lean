@@ -275,9 +275,9 @@ theorem GlobalTheory.Mem.R3.Rw.read_of_moved : ∀ (B : Base) (f : Fr B.toPre) (
       exact h₁.trans h₂
     stable := fun μ => by exact (m.t.tA true μ).stable
     stable0 := fun μ => by exact (m.t.tA false μ).stable
-    eE := by exact eE
+    eE := eE
     eE_read := fun x => by exact ((h1E x).trans (heE x))
-    dall := by exact m.t.dall
+    dall := m.t.dall
     junk := fun μ h => iota_eq_zero _ m.y.hm μ ((m.t.ch true).junk μ fun h' => h ((hU μ).2 h'))
     cen0 := fun cG hk t => by
       exact (cen_of_tie (tieA false t) (m.z.R.eG.trans cG) (fun z x => s.cen (m.y.tup t) z x)
@@ -286,7 +286,7 @@ theorem GlobalTheory.Mem.R3.Rw.read_of_moved : ∀ (B : Base) (f : Fr B.toPre) (
       exact (cen_of_tie (tieA true t) (m.z.R.eG.trans cG)
         (fun z x => o.N.ntypes.cenAmb (m.y.tup t) z x) ((hfits.cen _ (stdIso_of_keep m.z cG hk)).amb (m.y.tup t)))
     lam := hN.lam
-    occ := by exact hocc
+    occ := hocc
     kap := q.kap o.η o.hη o.V o.S o.N o.G
     bu := hN.bu
     ze := hN.ze }
