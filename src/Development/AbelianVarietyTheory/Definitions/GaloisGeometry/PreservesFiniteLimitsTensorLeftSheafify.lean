@@ -301,11 +301,9 @@ def cup (X : Scheme.{0}) (i j : ℕ) : H R i X →ₗ[R] H R j X →ₗ[R] H R (
 
 end Cup
 
-section Natural
 
 variable [FlatCoef R]
 
-end Natural
 
 section DegreeZero
 
@@ -403,10 +401,8 @@ theorem e_one (X : Scheme.{0}) : H0.e R X (one R X) = 1 := by
 
 end One
 
-section Examples
 
 variable (X : Scheme.{0})
 
-end Examples
 
 end GlobalTheory.Et

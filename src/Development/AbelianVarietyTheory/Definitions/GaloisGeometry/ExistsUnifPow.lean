@@ -100,11 +100,9 @@ namespace GlobalTheory.Port
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host
 
-section Gen
 
 variable {L : Type} [Field L] [NumberField L]
 
-end Gen
 
 variable {D : D7}
 

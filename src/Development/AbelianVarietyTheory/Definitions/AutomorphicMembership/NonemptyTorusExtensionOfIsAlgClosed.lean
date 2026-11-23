@@ -242,11 +242,9 @@ theorem ofTorus_id_bijective [ConnectedSpace S] :
     Function.Bijective (ofTorus (𝟙 (splitTorus S X))) :=
   ⟨ofTorus_injective _, fun l => mem_range_ofTorus _ l l.1 (Category.comp_id _)⟩
 
-section Ext
 
 variable {K : Type} [Field K] {G : Over (Sp K)} [GrpObj G] [IsCommMonObj G]
 
-end Ext
 
 theorem eval_bijective (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] :
     Function.Bijective (AddMonoidHom.eval : X →+ (X →+ ℤ) →+ ℤ) := by
@@ -398,7 +396,6 @@ theorem map_eq_zero_of_isLocalHom [IsLocalRing R] {k : Type} [Field k] (ρ : R �
 
 end Unif
 
-section Spec
 
 variable {V S₁ S₀ : Scheme.{0}} {G : Over V} [GrpObj G] [IsCommMonObj G]
   {G₁ : Over S₁} [GrpObj G₁] [IsCommMonObj G₁] {G₀ : Over S₀} [GrpObj G₀] [IsCommMonObj G₀]
@@ -407,13 +404,10 @@ variable {V S₁ S₀ : Scheme.{0}} {G : Over V} [GrpObj G] [IsCommMonObj G]
 variable (h₁ : IsGrpPullback G₁ G f₁ φ₁) (h₀ : IsGrpPullback G₀ G f₀ φ₀)
   (hb : Function.Bijective (Cochar.pull h₁))
 
-end Spec
 
-section SpecTriple
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {V S₁ S₀ : Scheme.{0}}
   {t : SAB H V} {t₁ : SAB H S₁} {t₀ : SAB H S₀} {f₁ : S₁ ⟶ V} {f₀ : S₀ ⟶ V}
 
-end SpecTriple
 
 end GlobalTheory.TorusPart

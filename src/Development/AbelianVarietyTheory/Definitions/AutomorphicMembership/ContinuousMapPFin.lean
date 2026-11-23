@@ -377,13 +377,10 @@ theorem HasWt.wt {π : AU E n} {τ : E →+* ℂ} {lam : DomWeight n} (h : π.Ha
 
 end AU
 
-section Par
 
 variable {LP : HeightOneSpectrum (𝓞 E) → Type}
 
-end Par
 
-section Host
 
 open Formalism.MainNotions.N GlobalTheory.DefiniteBC
 
@@ -393,7 +390,6 @@ variable {R : Ranks} (H : Host R)
 
 variable {H} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
 
-end Host
 
 end GlobalTheory.DefU
 

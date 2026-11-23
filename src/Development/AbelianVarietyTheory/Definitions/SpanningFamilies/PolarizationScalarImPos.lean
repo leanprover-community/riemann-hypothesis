@@ -182,13 +182,11 @@ theorem exists_stdChar (D : D7) : ∃ ψ, IsStdChar D ψ (-1) := by
       rw [GlobalTheory.StdRat.tmul_one_eq, Finset.sum_congr rfl fun ρ _ => (hθ ρ).1 _, GlobalTheory.StdRat.sum_tauE_eq_trace])
   exact ⟨ψ, h1, ⟨θ, hθ⟩, fun θ' hθ' x => by rw [h2, hts, GlobalTheory.DualPairCompare.sum_infFam θ' hθ']⟩
 
-section Lattice
 
 open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA FractionalIdeal
 
 variable (D : D7)
 
-end Lattice
 
 variable {D : D7} {S T : HSp D} (C : Ctx S T)
 

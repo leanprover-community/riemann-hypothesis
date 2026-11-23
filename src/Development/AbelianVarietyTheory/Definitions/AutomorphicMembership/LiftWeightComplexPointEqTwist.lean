@@ -138,12 +138,10 @@ theorem supLat_stable (h : A.MKStable) (g : G) :
 
 end Twisted
 
-section Block
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 : Type}
   {B : BlockDat K G Pl0} {ℓ : Lvl K G} {Z : Submodule K B.S.Forms} {v0 : InfinitePlace K} {s : ℕ}
 
-end Block
 
 section Local
 

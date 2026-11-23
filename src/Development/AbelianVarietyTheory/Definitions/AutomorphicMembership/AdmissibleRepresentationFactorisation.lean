@@ -195,12 +195,10 @@ variable (hA : AdmEx S κ) (p : ℕ) [Fact p.Prime] (la : PlL D p)
 
 end PiLocalization₂
 
-section Examples
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {Xo : ∀ l : Level H, Moduli Dw l} {p : ℕ} {W : ValuationSubring ℂ} {Y : LocalSystem Xo p W} {i₀ : Idx H p}
   (hp : p.Prime) (hW : (p : ℂ) ∈ W.nonunits)
 
-end Examples
 
 end GlobalTheory.ShFam.Pad

@@ -69,7 +69,6 @@ end Term
 
 end Defs
 
-section Basic
 
 variable {E : Type} [Field E] [NumberField E] {σ : E →+* E} {n r g : ℕ} {J : Matrix (Fin n) (Fin n) E}
   {T T' : E} {P A B : Matrix (Fin n) (Fin (r + 1)) E} {Λ : Submodule (𝓞 E) (Fin n → E)}
@@ -89,13 +88,10 @@ variable (t)
 
 end Term
 
-end Basic
 
-section Examples
 
 variable {E : Type} [Field E] [NumberField E]
 
-end Examples
 
 section Spaces
 
@@ -115,7 +111,6 @@ theorem hT_eq_sum (V : HSpace E) (x y : V.V) :
 
 end Spaces
 
-section Record
 
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -124,6 +119,5 @@ variable (D : D7)
 
 variable {D} {u u' : D.what₂.Word}
 
-end Record
 
 end GlobalTheory.IntTerm

@@ -279,13 +279,11 @@ structure FlatSt : Type where
   sv : D.what₂.Tau → Pt s → Qb
   ht : ℝ → s.Comp → D.what₂.Tau → ℝ
 
-section OfPkg
 
 variable {Comp : Type} {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg}
   (P : PadPkg D N j Comp jC ng)
 
 
-end OfPkg
 
 def padOf {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg} (L : LocSt D N j ng)
     (G : GlobSt fun p => (L.loc p).Mdl) (M : AdmSt D N j jC) (F : FlatSt s)
@@ -308,11 +306,9 @@ def padOf {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {
     arDeg := I.arDeg, arDeg_homog := I.arDeg_homog
     arMix := I.arMix, arMix_HT := I.arMix_HT, arMix_DR := I.arMix_DR }
 
-section Unfold
 
 variable {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg} (L : LocSt D N j ng)
   (G : GlobSt fun p => (L.loc p).Mdl) (M : AdmSt D N j jC) (F : FlatSt s) (I : ArIn D.what₂.Tau N (D.R.f * N) s.Comp)
 
-end Unfold
 
 end GlobalTheory.ShFam.Pad

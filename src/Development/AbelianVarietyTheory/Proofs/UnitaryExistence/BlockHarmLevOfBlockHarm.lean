@@ -311,11 +311,9 @@ theorem _root_.GlobalTheory.ShortLawsCompare.isBeta_mul {n : ℕ} {Λ : _root_.F
 
 end Beta
 
-section Level
 
 variable {Xo : Moduli Dw l} {c : Coeff l}
 
-end Level
 
 section Objects
 

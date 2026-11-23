@@ -49,13 +49,11 @@ noncomputable section
 
 namespace GlobalTheory.Ker.DCos
 
-section Generic
 
 variable {R : Type} [CommRing R] {k : ℕ}
 
 variable {E : Type} [Field E] [NumberField E]
 
-end Generic
 
 section Adelic
 

@@ -61,7 +61,6 @@ theorem isClopen_comp (Z : Comp Xo c) : IsClopen (Z : Set (Xo.XF c)) := by
 
 variable [Fintype (Comp Xo c)]
 
-section Concrete
 
 variable (h : GenFrEx Xo c)
     (δ : ∀ Z : Comp Xo c, AddValuation (Om Z) (WithTop ℤ) → Ix Dw → ℤ)
@@ -75,6 +74,5 @@ variable (h : GenFrEx Xo c)
     (ip : (c.F →+* ℂ) → (∀ Z : Comp Xo c, AC Z) → (∀ Z : Comp Xo c, AC Z) → ℂ)
     (wsize : WTZ E → ℝ) (DF PN PQ tableDegreeThreeBase PP0' Pd Gc PI4 Pet tableLineDegreeFive tableLineDegreeTwo Prw PO f r : ℝ)
 
-end Concrete
 
 end GlobalTheory.TrivOrderTieCompare

@@ -83,11 +83,9 @@ def mixF (A : Finset ι → Finset κ → Submodule k E) (s : Finset (ι ⊕ₗ 
 
 end Join
 
-section Koszul
 
 variable {k : Type} [Field k] {σ : Type} [LinearOrder σ] {E : Type} [AddCommGroup E] [Module k E]
 
-end Koszul
 
 section Forms
 

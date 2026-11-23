@@ -166,11 +166,9 @@ theorem IsSaturatedSubmodule.comap {N : Submodule R M'} (h : IsSaturatedSubmodul
 
 end Basic
 
-section Rank
 
 variable {R : Type*} [CommRing R] [IsDomain R] {M : Type*} [AddCommGroup M] [Module R M]
 
-end Rank
 
 section Relative
 

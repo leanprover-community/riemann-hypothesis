@@ -279,12 +279,10 @@ theorem level_fpull (e : ℕ) (c : SmallPic Y) : level e (fpull q hq c) = smallP
   rw [fpull_smallCls, level_fcls, smallPull_smallCls _ _ (pull_isLB hL _)]
   rfl
 
-section Projective
 
 open GlobalTheory.ProjSpace
 
 variable {R : Type} [CommRing R] (I : Ideal R) (N : ℕ)
 
-end Projective
 
 end GlobalTheory.FormalPic

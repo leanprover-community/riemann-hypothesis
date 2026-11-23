@@ -142,11 +142,9 @@ theorem chi_shortExact (hS : S.ShortExact) (h₁ : FiniteCoh k S.X₁) (h₃ : F
 
 end ShortExact
 
-section Pi
 
 variable {ι : Type*} [Fintype ι] {E : ι → X.Modules}
 
-end Pi
 
 
 variable (k F) in

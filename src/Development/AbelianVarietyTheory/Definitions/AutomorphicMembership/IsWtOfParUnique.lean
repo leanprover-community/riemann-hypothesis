@@ -38,7 +38,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Mem.R3.StdModel
 
-section Gen
 
 variable {X : Fields} {n : ℕ} (σ : X.K →+* ℂ)
 
@@ -48,7 +47,6 @@ variable {σ} {a : ℕ} {H Γ W : Type} [AddCommGroup W] [Module ℂ W]
   {mat : H → GL (Fin a) (X.E ⊗[X.F] Formalism.L2.Herm.Af X.F)} {rat : Γ → GL (Fin a) X.E → Prop} {ρ : Γ → W → W}
   {ι : Type} {lam : X.Tau → DomWeight n} {rho : GL (Fin n) X.E →* Module.End X.K (VV X.K lam)}
 
-end Gen
 
 section Rec
 

@@ -50,12 +50,10 @@ noncomputable section
 
 namespace GlobalTheory.DegenerateTest
 
-section Pull
 
 variable {S S' S'' : Scheme.{0}} {G : Over S} {G' : Over S'} {G'' : Over S''} [GrpObj G] [GrpObj G'] [GrpObj G'']
   {L : LB G.left} {L' : LB G'.left} {L'' : LB G''.left}
 
-end Pull
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H}
 

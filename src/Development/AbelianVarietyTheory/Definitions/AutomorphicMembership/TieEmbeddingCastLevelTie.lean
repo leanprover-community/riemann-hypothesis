@@ -38,13 +38,11 @@ namespace GlobalTheory.Mem.LocalPack
 
 attribute [local instance] Formalism.BasicNotions.factResChar Formalism.BasicNotions.Host.cmStar
 
-section Ext
 
 variable {Os Ks O Kf O' Kf' : Type} [CommRing Os] [Field Ks] [Algebra Os Ks] [CommRing O] [IsDomain O]
   [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf] [CommRing O'] [IsDomain O'] [IsDiscreteValuationRing O'] [Field Kf']
   [Algebra O' Kf']
 
-end Ext
 
 section Ties
 
@@ -77,7 +75,6 @@ theorem pack_eq (D : D7) (u : D.what₂.Word)
 
 end Bridge
 
-section Record
 
 variable (D : D7) (sc : Scale) (Ce : ℝ)
   (Lc : ∀ u, ColLevel D.R D.host.F D.host.E D.sp D.host.g (D.mem u).C (D.mem u).A (D.clsLat u))
@@ -90,7 +87,6 @@ variable (D : D7) (sc : Scale) (Ce : ℝ)
   (hd : ∀ u w h, ((packC D Lc I ψ u w h).gat (rSc sc D.R.k (D.what₂.places.resChar w))
     (epSc D.R sc Ce (D.what₂.places.resChar w))).d = Module.finrank ℂ (D.mem u).A.Mu0)
 
-end Record
 
 abbrev IsConcrete := @Formalism.L2.G.IsRecC
 

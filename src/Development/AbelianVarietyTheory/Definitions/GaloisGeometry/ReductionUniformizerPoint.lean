@@ -90,17 +90,13 @@ namespace GlobalTheory.Strata
 
 variable {X : Scheme.{0}} {ι : Type} (I : ι → X.IdealSheafData)
 
-section Fibre
 
 variable {O : Type} [CommRing O] (p : X ⟶ Spec (CommRingCat.of O)) (ϖ : O)
 
-end Fibre
 
-section BaseChange
 
 variable {X' : Scheme.{0}} (f : X' ⟶ X)
 
-end BaseChange
 
 theorem nonempty_Ystr {s : ℕ} (S : Idx ι s) (y : Y I S.1) : Nonempty (Ystr I s) := ⟨(inj I S).base y⟩
 
@@ -119,17 +115,13 @@ namespace GlobalTheory.Strata
 
 variable {X : Scheme.{0}} {ι : Type} (I : ι → X.IdealSheafData)
 
-section FibreStr
 
 variable {O : Type} [CommRing O] (p : X ⟶ Spec (CommRingCat.of O)) (ϖ : O)
 
-end FibreStr
 
-section BaseChangeStr
 
 variable {X' : Scheme.{0}} (f : X' ⟶ X)
 
-end BaseChangeStr
 
 end GlobalTheory.Strata
 

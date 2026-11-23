@@ -427,11 +427,9 @@ theorem ofAffinePoint_zsmul (n : ℤ) (p : (W.baseChange k).toAffine.Point) :
 
 end Field
 
-section ReducedBase
 
 variable [_root_.IsReduced R]
 
-end ReducedBase
 
 section Examples
 

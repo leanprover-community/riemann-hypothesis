@@ -51,11 +51,9 @@ open GlobalTheory.IndefiniteRowSideFullHecke.DeltaDatumCombinedCoefficient
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-section Calc
 
 variable {X X' Y Y' : Scheme.{0}} {L : LB X} {L' : LB X'} {F : X' ⟶ X} {q : Y ⟶ X} {q' : Y' ⟶ X'} {pm : Y' ⟶ Y}
 
-end Calc
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
 
@@ -65,12 +63,10 @@ end Half
 
 variable {Xo : Moduli D l} {c : Coeff l}
 
-section Cover
 
 variable {a : IsAuxiliarySplitSquarefreeLevel l} (C : Cover Xo c a) (n : ℕ) (nab₂ : NabV C.Xo₂ C.c₂) (f : Rul C.Xo₂ C.c₂)
   (φ : (Fin n → LevQ D a.l₂) → c.F)
 
-end Cover
 
 section Rule
 
@@ -112,13 +108,10 @@ theorem evR_fnRule (g : Γ(Xo.XF c, ⊤)) {S : Type} [CommRing S] [IsReduced S] 
 
 end Rule
 
-section Law
 
 variable {a : IsAuxiliarySplitSquarefreeLevel l} (C : Cover Xo c a)
 
-end Law
 
-section Coefficients
 
 open GlobalTheory.ShortDatumEq
 
@@ -126,7 +119,6 @@ variable {a : IsAuxiliarySplitSquarefreeLevel l}
 
 variable {nab : NabV Xo c} (Δ : DeltaDatum Xo c nab) {n : ℕ}
 
-end Coefficients
 
 theorem fnRule_injective : Function.Injective (fnRule (Xo := Xo) (c := c)) := by
   intro g g' h
@@ -142,13 +134,11 @@ theorem fnRule_injective : Function.Injective (fnRule (Xo := Xo) (c := c)) := by
   rw [gs_eq j z ⊤ trivial, gs_eq j z ⊤ trivial]
   exact congrArg _ e''
 
-section Datum
 
 
 variable {nab : NabV Xo c} (Δ : DeltaDatum Xo c nab) (n : ℕ)
 
 variable {n}
 
-end Datum
 
 end GlobalTheory.LevelCoverCompare

@@ -191,11 +191,9 @@ theorem isWeilHom_baseChange (hA : IsAbelianScheme A) (h : IsGrpPullback A₀ A 
 
 end Functor
 
-section Consequences
 
 variable {p : ℕ} [Fact p.Prime] {R R₀ : Type} [CommRing R] [CommRing R₀] [Algebra R R₀]
 
-end Consequences
 
 section Base
 

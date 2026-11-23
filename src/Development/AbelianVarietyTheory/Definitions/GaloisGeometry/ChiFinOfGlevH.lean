@@ -255,13 +255,11 @@ open Formalism.BasicNotions Formalism.L2.Forms NumberField IsDedekindDomain Matr
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Gen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))}
   {gp : Fin 2 → ℕ} {LL : Type} [Field LL]
 
-end Gen
 
 variable {D : D7} {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i}
 

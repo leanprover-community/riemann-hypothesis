@@ -136,13 +136,10 @@ theorem isGen_divEquiv (φ : K → (X ⟶ X)) (ε : K → ℤ) (w : LB.Iso L (LB
 
 end General
 
-section Jets
 
 variable {S : Type} [CommRing S] {d : ℕ}
 
-end Jets
 
-section Compare
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X₀ : Scheme.{0}} (t : SAB H X₀)
 
@@ -152,6 +149,5 @@ variable {t x}
 
 variable {j : JetPts t.G x d} (act : 𝓞 E → Germ.Pt S 1 d) (e : FrameFam t.G x t.PP.L j) (w : PrimIso t)
 
-end Compare
 
 end GlobalTheory.GermSectionCompare

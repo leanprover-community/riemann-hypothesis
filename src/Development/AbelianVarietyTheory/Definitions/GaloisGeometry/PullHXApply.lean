@@ -125,9 +125,7 @@ def nbCMap (i : Z ⟶ Y) (j : U ⟶ Y) {F G : Shv R} (φ : F ⟶ G) : nbC R i j 
 
 end Flat
 
-section HX
 variable {Z Z' : Scheme.{0}}
 
-end HX
 
 end GlobalTheory.EtC.Psi

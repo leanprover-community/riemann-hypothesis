@@ -209,11 +209,9 @@ theorem pairAt_eq (v : InfinitePlace K) (x : S.V) :
 
 end Forms
 
-section Int
 
 variable {K : Type} [Field K] [NumberField K] (Pl : Rows.Places K) (w : Pl.Pl)
 
-end Int
 
 section Coeff
 
@@ -263,12 +261,10 @@ theorem map_pairBK (φ : K →+* ℂ) (x y : VV K lam) :
 
 end Coeff
 
-section Level
 
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))} (C C' : CoefPk X n (DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)))
   (Λ : LevFam X.E X.K n SG)
 
-end Level
 
 section Concrete
 
@@ -297,7 +293,6 @@ variable {W Ch sel mu P h h'}
 
 end Concrete
 
-section Record
 
 open ColumnAvoidanceConditions
 
@@ -307,6 +302,5 @@ variable (D : D7) (EX : ErrX D) (Ch : Chars (fieldsOf D) (primesOf D EX) D.R.m)
 variable (tw : D.what₂.Tup → Tup (fieldsOf D).F (fieldsOf D).E (fieldsOf D).K S) (Tw : TwForms D)
   (A : AmbForm D (RowSide.sharp D)) (u : D.what₂.Word)
 
-end Record
 
 end GlobalTheory.PeriodClassSum

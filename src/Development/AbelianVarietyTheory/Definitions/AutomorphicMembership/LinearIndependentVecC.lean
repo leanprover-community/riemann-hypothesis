@@ -175,7 +175,6 @@ variable {Y U hU e hσ T B}
 
 end Bd
 
-section Flat
 
 open GlobalTheory.FlatLine GlobalTheory.AllWt
 
@@ -186,6 +185,5 @@ variable {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff
 
 variable {U sig hU hσ T}
 
-end Flat
 
 end GlobalTheory.TrueCx

@@ -39,13 +39,11 @@ namespace GlobalTheory.HeightCounting.LabConjModel
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host NumberField IsDedekindDomain Polynomial
 open GlobalTheory.WeilDeligne Pointwise
 
-section General
 
 variable {Ω : Type} [Field Ω]
 
 variable {E : Type} [Field E] [NumberField E] [Algebra E Ω]
 
-end General
 
 section Host
 

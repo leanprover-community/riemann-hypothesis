@@ -117,7 +117,6 @@ theorem inertJunk_col {X : Col.Fields} {Pr : Col.Primes X} {R : Ranks} (W : Col.
     · exact Or.inl h
     · exact Or.inr ⟨y, hy, hyeq⟩
 
-section Real
 
 open Formalism.IndefR Formalism.IndefR.Links Formalism.L2.Theta
 
@@ -127,7 +126,6 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} (A3 : FamIn
 
 variable {A3} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
-end Real
 
 end GlobalTheory.Hk3.FamModel
 

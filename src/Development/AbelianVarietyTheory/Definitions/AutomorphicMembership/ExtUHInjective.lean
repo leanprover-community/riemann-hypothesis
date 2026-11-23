@@ -554,12 +554,10 @@ theorem embF_mem (h : (S.fam emb lam).Ok) (x : S.FormsK emb lam h) : S.embF emb 
 
 end General
 
-section Dia
 
 variable {E K ι : Type} [Field E] [NumberField E] [StarRing E] [Field K] [NumberField K] [StarRing K] [Fintype ι] {R : Ranks}
   {I : ChainIn E K ι R} (J : AtIn I) (emb : ι → E →+* K) (σ : K →+* ℂ)
 
-end Dia
 
 section Laws
 

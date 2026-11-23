@@ -55,29 +55,22 @@ open scoped ENNReal NNReal Pointwise Classical
 
 namespace GlobalTheory.AutQuotCompare
 
-section First
 
 variable {H : Type} [Group H] (Γ : Subgroup H)
 
 variable [MeasurableSpace H] (P P' : Measure H × Set H → Prop)
 
-end First
 
-section Haar
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
 
-end Haar
 
-section Adelic
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} (G : Matrix (Fin n) (Fin n) E)
 
 variable {G}
 
-end Adelic
 
-section Transport
 
 variable {H H' : Type} [Group H] [Group H'] [TopologicalSpace H] [TopologicalSpace H']
   {Γ : Subgroup H} {Γ' : Subgroup H'} (e : H ≃ₜ* H') (he : ∀ g, e g ∈ Γ' ↔ g ∈ Γ)
@@ -85,7 +78,6 @@ variable {H H' : Type} [Group H] [Group H'] [TopologicalSpace H] [TopologicalSpa
 
 variable [MeasurableSpace H] [BorelSpace H] [MeasurableSpace H'] [BorelSpace H']
 
-end Transport
 
 section Main
 
@@ -174,15 +166,12 @@ theorem exists_inf_equiv : ∃ Θ : Ainf (maximalRealSubfield E) ⊗[maximalReal
 
 end Adeles
 
-section Groups
 
 open scoped TensorProduct Matrix
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-end Groups
 
-section Record
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.Pj Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice
 
@@ -192,6 +181,5 @@ variable {D : D7} [IsCMField D.host.E] (V : HSp D)
 
 omit [IsCMField D.host.E]
 
-end Record
 
 end GlobalTheory.AutQuotCompare

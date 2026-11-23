@@ -47,12 +47,10 @@ def padTrue (L : LocSt D N j ng) (G : GlobSt fun p => (L.loc p).Mdl) : PadPkg D 
 
 variable (L : LocSt D N j ng) (G : GlobSt fun p => (L.loc p).Mdl)
 
-section Prime
 
 open PadPkg (md)
 
 variable {p : ℕ} [Fact p.Prime] {la : PlL D p}
 
-end Prime
 
 end GlobalTheory.ShFam.Pad

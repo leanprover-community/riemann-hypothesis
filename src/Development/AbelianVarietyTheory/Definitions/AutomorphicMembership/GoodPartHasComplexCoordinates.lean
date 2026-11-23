@@ -170,7 +170,6 @@ end Read
 
 end Extend
 
-section Untwisted
 
 variable {R : Read D X fc false} {cr : Crd A fc} (M : Seam R cr)
 
@@ -178,9 +177,7 @@ namespace Seam
 
 end Seam
 
-end Untwisted
 
-section OfTie
 
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
 
@@ -190,16 +187,12 @@ variable (F : Face D A) (X : CxData A.fam.amb) {S₀ : IndefData (A.side F.P0 F.
 variable {Sp : SPer (F.Dc X.zs)} {C : ColData (F.Dc X.zs) Sp (X.data F.cr true)}
   {NuC : ∀ u, Submodule (𝓞 D.what₂.LL) (Fin ((F.Dc X.zs).a u) → D.what₂.LL)}
 
-end OfTie
 
-section Place
 
-section Block
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 : Type}
   (B : BlockDat K G Pl0) (ℓ : Lvl K G)
 
-end Block
 
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} (F : Face D A)
 

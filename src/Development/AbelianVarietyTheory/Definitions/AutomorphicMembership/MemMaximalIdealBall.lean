@@ -36,11 +36,9 @@ open Formalism.MainNotions.DIV.Cons (SCF intO)
 
 namespace GlobalTheory.LocM.Cht
 
-section Ball
 
 variable {C : Type} [NormedField C] [IsUltrametricDist C]
 
-end Ball
 
 section Free
 

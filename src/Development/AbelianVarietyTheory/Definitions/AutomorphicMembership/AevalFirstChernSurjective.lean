@@ -498,12 +498,10 @@ variable (Z) in
 
 end VPair
 
-section Lift
 
 variable {Z} {A : Type*} [AddCommGroup A] (φ : VPair Z → A)
   (h : ∀ P P' P'' : VPair Z, P.IsSum P' P'' → φ P'' = φ P + φ P')
 
-end Lift
 
 def vCls : Z.VDivZ →+ Pic Z.X :=
   (smallPicEquiv Z.X).toAddMonoidHom.comp ((AddMonoidHom.fst _ _).comp Z.vdivSubgroup.subtype)

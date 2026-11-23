@@ -79,10 +79,8 @@ theorem expo_absC (s : ℂ) (τ : E →+* ℂ) : expo (absC E s) τ = s := by
     simp [atEmb, hw]
   · simp
 
-section CM
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
-end CM
 
 end GlobalTheory.CuspRep.Model

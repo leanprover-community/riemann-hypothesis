@@ -192,7 +192,6 @@ def ChBound (C : IntegralChartA3 Xo c T io y) (e : ℕ) (ρ : ℝ) (a : (E →+*
   ∀ k : ℕ, ((-ρ : ℝ) : EReal) ≤ nuLocC C e k a n
 end Sections
 
-section Lattice
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 structure Adapt {n : ℕ} (Λ : GenLat E n) (N ℓ : ℕ) where
@@ -213,6 +212,5 @@ structure Adapt {n : ℕ} (Λ : GenLat E n) (N ℓ : ℕ) where
   spans : ∀ w ∈ Λ.Ln, ∃ v ∈ stdLat E n, (k₁ : E) • w = (g.map (algebraMap (𝓞 E) E)).mulVec v
   gq : g * q = ((k₁ * N : ℕ) : 𝓞 E) • (1 : Matrix (Fin n) (Fin n) (𝓞 E))
 
-end Lattice
 
 end GlobalTheory.PlaceInt

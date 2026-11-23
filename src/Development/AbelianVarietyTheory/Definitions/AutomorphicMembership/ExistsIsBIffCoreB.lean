@@ -138,11 +138,9 @@ theorem IsB.ind {K : Ctx} {R : ∀ D : D7, Obj2 D → Prop}
   cases e
   exact h B f T w Z b
 
-section Layers
 
 variable {K : Ctx} {w : ColW B f T} {Z : w.Lt}
 
-end Layers
 
 end GlobalTheory.Mem.Db
 

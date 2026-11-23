@@ -52,11 +52,9 @@ namespace GlobalTheory.Mem.Col2.TrueColsTest
 
 attribute [local instance] GlobalTheory.Mem.Col2.starE
 
-section Normal
 
 variable {E K A : Type} [Field E] [NumberField E] [Field K] {n : ℕ} (S : GStep E K n) (b : S.β) (f : S.D b → A)
 
-end Normal
 
 variable {B : Base} {X : PreX B.toPre} {I : TC B X}
 

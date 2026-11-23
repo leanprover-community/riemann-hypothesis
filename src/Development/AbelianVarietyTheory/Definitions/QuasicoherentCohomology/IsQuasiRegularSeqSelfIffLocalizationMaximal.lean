@@ -394,7 +394,6 @@ theorem isQuasiRegularSeq_algebraMap_iff (S : Type*) [CommRing S] [Algebra R S] 
 
 end Quasi
 
-section Basis
 
 variable {R : Type*} [CommRing R] {ι : Type*} [Finite ι]
 
@@ -409,7 +408,6 @@ noncomputable def IsQuasiRegularSeq.powGrBasis {f : ι → R} (h : IsQuasiRegula
   Module.Basis.ofEquivFun <| (h.powGrEquiv a).symm ≪≫ₗ
     LinearEquiv.piCongrRight fun _ => quotSMulTopEquivQuot _
 
-end Basis
 
 section Flat
 

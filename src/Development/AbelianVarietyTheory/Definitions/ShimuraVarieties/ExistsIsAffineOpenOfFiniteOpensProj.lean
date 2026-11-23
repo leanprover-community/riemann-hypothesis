@@ -535,7 +535,6 @@ theorem finrank_π (hρ : IsFreeAction ρ) (y : finiteQuotient ρ) : (π ρ).fin
 
 end Free
 
-section Base
 
 variable {S S' : Scheme.{u}} (f : X ⟶ S) (hf : ∀ g, (ρ g).asIso.hom ≫ f = f)
 
@@ -555,7 +554,6 @@ instance isSeparated_desc [IsSeparated f] : IsSeparated (desc ρ f hf) :=
 
 variable (t : S' ⟶ S)
 
-end Base
 
 section Functoriality
 

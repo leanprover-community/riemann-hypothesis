@@ -38,13 +38,10 @@ open _root_.Formalism.L2.Col _root_.Formalism.L2.DIV _root_.Formalism.L2.Ker _ro
 open NumberField IsDedekindDomain _root_.Formalism.BasicNotions _root_.Formalism.MainNotions GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 open scoped TensorProduct
 
-section Idele
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (hc : CMData F E)
 
-end Idele
 
-section Central
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -54,16 +51,12 @@ variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G
 variable {t μ} {St : ChainCharts D u μ} {A : AdData t u μ St} {dtU : Formalism.L2.Herm.unitaryOneFiniteAdeles D.sp.cm →* D.Dt} {a : 𝓞 D.host.E}
 
 
-end Central
 
-section Twist
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))}
 
-end Twist
 
-section Charts
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -71,7 +64,6 @@ variable {D : D7} {T : ℕ} {bad : Set (HeightOneSpectrum (𝓞 D.host.F))} {i :
   {stab : cl → Type} [∀ c, Group (stab c)] {lat : cl → Submodule (𝓞 D.host.E) (Fin (D.R.N i) → D.host.E)}
 
 
-end Charts
 
 section True
 

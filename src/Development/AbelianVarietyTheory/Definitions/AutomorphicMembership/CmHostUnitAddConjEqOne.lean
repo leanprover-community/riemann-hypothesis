@@ -41,7 +41,6 @@ namespace GlobalTheory.LocM
 
 namespace Bdy
 
-section Reg
 
 open scoped CategoryTheory.Obj
 
@@ -49,7 +48,6 @@ variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing 
   {A : PolAV (Spec (CommRingCat.of (FractionRing R)))} {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]
   (U : Unif (maximalIdeal R) D A G) (hR : AdmBase R (maximalIdeal R)) [GeometricallyConnected G.hom]
 
-end Reg
 
 namespace BDat
 

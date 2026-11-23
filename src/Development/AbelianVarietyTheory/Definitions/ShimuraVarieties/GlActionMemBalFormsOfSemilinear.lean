@@ -303,12 +303,10 @@ end BalSq
 
 end Balanced
 
-section Level
 
 variable {Y Y' : Type*} [AddCommGroup Y] [AddCommGroup Y']
 
 
 
-end Level
 
 end GlobalTheory.Forms

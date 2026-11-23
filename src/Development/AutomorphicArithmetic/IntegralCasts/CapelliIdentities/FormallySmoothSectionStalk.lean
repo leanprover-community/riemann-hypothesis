@@ -54,7 +54,6 @@ theorem UpperTheory.formally_smooth_section_stalk :
               ∀ (R R' : CommRingCat.{0}) [IsLocalRing R] (π : R' ⟶ R) (φ : X.presheaf.stalk p ⟶ R) (v : Spec R' ⟶ Y),
                 Function.Surjective π.hom → (∀ x, π.hom x = 0 → x * x = 0) →
                   Spec.map π ≫ v = Spec.map φ ≫ X.fromSpecStalk p ≫ s → ∃ g : B ⟶ R', v = Spec.map g ≫ ι := by
-  open AlgebraicGeometry CategoryTheory in
   intro X Y f _ s hs p
   have hp : f (s p) = p := by
     rw [← Scheme.Hom.comp_apply, hs]; rfl

@@ -225,14 +225,12 @@ theorem exists_mjHTie (Xd : DivX D) (h : Xd.MjH = mjH Z) (hj : HEq Xd.jM (jM Z))
     ∃ JM, MjHTie D A3.A Xd (A3.indefDown (s0Of R F)) Z.jW JM :=
   ⟨_, mjHTie_of_eq Z Xd h hj⟩
 
-section Reface
 
 variable {Dc : ∀ Zs : DefSub A3.fam3.amb3, DefCols (A3.side3 F.P1 F.ψ1 Zs)} {Sp : ∀ Zs, SPer (Dc Zs)}
   {Zsc : DefSub A3.fam3.amb3 → IndefScale A3.fam3.base3} {kap : ℝ} {lam : type_of% R.lam3} {err : type_of% (R.updS kap lam).err0}
   {Y' : Read (A3 := A3) ((R.updS kap lam).withErr err).toRealDat (reFace F Dc Sp Zsc).lv2 X0}
   (Z' : ReadL ((R.updS kap lam).withErr err) (reFace F Dc Sp Zsc) X0 Y')
 
-end Reface
 
 end GlobalTheory.Mem.R3
 

@@ -73,24 +73,19 @@ variable {Δ}
 
 end Generators
 
-section Spans
 
 variable {nab : NabV Xo c} (Δ : DeltaDatum Xo c nab) (hK : ReflexLe Dw c) (nV : ℕ)
 
 variable {Δ}
 
-end Spans
 
-section Claims
 
 variable {nab : NabV Xo c} (Δ : DeltaDatum Xo c nab) (hK : ReflexLe Dw c) (nV : ℕ)
   (cusp : ((E →+* ℂ) × ℕ → ℕ) → ℕ → Submodule c.F (Rul Xo c))
 
 variable {Δ hK nV}
 
-end Claims
 
-section Std
 
 variable (Xo c) (nab : NabV Xo c)
 
@@ -100,6 +95,5 @@ variable (Xo c nab)
 
 variable {Xo c nab}
 
-end Std
 
 end GlobalTheory.ShortSpanCompare

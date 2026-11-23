@@ -56,7 +56,6 @@ theorem prime_le_of_embed_GL {E G : Type} [Field E] [NumberField E] [Group G] [F
     ((LinearMap.GeneralLinearGroup.generalLinearEquiv E (Fin n → E)).injective.comp
       ((Matrix.GeneralLinearGroup.toLin (n := Fin n) (R := E)).injective.comp hφ)) hp hd
 
-section Concrete
 
 variable {F : Fields} {Pr : Primes F} {R : Ranks} {W : Wts F Pr.Word R} {a : ℝ}
 
@@ -65,7 +64,6 @@ variable {n : ℕ} {ST SG Q : Finset (HeightOneSpectrum (𝓞 F.E))}
 variable (sel : HeightOneSpectrum (𝓞 F.F) → HeightOneSpectrum (𝓞 F.E)) {S : Set ℕ} (mu : Tup F.F F.E F.K S)
   (cst : LocCst F (rowSG Pr sel mu)) (L : ChIdx F Pr R (QE sel (mu : Chr F.F F.E F.K)))
 
-end Concrete
 
 section Record
 

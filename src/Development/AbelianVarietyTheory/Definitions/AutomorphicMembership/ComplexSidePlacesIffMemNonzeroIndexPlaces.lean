@@ -97,7 +97,6 @@ theorem twisted_places_eq_complex_side_of_eq_nonzero_index (hW : z.W1 F0 = Wt) (
   exact (z.plB_mem_twPl w).trans ((Set.ext_iff.1 hW w).symm.trans (z.complex_side_face_numbers_iff_mem_nonzero_index_places F0 kap lam err Dc Sp Zsc C CH hZ w).symm)
 
 
-section Ex
 
 variable (e : z.R.toRealDat.ExAt) (h : Wt' ⊆ Wt) (hc : ConjStable X Wt')
 
@@ -107,13 +106,10 @@ variable (e : z.R.toRealDat.ExAt) (h : Wt' ⊆ Wt) (hc : ConjStable X Wt')
 
 
 
-end Ex
 
-section ExW
 
 variable (e : z.R.toRealDat.ExAt) (h : z.W1 F0 ⊆ Wt)
 
-end ExW
 
 
 end Dat

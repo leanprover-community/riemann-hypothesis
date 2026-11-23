@@ -61,7 +61,6 @@ namespace GlobalTheory.LocM.Frm
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-section Linear
 
 variable {C M : Type} [NormedField C] [IsUltrametricDist C] [AddCommGroup M] [Module C M] {m : ℕ}
 
@@ -70,16 +69,12 @@ variable {C M : Type} [NormedField C] [IsUltrametricDist C] [AddCommGroup M] [Mo
 
 
 
-end Linear
 
-section Tangent
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {X : Scheme.{0}}
   {t : SAB H X} {S T : Type} [CommRing S] [CommRing T] {x : Sp S ⟶ X} {x' : Sp T ⟶ X}
 
-end Tangent
 
-section Free
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {Xo : ∀ l : Level H, Moduli Dw l} {p : ℕ} {W : ValuationSubring ℂ} {Y : LocalSystem Xo p W} {i₀ : Idx H p}
@@ -90,7 +85,6 @@ variable {y}
 
 
 
-end Free
 
 variable {D : D7} {A : Amb D} {N j : ℕ} {S : Sig A N j} {κ : Lv A} {p : ℕ} (ct : At S κ p)
 

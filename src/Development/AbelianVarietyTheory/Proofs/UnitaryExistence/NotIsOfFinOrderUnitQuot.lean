@@ -43,11 +43,9 @@ open scoped nonZeroDivisors Classical TensorProduct
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 
-section Poly
 
 variable (c : Coeff l) {n : ℕ}
 
-end Poly
 
 section Adelic
 
@@ -188,19 +186,15 @@ def Guard (H : Host E) (bad : ℕ) (L : Submodule (𝓞 E) (Fin n → E)) : Prop
 
 end Scalar
 
-section Comparison₂
 
 variable (c : Coeff l) {n : ℕ} {T : Type} [AddCommGroup T] [Module c.F T] [Module (𝓞 c.F) T]
   [IsScalarTower (𝓞 c.F) c.F T]
 
-end Comparison₂
 
-section Twist
 
 variable (c : Coeff l) {n : ℕ} {T : Type} [AddCommGroup T] [Module c.F T] [Module (𝓞 c.F) T]
   [IsScalarTower (𝓞 c.F) c.F T]
 
-end Twist
 
 section Indep
 

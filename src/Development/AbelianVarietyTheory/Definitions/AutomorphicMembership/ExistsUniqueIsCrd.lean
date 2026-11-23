@@ -55,19 +55,15 @@ theorem isFormOf_unique {V : Type} {y : V} {x x' : MtildeV W Ch sel mu P} (h : I
 
 end Forms
 
-section Cols
 
 attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 variable (X : Stages) {px : PreX X.B.toPre} (I : ColIn X.B px) (hX : X.B.fields.Ok)
 
-end Cols
 
-section Core
 
 variable {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T} {Z : w.Lt} {Wt : Set B.places.Pl} {p0 : BaseLevelRowSide (w.D Z)}
 
-end Core
 
 section Standard
 

@@ -640,12 +640,10 @@ theorem chainTh_unf (hc : X.Tau → HCParam R) (cD : X.Tau → ℂ) (Th : A.ThFa
       ∑ q ∈ (derPol cD Q y'.1).support, AddMonoidAlgebra.coeff (derPol cD Q y'.1) q * Formalism.L2.Ker.derivAt0 (Th i c c') q :=
   (A.chainJet_unf σ hc _ i c c' Q y').trans (eval_jetMap cD _ Q y'.1)
 
-section Laws
 
 variable {A} {hc : X.Tau → HCParam R} (h : A.Tied hc) {cD : X.Tau → ℂ} {Th : A.ThFam} (hJ : A.JetTie σ hc (A.jetTh cD Th))
 include h hJ
 
-end Laws
 
 end ChSrc
 

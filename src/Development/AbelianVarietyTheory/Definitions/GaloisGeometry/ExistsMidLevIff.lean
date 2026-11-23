@@ -215,7 +215,6 @@ def TopLev (j : ℕ) (P : rowSG Pr sel mu) (g : Sp X.E (R.N j) ≃ₗ[X.E] Sp X.
 
 end Levels
 
-section Moved
 
 open Formalism.L2.Forms
 
@@ -223,7 +222,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
   {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))}
   {S : StepLevel F E σ J T f bad} (k : basePts S) (κ : S.U)
 
-end Moved
 
 section Charts
 

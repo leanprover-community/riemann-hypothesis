@@ -157,10 +157,8 @@ theorem isLat_of_unimod (Λ : GenLat E n) (h : Λ.Unimod) : IsLat Λ := by
   rw [Pi.smul_apply, Pi.smul_apply, Pi.single_eq_same, Algebra.smul_def, Algebra.smul_def, mul_one]
   congr 1
 
-section Poly
 
 variable {H : Host E} (Dw : Datum H) {l : Level H} (c : Coeff l)
 
-end Poly
 
 end GlobalTheory.GenusLatCompare

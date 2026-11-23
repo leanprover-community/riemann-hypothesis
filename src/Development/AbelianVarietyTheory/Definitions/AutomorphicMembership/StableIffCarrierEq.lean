@@ -289,11 +289,9 @@ end Ids
 
 namespace DatApi
 
-section Err
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : DefBase K} {Df : DefSide Bs}
 
-end Err
 
 theorem swapCast_one_tmul {E : Type} [Field E] [NumberField E] {F1 F2 : Subfield E} (h : F1 = F2) (x : E) :
     swapCast h (1 ⊗ₜ[F1] x) = x ⊗ₜ[F2] 1 := by
@@ -319,12 +317,10 @@ theorem liftForm_smul (A : FamIn D.what₂.LL G Pl0 T D.R.m) (P : Subgroup G) (�
   unfold liftForm
   exact (congrArg _ (Matrix.mulVec_smul _ c x)).trans (map_smul _ _ _)
 
-section Lat
 
 variable {K : Type} [Field K] [NumberField K] {O : Type} [CommRing O] {φ : O →+* ℂ} {σ : K →+* ℂ}
   {W : Type} [AddCommGroup W] [Module ℂ W] {n : ℕ}
 
-end Lat
 
 end DatApi
 

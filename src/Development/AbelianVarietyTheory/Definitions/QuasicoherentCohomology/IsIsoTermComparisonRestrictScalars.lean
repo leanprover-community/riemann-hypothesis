@@ -608,11 +608,9 @@ theorem cubeComplex_exactAt_of_bijective (A : Cube.{v} ι R) (i : ι)
 
 end Complex
 
-section Linear
 
 variable {ι : Type} [LinearOrder ι] {R : Type u} [CommRing R]
 
-end Linear
 
 section ChangeOfRings
 

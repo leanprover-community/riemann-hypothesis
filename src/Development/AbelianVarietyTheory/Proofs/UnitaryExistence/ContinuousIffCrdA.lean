@@ -42,7 +42,6 @@ open NumberField IsDedekindDomain MeasureTheory ReciprocityTheory.ChartRestricti
 open GlobalTheory.IndefiniteRowSideFullHecke
 open scoped TensorProduct Matrix
 
-section Gen
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] [Algebra F E] {r : â„•} (V : ConjugateFieldNorm.HSpace E r)
@@ -50,7 +49,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] [Algebra F E] {r : â
 
 
 
-end Gen
 
 section Rec
 

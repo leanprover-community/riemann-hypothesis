@@ -55,10 +55,8 @@ theorem mem_nonzeroLocus_iff_sval {K : Type} [Fintype K] {φ : K → (Y ⟶ X)} 
 
 end General
 
-section Group
 variable {S : Scheme.{0}} (A : Over S) [GrpObj A]
 
-end Group
 
 end GlobalTheory.AbVarProj
 end

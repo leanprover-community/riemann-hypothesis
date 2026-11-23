@@ -434,7 +434,6 @@ def zeroUnitSpecEquiv (A : CommRingCat.{u}) :
 
 end coh
 
-section Functors
 
 variable (R : Type v) [CommRing R] [Algebra R Γ(X, ⊤)]
 
@@ -450,7 +449,6 @@ variable (R : Type v) [CommRing R] [Algebra R Γ(X, ⊤)]
   map_id U := ModuleCat.hom_ext (sectionsOn.res_refl R F U.unop)
   map_comp i j := ModuleCat.hom_ext (sectionsOn.res_comp_res R F i.unop.le j.unop.le).symm
 
-end Functors
 
 abbrev algebraΓOfHom {R : Type u} [CommRing R] (f : X ⟶ Spec (.of R)) : Algebra R Γ(X, ⊤) :=
   ((Scheme.ΓSpecIso (.of R)).inv ≫ f.appTop).hom.toAlgebra

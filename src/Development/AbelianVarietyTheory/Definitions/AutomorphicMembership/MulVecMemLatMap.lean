@@ -54,14 +54,11 @@ def simpleSum {r : ℕ} (A : Matrix (Fin (r + 1)) (Fin (r + 1)) E) : E := ∑ a 
 
 end Tri
 
-section Frames
 
 variable {σ : E →+* E} {n r : ℕ} {J s : Matrix (Fin n) (Fin n) E} {P P' : Matrix (Fin n) (Fin (r + 1)) E}
   {u v : Matrix (Fin (r + 1)) (Fin (r + 1)) E}
 
-end Frames
 
-section Lattices
 
 variable [NumberField E] {σ : E →+* E} {n r : ℕ} {J s : Matrix (Fin n) (Fin n) E}
   {P P' : Matrix (Fin n) (Fin (r + 1)) E} {u v : Matrix (Fin (r + 1)) (Fin (r + 1)) E}
@@ -71,6 +68,5 @@ variable [NumberField E] {σ : E →+* E} {n r : ℕ} {J s : Matrix (Fin n) (Fin
 
 
 
-end Lattices
 
 end GlobalTheory.IntTerm

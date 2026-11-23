@@ -44,14 +44,12 @@ namespace GlobalTheory.OrdLoc.Dcmp
 
 open ReciprocityTheory.Gal (H0 H1 H2 Z2 B1 B2 ContAction charRep twDual cup20 TDual)
 
-section Abstract
 
 variable {n : ℕ} [NeZero n] {G : Type} [Group G] [TopologicalSpace G] {R : Type} [CommRing R] [Finite R]
   [Algebra (ZMod n) R] [TopologicalSpace R] [DiscreteTopology R]
 
 
 
-end Abstract
 
 open NumberField IsDedekindDomain in
 private lemma span_prime_isMaximal_ratRingOfIntegers {l : ℕ} [hl : Fact l.Prime] :

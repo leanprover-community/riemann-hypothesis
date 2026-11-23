@@ -79,10 +79,8 @@ def altPoly {N : ℕ} (X : GenModel gb N) (k : ℕ) (S : Finset ℕ) (θ : (G.La
   ∑ a ∈ Finset.range (d + 1), Polynomial.C (∑ b ∈ Finset.range (d + 1),
     (-1 : ℤ) ^ b * (Module.finrank ℂ (heckeEig X k S θ a b) : ℤ)) * Polynomial.X ^ a
 
-section Eig
 
 variable {N : ℕ} {X : GenModel gb N} {k : ℕ} {S : Finset ℕ} {θ : (G.La →ₗ[G.O] G.La) → ℕ → ℂ} {a b : ℕ}
 
-end Eig
 
 end GlobalTheory.W2

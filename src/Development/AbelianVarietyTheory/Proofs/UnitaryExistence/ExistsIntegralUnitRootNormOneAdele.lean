@@ -49,10 +49,8 @@ open scoped TensorProduct Topology Matrix
 
 namespace GlobalTheory.AdLat.UnitRoot
 
-section quad
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-end quad
 
 section inst
 variable (F : Type) [Field F] [NumberField F]

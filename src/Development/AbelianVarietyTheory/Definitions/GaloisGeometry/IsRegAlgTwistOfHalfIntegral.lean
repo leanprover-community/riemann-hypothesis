@@ -80,11 +80,9 @@ def HalfIntegral {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTota
 
 namespace Basic
 
-section Sum
 
 variable {Γ K : Type} [Group Γ] [Field K] {n k : ℕ} (r : Γ →* GL (Fin n) K) (ν : Fin k → (Γ →* Kˣ))
 
-end Sum
 
 variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K]
 

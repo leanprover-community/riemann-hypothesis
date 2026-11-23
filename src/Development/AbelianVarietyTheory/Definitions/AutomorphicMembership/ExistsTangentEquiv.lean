@@ -140,7 +140,6 @@ theorem exists_tangent_equiv {C : Scheme.{0}} {t' : SAB H C} {g : C ⟶ X} (m : 
 
 end Sections
 
-section Inhabitants
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
   {Xo : ∀ l : Level H, Moduli Dw l} {p : ℕ} {W : ValuationSubring ℂ} {Y : LocalSystem Xo p W} {i₀ : Idx H p}
@@ -149,7 +148,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.ModuliIn
 
 variable {D : D7} {A : Amb D} {N j : ℕ} {S : Sig A N j} {κ : Lv A}
 
-end Inhabitants
 
 section Steps
 

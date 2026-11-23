@@ -103,7 +103,6 @@ end Generic
 
 end Res
 
-section Record
 
 variable {X : Stages} {px : PreX X.B.toPre} {I : ColIn X.B px} {hX : X.B.fields.Ok} {T : Top.TwDat X.B}
   {Wt Wt' : Set X.B.places.Pl} (z : Dat X I hX T Wt)
@@ -119,7 +118,6 @@ namespace Dat
 
 end Dat
 
-end Record
 
 end GlobalTheory.Mem.R3
 

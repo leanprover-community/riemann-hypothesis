@@ -39,12 +39,10 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Ker.LevEig
 
-section Alg
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r n : ℕ} {X : Data E r} (L : SW.Level X)
 
 
-end Alg
 
 section Hat
 
@@ -97,16 +95,12 @@ theorem actO_sub (h : GA D S) (g : GA D T) (w w' : WO S T) :
 
 end Hat
 
-section Mov
 
 variable {D : D7} {S T : HSp D}
 
-end Mov
 
-section Main
 
 variable {D : D7} {S T : HSp D} (C : Ctx S T) (Lv : SW.Level C.X)
 
-end Main
 
 end GlobalTheory.Ker.LevEig

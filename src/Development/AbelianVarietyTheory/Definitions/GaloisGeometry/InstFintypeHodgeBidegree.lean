@@ -404,13 +404,11 @@ theorem Hyp.one_cup {n : ℕ} (h : 0 + n = n) (x : Hyp F n) : Hyp.cup F h (Hyp.o
 
 end Total
 
-section Pull
 
 variable {R R' : Type} [CommRing R] [CommRing R'] {C : Type u} [Category.{v} C] {C' : Type u'}
   [Category.{v'} C'] {σ : R →+* R'} {F : C ⥤ CommAlgCat.{0} R} {F' : C' ⥤ CommAlgCat.{0} R'}
   (μ : CoefMap σ F F')
 
-end Pull
 
 section Cone
 

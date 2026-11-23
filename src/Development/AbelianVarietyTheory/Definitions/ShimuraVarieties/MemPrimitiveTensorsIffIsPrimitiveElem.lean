@@ -285,7 +285,6 @@ theorem pair_mul (x y : CartierDual R C ⊗[R] CartierDual R C') :
 
 end Algebra
 
-section Bialgebra
 
 variable {R H : Type*} [CommSemiring R] [Semiring H] [Bialgebra R H] [Module.Finite R H]
   [Module.Projective R H]
@@ -301,9 +300,7 @@ instance instBialgebra : Bialgebra R (CartierDual R H) :=
         ((ℛ R a).tmul (ℛ R b)).convMul_apply]
       simp)
 
-end Bialgebra
 
-section Hopf
 
 variable {R H : Type*} [CommSemiring R] [Semiring H] [HopfAlgebra R H] [Module.Finite R H]
   [Module.Projective R H]
@@ -342,7 +339,6 @@ instance instHopfAlgebra : HopfAlgebra R (CartierDual R H) where
     simp only [LinearMap.comp_apply, mul'_apply, h, pair_comul, mul_antipode_lTensor_comul_apply]
     simp [Algebra.algebraMap_eq_smul_one, mul_comm]
 
-end Hopf
 
 section Transpose
 
@@ -611,13 +607,11 @@ theorem baseChange_map {K : Type*} [Semiring K] [Bialgebra R K] [Module.Finite R
 
 end BaseChange
 
-section Product
 
 variable (R H K : Type*) [CommSemiring R] [Semiring H] [Bialgebra R H] [Module.Finite R H]
   [Module.Projective R H] [Semiring K] [Bialgebra R K] [Module.Finite R K] [Module.Projective R K]
 
 
-end Product
 
 section Tensor
 
@@ -721,14 +715,12 @@ def pointsEquiv : (CartierDual R C →ₐ[R] A) ≃ GroupLike A (A ⊗[R] C) whe
 
 end Points
 
-section PointsBialgebra
 
 variable {R H A : Type*} [CommSemiring R] [Semiring H] [Bialgebra R H] [Module.Finite R H]
   [Module.Projective R H] [CommSemiring A] [Algebra R A]
 
 
 
-end PointsBialgebra
 
 end CartierDual
 
@@ -801,7 +793,6 @@ theorem isPrimitiveElem_iff_mul (a : H) : IsPrimitiveElem R a ↔
 
 end Lie
 
-section LieRing
 
 open TrivSqZeroExt
 
@@ -813,15 +804,12 @@ variable {R H A M}
 
 
 
-end LieRing
 
-section MonoidAlgebra
 
 variable (R Γ : Type*) [CommSemiring R]
 
 variable {R Γ}
 
-end MonoidAlgebra
 
 section AddMonoidAlgebra
 

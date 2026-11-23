@@ -65,7 +65,6 @@ theorem schurAll (hH : GlobalTheory.Published.HarishChandraFinite) (hC : GlobalT
     Formalism.IndefR.Links.SchurAll D :=
   fun V _ S θ M J χ μ 𝓕 => (GlobalTheory.MultFinite.hcFinite_and_schurMult hH hC D θ V S M J χ μ 𝓕).2
 
-section IndefiniteRowSideFullHecke
 
 open Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.Lev Formalism.IndefR.AutomorphicEvaluation
   Formalism.L2.Theta Formalism.L2.SG.RowsJoinPinned GlobalTheory.Mem.R3 GlobalTheory.Mem.SRe
@@ -73,22 +72,17 @@ open Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Formalis
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {K : Formalism.MainNotions.G.Consts}
   {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl K Yd cX}
 
-end IndefiniteRowSideFullHecke
 
-section Wit
 
   Formalism.L2.Theta Formalism.L2.SG.RowsJoinPinned GlobalTheory.Mem.SRe
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {p : Prm hL}
 
 
-end Wit
 
-section Constructions₂
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {p : Prm hL}
 
-end Constructions₂
 
 end GlobalTheory.Fc.JoinLinked
 

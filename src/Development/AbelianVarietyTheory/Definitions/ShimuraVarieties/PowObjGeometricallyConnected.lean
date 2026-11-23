@@ -1123,13 +1123,11 @@ instance tensorObj.isAbelianScheme {O : Type} [CommRing O] {G : Over S} [GrpObj 
 
 end Properties
 
-section Ideals
 
 open NumberField nonZeroDivisors
 
 variable (K : Type) {E : Type} [Field K] [Field E] [NumberField K] [NumberField E] [Algebra K E]
 
-end Ideals
 
 section Examples
 

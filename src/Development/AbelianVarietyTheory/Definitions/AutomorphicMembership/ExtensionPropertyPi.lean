@@ -412,26 +412,20 @@ def LocB.pi [Nonempty ι] {L : ι → ModuliIntegralCharts.Loc D r j p} (B : ∀
   jX_int y := (B y.1).jX_int y.2
   jet_fourier y := (B y.1).jet_fourier y.2
 
-section Values
 
 variable (L : ι → ModuliIntegralCharts.Loc D r j p)
 
 
-end Values
 
-section Transfer
 
 variable [Finite ι] [Nonempty ι] {L : ι → ModuliIntegralCharts.Loc D r j p} (G : ∀ v, ModuliIntegralCharts.ExtA D (L v))
 
-end Transfer
 
-section TransferB
 
 variable [Nonempty ι] {L : ι → ModuliIntegralCharts.Loc D r j p} (B : ∀ v, BoundaryLocalData.LocB D (L v)) (α : ℕ → 𝓞 D.host.E)
   (hα : ∀ v, (B v).alp = α)
 
 
-end TransferB
 
 end GlobalTheory.LocM
 

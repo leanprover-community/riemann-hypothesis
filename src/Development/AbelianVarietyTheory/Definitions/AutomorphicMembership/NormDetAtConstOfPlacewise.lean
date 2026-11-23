@@ -66,11 +66,9 @@ def padAt {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {
     normDetT := fun p τ (y : Pt s) => normDetAt s p true τ y (F.sv τ y)
     normDetH := fun p τ (y : Pt s) => normDetAt s p false τ y (F.sv τ y) }
 
-section Unfold
 
 variable {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg} (L : LocSt D N j ng)
   (G : GlobSt fun p => (L.loc p).Mdl) (M : AdmSt D N j jC) (F : FlatSt s) (I : ArIn D.what₂.Tau N (D.R.f * N) s.Comp)
 
-end Unfold
 
 end GlobalTheory.ShFam.Pad

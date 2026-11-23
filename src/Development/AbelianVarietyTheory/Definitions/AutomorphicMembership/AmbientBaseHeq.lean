@@ -63,12 +63,10 @@ def ExportAt (D : D7) (nch : NChoice D) (xd : ThData D) : Prop :=
     ∀ w, D.what₂.muAt w ≠ D.what₂.mu0 →
       BlochKatoReduction.Gen.SetHyp (BlochKatoReduction.bk0 D) (nch.twI w) ∧ TwIn.Ok (⟨twEOf xd, N0, S⟩ : TwIn D) (nch.twI w)
 
-section Lemmas
 
 variable {D : D7}
 
 
-end Lemmas
 
 structure Core (K : Ctx) (X : Stages) (f : Fr X.B.toPre) (T : TwDat X.B) : Type 1 where
   isOver : K.Over X.B.toPre

@@ -101,12 +101,10 @@ end LatticeIndicator
 
 open LatticeIndicator
 
-section Main
 
 variable {O K m n R : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   [Finite (IsLocalRing.ResidueField O)] [Field K] [Algebra O K] [IsFractionRing O K]
   [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] [CommRing R]
 
-end Main
 
 end GlobalTheory

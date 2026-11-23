@@ -118,17 +118,13 @@ abbrev HdR (s : X ⟶ Sp k) (n : ℕ) : Type 1 := Hyp (OPt s) n
 
 abbrev HdR.fil (s : X ⟶ Sp k) (p n : ℕ) : Submodule k (HdR s n) := Hyp.fil (OPt s) p n
 
-section Pull
 
 variable {s : X ⟶ Sp k} {s' : X' ⟶ Sp k'} {s'' : X'' ⟶ Sp k''} {σ : k →+* k'} {τ : k' →+* k''}
 
-end Pull
 
-section Aff
 
 variable (s : X ⟶ Sp k)
 
-end Aff
 
 section Fil
 

@@ -285,14 +285,12 @@ def perAtH (H : Subgroup (FrmG (rowTyG Ch P) (levQX R sel mu))) :
 def perAt : PerIn (chainAt sel mu cst L (topLev Ch sel mu cst P) u rho rho' cD Th) :=
   perAtH W Ch sel mu cst L P u rho rho' cD Th ⊤
 
-section Gen
 
 variable (H : Subgroup (FrmG (rowTyG Ch P) (levQX R sel mu))) (σ : X.K →+* ℂ)
 
 variable {H} {Λ' : LevFam X.E X.K (R.N R.m - 1) Pr.vGs} (hH : IsSubLev (rowTyG Ch P) Λ' (levQX R sel mu) H)
   (hd : Disjoint Pr.vGs (QE sel (mu : Chr X.F X.E X.K)))
 
-end Gen
 
 variable (σ : X.K →+* ℂ)
 
