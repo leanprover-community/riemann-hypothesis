@@ -75,7 +75,6 @@ theorem dual_equivariant {n : ℕ} {Λ D : Type} [CommRing Λ] [Group D]
   change _ = _ * P (ρ g⁻¹ x) y
   rw [← hP, ← Module.End.mul_apply, ← map_mul, mul_inv_cancel, map_one, Module.End.one_apply]
 
-section Transport
 
 variable {R R' : Type} [CommRing R] [CommRing R'] {D : Type} [Group D] [TopologicalSpace D]
   {M : Type} [AddCommGroup M] [Module R M] [TopologicalSpace M] [DiscreteTopology M]
@@ -121,7 +120,6 @@ private theorem exists_H1_transport : ∃ T : H1 ρ ≃+ H1 ρ', ∀ (z : Z1 ρ)
   · obtain rfl : z' = cocycleTransport ρ ρ' e he z := Subtype.ext (funext h)
     rfl
 
-end Transport
 
 private theorem card_H0_transport {R R' : Type} [CommRing R] [CommRing R'] {D D' : Type} [Group D] [Group D']
     {M : Type} [AddCommGroup M] [Module R M] {M' : Type} [AddCommGroup M'] [Module R' M']

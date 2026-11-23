@@ -89,7 +89,6 @@ theorem _root_.GlobalTheory.WachTie.exists_invariant_basis : ∀ {G : Type} [Gro
   have hb : ∀ k, ∃ y : W.N T, (_root_.Formalism.BasicNotions.letπ : _root_.Formalism.BasicNotions.LetA O n) • y =
       (⟨avg (b k), hN _ (b k).2⟩ : W.N T) - b k := by
     intro k
-    open Pointwise in
     obtain ⟨y, hy, hxy⟩ := (Submodule.mem_smul_pointwise_iff_exists _ _ _).1 (hQ _ (b k).2)
     exact ⟨⟨y, hy⟩, Subtype.ext (by simpa using hxy)⟩
   choose y hy using hb

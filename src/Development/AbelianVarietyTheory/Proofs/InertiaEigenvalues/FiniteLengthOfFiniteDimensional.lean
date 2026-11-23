@@ -153,7 +153,6 @@ open Matrix
 
 end Distinct
 
-section BaseChange
 open GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices GlobalTheory.SpanRing
 
 variable {Γ X A B : Type} [Group Γ] [CommRing A] [CommRing B] {n r t : ℕ}
@@ -164,7 +163,6 @@ variable [IsDomain A] [IsDomain B]
 
 variable [IsLocalRing A] [IsLocalRing B]
 
-end BaseChange
 
 end GlobalTheory.ConsCompare
 end

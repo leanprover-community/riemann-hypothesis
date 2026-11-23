@@ -88,13 +88,11 @@ def GoodSplitU {n : ℕ} (U : Submodule ℂ (UA H.E n → ℂ)) : Prop :=
 
 end Statements
 
-section Proof
 
 variable {A : NAut N}
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-end Proof
 
 section Frozen
 
@@ -102,7 +100,6 @@ open Formalism.MainNotions
 
 end Frozen
 
-section LawsCore
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
@@ -112,7 +109,6 @@ variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAl
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
   {ar : Weil h →* (w.adicCompletion E)ˣ} {ha : IsLocalArtin h ar} {rc : IrrGL (k := w.adicCompletion E) → WD h}
 
-end LawsCore
 
 section LawsSpeh
 
@@ -120,7 +116,6 @@ open GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.
 
 end LawsSpeh
 
-section SatCore
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
@@ -129,9 +124,7 @@ variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAl
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
   {ar : Weil h →* (w.adicCompletion E)ˣ} {ha : IsLocalArtin h ar} {rc : IrrGL (k := w.adicCompletion E) → WD h}
 
-end SatCore
 
-section RecordLaws
 
 open GlobalTheory.LocGL GlobalTheory.WeilDeligne Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 
@@ -140,20 +133,17 @@ variable {A : NAut N} (T : GlobalTheory.RowTie.WDTie N A)
 
 open GlobalTheory.RecLaws GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 
-end RecordLaws
 
 section Top
 
 
 end Top
 
-section RecordLawsFam
 
 open GlobalTheory.LocGL GlobalTheory.WeilDeligne Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.SmGL GlobalTheory.LocLanglands GlobalTheory.RecLaws
 
 variable {A : NAut N} (T : GlobalTheory.RowTie.WDTie N A) {rc : GlobalTheory.RecT.RecFam}
 
-end RecordLawsFam
 
 end GlobalTheory.DefiniteBCGood
 
