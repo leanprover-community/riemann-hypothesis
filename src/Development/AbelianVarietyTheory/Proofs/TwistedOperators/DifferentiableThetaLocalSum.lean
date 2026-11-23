@@ -74,7 +74,6 @@ noncomputable section
 
 namespace GlobalTheory.RatMoveFock
 
-section SlopeTestRemainingChoices
 
 open Matrix
 
@@ -216,7 +215,6 @@ private theorem norm_det_padic {N q : ℕ} [Fact q.Prime] (U : Matrix.unitaryGro
   simp only [map_mul, norm_mul, map_one, norm_one] at h
   nlinarith [norm_nonneg (φ U.1.det), norm_nonneg (φ (star U.1).det)]
 
-end SlopeTestRemainingChoices
 
 open Matrix GlobalTheory.AdForm.RatMove
 open scoped ComplexOrder

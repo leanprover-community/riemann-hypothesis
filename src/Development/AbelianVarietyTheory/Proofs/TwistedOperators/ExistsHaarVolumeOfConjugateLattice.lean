@@ -43,7 +43,6 @@ noncomputable section
 
 namespace GlobalTheory.CellIdx
 
-section Abstract
 
 variable {G : Type} [Group G] (M N K : Subgroup G)
 
@@ -51,19 +50,16 @@ variable {M N K}
 
 variable [TopologicalSpace G] [IsTopologicalGroup G]
 
-end Abstract
 
 end GlobalTheory.CellIdx
 
 namespace GlobalTheory.CellIdx
 open GlobalTheory.RootEx GlobalTheory.LocGrp GlobalTheory.LocGrpIff GlobalTheory.RowRep
 
-section Flag
 variable {D : D7} {K : Type} [Field K] (π : AE D →+* K) {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ)
 
 variable {Y₀ : Type} [Fintype Y₀] [DecidableEq Y₀] (b : Matrix (Fin S₀.rank) Y₀ K) (b' : Matrix Y₀ (Fin S₀.rank) K)
 
-end Flag
 
 variable {D : D7}
 
@@ -72,12 +68,10 @@ end GlobalTheory.CellIdx
 namespace GlobalTheory.CellIdx
 open GlobalTheory.RootEx GlobalTheory.LocGrp GlobalTheory.RowRep GlobalTheory.SplitWeil
 
-section Local
 variable {k : Type} [Field k]
 
 variable [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-end Local
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
 

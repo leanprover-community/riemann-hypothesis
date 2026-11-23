@@ -52,11 +52,9 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IwSplitFrame
 
-section Frame
 
 variable {D : D7} {V : HSp D} (Φ : WittFrame V)
 
-end Frame
 
 theorem exists_compl {K : Type} [Field K] [CharZero K] {n r : ℕ} (e e' : Matrix (Fin n) (Fin r) K)
     (p a : Matrix (Fin r) (Fin n) K) (hpe : p * e = 1) (hpe' : p * e' = 0) (hae : a * e = 0) (hae' : a * e' = 1) :

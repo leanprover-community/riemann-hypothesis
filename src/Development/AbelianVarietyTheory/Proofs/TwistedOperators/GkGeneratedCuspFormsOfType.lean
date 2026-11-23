@@ -187,12 +187,10 @@ theorem exists_quotient_near (hθ : IsInfFam θ) {τ : D.what₂.Tau} {X : Matri
   refine key.trans_lt ?_
   nlinarith
 
-section Sig
 
 variable (hPr : GlobalTheory.FunPr.Hypotheses₂) (hθ : IsInfFam θ) {τ τ' : D.what₂.Tau} {S : SPar} {φ ψ : GA D V → ℂ}
 include hPr hθ
 
-end Sig
 
 variable {S : D.what₂.Tau → SPar}
 

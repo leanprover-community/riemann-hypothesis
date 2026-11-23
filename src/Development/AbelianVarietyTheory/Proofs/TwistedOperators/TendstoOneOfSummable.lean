@@ -103,17 +103,13 @@ theorem norm_lt_one_of_bounded {T : Set (HeightOneSpectrum (𝓞 K))} {c : Fam K
 
 end Analysis
 
-section Normalising
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-end Normalising
 
-section Transport
 
 variable {G H V : Type} [Group G] [Group H] [AddCommGroup V] [Module ℂ V] {ρ : Representation ℂ G V}
 
-end Transport
 
 section Local
 

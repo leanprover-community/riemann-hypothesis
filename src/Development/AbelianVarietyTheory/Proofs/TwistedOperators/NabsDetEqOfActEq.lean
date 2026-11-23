@@ -53,7 +53,6 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 
 
 
-section Act
 variable {ι ι' : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
 
 
@@ -61,7 +60,6 @@ variable {ι ι' : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableE
 
 
 
-end Act
 
 section Half
 

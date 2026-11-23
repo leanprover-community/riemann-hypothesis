@@ -59,19 +59,21 @@ Removed ~745 lines of dead `section X ... end X` blocks from 244 files. These we
 
 **Title:** "Remove 1.67M lines of dead code from 148K files (imports, open statements, dead sections)"
 
-**Total commits:** 34  
-**Files changed:** 148,160+  
-**Lines deleted:** **1,659,000+**  
-**Lines added:** ~2,600  
+**Total commits:** 43  
+**Files changed:** 148,150+  
+**Lines deleted:** **1,661,000+**  
+**Lines added:** ~4,500  
 
-### Commit breakdown:
-| # | Category | Key Changes |
-|---|----------|-------------|
-| 1-3 | Dead imports | Removed ALL unused NormNum imports (NatFib, NatLog, NatSqrt, etc.) from 148K files |
-| 4-5 | CI fixes | Fixed label-pr.yml and challenge-files.yml for fork PRs |
-| 6-8 | Proof simplifications | `by exact <term>` → `<term>`, `rw [h]; simp` → `simp [h]`, `exact_mod_cast (by omega)` → `exact_mod_cast (omega)` |
-| 9-12 | Open dedup | Removed ~22K duplicate `open` statements across all directories |
-| 13+ | Dead sections | Removed variable-only section blocks from ~1,500+ files |
+### Major proof simplification categories:
+| Type | Pattern Changed | Occurrences |
+|------|----------------|-------------|
+| dead imports | NormNum unused imports | 1.08M lines |
+| open dedup | Duplicate `open X` statements | ~22K |
+| dead sections | Empty variable-only sections | ~3,500+ |
+| rw;simp | `rw [h]; simp` → `simp [h]` | 1,379 files |
+| by_have | `exact_mod_cast (by have := X; omega : Y)` → `exact_mod_cast (omega : Y)` | 2,000+ |
+| by_omega | `exact_mod_cast (by omega)` → `exact_mod_cast (omega)` | 1,300+ |
+| dead_section_batch | Variable-only sections in batches | ~2,000+ |
 | 1 | Remove 3 unused NormNum imports (NatFib/NatLog/NatSqrt) from 425 files | 425 | ~500 |
 | 2 | Remove NatFib/NatLog/NatSqrt (~120K Dev + other dirs) | ~120K | ~900K |
 | 3 | Strip ALL remaining dead NormNum imports + fix CI workflows | 148K+ | ~180K |
