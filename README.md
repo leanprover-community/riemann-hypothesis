@@ -56,7 +56,7 @@ imports that need rebuilding. This also works when `lake build --no-build` repor
 artifacts elsewhere in the project.
 
 ```bash
-lake build src/Development/EtaleCohomology/CohomologicalPurity/LeafCoeqPf.lean
+lake build src/Development/EtaleCohomology/CohomologicalPurity/LeafHensCutDef.lean
 ```
 
 You can pass several source paths in the same command, including downstream modules you
