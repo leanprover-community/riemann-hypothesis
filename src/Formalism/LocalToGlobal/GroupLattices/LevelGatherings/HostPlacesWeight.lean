@@ -63,7 +63,6 @@ abbrev placesConst (hS : HidaSetting p n' W Qq O Kf ι σ j w) (nV m r : ℕ) (l
 
 end Const
 
-section Host
 
 variable {p : ℕ} {φ : Formalism.HC.Frame} (h : φ.MA) {W Qq O Kf : Type} [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq]
   [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
@@ -72,6 +71,5 @@ variable {p : ℕ} {φ : Formalism.HC.Frame} (h : φ.MA) {W Qq O Kf : Type} [Com
 variable (hS : HidaSetting p (orderOf (zPsi φ h)) W Qq O Kf ι σ j w) (m r : ℕ) (lam : φ.Psi → Fin (m + 1) → ℤ)
   (hlam : ∀ g, Antitone (lam g))
 
-end Host
 
 end Formalism.L2.G

@@ -669,12 +669,10 @@ theorem mem_MtildeV_iff (φ : DecoSet (E := X.E) (n := R.N R.m - 1) (ST := ∅) 
 
 end LevelP
 
-section LevelPMt
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
   (P : LevFam X.E X.K R.r Pr.vGs)
 
-end LevelPMt
 
 end Formalism.L2.Col

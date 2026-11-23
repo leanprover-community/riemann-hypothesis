@@ -68,22 +68,18 @@ theorem CoordAt.of_smul_mem (h : CoordAt P N co) {z : Sp E n} (hz : z ∈ P.asId
 
 end CoordLemmas
 
-section FibLemmas
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
   {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
 
 variable {d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)} {P : ST} {q : 𝓞 E} {co : Sp E n → (Fin n → 𝓞 E ⧸ P.1.asIdeal)}
 
-end FibLemmas
 
-section FibModel
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
   {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
   {d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)} {P : ST} {q : 𝓞 E} {co : Sp E n → (Fin n → 𝓞 E ⧸ P.1.asIdeal)}
 
-end FibModel
 
 section Exists
 
@@ -181,14 +177,11 @@ theorem exists_coordAt (P : HeightOneSpectrum (𝓞 E)) {N : Submodule (𝓞 E) 
 
 end Exists
 
-section Apply
 
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
   (C : CoefPk X n (DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG))) (Λ : LevFam X.E X.K n SG)
 
-end Apply
 
-section Dict
 
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
   {C : CoefPk X n (DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG))} {Λ : LevFam X.E X.K n SG}
@@ -200,9 +193,7 @@ open Classical
 variable {P : ST} {q : 𝓞 X.E} {d : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)} {co : Sp X.E n → (Fin n → 𝓞 X.E ⧸ P.1.asIdeal)}
   {R : Type} [CommRing R] {σ : X.K →+* R}
 
-end Dict
 
-section T1
 
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
   (C : CoefPk X n (DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG))) (Λ : LevFam X.E X.K n SG)
@@ -213,16 +204,13 @@ open Classical
 
 variable {P : ST} {q : 𝓞 X.E}
 
-section Lin
 
 variable {C Λ} {d : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)} {co : Sp X.E n → (Fin n → 𝓞 X.E ⧸ P.1.asIdeal)}
   {R : Type} [CommRing R] {σ : X.K →+* R}
 
-end Lin
 
 end T1
 
-section T7
 
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
   (C : CoefPk X n (DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG))) (Λ : LevFam X.E X.K n SG)
@@ -233,51 +221,35 @@ open Classical
 
 variable {P : ST} {q : 𝓞 X.E}
 
-section DictC
 
 variable {C Λ} {d : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)} {co : Sp X.E n → (Fin n → 𝓞 X.E ⧸ P.1.asIdeal)} {σ : X.K →+* ℂ}
 
-end DictC
 
 end T7
 
-section ColsT1
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
 variable (Ps : CharT X Pr)
 
-end ColsT1
 
-section AdjA
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-end AdjA
 
-section AdjB
 variable {X : Fields}
 
-end AdjB
 
-section AdjC
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m) (Ps : CharT X Pr)
 
-end AdjC
 
-section AdjD
 variable {K : Type} [Field K] [NumberField K] [StarRing K] (S : GSD K)
 
-end AdjD
-
-section AdjF
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m) (Ps : CharT X Pr)
-
-end AdjF
-
-section RamStable
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m) (Ps : CharT X Pr)
 
-end RamStable
+
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m) (Ps : CharT X Pr)
+
 
 end Formalism.L2.Col

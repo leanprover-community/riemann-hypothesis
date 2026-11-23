@@ -102,10 +102,10 @@ abbrev lamQ (Z : M.Mat (m + 1)) : M.Cok Z →ₗ[M.R] Qt M.R := M.lam Z
 
 theorem linQ_mk (Y : M.Mat m) (row : Fin m → M.R) (x : Fin m → M.R) :
     alQ M Y row (Submodule.Quotient.mk x) =
-      (Rs M.R).mkQ (toE M row ⬝ᵥ ((Y.Z.map M.R.subtype)⁻¹ *ᵥ toE M x)) := by rfl
+      (Rs M.R).mkQ (toE M row ⬝ᵥ ((Y.Z.map M.R.subtype)⁻¹ *ᵥ toE M x)) := rfl
 
 theorem lam_mk (Z : M.Mat (m + 1)) (v : Fin (m + 1) → M.R) :
-    lamQ M Z (Submodule.Quotient.mk v) = (Rs M.R).mkQ (((Z.Z.map M.R.subtype)⁻¹ *ᵥ toE M v) (Fin.last m)) := by rfl
+    lamQ M Z (Submodule.Quotient.mk v) = (Rs M.R).mkQ (((Z.Z.map M.R.subtype)⁻¹ *ᵥ toE M v) (Fin.last m)) := rfl
 
 variable (Y : M.Mat m) (Z : M.Mat (m + 1)) (be al : Fin m → M.R)
   (hY : ∀ a b : Fin m, (Y.Z a b : E) = Z.Z.map M.R.subtype a.castSucc b.castSucc)

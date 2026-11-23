@@ -133,7 +133,6 @@ end Formalism.FourierDecayAlt.P.BesselScaling
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 theorem lemma_b_from_xi_of_parts : Formalism.FourierDecayAlt.B2.LemmaBFromXiFromParts := by
   intro hC hJ hD hI hB hX

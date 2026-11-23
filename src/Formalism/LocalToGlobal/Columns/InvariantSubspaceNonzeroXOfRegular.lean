@@ -53,65 +53,49 @@ namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.DivisionValues
 
-section Idem
 
 variable {K : Type} [Field K] {A : Type} [Group A] {M : Type} [Group M] [Fintype M]
 
 
-end Idem
 
-section Gen
 
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
   (C : CoefPk X n (DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG))) (Λ : LevFam X.E X.K n SG) {A : Type} [Group A] [Fintype A]
   (ι : A →* GLG (E := X.E) (n := n) (SG := SG)) (hι : ∀ a w, (Λ w).NormBy (ι a w))
   {M : Type} [Group M] [Fintype M] (j : M →* A) (ε : M →* X.Kˣ)
 
-end Gen
 
-section StabComb
 
 variable (κ : Type) [CommRing κ] {n : ℕ}
 
 variable {κ}
 
-end StabComb
 
-section Stab
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-end Stab
 
-section StabPt
 
 variable {X : Fields} {n : ℕ} [NeZero n] {SG : Finset (HeightOneSpectrum (𝓞 X.E))}
 
 
-end StabPt
 
-section Scal
 
 variable {E : Type} [Field E] [NumberField E]
 
 
 
-end Scal
 
-section Rows
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
 
 
-end Rows
 
-section ScalAct
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-end ScalAct
 
 section RhoScal
 
@@ -148,27 +132,22 @@ theorem tensorWeights_scalar_action (lam : ι → DomWeight n) (t : ι → Kˣ) 
 
 end RhoScal
 
-section RhoScal2
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {K : Type} [Field K] {ι : Type} [Fintype ι] {n : ℕ} [NeZero n]
 
 
-end RhoScal2
 
-section RowsScal
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
 
 
-end RowsScal
 
 section LamKEv
 
 end LamKEv
 
-section RowsMain
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
@@ -176,9 +155,7 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
 
 
 
-end RowsMain
 
-section RowsMainV
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
@@ -186,28 +163,21 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
 
 
 
-end RowsMainV
 
-section Card
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-end Card
 
-section RowsCard
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
-
-end RowsCard
-
-section NotFaithful
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
 
 
-end NotFaithful
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
+  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
+
+
+
 
 end Formalism.L2.Col

@@ -178,7 +178,6 @@ end Formalism.FourierDecayAlt.P.TLB
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
 noncomputable section
 

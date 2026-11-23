@@ -213,11 +213,9 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {P : SlopeBoundParame
 
 end SlopeBoundLiftData
 
-section Leaves
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {P : SlopeBoundParameters}
 
-end Leaves
 
 
 

@@ -151,7 +151,6 @@ def secSub (T : Top D) (j : ℕ) : Subring (AddMonoidAlgebra (T.R j) (WTZ D.host
   neg_mem' {a} ha G := by
     rw [AddMonoidAlgebra.coeff_neg, Finsupp.neg_apply]; exact neg_mem (ha G)
 
-section Kappa
 variable (h : LawsP T) {j : ℕ} (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c)
   {κ : Comp (T.Q.Xo j) T.Q.c → (T.U j T.σ₀).Comp} (hκ : KappaTie j hG κ) (Z : Comp (T.Q.Xo j) T.Q.c)
 
@@ -159,15 +158,12 @@ variable (h : LawsP T) {j : ℕ} (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c)
 variable {x₀ : Frame ((T.U j T.σ₀).X (κ Z)).Ψ D.R.r} (hx0 : x₀ ∈ ((T.U j T.σ₀).X (κ Z)).dom)
 
 
-end Kappa
 
-section Rd
 variable (h : LawsP T) {j : ℕ} (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c)
   {κ : Comp (T.Q.Xo j) T.Q.c → (T.U j T.σ₀).Comp} (hκ : KappaTie j hG κ) (Z : Comp (T.Q.Xo j) T.Q.c)
   {x₀ : Frame ((T.U j T.σ₀).X (κ Z)).Ψ D.R.r} (hx0 : x₀ ∈ ((T.U j T.σ₀).X (κ Z)).dom)
 
 
 
-end Rd
 
 end Formalism.L2.Pj

@@ -42,11 +42,9 @@ namespace Formalism.L2.Th1.E
 
 namespace Shape
 
-section Alg
 
 variable {R : Type} [CommRing R] (W : WeierstrassCurve R) (xP yP : R)
 
-end Alg
 
 section Pts
 
@@ -57,11 +55,9 @@ theorem px_neg (Q : W.toAffine.Point) : px W (-Q) = px W Q := by
 
 end Pts
 
-section Nrm
 
 variable {K : Type} [NormedField K] [IsUltrametricDist K]
 
-end Nrm
 
 end Shape
 

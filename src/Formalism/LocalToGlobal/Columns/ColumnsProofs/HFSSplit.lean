@@ -195,7 +195,6 @@ end GSDBC
 
 end Lifts
 
-section HeckeLift
 
 variable {K L : Type} [Field K] [NumberField K] [StarRing K] [Field L] [NumberField L] [StarRing L] {ι : K →+* L}
   {S : GSD K} {S' : GSD L} (b : GSDBC ι S S')
@@ -206,6 +205,5 @@ namespace GSDBC
 
 end GSDBC
 
-end HeckeLift
 
 end Formalism.L2.Col

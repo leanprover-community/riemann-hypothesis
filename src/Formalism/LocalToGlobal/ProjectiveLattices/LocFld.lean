@@ -241,13 +241,11 @@ theorem locFld : LocFld := by
   push_cast
   simp
 
-section Cor
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
 
-end Cor
 
 end Formalism.L2.Pj

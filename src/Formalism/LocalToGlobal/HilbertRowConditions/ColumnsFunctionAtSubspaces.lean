@@ -38,7 +38,6 @@ namespace Formalism.L2.Rows
 
 open Formalism.L2.DIV Formalism.L2.Indef
 
-section Joint
 
 variable (D : D7) {Gp : Type} [Group Gp] [Fintype Gp] {Pl0 I0 Ty T : Type}
   (A3 : FamIn3 D.what₂.LL Gp Pl0 I0 Ty T D.R.m)
@@ -59,7 +58,6 @@ structure BaseDivisionAmbientCompatibilityFamily (Y : DivX D) (p0 : BaseLevelRow
 
   cen0 : CenTie D A3.A p0.s P0 ψ0 I.eG I.tup I.jA0
 
-end Joint
 
 section Bundle
 

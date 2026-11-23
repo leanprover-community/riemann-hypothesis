@@ -123,11 +123,9 @@ def LatPin {Cl : Type} (Lh : Cl → Submodule (𝓞 E) (Fin n → E)) (La : Cl �
 
 end Io
 
-section Ep
 
 variable {n : ℕ} {Cl : Type}
 
-end Ep
 
 section Row
 

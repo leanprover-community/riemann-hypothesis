@@ -1233,13 +1233,11 @@ theorem automorphism_induces_lattice_map (u : D.what₂.Word) (F0 : FlagG (VS D)
 
 end D7
 
-section D7
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-end D7
 
 section Int
 
@@ -1355,12 +1353,10 @@ theorem eq_of_locP {A B : Submodule (𝓞 E) S.V}
 
 end Int
 
-section D7
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable (D : D7)
 
-end D7
 
 end Formalism.L2.SG.Pf

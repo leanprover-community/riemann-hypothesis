@@ -73,17 +73,13 @@ def FibTri {g : ℕ} (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ))
 
 end Fam
 
-section Genus
 
 variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l}
   {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ}
 
-end Genus
 
-section Rows
 
 variable {D : D7}
 
-end Rows
 
 end Formalism.L2.Pj

@@ -68,12 +68,10 @@ theorem weylDim_of_weylProd (h : PI.WeylProd) {n : ℕ} (lam : DomWeight n) : We
 
 theorem weylDim_holds {n : ℕ} (lam : DomWeight n) : WeylDim lam := weylDim_of_weylProd weyl_product_formula lam
 
-section Inst
 
 open Finset Formalism.LogVandermondeBounds.StandardLattice
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-end Inst
 
 end Formalism.L2.Col

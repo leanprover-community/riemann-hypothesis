@@ -112,7 +112,6 @@ end FlagSpanVanishing
 
 namespace FlagSpanVanishing
 
-open C2x5 C2x7
 
 variable {k r : ℕ}
 

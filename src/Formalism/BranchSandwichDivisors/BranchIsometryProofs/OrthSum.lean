@@ -268,7 +268,6 @@ theorem muMax_mono (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
 
 end OrthogonalSumAlt
 
-open OrthogonalSumAlt in
 theorem power_slope_mu : PowMu := by
   intro K V ι _ _ _ _ _ _ _ _ _ _ b X hX A n hA hA0 hn bn Xn An
   have hXn : ∀ v, IsUnit (Xn v).det := fun v =>
@@ -335,7 +334,6 @@ theorem power_slope_mu : PowMu := by
     unfold Formalism.HN.muMaxDef
     linarith
 
-open OrthogonalSumAlt in
 theorem orthSandwich_of (hS : ScaleSandwich) : OrthSandwich := by
   intro K V ι _ _ _ _ _ _ _ _ _ _ b X hX S _ A A0 G hA0 hG horth hle hGA
   have hnoeth : IsNoetherian (𝓞 K) A0 := isNoetherian_of_fg_of_noetherian A0 hA0

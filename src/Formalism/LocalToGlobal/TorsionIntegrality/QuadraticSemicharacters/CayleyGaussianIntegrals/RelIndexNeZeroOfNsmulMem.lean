@@ -39,11 +39,9 @@ open scoped BigOperators ComplexConjugate
 
 namespace Formalism.L2.Th1.H
 
-section Index
 
 variable {V : Type*} [AddCommGroup V]
 
-end Index
 
 section Lattice
 

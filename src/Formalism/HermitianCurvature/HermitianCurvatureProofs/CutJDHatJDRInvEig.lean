@@ -133,7 +133,6 @@ end Formalism.FourierDecayAlt.P.CutMP.InvEig
 
 namespace Formalism.FourierDecayAlt.P.CutMP.InvEig
 
-open Matrix
 
 noncomputable section
 
@@ -326,7 +325,6 @@ end Formalism.FourierDecayAlt.P.CutMP
 
 namespace Formalism.FourierDecayAlt.P.CutMP.InvEig
 
-open Matrix
 
 noncomputable section
 

@@ -228,11 +228,9 @@ variable {L} {op : I → End K V}
 
 end BaseChange
 
-section Basis
 
 variable {K V I J : Type} [Field K] [AddCommGroup V] [Module K V] {op : I → End K V}
 
-end Basis
 
 section Poly
 
@@ -829,14 +827,12 @@ def HeckeFieldsIn (c : DecoPts S E n ST SG) (S0 : Set (HeightOneSpectrum (𝓞 E
 
 end Fam
 
-section Triv
 
 
 variable (K : Type) [Field K] [NumberField K] [StarRing K]
 variable (E : Type) [Field E] [NumberField E] [StarRing E] (n : ℕ)
   (ST SG : Finset (HeightOneSpectrum (𝓞 E)))
 
-end Triv
 
 section NonZero
 

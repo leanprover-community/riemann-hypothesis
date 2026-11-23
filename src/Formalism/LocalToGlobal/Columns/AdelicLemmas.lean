@@ -1176,12 +1176,10 @@ theorem decorated_point_equivariant (H : Subgroup (GLG (E := E) (n := n) (SG := 
 
 end Final
 
-section Inst
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 variable (hc : Formalism.BasicNotions.CMData F E) (n : ℕ) [NeZero n] (ST SG : Finset (Pl E)) (H : Subgroup (GLG (E := E) (n := n) (SG := SG)))
 
-end Inst
 
 section LinAlg
 

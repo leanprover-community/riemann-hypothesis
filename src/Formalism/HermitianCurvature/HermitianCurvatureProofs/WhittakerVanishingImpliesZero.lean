@@ -401,7 +401,6 @@ end Formalism.FourierDecayAlt.P.WhittakerVanishingImpliesZero
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt.G Formalism.FourierDecayAlt.P.G6 Formalism.FourierDecayAlt.P.WhittakerVanishingImpliesZero
 
 theorem product_lower_bound : Formalism.FourierDecayAlt.G.ProdLower := by
   intro m Kc hK h0 R hR

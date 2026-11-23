@@ -53,16 +53,12 @@ def extQ (lam : DomWeight n) : ℚ := Formalism.GradedWeylDivisibility.fockQ (ex
 
 end Std
 
-section Std2
 
 variable (K : Type) [Field K] [NumberField K] [StarRing K] {n : ℕ} (lam : DomWeight n)
 
-end Std2
 
-section Deg
 
 variable (K : Type) [Field K] [NumberField K] [StarRing K] {n : ℕ} (lam : DomWeight n)
 
-end Deg
 
 end Formalism.L2.Col

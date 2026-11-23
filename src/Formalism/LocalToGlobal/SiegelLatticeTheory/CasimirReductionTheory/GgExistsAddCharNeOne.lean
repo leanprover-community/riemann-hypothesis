@@ -113,11 +113,9 @@ def GFf (I : Formalism.MainNotions.S.AutInst) : Set I.Gf :=
   {x | ∃ γ : GL (Fin I.n) I.E, γ ∈ Formalism.UG.UJ (starRingEnd I.E) I.J ∧
     I.fmat x = (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (Formalism.UG.inclE (F := I.F) (Formalism.MainNotions.S.Af I.F))}
 
-section Herm
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E]
 
-end Herm
 
 
 end GlobalHyps

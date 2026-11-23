@@ -157,12 +157,10 @@ def thetaP (P : LevFam X.E X.K R.r Pr.vGs) (th : ThM W Ch sel mu P) (h : (mtGSD 
 
 end Theta
 
-section Z
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
-end Z
 
 section NbFun
 
@@ -180,11 +178,9 @@ def nbFun (P : Ideal (𝓞 E)) (i : ℕ) : (DecoSet (E := E) (n := n) (ST := ST)
 
 end NbFun
 
-section Rel
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
-end Rel
 
 end Formalism.L2.Col

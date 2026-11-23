@@ -73,11 +73,9 @@ theorem herm_smul_right (G : Matrix (Fin r) (Fin r) E) (c : 𝓞 E) (u w : Fin r
 
 end Herm
 
-section Gam
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} {Xo : Moduli Dw l} {r : ℕ}
 
-end Gam
 
 end Formalism.L2.Pj

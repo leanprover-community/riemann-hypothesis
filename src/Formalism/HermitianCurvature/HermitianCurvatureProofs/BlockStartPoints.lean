@@ -204,7 +204,6 @@ end Formalism.FourierDecayAlt.P.BlockStartPoints
 namespace Formalism.FourierDecayAlt.P
 
 open Finset Formalism.FourierDecayAlt.TB Formalism.FourierDecayAlt.TB.Data Formalism.FourierDecayAlt.P.BlockStartPoints
-open Classical
 
 theorem schurRecursion_true : Formalism.FourierDecayAlt.TB.SchurStep := by
   intro E W _ D ep hG hK hW hA2 hEL hLS T ε hε i s hs hsi hi w hw hcnt M hM

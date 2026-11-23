@@ -42,13 +42,11 @@ namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Host Formalism.FrobeniusOrbits
 
-section SplitGen
 
 open Ideal
 
 variable {E L : Type} [Field E] [NumberField E] [Field L] [NumberField L] [Algebra E L]
 
-end SplitGen
 
 theorem cyclotomic_mono_of_dvd {M N : ℕ} (h : M ∣ N) : cycQ M ≤ cycQ N := by
   unfold cycQ
@@ -58,11 +56,9 @@ theorem cyclotomic_mono_of_dvd {M N : ℕ} (h : M ∣ N) : cycQ M ≤ cycQ N := 
   show z ^ (M * c) = 1
   rw [pow_mul, show z ^ M = 1 from hz, one_pow]
 
-section Split
 
 variable {X : Fields}
 
-end Split
 
 section HostZ
 
@@ -104,20 +100,16 @@ def nd2T : ℕ := 56194698826333161291662198507648755438473557111144279252246328
 
 def columnDegreeBound : ℕ := 175899382716746995995794692370095808443505986460327359316203003947391329197558870718244898147225575657278023097973275990081581282841096000378419862656504066221696375796925055794734493697
 
-section CharsGen
 
 variable {X : Fields}
 
 variable {Pr : Primes X}
 
-end CharsGen
 
-section Hecke
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks}
 
 
-end Hecke
 
 def nd2N : ℕ := 204572886511813553061037407562329625995783655411690436542768105489192394035355663504895707466548678171695054788500010062488923813826764064938234928730947196464262768270018653110228498338042697795156970159903677022807129186961004810571117527615229822789011462114279289419559348825463524785325415815445950503458435921145728668675289394505621558664460319354973532563002004291054537384997546176343222140701606270894674242774158138205418672187221164903157007908864
 
@@ -146,20 +138,16 @@ def toyPrimes : Primes (nd2X LL hLL) where
 
 end Inst
 
-section Gen
 
 open ComplexOrder
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-end Gen
 
 
-section Inst
 
 variable (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL] (hLL : cycQ nd2N ≤ LL)
 
 
-end Inst
 
 end Formalism.L2.Col

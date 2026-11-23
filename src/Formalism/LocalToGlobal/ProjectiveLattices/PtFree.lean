@@ -43,7 +43,6 @@ namespace Formalism.L2.PjFree
 
 open Formalism.L2.Pj NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-section One
 
 variable {K : Type} [Field K] [NumberField K] {R : Type} [CommRing R] [Algebra K R]
 
@@ -54,7 +53,6 @@ structure IsVal (la : HeightOneSpectrum (𝓞 K)) (v : R → EReal) : Prop where
   smul : ∀ (a : K) r, a ≠ 0 → v (a • r) = (((vLa la a : ℤ) : ℝ) : EReal) + v r
   mul : ∀ r s, v (r * s) = v r + v s
 
-end One
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} (Xo : Moduli Dw l) (c : Coeff l)

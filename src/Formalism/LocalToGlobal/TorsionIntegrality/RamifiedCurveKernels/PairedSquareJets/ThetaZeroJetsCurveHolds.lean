@@ -49,17 +49,13 @@ open Formalism.DworkPowerSeriesWeights (JetsIntegral jetPair)
 
 namespace GramFrameCompositionTwoFacts
 
-section Even
 
 variable {K : Type} [Field K] [CharZero K]
 
-end Even
 
-section abelian₂
 
 variable {K : Type} [Field K] [CharZero K]
 
-end abelian₂
 
 section Hom
 

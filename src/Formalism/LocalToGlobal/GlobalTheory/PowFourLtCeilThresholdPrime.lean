@@ -1566,14 +1566,12 @@ open NumberField Formalism.FrobeniusOrbits Formalism.BasicNotions Formalism.Main
 
 variable {D : D7} {L : SizeData₂ D}
 
-section marg
 
 variable {α β : Type} [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β]
 
 
 
 
-end marg
 
 end Formalism.L2.GlobalTheoryTheory.Loss.Marg
 
@@ -1585,17 +1583,13 @@ namespace Formalism.L2.GlobalTheoryTheory.Loss
 
 open Formalism.BasicNotions Formalism.MainNotions
 
-section AtRecordMean
 
 variable {D : D7} {L : SizeData₂ D}
 
-end AtRecordMean
 
-section FamilyMean
 
 variable {eps : ℝ} {Fm : FamP eps} {x : ℝ} {i0 : Fm.Ix x}
 
-end FamilyMean
 
 end Formalism.L2.GlobalTheoryTheory.Loss
 
@@ -1654,13 +1648,11 @@ theorem ptH {x : ℝ} (hx : Fm.x1 < x) (h3 : 3 ≤ x) (i : Fm.Ix x) : PtH (Fm.Gx
 
 end Family
 
-section Conclusion5₂
 
 open Formalism.D5 Formalism.FrobeniusOrbits Formalism.LFunctionChainParameters.LHost Formalism.LFunctionChainParameters.characterSumData
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end Conclusion5₂
 
 end Formalism.L2.GlobalTheoryTheory.Loss
 

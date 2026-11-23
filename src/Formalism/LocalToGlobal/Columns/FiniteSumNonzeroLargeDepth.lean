@@ -1324,12 +1324,10 @@ def NuC {u : Pr.Word} (Sv : Serv W Ch u) : Submodule (𝓞 X.K) (MramV W Ch u) :
 
 end Nu
 
-section NuPrime
 
 variable {K : Type} [Field K] [NumberField K]
 
 
-end NuPrime
 
 section ColOp
 
@@ -1373,13 +1371,11 @@ def colC {P : LevFam X.E X.K R.r Pr.vGs} {u : Pr.Word} {m2 : ℕ} {b : L.β (m2 
 
 end ColOp
 
-section Names
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Ch : Chars X Pr R.m}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}
   {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)} {L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))}
 
-end Names
 
 namespace Br
 

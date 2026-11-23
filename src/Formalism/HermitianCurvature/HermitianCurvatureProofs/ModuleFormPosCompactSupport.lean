@@ -53,8 +53,6 @@ end Formalism.FourierDecayAlt.P.ModuleFormPositivity
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5 Formalism.FourierDecayAlt.Q Formalism.QuantumDeterminants
-open scoped ComplexOrder
 
 theorem module_form_pos_compact_support : ModuleFormPositivity.FormPosCpt := by
   intro hP Wp Wq _ _ _ _ _ _ P p j hj w hc x hx

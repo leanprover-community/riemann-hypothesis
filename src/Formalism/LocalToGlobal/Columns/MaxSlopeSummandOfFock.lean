@@ -83,10 +83,8 @@ theorem mean_over_places_comap (φ : E →+* K) (G : InfinitePlace E → ℝ) :
 
 end Places
 
-section Cols
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-end Cols
 
 end Formalism.L2.Col

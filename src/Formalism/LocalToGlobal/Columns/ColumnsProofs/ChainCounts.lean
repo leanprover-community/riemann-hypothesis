@@ -324,13 +324,10 @@ theorem mem_JGsym_of_cong (P : HeightOneSpectrum (𝓞 E)) {n c : ℕ} {κ : Sp 
 
 end AtG
 
-section Yb
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-end Yb
 
-section Chain
 
 open Classical
 
@@ -338,7 +335,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
 
-end Chain
 
 section Unram
 
@@ -355,7 +351,6 @@ theorem mem_of_mem_divs {A : Type} [CommRing A] [IsDedekindDomain A] {a : A} {P 
 
 end Unram
 
-section Final
 
 open Classical
 
@@ -363,7 +358,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
 
-end Final
 
 end ChainCounts
 

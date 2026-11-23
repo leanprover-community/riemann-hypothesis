@@ -45,19 +45,15 @@ namespace Formalism.L2.Indef.Examples₂
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling
 
-section Std
 
 variable (K : Type) [Field K] [NumberField K] [StarRing K]
 
 variable {K}
 
-end Std
 
-section Amb
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
-end Amb
 
 namespace one
 
@@ -80,12 +76,10 @@ variable {K v0 S a kap l}
 
 end two
 
-section Pair
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
 
-end Pair
 
 section Concrete
 

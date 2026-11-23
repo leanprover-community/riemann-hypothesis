@@ -197,7 +197,6 @@ end Small
 section Text
 
 
-open scoped Classical in
 def LatticeFacts (E : Type) [Field E] [NumberField E] [IsCMField E] (g : ℕ) (ν : ℤ) (s : ℕ) :
     Prop :=
   zsub E (idl E g 2 ν) ≤ perLat E g ν s ∧

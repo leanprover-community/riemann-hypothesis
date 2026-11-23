@@ -52,26 +52,20 @@ theorem first_sum_scalar_mul {k K : Type} [CommRing k] [Field K] {n' c' n c : �
 
 end Pts
 
-section Res
 
 variable {k : Type} [CommRing k]
 
-end Res
 
-section Assemble
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {Ch : Chars X Pr R.m}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}
   {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)}
 
-end Assemble
 
-section Deep
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {Ch : Chars X Pr R.m}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}
   {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)}
 
-end Deep
 
 end Formalism.L2.Col

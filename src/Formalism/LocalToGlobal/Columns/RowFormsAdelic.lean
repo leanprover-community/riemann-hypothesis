@@ -46,7 +46,6 @@ def rf_onDeco {X : Fields} {n : ℕ} [NeZero n] {ST SG : Finset (HeightOneSpectr
   eD := Equiv.refl _
   smul := fun _ _ => rfl
 
-section Rows
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
@@ -58,6 +57,5 @@ instance rf_neZero_nV (R : Ranks) : NeZero R.nV := ⟨(nV_pos R).ne'⟩
 
 
 
-end Rows
 
 end Formalism.L2.Col

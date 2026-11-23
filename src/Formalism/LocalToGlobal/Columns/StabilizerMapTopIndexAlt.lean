@@ -40,7 +40,6 @@ namespace Formalism.L2.Col.Sc.Fr
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Ker Formalism.L2.Col Formalism.L2.Col.Sc
 
-section Top
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R)
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}
@@ -62,6 +61,5 @@ variable {W cst L₀ u m2 Λt Θt hSG ΛM hm F}
 
 variable (sec : SecY W sel mu cst (L₀.withTop m2 Λt Θt) u m2)
 
-end Top
 
 end Formalism.L2.Col.Sc.Fr

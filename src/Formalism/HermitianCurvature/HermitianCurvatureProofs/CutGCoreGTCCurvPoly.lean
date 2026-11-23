@@ -216,7 +216,6 @@ end Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.CurvPoly
 
 namespace Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.CurvPoly
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 noncomputable section
 

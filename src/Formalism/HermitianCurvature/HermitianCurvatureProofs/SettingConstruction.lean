@@ -352,7 +352,6 @@ end Formalism.FourierDecayAlt.P.SettingConstruction
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 theorem base_vector_exists : Formalism.FourierDecayAlt.B2.ZExists := by
   intro k r

@@ -147,7 +147,6 @@ end HermitianXiVector
 
 namespace HermitianXiVector
 
-open C2x5 FlagSpanVanishing
 
 variable {k r : ℕ}
 

@@ -85,11 +85,9 @@ theorem logPair {l : ℕ} (hl : 2 ≤ l) : C.IsLogPair (lgF K l) (expF K l) := b
 
 end Alg
 
-section Cont
 
 variable {K : Type} [Field K]
 
-end Cont
 
 section Normed
 

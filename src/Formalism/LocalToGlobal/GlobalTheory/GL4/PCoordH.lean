@@ -42,19 +42,15 @@ open scoped ComplexOrder
 
 namespace Formalism.L2.GlobalTheoryTheory.TraceIntegrality.Cc
 
-section Norm
 
 variable {E : Type} [Field E] [NumberField E]
 
-end Norm
 
-section Had
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
 open Formalism.BasicNotions
 
-end Had
 
 section Coord
 

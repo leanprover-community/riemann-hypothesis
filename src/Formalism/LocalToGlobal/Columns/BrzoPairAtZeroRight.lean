@@ -160,25 +160,19 @@ theorem hlat_orth_sum [Fintype γ] [Nonempty γ] (hA : FrameOK A) (hfg : ∀ c, 
 
 end Orth
 
-section GSDOrth
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] (S : GSD K) (h : S.Ok) (hf : S.Free)
 
 
 
 
-end GSDOrth
 
-section GSDOrth2
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {S : GSD K}
 
-end GSDOrth2
 
-section Cols
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-end Cols
 
 end Formalism.L2.Col

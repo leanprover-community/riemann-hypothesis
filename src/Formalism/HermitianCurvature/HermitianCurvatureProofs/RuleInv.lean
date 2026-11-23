@@ -164,7 +164,6 @@ theorem _root_.Formalism.FourierDecayAlt.R.LevelData.inv_hR_bar (Y : ℂ) :
 
 theorem _root_.Formalism.FourierDecayAlt.R.LevelData.inv_hR_hol (Y : ℂ) :
     L.G * L.Di * L.Di * L.Ahat Y = L.Drb * L.GG * (L.ζi * L.ζi * L.Ar Y) := by
-  open scoped IsMulCommutative in
   letI : IsMulCommutative (Algebra.adjoin ℂ L.fns) := Algebra.isMulCommutative_adjoin ℂ (by
     intro x hx y hy _
     exact L.fns_comm x hx y hy)

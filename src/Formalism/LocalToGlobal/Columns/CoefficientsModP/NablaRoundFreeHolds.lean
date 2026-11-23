@@ -48,11 +48,9 @@ namespace Formalism.L2.DIV
 
 open Formalism.BasicNotions
 
-section Dual
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
-end Dual
 
 section Tensor
 

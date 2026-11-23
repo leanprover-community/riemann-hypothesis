@@ -223,7 +223,6 @@ theorem levelv_denom_family {ι : Type*} [Fintype ι] (a : ι → E ⊗[F] v.adi
 end Local
 
 
-open IsDedekindDomain NumberField
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (v : HeightOneSpectrum (𝓞 F)) {n : Type} [Fintype n] [DecidableEq n]

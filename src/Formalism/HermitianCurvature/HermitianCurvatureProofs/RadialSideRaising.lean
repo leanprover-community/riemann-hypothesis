@@ -253,7 +253,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.PBN
 
 theorem raising_cell : PBN.AACell := by
   intro k r E _ _ f u c g hg

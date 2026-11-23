@@ -279,7 +279,6 @@ end Proj
 
 end RamFun
 
-section ColsRank
 
 open NumberField IsDedekindDomain Formalism.BasicNotions
 
@@ -288,6 +287,5 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
 
 
 
-end ColsRank
 
 end Formalism.L2.Col

@@ -458,14 +458,12 @@ def VJoint [∀ x, FiniteDimensional ℂ (Wq x)] (S : Formalism.FourierDecayAlt.
 
 end Built
 
-section Carrier
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
-end Carrier
 
 section Proofs
 

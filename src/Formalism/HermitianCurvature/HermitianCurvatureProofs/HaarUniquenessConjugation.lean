@@ -276,7 +276,6 @@ end Formalism.FourierDecayAlt.P.HaarUniquenessConjugation
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 theorem group_measure_from_diagonal : Formalism.FourierDecayAlt.B2.GFromDiag :=
   fun hE hU _ hV hF hC _ _ => HaarUniquenessConjugation.gFromDiag' hE hU hV hF hC

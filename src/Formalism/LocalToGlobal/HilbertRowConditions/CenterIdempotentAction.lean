@@ -67,7 +67,6 @@ def PosAt {n : ℕ} (H : Matrix (Fin n) (Fin n) K) (v : InfinitePlace K) : Prop 
 
 end Place
 
-section Amb
 
 variable (D : D7) {Gp : Type} [Group Gp] [Fintype Gp] {Pl0 T : Type} {m : ℕ}
   (A : FamIn D.what₂.LL Gp Pl0 T m)
@@ -90,9 +89,7 @@ structure AmbTie {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] 
   metric : ∀ t (h : DV.Used D (tup t)) (v : InfinitePlace D.what₂.LL), PosAt (rH D A P ψ t) v → ∀ x y,
     Formalism.HermitianLatticesTheory.majAt (Fm.MtH (tup t)).b (Fm.MtH (tup t)).X v (J.eA t h x) (J.eA t h y) = hAt (rH D A P ψ t) v x y
 
-end Amb
 
-section MjH
 
 variable (D : D7) {Gp : Type} [Group Gp] [Fintype Gp] {Pl0 T : Type} {m : ℕ}
   (A : FamIn D.what₂.LL Gp Pl0 T m) {P0 : Subgroup Gp} {ψ0 : P0 →* D.what₂.LLˣ} {Zs : DefSub A.fam.amb}
@@ -109,9 +106,7 @@ structure MjHTie (Y : DivX D) (S0 : IndefData (A.side P0 ψ0 Zs))
 
   hlat : ∀ i : Fin m, HLatTie (Y.MjH ((i : ℕ) + 1)) (S0.M i) (S0.XW i) (J.eW i)
 
-end MjH
 
-section Joint
 
 variable (D : D7) {Gp : Type} [Group Gp] [Fintype Gp] {Pl0 T : Type}
   (A : FamIn D.what₂.LL Gp Pl0 T D.R.m)
@@ -132,9 +127,7 @@ structure BaseDivisionAmbientCompatibility (Y : DivX D) (p0 : BaseLevelRowSide D
 
   cen0 : CenTie D A p0.s P0 ψ0 I.eG I.tup I.jA0
 
-end Joint
 
-section Consistency
 
 variable {D : D7} {Gp : Type} [Group Gp] [Fintype Gp] {Pl0 T : Type} {A : FamIn D.what₂.LL Gp Pl0 T D.R.m}
   {Y : DivX D} {p0 : BaseLevelRowSide D} {a0 : AmbForm D p0.s} {P0 : Subgroup Gp} {ψ0 : P0 →* D.what₂.LLˣ} {Ps : Subgroup Gp}
@@ -143,9 +136,7 @@ variable {D : D7} {Gp : Type} [Group Gp] [Fintype Gp] {Pl0 T : Type} {A : FamIn 
   {NuC : ∀ u, Submodule (𝓞 D.what₂.LL) (Fin (Dc.a u) → D.what₂.LL)} {I : DivisionCompatibilityData D A P0 ψ0 Ps ψs Zs S0 S1 p0 Dc}
   {JA : AmbIds D A p0.s a0 P0 ψ0 I.tup} {JM : MjHIds D A Y S0}
 
-end Consistency
 
-section Bundle
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D}
   {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC}
@@ -186,6 +177,5 @@ structure FiniteGroupFamilyCharacterData (ex : Extra D L hT Gi Gl Kc Y cX) : Typ
 
 attribute [instance] FiniteGroupFamilyCharacterData.grp FiniteGroupFamilyCharacterData.fin
 
-end Bundle
 
 end Formalism.L2.Rows

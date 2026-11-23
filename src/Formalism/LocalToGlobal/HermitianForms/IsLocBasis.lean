@@ -84,7 +84,6 @@ def ValC (G : ι → Matrix (Fin n) (Fin n) ℂ) (lam : ι → DomWeight n) : Su
 
 end Frames
 
-section Level
 
 variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -122,7 +121,6 @@ structure StepLevel (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E
 
 attribute [instance] StepLevel.fM_acg StepLevel.fM_mod
 
-end Level
 
 section Adelic
 

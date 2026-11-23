@@ -358,7 +358,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.Markov
 
-open Polynomial
 
 theorem interval_one (hA : Formalism.FourierDecayAlt.E.AMarkov) (P : ℝ[X]) (d : ℕ) (t₀ L M : ℝ) (hL : 0 < L)
     (hd : P.natDegree ≤ d) (hP : ∀ t ∈ Set.Icc t₀ (t₀ + L), |P.eval t| ≤ M) :
@@ -435,7 +434,6 @@ end Formalism.FourierDecayAlt.P.Markov
 
 namespace Formalism.FourierDecayAlt.P
 
-open Polynomial
 
 theorem markovVector_of : Formalism.FourierDecayAlt.E.AMarkov → Formalism.FourierDecayAlt.E.MarkovVector := by
   intro hA H _ _ d a t₀ L M hL hM q t ht

@@ -122,10 +122,8 @@ def SameBelow (w : HeightOneSpectrum (𝓞 K)) (L L' : Submodule (𝓞 E) (Fin n
 
 end Below
 
-section Cols
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m) (Ps : CharT X Pr)
 
-end Cols
 
 end Formalism.L2.Col

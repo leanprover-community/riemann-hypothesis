@@ -280,11 +280,9 @@ def intSub {Λ : Type*} [CommRing Λ] {Z : Type*} (T : Z → CDVR) (ev : ∀ ζ,
 
 end Int
 
-section Approx
 
 variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ} (X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO))
   {N : ℕ} {wL : WeightFamilies.Wt D j} (w : Fin N → B.Cusp j wL)
 
-end Approx
 
 end Formalism.L2.Pj

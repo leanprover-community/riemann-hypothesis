@@ -99,13 +99,11 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] (S : GSD K)
 
 end GSD
 
-section FormFam
 
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))} {β : Type} [Fintype β] [DecidableEq β]
 
 
 variable (C : CoefPk X n (DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG))) (Λ : β → LevFam X.E X.K n SG)
 
-end FormFam
 
 end Formalism.L2.Col

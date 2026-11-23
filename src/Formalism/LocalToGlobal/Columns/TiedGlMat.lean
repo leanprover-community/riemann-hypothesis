@@ -50,11 +50,9 @@ theorem glm_blkIdx {t : ℕ} (ht : 0 < t) (j x : ℕ) : blkIdx (List.replicate j
     · have hx : x / t = (x - t) / t + 1 := Nat.div_eq_sub_div ht (by omega)
       rw [ih, hx]; omega
 
-section Grp
 
 variable {κ k' : Type} [CommRing κ] [Field k'] {n : ℕ}
 
-end Grp
 
 section Chr
 

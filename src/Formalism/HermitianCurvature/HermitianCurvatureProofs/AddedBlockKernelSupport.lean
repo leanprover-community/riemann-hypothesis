@@ -525,7 +525,6 @@ theorem phase_one (ψ : AddChar K ℂ) (hψ : ∀ r ∈ R, ψ r = 1) (w : Point 
 end Ones
 end Formalism.FourierDecayAlt.P.A5x7
 
-open Formalism.FourierDecayAlt.P.A5x7 in
 theorem Formalism.FourierDecayAlt.P.zero_kernel_all_ones : Formalism.FourierDecayAlt.A5.BaseKernelOne := by
   intro K _ R ψ hψ h h' _ hh hh'
   unfold N0 Kp

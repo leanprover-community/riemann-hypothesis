@@ -37,7 +37,6 @@ namespace Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 
 open Formalism.BasicNotions
 
-section Model
 
 variable {R : Ranks} {ι : Type} [Fintype ι] {hc : ι → HCParam R} {C : ColumnChain R ι hc}
 
@@ -63,7 +62,6 @@ variable (A : ColumnsAtT R C)
 
 
 
-end Model
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 

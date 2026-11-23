@@ -122,10 +122,8 @@ theorem max_slope_line_neg_log (b : Basis ι K V) (X : InfinitePlace K → Matri
 
 end F3
 
-section F3b
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] [_root_.NumberField.IsTotallyComplex K]
 
-end F3b
 
 end Formalism.L2.Col

@@ -52,11 +52,9 @@ def quadFields (d : ℕ) (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ L
   Tau := Unit
   emb := fun _ => (tauLL hE (KQ d).val).toRingHom
 
-section QuadOk
 
 variable (d : ℕ) (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL] (hE : KQ d ≤ LL)
 
-end QuadOk
 
 section DegTwo
 
@@ -89,22 +87,16 @@ section Roots
 
 end Roots
 
-section GaussChars
 
 variable (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL] (hE : KQ 1 ≤ LL)
 
-end GaussChars
 
-section GaussChars2
 
 variable (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL] (hE : KQ 1 ≤ LL)
 
-end GaussChars2
 
-section Gauss
 
 variable (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL] (hE : KQ 1 ≤ LL)
 
-end Gauss
 
 end Formalism.L2.Col

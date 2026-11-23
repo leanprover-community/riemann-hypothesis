@@ -218,7 +218,6 @@ theorem list_prod_apply {W : Type*} [AddCommGroup W] [Module ℂ W] (L : List (M
 
 end LieListProducts
 
-open LieListProducts in
 theorem qr_frameGl_of : Qr.EcLie → Qr.FrameGl := by
   intro hE W _ _ _ k r m z π Bs hπ hB
   have hgl : ∀ a b, InGlW k r z (unitB (Hpk k r) Bs a b) := fun a b => frame_lie hB a b

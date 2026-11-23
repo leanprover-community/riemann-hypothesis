@@ -156,7 +156,7 @@ def brpDiag : (Fin n → Kˣ) →* GL (Fin n) K :=
   (Units.map (Matrix.diagonalRingHom (Fin n) K).toMonoidHom).comp (MulEquiv.piUnits.symm.toMonoidHom)
 
 theorem brpDiag_coe (d : Fin n → Kˣ) :
-    ((brpDiag K d : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) = Matrix.diagonal fun a => (d a : K) := by rfl
+    ((brpDiag K d : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) = Matrix.diagonal fun a => (d a : K) := rfl
 
 end ChiPow
 

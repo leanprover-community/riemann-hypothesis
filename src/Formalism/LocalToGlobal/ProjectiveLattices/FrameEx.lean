@@ -75,7 +75,6 @@ abbrev IsGenSec (s : GenSec e F M) : Prop :=
 
 end Fam
 
-section Red
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ} {g : ℕ}
@@ -85,13 +84,10 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
   (hTE : ExpTan e F) (hEL : ExpLin e F) (hLE : LieEig e F) (hP : PerAt e F M) (s : GenSec e F M)
   (hs : IsGenSec e F M s)
 
-end Red
 
-section Row
 
 variable {D : D7}
 
-end Row
 
 section Gam
 
@@ -105,7 +101,6 @@ theorem det_map_ne (τ : E →+* ℂ) (γ : GL (Fin r) E) : ((γ : Matrix (Fin r
 
 end Gam
 
-section GamL
 
 open scoped Matrix
 
@@ -116,6 +111,5 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
   {M : ModelsOf F r}
 
 
-end GamL
 
 end Formalism.L2.Pj

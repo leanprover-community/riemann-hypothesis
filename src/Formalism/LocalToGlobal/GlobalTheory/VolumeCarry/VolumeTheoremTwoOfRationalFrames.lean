@@ -44,11 +44,9 @@ def frameMat (D : D7) (W W' : HSpace D.host.E) (ι : W'.V →ₗ[D.host.E] W.V) 
     Matrix (Fin W.rank) (Fin W'.rank) D.host.E :=
   fun i j => W.frame.repr (ι (W'.frame j)) i
 
-section Gen
 
 variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
 
-end Gen
 
 theorem gram_frameMat (D : D7) (W W' : HSpace D.host.E) (ι : W'.V →ₗ[D.host.E] W.V)
     (h1 : HSpace.IsIsomEmb W' W ι) :

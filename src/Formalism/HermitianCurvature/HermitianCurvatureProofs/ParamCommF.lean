@@ -80,7 +80,6 @@ end Formalism.FourierDecayAlt.P.WirtingerOperators
 
 namespace Formalism.FourierDecayAlt.P.WirtingerOperators
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.LevelPointCoordinates
 
 def CurveLevi : Prop :=
   ∀ (k r j : ℕ) (hj : j + 1 ≤ r) (Z : MJ j) (τ : ℂ) (γ : B.Mat k (r - (j + 1))) (x : MJ j) (t : ℝ),

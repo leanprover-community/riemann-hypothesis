@@ -138,7 +138,6 @@ end Formalism.FourierDecayAlt.P.Wd2
 
 namespace Formalism.FourierDecayAlt.P
 
-open Matrix Formalism.YangianSpanCharacter.T Formalism.FourierDecayAlt.W Formalism.FourierDecayAlt.Wd
 
 theorem initial_module_structure : Formalism.FourierDecayAlt.Wd.StartModule := by
   intro K A S _ _ _ _ _ _ _ _ QQ q hS

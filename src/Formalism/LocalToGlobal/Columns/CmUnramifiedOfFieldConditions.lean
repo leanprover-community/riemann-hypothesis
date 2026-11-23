@@ -52,7 +52,6 @@ namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV
 
-section Frame
 
 variable {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]
@@ -69,19 +68,14 @@ variable {w : HeightOneSpectrum (𝓞 K)} {N : Submodule (𝓞 K) V} {A : Type} 
 
 end LinOn
 
-end Frame
 
-section Fibre
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-end Fibre
 
-section Abstract
 
 variable {A H D D₀ : Type} [Group A] [Group H] [MulAction (A × H) D] [MulAction A D₀]
 
-end Abstract
 
 section Mass
 
@@ -124,11 +118,9 @@ theorem finite_autU (hE : PosStar E) (N : UniLat E n) : Finite (autU E n N) := b
 
 end Mass
 
-section MassGenus
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
 
-end MassGenus
 
 section Count
 
@@ -139,19 +131,15 @@ def DecoSet.lat (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) : UniLat E
 
 end Count
 
-section Idx
 
 variable {E K : Type} [Field E] [NumberField E] [Field K] {n : ℕ} {SG : Finset (HeightOneSpectrum (𝓞 E))}
   (Λ : LevFam E K n SG)
 
-end Idx
 
-section FormCount
 
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
   (C : CoefPk X n (DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG))) (Λ : LevFam X.E X.K n SG)
 
-end FormCount
 
 section IdxQ
 
@@ -187,7 +175,6 @@ theorem vandN_congr {x y : ℕ → ℝ} {N : ℕ} (h : ∀ i j, i < N → j < N 
 
 end Inst
 
-section Rows
 
 open Finset Formalism.LogVandermondeBounds.StandardLattice
 
@@ -197,7 +184,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
 
 variable (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-end Rows
 
 section WeylTest
 
@@ -251,14 +237,12 @@ theorem cm_unramified_of_field_conditions {X : Fields} (hX : X.AbelianUnramified
 
 end Unram
 
-section Weighted
 
 variable {A H D D₀ : Type} [Group A] [Group H] [MulAction (A × H) D] [MulAction A D₀]
 
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
   (C : CoefPk X n (DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG))) (Λ : LevFam X.E X.K n SG)
 
-end Weighted
 
 section Whole
 
