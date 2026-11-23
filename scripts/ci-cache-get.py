@@ -81,8 +81,12 @@ def current_identity(root):
     restore.local_path(root, Path("src"), checked)
     subprocess.run(["git", "-C", str(root), "diff", "--no-ext-diff", "--no-textconv", "--quiet",
                     "HEAD", "--", "src", *files], check=True)
-    if git(root, "ls-files", "--others", "--", "src"):
-        raise ValueError("untracked source files differ from HEAD")
+    # Lake compiles only .lean files, so a stray .DS_Store or editor backup changes no module.
+    untracked = [name for name in git(root, "ls-files", "--others", "-z", "--", "src").split("\0")
+                 if name.endswith(".lean")]
+    if untracked:
+        more = f" and {len(untracked) - 3} more" if len(untracked) > 3 else ""
+        raise ValueError(f"untracked Lean files under src differ from HEAD: {', '.join(untracked[:3])}{more}")
     config = tomllib.loads(files["lakefile.toml"].decode())
     if (config.get("srcDir", ".") != "src" or config.get("extern_lib")
             or any(key in config for key in ("buildDir", "leanLibDir", "irDir", "packagesDir", "manifestFile"))
