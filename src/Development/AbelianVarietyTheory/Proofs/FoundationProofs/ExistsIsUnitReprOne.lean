@@ -38,11 +38,9 @@ open scoped ENNReal nonZeroDivisors
 
 namespace GlobalTheory.SelBaseChange
 
-section Coord
 
 variable {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R'] [Algebra R R']
 
-end Coord
 
 section Coh
 

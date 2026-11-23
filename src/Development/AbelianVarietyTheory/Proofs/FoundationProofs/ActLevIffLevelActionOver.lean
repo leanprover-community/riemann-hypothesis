@@ -69,20 +69,16 @@ theorem frMap_id_iff {S : Type} [CommRing S] [Algebra c.F S] (y y' : FrPt Xo c S
   obtain ⟨hu, hr, -⟩ := GlobalTheory.Frames.frMap_unique_refl_iff E H Dw l Xo c S S (AlgHom.id c.F S) y
   exact ⟨fun h => hu _ _ hr h, fun h => h ▸ hr⟩
 
-section Laws
 
 variable {G : Type} [Group G] (R : RelFam Xo c G)
 
 variable {R}
 
-end Laws
 
 end General
 
-section Record
 
 variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} (Xo : Moduli Dw l) (c : Coeff l)
 
-end Record
 
 end GlobalTheory.LevelLawsCompare

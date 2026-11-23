@@ -183,10 +183,8 @@ variable {Y : Model Xo c β} {Xc : (Xo.XF c).Opens} {τ : E →+* ℂ}
 
 end Point
 
-section Record
 
 variable {D : D7} (large₂ : SizeData₂ D) {X : DivX D} (Lc : placeRankTwoOne.Loc D X)
 
-end Record
 
 end GlobalTheory.FlatRow

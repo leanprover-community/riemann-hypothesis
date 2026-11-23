@@ -324,13 +324,11 @@ variable {X S : Scheme.{u}} (f : X ⟶ S) [Smooth f]
 
 end DiscreteValuation
 
-section SpecialFibre
 
 variable {V : Type u} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] {X : Scheme.{u}}
   (f : X ⟶ Spec (.of V)) [Smooth f]
   (U : (pullback f (Spec.map (CommRingCat.ofHom (residue V)))).Opens)
 
-end SpecialFibre
 
 section Main
 
