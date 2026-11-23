@@ -41,7 +41,6 @@ open UpperTheory.V.Z.Tf.GlobalTraceComparison UpperTheory.V.Z.Tf.GlobalTraceComp
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -113,7 +112,6 @@ private def fixer (y : Sm E n) : Subgroup (GL (Fin n) (Af E)) where
       rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply]
     rwa [ha] at h
 
-end SlopeTestRemainingChoices
 
 theorem jointFix_pf : SlotBasic → JointFix := by
   intro _ E _ _ _ n π P

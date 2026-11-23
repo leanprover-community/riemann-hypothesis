@@ -39,7 +39,6 @@ namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Th
 open GlobalTheory.BCT UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm
 open scoped Pointwise
 
-section SlopeTestRemainingChoices
 
 variable {G : Type} [Group G]
 
@@ -232,7 +231,6 @@ private theorem avg_hecke (K : Subgroup G) (θ : G →* G) (δ : G) (h : G → �
     rw [map_mul]; group
   rw [e, (hh _ (K.inv_mem k.2) _).1, (hh _ (hθK _ k.2) _).2]
 
-end SlopeTestRemainingChoices
 
 theorem twSwap : OrbFub → TwSwap := by
   intro hFub G _ _ _ K hKo hKc θ hθc hθ2 hθK δ hfin f g hf hg

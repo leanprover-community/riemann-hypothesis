@@ -56,7 +56,6 @@ open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg
 open scoped ENNReal NumberField.AdeleRing InnerProductSpace ComplexConjugate
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
-section SlopeTestRemainingChoices
 
 variable {G H : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [FirstCountableTopology G]
   [LocallyCompactSpace G] [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [MeasurableSpace H] [BorelSpace H]
@@ -133,7 +132,6 @@ private theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.bump_step (ν 
       simpa [mul_assoc] using this
     simp [this]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.bumpEx :
     ∀ {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (G1 K n)) [μ.IsHaarMeasure] (O : Set (G1 K n)), O ∈ 𝓝 (1 : G1 K n) →

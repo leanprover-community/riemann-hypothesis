@@ -44,7 +44,6 @@ open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg
 open scoped ENNReal NumberField.AdeleRing InnerProductSpace ComplexConjugate
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
-section SlopeTestRemainingChoices
 
 open IsDedekindDomain Formalism.L2.Host GroundTheory.Global GroundTheory.Global.IdeleGroup
 open NumberField.InfinitePlace NumberField.InfinitePlace.Completion
@@ -179,7 +178,6 @@ private theorem act_compact (σ : K ≃+* K) {k : AdelicGLn.AdelicGL K n} (hk : 
     rw [← map_inv]
     exact h _ (hv.2 i j)
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.galLaws :
     ∀ {K : Type} [Field K] [NumberField K] (μ : Measure (G1 K (2 + 2))) [μ.IsHaarMeasure] (μ₂ : Measure (G1 K 2)) [μ₂.IsHaarMeasure] (σ : K ≃+* K) (θ : Twist μ) (θ₂ : Twist μ₂), UpperTheory.ConvolutionTheory.K.IsGal σ θ → UpperTheory.ConvolutionTheory.K.IsGal σ θ₂ →

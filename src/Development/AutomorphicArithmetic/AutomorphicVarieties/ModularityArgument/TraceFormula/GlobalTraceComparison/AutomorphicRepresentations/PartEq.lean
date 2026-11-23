@@ -41,7 +41,6 @@ namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
 attribute [local instance] borelH
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {ι : Type} [Fintype ι]
 
@@ -133,7 +132,6 @@ private theorem vec_int {D : Dom E n 0} (w : Lp ℂ 2 D.ν) (c : ι → ℂ) (j 
   filter_upwards [e] with y hy
   rw [hy]; ring
 
-end SlopeTestRemainingChoices
 
 theorem ker_pf :
     Weak → PointRep → PComm → PDiag → Ker := by

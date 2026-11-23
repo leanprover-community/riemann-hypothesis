@@ -41,7 +41,6 @@ open PositivityTheory.RgBcC PositivityTheory.RgBcC.RealD PositivityTheory.RgBcC.
 
 namespace UpperTheory.V.Z.GSp4Splitting
 
-section Avg
 
 variable {K M : Type*} [Group K] [AddCommGroup M] [Module ℂ M]
 
@@ -51,9 +50,7 @@ private theorem exists_avg [TopologicalSpace K] [IsTopologicalGroup K] [CompactS
       ∀ T : M →ₗ[ℂ] M, (∀ k m, T (ρ k m) = ρ k (T m)) → ∀ m, T (P m) = P (T m) :=
   _root_.UpperTheory.Reformulated.B.ExistsAverage.exists_avg ρ hs
 
-end Avg
 
-section Core
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {n : ℕ}
 
@@ -126,7 +123,6 @@ private theorem core (π : CuspSub E n) (K : Subgroup (GL (Fin n) (Af E))) (hKc 
     rw [map_one, Module.End.one_apply, hPfix y fun k => hfix k.1 k.2] at h2
     exact hv0 h2
 
-end Core
 
 theorem rlLow : HeckeMem → LowType → RlLow := by
   intro _ hL

@@ -35,7 +35,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison
 
-section Core
 
 variable {X : Type} [TopologicalSpace X] [CompactSpace X] {B : Type} [CommRing B] [StarRing B]
   [Algebra ℂ B] [StarModule ℂ B] (Φ : B →⋆ₐ[ℂ] C(X, ℂ)) (A : StarSubalgebra ℂ B)
@@ -129,7 +128,6 @@ private lemma exists_gap (x : B) {ρ : ℝ} (hρ : 0 < ρ)
     have : ‖Φ x χ‖ ≤ ‖Φ x χ₀‖ := hmax hχ
     linarith
 
-end Core
 
 section Rep
 
@@ -158,7 +156,6 @@ private theorem exists_rep {B : Type} [CommRing B] [StarRing B] [Algebra ℂ B] 
 
 end Rep
 
-section Peak
 
 variable {X : Type} [TopologicalSpace X] [CompactSpace X] {B : Type} [CommRing B] [StarRing B]
   [Algebra ℂ B] [StarModule ℂ B] (Φ : B →⋆ₐ[ℂ] C(X, ℂ)) (A : StarSubalgebra ℂ B)
@@ -280,7 +277,6 @@ private theorem core (a₀ : A) (x : B) {ρ : ℝ} (ha : p a₀ = 1) (hρ : 0 < 
       _ < ρ' * (1 * (1 + ε)) := mul_lt_mul_of_pos_right hxl (by positivity)
       _ = ρ := by rw [one_mul, hρε]
 
-end Peak
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison
 

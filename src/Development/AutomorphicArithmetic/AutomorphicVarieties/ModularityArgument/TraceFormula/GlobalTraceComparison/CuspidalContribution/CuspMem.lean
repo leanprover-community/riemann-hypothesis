@@ -42,7 +42,6 @@ open UpperTheory.V.Cj.S (CI mem_CI fL ciBasic ciCompl capAct locOf Pl)
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Cusp.GeneralLocalHecke
 
-section Lin
 
 variable {M O : Type*} [AddCommGroup M] [Module ℂ M]
 
@@ -83,7 +82,6 @@ private theorem compl_sub (act : O → Module.End ℂ M) {C D : Submodule ℂ M}
   · rw [← inf_assoc, a3, bot_inf_eq]
   · rw [← sup_inf_assoc_of_le _ hU, a4, inf_eq_right.2 hD]
 
-end Lin
 
 private theorem exists_proj {M : Type*} [AddCommGroup M] [Module ℂ M] {C V D : Submodule ℂ M} (hV : V ≤ C) (hD : D ≤ C)
     (h1 : V ⊓ D = ⊥) (h2 : V ⊔ D = C) :
@@ -109,7 +107,6 @@ private theorem exists_proj {M : Type*} [AddCommGroup M] [Module ℂ M] {C V D :
   have := D.sub_mem h (hp x)
   rwa [sub_sub_sub_cancel_left] at this
 
-section Forms
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
 
@@ -133,7 +130,6 @@ private theorem hasSat_of_map {C : Submodule ℂ (Sm E a)} (hC : _root_.GlobalTh
   obtain ⟨B', hB⟩ := GlobalTheory.CompanionTheory.SatAe.exists_hasSatGL_locRep π w ((Submodule.ne_bot_iff _).2 ⟨f x, h2.2.1, h0⟩)
   rwa [(hB.2 _ h2.2.1 h0).unique h2] at hB
 
-end Forms
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Cusp.GeneralLocalHecke
 

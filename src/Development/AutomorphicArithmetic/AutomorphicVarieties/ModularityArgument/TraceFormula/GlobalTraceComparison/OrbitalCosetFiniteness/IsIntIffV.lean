@@ -44,7 +44,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Th
 
-section Block
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -179,7 +178,6 @@ private theorem Tj_twist (w : Pl E) (n j : ℕ) (hj : j ≤ n) (ϖ : w.adicCompl
   · rintro ⟨a, b, c⟩
     exact ⟨b, a, by omega⟩
 
-end Block
 
 theorem genTw : GenTw := by
   intro E _ _ _ hU a b w hs p

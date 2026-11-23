@@ -46,7 +46,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm
 
-section Gen
 
 variable {G G' : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [Group G'] [TopologicalSpace G'] [IsTopologicalGroup G']
@@ -234,7 +233,6 @@ private theorem clSum_map (e : G ≃* G') (hc : Continuous e) (hc' : Continuous 
         rw [hL]
         simp only [F', Pi.one_apply, one_mul]
 
-end Gen
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 

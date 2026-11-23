@@ -50,7 +50,6 @@ namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
 attribute [local instance] PositivityTheory.Rg.BcB.E.borelH borelG borelF borelA
 
-section SlopeTestRemainingChoices
 
 private def rtRep {X Γ : Type} [Group X] [Group Γ] (τ : Γ →* X) (F : Submodule ℂ (X → ℂ))
     (h : ∀ γ, ∀ a ∈ F, (fun x => a (x * τ γ)) ∈ F) : Representation ℂ Γ F where
@@ -141,7 +140,6 @@ private lemma inS_sub (D : Dom E n 0) (π : CuspSub E n) {a b : GA E n → ℂ} 
   simp only [h1, Pi.sub_apply, h2, h3]
   ring
 
-end SlopeTestRemainingChoices
 
 theorem typeIn_pf : PiAdm → DetZero → EvalBasis → CvIn → FormEx → OrthZero → AbsType → TypeIn := by
   intro hAdm hDet hEv hCv hForm hOrth hAbs E _ _ _ n hn D π hfix K W hKo hKc hW hWR f hS hI hT

@@ -46,7 +46,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm
 
-section Gen
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
 private theorem exists_normal (K K₀ : Subgroup G) (hKo : IsOpen (K : Set G)) (hKc : IsCompact (K : Set G))
@@ -93,7 +92,6 @@ private theorem trc_eq {V : Type} [AddCommGroup V] [Module ℂ V] (ρ : Represen
     simp only [_root_.mul_inv_rev, inv_inv, inv_mul_cancel_right] at h
     simpa using h.symm
 
-end Gen
 
 private theorem hint_sub {H : Type} [Group H] [Subsingleton H] (K : Subgroup H) (u : H → ℂ) : hint K u = u 1 := by
   unfold hint

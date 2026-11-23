@@ -43,7 +43,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
-section Generic
 
 variable {G H : Type} [Group G] [Group H] [Subsingleton H]
 
@@ -77,7 +76,6 @@ private theorem hint_prod (K : Subgroup G) (K₂ : Subgroup H) (u : G × H → �
   · intro q
     exact (hout _).symm
 
-end Generic
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 

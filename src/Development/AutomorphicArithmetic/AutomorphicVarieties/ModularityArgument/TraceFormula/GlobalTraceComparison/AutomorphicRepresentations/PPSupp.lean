@@ -40,7 +40,6 @@ namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.PS
 
 open MeasureTheory
 
-section Abs
 
 variable {K : Type*} [NormedAddCommGroup K] [InnerProductSpace ℂ K] [CompleteSpace K]
 
@@ -66,9 +65,7 @@ private theorem fix_proj (S : Submodule ℂ K) [S.HasOrthogonalProjection] (m : 
     exact inner_self_eq_zero.1 this
   exact sub_eq_zero.1 h3
 
-end Abs
 
-section Mul
 
 variable {X : Type*} [MeasurableSpace X] {ν : Measure X} (c : X → ℝ)
 
@@ -105,7 +102,6 @@ private theorem mulS_inner (hc : Measurable c) (hb : ∀ x, |c x| ≤ 1)
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [mulS_apply, mulS_apply, mulL_inner]
 
-end Mul
 
 section Cut
 

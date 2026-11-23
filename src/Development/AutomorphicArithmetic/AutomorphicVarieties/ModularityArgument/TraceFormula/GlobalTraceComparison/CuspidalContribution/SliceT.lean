@@ -38,7 +38,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument
 open NumberField IsDedekindDomain Matrix Filter Topology
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.LFun UpperTheory.V.Z.Tf.GlobalTraceComparison UpperTheory.V.Z.Tf.GlobalTraceComparison.Cusp
 
-section SlopeTestRemainingChoices
 
 open UpperTheory.V.Af.Fin GroundTheory.Automorphic.AutomorphicForm
 
@@ -98,9 +97,7 @@ private theorem st_corner_emb {a n : ℕ} (e : Fin a ↪ Fin n) (s : R →ₙ+* 
   · push Not at hi
     rw [extendByZero_apply_eq_zero_of_row_not_mem e _ hi, extendByZero_apply_eq_zero_of_row_not_mem e _ hi, map_zero]
 
-end SlopeTestRemainingChoices
 
-section Main
 
 open PositivityTheory.Rg.BcB.SpectralAccumulation (TypeB)
 open UpperTheory.V.Cj.S (res)
@@ -170,7 +167,6 @@ private theorem st_slice {a n : ℕ} (e : Fin a ↪ Fin n) {K : Subgroup (GL (Fi
   · simp only [LinearMap.funLeft_apply]
     rw [hf, map_mul, st_emb_inf, mul_assoc]
 
-end Main
 
 open UpperTheory.V.Af.Fin GroundTheory.Automorphic.AutomorphicForm in
 theorem UpperTheory.V.Z.Tf.GlobalTraceComparison.Cusp.sliceT :

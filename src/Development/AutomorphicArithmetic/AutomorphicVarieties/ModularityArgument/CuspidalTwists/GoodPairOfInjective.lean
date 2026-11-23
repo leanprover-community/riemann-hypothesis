@@ -33,7 +33,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws UpperTheory.V.Cu
 
-section Inj
 
 variable {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R'']
 
@@ -139,9 +138,7 @@ private theorem isRes_of [TopologicalSpace Γ] (f : R →+* R') (hf : Function.I
       fun h g => supp_of f hf _ _ (h g)
   · exact (cont_iff _).2 (IsLocallyConstant.desc _ f ((cont_iff _).1 (c1 i j)) hf)
 
-end Inj
 
-section Ev
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -198,7 +195,6 @@ private theorem ev_poly (c : Coef l) (x : 𝔞.k[X]) : Ev fun c => x ∈ (mapRin
   · rw [h0]; exact zero_mem _
   · exact h _ (Polynomial.coeff_mem_coeffs h0)
 
-end Ev
 
 theorem UpperTheory.V.Cu.chainDesc4 : ChainDesc4 := by
   intro l _ 𝔞 c Γ _ _ _ Φ s t hs ⟨hg, hch⟩

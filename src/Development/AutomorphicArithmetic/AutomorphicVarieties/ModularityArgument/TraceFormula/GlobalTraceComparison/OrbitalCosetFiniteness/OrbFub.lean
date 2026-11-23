@@ -40,7 +40,6 @@ open MulAction
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Th
 
-section SlopeTestRemainingChoices
 
 variable {T : Type} [Group T]
 
@@ -213,7 +212,6 @@ private lemma one_side {X Y : Type} [MulAction T X] [MulAction T Y] (C : Subgrou
   push_cast
   ring
 
-end SlopeTestRemainingChoices
 
 theorem orbFub : OrbFub := by
   intro T X Y _ _ _ C _ hX hY F hF hx hy hq

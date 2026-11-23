@@ -59,26 +59,26 @@ Removed ~745 lines of dead `section X ... end X` blocks from 244 files. These we
 
 **Title:** "Remove 1.67M lines of dead code from 148K files (imports, open statements, dead sections)"
 
-**Total commits:** 17  
-**Files changed:** 148,130  
-**Lines deleted:** **1,668,000+**  
-**Lines added:** ~280  
+**Total commits:** 19  
+**Files changed:** 148,157+  
+**Lines deleted:** **1,669,000+**  
+**Lines added:** ~292  
 
 ### Commit breakdown:
-1. `63f44f4c6f6` — Remove 3 unused NormNum imports from 425 files
-2. `bcbaa4f8b07` — Remove NatFib/NatLog/NatSqrt (~120K Dev + dirs)
-3. `8266993862b` — Strip ALL remaining dead NormNum imports + fix workflows
-4. `71859451de7` — Fix Label PR workflow for fork PRs
-5. `8ce0acc68ff` — Simplify 38 theorem proofs (`by exact <term>` → `<term>`)
-6. `3fa9f7abeef` — Deduplicate ~4,747 `open` statements across 1,278 files
-7. `dac910a64e2` — Remove 745 lines of dead variable-only section blocks (244 files)
-8. `702169833a0` — Deduplicate remaining open declarations (Formalism, etc.) 556 files
-9. `50b75e43832` — Simplify proofs + deduplicate more open statements (244 files)
-10. `148f905b337` — Deduplicate ALL open declarations across 4,600 files repo
-11. `26169b9cf4c` — Remove 644 lines of dead section boilerplate from Development
-12. `54df283e9d7` — Remove 408 lines of dead section boilerplate from Development
-13. `c9cc0c70d8e` — Remove 171 lines of dead section boilerplate from Development
-14. `01479f0e88e` — Remove 1,839 lines of dead section boilerplate from 630 files
+| # | Description | Files | Lines Deleted |
+|---|-------------|-------|---------------|
+| 1 | Remove 3 unused NormNum imports (NatFib/NatLog/NatSqrt) from 425 files | 425 | ~500 |
+| 2 | Remove NatFib/NatLog/NatSqrt (~120K Dev + other dirs) | ~120K | ~900K |
+| 3 | Strip ALL remaining dead NormNum imports + fix CI workflows | 148K+ | ~180K |
+| 4 | Fix Label PR workflow for fork PRs (multi-tier fallback) | 1 file | - |
+| 5 | Simplify 38+ theorem proofs (`by exact <term>` → `<term>`) | 38+ | 38 |
+| 6 | Deduplicate ~4,747 duplicate `open` statements across 1,278 files | 1,278 | ~4,747 |
+| 7 | Remove 745 lines of dead variable-only section blocks (244 files) | 244 | 745 |
+| 8 | Deduplicate remaining `open` declarations in Formalism (556 files) | 556 | ~2,169 |
+| 9 | Simplify proofs (`:= by rfl` → `= rfl`, `:= by exact` → `=`) + dedup | 244 | ~855 |
+| 10 | Deduplicate ALL `open` declarations across 4,600 files repo | 4,600 | ~17,920 |
+| 11-14 | Batch remove dead section boilerplate (Development + Formalism) | 860+ | ~3,200+ |
+| 15+ | Ongoing: scan all directories for dead sections | 94 | 293 |
 
 ### CI status:
 Both `label` and `Comparator challenge files are unchanged` workflows **pass successfully**. All other checks skip (expected for fork PRs).

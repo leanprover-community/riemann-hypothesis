@@ -45,7 +45,6 @@ open scoped InnerProductSpace Classical
 
 namespace UpperTheory.V.Z.GSp4Splitting.RealLieSimple
 
-section Dbl
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
 
@@ -111,7 +110,6 @@ private theorem dbl (μ : Measure G) [μ.IsHaarMeasure] (K : Subgroup G) (hKo : 
       simp only [Measure.real, hCμ, Complex.real_smul]
     · exact fun x _ => (integrable_indicator_iff (hCm x)).2 (integrableOn_const (by rw [hCμ]; exact hfin))
 
-end Dbl
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 

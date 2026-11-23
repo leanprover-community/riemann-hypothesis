@@ -47,7 +47,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm
 
-section Generic
 
 variable {G : Type} [Group G]
 
@@ -132,7 +131,6 @@ private theorem isHecke_of_mem [TopologicalSpace G] [IsTopologicalGroup G] {K : 
   · simpa using hb ⟨k, hk⟩ 1 x
   · simpa using hb 1 ⟨k, hk⟩ x
 
-end Generic
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm
 

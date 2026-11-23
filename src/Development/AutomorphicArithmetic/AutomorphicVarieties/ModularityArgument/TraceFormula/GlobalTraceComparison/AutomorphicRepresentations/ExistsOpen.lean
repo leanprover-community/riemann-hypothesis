@@ -41,7 +41,6 @@ open UpperTheory.V.Z.Tf.GlobalTraceComparison UpperTheory.V.Z.Tf.GlobalTraceComp
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.IsotypicAlt
 
-section Abs
 
 variable {G W V : Type} [Group G] [AddCommGroup W] [Module ℂ W] [AddCommGroup V] [Module ℂ V]
 
@@ -164,9 +163,7 @@ private theorem iso_abs [TopologicalSpace G] [IsTopologicalGroup G] [Nontrivial 
   rintro _ ⟨x, hx, rfl⟩
   rw [Submodule.mem_comap, Submodule.mem_bot, ← lift_inter σ ρ f.1 f.2 N p x, hp x hx, map_zero]
 
-end Abs
 
-section Conc
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -217,7 +214,6 @@ private theorem iso_top (π : CuspSub E n) (w : HeightOneSpectrum (𝓞 E)) (τ 
     exact le_iSup (fun f : {f : τ.V →ₗ[ℂ] π.V // ∀ g v, f (τ.ρ g v) = π.locRep w g (f v)} => LinearMap.range f.1) ⟨f, hf⟩
   · exact hi (h.trans (Submodule.map_subtype_top _).symm)
 
-end Conc
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.IsotypicAlt
 

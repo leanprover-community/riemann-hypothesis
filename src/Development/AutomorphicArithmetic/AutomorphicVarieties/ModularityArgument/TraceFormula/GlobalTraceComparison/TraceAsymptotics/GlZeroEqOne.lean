@@ -52,7 +52,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm
 
-section Tri
 
 variable {R : Type} [CommRing R] {r s N : ℕ} {h : r + s = N}
 
@@ -125,9 +124,7 @@ private theorem tri_blk_nU (m : GL (Fin r) R × GL (Fin s) R) (X : Matrix (Fin r
   rw [Units.val_mul, ← Matrix.submatrix_mul_equiv _ _ _ (GlobalTheory.ResW.blkE h), nU_sub, GlobalTheory.ResW.HeckeCT.blk_sub, Matrix.fromBlocks_multiply]
   simp
 
-end Tri
 
-section Int
 
 variable {L : Type} [Field L] {O : Subring L} {r s N : ℕ} {h : r + s = N}
 
@@ -174,9 +171,7 @@ private theorem nU_int {X : Matrix (Fin r) (Fin s) L} (hX : nU h X ∈ GLint (Fi
   rw [← this]
   exact satake_glint_entry O hX _ _
 
-end Int
 
-section Local
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n a b : ℕ} {w : Pl E}
 
@@ -334,9 +329,7 @@ private theorem sum_right (h : a + b = n) (m : GLw a w × GLw b w) (A : GLw a w 
     rintro ⟨e, -⟩
     exact hc ((QuotientGroup.out_eq' c).symm.trans e)
 
-end Local
 
-section Main
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {w : Pl E}
 
@@ -443,7 +436,6 @@ private theorem sum_conv (a b j : ℕ) (g : ℕ × ℕ → ℂ) :
   refine Finset.sum_congr rfl fun x _ => ?_
   rw [Finset.sum_range]
 
-end Main
 
 theorem ctT : CtT := by
   intro E _ _ _ w n a b h j m

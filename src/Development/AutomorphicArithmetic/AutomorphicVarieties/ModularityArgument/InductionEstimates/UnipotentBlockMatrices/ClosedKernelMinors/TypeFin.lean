@@ -49,7 +49,6 @@ open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg
 open scoped ENNReal NumberField.AdeleRing InnerProductSpace ComplexConjugate
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
-section General
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [OpensMeasurableSpace G]
   [T2Space G]
@@ -111,7 +110,6 @@ private theorem detect (U : Subgroup G) (hU : IsCompact (U : Set G)) (ν : Measu
   have := norm_nonneg (F x)
   exact norm_le_zero_iff.1 (by linarith)
 
-end General
 
 private theorem leftRight {H : Type} [Group H] (V : Submodule ℂ (H → ℂ)) [FiniteDimensional ℂ V]
     (hV : ∀ a ∈ V, ∀ g, (fun x => a (g * x)) ∈ V) :

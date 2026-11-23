@@ -48,7 +48,6 @@ open scoped InnerProductSpace
 
 namespace UpperTheory.V.Z.GSp4Splitting
 
-section Gen
 
 variable {G : Type} [TopologicalSpace G]
 
@@ -137,9 +136,7 @@ private theorem trOn_map' {M N : Type} [AddCommGroup M] [Module ℂ M] [AddCommG
   rw [LinearEquiv.conj_apply_apply, LinearEquiv.symm_apply_apply]
   exact Subtype.ext (h x)
 
-end Gen
 
-section Fin
 
 variable {n : ℕ} {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
 
@@ -236,7 +233,6 @@ private theorem iso_stable (σ : Un n →* (V →ₗ[ℂ] V)) (E : KMod n) {A : 
     exact (le_iSup (fun s : invA σ E => LinearMap.range s.1) ⟨t', ht'⟩) ⟨ξ', h.symm⟩
   exact this hx
 
-end Fin
 
 end UpperTheory.V.Z.GSp4Splitting
 

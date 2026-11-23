@@ -33,7 +33,6 @@ open scoped InnerProductSpace
 
 namespace UpperTheory.V.Z.GSp4Splitting
 
-section SlopeTestRemainingChoices
 
 variable {n : ℕ} {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
   {σ : Un n →* (V →ₗ[ℂ] V)} {E : KMod n}
@@ -117,7 +116,6 @@ private theorem core (hσ : IsK σ) (S : Submodule ℂ V) [FiniteDimensional ℂ
   have h := (Submodule.mem_orthogonal _ _).1 (hIC hy) _ hc
   rw [← inner_conj_symm, h, map_zero]
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Z.GSp4Splitting
 

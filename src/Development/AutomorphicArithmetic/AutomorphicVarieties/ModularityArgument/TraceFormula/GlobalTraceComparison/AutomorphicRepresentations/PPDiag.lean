@@ -39,7 +39,6 @@ attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {D : Dom E n 0} {ι : Type}
 
@@ -128,7 +127,6 @@ private lemma vecM_orth [Fintype ι] (π : CuspSub E n) (c : ι → ℂ) {w : Lp
   | add x y _ _ hx hy => rw [inner_add_left, hx, hy, add_zero]
   | smul r x _ hx => rw [inner_smul_left, hx, mul_zero]
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 

@@ -228,7 +228,6 @@ private theorem hasDerivAt_of_dual {F : Type} [NormedAddCommGroup F] [NormedSpac
   have h2 := ((e.symm : _ →L[ℂ] F).restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt (0 : ℝ) h1
   simpa [Function.comp_def] using h2
 
-section Data
 
 variable {π} {K : Subgroup (GL (Fin n) (Af E))} [MeasurableSpace (GL (Fin n) (Af E))]
   {μf : MeasureTheory.Measure (GL (Fin n) (Af E))} (D : Rl π K μf) (w : InfinitePlace E)
@@ -353,7 +352,6 @@ private theorem cont_σ (v x : D.U) : Continuous fun k : Un n => ⟪x, D.σ w k 
   rw [e]
   exact ((gkData_holds E n π).cont (D.i v) (D.H (D.i x))).comp (continuous_kW w)
 
-end Data
 
 end UpperTheory.V.Z.GSp4Splitting.CompactSubgroupTangentSkew
 

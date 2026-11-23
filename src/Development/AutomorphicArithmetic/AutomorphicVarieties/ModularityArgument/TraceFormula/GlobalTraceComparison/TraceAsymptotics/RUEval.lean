@@ -49,7 +49,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm
 
-section Generic
 
 variable {G H V : Type} [Group G] [Group H] [AddCommGroup V] [Module ℂ V]
 
@@ -156,9 +155,7 @@ private theorem fixed_comp (e : G ≃* H) (ρ : Representation ℂ H V) (K : Sub
     simpa using h1
   · exact GlobalTheory.LGrp.mem_fixed.1 h (e k) ((hK k).1 hk)
 
-end Generic
 
-section Local
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {w : Pl E}
 
@@ -230,7 +227,6 @@ private theorem trace_test_function_eq (hE : ExAct) (hU : GlobalTheory.BCT.Unr E
     (finite_supp _ (GlobalTheory.BCT.LocCompU.isOpen_isCompact_KL hU n w).1 _ hHU.1) hfix]
   exact hop
 
-end Local
 
 theorem rUEval : RUEval := by
   intro hUS hPl hEx hSL hIL hUC E _ _ _ hU n hn S hS lam Z hZ f hf hreg

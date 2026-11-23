@@ -37,7 +37,6 @@ namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.PfH
 
 open scoped Pointwise
 
-section Abs
 
 variable {G ι : Type} [Group G] {A : ι → Type} [∀ i, Group (A i)]
 
@@ -134,7 +133,6 @@ private theorem abs_support [TopologicalSpace G] [IsTopologicalGroup G] [∀ i, 
   rw [hcl.closure_eq]
   exact hK.of_isClosed_subset hcl hsub
 
-end Abs
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.PfH
 

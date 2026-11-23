@@ -44,7 +44,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n a b : ℕ}
 
@@ -178,7 +177,6 @@ private theorem supp_fin (h : a + b = n) (w : Pl E) (f : GLw n w → ℂ) (hf : 
   have := hXY i j
   simpa [sub_eq_neg_add] using this
 
-end SlopeTestRemainingChoices
 
 theorem ctSph : CtSph := by
   intro E _ _ _ w n a b h f hf m

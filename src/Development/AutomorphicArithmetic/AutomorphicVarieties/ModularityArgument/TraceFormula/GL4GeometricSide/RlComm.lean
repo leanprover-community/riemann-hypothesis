@@ -45,7 +45,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.GSp4Splitting
 
-section Sum
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
 
@@ -55,9 +54,7 @@ private theorem exists_sum (μ : Measure G) [IsFiniteMeasureOnCompacts μ] (K : 
       (∀ g, g ∉ S → F g = 0) → ∫ g, F g ∂μ = ∑ x ∈ T, c x * F (r x) :=
   _root_.UpperTheory.Reformulated.B.Qg3.exists_sum μ K hKo hKc hS
 
-end Sum
 
-section Ops
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {n : ℕ}
 
@@ -161,7 +158,6 @@ private theorem exists_op [MeasurableSpace (GL (Fin n) (Af E))] [BorelSpace (GL 
       simp only [e1, map_mul, ← mul_assoc, e2]
     · simp [image_eq_zero_of_notMem_tsupport hg]
 
-end Ops
 
 theorem rlComm : RlComm := by
   intro E _ _ _ n hn π hθ K hKo hKc hKθ _ _ μf _ D

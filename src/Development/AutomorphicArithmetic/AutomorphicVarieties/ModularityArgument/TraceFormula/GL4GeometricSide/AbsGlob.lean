@@ -41,7 +41,6 @@ noncomputable section
 
 namespace UpperTheory.V.Z.GSp4Splitting.AbsoluteGlobal
 
-section Pure
 
 variable {ι : Type} {U : Type} [AddCommGroup U] [Module ℂ U]
 
@@ -257,9 +256,7 @@ private theorem prod_option [Fintype ι] (a : Option ι → Module.End ℂ U) (h
   rw [(hp.map a).prod_eq' (List.pairwise_map.2 ((Finset.nodup_toList _).imp fun hij => h _ _ hij))]
   simp [List.map_map, Function.comp_def]
 
-end Pure
 
-section Gen
 
 variable {U : Type} [AddCommGroup U] [Module ℂ U]
 
@@ -309,9 +306,7 @@ private theorem list_fix {ι : Type} (P : ι → Module.End ℂ U) (e : Module.E
     · exact hi _
     · rw [capp (h j), ih hl]
 
-end Gen
 
-section Adj
 
 variable {n : ℕ} {U : Type} [NormedAddCommGroup U] [InnerProductSpace ℂ U]
 
@@ -327,7 +322,6 @@ private theorem iso_adj {f g : Module.End ℂ U} (h : ∀ x y : U, ⟪f x, f y�
     ⟪f x, y⟫_ℂ = ⟪x, g y⟫_ℂ := by
   rw [← h x (g y), ← Module.End.mul_apply, hfg, Module.End.one_apply]
 
-end Adj
 
 end UpperTheory.V.Z.GSp4Splitting.AbsoluteGlobal
 

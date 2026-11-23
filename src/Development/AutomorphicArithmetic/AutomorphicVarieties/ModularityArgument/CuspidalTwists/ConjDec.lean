@@ -41,7 +41,6 @@ open scoped Matrix
 
 namespace UpperTheory.V.Cu
 
-section Alg
 
 variable {R R' : Type} [CommRing R] [CommRing R']
 
@@ -75,7 +74,6 @@ private theorem isUp_mid (a : R) {m t : M2 R} {s s' : R} (hm01 : m 0 1 = 0) (hm1
     | linear_combination (-(a * m 0 0)) * hs1
     | linear_combination (a * m 1 1) * hs2
 
-end Alg
 
 private theorem conj_dec {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {A A' : ValuationSubring Ω} {g s : G ℚ Ω}
     (hA : ∀ x, g x ∈ A' ↔ x ∈ A) (hs : s ∈ Dec (F := ℚ) A') : g⁻¹ * s * g ∈ Dec (F := ℚ) A :=

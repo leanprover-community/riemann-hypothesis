@@ -47,7 +47,6 @@ noncomputable section
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
-section SlopeTestRemainingChoices
 
 open NumberField MeasureTheory Filter GlobalTheory.CuspRep PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.Desc
 open scoped ENNReal
@@ -236,7 +235,6 @@ private theorem form_inS (hn : 1 ≤ n) (D : Dom E n 0) (π : CuspSub E n) (hθ 
     Submodule.le_topologicalClosure _ (Submodule.subset_span fun _ => ⟨ψ, hψ, w, hw, hws, hL.coeFn_toLp⟩),
     hL.coeFn_toLp⟩
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 

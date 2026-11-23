@@ -100,7 +100,6 @@ private theorem swap3 {α β γ : Type} (u : β → γ → ℂ) (v : β → γ �
       have : (fun x => u c x) = fun _ => 0 := funext (hCs c hcs)
       simp [this]
 
-section Tr
 
 variable {N : Type} [CommGroup N] (L : Subgroup N)
 
@@ -129,9 +128,7 @@ private theorem support_translate (φ : N → ℂ) (hφ : ∀ x, ∀ l ∈ L, φ
   have : (QuotientGroup.mk (x.out * t) : N ⧸ L) = Equiv.mulRight (QuotientGroup.mk t : N ⧸ L) x := by simp
   rwa [this] at hx
 
-end Tr
 
-section Conc
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n a b : ℕ}
 
@@ -184,7 +181,6 @@ private theorem ct_bi (h : a + b = n) (w : Pl E) (F : GLw n w → ℂ) (hF : IsH
     (fun k hk x hx => mul_mem (mul_mem (inv_mem hk) hx) hk) (fun y hy x => hF.2 y hy x) k
     (Subgroup.mem_prod.1 hk).1 (Subgroup.mem_prod.1 hk).2 hkN m
 
-end Conc
 
 theorem ctMul : CtMul := by
   intro E _ _ _ w n a b h f g hf hg

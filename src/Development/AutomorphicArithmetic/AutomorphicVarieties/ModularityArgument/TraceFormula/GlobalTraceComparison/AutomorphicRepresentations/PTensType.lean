@@ -51,7 +51,6 @@ namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
 attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -101,7 +100,6 @@ private theorem level_open_compact {b : ℕ} (U : Subgroup (Hf E n b)) (hU : IsO
     h1.inter (GroundTheory.Automorphic.AdelicGLn.isOpen_integralFiniteGL E n)
   exact ⟨h2, (GroundTheory.Automorphic.AdelicGLn.isCompact_integralFiniteGL E n).of_isClosed_subset (Subgroup.isClosed_of_isOpen _ h2) Set.inter_subset_right⟩
 
-end SlopeTestRemainingChoices
 
 theorem tensType_pf : TensType := by
   intro E _ _ _ n μa μb _ _ Ma Mb κ ka kb va vb R ψ U ha hb hψ hU hlev i j

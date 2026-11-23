@@ -219,7 +219,6 @@ private theorem prod_step {ι X : Type} [Fintype ι] [DecidableEq ι] [AddCommMo
         mul_comm]
   simpa using key Finset.univ
 
-section Glob
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {𝔞 : ι → Subalgebra ℂ (Module.End ℂ F)}
   (P : (∀ i, 𝔞 i) →* Module.End ℂ F) (hP : ∀ i (y : 𝔞 i), P (Pi.mulSingle i y) = y.1)
@@ -292,7 +291,6 @@ private theorem untw [Nontrivial F]
     rw [(LinearMap.IsIdempotentElem.isProj_range (P e) hE).trace, hr, finrank_span_singleton hx, Nat.cast_one]
   rw [h1, h5, smul_eq_mul, mul_one]
 
-end Glob
 
 end UpperTheory.V.Z.GSp4Splitting.MF
 

@@ -48,7 +48,6 @@ open PositivityTheory.RgTw (G)
 
 namespace UpperTheory.V.Z.GSp4Splitting
 
-section Iter
 
 variable {X Γ U ι : Type} [TopologicalSpace X] [T2Space X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X]
   [Monoid Γ] [TopologicalSpace Γ] [ContinuousMul Γ] [AddCommGroup U] [Module ℂ U]
@@ -122,7 +121,6 @@ private theorem iter_list [Fintype ι] (μ : Measure X) [SigmaFinite μ] [IsFini
   rw [← hσ, ← Equiv.prod_comp σ]
   simp only [e1]
 
-end Iter
 
 private theorem prod_single {ι M : Type} [DecidableEq ι] [Monoid M] (y : ι → M) :
     ∀ l : List ι, l.Nodup → ∀ w, (l.map fun v => (Pi.mulSingle v (y v) : ι → M)).prod w = if w ∈ l then y w else 1 := by

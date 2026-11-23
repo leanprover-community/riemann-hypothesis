@@ -37,7 +37,6 @@ open GlobalTheory.CuspRep PositivityTheory.Rg.BcB.Desc
 
 namespace UpperTheory.V.Z.GSp4Splitting
 
-section Abs
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
 
@@ -112,7 +111,6 @@ private theorem integral_eq_sum (μ : Measure G) [μ.IsMulLeftInvariant] {U : Su
     refine (integrable_indicator_iff (isOpen_cos hU a).measurableSet).2 ?_
     exact integrableOn_const (by rw [hmeas a]; exact hfin)
 
-end Abs
 
 theorem heckeMem : HeckeMem := by
   intro E _ _ _ n π K hKo hKc _ _ μf _ h hh ψ

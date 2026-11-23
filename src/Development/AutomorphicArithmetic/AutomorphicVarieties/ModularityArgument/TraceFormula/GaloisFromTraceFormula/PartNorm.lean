@@ -53,7 +53,6 @@ open UpperTheory.V.Z.Tf.GlobalTraceComparison UpperTheory.V.Z.Tf.GlobalTraceComp
 
 namespace UpperTheory.V.Z.Tf.GaloisFromTraceFormula
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -195,7 +194,6 @@ private theorem twist_zero (hA : AbsInf) {a n : ℕ} (ha : 1 ≤ a) (ρ : CuspSu
   rw [hM0] at hM
   simpa using hM
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Z.Tf.GaloisFromTraceFormula
 

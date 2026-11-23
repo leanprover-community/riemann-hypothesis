@@ -43,7 +43,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
-section Abstract
 
 variable {M ι : Type} [AddCommGroup M] [Module ℂ M]
 
@@ -66,7 +65,6 @@ private theorem prod_split [DecidableEq ι] (L : ι → Module.End ℂ M) (I₀ 
   exact (Finset.nodup_toList _).imp_of_mem fun ha hb hab =>
     hc _ (Finset.mem_toList.1 ha) _ (Finset.mem_toList.1 hb) hab
 
-end Abstract
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 

@@ -40,7 +40,6 @@ noncomputable section
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -117,7 +116,6 @@ private theorem cont_q (w : Pl E) (b : Bool) : Continuous (qw (E := E) n w b) :=
   · exact GlobalTheory.BCT.LocCpt.continuous_mapLoc w
   · exact (GlobalTheory.BCT.LocCpt.continuous_mapLoc w).comp cont_thF
 
-end SlopeTestRemainingChoices
 
 theorem slotFacts_pf : UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm.Places → SlotBasic := by
   intro hP E _ _ _ n S hS

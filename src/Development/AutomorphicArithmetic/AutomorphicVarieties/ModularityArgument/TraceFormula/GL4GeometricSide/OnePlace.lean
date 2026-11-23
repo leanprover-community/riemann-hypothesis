@@ -111,7 +111,6 @@ private theorem cyc_stab {x y : V} {a : Module.End ℂ V} (ha : a ∈ alg E1 E2)
 private theorem cyc_K {x : V} (a b : Fin n) : ∀ y ∈ cyc E1 E2 x, kF E1 E2 a b y ∈ cyc E1 E2 x :=
   fun _ hy => cyc_stab (add_mem (mem1 a b) (mem2 a b)) hy
 
-section Res
 
 variable {X : Submodule ℂ V}
 
@@ -252,7 +251,6 @@ private theorem iso_res {σ : Un n →* (V →ₗ[ℂ] V)} {σ' : Un n →* (X �
     have h2 : p x ∈ isoSp σ' E := hp (hSi hx)
     rwa [h1] at h2
 
-end Res
 
 end UpperTheory.V.Z.GSp4Splitting.OnePlaceCyclotomic
 

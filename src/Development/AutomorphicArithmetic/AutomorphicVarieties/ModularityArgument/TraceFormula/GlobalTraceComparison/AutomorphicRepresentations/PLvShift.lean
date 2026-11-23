@@ -36,7 +36,6 @@ open GlobalTheory.BCT GlobalTheory.PRep
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
-section SlopeTestRemainingChoices
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
 
@@ -112,7 +111,6 @@ private theorem fin_supp [TopologicalSpace G] [IsTopologicalGroup G] (K : Subgro
   obtain ⟨x, hx, hxq⟩ := Set.mem_iUnion₂.1 (ht hm)
   exact ⟨x, hx, (QuotientGroup.eq.2 hxq).trans (QuotientGroup.out_eq' q)⟩
 
-end SlopeTestRemainingChoices
 
 theorem lvShift_pf : LvShift := by
   intro G V _ _ _ _ _ ρ K hKo hKc u hu h hh

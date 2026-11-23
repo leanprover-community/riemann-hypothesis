@@ -69,7 +69,6 @@ private def trR (M : KMod n) (T : M.V →L[ℂ] M.V) : (M.V →L[ℂ] M.V) →L[
 private theorem trR_apply (M : KMod n) (T X : M.V →L[ℂ] M.V) :
     trR M T X = LinearMap.trace ℂ M.V ((X * T : M.V →L[ℂ] M.V) : M.V →ₗ[ℂ] M.V) := rfl
 
-section Abs
 
 variable [MeasurableSpace (Un n)] [BorelSpace (Un n)] (ν : Measure (Un n)) [ν.IsHaarMeasure] (M : KMod n)
   {ι : Type} [Fintype ι] {c : ι → Un n → ℂ} {F : ι → Mat n → ℂ} {F0 : Mat n → ℂ}
@@ -200,7 +199,6 @@ private theorem abs_act (hν : ν Set.univ = 1) (hk : IsMult μ M k val T') (T :
   refine integral_congr_ae (Filter.Eventually.of_forall fun κ => ?_)
   simp only [map_smul, smul_eq_mul, trR_apply, mul_comm]
 
-end Abs
 
 private theorem along_right {E : Type} [Field E] [NumberField E] [IsCMField E] (w : InfinitePlace E)
     (g : GlobalTheory.CuspRep.GA E n) (φ ψ : GlobalTheory.CuspRep.GA E n → ℂ) (κ : Un n) (h : ∀ x, ψ x = along w x φ κ.1) {y : Mat n}

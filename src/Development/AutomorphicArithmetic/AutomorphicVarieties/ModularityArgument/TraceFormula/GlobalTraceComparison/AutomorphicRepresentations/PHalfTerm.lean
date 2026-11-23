@@ -43,7 +43,6 @@ attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {ι : Type} [Fintype ι]
 
@@ -69,7 +68,6 @@ private theorem measurable_cnt (D : Dom E n 0) {Ω : Set (H E n 0)} (hΩ : IsCom
     (continuous_inv.mul continuous_const).mul continuous_id
   exact (measurable_one.indicator hΩ.isClosed.measurableSet).comp hc.measurable
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 

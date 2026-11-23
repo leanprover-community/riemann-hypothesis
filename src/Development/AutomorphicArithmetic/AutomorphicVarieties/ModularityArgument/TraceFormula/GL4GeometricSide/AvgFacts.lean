@@ -43,7 +43,6 @@ open scoped InnerProductSpace ComplexConjugate
 
 namespace UpperTheory.V.Z.GSp4Splitting
 
-section Haar
 
 variable {n : ℕ} [MeasurableSpace (Un n)] [BorelSpace (Un n)] (ν : Measure (Un n)) [ν.IsHaarMeasure]
 
@@ -79,9 +78,7 @@ private theorem invInv : ν.IsInvInvariant := by
   refine ⟨eq_of_univ ν _ ?_⟩
   simp [Measure.inv_apply]
 
-end Haar
 
-section Abs
 
 variable {n : ℕ} {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
 
@@ -265,7 +262,6 @@ private theorem tr_class (E : KMod n) {T : E.V →L[ℂ] E.V} (hT : ∀ k, T * E
     ((E.ρ g⁻¹ : E.V →L[ℂ] E.V) : E.V →ₗ[ℂ] E.V)) = _
   rw [LinearMap.trace_mul_comm, ← mul_assoc, e1, one_mul]
 
-end Abs
 
 theorem avgFacts : AvgFacts := by
   intro n _ _ ν _ V _ _ σ hσ E T P hT hP

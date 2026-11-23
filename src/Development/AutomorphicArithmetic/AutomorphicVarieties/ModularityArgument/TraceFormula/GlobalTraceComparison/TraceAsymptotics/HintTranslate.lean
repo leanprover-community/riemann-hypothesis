@@ -43,7 +43,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm
 
-section Generic
 
 variable {G : Type} [Group G]
 
@@ -151,7 +150,6 @@ private theorem isHecke_fn {ι : Type} (K : Subgroup G) (hK : IsCompact (K : Set
     exact ⟨rfl, rfl⟩
   | mul a b iha ihb => exact isHecke_conv K iha ihb
 
-end Generic
 
 private theorem isHecke_pair {G H : Type} [Group G] [Group H] [TopologicalSpace G] [TopologicalSpace H]
     [IsTopologicalGroup G] [IsTopologicalGroup H] (K₁ : Subgroup G) (K₂ : Subgroup H) {f : G → ℂ} {g : H → ℂ}

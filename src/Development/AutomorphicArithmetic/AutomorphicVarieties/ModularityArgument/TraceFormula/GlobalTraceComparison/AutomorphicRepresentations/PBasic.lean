@@ -47,7 +47,6 @@ namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
 attribute [local instance] borelH
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -78,7 +77,6 @@ private theorem logAbs_det_theta (g : GA E n) : logAbs (thetaA E n g).val.det = 
     exact (RingHom.map_det (conjAd E) _).symm
   rw [h, GlobalTheory.CompanionTheory.DegPairingProof.logAbs_conj D1.conjPlaces, logAbs_det_inv]
 
-end SlopeTestRemainingChoices
 
 theorem basic_pf : Basic := by
   intro E _ _ _ n hn

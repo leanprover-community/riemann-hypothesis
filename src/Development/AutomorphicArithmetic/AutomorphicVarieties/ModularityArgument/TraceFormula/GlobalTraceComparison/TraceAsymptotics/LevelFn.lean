@@ -43,7 +43,6 @@ open UpperTheory.V.Z.Tf.GlobalTraceComparison
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm
 
-section Generic
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
 
@@ -127,7 +126,6 @@ private theorem trc_ind_ne (ρ : Representation ℂ G V) (K K' : Subgroup G) (hl
     exact hne (Submodule.finrank_eq_zero.1 h0)
   exact mul_ne_zero (inv_ne_zero (by exact_mod_cast hi)) (by exact_mod_cast hpos)
 
-end Generic
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm
 

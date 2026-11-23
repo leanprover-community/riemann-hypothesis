@@ -53,7 +53,6 @@ open scoped ENNReal NumberField.AdeleRing InnerProductSpace ComplexConjugate
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 open scoped Pointwise
 
-section SlopeTestRemainingChoices
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [SecondCountableTopology G]
   [LocallyCompactSpace G] [MeasurableSpace G] [BorelSpace G]
@@ -217,7 +216,6 @@ private theorem exists_uniform_neighborhood {d : ℕ} (S : Eu d →ₗ[ℂ] (G �
     intro v hv
     exact ⟨x, ε, (half_pos hp).le, hv.2, fun k hk g hg => (h hv.1 hg k hk).le⟩
 
-end SlopeTestRemainingChoices
 
 private theorem exists_positive_period_line {K : Type} [Field K] [NumberField K] (μ : Measure (G1 K (2 + 2))) [μ.IsHaarMeasure]
     {μ₂ : Measure (G1 K 2)} {τ₁ τ₂ : Submodule ℂ (L2 μ₂)} {D : TypeDat K (2 + 2)} {d : ℕ} (A : Line μ τ₁ τ₂ D d) :

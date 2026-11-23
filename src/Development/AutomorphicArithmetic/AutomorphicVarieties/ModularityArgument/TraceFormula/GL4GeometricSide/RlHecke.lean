@@ -110,7 +110,6 @@ private theorem integral_invol {X : Type} [TopologicalSpace X] [MeasurableSpace 
   push_cast
   field_simp
 
-section Grp
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
 
@@ -195,9 +194,7 @@ private theorem integral_aut (μ : Measure G) [μ.IsHaarMeasure] (K : Subgroup G
     have := hF a _ hb
     rwa [mul_inv_cancel_left] at this
 
-end Grp
 
-section Conc
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -283,7 +280,6 @@ private theorem form_R {π : CuspSub E n} {K : Subgroup (GL (Fin n) (Af E))} (hK
       map_add' := fun _ _ => rfl
       map_smul' := fun _ _ => rfl }
 
-end Conc
 
 theorem rlHecke :
     HeckeMem → RlHecke := by

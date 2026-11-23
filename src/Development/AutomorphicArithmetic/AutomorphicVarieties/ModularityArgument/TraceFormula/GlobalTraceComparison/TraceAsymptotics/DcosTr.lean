@@ -122,7 +122,6 @@ private theorem exists_pow_trace {W : Type} [AddCommGroup W] [Module ℂ W] [Fin
   refine Multiset.map_congr rfl fun χ _ => ?_
   simp
 
-section Abs
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
 
@@ -184,9 +183,7 @@ private theorem twTr_eq (ρ : Representation ℂ G V) (K I : Subgroup G) (x : G)
   rw [dite_eq_left hst, trace_move (fixed_eq ρ I) _ hst (((I.relIndex K : ℕ) : ℂ)⁻¹ • hk ρ I x)
     fun v => levOp_eq ρ K I x hx f hf v, map_smul, smul_eq_mul]
 
-end Abs
 
-section Lev
 
 variable {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V]
 
@@ -197,9 +194,7 @@ private theorem trc_eq (ρ : Representation ℂ G V) (K I : Subgroup G) (hKo : I
     trc ρ K f = twTr ρ K I f LinearMap.id :=
   _root_.UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.trc_eq ρ K I hKo hKc hIo hIc hIK x f hf hfd
 
-end Lev
 
-section Loc
 
 open ValuativeRel GlobalTheory.SmGL
 
@@ -253,7 +248,6 @@ private theorem exists_hk_trace {V : Type} [AddCommGroup V] [Module ℂ V] (ρ :
   rw [hpow]
   exact hne
 
-end Loc
 
 private theorem v_lt_one {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {x : L} (h : Formalism.UG.ordL x = 1) :
     Valued.v x < 1 := by

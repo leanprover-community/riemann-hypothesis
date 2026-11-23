@@ -49,7 +49,6 @@ namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Cusp
 open GlobalTheory.Mem.Chr.CharModel
 open scoped nonZeroDivisors
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -88,9 +87,7 @@ private theorem logFin_eq (t : (Af E)ˣ) : logFin E t = -∑ᶠ w, Real.log ‖(
     push_cast
     exact zpow_ne_zero _ (hq v)
 
-end SlopeTestRemainingChoices
 
-section Aux2
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -101,9 +98,7 @@ private theorem logAbs_eq_logNorm (u : (Ad E)ˣ) : PositivityTheory.Rg.BcB.logAb
   rw [Real.log_pow, DiscreteGroups.T1.G.norm_cV_eq, DiscreteGroups.T1.G.mult_eq_two]
   rfl
 
-end Aux2
 
-section Aux3
 
 open UpperTheory.V.Cj.S (Pl)
 
@@ -137,7 +132,6 @@ private theorem chi_inf (z : ℂ) (k : Kinf E N) :
   rw [PositivityTheory.Rg.Rs.InducedTensorMap.cf, map_one, mul_one] at h
   rw [h, Units.val_one]
 
-end Aux3
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Cusp
 

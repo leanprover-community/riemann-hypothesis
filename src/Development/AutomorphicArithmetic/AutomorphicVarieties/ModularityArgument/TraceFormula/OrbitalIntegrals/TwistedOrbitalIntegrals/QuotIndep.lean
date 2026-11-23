@@ -41,7 +41,6 @@ public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 open MeasureTheory Topology PositivityTheory.Rg.Tf.Loc
 open scoped ENNReal
 
-section Core
 
 variable {G T : Type} [Group G] [MeasurableSpace G] [MeasurableMul₂ G] [MeasurableInv G] [Group T] [MeasurableSpace T] [MeasurableInv T]
   {μ : Measure G} [μ.IsMulLeftInvariant] [SFinite μ] {ν : Measure T} [SFinite ν] {j : T →* G}
@@ -108,7 +107,6 @@ private theorem wd_eq [ν.IsInvInvariant] (hj : Measurable j) {F : G → ℂ} (h
   refine lint_eq hj (measurable_one.indicator (hF hA)) (fun t g => ?_) hm h hm' h'
   by_cases hg : F g ∈ A <;> simp [Set.indicator, hFH, hg]
 
-end Core
 
 theorem UpperTheory.V.Z.Tf.Orb.quotIndep :
     UpperTheory.V.Z.Tf.Orb.QuotIndep := by

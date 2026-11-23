@@ -50,7 +50,6 @@ namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
 attribute [local instance] PositivityTheory.Rg.BcB.E.borelH borelSpace_H
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -153,7 +152,6 @@ private theorem pair_rt (D : Dom E n 0) {a b : GA E n → ℂ} (ha : Slab D a) (
   simp only [ldet_shift hg] at h
   exact h
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 

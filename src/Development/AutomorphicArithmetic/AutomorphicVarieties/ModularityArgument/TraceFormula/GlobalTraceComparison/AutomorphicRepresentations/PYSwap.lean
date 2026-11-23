@@ -42,7 +42,6 @@ noncomputable section
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -110,7 +109,6 @@ private theorem pf_sing_twist (S : Set (Pl E)) (N : ∀ w : Pl E, Subgroup (GLw 
     · rw [Set.indicator_of_notMem (show qw n v true g ∉ (KGL v (n := n) : Set (GLw n v)) from fun e => hm (h.1 e)),
         Set.indicator_of_notMem (show qw n v false g ∉ (KGL v (n := n) : Set (GLw n v)) from hm)]
 
-end SlopeTestRemainingChoices
 
 theorem ySwap_pf : SlotBasic → PfHecke → ProdOp → YSwap := by
   intro hSF hPH hPO E _ _ _ n S Z N hS hZ hG π y w hw f hf x x' hx
