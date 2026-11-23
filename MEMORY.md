@@ -35,7 +35,16 @@ Removed 3 empty `section Helpers` blocks that only contained unused `variable` d
 - IrrUnitaryTraceNeZeroCopyFinDSX.lean (Development): `{G : Type} [Group G] [...]` never referenced
 
 ### Workflow fixes confirmed working
-Both label-pr.yml and challenge-files.yml now pass on fork PRs (see above). Push of batch 2 completed at `8ce0acc68ff`.
+Both label-pr.yml and challenge-files.yml now pass on fork PRs (see above). Batch 2 commit: `8ce0acc68ff`.
+
+## Batch 3 — Deduplicate open statements (2026-11-23)
+
+### Duplicate "open X" removal
+Removed ~4,747 duplicate `open ... in` / `open scoped ...` declarations across 1,278 files. Common patterns removed:
+- `"open Classical in"` appearing 2-7 times in same file → keep 1
+- All other exact-duplicate `open` statements → keep first occurrence
+
+This is purely cosmetic boilerplate cleanup; no semantic change. Commit: `3fa9f7abeef`.
 
 ## PR Conventions
 
