@@ -43,27 +43,19 @@ import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.NormSmal
 section
 noncomputable section
 namespace GlobalTheory.GoodFock
-section Ring
 open ReciprocityTheory.ChartRestriction.DS.Lap.Capelli Finset
 variable {U : Type} [Ring U] [Algebra ℂ U] {n b : ℕ}
-end Ring
-section Poly
 open Formalism.BasicNotions Formalism.IndefR.Links GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators MvPolynomial
 variable {D : D7} {a b : ℕ} (τ : D.what₂.Tau) (ε : Fin a → Bool) (ε' : Fin b → Bool)
-end Poly
-section Theta
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum
 open MeasureTheory Matrix GlobalTheory.ChainFr GlobalTheory.FockIndep GlobalTheory.OrientedHeis GlobalTheory.MixModel Complex
 open GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators (raiO lowO fockS)
 open ReciprocityTheory.ChartRestriction.DS.Lap.Capelli
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {V W : HSp D}
-end Theta
-section Quot
 open Matrix GlobalTheory.ChainFr GlobalTheory.SquareComm GlobalTheory.RealQuot Complex
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {M X : HSp D}
-end Quot
 section Main
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset
 open Formalism.DivisionValues (vw)

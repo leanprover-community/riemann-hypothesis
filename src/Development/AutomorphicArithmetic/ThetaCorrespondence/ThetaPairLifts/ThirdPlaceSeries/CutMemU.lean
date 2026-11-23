@@ -45,15 +45,11 @@ open GlobalTheory.StepData GlobalTheory.SplitWeil
 open ValuativeRel
 noncomputable section
 namespace GlobalTheory.PenLevOff
-section Cut
 open GlobalTheory.FinPl GlobalTheory.FinPl.SetCut
 
 variable {D : D7}
-end Cut
-section Level
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {u : B.Word} {a : I.ι}
   {Ch : ℕ → Type} {A : TwDat I l Z u a Ch}
-end Level
 end GlobalTheory.PenLevOff
 end
 

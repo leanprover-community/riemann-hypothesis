@@ -64,11 +64,9 @@ variable {D : D7}
 end GlobalTheory.MiTop.TailColumnRecursion
 namespace GlobalTheory.MiTop.TailColumnRecursion
 variable {D : D7}
-section G
 variable {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {A : ColumnsAtT D.R C} {Pm : PeriodMap D.R C}
     {M : MemberForms D.what₂.LL D.what₂.embLL D.what₂.places D.what₂.Tau (D.hcW u) C A Pm}
     {bad : Set (IsDedekindDomain.HeightOneSpectrum (𝓞 D.host.F))} {K : ClassesAtPrimes M bad} {okW : D.what₂.places.Pl → Prop}
-end G
 end GlobalTheory.MiTop.TailColumnRecursion
 namespace GlobalTheory.MiTop.TailColumnRecursion
 variable {D : D7}

@@ -38,7 +38,6 @@ open GlobalTheory.ExportSeries hiding Base
 
 
 set_option linter.unusedVariables false
-section L1
 variable {B : Base} {C : Cols B} {a : Late B C} (b : Late B C)
 private def weight_pz {n : ℕ} (x : ExportSeries.Weight a.D n) : ExportSeries.Weight b.D n where
   p := (by with_unfolding_all exact (x.p :))
@@ -172,8 +171,6 @@ private theorem xiCoef_eq_pz : @ExportSeries.Base.xiCoef b.D = @xiCoefB_pz B C a
   delta ExportSeries.Base.xiCoef ExportSeries.Base.xi ExportSeries.Base.vecFam
   rewrite [vecAt_eq_pz a b]
   with_unfolding_all rfl
-end L1
-section L2
 open GlobalTheory.SeriesTie
 variable {B : Base} {C : Cols B} {a : Late B C} (b : Late B C)
 private def recip_pz {Ω : Type} [i1 : Field Ω] [i2 : Algebra a.D.host.E Ω] (x : Recip a.D Ω) : @Recip b.D Ω i1 ((i2)) :=
@@ -184,9 +181,7 @@ private theorem recip_good_pz {Ω : Type} [i1 : Field Ω] [i2 : Algebra a.D.host
 private theorem choice_imp_pz {ch} (h : @IsChoice a.D ch) : @IsChoice b.D ((ch)) :=
   { pair := (by with_unfolding_all exact (h.pair :))
     one := (by with_unfolding_all exact (h.one :)) }
-end L2
 abbrev lt_pz {B : Base} {C : Cols B} (c : Late B C) (n : NStage B C c.W) : Late B C := ⟨c.W, c.V, c.S, n, c.G⟩
-section L2
 variable {B : Base} {C : Cols B} {c : Late B C} {a : NStage B C c.W} (b : NStage B C c.W)
 section
 variable {N : NData (lt_pz c a).D.R (lt_pz c a).D.host (lt_pz c a).D.what₂} {X : NTw (lt_pz c a).D.R (lt_pz c a).D.host (lt_pz c a).D.what₂ (lt_pz c a).D.LL0 N}
@@ -280,8 +275,6 @@ private theorem rat_imp_pz {hρ : ρ.Good} (h : SeriesTie.Rat hρ rd) :
   rewrite [isDatum_eq_pz (c := c) a b, theta_eq_pz (lt_pz c a) (lt_pz c b), genSet_eq_pz (lt_pz c a) (lt_pz c b), xiCoef_eq_pz (lt_pz c a) (lt_pz c b)]
   with_unfolding_all refine h
 end
-end L2
-section L3
 variable {B : Base} {C : Cols B} {c : Late B C} {a : NStage B C c.W} (b : NStage B C c.W)
   {Γ : Type} [i1 : Group Γ] [i2 : Fintype Γ] {Pl0 I0 T : Type}
   {A3 : FamIn3 (lt_pz c a).D.what₂.LL Γ Pl0 I0 (List ℕ) T (lt_pz c a).D.R.m} {Ks : Type} [i3 : Field Ks] [i4 : NumberField Ks]
@@ -331,7 +324,6 @@ private theorem norm_from_pz
     · intro F
       with_unfolding_all exact hPoly F
   · with_unfolding_all exact hPow
-end L3
 section L4
 variable {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T} {P : Pre2 K w}
   (x : St P) (l : _root_.GlobalTheory.HeightCounting.Up.SecondIntermediateLevel hL x) (th : NTh (Dof x).R (Dof x).host (Dof x).what₂ (Dof x).LL0 (Dof x).nd (Dof x).ntw (Dof x).nexp)

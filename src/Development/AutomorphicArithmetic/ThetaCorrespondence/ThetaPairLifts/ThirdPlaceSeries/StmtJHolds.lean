@@ -42,9 +42,7 @@ end
 noncomputable section
 namespace GlobalTheory.JumpSets
 variable {D : D7}
-section HC
 variable {R : Ranks} (P : HCParam R)
-end HC
 end GlobalTheory.JumpSets
 end
 noncomputable section
@@ -55,17 +53,13 @@ end
 noncomputable section
 namespace GlobalTheory.JumpSets
 variable {D : D7}
-section JB
 variable {L : SizeData₂ D} {j : ℕ} {ρ : D.what₂.Tau}
-end JB
 end GlobalTheory.JumpSets
 end
 noncomputable section
 namespace GlobalTheory.JumpSets
 variable {D : D7}
-section Core
 variable {L : SizeData₂ D} {j : ℕ} {ρ : D.what₂.Tau}
-end Core
 end GlobalTheory.JumpSets
 end
 noncomputable section

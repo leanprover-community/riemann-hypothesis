@@ -55,9 +55,7 @@ open scoped TensorProduct
 set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CovTop.HodgeGapBounds
-section Weights
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Geo.Tor.Host E} {Dw : Datum H}
-end Weights
 end GlobalTheory.CovTop.HodgeGapBounds
 namespace GlobalTheory.CovTop.HodgeGapBounds
 theorem reading_alt : _root_.GlobalTheory.CovTop.LiftsCondition fun Fm x _ ι p i _ _ => (i : ℕ) + 1 < (Fm.D x ι).R.m → LawsJ p.T ∧ 1 ≤ (dat p i).p ∧

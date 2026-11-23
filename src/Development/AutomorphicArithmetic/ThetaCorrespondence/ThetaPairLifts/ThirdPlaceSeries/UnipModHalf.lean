@@ -42,9 +42,7 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct
 noncomputable section
 namespace GlobalTheory.LevelUnip
-section Res
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
-end Res
 variable {D : D7}
 end GlobalTheory.LevelUnip
 open GlobalTheory.LevelUnip in

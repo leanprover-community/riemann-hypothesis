@@ -46,10 +46,8 @@ variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [Is
 end GlobalTheory.MiTop.Scale.Glue
 namespace GlobalTheory.MiTop.Scale
 variable {D : D7}
-section Com
 variable {c : Comm D} {v : VCom c} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {ι : Type} {o : TDat c k ι}
-end Com
 end GlobalTheory.MiTop.Scale
 namespace GlobalTheory.MiTop
 open Formalism.MainNotions Formalism.DivisionValues Formalism.L2 Formalism.L2.Indef Formalism.L2.Rows Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links GlobalTheory.MiS GlobalTheory.Core.Mi GlobalTheory.Fam GlobalTheory.MiTop.Scale

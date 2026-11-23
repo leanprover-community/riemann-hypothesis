@@ -82,7 +82,6 @@ structure GeometricFamily.Is : Prop where
   bot : (∀ h0, a.d.B.lev = (commOf (_root_.GlobalTheory.Fam.pk_z W) u a.g).B 0 D.R.rS h0) ∧ a.d.b = a.g.b 0 ∧ a.d.B.Adapted (W.S.tr u).wt ∧
     ∀ r, (a.d.B.d.i₀ *ᵥ vecB a.d.B.o a.d.B.ζ) r = W.S.X.ιE (W.S.X.zR u (Fin.cast (GlobalTheory.Core.Mi.rank_eq W.S.X W.Q.instEq) r))
 end Gen
-section True
 open GlobalTheory.Mem GlobalTheory.Mem.Col2
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {L : SizeData₂ (I.rec7 l Z)}
   {hT : GatTies (I.rec7 l Z)} {Gi : Formalism.MainNotions.G.Inst (I.rec7 l Z) L} {Gl : Formalism.MainNotions.G.LatInst (I.rec7 l Z)} {Kc : Formalism.MainNotions.G.Consts}
@@ -98,7 +97,6 @@ structure GeometricFamilyConditions (W : _root_.GlobalTheory.MiS.RealPackAlt ex)
   xi : ∀ t, ChrEq ((_root_.GlobalTheory.Fam.pk_z W).xi t) (I.xi (W.P.I.tup t))
   Q : ∀ t PP, PP ∈ (_root_.GlobalTheory.Fam.pk_z W).Q t ↔ PP ∈ Formalism.L2.Col.QE I.sel (I.tup (W.P.I.tup t) : Formalism.L2.DIV.Chr B.fields.F B.fields.E B.fields.K)
   top1 : ∀ u, ∃ j, _root_.GlobalTheory.Fam.LeadingReadAt W u j 1
-end True
 end GlobalTheory.Fam
 end
 end

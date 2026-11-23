@@ -117,7 +117,6 @@ private theorem isHeckeDatum_eq_pz (ρ : Setup (Dof x).ntw) :
   refine propext ⟨fun d => ?_, fun d => ?_⟩
   · exact (by with_unfolding_all exact ((⟨(d.elt), (d.reps), (d.det)⟩ : ρ.IsHeckeDatum ((i)) ((j)) b k ((P)) ((α)) ((R)) ((z))) : _))
   · exact ⟨(by with_unfolding_all exact (d.elt :)), (by with_unfolding_all exact (d.reps :)), (by with_unfolding_all exact (d.det :))⟩
-section Cell
 open GlobalTheory.SeriesTie
 variable {ρ : Setup (Dof x).ntw} {i : (DL x L).ntw.Tw} {j : Fin (DL x L).R.m} {c : Bool}
 private def rdL_pz (rd : Rd ρ (Dof x).nexp ((i)) ((j)) c) : Rd (setupL L ρ) (DL x L).nexp i j c := by
@@ -169,7 +168,6 @@ private theorem isNormL_pz (ρ : Setup (Dof x).ntw) (i : (DL x L).ntw.Tw) (j : F
     refine ⟨hν, a, ⟨kc% g, kc% cR, kc% cL, ?_, kc% u, kc% hu, kc% ha⟩, kc% hn⟩
     rewrite [famTie_eq x.o.Z (oL x L).Z]
     exact_by_kernel hF
-end Cell
 section Comparison₂
 variable (l : _root_.GlobalTheory.HeightCounting.Up.StrictHenselianAcyclicLevel hL x)
 theorem rat_setupL_iff_rat_realRd {ρ : Setup (Dof x).ntw} (h : ρ.Good) (i : (DL x L).ntw.Tw) (j : Fin (DL x L).R.m) (c : Bool) (ν : ℂ) :

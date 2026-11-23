@@ -40,9 +40,7 @@ open GlobalTheory.TameLabels GlobalTheory.AntiRamConj GlobalTheory.TwistDet
 open GlobalTheory.TypeLeaf (WildOne FrobDense)
 open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (OnW IsBaseChange IsGaloisRepOf IsReduction Zbar GaloisReps GalE toFb)
 open scoped Pointwise
-section Wild
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
-end Wild
 section Row
 variable {D : D7} (Y : NTw D.R D.host D.what₂ D.LL0 D.nd)
 theorem charpoly_cConj_eq_charpoly_inv_of_mem_ine (hD : FrobDense D) {n : ℕ} {π : D.naut.CG n} (hπ : D.naut.csd π) {l : ℕ} [Fact l.Prime]

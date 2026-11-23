@@ -46,9 +46,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.RowChain
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 variable {D : D7}
-section Lin
 variable {ψ : AddChar (AF D.host.F) ℂ} {T₀ : HSp D}
-end Lin
 variable {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc}
 end GlobalTheory.RowChain
 namespace GlobalTheory.RowChain

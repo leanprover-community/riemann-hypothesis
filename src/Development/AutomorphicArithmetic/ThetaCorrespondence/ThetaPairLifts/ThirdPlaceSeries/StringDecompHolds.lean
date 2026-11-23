@@ -46,19 +46,13 @@ open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Fo
 noncomputable section
 namespace GlobalTheory.StringDecomp
 open Formalism.MainNotions.SumRepresentations.At Topology
-section Alg
 variable {Γ : Type} [Group Γ] {K : Type} [Field K]
-end Alg
 end GlobalTheory.StringDecomp
 namespace GlobalTheory.StringDecomp
-section Frob
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
-end Frob
 end GlobalTheory.StringDecomp
 namespace GlobalTheory.StringDecomp
-section Eps
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (A : NAut N) (i : N.Loc)
-end Eps
 end GlobalTheory.StringDecomp
 namespace GlobalTheory.StringDecomp
 theorem exists_stringRep_alt_alt (D : D7) (hA : _root_.Formalism.MainNotions.SumRepresentations.AdmissibleDatum D) (i : D.nd.Loc) (P : D.naut.AV i)

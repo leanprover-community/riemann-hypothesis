@@ -34,11 +34,8 @@ noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 namespace Formalism.L2.Rows
 open Formalism.L2.DIV Formalism.L2.Indef
-section Joint
 variable (D : D7) {Gp : Type} [Group Gp] [Fintype Gp] {Pl0 I0 Ty T : Type}
   (A3 : FamIn3 D.what₂.LL Gp Pl0 I0 Ty T D.R.m)
-end Joint
-section Bundle
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {Kc : MainNotions.G.Consts} {Y : DivX D}
   {cX : ExtraC}
 variable {ex : Extra D L hT Gi Gl Kc Y cX}
@@ -53,7 +50,6 @@ structure RowSideDeterminedAlt (T : _root_.Formalism.L2.TiedDataSKAlt ex) (P : R
     Dcf P.Zs = P.Dc ∧ HEq (Spf P.Zs) P.Sp
   gamDvd : (∀ (t : P.T) (c : (P.A3.A.fam.R t).S.Cl), Fintype.card ((P.A3.A.fam.R t).S.Gam c) ∣ (D.mem D.u₀).C.DGam) ∧
     ∀ (j : Fin D.R.m) (t : P.T) (c : (P.A3.A.fam.L j t).S.Cl), Fintype.card ((P.A3.A.fam.L j t).S.Gam c) ∣ (D.mem D.u₀).C.DGam
-end Bundle
 end Formalism.L2.Rows
 end
 end

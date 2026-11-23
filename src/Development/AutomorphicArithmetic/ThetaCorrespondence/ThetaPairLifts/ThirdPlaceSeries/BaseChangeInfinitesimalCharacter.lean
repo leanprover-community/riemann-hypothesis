@@ -45,14 +45,10 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeR
 noncomputable section
 namespace GlobalTheory.LiftInfRef
 open Matrix Formalism.L2.NG GlobalTheory.AlgWtHW NumberField
-section Conj
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
-end Conj
 end GlobalTheory.LiftInfRef
 namespace GlobalTheory.LiftInfRef
-section Conj2
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
-end Conj2
 end GlobalTheory.LiftInfRef
 namespace GlobalTheory.LiftInfRef
 open GlobalTheory.LiftRef

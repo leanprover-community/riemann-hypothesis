@@ -53,10 +53,8 @@ open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.BigOn.Exp.SerBase
-section BaseChange
 variable {E K₀ K ι : Type} [Field E] [NumberField E] [Field K₀] [NumberField K₀] [Field K] [NumberField K] [Fintype ι]
   {n : ℕ}
-end BaseChange
 end GlobalTheory.BigOn.Exp.SerBase
 namespace GlobalTheory.BigOn.Exp.SerBase
 theorem latIoAt_alt : _root_.GlobalTheory.BigOn.Exp.SerBase.LatticeInclusionAt := by

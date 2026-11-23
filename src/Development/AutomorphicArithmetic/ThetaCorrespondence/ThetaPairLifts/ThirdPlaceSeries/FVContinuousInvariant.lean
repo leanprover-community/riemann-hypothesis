@@ -44,9 +44,7 @@ namespace GlobalTheory.ThetaFormV
 open Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR GlobalTheory.ThetaTri
 open scoped Topology
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-section Frame
 variable {D : D7} {V : HSp D} {n : ℕ}
-end Frame
 section Forms
 variable {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {D : D7} {P : _root_.GlobalTheory.NPin.CharacterChoiceData hL D} {X : GlobalTheory.NJoin.RealAt D P.cf P.C P.tp}
 theorem eW_cast_cV_rho_eq_wt_rho (A : GlobalTheory.NJoin.Agree X P.M P.rep) {μ : D.what₂.Tup} (hμ : Formalism.IndefR.RecTie.Used0 D μ)

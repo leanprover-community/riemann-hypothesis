@@ -40,9 +40,7 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.
 namespace GlobalTheory.BigTop.Fun
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FunObj.SqNum GlobalTheory.SignedHC
-section Arith
 variable {D : D7}
-end Arith
 theorem wt_tie_alt (h : _root_.GlobalTheory.BigTop.Fun.SizeAtAlt) : _root_.GlobalTheory.BigTop.Fun.LeafWeightBound @Comparison₂ := by
   obtain ⟨e, he, h⟩ := h
   refine ⟨0, fun CF _ => ⟨e, he, fun eps h1 h2 => ?_⟩⟩

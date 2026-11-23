@@ -70,7 +70,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsRte
 section
 noncomputable section
 namespace GlobalTheory.FinMatch
-section Local
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField Matrix
 open scoped TensorProduct
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.WeilM GlobalTheory.SplitFlip GlobalTheory.StdPairCone
@@ -165,8 +164,6 @@ private theorem local_matching_decomposition {B : Base F E} {a a' : ℕ} {G : Ge
   · have := (hz φ hφ 0 (zero_mem _)).1 (by rw [h0, map_zero])
     rw [eφ, map_zero, s0] at this
     exact this
-end Local
-section Pair
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField Matrix
 open Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints GlobalTheory.Grid GlobalTheory.ChainFr GlobalTheory.SquareComm GlobalTheory.FinMatch
 open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Classical
@@ -221,7 +218,6 @@ private theorem pure_tensor_ne_zero {ι : Type} {N : ι → Type} [∀ i, AddCom
   intro e
   have := hΛ ξ h
   simp [e, hl] at this
-end Pair
 section Main
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)

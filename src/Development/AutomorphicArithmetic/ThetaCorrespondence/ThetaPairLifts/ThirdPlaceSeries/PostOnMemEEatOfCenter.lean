@@ -46,9 +46,7 @@ noncomputable section
 
 open Formalism.BasicNotions.TH Formalism.IndefR.Lev
 namespace GlobalTheory.MiTop.CentralShift
-section General
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S}
-end General
 section Main
 open GlobalTheory.MiTop.CentralShift
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}

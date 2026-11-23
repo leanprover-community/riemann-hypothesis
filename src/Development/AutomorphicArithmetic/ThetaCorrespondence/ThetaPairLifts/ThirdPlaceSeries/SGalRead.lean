@@ -129,9 +129,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepO
 open GlobalTheory.Triple (IsParam IsResidual Reading IsChars IsTripleWith IsTripleFor IsTripleOf IsTriple muBase hframe jIdx)
 open GlobalTheory.TwistDet GlobalTheory.GalChar Formalism.L2.Host
 variable {D : D7}
-section Row
 variable {σ : D.what₂.FT} {π : D.naut.CG D.R.r} {w : D.what₂.places.Pl}
-end Row
 end GlobalTheory.TripleAdm
 end
 end
@@ -198,9 +196,7 @@ namespace GlobalTheory.TripleResidual
 open GlobalTheory.TameLabels GlobalTheory.AntiRamConj GlobalTheory.TwistDet
 open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (OnW IsBaseChange IsGaloisRepOf IsReduction Zbar GaloisReps GalE toFb)
 open scoped Pointwise
-section Row
 variable {D : D7} (Y : NTw D.R D.host D.what₂ D.LL0 D.nd)
-end Row
 end GlobalTheory.TripleResidual
 end
 end

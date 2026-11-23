@@ -48,10 +48,8 @@ import Mathlib.Topology.Separation.CompletelyRegular
 section
 noncomputable section
 namespace GlobalTheory.ArchRep
-section Real
 open MeasureTheory Filter Topology GlobalTheory.RealWeil Matrix
 variable {l : Type} [Fintype l] [DecidableEq l]
-end Real
 section Haar
 open MeasureTheory
 end Haar

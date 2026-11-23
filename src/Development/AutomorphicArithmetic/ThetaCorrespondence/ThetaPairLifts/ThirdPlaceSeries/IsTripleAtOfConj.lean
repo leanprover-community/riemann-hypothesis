@@ -43,10 +43,8 @@ open GlobalTheory.GalChar (IsGal toQ block)
 open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf Zbar GalE toFb)
 open GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary (embOver)
 variable {D : D7}
-section Reading
 variable (X : NTw D.R D.host D.what₂ D.LL0 D.nd)
 variable {X} {i : X.Tw} {b : Bool}
-end Reading
 section Comparison₂
 variable (C : CharFrame D) (art : Ideles D.host.E →* Gab D.host.E D.nd.Om) {X : NTw D.R D.host D.what₂ D.LL0 D.nd}
 structure IsGaloisTripleWithReduction {i : X.Tw} {b : Bool} (ρ : Reading X i b) (s : X.Sig i) (σ : D.what₂.FT) (π : D.naut.CG D.R.r)
@@ -76,16 +74,10 @@ end Comparison₂
 def IsGaloisTripleOfExpansion {X : NTw D.R D.host D.what₂ D.LL0 D.nd} (Y : NExp D.R D.host D.what₂ D.LL0 D.nd X) : Prop :=
   ∃ (C : CharFrame D) (art : Ideles D.host.E →* Gab D.host.E D.nd.Om), _root_.GlobalTheory.Triple.IsGaloisTripleForExpansion C art Y
 def IsGaloisTriple (D : D7) : Prop := _root_.GlobalTheory.Triple.IsGaloisTripleOfExpansion D.nexp
-section ReadingAPI
 variable {X : NTw D.R D.host D.what₂ D.LL0 D.nd} {i : X.Tw} {b : Bool}
-end ReadingAPI
-section Chars
 variable (C : CharFrame D)
 variable {C} {X : NTw D.R D.host D.what₂ D.LL0 D.nd} {i : X.Tw} {b : Bool} {art : Ideles D.host.E →* Gab D.host.E D.nd.Om}
-end Chars
-section Values
 variable (μ : HChar D.host.E) (π : D.naut.CG D.R.r) (P : PlE D.host)
-end Values
 section API
 variable {C : CharFrame D} {art : Ideles D.host.E →* Gab D.host.E D.nd.Om} {X : NTw D.R D.host D.what₂ D.LL0 D.nd}
   {i : X.Tw} {b : Bool} {ρ : Reading X i b} {s : X.Sig i} {σ : D.what₂.FT} {π : D.naut.CG D.R.r}

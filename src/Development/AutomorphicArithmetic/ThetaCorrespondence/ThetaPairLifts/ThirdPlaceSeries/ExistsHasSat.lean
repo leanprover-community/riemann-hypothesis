@@ -39,11 +39,9 @@ section
 noncomputable section
 namespace GlobalTheory.HeightCounting.Blocks
 open NumberField IsDedekindDomain Polynomial Filter
-section Satake
 open GlobalTheory.LFun GlobalTheory.PRep GlobalTheory.CuspRep Formalism.UG
 variable {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)} {n : ℕ}
 variable [_root_.NumberField.IsTotallyComplex E]
-end Satake
 section Local
 open GlobalTheory.CuspRep GlobalTheory.CuspRep.ParLaws GlobalTheory.WeilDeligne GlobalTheory.LocLanglands Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField

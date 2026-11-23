@@ -54,9 +54,7 @@ open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.SerRefPt
-section Core
 variable {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 I0 T0 : Type} {A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T0 D.R.m}
-end Core
 end GlobalTheory.SerRefPt
 namespace GlobalTheory.SerRefPt
 open GlobalTheory.RealGeo GlobalTheory.Unframe GlobalTheory.UnframePt
