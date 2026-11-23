@@ -68,4 +68,35 @@ class QueuePolicy(unittest.TestCase):
   with patch.object(q.ci,'git',side_effect=['a'*40,'\n'.join('src/A'+str(i)+'.lean'for i in range(9))]),patch.object(q.ci,'validate_inputs'),patch.object(q.ci,'sha256',return_value='same'):
    with self.assertRaisesRegex(ValueError,'eight changed'):q.plan(Path('/unused'),{'expected':{'candidate_head':'a'*40},'base_ref':'main','base_head':'b'*40})
 
+ def test_quota_drop_leaves_the_pr_and_runner_available(self):
+  from types import SimpleNamespace
+  from unittest.mock import patch
+
+  host = q.runner('gcp-small')
+  pr = {'number': 152, 'headRefOid': 'a' * 40, 'mergeable': 'MERGEABLE',
+        'changedFiles': 1, 'additions': 1, 'deletions': 0}
+  inventory = {'runners': [{'id': host['runner_id'], 'name': host['runner_name'],
+                            'status': 'online', 'busy': False,
+                            'labels': [{'name': host['label']}]}]}
+  ample = {'resources': {'core': {'remaining': 201}}}
+  low = {'resources': {'core': {'remaining': 199}}}
+
+  with tempfile.TemporaryDirectory() as tmp:
+   root = Path(tmp)
+   with patch.object(sys, 'argv', ['quick-schedule', '--state', tmp, '--once']), \
+        patch.object(self.queue, 'command', return_value=json.dumps([pr])), \
+        patch.object(self.queue, 'gh', side_effect=[ample, inventory, low, ample, inventory, ample]), \
+        patch.object(self.queue.subprocess, 'run',
+                     return_value=SimpleNamespace(returncode=1, stdout='', stderr='')) as dispatch:
+    self.queue.main()
+    dispatch.assert_not_called()
+    self.assertFalse((root / (self.queue.key(pr) + '.json')).exists())
+    self.assertFalse((root / f"host-{host['id']}.json").exists())
+
+    self.queue.main()
+    dispatch.assert_called_once()
+    self.assertEqual(dispatch.call_args.args[0][:3], ['gh', 'workflow', 'run'])
+    host_state = json.loads((root / f"host-{host['id']}.json").read_text())
+    self.assertEqual(host_state['phase'], 'held')
+
 if __name__=='__main__':unittest.main()

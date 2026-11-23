@@ -56,17 +56,20 @@ def main():
   def worker(pair):
    host,pr=pair;path=a.state/(key(pr)+'.json');hostfile=a.state/('host-'+host['id']+'.json');directory=a.state/key(pr);directory.mkdir(exist_ok=True);state=pr.get('resume',{'phase':'reserved','pr':pr['number'],'pr_head':pr['headRefOid'],'host':host['id']})
    def persist():save(path,state);save(hostfile,state)
-   persist()
    try:
     if state['phase']!='watching':
      quota=gh('rate_limit')['resources']['core']
-     if quota['remaining']<200:raise RuntimeError('quota reserve reached; held before POST')
+     # No dispatch was attempted, so leave the PR and runner available.
+     if quota['remaining'] < 200:
+      return
      state['phase']='dispatch_started';persist()
      r=subprocess.run(['gh','workflow','run','build-pr.yml','--repo',REPO,'--ref','main','-f','mode=quick-check','-f','pr_number='+str(pr['number']),'-f','quick_head='+pr['headRefOid'],'-f','quick_runner='+host['id']],capture_output=True,text=True,timeout=120)
      (directory/'dispatch.log').write_text(r.stdout+'\n'+r.stderr)
      match=re.search(r'https://github\.com/'+re.escape(REPO)+r'/actions/runs/([0-9]+)',r.stdout+'\n'+r.stderr)
      if r.returncode or not match:raise RuntimeError('uncertain dispatch outcome; do not redispatch automatically')
      state.update(phase='watching',run_id=match[1],run_url=match[0]);persist();print(json.dumps(state),flush=True)
+    else:
+     persist()
     for recovery in range(4):
      with(directory/'watch.log').open('a+')as log:
       offset=log.tell();watch=subprocess.run(['gh','run','watch',state['run_id'],'--repo',REPO,'--exit-status','--interval','120'],stdout=log,stderr=subprocess.STDOUT);log.flush();log.seek(offset);message=log.read(8192)
