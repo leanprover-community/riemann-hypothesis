@@ -231,8 +231,8 @@ theorem pair_chain (p : ℕ) {s r : ℕ} (S : SegData s) (aTop : Fin s → ℕ) 
     have n3 := Int.toNat_of_nonneg t3
     have n5 := Int.toNat_of_nonneg t5
     have eO : pairO mu Ai i = pairW mu i.val + pairSg mu Ai i := by unfold pairSg; ring
-    rw [levW, pairChain_lt mu lam (2 * i.val + 1) (by have := i.2; omega),
-      pairChain_lt mu lam (2 * i.val) (by have := i.2; omega)]
+    rw [levW, pairChain_lt mu lam (2 * i.val + 1) omega,
+      pairChain_lt mu lam (2 * i.val) omega]
     have e : (if i.val < S.sigma then (pairBlock S rz ry Ai mu lam jp).w i else (pairBlock S rz ry Ai mu lam jp).o i) -
         jE S (pairLevel S Ai mu) i.val = (pairW mu i.val).toNat := by
       by_cases hσ : i.val < S.sigma
@@ -251,8 +251,8 @@ theorem pair_chain (p : ℕ) {s r : ℕ} (S : SegData s) (aTop : Fin s → ℕ) 
         ⟨2 * i.val + 1, by omega⟩) := by
     intro i
     obtain ⟨t1, t2, t3, t4, t5, t6, -, -⟩ := pair_top hP.1 i
-    rw [levE, pairChain_lt mu lam (2 * i.val + 1) (by have := i.2; omega),
-      pairChain_lt mu lam (2 * i.val + 2) (by have := i.2; omega)]
+    rw [levE, pairChain_lt mu lam (2 * i.val + 1) omega,
+      pairChain_lt mu lam (2 * i.val + 2) omega]
     have e : (if i.val < S.sigma then coarseC p S aTop (pairBlock S rz ry Ai mu lam jp) i -
           (pairBlock S rz ry Ai mu lam jp).sg i else coarseC p S aTop (pairBlock S rz ry Ai mu lam jp) i) -
         jE S (pairLevel S Ai mu) i.val = Ci i - (pairSg mu Ai i).toNat := by
@@ -691,7 +691,7 @@ theorem kept_pair_of_three_lines {C0 CYb Cde Ck CD Cb CE1 CE2 Cc H : ℝ}
         (fun c => (hd.1 i c).2) (hd.2.2 i).1 (hd.2.2 i).2).1
       have hw := (hs.winA _ (pos_mem X.TT j i).1).2
       have hkY : 2 / (X.k * X.Y) ≤ 1 := by
-        rw [div_le_one (by have := hs.Y1; positivity)]
+        rw [div_le_one (positivity)]
         have := hs.k5
         have := hs.Y1
         nlinarith

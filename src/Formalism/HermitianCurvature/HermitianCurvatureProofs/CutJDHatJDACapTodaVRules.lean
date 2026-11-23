@@ -115,7 +115,7 @@ theorem mirror_torus_cell_holds : TorusCellv := by
       exact ⟨1, glev_one _, fun _ _ => by simp⟩
     | succ n ih =>
       intro i hi
-      let j : Fin r := ⟨l.val + 1 + n, by have := i.isLt; omega⟩
+      let j : Fin r := ⟨l.val + 1 + n, omega⟩
       rw [show i = j.succ from Fin.ext (by simpa [j, Nat.add_assoc] using hi)]
       obtain ⟨T, hTG, hTc⟩ := ih j.castSucc (by simp [j])
       have hlj : l.val < j.val := by simp [j]; omega
@@ -186,7 +186,7 @@ theorem mirror_left_rule_cell_holds : LeftRuleCellv := by
       rw [ite_eq_right (by simp; omega), Matrix.one_mulVec]
     | succ n ih =>
       intro i hi
-      let j : Fin r := ⟨b.val + 1 + n, by have := i.isLt; omega⟩
+      let j : Fin r := ⟨b.val + 1 + n, omega⟩
       rw [show i = j.succ from Fin.ext (by simpa [j, Nat.add_assoc] using hi)]
       obtain ⟨T, hT, hTG, hTe, hTs⟩ := ih j.castSucc (by simp [j])
       have hbj : b.val + 1 ≤ j.val := by simp [j]

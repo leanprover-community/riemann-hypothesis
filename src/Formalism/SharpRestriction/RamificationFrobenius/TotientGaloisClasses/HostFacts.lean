@@ -124,7 +124,7 @@ theorem d_dvd_condN : H.d ∣ H.condN := dvd_mul_left _ _
 theorem tower_dvd_condN : 2 ^ (φ.e + 2) ∣ H.condN := H.tower_dvd.trans H.QS_dvd_condN
 theorem two_dvd_QS : 2 ∣ H.QS := (dvd_pow_self 2 (by omega)).trans H.tower_dvd
 theorem sixteen_dvd_QS : 16 ∣ H.QS :=
-  (show 2 ^ 4 ∣ 2 ^ (φ.e + 2) from Nat.pow_dvd_pow 2 (by have := H.two_le_e; omega)).trans H.tower_dvd
+  (show 2 ^ 4 ∣ 2 ^ (φ.e + 2) from Nat.pow_dvd_pow 2 omega).trans H.tower_dvd
 theorem two_dvd_condN : 2 ∣ H.condN := H.two_dvd_QS.trans H.QS_dvd_condN
 theorem sixteen_dvd_condN : 16 ∣ H.condN := H.sixteen_dvd_QS.trans H.QS_dvd_condN
 

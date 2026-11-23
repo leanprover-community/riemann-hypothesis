@@ -298,7 +298,7 @@ theorem nlam_eq_sram (D : D7) (u : D.what₂.Word) (w : D.what₂.places.Pl) (h 
 theorem lenLoc_atT_zero (hAtT : NuAtTDef D L) {X : ErrX D} {K : G.Consts} {c : ErrC} (hE : L.EDef X K c)
     (u : D.what₂.Word) (w : D.what₂.places.Pl) (hw : D.what₂.places.resChar w = (D.mem u).A.T) (hs : w ∉ L.supp) :
     DV.lenLoc (D.plEq w) (L.NuLat u) (DV.MramL D u) = 0 := by
-  have hm : 1 ∈ SizeData₂.lifts D := Finset.mem_Icc.2 ⟨le_rfl, by have := D.R.two_le_m; omega⟩
+  have hm : 1 ∈ SizeData₂.lifts D := Finset.mem_Icc.2 ⟨le_rfl, omega⟩
   have h1 := hE u 1 hm w
   rw [L.E_supp u 1 w hs] at h1
   unfold Eval at h1
@@ -310,7 +310,7 @@ theorem lenLoc_atT_zero (hAtT : NuAtTDef D L) {X : ErrX D} {K : G.Consts} {c : E
     rw [if_pos ht] at h1
     have hf : (0 : ℝ) < (D.R.f : ℝ) := by
       have : 0 < D.R.f := by
-        exact lt_of_lt_of_le (by have := D.R.two_le_m; omega) D.R.m_le_f
+        exact lt_of_lt_of_le omega D.R.m_le_f
       exact_mod_cast this
     have hN : (0 : ℝ) < G.Nm D := by
       unfold G.Nm

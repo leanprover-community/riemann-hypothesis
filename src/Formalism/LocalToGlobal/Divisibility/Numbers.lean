@@ -216,10 +216,10 @@ def apDiag (j : ℕ) (z : RPl N.R) : YoungDiagram :=
 def logHook (j : ℕ) (z : RPl N.R) : ℝ := Real.log (Formalism.LatticeIndexTer.hookProd (N.apDiag j z) : ℝ)
 
 def aT (t : N.R.A) : ℚ :=
-  (N.hc (false, t)).u ⟨0, by have := N.R.m_add_three_le_k; omega⟩ - ((N.R.k : ℚ) - 1) / 2
+  (N.hc (false, t)).u ⟨0, omega⟩ - ((N.R.k : ℚ) - 1) / 2
 
 def bT (t : N.R.A) : ℚ :=
-  -(N.hc (false, t)).u ⟨N.R.k - 1, by have := N.R.m_add_three_le_k; omega⟩ - ((N.R.k : ℚ) - 1) / 2
+  -(N.hc (false, t)).u ⟨N.R.k - 1, omega⟩ - ((N.R.k : ℚ) - 1) / 2
 
 def hA (C : ℝ) (T : ℕ) : ℝ :=
   -(∑ t ∈ N.TT, ((N.aT t : ℚ) : ℝ) * Real.log (T : ℝ)) +

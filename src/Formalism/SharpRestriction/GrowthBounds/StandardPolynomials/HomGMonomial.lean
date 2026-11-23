@@ -169,7 +169,7 @@ theorem kcol_pol {R : Type} [CommRing R] (ka : Fin (N + 1) → Fin n → ℤ) (c
   have key : multideg m i = _ :=
     KG_hom (mdG N n i) c (hsOf ka c) (xOf R N n) (fun a => if a = i.val then 1 else 0) hx N J m (Finset.mem_coe.1 hm)
   rw [key, Finset.sum_eq_single i.val]
-  · rw [hsOf_eq ka c i.val (by have := i.2; omega), hsOf_eq ka c (i.val + 1) (by have := i.2; omega), if_pos rfl]
+  · rw [hsOf_eq ka c i.val omega, hsOf_eq ka c (i.val + 1) omega, if_pos rfl]
     rfl
   · intro b _ hb
     rw [if_neg hb]; simp

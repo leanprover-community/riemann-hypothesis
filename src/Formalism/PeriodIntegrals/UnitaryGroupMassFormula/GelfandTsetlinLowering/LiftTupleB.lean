@@ -209,7 +209,7 @@ theorem card_eq_val {m n : ℕ} (a : Fin n) :
     simp [Fin.ext_iff]
   · rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
     intro p _ hp
-    exact h (by have := p.2; omega)
+    exact h omega
 
 theorem tupCnt_std {n K : ℕ} (sz : Fin K → ℕ) (hsz : ∀ k, sz k ≤ n) : tupCnt (stdT sz hsz) = shapeDeg sz := by
   funext a
@@ -281,8 +281,8 @@ theorem bidet_std {n K : ℕ} (sz : Fin K → ℕ) (hsz : ∀ k, sz k ≤ n) (ν
   rw [h0, one_pow, mul_one, ← Fin.prod_univ_eq_prod_range]
   refine Finset.prod_congr rfl (fun s _ => ?_)
   rw [count_succ sz hsz s]
-  have e : F (s.1 + 1) = lpMinor ℤ (s.1 + 1) (by have := s.2; omega) (by have := s.2; omega) :=
-    dif_pos (by have := s.2; omega)
+  have e : F (s.1 + 1) = lpMinor ℤ (s.1 + 1) omega omega :=
+    dif_pos omega
   rw [e]
 
 theorem prod_zsmul' {R : Type*} [CommRing R] {K : ℕ} (a : Fin K → ℤ) (x : Fin K → R) :

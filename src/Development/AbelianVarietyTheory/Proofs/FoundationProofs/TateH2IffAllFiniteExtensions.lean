@@ -49,7 +49,6 @@ namespace GlobalTheory.TateTopCompare
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N GlobalTheory.IndefiniteRowSideFullHecke.TateLocalDualityDegreeTwo
 
-section Transport
 
 variable {O O' G M M' : Type} [CommRing O] [CommRing O'] [Group G] [TopologicalSpace G]
   [AddCommGroup M] [Module O M] [AddCommGroup M'] [Module O' M'] [TopologicalSpace M']
@@ -61,7 +60,6 @@ variable (he : ∀ g x, e (π g x) = ρ g (e x))
 include he
 
 
-end Transport
 
 section Integers
 
@@ -186,10 +184,8 @@ def rangeLattice (hinj : Function.Injective (algebraMap O LL)) (χ : G →* LLˣ
 
 end Quotients
 
-section Compare
 
 variable {l : ℕ} [Fact l.Prime] (P : LocPrime l) (K : FinExt l)
 
-end Compare
 
 end GlobalTheory.TateTopCompare

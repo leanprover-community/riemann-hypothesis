@@ -116,8 +116,8 @@ theorem application_window : ApplicationWindow := by
     (applicationSteps hD l k j t q h lam hl ht hanti hconst hspread ecl hecl I μ hμ)
   refine Nat.le_floor ?_
   have hb : ∀ a : Fin (k + j), lam (k + j) ≤ res (k + j) lam a ∧ res (k + j) lam a ≤ lam 0 := fun a =>
-    ⟨hanti a.val (k + j) (by have := a.isLt; omega) (by omega),
-      hanti 0 a.val (Nat.zero_le _) (by have := a.isLt; omega)⟩
+    ⟨hanti a.val (k + j) omega (by omega),
+      hanti 0 a.val (Nat.zero_le _) omega⟩
   have eU : ∀ a : Fin (k + j),
       UN (k + j + t + q) lam a.val = U k j t (res (k + j) lam) a + (q : ℤ) := by
     intro a

@@ -141,7 +141,7 @@ theorem tyComplete : TyComplete := by
       obtain ⟨n, hn⟩ := hint i hi
       exact ⟨by linarith, by linarith, floor_of_int _ (by linarith) (n - a) (by push_cast; linarith)⟩
     refine ⟨fun i => ⟨⌊ρ ((i : ℕ) + 1) - P.lo ((i : ℕ) + 1)⌋₊, ?_⟩, ?_⟩
-    · have hi : (i : ℕ) + 1 ∈ Icc 1 (P.k - 1) := Finset.mem_Icc.2 ⟨by omega, by have := i.2; omega⟩
+    · have hi : (i : ℕ) + 1 ∈ Icc 1 (P.k - 1) := Finset.mem_Icc.2 ⟨by omega, omega⟩
       exact Nat.lt_succ_of_le (Nat.floor_le_floor (key _ hi).2.1)
     · intro i hi
       have h := Finset.mem_Icc.1 hi
@@ -152,12 +152,12 @@ theorem tyComplete : TyComplete := by
   · intro π π' h
     funext i
     apply Fin.ext
-    have hi : (i : ℕ) + 1 ∈ Icc 1 (P.k - 1) := Finset.mem_Icc.2 ⟨by omega, by have := i.2; omega⟩
+    have hi : (i : ℕ) + 1 ∈ Icc 1 (P.k - 1) := Finset.mem_Icc.2 ⟨by omega, omega⟩
     have h1 := h _ hi
     rw [rho_eq P π _ (Finset.mem_Icc.1 hi), rho_eq P π' _ (Finset.mem_Icc.1 hi)] at h1
-    have h2 : (((π ⟨(i : ℕ) + 1 - 1, by have := i.2; omega⟩ : Fin _) : ℕ) : ℝ) = (((π' ⟨(i : ℕ) + 1 - 1, by have := i.2; omega⟩ : Fin _) : ℕ) : ℝ) := by
+    have h2 : (((π ⟨(i : ℕ) + 1 - 1, omega⟩ : Fin _) : ℕ) : ℝ) = (((π' ⟨(i : ℕ) + 1 - 1, omega⟩ : Fin _) : ℕ) : ℝ) := by
       linarith
-    have h3 : ((π ⟨(i : ℕ) + 1 - 1, by have := i.2; omega⟩ : Fin _) : ℕ) = ((π' ⟨(i : ℕ) + 1 - 1, by have := i.2; omega⟩ : Fin _) : ℕ) := by
+    have h3 : ((π ⟨(i : ℕ) + 1 - 1, omega⟩ : Fin _) : ℕ) = ((π' ⟨(i : ℕ) + 1 - 1, omega⟩ : Fin _) : ℕ) := by
       exact_mod_cast h2
     rw [val_congr P π _ i (Fin.ext (by simp)), val_congr P π' _ i (Fin.ext (by simp))] at h3
     exact h3

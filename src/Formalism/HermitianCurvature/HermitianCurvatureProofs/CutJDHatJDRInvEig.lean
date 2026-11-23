@@ -89,19 +89,19 @@ theorem smono_succAbove {N : ℕ} (f : Fin N → Fin (N + 1)) (hf : StrictMono f
 
 variable {k r : ℕ}
 
-def eV (k r : ℕ) (p : Fin (r + k + 1)) : Fin (2 * r + k + 1) := ⟨r + p.val, by have := p.isLt; omega⟩
+def eV (k r : ℕ) (p : Fin (r + k + 1)) : Fin (2 * r + k + 1) := ⟨r + p.val, omega⟩
 
-def e0 (k r : ℕ) (p : Fin (r + k + 1)) : Fin (2 * r + k + 1) := ⟨p.val, by have := p.isLt; omega⟩
+def e0 (k r : ℕ) (p : Fin (r + k + 1)) : Fin (2 * r + k + 1) := ⟨p.val, omega⟩
 
 theorem colsV_eq (t : Fin (k + 1)) :
-    colsV k r t = eV k r ∘ (⟨t.val, by have := t.isLt; omega⟩ : Fin (r + k + 1)).succAbove := by
+    colsV k r t = eV k r ∘ (⟨t.val, omega⟩ : Fin (r + k + 1)).succAbove := by
   funext l
   apply Fin.ext
   simp only [colsV, eV, Function.comp_apply, Fin.succAbove, Fin.lt_def]
   split_ifs <;> simp only [Fin.val_castSucc, Fin.val_succ] at * <;> omega
 
 theorem rowsR_eq (i : Fin (k + 1)) :
-    rowsR k r i = e0 k r ∘ (⟨r + i.val, by have := i.isLt; omega⟩ : Fin (r + k + 1)).succAbove := by
+    rowsR k r i = e0 k r ∘ (⟨r + i.val, omega⟩ : Fin (r + k + 1)).succAbove := by
   funext l
   apply Fin.ext
   simp only [rowsR, e0, Function.comp_apply, Fin.succAbove, Fin.lt_def]
@@ -184,7 +184,7 @@ theorem TV_fix {z' : Fin (2 * r + k + 1) → ℂ} {w m : B.Mat k r} (hz' : inWb 
   refine sum_emb (eV k r) eV_inj (fun q => (m * w) (eV k r i) q * z' q) (fun q hq => ?_)
   have : q.val < r := by
     by_contra hc
-    exact hq ⟨q.val - r, by have := q.isLt; omega⟩ (Fin.ext (by simp [eV]; omega))
+    exact hq ⟨q.val - r, omega⟩ (Fin.ext (by simp [eV]; omega))
   rw [hz' q (Or.inl this), mul_zero]
 
 def eVEquiv (k r : ℕ) : Fin (r + k + 1) ≃ {a : Fin (2 * r + k + 1) // ¬ a.val < r} where
@@ -250,10 +250,10 @@ theorem betaM_d {z' : Fin (2 * r + k + 1) → ℂ} {w m : B.Mat k r} (hz' : inWb
     have hT : T *ᵥ η = η := TV_fix hz' hw hm
     have hη : ∀ p : Fin (r + k + 1), k < p.val → η p = 0 := fun p hp =>
       hz' _ (Or.inr (by simp [eV]; omega))
-    have hwI : ∀ t : Fin (k + 1), wI k r t = eV k r ⟨t.val, by have := t.isLt; omega⟩ := fun t => Fin.ext rfl
-    have emb_inj : Function.Injective (fun t : Fin (k + 1) => (⟨t.val, by have := t.isLt; omega⟩ : Fin (r + k + 1))) :=
+    have hwI : ∀ t : Fin (k + 1), wI k r t = eV k r ⟨t.val, omega⟩ := fun t => Fin.ext rfl
+    have emb_inj : Function.Injective (fun t : Fin (k + 1) => (⟨t.val, omega⟩ : Fin (r + k + 1))) :=
       fun a b h => Fin.ext (by simpa using h)
-    have notin : ∀ q : Fin (r + k + 1), (∀ t : Fin (k + 1), (⟨t.val, by have := t.isLt; omega⟩ : Fin (r + k + 1)) ≠ q) →
+    have notin : ∀ q : Fin (r + k + 1), (∀ t : Fin (k + 1), (⟨t.val, omega⟩ : Fin (r + k + 1)) ≠ q) →
         k < q.val := fun q hq => by
       by_contra hc
       exact hq ⟨q.val, by omega⟩ (Fin.ext rfl)
@@ -268,15 +268,15 @@ theorem betaM_d {z' : Fin (2 * r + k + 1) → ℂ} {w m : B.Mat k r} (hz' : inWb
     have rhs : ∑ t, beM k r z' t * (if d = colsV k r t then 1 else 0) = (-1 : ℂ) ^ (j : ℕ) * η j := by
       have e1 : ∀ t : Fin (k + 1), beM k r z' t * (if d = colsV k r t then 1 else 0) =
           (fun p : Fin (r + k + 1) => if j = p then η p * (-1 : ℂ) ^ (p : ℕ) else 0)
-            ⟨t.val, by have := t.isLt; omega⟩ := by
+            ⟨t.val, omega⟩ := by
         intro t
         dsimp only
-        have iff : d = colsV k r t ↔ j = ⟨t.val, by have := t.isLt; omega⟩ := by
+        have iff : d = colsV k r t ↔ j = ⟨t.val, omega⟩ := by
           rw [colsV_eq, hdj]
           constructor
           · intro h; exact Fin.succAbove_left_injective (comp_inj eV_inj h)
           · intro h; rw [h]
-        by_cases h : j = ⟨t.val, by have := t.isLt; omega⟩
+        by_cases h : j = ⟨t.val, omega⟩
         · rw [if_pos (iff.2 h), if_pos h, beM, hwI]
           simp only [hηdef]
           ring
@@ -301,7 +301,7 @@ open Matrix InvEig
 theorem colsV_smono {k r : ℕ} (t : Fin (k + 1)) : StrictMono (colsV k r t) := by
   rw [colsV_eq]
   intro a b h
-  have := Fin.strictMono_succAbove (⟨t.val, by have := t.isLt; omega⟩ : Fin (r + k + 1)) h
+  have := Fin.strictMono_succAbove (⟨t.val, omega⟩ : Fin (r + k + 1)) h
   simp only [Function.comp_apply, eV, Fin.lt_def] at this ⊢
   omega
 
@@ -346,7 +346,7 @@ theorem zeta_zero {z' : Fin (2 * r + k + 1) → ℂ} (hz' : inWb k r z') (q : Fi
 theorem rowsR_smono (i : Fin (k + 1)) : StrictMono (rowsR k r i) := by
   rw [rowsR_eq]
   intro a b h
-  have := Fin.strictMono_succAbove (⟨r + i.val, by have := i.isLt; omega⟩ : Fin (r + k + 1)) h
+  have := Fin.strictMono_succAbove (⟨r + i.val, omega⟩ : Fin (r + k + 1)) h
   simp only [Function.comp_apply, e0, Fin.lt_def] at this ⊢
   omega
 
@@ -390,15 +390,15 @@ theorem conclusion₃ {z' : Fin (2 * r + k + 1) → ℂ} (hz' : inWb k r z') (P 
     set T := P.submatrix (e0 k r) (e0 k r) with hTdef
     set ζ : Fin (r + k + 1) → ℂ := fun p => herm (Hpk k r) (bvec (e0 k r p)) z' with hζdef
     have hζ0 : ∀ p : Fin (r + k + 1), p.val < r → ζ p = 0 := fun p hp => zeta_zero hz' _ (by simp [e0]; omega)
-    have hwI : ∀ i : Fin (k + 1), wI k r i = e0 k r ⟨r + i.val, by have := i.isLt; omega⟩ := fun i => Fin.ext rfl
+    have hwI : ∀ i : Fin (k + 1), wI k r i = e0 k r ⟨r + i.val, omega⟩ := fun i => Fin.ext rfl
     have emb_inj : Function.Injective
-        (fun i : Fin (k + 1) => (⟨r + i.val, by have := i.isLt; omega⟩ : Fin (r + k + 1))) :=
+        (fun i : Fin (k + 1) => (⟨r + i.val, omega⟩ : Fin (r + k + 1))) :=
       fun a b h => Fin.ext (by simp only [Fin.mk.injEq] at h; omega)
     have notin : ∀ q : Fin (r + k + 1),
-        (∀ i : Fin (k + 1), (⟨r + i.val, by have := i.isLt; omega⟩ : Fin (r + k + 1)) ≠ q) → q.val < r :=
+        (∀ i : Fin (k + 1), (⟨r + i.val, omega⟩ : Fin (r + k + 1)) ≠ q) → q.val < r :=
       fun q hq => by
         by_contra hc
-        exact hq ⟨q.val - r, by have := q.isLt; omega⟩ (Fin.ext (by simp only; omega))
+        exact hq ⟨q.val - r, omega⟩ (Fin.ext (by simp only; omega))
     have hs : ∀ i : ℕ, (-1 : ℂ) ^ i = (-1 : ℂ) ^ r * (-1 : ℂ) ^ (r + i) := fun i => by
       rw [pow_add, ← mul_assoc, ← mul_pow]; simp
     have lhs : ∑ i, alP k r z' i * (P.submatrix c (rowsR k r i)).det =
@@ -414,15 +414,15 @@ theorem conclusion₃ {z' : Fin (2 * r + k + 1) → ℂ} (hz' : inWb k r z') (P 
         (-1 : ℂ) ^ r * ((-1 : ℂ) ^ (j : ℕ) * ζ j) := by
       have e1 : ∀ i : Fin (k + 1), alP k r z' i * (if c = rowsR k r i then 1 else 0) =
           (fun p : Fin (r + k + 1) => if j = p then (-1 : ℂ) ^ r * ((-1 : ℂ) ^ (p : ℕ) * ζ p) else 0)
-            ⟨r + i.val, by have := i.isLt; omega⟩ := by
+            ⟨r + i.val, omega⟩ := by
         intro i
         dsimp only
-        have iff : c = rowsR k r i ↔ j = ⟨r + i.val, by have := i.isLt; omega⟩ := by
+        have iff : c = rowsR k r i ↔ j = ⟨r + i.val, omega⟩ := by
           rw [rowsR_eq, hcj]
           constructor
           · intro h; exact Fin.succAbove_left_injective (comp_inj index_embedding_injective h)
           · intro h; rw [h]
-        by_cases h : j = ⟨r + i.val, by have := i.isLt; omega⟩
+        by_cases h : j = ⟨r + i.val, omega⟩
         · rw [if_pos (iff.2 h), if_pos h, alP, hwI, hs (i : ℕ)]
           simp only [hζdef]
           ring

@@ -105,7 +105,7 @@ theorem lambda_zero_le_four_b {D : D7} (L : SizeData₂ D) (hS : SizesAt L) : la
   have h0 := Formalism.MainNotions.DIV.Proofs.ScaledLatticeNorms.scaled_lattice_nonzero_holds D (D.host.g 0 : ℝ) hY
   have hlog : Real.log (2 * (D.host.g 0 : ℝ)) ≤ 1 + A := by
     rw [Real.log_mul (by norm_num) hg0.ne']
-    have h2 : Real.log 2 < 1 := by have := Real.log_two_lt_d9; linarith
+    have h2 : Real.log 2 < 1 := linarith
     have h3 : Real.log (D.host.g 0 : ℝ) ≤ A := (hG 0 0).2.2
     linarith
   calc lam0 D ≤ 2 * F * R ^ 2 * Real.log (2 * (D.host.g 0 : ℝ)) := h0

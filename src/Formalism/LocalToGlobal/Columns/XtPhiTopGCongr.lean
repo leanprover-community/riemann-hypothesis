@@ -156,7 +156,7 @@ theorem topDat_int {i : ℕ} (hn : TopNum R i) (P : rowSG Pr sel mu) (hP : P.1 �
   have h2 := right_ne_zero_of_mul h
   refine (xt_split (i + 1) (y (Pi.single j 1))).2 ⟨fun l => ?_, ?_⟩ l
   · have := xtPhiTopG_int Ch mu hn cst.sharp hP _ h1 l.1 j.1 l.2 j.2
-    rwa [xtEntB hn.c0 _ (by have := l.2; omega) j.2, LinearMap.comp_apply, LinearMap.comp_apply, xtRes j.2] at this
+    rwa [xtEntB hn.c0 _ omega j.2, LinearMap.comp_apply, LinearMap.comp_apply, xtRes j.2] at this
   · unfold ftY at h2
     rw [ite_eq_left hP] at h2
     by_contra h3

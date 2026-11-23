@@ -55,7 +55,7 @@ theorem exists_sign {p : ℕ} (hp : p.Prime) (hp4 : p % 4 = 3) (s : ℤˣ) :
     refine ⟨p - 1, ?_, ?_⟩
     · rw [Nat.coprime_comm, Nat.Prime.coprime_iff_not_dvd hp]
       intro h
-      have := Nat.le_of_dvd (by have := hp.two_le; omega) h
+      have := Nat.le_of_dvd omega h
       omega
     · have hcast : ((p - 1 : ℕ) : ℤ) = -1 + (p : ℤ) * 1 := by push_cast [h1]; ring
       rw [hcast, jacobiSym.mod_left, Int.add_mul_emod_self_left, ← jacobiSym.mod_left (-1) p,

@@ -185,7 +185,7 @@ theorem typeNormMeas_of_typeComm_houseMeas (hTC : TypeComm) (hHM : HouseMeas) : 
     have hge : g *ᵥ (p.m₀ *ᵥ p.ν') = (l'⁻¹ * l) • (p.m₀ *ᵥ p.ν') := by
       rw [hgdef, ← Matrix.mulVec_mulVec, hHinv, Matrix.mulVec_smul, hAw, smul_smul]
     have hcomm := hTC P Wp p.T.base.π p.T.base.z (p.m₀ *ᵥ p.ν') p.TP p.T.base.π_rep p.T.base.π_cont
-      p.T.base.π_unitary (by have := p.hl.2.2; omega) hzW p.T.base.T_pos he hez hee g hg (l'⁻¹ * l) hge ρ
+      p.T.base.π_unitary omega hzW p.T.base.T_pos he hez hee g hg (l'⁻¹ * l) hge ρ
     have hgH : g * Mw = hA := by
       rw [hgdef, Matrix.mul_assoc, Matrix.nonsing_inv_mul _ uH, Matrix.mul_one]
     have hπA : p.T.base.π hA = (p.T.base.π g).comp (p.T.base.π Mw) := by

@@ -196,7 +196,7 @@ theorem exists_two : ∃ u ∈ KK H.condN (ordCompl[2] H.condN), u ∉ H.art.ker
       rfl) u (by rw [hc, mem_KK]; exact Nat.modEq_one)
   have h2 := (hH_art H u).symm.trans h1
   rw [hu] at h2
-  have h3 : 2 ^ 4 ≤ 2 ^ (φ.e + 2) := Nat.pow_le_pow_right (by norm_num) (by have := H.two_le_e; omega)
+  have h3 : 2 ^ 4 ≤ 2 ^ (φ.e + 2) := Nat.pow_le_pow_right (by norm_num) omega
   rcases hcl_eq_one h2 with h4 | h4
   · have h5 := congrArg Units.val h4
     rw [ZMod.coe_unitOfCoprime, Units.val_one] at h5
@@ -276,7 +276,7 @@ theorem discr_primes (C : HostCore H) :
 
 theorem rd_ge (C : HostCore H) : (2 : ℝ) ^ ((φ.e : ℝ) + 1 - (2 : ℝ) ^ (-(φ.e : ℝ))) * Real.sqrt H.d ≤ H.rd := by
   have hd : (0 : ℝ) < H.d := by exact_mod_cast H.hyp.2.1.pos
-  have h1 := le_SS H.art.ker (two_dvd H) H.hyp.2.1 (dvd_mul_left _ _) (by have := H.hyp.2.2.2.1; omega)
+  have h1 := le_SS H.art.ker (two_dvd H) H.hyp.2.1 (dvd_mul_left _ _) omega
     (fun u hu => hcl_eq_one (by rw [← hH_art, MonoidHom.mem_ker.mp hu]; exact map_one _))
     (by rw [div_d]; exact half_le_rho _ (dvd_mul_right _ _) (exists_d H C))
   rw [← Real.log_le_log_iff (by positivity) (rd_pos H), log_rd_eq, Real.log_mul (by positivity) (by positivity),
@@ -288,8 +288,8 @@ theorem rd_le : H.rd ≤ (H.QS : ℝ) / 2 * Real.sqrt ((H.q : ℝ) * H.d) := by
   have hq : (0 : ℝ) < H.q := by exact_mod_cast H.hyp.1.pos
   have hS : (0 : ℝ) < H.QS := by exact_mod_cast H.QS_pos
   have h1 := SS_le H.art.ker ((dvd_pow_self 2 (by omega)).trans (two_dvd H)) H.hyp.1 H.hyp.2.1
-    ((dvd_mul_left _ _).mul_right _) (dvd_mul_left _ _) (by have := H.hyp.2.2.1; omega)
-    (by have := H.hyp.2.2.2.1; omega) (q_ne_d H) (rho_q H) (rho_d H)
+    ((dvd_mul_left _ _).mul_right _) (dvd_mul_left _ _) omega
+    omega (q_ne_d H) (rho_q H) (rho_d H)
   have hN : Real.log (H.condN : ℝ) = Real.log H.QS + Real.log H.q + Real.log H.d := by
     rw [Nat.cast_mul, Nat.cast_mul, Real.log_mul (by positivity) hd.ne', Real.log_mul hS.ne' hq.ne']
   rw [hN] at h1

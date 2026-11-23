@@ -31,7 +31,7 @@ theorem coeff_poly {D : ℕ} (a : Fin D → O) (n : ℕ) :
   · rw [Finset.sum_eq_single ⟨n, h⟩ (fun j _ hj => if_neg (fun e => hj (Fin.ext e.symm)))
       (by simp)]
     simp
-  · exact Finset.sum_eq_zero fun j _ => if_neg (by have := j.2; omega)
+  · exact Finset.sum_eq_zero fun j _ => if_neg omega
 
 theorem coe_poly {D : ℕ} (a : Fin D → O) :
     ((poly a : Polynomial O) : O⟦X⟧) = ∑ i : Fin D, C (a i) * X ^ (i : ℕ) := by

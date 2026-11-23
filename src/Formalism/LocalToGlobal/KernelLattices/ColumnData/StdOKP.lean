@@ -266,7 +266,7 @@ theorem half : B.ω₀ / 2 ∉ B.L.lattice := SC.half_notMem (hst B) B.omega_mem
 
 theorem betaStd : ∀ x ∈ stdLat B.L (Fin 4 × D.what₂.Tau),
     alphaQ B.cq (stdH B.L (Fin 4 × D.what₂.Tau)) x = stdChar B.L B.ω₀ x :=
-  fun x hx => SC.stdChar_eq (hst B) B.omega_mem (hθ B) (hθ' B) (by have := D.host.hyp.2.2.2.1; omega) _ x hx
+  fun x hx => SC.stdChar_eq (hst B) B.omega_mem (hθ B) (hθ' B) omega _ x hx
 
 theorem selfDual (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) :
     IsSelfDual (stdH B.L (Fin 4 × D.what₂.Tau))

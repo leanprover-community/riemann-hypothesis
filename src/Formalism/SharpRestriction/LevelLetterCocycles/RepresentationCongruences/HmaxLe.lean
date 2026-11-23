@@ -123,7 +123,7 @@ theorem aI_le [NeZero n] [Fintype (K →ₐ[Qp] LL)] (W : LocWach PD LL O v n)
     exact (Nat.ceil_lt_add_one h0).le
   have hη1 : η + 1 ≤ b + η + S := by have := hηs c; have := hct.2; omega
   have key := Aa_cut_le PD.p hp11 (b + η + S) w S η (Formalism.MainNotions.LiftingTheory.Hmax n Mi' hi') (size c + S + η)
-    (w + S + η) hη1 hHle (by have := hct.2; omega) le_rfl _ _ hst hA
+    (w + S + η) hη1 hHle omega le_rfl _ _ hst hA
   have ec : (((size c + S + η : ℕ) : ℝ)) = (size c : ℝ) + S + η := by push_cast; ring
   rw [ec] at key
   exact key

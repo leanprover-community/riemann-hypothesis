@@ -771,7 +771,7 @@ theorem Zp_div_pow {q : ℚ} (hq : 0 < q) (h : ∀ j : ℕ, Zp p (q / (p : ℚ) 
   have hle : ((p : ℤ) ^ (2 * N)) ≤ (N : ℤ) := Int.le_of_dvd (by omega) hdv
   have hle' : p ^ (2 * N) ≤ N := by exact_mod_cast hle
   have h2 : N < 2 ^ N := Nat.lt_two_pow_self
-  have h3 : 2 ^ N ≤ p ^ N := Nat.pow_le_pow_left (by have := hp.out.two_le; omega) N
+  have h3 : 2 ^ N ≤ p ^ N := Nat.pow_le_pow_left omega N
   have h4 : p ^ N ≤ p ^ (2 * N) := Nat.pow_le_pow_right hp.out.pos (by omega)
   omega
 

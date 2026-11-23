@@ -6554,14 +6554,14 @@ theorem sliceOm : D.SliceOm := by
   have hσ : ∀ a : Fin (D.ptSize (h ++ [(n + 1, t)])),
       ((sigP (n := n) (D.ptPerm h)) (Fin.cast hP a)).val = (D.ptPerm (h ++ [(n + 1, t)]) a).val := by
     intro a
-    rw [hspec a, partner_append (n + 1) t h a.val (by have := a.isLt; omega)]
+    rw [hspec a, partner_append (n + 1) t h a.val omega]
     by_cases h1 : a.val < D.ptSize h
     · rw [if_pos h1]
       have e : Fin.cast hP a = Fin.castAdd (n + 1) ⟨a.val, h1⟩ := Fin.ext rfl
       rw [e, blockPerm_castAdd]
       exact hspec' ⟨a.val, h1⟩
     · rw [if_neg h1]
-      have e : Fin.cast hP a = Fin.natAdd (D.ptSize h) ⟨a.val - D.ptSize h, by have := a.isLt; omega⟩ :=
+      have e : Fin.cast hP a = Fin.natAdd (D.ptSize h) ⟨a.val - D.ptSize h, omega⟩ :=
         Fin.ext (by simp; omega)
       rw [e, blockPerm_natAdd]
       simp only [Fin.val_natAdd, Fin.val_rev]
@@ -6570,13 +6570,13 @@ theorem sliceOm : D.SliceOm := by
       dP (n := n) (D.ptDiag h) t (Fin.cast hP a) = D.ptDiag (h ++ [(n + 1, t)]) a := by
     intro a
     simp only [D.ptDiag]
-    rw [scal_append (n + 1) t h a.val (by have := a.isLt; omega)]
+    rw [scal_append (n + 1) t h a.val omega]
     by_cases h1 : a.val < D.ptSize h
     · rw [if_pos h1]
       have e : Fin.cast hP a = Fin.castAdd (n + 1) ⟨a.val, h1⟩ := Fin.ext rfl
       rw [e, dP, Fin.addCases_left]; rfl
     · rw [if_neg h1]
-      have e : Fin.cast hP a = Fin.natAdd (D.ptSize h) ⟨a.val - D.ptSize h, by have := a.isLt; omega⟩ :=
+      have e : Fin.cast hP a = Fin.natAdd (D.ptSize h) ⟨a.val - D.ptSize h, omega⟩ :=
         Fin.ext (by simp; omega)
       rw [e, dP, Fin.addCases_right]
   obtain ⟨hT1, hT2⟩ := phi_transport (k := k) (ρ := r - D.ptSize (h ++ [(n + 1, t)])) hP _ _ hσ _ _ hd

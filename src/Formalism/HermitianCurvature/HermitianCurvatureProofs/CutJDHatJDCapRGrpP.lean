@@ -60,7 +60,7 @@ def colR (z : Fin (2 * r + k + 1) → ℂ) (g : Q.Mx k r) (J : Fin (r + k) → F
     (q : Fin (2 * r + k + 1)) : Fin (2 * r + k + 1) → ℂ :=
   if h : q.val < r then ginvH k r g *ᵥ bvec (eI k r ⟨r - 1 - q.val, by omega⟩)
   else if h2 : q.val = r then ginvH k r g *ᵥ z
-  else bvec (J ⟨q.val - r - 1, by have := q.isLt; omega⟩)
+  else bvec (J ⟨q.val - r - 1, omega⟩)
 
 def beJ (z : Fin (2 * r + k + 1) → ℂ) (g : Q.Mx k r) (J : Fin (r + k) → Fin (2 * r + k + 1)) : ℂ :=
   (Matrix.of fun p q => colR k r z g J q p).det

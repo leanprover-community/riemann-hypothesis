@@ -62,14 +62,14 @@ theorem integrable_slice_append_single {k r : ℕ} {E : Type} [NormedAddCommGrou
   have hσ : ∀ a : Fin (D.ptSize (h ++ [(1, c)])),
       ((Dx2.SL.sigP (n := 0) (D.ptPerm h)) (Fin.cast hP a)).val = (D.ptPerm (h ++ [(1, c)]) a).val := by
     intro a
-    rw [hspec a, Dx2.SL.partner_append 1 c h a.val (by have := a.isLt; omega)]
+    rw [hspec a, Dx2.SL.partner_append 1 c h a.val omega]
     by_cases h1 : a.val < D.ptSize h
     · rw [if_pos h1]
       have e : Fin.cast hP a = Fin.castAdd (0 + 1) ⟨a.val, h1⟩ := Fin.ext rfl
       rw [e, Dx2.SL.blockPerm_castAdd]
       exact hspec' ⟨a.val, h1⟩
     · rw [if_neg h1]
-      have e : Fin.cast hP a = Fin.natAdd (D.ptSize h) ⟨a.val - D.ptSize h, by have := a.isLt; omega⟩ :=
+      have e : Fin.cast hP a = Fin.natAdd (D.ptSize h) ⟨a.val - D.ptSize h, omega⟩ :=
         Fin.ext (by simp; omega)
       rw [e, Dx2.SL.blockPerm_natAdd]
       simp only [Fin.val_natAdd, Fin.val_rev]
@@ -78,13 +78,13 @@ theorem integrable_slice_append_single {k r : ℕ} {E : Type} [NormedAddCommGrou
       Dx2.SL.dP (n := 0) (D.ptDiag h) c (Fin.cast hP a) = D.ptDiag (h ++ [(1, c)]) a := by
     intro a
     simp only [D.ptDiag]
-    rw [Dx2.SL.scal_append 1 c h a.val (by have := a.isLt; omega)]
+    rw [Dx2.SL.scal_append 1 c h a.val omega]
     by_cases h1 : a.val < D.ptSize h
     · rw [if_pos h1]
       have e : Fin.cast hP a = Fin.castAdd (0 + 1) ⟨a.val, h1⟩ := Fin.ext rfl
       rw [e, Dx2.SL.dP, Fin.addCases_left]; rfl
     · rw [if_neg h1]
-      have e : Fin.cast hP a = Fin.natAdd (D.ptSize h) ⟨a.val - D.ptSize h, by have := a.isLt; omega⟩ :=
+      have e : Fin.cast hP a = Fin.natAdd (D.ptSize h) ⟨a.val - D.ptSize h, omega⟩ :=
         Fin.ext (by simp; omega)
       rw [e, Dx2.SL.dP, Fin.addCases_right]
 

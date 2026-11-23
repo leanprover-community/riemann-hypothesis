@@ -71,7 +71,7 @@ theorem sumFE_atG_le {K : Consts} {lev : LevelData D} {Xe : ErrX D} {ce : ErrC} 
   have hη := L.etaSz_pos.le
   have hN0 : 0 ≤ Nm D := by unfold Nm; positivity
   have ht : (D.R.t : ℝ) ≤ Nm D := by
-    have h1 : D.R.t + 1 ≤ D.R.m * (D.R.t + 1) := Nat.le_mul_of_pos_left _ (by have := D.R.two_le_m; omega)
+    have h1 : D.R.t + 1 ≤ D.R.m * (D.R.t + 1) := Nat.le_mul_of_pos_left _ omega
     have h2 : D.R.t ≤ D.R.N D.R.m := by unfold Ranks.N; omega
     unfold Nm
     exact_mod_cast h2

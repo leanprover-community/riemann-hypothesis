@@ -783,7 +783,7 @@ theorem inPN_one_of_gamma_sub [IsDomain O] (hR : RingA W) {T : LocLat G Qp LL O}
     rw [Pi.pow_apply, map_pow, hUdef, Pi.mul_apply, Pi.mul_apply, Pi.pow_apply, map_mul, map_mul, map_pow,
       hγw, cc_γ₀, hwi, one_mul, hcu, ← pow_mul]
   obtain ⟨c, hcdef⟩ : ∃ c : O, c = ((W.χΓ W.gam : Oˣ) : O) ^ ((PD.p - 1) * k) - 1 := ⟨_, rfl⟩
-  have hpos : 0 < (PD.p - 1) * k := Nat.mul_pos (by have := hp.two_le; omega) hk
+  have hpos : 0 < (PD.p - 1) * k := Nat.mul_pos omega hk
   have hc : c ≠ 0 := by
     have := hχ _ hpos
     rw [Units.val_pow_eq_pow_val] at this

@@ -79,7 +79,7 @@ lemma emb_out_row (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * 
   · rw [if_neg (fun h => hqj h.1), if_neg hqj]
 
 lemma emb_mid (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * r + k + 1)) (hq : mid k r q) (hj : mid k r j) :
-    embWb k r μ q j = μ ⟨q.val - r, by have := hq; omega⟩ ⟨j.val - r, by have := hj; omega⟩ := by
+    embWb k r μ q j = μ ⟨q.val - r, omega⟩ ⟨j.val - r, omega⟩ := by
   simp only [embWb]
   rw [dite_eq_left ⟨hq, hj⟩]
 
@@ -108,7 +108,7 @@ private lemma sum_eq_sum_wI_of_eq_zero_off_mid (f : Fin (2 * r + k + 1) → ℂ)
         intro hm
         apply hp
         rw [Finset.mem_map]
-        refine ⟨⟨p.val - r, by have := hm.2; omega⟩, Finset.mem_univ _, ?_⟩
+        refine ⟨⟨p.val - r, omega⟩, Finset.mem_univ _, ?_⟩
         apply Fin.ext
         have := hm.1
         show r + (p.val - r) = p.val

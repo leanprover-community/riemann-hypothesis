@@ -167,7 +167,7 @@ theorem Psi_grD (δ : ∀ p : PlF D, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Mod
       have := pinv_add w a c hs; omega
     have h1 := hG _ _ hle
     rw [hh] at h1
-    have h2 := dd_conj δ M hA (by have := c.isLt; omega) h1
+    have h2 := dd_conj δ M hA omega h1
     rcases sgm_cases a c with e | e
     · rw [e, one_mul]; exact h2
     · rw [e, neg_one_mul]; exact (ddPow D _ : Submodule (𝓞 D.host.E) D.host.E).neg_mem h2

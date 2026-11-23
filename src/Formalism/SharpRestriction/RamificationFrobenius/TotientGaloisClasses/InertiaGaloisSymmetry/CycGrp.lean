@@ -418,7 +418,7 @@ theorem exists_art_iod : ∃ u : (ZMod H.condN)ˣ, (u : ZMod H.condN).val ≡ 1 
   have hd1 : 1 ≤ H.d := H.hyp.2.1.one_lt.le
   have hcop : Nat.Coprime (H.d - 1) H.d :=
     ((Nat.Prime.coprime_iff_not_dvd H.hyp.2.1).mpr
-      (Nat.not_dvd_of_pos_of_lt (by have := H.hyp.2.1.two_le; omega) (by omega))).symm
+      (Nat.not_dvd_of_pos_of_lt omega (by omega))).symm
   obtain ⟨u, hu1, hu2⟩ := exists_unit_crt (cop_QSq_d H) 1 (H.d - 1) (Nat.coprime_one_left _) hcop
   refine ⟨u, hu1, ?_⟩
   have hdv : H.d ∣ (u : ZMod H.condN).val + 1 := by
@@ -485,7 +485,7 @@ theorem decomp_typeI : ∀ (l : ℕ), l.Prime → l ∣ H.QS * H.q →
   have hd8 : (H.d : ℤ) % 8 = 7 := omega
   obtain ⟨s, hs⟩ := sq_mod hd8 (H.QS * H.q) hM0 (split_QSq H)
   have h16 : 2 ^ 4 ∣ H.QS * H.q :=
-    ((pow_dvd_pow 2 (by have := H.two_le_e; omega)).trans H.tower_dvd).trans (dvd_mul_right _ _)
+    ((pow_dvd_pow 2 omega).trans H.tower_dvd).trans (dvd_mul_right _ _)
   obtain ⟨R, hR⟩ := h16
   obtain ⟨c, hc⟩ := hs
   have hc' : s ^ 2 + (H.d : ℤ) = 16 * ((R : ℤ) * c) := by rw [hc, hR]; push_cast; ring
@@ -619,7 +619,7 @@ theorem decompConj : ∀ (l : ℕ), l.Prime → l ∣ H.condN →
   have h16 : 16 ∣ 2 ^ (φ.e + 2) := by
     have h0 : (16 : ℕ) = 2 ^ 4 := by norm_num
     rw [h0]
-    exact pow_dvd_pow 2 (by have := H.two_le_e; omega)
+    exact pow_dvd_pow 2 omega
   have hfv : ZMod.castHom h16 (ZMod 16) ((ZMod.unitOfCoprime H.d hc2 : (ZMod (2 ^ (φ.e + 2)))ˣ) :
       ZMod (2 ^ (φ.e + 2))) = 7 := by
     rw [ZMod.coe_unitOfCoprime, map_natCast, ← ZMod.natCast_mod H.d 16, H.hyp.2.2.2.1]

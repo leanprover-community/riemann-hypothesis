@@ -209,7 +209,7 @@ theorem geo_W_mem (F : FlagG S r T) (A : Matrix (Fin j) (Fin j) E) (hA : StrictU
 theorem geo_W_split (F : FlagG S r T) (A : Matrix (Fin j) (Fin j) E) (hA : StrictUp A) (a : Fin j) (i : Fin r)
     (hi : a.val = i.val + 1) :
     ∃ y ∈ F.Xa i.val, ∑ b, A b a • F.fvec (Fin.castLE hj b) =
-      A ⟨i.val, by have := a.isLt; omega⟩ a • F.e i + y := by
+      A ⟨i.val, omega⟩ a • F.e i + y := by
   have hi0 : i.val < j := omega
   refine ⟨∑ b ∈ Finset.univ.erase (⟨i.val, hi0⟩ : Fin j), A b a • F.fvec (Fin.castLE hj b), ?_, ?_⟩
   · refine sum_mem fun b hb => ?_

@@ -263,7 +263,7 @@ theorem exists_phiBridge [IsAdicComplete (IsLocalRing.maximalIdeal O) O] (W : Lo
       PowerSeries.subst ((u * X ^ PD.p).map (IsLocalRing.residue O)) (f.map (IsLocalRing.residue O)) := by
     have hc0 : constantCoeff ((u * X ^ PD.p).map (IsLocalRing.residue O)) = 0 := by
       rw [← coeff_zero_eq_constantCoeff_apply, coeff_map, coeff_zero_eq_constantCoeff_apply,
-        _root_.map_mul, _root_.map_pow, constantCoeff_X, zero_pow (by have := PD.hp.two_le; omega),
+        _root_.map_mul, _root_.map_pow, constantCoeff_X, zero_pow omega,
         mul_zero, _root_.map_zero]
     let ψ : PowerSeries (IsLocalRing.ResidueField O) →ₐ[IsLocalRing.ResidueField O]
       PowerSeries (IsLocalRing.ResidueField O) := substAlgHom (HasSubst.of_constantCoeff_zero' hc0)

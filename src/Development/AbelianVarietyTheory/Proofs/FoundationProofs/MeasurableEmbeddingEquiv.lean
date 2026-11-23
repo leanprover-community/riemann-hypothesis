@@ -195,7 +195,6 @@ theorem isPseudoCoeff_map_iff (ha : IsUnit a) (hι : ∀ g, ι' (e g) = a * ι g
 
 end Transport
 
-section Scaling
 
 variable {H n V W : Type} [Group H] [TopologicalSpace H] [Fintype n] [DecidableEq n] [NormedAddCommGroup V]
   [InnerProductSpace ℂ V] [NormedAddCommGroup W] [InnerProductSpace ℂ W] [MeasurableSpace H]
@@ -207,7 +206,6 @@ variable [CompleteSpace V] [CompleteSpace W]
 variable [BorelSpace H] [IsTopologicalGroup H] [SecondCountableTopology H] [LocallyCompactSpace H] [T2Space H]
   [μ.IsHaarMeasure]
 
-end Scaling
 
 section Record
 

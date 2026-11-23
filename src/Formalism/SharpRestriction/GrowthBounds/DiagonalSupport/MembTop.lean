@@ -121,7 +121,7 @@ theorem mfh_of : ∃ C₁ : ℝ, 0 < C₁ ∧ ∀ C : ℝ, C₁ ≤ C → ∀ CL
   have cg0 := counting_hypotheses_of_hyps hC0 (hyps_mono hC0 hC0' H) 0 (Nat.zero_le _) (Nat.zero_le _)
   obtain ⟨h1, h2, h3, _, h5, _, _, _, _, h10, h11, _⟩ := H
   have ha0 : 0 ≤ a := by linarith [hnb.two_le_a]
-  have hfd := fun s hs => flatDeg_bounds (by have := hB.m_ge; omega) ha0 h5 s hs
+  have hfd := fun s hs => flatDeg_bounds omega ha0 h5 s hs
   have hcPe : ((cPrime n' r TT.card c0 cpp cStar : ℕ) : ℝ) = Formalism.CountingSumsFrames.cPrII r TT.card n' c0 cpp cStar := by
     unfold cPrime Formalism.CountingSumsFrames.cPrII Formalism.CountingSumsFrames.omII
     push_cast

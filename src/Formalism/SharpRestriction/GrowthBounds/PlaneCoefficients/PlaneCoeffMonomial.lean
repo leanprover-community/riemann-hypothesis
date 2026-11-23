@@ -246,7 +246,7 @@ theorem thDrop_of (hB : Base Fr p Dt) {x0 : TL J Dt.nL r} (hG : TouchAt Fr Dt x0
       apply hG j _ hi
       left
       rcases hx with ⟨l, hl⟩ | ⟨m', hlt, hm'⟩
-      · exact Or.inl ⟨l, hl, by have := l.isLt; omega⟩
+      · exact Or.inl ⟨l, hl, omega⟩
       · refine Or.inr ⟨m', hm', ?_⟩
         have h1 : mm.val < m'.val := hlt
         have h2 := m'.isLt

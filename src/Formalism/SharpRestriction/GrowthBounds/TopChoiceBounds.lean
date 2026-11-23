@@ -2916,7 +2916,7 @@ theorem bt_Ta_at (X : Inst D L) (K : Consts) (C : ℝ) (hC : 0 ≤ C) (hM : Corn
 theorem bt_X'S (s : Scale) : s.X' ≤ Real.exp (s.x ^ (s.eps / 2)) := by
   unfold Scale.X'
   apply Real.exp_le_exp.2
-  exact Real.rpow_le_rpow_of_exponent_le s.one_lt_alt.le (by have := s.eps_pos; linarith)
+  exact Real.rpow_le_rpow_of_exponent_le s.one_lt_alt.le (linarith)
 
 theorem bt_bo {S C f n k la X c : ℝ} (hS : 40 ≤ S) (hC0 : 0 ≤ C) (hC : C ≤ S) (hf : f = 2 * n) (hn0 : 0 ≤ n) (hn : n ≤ S)
     (hk0 : 0 ≤ k) (hk : k ≤ S) (hl0 : 0 ≤ la) (hl : 2 * la ≤ S) (hX1 : 1 ≤ X) (hX : X ≤ S) (hc0 : 0 ≤ c)
@@ -3081,7 +3081,7 @@ theorem w''_le₂ (s : Scale) (n : ℕ) (hn : 1 ≤ n) : s.w'' n ≤ s.b' / s.x 
 theorem two_b'_le_a₂ (s : Scale) : 2 * s.b' ≤ s.a := by
   have hX : 2 ≤ s.X' := by
     unfold Scale.X'
-    have h1 : 1 ≤ s.x ^ (s.eps / 3) := Real.one_le_rpow s.one_lt_alt.le (by have := s.eps_pos; positivity)
+    have h1 : 1 ≤ s.x ^ (s.eps / 3) := Real.one_le_rpow s.one_lt_alt.le (positivity)
     have := Real.add_one_le_exp (s.x ^ (s.eps / 3))
     linarith
   have hb := scale_b'_nonneg₂ s

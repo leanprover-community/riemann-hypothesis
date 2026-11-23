@@ -204,7 +204,7 @@ theorem colFam_rows_ok (commR : ∀ τ : TupF TU, Col.HeckeComm (rowPts W Ch sel
     opG := fun i g => heckeCSD_comm_trRep _ _ _ _ _ _ _ i g
     blocks := Col.blockOk_firstValB (fun j (P : ↥(offSub ∅ Pr.vGs (Col.rowSG Pr sel τ.1) S0)) =>
         Ch.muVal j P.1.1 * xiVal τ.1 P.1.1) (q := fun P => Col.SplitOff.q P.1) R.r R.t_odd.pos
-      (by have := R.two_le_m; omega) (fun P => Col.SplitOff.q_ne_zero P.1)
+      omega (fun P => Col.SplitOff.q_ne_zero P.1)
     q_pos := fun P => Nat.pos_of_ne_zero (Col.SplitOff.q_ne_zero P.1)
     pl_inj := Subtype.val_injective }
 

@@ -157,9 +157,9 @@ theorem nu_last_le [NeZero r] {n0 : ℕ} {LL : Letters (Fin N)} {B : Fin N → �
   have hod := oldest_lt_n0 H i hi
   have hvc := vcount_od H i hi
   have hlt : (od i).val < i.val := H.od_lt i hi
-  have h1 := row_back P ((od i).val + 1) i.val (by omega) (by have := i.2; omega) ⟨0, by omega⟩
+  have h1 := row_back P ((od i).val + 1) i.val (by omega) omega ⟨0, by omega⟩
     (Fin.castAdd K (lastIdx r)) (by simp [lastIdx]; omega)
-  have h2 := mu_le_dplus P ((od i).val + 1) (by have := i.2; omega) ⟨0, by omega⟩
+  have h2 := mu_le_dplus P ((od i).val + 1) omega ⟨0, by omega⟩
   have h3 : dplus LL dd ((od i).val + 1) = dplus LL B ((od i).val + 1) := by
     unfold dplus
     refine Finset.sum_congr rfl fun l _ => ?_
@@ -192,7 +192,7 @@ theorem typical_path_orders_small : TypicalPathOrdersSmall := by
   have hK := H.N_add_r_le_K
   have F1 : ∀ (s : Fin (N + 1)) (m : Fin (r + K)), m.val ≤ r → 0 ≤ P.mu s m := by
     intro s m hm
-    exact mu_nonneg P s.val s.2 m (by have := s.2; omega)
+    exact mu_nonneg P s.val s.2 m omega
   obtain ⟨hT1, hT2, hT3⟩ := hTyp i
   refine ⟨hT3 hi, ?_, ?_⟩
   · intro hv

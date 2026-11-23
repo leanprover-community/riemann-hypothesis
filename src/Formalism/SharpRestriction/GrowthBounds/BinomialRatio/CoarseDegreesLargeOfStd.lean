@@ -114,7 +114,7 @@ theorem coarse_degrees_large_of_std {C0 Cde CE1 CE2 : ℝ} {X : Loc} [NeZero X.m
     linarith
   · intro i
     have hPpos : 0 < (X.seg C0 CE1 CE2 j).P X.p i := by
-      unfold SegData.P; exact pow_pos (by have := h.p5; omega) _
+      unfold SegData.P; exact pow_pos omega _
     have hPQ : ((X.seg C0 CE1 CE2 j).P X.p i : ℝ) ≤ X.Q := by
       have hl := h.levels j i
       exact le_trans hl.2.2.2.2 hl.2.2.2.1
@@ -142,7 +142,7 @@ theorem coarse_degrees_large_of_std {C0 Cde CE1 CE2 : ℝ} {X : Loc} [NeZero X.m
     linarith
   · intro i
     have hPpos : 0 < (X.seg C0 CE1 CE2 j).P X.p i := by
-      unfold SegData.P; exact pow_pos (by have := h.p5; omega) _
+      unfold SegData.P; exact pow_pos omega _
     have hPQ : ((X.seg C0 CE1 CE2 j).P X.p i : ℝ) ≤ X.Q := by
       have hl := h.levels j i
       exact le_trans hl.2.2.2.2 hl.2.2.2.1

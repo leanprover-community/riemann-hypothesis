@@ -527,7 +527,7 @@ theorem level_places_prime_to_type (A : AtTTied u) (v : (D.mem u).A.vT) : (A.eV 
 
 theorem rank_zero_le_type_level : D.R.N 0 ≤ aOf D.R 0 := by
   unfold aOf
-  rw [if_pos (by have := D.R.two_le_m; omega)]
+  rw [if_pos omega]
   simp [Ranks.N]
 
 theorem fixed_class_mem_level_general (K : ClsTied u 0 (Nat.zero_le _)) (G : GLoc D.host.F D.host.E (sigD D) D.host.g)

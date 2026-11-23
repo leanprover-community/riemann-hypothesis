@@ -106,10 +106,10 @@ theorem rowsR_strictMono (t : Fin (k + 1)) : StrictMono (rowsR k r t) := by
 theorem residue_rows_injective {t t' : Fin (k + 1)} (h : rowsR k r t = rowsR k r t') : t = t' := by
   by_contra hne
   rcases lt_or_gt_of_ne (fun e => hne (Fin.ext e) : t.val ≠ t'.val) with hl | hl
-  · have := congrArg Fin.val (congrFun h ⟨r + t.val, by have := t'.isLt; omega⟩)
+  · have := congrArg Fin.val (congrFun h ⟨r + t.val, omega⟩)
     simp only [rowsR_val, Fin.val_mk] at this
     split_ifs at this <;> omega
-  · have := congrArg Fin.val (congrFun h ⟨r + t'.val, by have := t.isLt; omega⟩)
+  · have := congrArg Fin.val (congrFun h ⟨r + t'.val, omega⟩)
     simp only [rowsR_val, Fin.val_mk] at this
     split_ifs at this <;> omega
 
@@ -143,7 +143,7 @@ theorem colR_eq (J : Fin (r + k) → Fin (2 * r + k + 1)) (q p : Fin (2 * r + k 
 
 omit h1 in
 theorem colR_gt (J : Fin (r + k) → Fin (2 * r + k + 1)) (q p : Fin (2 * r + k + 1)) (hq : r < q.val) :
-    colR k r z x J q p = if p = J ⟨q.val - r - 1, by have := q.isLt; omega⟩ then 1 else 0 := by
+    colR k r z x J q p = if p = J ⟨q.val - r - 1, omega⟩ then 1 else 0 := by
   unfold colR
   rw [dite_eq_right (by omega), dite_eq_right (by omega)]
   simp only [bvec, Pi.single_apply]
@@ -160,7 +160,7 @@ theorem claimA (J : Fin (r + k) → Fin (2 * r + k + 1)) (hJ : StrictMono J) (σ
     rw [colR_lt z x v h1 J q _ hq] at this
     by_contra h
     exact this (if_neg h)
-  have hgt : ∀ (q : Fin (2 * r + k + 1)) (hq : r < q.val), σ q = J ⟨q.val - r - 1, by have := q.isLt; omega⟩ := by
+  have hgt : ∀ (q : Fin (2 * r + k + 1)) (hq : r < q.val), σ q = J ⟨q.val - r - 1, omega⟩ := by
     intro q hq
     have := hne q
     rw [colR_gt z x J q _ hq] at this
@@ -190,15 +190,15 @@ theorem claimA (J : Fin (r + k) → Fin (2 * r + k + 1)) (hJ : StrictMono J) (σ
   set t : Fin (k + 1) := ⟨(σ ⟨r, by omega⟩).val - r, by omega⟩ with ht
   have hJS : ∀ j : Fin (r + k), (J j).val ≤ r + k ∧ (J j).val ≠ r + t.val := by
     intro j
-    have e := hgt ⟨r + 1 + j.val, by have := j.isLt; omega⟩ (by simp only; omega)
-    have ej : (⟨(r + 1 + j.val) - r - 1, by have := j.isLt; omega⟩ : Fin (r + k)) = j := Fin.ext (by simp only; omega)
+    have e := hgt ⟨r + 1 + j.val, omega⟩ (by simp only; omega)
+    have ej : (⟨(r + 1 + j.val) - r - 1, omega⟩ : Fin (r + k)) = j := Fin.ext (by simp only; omega)
     rw [ej] at e
     rw [← e]
     constructor
     · by_contra h
-      exact hstar 0 ⟨r + 1 + j.val, by have := j.isLt; omega⟩ (by show r < r + 1 + j.val; omega) (by omega)
+      exact hstar 0 ⟨r + 1 + j.val, omega⟩ (by show r < r + 1 + j.val; omega) (by omega)
     · intro h
-      have : σ ⟨r + 1 + j.val, by have := j.isLt; omega⟩ = σ ⟨r, by omega⟩ := Fin.ext (by rw [h, ht]; simp only; omega)
+      have : σ ⟨r + 1 + j.val, omega⟩ = σ ⟨r, by omega⟩ := Fin.ext (by rw [h, ht]; simp only; omega)
       have := congrArg Fin.val (σ.injective this)
       simp only at this
       omega
@@ -281,7 +281,7 @@ theorem claimB (t : Fin (k + 1)) :
       rw [Pt_apply]
       simp only [ptv, wI]
       rw [if_neg (by omega), if_pos hi]
-    · have hP : Pt k r t i = rowsR k r t ⟨i.val - r - 1, by have := i.isLt; omega⟩ := by
+    · have hP : Pt k r t i = rowsR k r t ⟨i.val - r - 1, omega⟩ := by
         apply Fin.ext
         rw [Pt_apply, rowsR_val]
         simp only [ptv, Fin.val_mk]

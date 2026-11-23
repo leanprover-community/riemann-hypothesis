@@ -162,7 +162,7 @@ theorem kaBig_anti (D : D7) (hK : DV.KapDef D) {j : ℕ} (h1 : 1 ≤ j) (h2 : j 
   have hab' : a.1 ≤ b.1 := Fin.le_def.1 hab
   have hq' : (D.what₂.kaBig j τ b : ℚ) ≤ D.what₂.kaBig j τ a := by
     rw [hq a, hq b]
-    have h5 := step (b.1 - a.1) a.1 (by have := b.2; omega)
+    have h5 := step (b.1 - a.1) a.1 omega
     have e : a.1 + (b.1 - a.1) = b.1 := by omega
     rw [e] at h5
     exact h5
@@ -245,7 +245,7 @@ theorem kaSmall_anti (D : D7) (hK : DV.KapDef D) {j : ℕ} (h1 : 1 ≤ j) (h2 : 
   have hab' : a.1 ≤ b.1 := Fin.le_def.1 hab
   have hq' : (D.what₂.kaSmall j τ b : ℚ) ≤ D.what₂.kaSmall j τ a := by
     rw [hq a, hq b]
-    have h5 := step (b.1 - a.1) a.1 (by have := b.2; omega)
+    have h5 := step (b.1 - a.1) a.1 omega
     have e : a.1 + (b.1 - a.1) = b.1 := by omega
     rw [e] at h5
     linarith

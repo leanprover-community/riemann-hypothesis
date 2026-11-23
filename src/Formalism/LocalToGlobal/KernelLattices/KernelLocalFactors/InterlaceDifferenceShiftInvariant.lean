@@ -736,7 +736,7 @@ def lamN (lam : DomWeight N) : Fin n → ℕ := fun i => (lam.w (iC hN i) - lam.
 
 theorem lx_rename_minorA (i : Fin n) :
     rename (lxRho hN) (Formalism.GradedWeylDivisibility.initMinor K (Formalism.BranchingDeterminantCap.rowsA i) (by omega : i.val + 1 ≤ n)) =
-      Formalism.GradedWeylDivisibility.lpMinor K (r := N) (n := N) (i.val + 1) (by have := i.2; omega) (by have := i.2; omega) := by
+      Formalism.GradedWeylDivisibility.lpMinor K (r := N) (n := N) (i.val + 1) omega omega := by
   unfold Formalism.GradedWeylDivisibility.initMinor Formalism.GradedWeylDivisibility.lpMinor
   rw [AlgHom.map_det]
   congr 1
@@ -1439,7 +1439,7 @@ theorem sameShiftTr (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) (τ : D
   have hk := D.R.m_add_three_le_k
   have hm := D.R.two_le_m
   have hN : D.R.N D.R.m = D.R.k + D.R.m * (D.R.t + 1) := rfl
-  have hmt : 2 * 2 ≤ D.R.m * (D.R.t + 1) := Nat.mul_le_mul hm (by have := D.R.rank_add_five_le; omega)
+  have hmt : 2 * 2 ≤ D.R.m * (D.R.t + 1) := Nat.mul_le_mul hm omega
   have hpos : 0 < D.R.N D.R.m - 1 := by rw [hN]; omega
   have hpos' : 0 < D.R.N D.R.m := by omega
   obtain ⟨ha, hb⟩ := hI ⟨D.R.N D.R.m - 1 - 1, by omega⟩
@@ -2226,7 +2226,7 @@ theorem hwB_xiB_raise (lam sg : Fin n → ℕ) (a a' : Fin n) (h : a < a') :
     have hv : p.val = a'.val := by
       have := congrArg Fin.val hp
       simpa [Formalism.BranchingDeterminantCap.rowsA] using this
-    exact ⟨⟨a.val, by have := p.2; omega⟩, Fin.ext (by simp [Formalism.BranchingDeterminantCap.rowsA])⟩
+    exact ⟨⟨a.val, omega⟩, Fin.ext (by simp [Formalism.BranchingDeterminantCap.rowsA])⟩
   · refine hwB_minor_raise _ _ hne _ _ fun p hp => ?_
     have hpl : p.val < i.val := by
       by_contra hc
@@ -2278,8 +2278,8 @@ theorem hwB_xi (lam : DomWeight N) (sg : DomWeight n) (hI : Interlace hN lam sg)
 
 theorem hwB_rename_lp (i : Fin n) :
     rename (fun v : Fin n × Fin n => (iC hN v.1, iC hN v.2))
-        (lpMinor K (r := n) (n := n) (i.val + 1) (by have := i.2; omega) (by have := i.2; omega)) =
-      lpMinor K (r := N) (n := N) (i.val + 1) (by have := i.2; omega) (by have := i.2; omega) := by
+        (lpMinor K (r := n) (n := n) (i.val + 1) omega omega) =
+      lpMinor K (r := N) (n := N) (i.val + 1) omega omega := by
   unfold lpMinor
   rw [AlgHom.map_det]
   congr 1
@@ -4092,8 +4092,8 @@ theorem nm_natW_last : l.natW (iL hN) = 0 := by
   rw [lx_detShift_N hN l, sub_self]; rfl
 
 theorem nm_rename_lp (i : Fin n) :
-    rename (lxRho hN) (lpMinor ℂ (r := n + 1) (n := n) (i.val + 1) (by have := i.2; omega) (by have := i.2; omega)) =
-      lpMinor ℂ (r := N) (n := N) (i.val + 1) (by have := i.2; omega) (by have := i.2; omega) := by
+    rename (lxRho hN) (lpMinor ℂ (r := n + 1) (n := n) (i.val + 1) omega omega) =
+      lpMinor ℂ (r := N) (n := N) (i.val + 1) omega omega := by
   unfold lpMinor
   rw [AlgHom.map_det]
   congr 1

@@ -95,7 +95,7 @@ theorem mlOf_wc (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, nL j = (Fr.LLset (segZ j
   have h2 : ¬ ∃ m' : Fin r, Fr.fr (segZ j - 1) (r - 1 - m.val) = Fr.fr (segZ j) (r - 1 - m'.val) := by
     rintro ⟨m', hm'⟩
     have h3 := frame_end_lt_next_start hV (segZ j)
-    have h4 := dg_fr_le hV (segZ j) (Nat.zero_le (r - 1 - m'.val)) (by have := m'.isLt; omega)
+    have h4 := dg_fr_le hV (segZ j) (Nat.zero_le (r - 1 - m'.val)) omega
     omega
   have h : ∃ m' : Fin r, Fr.fr (segZ j - 1) (r - 1 - m.val) = Fr.fr (segZ j - 1) (r - 1 - m'.val) := ⟨m, rfl⟩
   unfold mlOf

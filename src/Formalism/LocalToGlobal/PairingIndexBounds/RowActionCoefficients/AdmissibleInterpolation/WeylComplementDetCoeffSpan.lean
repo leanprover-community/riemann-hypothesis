@@ -644,7 +644,7 @@ theorem det_catM_tv (l : ℕ) (i j : Fin n) (hij : i ≠ j) (c : S) (y : Matrix 
   rw [← mul_catM, Matrix.det_mul, Matrix.det_transvection_of_ne i j hij, one_mul]
 
 def revTail (n h : ℕ) (hh : h ≤ n) : Equiv.Perm (Fin n) :=
-  Function.Involutive.toPerm (fun t => if ht : t.val < n - h then t else ⟨2 * n - h - 1 - t.val, by have := t.isLt; omega⟩)
+  Function.Involutive.toPerm (fun t => if ht : t.val < n - h then t else ⟨2 * n - h - 1 - t.val, omega⟩)
     (by
       intro t
       by_cases ht : t.val < n - h
@@ -656,13 +656,13 @@ def revTail (n h : ℕ) (hh : h ≤ n) : Equiv.Perm (Fin n) :=
 
 theorem revTail_apply_lt (n h : ℕ) (hh : h ≤ n) (t : Fin n) (ht : t.val < n - h) : revTail n h hh t = t := by
   change (fun t : Fin n => if ht : t.val < n - h then t else
-    (⟨2 * n - h - 1 - t.val, by have := t.isLt; omega⟩ : Fin n)) t = t
+    (⟨2 * n - h - 1 - t.val, omega⟩ : Fin n)) t = t
   simp only [dif_pos ht]
 
 theorem revTail_apply_ge (n h : ℕ) (hh : h ≤ n) (t : Fin n) (ht : ¬ t.val < n - h) :
     (revTail n h hh t).val = 2 * n - h - 1 - t.val := by
   change ((fun t : Fin n => if ht : t.val < n - h then t else
-    (⟨2 * n - h - 1 - t.val, by have := t.isLt; omega⟩ : Fin n)) t).val = _
+    (⟨2 * n - h - 1 - t.val, omega⟩ : Fin n)) t).val = _
   simp only [dif_neg ht]
 
 theorem det_catM_rev (h : ℕ) (hh : h ≤ n) (y : Matrix (Fin n) (Fin n) S) (x : Fin n → ℕ → S)

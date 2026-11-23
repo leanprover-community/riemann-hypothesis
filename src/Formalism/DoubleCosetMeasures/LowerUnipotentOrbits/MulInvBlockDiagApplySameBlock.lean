@@ -315,7 +315,7 @@ private lemma sum_superdiagonal_eq_sum_ite {n : ℕ} (M : Matrix (Fin n) (Fin n)
     · simp
   · symm
     refine Finset.sum_eq_zero fun c _ => ?_
-    rw [if_neg (show ¬ ((c : ℕ) = a + 1) from fun e => h (by have := c.2; omega))]
+    rw [if_neg (show ¬ ((c : ℕ) = a + 1) from fun e => h omega)]
 
 private lemma sum_subdiagonal_eq_sum_ite {n : ℕ} (M : Matrix (Fin n) (Fin n) K) :
     (∑ j : Fin n, if h : (j : ℕ) + 1 < n then M ⟨j + 1, h⟩ j else 0) =
@@ -330,7 +330,7 @@ private lemma sum_subdiagonal_eq_sum_ite {n : ℕ} (M : Matrix (Fin n) (Fin n) K
     · simp
   · symm
     refine Finset.sum_eq_zero fun a _ => ?_
-    rw [if_neg (show ¬ ((a : ℕ) = c + 1) from fun e => h (by have := a.2; omega))]
+    rw [if_neg (show ¬ ((a : ℕ) = c + 1) from fun e => h omega)]
 
 theorem phase_main : PhaseWellDef := by
   unfold PhaseWellDef
@@ -360,7 +360,7 @@ theorem phase_main : PhaseWellDef := by
     by_cases h1 : (a : ℕ) = c + 1
     · rw [if_pos h1]
       by_cases hb : blk s a = blk s c
-      · have hs := revIn_succ s c (by have := a.2; omega) (by rw [← h1]; exact hb.symm)
+      · have hs := revIn_succ s c omega (by rw [← h1]; exact hb.symm)
         rw [← h1] at hs
         rw [if_pos (show (revF s c : ℕ) = revF s a + 1 by rw [revF_val, revF_val]; omega), hb,
           mul_assoc, mul_comm (x a c), ← mul_assoc, Units.inv_mul, one_mul]

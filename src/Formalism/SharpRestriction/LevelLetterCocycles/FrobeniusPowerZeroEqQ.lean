@@ -196,7 +196,7 @@ theorem fil_of_rep (C : Formalism.MainNotions.UnusedSlot80.LevC.Ctx W) (Ti : For
   have hM : 3 * (H : ℤ) ≤ (((PD.p - 1) * A.M PD.p : ℕ) : ℤ) + H := by
     have h2 : 2 * A.h < (PD.p - 1) * A.M PD.p := by
       unfold ArcP.M
-      exact Nat.lt_mul_div_succ _ (by have := PD.hp.two_le; omega)
+      exact Nat.lt_mul_div_succ _ omega
     have h3 : 2 * H < (PD.p - 1) * A.M PD.p := by omega
     omega
   have hfr : ∀ m, ∀ r < 3 * (H : ℤ), levB T a ζ ⟨_, hZ m⟩ r =

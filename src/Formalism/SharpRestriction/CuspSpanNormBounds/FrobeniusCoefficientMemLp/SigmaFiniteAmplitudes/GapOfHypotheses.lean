@@ -111,7 +111,7 @@ theorem gap_of_hypotheses (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
     by_contra hc
     push Not at hc
     have h1 : Real.exp (2 * large₂.sc.L) < Real.exp 1 := Real.exp_lt_exp.mpr (by linarith)
-    have h2 : Real.exp 1 < 3 := by have := Real.exp_one_lt_d9; linarith
+    have h2 : Real.exp 1 < 3 := linarith
     linarith
 
   set h0 : ℝ := Cl * N ^ 19 * (D.R.f : ℝ) ^ 5 * large₂.sc.L with hh0

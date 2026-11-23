@@ -159,7 +159,7 @@ theorem Sys.noDown (h : Sys L P) (M : Fin n → ℤ) (hM : Box L M) (i : Fin n) 
         omega)
     exact (Set.infinite_of_injective_forall_mem (f := fun s : ℕ => M i - 1 - (s : ℤ))
       (fun a b e => by simpa using e) (fun s => hall _ (by omega))) (h.fin M i)
-  · let i' : Fin n := ⟨i + 1, by have := i.2; omega⟩
+  · let i' : Fin n := ⟨i + 1, omega⟩
     have e1 : i'.castSucc = i.succ := by
       ext
       simp [i']

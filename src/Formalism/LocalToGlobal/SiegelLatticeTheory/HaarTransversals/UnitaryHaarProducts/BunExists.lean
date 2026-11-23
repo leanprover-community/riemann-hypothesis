@@ -361,7 +361,7 @@ theorem u_anti (R : Ranks) (P : HCParam R) : ∀ (d : ℕ) (i : Fin R.k) (hi : i
     show P.u ⟨i.1 + d + 1, by omega⟩ ≤ P.u i
     linarith
 
-theorem v_gt (R : Ranks) (P : HCParam R) (i : Fin (R.k - 1)) : -P.b ⟨0, by have := R.two_le_m; omega⟩ < P.v i := by
+theorem v_gt (R : Ranks) (P : HCParam R) (i : Fin (R.k - 1)) : -P.b ⟨0, omega⟩ < P.v i := by
   have hk : 0 < R.k := omega
   have hm : 0 < R.m := omega
   have h1 : -P.b ⟨0, hm⟩ < P.u ⟨R.k - 1, by omega⟩ := P.u_last_gt hk hm

@@ -227,14 +227,14 @@ lemma gg_step {d : ℕ} {R : Type*} [CommRing R] (Z : Matrix (Fin d) (Fin d) R) 
   · congr 1
     · let e : {i : Fin d // (i : ℕ) < q} ≃
           {x : {i : Fin d // (i : ℕ) < q + s} // (x.1 : ℕ) < q} :=
-        { toFun := fun i => ⟨⟨i.1, by have := i.2; omega⟩, i.2⟩
+        { toFun := fun i => ⟨⟨i.1, omega⟩, i.2⟩
           invFun := fun x => ⟨x.1.1, x.2⟩
           left_inv := fun i => rfl
           right_inv := fun x => rfl }
       rw [← Matrix.det_submatrix_equiv_self e]
       rfl
     · let e : Fin s ≃ {x : {i : Fin d // (i : ℕ) < q + s} // ¬ (x.1 : ℕ) < q} :=
-        { toFun := fun i => ⟨⟨⟨q + i, by have := i.2; omega⟩, by have := i.2; simp⟩, by simp⟩
+        { toFun := fun i => ⟨⟨⟨q + i, omega⟩, by have := i.2; simp⟩, by simp⟩
           invFun := fun x => ⟨(x.1.1 : ℕ) - q, by have := x.1.2; have := x.2; omega⟩
           left_inv := fun i => by ext; simp
           right_inv := fun x => by

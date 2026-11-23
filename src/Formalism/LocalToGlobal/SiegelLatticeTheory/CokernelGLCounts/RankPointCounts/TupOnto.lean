@@ -136,7 +136,7 @@ theorem inv_good {U : Matrix (Fin n) (Fin n) E} (hU0 : ∀ c b, b < c → U c b 
       exact Submodule.zero_mem _
   have hNn : N ^ n = 0 := by
     ext c b
-    rw [pow_upper hN0 n c b (by have := b.isLt; omega), Matrix.zero_apply]
+    rw [pow_upper hN0 n c b omega, Matrix.zero_apply]
   have hinv : (∑ k ∈ Finset.range n, (-N) ^ k) * U = 1 := by
     have h := geom_sum_mul (-N) n
     rw [neg_pow, hNn, mul_zero, zero_sub] at h

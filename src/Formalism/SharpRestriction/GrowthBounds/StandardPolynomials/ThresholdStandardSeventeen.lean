@@ -44,11 +44,11 @@ theorem error_exponent_lower_bound {C0 Cde CE1 CE2 : ℝ} {X : Loc} (St : Std C0
   have hp5 : (5 : ℝ) ≤ X.p := by exact_mod_cast St.p5
   have hp : (0 : ℝ) < X.p := by linarith
   have hN1 : (1 : ℝ) ≤ X.N1 := by exact_mod_cast St.N1pos
-  have hk : (1 : ℝ) ≤ X.k := by have := St.N1k; linarith
+  have hk : (1 : ℝ) ≤ X.k := linarith
   have hk0 : (0 : ℝ) < X.k := by linarith
   have hQ : (1 : ℝ) ≤ X.Q := one_le_pow₀ (by linarith)
   have hcr : (1 : ℝ) ≤ X.c := by exact_mod_cast hc
-  have hLa : (0 : ℝ) ≤ X.La C0 := by have := St.La1; linarith
+  have hLa : (0 : ℝ) ≤ X.La C0 := linarith
   have ha : (0 : ℝ) ≤ X.a := Nat.cast_nonneg _
   have hb : (0 : ℝ) ≤ X.b' := St.bpos.le
   have A1 : 0 ≤ (X.a : ℝ) / (X.p : ℝ) ^ 2 := by positivity

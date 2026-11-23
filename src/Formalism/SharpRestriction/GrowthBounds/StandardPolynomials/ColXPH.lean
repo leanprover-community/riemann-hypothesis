@@ -119,14 +119,14 @@ theorem first_row_le {n N : ℕ} [NeZero n] {Lt : Letters (Fin N)} {B : Fin N �
 
 theorem deg_even_le {s r : ℕ} (p : ℕ) (S : SegData s) (aTop : Fin s → ℕ) (aPlus : ℕ) (m : ℝ) (b : SegBlock s r)
     (lv : Fin (blockData p S aTop aPlus m b).T.t → ℕ) (jp : ℕ) (l : Fin s) (hl : (l : ℕ) < S.sigma) :
-    ((blockData p S aTop aPlus m b).lettersAt lv jp).deg ⟨2 * l.val, by have := l.2; omega⟩ ≤ b.w l := by
+    ((blockData p S aTop aPlus m b).lettersAt lv jp).deg ⟨2 * l.val, omega⟩ ≤ b.w l := by
   refine (Nat.sub_le _ _).trans ((Nat.sub_le _ _).trans ?_)
-  show (segChain p S aTop b).deg ⟨2 * l.val, by have := l.2; omega⟩ ≤ b.w l
-  have hne : ((⟨2 * l.val, by have := l.2; omega⟩ : Fin (2 * s + 1)) : ℕ) ≠ 2 * s := by
+  show (segChain p S aTop b).deg ⟨2 * l.val, omega⟩ ≤ b.w l
+  have hne : ((⟨2 * l.val, omega⟩ : Fin (2 * s + 1)) : ℕ) ≠ 2 * s := by
     have := l.2
     show 2 * l.val ≠ 2 * s
     omega
-  have ht : topOf ⟨2 * l.val, by have := l.2; omega⟩ hne = l := Fin.ext (by show 2 * l.val / 2 = l.val; omega)
+  have ht : topOf ⟨2 * l.val, omega⟩ hne = l := Fin.ext (by show 2 * l.val / 2 = l.val; omega)
   unfold segChain
   simp only
   rw [dif_neg hne, if_pos (by omega), ht, if_pos hl]
@@ -146,7 +146,7 @@ theorem sum_deg_le {s r : ℕ} (p : ℕ) (S : SegData s) (aTop : Fin s → ℕ) 
   rw [if_neg hlast, add_zero]
   refine Finset.sum_le_sum fun l' _ => ?_
   have hodd : ¬ (2 * l'.val + 1 < 2 * l.val + 1 ∧
-      ((blockData p S aTop aPlus m b).lettersAt lv jp).vec ⟨2 * l'.val + 1, by have := l'.2; omega⟩ = true) := by
+      ((blockData p S aTop aPlus m b).lettersAt lv jp).vec ⟨2 * l'.val + 1, omega⟩ = true) := by
     rintro ⟨-, h⟩
     rw [hvec] at h
     simp only [decide_eq_true_eq] at h

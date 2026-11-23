@@ -42,18 +42,14 @@ open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Group
 
 variable {G : Type} [Group G] (Γ K : Subgroup G)
 
-end Group
 
-section Stab
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E)
 
-end Stab
 
 theorem frame_inv {n P Q : ℕ} {G : Matrix (Fin n) (Fin n) ℂ} (h : Formalism.UG.HasSignature G P Q)
     {A : Matrix (Fin P ⊕ Fin Q) (Fin n) ℂ} (hA : Aᴴ * Formalism.UG.Jpq P Q * A = G) :

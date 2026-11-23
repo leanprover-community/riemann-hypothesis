@@ -93,7 +93,7 @@ theorem kill_Kcol_low (n0 : ℕ) (hn : n0 ≤ N) (ν : Fin (N + 1) → Fin r →
 
 variable (n0 : ℕ) (hN : n0 + r = N)
 
-def tauI (m : Fin r) : Fin N := ⟨n0 + (r - 1 - m.val), by have := m.isLt; omega⟩
+def tauI (m : Fin r) : Fin N := ⟨n0 + (r - 1 - m.val), omega⟩
 
 def rises (ν : Fin (N + 1) → Fin r → ℤ) (c : ℤ) (i : ℕ) : Prop := colH (stg ν i) c < colH (stg ν (i + 1)) c
 

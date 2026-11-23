@@ -85,7 +85,7 @@ theorem beta_eq_sum_thresholds (LL : Letters (Fin N)) (B : Fin N → ℕ) (n0 : 
   rw [sum_Icc_one_eq_sum_range, ← sum_fin_ite_lt_eq N n0 hn (fun m => (toL r K LL B).B (m + 1))]
   refine Finset.sum_congr rfl fun i _ => ?_
   by_cases hi : i.val < n0
-  · rw [if_pos hi, if_pos hi, toL_B LL B (i.val + 1) ⟨by omega, by have := i.2; omega⟩]
+  · rw [if_pos hi, if_pos hi, toL_B LL B (i.val + 1) ⟨by omega, omega⟩]
     congr 1
   · rw [if_neg hi, if_neg hi]
 
@@ -95,7 +95,7 @@ theorem rank_eq_prod_choose (LL : Letters (Fin N)) (B : Fin N → ℕ) (n0 : ℕ
   rw [prod_Icc_one_eq_prod_range, ← prod_fin_ite_lt_eq N n0 hn (fun m => ((toL r K LL B).B (m + 1) + (r + K) - 1).choose (r + K - 1))]
   refine Finset.prod_congr rfl fun i _ => ?_
   by_cases hi : i.val < n0
-  · rw [if_pos hi, if_pos hi, toL_B LL B (i.val + 1) ⟨by omega, by have := i.2; omega⟩]
+  · rw [if_pos hi, if_pos hi, toL_B LL B (i.val + 1) ⟨by omega, omega⟩]
     congr 3
   · rw [if_neg hi, if_neg hi]
 
@@ -201,7 +201,7 @@ theorem toL_wt (D : Formalism.BasicNotions.D7) (h3 : admB3 D) (μ : Fin (N + 1) 
     intro x
     unfold BranchingDimensions.Letters.kaRows
     show BranchingDimensions.Letters.ent (D := toL r K LL B) μ N (r + x.val) = _
-    rw [entry_eq_of_lt LL B μ N (r + x.val) (by omega) (by have := x.2; omega)]
+    rw [entry_eq_of_lt LL B μ N (r + x.val) (by omega) omega]
     rfl
   refine Eq.trans ?_ (prod_fin_ite_lt_eq K j.val j.2.le (fun i =>
     (((BranchingDimensions.Letters.kaRows (D := toL r K LL B) μ N i : ℤ) : ℝ) - ((BranchingDimensions.Letters.kaRows (D := toL r K LL B) μ N j.val : ℤ) : ℝ) +

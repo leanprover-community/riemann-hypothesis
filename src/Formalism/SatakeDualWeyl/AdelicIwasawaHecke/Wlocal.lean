@@ -313,7 +313,7 @@ theorem wlocal_main {r n : ℕ} (hn : n ≤ r) (ν : Fin n → ℕ) :
     intro k hk M N _ hstd
     have hM : M = 1 := by
       ext i j
-      rw [hstd i j (by have := j.isLt; omega), Matrix.one_apply]
+      rw [hstd i j omega, Matrix.one_apply]
     rw [hM]
     exact wlocal_good_one hn ν
   | succ d ih =>

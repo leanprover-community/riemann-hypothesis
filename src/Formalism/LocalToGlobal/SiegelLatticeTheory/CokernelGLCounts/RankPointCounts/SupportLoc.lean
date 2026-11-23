@@ -491,7 +491,7 @@ theorem last_one (w : Point D.host.E (D.R.rS + 1)) (hD : Dmin w D.R.rS ≠ 0) :
   · exfalso
     apply hD
     rw [dmin_r]
-    apply Matrix.det_eq_zero_of_row_eq_zero ⟨(l0.map Prod.snd).sum, by have := hmem.2; omega⟩
+    apply Matrix.det_eq_zero_of_row_eq_zero ⟨(l0.map Prod.snd).sum, omega⟩
     intro j
     show ptEntry w.1 (l0.map Prod.snd).sum j.val = 0
     rw [hb, ptEntry_append_ge _ _ _ _ le_rfl]

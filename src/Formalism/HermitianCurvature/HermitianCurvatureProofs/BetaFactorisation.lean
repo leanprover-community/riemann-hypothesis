@@ -123,7 +123,7 @@ theorem betaFactorisation : Factorisation := by
   have hkD : 0 < 4 * (c.k : ℝ) * c.Del := by
     have : (0 : ℝ) < c.k := by linarith
     positivity
-  have ha : 0 < Y + 1 / 2 + c.a := by have := h.ha; linarith
+  have ha : 0 < Y + 1 / 2 + c.a := linarith
   have hbj : ∀ j : ℕ, 1 ≤ j → j ≤ c.m → 1 ≤ c.b j := by
     intro j hj
     induction j, hj using Nat.le_induction with
@@ -444,7 +444,7 @@ theorem positionTop : PositionTop := by
   have hc : c.top = true ∧ c.k - 1 + 1 = c.k := ⟨ht, by omega⟩
   simp only [Cfg.rho, if_pos hc]
   obtain ⟨hb1, hb2⟩ := h.htop ht
-  have hbp : 0 < c.bp := by have := h.hb1; linarith
+  have hbp : 0 < c.bp := linarith
   have hkc : ((c.k - 1 : ℕ) : ℝ) = (c.k:ℝ) - 1 := by
     rw [Nat.cast_sub (by omega : 1 ≤ c.k)]; norm_num
   have hvk : c.v (c.k - 1) = c.vlast := by simp only [Cfg.v, hkc]; ring

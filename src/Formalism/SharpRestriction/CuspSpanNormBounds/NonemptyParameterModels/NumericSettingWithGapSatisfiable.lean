@@ -243,8 +243,8 @@ theorem obj_isHCParam_u (R : Formalism.BasicNotions.Ranks) (P : Formalism.BasicN
       | succ d ih => intro i h; exact lt_trans (key (i + d + 1) h) (ih i (by omega))
     intro a b hab
     have hab' : a.val < b.val := hab
-    have := anti (b.val - a.val - 1) a.val (by have := b.isLt; omega)
-    have e : (⟨a.val + (b.val - a.val - 1) + 1, by have := b.isLt; omega⟩ : Fin R.k) = b := by
+    have := anti (b.val - a.val - 1) a.val omega
+    have e : (⟨a.val + (b.val - a.val - 1) + 1, omega⟩ : Fin R.k) = b := by
       apply Fin.ext; simp; omega
     rw [e] at this
     show ((P.u b : ℚ) : ℝ) < ((P.u a : ℚ) : ℝ)

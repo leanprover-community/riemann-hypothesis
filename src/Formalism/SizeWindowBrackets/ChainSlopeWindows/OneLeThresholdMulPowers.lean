@@ -950,7 +950,7 @@ lemma first_le {C₁ : ℝ}
     unfold Par.Jo
     apply Nat.le_floor
     rw [Nat.cast_one]
-    exact Real.one_le_rpow F.x1 (by have := hW.1; positivity)
+    exact Real.one_le_rpow F.x1 (positivity)
   have hρ : P.ρ ≤ 1 / 2 := by
     have h1 : (P.x ^ 2)⁻¹ ≤ (100 : ℝ)⁻¹ := inv_anti₀ (by norm_num) (by linarith)
     have := F.ρx

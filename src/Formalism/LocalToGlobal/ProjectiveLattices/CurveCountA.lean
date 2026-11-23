@@ -146,7 +146,7 @@ theorem exists_indep_ratios {K κ : Type*} [Field K] [Field κ] [Algebra K κ] {
     rw [← hn, ← Nat.cast_add, Nat.cast_le] at this
     exact this
   have hN : (D + 1) * N = (D + 1) * (N - 1) + (D + 1) := by
-    obtain ⟨N', rfl⟩ : ∃ N', N = N' + 1 := ⟨N - 1, by have := a.2; omega⟩
+    obtain ⟨N', rfl⟩ : ∃ N', N = N' + 1 := ⟨N - 1, omega⟩
     simp only [Nat.add_sub_cancel]
     ring
   have hDn : D ≤ n := by

@@ -194,7 +194,7 @@ def insB (k c x : ℕ) : ℕ := if x < k then x else x + c
 
 def eBf (N k c : ℕ) (hk : k ≤ N) : Fin N ⊕ Fin c → Fin (N + c) :=
   Sum.elim (fun x => ⟨insB k c x, by have := x.isLt; unfold insB; split_ifs <;> omega⟩)
-    (fun i => ⟨k + i, by have := i.isLt; omega⟩)
+    (fun i => ⟨k + i, omega⟩)
 
 theorem eBf_inj (N k c : ℕ) (hk : k ≤ N) : Function.Injective (eBf N k c hk) := by
   intro a b h

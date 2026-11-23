@@ -65,7 +65,7 @@ theorem hfF (w' : D.what₂.Word) (a : Fin D.R.rS) (b : Fin (D.R.rS + 1)) :
 theorem coord_eq (hw : OkPt X u u' w) (c : FreeE w → ℂ) (p : FreeE w) :
     stCoordV X u' w (gamW X u u' w) v (yU X u u' w v c hw) p = c p := by
   unfold stCoordV
-  set a' : Fin D.R.rS := ⟨p.1.1.1, by have := p.2.1; omega⟩ with ha'
+  set a' : Fin D.R.rS := ⟨p.1.1.1, omega⟩ with ha'
   have hcs : a'.castSucc = p.1.1 := Fin.ext rfl
   have hT : uMat ((gamW X u u' w v)⁻¹ * yU X u u' w v c hw * gamW X u u' w v) *ᵥ frm X u' D.host.rdE v p.1.2 =
       frm X u' D.host.rdE v p.1.2 + ∑ b', (Cw w c - 1) b' p.1.2 • frm X u' D.host.rdE v b' := by

@@ -235,7 +235,7 @@ theorem restMemA_of (D : Formalism.BasicNotions.D7) (hAdm : AdmB D) (C₀ : ℝ)
     have hWlt : ∀ a : Fin r, X.F.fr (j - 1) a.val < segE X.F j i := by
       intro a
       have h3 : ¬ segE X.F j i ≤ X.F.fr (j - 1) (r - 1) := hW
-      have h4 := kfr_le X.F hV (j - 1) (by have := a.isLt; omega : a.val ≤ r - 1) (by have := a.isLt; omega)
+      have h4 := kfr_le X.F hV (j - 1) (by have := a.isLt; omega : a.val ≤ r - 1) omega
       omega
     have vlt := mem_vg_A D hB2 hX O j b q.1 {y | y < segE X.F j i} hWlt (plPart q.1.1 i.castSucc (lastIdx r))
       (by unfold Dat.memPl; rw [sA2]; exact (u1.2 i.castSucc).1)

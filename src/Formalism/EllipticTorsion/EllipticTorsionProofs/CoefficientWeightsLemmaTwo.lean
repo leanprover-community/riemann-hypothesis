@@ -350,7 +350,7 @@ theorem main (hCE : Formalism.ELL.CompExpWeight.{u}) : Formalism.ELL.EllipticTor
         rcases Nat.eq_zero_or_pos k with rfl | hkpos
         · have hndvd : ¬ (p ^ 2 - 1) ∣ (p - 1) := by
             intro h
-            have h3 := Nat.le_of_dvd (by have := hp.two_le; omega) h
+            have h3 := Nat.le_of_dvd omega h
             have h4 := hpq
             have h5 := hp.two_le
             generalize p ^ 2 = q at h3 h4
@@ -372,7 +372,7 @@ theorem main (hCE : Formalism.ELL.CompExpWeight.{u}) : Formalism.ELL.EllipticTor
             have hle' := hle
             rw [show p ^ k - 1 - (p ^ k - p) = p - 1 by
               generalize p ^ k = r at hpk' hle' ⊢; omega] at h2
-            have h3 := Nat.le_of_dvd (by have := hp.two_le; omega) h2
+            have h3 := Nat.le_of_dvd omega h2
             have h4 := hpq
             have h5 := hp.two_le
             generalize p ^ 2 = q at h3 h4

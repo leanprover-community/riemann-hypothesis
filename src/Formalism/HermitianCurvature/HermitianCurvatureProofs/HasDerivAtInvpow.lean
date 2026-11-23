@@ -121,13 +121,13 @@ lemma dminPoly (z z' : Fin (2 * r + k + 1) → ℂ) (l : Fin (r + 2)) :
     ∃ q : MvPolynomial (Vr (2 * r + k + 1)) ℂ, q.totalDegree ≤ 2 * r + 2 ∧
       ∀ g : Mat k r, Dmin k r z z' g l = eval (vars g) q := by
   obtain ⟨q, hq, hqe⟩ := exists_dmin_eq_eval_poly_deg_le (k := k) z z' l
-  exact ⟨q, hq.trans (by have := l.isLt; omega), hqe⟩
+  exact ⟨q, hq.trans omega, hqe⟩
 
 lemma dminStarPoly (z z' : Fin (2 * r + k + 1) → ℂ) (l : Fin (r + 2)) :
     ∃ q : MvPolynomial (Vr (2 * r + k + 1)) ℂ, q.totalDegree ≤ 2 * r + 2 ∧
       ∀ g : Mat k r, star (Dmin k r z z' g l) = eval (vars g) q := by
   obtain ⟨q, hq, hqe⟩ := exists_star_dmin_eq_eval_poly_deg_le (k := k) z z' l
-  exact ⟨q, hq.trans (by have := l.isLt; omega), hqe⟩
+  exact ⟨q, hq.trans omega, hqe⟩
 
 lemma gfPoly (z z' : Fin (2 * r + k + 1) → ℂ) :
     ∃ q : MvPolynomial (Vr (2 * r + k + 1)) ℂ, q.totalDegree ≤ 2 * r + 2 ∧

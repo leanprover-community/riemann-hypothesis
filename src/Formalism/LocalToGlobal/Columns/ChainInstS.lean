@@ -186,7 +186,7 @@ theorem symEntB_join_col (q : ℕ) {k₀ n' c' n c : ℕ} (hc' : c' = 1) (hc : c
     show Loc.eN E (n' + 1) n' (Fin.castAdd 1 i) = 0
     unfold Loc.eN
     simp only [Fin.val_castAdd]
-    rw [if_neg (by have := i.2; omega)]
+    rw [if_neg omega]
   have e2 : Loc.eN E (n' + 1) n' ⟨n', by omega⟩ = 1 := by
     unfold Loc.eN
     rw [if_pos rfl]

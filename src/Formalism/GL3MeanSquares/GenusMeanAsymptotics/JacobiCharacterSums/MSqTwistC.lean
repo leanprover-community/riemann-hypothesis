@@ -51,7 +51,7 @@ private lemma intervalIntegrable_inv_log_two {Y : ℝ} (hY : 2 ≤ Y) :
 
 theorem liX_upper {Y : ℝ} (hY : 2 ≤ Y) : 0 ≤ liX Y ∧ liX Y ≤ 2 * Y := by
   have hpos : ∀ t ∈ Set.Icc (2 : ℝ) Y, 0 < Real.log t := fun t ht => Real.log_pos (by linarith [ht.1])
-  have hlog2 : (1 : ℝ) / 2 < Real.log 2 := by have := Real.log_two_gt_d9; linarith
+  have hlog2 : (1 : ℝ) / 2 < Real.log 2 := linarith
   constructor
   · unfold liX
     exact intervalIntegral.integral_nonneg hY (fun t ht => (one_div_pos.2 (hpos t ht)).le)

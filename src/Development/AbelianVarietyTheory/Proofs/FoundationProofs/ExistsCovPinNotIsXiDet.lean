@@ -75,7 +75,6 @@ theorem eq_of_complex (σ : c.F →+* ℂ) {f f' : Rul Xo c} {a : (E →+* ℂ) 
   obtain ⟨z, hz⟩ := GlobalTheory.Frames.FramedBaseChange.exists_frMap GlobalTheory.firstFiveLaws.1.secBaseChange E H Dw l Xo c _ _ ψ y
   rw [← hψ, map_sub, ← GlobalTheory.ShortSpanCompare.evR_of_frMap hf ψ hz, ← GlobalTheory.ShortSpanCompare.evR_of_frMap hf' ψ hz, h, sub_self]
 
-section Pins
 
 variable [StarRing (𝓞 E)]
 
@@ -83,7 +82,6 @@ variable [StarRing (𝓞 E)]
 variable {Tup : Type} (σ : c.F →+* ℂ) (Q : Tup → Finset (Ideal (𝓞 E))) (xi : Tup → (Ideal (𝓞 E) →*₀ c.F))
   (I : Tup → Ideal (𝓞 E))
 
-end Pins
 
 
 end GlobalTheory.CoverPinCompare

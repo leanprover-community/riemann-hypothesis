@@ -337,13 +337,13 @@ theorem negative_count_of_sign_pattern (k r : ℕ) (hk : 1 ≤ k) : PlaceDegreeD
   unfold PlaceDegreeData.qOf
   have : (Finset.univ.filter fun a => CayleySignature.eps48 k r a = false) =
       (Finset.univ : Finset (Fin (r + 1))).image
-        (fun j => (⟨k - 1 + (2 * j.val + 1), by have := j.isLt; omega⟩ : Fin (2 * r + k + 1))) := by
+        (fun j => (⟨k - 1 + (2 * j.val + 1), omega⟩ : Fin (2 * r + k + 1))) := by
     ext i
     simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_image]
     constructor
     · intro hi
       obtain ⟨i1, i2⟩ := sign_pattern_false_odd_offset k r i hi
-      refine ⟨⟨(i.val - (k - 1)) / 2, by have := i.isLt; omega⟩, Fin.ext ?_⟩
+      refine ⟨⟨(i.val - (k - 1)) / 2, omega⟩, Fin.ext ?_⟩
       simp only
       omega
     · rintro ⟨j, rfl⟩
@@ -359,7 +359,7 @@ theorem negative_count_of_sign_pattern (k r : ℕ) (hk : 1 ≤ k) : PlaceDegreeD
 theorem positive_count_of_sign_pattern (k r : ℕ) (hk : 1 ≤ k) : r + 1 ≤ PlaceDegreeData.pOf (CayleySignature.eps48 k r) := by
   unfold PlaceDegreeData.pOf
   have hsub : (Finset.univ : Finset (Fin (r + 1))).image
-        (fun j => (⟨k - 1 + 2 * j.val, by have := j.isLt; omega⟩ : Fin (2 * r + k + 1))) ⊆
+        (fun j => (⟨k - 1 + 2 * j.val, omega⟩ : Fin (2 * r + k + 1))) ⊆
       (Finset.univ.filter fun a => CayleySignature.eps48 k r a = true) := by
     intro i hi
     obtain ⟨j, _, rfl⟩ := Finset.mem_image.mp hi

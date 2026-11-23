@@ -306,7 +306,7 @@ theorem m1num_of_std {C0 Cde CE1 CE2 : ℝ} {X : Loc} (St : Std C0 Cde CE1 CE2 1
         have hn : X.p * X.p ^ (segG X.TT j - (segDists X.TT j).get i) ≤
             X.p ^ (segG X.TT j - (segDists X.TT j).get l) := by
           rw [← pow_succ']
-          exact Nat.pow_le_pow_right (by have := St.p5; omega) (by omega)
+          exact Nat.pow_le_pow_right omega (by omega)
         exact_mod_cast hn
       have h3 := column_lower_ratio St.bpos hP0 hk0.le (Nat.cast_nonneg _) hAPl hbTl hPP hAPi hbTi hbe12 (hPQ.trans hQ)
         (St.two_rank_mul_Q_le le_rfl)

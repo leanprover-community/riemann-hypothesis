@@ -228,7 +228,7 @@ theorem numStep_of : ∃ C₁ : ℝ, 0 < C₁ ∧ ∀ C : ℝ, C₁ ≤ C → �
   have cg5 := counting_hypotheses_of_hyps hC5 (hyps_mono hC5 hC5' H) 0 (Nat.zero_le _) (Nat.zero_le _)
   obtain ⟨h1, h2, h3, _, h5, _, _, _, _, h10, h11, _⟩ := H
   have ha0 : 0 ≤ a := by linarith [hnb.two_le_a]
-  have hfd := fun s hs => flatDeg_bounds (by have := hB.m_ge; omega) ha0 h5 s hs
+  have hfd := fun s hs => flatDeg_bounds omega ha0 h5 s hs
   have hcPe : ((cPrime n' r TT.card c0 cpp cStar : ℕ) : ℝ) = Formalism.CountingSumsFrames.cPrII r TT.card n' c0 cpp cStar := by
     unfold cPrime Formalism.CountingSumsFrames.cPrII Formalism.CountingSumsFrames.omII
     push_cast
@@ -250,7 +250,7 @@ theorem numStep_of : ∃ C₁ : ℝ, 0 < C₁ ∧ ∀ C : ℝ, C₁ ≤ C → �
   have A0 := (H0 p r TT.card (orbitWindowCount r de h x) 0 1 (r + K) n' L₁ (goodG' r de h x) Y a 0 c0 cpp Dp cStar cg0
     le_rfl (by unfold Formalism.CountingSumsFrames.QII; positivity)).2.1
   refine ⟨hnb.one_le_Lg, kapFl_le (by omega) hnb.two_le_a hnb.one_le_log hfd, ?_⟩
-  refine numAt_of hk hF (by omega) h2 (by have := h3.2.1; omega) hnb hfd hcP A5 ?_
+  refine numAt_of hk hF (by omega) h2 omega hnb hfd hcP A5 ?_
   intro Bb hBb
   have q := (A0 Bb hBb).1
   rw [hcPe]

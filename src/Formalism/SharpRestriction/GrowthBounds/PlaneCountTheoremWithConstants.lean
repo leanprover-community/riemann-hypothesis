@@ -269,7 +269,7 @@ theorem ask_eq_askP (X : Inst D L) (p : ℕ) (hp : p.Prime)
         lt_of_lt_of_le (Nat.lt_pow_succ_log_self hp.one_lt _) (Nat.pow_le_pow_right hp.pos (by omega))
       have h2 : (L.aT t : ℝ) ≤ ((L.aT t).toNat : ℝ) := by exact_mod_cast Int.self_le_toNat (L.aT t)
       have h3 : (((L.aT t).toNat : ℕ) : ℝ) < (p : ℝ) ^ i := by exact_mod_cast h1
-      have h4 : (0 : ℝ) < (p : ℝ) ^ i := by have := hp.pos; positivity
+      have h4 : (0 : ℝ) < (p : ℝ) ^ i := positivity
       have h5 : (L.aT t : ℝ) / (p : ℝ) ^ i < 1 := by rw [div_lt_one h4]; linarith
       have := L.wPart_ge j t p i
       linarith
@@ -393,7 +393,7 @@ theorem w''_le (s : Scale) (n : ℕ) (hn : 1 ≤ n) : s.w'' n ≤ s.b' / s.x ∧
 theorem two_b'_le_a (s : Scale) : 2 * s.b' ≤ s.a := by
   have hX : 2 ≤ s.X' := by
     unfold Scale.X'
-    have h1 : 1 ≤ s.x ^ (s.eps / 3) := Real.one_le_rpow s.one_lt_alt.le (by have := s.eps_pos; positivity)
+    have h1 : 1 ≤ s.x ^ (s.eps / 3) := Real.one_le_rpow s.one_lt_alt.le (positivity)
     have := Real.add_one_le_exp (s.x ^ (s.eps / 3))
     linarith
   have hb := sc_b'_nonneg s

@@ -158,11 +158,11 @@ section Seg
 variable (C0 CE1 CE2 mu : ℝ) (X : Loc) (β : GlobalTheory X) (j : Fin (numSeg X.TT))
 
 theorem PS_even (l : Fin (segS X.TT j)) :
-    PS X j (⟨2 * l.val, by have := l.2; omega⟩ : Fin (2 * segS X.TT j + 1)).succ = (X.seg C0 CE1 CE2 j).P X.p l := by
+    PS X j (⟨2 * l.val, omega⟩ : Fin (2 * segS X.TT j + 1)).succ = (X.seg C0 CE1 CE2 j).P X.p l := by
   unfold PS
   rw [posS_succ_lt X j _ (by have := l.2; simp only; omega)]
   show _ = X.p ^ (segG X.TT j - (segDists X.TT j).get l)
-  have e2 : (⟨(2 * l.val) / 2, by have := l.2; omega⟩ : Fin (segS X.TT j)) = l := by
+  have e2 : (⟨(2 * l.val) / 2, omega⟩ : Fin (segS X.TT j)) = l := by
     apply Fin.ext; simp
   simp only [e2]
   congr 1
@@ -212,7 +212,7 @@ theorem nuS_last :
   unfold nuS
   rw [if_neg (by omega), if_neg (by omega)]
   congr 1
-  exact Finset.sum_congr rfl fun l' _ => if_congr (by have := l'.2; omega) rfl rfl
+  exact Finset.sum_congr rfl fun l' _ => if_congr omega rfl rfl
 
 end Seg
 
@@ -240,12 +240,12 @@ theorem plSum_seg (h : Col.PH (L.LL j).vec (L.LL j).deg y.1.1.mu (nuS C0 CE1 CE2
     congr 2
     exact lev_zero X j C0 CE1 CE2
   have tE : ∀ l : Fin (segS X.TT j),
-      (Finsupp.single (phiS X j ((⟨2 * l.val, by have := l.2; omega⟩ : Fin (2 * segS X.TT j + 1)).succ, Fin.castAdd X.m 0))
-        (PS X j (⟨2 * l.val, by have := l.2; omega⟩ : Fin (2 * segS X.TT j + 1)).succ *
+      (Finsupp.single (phiS X j ((⟨2 * l.val, omega⟩ : Fin (2 * segS X.TT j + 1)).succ, Fin.castAdd X.m 0))
+        (PS X j (⟨2 * l.val, omega⟩ : Fin (2 * segS X.TT j + 1)).succ *
           (nuS C0 CE1 CE2 mu X β j (2 * l.val + 1 + 1) - nuS C0 CE1 CE2 mu X β j (2 * l.val + 1)).toNat) : MonH X) =
       Finsupp.single ((topOdd X j l, true), 0) ((X.seg C0 CE1 CE2 j).P X.p l * zxS C0 CE1 CE2 X β j l) := by
     intro l
-    have e1 : phiS X j ((⟨2 * l.val, by have := l.2; omega⟩ : Fin (2 * segS X.TT j + 1)).succ, Fin.castAdd X.m 0) =
+    have e1 : phiS X j ((⟨2 * l.val, omega⟩ : Fin (2 * segS X.TT j + 1)).succ, Fin.castAdd X.m 0) =
         ((topOdd X j l, true), 0) := phiS_odd X j l
     rw [e1, PS_even C0 CE1 CE2, nuS_step, add_sub_cancel_left, Int.toNat_natCast]
   rw [sum_fin_odd]
@@ -264,7 +264,7 @@ theorem plSum_seg (h : Col.PH (L.LL j).vec (L.LL j).deg y.1.1.mu (nuS C0 CE1 CE2
 theorem oSum_seg (h : Col.PH (L.LL j).vec (L.LL j).deg y.1.1.mu (nuS C0 CE1 CE2 mu X β j)) :
     ∑ c ∈ colsS C0 CE1 CE2 mu X β j y.1.1.mu, oCS C0 CE1 CE2 mu X β j y.1.1.mu c =
       (∑ i : Fin (segS X.TT j), (X.seg C0 CE1 CE2 j).P X.p i *
-        (L.LL j).deg ⟨2 * (i : ℕ), by have := i.2; omega⟩) + (L.LL j).deg ⟨2 * segS X.TT j, by omega⟩ := by
+        (L.LL j).deg ⟨2 * (i : ℕ), omega⟩) + (L.LL j).deg ⟨2 * segS X.TT j, by omega⟩ := by
   have hsub : colRange y.1.1.mu ⊆ colsS C0 CE1 CE2 mu X β j y.1.1.mu := by
     unfold colsS
     exact Finset.subset_union_left
@@ -276,10 +276,10 @@ theorem oSum_seg (h : Col.PH (L.LL j).vec (L.LL j).deg y.1.1.mu (nuS C0 CE1 CE2 
   rw [if_pos v3, PS_last, one_mul]
   congr 1
   refine Finset.sum_congr rfl fun l _ => ?_
-  have v1 : (L.LL j).vec ⟨2 * l.val, by have := l.2; omega⟩ = true := by
+  have v1 : (L.LL j).vec ⟨2 * l.val, omega⟩ = true := by
     show decide ((2 * l.val) % 2 = 0) = true
     simp
-  have v2 : (L.LL j).vec ⟨2 * l.val + 1, by have := l.2; omega⟩ = false := by
+  have v2 : (L.LL j).vec ⟨2 * l.val + 1, omega⟩ = false := by
     show decide ((2 * l.val + 1) % 2 = 0) = false
     simp
   rw [if_pos v1, if_neg (by rw [v2]; simp), mul_zero, add_zero, PS_even C0 CE1 CE2]

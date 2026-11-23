@@ -167,7 +167,7 @@ theorem ex_local : ∃ C : ℝ, 0 < C ∧ ∀ (M : ℕ) [NeZero M] (χ : Dirichl
   rw [e6] at hZ4
   refine ⟨Z, hZ1, ?_, ?_⟩
   · have h2 : Real.log B / Real.log 2 ≤ 180 * Real.log B := by
-      have hl2 : (1 / 2 : ℝ) ≤ Real.log 2 := by have := Real.log_two_gt_d9; linarith
+      have hl2 : (1 / 2 : ℝ) ≤ Real.log 2 := linarith
       rw [div_le_iff₀ (by linarith)]
       nlinarith
     have h3 : ((∑ ρ ∈ Z, exOrd χ ρ : ℕ) : ℝ) ≤ Real.log B / Real.log 2 := hZ3

@@ -181,7 +181,7 @@ theorem qpφ_mem (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisExac
   have hmem : e' k ∈ W.Nl T₂ (i - 1) := ⟨e' k, (he'.1 k).1, by simpa using (he'.1 k).2.1⟩
   have h1 := h5T.1 i (e' k) hmem
   simp only [MiS, if_true] at h1
-  obtain ⟨-, -, w, hw⟩ := uniformizer_unit_and_q_factor W h9 hS.1 T₂ hT (by have := hS.2.1; omega)
+  obtain ⟨-, -, w, hw⟩ := uniformizer_unit_and_q_factor W h9 hS.1 T₂ hT omega
   rw [Formalism.MainNotions.RamifiedCoefficientChains.S9.NinQ.Q_eq_q W hS.1.2.1, hw, mul_pow, mul_smul] at h1
   have hN : Formalism.MainNotions.LiftingTheory.qp W ^ (b i + S) • W.φD T₂ (e' k) ∈ W.N T₂ := by
     have := (W.N T₂).smul_mem (((w⁻¹ : (LetA O n)ˣ) : LetA O n) ^ (b i + S)) h1

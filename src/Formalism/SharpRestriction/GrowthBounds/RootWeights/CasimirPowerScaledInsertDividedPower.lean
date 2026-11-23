@@ -263,7 +263,7 @@ theorem extremalProjector_denominator_bound (S : UniformizedDVR p O) (hp : p.Pri
   refine Submodule.sum_mem _ fun q hq => ?_
   have hqL : q ≤ L := Nat.lt_succ_iff.mp (Finset.mem_range.mp hq)
   have h := scaled_casimirPower_integral_bound S hp hE hM c L (Finset.Iio c) (fun j hj => ne_of_lt (Finset.mem_Iio.mp hj))
-    q c.val (by have := c.isLt; omega) y hy
+    q c.val omega y hy
   rw [Fin.card_Iio] at h
   have heq : ((p : O) ^ (c.val * deF p n L)) • (((-1 : KK O) ^ q) • casimirPowerScaled E c (Finset.Iio c) c.val q) y =
       ((-1 : O) ^ q) • (((p : O) ^ (c.val * deF p n L)) • casimirPowerScaled E c (Finset.Iio c) c.val q y) := by

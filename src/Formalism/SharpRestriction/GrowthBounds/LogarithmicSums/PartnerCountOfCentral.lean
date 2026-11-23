@@ -505,7 +505,7 @@ theorem orbit_facts (X : Inst D L) {K : Consts} {C31 C bo : ℝ} (A1 : adm1 D L 
   have h3 : 3 * Gp L.sc ≤ addOrderOf (hP D p) := by exact_mod_cast le_trans Nn.h3G hord
   obtain ⟨hr, hg⟩ := Finset.mem_filter.1 ht0
   have h := (A1 p hp hc hord Nn.hL2 h3 t0 hr hg).1.1
-  have hpos : 0 < C31 * Real.log L.sc.x := mul_pos hC31 (by have := Nn.hlx; linarith)
+  have hpos : 0 < C31 * Real.log L.sc.x := mul_pos hC31 (linarith)
   have hδ := sc_delta1_pos L.sc
   rw [div_le_iff₀ hpos] at h
   have hn1 : (1 : ℝ) ≤ (addOrderOf (hP D p) : ℝ) := by exact_mod_cast addOrderOf_pos (hP D p)
@@ -732,7 +732,7 @@ theorem starAt_E (X : Inst D L) {K : Consts} (hK : K.Nonneg) (P : ParameterChoic
   have hfix : X.bs (stepP D p) t0 = t0 := reps_fix X (Finset.mem_filter.1 ht0).1
   have hord1 : 1 < addOrderOf (hP D p) := by
     have h1 : (1 : ℝ) < L.sc.x ^ (L.sc.eps / 4) :=
-      Real.one_lt_rpow L.sc.one_lt_alt (by have := L.sc.eps_pos; positivity)
+      Real.one_lt_rpow L.sc.one_lt_alt (positivity)
     exact_mod_cast lt_of_lt_of_le h1 hord
   have hlg := lg_ge_one P hp hX
   have hgl := gU_lower X K P hW hp hlg hj t0

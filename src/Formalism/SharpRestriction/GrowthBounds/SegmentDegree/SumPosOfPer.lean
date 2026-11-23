@@ -195,7 +195,7 @@ theorem sum_frlate (hV : X.F.Valid L₁ N₁) (j : ℤ) (i : Fin r) : X.F.fr j i
   · have h1 := hV.2.2.2.1 (j - 1)
     rw [sub_add_cancel] at h1
     exact lt_of_lt_of_le h1 (fr_zero_le hV j i.val i.isLt)
-  · exact sum_fr_le hV j i.val (r - 1) (by have := i.isLt; omega) (Nat.sub_lt (NeZero.pos r) Nat.one_pos)
+  · exact sum_fr_le hV j i.val (r - 1) omega (Nat.sub_lt (NeZero.pos r) Nat.one_pos)
 
 theorem sum_split (hV : X.F.Valid L₁ N₁) (j : ℤ) (ψ : ℤ → ℝ) :
     ∏ x ∈ X.toLate j, ψ x = (∏ x ∈ X.F.LLset j, ψ x) * ∏ i : Fin r, ψ (X.F.fr j i.val) := by

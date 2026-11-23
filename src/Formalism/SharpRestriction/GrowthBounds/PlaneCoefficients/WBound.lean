@@ -190,7 +190,7 @@ theorem wordBoundStep (C CLa : ℝ) (hC : 16 ≤ C) : WordBoundStep C CLa := by
   have hdeg : ∀ s ∈ F.TT, a ≤ (flatDeg lam0 s : ℝ) := by
     intro s hs
     rw [hTT] at hs
-    exact (flatDeg_bounds (by have := hB.m_ge; omega) ha0 h5 s hs).1
+    exact (flatDeg_bounds omega ha0 h5 s hs).1
   have hBo := Bo_ge hV hr1 p (by omega) (flatDeg lam0) a hdeg (goodG' r de h x) jz xx (le_of_lt (hG jz)) hx hW
 
   have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (by omega : 1 ≤ p)

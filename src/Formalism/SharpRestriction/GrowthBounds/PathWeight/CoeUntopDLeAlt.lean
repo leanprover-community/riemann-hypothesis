@@ -219,9 +219,9 @@ theorem generator_pair_conditions_of_admitted (D : Formalism.BasicNotions.D7) (h
         exact decide_eq_true (even_of_lower_letter X.Fr X.hV hr j _ (letter_enum_mem X.Fr j i') (hWle i' hi'))
       rw [if_pos (hvec i (by omega))]
       have hz : P2.mu i.succ = 0 :=
-        lattice_path_zero_prefix P2 (i.val + 1) (by have := i.2; omega) (fun i' hi' => ⟨hvec i' hi', hW i' (hWle i' hi')⟩)
+        lattice_path_zero_prefix P2 (i.val + 1) omega (fun i' hi' => ⟨hvec i' hi', hW i' (hWle i' hi')⟩)
       have hn : 0 ≤ P1.mu i.castSucc (lastIdx r) :=
-        lattice_path_nonneg_prefix P1 i.val (by have := i.2; omega) (fun i' hi' => hvec i' (by omega)) _
+        lattice_path_nonneg_prefix P1 i.val omega (fun i' hi' => hvec i' (by omega)) _
       rw [hz]
       exact hn
     · obtain ⟨i', e1, e2, e3⟩ := hpred i hiW

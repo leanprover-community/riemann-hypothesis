@@ -69,7 +69,7 @@ def colQ (e f : Fin r → Fin (2 * r + k + 1) → ℂ) (wf : Fin k → Fin (2 * 
   if h : j.val < r then e ⟨j.val, h⟩
   else if h2 : j.val < r + k then wf ⟨j.val - r, by omega⟩
   else if h3 : j.val = r + k then z0
-  else f ⟨2 * r + k - j.val, by have := j.isLt; omega⟩
+  else f ⟨2 * r + k - j.val, omega⟩
 
 section Col
 variable (e f : Fin r → Fin (2 * r + k + 1) → ℂ) (wf : Fin k → Fin (2 * r + k + 1) → ℂ)
@@ -193,11 +193,11 @@ theorem gramQ {ε : Fin (2 * r + k + 1) → Bool} {e f : Fin r → Fin (2 * r + 
   · rw [colQ_eI, colQ_eI, hF.ee, Hpk_ee]
   · by_cases hdk : d.val < k
     · rw [colQ_eI, colQ_wI _ _ _ _ _ hdk, hF.ew, Hpk_ew]
-    · rw [colQ_eI, colQ_wI_last _ _ _ _ _ (by have := d.isLt; omega), hF.ez, Hpk_ew]
+    · rw [colQ_eI, colQ_wI_last _ _ _ _ _ omega, hF.ez, Hpk_ew]
   · rw [colQ_eI, colQ_esI, hF.ef, Hpk_ef]
   · by_cases hck : c.val < k
     · rw [colQ_wI _ _ _ _ _ hck, colQ_eI, hJ_swap, hF.ew, star_zero, Hpk_we]
-    · rw [colQ_wI_last _ _ _ _ _ (by have := c.isLt; omega), colQ_eI, hJ_swap, hF.ez, star_zero, Hpk_we]
+    · rw [colQ_wI_last _ _ _ _ _ omega, colQ_eI, hJ_swap, hF.ez, star_zero, Hpk_we]
   · rw [Hpk_ww]
     by_cases hck : c.val < k <;> by_cases hdk : d.val < k
     · rw [colQ_wI _ _ _ _ _ hck, colQ_wI _ _ _ _ _ hdk, hF.ww]
@@ -206,23 +206,23 @@ theorem gramQ {ε : Fin (2 * r + k + 1) → Bool} {e f : Fin r → Fin (2 * r + 
       · have hv : c.val ≠ d.val := fun h => hcd (Fin.ext h)
         have h1 : ¬ (⟨c.val, hck⟩ : Fin k) = ⟨d.val, hdk⟩ := fun h => hv (Fin.mk.inj h)
         rw [if_neg h1, if_neg hcd]
-    · rw [colQ_wI _ _ _ _ _ hck, colQ_wI_last _ _ _ _ _ (by have := d.isLt; omega), hJ_swap, hF.zw, star_zero,
+    · rw [colQ_wI _ _ _ _ _ hck, colQ_wI_last _ _ _ _ _ omega, hJ_swap, hF.zw, star_zero,
         if_neg (fun h => by subst h; omega)]
-    · rw [colQ_wI_last _ _ _ _ _ (by have := c.isLt; omega), colQ_wI _ _ _ _ _ hdk, hF.zw,
+    · rw [colQ_wI_last _ _ _ _ _ omega, colQ_wI _ _ _ _ _ hdk, hF.zw,
         if_neg (fun h => by subst h; omega)]
     · have e1 : c = d := Fin.ext (by have := c.isLt; have := d.isLt; omega)
       subst e1
-      rw [colQ_wI_last _ _ _ _ _ (by have := c.isLt; omega), hF.zz, if_pos rfl, if_pos (by have := c.isLt; omega)]
+      rw [colQ_wI_last _ _ _ _ _ omega, hF.zz, if_pos rfl, if_pos omega]
   · by_cases hck : c.val < k
     · rw [colQ_wI _ _ _ _ _ hck, colQ_esI, hJ_swap, hF.fw, star_zero, Hpk_wf]
-    · rw [colQ_wI_last _ _ _ _ _ (by have := c.isLt; omega), colQ_esI, hJ_swap, hF.fz, star_zero, Hpk_wf]
+    · rw [colQ_wI_last _ _ _ _ _ omega, colQ_esI, hJ_swap, hF.fz, star_zero, Hpk_wf]
   · rw [colQ_esI, colQ_eI, hJ_swap, hF.ef, Hpk_fe]
     by_cases hab : a = b
     · subst hab; simp
     · rw [if_neg (Ne.symm hab), if_neg hab, star_zero]
   · by_cases hdk : d.val < k
     · rw [colQ_esI, colQ_wI _ _ _ _ _ hdk, hF.fw, Hpk_fw]
-    · rw [colQ_esI, colQ_wI_last _ _ _ _ _ (by have := d.isLt; omega), hF.fz, Hpk_fw]
+    · rw [colQ_esI, colQ_wI_last _ _ _ _ _ omega, hF.fz, Hpk_fw]
   · rw [colQ_esI, colQ_esI, hF.ff, Hpk_ff]
 
 section Frame
@@ -363,7 +363,7 @@ theorem conj_mem_Nset (hF : IsFrameJ ε e f wf z0) {z : Fin (2 * r + k + 1) → 
       intro a
       by_cases hck : c.val < k
       · rw [colQ_wI _ _ _ _ _ hck, hF.ew]
-      · rw [colQ_wI_last _ _ _ _ _ (by have := c.isLt; omega), hF.ez]
+      · rw [colQ_wI_last _ _ _ _ _ omega, hF.ez]
     obtain ⟨y, hy, hny⟩ : ∃ y ∈ spanLt e r, n *ᵥ colQ e f wf z0 (wI k r c) = colQ e f wf z0 (wI k r c) + y :=
       ⟨(n - 1) *ᵥ colQ e f wf z0 (wI k r c), hN.2 _ hperp, by rw [Matrix.sub_mulVec, Matrix.one_mulVec]; abel⟩
     rw [hny, Matrix.mulVec_add, Pi.add_apply, Qi_mulVec_col hF, bvec_apply]

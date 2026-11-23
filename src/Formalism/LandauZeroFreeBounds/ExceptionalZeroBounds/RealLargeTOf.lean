@@ -107,7 +107,7 @@ theorem realCharZeroFreeLargeHeightOfBounds : RealLargeTOf := by
   have hreg' : 1 - a / 8 / Real.log ((q : ℝ) * (|s.im| + 2)) ≤ s.re := hreg
   obtain ⟨L, hLdef⟩ : ∃ L, L = Real.log ((q : ℝ) * (|s.im| + 2)) := ⟨_, rfl⟩
   rw [← hLdef] at hreg' hδt
-  have hlog2 : (1 / 2 : ℝ) < Real.log 2 := by have := Real.log_two_gt_d9; linarith
+  have hlog2 : (1 / 2 : ℝ) < Real.log 2 := linarith
   have hL : 1 / 2 < L := by
     rw [hLdef]
     exact lt_of_lt_of_le hlog2 (Real.log_le_log (by norm_num) (two_le_mul_abs_add_two q s.im))

@@ -107,7 +107,7 @@ end CgCalc
 section Pos
 
 theorem th_posSub_posAdd {n' : ℕ} (s : Fin n') (d : ℕ) : posSub (posAdd s d) d = s := by
-  obtain ⟨m, rfl⟩ : ∃ m, n' = m + 1 := ⟨n' - 1, by have := s.pos; omega⟩
+  obtain ⟨m, rfl⟩ : ∃ m, n' = m + 1 := ⟨n' - 1, omega⟩
   apply Fin.ext
   show ((s.val + d) % (m + 1) + (m + 1) * d - d) % (m + 1) = s.val
   have e : (s.val + d) % (m + 1) + (m + 1) * d - d = (s.val + d) % (m + 1) + m * d := by
@@ -118,7 +118,7 @@ theorem th_posSub_posAdd {n' : ℕ} (s : Fin n') (d : ℕ) : posSub (posAdd s d)
   rw [e2, Nat.add_mul_mod_self_left, Nat.mod_eq_of_lt s.isLt]
 
 theorem th_posAdd_posSub {n' : ℕ} (t : Fin n') (d : ℕ) : posAdd (posSub t d) d = t := by
-  obtain ⟨m, rfl⟩ : ∃ m, n' = m + 1 := ⟨n' - 1, by have := t.pos; omega⟩
+  obtain ⟨m, rfl⟩ : ∃ m, n' = m + 1 := ⟨n' - 1, omega⟩
   apply Fin.ext
   show ((t.val + (m + 1) * d - d) % (m + 1) + d) % (m + 1) = t.val
   have e : t.val + (m + 1) * d - d = t.val + m * d := by

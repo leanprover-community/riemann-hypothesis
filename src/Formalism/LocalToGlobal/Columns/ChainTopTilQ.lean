@@ -137,7 +137,7 @@ theorem xiTopTilQ_holds (hX : X.Ok) (hPr : Pr.Ok) (hc : cst.Ok) {m2 : ℕ} (hm :
         · refine h.1.trans (and_congr Iff.rfl ?_)
           show _ ↔ IntAt P.1 (((Pr.piT u : 𝓞 X.E) : X.E)⁻¹ * atNL X.E (R.N R.m) (R.N R.m - 1) (x (frsF sel mu p P (Pi.single j 1))))
           rw [el]
-        · exact (h.2 hall).1 ⟨i.1, by have := i.2; omega⟩
+        · exact (h.2 hall).1 ⟨i.1, omega⟩
         · show redP P.1 (atNL X.E (R.N R.m) (R.N R.m - 1) _) =
             redP P.1 (((Pr.piT u : 𝓞 X.E) : X.E)⁻¹ * atNL X.E (R.N R.m) (R.N R.m - 1) (x (frsF sel mu p P (Pi.single j 1))))
           rw [el, el]

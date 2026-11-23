@@ -212,7 +212,7 @@ theorem massRatioFormula : Formalism.FourierDecayAlt.Sz.PropA := by
   have hsk : (sfac S.k : ℝ) ≠ 0 := by
     unfold sfac
     exact_mod_cast (Finset.prod_ne_zero_iff.mpr fun i _ => Nat.factorial_ne_zero i)
-  have hTk : (1 : ℝ) < (S.T : ℝ) ^ S.k := one_lt_pow₀ hT (by have := hOk.hk; omega)
+  have hTk : (1 : ℝ) < (S.T : ℝ) ^ S.k := one_lt_pow₀ hT omega
   have hTk0 : (S.T : ℝ) ^ S.k ≠ 0 := by linarith
   have hTk1 : (S.T : ℝ) ^ S.k - 1 ≠ 0 := by linarith
   have hVu : ∏ w, S.Vu w ≠ 0 := Finset.prod_ne_zero_iff.mpr fun w _ => (hOk.hVu w).ne'

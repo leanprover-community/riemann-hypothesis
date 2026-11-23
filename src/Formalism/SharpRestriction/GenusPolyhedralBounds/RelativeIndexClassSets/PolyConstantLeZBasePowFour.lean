@@ -256,7 +256,7 @@ theorem logOm_le (P : ParameterChoice' D L) : |L.logOm| ≤ 6 * L.sc.L := by
     have := Real.one_half_lt_eulerMascheroniConstant; linarith
   have hg1 : Real.eulerMascheroniConstant < 1 := by
     have := Real.eulerMascheroniConstant_lt_two_thirds; linarith
-  have hlog2 : Real.log 2 < 1 := by have := Real.log_two_lt_d9; linarith
+  have hlog2 : Real.log 2 < 1 := linarith
   have hlog2' : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have hpi0 : 0 ≤ Real.log Real.pi := Real.log_nonneg (by linarith [Real.pi_gt_three])
   have hpi1 : Real.log Real.pi ≤ 2 := by

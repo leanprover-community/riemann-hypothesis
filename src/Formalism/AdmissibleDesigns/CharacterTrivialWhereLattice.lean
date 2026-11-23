@@ -266,7 +266,7 @@ theorem r_act (hE : Ev r π Dd) (hN : RepresentationBoundsCohomology.NormAt D.nd
 theorem chi_c_eq (h5x : TruncatedSeriesCountingIdentities.TameGeneratorConditions i) (v : HeightOneSpectrum (𝓞 D.host.E)) (hv : v ∈ D.nd.S i ∨ v ∈ D.nd.Q i)
     (c' : Fin D.R.t) (g : GE D.nd) (hg : g ∈ Ine (F := D.host.E) (D.nd.plOm.1 v)) :
     D.nd.chi i ((c' : ℕ) + 1) g = D.nd.chi i 1 g :=
-  (h5x v hv).2.1 ((c' : ℕ) + 1) (Finset.mem_Icc.2 ⟨by omega, by have := c'.2; omega⟩) g hg
+  (h5x v hv).2.1 ((c' : ℕ) + 1) (Finset.mem_Icc.2 ⟨by omega, omega⟩) g hg
 
 theorem conj_eq {M : Type*} [Monoid M] (u : Mˣ) (b c : M) (h : ↑u⁻¹ * b * ↑u = c) : b = ↑u * c * ↑u⁻¹ := by
   subst h

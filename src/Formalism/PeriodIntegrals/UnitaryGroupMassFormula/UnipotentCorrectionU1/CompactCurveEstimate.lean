@@ -197,7 +197,7 @@ private theorem Dw_comp_eq_zero_of_not_mem_tsupport {k r : ℕ} (ψ : B.Mat k r 
             intro w₁ w₂ s1 _ _
             have hg' : ψ g ∉ tsupport (fun z => fderiv ℝ χ z v) :=
               fun h => hg (tsupport_fderiv_apply_subset (𝕜 := ℝ) v h)
-            rw [ih _ (CCA.sm_fd hχ v) w₁ (by have := s1.length_le; omega) g hg']
+            rw [ih _ (CCA.sm_fd hχ v) w₁ omega g hg']
             simp)
         simpa using hM
       beta_reduce

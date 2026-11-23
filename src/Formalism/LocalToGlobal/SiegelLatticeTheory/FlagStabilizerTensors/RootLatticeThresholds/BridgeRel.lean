@@ -155,7 +155,7 @@ theorem inN_Q (hT : TrHyp F Qm Qim c) {ρ : Matrix (Fin (2 * r + k + 1)) (Fin (2
       unfold Formalism.QuantumDeterminants.bvec
       rw [mulVec_single_apply, hρ.2.1 a i hi, sub_eq_zero]
       simp [Pi.single_apply]
-    have hvX : IsXv v := fun i hi => hva i (by have := a.2; omega)
+    have hvX : IsXv v := fun i hi => hva i omega
     rw [isXv_eq v hvX, Matrix.mulVec_sum]
     refine Submodule.sum_mem _ fun b _ => ?_
     by_cases hb : b.val < a.val

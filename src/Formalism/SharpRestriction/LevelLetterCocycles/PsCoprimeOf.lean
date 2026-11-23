@@ -250,7 +250,7 @@ private lemma exists_phiA_pow_succ_pi0_eq_qA_mul (W : LocWach PD LL O v n) (hR :
     ∃ e : LetA O n, (W.φA ^ (m + 1)) W.π₀ = qA W * e := by
   obtain ⟨-, -, -, -, -, ⟨w, hw⟩, -⟩ := hR
   rw [Eat_X_add_p_pi0_eq_qA] at hw
-  obtain ⟨k, hk⟩ : ∃ k, PD.p - 1 = k + 1 := ⟨PD.p - 2, by have := PD.hp.two_le; omega⟩
+  obtain ⟨k, hk⟩ : ∃ k, PD.p - 1 = k + 1 := ⟨PD.p - 2, omega⟩
   have hA : ∀ j : ℕ, ∃ d : LetA O n, (W.φA ^ j) W.π₀ = W.π₀ * d := by
     intro j
     induction j with

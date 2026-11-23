@@ -372,7 +372,7 @@ theorem halfInt_of (R : Ranks) (P Q : HCParam R) :
     rw [ha, hgv]
     push_cast
     ring
-  · refine ⟨a + gb (Fin.cast (mEqR R) ⟨s.val - (R.k - 1), by have := s.isLt; omega⟩), ?_⟩
+  · refine ⟨a + gb (Fin.cast (mEqR R) ⟨s.val - (R.k - 1), omega⟩), ?_⟩
     simp only [ha, hgb]
     push_cast
     ring

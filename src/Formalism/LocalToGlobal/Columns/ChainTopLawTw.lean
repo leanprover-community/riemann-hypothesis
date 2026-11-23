@@ -169,12 +169,12 @@ theorem blk_D {n r d : ℕ} (hn : n = r + d) (M : Matrix (Fin (n + 1)) (Fin (n +
       Fin.ext (by simp only [brI, Fin.val_last]; omega)
     refine ⟨fun j => ?_, fun i => ?_, ?_⟩
     · have e2 : brI (show n + 1 = r + (d + 1) by omega) (Fin.castSucc j) =
-          Fin.castSucc (⟨r + j.1, by have := j.2; omega⟩ : Fin n) :=
+          Fin.castSucc (⟨r + j.1, omega⟩ : Fin n) :=
         Fin.ext (by simp only [brI, Fin.coe_castSucc])
       simp only [Matrix.submatrix_apply, e1, e2]
       exact hM.1 _
     · have e2 : brI (show n + 1 = r + (d + 1) by omega) (Fin.castSucc i) =
-          Fin.castSucc (⟨r + i.1, by have := i.2; omega⟩ : Fin n) :=
+          Fin.castSucc (⟨r + i.1, omega⟩ : Fin n) :=
         Fin.ext (by simp only [brI, Fin.coe_castSucc])
       simp only [Matrix.submatrix_apply, e1, e2]
       exact hM.2.1 _
@@ -352,11 +352,11 @@ theorem tlq_phiQ_red (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : ℕ) 
     intro s l
     subst hy hy'
     have e : (LinearMap.funLeft E E (Fin.castAdd 0) (Pi.single s (1 : E)) : Sp E n') =
-        Pi.single (⟨s.1, by have := s.2; omega⟩ : Fin n') 1 := by
+        Pi.single (⟨s.1, omega⟩ : Fin n') 1 := by
       ext t; simp [LinearMap.funLeft_apply, Pi.single_apply, Fin.ext_iff]
     simp only [LinearMap.sub_apply, LinearMap.comp_apply, Pi.sub_apply, e]
     refine intAt_q_inv_mul_sub_of_redP_eq hq hu (hx _ l) (hx' _ l) ?_
-    have h5 := congrFun (congrFun hred l) (⟨s.1, by have := s.2; omega⟩ : Fin n')
+    have h5 := congrFun (congrFun hred l) (⟨s.1, omega⟩ : Fin n')
     simpa [redMQ] using h5
   have key := phiQ_invB hqn hq ξ k₀ r 0 n' n rfl y (y' - y) hz
   rw [show y + (y' - y) = y' by abel] at key

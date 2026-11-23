@@ -53,7 +53,7 @@ def fcol (k r : ℕ) (e f : Fin r → Fin (2 * r + k + 1) → ℂ) (wf : Fin k �
   if h1 : i.val < r then e ⟨i.val, h1⟩
   else if h2 : i.val < r + k then wf ⟨i.val - r, by omega⟩
   else if h3 : i.val = r + k then z0
-  else f ⟨2 * r + k - i.val, by have := i.isLt; omega⟩
+  else f ⟨2 * r + k - i.val, omega⟩
 
 def Pm (k r : ℕ) (e f : Fin r → Fin (2 * r + k + 1) → ℂ) (wf : Fin k → Fin (2 * r + k + 1) → ℂ)
     (z0 : Fin (2 * r + k + 1) → ℂ) : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ :=

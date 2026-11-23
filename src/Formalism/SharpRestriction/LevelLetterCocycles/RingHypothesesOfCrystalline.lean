@@ -289,7 +289,7 @@ theorem conv_cancel (L U : PowerSeries LL) (Kk Xx : ℕ) (hL : L = PowerSeries.X
     rw [h1]; exact ⟨hes, hs⟩⟩
   have ht₀ : P (Nat.find hP) := Nat.find_spec hP
   have hmin : ∀ t < Nat.find hP, ¬ P t := fun t ht => Nat.find_min hP ht
-  have hcs := hc (m + (Nat.find hP : ℤ) + Kk) (by have := ht₀.2; omega)
+  have hcs := hc (m + (Nat.find hP : ℤ) + Kk) omega
   simp only [conv] at hcs
   rw [finsum_eq_single _ Kk] at hcs
   · rw [hL, PowerSeries.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self,

@@ -933,7 +933,7 @@ theorem jA_le (l : ℕ) (hl : 5 ≤ l) (hA : 1 ≤ lA L) : (jA L l : ℝ) + 1 �
     have : (5 : ℝ) ≤ l := by exact_mod_cast hl
     linarith
   have hlog1 : 1 ≤ Real.log ((l : ℝ) - 1) := by
-    have : Real.exp 1 ≤ (l : ℝ) - 1 := by have := Real.exp_one_lt_d9; linarith
+    have : Real.exp 1 ≤ (l : ℝ) - 1 := linarith
     calc (1 : ℝ) = Real.log (Real.exp 1) := (Real.log_exp 1).symm
       _ ≤ _ := Real.log_le_log (Real.exp_pos 1) this
   have hA0 : 0 ≤ Real.log (lA L) := Real.log_nonneg hA
@@ -1150,7 +1150,7 @@ theorem sum_eP (T : Finset ℕ) (hT : ∀ l ∈ T, 1 ≤ l ∧ (l : ℝ) ≤ lSt
   have hlh : Real.log (hB L) ≤ large₂ L + 1 := by
     have := Real.log_le_log (by linarith) hh
     rw [Real.log_mul (by norm_num) (by linarith), b_eq, Real.log_exp] at this
-    have : Real.log 2 < 1 := by have := Real.log_two_lt_d9; linarith
+    have : Real.log 2 < 1 := linarith
     linarith
   have hlsL : lStar L * large₂ L ≤ L.sc.b := by
     rw [le_div_iff₀ (by linarith)] at hlsb; exact hlsb

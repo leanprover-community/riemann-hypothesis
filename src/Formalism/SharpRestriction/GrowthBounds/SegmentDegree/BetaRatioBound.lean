@@ -177,7 +177,7 @@ theorem beta_ratio_bound : BetaRatioBound 1088 := by
   rw [← hQ] at hcore
   have hQpos : (0 : ℝ) < ((X.Qc p K j : ℕ) : ℝ) := by
     rw [hQ]; positivity
-  rw [div_le_div_iff₀ hQpos (by have := B.Y1; positivity)] at hcore
+  rw [div_le_div_iff₀ hQpos (positivity)] at hcore
   linarith
 
 end Formalism.MainNotions.SelectionLemmas.Pf

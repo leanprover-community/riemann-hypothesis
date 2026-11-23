@@ -240,11 +240,11 @@ theorem ocbPhiGS_red (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : ℕ) 
       rw [redP_det (Matrix.of fun (s s' : Fin (k₀ + m - 1 + (j - 1) * t)) =>
           LocE.entB q k₀ (c + 1) n' c n (fun i => i + 1) (fun i => i + 1) y ↑s ↑s')
         (fun (s s' : Fin (k₀ + m - 1 + (j - 1) * t)) => hI (↑s) (↑s')
-          (by have := s.isLt; omega) (by have := s'.isLt; omega))]
+          omega omega)]
       congr 1
       ext s s'
       simp only [Matrix.map_apply, Matrix.of_apply]
-      exact (hF _ _ (by have := s.isLt; omega) (by have := s'.isLt; omega)).symm
+      exact (hF _ _ omega omega).symm
     rw [hS, hT, Finset.prod_congr rfl (fun i hi => by rw [hB i hi])]
     rfl
   · exfalso

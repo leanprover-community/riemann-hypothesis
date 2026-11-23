@@ -253,7 +253,7 @@ lemma fwd (g : Mk k r) (zH : Vk k r) (hg : gᴴ * Formalism.QuantumDeterminants.
     intro i j hi hj
     have e : i = ⟨2 * r + k - (2 * r + k - i.val), by omega⟩ :=
       Fin.ext (by have := i.isLt; show i.val = 2 * r + k - (2 * r + k - i.val); omega)
-    rw [e]; exact G3 _ (by have := i.isLt; omega) j hj
+    rw [e]; exact G3 _ omega j hj
   have hDD : diagonal (dW k r) * diagonal (dW k r) = diagonal (dW k r) := by
     rw [diagonal_mul_diagonal]; congr 1; funext i; unfold dW; split_ifs <;> simp
   have hDH : diagonal (dW k r) * Formalism.QuantumDeterminants.Hpk k r = Formalism.QuantumDeterminants.Hpk k r * diagonal (dW k r) := by
@@ -332,7 +332,7 @@ lemma fwd (g : Mk k r) (zH : Vk k r) (hg : gᴴ * Formalism.QuantumDeterminants.
   · intro a i hai
     have hg1 : g *ᵥ stdX k r a ∈ supSub k r r := by
       rw [mem_supSub]; intro i' hi'
-      rw [stdX, colEntry, G1 a i' (by have := a.isLt; omega), if_neg (by have := a.isLt; omega)]
+      rw [stdX, colEntry, G1 a i' omega, if_neg omega]
     have := congrFun (show (hinv * g) *ᵥ stdX k r a = g *ᵥ stdX k r a by
       rw [← Matrix.mulVec_mulVec]; exact hinvX _ hg1) i
     rw [stdX, colEntry, colEntry] at this

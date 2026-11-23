@@ -360,7 +360,7 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
 theorem single_castAdd_inX {n c : ℕ} (j : Fin n) : (Pi.single (Fin.castAdd c j) 1 : Sp E (n + c)) = Loc.inX E n c (Pi.single j 1) := by
   have h := ciEN (E := E) (c := c) j.2
-  rw [eN_inB _ _ (by have := j.2; omega)] at h
+  rw [eN_inB _ _ omega] at h
   exact h
 
 theorem det_first_parabolic_eq_det_block {n c : ℕ} {r : Sp E (n + c) ≃ₗ[E] Sp E (n + c)} (hr : Loc.R1cond E n c r) {g : Sp E n ≃ₗ[E] Sp E n}

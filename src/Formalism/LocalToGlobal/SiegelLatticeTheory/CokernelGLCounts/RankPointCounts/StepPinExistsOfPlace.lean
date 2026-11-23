@@ -354,7 +354,7 @@ variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' : D.what
 def stCoordV (u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1)) (γ : X.B.I.Ginf) (v : InfinitePlace X.B.I.F)
     (y : Formalism.REAL.UJ (X.B.I.ε v)) : FreeE w → ℂ :=
   fun p => ((D.host.rdE : ℂ) ^ (D.R.rS - p.1.1.1)) *
-    hJ (X.B.I.ε v) (rv X.B.I v (X.fR ⟨p.1.1.1, by have := p.2.1; omega⟩))
+    hJ (X.B.I.ε v) (rv X.B.I v (X.fR ⟨p.1.1.1, omega⟩))
       (uMat ((γ v)⁻¹ * y * γ v) *ᵥ frm X u' D.host.rdE v p.1.2)
 
 theorem stCoord_eq (u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1)) (γ : X.B.I.Ginf) :

@@ -173,7 +173,7 @@ lemma n_rowM {n : Mat k r} (hn : n ∈ Nset k r) (i l : Fin (2 * r + k + 1)) (hi
 
 lemma n_colE_zero {n : Mat k r} (hn : n ∈ Nset k r) (l : Fin (2 * r + k + 1)) (b : Fin r) (hl : r ≤ l.val) :
     n l (eI k r b) = 0 := by
-  rw [n_colE hn b l (by have := b.isLt; omega),
+  rw [n_colE hn b l omega,
     if_neg (by intro h; have := congrArg Fin.val h; simp [eI] at this; omega)]
 
 lemma eI_inj : Function.Injective (eI k r) := fun a b h => Fin.ext (by simpa [eI] using congrArg Fin.val h)

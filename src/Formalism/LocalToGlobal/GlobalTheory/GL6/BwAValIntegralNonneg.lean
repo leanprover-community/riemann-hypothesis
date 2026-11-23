@@ -475,8 +475,8 @@ end Grade
 theorem bwA_rowDeg_le {r n : ℕ} (hn : n ≤ r) (ν : Fin n → ℕ) (hν : Antitone ν)
     (f : MvPolynomial (Fin r × Fin n) ℤ) (hf : f ∈ Formalism.GradedWeylDivisibility.dualWeyl ℤ r n ν)
     (m : Fin r × Fin n →₀ ℕ) (hm : m ∈ f.support) (a : Fin r) :
-    Formalism.GradedWeylDivisibility.rowDeg m a ≤ Formalism.GradedWeylDivisibility.rowNu (r := r) ν ⟨0, by have := a.2; omega⟩ := by
-  set z : Fin r := ⟨0, by have := a.2; omega⟩ with hz
+    Formalism.GradedWeylDivisibility.rowDeg m a ≤ Formalism.GradedWeylDivisibility.rowNu (r := r) ν ⟨0, omega⟩ := by
+  set z : Fin r := ⟨0, omega⟩ with hz
   set σ : Equiv.Perm (Fin r) := Equiv.swap z a with hσ
   set e : Fin r × Fin n → Fin r × Fin n := fun v => (σ v.1, v.2) with he_def
   have he : Function.Injective e := by
@@ -559,7 +559,7 @@ theorem bwA_diag_gen {K : Type} [Field K] {r n : ℕ} (hn : n ≤ r) (ν : Fin n
     Formalism.GradedWeylDivisibility.weylLeDual ℤ r n hn ν hν (Submodule.subset_span ⟨w, rfl⟩)
   have hle := bwA_rowDeg_le hn ν hν g hmem m hm j
   rw [bwA_rowDeg_eq_weight] at hle
-  have hnu : Formalism.GradedWeylDivisibility.rowNu (r := r) ν ⟨0, by have := j.2; omega⟩ = ν ⟨0, hn0⟩ := by
+  have hnu : Formalism.GradedWeylDivisibility.rowNu (r := r) ν ⟨0, omega⟩ = ν ⟨0, hn0⟩ := by
     unfold Formalism.GradedWeylDivisibility.rowNu; rw [dite_eq_left hn0]
   rw [hnu] at hle
   refine ⟨μN j, hle, ?_⟩

@@ -552,7 +552,7 @@ theorem adaptBas_of (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisE
   let eL := L.orderEmbOfFin (rfl : L.card = L.card)
   let eC := Lᶜ.orderEmbOfFin hLc
   let fσ : Fin (finrank LL T₂.V) → Fin (finrank LL T₂.V) := fun t =>
-    if h : (t : ℕ) < L.card then eL ⟨t, h⟩ else eC ⟨t - L.card, by have := t.2; omega⟩
+    if h : (t : ℕ) < L.card then eL ⟨t, h⟩ else eC ⟨t - L.card, omega⟩
   have hfσinj : Function.Injective fσ := by
     intro t t' h
     simp only [fσ] at h
@@ -561,11 +561,11 @@ theorem adaptBas_of (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisE
       ext; simpa using congrArg Fin.val h3
     · exfalso
       have h3 := L.orderEmbOfFin_mem rfl ⟨t, h1⟩
-      have h4 := Lᶜ.orderEmbOfFin_mem hLc ⟨t' - L.card, by have := t'.2; omega⟩
+      have h4 := Lᶜ.orderEmbOfFin_mem hLc ⟨t' - L.card, omega⟩
       rw [← h] at h4
       exact (Finset.mem_compl.1 h4) h3
     · exfalso
-      have h3 := Lᶜ.orderEmbOfFin_mem hLc ⟨t - L.card, by have := t.2; omega⟩
+      have h3 := Lᶜ.orderEmbOfFin_mem hLc ⟨t - L.card, omega⟩
       have h4 := L.orderEmbOfFin_mem rfl ⟨t', h2⟩
       rw [h] at h3
       exact (Finset.mem_compl.1 h3) h4

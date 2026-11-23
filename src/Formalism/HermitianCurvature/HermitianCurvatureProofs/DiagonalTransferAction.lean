@@ -204,7 +204,7 @@ theorem sep_real {P : M.Par} (hP : P.OK) :
       intro Y
       rw [← LieAlgebraWeightVectors.cb_eval_xPoly, ← LieAlgebraWeightVectors.cb_eval_xPoly, sub_eq_zero.mp h0]
     have e := LieAlgebraWeightVectors.cb_eq_of_prod_eq (n := P.k - 1) (LieAlgebraWeightVectors.cb_rho_anti _ gP σ) (LieAlgebraWeightVectors.cb_rho_anti _ gP σ') hx
-    exact LieAlgebraWeightVectors.cb_ty_ext _ (fun j => e _ (Finset.mem_Icc.mpr ⟨by omega, by have := j.2; omega⟩))
+    exact LieAlgebraWeightVectors.cb_ty_ext _ (fun j => e _ (Finset.mem_Icc.mpr ⟨by omega, omega⟩))
   obtain ⟨Y₀, hY⟩ := Infinite.exists_notMem_finset
     (((Finset.univ : Finset (M.Ty P × M.Ty P)).biUnion
       (fun q => if q.1 = q.2 then ∅ else (LieAlgebraWeightVectors.cb_xPoly P q.1 - LieAlgebraWeightVectors.cb_xPoly P q.2).roots.toFinset)).image

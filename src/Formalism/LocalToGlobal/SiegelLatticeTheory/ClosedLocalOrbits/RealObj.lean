@@ -348,7 +348,7 @@ def stCoord (u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1)) (γ y : X.B.
     InfinitePlace X.B.I.F → FreeE w → ℂ :=
   fun v p => ((D.host.rdE : ℂ) ^ (D.R.rS - p.1.1.1)) *
     Formalism.L2.SG.HidaSetting.hJ (X.B.I.ε v)
-      (Formalism.L2.SG.HidaSetting.rv X.B.I v (X.fR ⟨p.1.1.1, by have := p.2.1; omega⟩))
+      (Formalism.L2.SG.HidaSetting.rv X.B.I v (X.fR ⟨p.1.1.1, omega⟩))
       (uMat ((γ⁻¹ * y * γ) v) *ᵥ frm X u' D.host.rdE v p.1.2)
 
 def muStab (w : Point D.host.E (D.R.rS + 1)) : Measure (InfinitePlace X.B.I.F → FreeE w → ℂ) :=

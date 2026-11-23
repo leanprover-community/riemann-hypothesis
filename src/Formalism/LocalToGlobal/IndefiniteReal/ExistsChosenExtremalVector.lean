@@ -74,18 +74,18 @@ theorem eps_revNeg (a : Fin n) : ε (revNeg ε a) = ε a := by
   · rw [show revNeg ε a = a from Equiv.Perm.ofSubtype_apply_of_not_mem _ h]
 
 def arr (q : ℕ) (c : Fin n) : Fin n :=
-  if h : (c : ℕ) < q then ⟨n - 1 - c, by have := c.2; omega⟩ else ⟨c - q, by have := c.2; omega⟩
+  if h : (c : ℕ) < q then ⟨n - 1 - c, omega⟩ else ⟨c - q, omega⟩
 
 variable {ε}
 
 theorem nNeg_shape {p : ℕ} (hp : p ≤ n) (h : ∀ a, ε a = decide ((a : ℕ) < p)) : nNeg ε = n - p := by
-  have e : negS ε = Finset.univ.map ⟨fun i : Fin (n - p) => (⟨p + i, by have := i.2; omega⟩ : Fin n),
+  have e : negS ε = Finset.univ.map ⟨fun i : Fin (n - p) => (⟨p + i, omega⟩ : Fin n),
       fun i j hij => Fin.ext (by have := congrArg Fin.val hij; simp only at this; omega)⟩ := by
     ext a
     simp only [negS, Finset.mem_filter, Finset.mem_univ, true_and, h, decide_eq_false_iff_not, Finset.mem_map]
     constructor
     · intro ha
-      exact ⟨⟨a - p, by have := a.2; omega⟩, Fin.ext (show p + ((a : ℕ) - p) = a by omega)⟩
+      exact ⟨⟨a - p, omega⟩, Fin.ext (show p + ((a : ℕ) - p) = a by omega)⟩
     · rintro ⟨i, rfl⟩
       show ¬ (p + (i : ℕ) < p)
       omega
@@ -99,7 +99,7 @@ theorem revNeg_shape {p : ℕ} (hp : p ≤ n) (h : ∀ a, ε a = decide ((a : �
     have hm : a ∈ negS ε := by simpa [negS, h] using ha
     have hf : ∀ i : Fin (negS ε).card, (((negS ε).orderEmbOfFin rfl i : Fin n) : ℕ) = p + i := by
       have := Finset.orderEmbOfFin_unique (s := negS ε) (rfl : (negS ε).card = _)
-        (f := fun i : Fin (negS ε).card => (⟨p + i, by have := i.2; omega⟩ : Fin n))
+        (f := fun i : Fin (negS ε).card => (⟨p + i, omega⟩ : Fin n))
         (fun i => by simp [negS, h]) (fun i j hij => by
           show p + (i : ℕ) < p + j
           have : (i : ℕ) < j := hij

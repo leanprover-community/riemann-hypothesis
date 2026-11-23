@@ -194,7 +194,7 @@ def I1 (v : D.what₂.Tau) : Set ℝ := Set.Icc (X.a1 v) (X.b1 v)
 def sg (v : D.what₂.Tau) : ℝ := sCut (X.B v).u (X.B v).u' (X.I v)
 
 def loc (v : D.what₂.Tau) : LocalDataRealPlace D where
-  lam := fun s => (X.B v).lam (Fin.cast (by have := X.hk; omega) s)
+  lam := fun s => (X.B v).lam (Fin.cast omega s)
   u := fun i => (X.B v).u (Fin.cast X.hk.symm i)
   u' := fun i => (X.B v).u' (Fin.cast X.hk.symm i)
   l := Fin.cast X.hk (X.l v)
@@ -221,7 +221,7 @@ def jn2 : ℂ := ∏ v, (X.B v).beta (X.μsec v) (X.f v) (X.f v)
 
 def Std (Ks : ℕ) (C₀ Cg : ℝ) : Prop :=
   4 ≤ Ks ∧ ∀ v,
-    (∀ i, (X.B v).ε i = epsSH D.R (Fin.cast (by have := X.hk; omega) i)) ∧ (X.B v).c = cStd ∧
+    (∀ i, (X.B v).ε i = epsSH D.R (Fin.cast omega i)) ∧ (X.B v).c = cStd ∧
     IsSection (k0 + 1) D.R.rS (X.B v).z (X.B v).z' (X.μsec v) ∧
     IsCutS (X.B v).u (X.B v).u' (X.I v) ∧
     ((X.B v).u (X.l v) ≠ (X.B v).u' (X.l v) ∧

@@ -164,7 +164,7 @@ theorem invCutPf_teich (x : (ZMod (l ^ 1))ˣ) : ∃ d : DeltaT l, redU l 0 d.1 =
     apply invCutPf_norm_eq_one
     rw [map_natCast, Ne, ZMod.natCast_eq_zero_iff]
     intro hd
-    have := Nat.le_of_dvd (by have := hl.two_le; omega) hd
+    have := Nat.le_of_dvd omega hd
     rw [pow_one] at this
     have := hl.two_le
     omega

@@ -177,7 +177,7 @@ theorem chi_ratio (c' : Fin D.R.t) (g : GE D.nd) :
     (((D.nd.chi i 1 g)⁻¹ : (D.nd.O i)ˣ) : D.nd.O i) * ((D.nd.chi i ((c' : ℕ) + 1) g : (D.nd.O i)ˣ) : D.nd.O i) =
       ((((Units.map (algebraMap ℤ_[D.nd.l i] (D.nd.O i)).toMonoidHom).comp
         (cycE i ^ (-((((Fin.succ c' : Fin (D.R.t + 1)) : ℕ) - 1 : ℕ) : ℤ)))) g : (D.nd.O i)ˣ) : D.nd.O i) := by
-  have hc := D.nd.chi_def i ((c' : ℕ) + 1) (by omega) (by have := c'.isLt; omega)
+  have hc := D.nd.chi_def i ((c' : ℕ) + 1) (by omega) omega
   have hn : (-(((((c' : ℕ) + 1 : ℕ)) : ℤ) - 1)) =
       -((((Fin.succ c' : Fin (D.R.t + 1)) : ℕ) - 1 : ℕ) : ℤ) := by
     simp [Fin.val_succ]
@@ -277,7 +277,7 @@ theorem tieSel2_rec [∀ k, IsScalarTower Dd.T' Dd.R' (blockRestrictedRepresenta
     TieSel2 i (Mc i Dd c) Dd.r Dd.χ (colIdx i dc) (decs D.host.E (Aw i dc)) (rowsN i dc) (qsN i dc)
       (Fall i dc Dd F0 c) (Io i) (IS i) (c : ℕ) :=
   tieSel2 i dc Dd F0 c hc (blkTw_of_def hD hN c (by omega)) hC
-    (hZ _ (Finset.mem_Ioo.2 ⟨by omega, by have := c.isLt; omega⟩))
+    (hZ _ (Finset.mem_Ioo.2 ⟨by omega, omega⟩))
 
 end Rec
 

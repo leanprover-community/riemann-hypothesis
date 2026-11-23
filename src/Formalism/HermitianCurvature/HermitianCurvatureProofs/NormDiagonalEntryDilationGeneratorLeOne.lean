@@ -1391,7 +1391,7 @@ theorem ph_hasDerivAt_y (H : Hyp D Ξ α) {A B : Mat k r → (Wq →L[ℂ] Wp)} 
       (((-(rr r / y) : ℝ) : ℂ) * (Ph D (Rr A) B (dilation₂ (x, y) p) + Ph D A (Rr B) (dilation₂ (x, y) p))) y := by
   obtain ⟨K1, hK1, hK1b⟩ := aDil_gN_bound k r (a := y / 2) (b := 2 * y) (by linarith)
   have hs : Set.Ioo (y / 2) (2 * y) ∈ 𝓝 y := Ioo_mem_nhds (by linarith) (by linarith)
-  have hpos : ∀ t ∈ Set.Ioo (y / 2) (2 * y), 0 < t := fun t ht => by have := ht.1; linarith
+  have hpos : ∀ t ∈ Set.Ioo (y / 2) (2 * y), 0 < t := fun t ht => linarith
   have hr := rr_pos r
   have hd : ∀ {f : Mat k r → (Wq →L[ℂ] Wp)}, DR f → ∀ z ∈ GV k r, ∀ t ∈ Set.Ioo (y / 2) (2 * y),
       HasDerivAt (fun t => f (aDil k r x * z * (aDil k r t)⁻¹))
@@ -1431,7 +1431,7 @@ theorem phase_dilation_deriv_x (H : Hyp D Ξ α) {A B : Mat k r → (Wq →L[ℂ
       (((-(rr r / x) : ℝ) : ℂ) * (Ph D (Ll A) B (dilation₂ (x, y) p) + Ph D A (Ll B) (dilation₂ (x, y) p))) x := by
   obtain ⟨K1, hK1, hK1b⟩ := aDil_gN_bound k r (a := x / 2) (b := 2 * x) (by linarith)
   have hs : Set.Ioo (x / 2) (2 * x) ∈ 𝓝 x := Ioo_mem_nhds (by linarith) (by linarith)
-  have hpos : ∀ t ∈ Set.Ioo (x / 2) (2 * x), 0 < t := fun t ht => by have := ht.1; linarith
+  have hpos : ∀ t ∈ Set.Ioo (x / 2) (2 * x), 0 < t := fun t ht => linarith
   have hr := rr_pos r
   have hd : ∀ {f : Mat k r → (Wq →L[ℂ] Wp)}, DL f → ∀ z ∈ GV k r, ∀ t ∈ Set.Ioo (x / 2) (2 * x),
       HasDerivAt (fun t => f (aDil k r t * z * (aDil k r y)⁻¹))

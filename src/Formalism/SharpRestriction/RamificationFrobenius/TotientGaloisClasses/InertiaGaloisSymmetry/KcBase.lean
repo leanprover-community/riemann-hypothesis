@@ -127,7 +127,7 @@ theorem kc_stab_of_inertia {G S : Type*} [Group G] [CommRing S] [MulSemiringActi
 
 theorem splitK : ∀ p : ℕ, p.Prime →
     ((primesOver (span {(p : ℤ)}) (𝓞 H.K)).ncard = 2 ↔ (p = 2 ∨ (p ≠ 2 ∧ jacobiSym (-(H.d : ℤ)) p = 1))) :=
-  fun p hp => SplitK.clause (L := H.E) (b := H.sqd) H.hyp.2.1 (by have := H.hyp.2.2.2.1; omega) H.sqd_sq p hp
+  fun p hp => SplitK.clause (L := H.E) (b := H.sqd) H.hyp.2.1 omega H.sqd_sq p hp
 
 variable (C : HostCore H)
 include C

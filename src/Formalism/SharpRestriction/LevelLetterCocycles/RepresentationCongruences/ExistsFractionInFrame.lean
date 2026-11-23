@@ -74,7 +74,7 @@ theorem ArcLengthFourSecond.isUnit_ps (W : LocWach PD LL O v n) (hR : GS.RD W) (
       exact hπ0.map W.φE
     rw [h] at hφ
     have h3 := isUnit_of_mul_isUnit_right hφ
-    exact (isUnit_pow_iff (by have := hp.two_le; omega)).1 h3
+    exact (isUnit_pow_iff omega).1 h3
   induction t with
   | zero => simpa [ps] using hq0
   | succ t ih =>

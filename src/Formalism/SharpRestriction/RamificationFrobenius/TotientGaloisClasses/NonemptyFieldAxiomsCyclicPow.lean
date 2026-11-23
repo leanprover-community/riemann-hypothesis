@@ -438,7 +438,7 @@ theorem exact_art (he : 1 ≤ e) : ∃ u : (ZMod (2 ^ (e + 2) * q * d))ˣ,
 
 theorem splitK_E (p : ℕ) (hp : p.Prime) :
     (primesOver (span {(p : ℤ)}) (𝓞 (KinE ζ a b))).ncard = 2 ↔ (p = 2 ∨ (p ≠ 2 ∧ jacobiSym (-(d : ℤ)) p = 1)) :=
-  SplitK.clause (L := hostE ζ a b) (b := bE ζ a b) hH.2.1 (by have := hH.2.2.2.1; omega)
+  SplitK.clause (L := hostE ζ a b) (b := bE ζ a b) hH.2.1 omega
     (by apply Subtype.ext; push_cast; exact h.2.2.1) p hp
 
 theorem rd_eq : |(discr (hostE ζ a b) : ℝ)| ^ ((1 : ℝ) / (Module.finrank ℚ (hostE ζ a b) : ℝ)) =

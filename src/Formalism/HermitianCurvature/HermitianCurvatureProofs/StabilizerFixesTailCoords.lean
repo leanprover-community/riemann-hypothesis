@@ -286,7 +286,7 @@ theorem lie_stabilizer_splitting : LieSsetSplit := by
       intro l _
       by_cases hl : a.val ≤ l.val
       · rw [Matrix.conjTranspose_apply, F1 a l hl, star_zero, zero_mul]
-      · rw [hpk_cross l j (Or.inr ⟨Or.inl (by have := a.2; omega), h1, h2⟩), mul_zero]
+      · rw [hpk_cross l j (Or.inr ⟨Or.inl omega, h1, h2⟩), mul_zero]
     have s2 : ∑ l, Formalism.QuantumDeterminants.Hpk k r (Formalism.QuantumDeterminants.eI k r a) l * X l j = X i j := by
       rw [Finset.sum_eq_single i]
       · rw [hpk_row, if_pos (by simp only [a]; omega), one_mul]

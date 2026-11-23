@@ -52,7 +52,7 @@ theorem data {a₀ : ℕ} {b₀ c₀ : ℤ} {dK : ℕ} (ha : 0 < a₀) (hdK : 0 
     Squarefree dK ∧ dK % 4 = 3 ∧ Formalism.L2.Th1.CM.HasCMBy dK (Formalism.L2.Th1.F.cmPair a₀ b₀ dK ha hdK) := by
   obtain ⟨j, hj⟩ := odd_b hOK
   have h1 := hOK.1
-  refine ⟨hOK.2.2.2.squarefree, by have := hOK.2.2.1; omega, ?_⟩
+  refine ⟨hOK.2.2.2.squarefree, omega, ?_⟩
   intro ω hω
   simp only [PeriodPair.lattice, Formalism.L2.Th1.F.cmPair] at hω ⊢
   rw [Submodule.mem_span_pair] at hω ⊢

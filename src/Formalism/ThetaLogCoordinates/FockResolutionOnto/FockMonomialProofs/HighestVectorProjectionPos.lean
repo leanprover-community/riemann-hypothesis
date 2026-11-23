@@ -356,7 +356,7 @@ theorem highest_vector_projection_holds : HighestVectorProjectionPos := by
   have hsub : ∀ i i' : Fin (K + 2), (i : ℕ) ≤ (i' : ℕ) → Cs i' ⊆ Cs i := by
     intro i i' h
     by_cases hi : (i : ℕ) = K + 1
-    · rw [hCsT i hi, hCsT i' (by have := i'.isLt; omega)]
+    · rw [hCsT i hi, hCsT i' omega]
     · rw [hCsL i hi]; exact subset_univ _
   have hcomm : ∀ i i' x, P i (P i' x) = P i' (P i x) := by
     intro i i' x

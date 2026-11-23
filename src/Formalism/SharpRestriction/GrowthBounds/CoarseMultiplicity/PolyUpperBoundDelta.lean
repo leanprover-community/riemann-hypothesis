@@ -196,7 +196,7 @@ theorem kept_upper_level_bound (St : Std C0 Cde CE1 CE2 1 X) (j : Fin (numSeg X.
     dlt := dist_pos_lt X.TT j
     dodd := dist_odd St.nEven X.TT j
     dmono := dist_strictMono X.TT j
-    sig := fun i => sigma_iff X.p (by have := St.p5; omega) X.TT X.bT X.a X.b' X.Y _ _ j i
+    sig := fun i => sigma_iff X.p omega X.TT X.bT X.a X.b' X.Y _ _ j i
     bpos := St.bpos
     La0 := by
       show 0 ≤ X.La C0
@@ -288,7 +288,7 @@ theorem extra_order_le_maximal (St : Std C0 Cde CE1 CE2 1 X) (j : Fin (numSeg X.
     dlt := dist_pos_lt X.TT j
     dodd := dist_odd St.nEven X.TT j
     dmono := dist_strictMono X.TT j
-    sig := fun i => sigma_iff X.p (by have := St.p5; omega) X.TT X.bT X.a X.b' X.Y _ _ j i
+    sig := fun i => sigma_iff X.p omega X.TT X.bT X.a X.b' X.Y _ _ j i
     bpos := St.bpos
     La0 := by
       show 0 ≤ X.La C0
@@ -333,7 +333,7 @@ theorem extra_order_le_maximal (St : Std C0 Cde CE1 CE2 1 X) (j : Fin (numSeg X.
   have ha0 : (0 : ℝ) ≤ (X.a : ℝ) := Nat.cast_nonneg _
   have hgeo := H.geo
   have hcapS := cap_le X.p (X.seg C0 CE1 CE2 j) b (segS X.TT j)
-  have hA0 := base_exponent_le_a X.p (by have := St.p5; omega) (X.seg C0 CE1 CE2 j) H.errorNonneg
+  have hA0 := base_exponent_le_a X.p omega (X.seg C0 CE1 CE2 j) H.errorNonneg
   have hA0' : ((X.seg C0 CE1 CE2 j).A0 X.p : ℝ) ≤ (X.a : ℝ) / (X.p : ℝ) ^ 2 := by
     refine hA0.trans ?_
     show (X.a : ℝ) / (X.p : ℝ) ^ (X.seg C0 CE1 CE2 j).G ≤ _

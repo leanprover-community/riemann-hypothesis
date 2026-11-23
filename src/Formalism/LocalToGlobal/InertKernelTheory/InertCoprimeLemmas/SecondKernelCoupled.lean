@@ -237,7 +237,7 @@ theorem coupled_compatibility_at_place : TiesCOfAt := by
   · have e := hSt (lp x) (hsec x).1
     rw [(hsec x).2] at e
     rw [e]
-    exact dG_spec (D.R.m - 1) (by have := KA.fl_m; omega) (lp x).1 (lp x).2 (Y.Rep_lat _ _ (hsec x).1)
+    exact dG_spec (D.R.m - 1) omega (lp x).1 (lp x).2 (Y.Rep_lat _ _ (hsec x).1)
   · have e := hDel (lp x) (hsec x).1 y c' L' hL
     rw [(hsec x).2] at e
     exact e

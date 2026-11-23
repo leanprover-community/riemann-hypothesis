@@ -458,7 +458,7 @@ theorem lhwline_diag_tall (ν : Fin n → ℕ) (s : Fin n) (hs : r ≤ s.val) (h
     rw [← lhwline_weight_col, hw]
     exact Nat.pos_iff_ne_zero.mp hνs
   obtain ⟨a, -, ha⟩ := Finset.exists_ne_zero_of_sum_ne_zero hcol
-  have hDa : D (a, s) = 0 := hD a s (by have := a.isLt; omega)
+  have hDa : D (a, s) = 0 := hD a s omega
   rw [Finset.prod_eq_zero (Finset.mem_univ (a, s)) (by rw [hDa, zero_pow ha]), mul_zero]
 
 def lhwline_mnu (hn : n ≤ r) (ν : Fin n → ℕ) : Fin r × Fin n →₀ ℕ :=

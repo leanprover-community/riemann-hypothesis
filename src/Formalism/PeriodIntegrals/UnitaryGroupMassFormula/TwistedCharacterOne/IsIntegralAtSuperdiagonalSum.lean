@@ -235,7 +235,7 @@ def Mb (kj N c : ℕ) (f : Sp E (N + c) ≃ₗ[E] Sp E (N + c)) :
     Matrix (Fin (N - kj)) (Fin (N - kj)) (𝓞 E ⧸ P.asIdeal) :=
   (Ment kj N c f).map (redP P)
 
-def dI (kj N c : ℕ) (t : Fin (N - kj)) : Fin (N + c) := ⟨kj + t.1, by have := t.2; omega⟩
+def dI (kj N c : ℕ) (t : Fin (N - kj)) : Fin (N + c) := ⟨kj + t.1, omega⟩
 
 lemma dI_inj : Function.Injective (dI kj N c) := by
   intro s t h
@@ -243,7 +243,7 @@ lemma dI_inj : Function.Injective (dI kj N c) := by
 
 lemma atN_dI (v : Sp E (N + c)) (s : Fin (N - kj)) : Loc.atN v (kj + s.1) = v (dI kj N c s) := by
   unfold Loc.atN
-  rw [dite_eq_left (by have := s.2; omega)]
+  rw [dite_eq_left omega]
   rfl
 
 lemma Mb_mul_of {r g h : Sp E (N + c) ≃ₗ[E] Sp E (N + c)}

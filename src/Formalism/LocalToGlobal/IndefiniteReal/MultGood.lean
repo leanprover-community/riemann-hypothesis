@@ -85,12 +85,12 @@ theorem holPar_kapW_eq {R : Ranks} (h : HCParam R) (p q : ℕ) (hpq : p + q = R.
   constructor
   · rintro ⟨a, rfl, rfl⟩
     cases a with
-    | inl i => exact ⟨⟨i, by have := i.2; omega⟩, rfl, by simp⟩
-    | inr c => exact ⟨⟨p + c, by have := c.2; omega⟩, rfl, by simp⟩
+    | inl i => exact ⟨⟨i, omega⟩, rfl, by simp⟩
+    | inr c => exact ⟨⟨p + c, omega⟩, rfl, by simp⟩
   · rintro ⟨a, rfl, rfl⟩
     by_cases hc : (a : ℕ) < p
     · exact ⟨Sum.inl ⟨a, hc⟩, rfl, by simp [hc]⟩
-    · refine ⟨Sum.inr ⟨a - p, by have := a.2; omega⟩, ?_, by simp [hc]⟩
+    · refine ⟨Sum.inr ⟨a - p, omega⟩, ?_, by simp [hc]⟩
       simp only [Sum.elim_inr]
       rw [show p + ((a : ℕ) - p) = a by omega]
 

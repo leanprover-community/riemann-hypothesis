@@ -120,11 +120,11 @@ theorem TfFacts.aEff_bd (F : TfFacts D large₂ C' Cl Cu C0) (hCl : 4 ≤ Cl) (u
   have hDel := F.Del1
   have hm2 : (2 : ℝ) ≤ D.R.m := by exact_mod_cast D.R.two_le_m
   have hKD : 1 ≤ (D.R.k : ℝ) * D.s.Del := by nlinarith
-  have hv1 : 0 ≤ vOne D τ 1 := F.dv τ 1 le_rfl (by have := D.R.m_add_three_le_k; omega)
+  have hv1 : 0 ≤ vOne D τ 1 := F.dv τ 1 le_rfl omega
   have hu := F.du u τ
   have hu1 : 1 ≤ uOne D u τ 1 := by nlinarith
   have hbC : 1 ≤ large₂.sc.b ^ Cu := le_trans hu1 (F.hu1 u τ)
-  have hb := F.hb1 τ 1 le_rfl (by have := D.R.two_le_m; omega)
+  have hb := F.hb1 τ 1 le_rfl omega
   have hb8 : 8 * ((D.R.k : ℝ) * D.s.Del) ≤ bOne D τ 1 := by
     refine le_trans ?_ hb
     have : (8 : ℝ) ≤ Cl * D.R.m := by nlinarith

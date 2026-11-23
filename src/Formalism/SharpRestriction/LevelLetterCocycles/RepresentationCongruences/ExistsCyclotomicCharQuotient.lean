@@ -230,7 +230,7 @@ theorem gamma_q_expansion_of_points [IsDomain O] [IsDiscreteValuationRing O] [Ch
   let xr : Fin (PD.p - 1) → O := fun j => z ^ (j.1 + 1) - 1
   have hxr0 : ∀ j, xr j ≠ 0 := by
     intro j h
-    apply hprim.pow_ne_one_of_pos_of_lt (Nat.succ_ne_zero j.1) (by have := j.2; omega)
+    apply hprim.pow_ne_one_of_pos_of_lt (Nat.succ_ne_zero j.1) omega
     exact sub_eq_zero.1 h
   have hxrr : ∀ j, (1 + xr j) ^ PD.p = 1 := by
     intro j
@@ -240,7 +240,7 @@ theorem gamma_q_expansion_of_points [IsDomain O] [IsDiscreteValuationRing O] [Ch
     intro j k h
     have h' : z ^ (j.1 + 1) = z ^ (k.1 + 1) := by
       have := h; simp only [xr] at this; exact sub_left_injective this
-    have := hprim.pow_inj (by have := j.2; omega) (by have := k.2; omega) h'
+    have := hprim.pow_inj omega omega h'
     exact Fin.ext (by omega)
 
   have hfr : Module.finrank K₀ K = 1 := by

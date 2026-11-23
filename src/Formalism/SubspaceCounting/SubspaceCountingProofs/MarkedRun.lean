@@ -53,7 +53,7 @@ open MarkedRunP in
 theorem marked_run : MarkedRun := by
   intro T r u s hu hM
   have hex : ∀ i : Fin (3 * r), ∃ x, T ∩ cell r u s (2 * i.val + 1 + 1) = {x} ∧ Even x :=
-    fun i => (hM (2 * i.val + 1 + 1) (by omega) (by have := i.2; omega)).2 ⟨i.val + 1, by ring⟩
+    fun i => (hM (2 * i.val + 1 + 1) (by omega) omega).2 ⟨i.val + 1, by ring⟩
   choose f hf hfe using hex
   have hmem : ∀ i : Fin (3 * r), f i ∈ T ∧
       s * ((6 * r + 1) * u) + (2 * i.val + 1) * u ≤ f i ∧

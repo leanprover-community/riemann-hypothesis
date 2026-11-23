@@ -146,7 +146,7 @@ theorem exists_root {p : ℕ} (hp : p.Prime) (hp4 : p % 4 = 3) (hN : p ∣ D.QS 
 
 theorem exists_sqd : ∃ y : D.E, y ^ 2 = -(D.d : D.E) ∧
     ∀ σ : D.E ≃ₐ[ℚ] D.E, σ y = ((((D.gal σ).1.2 : ℤˣ) : ℤ) : D.E) * y :=
-  D.exists_root D.hyp.2.1 (by have := D.hyp.2.2.2.1; omega) (dvd_mul_left _ _) φ.chD D.art_ch
+  D.exists_root D.hyp.2.1 omega (dvd_mul_left _ _) φ.chD D.art_ch
 
 def toHostRaw : HostRaw φ where
   q := D.q
@@ -178,7 +178,7 @@ def toHostRaw : HostRaw φ where
 
 theorem exists_sqq (h : D.toHostRaw.PsQ) : ∃ s : D.toHostRaw.E, s ^ 2 = -(D.toHostRaw.q : D.toHostRaw.E) ∧
     ∀ σ : D.toHostRaw.E ≃ₐ[ℚ] D.toHostRaw.E, σ s = ((((D.toHostRaw.gal σ).1.1 : ℤˣ) : ℤ) : D.toHostRaw.E) * s :=
-  D.exists_root D.hyp.1 (by have := D.hyp.2.2.1; omega) (Dvd.dvd.mul_right (dvd_mul_left _ _) _) φ.chQ h
+  D.exists_root D.hyp.1 omega (Dvd.dvd.mul_right (dvd_mul_left _ _) _) φ.chQ h
 
 theorem muPM (h : ∀ k : ℕ, k ∣ D.QS * D.q * D.d →
     (∀ u : (ZMod (D.QS * D.q * D.d))ˣ, D.art u = 1 → (u : ZMod (D.QS * D.q * D.d)).val ≡ 1 [MOD k]) → k ∣ 2) :

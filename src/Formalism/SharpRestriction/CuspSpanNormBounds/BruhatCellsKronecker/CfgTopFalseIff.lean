@@ -267,7 +267,7 @@ theorem Vand_u (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau)
     Sz.Vand D.R.k ((cfgOf D τ).u (deOf D u)) = vand (uS D u τ) := by
   apply Vand_eq_vand
   intro a
-  rw [cfg_u D u τ h5 (a.1 + 1) (by omega) (by have := a.isLt; omega), uOne_succ D u τ a.1 a.isLt]
+  rw [cfg_u D u τ h5 (a.1 + 1) (by omega) omega, uOne_succ D u τ a.1 a.isLt]
   rfl
 
 theorem Vand_lam (D : D7) (τ : D.what₂.Tau) :

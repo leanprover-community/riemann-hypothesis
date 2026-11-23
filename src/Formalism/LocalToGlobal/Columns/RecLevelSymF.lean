@@ -78,7 +78,7 @@ theorem mem_HJsym_iff_InJSym (e : κ ≃+* k') {n k rS t j : ℕ} (ht : 0 < t) (
     unfold Formalism.L2.Forms.lvSym Formalism.L2.Forms.rSym
     rw [posSym_eq_symIdx]
   have hco : ∀ x : Fin n, coarse (k + 2 * rS + 1) (List.replicate j t) x.val =
-      if x.val < k + 2 * rS + 1 then 0 else (x.val - (k + 2 * rS + 1)) / t + 1 := fun x => coarse_rep ht (by have := x.2; omega)
+      if x.val < k + 2 * rS + 1 then 0 else (x.val - (k + 2 * rS + 1)) / t + 1 := fun x => coarse_rep ht omega
   have hsym : ∀ x : ℕ, x < k + 2 * rS + 1 → symIdx k rS x < k + 2 * rS + 1 := fun x hx => symIdx_lt hrS hx
   have z0 : ∀ a : κ, e a = 0 ↔ a = 0 := fun a => EmbeddingLike.map_eq_zero_iff
   have z1 : ∀ a : κ, e a = 1 ↔ a = 1 := fun a => ⟨fun h' => e.injective (by rw [h', map_one]), fun h' => by rw [h', map_one]⟩

@@ -74,7 +74,7 @@ lemma strict_pow_eq_zero {m : ℕ} (M : Matrix (Fin m) (Fin m) ℂ) (hM : ∀ i 
     M ^ m = 0 := by
   ext i j
   rw [Matrix.zero_apply]
-  exact strict_pow_apply M hM m i j (by have := j.isLt; omega)
+  exact strict_pow_apply M hM m i j omega
 
 section herm
 

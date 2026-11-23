@@ -107,7 +107,7 @@ theorem restr_setTau_tau (hX : X.Hyp p K) (j : ℤ) (b : ℤ → ℕ) (e : Fin r
   have h4 := hV.2.2.2.1 (j - 1)
   rw [sub_add_cancel] at h4
   have a2 := kfr_le X.F hV j (Nat.zero_le i'.val) i'.isLt
-  have a3 := kfr_le X.F hV j (by have := i'.isLt; omega : i'.val ≤ r - 1) (by have := i'.isLt; omega)
+  have a3 := kfr_le X.F hV j (by have := i'.isLt; omega : i'.val ≤ r - 1) omega
   have hlate : X.F.fr j i'.val ∈ X.toLate j := by
     refine Finset.mem_filter.mpr ⟨hmem, ?_⟩
     unfold Frames.IsW
@@ -149,7 +149,7 @@ theorem restMon_of (C₀ : ℝ) (h61 : BetaRatioBound C₀) (h21 : TauDegreeOnPa
   obtain ⟨T, hT⟩ : ∃ T, Q = T + 2 * be := ⟨Q - 2 * be, by omega⟩
   have hTpos : 0 < T := by omega
   have hrN := k_r_le_segN X.F hV hr j
-  let idxT : Fin r → Fin (segN X.F j) := fun i' => ⟨segN X.F j - r + i'.val, by have := i'.isLt; omega⟩
+  let idxT : Fin r → Fin (segN X.F j) := fun i' => ⟨segN X.F j - r + i'.val, omega⟩
   have hidx : ∀ i', segE X.F j (idxT i') = X.F.fr j i'.val := fun i' =>
     (segE_eq_fr_iff X.F hV j _ i'.isLt).mpr rfl
   have := Fintype.ofFinite (X.Tset p K j (X.restr j b))

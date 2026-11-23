@@ -54,7 +54,7 @@ variable {n0 : ℕ} {LL : Letters (Fin N)} {B : Fin N → ℕ} {od : Fin N → F
 
 theorem tail_positive_eq (H : HypT N n0 r K LL B od bb a La p) (μ : Fin (N + 1) → Fin (r + K) → ℤ) (s : ℕ) (hs : s ≤ n0) :
     BranchingDimensions.tailPos ((toL r K LL B).stLen s) (BranchingDimensions.Letters.stage (D := toL r K LL B) μ s) 0 =
-      posS (μ ⟨s, by have := H.hN; omega⟩) := by
+      posS (μ ⟨s, omega⟩) := by
   have hN := H.hN
   have hn0 := letters_n0_eq (r := r) (K := K) H
   have h0 : s - (toL r K LL B).n0 = 0 := by rw [hn0]; omega
@@ -166,9 +166,9 @@ theorem threshold_letter_eq_Xi (H : HypT N n0 r K LL B od bb a La p) (i : Fin N)
     have : 0 < r + K := omega
     exact_mod_cast this
   unfold BranchingDimensions.Letters.XT toB Xi
-  rw [dite_eq_left ⟨by omega, by have := i.2; omega⟩]
+  rw [dite_eq_left ⟨by omega, omega⟩]
   show La * (13 * bb ⟨i.val + 1 - 1, _⟩ / (p : ℝ)) / (((13 : ℕ) : ℝ) * ((r + K : ℕ) : ℝ)) = _
-  have he : (⟨i.val + 1 - 1, by have := i.2; omega⟩ : Fin N) = i := Fin.ext (by simp)
+  have he : (⟨i.val + 1 - 1, omega⟩ : Fin N) = i := Fin.ext (by simp)
   rw [he]
   push_cast
   field_simp
@@ -199,7 +199,7 @@ theorem typ_of_Typical [NeZero r] (H : HypT N n0 r K LL B od bb a La p) {dd : Fi
     have he : BranchingDimensions.Letters.ent (D := toL r K LL B) P.mu i.val ((toL r K LL B).r - 1) =
         plPart P.mu i.castSucc (lastIdx r) := by
       show BranchingDimensions.Letters.ent (D := toL r K LL B) P.mu i.val (r - 1) = _
-      rw [entry_eq_of_lt LL B P.mu i.val (r - 1) (by omega) (by have := H.r1; omega)]
+      rw [entry_eq_of_lt LL B P.mu i.val (r - 1) (by omega) omega]
       rfl
     rw [he] at h
     exact h

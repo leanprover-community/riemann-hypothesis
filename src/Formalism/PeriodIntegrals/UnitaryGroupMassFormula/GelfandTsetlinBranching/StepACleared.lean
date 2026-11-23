@@ -194,7 +194,7 @@ theorem vanishA (g : MvPolynomial (Fin (n + 1) × Fin (n + 1)) ℂ)
       (∀ a j : Fin (n + 1), a.val < n → a ≠ j → D (a, j) = 0) → eval D g = 0) :
     g = 0 := by
   set P : MvPolynomial (Fin (n + 1) × Fin (n + 1)) ℂ := ∏ s : Fin n,
-    lpMinor ℂ (s.val + 1) (by have := s.isLt; omega) (by have := s.isLt; omega) with hPdef
+    lpMinor ℂ (s.val + 1) omega omega with hPdef
   have hP : P ≠ 0 := by
     intro h
     have := congrArg (eval (idPoint ℂ (n + 1) (n + 1))) h

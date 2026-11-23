@@ -531,10 +531,10 @@ theorem vGeK_FF (v : X.Pl) (m : ℕ → X.G.Kf) (hm : ∀ l ∈ Icc 1 X.mm, X.vE
   have hfr := frac_of_place X v
   unfold Sys.FF Sys.qh
   have h1 : X.vGeK (m (x.1.val + 1)) (X.vm v (x.1.val + 1)) :=
-    (hm _ (mem_Icc.2 ⟨by omega, by have := x.1.isLt; omega⟩)).1
+    (hm _ (mem_Icc.2 ⟨by omega, omega⟩)).1
   have h2 := vGeK_mul X hfr h1 (vGeK_ppow X hfr (((X.G.P.n' v / 2 : ℕ) : ℤ) * ((X.t : ℤ) - 2 * x.2.val)))
   refine vGeK_mono X hfr ?_ h2
-  have h3 := mu_le (X.std v) (l := x.1.val + 1) (j := j) (i := x.2.val) (by omega) (by have := x.1.isLt; omega) hj
+  have h3 := mu_le (X.std v) (l := x.1.val + 1) (j := j) (i := x.2.val) (by omega) omega hj
     (Nat.lt_succ_iff.1 x.2.isLt)
   have h4 : ((muZ X.t (X.w v) j : ℤ) : ℝ) ≤
       ((X.vm v (x.1.val + 1) + ((X.G.P.n' v / 2 : ℕ) : ℤ) * ((X.t : ℤ) - 2 * x.2.val) : ℤ) : ℝ) := by

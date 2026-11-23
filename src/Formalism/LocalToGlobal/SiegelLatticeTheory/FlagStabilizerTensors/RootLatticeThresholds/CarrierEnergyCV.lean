@@ -100,7 +100,7 @@ theorem jac_diag (c : Fin (r + 1) → ℂ) :
   ring
 
 def phiC (lam : Fin r → ℝ) (c : Fin (r + 1) → ℂ) : (Fin r → ℂ) × ℂ :=
-  (fun a => ((lam a : ℝ) : ℂ) * c ⟨a.val, by have := a.2; omega⟩, c ⟨r, by omega⟩)
+  (fun a => ((lam a : ℝ) : ℂ) * c ⟨a.val, omega⟩, c ⟨r, by omega⟩)
 
 theorem bc_prod (k : ℕ) (hk : 1 ≤ k) (lam : Fin r → ℝ) (hlam : ∀ a, 0 < lam a) (c : Fin (r + 1) → ℂ) :
     ∏ a : Fin r, ‖(phiC lam c).1 a‖ ^ (2 * (Formalism.QuantumDeterminants.Mdim k r a - 2)) =
@@ -356,7 +356,7 @@ theorem cv_core {r : ℕ} (k : ℕ) (hk : 1 ≤ k) (T T' : ℝ) (lam : Fin r →
 theorem cv_inst {D : D7} (u u' : D.what₂.Word) (m : ℕ) (hm : m = D.R.rS) (lam : Fin m → ℝ) (hlam : ∀ a, 0 < lam a)
     (F : (Fin m → ℂ) × ℂ → ℝ) :
     ∫⁻ cv in GoodV u u', ENNReal.ofReal (wtV u u' cv *
-        F ((fun a => ((lam a : ℝ) : ℂ) * cv ⟨a.val, by have := a.2; omega⟩, cv ⟨D.R.rS, by omega⟩))) ∂(dcV (D := D)) =
+        F ((fun a => ((lam a : ℝ) : ℂ) * cv ⟨a.val, omega⟩, cv ⟨D.R.rS, by omega⟩))) ∂(dcV (D := D)) =
       ENNReal.ofReal (2 ^ (m + 1) * ∏ a : Fin m, (lam a ^ (2 * (Formalism.QuantumDeterminants.Mdim D.R.k m a - 1)))⁻¹) *
         ∫⁻ q, ENNReal.ofReal (Formalism.QuantumDeterminants.bcWeight D.R.k m (Tw (D := D) u) (Tw (D := D) u') q * F q) := by
   subst hm

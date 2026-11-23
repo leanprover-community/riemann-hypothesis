@@ -4510,8 +4510,8 @@ theorem theorem_B_first_two_steps (D : D7) (hGl : Formalism.MainNotions.S.Unitar
   have h3 := hA3 u T' Λ F F' F'' β hF hPr hT' hT'' hp hs
   refine ⟨d_step1 H' H'' hp h3.1 h3.2 G1, ?_⟩
   intro P hP hTP
-  exact d_step2_congr H' H'' hp h3.1 h3.2 G1 (by have := hPr.2.1; omega)
-    (by have := hPr.2.2.2.1; omega) hPr.2.2.2.2.2.2.2.1 P hP hTP
+  exact d_step2_congr H' H'' hp h3.1 h3.2 G1 omega
+    omega hPr.2.2.2.2.2.2.2.1 P hP hTP
 
 end FinalB
 

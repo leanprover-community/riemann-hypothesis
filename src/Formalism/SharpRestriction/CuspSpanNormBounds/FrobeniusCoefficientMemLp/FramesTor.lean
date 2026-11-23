@@ -127,7 +127,7 @@ theorem Hpk_ne_dT {k r : ℕ} (i j : Fin (2 * r + k + 1)) (h : Hpk k r i j ≠ 0
   unfold Hpk at h
   split_ifs at h with h1 h2 h3 h4
   · exact (dT_pair i j h1.1 h1.2).symm
-  · exact dT_pair j i h2.1 (by have := h2.2; omega)
+  · exact dT_pair j i h2.1 omega
   · rw [h3.2.2]
   · rw [h3.2.2]
   · exact absurd rfl h

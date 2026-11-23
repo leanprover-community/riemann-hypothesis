@@ -286,7 +286,7 @@ theorem jumpsLet_box [NeZero n] (W : LocWach PD LL O v n) {d : ℕ} {T₁ T₂ :
   intro i τ hτ a ha
   have h := hS.2.2.2.2.2.2.1 i τ hτ a ha
   have hη : 2 * ⌊Formalism.MainNotions.RamifiedCoefficientChains.aR PD.p (Formalism.MainNotions.RamifiedCoefficientChains.hpar n b S + η)⌋₊ + η + 1 ≤ b i :=
-    Formalism.MainNotions.RamifiedCoefficientChains.floor_a_le _ _ _ _ (by have := hS.2.1; omega) (hS.2.2.2.2.2.2.2.2.1 i)
+    Formalism.MainNotions.RamifiedCoefficientChains.floor_a_le _ _ _ _ omega (hS.2.2.2.2.2.2.2.2.1 i)
   unfold Formalism.MainNotions.RamifiedCoefficientChains.JumpWinS at h
   unfold boxM boxh
   by_cases hi : (i.val + d) % 2 = 0

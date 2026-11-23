@@ -149,7 +149,7 @@ theorem arithCondition_of_one_le (C CLa : ℝ) (hC : 1 ≤ C) : RestArithStep C 
       unfold G2d
       rw [if_pos htop]
       exact Nat.sub_le _ _
-    have hfd := (flatDeg_bounds (by have := hB.m_ge; omega) ha0 h5 _ (hTT ▸ htop)).2
+    have hfd := (flatDeg_bounds omega ha0 h5 _ (hTT ▸ htop)).2
     have s1 := hs (r - 1)
     have s2 := hs (r - 1 - m'.val)
     have hlowP : lowP F p (⟨jj - 1, Sum.inr m'⟩ : TL J Dt.nL r) = p ^ t m' := by
@@ -202,7 +202,7 @@ theorem arithCondition_of_one_le (C CLa : ℝ) (hC : 1 ≤ C) : RestArithStep C 
   set y : ℤ := F.oldest (segZ jj) (F.fr (segZ jj) (r - 1 - mm.val)) with hydef
   set Dd : ℕ := F.dist (segZ jj) y with hDd
   have hDd' : Dd = (F.fr (segZ jj) (r - 1) - y).toNat := rfl
-  have hdeg := (flatDeg_bounds (by have := hB.m_ge; omega) ha0 h5 _ (hTT ▸ hy.2)).1
+  have hdeg := (flatDeg_bounds omega ha0 h5 _ (hTT ▸ hy.2)).1
   have hPD : (0 : ℝ) < (p : ℝ) ^ Dd := by positivity
   have hBoe : Bo p F (flatDeg lam0) (segZ jj) (F.fr (segZ jj) (r - 1 - mm.val)) =
       (flatDeg lam0 (posOf n' y) : ℝ) / (p : ℝ) ^ Dd := rfl

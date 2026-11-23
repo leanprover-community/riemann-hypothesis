@@ -182,7 +182,7 @@ theorem pow_apply_strict {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (hX : IsStri
 
 theorem pow_card_strict {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (hX : IsStrictUpper X) : X ^ n = 0 := by
   ext i k
-  exact pow_apply_strict X hX n i k (by have := k.2; omega)
+  exact pow_apply_strict X hX n i k omega
 
 theorem cornerRelation : CornerRelation := by
   intro n t c a b v

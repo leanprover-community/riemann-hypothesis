@@ -408,7 +408,7 @@ theorem int_of_frob (hp : p.Prime) (hnp : ‖(p : K)‖ = (p : ℝ)⁻¹)
     (hσ : ∀ a : K, ‖a‖ ≤ 1 → ‖σ a - a ^ p‖ ≤ (p : ℝ)⁻¹) {Fo Ga : MvPowerSeries ι K}
     (hF : MvPowerSeries.constantCoeff Fo = 1) (hG0 : MvPowerSeries.constantCoeff Ga = 1)
     (hG : Bd (p : ℝ)⁻¹ (Ga - 1)) (hrel : PhiH hp.ne_zero σ Fo = Fo ^ p * Ga) : Bd 1 Fo := by
-  have hpos : (0 : ℝ) < (p : ℝ)⁻¹ := by have := hp.pos; positivity
+  have hpos : (0 : ℝ) < (p : ℝ)⁻¹ := positivity
   refine bd_induct zero_le_one Fo fun d hl m hm => ?_
   rcases Nat.eq_zero_or_pos d with rfl | hd
   · have hm0 : m = 0 := (Finsupp.degree_eq_zero_iff m).1 hm
@@ -497,7 +497,7 @@ theorem dwork_multivariable : DworkMv := by
     have hDe0 : MvPowerSeries.constantCoeff (PhiH hp.ne_zero σ Ψ - MvPowerSeries.C (p : K) * Ψ) = 0 := by
       rw [map_sub, hΦ0, hpΨ0, sub_zero]
     have hpow : mvExp (MvPowerSeries.C (p : K) * Ψ) = (mvExp Ψ) ^ p := by
-      obtain ⟨n, rfl⟩ : ∃ n, p = n + 1 := ⟨p - 1, by have := hp.pos; omega⟩
+      obtain ⟨n, rfl⟩ : ∃ n, p = n + 1 := ⟨p - 1, omega⟩
       exact mvExp_natMul h0 n
     have hid : PhiH hp.ne_zero σ (mvExp Ψ) =
         (mvExp Ψ) ^ p * mvExp (PhiH hp.ne_zero σ Ψ - MvPowerSeries.C (p : K) * Ψ) := by

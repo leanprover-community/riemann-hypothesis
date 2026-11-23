@@ -129,8 +129,8 @@ def DataAt (V : Lev D) (b κ : ℝ) : Prop :=
     LamLow D b
 
 def lamC : ℝ :=
-  ⨆ τ : D.what₂.Tau, (((D.hc τ).v ⟨0, by have := D.R.m_add_three_le_k; omega⟩ -
-    (D.hc τ).v ⟨D.R.k - 2, by have := D.R.m_add_three_le_k; omega⟩ : ℚ) : ℝ)
+  ⨆ τ : D.what₂.Tau, (((D.hc τ).v ⟨0, omega⟩ -
+    (D.hc τ).v ⟨D.R.k - 2, omega⟩ : ℚ) : ℝ)
 
 def rPr : ℕ :=
   sInf {p : ℕ | p.Prime ∧

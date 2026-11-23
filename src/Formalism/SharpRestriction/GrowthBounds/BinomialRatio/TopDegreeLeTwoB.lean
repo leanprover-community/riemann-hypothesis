@@ -170,7 +170,7 @@ theorem SegHyp.Pcap (H : SegHyp p S b' de be aS Q) (b : SegBlock s r) (i : Fin s
   have hGi : (p : ℝ) ^ S.G = (p : ℝ) ^ (S.G - S.d i) * (p : ℝ) ^ (S.d i) := by
     rw [← pow_add, Nat.sub_add_cancel hdi.le]
   have hA : (p : ℝ) ^ (S.G - S.d i) * (S.A0 p : ℝ) ≤ (S.a : ℝ) / (p : ℝ) ^ (S.d i) := by
-    have h1 := base_exponent_le_a p (by have := H.p5; omega) S H.errorNonneg
+    have h1 := base_exponent_le_a p omega S H.errorNonneg
     calc (p : ℝ) ^ (S.G - S.d i) * (S.A0 p : ℝ)
         ≤ (p : ℝ) ^ (S.G - S.d i) * ((S.a : ℝ) / (p : ℝ) ^ S.G) :=
           mul_le_mul_of_nonneg_left h1 hX.le
@@ -428,7 +428,7 @@ theorem SegHyp.oplus (H : SegHyp p S b' de be aS Q) (b : SegBlock s r) :
   have hcap : (cap p S b s : ℝ) ≤ (S.a : ℝ) / (p : ℝ) ^ 2 + (s : ℝ) * (2 * (b' / p)) := by
     have h1 := cap_le p S b s
     have h2 : (S.A0 p : ℝ) ≤ (S.a : ℝ) / (p : ℝ) ^ 2 := by
-      have h3 := base_exponent_le_a p (by have := H.p5; omega) S H.errorNonneg
+      have h3 := base_exponent_le_a p omega S H.errorNonneg
       have hq : (p : ℝ) ^ 2 ≤ (p : ℝ) ^ S.G := pow_le_pow_right₀ (by linarith) H.G2
       have hq0 : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
       exact h3.trans (div_le_div_of_nonneg_left ha0 hq0 hq)
@@ -564,7 +564,7 @@ theorem segHyp_of {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (St : Std C0 Cde CE1 CE2 H 
     dlt := dist_pos_lt X.TT j
     dodd := dist_odd St.nEven X.TT j
     dmono := dist_strictMono X.TT j
-    sig := fun i => sigma_iff X.p (by have := St.p5; omega) X.TT X.bT X.a X.b' X.Y _ _ j i
+    sig := fun i => sigma_iff X.p omega X.TT X.bT X.a X.b' X.Y _ _ j i
     bpos := St.bpos
     La0 := by
       show 0 ≤ X.La C0

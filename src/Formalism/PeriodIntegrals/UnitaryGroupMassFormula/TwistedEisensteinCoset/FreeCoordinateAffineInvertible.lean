@@ -204,7 +204,7 @@ theorem unfolding_affine_space_invariant : XXP := by
         refine ⟨by omega, ?_⟩
         by_cases hjc : s.1 - n' = c
         · exact Or.inl hjc
-        · exact Or.inr ⟨by omega, by have := l.isLt; omega⟩
+        · exact Or.inr ⟨by omega, omega⟩
       by_cases hj0 : s.1 - n' = 0
       · have hcol : xx1 xj t (Pi.single s 1) = eN E (n + c) n := by
           funext l'

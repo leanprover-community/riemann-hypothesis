@@ -499,8 +499,8 @@ theorem edgePlane : EdgePlane := by
     exact fun h => hp0 ((IsFractionRing.injective W Qq) (by rw [h, map_zero]))
   refine ⟨?_, ?_, ?_⟩
   · intro e he hsrc
-    obtain ⟨ge, hge⟩ := LatticeSystems.lc_main p n' r (m + 1) hS.p_unif hS.res_card (by have := hS.five_le; omega)
-      (by have := hS.two_le; omega) e he
+    obtain ⟨ge, hge⟩ := LatticeSystems.lc_main p n' r (m + 1) hS.p_unif hS.res_card omega
+      omega e he
     obtain ⟨hdet, hs, ht⟩ := hge
     obtain ⟨U, hU⟩ := LatticeSystems.la_factor (O := W) h ge (by rw [← hs, hsrc])
     obtain ⟨U', hU'⟩ := LatticeSystems.la_factor (O := W) ge h (by rw [← hs, hsrc])

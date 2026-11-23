@@ -412,7 +412,7 @@ theorem measPinAt_of (sc : ℝ) (hsc : 0 < sc) (i0 i0' : ∀ _ : InfinitePlace X
       show (X.B.g : ℝ) = ((D.host.g 0 * D.host.g 1 : ℕ) : ℝ)
       rw [X.g_eq]
     set y : ℝ := D.host.rdE * ((PP).S.g : ℝ) / (2 * Real.pi) with hy
-    have hy0 : 0 < y := by have := Real.pi_pos; positivity
+    have hy0 : 0 < y := positivity
     have hcy : c = ((y : ℝ) : ℂ) * (-Complex.I) := by
       rw [hc, hlam, hy]; push_cast; ring
     have hnc : Complex.normSq c = y ^ 2 := by

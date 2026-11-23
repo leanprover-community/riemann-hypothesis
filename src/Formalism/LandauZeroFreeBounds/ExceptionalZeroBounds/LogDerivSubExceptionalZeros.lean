@@ -60,7 +60,7 @@ lemma log_deriv_sub_exceptional_zeros {c₁ : ℝ} (hc₁ : 0 < c₁) {q : ℕ} 
       3 * K / (c₁ * Real.log 2) * Real.log ((q : ℝ) * (|s.im| + 2)) ^ 2 + 120 / 11 := by
   have hs' : 1 - c₁ / 2 / Real.log ((q : ℝ) * (|s.im| + 2)) ≤ s.re := hs
   have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
-  have hlog2 : (0.6931 : ℝ) < Real.log 2 := by have := Real.log_two_gt_d9; linarith
+  have hlog2 : (0.6931 : ℝ) < Real.log 2 := linarith
   set L := Real.log ((q : ℝ) * (|s.im| + 2)) with hLdef
   have hL2 : Real.log 2 ≤ L :=
     Real.log_le_log (by norm_num) (by nlinarith [abs_nonneg s.im])

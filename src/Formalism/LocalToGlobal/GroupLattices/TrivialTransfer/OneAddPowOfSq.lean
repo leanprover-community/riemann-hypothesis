@@ -97,7 +97,7 @@ theorem unip_pow (I : Ideal R) (g : ℕ) (hg : g.Prime) (hgI : (g : R) ∈ I) (A
       by_cases hmm : m = g ^ s
       · have : N ^ m = 0 := by
           ext a b
-          exact hpow m a b (by have := b.2; omega)
+          exact hpow m a b omega
         rw [this]; simp
       · have hd : g ∣ (g ^ s).choose m := hg.dvd_choose_pow hm0 hmm
         obtain ⟨c, hc⟩ := hd

@@ -102,7 +102,7 @@ theorem levRat_of [IsDiscreteValuationRing O] (W : LocWach PD LL O v n) (hR : To
       (r.map (algebraMap O hB.F)).natDegree < (PD.p - 1) * PD.p ^ s := by
     intro r hr
     have hNpos : 0 < (PD.p - 1) * PD.p ^ s :=
-      Nat.mul_pos (by have := PD.hp.two_le; omega) (pow_pos PD.hp.pos _)
+      Nat.mul_pos omega (pow_pos PD.hp.pos _)
     refine lt_of_le_of_lt Polynomial.natDegree_map_le ?_
     by_cases h0 : r = 0
     · rw [h0, Polynomial.natDegree_zero]; exact hNpos
@@ -117,7 +117,7 @@ theorem levRat_of [IsDiscreteValuationRing O] (W : LocWach PD LL O v n) (hR : To
         Polynomial.eval_map, ← Polynomial.aeval_def, ← Polynomial.aeval_def, ← hg ζ, ← hdv ζ, hc ζ, sub_self]
   have hne : Nonempty (Rs hB.F PD.p s) := by
     rw [← Fintype.card_pos_iff, card_Rs hB]
-    exact Nat.mul_pos (by have := PD.hp.two_le; omega) (pow_pos PD.hp.pos _)
+    exact Nat.mul_pos omega (pow_pos PD.hp.pos _)
   obtain ⟨ζ₀⟩ := hne
   have hrd : rd ≠ 0 := by
     intro h

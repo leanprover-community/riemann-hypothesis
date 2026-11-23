@@ -138,8 +138,8 @@ theorem isIntegral_half {K : Type} [Field K] [CharZero K] (x : K) (k : ℕ)
 
 variable {R : Ranks} (H : Host R)
 
-theorem q_mod_four : ∃ k : ℕ, H.q = 4 * k + 3 := ⟨H.q / 4, by have := H.hyp.2.2.1; omega⟩
-theorem d_mod_four : ∃ k : ℕ, H.d = 4 * k + 3 := ⟨H.d / 4, by have := H.hyp.2.2.2.1; omega⟩
+theorem q_mod_four : ∃ k : ℕ, H.q = 4 * k + 3 := ⟨H.q / 4, omega⟩
+theorem d_mod_four : ∃ k : ℕ, H.d = 4 * k + 3 := ⟨H.d / 4, omega⟩
 
 theorem isIntegral_halfB : IsIntegral ℤ ((1 + H.sqd) / 2) := by
   obtain ⟨k, hk⟩ := d_mod_four H

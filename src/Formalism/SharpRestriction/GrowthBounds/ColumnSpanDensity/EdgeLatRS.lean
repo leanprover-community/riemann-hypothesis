@@ -128,7 +128,7 @@ theorem edgeLat_RS (e : Edge R.W R.Qq (m + 1)) (he : IsEdge p n' 1 e) :
         colSpan R.O (gs s * lb_D (m + 1) 1 (algebraMap R.O R.Kf R.w) * lb_D (m + 1) 1 (algebraMap R.O R.Kf R.w))) := by
   have hfrW : IsFractionRing R.W R.Qq := R.std.1.frac_alt
   obtain ⟨g, hg, hsrc, htgt⟩ := lc_main p n' 1 (m + 1) R.std.1.p_unif R.std.1.res_card R.std.1.prime.two_le
-    (by have := R.std.1.two_le; omega) e he
+    omega e he
   unfold lb_D
   set c : R.Kf := algebraMap R.O R.Kf R.w with hc
   have hw : c ≠ 0 := R.w_ne

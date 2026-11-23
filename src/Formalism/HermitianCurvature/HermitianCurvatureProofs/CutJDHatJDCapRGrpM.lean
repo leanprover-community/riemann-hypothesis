@@ -59,7 +59,7 @@ def rowV (z : Fin (2 * r + k + 1) → ℂ) (g : Q.Mx k r) (J : Fin (r + k) → F
   fun q =>
     if h : p.val < r then herm (Hpk k r) (g *ᵥ bvec q) (bvec (eI k r ⟨p.val, h⟩))
     else if h2 : p.val = r then herm (Hpk k r) (g *ᵥ bvec q) z
-    else if q = J ⟨p.val - r - 1, by have := p.isLt; omega⟩ then 1 else 0
+    else if q = J ⟨p.val - r - 1, omega⟩ then 1 else 0
 
 def alJ (z : Fin (2 * r + k + 1) → ℂ) (g : Q.Mx k r) (J : Fin (r + k) → Fin (2 * r + k + 1)) : ℂ :=
   (Matrix.of fun p q => rowV k r z g J p q).det

@@ -199,7 +199,7 @@ theorem exponent_bound_peel_one_row (hD : BranchingBoundLastGradedOneRow) (l n :
   rw [hres] at hμ ⊢
   refine peelBoundLast hD l n (lam n) (lam 0) (res n lam) (res (n + 1) ξ) hl
     (restriction_antitone n lam fun a b hab hb => ha a b hab (by omega))
-    (fun b => ⟨ha b.val n (le_of_lt b.isLt) (by omega), ha 0 b.val (Nat.zero_le _) (by have := b.isLt; omega)⟩)
+    (fun b => ⟨ha b.val n (le_of_lt b.isLt) (by omega), ha 0 b.val (Nat.zero_le _) omega⟩)
     (fun a b hab => hξ hab) I e (fun μ2 h2 => hE μ2 ?_) μ hμ
   rw [depth2Levi] at h2
   exact h2
@@ -229,7 +229,7 @@ theorem blockStep : BlockStep := by
   have hres := restriction_eq_block_weight n t lam hc
   have hanti : Antitone (res n lam) := restriction_antitone n lam fun a b hab hb => ha a b hab (by omega)
   have hb : ∀ b : Fin n, lam n ≤ res n lam b ∧ res n lam b ≤ lam 0 := fun b =>
-    ⟨ha b.val n (le_of_lt b.isLt) (by omega), ha 0 b.val (Nat.zero_le _) (by have := b.isLt; omega)⟩
+    ⟨ha b.val n (le_of_lt b.isLt) (by omega), ha 0 b.val (Nat.zero_le _) omega⟩
   rw [hres] at hμ ⊢
   refine exp_le_of_nonzero_weight_vectors l _ _ μ _ hl fun x hx hne => ?_
   obtain ⟨i, hd, hi⟩ := depth_exists_last_block t n (lam n) (res n lam) hanti (fun b => (hb b).1) μ x hx hne

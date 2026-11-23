@@ -48,14 +48,14 @@ abbrev Mat (k r : ℕ) := Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ
 
 def lam48 (k r : ℕ) (v : Fin (k - 1) → ℝ) (b : Fin (2 * r + 2) → ℝ) : Fin (2 * r + k + 1) → ℝ :=
   fun i => if h : i.val < k - 1 then v ⟨i.val, h⟩
-    else -b ⟨i.val - (k - 1), by have := i.isLt; omega⟩
+    else -b ⟨i.val - (k - 1), omega⟩
 
 def eps48 (k r : ℕ) : Fin (2 * r + k + 1) → Bool :=
   fun i => if i.val < k - 1 then true else decide ((i.val - (k - 1)) % 2 = 0)
 
 def InterlacingCondition (k r : ℕ) (u : Fin k → ℝ) (v : Fin (k - 1) → ℝ) (b : Fin (2 * r + 2) → ℝ) : Prop :=
-  (∀ i : Fin (k - 1), v i < u ⟨i.val, by have := i.isLt; omega⟩ ∧
-      u ⟨i.val + 1, by have := i.isLt; omega⟩ < v i) ∧
+  (∀ i : Fin (k - 1), v i < u ⟨i.val, omega⟩ ∧
+      u ⟨i.val + 1, omega⟩ < v i) ∧
     ∀ h : 0 < k, -b ⟨0, by omega⟩ < u ⟨k - 1, by omega⟩
 
 def HalfIntegralDifference (k r : ℕ) (u : Fin k → ℝ) (v : Fin (k - 1) → ℝ) (b : Fin (2 * r + 2) → ℝ) : Prop :=

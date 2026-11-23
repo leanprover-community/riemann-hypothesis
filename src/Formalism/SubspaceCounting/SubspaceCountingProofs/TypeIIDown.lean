@@ -235,7 +235,7 @@ theorem codimCount (hS : SubspaceCount) {F W : Type} [Field F] [Fintype F] [AddC
     rw [Nat.sub_add_cancel hj] at hs
     exact hs
   · have : IsEmpty {V : Submodule F W // Module.finrank F V + j = n} :=
-      ⟨fun V => hj (by have := V.2; omega)⟩
+      ⟨fun V => hj omega⟩
     rw [Nat.card_of_isEmpty, Formalism.G0.QVandermondeP.gb_eq_zero _ n j (by omega)]
 
 end TypeIIDownP

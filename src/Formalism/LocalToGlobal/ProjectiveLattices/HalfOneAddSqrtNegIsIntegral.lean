@@ -62,7 +62,7 @@ theorem rtE_sq (D : D7) : rtE D ^ 2 = -(D.host.d : 𝓞 D.host.E) := by
 
 theorem half_one_add_sqrt_neg_isIntegral (D : D7) : IsIntegral ℤ ((1 + D.host.sqrtMinusD) / 2) := by
   obtain ⟨m, hm⟩ : ∃ m : ℕ, D.host.d + 1 = 4 * m :=
-    ⟨(D.host.d + 1) / 4, by have := D.host.hyp.2.2.2.1; omega⟩
+    ⟨(D.host.d + 1) / 4, omega⟩
   set c : D.host.E := (1 + D.host.sqrtMinusD) / 2
   have hc : c ^ 2 - c + (m : D.host.E) = 0 := by
     have e : ((D.host.d : ℕ) : D.host.E) + 1 = 4 * (m : D.host.E) := by exact_mod_cast hm

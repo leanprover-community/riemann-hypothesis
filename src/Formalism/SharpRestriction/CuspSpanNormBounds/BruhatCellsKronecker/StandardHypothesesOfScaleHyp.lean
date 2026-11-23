@@ -56,8 +56,8 @@ theorem std_drop {N : ℕ} (f : Fin N → ℝ) (g : ℝ) (hg : 0 ≤ g)
   intro a b hab
   have hlt : a.val < b.val := hab
   obtain ⟨d, hd⟩ : ∃ d, b.val = a.val + d + 1 := ⟨b.val - a.val - 1, by omega⟩
-  have := key d a.val (by have := b.isLt; omega)
-  have eb : b = ⟨a.val + d + 1, by have := b.isLt; omega⟩ := Fin.ext hd
+  have := key d a.val omega
+  have eb : b = ⟨a.val + d + 1, omega⟩ := Fin.ext hd
   rw [eb]
   exact this
 
@@ -90,7 +90,7 @@ theorem std_lamD_node (D : D7) (τ : D.what₂.Tau) (s : Fin (2 * D.R.rS + D.R.k
 
 theorem std_uS (D : D7) (w : D.what₂.Word) (τ : D.what₂.Tau) (i : Fin D.R.k) :
     uS D w τ i = uOne D w τ (i.val + 1) := by
-  have h2 : 1 ≤ i.val + 1 ∧ i.val + 1 ≤ D.R.k := ⟨by omega, by have := i.isLt; omega⟩
+  have h2 : 1 ≤ i.val + 1 ∧ i.val + 1 ≤ D.R.k := ⟨by omega, omega⟩
   unfold uOne
   rw [dite_eq_left h2]
   rfl
@@ -206,7 +206,7 @@ theorem std_cloud_bd (H : Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0) (hCl : 8 
   obtain ⟨hm8, _, _, _, _⟩ := std_sizes H hCl
   rw [std_lamD_cloud D τ s h]
   have hv := d1 τ (s.val + 1) (by omega) (by omega)
-  have hb := h8 τ 1 le_rfl (by have := D.R.two_le_m; omega)
+  have hb := h8 τ 1 le_rfl omega
   have hD := std_Del_pos D
   have hkD : 0 ≤ (D.R.k : ℝ) * (D.s.Del : ℝ) := by positivity
   have h64 : 64 ≤ Cl * (D.R.m : ℝ) := by nlinarith
@@ -219,7 +219,7 @@ theorem std_cloud_bd (H : Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0) (hCl : 8 
   linarith
 
 theorem std_first_node (D : D7) (τ : D.what₂.Tau) :
-    lamD D τ ⟨D.R.k - 1, by have := D.R.m_add_three_le_k; omega⟩ = -bOne D τ 1 := by
+    lamD D τ ⟨D.R.k - 1, omega⟩ = -bOne D τ 1 := by
   rw [std_lamD_node D τ _ (by simp)]
   simp
 
@@ -237,7 +237,7 @@ theorem std_node_bd (H : Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0) (τ : D.wh
     -2 * bOne D τ 1 ≤ lamD D τ s ∧ lamD D τ s ≤ -bOne D τ 1 := by
   obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, h17, _⟩ := H.1
   have ha := (std_anti H τ).antitone
-  have h1 : lamD D τ s ≤ lamD D τ ⟨D.R.k - 1, by have := D.R.m_add_three_le_k; omega⟩ :=
+  have h1 : lamD D τ s ≤ lamD D τ ⟨D.R.k - 1, omega⟩ :=
     ha (Fin.le_def.2 (by simp only; omega))
   have h2 : lamD D τ ⟨2 * D.R.rS + D.R.k, by omega⟩ ≤ lamD D τ s :=
     ha (Fin.le_def.2 (by have := s.isLt; simp only; omega))
@@ -380,7 +380,7 @@ theorem first_node_size_bounds (H : Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0)
     (D.R.k : ℝ) ^ 8 ≤ bOne D τ 1 ∧ bOne D τ 1 ≤ large₂.sc.b ^ (2 : ℝ) / 1 ∧ 2 * bOne D τ 1 ≤ 2 * large₂.sc.b ^ (2 : ℝ) := by
   obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, h16, _⟩ := H.1
   obtain ⟨hm8, hmk, _, _, _⟩ := std_sizes H hCl
-  have h := h16 τ 1 le_rfl (by have := D.R.two_le_m; omega)
+  have h := h16 τ 1 le_rfl omega
   have hk1 : (1 : ℝ) ≤ D.R.k := by linarith
   refine ⟨?_, by simpa using h.2, by linarith [h.2]⟩
   calc (D.R.k : ℝ) ^ 8 = (D.R.k : ℝ) ^ (8 : ℝ) := by norm_cast

@@ -79,7 +79,7 @@ theorem pf_last : pf (r := r) (k := k) (Fin.last r) = zI := by
   rw [dite_eq_right (by simp)]
 
 theorem pf_of_lt {a b : Fin (r + 1)} (h : a < b) :
-    pf (k := k) a = Sum.inr (Sum.inr (Fin.rev ⟨a, by have := b.isLt; omega⟩)) := by
+    pf (k := k) a = Sum.inr (Sum.inr (Fin.rev ⟨a, omega⟩)) := by
   unfold pf
   rw [dite_eq_left (by omega)]
 

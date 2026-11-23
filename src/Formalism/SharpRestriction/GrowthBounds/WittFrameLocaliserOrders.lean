@@ -629,7 +629,7 @@ theorem localiser_vanishing_of_distinct_planes (D : Formalism.BasicNotions.D7) (
   have hge : ∀ (j : ℕ) (l : Fin r), s0 ≤ Fr.fr (j : ℤ) l.val := fun j l =>
     le_trans hs0le (le_trans (frame_first_entry_monotone hV (by omega) j) (frame_entries_monotone hV j 0 l.val (Nat.zero_le _) l.2))
   have hlez : ∀ (j : ℕ) (l : Fin r), Fr.fr (j : ℤ) l.val ≤ zF Fr (j : ℤ) := fun j l =>
-    frame_entries_monotone hV j l.val (r - 1) (by have := l.2; omega) (by omega)
+    frame_entries_monotone hV j l.val (r - 1) omega (by omega)
   have hzz : ∀ j : ℕ, zF Fr (j : ℤ) ≤ zF Fr ((j : ℤ) + 1) := fun j => by
     have h1 := hV.2.2.2.1 (j : ℤ)
     have h2 := frame_entries_monotone hV ((j : ℤ) + 1) 0 (r - 1) (Nat.zero_le _) (by omega)
@@ -3385,7 +3385,7 @@ theorem pairing_order_of_planes_and_rows (D : Formalism.BasicNotions.D7) (h1 : R
   have hn : Even n' := hH.2.2.2.2
   have hrk : r ≤ k := hH.2.2.1
   have hp : 2 ≤ p := omega
-  have hA : RowsEvenTopsBefore Fr (s.val : ℤ) := h2 n' r Fr L₁ N₁ hV hn (by have := hH.2.1; omega) (s.val : ℤ)
+  have hA : RowsEvenTopsBefore Fr (s.val : ℤ) := h2 n' r Fr L₁ N₁ hV hn omega (s.val : ℤ)
   have hQ1 : 1 ≤ 2 * Q := by
     have h3 : 1 ≤ Qj Fr p 0 := Nat.one_le_pow _ _ (by omega)
     have h4 := hQ.1 0
@@ -3668,7 +3668,7 @@ def ExplicitMinorsOrderRemaining : Prop :=
 theorem plane_pairings_of_first_key (h : ExplicitMinorsOrderRemaining) : RowsPairOnPlanes := by
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV g g' hg hg' s hs
   have hn : Even n' := hH.2.2.2.2
-  have hA : RowsEvenTopsBefore Fr (s.val : ℤ) := window_holds_even_tops n' r Fr L₁ N₁ hV hn (by have := hH.2.1; omega) (s.val : ℤ)
+  have hA : RowsEvenTopsBefore Fr (s.val : ℤ) := window_holds_even_tops n' r Fr L₁ N₁ hV hn omega (s.val : ℤ)
   refine ⟨fun hE c hc => h p n' r k O S hO hH Fr L₁ N₁ hV g g' hg hg' s hs hE c hc, fun hE l => ?_⟩
   have hEz : ¬ Even (s.val : ℤ) := fun h => hE ((Int.even_coe_nat _).mp h)
   have e := residue_zero_mem_order_one S _ (third_key_residue_eq_zero S Fr hH.2.2.1 hg hg' hn _ hEz hA l)
@@ -3836,7 +3836,7 @@ end V
 theorem first_key_plane_order : ExplicitMinorsOrderRemaining := by
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV g g' hg hg' s hs hse c hc
   exact explicit_minor_order_positive S hH.2.2.1 hH.2.2.2.2 Fr g hg hg' s hse
-    (window_holds_even_tops n' r Fr L₁ N₁ hV hH.2.2.2.2 (by have := hH.2.1; omega) (s.val : ℤ)) c
+    (window_holds_even_tops n' r Fr L₁ N₁ hV hH.2.2.2.2 omega (s.val : ℤ)) c
 
 theorem keys_vanish_modulo_uniformiser (D : Formalism.BasicNotions.D7) : PointsLemma D := keys_of_explicit_minors D first_key_plane_order
 

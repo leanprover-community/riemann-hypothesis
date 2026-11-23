@@ -321,7 +321,7 @@ theorem reduce (hA : HasStableRangeOne A) : ∀ n : ℕ, ∀ X : GL (Fin k) A,
     intro X hX
     have hX1 : X = 1 := Units.ext (Matrix.ext fun i j => by
       rw [Units.val_one]
-      exact hX i j (Or.inl (by have := i.isLt; omega)))
+      exact hX i j (Or.inl omega))
     rw [hX1]
     exact Subgroup.one_mem _
   | succ n ih =>

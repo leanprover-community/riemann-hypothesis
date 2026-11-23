@@ -52,7 +52,7 @@ theorem tailT_glueT (t : ℕ) (ht : t ≤ r) (be : ℤ) (τ : Fin (K + t) → �
   simp
 
 theorem tailT_apply (t : ℕ) (ht : t ≤ r) (la : Fin (r + K) → ℤ) (l : Fin (K + t)) :
-    tailT t la l = la ⟨(r - t) + l.val, by have := l.2; omega⟩ := by
+    tailT t la l = la ⟨(r - t) + l.val, omega⟩ := by
   unfold tailT; rw [dif_pos]
 
 section

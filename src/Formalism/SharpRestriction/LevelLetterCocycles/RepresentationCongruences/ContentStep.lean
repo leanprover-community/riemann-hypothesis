@@ -253,7 +253,7 @@ theorem content_step (W : LocWach PD LL O v n) (hcase : Formalism.MainNotions.Li
     rw [PowerSeries.isUnit_iff_constantCoeff, map_sub, map_one, map_mul, map_pow, hccq]
     apply IsLocalRing.isUnit_one_sub_self_of_mem_nonunits
     rw [← IsLocalRing.mem_maximalIdeal]
-    exact Ideal.mul_mem_left _ _ (Ideal.pow_mem_of_mem _ hlm _ (by have := PD.hp.two_le; omega))
+    exact Ideal.mul_mem_left _ _ (Ideal.pow_mem_of_mem _ hlm _ omega)
   have hPd : IsDist (ps W 1 c) := GS.dist_ps (GS.ringData_of_caseA_of_p9 W hcase hP9) 1 (GS.dist_φpow (GS.ringData_of_caseA_of_p9 W hcase hP9) 1) c
   have hPw : 1 ≤ wdeg (ps W 1 c) := by
     unfold wdeg

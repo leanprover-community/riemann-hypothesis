@@ -183,7 +183,7 @@ theorem mulVec_basisVec_of_identity_column {N : ℕ} (M : Matrix (Fin N) (Fin N)
   · have h0 : Loc.eN E N i = 0 := by
       funext l
       unfold Loc.eN
-      rw [if_neg (by have := l.2; omega)]
+      rw [if_neg omega]
       rfl
     rw [h0, Matrix.mulVec_zero]
 
@@ -272,7 +272,7 @@ theorem residueR1_lifts_to_stabilizer (hq0 : (q : E) ≠ 0) {n c : ℕ}
     · have h0 : Loc.eN E (n + c) (n + i) = 0 := by
         funext l
         unfold Loc.eN
-        rw [if_neg (by have := l.2; omega)]
+        rw [if_neg omega]
         rfl
       rw [h0, map_zero, sub_zero]
       exact zero_mem _

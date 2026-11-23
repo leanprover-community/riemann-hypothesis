@@ -199,7 +199,7 @@ theorem Lm_fil_sub {y y' : J k r → ℝ} {p : ℕ} (h : ∀ j, ht j < p → y j
     · rw [coordinate_first_eq h (by simp only [hC]; have := a.isLt; omega)]
     · have e : a = b := le_antisymm (not_lt.1 h2) (not_lt.1 h1)
       subst e
-      rw [coordinate_second_eq h (by have := a.isLt; omega)]
+      rw [coordinate_second_eq h omega]
   · simp only [cB]
     rw [coordinate_first_eq h (c := Sum.inr (Sum.inl (b, c))) (by simp only [hC]; have := b.isLt; omega)]
   · by_cases hab : b < a

@@ -56,9 +56,9 @@ section Idx
 
 variable {N n : ℕ} (hN : N = n + 1)
 
-def iC (i : Fin n) : Fin N := ⟨i.1, by have := i.2; omega⟩
+def iC (i : Fin n) : Fin N := ⟨i.1, omega⟩
 
-def iS (i : Fin n) : Fin N := ⟨i.1 + 1, by have := i.2; omega⟩
+def iS (i : Fin n) : Fin N := ⟨i.1 + 1, omega⟩
 
 def iL : Fin N := ⟨n, by omega⟩
 
@@ -142,11 +142,11 @@ variable (K : Type) [Field K] {N n : ℕ} (hN : N = n + 1) (lam : DomWeight N) (
 
 def zMinor (i : Fin n) : MvPolynomial (Fin N × Fin N) K :=
   Formalism.GradedWeylDivisibility.initMinor K (s := i.val + 1)
-    (fun p : Fin (i.val + 1) => if h : p.val < i.val then (⟨p.val, by have := i.2; omega⟩ : Fin N) else iL hN)
-    (by have := i.2; omega)
+    (fun p : Fin (i.val + 1) => if h : p.val < i.val then (⟨p.val, omega⟩ : Fin N) else iL hN)
+    omega
 
 def xiBr : MvPolynomial (Fin N × Fin N) K :=
-  ∏ i : Fin n, Formalism.GradedWeylDivisibility.lpMinor K (i.val + 1) (by have := i.2; omega) (by have := i.2; omega) ^ (aBr hN lam sg i).toNat *
+  ∏ i : Fin n, Formalism.GradedWeylDivisibility.lpMinor K (i.val + 1) omega omega ^ (aBr hN lam sg i).toNat *
     zMinor K hN i ^ (bBr hN lam sg i).toNat
 
 def kapBr : K := fockB (xiBr K hN lam sg) (xiBr K hN lam sg) / fockB (extremal K N lam) (extremal K N lam)
@@ -1160,7 +1160,7 @@ def ftY {n : ℕ} (P : rowSG Pr sel mu) (η : Sp X.E n →ₗ[X.E] X.E) (y' : Sp
       then ((qOf P.1 : X.K) ^ (cst.M * n))⁻¹ * cst.psi P ((epsSg : X.E) * η y') else 0)
 
 def prXp (E : Type) [Field E] (R : Ranks) : Sp E (R.N R.m) →ₗ[E] Sp E ((R.N R.m - 1) + 0) :=
-  LinearMap.funLeft E E fun i : Fin ((R.N R.m - 1) + 0) => (⟨i.1, by have := i.2; omega⟩ : Fin (R.N R.m))
+  LinearMap.funLeft E E fun i : Fin ((R.N R.m - 1) + 0) => (⟨i.1, omega⟩ : Fin (R.N R.m))
 
 def XiCpl2 {u : Pr.Word} (m2 : ℕ) (p : ChPt (R := R) sel mu u (m2 + 1)) (Y : Set (Sp X.E (R.N (m2 + 1)))) (d : RowPt Pr R sel mu)
     (x : HomE X.E (R.N (m2 + 1)) (R.N R.m)) : X.K :=

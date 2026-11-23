@@ -252,9 +252,9 @@ theorem col_setup (D : D7) (u : D.what₂.Word) (Cn x b L b' Sc eta K : ℝ) (hK
       (∀ τ, τ ∉ tops D → |(lam τ (Fin.last (κ + 1)) : ℝ)| ≤ (2 * Cn + 4) * (K * Sc)) := by
   obtain ⟨hL1, hCn, h4, hbb⟩ := nums_basic hN
   have hSc : 1 ≤ Sc := hN.2.2.2.2.2.2.1
-  obtain ⟨κ, hκ⟩ : ∃ κ, D.R.k = κ + 1 + 1 := ⟨D.R.k - 2, by have := D.R.m_add_three_le_k; omega⟩
+  obtain ⟨κ, hκ⟩ : ∃ κ, D.R.k = κ + 1 + 1 := ⟨D.R.k - 2, omega⟩
   have hint : ∀ τ (i : Fin (κ + 1 + 1)), ∃ z : ℤ, lamCol D u τ i = z :=
-    fun τ i => (hW τ).1 i (by have := i.2; omega)
+    fun τ i => (hW τ).1 i omega
   choose lam hlam using hint
   have hl : ∀ τ (i : Fin (κ + 1 + 1)), (lamCol D u τ i : ℝ) = (lam τ i : ℝ) := fun τ i => by
     rw [hlam τ i]; norm_cast
@@ -265,7 +265,7 @@ theorem col_setup (D : D7) (u : D.what₂.Word) (Cn x b L b' Sc eta K : ℝ) (hK
     rw [← hl τ 0]; rfl
   have hanti : ∀ τ, Antitone (lam τ) := fun τ => by
     refine Fin.antitone_iff_succ_le.2 fun i => ?_
-    have h1 := lamCol_stepB D u τ i (by have := i.2; omega)
+    have h1 := lamCol_stepB D u τ i omega
     have h2 := hlam τ i.succ
     have h3 := hlam τ i.castSucc
     rw [Fin.val_succ] at h2
@@ -321,7 +321,7 @@ theorem col_setup (D : D7) (u : D.what₂.Word) (Cn x b L b' Sc eta K : ℝ) (hK
     · nlinarith [mul_le_mul_of_nonneg_left hfl hκ0]
   have hnt : ∀ τ, τ ∉ tops D → ∀ i : Fin (κ + 1 + 1), 0 ≤ (lam τ i : ℝ) ∧ (lam τ i : ℝ) ≤ Cn * Sc := by
     intro τ hτ i
-    have := (hW τ).2.2.1 (fun h => hτ ((mem_tops D τ).2 h)) i (by have := i.2; omega)
+    have := (hW τ).2.2.1 (fun h => hτ ((mem_tops D τ).2 h)) i omega
     rwa [hl τ i] at this
   have hCS : Cn * Sc ≤ K * Sc := mul_le_mul_of_nonneg_right hKC (by linarith)
   have hKS0 : 0 ≤ K * Sc := by positivity

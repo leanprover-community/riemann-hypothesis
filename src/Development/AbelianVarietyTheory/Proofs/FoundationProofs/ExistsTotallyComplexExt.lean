@@ -63,7 +63,6 @@ theorem log_d_le (D : D7) : Real.log D.host.d ≤ 2 * Real.log D.host.rdE := by
   have := Real.log_le_log (by linarith) h5
   rwa [Real.log_pow, Nat.cast_ofNat] at this
 
-section Places
 
 open Formalism.DivisionValues (vw lw)
 open Formalism.PairingDivisionLocalBalance (Pl)
@@ -71,6 +70,5 @@ open IsDedekindDomain
 
 variable {K : Type} [Field K] [NumberField K]
 
-end Places
 
 end GlobalTheory.NormSum.Compare

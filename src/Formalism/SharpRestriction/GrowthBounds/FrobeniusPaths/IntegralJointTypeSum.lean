@@ -438,7 +438,7 @@ theorem path_of_iso (D : Formalism.BasicNotions.D7) (h14 : JointComponentsPaths 
 def dcdPl (r K : ℕ) : Fin (r + K) → Option (Fin r) := fun c => if h : c.val < r then some ⟨c.val, h⟩ else none
 
 def dcdTan (r K : ℕ) : Fin (r + K) → Option (Fin K) := fun c =>
-  if h : r ≤ c.val then some ⟨c.val - r, by have := c.isLt; omega⟩ else none
+  if h : r ≤ c.val then some ⟨c.val - r, omega⟩ else none
 
 lemma dcdPl_1 (r K : ℕ) (a : Fin r) : dcdPl r K (Fin.castAdd K a) = some a := by
   unfold dcdPl

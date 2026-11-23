@@ -45,7 +45,7 @@ variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what
 def lamA (P : Parts X u u') (a : Fin P.S.G.r) : ℝ := ((P.S.g : ℝ) / (2 * Real.pi)) ^ (2 * (P.S.G.r - a.val))
 
 def phiQ (P : Parts X u u') (hr : P.S.G.r = D.R.rS) (cv : Fin (D.R.rS + 1) → ℂ) : (Fin P.S.G.r → ℂ) × ℂ :=
-  (fun a => ((lamA P a : ℝ) : ℂ) * cv ⟨a.val, by have := a.2; omega⟩, cv ⟨D.R.rS, by omega⟩)
+  (fun a => ((lamA P a : ℝ) : ℂ) * cv ⟨a.val, omega⟩, cv ⟨D.R.rS, by omega⟩)
 
 def K0 (P : Parts X u u') : ℝ :=
   2 ^ (P.S.G.r + 1) * ∏ a : Fin P.S.G.r, (lamA P a ^ (2 * (Formalism.QuantumDeterminants.Mdim P.S.G.k P.S.G.r a - 1)))⁻¹

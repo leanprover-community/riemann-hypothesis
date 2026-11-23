@@ -51,9 +51,9 @@ def unipotentBlockMatrix (k r : ℕ) (Bm : Matrix (Fin r) (Fin (k + 1)) ℂ) (S 
     (if h : i.val < r ∧ r ≤ j.val ∧ j.val ≤ r + k then
       Bm ⟨i.val, h.1⟩ ⟨j.val - r, by omega⟩ else 0) +
     (if h : i.val < r ∧ r + k < j.val then
-      cmOf k r Bm S ⟨i.val, h.1⟩ ⟨2 * r + k - j.val, by have := j.isLt; omega⟩ else 0) +
+      cmOf k r Bm S ⟨i.val, h.1⟩ ⟨2 * r + k - j.val, omega⟩ else 0) +
     (if h : r ≤ i.val ∧ i.val ≤ r + k ∧ r + k < j.val then
-      -(hW k ⟨i.val - r, by omega⟩) * star (Bm ⟨2 * r + k - j.val, by have := j.isLt; omega⟩ ⟨i.val - r, by omega⟩)
+      -(hW k ⟨i.val - r, by omega⟩) * star (Bm ⟨2 * r + k - j.val, omega⟩ ⟨i.val - r, by omega⟩)
       else 0)
 
 end PI.UnitaryGroupMassFormula.DLm

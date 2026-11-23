@@ -133,9 +133,9 @@ theorem sum_int {ι : Type*} (s : Finset ι) (f : ι → ℝ) (h : ∀ i ∈ s, 
 theorem sdec (P : M.Par) (hOK : P.OK) :
     SDec (fun j : Fin P.k => ((P.u ((j : ℕ) + 1) : ℝ) : ℂ) - (P.k : ℂ) / 2 + 1 / 2) := by
   intro a b hab
-  obtain ⟨na, hna⟩ := u_int P hOK ((a : ℕ) + 1) (by omega) (by have := a.isLt; omega)
-  obtain ⟨nb, hnb⟩ := u_int P hOK ((b : ℕ) + 1) (by omega) (by have := b.isLt; omega)
-  have hm := u_mono P hOK ((a : ℕ) + 1) (by omega) ((b : ℕ) - a) (by have := b.isLt; omega)
+  obtain ⟨na, hna⟩ := u_int P hOK ((a : ℕ) + 1) (by omega) omega
+  obtain ⟨nb, hnb⟩ := u_int P hOK ((b : ℕ) + 1) (by omega) omega
+  have hm := u_mono P hOK ((a : ℕ) + 1) (by omega) ((b : ℕ) - a) omega
   rw [show (a : ℕ) + 1 + ((b : ℕ) - a) = (b : ℕ) + 1 by omega] at hm
   have hba : (1 : ℝ) ≤ (((b : ℕ) - (a : ℕ) : ℕ) : ℝ) := by
     have : 1 ≤ (b : ℕ) - (a : ℕ) := by omega

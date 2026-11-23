@@ -170,7 +170,7 @@ theorem reorder (R : Type) [CommRing R] (ν : YoungDiagram) (N : ℕ) {K : ℕ} 
   · unfold bideterminant
     rw [← Fintype.prod_subtype_mul_prod_subtype (fun k => 0 < sz k)]
     have h1 : ∏ k : {k // ¬ 0 < sz k}, initMinor R (I k.1) (hsz k.1) = 1 :=
-      Finset.prod_eq_one fun k _ => initMinor_zero R (by have := k.2; omega) _ _
+      Finset.prod_eq_one fun k _ => initMinor_zero R omega _ _
     rw [h1, mul_one]
     exact (Fintype.prod_equiv e.symm _ _
       (fun c => initMinor_cast R (hJ c) (I (e.symm c).1) (hsz _) (hsz0 ν c))).symm

@@ -98,7 +98,7 @@ theorem rld_coarse_eq {t s : ℕ} (ht : 0 < t) (hn : n = r + s * t) :
   simp only [coarse, blkIdx, Formalism.L2.DIV.blkOf]
   split_ifs with hi
   · rfl
-  · rw [blkIdx_replicate ht s (i.val - r) (by have := i.isLt; omega)]
+  · rw [blkIdx_replicate ht s (i.val - r) omega]
 
 theorem rld_blockUT_eq {t s : ℕ} (ht : 0 < t) (hn : n = r + s * t) :
     blockUT n κ r (List.replicate s t) = Formalism.L2.DIV.blockTri (Formalism.L2.DIV.blkOf r t) := by

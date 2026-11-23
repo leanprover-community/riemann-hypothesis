@@ -69,7 +69,7 @@ theorem conj_be : starRingEnd ℂ (be D) = -be D := by
   simp [be, Complex.conj_ofReal]
 
 theorem d_mod : ∃ k : ℤ, (D.host.d : ℤ) = 4 * k + 3 :=
-  ⟨(D.host.d : ℤ) / 4, by have := D.host.hyp.2.2.2.1; omega⟩
+  ⟨(D.host.d : ℤ) / 4, omega⟩
 
 theorem phi_b : D.host.φ₀ (bb D) = be D := D.host.φ₀_mem
 

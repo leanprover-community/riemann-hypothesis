@@ -314,7 +314,7 @@ theorem shape_a_real_holds : ShapeAReal := by
     exact ⟨h1.1, by omega⟩
   · intro a ha
     rw [Int.toNat_of_nonneg hE]
-    have h1 := weights_antitone_le P W hW τ a (P.Nr - 1) (by have := a.isLt; omega) (by omega)
+    have h1 := weights_antitone_le P W hW τ a (P.Nr - 1) omega (by omega)
     have h2 := weights_antitone_le P W hW τ (kc P) a ha a.isLt
     exact ⟨h1, by omega⟩
   · rw [toNat_cast_real_of_nonneg _ hS]
@@ -582,7 +582,7 @@ theorem depth_of_linkage_holds : DepthOfLink := by
   have hshape : WorkedExample.ShapeAt (kc P) (W.j τ) P.t (W.q τ) D (inc τ) := by
     refine ⟨fun a => ?_, hsum, fun a h1 h2 => ?_⟩
     · rw [hU]
-      exact weight_nonneg' P W τ a (by have := a.2; omega)
+      exact weight_nonneg' P W τ a omega
     · rw [hU, hbot]
       exact weight_on_block_eq_bot_add P hH W hW τ a h1 h2
   have hDB := WorkedExample.orientation_lattice_holds E σ (kc P) (W.j τ) P.t (W.q τ) l (h0 P) O' F L' I Wl u c D cst ep

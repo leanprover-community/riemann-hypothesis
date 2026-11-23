@@ -119,7 +119,7 @@ theorem integral_pair_of_shape (Zd : Formalism.L2.SG.TermLoc.LocDat D) {A B : Pa
   open Formalism.L2.SG.Pf.FibD in
   refine ⟨fun c b hcb x hx => ?_, fun c b hcb x hx => ?_, fun P hP c b => ?_⟩
   · rw [Matrix.conjTranspose_apply, PI.UnitaryGroupMassFormula.CntFormula.star_eq_conjF]
-    exact mem_aaF hcb hx (ddPow_conj Zd (by have := b.isLt; omega) (hES b c hcb).1)
+    exact mem_aaF hcb hx (ddPow_conj Zd omega (hES b c hcb).1)
   · rw [sg_entry]
     exact mem_aaF hcb hx (hES b c hcb).2.1
   · rcases lt_trichotomy c b with h | h | h

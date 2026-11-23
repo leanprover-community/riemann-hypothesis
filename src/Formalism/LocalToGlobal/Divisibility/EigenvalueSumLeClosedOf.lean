@@ -706,7 +706,7 @@ theorem nf_logrd (hS : SizesAt L) (hB : BigX L) :
   have hqT : Real.log D.host.q ≤ T := hq2.trans (Real.rpow_le_rpow_of_exponent_le hx1 (by unfold szTh; linarith))
   have hdT : Real.log D.host.d ≤ T := hd2.trans (Real.rpow_le_rpow_of_exponent_le hx1 (by unfold szTh; linarith))
   have hlx := log_le_half hx1 heps
-  have hl2 : Real.log 2 ≤ 1 := by have := Real.log_two_lt_d9; linarith
+  have hl2 : Real.log 2 ≤ 1 := linarith
   rw [L_eq_TT L]
   have hk : 6 / L.sc.eps * T + T + 1 ≤ T * T := by nlinarith
   have e3 : 3 * (2 / L.sc.eps * T) = 6 / L.sc.eps * T := by ring
@@ -730,7 +730,7 @@ theorem nf_Om (hS : SizesAt L) (hB : BigX L) : |(ofRecord D L Del h0).logOm| ≤
     rw [div_div_eq_mul_div, Real.log_div (by positivity) hr0.ne', Real.log_mul Real.pi_pos.ne' (by norm_num)]
   rw [hLa, hOm]
   have hg1 := Real.eulerMascheroniConstant_lt_two_thirds
-  have hg0 : 0 ≤ Real.eulerMascheroniConstant := by have := Real.one_half_lt_eulerMascheroniConstant; linarith
+  have hg0 : 0 ≤ Real.eulerMascheroniConstant := linarith
   have hpi : Real.log Real.pi ≤ 2 * Real.log 2 := by
     rw [← Real.log_rpow (by norm_num : (0:ℝ) < 2)]
     exact Real.log_le_log Real.pi_pos (by have := Real.pi_lt_four; norm_num; linarith)
@@ -1633,7 +1633,7 @@ theorem Lp_le_La (P5 : ParameterChoice' D L) (hS : SizesAt L) (hx : 9 ≤ L.sc.x
   rw [E1, E2]
   have lx : 0 ≤ Real.log L.sc.x := Real.log_nonneg hx1.le
   have lr : 0 ≤ Real.log D.host.rdE := Real.log_nonneg hr
-  have l2 : Real.log 2 < 1 := by have := Real.log_two_lt_d9; linarith
+  have l2 : Real.log 2 < 1 := linarith
   have e1 : P5.CYL * L.sc.L ≤ P5.CYL * (Real.log L.sc.x + L.sc.L + Real.log D.host.rdE) :=
     mul_le_mul_of_nonneg_left (by linarith) hY.le
   have e2 : c * Real.log L.sc.x ≤ c * (Real.log L.sc.x + L.sc.L + Real.log D.host.rdE) :=

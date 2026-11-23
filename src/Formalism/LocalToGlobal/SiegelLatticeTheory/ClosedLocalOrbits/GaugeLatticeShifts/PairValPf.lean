@@ -481,11 +481,11 @@ theorem simple_eq (p : Point K N) {n m : Matrix (Fin N) (Fin N) K} (hn : IsLoUni
   · intro a ha
     obtain ⟨-, hs⟩ := Finset.mem_filter.mp ha
     obtain ⟨hs', -⟩ := same_phi p hs
-    exact Finset.mem_filter.mpr ⟨Finset.mem_range.mpr (by have := hs'.1; omega), hs'⟩
+    exact Finset.mem_filter.mpr ⟨Finset.mem_range.mpr omega, hs'⟩
   · intro a ha
     obtain ⟨-, hs⟩ := Finset.mem_filter.mp ha
     obtain ⟨hs', -⟩ := same_phi p hs
-    exact Finset.mem_filter.mpr ⟨Finset.mem_range.mpr (by have := hs'.1; omega), hs'⟩
+    exact Finset.mem_filter.mpr ⟨Finset.mem_range.mpr omega, hs'⟩
   · intro a ha
     exact (same_phi p (Finset.mem_filter.mp ha).2).2
   · intro a ha

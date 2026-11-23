@@ -272,15 +272,15 @@ theorem det_catM_block {A : Type*} [CommRing A] {n : ℕ} (h : ℕ) (hh : h ≤ 
     (z : Fin n → ℕ → A) (hz : ∀ (a : Fin n) (i : ℕ), a.val < n - h → i < h → z a i = 0) :
     (catM h W z).det =
       (Matrix.of fun p q : Fin (n - h) => W (Fin.castLE (Nat.sub_le n h) p) (Fin.castLE (Nat.sub_le n h) q)).det *
-        (Matrix.of fun r s : Fin h => z ⟨n - h + r.val, by have := r.isLt; omega⟩ s.val).det := by
+        (Matrix.of fun r s : Fin h => z ⟨n - h + r.val, omega⟩ s.val).det := by
   let e : Fin (n - h) ⊕ Fin h ≃ Fin n := finSumFinEquiv.trans (finCongr (by omega))
   have e1 : ∀ i : Fin (n - h), e (Sum.inl i) = Fin.castLE (Nat.sub_le n h) i := fun i => Fin.ext (by simp [e])
-  have e2 : ∀ r : Fin h, e (Sum.inr r) = ⟨n - h + r.val, by have := r.isLt; omega⟩ := fun r => Fin.ext (by simp [e])
+  have e2 : ∀ r : Fin h, e (Sum.inr r) = ⟨n - h + r.val, omega⟩ := fun r => Fin.ext (by simp [e])
   rw [← Matrix.det_submatrix_equiv_self e]
   have hb : (catM h W z).submatrix e e = Matrix.fromBlocks
       (Matrix.of fun p q : Fin (n - h) => W (Fin.castLE (Nat.sub_le n h) p) (Fin.castLE (Nat.sub_le n h) q)) 0
       (Matrix.of fun (r : Fin h) (q : Fin (n - h)) => W (e (Sum.inr r)) (Fin.castLE (Nat.sub_le n h) q))
-      (Matrix.of fun r s : Fin h => z ⟨n - h + r.val, by have := r.isLt; omega⟩ s.val) := by
+      (Matrix.of fun r s : Fin h => z ⟨n - h + r.val, omega⟩ s.val) := by
     ext a t
     rcases a with a | a <;> rcases t with t | t
     · rw [Matrix.submatrix_apply, Matrix.fromBlocks_apply₁₁, e1, e1, Matrix.of_apply]
@@ -325,7 +325,7 @@ theorem det_catM_inv {A : Type*} [CommRing A] {n : ℕ} (h : ℕ) (hh : h ≤ n)
   have key : ∀ Y : Matrix (Fin n) (Fin n) A, (catM h Y x).det = Xm.det *
       ((Matrix.of fun p q : Fin (n - h) =>
         (Z * Y) (Fin.castLE (Nat.sub_le n h) p) (Fin.castLE (Nat.sub_le n h) q)).det *
-        (Matrix.of fun r s : Fin h => mulC Z x ⟨n - h + r.val, by have := r.isLt; omega⟩ s.val).det) := by
+        (Matrix.of fun r s : Fin h => mulC Z x ⟨n - h + r.val, omega⟩ s.val).det) := by
     intro Y
     have hc : catM h Y x = Xm * catM h (Z * Y) (mulC Z x) := by
       rw [mul_catM, ← Matrix.mul_assoc, hXZ, Matrix.one_mul, ← mulC_mul, hXZ, mulC_one']

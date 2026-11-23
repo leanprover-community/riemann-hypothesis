@@ -136,7 +136,7 @@ def LeftActionRuleAtBasePoint : Prop :=
     γ ∈ B.GV k (r - (j + 1)) → x0 k r j hj Z τ γ ∈ Dm →
     (∀ a : Fin j → ℂ, Ψ (nL k r j hj a * x0 k r j hj Z τ γ) = psi k r z cStd (nL k r j hj a) • Ψ (x0 k r j hj Z τ γ)) →
     ∀ b : Fin j, Q.EH k r (eI k r ⟨j, by omega⟩) (eI k r ⟨b, by omega⟩) Ψ (x0 k r j hj Z τ γ) =
-      (τ * Z⁻¹ b ⟨j - 1, by have := b.isLt; omega⟩) • Ψ (x0 k r j hj Z τ γ)
+      (τ * Z⁻¹ b ⟨j - 1, omega⟩) • Ψ (x0 k r j hj Z τ γ)
 
 def TorusDirectionAtBasePoint : Prop :=
   ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] (k r j : ℕ) (hj : j + 1 ≤ r)
@@ -153,7 +153,7 @@ def ConjugateActionRuleAtBasePoint : Prop :=
     γ ∈ B.GV k (r - (j + 1)) → x0 k r j hj Z τ γ ∈ Dm →
     (∀ a : Fin j → ℂ, Ψ (nL k r j hj a * x0 k r j hj Z τ γ) = psi k r z cStd (nL k r j hj a) • Ψ (x0 k r j hj Z τ γ)) →
     ∀ b : Fin j, Q.EH k r (esI k r ⟨b, by omega⟩) (esI k r ⟨j, by omega⟩) Ψ (x0 k r j hj Z τ γ) =
-      (conj τ * conj (Z⁻¹ b ⟨j - 1, by have := b.isLt; omega⟩)) • Ψ (x0 k r j hj Z τ γ)
+      (conj τ * conj (Z⁻¹ b ⟨j - 1, omega⟩)) • Ψ (x0 k r j hj Z τ γ)
 
 def ConjugateTorusDirectionAtBasePoint : Prop :=
   ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] (k r j : ℕ) (hj : j + 1 ≤ r)

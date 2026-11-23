@@ -68,7 +68,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
   {A3 : Formalism.L2.DIV.FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
-def idxOf (D : D7) (j : ℕ) : Fin D.R.m := ⟨min (j - 1) (D.R.m - 1), by have := D.R.two_le_m; omega⟩
+def idxOf (D : D7) (j : ℕ) : Fin D.R.m := ⟨min (j - 1) (D.R.m - 1), omega⟩
 
 theorem idxOf_succ (D : D7) (i : Fin D.R.m) : idxOf D ((i : ℕ) + 1) = i := by
   apply Fin.ext

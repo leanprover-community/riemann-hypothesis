@@ -505,11 +505,11 @@ lemma emb_out_row (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * 
   split_ifs <;> first | rfl | (exfalso; omega)
 
 lemma emb_mid (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * r + k + 1)) (hq : midW k r q) (hj : midW k r j) :
-    embWb k r μ q j = μ ⟨q.val - r, by have := hq; omega⟩ ⟨j.val - r, by have := hj; omega⟩ := by
+    embWb k r μ q j = μ ⟨q.val - r, omega⟩ ⟨j.val - r, omega⟩ := by
   simp only [embWb, dif_pos (show (r ≤ q.val ∧ q.val ≤ r + k) ∧ (r ≤ j.val ∧ j.val ≤ r + k) from ⟨hq, hj⟩)]
 
 lemma bc_mid_col (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (i j : Fin (2 * r + k + 1)) (hj : midW k r j) :
-    bigCell k r c μ i j = if hi : midW k r i then μ ⟨i.val - r, by have := hi; omega⟩ ⟨j.val - r, by have := hj; omega⟩
+    bigCell k r c μ i j = if hi : midW k r i then μ ⟨i.val - r, omega⟩ ⟨j.val - r, omega⟩
       else 0 := by
   have h1 := hj.1
   have h2 := hj.2

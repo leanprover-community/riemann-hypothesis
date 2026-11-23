@@ -127,7 +127,7 @@ theorem good_al (T : Tor D) (x : VC D N N') : Good lam (al D T x) := by
 
 theorem good_cf (T : Tor D) (x y : VC D N N') (q : ℚ) (hq : (Formalism.MainNotions.TaylorLogMetric.Hf D T x y).im = q) :
     Good lam (IO.cf T x y) := by
-  refine good_of_pow lam _ (2 * q.den) 1 (by have := q.den_pos; omega) (Nat.coprime_one_left p) ?_
+  refine good_of_pow lam _ (2 * q.den) 1 omega (Nat.coprime_one_left p) ?_
   rw [Nat.cast_one, mul_one, IO.cf, hq, ← Complex.exp_nat_mul]
   convert Complex.exp_int_mul_two_pi_mul_I (-q.num) using 2
   have hd : (q.den : ℂ) ≠ 0 := by exact_mod_cast q.den_nz

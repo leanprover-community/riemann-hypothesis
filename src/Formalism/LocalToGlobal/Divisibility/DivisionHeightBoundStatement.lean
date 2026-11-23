@@ -288,12 +288,12 @@ structure ChainTie {Df : DefSide Bs} {Dc : DefCols Df} {u : Dc.Mem} (ch : ColCha
 variable {Df : DefSide Bs} {Dc : DefCols Df} {u : Dc.Mem} {ch : ColChain Dc u} {Q : KerChain K}
 
 theorem ChainTie.chain (T : ChainTie ch Q) (x : Fin (ch.c 0) → K) :
-    T.coL ((chainMat ch.Kj ⟨Q.n + 1, by have := T.hmm; omega⟩).mulVec x) = Q.col (T.coF 0 (Nat.zero_le _) x) := by
-  have e : (chainMat ch.Kj ⟨Q.n + 1, by have := T.hmm; omega⟩).mulVec x =
-      (ch.Kj ⟨Q.n, by have := T.hmm; omega⟩).mulVec ((chainMat ch.Kj ⟨Q.n, by have := T.hmm; omega⟩).mulVec x) :=
+    T.coL ((chainMat ch.Kj ⟨Q.n + 1, omega⟩).mulVec x) = Q.col (T.coF 0 (Nat.zero_le _) x) := by
+  have e : (chainMat ch.Kj ⟨Q.n + 1, omega⟩).mulVec x =
+      (ch.Kj ⟨Q.n, omega⟩).mulVec ((chainMat ch.Kj ⟨Q.n, omega⟩).mulVec x) :=
     (Matrix.mulVec_mulVec _ _ _).symm
   have aux : ∀ i (h : i ≤ Q.n), T.coF i h
-      ((chainMat ch.Kj ⟨i, by have := T.hmm; omega⟩).mulVec x) =
+      ((chainMat ch.Kj ⟨i, omega⟩).mulVec x) =
       Q.kk.colTo Q.hF i (T.coF 0 (Nat.zero_le _) x) := by
     intro i
     induction i with
@@ -303,24 +303,24 @@ theorem ChainTie.chain (T : ChainTie ch Q) (x : Fin (ch.c 0) → K) :
     | succ i ih =>
       intro h
       have hi : i < Q.n := by omega
-      have ee : (chainMat ch.Kj ⟨i + 1, by have := T.hmm; omega⟩).mulVec x =
-          (ch.Kj ⟨i, by have := T.hmm; omega⟩).mulVec
-            ((chainMat ch.Kj ⟨i, by have := T.hmm; omega⟩).mulVec x) :=
+      have ee : (chainMat ch.Kj ⟨i + 1, omega⟩).mulVec x =
+          (ch.Kj ⟨i, omega⟩).mulVec
+            ((chainMat ch.Kj ⟨i, omega⟩).mulVec x) :=
         (Matrix.mulVec_mulVec _ _ _).symm
       rw [ee, T.kerF i hi, ih hi.le]
       rfl
   rw [e, T.kerC, aux Q.n le_rfl]
   rfl
 
-theorem ChainTie.step_norm (T : ChainTie ch Q) (j : ℕ) (h : j < Q.n) (v : InfinitePlace K) (x : Fin (ch.c ⟨j, by have := T.hmm; omega⟩) → K) :
-    ((Formalism.HermitianLatticesTheory.normAt (Pi.basisFun K (Fin (ch.c ⟨j + 1, by have := T.hmm; omega⟩))) (ch.X ⟨j + 1, by have := T.hmm; omega⟩) v
-        ((ch.Kj ⟨j, by have := T.hmm; omega⟩).mulVec x) ^ 2 : ℝ) : ℂ) =
+theorem ChainTie.step_norm (T : ChainTie ch Q) (j : ℕ) (h : j < Q.n) (v : InfinitePlace K) (x : Fin (ch.c ⟨j, omega⟩) → K) :
+    ((Formalism.HermitianLatticesTheory.normAt (Pi.basisFun K (Fin (ch.c ⟨j + 1, omega⟩))) (ch.X ⟨j + 1, omega⟩) v
+        ((ch.Kj ⟨j, omega⟩).mulVec x) ^ 2 : ℝ) : ℂ) =
       famIpAt (Q.F (j + 1)) (Q.hF (j + 1)) v (Q.step j (T.coF j h.le x)) (Q.step j (T.coF j h.le x)) := by
   rw [T.metF (j + 1) h v, T.kerF j h x]
 
-theorem ChainTie.cpl_norm (T : ChainTie ch Q) (v : InfinitePlace K) (x : Fin (ch.c ⟨Q.n, by have := T.hmm; omega⟩) → K) :
-    ((Formalism.HermitianLatticesTheory.normAt (Pi.basisFun K (Fin (ch.c ⟨Q.n + 1, by have := T.hmm; omega⟩))) (ch.X ⟨Q.n + 1, by have := T.hmm; omega⟩) v
-        ((ch.Kj ⟨Q.n, by have := T.hmm; omega⟩).mulVec x) ^ 2 : ℝ) : ℂ) =
+theorem ChainTie.cpl_norm (T : ChainTie ch Q) (v : InfinitePlace K) (x : Fin (ch.c ⟨Q.n, omega⟩) → K) :
+    ((Formalism.HermitianLatticesTheory.normAt (Pi.basisFun K (Fin (ch.c ⟨Q.n + 1, omega⟩))) (ch.X ⟨Q.n + 1, omega⟩) v
+        ((ch.Kj ⟨Q.n, omega⟩).mulVec x) ^ 2 : ℝ) : ℂ) =
       Q.S₁.ipAt Q.hS₁ v (Q.cpl (T.coF Q.n le_rfl x)) (Q.cpl (T.coF Q.n le_rfl x)) := by
   rw [T.metL v, T.kerC x]
 

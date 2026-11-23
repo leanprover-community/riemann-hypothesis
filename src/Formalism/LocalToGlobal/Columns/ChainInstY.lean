@@ -81,7 +81,7 @@ def PhiTopG (sharp : Bool) (i j n : ℕ) (P : HeightOneSpectrum (𝓞 X.E)) : Lo
   else LocE.PhiQ (qOf P) (resChar (mu : Chr X.F X.E X.K) P) R.k R.r (cOf R i) (R.N i) 0 (n - 1)
 
 def prXpG (E : Type) [Field E] (n : ℕ) : Sp E n →ₗ[E] Sp E ((n - 1) + 0) :=
-  LinearMap.funLeft E E fun i : Fin ((n - 1) + 0) => (⟨i.1, by have := i.2; omega⟩ : Fin n)
+  LinearMap.funLeft E E fun i : Fin ((n - 1) + 0) => (⟨i.1, omega⟩ : Fin n)
 
 
 def frsG {n : ℕ} {ST : Finset (HeightOneSpectrum (𝓞 X.E))} (p : DecoF X.E n ST Pr.vGs (QE sel (mu : Chr X.F X.E X.K))) :

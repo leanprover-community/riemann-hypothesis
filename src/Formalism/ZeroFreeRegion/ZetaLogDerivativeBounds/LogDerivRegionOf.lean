@@ -43,7 +43,7 @@ theorem logDerivBoundInRegionOfBounds : LogDerivRegionOf := by
   obtain ⟨c₀, hc₀, hZ0⟩ := hZF
   obtain ⟨CR, hCR0, hCR⟩ := hLR
   obtain ⟨cS, CS, hcS, hCS⟩ := hSH (Real.exp 24)
-  have hlog2 : (1 / 2 : ℝ) < Real.log 2 := by have := Real.log_two_gt_d9; linarith
+  have hlog2 : (1 / 2 : ℝ) < Real.log 2 := linarith
   set c := min (min (c₀ / 4) 1) (cS * Real.log 2) with hc
   have hcpos : 0 < c := lt_min (lt_min (by linarith) one_pos) (mul_pos hcS (by linarith))
   have hc1 : c ≤ c₀ / 4 := (min_le_left _ _).trans (min_le_left _ _)

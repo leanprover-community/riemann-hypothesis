@@ -259,7 +259,7 @@ theorem locShapeL : LocShapeL D := by
     have m2 := (locMem_iff δ M hA p hk (bt D b j i)).2 (h2 i j hji)
     exact ⟨m1, m2, locMem_qd_of δ M hA p hs _ (locMem_sub δ M hA p _ m1 (locMem_conj δ M hA p hk m2))⟩
   · intro h
-    exact ⟨fun i j hji => (locMem_iff δ M hA p (by have := i.isLt; omega) _).1 (h i j hji).1,
-      fun i j hji => (locMem_iff δ M hA p (by have := i.isLt; omega) _).1 (h i j hji).2.1⟩
+    exact ⟨fun i j hji => (locMem_iff δ M hA p omega _).1 (h i j hji).1,
+      fun i j hji => (locMem_iff δ M hA p omega _).1 (h i j hji).2.1⟩
 
 end Formalism.L2.SG.Pf.StabIntSh

@@ -97,7 +97,7 @@ def nuR (p : KB.Pl P Wp Wq) : Fin (2 * (P.r - P.r) + P.k + 1) → ℂ :=
   Formalism.FourierDecayAlt.P.Dx2.Tower.zL P.r (P.r - P.r) (by omega) p.ν'
 
 def m0R (p : KB.Pl P Wp Wq) : B.Mat P.k (P.r - P.r) :=
-  fun i j => p.m₀ ⟨i.val + P.r, by have := i.isLt; omega⟩ ⟨j.val + P.r, by have := j.isLt; omega⟩
+  fun i j => p.m₀ ⟨i.val + P.r, omega⟩ ⟨j.val + P.r, omega⟩
 
 theorem base_point_block_eq (p : KB.Pl P Wp Wq) :
     D.castM (by omega : P.r + (P.r - P.r) = P.r) (ιLev P.k P.r (P.r - P.r) (m0R p)) = p.m₀ := by

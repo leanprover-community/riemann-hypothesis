@@ -99,7 +99,7 @@ theorem path_le_beA (H : HypT N n0 r K LL B od bb a La p) {dd : Fin N → ℕ} (
         exact le_of_eq this
       · have h := step_vec P ⟨s, hsN⟩ hv
         have hm1 : (m.val - 1) + 1 < r + K := omega
-        have h2 := h.2.1 ⟨m.val - 1, by have := m.2; omega⟩ hm1
+        have h2 := h.2.1 ⟨m.val - 1, omega⟩ hm1
         have hme : (⟨(m.val - 1) + 1, hm1⟩ : Fin (r + K)) = m := Fin.ext (by simp only; omega)
         rw [hme] at h2
         exact le_trans h2 (ih (by omega) _)
@@ -107,7 +107,7 @@ theorem path_le_beA (H : HypT N n0 r K LL B od bb a La p) {dd : Fin N → ℕ} (
 theorem beA_le (H : HypT N n0 r K LL B od bb a La p) : (beA n0 B : ℝ) ≤ 2 * a * (N : ℝ) := by
   unfold beA
   push_cast
-  have ha : (0 : ℝ) ≤ 2 * a := by have := H.a3; linarith
+  have ha : (0 : ℝ) ≤ 2 * a := linarith
   calc ∑ i : Fin N, (if i.val < n0 then (B i : ℝ) else 0) ≤ ∑ _i : Fin N, 2 * a := by
         refine Finset.sum_le_sum fun i _ => ?_
         by_cases hi : i.val < n0
@@ -131,8 +131,8 @@ theorem path_count_finite : PathCountFinite := by
       (m.val + N < r + K → 0 ≤ μ s m) ∧ (N ≤ m.val → μ s m ≤ 0) ∧ μ s m ≤ (M : ℤ) ∧ -(M : ℤ) ≤ μ s m := by
     rintro μ ⟨dd, hP⟩ s m
     obtain ⟨P, rfl⟩ := hP.path
-    refine ⟨fun h => mu_nonneg P s.val s.2 m (by have := s.2; omega),
-      fun h => mu_nonpos P s.val s.2 m (by have := s.2; omega), path_le_beA H P hP s.val s.2 m, ?_⟩
+    refine ⟨fun h => mu_nonneg P s.val s.2 m omega,
+      fun h => mu_nonpos P s.val s.2 m omega, path_le_beA H P hP s.val s.2 m, ?_⟩
     refine le_trans ?_ (neg_dminus_le_mu P s.val s.2 m)
     have := dminus_le_beA H hP.degs s.val
     have h' : (dminus LL dd s.val : ℤ) ≤ (M : ℤ) := by exact_mod_cast this

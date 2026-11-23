@@ -68,7 +68,7 @@ theorem modMat_off (δ : ∀ p, (D.s.atP p).Fp) (T T' : ℕ) (p : PlF D) (w : Po
     hn ⟨Fin.ext (by rw [Fin.val_last]; exact h.1), Fin.ext (by rw [Fin.val_last]; exact h.2)⟩
   have e := Formalism.L2.SG.Pf.ptEntry_scale (D.s.atP p).ιE (blkMod δ T T' p) (Formalism.L2.SG.Pf.rho δ p)
     (Formalism.L2.SG.Pf.kap p) D.R.rS (blkMod_eq δ T T' p) w.1 1
-    x y le_rfl (by have := x.isLt; omega) (by have := y.isLt; omega) (by simpa using hn')
+    x y le_rfl omega omega (by simpa using hn')
   simp only [Nat.sub_self, zero_add] at e
   show ptEntry (mapBlocks (blkMod δ T T' p) 1 w.1) x y = _
   rw [e]

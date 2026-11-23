@@ -210,7 +210,7 @@ theorem cloudBound {D : D7} (L : SizeData₂ D) (P : ParameterChoice' D L) (u : 
           rw [h, abs_le]
           constructor <;> linarith [g3.1, g3.2]
         exact_mod_cast h2
-  · have h1 : (1 : ℕ) ∈ SizeData₂.lifts D := Finset.mem_Icc.2 ⟨le_rfl, by have := D.R.two_le_m; omega⟩
+  · have h1 : (1 : ℕ) ∈ SizeData₂.lifts D := Finset.mem_Icc.2 ⟨le_rfl, omega⟩
     have hw := wRec_eq D u g 1 h1
     have hw'' := w''_le_wj_one L (D.eTau.symm g)
     have hkS := P.kS_le

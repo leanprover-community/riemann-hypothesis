@@ -2246,8 +2246,8 @@ theorem restEdgeBasis {p : ℕ} (G : GAtP p) (v : Fin G.P.nV) : RestEdgeBasis G 
   intro e he
   have hS := G.P.setting v
   have := hS.frac_alt
-  exact lc_main p (G.P.n' v) G.P.r (G.P.m + 1) hS.p_unif hS.res_card (by have := hS.five_le; omega)
-    (by have := hS.two_le; omega) e he
+  exact lc_main p (G.P.n' v) G.P.r (G.P.m + 1) hS.p_unif hS.res_card omega
+    omega e he
 
 end Formalism.MainNotions.G.LatticeSystems
 

@@ -189,7 +189,7 @@ theorem clPf_lam_congr {K : Type} [Field K] (ψ₀ : AddChar k K) (χ : ℕ → 
       omega
     congr 2
     ext s s'
-    exact h _ _ (by have := s.2; omega) (by have := s'.2; omega)
+    exact h _ _ omega omega
 
 theorem clPf_top_congr {A : ℕ} {X Y : ℕ → ℕ → k} (h : ∀ p p', p < A → p' < A → X p p' = Y p p') : clPfTop A X = clPfTop A Y := by
   ext s s'
@@ -283,7 +283,7 @@ theorem clPf_lamGvS (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (�
     rw [Nat.add_mul, one_mul] at this
     omega
   rw [clPf_unitV, redP_det (Matrix.of fun s s' : Fin t => M (r + i * t + s.1) (r + i * t + s'.1))
-    fun s s' => hM _ _ (by have := s.2; omega) (by have := s'.2; omega)]
+    fun s s' => hM _ _ omega omega]
   rfl
 
 theorem clPf_phiGS_val (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) {k₀ rS r t j c' n' c n : ℕ}
@@ -294,7 +294,7 @@ theorem clPf_phiGS_val (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → 
         (clPfUV (χ (j - 1)) (clPfTop (r + (j - 1) * t) (clPfRed P q k₀ c' n' c n x)).det)⁻¹ := by
   rw [phiGS_eq, if_pos hC, clPf_lamGvS ψ₀ χ hkr _ (fun p p' hp hp' => hC.1 p p' (by omega) hp'), clPf_unitV,
     redP_det (Matrix.of fun s s' : Fin (r + (j - 1) * t) => LocE.entB q k₀ c' n' c n (fun i => i + 1) (fun i => i + 1) x s.1 s'.1)
-      fun s s' => hC.1 _ _ (by have := s.2; omega) s'.2]
+      fun s s' => hC.1 _ _ omega s'.2]
   rfl
 
 theorem clPf_lamGBS (hq0 : (q : E) ≠ 0) (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) {k₀ r t J n c : ℕ}

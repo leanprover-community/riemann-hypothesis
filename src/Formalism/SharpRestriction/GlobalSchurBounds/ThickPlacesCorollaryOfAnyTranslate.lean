@@ -255,9 +255,9 @@ theorem card_upper_pairs_in_interval (k rS n : ℕ) (hn : rS + k ≤ n) :
     Nat.card {p : Fin n × Fin n // rS ≤ p.1.val ∧ p.1.val < p.2.val ∧ p.2.val < rS + k} = k * (k - 1) / 2 := by
   rw [← Formalism.LogVandermondeBounds.StandardLattice.card_lt_pairs k]
   refine Nat.card_congr
-    { toFun := fun p => ⟨(⟨p.1.1.val - rS, by have := p.2; omega⟩, ⟨p.1.2.val - rS, by have := p.2; omega⟩), by
+    { toFun := fun p => ⟨(⟨p.1.1.val - rS, omega⟩, ⟨p.1.2.val - rS, omega⟩), by
         have := p.2; rw [Fin.lt_def]; simp only; omega⟩
-      invFun := fun q => ⟨(⟨q.1.1.val + rS, by have := q.1.1.2; omega⟩, ⟨q.1.2.val + rS, by have := q.1.2.2; omega⟩), by
+      invFun := fun q => ⟨(⟨q.1.1.val + rS, omega⟩, ⟨q.1.2.val + rS, omega⟩), by
         have h := q.2; rw [Fin.lt_def] at h; have := q.1.2.2; simp only; omega⟩
       left_inv := fun p => by
         have := p.2
@@ -367,8 +367,8 @@ theorem strictAnti_neg_param_b (D : D7) (ρ : D.what₂.Tau) : StrictAnti (fun j
   apply strictAnti_of_succ_lt_alt
   intro i j hij
   have h1 := (D.hc ρ).gap_be i
-  have h2 := (D.hc ρ).gap_eb i (by have := j.2; omega)
-  have e : (⟨i.1 + 1, by have := j.2; omega⟩ : Fin D.R.m) = j := by ext; simp [hij]
+  have h2 := (D.hc ρ).gap_eb i omega
+  have e : (⟨i.1 + 1, omega⟩ : Fin D.R.m) = j := by ext; simp [hij]
   rw [e] at h2
   have ht : (0 : ℚ) ≤ D.R.t := by positivity
   have : (D.hc ρ).b i < (D.hc ρ).b j := by linarith

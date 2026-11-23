@@ -49,7 +49,7 @@ theorem discr_K (D : D7) : discr D.host.K = -(D.host.d : ℤ) := by
     rw [Set.image_singleton]
     rfl
   exact Formalism.HF.Final.quadDiscr D.host.K _ x hx htop (Formalism.HF.P.sqf_neg _ D.host.hyp.2.1)
-    (by have := D.host.hyp.2.2.2.1; omega)
+    omega
 
 theorem finrank_K (D : D7) : Module.finrank ℚ D.host.K = 2 :=
   SplitK.finrank_K (L := D.host.E) (b := D.host.sqd) (d := D.host.d) D.host.hyp.2.1.pos

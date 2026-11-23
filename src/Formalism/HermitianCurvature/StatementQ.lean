@@ -48,12 +48,12 @@ open Formalism.REAL Formalism.QuantumDeterminants
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 def skip1 {t : ℕ} (i : Fin t) (j : Fin (t - 1)) : Fin t :=
-  if j.val < i.val then ⟨j.val, by have := j.isLt; omega⟩ else ⟨j.val + 1, by have := j.isLt; omega⟩
+  if j.val < i.val then ⟨j.val, omega⟩ else ⟨j.val + 1, omega⟩
 
 def skip2 {t : ℕ} (i i' : Fin t) (j : Fin (t - 2)) : Fin t :=
-  if j.val < i.val then ⟨j.val, by have := j.isLt; omega⟩
-  else if j.val + 1 < i'.val then ⟨j.val + 1, by have := j.isLt; omega⟩
-  else ⟨j.val + 2, by have := j.isLt; omega⟩
+  if j.val < i.val then ⟨j.val, omega⟩
+  else if j.val + 1 < i'.val then ⟨j.val + 1, omega⟩
+  else ⟨j.val + 2, omega⟩
 
 def SkipSucc : Prop := ∀ (t : ℕ) (i : Fin (t + 1)) (j : Fin t), skip1 i j = i.succAbove j
 

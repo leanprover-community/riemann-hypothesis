@@ -108,7 +108,7 @@ theorem lowUni_mulVec_eLast {M : Matrix (Fin n) (Fin n) K} (h : IsLowUni M) :
     apply Finset.sum_eq_zero
     intro j _
     split_ifs with hj
-    · have hij : i < j := Fin.lt_def.mpr (by have := i.isLt; omega)
+    · have hij : i < j := Fin.lt_def.mpr omega
       exact h.1 hij
     · rfl
 
@@ -129,7 +129,7 @@ theorem lastCoord_upUni {M : Matrix (Fin n) (Fin n) K} (h : IsUpUni M) (w : Fin 
     · rw [h.2 j, one_mul]
     · intro k _ hk
       have hne : k.val ≠ j.val := fun e => hk (Fin.ext e)
-      have hkj : k < j := Fin.lt_def.mpr (by have := k.isLt; omega)
+      have hkj : k < j := Fin.lt_def.mpr omega
       rw [h.1 hkj, zero_mul]
     · intro hj'
       exact absurd (Finset.mem_univ j) hj'

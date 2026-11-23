@@ -179,6 +179,6 @@ theorem gA_rat {n' k1 : ℕ} (p t : ℕ) (hp : 2 ≤ p) (hn : 0 < n') (TT : Fins
 theorem restRat {p : ℕ} [Fact p.Prime] (X : Sys p) : RatCondition X := by
   intro v j
   have h := X.std v
-  exact gA_rat p X.t (by have := h.five_le; omega) (by have := h.two_le; omega) _ _ _ j
+  exact gA_rat p X.t omega omega _ _ _ j
 
 end Formalism.MainNotions.FormalGroupSystem.Pf

@@ -73,7 +73,7 @@ def sigTow (D : D7) (t : ℕ) : Tow D t where
       have := D.R.two_le_m
       unfold Ranks.r
       rw [Nat.mul_succ]
-      omega) _ _ (fun i => (negTail_false _ _ _ (by have := i.isLt; omega)).symm) x y
+      omega) _ _ (fun i => (negTail_false _ _ _ omega).symm) x y
 
 
 open Classical in

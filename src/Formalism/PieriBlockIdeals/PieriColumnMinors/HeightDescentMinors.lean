@@ -909,7 +909,7 @@ theorem constantCoeff_eq_zero_of_sum_subst (n : ℕ) (hn : 0 < n) (w : (R⟦X⟧
   rw [e] at h0
   have h1 := congrArg (coeff (i : ℕ)) h0
 
-  rw [map_add (f := _), map_sum, coeff_X_pow_mul', if_neg (by have := i.2; omega), add_zero, map_zero] at h1
+  rw [map_add (f := _), map_sum, coeff_X_pow_mul', if_neg omega, add_zero, map_zero] at h1
   simp only [coeff_C_mul_X_pow] at h1
   rw [Finset.sum_eq_single i] at h1
   · simpa using h1

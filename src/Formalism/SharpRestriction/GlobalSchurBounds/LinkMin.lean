@@ -341,7 +341,7 @@ theorem upper_weight_bound_eventually (D : D7) (sc : Scale) (C0 CY : ℝ)
     Real.log_nonneg ((one_le_div Real.pi_pos).2 hpi)
   have hlv : Real.log (D.host.v / Real.pi) ≤ sc.L := by
     rw [Real.log_div hv0.ne' Real.pi_pos.ne']
-    have : 0 ≤ Real.log Real.pi := Real.log_nonneg (by have := Real.pi_gt_three; linarith)
+    have : 0 ≤ Real.log Real.pi := Real.log_nonneg (linarith)
     linarith [hB.2.1]
   have hG : 0 ≤ ∑ i : Fin 2, Real.log (D.host.g i : ℝ) :=
     Finset.sum_nonneg fun i _ => Real.log_nonneg (by exact_mod_cast (D.host.g_prime i).one_lt.le)

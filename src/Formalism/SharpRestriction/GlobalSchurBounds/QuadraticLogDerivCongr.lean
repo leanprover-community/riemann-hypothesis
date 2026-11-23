@@ -1473,7 +1473,7 @@ theorem winN' (hT : D.host.secondSet_card_lower_bound) (sN : SizeN L) (sLw : Siz
   have hx : 0 < L.sc.x := by linarith
   have he : 0 < L.sc.eps := L.sc.eps_pos
   have hy1 : 1 ≤ Real.log L.sc.x := by
-    have h1 : Real.exp 1 ≤ L.sc.x := by have := Real.exp_one_lt_d9; linarith
+    have h1 : Real.exp 1 ≤ L.sc.x := linarith
     have h := Real.log_le_log (Real.exp_pos 1) h1
     rwa [Real.log_exp] at h
   have hy0 : 0 < Real.log L.sc.x := by linarith

@@ -128,7 +128,7 @@ theorem sp_iff (H : HypT N n0 r K LL B od bb a La p) (μ : Fin (N + 1) → Fin (
         rw [if_pos (H.vec_true_of_late i (by omega))]
         exact hd'
     choose dd hdd using hex
-    exact ⟨dd, ⟨⟨μ, h0, fun t => hd t (by have := t.2; omega), fun i => (hdd i).2⟩, rfl⟩, fun i hi => (hdd i).1 hi,
+    exact ⟨dd, ⟨⟨μ, h0, fun t => hd t omega, fun i => (hdd i).2⟩, rfl⟩, fun i hi => (hdd i).1 hi,
       fun i m hi hm => ((hs i i.2).2 hi).2 m hm⟩
 
 theorem vp_le_dplus {s : ℕ} {μ : Fin (N + 1) → Fin (r + K) → ℤ} (h : VP LL n0 B s μ) :
@@ -185,7 +185,7 @@ theorem vp_le {s : ℕ} {μ : Fin (N + 1) → Fin (r + K) → ℤ} (h : VP LL n0
       by_cases hm : m.val = 0
       · exact le_of_eq (hhead m (by omega))
       · have hm1 : (m.val - 1) + 1 < r + K := omega
-        have h2 := hst.2.1 ⟨m.val - 1, by have := m.2; omega⟩ hm1
+        have h2 := hst.2.1 ⟨m.val - 1, omega⟩ hm1
         have hme : (⟨(m.val - 1) + 1, hm1⟩ : Fin (r + K)) = m := Fin.ext (by simp only; omega)
         rw [hme] at h2
         exact le_trans h2 (ih (by omega) (by omega) _)

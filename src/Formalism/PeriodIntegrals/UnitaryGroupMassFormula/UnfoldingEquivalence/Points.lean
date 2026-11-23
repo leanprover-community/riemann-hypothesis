@@ -53,7 +53,7 @@ private theorem inX_apply' {n c : ℕ} (v : Fin n → k) (l : Fin (n + c)) :
   split_ifs <;> simp
 
 private theorem inX_single' {n c : ℕ} (s : Fin n) :
-    inX k n c (Pi.single s 1) = Pi.single ⟨s.1, by have := s.2; omega⟩ 1 := by
+    inX k n c (Pi.single s 1) = Pi.single ⟨s.1, omega⟩ 1 := by
   funext l
   rw [inX_apply']
   by_cases h : l.1 < n

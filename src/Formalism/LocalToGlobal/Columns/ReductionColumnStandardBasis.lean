@@ -369,7 +369,7 @@ theorem finite_sum_target_equality (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu
     intro p
     by_cases hl : p.1.1.1 < n
     · exact Or.inr ⟨⟨p.1.1.1, hl⟩, Fin.ext rfl⟩
-    · exact Or.inl ⟨⟨p.1.1.1 - n, by have := p.1.1.2; omega⟩, Fin.ext (by simp; omega)⟩
+    · exact Or.inl ⟨⟨p.1.1.1 - n, omega⟩, Fin.ext (by simp; omega)⟩
   have hTbd : ∀ t, box t → ∀ p, IntAt P ((q : E) ^ bnd p.1.1 * T t p) := by
     intro t ht p
     rcases hrow p with ⟨v, hv⟩ | ⟨l0, hl0⟩

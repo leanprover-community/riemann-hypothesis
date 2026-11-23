@@ -226,7 +226,7 @@ theorem coarse_degree_alternative (hH : 1 ≤ H) (h : Std C0 Cde CE1 CE2 H X) (j
   obtain ⟨hP0, hpd0, hQj, hQ, hPQ⟩ := h.levels j i
   have hcb := coarse_bounds (X.bT (segPos X.TT j i)) (X.p ^ (segG X.TT j - (segDists X.TT j).get i)) (b.rz i)
     (fun c => (hd.1 i c).1) (hd.2.1 i).1 (hd.2.1 i).2
-  have hsig := sigma_iff X.p (by have := h.p5; omega) X.TT X.bT X.a X.b' X.Y (X.La C0) (X.E0 C0 CE1 CE2) j i
+  have hsig := sigma_iff X.p omega X.TT X.bT X.a X.b' X.Y (X.La C0) (X.E0 C0 CE1 CE2) j i
   have hband := h.band _ hodd
   have hde : 40 * eps X C0 ≤ X.de C0 Cde := by
     have := h.LaK

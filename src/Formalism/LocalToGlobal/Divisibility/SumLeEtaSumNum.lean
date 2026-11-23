@@ -98,7 +98,7 @@ theorem inEta_num (L : SizeData₂ D) (A : FamIn D.what₂.LL G Pl0 T m) {P0 : S
   have h1 := sum_le_etaSum_num L A hnum hTw i
   have hi : (i : ℕ) + 1 ∈ SizeData₂.lifts D := by
     unfold SizeData₂.lifts
-    exact Finset.mem_Icc.2 ⟨by omega, by have := i.isLt; omega⟩
+    exact Finset.mem_Icc.2 ⟨by omega, omega⟩
   have h2 := hN ((i : ℕ) + 1) hi
   unfold Formalism.MainNotions.DIVinN_at at h2
   rw [hD] at h2

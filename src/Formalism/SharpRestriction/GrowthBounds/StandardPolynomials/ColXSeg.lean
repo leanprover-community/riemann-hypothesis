@@ -300,13 +300,13 @@ theorem phiS_zero [NeZero X.m] : phiS X j (0, Fin.castAdd X.m 0) = ((topStart X 
   rfl
 
 theorem phiS_odd (l : Fin (segS X.TT j)) :
-    phiS X j (⟨2 * l.val + 1, by have := l.2; omega⟩, Fin.castAdd X.m 0) = ((topOdd X j l, true), 0) := by
-  have e : (⟨2 * l.val + 1, by have := l.2; omega⟩ : Fin (2 * segS X.TT j + 1 + 1)) =
-      (⟨2 * l.val, by have := l.2; omega⟩ : Fin (2 * segS X.TT j + 1)).succ := rfl
+    phiS X j (⟨2 * l.val + 1, omega⟩, Fin.castAdd X.m 0) = ((topOdd X j l, true), 0) := by
+  have e : (⟨2 * l.val + 1, omega⟩ : Fin (2 * segS X.TT j + 1 + 1)) =
+      (⟨2 * l.val, omega⟩ : Fin (2 * segS X.TT j + 1)).succ := rfl
   unfold phiS
   simp only [e]
   rw [lamS_succ_lt X j _ (by have := l.2; simp only; omega)]
-  have e2 : (⟨(2 * l.val) / 2, by have := l.2; omega⟩ : Fin (segS X.TT j)) = l := by
+  have e2 : (⟨(2 * l.val) / 2, omega⟩ : Fin (segS X.TT j)) = l := by
     apply Fin.ext; simp
   simp only [e2]
   simp

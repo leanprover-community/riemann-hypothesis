@@ -154,7 +154,7 @@ def ea_eS {n' ν : ℕ} [NeZero ν] (hn : n' = 2 * ν) : Fin n' ≃ ZMod (2 * ν
   left_inv s := by
     apply Fin.ext
     show ((s.val : ZMod (2 * ν))).val = s.val
-    exact ZMod.val_natCast_of_lt (by have := s.isLt; omega)
+    exact ZMod.val_natCast_of_lt omega
   right_inv x := by
     show ((x.val : ℕ) : ZMod (2 * ν)) = x
     exact ZMod.natCast_zmod_val x

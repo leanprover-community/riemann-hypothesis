@@ -96,7 +96,7 @@ theorem fixE_colLevSym (Ch : Chars X Pr R.m) {m2 : ℕ} (hm : R.m = m2 + 2) : Fi
   have e2 : m2 + 1 + 1 = R.m := by omega
   unfold colLevSym at hw
   rw [if_neg e0, dite_eq_right e1, dite_eq_left e2] at hw
-  exact mulVec_eN_eq_of_mem_HPar _ (by have := R.rank_add_five_le; omega)
+  exact mulVec_eN_eq_of_mem_HPar _ omega
     (by
       show R.k + (m2 + 1) * (R.t + 1) = R.k + R.m - 1 + (m2 + 1) * R.t
       rw [hm, Nat.mul_succ]

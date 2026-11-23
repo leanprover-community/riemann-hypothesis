@@ -1401,7 +1401,7 @@ theorem nu_t_identity : NuTIs := by
   intro D u i hi τ r
   obtain ⟨z, hz⟩ := RowWeightLemmas.nuRow_int D u i hi τ r r.2
   have hpos : 0 < DV.nuRow D u (i + 1) τ r :=
-    lt_of_lt_of_le (RowWeightLemmas.nuRow_last_pos D u i hi τ) (nuRow_anti_le D u i hi τ r _ (by have := r.2; omega) (by have := r.2; omega))
+    lt_of_lt_of_le (RowWeightLemmas.nuRow_last_pos D u i hi τ) (nuRow_anti_le D u i hi τ r _ omega omega)
   have hz0 : 0 < z := by rw [hz] at hpos; exact_mod_cast hpos
   obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le hz0.le
   have : nuT D u i τ r = n := by

@@ -179,7 +179,7 @@ theorem segCoreAt_of_num {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hN : NumCoreAt 
       refine ⟨?_, by omega, by omega, by omega, by omega⟩
       show (if (i : ℕ) < (X.seg C0 CE1 CE2 j).sigma then 0 else _) = 0
       rw [if_pos hi])
-    (by omega) (by have := hlb.2; omega)
+    (by omega) omega
   refine ⟨(segmentBlockOfMonomial C0 CE1 CE2 X j ju (L.jp j) du A), hBL', nb_ord C0 CE1 CE2 X j ju (L.jp j) du A,
     uTot O X.m (X.seg C0 CE1 CE2 j) ju (L.jp j) (Gu * (mEps (KK O) (ezA C0 CE1 CE2 X j A) (eyA C0 CE1 CE2 X j A) (axA X j A)))
       (fun l => z0A C0 CE1 CE2 X j A (uTop (X.seg C0 CE1 CE2 j) l)) (fun l => y0A C0 CE1 CE2 X j A (uTop (X.seg C0 CE1 CE2 j) l))

@@ -361,7 +361,7 @@ theorem hostInertia : HostInertia := by
   have hqd := hH.toHypOdd
   have hq4 : q % 4 = 3 := omega
   have hd4 : d % 4 = 3 := omega
-  have hQD : HypQD q d := ⟨hH.1, hH.2.1, hH.2.2.1, by have := hH.2.2.2.1; omega⟩
+  have hQD : HypQD q d := ⟨hH.1, hH.2.1, hH.2.2.1, omega⟩
   have hspec := hostGalSpec e q d hqd L ζ a b h σ
   have hsa := hspec.1
   have hsb := hspec.2.1

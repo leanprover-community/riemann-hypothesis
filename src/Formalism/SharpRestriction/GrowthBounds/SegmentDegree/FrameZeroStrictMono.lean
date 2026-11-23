@@ -139,7 +139,7 @@ theorem thirty_two_Y_le_a (hX : X.Hyp p K) : 32 * X.Y ≤ X.a := by
     le_mul_of_one_le_right (by positivity) B.Ns1
   have h4 : 8 * X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) ≤
       8 * X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) * (p : ℝ) ^ (X.F.dist 0 (X.F.fr (0 - 1) 0) + X.Rj p K 0) :=
-    le_mul_of_one_le_right (by have := B.Ns1; positivity) h1
+    le_mul_of_one_le_right (positivity) h1
   linarith
 
 theorem sum_aP (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : ℝ) ≤ X.Ck) (j y : ℤ)
@@ -163,7 +163,7 @@ theorem sum_kP (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : ℝ
     have a1 : Dat.k (r := r) K ≤ Dat.k (r := r) K ^ 2 := by nlinarith [B.k5]
     have a2 : Dat.k (r := r) K ^ 2 ≤ X.Y * Dat.k (r := r) K ^ 2 := le_mul_of_one_le_left (by positivity) B.Y1
     have a3 : X.Y * Dat.k (r := r) K ^ 2 ≤ X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) :=
-      le_mul_of_one_le_right (by have := B.Y1; positivity) B.Ns1
+      le_mul_of_one_le_right (positivity) B.Ns1
     linarith
   have h2 := mul_le_mul_of_nonneg_right h1 hP.le
   have h3 : Dat.k (r := r) K * (p : ℝ) ^ (X.F.dist j x + X.Rj p K j) ≤ (X.a' p K (posOf n' x) : ℝ) := by
@@ -204,7 +204,7 @@ theorem sum_compA (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : 
         le_mul_of_one_le_right (by positivity) B.Ns1
       have a3 : 8 * X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) ≤
           8 * X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) * (p : ℝ) ^ X.F.dist 0 (X.F.fr (0 - 1) 0) :=
-        le_mul_of_one_le_right (by have := B.Ns1; positivity) hp1
+        le_mul_of_one_le_right (positivity) hp1
       linarith
     have hE : (X.E₀ : ℝ) ≤ 4 * (p : ℝ) * ((X.E₀ : ℝ) + X.mStar + 1) := by
       have e0 : (0 : ℝ) ≤ X.E₀ := Nat.cast_nonneg _
@@ -265,7 +265,7 @@ theorem sum_compW (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : 
   have hY0 : (0 : ℝ) < X.Y := by linarith [B.Y1]
   have hu : 0 < Dat.k (r := r) K * X.Y := by positivity
   have hrr : r - 1 < r := Nat.sub_lt (NeZero.pos r) Nat.one_pos
-  have hvle : X.F.fr j i.val ≤ X.F.fr j (r - 1) := sum_fr_le hX.valid j i.val (r - 1) (by have := i.isLt; omega) hrr
+  have hvle : X.F.fr j i.val ≤ X.F.fr j (r - 1) := sum_fr_le hX.valid j i.val (r - 1) omega hrr
   have hvlet : X.F.fr j i.val ∈ X.F.letters (j + 1) := by
     unfold Frames.letters
     rw [Finset.mem_filter, Finset.mem_Icc, add_sub_cancel_right]

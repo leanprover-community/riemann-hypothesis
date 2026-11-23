@@ -990,7 +990,7 @@ theorem heightStatement_of_bounds (C' Cl Cg cb Cu cT CT C0 A C C2 Ch : ℝ) (hC 
   have hR1 : 1 ≤ GamS D large₂ * S ^ (C2 * (D.R.m : ℝ) ^ 2) := by
     have g1 : 1 ≤ GamS D large₂ := by
       unfold GamS
-      exact Real.one_le_exp (by have := large₂.CGam_pos.le; positivity)
+      exact Real.one_le_exp (positivity)
     have g2 : 1 ≤ S ^ (C2 * (D.R.m : ℝ) ^ 2) :=
       Real.one_le_rpow hS1 (mul_nonneg (by linarith) (by positivity))
     exact one_le_mul_of_one_le_of_one_le g1 g2

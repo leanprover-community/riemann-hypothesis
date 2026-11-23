@@ -624,7 +624,7 @@ theorem Pmin_degree (ha : Dom r a) (m : Letter T r n →₀ ℕ)
         rw [Finset.mem_filter, Finset.mem_Iic]
         constructor
         · intro h
-          exact Fin.le_def.mpr (by have := h.2; omega)
+          exact Fin.le_def.mpr omega
         · intro h
           exact ⟨Finset.mem_univ _, by have := Fin.le_def.mp h; omega⟩]
       exact Fin.card_Iic kk

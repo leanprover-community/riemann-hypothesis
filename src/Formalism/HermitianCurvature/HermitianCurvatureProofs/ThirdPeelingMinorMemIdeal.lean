@@ -172,7 +172,7 @@ private theorem sR_succAbove_eq_ps (k r m : ℕ) (hm : m + 1 ≤ r) (i : Fin (m 
 theorem third_peeling_identity : PeelingDualColumn := by
   intro A _ _ k r z' E hG m hm i ell
   rw [sR_succAbove_eq_ps, sR_eq_ps, sR_eq_ps]
-  exact third_peeling_minor_mem_ideal k r z' E hG ell m i.val (by have := i.isLt; omega) hm
+  exact third_peeling_minor_mem_ideal k r z' E hG ell m i.val omega hm
 
 theorem second_peeling_identity : PeelingCovector := by
   intro A _ _ k m z' yb E i u hz'
@@ -181,7 +181,7 @@ theorem second_peeling_identity : PeelingCovector := by
   have hb : (fun l : Fin m => xR k (m + 1) (m + 1) le_rfl (i.succAbove l)) =
       fun l : Fin m => pe k (m + 1) (if l.val < i.val then l.val else l.val + 1) := by
     funext l; ext; simp only [xR, eI, Fin.val_castLE, succAbove_val, pe_val]; all_goals (split_ifs <;> omega)
-  have hi : xR k (m + 1) i.val (by have := i.isLt; omega) = fun l : Fin i.val => pe k (m + 1) l.val := by
+  have hi : xR k (m + 1) i.val omega = fun l : Fin i.val => pe k (m + 1) l.val := by
     funext l; ext; simp only [xR, eI, Fin.val_castLE]; rw [pe_lt (by omega)]
   rw [hb, ha, hi]
   have step := peel_col (Ideal.span (rgen k (m + 1) z' E)) E (fun w => herm (Hpk k (m + 1)) (bvec (wI k (m + 1) w)) yb)

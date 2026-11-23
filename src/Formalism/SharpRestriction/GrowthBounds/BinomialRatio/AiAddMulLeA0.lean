@@ -159,7 +159,7 @@ theorem partial_width_le_cap [NeZero X.m] (hH : 1 ≤ H) (h : Std C0 Cde CE1 CE2
         have hPP : X.p * X.p ^ (segG X.TT j - (segDists X.TT j).get i) ≤
             X.p ^ (segG X.TT j - (segDists X.TT j).get l) := by
           rw [← pow_succ']
-          exact Nat.pow_le_pow_right (by have := h.p5; omega) (by omega)
+          exact Nat.pow_le_pow_right omega (by omega)
         have hPP' : (X.p : ℝ) * ((X.p ^ (segG X.TT j - (segDists X.TT j).get i) : ℕ) : ℝ) ≤
             ((X.p ^ (segG X.TT j - (segDists X.TT j).get l) : ℕ) : ℝ) := by exact_mod_cast hPP
         have := coarse_ratio_small (k := X.k) (Nat.cast_nonneg _) h.bpos h.be0 hbe12 (h.levels j i).1 hp0 hPP' (hcb l).1

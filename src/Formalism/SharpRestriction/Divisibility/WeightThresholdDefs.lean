@@ -46,7 +46,7 @@ variable {D : D7} (Y : ShimX D.what₂.Tau)
 abbrev dimY : ℕ := dimFl D.what₂.Tau Y.N
 
 def gap (lam : D.what₂.Tau → Fin Y.N → ℝ) (τ : D.what₂.Tau) : ℝ :=
-  lam τ ⟨Y.j - 1, by have := Y.j_lt; omega⟩ - lam τ ⟨Y.j, Y.j_lt⟩
+  lam τ ⟨Y.j - 1, omega⟩ - lam τ ⟨Y.j, Y.j_lt⟩
 
 def supAbs (lam : D.what₂.Tau → Fin Y.N → ℝ) : ℝ := ⨆ x : Rt D.what₂.Tau Y.N, |lam x.1 x.2|
 

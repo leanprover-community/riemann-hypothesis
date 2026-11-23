@@ -448,7 +448,7 @@ theorem qExpansion_pk_one (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP 
       (qExpansion_algebraMap a _))) (qExpansion_pow_alt hR (qExpansion_qP hR a) _)) (qExpansion_algebraMap a _)
   refine ⟨1 - Fw * X ^ (PD.p - 1), Fw, ?_, hFwu, ?_⟩
   · rw [isUnit_iff_constantCoeff, map_sub, map_one, map_mul, map_pow, constantCoeff_X,
-      zero_pow (by have := PD.hp.two_le; omega), mul_zero, sub_zero]
+      zero_pow omega, mul_zero, sub_zero]
     exact isUnit_one
   · have hXl : (X : PowerSeries O) ^ PD.p = X * X ^ (PD.p - 1) := by
       rw [← pow_succ', Nat.sub_add_cancel PD.hp.one_le]

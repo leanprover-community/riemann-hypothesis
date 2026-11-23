@@ -135,7 +135,7 @@ theorem algebraic_translates_all_data : AlgTAll := by
   obtain ⟨s', hs', hsL1', hsL2'⟩ := exists_den D L' hA.2.2.2
   have hd := D.host.hyp
   obtain ⟨p, hpn, hp, hJ⟩ :=
-    exists_inert_prime D.host.d hd.2.1 (by have := hd.2.2.2.1; omega) (a * s * s' + 4)
+    exists_inert_prime D.host.d hd.2.1 omega (a * s * s' + 4)
   have : Fact p.Prime := ⟨hp⟩
   have hpos : 0 < a * s * s' := by positivity
   have hcop : ∀ m : ℕ, m ∣ a * s * s' → Nat.Coprime m p := fun m hm =>

@@ -70,7 +70,7 @@ theorem unit_cols (n l : ℕ) (hl : l ≤ n) (I : Fin (n - l) → Fin n) (hI : F
   let π : Equiv.Perm (Fin n) := e0.extendSubtype
   have hπ : ∀ q : Fin (n - l), π (Fin.castLE hm q) = I q := fun q =>
     e0.extendSubtype_apply_of_mem (Fin.castLE hm q) q.isLt
-  let J : Fin l → Fin n := fun i => π ⟨n - l + i.val, by have := i.isLt; omega⟩
+  let J : Fin l → Fin n := fun i => π ⟨n - l + i.val, omega⟩
   refine ⟨J, ((Equiv.Perm.sign π : ℤˣ) : ℤ), ?_, ?_, ?_, ?_⟩
   · intro i i' h
     have h1 := Fin.mk.inj (π.injective h)

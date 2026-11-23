@@ -198,6 +198,6 @@ theorem first_peeling_identity : PeelingOmittedColumn := by
     have := l.isLt
     split_ifs <;> omega
   rw [e2, e1, e1]
-  exact first_peeling_minor_mem_ideal k r z' E u m i.val (by have := i.isLt; omega) hm
+  exact first_peeling_minor_mem_ideal k r z' E u m i.val omega hm
 
 end Formalism.FourierDecayAlt.P.SignAntidiagonal

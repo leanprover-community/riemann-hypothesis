@@ -765,7 +765,7 @@ theorem isReps_repsPl (X : Inst D L) (p : ℕ) : IsReps D p (repsPl X p) := by
       rw [← he2, bs_iter, h2, he1]
 
 theorem one_mem_lifts (D : D7) : 1 ∈ SizeData₂.lifts D := by
-  unfold SizeData₂.lifts; rw [Finset.mem_Icc]; exact ⟨le_refl 1, by have := D.R.two_le_m; omega⟩
+  unfold SizeData₂.lifts; rw [Finset.mem_Icc]; exact ⟨le_refl 1, omega⟩
 
 theorem sum_ite_one (D : D7) (c : ℝ) : ∑ j ∈ SizeData₂.lifts D, (if j = 1 then c else 0) = c := by
   rw [Finset.sum_ite_eq' (SizeData₂.lifts D) 1 (fun _ => c)]; simp [one_mem_lifts D]

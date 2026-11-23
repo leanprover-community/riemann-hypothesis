@@ -147,7 +147,7 @@ theorem sources_realisable_holds (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cde
   rw [eE]
   show SymbolRealisableGeneralRank p n' O (dvrOfStd hSet).w hk hH.2.2.1 F (fun j => XX' O r K F j _ _ _) _ _ _ _ _
   refine symbol_realisable_general_rank D hW1 hW2 hMon O (dvrOfStd hSet) (oHyp_of hSet φ) hk hH F L₁ (orbitWindowCount r de h x) (goodG' r de h x)
-    hF.2.1 (twist_of hF (by have := H.2.1; omega) hGn p (by have := H.1; omega))
+    hF.2.1 (twist_of hF omega hGn p omega)
     (fun j => (hF.2.2.1 j).le) (by omega) _ _ _ ?_ (flatDeg lam0) (dT TT lam0) (cPrime n' r TT.card c0 cpp cStar) _
     ?_ ?_ ?_
   · intro j x'

@@ -67,7 +67,7 @@ theorem mulC_mul {n n' n'' : ℕ} (A : Matrix (Fin n'') (Fin n') R) (B : Matrix 
   ring
 
 def lastMinor {n : ℕ} (l : ℕ) (hl : l ≤ n) (z : Fin n → ℕ → R) : R :=
-  Matrix.det (Matrix.of fun r i : Fin l => z ⟨n - l + r.val, by have := r.isLt; omega⟩ i.val)
+  Matrix.det (Matrix.of fun r i : Fin l => z ⟨n - l + r.val, omega⟩ i.val)
 
 theorem det_catM_smul_one {n : ℕ} (l : ℕ) (hl : l ≤ n) (c : R) (z : Fin n → ℕ → R) :
     (catM l (c • (1 : Matrix (Fin n) (Fin n) R)) z).det = c ^ (n - l) * lastMinor l hl z := by
@@ -78,7 +78,7 @@ theorem det_catM_smul_one {n : ℕ} (l : ℕ) (hl : l ≤ n) (c : R) (z : Fin n 
   have hb : (catM l (c • (1 : Matrix (Fin n) (Fin n) R)) z).submatrix e e =
       Matrix.fromBlocks (c • (1 : Matrix (Fin (n - l)) (Fin (n - l)) R))
         (Matrix.of fun (i : Fin (n - l)) (r : Fin l) => z (e (Sum.inl i)) r.val) 0
-        (Matrix.of fun r i : Fin l => z ⟨n - l + r.val, by have := r.isLt; omega⟩ i.val) := by
+        (Matrix.of fun r i : Fin l => z ⟨n - l + r.val, omega⟩ i.val) := by
     ext a t
     rcases a with a | a <;> rcases t with t | t
     · simp only [Matrix.submatrix_apply, catM, Matrix.fromBlocks_apply₁₁, e1, t.isLt, if_true, Matrix.smul_apply,
@@ -91,7 +91,7 @@ theorem det_catM_smul_one {n : ℕ} (l : ℕ) (hl : l ≤ n) (c : R) (z : Fin n 
     · have h : ¬ (n - l + t.val < n - l) := by omega
       simp only [Matrix.submatrix_apply, catM, Matrix.fromBlocks_apply₂₂, e2, h, if_false, Nat.add_sub_cancel_left,
         Matrix.of_apply]
-      rw [show e (Sum.inr a) = ⟨n - l + a.val, by have := a.isLt; omega⟩ from Fin.ext (e2 a)]
+      rw [show e (Sum.inr a) = ⟨n - l + a.val, omega⟩ from Fin.ext (e2 a)]
   rw [hb, Matrix.det_fromBlocks_zero₂₁, Matrix.det_smul, Matrix.det_one, mul_one, Fintype.card_fin]
   rfl
 
@@ -121,7 +121,7 @@ theorem col_id {N N' : ℕ} (hN : N ≤ N') (y : Matrix (Fin N') (Fin N') R) (d 
     rw [mulC_mul]
     simp only [Matrix.of_apply]
     simp only [mulC, Matrix.submatrix_apply, id]
-    have : sh ⟨N - l + r.val, by have := r.isLt; omega⟩ = ⟨N' - l + r.val, by have := r.isLt; omega⟩ := by
+    have : sh ⟨N - l + r.val, omega⟩ = ⟨N' - l + r.val, omega⟩ := by
       apply Fin.ext
       rw [hsh]
       show N' - N + (N - l + r.val) = N' - l + r.val

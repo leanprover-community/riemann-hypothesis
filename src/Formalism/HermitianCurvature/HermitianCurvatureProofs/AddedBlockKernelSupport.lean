@@ -179,7 +179,7 @@ theorem minor_lemma {n m : ℕ} (hmn : m < n) (x w y : Matrix (Fin n) (Fin n) K)
       intro j
       rw [hrowsum]
       have hcj : c (Fin.castSucc j) = e j := by simp [c, e, j.isLt]
-      rw [hcj, hyT (show e j < ⟨n - 1, hn1⟩ from Fin.mk_lt_mk.2 (by have := j.isLt; omega)),
+      rw [hcj, hyT (show e j < ⟨n - 1, hn1⟩ from Fin.mk_lt_mk.2 omega),
         mul_zero]
     simp only [hz, mul_zero, zero_mul, Finset.sum_const_zero, zero_add]
     rw [hrowsum (Fin.last m), hcl, hyD, mul_one, Fin.succAbove_last, Fin.val_last, ← two_mul,

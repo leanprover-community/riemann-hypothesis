@@ -292,7 +292,7 @@ theorem val_comp (hp : (Ideal.absNorm P.asIdeal).Prime) {g : Sp E (n + c) ≃ₗ
       reduction_eq_zero_of_integral_inv_mul hp (hyB p'' t.1 h6 h7 t.isLt), mul_zero]
   rw [hzero, add_zero, Finset.sum_range]
   refine Finset.sum_congr rfl (fun x _ => ?_)
-  rw [reduction_mul' (P := P) (gm_int rfl h1 h2 h3 h4 h5 hg s.1 x.1 hs) (hyA x.1 t.1 (by have := x.isLt; omega) ht)]
+  rw [reduction_mul' (P := P) (gm_int rfl h1 h2 h3 h4 h5 hg s.1 x.1 hs) (hyA x.1 t.1 omega ht)]
 
 theorem det_comp (hp : (Ideal.absNorm P.asIdeal).Prime) {g : Sp E (n + c) ≃ₗ[E] Sp E (n + c)} (hg : g ∈ JQ P q kj n c)
     {y : HomE E (n' + c') (n + c)} (hy : CondQ P q k₀ r c' n' c n y) :
@@ -300,11 +300,11 @@ theorem det_comp (hp : (Ideal.absNorm P.asIdeal).Prime) {g : Sp E (n + c) ≃ₗ
       redP P (GA k₀ r c n g).det * redP P (AYm q k₀ r c' n' c n y).det := by
   have hgy := supp_comp hqq h1 h2 h3 h4 h5 hg hy
   rw [reduction_det' (AYm q k₀ r c' n' c n (g.toLinearMap ∘ₗ y))
-      (fun s t => hgy.1 s.1 t.1 (by have := s.isLt; omega) (by have := t.isLt; omega)),
+      (fun s t => hgy.1 s.1 t.1 omega omega),
     val_comp hqq h1 h2 h3 h4 h5 hp hg hy, Matrix.det_mul,
-    reduction_det' (GA k₀ r c n g) (fun s t => gm_int hqq h1 h2 h3 h4 h5 hg s.1 t.1 (by have := s.isLt; omega)),
+    reduction_det' (GA k₀ r c n g) (fun s t => gm_int hqq h1 h2 h3 h4 h5 hg s.1 t.1 omega),
     reduction_det' (AYm q k₀ r c' n' c n y)
-      (fun s t => hy.1 s.1 t.1 (by have := s.isLt; omega) (by have := t.isLt; omega))]
+      (fun s t => hy.1 s.1 t.1 omega omega)]
 
 end Law
 
@@ -372,7 +372,7 @@ theorem jacobian_transformation_law : JLawP := by
   have hA0 : AYm (qOf P) k₀ r c' n' c n (Matrix.toLin' M0) = 1 := by
     ext s t
     simp only [AYm, Matrix.of_apply, Matrix.one_apply]
-    rw [hent0 _ _ (by have := s.isLt; omega) (by have := t.isLt; omega)]
+    rw [hent0 _ _ omega omega]
     by_cases hst : s = t
     · subst hst
       simp

@@ -245,7 +245,7 @@ theorem len_edge : ∀ j (v' : Fin (X.Pj j).nV) (i : ℕ) (L : (X.Pj j).Tup)
     | exact Function.update_same _ _ _
     | exact dif_pos rfl
   rw [hu]
-  exact lenLat_edge hS.p_unif hS.res_card (by have := hS.five_le; omega) (by have := hS.two_le; omega) _ he
+  exact lenLat_edge hS.p_unif hS.res_card omega omega _ he
 
 theorem len_other : ∀ j (v' : Fin (X.Pj j).nV) (v : X.Pl) (L : (X.Pj j).Tup)
     (L'' : Submodule ((X.Pj j).W v') (Fin ((X.Pj j).m + 1) → (X.Pj j).Qq v')),

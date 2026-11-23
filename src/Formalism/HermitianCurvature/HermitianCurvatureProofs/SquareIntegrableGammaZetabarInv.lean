@@ -309,7 +309,7 @@ theorem third_identity_of_parts : Formalism.FourierDecayAlt.MA.EnergyAbsoluteIde
   have hbox := (hBF (sysQ P l L j lam α β Lb c Ntot) hL2 h6).1 w.length hl
   have hYb : Y ∈ (sysQ P l L j lam α β Lb c Ntot).box w.length := hY
   have hmid : Y ∈ Set.Icc (α + (β - α) / 3) (β - (β - α) / 3) := hbox hYb
-  have hYI : Y ∈ Set.Icc α β := ⟨by have := hmid.1; linarith, by have := hmid.2; linarith⟩
+  have hYI : Y ∈ Set.Icc α β := ⟨linarith, linarith⟩
   have hπ := hTy P hOK (ixOf P w.length i).2
   have hsign := (hPS P.k P.r P.u P.u' (M.rho P (ixOf P w.length i).2) lam l Y hl1 hlk hu hu' hπ
     (MAx2.between_of_onCut (hcut Y hYI))).2.2
@@ -429,7 +429,7 @@ theorem famPos (P : M.Par) (l : ℕ) (L : R.LevelData (A P (DQ P)) P.r) (j : M.T
     have hYI : ∀ a : Fin N, Y a ∈ Set.Icc α β := fun a => by
       have hm : Y a ∈ Set.Icc (α + (β - α) / 3) (β - (β - α) / 3) :=
         hBF.1 (N - 1 - (a : ℕ)) (by show N - 1 - (a : ℕ) < Ntot; omega) (hYbox a)
-      exact ⟨by have := hm.1; linarith, by have := hm.2; linarith⟩
+      exact ⟨linarith, linarith⟩
     have hpw : (List.ofFn Y).Pairwise fun Y Y' => 2 < |Y - Y'| := by
       rw [List.pairwise_ofFn]
       intro a b hab

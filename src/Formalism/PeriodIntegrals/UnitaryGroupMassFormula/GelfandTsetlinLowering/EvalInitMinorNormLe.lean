@@ -285,7 +285,7 @@ theorem nu_eq {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight n)
   push_cast
   rw [Finset.sum_congr rfl (g := fun i : Fin n => (fun k : ℕ => if t.1 ≤ k then ℓ k - ℓ (k + 1) else 0) i.1)]
   · rw [Fin.sum_univ_eq_sum_range (fun k : ℕ => if t.1 ≤ k then ℓ k - ℓ (k + 1) else 0) n,
-      XiA.tele_sum ℓ n t.1 (by have := t.2; omega)]
+      XiA.tele_sum ℓ n t.1 omega]
     simp only [hℓ, dif_pos t.2, dif_pos (show n < n + 1 by omega)]
   · intro i _
     have hi := i.2

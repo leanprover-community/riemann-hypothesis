@@ -205,7 +205,7 @@ theorem pb_eq_JK {p : ℕ} (hp : SplitOK D p) (pb : HeightOneSpectrum (𝓞 D.ho
       · rfl
       · exfalso
         rw [hieq] at hN
-        exact h2 (Nat.eq_of_mul_eq_mul_left (by have := hp.1.pos; positivity) (hN.trans (mul_one _).symm))
+        exact h2 (Nat.eq_of_mul_eq_mul_left (positivity) (hN.trans (mul_one _).symm))
     rw [hi1, pow_one] at hieq
     have hprime : (JK D p e).IsPrime :=
       Ideal.isPrime_of_irreducible_absNorm (by rw [hieq]; exact hp.1.prime.irreducible)

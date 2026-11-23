@@ -353,7 +353,7 @@ theorem pb_ask_zero (j : ℕ) (t : D.host.TT) (p : ℕ) (hp : (L.aT t).toNat < p
   refine Finset.sum_eq_zero (fun i _ => ?_)
   by_cases hi : Odd i
   · rw [if_pos hi]
-    have hlt : (L.aT t).toNat < p ^ i := lt_of_lt_of_le hp (Nat.le_self_pow (by have := hi.pos; omega) p)
+    have hlt : (L.aT t).toNat < p ^ i := lt_of_lt_of_le hp (Nat.le_self_pow omega p)
     have := Lnk.term0 L t (L.wPart_ge j t p i) hlt
     rw [Nat.cast_pow] at this
     rw [max_comm]

@@ -402,13 +402,13 @@ theorem exc_pt {l : ℕ} (hl : lStar L < l) :
       _ ≤ 2 * Den L := by linarith
 
   have hlog1 : 1 ≤ Real.log (l : ℝ) := by
-    have : Real.exp 1 ≤ (l : ℝ) := by have := Real.exp_one_lt_d9; linarith
+    have : Real.exp 1 ≤ (l : ℝ) := linarith
     calc (1 : ℝ) = Real.log (Real.exp 1) := (Real.log_exp 1).symm
       _ ≤ _ := Real.log_le_log (Real.exp_pos 1) this
   have hlogh : Real.log (hB L) ≤ large₂ L + 1 := by
     have := Real.log_le_log (by linarith) hh
     rw [Real.log_mul (by norm_num) (by linarith), b_eq, Real.log_exp] at this
-    have : Real.log 2 < 1 := by have := Real.log_two_lt_d9; linarith
+    have : Real.log 2 < 1 := linarith
     linarith
   have hlb : Real.logb l (hB L) ≤ large₂ L + 1 := by
     unfold Real.logb
@@ -660,7 +660,7 @@ theorem sum_g (T : Finset ℕ) (hT : ∀ l ∈ T, l ∈ gset D) :
         have hg0 : (0 : ℝ) < D.host.g i := lt_of_lt_of_le hY0 h1
         have := Real.log_le_log hg0 h2
         rw [Real.log_mul (by norm_num) hY0.ne'] at this
-        have : Real.log 2 < 1 := by have := Real.log_two_lt_d9; linarith
+        have : Real.log 2 < 1 := linarith
         have : P.CYL * large₂ L ≤ C * large₂ L := mul_le_mul_of_nonneg_right hCYL (Lg_nonneg L)
         have hY3' : Real.log Y ≤ P.CYL * large₂ L := hY3
         nlinarith

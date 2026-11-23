@@ -94,8 +94,8 @@ theorem sigPar_succ (τ : D.what₂.Tau) (i : ℕ) (hi : i + 1 < D.R.k - 1 + D.R
         have hb : i + 1 - (D.R.k - 1) < D.R.m := by omega
         rw [dite_eq_left hb]
         have a := (D.hc τ).v_gt_u ⟨i, by omega⟩
-        have b := (D.hc τ).u_last_gt (by omega) (by have := D.R.two_le_m; omega)
-        have e1 : (⟨i + 1 - (D.R.k - 1), hb⟩ : Fin D.R.m) = ⟨0, by have := D.R.two_le_m; omega⟩ := Fin.ext (by simp; omega)
+        have b := (D.hc τ).u_last_gt (by omega) omega
+        have e1 : (⟨i + 1 - (D.R.k - 1), hb⟩ : Fin D.R.m) = ⟨0, omega⟩ := Fin.ext (by simp; omega)
         have e2 : (⟨(⟨i, by omega⟩ : Fin (D.R.k - 1)).1 + 1, by omega⟩ : Fin D.R.k) = ⟨D.R.k - 1, by omega⟩ :=
           Fin.ext (by simp; omega)
         rw [e1]

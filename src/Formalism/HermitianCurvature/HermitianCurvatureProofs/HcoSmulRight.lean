@@ -198,8 +198,8 @@ theorem herm_cvec (hz' : inWb k r z') (hν : inWb k r ν') (hνz : herm (Hpk k r
   have hpw' : ∀ (p : Fin (2 * r + k + 1)) (w : Fin (2 * r + k + 1) → ℂ), (p.val < r ∨ r + k < p.val) →
       inWb k r w → herm (Hpk k r) w (Pi.single p 1) = 0 := by
     intro p w hp hw; rw [hsym, hpw p w hp hw, map_zero]
-  have hEe : ∀ a : Fin r, ee k r a = Pi.single ⟨a.val, by have := a.isLt; omega⟩ 1 := fun a => rfl
-  have hEs : ∀ a : Fin r, es k r a = Pi.single ⟨2 * r + k - a.val, by have := a.isLt; omega⟩ 1 :=
+  have hEe : ∀ a : Fin r, ee k r a = Pi.single ⟨a.val, omega⟩ 1 := fun a => rfl
+  have hEs : ∀ a : Fin r, es k r a = Pi.single ⟨2 * r + k - a.val, omega⟩ 1 :=
     fun a => rfl
   have hee : ∀ a b : Fin r, herm (Hpk k r) (ee k r a) (ee k r b) = 0 := by
     intro a b; rw [hEe, hEe, hsing]; have := a.isLt; have := b.isLt

@@ -95,7 +95,7 @@ theorem first_count_le_log (s : Scale) (hx : Real.exp 1 ≤ s.x) : (N1 s : ℝ) 
     calc (Gp s : ℝ) * s.delta1 ≤ cGE s.eps * Real.log s.x * s.x ^ (s.eps / 8) * s.delta1 :=
           mul_le_mul_of_nonneg_right hGp hd0.le
       _ = cGE s.eps * Real.log s.x := by rw [mul_assoc, hd, mul_one]
-  have he3 : Real.exp 1 ≤ 3 := by have := Real.exp_one_lt_d9; linarith
+  have he3 : Real.exp 1 ≤ 3 := linarith
   have h0 : 0 ≤ (Gp s : ℝ) * s.delta1 := by positivity
   have h2 : 6 * Real.exp 1 * (Gp s : ℝ) * s.delta1 ≤ 18 * cGE s.eps * Real.log s.x := by
     have : 6 * Real.exp 1 * ((Gp s : ℝ) * s.delta1) ≤ 18 * ((Gp s : ℝ) * s.delta1) :=
@@ -103,7 +103,7 @@ theorem first_count_le_log (s : Scale) (hx : Real.exp 1 ≤ s.x) : (N1 s : ℝ) 
     nlinarith
   have h3 : (hG s + 3) * Real.logb 2 s.x ≤ 2 * (2 + 8 * s.eps + 3) * Real.log s.x := by
     unfold Formalism.MainNotions.G.hG Real.logb
-    have hl2 : (1 / 2 : ℝ) ≤ Real.log 2 := by have := Real.log_two_gt_d9; linarith
+    have hl2 : (1 / 2 : ℝ) ≤ Real.log 2 := linarith
     have : Real.log s.x / Real.log 2 ≤ 2 * Real.log s.x := by
       rw [div_le_iff₀ (by linarith)]
       nlinarith
@@ -292,7 +292,7 @@ theorem facts_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (hC31 : 0 
   have e_lb : ∀ p : ℕ, p.Prime → 0 ≤ Real.logb p L.sc.a ∧ Real.logb p L.sc.a ≤ (Real.exp (L.sc.x ^ (23 * L.sc.eps / 48))) := by
     intro p hp
     have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
-    have hl2 : (1 / 2 : ℝ) ≤ Real.log 2 := by have := Real.log_two_gt_d9; linarith
+    have hl2 : (1 / 2 : ℝ) ≤ Real.log 2 := linarith
     have hlp : (1 / 2 : ℝ) ≤ Real.log p := le_trans hl2 (Real.log_le_log (by norm_num) hp2)
     unfold Real.logb
     refine ⟨div_nonneg hla0 (by linarith), ?_⟩

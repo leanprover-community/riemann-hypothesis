@@ -98,7 +98,7 @@ theorem qminorRow_eq_unop {A : Type*} [Ring A] [Algebra ℂ A] {n t : ℕ} (E : 
   congr 2
   funext k
   have hk : (((Fin.rev k : Fin t) : ℕ) : ℂ) = (t : ℂ) - 1 - ((k : ℕ) : ℂ) := by
-    rw [Fin.val_rev, Nat.cast_sub (by have := k.isLt; omega)]
+    rw [Fin.val_rev, Nat.cast_sub omega]
     push_cast
     ring
   have hσ : (revConj t σ) (Fin.rev k) = Fin.rev (σ k) := by

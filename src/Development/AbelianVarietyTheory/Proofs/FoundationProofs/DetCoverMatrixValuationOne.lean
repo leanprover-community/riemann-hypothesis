@@ -63,21 +63,17 @@ end GlobalTheory.GLintCover
 noncomputable section
 namespace GlobalTheory.GLintCover
 
-section Count
 variable {F : Type} [Field F] [NumberField F] {v : HeightOneSpectrum (𝓞 F)} {n : ℕ}
 
 variable {ϖ : v.adicCompletion F} {a : Fin n → ℤ}
 
-end Count
 end GlobalTheory.GLintCover
 
 noncomputable section
 namespace GlobalTheory.GLintCover
 
-section Main
 variable {F : Type} [Field F] [NumberField F] {v : HeightOneSpectrum (𝓞 F)} {n : ℕ}
 variable {ϖ : v.adicCompletion F} {a : Fin n → ℤ}
 
-end Main
 
 end GlobalTheory.GLintCover

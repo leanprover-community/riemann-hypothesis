@@ -70,7 +70,7 @@ theorem harmonic_gap_sum_le (k : ℕ) (a : Fin k) :
     by_cases h : a < b
     · rw [if_pos h, if_pos (show a.val < b.val from h)]
     · rw [if_neg h, if_neg (show ¬ a.val < b.val from h)]
-  obtain ⟨m, hm⟩ : ∃ m, k = (a.val + 1) + m := ⟨k - (a.val + 1), by have := a.isLt; omega⟩
+  obtain ⟨m, hm⟩ : ∃ m, k = (a.val + 1) + m := ⟨k - (a.val + 1), omega⟩
   have hr : range k = range ((a.val + 1) + m) := congrArg range hm
   rw [e, hr, Finset.sum_range_add]
   have h1 : ∑ i ∈ range (a.val + 1), (if a.val < i then (1 : ℝ) / ((i : ℝ) - (a.val : ℝ)) else 0) = 0 :=

@@ -131,7 +131,7 @@ theorem restTMEps_of (hS : SegFacts C0 CE1 CE2 X) (hE' : (X.r : ℝ) + 1 ≤ X.L
   intro dl hdl a ha x hx i
   have hk : X.L.k = (X.r : ℝ) + 1 := rfl
   have hk0 : X.L.k ≠ 0 := by rw [hk]; have := r5 hS; linarith
-  have hY0 : X.L.Y ≠ 0 := by have := hS.Y1; linarith
+  have hY0 : X.L.Y ≠ 0 := linarith
   have hr5 := r5 hS
   have hY := hS.Y1
   have hb0 := hS.hF.b0

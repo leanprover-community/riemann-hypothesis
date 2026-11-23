@@ -180,7 +180,7 @@ theorem Pv_last (τ : Equiv.Perm (Fin (m + 1))) :
       fun k : Fin m => Tm E (w - 1 - (k : ℂ)) (a (σ k)) (b (τ k.castSucc)) := by
     funext k
     simp only [Fv, Fin.val_castSucc]
-    rw [if_neg (by have := k.isLt; omega), if_pos k.isLt, extN_lt] <;> rfl
+    rw [if_neg omega, if_pos k.isLt, extN_lt] <;> rfl
   rw [hf, hg]
   exact (mul_assoc _ _ _).symm
 

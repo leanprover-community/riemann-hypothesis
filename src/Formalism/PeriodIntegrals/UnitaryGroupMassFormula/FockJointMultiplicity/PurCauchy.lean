@@ -156,7 +156,7 @@ theorem cauchyHW_of (hA : HypAnti) (hS : HypShape) (hD : HypDiag) (hF : HypFree)
     push_neg at hi
     have h0 : α i = 0 := by
       rw [← (hsum e heP).1 i]
-      exact Finset.sum_eq_zero fun k _ => hoff i k (by have := k.isLt; omega)
+      exact Finset.sum_eq_zero fun k _ => hoff i k omega
     exact (hα i).ne' h0
   have hcollt : ∀ k : Fin n, (k : ℕ) < m := by
     intro k
@@ -164,7 +164,7 @@ theorem cauchyHW_of (hA : HypAnti) (hS : HypShape) (hD : HypDiag) (hF : HypFree)
     push_neg at hk
     have h0 : β k = 0 := by
       rw [← (hsum e heP).2 k]
-      exact Finset.sum_eq_zero fun i _ => hoff i k (by have := i.isLt; omega)
+      exact Finset.sum_eq_zero fun i _ => hoff i k omega
     exact (hβ k).ne' h0
   have hmn : m = n := by
     apply le_antisymm

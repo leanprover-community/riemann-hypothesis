@@ -117,7 +117,7 @@ theorem wtGe_mul_natCast {pi : ℝ} (h0 : 0 < pi) {r : ι → ℝ} {wt : ℝ} {f
 theorem frob_two {l : ℕ} (hl : l.Prime) (hpi0 : 0 < ‖(l : K)‖) {r : ι → ℝ} {wt : ℝ}
     {A B : MvPowerSeries ι K} (hA : WtGe ‖(l : K)‖ r wt A) (hB : WtGe ‖(l : K)‖ r wt B) :
     WtGe ‖(l : K)‖ r ((l : ℝ) * wt + 1) ((A + B) ^ l - A ^ l - B ^ l) := by
-  obtain ⟨k, hk⟩ : ∃ k, l = k + 1 + 1 := ⟨l - 2, by have := hl.two_le; omega⟩
+  obtain ⟨k, hk⟩ : ∃ k, l = k + 1 + 1 := ⟨l - 2, omega⟩
   have key : (A + B) ^ l - A ^ l - B ^ l = ∑ m ∈ Finset.range (k + 1),
       A ^ (m + 1) * B ^ (l - (m + 1)) * (l.choose (m + 1) : MvPowerSeries ι K) := by
     subst hk

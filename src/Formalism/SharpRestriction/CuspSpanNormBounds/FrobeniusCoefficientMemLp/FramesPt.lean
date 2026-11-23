@@ -207,7 +207,7 @@ theorem Zhat_conjI_turn {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} (hz : i
     {g : Mx k r} {p : Point ℂ (r + 1)} (h : ZhatO k r z z' g = ptMat p) :
     Zhat k r z z' (tTi k r * g * tT k r) = ptMat (turnPt p) := by
   ext a b
-  rw [Zhat_conjI hz hz', ZhatO_eq, h, ptMat_turnPt, ← phase_id r a.val b.val (by have := b.isLt; omega)]
+  rw [Zhat_conjI hz hz', ZhatO_eq, h, ptMat_turnPt, ← phase_id r a.val b.val omega]
   ring
 
 end Formalism.MainNotions.S.Pv.Frames

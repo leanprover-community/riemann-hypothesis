@@ -82,7 +82,7 @@ theorem antitone_shapes : Anti := by
     intro x
     have hcard : Fintype.card P < Fintype.card (Fin (Fintype.card P + 1)) := by simp
     obtain ⟨s, t, hst, hx⟩ := Fintype.exists_ne_map_eq_of_card_lt
-      (fun s : Fin (Fintype.card P + 1) => x ⟨i + s.val, by have := s.isLt; omega⟩) hcard
+      (fun s : Fin (Fintype.card P + 1) => x ⟨i + s.val, omega⟩) hcard
     have hs := s.isLt
     have ht := t.isLt
     have hst' : s.val ≠ t.val := fun e => hst (Fin.ext e)

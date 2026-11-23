@@ -73,7 +73,7 @@ theorem sum_cnt (n : ℕ) : ∑ k ∈ Finset.Icc 1 n, cnt K k =
       simp at hI
     let e : {I : (Ideal (𝓞 K))⁰ // Ideal.absNorm (I : Ideal (𝓞 K)) ≤ n + 1} ≃ {I : (Ideal (𝓞 K))⁰ // Ideal.absNorm (I : Ideal (𝓞 K)) ≤ n} ⊕ {I : Ideal (𝓞 K) // Ideal.absNorm I = n + 1} :=
       { toFun := fun x => if h : Ideal.absNorm (x.1 : Ideal (𝓞 K)) ≤ n then Sum.inl ⟨x.1, h⟩
-          else Sum.inr ⟨x.1.1, by have := x.2; omega⟩
+          else Sum.inr ⟨x.1.1, omega⟩
         invFun := fun y => match y with
           | Sum.inl z => ⟨z.1, Nat.le_succ_of_le z.2⟩
           | Sum.inr z => ⟨⟨z.1, hnz z.1 z.2⟩, z.2.le⟩

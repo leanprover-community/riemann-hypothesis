@@ -169,7 +169,7 @@ theorem pcEnc_inj {K s : ℕ} {v v' : Fin K → ℤ} (hz : ∀ i : Fin K, s + 1 
   · have hq : ∃ q : Fin (2 * s + 1), pcPosition K s q.val = i.val := by
       by_cases hi : i.val < s + 1
       · exact ⟨⟨i.val, by omega⟩, by simp [pcPosition, hi]⟩
-      · refine ⟨⟨2 * s + 1 - (K - i.val), by have := i.2; omega⟩, ?_⟩
+      · refine ⟨⟨2 * s + 1 - (K - i.val), omega⟩, ?_⟩
         have h1 : ¬ (2 * s + 1 - (K - i.val) < s + 1) := omega
         simp only [pcPosition, h1, if_false]
         have := i.2
@@ -266,7 +266,7 @@ theorem pairCount_of_std {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (h : Std C0 Cde CE1 
   have hp1 : (1 : ℝ) ≤ X.p := h.p1
   have hp0 : (0 : ℝ) < X.p := by linarith
   have hN1 : (1 : ℝ) ≤ X.N1 := by exact_mod_cast h.N1pos
-  have hk5 : 5 ≤ X.k := by have := h.N1k; linarith
+  have hk5 : 5 ≤ X.k := linarith
   have hY := h.Y1
   have hY2 : 1 ≤ X.Y ^ 2 := one_le_pow₀ hY
   have hpk : X.k ^ 2 ≤ X.p := le_trans (by nlinarith [sq_nonneg X.k]) h.pk
@@ -318,12 +318,12 @@ theorem pairCount_of_std {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (h : Std C0 Cde CE1 
   have hsr : ((segS X.TT j : ℕ) : ℝ) ≤ X.N1 := by exact_mod_cast hs
   have hMr : (M : ℝ) ≤ 2 * (X.a : ℝ) / X.p := Nat.floor_le (by positivity)
   have hAa : (A : ℝ) ≤ X.a := by
-    have h1 := base_exponent_le_a X.p (by have := h.p5; omega) (X.seg C0 CE1 CE2 j) h.E0nn
+    have h1 := base_exponent_le_a X.p omega (X.seg C0 CE1 CE2 j) h.E0nn
     have h2 : ((X.seg C0 CE1 CE2 j).a : ℝ) / (X.p : ℝ) ^ (X.seg C0 CE1 CE2 j).G ≤ X.a :=
       div_le_self hapos.le (one_le_pow₀ hp1)
     linarith
   have hsM : (2 * ((segS X.TT j : ℕ) : ℝ) + 1) * (M : ℝ) ≤ X.a := by
-    have h1 : 2 * ((segS X.TT j : ℕ) : ℝ) + 1 ≤ X.k := by have := h.N1k; linarith
+    have h1 : 2 * ((segS X.TT j : ℕ) : ℝ) + 1 ≤ X.k := linarith
     have h2 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg _
     have h3 : (2 * ((segS X.TT j : ℕ) : ℝ) + 1) * (M : ℝ) ≤ X.k * (2 * (X.a : ℝ) / X.p) :=
       mul_le_mul h1 hMr h2 (by linarith)

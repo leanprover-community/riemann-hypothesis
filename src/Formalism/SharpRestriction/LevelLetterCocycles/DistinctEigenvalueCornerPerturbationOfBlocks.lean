@@ -73,7 +73,7 @@ theorem exists_natAdd (r t : ℕ) (a : Fin (r + t)) (ha : blkG r t a ≠ 0) :
   unfold blkG at ha
   split_ifs at ha with h
   · exact absurd rfl ha
-  · exact ⟨⟨(a : ℕ) - r, by have := a.2; omega⟩, Fin.ext (by simp; omega)⟩
+  · exact ⟨⟨(a : ℕ) - r, omega⟩, Fin.ext (by simp; omega)⟩
 
 theorem primHyp_of (hN : NormAt N r ρ π)
     (hG1 : ∀ (γ : GE N) (k : ℕ), (fun x : N.X i => ((rO N i r x γ).charpolyRev).coeff k) ∈ N.T i) :
@@ -86,7 +86,7 @@ theorem primHyp_of (hN : NormAt N r ρ π)
     simp
   rw [h1]
   refine (hχ g c).trans ?_
-  have h2 := N.chi_def i ((c : ℕ) + 1) (by omega) (by have := c.2; omega)
+  have h2 := N.chi_def i ((c : ℕ) + 1) (by omega) omega
   have h3 : chiU N i ((c : ℕ) + 1) g = chiU N i 1 g * ((epsU N i g)⁻¹ ^ (c : ℕ)) := by
     show N.chi i ((c : ℕ) + 1) g = _
     rw [h2, MonoidHom.mul_apply]

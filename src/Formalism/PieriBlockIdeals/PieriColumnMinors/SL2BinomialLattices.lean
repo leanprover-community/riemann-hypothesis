@@ -135,7 +135,7 @@ theorem raising_split_three : ESplit3 := by
 def embedFinFirst {N k : ℕ} (hk : k ≤ N) : Fin k ↪ Fin N := ⟨Fin.castLE hk, Fin.castLE_injective hk⟩
 
 def embedFinLast (N k : ℕ) : Fin (N - k) ↪ Fin N :=
-  ⟨fun a => ⟨k + a.val, by have := a.isLt; omega⟩, fun a b h => by
+  ⟨fun a => ⟨k + a.val, omega⟩, fun a b h => by
     have := congrArg Fin.val h
     simp only at this
     exact Fin.ext (by omega)⟩

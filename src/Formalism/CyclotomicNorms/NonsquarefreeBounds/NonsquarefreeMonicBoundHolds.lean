@@ -60,7 +60,7 @@ lemma coeff_monicOf_ge {N : ℕ} (a : Fin N → K) (k : ℕ) (hk : N ≤ k) :
   unfold monicOf
   rw [coeff_add, coeff_X_pow, Polynomial.finsetSum_coeff]
   simp only [coeff_C_mul_X_pow]
-  rw [Finset.sum_eq_zero (fun j _ => if_neg (by have := j.2; omega)), add_zero]
+  rw [Finset.sum_eq_zero (fun j _ => if_neg omega), add_zero]
 
 lemma natDegree_monicOf {N : ℕ} (a : Fin N → K) : (monicOf a).natDegree = N := by
   unfold monicOf

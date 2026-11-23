@@ -274,7 +274,7 @@ theorem sec_pt (h : Point K) (c : Kˣ) :
     simp only [pt, eN_inl, eN_inr]
     change (if (y : ℕ) = revIn (h.1 ++ [1]) h.1.sum then
       ((Function.update h.2 h.1.length c (blk (h.1 ++ [1]) h.1.sum) : Kˣ) : K) else 0) = _
-    rw [A5x7.revIn_app _ 1 le_rfl, if_neg (by have := y.2; omega)]
+    rw [A5x7.revIn_app _ 1 le_rfl, if_neg omega]
     rfl
   · rw [blkM_rr]
     simp only [pt, eN_inr]

@@ -51,7 +51,7 @@ section GlobalTheory
 variable (r t : ℕ)
 
 def blkG (a : Fin (r + t)) : Fin (t + 1) :=
-  if _h : (a : ℕ) < r then 0 else ⟨(a : ℕ) - r + 1, by have := a.2; omega⟩
+  if _h : (a : ℕ) < r then 0 else ⟨(a : ℕ) - r + 1, omega⟩
 
 theorem blkG_castAdd (a : Fin r) : blkG r t (Fin.castAdd t a) = 0 := by
   rw [blkG, dite_eq_left (by simp)]

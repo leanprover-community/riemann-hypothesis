@@ -291,14 +291,14 @@ theorem countLow_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
 
   obtain ⟨A0n, hA0n⟩ : ∃ n : ℕ, (X.seg C0 CE1 CE2 j).A0 X.p = (n : ℤ) := by
     have h1 := hs.half_ratio_le_segment_base_of_std j
-    have h2 : (0 : ℝ) < (X.a : ℝ) / (2 * X.Q) := div_pos hs.apos (by have := hs.Q1; linarith)
+    have h2 : (0 : ℝ) < (X.a : ℝ) / (2 * X.Q) := div_pos hs.apos (linarith)
     have h3 : (0 : ℝ) < ((X.seg C0 CE1 CE2 j).A0 X.p : ℝ) := lt_of_lt_of_le h2 h1
     have h4 : 0 < (X.seg C0 CE1 CE2 j).A0 X.p := by exact_mod_cast h3
     exact ⟨((X.seg C0 CE1 CE2 j).A0 X.p).toNat, (Int.toNat_of_nonneg h4.le).symm⟩
   have hA0r : ((X.seg C0 CE1 CE2 j).A0 X.p : ℝ) = (A0n : ℝ) := simp [hA0n]
   have hA0pos : (0 : ℝ) < (A0n : ℝ) := by
     have h1 := hs.half_ratio_le_segment_base_of_std j
-    have h2 : (0 : ℝ) < (X.a : ℝ) / (2 * X.Q) := div_pos hs.apos (by have := hs.Q1; linarith)
+    have h2 : (0 : ℝ) < (X.a : ℝ) / (2 * X.Q) := div_pos hs.apos (linarith)
     rw [hA0r] at h1
     linarith
   have hA0pos' : 0 < A0n := by exact_mod_cast hA0pos

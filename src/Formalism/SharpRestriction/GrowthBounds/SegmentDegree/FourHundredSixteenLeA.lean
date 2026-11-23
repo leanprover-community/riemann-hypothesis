@@ -122,7 +122,7 @@ theorem a_big (hX : X.Hyp p K) : 416 * (X.Ns : ℝ) ≤ X.a := by
   have hk : (1 : ℝ) ≤ ((r + K : ℕ) : ℝ) := by
     have h0 := hX.r2
     exact_mod_cast (by omega : 1 ≤ r + K)
-  have hmem := frj_mem hX.valid 1 0 (by have := hX.r2; omega)
+  have hmem := frj_mem hX.valid 1 0 omega
   have hQ : 1 ≤ X.Q := (one_le_pow₀ (by linarith : (1 : ℝ) ≤ p)).trans (hX.twist 1 _ hmem)
   have hE : (1 : ℝ) ≤ (X.E₀ : ℝ) + X.mStar + 1 := by
     have h1 : (0 : ℝ) ≤ X.E₀ := Nat.cast_nonneg _

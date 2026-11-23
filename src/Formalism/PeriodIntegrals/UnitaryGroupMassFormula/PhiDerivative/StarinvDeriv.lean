@@ -78,7 +78,7 @@ def dvC : (Fin r → ℂ) →L[ℝ] (Fin (2 * r + k + 1) → ℂ) :=
     else if h2 : i.val ≤ r + k then 0
     else -((Complex.conjCLE : ℂ →L[ℝ] ℂ).comp
       (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin r => ℂ)
-        ⟨2 * r + k - i.val, by have := i.isLt; omega⟩))
+        ⟨2 * r + k - i.val, omega⟩))
 
 theorem dvC_apply (x : Fin r → ℂ) : dvC k r x = dv k r x := by
   funext i
@@ -100,7 +100,7 @@ theorem tv_deriv : HasStrictFDerivAt (fun x : Fin r → ℂ => tv k r (1 + x)) (
       exact hasStrictFDerivAt_const _ _
     · simp only [h, h2, ↓reduceDIte, Pi.add_apply, Pi.one_apply]
       have ha := hasStrictFDerivAt_apply (𝕜 := ℝ)
-        (i := (⟨2 * r + k - i.val, by have := i.isLt; omega⟩ : Fin r)) (f := (0 : Fin r → ℂ))
+        (i := (⟨2 * r + k - i.val, omega⟩ : Fin r)) (f := (0 : Fin r → ℂ))
       have hs : ∀ y : ℂ, y = 0 → HasStrictFDerivAt (fun z : ℂ => (star (1 + z))⁻¹)
           (-(Complex.conjCLE : ℂ →L[ℝ] ℂ)) y := by
         rintro y rfl; exact starinv_deriv

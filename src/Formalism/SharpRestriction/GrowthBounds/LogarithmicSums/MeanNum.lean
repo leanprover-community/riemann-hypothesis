@@ -124,7 +124,7 @@ theorem first_count_le_log (s : Scale) (hx : Real.exp 1 ≤ s.x) : (N1 s : ℝ) 
     calc (Gp s : ℝ) * s.delta1 ≤ cGE s.eps * Real.log s.x * s.x ^ (s.eps / 8) * s.delta1 :=
           mul_le_mul_of_nonneg_right hGp hd0.le
       _ = cGE s.eps * Real.log s.x := by rw [mul_assoc, hd, mul_one]
-  have he3 : Real.exp 1 ≤ 3 := by have := Real.exp_one_lt_d9; linarith
+  have he3 : Real.exp 1 ≤ 3 := linarith
   have h0 : 0 ≤ (Gp s : ℝ) * s.delta1 := by positivity
   have h2 : 6 * Real.exp 1 * (Gp s : ℝ) * s.delta1 ≤ 18 * cGE s.eps * Real.log s.x := by
     have : 6 * Real.exp 1 * ((Gp s : ℝ) * s.delta1) ≤ 18 * ((Gp s : ℝ) * s.delta1) :=

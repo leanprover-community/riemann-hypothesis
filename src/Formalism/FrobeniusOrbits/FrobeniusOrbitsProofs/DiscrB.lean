@@ -152,7 +152,7 @@ theorem discr_hostE (h1 : DiscrMaximalRealCyclotomic) (hH : HostHyp q d) (h : Is
   have hnat := natAbs_discr_eq_natAbs_discr_pow_mul_natAbs_discr_pow (hostE ζ a b) K₁ K₂ hld hsup
     (isCoprime_differentIdeal_of_isCoprime_discr (hostE ζ a b) hcop)
   have hr : nrRealPlaces (hostE ζ a b) = 0 :=
-    Formalism.HF.P.nrRealPlaces_zero (aE ζ a b) (-(q : ℤ)) (by have := hqp.pos; omega)
+    Formalism.HF.P.nrRealPlaces_zero (aE ζ a b) (-(q : ℤ)) omega
       (by rw [ConjReal.aE_sq h]; push_cast; rfl)
   have hc : nrComplexPlaces (hostE ζ a b) = 2 ^ (e + 1) := by
     have := card_add_two_mul_card_eq_rank (K := hostE ζ a b)

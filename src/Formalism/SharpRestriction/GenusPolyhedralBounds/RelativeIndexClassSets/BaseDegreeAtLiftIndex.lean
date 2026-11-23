@@ -71,7 +71,7 @@ theorem sA_lin {p l1 g1 l2 g2 : ℕ} {a1 a2 e : ℝ}
       ∑ i : Fin p, a2 * ((l2 + (p - 1 - i.1) * g2 : ℕ) : ℝ) + p * e := by
     rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   rw [← h2]
-  exact Finset.sum_le_sum (fun i _ => h _ (by have := i.isLt; omega))
+  exact Finset.sum_le_sum (fun i _ => h _ omega)
 
 def apW (D : D7) (j l g n : ℕ) (hn : Even n) : WeightFamilies.Wt D j where
   aP _ i := l + ((D.R.sigW j).1 - 1 - i.1) * g

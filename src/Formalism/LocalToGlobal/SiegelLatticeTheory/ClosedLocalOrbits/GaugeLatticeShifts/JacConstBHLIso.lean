@@ -351,7 +351,7 @@ theorem dv_sq_sum (x : Fin r → ℂ) : ∑ i, ‖dv k r x i‖ ^ 2 = 2 * ∑ a,
     have h1 : ¬ i.val < r := fun h => hi.1 ⟨i.val, h⟩ (Fin.ext rfl)
     have h2 : i.val ≤ r + k := by
       by_contra h
-      exact hi.2 ⟨2 * r + k - i.val, by have := i.isLt; omega⟩ (Fin.ext (by simp [f]; have := i.isLt; omega))
+      exact hi.2 ⟨2 * r + k - i.val, omega⟩ (Fin.ext (by simp [f]; have := i.isLt; omega))
     unfold dv; rw [dite_eq_right h1, dite_eq_left h2]; simp
   rw [← Finset.sum_subset (Finset.subset_univ _) hsupp, Finset.sum_union hdisj, Finset.sum_image (fun a _ b _ h => he h),
     Finset.sum_image (fun a _ b _ h => hf h), two_mul]

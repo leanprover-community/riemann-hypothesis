@@ -599,7 +599,7 @@ theorem bmA_adj : ∀ {n : ℕ} (g : Fin n → A) (p p' : Fin n), p'.val = p.val
     induction p using Fin.cases with
     | zero =>
       have hq : q'.val = 0 := by simpa using h
-      obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by have := q'.isLt; omega⟩
+      obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, omega⟩
       have hq0 : q' = 0 := by ext; simpa using hq
       subst hq0
       refine ⟨1, (List.ofFn fun i : Fin m => g i.succ.succ).prod, fun a b => ?_⟩
@@ -2446,7 +2446,7 @@ theorem bm_xi_row {R : Type} [CommRing R] {n : ℕ} (lam sg : Fin n → ℕ) (hI
   · rw [dite_eq_right ha]
     have hl : a = Fin.last n := Fin.ext (by have := a.isLt; simp; omega)
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [if_pos hl, if_neg (by have := i.isLt; omega), if_neg (by have := i.isLt; omega)]
+    rw [if_pos hl, if_neg omega, if_neg omega]
     omega
 
 theorem bmK_two_tf (R : Type*) [CommRing R] [IsDomain R] [CharZero R] (n : ℕ) (x : Module.End R (BP R n))

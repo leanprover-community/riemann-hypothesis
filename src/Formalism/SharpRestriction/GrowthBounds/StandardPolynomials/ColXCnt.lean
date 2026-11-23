@@ -90,7 +90,7 @@ theorem sum_range_odd {M : Type*} [AddCommMonoid M] (G : ℕ → M) (s : ℕ) :
     abel
 
 theorem sum_fin_odd {M : Type*} [AddCommMonoid M] (s : ℕ) (F : Fin (2 * s + 1) → M) :
-    ∑ a, F a = (∑ l : Fin s, (F ⟨2 * l.val, by have := l.2; omega⟩ + F ⟨2 * l.val + 1, by have := l.2; omega⟩)) +
+    ∑ a, F a = (∑ l : Fin s, (F ⟨2 * l.val, omega⟩ + F ⟨2 * l.val + 1, omega⟩)) +
       F ⟨2 * s, by omega⟩ := by
   classical
   set G : ℕ → M := fun a => if h : a < 2 * s + 1 then F ⟨a, h⟩ else 0 with hG

@@ -225,7 +225,7 @@ theorem branchingDimensionFormula : BranchDim := by
   intro n mu hmu
   have h : ∀ i : Fin n, mu i.succ ≤ mu i.castSucc := by
     intro i
-    have := hmu i.val (by have := i.isLt; omega)
+    have := hmu i.val omega
     have e1 : extW mu i.val = mu i.castSucc := extW_val mu i.castSucc
     have e2 : extW mu (i.val + 1) = mu i.succ := extW_val mu i.succ
     rwa [e1, e2] at this

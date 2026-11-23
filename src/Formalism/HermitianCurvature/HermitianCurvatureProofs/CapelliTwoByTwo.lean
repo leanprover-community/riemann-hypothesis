@@ -132,7 +132,7 @@ theorem herm_zero {r : ℕ} {v : Fin (2 * r + 0 + 1) → ℂ} (hv : inWb 0 r v) 
     · rw [Hpk_zero]
     · intro b _ hb
       have hb' : b.val ≠ r := fun h => hb (Fin.ext h)
-      rw [hv b (by have := b.isLt; omega), mul_zero]
+      rw [hv b omega, mul_zero]
     · intro h
       exact absurd (Finset.mem_univ _) h
   rw [herm, hmv]

@@ -313,7 +313,7 @@ theorem ell_nonunit {ϖ : O} (hϖ : Irreducible ϖ) {ℓ e : ℕ} (he : 1 ≤ e)
 theorem pshape' {B : Base O} {ϖ : O} (hϖ : Irreducible ϖ) {e : ℕ} (hB : PrimBase B ϖ e) (ell : ℕ) :
     B.PShape ell := by
   haveI := hB.complete
-  exact pshape (ell_nonunit hϖ hB.one_le_e hB.assoc) hB.e3 (by have := hB.three_le; omega) ell
+  exact pshape (ell_nonunit hϖ hB.one_le_e hB.assoc) hB.e3 omega ell
 
 theorem unitDist {B : Base O} {ϖ : O} (hd : ϖ ∣ (B.ℓ : O)) {ell : ℕ} (hP : B.PShape ell) (s : ℕ)
     (hs : s < ell) : UnitDist ϖ (B.ℓ ^ s) (B.p s) := by
@@ -364,7 +364,7 @@ theorem constant_model_setting {B : Base O} {ϖ : O} {e : ℕ} (he : 1 ≤ e) (h
 
 theorem baseGood {B : Base O} {ϖ : O} {e : ℕ} (hB : PrimBase B ϖ e) {g hh : ℕ}
     (hg : g ≤ hh) (j : ℕ) : B.Good j (parM B.ℓ hh g) g := by
-  have hM := lt_parM B.ℓ hh g (by have := hB.three_le; omega)
+  have hM := lt_parM B.ℓ hh g omega
   exact base_ring_good_holds O B j _ g hB.e3 hB.e4 (le_of_lt (lt_of_le_of_lt (by omega) hM))
 
 end ring
@@ -380,7 +380,7 @@ theorem latGood {ϖ : O} (hϖ : Irreducible ϖ) {e : ℕ} (hB : PrimBase B ϖ e)
   classical
   have hd := dvd_ell hB.one_le_e hB.assoc
   obtain ⟨u₁, hu₁⟩ := one_add_unit_pow_formula O ϖ B hϖ hd hB.prime hB.three_le hB.e4
-  have hM := lt_parM B.ℓ hh g (by have := hB.three_le; omega)
+  have hM := lt_parM B.ℓ hh g omega
   let Mi : ZMod n → ℕ := fun i =>
     if ∃ c ∈ Cu.cuts, ∃ k : ℕ, 1 ≤ k ∧ k ≤ j ∧ i = c + (k : ZMod n) then G else hh
   refine good_lattice_holds O ϖ B u₁ n Cu j (parM B.ℓ hh g) g G sig Mi V L hϖ hd

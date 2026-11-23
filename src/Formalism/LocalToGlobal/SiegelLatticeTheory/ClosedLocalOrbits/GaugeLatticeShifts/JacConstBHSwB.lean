@@ -76,14 +76,14 @@ def uWb (k r : ℕ) : Submodule ℝ (Mat k r) where
 def tv (k r : ℕ) (c : Fin r → ℂ) (i : Fin (2 * r + k + 1)) : ℂ :=
   if h : i.val < r then c ⟨i.val, h⟩
   else if h2 : i.val ≤ r + k then 1
-  else (star (c ⟨2 * r + k - i.val, by have := i.isLt; omega⟩))⁻¹
+  else (star (c ⟨2 * r + k - i.val, omega⟩))⁻¹
 
 def tM (k r : ℕ) (c : Fin r → ℂ) : Mat k r := Matrix.diagonal (tv k r c)
 
 def dv (k r : ℕ) (x : Fin r → ℂ) (i : Fin (2 * r + k + 1)) : ℂ :=
   if h : i.val < r then x ⟨i.val, h⟩
   else if h2 : i.val ≤ r + k then 0
-  else -star (x ⟨2 * r + k - i.val, by have := i.isLt; omega⟩)
+  else -star (x ⟨2 * r + k - i.val, omega⟩)
 
 def tD (k r : ℕ) (x : Fin r → ℂ) : Mat k r := Matrix.diagonal (dv k r x)
 

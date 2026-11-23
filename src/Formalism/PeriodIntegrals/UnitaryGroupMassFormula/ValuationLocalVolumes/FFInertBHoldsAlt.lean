@@ -50,7 +50,7 @@ theorem fFInertB_holds : PI.OmVd.FFInertB := by
   intro k K _ _ _ _ σ hσ h2 hne M a haM J hJ hdJ T hT hTu
   classical
   obtain ⟨i₀, hr, hc, hu⟩ := hTu
-  obtain ⟨a', rfl⟩ : ∃ a', a = a' + 1 := ⟨a - 1, by have := i₀.pos; omega⟩
+  obtain ⟨a', rfl⟩ : ∃ a', a = a' + 1 := ⟨a - 1, omega⟩
   have := Fintype.ofFinite k
   have : Module.Finite k K := Module.finite_of_finrank_pos (by omega)
   have : Finite K := Module.finite_of_finite k

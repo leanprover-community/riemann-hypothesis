@@ -151,12 +151,10 @@ theorem toFrac_injective : Function.Injective (toFrac O F O') := by
   exact h (by rw [← e, ← e, hxy])
 
 end Transport
-section Objects
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
   (Y : NExp D.R D.host D.what₂ D.LL0 N X) (i : X.Tw) (j : ℕ) (b : Bool)
 
-end Objects
 
 section PartB
 
@@ -279,7 +277,6 @@ variable (E : Formalism.MainNotions.IntegralHeckeForms.ExpDat Y)
 
 end Basis
 
-section Main
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
   (bkP : BKPh X)
@@ -289,7 +286,6 @@ variable (Y : NExp D.R D.host D.what₂ D.LL0 N X) (E : Formalism.MainNotions.In
 
 
 
-end Main
 
 end GlobalTheory.ExportCompare
 

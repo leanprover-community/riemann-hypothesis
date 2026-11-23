@@ -69,7 +69,7 @@ def PeelingOmittedColumn : Prop :=
   ∀ (A : Type) [Ring A] [Algebra ℂ A] (k r : ℕ) (z' : Fin (2 * r + k + 1) → ℂ)
     (E : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A) (m : ℕ) (hm : m + 1 ≤ r) (i : Fin (m + 1)) (u : ℂ),
     qminor E (xR k r m (by omega)) (fun l : Fin m => xR k r (m + 1) hm (i.succAbove l)) u -
-      qminor E (xR k r i.val (by have := i.isLt; omega)) (xR k r i.val (by have := i.isLt; omega)) u ∈
+      qminor E (xR k r i.val omega) (xR k r i.val omega) u ∈
       Ideal.span (rgen k r z' E)
 
 def PeelingCovector : Prop :=
@@ -81,7 +81,7 @@ def PeelingCovector : Prop :=
           (Fin.snoc (α := fun _ => Fin (2 * (m + 1) + k + 1))
             (fun l : Fin m => xR k (m + 1) (m + 1) le_rfl (i.succAbove l)) (wI k (m + 1) w)) u) -
       herm (Hpk k (m + 1)) z' yb •
-        qminor E (xR k (m + 1) i.val (by have := i.isLt; omega)) (xR k (m + 1) i.val (by have := i.isLt; omega)) u ∈
+        qminor E (xR k (m + 1) i.val omega) (xR k (m + 1) i.val omega) u ∈
       Ideal.span (rgen k (m + 1) z' E)
 
 def PeelingDualColumn : Prop :=
@@ -89,7 +89,7 @@ def PeelingDualColumn : Prop :=
     (E : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A), GlRel E →
     ∀ (m : ℕ) (hm : m + 1 ≤ r) (i : Fin (m + 1)) (ell : ℂ),
     qminor E (fun l : Fin m => sR k r (m + 1) hm (i.succAbove l)) (sR k r m (by omega)) (ell + (m : ℂ) - 1) -
-      qminor E (sR k r i.val (by have := i.isLt; omega)) (sR k r i.val (by have := i.isLt; omega))
+      qminor E (sR k r i.val omega) (sR k r i.val omega)
         (ell + ((i.val : ℕ) : ℂ) - 1) ∈
       Ideal.span (rgen k r z' E)
 

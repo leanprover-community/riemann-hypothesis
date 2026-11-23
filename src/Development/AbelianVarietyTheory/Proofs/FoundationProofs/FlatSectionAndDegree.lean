@@ -104,20 +104,16 @@ theorem comb_one {R : Type} [CommRing R] {t : SAB H (Sp R)} {m : ℕ} {v : Fin m
   rw [this]
   exact (LieComb.lieComb_algebra _ _ m v hv).2.2.2.1 i
 
-section Algebraic
 
 variable {L : Type} [Field L] [NumberField L] {j : c.F →+* L} {a : FramedFlatCoordinates.Framed Y U τ L j} {y : Sp L ⟶ Xo.XF c}
   {sig : FramedFlatCoordinates.Rule Y U τ}
 
-end Algebraic
 
-section Ties
 
 variable {D : D7} {X : DivX D} (Lc : placeRankTwoOne.Loc D X) {j : ℕ} {Z : X.Comp j} {τ : D.what₂.Tau}
   {H : Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
   {Y : Model Xo c (RingHom.id c.F)} {U : (Xo.XF c).Opens} {em : c.F →+* D.what₂.LL}
   (Φ : FramedFlatCoordinates.sections Y U (DV.tauEmb D τ) →ₛₗ[em] X.geo.Fn (X.Yv j Z))
 
-end Ties
 
 end GlobalTheory.FlatRow

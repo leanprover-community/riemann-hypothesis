@@ -114,7 +114,7 @@ theorem nset_fix {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (h
           simp
         · rw [if_neg hij, if_neg (Ne.symm hij), zero_mul]
       · have hyj : y j = 0 := by
-          have := hy ⟨2 * r + k - j.val, by have := j.isLt; omega⟩
+          have := hy ⟨2 * r + k - j.val, omega⟩
           rwa [esI_of j (by omega)] at this
         rw [hyj, mul_zero]
         split_ifs with hji

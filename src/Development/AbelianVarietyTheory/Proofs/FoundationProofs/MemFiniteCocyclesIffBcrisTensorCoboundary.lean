@@ -60,13 +60,11 @@ def subEquiv (E : W' ≃ₗ[R] (ι → W)) (S' : Submodule R W') (S : Submodule 
 
 end Linear
 
-section Length
 
 variable {O O' : Type} [CommRing O] [CommRing O'] [Algebra O O'] {W W' : Type} [AddCommGroup W]
   [AddCommGroup W'] [Module O W] [Module O W'] [Module O' W'] [IsScalarTower O O' W'] {ι : Type}
   [Fintype ι]
 
-end Length
 
 section Tensor
 
@@ -259,15 +257,12 @@ theorem mem_FildR_iff (hE : ∀ g x i, E (ρ' g x) i = ρ g (E x i)) (τ : K →
 
 end Period
 
-section Cochains
 
 variable {O LL : Type} [CommRing O] [Field LL] [Algebra O LL]
   {V V' : Type} [AddCommGroup V] [AddCommGroup V'] [Module LL V] [Module LL V'] [Module O V]
   [Module O V'] [IsScalarTower O LL V] [IsScalarTower O LL V'] {ι : Type}
 
-end Cochains
 
-section Lat
 
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -279,7 +274,6 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {O O' : Type} [CommRing O] [CommRing O'] [Algebra O LL] [Algebra O' LL']
     {ι : Type} [Fintype ι] [DecidableEq ι] [TopologicalSpace G]
 
-section One
 
 variable {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
     [Module O V] [IsScalarTower O LL V]
@@ -291,9 +285,7 @@ variable {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower 
     {ρ : Representation LL G V} {ρ' : Representation LL' G V'}
     {E : V' ≃ₗ[LL] (ι → V)} {L : Lattice (O := O) ρ} {L' : Lattice (O := O') ρ'}
 
-end One
 
-section Two
 
 variable {V₁ : Type} [AddCommGroup V₁] [Module LL V₁] [Module Qp V₁] [IsScalarTower Qp LL V₁]
     [Module O V₁] [IsScalarTower O LL V₁]
@@ -315,7 +307,6 @@ variable {V₁ : Type} [AddCommGroup V₁] [Module LL V₁] [Module Qp V₁] [Is
     {E₂ : V₂' ≃ₗ[LL] (ι → V₂)} {L₂ : Lattice (O := O) ρ₂} {L₂' : Lattice (O := O') ρ₂'}
     (F : LatHom L₁ L₂) (F' : LatHom L₁' L₂')
 
-end Two
 
 
 end Lat

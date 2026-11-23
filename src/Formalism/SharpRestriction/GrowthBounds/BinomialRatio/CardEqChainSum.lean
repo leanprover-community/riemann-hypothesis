@@ -73,7 +73,7 @@ theorem anti_of_step {f : Fin r → ℤ} (h : ∀ (a : Fin r) (ha : a.1 + 1 < r)
       exact le_trans (h ⟨a + d, by omega⟩ hb) (ih a ha (by omega))
   intro a b hab
   have hab' : a.1 ≤ b.1 := hab
-  have hb : b = ⟨a.1 + (b.1 - a.1), by have := b.2; omega⟩ := Fin.ext (by simp; omega)
+  have hb : b = ⟨a.1 + (b.1 - a.1), omega⟩ := Fin.ext (by simp; omega)
   rw [hb]
   exact H _ a.1 a.2 _
 

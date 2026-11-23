@@ -158,7 +158,7 @@ theorem poly_eq_zero {W : LocWach PD LL O v n} {a : ZMod n} {s : ℕ} (hB : LevB
 theorem levDiv_of (W : LocWach PD LL O v n) (hR : ToolsR.RingP W) (hT : Formalism.MainNotions.WachCoordinates.ToolsAlg W)
     (hpu : ¬ IsUnit ((PD.p : ℕ) : O)) (a : ZMod n) (s : ℕ) (hB : LevBasics W a s) : LevDiv W a s hB.F hB.ev := by
   intro g hg hev
-  have hNpos : 0 < (PD.p - 1) * PD.p ^ s := Nat.mul_pos (by have := PD.hp.two_le; omega) (pow_pos PD.hp.pos _)
+  have hNpos : 0 < (PD.p - 1) * PD.p ^ s := Nat.mul_pos omega (pow_pos PD.hp.pos _)
   obtain ⟨H, r, hdeg, heq⟩ := wdiv_ps W hR hT hpu a s (g a)
   set wH : LetA O n := Pi.single a H with hwH
   have hRr : (fun _ : ZMod n => (r : PowerSeries O)) = Polynomial.aeval (letπ : LetA O n) r := by

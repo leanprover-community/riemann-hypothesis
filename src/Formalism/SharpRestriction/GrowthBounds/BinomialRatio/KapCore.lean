@@ -134,15 +134,15 @@ theorem rest2 (D : Formalism.BasicNotions.D7) : FamilyFourthBound D := by
   have hN2 := S.N2
   have hLaY : X.La C0 * X.Y * X.b' ≤ X.a := by
     refine le_trans ?_ S.kYLab
-    have hY0 : 0 < X.Y := by have := S.Y1; linarith
-    have hLa0 : 0 < X.La C0 := by have := S.La1; linarith
+    have hY0 : 0 < X.Y := linarith
+    have hLa0 : 0 < X.La C0 := linarith
     have hb := S.bpos
     have : 1 * (X.Y * X.La C0 * X.b') ≤ X.k * (X.Y * X.La C0 * X.b') :=
       mul_le_mul_of_nonneg_right (by linarith) (by positivity)
     linarith [this]
   have core := kap_core (p := X.p) (k := X.k) (N := X.N) (N1 := X.N1) (La := X.La C0) (Q := X.Q) (c := X.c)
     (a := X.a) (b' := X.b') (Y := X.Y) (CE1 := CE1) (CE2 := CE2) (Cm := Cm) (by linarith) S.Y1 (by linarith) S.one_le_level_alt
-    (by have := S.La1; linarith) S.Q1 (by positivity) S.bpos S.pk S.LaNY S.LaLeK S.kb hLaY
+    (linarith) S.Q1 (by positivity) S.bpos S.pk S.LaNY S.LaLeK S.kb hLaY
     (by have := S.Hc2 zero_le_one; linarith) (by have := S.Hb1 zero_le_one; linarith)
     (by linarith) (by linarith) (by linarith)
   have hN0 : 0 ≤ X.N := by linarith

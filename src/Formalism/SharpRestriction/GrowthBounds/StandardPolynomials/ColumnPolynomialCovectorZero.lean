@@ -143,7 +143,7 @@ def lemmaRData (S : UniformizedDVR X.p O) (hS : S.SqP) (hD : D1num X) (h2 : 2 â‰
   rigInt := by
     rw [rigid_factor_product]; exact algebra_mul_mem (algebra_prod_pow_mem _ _ _ fun j _ => hTop_inA _) (monomial_in_algebra _)
   dgCQ := fun j => (Cs j).dgCQ
-  dgHQ := level_degree_le_prime_pow (by have := hD.2.1; omega) hGle
+  dgHQ := level_degree_le_prime_pow omega hGle
   dgMQ := dgMk_le hD hGle C0 CE1 CE2
   dgCY := fun j => (Cs j).dgCY
   dgHY := level_degree_covector_zero

@@ -60,11 +60,11 @@ lemma colH_strip {n : ℕ} (nu mu' : Fin n → ℤ) (b : ℕ) (h : HStrip nu mu'
       simp only [Finset.mem_filter] at ha hb
       exact Fin.ext (by omega)
     have e2 : (A.filter fun m => ¬ m.val = 0).card ≤ (univ.filter fun m : Fin n => c ≤ nu m).card := by
-      refine Finset.card_le_card_of_injOn (fun m => ⟨m.val - 1, by have := m.isLt; omega⟩) ?_ ?_
+      refine Finset.card_le_card_of_injOn (fun m => ⟨m.val - 1, omega⟩) ?_ ?_
       · intro m hm
         simp only [Finset.coe_filter, Finset.mem_filter, hA, Finset.mem_univ, true_and, Set.mem_ofPred_eq] at hm ⊢
         have hlt : (m.val - 1) + 1 < n := omega
-        have := h2 ⟨m.val - 1, by have := m.isLt; omega⟩ hlt
+        have := h2 ⟨m.val - 1, omega⟩ hlt
         have em : (⟨(m.val - 1) + 1, hlt⟩ : Fin n) = m := Fin.ext (by simp; omega)
         simp only [em] at this
         exact hm.1.trans this

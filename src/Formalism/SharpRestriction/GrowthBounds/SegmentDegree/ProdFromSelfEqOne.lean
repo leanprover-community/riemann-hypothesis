@@ -77,7 +77,7 @@ open Classical in
 theorem pre_count (D : Formalism.BasicNotions.D7) (h3 : admB3 D) (h4 : ColumnFamilyLowerSet D) (h5 : GenericProjectionCriterion D)
     (H : HypT N n0 r K LL B od bb a La p) (hfin : (SAll (r := r) (K := K) LL n0 B).Finite) :
     ∀ (u s : ℕ) (hsu : s + u = n0) (μ0 : Fin (N + 1) → Fin (r + K) → ℤ), VP LL n0 B s μ0 →
-      (Af hfin s μ0).card = stCount (r + K) (μ0 ⟨s, by have := H.hN; omega⟩) * prodFrom r K n0 B s := by
+      (Af hfin s μ0).card = stCount (r + K) (μ0 ⟨s, omega⟩) * prodFrom r K n0 B s := by
   have hN := H.hN
   have hn : 0 < r + K := omega
   intro u

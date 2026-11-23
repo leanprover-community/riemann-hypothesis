@@ -161,7 +161,7 @@ theorem spdeg {C : ℝ} (hC : 30 ≤ C) {p n' m r : ℕ} [Fact p.Prime] [NeZero 
     unfold E0
     exact le_trans hle hnum
   refine ⟨hfin, ?_⟩
-  have hfd := (flatDeg_bounds (by have := hB.m_ge; omega) (by linarith [hB.two_le_a]) h5 t (hTT ▸ ht)).1
+  have hfd := (flatDeg_bounds omega (by linarith [hB.two_le_a]) h5 t (hTT ▸ ht)).1
   have : ((eSP p n' F (m + 1) (cPrime n' r TT.card c0 cpp cStar) (p ^ goodG' r de h x) t : ℕ) : ℝ) ≤
       (flatDeg lam0 t : ℝ) := by
     have h0 : ((eSP p n' F (m + 1) (cPrime n' r TT.card c0 cpp cStar) (p ^ goodG' r de h x) t : ℕ) : ℝ) ≤

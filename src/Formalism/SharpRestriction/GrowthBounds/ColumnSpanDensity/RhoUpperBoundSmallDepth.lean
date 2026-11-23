@@ -222,7 +222,7 @@ theorem restEdgeCountSrc : RestEdgeCountSrc := by
   haveI := R.std.1.frac_alt
   have hcard : Nat.card (R.W ⧸ Ideal.span {(p : R.W)}) = p ^ n' := R.std.1.res_card
   have hp5 : 5 ≤ p := R.std.1.five_le
-  have hq2 : 2 ≤ p ^ n' := le_trans (by omega) (Nat.le_self_pow (by have := R.std.1.two_le; omega) p)
+  have hq2 : 2 ≤ p ^ n' := le_trans (by omega) (Nat.le_self_pow omega p)
   haveI : Finite (R.W ⧸ Ideal.span {(p : R.W)}) := Nat.finite_of_card_ne_zero (by rw [hcard]; omega)
   haveI : Finite (Projectivization (R.W ⧸ Ideal.span {(p : R.W)}) (Fin k → R.W ⧸ Ideal.span {(p : R.W)})) := by
     unfold Projectivization
@@ -288,7 +288,7 @@ theorem restEdgeCount : RestEdgeCount := by
   haveI := R.std.1.frac_alt
   have hcard : Nat.card (R.W ⧸ Ideal.span {(p : R.W)}) = p ^ n' := R.std.1.res_card
   have hp5 : 5 ≤ p := R.std.1.five_le
-  have hq2 : 2 ≤ p ^ n' := le_trans (by omega) (Nat.le_self_pow (by have := R.std.1.two_le; omega) p)
+  have hq2 : 2 ≤ p ^ n' := le_trans (by omega) (Nat.le_self_pow omega p)
   haveI : Finite (R.W ⧸ Ideal.span {(p : R.W)}) := Nat.finite_of_card_ne_zero (by rw [hcard]; omega)
   haveI : Finite (Projectivization (R.W ⧸ Ideal.span {(p : R.W)}) (Fin k → R.W ⧸ Ideal.span {(p : R.W)})) := by
     unfold Projectivization

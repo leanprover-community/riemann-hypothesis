@@ -208,7 +208,7 @@ def layerEmb : L →ₐ[ℚ] Cond.Cyc (2 ^ (e + 2) * q * d) :=
   haveI := neZeroN e hH
   haveI := Fact.mk hH.1
   haveI := Fact.mk hH.2.1
-  Classical.choice (Cond.layer_emb (by have := hH.2.2.1; omega) (by have := hH.2.2.2.1; omega) h
+  Classical.choice (Cond.layer_emb omega omega h
     (two_dvd e q d) (q_dvd e q d) (d_dvd e q d))
 
 include h in

@@ -177,7 +177,7 @@ theorem bwD_elim (hL : bwD_Loc O) (M : Matrix (Fin r) (Fin r) ℂ) (hM : bwD_Int
     have h1 : M = 1 := by
       ext b c
       rw [Matrix.one_apply]
-      exact hstd b c (by have := c.isLt; omega)
+      exact hstd b c omega
     rw [h1]
     exact one_mem _
   | succ n ih =>

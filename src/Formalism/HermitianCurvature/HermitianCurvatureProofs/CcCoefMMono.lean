@@ -71,14 +71,14 @@ theorem xs_eq_phi {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProdu
   have hσ : ∀ q : Fin (D.ptSize (h0 ++ [(n + 1, t)])),
       ((Formalism.FourierDecayAlt.P.Dx2.SL.sigP (n := n) (D.ptPerm h0)) (Fin.cast hP q)).val = (D.ptPerm (h0 ++ [(n + 1, t)]) q).val := by
     intro q
-    rw [hspec q, Formalism.FourierDecayAlt.P.Dx2.SL.partner_append (n + 1) t h0 q.val (by have := q.isLt; omega)]
+    rw [hspec q, Formalism.FourierDecayAlt.P.Dx2.SL.partner_append (n + 1) t h0 q.val omega]
     by_cases h1 : q.val < D.ptSize h0
     · rw [if_pos h1]
       have e : Fin.cast hP q = Fin.castAdd (n + 1) ⟨q.val, h1⟩ := Fin.ext rfl
       rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.blockPerm_castAdd]
       exact hspec' ⟨q.val, h1⟩
     · rw [if_neg h1]
-      have e : Fin.cast hP q = Fin.natAdd (D.ptSize h0) ⟨q.val - D.ptSize h0, by have := q.isLt; omega⟩ :=
+      have e : Fin.cast hP q = Fin.natAdd (D.ptSize h0) ⟨q.val - D.ptSize h0, omega⟩ :=
         Fin.ext (by simp; omega)
       rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.blockPerm_natAdd]
       simp only [Fin.val_natAdd, Fin.val_rev]
@@ -87,13 +87,13 @@ theorem xs_eq_phi {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProdu
       Formalism.FourierDecayAlt.P.Dx2.SL.dP (n := n) (D.ptDiag h0) t (Fin.cast hP q) = D.ptDiag (h0 ++ [(n + 1, t)]) q := by
     intro q
     simp only [D.ptDiag]
-    rw [Formalism.FourierDecayAlt.P.Dx2.SL.scal_append (n + 1) t h0 q.val (by have := q.isLt; omega)]
+    rw [Formalism.FourierDecayAlt.P.Dx2.SL.scal_append (n + 1) t h0 q.val omega]
     by_cases h1 : q.val < D.ptSize h0
     · rw [if_pos h1]
       have e : Fin.cast hP q = Fin.castAdd (n + 1) ⟨q.val, h1⟩ := Fin.ext rfl
       rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.dP, Fin.addCases_left]; rfl
     · rw [if_neg h1]
-      have e : Fin.cast hP q = Fin.natAdd (D.ptSize h0) ⟨q.val - D.ptSize h0, by have := q.isLt; omega⟩ :=
+      have e : Fin.cast hP q = Fin.natAdd (D.ptSize h0) ⟨q.val - D.ptSize h0, omega⟩ :=
         Fin.ext (by simp; omega)
       rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.dP, Fin.addCases_right]
   set ρ := r - D.ptSize (h0 ++ [(n + 1, t)]) with hρ

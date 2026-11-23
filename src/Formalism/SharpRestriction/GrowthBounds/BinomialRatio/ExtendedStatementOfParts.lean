@@ -133,7 +133,7 @@ theorem extended_statement_of_parts {D : Formalism.BasicNotions.D7} {C0 CYb Cde 
     have hQ : 0 ≤ X.Q := by unfold Loc.Q; positivity
     unfold Loc.m0 m0G4 m1G4; positivity
   have hNe : 0 < gaussianNumber (X.p ^ X.n') (X.m + 1) :=
-    Ne_pos (by have := hS.1.five_le; omega) (by have := hS.1.two_le; omega) (by omega)
+    Ne_pos omega omega (by omega)
 
   choose L₁ hL₁ using fun j => (hDj j).2.2
   have hF : ∀ j, BlockDiag X.p (segForm O X.p X.m (X.seg C0 CE1 CE2 j)) (Lj O C0 CE1 CE2 Cm X j)

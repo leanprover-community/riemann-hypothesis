@@ -480,7 +480,7 @@ theorem pi_factorial : PiFactorial := by
   have : Fact p.Prime := ⟨hp⟩
   have hleg := Nat.Prime.sub_one_mul_multiplicity_factorial (n := i) hp
   have hsq : p ^ 2 - 1 = (p + 1) * (p - 1) := by
-    obtain ⟨m, rfl⟩ : ∃ m, p = m + 1 := ⟨p - 1, by have := hp.one_lt; omega⟩
+    obtain ⟨m, rfl⟩ : ∃ m, p = m + 1 := ⟨p - 1, omega⟩
     simp only [Nat.add_sub_cancel]
     have : (m + 1) ^ 2 = (m + 1 + 1) * m + 1 := by ring
     omega

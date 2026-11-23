@@ -294,13 +294,13 @@ theorem seg_step (h : Std C0 Cde CE1 CE2 1 X) {m : ℝ} (hm : 0 ≤ m) (hB : brk
     linarith
   obtain ⟨hQj1, hQjQ, hfl, hA0lo⟩ := first_coefficient_facts h j
   have hA0pos : (0 : ℝ) < ((X.seg C0 CE1 CE2 j).A0 X.p : ℝ) :=
-    lt_of_lt_of_le (div_pos ha (by have := h.Q1; linarith)) hA0lo
+    lt_of_lt_of_le (div_pos ha (linarith)) hA0lo
   have hA0nn : 0 ≤ (X.seg C0 CE1 CE2 j).A0 X.p := by exact_mod_cast hA0pos.le
   have hcast : ((((X.seg C0 CE1 CE2 j).A0 X.p).toNat : ℕ) : ℝ) = ((X.seg C0 CE1 CE2 j).A0 X.p : ℝ) := by
     exact_mod_cast Int.toNat_of_nonneg hA0nn
   have he21 : Real.exp (-(X.La C0) / 3) ≤ Real.exp (-(X.La C0) / 8) :=
-    Real.exp_le_exp.mpr (by have := h.La1; linarith)
-  have he1 : Real.exp (-(X.La C0) / 8) ≤ 1 := Real.exp_le_one_iff.mpr (by have := h.La1; linarith)
+    Real.exp_le_exp.mpr (linarith)
+  have he1 : Real.exp (-(X.La C0) / 8) ≤ 1 := Real.exp_le_one_iff.mpr (linarith)
   obtain ⟨hrange, hx0, hx1, hz0, hδ1, hδa0, hsum⟩ := seg_num (mN := (X.m : ℝ)) (cm := (⌈m⌉₊ : ℝ)) h.k5 h.Q1 h.bpos h.ba
     h.Y1 h.E0nn h.one_le_level_alt h.La1 rfl hm4 hA0lo (h.kQ le_rfl) hm (Nat.ceil_lt_add_one hm) (Nat.cast_nonneg _)
     (Real.exp_pos (-(X.La C0) / 8)) (Real.exp_pos (-(X.La C0) / 3)) he21 hB
@@ -346,17 +346,17 @@ theorem rank_alternative_lower (h : Std C0 Cde CE1 CE2 1 X) {Ckap : ℝ} (hCk : 
   rw [kap_eq]
   have hdim0 : 0 ≤ dim := by rw [hdim]; positivity
   have hq2 : 2 ≤ X.p ^ X.n' := by
-    have h1 : 1 < X.p ^ X.n' := Nat.one_lt_pow (by have := h.n2; omega) (by have := h.p5; omega)
+    have h1 : 1 < X.p ^ X.n' := Nat.one_lt_pow omega omega
     omega
   have hNe := Ne_ge (X.p ^ X.n') X.m hq2
   have hNe0 : 0 ≤ gaussianNumber (X.p ^ X.n') (X.m + 1) := le_trans (by positivity) hNe
   have hP0 : 0 ≤ ∏ j, R j := Finset.prod_nonneg fun j _ => hR0 j
   have hN2 := h.N2
   have hB0 : 0 ≤ brk C0 CE1 CE2 X m := by
-    have hk0 : 0 ≤ X.k := by have := h.k5; linarith
-    have hQ0 : 0 ≤ X.Q := by have := h.Q1; linarith
+    have hk0 : 0 ≤ X.k := linarith
+    have hQ0 : 0 ≤ X.Q := linarith
     have hb := h.bpos.le
-    have hY0 : 0 ≤ X.Y := by have := h.Y1; linarith
+    have hY0 : 0 ≤ X.Y := linarith
     have hE := h.E0nn
     unfold brk
     positivity

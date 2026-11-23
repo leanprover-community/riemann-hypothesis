@@ -97,7 +97,7 @@ theorem colLevSym_pred {j : ℕ} (hj : j + 1 = R.m) :
     colLevSym Ch j = parFam (r_le_N_of_le hj.ge) R.t j (rPsymF Ch) (fun w => extChi fun s => Ch.chi s w) := by
   funext w
   unfold colLevSym
-  rw [if_neg (by have := R.two_le_m; omega), dite_eq_right (by omega), dite_eq_left hj]
+  rw [if_neg omega, dite_eq_right (by omega), dite_eq_left hj]
   rfl
 
 theorem colLevSym_top_H {j : ℕ} (hj : R.m ≤ j) (w : Pr.vGs) :
@@ -116,7 +116,7 @@ theorem colLevSym_top_lam {j : ℕ} (hj : R.m ≤ j) (w : Pr.vGs) (M : ↥(colLe
     intro l hl M' hM'
     have hl' : l = ⟨HXmsym (𝓞 X.E ⧸ w.1.asIdeal) (R.N j) R.k R.r R.t R.m R.rS (r_le_N_of_le (by omega)),
         lamXmsym (Ch.psi0 w) (extChi fun s => Ch.chi s w) (R.N j) R.k R.r R.t R.m R.rS (r_le_N_of_le (by omega))⟩ := by
-      rw [hl]; unfold colLevSym; rw [if_neg (by have := R.two_le_m; omega), dite_eq_right (by omega), dite_eq_right (by omega)]
+      rw [hl]; unfold colLevSym; rw [if_neg omega, dite_eq_right (by omega), dite_eq_right (by omega)]
     subst hl'
     rfl
   exact key _ rfl M hM

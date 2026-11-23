@@ -140,7 +140,7 @@ theorem idx_cases (p : Fin (2 * r + k + 1)) :
   · exact Or.inr (Or.inl ⟨⟨p.val, h1⟩, Fin.ext rfl⟩)
   · by_cases h2 : p.val ≤ r + k
     · exact Or.inl ⟨⟨p.val - r, by omega⟩, Fin.ext (by simp [wI]; omega)⟩
-    · refine Or.inr (Or.inr ⟨⟨2 * r + k - p.val, by have := p.isLt; omega⟩, Fin.ext ?_⟩)
+    · refine Or.inr (Or.inr ⟨⟨2 * r + k - p.val, omega⟩, Fin.ext ?_⟩)
       simp [esI]; have := p.isLt; omega
 
 theorem mulVec_bvec_apply (Z : Q.Mx k r) (p q : Fin (2 * r + k + 1)) : (Z *ᵥ bvec q) p = Z p q := by

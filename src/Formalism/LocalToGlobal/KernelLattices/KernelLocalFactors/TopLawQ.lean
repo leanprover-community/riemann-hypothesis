@@ -138,7 +138,7 @@ theorem det_LLz {r d : ℕ} (A : Matrix (Fin (r + d)) (Fin (r + d)) k) (hA : LLz
     · rfl
   rw [← Matrix.det_submatrix_equiv_self finSumFinEquiv A, e, Matrix.det_fromBlocks_zero₂₁]
 
-def brI {n r d : ℕ} (hn : n = r + d) (s : Fin d) : Fin n := ⟨r + s.1, by have := s.2; omega⟩
+def brI {n r d : ℕ} (hn : n = r + d) (s : Fin d) : Fin n := ⟨r + s.1, omega⟩
 
 theorem scal_law (ξ : kˣ →* Kˣ) {r n n' d d' : ℕ} (hn : n = r + d) (hn' : n' = r + d') (hr : r ≤ n) (hr' : r ≤ n')
     (A Ai : Matrix (Fin n) (Fin n) k) (B C : Matrix (Fin n') (Fin n') k)

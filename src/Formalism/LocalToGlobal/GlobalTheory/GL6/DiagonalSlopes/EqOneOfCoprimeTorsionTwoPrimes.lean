@@ -495,7 +495,7 @@ theorem rank_zero_le_weight : D.R.N 0 ≤ D.R.k := by
   have h := rank_zero_le_type_level (D := D)
   have e : aOf D.R 0 = D.R.k := by
     unfold aOf
-    rw [if_pos (by have := D.R.two_le_m; omega)]
+    rw [if_pos omega]
     simp
   omega
 
@@ -529,7 +529,7 @@ theorem diamond_free_on_classes (Tf : Forms0 D u) (hS : Formalism.MainNotions.pr
   have hpowU : δ.1 ^ ((D.mem u).A.T - 1) ∈ (Tf.cls 0 (Nat.zero_le _) rfl).lev.U := by
     have := multi_diamond_mem_level _ _ _ (multi_diamond_pow _ _ _ hδ ((D.mem u).A.T - 1)) hkT
     simpa using this
-  have hmem := fixed_class_mem_level Tf hS c δ hbad ((D.mem u).A.T - 1) (by have := hT.two_le; omega)
+  have hmem := fixed_class_mem_level Tf hS c δ hbad ((D.mem u).A.T - 1) omega
     (fun κ hκ => pow_mul_mem_of_normalises _ δ.1 (fun κ' hκ' => multi_diamond_conj_mem _ _ _ hδ κ' hκ') _ hpowU κ hκ) hfix
   intro v
   have hdvd := multi_diamond_multiplier_congr _ hT _ _ hδ hmem v

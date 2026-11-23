@@ -226,7 +226,7 @@ theorem fibre_unit_normalization : C6.FibUnit := by
       intro w₁ w₂ hs
       have hlen := spl_len hs
       obtain ⟨h₁, h₂, _⟩ := hs
-      have b1 := hC₁ w₁ (Adm_sub h₁ hwA) (by have := h₁.length_le; omega) g ⟨hg, hεg⟩
+      have b1 := hC₁ w₁ (Adm_sub h₁ hwA) omega g ⟨hg, hεg⟩
       have b2 := (hCo a w₂ (Adm_sub h₂ hwA) g hg).trans
         (mul_le_mul_of_nonneg_right (hCoa a) (pow_nonneg (gN_pos hg).le _))
       have hexp : (2 * r + 2 + 0) * w₁.length + (r + 1) ≤ (r + 1) * (2 * i + 1) := by

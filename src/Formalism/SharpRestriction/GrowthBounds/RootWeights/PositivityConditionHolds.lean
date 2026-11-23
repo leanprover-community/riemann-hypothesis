@@ -42,7 +42,7 @@ namespace Formalism.MainNotions.G.GLWeightTheory
 
 open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
-def pie_pr {n : ℕ} (j : Fin n) : Fin n := ⟨j.val - 1, by have := j.isLt; omega⟩
+def pie_pr {n : ℕ} (j : Fin n) : Fin n := ⟨j.val - 1, omega⟩
 
 def pie_sw {n : ℕ} (mu : Fin n → ℕ) (j : Fin n) : Fin n → ℕ :=
   Function.update (Function.update mu (pie_pr j) (mu j - 1)) j (mu (pie_pr j) + 1)

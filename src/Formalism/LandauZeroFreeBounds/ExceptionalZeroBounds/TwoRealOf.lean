@@ -124,7 +124,7 @@ theorem twoRealCharNoCommonZeroOfBounds : TwoRealOf := by
   have hq : (1 : ℝ) ≤ q := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
   have hL2 : Real.log 2 ≤ L := by
     rw [hL]; exact Real.log_le_log (by norm_num) (by linarith)
-  have hLhalf : 1 / 2 < L := by have := Real.log_two_gt_d9; linarith
+  have hLhalf : 1 / 2 < L := linarith
   have hL0 : 0 < L := by linarith
   have hAL0 : 0 < 20 * A * L := mul_pos (mul_pos (by norm_num) hA0) hL0
   obtain ⟨e, he⟩ : ∃ e : ℝ, e = 1 / (20 * A * L) := ⟨_, rfl⟩

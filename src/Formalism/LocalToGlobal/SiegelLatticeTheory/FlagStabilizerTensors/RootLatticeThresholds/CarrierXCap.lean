@@ -91,7 +91,7 @@ theorem gap_X {large₂ : SizeData₂ D} {C' Cl Cg cb Cu cT CT : ℝ} (hS0 : Sta
       by_contra hcn
       push Not at hcn
       have h1 : Real.exp (2 * large₂.sc.L) < Real.exp 1 := Real.exp_lt_exp.mpr (by linarith)
-      have h2 : Real.exp 1 < 3 := by have := Real.exp_one_lt_d9; linarith
+      have h2 : Real.exp 1 < 3 := linarith
       linarith
     have hf : (2 : ℝ) ≤ (D.R.f : ℝ) := by
       have : 2 ≤ D.R.f := by

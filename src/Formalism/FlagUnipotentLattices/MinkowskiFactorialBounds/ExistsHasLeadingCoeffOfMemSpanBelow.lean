@@ -425,7 +425,7 @@ lemma Xa_eq_range (F : FlagD H r) {j : ℕ} (hj : j ≤ r) :
   · rintro ⟨b, hb, rfl⟩
     exact ⟨⟨b.val, hb⟩, congrArg F.e (Fin.ext rfl)⟩
   · rintro ⟨a, rfl⟩
-    exact ⟨⟨a.val, by have := a.isLt; omega⟩, a.isLt, congrArg F.e (Fin.ext rfl)⟩
+    exact ⟨⟨a.val, omega⟩, a.isLt, congrArg F.e (Fin.ext rfl)⟩
 
 lemma indep_le (F : FlagD H r) {j : ℕ} (hj : j ≤ r) :
     LinearIndependent K (fun a : Fin j => F.e (Fin.castLE (hj.trans (Nat.le_succ r)) a)) := by
@@ -609,7 +609,7 @@ lemma nFCaseA_of_lastVectorNotMemSup (hStep : Formalism.HermitianLatticeCounting
         F'.z - (al / al') • F.z ∈ F.X ⊔ F'.X ∧
         ∀ b : Fin r, a ≤ b → ∃ y ∈ Formalism.HermitianLatticeCounting.S6.II F F', F.HasLevel y b al ∧ F'.HasLevel y b al' :=
     fun x hx a a' al al' hF hF' => hasLevel_index_eq_of_mem_II F F' hStep hN0 hμ hrel
-      (r - a.val - 1) x a a' al al' (by have := a.isLt; omega) hx hF hF'
+      (r - a.val - 1) x a a' al al' omega hx hF hF'
   have hex : ∃ n : ℕ, ∃ x ∈ Formalism.HermitianLatticeCounting.S6.II F F', x ≠ 0 ∧ ∃ (a : Fin r) (al : K), a.val = n ∧ F.HasLevel x a al := by
     obtain ⟨x, hx, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hm
     obtain ⟨a, al, h⟩ := (level_exists F) (Submodule.mem_inf.1 hx).1 hx0
@@ -743,7 +743,7 @@ lemma Dl_injL (F F' : FlagD H r) {j : ℕ} (hj : j ≤ r) (hD : Dl F F' j (hj.tr
   obtain ⟨c, rfl⟩ := ((mem_Xa_iff F) hj).1 hx
   have hc := gram_inj H (fun a : Fin j => F.e (Fin.castLE (hj.trans (Nat.le_succ r)) a))
     (fun b : Fin j => F'.e (Fin.castLE (hj.trans (Nat.le_succ r)) b)) hD c
-    (fun b => h _ ((e_mem_Xa F') ⟨b.val, by have := b.isLt; omega⟩ b.isLt))
+    (fun b => h _ ((e_mem_Xa F') ⟨b.val, omega⟩ b.isLt))
   rw [hc]
   simp
 

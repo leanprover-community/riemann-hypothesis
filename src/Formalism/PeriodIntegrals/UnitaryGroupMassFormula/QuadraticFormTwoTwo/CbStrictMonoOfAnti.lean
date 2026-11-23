@@ -73,7 +73,7 @@ theorem cb_mem_of_prod_eq {n : ℕ} {a b : ℕ → ℝ}
 theorem cb_range_sub_of_mem {n : ℕ} {a b : ℕ → ℝ} (hm : ∀ i ∈ Icc 1 n, ∃ j ∈ Icc 1 n, a i = b j) :
     Set.range (fun j : Fin n => -a (j.1 + 1)) ⊆ Set.range (fun j : Fin n => -b (j.1 + 1)) := by
   rintro x ⟨j, rfl⟩
-  obtain ⟨l, hl, hab⟩ := hm (j.val + 1) (Finset.mem_Icc.mpr ⟨by omega, by have := j.isLt; omega⟩)
+  obtain ⟨l, hl, hab⟩ := hm (j.val + 1) (Finset.mem_Icc.mpr ⟨by omega, omega⟩)
   have hl1 := (Finset.mem_Icc.mp hl).1
   have hl2 := (Finset.mem_Icc.mp hl).2
   refine ⟨⟨l - 1, by omega⟩, ?_⟩
@@ -107,7 +107,7 @@ theorem cb_eq_of_prod_eq {n : ℕ} {a b : ℕ → ℝ}
 theorem cb_rho_eq' (Q : M.Par) (π : M.Ty Q) (j : Fin (Q.k - 1)) :
     M.rho Q π (j.1 + 1) = Q.lo (j.1 + 1) + (((π j : Fin _) : ℕ) : ℝ) := by
   unfold M.rho
-  rw [dite_eq_left ⟨by omega, by have := j.isLt; omega⟩]
+  rw [dite_eq_left ⟨by omega, omega⟩]
   first
     | rfl
     | simp
@@ -258,9 +258,9 @@ theorem comb_match {P : M.Par} (hP : P.OK) :
   have gPp : ∀ i ∈ Icc 1 ((Pp P).k - 1), (Pp P).lo i ≤ (Pp P).hi i := (Pp_OK hP).gap
   have gPq : ∀ i ∈ Icc 1 ((Pq P).k - 1), (Pq P).lo i ≤ (Pq P).hi i := (Pq_OK hP).gap
   have hu : ∀ j : Fin (P.k - 1), ∃ n : ℤ, P.u (j.1 + 1 + 1) - P.u 1 = n := fun j =>
-    hP.int_u _ (Finset.mem_Icc.mpr ⟨by omega, by have := j.2; omega⟩)
+    hP.int_u _ (Finset.mem_Icc.mpr ⟨by omega, omega⟩)
   have hu' : ∀ j : Fin (P.k - 1), ∃ n : ℤ, P.u' (j.1 + 1 + 1) - P.u 1 = n := fun j =>
-    hP.int_u' _ (Finset.mem_Icc.mpr ⟨by omega, by have := j.2; omega⟩)
+    hP.int_u' _ (Finset.mem_Icc.mpr ⟨by omega, omega⟩)
   have zP : ∀ j : Fin (P.k - 1), ∃ n : ℤ, P.lo (j.1 + 1) - (P.u 1 + 1 / 2) = n := fun j =>
     cb_lo_int P _ _ (hu j) (hu' j)
   have zPp : ∀ j : Fin (P.k - 1), ∃ n : ℤ, (Pp P).lo (j.1 + 1) - (P.u 1 + 1 / 2) = n := fun j =>
@@ -289,7 +289,7 @@ theorem comb_match {P : M.Par} (hP : P.OK) :
     have hst : ∀ i ∈ Icc 1 (P.k - 1), M.rho (Pp P) σ i = M.rho (Pq P) τ i :=
       cb_eq_of_prod_eq (n := P.k - 1) (cb_rho_anti (Pp P) gPp σ) (cb_rho_anti (Pq P) gPq τ) (fun Y => hx Y)
     obtain ⟨ρ, hρ⟩ := cb_exists_ty P (fun i => M.rho (Pp P) σ i) (fun j => by
-      have e := hst (j.1 + 1) (Finset.mem_Icc.mpr ⟨by omega, by have := j.2; omega⟩)
+      have e := hst (j.1 + 1) (Finset.mem_Icc.mpr ⟨by omega, omega⟩)
       have bσ := cb_rho_bounds (Pp P) gPp σ j
       have bτ := cb_rho_bounds (Pq P) gPq τ j
       rw [← e] at bτ
@@ -316,7 +316,7 @@ theorem exists_sep {P : M.Par} (hP : P.OK) :
       intro Y
       rw [← cb_eval_xPoly, ← cb_eval_xPoly, sub_eq_zero.mp h0]
     have e := cb_eq_of_prod_eq (n := (Pp P).k - 1) (cb_rho_anti _ gPp σ) (cb_rho_anti _ gPp σ') hx
-    exact cb_ty_ext _ (fun j => e _ (Finset.mem_Icc.mpr ⟨by omega, by have := j.2; omega⟩))
+    exact cb_ty_ext _ (fun j => e _ (Finset.mem_Icc.mpr ⟨by omega, omega⟩))
   obtain ⟨Y₀, hY⟩ := Infinite.exists_notMem_finset
     ((Finset.univ : Finset (M.Ty (Pp P) × M.Ty (Pp P))).biUnion
       (fun p => if p.1 = p.2 then ∅ else (cb_xPoly (Pp P) p.1 - cb_xPoly (Pp P) p.2).roots.toFinset))

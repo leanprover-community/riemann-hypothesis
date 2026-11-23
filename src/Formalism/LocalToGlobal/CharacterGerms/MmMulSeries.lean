@@ -121,7 +121,7 @@ theorem root_one {ζ : C} (hζ : ζ ^ V.l = 1) : V.MM (ζ - 1) := by
   rcases V with ⟨v, l, hp, hv⟩
   change ζ ^ l = 1 at hζ
   change (0 : WithTop ℝ) < v (ζ - 1)
-  obtain ⟨l', rfl⟩ : ∃ l', l = l' + 1 := ⟨l - 1, by have := hp.pos; omega⟩
+  obtain ⟨l', rfl⟩ : ∃ l', l = l' + 1 := ⟨l - 1, omega⟩
   by_contra hneg
   have hle : v (ζ - 1) ≤ 0 := not_lt.mp hneg
   have hne : v (ζ - 1) ≠ ⊤ := ne_top_of_le_ne_top (by simp) hle

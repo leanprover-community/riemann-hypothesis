@@ -191,7 +191,7 @@ def Arow (c : Fin r → ℂ) (J : Fin (r + k) → Fin (2 * r + k + 1)) (t : Fin 
   Matrix.of fun p q =>
     if h : p.val < r then (if q = eI k r ⟨p.val, h⟩ then c ⟨p.val, h⟩ else 0)
     else if h2 : p.val = r then (if q = wI k r t then 1 else 0)
-    else if q = J ⟨p.val - r - 1, by have := p.isLt; omega⟩ then 1 else 0
+    else if q = J ⟨p.val - r - 1, omega⟩ then 1 else 0
 
 theorem det_prop {m : ℕ} {A : Matrix (Fin m) (Fin m) ℂ} {p p' : Fin m} (h : p ≠ p') (l : ℂ) (hA : A p = l • A p') :
     A.det = 0 := by
@@ -360,7 +360,7 @@ theorem yrow_sum (hg : g ∈ Q.Glev k r (Fin.last r)) {z : Fin (2 * r + k + 1) �
     · have : q = eI k r ⟨q.val, h1⟩ := Fin.ext rfl
       rw [this]; exact (row_z_e hg hz _).1
     · have hq2 : r + k < q.val := by omega
-      have : q = esI k r ⟨2 * r + k - q.val, by have := q.isLt; omega⟩ :=
+      have : q = esI k r ⟨2 * r + k - q.val, omega⟩ :=
         Fin.ext (by simp only [esI]; have := q.isLt; omega)
       rw [this]; exact (row_z_e hg hz _).2
 

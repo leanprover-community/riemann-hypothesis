@@ -219,7 +219,7 @@ theorem oPlusAt_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
     have hcap : (cap p S b s : ℝ) ≤ (S.a : ℝ) / (p : ℝ) ^ 2 + (s : ℝ) * (2 * (b' / p)) := by
       have h1 := cap_le p S b s
       have h2 : (S.A0 p : ℝ) ≤ (S.a : ℝ) / (p : ℝ) ^ 2 := by
-        have h3 := base_exponent_le_a p (by have := St.p5; omega) S St.E0nn
+        have h3 := base_exponent_le_a p omega S St.E0nn
         have hq : (p : ℝ) ^ 2 ≤ (p : ℝ) ^ S.G := pow_le_pow_right₀ (by linarith) hG2
         have hq0 : (0 : ℝ) < (p : ℝ) ^ 2 := by positivity
         exact h3.trans (div_le_div_of_nonneg_left ha0 hq0 hq)

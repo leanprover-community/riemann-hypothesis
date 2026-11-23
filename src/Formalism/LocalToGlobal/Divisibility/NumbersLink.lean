@@ -111,8 +111,8 @@ structure NumFacts (δ : Code N) (Nc lam0 C0 ce Ch Sw C1 : ℝ) : Prop where
   inter : ∀ z (i : ℕ) (h : i + 1 < N.R.k),
     N.sigPar z i < N.uW δ z ⟨i, by omega⟩ ∧ N.uW δ z ⟨i + 1, h⟩ < N.sigPar z i
   off : ∀ z, ¬ (z.1 = false ∧ z.2 ∈ N.TT) →
-    0 ≤ (N.hc z).u ⟨N.R.k - 1, by have := N.R.m_add_three_le_k; omega⟩ + ((N.R.k : ℚ) - 1) / 2 ∧
-    (((N.hc z).u ⟨0, by have := N.R.m_add_three_le_k; omega⟩ - ((N.R.k : ℚ) - 1) / 2 : ℚ) : ℝ) ≤ Sw
+    0 ≤ (N.hc z).u ⟨N.R.k - 1, omega⟩ + ((N.R.k : ℚ) - 1) / 2 ∧
+    (((N.hc z).u ⟨0, omega⟩ - ((N.R.k : ℚ) - 1) / 2 : ℚ) : ℝ) ≤ Sw
   top : ∀ t ∈ N.TT, 0 ≤ N.aT t ∧ 0 ≤ N.bT t ∧
     0 ≤ N.sigPar (false, t) (N.R.k - 2) + ((N.R.k : ℚ) - 2) / 2 ∧
     ((N.sigPar (false, t) 0 - ((N.R.k : ℚ) - 2) / 2 : ℚ) : ℝ) ≤ Sw
@@ -164,7 +164,7 @@ theorem k_two : 2 ≤ N.R.k := by
 
 theorem aT_int (t : N.R.A) : ∃ a : ℤ, N.aT t = a := by
   unfold aT
-  obtain ⟨n, hn⟩ := (N.hc (false, t)).u_half ⟨0, by have := N.R.m_add_three_le_k; omega⟩
+  obtain ⟨n, hn⟩ := (N.hc (false, t)).u_half ⟨0, omega⟩
   obtain ⟨c, hc⟩ := N.R.k_even
   have hk : (N.R.k : ℚ) = 2 * c := by rw [hc]; push_cast; ring
   refine ⟨n + 1 - c, ?_⟩
@@ -174,7 +174,7 @@ theorem aT_int (t : N.R.A) : ∃ a : ℤ, N.aT t = a := by
 
 theorem bT_int (t : N.R.A) : ∃ a : ℤ, N.bT t = a := by
   unfold bT
-  obtain ⟨n, hn⟩ := (N.hc (false, t)).u_half ⟨N.R.k - 1, by have := N.R.m_add_three_le_k; omega⟩
+  obtain ⟨n, hn⟩ := (N.hc (false, t)).u_half ⟨N.R.k - 1, omega⟩
   obtain ⟨c, hc⟩ := N.R.k_even
   have hk : (N.R.k : ℚ) = 2 * c := by rw [hc]; push_cast; ring
   refine ⟨-n - c, ?_⟩
@@ -443,7 +443,7 @@ theorem stepE_num (δ : Code N) {Nc lam0 C0 ce Ch Sw C1 : ℝ} (H : N.NumFacts �
   obtain ⟨eE, dd, h1, h2, h3, h4⟩ := Formalism.DivisionValues.rowsStepEOrigin (Fin N.R.m) (RPl N.R) N.topsPl (N.R.k - 2) N.R.t
     (fun j => j.1 + 1) (fun j => N.sN (j.1 + 1)) (fun ρ => ⌊N.aT ρ.2⌋.toNat) (fun ρ => ⌊N.bT ρ.2⌋.toNat)
     (fun j ρ => N.wN (j.1 + 1) ρ)
-    (fun ρ i => ((N.uW δ ρ ⟨i.1, by have := i.2; omega⟩ : ℚ) : ℝ)) (fun ρ i => ((N.sigPar ρ i.1 : ℚ) : ℝ))
+    (fun ρ i => ((N.uW δ ρ ⟨i.1, omega⟩ : ℚ) : ℝ)) (fun ρ i => ((N.sigPar ρ i.1 : ℚ) : ℝ))
     (fun j ρ i => N.nuN δ (j.1 + 1) ρ i.1) (fun j ρ i => N.apN (j.1 + 1) ρ i.1)
     (fun j ρ => (Multiset.range (N.R.N j.1 - N.R.k)).map (fun c => N.nuN δ (j.1 + 1) ρ (N.R.k + c)))
     (fun j ρ => (Multiset.range (j.1 + 1)).map (fun c => N.apN (j.1 + 1) ρ (N.R.k - 1 + c)))
@@ -455,7 +455,7 @@ theorem stepE_num (δ : Code N) {Nc lam0 C0 ce Ch Sw C1 : ℝ} (H : N.NumFacts �
     (fun j => N.sN_cast _ (by omega))
     (fun j ρ => by have := hs j ρ; rw [← hw j ρ] at this; exact_mod_cast this)
     (fun j ρ => by rw [hw j ρ]; exact H.rowsA _ (by omega) (by omega) ρ)
-    hmη (by have := N.eta_nonneg; positivity)
+    hmη (positivity)
     (fun j ρ hρ => by
       rw [hTop ρ hρ, hw j ρ]
       have hρ' := (N.mem_topsPl ρ).1 hρ
@@ -470,7 +470,7 @@ theorem stepE_num (δ : Code N) {Nc lam0 C0 ce Ch Sw C1 : ℝ} (H : N.NumFacts �
       have hi : i.1 < N.R.N (j.1 + 1 - 1) := by
         rw [Nat.add_sub_cancel]; have := i.2; unfold Ranks.N; omega
       rw [N.nuN_cast δ (by omega) (by omega) ρ hi (H.nu0 _ (by omega) (by omega) ρ _ hi),
-        N.nu_eq_originRow δ (j.1 + 1) (by omega) ρ i.1, N.srcPar_lt δ ρ i.1 (by have := i.2; omega), hw j ρ])
+        N.nu_eq_originRow δ (j.1 + 1) (by omega) ρ i.1, N.srcPar_lt δ ρ i.1 omega, hw j ρ])
     (fun j ρ i => by
       have hi : i.1 < (N.R.sigW (j.1 + 1)).1 := by rw [sigW_fst]; have := i.2; omega
       rw [N.apN_cast (by omega) (by omega) ρ hi, N.aPlus_eq_originBig (j.1 + 1) ρ i.1, hw j ρ])
@@ -487,7 +487,7 @@ theorem stepE_num (δ : Code N) {Nc lam0 C0 ce Ch Sw C1 : ℝ} (H : N.NumFacts �
         rw [Nat.add_sub_cancel]; have := Finset.mem_range.1 hc; omega
       exact N.nuN_cast δ (by omega) (by omega) ρ hc' (H.nu0 _ (by omega) (by omega) ρ _ hc'))
     (fun ρ i => by
-      have := H.inter ρ i.1 (by have := i.2; omega)
+      have := H.inter ρ i.1 omega
       constructor
       · exact_mod_cast this.1
       · exact_mod_cast this.2)

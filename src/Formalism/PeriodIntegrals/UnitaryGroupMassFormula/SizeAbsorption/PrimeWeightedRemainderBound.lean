@@ -264,7 +264,7 @@ theorem prime_weighted_remainder_bound (K : Consts) (ce : ErrC) (D : D7) (L : Si
   have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
   have hp0 : (0 : ℝ) < p := by linarith
   have hlp : Real.log 2 ≤ Real.log p := Real.log_le_log (by norm_num) hp2
-  have hlp2 : (1 / 2 : ℝ) ≤ Real.log p := by have := Real.log_two_gt_d9; linarith
+  have hlp2 : (1 / 2 : ℝ) ≤ Real.log p := linarith
   have hlp0 : 0 < Real.log p := by linarith
   have hf0 : (0 : ℝ) ≤ (D.R.f : ℝ) := Nat.cast_nonneg _
   have hb := b_pos L

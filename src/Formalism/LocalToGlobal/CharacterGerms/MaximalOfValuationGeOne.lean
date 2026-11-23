@@ -139,7 +139,7 @@ theorem ge_of_pow {x : C} (h : V.Ge 0 (x ^ V.l)) : V.Ge 0 x := by
   exact absurd (le_trans h h2) (not_le.2 hc')
 
 theorem mm_add_pow {x y : C} (hx : V.Ge 0 x) (hy : V.Ge 0 y) : V.MM ((x + y) ^ V.l - x ^ V.l - y ^ V.l) := by
-  obtain ⟨k, hk⟩ : ∃ k, V.l = k + 2 := ⟨V.l - 2, by have := V.l_prime.two_le; omega⟩
+  obtain ⟨k, hk⟩ : ∃ k, V.l = k + 2 := ⟨V.l - 2, omega⟩
   have hdvd : ∀ i ∈ Finset.range (k + 1), V.l ∣ (k + 2).choose (i + 1) := by
     intro i hi
     rw [Finset.mem_range] at hi
@@ -257,7 +257,7 @@ private theorem mms_mul_natCast_lemma_5 {h : MvPowerSeries σ C} (hh : IntS V h)
 
 theorem mms_add_pow {f g : MvPowerSeries σ C} (hf : IntS V f) (hg : IntS V g) :
     MMS V ((f + g) ^ V.l - f ^ V.l - g ^ V.l) := by
-  obtain ⟨k, hk⟩ : ∃ k, V.l = k + 2 := ⟨V.l - 2, by have := V.l_prime.two_le; omega⟩
+  obtain ⟨k, hk⟩ : ∃ k, V.l = k + 2 := ⟨V.l - 2, omega⟩
   have hdvd : ∀ i ∈ Finset.range (k + 1), V.l ∣ (k + 2).choose (i + 1) := by
     intro i hi
     rw [Finset.mem_range] at hi

@@ -216,7 +216,7 @@ theorem szh_k_le (hH : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT) (h1 :
   unfold StandingHypotheses at hH
   simp only [] at hH
   obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hb, -⟩ := hH
-  have hj := hb τ 1 le_rfl (by have := D.R.two_le_m; omega)
+  have hj := hb τ 1 le_rfl omega
   refine hkC.trans ((le_max_left _ _).trans (hj.1.trans (hj.2.trans (le_of_eq ?_))))
   first
     | exact szh_b_sq large₂

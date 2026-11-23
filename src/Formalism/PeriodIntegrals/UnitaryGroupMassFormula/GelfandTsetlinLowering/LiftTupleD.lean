@@ -52,8 +52,8 @@ theorem sum_ite_val {n : ℕ} (f : Fin n → ℕ) (j : ℕ) :
   · apply Finset.sum_eq_zero; intro i _; rw [if_neg]; intro h'; exact hj (h' ▸ i.2)
 
 theorem natW_sg_val {n : ℕ} (sg : DomWeight n) (i : Fin n) :
-    ((sg.natW i : ℕ) : ℤ) = sg.w i - sg.w ⟨n - 1, by have := i.2; omega⟩ := by
-  have hle : i ≤ ⟨n - 1, by have := i.2; omega⟩ := by rw [Fin.le_def]; simp; have := i.2; omega
+    ((sg.natW i : ℕ) : ℤ) = sg.w i - sg.w ⟨n - 1, omega⟩ := by
+  have hle : i ≤ ⟨n - 1, omega⟩ := by rw [Fin.le_def]; simp; have := i.2; omega
   have := sg.anti hle
   simp only [DomWeight.natW, DomWeight.detShift, dif_pos (show 0 < n by have := i.2; omega)]
   rw [Int.toNat_of_nonneg (by omega)]

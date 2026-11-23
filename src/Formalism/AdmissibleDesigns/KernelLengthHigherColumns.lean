@@ -196,7 +196,7 @@ theorem kernel_length_higher_columns [∀ k, IsScalarTower Dd.T' Dd.R' (blockRes
       invariantsLengthSup i dc := by
   intro w hw
   rw [cols_eq] at hw
-  have hk : (c : ℕ) - 1 ∈ Finset.Ioo 0 D.R.t := Finset.mem_Ioo.2 ⟨by omega, by have := c.2; omega⟩
+  have hk : (c : ℕ) - 1 ∈ Finset.Ioo 0 D.R.t := Finset.mem_Ioo.2 ⟨by omega, omega⟩
   refine le_H0N i dc hw hk ?_
   obtain ⟨φ, hφ⟩ := ShaT.blkTw_of_def hD hN c (by omega)
   let κ : KO (D.nd.O i) ≃ₗ[D.nd.O i] KmodO (D.nd.O i) := Submodule.quotEquivOfEq _ _ Submodule.one_eq_range

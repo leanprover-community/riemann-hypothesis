@@ -707,7 +707,7 @@ theorem baseSpace_posDef : BaseSpacePosDef R F E := by
     have hw : (Matrix.of fun i j => (S.Y 0).hT (S.iXY 0 ((S.X 0).frame i))
         (S.iXY 0 ((S.X 0).frame j))) = (S.X 0).gram := by
       ext i j
-      exact S.iXY_isom 0 (by have := R.two_le_m; omega) _ _
+      exact S.iXY_isom 0 omega _ _
     have hsX := S.X_sig 0 τ
     rw [h, ← hw] at hsX
     have hsY := S.Y_sig 0 τ

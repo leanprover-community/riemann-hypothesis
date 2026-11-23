@@ -271,7 +271,7 @@ lemma card_compl (hj : j ≤ n) : Fintype.card {i : Fin n // ¬ (i : ℕ) < j} =
   rw [← Fintype.card_fin (n - j)]
   exact Fintype.card_congr
     { toFun := fun i => ⟨(i.1 : ℕ) - j, by have := i.1.2; have := i.2; omega⟩
-      invFun := fun k => ⟨⟨(k : ℕ) + j, by have := k.2; omega⟩, by
+      invFun := fun k => ⟨⟨(k : ℕ) + j, omega⟩, by
         show ¬ ((k : ℕ) + j < j); omega⟩
       left_inv := fun i => Subtype.ext (Fin.ext (by
         show (i.1 : ℕ) - j + j = i.1

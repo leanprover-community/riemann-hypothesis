@@ -155,7 +155,7 @@ theorem corollary_five_four_of_explicit (D : D7) (sc : Scale) (C0 CY : ℝ) (h5 
     (DstarD D) (duStarU D u) _ (logXuD D u) (logXuD D u) hf (by omega) hfk hT (Real.exp_pos _) hΓ hD hd hX
     hT1 hT3 rfl (by rw [Real.log_exp]) (by rw [Real.log_exp])
   have hL := scale_one_le_L sc
-  have hlog2 : Real.log 2 ≤ 1 := by have := Real.log_two_lt_d9; linarith
+  have hlog2 : Real.log 2 ≤ 1 := linarith
   have hΓ0 : 0 < Γ := by linarith
   have eΓ : Γ ^ (-(2 : ℝ)) = (Γ⁻¹) ^ 2 := by
     rw [Real.rpow_neg hΓ0.le, Real.rpow_two, inv_pow]

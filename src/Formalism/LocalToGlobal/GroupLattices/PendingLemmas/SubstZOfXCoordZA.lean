@@ -351,8 +351,8 @@ theorem sum_parity {M : Type*} [AddCommMonoid M] {n' : ℕ} (he : Even n') (ε :
     (P : Fin n' → Prop) [DecidablePred P] (hP : ∀ s, P s ↔ s.val % 2 = ε) (f : ℕ → M) :
     ∑ s ∈ univ.filter P, f s.val = ∑ i : Fin (n' / 2), f (ε + 2 * i.val) := by
   obtain ⟨h, rfl⟩ := he
-  refine Finset.sum_bij' (fun s _ => (⟨s.val / 2, by have := s.isLt; omega⟩ : Fin ((h + h) / 2)))
-    (fun i _ => (⟨ε + 2 * i.val, by have := i.isLt; omega⟩ : Fin (h + h))) ?_ ?_ ?_ ?_ ?_
+  refine Finset.sum_bij' (fun s _ => (⟨s.val / 2, omega⟩ : Fin ((h + h) / 2)))
+    (fun i _ => (⟨ε + 2 * i.val, omega⟩ : Fin (h + h))) ?_ ?_ ?_ ?_ ?_
   · intro s _
     exact Finset.mem_univ _
   · intro i _

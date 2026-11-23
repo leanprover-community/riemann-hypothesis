@@ -142,7 +142,7 @@ theorem mono_le {n : ℕ} {C : Fin r → Fin n} (hC : StrictMono C) (hb : ∀ l,
       rw [Fin.lt_def] at h2
       omega
   intro l
-  have := key (r - 1 - l.val) l (by have := l.isLt; omega)
+  have := key (r - 1 - l.val) l omega
   have := l.isLt
   omega
 

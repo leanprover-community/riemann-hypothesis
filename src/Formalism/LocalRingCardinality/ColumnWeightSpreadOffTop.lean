@@ -153,8 +153,8 @@ def lamLst (D : D7) : Fin (D.R.N 0) := ⟨D.R.k - 1, by have := D.R.five_le_k; s
 
 theorem columnWeight_spread_eq (u : D.what₂.Word) (τ : D.what₂.Tau) :
     ((((D.fm u).lam 0 τ).w (lamFst D) - ((D.fm u).lam 0 τ).w (lamLst D) : ℤ) : ℝ) =
-      (((D.hc τ).u ⟨0, by have := D.R.five_le_k; omega⟩ : ℚ) : ℝ) -
-        (((D.hc τ).u ⟨D.R.k - 1, by have := D.R.five_le_k; omega⟩ : ℚ) : ℝ) - ((D.R.k : ℝ) - 1) := by
+      (((D.hc τ).u ⟨0, omega⟩ : ℚ) : ℝ) -
+        (((D.hc τ).u ⟨D.R.k - 1, omega⟩ : ℚ) : ℝ) - ((D.R.k : ℝ) - 1) := by
   have hk := D.R.five_le_k
   have h0 := (D.fm u).lam_eq 0 (Nat.zero_le _) τ (lamFst D)
   have h1 := (D.fm u).lam_eq 0 (Nat.zero_le _) τ (lamLst D)
@@ -185,7 +185,7 @@ theorem columnWeight_spread_at_top (L : SizeData₂ D) (u : D.what₂.Word) (τ 
     (ht : (D.eTau τ : D.R.GG) = D.R.tau1 t) :
     ((D.fm u).lam 0 τ).w (lamFst D) - ((D.fm u).lam 0 τ).w (lamLst D) = L.aT t + L.bT t := by
   have h := columnWeight_spread_eq u τ
-  obtain ⟨h1, h2⟩ := L.top_u τ t (by have := D.R.five_le_k; omega) ht
+  obtain ⟨h1, h2⟩ := L.top_u τ t omega ht
   rw [h1, h2] at h
   have : ((((D.fm u).lam 0 τ).w (lamFst D) - ((D.fm u).lam 0 τ).w (lamLst D) : ℤ) : ℝ) = ((L.aT t + L.bT t : ℤ) : ℝ) := by
     rw [h]; push_cast; ring

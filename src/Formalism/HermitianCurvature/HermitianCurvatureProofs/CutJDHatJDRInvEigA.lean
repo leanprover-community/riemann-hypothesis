@@ -49,7 +49,7 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 variable {k r : ℕ}
 
-def e0A (k r : ℕ) (p : Fin (r + k + 1)) : Fin (2 * r + k + 1) := ⟨p.val, by have := p.isLt; omega⟩
+def e0A (k r : ℕ) (p : Fin (r + k + 1)) : Fin (2 * r + k + 1) := ⟨p.val, omega⟩
 
 theorem anisotropic_index_injective : Function.Injective (e0A k r) := fun a b h => by
   simp only [e0A, Fin.ext_iff] at h; exact Fin.ext h
@@ -127,7 +127,7 @@ theorem P_row (hw : w ∈ UWset k r z') (hm : m ∈ Nset k r) (a : Fin r) (j : F
     Matrix.conjTranspose_apply]
 
 theorem esI_of (i : Fin (2 * r + k + 1)) (hi : r + k < i.val) :
-    esI k r ⟨2 * r + k - i.val, by have := i.isLt; omega⟩ = i := by
+    esI k r ⟨2 * r + k - i.val, omega⟩ = i := by
   ext; simp [esI]; omega
 
 theorem inverse_product_block_zero (hw : w ∈ UWset k r z') (hm : m ∈ Nset k r) (i j : Fin (2 * r + k + 1)) (hi : r + k < i.val)
@@ -153,7 +153,7 @@ theorem det_inverse_product_block (hw : w ∈ UWset k r z') (hm : m ∈ Nset k r
       (P.submatrix (e0A k r) (e0A k r)).det := by
     let e : Fin (r + k + 1) ≃ {i : Fin (2 * r + k + 1) // i.val ≤ r + k} :=
       { toFun := fun p => ⟨e0A k r p, by simp [e0A]; omega⟩
-        invFun := fun i => ⟨i.1.val, by have := i.2; omega⟩
+        invFun := fun i => ⟨i.1.val, omega⟩
         left_inv := fun p => by ext; simp [e0A]
         right_inv := fun i => by ext; simp [e0A] }
     rw [← Matrix.det_submatrix_equiv_self e]

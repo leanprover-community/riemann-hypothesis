@@ -449,8 +449,8 @@ theorem first_operator_norm_bound : Formalism.HermitianLatticeCounting.Expansion
     have above : ∀ (i : Fin k) (a : Fin (k + M)), (a : ℕ) + 1 = (i : ℕ) → (i : ℕ) < (s : ℕ) →
         |mu s - 1 / 2 - u i| ≤ Real.exp (2 * |mu a - lam a| / (ga / 2)) * |mu s - 1 - mu a| := by
       intro i a hai his
-      have g1 := hgap ⟨(i : ℕ), by have := i.isLt; omega⟩ s (by simp [Fin.lt_def]; exact his) hs
-      have f1 := F1 i ⟨(i : ℕ), by have := i.isLt; omega⟩ rfl
+      have g1 := hgap ⟨(i : ℕ), omega⟩ s (by simp [Fin.lt_def]; exact his) hs
+      have f1 := F1 i ⟨(i : ℕ), omega⟩ rfl
       have f2 := F2 i a hai
       have h3 := hmu1 s
       have h5 := hδq s
@@ -466,10 +466,10 @@ theorem first_operator_norm_bound : Formalism.HermitianLatticeCounting.Expansion
     have below : ∀ (i : Fin k) (a : Fin (k + M)), (a : ℕ) = (i : ℕ) → (s : ℕ) + 2 ≤ (i : ℕ) →
         |mu s - 1 / 2 - u i| ≤ Real.exp (2 * |mu a - lam a| / (ga / 2)) * |mu s - 1 - mu a| := by
       intro i a hai his
-      have g1 := hgap s ⟨(i : ℕ) - 1, by have := i.isLt; omega⟩ (by simp [Fin.lt_def]; omega)
+      have g1 := hgap s ⟨(i : ℕ) - 1, omega⟩ (by simp [Fin.lt_def]; omega)
         (by have := i.isLt; simp; omega)
       have f1 := F1 i a hai
-      have f2 := F2 i ⟨(i : ℕ) - 1, by have := i.isLt; omega⟩ (by simp; omega)
+      have f2 := F2 i ⟨(i : ℕ) - 1, omega⟩ (by simp; omega)
       have h3 := hmu2 s
       have h5 := hδq s
       have h6 := hδq a
@@ -546,9 +546,9 @@ theorem first_operator_norm_bound : Formalism.HermitianLatticeCounting.Expansion
     have above : ∀ (i : Fin k) (a : Fin (k + M)), (a : ℕ) + 1 = (i : ℕ) → (i : ℕ) + 1 < k →
         |mu s - 1 / 2 - u i| ≤ Real.exp (2 * |mu a - lam a| / (bv / 2)) * |mu s - 1 - mu a| := by
       intro i a hai hik
-      have g1 := hcloud ⟨(i : ℕ), by have := i.isLt; omega⟩ hik
+      have g1 := hcloud ⟨(i : ℕ), omega⟩ hik
       have g2 := hnode s (by omega)
-      have f1 := F1 i ⟨(i : ℕ), by have := i.isLt; omega⟩ rfl
+      have f1 := F1 i ⟨(i : ℕ), omega⟩ rfl
       have f2 := F2 i a hai
       have h3 := hmu1 s
       have h5 := hδq s
@@ -565,7 +565,7 @@ theorem first_operator_norm_bound : Formalism.HermitianLatticeCounting.Expansion
       (univ.filter fun i : Fin k => 1 ≤ (i : ℕ) ∧ (i : ℕ) + 1 < k)
       (univ.erase s) (fun i => |mu s - 1 / 2 - u i|) (fun a => |mu s - 1 - mu a|)
       (fun a => 2 * |mu a - lam a| / (bv / 2))
-      (fun i => ⟨(i : ℕ) - 1, by have := i.isLt; omega⟩) (4 * b) 2 (Finset.subset_univ _)
+      (fun i => ⟨(i : ℕ) - 1, omega⟩) (4 * b) 2 (Finset.subset_univ _)
       (by
         intro i hi
         have h := (Finset.mem_filter.mp hi).2

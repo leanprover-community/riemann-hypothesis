@@ -382,7 +382,7 @@ theorem alfProd_inv_le (Rd : ℝ) (hRd1 : 1 ≤ Rd) (hRd : D.host.rdE ≤ Rd) (n
     rw [← Finset.prod_inv_distrib]
     calc ∏ i : Fin n, (alf D i)⁻¹ ≤ ∏ _i : Fin n, Rd ^ D.R.rS :=
           Finset.prod_le_prod₀ (fun i _ => (inv_pos.2 (alf_pos D i)).le)
-            (fun i _ => alf_inv_le D Rd hRd1 hRd i (by have := i.2; omega))
+            (fun i _ => alf_inv_le D Rd hRd1 hRd i omega)
       _ = Rd ^ (D.R.rS * n) := by
           rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin, ← pow_mul]
   have h0 : 0 ≤ (∏ i : Fin n, alf D i)⁻¹ := inv_nonneg.2 (Finset.prod_nonneg fun i _ => (alf_pos D i).le)

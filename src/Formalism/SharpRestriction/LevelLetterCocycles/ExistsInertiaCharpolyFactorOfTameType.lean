@@ -932,7 +932,7 @@ theorem Y_of_b (hG : Formalism.MainNotions.SumRepresentations.At.IdempotentChoic
     set_option synthInstance.maxHeartbeats 100000 in
       rw [eval_eq_sum_range, map_sum, Finset.sum_range] at h1
     convert h1 using 2
-    rw [map_mul, map_pow, map_pow, character_eq_first_off_l N w hw _ (by omega) (by have := c.2; omega) _ (N.locNd_chebotarevPlace_mem i w)]
+    rw [map_mul, map_pow, map_pow, character_eq_first_off_l N w hw _ (by omega) omega _ (N.locNd_chebotarevPlace_mem i w)]
     simp [chi1]
 
 theorem exists_unit_of_card (w : PlE H)
@@ -977,7 +977,7 @@ theorem Y_of_a (hG : Formalism.MainNotions.SumRepresentations.At.IdempotentChoic
         ((chiU N i ((c : ℕ) + 1) ((![γ', 1] : Fin 2 → GE N) k) : (N.O i)ˣ) : N.O i) = chi1 N i γ' - 1 := by
       simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, Pi.one_apply, Pi.neg_apply,
         one_mul, map_one, Units.val_one, mul_one]
-      rw [character_eq_first_off_l N w hw _ (by omega) (by have := c.2; omega) _ hγ', sub_eq_add_neg]
+      rw [character_eq_first_off_l N w hw _ (by omega) omega _ hγ', sub_eq_add_neg]
       rfl
     rw [h2]
     exact hu

@@ -141,7 +141,7 @@ theorem edgeStep_of (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) (hA 
       exact le_refl _
     exact_mod_cast this
   have hfam := edgeFamOf D hM hBP hInc p n' W Qq O Kf ι σ j w hSet.1 m r (flW (dT F.TT lam0)) (restW F.TT lam0) lam0
-    (lambda_zero_eq_product F.TT lam0) (flW_dom _) (restW_dom (by have := hB.m_ge; omega) F.TT lam0 hdom) e he
+    (lambda_zero_eq_product F.TT lam0) (flW_dom _) (restW_dom omega F.TT lam0 hdom) e he
     (Module.finrank O Sg) n2 ⌊X⌋₊ oS tT D1 cStar (cPrime n' r F.TT.card c0 cpp cStar)
     (by unfold cPrime; omega) (by unfold cPrime; omega)
     (fun i => ∑ o ∈ Finset.range (⌊X⌋₊ + 1), Fv i o)
@@ -172,7 +172,7 @@ theorem edgeStep_of (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) (hA 
     rw [hX, hkR]
     exact level_lower_bound_terms Cdeg CLa C (max Ct0 |Cdeg|) (le_max_right _ _) c5
       p F.TT.card (orbitWindowCount r de h x) (min (orbitWindowCount r de h x) (2 * F.TT.card)) L₁ (goodG' r de h x) (m + 1)
-      (min_le_left _ _) (by have := H.1; omega) (by omega) a ha1
+      (min_le_left _ _) omega (by omega) a ha1
   have ht0 := initial_level_nonneg (C := C) (Ct0 := max Ct0 |Cdeg|) (by linarith) (le_trans h0.le (le_max_left _ _)) p F.TT.card
     (orbitWindowCount r de h x) L₁ (goodG' r de h x) (m + 1) ha1
   have hTle : ((⌊X⌋₊ : ℕ) : ℝ) ≤ t0 C (max Ct0 |Cdeg|) p F.TT.card (orbitWindowCount r de h x) L₁ (goodG' r de h x) (m + 1) a := by

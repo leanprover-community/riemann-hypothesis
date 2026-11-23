@@ -88,12 +88,12 @@ lemma emb_out_row (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * 
   · rw [if_neg (fun h' => h h'.1), if_neg h]
 
 lemma emb_mid (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * r + k + 1)) (hq : mid k r q) (hj : mid k r j) :
-    embWb k r μ q j = μ ⟨q.val - r, by have := hq; omega⟩ ⟨j.val - r, by have := hj; omega⟩ := by
+    embWb k r μ q j = μ ⟨q.val - r, omega⟩ ⟨j.val - r, omega⟩ := by
   unfold embWb
   rw [dif_pos ⟨hq, hj⟩]
 
 lemma bc_mid_col (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (i j : Fin (2 * r + k + 1)) (hj : mid k r j) :
-    bigCell k r c μ i j = if hi : mid k r i then μ ⟨i.val - r, by have := hi; omega⟩ ⟨j.val - r, by have := hj; omega⟩
+    bigCell k r c μ i j = if hi : mid k r i then μ ⟨i.val - r, omega⟩ ⟨j.val - r, omega⟩
       else 0 := by
   unfold bigCell
   rw [dif_neg (show ¬ j.val < r by have := hj; omega), dif_pos hj.2]
@@ -138,7 +138,7 @@ lemma mid_wI (a : Fin (k + 1)) : mid k r (wI k r a) := by
   constructor <;> simp only [wI] <;> omega
 
 lemma mid_exists {i : Fin (2 * r + k + 1)} (hi : mid k r i) : ∃ a : Fin (k + 1), i = wI k r a :=
-  ⟨⟨i.val - r, by have := hi; omega⟩, by apply Fin.ext; simp only [wI]; have := hi; omega⟩
+  ⟨⟨i.val - r, omega⟩, by apply Fin.ext; simp only [wI]; have := hi; omega⟩
 
 lemma wI_inj : Function.Injective (wI k r) := by
   intro a b h
@@ -210,7 +210,7 @@ lemma jV_wbPart {v : Fin (2 * r + k + 1) → ℂ} (hv : inWb k r v) : jV k r (wb
   by_cases hi : mid k r i
   · obtain ⟨a, rfl⟩ := mid_exists hi
     rw [jV_wI]; rfl
-  · rw [jV_out _ hi, hv i (by have := hi; omega)]
+  · rw [jV_out _ hi, hv i omega]
 
 lemma inWb_jV (u : Fin (k + 1) → ℂ) : inWb k r (jV k r u) := by
   intro i hi
@@ -1048,7 +1048,7 @@ lemma Jc_ne_top (n : ℕ) {T T' : ℝ} (hT : 0 < T) (hT' : 0 < T') : Jc n T T' �
     intro s hs
     have h1 : s / (T * T') ≤ 1 / T := by
       rw [div_le_div_iff₀ (by positivity) hT]; nlinarith [hs.2]
-    have h0 : 0 ≤ s / (T * T') := by have := hs.1; positivity
+    have h0 : 0 ≤ s / (T * T') := positivity
     exact mul_le_mul' (ENNReal.ofReal_le_ofReal (pow_le_pow_left₀ h0 h1 n)) (ENNReal.ofReal_le_ofReal h1)
   refine ne_top_of_le_ne_top ?_ (setLIntegral_mono' measurableSet_Ioc hb)
   rw [setLIntegral_const, Real.volume_Ioc]
@@ -1064,7 +1064,7 @@ lemma Jc_ne_zero (n : ℕ) {T T' : ℝ} (hT : 0 < T) (hT' : 0 < T') : Jc n T T' 
       ENNReal.ofReal ((s / (T * T')) ^ n) * ENNReal.ofReal (s / (T * T'))) ∩ Ioc 0 T' := by
     intro s hs
     refine ⟨?_, hs⟩
-    have h0 : 0 < s / (T * T') := by have := hs.1; positivity
+    have h0 : 0 < s / (T * T') := positivity
     rw [Function.mem_support]
     exact mul_ne_zero (ENNReal.ofReal_pos.2 (pow_pos h0 n)).ne' (ENNReal.ofReal_pos.2 h0).ne'
   refine lt_of_lt_of_le ?_ (measure_mono hsub)

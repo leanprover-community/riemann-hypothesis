@@ -754,11 +754,11 @@ theorem skip_one_ne {t : ℕ} (a : Fin t) (l : Fin (t - 1)) : skip1 a l ≠ a :=
 
 theorem exists_skip_one_eq {t : ℕ} {a b : Fin t} (h : a ≠ b) : ∃ l, skip1 b l = a := by
   rcases Nat.lt_or_gt_of_ne (fun e => h (Fin.ext e)) with hab | hab
-  · refine ⟨⟨a.val, by have := b.isLt; omega⟩, ?_⟩
+  · refine ⟨⟨a.val, omega⟩, ?_⟩
     apply Fin.ext
     unfold skip1
     split_ifs with h' <;> simp only [Fin.val_mk] at * <;> omega
-  · refine ⟨⟨a.val - 1, by have := a.isLt; omega⟩, ?_⟩
+  · refine ⟨⟨a.val - 1, omega⟩, ?_⟩
     apply Fin.ext
     unfold skip1
     split_ifs with h' <;> simp only [Fin.val_mk] at * <;> omega

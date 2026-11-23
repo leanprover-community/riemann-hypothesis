@@ -103,9 +103,9 @@ theorem restEdge_of (hFun : RestFunct) : RestEdge := by
   intro p n' R m lam0 hDom t c n D e e' he he' hfac
   have hfrW : IsFractionRing R.W R.Qq := R.std.1.frac_alt
   obtain ⟨g, hg, hsrc, htgt⟩ := lc_main p n' 1 (m + 1) R.std.1.p_unif R.std.1.res_card R.std.1.prime.two_le
-    (by have := R.std.1.two_le; omega) e he
+    omega e he
   obtain ⟨g', hg', hsrc', htgt'⟩ := lc_main p n' 1 (m + 1) R.std.1.p_unif R.std.1.res_card R.std.1.prime.two_le
-    (by have := R.std.1.two_le; omega) e' he'
+    omega e' he'
   have hug : IsUnit g := (Matrix.isUnit_iff_isUnit_det _).2 hg
   have hug' : IsUnit g' := (Matrix.isUnit_iff_isUnit_det _).2 hg'
   let γ : GL (Fin (m + 1)) R.Qq := hug'.unit * hug.unit⁻¹

@@ -402,7 +402,7 @@ theorem muPM (hq : q ≠ 3)
     obtain ⟨u, h1, h2, h3⟩ := ex 1 1 4 (Nat.coprime_one_left _) (Nat.coprime_one_left _) (c4 d hd2)
     have h4 := h u (D.art_eq_one hH u (D.art_ps_one hH u h2 (by simp)) (D.art_ch_one hH u h3 (j4 d hd2))
       (D.eta_one hH u h1))
-    exact n4 d hH.2.1 (by have := hH.2.2.2.1; omega) (h3.symm.trans (h4.of_dvd hqk))
+    exact n4 d hH.2.1 omega (h3.symm.trans (h4.of_dvd hqk))
   have km : k ∣ D.m := kq.dvd_of_dvd_mul_right (kd.dvd_of_dvd_mul_right hk)
   refine hmu k km fun v hv => ?_
   obtain ⟨u, h1, h2, h3⟩ := ex (v : ZMod D.m).val 1 1 (ZMod.val_coe_unit_coprime _)

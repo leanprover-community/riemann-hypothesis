@@ -107,7 +107,7 @@ lemma uMap_eq {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (s : B.Mat 
   · rw [herm_sum_smul]
     simp only [hermitian_form_flag_vector hz.1]
     rw [Finset.sum_eq_single a]
-    · rw [if_pos (by have := a.isLt; omega)]
+    · rw [if_pos omega]
       field_simp [hzz_ne hz.2]
     · intro c _ hc
       rw [if_neg, mul_zero]

@@ -63,7 +63,7 @@ private theorem herm_hpk_bvec_esI (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) 
     have hj' : j.val ≠ a.val := fun h => hj (Fin.ext (h.trans he.symm))
     have h0 : Hpk k r (esI k r a) j = 0 := by
       simp only [Hpk]
-      rw [if_neg (fun h => absurd h.1 (by omega)), if_neg (fun h => hj' (by have := h.2; omega)),
+      rw [if_neg (fun h => absurd h.1 (by omega)), if_neg (fun h => hj' omega),
         if_neg (fun h => absurd h.2.1 (by omega))]
     rw [h0, zero_mul]
   · simp

@@ -275,7 +275,7 @@ theorem restWeylEdge : RestWeylEdge P := by
   have hp := pKf_ne_of_place P v
   have hw : algebraMap O Kf (p : O) ≠ 0 := by rwa [map_natCast]
   obtain ⟨g, hg, hsrc, htgt⟩ := lc_main p (P.n' v) i (P.m + 1) hS.p_unif hS.res_card
-    (by have := hS.five_le; omega) (by have := hS.two_le; omega) ⟨L'', L v⟩ hE
+    omega omega ⟨L'', L v⟩ hE
   have hsrc' : L'' = colSpan (P.W v) g := hsrc
   have htgt' : L v = colSpan (P.W v) (g * Matrix.diagonal fun c => if c.val < i then ((p : P.Qq v))⁻¹ else 1) := htgt
   have hfrob : ∀ x : P.W v, ∃ y : P.W v, P.σ v (algebraMap (P.W v) (P.Qq v) x) = algebraMap (P.W v) (P.Qq v) y := by

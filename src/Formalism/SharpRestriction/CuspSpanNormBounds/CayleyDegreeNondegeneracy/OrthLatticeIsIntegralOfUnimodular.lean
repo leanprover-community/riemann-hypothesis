@@ -47,7 +47,7 @@ variable (D : D7)
 
 theorem orth_embedding_isometry (x y : (D.sp.X 0).V) :
     (D.sp.Y 0).hT (D.sp.iXY 0 x) (D.sp.iXY 0 y) = (D.sp.X 0).hT x y :=
-  D.sp.iXY_isom 0 (by have := D.R.two_le_m; omega) x y
+  D.sp.iXY_isom 0 omega x y
 
 theorem orth_embedding_injective : Function.Injective (D.sp.iXY 0) := by
   refine (injective_iff_map_eq_zero _).2 fun x hx => ?_

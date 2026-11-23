@@ -113,7 +113,7 @@ lemma combine {B Tp R Lf : ℂ} {b1 b2 b3 : ℝ} (h1 : ‖B‖ ≤ b1) (h2 : ‖
 
 lemma cLine_le_three {u : ℝ} (hu : 2 ≤ u) : cLine u ≤ 3 := by
   unfold cLine
-  have h2 : (1 : ℝ) / 2 < Real.log 2 := by have := Real.log_two_gt_d9; linarith
+  have h2 : (1 : ℝ) / 2 < Real.log 2 := linarith
   have hl : Real.log 2 ≤ Real.log u := Real.log_le_log (by norm_num) hu
   have hpos : 0 < Real.log u := by linarith
   have h3 : 1 / Real.log u ≤ 2 := by rw [div_le_iff₀ hpos]; linarith

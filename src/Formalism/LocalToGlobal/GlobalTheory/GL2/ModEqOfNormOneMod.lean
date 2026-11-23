@@ -42,8 +42,8 @@ namespace Formalism.L2.GlobalTheoryTheory.FiltrationCocycleLiftCriterion
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory Formalism.MainNotions.ShortIntervalPrimes NumberField
 
 theorem NE_pos (D : D7) : 0 < NE D :=
-  Nat.mul_pos (Nat.mul_pos D.host.QS_pos (by have := D.host.qd_big.1; omega))
-    (by have := D.host.qd_big.2; omega)
+  Nat.mul_pos (Nat.mul_pos D.host.QS_pos omega)
+    omega
 
 theorem splits_of_modEq (D : D7) (hC : CycSplit) {p : ℕ} (hp : p.Prime) (h1 : p ≡ 1 [MOD NE D]) :
     SplitsCompletely D p := by

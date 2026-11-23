@@ -198,7 +198,7 @@ theorem herm (m : ℕ) (Λ : Submodule V (Fin m → K)) (hfg : Λ.FG)
         rw [sub_eq_iff_eq_add] at hr
         rw [hr]
         simp only [Pi.add_apply, add_smul, Finset.sum_add_distrib, hs]
-      · exact ih α hα (fun j hj => hz j (by have := j.isLt; omega))
+      · exact ih α hα (fun j hj => hz j omega)
   refine ⟨β, hβΛ, hβz, hβd, ?_⟩
   intro α hα
   obtain ⟨r, hr⟩ := exist m α hα (fun j hj => absurd j.isLt (not_lt.2 hj))

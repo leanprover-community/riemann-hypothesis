@@ -334,7 +334,7 @@ theorem rdE_pos_c : (0 : ℝ) < D.host.rdE :=
 theorem stCoordV_apply (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1))
     (γ : X.B.I.Ginf) (v : InfinitePlace X.B.I.F) (y : Formalism.REAL.UJ (X.B.I.ε v)) (p : FreeE w) :
     stCoordV X u' w γ v y p = ((D.host.rdE : ℂ) ^ (D.R.rS - p.1.1.1) * ((D.host.rdE : ℂ) ^ (D.R.rS - p.1.2.1))⁻¹) *
-      Formalism.L2.SG.HidaSetting.hJ (X.B.I.ε v) (Formalism.L2.SG.HidaSetting.rv X.B.I v (X.fR ⟨p.1.1.1, by have := p.2.1; omega⟩))
+      Formalism.L2.SG.HidaSetting.hJ (X.B.I.ε v) (Formalism.L2.SG.HidaSetting.rv X.B.I v (X.fR ⟨p.1.1.1, omega⟩))
         (uMat ((γ v)⁻¹ * y * γ v) *ᵥ
           fam (fun a => Formalism.L2.SG.HidaSetting.rv X.B.I v (X.eR a)) (Formalism.L2.SG.HidaSetting.rv X.B.I v (X.zR u')) p.1.2) := by
   simp only [stCoordV, frm, famSc, Matrix.mulVec_smul, hJ_smul_r]
