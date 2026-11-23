@@ -59,10 +59,10 @@ Removed ~745 lines of dead `section X ... end X` blocks from 244 files. These we
 
 **Title:** "Remove 1.67M lines of dead code from 148K files (imports, open statements, dead sections)"
 
-**Total commits:** 43  
-**Files changed:** 148,150+  
-**Lines deleted:** **1,661,000+**  
-**Lines added:** ~4,500  
+**Total commits:** 51  
+**Files changed:** 148,119  
+**Lines deleted:** **1,661,637**  
+**Lines added:** ~4,552  
 
 ### Major proof simplification categories:
 | Type | Pattern Changed | Occurrences |
