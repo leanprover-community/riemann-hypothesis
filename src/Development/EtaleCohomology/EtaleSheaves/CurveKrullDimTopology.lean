@@ -17,13 +17,13 @@ theorem two_le_dim (A B : IrreducibleCloseds X) (hAB : (A : Set X) ⊂ B) (hB : 
     rw [← SetLike.coe_ssubset_coe]; exact hAB
   have h2 : B < T := by
     rw [← SetLike.coe_ssubset_coe]; exact ssubset_univ_iff.mpr hB
-  let l : LTSeries (IrreducibleCloseds X) := ⟨2, ![A, B, T], fun i => by
-    fin_cases i
-    · exact h1
-    · exact h2⟩
-  have hl : l.length = 2 := rfl
+  let initial : LTSeries (IrreducibleCloseds X) := RelSeries.singleton _ A
+  let pair := initial.snoc B h1
+  let series := pair.snoc T (by
+    change pair.last < T
+    exact (RelSeries.last_snoc initial B h1).symm ▸ h2)
   unfold topologicalKrullDim
-  exact Order.le_krullDim_iff.mpr ⟨l, hl⟩
+  exact Order.le_krullDim_iff.mpr ⟨series, rfl⟩
 
 theorem closed_of_ne_univ [IrreducibleSpace X] [T0Space X] (hd : topologicalKrullDim X ≤ 1) (z : X)
     (hz : closure ({z} : Set X) ≠ univ) : IsClosed ({z} : Set X) := by
@@ -31,41 +31,28 @@ theorem closed_of_ne_univ [IrreducibleSpace X] [T0Space X] (hd : topologicalKrul
   intro y hy
   by_contra hne
   have hyz : closure ({y} : Set X) ⊂ closure {z} := by
-    refine ⟨closure_minimal (by simpa using hy) isClosed_closure, fun h => hne ?_⟩
+    refine ⟨closure_minimal (singleton_subset_iff.mpr hy) isClosed_closure, fun h => hne ?_⟩
     have h1 : z ⤳ y := specializes_iff_mem_closure.mpr hy
     have h2 : y ⤳ z := specializes_iff_mem_closure.mpr (h (subset_closure rfl))
     exact (h1.antisymm h2).eq.symm
   have := two_le_dim ⟨closure {y}, isIrreducible_singleton.closure, isClosed_closure⟩
     ⟨closure {z}, isIrreducible_singleton.closure, isClosed_closure⟩ hyz hz
-  have h3 := this.trans hd
-  norm_cast at h3
+  exact (by decide : ¬ (2 : WithBot ℕ∞) ≤ 1) (this.trans hd)
 
 theorem finite_of_closed [IrreducibleSpace X] [T0Space X] [QuasiSober X] [NoetherianSpace X]
     (hd : topologicalKrullDim X ≤ 1) (Z : Set X) (hZ : IsClosed Z) (hne : Z ≠ univ) : Z.Finite := by
-  have hpt : ∀ z ∈ Z, IsClosed ({z} : Set X) := fun z hz => closed_of_ne_univ hd z
-    (fun h => hne (eq_univ_of_univ_subset (h ▸ closure_minimal (by simpa using hz) hZ)))
-  have hfin := NoetherianSpace.finite_irreducibleComponents (α := Z)
-  have hsub : ∀ S ∈ irreducibleComponents Z, (Subtype.val '' S).Subsingleton := by
-    intro S hS
-    have hirr : IsIrreducible (Subtype.val '' S) := hS.1.image _ continuous_subtype_val.continuousOn
-    obtain ⟨g, hg⟩ := QuasiSober.sober hirr.closure isClosed_closure
-    have hgZ : g ∈ Z := closure_minimal (by rintro _ ⟨x, -, rfl⟩; exact x.2) hZ (hg.mem)
-    have : closure (Subtype.val '' S) = {g} := by
-      rw [← hg.def, (hpt g hgZ).closure_eq]
-    intro a ha b hb
-    have ha' := subset_closure ha; have hb' := subset_closure hb
-    rw [this] at ha' hb'
-    exact ha'.trans hb'.symm
-  have : Z = ⋃ S ∈ irreducibleComponents Z, Subtype.val '' S := by
-    ext x; constructor
-    · intro hx
-      have : (⟨x, hx⟩ : Z) ∈ ⋃₀ irreducibleComponents Z := by rw [sUnion_irreducibleComponents]; trivial
-      obtain ⟨S, hS, hxS⟩ := this
-      exact mem_iUnion₂.mpr ⟨S, hS, ⟨_, hxS, rfl⟩⟩
-    · intro hx
-      obtain ⟨S, -, y, -, rfl⟩ := mem_iUnion₂.mp hx
-      exact y.2
-  rw [this]
-  exact hfin.biUnion fun S hS => (hsub S hS).finite
+  let : QuasiSober Z := hZ.isClosedEmbedding_subtypeVal.quasiSober
+  have hpt (z : Z) : IsClosed ({z} : Set Z) := by
+    have hz : closure ({z.val} : Set X) ≠ univ := fun h =>
+      hne (eq_univ_of_univ_subset (h ▸ closure_minimal (singleton_subset_iff.mpr z.property) hZ))
+    rw [← preimage_image_eq {z} Subtype.val_injective, image_singleton]
+    exact (closed_of_ne_univ hd z.val hz).preimage continuous_subtypeVal
+  have hfin : (univ : Set Z).Finite := by
+    rw [← sUnion_irreducibleComponents]
+    refine NoetherianSpace.finite_irreducibleComponents.sUnion fun S hS => ?_
+    obtain ⟨z, hz⟩ := QuasiSober.sober hS.1 (isClosed_of_mem_irreducibleComponents S hS)
+    rw [← hz.def, (hpt z).closure_eq]
+    exact finite_singleton z
+  exact finite_coe_iff.mp (finite_univ_iff.mp hfin)
 
 end LateralTheory.E.CurveKrullDim
