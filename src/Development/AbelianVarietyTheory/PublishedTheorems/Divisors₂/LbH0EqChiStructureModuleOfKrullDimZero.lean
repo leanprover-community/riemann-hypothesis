@@ -43,10 +43,8 @@ open GlobalTheory.QCoh GlobalTheory.CechPic
 
 namespace GlobalTheory.NefNumericsModel
 
-section General
 variable {k : Type} [Field k] {X : Scheme.{0}} [Algebra k Γ(X, ⊤)]
 
-end General
 
 section Space
 open ProjSpace

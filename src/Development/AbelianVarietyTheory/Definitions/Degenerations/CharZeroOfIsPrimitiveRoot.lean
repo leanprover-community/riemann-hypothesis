@@ -308,24 +308,20 @@ def toricNum : NumD F where
 
 end Toric
 
-section ThetaShiftProofs
 open GlobalTheory.HostModel GlobalTheory.HostModel.ConjDual
 variable (H : Host E) (K : Type) [CommRing K] [IsDomain K]
   {F : Type} [Field F] [IsAlgClosed F] [Algebra (FractionRing K) F] (ρ : F) (hρ : ρ ^ 2 = -(H.d : F)) (ζ : ℕ → Fˣ)
   (hp : ∀ n, 0 < n → IsPrimitiveRoot (ζ n) n) (hc : ∀ n m, 0 < n → 0 < m → ζ (n * m) ^ m = ζ n)
 
-end ThetaShiftProofs
 
 theorem lbIso_of_g_one {X : Scheme.{0}} {L M : LB X} (hL : ∀ i j, L.g i j = 1) (hM : ∀ i j, M.g i j = 1) : LBIso L M := by
   refine ⟨⟨fun _ => 1⟩, fun i j => ?_⟩
   have e : (LB.div M L).g i j = 1 := by simp only [LB.div, hL, hM, map_one, inv_one, _root_.mul_one]; rfl
   rw [e, map_one, map_one, _root_.mul_one]
 
-section RankZero
 open GlobalTheory.HostModel
 variable (H : Host E) (K : Type) [CommRing K] [IsDomain K] [Algebra (FractionRing K) ℂ]
 
-end RankZero
 
 end ValInh
 end GlobalTheory.Ex

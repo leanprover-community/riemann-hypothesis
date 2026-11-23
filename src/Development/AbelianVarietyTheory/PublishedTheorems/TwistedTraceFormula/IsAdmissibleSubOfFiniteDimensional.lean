@@ -140,11 +140,9 @@ def InfinitesimalEquivalence : Prop :=
 
 def GKGlobalisation : Prop := AdmissibleClosure ∧ InfinitesimalEquivalence
 
-section Consequences
 
 variable {n : ℕ} {ε : Fin n → Bool}
 
-end Consequences
 
 end GlobalTheory.Published
 

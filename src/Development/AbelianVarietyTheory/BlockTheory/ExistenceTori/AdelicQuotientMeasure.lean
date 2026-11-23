@@ -44,13 +44,11 @@ open scoped TensorProduct Matrix ENNReal
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.AdelicQuotientClasses
 
-section General
 
 variable {H : Type} [Group H] (Γ : Subgroup H)
 
 variable [MeasurableSpace H]
 
-end General
 
 def unitaryOf {R : Type} [CommRing R] (s : R →+* R) {n : ℕ} (J : Matrix (Fin n) (Fin n) R) :
     Subgroup (GL (Fin n) R) where

@@ -43,15 +43,11 @@ open scoped Classical
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.SchurTensorLattices
 
-section Theta
 variable {P : Type} [Fintype P]
 
-end Theta
 
-section Schur
 variable {T : Type} [Fintype T] {n₀ : ℕ}
 
-end Schur
 
 def hookProd (n : ℕ) (ν : ℕ → ℕ) : ℕ :=
   ∏ r ∈ Finset.range n, ∏ c ∈ Finset.range (ν r),

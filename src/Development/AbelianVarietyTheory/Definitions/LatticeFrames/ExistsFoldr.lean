@@ -36,15 +36,11 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.SeeSaw.GModel
 variable {D : D7} {c : Comm D} {v : VCom c}
 
-section Rel
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-end Rel
 
-section Mu
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-end Mu
 
 
 open MeasureTheory IsDedekindDomain NumberField Matrix ValuativeRel in

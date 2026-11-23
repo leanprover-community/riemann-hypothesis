@@ -102,13 +102,11 @@ theorem eq_cyc_pow [IsAlgClosure E Ω] {art : Ideles E →* Gab E Ω} (ha : IsGl
     cycZ_of_isFrob hv' hA hσ]
   simp
 
-section Loc
 
 variable (P : LocPrime l) {Gw : Subgroup (Ω ≃ₐ[E] Ω)} {O : Type} [CommRing O] [Algebra ℤ_[l] O]
   [TopologicalSpace O] (Bw : LocBridge l E Ω Gw O)
 
 
-end Loc
 
 end GlobalTheory.Published.CharAboveModel
 

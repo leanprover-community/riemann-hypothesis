@@ -331,10 +331,8 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 end HasseNorm
 
-section Tests
 
 variable (E : Type) [Field E] [NumberField E] [IsCMField E]
 
-end Tests
 
 end GlobalTheory.Published

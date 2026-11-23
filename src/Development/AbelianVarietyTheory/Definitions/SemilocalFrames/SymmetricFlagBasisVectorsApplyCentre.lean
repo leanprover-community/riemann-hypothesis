@@ -121,11 +121,9 @@ theorem xPlus_sup (F F' : FlagD H r) : xPlus F ⊔ xPlus F' = V0 F F' := by
 theorem wSp_eq (F F' : FlagD H r) : wSp F F' = perp H (xPlus F) ⊓ perp H (xPlus F') := by
   rw [wSp, ← xPlus_sup, perp_sup]
 
-section Pair
 
 variable {F F' F'' : FlagD H r} {Λ : Submodule R V} {g : R} {β : V ≃ₗ[K] V}
 
-end Pair
 
 namespace FlagExample
 

@@ -265,13 +265,11 @@ abbrev LieUniv : Type := Module.Dual O G.RigExt
 variable (G) in
 def lieUnivToLie : G.LieUniv →ₗ[O] G.Lie := G.rigOfOmega.dualMap
 
-section Carry
 
 variable (p O)
 
 variable {p O}
 
-end Carry
 
 end PDivGroup
 

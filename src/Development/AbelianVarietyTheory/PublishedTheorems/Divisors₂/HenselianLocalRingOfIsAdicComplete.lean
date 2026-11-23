@@ -43,13 +43,11 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Raynaud
 
-section Formal
 
 variable {R : Type} [CommRing R] (I : Ideal R)
 
 variable {I}
 
-end Formal
 
 section Parts
 

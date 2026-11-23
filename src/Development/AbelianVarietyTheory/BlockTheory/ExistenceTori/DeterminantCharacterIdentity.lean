@@ -72,11 +72,9 @@ def push {n : ℕ} (g : Matrix (Fin n) (Fin n) E) :
     MvPolynomial (LtN Dw n) c.F →ₐ[c.F] MvPolynomial (LtN Dw n) c.F :=
   aeval fun ℓ => letB c ℓ.1 ℓ.2.1 (fun k => g k ℓ.2.2)
 
-section Coeff
 
 variable {n : ℕ} {T : Type} [AddCommGroup T] [Module c.F T] [Module (𝓞 c.F) T] [IsScalarTower (𝓞 c.F) c.F T]
 
-end Coeff
 
 def MovesDatum {n : ℕ} (J : Subgroup (UA E n)) (ψ : J →* c.Fˣ) (ph : (Fin n → ConjQ Dw l) → c.F) : Prop :=
   ∀ (k : J) (κ : Fin n → Fin n → 𝓞 E),

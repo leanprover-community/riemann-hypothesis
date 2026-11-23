@@ -88,7 +88,6 @@ theorem over_move_iff {H : HermSp M V} (P : FPair H r) (d : Datum P) (t : Term V
 
 end Loc
 
-section Glob
 
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGLocModel Formalism.L2.SG.FamDefs
 
@@ -96,6 +95,5 @@ variable {D : D7}
 
 variable {X : HidaSetting D} {Y : Full X} {u u' : D.what₂.Word}
 
-end Glob
 
 end GlobalTheory.LocOver.Check

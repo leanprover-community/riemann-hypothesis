@@ -116,7 +116,6 @@ structure DivRows3G (P : RowSideFamily ex) : Prop where
 
 end IndefiniteRowSideFullHecke
 
-section At
 
 open Formalism
 
@@ -137,7 +136,6 @@ structure RowsAt4 (Q : Formalism.IndefR.RealT Rc P Dcf Spf Zscf S Ks) (C CH : â„
   pass : Formalism.IndefR.Links.PassIn3 Q.Rl Q.F C CH
   kap : Formalism.L2.Rows.RowsHoldKap3 P
 
-end At
 
 section Serv
 

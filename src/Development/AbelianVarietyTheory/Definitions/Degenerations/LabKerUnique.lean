@@ -72,12 +72,10 @@ theorem translT_id {T : Over B} (x : T ⟶ (zeroPolAV B).A) : (translT (zeroPolA
 
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
 
-section More
 variable {S : ThetaSys o Ω} (ρ : S.Real)
 
 variable {ρ} {p : ℕ} [Fact p.Prime] {y₀ : S.R →+* PadicAlgCl p} {u : ρ.UTest p y₀}
 
-end More
 
 end RealModel
 end GlobalTheory.ZH

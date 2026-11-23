@@ -285,17 +285,13 @@ theorem stdField_norm (σ : K →+* ℂ) (x : K) : (stdField K).norm σ x = ‖�
   rw [norm, stdField_form, Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq,
     Real.sqrt_sq (_root_.norm_nonneg _)]
 
-section Comap
 
 variable (f : V' →ₗ[K] V) (hf : Function.Injective f) (σ : K →+* ℂ)
 
-end Comap
 
-section Scale
 
 variable (c : (K →+* ℂ) → ℝ) (hc : ∀ σ, 0 < c σ) (σ : K →+* ℂ)
 
-end Scale
 
 noncomputable def scaleNormExp (t : (K →+* ℂ) → ℝ) : ArchMetric K V :=
   { form := fun σ => (Real.exp (2 * t σ) : ℂ) • h.form σ
@@ -692,11 +688,9 @@ theorem muMax_of_finrank_eq_one (hA : A.FG) (h1 : finrank (𝓞 K) A = 1) :
   exact div_le_div_of_nonneg_right (h.arDeg_le_of_finrank_eq hA hBA (hr.trans h1.symm))
     (Nat.cast_nonneg _)
 
-section Comap
 
 variable (f : V' →ₗ[K] V) (hf : Function.Injective f) {A' : Submodule (𝓞 K) V'}
 
-end Comap
 
 end Slopes
 

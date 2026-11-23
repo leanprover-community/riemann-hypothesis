@@ -473,12 +473,10 @@ theorem ratPts_eq : ratPts hc V = HFinIn (AF F) hc.sig V.gram := by
 
 end Claims
 
-section Host
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable (D : D7) (V : TH.HSp D)
 
-end Host
 
 end GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups

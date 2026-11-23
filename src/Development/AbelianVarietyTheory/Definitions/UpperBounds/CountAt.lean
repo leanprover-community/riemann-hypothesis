@@ -55,12 +55,10 @@ def domSpan (X : Data E r) (A : Set (Frame X.Ψ r → ℂ)) : Submodule ℂ (Fra
 
 end Model
 
-section Record
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.Gaps.EtaleWeightGaps Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.FD
 
 variable {D : D7} {T : Top D}
 
-end Record
 
 end GlobalTheory.UpTie

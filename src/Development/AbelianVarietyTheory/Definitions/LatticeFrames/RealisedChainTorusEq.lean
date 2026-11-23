@@ -143,11 +143,9 @@ variable {F : Pts}
 
 end Pts
 
-section Hyp
 
 variable (Fam : ℝ → Type 1) (Cl : ∀ ε, Fam ε → Prop) (pts : ∀ ε, Fam ε → Pts) (Form : ℝ → Pts → Prop)
 
-end Hyp
 
 end GlobalTheory.Core.Rk
 

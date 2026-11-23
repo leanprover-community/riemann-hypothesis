@@ -42,17 +42,13 @@ def len_vp (O : Type) [CommRing O] (l : ℕ) (M : Type) [AddCommGroup M] [Module
 def val_vp {O : Type} [CommRing O] (l : ℕ) (x : O) : ℝ≥0∞ :=
   len_vp O l (O ⧸ Ideal.span {x})
 
-section Rep
 
 variable {Γ A : Type} [Group Γ] [CommRing A] {m : ℕ}
 
-end Rep
 
-section Div
 
 variable {Γ O' : Type} [Group Γ] [CommRing O'] [IsDomain O'] {m : ℕ}
 
-end Div
 
 section BK
 

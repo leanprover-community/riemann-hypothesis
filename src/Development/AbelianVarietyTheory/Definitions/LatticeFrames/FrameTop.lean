@@ -102,7 +102,6 @@ def OffX.atT (o : OffX a k ι) (v : Pl D) : Prop := ∃ i, v = (o.p i).v
 
 end Off
 
-section AtLevel
 
 open GlobalTheory.LocMod
 
@@ -149,9 +148,7 @@ attribute [instance] GX.fld GX.val GX.top GX.loc GX.mea GX.bor
 
 variable {a : XPart D u} {ζ₀ : Fin a.Lz.rank → D.host.E}
 
-end AtLevel
 
-section World
 
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Core.Rk
 
@@ -159,7 +156,6 @@ variable {B : Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B
   (a : XPart (I.rec7 l Z) v) {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {ι : Type}
   (o : OffX a k ι) (G : ∀ PP : a.c.Pg, GX a o.ζ₀ PP.1)
 
-end World
 
 end GlobalTheory.SeeSaw
 

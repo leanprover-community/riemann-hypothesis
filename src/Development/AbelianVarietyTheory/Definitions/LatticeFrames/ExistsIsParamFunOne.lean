@@ -122,12 +122,10 @@ theorem isSphOff_of_vac {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : 
     obtain ⟨⟨p, hp⟩, h'⟩ := h.2.norm
     simpa [nrm2] using h' p hp
 
-section Coef
 
 variable {ψ : AddChar (AF D.host.F) ℂ} {A B : HSp D} {χA χB : (AE D)ˣ →* Circle} {om : WRep A B} {ν : Measure (WO A B)}
   {𝓕 : Set (WO A B)} {Φ₁ Φ₂ : WO A B → ℂ}
 
-end Coef
 
 end GlobalTheory.Core.Rk.IP.Model
 

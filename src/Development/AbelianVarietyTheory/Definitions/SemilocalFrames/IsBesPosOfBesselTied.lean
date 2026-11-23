@@ -141,13 +141,11 @@ def perFun (ψ : AddChar (AF D.host.F) ℂ) (Om : GA D A → WA L A → ℂ) (s 
 
 end FJDat
 
-section Comparison₂
 
 variable {X : ThetaX D} {T : ThetaTied D X}
 
 variable {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
 
-end Comparison₂
 
 theorem kap_symm_tPt (L A : HSp D) (c : D.host.E) (a : Fin A.rank → AE D) (i : Fin L.rank) (k : Fin A.rank) :
     (kap L A).symm (tPt L A c a) i k = incA D (-(c * L.hD (L.frame i) (lineVec L))) * a k := by
@@ -230,13 +228,11 @@ theorem isAniso_of_posDef {V : HSp D} (hs : V.SigOK) (hp : V.IsPosDef) : IsAniso
   simp only [map_sum, map_mul, h3, map_zero, Complex.zero_re] at h4
   exact h2.ne' h4
 
-section Realises
 
 open GlobalTheory.Mem.Th (Realises WeilFun Tow RecFun InfF)
 
 variable {θ : InfF D} {Bt : BesselTied D X T Wl} {Wf : WeilFun D Wl.ψ} {Tw : Tow D} {Rc : RecFun D θ Wl.ψ}
 
-end Realises
 
 end Comparison₂
 

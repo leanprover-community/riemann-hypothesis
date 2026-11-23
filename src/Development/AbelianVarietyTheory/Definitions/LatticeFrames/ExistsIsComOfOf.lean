@@ -147,11 +147,9 @@ include H
 
 end StdSp
 
-section Ker
 
 variable {a : XPart D u} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {ι : Type}
 
-end Ker
 
 end Gen
 

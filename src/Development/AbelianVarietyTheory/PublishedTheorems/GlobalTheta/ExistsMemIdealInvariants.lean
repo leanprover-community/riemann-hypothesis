@@ -87,10 +87,8 @@ theorem ComplexMultiplicationJSt.oneOrbit (h : ComplexMultiplicationJSt) :
       rw [← hact 𝔞 _ L L'' hL hL'' ⟨_, hjH⟩ rfl]
       exact hρ ⟨_, hjH⟩
 
-section Use
 
 variable {K : Type} [Field K] [NumberField K] [IsTotallyComplex K]
 
-end Use
 
 end GlobalTheory.Published

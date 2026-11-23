@@ -59,11 +59,9 @@ def low : Fin n → ℝ := Formalism.QuantumDeterminants.lowK P.sgn P.lam
 
 end SignedPar
 
-section Chains
 
 variable {R : Ranks} (c : HCParam R)
 
-end Chains
 
 section Adelic
 

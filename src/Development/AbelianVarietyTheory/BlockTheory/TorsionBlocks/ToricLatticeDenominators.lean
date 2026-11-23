@@ -92,13 +92,11 @@ def incl : X.Ok i k ⊗[X.O i] Y.Fm i j b →ₗ[X.O i] FmExt Y i j b O' :=
 
 end Lattices
 
-section Statement
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
 
 variable (bkP : BKPh X)
 
-end Statement
 
 end GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators
 

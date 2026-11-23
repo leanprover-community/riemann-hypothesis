@@ -55,18 +55,14 @@ theorem IsRelParam.eq_of_dvd (h : IsRelParam b t) {i j : Fin m} (hd : t i ∣ t 
 
 end Param
 
-section Local
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] {m : ℕ}
 
 
-end Local
 
-section Charts
 
 variable {o : Type} [CommRing o] {ζ : o} {g n : ℕ} {F : SFam g n ζ} {S : Scheme.{0}} {s : S ⟶ Sp o} {j : F.X ⟶ S}
   {G : Over S} [GrpObj G] {e : F.univ.A.left ⟶ G.left}
 
-end Charts
 
 end GlobalTheory.SiegelTor

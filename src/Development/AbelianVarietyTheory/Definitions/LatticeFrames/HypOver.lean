@@ -70,14 +70,12 @@ theorem log_T_lt (D : D7) (u : D.what₂.Word) :
   linarith
 
 
-section Rank
 
 variable {R : Ranks} {Tau : Type} [Fintype Tau] (hc : Tau → HCParam R) (N : ℕ)
 
 variable (T : ℕ) [Fact T.Prime] (Dst : ℝ) (hD : 0 < Dst) (hT : T ≠ 2) (s : ℂ)
 
 
-end Rank
 
 end GlobalTheory.Core.RkFamModel
 

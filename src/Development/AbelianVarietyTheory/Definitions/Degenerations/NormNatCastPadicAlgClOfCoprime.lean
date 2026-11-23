@@ -245,13 +245,11 @@ theorem exists_at_of_cen (M : RatModel o Ω) {U₀ : M.Z.Opens} (hle : S.R ≤ M
 
 end ThetaSys
 
-section Dedekind
 
 variable (o Ω : Type) [CommRing o] [IsDedekindDomain o] [Field Ω] [Algebra o Ω] [IsFractionRing o Ω]
 
 variable {o Ω}
 
-end Dedekind
 
 section Heisenberg
 
@@ -366,11 +364,9 @@ def heisSys : ThetaSys o Ω :=
       simp [h]
     th_ne := ⟨0, by simp⟩ }
 
-section HeisTests
 
 variable {p : ℕ} [Fact p.Prime] (y : (heisSys Ω hN hr hζ hu hodd ϖ hϖ).R →+* PadicAlgCl p)
 
-end HeisTests
 
 end Inhabitants
 

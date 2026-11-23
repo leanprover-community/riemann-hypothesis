@@ -420,12 +420,10 @@ namespace QuadSpace
 
 variable (Q : QuadraticForm ℝ V) (hQ : Q.PosDef)
 
-section Normed
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   (Q : QuadraticForm ℝ E) (hQ : Q.PosDef) (L : Submodule ℤ E) [DiscreteTopology L]
 
-end Normed
 
 end QuadSpace
 

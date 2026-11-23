@@ -44,7 +44,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 variable {X₀ : Scheme.{0}} {S : Type} [CommRing S]
 
-section Group
 
 variable (G : Over X₀) [GrpObj G] [IsCommMonObj G]
 
@@ -53,13 +52,10 @@ variable (x : Sp S ⟶ X₀) {d : ℕ}
 
 variable {G x}
 
-end Group
 
-section Germ
 
 variable {G : Over X₀} [GrpObj G] {x : Sp S ⟶ X₀} {d : ℕ}
 
-end Germ
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 

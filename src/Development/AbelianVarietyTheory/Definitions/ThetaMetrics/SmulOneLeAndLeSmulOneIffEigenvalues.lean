@@ -87,11 +87,9 @@ theorem mul_logWeight_pow_le (S : Finset κ) (z : κ → ℂ) {C C' : ℝ} {N N'
 
 end Weight
 
-section Polydisc
 
 variable {ι : Type*}
 
-end Polydisc
 
 section Growth
 
@@ -282,7 +280,6 @@ end HasLogGrowthEntries
 
 end Entries
 
-section MatrixLemmas
 
 variable {m n : Type*}
 
@@ -295,9 +292,7 @@ noncomputable def schurComplement₁₁ (G : Matrix (m ⊕ n) (m ⊕ n) ℂ) : M
 
 
 
-end MatrixLemmas
 
-section PiKronecker
 
 variable {α : Type*} [Fintype α] {l n o : α → Type*}
 
@@ -305,7 +300,6 @@ variable [DecidableEq α] [∀ a, Fintype (n a)]
 
 variable [∀ a, DecidableEq (n a)]
 
-end PiKronecker
 
 section Compound
 

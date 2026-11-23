@@ -687,11 +687,9 @@ def colTop (hM : MatEquiv W Ch sel mu cst L T) (h1 : Cp1Equiv W Ch sel mu cst L 
 
 end Col
 
-section Checks
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
-end Checks
 
 end GlobalTheory.TopStep

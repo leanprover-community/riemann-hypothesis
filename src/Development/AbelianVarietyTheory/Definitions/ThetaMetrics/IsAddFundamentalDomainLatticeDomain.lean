@@ -209,14 +209,11 @@ theorem latticeMean_comp_equiv {E' : Type*} [NormedAddCommGroup E'] [NormedSpace
 
 end Mean
 
-section Pi
 
 variable {ι : Type*} [Fintype ι] {E : ι → Type*} [∀ i, NormedAddCommGroup (E i)]
   [∀ i, NormedSpace ℝ (E i)] (L : ∀ i, Submodule ℤ (E i))
 
-end Pi
 
-section Prod
 
 variable {E E' : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup E']
   [NormedSpace ℝ E'] (L : Submodule ℤ E) (L' : Submodule ℤ E')
@@ -236,7 +233,6 @@ instance isZLattice_submoduleProd [DiscreteTopology L] [DiscreteTopology L'] [Is
     rw [Submodule.prod_coe, Submodule.span_prod_eq ℝ L.zero_mem L'.zero_mem,
       IsZLattice.span_top, IsZLattice.span_top, Submodule.prod_top]
 
-end Prod
 
 end
 

@@ -118,14 +118,12 @@ theorem map_zsmul (φ : R →+* S) (n : ℤ) : PowerSeries.map φ (zSer W n) = z
 
 end Group
 
-section Law
 
 
 variable {R S : Type} [CommRing R] [CommRing S]
 
 variable (W : WeierstrassCurve R)
 
-end Law
 
 section Points
 

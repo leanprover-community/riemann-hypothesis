@@ -98,20 +98,16 @@ theorem hasIw_of_good {V V₀ : HSp D} {r : ℕ} (d : HypDec V V₀ r) (l : Lvl 
     congrArg (fun L => levelAll D.sp.cm.sig V.gram L l.c) (frameLat_relat V l hl)
   exact ⟨⟨q.1, q.2⟩, k, e2 ▸ hk, e⟩
 
-section Arch
 
 variable {m k r : ℕ} {X Y : Matrix (Fin m) (Fin r) ℂ} {Z : Matrix (Fin m) (Fin k) ℂ} {P R : Matrix (Fin r) (Fin m) ℂ}
   {Q : Matrix (Fin k) (Fin m) ℂ} {G : Matrix (Fin m) (Fin m) ℂ} {G₀ s₀ B B' : Matrix (Fin k) (Fin k) ℂ}
 
-end Arch
 
-section Standard
 
 variable {V V₀ : HSp D} {r : ℕ} (d : HypDec V V₀ r)
 
 variable {L₀ : Submodule (𝓞 D.host.E) (Fin V₀.rank → D.host.E)}
 
-end Standard
 
 end GlobalTheory.Published.SiegelSectionIwasawa
 

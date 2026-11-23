@@ -62,12 +62,10 @@ section Inhabitant
 
 end Inhabitant
 
-section Local
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 
 
-end Local
 
 namespace ModFam
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]

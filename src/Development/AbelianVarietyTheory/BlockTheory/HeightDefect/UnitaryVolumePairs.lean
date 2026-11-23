@@ -91,13 +91,11 @@ variable (D)
 
 end Hecke
 
-section Witt
 
 variable {D : D7}
 
 variable (D)
 
-end Witt
 
 end GlobalTheory.IndefiniteRowSideFullHecke.UnitaryVolumePairs
 

@@ -170,7 +170,6 @@ theorem detNorm_invAdjoint (T : V ≃ₗ[𝕜] W) : detNorm (invAdjoint T) = (de
 
 end NormDet
 
-section Dual
 
 open InnerProductSpace
 
@@ -178,6 +177,5 @@ variable [FiniteDimensional 𝕜 V] [FiniteDimensional 𝕜 W] [FiniteDimensiona
 
 
 
-end Dual
 
 end GlobalTheory

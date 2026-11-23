@@ -140,13 +140,11 @@ theorem detLine_ne_cusp (ha : 1 < a) (χ : HChar E) (π : CuspSub E a) : detLine
   rw [← mulChi_mul, mul_inv_cancel, mulChi_one] at h
   exact GlobalTheory.ConstNotCusp.not_isCuspidal_oneFn E a ha h.2
 
-section Local
 
 open GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.LocGL.ProjLine
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-end Local
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 

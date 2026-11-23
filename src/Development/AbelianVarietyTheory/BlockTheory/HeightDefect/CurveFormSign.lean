@@ -60,10 +60,8 @@ variable {C G f x}
 
 end Maps
 
-section Clauses
 
 variable {S X Y : Scheme.{0}} {C : Over S} [GrpObj C] {G : Over X} [GrpObj G] {f : Y ⟶ S} {x : Y ⟶ X}
 
-end Clauses
 
 end GlobalTheory.IndefiniteRowSideFullHecke.CurveFormSign

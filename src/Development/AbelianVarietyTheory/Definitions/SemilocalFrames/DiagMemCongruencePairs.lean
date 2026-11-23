@@ -101,11 +101,9 @@ theorem mem_latMap (γ : Matrix (Fin n) (Fin n) E) (Λ : Submodule (𝓞 E) (Fin
 
 end Basic
 
-section Iota
 
 variable {σ : E →+* E} {n m r : ℕ} {J : Matrix (Fin n) (Fin n) E} {Jb : Matrix (Fin m) (Fin m) E}
 
-end Iota
 
 section Iso
 
@@ -132,16 +130,12 @@ theorem latMap_mul (γ δ : Matrix (Fin n) (Fin n) E) (Λ : Submodule (𝓞 E) (
 
 end Iso
 
-section Unip
 
 variable {n r : ℕ}
 
-end Unip
 
-section Examples
 
 variable {σ : E →+* E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E}
 
-end Examples
 
 end GlobalTheory.SgGlob

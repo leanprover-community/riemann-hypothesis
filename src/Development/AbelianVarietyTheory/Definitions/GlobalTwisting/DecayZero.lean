@@ -96,11 +96,9 @@ def th (Φ : (Fin N → AF F) → ℂ) : ℂ := ∑' ξ : Fin N → F, Φ (rat �
 
 variable {ψ a}
 
-section Herm
 
 variable {E : Type} [Field E] [Algebra F E] {M : ℕ}
 
-end Herm
 
 theorem decay_zero : Decay (fun _ : Fin N → AF F => (0 : ℂ)) :=
   ⟨continuous_const, ⟨∅, isCompact_empty, fun _ _ => rfl⟩, fun _ => ⟨0, fun _ => by simp⟩⟩

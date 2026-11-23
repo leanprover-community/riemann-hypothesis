@@ -274,13 +274,11 @@ theorem locTop_invQ (hm : R.m = m2 + 2) (hc : cst.Ok) {P : rowSG Pr sel mu} (hP 
 
 end Q
 
-section Depth
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {n N : ℕ} (hN : N = n + 1) {P : HeightOneSpectrum (𝓞 E)}
   (l : Lev (𝓞 E ⧸ P.asIdeal) K n)
 
 
-end Depth
 
 section Kernel
 

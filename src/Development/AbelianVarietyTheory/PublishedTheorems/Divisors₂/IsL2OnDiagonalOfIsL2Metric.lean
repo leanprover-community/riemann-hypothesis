@@ -54,13 +54,11 @@ namespace GlobalTheory.TorsionForm
 variable {k : Type} [CommRing k] {S : Scheme.{0}} {p : S ⟶ Sp k} {σ : k →+* ℂ} {A : Over S}
   {g D : ℕ}
 
-section Global
 
 variable {D' r : ℕ}
 
 
 
-end Global
 
 end GlobalTheory.TorsionForm
 

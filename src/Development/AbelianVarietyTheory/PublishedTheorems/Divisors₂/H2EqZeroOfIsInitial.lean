@@ -76,10 +76,8 @@ theorem dual_unique {B' : Over S} [GrpObj B'] {P' : LB (A ⊗ B').left} (h : IsD
 
 end Dual
 
-section Crystal
 
 variable {R R₀ : Type} [CommRing R] [CommRing R₀] {I : Ideal R} {κ : DividedPowers I} {π : R →+* R₀}
 
-end Crystal
 
 end GlobalTheory.Published.AbelianDualCrystal.Test

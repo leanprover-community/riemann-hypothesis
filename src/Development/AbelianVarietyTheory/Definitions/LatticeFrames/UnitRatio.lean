@@ -66,7 +66,6 @@ variable {c : Comm D}
 open Classical in
 def Base.S (B : Base c) : Finset (GlobalTheory.FinPl.Pl D) := B.Pg.image fun PP => (_root_.IsDedekindDomain.HeightOneSpectrum.under (𝓞 D.host.F) PP)
 
-section Off
 
 open GlobalTheory.FinPl
 
@@ -108,11 +107,9 @@ variable {B : Base c} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
 
 namespace Off
 
-end Off
 
 end Off
 
-section AtLevel
 
 open GlobalTheory.LocMod
 
@@ -170,7 +167,6 @@ attribute [instance] GAt.fld GAt.val GAt.top GAt.loc GAt.mea GAt.bor
 
 variable {B : Base c} {τ : ∀ j h, Matrix (Fin (c.bes j 0 h).L.rank) (Fin c.Lz.rank) D.host.E}
 
-end AtLevel
 
 
 

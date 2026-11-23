@@ -44,11 +44,9 @@ namespace GlobalTheory.Core.Cls.JointsStd
 
 open NumberField IsDedekindDomain Formalism.L2.Host Formalism.L2.Host.CT Neutral.B1
 
-section Refl
 
 variable {E : Type} [Field E] [NumberField E]
 
-end Refl
 
 section Std
 

@@ -139,21 +139,17 @@ variable (Xo c)
 
 end Value
 
-section Action
 
 variable {l : Level H} (Xo : Moduli Dw l) (c : Coeff l) {G : Type} [Group G]
   (lev : G → (Dw.La →ₗ[𝓞 E] Dw.La) × (Dw.La →ₗ[𝓞 E] Dw.La))
 
 variable {c} {c' : Coeff l}
 
-end Action
 
-section Row
 
 variable {l : Level H} (Xo : Moduli Dw l) {c c' : Coeff l} {n : ℕ}
 
 variable {Pt : Type} {G : Type} [Group G] {Tup : Type*} {Vs : Type} [AddCommGroup Vs] [Module c'.F Vs]
 
-end Row
 
 end GlobalTheory.IndefiniteRowSideFullHecke.UnitaryDeterminantRoot

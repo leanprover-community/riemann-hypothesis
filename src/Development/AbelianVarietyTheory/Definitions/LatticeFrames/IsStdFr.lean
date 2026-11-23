@@ -100,7 +100,6 @@ structure GeoAll.Is : Prop where
 
 end Gen
 
-section True
 
 open GlobalTheory.Mem GlobalTheory.Mem.Col2
 
@@ -116,7 +115,6 @@ structure GeoAll.True (a : GeoAll W u) : Prop where
   z0 : ∀ r, vecB (a.g.oT B.R.m rfl) (@TDat.ζ₀ _ _ _ a.fld a.val a.top a.loc _ a.o) r =
     (show Fin (B.R.N B.R.m) → (I.rec7 l Z).host.E from TC.z0 X u) (Fin.cast (Formalism.L2.Forms.rankN (I.rec7 l Z) _ le_rfl) r)
 
-end True
 
 end GlobalTheory.Fam
 

@@ -61,12 +61,10 @@ def AbelianDualCrystal : Prop := DualAbelianScheme ∧ CrystallineDeRham
 
 namespace AbelianDualCrystal
 
-section Neron
 
 variable {V K : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [Field K] [Algebra V K]
   [IsFractionRing V K] {A B : Over (Sp V)} [GrpObj A] [GrpObj B]
 
-end Neron
 
 variable {R R₀ : Type} [CommRing R] [CommRing R₀] {I : Ideal R} {κ : DividedPowers I} {π : R →+* R₀}
   {A B A' B' : Over (Sp R)} [GrpObj A] [GrpObj B] [GrpObj A'] [GrpObj B'] {A₀ B₀ : Over (Sp R₀)} [GrpObj A₀]

@@ -48,11 +48,9 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 def RowsDominant (Dw : Datum H) (a : (E →+* ℂ) × ℕ → ℕ) : Prop :=
   ∀ τ : E →+* ℂ, Antitone fun i : Fin (Dw.mult τ) => a (τ, i)
 
-section Rig
 
 variable {X : Scheme.{0}} (A : Over X) [GrpObj A] [IsCommMonObj A] (L : RigLB A)
 
-end Rig
 
 variable {Dw : Datum H} {l : Level H} (Xo : Moduli Dw l) (c : Coeff l)
 

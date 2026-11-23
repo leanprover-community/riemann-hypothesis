@@ -57,11 +57,9 @@ variable {D : D7} {u : D.what₂.Word}
 variable (d : Dat D u) (hb : d.Base)
 
 
-section Ind
 
 variable {c : Comm D} {𝒯 : Type} (t : 𝒯 → Tup c)
 
-end Ind
 
 end GlobalTheory.SeeSaw.TupModel
 

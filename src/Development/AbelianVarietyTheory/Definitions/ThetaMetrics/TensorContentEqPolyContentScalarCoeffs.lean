@@ -229,16 +229,13 @@ theorem gaussVal_sum_C_mul_X (s : Finset σ) (a : σ → R) :
 
 end Poly
 
-section Field
 
 
 variable {K Γ₀ σ τ : Type*} [Field K]
 
-section Monoid
 
 variable [LinearOrderedCommMonoidWithZero Γ₀] [Nontrivial Γ₀] (v : Valuation K Γ₀)
 
-end Monoid
 
 variable [LinearOrderedCommGroupWithZero Γ₀] (v : Valuation K Γ₀)
 
@@ -330,7 +327,6 @@ theorem basisVal_le_iff {x : M} {γ : Γ₀} : basisVal v b x ≤ γ ↔ ∀ i, 
 
 end Content
 
-section Lattice
 
 open Module
 
@@ -338,16 +334,13 @@ variable {R Γ₀ ι κ : Type*} [CommRing R] [LinearOrderedCommGroupWithZero Γ
   (v : Valuation R Γ₀) {M : Type*} [AddCommGroup M] [Module R M] (b : Basis ι R M)
   {O : Type*} [CommRing O] [Algebra O R] [Module O M] [IsScalarTower O R M]
 
-end Lattice
 
-section Tensor
 
 
 variable {O R S Γ₀ ι κ σ : Type*} [CommRing O] [CommRing R] [Algebra O R] [CommRing S]
   [Algebra O S] [LinearOrderedCommMonoidWithZero Γ₀] (v : Valuation R Γ₀)
   {M : Type*} [AddCommGroup M] [Module O M] (b : Basis ι O M)
 
-end Tensor
 
 section AdditiveContent
 

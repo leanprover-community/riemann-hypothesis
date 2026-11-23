@@ -282,7 +282,6 @@ theorem isDPMorphism_inl (κ : DividedPowers I) :
   refine ⟨Ideal.map_le_iff_le_comap.2 fun a ha ↦ ha, fun {n} a _ ↦ TrivSqZeroExt.ext (fst_extDP _ _ _) ?_⟩
   exact (snd_extDP _ _ _).trans (smul_zero _)
 
-section Conn
 
 variable {S S' : Scheme.{0}} (κ : DividedPowers I) (t : S ⟶ Sp R) (A : Over S) [GrpObj A]
 
@@ -292,7 +291,6 @@ variable {κ}
 
 variable {t A} {D : Derivation T R M} {hD : IsDPDer κ D} {c c' : prim κ t A} {ω ω' : M ⊗[R] prim κ t A}
 
-end Conn
 
 section Abelian
 

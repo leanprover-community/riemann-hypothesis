@@ -34,11 +34,9 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.VolumePerpendicular
 
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
-section Spaces
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-end Spaces
 
 def IsVol (D : D7) : letI := D.host.cmStar; HSpace D.host.E → ℕ → ℕ → ℝ → Prop :=
   letI := D.host.cmStar
