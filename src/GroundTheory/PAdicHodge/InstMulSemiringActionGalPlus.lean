@@ -23,6 +23,19 @@ variable (p : ℕ) [hp : Fact p.Prime] [IsPerfectoidField K p]
 
 abbrev BCrisPlus : Type _ := Localization.Away (p : ACris (K := K) (p := p))
 
+/-! Shortcut instances. Without them, instance search on `BCrisPlus K p` returns an unfolded
+`OreLocalization` term, and the kernel compares such terms by unfolding `ACris` down to its
+`AdicCompletion` carrier. This took about 75 seconds for each of `iotaB`, `galB` and `fracBCris`. -/
+
+instance (priority := high) instCommRingBCrisPlus : CommRing (BCrisPlus K p) := inferInstance
+
+instance (priority := high) instCommSemiringBCrisPlus : CommSemiring (BCrisPlus K p) :=
+  inferInstance
+
+instance (priority := high) instSemiringBCrisPlus : Semiring (BCrisPlus K p) := inferInstance
+
+instance (priority := high) instCommMonoidBCrisPlus : CommMonoid (BCrisPlus K p) := inferInstance
+
 theorem phi_natCast_p : phi (K := K) (p := p) (p : ACris (K := K) (p := p)) = (p : ACris (K := K) (p := p)) :=
   map_natCast (phi (K := K) (p := p)) p
 
