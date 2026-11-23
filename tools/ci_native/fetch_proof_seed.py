@@ -7,6 +7,7 @@ import urllib.request
 import rpc
 
 BASE = 'https://rh-cache.taucetiproject.org/ci/proof-leases/'
+PROOF_SEED_MAX_BYTES = 40 * 1024**2
 
 
 def fetch(digest, kind, output, maximum):
@@ -37,7 +38,7 @@ def main():
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--inputs-only', action='store_true')
     args = parser.parse_args()
-    seed = fetch(args.seed_sha256, 'seed.json', args.output / 'seed.json', 10 * 1024**2)
+    seed = fetch(args.seed_sha256, 'seed.json', args.output / 'seed.json', PROOF_SEED_MAX_BYTES)
     value = rpc.read(seed)
     rpc.snapshot_identity(value['snapshot'], rpc.PROOF_OPERATION)
     if args.inputs_only:
