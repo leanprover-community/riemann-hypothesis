@@ -160,7 +160,7 @@ private theorem core {F E : Type} [Field F] [NumberField F] [Field E] [NumberFie
   have hθ0 : θ ≠ 0 := by
     rintro rfl
     apply hd
-    have h0 : algebraMap F E d = 0 := by rw [← hθ]; simp
+    have h0 : algebraMap F E d = 0 := simp [← hθ]
     exact (map_eq_zero (algebraMap F E)).1 h0
   have hσσ : ∀ x, σ (σ x) = x := by
     intro x

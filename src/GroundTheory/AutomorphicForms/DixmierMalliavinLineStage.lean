@@ -240,7 +240,7 @@ theorem integral_opT_mul (a : ℕ → ℝ) (n : ℕ) {F ψ : ℝ → ℂ} (hF : 
       (coef a n p : ℂ) * ∫ u, F u * iteratedDeriv p ψ u := by
     rw [← integral_const_mul]; congr 1; funext u; ring
   rw [this]
-  have h1 : ((-1 : ℂ) ^ p) * ((-1) ^ p) = 1 := by rw [← pow_add, ← two_mul, pow_mul]; simp
+  have h1 : ((-1 : ℂ) ^ p) * ((-1) ^ p) = 1 := simp [← pow_add, ← two_mul, pow_mul]
   linear_combination ((coef a n p : ℂ) * ∫ u, F u * iteratedDeriv p ψ u) * h1
 
 def Kc (a r : ℕ → ℝ) : ℕ → ℝ → ℝ

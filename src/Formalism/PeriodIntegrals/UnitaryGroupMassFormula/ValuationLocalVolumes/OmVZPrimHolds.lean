@@ -93,7 +93,7 @@ theorem omVZPrim_holds : OmVZPrim X u' := by
   have hz : z ∈ abelian₂ X := crdOf_mem X (frame_vector_mem_base_lattice X u')
   rw [yTup_zi] at hc
   obtain ⟨c', w, hw, hcw⟩ := approx v 1 one_ne_zero c
-  have hw' : c - inclR (F := X.B.I.F) (Fv X.B.I.F v) c' = w := by rw [hcw]; simp
+  have hw' : c - inclR (F := X.B.I.F) (Fv X.B.I.F v) c' = w := simp [hcw]
   have h1 : ratV (F := X.B.I.F) (Fv X.B.I.F v) (c' • z) ∈ latLoc (E := X.B.I.E) v (abelian₂ X) := by
     have e : ratV (F := X.B.I.F) (Fv X.B.I.F v) (c' • z) =
         c • ratV (F := X.B.I.F) (Fv X.B.I.F v) z - w • ratV (F := X.B.I.F) (Fv X.B.I.F v) z := by

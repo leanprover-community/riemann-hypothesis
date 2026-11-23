@@ -127,8 +127,8 @@ theorem exists_row {m : ℕ} (hm : 0 < m) (f : Fin m → F) (hf : f ≠ 0) :
     LinearEquiv.toSpanNonzeroSingleton_one] at h1
   set M := LinearMap.toMatrix' g.toLinearMap with hM
   set N := LinearMap.toMatrix' g.symm.toLinearMap with hN
-  have hMN : M * N = 1 := by rw [hM, hN, ← LinearMap.toMatrix'_comp]; simp
-  have hNM : N * M = 1 := by rw [hM, hN, ← LinearMap.toMatrix'_comp]; simp
+  have hMN : M * N = 1 := simp [hM, hN, ← LinearMap.toMatrix'_comp]
+  have hNM : N * M = 1 := simp [hM, hN, ← LinearMap.toMatrix'_comp]
   refine ⟨⟨Mᵀ, Nᵀ, by rw [← transpose_mul, hNM, transpose_one], by rw [← transpose_mul, hMN, transpose_one]⟩, ?_⟩
   show eLast m hm ᵥ* Mᵀ = f
   rw [vecMul_transpose, hM, LinearMap.toMatrix'_mulVec]

@@ -382,7 +382,7 @@ theorem frobenius_trace_norm_nonzero_log_bound :
     mul_ne_zero (pow_ne_zero _ hq0) (sub_ne_zero.2 (hF o s).1)
   refine ⟨NN, ?_, ?_, ?_⟩
   · intro h0
-    have h1 : (NN : ℂ) = 0 := by rw [h0]; simp
+    have h1 : (NN : ℂ) = 0 := simp [h0]
     rw [hprod] at h1
     obtain ⟨o, -, ho⟩ := Finset.prod_eq_zero_iff.1 h1
     obtain ⟨s, -, hs⟩ := Finset.prod_eq_zero_iff.1 ho

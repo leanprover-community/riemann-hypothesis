@@ -125,7 +125,7 @@ theorem GlobalTheory.Mem.Df.rowsDef_nonempty : ∀ {B : Base} {X : PreX B.toPre}
       obtain ⟨x, hx, hxy⟩ := (Set.ext_iff.1 (hLc a) _).1 ((hcar a _).1 hy')
       refine ⟨x, hx, ?_⟩
       have h1 : gA a (toCx I hX a x) = (g a).symm y := (congrArg (gA a) (hj a x)).symm.trans hxy
-      have h2 : g a (gA a (toCx I hX a x)) = y := by rw [h1]; simp
+      have h2 : g a (gA a (toCx I hX a x)) = y := simp [h1]
       exact h2
     · rintro ⟨x, hx, rfl⟩
       have h1 : jj a x = gA a (toCx I hX a x) := congrArg (gA a) (hj a x)

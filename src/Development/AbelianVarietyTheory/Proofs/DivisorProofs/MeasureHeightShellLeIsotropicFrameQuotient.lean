@@ -71,7 +71,7 @@ theorem measure_shell_le : ∀ (F E : Type) [Field F] [NumberField F] [Field E] 
       rw [this]
       exact mul_le_mul_of_nonneg_left hx.1.le hp.le
     · rw [e2]
-      have : (1 : ℝ) = Real.exp j * Real.exp (-(j : ℝ)) := by rw [← Real.exp_add]; simp
+      have : (1 : ℝ) = Real.exp j * Real.exp (-(j : ℝ)) := simp [← Real.exp_add]
       rw [this]
       exact mul_le_mul_of_nonneg_left hx.2 hp.le)
   rw [Measure.restrict_apply hS]

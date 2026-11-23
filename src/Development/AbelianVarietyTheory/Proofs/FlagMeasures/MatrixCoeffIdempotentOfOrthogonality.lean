@@ -85,7 +85,7 @@ theorem matrixCoeff_idempotent_of_orthogonality : ∀ (G : Type) [Group G] [Meas
   · intro y hy
     have h0 := hS w y w y
     simp only [hy, zero_mul, integral_zero] at h0
-    have hww : ⟪w, w⟫_ℂ = 1 := by rw [inner_self_eq_norm_sq_to_K, hw]; simp
+    have hww : ⟪w, w⟫_ℂ = 1 := simp [inner_self_eq_norm_sq_to_K, hw]
     rw [hww, one_mul] at h0
     have hyy : ⟪y, y⟫_ℂ = 0 := (div_eq_zero_iff.mp h0.symm).resolve_right hd0
     exact inner_self_eq_zero.mp hyy

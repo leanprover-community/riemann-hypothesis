@@ -66,7 +66,7 @@ private theorem UpperTheory.V.Lit.Dr.absPos (q : ℕ) :
       (fun i γ => Subtype.ext (hw i γ)) ?_
     rintro c ⟨y, hy, hy'⟩
     refine hind c ⟨y, hy, ?_⟩
-    have h : (π y).1 = ∑ i, c i • w i := by rw [hy']; simp
+    have h : (π y).1 = ∑ i, c i • w i := simp [hy']
     exact h
   | succ q ih =>
     intro Γ M Ω _ _ _ _ _ ρM ρ ι d hι hd hinj hex0 hex hav n w hw hdw hind

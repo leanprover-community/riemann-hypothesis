@@ -67,7 +67,7 @@ private theorem re_hecke {k : Type} [Field k] {n q : ℕ} (hq : (q : k) ≠ 0) (
     simpa using this
   · rw [dite_eq_left ⟨by omega, by omega⟩]
     simp only [Nat.add_sub_cancel]
-    have h1 : ((-1 : k) ^ (d + 1)) * (-1) ^ (d + 1) = 1 := by rw [← mul_pow]; simp
+    have h1 : ((-1 : k) ^ (d + 1)) * (-1) ^ (d + 1) = 1 := simp [← mul_pow]
     have h2 : (q : k) ^ ((d + 1) * d / 2) * ((q : k) ^ ((d + 1) * d / 2))⁻¹ = 1 := mul_inv_cancel₀ (pow_ne_zero _ hq)
     linear_combination (-P.coeff j) * h2 - P.coeff j * ((q : k) ^ ((d + 1) * d / 2) * ((q : k) ^ ((d + 1) * d / 2))⁻¹) * h1
 

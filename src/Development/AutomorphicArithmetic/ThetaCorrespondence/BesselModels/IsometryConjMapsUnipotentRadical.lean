@@ -56,7 +56,7 @@ theorem conj_mem_unipRad : ∀ {n r : ℕ} {J G Q Qi : Matrix (Fin n) (Fin n) �
       _ = Qiᴴ * G * Qi := by rw [hg, hu1']
       _ = (Q * Qi)ᴴ * J * (Q * Qi) := by
           rw [← hg, Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = J := by rw [h1]; simp
+      _ = J := simp [h1]
   · intro i
     obtain ⟨a, ha0, ha⟩ := hu2 i
     refine ⟨a, ha0, ?_⟩

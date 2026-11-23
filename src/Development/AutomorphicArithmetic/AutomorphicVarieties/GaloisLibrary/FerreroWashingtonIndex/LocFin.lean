@@ -81,7 +81,7 @@ private theorem norm_cm (K : Type) [Field K] [NumberField K] [IsCMField K] (b : 
 theorem UpperTheory.V.FW.locFin :
     ∀ (K : Type) [Field K] [NumberField K] [IsCMField K] (x : (maximalRealSubfield K)ˣ) (a : 𝓞 K) (I : (Ideal (𝓞 K))⁰), UnrFin K → (a : K) = algebraMap (maximalRealSubfield K) K x → (I * idMap (cE K) I).1 = Ideal.span {a} → ∀ v, GroundTheory.Global.IdeleGroup.finiteProj v (GroundTheory.Global.IdeleGroup.diagonal (maximalRealSubfield K) x) ∈ (GroundTheory.Global.IdeleNorm.finiteLocalNorm K v).range := by
   intro K _ _ _ x a I hunr hax hI v
-  have haK : (a : K) ≠ 0 := by rw [hax]; simp
+  have haK : (a : K) ≠ 0 := simp [hax]
   have ha : a ≠ 0 := fun h => haK (by rw [h]; rfl)
   obtain ⟨w⟩ := GroundTheory.Global.nonempty_placesOver K v
   have hw : w.1.asIdeal.LiesOver v.asIdeal := inferInstance

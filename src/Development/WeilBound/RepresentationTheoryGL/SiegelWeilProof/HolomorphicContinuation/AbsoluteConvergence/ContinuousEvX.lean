@@ -118,7 +118,7 @@ theorem decay (k : ℕ) (κ : ℝ) (hκ : 0 < κ) (r : ℝ) :
     have := Real.pow_div_factorial_le_exp (x := κ * s ^ 2) (by positivity) N
     rw [div_le_iff₀ (by positivity)] at this
     rw [le_div_iff₀ (by positivity)]
-    have e : Real.exp (-(κ * s ^ 2)) * Real.exp (κ * s ^ 2) = 1 := by rw [← Real.exp_add]; simp
+    have e : Real.exp (-(κ * s ^ 2)) * Real.exp (κ * s ^ 2) = 1 := simp [← Real.exp_add]
     calc (s ^ 2) ^ N * Real.exp (-(κ * s ^ 2)) * κ ^ N = (κ * s ^ 2) ^ N * Real.exp (-(κ * s ^ 2)) := by ring
       _ ≤ (Real.exp (κ * s ^ 2) * N.factorial) * Real.exp (-(κ * s ^ 2)) :=
           mul_le_mul_of_nonneg_right this hE.le

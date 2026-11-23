@@ -72,7 +72,7 @@ def suGrp (H : ι → Matrix (Fin r) (Fin r) ℂ) : Subgroup (ι → GL (Fin r) 
       calc _ = ((g i : Matrix (Fin r) (Fin r) ℂ) * ((g⁻¹ i : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ))ᵀ * H i *
           ((g i : Matrix (Fin r) (Fin r) ℂ) * ((g⁻¹ i : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ)).map (starRingEnd ℂ) := by
             simp only [transpose_mul, Matrix.map_mul, Matrix.mul_assoc]
-        _ = H i := by rw [e]; simp
+        _ = H i := simp [e]
     · have := congrArg Matrix.det e
       rwa [det_mul, g2, one_mul, det_one] at this
 

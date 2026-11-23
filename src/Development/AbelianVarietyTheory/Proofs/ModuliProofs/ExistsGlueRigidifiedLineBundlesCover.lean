@@ -90,7 +90,7 @@ theorem eq_one_of_section {S : Scheme.{0}} (A : Over S) [GrpObj A] (hA : IsAbeli
 theorem eSec_comm {S S' : Scheme.{0}} {G : Over S} {G' : Over S'} [GrpObj G] [GrpObj G'] {f : S' ⟶ S}
     {φ : G'.left ⟶ G.left} (h : IsGrpPullback G' G f φ) : eSec G' ≫ φ = f ≫ eSec G := by
   have e := congrArg (fun z => z.left) (map_one (pushHom h (𝟙_ (Over S'))))
-  have e₁ : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := simp [Hom.one_def]
   rw [e₁] at e
   refine e.trans ?_
   show (toUnit _ ≫ η[G]).left = _

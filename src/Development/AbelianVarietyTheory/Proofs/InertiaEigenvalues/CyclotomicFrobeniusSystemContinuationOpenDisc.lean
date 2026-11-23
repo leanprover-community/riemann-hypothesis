@@ -256,7 +256,7 @@ theorem bd_log_div (a : (↥LL.1)⟦X⟧) (h1 : (1 + X) * derivative (X * a) = 1
     have h2 := inv_le_norm_nat l (k + 1) k.succ_ne_zero
     calc ‖coeff k a‖ ≤ ‖coeff k a‖ * (((k + 1 : ℕ) : ℝ) * ‖((k + 1 : ℕ) : ℤ_[l])‖) :=
           le_mul_of_one_le_right (norm_nonneg _) h2
-      _ = k + 1 := by rw [mul_left_comm, h]; simp
+      _ = k + 1 := simp [mul_left_comm, h]
   refine bd_of_tendsto (squeeze_zero (fun k => by positivity)
     (fun k => mul_le_mul_of_nonneg_right (hb k) (by positivity)) ?_)
   simpa [add_mul] using (tendsto_self_mul_const_pow_of_lt_one hr.le hr1).add

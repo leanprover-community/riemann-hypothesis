@@ -152,7 +152,7 @@ theorem core_conj {G : Type} [Group G] (φ : G →* S) (hφ : Function.Injective
   have yy : y * y = 0 := calc
     y * y = p * y * q * (p * y * q) := by rw [hy]
     _ = p * y * (q * p) * y * q := by simp only [mul_assoc]
-    _ = 0 := by rw [hqp]; simp
+    _ = 0 := simp [hqp]
   have pw : ∀ k : ℕ, φ (z ^ k) = 1 + (k : K) • y := fun k => by rw [map_pow, mz, one_add_pow (K := K) yy]
   have conj : ∀ (c : G) {v v' : K} (k : ℕ), φ c = levi v v' p q → v * v' = 1 → v * v = (k : K) → c * z * c⁻¹ = z ^ k := by
     intro c v v' k hcv hvv hk

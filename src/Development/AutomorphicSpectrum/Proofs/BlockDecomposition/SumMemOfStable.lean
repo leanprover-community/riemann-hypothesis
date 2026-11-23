@@ -184,8 +184,8 @@ theorem weight_of_torus (h : IsDerivK σ Kf) (μ : Fin n → ℤ) {v : V}
     have h4 := (h3.comp_ofReal).smul_const v
     simpa using h4
   have e := hd.unique h2
-  calc Kf a a v = (-Complex.I) • (Complex.I • Kf a a v) := by rw [smul_smul]; simp
-    _ = ((μ a : ℝ) : ℂ) • v := by rw [e, smul_smul, ← mul_assoc]; simp
+  calc Kf a a v = (-Complex.I) • (Complex.I • Kf a a v) := simp [smul_smul]
+    _ = ((μ a : ℝ) : ℂ) • v := simp [e, smul_smul, ← mul_assoc]
 
 end V
 

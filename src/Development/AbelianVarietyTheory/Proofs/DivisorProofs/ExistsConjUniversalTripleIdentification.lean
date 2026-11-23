@@ -89,7 +89,7 @@ theorem exists_twist_along_genericAutomorphism {o Ω : Type} [CommRing o] [Field
     have k₃ : w ≫ P₀.A.hom = 𝟙 _ := by
       rw [← cancel_mono (spMap S.R.val.toRingHom), Category.assoc, ← hb.1.w, reassoc_of% hw, hs]
       simp
-    have c₂ : (spMap σ ≫ w) ≫ P₀.A.hom = 𝟙 _ ≫ spMap σ := by rw [Category.assoc, k₃]; simp
+    have c₂ : (spMap σ ≫ w) ≫ P₀.A.hom = 𝟙 _ ≫ spMap σ := simp [Category.assoc, k₃]
     have k₄ := ht.1.lift_fst _ _ c₂
     generalize ht.1.lift _ _ c₂ = w' at k₄
     have k₅ : u ≫ κ = w' := by

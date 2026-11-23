@@ -1373,7 +1373,7 @@ theorem two_le_qPl (p : PlF D) : (2 : ℝ) ≤ qPl p := by
 
 theorem exp_neg_two_le {y : ℝ} (hy0 : 0 ≤ y) (hy : y ≤ 1 / 2) : Real.exp (-(2 * y)) ≤ 1 - y := by
   have h1 := Real.quadratic_le_exp_of_nonneg (show (0:ℝ) ≤ 2 * y by linarith)
-  have h2 : Real.exp (-(2 * y)) * Real.exp (2 * y) = 1 := by rw [← Real.exp_add]; simp
+  have h2 : Real.exp (-(2 * y)) * Real.exp (2 * y) = 1 := simp [← Real.exp_add]
   have h3 := Real.exp_pos (-(2 * y))
   have h4 : 1 ≤ (1 - y) * Real.exp (2 * y) := by
     nlinarith [mul_nonneg (show (0:ℝ) ≤ 1 - y by linarith) (sub_nonneg.2 h1),

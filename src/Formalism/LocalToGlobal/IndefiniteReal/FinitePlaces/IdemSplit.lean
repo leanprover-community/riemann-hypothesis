@@ -210,7 +210,7 @@ theorem idemAt_split {P : HeightOneSpectrum (𝓞 D.host.E)} {e : AE D} (he : Fo
     rw [star_sqrt]; intro h
     have : D.host.sqrtMinusD = 0 := by linear_combination -h / 2
     exact Formalism.MainNotions.UnusedSlot33.HK.b_ne_zero D.host this
-  have ht0 : algebraMap D.host.F D.host.E 0 = D.host.sqrtMinusD + star D.host.sqrtMinusD := by rw [star_sqrt]; simp
+  have ht0 : algebraMap D.host.F D.host.E 0 = D.host.sqrtMinusD + star D.host.sqrtMinusD := simp [star_sqrt]
   have hN0 : algebraMap D.host.F D.host.E (D.host.d : D.host.F) = D.host.sqrtMinusD * star D.host.sqrtMinusD := by
     rw [star_sqrt, mul_neg, sqrt_sq, neg_neg, map_natCast]
   have hadj := adjoin_top_of D.host.sqrtMinusD 0 (D.host.d : D.host.F) ht0 hN0 hadj0

@@ -143,7 +143,7 @@ theorem IsTopologicalGenerator.exists_cocycle_of_hom (hσ : IsTopologicalGenerat
     exact (mem_stabilizer _ _ _).1 (zpow_mem hmem _)
   obtain ⟨c, hc⟩ : ∃ c : ℤ → A, ∀ n, c n = ∑ i ∈ Finset.range ((n : ZMod L).val), A.ρ (σ ^ i) a :=
     ⟨_, fun _ => rfl⟩
-  have hc0 : c 0 = 0 := by rw [hc]; simp
+  have hc0 : c 0 = 0 := simp [hc]
   have hrec : ∀ n : ℤ, c (n + 1) = c n + A.ρ (σ ^ n) a := by
     intro n
     obtain ⟨r, hr⟩ : ∃ r, r = (n : ZMod L).val := ⟨_, rfl⟩

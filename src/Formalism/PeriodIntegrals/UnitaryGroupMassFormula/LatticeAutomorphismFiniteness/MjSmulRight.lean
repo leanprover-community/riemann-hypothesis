@@ -156,7 +156,7 @@ theorem mj_cs (x y : S.V) (hx : x ∈ P) (hy : y ∈ P) :
     rw [← Complex.ofReal_div, Complex.ofReal_re] at h
     rw [sub_nonneg, div_le_iff₀ hapos] at h
     linarith
-  · have hτa : τ (mj S z x x) = 0 := by rw [hareal, ← hazero]; simp
+  · have hτa : τ (mj S z x x) = 0 := simp [hareal, ← hazero]
     have ha : mj S z x x = 0 := τ.injective (by rw [hτa, map_zero])
     rw [← hazero, zero_mul]
     by_contra hlt

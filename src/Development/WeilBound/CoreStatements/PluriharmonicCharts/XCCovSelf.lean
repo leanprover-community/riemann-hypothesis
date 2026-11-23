@@ -132,7 +132,7 @@ theorem metric_self [Fintype Ψ] [DecidableEq Ψ] (M : FlagModel y Ψ N j) (z : 
     · cases hp : M.blk p with
       | none =>
         refine Finset.prod_eq_one fun k _ => ?_
-        have : M.blk p ≠ some k.1 := by rw [hp]; simp
+        have : M.blk p ≠ some k.1 := simp [hp]
         simp only [FlagModel.dy, dif_neg k.2, if_neg this, _root_.zpow_zero]
       | some k₀ =>
         have hk₀ : ¬ ∀ p', M.blk p' ≠ some k₀ := fun e => e p hp

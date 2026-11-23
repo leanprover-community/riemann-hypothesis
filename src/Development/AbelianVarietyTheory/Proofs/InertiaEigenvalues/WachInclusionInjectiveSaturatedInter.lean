@@ -144,8 +144,8 @@ theorem abstract (j : A →+* E) (f : E →+* W) (g : A →+* B) (c : B →+* W)
       (∀ (x : E) (y : W), f x = (p : W) * y → ∃ x', x = (p : E) * x') ∧
       ∀ x : E, (∃ y, c y = f x) → ∃ a, j a = x := by
   classical
-  have hpE : (p : E) = j U * j t ^ (n + 1) := by rw [← map_natCast j, hp]; simp
-  have hpW : (p : W) = f (j U) * f (j t) ^ (n + 1) := by rw [← map_natCast f, hpE]; simp
+  have hpE : (p : E) = j U * j t ^ (n + 1) := simp [← map_natCast j, hp]
+  have hpW : (p : W) = f (j U) * f (j t) ^ (n + 1) := simp [← map_natCast f, hpE]
   have hUE : IsUnit (j U) := hU.map j
   have hUW : IsUnit (f (j U)) := hUE.map f
   have htW : f (j t) ∈ Ideal.jacobson (⊥ : Ideal W) := mem_jac_of_pow hUW (hpW ▸ hWJ) (by omega)

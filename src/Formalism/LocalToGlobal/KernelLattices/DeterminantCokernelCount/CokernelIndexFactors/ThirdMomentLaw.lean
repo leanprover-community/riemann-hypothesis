@@ -274,7 +274,7 @@ theorem relIndexFormula : RelIndexFormula := by
   have he : (N' : ℤ) * a - (N : ℤ) * a' = m := by linarith
   have hc := card_quot_range_toLin' ϖ hϖ Mat m v (by rw [hdv, mul_comm])
   refine ⟨by rw [he]; omega, ?_⟩
-  have htoNat : ((N' : ℤ) * a - (N : ℤ) * a').toNat = m := by rw [he]; simp
+  have htoNat : ((N' : ℤ) * a - (N : ℤ) * a').toNat = m := simp [he]
   rw [htoNat, ← hQ, ← hc, show movLat O K k k' =
     (matLat O K N N').map (movHom K k k') from rfl, hrc, hidx, hsub]
   first

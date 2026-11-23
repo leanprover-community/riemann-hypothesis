@@ -254,7 +254,7 @@ theorem FiniteCoverPuncturedPolydisc.proof : FiniteCoverPuncturedPolydisc.Statem
       rw [hLs, ih, zpow_add_one, Equiv.Perm.mul_apply, hσ]
     | pred k ih =>
       intro y a
-      have hy : y = s (σ⁻¹ y) := by rw [← hσ]; simp
+      have hy : y = s (σ⁻¹ y) := simp [← hσ]
       conv_lhs => rw [hy]
       rw [← hLs, shift_shift, show (1 : ℤ) + (-↑k - 1) = -↑k by ring, ih, zpow_sub_one,
         Equiv.Perm.mul_apply]

@@ -146,8 +146,8 @@ theorem continuous_rightMul (g : G) : Continuous (rightMul Γ g) :=
 def rightMulHomeomorph (g : G) : RightCosetSpace Γ ≃ₜ RightCosetSpace Γ where
   toFun := rightMul Γ g
   invFun := rightMul Γ g⁻¹
-  left_inv x := by rw [← Function.comp_apply (f := rightMul Γ g⁻¹), ← rightMul_mul]; simp
-  right_inv x := by rw [← Function.comp_apply (f := rightMul Γ g), ← rightMul_mul]; simp
+  left_inv x := simp [← Function.comp_apply (f := rightMul Γ g⁻¹), ← rightMul_mul]
+  right_inv x := simp [← Function.comp_apply (f := rightMul Γ g), ← rightMul_mul]
   continuous_toFun := continuous_rightMul Γ g
   continuous_invFun := continuous_rightMul Γ g⁻¹
 

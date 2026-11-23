@@ -318,7 +318,7 @@ theorem DiagonalSectionDifference.proof : DiagonalSectionDifference.Statement :=
   have e1 := hval j (by omega)
   have e2 := hval (j - 1) (by omega)
   have hc := hC (j : ℚ) (by exact_mod_cast (show 1 ≤ j by omega))
-  have hcast : ((j - 1 : ℕ) : ℚ) = (j : ℚ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
+  have hcast : ((j - 1 : ℕ) : ℚ) = (j : ℚ) - 1 := simp [Nat.cast_sub (by omega)]
   rw [hcast] at e2
   have key : (Module.finrank ℚ (chartLatQ y ((j : ℤ) • (1 : K → ℤ)) 1) : ℚ) ≤
       Module.finrank ℚ (chartLatQ y (((j - 1 : ℕ) : ℤ) • (1 : K → ℤ)) 1) + C * (j : ℚ) ^ (D - 1) := by

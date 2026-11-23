@@ -125,8 +125,8 @@ theorem exists_log (hm : ∀ x y, st (x * y) = st y * st x) (hi : ∀ x, st (st 
       have a : (1 - e) * m = (1 - e) * m * st e := by rwa [mul_sub, mul_one, sub_eq_zero] at h2
       rw [← mul_assoc, a, mul_assoc _ (st e), k3, mul_zero, zero_mul]
     rw [mul_sub (1 - e), sub_mul, h2, mul_smul_comm, smul_mul_assoc, this]; simp
-  have x1 : (m - h • (m * m)) * e = 0 := by rw [sub_mul, smul_mul_assoc, mul_assoc, h1]; simp
-  have x3 : st e * (m - h • (m * m)) = 0 := by rw [mul_sub, mul_smul_comm, ← mul_assoc, k3]; simp
+  have x1 : (m - h • (m * m)) * e = 0 := simp [sub_mul, smul_mul_assoc, mul_assoc, h1]
+  have x3 : st e * (m - h • (m * m)) = 0 := simp [mul_sub, mul_smul_comm, ← mul_assoc, k3]
   refine ⟨m - h • (m * m), ?_⟩
   have q : skw st e h (m - h • (m * m)) = m - h • (m * m) := by
     generalize m - h • (m * m) = x at sx x1 x2 x3

@@ -65,7 +65,7 @@ theorem stab : ∀ {n r : ℕ} {ε : Fin n → Bool} {ε' : Fin r → Bool} (ι 
   have ZF : Zᴴ * F = 0 := by simpa using congrArg conjTranspose FZ
   have ZZ : Zᴴ * Z = 1 := by
     ext i j
-    have : ((nsq z : ℝ) : ℂ) = 1 := by rw [hz]; simp
+    have : ((nsq z : ℝ) : ℂ) = 1 := simp [hz]
     simp only [hZ, Matrix.mul_apply, conjTranspose_apply, replicateCol_apply, Complex.star_def, Complex.conj_mul', Subsingleton.elim i j,
       one_apply_eq]
     rw [← this, GlobalTheory.CompanionTheory.UnitaryFramesMetricPeriods.nsq]; push_cast; rfl

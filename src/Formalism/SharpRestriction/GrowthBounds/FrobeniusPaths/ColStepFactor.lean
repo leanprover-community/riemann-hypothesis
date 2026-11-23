@@ -172,7 +172,7 @@ lemma piR_ker {σ : Type} (S : UniformizedDVR p O) (Y : MvPolynomial σ O)
   have : C S.w ∣ Y := by
     rw [MvPolynomial.C_dvd_iff_dvd_coeff]
     intro m
-    have h1 : IsLocalRing.residue O (Y.coeff m) = 0 := by rw [← coeff_map, h]; simp
+    have h1 : IsLocalRing.residue O (Y.coeff m) = 0 := simp [← coeff_map, h]
     rw [IsLocalRing.residue_eq_zero_iff, S.w_irr.maximalIdeal_eq, Ideal.mem_span_singleton] at h1
     exact h1
   exact this

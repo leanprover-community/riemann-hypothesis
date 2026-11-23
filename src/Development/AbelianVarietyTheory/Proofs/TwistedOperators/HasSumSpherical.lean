@@ -131,7 +131,7 @@ theorem zVal_succ (q N : ℕ) (X y : ℂ) {r : ℕ} (α : Fin (r + 1) → ℂ) :
         (1 - (-(q : ℂ)) ^ (j + 1 + 1) * X) = (1 - (-(q : ℂ)) ^ j * ((q : ℂ) ^ 2 * X)) := by
       intro j _; ring
     rw [Finset.prod_congr rfl h]; ring
-  have ho : Odd (N + 2) ↔ Odd N := by rw [Nat.odd_add]; simp
+  have ho : Odd (N + 2) ↔ Odd N := simp [Nat.odd_add]
   unfold zVal
   rw [hp, Fin.prod_univ_succ, if_congr ho rfl rfl]
   simp only [Fin.tail]

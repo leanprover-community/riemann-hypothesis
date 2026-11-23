@@ -402,7 +402,7 @@ theorem v_le_one_of_finite {K : Type} [Field K] (C : ACurve K) (k : Type) [Field
   · simp [h]
   obtain ⟨n, hn, hc⟩ := isOfFinOrder_iff_pow_eq_one.1 (isOfFinOrder_of_finite (Units.mk0 c h))
   have h1 : c ^ n = 1 := by simpa using congrArg Units.val hc
-  have h2 : C.v i (algebraMap k K c) ^ n = 1 := by rw [← map_pow, ← map_pow, h1]; simp
+  have h2 : C.v i (algebraMap k K c) ^ n = 1 := simp [← map_pow, ← map_pow, h1]
   exact (pow_eq_one_iff_of_nonneg (zero_le') hn.ne').1 h2 |>.le
 
 

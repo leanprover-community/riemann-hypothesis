@@ -165,7 +165,7 @@ private theorem cd_xi {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
     have hu : x⁻¹ * y ∈ Uo k := by
       have := (valuation k).map_one_add_of_lt (hy'.trans hlt)
       rwa [add_sub_cancel] at this
-    have e : ξ y = ξ x * φ ⟨_, hu⟩ := by rw [← h1, ← map_mul]; simp
+    have e : ξ y = ξ x * φ ⟨_, hu⟩ := simp [← h1, ← map_mul]
     rw [Ideal.Quotient.eq, e, Units.val_mul, ← mul_sub_one]
     exact Ideal.mul_mem_left _ _ (hc ⟨_, hu⟩ hy'.le)
   · change φ ⟨_, _⟩ * u ^ ord k (unif k) = u

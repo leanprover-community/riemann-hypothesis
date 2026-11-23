@@ -340,7 +340,7 @@ theorem map_lr {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (p : Point �
 
 def Sg (r : ℕ) : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ := Matrix.diagonal fun b => (-1 : ℂ) ^ (r - b.val)
 
-theorem sign_sq (n : ℕ) : (-1 : ℂ) ^ n * (-1) ^ n = 1 := by rw [← mul_pow]; simp
+theorem sign_sq (n : ℕ) : (-1 : ℂ) ^ n * (-1) ^ n = 1 := simp [← mul_pow]
 
 theorem Sg_sq : Sg r * Sg r = 1 := by
   rw [Sg, Matrix.diagonal_mul_diagonal]

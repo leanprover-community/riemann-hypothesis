@@ -132,8 +132,8 @@ theorem block_pair (J : ∀ k, Finset (ι k)) (n : ℕ) (f : CombC S J n) (I : C
     ∑ i ∈ I.1.1 k, (if h : FaceOK J n (Function.update I.1.1 k ((I.1.1 k).erase i)) then
         (KH.faceSign I.1.1 k i : ℤ) • f ⟨⟨_, h.1⟩, h.2⟩ else 0) = 0 := by
   obtain ⟨a, b, hab, he⟩ := Finset.card_eq_two.mp h2
-  have ha : a ∈ I.1.1 k := by rw [he]; simp
-  have hb : b ∈ I.1.1 k := by rw [he]; simp
+  have ha : a ∈ I.1.1 k := simp [he]
+  have hb : b ∈ I.1.1 k := simp [he]
   have hiff : FaceOK J n (Function.update I.1.1 k ((I.1.1 k).erase a)) ↔
       FaceOK J n (Function.update I.1.1 k ((I.1.1 k).erase b)) :=
     faceOK_congr hJ (by rw [Function.update_self, Function.update_self, Finset.card_erase_of_mem ha,

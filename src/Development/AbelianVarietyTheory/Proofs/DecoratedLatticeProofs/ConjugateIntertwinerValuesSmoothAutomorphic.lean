@@ -62,7 +62,7 @@ theorem conj_lie {n : ℕ} {P H J E : Matrix (Fin n) (Fin n) ℂ} (hP : IsUnit P
         rw [hPi, hPiH]; simp only [conjTranspose_mul, Matrix.mul_assoc, Matrix.mul_one, Matrix.one_mul]
     _ = (P⁻¹)ᴴ * (Eᴴ * J + J * E) * P⁻¹ := by
         rw [← hs]; simp only [Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul]
-    _ = 0 := by rw [hE]; simp
+    _ = 0 := simp [hE]
 
 theorem exp_conj {n : ℕ} {P : Matrix (Fin n) (Fin n) ℂ} (hP : IsUnit P) (E : Matrix (Fin n) (Fin n) ℂ) (t : ℝ) :
     P⁻¹ * NormedSpace.exp (t • (P * E * P⁻¹)) * P = NormedSpace.exp (t • E) := by

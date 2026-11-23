@@ -59,7 +59,7 @@ private lemma dualNumberPoint_preimage_top_of_reduction {O : Type} [CommRing O] 
     rw [sub_eq_zero]
     ext j
     simp [Finset.sum_apply, Pi.single_apply]
-  have h1 : (A * A' + B' * B)ᵀ *ᵥ (f - t) = f - t := by rw [h3]; simp
+  have h1 : (A * A' + B' * B)ᵀ *ᵥ (f - t) = f - t := simp [h3]
   rw [Matrix.transpose_add, Matrix.transpose_mul, Matrix.transpose_mul, Matrix.add_mulVec,
     ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, h0, Matrix.mulVec_zero, zero_add] at h1
   refine ⟨t, B'ᵀ *ᵥ (f - t), ?_, by rw [h1]; abel⟩
@@ -91,7 +91,7 @@ private lemma idem_fix {O E : Type} [CommRing O] {g m : ℕ} (ρ : E → Matrix 
     rw [hy, Matrix.mulVec_smul] at h1
     have h2 : (sg i a - sg j a) • (ε j *ᵥ y) = 0 := by rw [sub_smul, h1, sub_self]
     exact (ha.smul_eq_zero).1 h2
-  have h3 : (∑ j, ε j) *ᵥ y = y := by rw [hsum]; simp
+  have h3 : (∑ j, ε j) *ᵥ y = y := simp [hsum]
   rw [Matrix.sum_mulVec, Finset.sum_eq_single i] at h3
   · exact h3
   · intro b _ hb

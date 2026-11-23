@@ -74,7 +74,7 @@ theorem congr_of_hasSignature {n : Type} [Fintype n] [DecidableEq n] {A B : Matr
       _ = (S * S⁻¹)ᴴ * B * (S * S⁻¹) := by
           rw [h1, ← h2]
           simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = B := by rw [mul_nonsing_inv _ hu]; simp
+      _ = B := simp [mul_nonsing_inv _ hu]
 
 theorem form_eq {E V n : Type} [Field E] [StarRing E] [AddCommGroup V] [Module E V] [Fintype n]
     (h : V →ₗ⋆[E] V →ₗ[E] E) (b : Module.Basis n E V) (x y : n → E) :

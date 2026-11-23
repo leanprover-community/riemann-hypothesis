@@ -128,8 +128,8 @@ theorem gram_block_unit {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (T 
     rcases mul_eq_zero.mp hαG with h | h
     · exact h
     · exact absurd h hG
-  have hβ0 : β = 0 := by rw [Eβ, hαl0]; simp
-  have hα0 : α = 0 := by rw [Eα, show β l = 0 from by rw [hβ0]; rfl]; simp
+  have hβ0 : β = 0 := simp [Eβ, hαl0]
+  have hα0 : α = 0 := simp [Eα, show β l = 0 from by rw [hβ0]; rfl]
   apply hv0
   ext x
   rcases x with a | b

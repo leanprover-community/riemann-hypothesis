@@ -169,7 +169,7 @@ theorem diag_mem_UH (s : Fin (2 * r + k + 1) → ℝ)
   · have := hs i j h
     simp only [Pi.star_apply, Complex.star_def, Complex.conj_ofReal]
     calc (s i : ℂ) * Hpk k r i j * (s j : ℂ) = ((s i * s j : ℝ) : ℂ) * Hpk k r i j := by push_cast; ring
-      _ = Hpk k r i j := by rw [this]; simp
+      _ = Hpk k r i j := simp [this]
 
 theorem dM_mem_UH (hκ : 0 < κ) (hτ : 0 < τ) : dM k r κ τ ∈ UH (Hpk k r) :=
   diag_mem_UH _ (tV_mul_of_Hpk hκ hτ)

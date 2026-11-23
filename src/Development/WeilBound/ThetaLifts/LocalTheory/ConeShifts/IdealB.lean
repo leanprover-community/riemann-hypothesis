@@ -144,7 +144,7 @@ theorem exp_count_eq {K L : Type} [Field K] [NumberField K] [Field L] [NumberFie
   refine le_antisymm a1 ?_
   calc exp (-count L w J) = exp (-count L w J) * (w.valuation L (f s) * w.valuation L (f t)) := by rw [a3, mul_one]
     _ ≤ exp (-count L w J) * (w.valuation L (f s) * exp (count L w J)) := by gcongr
-    _ = _ := by rw [mul_left_comm, ← exp_add]; simp
+    _ = _ := simp [mul_left_comm, ← exp_add]
 
 theorem codiff_up (hu : Algebra.Unramified (𝓞 F) (𝓞 E)) {w : HeightOneSpectrum (𝓞 E)} {x : F}
     (hx : (w.under (𝓞 F)).valuation F x = exp (-count F (w.under (𝓞 F)) (codiff F))) :

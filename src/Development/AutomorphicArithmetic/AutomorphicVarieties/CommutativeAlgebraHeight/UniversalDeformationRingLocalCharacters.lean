@@ -61,7 +61,7 @@ private theorem lc_of_open {G H : Type} [Group G] [TopologicalSpace G] [IsTopolo
 
 private theorem eq_one_of_pow {k : Type} [Field k] (l : ℕ) [Fact l.Prime] [CharP k l] (x : k) (m : ℕ)
     (h : x ^ l ^ m = 1) : x = 1 := by
-  have h2 : (x - 1) ^ l ^ m = 0 := by rw [sub_pow_char_pow, h]; simp
+  have h2 : (x - 1) ^ l ^ m = 0 := simp [sub_pow_char_pow, h]
   exact sub_eq_zero.1 (pow_eq_zero_iff (pow_ne_zero m (Fact.out : l.Prime).ne_zero) |>.1 h2)
 
 private theorem psib_th {l : ℕ} [Fact l.Prime] {F : GFrame l} {O : Type} [CommRing O] [IsLocalRing O]

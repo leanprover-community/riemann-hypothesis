@@ -68,7 +68,7 @@ theorem GlobalTheory.CuspGK.inK_inv {D : D7} {V : HSp D} {S : D.what₂.Tau → 
     calc (g⁻¹)ᴴ * gramAt D V τ * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * gramAt D V τ * g) * g⁻¹ := by rw [hU']
       _ = (g * g⁻¹)ᴴ * gramAt D V τ * (g * g⁻¹) := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = gramAt D V τ := by rw [hgg]; simp
+      _ = gramAt D V τ := simp [hgg]
   · show P * g⁻¹ * P⁻¹ ∈ _
     rw [hinv, hustar]
     exact Unitary.star_mem hK1

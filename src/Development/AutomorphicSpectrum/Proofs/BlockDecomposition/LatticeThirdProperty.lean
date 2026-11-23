@@ -147,7 +147,7 @@ theorem sum_pow_fixed (σ : E ≃ₐ[k] E) {ℓ : ℕ} (hℓ : σ ^ ℓ = 1) (z 
   simp_rw [h]
   have h1 := Finset.sum_range_succ (fun j => (σ ^ j) z) ℓ
   have h2 := Finset.sum_range_succ' (fun j => (σ ^ j) z) ℓ
-  have h3 : (σ ^ ℓ) z = (σ ^ 0) z := by rw [hℓ]; simp
+  have h3 : (σ ^ ℓ) z = (σ ^ 0) z := simp [hℓ]
   rw [h1, h3] at h2
   exact (add_right_cancel h2).symm
 

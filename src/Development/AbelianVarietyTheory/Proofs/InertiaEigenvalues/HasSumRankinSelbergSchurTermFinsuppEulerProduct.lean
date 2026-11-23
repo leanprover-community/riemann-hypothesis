@@ -82,7 +82,7 @@ theorem sqTerm_nonneg (q : ℕ) {n : ℕ} (α : Fin n → ℂ) (x : ℝ) (v : Fi
   · exact le_rfl
 
 theorem sqTerm_zero (q : ℕ) {n : ℕ} (α : Fin n → ℂ) (x : ℝ) : sqTerm q α x 0 = 1 := by
-  have hs : schurAt (fun _ : Fin n => 0) α = 1 := by rw [schurAt, schur_zero]; simp
+  have hs : schurAt (fun _ : Fin n => 0) α = 1 := simp [schurAt, schur_zero]
   rw [sqTerm, if_pos ⟨fun i => le_rfl, antitone_const⟩]
   simp [hs]
 

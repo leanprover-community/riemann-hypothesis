@@ -290,7 +290,7 @@ theorem UpperTheory.V.UnitaryThreeInertia.eq_rz_of_vanE :
   have hgw : ∀ g, γ g ∈ gw O j := fun g => by
     rcases Int.units_eq_one_or (F.η g) with hg | hg
     · exact fun a b hab => hz g a b (hw g a b hg hab)
-    · have h1 : F.η (g * F.c) = 1 := by rw [map_mul, hg, ok.ηc]; simp
+    · have h1 : F.η (g * F.c) = 1 := simp [map_mul, hg, ok.ηc]
       have h2 := hcoc g F.c
       rw [hc, map_zero, add_zero] at h2
       rw [← h2]

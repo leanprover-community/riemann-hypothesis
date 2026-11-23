@@ -62,7 +62,7 @@ theorem normDescent : ∀ (K E : Type) [Field K] [NumberField K] [Field E] [Numb
     rw [← map_pow Ideal.absNorm p, ← hrel, Ideal.absNorm_relNorm]
   have h := (Nat.Prime.pow_eq_iff hp).1 hab.symm
   have hne : p ≠ ⊥ := fun h0 => by
-    have : Ideal.absNorm p = 0 := by rw [h0]; simp
+    have : Ideal.absNorm p = 0 := simp [h0]
     rw [this] at h
     exact hp.ne_zero h.1.symm
   let 𝔭 : HeightOneSpectrum (𝓞 K) := ⟨p, inferInstance, hne⟩

@@ -133,7 +133,7 @@ theorem qs_eq_of_MF (k L : ℕ) (χ : ℤ → ℂ) (a a' : ℕ → ℂ) (hk : 1 
       have hL1 : (1 : ℝ) ≤ L := by exact_mod_cast hL
       rw [abs_of_nonneg (by positivity)] at this
       linarith
-    have : ‖w‖ = 1 := by rw [hw1]; simp
+    have : ‖w‖ = 1 := simp [hw1]
     rw [hw, norm_pow] at this
     have h2 : (2 : ℝ) ^ k ≤ ‖((L : ℂ) * τ0 + 1)‖ ^ k := pow_le_pow_left₀ (by norm_num) hn k
     have h3 : (1 : ℝ) < 2 ^ k := one_lt_pow₀ (by norm_num) (by omega)
@@ -183,10 +183,10 @@ theorem atkin_lehner_eis : ∀ (j N l : ℕ) (ω : DirichletCharacter ℂ l) (ν
   set E₂ := eis j c₂ (fun x => ch ω x * hat ν x) (fun _ => 1) with hE₂
   have hν1 : ch ν⁻¹ (-1) = ch ν (-1) := by
     unfold ch
-    have e : ν ((-1 : ℤ) : ZMod N) * ν ((-1 : ℤ) : ZMod N) = 1 := by rw [← map_mul]; simp
+    have e : ν ((-1 : ℤ) : ZMod N) * ν ((-1 : ℤ) : ZMod N) = 1 := simp [← map_mul]
     rw [MulChar.inv_apply_eq_inv']
     exact inv_eq_of_mul_eq_one_right e
-  have hs : ((-1 : ℂ) ^ j) ^ 2 = 1 := by rw [← pow_mul, mul_comm, pow_mul]; simp
+  have hs : ((-1 : ℂ) ^ j) ^ 2 = 1 := simp [← pow_mul, mul_comm, pow_mul]
   by_cases hpar : ch ω (-1) * ch ν (-1) = (-1) ^ j
   swap
   · have z1 : qs E₁ = 0 := inv_eq_zero_of_parity j (N * l) _ _ h1.2 (by

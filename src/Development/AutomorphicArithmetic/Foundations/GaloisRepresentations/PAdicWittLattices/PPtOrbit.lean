@@ -89,7 +89,7 @@ theorem UpperTheory.Gal.G3.pPtOrbit :
     exact this
   calc Over.Hom.left θ ≫ my.φ ≫ Over.Hom.left ψ ≫ φ.φ
       = Over.Hom.left θ ≫ (my.φ ≫ Over.Hom.left ψ) ≫ φ.φ := by rw [Category.assoc]
-    _ = Over.Hom.left (θ ≫ ψy) ≫ ny.φ ≫ φ.φ := by rw [← cy]; simp
+    _ = Over.Hom.left (θ ≫ ψy) ≫ ny.φ ≫ φ.φ := simp [← cy]
     _ = Over.Hom.left ψx ≫ c.φ ≫ ny.φ ≫ φ.φ := by rw [hθ, Over.comp_left, hθ', Category.assoc]
     _ = Over.Hom.left ψx ≫ nx.φ ≫ φ.φ := by rw [key]
     _ = mx.φ ≫ Over.Hom.left ψ ≫ φ.φ := by rw [← Category.assoc, cx, Category.assoc]

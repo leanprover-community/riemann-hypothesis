@@ -79,7 +79,7 @@ theorem exists_pair_of_annihilator_any : ∀ (F : Type) [Field F] [NumberField F
     · intro h
       rw [e]
       calc WithZero.exp (-n) * (WithZero.exp n * Valued.v x) ≤ WithZero.exp (-n) * WithZero.exp n := by gcongr
-        _ = 1 := by rw [← WithZero.exp_add]; simp
+        _ = 1 := simp [← WithZero.exp_add]
     · intro h
       calc WithZero.exp n * Valued.v x ≤ WithZero.exp n * 1 := by gcongr
         _ = WithZero.exp n := mul_one _

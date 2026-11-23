@@ -100,7 +100,7 @@ theorem UpperTheory.V.W.exists_character_lifting_psi_free :
     obtain ⟨k, hk⟩ := (CommGroup.primaryComponent.isPGroup (G := TopologicalAbelianization (F.Gv v)) (p := l)) x
     have h1 : residue O (t x) ^ l ^ k = 1 := by
       rw [← map_pow, ← Units.val_pow_eq_pow_val, ← map_pow, hk]; simp
-    have h2 : (residue O (t x) - 1) ^ l ^ k = 0 := by rw [sub_pow_char_pow, h1]; simp
+    have h2 : (residue O (t x) - 1) ^ l ^ k = 0 := simp [sub_pow_char_pow, h1]
     exact sub_eq_zero.1 (pow_eq_zero_iff (pow_ne_zero k (Fact.out : l.Prime).ne_zero) |>.1 h2)
   have hb : ∀ g : F.mu v, (A v).b g = q g := fun g => Subtype.ext ((A v).b_mu g g.2)
   have hrO : ∀ x : O, res O O x = residue O x := fun x => (res O O).commutes x

@@ -60,7 +60,7 @@ theorem lgc_of_cut'_alt (D : D7) (hA : _root_.Formalism.MainNotions.SumRepresent
   refine ⟨P, hP, rel, (nc_tw _ _).2 ?_⟩
   have hd : D.naut.lpDim (D.naut.locV i P w) = D.R.nV := by
     rw [← D.naut.lpDim_tw _ ((1 - (D.R.nV : ℝ)) / 2), ← rel.dim, D.naut.wdOf_dim]
-  have hne : D.naut.ptV i P ≠ none := by rw [hP]; simp
+  have hne : D.naut.ptV i P ≠ none := simp [hP]
   rcases hw with hS | hQ
   · rcases ((D.nd.S_def i w).1 hS).1 with h | h | h
     · exact hC i P hne 0 w h

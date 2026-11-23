@@ -54,7 +54,7 @@ theorem cinv_inv_up {U : Matrix (Fin n) (Fin n) K} (hU : IsUpUni U) : IsUpUni U�
   intro i j
   refine ⟨fun h => hI (show id j < id i from h), ?_⟩
   rintro rfl
-  have h1 : (U⁻¹ * U) i i = 1 := by rw [Matrix.nonsing_inv_mul _ hdet]; simp
+  have h1 : (U⁻¹ * U) i i = 1 := simp [Matrix.nonsing_inv_mul _ hdet]
   rw [Matrix.mul_apply, Finset.sum_eq_single i] at h1
   · rwa [(hU i i).2 rfl, mul_one] at h1
   · intro k _ hk

@@ -73,7 +73,7 @@ theorem invol_eq_pow {k : Type} [Field k] [Finite k] (p : ℕ) [Fact p.Prime] [C
     rintro rfl
     obtain ⟨x, hx⟩ := hne
     apply hx
-    have : σ x = x := by rw [← e]; simp
+    have : σ x = x := simp [← e]
     exact this
   have hn : Module.finrank (ZMod p) k = 2 * j := by
     obtain ⟨m, hm⟩ := hdvd

@@ -81,8 +81,8 @@ theorem Fr.dbl (h : Fr c J J₁ H ι Z π ρ) : Fr c (dbl J) (dbl J₁) (dbl H) 
       ri := by simp [fromBlocks_multiply, h.ri]
       rz := by simp [fromBlocks_multiply, h.rz]
       gii := by rw [doubling_gram_fromBlocks, h.gii]; rfl
-      giz := by rw [doubling_gram_fromBlocks, h.giz]; simp
-      gzi := by rw [doubling_gram_fromBlocks, h.gzi]; simp
+      giz := simp [doubling_gram_fromBlocks, h.giz]
+      gzi := simp [doubling_gram_fromBlocks, h.gzi]
       gzz := by rw [doubling_gram_fromBlocks, h.gzz]; rfl }
 
 theorem Fr.mul (h : Fr c J J₁ H ι Z π ρ) (g g' : Matrix β₁ β₁ E) (k k' : Matrix μ μ E) :

@@ -60,7 +60,6 @@ namespace UpperTheory.Reformulated.B.CayleyHamiltonSymmetric
 
 open MonoidAlgebra UpperTheory.V.W
 
-section Tens
 
 variable {G : Type} [Group G] {n : ℕ} {B B' : Type} [CommRing B] [CommRing B']
 
@@ -233,9 +232,7 @@ private lemma coeff_tens_gam [DecidableEq G] (S : Finset G) (g : Fin n → G) :
   rw [MvPolynomial.monomial_sum_one]
   rfl
 
-end Tens
 
-section Homog
 
 variable {σ B : Type} [CommRing B]
 
@@ -294,9 +291,7 @@ private lemma coeff_kill [DecidableEq σ] (T : Finset σ) (P : MvPolynomial σ B
     · subst hab; split_ifs <;> simp
     · split_ifs <;> simp [coeff_monomial, hab]
 
-end Homog
 
-section Phi
 
 variable {A G : Type} [CommRing A] [Group G] {n : ℕ}
 
@@ -413,9 +408,7 @@ private lemma exists_phi (D : GDet n A G) : ∃ c : (Fin n → G) → A,
   conv_rhs => rw [← e, ← tens_map]
   rfl
 
-end Phi
 
-section Theta
 
 variable {H B B' : Type} [Monoid H] [CommRing B] [CommRing B'] [Algebra B B']
 
@@ -506,9 +499,7 @@ private lemma exists_aeval_of_commute {σ W : Type} [Ring W] [Algebra B W] (p : 
     (MvPolynomial.aeval (R := B) fun j =>
     (⟨p j, Algebra.subset_adjoin ⟨j, rfl⟩⟩ : Algebra.adjoin B (Set.range p))), fun j => by simp⟩
 
-end Theta
 
-section CH
 
 variable {A G : Type} [CommRing A] [Group G] {n : ℕ} {D : GDet n A G} {c : (Fin n → G) → A}
 
@@ -542,9 +533,7 @@ private lemma phi_mul (hc : ∀ (B : Type) [CommRing B] [Algebra A B] (y : Monoi
   erw [← this]
   rw [map_mul, n1, mul_comm, ← Algebra.smul_def, map_smul, smul_eq_mul, mul_comm]
 
-end CH
 
-section LocalCohomologySetup
 
 variable {A G : Type} [CommRing A] [Group G] {n : ℕ}
 
@@ -747,9 +736,7 @@ private theorem cayley_hamilton (D : GDet n A G) (x m r : MonoidAlgebra B G) :
   change _ = mapRingHom G (ev : MvPolynomial ℕ B →+* B) _
   rw [map_add (f := _), map_mul, hι, hι, hq]
 
-end LocalCohomologySetup
 
-section MatrixLaw
 
 variable {A : Type} [CommRing A] {n : ℕ}
 
@@ -856,9 +843,7 @@ private theorem law_eq_det
   rw [h1, one_smul, Pi.basisFun_det] at h
   exact DFunLike.congr_fun h M
 
-end MatrixLaw
 
-section Units
 
 open Matrix
 
@@ -1004,9 +989,7 @@ private lemma exists_iso [IsLocalHom (algebraMap A k)] (hf : Function.Surjective
     rw [hτ', map_mul, map_mul, h5, h6, single_mul_mul_single]
     simp
 
-end Units
 
-section Main
 
 variable {A k G : Type} [CommRing A] [Group G] {n : ℕ}
 
@@ -1105,7 +1088,7 @@ private lemma idem_lift [IsLocalRing A] [IsAdicComplete (IsLocalRing.maximalIdea
   have hg' : g.map (algebraMap A k) = X ^ (n - 1) := by
     rw [hg, Polynomial.map_mul, Polynomial.map_sub, map_X, map_C, ha1] at hch
     exact mul_left_cancel₀ (X_sub_C_ne_zero 1) hch
-  have h1 : algebraMap A k (g.eval a) = 1 := by rw [ev, hg', ha1]; simp
+  have h1 : algebraMap A k (g.eval a) = 1 := simp [ev, hg', ha1]
   obtain ⟨u, hu⟩ : IsUnit (g.eval a) := isUnit_of_map_unit (algebraMap A k) _ (h1 ▸ isUnit_one)
   have h2 : z * aeval z g = a • aeval z g := by
     rwa [hg, map_mul, map_sub, aeval_X, aeval_C, sub_mul, sub_eq_zero, ← Algebra.smul_def] at h0
@@ -1129,9 +1112,7 @@ private lemma idem_lift [IsLocalRing A] [IsAdicComplete (IsLocalRing.maximalIdea
   · rw [smul_mul_smul_comm, h3, ← hu, smul_smul, mul_assoc, u.inv_mul, mul_one]
   · rw [map_smul, ← algebraMap_smul k, h4, one_smul, h5]
 
-end Main
 
-section Final
 
 variable {A k G : Type} [CommRing A] [Group G] {n : ℕ}
 
@@ -1329,7 +1310,6 @@ private lemma full_iff {K : Type} [CommRing K] (ρ : G →* GL (Fin n) K) :
   rw [Full, e, LinearMap.range_eq_top]
   rfl
 
-end Final
 
 end UpperTheory.Reformulated.B.CayleyHamiltonSymmetric
 

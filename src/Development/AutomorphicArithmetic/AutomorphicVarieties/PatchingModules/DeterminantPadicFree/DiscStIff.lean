@@ -77,7 +77,7 @@ private theorem span_of_gram {n : ℕ} {K : Type} [Field K] (s : Set (Matrix (Fi
     intro c hc
     have hv : Matrix.vecMul c (Matrix.of fun a b => (x a * y b).trace) = 0 := by
       funext b
-      have h0 : ((∑ a, c a • x a) * y b).trace = 0 := by rw [hc]; simp
+      have h0 : ((∑ a, c a • x a) * y b).trace = 0 := simp [hc]
       rw [Finset.sum_mul, Matrix.trace_sum] at h0
       simpa [Matrix.vecMul, dotProduct, Matrix.trace_smul, smul_mul_assoc] using h0
     have := Matrix.eq_zero_of_vecMul_eq_zero hdet hv

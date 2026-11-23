@@ -50,16 +50,16 @@ variable {n : ℕ} {J P G : Matrix (Fin n) (Fin n) ℂ}
 theorem conj_cancel (hP : IsUnit P) (g : Matrix (Fin n) (Fin n) ℂ) : P * (P⁻¹ * g * P) * P⁻¹ = g := by
   have h1 : P * P⁻¹ = 1 := Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).1 hP)
   calc P * (P⁻¹ * g * P) * P⁻¹ = (P * P⁻¹) * g * (P * P⁻¹) := by simp only [Matrix.mul_assoc]
-    _ = g := by rw [h1]; simp
+    _ = g := simp [h1]
 
 theorem lie_conj (hP : IsUnit P) (hG : Pᴴ * J * P = G) {X : Matrix (Fin n) (Fin n) ℂ} (hX : Xᴴ * G + G * X = 0) :
     (P * X * P⁻¹)ᴴ * J + J * (P * X * P⁻¹) = 0 := by
   have h1 : P * P⁻¹ = 1 := Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).1 hP)
   calc (P * X * P⁻¹)ᴴ * J + J * (P * X * P⁻¹)
-      = (P * X * P⁻¹)ᴴ * J * (P * P⁻¹) + (P * P⁻¹)ᴴ * J * (P * X * P⁻¹) := by rw [h1]; simp
+      = (P * X * P⁻¹)ᴴ * J * (P * P⁻¹) + (P * P⁻¹)ᴴ * J * (P * X * P⁻¹) := simp [h1]
     _ = (P⁻¹)ᴴ * (Xᴴ * G + G * X) * P⁻¹ := by
         rw [← hG]; simp only [conjTranspose_mul, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul]
-    _ = 0 := by rw [hX]; simp
+    _ = 0 := simp [hX]
 
 theorem lie_conj_inv (hP : IsUnit P) (hG : Pᴴ * J * P = G) {X : Matrix (Fin n) (Fin n) ℂ} (hX : Xᴴ * J + J * X = 0) :
     (P⁻¹ * X * P)ᴴ * G + G * (P⁻¹ * X * P) = 0 := by
@@ -67,7 +67,7 @@ theorem lie_conj_inv (hP : IsUnit P) (hG : Pᴴ * J * P = G) {X : Matrix (Fin n)
   calc (P⁻¹ * X * P)ᴴ * G + G * (P⁻¹ * X * P)
       = Pᴴ * (Xᴴ * ((P * P⁻¹)ᴴ * J) + J * (P * P⁻¹) * X) * P := by
         rw [← hG]; simp only [conjTranspose_mul, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul]
-    _ = 0 := by rw [h1, conjTranspose_one, Matrix.one_mul, Matrix.mul_one, hX]; simp
+    _ = 0 := simp [h1, conjTranspose_one, Matrix.one_mul, Matrix.mul_one, hX]
 
 theorem exp_smul_conj (hP : IsUnit P) (X : Matrix (Fin n) (Fin n) ℂ) (t : ℝ) :
     NormedSpace.exp (t • (P * X * P⁻¹)) = P * NormedSpace.exp (t • X) * P⁻¹ := by

@@ -51,6 +51,6 @@ theorem charpoly_nilpotent_add_scalar : ∀ (k : Type) [Field k] (n : ℕ) (N : 
   calc (N + Matrix.scalar (Fin n) c).charpoly
       = ((N + Matrix.scalar (Fin n) c).charpoly.comp (X + C c)).comp (X - C c) := by
         rw [comp_assoc, hXC, comp_X]
-    _ = (X - C c) ^ n := by rw [← h1]; simp
+    _ = (X - C c) ^ n := simp [← h1]
 
 end GlobalTheory

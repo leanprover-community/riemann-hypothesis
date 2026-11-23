@@ -85,8 +85,8 @@ theorem triv_slice_of_forall_weilIs_one : ∀ (S : Scheme.{0}) (A : Over S) [Grp
     intro z hz
     have e : lift (z ≫ fst A A) 1 * lift 1 (z ≫ snd A A) = z := by
       ext <;> simp [MonObj.mul_comp]
-    have hz1 : (z ≫ fst A A) ^ n = 1 := by rw [← MonObj.pow_comp, hz]; simp
-    have hz2 : (z ≫ snd A A) ^ n = 1 := by rw [← MonObj.pow_comp, hz]; simp
+    have hz1 : (z ≫ fst A A) ^ n = 1 := simp [← MonObj.pow_comp, hz]
+    have hz2 : (z ≫ snd A A) ^ n = 1 := simp [← MonObj.pow_comp, hz]
     have h := ((s2 _ hz1).mul_left (s1 _ hz2).symm).symm
     rw [e] at h
     simpa using h

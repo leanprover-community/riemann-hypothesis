@@ -273,7 +273,7 @@ theorem dyadic_summation : ∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (
     _ ≤ ∑' p, ∫⁻ x in Q p, ENNReal.ofReal (A x * B x) ∂ν := lintegral_iUnion_le _ _
     _ ≤ _ := ENNReal.tsum_le_tsum hpiece
     _ = ENNReal.ofReal C * 16 := tsum_four _
-    _ = ENNReal.ofReal (C * 16) := by rw [ENNReal.ofReal_mul hC0]; simp
+    _ = ENNReal.ofReal (C * 16) := simp [ENNReal.ofReal_mul hC0]
     _ ≤ _ := by
         refine ENNReal.ofReal_le_ofReal ?_
         calc C * 16 ≤ C * 24 := by gcongr; norm_num

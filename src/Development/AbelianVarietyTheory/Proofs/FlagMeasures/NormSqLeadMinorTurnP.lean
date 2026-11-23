@@ -102,7 +102,7 @@ theorem cj_star_cj {d : Fin m → ℂ} (h : Uni d) (a : Matrix (Fin m) (Fin m) �
   rw [star_star]
   calc diagonal d * (diagonal (star d) * a * diagonal d) * diagonal (star d)
       = (diagonal d * diagonal (star d)) * a * (diagonal d * diagonal (star d)) := by simp only [Matrix.mul_assoc]
-    _ = a := by rw [h.r]; simp
+    _ = a := simp [h.r]
 
 theorem cj_cj_star {d : Fin m → ℂ} (h : Uni d) (a : Matrix (Fin m) (Fin m) ℂ) : cj d (cj (star d) a) = a := by
   have := cj_star_cj h.st a
@@ -456,7 +456,7 @@ theorem Zhat_cj {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hz' : in
   rw [mulVec_smul, star_smul, smul_dotProduct, dotProduct_smul, smul_eq_mul, smul_eq_mul, ← mul_assoc, ← mul_assoc]
   congr 1
   have e : 2 * r = (r - a.val) + (r - b.val) + (a.val + b.val) := by have := a.isLt; have := b.isLt; omega
-  have e2 : Complex.I ^ (a.val + b.val) * (-Complex.I) ^ (a.val + b.val) = 1 := by rw [← mul_pow]; simp
+  have e2 : Complex.I ^ (a.val + b.val) * (-Complex.I) ^ (a.val + b.val) = 1 := simp [← mul_pow]
   rw [e, pow_add, mul_assoc (Complex.I ^ _), e2, mul_one, pow_add, star_pow, neg_pow Complex.I (r - b.val)]
   simp only [star_neg, Complex.star_def, Complex.conj_I, neg_neg]
   ring

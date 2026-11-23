@@ -43,7 +43,7 @@ open NumberField TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs Formalism.L2.Pj UpperTheory.Depth
 
 private theorem bar_rt' {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) : H.bar H.rt = -H.rt := by
-  have h1 : (H.bar H.rt) ^ 2 = H.rt ^ 2 := by rw [← map_pow, H.rt_sq]; simp
+  have h1 : (H.bar H.rt) ^ 2 = H.rt ^ 2 := simp [← map_pow, H.rt_sq]
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 h1 with h | h
   · exfalso
     obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance

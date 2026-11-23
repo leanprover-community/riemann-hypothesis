@@ -119,7 +119,7 @@ lemma Good.mul {f g : MvPolynomial σ K} {a b : ι → ℕ} {s s' : σ →₀ �
 lemma Good.one : Good sv (1 : MvPolynomial σ K) 0 0 := by
   refine ⟨by funext k; simp [sd], ?_⟩
   intro m hm
-  have : (1 : MvPolynomial σ K) - monomial 0 1 = 0 := by rw [← C_1, ← monomial_zero']; simp
+  have : (1 : MvPolynomial σ K) - monomial 0 1 = 0 := simp [← C_1, ← monomial_zero']
   rw [this] at hm; simp at hm
 
 lemma Good.pow {f : MvPolynomial σ K} {a : ι → ℕ} {s : σ →₀ ℕ} (hf : Good sv f a s) (n : ℕ) :

@@ -145,7 +145,7 @@ theorem fourier : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
       rw [charInd, vecInd, vecInd, if_pos hy, if_pos hy', hr', ← map_neg, resChar_residue, hψk, mul_one, one_mul,
         ← Circle.coe_mul, ← AddChar.map_add_eq_mul]
       congr 2
-      have ht' : (t : k) = s⁻¹ * (F ⬝ᵥ y) := by rw [ht]; simp
+      have ht' : (t : k) = s⁻¹ * (F ⬝ᵥ y) := simp [ht]
       have hx : xi = -wk * s⁻¹ := by rw [← hw]; field_simp
       rw [hη', sub_dotProduct, smul_dotProduct, smul_dotProduct, Subring.coe_neg, ht', hx, smul_eq_mul, smul_eq_mul]
       linear_combination (q.inv * s⁻¹ * (F ⬝ᵥ y)) * hww

@@ -55,7 +55,7 @@ theorem conj_mem {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel 
         rw [h1, hg']
     _ = (M.fr τ * (M.fr τ)⁻¹)ᴴ * Formalism.REAL.Jm (M.ε τ) * (M.fr τ * (M.fr τ)⁻¹) := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = _ := by rw [h2]; simp
+    _ = _ := simp [h2]
 
 theorem rep_one {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) (τ : D.what₂.Tau) :
     M.rep τ 1 = 1 := by

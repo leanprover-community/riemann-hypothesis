@@ -107,7 +107,7 @@ theorem exists_clear {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum
       omega
     calc Q.intValuation s * Valued.v (y Q) ≤ WithZero.exp (-((m Q : ℕ) : ℤ)) * WithZero.exp ((m Q : ℕ) : ℤ) :=
           mul_le_mul' h1 h2
-      _ = 1 := by rw [← WithZero.exp_add]; simp
+      _ = 1 := simp [← WithZero.exp_add]
   · have h1 : Valued.v (y Q) ≤ 1 := not_lt.1 fun h => hQ ((memS Q).2 h)
     exact mul_le_one' (HeightOneSpectrum.intValuation_le_one Q s) h1
 

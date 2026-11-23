@@ -132,7 +132,7 @@ theorem derivative_upper_bound : DUp := by
     hI.re.congr (Filter.Eventually.of_forall fun g => Complex.ofReal_re _)
   rw [integral_complex_ofReal, inner_self_eq_norm_sq_to_K, hv1] at hE
   have hE' : ∫ g : UJ ε, ‖⟪v, π (uMat g) v⟫_ℂ‖ ^ 2 ∂μ = d⁻¹ := by
-    have : ((∫ g : UJ ε, ‖⟪v, π (uMat g) v⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ) = ((d⁻¹ : ℝ) : ℂ) := by rw [hE]; simp
+    have : ((∫ g : UJ ε, ‖⟪v, π (uMat g) v⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ) = ((d⁻¹ : ℝ) : ℂ) := simp [hE]
     exact_mod_cast this
   have hmeas : MeasurableSet (nearSet ε (K ^ 2)⁻¹) :=
     (isClosed_le (continuous_hs_real_place_taylor.comp ((continuous_coeMatrix ε).sub continuous_const)) continuous_const).measurableSet

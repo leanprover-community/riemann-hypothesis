@@ -354,7 +354,7 @@ theorem sum_log_div_sq_mod_pm_one_le (T : Finset ℕ) (M : ℕ) (Y : ℝ) (hY : 
     rw [hl.2.2] at h
     exact ⟨l / M, by linarith⟩)
   have c1 : ((M + 1 : ℕ) : ℝ) = (M : ℝ) + 1 := by push_cast; ring
-  have c2 : ((M - 1 : ℕ) : ℝ) = (M : ℝ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
+  have c2 : ((M - 1 : ℕ) : ℝ) = (M : ℝ) - 1 := simp [Nat.cast_sub (by omega)]
   rw [c1] at h1
   rw [c2] at h2
   have a1 : Real.log ((M : ℝ) + 1) / ((M : ℝ) + 1) ^ 2 ≤ Real.log Y / Y ^ 2 := logsq_anti hY (by linarith)

@@ -69,7 +69,7 @@ lemma map_smul_volume {m n : ℕ} (ζ : ℂ) (hζ : ‖ζ‖ = 1) :
     (f := L) (by rw [hdet]; exact one_ne_zero)
   rw [hdet] at this
   calc Measure.map (fun x : Fin m → Fin n → ℂ => ζ • x) volume = Measure.map (⇑L) volume := rfl
-    _ = volume := by rw [this]; simp
+    _ = volume := simp [this]
 
 lemma evX_smul_mono {m n : ℕ} (ζ : ℂ) (d : (Fin m × Fin n × Bool) →₀ ℕ) (hd : ∀ k, k.2.2 = true → d k = 0)
     (x : Fin m → Fin n → ℂ) :

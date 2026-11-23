@@ -262,7 +262,7 @@ theorem line_ne_zero (x : (Σ k, ι k) → Ω) (A : ChartBundle O (mseg x) 1 Ω)
   obtain ⟨b, hb, -, hiff⟩ := hl l
   obtain ⟨n, hn⟩ := (hiff (b 0)).2 ⟨fun _ => 1, fun q => ⟨1, by simpa using he l⟩, by simp⟩
   obtain ⟨r, -, hr⟩ := (hA s hs _).1 hn
-  have h0 : e l ^ n • b 0 = 0 := by rw [hr]; simp
+  have h0 : e l ^ n • b 0 = 0 := simp [hr]
   exact (smul_ne_zero (pow_ne_zero _ hl0) (hb.ne_zero 0)) h0
 
 def lineBasis {u : Ω} (hu : u ≠ 0) : Module.Basis (Fin 1) Ω Ω :=

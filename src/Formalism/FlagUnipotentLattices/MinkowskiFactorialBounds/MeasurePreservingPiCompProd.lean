@@ -740,7 +740,7 @@ theorem s5b7_vol (R : ℝ) (hR : 0 < R) : ∀ (r d : ℕ), r ≤ d → ∀ t : �
     by_cases h1 : 1 ≤ t
     · calc volume (s5b7_A R d 0 t) ≤ volume (univ : Set (Fin 0 → EuclideanSpace ℂ (Fin d))) :=
             measure_mono (subset_univ _)
-        _ = 1 := by rw [Measure.volume_pi_eq_dirac 0]; simp
+        _ = 1 := simp [Measure.volume_pi_eq_dirac 0]
         _ ≤ _ := by
             rw [← ENNReal.ofReal_one]
             apply ENNReal.ofReal_le_ofReal

@@ -184,7 +184,7 @@ private lemma cay_preserves_herm_of_skew {H X : Matrix (Fin n) (Fin n) ℂ} (hX 
         simp only [_root_.GlobalTheory.UnitaryRetraction.cay, conjTranspose_mul, mul_assoc]
     _ = ((1 + X) * (1 + X)⁻¹)ᴴ * H * ((1 + X) * (1 + X)⁻¹) := by
         rw [← e]; simp only [conjTranspose_mul, mul_assoc]
-    _ = H := by rw [hw]; simp
+    _ = H := simp [hw]
 
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
@@ -227,7 +227,7 @@ private lemma skew_cay_eq_and_cay_cay_eq {H Y : Matrix (Fin n) (Fin n) ℂ} (h2 
           rw [hw1]; simp
       _ = wᴴ * ((1 + Y)ᴴ * (Aᴴ * H + H * A) * (1 + Y)) * w := by
           rw [conjTranspose_mul]; simp only [mul_assoc]
-      _ = 0 := by rw [hZ']; simp
+      _ = 0 := simp [hZ']
   have hsum : (1 + Y) + (1 - Y) = (2 : ℂ) • (1 : Matrix (Fin n) (Fin n) ℂ) := by
     rw [two_smul]; abel
   have hdiff : (1 + Y) - (1 - Y) = (2 : ℂ) • Y := by
@@ -292,7 +292,7 @@ theorem _root_.GlobalTheory.UnitaryRetraction.contDiffOn_iff_local_extension (hH
       show _root_.GlobalTheory.UnitaryRetraction.skewPart H (_root_.GlobalTheory.UnitaryRetraction.cay (k * g₀)) = 0
       rw [hkg]
       simp [_root_.GlobalTheory.UnitaryRetraction.cay, _root_.GlobalTheory.UnitaryRetraction.skewPart]
-    have hval2 : (1 + ψ g₀).det ≠ 0 := by rw [hψ0]; simp
+    have hval2 : (1 + ψ g₀).det ≠ 0 := simp [hψ0]
     have hc1 : ContinuousAt (fun g => (1 + k * g).det) g₀ :=
       (contDiff_det_jet_harmonics.comp_contDiffAt g₀ (contDiffAt_const.add (hlin g₀))).continuousAt
     have hc2 : ContinuousAt (fun g => (1 + ψ g).det) g₀ :=

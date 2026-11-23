@@ -199,7 +199,7 @@ theorem coeff_eq (n : ℕ) (ε : Fin n → Bool) (μ : Fin n → ℝ) (P : Type)
       obtain ⟨c, hc⟩ := gram (exp_mem hJ ((t : ℂ) / 2)) μ
       simp only [exp_gram hH t, hc P B π x y h hx hy, hc P' B' π' x' y' h' hx' hy']
       ring) Complex.I
-  have e : Complex.I • (-Complex.I) • Y = Y := by rw [smul_smul]; simp
+  have e : Complex.I • (-Complex.I) • Y = Y := simp [smul_smul]
   simp only [e] at h0
   exact sub_eq_zero.1 h0
 

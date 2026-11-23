@@ -197,7 +197,7 @@ private theorem finiteDimensional_of_lbIso_sections {V W : Type} [AddCommGroup V
   have : FiniteDimensional K W := Module.Finite.of_injective g hg
   have h1 := LinearMap.finrank_le_finrank_of_injective hf
   have h2 := LinearMap.finrank_le_finrank_of_injective hg
-  have h3 : Module.finrank K V = r := by rw [← e.finrank_eq]; simp
+  have h3 : Module.finrank K V = r := simp [← e.finrank_eq]
   exact ⟨LinearEquiv.ofFinrankEq _ _ (by rw [Module.finrank_fin_fun]; omega)⟩
 
 theorem sectionsHaveFiniteDimension_iff_of_lineBundleIso (p : X ⟶ Sp K) {M M' : LB X} (hM : M.IsLB) (hM' : M'.IsLB) (h : LBIso M M') (r : ℕ) :

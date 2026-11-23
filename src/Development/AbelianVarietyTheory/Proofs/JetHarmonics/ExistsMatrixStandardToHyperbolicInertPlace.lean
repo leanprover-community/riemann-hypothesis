@@ -227,7 +227,7 @@ theorem exists_pair [IsAlgClosed C] (h2 : V.l ≠ 2) (O : Type) [CommRing O] [St
     convert this using 2; ring
   obtain ⟨a, b, hab⟩ := exists_norm_congr h2 t hx htl
   set w : O := a + b * (x - star x) with hw
-  have w0 : em 0 w = a + b * t := by rw [hw, map_add (f := _), map_mul, d0]; simp
+  have w0 : em 0 w = a + b * t := simp [hw, map_add (f := _), map_mul, d0]
   have w1 : em 1 w = a - b * t := by rw [hw, map_add (f := _), map_mul, d1]; simp [sub_eq_add_neg]
   set u : C := -((a : C) ^ 2 - (b : C) ^ 2 * t ^ 2) with hu
   have hwu : ∀ c, em (c + 1) w * em c w = -u := by

@@ -95,7 +95,7 @@ theorem exists_numerator_of_involution {F ι : Type*} [Field F] [CharZero F] [Fi
   · refine IsCoprime.prod_right fun t _ ↦
       ((irreducible_X_sub_C (p t)).coprime_iff_not_dvd.mpr ?_).symm
     rw [dvd_iff_isRoot, IsRoot.def]
-    have h0 : D.eval (p t) = 0 := by rw [hDE t]; simp
+    have h0 : D.eval (p t) = 0 := simp [hDE t]
     have h1 : ∀ s, s ≠ t → s ≠ σ t → ((C (a s) * u s + C (b s)) * E s).eval (p t) = 0 :=
       fun s h h' ↦ by
         rw [eval_mul, eval_prod, Finset.prod_eq_zero (i := t), mul_zero]

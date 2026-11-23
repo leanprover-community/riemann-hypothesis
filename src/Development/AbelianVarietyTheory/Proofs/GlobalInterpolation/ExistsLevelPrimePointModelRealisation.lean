@@ -111,7 +111,7 @@ theorem ipVal_trFr (hF : FOk emb σ) (h : GG E K n) {f f' : Fr emb σ n → ℂ}
     simp only [hi, fnOf, LinearMap.coe_mk, AddHom.coe_mk, frMul, Pi.one_apply, Matrix.one_mul]
   have hn : starRingEnd ℂ (σ c) * σ c = 1 := by
     obtain ⟨m, hm, e⟩ := isOfFinOrder_iff_pow_eq_one.1 hc
-    have e1 : (σ c) ^ m = 1 := by rw [← map_pow, ← Units.val_pow_eq_pow_val, e]; simp
+    have e1 : (σ c) ^ m = 1 := simp [← map_pow, ← Units.val_pow_eq_pow_val, e]
     have e2 : ‖σ c‖ = 1 := Complex.norm_eq_one_of_pow_eq_one e1 hm.ne'
     rw [Complex.conj_mul', e2]; simp
   show ipVal emb σ lam (trFr emb σ γ c _) (trFr emb σ γ c _) = _

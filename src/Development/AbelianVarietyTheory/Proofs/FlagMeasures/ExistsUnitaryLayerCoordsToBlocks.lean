@@ -246,7 +246,7 @@ theorem exists_layerIso : ∀ (n m d : ℕ) (W : ℕ → Submodule ℂ (Fin n �
     intro z hz
     have h := toBlocks_norm hU hW hB hL c z
     rw [hz] at h
-    have h0 : ∑ i, ‖z i‖ ^ 2 = 0 := by rw [← h]; simp
+    have h0 : ∑ i, ‖z i‖ ^ 2 = 0 := simp [← h]
     rw [Finset.sum_eq_zero_iff_of_nonneg (fun i _ => by positivity)] at h0
     funext i
     simpa using h0 i (Finset.mem_univ i)

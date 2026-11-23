@@ -53,7 +53,7 @@ theorem heckeForm_of_global_euler : ∀ D : D7, GlobalForm D → EulerRight D �
   obtain ⟨hA1, ht1, hB, -⟩ := hP.setting
   have hs0 : sZero A B = (t : ℂ) / 2 := by
     simp only [sZero, hB]; push_cast; ring
-  have hs0re : (sZero A B).re = (t : ℝ) / 2 := by rw [hs0]; simp
+  have hs0re : (sZero A B).re = (t : ℝ) / 2 := simp [hs0]
   obtain ⟨hcont, hbd, -⟩ := GlobalTheory.T.doubledLatticeHeightFun_properties D A LA a hU.sdA hP.maj
   have hflat : ∀ s, integrand om m ν 𝓕 LA a Φ₁ Φ₂ u₁ u₂ s =
       GlobalTheory.IndefiniteRowSideFullHecke.FlatZetaIntegral.flatIntegrand (fun g => wcoef om ν 𝓕 Φ₁ Φ₂ g * rcoef m u₁ u₂ g)

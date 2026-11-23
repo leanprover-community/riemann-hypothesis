@@ -349,7 +349,7 @@ theorem theorem_B_statement : Formalism.HermitianLatticeCounting.LocalIntegralSt
     have hβ0 : β ≠ 0 := by
       rintro rfl
       apply hne
-      have h0 : y - 1 = 0 := by rw [hβ]; simp
+      have h0 : y - 1 = 0 := simp [hβ]
       exact sub_eq_zero.mp h0
     have hNr : (3 : ℝ) ≤ N := by exact_mod_cast hN
     have hb : ∀ w : InfinitePlace E, (w (β : E)) ^ 2 ≤ 4 / 9 := by
@@ -433,7 +433,7 @@ theorem theorem_B_statement : Formalism.HermitianLatticeCounting.LocalIntegralSt
     have hβ0 : β ≠ 0 := by
       rintro rfl
       have hg0 : (g : E) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
-      have h0 : (g : E) ^ 2 * s = 0 := by rw [hβ]; simp
+      have h0 : (g : E) ^ 2 * s = 0 := simp [hβ]
       exact hs0 ((mul_eq_zero.mp h0).resolve_left (pow_ne_zero 2 hg0))
     set q : ℝ := (T : ℝ) * T' / (g : ℝ) ^ 2 with hq_def
     have hq : 0 < q := div_pos (mul_pos hTr hT'r) (pow_pos hgr 2)

@@ -144,7 +144,7 @@ theorem exists_Y0_mul_parab (hnd : n ≤ d) {p : GL (Fin d) k}
       Yo * q.val = A * Yo → Yo * r.val = B * Yo → A * B = 1 := by
     intro A B q r hqr hq hr
     have : Yo = A * B * Yo := by
-      calc Yo = Yo * (q * r).val := by rw [hqr]; simp
+      calc Yo = Yo * (q * r).val := simp [hqr]
         _ = A * B * Yo := by rw [Units.val_mul, ← Matrix.mul_assoc, hq, Matrix.mul_assoc, hr, Matrix.mul_assoc]
     have := congrArg (· * (Yo)ᵀ) this
     simpa [Matrix.mul_assoc, Y0_mul_transpose hnd] using this.symm

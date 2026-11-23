@@ -315,7 +315,7 @@ theorem gg_dv (hz : CH.d _ 2 z = 0) (hb : ∀ α, resB A (hWV α) z = CH.d _ 1 (
   rw [dv_apply]
   change CH.d _ _ ((CH.mulP _).cupC _ _ _) = _
   rw [CrystallineSemistableComparison.P.leibniz, d_resB, cupPow_d _ z hz, d_resB, ← hb]
-  have e : ((-1 : ℤ) ^ (2 * k)) = 1 := by rw [pow_mul]; simp
+  have e : ((-1 : ℤ) ^ (2 * k)) = 1 := simp [pow_mul]
   rw [e, one_smul]
   have h0 : resB A (capV hWV i) (0 : Ch A V (2 * k + 1)) = 0 := map_zero ((rM A (capV hWV i)).pullC _)
   rw [h0, map_zero, LinearMap.zero_apply]

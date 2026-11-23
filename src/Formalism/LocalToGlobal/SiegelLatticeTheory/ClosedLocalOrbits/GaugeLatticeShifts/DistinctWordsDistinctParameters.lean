@@ -327,7 +327,7 @@ theorem smat_unitary (hJh : Jᴴ = J) (G : Matrix (Fin k) (Fin k) ℂ) (hG : G�
         rw [hsh]
         simp only [smat, Matrix.add_mul, Matrix.mul_add, Matrix.mul_one, Matrix.one_mul, Matrix.mul_assoc, hO]
         abel
-    _ = J := by rw [hsq]; simp
+    _ = J := simp [hsq]
 
 include hon in
 theorem smat_fix (G : Matrix (Fin k) (Fin k) ℂ) (x : Fin n → ℂ) (hx : ∀ a, star (wf a) ⬝ᵥ (J *ᵥ x) = 0) :

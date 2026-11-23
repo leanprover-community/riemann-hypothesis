@@ -50,7 +50,7 @@ open GlobalTheory GlobalTheory.ArchMetricCompare
 theorem eSec_comp_of_cart {S : Scheme.{0}} {G : Over S} [GrpObj G] {z : Sp ℂ ⟶ S} {A : Over (Sp ℂ)} [GrpObj A]
     {φ : A.left ⟶ G.left} (h : IsGrpPullback A G z φ) : eSec A ≫ φ = z ≫ eSec G := by
   have e := congrArg (fun q => q.left) (map_one (pushHom h (𝟙_ (Over (Sp ℂ)))))
-  have e₁ : (1 : 𝟙_ (Over (Sp ℂ)) ⟶ A) = η[A] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over (Sp ℂ)) ⟶ A) = η[A] := simp [Hom.one_def]
   rw [e₁] at e
   refine e.trans ?_
   show (toUnit _ ≫ η[G]).left = _

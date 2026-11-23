@@ -142,7 +142,7 @@ theorem UpperTheory.Lit.Mix.nolow :
   have hS1 : ∀ a ∈ S, (x a).1 = 1 := fun a ha => by rw [hg a (hSL ha)]; rfl
   have hScard : S.card ≤ r := by
     rw [← hr]
-    calc S.card = ∑ a ∈ S, (x a).1 := by rw [Finset.sum_congr rfl hS1]; simp
+    calc S.card = ∑ a ∈ S, (x a).1 := simp [Finset.sum_congr rfl hS1]
       _ ≤ ∑ a, (x a).1 := Finset.sum_le_sum_of_subset (Finset.subset_univ S)
   obtain ⟨n, rfl⟩ : ∃ n, r = S.card + n := ⟨r - S.card, by omega⟩
   have e0 : Finset.univ.val.filter (· ∈ S) = S.val := by

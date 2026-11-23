@@ -179,7 +179,7 @@ def datum {n : ℕ} (h : A.Facts n) (q : ℕ) [Fact q.Prime] (hs : A.SplitK q) (
   finO := inferInstance
   m := 1
   m_pos := one_pos
-  rankO := by rw [RingOfIntegers.rank]; simp
+  rankO := simp [RingOfIntegers.rank]
   central x _ := ⟨x, 1, one_ne_zero, by simp⟩
   star := A.bar.trans (RingEquiv.toOpposite (𝓞 E))
   star_star x := A.bar_bar x

@@ -52,7 +52,7 @@ theorem mem_img_iff (g : GL (Fin n) K) (W : Submodule K (Fin n → K)) (y : Fin 
     y ∈ img g W ↔ (g⁻¹ : GL (Fin n) K).val *ᵥ y ∈ W := by
   constructor
   · rintro ⟨x, hx, rfl⟩
-    have : (g⁻¹ : GL (Fin n) K).val * g.val = 1 := by rw [← Units.val_mul]; simp
+    have : (g⁻¹ : GL (Fin n) K).val * g.val = 1 := simp [← Units.val_mul]
     simpa [Matrix.toLin'_apply, Matrix.mulVec_mulVec, this] using hx
   · intro h
     refine ⟨_, h, ?_⟩

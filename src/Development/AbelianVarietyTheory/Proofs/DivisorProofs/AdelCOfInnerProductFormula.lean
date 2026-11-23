@@ -137,7 +137,7 @@ theorem term_eval_lowC (h3 : InnerProductFormulaC R F) (h4 : FockCoefficientC R 
   have a1 := (h3 _ _ _ _ _ _ _ _ _ _ _ _ _ _ hd ν 𝓕 hν μ 𝓧 hμ Fr hFr mR hmR _ m1 _ (HMod_mem (hd.1.models.HW i σ) U₂) v v
     (io (PiTensorProduct.tprod ℂ v) w) (io (PiTensorProduct.tprod ℂ v) w)).2.2.2
   have a2 := h4 _ _ _ _ _ _ _ _ _ _ _ _ _ _ hd μ 𝓧 hμ
-  have e : ⟪w, w⟫_ℂ = 1 := by rw [inner_self_eq_norm_sq_to_K, hw]; simp
+  have e : ⟪w, w⟫_ℂ = 1 := simp [inner_self_eq_norm_sq_to_K, hw]
   refine a1.trans (congrArg _ ?_)
   exact @zeta_eval D (Vc D i) (Wc D i) _ _ _ _ (R.HW i σ) _ (inner_HW_lowC R hd.1 i σ) R.θ _ _ U₁ U₂ m1 (fun ρ => v ρ) (levW R i) _
     (Datum.measMx _ _) μ 𝓧 ω _ f Fr (realMat_mem i hFr) mR hmR _ z (fun x hx g hg => e ▸ a2 x hx g hg v v w w) hZ

@@ -146,7 +146,7 @@ theorem exists_frame_two : Formalism.FourierDecayAlt.Qr.FrameExists2 := by
     rfl
   have hεn : ‖εE‖ = 1 := by
     have h1 : inner ℂ εE εE = (1 : ℂ) := by rw [hin]; exact hnorm
-    have h2 : ‖εE‖ ^ 2 = 1 := by rw [@norm_sq_eq_re_inner ℂ, h1]; simp
+    have h2 : ‖εE‖ ^ 2 = 1 := simp [@norm_sq_eq_re_inner ℂ, h1]
     nlinarith [norm_nonneg εE, sq_nonneg (‖εE‖ - 1), sq_nonneg (‖εE‖ + 1)]
   have hon : Orthonormal ℂ (({Fin.last n} : Set (Fin (n + 1))).domRestrict fun _ => εE) := by
     refine ⟨fun _ => hεn, fun i j hij => ?_⟩

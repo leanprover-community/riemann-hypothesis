@@ -268,11 +268,11 @@ theorem face (a : Fin 3) (x : Fin 3 → Fin g → ℂ)
         exact hTp _ _ _ (hl l hlm))
     (fun _ => i₀) (fun _ => i₀) x 0
     (by
-      have : Function.update x a 0 = x := by rw [← hxa]; simp
+      have : Function.update x a 0 = x := simp [← hxa]
       rw [Set.mem_preimage, this]
       exact hx)
     (by intro I; simpa using h0)
-  have : Function.update x a 0 = x := by rw [← hxa]; simp
+  have : Function.update x a 0 = x := simp [← hxa]
   simpa [this] using key
 
 

@@ -91,7 +91,7 @@ theorem blkU_lastRow {r : ℕ} (hr : r ≤ m) (x : UnipotentBlockColumnIndex (m 
   intro t _
   rw [Matrix.single_apply_of_ne]
   rintro ⟨e1, -⟩
-  have h1 : (t.1.1 : ℕ) = m := by rw [e1]; simp
+  have h1 : (t.1.1 : ℕ) = m := simp [e1]
   have h2 := t.2.1
   omega
 

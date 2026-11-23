@@ -113,7 +113,7 @@ theorem letters_independent : ThetaUnifAV → Out.Laws → IndSt := by
     rw [h] at this
     exact H.d_prime.ne_zero (by simpa using this)
   have hsq : ∀ τ : 𝓞 E →+* 𝓞 K, τ H.rt = -ρ ↔ ¬ τ H.rt = ρ := fun τ => by
-    have e : τ H.rt ^ 2 = ρ ^ 2 := by rw [← map_pow, H.rt_sq, X.ρ_sq]; simp
+    have e : τ H.rt ^ 2 = ρ ^ 2 := simp [← map_pow, H.rt_sq, X.ρ_sq]
     refine ⟨fun h h' => hρ ?_, fun h => (sq_eq_sq_iff_eq_or_eq_neg.1 e).resolve_left h⟩
     have : (2 : 𝓞 K) * ρ = 0 := by linear_combination h - h'
     exact (mul_eq_zero.1 this).resolve_left two_ne_zero

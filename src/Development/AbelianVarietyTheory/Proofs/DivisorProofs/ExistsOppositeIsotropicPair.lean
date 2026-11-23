@@ -64,7 +64,7 @@ theorem sat_int (hZ : IsIsoSat D Z) (n : ℤ) (hn : n ≠ 0) (y : D.La) (hy : n 
   refine hZ.2 n.natAbs y (by omega) ?_
   rcases Int.natAbs_eq n with h1 | h1
   · rw [← natCast_zsmul, ← h1]; exact hy
-  · have : ((n.natAbs : ℤ)) • y = -(n • y) := by rw [h1]; simp
+  · have : ((n.natAbs : ℤ)) • y = -(n • y) := simp [h1]
     rw [← natCast_zsmul, this]; exact Z.neg_mem hy
 
 theorem proj_int (hZ : IsIsoSat D Z) : Module.Projective ℤ (D.La ⧸ Z.restrictScalars ℤ) := by

@@ -184,8 +184,8 @@ theorem y_inv (σ : K →+* K) (hσ : ∀ x, σ (σ x) = x) {a b c d : Matrix (F
   have hm : blk4 a b c d * blk4 (cT σ d) (-cT σ b) (-cT σ c) (cT σ a) = 1 := by
     rw [submatrix_fromBlocks_mul]
     have e1 : a * cT σ d + b * -cT σ c = 1 := by rw [mul_neg, ← sub_eq_add_neg]; exact r1
-    have e2 : a * -cT σ b + b * cT σ a = 0 := by rw [mul_neg, r2]; simp
-    have e3 : c * cT σ d + d * -cT σ c = 0 := by rw [mul_neg, r3]; simp
+    have e2 : a * -cT σ b + b * cT σ a = 0 := simp [mul_neg, r2]
+    have e3 : c * cT σ d + d * -cT σ c = 0 := simp [mul_neg, r3]
     have e4 : c * -cT σ b + d * cT σ a = 1 := by rw [mul_neg, ← r1']; abel
     rw [e1, e2, e3, e4, BigCell.block_identity_eq_one]
   exact mul_eq_one_comm.1 hm

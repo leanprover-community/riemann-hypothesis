@@ -153,7 +153,7 @@ theorem exists_isRegSS_torusPt (ε : Fin n → Bool) : ∃ θ, IsRegSS (ujMat ε
   have hb : ∀ a : Fin n, -Real.pi < (((1 / ((a : ℕ) + 1) : ℝ) : ℂ) * Complex.I).im ∧
       (((1 / ((a : ℕ) + 1) : ℝ) : ℂ) * Complex.I).im ≤ Real.pi := fun a => by
     have h1 : (0 : ℝ) < 1 / ((a : ℕ) + 1) := by positivity
-    have h2 : (1 : ℝ) / ((a : ℕ) + 1) ≤ 1 := by rw [div_le_one (by positivity)]; simp
+    have h2 : (1 : ℝ) / ((a : ℕ) + 1) ≤ 1 := simp [div_le_one (by positivity)]
     rw [Complex.mul_I_im, Complex.ofReal_re]
     constructor <;> linarith [Real.pi_gt_three]
   intro a b h

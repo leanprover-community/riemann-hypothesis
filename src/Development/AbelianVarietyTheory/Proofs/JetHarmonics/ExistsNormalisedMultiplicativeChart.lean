@@ -260,7 +260,7 @@ theorem exists_normalised_chart : ∀ (d q : ℕ) [Fact q.Prime] (M : Mdl q) (ω
     obtain ⟨c, hc⟩ := h1
     have h2 := hβn 1
     rw [hc, map_mul, map_natCast] at h2
-    have h3 : ((q : ℕ) : ZMod (q ^ 1)) = 0 := by rw [ZMod.natCast_eq_zero_iff]; simp
+    have h3 : ((q : ℕ) : ZMod (q ^ 1)) = 0 := simp [ZMod.natCast_eq_zero_iff]
     rw [h3, zero_mul, eq_comm, ZMod.intCast_zmod_eq_zero_iff_dvd] at h2
     exact hb 1 one_ne_zero (by simpa using h2)
   obtain ⟨a, ha⟩ := hβu.exists_left_inv

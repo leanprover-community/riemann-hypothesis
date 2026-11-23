@@ -70,7 +70,7 @@ theorem rank_le_of_growth_in_radius : ∀ (D : ℕ) (f : ℝ → ℕ → ℝ) (�
       rw [hQ]; exact Nat.floor_pos.mpr (by linarith)
     have e2 : Real.exp (-(m:ℝ)) ≤ 1 / 2 := by
       have h := Real.add_one_le_exp (m:ℝ)
-      have hp : Real.exp (-(m:ℝ)) * Real.exp m = 1 := by rw [← Real.exp_add]; simp
+      have hp : Real.exp (-(m:ℝ)) * Real.exp m = 1 := simp [← Real.exp_add]
       nlinarith [Real.exp_pos (-(m:ℝ))]
     have hQge : Real.exp ((t - t₁ - 2) * m) ≤ Q := by
       have e1 : Real.exp ((t - t₁ - 2) * m) = x * Real.exp (-(m:ℝ)) := by

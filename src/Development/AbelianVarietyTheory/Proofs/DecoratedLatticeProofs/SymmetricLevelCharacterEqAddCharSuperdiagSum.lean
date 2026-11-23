@@ -77,7 +77,7 @@ theorem psi_inv_mul_eq_one (ψ : AddChar k Circle) (ϖ : kˣ) (hψ : GlobalTheor
   rw [map_mul, map_one]
   calc valuation k ((ϖ⁻¹ : kˣ) : k) * valuation k t
       ≤ valuation k ((ϖ⁻¹ : kˣ) : k) * valuation k (ϖ : k) := by gcongr
-    _ = 1 := by rw [← map_mul]; simp
+    _ = 1 := simp [← map_mul]
 
 end GlobalTheory.SymChain.SymData.RowLam
 

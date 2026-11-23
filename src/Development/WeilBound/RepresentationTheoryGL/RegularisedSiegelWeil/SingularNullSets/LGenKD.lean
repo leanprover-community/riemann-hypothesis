@@ -71,9 +71,9 @@ theorem unit_rel {R : Type} [CommRing R] (s : R →+* R) (a b c d : Matrix n n R
     simp only [Matrix.mul_assoc] at h2 ⊢
     exact neg_eq_iff_eq_neg.mp h2
   have h3 : M * J * cj s M = J := by
-    calc M * J * cj s M = -(M * J * cj s M * (J * J)) := by rw [hJJ]; simp
+    calc M * J * cj s M = -(M * J * cj s M * (J * J)) := simp [hJJ]
       _ = -(M * J * cj s M * J * J) := by simp [Matrix.mul_assoc]
-      _ = J := by rw [e]; simp
+      _ = J := simp [e]
   rw [hM, hJ, cj_fromBlocks, Matrix.fromBlocks_multiply, Matrix.fromBlocks_multiply] at h3
   simp at h3
   obtain ⟨-, k1, k2, k3⟩ := h3

@@ -311,8 +311,8 @@ theorem val_faces (z : KH.CechC ℚ ι (MRingOver ℚ ι ⧸ KH.genIdeal y) 0)
       simp [Finset.filter_insert, Finset.filter_singleton, hlt]
     simp only [KH.faceSign, hsumsign, hI, add_zero, f2]
     norm_num
-  have hi1 : i1 ∈ I.1 k0 := by rw [hI]; simp
-  have hi2 : i2 ∈ I.1 k0 := by rw [hI]; simp
+  have hi1 : i1 ∈ I.1 k0 := simp [hI]
+  have hi2 : i2 ∈ I.1 k0 := simp [hI]
   have key : KH.cechD ℚ ι (MRingOver ℚ ι ⧸ KH.genIdeal y) 0 z I =
       KH.faceSign I.1 k0 i1 • KH.cellRes ℚ _ (Function.update I.1 k0 ((I.1 k0).erase i1)) I.1
         (z ⟨_, hface i1 hi1⟩) + KH.faceSign I.1 k0 i2 • KH.cellRes ℚ _

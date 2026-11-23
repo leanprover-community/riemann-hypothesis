@@ -146,7 +146,7 @@ theorem even_of_norm (h2 : Valued.v (2 : Fv F v) = 1) {D' j' : Fv F v} (vD : Val
   have hM0 : M ≠ 0 := by
     intro h0
     rw [h0] at e
-    have h3 : WithZero.exp (-(k : ℤ)) = 0 := by rw [← e]; simp
+    have h3 : WithZero.exp (-(k : ℤ)) = 0 := simp [← e]
     exact WithZero.exp_ne_zero h3
   rw [← WithZero.exp_log hM0, ← WithZero.exp_nsmul, WithZero.exp_inj] at e
   simp at e

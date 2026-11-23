@@ -324,7 +324,7 @@ theorem main : PositivityTheory.Rg.BcB.D4.LocProper := by
     apply Units.ext
     rw [Units.val_mul z, Units.val_mul _ z, hP, hz]
     simp only [Units.val_mul]
-    have hPP : (P⁻¹).val * P.val = 1 := by rw [← Units.val_mul]; simp
+    have hPP : (P⁻¹).val * P.val = 1 := simp [← Units.val_mul]
     have hdt : t.val * diagonal lam = diagonal lam * t.val := by
       rw [ht, Matrix.diagonal_mul_diagonal, Matrix.diagonal_mul_diagonal]
       congr 1; ext i; ring

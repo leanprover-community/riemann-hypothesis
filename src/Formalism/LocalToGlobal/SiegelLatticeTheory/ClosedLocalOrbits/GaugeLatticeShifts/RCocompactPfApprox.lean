@@ -116,7 +116,7 @@ theorem norm_proj_entry_le [Invertible (2 : ℂ)] (J J' E' : Matrix ι ι ℂ) (
   have h1 := norm_mul_entry_le J' E'ᴴ bJ' a hJ'0 hJ' hs
   have hn : 0 ≤ Fintype.card ι * (bJ' * a) := by positivity
   have h2 := norm_mul_entry_le (J' * E'ᴴ) J _ bJ hn h1 hJ i j
-  have h2' : ‖(⅟2 : ℂ)‖ = 1 / 2 := by rw [invOf_eq_inv]; simp
+  have h2' : ‖(⅟2 : ℂ)‖ = 1 / 2 := simp [invOf_eq_inv]
   unfold proj Formalism.L2.SG.Pf.Unip.sharp
   rw [Matrix.smul_apply, smul_eq_mul, norm_mul, h2', Matrix.sub_apply]
   have h3 := norm_sub_le (E' i j) ((J' * E'ᴴ * J) i j)

@@ -217,7 +217,6 @@ private theorem field_bounded {F E : Type*} [Field F] [CommRing E] [TopologicalS
 
 open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum NumberField
 
-section Finite
 
 variable {R K : Type*} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K]
   [IsFractionRing R K]
@@ -339,9 +338,7 @@ private theorem finite_approx (y : FiniteAdeleRing R K) :
   rw [e, map_add (f := _), ← sub_sub]
   exact sub_mem (hk v) h2
 
-end Finite
 
-section Infinite
 
 variable {F : Type*} [Field F] [NumberField F]
 
@@ -384,9 +381,7 @@ private theorem exists_small_inf (v : InfinitePlace F) (U : Set v.Completion)
     Complex.norm_natCast]
   exact_mod_cast hn
 
-end Infinite
 
-section Adele
 
 variable {F : Type*} [Field F] [NumberField F]
 
@@ -424,7 +419,6 @@ private theorem adele_bounded (C : Set (AdeleRing (RingOfIntegers F) F)) (hC : I
     obtain ⟨b, hb0, hb⟩ := exists_scale v U hU
     exact ⟨b, hb0, by simpa using hb 1 (one_mem _)⟩
 
-end Adele
 
 theorem UpperTheory.Reformulated.B.UnitaryAnnihilator.unitary_and_annihilator_eq :
     ∀ (F : Type) [inst : Field F] [inst_1 : NumberField F]

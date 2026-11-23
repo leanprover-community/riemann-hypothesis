@@ -150,11 +150,11 @@ theorem exists_frobenius_semisimplification : ∀ (E Ω : Type) [Field E] [Numbe
   set f := ρ (frob (h := h)) with hfdef
   have hfn : Commute f n := Algebra.commute_of_mem_adjoin_self hn
   have hfs : Commute f s := Algebra.commute_of_mem_adjoin_self hs
-  have hsub : f - s = n := by rw [hf]; simp
+  have hsub : f - s = n := simp [hf]
   have hns : Commute n s := by rw [← hsub]; exact hfs.sub_left (Commute.refl s)
   have hfu : IsUnit f := (Group.isUnit (frob (h := h))).map ρ
   have hsu : IsUnit s := by
-    have : s = f + -n := by rw [← hsub]; simp
+    have : s = f + -n := simp [← hsub]
     rw [this]
     exact hnil.neg.isUnit_add_left_of_commute hfu hfn.symm.neg_left
   obtain ⟨S, rfl⟩ := hsu

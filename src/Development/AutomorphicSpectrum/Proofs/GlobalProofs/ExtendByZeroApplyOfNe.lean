@@ -182,7 +182,7 @@ theorem eichler_of_involution (J : Matrix (Fin n) (Fin n) ℂ) (hJJ : J * J = 1)
   have hPaH : P * aᴴ = aᴴ := by rw [haH, ← Matrix.mul_assoc, hPP]
   have haJa : aᴴ * J * a = 0 := by
     calc aᴴ * J * a = P * (xᴴ * J * x) * P := by rw [haH, ha]; simp only [Matrix.mul_assoc]
-      _ = 0 := by rw [hxx]; simp
+      _ = 0 := simp [hxx]
   have haJy : aᴴ * J * y = P := by
     calc aᴴ * J * y = P * (xᴴ * J * y) := by rw [haH]; simp only [Matrix.mul_assoc]
       _ = P := by rw [hxy, Matrix.mul_one]

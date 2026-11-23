@@ -226,7 +226,7 @@ theorem inner_polarOp {W : Type} [Fintype W] {n M : ℕ} (J : W → Matrix (Fin 
       = ∑ p, RCLike.re (inner ℂ (x (w, p)) (mixOp J (diagOp b y) (w, p))) :=
         Finset.sum_congr rfl fun p _ => hre _ _
     _ = RCLike.re (∑ p, inner ℂ (x (w, p)) (mixOp J (diagOp b y) (w, p))) := (map_sum _ _ _).symm
-    _ = 2 * (sesq (J w) (b w) (tupCoord x w) (tupCoord y w)).re := by rw [key]; simp
+    _ = 2 * (sesq (J w) (b w) (tupCoord x w) (tupCoord y w)).re := simp [key]
 
 theorem phase_polar : ∀ (W : Type) [Fintype W] (n M : ℕ) (J : W → Matrix (Fin M) (Fin M) ℂ),
     (∀ w, (J w).IsHermitian) → ∀ b : W → Matrix (Fin n) (Fin n) ℂ, (∀ w, (b w).IsHermitian) →

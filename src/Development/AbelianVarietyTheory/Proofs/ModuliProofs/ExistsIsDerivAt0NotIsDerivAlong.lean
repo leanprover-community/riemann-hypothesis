@@ -98,7 +98,7 @@ theorem trace_eq_of_pos {W : Type} [AddCommGroup W] [Module ℝ W] [FiniteDimens
     by_contra h0
     have h1 := hp x h0
     have h2 := hp' x h0
-    have h3 : B ((J + J') x) x = 0 := by rw [hx]; simp
+    have h3 : B ((J + J') x) x = 0 := simp [hx]
     simp only [LinearMap.add_apply, map_add (f := _)] at h3
     linarith
   let T := LinearEquiv.ofInjectiveEndo _ hinj

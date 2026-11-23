@@ -64,7 +64,7 @@ theorem coord_val (D : DegPre R) (ξ : Spec (CommRingCat.of (FractionRing R))) {
   obtain ⟨c5, h5⟩ : ∃ w : Rˣ, val D.rigK (𝟙 (TK R).left) ξ J = cU w := by
     unfold DegPre.rigK
     rw [val_pull hJ]
-    have : 𝟙 _ ≫ (toUnit (TK R)).left = jK R ≫ 𝟙 _ := by rw [toUnit_left]; simp
+    have : 𝟙 _ ≫ (toUnit (TK R)).left = jK R ≫ 𝟙 _ := simp [toUnit_left]
     rw [this]
     exact val_int ξ hJc D.rig (𝟙 _) fun _ => by rw [Category.id_comp]; exact Over.w η[D.P.A]
   obtain ⟨j, h, i1, i2, i3, i4, rfl⟩ := hx

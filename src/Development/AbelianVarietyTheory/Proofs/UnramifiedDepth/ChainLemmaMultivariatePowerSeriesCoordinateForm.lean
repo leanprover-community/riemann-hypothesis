@@ -294,7 +294,7 @@ theorem chain :
   have hσ0 : 0 < σ := by rw [hσ]; positivity
   have hρq : (l : ℝ) ^ 2 * ρ = 1 + ρ := by rw [hρ]; field_simp; ring
   have hσq : ((l : ℝ) ^ 2) ^ (s₀ + 1) * σ = 3 * l / 8 := by rw [hσ]; field_simp; ring
-  have hv1 : ((1 : ℝ) : WithTop ℝ) ≤ v (l : C) := by rw [hv]; simp
+  have hv1 : ((1 : ℝ) : WithTop ℝ) ≤ v (l : C) := simp [hv]
 
   have hint : ∀ s c j, ((0 : ℝ) : WithTop ℝ) ≤ v (π s c j) := by
     intro s

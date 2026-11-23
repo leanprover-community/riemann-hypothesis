@@ -44,8 +44,8 @@ namespace GlobalTheory.CompanionTheory.Rodier.RootElt
 def elemGL {k : Type} [Field k] {N : ℕ} (i j : Fin N) (hij : i ≠ j) (t : k) : GL (Fin N) k where
   val := Matrix.transvection i j t
   inv := Matrix.transvection i j (-t)
-  val_inv := by rw [Matrix.transvection_mul_transvection_same _ _ hij]; simp
-  inv_val := by rw [Matrix.transvection_mul_transvection_same _ _ hij]; simp
+  val_inv := simp [Matrix.transvection_mul_transvection_same _ _ hij]
+  inv_val := simp [Matrix.transvection_mul_transvection_same _ _ hij]
 
 theorem elemGL_apply {k : Type} [Field k] {N : ℕ} (i j : Fin N) (hij : i ≠ j) (t : k) (a b : Fin N) :
     (elemGL i j hij t).val a b = (1 : Matrix (Fin N) (Fin N) k) a b + if a = i ∧ b = j then t else 0 := by

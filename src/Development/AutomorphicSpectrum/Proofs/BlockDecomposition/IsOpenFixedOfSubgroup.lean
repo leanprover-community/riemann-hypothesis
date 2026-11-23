@@ -131,7 +131,7 @@ theorem exists_bump (H : Subgroup G) (ρ : Representation ℂ H W) (K : Subgroup
     have e4 := hw (a'⁻¹ * a) _ (mul_mem hx' (inv_mem hx)) e2
     rw [map_mul, Module.End.mul_apply] at e4
     calc ρ a' w = ρ a' (ρ a'⁻¹ (ρ a w)) := by rw [e4]
-      _ = ρ a w := by rw [← Module.End.mul_apply (ρ a'), ← map_mul]; simp
+      _ = ρ a w := simp [← Module.End.mul_apply (ρ a'), ← map_mul]
   have hb0 : ∀ g, (¬ ∃ a : H, ∃ x ∈ K, g = (a : G) * c * x) → b g = 0 := fun g h => dif_neg h
   have hind : b ∈ indSpace H ρ := by
     intro h g

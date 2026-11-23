@@ -91,7 +91,7 @@ theorem lie_conj {X g : Mx k r} (hX : InLieHpk k r X) (hg : g ∈ UH (Hpk k r)) 
           simp only [conjTranspose_mul, Matrix.mul_assoc]
       _ = gᴴ * (Xᴴ * Hpk k r + Hpk k r * X) * g := by
           rw [A, B]; simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-      _ = 0 := by rw [hL]; simp
+      _ = 0 := simp [hL]
 
 theorem lie_conj' {X g : Mx k r} (hX : InLieHpk k r X) (hg : g ∈ UH (Hpk k r)) :
     InLieHpk k r (g * X * g⁻¹) := by

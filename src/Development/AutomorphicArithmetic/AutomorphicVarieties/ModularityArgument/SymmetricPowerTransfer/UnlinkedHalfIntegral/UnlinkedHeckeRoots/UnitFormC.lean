@@ -151,7 +151,7 @@ theorem UpperTheory.V.Z.Sym.Unl.unitFormC :
       exact (hfam 1 (-1) (-1) (by simp [Gamma0_mem]) (by simp)).symm
     rw [coef_comb, Fintype.sum_eq_add 1 (-1) hne (fun a ha => by rw [hzero a ha.1 ha.2, mul_zero]), hm, coef_smul, ← hu]
     simp only [hc, inv_one, Units.val_one, map_one, inv_neg, Units.val_neg, hχ]
-    have h1 : ((-1 : ℂ) ^ k) * (-1) ^ k = 1 := by rw [← mul_pow]; simp
+    have h1 : ((-1 : ℂ) ^ k) * (-1) ^ k = 1 := simp [← mul_pow]
     field_simp
     linear_combination h1
   · intro σ

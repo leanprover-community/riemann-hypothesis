@@ -183,7 +183,7 @@ theorem primUniqOfGlobal_holds : PrimUniqOfGlobalSt := by
     obtain ⟨c, hc⟩ := (hglob _ _ hab).2 (u : Γ(Xo.univ.t.G.left, ⊤))
     have e1 : eSec Xo.univ.t.G ≫ Xo.univ.t.G.hom = (𝟙_ (Over Xo.X)).hom := Over.w _
     have hc1 : c = 1 := by
-      calc c = (ι ≫ (𝟙_ (Over Xo.X)).hom).appTop.hom c := by rw [hι]; simp
+      calc c = (ι ≫ (𝟙_ (Over Xo.X)).hom).appTop.hom c := simp [hι]
         _ = ι.appTop.hom ((eSec Xo.univ.t.G).appTop.hom (Xo.univ.t.G.hom.appTop.hom c)) := by
             rw [← e1, Scheme.Hom.comp_appTop, Scheme.Hom.comp_appTop]; rfl
         _ = 1 := by

@@ -222,7 +222,7 @@ theorem UpperTheory.V.ML.zEval :
     rw [this, norm_algebraMap']; exact Padic.norm_p_lt_one
   set ψ' : DirichletCharacter (PadicAlgCl l) f := ψ.ringHomComp c.O.val.toRingHom with hψ'
   have hv : ∀ x, ψ' x = ((ψ x : c.O) : PadicAlgCl l) := fun x => rfl
-  have hpar' : ψ' (-1) = (-1) ^ (e + 1) := by rw [hv, hpar]; simp
+  have hpar' : ψ' (-1) = (-1) ^ (e + 1) := simp [hv, hpar]
   have hprim' : ψ'.IsPrimitive := ((Bern.b_condmap c.O.val.toRingHom Subtype.val_injective ψ).1).trans hprim
   have hB : Bern.Bprim (e + 1) ψ' = Bern.genB (e + 1) (ψ' : ZMod f → PadicAlgCl l) :=
     ((Bern.b_primeq (e + 1) ψ').1 hprim').1

@@ -138,7 +138,7 @@ theorem stabilizer_splitting_of_parts (hFS : FixSub) (hSF : SubFlag) (hUN : Unip
       hFS k r z' hz' ⟨GV_mul k r (GV_mul k r (GV_inv k r hγ) hκG) hγ, fun b => ?_⟩, ?_⟩
     · have h1 : κ *ᵥ (γ *ᵥ fvec k r z' b) = γ *ᵥ fvec k r z' b := hκf (Sum.inr b)
       rw [← mulVec_mulVec, ← mulVec_mulVec, h1, mulVec_mulVec, hγ1, one_mulVec]
-    · calc κ = (γ * γ⁻¹) * κ * (γ * γ⁻¹) := by rw [hγ2]; simp
+    · calc κ = (γ * γ⁻¹) * κ * (γ * γ⁻¹) := simp [hγ2]
         _ = γ * (γ⁻¹ * κ * γ) * γ⁻¹ := by noncomm_ring
 
   have Rnil : ∀ g ∈ Rst k r z z' γ, (g - 1) ^ (r + 2) = 0 := by
@@ -195,7 +195,7 @@ theorem stabilizer_splitting_of_parts (hFS : FixSub) (hSF : SubFlag) (hUN : Unip
       refine ⟨hUN k r z hs.2.1 g hgS (r + 2) hn, s, hUN k r z' hs.2.2 s hs1 (r + 2) ?_, hgs⟩
       have hsg : s = γ⁻¹ * g * γ := by
         rw [hgs]
-        calc s = (γ⁻¹ * γ) * s * (γ⁻¹ * γ) := by rw [hγ1]; simp
+        calc s = (γ⁻¹ * γ) * s * (γ⁻¹ * γ) := simp [hγ1]
           _ = γ⁻¹ * (γ * s * γ⁻¹) * γ := by noncomm_ring
       have e : s - 1 = γ⁻¹ * (g - 1) * γ := by
         calc s - 1 = γ⁻¹ * g * γ - γ⁻¹ * γ := by rw [hγ1, ← hsg]

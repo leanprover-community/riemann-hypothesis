@@ -291,7 +291,7 @@ theorem qdet_blocks : ∀ (c : ℕ) {N : ℕ} (n : Fin c → ℕ) (h : ∑ i, n 
   induction c with
   | zero =>
     intro N n h X hX u
-    have hN : N = 0 := by rw [← h]; simp
+    have hN : N = 0 := simp [← h]
     subst hN
     have h1 : qdet X (u + (((0 : ℕ) : ℂ) - 1) / 2) = 1 := by unfold qdet qminor; simp
     rw [h1]

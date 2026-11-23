@@ -69,7 +69,7 @@ theorem mul_mem_range_norm (F : Type) [Field F] [CharZero F] [ValuativeRel F] [T
     (hy : y ∉ (Units.map (Algebra.norm F : E →* F)).range) :
     x * y ∈ (Units.map (Algebra.norm F : E →* F)).range := by
   obtain ⟨b, -, -⟩ := hE.basis
-  have h2 : Module.finrank F E = 2 := by rw [Module.finrank_eq_card_basis b]; simp
+  have h2 : Module.finrank F E = 2 := simp [Module.finrank_eq_card_basis b]
   haveI : FiniteDimensional F E := Module.finite_of_finrank_eq_succ h2
   haveI : Algebra.IsQuadraticExtension F E := ⟨h2⟩
   haveI : IsGalois F E := Algebra.IsQuadraticExtension.isGalois F E

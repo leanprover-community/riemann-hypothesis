@@ -94,7 +94,7 @@ theorem ampTK_pt (H : GlobalTheory.GapIn.Hyp) (L : LocBessel k r) (h : ℝ) (μG
   have hS' : ∀ y y' : L.Hs, ∫ x, ⟪y, L.σ (Matrix.of x) w⟫_ℂ * star ⟪y', L.σ (Matrix.of x) w⟫_ℂ ∂μG =
       (PI.BesselPeriodGGP.fdegH μG L.σ w : ℂ)⁻¹ * ⟪y, y'⟫_ℂ := fun y y' => by
     refine (hS w y w y').2.trans ?_
-    have : ⟪w, w⟫_ℂ = 1 := by rw [inner_self_eq_norm_sq_to_K, hw1]; simp
+    have : ⟪w, w⟫_ℂ = 1 := simp [inner_self_eq_norm_sq_to_K, hw1]
     rw [hd']
     show ⟪w, w⟫_ℂ * ⟪y, y'⟫_ℂ / _ = _
     rw [this, one_mul, div_eq_inv_mul]

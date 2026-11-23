@@ -109,7 +109,7 @@ theorem isom_sub_mem_of_congr : ∀ (K V : Type) [Field K] [NumberField K] [Star
         have e2 : B y u = 0 := by rw [hB, hrad' y hyU u hu, map_zero]
         have hz' : z = (g : ℤ) • y + u := by rw [hz, natCast_zsmul, Nat.cast_smul_eq_nsmul]
         calc B z z = B ((g : ℤ) • y + u) z := by rw [← hz']
-          _ = (g : ℤ) • B y z := by rw [map_add (f := _), LinearMap.add_apply, e1, map_smul]; simp
+          _ = (g : ℤ) • B y z := simp [map_add (f := _), LinearMap.add_apply, e1, map_smul]
           _ = (g : ℤ) • B y ((g : ℤ) • y + u) := by rw [← hz']
           _ = _ := by rw [map_add (f := _), e2, map_smul]; simp; ring
       have h2 : B z z + B (γ x + x) (γ x + x) = 4 * B x x := by

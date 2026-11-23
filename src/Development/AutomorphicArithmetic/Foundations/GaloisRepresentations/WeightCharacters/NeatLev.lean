@@ -53,7 +53,7 @@ theorem UpperTheory.Gal.Wt.neatLev_of :
   · have hKGL : GlobalTheory.LFun.KGL v' (n := a) ≤ (UpperTheory.Gal.Gen.lev K w₀ (J 0)).map (cLoc v') := by
       intro y hy
       obtain ⟨e, he⟩ := GlobalTheory.locU_equiv_GL E a v' hv'
-      have hy' : cLoc v' (e.symm y : UA E a) = y := by rw [← he]; simp
+      have hy' : cLoc v' (e.symm y : UA E a) = y := simp [← he]
       exact ⟨(e.symm y : UA E a), hKC (hint _ (e.symm y).2 (hy'.symm ▸ hy)), hy'⟩
     have hmax := UpperTheory.Gal.Gen.maxCpt_holds E v' a ((UpperTheory.Gal.Gen.lev K w₀ (J 0)).map (cLoc v'))
       (cLoc v' '' (UpperTheory.Gal.Gen.lev K w₀ (J 0) : Set (UA E a)))

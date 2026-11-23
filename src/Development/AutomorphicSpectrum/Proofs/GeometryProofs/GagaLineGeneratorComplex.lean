@@ -67,7 +67,7 @@ theorem genV_res {N N' : X.Opens} (l : N' ≤ N) (h' : genPt ξ ∈ N') (h : gen
 theorem unitAt_genV {N : X.Opens} {q : X} (hq : genPt ξ ⤳ q) (hN : q ∈ N) (h : genPt ξ ∈ N) {v : Γ(X, N)}
     (hv : IsUnit v) : unitAt ξ ⟨q, hq⟩ (genV ξ N h v) := by
   obtain ⟨u, rfl⟩ := hv
-  have e : genV ξ N h u * genV ξ N h (u⁻¹ : Γ(X, N)ˣ) = 1 := by rw [← map_mul]; simp
+  have e : genV ξ N h u * genV ξ N h (u⁻¹ : Γ(X, N)ˣ) = 1 := simp [← map_mul]
   refine ⟨left_ne_zero_of_mul_eq_one e, ⟨_, genMap_germ N hq hN h _⟩, ?_⟩
   rw [inv_eq_of_mul_eq_one_right e]
   exact ⟨_, genMap_germ N hq hN h _⟩

@@ -194,7 +194,7 @@ theorem exists_parahoric_char : ∀ (L : Type) [Field L] [NumberField L] [IsCMFi
     have ha : Valued.v a = WithZero.exp (-(N : ℤ)) := by
       simp only [a, map_pow, HeightOneSpectrum.valuedAdicCompletion_eq_valuation', hπ, ← WithZero.exp_nsmul]
       congr 1; simp
-    have ha0 : (Valued.v a) ≠ 0 := by rw [ha]; simp
+    have ha0 : (Valued.v a) ≠ 0 := simp [ha]
     have hnhds : {x : s.v.adicCompletion (maximalRealSubfield L) |
         Valued.v (x - 1) < WithZero.exp (-(N : ℤ))} ∈ nhds (1 : s.v.adicCompletion (maximalRealSubfield L)) := by
       refine Valued.mem_nhds.2 ⟨Units.mk0 (Valued.v.restrict a) (by rwa [ne_eq, Valuation.restrict_eq_zero_iff]), ?_⟩

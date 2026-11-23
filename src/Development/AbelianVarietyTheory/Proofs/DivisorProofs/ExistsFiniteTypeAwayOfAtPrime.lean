@@ -72,7 +72,7 @@ theorem finiteType_away_of_pow_mul_mem {R C : Type} [CommRing R] [CommRing C] [A
   have hc' : y * φ x ^ m = φ c := hc
   have : y = φ (x ^ n * c) * u ^ (n + m) := by
     rw [map_mul, map_pow, ← hc']
-    calc y = y * (φ x * u) ^ (n + m) := by rw [hu]; simp
+    calc y = y * (φ x * u) ^ (n + m) := simp [hu]
       _ = _ := by ring
   rw [this]
   exact mul_mem (hB _ hn) (pow_mem hU _)

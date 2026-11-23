@@ -81,7 +81,7 @@ theorem UpperTheory.V.Z.IntegralApplyAeEq.resInv :
     have t4 := (tendsto_const_nhds (x := (1 : ℝ))).sub ((Complex.continuous_re.tendsto 0).comp t3)
     simp only [Complex.zero_re, sub_zero] at t4
     refine t4.congr fun n => ?_
-    have e1 : ⟪f n, f n⟫_ℂ = 1 := by rw [inner_self_eq_norm_sq_to_K, hf]; simp
+    have e1 : ⟪f n, f n⟫_ℂ = 1 := simp [inner_self_eq_norm_sq_to_K, hf]
     rw [← hS, Function.comp_apply, inner_sub_right, inner_sub_left, sa.isSymmetric.apply_clm, e1]
     simp
   obtain ⟨c, c0, h1⟩ := below R fun _ => rfl

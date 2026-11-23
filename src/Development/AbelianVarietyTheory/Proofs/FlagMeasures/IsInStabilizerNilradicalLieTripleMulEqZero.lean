@@ -331,7 +331,7 @@ theorem inG_frame (x : I.GA) (v : InfinitePlace I.F) {W : Submodule ℂ (Fin I.n
         simp only [conjTranspose_mul, mul_assoc]
     _ = Gᴴ * (Aᴴ * I.J.map (I.φ v)) * G + Gᴴ * (I.J.map (I.φ v) * A) * G := by
         rw [h1]; simp only [conjTranspose_one, mul_one, mul_assoc]
-    _ = 0 := by rw [h2]; simp
+    _ = 0 := simp [h2]
 
 end Point
 

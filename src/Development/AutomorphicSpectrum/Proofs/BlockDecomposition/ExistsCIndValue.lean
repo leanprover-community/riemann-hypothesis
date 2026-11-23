@@ -154,7 +154,7 @@ theorem exists_cInd_value (H : Subgroup G) (σ : Representation ℂ H W) (hσ : 
     (c : G) (w : W) : ∃ e : cIndSpace H σ, e.1.1.1 c = w := by
   obtain ⟨O, hO, hOe⟩ := isOpen_induced_iff.1 (hσ w)
   have h1O : (1 : G) ∈ O := by
-    have : (1 : H) ∈ (Subtype.val ⁻¹' O : Set H) := by rw [hOe]; simp
+    have : (1 : H) ∈ (Subtype.val ⁻¹' O : Set H) := simp [hOe]
     exact this
   have hn : (fun x => c * x * c⁻¹) ⁻¹' O ∈ 𝓝 (1 : G) :=
     (hO.preimage (by fun_prop)).mem_nhds (by simpa using h1O)

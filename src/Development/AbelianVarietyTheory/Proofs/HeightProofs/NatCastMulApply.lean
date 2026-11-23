@@ -78,7 +78,7 @@ theorem local_den (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion F) :
     · rw [HeightOneSpectrum.mem_adicCompletionIntegers, map_mul, he, Nat.cast_pow, map_pow]
       calc _ ≤ (WithZero.exp (-1 : ℤ)) ^ k * WithZero.exp (k : ℤ) := by
             gcongr; exact valued_absNorm_le v
-        _ = 1 := by rw [← WithZero.exp_nsmul, ← WithZero.exp_add]; simp
+        _ = 1 := simp [← WithZero.exp_nsmul, ← WithZero.exp_add]
 
 theorem adele_den (c : FiniteAdeleRing (𝓞 F) F) (h : HeightOneSpectrum (𝓞 F) → ℝ≥0)
     (hf : (Function.mulSupport h).Finite) (h1 : ∀ v, 1 ≤ h v) (hc : ∀ v, ‖c v‖₊ ≤ h v) :

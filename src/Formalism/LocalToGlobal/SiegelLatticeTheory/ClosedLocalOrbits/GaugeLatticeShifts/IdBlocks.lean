@@ -549,7 +549,7 @@ theorem schur_cross (H : Set G) (π : G → (V →L[ℂ] V)) (σ : G → (V' →
       rw [huσ k hk]
     rw [h1, ← integral_map (hmeas k).aemeasurable (by rw [hi k hk]; exact hFm (σ k x)), hi k hk]
   have hT0 := hne T hcomm
-  have h : ⟪ξ, T η⟫_ℂ = 0 := by rw [hT0]; simp
+  have h : ⟪ξ, T η⟫_ℂ = 0 := simp [hT0]
   rw [hT, ← integral_inner (hFi η)] at h
   rw [← h]
   refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)

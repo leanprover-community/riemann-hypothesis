@@ -95,7 +95,7 @@ theorem UpperTheory.V.Loc.wdPotUnr :
     hV1.preimage (continuous_subtype_val.comp Bw.e_symm_cont)
   obtain ⟨U, hU, hU'⟩ := isOpen_induced_iff.1 ho2
   have h1 : (1 : GQ l) ∈ U := by
-    have h0 : (1 : Ine (F := F) A) ∈ Subtype.val ⁻¹' V := by rw [hV2]; simp
+    have h0 : (1 : Ine (F := F) A) ∈ Subtype.val ⁻¹' V := simp [hV2]
     have : (1 : GK Bw.Kw) ∈ Subtype.val ⁻¹' U := by rw [hU']; simpa using h0
     exact this
   obtain ⟨K', hK1, hK2⟩ := (krullTopology_mem_nhds_one_iff _ _ U).1 (hU.mem_nhds h1)

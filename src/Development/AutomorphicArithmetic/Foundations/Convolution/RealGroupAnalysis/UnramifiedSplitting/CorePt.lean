@@ -201,7 +201,7 @@ theorem UpperTheory.ConvolutionTheory.R2.H.corePt :
         funext j; fin_cases j <;> simp
       have h1' : H ![0, ((a⁻¹ : (A F)ˣ) : A F) * p, a, 0] = _ := e ▸ h1
       have hI : IntAt v (mD (a * p⁻¹)) := fun i j => by
-        have w1 : Valued.v (cp v ((a * p⁻¹ : (A F)ˣ) : A F)) = 1 := by rw [v3, n1]; simp
+        have w1 : Valued.v (cp v ((a * p⁻¹ : (A F)ˣ) : A F)) = 1 := simp [v3, n1]
         have w2 : Valued.v (cp v (((a * p⁻¹)⁻¹ : (A F)ˣ) : A F)) = 1 := by
           rw [_root_.mul_inv_rev, inv_inv, mul_comm, Units.val_mul, v2, n1]; simp
         fin_cases i <;> fin_cases j

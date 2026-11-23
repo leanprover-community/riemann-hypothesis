@@ -52,7 +52,7 @@ theorem piInf_one {w : InfinitePlace F} (τ : EmbOver E w) (x : E) : piInf τ ((
 theorem norm_inv_mul_self {z : ℂ} (hz : z ≠ 0) (him : z.im = 0) :
     ((‖z‖⁻¹ : ℝ) : ℂ) * z = if 0 < z.re then 1 else -1 := by
   have hz' : z = (z.re : ℂ) := Complex.ext rfl (by simp [him])
-  have hn : ‖z‖ = |z.re| := by rw [hz', Complex.norm_real, Real.norm_eq_abs]; simp
+  have hn : ‖z‖ = |z.re| := simp [hz', Complex.norm_real, Real.norm_eq_abs]
   have hre : z.re ≠ 0 := fun h => hz (by rw [hz', h]; simp)
   rw [hn]
   split_ifs with hpos

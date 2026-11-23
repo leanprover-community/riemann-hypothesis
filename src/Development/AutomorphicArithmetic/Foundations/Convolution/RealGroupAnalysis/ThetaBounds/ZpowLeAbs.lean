@@ -181,7 +181,7 @@ private theorem nu_inv (v : InfinitePlace F) (x : IdeleGroup F) : nuH v x⁻¹ =
   eq_inv_of_mul_eq_one_left (by rw [← map_mul]; simp)
 
 private theorem nu_pos (v : InfinitePlace F) (x : IdeleGroup F) : 0 < nuH v x := by
-  have h : nuH v x * nuH v x⁻¹ = 1 := by rw [← map_mul]; simp
+  have h : nuH v x * nuH v x⁻¹ = 1 := simp [← map_mul]
   have h0 : 0 ≤ nuH v x := (norm_nonneg _ : 0 ≤ ‖(x : A F).1 v‖)
   rcases h0.lt_or_eq with h1 | h1
   · exact h1

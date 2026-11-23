@@ -257,7 +257,7 @@ theorem exists_colChar_eig_ne_bot : ∀ (F : Type) [Field F] [Fintype F] (ψ : A
       · rfl
     have h2 := hl (Pi.single i t)
     rw [h1, Finset.sum_eq_single i (fun a _ ha => by simp [ha]) (by simp), Pi.single_eq_same] at h2
-    have h3 : (ψ (l i * t) - 1) • w = 0 := by rw [sub_smul, ← h2]; simp
+    have h3 : (ψ (l i * t) - 1) • w = 0 := simp [sub_smul, ← h2]
     have h4 := (smul_eq_zero.1 h3).resolve_right hw0
     simpa [sub_eq_zero] using h4
   · rw [mem_eig] at hw ⊢

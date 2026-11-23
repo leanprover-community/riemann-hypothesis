@@ -278,7 +278,7 @@ theorem UnipMod.exists_pow_eq_one [IsDomain O] [IsNoetherianRing O] [Module.IsTo
     obtain ⟨u, v, huv⟩ := hc
     refine ⟨(u : O), ?_⟩
     have : (u : O) * (m : O) - 1 = -((v : O) * (g : O)) := by
-      have h3 : ((u * m + v * g : ℤ) : O) = 1 := by rw [huv]; simp
+      have h3 : ((u * m + v * g : ℤ) : O) = 1 := simp [huv]
       push_cast at h3
       rw [← h3]; ring
     rw [this]

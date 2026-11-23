@@ -107,7 +107,7 @@ lemma sm_transfer {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (�
       _ = (P⁻¹)ᴴ * (Pᴴ * Formalism.REAL.Jm ε * P) * P⁻¹ := by rw [hG, hQ]
       _ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
           simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = Formalism.REAL.Jm ε := by rw [hinv]; simp
+      _ = Formalism.REAL.Jm ε := simp [hinv]
   rw [contDiff_iff_contDiffAt]
   intro t0
   obtain ⟨U, F, hU, h0, hF, hEq⟩ := hs _ (hmem t0)

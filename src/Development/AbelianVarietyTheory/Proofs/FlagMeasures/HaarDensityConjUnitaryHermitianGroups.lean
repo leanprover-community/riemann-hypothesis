@@ -162,11 +162,11 @@ def cjM {m : ℕ} {A B : Matrix (Fin m) (Fin m) ℂ} (hAB : A * B = 1) : PI.MtM 
   left_inv x := by
     show B * (A * Matrix.of x * B) * A = Matrix.of x
     calc _ = (B * A) * Matrix.of x * (B * A) := by simp only [Matrix.mul_assoc]
-      _ = _ := by rw [mul_eq_one_comm.1 hAB]; simp
+      _ = _ := simp [mul_eq_one_comm.1 hAB]
   right_inv x := by
     show A * (B * Matrix.of x * A) * B = Matrix.of x
     calc _ = (A * B) * Matrix.of x * (A * B) := by simp only [Matrix.mul_assoc]
-      _ = _ := by rw [hAB]; simp
+      _ = _ := simp [hAB]
   continuous_toFun := (continuous_const.matrix_mul (continuous_id (X := Matrix (Fin m) (Fin m) ℂ))).matrix_mul continuous_const
   continuous_invFun := (continuous_const.matrix_mul (continuous_id (X := Matrix (Fin m) (Fin m) ℂ))).matrix_mul continuous_const
 

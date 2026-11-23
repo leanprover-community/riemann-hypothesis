@@ -114,7 +114,7 @@ theorem cls_eq_sum_lam : ∀ (g n : ℕ) (o : Type) [CommRing o] (ζ : o) (F : G
     refine Finset.sum_eq_zero fun b _ => ?_
     have := hq a
     have := hq b
-    have e₁ : (1 : 𝟙_ (Over (Sp R)) ⟶ G₀) = η[G₀] := by rw [Hom.one_def]; simp
+    have e₁ : (1 : 𝟙_ (Over (Sp R)) ⟶ G₀) = η[G₀] := simp [Hom.one_def]
     rw [map_zsmul]
     show _ • CechPic.pull η[G].left _ = 0
     rw [pull_lam, IsMonHom.one_hom, IsMonHom.one_hom, ← e₁, lam_one_left, smul_zero]

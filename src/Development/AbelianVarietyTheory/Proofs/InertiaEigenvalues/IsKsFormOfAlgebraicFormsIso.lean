@@ -59,7 +59,7 @@ theorem isKsForm_of_formsIso {LL Ks Ks' WL WL' G G' : Type} [Field LL] [NumberFi
       have hy' : f.e y ∈ Submodule.span Ks' (Set.range b) := by rw [hKs]; exact (f.wk y).1 hy
       obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun Ks').1 hy'
       have hyeq : y = ∑ i, f.eK.symm (c i) • f.e.symm (b i) := by
-        have : y = f.e.symm (∑ i, c i • b i) := by rw [hc]; simp
+        have : y = f.e.symm (∑ i, c i • b i) := simp [hc]
 
         rw [this, map_sum]
         refine Finset.sum_congr rfl fun i _ => ?_

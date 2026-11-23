@@ -100,7 +100,7 @@ private theorem eta_cc {η : G ℚ Ω →* ℤˣ} {σ : G ℚ Ω} (hσ : IsCC σ
     (h : ∀ s : G ℚ Ω, s δ = (η s : ℤ) • δ) : η σ = -1 := by
   refine (Int.units_eq_one_or (η σ)).resolve_left fun h1 => ?_
   obtain ⟨j, hj⟩ := hσ
-  have h3 : σ δ = δ := by rw [h, h1]; simp
+  have h3 : σ δ = δ := simp [h, h1]
   have h4 := hj δ
   rw [h3] at h4
   obtain ⟨r, hr⟩ := Complex.conj_eq_iff_real.1 h4.symm

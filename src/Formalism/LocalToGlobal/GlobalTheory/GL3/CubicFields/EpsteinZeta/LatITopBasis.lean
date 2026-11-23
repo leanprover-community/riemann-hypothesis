@@ -266,7 +266,7 @@ theorem latI_top_basis (K : Type) [Field K] [NumberField K] (d : ℕ) [Fact d.Pr
       ((starRingEnd ℂ) a * b).im = Real.sqrt d / 2 := by
   obtain ⟨ω, hω, hspan⟩ := covA_span K d hd4 x hx hK
   have hd0 : 0 < d := (Fact.out : d.Prime).pos
-  have hφx : (φ x) ^ 2 = -(d : ℂ) := by rw [← map_pow, hx]; simp
+  have hφx : (φ x) ^ 2 = -(d : ℂ) := simp [← map_pow, hx]
   have ht := covA_sq_im (φ x) d hd0 hφx
   have key : ∀ ω' : 𝓞 K, (∀ y : 𝓞 K, ∃ m n : ℤ, y = (m : 𝓞 K) + (n : 𝓞 K) * ω') →
       latI φ ⊤ 1 = AddSubgroup.closure {1, φ (ω' : K)} := by

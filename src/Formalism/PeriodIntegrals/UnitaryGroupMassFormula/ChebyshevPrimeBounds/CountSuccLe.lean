@@ -51,7 +51,7 @@ theorem tst_sound {m c c' : ℕ} (h : tst m c = true) (hc : c' ≤ c) (hm : 1 �
     rcases Nat.eq_zero_or_pos c with h0 | h0
     · exfalso
       subst h0
-      have hq0 : q = 0 := by rw [hqdef]; simp
+      have hq0 : q = 0 := simp [hqdef]
       rw [hq0, pow_zero] at h
       exact absurd h (not_lt.mpr hm256)
     · exact h0

@@ -50,7 +50,7 @@ theorem ι_mul_ι_mul_ι_mul_ι_left (u w w' : Fin n ⊕ Fin n → ℂ) :
           simp only [mul_assoc]
     _ = -(ExteriorAlgebra.ι ℂ u * ExteriorAlgebra.ι ℂ u * ExteriorAlgebra.ι ℂ w * ExteriorAlgebra.ι ℂ w') := by
           rw [h]; simp only [mul_neg, neg_mul, mul_assoc]
-    _ = 0 := by rw [ExteriorAlgebra.ι_sq_zero]; simp
+    _ = 0 := simp [ExteriorAlgebra.ι_sq_zero]
 
 theorem ι_mul_ι_mul_ι_mul_ι_right (u u' w : Fin n ⊕ Fin n → ℂ) :
     ExteriorAlgebra.ι ℂ u * ExteriorAlgebra.ι ℂ w * (ExteriorAlgebra.ι ℂ u' * ExteriorAlgebra.ι ℂ w) = (0 : Alt n) := by
@@ -59,7 +59,7 @@ theorem ι_mul_ι_mul_ι_mul_ι_right (u u' w : Fin n ⊕ Fin n → ℂ) :
           simp only [mul_assoc]
     _ = -(ExteriorAlgebra.ι ℂ u * ExteriorAlgebra.ι ℂ u' * (ExteriorAlgebra.ι ℂ w * ExteriorAlgebra.ι ℂ w)) := by
           rw [h]; simp only [mul_neg, neg_mul, mul_assoc]
-    _ = 0 := by rw [ExteriorAlgebra.ι_sq_zero]; simp
+    _ = 0 := simp [ExteriorAlgebra.ι_sq_zero]
 
 def row (a : Fin n) : (Fin n → ℂ) →ₗ[ℂ] Ev n where
   toFun w := ∑ b, w b • sym (a, b)

@@ -119,7 +119,7 @@ theorem atEmb_one (τ : E →+* ℂ) : atEmb τ 1 = Pi.single (InfinitePlace.mk 
 
 theorem Eop_add_conj (τ : E →+* ℂ) (i j : Fin a) :
     Eop τ i j + Eop (ComplexEmbedding.conjugate τ) i j = lieS E a i j (atEmb τ 1) := by
-  have e : atEmb τ (-Complex.I) = -atEmb τ Complex.I := by rw [atEmb_eq]; simp
+  have e : atEmb τ (-Complex.I) = -atEmb τ Complex.I := simp [atEmb_eq]
   simp only [Eop, atEmb_conj, map_one, Complex.conj_I, e, map_neg, smul_neg, sub_neg_eq_add]
   module
 

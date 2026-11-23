@@ -587,7 +587,7 @@ theorem μx_map_inv (l : ℂ) (hl : l ≠ 0) : μx.map (fun c => l / conj c) = �
   rw [conj_inverse_map_image l hl, restrict_compl_zero_eq] at key
   rw [key]
   refine lintegral_congr_ae ?_
-  have hae : ∀ᵐ c : ℂ, c ≠ 0 := by rw [ae_iff]; simp
+  have hae : ∀ᵐ c : ℂ, c ≠ 0 := simp [ae_iff]
   filter_upwards [hae] with c hc
   simp only [Pi.mul_apply]
   rw [← mul_assoc, ← ENNReal.ofReal_mul (abs_nonneg _), conj_inverse_map_det, abs_neg]
@@ -906,7 +906,7 @@ lemma al_inv_mem {k r : ℕ} {g : Mat k r} (hg : g ∈ GV k r) : g⁻¹ ∈ GV k
   show (g⁻¹)ᴴ * Hpk k r * g⁻¹ = Hpk k r
   calc (g⁻¹)ᴴ * Hpk k r * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Hpk k r * g) * g⁻¹ := by rw [hg']
     _ = (g * g⁻¹)ᴴ * Hpk k r * (g * g⁻¹) := by rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [Matrix.mul_nonsing_inv _ hu]; simp
+    _ = Hpk k r := simp [Matrix.mul_nonsing_inv _ hu]
 
 lemma al_cL_eq (u : Fin (2 * (1 + r') + k + 1) → ℂ) : herm (Hpk k (1 + r')) u (e0 k r') = cL u := by
   have h := hermitian_three_block (k := k) (r' := r') (cF u) 1 (cL u) 0 (mid u) 0
@@ -999,10 +999,10 @@ lemma long_weyl_element_base_vector (c : ℂ) : w0 k r' c *ᵥ e0 k r' = mk3 k r
 def alL (h : Mat k (1 + r')) : (Fin (2 * r' + k + 1) → ℂ) →ₗ[ℂ] (Fin (2 * r' + k + 1) → ℂ) where
   toFun y := mid (h *ᵥ mk3 k r' 0 y 0)
   map_add' y y' := by
-    have : mk3 k r' 0 (y + y') 0 = mk3 k r' 0 y 0 + mk3 k r' 0 y' 0 := by rw [three_block_add]; simp
+    have : mk3 k r' 0 (y + y') 0 = mk3 k r' 0 y 0 + mk3 k r' 0 y' 0 := simp [three_block_add]
     rw [this, Matrix.mulVec_add]; rfl
   map_smul' c y := by
-    have : mk3 k r' 0 (c • y) 0 = c • mk3 k r' 0 y 0 := by rw [three_block_smul]; simp
+    have : mk3 k r' 0 (c • y) 0 = c • mk3 k r' 0 y 0 := simp [three_block_smul]
     rw [this, Matrix.mulVec_smul]; rfl
 
 lemma al_fix {h : Mat k (1 + r')} (hh : h ∈ GV k (1 + r')) (h1 : h *ᵥ e0 k r' = e0 k r')

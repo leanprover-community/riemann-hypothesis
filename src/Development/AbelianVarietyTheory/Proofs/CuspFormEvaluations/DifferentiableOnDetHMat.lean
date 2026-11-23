@@ -395,7 +395,7 @@ theorem riemann_of_isOrtho (hs : IsSympl X bas) {x : Frame X.Ψ r} (ho : X.IsOrt
   rw [Hm, imInv_eq, inv_eq_left_inv (gram_mul_im G A _ hM (by rw [hAB]; exact hN))]
   calc _ = (A * hMat X bas idx x)ᵀ * G * (A * hMat X bas idx x).map conj := by
         rw [transpose_mul, Matrix.map_mul]; simp only [Matrix.mul_assoc]
-    _ = G := by rw [h1]; simp
+    _ = G := simp [h1]
 
 theorem Hm_of_isOrtho (hs : IsSympl X bas) {x : Frame X.Ψ r} (ho : X.IsOrtho x) :
     Hm X bas idx x = Matrix.diagonal fun i => (X.c (idx i).1 : ℂ) :=

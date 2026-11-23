@@ -93,7 +93,7 @@ theorem isClosed_isLog : ∀ (ι : Type) [Fintype ι] [DecidableEq ι],
           calc Uᴴ * (U * diagonal (fun i => (d i : ℂ)) * Uᴴ) * U
               = (Uᴴ * U) * diagonal (fun i => (d i : ℂ)) * (Uᴴ * U) := by
                 simp only [Matrix.mul_assoc]
-            _ = _ := by rw [h1']; simp
+            _ = _ := simp [h1']
         rw [this]; simp
       refine ⟨(⟨U, hUK⟩, p), ⟨h1, ?_, ?_⟩, rfl⟩
       · rw [hd]; exact h2

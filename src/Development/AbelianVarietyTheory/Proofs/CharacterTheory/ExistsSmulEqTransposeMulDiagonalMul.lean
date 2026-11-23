@@ -79,7 +79,7 @@ theorem exists_rat_eq_transpose_mul_diagonal_mul {n : ℕ} (A : Matrix (Fin n) (
   · rw [← hdiag, Matrix.transpose_transpose]
     have h1 : P⁻¹ * P = 1 := Matrix.nonsing_inv_mul P hPd
     have h2 : Pᵀ * (P⁻¹)ᵀ = 1 := by rw [← Matrix.transpose_mul, h1, Matrix.transpose_one]
-    calc A = (P⁻¹ * P) * A * (Pᵀ * (P⁻¹)ᵀ) := by rw [h1, h2]; simp
+    calc A = (P⁻¹ * P) * A * (Pᵀ * (P⁻¹)ᵀ) := simp [h1, h2]
       _ = P⁻¹ * (P * A * Pᵀ) * (P⁻¹)ᵀ := by simp only [Matrix.mul_assoc]
 
 theorem exists_pos_nat_mul_eq_intCast {ι : Type} [Finite ι] (f : ι → ℚ) :

@@ -70,7 +70,7 @@ theorem norm_le (v : Fin 2 → ℤ) (n : ℕ) : ‖eisSummand 3 v (pt n)‖ ≤ 
     · have h1 := Complex.abs_im_le_norm w
       rw [him, abs_mul] at h1
       have h2 : |(v 0 : ℝ)| ≤ |(v 0 : ℝ)| * |(n : ℝ) + 1| := by
-        have : (1 : ℝ) ≤ |(n : ℝ) + 1| := by rw [abs_of_pos (by positivity)]; simp
+        have : (1 : ℝ) ≤ |(n : ℝ) + 1| := simp [abs_of_pos (by positivity)]
         nlinarith [abs_nonneg (v 0 : ℝ)]
       simp only [Int.norm_eq_abs]
       simpa using h2.trans h1

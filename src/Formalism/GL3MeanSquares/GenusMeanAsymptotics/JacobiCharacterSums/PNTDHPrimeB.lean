@@ -61,7 +61,7 @@ lemma dhpr_one_sub_exp_neg {a : ℝ} (ha : 0 < a) : a / (1 + a) ≤ 1 - Real.exp
   have h4 : Real.exp (-a) * (1 + a) ≤ 1 := by
     calc Real.exp (-a) * (1 + a) ≤ Real.exp (-a) * Real.exp a :=
           mul_le_mul_of_nonneg_left (by linarith [Real.add_one_le_exp a]) (Real.exp_pos _).le
-      _ = 1 := by rw [← Real.exp_add]; simp
+      _ = 1 := simp [← Real.exp_add]
   rw [div_le_iff₀ hpos]
   have e : (1 - Real.exp (-a)) * (1 + a) = (1 + a) - Real.exp (-a) * (1 + a) := by ring
   rw [e]; linarith

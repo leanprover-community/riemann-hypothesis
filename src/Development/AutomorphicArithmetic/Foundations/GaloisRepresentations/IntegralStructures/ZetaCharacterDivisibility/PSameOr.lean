@@ -99,7 +99,7 @@ private theorem int_mem {R : Type} [CommRing R] {l : ℕ} (hl : l.Prime) {u u' :
     exfalso
     apply hu
     rw [Ideal.eq_top_iff_one]
-    have : ((a * l + b * n : ℤ) : R) = 1 := by rw [hab]; simp
+    have : ((a * l + b * n : ℤ) : R) = 1 := simp [hab]
     rw [← this]
     push_cast
     exact u.add_mem (u.mul_mem_left _ hlu) (u.mul_mem_left _ hn)

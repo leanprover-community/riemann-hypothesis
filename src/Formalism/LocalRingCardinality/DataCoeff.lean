@@ -99,8 +99,8 @@ def roundAct (lam : DomWeight N) (g : GL (Fin N) R) (f : MvPolynomial (Fin N × 
 def inside₂ (g : GL (Fin N) R) : GL (Fin N) R where
   val := ((g⁻¹ : GL (Fin N) R) : Matrix (Fin N) (Fin N) R).transpose
   inv := (g : Matrix (Fin N) (Fin N) R).transpose
-  val_inv := by rw [← Matrix.transpose_mul]; simp
-  inv_val := by rw [← Matrix.transpose_mul]; simp
+  val_inv := simp [← Matrix.transpose_mul]
+  inv_val := simp [← Matrix.transpose_mul]
 
 def diagGL (t : Fin N → Rˣ) : GL (Fin N) R where
   val := Matrix.diagonal fun a => (t a : R)

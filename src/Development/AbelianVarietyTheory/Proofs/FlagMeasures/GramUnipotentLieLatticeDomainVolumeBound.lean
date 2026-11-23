@@ -421,7 +421,7 @@ theorem upUni_inv {U : Matrix (Fin N) (Fin N) K} (hU : IsUpUni U) : IsUpUni U⁻
   intro i j
   refine ⟨fun h => ht h, ?_⟩
   rintro rfl
-  have h1 : (U * U⁻¹) i i = 1 := by rw [Matrix.mul_nonsing_inv _ hdet]; simp
+  have h1 : (U * U⁻¹) i i = 1 := simp [Matrix.mul_nonsing_inv _ hdet]
   rw [Matrix.mul_apply, Finset.sum_eq_single i] at h1
   · rwa [(hU i i).2 rfl, one_mul] at h1
   · intro k _ hki

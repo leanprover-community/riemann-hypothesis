@@ -171,7 +171,7 @@ lemma cayley_quot {B P Q : Matrix (Fin n) (Fin n) ℂ} (hQ : IsUnit Q) (hP : P�
   calc _ = (Q⁻¹)ᴴ * (Pᴴ * PI.UpqRep.Jm ε * P) * Q⁻¹ := by rw [conjTranspose_mul]; simp only [Matrix.mul_assoc]
     _ = (Q * Q⁻¹)ᴴ * PI.UpqRep.Jm ε * (Q * Q⁻¹) := by
       rw [hP, ← hQ', conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = _ := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+    _ = _ := simp [Matrix.mul_nonsing_inv _ hd]
 
 end
 
@@ -196,7 +196,7 @@ lemma exists_kfin {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {mu : Fin (2 *
           simp only [conjTranspose_mul, conjTranspose_conjTranspose, Matrix.mul_assoc]
       _ = (P * Pᴴ) * PI.UpqRep.Jm ε * (P * Pᴴ) := by
           rw [hc, hg', ← hc]; simp only [Matrix.mul_assoc]
-      _ = _ := by rw [hPP']; simp
+      _ = _ := simp [hPP']
   have hK : P * g * star P ∈ PI.UpqRep.Kset ε := by
     refine ⟨hu, ?_⟩
     have h1 : (P * g * star P) * (P * g * star P)ᴴ = 1 := Unitary.mul_star_self_of_mem hu
@@ -208,7 +208,7 @@ lemma exists_kfin {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {mu : Fin (2 *
   have e : P⁻¹ * (P * g * star P) * P = g := by
     rw [hinv]
     calc _ = (star P * P) * g * (star P * P) := by simp only [Matrix.mul_assoc]
-      _ = g := by rw [hPP]; simp
+      _ = g := simp [hPP]
   simpa only [e] using this
 
 theorem param_eq_of_equiv : Hyps → ∀ (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (mu : Fin (2 * r + k + 1) → ℝ) (mu' : Fin (2 * r + k + 1) → ℝ) (R R' : Rep k r), R.IsDS ε mu → R'.IsDS ε mu' → ∀ U : R.H ≃ₗᵢ[ℂ] R'.H, (∀ g ∈ GG k r, ∀ x, U (R.σ g x) = R'.σ g (U x)) → mu = mu' := by

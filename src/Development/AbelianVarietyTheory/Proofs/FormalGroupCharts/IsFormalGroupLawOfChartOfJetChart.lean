@@ -61,7 +61,7 @@ theorem psJet_eq_toJet {n : ℕ} (m : ℕ) (f : PS T n d) (hf : MvPowerSeries.co
       ext i
       exfalso
       have h1 := Finsupp.le_degree i e
-      have h2 : e i = m + 1 := by rw [heq]; simp
+      have h2 : e i = m + 1 := simp [heq]
       omega
     rw [h0, MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hf]
 

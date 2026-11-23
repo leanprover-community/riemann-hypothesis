@@ -180,7 +180,7 @@ theorem gaussRing_completion :
     rw [map_sub, ← hf'] at h1 h2
     simp only at h hu'
     rw [← hu'] at h2
-    have h3 : f u * f ↑u⁻¹ = 1 := by rw [← map_mul]; simp
+    have h3 : f u * f ↑u⁻¹ = 1 := simp [← map_mul]
     have h4 := Ideal.mul_mem_right (f ↑u⁻¹) _
       (Ideal.sub_mem _ h1 (Ideal.mul_mem_left _ x h2))
     convert h4 using 1

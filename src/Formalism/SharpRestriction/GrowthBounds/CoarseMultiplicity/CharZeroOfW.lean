@@ -58,7 +58,7 @@ theorem charZero_of_w {O : Type} [CommRing O] [IsDomain O] {p : ℕ} (hp : p.Pri
     · exact hp0 (hcp ▸ hc0)
     · have hcop : Nat.Coprime c p := (Nat.coprime_primes h hp).2 hcp
       obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 hcop
-      have h1 : ((a * c + b * p : ℤ) : O) = 1 := by rw [hab]; simp
+      have h1 : ((a * c + b * p : ℤ) : O) = 1 := simp [hab]
       push_cast at h1
       rw [hc0, mul_zero, zero_add] at h1
       exact hpu (IsUnit.of_mul_eq_one_right _ h1)

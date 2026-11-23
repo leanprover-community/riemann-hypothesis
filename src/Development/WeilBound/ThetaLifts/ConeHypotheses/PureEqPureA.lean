@@ -58,7 +58,7 @@ theorem resEtaPow_div {R E : Type} [CommRing R] [CommRing E] [Algebra R E] {K : 
   rw [e1, e2]
   split_ifs
   · simp
-  · have hm : ((-1 : ℂ) ^ m) * ((-1 : ℂ) ^ m) = 1 := by rw [← pow_add, ← two_mul, pow_mul]; simp
+  · have hm : ((-1 : ℂ) ^ m) * ((-1 : ℂ) ^ m) = 1 := simp [← pow_add, ← two_mul, pow_mul]
     rw [div_eq_iff (by simp), pow_add, mul_assoc, hm, mul_one]
 
 variable {B : Base F E} {G : Geo σ a a'} {X : Chars F E} {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W}

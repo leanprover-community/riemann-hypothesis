@@ -183,7 +183,7 @@ theorem exists_cartan_comm_quasiReflection : ∀ (n : ℕ) (G : Matrix (Fin n) (
     have : -2 / q + (-2 / q + -2 / q * (-2 / q * q)) = 0 := by field_simp; ring
     rw [this, zero_smul, add_zero]
   have hrG : (1 + (-2 / q) • M)ᴴ * G = G * (1 + (-2 / q) • M) := by
-    have : star (-2 / q) = -2 / q := by rw [star_div₀, hqs]; simp
+    have : star (-2 / q) = -2 / q := simp [star_div₀, hqs]
     rw [conjTranspose_add, conjTranspose_one, conjTranspose_smul, this, Matrix.add_mul, Matrix.mul_add, Matrix.one_mul,
       Matrix.mul_one, Matrix.smul_mul, Matrix.mul_smul, hMG]
   obtain ⟨s, hs, hc⟩ := exists_comm hG hd hr (by rw [hrG, Matrix.mul_assoc, hr, Matrix.mul_one])

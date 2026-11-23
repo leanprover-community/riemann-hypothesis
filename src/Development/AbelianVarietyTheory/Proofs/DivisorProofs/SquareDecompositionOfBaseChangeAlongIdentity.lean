@@ -52,7 +52,7 @@ theorem sqDec_of_baseChange_id : ∀ (F : Type) [CommRing F] (A : Over (Sp F)) [
   intro F _ A _ L M hL hM hD
   have hid : spMap (RingHom.id F) = 𝟙 (Sp F) := by
     simp [spMap]
-  have hw : 𝟙 A.left ≫ A.hom = A.hom ≫ spMap (RingHom.id F) := by rw [hid]; simp
+  have hw : 𝟙 A.left ≫ A.hom = A.hom ≫ spMap (RingHom.id F) := simp [hid]
   let π' : A.left ⟶ pullback A.hom (spMap (RingHom.id F)) := pullback.lift (𝟙 _) A.hom hw
   have e₁ : π' ≫ pullback.fst A.hom (spMap (RingHom.id F)) = 𝟙 _ := pullback.lift_fst _ _ _
   have e₂ : π' ≫ ((Over.pullback (spMap (RingHom.id F))).obj A).hom = A.hom ≫ 𝟙 _ := by

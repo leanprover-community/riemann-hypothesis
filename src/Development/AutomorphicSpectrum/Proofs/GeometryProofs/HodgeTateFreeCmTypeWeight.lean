@@ -95,7 +95,7 @@ theorem dvd_sq (A K : Type) [CommRing A] [IsDomain A] [Field K] [Algebra A K] (h
     rw [this]
     norm_num
   · obtain ⟨ζ, hζ, e⟩ := h
-    have e' : algebraMap A K (κ + 1) = ζ := by rw [map_add (f := _), e]; simp
+    have e' : algebraMap A K (κ + 1) = ζ := simp [map_add (f := _), e]
     have hz : IsPrimitiveRoot (κ + 1) p := IsPrimitiveRoot.of_map_of_injective (f := algebraMap A K) (by rwa [e']) hinj
     obtain ⟨n, rfl⟩ : ∃ n, p = n + 1 := ⟨p - 1, by have := hp.pos; omega⟩
     have hn : 0 < n := by have := hp.one_lt; omega

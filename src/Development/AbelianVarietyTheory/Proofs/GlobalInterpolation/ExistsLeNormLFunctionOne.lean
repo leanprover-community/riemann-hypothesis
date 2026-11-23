@@ -128,7 +128,7 @@ theorem wt_nonneg {x : ℝ} (hx : 0 < x) : 0 ≤ wt x := by
 theorem wt_le_one {x : ℝ} (hx : 0 < x) : wt x ≤ 1 := by
   have h1 := Real.add_one_le_exp x
   have h2 := Real.add_one_le_exp (-x)
-  have h3 : Real.exp x * Real.exp (-x) = 1 := by rw [← Real.exp_add]; simp
+  have h3 : Real.exp x * Real.exp (-x) = 1 := simp [← Real.exp_add]
   have h4 := Real.exp_pos x
   have h5 : 0 < Real.exp x - 1 := by linarith
   unfold wt
@@ -152,8 +152,8 @@ theorem wt_antitoneOn : AntitoneOn wt (Set.Ioi 0) := by
     have h5 : 0 < Real.exp x - 1 := by linarith [Real.add_one_le_exp x]
     have h6 : x / 2 ≤ Real.sinh (x / 2) := Real.self_le_sinh_iff.2 (by linarith)
     rw [Real.sinh_eq] at h6
-    have h7 : Real.exp (x / 2) * Real.exp (-(x / 2)) = 1 := by rw [← Real.exp_add]; simp
-    have h8 : Real.exp x = Real.exp (x / 2) ^ 2 := by rw [sq, ← Real.exp_add]; simp
+    have h7 : Real.exp (x / 2) * Real.exp (-(x / 2)) = 1 := simp [← Real.exp_add]
+    have h8 : Real.exp x = Real.exp (x / 2) ^ 2 := simp [sq, ← Real.exp_add]
     have h9 := Real.exp_pos (x / 2)
     have h10 : x * Real.exp (x / 2) ≤ Real.exp x - 1 := by rw [h8]; nlinarith
     have h11 : (x * Real.exp (x / 2)) ^ 2 ≤ (Real.exp x - 1) ^ 2 := by gcongr

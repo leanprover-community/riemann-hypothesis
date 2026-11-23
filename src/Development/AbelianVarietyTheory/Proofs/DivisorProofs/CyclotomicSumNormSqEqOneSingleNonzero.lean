@@ -96,7 +96,7 @@ theorem cycloSq_coeff_eq {l : ℕ} (hl : l.Prime) {ζ : ℂ} (hζ : IsPrimitiveR
   intro d hd
   by_cases hd' : d = l - 1
   · rw [hd']
-  have h1 : Q.coeff d = 0 := by rw [hQ0]; simp
+  have h1 : Q.coeff d = 0 := simp [hQ0]
   rw [hQdef, finsetSum_coeff] at h1
   simp only [coeff_C_mul_X_pow, Finset.sum_ite_eq, Finset.mem_range] at h1
   rw [if_pos (by omega)] at h1

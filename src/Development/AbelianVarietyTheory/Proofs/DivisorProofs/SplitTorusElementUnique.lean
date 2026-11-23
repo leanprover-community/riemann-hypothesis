@@ -51,10 +51,10 @@ theorem idelicFrameTorusElement_apply_column_decomposition {F E : Type} [Field F
   set Q := adMat F (Formalism.UG.cT (σ : E →+* E) Y * J)
   have mm : ∀ {a b c : ℕ} (A : Matrix (Fin a) (Fin b) E) (B : Matrix (Fin b) (Fin c) E),
       adMat F A * adMat F B = adMat F (A * B) := fun A B => (Matrix.map_mul).symm
-  have hPX : P * adMat F X = 0 := by rw [mm, hW.xx]; simp
-  have hPY : P * adMat F Y = 1 := by rw [mm, hW.xy]; simp
-  have hQX : Q * adMat F X = 1 := by rw [mm, yx h hJ hW]; simp
-  have hQY : Q * adMat F Y = 0 := by rw [mm, hW.yy]; simp
+  have hPX : P * adMat F X = 0 := simp [mm, hW.xx]
+  have hPY : P * adMat F Y = 1 := simp [mm, hW.xy]
+  have hQX : Q * adMat F X = 1 := simp [mm, yx h hJ hW]
+  have hQY : Q * adMat F Y = 0 := simp [mm, hW.yy]
   set w := z - adMat F X *ᵥ (Q *ᵥ z) - adMat F Y *ᵥ (P *ᵥ z) with hw
   have hPw : P *ᵥ w = 0 := by
     rw [hw, mulVec_sub, mulVec_sub, mulVec_mulVec (M := P) (N := adMat F X), mulVec_mulVec (M := P) (N := adMat F Y), hPX, hPY,

@@ -169,7 +169,7 @@ theorem inv_mem_UJ {g : Mx n} (hg : g ∈ UJset ε) : g⁻¹ ∈ UJset ε := by
   conv_lhs => rw [← e]
   calc (g⁻¹)ᴴ * (gᴴ * Jm ε * g) * g⁻¹ = (g * g⁻¹)ᴴ * Jm ε * (g * g⁻¹) := by
         simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = _ := by rw [mul_inv_UJ hg]; simp
+    _ = _ := simp [mul_inv_UJ hg]
 
 theorem exp_mem_UJ {X : Mx n} (hX : X ∈ lieSet ε) (t : ℝ) : NormedSpace.exp (t • X) ∈ UJset ε :=
   GlobalTheory.GardingVec.exp_mem (isUnit_Jm ε) hX t

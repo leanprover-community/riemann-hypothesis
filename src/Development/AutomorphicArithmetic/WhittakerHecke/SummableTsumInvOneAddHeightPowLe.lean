@@ -302,7 +302,7 @@ theorem UpperTheory.summable_tsum_inv_one_add_height_pow_le :
           have : (1 : ℤ) ≤ |l| := Int.one_le_abs hl0
           exact_mod_cast this
         apply lower_bound_second_case _ _ _ _ _ _ hd1 hBu hα hαT hT (abs_nonneg _) (abs_nonneg _)
-        have hz' : ((ξ.1 0 : ℚ) : ℝ) = 0 := by rw [hz]; simp
+        have hz' : ((ξ.1 0 : ℚ) : ℝ) = 0 := simp [hz]
         rw [hz', zero_mul, zero_add]
         calc (1 : ℝ) ≤ |(l : ℝ)| := hl1
           _ = (d : ℝ) * |((ξ.1 1 : ℚ) : ℝ)| := by

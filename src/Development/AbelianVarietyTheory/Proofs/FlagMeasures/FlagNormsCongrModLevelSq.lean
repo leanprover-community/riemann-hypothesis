@@ -49,7 +49,7 @@ private theorem prime_dvd_int_of_cast_eq_mul {O : Type} [CommRing O] [IsDomain O
   by_contra hnd
   obtain ⟨a, b, hab⟩ := (Prime.coprime_iff_not_dvd (Nat.prime_iff_prime_int.mp hℓ)).2 hnd
   apply hq.not_isUnit
-  have h1 : ((a * ℓ + b * m : ℤ) : O) = 1 := by rw [hab]; simp
+  have h1 : ((a * ℓ + b * m : ℤ) : O) = 1 := simp [hab]
   push_cast at h1
   rw [h, ← hqℓ] at h1
   exact isUnit_iff_exists_inv.2 ⟨a + b * c, by linear_combination h1⟩

@@ -340,7 +340,7 @@ theorem exists_nrm_eq {K : Type} [Field K] [StarRing K] {n : ℕ}
     rw [hx, Matrix.mul_assoc, ← conjTranspose_mul, Matrix.mul_nonsing_inv _ hd, conjTranspose_one, Matrix.mul_one]
   obtain ⟨ε, hε⟩ : ∃ ε : K, ε = (-1) ^ (n - 1) := ⟨_, rfl⟩
   have hεs : star ε = ε := by simp [hε]
-  have hεε : ε * ε = 1 := by rw [hε, ← mul_pow]; simp
+  have hεε : ε * ε = 1 := simp [hε, ← mul_pow]
   let B := (-ε) • (N * x.valᴴ * (x⁻¹).val)
   obtain ⟨u, ⟨c, hc, huc⟩, hu⟩ := hinf.exists_notMem_finset B.charpoly.roots.toFinset
   rw [Multiset.mem_toFinset, mem_roots B.charpoly_monic.ne_zero, IsRoot, Matrix.eval_charpoly] at hu

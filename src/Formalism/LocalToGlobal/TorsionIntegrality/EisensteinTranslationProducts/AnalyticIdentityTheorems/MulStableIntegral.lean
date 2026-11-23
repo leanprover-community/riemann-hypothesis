@@ -192,7 +192,7 @@ theorem kernel_reps_card : KerRepsCard := by
     intro h0
     have hc := card_quot L α hα h
     rw [h0] at hc
-    have hn : Complex.normSq α = 0 := by rw [← hc]; simp
+    have hn : Complex.normSq α = 0 := simp [← hc]
     exact hα (Complex.normSq_eq_zero.1 hn)
   have hout : ∀ q : L.lattice ⧸ LinearMap.range (mulEnd L α h), Submodule.Quotient.mk (Quotient.out q) = q :=
     fun q => Quotient.out_eq' q
@@ -257,7 +257,7 @@ theorem kernel_reps_exist : KerRepsExist := by
     intro h0
     have hc := card_quot L α hα h
     rw [h0] at hc
-    have hn : Complex.normSq α = 0 := by rw [← hc]; simp
+    have hn : Complex.normSq α = 0 := simp [← hc]
     exact hα (Complex.normSq_eq_zero.1 hn)
   have hout : ∀ q : L.lattice ⧸ LinearMap.range (mulEnd L α h), Submodule.Quotient.mk (Quotient.out q) = q :=
     fun q => Quotient.out_eq' q

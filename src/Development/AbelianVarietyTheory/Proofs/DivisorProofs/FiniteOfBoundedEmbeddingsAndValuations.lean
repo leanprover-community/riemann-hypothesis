@@ -69,7 +69,7 @@ theorem exists_clearing {K : Type} [Field K] [NumberField K] (A : Set K)
   rw [h2]
   calc w.intValuation r * w.valuation K x ≤ WithZero.exp (-(n : ℤ)) * WithZero.exp (n : ℤ) :=
         mul_le_mul' h1 ((hB x hx).trans hn)
-    _ = 1 := by rw [← WithZero.exp_add]; simp
+    _ = 1 := simp [← WithZero.exp_add]
 
 theorem finite_of_bdd : ∀ (K : Type) [Field K] [NumberField K] (A : Set K) (R : ℝ), (∀ x ∈ A, ∀ τ : K →+* ℂ, ‖τ x‖ ≤ R) → (∀ w : HeightOneSpectrum (𝓞 K), ∃ B : WithZero (Multiplicative ℤ), ∀ x ∈ A, w.valuation K x ≤ B) → (∀ᶠ w : HeightOneSpectrum (𝓞 K) in cofinite, ∀ x ∈ A, w.valuation K x ≤ 1) → A.Finite := by
   classical

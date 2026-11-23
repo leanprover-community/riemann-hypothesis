@@ -101,7 +101,7 @@ private theorem tri_of_idem {R : Type} [CommRing R] {n : ℕ} (f : Fin n → Mat
     intro a b h
     rw [e3, h0 a b h]; simp
   have hM : M = V * (V⁻¹ * M * V) * V⁻¹ := by
-    calc M = (V * V⁻¹) * M * (V * V⁻¹) := by rw [hr]; simp
+    calc M = (V * V⁻¹) * M * (V * V⁻¹) := simp [hr]
       _ = _ := by simp only [mul_assoc]
   have hMt : M.BlockTriangular id := by
     rw [hM]; exact (hV.mul hT).mul hVi
@@ -300,7 +300,7 @@ theorem UpperTheory.V.Pa.locLemma :
   have hcinj : ∀ X, c X = 0 → X = 0 := fun X hX => by
     calc X = w * (wi * X * w) * wi := by
           rw [← mul_assoc, ← mul_assoc, hw1, one_mul, mul_assoc, hw1, mul_one]
-      _ = 0 := by rw [← hc, hX]; simp
+      _ = 0 := simp [← hc, hX]
   have htri1 : ∀ g, (c (ρ₀ g)).BlockTriangular id := fun g i j h => (htri g).1 i j h
   have htri2 : ∀ g i, c (ρ₀ g) i i = ψ₀ i g := fun g => (htri g).2
   have hord0 : ∀ g : Fin n → H, (List.ofFn fun i => ρ₀ (g i) -

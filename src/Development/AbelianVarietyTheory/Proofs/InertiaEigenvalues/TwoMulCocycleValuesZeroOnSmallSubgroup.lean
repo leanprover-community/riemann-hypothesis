@@ -119,7 +119,7 @@ theorem two_mul_values_eq_zero : ∀ (D : Formalism.BasicNotions.D7) (N : NData 
     by_cases hab : a = b
     · subst hab; simp [hφ]
     · simp [hab]
-  have hχz : χ z = 1 := by rw [hχ, hε]; simp
+  have hχz : χ z = 1 := simp [hχ, hε]
   have z₃ : T' (cConj X z) = (d' : A) • (1 : Matrix (Fin D.R.r) (Fin D.R.r) A) := by
     rw [sd, hχz, one_smul, z₁, Matrix.mul_smul, mul_one, Matrix.smul_mul, Units.mul_inv]
   have z₄ : T (cConj X z) = ((d'⁻¹ : Aˣ) : A) • (1 : Matrix (Fin D.R.r) (Fin D.R.r) A) := by

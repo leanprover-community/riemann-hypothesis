@@ -157,7 +157,7 @@ theorem t_TraceDual : TraceDual := by
       have h1 := hμ (semb E c ((n : E) * b j)) (Submodule.mem_map_of_mem (f := (semb E c).toIntLinearMap) hnL)
       obtain ⟨m, hm⟩ := Submodule.mem_one.mp h1
       have h2 : R ((n : E) * b j) = (n : ℝ) * R (b j) := by
-        have : (n : E) * b j = (n : ℚ) • b j := by rw [Algebra.smul_def]; simp
+        have : (n : E) * b j = (n : ℚ) • b j := simp [Algebra.smul_def]
         rw [this, map_smul]; simp [Rat.smul_def]
       refine ⟨(m : ℚ) / n, ?_⟩
       have hn' : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'

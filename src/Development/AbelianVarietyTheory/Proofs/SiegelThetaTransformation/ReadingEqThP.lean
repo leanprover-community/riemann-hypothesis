@@ -71,7 +71,7 @@ theorem cmHost_idempotent_trace_eq_one {E : Type} [Field E] [NumberField E] [IsC
   have hc : cc (H.rt : E) = -(H.rt : E) := by
     obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
     apply τ.injective
-    have h1 : τ (H.rt : E) ^ 2 = -(H.d : ℂ) := by rw [← map_pow, hs]; simp
+    have h1 : τ (H.rt : E) ^ 2 = -(H.d : ℂ) := simp [← map_pow, hs]
     have hre : (τ (H.rt : E)).re = 0 := by
       have a1 := congrArg Complex.re h1
       have a2 := congrArg Complex.im h1

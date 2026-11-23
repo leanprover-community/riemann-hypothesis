@@ -205,7 +205,7 @@ private theorem main (hX : LemmaX) (h16 : UnramifiedCocycleIsCoboundaryOfBernoul
   obtain ⟨g, hg1, hg2⟩ := xd_gal (Ω := Ω) hl h
   have hne : (-1 : k) ≠ 1 := by
     intro e
-    have : ((2 : ℕ) : k) = 0 := by rw [Nat.cast_ofNat, ← one_add_one_eq_two]; nth_rewrite 1 [← e]; simp
+    have : ((2 : ℕ) : k) = 0 := simp [Nat.cast_ofNat, ← one_add_one_eq_two]; nth_rewrite 1 [← e]
     exact h2 ((Nat.prime_dvd_prime_iff_eq hl Nat.prime_two).1 ((CharP.cast_eq_zero_iff k l 2).1 this))
   have hg3 : (redChar Ω red (prodX φ ξ) g : k) = -1 := by
     have : (redChar Ω red (prodX φ ξ) g : k) = red (Chr.dirG ℚ Ω (prodX φ ξ) g : c.O) := rfl

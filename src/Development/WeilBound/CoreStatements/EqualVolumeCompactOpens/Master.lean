@@ -110,7 +110,7 @@ theorem unimod (S Γ K : Subgroup G) (hc : ∀ g : G, K.relIndex (conjBy g K) �
     exact this (hΓ hγ)
   obtain ⟨n, hn, z, hz, s, hs, e⟩ := hp g
   obtain ⟨γ, hγ, k, hk, rfl⟩ := hS s hs
-  have h2 : c g ^ n = 1 := by rw [← map_pow, e, map_mul, map_mul, hZ z hz, hG γ hγ, hK k hk]; simp
+  have h2 : c g ^ n = 1 := simp [← map_pow, e, map_mul, map_mul, hZ z hz, hG γ hγ, hK k hk]
   have h3 : f g ^ n = 1 := by
     have := congrArg Units.val h2
     rwa [Units.val_pow_eq_pow_val] at this

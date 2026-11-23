@@ -65,7 +65,7 @@ theorem dual_irr : ∀ (D : D7) (V : HSp D) (θ : InfFam D) (c : CoefA V), IsInf
       calc giᴴ * gramAt D V τ * gi = giᴴ * (gᴴ * gramAt D V τ * g) * gi := by rw [h1]
         _ = (g * gi)ᴴ * gramAt D V τ * (g * gi) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-        _ = gramAt D V τ := by rw [h3]; simp
+        _ = gramAt D V τ := simp [h3]
     refine ⟨gi, hgi', ?_⟩
     have e : atTau θ V τ g * atTau θ V τ gi = 1 := by
       rw [← GlobalTheory.PointAtPlaceHom.atTau_mul hθ V τ hg hgi', h3, GlobalTheory.PointAtPlaceHom.atTau_one hθ V τ]

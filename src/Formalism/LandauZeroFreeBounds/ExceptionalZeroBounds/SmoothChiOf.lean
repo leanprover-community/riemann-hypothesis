@@ -72,7 +72,7 @@ theorem smoothed_character_sum_of : SmoothChiOf := by
   obtain ⟨X, hXdef⟩ : ∃ X : ℝ, X = Real.exp (-(c₁ * s / 2)) := ⟨_, rfl⟩
   have hT1 : 1 ≤ T := by rw [hTdef]; exact Real.one_le_exp (by positivity)
   have hT0 : 0 < T := by linarith
-  have hTX : T * X = 1 := by rw [hTdef, hXdef, ← Real.exp_add]; simp
+  have hTX : T * X = 1 := simp [hTdef, hXdef, ← Real.exp_add]
   have hX0 : 0 < X := by rw [hXdef]; exact Real.exp_pos _
   have hX1 : X ≤ 1 := by
     rw [hXdef]; exact Real.exp_le_one_iff.mpr (by linarith [mul_pos hc₁ hs0])

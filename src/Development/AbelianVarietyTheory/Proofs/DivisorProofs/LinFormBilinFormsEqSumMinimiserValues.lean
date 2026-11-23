@@ -118,7 +118,7 @@ theorem exists_nat_mul_eq_sum_of_injective {M ι : Type} [AddCommGroup M] [Modul
   obtain ⟨D, hD, ν, hν⟩ :=
     exists_vecMul_eq_nat_smul A hA (fun i => w (e.symm (fun j => if i = j then 1 else 0)))
   refine ⟨D, hD, ν, fun x => ?_⟩
-  have h1 : g x = A *ᵥ e x := by rw [hAdef, LinearMap.toMatrix'_mulVec]; simp
+  have h1 : g x = A *ᵥ e x := simp [hAdef, LinearMap.toMatrix'_mulVec]
   have h2 : w x = ∑ i, e x i * w (e.symm (fun j => if i = j then 1 else 0)) := by
     have := LinearMap.pi_apply_eq_sum_univ (w ∘ₗ e.symm.toLinearMap) (e x)
     simpa using this

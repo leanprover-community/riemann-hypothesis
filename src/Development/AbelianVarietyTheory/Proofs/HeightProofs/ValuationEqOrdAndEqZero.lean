@@ -141,7 +141,7 @@ theorem exists_ord_eq [∀ ζ : Pts O A, IsDVRAt ζ] {ϖ : O} (h : IsUnif A ϖ)
   obtain ⟨a₀, ha₀⟩ := exists_vL_eq_one ζ
   have hfin : ∀ (b : ↥(As O A)) (m : ℕ), vL ζ b = m → u (b : A) = m • u (a₀ : A) := by
     intro b m hb
-    have e : vL ζ (a₀ ^ m) = vL ζ b := by rw [vL_pow, ha₀, hb]; simp
+    have e : vL ζ (a₀ ^ m) = vL ζ b := simp [vL_pow, ha₀, hb]
     have := le_antisymm (le_of_vL_le u hu ζ hζ e.ge) (le_of_vL_le u hu ζ hζ e.le)
     rw [this, SubmonoidClass.coe_pow, u.map_pow]
   have htop : ∀ b : ↥(As O A), vL ζ b = ⊤ → u (b : A) = ⊤ := by

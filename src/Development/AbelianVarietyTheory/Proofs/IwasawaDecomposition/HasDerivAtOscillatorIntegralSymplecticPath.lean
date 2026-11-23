@@ -365,7 +365,7 @@ theorem _root_.GlobalTheory.Mem.Lift.OscDeriv.hasDerivAt_osc : ∀ (V : Type) [N
     have ht : t ≠ 0 := ht0
     have hta : |t| ≠ 0 := abs_ne_zero.mpr ht
     have hat : ‖a t w - w‖ ≤ K * |t| * ‖w‖ := by
-      have e : a t w - w = (a t - a 0) w := by rw [ha0]; simp
+      have e : a t w - w = (a t - a 0) w := simp [ha0]
       rw [e]
       refine (ContinuousLinearMap.le_opNorm _ _).trans ?_
       have := mul_le_mul_of_nonneg_right hKt (norm_nonneg w)

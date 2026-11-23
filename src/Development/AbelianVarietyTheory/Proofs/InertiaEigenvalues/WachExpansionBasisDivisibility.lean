@@ -96,7 +96,7 @@ theorem coeff_smul_hahn (e : PowerSeries L) (y : HahnModule ℤ L M) :
     rw [hS, Finset.mem_vaddAntidiagonal] at hij
     obtain ⟨h1, -, h3⟩ := hij
     obtain ⟨n, hn⟩ := hneg _ h1
-    have : ij.2 = k - n := by rw [← h3, hn]; simp
+    have : ij.2 = k - n := simp [← h3, hn]
     rw [hn, this, hco, Int.toNat_natCast]
   · intro a ha b hb hab
     rw [hS, Finset.mem_coe, Finset.mem_vaddAntidiagonal] at ha hb

@@ -510,8 +510,8 @@ lemma abs_deriv_weight_profile_le {a R : ℝ} (ha : 0 ≤ a) (hR : 1 ≤ R) (t :
 lemma dim_le_frobenius {n : ℕ} {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) :
     (n : ℝ) ≤ hs g := by
   have h1 := (indefinite_unitary_inv_closed n ε g hg).2
-  have ht : Matrix.trace ((Jm ε * gᴴ * Jm ε) * g) = n := by rw [h1]; simp
-  have hre : (n : ℝ) = (Matrix.trace ((Jm ε * gᴴ * Jm ε) * g)).re := by rw [ht]; simp
+  have ht : Matrix.trace ((Jm ε * gᴴ * Jm ε) * g) = n := simp [h1]
+  have hre : (n : ℝ) = (Matrix.trace ((Jm ε * gᴴ * Jm ε) * g)).re := simp [ht]
   have e : ∀ i j, (Jm ε * gᴴ * Jm ε) i j =
       (if ε i then 1 else -1) * star (g j i) * (if ε j then 1 else -1) := by
     intro i j

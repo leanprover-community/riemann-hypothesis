@@ -82,7 +82,7 @@ theorem landau_nearest {Z : Set ℂ} (hiso : ∀ z : ℂ, 0 < z.re → ∀ᶠ w 
     · have := min_le_right (D - (σ - ρ₁.re)) (σ - D)
       linarith
   obtain ⟨c₀, hc₀⟩ : ∃ c₀ : ℂ, c₀ = (σ : ℂ) + ρ₁.im * I := ⟨_, rfl⟩
-  have hc₀re : c₀.re = σ := by rw [hc₀]; simp
+  have hc₀re : c₀.re = σ := simp [hc₀]
   have hF : (Z ∩ Metric.closedBall c₀ (D + ε)).Finite :=
     landau_finite hiso (by rw [hc₀re]; linarith)
   set F := Z ∩ Metric.closedBall c₀ (D + ε) with hFdef

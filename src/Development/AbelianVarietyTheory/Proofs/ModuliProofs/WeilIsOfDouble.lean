@@ -259,7 +259,7 @@ theorem exists_triple (laws : Out.Laws) (cube : (∀ (S : Scheme.{0}) (P : Out.P
     fun k a b c hk hc => ?_⟩
   have hk' : (k : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hk.ne'
   have hdbl : IsMonHom ((𝟙 Q.A : Q.A ⟶ Q.A) ^ 2) := laws.rigidity _ _ _ hA hA _ (by
-    have e₁ : (η[Q.A] : 𝟙_ _ ⟶ Q.A) = 1 := by rw [Hom.one_def]; simp
+    have e₁ : (η[Q.A] : 𝟙_ _ ⟶ Q.A) = 1 := simp [Hom.one_def]
     rw [MonObj.comp_pow, Category.comp_id, e₁, one_pow])
   have hx : ∀ a, u.ex (((k * 4 : ℕ) : ℂ)⁻¹ • P (2 • a)) ≫ (𝟙 Q.A : Q.A ⟶ Q.A) ^ 2 = u.ex ((k : ℂ)⁻¹ • P a) := fun a => by
     rw [MonObj.comp_pow, Category.comp_id, ex_pow, map_nsmul]

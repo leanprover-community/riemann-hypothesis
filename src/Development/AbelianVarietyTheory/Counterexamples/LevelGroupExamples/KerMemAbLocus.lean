@@ -82,7 +82,7 @@ theorem vPsiAt_eq (A : DatAt Y P) (χ : A.Ylat) : (∃ r, PsiCoord A.U.D.toPre �
   have hex : ∃ r, PsiCoord A.U.D.toPre χ r := ⟨r₀, h₀⟩
   refine ⟨hex, fun r hr => ?_⟩
   obtain ⟨u, hu⟩ := hu _ _ hr hex.choose_spec
-  have h1 : ‖fC A u‖ * ‖fC A (↑u⁻¹ : A.R)‖ = 1 := by rw [← norm_mul, ← map_mul]; simp
+  have h1 : ‖fC A u‖ * ‖fC A (↑u⁻¹ : A.R)‖ = 1 := simp [← norm_mul, ← map_mul]
   have h2 := norm_le A u
   have h3 := norm_le A (↑u⁻¹ : A.R)
   have h4 : ‖fC A u‖ = 1 := by nlinarith [norm_nonneg (fC A u), norm_nonneg (fC A (↑u⁻¹ : A.R))]

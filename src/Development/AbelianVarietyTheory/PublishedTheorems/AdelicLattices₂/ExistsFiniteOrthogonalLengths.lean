@@ -114,7 +114,7 @@ theorem exists_finite_lengths (n : ℕ) (hn : n ≠ 0) {N : ℤ} (hN : N ≠ 0) 
   have h1 : h w v' = N * M := by
     simp only [hv', map_smulₛₗ, starRingEnd_apply, star_star, smul_eq_mul, hwj, star_intCast]
     field_simp
-  have h2 : h v' w = N * M := by rw [hs, h1]; simp
+  have h2 : h v' w = N * M := simp [hs, h1]
   have h3 : h v' v' = 0 := by simp [hv', hvv]
   have h4 : ∀ s : E, star s = s → h (w - s • v') (w - s • v') = h w w - 2 * (N * M) * s := by
     intro s hs'

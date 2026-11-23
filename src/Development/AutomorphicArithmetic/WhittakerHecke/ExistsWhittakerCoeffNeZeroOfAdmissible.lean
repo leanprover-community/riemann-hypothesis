@@ -94,7 +94,7 @@ private theorem exists_mul {E : Type} [Field E] [NumberField E] (D : Dat ℚ E) 
     ∃ ξ : Eˣ, ∀ z : A E, ψ (rt (ξ : E) * z) = ψ (D.co z 1) := by
   let χ : AddChar (A E) Circle :=
     { toFun := fun z => adelicChar ℚ (D.co z 1)
-      map_zero_eq_one' := by rw [← D.mkE_zero, D.co_mkE]; simp
+      map_zero_eq_one' := simp [← D.mkE_zero, D.co_mkE]
       map_add_eq_mul' := fun a b => by rw [D.co_add, Pi.add_apply, AddChar.map_add_eq_mul] }
   have h1 : Continuous fun z : A E => D.co z 1 := (continuous_apply 1).comp D.continuous_co
   have h2 : Continuous fun z : A E => adelicChar ℚ (D.co z 1) := (continuous_adelicChar (K := ℚ)).comp h1

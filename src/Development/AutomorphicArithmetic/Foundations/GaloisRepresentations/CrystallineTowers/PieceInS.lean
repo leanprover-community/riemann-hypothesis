@@ -79,7 +79,7 @@ private theorem corr_iso (hV : VInv) (l : ℕ) [Fact l.Prime] {Z Y : Scheme.{0}}
   let pt : UpperTheory.Gal.G3.sp (W.residueField w) ⟶ W := W.fromSpecResidueField w
   obtain ⟨j₀, -, hj⟩ := UpperTheory.Gal.G3.pPtsOfSplits s c J σ hS (W.residueField w) pt (pt ≫ c ≫ inv s) (by simp)
   have hall : ∀ j, j = j₀ := fun j => hj j (by
-    have : σ j = c ≫ inv s := by rw [← hσ j]; simp
+    have : σ j = c ≫ inv s := simp [← hσ j]
     change pt ≫ σ j = pt ≫ c ≫ inv s
     rw [this])
   haveI : Unique J := ⟨⟨j₀⟩, hall⟩

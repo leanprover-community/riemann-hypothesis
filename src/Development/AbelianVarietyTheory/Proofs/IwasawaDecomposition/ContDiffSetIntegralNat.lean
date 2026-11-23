@@ -183,7 +183,7 @@ theorem conj_mem {n : ℕ} {ε : Fin n → Bool} {P G : Matrix (Fin n) (Fin n) �
         simp only [conjTranspose_mul, Matrix.mul_assoc]
     _ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
         rw [h, hg', ← h]; simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = _ := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+    _ = _ := simp [Matrix.mul_nonsing_inv _ hd]
 
 theorem exp_mem {n : ℕ} {G X : Matrix (Fin n) (Fin n) ℂ} (hG : IsUnit G) (hX : Xᴴ * G + G * X = 0) (t : ℝ) :
     (NormedSpace.exp (t • X))ᴴ * G * NormedSpace.exp (t • X) = G := by

@@ -97,7 +97,7 @@ theorem exists_univ_scalars {k S : Type} [Field k] [CommRing S] [Algebra k S] (h
   obtain ⟨F, hF₁, hF₂, hF₃, hF₄⟩ := key s a N
   obtain ⟨G, hG₁, -, -, hG₄⟩ := key s₀.toRingHom 1 1
   have uF : IsUnit (F r) := hF₄ ▸ a.isUnit.mul hN
-  have uG : IsUnit (G r) := by rw [hG₄]; simp
+  have uG : IsUnit (G r) := simp [hG₄]
   have hr : r ≠ 0 := fun e => uG.ne_zero (by rw [e, map_zero])
   let S' := Localization.Away r
   have ur : IsUnit (algebraMap T S' r) := IsLocalization.Away.algebraMap_isUnit r

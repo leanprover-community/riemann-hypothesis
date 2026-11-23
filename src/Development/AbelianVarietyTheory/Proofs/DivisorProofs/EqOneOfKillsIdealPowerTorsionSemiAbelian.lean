@@ -63,7 +63,7 @@ theorem exists_pow_eq_span (E : Type) [Field E] [NumberField E] (I : Ideal (𝓞
   have hpos : 0 < Fintype.card (ClassGroup (𝓞 E)) := Fintype.card_pos
   refine ⟨_, π, hpos, by rw [hπ], ?_, ?_⟩
   · rintro rfl
-    have : I ^ Fintype.card (ClassGroup (𝓞 E)) = ⊥ := by rw [hπ]; simp
+    have : I ^ Fintype.card (ClassGroup (𝓞 E)) = ⊥ := simp [hπ]
     exact hI (pow_eq_zero_iff hpos.ne' |>.1 this)
   · intro hu
     have : I ^ Fintype.card (ClassGroup (𝓞 E)) = ⊤ := by

@@ -61,8 +61,8 @@ def gact (N : ℕ) (D : GL (Fin 2) (ZMod N)) (α : GL (Fin 2) (ZMod N)) (γ : SL
 def dg {N : ℕ} (a : (ZMod N)ˣ) : GL (Fin 2) (ZMod N) where
   val := !![1, 0; 0, (a : ZMod N)]
   inv := !![1, 0; 0, ((a⁻¹ : (ZMod N)ˣ) : ZMod N)]
-  val_inv := by rw [Matrix.mul_fin_two, Matrix.one_fin_two]; simp
-  inv_val := by rw [Matrix.mul_fin_two, Matrix.one_fin_two]; simp
+  val_inv := simp [Matrix.mul_fin_two, Matrix.one_fin_two]
+  inv_val := simp [Matrix.mul_fin_two, Matrix.one_fin_two]
 
 def tors (N : ℕ) (τ : ℍ) (x : Fin 2 → ZMod N) : ℂ := (((x 0).val : ℂ) * τ + ((x 1).val : ℂ)) / N
 

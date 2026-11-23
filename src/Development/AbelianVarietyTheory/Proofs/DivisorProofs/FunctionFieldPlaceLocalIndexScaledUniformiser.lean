@@ -79,7 +79,7 @@ theorem local_index_scaled : ∀ (k F : Type) [Field k] [IsAlgClosed k] [CharZer
     rw [hinv, Matrix.smul_apply, smul_eq_mul, map_mul, hvc]
     calc WithZero.exp (-(d : ℤ)) * v.1 (M⁻¹ i j) ≤ WithZero.exp (-(d : ℤ)) * WithZero.exp (d : ℤ) :=
           by gcongr; exact hMinv i j
-      _ = 1 := by rw [← WithZero.exp_add]; simp
+      _ = 1 := simp [← WithZero.exp_add]
   obtain ⟨N, φ₀, hN, hφ₀⟩ := GlobalTheory.T.functionFieldPlace_local_index_colength k F hFF v n h hdet0 hinvb
 
   have hord : ord v h.det = -(n * d : ℤ) + ord v M.det := by
@@ -100,7 +100,7 @@ theorem local_index_scaled : ∀ (k F : Type) [Field k] [IsAlgClosed k] [CharZer
     rw [Pi.smul_apply, smul_eq_mul, map_mul, hvc]
     calc WithZero.exp (-(d : ℤ)) * v.1 (p i) ≤ WithZero.exp (-(d : ℤ)) * WithZero.exp (d : ℤ) :=
           by gcongr; exact hp i
-      _ = 1 := by rw [← WithZero.exp_add]; simp
+      _ = 1 := simp [← WithZero.exp_add]
   have := hφ₀ (c • p) hx hφ i
   have e2 : h.mulVec (c • p) = M.mulVec p := by
     rw [hhdef, Matrix.mulVec_smul, Matrix.smul_mulVec, smul_smul, mul_inv_cancel₀ hc0, one_smul]

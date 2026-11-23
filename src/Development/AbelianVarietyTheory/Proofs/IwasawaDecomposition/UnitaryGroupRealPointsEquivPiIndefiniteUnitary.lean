@@ -78,7 +78,7 @@ theorem conj_conj {m n : Type} [Fintype m] [Fintype n] [DecidableEq n] {A : Matr
     {B : Matrix n m ℂ} (hBA : B * A = 1) (X : Matrix n n ℂ) :
     B * (A * X * B) * A = X := by
   calc B * (A * X * B) * A = (B * A) * X * (B * A) := by simp only [Matrix.mul_assoc]
-    _ = _ := by rw [hBA]; simp
+    _ = _ := simp [hBA]
 
 theorem conj_unitary {m n : Type} [Fintype m] [Fintype n] [DecidableEq n] {A : Matrix m n ℂ}
     {B : Matrix n m ℂ} (hBA : B * A = 1) {G X : Matrix n n ℂ} {K : Matrix m m ℂ}
@@ -105,7 +105,7 @@ theorem exists_equiv [TopologicalSpace S] (he : ∀ x i, e x i = θ i x) (hc : C
     calc (B i)ᴴ * ((A i)ᴴ * Formalism.UG.Jpq (P i) (Q i) * A i) * B i
         = (A i * B i)ᴴ * Formalism.UG.Jpq (P i) (Q i) * (A i * B i) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [hAB]; simp
+      _ = _ := simp [hAB]
   have hone : ∀ i, (1 : Matrix (Fin M) (Fin M) S).map (θ i) = 1 := fun i =>
     Matrix.map_one _ (map_zero _) (map_one _)
   have hθ : ∀ i, Continuous (θ i) := fun i => by

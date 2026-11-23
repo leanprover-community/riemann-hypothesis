@@ -51,7 +51,7 @@ private lemma natCast_mem_cj {E : Type} [Field E] [NumberField E] [IsCMField E] 
 private lemma natCast_not_mem_of_coprime {E : Type} [Field E] [NumberField E] (u : Plc E) {q m : ℕ} (hm : m.Coprime q)
     (hq : (q : 𝓞 E) ∈ u.asIdeal) : (m : 𝓞 E) ∉ u.asIdeal := fun h => by
   obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 hm
-  have h1 : ((a * (m : ℤ) + b * (q : ℤ) : ℤ) : 𝓞 E) = 1 := by rw [hab]; simp
+  have h1 : ((a * (m : ℤ) + b * (q : ℤ) : ℤ) : 𝓞 E) = 1 := simp [hab]
   refine u.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 ?_)
   rw [← h1]
   push_cast

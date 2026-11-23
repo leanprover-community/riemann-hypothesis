@@ -380,7 +380,7 @@ theorem theta_diagonal_holds : ThetaDiag := by
     | (rw [isUnit_iff_constantCoeff]; simp)
     | exact isUnit_iff_constantCoeff.2 (by simp)
   set V := hV.unit with hVdef
-  have hV0 : constantCoeff (V : k⟦X⟧) = 1 := by rw [IsUnit.unit_spec]; simp
+  have hV0 : constantCoeff (V : k⟦X⟧) = 1 := simp [IsUnit.unit_spec]
   have hV1' : coeff 1 (V : k⟦X⟧) = constantCoeff un := by
     rw [IsUnit.unit_spec, map_add (f := _), coeff_one, if_neg one_ne_zero, zero_add, mul_comm, e1]
   have hgs : gamSer 0 un = X * (V : k⟦X⟧) := by rw [gammaSeries_zero_eq, IsUnit.unit_spec]

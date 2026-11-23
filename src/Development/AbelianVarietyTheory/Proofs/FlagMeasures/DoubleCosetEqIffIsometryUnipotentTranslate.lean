@@ -110,7 +110,7 @@ theorem symm_mem_Xa {n : (VS D).V ≃ₗ[D.host.E] (VS D).V} (hn : n ∈ NRat F)
   have heq := Submodule.eq_of_le_of_finrank_eq hle (LinearEquiv.finrank_map_eq n _)
   rw [← heq] at hx
   obtain ⟨y, hy, hyx⟩ := hx
-  have : n.symm x = y := by rw [← hyx]; simp
+  have : n.symm x = y := simp [← hyx]
   rw [this]; exact hy
 
 theorem one_mem : (1 : (VS D).V ≃ₗ[D.host.E] (VS D).V) ∈ NRat F := by

@@ -52,7 +52,7 @@ local notation "E" m:arg => emb₂ k (Equiv.refl (A ⊕ D)) (1, m)
 theorem lowU_mul_lowU (a b : Matrix D A k) : (lowU a * lowU b : GL (A ⊕ D) k) = lowU (a + b) := by
   ext1; rw [Units.val_mul, val_lowU, val_lowU, val_lowU, fromBlocks_multiply]; simp [add_comm]
 
-theorem emb_one_inv (m : GL D k) : (E m)⁻¹ = E (m⁻¹) := by rw [← map_inv]; simp
+theorem emb_one_inv (m : GL D k) : (E m)⁻¹ = E (m⁻¹) := simp [← map_inv]
 
 theorem quot_eq (ν ν' : Matrix D A k) (a b w : GL D k) :
     (lowU ν * (E a) * (E w))⁻¹ * (lowU ν' * (E b) * (E w)) =

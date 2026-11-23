@@ -95,7 +95,7 @@ theorem term_eq (k L N : ℕ) (ε : DirichletCharacter ℂ N) (β : M2) (γ : Ga
     rw [this]; simp
   have h1 : (g 0 0 : ZMod N) * (g 1 1 : ZMod N) = 1 := by
     have : ((g 1 0 : ℤ) : ZMod N) = 0 := (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).2 hgN
-    have h2 : ((g 0 0 * g 1 1 - g 0 1 * g 1 0 : ℤ) : ZMod N) = 1 := by rw [hdetg]; simp
+    have h2 : ((g 0 0 * g 1 1 - g 0 1 * g 1 0 : ℤ) : ZMod N) = 1 := simp [hdetg]
     push_cast at h2
     rw [this, mul_zero, sub_zero] at h2
     exact h2

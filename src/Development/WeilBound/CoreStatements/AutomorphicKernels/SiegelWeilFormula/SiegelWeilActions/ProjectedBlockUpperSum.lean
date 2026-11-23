@@ -82,7 +82,7 @@ theorem uA_mul_neg (L : LD d) (u : Fin L.n → AE F E) : uA L u * uA L (-u) = 1 
   rw [e, e]
   calc (1 + ComplexParameterFamilyContinuity.nilpotentFrameMatrix L u) * (1 + ComplexParameterFamilyContinuity.nilpotentFrameMatrix L (-u)) = 1 + (ComplexParameterFamilyContinuity.nilpotentFrameMatrix L u + ComplexParameterFamilyContinuity.nilpotentFrameMatrix L (-u)) + ComplexParameterFamilyContinuity.nilpotentFrameMatrix L u * ComplexParameterFamilyContinuity.nilpotentFrameMatrix L (-u) := by
         noncomm_ring
-    _ = 1 := by rw [hs, ComplexParameterFamilyContinuity.nilpotent_frame_mul_zero]; simp
+    _ = 1 := simp [hs, ComplexParameterFamilyContinuity.nilpotent_frame_mul_zero]
 
 theorem projected_block_upper_sum (x : d.G) (h21 : (inFrame d.b x).toBlocks₂₁ = 0) :
     ((inFrame d.b x).toBlocks₁₁)ᵀ * ((inFrame d.b x).toBlocks₂₂).map (cA σ) = 1 := by

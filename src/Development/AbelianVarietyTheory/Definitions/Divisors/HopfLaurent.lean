@@ -123,7 +123,7 @@ theorem hom_ext' {C : Type} [CommRing C] {φ ψ : R[T;T⁻¹] →+* C}
     rw [LaurentPolynomial.C_eq_algebraMap]
     exact congrArg (fun f : R →+* C => f a) h0
   have hinv : φ (T (-1)) = ψ (T (-1)) := by
-    have e : (T (-1) : R[T;T⁻¹]) * T 1 = 1 := by rw [← T_add]; simp
+    have e : (T (-1) : R[T;T⁻¹]) * T 1 = 1 := simp [← T_add]
     have eφ : φ (T (-1)) * φ (T 1) = 1 := by rw [← map_mul, e, map_one]
     have eψ : ψ (T 1) * ψ (T (-1)) = 1 := by rw [← map_mul, mul_comm, e, map_one]
     calc φ (T (-1)) = φ (T (-1)) * (ψ (T 1) * ψ (T (-1))) := by rw [eψ, _root_.mul_one]
@@ -191,7 +191,7 @@ def tanRep : TanRep (G R) R where
       rw [← spMap_pre z] at hz ⊢
       obtain ⟨h1, h2⟩ := (lifts_iff _).1 hz
       refine congrArg _ (hom_ext' (h1.trans hC.symm) ?_)
-      have h3 : (pre z (T 1)).snd = l 1 := by rw [← hl]; simp
+      have h3 : (pre z (T 1)).snd = l 1 := simp [← hl]
       rw [hT]; ext
       · simp [h2]
       · simp [h3]

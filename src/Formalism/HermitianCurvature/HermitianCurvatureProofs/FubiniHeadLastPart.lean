@@ -521,7 +521,7 @@ theorem shearE_mp : MeasurePreserving (shearE σh σb) volume volume := by
     intro x
     have hN : Complex.normSq (((U.lowW σh x.1)⁻¹ * (U.wP σh)⁻¹)).det = 1 := by
       rw [Matrix.det_mul, Dx2.SL.det_inv_low, one_mul, Ux2.permutationMatrix_inv, Dx2.SL.normSq_det_wP]
-    have hM : Complex.normSq ((G.upper x.2)⁻¹).det = 1 := by rw [Dx2.SL.det_inv_up]; simp
+    have hM : Complex.normSq ((G.upper x.2)⁻¹).det = 1 := simp [Dx2.SL.det_inv_up]
     exact (fa_mp' σb _ hN).prod (fb_mp' _ hM)
   have s1 : SFinite (volume : Measure ((U.LW σh → ℂ) × (G.UT p → ℂ))) := by
     rw [Measure.volume_eq_prod]; infer_instance

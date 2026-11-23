@@ -70,7 +70,7 @@ lemma ch_unit (N : ℕ) (ε : DirichletCharacter ℂ N) (γ : SL(2, ℤ)) (hγ :
   have hdet := γ.det_coe
   rw [Matrix.det_fin_two] at hdet
   have h0 : ((γ 1 0 : ℤ) : ZMod N) = 0 := (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr hγ
-  have h2 : (((γ 0 0 * γ 1 1 - γ 0 1 * γ 1 0 : ℤ)) : ZMod N) = 1 := by rw [hdet]; simp
+  have h2 : (((γ 0 0 * γ 1 1 - γ 0 1 * γ 1 0 : ℤ)) : ZMod N) = 1 := simp [hdet]
   push_cast at h2
   rw [h0, mul_zero, sub_zero] at h2
   simp only [ch, ← map_mul, h2, map_one]

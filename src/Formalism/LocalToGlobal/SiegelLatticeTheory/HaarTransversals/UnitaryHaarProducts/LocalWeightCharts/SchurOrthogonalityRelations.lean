@@ -100,7 +100,7 @@ theorem haar_transport (hP : IsUnit P) (μ : Measure (Fin n → Fin n → ℂ)) 
         _ = (P⁻¹)ᴴ * (Pᴴ * Jm ε * P) * P⁻¹ := by rw [hx']
         _ = (P * P⁻¹)ᴴ * Jm ε * (P * P⁻¹) := by
             simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-        _ = Jm ε := by rw [h2]; simp
+        _ = Jm ε := simp [h2]
     have hr := (isClosedEmbeddingMatrix n ε).2
     have hmem : P * Matrix.of x * P⁻¹ ∈
         Set.range (fun g : UJ ε => ((g : (Matrix (Fin n) (Fin n) ℂ)ˣ) : Matrix (Fin n) (Fin n) ℂ)) := by

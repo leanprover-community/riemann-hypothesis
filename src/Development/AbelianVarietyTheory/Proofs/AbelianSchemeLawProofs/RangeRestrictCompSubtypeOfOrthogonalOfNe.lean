@@ -366,7 +366,7 @@ theorem tensor_homotopy {D e h ε : Module.End K V} {D' e' h' : Module.End K V'}
           (TensorProduct.map h 1 + TensorProduct.map (ε * e) h') +
         (TensorProduct.map h 1 + TensorProduct.map (ε * e) h') *
           (TensorProduct.map D 1 + TensorProduct.map ε D') := by
-  have a1 : D * (ε * e) = 0 := by rw [← mul_assoc, hDε, neg_mul, mul_assoc, hDe]; simp
+  have a1 : D * (ε * e) = 0 := simp [← mul_assoc, hDε, neg_mul, mul_assoc, hDe]
   have a2 : ε * (ε * e) = e := by rw [← mul_assoc, hεε, one_mul]
   have a3 : ε * e * D = 0 := by rw [mul_assoc, heD, mul_zero]
   have a4 : ε * e * ε = e := by rw [mul_assoc, ← hεe, a2]

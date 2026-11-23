@@ -56,11 +56,11 @@ theorem eq_one_of_pow_eq_one (hl : l ≠ 2) (x : ℤ_[l]) (n : ℕ) (hn : n ≠ 
   have hp : l.Prime := Fact.out
   have hP : Prime (l : ℤ_[l]) := PadicInt.prime_p
   obtain ⟨k, m, hm, rfl⟩ := Nat.exists_eq_pow_mul_and_not_dvd hn l hp.ne_one
-  have hd : (l : ℤ_[l]) ∣ x - 1 := by rw [dvd_iff_toZMod, map_sub, h1]; simp
-  have hnd : ¬ (l : ℤ_[l]) ∣ x := by rw [dvd_iff_toZMod, h1]; simp
+  have hd : (l : ℤ_[l]) ∣ x - 1 := simp [dvd_iff_toZMod, map_sub, h1]
+  have hnd : ¬ (l : ℤ_[l]) ∣ x := simp [dvd_iff_toZMod, h1]
   have e1 := emultiplicity_pow_prime_pow_sub_pow_prime_pow hP (hp.odd_of_ne_two hl) hd hnd k
-  have hd2 : (l : ℤ_[l]) ∣ x ^ l ^ k - 1 := by rw [dvd_iff_toZMod, map_sub, map_pow, h1]; simp
-  have hnd2 : ¬ (l : ℤ_[l]) ∣ x ^ l ^ k := by rw [dvd_iff_toZMod, map_pow, h1]; simp
+  have hd2 : (l : ℤ_[l]) ∣ x ^ l ^ k - 1 := simp [dvd_iff_toZMod, map_sub, map_pow, h1]
+  have hnd2 : ¬ (l : ℤ_[l]) ∣ x ^ l ^ k := simp [dvd_iff_toZMod, map_pow, h1]
   have hm2 : ¬ (l : ℤ_[l]) ∣ (m : ℤ_[l]) := by
     rw [dvd_iff_toZMod, map_natCast, ZMod.natCast_eq_zero_iff]; exact hm
   have e2 := emultiplicity_pow_sub_pow_of_prime hP hd2 hnd2 hm2

@@ -54,7 +54,7 @@ theorem ratUnit_eq_one_of_divisible :
   intro x h
   obtain ⟨y, hy⟩ := h (2 * ((x : ℚ).num.natAbs + (x : ℚ).den + 1)) (by omega)
   set n := 2 * ((x : ℚ).num.natAbs + (x : ℚ).den + 1) with hn
-  have hq : (y : ℚ) ^ n = (x : ℚ) := by rw [← hy]; simp
+  have hq : (y : ℚ) ^ n = (x : ℚ) := simp [← hy]
   have hnum : (y : ℚ).num ^ n = (x : ℚ).num := by rw [← hq, Rat.num_pow]
   have hden : (y : ℚ).den ^ n = (x : ℚ).den := by rw [← hq, Rat.den_pow]
   have h1 : (y : ℚ).den = 1 := eq_one_of_pow_eq_le_exponent (y : ℚ).den_nz hden (by omega)

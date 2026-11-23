@@ -252,7 +252,7 @@ theorem exists_denominator (M : Submodule R (Fin r → K)) (hM : M.FG) :
 theorem exists_det_ne_zero (S : Set (Fin r → K)) (hS : Submodule.span K S = ⊤) :
     ∃ Y : Matrix (Fin r) (Fin r) K, (∀ i, Y i ∈ S) ∧ Y.det ≠ 0 := by
   obtain ⟨f, hf, -, hli⟩ := Submodule.exists_fun_fin_finrank_span_eq K S
-  have e : r = Module.finrank K (Submodule.span K S) := by rw [hS]; simp
+  have e : r = Module.finrank K (Submodule.span K S) := simp [hS]
   refine ⟨Matrix.of fun i => f (Fin.cast e i), fun i => hf _, ?_⟩
   apply IsUnit.ne_zero
   rw [← Matrix.isUnit_iff_isUnit_det, ← Matrix.linearIndependent_rows_iff_isUnit]

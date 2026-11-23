@@ -105,7 +105,7 @@ theorem isLocPt_ptG {h' : C.LPt} (hh' : D.IsLocPt h' (D.ptSize h')) {m : ℕ} {K
   · obtain ⟨D, hD, hz⟩ := hq
     have hz0 : z ≠ 0 := by
       rintro rfl
-      have h0 : ((-1 : ℂ) ^ (m + 3)) * D = 0 := by rw [← hz]; simp
+      have h0 : ((-1 : ℂ) ^ (m + 3)) * D = 0 := simp [← hz]
       have : D = 0 := (mul_eq_zero.1 h0).resolve_left (pow_ne_zero _ (by norm_num))
       exact hK0 (this ▸ hD)
     intro b hb

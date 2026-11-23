@@ -92,7 +92,7 @@ private theorem exists_dual_map {G K Γ V W : Type} [Group G] [TopologicalSpace 
     let T : Module.End ℂ W := ∑ γ : Γ, ρ γ * P * ρ γ⁻¹
     have hT : T = 0 := by
       refine LinearMap.ext fun w => (Module.forall_dual_apply_eq_zero_iff ℂ _).1 fun l => ?_
-      have e : B w (ψ l) = 0 := by rw [h0]; simp
+      have e : B w (ψ l) = 0 := simp [h0]
 
       rw [hψ, map_sum] at e
       rw [← e]

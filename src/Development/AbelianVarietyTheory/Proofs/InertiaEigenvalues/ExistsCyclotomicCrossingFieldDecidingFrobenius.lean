@@ -152,7 +152,7 @@ theorem cross : ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra 
   obtain ⟨τ, hτ⟩ := IsCyclic.exists_generator (α := (ZMod m)ˣ)
   obtain ⟨u, hu, hu'⟩ := exists_fixing L hζ hirr (τ * (hζ.autToPow F g)⁻¹)
   set h := u * g with hh
-  have hχ : hζ.autToPow F h = τ := by rw [hh, map_mul, hu']; simp
+  have hχ : hζ.autToPow F h = τ := simp [hh, map_mul, hu']
   haveI : IsCyclotomicExtension {m} F (IntermediateField.adjoin F {ζ}) :=
     hζ.intermediateField_adjoin_isCyclotomicExtension F
   haveI : FiniteDimensional F (IntermediateField.adjoin F {ζ}) :=

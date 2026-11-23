@@ -50,7 +50,7 @@ theorem cmType_of_rt {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Rec
   have hE : (H.rt : E) ^ 2 = -(H.d : E) := by
     have := congrArg (algebraMap (𝓞 E) E) H.rt_sq
     simpa using this
-  have hsq : τ (H.rt : E) ^ 2 = -(H.d : ℂ) := by rw [← map_pow, hE]; simp
+  have hsq : τ (H.rt : E) ^ 2 = -(H.d : ℂ) := simp [← map_pow, hE]
   have hd : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
   have hconj : ∀ z : ℂ, z ^ 2 = -(H.d : ℂ) → starRingEnd ℂ z = -z := by
     intro z hz

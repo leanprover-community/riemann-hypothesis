@@ -66,7 +66,7 @@ theorem relIndex_inf_eq_of_mem_mul : ∀ (G : Type) [Group G] (Γ K₁ K₂ : Su
     induction y using Quotient.inductionOn' with | h k => ?_
     obtain ⟨γ, hγ, k', hk', e⟩ := h k.1 k.2
     have hγ2 : γ ∈ K₂ := by
-      have : γ = k.1 * k'⁻¹ := by rw [e]; simp
+      have : γ = k.1 * k'⁻¹ := simp [e]
       rw [this]
       exact K₂.mul_mem k.2 (K₂.inv_mem hk'.2)
     refine ⟨Quotient.mk'' ⟨γ, hγ2, hγ⟩, Quotient.sound' ?_⟩

@@ -215,7 +215,7 @@ theorem factor : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberFie
     have hu' : u • (G - 1) = 0 := hg.1 u hu
     calc u • M = (fromRows (1 : Matrix (Fin d) (Fin d) (AE F E)) 1 : Matrix (Fin d ⊕ Fin d) (Fin d) (AE F E)) * ((fromCols (1 : Matrix (Fin d) (Fin d) (AE F E)) 1 : Matrix (Fin d) (Fin d ⊕ Fin d) (AE F E)) * (u • (G - 1)) * (fromRows (1 : Matrix (Fin d) (Fin d) (AE F E)) (-1) : Matrix (Fin d ⊕ Fin d) (Fin d) (AE F E)) * D⁻¹) * (fromCols (1 : Matrix (Fin d) (Fin d) (AE F E)) (-1) : Matrix (Fin d) (Fin d ⊕ Fin d) (AE F E)) := by
           rw [hMdef, hE]; simp only [Matrix.mul_smul, Matrix.smul_mul]
-      _ = 0 := by rw [hu']; simp
+      _ = 0 := simp [hu']
   have hpK : p ∈ KD σ W v := by
     refine ⟨fun u hu => ?_, fun z hz => ⟨?_, ?_⟩⟩
     · show u • ((1 + ⅟(2 : AE F E) • M) - 1) = 0

@@ -77,7 +77,7 @@ theorem exists_frame_of_hasSignature {n p q : ℕ} {J : Matrix (Fin n) (Fin n) �
     calc _ = ((Q : Matrix _ _ ℂ) * ((Q⁻¹ : GL _ ℂ) : Matrix _ _ ℂ))ᴴ * J.reindex e e *
           ((Q : Matrix _ _ ℂ) * ((Q⁻¹ : GL _ ℂ) : Matrix _ _ ℂ)) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [Units.mul_inv]; simp
+      _ = _ := simp [Units.mul_inv]
   refine ⟨((Q⁻¹ : GL _ ℂ) : Matrix _ _ ℂ).submatrix e'.symm e, ?_, ?_⟩
   · refine IsUnit.of_mul_eq_one ((Q : Matrix _ _ ℂ).submatrix e e'.symm) ?_
     rw [Matrix.submatrix_mul_equiv, Units.inv_mul, Matrix.submatrix_one_equiv]

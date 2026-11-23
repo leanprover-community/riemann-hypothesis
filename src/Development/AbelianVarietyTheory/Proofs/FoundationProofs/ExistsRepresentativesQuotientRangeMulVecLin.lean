@@ -195,7 +195,7 @@ theorem sq_sum_bicharacter (hodd : Odd (Fintype.card A)) (B : A → AddChar A �
       simp only [φ]
       rw [hsymm (x + y), AddChar.map_add_eq_mul, hsymm (x - y) x, hsymm (x - y) y, sub_eq_add_neg,
         AddChar.map_add_eq_mul, AddChar.map_add_eq_mul, hsymm y x, hsymm (-y) y]
-      have : B x (-y) * B x y = 1 := by rw [← AddChar.map_add_eq_mul]; simp
+      have : B x (-y) * B x y = 1 := simp [← AddChar.map_add_eq_mul]
       linear_combination (-(B x x * B y (-y))) * this
   have hU2 : (s⁻¹ • F) ^ 2 = P := by
     rw [smul_pow, pow_two F, hFF, smul_smul, ← hs, inv_pow, inv_mul_cancel₀ (pow_ne_zero _ hs0),

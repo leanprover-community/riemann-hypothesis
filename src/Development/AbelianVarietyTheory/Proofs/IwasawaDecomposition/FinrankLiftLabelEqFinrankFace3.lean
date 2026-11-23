@@ -328,7 +328,7 @@ theorem span_jW_wp : GlobalTheory.Published.WeilRepresentationUnitaryPair → Gl
     have hinj : Function.Injective (Y.mj.eW i) := by
       rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
       intro d hd
-      have h1 : RealDat.nP F.lv2 false * ‖d‖ ^ 2 = 0 := by rw [← Y.mj.eW_norm i d, hd]; simp
+      have h1 : RealDat.nP F.lv2 false * ‖d‖ ^ 2 = 0 := simp [← Y.mj.eW_norm i d, hd]
       have h2 : ‖d‖ ^ 2 = 0 := by
         rcases mul_eq_zero.1 h1 with h | h
         · exact absurd h hnP.ne'

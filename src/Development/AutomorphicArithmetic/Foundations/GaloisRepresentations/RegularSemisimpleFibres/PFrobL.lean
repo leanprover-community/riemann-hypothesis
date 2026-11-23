@@ -99,7 +99,7 @@ theorem UpperTheory.Gal.InertialTypesAlt.frobL :
   | zero =>
     intro d n hd
     refine ⟨1, one_ne_zero, fun Y T _ => ?_⟩
-    have hn : n = 0 := by rw [← hd]; simp
+    have hn : n = 0 := simp [← hd]
     subst hn
     have hall : ∀ g : GL (Fin 0) F, g ∈ GlobalTheory.SmGL.parab F (GlobalTheory.SmGL.stdBlocks d hd) :=
       fun g => GlobalTheory.SmGL.mem_parab_iff.2 fun a => a.elim0

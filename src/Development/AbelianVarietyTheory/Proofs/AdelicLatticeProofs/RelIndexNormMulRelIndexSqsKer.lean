@@ -78,7 +78,7 @@ theorem relIndex_norm_mul_relIndex_sqs_ker :
       rw [hK] at hc
       rw [hfa] at hac
       have hc' : σ c = c⁻¹ := eq_inv_of_mul_eq_one_right hc
-      have ha' : σ a = a / c ^ 2 := by rw [hac]; simp
+      have ha' : σ a = a / c ^ 2 := simp [hac]
       refine ⟨a / c, ?_, ?_⟩
       · rw [hBa, map_div, hc', ha', sq, div_inv_eq_mul, div_mul_eq_div_div, div_mul_cancel]
       · rw [hNa, ha', div_pow, sq a, mul_div_assoc]

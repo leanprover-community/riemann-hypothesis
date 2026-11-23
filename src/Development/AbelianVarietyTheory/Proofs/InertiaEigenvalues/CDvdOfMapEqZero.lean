@@ -96,7 +96,7 @@ theorem map_act (e : A →ₐ[ℤ_[l]] B) (c : ℤ_[l]) (x : A⟦X⟧) :
     rw [hX, X_dvd_iff, cyc_const]
 
 theorem constantCoeff_act (c : ℤ_[l]) (x : A⟦X⟧) : constantCoeff (act l A c x) = constantCoeff x := by
-  obtain ⟨y, hy⟩ : X ∣ x - C (constantCoeff x) := by rw [X_dvd_iff]; simp
+  obtain ⟨y, hy⟩ : X ∣ x - C (constantCoeff x) := simp [X_dvd_iff]
   have h : x = C (constantCoeff x) + X * y := by rw [← hy]; ring
   conv_lhs => rw [h, map_add (f := _), map_mul, act_C, act_X, map_add (f := _), map_mul, cyc_const]
   simp
@@ -166,7 +166,7 @@ theorem isAdicComplete_span {A : Type} [CommRing A] (p : A) [IsAdicComplete (Ide
     refine le_antisymm (fun x hx => ?_) (sup_le ?_ ?_)
     · rw [Ideal.mem_comap, Ideal.mem_span_singleton] at hx
       obtain ⟨c, hc⟩ := hx
-      obtain ⟨y, hy⟩ : X ∣ x - C (constantCoeff x) := by rw [X_dvd_iff]; simp
+      obtain ⟨y, hy⟩ : X ∣ x - C (constantCoeff x) := simp [X_dvd_iff]
       have h : x = C p * C c + X * y := by rw [← hy, ← map_mul, ← hc]; ring
       rw [h]
       exact Submodule.add_mem_sup (Ideal.mul_mem_right _ _ (Ideal.mem_span_singleton_self _))

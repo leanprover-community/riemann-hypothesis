@@ -98,7 +98,7 @@ theorem intdet : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] 
     induction n with
     | zero =>
       calc _ ≤ ∫⁻ X, 1 ∂(volM μ (Fin 0) (Fin 0)) := lintegral_mono fun X => ?_
-        _ < ⊤ := by rw [lintegral_one, volM]; erw [Measure.pi_univ]; simp
+        _ < ⊤ := simp [lintegral_one, volM]; erw [Measure.pi_univ]
       by_cases hX : X ∈ intM k (Fin 0) (Fin 0)
       · rw [Set.indicator_of_mem hX]
         simp [P, GlobalTheory.SplitWeil.Model.nabs_one]

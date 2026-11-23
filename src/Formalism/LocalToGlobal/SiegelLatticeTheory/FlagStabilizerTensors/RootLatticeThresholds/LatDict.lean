@@ -312,7 +312,7 @@ theorem stab_perp {γ : (VS D).V ≃ₗ[D.host.E] (VS D).V} (hγ : γ ∈ stabF 
     rw [Xa_top] at h
     have hm : X.eX a ∈ (Xs X).map (γ : (VS D).V →ₗ[D.host.E] (VS D).V) := h.symm ▸ eX_mem_Xs X a
     obtain ⟨x, hx, hxe⟩ := hm
-    have : γ.symm (X.eX a) = x := by rw [← hxe]; simp
+    have : γ.symm (X.eX a) = x := simp [← hxe]
     rw [this]; exact hx
   exact hT_Xs_prV X hs w
 
@@ -1493,7 +1493,7 @@ theorem latInj {D : D7} (X : HidaSetting D) (u : D.what₂.Word) : LatInj X u :=
     have hy' : y ∈ Λ' := by rw [← SetLike.mem_coe, hΛ']; exact hy
     rw [← hγΛ] at hy'
     obtain ⟨x, hx, hxy⟩ := hy'
-    have e : γ.symm y = x := by rw [← hxy]; simp
+    have e : γ.symm y = x := simp [← hxy]
     rw [e, ← hΛ]
     exact hx
   have h1 : gW X γ ∘ₗ gW X γ.symm = LinearMap.id :=

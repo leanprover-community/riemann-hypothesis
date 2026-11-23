@@ -58,7 +58,7 @@ theorem key (hlin : ∀ (c : A) (x : H) (φ : Q), κ (c • x) φ = i c * κ x �
   obtain ⟨n₀, h₀⟩ := hinj
   have h1 : β (t ^ n • x' - c • x y) = 0 := by
     rw [map_sub, map_smul, map_smul, h, hx, smul_smul, smul_smul, mul_comm, sub_self]
-  have h2 : κ (t ^ n₀ • (t ^ n • x' - c • x y)) φ = 0 := by rw [h₀ _ h1]; simp
+  have h2 : κ (t ^ n₀ • (t ^ n • x' - c • x y)) φ = 0 := simp [h₀ _ h1]
   simp only [smul_sub, map_sub, AddMonoidHom.sub_apply, hlin, map_pow] at h2
   have h3 : i t ^ n * κ x' φ = i c * κ (x y) φ := by
     apply (ht.pow n₀).mul_left_cancel; linear_combination h2

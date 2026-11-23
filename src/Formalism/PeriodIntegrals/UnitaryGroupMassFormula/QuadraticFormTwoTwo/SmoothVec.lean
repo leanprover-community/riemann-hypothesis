@@ -157,7 +157,7 @@ theorem sv_lie_conj {z : Fin (2 * r + k + 1) → ℂ} {X h₀ : Mx k r} (hX : in
           simp only [conjTranspose_mul, Matrix.mul_assoc]
       _ = h₀ᴴ * (Xᴴ * Hpk k r + Hpk k r * X) * h₀ := by
           rw [A, B]; simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-      _ = 0 := by rw [hX.1]; simp
+      _ = 0 := simp [hX.1]
   · rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hh₀.2.2, hX.2.1, Matrix.mulVec_zero]
   · rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, (hh₀.2.1 a).1, (hX.2.2 a).1, Matrix.mulVec_zero]
   · rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, (hh₀.2.1 a).2, (hX.2.2 a).2, Matrix.mulVec_zero]

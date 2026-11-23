@@ -88,7 +88,7 @@ theorem exists_scalar : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : 
         (GlobalTheory.LFun.LSD D (finS R A.μ0) Bf μ' ((1 + (D.R.t : ℂ)) / 2) / (dOff D (finS R A.μ0) : ℂ)))) / N,
       fun y₁ hy₁ y₂ w hw => ?_⟩
     have hm : ∀ x, (R.HW i σ).e x ∈ R.Wall i σ := HMod_mem (hC.models.HW i σ)
-    have hw' : ⟪w, w⟫_ℂ = 1 := by rw [inner_self_eq_norm_sq_to_K, hw]; simp
+    have hw' : ⟪w, w⟫_ℂ = 1 := simp [inner_self_eq_norm_sq_to_K, hw]
     have hy' : y₁ ∈ typePart R i σ A.μ0 R.triv ev := by
       rw [GlobalTheory.LiftLower.typePart_base hC.lev]; exact hy₁
     have hK1 := hK _ (Submodule.mem_comap.1 hy') _ (hm y₂)

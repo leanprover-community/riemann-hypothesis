@@ -186,7 +186,7 @@ theorem stab_blockDiag : ∀ {K : Type} [Field K] (sig : K →+* K), (∀ x, sig
     generalize s'⁻¹ = U at hUup hUβ hsU hUs
     have hUdiag : ∀ i, U i i = 1 := by
       intro i
-      have h1 : (s' * U) i i = 1 := by rw [hsU]; simp
+      have h1 : (s' * U) i i = 1 := simp [hsU]
       rw [Matrix.mul_apply, Finset.sum_eq_single i, (hs' i i).2 rfl, one_mul] at h1
       · exact h1
       · intro k _ hk

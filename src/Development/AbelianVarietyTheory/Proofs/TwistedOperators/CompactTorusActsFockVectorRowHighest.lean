@@ -188,7 +188,7 @@ theorem mem_UH_tor (C : Ctx S T) {B : C.Bas} (hB : C.IsB B) (ρ : D.what₂.Tau)
         simp only [conjTranspose_mul, Matrix.mul_assoc]
     _ = (P⁻¹)ᴴ * (Pᴴ * G * P) * P⁻¹ := by rw [hP, hdd]
     _ = (P * P⁻¹)ᴴ * G * (P * P⁻¹) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = G := by rw [mul_nonsing_inv _ hdet]; simp
+    _ = G := simp [mul_nonsing_inv _ hdet]
 
 theorem compAt_torAt (C : Ctx S T) {B : C.Bas} (hB : C.IsB B) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ)
     (τ : D.what₂.Tau) : compAt C.θ τ (mt T (torAt C.θ T B ρ t)) =

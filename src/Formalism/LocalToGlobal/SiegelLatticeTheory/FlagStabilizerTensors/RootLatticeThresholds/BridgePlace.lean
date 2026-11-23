@@ -516,7 +516,7 @@ theorem bridge_place (hT : TrHyp F Qm Qim c) (hT' : TrHyp F' Qm Qim c) {sc : ℝ
   set pL : ℂ := ∏ j, L j with hpL
   set pS : ℂ := ∏ j, star (L j) with hpS
   have hpLs : star pL = pS := by rw [hpL, hpS, star_prod]
-  have hpSs : star pS = pL := by rw [hpL, hpS, star_prod]; simp
+  have hpSs : star pS = pL := simp [hpL, hpS, star_prod]
   have hdet : (Formalism.QuantumDeterminants.Zhat k r Bs.z Bs.z' (Qim * (Hi * g * H') * Qm)).det = pL * pS * Z.det := by
     rw [hZC, Matrix.det_mul, Matrix.det_mul, Matrix.det_diagonal, Matrix.det_diagonal]
     ring

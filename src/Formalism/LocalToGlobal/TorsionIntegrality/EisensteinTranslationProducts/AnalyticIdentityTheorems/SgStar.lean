@@ -220,7 +220,7 @@ theorem sgStarBasic_of (he : SigmaEntire) (ho : SigmaOdd) (hz : SigmaZero) (h1 :
       simpa using this
     rw [h.cexp.deriv]
     ring
-  have he1 : deriv e 0 = 0 := by rw [hde]; simp
+  have he1 : deriv e 0 = 0 := simp [hde]
   have he2 : iteratedDeriv 2 e 0 = -(s2 L) := by
     rw [iteratedDeriv_succ, iteratedDeriv_one, hde]
     have h : HasDerivAt (fun z : ℂ => -(s2 L) * z * e z)

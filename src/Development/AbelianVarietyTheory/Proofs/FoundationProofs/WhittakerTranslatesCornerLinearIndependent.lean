@@ -213,7 +213,7 @@ lemma sum_char (ψ : AddChar (ZMod g) ℂ) (hψ : ψ ≠ 1) (d : Fin N → ZMod 
     · intro b _ hb; simp [hb]
     · simp
   simp only [e2, ← Finset.mul_sum] at e
-  have : (ψ t - 1) * ∑ v : Fin N → ZMod g, ψ (∑ c, d c * v c) = 0 := by rw [sub_mul, e]; simp
+  have : (ψ t - 1) * ∑ v : Fin N → ZMod g, ψ (∑ c, d c * v c) = 0 := simp [sub_mul, e]
   exact (mul_eq_zero.1 this).resolve_left (sub_ne_zero.2 ht')
 
 lemma step {M : Type} [AddCommGroup M] [Module ℂ M] (ρ : Representation ℂ (GG g N) M) (L : Lev g N)

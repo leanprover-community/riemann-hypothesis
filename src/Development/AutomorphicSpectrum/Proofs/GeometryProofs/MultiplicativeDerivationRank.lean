@@ -122,7 +122,7 @@ theorem derivation_pow_of_eq (D : Derivation k R R) {z : R} (hz : D z = z) (n : 
 
 theorem derivation_inv_of_eq (D : Derivation k R R) {z w : R} (hz : D z = z) (hw : z * w = 1) :
     D w = -w := by
-  have h1 : D (z * w) = 0 := by rw [hw]; simp
+  have h1 : D (z * w) = 0 := simp [hw]
   rw [D.leibniz, hz] at h1
   simp only [smul_eq_mul] at h1
   have h2 : w * (z * D w + w * z) = 0 := by rw [h1, mul_zero]

@@ -90,7 +90,7 @@ theorem rt_sq_map (H : Host E) (τ : E →+* ℂ) : τ H.rt ^ 2 = -(H.d : ℂ) :
   simpa using congrArg (fun w : 𝓞 E => τ w) H.rt_sq
 
 theorem bar_rt (H : Host E) : H.bar H.rt = -H.rt := by
-  have h1 : H.bar H.rt ^ 2 = H.rt ^ 2 := by rw [← map_pow, H.rt_sq]; simp
+  have h1 : H.bar H.rt ^ 2 = H.rt ^ 2 := simp [← map_pow, H.rt_sq]
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 h1 with h | h
   · exfalso
     obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance

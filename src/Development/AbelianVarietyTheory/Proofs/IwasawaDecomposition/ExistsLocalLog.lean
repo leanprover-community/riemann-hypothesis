@@ -78,7 +78,7 @@ theorem local_log_UJ : ∀ (n : ℕ) (ε : Fin n → Bool), ∃ L : Mx n → Mx 
       rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, hU', hJ]
     rw [h3]
     calc Jm ε * (Jm ε * g * Jm ε) * Jm ε = (Jm ε * Jm ε) * g * (Jm ε * Jm ε) := by simp only [Matrix.mul_assoc]
-      _ = g := by rw [hJ]; simp
+      _ = g := simp [hJ]
   rw [he] at hg'
   show (L g)ᴴ * Jm ε + Jm ε * L g = 0
   nth_rewrite 2 [hg']

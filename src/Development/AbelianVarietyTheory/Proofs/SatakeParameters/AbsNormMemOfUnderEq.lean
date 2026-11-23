@@ -54,7 +54,7 @@ theorem isSquare_neg_padic (q : ℕ) [hq : Fact q.Prime] (d : ℕ) (a : ℤ)
     rw [hF, hF']; push_cast at hn hlt; rw [hn]; simpa using hlt)
   rw [hF] at hz
   refine ⟨(z : ℚ_[q]), ?_⟩
-  have : ((z ^ 2 + d : ℤ_[q]) : ℚ_[q]) = 0 := by rw [hz]; simp
+  have : ((z ^ 2 + d : ℤ_[q]) : ℚ_[q]) = 0 := simp [hz]
   push_cast at this
   linear_combination -this
 

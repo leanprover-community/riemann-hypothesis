@@ -526,8 +526,8 @@ theorem dif_projOp (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) {f : (∀ k, Finset (ι k)
     rw [Finset.sum_eq_single j]
     · by_cases h2 : (I j).card = 2
       · obtain ⟨a, b, hab, hIj⟩ := Finset.card_eq_two.1 h2
-        have ha : a ∈ I j := by rw [hIj]; simp
-        have hb : b ∈ I j := by rw [hIj]; simp
+        have ha : a ∈ I j := simp [hIj]
+        have hb : b ∈ I j := simp [hIj]
         have e1 := faceSign_pair hIj hab
         have e2 := faceSign_mul_self I j a
         have e3 : faceSign I j a + faceSign I j b = 0 := by

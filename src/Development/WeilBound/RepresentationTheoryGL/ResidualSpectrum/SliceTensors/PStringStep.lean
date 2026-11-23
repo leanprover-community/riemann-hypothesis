@@ -63,7 +63,7 @@ theorem stringStep_of : GlobalTheory.Published.JacquetShalikaRigidity → Global
   rcases StrStepD.match_left ha₁ ha₂ π₁ π₂ hn₁ hn₂ _ _ hp₀ ⟨d₁ - 1, by omega⟩ with ⟨i', hi'⟩ | ⟨j, hj, hcls⟩
   · exfalso
     have h := congrArg Complex.re hi'
-    have hi : ((d₁ - 1 : ℕ) : ℝ) = d₁ - 1 := by rw [Nat.cast_sub (by omega)]; simp
+    have hi : ((d₁ - 1 : ℕ) : ℝ) = d₁ - 1 := simp [Nat.cast_sub (by omega)]
     simp only [spehExp, Complex.add_re, Complex.sub_re, Complex.neg_re, Complex.conj_re, Complex.ofReal_re,
       Complex.div_ofNat_re, Complex.natCast_re, hi] at h
     have : (0 : ℝ) ≤ (i' : ℕ) := Nat.cast_nonneg _

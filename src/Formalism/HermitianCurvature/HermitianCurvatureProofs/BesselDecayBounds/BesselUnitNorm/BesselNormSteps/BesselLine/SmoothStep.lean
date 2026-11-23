@@ -56,13 +56,13 @@ theorem conj_mem_UJ {ε : Fin (2 * r + k + 1) → Bool} {P : Mx k r} (hP : IsCay
   rw [e1, hJ, hg', ← hJ]
   calc (P⁻¹)ᴴ * (Pᴴ * Formalism.REAL.Jm ε * P) * P⁻¹ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Formalism.REAL.Jm ε := by rw [hinv']; simp
+    _ = Formalism.REAL.Jm ε := simp [hinv']
 
 theorem conj_back {ε : Fin (2 * r + k + 1) → Bool} {P : Mx k r} (hP : IsCayleyU k r ε P) (g : Mx k r) :
     P⁻¹ * (P * g * P⁻¹) * P = g := by
   have hinv : P⁻¹ * P = 1 := Matrix.nonsing_inv_mul P ((Matrix.isUnit_iff_isUnit_det P).mp hP.1.1)
   calc P⁻¹ * (P * g * P⁻¹) * P = (P⁻¹ * P) * g * (P⁻¹ * P) := by simp only [Matrix.mul_assoc]
-    _ = g := by rw [hinv]; simp
+    _ = g := simp [hinv]
 
 theorem ds_rep {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1) → ℝ} {σ : Mx k r → (H →L[ℂ] H)}
     (hσ : IsDSHpk k r ε lam σ) :

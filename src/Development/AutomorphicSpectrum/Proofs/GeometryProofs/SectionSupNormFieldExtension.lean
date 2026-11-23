@@ -284,7 +284,7 @@ variable {S S' : Scheme.{0}} {G : Over S} {G' : Over S'} [GrpObj G] [IsCommMonOb
 theorem pt_zero {z' : Sp ℂ ⟶ S'} (a' : ArchFrame P' z' g) : pz a'.u 0 = z' ≫ eSec G' := by
   have e : a'.u.ex 0 = 1 := (a'.u.ker 0).2 a'.u.Λ.zero_mem
   have o := Out.PullGtPf.IsGrpPullback.one_left a'.cart
-  have e₁ : (1 : 𝟙_ (Over (Sp ℂ)) ⟶ a'.A) = η[a'.A] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over (Sp ℂ)) ⟶ a'.A) = η[a'.A] := simp [Hom.one_def]
   rw [pz, e, e₁]
   exact o
 

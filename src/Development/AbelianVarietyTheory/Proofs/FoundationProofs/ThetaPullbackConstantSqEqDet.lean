@@ -257,7 +257,7 @@ theorem sq_eq_of_ph {r : ℕ} (G : Matrix (Fin r) (Fin r) ℂ) (hG : G.conjTrans
     rw [mul_pow, ← pow_mul, ← pow_mul, show 2 * (2 * m) = m * 4 by ring, pow_mul, this,
       show r * (2 * m) = 2 * (r * m) by ring, pow_mul (-1 : ℂ)]
     simp
-  · have hs : ((-1 : ℂ) ^ r) * (-1) ^ r = 1 := by rw [← mul_pow]; simp
+  · have hs : ((-1 : ℂ) ^ r) * (-1) ^ r = 1 := simp [← mul_pow]
     have hGd : G.det ≠ 0 := by
       intro h0
       have := congrArg Matrix.det hG

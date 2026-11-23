@@ -76,7 +76,7 @@ theorem PhaseOnMinus.proof (ι : Type*) [Fintype ι] [DecidableEq ι] :
       linear_combination (-1 / 2 : ℂ) * hab
     calc _ = ((1 + a) / 2 * ((1 + b) / 2) + (1 - a) / 2 * ((1 - b) / 2)) • (1 : Matrix ι ι ℂ)
           + ((1 + a) / 2 * ((1 - b) / 2) + (1 - a) / 2 * ((1 + b) / 2)) • A := by module
-      _ = 1 := by rw [e1, e2]; simp
+      _ = 1 := simp [e1, e2]
   have hDA : ∀ a : ℂ, Dm a * A = A * Dm a := by
     intro a
     simp only [Dm, add_mul, mul_add, smul_mul_assoc, mul_smul_comm, Matrix.one_mul,

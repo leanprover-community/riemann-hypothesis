@@ -189,7 +189,7 @@ theorem jacquet_surjective : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologi
       refine ⟨c⁻¹ * b⁻¹, ⟨J.mul_mem (J.inv_mem hc.1) (J.inv_mem hb.1),
         (cosetStab π q u').mul_mem ((cosetStab π q u').inv_mem (hNstab c hc.2)) ((cosetStab π q u').inv_mem hbS)⟩, ?_⟩
       have h5 : (c⁻¹ * b⁻¹)⁻¹ * y = a'⁻¹ := by
-        have : y = (a' * b * c)⁻¹ := by rw [← hy']; simp
+        have : y = (a' * b * c)⁻¹ := simp [← hy']
         rw [this]; group
       rw [h5]
       exact inv_mem ha')

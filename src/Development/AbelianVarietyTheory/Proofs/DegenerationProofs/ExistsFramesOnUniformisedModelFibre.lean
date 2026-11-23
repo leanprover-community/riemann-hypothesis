@@ -83,7 +83,7 @@ theorem comp_mulA (x : T ⟶ A) (n : ℕ) : x.left ≫ (mulA A n).left = (x ^ n)
   rw [← Over.comp_left, comp_pow, Category.comp_id]
 
 theorem eSec_mulA (n : ℕ) : eSec A ≫ (mulA A n).left = eSec A := by
-  have e₁ : (1 : 𝟙_ (Over S) ⟶ A) = η[A] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S) ⟶ A) = η[A] := simp [Hom.one_def]
   have := comp_mulA (1 : 𝟙_ (Over S) ⟶ A) n
   rw [one_pow, e₁] at this
   exact this

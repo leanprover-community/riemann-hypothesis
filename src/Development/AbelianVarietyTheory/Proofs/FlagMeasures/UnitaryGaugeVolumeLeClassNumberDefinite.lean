@@ -151,7 +151,7 @@ theorem isom_equivalence (E : Type) [Field E] [NumberField E] [StarRing E] (r : 
               ((γ : Matrix (Fin r) (Fin r) E) * ((γ⁻¹ : GL (Fin r) E) : Matrix (Fin r) (Fin r) E)) := by
             rw [← h1, conjTranspose_mul]
             simp only [Matrix.mul_assoc]
-        _ = Y.1.1 := by rw [hu]; simp
+        _ = Y.1.1 := simp [hu]
     · have h3 := h2 (((γ⁻¹ : GL (Fin r) E) : Matrix (Fin r) (Fin r) E) *ᵥ y)
       rw [mulVec_mulVec, Units.mul_inv, one_mulVec] at h3
       exact h3.symm

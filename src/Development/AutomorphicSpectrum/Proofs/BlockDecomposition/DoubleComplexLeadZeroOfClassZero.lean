@@ -83,7 +83,7 @@ theorem push_step (n k q : ℕ) (hkq : k + q + 1 = n) (W : ∀ p q, K.X p q)
   obtain ⟨q, rfl⟩ : ∃ r, q = r + 1 := ⟨q - 1, by omega⟩
   obtain ⟨y, hy⟩ := hB
   have hy' : K.dv k q y = W k (q + 1) := hy
-  have hsq : ((-1 : ℤ) ^ k * (-1) ^ k) = 1 := by rw [← mul_pow]; simp
+  have hsq : ((-1 : ℤ) ^ k * (-1) ^ k) = 1 := simp [← mul_pow]
   have hDY : K.D (K.sgl k q ((-1 : ℤ) ^ k • y)) =
       K.sgl (k + 1) q (K.dh k q ((-1 : ℤ) ^ k • y)) + K.sgl k (q + 1) (W k (q + 1)) := by
     rw [K.D_sgl, map_zsmul (K.dv k q), hy', map_zsmul (K.sgl k (q + 1)), smul_smul, hsq, one_smul]

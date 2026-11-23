@@ -284,7 +284,7 @@ theorem faceCut_data (hP : IsPolyFanOn bar φ X) [Module.Finite ℤ X] {m m' : �
     intro j
     constructor
     · intro h0
-      have h0' : ((h' (γ j) : ℤ) : ℝ) = 0 := by rw [h0]; simp
+      have h0' : ((h' (γ j) : ℤ) : ℝ) = 0 := simp [h0]
       rw [hreal] at h0'
       have hN' : (N : ℝ) ≠ 0 := by exact_mod_cast hN.ne'
       have he : (NF : ℝ) * φ.evalZ (γ j) = ℓF (γ j) := by

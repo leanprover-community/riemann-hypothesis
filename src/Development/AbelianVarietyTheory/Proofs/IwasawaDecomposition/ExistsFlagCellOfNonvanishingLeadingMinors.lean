@@ -105,7 +105,7 @@ theorem exists_lu (A : Matrix (Fin n) (Fin n) K)
   letI := L.invertibleOfIsUnitDet hu
   have hN : L⁻¹.BlockTriangular OrderDual.toDual := blockTriangular_inv_of_blockTriangular hLt
   refine ⟨L⁻¹, L * A, fun i k h => hN h, fun i => ?_, hz, fun i => ?_, ?_⟩
-  · have h1 : (L * L⁻¹) i i = 1 := by rw [mul_nonsing_inv _ hu]; simp
+  · have h1 : (L * L⁻¹) i i = 1 := simp [mul_nonsing_inv _ hu]
     rw [Matrix.mul_apply, Finset.sum_eq_single i, hd, one_mul] at h1
     · exact h1
     · intro k _ hk

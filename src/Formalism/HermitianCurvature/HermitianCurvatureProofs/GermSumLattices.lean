@@ -331,7 +331,7 @@ theorem amp_latInv (h h' : Point K) (t₁ ζ : Kˣ) (Om Esq : Set K) (Λ' Λ₁ 
   obtain ⟨b, hb⟩ := hsq (u' * u⁻¹) (by
     rw [Units.val_mul, hu', add_mul, Units.mul_inv, add_sub_cancel_left]
     exact hE)
-  have hub : u' = u * b ^ 2 := by rw [← hb]; simp
+  have hub : u' = u * b ^ 2 := simp [← hb]
   have e1 : γ (u' * t₁) = γ (u * t₁) := by
     rw [hub, mul_right_comm, hγ2]
   have e2 : γ (ζ * u' * t₁) = γ (ζ * u * t₁) := by
@@ -506,7 +506,7 @@ theorem cut_Q (m : ℕ) (Om : Set K) (t c : Kˣ) (hc : (c : K) ∈ cutSet m Om t
   refine ⟨z, hz, ?_⟩
   simp only
   rw [hzc, neg_pow (t : K) m]
-  have h1 : ((-1 : K) ^ m) * ((-1) ^ m) = 1 := by rw [← mul_pow]; simp
+  have h1 : ((-1 : K) ^ m) * ((-1) ^ m) = 1 := simp [← mul_pow]
   linear_combination ((t : K) ^ m * c) * h1
 
 theorem cut_mem [TopologicalSpace K] (m : ℕ) (Om : Set K) (hOm : IsOmega (m + 1) Om) (t c z : Kˣ)

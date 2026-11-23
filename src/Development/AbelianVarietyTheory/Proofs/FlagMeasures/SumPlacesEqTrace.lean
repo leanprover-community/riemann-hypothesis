@@ -248,7 +248,7 @@ theorem exists_model (k r : ℕ) : ∃ (P Q : ℕ) (C : Matrix (Fin P ⊕ Fin Q)
     rw [← hC]
     calc Dᴴ * (Cᴴ * Formalism.UG.Jpq P Q * C) * D = (C * D)ᴴ * Formalism.UG.Jpq P Q * (C * D) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [hCD]; simp
+      _ = _ := simp [hCD]
   obtain ⟨-, -, -, -, hB, hcl⟩ := GlobalTheory.UpqTopology.upq_lcsc P Q
   let h : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ ≃ₜ Mt k r :=
     { toFun := fun x => D * x * C

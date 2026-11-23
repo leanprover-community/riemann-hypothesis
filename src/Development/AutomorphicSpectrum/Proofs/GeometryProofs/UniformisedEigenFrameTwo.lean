@@ -147,7 +147,7 @@ theorem norm_core {p q g : ℕ} (V : Fin p → Fin g → ℂ) (W : Fin q → Fin
   have hXne : X ≠ 0 := by
     intro h0
     rw [h0, div_zero, norm_zero] at t₄
-    have h00 : (2 : ℝ) ^ p * (2 : ℝ)⁻¹ ^ q * ‖S.det‖ * H₂.det.re = 0 := by rw [← t₄]; simp
+    have h00 : (2 : ℝ) ^ p * (2 : ℝ)⁻¹ ^ q * ‖S.det‖ * H₂.det.re = 0 := simp [← t₄]
     exact hc.ne' h00
   have hdne : d ≠ 0 := fun h0 => hXne (by rw [← hmul, h0, mul_zero])
   have hq : M / X = d⁻¹ := by

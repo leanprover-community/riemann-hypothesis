@@ -190,7 +190,7 @@ private theorem pt_bound {s : ℂ} (hs : s ≠ 0) (w : InfinitePlace F) (x x' : 
     {t U : ℝ} (ht : 0 ≤ t) (hU : 0 ≤ U) (hY : ∀ i j, ‖Y i j‖ ≤ t) (h' : ∀ i, |x' i w| ≤ U) (i : Fin 4) :
     |x i w| ≤ (1 + ‖s‖⁻¹) * (4 * (1 + ‖s‖)) * (t ^ 2 * U) := by
   have e : Hm s w x = Y * Hm s w x' * Yᴴ := by
-    calc Hm s w x = (Y * Z) * Hm s w x * (Y * Z)ᴴ := by rw [hZ]; simp
+    calc Hm s w x = (Y * Z) * Hm s w x * (Y * Z)ᴴ := simp [hZ]
       _ = Y * Hm s w x' * Yᴴ := by
         rw [hx, Matrix.conjTranspose_mul]
         simp only [Matrix.mul_assoc]

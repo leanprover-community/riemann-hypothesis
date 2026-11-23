@@ -64,13 +64,13 @@ theorem howe_finiteLength_uniqueMaximal_of_cyclic : ∀ (T : Type) [Fintype T] [
     obtain ⟨x, rfl⟩ := Submodule.mem_span_singleton.mp hy
     by_cases hx : x = 0
     · subst hx
-      have hnC : n = c := by rw [← hyc]; simp
+      have hnC : n = c := simp [← hyc]
       have hvN' : v ∈ N' := by
         rw [← hnn]; exact N'.add_mem (hCN' (hnC ▸ hc')) hn'.1
       exact hN't (hgen N' hN' hCN' hvN')
     · have hvN : v ∈ N := by
         have h1 : x • v ∈ N := by
-          have : x • v = n - c := by rw [← hyc]; simp
+          have : x • v = n - c := simp [← hyc]
           rw [this]; exact N.sub_mem hn.1 (hCN hc')
         have := N.smul_mem x⁻¹ h1
         rwa [smul_smul, inv_mul_cancel₀ hx, one_smul] at this

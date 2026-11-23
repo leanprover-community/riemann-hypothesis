@@ -94,7 +94,7 @@ theorem lintegral_thetaSum_schr_sq : ∀ (F : Type) [Field F] [NumberField F] (�
   have he_cont : ∀ ξ, Continuous (e ξ) := fun ξ => by
     rw [he]; exact hcont.comp (continuous_const.dotProduct continuous_id)
   have hconj : ∀ t, (starRingEnd ℂ) (ψ t) = ψ (-t) := fun t => by
-    have h1 : ψ t * (starRingEnd ℂ) (ψ t) = 1 := by rw [Complex.mul_conj', hnorm]; simp
+    have h1 : ψ t * (starRingEnd ℂ) (ψ t) = 1 := simp [Complex.mul_conj', hnorm]
     have h2 : ψ t * ψ (-t) = 1 := by rw [← AddChar.map_add_eq_mul, add_neg_cancel, AddChar.map_zero_eq_one]
     have h0 : ψ t ≠ 0 := fun h => by simpa [h] using hnorm t
     exact mul_left_cancel₀ h0 (h1.trans h2.symm)

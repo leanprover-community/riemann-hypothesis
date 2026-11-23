@@ -69,7 +69,7 @@ theorem Sp.of_mul_eq_one {g s : Matrix (κ ⊕ κ) (κ ⊕ κ) F} (hg : Sp g) (h
   unfold Sp at *
   calc sᵀ * J F κ * s = sᵀ * (gᵀ * J F κ * g) * s := by rw [hg]
     _ = (g * s)ᵀ * J F κ * (g * s) := by rw [Matrix.transpose_mul]; simp only [Matrix.mul_assoc]
-    _ = J F κ := by rw [h1]; simp
+    _ = J F κ := simp [h1]
 
 theorem Sp.sInv {g : Matrix (κ ⊕ κ) (κ ⊕ κ) F} (hg : Sp g) : Sp (sInv g) :=
   Sp.of_mul_eq_one hg (mul_sInv hg)

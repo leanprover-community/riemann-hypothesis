@@ -78,7 +78,7 @@ theorem inv_mem_KAt {G s a : Matrix (Fin n) (Fin n) ℂ} (hG : IsUnit G.det) (ha
     calc (a⁻¹)ᴴ * G * a⁻¹ = (a⁻¹)ᴴ * (aᴴ * G * a) * a⁻¹ := by rw [h1]
       _ = (a * a⁻¹)ᴴ * G * (a * a⁻¹) := by
         rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = G := by rw [hright]; simp
+      _ = G := simp [hright]
   · calc a⁻¹ * s = a⁻¹ * s * (a * a⁻¹) := by rw [hright, Matrix.mul_one]
       _ = a⁻¹ * (s * a) * a⁻¹ := by simp only [Matrix.mul_assoc]
       _ = a⁻¹ * (a * s) * a⁻¹ := by rw [ha'.2]

@@ -445,7 +445,7 @@ theorem gaussModulus_of (hPL : PerpLat) : GaussModulus := by
         (gi ((PL (perp ψ L) m).map (mv M⁻¹)) (PL Λ m) * volL R Λ ^ m) * modK R M.det := by ring
     _ = (volL R L * volL R (perp ψ L)) ^ m * (modK R (M⁻¹).det * modK R M.det) := by
         rw [e1, e2]; ring
-    _ = 1 := by rw [hvol, e3]; simp
+    _ = 1 := simp [hvol, e3]
 
 end Final
 

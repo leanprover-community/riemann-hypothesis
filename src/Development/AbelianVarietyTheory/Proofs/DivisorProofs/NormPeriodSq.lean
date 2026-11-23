@@ -88,7 +88,7 @@ theorem normSq_scale (hc : cc ≠ ⊥) (h : IsScale D cc r) (δ : ℂ) (τ : D.w
 
 theorem IsScale.ne_zero (hc : cc ≠ ⊥) (h : IsScale D cc r) : r ≠ 0 := by
   rintro rfl
-  have h1 : ((Ideal.absNorm cc : ℕ) : D.host.E) = 0 := by rw [← h]; simp
+  have h1 : ((Ideal.absNorm cc : ℕ) : D.host.E) = 0 := simp [← h]
   exact hc (Ideal.absNorm_eq_zero_iff.1 (by exact_mod_cast h1))
 
 theorem norm_period_sq (hc : cc ≠ ⊥) (h : IsScale D cc r) (δ : ℂ) (τ : D.what₂.Tau) :

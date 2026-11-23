@@ -57,7 +57,7 @@ theorem idem_mul_compl {e : R} (he : e * e = e) : e * (1 - e) = 0 := by rw [mul_
 
 def ptM (e : R) (he : e * e = e) : Matrix m m R →* Matrix m m R where
   toFun M := (1 - e) • 1 + e • M
-  map_one' := by rw [← add_smul]; simp
+  map_one' := simp [← add_smul]
   map_mul' M N := by
     have h1 := idem_compl he
     have h2 := idem_mul_compl he
@@ -122,7 +122,7 @@ theorem blk_smul (r : R) (a b c d : Matrix (Fin n) (Fin n) R) :
 
 theorem ptM_unip {e : R} (he : e * e = e) {y : Matrix (Fin n) (Fin n) R} (hy : e • y = y) :
     ptM e he (blk4 1 y 0 1) = blk4 1 y 0 1 := by
-  have h1 : (1 - e) • (1 : Matrix (Fin n) (Fin n) R) + e • 1 = 1 := by rw [← add_smul]; simp
+  have h1 : (1 - e) • (1 : Matrix (Fin n) (Fin n) R) + e • 1 = 1 := simp [← add_smul]
   rw [ptM_apply]
   nth_rw 1 [← blk_one]
   rw [blk_smul, blk_smul, blk_add]

@@ -370,7 +370,7 @@ theorem uh_inv_mem {X : Q.Mx k r} (hX : X ∈ UH (Hpk k r)) : X⁻¹ ∈ UH (Hpk
   calc (X⁻¹)ᴴ * Hpk k r * X⁻¹ = (X⁻¹)ᴴ * (Xᴴ * Hpk k r * X) * X⁻¹ := by rw [hX']
     _ = (X * X⁻¹)ᴴ * Hpk k r * (X * X⁻¹) := by
         rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [Matrix.mul_nonsing_inv _ hdX]; simp
+    _ = Hpk k r := simp [Matrix.mul_nonsing_inv _ hdX]
 
 theorem inv_fix {X : Q.Mx k r} (hu : IsUnit X.det) {v w : Fin (2 * r + k + 1) → ℂ} (h : X *ᵥ v = w) :
     X⁻¹ *ᵥ w = v := by

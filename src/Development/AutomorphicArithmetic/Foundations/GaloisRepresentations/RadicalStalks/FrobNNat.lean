@@ -59,7 +59,7 @@ private theorem rel_mor (p : ℕ) [Fact p.Prime] {X : Scheme.{0}} [IsReduced X] 
     _ = frobN p X h j ≫ a ≫ g := by
         rw [h1, ← Category.assoc, ← frobN_nat p h h a j, Category.assoc]
     _ = frobN p X h j ≫ (GlobalTheory.VB.frob X p h ≫ V) ≫ c := by rw [h3, h2]
-    _ = frobN p X h (j + 1) ≫ V ≫ c := by rw [e]; simp
+    _ = frobN p X h (j + 1) ≫ V ≫ c := simp [e]
 
 private theorem frobN_mor (p : ℕ) [Fact p.Prime] {k : Type} [Field k] (hk : (p : k) = 0) (A : Over (Sp k)) [GrpObj A] (j : ℕ) :
     ∃ (ρ : k →+* k) (u : GrpMor (dp0 k) (𝟙 _) A (dp0 k) (𝟙 _) A ρ (spMap ρ) (frobN p A.left (cast_left p k hk A) j)),

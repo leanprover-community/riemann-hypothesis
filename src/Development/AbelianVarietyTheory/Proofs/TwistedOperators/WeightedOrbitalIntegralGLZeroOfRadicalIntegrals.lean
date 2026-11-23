@@ -57,12 +57,12 @@ theorem mul_comm_of_mem {ε : Matrix (Fin r) (Fin r) k} (hε : ε * ε = ε) {N 
     rw [← hX, ← hY]
     calc ε * (a.1 - 1) * (1 - ε) * (ε * (b.1 - 1) * (1 - ε))
         = ε * (a.1 - 1) * ((1 - ε) * ε) * (b.1 - 1) * (1 - ε) := by simp only [mul_assoc]
-      _ = 0 := by rw [h0]; simp
+      _ = 0 := simp [h0]
   have hYX : (b.1 - 1) * (a.1 - 1) = 0 := by
     rw [← hX, ← hY]
     calc ε * (b.1 - 1) * (1 - ε) * (ε * (a.1 - 1) * (1 - ε))
         = ε * (b.1 - 1) * ((1 - ε) * ε) * (a.1 - 1) * (1 - ε) := by simp only [mul_assoc]
-      _ = 0 := by rw [h0]; simp
+      _ = 0 := simp [h0]
   refine Units.ext ?_
   rw [Units.val_mul, Units.val_mul, ← sub_eq_zero]
   have : a.1 * b.1 - b.1 * a.1 = (a.1 - 1) * (b.1 - 1) - (b.1 - 1) * (a.1 - 1) := by noncomm_ring
@@ -203,7 +203,7 @@ theorem mul_mul_eq_zero {ε X Y A : Matrix (Fin r) (Fin r) k} (hε : ε * ε = �
   rw [← hX, ← hY]
   calc ε * X * (1 - ε) * A * (ε * Y * (1 - ε)) = ε * X * ((1 - ε) * (A * ε)) * Y * (1 - ε) := by
         simp only [mul_assoc]
-    _ = 0 := by rw [hA, ← mul_assoc (1 - ε), h0]; simp
+    _ = 0 := simp [hA, ← mul_assoc (1 - ε), h0]
 
 theorem conj_mem {ε : Matrix (Fin r) (Fin r) k} {N : Subgroup (GL (Fin r) k)}
     (hN : ∀ g, g ∈ N ↔ ε * (g.1 - 1) * (1 - ε) = g.1 - 1) {s : GL (Fin r) k} (hs : s.1 * ε = ε * s.1)

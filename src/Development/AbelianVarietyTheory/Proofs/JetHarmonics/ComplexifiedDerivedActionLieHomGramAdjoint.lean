@@ -114,7 +114,7 @@ theorem dC_decomp (R : Rep k r) {X₁ X₂ : Mx k r} (h₁ : InLieHpk k r X₁) 
   unfold Rep.dC
   rw [adj_decomp h₁ h₂, e1, e2]
 
-theorem lie_zero : InLieHpk k r 0 := by rw [lie_iff]; simp
+theorem lie_zero : InLieHpk k r 0 := simp [lie_iff]
 
 theorem lie_add {X Y : Mx k r} (hX : InLieHpk k r X) (hY : InLieHpk k r Y) : InLieHpk k r (X + Y) := by
   apply lie_of_adj

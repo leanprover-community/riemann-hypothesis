@@ -93,7 +93,7 @@ theorem isFundamentalDomain_shell : ∀ (E : Type) [Field E] [NumberField E] [_r
       change δ ((γ : GA E a) * splitCentre E a 1 ^ (-(m + 1)) * x) ≤ 1
       rw [mul_assoc, ← hγ0, hδr, hδz]
       calc T ^ (-(m + 1)) * δ x ≤ T ^ (-(m + 1)) * T ^ (m + 1) := mul_le_mul_of_nonneg_left hm2 (zpow_pos hT0 _).le
-        _ = 1 := by rw [hTadd]; simp
+        _ = 1 := simp [hTadd]
   · intro g1 g2 hne
     have key : ∀ (g : latticeGL E a) (γ : GL (Fin a) E) (n : ℤ),
         ratGL E a γ * splitCentre E a 1 ^ n = g → ∀ y ∈ g • (𝓕 ∩ {g | T ^ (-1 : ℤ) < δ g ∧ δ g ≤ 1}),

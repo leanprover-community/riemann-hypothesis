@@ -138,9 +138,9 @@ theorem delta_cechOfPosetOne_of_eq {y : CC F 2} {f : C1 F} (hf : e2 F y = d1 F f
     (t : {s : Finset κ // s.card = 2 + 1}) {i j k : κ} (hij : i < j) (hjk : j < k)
     (ht : t.1 = {i, j, k}) : δ F 1 (cechOfPosetOne F f) t = y t := by
   have hik := hij.trans hjk
-  have hi : i ∈ t.1 := by rw [ht]; simp
-  have hj : j ∈ t.1 := by rw [ht]; simp
-  have hk : k ∈ t.1 := by rw [ht]; simp
+  have hi : i ∈ t.1 := simp [ht]
+  have hj : j ∈ t.1 := simp [ht]
+  have hk : k ∈ t.1 := simp [ht]
   have huniv : (Finset.univ : Finset t.1) = {⟨i, hi⟩, ⟨j, hj⟩, ⟨k, hk⟩} := by
     ext ⟨x, hx⟩
     have hx' := hx

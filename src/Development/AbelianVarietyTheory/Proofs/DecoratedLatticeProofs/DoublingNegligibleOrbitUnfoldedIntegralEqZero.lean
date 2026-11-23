@@ -91,7 +91,7 @@ theorem integral_eq_zero_of_not_open : ∀ (D : D7) (V : HSp D) (a : GL (Fin V.r
   have hKN : ∀ n ∈ N, ∀ h, K (n * h) = K h := by
     intro n hn h
     obtain ⟨p, hp, hp1⟩ := hN n ((hNI n).1 hn)
-    have e : io V (n * h, g₂) = io V (n, 1) * io V (h, g₂) := by rw [← map_mul]; simp
+    have e : io V (n * h, g₂) = io V (n, 1) * io V (h, g₂) := simp [← map_mul]
     simp only [hK]
     rw [e, ← mul_assoc, hp, mul_assoc (p : GA D (dblSp V)) γ, hφ'.1, hp1]
     simp

@@ -77,7 +77,7 @@ theorem hermitian_involution_unitary_blocks {n : ℕ} (t : Matrix (Fin n) (Fin n
     rw [hspec]
     calc Uᴴ * (U * diagonal d * Uᴴ) * U = (Uᴴ * U) * diagonal d * (Uᴴ * U) := by
           simp only [Matrix.mul_assoc]
-      _ = diagonal d := by rw [hUU']; simp
+      _ = diagonal d := simp [hUU']
   have hDD : diagonal d * diagonal d = 1 := by
     rw [← hD]
     calc Uᴴ * t * U * (Uᴴ * t * U) = Uᴴ * (t * (U * Uᴴ) * t) * U := by

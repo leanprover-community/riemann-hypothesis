@@ -177,7 +177,6 @@ end Action
 
 end IsUnitBall
 
-section Completion
 
 open UniformSpace
 
@@ -204,7 +203,6 @@ instance completionMulSemiringAction : MulSemiringAction G (Completion E) where
 instance completionIsIsometricSMul : IsIsometricSMul G (Completion E) :=
   ⟨fun g => (isometry_smul E g).completion_map⟩
 
-end Completion
 
 section PadicComplex
 

@@ -62,7 +62,7 @@ theorem UpperTheory.Esk.pf_PropMV_sv_alt : _root_.UpperTheory.V.Af.HypothesesH' 
     exact ξ.ker.pow_index_mem g
   have hn : ∀ s, ‖(ξ s : Qbar l)‖ = 1 := fun s => by
     have h2 : ξ s ^ ξ.ker.index = 1 := DFunLike.congr_fun hξm s
-    have h3 : ‖(ξ s : Qbar l)‖ ^ ξ.ker.index = 1 := by rw [← norm_pow, ← Units.val_pow_eq_pow_val, h2]; simp
+    have h3 : ‖(ξ s : Qbar l)‖ ^ ξ.ker.index = 1 := simp [← norm_pow, ← Units.val_pow_eq_pow_val, h2]
     exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hm.ne').1 h3
   obtain ⟨ω, ⟨hω, hL⟩, -⟩ := exists_unique_hchar_of_finite_order ha ι ξ hc hm hξm
   have hfo : IsOfFinOrder ω := isOfFinOrder_iff_pow_eq_one.2 ⟨_, hm, hω⟩

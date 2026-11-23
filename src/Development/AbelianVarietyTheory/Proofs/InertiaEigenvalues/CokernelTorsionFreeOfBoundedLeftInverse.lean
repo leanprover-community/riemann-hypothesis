@@ -168,7 +168,7 @@ theorem mem_imM_of_smul_mem (F : Hom P Q)
     rwa [mul_one, mul_one] at this
   have hgA : ∀ τ (i : ι), ∀ n, ‖coeff n (g τ)‖ ≤ 1 := by
     intro τ i
-    have h5 : g τ = (Y0 τ * F.mat τ) i i := by rw [hY0 τ]; simp
+    have h5 : g τ = (Y0 τ * F.mat τ) i i := simp [hY0 τ]
     rw [h5]
     exact Subalgebra.sum_mem _ fun j _ => mul_mem (hY0A τ i j) (F.mem τ j i)
   have hgx : ∀ τ i, ∀ n, ‖coeff n (g τ * x τ i)‖ ≤ 1 := by

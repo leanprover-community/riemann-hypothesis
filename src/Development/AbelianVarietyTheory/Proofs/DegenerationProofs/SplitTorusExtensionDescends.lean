@@ -84,7 +84,7 @@ theorem isMonHom_of_grpPullback [Flat f] [Surjective f] {X Y : Over S} {X₀ Y�
 theorem unit_comm {X : Over S} {X₀ : Over S₀} [GrpObj X] [GrpObj X₀] {φ : X.left ⟶ X₀.left}
     (h : IsGrpPullback X X₀ f φ) : f ≫ (η[X₀]).left = (η[X]).left ≫ φ := by
   have e := congrArg (fun z => z.left) (map_one (pushHom h (𝟙_ (Over S))))
-  have e₁ : (1 : 𝟙_ (Over S) ⟶ X) = η[X] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S) ⟶ X) = η[X] := simp [Hom.one_def]
   rw [e₁] at e
   refine Eq.symm (e.trans ?_)
   show (toUnit _ ≫ η[X₀]).left = _

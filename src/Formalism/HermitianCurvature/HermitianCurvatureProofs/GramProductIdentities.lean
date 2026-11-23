@@ -69,7 +69,7 @@ theorem exp_le_one_add {x : ℝ} (hx : |x| ≤ 1 / 2) : Real.exp (-2 * |x|) ≤ 
     set u := -x with hu'
     have hu0 : 0 ≤ u := by linarith
     have h1 : 1 + 2 * u ≤ Real.exp (2 * u) := by linarith [Real.add_one_le_exp (2 * u)]
-    have h2 : Real.exp (-2 * u) * Real.exp (2 * u) = 1 := by rw [← Real.exp_add]; simp
+    have h2 : Real.exp (-2 * u) * Real.exp (2 * u) = 1 := simp [← Real.exp_add]
     have h3 : Real.exp (-2 * u) * (1 + 2 * u) ≤ 1 := by
       calc Real.exp (-2 * u) * (1 + 2 * u) ≤ Real.exp (-2 * u) * Real.exp (2 * u) :=
             mul_le_mul_of_nonneg_left h1 (Real.exp_pos _).le

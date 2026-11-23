@@ -59,7 +59,7 @@ theorem exists_factor : ∀ (M p q : ℕ) (G : Matrix (Fin M) (Fin M) ℂ), Form
     calc Qᴴ * (P.valᴴ * (reindex e e G) * P.val) * Q
         = (P.val * Q)ᴴ * (reindex e e G) * (P.val * Q) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [hPQ]; simp
+      _ = _ := simp [hPQ]
   have hdet : G.det ≠ 0 := by
     intro h0
     have h1 : (Formalism.UG.Jpq p q).det = 0 := by

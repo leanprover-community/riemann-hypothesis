@@ -129,7 +129,7 @@ theorem tv_zcl {ρS : Submonoid (Mat C N)} (hZM : ZclMul) (hUn : Unip) [CharZero
     apply hUn C N ρS _ (hT a ha j k hjk)
     have : p k * p j = 0 := hS.1.ortho (Ne.symm hjk)
     calc p j * a * p k * (p j * a * p k) = p j * a * (p k * p j) * a * p k := by simp only [mul_assoc]
-      _ = 0 := by rw [this]; simp
+      _ = 0 := simp [this]
   | one => exact zcl_sub _ ρS.one_mem
   | mul x y _ _ hx hy => exact hZM C N ρS x hx y hy
 

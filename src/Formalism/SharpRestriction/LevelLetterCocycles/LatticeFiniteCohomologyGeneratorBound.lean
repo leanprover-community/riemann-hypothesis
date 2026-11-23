@@ -270,7 +270,7 @@ private lemma e0_le_eBd_of_ExpC {l h η S e₀ : ℕ} (hl : 11 ≤ l) (hE : ExpC
     field_simp
   have hsig : Formalism.TruncatedSeriesCounting.RamifiedCoefficientChains.sig l h η ≤ h * t ^ 2 + t + η * t + 1 := by
     unfold Formalism.TruncatedSeriesCounting.RamifiedCoefficientChains.sig
-    have hc : ((l - 1 : ℕ) : ℝ) = (l : ℝ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
+    have hc : ((l - 1 : ℕ) : ℝ) = (l : ℝ) - 1 := simp [Nat.cast_sub (by omega)]
     have hq : (((h / (l - 1) + 1 : ℕ)) : ℝ) ≤ h * t + 1 := by
       have h1 := Nat.cast_div_le (α := ℝ) (m := h) (n := l - 1)
       rw [hc] at h1

@@ -107,7 +107,7 @@ theorem companion_pow_mulVec (bb : Module.Basis (Fin r) F K) (hb : ∀ i, bb i =
     rw [pow_zero, Matrix.one_mulVec, pow_zero]
     funext i
     have hr0 : 0 < r := lt_of_le_of_lt (Nat.zero_le _) i.2
-    have h1 : (1 : K) = bb ⟨0, hr0⟩ := by rw [hb]; simp
+    have h1 : (1 : K) = bb ⟨0, hr0⟩ := simp [hb]
     rw [h1, bb.repr_self, Finsupp.single_apply]
     by_cases hi : (i : ℕ) = 0
     · rw [if_pos hi, if_pos (Fin.ext hi.symm)]

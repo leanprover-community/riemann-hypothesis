@@ -141,7 +141,7 @@ theorem AllPlus.exists_unfr (h : AllPlus M) (τ : D.what₂.Tau) {g : Matrix (Fi
           simp only [star_eq_conjTranspose, Matrix.conjTranspose_mul, Matrix.mul_assoc]
       _ = (M.fr τ * (M.fr τ)⁻¹)ᴴ * (M.fr τ * (M.fr τ)⁻¹) := by
           rw [hg']; simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = 1 := by rw [Matrix.mul_nonsing_inv _ (fr_det M τ)]; simp
+      _ = 1 := simp [Matrix.mul_nonsing_inv _ (fr_det M τ)]
   · show (M.fr τ)⁻¹ * (M.fr τ * g * (M.fr τ)⁻¹) * M.fr τ = g
     rw [Matrix.mul_assoc (M.fr τ), Matrix.nonsing_inv_mul_cancel_left _ _ (fr_det M τ),
       Matrix.nonsing_inv_mul_cancel_right _ _ (fr_det M τ)]

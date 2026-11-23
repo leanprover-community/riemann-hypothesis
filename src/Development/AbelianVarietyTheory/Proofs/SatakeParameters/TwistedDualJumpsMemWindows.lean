@@ -48,7 +48,7 @@ theorem jT1_mem_window_of_bounded_v : ∀ {R : Ranks} (P : HCParam R) (j : Fin R
   have ht2 : ((R.t : ℤ) + 1) / 2 = c + 1 := by rw [hc]; push_cast; omega
   have htc : (R.t : ℤ) = 2 * c + 1 := by rw [hc]; push_cast; ring
   obtain ⟨E, hE⟩ := P.e_int j
-  have hEf : ⌊P.e j⌋ = E := by rw [hE]; simp
+  have hEf : ⌊P.e j⌋ = E := simp [hE]
   have hV : ∀ i, 0 ≤ ⌊P.v i⌋ ∧ ⌊P.v i⌋ ≤ ((⌊S⌋₊ : ℕ) : ℤ) := by
     intro i
     obtain ⟨V, hVi⟩ := P.v_int i

@@ -88,7 +88,7 @@ private theorem UpperTheory.mem_dual_of_valuation_le_different (F : Type) [Field
   calc v.valuation F x * v.intValuation d
       ≤ WithZero.exp (ordI v (differentIdeal ℤ (𝓞 F)) : ℤ) *
           WithZero.exp (-(ordI v (differentIdeal ℤ (𝓞 F)) : ℤ)) := mul_le_mul' (hx v) h1
-    _ = 1 := by rw [← WithZero.exp_add]; simp
+    _ = 1 := simp [← WithZero.exp_add]
 
 private theorem UpperTheory.false_of_mem_dual_of_valuation_eq_different_succ (F : Type) [Field F] [NumberField F] (x : F) (w : Pl F)
     (hx : x ∈ FractionalIdeal.dual ℤ ℚ (1 : FractionalIdeal (nonZeroDivisors (𝓞 F)) F))

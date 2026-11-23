@@ -242,7 +242,7 @@ theorem dualSubset (h1 : Formalism.FourierDecayAlt.L.DualLatticeInclusion) (h2 :
     have := h2 E g 0 ν i (by unfold idl; simpa using hi)
     unfold idl at this; simpa using this
   set ε : E := (-1) ^ s with hε
-  have hεε : ε * ε = 1 := by rw [hε, ← pow_add, ← two_mul, pow_mul]; simp
+  have hεε : ε * ε = 1 := simp [hε, ← pow_add, ← two_mul, pow_mul]
   have hεc : complexConj E ε = ε := by rw [hε, map_pow, map_neg, map_one]
   have hεi : ε * complexConj E i ∈ dd E ^ ν := by
     rcases neg_one_pow_eq_or E s with h | h

@@ -94,7 +94,7 @@ theorem lin_act (hP : P * P = P) (h₁ : g₁ * u₁ = 1) (h₂ : g₂ * u₂ = 
     (hg : g₂ᵀ * G * g₂.map conj = G) :
     lin G P (g₁ * x₁) (g₂ * x₂) = P * lin G P x₁ x₂ * u₂ + (1 - P) * lin G P x₁ x₂ * u₁ := by
   have e : G * g₂.map conj = u₂ᵀ * G := by
-    calc _ = (g₂ * u₂)ᵀ * G * g₂.map conj := by rw [h₂]; simp
+    calc _ = (g₂ * u₂)ᵀ * G * g₂.map conj := simp [h₂]
       _ = u₂ᵀ * (g₂ᵀ * G * g₂.map conj) := by simp only [transpose_mul, Matrix.mul_assoc]
       _ = _ := by rw [hg]
   rw [lin, lin, (proj_parts hP _ _).1, (proj_parts hP _ _).2, Matrix.map_mul, ← Matrix.mul_assoc G,

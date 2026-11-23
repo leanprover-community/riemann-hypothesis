@@ -159,7 +159,7 @@ theorem smoothVec_transport (hP : IsUnit P) (h : Pᴴ * Formalism.REAL.Jm ε * P
   have h' : (P⁻¹)ᴴ * G * P⁻¹ = Formalism.REAL.Jm ε := by
     calc (P⁻¹)ᴴ * G * P⁻¹ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
           rw [← h]; simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [h1]; simp
+      _ = _ := simp [h1]
   constructor
   · intro hw k Xs hX
     have := hw k (fun i => P⁻¹ * Xs i * P) fun i => conj_lie h2 h (hX i)
@@ -177,7 +177,7 @@ theorem sobCont_transport (hP : IsUnit P) (h : Pᴴ * Formalism.REAL.Jm ε * P =
   have h' : (P⁻¹)ᴴ * G * P⁻¹ = Formalism.REAL.Jm ε := by
     calc (P⁻¹)ᴴ * G * P⁻¹ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
           rw [← h]; simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [h1]; simp
+      _ = _ := simp [h1]
   obtain ⟨S, C, hS, hb⟩ := hℓ
   have e : dRep (fun g => σ (P * g * P⁻¹)) = fun X w => dRep σ (P * X * P⁻¹) w := by
     funext X w

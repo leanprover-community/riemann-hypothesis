@@ -96,7 +96,7 @@ theorem gM_mem_Nset (F E : Type) [Field F] [NumberField F] [Field E] [NumberFiel
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
       _ = (B⁻¹)ᴴ * (Bᴴ * H * B) * B⁻¹ := by rw [hJw, hGU]
       _ = (B * B⁻¹)ᴴ * H * (B * B⁻¹) := by simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = H := by rw [hBB]; simp
+      _ = H := simp [hBB]
   ·
     have hGE : G * Ew = Ew * ν.map τ := by
       show γ.map τ * (eOf P).map τ = (eOf P).map τ * ν.map τ

@@ -168,7 +168,7 @@ theorem bigM_der (lab : Q → (E →+* ℂ)) (s : ℤ) (c : ℝ → GL (Fin a) (
     have h2 := HasDerivAt.fun_finsetProd (u := Finset.univ) (fun τ _ => hdet τ)
     refine h2.congr_deriv (Finset.sum_congr rfl fun τ _ => ?_)
     rw [Finset.prod_eq_one (fun j _ => by rw [h0]; simp), one_smul]
-  have h1 : (∏ τ : E →+* ℂ, coord τ (c 0).val.det) = 1 := by rw [h0]; simp
+  have h1 : (∏ τ : E →+* ℂ, coord τ (c 0).val.det) = 1 := simp [h0]
   have hZ : HasDerivAt (fun t => (∏ τ : E →+* ℂ, coord τ (c t).val.det) ^ (-s))
       (((-s : ℤ) : ℂ) * ∑ τ : E →+* ℂ, ∑ i, coord τ (X i i)) 0 := by
     have hz := hasDerivAt_zpow (-s) (∏ τ : E →+* ℂ, coord τ (c 0).val.det) (Or.inl (by rw [h1]; exact one_ne_zero))

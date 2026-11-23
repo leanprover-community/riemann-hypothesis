@@ -82,6 +82,6 @@ theorem sigPosH_congr : ∀ {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.I
       = ((Z : Matrix (Fin n) (Fin n) ℂ) * ((Z⁻¹ : GL (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ))ᴴ * A *
         ((Z : Matrix (Fin n) (Fin n) ℂ) * ((Z⁻¹ : GL (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ)) := by
         rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = A := by rw [h1]; simp
+    _ = A := simp [h1]
 
 end GlobalTheory.SigCong

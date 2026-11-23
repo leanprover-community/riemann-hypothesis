@@ -118,7 +118,7 @@ theorem UpperTheory.V.Th.oneLevelO :
     · exact ⟨le_sup_left, (hloc v).1⟩
     · refine ⟨le_inf (block_le₂ _ (hLCw _)) fun z hz g hg => ?_, inf_le_left⟩
       obtain ⟨Y, hy⟩ := (mem_Bl _).1 hz
-      have e1 : rep (G.φu u g : G.Γ) Y - Y = 0 := by rw [hu u g hg]; simp
+      have e1 : rep (G.φu u g : G.Γ) Y - Y = 0 := simp [hu u g hg]
       exact AddSubgroup.mem_bot.2 ((hy g).trans e1)
     · exact ⟨block_le₂ _ (hLCw _), le_rfl⟩
   obtain ⟨hF, hF', hgw⟩ := hC.gw k hk O _ _ rep rep' b hLC hb 𝓛 h𝓛

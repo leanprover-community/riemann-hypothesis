@@ -136,7 +136,7 @@ theorem reduced_bound : ∀ (N : ℕ) (C R : ℝ), ∃ C' : ℝ, ∀ (k : Matrix
     simpa [Matrix.mul_diagonal, Matrix.diagonal_mul] using this
   have hBm : Br' = m * W * mᵀ := by
     rw [hWdef]
-    calc Br' = (m * n) * Br' * (m * n)ᵀ := by rw [hmn]; simp
+    calc Br' = (m * n) * Br' * (m * n)ᵀ := simp [hmn]
       _ = m * (n * Br' * nᵀ) * mᵀ := by rw [Matrix.transpose_mul]; simp only [Matrix.mul_assoc]
   have hZ : B.map (Int.cast : ℤ → ℝ) = nᵀ * (diagonal a * X' * diagonal a) * n := by
     rw [hB, hX'def]

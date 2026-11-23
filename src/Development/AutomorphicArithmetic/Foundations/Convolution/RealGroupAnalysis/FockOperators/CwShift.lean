@@ -66,7 +66,7 @@ theorem UpperTheory.ConvolutionTheory.R2.Fo.weyl :
     rw [O.x_apply, O.x_apply, O.x_apply, O.x_apply, mul_left_comm]
   · refine LinearMap.ext fun φ => Subtype.ext (funext fun v => ?_)
     have h0 : at1 w 0 = (0 : A F) := (atLaws F w).2.2.2.2.1
-    have hv : (v + Pi.single i (at1 w 0) : V4 F) = v := by rw [h0]; simp
+    have hv : (v + Pi.single i (at1 w 0) : V4 F) = v := simp [h0]
     set C : Prop := w = w' ∧ i = j with hC
     have hg := O.d_spec w i φ v
     have hh : HasDerivAt (fun t : ℝ => cw w' (v j) + if C then (t : ℂ) else 0) (if C then 1 else 0) 0 := by

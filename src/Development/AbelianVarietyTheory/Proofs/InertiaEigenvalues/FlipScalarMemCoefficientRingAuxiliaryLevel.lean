@@ -177,7 +177,7 @@ theorem GlobalTheory.LevelSeries.flipScal_mem_valRing_of_unit : ∀ (D : D7) (ψ
       ((a : ℕ) : 𝓞 D.host.E) ∈ R.asIdeal → ((b : ℕ) : 𝓞 D.host.E) ∉ R.asIdeal := by
     intro a b hab R ha hb
     obtain ⟨u, v, huv⟩ := Nat.isCoprime_iff_coprime.2 hab
-    have h1 : (((u * a + v * b : ℤ)) : 𝓞 D.host.E) = 1 := by rw [huv]; simp
+    have h1 : (((u * a + v * b : ℤ)) : 𝓞 D.host.E) = 1 := simp [huv]
     apply R.isPrime.ne_top
     rw [Ideal.eq_top_iff_one, ← h1]
     push_cast

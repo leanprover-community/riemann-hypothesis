@@ -58,7 +58,7 @@ theorem exists_conj {S R : Type} [CommRing S] [CommRing R] [Algebra S R] (c : R 
   show (P * D * Q)ᵀ * J * (P * D * Q).map c = J
   calc _ = Qᵀ * (Dᵀ * (Pᵀ * J * P.map c) * D.map c) * Q.map c := by simp only [mm, Matrix.transpose_mul, Matrix.mul_assoc]
     _ = (P * Q)ᵀ * J * (P * Q).map c := by rw [h]; simp only [mm, Matrix.transpose_mul, Matrix.mul_assoc]
-    _ = J := by rw [h1, Matrix.map_one _ (map_zero c) (map_one c)]; simp
+    _ = J := simp [h1, Matrix.map_one _ (map_zero c) (map_one c)]
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 

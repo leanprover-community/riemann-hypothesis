@@ -387,7 +387,7 @@ theorem exists_fr {s : K →+* K} (ss : ∀ a, s (s a) = a) {J : Matrix (Fin n) 
     have e1 : A * (x * a) = 0 := by rw [← Matrix.mul_assoc, Ax, Matrix.zero_mul]
     have e2 : A * (y * b) = 0 := by rw [← Matrix.mul_assoc, Ay, Matrix.zero_mul]
     calc A * A = A * (1 - x * a - y * b) := rfl
-      _ = A := by rw [Matrix.mul_sub, Matrix.mul_sub, Matrix.mul_one, e1, e2]; simp
+      _ = A := simp [Matrix.mul_sub, Matrix.mul_sub, Matrix.mul_one, e1, e2]
   obtain ⟨m, P, Q, hPQ, hQP⟩ := exists_split A AA
   have hQ : Q * A = Q := by rw [← hPQ, ← Matrix.mul_assoc, hQP, Matrix.one_mul]
   have hP : A * P = P := by rw [← hPQ, Matrix.mul_assoc, hQP, Matrix.mul_one]
@@ -500,8 +500,8 @@ theorem Fr.witt : IsWittFrame σ J' (Q * tl X) (Q * tl Y) := by
   · rw [h.gram_P hW, pX, gram_sub, hW.xx]; rfl
   · rw [h.gram_P hW, pY, gram_sub, hW.yy]; rfl
   · rw [h.gram_P hW, pX, pY, gram_sub, hW.xy, Matrix.submatrix_one _ (Fin.succ_injective _)]
-  · have e1 : (cT (σ : E →+* E) (hd X) * J) *ᵥ (P *ᵥ z) = 0 := by rw [Matrix.mulVec_mulVec, h.xP]; simp
-    have e2 : (cT (σ : E →+* E) (hd Y) * J) *ᵥ (P *ᵥ z) = 0 := by rw [Matrix.mulVec_mulVec, h.yP]; simp
+  · have e1 : (cT (σ : E →+* E) (hd X) * J) *ᵥ (P *ᵥ z) = 0 := simp [Matrix.mulVec_mulVec, h.xP]
+    have e2 : (cT (σ : E →+* E) (hd Y) * J) *ᵥ (P *ᵥ z) = 0 := simp [Matrix.mulVec_mulVec, h.yP]
     have e3 : P *ᵥ z = 0 := hW.aniso _ (row e1 (tlz h1)) (row e2 (tlz h2)) ((h.hform_P z).trans h3)
     have e4 := congrArg (Q *ᵥ ·) e3
     simpa [Matrix.mulVec_mulVec, h.QP] using e4

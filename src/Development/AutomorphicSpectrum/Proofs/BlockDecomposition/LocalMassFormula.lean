@@ -150,7 +150,7 @@ theorem local_density_binary_unimodular {ι : Type} [Fintype ι] {F : Type} [Fie
       rw [hvs']
       calc WithZero.exp (2 : ℤ) * Valued.v s ≤ WithZero.exp (2 : ℤ) * WithZero.exp (-2 : ℤ) :=
             mul_le_mul' le_rfl hcase'
-        _ = 1 := by rw [← WithZero.exp_add]; simp
+        _ = 1 := simp [← WithZero.exp_add]
     have hs'0 : s' ≠ 0 := by
       intro h
       rw [h] at hss
@@ -170,8 +170,8 @@ theorem local_density_binary_unimodular {ι : Type} [Fintype ι] {F : Type} [Fie
         _ ≤ _ := mul_le_mul' le_rfl hn
     obtain ⟨D', hD', hdens⟩ := ih m (by omega) s' (mem_int.2 hs'1) hs'0 hm
     obtain ⟨q, hqq⟩ : ∃ q : ℝ≥0, q = (Ideal.absNorm v.asIdeal : ℝ≥0) := ⟨_, rfl⟩
-    have hqR : (q : ℝ) = (Ideal.absNorm v.asIdeal : ℝ) := by rw [hqq]; simp
-    have hqE : (q : ℝ≥0∞) = (Ideal.absNorm v.asIdeal : ℝ≥0∞) := by rw [hqq]; simp
+    have hqR : (q : ℝ) = (Ideal.absNorm v.asIdeal : ℝ) := simp [hqq]
+    have hqE : (q : ℝ≥0∞) = (Ideal.absNorm v.asIdeal : ℝ≥0∞) := simp [hqq]
     have hq0 : q ≠ 0 := by
       intro h
       rw [h] at hqR

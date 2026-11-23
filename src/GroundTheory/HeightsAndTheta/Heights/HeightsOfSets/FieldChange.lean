@@ -137,7 +137,7 @@ theorem finprod_iSup_algebraMap {ι : Type*} [Finite ι] {y : ι → K} (hy : y 
   have hz0 : z ≠ 0 := by
     obtain ⟨i, hi⟩ := Function.ne_iff.mp hy
     refine Function.ne_iff.mpr ⟨i, fun h ↦ hi ?_⟩
-    have h1 : (b : K) * y i = 0 := by rw [← hzy i, h]; simp
+    have h1 : (b : K) * y i = 0 := simp [← hzy i, h]
     exact (mul_eq_zero.mp h1).resolve_left hb0
   have key := finprod_iSup_algebraMap_int (L := L) hz0
   have hsupK : ∀ v : FinitePlace K, ⨆ i, v (z i : K) = v (b : K) * ⨆ i, v (y i) := by

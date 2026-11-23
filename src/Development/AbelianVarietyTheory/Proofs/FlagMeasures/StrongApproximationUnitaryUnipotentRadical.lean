@@ -198,7 +198,7 @@ theorem exists_param [TopologicalSpace S] [IsTopologicalRing S]
       · rw [hw₂, map_add (f := _), hm, hsh, ← hc, map_sub, hm, hm, hi, hi, hw.2.2]
         noncomm_ring
     obtain ⟨ω, hω, hωK⟩ := hcov w₂
-    have Bn : B (-β) = - B β := by rw [hB, hB]; simp
+    have Bn : B (-β) = - B β := simp [hB, hB]
     have Wn : Wd (-ω) = - Wd ω := by rw [hW, hW, map_neg]; noncomm_ring
     refine ⟨U (-β, -ω), Up _, E0 _ (B0 _ (S₀.neg_mem hβ)) _ (W0 _ (S₀.neg_mem hω)),
       E0 _ (S₀.neg_mem (B0 _ (S₀.neg_mem hβ))) _ (S₀.neg_mem (W0 _ (S₀.neg_mem hω))),

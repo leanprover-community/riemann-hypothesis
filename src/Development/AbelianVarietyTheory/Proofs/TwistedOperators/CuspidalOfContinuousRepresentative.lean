@@ -67,7 +67,7 @@ theorem isCuspFun_of_mem_L2cusp : ∀ (D : D7) (V : HSp D) (μ : Measure (GA D V
               hFψ.symm)))
       _ = ∫ y in S, GlobalTheory.Cusp.constTermOn (GQ V) (GlobalTheory.Cusp.NA (.single hW)) (lift (GQ V) F) y ∂μ :=
           (GlobalTheory.CuspAE.setIntegral_constTermOn hc (leftInv_lift F) hm (GlobalTheory.CuspAE.locallyIntegrable_lift F) hS).symm
-      _ = 0 := by rw [integral_congr_ae (ae_restrict_of_ae h1)]; simp
+      _ = 0 := simp [integral_congr_ae (ae_restrict_of_ae h1)]
   exact (hcont.ae_eq_iff_eq μ continuous_const).1 h2
 
 end GlobalTheory.CuspRep

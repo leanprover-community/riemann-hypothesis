@@ -96,7 +96,7 @@ theorem bigProjP_of (hg0 : PositivityTheory.UnitaryDecomposition.X4.IntegralGerm
   have hn2 : 2 ≤ n := hP.two
   have hB : 100 * ((n : ℝ) + 1) ^ 3 ≤ B := by
     obtain ⟨a, ha⟩ := hP.neg
-    have hne : ε a ≠ ε (zi e) := by rw [ha, hF.1]; simp
+    have hne : ε a ≠ ε (zi e) := simp [ha, hF.1]
     have h1 := hP.gap a (zi e) hne
     have h2 := hP.bd a
     have h3 := hP.bd (zi e)

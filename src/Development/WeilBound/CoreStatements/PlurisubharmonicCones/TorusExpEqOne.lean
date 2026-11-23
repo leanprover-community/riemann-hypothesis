@@ -127,7 +127,7 @@ theorem torus_deriv {X : Type} [AddCommGroup X] {d : ℕ} (β : Module.Basis (Fi
       simp only [pairing, map_zsmul, zsmul_eq_mul]
     have h6 := hMT δ' χ
     rw [hδ'] at h6
-    have h7 : (charVal v' χ).snd = δ' χ := by rw [h6]; simp
+    have h7 : (charVal v' χ).snd = δ' χ := simp [h6]
     rw [← h7, ← h5, ← h4]
     refine Eq.trans ?_ h3
     congr 1

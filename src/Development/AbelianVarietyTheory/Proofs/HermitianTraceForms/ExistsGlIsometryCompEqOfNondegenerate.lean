@@ -257,12 +257,12 @@ theorem exists_graph_lt [FiniteDimensional E V] (h2 : (2 : E) ≠ 0) (hc : ∀ t
     constructor
     · intro h
       dsimp only at h ⊢
-      have ht : t = 0 := by rw [← e1, h]; simp
+      have ht : t = 0 := simp [← e1, h]
       subst ht
       simpa using (h0 q hq).1 (by simpa using h)
     · intro h
       dsimp only at h ⊢
-      have ht : t = 0 := by rw [← e2, h]; simp
+      have ht : t = 0 := simp [← e2, h]
       subst ht
       simpa using (h0 q hq).2 (by simpa using h)
   · intro p hp p' hp'

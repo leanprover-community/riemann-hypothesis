@@ -91,7 +91,7 @@ theorem exists_unitary {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.IsHerm
     simpa [Unitary.conjStarAlgAut_apply, hU, hD, Function.comp_def] using this
   have hD' : D = star U * A * U := by
     rw [hs]
-    calc D = (star U * U) * D * (star U * U) := by rw [hl]; simp
+    calc D = (star U * U) * D * (star U * U) := simp [hl]
       _ = _ := by simp only [Matrix.mul_assoc]
   have hDD : D * D = 1 := by
     rw [hD']
@@ -181,7 +181,7 @@ theorem transport {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool}
     have e : ∀ C : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ, P * (Pᴴ * C * P) * Pᴴ = C := by
       intro C
       calc P * (Pᴴ * C * P) * Pᴴ = (P * Pᴴ) * C * (P * Pᴴ) := by simp only [Matrix.mul_assoc]
-        _ = C := by rw [hr]; simp
+        _ = C := simp [hr]
     rw [← e A, h, e]
   have gen : ∀ J : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ,
       (Pᴴ * g * P)ᴴ * (Pᴴ * J * P) * (Pᴴ * g * P) = Pᴴ * (gᴴ * J * g) * P := by
@@ -189,7 +189,7 @@ theorem transport {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool}
     simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose]
     calc Pᴴ * (gᴴ * P) * (Pᴴ * J * P) * (Pᴴ * g * P)
         = Pᴴ * (gᴴ * (P * Pᴴ) * J * (P * Pᴴ) * g) * P := by simp only [Matrix.mul_assoc]
-      _ = _ := by rw [hr]; simp
+      _ = _ := simp [hr]
   rw [hi]
   constructor
   · show (Pᴴ * g * P)ᴴ * Hpk k r * (Pᴴ * g * P) = Hpk k r ↔ gᴴ * Jm ε * g = Jm ε

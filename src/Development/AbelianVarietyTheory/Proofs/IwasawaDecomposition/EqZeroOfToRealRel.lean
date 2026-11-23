@@ -126,7 +126,7 @@ theorem eq_zero_of_toReal_rel {a b : ℕ} {u : Fin a → LinearMap.BilinForm ℤ
           rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun k _ => by ring
   have h0 := hind d c hrel
   intro j
-  have hcj : (c j : ℚ) = 0 := by rw [h0]; simp
+  have hcj : (c j : ℚ) = 0 := simp [h0]
   rw [hc j] at hcj
   have : (f (r j) : ℚ) = 0 := (mul_eq_zero.mp hcj).resolve_left hN
   exact_mod_cast this

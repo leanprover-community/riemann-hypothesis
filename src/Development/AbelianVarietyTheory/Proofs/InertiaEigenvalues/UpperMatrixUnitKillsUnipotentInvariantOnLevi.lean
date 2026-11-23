@@ -95,8 +95,8 @@ theorem tv_mem_unipRad (e : (Σ a, m a) ≃ Fin N) {p q : Fin N} (hpq : blk e p 
       · have hne : e ⟨a, i⟩ ≠ e ⟨a, j⟩ := fun h => hij (by simpa using e.injective h)
         rw [Matrix.one_apply_ne hne, Matrix.one_apply_ne hij]
     · rintro ⟨h1, h2⟩
-      have h1' : blk e p = a := by rw [h1]; simp
-      have h2' : blk e q = a := by rw [h2]; simp
+      have h1' : blk e p = a := simp [h1]
+      have h2' : blk e q = a := simp [h2]
       rw [h1', h2'] at hpq
       exact lt_irrefl _ hpq
 

@@ -170,7 +170,7 @@ theorem exists_form_of_compatible_fractions : ∀ (A : Type) [CommRing A] [IsNoe
         simp only [Finset.prod_pair hab, smul_eq_mul]
         ring
     rw [Cube.d_apply]
-    have hbt : b ∈ t.1 := by rw [hab']; simp
+    have hbt : b ∈ t.1 := simp [hab']
     have key : ∀ i : t.1, Cube.res (grCube (Fin (n + 1)) (grQuot (polyGrading (Fin (n + 1)) A) J) d)
         (Finset.erase_subset i.1 t.1) (x (Cube.eraseIdx t i)) =
         Cube.res (grCube (Fin (n + 1)) (grQuot (polyGrading (Fin (n + 1)) A) J) d)

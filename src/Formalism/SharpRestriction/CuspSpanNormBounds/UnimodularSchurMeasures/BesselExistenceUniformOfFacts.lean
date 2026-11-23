@@ -70,9 +70,9 @@ theorem cayley_conj_mem_diagonal_model {ε : Fin (2 * r + k + 1) → Bool} {P a 
       _ = (P⁻¹)ᴴ * (Pᴴ * Formalism.REAL.Jm ε * P) * P⁻¹ := by rw [hH, ha']
       _ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
           simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = Formalism.REAL.Jm ε := by rw [h2]; simp
+      _ = Formalism.REAL.Jm ε := simp [h2]
   · calc P⁻¹ * (P * a * P⁻¹) * P = (P⁻¹ * P) * a * (P⁻¹ * P) := by simp only [Matrix.mul_assoc]
-      _ = a := by rw [h1]; simp
+      _ = a := simp [h1]
 
 theorem discrete_series_map_mul {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ε : Fin (2 * r + k + 1) → Bool}
     {lam : Fin (2 * r + k + 1) → ℝ} {σ : Mat k r → (H →L[ℂ] H)} (hσ : IsDSHpk k r ε lam σ) {a b : Mat k r}
@@ -85,7 +85,7 @@ theorem discrete_series_map_mul {H : Type} [NormedAddCommGroup H] [InnerProductS
   have e1 : P⁻¹ * (P * a * P⁻¹ * (P * b * P⁻¹)) * P = a * b := by
     calc P⁻¹ * (P * a * P⁻¹ * (P * b * P⁻¹)) * P = (P⁻¹ * P) * a * (P⁻¹ * P) * b * (P⁻¹ * P) := by
           simp only [Matrix.mul_assoc]
-      _ = a * b := by rw [h1]; simp
+      _ = a * b := simp [h1]
   simp only [e1, (cayley_conj_mem_diagonal_model hP ha).2, (cayley_conj_mem_diagonal_model hP hb).2] at hrep
   exact hrep
 

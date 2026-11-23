@@ -317,7 +317,7 @@ theorem dTot_cup {m n N : ℕ} (h : m + n = N) (x : Tot F m) (y : Tot F n) :
     Tot.cup_sg _ h₁ _ (show a + (a' + 1) = a + a' + 1 by omega) rfl e₁,
     Tot.cup_sg _ h₁ _ rfl (show q + (q' + 1) = q + q' + 1 by omega) e₂]
   rw [show (-1 : ℤ) ^ m = (-1) ^ (a + q) by rw [h₁]]
-  have hq : ((-1 : ℤ) ^ q) ^ 2 = 1 := by rw [← pow_mul, mul_comm, pow_mul]; simp
+  have hq : ((-1 : ℤ) ^ q) ^ 2 = 1 := simp [← pow_mul, mul_comm, pow_mul]
   simp only [pow_add, add_mul, mul_add, one_mul, mul_one]
   match_scalars
   · ring

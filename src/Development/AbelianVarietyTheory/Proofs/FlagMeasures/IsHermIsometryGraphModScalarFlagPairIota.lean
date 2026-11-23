@@ -289,7 +289,7 @@ theorem iota_total [FiniteDimensional K V] {F F' : FlagD H r} {Λ : Submodule (�
     have a2 := orth_symm (hperp _ (lastVector_mem_jointSpan_left F' F))
     have a3 := X_iso F' h1' hx'
     have a4 := orth_symm (pairing_isotropicSpan_lastVector F' hx')
-    have a5 : H.B (x' - (u + t • F.z)) l' = g * H.B n l' := by rw [hxn]; simp
+    have a5 : H.B (x' - (u + t • F.z)) l' = g * H.B n l' := simp [hxn]
     obtain ⟨c, hc⟩ := integral_of_unimod hU hn hl'
     have : (g : K)⁻¹ * H.B (u + t • F.z) l' = ((-c : 𝓞 K) : K) := by
       rw [inv_mul_eq_iff_eq_mul₀ hg0]

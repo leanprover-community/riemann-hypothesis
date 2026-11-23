@@ -169,7 +169,7 @@ theorem sum_sq_eq (hs : ∀ i u v, ⟪X i u, v⟫_ℂ = -⟪u, X i v⟫_ℂ) (a 
     simp [lap, Module.End.mul_apply, LinearMap.sum_apply]
   rw [h, inner_neg_right, inner_sum, Complex.neg_re, Complex.re_sum, ← Finset.sum_neg_distrib]
   refine sum_congr rfl fun i _ => ?_
-  have e : ⟪a, X i (X i a)⟫_ℂ = -⟪X i a, X i a⟫_ℂ := by rw [hs]; simp
+  have e : ⟪a, X i (X i a)⟫_ℂ = -⟪X i a, X i a⟫_ℂ := simp [hs]
   rw [e, Complex.neg_re, neg_neg]
   simpa using (inner_self_eq_norm_sq (𝕜 := ℂ) (X i a)).symm
 
@@ -191,7 +191,7 @@ theorem core (hs : ∀ i u v, ⟪X i u, v⟫_ℂ = -⟪u, X i v⟫_ℂ) (i b : �
   rw [e1, e2]
   refine (sq_le_lap X hs i a).trans ?_
   rw [e3, inner_add_right, Complex.add_re]
-  have e4 : ⟪a, X b (wd X w (lap X u))⟫_ℂ = -⟪X b a, wd X w (lap X u)⟫_ℂ := by rw [hs]; simp
+  have e4 : ⟪a, X b (wd X w (lap X u))⟫_ℂ = -⟪X b a, wd X w (lap X u)⟫_ℂ := simp [hs]
   refine add_le_add ?_ ((Complex.re_le_norm _).trans (norm_inner_le_norm _ _))
   rw [e4, Complex.neg_re]
   exact (neg_le_abs _).trans ((Complex.abs_re_le_norm _).trans (norm_inner_le_norm _ _))

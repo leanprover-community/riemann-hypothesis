@@ -93,7 +93,6 @@ noncomputable def μK : MeasureTheory.Measure U2 := by
   letI : Nonempty U2 := aux6
   exact MeasureTheory.Measure.haarMeasure ⊤
 
-section Algebra
 variable {A : Type*} [NormedCommRing A] [NormedAlgebra ℂ A]
 
 private theorem deriv_zero (φ : A →L[ℂ] ℂ) {f : ℂ → A} {f' : A}
@@ -170,7 +169,6 @@ private theorem mul_lin (φ : A →L[ℂ] ℂ) (p q r s z : A) (D : ℤ → A)
       congr 1
       ring
 
-end Algebra
 
 private theorem unit_vec (a b : ℂ) :
     ∃ r α β : ℂ, a = r * α ∧ b = r * β ∧

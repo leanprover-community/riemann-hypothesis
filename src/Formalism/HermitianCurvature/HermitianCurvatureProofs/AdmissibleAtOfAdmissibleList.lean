@@ -109,7 +109,7 @@ theorem admissible_at_of_admissible_list (S : C.HidaSetting E Wp Wq) (w : S.W) (
   · by_cases hu : u = v
     · subst hu
       generalize hM : Function.update w.1 u L u = M
-      have hML : M = L := by rw [← hM]; simp
+      have hML : M = L := simp [← hM]
       subst hML
       exact hL1
     · generalize hM : Function.update w.1 v L u = M
@@ -119,7 +119,7 @@ theorem admissible_at_of_admissible_list (S : C.HidaSetting E Wp Wq) (w : S.W) (
   · by_cases hu : u = v
     · subst hu
       generalize hM : Function.update w.1 u L u = M
-      have hML : M = L := by rw [← hM]; simp
+      have hML : M = L := simp [← hM]
       subst hML
       exact fun j j' hj hj' hne δ hδ1 hδ2 => (pairwise_iff_idx M).1 hL2 j j' hj hj' hne δ hδ1 hδ2
     · generalize hM : Function.update w.1 v L u = M

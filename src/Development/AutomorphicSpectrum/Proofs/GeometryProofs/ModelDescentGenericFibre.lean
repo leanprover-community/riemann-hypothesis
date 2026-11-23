@@ -265,7 +265,7 @@ theorem not_unit_of_mem_maximalIdeal {O' C : Type} [CommRing O'] [IsDomain O'] [
   obtain ⟨b, hb⟩ := hf
   have he0 : e ≠ 0 := by
     rintro rfl
-    have h1 : IsUnit ((p : O') * (a : O')) := by rw [ha]; simp
+    have h1 : IsUnit ((p : O') * (a : O')) := simp [ha]
     exact hpn (isUnit_of_mul_isUnit_left h1)
   have hf0 : f ≠ 0 := by
     rintro rfl

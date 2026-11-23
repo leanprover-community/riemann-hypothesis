@@ -127,7 +127,7 @@ private theorem exists_rayPair_inf_of_rayPair (hu : ∀ u : (𝓞 K)ˣ, u = 1 �
     rcases hu u with rfl | rfl
     · simpa using hu'
     · exfalso
-      have hneg : α' * β = -(α * β') := by rw [← hu']; simp
+      have hneg : α' * β = -(α * β') := simp [← hu']
       have h2mem : 2 * α * β' ∈ Ideal.span {(q : 𝓞 K)} := by
         have : 2 * α * β' = β' * (α - β) - β * (α' - β') := by linear_combination hneg
         rw [this]

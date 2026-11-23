@@ -136,7 +136,7 @@ theorem lossLe_sqrt {w : PlL D} {q : ℕ} (hq : q ≠ 0) (hs : ((Real.sqrt q : �
     rw [map_pow, hy, map_natCast, ← Complex.ofReal_pow, Real.sq_sqrt (Nat.cast_nonneg _), Complex.ofReal_natCast])
   have hy0 : y ≠ 0 := by
     rintro rfl
-    have : (q : D.what₂.LL) = 0 := by rw [← h2]; simp
+    have : (q : D.what₂.LL) = 0 := simp [← h2]
     exact hq (by exact_mod_cast this)
   have hv : (vw w (q : D.what₂.LL) : ℝ) = 2 * vw w y := by
     rw [← h2, ResidueCardinalityNilpotence.GlobalTheory.CompanionTheory.VolVal.vw_npow w hy0]

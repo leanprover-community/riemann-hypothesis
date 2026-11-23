@@ -92,7 +92,7 @@ theorem tendsto_sum_Icc_div (L : ℕ) (φ : ZMod L → ℂ) (z : ℂ) (hL : 0 < 
       have hr : (d+1) % L = 0 := by
         have := Int.mul_ediv_add_emod (d+1) L
         rw [hq] at this; linarith
-      have hΦ0 : Φ (d+1) = 0 := by rw [hΦ, hr]; simp
+      have hΦ0 : Φ (d+1) = 0 := simp [hΦ, hr]
       have hn : (d % L).toNat = L - 1 := by omega
       have hs := Finset.sum_range_succ (fun e : ℕ => φ (e : ZMod L)) (L-1)
       rw [Nat.sub_add_cancel hL, ← hn, hcast, hsum] at hs

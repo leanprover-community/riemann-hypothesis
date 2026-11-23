@@ -249,7 +249,7 @@ theorem unitSec_comp (h : IsGrpPullback G' G f φ) : unitSec G' ≫ φ = f ≫ u
   have h₁ : x * x = x := Over.OverMorphism.ext ((h.2 _ 1 1 x x rfl rfl).trans
     (by rw [_root_.mul_one]; rfl))
   have h₂ := congrArg (·.left) (mul_eq_left.1 h₁)
-  have h₃ : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := by rw [Hom.one_def]; simp
+  have h₃ : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := simp [Hom.one_def]
   refine (congrArg (·.left ≫ φ) h₃).symm.trans (h₂.trans ?_)
   exact congrArg (· ≫ unitSec G) (Category.id_comp f)
 

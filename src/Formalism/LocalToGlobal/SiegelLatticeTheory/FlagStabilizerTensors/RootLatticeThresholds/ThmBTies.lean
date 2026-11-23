@@ -201,7 +201,7 @@ theorem lead_r_zero {r : ℕ} (p : Point ℂ (r + 1)) (L0 : List (ℂ × ℕ)) (
   have e0 : leadMinor (ptMat p) r (Nat.le_succ r) = Formalism.HermitianLatticeCounting.ExpansionTerms.leadingPrincipalMinor (Formalism.HermitianLatticeCounting.ExpansionTerms.blockAntidiagonalMatrix (toComp p) (toT p)) r := by
     rw [← ptMat_eq]; exact leadMinorK_eq _ _ _
   rw [e0]
-  have hlen : (toComp p).length = L0.length + 1 := by rw [toComp_length, hp]; simp
+  have hlen : (toComp p).length = L0.length + 1 := simp [toComp_length, hp]
   have hb : (toComp p).blocksFun ⟨(toComp p).length - 1, by omega⟩ = s := by
     have e1 := comp_last (toComp p) (comp_len_pos _)
     have e2 : (toComp p).sizeUpTo ((toComp p).length - 1) = (L0.map Prod.snd).sum := by

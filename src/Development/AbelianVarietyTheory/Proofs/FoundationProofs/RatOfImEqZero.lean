@@ -39,7 +39,7 @@ theorem exists_coords {E : Type*} [Field E] [CharZero E] [Algebra ℚ E] (β : E
     (hβ : β * β = -(d : E)) (y : E) (hy : y ∈ ℚ⟮β⟯) : ∃ u v : ℚ, y = (u : E) + (v : E) * β := by
   have hint : IsIntegral ℚ β := by
     refine IsIntegral.of_pow (n := 2) (by norm_num) ?_
-    have : β ^ 2 = algebraMap ℚ E (-d) := by rw [pow_two, hβ]; simp
+    have : β ^ 2 = algebraMap ℚ E (-d) := simp [pow_two, hβ]
     rw [this]
     exact isIntegral_algebraMap
   have hy' : y ∈ Algebra.adjoin ℚ ({β} : Set E) := by

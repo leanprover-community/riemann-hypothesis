@@ -88,8 +88,8 @@ theorem pm_mul_dg (σ : Equiv.Perm (Fin n)) (d : Fin n → ℂˣ) :
 noncomputable def tv {i j : Fin n} (hij : i ≠ j) (c : ℂ) : GL (Fin n) ℂ where
   val := transvection i j c
   inv := transvection i j (-c)
-  val_inv := by rw [transvection_mul_transvection_same _ _ hij]; simp
-  inv_val := by rw [transvection_mul_transvection_same _ _ hij]; simp
+  val_inv := simp [transvection_mul_transvection_same _ _ hij]
+  inv_val := simp [transvection_mul_transvection_same _ _ hij]
 
 theorem tv_mul {i j : Fin n} (hij : i ≠ j) (c : ℂ) : tv hij c * tv hij c = tv hij (2 * c) := by
   ext1

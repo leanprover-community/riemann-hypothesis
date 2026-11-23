@@ -66,7 +66,7 @@ theorem genFib_appLE_injective {S : Scheme.{0}} [IsIntegral S] (F : Type) [Field
     Function.Injective (gp.appLE W ⊤ e).hom := by
   set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
   intro r hr
-  have h1 : (Sp F).basicOpen (gp.appLE W ⊤ e r) = ⊥ := by rw [hr]; simp
+  have h1 : (Sp F).basicOpen (gp.appLE W ⊤ e r) = ⊥ := simp [hr]
   have h2 : S.basicOpen r = ⊥ := by
     by_contra hne
     have hne' : (S.basicOpen r : Set S).Nonempty := by

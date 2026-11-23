@@ -291,7 +291,7 @@ theorem swapStepU : PositivityTheory.SphericalProduct.SwapStepU := by
       simp at hw1
     have n2 : (1 - w * (q : ℂ) ^ 2) ≠ 0 := fun e0 => by
       have e3 : w * (q : ℂ) ^ 2 = 1 := by linear_combination -e0
-      have : ‖w * (q : ℂ) ^ 2‖ = 1 := by rw [e3]; simp
+      have : ‖w * (q : ℂ) ^ 2‖ = 1 := simp [e3]
       rw [norm_mul, norm_pow, Complex.norm_natCast] at this
       linarith
     exact mul_ne_zero hone (div_ne_zero n1 n2) e

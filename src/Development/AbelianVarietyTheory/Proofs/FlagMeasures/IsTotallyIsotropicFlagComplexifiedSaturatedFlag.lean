@@ -164,7 +164,7 @@ theorem isIsoFlag_flagAt_of_isSatFlag :
     calc ((I.P v)⁻¹)ᴴ * ((I.P v)ᴴ * I.J.map (I.φ v) * I.P v * (I.P v)⁻¹)
         = (I.P v * (I.P v)⁻¹)ᴴ * I.J.map (I.φ v) * (I.P v * (I.P v)⁻¹) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = I.J.map (I.φ v) := by rw [hPQ]; simp
+      _ = I.J.map (I.φ v) := simp [hPQ]
   have hgen : ∀ x y : Fin I.n → ℂ, star ((I.P v)⁻¹ *ᵥ x) ⬝ᵥ (Formalism.REAL.Jm (I.ε v) *ᵥ ((I.P v)⁻¹ *ᵥ y)) =
       star x ⬝ᵥ (I.J.map (I.φ v) *ᵥ y) := by
     intro x y

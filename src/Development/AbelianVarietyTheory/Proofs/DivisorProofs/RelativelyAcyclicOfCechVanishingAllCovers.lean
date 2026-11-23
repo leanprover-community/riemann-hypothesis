@@ -44,7 +44,7 @@ theorem isRelAcyclic_of_not_NV : ∀ (K : Type) [Field K] (A : Over (Sp K)) [Grp
   intro K _ A _ P hP U _ κ _ _ W hW hWU n
   by_cases hU : U = ⊤
   · subst hU
-    have hWU' : ⨆ i, W i = ⊤ := by rw [hWU]; simp
+    have hWU' : ⨆ i, W i = ⊤ := simp [hWU]
     by_contra h
     exact hP n ⟨κ, inferInstance, inferInstance, W, hW, hWU', h⟩
   · have hb : U = ⊥ := by

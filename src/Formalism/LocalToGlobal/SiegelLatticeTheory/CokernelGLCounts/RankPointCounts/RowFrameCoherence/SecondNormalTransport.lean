@@ -313,7 +313,7 @@ theorem secondNormal_transport (hT' : T' ≠ 0) (hi : β ∈ Formalism.Hermitian
   refine ⟨fun b => ?_, ?_, ?_⟩
   · rw [hswap, k1 b, star_zero]
   · rw [hswap, k2, star_one]
-  · have hs : β.symm F''.fl.z = F'.fl.z := by rw [← hβz]; simp
+  · have hs : β.symm F''.fl.z = F'.fl.z := simp [← hβz]
     rw [hx2, map_add (f := _), map_add (f := _), map_smul, LinearEquiv.symm_apply_apply, hs, hy]
     have : x₁ - c • F'.fl.z + c • F'.fl.z + β.symm x'' - x₁ = β.symm x'' := by abel
     rw [this]

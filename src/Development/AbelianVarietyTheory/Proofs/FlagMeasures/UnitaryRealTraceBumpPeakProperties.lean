@@ -46,7 +46,7 @@ theorem sum_normSq_col {n : ℕ} {g : Matrix (Fin n) (Fin n) ℂ}
     (hg : g ∈ (Matrix.unitaryGroup (Fin n) ℂ : Set (Matrix (Fin n) (Fin n) ℂ))) (i : Fin n) :
     ∑ j, ‖g j i‖ ^ 2 = 1 := by
   have h1 : star g * g = 1 := (Matrix.mem_unitaryGroup_iff').1 hg
-  have h2 : (star g * g) i i = 1 := by rw [h1]; simp
+  have h2 : (star g * g) i i = 1 := simp [h1]
   rw [Matrix.mul_apply] at h2
   have h3 : ((∑ j, ‖g j i‖ ^ 2 : ℝ) : ℂ) = 1 := by
     rw [← h2]

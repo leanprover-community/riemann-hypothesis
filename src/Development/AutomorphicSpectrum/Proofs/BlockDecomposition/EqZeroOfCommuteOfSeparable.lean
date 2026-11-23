@@ -150,7 +150,7 @@ theorem map_shear (ν : Measure E) [ν.IsAddHaarMeasure] (F : Submodule ℝ E) (
     rw [← e.apply_symm_apply (P (e (y, 0))), he] at this
     exact this
   have hshear : ∀ p, e.symm (e p + P (e p)) = (p.1, p.2 + g p.1) := fun p => by
-    have h1 : e p = e (p.1, 0) + e (0, p.2) := by rw [← map_add (f := _)]; simp
+    have h1 : e p = e (p.1, 0) + e (0, p.2) := simp [← map_add (f := _)]
     have h2 : P (e p) = P (e (p.1, 0)) := by rw [h1]; exact hinv _ _ (hF0 _)
     rw [map_add (f := _), e.symm_apply_apply, h2]
     ext1

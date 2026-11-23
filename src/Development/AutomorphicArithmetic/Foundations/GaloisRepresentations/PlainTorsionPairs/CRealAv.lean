@@ -67,7 +67,7 @@ private theorem natCast_not_mem_asIdeal_of_not_dvd {E : Type} [Field E] [NumberF
   obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 ((Nat.Prime.coprime_iff_not_dvd hp).2 hm)
   apply v.isPrime.ne_top
   rw [Ideal.eq_top_iff_one]
-  have h1 : (((a * p + b * m : ℤ)) : 𝓞 E) = 1 := by rw [hab]; simp
+  have h1 : (((a * p + b * m : ℤ)) : 𝓞 E) = 1 := simp [hab]
   rw [← h1]
   push_cast
   exact v.asIdeal.add_mem (v.asIdeal.mul_mem_left _ hpv) (v.asIdeal.mul_mem_left _ hmv)

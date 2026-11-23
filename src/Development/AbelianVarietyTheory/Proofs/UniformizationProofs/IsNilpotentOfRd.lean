@@ -308,7 +308,7 @@ theorem cong_mono {I I' : Ideal A} (h : I ≤ I') {u : (A[X])ˣ} (hu : u ∈ con
 theorem exists_cong_pow {J : Ideal A} (hJ : IsNilpotent J) :
     ∃ n : ℕ, ∀ u : (A[X])ˣ, u ∈ cong (J ^ (n + 1)) → u = 1 := by
   obtain ⟨n, hn⟩ := hJ
-  have : J ^ (n + 1) ≤ ⊥ := by rw [pow_succ, hn]; simp
+  have : J ^ (n + 1) ≤ ⊥ := simp [pow_succ, hn]
   exact ⟨n, fun u hu => Units.ext (sub_eq_zero.1 (eq_zero_of_rd (mem_cong'.1 (cong_mono this hu))))⟩
 
 theorem pow_mul_pow_le (J : Ideal A) (k : ℕ) : J ^ (k + 1) * J ^ (k + 1) ≤ J ^ (k + 1 + 1) := by

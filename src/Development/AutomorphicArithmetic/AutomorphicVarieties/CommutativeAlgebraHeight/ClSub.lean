@@ -104,7 +104,7 @@ private theorem residue_constant_subalgebra_isUnit_iff (O : Type) [CommRing O] (
       refine (hS _).2 ⟨↑v⁻¹, ?_⟩
       have e : (↑u⁻¹ : R) - algebraMap O R ↑v⁻¹
           = (↑u⁻¹ : R) * algebraMap O R ↑v⁻¹ * (algebraMap O R a - (c : R)) := by
-        have h1 : (↑u⁻¹ : R) * (c : R) = 1 := by rw [← hu']; simp
+        have h1 : (↑u⁻¹ : R) * (c : R) = 1 := simp [← hu']
         have h2 : algebraMap O R ↑v⁻¹ * algebraMap O R a = 1 := by
           rw [← map_mul, ← hv]; simp
         linear_combination algebraMap O R ↑v⁻¹ * h1 - (↑u⁻¹ : R) * h2

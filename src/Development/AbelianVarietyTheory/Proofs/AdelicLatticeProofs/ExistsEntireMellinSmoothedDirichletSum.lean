@@ -259,7 +259,7 @@ theorem exists_entire_mellin : ∀ (ι : Type) [Countable ι] (a : ι → ℂ) (
   · intro s hs
     have hs1 : s + -1 ≠ 0 := by
       intro h
-      have : (s + -1).re = 0 := by rw [h]; simp
+      have : (s + -1).re = 0 := simp [h]
       simp at this
       linarith
     have hGm := hasMellin_cpow_Ioc (-1) (s := s) (by rw [Complex.neg_re, Complex.one_re]; linarith)

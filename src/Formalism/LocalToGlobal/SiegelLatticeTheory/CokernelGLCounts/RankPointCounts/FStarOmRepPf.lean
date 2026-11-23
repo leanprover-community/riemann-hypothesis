@@ -277,7 +277,7 @@ theorem pair_core (hΛ : Submodule.IsFullLattice E Λ) (F : LFlag S r T) (F' F''
     rw [show Hp Λ F F' = orth S (UUE Λ F F') from rfl, orth_orth] at this
     exact this
   have hzz : S.hT F.fl.z ν = 0 := by
-    have h1 : S.hT F.fl.z Ω'' = 1 := by rw [← fvec_last, hΩ.2]; simp
+    have h1 : S.hT F.fl.z Ω'' = 1 := simp [← fvec_last, hΩ.2]
     rw [hν, map_add (f := _), map_smul, h1, F.fl.z_norm, smul_eq_mul]
     field_simp
     ring

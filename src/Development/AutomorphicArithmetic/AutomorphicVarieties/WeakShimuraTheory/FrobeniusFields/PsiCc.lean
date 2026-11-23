@@ -43,7 +43,7 @@ private theorem psi_cc (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω
     simp [chiO, h1]
   have h4 : ((Chr.Psi l e (Chr.dirG ℚ Ω ψ) σ : Oˣ) : O) = (-1) ^ e * ψ (-1) := by
     simp [Chr.Psi, Chr.dirG, h2, h3]
-  have h5 : ((-1 : O) ^ e) * (-1) ^ e = 1 := by rw [← mul_pow]; simp
+  have h5 : ((-1 : O) ^ e) * (-1) ^ e = 1 := simp [← mul_pow]
   rw [Units.ext_iff, h4, Units.val_one, hψ, h5]
 
 theorem UpperTheory.V.Ws.xi2 :

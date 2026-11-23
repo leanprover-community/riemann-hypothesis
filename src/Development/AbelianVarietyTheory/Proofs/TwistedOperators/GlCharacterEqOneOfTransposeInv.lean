@@ -67,7 +67,7 @@ theorem gl_character_eq_one_of_transpose_inv (k : Type) [Field k] [Infinite k] (
       rw [Matrix.coe_units_inv, Matrix.transpose_nonsing_inv, hg, diagonal_transpose]
     have h2 : χ g * χ g = 1 := by
       calc χ g * χ g = χ g * χ g⁻¹ := by rw [h1]
-        _ = 1 := by rw [← map_mul]; simp
+        _ = 1 := simp [← map_mul]
     have h3 : χ g ^ 2 = 1 := by rw [sq, h2]
     exact (pow_eq_one_iff_of_nonneg (zero_le) two_ne_zero).1 h3
   obtain ⟨a, ha⟩ := Infinite.exists_notMem_finset ({0, 1} : Finset k)

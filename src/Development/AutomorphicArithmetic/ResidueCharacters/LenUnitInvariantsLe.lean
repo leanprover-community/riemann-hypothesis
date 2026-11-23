@@ -62,7 +62,7 @@ theorem lenUnit_invariants_le (D : D7) (i : D.nd.Loc) (hl2 : D.nd.l i = 2 → 2 
       (Formalism.MainNotions.TruncatedSeriesCountingIdentities.Br.l_not_unit D.nd i) (D.nd.s0 i) hs hl2 1 n hn
   have ha0 : a ≠ 0 := by
     intro h
-    have ht : addVal (D.nd.O i) a = ⊤ := by rw [h]; simp
+    have ht : addVal (D.nd.O i) a = ⊤ := simp [h]
     rw [hva] at ht
     obtain ⟨e, he0, he⟩ := Formalism.MainNotions.TruncatedSeriesCountingIdentities.Br.exists_eO D.nd i
     rw [he] at ht

@@ -107,7 +107,7 @@ theorem equiv_piTensor_dec : ∀ {k : Type} [Field k] [ValuativeRel k] [Topologi
   have hc0 : ∀ a, 1 ≤ c a := fun a => by
     refine Nat.one_le_iff_ne_zero.2 fun h0 => ?_
     have : IsEmpty (Fin (c a)) := by rw [h0]; exact Fin.isEmpty
-    have h3 : (y a).1 = 0 := by rw [← hd a]; simp
+    have h3 : (y a).1 = 0 := simp [← hd a]
     exact Γ.d_pos.ne' h3
   obtain rfl : c = fun _ => 1 := funext (eq_one_of_sum_eq c hc0 h)
   funext a

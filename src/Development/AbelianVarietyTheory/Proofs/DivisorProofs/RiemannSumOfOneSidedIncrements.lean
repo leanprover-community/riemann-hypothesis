@@ -102,7 +102,7 @@ theorem riemann_sum_of_one_sided_increments : ∀ (s : Polynomial ℝ) (ℓ : �
     have hj' := Finset.mem_range.mp hj
     exact h _ _ (ht0 (j+1)) (ht1 (j+1) hj') (ht0 j) (ht1 j hj'.le) _ (by positivity)
   filter_upwards [hup, hlo] with m hu hl
-  have t0 : t 0 = 0 := by rw [ht]; simp
+  have t0 : t 0 = 0 := simp [ht]
   have tn : t n = 1 := by
     rw [ht]; show (n:ℚ) / n = 1; exact div_self (by exact_mod_cast hn0)
   have hsumℓ : ℓ 0 m - ℓ 1 m = ∑ j ∈ Finset.range n, (ℓ (t j) m - ℓ (t (j+1)) m) := by

@@ -78,7 +78,7 @@ theorem real_eq_of_exp_neg_two_pi_I_div_eq : ∀ x y : ℝ, (∀ k : ℕ, 0 < k 
       rw [hmn, Int.natAbs_mul]; simp
     have h2 : 1 ≤ n.natAbs := Int.natAbs_pos.mpr hn0
     nlinarith
-  have : y - x = 0 := by rw [hm, hm0]; simp
+  have : y - x = 0 := simp [hm, hm0]
   linarith
 
 end GlobalTheory

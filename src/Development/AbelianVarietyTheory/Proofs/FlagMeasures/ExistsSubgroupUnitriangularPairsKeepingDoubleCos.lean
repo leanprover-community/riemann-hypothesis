@@ -289,7 +289,7 @@ theorem keyEq_left {γ n : GV D} (hγ : γ ∈ Formalism.HermitianLatticesTheory
     refine ⟨Λ.sub_mem ((hnΛ _).1 (by simpa using hl.1)) hl.1, ?_⟩
     show n.symm l - l ∈ Xsp F
     rw [← neg_sub]; exact Submodule.neg_mem _ h3
-  have e : l - n x' = n (n.symm l - x') := by rw [map_sub]; simp
+  have e : l - n x' = n (n.symm l - x') := simp [map_sub]
   rw [e, ngx_iff (gS D) hnΛ hnX hn1, show n.symm l - x' = (l - x') + (n.symm l - l) by abel,
     Submodule.add_mem_iff_left _ hd]
 

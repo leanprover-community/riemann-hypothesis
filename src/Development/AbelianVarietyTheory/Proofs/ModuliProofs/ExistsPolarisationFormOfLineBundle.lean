@@ -200,7 +200,7 @@ theorem exists_formIs : Out.Laws → Out.Laws2 → ∀ (K : Type) [Field K] [IsA
   have key := (hR _ h).2 ⟨inv q, rfl⟩
   rw [h₁, Category.comp_id] at key
   refine ⟨h ≫ snd _ _, hA.rigidity _ _ _ P.isAb P.isAb _ ?_, ?_⟩
-  · have e1 : (1 : 𝟙_ (Over (Sp K)) ⟶ P.A) = η[P.A] := by rw [Hom.one_def]; simp
+  · have e1 : (1 : 𝟙_ (Over (Sp K)) ⟶ P.A) = η[P.A] := simp [Hom.one_def]
     rw [← e1]
     refine uniq _ _ ?_
     have k := congrArg (pl ((1 : 𝟙_ (Over (Sp K)) ⟶ P.A) ▷ P.A).left) key

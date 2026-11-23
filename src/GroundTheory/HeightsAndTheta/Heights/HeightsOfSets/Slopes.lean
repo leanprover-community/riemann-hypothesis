@@ -125,7 +125,7 @@ theorem standardFlag_saturated (i : Fin 3) :
   · change x ∈ LinearMap.range (firstIncl K)
     change a • x ∈ LinearMap.range (firstIncl K) at hx
     obtain ⟨b, hb⟩ := hx
-    have h1 : (a • x) 1 = 0 := by rw [← hb]; simp
+    have h1 : (a • x) 1 = 0 := simp [← hb]
     rw [Pi.smul_apply, smul_eq_mul] at h1
     have hx1 : x 1 = 0 := (mul_eq_zero.mp h1).resolve_left ha
     refine ⟨x 0, funext fun i ↦ ?_⟩

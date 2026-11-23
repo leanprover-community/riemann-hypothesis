@@ -276,7 +276,7 @@ theorem residue_identity : ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ
       · exact DirichletCharacter.LFunction_ne_zero_of_one_le_re χ (.inr hs1) h1 hL
       by_cases h0 : s.re ≤ 0
       · obtain ⟨⟨n, hn⟩, -⟩ := GlobalTheory.LFunction_zero_of_re_nonpos N χ hχ s h0 hL
-        have hre : s.re = -(n : ℝ) := by rw [hn]; simp
+        have hre : s.re = -(n : ℝ) := simp [hn]
         have hn0 : n = 0 := by
           by_contra hne
           have : (1 : ℝ) ≤ n := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hne

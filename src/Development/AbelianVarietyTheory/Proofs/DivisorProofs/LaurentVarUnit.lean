@@ -40,8 +40,8 @@ namespace GlobalTheory.EtC
 def laurentVarUnit (A : Type) [CommRing A] : (LaurentPolynomial A)ˣ where
   val := LaurentPolynomial.T 1
   inv := LaurentPolynomial.T (-1)
-  val_inv := by rw [← LaurentPolynomial.T_add]; simp
-  inv_val := by rw [← LaurentPolynomial.T_add]; simp
+  val_inv := simp [← LaurentPolynomial.T_add]
+  inv_val := simp [← LaurentPolynomial.T_add]
 
 def laurentVar (A : Type) [CommRing A] : (Γ(Spec (CommRingCat.of (LaurentPolynomial A)), ⊤))ˣ :=
   Units.map (Scheme.ΓSpecIso (CommRingCat.of (LaurentPolynomial A))).inv.hom.toMonoidHom (laurentVarUnit A)

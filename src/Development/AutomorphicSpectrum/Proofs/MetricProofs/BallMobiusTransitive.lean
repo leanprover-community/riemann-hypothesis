@@ -60,7 +60,7 @@ theorem exists_congr_one {A : Matrix a a ℂ} (hA : A.PosDef) : ∃ X : Matrix a
   refine ⟨C⁻¹, ?_, ?_⟩
   · calc (C⁻¹)ᴴ * A * C⁻¹ = (C * C⁻¹)ᴴ * (C * C⁻¹) := by
           rw [hCA, Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [h1]; simp
+      _ = 1 := simp [h1]
   · exact (Matrix.isUnit_nonsing_inv_det_iff).2 hC
 
 theorem posDef_one_sub_swap {W : Matrix b a ℂ} (h : (1 - W * Wᴴ).PosDef) : (1 - Wᴴ * W).PosDef := by

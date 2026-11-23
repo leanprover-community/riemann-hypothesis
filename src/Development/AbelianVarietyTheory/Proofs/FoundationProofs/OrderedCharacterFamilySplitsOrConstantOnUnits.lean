@@ -51,7 +51,7 @@ theorem cut_or_const : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpa
     refine Or.inl ⟨m + 1, by omega, hm, ?_⟩
     intro i j hi hj htr
     have h1 : i ≤ (⟨m, by omega⟩ : Fin n) := by rw [Fin.le_def]; simp; omega
-    have h2 : (⟨m, by omega⟩ : Fin n) ≤ ⟨m + 1, hm⟩ := by rw [Fin.le_def]; simp
+    have h2 : (⟨m, by omega⟩ : Fin n) ≤ ⟨m + 1, hm⟩ := simp [Fin.le_def]
     have h3 : (⟨m + 1, hm⟩ : Fin n) ≤ j := by rw [Fin.le_def]; simp; omega
     exact hnt (hord i _ _ j h1 h2 h3 1 htr)
   · push_neg at hc

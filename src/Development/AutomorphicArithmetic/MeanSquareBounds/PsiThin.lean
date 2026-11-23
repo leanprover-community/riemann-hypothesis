@@ -66,7 +66,7 @@ private theorem pt_zero_symm {N : ℕ} [NeZero N] {χ : DirichletCharacter ℂ N
   have hρ0 : ρ ≠ 0 := by rintro rfl; simp at h0
   have hρ1 : (1 - ρ) ≠ 0 := by
     intro h
-    have : (1 - ρ).re = 0 := by rw [h]; simp
+    have : (1 - ρ).re = 0 := simp [h]
     simp at this
     linarith
   rw [DirichletCharacter.LFunction_eq_completed_div_gammaFactor χ ρ (Or.inl hρ0)] at hz

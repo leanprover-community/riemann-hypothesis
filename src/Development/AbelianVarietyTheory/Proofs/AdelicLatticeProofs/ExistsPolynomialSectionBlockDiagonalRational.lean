@@ -157,7 +157,7 @@ theorem exists_section : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (Γ : Set
     rw [← hp X, ← hp Y]
     calc _ = e.map (algebraMap ℚ R) * linExt c X * ((1 - e.map (algebraMap ℚ R)) * e.map (algebraMap ℚ R)) *
           linExt c Y * (1 - e.map (algebraMap ℚ R)) := by simp only [mul_assoc]
-      _ = 0 := by rw [hE]; simp
+      _ = 0 := simp [hE]
   · have hone : (Matrix.of fun i j => ev (b i j) (1 : Matrix ι ι R)) = 1 := by
       have hq : (Matrix.of fun i j => ev (b i j) (1 : Matrix ι ι ℚ)) = 1 := by
         have := map_poly (Algebra.ofId ℚ ℂ) b 1

@@ -55,7 +55,7 @@ def GR (n : ℕ) : Subgroup (GL (Fin n ⊕ Fin n) ℂ) where
     have h1 : a.1 * (a⁻¹).1 = 1 := by simp
     calc (a⁻¹).1ᴴ * JJ n * (a⁻¹).1 = (a⁻¹).1ᴴ * (a.1ᴴ * JJ n * a.1) * (a⁻¹).1 := by rw [ha]
       _ = (a.1 * (a⁻¹).1)ᴴ * JJ n * (a.1 * (a⁻¹).1) := by simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = JJ n := by rw [h1]; simp
+      _ = JJ n := simp [h1]
 
 def mR (g : GR n) : M2 n := g.1.1
 

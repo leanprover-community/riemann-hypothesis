@@ -81,7 +81,7 @@ theorem val_of_real_neg {N : ℕ} (χ : HeckeU D N) (a : D.host.Eˣ)
     rw [h2, Complex.ofReal_re] at hneg
     exact absurd (Finset.prod_nonneg fun τ _ => norm_nonneg _) (not_le.2 hneg)
   · rw [h1] at h
-    have h3 : ((-1 : ℂ) ^ N) * (-1) ^ N = 1 := by rw [← mul_pow]; simp
+    have h3 : ((-1 : ℂ) ^ N) * (-1) ^ N = 1 := simp [← mul_pow]
     linear_combination (-1 : ℂ) ^ N * h - ((χ.f (Units.map (inc D).toMonoidHom a) : ℂˣ) : ℂ) * h3
 
 theorem hom_gen (N : ℕ) (ψ : (AE D)ˣ →* ℂˣ) (h1 : ∀ u, IntU D u → ψ u = 1)

@@ -89,7 +89,7 @@ theorem lift_step {w : R} (hw : w + star w = 1) (m : ℕ) {p : ℕ} (hp : p.Prim
     simp only [star_add, star_smul, star_mul, star_natCast, star_intCast, star_one, mul_add, add_mul, mul_one, one_mul,
       mul_smul_comm, smul_mul_assoc, h]
     push_cast
-    have : (1 : S) = (((a : R) * m + b * p) ^ 2) • (1 : S) := by rw [hab']; simp
+    have : (1 : S) = (((a : R) * m + b * p) ^ 2) • (1 : S) := simp [hab']
     conv_rhs => enter [1]; rw [this]
     module
 

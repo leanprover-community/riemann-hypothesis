@@ -206,7 +206,7 @@ theorem hA_mL_left (m : ℕ) : ∀ v ∈ mL I m, ∀ w ∈ I.Lf, ZMod' I m (hA I
 theorem bezout {P : Submodule (IntAf I.F I.E) (VA I)} {m c : ℕ} (hc : Nat.Coprime c m) (hmP : mL I m ≤ P)
     {v : VA I} (hv : v ∈ I.Lf) (hcv : (c : I.E ⊗[I.F] Af I.F) • v ∈ P) : v ∈ P := by
   obtain ⟨a, b, hab⟩ : IsCoprime (c : ℤ) (m : ℤ) := Nat.isCoprime_iff_coprime.2 hc
-  have h1 : (((a * c + b * m : ℤ)) : I.E ⊗[I.F] Af I.F) = 1 := by rw [hab]; simp
+  have h1 : (((a * c + b * m : ℤ)) : I.E ⊗[I.F] Af I.F) = 1 := simp [hab]
   have hv' : v = a • ((c : I.E ⊗[I.F] Af I.F) • v) + b • ((m : I.E ⊗[I.F] Af I.F) • v) := by
     calc v = (((a * c + b * m : ℤ)) : I.E ⊗[I.F] Af I.F) • v := by rw [h1, one_smul]
       _ = _ := by

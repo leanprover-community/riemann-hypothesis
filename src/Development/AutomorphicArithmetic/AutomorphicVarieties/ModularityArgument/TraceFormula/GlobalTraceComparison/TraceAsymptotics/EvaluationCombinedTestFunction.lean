@@ -321,7 +321,7 @@ private theorem hint_subsingleton {H : Type} [Group H] [Subsingleton H] (K : Sub
     hint K u = u 1 := by
   unfold hint
   have h1 : rStab u ⊓ K = ⊤ := Subsingleton.elim _ _
-  have h2 : (rStab u ⊓ K).relIndex K = 1 := by rw [h1]; simp
+  have h2 : (rStab u ⊓ K).relIndex K = 1 := simp [h1]
   rw [h2]
   haveI : Subsingleton (H ⧸ (rStab u ⊓ K)) := ⟨by
     intro a b

@@ -197,9 +197,9 @@ theorem rho_eq (hpq : D.p ≠ D.q) {r : Xo₂.X ⟶ Xo.X} (m : SABMap Xo₂.univ
     obtain ⟨v'⟩ := (GlobalTheory.Serre.Lie.lieMult_id_iff o.t.act τ n').mp (t _ b)
     simpa using (Module.finrank_eq_card_basis v).symm.trans (Module.finrank_eq_card_basis v')
   let τ : 𝓞 E →+* ℂ := ((IsAlgClosed.lift : E →ₐ[ℚ] ℂ) : E →+* ℂ).comp (algebraMap (𝓞 E) E)
-  have s₀ : τ H.rt ^ 2 = -(H.d : ℂ) := by rw [← map_pow, H.rt_sq]; simp
-  have s₁ : β (baseKA l).ρ ^ 2 = -(H.d : ℂ) := by rw [← map_pow, (baseKA l).ρ_sq]; simp
-  have s₂ : β₂ (baseKA l₂).ρ ^ 2 = -(H.d : ℂ) := by rw [← map_pow, (baseKA l₂).ρ_sq]; simp
+  have s₀ : τ H.rt ^ 2 = -(H.d : ℂ) := simp [← map_pow, H.rt_sq]
+  have s₁ : β (baseKA l).ρ ^ 2 = -(H.d : ℂ) := simp [← map_pow, (baseKA l).ρ_sq]
+  have s₂ : β₂ (baseKA l₂).ρ ^ 2 = -(H.d : ℂ) := simp [← map_pow, (baseKA l₂).ρ_sq]
   by_cases ht : τ H.rt = β (baseKA l).ρ
   · exact hpq (uniq τ _ _ ((d₁ τ).1 ht) ((d₂ τ).2 (ht ▸ hne)))
   · have a := (sq_eq_sq_iff_eq_or_eq_neg.mp (s₀.trans s₁.symm)).resolve_left ht

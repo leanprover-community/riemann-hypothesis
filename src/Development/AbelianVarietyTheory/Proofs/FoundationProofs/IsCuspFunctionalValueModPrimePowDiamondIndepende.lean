@@ -53,8 +53,8 @@ theorem mul_inv_mem_Gam_of_isDiam {N l d : ℕ} {s t : SL(2, ℤ)} (hs : IsDiam 
   have ds := s.det_coe
   have dt := t.det_coe
   rw [Matrix.det_fin_two] at ds dt
-  have ds' : ((s 0 0 * s 1 1 - s 0 1 * s 1 0 : ℤ) : ZMod N) = 1 := by rw [ds]; simp
-  have dt' : ((t 0 0 * t 1 1 - t 0 1 * t 1 0 : ℤ) : ZMod N) = 1 := by rw [dt]; simp
+  have ds' : ((s 0 0 * s 1 1 - s 0 1 * s 1 0 : ℤ) : ZMod N) = 1 := simp [ds]
+  have dt' : ((t 0 0 * t 1 1 - t 0 1 * t 1 0 : ℤ) : ZMod N) = 1 := simp [dt]
   push_cast at ds' dt'
   simp only [en] at hsd htd
   rw [CongruenceSubgroup.Gamma1_mem]

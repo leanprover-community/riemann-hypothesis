@@ -68,7 +68,7 @@ theorem quasiFinite_quotient_of_isUnit_coeff {R : Type*} [CommRing R] (G : R[X])
   let Gb : P.ResidueField[X] := G.map (algebraMap R P.ResidueField)
   have hG : Gb ≠ 0 := by
     intro h
-    have h2 : (Gb).coeff k = 0 := by rw [h]; simp
+    have h2 : (Gb).coeff k = 0 := simp [h]
     rw [coeff_map] at h2
     exact (hc.map (algebraMap R P.ResidueField)).ne_zero h2
   have hmem : Gb ∈ I := by

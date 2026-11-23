@@ -79,7 +79,7 @@ private theorem UpperTheory.frame_pos {N j : ℕ} (S : Matrix (Fin N) (Fin N) �
       _ = (D * E)ᴴ * (D * E) := by
           rw [hGD, star_eq_conjTranspose]
           simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = 1 := by rw [hE]; simp
+      _ = 1 := simp [hE]
   · rw [← mulVec_mulVec]
     exact hmem _
 

@@ -74,7 +74,7 @@ theorem exists_root {d : ℕ} (hd : Valued.v ((d : w.adicCompletion E)) < 1) (t 
     intro hu
     obtain ⟨b, hb⟩ := hu.exists_right_inv
     have hb1 : Valued.v (b : w.adicCompletion E) ≤ 1 := ((isEquiv w).le_one_iff_le_one).mp b.2
-    have h1 : Valued.v (((d : O) * b : O) : w.adicCompletion E) = 1 := by rw [hb]; simp
+    have h1 : Valued.v (((d : O) * b : O) : w.adicCompletion E) = 1 := simp [hb]
     have h2 : Valued.v (((d : O) * b : O) : w.adicCompletion E) < 1 := by
       have : (((d : O) * b : O) : w.adicCompletion E) = (d : w.adicCompletion E) * b := by push_cast; rfl
       rw [this, map_mul]

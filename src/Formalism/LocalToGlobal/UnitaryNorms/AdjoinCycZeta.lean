@@ -85,7 +85,7 @@ theorem range_eq (j : H.E →ₐ[ℚ] Qb) : j.fieldRange = H.EQ := by
   exact ⟨σ x, (hσ x).symm⟩
 
 theorem map_K (j : H.E →ₐ[ℚ] Qb) : H.K.map j = KQ H.d := by
-  have hb : j H.sqd ^ 2 = ((-(H.d : ℤ) : ℤ) : Qb) := by rw [← map_pow, H.sqd_sq]; simp
+  have hb : j H.sqd ^ 2 = ((-(H.d : ℤ) : ℤ) : Qb) := simp [← map_pow, H.sqd_sq]
   rw [K, adjoin_map, Set.image_singleton, KQ, sqQ_eq hb]
 
 theorem FQ_le_EQ : H.FQ ≤ H.EQ := iSup_le fun j => by

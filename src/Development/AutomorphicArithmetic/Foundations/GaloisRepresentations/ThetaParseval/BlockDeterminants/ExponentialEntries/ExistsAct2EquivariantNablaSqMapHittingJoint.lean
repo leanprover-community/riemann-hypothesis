@@ -109,7 +109,7 @@ private theorem hw_lt {n d : ℕ} (h : n ≤ d) (hlt : n < d) (ν : Fin d → �
     have hk1 : (k : ℕ) + 1 ≤ n := k.2
     rw [map_pow, map_pow]
     have e1 := sSub_lp (n := n) (d := d) (s := (k : ℕ) + 1) (by omega) hk1
-    have a : ν (Fin.castLE h k) = μ k := by rw [hν]; simp
+    have a : ν (Fin.castLE h k) = μ k := simp [hν]
     have b : Formalism.GradedWeylDivisibility.nuNext ν (Fin.castLE h k) = Formalism.GradedWeylDivisibility.nuNext μ k := by
       unfold Formalism.GradedWeylDivisibility.nuNext
       by_cases hk : (k : ℕ) + 1 < n

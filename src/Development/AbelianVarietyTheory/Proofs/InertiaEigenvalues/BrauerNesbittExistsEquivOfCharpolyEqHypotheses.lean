@@ -104,7 +104,7 @@ theorem finrank_eq_zero_of_hom
           (h₁ ((LinearMap.snd A V W).comp (φ.comp (LinearMap.inl A V W)))) v
         have e₂ := LinearMap.congr_fun
           (h₂ ((LinearMap.fst A V W).comp (φ.comp (LinearMap.inr A V W)))) w
-        have e₃ : φ (v, w) = φ (v, 0) + φ (0, w) := by rw [← map_add (f := _)]; simp
+        have e₃ : φ (v, w) = φ (v, 0) + φ (0, w) := simp [← map_add (f := _)]
         simp only [LinearMap.comp_apply, LinearMap.inl_apply, LinearMap.inr_apply, LinearMap.snd_apply,
           LinearMap.fst_apply, LinearMap.zero_apply] at e₁ e₂
         change ((φ (v, w)).1, (0 : W)) = φ (v, 0)

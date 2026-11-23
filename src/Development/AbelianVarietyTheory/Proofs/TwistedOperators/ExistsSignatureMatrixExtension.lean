@@ -169,7 +169,7 @@ theorem exists_frame (J : Matrix (Fin N) (Fin N) ℂ) (h1 : Fᴴ * J * z = 0) (h
           rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
       _ = (M * M⁻¹)ᴴ * J * (M * M⁻¹) := by
           rw [← hg, Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = J := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+      _ = J := simp [Matrix.mul_nonsing_inv _ hd]
   · rw [key, eu_vecOpt]
   · have := key 0 1
     simpa [vecOpt_zero_one] using this

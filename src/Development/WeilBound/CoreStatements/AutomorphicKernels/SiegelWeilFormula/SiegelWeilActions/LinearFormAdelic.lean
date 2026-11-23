@@ -103,7 +103,7 @@ theorem eig_line {B : Base F E} (hB : B.IsGood σ) {k : ℤ} (hk : k * k = 1) {�
     (hδ : σ δ = (k : E) * δ) (hy : σ y = (k : E) * y) : ∃ f : F, y = f • δ := by
   have hk0 : (k : E) ≠ 0 := by
     intro h
-    have h1 : ((k * k : ℤ) : E) = 1 := by rw [hk]; simp
+    have h1 : ((k * k : ℤ) : E) = 1 := simp [hk]
     rw [Int.cast_mul, h, zero_mul] at h1
     exact zero_ne_one h1
   have hfix : σ (y / δ) = y / δ := by

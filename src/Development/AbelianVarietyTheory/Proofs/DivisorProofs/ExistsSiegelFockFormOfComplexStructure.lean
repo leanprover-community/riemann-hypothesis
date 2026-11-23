@@ -147,7 +147,7 @@ theorem siegel_fock_exists : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace 
     have h2 : B (J w).1 = A w.1 + w.2 := (congrArg Prod.snd e1).symm
     have hb1 : β x (A (J w).1) = -β x (B w.1) - β x (J w).2 := by
       have := congrArg (β x) h1; simp at this; linarith
-    have hb2 : β x (B (J w).1) = β x (A w.1) + β x w.2 := by rw [h2]; simp
+    have hb2 : β x (B (J w).1) = β x (A w.1) + β x w.2 := simp [h2]
     rw [hQ, hQ, hb1, hb2]
     push_cast
     linear_combination (-((Real.pi : ℂ) * (β x (A w.1) : ℂ) + (Real.pi : ℂ) * (β x w.2 : ℂ))) * Complex.I_sq

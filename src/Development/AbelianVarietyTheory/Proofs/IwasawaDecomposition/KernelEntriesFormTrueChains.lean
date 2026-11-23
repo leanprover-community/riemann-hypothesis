@@ -254,7 +254,7 @@ theorem lamC_jetC (D : D7) {N N' p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[
     simp only [f, Finsupp.prod, map_prod, map_natCast]
   rw [hla, hlf]
   by_cases ha0 : a = 0
-  · have : jetC cD G m = ((0 : Qbar) : ℂ) := by rw [hj, ha0]; simp
+  · have : jetC cD G m = ((0 : Qbar) : ℂ) := simp [hj, ha0]
     rw [this, lamC_coe, ha0]
     simp
   · have ha0' : (a : ℂ) ≠ 0 := fun h => ha0 (Subtype.ext h)

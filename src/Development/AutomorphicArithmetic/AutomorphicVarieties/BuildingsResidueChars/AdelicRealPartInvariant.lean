@@ -34,7 +34,7 @@ theorem UpperTheory.adelic_realPart_invariant :
   intro L _ _ N σ hσ
   refine ⟨fun x => ?_, fun h hh => ⟨fun y => ?_, fun g hg => ?_⟩⟩
   · obtain ⟨w⟩ : Nonempty (InfinitePlace L) := inferInstance
-    have e : embO w (σ (σ x)) = embO w x := by rw [hσ, hσ]; simp
+    have e : embO w (σ (σ x)) = embO w x := simp [hσ, hσ]
     apply RingOfIntegers.coe_injective
     exact w.embedding.injective (by simpa [embO] using e)
   · have hz : ∀ w i, toR (sLat σ y) w i = star (toR y w i) := fun w i => hσ w (y i)

@@ -81,7 +81,7 @@ theorem dhPair (η γ β₁ : ℝ) (hη : 0 < η) (hβ1 : β₁ < 1) (k : ℕ) (
     (hs : s = ((1 + η : ℝ) : ℂ) + γ * I) :
     (1 / (s - 1) ^ (k + 1) - 1 / (s - β₁) ^ (k + 1)).re ≤ ((k : ℝ) + 1) * (1 - β₁) / η ^ (k + 2) := by
   have hδ : 0 < 1 - β₁ := by linarith
-  have hare : (s - 1).re = η := by rw [hs]; simp
+  have hare : (s - 1).re = η := simp [hs]
   have hbre : (s - β₁).re = η + (1 - β₁) := by rw [hs]; simp; ring
   have hna : η ≤ ‖s - 1‖ := hare ▸ Complex.re_le_norm (s - 1)
   have hnb : η ≤ ‖s - β₁‖ := le_trans (by linarith) (hbre ▸ Complex.re_le_norm (s - β₁))

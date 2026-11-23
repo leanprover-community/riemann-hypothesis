@@ -56,7 +56,7 @@ variable {𝕜 : Type*} [RCLike 𝕜] {n : Type*} [Fintype n] [LinearOrder n]
 
 theorem rclike_inv_pos {z : 𝕜} (hz : 0 < z) : 0 < z⁻¹ := by
   obtain ⟨hre, him⟩ := RCLike.pos_iff.1 hz
-  have hz' : z = (RCLike.re z : 𝕜) := by rw [← RCLike.re_add_im z, him]; simp
+  have hz' : z = (RCLike.re z : 𝕜) := simp [← RCLike.re_add_im z, him]
   rw [hz', ← RCLike.ofReal_inv]
   exact RCLike.ofReal_pos.2 (inv_pos.2 hre)
 

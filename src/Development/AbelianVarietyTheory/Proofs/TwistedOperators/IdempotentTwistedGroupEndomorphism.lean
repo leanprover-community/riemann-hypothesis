@@ -50,7 +50,7 @@ variable {A B : Type} [CommRing A] [CommRing B] {n : Type} [Fintype n] [Decidabl
 
 def cutM (b : A) (hb : b * b = b) : Matrix n n A →* Matrix n n A where
   toFun M := b • M + (1 - b) • 1
-  map_one' := by rw [← add_smul]; simp
+  map_one' := simp [← add_smul]
   map_mul' M N := by
     have h1 : b * (1 - b) = 0 := by linear_combination -hb
     have h2 : (1 - b) * b = 0 := by linear_combination -hb

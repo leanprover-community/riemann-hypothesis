@@ -53,7 +53,7 @@ theorem conj_mem (hP : IsUnit P) (hG : Pᴴ * Formalism.REAL.Jm ε * P = G) {g :
         simp only [conjTranspose_mul, Matrix.mul_assoc]
     _ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
         rw [hG, hg', ← hG]; simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = _ := by rw [h1]; simp
+    _ = _ := simp [h1]
 
 theorem conj_mem_inv (hP : IsUnit P) (hG : Pᴴ * Formalism.REAL.Jm ε * P = G) {g : Matrix (Fin n) (Fin n) ℂ}
     (hg : g ∈ UJset ε) : P⁻¹ * g * P ∈ Formalism.QuantumDeterminants.UH G := by
@@ -94,7 +94,7 @@ theorem isIrredOn_conj (hP : IsUnit P) (hG : Pᴴ * Formalism.REAL.Jm ε * P = G
   have := h _ (conj_mem_inv hP hG hg) v hv
   have e : P * (P⁻¹ * g * P) * P⁻¹ = g := by
     calc P * (P⁻¹ * g * P) * P⁻¹ = (P * P⁻¹) * g * (P * P⁻¹) := by simp only [Matrix.mul_assoc]
-      _ = g := by rw [h1]; simp
+      _ = g := simp [h1]
   simpa only [e] using this
 
 theorem arr_injective {q : ℕ} (hq : q ≤ n) : Function.Injective (arr q : Fin n → Fin n) := by
@@ -115,7 +115,7 @@ theorem orth_sub (hP : IsUnit P) (hG : Pᴴ * Formalism.REAL.Jm ε * P = G) (f :
   have h3 : (P⁻¹)ᴴ * G * P⁻¹ = Formalism.REAL.Jm ε := by
     calc (P⁻¹)ᴴ * G * P⁻¹ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
           rw [← hG]; simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [h1]; simp
+      _ = _ := simp [h1]
   rw [← h3]
   rfl
 

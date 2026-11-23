@@ -93,7 +93,7 @@ private theorem real_dec {ι : Type} (X : GL (Fin 2) (ι → ℝ)) :
     have h2 : (s : ι → ℝ) w * ((s⁻¹ : (ι → ℝ)ˣ) : ι → ℝ) w = 1 := congrFun s.mul_inv w
     simp only [Pi.mul_apply, Pi.one_apply] at h1 ⊢
     calc _ = (((s : ι → ℝ) w * ((s⁻¹ : (ι → ℝ)ˣ) : ι → ℝ) w) ^ 2) * (e w * e w) := by ring
-      _ = 1 := by rw [h2, h1]; simp
+      _ = 1 := simp [h2, h1]
   · have hsc : Matrix.GeneralLinearGroup.scalar (Fin 2) s * Matrix.GeneralLinearGroup.scalar (Fin 2) s⁻¹ = 1 := by
       rw [← map_mul]; simp
     rw [mul_assoc _ _ (Unitary.toUnits k), hk, mul_one, ← mul_assoc, hsc, one_mul]

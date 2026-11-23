@@ -108,7 +108,7 @@ theorem exists_good_level (H : Host E) : ∃ l : Level H, l.A = 1 ∧ ∀ p : �
   obtain ⟨e, he⟩ : ∃ e, H.d = 16 * e + 7 := ⟨H.d / 16, by omega⟩
   have hrt : H.rt = 2 * H.w0 - 1 := by rw [H.two_weight_eq_one_add_root]; ring
   have hbar : H.bar H.rt = -H.rt := by
-    have h2 : (H.bar H.rt) ^ 2 = H.rt ^ 2 := by rw [← map_pow, H.rt_sq]; simp
+    have h2 : (H.bar H.rt) ^ 2 = H.rt ^ 2 := simp [← map_pow, H.rt_sq]
     rcases sq_eq_sq_iff_eq_or_eq_neg.1 h2 with h | h
     · exfalso
       have h3 : IsCMField.complexConj E (H.rt : E) = H.rt := by rw [← H.bar_eq, h]

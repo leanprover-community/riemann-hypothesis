@@ -82,7 +82,7 @@ theorem differentiableOn_coord_of_linearIndependent :
     intro i
     exact DifferentiableAt.fun_sum fun z _ => ((hF z).differentiableAt hnh).const_mul _
   have hdet := differentiableAt_det_of_entries A e₀ hAd
-  have hne : (A e₀).det ≠ 0 := by rw [hA0]; simp
+  have hne : (A e₀).det ≠ 0 := simp [hA0]
   have hnum : DifferentiableAt ℂ (fun e => ((A e).updateCol k (b e)).det) e₀ := by
     refine differentiableAt_det_of_entries _ e₀ fun i j => ?_
     simp only [Matrix.updateCol_apply]

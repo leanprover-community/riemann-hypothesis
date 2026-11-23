@@ -87,7 +87,7 @@ theorem gram_det_ne_zero_local_basis_cofinite : ∀ (E : Type) [Field E] [Number
     have hu0 := (Fintype.linearIndependent_iff.1 he) u (by rw [← hz]; exact hzz)
     apply hv0
     funext m
-    have : (c : 𝓞 E) * v m = 0 := by rw [← huv, hu0 m]; simp
+    have : (c : 𝓞 E) * v m = 0 := simp [← huv, hu0 m]
     simpa [hc0] using this
   · refine (Set.finite_le_nat n).preimage (f := fun ℓ : Nat.Primes => (ℓ : ℕ))
       (fun a _ b _ h => Subtype.ext h) |>.subset ?_

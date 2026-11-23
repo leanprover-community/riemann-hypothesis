@@ -71,7 +71,7 @@ theorem exists_arcF_over : Laws → BrGtSt → BrWpSt → AllD fun D => ∀ (R :
     rfl
   choose q' hq' using fun (n : ℕ) (a : D.La) => ((G' n).1 (qkExt A.bimult f hf (A.I.ev n a))).exists
   refine ⟨{ D₀ := A.D₀, oa := A.oa, even := A.even, bimult := A.bimult, w0 := A.w0, ρ := f A.ρ
-            ρ_sq := by rw [← map_pow, A.ρ_sq, map_neg]; simp
+            ρ_sq := simp [← map_pow, A.ρ_sq, map_neg]
             det := fun σ => ?_
             I := tateExt f hf A.bimult hL A.I hw, N := N', ν := ν', q := q', hq := hq', closed := inferInstance },
     rfl, I, rfl, fun _ _ => rfl, fun a y => ?_, fun n a _ => ?_⟩

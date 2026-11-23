@@ -261,7 +261,7 @@ section Num3
 lemma exp_mul_one_sub_le (y : ℝ) : Real.exp y * (1 - y) ≤ 1 := by
   have h := Real.add_one_le_exp (-y)
   have hp := Real.exp_pos y
-  have e : Real.exp y * Real.exp (-y) = 1 := by rw [← Real.exp_add]; simp
+  have e : Real.exp y * Real.exp (-y) = 1 := simp [← Real.exp_add]
   nlinarith [mul_le_mul_of_nonneg_left h hp.le]
 
 private theorem exp_le_quad_lemma (x : ℝ) (h0 : 0 ≤ x) (h1 : x ≤ 1 / 2) :

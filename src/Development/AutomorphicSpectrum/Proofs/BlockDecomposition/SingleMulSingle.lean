@@ -130,20 +130,20 @@ theorem pr_mul_pr_eq_zero {X Y : Matrix (Fin n) (Fin r) R} {X' Y' : Matrix (Fin 
     have e : Matrix.single i i (1 : R) * B * Matrix.single j j (1 : R) = 0 := single_mul_single (hBt h')
     calc _ = X * (Matrix.single i i (1 : R) * (Y' * (g * X)) * Matrix.single j j (1 : R)) * Y' := by
           simp only [pr, Matrix.mul_assoc]
-      _ = 0 := by rw [hB, ← Matrix.mul_assoc Y', hyx, Matrix.one_mul, e]; simp
+      _ = 0 := simp [hB, ← Matrix.mul_assoc Y', hyx, Matrix.one_mul, e]
   · exact absurd h (by simp only [rk]; omega)
   · exact absurd h (by simp only [rk]; omega)
   · calc _ = (1 - X * Y' - Y * X') * (g * X) * Matrix.single j j (1 : R) * Y' := by
           simp only [pr, Matrix.mul_assoc]
-      _ = 0 := by rw [hB, ← Matrix.mul_assoc, hZX]; simp
+      _ = 0 := simp [hB, ← Matrix.mul_assoc, hZX]
   · exact absurd h (by simp only [rk]; omega)
   · exact absurd h (by simp only [rk]; omega)
   · calc _ = Y * Matrix.single i i (1 : R) * (X' * g) * X * Matrix.single j j (1 : R) * Y' := by
           simp only [pr, Matrix.mul_assoc]
-      _ = 0 := by rw [hL]; simp only [Matrix.mul_assoc, hxx]; simp
+      _ = 0 := simp [hL]; simp only [Matrix.mul_assoc, hxx]
   · calc _ = Y * Matrix.single i i (1 : R) * (X' * g) * (1 - X * Y' - Y * X') := by
           simp only [pr, Matrix.mul_assoc]
-      _ = 0 := by rw [hL, Matrix.mul_assoc _ (L * X'), Matrix.mul_assoc L, hXZ]; simp
+      _ = 0 := simp [hL, Matrix.mul_assoc _ (L * X'), Matrix.mul_assoc L, hXZ]
   · have h' : i < j := by
       have h1 := i.2
       have h2 := j.2
@@ -152,7 +152,7 @@ theorem pr_mul_pr_eq_zero {X Y : Matrix (Fin n) (Fin r) R} {X' Y' : Matrix (Fin 
     have e : Matrix.single i i (1 : R) * L * Matrix.single j j (1 : R) = 0 := single_mul_single (hLt i j h')
     calc _ = Y * (Matrix.single i i (1 : R) * ((X' * g) * Y) * Matrix.single j j (1 : R)) * X' := by
           simp only [pr, Matrix.mul_assoc]
-      _ = 0 := by rw [hL, Matrix.mul_assoc L, hxy, Matrix.mul_one, e]; simp
+      _ = 0 := simp [hL, Matrix.mul_assoc L, hxy, Matrix.mul_one, e]
 
 end Alg
 

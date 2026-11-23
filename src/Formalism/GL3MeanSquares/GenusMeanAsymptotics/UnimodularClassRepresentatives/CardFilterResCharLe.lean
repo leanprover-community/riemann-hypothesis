@@ -105,7 +105,7 @@ theorem resChar_le_of_sq {P : Ideal (𝓞 K)} (hP : P.IsMaximal) {q : ℕ}
     exact dvd_pow_self _ (by omega)
   have hq0 : q ≠ 0 := by
     rintro rfl
-    have h0 : resChar P ^ k = 0 := by rw [← hk2, hq]; simp
+    have h0 : resChar P ^ k = 0 := simp [← hk2, hq]
     exact hp.ne_zero (pow_eq_zero_iff (by omega) |>.mp h0)
   exact Nat.le_of_dvd (Nat.pos_of_ne_zero hq0) (hp.dvd_of_dvd_pow hdvd)
 

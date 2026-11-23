@@ -149,7 +149,7 @@ theorem cth_eq_th_quot : ∀ (c : ℕ) (τ : ℍ) (z : ℂ), 1 < c → Nat.Copri
   have y3 : s ^ (c ^ 2) = s ^ c * (s ^ 2) ^ (c * j) := by
     rw [← pow_mul, ← pow_add]; congr 1; subst hj; ring
   have y4 : u ^ (c ^ 2) = u * (u ^ 12) ^ k := by rw [hk, ← pow_mul]; ring
-  have y5 : ((-1 : ℂ)) ^ (c * j) * (-1) ^ (c * j) = 1 := by rw [← mul_pow]; simp
+  have y5 : ((-1 : ℂ)) ^ (c * j) * (-1) ^ (c * j) = 1 := simp [← mul_pow]
   rw [y1, y2, mul_pow, mul_pow, div_pow, hc2.neg_pow, y3, y4, neg_pow (s ^ 2)]
   have hS : (s ^ 2) ^ (c * j) ≠ 0 := pow_ne_zero _ (pow_ne_zero _ hs0)
   generalize (s ^ 2) ^ (c * j) = S at *

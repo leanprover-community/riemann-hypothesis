@@ -110,7 +110,7 @@ theorem window : Window := by
     · have h1 : G.σ γ⁻¹ s = r s := by rw [← h0, hrr]
       have h2 : δ⁻¹ * γ ∈ stab G (r s) := by
         change G.σ (δ⁻¹ * γ) (r s) = r s
-        have h3 : G.σ γ (r s) = s := by rw [← h1, map_inv]; simp
+        have h3 : G.σ γ (r s) = s := simp [← h1, map_inv]
         rw [map_mul, Equiv.Perm.mul_apply, h3, hδ]
       refine ⟨⟨_, h2⟩, ⟨_, hx, ?_⟩, by simp⟩
       rw [h1] at hγ

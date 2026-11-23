@@ -153,7 +153,7 @@ theorem det_one_add_ne_zero {n : ℕ} {J S : Matrix (Fin n) (Fin n) ℂ} (hJ : J
   have h1 : S *ᵥ v = -v := by
     rw [Matrix.add_mulVec, Matrix.one_mulVec] at h0
     exact eq_neg_of_add_eq_zero_right h0
-  have h2 : star v ⬝ᵥ ((Sᴴ * J + J * S) *ᵥ v) = 0 := by rw [hS]; simp
+  have h2 : star v ⬝ᵥ ((Sᴴ * J + J * S) *ᵥ v) = 0 := simp [hS]
   rw [Matrix.add_mulVec, dotProduct_add, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec,
     ← Matrix.star_mulVec, h1, Matrix.mulVec_neg, star_neg, neg_dotProduct, dotProduct_neg] at h2
   have h3 := (hJ.dotProduct_mulVec_pos hv).ne'

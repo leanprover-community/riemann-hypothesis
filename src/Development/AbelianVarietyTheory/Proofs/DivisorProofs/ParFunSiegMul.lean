@@ -57,7 +57,7 @@ theorem GlobalTheory.KSp.parFun_sieg_mul : ∀ (F : Type) [Field F] [CharZero F]
       by_cases h : i = j <;> simp [toBlocks₁₁, Matrix.one_apply, h]
     have h12 : (1 : Matrix (ν ⊕ ν) (ν ⊕ ν) E).toBlocks₁₂ = 0 := by
       ext i j; simp [toBlocks₁₂, one_apply]
-    have hp0 : pr c Q x 0 = 0 := by rw [← hβ]; simp
+    have hp0 : pr c Q x 0 = 0 := simp [← hβ]
     simp only [parFun, h1, h11, h12, det_one, hsc1, Matrix.mul_one, Matrix.mul_zero, hp0, mul_zero,
       AddChar.map_zero_eq_one, one_mul]
   · intro p hp q hq φ

@@ -141,7 +141,7 @@ theorem gauss_value : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgCl
     haveI : Module.Finite (ZMod p) F := Module.Finite.of_finite
     obtain ⟨b, hb⟩ := Algebra.trace_surjective (ZMod p) F 1
     intro h
-    have h1 : ψ₀ b = 1 := by rw [h]; simp
+    have h1 : ψ₀ b = 1 := simp [h]
     rw [hψ₀] at h1
     have hb0 : (Algebra.trace (ZMod p) F b).val ≠ 0 := by
       rw [hb, Ne, ZMod.val_eq_zero]

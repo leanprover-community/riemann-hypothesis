@@ -118,8 +118,8 @@ theorem glueContour : GlueContour := by
     have hs' := mem_rect_iff.1 hs
     have hs1 : s ≠ 1 := by
       intro e
-      have r1 : s.re = 1 := by rw [e]; simp
-      have i1 : s.im = 0 := by rw [e]; simp
+      have r1 : s.re = 1 := simp [e]
+      have i1 : s.im = 0 := simp [e]
       rcases hside with e' | e' | e' | e' <;> linarith
     have hL : DirichletCharacter.LFunction χ s ≠ 0 := by
       intro h0
@@ -129,11 +129,11 @@ theorem glueContour : GlueContour := by
         · linarith [h.2]
         · exact hno s h.1 h.2 h0 (by rw [e, abs_neg, abs_of_pos (by linarith)])
         · exact hno s h.1 h.2 h0 (by rw [e, abs_of_pos (by linarith)])
-      · have r1 : s.re = 0 := by rw [h]; simp
-        have i1 : s.im = 0 := by rw [h]; simp
+      · have r1 : s.re = 0 := simp [h]
+        have i1 : s.im = 0 := simp [h]
         rcases hside with e' | e' | e' | e' <;> linarith
-      · have r1 : s.re = -1 := by rw [h]; simp
-        have i1 : s.im = 0 := by rw [h]; simp
+      · have r1 : s.re = -1 := simp [h]
+        have i1 : s.im = 0 := simp [h]
         rcases hside with e' | e' | e' | e' <;> linarith
     rw [hreg.2 s hs hL hs1, hfs]
     have := hsumZ (fun w ρ => w / (s - ρ))

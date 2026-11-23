@@ -78,8 +78,8 @@ private theorem len_up {n : ℕ} (w : Equiv.Perm (Fin n)) (i j : Fin n) (h : (j 
       intro hlt
       apply swap_lt_iff i j _ _ h
       · rintro ⟨h1, h2⟩
-        have e1 : y = w⁻¹ i := by rw [← h1]; simp
-        have e2 : x = w⁻¹ j := by rw [← h2]; simp
+        have e1 : y = w⁻¹ i := simp [← h1]
+        have e2 : x = w⁻¹ j := simp [← h2]
         subst e1 e2
         exact absurd hlt (not_lt.mpr hw.le)
       · rintro ⟨h1, h2⟩

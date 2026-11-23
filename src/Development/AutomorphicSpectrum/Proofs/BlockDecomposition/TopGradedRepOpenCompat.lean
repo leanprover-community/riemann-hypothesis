@@ -255,7 +255,7 @@ theorem main : CrystallineSemistableComparison.Pb.KH.LocGr → CrystallineSemist
       rw [Fintype.sum_prod_type_right, map_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [Finset.sum_eq_single (Ik k)]
-      · have a1 : ((-1 : Γ(X, V)) ^ (k : ℕ)) * (-1) ^ (k : ℕ) = 1 := by rw [← mul_pow]; simp
+      · have a1 : ((-1 : Γ(X, V)) ^ (k : ℕ)) * (-1) ^ (k : ℕ) = 1 := simp [← mul_pow]
         rw [map_zsmul, zsmul_eq_mul, zsmul_eq_mul, RingEquiv.symm_apply_apply]
         push_cast
         have a2 : (-1 : Γ(X, V)) ^ (k : ℕ) * (((-1) ^ (k : ℕ) * (-1) ^ n * (sg k : Γ(X, V))) * D k (y (Ik k))) =

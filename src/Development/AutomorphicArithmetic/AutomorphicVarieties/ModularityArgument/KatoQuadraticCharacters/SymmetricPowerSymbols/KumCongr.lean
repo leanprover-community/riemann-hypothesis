@@ -108,7 +108,7 @@ private theorem inD_conj_of_lifts {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlg
   intro f
   have h1 : σ (io X f) = io X (τ f) := hσL f
   have h2 : h (io X (τ f)) = io X (τ f) := hh (τ f)
-  have h3 : σ⁻¹ (io X (τ f)) = io X f := by rw [← h1]; simp
+  have h3 : σ⁻¹ (io X (τ f)) = io X f := simp [← h1]
   rw [RingAut.mul_apply, RingAut.mul_apply, h1, h2, h3]
 private theorem ka_apply_lift_eq_cyc_mul_ka_conj {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] {ε : Ω →+* ℂ}
     {X : Tower Ω ε} {m : ℕ} (hm : 0 < m) {τ : X.K ≃+* X.K} {s : Gal(Ω/ℚ)} (hs : admitted X τ s)
@@ -123,7 +123,7 @@ private theorem ka_apply_lift_eq_cyc_mul_ka_conj {Ω : Type} [Field Ω] [Algebra
   refine hσ σ τ s hs hσL _ _ hx0 ?_
   have h1 : σ (io X w) = io X (τ w) := hσL w
   have h2 : h (io X (τ w)) = io X (τ w) := hh (τ w)
-  have h3 : σ⁻¹ (io X (τ w)) = io X w := by rw [← h1]; simp
+  have h3 : σ⁻¹ (io X (τ w)) = io X w := simp [← h1]
   rw [← map_pow, hx, RingAut.mul_apply, RingAut.mul_apply, h1, h2, h3]
 
 private theorem dif_mv_eq_of_dif_eq_zero {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] {ε : Ω →+* ℂ}

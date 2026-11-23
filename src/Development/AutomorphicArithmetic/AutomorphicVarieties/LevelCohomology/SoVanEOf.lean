@@ -57,7 +57,7 @@ private theorem UpperTheory.V.X.So.vanE_ad {O : Type} [CommRing O] [IsLocalRing 
     U3.adRep (U3.r0 F.η F.Ψ) g X a b - (-1) ^ s * U3.adRep (U3.r0 F.η F.Ψ) g X b.rev a.rev =
       (lineChar F (U3.wt a b) s g : O) * (X a b - (-1) ^ s * X b.rev a.rev) := by
   rw [U3.adRep_baseLift_apply, U3.adRep_baseLift_apply, So.vanE_char, So.vanE_wt_rev, Fin.rev_rev, Fin.rev_rev]
-  have h : ((-1 : O) ^ s) * (-1) ^ s = 1 := by rw [← mul_pow]; simp
+  have h : ((-1 : O) ^ s) * (-1) ^ s = 1 := simp [← mul_pow]
   split_ifs
   · ring
   · linear_combination (((F.Ψ g ^ U3.wt a b : Oˣ) : O) * X b.rev a.rev) * h

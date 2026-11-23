@@ -305,10 +305,10 @@ theorem plusStep_of (hLP : LetterPlus) (hRTT : RTTEntries) (hForm : PlusForm) (h
     by_cases hYY : Y = Y'
     · subst hYY
       exact Commute.refl _
-    have hee : (eU a 0 0 : SlopeTestRemainingChoices S A) * eU a 0 0 = eU a 0 0 := by rw [eU_mul_eU]; simp
-    have hen : (eU a 0 0 : SlopeTestRemainingChoices S A) * eU a 0 1 = eU a 0 1 := by rw [eU_mul_eU]; simp
-    have hne : (eU a 0 1 : SlopeTestRemainingChoices S A) * eU a 0 0 = 0 := by rw [eU_mul_eU]; simp
-    have hnn : (eU a 0 1 : SlopeTestRemainingChoices S A) * eU a 0 1 = 0 := by rw [eU_mul_eU]; simp
+    have hee : (eU a 0 0 : SlopeTestRemainingChoices S A) * eU a 0 0 = eU a 0 0 := simp [eU_mul_eU]
+    have hen : (eU a 0 0 : SlopeTestRemainingChoices S A) * eU a 0 1 = eU a 0 1 := simp [eU_mul_eU]
+    have hne : (eU a 0 1 : SlopeTestRemainingChoices S A) * eU a 0 0 = 0 := simp [eU_mul_eU]
+    have hnn : (eU a 0 1 : SlopeTestRemainingChoices S A) * eU a 0 1 = 0 := simp [eU_mul_eU]
     have K := key_rel _ _ _ _ Y Y' Ya hYY
       (hRTT ℂ (SlopeTestRemainingChoices S A) f.TT Y' Y (hf.module.rtt Y' hY'.1 Y hY.1) 1 1 1 0)
       (hRTT ℂ (SlopeTestRemainingChoices S A) f.TT Y Y' (hf.module.rtt Y hY.1 Y' hY'.1) 1 1 1 0)

@@ -751,7 +751,7 @@ theorem GTAlt.transfer (σ : G → G) (hσ : ∀ x y, σ (x * y) = σ y * σ x)
       calc (χ u2)⁻¹ * χ a * χ u1 * (χ u2 * χ b * (χ u1)⁻¹)
           = (χ a * χ b) * ((χ u2)⁻¹ * χ u2) * (χ u1 * (χ u1)⁻¹) := by
             simp only [mul_assoc, mul_comm, mul_left_comm]
-        _ = 1 := by rw [h2]; simp
+        _ = 1 := simp [h2]
   · right
     refine ⟨u1⁻¹ * a * u1, u2 * b * u2⁻¹, ?_, ?_⟩
     · simp only [Subgroup.coe_mul, Subgroup.coe_inv]

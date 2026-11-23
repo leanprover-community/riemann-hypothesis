@@ -100,7 +100,7 @@ theorem res_eq {x : 𝔸f} {n : ℤ} (h : x - (n : 𝔸f) ∈ levelIdeal N) : re
   have h4 : algebraMap ℚ 𝔸f ((n - m : ℤ) : ℚ) ∈ levelIdeal N := by simpa using h3
   obtain ⟨t, ht⟩ := exists_int_of_mem_levelIdeal N h4
   have h5 : n - m = N * t := by exact_mod_cast ht
-  have h6 : ((n - m : ℤ) : ZMod N) = 0 := by rw [h5]; simp
+  have h6 : ((n - m : ℤ) : ZMod N) = 0 := simp [h5]
   push_cast at h6
   exact (sub_eq_zero.1 h6).symm
 

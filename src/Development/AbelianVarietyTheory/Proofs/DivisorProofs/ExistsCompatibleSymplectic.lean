@@ -345,7 +345,7 @@ theorem exists_compatible_symplectic : ∀ (F : Type) [Field F] (ζ : ℕ → F�
         intro a
         obtain ⟨x, hx⟩ := (U.map fun k => π k.factorial n (E k a)).eq_pure_of_finite
         refine ⟨x, ?_⟩
-        have : {x} ∈ (U.map fun k => π k.factorial n (E k a)) := by rw [hx]; simp
+        have : {x} ∈ (U.map fun k => π k.factorial n (E k a)) := simp [hx]
         exact this
       choose f hf using this
       refine ⟨AddMonoidHom.mk' f fun a b => ?_, fun _ => hf⟩

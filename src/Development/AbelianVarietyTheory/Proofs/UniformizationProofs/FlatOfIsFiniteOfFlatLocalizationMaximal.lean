@@ -79,7 +79,7 @@ theorem flat_of_isFinite_of_flat_localization_maximal :
   intro V _ H hfin h
   haveI : IsAffine H.left := isAffine_of_isAffineHom H.hom
   obtain ⟨f, hf⟩ := Spec.map_surjective (H.left.isoSpec.inv ≫ H.hom)
-  have hf' : H.hom = H.left.isoSpec.hom ≫ Spec.map f := by rw [hf]; simp
+  have hf' : H.hom = H.left.isoSpec.hom ≫ Spec.map f := simp [hf]
   have : Flat (Spec.map f) := by
     refine flat_SpecMap_of_flat_localization_maximal V _ f fun m _ => ?_
     have h1 := h m

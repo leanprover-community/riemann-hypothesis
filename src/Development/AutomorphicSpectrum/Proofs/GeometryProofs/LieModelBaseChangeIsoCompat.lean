@@ -211,7 +211,7 @@ theorem gramAt_move : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
     rw [← hpt v, Category.assoc]
     erw [φ.hom_inv_id]
     exact Category.comp_id _
-  have hξ' : ξ ≫ e.symm.hom = ξ' := by rw [← hξ]; simp
+  have hξ' : ξ ≫ e.symm.hom = ξ' := simp [← hξ]
   constructor
   · rintro ⟨v', hval, hip⟩
     let v : Fin r → (epsAt (z ≫ e.hom) ⟶ t.G) := fun i => Over.homMk ((v' i).left ≫ k.φ) (by

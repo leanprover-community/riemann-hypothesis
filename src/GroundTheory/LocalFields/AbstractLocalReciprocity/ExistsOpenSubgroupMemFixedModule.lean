@@ -99,7 +99,7 @@ def cosetSMul (a : fixedModule A L) : K ⧸ L.subgroupOf K → A :=
     rw [Subgroup.mem_subgroupOf] at h
     have ha := a.2 _ h
     calc (σ : G) • (a : A) = (σ : G) • ((((σ⁻¹ * τ : K)) : G) • (a : A)) := by rw [ha]
-      _ = (τ : G) • (a : A) := by rw [smul_smul]; simp
+      _ = (τ : G) • (a : A) := simp [smul_smul]
 
 variable {A K L}
 

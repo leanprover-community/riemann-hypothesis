@@ -90,7 +90,7 @@ theorem UH_inv {g : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hg : g ∈ UH (Hb k
   show (g⁻¹)ᴴ * Hb k * g⁻¹ = Hb k
   calc (g⁻¹)ᴴ * Hb k * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Hb k * g) * g⁻¹ := by rw [hg']
     _ = (g * g⁻¹)ᴴ * Hb k * (g * g⁻¹) := by rw [conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Hb k := by rw [h2]; simp
+    _ = Hb k := simp [h2]
 
 theorem diag_phase_UH (d : Fin (k + 1) → ℂ) (hd : ∀ j, star (d j) * d j = 1) : diagonal d ∈ UH (Hb k) := by
   show (diagonal d)ᴴ * Hb k * diagonal d = Hb k

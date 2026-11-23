@@ -216,7 +216,7 @@ theorem homotopy (n : ℕ) (f : Cn (Cyl G) (n + 1)) :
       split_ifs <;> omega
     simp only [T, hl1, hl2, SimplexCategory.δ_comp_σ_self, SimplexCategory.δ_comp_σ_succ, Fin.val_castSucc,
       Fin.val_succ]
-    have s1 : ((-1 : R) ^ ((j : ℕ) + (j : ℕ))) = 1 := by rw [← two_mul, pow_mul]; simp
+    have s1 : ((-1 : R) ^ ((j : ℕ) + (j : ℕ))) = 1 := simp [← two_mul, pow_mul]
     have s2 : ((-1 : R) ^ ((j : ℕ) + 1 + (j : ℕ))) = -1 := by
       rw [show (j : ℕ) + 1 + (j : ℕ) = (j : ℕ) + (j : ℕ) + 1 by omega, pow_succ, s1]; simp
     rw [s1, s2]

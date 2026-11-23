@@ -85,7 +85,7 @@ theorem eq_map_of_local (A : Places F E sig) {n : ℕ} {Λ Γ : Submodule (𝓞 
     have hy' := hy p
     rw [hp] at hy'
     obtain ⟨b, hb, hbe⟩ := (Submodule.mem_smul_pointwise_iff_exists _ _ _).1 hy'
-    have e : g (A.bc p (x.symm y)) = A.bc p y := by rw [hg]; simp
+    have e : g (A.bc p (x.symm y)) = A.bc p y := simp [hg]
     have hb' : b = A.bc p (x.symm y) := g.injective (by rw [e]; exact hbe)
     rw [← hb']
     exact hb

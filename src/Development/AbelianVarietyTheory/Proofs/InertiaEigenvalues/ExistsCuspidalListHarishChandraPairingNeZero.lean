@@ -165,7 +165,7 @@ theorem exists_cusp_list (g : ℕ) [Fact g.Prime] (n : ℕ) (χ : Gn g n → ℂ
   · subst hn
     have hsub : ∀ x : Gn g 0, x = 1 := fun x => Units.ext (Matrix.ext fun i _ => i.elim0)
     have hu : (Finset.univ : Finset (Gn g 0)) = {1} := by ext x; simp only [Finset.mem_univ, Finset.mem_singleton, true_iff]; exact hsub x
-    have hcard : Fintype.card (Gn g 0) = 1 := by rw [← Finset.card_univ, hu]; simp
+    have hcard : Fintype.card (Gn g 0) = 1 := simp [← Finset.card_univ, hu]
     have hc1 : ∀ f : Gn g 0 → ℂ, ip χ f = χ 1 * f 1 := by
       intro f; unfold ip; rw [hcard, hu]; simp
     refine ⟨[], by simp, rfl, ?_⟩

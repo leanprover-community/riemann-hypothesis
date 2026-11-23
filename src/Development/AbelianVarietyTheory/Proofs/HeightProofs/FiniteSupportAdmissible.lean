@@ -124,7 +124,7 @@ private lemma case_two_finite_lemma
   have hbasis : IsTranscendenceBasis K x' :=
     isTranscendenceBasis_iff_algebraicIndependent_isAlgebraic.2
       ⟨hx', by rw [hrange]; exact isAlgebraic_adjoin_adjoin_preimage _⟩
-  have hKF : Algebra.trdeg K F = n := by rw [← hbasis.cardinalMk_eq_trdeg]; simp
+  have hKF : Algebra.trdeg K F = n := simp [← hbasis.cardinalMk_eq_trdeg]
   have hsum := trdeg_add_eq K F (A := Ω)
   rw [hKF, htr, ← hD] at hsum
   have hFΩ : Algebra.trdeg F Ω = 1 := by

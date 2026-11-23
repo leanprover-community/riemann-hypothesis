@@ -90,7 +90,7 @@ theorem exists_eig_of_low {A : Type} [NormedAddCommGroup A] [InnerProductSpace �
   have h3 : (⟪p, T p⟫_ℂ).re ≤ ‖p‖ ^ 2 / (2 * d) * ‖p‖ ^ 2 :=
     hasSum_le (fun i => mul_le_mul_of_nonneg_right (hlt i).le (by positivity)) h2 (h1.mul_left (‖p‖ ^ 2 / (2 * d)))
   have h5 := h p
-  have e2 : ‖⟪p, p⟫_ℂ‖ = ‖p‖ ^ 2 := by rw [inner_self_eq_norm_sq_to_K]; simp
+  have e2 : ‖⟪p, p⟫_ℂ‖ = ‖p‖ ^ 2 := simp [inner_self_eq_norm_sq_to_K]
   rw [e2] at h5
   have hP : 0 < ‖p‖ ^ 2 := by
     by_contra hh

@@ -176,8 +176,8 @@ theorem detCond_of_point : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E
     have e₂ : f₂.comp (algebraMap A _) = g₂ := IsLocalization.lift_comp _
     have v₁ : f₁ (algebraMap A _ ρ) = g₁ ρ := by rw [← RingHom.comp_apply, e₁]
     have v₂ : f₂ (algebraMap A _ ρ) = g₂ ρ := by rw [← RingHom.comp_apply, e₂]
-    have hρ₁ : (f₁ (algebraMap A _ ρ)) ^ 2 = -(H.d : K₁) := by rw [v₁, ← map_pow, hρ]; simp
-    have hρ₂ : (f₂ (algebraMap A _ ρ)) ^ 2 = -(H.d : K₂) := by rw [v₂, ← map_pow, hρ]; simp
+    have hρ₁ : (f₁ (algebraMap A _ ρ)) ^ 2 = -(H.d : K₁) := simp [v₁, ← map_pow, hρ]
+    have hρ₂ : (f₂ (algebraMap A _ ρ)) ^ 2 = -(H.d : K₂) := simp [v₂, ← map_pow, hρ]
     have hρR : (algebraMap A (Localization.Away r) ρ) ^ 2 = -(H.d : Localization.Away r) := by
       rw [← map_pow, hρ]; simp
     have h := (hiff K₁ f₁ ρ hρ₁).1 (by rw [e₁, v₁]; exact hdet)

@@ -98,7 +98,7 @@ theorem psiEf_conj_eq_prod : ∀ (D : D7) (X : HidaSetting D) (h : X.B.I = Forma
   obtain ⟨v0⟩ : Nonempty (D.nd.PlG 0) := by
     by_contra hc
     rw [not_nonempty_iff] at hc
-    have h0 : Module.finrank ℚ D.host.E = 0 := by rw [← hcard0]; simp
+    have h0 : Module.finrank ℚ D.host.E = 0 := simp [← hcard0]
     exact (Module.finrank_pos (R := ℚ) (M := D.host.E)).ne' h0
   have hs : s ∈ Formalism.MainNotions.S.IntAf X.B.I.F X.B.I.E := by
     have h1 := wInt_le X _ (ht ⟨0, v0⟩)

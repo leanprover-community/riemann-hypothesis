@@ -192,7 +192,7 @@ theorem yMain_of :
   set U : (K ⊗[ℂ] K)ˣ := ((sysZ K x a).X 0 * (sysZ K x a).Y 0) ^ d with hU
   have hm'eq' : actZ K (U : K ⊗[ℂ] K) m' = c0 := hm'eq
   set ε : ℂ := (-1) ^ d with hε
-  have hεε : ε * ε = 1 := by rw [hε, ← mul_pow]; simp
+  have hεε : ε * ε = 1 := simp [hε, ← mul_pow]
   set s0 : K ⊗[ℂ] K := algebraMap ℂ _ ε * ((U⁻¹ : (K ⊗[ℂ] K)ˣ) : K ⊗[ℂ] K) with hs0
   have hm_eq : actZ K s0 c0 = ε • m' := by
     rw [← hm'eq', ← Module.End.mul_apply, ← map_mul, hs0, mul_assoc, Units.inv_mul, mul_one, AlgHom.commutes,

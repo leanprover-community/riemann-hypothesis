@@ -57,7 +57,7 @@ theorem unipotent_upper_inv_bounded : ∀ (N : ℕ) (C : ℝ), ∃ C' : ℝ, ∀
     letI := Matrix.invertibleOfIsUnitDet n hu
     exact Matrix.blockTriangular_inv_of_blockTriangular htri h
   · intro i j
-    have hinv : n⁻¹ = n.adjugate := by rw [Matrix.inv_def, hdet]; simp
+    have hinv : n⁻¹ = n.adjugate := simp [Matrix.inv_def, hdet]
     rw [hinv, Matrix.adjugate_apply]
     have key := Matrix.det_le (abv := AbsoluteValue.abs) (x := max C 1)
       (A := n.updateRow j (Pi.single i 1)) ?_

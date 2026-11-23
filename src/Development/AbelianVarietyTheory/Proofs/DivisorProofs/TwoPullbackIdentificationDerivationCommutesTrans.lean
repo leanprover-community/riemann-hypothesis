@@ -205,7 +205,7 @@ theorem commutes : ∀ {R : Type} [CommRing R] [IsDomain R] (Q : DegPre R) {k : 
       rw [this]; exact hy'
     have m₃ : φ' (sc y) ∈ π₂ ⁻¹ᵁ W := by
       change π₂ (φ' (sc y)) ∈ W
-      have : (φ' ≫ π₂) (sc y) = φ (π₂ (sc y)) := by rw [hφ'2]; simp
+      have : (φ' ≫ π₂) (sc y) = φ (π₂ (sc y)) := simp [hφ'2]
       simp only [Scheme.Hom.comp_apply] at this
       rw [this]; exact m₂
     have eA := congrArg (gs (𝟙 B'.left) (sc y) (π₂ ⁻¹ᵁ (φ ⁻¹ᵁ W))) (hD (φ ⁻¹ᵁ W) ((φ.app W).hom f))

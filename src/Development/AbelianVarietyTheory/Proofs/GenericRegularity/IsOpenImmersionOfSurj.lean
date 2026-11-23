@@ -56,7 +56,7 @@ theorem away_irreducible {O K : Type} [CommRing O] [IsDomain O] [IsDiscreteValua
   obtain ⟨n, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible (nonZeroDivisors.ne_zero hb) hϖ
   refine ⟨n, a * ↑u⁻¹, ?_⟩
   have h1 : algebraMap O K ϖ ≠ 0 := by simpa using hϖ.ne_zero
-  have h2 : algebraMap O K u * algebraMap O K ↑u⁻¹ = 1 := by rw [← map_mul]; simp
+  have h2 : algebraMap O K u * algebraMap O K ↑u⁻¹ = 1 := simp [← map_mul]
   have h3 : algebraMap O K u ≠ 0 := left_ne_zero_of_mul_eq_one h2
   rw [map_mul, map_mul, map_pow, eq_inv_of_mul_eq_one_right h2]
   field_simp

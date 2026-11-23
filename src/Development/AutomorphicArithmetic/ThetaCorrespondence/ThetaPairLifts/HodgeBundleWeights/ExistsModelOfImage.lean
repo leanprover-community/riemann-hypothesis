@@ -56,8 +56,8 @@ theorem exists_model_of_image : _root_.GlobalTheory.CovTop.PublishedHodgeBundleT
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := by
     rcases n with _ | m
     · exfalso
-      have hW0 : W = ⊥ := by rw [← hF.span]; simp
-      have htop : (⊤ : Submodule K V) = ⊥ := by rw [← hs, hW0]; simp
+      have hW0 : W = ⊥ := simp [← hF.span]
+      have htop : (⊤ : Submodule K V) = ⊥ := simp [← hs, hW0]
       refine hR.1 (LinearMap.ext fun x => ?_)
       have hx : x ∈ (⊥ : Submodule K V) := htop ▸ Submodule.mem_top
       rw [Submodule.mem_bot] at hx

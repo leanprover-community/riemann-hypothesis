@@ -233,7 +233,7 @@ theorem conj_form {K : Type} [CommRing K] {n : ℕ} (c : K →+* K) (Ja p q m : 
     _ = δ • (qᵀ * q.map c) := by rw [hk, Matrix.mul_one]
     _ = qᵀ * (pᵀ * Ja * p.map c) * q.map c := by rw [hP]; simp only [Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_one]
     _ = (p * q)ᵀ * Ja * (p.map c * q.map c) := by rw [Matrix.transpose_mul]; simp only [Matrix.mul_assoc]
-    _ = Ja := by rw [hpq, hpqc]; simp
+    _ = Ja := simp [hpq, hpqc]
 
 variable {Γ : Type} [Group Γ]
 

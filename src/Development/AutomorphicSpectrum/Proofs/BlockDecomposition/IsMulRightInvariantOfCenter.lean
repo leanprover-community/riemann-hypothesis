@@ -197,10 +197,10 @@ theorem lev_mul {p₁ p₂ p₃ a b : R} (hs : p₁ + p₂ + p₃ = 1)
   have k3 := key p₃ i3
   have t1 : p₁ * a * p₂ * b * p₁ = 0 := by simp only [mul_assoc] at b21 ⊢; simp [b21]
   have t2 : p₁ * a * p₃ * b * p₁ = 0 := by simp only [mul_assoc] at b31 ⊢; simp [b31]
-  have t3 : p₂ * a * p₁ * b * p₂ = 0 := by rw [a21]; simp
+  have t3 : p₂ * a * p₁ * b * p₂ = 0 := simp [a21]
   have t4 : p₂ * a * p₃ * b * p₂ = 0 := by simp only [mul_assoc] at b32 ⊢; simp [b32]
-  have t5 : p₃ * a * p₁ * b * p₃ = 0 := by rw [a31]; simp
-  have t6 : p₃ * a * p₂ * b * p₃ = 0 := by rw [a32]; simp
+  have t5 : p₃ * a * p₁ * b * p₃ = 0 := simp [a31]
+  have t6 : p₃ * a * p₂ * b * p₃ = 0 := simp [a32]
   rw [t1, t2, add_zero, add_zero] at k1
   rw [t3, t4, zero_add, add_zero] at k2
   rw [t5, t6, zero_add, zero_add] at k3
@@ -209,7 +209,7 @@ theorem lev_mul {p₁ p₂ p₃ a b : R} (hs : p₁ + p₂ + p₃ = 1)
 theorem eq_lev_add {p₁ p₂ p₃ a : R} (hs : p₁ + p₂ + p₃ = 1)
     (a21 : p₂ * a * p₁ = 0) (a31 : p₃ * a * p₁ = 0) (a32 : p₃ * a * p₂ = 0) :
     a - lev p₁ p₂ p₃ a = p₁ * a * p₂ + p₁ * a * p₃ + p₂ * a * p₃ := by
-  have h : a = (p₁ + p₂ + p₃) * a * (p₁ + p₂ + p₃) := by rw [hs]; simp
+  have h : a = (p₁ + p₂ + p₃) * a * (p₁ + p₂ + p₃) := simp [hs]
   have h2 : (p₁ + p₂ + p₃) * a * (p₁ + p₂ + p₃) = p₁ * a * p₁ + p₁ * a * p₂ + p₁ * a * p₃ +
       (p₂ * a * p₁ + p₂ * a * p₂ + p₂ * a * p₃) + (p₃ * a * p₁ + p₃ * a * p₂ + p₃ * a * p₃) := by
     noncomm_ring

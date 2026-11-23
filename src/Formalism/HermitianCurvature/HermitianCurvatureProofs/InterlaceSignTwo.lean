@@ -417,7 +417,7 @@ theorem interlaceSignTwo : InterlaceSignTwo := by
   rw [hneg]
   have p1 := Finset.prod_pos hlow
   have p2 := Finset.prod_pos hhigh
-  have sq : ((-1 : ℝ) ^ (k - l)) * (-1) ^ (k - l) = 1 := by rw [← mul_pow]; simp
+  have sq : ((-1 : ℝ) ^ (k - l)) * (-1) ^ (k - l) = 1 := simp [← mul_pow]
   calc (0:ℝ) < (∏ i ∈ Icc 1 (l - 1), (Y + e + ρ i)) * ∏ i ∈ Icc l (k - 1), (-(Y + e + ρ i)) := mul_pos p1 p2
     _ = ((-1 : ℝ) ^ (k - l) * (-1) ^ (k - l)) * ((∏ i ∈ Icc 1 (l - 1), (Y + e + ρ i)) * ∏ i ∈ Icc l (k - 1), (-(Y + e + ρ i))) := by rw [sq, one_mul]
     _ = _ := by ring

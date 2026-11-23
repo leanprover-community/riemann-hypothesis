@@ -330,7 +330,7 @@ theorem conj_mem_lie {g X : Matrix (Fin n) (Fin n) ℂ} (hu : IsUnit g) (h : g�
   calc (g⁻¹ * X * g)ᴴ * G + G * (g⁻¹ * X * g) = gᴴ * Xᴴ * ((g⁻¹)ᴴ * G) + (G * g⁻¹) * X * g := by
         simp only [conjTranspose_mul, Matrix.mul_assoc]
     _ = gᴴ * (Xᴴ * G + G * X) * g := by rw [h1, h2]; simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-    _ = 0 := by rw [hX']; simp
+    _ = 0 := simp [hX']
 
 theorem prod_conj {g : Matrix (Fin n) (Fin n) ℂ} (hg : IsUnit g) (l : List (Matrix (Fin n) (Fin n) ℂ)) :
     g * (l.map fun x => g⁻¹ * x * g).prod = l.prod * g := by
@@ -373,7 +373,7 @@ theorem conj_mem_UJ {ε : Fin n → Bool} {P : Matrix (Fin n) (Fin n) ℂ} (hP :
         simp only [conjTranspose_mul, Matrix.mul_assoc]
     _ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
         rw [h, hg', ← h]; simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = _ := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+    _ = _ := simp [Matrix.mul_nonsing_inv _ hd]
 
 theorem rep_mem_sm {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) (τ : D.what₂.Tau)
     (g : Matrix (Fin V.rank) (Fin V.rank) ℂ) (hg : g ∈ UH (gramAt D V τ)) (w : M.H τ) (hw : w ∈ M.sm τ) :

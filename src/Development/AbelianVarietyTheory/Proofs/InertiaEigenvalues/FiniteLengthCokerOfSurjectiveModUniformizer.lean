@@ -81,7 +81,7 @@ theorem GlobalTheory.BK.Hom.finiteLength_coker_of_generic : ∀ (O K : Type) [Co
       intro τ
       obtain ⟨Y, g, hY, hg, hFY⟩ := hyp τ
       have hgA : g ∈ A O K := by
-        have : (F.mat τ * Y) i0 i0 = g := by rw [hFY]; simp
+        have : (F.mat τ * Y) i0 i0 = g := simp [hFY]
         rw [← this, Matrix.mul_apply]
         exact Subalgebra.sum_mem _ fun j _ => mul_mem (F.mem τ i0 j) (hY j i0)
       exact ⟨g, ⟨⟨1, mem_A.1 hgA⟩, Y, ⟨1, fun i j => mem_A.1 (hY i j)⟩, hFY⟩, mem_A.1 hgA, hg⟩
@@ -95,7 +95,7 @@ theorem GlobalTheory.BK.Hom.finiteLength_coker_of_generic : ∀ (O K : Type) [Co
       intro τ
       obtain ⟨Y, g, hY, hg, hFY⟩ := hyp τ
       have hgA : g ∈ A O K := by
-        have : (Y * F.mat τ) i0 i0 = g := by rw [hFY]; simp
+        have : (Y * F.mat τ) i0 i0 = g := simp [hFY]
         rw [← this, Matrix.mul_apply]
         exact Subalgebra.sum_mem _ fun j _ => mul_mem (hY i0 j) (F.mem τ j i0)
       exact ⟨g, ⟨⟨1, mem_A.1 hgA⟩, Y, ⟨1, fun i j => mem_A.1 (hY i j)⟩, hFY⟩, mem_A.1 hgA, hg⟩

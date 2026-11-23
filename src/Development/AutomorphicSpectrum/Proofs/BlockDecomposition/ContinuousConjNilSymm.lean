@@ -204,7 +204,7 @@ theorem cnB_add (q : GL (Fin n) ℂ) (W₁ W₂ : Submodule ℂ (Fin n → ℂ))
 theorem cnB_cnF (q : GL (Fin n) ℂ) (W₁ W₂ : Submodule ℂ (Fin n → ℂ)) (X : nilrad W₁ W₂) :
     cnB q W₁ W₂ (cnF q W₁ W₂ X) = X :=
   Subtype.ext (by
-    have h1 : q.val * (q⁻¹ : GL (Fin n) ℂ).val = 1 := by rw [← Units.val_mul]; simp
+    have h1 : q.val * (q⁻¹ : GL (Fin n) ℂ).val = 1 := simp [← Units.val_mul]
     rw [cnB_val, cnF_val]
     calc _ = (q.val * (q⁻¹ : GL (Fin n) ℂ).val) * X.1 * (q.val * (q⁻¹ : GL (Fin n) ℂ).val) := by
           simp only [mul_assoc]
@@ -213,7 +213,7 @@ theorem cnB_cnF (q : GL (Fin n) ℂ) (W₁ W₂ : Submodule ℂ (Fin n → ℂ))
 theorem cnF_cnB (q : GL (Fin n) ℂ) (W₁ W₂ : Submodule ℂ (Fin n → ℂ))
     (Z : nilrad (img q⁻¹ W₁) (img q⁻¹ W₂)) : cnF q W₁ W₂ (cnB q W₁ W₂ Z) = Z :=
   Subtype.ext (by
-    have h1 : (q⁻¹ : GL (Fin n) ℂ).val * q.val = 1 := by rw [← Units.val_mul]; simp
+    have h1 : (q⁻¹ : GL (Fin n) ℂ).val * q.val = 1 := simp [← Units.val_mul]
     rw [cnF_val, cnB_val]
     calc _ = ((q⁻¹ : GL (Fin n) ℂ).val * q.val) * Z.1 * ((q⁻¹ : GL (Fin n) ℂ).val * q.val) := by
           simp only [mul_assoc]
@@ -238,7 +238,7 @@ theorem continuous_conjNil_symm (q : GL (Fin n) ℂ) (W₁ W₂ : Submodule ℂ 
 theorem uOf_conjNil (q : GL (Fin n) ℂ) (W₁ W₂ : Submodule ℂ (Fin n → ℂ)) (X : nilrad W₁ W₂) :
     uOf (conjNil q W₁ W₂ X) = q⁻¹ * uOf X * q := by
   apply Units.ext
-  have h1 : (q⁻¹ : GL (Fin n) ℂ).val * q.val = 1 := by rw [← Units.val_mul]; simp
+  have h1 : (q⁻¹ : GL (Fin n) ℂ).val * q.val = 1 := simp [← Units.val_mul]
   simp only [uOf_val, conjNil_val, Units.val_mul, mul_add, add_mul, mul_one, h1]
 
 theorem continuous_thC : Continuous (thC n) := by

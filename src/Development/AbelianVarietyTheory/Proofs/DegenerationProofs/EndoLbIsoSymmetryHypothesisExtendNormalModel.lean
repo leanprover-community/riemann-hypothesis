@@ -89,7 +89,7 @@ theorem pull_cubeCls {T T' : Over S} {n : ℕ} (x : Fin n → (T ⟶ G)) (x' : F
 theorem cubeCls_one {n : ℕ} (c : Pic G.left) (hc : CechPic.pull (eSec G) c = 0) :
     cubeCls G (fun _ : Fin n => (η[G] : 𝟙_ (Over S) ⟶ G)) c = 0 := by
   refine Finset.sum_eq_zero fun I _ => ?_
-  have e₁ : (1 : 𝟙_ (Over S) ⟶ G) = η[G] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S) ⟶ G) = η[G] := simp [Hom.one_def]
   have : psum G (fun _ : Fin n => (1 : 𝟙_ (Over S) ⟶ G)) I.down = 1 := by
     unfold psum
     induction (List.finRange n).filter (· ∈ I.down) with

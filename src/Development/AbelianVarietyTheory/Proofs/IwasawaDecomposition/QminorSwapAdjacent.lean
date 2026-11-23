@@ -143,7 +143,7 @@ theorem cast_sign_mul {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : A) :
 theorem eq_zero_of_eq_neg {x : A} (h : x = -x) : x = 0 := by
   have h2 : (2 : ℂ) • x = 0 := by
     rw [two_smul]; exact add_eq_zero_iff_eq_neg.2 h
-  have : x = (2 : ℂ)⁻¹ • ((2 : ℂ) • x) := by rw [smul_smul]; simp
+  have : x = (2 : ℂ)⁻¹ • ((2 : ℂ) • x) := simp [smul_smul]
   rw [this, h2, smul_zero]
 
 theorem qminor_swap_adjacent {n m : ℕ} (E : Fin n → Fin n → A) (hE : GlRel E)

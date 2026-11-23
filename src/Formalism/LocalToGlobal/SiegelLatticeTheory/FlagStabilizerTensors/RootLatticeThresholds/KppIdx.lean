@@ -241,7 +241,7 @@ theorem phi_key (hr : r = kk + 2 * s + 1) (ob : Bool) {N N' : Matrix (Fin r) (Fi
   · rw [if_pos hs, if_pos hs]
     have h1 : dN (g := g) s kk ob (s - 1) = 1 := index_diag_isotropic ob (by omega)
     have h2 : dN (g := g) s kk ob (s + kk) = 1 := dN_add_eq_one ob
-    have h3 : dN (g := g) s kk ob (s + kk + 1) = 1 := by rw [dN_y ob le_rfl]; simp
+    have h3 : dN (g := g) s kk ob (s + kk + 1) = 1 := simp [dN_y ob le_rfl]
     rw [h1, h2, h3, hinv _ (by omega), Finset.sum_neg_distrib]
     ring
   · rw [if_neg hs, if_neg hs]

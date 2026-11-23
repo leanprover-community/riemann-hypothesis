@@ -128,7 +128,7 @@ theorem cone_zigzag_compat (hh : ∀ p q x, K.dh (p + 1) (q + 1) (B p q x) = B (
           rw [hU p q (by omega)]
           simp
     · rw [map_add (f := _), D_shift B hh hv, hDU, shift_sub, shift_sgl, shift_sgl, K.D_sgl, hg1, hg2, hPs, map_neg, map_zsmul]
-      have e : ((-1 : ℤ) ^ (2 * k)) = 1 := by rw [pow_mul]; simp
+      have e : ((-1 : ℤ) ^ (2 * k)) = 1 := simp [pow_mul]
       rw [e, one_smul, pow_zero, one_smul]
       have e2 : K.sgl 0 (2 * k + 1 + 1) (a (k + 1)) = K.sgl 0 (2 * (k + 1)) (a (k + 1)) := rfl
       rw [e2]

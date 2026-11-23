@@ -195,7 +195,7 @@ theorem ratIn_of_definite {L : Type} [Field L] {σ : L →+* ℂ} {lam : T → �
   exact congrArg₂ (fun u v => a * u - b * v) ((c t P).2.2 γ hγ g) ((c' t P').2.2 γ hγ g)
 
 theorem posDef_of_std {V : HSp D} {r : Rig V} (h : r.IsStd) (τ : D.what₂.Tau) : (gramAt D V τ).PosDef := by
-  have : gramAt D V τ = 1 := by rw [gramAt, h.1]; simp
+  have : gramAt D V τ = 1 := simp [gramAt, h.1]
   rw [this]; exact Matrix.PosDef.one
 
 end Bottom

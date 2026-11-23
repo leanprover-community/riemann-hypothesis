@@ -183,10 +183,10 @@ theorem exists_blocks_mp {F m J : Type} [Fintype F] [Fintype m] [DecidableEq m] 
     obtain ⟨y, rfl⟩ := σ.surjective x
     rw [Matrix.mulVec, dotProduct, ← σ.sum_comp]
     rcases y with ⟨r, j⟩ | y
-    · have : σ.symm (ι (r, j)) = Sum.inl (r, j) := by rw [← σl]; simp
+    · have : σ.symm (ι (r, j)) = Sum.inl (r, j) := simp [← σl]
       simp [G, this, σl, σr, h1, Fintype.sum_sum_type, Fintype.sum_prod_type, blockDiagonal_apply]
     · rw [σr, h2 _ _ y.2]
-      have : σ.symm y.1 = Sum.inr y := by rw [← σr]; simp
+      have : σ.symm y.1 = Sum.inr y := simp [← σr]
       simp [G, this, Fintype.sum_sum_type, Matrix.one_apply, σr]
   obtain ⟨φ, hφ, hφe⟩ := exists_affine_mp ν G (u ^ Fintype.card J) hG.symm
     (by rw [Units.val_pow_eq_pow_val, map_pow, hv, one_pow]) 0

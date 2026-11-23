@@ -66,7 +66,7 @@ theorem gap_lam {k r : ℕ} {lam : Fin (2 * r + k + 1) → ℝ} {u : ℕ → ℝ
   ·
     have hac' : a.val < c.val := hac
     have hd : a.val + 1 < 2 * r + k + 1 := by have := c.isLt; omega
-    have had : a < ⟨a.val + 1, hd⟩ := by rw [Fin.lt_def]; simp
+    have had : a < ⟨a.val + 1, hd⟩ := simp [Fin.lt_def]
     have hdc : (⟨a.val + 1, hd⟩ : Fin (2 * r + k + 1)) ≤ c := by rw [Fin.le_iff_val_le_val]; simp; omega
     have hne : PI.BesselPeriodGGP.eps48 k r a ≠ PI.BesselPeriodGGP.eps48 k r ⟨a.val + 1, hd⟩ := by
       have h1 : ¬ (a.val < k - 1) := by omega

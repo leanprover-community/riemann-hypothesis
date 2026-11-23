@@ -217,7 +217,7 @@ theorem share_abs (L H Hp Cl κ₁ κ₂ ep : ℝ) (hL : 0 ≤ L) (_hH : 0 ≤ H
 
 private theorem one_sub_mul_exp_le_one_of_le (x ep : ℝ) (hx : x ≤ ep) : (1 - ep) * Real.exp x ≤ 1 := by
   have h1 : 1 - x ≤ Real.exp (-x) := by linarith [Real.add_one_le_exp (-x)]
-  have h2 : Real.exp (-x) * Real.exp x = 1 := by rw [← Real.exp_add]; simp
+  have h2 : Real.exp (-x) * Real.exp x = 1 := simp [← Real.exp_add]
   have h3 := Real.exp_pos x
   nlinarith [mul_le_mul_of_nonneg_right h1 h3.le, mul_le_mul_of_nonneg_right hx h3.le]
 

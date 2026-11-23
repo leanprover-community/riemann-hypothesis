@@ -121,7 +121,6 @@ noncomputable def UpperTheory.Reformulated.B.KoszulComplexHomotopy.KoszulExactBe
 
 namespace UpperTheory.Reformulated.B.KoszulComplexHomotopy
 
-section Helpers
 
 variable {R N : Type} [CommRing R] [AddCommGroup N] [Module R N] {κ : Type} [LinearOrder κ]
 
@@ -194,7 +193,6 @@ private theorem kos_B (r : κ → R) (c : Finset κ → N) (n : ℤ) :
       ∃ b : Finset κ → N, (∀ s : Finset κ, (s.card : ℤ) ≠ n - 1 → b s = 0) ∧ dd r b = c := by
   simp only [GlobalTheory.PD.Cx.B, Submodule.mem_map, kos_C, kos_D]
 
-end Helpers
 
 end UpperTheory.Reformulated.B.KoszulComplexHomotopy
 

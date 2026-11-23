@@ -153,7 +153,7 @@ theorem exists_arch {n : ℕ} {J θ : Matrix (Fin n) (Fin n) ℂ} {c : ℂ} (hc 
       rfl
     have e2 : T.1ᴴ = (2 * c) • D := by rw [← Matrix.mul_one T.1ᴴ, ← dd, ← Matrix.mul_assoc, e1, Matrix.smul_mul, Matrix.one_mul]
     have e3 : T.1ᴴ * T.1 = (4 : ℂ) • 1 := by
-      have : T.1 = (2 * star c) • D := by rw [← conjTranspose_conjTranspose T.1, e2, conjTranspose_smul, dh]; simp
+      have : T.1 = (2 * star c) • D := simp [← conjTranspose_conjTranspose T.1, e2, conjTranspose_smul, dh]
       rw [e2, this, Matrix.smul_mul, Matrix.mul_smul, dd, smul_smul]
       congr 1
       linear_combination 4 * hc

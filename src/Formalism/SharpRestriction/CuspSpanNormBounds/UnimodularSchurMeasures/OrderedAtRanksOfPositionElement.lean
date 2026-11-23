@@ -66,7 +66,7 @@ theorem discrete_series_unitary_rep {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bo
     rw [e1, hPJ, hx', ← hPJ]
     calc (P⁻¹)ᴴ * (Pᴴ * Formalism.REAL.Jm ε * P) * P⁻¹ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = Formalism.REAL.Jm ε := by rw [hPi']; simp
+      _ = Formalism.REAL.Jm ε := simp [hPi']
   refine ⟨?_, fun x hx y hy => ?_, fun x hx v => ?_⟩
   · have : σ (P⁻¹ * 1 * P) = 1 := h1
     rwa [Matrix.mul_one, hPi] at this
@@ -75,7 +75,7 @@ theorem discrete_series_unitary_rep {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bo
     have e : P⁻¹ * (P * x * P⁻¹ * (P * y * P⁻¹)) * P = x * y := by
       calc P⁻¹ * (P * x * P⁻¹ * (P * y * P⁻¹)) * P = (P⁻¹ * P) * x * (P⁻¹ * P) * y * (P⁻¹ * P) := by
             simp only [Matrix.mul_assoc]
-        _ = x * y := by rw [hPi]; simp
+        _ = x * y := simp [hPi]
     rwa [e] at this
   · have := hiso _ (hmem x hx) v
     simp only [hback] at this

@@ -116,7 +116,7 @@ variable {E : Type} [CommRing E] (θ : B →+* E)
 theorem main [CharZero K] (U : Cov q) {t : B} (ht : t ∈ I) (m : ℕ) (hker : RingHom.ker θ = I) (hp : ∀ r, pdP γ r = Ideal.span {t ^ r})
     (hnil : t ^ m = 0) (hgr : ∀ i < m, ∀ x : B, x * t ^ i ∈ Ideal.span {t ^ (i + 1)} → x ∈ I) (r j : ℕ) (hr : r < m) :
     Spans γ q (TS γ q 1 m {⊤}) ht r j ∧ ∃ co, IsCo γ q (TS γ q 1 m {⊤}) θ ht r j co := by
-  have hm : pdP γ m = ⊥ := by rw [hp, hnil]; simp
+  have hm : pdP γ m = ⊥ := simp [hp, hnil]
   obtain ⟨S⟩ := split_field (K := K) γ m hm
   have hB : TFBase γ 1 m := ⟨hm, fun r x hx => by simpa using hx, fun n hn => ⟨0, algebraMap K B (n : K)⁻¹, by
     rw [pow_zero, ← map_natCast (algebraMap K B), ← map_mul, mul_inv_cancel₀ (Nat.cast_ne_zero.2 hn), map_one]⟩⟩

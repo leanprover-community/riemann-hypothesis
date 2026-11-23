@@ -165,7 +165,7 @@ theorem val_eq_one [CharZero K] (w : Valuation K Γ) {l k : ℕ} [Fact l.Prime] 
     push_neg at h
     obtain ⟨a, b, hab⟩ :=
       (Irreducible.coprime_iff_not_dvd (Nat.prime_iff_prime_int.mp hl).irreducible).mpr hm
-    have e : ((a * l + b * m : ℤ) : K) = 1 := by rw [hab]; simp
+    have e : ((a * l + b * m : ℤ) : K) = 1 := simp [hab]
     push_cast at e
     have h₀ := w.map_add ((a : K) * l) ((b : K) * m)
     rw [e, map_one, map_mul, map_mul] at h₀

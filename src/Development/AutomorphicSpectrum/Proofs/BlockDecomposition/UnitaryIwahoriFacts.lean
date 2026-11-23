@@ -45,8 +45,8 @@ variable {L : Type} [Field L] {n : ℕ}
 
 theorem conj_mem_UJ_one_iff (σ : L →+* L) {J : Matrix (Fin n) (Fin n) L} (b g : GL (Fin n) L)
     (hb : cT σ b.val * b.val = J) : b * g * b⁻¹ ∈ UJ σ 1 ↔ g ∈ UJ σ J := by
-  have hbi : b.val * (b⁻¹ : GL (Fin n) L).val = 1 := by rw [← Units.val_mul]; simp
-  have hib : (b⁻¹ : GL (Fin n) L).val * b.val = 1 := by rw [← Units.val_mul]; simp
+  have hbi : b.val * (b⁻¹ : GL (Fin n) L).val = 1 := simp [← Units.val_mul]
+  have hib : (b⁻¹ : GL (Fin n) L).val * b.val = 1 := simp [← Units.val_mul]
   change cT σ (b * g * b⁻¹).val * 1 * (b * g * b⁻¹).val = 1 ↔ cT σ g.val * J * g.val = J
   simp only [Units.val_mul, Matrix.mul_one]
   have hc : cT σ (b⁻¹ : GL (Fin n) L).val * cT σ b.val = 1 := by

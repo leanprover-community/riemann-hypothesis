@@ -57,7 +57,7 @@ theorem urep_of_ds {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSp
   have mem : ∀ g, g ∈ GG k r ↔ P * g * P⁻¹ ∈ UJset ε := uHConj _ ε _ P hd hH
   have back : ∀ g : Mat k r, P⁻¹ * (P * g * P⁻¹) * P = g := fun g => by
     calc P⁻¹ * (P * g * P⁻¹) * P = (P⁻¹ * P) * g * (P⁻¹ * P) := by simp only [Matrix.mul_assoc]
-      _ = g := by rw [hiP]; simp
+      _ = g := simp [hiP]
   refine ⟨⟨?_, ?_⟩, ?_, ?_⟩
   · simpa [hiP] using h1
   · intro a ha b hb

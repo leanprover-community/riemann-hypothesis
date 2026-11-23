@@ -186,8 +186,8 @@ theorem UpperTheory.V.Z.Kato.Joint.meas3 :
     UpperTheory.V.Z.Kato.Joint.Meas3 := by
   intro l _ ι e s u w ψ α B c v n β t hl he hs' H hv ht hS
   have hs : s * s = 1 := by
-    have h1 : ψ (-1) * ψ (-1) = 1 := by rw [← map_mul]; simp
-    have h2 : ((-1 : ℂ) ^ e) * (-1) ^ e = 1 := by rw [← mul_pow]; simp
+    have h1 : ψ (-1) * ψ (-1) = 1 := simp [← map_mul]
+    have h2 : ((-1 : ℂ) ^ e) * (-1) ^ e = 1 := simp [← mul_pow]
     rw [hs']
     linear_combination ψ (-1) * ψ (-1) * h2 + h1
   have hσ : ι.symm s * ι.symm s = 1 := by rw [← map_mul, hs, map_one]

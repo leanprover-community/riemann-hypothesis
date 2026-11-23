@@ -100,7 +100,7 @@ theorem UpperTheory.ConvolutionTheory.G3.transl :
   · apply Units.ext
     have hc : (IsCMField.complexConj E z)⁻¹ * z * (-1) ^ (n - 1) = 1 := by
       have hcz : IsCMField.complexConj E z ≠ 0 := (_root_.map_ne_zero _).mpr hz0
-      have hs : ((-1 : E) ^ (n - 1)) * (-1) ^ (n - 1) = 1 := by rw [← mul_pow]; simp
+      have hs : ((-1 : E) ^ (n - 1)) * (-1) ^ (n - 1) = 1 := simp [← mul_pow]
       have e : (IsCMField.complexConj E z)⁻¹ * z * (-1) ^ (n - 1) =
           ((IsCMField.complexConj E z)⁻¹ * IsCMField.complexConj E z) * (((-1 : E) ^ (n - 1)) * (-1) ^ (n - 1)) := by
         rw [show (IsCMField.complexConj E z)⁻¹ * z * (-1) ^ (n - 1) =

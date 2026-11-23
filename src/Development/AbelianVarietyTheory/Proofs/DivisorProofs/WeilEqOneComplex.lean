@@ -222,7 +222,7 @@ theorem lamEq_one {ρ : 𝓞 K} (hρ : ρ ^ 2 = -(H.d : 𝓞 K)) (A A' B : PAT H
     have := GlobalTheory.lieMult_iff_of_isGrpPullback mA.cart A₁.t.act A.t.act mA.act (𝟙 (Sp ℂ)) τ n
     rw [Category.id_comp] at this
     exact this.2
-  have hβρ : β ρ ^ 2 = -(H.d : ℂ) := by rw [← map_pow, hρ]; simp
+  have hβρ : β ρ ^ 2 = -(H.d : ℂ) := simp [← map_pow, hρ]
   have hτ : ∀ τ : 𝓞 E →+* ℂ, τ H.rt ^ 2 = -(H.d : ℂ) := fun τ => by rw [← map_pow, H.rt_sq]; simp
   have h := weilEq_one_complex A₁ A₂ B₁ hβρ (fun τ h => hlie m₁ τ 0 ((hA ℂ β hβi τ).2 h))
     (fun τ h => hlie m₂ τ 0 ((hA' ℂ β hβi τ).1

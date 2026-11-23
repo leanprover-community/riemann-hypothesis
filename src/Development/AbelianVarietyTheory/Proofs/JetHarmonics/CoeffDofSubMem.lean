@@ -149,7 +149,7 @@ theorem dof_baseChange (hJ : JetAlgSt) (hRep : RepSt) (hSer : SerSt) [IsLocalRin
     exact ChartBaseChange.hasSer_move hΘ π _ _ (fun m => congrArg (fun k => k.left) (e 0 m)) U _ _ H
   have hη : η[G'].left ≫ π = Spec.map (CommRingCat.ofHom (algebraMap V R)) ≫ η[G].left := by
     have e := congrArg (fun z => z.left) (map_one (pushHom hπ (𝟙_ _)))
-    have e₁ : (1 : 𝟙_ _ ⟶ G') = η[G'] := by rw [Hom.one_def]; simp
+    have e₁ : (1 : 𝟙_ _ ⟶ G') = η[G'] := simp [Hom.one_def]
     rw [e₁] at e
     refine e.trans ?_
     show (toUnit _ ≫ η[G]).left = _

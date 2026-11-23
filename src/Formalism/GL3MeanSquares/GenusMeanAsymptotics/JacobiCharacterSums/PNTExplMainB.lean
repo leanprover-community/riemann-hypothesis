@@ -170,7 +170,7 @@ theorem exm_core : ∃ C₂ C₃ : ℝ, 0 < C₂ ∧ 0 ≤ C₃ ∧ ∀ (κ : �
     gcongr
   have hLf := ex_left_bound χ y σ₁ T' (N + 4 / (3 * κ)) (by linarith) (by linarith) hσ1 hT'0.le hBL
   have hTl := htail M χ y σ₀ T' (by linarith) hσ₀1 (by linarith)
-  have hinv : 1 / (σ₀ - 1) = Real.log y := by rw [hσ₀]; simp
+  have hinv : 1 / (σ₀ - 1) = Real.log y := simp [hσ₀]
   rw [hinv, hyσ₀] at hTl
   have hedge : ∀ w : ℂ, σ₁ ≤ w.re → w.re ≤ σ₀ → |w.im| ≤ T' → exLF χ w = 0 → σ₁ < w.re ∧ |w.im| < T' := by
     intro w hw1 _ hw3 hw0

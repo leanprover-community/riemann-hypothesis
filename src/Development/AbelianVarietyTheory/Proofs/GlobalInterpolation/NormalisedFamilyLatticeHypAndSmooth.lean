@@ -84,7 +84,7 @@ theorem latAll {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc �
     have hI := hermitian_form_integral_values D cc hcc δ hδ h0 N N' L L' hA
     have hs := IO.semiChar_of_HfInt _ hI x hx y hy
     obtain ⟨a, b, -, hab⟩ := hI x hx y hy
-    have him : (TaylorLogMetric.Hf D (TaylorLogMetric.tor0 D cc δ) x y).im = (b : ℝ) := by rw [hab]; simp
+    have him : (TaylorLogMetric.Hf D (TaylorLogMetric.tor0 D cc δ) x y).im = (b : ℝ) := simp [hab]
     rw [hs]
     congr 1
     show Complex.exp (-((Real.pi : ℂ) * Complex.I * (((TaylorLogMetric.Hf D (TaylorLogMetric.tor0 D cc δ) x y).im : ℝ) : ℂ)))

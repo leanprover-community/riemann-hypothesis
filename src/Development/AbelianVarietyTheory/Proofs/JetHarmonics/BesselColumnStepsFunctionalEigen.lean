@@ -90,8 +90,8 @@ theorem quantumMinor_columnSteps_partial (M Wp : Type) [AddCommGroup M] [Module 
         f (Fin.last _) ∉ Set.range fun i : Fin (k + j) => f i.castSucc := by
       rintro f hf ⟨i, hi⟩
       exact (Fin.castSucc_lt_last i).ne (hf hi)
-    have hal : (a (Fin.last _)).val = r + (k + j) := by rw [ha]; simp
-    have hbl : (b (Fin.last _)).val = r + (k + j) + 1 := by rw [hb]; simp
+    have hal : (a (Fin.last _)).val = r + (k + j) := simp [ha]
+    have hbl : (b (Fin.last _)).val = r + (k + j) + 1 := simp [hb]
     have hlt : ∀ i, a i < b (Fin.last _) := fun i => by
       have := i.isLt
       rw [Fin.lt_def, ha, hbl]; omega

@@ -281,7 +281,7 @@ theorem exists_span {n m : ℕ} {κ : Type} [Fintype κ] [DecidableEq κ]
     have h1 := LinearMap.finrank_range_add_finrank_ker F.vecMulLinear
     rw [hsurj, finrank_top, Module.finrank_fin_fun, Module.finrank_fintype_fun_eq_card] at h1
     omega
-  have hP : (1 - F * R) * F = 0 := by rw [Matrix.sub_mul, Matrix.mul_assoc, h]; simp
+  have hP : (1 - F * R) * F = 0 := simp [Matrix.sub_mul, Matrix.mul_assoc, h]
   generalize 1 - F * R = P at hP
   have hmem : ∀ i, P i ∈ LinearMap.ker F.vecMulLinear := fun i =>
     LinearMap.mem_ker.2 (congrFun hP i)

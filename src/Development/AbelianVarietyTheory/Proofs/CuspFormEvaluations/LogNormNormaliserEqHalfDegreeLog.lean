@@ -69,7 +69,7 @@ theorem log_norm_normaliser : ∀ (D : D7) (B : WeightFamilies.Prov D) (hinj : F
   have h0 := Real.rpow_pos_of_pos (hg 0) (((Dplus w : ℝ) + Dminus w) / 2)
   have h1 := Real.rpow_pos_of_pos (hg 1) (((Dplus w : ℝ) + Dminus w) / 2)
   refine ⟨fun hz => ?_, ?_⟩
-  · have hz' : ‖σ ((nnW B hinj EX w : 𝓞 B.KO) : B.KO)‖ = 0 := by rw [hz]; simp
+  · have hz' : ‖σ ((nnW B hinj EX w : 𝓞 B.KO) : B.KO)‖ = 0 := simp [hz]
     rw [hnorm, Fin.prod_univ_two] at hz'
     nlinarith [mul_pos h0 h1]
   · rw [hnorm, Fin.prod_univ_two, Real.log_mul h0.ne' h1.ne', Real.log_rpow (hg 0), Real.log_rpow (hg 1),

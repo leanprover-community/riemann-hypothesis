@@ -48,14 +48,14 @@ theorem exists_of_anti {E : Type} [Field E] [CharZero E] (c : E →+* E) (s : E)
   have hm : ∀ k : ℕ, ((k : E) + 1) - s ≠ 0 := by
     intro k h
     have h1 : s = (k : E) + 1 := by linear_combination -h
-    have h2 : c s = s := by rw [h1]; simp
+    have h2 : c s = s := simp [h1]
     apply hs
     have : (2 : E) * s = 0 := by linear_combination hc - h2
     simpa using this
   have hp : ∀ k : ℕ, ((k : E) + 1) + s ≠ 0 := by
     intro k h
     have h1 : s = -((k : E) + 1) := by linear_combination h
-    have h2 : c s = s := by rw [h1]; simp
+    have h2 : c s = s := simp [h1]
     apply hs
     have : (2 : E) * s = 0 := by linear_combination hc - h2
     simpa using this

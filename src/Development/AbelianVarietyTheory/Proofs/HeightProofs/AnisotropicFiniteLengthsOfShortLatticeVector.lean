@@ -245,7 +245,7 @@ theorem exists_small_lift [FiniteDimensional E V] (H : Sized h Λ N ν B) {C U :
       (size_smul_le H hU (house_form_le H hU hx₀U hvU) ((hx i).2.trans hB))
       (size_smul_le H hU (house_form_le H hU ((hx i).2.trans hB) hvU) hx₀U))
   have hsum : w = (h w v * a⁻¹) • x₀ + ∑ i, (c i * a⁻¹) • p i := by
-    have h1 : h w v = ∑ i, c i * h (x i) v := by rw [← hc]; simp
+    have h1 : h w v = ∑ i, c i * h (x i) v := simp [← hc]
     have h2 : ∀ i, (c i * a⁻¹) • p i = c i • x i - (c i * h (x i) v * a⁻¹) • x₀ := fun i => by
       simp only [p, smul_sub, smul_smul]
       rw [mul_assoc, inv_mul_cancel₀ ha, mul_one, mul_right_comm]
@@ -388,7 +388,7 @@ theorem anisoSmall_of_shortSmall (E : Type) [Field E] [NumberField E] [IsCMField
   have h1 : h w v' = N * M := by
     simp only [hv', map_smulₛₗ, starRingEnd_apply, star_star, smul_eq_mul, hwj, star_intCast]
     field_simp
-  have h2 : h v' w = N * M := by rw [hs, h1]; simp
+  have h2 : h v' w = N * M := simp [hs, h1]
   have h3 : h v' v' = 0 := by simp [hv', hvv]
   have h4 : ∀ s : E, star s = s → h (w - s • v') (w - s • v') = h w w - 2 * (N * M) * s := by
     intro s hs'

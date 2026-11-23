@@ -48,7 +48,7 @@ theorem UpperTheory.Gal.G1.pNormTwo :
   have hc0 : ((c0 : 𝓞 F) : F) = cf := rfl
   have hc0ne : c0 ≠ 0 := by
     intro h
-    have h1 : ((c0 : 𝓞 F) : F) = 0 := by rw [h]; simp
+    have h1 : ((c0 : 𝓞 F) : F) = 0 := simp [h]
     have h2 : (A.c : E) = 0 := by
       rw [← hcfE, ← hc0, h1, map_zero]
     exact A.c_ne h2

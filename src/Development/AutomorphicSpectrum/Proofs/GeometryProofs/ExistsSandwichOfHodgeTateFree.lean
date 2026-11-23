@@ -61,7 +61,7 @@ theorem inFibre_unique : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] [CharZero �
   have hcop : Nat.Coprime p r := (Nat.coprime_primes hp hr).2 (Ne.symm hne)
   obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 hcop
   have h1 : (1 : X.presheaf.stalk q.1) ∈ IsLocalRing.maximalIdeal (X.presheaf.stalk q.1) := by
-    have : ((a * p + b * r : ℤ) : X.presheaf.stalk q.1) = 1 := by rw [hab]; simp
+    have : ((a * p + b * r : ℤ) : X.presheaf.stalk q.1) = 1 := simp [hab]
     rw [← this]
     push_cast
     exact add_mem (Ideal.mul_mem_left _ _ (key p hp hpq)) (Ideal.mul_mem_left _ _ (key r hr hrq))

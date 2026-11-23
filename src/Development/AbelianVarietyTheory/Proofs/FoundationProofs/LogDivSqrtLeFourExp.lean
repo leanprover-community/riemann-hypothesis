@@ -90,7 +90,7 @@ theorem log_div_sqrt_le_four_exp {g u : ℝ} (hg : Real.exp (4 * u) ≤ g) :
       rw [← Real.exp_mul]; ring_nf
     rw [this]; exact Real.rpow_le_rpow (Real.exp_pos _).le hg (by norm_num)
   have hone : 1 ≤ Real.exp (-u) * q := by
-    calc (1 : ℝ) = Real.exp (-u) * Real.exp u := by rw [← Real.exp_add]; simp
+    calc (1 : ℝ) = Real.exp (-u) * Real.exp u := simp [← Real.exp_add]
       _ ≤ Real.exp (-u) * q := mul_le_mul_of_nonneg_left hq (Real.exp_pos _).le
   rw [hs, div_le_iff₀ (by positivity)]
   have h1' : Real.log g ≤ 4 * q := by rw [← hqdef] at h1; linarith
@@ -136,7 +136,7 @@ theorem badBound_numbers : ∀ eps C : ℝ, 0 < eps → eps ≤ 1 → ∃ x₀ :
   have hg2 : 2 ≤ g := by have := Real.add_one_le_exp 8; linarith
   have hg0 : 0 < g := by linarith
   have hEg : 1 ≤ E * g := by
-    calc (1 : ℝ) = E * Real.exp (x ^ (eps / 6)) := by rw [hE, ← Real.exp_add]; simp
+    calc (1 : ℝ) = E * Real.exp (x ^ (eps / 6)) := simp [hE, ← Real.exp_add]
       _ ≤ E * g := mul_le_mul_of_nonneg_left (le_trans (Real.exp_le_exp.2 (by linarith)) hg) hE0.le
   have hginv : 1 / g ≤ E := by rw [div_le_iff₀ hg0]; linarith
   have hT2 : Real.log g / Real.sqrt g ≤ 4 * E := by
@@ -150,7 +150,7 @@ theorem badBound_numbers : ∀ eps C : ℝ, 0 < eps → eps ≤ 1 → ∃ x₀ :
     div_nonneg (Real.log_nonneg (by linarith)) (Real.sqrt_nonneg _)
   have hq0 : 0 < q := lt_of_lt_of_le (Real.exp_pos _) hq
   have hEq : 1 ≤ E * q := by
-    calc (1 : ℝ) = E * Real.exp (x ^ (eps / 6)) := by rw [hE, ← Real.exp_add]; simp
+    calc (1 : ℝ) = E * Real.exp (x ^ (eps / 6)) := simp [hE, ← Real.exp_add]
       _ ≤ E * q := mul_le_mul_of_nonneg_left hq hE0.le
   have hqinv : 1 / (4 * q) ≤ E / 4 := by
     rw [div_le_div_iff₀ (by positivity) (by norm_num)]

@@ -77,7 +77,7 @@ theorem Mof_eq_span {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {
   · apply Submodule.span_le.2
     rintro _ ⟨j | j, rfl⟩
     · exact Submodule.subset_span (Or.inl ⟨j, rfl⟩)
-    · have h1 : g' j = algebraMap F E S.th⁻¹ • (g' j - g j) + g j := by rw [hth']; simp
+    · have h1 : g' j = algebraMap F E S.th⁻¹ • (g' j - g j) + g j := simp [hth']
       simp only [Sum.elim_inr, SetLike.mem_coe]
       rw [h1]
       exact Submodule.add_mem _ (Submodule.subset_span (Or.inr ⟨j, rfl⟩))

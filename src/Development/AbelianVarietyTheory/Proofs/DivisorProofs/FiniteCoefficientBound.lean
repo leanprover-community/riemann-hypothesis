@@ -144,7 +144,7 @@ def UT (k : Type*) [Field k] {ι : Type*} [Fintype ι] [DecidableEq ι] (ℓ : �
       have e : g.val = 1 - (-X) := by rw [hX]; noncomm_ring
       rw [e, mul_neg_geom_sum, neg_pow, hd, mul_zero, sub_zero]
     have hi : (g⁻¹).val = ∑ i ∈ Finset.range d, (-X) ^ i := by
-      have h1 : (g⁻¹).val * g.val = 1 := by rw [← Units.val_mul]; simp
+      have h1 : (g⁻¹).val * g.val = 1 := simp [← Units.val_mul]
       calc (g⁻¹).val = (g⁻¹).val * (g.val * ∑ i ∈ Finset.range d, (-X) ^ i) := by rw [hs, mul_one]
         _ = _ := by rw [← mul_assoc, h1, one_mul]
     show Rises ℓ 1 _

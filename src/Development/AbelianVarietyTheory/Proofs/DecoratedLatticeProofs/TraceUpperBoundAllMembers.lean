@@ -148,7 +148,7 @@ theorem log_ratio_eq (D : D7) (u : D.what₂.Word) :
     have hmc : (D.R.m : ℝ) = 2 * c := by rw [hc]; push_cast; ring
     rw [h1, Nat.cast_mul, Nat.cast_mul, hX, hmc]
     ring
-  have hn : ((D.R.m - 1 : ℕ) : ℝ) = (D.R.m : ℝ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
+  have hn : ((D.R.m - 1 : ℕ) : ℝ) = (D.R.m : ℝ) - 1 := simp [Nat.cast_sub (by omega)]
   rw [e2, Real.log_mul (mul_pos hRpos hQpos).ne' hP.ne', Real.log_mul hRpos.ne' hQpos.ne', eR, eQ, eP,
     log_mass_ratio_telescoping D D.R.k (by omega) (D.R.m - 1), he, hn, Ico_succ_eq_Ioc, ← hr]
   ring

@@ -107,7 +107,7 @@ theorem split_step_o_alt (D : D7) (Rw : RowSide D) (hL : _root_.GlobalTheory.Hei
   have he0 : e ≠ 0 := by intro h; rw [h] at hen; simp at hen
   obtain ⟨hbu, hbe⟩ := D.naut.etaTinv_def w
   have hbd : D.naut.lpDim (D.naut.locG D.naut.etaTinv w) = 1 := D.naut.locG_dim _ _
-  have hb : D.naut.frobEig (D.naut.locG D.naut.etaTinv w) = {e⁻¹} := by rw [hbe, he]; simp
+  have hb : D.naut.frobEig (D.naut.locG D.naut.etaTinv w) = {e⁻¹} := simp [hbe, he]
   have hbn : ‖e⁻¹‖ = 1 := by rw [norm_inv, hen, inv_one]
   obtain ⟨m, hm⟩ := GlobalTheory.MuBlock.frobEig_eq_single D.nd D.naut _ hμ (D.naut.locG_dim _ _)
   have hmt := (_root_.UpperTheory.GalN.tempo' hL.temp 1 μ le_rfl hA.csd (mu_ralg D Rw j σ π μ hA) w).1 rfl

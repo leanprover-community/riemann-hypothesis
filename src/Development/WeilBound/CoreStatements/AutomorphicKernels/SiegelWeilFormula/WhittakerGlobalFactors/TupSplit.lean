@@ -213,7 +213,7 @@ theorem tup_split (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF 
   rw [Finset.prod_congr rfl (fun v _ => NNReal.smul_def (c v) _), Finset.prod_congr rfl (fun v _ => Complex.real_smul)]
   rw [NNReal.smul_def, Complex.real_smul, Finset.prod_mul_distrib]
   have hc1 : ((cinf : ℝ) : ℂ) * ∏ v ∈ S, ((c v : ℝ) : ℂ) = 1 := by
-    have : ((cinf * ∏ v ∈ S, c v : ℝ≥0) : ℝ) = 1 := by rw [hprod1]; simp
+    have : ((cinf * ∏ v ∈ S, c v : ℝ≥0) : ℝ) = 1 := simp [hprod1]
     push_cast at this
     exact_mod_cast this
   calc _ = (((cinf : ℝ) : ℂ) * ∏ v ∈ S, ((c v : ℝ) : ℂ)) * ((∫ x, gi x ∂(GlobalTheory.CompanionTheory.SW.coordW (Ainf F) bs laminf n M)) *

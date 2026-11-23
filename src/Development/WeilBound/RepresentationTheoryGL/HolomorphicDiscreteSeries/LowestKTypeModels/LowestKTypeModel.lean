@@ -62,7 +62,7 @@ theorem lowestKTypeModel : Seed := by
   have hS : ∀ v w v' w' : H', ∫ g : UJ ε', ⟪w, σ (um g) v⟫_ℂ * conj ⟪w', σ (um g) v'⟫_ℂ ∂ν = κ * (⟪v', v⟫_ℂ * ⟪w, w'⟫_ℂ) :=
     fun v w v' w' => (hK.2 v w v' w').2
   have hw0 : w ≠ 0 := norm_ne_zero_iff.1 (by rw [hw1]; exact one_ne_zero)
-  have hww : ⟪w, w⟫_ℂ = 1 := by rw [inner_self_eq_norm_sq_to_K, hw1]; simp
+  have hww : ⟪w, w⟫_ℂ = 1 := simp [inner_self_eq_norm_sq_to_K, hw1]
   set φ : UJ ε' → ℂ := fun h => conj ⟪w, σ (um h) w⟫_ℂ with hφd
   have hφ : Integrable φ ν := Complex.conjCLE.toContinuousLinearMap.integrable_comp hm
   set ρ : UJ ε' → (H →L[ℂ] H) := fun h => π (emb e (um h)) with hρd

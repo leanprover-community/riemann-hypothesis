@@ -87,7 +87,7 @@ theorem mulA_comm (h : IsGrpPullback G' G f φ) (n : ℕ) : (mulA G' n).left ≫
 
 theorem eSec_comm (h : IsGrpPullback G' G f φ) : eSec G' ≫ φ = f ≫ eSec G := by
   have e := congrArg (fun z => z.left) (map_one (pushHom h (𝟙_ (Over S'))))
-  have e₁ : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := simp [Hom.one_def]
   rw [e₁] at e
   refine e.trans ((one_left _).trans ?_)
   simp

@@ -126,7 +126,7 @@ theorem sum_chains_eq_zero (R : V → V → Prop) (hr : ∀ x, R x x) (ht : ∀ 
     intro s
     by_cases h : c s ∈ s
     · have e1 : g s = s.erase (c s) := by rw [hg, if_pos h]
-      have e2 : c s ∉ g s := by rw [e1]; simp
+      have e2 : c s ∉ g s := simp [e1]
       rw [hg (g s), hcg, if_neg e2, e1, Finset.insert_erase h]
     · have e1 : g s = insert (c s) s := by rw [hg, if_neg h]
       have e2 : c s ∈ g s := by rw [e1]; exact Finset.mem_insert_self (c s) s
@@ -143,7 +143,7 @@ theorem sum_chains_eq_zero (R : V → V → Prop) (hr : ∀ x, R x x) (ht : ∀ 
   · intro s _ _ hEq
     by_cases h : c s ∈ s
     · have e1 : g s = s.erase (c s) := by rw [hg, if_pos h]
-      have e2 : c s ∉ g s := by rw [e1]; simp
+      have e2 : c s ∉ g s := simp [e1]
       rw [hEq] at e2
       exact e2 h
     · have e1 : g s = insert (c s) s := by rw [hg, if_neg h]

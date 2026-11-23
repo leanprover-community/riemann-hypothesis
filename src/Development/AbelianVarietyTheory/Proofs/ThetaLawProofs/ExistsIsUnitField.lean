@@ -159,7 +159,7 @@ theorem nonempty_equiv {R : Type} [CommRing R] [Nontrivial R] (deg : Ix → ℕ)
     Nonempty ({p // Even (deg p)} ≃ {p // ¬ Even (deg p)}) := by
   obtain ⟨hD1, hD2⟩ := hD
   have e1 : D * h = 1 - h * D := eq_sub_of_add_eq hh
-  have e2 : D * h * D = D := by rw [e1, sub_mul, mul_assoc, hD2]; simp
+  have e2 : D * h * D = D := simp [e1, sub_mul, mul_assoc, hD2]
   have e3 : D * h * (h * D) = 0 := by
     have : D * h = 1 - h * D := e1
     have e4 : h * D * (h * D) = h * D := by

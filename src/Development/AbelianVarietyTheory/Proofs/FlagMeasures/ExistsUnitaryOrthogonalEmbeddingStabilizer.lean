@@ -77,7 +77,7 @@ theorem exists_emb_block {R : Type} [CommRing R] (σ : R →+* R) {n m k : Type}
           + (cT σ A' * cT σ g * (cT σ A * J * X) * U
             + cT σ A' * (cT σ g * (cT σ A * J * A) * g) * A') := by
           simp only [cT_add_rect, cT_mul, Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc]; abel
-      _ = _ := by rw [hXA, hAX, hJ]; simp
+      _ = _ := simp [hXA, hAX, hJ]
   have hJJ : cT σ U * (cT σ X * J * X) * U + cT σ A' * J' * A' = J := by
     have := hform 1
     rw [hone] at this
@@ -105,7 +105,7 @@ theorem exists_emb_block {R : Type} [CommRing R] (σ : R →+* R) {n m k : Type}
     calc cT σ X * J = cT σ X * J * (X * U + A * A') := by rw [h5, Matrix.mul_one]
       _ = cT σ X * J * X * U + cT σ X * J * A * A' := by
         simp only [Matrix.mul_add, Matrix.mul_assoc]
-      _ = _ := by rw [hXA]; simp
+      _ = _ := simp [hXA]
   have key : ∀ h : Matrix n n R, cT σ h * J * h = J → h * X = X → A * (A' * h * A) = h * A := by
     intro h hh hX
     have e1 : cT σ X * J * X * (U * h * A) = 0 := by
@@ -120,7 +120,7 @@ theorem exists_emb_block {R : Type} [CommRing R] (σ : R →+* R) {n m k : Type}
       calc U * h * A = ((b⁻¹ : GL k R) : Matrix k k R) * (b : Matrix k k R) * (U * h * A) := by
             rw [Units.inv_mul, Matrix.one_mul]
         _ = 0 := by rw [Matrix.mul_assoc, e1, Matrix.mul_zero]
-    calc A * (A' * h * A) = X * (U * h * A) + A * (A' * h * A) := by rw [e2]; simp
+    calc A * (A' * h * A) = X * (U * h * A) + A * (A' * h * A) := simp [e2]
       _ = (X * U + A * A') * h * A := by simp only [Matrix.add_mul, Matrix.mul_assoc]
       _ = h * A := by rw [h5, Matrix.one_mul]
   intro h hX

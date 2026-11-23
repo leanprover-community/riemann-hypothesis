@@ -158,7 +158,7 @@ theorem bord {R : Type*} [CommRing R] (k : ℕ) (B : Matrix (Fin (k+2)) (Fin (k+
     rw [← Finset.sum_mul, hcol q]
   rw [hL, det_succ_row B j, Fin.sum_univ_succ (n := k+1), Fin.succAbove_zero]
   simp only [Fin.val_zero, Fin.val_succ, add_zero, mul_add, Finset.mul_sum]
-  have e1 : (-1 : R) ^ (j : ℕ) * (-1) ^ (j : ℕ) = 1 := by rw [← mul_pow]; simp
+  have e1 : (-1 : R) ^ (j : ℕ) * (-1) ^ (j : ℕ) = 1 := simp [← mul_pow]
   have hsum : ∑ q : Fin (k+1), (-1 : R) ^ (j : ℕ) * ((-1) ^ ((j : ℕ) + ((q : ℕ) + 1)) * B j q.succ *
       (B.submatrix j.succAbove q.succ.succAbove).det) =
       -∑ q : Fin (k+1), (-1 : R) ^ (q : ℕ) * (B.submatrix j.succAbove q.succ.succAbove).det *

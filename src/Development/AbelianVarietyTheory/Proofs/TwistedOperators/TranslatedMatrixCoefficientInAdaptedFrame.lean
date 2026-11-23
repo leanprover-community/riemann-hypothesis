@@ -71,11 +71,11 @@ theorem mco_frame : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : D
   have hBinv : (B⁻¹)ᴴ * G * B⁻¹ = J := by
     rw [← hBg]
     calc (B⁻¹)ᴴ * (Bᴴ * J * B) * B⁻¹ = ((B⁻¹)ᴴ * Bᴴ) * J * (B * B⁻¹) := by simp only [Matrix.mul_assoc]
-      _ = J := by rw [hBH, Matrix.mul_nonsing_inv B hBd]; simp
+      _ = J := simp [hBH, Matrix.mul_nonsing_inv B hBd]
   have hFinv : (F⁻¹)ᴴ * G * F⁻¹ = J := by
     rw [← hFg]
     calc (F⁻¹)ᴴ * (Fᴴ * J * F) * F⁻¹ = ((F⁻¹)ᴴ * Fᴴ) * J * (F * F⁻¹) := by simp only [Matrix.mul_assoc]
-      _ = J := by rw [hFH, Matrix.mul_nonsing_inv F hFd]; simp
+      _ = J := simp [hFH, Matrix.mul_nonsing_inv F hFd]
   refine ⟨?_, ?_⟩
   · show (B⁻¹ * g * F)ᴴ * G * (B⁻¹ * g * F) = G
     rw [conjTranspose_mul, conjTranspose_mul]

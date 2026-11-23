@@ -119,7 +119,7 @@ theorem pchain_DN' (i : ZMod n) (k : ℕ) {m : ℕ} {cc : ℝ} {FF : Type} [AddC
     rw [hspan] at ht
     obtain ⟨t', ht', rfl⟩ := Submodule.mem_map.1 ht
     have hxN : x ∈ Formalism.MainNotions.RamifiedCoefficientChains.S9.NDl W T i := by
-      have e : x = (z : W.DD T) - (t' : W.DD T) := by rw [← hxt]; simp
+      have e : x = (z : W.DD T) - (t' : W.DD T) := simp [← hxt]
       rw [e]; exact (Formalism.MainNotions.RamifiedCoefficientChains.S9.NDl W T i).sub_mem z.2 t'.2
     refine Submodule.mem_sup.2 ⟨⟨x, hxN⟩, hx, t', ht', Subtype.ext ?_⟩
     simpa using hxt

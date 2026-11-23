@@ -315,7 +315,7 @@ theorem exists_isolating (ν₀ : E) (h₀ : Freq ν₀) : ∃ u : 𝓞 E, cc (u
     intro ν hν
     obtain ⟨i, hi⟩ := hν.2.2 1 (by simpa using cc_nat (E := E) 1)
     have hi' : Algebra.trace ℚ E ν = i := by simpa using hi
-    have hs : (i : ℝ) = ∑ τ : E →+* ℂ, (τ ν).re := by rw [← trace_re, hi']; simp
+    have hs : (i : ℝ) = ∑ τ : E →+* ℂ, (τ ν).re := simp [← trace_re, hi']
     refine ⟨i, hi', hs ▸ Finset.sum_nonneg fun τ _ => hν.2.1 τ, ?_⟩
     rw [trace_re, hs, Finset.mul_sum]
     refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun τ _ => ?_)

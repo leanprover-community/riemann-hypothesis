@@ -245,7 +245,7 @@ theorem dB_skew (hρ : Continuous ρ) {X : (Mn n)} (hX : Xᴴ = -X) : dB hρ X =
 theorem dB_I (hρ : Continuous ρ) {X : (Mn n)} (hX : Xᴴ = -X) : dB (ρ := ρ) hρ (Complex.I • X) = 0 := by
   show dA ρ (skw (Complex.I • X)) _ = 0
   have h0 := real_skew hX 0
-  have e : skw (Complex.I • X) = ((0 : ℝ) : ℂ) • X := by rw [skw_I hX]; simp
+  have e : skw (Complex.I • X) = ((0 : ℝ) : ℂ) • X := simp [skw_I hX]
   rw [dA_congr ρ _ h0 e, dA_smul hρ hX 0 h0, zero_smul]
 
 def gL (hρ : Continuous ρ) : (Mn n) →ₗ[ℂ] (H →L[ℂ] H) where

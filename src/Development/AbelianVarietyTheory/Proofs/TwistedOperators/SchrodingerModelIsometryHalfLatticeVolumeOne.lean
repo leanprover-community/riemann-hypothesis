@@ -40,7 +40,7 @@ theorem isHalf_sub {m n : ℕ} {a : AE D} {x y : Mx D m n} (hx : IsHalf a x) (hy
 
 theorem char_mul_conj (hψ : IsStdChar D ψ (-1)) (s t : AF D.host.F) :
     ψ s * (starRingEnd ℂ) (ψ t) = ψ (s - t) := by
-  have h : ψ t * (starRingEnd ℂ) (ψ t) = 1 := by rw [Complex.mul_conj', hψ.1.2.1]; simp
+  have h : ψ t * (starRingEnd ℂ) (ψ t) = 1 := simp [Complex.mul_conj', hψ.1.2.1]
   have h2 : ψ s = ψ (s - t) * ψ t := by rw [← AddChar.map_add_eq_mul, sub_add_cancel]
   rw [h2, mul_assoc, h, mul_one]
 

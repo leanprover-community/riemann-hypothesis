@@ -64,7 +64,7 @@ theorem conj_lie' {A B G G' Y : Matrix (Fin n) (Fin n) ℂ} (hAB : A * B = 1) (h
         simp only [conjTranspose_mul, Matrix.mul_assoc]
     _ = Aᴴ * (Yᴴ * G + G * Y) * A := by
         rw [hAB]; simp only [conjTranspose_one, Matrix.mul_one, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-    _ = 0 := by rw [hY]; simp
+    _ = 0 := simp [hY]
 
 theorem exp_smul_conj' {Q : Matrix (Fin n) (Fin n) ℂ} (hQ : IsUnit Q) (X : Matrix (Fin n) (Fin n) ℂ) (t : ℝ) :
     Q * NormedSpace.exp (t • X) * Q⁻¹ = NormedSpace.exp (t • (Q * X * Q⁻¹)) := by
@@ -87,7 +87,7 @@ theorem model (h : GlobalTheory.Published.KFiniteVectorsUnitary) {lam : Fin n �
   have hG' : (P⁻¹)ᴴ * G * P⁻¹ = Jm ε := by
     rw [← hJ]
     calc _ = (P * P⁻¹)ᴴ * Jm ε * (P * P⁻¹) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [h2]; simp
+      _ = _ := simp [h2]
   refine ⟨?_, fun X hX v => ?_, fun B hB hS => ?_⟩
   · by_contra hne
     push_neg at hne
@@ -104,7 +104,7 @@ theorem model (h : GlobalTheory.Published.KFiniteVectorsUnitary) {lam : Fin n �
       refine ⟨⟨dRep σ Y v, hst _ hY _ v.2⟩, hS (P⁻¹ * Y * P) (conj_lie' h2 hJ hY) v _ hv ?_, rfl⟩
       have e : P * (P⁻¹ * Y * P) * P⁻¹ = Y := by
         calc _ = (P * P⁻¹) * Y * (P * P⁻¹) := by simp only [Matrix.mul_assoc]
-          _ = Y := by rw [h2]; simp
+          _ = Y := simp [h2]
       simp only [exp_smul_conj' hP, e]
       exact h.hasDerivAt hσ.2.2.1 hσ.2.2.2.1 v.2 hY
     rcases hirr _ hle hs with e | e

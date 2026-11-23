@@ -68,7 +68,7 @@ theorem kBB_mem {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} (Y : Fu
         · intro hy
           rw [← hmap'] at hy
           obtain ⟨z, hz, hzy⟩ := hy
-          have : p.1.2.symm y = z := by rw [← hzy]; simp
+          have : p.1.2.symm y = z := simp [← hzy]
           rw [this]; exact hz
         · intro h
           rw [← hmap']

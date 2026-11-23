@@ -98,7 +98,7 @@ theorem eq_zero_of_ideal (hD : LocalDatum K R ψ) (h0 : ∀ n : ℕ, n ≠ 0 →
   obtain ⟨u, hu⟩ := h0 k hk
   have := hVR _ hkV (x * ((u⁻¹ : Kˣ) : K)) (hx _)
   apply this
-  have h1 : (k : K) * ((u⁻¹ : Kˣ) : K) = 1 := by rw [← hu]; simp
+  have h1 : (k : K) * ((u⁻¹ : Kˣ) : K) = 1 := simp [← hu]
   show (k : K) * x * (x * ((u⁻¹ : Kˣ) : K)) = x * x
   linear_combination (x * x) * h1
 
@@ -636,7 +636,7 @@ theorem main : GaussAdmSmall := by
   obtain ⟨C₁, hC₁, hperp⟩ := perp_bdd hD h0 L hL
   obtain ⟨C₂, hC₂, hroot⟩ := roots_bdd hD h0 (m + 1) (by omega) Q hQ
   obtain ⟨u, hu⟩ := h0 (m + 1) (by omega)
-  have hc : ((m + 1 : ℕ) : K) * ((u⁻¹ : Kˣ) : K) = 1 := by rw [← hu]; simp
+  have hc : ((m + 1 : ℕ) : K) * ((u⁻¹ : Kˣ) : K) = 1 := simp [← hu]
   let F : K × (K × (Fin m → K)) → K := fun p =>
     Ring.inverse 2 * (p.2.1 * p.1 * (∑ k, p.2.2 k * p.2.2 k -
       ((u⁻¹ : Kˣ) : K) * ((∑ k, p.2.2 k) * ∑ k, p.2.2 k)))

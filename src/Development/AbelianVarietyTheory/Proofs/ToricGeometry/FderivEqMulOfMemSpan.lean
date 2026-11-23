@@ -220,7 +220,7 @@ private theorem smooth_of_grpObj_reduced_finiteType (X : Over (Sp ℂ)) [GrpObj 
     have hy : y ∈ Set.range ν.left := by rw [hrange]; trivial
     exact hy⟩
   have hiso : IsIso ν.left := isIso_of_isClosedImmersion_of_surjective ν.left
-  have e : X.hom = inv ν.left ≫ N.hom := by rw [← Over.w ν]; simp
+  have e : X.hom = inv ν.left ≫ N.hom := simp [← Over.w ν]
   rw [e]
   infer_instance
 

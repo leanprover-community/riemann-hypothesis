@@ -190,7 +190,7 @@ theorem b_props (e N M : ℕ) (χ : DirichletCharacter ℂ N) (φ : DirichletCha
       simp at this
       linarith
     have hφ : φ (-1) = 1 ∨ φ (-1) = -1 := by
-      have h2 : φ (-1) ^ 2 = 1 := by rw [← map_pow]; simp
+      have h2 : φ (-1) ^ 2 = 1 := simp [← map_pow]
       have h3 : (φ (-1) - 1) * (φ (-1) + 1) = 0 := by linear_combination h2
       rcases mul_eq_zero.1 h3 with h | h
       · left; linear_combination h

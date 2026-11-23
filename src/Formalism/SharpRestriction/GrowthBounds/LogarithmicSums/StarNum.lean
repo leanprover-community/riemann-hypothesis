@@ -258,7 +258,7 @@ theorem numStar_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (hC31 : 
     calc 4 * C31 * Real.log L.sc.x * L.sc.x ^ (L.sc.eps / 8)
         ≤ L.sc.x ^ (1 - L.sc.eps / 8) * L.sc.x ^ (L.sc.eps / 8) :=
           mul_le_mul_of_nonneg_right h4 hy0
-      _ = L.sc.x := by rw [← Real.rpow_add hx0]; simp
+      _ = L.sc.x := simp [← Real.rpow_add hx0]
   have hinv := inv_delta1 L.sc
   have hrG : (rG L.sc : ℝ) = (rE L.sc.eps : ℝ) := rfl
   exact

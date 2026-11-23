@@ -54,8 +54,8 @@ def oActIso {O : Type} [CommRing O] {S : Scheme.{0}} {A B : Over S} [GrpObj A] [
     (a : OAct O A) : OAct O B where
   act x := e.inv ≫ a.act x ≫ e.hom
   hom x := by have := a.hom x; infer_instance
-  one := by rw [a.one]; simp
-  mul x y := by rw [a.mul]; simp
+  one := simp [a.one]
+  mul x y := simp [a.mul]
   add x y := by rw [a.add, MonObj.mul_comp, MonObj.comp_mul]
 
 theorem pbMap_fst {S S' : Scheme.{0}} (f : S' ⟶ S) {X Y : Over S} (a : X ⟶ Y) :

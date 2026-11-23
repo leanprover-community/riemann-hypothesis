@@ -413,7 +413,7 @@ theorem Rel.slice (H : Rel p ε M V j hj u α) (hε : ε * ε = 0) (hV : ⨆ a, 
     (fun a b => gr_ext fun y hy => by
       rw [gr_res, gr_res, gr_app, gr_app, hr a b _ (𝟙 _ ≫ π) y hy.1 hy.2]
       have : ((𝟙 A' ≫ π) ≫ s) ≫ p = f' ≫ Spec.map (CommRingCat.ofHom
-          (Ideal.Quotient.mk (Ideal.span {ε}))) := by rw [← P.w]; simp
+          (Ideal.Quotient.mk (Ideal.span {ε}))) := simp [← P.w]
       rw [this, cstS_comp, Ideal.Quotient.eq_zero_iff_mem.2 (Ideal.mem_span_singleton_self ε),
         map_zero, zero_mul, add_zero, _root_.mul_one])
   obtain ⟨c₁, rfl⟩ := hf c'

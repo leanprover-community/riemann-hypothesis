@@ -241,7 +241,7 @@ theorem exists_SD (hS : SplitHyp σ v) : Nonempty (SD σ v) := by
   · rw [← hfdef, hfdec, a0, b1]; simp
   · exfalso
     apply hσ
-    have hfe : f = e := by rw [hfdec, a1, b0]; simp
+    have hfe : f = e := simp [hfdec, a1, b0]
     have hfix : ∀ z, sigR (Fv F v) σ z = z := by
       intro z
       conv_lhs => rw [dec z]

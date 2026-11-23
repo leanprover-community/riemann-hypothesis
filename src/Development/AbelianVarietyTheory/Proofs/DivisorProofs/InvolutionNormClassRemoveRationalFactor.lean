@@ -126,11 +126,11 @@ theorem lunit_integral {E : Type} [CommRing E] [Algebra ℚ E] {ℓ : ℕ} (hℓ
   obtain ⟨N, hN, ⟨m₁, h₁⟩, ⟨m₂, h₂⟩⟩ := hr
   refine ⟨d * N, fun h => (hℓ.dvd_mul.1 h).elim hd hN, ?_, ?_⟩
   · have e : ((d * N : ℕ) : E) * (algebraMap ℚ E r * x) = (m₁ : E) * ((d : E) * x) := by
-      have : (m₁ : E) = algebraMap ℚ E ((N : ℚ) * r) := by rw [h₁]; simp
+      have : (m₁ : E) = algebraMap ℚ E ((N : ℚ) * r) := simp [h₁]
       rw [this, map_mul, map_natCast]; push_cast; ring
     rw [e]; exact (isIntegral_intCast m₁).mul hx
   · have e : ((d * N : ℕ) : E) * (algebraMap ℚ E r⁻¹ * y) = (m₂ : E) * ((d : E) * y) := by
-      have : (m₂ : E) = algebraMap ℚ E ((N : ℚ) * r⁻¹) := by rw [h₂]; simp
+      have : (m₂ : E) = algebraMap ℚ E ((N : ℚ) * r⁻¹) := simp [h₂]
       rw [this, map_mul, map_natCast]; push_cast; ring
     rw [e]; exact (isIntegral_intCast m₂).mul hy
 

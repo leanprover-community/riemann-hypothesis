@@ -1771,7 +1771,7 @@ theorem not_psi_conj {τ : E →+* ℂ} (hτ : InPsi H τ) : ¬ InPsi H (Complex
 theorem psi_conj {τ : E →+* ℂ} (hτ : ¬ InPsi H τ) : InPsi H (ComplexEmbedding.conjugate τ) := by
   simp only [InPsi, ComplexEmbedding.conjugate_coe_eq] at hτ ⊢
   have h1 : ((H.rt : 𝓞 E) : E) ^ 2 = -(H.d : E) := by simpa using congrArg (algebraMap (𝓞 E) E) H.rt_sq
-  have h2 : (τ (H.rt : E)) ^ 2 = H.rt0 ^ 2 := by rw [← map_pow, h1, H.sqrt_neg_disc_sq]; simp
+  have h2 : (τ (H.rt : E)) ^ 2 = H.rt0 ^ 2 := simp [← map_pow, h1, H.sqrt_neg_disc_sq]
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 h2 with h3 | h3
   · exact absurd h3 hτ
   · rw [h3, map_neg, (rt0_conj_neg_ne_zero H).1, neg_neg]

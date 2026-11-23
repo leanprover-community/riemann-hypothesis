@@ -65,7 +65,7 @@ theorem exists_logResolution : GlobalTheory.Published.Principalisation → ∀ (
   have hI : I ≠ ⊥ := by
     intro h
     apply hgW
-    have : I.support = ⊤ := by rw [h]; simp
+    have : I.support = ⊤ := simp [h]
     rw [← hIs, this]; trivial
   obtain ⟨Y, s', hY, hsm', hpr', -, hiso', -, hsnc⟩ := hP F D W' (s ≫ p) hW' hsm hpr I hI
   have := hY

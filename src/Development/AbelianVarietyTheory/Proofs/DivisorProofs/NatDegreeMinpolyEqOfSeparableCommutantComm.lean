@@ -162,7 +162,7 @@ theorem natDegree_minpoly_eq_of_commutant_comm : ∀ (K : Type) [Field K] [IsAlg
   apply le_antisymm
   · calc (minpoly K N).natDegree ≤ N.charpoly.natDegree :=
           Polynomial.natDegree_le_of_dvd (Matrix.minpoly_dvd_charpoly N) (Matrix.charpoly_monic N).ne_zero
-      _ = k := by rw [Matrix.charpoly_natDegree_eq_dim]; simp
+      _ = k := simp [Matrix.charpoly_natDegree_eq_dim]
   · have h := finrank_le_natDegree_minpoly K (Fin k → K) (Matrix.toLin' N) (hmin ▸ hs) ?_
     · simpa [hmin] using h
     · intro a b ha hb

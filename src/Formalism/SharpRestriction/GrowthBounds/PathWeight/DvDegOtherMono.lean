@@ -96,7 +96,7 @@ theorem dv_quot_hom [IsDomain R] (φ ψ : MvPolynomial (ι × Fin n) R) (e d : �
   apply Submodule.sum_mem
   intro d2 _
   by_cases hd : e + d2 = d
-  · have : d - e = d2 := by rw [← hd]; simp
+  · have : d - e = d2 := simp [← hd]
     rw [this]; exact homogeneous_component_mem d2 ψ
   · rw [key d2 hd]; exact Submodule.zero_mem _
 

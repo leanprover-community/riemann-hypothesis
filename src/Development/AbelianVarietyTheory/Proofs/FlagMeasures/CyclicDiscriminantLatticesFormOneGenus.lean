@@ -63,7 +63,7 @@ def Cyc (A B : Submodule R W) (I : Ideal R) : Prop :=
 theorem cyc_of_equiv {A B : Submodule R W} {I : Ideal R}
     (e : (A ⧸ B.comap A.subtype) ≃ₗ[R] (R ⧸ I)) : Cyc A B I := by
   obtain ⟨x, hx⟩ := Submodule.Quotient.mk_surjective _ (e.symm (Submodule.Quotient.mk 1))
-  have hx' : e (Submodule.Quotient.mk x) = Submodule.Quotient.mk 1 := by rw [hx]; simp
+  have hx' : e (Submodule.Quotient.mk x) = Submodule.Quotient.mk 1 := simp [hx]
   refine ⟨x, x.2, fun y hy => ?_, fun r => ?_⟩
   · obtain ⟨a, ha⟩ := Submodule.Quotient.mk_surjective I (e (Submodule.Quotient.mk ⟨y, hy⟩))
     refine ⟨a, ?_⟩

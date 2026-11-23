@@ -247,11 +247,11 @@ def unitP {A : Type} [Ring A] [Algebra R A] (a : R) : Aˣ →* Aˣ := by
   classical
   exact if h : a * a = a then Units.map
     { toFun := fun x : A => a • x + (1 - a) • (1 : A)
-      map_one' := by rw [← add_smul]; simp
+      map_one' := simp [← add_smul]
       map_mul' := fun x y => by
-        have h1 : a * (1 - a) = 0 := by rw [mul_sub, h]; simp
+        have h1 : a * (1 - a) = 0 := simp [mul_sub, h]
         have h2 : (1 - a) * a = 0 := by rw [mul_comm, h1]
-        have h3 : (1 - a) * (1 - a) = 1 - a := by rw [mul_sub, h2]; simp
+        have h3 : (1 - a) * (1 - a) = 1 - a := simp [mul_sub, h2]
         simp only [add_mul, mul_add, smul_mul_smul_comm, h, h1, h2, h3, zero_smul, mul_one, add_zero, zero_add] } else 1
 
 theorem coe_unitP {A : Type} [Ring A] [Algebra R A] {a : R} (h : a * a = a) (x : Aˣ) :

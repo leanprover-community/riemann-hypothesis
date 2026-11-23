@@ -143,7 +143,7 @@ theorem CrystallineSmoothLift.toCrystallineDeRham (H : CrystallineSmoothLift) : 
   obtain ⟨e₁, e₂, -, h, n⟩ := H
   let D := Data.ofQuot κ hκ π hπ hI s s₀ i hs hs' hs'' hp _ rfl
   let D₀ := Data.self s hs hs' hs''
-  have w : 𝟙 X ≫ s = s ≫ spMap (RingHom.id R) := by rw [Cris.spMap_id]; simp
+  have w : 𝟙 X ≫ s = s ≫ spMap (RingHom.id R) := simp [Cris.spMap_id]
   constructor
   · have : ⇑(e₁ D) ∘ ⇑m.pull1 = ⇑(cmp1 s) := funext (h D m)
     exact (Function.Bijective.of_comp_iff' (e₁ D).bijective _).1 (this ▸ b)

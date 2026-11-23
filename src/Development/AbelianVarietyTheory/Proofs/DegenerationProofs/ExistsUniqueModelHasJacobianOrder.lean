@@ -95,7 +95,7 @@ theorem det_mem {B S L I : Type} [CommRing B] [CommRing S] [CommRing L] [Fintype
       obtain ⟨b, c, ⟨u, hu⟩, e⟩ := hloc (t j)
       have : col (t j) = (u⁻¹ : Sˣ).val • (col (ρ b) - t j • col (ρ c)) := by
         funext i
-        have e1 : φ (u⁻¹ : Sˣ).val * φ (ρ c) = 1 := by rw [← map_mul, ← hu]; simp
+        have e1 : φ (u⁻¹ : Sˣ).val * φ (ρ c) = 1 := simp [← map_mul, ← hu]
         show δ i (φ (t j)) = φ (u⁻¹ : Sˣ).val * (δ i (φ (ρ b)) - φ (t j) * δ i (φ (ρ c)))
         rw [← e, map_mul, hδ]
         linear_combination (-δ i (φ (t j))) * e1

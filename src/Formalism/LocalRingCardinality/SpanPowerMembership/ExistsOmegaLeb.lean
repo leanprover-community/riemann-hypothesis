@@ -97,7 +97,7 @@ theorem mem_lieU_iff (Z : MM P Q) : Z ∈ lieU P Q ↔ J * (-Zᴴ) * J = Z := by
     have : J * Z = -(Zᴴ * J) := by
       calc J * Z = J * (J * (-Zᴴ) * J) := by rw [h]
         _ = (J * J) * (-Zᴴ) * J := by simp only [Matrix.mul_assoc]
-        _ = -(Zᴴ * J) := by rw [J_sq]; simp
+        _ = -(Zᴴ * J) := simp [J_sq]
     rw [this, add_neg_cancel]
 
 def th (Z : MM P Q) : MM P Q := J * (-Zᴴ) * J
@@ -113,7 +113,7 @@ theorem th_th (Z : MM P Q) : th P Q (th P Q Z) = Z := by
   rw [Matrix.conjTranspose_mul, Matrix.conjTranspose_mul, J_star, Matrix.conjTranspose_neg,
     Matrix.conjTranspose_conjTranspose]
   calc J * -(J * (-Z * J)) * J = (J * J) * Z * (J * J) := by simp [Matrix.mul_assoc]
-    _ = Z := by rw [J_sq]; simp
+    _ = Z := simp [J_sq]
 
 theorem th_of_mem (X : lieU P Q) : th P Q (X : MM P Q) = X := (mem_lieU_iff P Q _).mp X.2
 

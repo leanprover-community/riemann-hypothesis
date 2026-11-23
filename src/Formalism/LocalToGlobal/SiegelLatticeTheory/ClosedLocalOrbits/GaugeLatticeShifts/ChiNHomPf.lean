@@ -146,7 +146,7 @@ theorem termK_car {Λ Λ' : Submodule (𝓞 D.host.E) (VS D).V} (hΛ : Λ ∈ wh
         rw [← hm2]
         constructor
         · rintro ⟨z, hz, hzy⟩
-          have : p.1.2.symm y = z := by rw [← hzy]; simp
+          have : p.1.2.symm y = z := simp [← hzy]
           rw [this]; exact hz
         · intro h
           exact ⟨p.1.2.symm y, h, by simp⟩

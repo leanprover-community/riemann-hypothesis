@@ -78,7 +78,7 @@ theorem AnArc.exists_basis_FSum : ∀ (O : Type) [CommRing O] [StarRing O] (A : 
     (A.linearIndependent_Sum_sigma (NeZero.ne j) hrep ht w fun c i z =>
       AnArc.summable_term hT (NeZero.ne j) (htm c i) hw (0, z)).comp s s.injective, fun α' th' hth' => ?_⟩
   obtain ⟨c, ⟨m, hm⟩, -⟩ := he α'
-  have hα : α' + j • (-m) = e c := by rw [hm]; simp
+  have hα : α' + j • (-m) = e c := simp [hm]
   have hmem := A.translate_mem_Theta hth' (-m)
   rw [hα] at hmem
   let x := (b c).repr ⟨_, hmem⟩

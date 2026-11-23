@@ -181,7 +181,7 @@ theorem delta_ne (β : R →+* k) : β b.ρ - ((D.tr : k) - β b.ρ) ≠ 0 := by
     simpa using this
   intro h0
   apply hu.ne_zero
-  have hnk : (n : k) = ((4 * D.nm - D.tr ^ 2 : ℤ) : k) := by rw [← hn]; simp
+  have hnk : (n : k) = ((4 * D.nm - D.tr ^ 2 : ℤ) : k) := simp [← hn]
   rw [hnk]
   push_cast
   have : (β b.ρ - ((D.tr : k) - β b.ρ)) ^ 2 = 0 := by rw [h0]; ring

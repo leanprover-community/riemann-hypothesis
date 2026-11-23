@@ -204,7 +204,7 @@ private theorem quo_int (j : Etau K τ →ₐ[K] Matrix (Fin 2) (Fin 2) K) (ht :
     rw [← j_det j ht, hjw, RingHom.map_det]; rfl
   have hwi := isInt_w (O := O) w _ _ h1 h2
   obtain ⟨n, hn⟩ := Matrix.isUnits_det_units k₀
-  have hzw : (z : Etau K τ) = (s : K) • w := by rw [hw, smul_smul]; simp
+  have hzw : (z : Etau K τ) = (s : K) • w := simp [hw, smul_smul]
   have h3 := quo_norm z s s.ne_zero w hzw
   rw [h2, ← hn] at h3
   have h4 : quo z = algebraMap O (Etau K τ) ((n⁻¹ : Oˣ) : O) * w ^ 2 := by
@@ -335,8 +335,8 @@ private theorem orbit_imp (h : IsLoc O Δ) (j : Etau K τ →ₐ[K] Matrix (Fin 
   set A := j ω with hA
   set Y : Matrix (Fin 2) (Fin 2) K := (y : Matrix (Fin 2) (Fin 2) K) with hY
   set Yi : Matrix (Fin 2) (Fin 2) K := ((y⁻¹ : GL (Fin 2) K) : Matrix (Fin 2) (Fin 2) K) with hYi
-  have hYiY : Yi * Y = 1 := by rw [hYi, hY, ← Units.val_mul]; simp
-  have hYYi : Y * Yi = 1 := by rw [hYi, hY, ← Units.val_mul]; simp
+  have hYiY : Yi * Y = 1 := simp [hYi, hY, ← Units.val_mul]
+  have hYYi : Y * Yi = 1 := simp [hYi, hY, ← Units.val_mul]
   have hconjdet : ∀ M : Matrix (Fin 2) (Fin 2) K, (Yi * M * Y).det = M.det := fun M => by
     have := congrArg Matrix.det hYiY
     rw [Matrix.det_mul, Matrix.det_one] at this
@@ -406,8 +406,8 @@ private theorem orbit_imp (h : IsLoc O Δ) (j : Etau K τ →ₐ[K] Matrix (Fin 
   set Gm : Matrix (Fin 2) (Fin 2) K := (G : Matrix (Fin 2) (Fin 2) K) with hGm
   set Gi : Matrix (Fin 2) (Fin 2) K := ((G⁻¹ : GL (Fin 2) K) : Matrix (Fin 2) (Fin 2) K) with hGi
   set Gp : Matrix (Fin 2) (Fin 2) K := (G' : Matrix (Fin 2) (Fin 2) K) with hGp
-  have hGiG : Gi * Gm = 1 := by rw [hGi, hGm, ← Units.val_mul]; simp
-  have hGGi : Gm * Gi = 1 := by rw [hGi, hGm, ← Units.val_mul]; simp
+  have hGiG : Gi * Gm = 1 := simp [hGi, hGm, ← Units.val_mul]
+  have hGGi : Gm * Gi = 1 := simp [hGi, hGm, ← Units.val_mul]
   have hCG : C = Gi * (A * Gm) := by rw [hAG, ← mul_assoc, hGiG, one_mul]
   have hYA : Y * (Gp * C) = A * (Y * Gp) := by
     rw [← hBG]

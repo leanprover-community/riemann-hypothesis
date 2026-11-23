@@ -51,7 +51,7 @@ theorem norm_map_pow_mul_pow_of_mul_conj {K : Type*} [Semiring K] (σ : K →+* 
     (hxy : x * y = g) (hy : σ y = starRingEnd ℂ (σ x)) (a b : ℕ) :
     ‖σ (x ^ a * y ^ b)‖ = (g : ℝ) ^ (((a : ℝ) + b) / 2) := by
   have h1 := norm_map_eq_sqrt_of_mul_conj σ x y g hxy hy
-  have hyn : ‖σ y‖ = ‖σ x‖ := by rw [hy]; simp
+  have hyn : ‖σ y‖ = ‖σ x‖ := simp [hy]
   rw [map_mul, map_pow, map_pow, norm_mul, norm_pow, norm_pow, hyn, ← pow_add, h1,
     ← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg g)]
   congr 1

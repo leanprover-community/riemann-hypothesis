@@ -67,7 +67,7 @@ def uGrp (σ : R →+* R) (J : Matrix (Fin N) (Fin N) R) : Subgroup (GL (Fin N) 
       _ = ((a : Matrix (Fin N) (Fin N) R) * ((a⁻¹ : GL (Fin N) R) : Matrix (Fin N) (Fin N) R))ᵀ * J *
           ((a : Matrix (Fin N) (Fin N) R) * ((a⁻¹ : GL (Fin N) R) : Matrix (Fin N) (Fin N) R)).map σ := by
             simp only [Matrix.transpose_mul, Matrix.map_mul, Matrix.mul_assoc]
-      _ = J := by rw [Units.mul_inv]; simp
+      _ = J := simp [Units.mul_inv]
 
 def suGrp (σ : R →+* R) (J : Matrix (Fin N) (Fin N) R) : Subgroup (GL (Fin N) R) :=
   uGrp σ J ⊓ (Matrix.GeneralLinearGroup.det : GL (Fin N) R →* Rˣ).ker

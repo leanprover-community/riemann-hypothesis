@@ -347,7 +347,7 @@ theorem step (hs : ∀ x, s (s x) = x) (J : Matrix (Fin n) (Fin n) E) (hJ : cT s
     have h1 : J * (f * e) = 0 := by
       rw [← Matrix.mul_assoc, hJf, hB, cT_mul]
       calc _ = cT s B * (cT s P * J * P) * B := by simp only [Matrix.mul_assoc]
-        _ = 0 := by rw [hPP]; simp
+        _ = 0 := simp [hPP]
     calc f * e = J⁻¹ * (J * (f * e)) := by rw [← Matrix.mul_assoc, hJi, Matrix.one_mul]
       _ = 0 := by rw [h1, Matrix.mul_zero]
   have hef : e * f = 0 := by rw [← hfe'.eq, hfe]
@@ -363,7 +363,7 @@ theorem step (hs : ∀ x, s (s x) = x) (J : Matrix (Fin n) (Fin n) E) (hJ : cT s
     rw [cT_mul]
     calc _ = cT s Q * (cT s f * J) * (f * Q) := by simp only [Matrix.mul_assoc]
       _ = cT s Q * J * ((e * f) * Q) := by rw [hfJ]; simp only [Matrix.mul_assoc]
-      _ = 0 := by rw [hef]; simp
+      _ = 0 := simp [hef]
   obtain ⟨N, hN, hNP, hNQ, hNZ⟩ := exists_unip s hs J hJ P Q (f * Q) hPP hPQ hQQ hPQ' hQQ'
   have hN'N : (J⁻¹ * cT s N * J) * N = 1 := by
     rw [Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc (cT s N), hN, hJi]

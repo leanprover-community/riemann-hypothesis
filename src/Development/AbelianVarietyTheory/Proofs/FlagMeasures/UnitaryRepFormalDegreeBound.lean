@@ -275,7 +275,7 @@ theorem exp_sub_one_sq_le (k : ℝ) : ∃ K : ℝ, 0 ≤ K ∧ ∀ s : ℝ, |s| 
     set x := k * s
     have a1 := Real.add_one_le_exp x
     have a2 := Real.add_one_le_exp (-x)
-    have a3 : Real.exp x * Real.exp (-x) = 1 := by rw [← Real.exp_add]; simp
+    have a3 : Real.exp x * Real.exp (-x) = 1 := simp [← Real.exp_add]
     have a4 := Real.exp_pos x
     have a5 := le_abs_self x
     have a6 := neg_abs_le x

@@ -94,7 +94,7 @@ private theorem inv4 {x₁ x₂ x₃ x₄ : ℂ} {R : ℝ} (h₁ : ‖x₁‖ �
     have e₄ := gs_mul x₄
     calc _ = (Gs x₁ * (1 - PowerSeries.C x₁ * PowerSeries.X)) * (Gs x₂ * (1 - PowerSeries.C x₂ * PowerSeries.X)) *
           ((Gs x₃ * (1 - PowerSeries.C x₃ * PowerSeries.X)) * (Gs x₄ * (1 - PowerSeries.C x₄ * PowerSeries.X))) := by ring
-      _ = 1 := by rw [e₁, e₂, e₃, e₄]; simp
+      _ = 1 := simp [e₁, e₂, e₃, e₄]
   · have := maj_mul (by positivity) (maj_mul hR (gs_maj h₁) (gs_maj h₂)) (maj_mul hR (gs_maj h₃) (gs_maj h₄))
     rwa [show 2 * (2 * R) = 4 * R by ring] at this
   · have hG : ∀ x, PowerSeries.constantCoeff (Gs x) = 1 := fun x => by

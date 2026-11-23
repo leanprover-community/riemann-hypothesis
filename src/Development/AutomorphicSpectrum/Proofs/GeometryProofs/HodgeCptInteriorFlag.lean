@@ -230,7 +230,7 @@ theorem span_image_unit_smul {R : Type} [Ring R] [Module R E] (c : Fin r → Rˣ
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, hk, rfl⟩)
   · refine Submodule.span_le.2 ?_
     rintro _ ⟨k, hk, rfl⟩
-    have e : b k = ((c k)⁻¹ : Rˣ).val • ((c k : R) • b k) := by rw [smul_smul]; simp
+    have e : b k = ((c k)⁻¹ : Rˣ).val • ((c k : R) • b k) := simp [smul_smul]
     rw [SetLike.mem_coe, e]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, hk, rfl⟩)
 

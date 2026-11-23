@@ -222,7 +222,7 @@ theorem linearIndependent_of_Lead (hκ : Function.Injective κ) {k : Type*} [Fie
   obtain ⟨i₁, hi₁, hg₁⟩ := hcon
   have hne : (s.filter fun i => g i ≠ 0).Nonempty := ⟨i₁, Finset.mem_filter.2 ⟨hi₁, hg₁⟩⟩
   obtain ⟨i₀, hi₀, hmax⟩ := exists_LL_max hκ d hd _ hne
-  have hc : AddMonoidAlgebra.coeff (∑ i ∈ s, g i • v i) (d i₀) = 0 := by rw [hsum]; simp
+  have hc : AddMonoidAlgebra.coeff (∑ i ∈ s, g i • v i) (d i₀) = 0 := simp [hsum]
   rw [MvPolynomial.coeff_sum, Finset.sum_eq_single i₀] at hc
   · rw [MvPolynomial.coeff_smul, (hv i₀).1, smul_eq_mul, mul_one] at hc
     exact (Finset.mem_filter.1 hi₀).2 hc

@@ -60,7 +60,7 @@ theorem gs_npow {X Y : Scheme.{0}} (f : Y ⟶ X) (y : Y) (U : X.Opens) (h : f y 
 theorem one_comp_of_isGrpPullback {S S' : Scheme.{0}} {f : S' ⟶ S} {G : Over S} {G' : Over S'} [GrpObj G]
     [GrpObj G'] {φ : G'.left ⟶ G.left} (hφ : IsGrpPullback G' G f φ) : (η[G']).left ≫ φ = f ≫ (η[G]).left := by
   have e := congrArg (fun z => z.left) (map_one (pushHom hφ (𝟙_ (Over S'))))
-  have e₁ : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := simp [Hom.one_def]
   rw [e₁] at e
   refine e.trans ?_
   show (toUnit _ ≫ η[G]).left = _

@@ -137,7 +137,7 @@ theorem arc_length_three_case_c [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomain
     rw [ArcLengthThreeFiltration.lam_inner W hlen, ArcLengthThreeFiltration.ps_cst Br, ArcLengthThreeFiltration.ps_cst Br, ArcLengthThreeFiltration.p_zero, hAh, Br.cst_mul, Br.cst_pow, Br.cst_pow]
     rfl
   set a := c - (((arcOf b w S η up size).len c : ℕ) : ZMod n) + ((2 : ℕ) : ZMod n) with ha
-  have ha0 : a - ((0 : ℕ) : ZMod n) = c - 1 := by rw [ha1]; simp
+  have ha0 : a - ((0 : ℕ) : ZMod n) = c - 1 := simp [ha1]
   have ha2 : a - ((1 : ℕ) : ZMod n) = c - 2 := by rw [ha1]; push_cast; ring
   have ha3 : a + 1 = c := by rw [ha1]; ring
   have hΛmem : abelian₂ W (arcOf b w S η up size) a 2 ∈ W.AΔ := by rw [hΛ]; exact Br.cst_mem _

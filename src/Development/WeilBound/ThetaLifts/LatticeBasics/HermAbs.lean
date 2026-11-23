@@ -89,7 +89,7 @@ theorem exists_eigen {K : Type} [Group K] (κ : K →* Module.End ℂ U) (hi : �
     obtain ⟨T, hT⟩ := exists_rep b (orb κ y)
     have eq : ∀ k x, (T (κ k x) : U) = κ k (T x) := fun k x => by
       have : T (κ k x) = ⟨κ k (T x), span_orbit_stab κ y k _ (T x).2⟩ := ext_inner_right ℂ fun u => by
-        have e : (u : U) = κ k (κ k⁻¹ u) := by rw [← Module.End.mul_apply, ← map_mul]; simp
+        have e : (u : U) = κ k (κ k⁻¹ u) := simp [← Module.End.mul_apply, ← map_mul]
         show ⟪(T (κ k x) : U), (u : U)⟫_ℂ = ⟪κ k (T x), (u : U)⟫_ℂ
         rw [hT _ _ u.2, e, hb, hi, hT _ _ (span_orbit_stab κ y k⁻¹ _ u.2)]
       rw [this]

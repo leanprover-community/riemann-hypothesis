@@ -147,7 +147,7 @@ theorem infiniteParams_unique (w : InfinitePlace K) {p : ℤ × ℝ}
     obtain ⟨hq0, hq2'⟩ := hq1 hw
     obtain ⟨a, ha⟩ := exists_extensionEmbedding_eq_ofReal w (-1)
     have ha0 : a ≠ 0 := fun h0 ↦ by rw [h0, map_zero] at ha; norm_num at ha
-    have hn : ‖a‖ = 1 := by rw [← norm_extensionEmbedding', ha]; simp
+    have hn : ‖a‖ = 1 := simp [← norm_extensionEmbedding', ha]
     have h := hm (Units.mk0 a ha0)
     simp only [Units.val_mk0, ha, hn, ofReal_one, div_one, ofReal_neg] at h
     rcases (show p.1 = 0 ∨ p.1 = 1 by omega) with h1 | h1 <;>

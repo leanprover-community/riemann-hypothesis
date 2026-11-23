@@ -85,7 +85,7 @@ private theorem cong_mul {N : ℕ} {w : Plc E} {x y : GL (Fin n) (w.adicCompleti
 private theorem cong_conj {N : ℕ} {w : Plc E} {a y : GL (Fin n) (w.adicCompletion E)}
     (ha : a ∈ KGL w (n := n)) (hy : Cong1 N w y) : Cong1 N w (a * y * a⁻¹) := fun i k => by
   have e : (a * y * a⁻¹).val - 1 = a.val * (y.val - 1) * (a⁻¹).val := by
-    have h : a.val * (a⁻¹).val = 1 := by rw [← Units.val_mul]; simp
+    have h : a.val * (a⁻¹).val = 1 := simp [← Units.val_mul]
     rw [Units.val_mul, Units.val_mul, mul_sub, sub_mul, mul_one, h]
   obtain ⟨h1, h2⟩ := GlobalTheory.AdelicU.mem_GLint_iff.1 ha
   have h1' : ∀ i j, Valued.v (a.val i j) ≤ 1 := fun i j => (HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 E) E w).1 (h1 i j)

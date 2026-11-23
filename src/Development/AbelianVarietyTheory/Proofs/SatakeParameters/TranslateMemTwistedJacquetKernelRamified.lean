@@ -71,8 +71,8 @@ end Gen
 def diagUnit {R : Type} [CommRing R] {a : ℕ} (f : Fin a → Rˣ) : GL (Fin a) R where
   val := Matrix.diagonal fun i => (f i : R)
   inv := Matrix.diagonal fun i => ((f i)⁻¹ : Rˣ)
-  val_inv := by rw [Matrix.diagonal_mul_diagonal]; simp
-  inv_val := by rw [Matrix.diagonal_mul_diagonal]; simp
+  val_inv := simp [Matrix.diagonal_mul_diagonal]
+  inv_val := simp [Matrix.diagonal_mul_diagonal]
 
 theorem exists_diag {L : Type} [Field L] (O : Subring L) {a : ℕ} (ha : 1 ≤ a) (u : Lˣ) (h1 : (u : L) ∈ O)
     (h2 : ((u⁻¹ : Lˣ) : L) ∈ O) : ∃ d ∈ Formalism.UG.GLint (Fin a) O, Matrix.GeneralLinearGroup.det d = u ∧

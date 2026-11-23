@@ -279,7 +279,7 @@ theorem exists_basis [ArithBase o Ω] {p : ℕ} [Fact p.Prime] {y₀ : S.R →+*
       have : g ∈ τ.yy.ker := hker ▸ AddSubgroup.mem_top g
       rw [AddMonoidHom.mem_ker, hg, QuotientAddGroup.eq_zero_iff] at this
       exact this
-    have h1 : ‖l i‖ = 1 := by rw [hl, h0]; simp
+    have h1 : ‖l i‖ = 1 := simp [hl, h0]
     rw [Matrix.of_apply, norm_mul, h1, _root_.one_mul]
     exact hB i j
 

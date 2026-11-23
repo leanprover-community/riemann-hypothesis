@@ -126,10 +126,10 @@ theorem hasTypeAll_transport : ∀ (n : ℕ) (H H' : Type) [NormedAddCommGroup H
     rw [← hGG]
     calc (Q⁻¹)ᴴ * (Qᴴ * G₂ * Q) * Q⁻¹ = (Q * Q⁻¹)ᴴ * G₂ * (Q * Q⁻¹) := by
           simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [h2]; simp
+      _ = _ := simp [h2]
   have cd : ∀ Y : Mx n, Q * (Q⁻¹ * Y * Q) * Q⁻¹ = Y := fun Y => by
     calc Q * (Q⁻¹ * Y * Q) * Q⁻¹ = (Q * Q⁻¹) * Y * (Q * Q⁻¹) := by simp only [Matrix.mul_assoc]
-      _ = Y := by rw [h2]; simp
+      _ = Y := simp [h2]
   let Ur : H ≃L[ℝ] H' :=
     { U.toLinearEquiv.restrictScalars ℝ with
       continuous_toFun := U.continuous
@@ -243,7 +243,7 @@ theorem hasTypeAll_add_of_equiv {H' : Type} [NormedAddCommGroup H'] [InnerProduc
     calc _ = (P'⁻¹)ᴴ * (Pᴴ * Jm ε * P) * P'⁻¹ := by simp only [conjTranspose_mul, Matrix.mul_assoc]
       _ = (P' * P'⁻¹)ᴴ * Jm ε * (P' * P'⁻¹) := by
           rw [hG, ← hG']; simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [a3]; simp
+      _ = _ := simp [a3]
   have t1 := hasTypeAll_transport n H H _ σ G (Jm ε) P hGu hP hG (LinearIsometryEquiv.refl ℂ H) (fun _ _ _ => rfl) f h
   have t2 := hasTypeAll_transport n H' H _ σ G (Jm ε) P hGu hP hG (U.trans (opEquiv hσ hm)) (fun g hg v => by
     have m1 := GlobalTheory.GardingVec.conj_mem hP hG hg

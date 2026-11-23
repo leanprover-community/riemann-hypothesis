@@ -149,7 +149,7 @@ theorem mem_unitary (hG : Gᵀ * K * G.map f = K) (hΔT : Δᵀ = Δt) (hNT : N�
     calc _ = N * ((xᵀ * J + J * x.map f) * Nt) := by
           rw [Matrix.mul_assoc, Matrix.mul_assoc, e3, ← Matrix.mul_assoc K Δ, e4]
           simp only [Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc]
-      _ = 0 := by rw [hZ]; simp
+      _ = 0 := simp [hZ]
   have expand : ∀ U V : Matrix (β ⊕ β) (β ⊕ β) R, (1 + ⅟(2 : R) • U) * K * (1 + ⅟(2 : R) • V) =
       K + ⅟(2 : R) • (U * K + K * V) + (⅟(2 : R) * ⅟(2 : R)) • (U * K * V) := by
     intro U V

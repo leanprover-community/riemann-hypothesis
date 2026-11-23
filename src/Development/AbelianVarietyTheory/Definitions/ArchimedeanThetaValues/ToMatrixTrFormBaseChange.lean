@@ -318,7 +318,7 @@ theorem sum_add_conj_eq_trace (H : Host E) (a : 𝓞 E) :
     rw [h1] at h2
     exact hd (by linear_combination h2)
   have hsq : ∀ τ : E →+* ℂ, τ (H.rt : E) ≠ H.rt0 → τ (H.rt : E) = -H.rt0 := fun τ h => by
-    have : τ (H.rt : E) ^ 2 = H.rt0 ^ 2 := by rw [← map_pow, coe_rt_sq, H.sqrt_neg_disc_sq]; simp
+    have : τ (H.rt : E) ^ 2 = H.rt0 ^ 2 := simp [← map_pow, coe_rt_sq, H.sqrt_neg_disc_sq]
     exact (sq_eq_sq_iff_eq_or_eq_neg.mp this).resolve_left h
   rw [coe_trace_eq_sum, Finset.sum_add_distrib,
     ← Finset.sum_filter_add_sum_filter_not Finset.univ (fun τ : E →+* ℂ => τ (H.rt : E) = H.rt0)]

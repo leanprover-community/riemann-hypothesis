@@ -208,7 +208,7 @@ theorem muPM (h : ∀ k : ℕ, k ∣ D.QS * D.q * D.d →
   rcases h2 with h2 | h2
   · exact sq_eq_one_iff.mp h2
   · refine key x ?_
-    have h4 : x ^ 2 ^ 2 = 1 := by rw [show (2 : ℕ) ^ 2 = 2 * 2 by norm_num, pow_mul, h2]; simp
+    have h4 : x ^ 2 ^ 2 = 1 := simp [show (2 : ℕ) ^ 2 = 2 * 2 by norm_num, pow_mul, h2]
     have h5 : (x : D.L) ^ 2 ^ 2 = 1 := congrArg (fun t : D.E => (t : D.L)) h4
     have hc : 2 ^ 2 ∣ D.QS * D.q * D.d :=
       (((pow_dvd_pow 2 (by omega)).trans D.tower_dvd).mul_right _).mul_right _

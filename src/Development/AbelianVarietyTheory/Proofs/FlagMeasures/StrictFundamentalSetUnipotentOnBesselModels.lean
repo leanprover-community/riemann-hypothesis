@@ -64,7 +64,7 @@ theorem inUJ_conj (Q : Matrix (Fin n) (Fin m) ℂ) (Qi : Matrix (Fin m) (Fin n) 
         simp only [Matrix.mul_assoc]
     _ = Qiᴴ * (Qᴴ * Formalism.REAL.Jm ε * Q) * Qi := by rw [hH, hx, ← hH]
     _ = (Q * Qi)ᴴ * Formalism.REAL.Jm ε * (Q * Qi) := by rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Formalism.REAL.Jm ε := by rw [hQ]; simp
+    _ = Formalism.REAL.Jm ε := simp [hQ]
 
 theorem inv_mul_of_inUJ (M : Matrix (Fin n) (Fin n) ℂ) (h : Formalism.REAL.inUJ ε M) :
     Formalism.REAL.Jm ε * Mᴴ * Formalism.REAL.Jm ε * M = 1 := by

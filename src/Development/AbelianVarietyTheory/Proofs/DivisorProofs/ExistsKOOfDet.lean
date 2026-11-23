@@ -99,7 +99,7 @@ theorem exists_symR_diag : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologica
     rw [Matrix.coe_units_inv]
     haveI := b.invertible
     exact Matrix.blockTriangular_inv_of_blockTriangular hb
-  have hH : H = u * b * w := by rw [mul_assoc, ← hbw]; simp
+  have hH : H = u * b * w := simp [mul_assoc, ← hbw]
   obtain ⟨w1, w2⟩ := (mem_KO_iff w).1 hw
   have hdiag : ∀ i, (b⁻¹).val (Sum.inr i) (Sum.inr i) * b.val (Sum.inr i) (Sum.inr i) = 1 := by
     intro i
@@ -122,7 +122,7 @@ theorem exists_symR_diag : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologica
     have key : ∀ t, (H.val *ᵥ fun s => (w⁻¹).val s (Sum.inr i)) t =
         ∑ s, u.val t (Sum.inl s) * b.val (Sum.inl s) (Sum.inr i) + ∑ l, v l t * b.val (Sum.inr l) (Sum.inr i) := by
       intro t
-      have : (H * w⁻¹).val t (Sum.inr i) = (u * b).val t (Sum.inr i) := by rw [hH]; simp
+      have : (H * w⁻¹).val t (Sum.inr i) = (u * b).val t (Sum.inr i) := simp [hH]
       rw [Units.val_mul, Units.val_mul, Matrix.mul_apply, Matrix.mul_apply, Fintype.sum_sum_type
         (fun j => u.val t j * b.val j (Sum.inr i))] at this
       simp only [uc] at this

@@ -67,7 +67,7 @@ theorem UpperTheory.V.Z.Win.Birth.mix_birth_of_prints :
     have : Finite (G F Ω ⧸ ξ.ker) := Subgroup.quotient_finite_of_isOpen _ hξ
     have h0 : ξ.ker.index ≠ 0 := Subgroup.index_ne_zero_of_finite
     have h1 : ξ g ^ ξ.ker.index = 1 := by rw [← map_pow]; exact ξ.ker.pow_index_mem g
-    have h2 : ‖(ξ g : Qbar l)‖ ^ ξ.ker.index = 1 := by rw [← norm_pow, ← Units.val_pow_eq_pow_val, h1]; simp
+    have h2 : ‖(ξ g : Qbar l)‖ ^ ξ.ker.index = 1 := simp [← norm_pow, ← Units.val_pow_eq_pow_val, h1]
     exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) h0).1 h2
   obtain ⟨A₁, hA₁⟩ := exists_isPlaceOver Ω w₁
   obtain ⟨A₂, hA₂⟩ := exists_isPlaceOver Ω w₂

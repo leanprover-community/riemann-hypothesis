@@ -133,7 +133,7 @@ private theorem jacq : JacqOfU := by
           induction hx using Submodule.span_induction with
           | mem z hz =>
             obtain ⟨t, s, hs, rfl⟩ := hz
-            have : τ t s = MonoidAlgebra.of ℂ T t • s := by rw [hsm]; simp
+            have : τ t s = MonoidAlgebra.of ℂ T t • s := simp [hsm]
             rw [this]
             exact Submodule.smul_mem _ _ (Submodule.subset_span hs)
           | zero => exact zero_mem _

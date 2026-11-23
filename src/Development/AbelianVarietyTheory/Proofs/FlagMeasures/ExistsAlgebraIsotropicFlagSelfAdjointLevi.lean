@@ -169,7 +169,7 @@ theorem finrank_real_form (ε : Fin n → Bool) (C : Submodule ℂ (Matrix (Fin 
       have h3 : J * (Y : Matrix (Fin n) (Fin n) ℂ) = 0 := by
         simpa using h2
       have h4 : (Y : Matrix (Fin n) (Fin n) ℂ) = 0 := by rw [← hJJ' Y, h3, mul_zero]
-      have h5 : (X : Matrix (Fin n) (Fin n) ℂ) = 0 := by rw [h1, h4]; simp
+      have h5 : (X : Matrix (Fin n) (Fin n) ℂ) = 0 := simp [h1, h4]
       exact Prod.ext (Subtype.ext h5) (Subtype.ext h4)
     · rintro ⟨Z, hZ⟩
       refine ⟨(⟨(1 / 2 : ℂ) • (Z - J * Zᴴ * J), (hG _).2 ⟨C.smul_mem _ (C.sub_mem hZ (hC Z hZ)), ?_⟩⟩,

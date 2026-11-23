@@ -94,7 +94,7 @@ private theorem lc_of_open {R Γ M : Type} [CommRing R] [Group Γ] [TopologicalS
     ⟨1, by simp, by simp⟩
   filter_upwards [h3.mem_nhds h4] with g hg
   obtain ⟨u, hu, e⟩ := hg
-  have e' : g = (u : Γ) * g0 := by rw [e]; simp
+  have e' : g = (u : Γ) * g0 := simp [e]
   rw [e', map_mul]
   exact hu
 

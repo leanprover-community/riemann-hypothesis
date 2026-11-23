@@ -113,7 +113,7 @@ theorem uh_inv (hH : Hm.det ≠ 0) {g : Mt n} (hg : g ∈ Formalism.QuantumDeter
   calc g⁻¹ᴴ * Hm * g⁻¹ = g⁻¹ᴴ * (gᴴ * Hm * g) * g⁻¹ := by rw [hg']
     _ = (g * g⁻¹)ᴴ * Hm * (g * g⁻¹) := by
         rw [conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Hm := by rw [h1]; simp
+    _ = Hm := simp [h1]
 
 theorem uh_of_gram_eq {x y : Mt n} (hx : x.det ≠ 0) (h : yᴴ * Hm * y = xᴴ * Hm * x) : y * x⁻¹ ∈ Formalism.QuantumDeterminants.UH Hm := by
   have h1 := mul_nonsing_inv x (isUnit_iff_ne_zero.2 hx)
@@ -122,7 +122,7 @@ theorem uh_of_gram_eq {x y : Mt n} (hx : x.det ≠ 0) (h : yᴴ * Hm * y = xᴴ 
         rw [conjTranspose_mul]; simp only [Matrix.mul_assoc]
     _ = (x * x⁻¹)ᴴ * Hm * (x * x⁻¹) := by
         rw [h, conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Hm := by rw [h1]; simp
+    _ = Hm := simp [h1]
 
 theorem OrthFr.tor_mem {q : ℕ} {x : Mt n} (h : OrthFr Hm q x) (s : Fin n → ℝ) :
     x * diagonal (fun a => Complex.exp ((s a : ℂ) * Complex.I)) * x⁻¹ ∈ Formalism.QuantumDeterminants.UH Hm := by
@@ -158,7 +158,7 @@ theorem inner_eigen_of_norm {H : Type} [NormedAddCommGroup H] [InnerProductSpace
     have := hA v
     rwa [hc, norm_smul, hv, mul_one] at this
   rw [hc, inner_smul_left] at h1
-  have h3 : c * (starRingEnd ℂ) c = 1 := by rw [Complex.mul_conj', h2]; simp
+  have h3 : c * (starRingEnd ℂ) c = 1 := simp [Complex.mul_conj', h2]
   rw [← h1, ← mul_assoc, h3, one_mul]
 
 section

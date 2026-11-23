@@ -122,7 +122,7 @@ theorem fr_conj_mem (M : DSModel V S) (τ : D.what₂.Tau) {g : Matrix (Fin V.ra
     _ = ((M.fr τ)⁻¹)ᴴ * ((M.fr τ)ᴴ * Formalism.REAL.Jm (M.ε τ) * M.fr τ) * (M.fr τ)⁻¹ := by rw [hg']
     _ = (M.fr τ * (M.fr τ)⁻¹)ᴴ * Formalism.REAL.Jm (M.ε τ) * (M.fr τ * (M.fr τ)⁻¹) := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Formalism.REAL.Jm (M.ε τ) := by rw [hPQ]; simp
+    _ = Formalism.REAL.Jm (M.ε τ) := simp [hPQ]
 
 open Classical in
 theorem actT_pure (M : DSModel V S) (τ : D.what₂.Tau) (g : Matrix (Fin V.rank) (Fin V.rank) ℂ) (v : ∀ ρ, M.H ρ) :

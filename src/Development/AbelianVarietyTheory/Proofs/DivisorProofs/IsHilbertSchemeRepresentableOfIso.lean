@@ -104,7 +104,7 @@ theorem isHilbRep_transfer : ∀ {S Z S' Z' : Scheme.{0}} (z : Z ⟶ S) (z' : Z'
     · exact transferIso_map z z' eS eZ hsq (g ≫ eS.inv) g hg h' f hf' hf
     · simp
   · rintro f₂ ⟨hf₂, w₂, hpb₂⟩
-    have hf₂' : f₂ ≫ h' = g ≫ eS.inv := by rw [← hf₂]; simp
+    have hf₂' : f₂ ≫ h' = g ≫ eS.inv := simp [← hf₂]
     apply huniq f₂ ⟨hf₂', w₂, ?_⟩
     refine hpb₂.of_iso (Iso.refl _) ΦT.symm (Iso.refl _) ΦH.symm ?_ ?_ ?_ ?_
     · simp

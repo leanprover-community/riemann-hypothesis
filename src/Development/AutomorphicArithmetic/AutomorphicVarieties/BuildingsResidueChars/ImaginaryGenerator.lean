@@ -36,7 +36,7 @@ theorem UpperTheory.imaginary_generator :
   intro K _ _ _ h
   haveI : Algebra.IsQuadraticExtension ℚ K := ⟨h⟩
   obtain ⟨d, e, -, h0, h1⟩ := GlobalTheory.QuadSymbol.AlmostNorm.exists_basis_sq ℚ K
-  have hy : e 1 ^ 2 = (d : K) := by rw [sq, h1]; simp
+  have hy : e 1 ^ 2 = (d : K) := simp [sq, h1]
   have hx : ∀ x : K, ∃ a b : ℚ, x = (a : K) + (b : K) * e 1 := fun x => by
     refine ⟨e.repr x 0, e.repr x 1, ?_⟩
     conv_lhs => rw [← e.sum_repr x]

@@ -47,7 +47,7 @@ theorem irrChar_eq_one_of_subsingleton {G : Type} [Group G] [Fintype G] [Subsing
   obtain ⟨⟨n, ρ, hρ⟩, hs⟩ := h
   have hx : x = 1 := Subsingleton.elim _ _
   subst hx
-  have h1 : χ 1 = (n : ℂ) := by rw [hρ]; simp
+  have h1 : χ 1 = (n : ℂ) := simp [hρ]
   rw [Fintype.sum_subsingleton _ (1 : G), Fintype.card_eq_one_iff_nonempty_unique.2
     ⟨uniqueOfSubsingleton (1 : G)⟩, h1] at hs
   have h2 : n * n = 1 := by

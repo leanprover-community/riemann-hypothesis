@@ -90,8 +90,8 @@ theorem rel_comp_perm (r : (Fin h → α) → (Fin h → α) → Prop) (hrefl : 
       rcases swap_lt_swap hpq h' with h'' | ⟨h1, h2⟩
       · exact h''
       · exfalso
-        have e1 : v = σ q := by rw [← h1]; simp
-        have e2 : u = σ p := by rw [← h2]; simp
+        have e1 : v = σ q := simp [← h1]
+        have e2 : u = σ p := simp [← h2]
         rw [e1, e2] at huv
         exact lt_asymm huv hlt
     have hsub : invSet σ' ⊂ invSet σ := by

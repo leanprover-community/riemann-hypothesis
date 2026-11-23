@@ -61,7 +61,7 @@ private lemma natCast_not_mem (u : Plc E) {q m : ℕ} (hm : m.Coprime q) (hq : (
     (m : 𝓞 E) ∉ u.asIdeal := by
   intro h
   obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 hm
-  have h1 : ((a * (m : ℤ) + b * (q : ℤ) : ℤ) : 𝓞 E) = 1 := by rw [hab]; simp
+  have h1 : ((a * (m : ℤ) + b * (q : ℤ) : ℤ) : 𝓞 E) = 1 := simp [hab]
   have h2 : (1 : 𝓞 E) ∈ u.asIdeal := by
     rw [← h1]; push_cast
     exact add_mem (Ideal.mul_mem_left _ _ h) (Ideal.mul_mem_left _ _ hq)

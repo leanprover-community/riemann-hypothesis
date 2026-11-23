@@ -272,7 +272,7 @@ theorem gN_setC_app {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq} {p : ∀ v, KB.Pl 
         have : ((S6.nuBlock (S.G.r : ℤ) (Nat.cast (j + 1)) (Nat.cast 1) : ℤ) : ℝ) = 0 := by
           unfold S6.nuBlock; rw [hjt]; push_cast; ring
         rw [this]; simp
-      have hρ1 : rhoS S j = 1 := by rw [rhoS, ← hlam, hlam1, hfr1]; simp
+      have hρ1 : rhoS S j = 1 := simp [rhoS, ← hlam, hlam1, hfr1]
       have hx : xw c = (Complex.normSq c - S.T * S.T') ^ (S.G.k - 1) := by
         simp only [hxw, C.nAux]
         rw [if_pos (by constructor <;> first | trivial | omega), mul_one]

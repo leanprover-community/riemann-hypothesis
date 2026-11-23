@@ -191,7 +191,7 @@ theorem l2glue_holds : An.L2DecayOfCountEscape := by
       calc _ ≤ _ := h1
         _ ≤ (((⌈C * Real.exp (2 * An.rho K n r * t)⌉₊ : ℕ) : ℝ≥0∞) * ∫⁻ x in F \ T, ‖φ x‖ₑ ^ 2 ∂μ).toReal :=
           ENNReal.toReal_mono (ENNReal.mul_ne_top (by simp) hfinT) (h2.trans h3)
-        _ = _ := by rw [ENNReal.toReal_mul]; simp
+        _ = _ := simp [ENNReal.toReal_mul]
     have hE := Real.exp_pos (2 * An.rho K n r * t)
     have hx : 0 ≤ 2 * An.rho K n r * t := mul_nonneg (mul_nonneg zero_le_two hρ) ht0
     have hN : (⌈C * Real.exp (2 * An.rho K n r * t)⌉₊ : ℝ) ≤ max C 0 * Real.exp (2 * An.rho K n r * t) + 1 := by

@@ -260,7 +260,7 @@ theorem UH_inv {a : Mx k r} (ha : a ∈ UH (Hpk k r)) : a⁻¹ ∈ UH (Hpk k r) 
   show (a⁻¹)ᴴ * Hpk k r * a⁻¹ = Hpk k r
   calc (a⁻¹)ᴴ * Hpk k r * a⁻¹ = (a⁻¹)ᴴ * (aᴴ * Hpk k r * a) * a⁻¹ := by rw [ha']
     _ = (a * a⁻¹)ᴴ * Hpk k r * (a * a⁻¹) := by rw [Matrix.conjTranspose_mul]; simp only [mul_assoc]
-    _ = Hpk k r := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+    _ = Hpk k r := simp [Matrix.mul_nonsing_inv _ hd]
 theorem UH_det {a : Mx k r} (ha : a ∈ UH (Hpk k r)) : IsUnit a.det := by
   have ha' : aᴴ * Hpk k r * a = Hpk k r := ha
   have h := congrArg Matrix.det ha'

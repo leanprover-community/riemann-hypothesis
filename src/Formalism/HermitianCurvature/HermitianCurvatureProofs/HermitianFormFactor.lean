@@ -741,7 +741,7 @@ lemma exists_unit_orth (X : Q → Q → ℂ) (j₀ : Q) :
     have hne : ν ≠ 0 := by
       intro h
       apply hn₀
-      have : star n₀ ⬝ᵥ n₀ = 0 := by rw [hνc, h]; simp
+      have : star n₀ ⬝ᵥ n₀ = 0 := simp [hνc, h]
       exact dotProduct_star_self_eq_zero.1 this
     exact lt_of_le_of_ne (Finset.sum_nonneg fun l _ => Complex.normSq_nonneg _) (Ne.symm hne)
   refine ⟨(((Real.sqrt ν)⁻¹ : ℝ) : ℂ) • n₀, ?_, fun j hj => ?_⟩

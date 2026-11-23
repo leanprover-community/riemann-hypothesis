@@ -77,7 +77,7 @@ theorem ne_zero_of_val_zero {C : Type} [Field C] (v : AddValuation C (WithTop �
 
 theorem inv_mem_of_val_zero {C : Type} [Field C] (v : AddValuation C (WithTop ℝ)) {z : C}
     (h : v z = 0) : z⁻¹ ∈ intRing v := by
-  have h1 : v (z * z⁻¹) = 0 := by rw [mul_inv_cancel₀ (ne_zero_of_val_zero v h)]; simp
+  have h1 : v (z * z⁻¹) = 0 := simp [mul_inv_cancel₀ (ne_zero_of_val_zero v h)]
   rw [v.map_mul, h, zero_add] at h1
   exact h1.ge
 

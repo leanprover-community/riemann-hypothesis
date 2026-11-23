@@ -160,7 +160,7 @@ theorem deuring_heilbronn_cauchy : DHCauchy := by
     have h2 : 2 * (r / 12) = r / 6 := by ring
     exact dhc_cauchy H z₀ s (r / 12) _ (by positivity) (h2 ▸ hHd) (h2 ▸ hHb) hs k
   have hfac : (k.factorial : ℂ) ≠ 0 := by exact_mod_cast k.factorial_ne_zero
-  have hpm : ((-1 : ℂ) ^ k * (-1) ^ k) = 1 := by rw [← mul_pow]; simp
+  have hpm : ((-1 : ℂ) ^ k * (-1) ^ k) = 1 := simp [← mul_pow]
   rw [hev.iteratedDeriv_eq k, iteratedDeriv_fun_sub (ContDiffAt.neg (ContDiffAt.sum hcd)) hHan.contDiffAt,
     iteratedDeriv_fun_neg, iteratedDeriv_fun_sum hcd]
   simp_rw [dhc_iter]

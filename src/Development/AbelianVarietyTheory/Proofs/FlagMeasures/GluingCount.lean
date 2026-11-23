@@ -103,7 +103,7 @@ theorem encard_le [IsNonarchimedeanLocalField F] [CharZero F] {L : LocE F E} {n 
   have hle : ∀ Λ Λ' : T, (∀ i, a Λ i ∈ Λ'.1) → Λ.1 ≤ Λ'.1 := by
     intro Λ Λ' hi l hl
     obtain ⟨u, hu, w, hw, huw⟩ := Submodule.mem_sup.1 (hc ▸ Submodule.mem_top : l ∈ Y ⊔ perp L Hm Y)
-    have hu' : l - w = u := by rw [← huw]; simp
+    have hu' : l - w = u := simp [← huw]
     have h1 := hproj _ Λ.2 l hl w hw (hu' ▸ hu)
     rw [hb] at h1
     obtain ⟨s, hs⟩ := (Submodule.mem_span_range_iff_exists_fun L.O).1 h1

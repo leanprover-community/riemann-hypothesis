@@ -274,7 +274,7 @@ theorem zDet_mul_colGram_le_norm_dmin : ∀ (E : Type) [Field E] [NumberField E]
       simp [hD', hD, Matrix.diagonal_apply, sgn, hp, Matrix.one_apply, (eR r hr).injective.eq_iff] <;>
       split_ifs <;> simp
   have hT : Aᵀ * D' * A.map (starRingEnd ℂ) = (Aᴴ * D' * A)ᵀ := by
-    have h1 : D'ᵀ = D' := by rw [hDb, Matrix.fromBlocks_transpose]; simp
+    have h1 : D'ᵀ = D' := simp [hDb, Matrix.fromBlocks_transpose]
     have h2 : (Aᴴ)ᵀ = A.map (starRingEnd ℂ) := by ext i j; simp
     rw [Matrix.transpose_mul, Matrix.transpose_mul, h1, h2, Matrix.mul_assoc]
   have hzD : zDet X z τ = (1 - Zmᴴ * Zm).det.re := by

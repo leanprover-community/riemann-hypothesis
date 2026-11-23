@@ -108,7 +108,7 @@ theorem lseries_taylor_lower_bound {a : ℕ → ℂ} (ha0 : ∀ n, 0 ≤ a n) (h
     intro n
     have hg : iteratedDeriv n G 2 = iteratedDeriv n (LSeries a) 2 - lam * ((-1) ^ n * (n ! : ℂ)) := by
       rw [hcoef n]; ring
-    have hpow : ((-1 : ℂ) ^ n) * ((-1) ^ n) = 1 := by rw [← mul_pow]; simp
+    have hpow : ((-1 : ℂ) ^ n) * ((-1) ^ n) = 1 := simp [← mul_pow]
     have hfac : (n ! : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero n
     simp only [htdef, hβdef, smul_eq_mul, hσx, hg, neg_pow (x : ℂ) n]
     have hQ : (n ! : ℂ)⁻¹ * (n ! : ℂ) = 1 := inv_mul_cancel₀ hfac

@@ -75,7 +75,7 @@ theorem unitary_group_holds : UHGroup := by
     calc (g⁻¹)ᴴ * H * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * H * g) * g⁻¹ := by rw [hg']
       _ = (g * g⁻¹)ᴴ * H * (g * g⁻¹) := by
           rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = H := by rw [h1]; simp
+      _ = H := simp [h1]
 
 theorem unitary_conjugation_holds : UHConj := by
   intro m ε H P hP hH g

@@ -192,7 +192,7 @@ theorem ratStep : RatStep := by
     calc M.transpose * (S.transpose * S.map conj) * M.map conj
         = (S * M).transpose * (S * M).map (starRingEnd ℂ) := by
           rw [Matrix.transpose_mul, Matrix.map_mul]; simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [hSM]; simp
+      _ = 1 := simp [hSM]
   have hUeq : ∀ k : Fin 4, (bmv0 k : Matrix _ _ ℂ) * M = M * (Gi * bmv0 k * G) := by
     intro k
     calc (bmv0 k : Matrix _ _ ℂ) * M = bmv0 k * bd4 Pinv * G := by rw [hM, Matrix.mul_assoc]

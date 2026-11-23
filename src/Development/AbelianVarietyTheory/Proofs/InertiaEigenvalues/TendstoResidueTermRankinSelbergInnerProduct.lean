@@ -113,7 +113,7 @@ theorem lowSum_bounds {L s u : ℝ} (hL : 0 < L) (hs : 0 < s) (hu : Real.exp (-L
     rwa [← Real.exp_mul, neg_mul, mul_comm L s] at h
   have hD : 0 < 1 - Real.exp (-(s * L)) := by linarith
   have hDy : 1 - Real.exp (-(s * L)) ≤ s * L := by have := Real.add_one_le_exp (-(s * L)); linarith
-  have hE : Real.exp (s * L) * Real.exp (-(s * L)) = 1 := by rw [← Real.exp_add]; simp
+  have hE : Real.exp (s * L) * Real.exp (-(s * L)) = 1 := simp [← Real.exp_add]
   have hey : s * L + 1 ≤ Real.exp (s * L) := Real.add_one_le_exp _
   have hre : s * (u ^ s * (1 - Real.exp (-(s * L)))⁻¹) = s * u ^ s / (1 - Real.exp (-(s * L))) := by
     field_simp

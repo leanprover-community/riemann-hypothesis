@@ -78,10 +78,10 @@ private theorem coordinate_embedNorm_zero {F E : Type} [Field F] [NumberField F]
   simp only [Dat.co, e, map_smul, Module.Basis.repr_self, Finsupp.smul_single, smul_eq_mul, mul_one, Finsupp.single_eq_pi_single]
 
 private theorem co_mkE {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (D : Dat F E) (u : A F) :
-    D.co (D.mkE u 0) 0 = u := by rw [coordinate_embedNorm_zero]; simp
+    D.co (D.mkE u 0) 0 = u := simp [coordinate_embedNorm_zero]
 
 private theorem co_mkE' {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (D : Dat F E) (u : A F) :
-    D.co (D.mkE u 0) 1 = 0 := by rw [coordinate_embedNorm_zero]; simp
+    D.co (D.mkE u 0) 1 = 0 := simp [coordinate_embedNorm_zero]
 
 theorem UpperTheory.ConvolutionTheory.R2.H.liftRel :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] (D : Dat F E) (W : Weil D) (M : Meas F) (π : TR.CuspSub F 2), ∀ f ∈ π.V, ∀ φ ∈ Fock D.δ, ∀ h₀ : GL (Fin 2) (A E),

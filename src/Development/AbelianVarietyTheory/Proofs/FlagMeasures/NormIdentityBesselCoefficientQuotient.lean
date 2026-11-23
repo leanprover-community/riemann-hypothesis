@@ -114,7 +114,7 @@ theorem normIdentity_besselCoef : ∀ (k r : ℕ) {H : Type} [NormedAddCommGroup
     refine hIi.re.congr (Filter.Eventually.of_forall fun x => ?_)
     exact inner_self_eq_norm_sq _
   obtain ⟨-, hwe⟩ := innerIntegral_besselCoef k r σ w a μG d z c π μS hStd hSide ν hν w hwD w hwD v hv ξ
-  have hww : ⟪w, w⟫_ℂ = 1 := by rw [inner_self_eq_norm_sq_to_K, hw1]; simp
+  have hww : ⟪w, w⟫_ℂ = 1 := simp [inner_self_eq_norm_sq_to_K, hw1]
   have hL : (∫ x, ⟪Afun (psiGen k r z c) π μS σ w v ξ (Matrix.of x), Afun (psiGen k r z c) π μS σ w v ξ (Matrix.of x)⟫_ℂ ∂ν)
       = ((∫ x, ‖Afun (psiGen k r z c) π μS σ w v ξ (Matrix.of x)‖ ^ 2 ∂ν : ℝ) : ℂ) := by
     rw [← integral_complex_ofReal]

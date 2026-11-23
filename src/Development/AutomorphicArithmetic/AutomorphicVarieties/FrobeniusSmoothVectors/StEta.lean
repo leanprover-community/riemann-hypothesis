@@ -36,7 +36,7 @@ theorem UpperTheory.V.Fr.st_eta :
   obtain ⟨j, hj⟩ := hσ
   rcases Int.units_eq_one_or (η σ) with h | h
   · exfalso
-    have h1 : σ δ = δ := by rw [hs σ, h]; simp
+    have h1 : σ δ = δ := simp [hs σ, h]
     have h2 : j δ = starRingEnd ℂ (j δ) := by
       have := hj δ
       rw [← this]

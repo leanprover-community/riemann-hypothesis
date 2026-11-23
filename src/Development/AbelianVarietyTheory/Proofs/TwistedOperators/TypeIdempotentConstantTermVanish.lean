@@ -138,7 +138,7 @@ theorem typeConstTermVanish : TypeConstTermVanish := by
           _ = τ (c⁻¹ * (c * u * c⁻¹)) v := by rw [show u * c⁻¹ = c⁻¹ * (c * u * c⁻¹) by group]
           _ = τ c⁻¹ (τ (c * u * c⁻¹) v) := by rw [map_mul]; rfl
           _ = τ c⁻¹ v := by rw [this]
-      have : v = τ c (τ c⁻¹ v) := by rw [← Module.End.mul_apply, ← map_mul]; simp
+      have : v = τ c (τ c⁻¹ v) := simp [← Module.End.mul_apply, ← map_mul]
       rw [this, h0, map_zero]
     · intro v hv
       obtain ⟨u, hu, hu2, hred⟩ := hc _ (mem_conjBy.1 hv)

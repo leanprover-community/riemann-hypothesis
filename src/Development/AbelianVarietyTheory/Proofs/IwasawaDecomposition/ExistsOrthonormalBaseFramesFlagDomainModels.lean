@@ -65,7 +65,7 @@ theorem gram_x0Mat {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) {r
     rw [← M.fr_gram ρ]
     calc _ = (M.fr ρ * (M.fr ρ)⁻¹)ᴴ * Formalism.REAL.Jm (M.ε ρ) * (M.fr ρ * (M.fr ρ)⁻¹) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [hinv]; simp
+      _ = _ := simp [hinv]
   have h2 : (x0Mat M ρ)ᴴ * gramAt D V ρ * x0Mat M ρ =
       (((M.fr ρ)⁻¹)ᴴ * gramAt D V ρ * (M.fr ρ)⁻¹).submatrix (arr (nNeg (M.ε ρ))) (arr (nNeg (M.ε ρ))) := rfl
   show ReciprocityTheory.ChartRestriction.G.FD.gram (tauE D ρ) (-V.gramᵀ) (x0Mat M ρ) = _

@@ -272,7 +272,7 @@ theorem realWhitAll_of (hWR : WR.WRSt) : RealWhitAll := by
       rw [hnorm, ← Finset.prod_mul_distrib]
       refine Finset.prod_eq_one fun i _ => ?_
       rw [← mul_pow, mul_inv_cancel₀ (abs_pos.2 (hl i)).ne', one_pow]
-    have h2 : ((((cb : ℝ) * cg) * ∏ i, (|l i|⁻¹) ^ (n ^ 2) : ℝ) : ℂ) = 1 := by rw [h1]; simp
+    have h2 : ((((cb : ℝ) * cg) * ∏ i, (|l i|⁻¹) ^ (n ^ 2) : ℝ) : ℂ) = 1 := simp [h1]
     rw [hcdef]
     push_cast at h2 ⊢
     linear_combination (cμ : ℂ) * h2

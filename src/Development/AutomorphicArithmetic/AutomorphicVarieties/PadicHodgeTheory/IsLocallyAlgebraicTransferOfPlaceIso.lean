@@ -69,7 +69,7 @@ private theorem locAlg_step {l : ℕ} [Fact l.Prime] (c : Weil h →* Weil h')
   refine ⟨ph.comp e, ?_, fun a ha σ => ?_⟩
   · obtain ⟨O', hO', hpre⟩ := isOpen_induced_iff.mp hop
     have h1 : (1 : G M Ω) ∈ O' := by
-      have : (1 : Ine (F := M) A) ∈ Subtype.val ⁻¹' O' := by rw [hpre]; simp
+      have : (1 : Ine (F := M) A) ∈ Subtype.val ⁻¹' O' := simp [hpre]
       exact this
     obtain ⟨U, hU, hU1, hUO⟩ := GlobalTheory.WeilTransport.conj_nhds F Ω M Ω (RingEquiv.refl Ω) O' (hO'.mem_nhds h1)
     refine Subgroup.isOpen_of_mem_nhds _ (g := 1)

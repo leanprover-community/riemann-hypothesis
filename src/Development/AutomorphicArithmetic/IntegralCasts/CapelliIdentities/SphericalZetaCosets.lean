@@ -93,7 +93,6 @@ private theorem sum_pi_prod : ∀ (c : ℕ) (T : Fin c → Type) (f : ∀ i, T i
 
 end Sums
 
-section Hermite
 
 variable {R : Type} [CommRing R] {c : ℕ}
 
@@ -274,7 +273,6 @@ private theorem hnf_exists [IsDomain R] [IsDiscreteValuationRing R] {π : R} (h�
     simp only [Matrix.mulVec_single_one, Matrix.col_apply] at this
     rw [this]; rfl
 
-end Hermite
 
 private theorem integral_cosets {G ι : Type} [Group G] [MeasurableSpace G] [MeasurableMul G]
     [Countable ι] (K : Subgroup G) (hK : MeasurableSet (K : Set G)) (κ : Measure G)

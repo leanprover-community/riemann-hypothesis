@@ -125,7 +125,7 @@ theorem growth_of_basic : A0 → B1 := by
     calc _ = (((1 + Complex.I) / 2) ^ 2 + ((1 - Complex.I) / 2) ^ 2) • ∑ p ∈ nc ε, E p.1 p.2 (E p.1 p.2 v) +
           ((1 + Complex.I) / 2 * ((1 - Complex.I) / 2) + (1 - Complex.I) / 2 * ((1 + Complex.I) / 2)) •
             ∑ p ∈ nc ε, E p.1 p.2 (E p.2 p.1 v) := by module
-      _ = _ := by rw [coef1, coef2]; simp
+      _ = _ := simp [coef1, coef2]
   · have key : ∀ p ∈ nc ε, ‖f (actM E (Xp p.1 p.2) w)‖ ^ 2 + ‖f (actM E (Xp p.2 p.1) w)‖ ^ 2 =
         ‖f (E p.1 p.2 w)‖ ^ 2 + ‖f (E p.2 p.1 w)‖ ^ 2 := by
       intro p _

@@ -75,10 +75,10 @@ private theorem eq_of_geomPoints {P Y B : Scheme.{0}} [IsReduced P] (a b : P ⟶
   have hk : k₀ ≫ a = k₀ ≫ b := by
     have h1 : k₀ ≫ a = pullback.snd d (pullback.diagonal g) := by
       calc k₀ ≫ a = (k₀ ≫ d) ≫ pullback.fst g g := by rw [Category.assoc, hd₁]
-        _ = _ := by rw [hc]; simp
+        _ = _ := simp [hc]
     have h2 : k₀ ≫ b = pullback.snd d (pullback.diagonal g) := by
       calc k₀ ≫ b = (k₀ ≫ d) ≫ pullback.snd g g := by rw [Category.assoc, hd₂]
-        _ = _ := by rw [hc]; simp
+        _ = _ := simp [hc]
     rw [h1, h2]
   have hsur : Surjective k₀ := ⟨fun p => by
     obtain ⟨Ω, _, _, t, q, rfl⟩ := exists_geomPoint P p

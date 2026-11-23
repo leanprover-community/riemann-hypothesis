@@ -62,7 +62,7 @@ theorem mem_pow_of_psiAt_trivial {E : Type} [Field E] [NumberField E] (w : Heigh
     calc Valued.v t * Valued.v (s - algebraMap E (w.adicCompletion E) (r : E))
         ≤ WithZero.exp (((a + diffExp w : ℕ) : ℤ)) * WithZero.exp (-((a + diffExp w : ℕ) : ℤ)) :=
           mul_le_mul' hvt hr
-      _ = 1 := by rw [← WithZero.exp_add]; simp
+      _ = 1 := simp [← WithZero.exp_add]
       _ ≤ WithZero.exp (diffExp w : ℤ) := by
           rw [← WithZero.exp_zero, WithZero.exp_le_exp]; omega
   have hvt' := (psiAt_conductor w t).1 key

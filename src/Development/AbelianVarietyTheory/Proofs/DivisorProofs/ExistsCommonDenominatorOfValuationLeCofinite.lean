@@ -75,7 +75,7 @@ theorem exists_common_denominator_of_valuation_le (E : Type) [Field E] [NumberFi
       have h2 : w.valuation E x ≤ WithZero.exp (k w : ℤ) := (hx w).trans (hk w)
       calc w.valuation E (D : E) * w.valuation E x
           ≤ WithZero.exp (-(k w : ℤ)) * WithZero.exp (k w : ℤ) := mul_le_mul' h1 h2
-        _ = 1 := by rw [← WithZero.exp_add]; simp
+        _ = 1 := simp [← WithZero.exp_add]
     · have hw1 : β w ≤ 1 := by
         by_contra h
         exact hw (by rw [hT, Set.Finite.mem_toFinset]; exact h)

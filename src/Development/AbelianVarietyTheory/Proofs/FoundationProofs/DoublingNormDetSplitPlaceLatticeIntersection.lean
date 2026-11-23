@@ -50,8 +50,8 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 def diagGL {K : Type} [Field K] (d : Fin n → Kˣ) : GL (Fin n) K where
   val := Matrix.diagonal fun i => (d i : K)
   inv := Matrix.diagonal fun i => ((d i)⁻¹ : Kˣ)
-  val_inv := by rw [Matrix.diagonal_mul_diagonal]; simp
-  inv_val := by rw [Matrix.diagonal_mul_diagonal]; simp
+  val_inv := simp [Matrix.diagonal_mul_diagonal]
+  inv_val := simp [Matrix.diagonal_mul_diagonal]
 
 theorem mem_int_iff {a : Fv F v} : a ∈ v.adicCompletionIntegers F ↔ ‖a‖₊ ≤ 1 := nnnorm_le_one_iff_mem.symm
 

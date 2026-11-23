@@ -79,7 +79,7 @@ theorem aZeroBound : AZeroBound := by
     linarith [hs.hmu]
   have hE1 : Real.exp c.vth ≤ 10 / 9 := by
     have h1 := Real.add_one_le_exp (-c.vth)
-    have h2 : Real.exp c.vth * Real.exp (-c.vth) = 1 := by rw [← Real.exp_add]; simp
+    have h2 : Real.exp c.vth * Real.exp (-c.vth) = 1 := simp [← Real.exp_add]
     have h3 := Real.exp_pos c.vth
     have h4 := hs.hvth
     nlinarith [mul_le_mul_of_nonneg_left h1 h3.le, mul_nonneg h3.le (by linarith : (0:ℝ) ≤ 1 / 10 - c.vth)]

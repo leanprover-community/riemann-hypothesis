@@ -149,7 +149,7 @@ theorem GlobalTheory.KSp.WeylCellRel.gauss_const_ne_zero : ∀ (F : Type) [Field
     rw [hfou]; exact GlobalTheory.T.bicharacterFourierTransform_mem_schwartzBruhat (Matrix α ν E) hgood μ _ hpair φ hφ
   have h1 : ((1 : Matrix ν ν E).map c)ᵀ = 1 := by
     rw [Matrix.map_one _ (map_zero c) (map_one c), transpose_one]
-  have hu : unip c 1 h1 ∈ sieg c ν := by rw [mem_sieg, WeylCellRel.mat_unip]; simp
+  have hu : unip c 1 h1 ∈ sieg c ν := simp [mem_sieg, WeylCellRel.mat_unip]
   have hg := GlobalTheory.T.siegelParabolic_preserves_schwartzBruhat F E c δ hE α ν Q hQ ψ hψ hψ1 hψne χ hχ hres (unip c 1 h1) hu _ hfφ
   obtain ⟨sc1, scmul, -⟩ := GlobalTheory.T.unitaryCharacterAbsScalar_basic_properties F E c δ hE (Fintype.card α) χ hres
   have sc_ne : ∀ z : E, z ≠ 0 → sc F χ (Fintype.card α) z ≠ 0 := fun z hz h => by
@@ -193,13 +193,13 @@ theorem GlobalTheory.KSp.weyl_cell_relation : ∀ (F : Type) [Field F] [CharZero
   have hb' := WeylCellRel.herm_neg_inv c b hb hb0
   have hunip : ∀ (b' : Matrix ν ν E) (h' : (b'.map c)ᵀ = b'), unip c b' h' ∈ sieg c ν := by
     intro b' h'; rw [mem_sieg, WeylCellRel.mat_unip]; simp
-  have hlevi : levi c hE.invol a ∈ sieg c ν := by rw [mem_sieg, WeylCellRel.mat_levi]; simp
+  have hlevi : levi c hE.invol a ∈ sieg c ν := simp [mem_sieg, WeylCellRel.mat_levi]
   obtain ⟨q, hqd⟩ : ∃ q, q = weyl c ν * levi c hE.invol a * (weyl c ν)⁻¹ := ⟨_, rfl⟩
   obtain ⟨p₀, hp0d⟩ : ∃ p₀, p₀ = weyl c ν * unip c b hb * weyl c ν * (unip c (-b⁻¹) hb')⁻¹ * (weyl c ν)⁻¹ :=
     ⟨_, rfl⟩
   have hq : q ∈ sieg c ν := hqd ▸ WeylCellRel.conj_levi_mem c hE.invol a
   have hp0m : mat c p₀ = fromBlocks (-b⁻¹) 1 0 (-b) := hp0d ▸ WeylCellRel.splitUnitaryElementMatrix_bigCell_product c b hb hb0 hb'
-  have hp0 : p₀ ∈ sieg c ν := by rw [mem_sieg, hp0m]; simp
+  have hp0 : p₀ ∈ sieg c ν := simp [mem_sieg, hp0m]
   refine ⟨q * p₀, mul_mem hq hp0, unip c (-b⁻¹) hb', hunip _ _, by rw [hqd, hp0d]; group, ?_⟩
   intro φ hφ
   obtain ⟨-, pm⟩ := GlobalTheory.T.parFun_sieg_mul' F E c δ hE α ν Q hQ ψ hψ hψ1 hψne χ hχ hres

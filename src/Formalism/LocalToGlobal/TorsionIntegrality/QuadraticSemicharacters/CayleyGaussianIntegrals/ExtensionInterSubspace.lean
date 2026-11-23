@@ -58,7 +58,7 @@ theorem powForm_diag (l : V →L[ℂ] ℂ) (n : ℕ) (y : V) : powForm l n (fun 
 theorem norm_powForm_le (l : V →L[ℂ] ℂ) (n : ℕ) : ‖powForm l n‖ ≤ ‖l‖ ^ n := by
   calc ‖powForm l n‖ ≤ ‖ContinuousMultilinearMap.mkPiAlgebra ℂ (Fin n) ℂ‖ * ∏ _i : Fin n, ‖l‖ :=
         ContinuousMultilinearMap.norm_compContinuousLinearMap_le _ _
-    _ = ‖l‖ ^ n := by rw [ContinuousMultilinearMap.norm_mkPiAlgebra]; simp
+    _ = ‖l‖ ^ n := simp [ContinuousMultilinearMap.norm_mkPiAlgebra]
 
 def expTerm {X : Type*} (c : X → ℂ) (l : X → V →L[ℂ] ℂ) (n : ℕ) (x : X) :
     ContinuousMultilinearMap ℂ (fun _ : Fin n => V) ℂ :=

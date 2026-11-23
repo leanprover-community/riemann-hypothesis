@@ -66,7 +66,7 @@ theorem main : ∀ (K : Type) [Field K] [NumberField K] (d : ℕ) (δ : K) (ι :
   refine ⟨hstab, ?_, ?_, hint⟩
   · exact hstab ⟨δ, hint⟩
   · intro him
-    have h2 : (ι δ) ^ 2 = -(d : ℂ) := by rw [← map_pow, hδ]; simp
+    have h2 : (ι δ) ^ 2 = -(d : ℂ) := simp [← map_pow, hδ]
     have h3 := congrArg Complex.re h2
     simp [pow_two, Complex.mul_re, him] at h3
     have : (0:ℝ) < d := by exact_mod_cast hd

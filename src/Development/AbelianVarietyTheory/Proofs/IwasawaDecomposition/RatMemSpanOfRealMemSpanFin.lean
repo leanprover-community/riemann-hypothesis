@@ -79,7 +79,7 @@ theorem rat_mem_span_of_real_mem_span (k r : ℕ) (w : Fin k → Fin r → ℚ) 
     show ∑ j, ((w i j : ℚ) : ℝ) * (a j : ℝ) = 0
     have h := hw i
     rw [hf] at h
-    have h' : ((∑ j, w i j * a j : ℚ) : ℝ) = 0 := by rw [h]; simp
+    have h' : ((∑ j, w i j * a j : ℚ) : ℝ) = 0 := simp [h]
     push_cast at h'
     exact h'
   have h0 : L (fun j => ((v j : ℚ) : ℝ)) = 0 := LinearMap.mem_ker.mp (hle hv)

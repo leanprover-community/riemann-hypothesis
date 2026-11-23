@@ -114,7 +114,7 @@ theorem exists_anti (σ : E →ₐ[F] E) (hσ : IsCMExt F E σ) (τ : E →+* �
     apply τ.injective
     rw [hconj, hθ, map_sub, map_neg, map_sub, hconj, star_sub, star_star]
     ring
-  have hre : (τ θ).re = 0 := by rw [hθ, map_sub, hconj]; simp
+  have hre : (τ θ).re = 0 := simp [hθ, map_sub, hconj]
   have him : (τ θ).im ≠ 0 := by
     rw [hθ, map_sub, hconj]
     intro h0

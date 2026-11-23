@@ -106,7 +106,7 @@ theorem UpperTheory.V.Alg.hh_group :
     · have := conj_form (h := h) (ν := (1 : R)) e1 (by rw [a1, one_smul]) a1
       calc h'.transpose * Φ.JR R * h' = h'.transpose * (h.transpose * Φ.JR R * h) * h' := by rw [a1]
         _ = (h * h').transpose * Φ.JR R * (h * h') := by simp only [Matrix.transpose_mul, Matrix.mul_assoc]
-        _ = Φ.JR R := by rw [e1]; simp
+        _ = Φ.JR R := simp [e1]
     · have := congrArg (fun A : Matrix ι ι R => A.map (res O R)) e1
       simp only [map_mul_alg, a3, one_mul] at this
       rw [this]; simp

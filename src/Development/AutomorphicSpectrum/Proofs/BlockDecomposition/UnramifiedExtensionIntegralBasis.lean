@@ -73,7 +73,7 @@ theorem exists_value_eq_zpow {π : K} (h0 : valuation K π ≠ 0) (h1 : valuatio
     intro h
     exact h0 (e.injective (h.trans (map_zero e).symm))
   obtain ⟨y, hy⟩ := ValuativeRel.valuation_surjective (e.symm (WithZero.exp (-1 : ℤ)))
-  have hey : e (valuation K y) = WithZero.exp (-1 : ℤ) := by rw [hy]; simp
+  have hey : e (valuation K y) = WithZero.exp (-1 : ℤ) := simp [hy]
   have hy1 : valuation K y < 1 := by
     rw [← e.strictMono.lt_iff_lt, hey, map_one, ← WithZero.exp_zero, WithZero.exp_lt_exp]
     norm_num

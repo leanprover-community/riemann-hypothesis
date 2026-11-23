@@ -645,9 +645,9 @@ theorem UpperTheory.V.Cu.existsTensorSeedTower_holds : ExistsTensorFactorTower :
   obtain ⟨x5, p5, w5⟩ := hB q hq (by omega) (D.pl q) (hD.pl_over q hq) g5 i5
   have hη1 : η g1 = 1 :=
     hηS 2 hD.two_mem _ (hD.pl_over 2 Nat.prime_two) (Ine_le_Dec _ i1)
-  have hx : D.ξ (g1 * g5 * g2 ^ 2) = -1 := by rw [map_mul, map_mul, map_pow, x1, x5, x2]; simp
-  have hw : D.om (g1 * g5 * g2 ^ 2) = 1 := by rw [map_mul, map_mul, map_pow, w1, w5, w2]; simp
-  have hp : D.ψ (g1 * g5 * g2 ^ 2) = D.ψ g2 ^ 2 := by rw [map_mul, map_mul, map_pow, p1, p5]; simp
+  have hx : D.ξ (g1 * g5 * g2 ^ 2) = -1 := simp [map_mul, map_mul, map_pow, x1, x5, x2]
+  have hw : D.om (g1 * g5 * g2 ^ 2) = 1 := simp [map_mul, map_mul, map_pow, w1, w5, w2]
+  have hp : D.ψ (g1 * g5 * g2 ^ 2) = D.ψ g2 ^ 2 := simp [map_mul, map_mul, map_pow, p1, p5]
   have hηx : ηc (g1 * g5 * g2 ^ 2) = -1 := by
     ext
     simp [ηc, map_mul, hη1, e5, Int.units_sq]

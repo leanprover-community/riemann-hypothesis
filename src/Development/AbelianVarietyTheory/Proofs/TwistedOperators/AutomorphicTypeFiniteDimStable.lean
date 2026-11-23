@@ -120,7 +120,7 @@ theorem avg_mem (hθ : IsInfFam (D := D) θ) (hP : IsUnit P) (hJ : Pᴴ * Jm ε 
   have hd := (isUnit_iff_isUnit_det _).1 hP
   have cc : ∀ g : Matrix (Fin V.rank) (Fin V.rank) ℂ, P * (P⁻¹ * g * P) * P⁻¹ = g := fun g => by
     calc P * (P⁻¹ * g * P) * P⁻¹ = (P * P⁻¹) * g * (P * P⁻¹) := by simp only [Matrix.mul_assoc]
-      _ = g := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+      _ = g := simp [Matrix.mul_nonsing_inv _ hd]
   have hmem : ∀ k : KG ε, rTr V (atTau θ V τ (P⁻¹ * toMK k * P)) φ ∈ W := fun k =>
     hW _ (conj_inv_mem hP hJ (K_le_UJ (toMK_mem_K k))) (by rw [cc]; exact toMK_mem_K k) φ hφ
   let f : KG ε → W := fun k => ⟨_, hmem k⟩

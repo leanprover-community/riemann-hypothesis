@@ -131,7 +131,7 @@ private theorem unitCharacter_of_central {P : CuspSub E 2} (D : Dat ℚ E) {ω :
   have hu : P.IsUnitary := GlobalTheory.SpehPair.isUnitary_of_isNormalised hN
   obtain ⟨φ, hφ, h0⟩ := (Submodule.ne_bot_iff _).1 P.ne_bot
   obtain ⟨g, hg⟩ : ∃ g, φ.1 g ≠ 0 := Function.ne_iff.1 fun e => h0 (Subtype.ext e)
-  have hfr : Module.finrank ℚ E = 2 := by rw [Module.finrank_eq_card_basis D.b]; simp
+  have hfr : Module.finrank ℚ E = 2 := simp [Module.finrank_eq_card_basis D.b]
   intro a
   have h1 := hC φ hφ (ideleEmbedding ℚ E a) g
   have h2 := hu.norm_eq hφ (ideleEmbedding ℚ E a) g

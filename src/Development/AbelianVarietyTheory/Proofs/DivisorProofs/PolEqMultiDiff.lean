@@ -183,7 +183,7 @@ theorem _root_.GlobalTheory.FibreProj.pol_pow {R : Type} [CommRing R]
   have hterm : ∀ (k : ℕ) (x : R), Φ ((-1 : R) ^ k * x) = (-1 : ℝ) ^ k * Φ x := by
     intro k x
     rw [← smul_eq_mul ((-1 : ℝ) ^ k), ← map_smul, Algebra.smul_def, map_pow, map_neg, map_one]
-  have h1 : ((-1 : R) ^ D) * (-1) ^ D = 1 := by rw [← mul_pow]; simp
+  have h1 : ((-1 : R) ^ D) * (-1) ^ D = 1 := simp [← mul_pow]
   have hfinal : Φ ((-1 : R) ^ D * D.factorial * ∏ i, -z i) = D.factorial * Φ (∏ i, z i) := by
     rw [Finset.prod_neg, Finset.card_univ, hD]
     calc Φ ((-1) ^ D * D.factorial * ((-1) ^ D * ∏ i, z i))

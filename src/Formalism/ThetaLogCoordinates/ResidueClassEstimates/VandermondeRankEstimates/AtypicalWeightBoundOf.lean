@@ -678,7 +678,7 @@ theorem pathWeightBound_of :
       (Formalism.InvariantFactorPaths.BranchingDimensions.TTyp.ent_sign h20 hW hP (i := i - 1) (m := D.r - 1) (by omega) (by omega)).1 (by omega)
     have hhpos : (0 : ℝ) < D.Bo i := by
       rcases Nat.eq_zero_or_pos (D.Bo i) with h0 | h0
-      · have hz : ((D.Bo i : ℕ) : ℝ) = 0 := by rw [h0]; simp
+      · have hz : ((D.Bo i : ℕ) : ℝ) = 0 := simp [h0]
         have : (0 : ℝ) ≤ Formalism.InvariantFactorPaths.BranchingDimensions.Letters.ent mu (i - 1) (D.r - 1) := by exact_mod_cast hent0
         linarith
       · exact_mod_cast h0

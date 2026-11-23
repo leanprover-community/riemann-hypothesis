@@ -88,7 +88,7 @@ theorem int_of_mulVec (h : Sm v γ (A - 1)) (hγ : γ < 1) {x : Fin n → k} (hx
   refine (hm i (Finset.mem_univ i)).trans (le_of_not_gt fun hlt => ?_)
   have h1 := h.mulVec (fun l => hm l (Finset.mem_univ l)) m
   have h2 : v (((A - 1) *ᵥ x) m) < v (x m) := h1.trans_lt (mul_lt_of_lt_one_left (zero_lt_one.trans hlt) hγ)
-  have h3 : x m = (A *ᵥ x) m - ((A - 1) *ᵥ x) m := by rw [Matrix.sub_mulVec, Matrix.one_mulVec]; simp
+  have h3 : x m = (A *ᵥ x) m - ((A - 1) *ᵥ x) m := simp [Matrix.sub_mulVec, Matrix.one_mulVec]
   have h4 := Valuation.map_sub_lt v ((hx m).trans_lt hlt) h2
   rw [← h3] at h4
   exact lt_irrefl _ h4

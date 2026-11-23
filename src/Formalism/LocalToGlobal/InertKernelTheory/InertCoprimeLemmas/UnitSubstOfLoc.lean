@@ -286,7 +286,7 @@ theorem unitary_P {n : Type*} [Fintype n] [DecidableEq n] {F : Type*} [Field F] 
     calc A⁻¹ * (A⁻¹.map σ)ᵀ = A⁻¹ * (A * G * (A.map σ)ᵀ) * (A⁻¹.map σ)ᵀ := by rw [hA, Matrix.mul_one]
       _ = (A⁻¹ * A) * G * (A⁻¹.map σ * A.map σ)ᵀ := by
           rw [Matrix.transpose_mul]; simp only [Matrix.mul_assoc]
-      _ = G := by rw [hBA, hBs]; simp
+      _ = G := simp [hBA, hBs]
   calc (A' * Qt * A⁻¹) * ((A' * Qt * A⁻¹).map σ)ᵀ
       = A' * (Qt * (A⁻¹ * (A⁻¹.map σ)ᵀ) * (Qt.map σ)ᵀ) * (A'.map σ)ᵀ := by
         simp only [Matrix.map_mul, Matrix.transpose_mul, Matrix.mul_assoc]

@@ -77,7 +77,7 @@ theorem exists_sqrt (l d : ℕ) [hl : Fact l.Prime] (h2 : l ≠ 2) (hj : jacobiS
 theorem exists_root {l d : ℕ} [Fact l.Prime] {A : Type} [CommRing A] [IsDomain A] (f : ℤ_[l] →+* A)
     {s : ℤ_[l]} (hs : s ^ 2 = -(d : ℤ_[l])) {y : A} (hy : y ^ 2 = -(d : A)) :
     ∃ t : ℤ_[l], (t = s ∨ t = -s) ∧ f t = y := by
-  have : y ^ 2 = (f s) ^ 2 := by rw [← map_pow, hs, hy]; simp
+  have : y ^ 2 = (f s) ^ 2 := simp [← map_pow, hs, hy]
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 this with h | h
   · exact ⟨s, Or.inl rfl, h.symm⟩
   · exact ⟨-s, Or.inr rfl, by rw [map_neg, h]⟩

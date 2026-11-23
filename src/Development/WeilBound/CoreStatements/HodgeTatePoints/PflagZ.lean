@@ -86,7 +86,7 @@ theorem isHomogeneous_hsymm_real (N a : ℕ) : (hsymm (Fin N) ℝ a).IsHomogeneo
   rw [Multiset.toFinsupp_toMultiset] at h
   calc Finsupp.degree (Multiset.toFinsupp (s : Multiset (Fin N)))
       = (Multiset.toFinsupp (s : Multiset (Fin N))).sum fun _ => id := rfl
-    _ = a := by rw [← h]; simp
+    _ = a := simp [← h]
 
 section
 variable (F : Type) [Field F] (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type)

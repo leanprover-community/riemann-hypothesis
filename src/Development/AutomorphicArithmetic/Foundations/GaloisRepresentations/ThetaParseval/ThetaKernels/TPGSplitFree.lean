@@ -152,7 +152,7 @@ theorem split_formula_k (B : Base F E) (M : Model σ X W) (χX χW : Chr F E) (o
   obtain ⟨φ'', hφ'', hA'', e''⟩ := kg g hg g₁ rfl φ' hφ'
   have hcomp : Acts (evFin F v) (om (g, h)) φ φ'' := by
     intro R hR
-    have e : om (g, h) = om (g, 1) * om (1, h) := by rw [← map_mul]; simp
+    have e : om (g, h) = om (g, 1) * om (1, h) := simp [← map_mul]
     have hR' : Rest (evFin F v) φ' R :=
       ⟨hR.1, by rw [← hA' R hR]; exact hp.weil.isUSplitting.pres (1, h) _ hR.2⟩
     rw [e, Module.End.mul_apply, hA' R hR, hA'' R hR']

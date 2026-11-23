@@ -311,7 +311,7 @@ lemma uc_val_factor (ℓ : ℕ) [Fact ℓ.Prime] (u : ℤ_[ℓ]ˣ) (M s : ℕ) (
     rw [h1v, h2v, eU, Finset.sum_add_distrib, Finset.sum_const, smul_eq_mul]; ring
   refine ⟨((μ1⁻¹ : ℤ_[ℓ]ˣ) : ℤ_[ℓ]) * ((μ2⁻¹ : ℤ_[ℓ]ˣ) : ℤ_[ℓ]) * (-1) ^ M, ?_⟩
   rw [heU, hneg, pow_add]
-  have hm1 : ((-1 : ℤ_[ℓ]) ^ M) * (-1) ^ M = 1 := by rw [← mul_pow]; simp
+  have hm1 : ((-1 : ℤ_[ℓ]) ^ M) * (-1) ^ M = 1 := simp [← mul_pow]
   calc (ℓ : ℤ_[ℓ]) ^ P1.valuation * (ℓ : ℤ_[ℓ]) ^ P2.valuation
       = (ℓ : ℤ_[ℓ]) ^ P1.valuation * (ℓ : ℤ_[ℓ]) ^ P2.valuation *
           (((μ1 : ℤ_[ℓ]) * ((μ1⁻¹ : ℤ_[ℓ]ˣ) : ℤ_[ℓ])) * ((μ2 : ℤ_[ℓ]) * ((μ2⁻¹ : ℤ_[ℓ]ˣ) : ℤ_[ℓ])) *

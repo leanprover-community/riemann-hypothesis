@@ -178,7 +178,7 @@ theorem mul_on_cone_eq_delta_char : ∀ (a b : ℕ) (q : ℂ), q ≠ 0 → ∀ �
     (fun y => φ (0, y)) (fun g g' => by rw [← hφ]; simp)
   refine ⟨ξa, ξb, fun x y hx hy => ?_⟩
   have h1 : χ x y = (φ (x, y) : ℂ) := hfφ (x, y) ⟨hx, hy⟩
-  have h2 : φ (x, y) = φ (x, 0) * φ (0, y) := by rw [← hφ]; simp
+  have h2 : φ (x, y) = φ (x, 0) * φ (0, y) := simp [← hφ]
   rw [h1, h2, ha x, hb y]
   simp only [Units.val_mul, Units.val_zpow_eq_zpow_val, Units.val_mk0, Q, Units.coe_prod]
 

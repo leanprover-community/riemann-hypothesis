@@ -147,7 +147,7 @@ theorem core (q : ℕ) (hq : q ≠ 0) (hdiv : ∀ c : ClassGroup B, ∃ d : Clas
   have hJ0 : (J : Ideal B) ≠ ⊥ := by simpa using nonZeroDivisors.coe_ne_zero J
   have hn0 : n ≠ 0 := by
     rintro rfl
-    have : Q * (J : Ideal B) ^ q = ⊥ := by rw [hn']; simp
+    have : Q * (J : Ideal B) ^ q = ⊥ := simp [hn']
     rcases Ideal.mul_eq_bot.1 this with h | h
     · exact hQ0 h
     · exact hJ0 (pow_eq_zero_iff hq |>.1 h)

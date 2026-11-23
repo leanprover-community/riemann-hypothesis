@@ -60,6 +60,6 @@ theorem sum_mul_cosetTrace_eq (L : Type) [Field L] (v : Valuation L ℝ≥0) (G 
         rw [Finset.sum_comm]
         refine Finset.sum_congr rfl fun q _ => Finset.sum_congr rfl fun i _ => ?_
         ring
-    _ = c * x := by rw [Finset.sum_congr rfl fun q _ => key q]; simp
+    _ = c * x := simp [Finset.sum_congr rfl fun q _ => key q]
 
 end GlobalTheory.AlmostEt

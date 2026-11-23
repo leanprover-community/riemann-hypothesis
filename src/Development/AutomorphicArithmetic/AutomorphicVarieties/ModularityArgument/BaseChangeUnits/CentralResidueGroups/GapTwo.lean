@@ -104,12 +104,12 @@ private theorem gap_of_sum {x y : ℂ} (hne : x ≠ y) {i j : ℤ} (hi : x = i +
   rcases lt_or_gt_of_ne h1 with h | h
   · obtain ⟨k, hk⟩ := Int.eq_ofNat_of_zero_le (sub_nonneg.2 h.le)
     refine ⟨x, k, by omega, ?_⟩
-    have : ((j - i : ℤ) : ℂ) = k := by rw [hk]; simp
+    have : ((j - i : ℤ) : ℂ) = k := simp [hk]
     push_cast at this
     rw [show x + k = y by linear_combination hi - hj - this]
   · obtain ⟨k, hk⟩ := Int.eq_ofNat_of_zero_le (sub_nonneg.2 h.le)
     refine ⟨y, k, by omega, ?_⟩
-    have : ((i - j : ℤ) : ℂ) = k := by rw [hk]; simp
+    have : ((i - j : ℤ) : ℂ) = k := simp [hk]
     push_cast at this
     rw [show y + k = x by linear_combination hj - hi - this, Multiset.pair_comm]
 

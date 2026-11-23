@@ -79,7 +79,7 @@ theorem RelA.sum (hLP : TieLP N A) {w : PlE H} {x y x' y' : A.LP w} (h : RelA N 
     RelA N A (A.lpSum x x') (A.lpSum y y') := by
   refine ⟨by rw [A.lpDim_sum, A.lpDim_sum, h.dim, h'.dim], by rw [A.monomial_sum_iff, A.monomial_sum_iff]; exact fun k => ⟨h.mono k.1, h'.mono k.2⟩,
     fun hy σ hσ => ?_⟩
-  have d1 : A.lpDim (A.lpUnr w {1}) = 1 := by rw [(A.lpUnr_spec w {1} (by simp)).2.2]; simp
+  have d1 : A.lpDim (A.lpUnr w {1}) = 1 := simp [(A.lpUnr_spec w {1} (by simp)).2.2]
   have mon : ∀ (a : A.LP w), ∀ τ ∈ Ine (F := H.E) (N.plOm.1 w), (A.inePol a τ).Monic ∧ (A.inePol a τ).natDegree = A.lpDim a :=
     fun a τ hτ => ((hLP w a a _ _ 0 d1 d1).2.2.2.2.2 τ hτ).1
   rw [A.inePol_sum, A.inePol_sum, h.ine (fun τ hτ => ?_) σ hσ, h'.ine (fun τ hτ => ?_) σ hσ]
@@ -94,7 +94,7 @@ theorem RelA.sum (hLP : TieLP N A) {w : PlE H} {x y x' y' : A.LP w} (h : RelA N 
 
 theorem inePol_char_unr (hLP : TieLP N A) {w : PlE H} (a c : A.LP w) (hc : A.lpDim c = 1) (hu : A.unr c) :
     ∀ σ ∈ Ine (F := H.E) (N.plOm.1 w), A.inePol (A.lpChar a c) σ = A.inePol a σ := fun σ hσ => by
-  have e : A.inePol c σ = X - C 1 := by rw [((A.unr_iff_ine c).1 hu).2 σ hσ, hc]; simp
+  have e : A.inePol c σ = X - C 1 := simp [((A.unr_iff_ine c).1 hu).2 σ hσ, hc]
   rw [((hLP w a a c c 0 hc hc).2.2.2.2.2 σ hσ).2 1 e, scaleRoots_one]
 
 theorem RelA.char (hLP : TieLP N A) {w : PlE H} {x y : A.LP w} (h : RelA N A x y) (c : A.LP w) (hc : A.lpDim c = 1)

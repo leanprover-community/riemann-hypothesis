@@ -134,7 +134,7 @@ theorem Fr.eich_mul_of (h : Fr s J X Y) {Z : Matrix (Fin n) (Fin k) R} (c : Matr
   simp
 
 theorem Fr.eich_X (h : Fr s J X Y) {Z : Matrix (Fin n) (Fin k) R} (hZ : cT s X * J * Z = 0) (c : Matrix (Fin k) (Fin k) R) :
-    eich s J X Z c * X = X := by rw [h.eich_mul_of c h.xx, h.zero hZ]; simp
+    eich s J X Z c * X = X := simp [h.eich_mul_of c h.xx, h.zero hZ]
 
 theorem Fr.eich_Y (h : Fr s J X Y) {Z : Matrix (Fin n) (Fin k) R} (hZ : cT s Y * J * Z = 0) (c : Matrix (Fin k) (Fin k) R) :
     eich s J X Z c * Y = Y + Z + X * c := by

@@ -231,7 +231,7 @@ theorem main : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [I
   have H : ∀ v ∈ Λ, v ∈ perp L S.Hm S.X' → S.InTh Λ (n₀ (n₀' v) - v) := fun v hv hp => by
     rw [e₀, e₀']
     exact cong S hSD hb hu hs1 hc hx'u hv (hp _ hx'X)
-  have hfx : n₀ x = x := by rw [e₀, eich_def, hxu, hxx]; simp
+  have hfx : n₀ x = x := simp [e₀, eich_def, hxu, hxx]
   have hb₁ : S.InTh (n₀⁻¹ • Λ) (x + x') := by
     apply inTh_tr S hm
     obtain ⟨c, hc, ec⟩ := hc

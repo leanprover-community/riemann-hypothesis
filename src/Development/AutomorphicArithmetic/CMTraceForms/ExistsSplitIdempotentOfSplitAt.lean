@@ -47,7 +47,7 @@ namespace UpperTheory.Depth.SplitIdem
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 private theorem cmHost_bar_halfIntegerGenerator (H : Host E) : H.bar H.w0 = 1 - H.w0 := by
-  have hsq : H.bar H.rt ^ 2 = H.rt ^ 2 := by rw [← map_pow, H.rt_sq]; simp
+  have hsq : H.bar H.rt ^ 2 = H.rt ^ 2 := simp [← map_pow, H.rt_sq]
   have hrt : H.bar H.rt = -H.rt := by
     rcases sq_eq_sq_iff_eq_or_eq_neg.1 hsq with h | h
     · exfalso

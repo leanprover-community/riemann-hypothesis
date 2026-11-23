@@ -271,7 +271,7 @@ theorem ident (Y : FBChart C V O dd) :
   have zc2 : constantCoeff c2 = 0 := eval_height_constantCoeff Y (z0p3 0) (z0p3 2)
   have zs : ∀ (c : C) (f : PS C 3 dd), constantCoeff f = 0 → constantCoeff (c • f) = 0 := fun c f hf => by
     rw [show c • f = MvPowerSeries.C c * f from (MvPowerSeries.smul_eq_C_mul f c), map_mul, hf, mul_zero]
-  have zE : constantCoeff (c1 + c2 - c0) = 0 := by rw [map_sub, map_add (f := _), zc1, zc2, zc0]; simp
+  have zE : constantCoeff (c1 + c2 - c0) = 0 := simp [map_sub, map_add (f := _), zc1, zc2, zc0]
   rw [UU_eq _ _ (triple_sum_constantCoeff _), UU_eq _ _ (z0p3 1), UU_eq _ _ (z0p3 2), QQ_eq, hph2, ← hc0, ← hc1, ← hc2, ← ha,
     ← hb1, ← hb2, ← ex_nsmul _ zE V.l,
     ← ex_add _ _ (by rw [map_sub, za, zs _ _ zc0, sub_zero]) (by rw [map_sub, map_add (f := _), zb1, zb2, za]; simp),

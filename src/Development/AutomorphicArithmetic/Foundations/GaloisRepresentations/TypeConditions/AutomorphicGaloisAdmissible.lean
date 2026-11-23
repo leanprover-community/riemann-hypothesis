@@ -92,7 +92,7 @@ theorem nc_char (hLP : TieLP N A) {w : PlE H} (y k : A.LP w) (hk : A.lpDim k = 1
   rw [Nc, Nc, tm_char hLP y k hk hu, A.monomial_char_iff _ _ hk, sqf_char hLP y k hk hu]
 
 theorem tm_sum (hLP : TieLP N A) {w : PlE H} (y y' : A.LP w) : Tm N A (A.lpSum y y') ↔ Tm N A y ∧ Tm N A y' := by
-  have d1 : A.lpDim (A.lpUnr w {1}) = 1 := by rw [(A.lpUnr_spec w {1} (by simp)).2.2]; simp
+  have d1 : A.lpDim (A.lpUnr w {1}) = 1 := simp [(A.lpUnr_spec w {1} (by simp)).2.2]
   have mon : ∀ (a : A.LP w), ∀ τ ∈ Ine (F := H.E) (N.plOm.1 w), (A.inePol a τ).Monic ∧ (A.inePol a τ).natDegree = A.lpDim a :=
     fun a τ hτ => ((hLP w a a _ _ 0 d1 d1).2.2.2.2.2 τ hτ).1
   refine ⟨fun h => ⟨fun τ hτ hw => ?_, fun τ hτ hw => ?_⟩, fun h τ hτ hw => ?_⟩
@@ -106,7 +106,7 @@ theorem tm_sum (hLP : TieLP N A) {w : PlE H} (y y' : A.LP w) : Tm N A (A.lpSum y
 
 theorem inePol_monic (hLP : TieLP N A) {w : PlE H} (a : A.LP w) (τ) (hτ : τ ∈ Ine (F := H.E) (N.plOm.1 w)) :
     (A.inePol a τ).Monic ∧ (A.inePol a τ).natDegree = A.lpDim a := by
-  have d1 : A.lpDim (A.lpUnr w {1}) = 1 := by rw [(A.lpUnr_spec w {1} (by simp)).2.2]; simp
+  have d1 : A.lpDim (A.lpUnr w {1}) = 1 := simp [(A.lpUnr_spec w {1} (by simp)).2.2]
   exact ((hLP w a a _ _ 0 d1 d1).2.2.2.2.2 τ hτ).1
 
 theorem sqf_sum (hLP : TieLP N A) {w : PlE H} (y y' : A.LP w) (h : Sqf N A (A.lpSum y y')) : Sqf N A y ∧ Sqf N A y' := by

@@ -126,7 +126,7 @@ theorem exists_cov {p q n : ℕ} (T : GrpData p q) {fr G : Mn n} {ε : Fin n →
       _ = (fr⁻¹)ᴴ * (frᴴ * Formalism.REAL.Jm ε * fr) * fr⁻¹ := by rw [hG, hg']
       _ = (fr * fr⁻¹)ᴴ * Formalism.REAL.Jm ε * (fr * fr⁻¹) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [e1]; simp
+      _ = _ := simp [e1]
   have hJ0 : Matrix.reindex e.symm e.symm (Formalism.REAL.Jm ε) = Formalism.UG.Jpq p q := by
     rw [← reindex_form hs]; simp
   set Y : Mat p q := Matrix.reindex e.symm e.symm h with hY

@@ -116,7 +116,7 @@ private theorem con_block {K Γ : Type} [Field K] [Group Γ] (r : Γ →* M4 K)
     exact IsUnit.of_mul_eq_one_right _ this
   have key : ∀ y, (aeval (B g0) (A g0).charpoly * B y).trace =
       (r (g0 * g0 * y)).trace - (A g0).trace * (r (g0 * y)).trace + (A g0).det * (r y).trace := fun y => by
-    have h1 : (aeval (A g0) (A g0).charpoly * A y).trace = 0 := by rw [Matrix.aeval_self_charpoly]; simp
+    have h1 : (aeval (A g0) (A g0).charpoly * A y).trace = 0 := simp [Matrix.aeval_self_charpoly]
     rw [ev] at h1 ⊢
     simp only [tr, mA, mB, add_mul, sub_mul, smul_mul_assoc, one_mul, Matrix.trace_add, Matrix.trace_sub,
       Matrix.trace_smul, smul_eq_mul] at h1 ⊢

@@ -71,7 +71,7 @@ theorem realConj : RealConj := by
           (((aTau θ a τ)⁻¹).1 * compAt θ τ a.1)ᴴ := by
             rw [Matrix.conjTranspose_mul]
             simp only [Matrix.mul_assoc]
-      _ = compAt θ τ b.1 := by rw [hA]; simp
+      _ = compAt θ τ b.1 := simp [hA]
   rw [matInf_map, matInf_map, hc, hB]
   simp
 

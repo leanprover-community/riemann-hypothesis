@@ -87,7 +87,7 @@ theorem amp_uniq : ∀ (k r : ℕ) (Wp : Type) [NormedAddCommGroup Wp] [InnerPro
     congr 1
     calc (starRingEnd ℂ) (ψ' ρ) * inner ℂ (Φ' x) w * ψ' ρ
         = ((starRingEnd ℂ) (ψ' ρ) * ψ' ρ) * inner ℂ (Φ' x) w := by ring
-      _ = inner ℂ (Φ' x) w := by rw [Complex.conj_mul', hn]; simp
+      _ = inner ℂ (Φ' x) w := simp [Complex.conj_mul', hn]
   have key := (GlobalTheory.T.integral_eq_of_quotientMeasures_besselUnitary k r (Rset k r γ) μG μR ν (ENNReal.ofReal t • ν') hRc hG hR (hRu μR hR) hν hν₂
     (Wq →L[ℂ] Wp) F hFc hFi).2
   rw [integral_smul_measure, ENNReal.toReal_ofReal ht.le] at key

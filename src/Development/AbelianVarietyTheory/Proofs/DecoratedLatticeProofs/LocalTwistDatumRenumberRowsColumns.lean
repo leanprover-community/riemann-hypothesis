@@ -227,7 +227,7 @@ theorem eq_inl (j : Fin a) (hj : j.val < r) : ε (.inl ⟨j, hj⟩) = j := Fin.e
 
 theorem exists_inr (j : Fin a) (hj : r ≤ j.val) : ∃ j', ε (.inr j') = j := by
   rcases h : ε.symm j with i | j'
-  · have e : ε (.inl i) = j := by rw [← h]; simp
+  · have e : ε (.inl i) = j := simp [← h]
     have := hε i
     rw [e] at this
     omega

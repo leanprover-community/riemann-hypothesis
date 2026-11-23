@@ -78,8 +78,8 @@ theorem cartan_of_frame {n r s : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (hn : r +
     ∃ θ, IsCartan M θ ∧ θ * A = A * (Matrix.fromBlocks 1 0 0 (-1) : Matrix (Fin r ⊕ Fin s) (Fin r ⊕ Fin s) ℂ) := by
   obtain ⟨B, hBA, hAB⟩ := frame_inv hn hA
   set J : Matrix (Fin r ⊕ Fin s) (Fin r ⊕ Fin s) ℂ := Matrix.fromBlocks 1 0 0 (-1) with hJ
-  have hJJ : J * J = 1 := by rw [hJ, Matrix.fromBlocks_multiply]; simp
-  have hJt : Jᵀ = J := by rw [hJ, Matrix.fromBlocks_transpose]; simp
+  have hJJ : J * J = 1 := simp [hJ, Matrix.fromBlocks_multiply]
+  have hJt : Jᵀ = J := simp [hJ, Matrix.fromBlocks_transpose]
   have hJs : J.map star = J := by
     ext (a | a) (b | b) <;> simp [hJ, Matrix.one_apply, apply_ite]
   have hθA : A * J * B * A = A * J := by rw [Matrix.mul_assoc, hBA, Matrix.mul_one]

@@ -146,7 +146,7 @@ theorem uInt_self_zero {Φ : (Fin (m + 1) → Cinf E) → ℂ} (hΦ : ∀ u, 0 �
   have hc' : c = (c.re : ℂ) ∧ 0 ≤ c.re := by
     simp only [c, indN]; split_ifs <;> simp
   have hΦy : Φ y = ((Φ y).re : ℂ) := Complex.ext rfl (by simp [(hΦ y).2])
-  have hd : detPow E (m + 1) 0 g = 1 := by rw [detPow_eq]; simp
+  have hd : detPow E (m + 1) 0 g = 1 := simp [detPow_eq]
   have e : GlobalTheory.ZEul.uInt φ φ Φ N 0 g = ((Complex.normSq w * (Φ y).re * c.re : ℝ) : ℂ) := by
     change w * conj w * Φ y * c * (detPow E (m + 1) 0 g : ℂ) = _
     conv_lhs => rw [hd, Complex.mul_conj, hΦy, hc'.1]

@@ -112,7 +112,7 @@ private theorem moved_at_ram {Y Ω : Type} [Field Y] [NumberField Y] [Field Ω] 
   have hv2 : A.valuation ((2 * (-(p₂ : ℤ)) : ℤ) : Ω) = 1 := by
     obtain ⟨s, t, hst⟩ := hcop
     refine le_antisymm ((A.valuation_le_one_iff _).2 (intCast_mem A _)) (not_lt.1 fun hlt1 => ?_)
-    have h3 : ((s * (p₁ : ℤ) + t * (2 * (-(p₂ : ℤ))) : ℤ) : Ω) = 1 := by rw [hst]; simp
+    have h3 : ((s * (p₁ : ℤ) + t * (2 * (-(p₂ : ℤ))) : ℤ) : Ω) = 1 := simp [hst]
     have hs1 : A.valuation ((s : ℤ) : Ω) ≤ 1 := (A.valuation_le_one_iff _).2 (intCast_mem A _)
     have ht1 : A.valuation ((t : ℤ) : Ω) ≤ 1 := (A.valuation_le_one_iff _).2 (intCast_mem A _)
     have h4 : A.valuation (((s * (p₁ : ℤ) + t * (2 * (-(p₂ : ℤ))) : ℤ)) : Ω) < 1 := by

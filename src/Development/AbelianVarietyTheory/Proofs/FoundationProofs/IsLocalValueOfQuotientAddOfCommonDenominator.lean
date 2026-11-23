@@ -152,7 +152,7 @@ theorem exists_ev {p : ℕ} [hp : Fact p.Prime] {K : Type} [Field K] [Algebra �
     | mul x y _ _ hx hy => rw [map_mul]; exact mul_mem hx hy
   let w : Valuation L ℝ≥0 := v.comap (algebraMap L Ω)
   have hw : ∀ x : L, w x = v (x : Ω) := fun x => rfl
-  have hwp : w (p : L) = v (p : Ω) := by rw [hw]; simp
+  have hwp : w (p : L) = v (p : Ω) := simp [hw]
   obtain ⟨E, F, π, κ, hE, hπ, hκ, -, hsp⟩ := OkBasis.exists_basis (p := p) w
     (fun z => by rw [hw, hf, hzp]; exact hle z) (hwp ▸ h0) (hwp ▸ h1)
   have hπ1 : w π ≤ 1 := by

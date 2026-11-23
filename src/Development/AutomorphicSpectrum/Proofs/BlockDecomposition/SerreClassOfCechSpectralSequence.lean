@@ -425,7 +425,7 @@ theorem lower_vert (x : ∀ p q, K.X p q) (hT : x ∈ K.T n) {a q : ℕ} (haq : 
     · show W₁ p r + (-1 : ℤ) ^ a • K.sgl a q u p r = 0
       rw [hs p r h, K.sgl_ne u (by omega)]
       simp
-    · have hsq : ((-1 : ℤ) ^ a * (-1) ^ a) = 1 := by rw [← mul_pow]; simp
+    · have hsq : ((-1 : ℤ) ^ a * (-1) ^ a) = 1 := simp [← mul_pow]
       rw [map_add (f := _), map_zsmul, K.D_sgl, hW₁, hu', smul_add, smul_smul, hsq, one_smul, map_sub]
       simp only [Pi.add_apply, Pi.sub_apply, Pi.smul_apply]
       rw [K.sgl_ne (K.dh a q u) (Or.inl (by omega) : p ≠ a + 1 ∨ r ≠ q)]

@@ -91,10 +91,10 @@ theorem cayley {J : Matrix β β E} (g : UG c J) (gd : UG c (dbl J))
             simp only [mh, ma, ms, m1, transpose_smul, transpose_add, transpose_sub, transpose_one, smul_mul, Matrix.mul_smul,
               Matrix.add_mul, Matrix.sub_mul, Matrix.mul_add, Matrix.mul_sub, hg, Matrix.one_mul, Matrix.mul_one]
             module
-    calc _ = ((t : Matrix β β E) * k)ᵀ * (Tᵀ * J + J * T.map c) * ((t : Matrix β β E) * k).map c := by rw [tk, m1]; simp
+    calc _ = ((t : Matrix β β E) * k)ᵀ * (Tᵀ * J + J * T.map c) * ((t : Matrix β β E) * k).map c := simp [tk, m1]
       _ = kᵀ * ((t : Matrix β β E)ᵀ * (Tᵀ * J + J * T.map c) * (t : Matrix β β E).map c) * k.map c := by
           simp only [transpose_mul, mm, Matrix.mul_assoc]
-      _ = 0 := by rw [e]; simp
+      _ = 0 := simp [e]
   have sk' : Tᵀ * J = -(J * T.map c) := eq_neg_of_add_eq_zero_left sk
   let n : UG c (dbl J) := ⟨⟨fromBlocks (1 + T) (-T) T (1 - T), fromBlocks (1 - T) T (-T) (1 + T),
     by rw [fromBlocks_multiply, ← fromBlocks_one]; congr 1 <;> noncomm_ring,

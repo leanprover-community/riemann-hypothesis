@@ -247,7 +247,7 @@ def NUg : Subgroup (V ≃ₗ[E] V) where
       have hg3 := hg.2.2 v hv
       rw [← Fj_r] at hk3 hg3 ⊢
       have h1 : g (k v - v) ∈ Fr.Fj r := (NU_flag Fr hg r le_rfl _).2 hk3
-      have : (g * k) v - v = g (k v - v) + (g v - v) := by rw [map_sub]; simp
+      have : (g * k) v - v = g (k v - v) + (g v - v) := simp [map_sub]
       rw [this]; exact add_mem h1 hg3
   inv_mem' := by
     intro g hg
@@ -264,7 +264,7 @@ def NUg : Subgroup (V ≃ₗ[E] V) where
     · have hg3 := hg.2.2 v hv
       rw [← Fj_r] at hg3 ⊢
       refine (NU_flag Fr hg r le_rfl _).1 ?_
-      have : g (g⁻¹ v - v) = -(g v - v) := by rw [map_sub]; simp
+      have : g (g⁻¹ v - v) = -(g v - v) := simp [map_sub]
       rw [this]; exact neg_mem hg3
 
 lemma NSet_eq : Fr.NSet = (NUg Fr : Set (V ≃ₗ[E] V)) := by

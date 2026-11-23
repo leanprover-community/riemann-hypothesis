@@ -51,7 +51,7 @@ theorem cotMap_list_prod {S : Scheme.{0}} {T G : Over S} [GrpObj G] [QuasiSepara
   | m + 1, z, hz, h => by
     have e : (List.ofFn z).prod = z 0 * (List.ofFn fun i : Fin m => z i.succ).prod := by
       rw [List.ofFn_succ, List.prod_cons]
-    have h₁ : (η : 𝟙_ (Over S) ⟶ G) = 1 := by rw [Hom.one_def]; simp
+    have h₁ : (η : 𝟙_ (Over S) ⟶ G) = 1 := simp [Hom.one_def]
     have h' : s ≫ (List.ofFn fun i : Fin m => z i.succ).prod = η := by
       have := h
       rw [e, MonObj.comp_mul, hz 0, h₁, _root_.one_mul] at this

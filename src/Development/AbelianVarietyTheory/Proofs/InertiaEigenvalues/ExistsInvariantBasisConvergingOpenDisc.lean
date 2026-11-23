@@ -209,7 +209,7 @@ theorem map_QQ (s : ℕ) : PowerSeries.map (algebraMap O L) (QQ l O s) = QQ l L 
   simp [QQ, XX, map_sum]
 
 theorem const_act (c : ℤ_[l]) (a : PowerSeries O) : constantCoeff (act l O c a) = constantCoeff a := by
-  obtain ⟨b, hb⟩ : X ∣ a - C (constantCoeff a) := by rw [X_dvd_iff]; simp
+  obtain ⟨b, hb⟩ : X ∣ a - C (constantCoeff a) := simp [X_dvd_iff]
   rw [sub_eq_iff_eq_add] at hb
   conv_lhs => rw [hb]
   rw [map_add (f := _), map_mul, act_C, act_X]

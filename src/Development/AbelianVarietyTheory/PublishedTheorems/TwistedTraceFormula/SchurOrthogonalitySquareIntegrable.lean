@@ -191,7 +191,7 @@ theorem memLp_coef_right [CompleteSpace H] [MeasurableMul G] [μ.IsMulRightInvar
   have hc0 : c ≠ 0 := by
     rintro rfl
     set p := Γ.starProjection (ι v₀) with hp
-    have hp1 : p.fst = 0 := by rw [← hA, hc]; simp
+    have hp1 : p.fst = 0 := simp [← hA, hc]
     have hm : WithLp.toLp 2 (v₀, h.toLp _) ∈ Γ := h.coeFn_toLp
     have hpm : WithLp.toLp 2 (p.fst, p.snd) ∈ Γ := Γ.starProjection_apply_mem _
     rw [hp1] at hpm

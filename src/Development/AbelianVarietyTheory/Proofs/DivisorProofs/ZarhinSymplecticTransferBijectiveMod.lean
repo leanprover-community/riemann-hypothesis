@@ -98,7 +98,7 @@ theorem kappaOK_mod (h M d : ℕ) (κ : Fin 8 → (Fin (8 * h) ⊕ Fin (8 * h) �
     obtain ⟨b, hb⟩ := (kappaOK_dvd_iff hκ a).1 hk
     funext i
     have e := congrFun hb i
-    have h2 : ((a i : ℤ) : ZMod M) = 0 := by rw [e]; simp
+    have h2 : ((a i : ℤ) : ZMod M) = 0 := simp [e]
     simp [a] at h2
     exact sub_eq_zero.mp h2
   have hcard : Fintype.card (Fin (8 * h) ⊕ Fin (8 * h) → ZMod M) =

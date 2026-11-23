@@ -72,7 +72,7 @@ theorem charpolyRev_neg_coeff_dim {R : Type*} [CommRing R] [Nontrivial R] {m : �
     Polynomial.revAt_le le_rfl, Nat.sub_self]
   have h := Matrix.det_eq_sign_charpoly_coeff (-P)
   rw [Matrix.det_neg, Fintype.card_fin] at h
-  have h2 : ((-1 : R) ^ m) * ((-1) ^ m) = 1 := by rw [← mul_pow]; simp
+  have h2 : ((-1 : R) ^ m) * ((-1) ^ m) = 1 := simp [← mul_pow]
   calc (-P).charpoly.coeff 0 = ((-1) ^ m * (-1) ^ m) * (-P).charpoly.coeff 0 := by rw [h2, one_mul]
     _ = P.det := by rw [mul_assoc, ← h, ← mul_assoc, h2, one_mul]
 

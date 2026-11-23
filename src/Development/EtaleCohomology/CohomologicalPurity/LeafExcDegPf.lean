@@ -70,7 +70,7 @@ theorem cokPO_transfer {A' B' Q' A B Q : C} (f' : A' ⟶ B') (l' r' : B' ⟶ Q')
     simp [Category.assoc, wl]
     simpa only [Category.assoc] using congrArg (fun k => k ≫ cokernel.π r) wl
   have : cokernel.map r' r b m wr.symm = inv (cokernel.map f' r' f' l' h'.w.symm) ≫
-      (cokernel.map f' f a b w.symm ≫ cokernel.map f r f l h.w.symm) := by rw [← e]; simp
+      (cokernel.map f' f a b w.symm ≫ cokernel.map f r f l h.w.symm) := simp [← e]
   rw [this]; infer_instance
 
 theorem cokIso_comp {A B A' B' : C} (f : A ⟶ B) (f' : A' ⟶ B') (a : A ⟶ A') (b : B ⟶ B') (w : f ≫ b = a ≫ f')

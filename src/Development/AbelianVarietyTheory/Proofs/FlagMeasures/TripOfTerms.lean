@@ -62,7 +62,7 @@ theorem perp_lift [FiniteDimensional K V] {F G : FlagD H r} {Λ : Submodule (�
     obtain ⟨n, hn, hxn⟩ := (mem_smulLat g Λ _).1 h2
     rw [zero_smul, sub_zero] at h1
     have a1 := hp x' h1
-    have a5 : H.B (x' - x) l = g * H.B n l := by rw [hxn]; simp
+    have a5 : H.B (x' - x) l = g * H.B n l := simp [hxn]
     obtain ⟨c, hc⟩ := integral_of_unimod hU hn hl
     have : (g : K)⁻¹ * H.B x l = ((-c : 𝓞 K) : K) := by
       rw [inv_mul_eq_iff_eq_mul₀ hg0]

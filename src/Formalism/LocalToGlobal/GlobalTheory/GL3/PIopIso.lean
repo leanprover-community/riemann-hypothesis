@@ -272,8 +272,8 @@ theorem semiChar_of_HfInt (T : Tor D) {La' : AddSubgroup (VC D N N')} (hI : HfIn
   obtain ⟨my, hyre, hyr⟩ := self_int T hI hy
   obtain ⟨ms, hsre, hsr⟩ := self_int T hI (La'.add_mem hx hy)
   obtain ⟨a, b, hab, h⟩ := hI x hx y hy
-  have hre : (Hf D T x y).re = a / Real.sqrt D.host.d := by rw [h]; simp
-  have him : (Hf D T x y).im = b := by rw [h]; simp
+  have hre : (Hf D T x y).re = a / Real.sqrt D.host.d := simp [h]
+  have him : (Hf D T x y).im = b := simp [h]
   have hexp : (Hf D T (x + y) (x + y)).re =
       (Hf D T x x).re + (Hf D T y y).re + 2 * (Hf D T x y).re := by
     rw [Hf_add_left, Hf_add_right, Hf_add_right, Complex.add_re, Complex.add_re, Complex.add_re,

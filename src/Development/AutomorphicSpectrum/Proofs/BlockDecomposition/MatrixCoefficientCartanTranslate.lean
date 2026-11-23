@@ -76,7 +76,7 @@ theorem coef_const_translated_double_coset :
     have hw := LinearMap.congr_fun h (π p1 w)
     simp only [LinearMap.comp_apply] at hw ⊢
     calc l (π p1 (π x w)) = l (π (p1 * x) w) := by rw [map_mul, Module.End.mul_apply]
-      _ = l (π (p1 * x * p1⁻¹) (π p1 w)) := by rw [e, map_mul, Module.End.mul_apply]; simp
+      _ = l (π (p1 * x * p1⁻¹) (π p1 w)) := simp [e, map_mul, Module.End.mul_apply]
       _ = l (π p1 w) := hw
   refine ⟨(mem_fixed_iff π _ _).2 h1, h2, ?_⟩
   intro D x hx y hy

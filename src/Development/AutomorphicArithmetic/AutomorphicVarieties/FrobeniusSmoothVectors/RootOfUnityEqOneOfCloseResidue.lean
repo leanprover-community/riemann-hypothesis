@@ -165,7 +165,7 @@ theorem UpperTheory.V.Fr.l15 :
   have he : etaO O η t = 1 := by simp [hη]
   let κ : G ℚ Ω →* (ResidueField O)ˣ := omO Ω l O ^ i * barChar O Ψ ^ j
   have hκ : ∀ s, κ s = omO Ω l O s ^ i * barChar O Ψ s ^ j := fun s => by simp [κ]
-  have hκt : κ t = 1 := by rw [hκ, hω, hΨ]; simp
+  have hκt : κ t = 1 := simp [hκ, hω, hΨ]
   refine ⟨fun h s => ?_, fun h s => ?_, fun h s hs => ?_⟩
   · rw [← hκ]
     exact core l κ _ H₀ ⊤ hU h0.idx t htH trivial hκt (fun s hs => by rw [hκ]; exact h s hs.1) s trivial

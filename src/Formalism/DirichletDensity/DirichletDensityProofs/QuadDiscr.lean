@@ -136,7 +136,7 @@ theorem Formalism.HF.quadDiscr : Formalism.HF.QuadDiscr := by
   intro K _ _ a x hx hadj hsf h4
   by_cases h1 : a = 1
   · subst h1
-    have hx1 : x * x = 1 := by rw [← sq, hx]; simp
+    have hx1 : x * x = 1 := simp [← sq, hx]
     have hbot : x ∈ (⊥ : IntermediateField ℚ K) := by
       rcases mul_self_eq_one_iff.1 hx1 with h | h
       · rw [h]; exact IntermediateField.one_mem _

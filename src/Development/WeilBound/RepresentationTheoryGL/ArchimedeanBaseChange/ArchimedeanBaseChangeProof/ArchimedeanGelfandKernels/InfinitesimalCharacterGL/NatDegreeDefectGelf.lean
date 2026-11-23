@@ -135,7 +135,7 @@ theorem coeff_defect_gelf (m : ℕ) (χ : Fin (m + 1) → ℂ) (N : ℕ) :
   have hPc : P.coeff (m + 1) = 1 := by
     have := (monic_capQ m χ).coeff_natDegree
     rwa [natDegree_capQ] at this
-  have hsq : ((-1 : ℂ) ^ N) * ((-1 : ℂ) ^ N) = 1 := by rw [← pow_add, ← two_mul, pow_mul]; simp
+  have hsq : ((-1 : ℂ) ^ N) * ((-1 : ℂ) ^ N) = 1 := simp [← pow_add, ← two_mul, pow_mul]
   rw [hdef, coeff_sub, coeff_mul_C, hPc, one_mul]
   linear_combination ((-1 : ℂ) ^ N) * hG - (G.coeff (m + 1)) * hsq
 

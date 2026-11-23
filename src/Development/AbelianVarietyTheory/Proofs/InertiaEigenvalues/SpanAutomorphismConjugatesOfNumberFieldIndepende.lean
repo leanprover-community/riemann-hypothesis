@@ -155,7 +155,7 @@ theorem span_conj_eq_top : ∀ (K : Type) [Field K] [NumberField K] (σ : K →+
     have hc0 := he c (by
       have h5 := (hRmem z').1 hz'R (RingEquiv.refl ℂ) (fun x => rfl)
       simpa [hc] using h5)
-    have h6 : z' i0 = 0 := by rw [← hc i0, hc0]; simp
+    have h6 : z' i0 = 0 := simp [← hc i0, hc0]
     rw [hz'i0] at h6
     exact one_ne_zero h6
   by_contra hS

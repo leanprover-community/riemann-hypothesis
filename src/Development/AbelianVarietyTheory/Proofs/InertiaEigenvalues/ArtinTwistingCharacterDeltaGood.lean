@@ -81,7 +81,7 @@ theorem twistOf_delta_good : ∀ (D : D7) (a : Recip D D.nd.Om), a.Good → ∀ 
     obtain ⟨u, w, huw⟩ := Nat.isCoprime_iff_coprime.2 hcop
     apply P.isPrime.ne_top
     rw [Ideal.eq_top_iff_one]
-    have : ((u * (15 : ℕ) + w * (p : ℕ) : ℤ) : 𝓞 D.host.E) = 1 := by rw [huw]; simp
+    have : ((u * (15 : ℕ) + w * (p : ℕ) : ℤ) : 𝓞 D.host.E) = 1 := simp [huw]
     rw [← this]
     push_cast
     exact Ideal.add_mem _ (Ideal.mul_mem_left _ _ (by exact_mod_cast h)) (Ideal.mul_mem_left _ _ (by exact_mod_cast hpP))

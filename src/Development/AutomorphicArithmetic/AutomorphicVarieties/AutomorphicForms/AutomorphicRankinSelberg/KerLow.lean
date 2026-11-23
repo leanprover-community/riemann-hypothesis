@@ -75,8 +75,8 @@ theorem kerLow : KerLow := by
       _ = n * (r + 1) := by ring
   have hwne : w ≠ 0 := by
     intro h0
-    have him : (w).im = 0 := by rw [h0]; simp
-    have hre : (w).re = 0 := by rw [h0]; simp
+    have him : (w).im = 0 := simp [h0]
+    have hre : (w).re = 0 := simp [h0]
     simp [hw] at him hre
     rcases him with h | h
     · have h1 : x 1 = 0 := by simpa [h] using hre

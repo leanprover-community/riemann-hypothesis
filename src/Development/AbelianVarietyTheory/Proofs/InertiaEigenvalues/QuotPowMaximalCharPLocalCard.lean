@@ -120,7 +120,7 @@ theorem quot_pow_maximal_charP_local_card : ∀ (L : Type) [Field L] [NumberFiel
     have hm'la : ((m' : ℕ) : 𝓞 L) ∉ la := by
       intro h
       obtain ⟨u, w, huw⟩ := Nat.isCoprime_iff_coprime.mpr hcop
-      have h1 : ((u * l + w * m' : ℤ) : 𝓞 L) = 1 := by rw [huw]; simp
+      have h1 : ((u * l + w * m' : ℤ) : 𝓞 L) = 1 := simp [huw]
       push_cast at h1
       have : (1 : 𝓞 L) ∈ la := h1 ▸ la.add_mem (la.mul_mem_left _ hlla) (la.mul_mem_left _ h)
       exact hlatop ((Ideal.eq_top_iff_one _).mpr this)

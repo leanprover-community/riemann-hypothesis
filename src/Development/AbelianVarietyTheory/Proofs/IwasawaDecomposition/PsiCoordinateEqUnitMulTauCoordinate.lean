@@ -142,7 +142,7 @@ theorem gm_rigK (D : DegPre R) (ξ : Spec (CommRingCat.of (FractionRing R))) (j 
     (pullU (toUnit (TK R)).left _ (D.rig.s j))
   have e2 := gm_pull (𝟙 _) (toUnit (TK R)).left ξ (LB.wchart D.P.L (fun _ : PUnit => eSec D.P.A) j)
     (Set.mem_iInter.2 fun k => Set.mem_iInter.1 hm k) (D.rig.s j)
-  have e3 : 𝟙 _ ≫ (toUnit (TK R)).left = jK R ≫ 𝟙 _ := by rw [toUnit_left]; simp
+  have e3 : 𝟙 _ ≫ (toUnit (TK R)).left = jK R ≫ 𝟙 _ := simp [toUnit_left]
   rw [e3] at e2
   obtain ⟨w, hw⟩ := unit_gm' ξ (𝟙 _) (LB.wchart D.P.L (fun _ : PUnit => eSec D.P.A) j)
     (Set.mem_iInter.2 fun _ => hj trivial) (D.rig.s j)
@@ -204,7 +204,7 @@ theorem main : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (D : Deg
   obtain ⟨c5, h5⟩ : ∃ w : Rˣ, val D.rigK (𝟙 _) ξ J = cU w := by
     unfold DegPre.rigK
     rw [val_pull hJ]
-    have : 𝟙 _ ≫ (toUnit (TK R)).left = jK R ≫ 𝟙 _ := by rw [toUnit_left]; simp
+    have : 𝟙 _ ≫ (toUnit (TK R)).left = jK R ≫ 𝟙 _ := simp [toUnit_left]
     rw [this]
     exact val_int ξ hJc D.rig (𝟙 _) fun _ => by rw [Category.id_comp]; exact Over.w η[D.P.A]
 

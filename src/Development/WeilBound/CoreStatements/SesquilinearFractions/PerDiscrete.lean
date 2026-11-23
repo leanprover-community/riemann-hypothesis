@@ -224,7 +224,7 @@ theorem per_discrete (hn0 : 0 < n) (hc : ∀ y, c y = 0 → y = 0) : DiscreteTop
     obtain ⟨k, hk1, hk2⟩ := hk
     have hn : (0 : ℝ) < n := by exact_mod_cast hn0
     calc 1 / (n : ℝ) ≤ ‖ty k (c y m : E)‖ / n := by gcongr
-      _ = ‖per hty c n y k‖ := by rw [per_apply, hk1, norm_div]; simp
+      _ = ‖per hty c n y k‖ := simp [per_apply, hk1, norm_div]
       _ ≤ ‖per hty c n y‖ := norm_le_pi_norm _ k
   rw [discreteTopology_iff_isOpen_singleton_zero, Metric.isOpen_singleton_iff]
   have hn : (0 : ℝ) < n := by exact_mod_cast hn0

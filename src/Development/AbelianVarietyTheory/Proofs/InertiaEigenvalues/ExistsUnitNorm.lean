@@ -219,7 +219,7 @@ theorem main_ind (c : E ≃+* E) (hcc : ∀ x, c (c x) = x)
       fun x hx y hy => (hdual x (hLW x hx)).mp hx y hy
     have hne : L ≠ ⊥ := by
       rintro rfl
-      have : W = ⊥ := by rw [← hsp]; simp
+      have : W = ⊥ := simp [← hsp]
       rw [this, finrank_bot] at hW; omega
     obtain ⟨x, hx, y, hy, a, ha⟩ := exists_unit_pair h hsmul W L hfg hsp hdual hne
     obtain ⟨e0, he0, u, hu⟩ :=

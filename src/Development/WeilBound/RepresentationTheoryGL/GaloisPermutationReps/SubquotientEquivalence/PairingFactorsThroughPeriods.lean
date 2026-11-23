@@ -202,7 +202,7 @@ theorem st1b : St1b := by
       rw [h1, one_smul]
       simp only [LinearMap.comp_apply, LinearEquiv.coe_coe]
       rw [hT, hbG', hTs, hbG]
-    · have h1 : d (Fin.last m) = μ / μ' := by rw [hd]; simp
+    · have h1 : d (Fin.last m) = μ / μ' := simp [hd]
       rw [h1]
       simp only [LinearMap.comp_apply, LinearEquiv.coe_coe]
       rw [hT, hbl', map_smul, hTs, smul_smul, div_mul_cancel₀ μ hμ', hbl]

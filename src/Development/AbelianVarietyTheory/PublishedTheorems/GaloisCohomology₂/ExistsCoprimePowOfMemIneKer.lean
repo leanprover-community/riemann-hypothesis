@@ -443,7 +443,7 @@ theorem eq_one_iff_mem_ineKer : ∀ (F Ω : Type) [Field F] [NumberField F] [Fie
     have hord : orderOf (θ n g) = l ^ n := by
       rw [orderOf_eq_card_of_forall_mem_zpowers hgen]; simp
     obtain ⟨_, ⟨k, rfl⟩, w, hw, e⟩ := Subgroup.mem_sup_of_normal_right.1 (hall σ)
-    have h1 : θ n σ = 1 := by rw [hθ, h]; simp
+    have h1 : θ n σ = 1 := simp [hθ, h]
     rw [← e, map_mul, map_zpow, hw.2, mul_one, ← orderOf_dvd_iff_zpow_eq_one, hord] at h1
     obtain ⟨j, rfl⟩ := h1
     rw [← e]

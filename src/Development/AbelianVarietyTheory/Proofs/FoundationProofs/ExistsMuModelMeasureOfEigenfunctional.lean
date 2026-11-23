@@ -199,8 +199,8 @@ theorem measMu_of_eig : ∀ (l : ℕ) [Fact l.Prime] (ι : PadicAlgCl l ≃+* �
   have hp : l.Prime := Fact.out
   have hα0 : α ≠ 0 := by rintro rfl; simp at hα
   haveI : NeZero N := ⟨hN.ne'⟩
-  have hψsq : ψ (-1) * ψ (-1) = 1 := by rw [← map_mul]; simp
-  have hE2 : ((-1 : ℂ) ^ e) ^ 2 = 1 := by rw [← pow_mul, mul_comm, pow_mul]; simp
+  have hψsq : ψ (-1) * ψ (-1) = 1 := simp [← map_mul]
+  have hE2 : ((-1 : ℂ) ^ e) ^ 2 = 1 := simp [← pow_mul, mul_comm, pow_mul]
   set s : ℂ := (-1) ^ e * ψ (-1) with hs
   have hs2 : s * s = 1 := by rw [hs]; linear_combination ((-1 : ℂ) ^ e) ^ 2 * hψsq + hE2
   have hθχ : (θ * χ) (-1) = -s := by rw [MulChar.coeToFun_mul, Pi.mul_apply, hθ, hχ]; ring
@@ -223,7 +223,7 @@ theorem measMu_of_eig : ∀ (l : ℕ) [Fact l.Prime] (ι : PadicAlgCl l ≃+* �
       (∀ y, f (-y) = s * f y) → ν ≠ θ * χ → ν (-1) ≠ s →
       val B c l α r (Zm (2 * e + 1) l (hat θ) (ch ν) (fun A d => f ((A : ZMod (l ^ m)) * (d : ZMod (l ^ m))⁻¹))) = 0 := by
     intro m r f ν hm hmr hf hne hνs
-    have hνsq : ν (-1) * ν (-1) = 1 := by rw [← map_mul]; simp
+    have hνsq : ν (-1) * ν (-1) = 1 := simp [← map_mul]
     have hν : ν (-1) = -θ (-1) := by
       have h0 : (ν (-1) - s) * (ν (-1) + s) = 0 := by linear_combination hνsq - hs2
       rcases mul_eq_zero.1 h0 with h | h

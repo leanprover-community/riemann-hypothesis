@@ -71,7 +71,7 @@ theorem cartan_eq_one {k : ℕ} {s : Matrix (Fin k) (Fin k) ℂ} (h : IsCartanIn
 variable {D : D7}
 
 theorem rigging_cartan_eq_one_of_gram_one {V : HSp D} (hV : V.gram = 1) {r : Rig V} (h : r.Is) : r.s = fun _ => 1 := funext fun τ => by
-  have e : gramAt D V τ = 1 := by rw [gramAt, hV]; simp
+  have e : gramAt D V τ = 1 := simp [gramAt, hV]
   exact cartan_eq_one (e ▸ (h.2.2 τ).1)
 
 theorem exists_haar_factor (V : HSp D) {μ ν : Measure (GA D V)} {𝓕 𝓖 : Set (GA D V)}

@@ -111,7 +111,7 @@ theorem isPullback_j (M : Model R A) :
     IsPullback M.j A.hom M.Y.hom (spMap (algebraMap R K)) := by
   refine (IsPullback.of_hasPullback M.Y.hom (spMap (algebraMap R K))).of_iso
     ((Over.forget _).mapIso M.e) (Iso.refl _) (Iso.refl _) (Iso.refl _) ?_ ?_ (by simp) (by simp)
-  · have : M.e.hom.left ≫ M.e.inv.left = 𝟙 _ := by rw [← Over.comp_left]; simp
+  · have : M.e.hom.left ≫ M.e.inv.left = 𝟙 _ := simp [← Over.comp_left]
     show _ ≫ 𝟙 _ = M.e.hom.left ≫ M.e.inv.left ≫ _
     rw [← Category.assoc, this]; simp
   · exact (Category.comp_id _).trans (Over.w M.e.hom).symm

@@ -85,7 +85,7 @@ theorem conjEmb_rt_of_ne {σ : E →+* ℂ} (h : σ (H.rt : E) ≠ H.rt0) : conj
   have h1 : (H.rt : E) ^ 2 = -(H.d : E) := by
     have := congrArg (algebraMap (𝓞 E) E) H.rt_sq
     simpa using this
-  have h2 : σ (H.rt : E) ^ 2 = H.rt0 ^ 2 := by rw [← map_pow, h1, H.sqrt_neg_disc_sq]; simp
+  have h2 : σ (H.rt : E) ^ 2 = H.rt0 ^ 2 := simp [← map_pow, h1, H.sqrt_neg_disc_sq]
   have h3 : σ (H.rt : E) = -H.rt0 := (sq_eq_sq_iff_eq_or_eq_neg.1 h2).resolve_left h
   show starRingEnd ℂ (σ (H.rt : E)) = H.rt0
   rw [h3, map_neg, rt0_conj_neg_ne_zero, neg_neg]

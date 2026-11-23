@@ -167,7 +167,7 @@ theorem ncValueC_of_global (a' Ω ATyp A' AT PT : ℝ)
   set e2 : ℝ := (D.R.r : ℝ) * (2 * s + 1) - ((2 * (s : ℝ) + 1) ^ 2) / 2 with he2
   set E1 : ℝ := -((2 * s * (s + 1) * (k - 1) : ℕ) : ℝ) + 1 / 2 - k with hE1
   have hrR : (D.R.r : ℝ) = k + 2 * s + 1 := by rw [hr]; push_cast; ring
-  have hk1 : ((k - 1 : ℕ) : ℝ) = (k : ℝ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
+  have hk1 : ((k - 1 : ℕ) : ℝ) = (k : ℝ) - 1 := simp [Nat.cast_sub (by omega)]
   have hexp : e = E1 - Xe + e2 := by
     rw [he, hE1, hXe, he2, hrR]
     push_cast

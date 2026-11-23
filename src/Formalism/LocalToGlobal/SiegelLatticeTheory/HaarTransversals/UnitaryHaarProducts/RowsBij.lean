@@ -87,7 +87,7 @@ def linOfInner (ψ : E → F) (C : ℂ) (h : ∀ y y', ⟪ψ y, ψ y'⟫_ℂ = C
       have h1 : ‖ψ y‖ ^ 2 ≤ (Real.sqrt ‖C‖ * ‖y‖) ^ 2 := by
         rw [mul_pow, Real.sq_sqrt (norm_nonneg _), ← inner_self_eq_norm_sq (𝕜 := ℂ), h]
         calc RCLike.re (C * ⟪y, y⟫_ℂ) ≤ ‖C * ⟪y, y⟫_ℂ‖ := RCLike.re_le_norm _
-          _ = ‖C‖ * ‖y‖ ^ 2 := by rw [norm_mul, inner_self_eq_norm_sq_to_K]; simp
+          _ = ‖C‖ * ‖y‖ ^ 2 := simp [norm_mul, inner_self_eq_norm_sq_to_K]
       exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 h1)
 
 end Lin

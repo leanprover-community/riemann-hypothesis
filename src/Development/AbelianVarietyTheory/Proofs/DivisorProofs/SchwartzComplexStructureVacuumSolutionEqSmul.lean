@@ -88,7 +88,7 @@ theorem ray_formula {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
   have : Complex.exp (((-((1:ℝ) ^ 2) / 2 : ℝ) : ℂ) * c) * Complex.exp (c / 2) = 1 := by
     rw [← Complex.exp_add]; push_cast; ring_nf; simp
   calc k w = k w * (Complex.exp (((-((1:ℝ) ^ 2) / 2 : ℝ) : ℂ) * c) * Complex.exp (c / 2)) := by rw [this, mul_one]
-    _ = _ := by rw [← mul_assoc, hc]; simp
+    _ = _ := simp [← mul_assoc, hc]
 
 theorem conj_mul_eq_zero_of_line {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
     (f g : SchwartzMap V ℂ) (y₀ : V) (hy : y₀ ≠ 0)

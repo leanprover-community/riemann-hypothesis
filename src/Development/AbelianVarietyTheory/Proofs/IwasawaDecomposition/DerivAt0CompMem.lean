@@ -64,7 +64,7 @@ theorem exists_derivAt0 (G : VCx ι a b → ℂ) (hG : ∀ k : ℕ, ContDiff ℂ
   set e : DVar ι a b →₀ ℕ := Multiset.toFinsupp (↑(List.ofFn f) : Multiset (DVar ι a b)) with he
   have hm : Finsupp.toMultiset e = (↑(List.ofFn f) : Multiset (DVar ι a b)) := by
     rw [he, Multiset.toFinsupp_toMultiset]
-  have hc : (Finsupp.toMultiset e).card = n := by rw [hm]; simp
+  have hc : (Finsupp.toMultiset e).card = n := simp [hm]
   refine ⟨e, ?_, ?_⟩
   · rw [← hc, Finsupp.card_toMultiset]; rfl
   have p : ((List.ofFn f).map coordX).Perm ((Finsupp.toMultiset e).toList.map coordX) := by

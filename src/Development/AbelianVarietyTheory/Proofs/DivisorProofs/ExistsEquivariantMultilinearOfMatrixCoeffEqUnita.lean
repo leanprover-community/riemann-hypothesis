@@ -188,7 +188,7 @@ theorem exists_equivariant_multilinear_of_matrixCoeff_eq :
     refine ⟨a⁻¹, ?_, Matrix.mul_nonsing_inv a hd⟩
     calc a⁻¹ᴴ * Hm τ * a⁻¹ = a⁻¹ᴴ * (aᴴ * Hm τ * a) * a⁻¹ := by rw [ha]
       _ = (a * a⁻¹)ᴴ * Hm τ * (a * a⁻¹) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = Hm τ := by rw [Matrix.mul_nonsing_inv a hd]; simp
+      _ = Hm τ := simp [Matrix.mul_nonsing_inv a hd]
   have hσ1 : ∀ τ, σ τ 1 = 1 := fun τ => (hσ τ).2.1.1.1
   have hσm : ∀ τ, ∀ a ∈ Formalism.QuantumDeterminants.UH (Hm τ), ∀ b ∈ Formalism.QuantumDeterminants.UH (Hm τ), σ τ (a * b) = σ τ a * σ τ b :=
     fun τ => (hσ τ).2.1.1.2

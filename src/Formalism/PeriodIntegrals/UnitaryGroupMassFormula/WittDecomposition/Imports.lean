@@ -48,7 +48,7 @@ theorem riesz [FiniteDimensional K V] (B : V →ₗ⋆[K] V →ₗ[K] K) (hB : �
   let b := Module.finBasis K V
   rcases isEmpty_or_nonempty (Fin (Module.finrank K V)) with hE | hNE
   · refine ⟨0, fun z => ?_⟩
-    have hz : z = 0 := by rw [← b.sum_repr z]; simp
+    have hz : z = 0 := simp [← b.sum_repr z]
     simp [hz]
   have hli : LinearIndependent K (fun i => B (b i)) := by
     rw [Fintype.linearIndependent_iff]

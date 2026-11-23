@@ -191,8 +191,8 @@ theorem hermitian_split_rank_one_struct {k R V : Type} [Field k] [CommRing R] [A
     Subsingleton V ∨ ∃ w₀ : V, (∀ x, ∃ r : R, x = r • w₀) ∧ IsUnit (h w₀ w₀) := by
   obtain ⟨e, he_def⟩ : ∃ e : R, e = φ.symm (1, 0) := ⟨_, rfl⟩
   obtain ⟨e', he'_def⟩ : ∃ e' : R, e' = φ.symm (0, 1) := ⟨_, rfl⟩
-  have hφe : φ e = (1, 0) := by rw [he_def]; simp
-  have hφe' : φ e' = (0, 1) := by rw [he'_def]; simp
+  have hφe : φ e = (1, 0) := simp [he_def]
+  have hφe' : φ e' = (0, 1) := simp [he'_def]
   have he : e + e' = 1 := φ.injective (by rw [map_add (f := _), hφe, hφe', map_one]; ext <;> simp)
   have hee : e * e' = 0 := φ.injective (by rw [map_mul, hφe, hφe', map_zero]; ext <;> simp)
   have hce : c e = e' := φ.injective (by rw [hc, hφe, hφe']; rfl)

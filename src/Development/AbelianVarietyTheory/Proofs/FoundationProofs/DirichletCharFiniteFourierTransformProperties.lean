@@ -91,7 +91,7 @@ theorem hat_zero_of_ne_one {N : ℕ} [NeZero N] (θ : DirichletCharacter ℂ N) 
 
 theorem isUnit_of_isCoprime {N : ℕ} (d : ℤ) (h : IsCoprime d N) : IsUnit (d : ZMod N) := by
   obtain ⟨a, b, hab⟩ := h
-  have : ((a * d + b * N : ℤ) : ZMod N) = 1 := by rw [hab]; simp
+  have : ((a * d + b * N : ℤ) : ZMod N) = 1 := simp [hab]
   push_cast at this
   rw [ZMod.natCast_self, mul_zero, add_zero] at this
   exact IsUnit.of_mul_eq_one (a : ZMod N) (by rw [mul_comm]; exact this)

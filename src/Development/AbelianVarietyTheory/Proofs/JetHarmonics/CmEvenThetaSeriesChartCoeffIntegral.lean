@@ -73,7 +73,7 @@ theorem theta_series_integral : ∀ (d q : ℕ) [Fact q.Prime] (M : Mdl q) (ω :
   have hm2 : 2 ≤ m := by
     rcases m with _ | _ | m
     · exfalso
-      have : α * conj α = 0 := by rw [← hm]; simp
+      have : α * conj α = 0 := simp [← hm]
       rcases mul_eq_zero.1 this with h | h
       · exact hα0 h
       · exact hα0 (by simpa using h)

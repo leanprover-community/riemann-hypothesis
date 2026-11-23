@@ -180,7 +180,7 @@ theorem step {r : ℕ} (h : IsCMExt F E σ) (hJ : IsHermND σ J) {X Y : Matrix (
       exact (mul_le_mul_of_nonneg_right hc1 (Real.exp_pos _).le).trans this
   · refine Fin.cases (motive := fun i => i.val + 1 = r + 1 → c ≤ Real.exp (S i)) ?_ (fun i' => ?_) i hi
     · intro _
-      have h4 : Real.exp (-S 0) * Real.exp (S 0) = 1 := by rw [← Real.exp_add]; simp
+      have h4 : Real.exp (-S 0) * Real.exp (S 0) = 1 := simp [← Real.exp_add]
       have h5 : M₁⁻¹ ≤ Real.exp (S 0) := by
         rw [inv_le_comm₀ hM₁ (Real.exp_pos _)]
         rw [← Real.exp_neg]

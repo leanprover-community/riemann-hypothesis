@@ -95,7 +95,7 @@ theorem evAt_ps (a : ZMod n) (s t : ℕ) (ζ : Rs F PD.p s) :
       rs_pow_N F PD.p s ζ, one_pow])
   refine ⟨hy, ?_⟩
   have hφ := Formalism.MainNotions.UnusedSlot80.LG.phi_pow_X W.φ₀ PD.p hl (Formalism.MainNotions.UnusedSlot80.LG.φ₀_X_eq W) t
-  have h0 : PowerSeries.constantCoeff ((W.φ₀ ^ t) PowerSeries.X) = 0 := by rw [hφ]; simp
+  have h0 : PowerSeries.constantCoeff ((W.φ₀ ^ t) PowerSeries.X) = 0 := simp [hφ]
   rw [evAt_apply, Formalism.MainNotions.UnusedSlot80.LG.ps_apply W t a, Formalism.MainNotions.UnusedSlot80.LG.algHom_eq_subst _ h0, hφ]
   refine evR_subst PD.p (s + 1) hlm (rs_root F s ζ) hy _ (by simp) ?_ _
   rw [map_sub, evR_onePow, map_one, add_sub_cancel]

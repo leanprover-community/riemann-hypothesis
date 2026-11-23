@@ -1186,7 +1186,7 @@ theorem Z2 (hE : GlRel E) (h : VecRel E y ξ ζb) (t : ℕ) (a b : Fin (t + 1) �
         (y (b q) * qminor E (a ∘ p.succAbove) (b ∘ q.succAbove) w) := by
   have d0 := duality hE a b w
   have z := Z1 h.cov t b a (((t + 1 : ℕ) : ℂ) - 1 - w)
-  have hs : (-1 : ℂ) ^ t * (-1) ^ t = 1 := by rw [← mul_pow]; simp
+  have hs : (-1 : ℂ) ^ t * (-1) ^ t = 1 := simp [← mul_pow]
   have d1 : ∀ p q : Fin (t + 1), qminor (Eop E) (b ∘ p.succAbove) (a ∘ q.succAbove) (((t + 1 : ℕ) : ℂ) - 1 - w - 1) =
       ((-1 : ℂ) ^ t) • qminor E (a ∘ q.succAbove) (b ∘ p.succAbove) w := by
     intro p q

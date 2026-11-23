@@ -126,7 +126,7 @@ theorem smallIdeal_ne_bot {L : Type} [Field L] [NumberField L] {l : ℕ} [Fact l
     rw [e, hext, Padic.norm_p]
     exact inv_lt_one_of_one_lt₀ (by exact_mod_cast (Fact.out : l.Prime).one_lt)
   rw [hbot, Ideal.mem_bot] at hl
-  have h0 : ((l : 𝓞 L) : L) = 0 := by rw [hl]; simp
+  have h0 : ((l : 𝓞 L) : L) = 0 := simp [hl]
   exact (Fact.out : l.Prime).ne_zero (by exact_mod_cast h0)
 
 theorem le_one_of_le_one {L : Type} [Field L] [NumberField L] {l : ℕ} [Fact l.Prime]

@@ -79,7 +79,7 @@ theorem transpose_splitHom_comp (τ : E →ₐ[F] Fv F v) (hJ : J.map τ * J.map
   have i1 : (splitHom σ J τ g).1 * (splitHom σ J τ g⁻¹).1 = 1 := by
     rw [map_inv, Units.mul_inv]
   calc (splitHom σ J (τ.comp σ) g).1ᵀ
-      = -((splitHom σ J (τ.comp σ) g).1ᵀ * (J.map τ * J.map τ)) := by rw [hJ]; simp
+      = -((splitHom σ J (τ.comp σ) g).1ᵀ * (J.map τ * J.map τ)) := simp [hJ]
     _ = -(((splitHom σ J (τ.comp σ) g).1ᵀ * J.map τ * (splitHom σ J τ g).1) *
           (splitHom σ J τ g⁻¹).1 * J.map τ) := by
         congr 1

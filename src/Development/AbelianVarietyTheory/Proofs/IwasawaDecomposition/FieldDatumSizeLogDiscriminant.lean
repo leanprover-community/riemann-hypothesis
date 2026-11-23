@@ -260,7 +260,7 @@ theorem sz_discField : RayField → ∀ (P : Pre) (δ : FieldDat P),
     (IntermediateField.inclusion hHM).toAlgebra
   haveI : IsGalois (hilbertField d δ.jField) (torsionField d A) :=
     isGalois_torsion δ.jField (hilbertField d δ.jField) (torsionField d A) A le_sup_right hHM rfl
-  have hdn : (discr K).natAbs = d := by rw [hdK]; simp
+  have hdn : (discr K).natAbs = d := simp [hdK]
   have hrd := log_rootDiscr_le K (hilbertField d δ.jField) (torsionField d A) d hd0 hK hdn hu
     (TorsionRam.dvd_discr_torsionField d δ.jField A hg)
   have hM' := hM.trans (Nat.mul_le_mul_left _ card_GL_le)

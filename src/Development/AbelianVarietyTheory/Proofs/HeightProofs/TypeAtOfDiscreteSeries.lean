@@ -301,7 +301,7 @@ theorem exists_gkMap (hθ : IsInfFam (D := D) θ) (hP : IsUnit P) (hJ : Pᴴ * J
       refine Transport.conj_lie (G := gramAt D V τ) (Matrix.nonsing_inv_mul _ hd) ?_ hX
       rw [← hJ]
       calc _ = (P * P⁻¹)ᴴ * Jm ε * (P * P⁻¹) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-        _ = _ := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+        _ = _ := simp [Matrix.mul_nonsing_inv _ hd]
     simp only [← Transport.exp_smul_conj hP] at hab
     have e : (b : H) = dRep σ (P * X * P⁻¹) a := hab.deriv.symm
     have h1 := (hσ.hasDerivAt_sobFun (hb x) (hsm a) hY).deriv

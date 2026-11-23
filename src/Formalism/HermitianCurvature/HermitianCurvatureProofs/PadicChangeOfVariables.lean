@@ -561,7 +561,7 @@ theorem square_near_unit : Formalism.FourierDecayAlt.A6.SquareNear := by
   obtain ⟨π, hπ, hπ'⟩ := hd.unif
   obtain ⟨u2, hu2⟩ := hn 2 (by norm_num)
   obtain ⟨k, hk⟩ := hπ' ((u2⁻¹ : Kˣ) : K)
-  have hs : ((2 : ℕ) : K) * ((u2⁻¹ : Kˣ) : K) = 1 := by rw [← hu2]; simp
+  have hs : ((2 : ℕ) : K) * ((u2⁻¹ : Kˣ) : K) = 1 := simp [← hu2]
   refine ⟨(fun x => ((u2⁻¹ : Kˣ) : K) * x) ⁻¹' (mulR R ((π : K) ^ (k + 1)) : Set K), ?_, ?_⟩
   · apply (continuous_const.mul continuous_id).continuousAt.preimage_mem_nhds
     simpa using J_nhds π hd (k + 1)
@@ -581,7 +581,7 @@ theorem phase_difference_estimate : Formalism.FourierDecayAlt.A6.PhaseDiff := by
   obtain ⟨π, hπ, hπ'⟩ := hd.unif
   obtain ⟨su, hsu⟩ := hn (m + 1) (by omega)
   obtain ⟨si, hsi⟩ : ∃ si : K, si = ((su⁻¹ : Kˣ) : K) := ⟨_, rfl⟩
-  have hs : ((m + 1 : ℕ) : K) * si = 1 := by rw [← hsu, hsi]; simp
+  have hs : ((m + 1 : ℕ) : K) * si = 1 := simp [← hsu, hsi]
   obtain ⟨k1, hk1⟩ := bdd_of_compact π hd hπ hπ' hOm
   obtain ⟨k2, hk2⟩ := bdd_of_compact π hd hπ hπ' Sg.finite_toSet.isCompact
   obtain ⟨k3, hk3⟩ := hπ' si
@@ -602,8 +602,8 @@ theorem phase_difference_estimate : Formalism.FourierDecayAlt.A6.PhaseDiff := by
   obtain ⟨d, hdd⟩ : ∃ X : K, X = σ - σ' := ⟨_, rfl⟩
   obtain ⟨δ, hδ⟩ : ∃ X : K, X = d * (t₂ : K) := ⟨_, rfl⟩
   have hκ' : (κ : K) = 1 + ε := by rw [hε]; ring
-  have hB : (t₂ : K) * X2 = 1 := by rw [hX2]; simp
-  have hD : (t : K) * x = 1 := by rw [hx]; simp
+  have hB : (t₂ : K) * X2 = 1 := simp [hX2]
+  have hD : (t : K) * x = 1 := simp [hx]
   rw [← hX1, ← hx] at h1
   rw [← hX2, ← hx] at h2
   have hkd : (π : K) ^ k * d ∈ R := by
@@ -678,7 +678,7 @@ theorem padic_change_of_variables : Formalism.FourierDecayAlt.A6.ChangeVar := by
   obtain ⟨π, hπ, hπ'⟩ := hd.unif
   obtain ⟨su, hsu⟩ := hn (m + 1) (by omega)
   obtain ⟨si, hsi⟩ : ∃ si : K, si = ((su⁻¹ : Kˣ) : K) := ⟨_, rfl⟩
-  have hs : ((m + 1 : ℕ) : K) * si = 1 := by rw [← hsu, hsi]; simp
+  have hs : ((m + 1 : ℕ) : K) * si = 1 := simp [← hsu, hsi]
   obtain ⟨k, hk⟩ := hπ' si
   obtain ⟨k', hk'⟩ := inv_bdd π hd hn hπ hπ' hOc hOu
   obtain ⟨i, hi⟩ := nhds_basis π hd hn hπ hπ' (Λ : Set K) (hΛ.1.mem_nhds Λ.zero_mem)
@@ -689,7 +689,7 @@ theorem padic_change_of_variables : Formalism.FourierDecayAlt.A6.ChangeVar := by
   intro t cr f ht hcr hf
   obtain ⟨r, hr, htr⟩ := mem_mulR.1 ht
   obtain ⟨T, hT⟩ : ∃ T : Kˣ, T = (-t) ^ m := ⟨_, rfl⟩
-  have hTv : (T : K) = (-(t : K)) ^ m := by rw [hT]; simp
+  have hTv : (T : K) = (-(t : K)) ^ m := simp [hT]
   simp only [← hT]
 
   have hloc : ∀ z0 ∈ Om,

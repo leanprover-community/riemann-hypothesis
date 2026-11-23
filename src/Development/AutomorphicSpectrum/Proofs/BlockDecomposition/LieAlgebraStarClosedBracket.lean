@@ -110,7 +110,7 @@ theorem block_diagonal_of_keeps_frame : ∀ {n D m : ℕ} (J : Matrix (Fin n) (F
     calc g * R = (C * Cᴴ + J * C * Cᴴ * J + R * Rᴴ) * (g * R) := by rw [hsum, Matrix.one_mul]
       _ = C * (Cᴴ * (g * R)) + J * C * (Cᴴ * J * (g * R)) + R * (Rᴴ * g * R) := by
           simp only [Matrix.add_mul, Matrix.mul_assoc]
-      _ = R * (Rᴴ * g * R) := by rw [hCgR, hCJgR]; simp
+      _ = R * (Rᴴ * g * R) := simp [hCgR, hCJgR]
   refine ⟨hunit, hsecond, hthird, ?_⟩
   have hRJ : R * J' = J * R := hJR.symm
   have hRhJR : Rᴴ * J * R = J' := by

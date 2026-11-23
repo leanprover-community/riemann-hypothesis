@@ -405,7 +405,7 @@ theorem eq_zero_of_piInf {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (τ : ∀ w :
   set C := Algebra.TensorProduct.basis (AF F) B with hC
   have hu : pairA F 0 1 • x = 0 := hx _ (map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F))
   have hfin : ∀ i, (C.repr x i).2 = 0 := fun i => by
-    have h1 : C.repr (pairA F 0 1 • x) i = 0 := by rw [hu]; simp
+    have h1 : C.repr (pairA F 0 1 • x) i = 0 := simp [hu]
     rw [map_smul] at h1
     have h2 : pairA F 0 1 * C.repr x i = 0 := h1
     have h3 := congrArg (sndA F) h2

@@ -87,9 +87,9 @@ theorem lin (h1 : Rx * X = 0) (h2 : Ry * Y = 0) (h3 : Rx * Y = 1) (h4 : Ry * X =
   have hAQ : A * (Q * ξ) = Q * ξ := by
     conv_lhs => rw [← hq]
     rw [← Matrix.mul_assoc, hAB, Matrix.one_mul]
-  have hQX : Q * X = 0 := by rw [eQ, h1, h4]; simp
-  have hQY : Q * Y = 0 := by rw [eQ, h2, h3]; simp
-  have hQQ : Q * Q = Q := by rw [eQ, hRxQ, hRyQ]; simp
+  have hQX : Q * X = 0 := simp [eQ, h1, h4]
+  have hQY : Q * Y = 0 := simp [eQ, h2, h3]
+  have hQQ : Q * Q = Q := simp [eQ, hRxQ, hRyQ]
   have hdec : ξ = X * (Ry * ξ) + Y * (Rx * ξ) + Q * ξ := by rw [eQ]; abel
   have hu : A * ξ = X * (S * (Ry * ξ)) + Y * (T * (Rx * ξ)) + Q * ξ := by
     conv_lhs => rw [hdec]

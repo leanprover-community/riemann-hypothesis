@@ -326,7 +326,7 @@ theorem local_multiplier_congr_one (S : StepLevel F E σ J T f bad) (hT : T.Prim
     exact S.fT_ne v hv (LinearMap.ext hc)
   have e1 := h3 y
   rw [hfix y] at e1
-  have hk1 : (k - 1) • S.fT v hv y = 0 := by rw [sub_zsmul, one_zsmul, e1]; simp
+  have hk1 : (k - 1) • S.fT v hv y = 0 := simp [sub_zsmul, one_zsmul, e1]
   have hT0 := level_functional_torsion S v hv y
   by_contra hnd
   have hp : Prime (T : ℤ) := Nat.prime_iff_prime_int.1 hT

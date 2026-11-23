@@ -232,7 +232,7 @@ theorem growth_decay : TStatement → ∀ (E : Type) [Field E] [NumberField E] [
     unfold dstar; exact_mod_cast Nat.mul_pos (by omega) hm1
   have hRR : (0 : ℝ) < RR (E := E) := by unfold RR; positivity
   have hrd2 : |(NumberField.discr E : ℝ)| ^ ((1 : ℝ) / X.Ψ.card) = PT.rd E ^ 2 := by
-    have h1 : (X.Ψ.card : ℝ) = PT.f E := by rw [← hcard]; simp
+    have h1 : (X.Ψ.card : ℝ) = PT.f E := simp [← hcard]
     have h2 : (Module.finrank ℚ E : ℝ) = 2 * PT.f E := by
       have h3 := NumberField.IsTotallyComplex.finrank E
       have : Module.finrank ℚ E = 2 * PT.f E := by unfold PT.f; omega

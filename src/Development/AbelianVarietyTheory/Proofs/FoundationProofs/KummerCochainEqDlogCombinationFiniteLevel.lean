@@ -292,7 +292,7 @@ theorem kummer_eq_dlog : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → ∃ c : ℕ, 
     (Lev_le_FixI T n le_rfl (hL x)).2 g hg
   have hπ : T.ζ n - 1 ≠ 0 := sub_ne_zero.2 ((T.prim n).ne_one
     (Nat.one_lt_pow (by omega) (Fact.out : p.Prime).one_lt))
-  have hww : ι w * ι (↑w⁻¹ : On p n) = 1 := by rw [← map_mul]; simp
+  have hww : ι w * ι (↑w⁻¹ : On p n) = 1 := simp [← map_mul]
   have hw0 : ι w ≠ 0 := left_ne_zero_of_mul_eq_one hww
   obtain ⟨s, hs⟩ := IsAlgClosed.exists_pow_nat_eq (T.ζ n - 1) (ppow_pos (p := p) n)
   have hs0 : s ≠ 0 := by

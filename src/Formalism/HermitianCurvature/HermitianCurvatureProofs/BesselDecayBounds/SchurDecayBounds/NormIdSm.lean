@@ -119,7 +119,7 @@ theorem decBd_left {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1
     show (y⁻¹)ᴴ * Hpk k r * y⁻¹ = Hpk k r
     calc (y⁻¹)ᴴ * Hpk k r * y⁻¹ = (y⁻¹)ᴴ * (yᴴ * Hpk k r * y) * y⁻¹ := by rw [hy']
       _ = (y * y⁻¹)ᴴ * Hpk k r * (y * y⁻¹) := by rw [Matrix.conjTranspose_mul]; simp only [mul_assoc]
-      _ = Hpk k r := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+      _ = Hpk k r := simp [Matrix.mul_nonsing_inv _ hd]
   refine ⟨max C 0 * Formalism.FourierDecayAlt.B.gN y ^ b, fun x hx => ?_⟩
   have hyx : y⁻¹ * x ∈ UH (Hpk k r) := hmul _ hinv _ hx
   have hsx : σ x = (σ y).comp (σ (y⁻¹ * x)) := by

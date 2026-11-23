@@ -79,7 +79,7 @@ theorem farClause : ∀ (D : D7) (θ : InfFam D) (Y V : HSp D) (d : HermitianOrt
       _ = (B⁻¹)ᴴ * (Bᴴ * Formalism.REAL.Jm (MP.ε τ) * B) * B⁻¹ := by rw [hBJ, hg0]
       _ = ((B⁻¹)ᴴ * Bᴴ) * Formalism.REAL.Jm (MP.ε τ) * (B * B⁻¹) := by
           simp only [Matrix.mul_assoc]
-      _ = Formalism.REAL.Jm (MP.ε τ) := by rw [hBi, hBinv']; simp
+      _ = Formalism.REAL.Jm (MP.ε τ) := simp [hBi, hBinv']
   obtain ⟨hbI, hbB⟩ := hb _ hg'
   set F : Matrix (Fin Y.rank) (Fin Y.rank) ℂ → ℂ :=
     fun x => ⟪v, MP.σ τ (B * g * B⁻¹ * GlobalTheory.PackLoc.embOpt e x) v⟫_ℂ with hF

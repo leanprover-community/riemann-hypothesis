@@ -238,7 +238,7 @@ theorem frameOK_of_isNormUn : Out.SecTwistSt → ∀ (E : Type) [Field E] [Numbe
         (pullback.lift_snd _ _ _) (by rw [hex]; exact hz)
       have h3 := h1.symm.trans h2
       have h4 := (hχl _ ⟨a, rfl⟩).2 z
-      have e1 : Complex.exp (q z) * Complex.exp (-q z) = 1 := by rw [← Complex.exp_add]; simp
+      have e1 : Complex.exp (q z) * Complex.exp (-q z) = 1 := simp [← Complex.exp_add]
       have e2 : Complex.exp (q (z + T.Pf (T.co b) a)) * Complex.exp (-q (z + T.Pf (T.co b) a)) = 1 := by
         rw [← Complex.exp_add]; simp
       linear_combination (thetaChar (T.ta b) T.c₁ T.c₂ (T.h b *ᵥ z) * T.fr j (b, z)) * e1 + h3 +

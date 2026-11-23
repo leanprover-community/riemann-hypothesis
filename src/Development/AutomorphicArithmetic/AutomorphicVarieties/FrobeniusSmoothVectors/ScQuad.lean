@@ -98,7 +98,7 @@ theorem UpperTheory.V.Fr.sc_quad :
         · exact two_ne_zero h3
         · exact hδ0 h3
     · intro h x
-      have hσδ : σ δ = δ := by rw [hη σ, h]; simp
+      have hσδ : σ δ = δ := simp [hη σ, h]
       have hext : ((σ : Ω →ₐ[ℚ] Ω).comp (IntermediateField.val _) :
           IntermediateField.adjoin ℚ ({δ} : Set Ω) →ₐ[ℚ] Ω) = IntermediateField.val _ :=
         IntermediateField.algHom_ext_of_eq_adjoin ℚ rfl (by

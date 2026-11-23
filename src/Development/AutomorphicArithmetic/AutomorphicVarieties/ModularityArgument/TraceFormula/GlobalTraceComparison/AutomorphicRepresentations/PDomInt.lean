@@ -44,7 +44,7 @@ private theorem pow_mul_exp_neg_le (N : ℕ) {r : ℝ} (hr : 0 ≤ r) :
     (1 + r) ^ N * Real.exp (-r) ≤ N.factorial * Real.exp 1 := by
   have h := Real.pow_div_factorial_le_exp (1 + r) (by linarith) N
   rw [div_le_iff₀ (by exact_mod_cast N.factorial_pos)] at h
-  have e : Real.exp r * Real.exp (-r) = 1 := by rw [← Real.exp_add]; simp
+  have e : Real.exp r * Real.exp (-r) = 1 := simp [← Real.exp_add]
   calc (1 + r) ^ N * Real.exp (-r) ≤ (Real.exp (1 + r) * N.factorial) * Real.exp (-r) :=
         mul_le_mul_of_nonneg_right h (Real.exp_pos _).le
     _ = N.factorial * Real.exp 1 * (Real.exp r * Real.exp (-r)) := by rw [Real.exp_add]; ring
@@ -74,7 +74,7 @@ private theorem point_bound {E : Type} [Field E] [NumberField E] [IsCMField E] {
   have hψy : ψ.1 y.1 = ψ.1 x.1 := hA _ _
   have hdec : ‖ψ.1 x.1‖ ≤ C * Real.exp (-((L + 1) * r)) := by
     have h := hC₀ y.1 (by
-      have : |ldet y| ≤ 0 := by rw [hy0]; simp
+      have : |ldet y| ≤ 0 := simp [hy0]
       exact this)
     rw [hψy] at h
     exact h.trans (mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.exp_pos _).le)

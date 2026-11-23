@@ -90,7 +90,7 @@ theorem invT_PhiU : invT n R (PhiU n R) = PhiU n R :=
 theorem PhiU_mul_self_val : (PhiU n R * PhiU n R).val = (-1 : R) ^ (n + 1) • (1 : Matrix (Fin n) (Fin n) R) := by
   have h1 : GlobalTheory.Tw.Phi n R * (GlobalTheory.Tw.Phi n R)ᵀ = 1 := Phi_mul_transpose n R
   rw [Phi_transpose', Matrix.mul_smul] at h1
-  have hs : ((-1 : R) ^ (n + 1)) * (-1) ^ (n + 1) = 1 := by rw [← mul_pow]; simp
+  have hs : ((-1 : R) ^ (n + 1)) * (-1) ^ (n + 1) = 1 := simp [← mul_pow]
   show GlobalTheory.Tw.Phi n R * GlobalTheory.Tw.Phi n R = _
   calc GlobalTheory.Tw.Phi n R * GlobalTheory.Tw.Phi n R = ((-1 : R) ^ (n + 1) * (-1) ^ (n + 1)) • (GlobalTheory.Tw.Phi n R * GlobalTheory.Tw.Phi n R) := by
         rw [hs, one_smul]
@@ -152,7 +152,7 @@ theorem exists_twConj_dlt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
   have huu : u * B.σ u = 1 := by
     have h := congrArg B.σ hβ₀
     rw [B.σ_σ, map_mul, hβ₀, map_mul, map_pow, map_neg, map_one] at h
-    have hε : ((-1 : B.A) ^ (m - 1)) * (-1) ^ (m - 1) = 1 := by rw [← mul_pow]; simp
+    have hε : ((-1 : B.A) ^ (m - 1)) * (-1) ^ (m - 1) = 1 := simp [← mul_pow]
     have h2 : (β₀ : B.A) * (u * B.σ u) = β₀ * 1 := by
       linear_combination (-1 : B.A) * h - ((β₀ : B.A) * u * B.σ u) * hε
     exact (Units.mul_right_inj β₀).1 h2
@@ -208,7 +208,7 @@ theorem exists_twConj_dlt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
   obtain ⟨hσβ, hβu⟩ := GlobalTheory.T.traceFormGram_asymmetry_forces_beta_relation E w K e he B m b u β hnd hGunit hsym
   refine ⟨β₀⁻¹ * hβu.unit, ?_, P⁻¹, ?_⟩
   · have hi : (((β₀⁻¹ : B.Aˣ) : B.A)) * β₀ = 1 := by simp
-    have hi' : B.σ (β₀ : B.A) * B.σ ((β₀⁻¹ : B.Aˣ) : B.A) = 1 := by rw [← map_mul]; simp
+    have hi' : B.σ (β₀ : B.A) * B.σ ((β₀⁻¹ : B.Aˣ) : B.A) = 1 := simp [← map_mul]
     rw [hβ₀] at hi'
     simp only [Units.val_mul, IsUnit.unit_spec, map_mul, hσβ]
     linear_combination (β * ((β₀⁻¹ : B.Aˣ) : B.A)) * hi' - (β * B.σ ((β₀⁻¹ : B.Aˣ) : B.A) * ((-1) ^ (m - 1) * u)) * hi

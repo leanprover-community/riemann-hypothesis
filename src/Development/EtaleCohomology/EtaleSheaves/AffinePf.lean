@@ -44,7 +44,7 @@ theorem eqv_of_sq (R : Type) [CommRing R] (F : Shv R) {E₁ E₂ E₁' E₂' : S
       Function.RightInverse.surjective (g := pull R e.inv F n) fun x => ?_⟩
     · rw [← pull_comp, e.inv_hom_id, pull_id]
     · rw [← pull_comp, e.hom_inv_id, pull_id]
-  have hf2 : f = a.hom ≫ f' ≫ b.inv := by rw [← Category.assoc, ← h]; simp
+  have hf2 : f = a.hom ≫ f' ≫ b.inv := simp [← Category.assoc, ← h]
   have : ⇑(pull R f F n) = pull R a.hom F n ∘ pull R f' F n ∘ pull R b.inv F n := by
     funext x; rw [hf2]; simp only [Function.comp_apply]; rw [pull_comp, pull_comp]
   rw [this]

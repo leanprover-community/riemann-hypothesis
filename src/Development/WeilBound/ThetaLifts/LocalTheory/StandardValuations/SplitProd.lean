@@ -66,7 +66,7 @@ theorem detB {b : ℕ} (N : Matrix (Fin (b + 2)) (Fin (b + 2)) k) (h0 : ∀ j, j
     ext i j; rfl
   rw [this]
   simp only [Fin.val_last, submatrix_apply, Fin.succ_last, Fin.castSucc_zero, pow_succ]
-  have : ((-1 : k) ^ b) * (-1) ^ b = 1 := by rw [← mul_pow]; simp
+  have : ((-1 : k) ^ b) * (-1) ^ b = 1 := simp [← mul_pow]
   linear_combination (-N 0 (Fin.last (b + 1)) * N (Fin.last (b + 1)) 0 * (N.submatrix mid mid).det) * this
 
 theorem detA {b : ℕ} (N : Matrix (Fin (b + 2)) (Fin (b + 2)) k) (h0 : ∀ i, i ≠ 0 → N i (Fin.last _) = 0)

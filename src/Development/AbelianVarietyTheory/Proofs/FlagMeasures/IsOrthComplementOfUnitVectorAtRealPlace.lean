@@ -56,7 +56,7 @@ theorem frame_inv_form (I : AutInst) (v : InfinitePlace I.F) :
   calc ((I.P v)⁻¹)ᴴ * ((I.P v)ᴴ * I.J.map (I.φ v) * I.P v) * (I.P v)⁻¹
       = (I.P v * (I.P v)⁻¹)ᴴ * I.J.map (I.φ v) * (I.P v * (I.P v)⁻¹) := by
         rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = _ := by rw [h1]; simp
+    _ = _ := simp [h1]
 
 theorem isPerp_at_place (I : AutInst) (D : Sib I) (s : Bool) (x : Fin I.n → I.E)
     (A : Matrix (Fin I.n) (Fin D.n) I.E) (xf : I.Gf) (h : IsPerp D s x A xf) (v : InfinitePlace I.F) :

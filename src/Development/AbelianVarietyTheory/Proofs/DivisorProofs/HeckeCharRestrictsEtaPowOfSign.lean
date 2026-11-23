@@ -106,7 +106,7 @@ theorem resEta_of_sign : ∀ (D : D7) (χ : (AE D)ˣ →* Circle) (N : ℕ), IsH
   have hN1' : N1 = 1 := by
     have : (N1 : ℚ) = 1 := by rw [hN1]; norm_num
     exact_mod_cast this
-  have hηc : ((η x : Circle) : ℂ) = -1 := by rw [hηx θ hθ x x1 xo, xτ, hN1']; simp
+  have hηc : ((η x : Circle) : ℂ) = -1 := simp [hηx θ hθ x x1 xo, xτ, hN1']
   have hfix : cA D (x : AE D) = x := by
     refine GlobalTheory.SplitCharExp.ext_of_chart h ?_ fun τ' => ?_
     · have e3 : finPart D (cA D (x : AE D)) = sigR (Af D.host.F) D.sp.cm.sig (finPart D (x : AE D)) :=

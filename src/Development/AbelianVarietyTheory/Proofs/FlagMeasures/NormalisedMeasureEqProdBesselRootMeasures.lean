@@ -214,7 +214,7 @@ theorem haar_smul {S : Set G} {μ : Measure G}
   refine ⟨?_, ?_, ?_, ?_⟩
   · exact Formalism.L2.SG.NGPin.sf_smul μ ht
   · intro hz
-    have h1 : (d • μ) Set.univ = 0 := by rw [hz]; simp
+    have h1 : (d • μ) Set.univ = 0 := simp [hz]
     rw [Measure.smul_apply, smul_eq_mul] at h1
     exact (mul_ne_zero h0 (Measure.measure_univ_ne_zero.mpr h0')) h1
   · rw [Measure.smul_apply, hS, smul_zero]
@@ -313,7 +313,7 @@ theorem kst_ne_top : kst X ≠ ⊤ := by
 private lemma smul_measure_ne_zero {α : Type*} [MeasurableSpace α] {c : ℝ≥0∞} {μ : Measure α} (hc : c ≠ 0)
     (hμ : μ ≠ 0) : c • μ ≠ 0 := by
   intro hz
-  have h1 : (c • μ) Set.univ = 0 := by rw [hz]; simp
+  have h1 : (c • μ) Set.univ = 0 := simp [hz]
   rw [Measure.smul_apply, smul_eq_mul] at h1
   exact (mul_ne_zero hc (Measure.measure_univ_ne_zero.mpr hμ)) h1
 

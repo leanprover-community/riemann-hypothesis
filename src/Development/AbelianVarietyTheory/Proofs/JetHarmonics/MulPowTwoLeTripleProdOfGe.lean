@@ -425,7 +425,7 @@ theorem norm_x_sub_eq_one {W : Affine K} (h₁ : ‖W.a₁‖ ≤ 1) (h₂ : ‖
     · simp [V, variableChange_a₄, ← eβ]
     · simp only [V, variableChange_a₆, inv_one, Units.val_one]
       linear_combination -k₁
-  have hΔ' : V.Δ = W.Δ := by rw [← hV, variableChange_Δ]; simp
+  have hΔ' : V.Δ = W.Δ := simp [← hV, variableChange_Δ]
   refine le_antisymm md ?_
   have ma : W.a₂ + 3 * x₁ ∈ intRing K := add_mem m₂ (mul_mem norm_three_le j₁)
   have e : V.Δ = (x₁ - x₂) * ((x₁ - x₂) * (-(W.a₁ ^ 2 + 4 * (W.a₂ + 3 * x₁)) ^ 2 *

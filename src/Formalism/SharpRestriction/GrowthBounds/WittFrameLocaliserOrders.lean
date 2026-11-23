@@ -5558,7 +5558,7 @@ theorem laurentRingMap_injective : Function.Injective (laurentRingMap R0 n) := b
   intro x hx
   have h := laurentCoordinateMap_support R0 n x
   rw [hx] at h
-  have h2 : x.coeff.support = ∅ := by rw [← h]; simp
+  have h2 : x.coeff.support = ∅ := simp [← h]
   have h3 : x.coeff = 0 := Finsupp.support_eq_empty.1 h2
   ext z
   rw [h3]; simp

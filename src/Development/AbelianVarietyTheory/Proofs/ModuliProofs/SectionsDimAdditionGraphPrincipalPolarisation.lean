@@ -216,7 +216,7 @@ theorem sectionsDim_additionGraph_principalPolarisation : Out.Laws → Out.Laws2
       rw [Category.assoc, sq, MonObj.comp_mul, MonObj.comp_pow, MonObj.comp_pow]
   have hform : FormIs Q M s := by
     refine ⟨laws.rigidity _ _ _ Q.isAb Q.isAb _ ?_, ?_⟩
-    · have e₁ : (η[Q.A] : 𝟙_ _ ⟶ Q.A) = 1 := by rw [Hom.one_def]; simp
+    · have e₁ : (η[Q.A] : 𝟙_ _ ⟶ Q.A) = 1 := simp [Hom.one_def]
       rw [e₁]
       refine (Φ _).injective (funext fun b => ?_)
       rw [hs, map_one]

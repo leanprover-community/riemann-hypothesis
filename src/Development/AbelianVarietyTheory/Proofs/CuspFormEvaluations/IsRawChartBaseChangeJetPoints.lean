@@ -90,8 +90,8 @@ theorem basis_map {S S' : Type} [CommRing S] [CommRing S'] (ψ : S →+* S') {σ
         rw [Matrix.mul_apply] at this
         exact this
     exact congrFun e ℓ'
-  have h1' : P.map ψ * M.map ψ = 1 := by rw [← Matrix.map_mul, h1]; simp
-  have h2' : M.map ψ * P.map ψ = 1 := by rw [← Matrix.map_mul, h2]; simp
+  have h1' : P.map ψ * M.map ψ = 1 := simp [← Matrix.map_mul, h1]
+  have h2' : M.map ψ * P.map ψ = 1 := simp [← Matrix.map_mul, h2]
   have key : ∀ a : σ → S', (∀ j, ∑ ℓ, a ℓ * ψ (U ℓ j) = v j) ↔ Matrix.vecMul a (M.map ψ) = v := by
     intro a
     rw [funext_iff]

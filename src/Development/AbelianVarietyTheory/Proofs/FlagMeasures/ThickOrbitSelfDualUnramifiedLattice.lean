@@ -259,7 +259,7 @@ theorem exists_close (L : LocE F E) {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ) {n : �
   have hG2 : gramT L Hm (rmul y1 A⁻¹) = Γ := by
     rw [GlobalTheory.HL.ContModel.gramT_rmul, hG1]
     calc _ = cT L (A * A⁻¹) * Γ * (A * A⁻¹) := by rw [cT_mul]; simp only [Matrix.mul_assoc]
-      _ = Γ := by rw [Matrix.mul_nonsing_inv _ hAu, cT_one]; simp
+      _ = Γ := simp [Matrix.mul_nonsing_inv _ hAu, cT_one]
   obtain ⟨g, hg, hgc, hgy⟩ := hN' (algebraMap F E ((ϖ : F) ^ e) • y)
     (algebraMap F E ((ϖ : F) ^ e) • rmul y1 A⁻¹) hy (by rw [gramT_smul, hG])
     (by rw [gramT_smul, hG2]) (by

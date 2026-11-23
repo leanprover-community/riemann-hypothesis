@@ -378,7 +378,7 @@ private theorem isHecke_Tj (k i : ℕ) (ϖ : w.adicCompletion E) : IsHecke (KGL 
     rw [hy', hd]
     calc a.val * (a'⁻¹).val * (a'.val * diagJ k ϖ i * b'.val) * ((b'⁻¹).val * b.val)
         = a.val * ((a'⁻¹).val * a'.val) * diagJ k ϖ i * (b'.val * (b'⁻¹).val) * b.val := by simp only [mul_assoc]
-      _ = _ := by rw [h1, h2]; simp
+      _ = _ := simp [h1, h2]
 
 private theorem ord_det {ϖ : w.adicCompletion E} (hϖ : IsUnifV E w ϖ) {k p : ℕ} (hp : p ≤ k) {g : GLw k w}
     (hg : Tj ℂ k (Ov E w) ϖ p g ≠ 0) :

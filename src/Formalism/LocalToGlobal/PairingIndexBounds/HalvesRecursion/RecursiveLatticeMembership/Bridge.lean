@@ -66,7 +66,7 @@ theorem local_global_comparison_holds : Bridge := by
     have h := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO.semiChar_of_HfInt T hI x hx y hy
     rw [h]
     obtain ⟨a, b, -, hab⟩ := hI x hx y hy
-    have him : (Hf D T x y).im = b := by rw [hab]; simp
+    have him : (Hf D T x y).im = b := simp [hab]
     simp only [Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO.cf, altE, HfS_apply, him]
     have e := exp_int_sign b
     push_cast at e ⊢

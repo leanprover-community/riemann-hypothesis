@@ -101,7 +101,7 @@ theorem exists_upq_mul {P Q M : ℕ} (A A' : Matrix (Fin P ⊕ Fin Q) (Fin M) �
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
       _ = (A * B)ᴴ * Formalism.UG.Jpq P Q * (A * B) := by
           rw [← h]; simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = Formalism.UG.Jpq P Q := by rw [h1]; simp
+      _ = Formalism.UG.Jpq P Q := simp [h1]
   refine ⟨(⟨g, hg⟩ : Formalism.UG.Upq P Q), ?_⟩
   show A' * B * A = A'
   rw [Matrix.mul_assoc, h2, Matrix.mul_one]

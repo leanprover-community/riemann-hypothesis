@@ -57,7 +57,7 @@ theorem exists_unitary_conj_diagonal {ι : Type} [Fintype ι] [DecidableEq ι] (
   have h2 : Uᴴ * A * U = D := by
     rw [h, Matrix.star_eq_conjTranspose]
     calc Uᴴ * (U * D * Uᴴ) * U = (Uᴴ * U) * D * (Uᴴ * U) := by simp only [Matrix.mul_assoc]
-      _ = D := by rw [h1]; simp
+      _ = D := simp [h1]
   rw [h2, hD]; rfl
 
 theorem simultaneous_diagonalisation :

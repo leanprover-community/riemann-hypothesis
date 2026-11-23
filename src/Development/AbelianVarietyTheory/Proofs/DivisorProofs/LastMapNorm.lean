@@ -261,7 +261,7 @@ theorem norm_le (s : K →+* ℂ) (hs : ∀ x, s (star x) = star (s x)) (B : V �
     (hPA : ∀ y, P (A y) = k • y) (f : V) : (s (B' (P f) (P f))).re ≤ κ * (s (B f f)).re := by
   have h := hpos (k • f - A (P f))
   have e1 : B f (A (P f)) = B' (P f) (P f) := by rw [← hB, hA, hB']
-  have e2 : s (star k) = κ := by rw [hs, hk]; simp
+  have e2 : s (star k) = κ := simp [hs, hk]
   simp only [map_sub, LinearMap.sub_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, hA, hPA, e1,
     starRingEnd_apply, RingHom.id_apply, map_mul, hk, e2, Complex.sub_re, Complex.re_ofReal_mul] at h
   nlinarith

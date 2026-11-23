@@ -72,7 +72,7 @@ theorem exists_eq_mul_corner {p : GL (Fin (m + 1)) k} (hp : IsP p) :
     ∃ u ∈ unipB k (Fin (m + 1)), ∃ h : GL (Fin m) k, p = u * corner h := by
   have hne : ∀ j : Fin m, Fin.last m ≠ j.castSucc := fun j => (Fin.castSucc_lt_last j).ne'
   set A : Matrix (Fin m) (Fin m) k := (p : Matrix (Fin (m + 1)) (Fin (m + 1)) k).submatrix Fin.castSucc Fin.castSucc
-  have he : ((-1 : k) ^ (m + m)) = 1 := by rw [← two_mul, pow_mul]; simp
+  have he : ((-1 : k) ^ (m + m)) = 1 := simp [← two_mul, pow_mul]
   have hdet : (p : Matrix (Fin (m + 1)) (Fin (m + 1)) k).det = A.det := by
     have hp' : ∀ j, (p : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j =
         (1 : Matrix (Fin (m + 1)) (Fin (m + 1)) k) (Fin.last m) j := hp

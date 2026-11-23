@@ -446,7 +446,7 @@ theorem d_dims {C' Cl Cg cb Cu cT CT C0 : ℝ} (hH : Cnt.Hyp0 D large₂ C' Cl C
 theorem aT_irr (Y : LoopTie D large₂ X u u' C1) (t : D.s.Term u u') (hG : D.s.Gterm t ≠ 0) (hrel : ¬ D.s.relevant t) : aT X t = 0 := by
   unfold aT
   rw [Y.J_irr t hG hrel]
-  have : hsNormSq (0 : X.Hpi u' →L[ℂ] X.Hpi u) = 0 := by rw [d_hsNormSq_eq]; simp
+  have : hsNormSq (0 : X.Hpi u' →L[ℂ] X.Hpi u) = 0 := simp [d_hsNormSq_eq]
   rw [this, Real.sqrt_zero]
 
 theorem d_tprod_inv {C' Cl Cg cb Cu cT CT C0 δ : ℝ} (hH : Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0)

@@ -117,7 +117,7 @@ theorem interlaceQ (R : Ranks) (h : HCParam R) (n : ℕ) (hn : n < R.N R.m - 1) 
       rw [hρ] at hnQ
       by_cases hq0 : q = 0
       · have hnk : n < R.k := by
-          have : a = 0 := by rw [← hdm, hρ, hq0]; simp
+          have : a = 0 := simp [← hdm, hρ, hq0]
           omega
         have hnk' : n = R.k - 1 := by omega
         have g0 := h.u_last_gt (by omega) (by omega)
@@ -138,7 +138,7 @@ theorem interlaceQ (R : Ranks) (h : HCParam R) (n : ℕ) (hn : n < R.N R.m - 1) 
         obtain ⟨q', hq'⟩ : ∃ q', q = q' + 1 := Nat.exists_eq_succ_of_ne_zero hq0
         have hi0 : (n - R.k) / (R.t + 1) = q' := by
           have : n - R.k = (R.t + 1) * q' + R.t := by
-            have h3 : a = (R.t + 1) * (q' + 1) := by rw [← hdm, hρ, hq']; simp
+            have h3 : a = (R.t + 1) * (q' + 1) := simp [← hdm, hρ, hq']
             rw [Nat.mul_add] at h3
             omega
           rw [this, Nat.mul_add_div (Nat.succ_pos _)]

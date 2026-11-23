@@ -214,7 +214,7 @@ theorem relevant {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hz' : i
     have e : r - b.castSucc.val = (r - b.succ.val) + 1 := by
       have := b.isLt
       simp only [Fin.val_castSucc, Fin.val_succ]; omega
-    have e2 : (-1 : ℂ) ^ (r - b.succ.val) * (-1 : ℂ) ^ (r - b.succ.val) = 1 := by rw [← mul_pow]; simp
+    have e2 : (-1 : ℂ) ^ (r - b.succ.val) * (-1 : ℂ) ^ (r - b.succ.val) = 1 := simp [← mul_pow]
     rw [ent, e, pow_succ]
     linear_combination (-A b.castSucc b.succ) * e2
   rw [hneg, neg_inj] at hcore

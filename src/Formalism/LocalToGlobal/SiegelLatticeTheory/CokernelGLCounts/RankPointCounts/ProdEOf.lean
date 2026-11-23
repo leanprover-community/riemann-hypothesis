@@ -208,7 +208,7 @@ theorem mem_CZ_glob (hA : ∀ p, Agree δ M p) (L U : Formalism.L2.SG.PairVal.Ma
       rw [← hgm] at h
       rw [h]
       calc ((a' : Formalism.L2.SG.PairVal.GLR D) : Formalism.L2.SG.PairVal.MatR D)
-          = (L * L⁻¹) * (a' : Formalism.L2.SG.PairVal.MatR D) * (L * L⁻¹) := by rw [hLi.2.2]; simp
+          = (L * L⁻¹) * (a' : Formalism.L2.SG.PairVal.MatR D) * (L * L⁻¹) := simp [hLi.2.2]
         _ = L * (L⁻¹ * (a' : Formalism.L2.SG.PairVal.MatR D) * L) * L⁻¹ := by simp only [Matrix.mul_assoc]
     have eb' : b' = U⁻¹ * b * U := by
       have h1 : gm * ptMat w * (U * b' * U⁻¹) = ptMat w := by
@@ -224,7 +224,7 @@ theorem mem_CZ_glob (hA : ∀ p, Agree δ M p) (L U : Formalism.L2.SG.PairVal.Ma
       have e := bOf_unique w (g : Formalism.L2.SG.PairVal.GLR D) _ h1
       rw [← hb'] at e
       rw [e]
-      calc b' = (U⁻¹ * U) * b' * (U⁻¹ * U) := by rw [hUi.2.1]; simp
+      calc b' = (U⁻¹ * U) * b' * (U⁻¹ * U) := simp [hUi.2.1]
         _ = U⁻¹ * (U * b' * U⁻¹) * U := by simp only [Matrix.mul_assoc]
     obtain ⟨l, ρ, hl, hρ, hZl⟩ := hloc p
     obtain ⟨el, eρ⟩ := uniq δ M u u' (hA p) _ b' ha'lo hb'up l ρ (fun i => hl.1 i) (fun i => hρ.1 i) hZl
@@ -253,7 +253,7 @@ theorem mem_CZ_glob (hA : ∀ p, Agree δ M p) (L U : Formalism.L2.SG.PairVal.Ma
     refine ⟨a', ?_, ha'lo, U⁻¹ * b * U, hb'up, ?_, fun p => ⟨_, _, (hp p).1, (hp p).2,
       move δ M u u' (hA p) a'm (U⁻¹ * b * U) ha'lo hb'up⟩⟩
     · show gm = L⁻¹ * a'm * L
-      calc gm = (L⁻¹ * L) * gm * (L⁻¹ * L) := by rw [hLi.2.1]; simp
+      calc gm = (L⁻¹ * L) * gm * (L⁻¹ * L) := simp [hLi.2.1]
         _ = L⁻¹ * a'm * L := by simp only [ha'm, Matrix.mul_assoc]
     · show a'm * ZhatOM Zh * (U⁻¹ * b * U) = ZhatOM Zh
       rw [hZ]

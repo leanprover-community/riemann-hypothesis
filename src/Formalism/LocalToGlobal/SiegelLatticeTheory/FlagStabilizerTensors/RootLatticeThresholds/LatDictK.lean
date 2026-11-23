@@ -147,7 +147,7 @@ theorem termK {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) 
         rw [← hmap']
         constructor
         · rintro ⟨z, hz, hzy⟩
-          have : t.lin.symm y = z := by rw [← hzy]; simp
+          have : t.lin.symm y = z := simp [← hzy]
           rw [this]; exact hz
         · intro h
           exact ⟨t.lin.symm y, h, by simp⟩

@@ -54,7 +54,7 @@ theorem nabs_le_of_valuation_le {x y : kˣ} (h : valuation k (x : k) ≤ valuati
   obtain ⟨ν, hν, h1⟩ := exists_isUnitVol k
   have hx := measureReal_cball ν x
   have hy := measureReal_cball ν y
-  have h2 : ν.real (𝒪[k] : Set k) = 1 := by rw [Measure.real, h1]; simp
+  have h2 : ν.real (𝒪[k] : Set k) = 1 := simp [Measure.real, h1]
   rw [h2, mul_one] at hx hy
   rw [← hx, ← hy]
   have h3 : cball x ⊆ cball y := fun z hz => le_trans (show valuation k z ≤ _ from hz) h

@@ -225,7 +225,7 @@ theorem mul_mem_ring_of_valuation {P : Place k K} {t z : K} {n : ℤ}
   rw [← P.valuation_le_one_iff, map_mul, ht]
   calc WithZero.exp (-n) * P.valuation z ≤ WithZero.exp (-n) * WithZero.exp n :=
         mul_le_mul' le_rfl hz
-    _ = 1 := by rw [← WithZero.exp_add]; simp
+    _ = 1 := simp [← WithZero.exp_add]
 
 noncomputable def residueMap (D : Divisor k K) (P : Place k K) {t : K}
     (ht : P.valuation t = WithZero.exp (-(D P + 1))) :

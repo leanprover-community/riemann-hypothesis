@@ -89,6 +89,6 @@ theorem localTerm_eq : ∀ (q : ℕ), 0 < q → ∀ (n : ℕ) (α β : Fin n →
   calc _ = (((q : ℝ) ^ GlobalTheory.CellDec.wtS n v * (A * A) : ℝ) : ℂ) *
         (schurAt (fun i => (v i).toNat) α * conj (schurAt (fun i => (v i).toNat) β) *
           ((q : ℂ) ^ (-(x : ℂ))) ^ (∑ i, (v i).toNat)) := by push_cast; ring
-    _ = _ := by rw [key]; simp
+    _ = _ := simp [key]
 
 end GlobalTheory.ZEulLocal

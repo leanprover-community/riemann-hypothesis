@@ -44,7 +44,7 @@ namespace GlobalTheory.TorusSign
 
 theorem cmHostUnit_add_conj_eq_one {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) :
     H.w0 + H.bar H.w0 = 1 := by
-  have hsq : (H.bar H.rt) ^ 2 = H.rt ^ 2 := by rw [← map_pow, H.rt_sq]; simp
+  have hsq : (H.bar H.rt) ^ 2 = H.rt ^ 2 := simp [← map_pow, H.rt_sq]
   have hne : H.bar H.rt ≠ H.rt := by
     intro h
     obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance

@@ -63,7 +63,7 @@ theorem open_crit : ∀ (R : Type) [CommRing R] (X Y : Scheme.{0}) (j : X ⟶ Y)
     have haf : Flat a := MorphismProperty.of_isPullback ha.flip hbf
     obtain ⟨x', hx1, hx2⟩ := Scheme.exists_preimage_of_isPullback (ha.paste_vert hb) x
       (IsLocalRing.closedPoint R') (PrimeSpectrum.ext hP.symm)
-    have hx2' : q' (j' x') = IsLocalRing.closedPoint R' := by rw [← hx2]; simp
+    have hx2' : q' (j' x') = IsLocalRing.closedPoint R' := simp [← hx2]
     let u : U.toScheme := ⟨x', hcl x' hx2'⟩
     have hu : U.ι u = x' := rfl
     have hw : (U.ι ≫ a) ≫ j = (U.ι ≫ j') ≫ b := by rw [Category.assoc, ha.w, Category.assoc]

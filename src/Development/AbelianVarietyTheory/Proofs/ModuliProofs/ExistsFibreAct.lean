@@ -68,11 +68,11 @@ theorem exists_lift_act {O : Type} [CommRing O] {S S' : Scheme.{0}} {G : Over S}
   · haveI := a.hom c
     refine ⟨?_, ?_⟩
     · obtain ⟨e₁, he₁⟩ := key (𝟙_ (Over S'))
-      have o : η[G'] = (1 : 𝟙_ (Over S') ⟶ G') := by rw [Hom.one_def]; simp
+      have o : η[G'] = (1 : 𝟙_ (Over S') ⟶ G') := simp [Hom.one_def]
       apply e₁.injective
       rw [he₁, o, map_one, MonObj.one_comp]
     · obtain ⟨e₂, he₂⟩ := key (G' ⊗ G')
-      have m₁ : μ[G'] = fst G' G' * snd G' G' := by rw [Hom.mul_def]; simp
+      have m₁ : μ[G'] = fst G' G' * snd G' G' := simp [Hom.mul_def]
       have m₂ : (r c ⊗ₘ r c) ≫ μ[G'] = (fst G' G' ≫ r c) * (snd G' G' ≫ r c) := by
         rw [Hom.mul_def]; congr 1
       apply e₂.injective

@@ -184,7 +184,7 @@ theorem cons (hgrp : ∀ k k' : GL (Fin (r + c)) F, k ∈ parJ O ϖ r c → k' �
     simpa using this
   have hkq : k' = q * k := (mul_left_cancel (a := p') (by rw [← mul_assoc]; exact e)).symm
   have hqJ : q ∈ parJ O ϖ r c := by
-    have : q = k' * k⁻¹ := by rw [hkq]; simp
+    have : q = k' * k⁻¹ := simp [hkq]
     rw [this]
     exact (hgrp _ _ hk' (hgrp _ _ hk hk).2).1
   obtain ⟨h1, h2⟩ := hfix q hqJ hq

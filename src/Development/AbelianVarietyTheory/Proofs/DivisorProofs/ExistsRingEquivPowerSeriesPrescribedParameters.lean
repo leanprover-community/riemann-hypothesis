@@ -98,7 +98,7 @@ theorem exists_ringEquiv_chartRing : ∀ (R : Type) [CommRing R] [IsRegularLocal
   set W := Submodule.span (ResidueField R) (Set.range v) with hW
   have hWd : Module.finrank (ResidueField R) (CotangentSpace R ⧸ W) = d - m := by
     have h1 := Submodule.finrank_quotient_add_finrank W
-    have h2 : Module.finrank (ResidueField R) W = m := by rw [finrank_span_eq_card hv]; simp
+    have h2 : Module.finrank (ResidueField R) W = m := simp [finrank_span_eq_card hv]
     omega
   let b := Module.finBasisOfFinrankEq (ResidueField R) (CotangentSpace R ⧸ W) hWd
   choose w hw using fun j => W.mkQ_surjective (b j)

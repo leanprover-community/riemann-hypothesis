@@ -49,7 +49,7 @@ theorem conj_lie {A B G G' Y : Mx n} (hAB : A * B = 1) (hG : Aᴴ * G * A = G') 
         simp only [conjTranspose_mul, Matrix.mul_assoc]
     _ = Aᴴ * (Yᴴ * G + G * Y) * A := by
         rw [hAB]; simp only [conjTranspose_one, Matrix.mul_one, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-    _ = 0 := by rw [hY']; simp
+    _ = 0 := simp [hY']
 
 theorem conj_UH {A B G G' g : Mx n} (hAB : A * B = 1) (hG : Aᴴ * G * A = G') (hg : g ∈ Formalism.QuantumDeterminants.UH G) :
     B * g * A ∈ Formalism.QuantumDeterminants.UH G' := by

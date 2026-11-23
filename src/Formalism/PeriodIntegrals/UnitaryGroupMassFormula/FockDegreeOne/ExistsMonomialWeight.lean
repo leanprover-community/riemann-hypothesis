@@ -289,7 +289,7 @@ theorem core (hK : OpsK) (hL : HarmIff) (μ : Ix p q → ℚ) (v : Pol p q r s)
     intro h
     rw [side_sb] at h
     have h1 := (side_lp a d).1 hd
-    have h2 : ¬ linePos ((a, c) : Ln p q r s) = true := by rw [hc]; simp
+    have h2 : ¬ linePos ((a, c) : Ln p q r s) = true := simp [hc]
     exact h2 ((side_lp a c).2 (h1.trans h.symm))
   unfold gg at hg
   rwa [if_pos ⟨hnsb, hd⟩] at hg

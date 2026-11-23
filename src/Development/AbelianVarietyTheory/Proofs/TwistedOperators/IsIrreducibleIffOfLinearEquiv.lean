@@ -266,7 +266,7 @@ theorem smInd_stages {P Q : Subgroup G} (hPQ : P ≤ Q) {P' : Subgroup H} (π : 
         have h3 := f.1.2 ⟨j p, (hP _).2 h2⟩ (j x)
         have h4 := hσ (j p) ((hP _).2 h2) h2 (κ.symm (f.1.1 (j x)))
         simp only [hπj, map_one, LinearEquiv.apply_symm_apply] at h4
-        have h5 : D (1, (p : H) * x) = D (1, (p : H)) * D (1, x) := by rw [← map_mul]; simp
+        have h5 : D (1, (p : H) * x) = D (1, (p : H)) * D (1, x) := simp [← map_mul]
         simp only [map_mul, Subgroup.coe_mul, h5]
         rw [h3, h4, map_smul, map_smul, κ.symm_apply_apply, smul_smul]
         congr 1
@@ -274,7 +274,7 @@ theorem smInd_stages {P Q : Subgroup G} (hPQ : P ≤ Q) {P' : Subgroup H} (π : 
         field_simp)
       (by
         filter_upwards [hD, (hj.tendsto' 1 1 (by simp)).eventually (eventually_of_smooth f)] with u h1 h2 x
-        have h5 : D (1, x * u) = D (1, x) * D (1, u) := by rw [← map_mul]; simp
+        have h5 : D (1, x * u) = D (1, x) * D (1, u) := simp [← map_mul]
         simp only [map_mul, Subgroup.coe_mul, h5, h1, mul_one, h2])
     refine ⟨t, fun q => ?_⟩
     have hp : ((q * (j (π q).2)⁻¹ : Q) : G) ∈ P := (hP _).2 (by simp [hπj])

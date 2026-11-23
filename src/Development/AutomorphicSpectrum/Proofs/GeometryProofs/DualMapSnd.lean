@@ -69,7 +69,7 @@ theorem secring : ∀ (B B' : Type) [CommRing B] [CommRing B'] (ψ : B →+* B')
 theorem eta : ∀ (X X' : Scheme.{0}) (G : Over X) [GrpObj G] (G' : Over X') [GrpObj G'] (f : X' ⟶ X) (φ : G'.left ⟶ G.left), IsGrpPullback G' G f φ → (η[G']).left ≫ φ = f ≫ (η[G]).left := by
   intro X X' G _ G' _ f φ h
   have e := congrArg (fun z => z.left) (map_one (pushHom h (𝟙_ (Over X'))))
-  have e₁ : (1 : 𝟙_ (Over X') ⟶ G') = η[G'] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over X') ⟶ G') = η[G'] := simp [Hom.one_def]
   rw [e₁] at e
   refine e.trans ?_
   show (toUnit _ ≫ η[G]).left = _

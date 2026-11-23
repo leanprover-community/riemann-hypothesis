@@ -265,7 +265,7 @@ theorem norm_key_of_frame : ∀ κ : GlobalTheory.KeyCl.Rule, GlobalTheory.KeyCl
       have h := a.u.ex_add 0 0
       rw [add_zero] at h
       exact mul_eq_left.1 h.symm
-    have e₁ : (1 : 𝟙_ (Over (Sp ℂ)) ⟶ a.A) = η[a.A] := by rw [Hom.one_def]; simp
+    have e₁ : (1 : 𝟙_ (Over (Sp ℂ)) ⟶ a.A) = η[a.A] := simp [Hom.one_def]
     rw [h₀, e₁]
     rfl
   have hRig : a.u.IsRig x'.rig := by

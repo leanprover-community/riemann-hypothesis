@@ -58,7 +58,7 @@ theorem isSkew_conj {r : ℕ} {D D' k l Y : Matrix (Fin r) (Fin r) ℂ} (hlk : l
     (h : kᵀ * D * cj k = D') (hY : IsSkew D' Y) : IsSkew D (k * Y * l) := by
   unfold IsSkew at *
   have e1 : kᵀ * D = D' * cj l := by
-    have : cj k * cj l = 1 := by rw [← cj_mul, hkl]; simp
+    have : cj k * cj l = 1 := simp [← cj_mul, hkl]
     calc kᵀ * D = kᵀ * D * (cj k * cj l) := by rw [this, Matrix.mul_one]
       _ = D' * cj l := by rw [← h]; simp only [Matrix.mul_assoc]
   have e2 : D * cj k = lᵀ * D' := by
@@ -69,7 +69,7 @@ theorem isSkew_conj {r : ℕ} {D D' k l Y : Matrix (Fin r) (Fin r) ℂ} (hlk : l
         simp only [Matrix.transpose_mul, cj_mul, Matrix.mul_assoc]
     _ = lᵀ * (Yᵀ * D' + D' * cj Y) * cj l := by
         rw [e1, e2]; simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-    _ = 0 := by rw [hY]; simp
+    _ = 0 := simp [hY]
 
 theorem trace_conj {r : ℕ} {k l Y : Matrix (Fin r) (Fin r) ℂ} (hlk : l * k = 1) :
     (k * Y * l).trace = Y.trace := by
@@ -143,7 +143,7 @@ theorem frame_facts {E : Type} [Field E] {r p : ℕ} (τ : E →+* ℂ) (G : Mat
   have hiM : M⁻¹ * M = 1 := Matrix.nonsing_inv_mul _ hu
   refine ⟨hMi, hiM, ?_⟩
   have c1 : (M⁻¹)ᵀ * Mᵀ = 1 := by rw [← Matrix.transpose_mul, hMi, Matrix.transpose_one]
-  have c2 : cj M * cj (M⁻¹) = 1 := by rw [← cj_mul, hMi]; simp
+  have c2 : cj M * cj (M⁻¹) = 1 := simp [← cj_mul, hMi]
   rw [← h]
   calc (M⁻¹)ᵀ * (Mᵀ * G.map τ * cj M) * cj M⁻¹ = ((M⁻¹)ᵀ * Mᵀ) * G.map τ * (cj M * cj M⁻¹) := by
         simp only [Matrix.mul_assoc]
@@ -174,7 +174,7 @@ theorem cjW_cjW {ι : Type} [Fintype ι] {r : ℕ} {k l : ι → Matrix (Fin r) 
   ext ⟨t, a, b⟩
   have : l t * (k t * blk Y t * l t) * k t = blk Y t := by
     calc _ = (l t * k t) * blk Y t * (l t * k t) := by simp only [Matrix.mul_assoc]
-      _ = _ := by rw [h]; simp
+      _ = _ := simp [h]
   have h2 : blk (cjW l k (cjW k l Y)) t = blk Y t := by rw [blk_cjW, blk_cjW, this]
   exact congrArg (fun A : Matrix (Fin r) (Fin r) ℂ => A a b) h2
 
@@ -187,7 +187,7 @@ theorem inner_theta {ι : Type} [Fintype ι] {r : ℕ} (d : Fin r → ℝ) (hd :
     have h := congrArg (fun A : Matrix (Fin r) (Fin r) ℂ => A a b) (hY t)
     simp only [IsSkew, Matrix.add_apply, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.transpose_apply,
       Matrix.map_apply, blk, Matrix.of_apply, Matrix.zero_apply] at h
-    have hb : (d b : ℂ) * d b = 1 := by rw [← Complex.ofReal_mul, hd]; simp
+    have hb : (d b : ℂ) * d b = 1 := simp [← Complex.ofReal_mul, hd]
     rw [map_mul, map_mul, Complex.conj_ofReal, Complex.conj_ofReal]
     linear_combination (d b : ℂ) * h - Y (t, b, a) * hb
   have hc : ∀ u w : ℂ, ⟪u, w⟫_ℝ = ((starRingEnd ℂ) u * w).re := fun u w => by
@@ -224,7 +224,7 @@ theorem mem_comap_iff {E : Type} [Field E] [NumberField E] [IsCMField E] {r p : 
   · have := isSkew_conj h1 h2 h3 h
     have e2 : (mat x τ)⁻¹ * (mat x τ * blk Y τ * (mat x τ)⁻¹) * mat x τ = blk Y τ := by
       calc _ = ((mat x τ)⁻¹ * mat x τ) * blk Y τ * ((mat x τ)⁻¹ * mat x τ) := by simp only [Matrix.mul_assoc]
-        _ = _ := by rw [h2]; simp
+        _ = _ := simp [h2]
     rwa [e2] at this
   · exact isSkew_conj h2 h1 (by rw [← gram_eq]; exact hx τ) h
 

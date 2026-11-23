@@ -105,7 +105,7 @@ theorem chainUp_of : ∀ D : D7, MetEx D → ParBound D → ChainL D → StepUp 
   intro D hMet hPB hCL hSU c hc s₀ hs₀ k hk s Θ hR
   refine ⟨reach_is hs₀ hR, fun ipD₀ ip₀ ipD ip h₀ h u B hu => ?_⟩
   have hb := hPB c hc 0 (Nat.zero_le _) s₀ hs₀ u B hu
-  have hr : s₀.V.rank = c.n := by rw [hs₀.rank]; simp
+  have hr : s₀.V.rank = c.n := simp [hs₀.rank]
   rw [hr] at hb
   exact (thetaChain_upward_induction_fixed_metric hMet hSU hc hs₀ h₀ hu (fun k hk => hCL c hc B hb k hk) hR hk).2 ipD ip h
 

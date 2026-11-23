@@ -332,7 +332,7 @@ theorem lintegral_siegel_le (μ : Measure G) [μ.IsHaarMeasure] (P K : Subgroup 
     have hmK : m.1 ∈ K := hm ▸ K.mul_mem hk' (K.inv_mem k.2)
     have hp : p = ⟨q, hqP⟩ * m * a t := by rw [mul_assoc, ← hc m hmK, ← mul_assoc, mul_inv_cancel_left]
     have hpT : p ∈ T := ⟨_, ⟨⟨q, hqP⟩, hq, m, hmK, rfl⟩, _, ⟨t, rfl⟩, hp.symm⟩
-    have hτp : τ p = t := by rw [hp, hτm, hτm, hq0, hτL m hmK, hτa]; simp
+    have hτp : τ p = t := simp [hp, hτm, hτm, hq0, hτL m hmK, hτa]
     rw [indicator_of_mem hg, indicator_of_mem hpT, hτp, indicator_of_mem ht, e]
     exact hf q hq t ht k' hk'
   · rw [indicator_of_notMem hg]

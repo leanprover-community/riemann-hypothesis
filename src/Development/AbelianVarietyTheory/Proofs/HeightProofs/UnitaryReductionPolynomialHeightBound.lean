@@ -221,7 +221,7 @@ theorem exists_unitary_to_finite : ∀ (E : Type) [Field E] [NumberField E] [Num
           simp only [transpose_mul, h3, Matrix.mul_assoc]
       _ = (P t * Y)ᵀ * G * (P t * Y).map star := by
           rw [h1]; simp only [transpose_mul, h3, Matrix.mul_assoc]
-      _ = G := by rw [h2, Matrix.map_one _ (star_zero _) (star_one _)]; simp
+      _ = G := simp [h2, Matrix.map_one _ (star_zero _) (star_one _)]
   · have hb0 : 0 ≤ b t := (house_nonneg _).trans (hb t i j)
     constructor
     · have := h₁ u ((P t).map star)ᵀ (b t) (fun i j => (house_star _).trans_le (hb t j i)) i j

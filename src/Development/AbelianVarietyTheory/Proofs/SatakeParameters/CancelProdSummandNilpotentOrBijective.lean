@@ -133,7 +133,7 @@ theorem linearEquiv_cancel_of_nilpotent_or_bijective
       · have hsub : ∀ x : P, x = 0 := by
           intro x
           apply hinj.iterate n
-          have h3 : (d ^ n) x = (d ^ n) 0 := by rw [hn]; simp
+          have h3 : (d ^ n) x = (d ^ n) 0 := simp [hn]
           simpa [Module.End.pow_apply] using h3
         exact ⟨hinj, fun y => ⟨0, by rw [map_zero, hsub y]⟩⟩
       · exact h2

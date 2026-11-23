@@ -327,7 +327,7 @@ theorem psiF_cond (hF : IsNonarchimedeanLocalField F) (L : LocE F E) (g : SplitG
     rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
     rintro ⟨w, hw⟩
     apply hx
-    have h1 : ((w⁻¹ : (𝒪[F])ˣ) : 𝒪[F]) * (⟨x⁻¹, hxi⟩ : 𝒪[F]) = 1 := by rw [← hw]; simp
+    have h1 : ((w⁻¹ : (𝒪[F])ˣ) : 𝒪[F]) * (⟨x⁻¹, hxi⟩ : 𝒪[F]) = 1 := simp [← hw]
     have h2 := congrArg Subtype.val h1
     push_cast at h2
     have h3 : (((w⁻¹ : (𝒪[F])ˣ) : 𝒪[F]) : F) = x := by

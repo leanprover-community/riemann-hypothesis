@@ -71,7 +71,7 @@ theorem abs_modelWt_le {E : Type} [Field E] [NumberField E] [IsCMField E] {H : R
     (la : AllWt.Weight Dw) (k : U.Comp) (τ : (U.X k).Ψ) (i : Fin r) :
     |((AllWt.modelWt U (wtOf Dw la 0) k τ i : ℤ) : ℝ)| ≤ ∑ τ, ∑ i, |(la τ i : ℝ)| := by
   unfold AllWt.modelWt
-  have h2 : (wtOf Dw la 0).2 / 2 = 0 := by rw [AllWt.wtOf_snd]; simp
+  have h2 : (wtOf Dw la 0).2 / 2 = 0 := simp [AllWt.wtOf_snd]
   split_ifs
   · rw [h2, add_zero]; exact abs_wtOf_le la _
   · rw [h2, sub_zero]; push_cast; rw [abs_neg]; exact abs_wtOf_le la _
@@ -126,7 +126,7 @@ theorem berg_sup_rank : GlobalTheory.CovTop.Hypotheses2 → ∃ C : ℝ, 0 ≤ C
     have hint : S = (((∑ τ, ∑ k, |la τ k|) : ℤ) : ℝ) := by rw [hSdef]; push_cast; rfl
     have hz : (0 : ℤ) ≤ ∑ τ, ∑ k, |la τ k| := Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => abs_nonneg _
     rcases hz.eq_or_lt with h0 | h1
-    · have : S = 0 := by rw [hint, ← h0]; simp
+    · have : S = 0 := simp [hint, ← h0]
       rw [hw, this]; simp; linarith
     · have hS1 : 1 ≤ S := by rw [hint]; exact_mod_cast h1
       have hwle : w ≤ 3 * (n * S) := by rw [hw]; nlinarith

@@ -83,7 +83,7 @@ theorem flt_g_pascal (R : Type*) [CommRing R] {σ : Type*} (m be : σ →₀ ℕ
     rw [hrest1, hrest2]
     obtain ⟨b, hb⟩ : ∃ b, be a = b + 1 := ⟨be a - 1, by omega⟩
     have hA : (m + Finsupp.single a 1 : σ →₀ ℕ) a = m a + 1 := by simp
-    have hB : (be - Finsupp.single a 1 : σ →₀ ℕ) a = b := by rw [Finsupp.tsub_apply, hb]; simp
+    have hB : (be - Finsupp.single a 1 : σ →₀ ℕ) a = b := simp [Finsupp.tsub_apply, hb]
     rw [hA, hB, hb, Nat.choose_succ_succ]
     rcases Nat.lt_or_ge (m a) b with hlt | hge
     · rw [Nat.choose_eq_zero_of_lt hlt, Nat.choose_eq_zero_of_lt (by omega : m a < b + 1)]

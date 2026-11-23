@@ -44,7 +44,7 @@ theorem orth_stab {K : Type} [Group K] (κ : K →* Module.End ℂ U) (hi : ∀ 
     (Y : Submodule ℂ U) (hY : ∀ k, ∀ y ∈ Y, κ k y ∈ Y) (k : K) (z : U) (hz : z ∈ Yᗮ) : κ k z ∈ Yᗮ := by
   rw [Submodule.mem_orthogonal] at hz ⊢
   intro y hy
-  have e : y = κ k (κ k⁻¹ y) := by rw [← mul_apply_eq_comp, ← map_mul]; simp
+  have e : y = κ k (κ k⁻¹ y) := simp [← mul_apply_eq_comp, ← map_mul]
   rw [e, hi]
   exact hz _ (hY _ _ hy)
 

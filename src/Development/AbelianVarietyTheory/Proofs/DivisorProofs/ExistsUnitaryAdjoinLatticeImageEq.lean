@@ -216,7 +216,7 @@ theorem exists_unitary_matLat_eq : ∀ {O K : Type} [CommRing O] [IsDomain O] [I
   have hcinv : (τ ((x⁻¹ : Aˣ) : A) * ((x⁻¹ : Aˣ) : A)) * (τ x * x) = 1 := by
     calc
       _ = (τ ((x⁻¹ : Aˣ) : A) * τ (x : A)) * (((x⁻¹ : Aˣ) : A) * (x : A)) := by ac_rfl
-      _ = 1 := by rw [← map_mul]; simp
+      _ = 1 := simp [← map_mul]
   have hc'M : ∀ v ∈ M, (τ ((x⁻¹ : Aˣ) : A) * ((x⁻¹ : Aˣ) : A) : A).1 *ᵥ v ∈ M := by
     intro v hv
     rw [← hpM] at hv

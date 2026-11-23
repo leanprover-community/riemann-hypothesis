@@ -48,7 +48,7 @@ variable {R : Type} [CommRing R]
 
 theorem relY_conj_imp (F : Shv R) (n : ℤ) {A B A' B' : HC R} (g : A ⟶ B) (g' : A' ⟶ B') (a : A ≅ A') (b : B ≅ B')
     (h : g ≫ b.hom = a.hom ≫ g') : Tri.RelY (Yres R F) n g → Tri.RelY (Yres R F) n g' := by
-  have hg' : g' = a.inv ≫ g ≫ b.hom := by rw [h]; simp
+  have hg' : g' = a.inv ≫ g ≫ b.hom := simp [h]
   rintro ⟨hs, hi⟩
   refine ⟨fun y => ?_, fun x1 x2 hx => ?_⟩
   · obtain ⟨x, hx⟩ := hs (a.hom ≫ y)

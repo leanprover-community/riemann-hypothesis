@@ -71,7 +71,7 @@ theorem finsum_linear_combination_four {α : Type} {f g h i : α → ℝ} (hf : 
 
 theorem two_log_norm {E A : Type} [Field E] [NormedField A] (j : E →+* A) {r : E} {d : ℕ}
     (hr : r ^ 2 = -(d : E)) : 2 * Real.log ‖j r‖ = Real.log ‖(d : A)‖ := by
-  have h1 : (j r) ^ 2 = -(d : A) := by rw [← map_pow, hr]; simp
+  have h1 : (j r) ^ 2 = -(d : A) := simp [← map_pow, hr]
   have h2 : ‖j r‖ ^ 2 = ‖(d : A)‖ := by rw [← norm_pow, h1, norm_neg]
   rw [← h2, Real.log_pow]
   norm_num

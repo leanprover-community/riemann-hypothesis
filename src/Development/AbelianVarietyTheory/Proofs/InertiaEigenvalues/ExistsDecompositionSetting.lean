@@ -64,7 +64,7 @@ theorem span_eq_top_of_trace_eq {Γ k : Type} [Group Γ] [Field k] {r : ℕ}
     rw [LinearMap.mem_ker] at hc ⊢
     have h1 : ∀ y : Γ, (L0 c * mat ρ y).trace = 0 := by
       intro y
-      have e1 : (L c * mat σ y).trace = 0 := by rw [hc]; simp
+      have e1 : (L c * mat σ y).trace = 0 := simp [hc]
       rw [← e1]
       simp only [L, L0, Finsupp.linearCombination_apply, Finsupp.sum, Finset.sum_mul, Matrix.smul_mul,
         Matrix.trace_sum, Matrix.trace_smul, mat_mul, ht]

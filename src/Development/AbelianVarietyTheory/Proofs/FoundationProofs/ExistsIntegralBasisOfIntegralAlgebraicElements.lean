@@ -350,7 +350,7 @@ theorem okbasis : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (
     (IsScalarTower.algebraMap_apply ℤ_[p] ℚ_[p] Ω z).symm.trans (hzp z).symm
   let w : Valuation L ℝ≥0 := v.comap (algebraMap L Ω)
   have hw : ∀ x : L, w x = v (x : Ω) := fun x => rfl
-  have hwp : w (p : L) = v (p : Ω) := by rw [hw]; simp
+  have hwp : w (p : L) = v (p : Ω) := simp [hw]
   obtain ⟨E, F, π, κ, hE, hπ, hκ, hu, hsp⟩ := exists_basis (p := p) w
     (fun z => by rw [hw, hf, hzp]; exact hle z) (hwp ▸ h0) (hwp ▸ h1)
   choose lam hlam using fun t => hsp ⟨e t, IntermediateField.subset_adjoin _ _ ⟨t, rfl⟩⟩ ((hv _).2 (he t).1)

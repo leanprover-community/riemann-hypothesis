@@ -65,7 +65,7 @@ theorem int_bezout_derivative_of_separable (f : ℤ[X])
     calc _ = C ((c1 : ℚ) * (c2 : ℚ)) *
             (a * map (Int.castRingHom ℚ) f + b * derivative (map (Int.castRingHom ℚ) f)) := by
           rw [C_mul]; simp only [eq_intCast]; ring
-      _ = _ := by rw [hab, mul_one]; simp
+      _ = _ := simp [hab, mul_one]
 
 theorem sep_int_poly_root_mod_prime_sq :
     ∀ f : ℤ[X], 0 < f.natDegree → (f.map (Int.castRingHom ℚ)).Separable →

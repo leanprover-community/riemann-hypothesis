@@ -298,7 +298,7 @@ theorem slope_le_max_slope {K V ι : Type} [Field K] [NumberField K] [StarRing K
     muDef b X N ≤ muMaxDef b X N := by
   have hne : N ≠ ⊥ := by
     rintro rfl
-    have h0 : (⊥ : Submodule K V) = ⊤ := by rw [← hsp]; simp
+    have h0 : (⊥ : Submodule K V) = ⊤ := simp [← hsp]
     have : Subsingleton (Submodule K V) := subsingleton_of_bot_eq_top h0
     have : Subsingleton V := (Submodule.subsingleton_iff K).1 inferInstance
     have := Module.finrank_eq_card_basis b

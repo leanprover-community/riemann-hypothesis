@@ -524,7 +524,7 @@ theorem lift_regular {d : Q.NFData P (RA P Bs)} (hD : P5.IsData P Bs.z Bs.z' Bs.
     unfold LevelData.Tvl
     rw [hL.2.1 l, hdL.2.1 l, hL.2.2.2.2.1 l, hdL.2.2.2.2.1 l, hL.2.2.2.2.2.1 l, hdL.2.2.2.2.2.1 l]
   set s : ℂ := M.sgn P l0 with hs
-  have hss : s * s = 1 := by rw [hs, M.sgn, ← mul_pow]; simp
+  have hss : s * s = 1 := simp [hs, M.sgn, ← mul_pow]
   set W : RA P Bs := d.QQ y 0 1 * d.L.Avr y + d.QQ y 1 1 * d.L.Bvr y with hW
   have hbM : TL.bM L st y = L.ζi * (s • W) := by
     unfold TL.bM

@@ -147,7 +147,7 @@ theorem covol_rk_eq (α : G →+ E) (β : G →+ F) (hn : ∀ g, ‖β g‖ = �
   have hinj : Function.Injective τf := by
     set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
     intro y hy
-    have : ‖(y : E)‖ = 0 := by rw [← hnorm, hy]; simp
+    have : ‖(y : E)‖ = 0 := simp [← hnorm, hy]
     exact Subtype.ext (norm_eq_zero.mp this)
   have hsurj : Function.Surjective τf := by
     rintro ⟨z, hz⟩

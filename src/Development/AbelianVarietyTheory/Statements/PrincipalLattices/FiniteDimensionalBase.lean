@@ -169,7 +169,7 @@ theorem exists_tangent_over {R R' : Type} [CommRing R] [CommRing R'] (f : R →+
     ext a <;> simp [Chart.dualMapR, TrivSqZeroExt.algebraMap_eq_inl]
   have he : η[G'].left ≫ φ = spMap f ≫ η[G].left := by
     have e := congrArg (fun z => z.left) (map_one (pushHom h (𝟙_ (Over (Sp R')))))
-    have e₁ : (1 : 𝟙_ (Over (Sp R')) ⟶ G') = η[G'] := by rw [Hom.one_def]; simp
+    have e₁ : (1 : 𝟙_ (Over (Sp R')) ⟶ G') = η[G'] := simp [Hom.one_def]
     rw [e₁] at e
     refine e.trans ?_
     show (toUnit _ ≫ η[G]).left = _

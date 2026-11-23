@@ -55,8 +55,8 @@ def ExpGe (s : ℤ) : Submodule ℂ (Circle → ℂ) := Submodule.span ℂ {f | 
 def dg {a : ℕ} (d : Fin a → ℂˣ) : GL (Fin a) ℂ where
   val := Matrix.diagonal fun i => (d i : ℂ)
   inv := Matrix.diagonal fun i => (((d i)⁻¹ : ℂˣ) : ℂ)
-  val_inv := by rw [Matrix.diagonal_mul_diagonal]; simp
-  inv_val := by rw [Matrix.diagonal_mul_diagonal]; simp
+  val_inv := simp [Matrix.diagonal_mul_diagonal]
+  inv_val := simp [Matrix.diagonal_mul_diagonal]
 
 def tor (a k : ℕ) (z : Circle) : GL (Fin a) ℂ := dg fun i => if i.val < k then Circle.toUnits z else 1
 

@@ -187,7 +187,7 @@ private theorem flag_all {e : ℕ} (he : 1 ≤ e) (W : G ℚ Ω →* GL (Fin 2) 
     have h3 : ∀ d ∈ D, M d 1 0 = 0 := fun d hd => by
       have e : s0 * d = d * (d⁻¹ * s0 * d) := by group
       have e2 := hmul s0 d 1 0
-      have e3 : χ 0 (d⁻¹ * s0 * d) = χ 0 s0 := by rw [map_mul, map_mul, map_inv, mul_right_comm]; simp
+      have e3 : χ 0 (d⁻¹ * s0 * d) = χ 0 s0 := simp [map_mul, map_mul, map_inv, mul_right_comm]
       rw [e, hmul, h1 _ (hc d hd s0 hs0), h1 _ hs0, h2 _ (hc d hd s0 hs0), h2 _ hs0, e3] at e2
       have : (χ 0 s0 : k) - χ 1 s0 ≠ 0 := sub_ne_zero.2 fun h => hne (Units.ext h)
       apply mul_left_cancel₀ this

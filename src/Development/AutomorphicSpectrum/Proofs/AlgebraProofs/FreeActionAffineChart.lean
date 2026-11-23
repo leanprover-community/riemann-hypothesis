@@ -288,10 +288,10 @@ def invIso (H : Over (Spec (CommRingCat.of R))) [GrpObj H] : H ≅ H where
   hom := ι[H]
   inv := ι[H]
   hom_inv_id := by
-    have h : ι[H] = (𝟙 H)⁻¹ := by rw [Hom.inv_def]; simp
+    have h : ι[H] = (𝟙 H)⁻¹ := simp [Hom.inv_def]
     rw [h, comp_inv'', Category.comp_id, inv_inv]
   inv_hom_id := by
-    have h : ι[H] = (𝟙 H)⁻¹ := by rw [Hom.inv_def]; simp
+    have h : ι[H] = (𝟙 H)⁻¹ := simp [Hom.inv_def]
     rw [h, comp_inv'', Category.comp_id, inv_inv]
 
 theorem affine_chart (H Z : Over (Spec (CommRingCat.of R))) [GrpObj H] [ModObj H Z]

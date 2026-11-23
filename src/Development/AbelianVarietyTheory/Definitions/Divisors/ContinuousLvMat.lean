@@ -147,7 +147,7 @@ theorem sum_ad (f : Fr σ J C D Z J₀) : carry (sigR (AF F) σ) (JR (AF F) J) (
   simp
 
 theorem inv_mul₀ (f : Fr σ J C D Z J₀) : J₀⁻¹ * J₀ = 1 := Matrix.nonsing_inv_mul _ (Ne.isUnit f.herm₀.2)
-theorem inv_mul_ad (f : Fr σ J C D Z J₀) : adMat F J₀⁻¹ * adMat F J₀ = 1 := by rw [← Matrix.map_mul, inv_mul₀ f]; simp
+theorem inv_mul_ad (f : Fr σ J C D Z J₀) : adMat F J₀⁻¹ * adMat F J₀ = 1 := simp [← Matrix.map_mul, inv_mul₀ f]
 
 def lvMat (f : Fr σ J C D Z J₀) : GL (Fin j) (AF F ⊗[F] E) →* Matrix (Fin n) (Fin n) (AF F ⊗[F] E) where
   toFun α := carry (sigR (AF F) σ) (JR (AF F) J) (adMat F C) (adMat F D) (adMat F Z) (adMat F J₀⁻¹)

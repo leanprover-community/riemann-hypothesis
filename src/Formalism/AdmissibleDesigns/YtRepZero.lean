@@ -72,7 +72,7 @@ def mkYt : YtLat (G := G) (Qp := Qp) LL Ow where
   p_int v hv := pY_int heO v hv
   e₀ := trY e (mkK (O := O) ((0 : N), (1 : O)))
   e₀_mem := ⟨_, rfl⟩
-  p_e₀ := by rw [pY_mk]; simp
+  p_e₀ := simp [pY_mk]
 
 end Mk
 

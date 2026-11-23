@@ -155,7 +155,7 @@ theorem inv_prod (hP2 : P2) (hψ : StdPsi ψ) {n : ℕ} {f φ : GA E k → ℂ} 
   have hn : ‖psN ψ u‖ = 1 := (hP2 E k ψ hψ).2.1 u
   rw [mul_assoc, hf.left γ hγ, hφ.left γ hγ, (hP2 E k ψ hψ).1 n f hf u hu g, (hP2 E k ψ hψ).1 n φ hφ u hu g, map_mul]
   calc psN ψ u * f g * (conj (psN ψ u) * conj (φ g)) = (psN ψ u * conj (psN ψ u)) * (f g * conj (φ g)) := by ring
-    _ = f g * conj (φ g) := by rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hn]; simp
+    _ = f g * conj (φ g) := simp [Complex.mul_conj, Complex.normSq_eq_norm_sq, hn]
 
 theorem int_mul {ν : Measure (GA E k)} {f φ : GA E k → ℂ} (hf : Continuous f) (hφ : Continuous φ)
     (h1 : ∫⁻ g, ‖f g‖ₑ ^ 2 ∂ν < ∞) (h2 : ∫⁻ g, ‖φ g‖ₑ ^ 2 ∂ν < ∞) :

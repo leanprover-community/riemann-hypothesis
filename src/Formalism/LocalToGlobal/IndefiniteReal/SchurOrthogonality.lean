@@ -130,7 +130,7 @@ def Gt (V : HSp D) (τ : D.what₂.Tau) : Subgroup (GL (Fin V.rank) ℂ) where
     generalize (a : Matrix (Fin V.rank) (Fin V.rank) ℂ) = A at ha' hi
     calc bᴴ * gramAt D V τ * b = bᴴ * (Aᴴ * gramAt D V τ * A) * b := by rw [ha']
       _ = (A * b)ᴴ * gramAt D V τ * (A * b) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = gramAt D V τ := by rw [hi]; simp
+      _ = gramAt D V τ := simp [hi]
 
 abbrev gm {τ : D.what₂.Tau} (g : Gt V τ) : Matrix (Fin V.rank) (Fin V.rank) ℂ :=
   ((g : GL (Fin V.rank) ℂ) : Matrix (Fin V.rank) (Fin V.rank) ℂ)
@@ -155,7 +155,7 @@ theorem conj_mem (M : DSModel V S) (τ : D.what₂.Tau) {g : Matrix (Fin V.rank)
     _ = ((M.fr τ)⁻¹)ᴴ * ((M.fr τ)ᴴ * Formalism.REAL.Jm (M.ε τ) * M.fr τ) * (M.fr τ)⁻¹ := by rw [hG, hQ]
     _ = (M.fr τ * (M.fr τ)⁻¹)ᴴ * Formalism.REAL.Jm (M.ε τ) * (M.fr τ * (M.fr τ)⁻¹) := by
         simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = Formalism.REAL.Jm (M.ε τ) := by rw [hinv]; simp
+    _ = Formalism.REAL.Jm (M.ε τ) := simp [hinv]
 
 def piR (M : DSModel V S) (τ : D.what₂.Tau) : Gt V τ →* (M.H τ →L[ℂ] M.H τ) where
   toFun g := M.rep τ (gm g)
@@ -214,7 +214,7 @@ theorem exists_gt_of_UJ (M : DSModel V S) (τ : D.what₂.Tau) {h : Matrix (Fin 
   rw [hgdef]
   calc M.fr τ * ((M.fr τ)⁻¹ * h * M.fr τ) * (M.fr τ)⁻¹
       = (M.fr τ * (M.fr τ)⁻¹) * h * (M.fr τ * (M.fr τ)⁻¹) := by simp only [Matrix.mul_assoc]
-    _ = h := by rw [fr_mul_inv]; simp
+    _ = h := simp [fr_mul_inv]
 
 theorem piR_inner (M : DSModel V S) (τ : D.what₂.Tau) (g : Gt V τ) (x y : M.H τ) :
     ⟪piR M τ g x, piR M τ g y⟫_ℂ = ⟪x, y⟫_ℂ := by
@@ -314,14 +314,14 @@ theorem smoothVec_rep (M : DSModel V S) (τ : D.what₂.Tau) (g : Gt V τ) {w : 
       calc ((gm g)⁻¹)ᴴ * gramAt D V τ = ((gm g)⁻¹)ᴴ * ((gm g)ᴴ * gramAt D V τ * gm g) := by rw [hG]
         _ = (gm g * (gm g)⁻¹)ᴴ * gramAt D V τ * gm g := by
             simp only [conjTranspose_mul, Matrix.mul_assoc]
-        _ = _ := by rw [Matrix.mul_nonsing_inv _ hgd]; simp
+        _ = _ := simp [Matrix.mul_nonsing_inv _ hgd]
     show ((gm g)⁻¹ * Xs i * gm g)ᴴ * gramAt D V τ + gramAt D V τ * ((gm g)⁻¹ * Xs i * gm g) = 0
     calc ((gm g)⁻¹ * Xs i * gm g)ᴴ * gramAt D V τ + gramAt D V τ * ((gm g)⁻¹ * Xs i * gm g)
         = (gm g)ᴴ * (Xs i)ᴴ * (((gm g)⁻¹)ᴴ * gramAt D V τ) + (gramAt D V τ * (gm g)⁻¹) * Xs i * gm g := by
           simp only [conjTranspose_mul, Matrix.mul_assoc]
       _ = (gm g)ᴴ * ((Xs i)ᴴ * gramAt D V τ + gramAt D V τ * Xs i) * gm g := by
           rw [e1, e2]; simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-      _ = 0 := by rw [hXi]; simp
+      _ = 0 := simp [hXi]
   have hsm : ContDiff ℝ ∞ (fun t : Fin k → ℝ => M.rep τ (gm g)
       (M.rep τ (List.ofFn fun i => NormedSpace.exp (t i • ((gm g)⁻¹ * Xs i * gm g))).prod w)) :=
     ((M.rep τ (gm g)).restrictScalars ℝ).contDiff.comp (hw k (fun i => (gm g)⁻¹ * Xs i * gm g) hY)

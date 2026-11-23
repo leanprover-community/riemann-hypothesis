@@ -519,7 +519,7 @@ theorem unitary_stabilizer_inv_mem (z : Fin (2 * r + k + 1) → ℂ) (a : Matrix
       = (Hpk k r * aᴴ * Hpk k r)ᴴ * (aᴴ * Hpk k r * a) * (Hpk k r * aᴴ * Hpk k r) := by rw [ha1']
     _ = (a * (Hpk k r * aᴴ * Hpk k r))ᴴ * Hpk k r * (a * (Hpk k r * aᴴ * Hpk k r)) := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Hpk k r := by rw [h2]; simp
+    _ = Hpk k r := simp [h2]
 
 end HaarCompact
 
@@ -549,7 +549,7 @@ theorem unitary_group_inv_mem (a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k 
       = (Hpk k r * aᴴ * Hpk k r)ᴴ * (aᴴ * Hpk k r * a) * (Hpk k r * aᴴ * Hpk k r) := by rw [ha1']
     _ = (a * (Hpk k r * aᴴ * Hpk k r))ᴴ * Hpk k r * (a * (Hpk k r * aᴴ * Hpk k r)) := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Hpk k r := by rw [h2]; simp
+    _ = Hpk k r := simp [h2]
 
 end HaarClosed
 

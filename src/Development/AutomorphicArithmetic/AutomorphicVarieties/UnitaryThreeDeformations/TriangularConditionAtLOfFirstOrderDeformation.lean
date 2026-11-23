@@ -95,7 +95,7 @@ private theorem core {h hi A D Y γ : Matrix (Fin 3) (Fin 3) R} (hh : EntIn m (h
   have b2 : W * p = 0 := kil_right hW hh
   calc _ = (1 + q) * ((1 + Y) * ((1 + γ) * (D + e)) * (1 - Y)) * (1 + p) := by simp only [Matrix.mul_assoc]
     _ = (1 + q) * (D + e) * (1 + p) + W + ((q * W) * (1 + p) + W * p) := by rw [e1]; noncomm_ring
-    _ = _ := by rw [b1, b2]; simp
+    _ = _ := simp [b1, b2]
 
 private theorem conj_mat {D : Type} [Group D] (h : GL (Fin 3) R) (r : D →* GG (m := 3) (R := R)) (g : D) (hg : (r g).right = 1) :
     (conjBy h⁻¹ r g).mat = ((h⁻¹ : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) * (r g).mat * h := by

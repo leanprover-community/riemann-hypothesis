@@ -118,7 +118,7 @@ theorem coeff_bound (hW : IntVal W) (N : ℕ) (z : PadicAlgCl l) (hz : IsPrimiti
   have e1 : aeval (z - 1) (taylor 1 P) = aeval z P := by
     rw [taylor_apply, aeval_comp]; simp
   rw [e1] at hQ
-  have e2 : P = taylor (-1) (taylor 1 P) := by rw [taylor_taylor]; simp
+  have e2 : P = taylor (-1) (taylor 1 P) := simp [taylor_taylor]
   generalize taylor 1 P = Q at hQ e2
   have : ‖(P.coeff k : PadicAlgCl l)‖ ≤ l * ‖aeval z P‖ := by
     conv_lhs => rw [e2, taylor_coeff, eval_eq_sum_range]

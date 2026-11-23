@@ -1238,7 +1238,7 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 lemma fin_step {x g a T c I : ℝ} (hg : 0 < g) (hx : x ≤ c * (T * g ^ (-a)) * I) :
     g ^ a * x ≤ c * I * T := by
-  have hga : g ^ a * g ^ (-a) = 1 := by rw [← Real.rpow_add hg]; simp
+  have hga : g ^ a * g ^ (-a) = 1 := simp [← Real.rpow_add hg]
   calc g ^ a * x ≤ g ^ a * (c * (T * g ^ (-a)) * I) := mul_le_mul_of_nonneg_left hx (Real.rpow_nonneg hg.le _)
     _ = (g ^ a * g ^ (-a)) * (c * I * T) := by ring
     _ = c * I * T := by rw [hga, one_mul]

@@ -156,7 +156,7 @@ theorem norm_unif_pow {K : Type} [NormedField K] {p : ℕ} [hp : Fact p.Prime]
   have hNpos : (0 : ℝ) < (p : ℝ) ^ 2 - 1 := by nlinarith
   have hNne : p ^ 2 - 1 ≠ 0 := by
     intro h
-    have h0 : ((p ^ 2 - 1 : ℕ) : ℝ) = 0 := by rw [h]; simp
+    have h0 : ((p ^ 2 - 1 : ℕ) : ℝ) = 0 := simp [h]
     rw [hN] at h0
     linarith
   have key : ‖ϖ‖ = (p : ℝ) ^ (-(rhoP p)) := by

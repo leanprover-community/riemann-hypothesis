@@ -65,7 +65,7 @@ theorem card_eq_of_congr {n p q : ℕ} {ε : Fin n → Bool} {P G : Matrix (Fin 
     rw [← h]
     calc (P⁻¹)ᴴ * (Pᴴ * Formalism.REAL.Jm ε * P) * P⁻¹ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
           simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+      _ = _ := simp [Matrix.mul_nonsing_inv _ hd]
   have hQ' : (P⁻¹.submatrix id e)ᴴ * G * P⁻¹.submatrix id e = Formalism.UG.Jpq p' q' := by
     have : (P⁻¹.submatrix id e)ᴴ * G * P⁻¹.submatrix id e = ((P⁻¹)ᴴ * G * P⁻¹).submatrix e e := by
       ext i j; simp [Matrix.mul_apply]
@@ -95,7 +95,7 @@ theorem conj_mem {n : ℕ} {ε : Fin n → Bool} {P G : Matrix (Fin n) (Fin n) �
         simp only [conjTranspose_mul, Matrix.mul_assoc]
     _ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
         rw [h, hg', ← h]; simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = _ := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+    _ = _ := simp [Matrix.mul_nonsing_inv _ hd]
 
 section Pred
 

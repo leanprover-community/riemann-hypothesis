@@ -103,7 +103,7 @@ private lemma det_one_add_sub_mul_degree_submatrix_eq_one (deg : Ix → ℕ) (D 
   have hψψ : k * D * (k * D) = 0 := by
     calc k * D * (k * D) = k * (D * k) * D := by simp only [mul_assoc]
       _ = -(k * k * (D * D)) := by rw [hDk]; simp only [mul_neg, neg_mul, mul_assoc]
-      _ = 0 := by rw [hDD]; simp
+      _ = 0 := simp [hDD]
   have hblock : ∀ n : ℕ, ((1 : Matrix Ix Ix R) + k * D).submatrix
       (Subtype.val : {p // deg p = n} → Ix) (Subtype.val : {p // deg p = n} → Ix)
         = 1 + (k * D).submatrix (Subtype.val : {p // deg p = n} → Ix)

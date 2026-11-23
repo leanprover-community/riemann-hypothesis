@@ -150,7 +150,7 @@ theorem fix_orthogonal_vector {N N' : ℕ} (σ : E →+* E) (hσ : ∀ (φ : E �
     rw [this]; exact P.neg_mem h1
   have hb1 : b = 1 := root_eq_one P T k b hTp hP hTP hk hbk hbP hdeg
   rw [hb1] at hb
-  have : γ *ᵥ z' = z' := by rw [hb]; simp
+  have : γ *ᵥ z' = z' := simp [hb]
   rw [hz0, Matrix.mulVec_smul, this]
 
 theorem fix_restrict {N N' : ℕ} (σ : E →+* E) (J : Matrix (Fin N) (Fin N) E) (J' : Matrix (Fin N') (Fin N') E)

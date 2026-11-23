@@ -323,8 +323,8 @@ theorem single_std (b : Fin n) : (Pi.single b 1 : Fin n → Lc.K) ∈ Lc.std n :
 def unip {K : Type} [CommRing K] (N : Matrix (Fin n) (Fin n) K) (hN : N * N = 0) : GL (Fin n) K where
   val := 1 + N
   inv := 1 - N
-  val_inv := by rw [add_mul, mul_sub, mul_sub, hN]; simp
-  inv_val := by rw [sub_mul, mul_add, mul_add, hN]; simp
+  val_inv := simp [add_mul, mul_sub, mul_sub, hN]
+  inv_val := simp [sub_mul, mul_add, mul_add, hN]
 
 theorem frame_unip {Λ : Submodule Lc.O (Fin n → Lc.K)} {h : GL (Fin n) Lc.K} (hh : Lc.IsFrame n h Λ)
     (N : Matrix (Fin n) (Fin n) Lc.K) (hN : N * N = 0) (hO : ∀ a b, N a b ∈ Lc.O) :

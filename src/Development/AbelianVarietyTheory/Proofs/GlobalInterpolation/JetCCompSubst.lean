@@ -67,7 +67,7 @@ theorem derivAt0_eq (G : VCx ι a b → ℂ) (hG : ∀ k : ℕ, ContDiff ℂ k G
     iteratedFDeriv ℂ n G 0 (fun i => coordX (f i)) = derivAt0 G e := by
   classical
   have hG' : ContDiff ℂ ∞ G := contDiff_infty.2 hG
-  have hc : (Finsupp.toMultiset e).card = n := by rw [hm]; simp
+  have hc : (Finsupp.toMultiset e).card = n := simp [hm]
   have p : ((List.ofFn f).map coordX).Perm ((Finsupp.toMultiset e).toList.map coordX) := by
     refine List.Perm.map _ ?_
     rw [← Multiset.coe_eq_coe, Multiset.coe_toList, hm]

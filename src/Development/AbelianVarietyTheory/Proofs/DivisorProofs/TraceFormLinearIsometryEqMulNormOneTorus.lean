@@ -74,7 +74,7 @@ theorem isom_eq_mul : ∀ (K : GlobalTheory.UnitLemma.UQ) (B : GlobalTheory.Unit
     exact (sub_eq_zero.mp (hnd _ h0)).symm
 
   have hsgn : ((-1 : B.A) ^ n) = algebraMap K.E B.A ((-1) ^ n) := by simp
-  have hsq : ((-1 : B.A) ^ n) * (-1) ^ n = 1 := by rw [← mul_pow]; simp
+  have hsq : ((-1 : B.A) ^ n) * (-1) ^ n = 1 := simp [← mul_pow]
   have hu : ∀ y, f (u * y) = u * f y := by
     intro y
     have e1 : u * y = (-1) ^ n * (((-1) ^ n * u) * y) := by

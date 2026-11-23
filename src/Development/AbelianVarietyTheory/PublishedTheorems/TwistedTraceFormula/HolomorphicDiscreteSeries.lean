@@ -148,7 +148,7 @@ theorem enum_holPar (h : HolOK p q κ) {lam : Fin n → ℝ} {ε : Fin n → Boo
       obtain ⟨x, hx⟩ := (hm _).2 ⟨a, rfl⟩
       exact ⟨finSumFinEquiv x, by simpa using congrArg Prod.fst hx⟩
   refine ⟨rfl, fun x => ?_⟩
-  have h1 : r (finSumFinEquiv x) = holEnt p q κ x := by rw [← hrr]; simp
+  have h1 : r (finSumFinEquiv x) = holEnt p q κ x := simp [← hrr]
   refine ⟨by rw [Fin.cast_eq_self, hr, h1], ?_⟩
   obtain ⟨y, hy⟩ := (hm _).2 ⟨finSumFinEquiv x, rfl⟩
   obtain rfl : y = x := hinj ((congrArg Prod.fst hy).trans h1)

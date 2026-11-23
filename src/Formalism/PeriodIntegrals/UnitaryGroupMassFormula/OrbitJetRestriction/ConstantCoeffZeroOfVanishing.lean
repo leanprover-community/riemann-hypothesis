@@ -108,7 +108,7 @@ private theorem killCompl_X_of_not_mem_range (e : υ ↪ τ) (t : τ) (ht : ¬ �
   rw [show coeff x (killCompl e (X t : MvPowerSeries τ R)) =
       coeff (embDomain e x) (X t : MvPowerSeries τ R) from coeff_killCompl _ _, coeff_X, if_neg, map_zero]
   intro hx
-  have h1 : (embDomain e x) t ≠ 0 := by rw [hx]; simp
+  have h1 : (embDomain e x) t ≠ 0 := simp [hx]
   rw [← Finsupp.mem_support_iff, Finsupp.support_embDomain, Finset.mem_map] at h1
   obtain ⟨w, _, hw⟩ := h1
   exact ht ⟨w, hw⟩

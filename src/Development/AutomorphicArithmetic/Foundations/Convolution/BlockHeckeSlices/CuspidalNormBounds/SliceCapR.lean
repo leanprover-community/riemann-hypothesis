@@ -177,7 +177,7 @@ private theorem gz_eq (hr : 0 < r) (τ : E →+* ℂ) (i k : Fin r) : ∃ X Y : 
     · have : ∀ l, ¬(i = l ∧ k = l) := fun l hl => h (hl.1.trans hl.2.symm)
       simp [this]
   have e : toL (Matrix.single i k (atEmb τ (-Complex.I))) = -toL (Matrix.single i k (atEmb τ Complex.I)) := by
-    have e : atEmb τ (-Complex.I) = -atEmb τ Complex.I := by rw [atEmb_eq]; simp
+    have e : atEmb τ (-Complex.I) = -atEmb τ Complex.I := simp [atEmb_eq]
     rw [e, ← Matrix.single_neg]; rfl
   refine ⟨toL (Matrix.single i k (atEmb τ 1)) - if i = k then zL E r + zL E r else 0,
     toL (Matrix.single i k (atEmb τ Complex.I)), ?_, ?_, ?_, ?_⟩

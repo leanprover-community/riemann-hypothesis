@@ -74,7 +74,7 @@ theorem unit_comp {A : Over S'} {G : Over S} [GrpObj A] [GrpObj G] {f : S' ⟶ S
     rw [ha.2 _ 1 1 (p 1) (p 1) rfl rfl, _root_.mul_one]; rfl
   have h1 : p 1 = 1 := by simpa using hp
   have e := congrArg (fun z => z.left) h1
-  have e₁ : (1 : 𝟙_ (Over S') ⟶ A) = η[A] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S') ⟶ A) = η[A] := simp [Hom.one_def]
   simp only [p, e₁, Hom.one_def] at e
   refine e.trans ?_
   simp

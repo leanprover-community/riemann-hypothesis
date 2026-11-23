@@ -49,8 +49,8 @@ theorem adjacent (c₁ c₂ : ℝ) (d₁ d₂ : ℕ) (hd₁ : 0 < d₁) (hd₂ :
   have hd₂' : (1 : ℝ) ≤ d₂ := by exact_mod_cast hd₂
   have he₁0 : 0 ≤ e₁ := by rw [he₁]; linarith
   have he₂0 : 0 ≤ e₂ := by rw [he₂]; linarith
-  have hcast₁ : ((d₁ - 1 : ℕ) : ℝ) = d₁ - 1 := by rw [Nat.cast_sub hd₁]; simp
-  have hcast₂ : ((d₂ - 1 : ℕ) : ℝ) = d₂ - 1 := by rw [Nat.cast_sub hd₂]; simp
+  have hcast₁ : ((d₁ - 1 : ℕ) : ℝ) = d₁ - 1 := simp [Nat.cast_sub hd₁]
+  have hcast₂ : ((d₂ - 1 : ℕ) : ℝ) = d₂ - 1 := simp [Nat.cast_sub hd₂]
   set B : ℝ := c₁ + e₁ with hBdef
   set C : ℝ := c₂ + e₂ - ((d₂ : ℝ) - 1) with hCdef
   have hB : B ∈ S := (hS _).2 (Or.inl ⟨0, hd₁, by simp [hBdef]⟩)

@@ -88,7 +88,7 @@ theorem trans_pos {h : HS L N} (hh : h ∈ Pos L N) : ∃ g : Gp L N, actL g h =
         ((B w : Matrix (Fin N) (Fin N) ℂ) * (B w : Matrix (Fin N) (Fin N) ℂ)⁻¹) := by
           rw [Matrix.conjTranspose_mul]
           simp only [Matrix.mul_assoc]
-    _ = 1 := by rw [gl_coe_mul_coe_inv_eq_one]; simp
+    _ = 1 := simp [gl_coe_mul_coe_inv_eq_one]
 
 theorem actL_sec {h : HS L N} (hh : h ∈ Pos L N) : actL (sec h) h = (one L N).1 :=
   Classical.epsilon_spec (trans_pos hh)
@@ -104,7 +104,7 @@ private theorem actL_inv_actL' (g : Gp L N) (h : HS L N) : actL g⁻¹ (actL g h
         ((g w : Matrix (Fin N) (Fin N) ℂ)⁻¹ * (g w : Matrix (Fin N) (Fin N) ℂ)) := by
           rw [Matrix.conjTranspose_mul]
           simp only [Matrix.mul_assoc]
-    _ = mat h w := by rw [gl_coe_inv_mul_coe_eq_one]; simp
+    _ = mat h w := simp [gl_coe_inv_mul_coe_eq_one]
 
 theorem actL_inv_sec {h : HS L N} (hh : h ∈ Pos L N) : actL (sec h)⁻¹ (one L N).1 = h := by
   rw [← actL_sec hh, actL_inv_actL']

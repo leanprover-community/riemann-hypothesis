@@ -158,8 +158,8 @@ theorem relIndex_ne_zero (Λ : Submodule O V) (hΛ : Λ.FG) {c : E} (hc : c ∈ 
     have hh := (mem_stab_iff Λ _).1 h.2
     refine ⟨g.1⁻¹ (h.1 w) + g.1⁻¹ w' - w,
       Λ.sub_mem (Λ.add_mem ((hi _).2 ((hh _).2 hw)) ((hi _).2 hw')) hw, ?_⟩
-    have e3 : v = (q.out : Λ) + c • w := by rw [← e1]; simp
-    have e4 : h.1 (q.out : Λ) = g.1 (q.out : Λ) + c • w' := by rw [← e2]; simp
+    have e3 : v = (q.out : Λ) + c • w := simp [← e1]
+    have e4 : h.1 (q.out : Λ) = g.1 (q.out : Λ) + c • w' := simp [← e2]
     have e5 : ∀ x, g.1⁻¹ (g.1 x) = x := fun x => g.1.symm_apply_apply x
     show g.1⁻¹ (h.1 v) - v = _
     rw [e3, map_add (f := _), e4]

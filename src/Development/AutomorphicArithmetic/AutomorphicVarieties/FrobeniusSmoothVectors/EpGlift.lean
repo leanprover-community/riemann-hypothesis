@@ -101,8 +101,8 @@ private theorem grM_gl_inv_of_grM {O R : Type} [CommRing O] [CommRing R] [Algebr
   rw [grM_iff_map_eq_diagonal_mul_mul_diagonal] at hg ⊢
   set G : Matrix (Fin 3) (Fin 3) R := (g : Matrix (Fin 3) (Fin 3) R) with hG
   set Gi : Matrix (Fin 3) (Fin 3) R := ((g⁻¹ : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) with hGi
-  have hGiG : Gi * G = 1 := by rw [hG, hGi]; simp
-  have hGGi : G * Gi = 1 := by rw [hG, hGi]; simp
+  have hGiG : Gi * G = 1 := simp [hG, hGi]
+  have hGGi : G * Gi = 1 := simp [hG, hGi]
   have e : (Gi * G).map σ = Gi.map σ * G.map σ := Matrix.map_mul (f := (σ : R →+* R))
   have e1 : Gi.map σ * G.map σ = 1 := by
     rw [← e, hGiG]

@@ -78,7 +78,7 @@ theorem lsd_denF (s : Finset D.host.E) :
     rw [hm, coe_starO, star_mul', star_star, mul_comm])
   refine ⟨r, ?_, fun x hx => ?_⟩
   · rintro rfl
-    have : ((d * starO d : 𝓞 D.host.E) : D.host.E) = 0 := by rw [← hr]; simp
+    have : ((d * starO d : 𝓞 D.host.E) : D.host.E) = 0 := simp [← hr]
     rw [hm, coe_starO, mul_eq_zero, star_eq_zero] at this
     have hd' : (d : D.host.E) ≠ 0 := fun h0 => hd (FaithfulSMul.algebraMap_injective (𝓞 D.host.E) D.host.E
       (by rw [map_zero]; exact h0))

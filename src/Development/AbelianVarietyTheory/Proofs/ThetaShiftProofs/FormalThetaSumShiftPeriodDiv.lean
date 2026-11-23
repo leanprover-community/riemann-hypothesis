@@ -94,7 +94,7 @@ theorem chi_ne_zero (l : A.abelian₂) : A.chi l ≠ 0 := fun h => by
   simp [h] at this
 
 theorem H_sub_H (l m : A.abelian₂) : A.H l m - A.H m l = 2 * Complex.I * A.Ef l m := by
-  have h : ((A.Ef l m : ℤ) : ℂ) = ((A.H l m).im : ℂ) := by rw [← Ef_eq_im]; simp
+  have h : ((A.Ef l m : ℤ) : ℂ) = ((A.H l m).im : ℂ) := simp [← Ef_eq_im]
   rw [h, ← A.H_conj l m, Complex.sub_conj]
   push_cast; ring
 

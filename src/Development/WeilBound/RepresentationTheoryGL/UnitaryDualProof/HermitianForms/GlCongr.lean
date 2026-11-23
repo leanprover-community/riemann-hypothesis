@@ -49,7 +49,7 @@ variable (k) in
 def blkHom (n r : ℕ) : Matrix (Fin n) (Fin n) k →* Matrix (Fin n ⊕ Fin r) (Fin n ⊕ Fin r) k where
   toFun A := fromBlocks A 0 0 1
   map_one' := by rw [← fromBlocks_one]
-  map_mul' A B := by rw [fromBlocks_multiply]; simp
+  map_mul' A B := simp [fromBlocks_multiply]
 
 
 variable (k) in

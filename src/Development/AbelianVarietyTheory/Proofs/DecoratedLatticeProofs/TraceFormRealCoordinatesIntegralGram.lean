@@ -175,7 +175,7 @@ theorem det_ne_zero {e : Fin N → Fin I.n → I.E} (he : IsZBasis I e) (c : ℕ
     intro i
     have h1 := congrFun hz i
     simp only [mulVec, dotProduct, Pi.zero_apply] at h1
-    have h2 : ((∑ j, B i j * z j : ℤ) : ℚ) = 0 := by rw [h1]; simp
+    have h2 : ((∑ j, B i j * z j : ℤ) : ℚ) = 0 := simp [h1]
     push_cast at h2
     simp only [hB] at h2
     rw [hxdef, trForm_sum_right]

@@ -154,7 +154,7 @@ private theorem gh_two {O : Type} [CommRing O] [IsDomain O] {N : ℕ} [NeZero N]
       rw [hj]
       exact Nat.pow_lt_pow_right one_lt_two (Nat.lt_succ_self i)
     exact (gh_sq a1).resolve_left a2
-  have h7 : (psi2 ψ).toUnitHom (-1) ^ 2 = 1 := by rw [← map_pow]; simp
+  have h7 : (psi2 ψ).toUnitHom (-1) ^ 2 = 1 := simp [← map_pow]
   rcases gh_sq h7 with h | h
   · exact ⟨-1, hm, h⟩
   · exact ⟨-1 * v ^ 2 ^ i, by rw [map_mul, map_pow, hv1, one_pow, mul_one, hm], by rw [map_mul, h, h6]; simp⟩

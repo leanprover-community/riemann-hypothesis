@@ -337,7 +337,7 @@ theorem conj_lie (M : DSModel V S) (τ : D.what₂.Tau) {X : Matrix (Fin V.rank)
           ((M.fr τ)ᴴ * Formalism.REAL.Jm (M.ε τ) * M.fr τ) * X) * (M.fr τ)⁻¹ := by
         simp only [conjTranspose_mul, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
         rw [h1, Matrix.mul_one, ← Matrix.mul_assoc ((M.fr τ)⁻¹)ᴴ (M.fr τ)ᴴ, h2, Matrix.one_mul]
-    _ = 0 := by rw [hX']; simp
+    _ = 0 := simp [hX']
 
 theorem rep_exp (M : DSModel V S) (τ : D.what₂.Tau) (X : Matrix (Fin V.rank) (Fin V.rank) ℂ) (t : ℝ) :
     M.rep τ (NormedSpace.exp (t • X)) = M.σ τ (NormedSpace.exp (t • (M.fr τ * X * (M.fr τ)⁻¹))) := by
@@ -445,7 +445,7 @@ theorem rep_conj_back (M : DSModel V S) (τ : D.what₂.Tau) (h : PI.UpqRep.UJ (
   congr 1
   calc M.fr τ * ((M.fr τ)⁻¹ * PI.UpqRep.umat h * M.fr τ) * (M.fr τ)⁻¹
       = (M.fr τ * (M.fr τ)⁻¹) * PI.UpqRep.umat h * (M.fr τ * (M.fr τ)⁻¹) := by simp only [Matrix.mul_assoc]
-    _ = PI.UpqRep.umat h := by rw [fr_mul_inv]; simp
+    _ = PI.UpqRep.umat h := simp [fr_mul_inv]
 
 end Meet
 

@@ -80,8 +80,8 @@ theorem weilIs_decomp : ∀ (h M₁ : ℕ) {Bt : Type} [CommRing Bt] (ζ : Bt) (
       ∀ u u' : T ⟶ c.A, u ^ n = 1 → u' ^ n = 1 → Out.WeilIs (G2 c.A) c.P n (u ≫ ψ) (u' ≫ ψ) 1 := by
     intro ψ _ ht u u' hu hu'
     have hL := pull_isLB c.isLB ψ.left
-    have pu : (u ≫ ψ) ^ n = 1 := by rw [← GlobalTheory.SS.FrobTorsion.pow_comp', hu]; simp
-    have pu' : (u' ≫ ψ) ^ n = 1 := by rw [← GlobalTheory.SS.FrobTorsion.pow_comp', hu']; simp
+    have pu : (u ≫ ψ) ^ n = 1 := simp [← GlobalTheory.SS.FrobTorsion.pow_comp', hu]
+    have pu' : (u' ≫ ψ) ^ n = 1 := simp [← GlobalTheory.SS.FrobTorsion.pow_comp', hu']
     obtain ⟨f, -, hf⟩ := GlobalTheory.HolTorsionAny.exists_weilIs_pow_eq_one hAA c.isLB pu pu'
     have hf' := GlobalTheory.SiegelPower.weilIs_of_cls hG hA hL c.isLB ψ (GlobalTheory.CechPic.cls_pull c.isLB _ _) hf
     obtain ⟨t, ht⟩ := ht

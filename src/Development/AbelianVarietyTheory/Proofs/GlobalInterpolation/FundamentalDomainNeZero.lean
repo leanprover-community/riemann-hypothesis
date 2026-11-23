@@ -168,7 +168,7 @@ theorem exists_stab_hom (hc : P' + Q' + 1 = P + Q) {x : Fin P ⊕ Fin Q → ℂ}
           simp only [conjTranspose_mul, Matrix.mul_assoc]
       _ = Nᴴ * (Mᴴ * Formalism.UG.Jpq P Q * M) * N := by rw [hG, blk_un]
       _ = (M * N)ᴴ * Formalism.UG.Jpq P Q * (M * N) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [hN']; simp
+      _ = _ := simp [hN']
   let j : UpqT P' Q' →* Formalism.UG.Upq P Q := φ.toHomUnits.codRestrict (Formalism.UG.Upq P Q) fun g => hφ g
   refine ⟨j, fun g => ?_⟩
   have e : φ g * M = fromCols (C * UpqT.mat g) (replicateCol Unit x) := by

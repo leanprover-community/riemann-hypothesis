@@ -80,7 +80,7 @@ theorem UpperTheory.V.AlgRepEndIrreducible.dualIff :
   have hd : GlobalTheory.WignerGL.dualE Ξ τ = fun i j => -(eL Ξ.dmat τ i j)ᵀ := by
     funext i j
     exact dualE_eq Ξ τ i j
-  have hs : (-1 : ℂ) ^ a * (-1 : ℂ) ^ a = 1 := by rw [← mul_pow]; simp
+  have hs : (-1 : ℂ) ^ a * (-1 : ℂ) ^ a = 1 := simp [← mul_pow]
   change (Multiset.card (m.map Neg.neg) = a ∧ ∀ u : ℂ, Formalism.REAL.qdet (eL Ξ.dmat τ) (u + ((a : ℂ) - 1) / 2) =
     ((m.map Neg.neg).map (u + ·)).prod • (1 : Matrix (Fin Ξ.d) (Fin Ξ.d) ℂ)) ↔ _
   unfold GlobalTheory.WignerGL.HasDualInfChar

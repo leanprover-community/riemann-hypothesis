@@ -170,7 +170,7 @@ theorem UpperTheory.V.Sd.eisChi :
     refine Finset.sum_congr rfl fun e _ => ?_
     rw [← Finset.mul_sum, Finset.sum_add_distrib, ← Finset.mul_sum, eisChi_gs hχ, eisChi_gs hχ, ← hgdef,
       ← neg_one_mul (e : ZMod N), map_mul, hpar]
-    have h2 : ((-1 : ℂ) ^ k) * (-1) ^ k = 1 := by rw [← mul_pow]; simp
+    have h2 : ((-1 : ℂ) ^ k) * (-1) ^ k = 1 := simp [← mul_pow]
     have h3 : (2 * g)⁻¹ * (2 * g) = 1 := inv_mul_cancel₀ (mul_ne_zero two_ne_zero hg)
     linear_combination ((2 * g)⁻¹ * (e : ℂ) ^ (k - 1) * χ (e : ZMod N) * g) * h2 + ((e : ℂ) ^ (k - 1) * χ (e : ZMod N)) * h3
   · rw [eisChi_coef_sum, Finset.mul_sum]

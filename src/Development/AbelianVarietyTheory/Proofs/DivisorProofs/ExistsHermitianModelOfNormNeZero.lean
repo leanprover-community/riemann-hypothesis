@@ -156,7 +156,7 @@ theorem exists_unit_vector [FiniteDimensional K.E V] (h : V → V → K.E)
     exact Submodule.smul_mem_smul (by rw [hmϖ]; exact Ideal.mem_span_singleton_self ϖ) hy'
   have hL : L = ⊥ := Submodule.eq_bot_of_le_smul_of_le_jacobson_bot m L hfg c3
     (le_of_eq (IsLocalRing.jacobson_eq_maximalIdeal ⊥ bot_ne_top).symm)
-  have htop : (⊤ : Submodule K.E V) = ⊥ := by rw [← hspan, hL]; simp
+  have htop : (⊤ : Submodule K.E V) = ⊥ := simp [← hspan, hL]
   haveI := Module.finrank_pos_iff.1 hpos
   exact bot_ne_top htop.symm
 

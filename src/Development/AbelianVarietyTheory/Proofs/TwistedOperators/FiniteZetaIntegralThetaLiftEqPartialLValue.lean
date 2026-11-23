@@ -153,7 +153,7 @@ theorem zeta_sum (hG : GlobalTheory.Published.UnramifiedDoublingGL) {ψ : AddCha
     simp only [co, hmul, hlaw k hk, map_smul, l2_smul_left]
   have F1 : ∀ k ∈ J, bddRep T k F₁ = χ k • F₁ := fun k hk => Subtype.ext (funext fun g => hlev k hk g)
   have Ψ1 : ∀ g, ∀ k ∈ J, Ψ (g * k) = Ψ g := fun g k hk => by
-    have h1 : χ k * starRingEnd ℂ (χ k) = 1 := by rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hχ k hk]; simp
+    have h1 : χ k * starRingEnd ℂ (χ k) = 1 := simp [Complex.mul_conj, Complex.normSq_eq_norm_sq, hχ k hk]
     simp only [Ψ, co1 g k hk, map_mul, Module.End.mul_apply, F1 k hk, map_smul, smul_eq_mul]
     linear_combination (co g * starRingEnd ℂ (ℓ (bddRep T g F₁))) * h1
   have co2 : ∀ (v : {v : HeightOneSpectrum (𝓞 D.host.F) // v ∉ Sb}) g, projV T v.1 g = 1 → ∀ a,

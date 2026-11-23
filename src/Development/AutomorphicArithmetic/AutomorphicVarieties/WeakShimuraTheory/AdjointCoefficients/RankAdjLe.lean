@@ -96,7 +96,7 @@ theorem UpperTheory.V.Ws.X1.ccDim :
   have hadj : adj g = -g := by
     have e : adj g * g = (-1 : k) • 1 := hs
     calc adj g = adj g * g * g := by rw [Matrix.mul_assoc, hg2, Matrix.mul_one]
-      _ = -g := by rw [e]; simp
+      _ = -g := simp [e]
   set c : k := (2 : k)⁻¹ with hc
   have hc2 : c * 2 = 1 := inv_mul_cancel₀ h2
   set p : M4 k := c • (1 + g) with hp

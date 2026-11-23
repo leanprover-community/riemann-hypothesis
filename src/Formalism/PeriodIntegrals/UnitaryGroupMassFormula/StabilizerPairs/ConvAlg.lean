@@ -100,6 +100,6 @@ theorem rhoOf_unitary (H : Matrix n n ℂ) (F : Matrix n m ℂ) (W : Matrix m m 
         rw [t3, t1, t2]
         simp only [Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc]
         abel
-    _ = H := by rw [inner]; simp
+    _ = H := simp [inner]
 
 end PI.StabPairs.ConvAlg

@@ -186,7 +186,7 @@ theorem mu_eq (hN' : DV.NprimeDef D L) (hNu : DV.NuDef D L) (hc : Lnk.NuCommens 
         have h5 := hNu.2.2 u _ l hl.symm
         rw [h0] at h5
         have h6 : l = 0 := by
-          have : (l : ℝ) = 0 := by rw [h5]; simp
+          have : (l : ℝ) = 0 := simp [h5]
           exact_mod_cast this
         rw [← hl, h6]; rfl
     rwa [Equiv.apply_symm_apply] at hz)

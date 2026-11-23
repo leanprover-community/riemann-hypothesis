@@ -355,7 +355,7 @@ theorem rel_one {S : Set (MRingOver ℂ ι)} {G : MRingOver ℂ ι} {e : K → �
         _ = Fintype.card (ι k) * r := by simp
     have h2 : Fintype.card (ι k) ≤ ∑ k, Fintype.card (ι k) :=
       Finset.single_le_sum (f := fun k => Fintype.card (ι k)) (fun _ _ => Nat.zero_le _) (Finset.mem_univ k)
-    have h3 : bdeg μ k = (M + 1) * e k := by rw [hμ]; simp
+    have h3 : bdeg μ k = (M + 1) * e k := simp [hμ]
     have h4 := he k
     have h5 : Fintype.card (ι k) * r ≤ (∑ k, Fintype.card (ι k)) * r := Nat.mul_le_mul_right r h2
     have h6 : (M + 1) * 1 ≤ (M + 1) * e k := Nat.mul_le_mul_left (M + 1) h4

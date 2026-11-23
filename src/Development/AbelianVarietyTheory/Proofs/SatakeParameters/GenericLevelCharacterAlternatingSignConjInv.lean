@@ -64,8 +64,8 @@ theorem typeSum_inv_eq {K G : Type} [Field K] [Group G] (P : Subgroup G) [Fintyp
 def sgnDiag (κ : Type) [CommRing κ] (r : ℕ) : GL (Fin r) κ where
   val := Matrix.diagonal fun i => (-1) ^ i.val
   inv := Matrix.diagonal fun i => (-1) ^ i.val
-  val_inv := by rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]; congr 1; funext i; rw [← pow_add, ← two_mul, pow_mul]; simp
-  inv_val := by rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]; congr 1; funext i; rw [← pow_add, ← two_mul, pow_mul]; simp
+  val_inv := simp [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]; congr 1; funext i; rw [← pow_add, ← two_mul, pow_mul]
+  inv_val := simp [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]; congr 1; funext i; rw [← pow_add, ← two_mul, pow_mul]
 
 theorem sgnDiag_conj_apply {κ : Type} [CommRing κ] {r : ℕ} (u : GL (Fin r) κ) (i j : Fin r) :
     ((sgnDiag κ r * u * (sgnDiag κ r)⁻¹ : GL (Fin r) κ) : Matrix (Fin r) (Fin r) κ) i j =
@@ -99,7 +99,7 @@ theorem edgeSum_sup_conj (u : GL (Fin r) κ) :
   split_ifs with h
   · rw [sgnDiag_conj_apply]
     unfold supEdge at h
-    have hs : ((-1 : κ)) ^ (i : ℕ) * (-1) ^ (i : ℕ) = 1 := by rw [← mul_pow]; simp
+    have hs : ((-1 : κ)) ^ (i : ℕ) * (-1) ^ (i : ℕ) = 1 := simp [← mul_pow]
     rw [h, pow_succ]
     linear_combination (-(u : Matrix (Fin r) (Fin r) κ) i j) * hs
   · simp

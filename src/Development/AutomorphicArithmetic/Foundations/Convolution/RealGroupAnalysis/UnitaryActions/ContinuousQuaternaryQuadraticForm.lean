@@ -91,8 +91,8 @@ theorem herm_act (h : GL (Fin 2) (A E)) (v : V4 F) : D.herm (D.act h v) = h.val 
 @[simp] theorem act_one (v : V4 F) : D.act 1 v = v := D.herm_injective (by rw [herm_act]; simp)
 theorem act_mul (h h' : GL (Fin 2) (A E)) (v : V4 F) : D.act (h * h') v = D.act h (D.act h' v) :=
   D.herm_injective (by simp only [herm_act, Units.val_mul, conjTransposeGal_mul, Matrix.mul_assoc])
-@[simp] theorem act_inv_act (h : GL (Fin 2) (A E)) (v : V4 F) : D.act h⁻¹ (D.act h v) = v := by rw [← act_mul]; simp
-@[simp] theorem act_act_inv (h : GL (Fin 2) (A E)) (v : V4 F) : D.act h (D.act h⁻¹ v) = v := by rw [← act_mul]; simp
+@[simp] theorem act_inv_act (h : GL (Fin 2) (A E)) (v : V4 F) : D.act h⁻¹ (D.act h v) = v := simp [← act_mul]
+@[simp] theorem act_act_inv (h : GL (Fin 2) (A E)) (v : V4 F) : D.act h (D.act h⁻¹ v) = v := simp [← act_mul]
 theorem act_add (h : GL (Fin 2) (A E)) (v v' : V4 F) : D.act h (v + v') = D.act h v + D.act h v' :=
   D.herm_injective (by simp only [herm_act, herm_add, Matrix.mul_add, Matrix.add_mul])
 theorem act_smul (h : GL (Fin 2) (A E)) (a : A F) (v : V4 F) : D.act h (a • v) = a • D.act h v :=

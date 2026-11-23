@@ -54,7 +54,7 @@ theorem exists_uniformiser_max (k : Type) [Field k] [ValuativeRel k] [Topologica
     ∃ ϖ : k, ϖ ≠ 0 ∧ valuation k ϖ < 1 ∧ ∀ x : k, valuation k x < 1 → valuation k x ≤ valuation k ϖ := by
   set e := IsNonarchimedeanLocalField.valueGroupWithZeroIsoInt k
   obtain ⟨x, hx⟩ := valuation_surjective (e.symm (WithZero.exp (-1 : ℤ)))
-  have hx' : e (valuation k x) = WithZero.exp (-1 : ℤ) := by rw [hx]; simp
+  have hx' : e (valuation k x) = WithZero.exp (-1 : ℤ) := simp [hx]
   refine ⟨x, ?_, ?_, ?_⟩
   · intro h0
     rw [h0, map_zero, map_zero] at hx'

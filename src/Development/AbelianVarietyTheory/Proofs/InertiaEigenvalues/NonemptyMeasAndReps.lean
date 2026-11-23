@@ -238,7 +238,7 @@ theorem isSES [U : Unram F E] (A : Et F E) :
     intro y
     constructor
     · intro h
-      have h1 : (y : A.L) * star (y : A.L) = 1 := by rw [← hN, ← normU_val, h]; simp
+      have h1 : (y : A.L) * star (y : A.L) = 1 := simp [← hN, ← normU_val, h]
       exact ⟨⟨y, by rw [mul_comm]; exact h1, h1⟩, Units.ext rfl⟩
     · rintro ⟨t, rfl⟩
       refine Units.ext (hinj ?_)

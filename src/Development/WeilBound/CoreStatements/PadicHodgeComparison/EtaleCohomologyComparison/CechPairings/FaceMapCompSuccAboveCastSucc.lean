@@ -72,8 +72,8 @@ theorem combN {M : Type*} [AddCommGroup M] (n : ℕ) (Q : ℕ → ℕ → M) (hQ
     simp at hi
     rw [← Finset.sum_range_add_sum_Ico _ (show i ≤ n+3 by omega), Finset.sum_eq_sum_Ico_succ_bot (show i < n+3 by omega),
       Finset.sum_eq_sum_Ico_succ_bot (show i+1 < n+3 by omega)]
-    have e1 : (-1:ℤ)^(i+i) = 1 := by rw [← two_mul, pow_mul]; simp
-    have e2 : (-1:ℤ)^(i+(i+1)) = -1 := by rw [← add_assoc, pow_succ, ← two_mul, pow_mul]; simp
+    have e1 : (-1:ℤ)^(i+i) = 1 := simp [← two_mul, pow_mul]
+    have e2 : (-1:ℤ)^(i+(i+1)) = -1 := simp [← add_assoc, pow_succ, ← two_mul, pow_mul]
     rw [e1, e2, one_smul, neg_one_smul, show i + 1 + 1 = i + 2 by omega]; abel
   have h3 : ∑ i ∈ range (n+2), ∑ k ∈ range i, (-1:ℤ)^(i+k) • Q i k = -∑ i ∈ range (n+1), ∑ j ∈ range (i+1), (-1:ℤ)^(j+i) • Q (i+1) j := by
     rw [Finset.sum_range_succ', Finset.sum_range_zero, add_zero, ← Finset.sum_neg_distrib]

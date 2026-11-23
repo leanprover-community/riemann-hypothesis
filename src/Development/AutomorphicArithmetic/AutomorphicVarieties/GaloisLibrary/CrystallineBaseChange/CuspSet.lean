@@ -173,7 +173,7 @@ theorem UpperTheory.V.Br.cuspSet :
   obtain ⟨h, hh⟩ := QuotientGroup.mk_out_eq_mul ((KLev F 2 M).subgroupOf (KLev F 2 1)) ⟨u, hu⟩
   have h2 := hZ.lev _ ((KLev F 2 M).inv_mem h.2) _ (h1 (s, QuotientGroup.mk ⟨u, hu⟩) y)
   have h3 := hZ.cent z _ (hZ.unip x _ (hZ.rot θ (Unitary.toUnits (rot θ)) rfl _ h2))
-  have e1 : aff y x = aff 1 x * aff y 0 := by rw [aff_mul]; simp
+  have e1 : aff y x = aff 1 x * aff y 0 := simp [aff_mul]
   convert h3 using 1
   simp only [b, hh, e1, mul_assoc, map_mul, Subgroup.coe_mul, map_inv]
   rw [TR.infGL_comm]

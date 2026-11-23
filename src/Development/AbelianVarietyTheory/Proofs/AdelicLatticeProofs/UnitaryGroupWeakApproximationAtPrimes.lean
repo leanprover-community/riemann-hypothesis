@@ -284,7 +284,7 @@ theorem unitary_inv {R : Type} [CommRing R] (σ : R →+* R) {n : ℕ} (G g h : 
     _ = (g * h)ᵀ * G * (g * h).map σ := by
       rw [Matrix.transpose_mul, Matrix.map_mul]
       simp only [mul_assoc]
-    _ = G := by rw [hgh, Matrix.map_one _ (map_zero σ) (map_one σ)]; simp
+    _ = G := simp [hgh, Matrix.map_one _ (map_zero σ) (map_one σ)]
 
 theorem weak_approximation : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (c : E ≃ₐ[F] E) (n : ℕ) (G : Matrix (Fin n) (Fin n) E), IsHermForm c G → Module.finrank F E = 2 → ∀ L : Submodule (𝓞 E) (Fin n → E), L.FG → Submodule.span E (L : Set (Fin n → E)) = ⊤ → ∀ (g : GL (Fin n) (RA F E)) (N D : ℕ), IsUnA c G g.1 → 0 < N → 0 < D → ∃ γ : GL (Fin n) E, IsUnE c G γ.1 ∧ CongAtA F L N D (fm F γ.1 * g.1) := by
   intro F E _ _ _ _ _ c n G hG hr L hfg hsp g N D hg hN hD

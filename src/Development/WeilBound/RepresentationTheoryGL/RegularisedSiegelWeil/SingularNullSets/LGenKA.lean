@@ -258,7 +258,7 @@ theorem fieldA {K : Type} [Field K] (s : K →+* K) (hs : ∀ x, s (s x) = x) (c
       _ = 0 := by rw [← Matrix.vecMul_vecMul, e1, Matrix.zero_vecMul]
   have hq0 : q = 0 := by
     calc q = q ᵥ* (c * X + d * Y) := by rw [h, Matrix.vecMul_one]
-      _ = 0 := by rw [Matrix.vecMul_add, ← Matrix.vecMul_vecMul, ← Matrix.vecMul_vecMul, hqc, hqd]; simp
+      _ = 0 := simp [Matrix.vecMul_add, ← Matrix.vecMul_vecMul, ← Matrix.vecMul_vecMul, hqc, hqd]
   calc p = p ᵥ* (P * P⁻¹) := by rw [Matrix.mul_nonsing_inv _ hPu, Matrix.vecMul_one]
     _ = 0 := by rw [← Matrix.vecMul_vecMul, ← hq, hq0, Matrix.zero_vecMul]
 

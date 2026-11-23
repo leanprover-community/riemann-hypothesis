@@ -75,7 +75,7 @@ def unitaryOf {R : Type} [CommRing R] (s : R →+* R) {n : ℕ} (J : Matrix (Fin
     calc _ = (((a⁻¹ : GL (Fin n) R) : Matrix (Fin n) (Fin n) R)ᵀ * (a : Matrix (Fin n) (Fin n) R)ᵀ) * J *
           ((a : Matrix (Fin n) (Fin n) R).map s *
             ((a⁻¹ : GL (Fin n) R) : Matrix (Fin n) (Fin n) R).map s) := by simp only [Matrix.mul_assoc]
-      _ = J := by rw [h1, h2]; simp
+      _ = J := simp [h1, h2]
 
 def unitaryMap {R R' : Type} [CommRing R] [CommRing R'] (s : R →+* R) (s' : R' →+* R') (φ : R →+* R')
     (hφ : ∀ x, φ (s x) = s' (φ x)) {n : ℕ} (J : Matrix (Fin n) (Fin n) R) :

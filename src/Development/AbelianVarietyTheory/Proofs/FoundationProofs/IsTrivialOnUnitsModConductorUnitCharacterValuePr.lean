@@ -83,7 +83,7 @@ theorem triv_mem_nhds (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ) : {x : k | T
   have hemb : Topology.IsEmbedding (Units.val : kˣ → k) := Units.isEmbedding_val₀
   obtain ⟨U, hUo, hU⟩ := hemb.isOpen_iff.mp hχ
   have h1 : (1 : k) ∈ U := by
-    have : (1 : kˣ) ∈ (Units.val ⁻¹' U) := by rw [hU]; simp
+    have : (1 : kˣ) ∈ (Units.val ⁻¹' U) := simp [hU]
     simpa using this
   obtain ⟨γ, hγ⟩ := (IsValuativeTopology.mem_nhds_iff' (R := k)).mp (hUo.mem_nhds h1)
   rw [IsValuativeTopology.mem_nhds_zero_iff]
@@ -122,7 +122,7 @@ theorem ev_congr (χ : kˣ →* ℂˣ) (x y : k) (hx : valuation k x = 1) (hy : 
   have hle : valuation k ((u : k) - 1) ≤ valuation k (x - y) := by
     rw [hsub, map_div₀, hy, div_one]
   have hχu : χ u = 1 := h u hu1 hle
-  have hxe : Units.mk0 x hx0 = u * Units.mk0 y hy0 := by rw [hu]; simp
+  have hxe : Units.mk0 x hx0 = u * Units.mk0 y hy0 := simp [hu]
   rw [ev_of_val χ _ hx, ev_of_val χ _ hy, hxe, map_mul, hχu, one_mul]
 
 theorem ev_of_triv_one (χ : kˣ →* ℂˣ) (x : k) (h : Triv χ 1) : ev χ x = 1 := by

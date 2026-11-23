@@ -126,7 +126,7 @@ theorem conjugation_fixed_closure : FixConj := by
   have hd0 : (D.host.d : ℂ_[p]) ≠ 0 := by exact_mod_cast (D.host.hyp.2.1).ne_zero
   have hr0 : rK ≠ 0 := by
     intro h
-    have h' : ((rK : ℂ_[p])) ^ 2 = 0 := by rw [h]; simp
+    have h' : ((rK : ℂ_[p])) ^ 2 = 0 := simp [h]
     rw [hrK, ← map_pow, hx2, map_neg, map_natCast, neg_eq_zero] at h'
     exact hd0 h'
 

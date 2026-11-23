@@ -237,7 +237,7 @@ theorem tsGen_of (hD : CayleyBlocksInvertible) (hK : KAK) (hM : Mult) (hS : SecZ
         congr 1
         refine integral_congr_ae (Filter.Eventually.of_forall fun k => ?_)
         simp only
-        have hm : aZ X (1 : ℂ) = mR a := by rw [hdilmat X 1 a ha]; simp
+        have hm : aZ X (1 : ℂ) = mR a := simp [hdilmat X 1 a ha]
         rw [hm, ← mR_mul, ← spherical_section_eq_extension, mul_assoc (y * (k : GR n)) k1 a]
       show ∑ y ∈ S, cf y * ∫ k, κ k * twistedScalarSection p q e (mR (y * (k : GR n) * k1) * aZ X 1) ∂ν = I Q' gpt
       rw [Finset.sum_congr rfl e3, ← hℓeval ⟨sL Q', ⟨Q', hQ'W, rfl⟩⟩]

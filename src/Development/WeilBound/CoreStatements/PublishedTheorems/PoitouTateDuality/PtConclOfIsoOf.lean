@@ -83,7 +83,7 @@ theorem ptConcl_of_iso_of (hL : PositivityTheory.PTN.LocHyp) : ∀ (F Ω F' Ω' 
   have hμ' : μ'.comp (toGS Ω' _) = cycMod F' Ω' l r := by
     ext1 τ
     obtain ⟨σ, rfl⟩ := Φ.surjective τ
-    have h1 : Ψ.symm (toGS Ω' _ (Φ σ)) = toGS Ω _ σ := by rw [← hΨ]; simp
+    have h1 : Ψ.symm (toGS Ω' _ (Φ σ)) = toGS Ω _ σ := simp [← hΨ]
     have h2 : μ (toGS Ω _ σ) = cycMod F Ω l r σ := DFunLike.congr_fun hμ σ
     show μ (Ψ.symm (toGS Ω' _ (Φ σ))) = _
     rw [h1, h2, hcyc]

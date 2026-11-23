@@ -92,10 +92,10 @@ def dualDatum [IsDomain (Ainf p O)] (hμ : mu ε ≠ 0) (hξ : xi ε ≠ 0) (D :
   Ψ' := D.Ψᵀ
   ρT := (etale ε h).ρT
   ρM := (etale ε h).ρM
-  G_mul_F := by rw [← Matrix.transpose_mul, D.G_mul_F]; simp
+  G_mul_F := simp [← Matrix.transpose_mul, D.G_mul_F]
   F_eq := by
     rw [Matrix.transpose_map, ← Matrix.transpose_mul, ← G_eq hμ hξ D]
-  Ψ_mul := by rw [← Matrix.transpose_mul, D.Ψ_mul]; simp
+  Ψ_mul := simp [← Matrix.transpose_mul, D.Ψ_mul]
   F_act := by
     intro a
     have e : ((etale ε h).ρT a).map (ofPadic p O) = ofPadic p O a • 1 := by

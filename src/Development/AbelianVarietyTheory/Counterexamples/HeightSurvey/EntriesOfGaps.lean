@@ -84,7 +84,7 @@ private lemma gapZ_nonneg_of_antitone' {p : ℕ} (a : Fin p → ℕ) (ha : Antit
     0 ≤ _root_.Formalism.MainNotions.WeightAlgebra.gapZ a k := by
   unfold _root_.Formalism.MainNotions.WeightAlgebra.gapZ
   split_ifs with h
-  · have hk : k ≤ ⟨(k : ℕ) + 1, h⟩ := by rw [Fin.le_iff_val_le_val]; simp
+  · have hk : k ≤ ⟨(k : ℕ) + 1, h⟩ := simp [Fin.le_iff_val_le_val]
     have := ha hk
     omega
   · positivity

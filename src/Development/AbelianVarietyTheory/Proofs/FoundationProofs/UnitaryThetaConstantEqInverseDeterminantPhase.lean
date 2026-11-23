@@ -157,7 +157,7 @@ theorem gauss_nonneg {V : Type} [AddCommGroup V] [Module ℂ V] (H : V →ₗ[�
       have := him y (a y)
       rw [hw', hC]; simp [ha, him0]; linarith
     have e4 : (H w (a y)).im = (H y (a y)).im := by rw [hw']; simp [him0]
-    have e5 : (H x w).im = (H x y).im - (H x (a y)).im := by rw [hw']; simp
+    have e5 : (H x w).im = (H x y).im - (H x (a y)).im := simp [hw']
     have e6 : (H (C (x + w)) (x + w)).im = (H (C x) x).im + (H (C w) w).im + 2 * (H (C w) x).im := by
       have := hCim x w
       simp; linarith

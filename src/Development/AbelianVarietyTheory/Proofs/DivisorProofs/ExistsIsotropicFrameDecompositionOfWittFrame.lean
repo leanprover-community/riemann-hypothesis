@@ -95,7 +95,7 @@ theorem GlobalTheory.FrameExt.exists_fr : ∀ (F E : Type) [Field F] [NumberFiel
     calc Q * Q = (1 - X * B - Y * A) * Q := by rw [← hQ]
       _ = Q - X * (B * Q) - Y * (A * Q) := by
         rw [Matrix.sub_mul, Matrix.sub_mul, Matrix.one_mul, Matrix.mul_assoc, Matrix.mul_assoc]
-      _ = Q := by rw [hBQ, hAQ]; simp
+      _ = Q := simp [hBQ, hAQ]
   obtain ⟨m, Z, C, hZC, hCZ⟩ := GlobalTheory.FrameExt.idem_factor Q hQQ
   have hQZ : Q * Z = Z := by rw [← hZC, Matrix.mul_assoc, hCZ, Matrix.mul_one]
   have hAZ : A * Z = 0 := by rw [← hQZ, ← Matrix.mul_assoc, hAQ, Matrix.zero_mul]
@@ -115,7 +115,7 @@ theorem GlobalTheory.FrameExt.exists_fr : ∀ (F E : Type) [Field F] [NumberFiel
           rw [hZC, hQ]; simp
       _ = cT (σ : E →+* E) Z * J * X * B + cT (σ : E →+* E) Z * J * Y * A + J₀ * C := by
           rw [Matrix.mul_add, Matrix.mul_add, ← Matrix.mul_assoc, ← Matrix.mul_assoc, ← Matrix.mul_assoc, hJ₀]
-      _ = J₀ * C := by rw [hzc, hzd]; simp
+      _ = J₀ * C := simp [hzc, hzd]
   have hJZ : J * Z = cT (σ : E →+* E) C * J₀ := by
     have := congrArg (cT (σ : E →+* E)) key
     rwa [Formalism.UG.cT_mul, Formalism.UG.cT_mul, ccT, hJJ, hJ₀h] at this

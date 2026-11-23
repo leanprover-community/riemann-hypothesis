@@ -291,8 +291,8 @@ theorem mem_unipLat_wt {σ : L →+* L} (hσ : ∀ x, Valued.v (σ x) = Valued.v
     have hinv := (mem_GU_iff_adjJ σ _).1 w.1.2
     have hs : Valued.v (σ (w.1.1.val 0 2) + w.1.1.val 0 2) ≤ WithZero.exp (j : ℤ) :=
       Valuation.map_add_le _ (by rwa [hσ]) h
-    have e1 : (w.1.1.val * adjJ σ w.1.1.val) 0 2 = 0 := by rw [← hinv, Units.mul_inv]; simp
-    have e2 : (adjJ σ w.1.1.val * w.1.1.val) 0 2 = 0 := by rw [← hinv, Units.inv_mul]; simp
+    have e1 : (w.1.1.val * adjJ σ w.1.1.val) 0 2 = 0 := simp [← hinv, Units.mul_inv]
+    have e2 : (adjJ σ w.1.1.val * w.1.1.val) 0 2 = 0 := simp [← hinv, Units.inv_mul]
     simp only [Matrix.mul_apply, Fin.sum_univ_three, adjJ] at e1 e2
     have r0 : (0 : Fin 3).rev = 2 := rfl
     have r1 : (1 : Fin 3).rev = 1 := rfl

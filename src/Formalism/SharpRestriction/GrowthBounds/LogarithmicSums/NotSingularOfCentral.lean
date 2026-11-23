@@ -577,7 +577,7 @@ theorem top_small (a b : HH D → ℤ) (hW : InWin L a b) (p : ℕ) (hp : p.Prim
   set Q : ℝ := (D.R.k : ℝ) * L.sc.x ^ (Scale.A / 2) with hQ
   have hQx : L.sc.b' / Q ≤ L.sc.b' / L.sc.x := by
     rcases Nat.eq_zero_or_pos D.R.k with hk | hk
-    · have hQ0 : Q = 0 := by rw [hQ, hk]; simp
+    · have hQ0 : Q = 0 := simp [hQ, hk]
       rw [hQ0, div_zero]
       exact div_nonneg hb'0 (by linarith)
     · have hk1 : (1 : ℝ) ≤ (D.R.k : ℝ) := by exact_mod_cast hk

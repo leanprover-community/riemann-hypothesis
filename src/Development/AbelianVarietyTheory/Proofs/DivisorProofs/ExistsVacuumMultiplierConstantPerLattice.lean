@@ -90,7 +90,7 @@ theorem isONFr_frMove {D : D7} {θ : InfFam D} (hθ : IsInfFam θ) (W : HSp D) (
     IsONFr X (frMove θ W rfl X u x) := by
   intro τ
   have hτ : ∃ ρ, τ.1 = tauE D ρ := (hX.psi τ.1).1 τ.2
-  have hG : X.Gm = -(W.gram)ᵀ := by rw [hX.model.1]; simp
+  have hG : X.Gm = -(W.gram)ᵀ := simp [hX.model.1]
   have e : mat (frMove θ W rfl X u x) τ = compAt θ hτ.choose (Formalism.L2.Theta.mt W u) * mat x τ := by
     show (Matrix.reindex (finCongr rfl) (finCongr rfl) (realM θ (Formalism.L2.Theta.mt W u) τ.1) * mat x τ :
       Matrix (Fin W.rank) (Fin W.rank) ℂ) = _

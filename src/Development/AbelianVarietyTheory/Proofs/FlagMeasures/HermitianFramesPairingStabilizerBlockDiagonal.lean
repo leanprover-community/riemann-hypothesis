@@ -111,7 +111,7 @@ theorem inv_facts (A : Matrix (Fin n) (Fin n) E) (hA : IsUni A) :
   have hT' := Matrix.blockTriangular_inv_of_blockTriangular hT
   refine ⟨A⁻¹, Matrix.mul_nonsing_inv _ hu, Matrix.nonsing_inv_mul _ hu, ⟨fun i j h => hT' h, fun i => ?_⟩,
     fun O hO i j => ?_, fun β hβ i j h => ?_⟩
-  · have h1 : (A * A⁻¹) i i = 1 := by rw [Matrix.mul_nonsing_inv _ hu]; simp
+  · have h1 : (A * A⁻¹) i i = 1 := simp [Matrix.mul_nonsing_inv _ hu]
     rw [Matrix.mul_apply, Finset.sum_eq_single i, hA.2, one_mul] at h1
     · exact h1
     · intro k _ hk

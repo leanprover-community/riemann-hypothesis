@@ -60,9 +60,9 @@ theorem deuring_heilbronn_inequality : DHIneqFOf := by
   obtain ⟨Z4, m4, hZ4, hm4, hr4, hN4, hE4⟩ := hL M (χ * χ₁) ρ.im hM
   obtain ⟨s₀, hs₀⟩ : ∃ s : ℂ, s = ((1 + η : ℝ) : ℂ) := ⟨_, rfl⟩
   obtain ⟨s₁, hs₁⟩ : ∃ s : ℂ, s = ((1 + η : ℝ) : ℂ) + ρ.im * I := ⟨_, rfl⟩
-  have hs₀' : s₀ = ((1 + η : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I := by rw [hs₀]; simp
-  have hs₀re : s₀.re = 1 + η := by rw [hs₀]; simp
-  have hs₁re : s₁.re = 1 + η := by rw [hs₁]; simp
+  have hs₀' : s₀ = ((1 + η : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I := simp [hs₀]
+  have hs₀re : s₀.re = 1 + η := simp [hs₀]
+  have hs₁re : s₁.re = 1 + η := simp [hs₁]
   have hd₀ : ‖s₀ - ((26 / 25 : ℂ) + ((0 : ℝ) : ℂ) * I)‖ ≤ 1 / 25 := by
     rw [hs₀, show ((1 + η : ℝ) : ℂ) - ((26 / 25 : ℂ) + ((0 : ℝ) : ℂ) * I) = ((η - 1 / 25 : ℝ) : ℂ) by
       push_cast; ring, Complex.norm_real, Real.norm_eq_abs, abs_le]

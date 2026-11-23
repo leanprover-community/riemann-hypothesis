@@ -124,7 +124,7 @@ theorem exists_res {t : kˣ} (ht : IsUnif t) : ∃ α : AddChar (kP PP) ℂ,
     chr_near hψ ht (by rw [← map_sub, ← prO_lt q h]; exact Ideal.Quotient.eq.1 e)
   choose l hl using Ideal.Quotient.mk_surjective (I := PP.asIdeal)
   refine ⟨{ toFun := fun u => ψ (((t⁻¹ : kˣ) : k) * prO q (l u))
-            map_zero_eq_one' := by rw [wd _ 0 (by rw [hl, map_zero])]; simp
+            map_zero_eq_one' := simp [wd _ 0 (by rw [hl, map_zero])]
             map_add_eq_mul' := fun a b => by
               rw [wd _ (l a + l b) (by rw [map_add (f := _), hl, hl, hl]), map_add (f := _), mul_add, AddChar.map_add_eq_mul, Circle.coe_mul] },
     fun z => congrArg (fun c : Circle => (c : ℂ)) (wd _ z (hl _)).symm⟩

@@ -68,7 +68,7 @@ theorem exists_pow_approx {l : ℕ} [hl : Fact l.Prime] (u : ℤ_[l]) (h2 : l �
   have hl0 : PadicInt.toZMod (l : ℤ_[l]) = 0 := by simp
   have hw0 : PadicInt.toZMod (w : ℤ_[l]) ≠ 0 :=
     (w.isUnit.map (PadicInt.toZMod (p := l))).ne_zero
-  have hu1 : PadicInt.toZMod u = 1 := by rw [hu']; simp
+  have hu1 : PadicInt.toZMod u = 1 := simp [hu']
   induction k with
   | zero => exact ⟨0, by simpa using hx⟩
   | succ k ih =>

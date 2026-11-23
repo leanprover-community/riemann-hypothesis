@@ -96,7 +96,7 @@ theorem UpperTheory.Gal.Wt.deltaNear_h : DeltaNear := by
   have hc : ∀ p, ‖m h p - m 1 p‖ ≤ ε := fun p => by
     have := hN p.2 p.1
     rwa [map_sub] at this
-  have eD : aeval (m 1) D = 1 := by rw [← hD]; simp
+  have eD : aeval (m 1) D = 1 := simp [← hD]
   have eE : aeval (m 1) (extremal ℤ a ν) = 1 := by
     rw [extremal, Formalism.GradedWeylDivisibility.hw, map_prod]
     refine Finset.prod_eq_one fun s _ => ?_

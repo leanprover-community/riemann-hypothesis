@@ -143,7 +143,7 @@ theorem pi_selfDual (F E : Type) [NontriviallyNormedField F] [NontriviallyNormed
   have hScl : IsClosed S := isClosed_set_pi fun _ _ => Metric.isClosed_closedBall
   let Mg : AddSubgroup (Fin r → F) :=
     { carrier := S
-      zero_mem' := by rw [hmem]; simp
+      zero_mem' := simp [hmem]
       add_mem' := by
         intro a b ha hb
         rw [hmem] at ha hb ⊢

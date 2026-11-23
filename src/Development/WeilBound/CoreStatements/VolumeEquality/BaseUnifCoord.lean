@@ -142,7 +142,7 @@ theorem analyticAt_of_forms {n g : ℕ} (w : (Fin n → ℂ) → Fin g → ℂ) 
     ext k l
     simp [M, h4, Pi.single_apply, Matrix.one_apply]
   have hd : AnalyticAt ℂ (fun t => (M t).det) t₀ := analyticAt_det fun a b => h1 a _
-  have hd0 : (M t₀).det ≠ 0 := by rw [hM0]; simp
+  have hd0 : (M t₀).det ≠ 0 := simp [hM0]
   refine analyticAt_pi_iff.2 fun k => ?_
   have hc : AnalyticAt ℂ (fun t => ((M t).updateCol k fun i => r i t).det) t₀ := analyticAt_det fun a b => by
     by_cases hb : b = k

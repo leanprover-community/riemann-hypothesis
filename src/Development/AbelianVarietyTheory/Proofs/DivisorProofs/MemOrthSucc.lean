@@ -258,7 +258,7 @@ theorem IsPr.zero_iff {π : Module.End ℂ V} {S : Submodule ℂ V} (h : IsPr π
 
 theorem IsPr.comm (h : Rep E) {π : Module.End ℂ V} {S : Submodule ℂ V} (hπ : IsPr π S) (hS : KSt E S)
     {a b : Ix p q} (hab : sameBlock a b) (x : V) : π (E a b x) = E a b (π x) := by
-  have e : E a b x = E a b (π x) + E a b (x - π x) := by rw [← map_add (f := _)]; simp
+  have e : E a b x = E a b (π x) + E a b (x - π x) := simp [← map_add (f := _)]
   rw [e, map_add (f := _), hπ.of_mem (hS a b hab _ (hπ.1 x)),
     hπ.zero_iff.mpr (hS.orth h a b hab _ (hπ.2 x)), add_zero]
 

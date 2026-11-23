@@ -97,7 +97,7 @@ theorem le_of_isotropic {n : Type} [Fintype n] [DecidableEq n] {q p r : ℕ} (J 
       have := congrFun hc i
       simpa [L, u, mulVec, dotProduct, submatrix] using this
     have h0 : star u ⬝ᵥ (Formalism.UG.Jpq q p *ᵥ u) = 0 := by
-      have : star c ⬝ᵥ ((Zᴴ * Formalism.UG.Jpq q p * Z) *ᵥ c) = 0 := by rw [hZZ]; simp
+      have : star c ⬝ᵥ ((Zᴴ * Formalism.UG.Jpq q p * Z) *ᵥ c) = 0 := simp [hZZ]
       rw [← this, hu, star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, mulVec_mulVec, Matrix.mul_assoc]
     have hup : (fun i => u (Sum.inl i)) = 0 := by
       rw [← dotProduct_star_self_eq_zero, ← h0]

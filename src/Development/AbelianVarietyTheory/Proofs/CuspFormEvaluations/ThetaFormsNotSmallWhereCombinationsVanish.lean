@@ -153,7 +153,7 @@ theorem decay_le : ∃ C : ℝ, ∀ x ∈ X.dom, ‖Xa.et x * Xa.th1 x ^ (Xa.i *
           exact pow_le_pow_left₀ (norm_nonneg _) (norm_le_pi_norm (fun j => Xa.w j x) k) 2
       _ = Xa.N * ρ ^ 2 := by simp
   have hph : phla X (n1 • Xa.de) x + n1 * phla X (2 • Xa.L - Xa.de) x = ((2 * n1 : ℕ) : ℝ) * phla X Xa.L x := by
-    have h0 : phla X 0 x = 0 := by rw [IW.phla_eq X hx]; simp
+    have h0 : phla X 0 x = 0 := simp [IW.phla_eq X hx]
     rw [← OW.phla_add_nsmul X hx]
     have : n1 • Xa.de + n1 • (2 • Xa.L - Xa.de) = 0 + (2 * n1) • Xa.L := by
       rw [smul_sub, ← mul_smul, mul_comm]; abel

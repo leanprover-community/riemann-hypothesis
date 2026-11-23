@@ -331,7 +331,7 @@ theorem classParam_of_scaled [IsTotallyReal F] {𝔣 𝔞 𝔟 : Ideal (𝓞 F)}
     have e3 := e1.trans e2.symm
     have hc : p.1.1 = p'.1.1 := congrArg Prod.snd e3
     have hu1 : u = 1 := (congrArg (fun z : congUnits 𝔣 × ι => (z.1 : (𝓞 F)ˣ)) e3).symm
-    have hξ : ξ p' = ξ p := by rw [hue, hu1]; simp
+    have hξ : ξ p' = ξ p := simp [hue, hu1]
     obtain ⟨t, ht, e⟩ := hcoef p
     obtain ⟨t', ht', e'⟩ := hcoef p'
     obtain ⟨⟨c, a, ha⟩, m⟩ := p

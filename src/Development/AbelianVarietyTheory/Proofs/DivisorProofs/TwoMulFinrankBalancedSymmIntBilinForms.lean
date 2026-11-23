@@ -45,7 +45,7 @@ theorem host_bar_bar (H : Host E) (a : 𝓞 E) : H.bar (H.bar a) = a := by
   exact IsCMField.complexConj_apply_apply E _
 
 theorem host_bar_rt (H : Host E) : H.bar H.rt = -H.rt := by
-  have h1 : (H.bar H.rt) ^ 2 = H.rt ^ 2 := by rw [← map_pow, H.rt_sq]; simp
+  have h1 : (H.bar H.rt) ^ 2 = H.rt ^ 2 := simp [← map_pow, H.rt_sq]
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 h1 with h | h
   · exfalso
     obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance

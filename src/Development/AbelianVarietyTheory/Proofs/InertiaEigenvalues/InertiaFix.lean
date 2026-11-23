@@ -66,7 +66,7 @@ theorem inertia_fix : ∀ (l : ℕ) [Fact l.Prime] (n : ℕ), 0 < n → ∀ σ :
     have : ‖x‖ ^ m = 1 := by rw [← norm_pow, hxm, norm_one]
     exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hm0).1 this
   have hcop : l.Coprime m := by
-    have h : (l ^ n).Coprime m := by rw [hm]; simp
+    have h : (l ^ n).Coprime m := simp [hm]
     exact Nat.Coprime.of_dvd_left (dvd_pow_self l hn.ne') h
   have hmn : ‖(m : Om l)‖ = 1 := by
     rw [← map_natCast (algebraMap ℚ_[l] (PadicAlgCl l)), PadicAlgCl.norm_extends]

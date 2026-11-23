@@ -83,7 +83,7 @@ theorem R_aff (q : ℕ) (P : Scheme.{0} → Prop) (haff : ∀ Z : Scheme.{0}, Is
     {Z : Scheme.{0}} (hZ : AICSch Z) (hq : IsUnit (q : Γ(Z, ⊤))) (A : Z.Opens) (hA : IsAffineOpen A) :
     R P (A : Set Z) := by
   intro W i _ hr hW
-  have e : Set.range i = Set.range A.ι := by rw [hr]; simp
+  have e : Set.range i = Set.range A.ι := simp [hr]
   have hWa : IsAffine W := (IsAffine.iff_of_isIso (IsOpenImmersion.isoOfRangeEq i A.ι e).hom).mpr hA
   exact haff W hWa (aicsch_of_imm i hZ) (unit_of_hom i q hq)
 

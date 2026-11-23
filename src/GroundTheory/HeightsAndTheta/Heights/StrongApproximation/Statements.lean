@@ -336,7 +336,7 @@ theorem inv_mem_SU {R : Type*} [CommRing R] (σ : R →+* R) {N : ℕ} (J : Matr
   calc a⁻¹ᵀ * J * a⁻¹.map σ = a⁻¹ᵀ * (aᵀ * J * a.map σ) * a⁻¹.map σ := by rw [hu]
     _ = (a * a⁻¹)ᵀ * J * (a.map σ * a⁻¹.map σ) := by
         rw [Matrix.transpose_mul]; simp only [Matrix.mul_assoc]
-    _ = J := by rw [Matrix.mul_nonsing_inv _ hunit, hmap]; simp
+    _ = J := simp [Matrix.mul_nonsing_inv _ hunit, hmap]
 
 end Inhabitants
 

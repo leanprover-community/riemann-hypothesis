@@ -152,7 +152,7 @@ private theorem isUnit_natCast_of_not_dvd_root_weights (S : UniformizedDVR p O) 
   have hcop : IsCoprime (u : ℤ) (p : ℤ) :=
     Nat.isCoprime_iff_coprime.mpr (Nat.coprime_comm.mp ((Nat.Prime.coprime_iff_not_dvd hp).mpr hu))
   obtain ⟨x, z, hxz⟩ := hcop
-  have h1 : ((x * u + z * p : ℤ) : O) = 1 := by rw [hxz]; simp
+  have h1 : ((x * u + z * p : ℤ) : O) = 1 := simp [hxz]
   push_cast at h1
   have h2 : (1 : O) ∈ IsLocalRing.maximalIdeal O := by
     rw [← h1]

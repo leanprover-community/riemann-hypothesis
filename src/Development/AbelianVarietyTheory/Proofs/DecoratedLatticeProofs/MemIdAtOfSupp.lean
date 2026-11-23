@@ -221,7 +221,7 @@ theorem exists_unif {PP : Formalism.L2.DIV.Pl D.host.E} (h : IsIdemAt q.e PP) {�
   choose l hl using Ideal.Quotient.mk_surjective (I := PP.asIdeal)
   let α : AddChar (Formalism.L2.DIV.kP PP) ℂ :=
     { toFun := fun u => ψ (t⁻¹ * prO q (l u))
-      map_zero_eq_one' := by rw [wd _ 0 (by rw [hl, map_zero])]; simp
+      map_zero_eq_one' := simp [wd _ 0 (by rw [hl, map_zero])]
       map_add_eq_mul' := fun a b => by
         rw [wd _ (l a + l b) (by rw [map_add (f := _), hl, hl, hl]), map_add (f := _), mul_add, AddChar.map_add_eq_mul, Circle.coe_mul] }
   have hα : ∀ z, α (Ideal.Quotient.mk _ z) = ψ (t⁻¹ * prO q z) := fun z => congrArg (fun c : Circle => (c : ℂ)) (wd _ z (hl _))

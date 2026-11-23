@@ -126,7 +126,7 @@ theorem isSubquotient_of_span {σ : Representation ℂ G W} {ρ : Representation
     intro s hs
     obtain ⟨t, ht, _, ⟨v, -, rfl⟩, e⟩ := Submodule.mem_sup.1
       (show (s : U) ∈ T.toSubmodule ⊔ (GlobalTheory.JHMult.subMap ι ⊤).toSubmodule from hs)
-    have e' : ι v = s + -t := by rw [← e]; simp
+    have e' : ι v = s + -t := simp [← e]
     have hv : v ∈ R.toSubmodule := by
       show ι v ∈ S.toSubmodule ⊔ T.toSubmodule
       rw [e']

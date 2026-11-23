@@ -291,7 +291,7 @@ theorem exists_bounded_basis [_root_.NumberField.IsTotallyComplex E] (hτ : Func
     change g _ = 0
     rw [hg, this, map_zero]
   obtain ⟨v, hv, -, hli⟩ := Submodule.exists_fun_fin_finrank_span_eq E Sx
-  have hr : n = Module.finrank E (Submodule.span E Sx) := by rw [hsp, finrank_top]; simp
+  have hr : n = Module.finrank E (Submodule.span E Sx) := simp [hsp, finrank_top]
   refine ⟨(Matrix.of fun k => v (Fin.cast hr k))ᵀ, ?_, fun a k => (hv _).1 a, fun a k => ?_⟩
   · rw [det_transpose]
     exact ((Matrix.isUnit_iff_isUnit_det _).1 (Matrix.linearIndependent_rows_iff_isUnit.1

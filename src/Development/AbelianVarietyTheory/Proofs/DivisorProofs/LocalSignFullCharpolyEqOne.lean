@@ -60,7 +60,7 @@ theorem kapSign_charpoly_eq_one : ∀ (E : Type) [Field E] [NumberField E] [IsCM
   · rfl
   · simp only []
     set V₁ := LinearMap.ker (Matrix.toLin' (aeval γ.val γ.val.charpoly)) with hV
-    have htop : V₁ = ⊤ := by rw [hV, Matrix.aeval_self_charpoly]; simp
+    have htop : V₁ = ⊤ := simp [hV, Matrix.aeval_self_charpoly]
     set b := Module.finBasis (w.adicCompletion E) V₁
     have hm : Module.finrank (w.adicCompletion E) V₁ = n := by
       rw [htop, finrank_top]; simp

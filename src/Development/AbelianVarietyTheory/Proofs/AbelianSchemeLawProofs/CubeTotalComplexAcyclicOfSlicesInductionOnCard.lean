@@ -604,7 +604,7 @@ noncomputable def suppSingletonHomologyIso (h : IsCompl (Set.range e) (Set.range
   let U := upperFace (otherDirections (f k)) (f k) D
   (homologyMapIso (@asIso _ _ _ _ (cubeUpperIncl (range_otherDirections (f k)) D)
     (isIso_cubeUpperIncl_of_subsingleton _ D fun u hu => subsingleton_supp A _ fun hu' => by
-      have hk : k ∈ part f u := by rw [Set.mem_singleton_iff.1 hu'.2]; simp
+      have hk : k ∈ part f u := simp [Set.mem_singleton_iff.1 hu'.2]
       exact hu ((mem_part f u k).1 hk))) (n + 1)).symm ≪≫
   shiftSuccHomologyIso _ n ≪≫
   homologyMapIso (@asIso _ _ _ _ (cubeLowerProj (e := e') U) (isIso_cubeLowerProj_of_subsingleton e' U (by

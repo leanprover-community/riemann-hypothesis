@@ -68,14 +68,14 @@ theorem isTypeAt_average_same_place : ∀ (D : D7) (θ : InfFam D), IsInfFam θ 
           simp only [hh, conjTranspose_mul, Matrix.mul_assoc]
       _ = (fr * fr⁻¹)ᴴ * Jm (N.M.ε τ) * (fr * fr⁻¹) := by
           rw [hJ, ← hfrJ]; simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [fr2]; simp
+      _ = _ := simp [fr2]
   have hiU : hi ∈ UJset (N.M.ε τ) := by
     show hiᴴ * Jm (N.M.ε τ) * hi = Jm (N.M.ε τ)
     calc hiᴴ * Jm (N.M.ε τ) * hi = (P⁻¹)ᴴ * (frᴴ * Jm (N.M.ε τ) * fr) * P⁻¹ := by
           simp only [hhi, conjTranspose_mul, Matrix.mul_assoc]
       _ = (P * P⁻¹)ᴴ * Jm (N.M.ε τ) * (P * P⁻¹) := by
           rw [hfrJ, ← hJ]; simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [P2]; simp
+      _ = _ := simp [P2]
   set σ₂ : Mx N.V.rank → (H →L[ℂ] H) := fun y => σ (h * y * hi) with hσ₂def
   have hD₂ : IsDS (N.M.ε τ) (N.M.lam τ) σ₂ := GlobalTheory.CayleyChoice.isDS_conj hD hiU hU hih
   have hσ₂ : Std (N.M.ε τ) σ₂ := std_of_isDS hPr.harishChandraModules hD₂
@@ -83,7 +83,7 @@ theorem isTypeAt_average_same_place : ∀ (D : D7) (θ : InfFam D), IsInfFam θ 
     intro g
     show σ (P * g * P⁻¹) = σ (h * (fr * g * fr⁻¹) * hi)
     congr 1
-    calc P * g * P⁻¹ = P * (fr⁻¹ * fr) * g * (fr⁻¹ * fr) * P⁻¹ := by rw [fr1]; simp
+    calc P * g * P⁻¹ = P * (fr⁻¹ * fr) * g * (fr⁻¹ * fr) * P⁻¹ := simp [fr1]
       _ = _ := by simp only [hh, hhi, Matrix.mul_assoc]
   simp only [e1] at hx
   refine ⟨H, i1, i2, σ₂, N.M.lam τ, N.M.ε τ, fr, N.M.enum τ, hD₂, hfr, hfrJ, fun x => ?_⟩
@@ -100,7 +100,7 @@ theorem isTypeAt_average_same_place : ∀ (D : D7) (θ : InfFam D), IsInfFam θ 
     rw [← hfrJ]
     calc (fr⁻¹)ᴴ * (frᴴ * Jm (N.M.ε τ) * fr) * fr⁻¹ = (fr * fr⁻¹)ᴴ * Jm (N.M.ε τ) * (fr * fr⁻¹) := by
           simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [fr2]; simp
+      _ = _ := simp [fr2]
   have hfri : IsUnit fr⁻¹ := (Matrix.isUnit_nonsing_inv_iff).2 hfr
   have hii : fr⁻¹⁻¹ = fr := Matrix.nonsing_inv_nonsing_inv _ dfr
   have hb := hasTypeAll_transport _ H H σ₂ (fun g => σ₂ (fr * g * fr⁻¹)) (Jm (N.M.ε τ)) (gramAt D N.V τ) fr⁻¹
@@ -108,7 +108,7 @@ theorem isTypeAt_average_same_place : ∀ (D : D7) (θ : InfFam D), IsInfFam θ 
       show σ₂ g w = σ₂ (fr * (fr⁻¹ * g * fr⁻¹⁻¹) * fr⁻¹) w
       rw [hii]
       congr 2
-      calc g = (fr * fr⁻¹) * g * (fr * fr⁻¹) := by rw [fr2]; simp
+      calc g = (fr * fr⁻¹) * g * (fr * fr⁻¹) := simp [fr2]
         _ = _ := by simp only [Matrix.mul_assoc]) _ hy
   have ef : (fun y => GlobalTheory.SeriesToClosure.res θ N.V τ fr (GlobalTheory.SeriesToClosure.avg θ N.V τ (N.M.ε τ) fr e ψ) x
       (fr⁻¹⁻¹ * y * fr⁻¹)) = fun g => GlobalTheory.SeriesToClosure.avg θ N.V τ (N.M.ε τ) fr e ψ (x * atTau θ N.V τ g) := by
@@ -117,7 +117,7 @@ theorem isTypeAt_average_same_place : ∀ (D : D7) (θ : InfFam D), IsInfFam θ 
     congr 3
     rw [hii]
     calc fr⁻¹ * (fr * y * fr⁻¹) * fr = (fr⁻¹ * fr) * y * (fr⁻¹ * fr) := by simp only [Matrix.mul_assoc]
-      _ = y := by rw [fr1]; simp
+      _ = y := simp [fr1]
   rw [ef] at hb
   exact hasTypeAll_iff.1 hb
 end GlobalTheory.AvgSamePlace

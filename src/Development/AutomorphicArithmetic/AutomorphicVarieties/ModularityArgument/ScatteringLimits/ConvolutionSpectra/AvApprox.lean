@@ -80,7 +80,7 @@ theorem UpperTheory.V.Z.IntegralApplyAeEq.avApprox :
     obtain ⟨hs, hi, -⟩ := two ψ a b hψ
     obtain ⟨i, e⟩ := ((avSpec F).2.2.2 _ hi).1 h
     have hr : Integrable ψ := hψ.cont.integrable_of_hasCompactSupport hs
-    have e2 : h = ∫ t, (ψ t : ℂ) • h := by rw [integral_smul_const, integral_complex_ofReal, hψ.total]; simp
+    have e2 : h = ∫ t, (ψ t : ℂ) • h := simp [integral_smul_const, integral_complex_ofReal, hψ.total]
     rw [e]
     conv_lhs => rw [show (∫ t, (ψ t : ℂ) • F.U t h) - h = (∫ t, (ψ t : ℂ) • F.U t h) - ∫ t, (ψ t : ℂ) • h from congrArg _ e2]
     rw [← integral_sub i (hi.smul_const h)]

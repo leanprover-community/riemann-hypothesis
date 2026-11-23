@@ -339,7 +339,7 @@ theorem half_int : ∃ v : ℕ, algebraMap F E S.ϖ ^ v * algebraMap F E 2⁻¹ 
   obtain ⟨v, u, e⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible h2 S.ϖ_irr
   refine ⟨v, ?_⟩
   have h3 : (S.ϖ : F) ^ v * 2⁻¹ = ((u⁻¹ : (𝒪[F])ˣ) : 𝒪[F]) := by
-    have h4 : (u⁻¹ : (𝒪[F])ˣ) * (2 : 𝒪[F]) = S.ϖ ^ v := by rw [e]; simp
+    have h4 : (u⁻¹ : (𝒪[F])ˣ) * (2 : 𝒪[F]) = S.ϖ ^ v := simp [e]
     have := congrArg (fun c : 𝒪[F] => (c : F)) h4
     push_cast at this
     rw [← this]

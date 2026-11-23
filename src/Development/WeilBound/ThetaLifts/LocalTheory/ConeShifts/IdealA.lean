@@ -313,7 +313,7 @@ theorem vl_of_inAt {𝔞 : FI E} {l : (AE F E)ˣ} {w : HeightOneSpectrum (𝓞 E
   calc exp (-count E w 𝔞) = exp (-count E w 𝔞) * (Valued.v (cp F w l) * Valued.v (cp F w ((l⁻¹ : (AE F E)ˣ) : AE F E))) := by
         rw [a3, mul_one]
     _ ≤ exp (-count E w 𝔞) * (Valued.v (cp F w l) * exp (count E w 𝔞)) := by gcongr
-    _ = _ := by rw [mul_left_comm, ← exp_add]; simp
+    _ = _ := simp [mul_left_comm, ← exp_add]
 
 theorem Gen.conj {P T : Finset (Pl F)} {𝔞 : FI E} (h0 : 𝔞 ≠ 0) {l : (AE F E)ˣ} (h : Gen P 𝔞 T l) :
     Gen P (cj hσ 𝔞) T (Units.map (cA σ : AE F E →* AE F E) l) := by

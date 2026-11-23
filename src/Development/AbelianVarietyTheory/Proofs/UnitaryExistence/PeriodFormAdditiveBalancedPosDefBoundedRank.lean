@@ -185,7 +185,7 @@ theorem rank_le_of_dvr {E : Type} [Field E] [NumberField E] [IsCMField E] {H : R
   have hsq : τ₀ H.rt ^ 2 = b.hom (baseKA l).ρ ^ 2 := by
     rw [← map_pow, ← map_pow, H.rt_sq, (baseKA l).ρ_sq]; simp
   have hne : -τ₀ H.rt ≠ τ₀ H.rt := fun h => by
-    have h2 : τ₀ H.rt ^ 2 = 0 := by rw [neg_eq_self.1 h]; simp
+    have h2 : τ₀ H.rt ^ 2 = 0 := simp [neg_eq_self.1 h]
     rw [← map_pow, H.rt_sq] at h2
     exact H.d_prime.ne_zero (by simpa using h2)
   refine ⟨Module.finrank (𝓞 E) A.U.D.toPre.X, ?_, ?_⟩

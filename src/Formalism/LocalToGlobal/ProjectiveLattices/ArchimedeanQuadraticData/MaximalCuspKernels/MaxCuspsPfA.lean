@@ -95,7 +95,7 @@ theorem maxCuspsA_zMatC_add (X : Data E r) (cu : CuspFD X ρ) (τ : E →+* ℂ)
     exact Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun k' _ => by ring
   have key : U * β * V * (U * β' * V) = 0 := by
     calc U * β * V * (U * β' * V) = U * β * (V * U) * β' * V := by simp only [Matrix.mul_assoc]
-      _ = 0 := by rw [hVU]; simp
+      _ = 0 := simp [hVU]
   rw [hZ, hZ, hZ]
   simp only [Matrix.mul_add, Matrix.add_mul, Matrix.one_mul, Matrix.mul_one, key, add_zero]
   abel

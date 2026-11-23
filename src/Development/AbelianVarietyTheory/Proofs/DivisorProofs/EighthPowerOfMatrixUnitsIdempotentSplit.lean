@@ -75,8 +75,8 @@ theorem matUnits_univ_of_idem : ∀ {S : Scheme.{0}} (G H : Over S) [GrpObj G] [
   intro S G H _ _ _ E hE hrel hsum i r hi hr hir hri T y
   have key : ∀ b, E b b = (E b 0 ≫ r) ≫ i ≫ E 0 b := by
     intro b
-    have h1 : E b 0 ≫ E 0 b = E b b := by rw [hrel]; simp
-    have h2 : E b 0 ≫ E 0 0 = E b 0 := by rw [hrel]; simp
+    have h1 : E b 0 ≫ E 0 b = E b b := simp [hrel]
+    have h2 : E b 0 ≫ E 0 0 = E b 0 := simp [hrel]
     calc E b b = E b 0 ≫ E 0 b := h1.symm
       _ = (E b 0 ≫ E 0 0) ≫ E 0 b := by rw [h2]
       _ = (E b 0 ≫ r) ≫ i ≫ E 0 b := by rw [← hri]; simp only [Category.assoc]
@@ -86,7 +86,7 @@ theorem matUnits_univ_of_idem : ∀ {S : Scheme.{0}} (G H : Over S) [GrpObj G] [
     haveI := hr
     have hx : (∏ a, y a ≫ i ≫ E 0 a) ≫ E b 0 = y b ≫ i ≫ E 0 0 := by
       rw [prod_comp', Finset.prod_eq_single b]
-      · have h3 : E 0 b ≫ E b 0 = E 0 0 := by rw [hrel]; simp
+      · have h3 : E 0 b ≫ E b 0 = E 0 0 := simp [hrel]
         simp only [Category.assoc, h3]
       · intro a _ hab
         have h3 : E 0 a ≫ E b 0 = 1 := by rw [hrel]; simp [hab]

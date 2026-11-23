@@ -316,7 +316,7 @@ theorem isDetRoot_at (hθ : IsInfFam θ) (V : HSp D) {g : GA D V} (hg : g ∈ Gi
     have h1 := hn τ
     rw [← hd]
     generalize θ τ (infPart D (x : AE D)) = w at h1
-    have : w * starRingEnd ℂ w = 1 := by rw [Complex.mul_conj', h1]; simp
+    have : w * starRingEnd ℂ w = 1 := simp [Complex.mul_conj', h1]
     linear_combination (-w) * this
 
 theorem exists_root_at (hθ : IsInfFam θ) (V : HSp D) {g : GA D V} (hg : g ∈ GinfC V) (τ : D.what₂.Tau) (w : ℂ)

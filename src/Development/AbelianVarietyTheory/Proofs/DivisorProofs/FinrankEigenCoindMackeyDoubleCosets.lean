@@ -86,7 +86,7 @@ theorem key (hχ : ∀ u ∈ U, ∀ u' ∈ U, χ (u * u') = χ u * χ u') (y : G
   simp only [e] at h1
   have h2 : σ p v = σ p' (σ (p'⁻¹ * p) v) := by
     rw [← Module.End.mul_apply, ← map_mul]; simp
-  have h3 : χ u' = χ (u' * u⁻¹) * χ u := by rw [← hχ _ hm _ hu]; simp
+  have h3 : χ u' = χ (u' * u⁻¹) * χ u := simp [← hχ _ hm _ hu]
   rw [h2, h1, map_smul, smul_smul, h3, mul_comm]
 
 theorem surj (h1 : χ 1 = 1) (hχ : ∀ u ∈ U, ∀ u' ∈ U, χ (u * u') = χ u * χ u') {ι : Type} (x : ι → G)

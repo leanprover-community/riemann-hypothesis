@@ -303,7 +303,7 @@ theorem aKind_of (hSG : SigmaG) (hS : SGrp) (hAB : ABound) (hD : Decay)
   have hσ : IsURepOn (Gr k r) σ := hSG k r _ _ H σ hDS
   obtain ⟨_, _, hw1, _⟩ := hLow
   have hGae := ae_gr hμG.2.2.1
-  have hww : ⟪w, w⟫_ℂ = 1 := by rw [inner_self_eq_norm_sq_to_K, hw1]; simp
+  have hww : ⟪w, w⟫_ℂ = 1 := simp [inner_self_eq_norm_sq_to_K, hw1]
   have hd' : (d : ℂ) ≠ 0 := by exact_mod_cast hd.ne'
   have hfd : fdegH μG σ w = d := by
     have h := (hSc w w w w).2

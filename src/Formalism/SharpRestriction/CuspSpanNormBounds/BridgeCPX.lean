@@ -1129,7 +1129,7 @@ theorem kfin_smoothVec (hadm : HCAdmDS) {k r : ℕ} {ε : Fin (2 * r + k + 1) �
   congr 2
   rw [iP]
   unfold cj
-  calc g = (Pcᴴ * Pc) * g * (Pcᴴ * Pc) := by rw [cay1 hP]; simp
+  calc g = (Pcᴴ * Pc) * g * (Pcᴴ * Pc) := simp [cay1 hP]
     _ = Pcᴴ * (Pc * g * Pcᴴ) * Pc := by simp only [Matrix.mul_assoc]
 
 end SmoothVecH

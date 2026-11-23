@@ -348,7 +348,7 @@ theorem conj_lie {N : ℕ} (n M H : Matrix (Fin N) (Fin N) ℂ) (hu : nᴴ * H *
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
     _ = nᴴ * (Mᴴ * H + H * M) * n := by
         rw [h2, h1]; simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-    _ = 0 := by rw [hM]; simp
+    _ = 0 := simp [hM]
 
 theorem lie_Y (Y : B.Mat k ρ) (hY : B.inLie k ρ Y) :
     B.inLie k (j + ρ) (blk3 0 0 0 0 Y 0 0 0 0) := by

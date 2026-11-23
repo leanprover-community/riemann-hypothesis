@@ -405,7 +405,7 @@ theorem ENΔ_eq {g : W.Gam} (hJ : QFrame W g J) (y : ℕ) : tableLineDegreeTwo.E
     congr 2
     rw [qΔ_eq W J hJ]
     exact funext fun _ => (hJ.2.1 _).1 ⟨X, rfl⟩ δ hδ
-  have hE : (letE i * letE i : LetA O n) = letE i := by rw [letE, mul_single]; simp
+  have hE : (letE i * letE i : LetA O n) = letE i := simp [letE, mul_single]
   ext x
   have h1 : x ∈ qN W T i (-(y : ℤ)) ↔ qΔ W ^ y • x ∈ NΔl W T i := by
     rw [qN, show (-(y : ℤ)).toNat = 0 by omega, neg_neg, Int.toNat_natCast, pow_zero,

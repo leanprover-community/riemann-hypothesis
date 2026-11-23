@@ -69,7 +69,7 @@ private theorem exists_isGrpPullback_factor {S S₁ S₂ : Scheme.{0}} {G : Over
     ∃ ψ : G₂.left ⟶ G₁.left, ψ ≫ φ₁ = φ₂ ∧ IsGrpPullback G₂ G₁ g ψ := by
   obtain ⟨hp₁, hm₁⟩ := h₁
   obtain ⟨hp₂, hm₂⟩ := h₂
-  have hw : φ₂ ≫ G.hom = (G₂.hom ≫ g) ≫ f₁ := by rw [hp₂.w]; simp
+  have hw : φ₂ ≫ G.hom = (G₂.hom ≫ g) ≫ f₁ := simp [hp₂.w]
   refine ⟨hp₁.lift φ₂ (G₂.hom ≫ g) hw, hp₁.lift_fst _ _ _, ?_, ?_⟩
   · refine IsPullback.of_right ?_ (hp₁.lift_snd _ _ _) hp₁
     rw [hp₁.lift_fst]

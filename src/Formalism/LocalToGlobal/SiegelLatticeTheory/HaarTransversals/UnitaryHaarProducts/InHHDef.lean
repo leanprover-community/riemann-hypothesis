@@ -347,7 +347,7 @@ theorem wuDefinite_holds : WuDefinite X u := by
   have hemb : v.embedding = ψ := NumberField.InfinitePlace.embedding_mk_eq_of_isReal hψr
   have hval : ((ι a : ℝ) : ℂ) = hJ (X.B.I.ε v) (rv X.B.I v x) (rv X.B.I v x) := by
     rw [← phi_hform, ← ha, X.B.I.φ_over v a, hemb]; rfl
-  have hre : ι a = (hJ (X.B.I.ε v) (rv X.B.I v x) (rv X.B.I v x)).re := by rw [← hval]; simp
+  have hre : ι a = (hJ (X.B.I.ε v) (rv X.B.I v x) (rv X.B.I v x)).re := simp [← hval]
   rw [hre]
   by_contra hle
   push_neg at hle

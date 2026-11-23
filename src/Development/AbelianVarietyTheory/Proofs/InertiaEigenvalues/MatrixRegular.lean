@@ -101,7 +101,7 @@ theorem inv_rel {p p' : R} {w : Rˣ} (hp : w.val * p' = p * w.val) : (w⁻¹).va
 
 theorem U_comm {p q : R} (h : q * p = 0) {u v : Rˣ} (hu : u ∈ U p q) (hv : v ∈ U p q) : u * v = v * u := by
   have k : ∀ {u v : Rˣ}, u ∈ U p q → v ∈ U p q → (u * v).val = u.val + v.val - 1 := fun {u v} hu hv => by
-    have : (u.val - 1) * (v.val - 1) = 0 := by rw [← hu.2, ← hv.1, mul_assoc, ← mul_assoc q, h]; simp
+    have : (u.val - 1) * (v.val - 1) = 0 := simp [← hu.2, ← hv.1, mul_assoc, ← mul_assoc q, h]
     rw [Units.val_mul, ← sub_zero (u.val * v.val), ← this]; noncomm_ring
   exact Units.ext (by rw [k hu hv, k hv hu, add_comm])
 

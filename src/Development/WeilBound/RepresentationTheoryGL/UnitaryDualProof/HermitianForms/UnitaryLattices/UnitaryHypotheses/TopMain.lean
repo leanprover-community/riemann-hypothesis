@@ -143,6 +143,6 @@ theorem top_core {n N : ℕ} (h : n ≤ N) {V D : Type} [AddCommGroup V] [Module
           (((nabs k (GeneralLinearGroup.det g) ^ s : ℝ) : ℂ) * Bt x y))
         = (((nabs k (GeneralLinearGroup.det g) ^ t) * ((nabs k (GeneralLinearGroup.det g) ^ t) *
           (nabs k (GeneralLinearGroup.det g) ^ s)) : ℝ) : ℂ) * Bt x y := by push_cast; ring
-      _ = Bt x y := by rw [e]; simp
+      _ = Bt x y := simp [e]
 
 end PositivityTheory.RgUd.Form.U.Asm

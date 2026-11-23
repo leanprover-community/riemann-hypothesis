@@ -89,7 +89,7 @@ theorem realZeta : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.P
     have : s.M.fr τ * ((s.M.fr τ)⁻¹ * Y * s.M.fr τ) * (s.M.fr τ)⁻¹ = Y := by
       calc s.M.fr τ * ((s.M.fr τ)⁻¹ * Y * s.M.fr τ) * (s.M.fr τ)⁻¹
           = (s.M.fr τ * (s.M.fr τ)⁻¹) * Y * (s.M.fr τ * (s.M.fr τ)⁻¹) := by simp only [Matrix.mul_assoc]
-        _ = Y := by rw [h1]; simp
+        _ = Y := simp [h1]
     simp only [DSModel.rep, ofFr, this]
   have hFu : ∀ τ (u : Formalism.REAL.UJ (s.M.ε τ)), F τ (ofFr s.M τ (umat u)) =
       ipTh m X (actSrc c.θ p.ω τ (ofFr s.M τ (umat u))

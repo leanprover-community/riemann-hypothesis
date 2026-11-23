@@ -189,7 +189,7 @@ theorem exists_root_alg {θ : InfFam D} (hθ : IsInfFam θ) (V : HSp D) (hV : �
       have e2 := GlobalTheory.VacuumCharacter.det_compAt θ τ (Formalism.L2.Theta.mt V g)
       rw [hi] at e1
       refine Eq.trans ?_ (congrArg₂ (· * ·) e2 e1.symm)
-      have : w τ * starRingEnd ℂ (w τ) = 1 := by rw [Complex.mul_conj', hw2]; simp
+      have : w τ * starRingEnd ℂ (w τ) = 1 := simp [Complex.mul_conj', hw2]
       rw [← hw1]; linear_combination (-w τ) * this
   · rw [map_prod]
     rw [show ((∏ τ, ν (x τ) : Circle) : ℂ) = ∏ τ, (ν (x τ) : ℂ) from map_prod Circle.coeHom _ _]

@@ -137,7 +137,7 @@ theorem top_count_holds : TopCount := by
     calc n = (range n).card := (card_range n).symm
       _ ≤ _ := card_le_card hsub
       _ ≤ (T ×ˢ Icc 1 G').card := card_image_le
-      _ = T.card * G' := by rw [card_product, Nat.card_Icc]; simp
+      _ = T.card * G' := simp [card_product, Nat.card_Icc]
   · have hcov : T ⊆ (T.image (fun p => p / G')).biUnion
         (fun c => T ∩ window n (c * G') G') := by
       intro p hp

@@ -104,7 +104,7 @@ theorem valuation {l e a : ℕ} [Fact l.Prime] (hsucc : e + 1 = l ^ a) (ha : a �
   · rw [eval_zero_polyR]; exact h2
   · calc ((shifts U η).erase 0).card ≤ (shifts U η).card := Finset.card_erase_le
       _ ≤ U.card * (Finset.Icc (1 : ℤ) η).card := Finset.card_image₂_le _ _ _
-      _ = U.card * η := by rw [Int.card_Icc]; simp
+      _ = U.card * η := simp [Int.card_Icc]
 
 end GlobalTheory.LcImage
 

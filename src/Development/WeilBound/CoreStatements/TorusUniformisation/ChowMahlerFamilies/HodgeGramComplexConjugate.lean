@@ -178,7 +178,7 @@ variable {S S' : Scheme.{0}} {f : S' ⟶ S} {A : Over S} {A' : Over S'} [GrpObj 
 theorem inv_comm (h : IsGrpPullback A' A f φ) :
     (GrpObj.inv : A' ⟶ A').left ≫ φ = φ ≫ (GrpObj.inv : A ⟶ A).left := by
   have e := congrArg (fun z => z.left) (map_inv (pushHom h A') (𝟙 A'))
-  have e₁ : (𝟙 A' : A' ⟶ A')⁻¹ = GrpObj.inv := by rw [Hom.inv_def]; simp
+  have e₁ : (𝟙 A' : A' ⟶ A')⁻¹ = GrpObj.inv := simp [Hom.inv_def]
   rw [e₁] at e
   refine e.trans ?_
   rw [Hom.inv_def, Over.comp_left]

@@ -59,13 +59,13 @@ theorem inv_of_inG {x : M2 n} (hx : InG x) : x⁻¹ = -(JJ n * xᴴ * JJ n) := b
   refine Matrix.inv_eq_left_inv ?_
   have h : xᴴ * JJ n * x = JJ n := hx
   calc -(JJ n * xᴴ * JJ n) * x = -(JJ n * (xᴴ * JJ n * x)) := by noncomm_ring
-    _ = 1 := by rw [h, JJ_sq]; simp
+    _ = 1 := simp [h, JJ_sq]
 
 theorem isUnit_of_inG {x : M2 n} (hx : InG x) : IsUnit x := by
   have h : (-(JJ n * xᴴ * JJ n)) * x = 1 := by
     have h : xᴴ * JJ n * x = JJ n := hx
     calc -(JJ n * xᴴ * JJ n) * x = -(JJ n * (xᴴ * JJ n * x)) := by noncomm_ring
-      _ = 1 := by rw [h, JJ_sq]; simp
+      _ = 1 := simp [h, JJ_sq]
   exact (Matrix.isUnit_iff_isUnit_det x).mpr (Matrix.isUnit_det_of_left_inverse h)
 
 theorem isUnit_det_of_inG {x : M2 n} (hx : InG x) : IsUnit x.det :=
@@ -92,7 +92,7 @@ theorem Nq_sq (Q : Matrix (Fin n) (Fin n) ℂ) : Nq Q * Nq Q = 0 := by
     rw [fromBlocks_multiply]; simp [fromBlocks_zero]
   calc Nq Q * Nq Q = Cm n * fromBlocks 0 Q 0 0 * (Cmi n * Cm n) * fromBlocks 0 Q 0 0 * Cmi n := by
         simp only [Nq, Matrix.mul_assoc]
-    _ = 0 := by rw [cmi_mul_cm, Matrix.mul_one, Matrix.mul_assoc (Cm n), this]; simp
+    _ = 0 := simp [cmi_mul_cm, Matrix.mul_one, Matrix.mul_assoc (Cm n), this]
 
 theorem mX_eq (Q : Matrix (Fin n) (Fin n) ℂ) (s : ℂ) : mX (1 : Matrix (Fin n) (Fin n) ℂ) (s • Q) 0 1 = 1 + s • Nq Q := by
   have e : (fromBlocks (1 : Matrix (Fin n) (Fin n) ℂ) (s • Q) 0 1 : M2 n) = 1 + s • (fromBlocks 0 Q 0 0 : M2 n) := by

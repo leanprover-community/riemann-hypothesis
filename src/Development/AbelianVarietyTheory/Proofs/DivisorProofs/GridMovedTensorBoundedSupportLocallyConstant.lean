@@ -75,7 +75,7 @@ theorem exists_le_inv_pow {ϖ : kˣ} (hϖ : IsUnif ϖ) (x : k) :
 theorem inv_pow_mono {ϖ : kˣ} (hϖ : IsUnif ϖ) {n N : ℕ} (h : n ≤ N) :
     (valuation k (ϖ : k) ^ n)⁻¹ ≤ (valuation k (ϖ : k) ^ N)⁻¹ := by
   have h1 : valuation k (ϖ : k) < 1 := hϖ ▸ uniformizer_lt_one
-  have hu : 0 < valuation k (ϖ : k) ^ N := by rw [pos_iff_ne_zero]; simp
+  have hu : 0 < valuation k (ϖ : k) ^ N := simp [pos_iff_ne_zero]
   exact inv_anti₀ hu (pow_le_pow_right_of_le_one' h1.le h)
 
 theorem exists_uniform {α : Type*} (s : Finset α) (P : α → ℕ → Prop)

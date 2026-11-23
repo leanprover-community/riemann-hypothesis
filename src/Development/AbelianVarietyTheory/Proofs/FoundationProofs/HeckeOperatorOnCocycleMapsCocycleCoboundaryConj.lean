@@ -108,8 +108,8 @@ theorem polySlash_pow (h : Matrix (Fin 2) (Fin 2) ℤ) (m : ℕ) (q : ℂ[X]) (h
       polySlash_mul h (m * k) m (q ^ k) q ((natDegree_pow_le_of_le k hq).trans (le_of_eq (mul_comm _ _))) hq, ih]
 
 theorem polySlash_one_num (g h : Matrix (Fin 2) (Fin 2) ℤ) : slP 1 h (lA g) = lA (g * h) := by
-  have c0 : (lA g).coeff 0 = ((g 0 1 : ℤ) : ℂ) := by rw [lA, coeff_add, coeff_C_mul_X, coeff_C]; simp
-  have c1 : (lA g).coeff 1 = ((g 0 0 : ℤ) : ℂ) := by rw [lA, coeff_add, coeff_C_mul_X, coeff_C]; simp
+  have c0 : (lA g).coeff 0 = ((g 0 1 : ℤ) : ℂ) := simp [lA, coeff_add, coeff_C_mul_X, coeff_C]
+  have c1 : (lA g).coeff 1 = ((g 0 0 : ℤ) : ℂ) := simp [lA, coeff_add, coeff_C_mul_X, coeff_C]
   rw [polySlash_apply, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_zero, c0, c1]
   simp only [lA, lB, Matrix.mul_apply, Fin.sum_univ_two]
   push_cast
@@ -117,8 +117,8 @@ theorem polySlash_one_num (g h : Matrix (Fin 2) (Fin 2) ℤ) : slP 1 h (lA g) = 
   ring
 
 theorem polySlash_one_denom (g h : Matrix (Fin 2) (Fin 2) ℤ) : slP 1 h (lB g) = lB (g * h) := by
-  have c0 : (lB g).coeff 0 = ((g 1 1 : ℤ) : ℂ) := by rw [lB, coeff_add, coeff_C_mul_X, coeff_C]; simp
-  have c1 : (lB g).coeff 1 = ((g 1 0 : ℤ) : ℂ) := by rw [lB, coeff_add, coeff_C_mul_X, coeff_C]; simp
+  have c0 : (lB g).coeff 0 = ((g 1 1 : ℤ) : ℂ) := simp [lB, coeff_add, coeff_C_mul_X, coeff_C]
+  have c1 : (lB g).coeff 1 = ((g 1 0 : ℤ) : ℂ) := simp [lB, coeff_add, coeff_C_mul_X, coeff_C]
   rw [polySlash_apply, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_zero, c0, c1]
   simp only [lA, lB, Matrix.mul_apply, Fin.sum_univ_two]
   push_cast

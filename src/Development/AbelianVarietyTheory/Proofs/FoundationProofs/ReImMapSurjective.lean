@@ -90,7 +90,7 @@ theorem reImMap_injective (P Q : ℕ) : Function.Injective (reImMap P Q) := by
   have h6 : b = 0 := by
     have := congrArg (Formalism.UG.Jpq P Q * ·) h5
     simpa [← Matrix.mul_assoc, Jpq_mul_self] using this
-  have h7 : a = 0 := by rw [h2, h6]; simp
+  have h7 : a = 0 := simp [h2, h6]
   subst h6
   subst h7
   rfl

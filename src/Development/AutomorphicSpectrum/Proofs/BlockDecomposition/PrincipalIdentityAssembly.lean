@@ -184,7 +184,7 @@ theorem wall_core : EpMain → DGood → Master → SideOf → Term → ZetaK �
   have hpar' : IsPar Γ K ((stab 𝔸[k] {i₁}ᶜ).comap π) c := hM.par'
   obtain ⟨Nr, hNr⟩ : ∃ Nr : ℝ, Nr = (Fintype.card ι : ℝ) := ⟨_, rfl⟩
   have hN2 : (2 : ℝ) ≤ Nr := by rw [hNr]; exact_mod_cast hM.two
-  have hcast : ((Fintype.card ι : ℕ) : ℂ) = (Nr : ℂ) := by rw [hNr]; simp
+  have hcast : ((Fintype.card ι : ℕ) : ℂ) = (Nr : ℂ) := simp [hNr]
   rw [← hNr]
   simp only [hcast] at hFE hval
   have hFeq : ∀ z : ℂ, Nr < z.re → ∀ m, F z m = z * (z - Nr) * epstein Ψ ω z m := fun z hz m => by

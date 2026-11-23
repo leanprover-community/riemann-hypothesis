@@ -116,7 +116,7 @@ theorem haarLie_finite_compact (κ : ℝ≥0∞) (hκ : κ ≠ ⊤) (K : Set (Mt
 
 theorem haarLie_ne_zero (κ : ℝ≥0∞) (h0 : κ ≠ 0) : Formalism.MainNotions.S.haarLie (Nset k r) κ ≠ 0 := by
   intro h
-  have h2 : Formalism.MainNotions.S.haarLie (Nset k r) κ Set.univ = 0 := by rw [h]; simp
+  have h2 : Formalism.MainNotions.S.haarLie (Nset k r) κ Set.univ = 0 := simp [h]
   unfold Formalism.MainNotions.S.haarLie at h2
   rw [Measure.smul_apply, Measure.map_apply (PI.WUN.continuous_expLie (Nset k r)).measurable MeasurableSet.univ,
     Set.preimage_univ, smul_eq_mul, mul_eq_zero] at h2

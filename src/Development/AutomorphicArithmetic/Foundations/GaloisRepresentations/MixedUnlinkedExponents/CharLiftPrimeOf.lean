@@ -122,7 +122,7 @@ theorem charSupp_of (h1 : GamMixed) (h2 : NmEq) (h3 : SuppFacts) : CharSupp := b
   obtain ⟨-, hsum, hpos⟩ := hdeg s' hs'
   obtain ⟨c1, c2⟩ := card_chs_le s' hpos
   rw [up, GlobalTheory.RoadU.chars, chs_map, h2 K L v ⟨u, hu⟩, Multiset.map_map] at H
-  have hc : Multiset.card ((chs s').filter (Thru (v := v) ⟨u, hu⟩)) = n := by rw [H]; simp
+  have hc : Multiset.card ((chs s').filter (Thru (v := v) ⟨u, hu⟩)) = n := simp [H]
   have hle := Multiset.filter_le (Thru (v := v) ⟨u, hu⟩) (chs s')
   have hc' := Multiset.card_le_card hle
   have e := Multiset.eq_of_le_of_card_le hle (by omega)

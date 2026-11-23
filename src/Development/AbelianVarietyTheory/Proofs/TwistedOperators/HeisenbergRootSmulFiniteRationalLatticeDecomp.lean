@@ -117,7 +117,7 @@ theorem heisO_eq_root_smul_finRat : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ
           rw [e2, mul_one]
       _ = (ε ^ 2) ^ n * ((ψ (-symplOH S T (GlobalTheory.VacUnique.finRat S T M) u) *
           ψ (symplOH S T (GlobalTheory.VacUnique.finRat S T M) u)) ^ 2) ^ n := by ring
-      _ = 1 := by rw [e1, hinv]; simp
+      _ = 1 := simp [e1, hinv]
   · rw [hw_eq, mul_comm, mul_smul, h1, smul_smul, hinv, one_smul]
 
 end GlobalTheory.MultLatDecomp

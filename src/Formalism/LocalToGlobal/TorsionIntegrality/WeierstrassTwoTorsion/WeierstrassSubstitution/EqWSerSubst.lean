@@ -109,7 +109,7 @@ theorem iSerSpec_of (hW : WSerSpec.{u}) (hF : WSerFactor.{u}) (hU : UnitSpec.{u}
   have hi : iSer W = X * r := rfl
   have hr0 : constantCoeff r = -1 := by
     rw [hr, constantCoeff_invOfUnit]; simp
-  have hi0 : constantCoeff (iSer W) = 0 := by rw [hi]; simp
+  have hi0 : constantCoeff (iSer W) = 0 := simp [hi]
   have hi1 : coeff 1 (iSer W) = -1 := by
     rw [hi, show (1 : ℕ) = 0 + 1 from rfl, coeff_succ_X_mul, coeff_zero_eq_constantCoeff_apply,
       hr0]

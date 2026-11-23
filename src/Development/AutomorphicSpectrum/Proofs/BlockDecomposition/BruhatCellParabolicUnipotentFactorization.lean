@@ -78,8 +78,8 @@ theorem inG_lower (c : Matrix (Fin n) (Fin n) ℂ) (hc : cᴴ = c) :
 def lowerU (c : Matrix (Fin n) (Fin n) ℂ) : GL (Fin n ⊕ Fin n) ℂ where
   val := fromBlocks 1 0 c 1
   inv := fromBlocks 1 0 (-c) 1
-  val_inv := by rw [fromBlocks_multiply, ← fromBlocks_one]; simp
-  inv_val := by rw [fromBlocks_multiply, ← fromBlocks_one]; simp
+  val_inv := simp [fromBlocks_multiply, ← fromBlocks_one]
+  inv_val := simp [fromBlocks_multiply, ← fromBlocks_one]
 
 theorem main : ∀ (n : ℕ) (y : PositivityTheory.Rg.Sw.GR n), ((PositivityTheory.Rg.Sw.mR y).toBlocks₂₂).det ≠ 0 → ∃ (p nbb : PositivityTheory.Rg.Sw.GR n) (c : Matrix (Fin n) (Fin n) ℂ), (PositivityTheory.Rg.Sw.mR p).toBlocks₂₁ = 0 ∧ cᴴ = c ∧ PositivityTheory.Rg.Sw.mR nbb = Matrix.fromBlocks 1 0 c 1 ∧ y = p * nbb := by
   intro n y hD

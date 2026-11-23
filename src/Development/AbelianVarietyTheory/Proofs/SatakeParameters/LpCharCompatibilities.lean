@@ -168,7 +168,7 @@ theorem lpChar_laws (a b c : WD h) (s : ℝ) :
     rw [lpDim_mk] at hd
     rw [frobEig_mk] at he
     have hroot : (c.ρ (frob h)).charpoly.IsRoot 1 := by
-      have h1 : (1 : ℂ) ∈ (c.ρ (frob h)).charpoly.roots := by rw [he]; simp
+      have h1 : (1 : ℂ) ∈ (c.ρ (frob h)).charpoly.roots := simp [he]
       exact (Polynomial.mem_roots'.mp h1).2
     rw [lpChar_mk]
     exact sound (a.iso_tensor_line c hu.1 hd (c.ρ_eq_one_of_line hu hd hroot))

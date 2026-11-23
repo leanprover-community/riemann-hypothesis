@@ -122,7 +122,7 @@ theorem exists_sum_sq (τ : A →ₗ[ℚ] ℚ) (h1 : ∀ a, a ≠ 0 → 0 < τ (
     intro a ha
     refine he a fun i => hz _ ?_
     have h0 : ∑ i, c i * τ ((e i * a) ^ 2) = 0 := by
-      have : τ (K * a * a) = 0 := by rw [ha]; simp
+      have : τ (K * a * a) = 0 := simp [ha]
 
       rw [← this, hKd, Finset.sum_mul, Finset.sum_mul, map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_

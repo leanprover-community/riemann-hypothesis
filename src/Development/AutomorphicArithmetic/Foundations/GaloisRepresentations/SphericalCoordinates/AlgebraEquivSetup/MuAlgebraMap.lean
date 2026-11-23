@@ -60,7 +60,7 @@ private theorem conj_form {K : Type} [CommRing K] (σ : K →+* K) {n : ℕ} (D 
   have h1' : b * (a.val.map σ)ᵀ = 1 := by
     rw [hb, ← Matrix.transpose_mul, ← Matrix.map_mul, Units.mul_inv, Matrix.map_one _ (map_zero σ) (map_one σ), Matrix.transpose_one]
   have hD : D = b * (a⁻¹).val := by
-    calc D = (b * (a.val.map σ)ᵀ) * D * (a.val * (a⁻¹).val) := by rw [h1', Units.mul_inv]; simp
+    calc D = (b * (a.val.map σ)ᵀ) * D * (a.val * (a⁻¹).val) := simp [h1', Units.mul_inv]
       _ = b * ((a.val.map σ)ᵀ * D * a.val) * (a⁻¹).val := by simp only [Matrix.mul_assoc]
       _ = b * (a⁻¹).val := by rw [ha, Matrix.mul_one]
   have e : ((a * g * a⁻¹).val.map σ)ᵀ = b * (g.val.map σ)ᵀ * (a.val.map σ)ᵀ := by

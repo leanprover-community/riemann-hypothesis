@@ -402,7 +402,7 @@ theorem rhoXY_eq (m : ℕ) (D t : ℂ) (p : XY m) :
 
 theorem rhoXY_ext (m : ℕ) (D t : ℂ) (p : XY m) (hc : cofXY m t p ≠ 0) (hp : ∏ k, p.1 k ≠ 0) :
     rhoXY m D t p = (-1) ^ (m + 3) * D / ∏ k, p.1 k + t * gExt m D t p := by
-  have he : ((-1 : ℂ) ^ m) * (-1) ^ m = 1 := by rw [← mul_pow]; simp
+  have he : ((-1 : ℂ) ^ m) * (-1) ^ m = 1 := simp [← mul_pow]
   have he0 : ((-1 : ℂ) ^ m) ≠ 0 := pow_ne_zero _ (by norm_num)
   have h0 : cof0XY m p ≠ 0 := mul_ne_zero he0 hp
   have hP : ∏ k, p.1 k = (-1) ^ m * cof0XY m p := by

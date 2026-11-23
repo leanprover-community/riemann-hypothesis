@@ -62,7 +62,7 @@ theorem exists_ratPts_sends_isotropic : ∀ (F E : Type) [Field F] [NumberField 
     exact Finset.sum_comm
   have hxx : h.toSesq (Xᵀ 0) (Xᵀ 0) = 0 := by rw [key, hW.xx]; rfl
   have hyy : h.toSesq (Yᵀ 0) (Yᵀ 0) = 0 := by rw [key, hW.yy]; rfl
-  have hxy : h.toSesq (Xᵀ 0) (Yᵀ 0) = 1 := by rw [key, hW.xy]; simp
+  have hxy : h.toSesq (Xᵀ 0) (Yᵀ 0) = 1 := simp [key, hW.xy]
   obtain ⟨w, hvw, hww⟩ := WittPartner.full h v hv (by rw [hform]; exact hvv)
   obtain ⟨g, hgv, -⟩ := HyperbolicPairTransitive.full h (Xᵀ 0) (Yᵀ 0) v w ⟨hxx, hyy, hxy⟩
     ⟨by rw [hform]; exact hvv, hww, hvw⟩

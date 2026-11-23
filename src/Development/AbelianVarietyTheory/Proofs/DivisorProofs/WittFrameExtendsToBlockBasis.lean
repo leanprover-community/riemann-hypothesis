@@ -139,9 +139,9 @@ theorem exists_perp_basis : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
       Formalism.UG.cT (σ : E →+* E) Xf * ((1 : E) • J.map σ) * Z₀ = 0 ∧ Formalism.UG.cT (σ : E →+* E) Yf * ((1 : E) • J.map σ) * Z₀ = 0 := by
   intro F E _ _ _ _ _ σ hcm n J hJ hdet r₀ X Y hW
   have hσ : ∀ x, σ (σ x) = x := GlobalTheory.SiegelSet.sigma_sigma hcm
-  have gxx : Xᵀ * J * X.map σ = 0 := by rw [gram_eq_transpose σ J hJ, hW.xx]; simp
-  have gyy : Yᵀ * J * Y.map σ = 0 := by rw [gram_eq_transpose σ J hJ, hW.yy]; simp
-  have gyx : Yᵀ * J * X.map σ = 1 := by rw [gram_eq_transpose σ J hJ, hW.xy]; simp
+  have gxx : Xᵀ * J * X.map σ = 0 := simp [gram_eq_transpose σ J hJ, hW.xx]
+  have gyy : Yᵀ * J * Y.map σ = 0 := simp [gram_eq_transpose σ J hJ, hW.yy]
+  have gyx : Yᵀ * J * X.map σ = 1 := simp [gram_eq_transpose σ J hJ, hW.xy]
   have gxy : Xᵀ * J * Y.map σ = 1 := by
     rw [gram_eq_map σ hσ J, hW.xy]; exact Matrix.map_one _ (map_zero σ) (map_one σ)
   have hyx : Formalism.UG.cT (σ : E →+* E) Y * ((1 : E) • J.map σ) * X = 1 := by
@@ -161,8 +161,8 @@ theorem exists_perp_basis : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
     ext i j; exact congrFun (congrFun hGZ (Sum.inl i)) j
   have hYZ : Formalism.UG.cT (σ : E →+* E) Y * ((1 : E) • J.map σ) * Z = 0 := by
     ext i j; exact congrFun (congrFun hGZ (Sum.inr i)) j
-  have gzx : Zᵀ * J * X.map σ = 0 := by rw [gram_eq_transpose σ J hJ, hXZ]; simp
-  have gzy : Zᵀ * J * Y.map σ = 0 := by rw [gram_eq_transpose σ J hJ, hYZ]; simp
+  have gzx : Zᵀ * J * X.map σ = 0 := simp [gram_eq_transpose σ J hJ, hXZ]
+  have gzy : Zᵀ * J * Y.map σ = 0 := simp [gram_eq_transpose σ J hJ, hYZ]
   have gxz : Xᵀ * J * Z.map σ = 0 := by
     rw [gram_eq_map σ hσ J, hXZ]; exact Matrix.map_zero _ (map_zero σ)
   have gyz : Yᵀ * J * Z.map σ = 0 := by

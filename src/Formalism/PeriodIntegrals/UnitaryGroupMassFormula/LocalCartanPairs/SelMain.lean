@@ -63,7 +63,7 @@ theorem sel_main (σ : R ≃+* R) (ϖ : R) (hϖ0 : ϖ ≠ 0) (hϖ : ¬ IsUnit ϖ
   have hc : ∀ n : ℕ, ϖ ^ n ≠ 0 := fun n => pow_ne_zero n hϖ0
   have hh : h ≠ 0 := by
     rintro rfl
-    have h0 : ϖ ^ (2 * k) • A' = 0 := by rw [← hrel]; simp
+    have h0 : ϖ ^ (2 * k) • A' = 0 := simp [← hrel]
     rcases smul_eq_zero.1 h0 with h2 | h2
     · exact hc _ h2
     · rw [h2, Matrix.det_zero] at hA'

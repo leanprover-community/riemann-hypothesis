@@ -128,7 +128,7 @@ theorem exists_resolution_supp : GlobalTheory.Published.Principalisation → ∀
   have hIs : (I.support : Set W) = Z := Scheme.IdealSheafData.coe_support_vanishingIdeal Z
   have hI : I ≠ ⊥ := by
     intro h0
-    have : genericPoint W ∈ (I.support : Set W) := by rw [h0]; simp
+    have : genericPoint W ∈ (I.support : Set W) := simp [h0]
     rw [hIs] at this
     exact hgZ this
   obtain ⟨Y, s₂, hY, hsm, hpr, -, hiso₂, -, hsnc⟩ := hP ℂ n W (s₁ ≫ p) hW hsm₁ hpr₁ I hI

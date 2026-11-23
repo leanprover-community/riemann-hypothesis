@@ -105,7 +105,7 @@ theorem UpperTheory.V.FW.reps :
     rcases (pow_eq_pow_iff_of_ne_zero hpos.ne').1 e4 with h | ⟨h, -⟩
     · subst h
       exact hne (Units.ext (mul_left_cancel₀ ha' hab))
-    · have hb : (b : ℤ_[l]) = -(a : ℤ_[l]) := by rw [h]; simp
+    · have hb : (b : ℤ_[l]) = -(a : ℤ_[l]) := simp [h]
       rw [hb, neg_mul, ← mul_neg] at hab
       have : r = -r' := Units.ext (by simpa using mul_left_cancel₀ ha' hab)
       exact h4 r' hr' (this ▸ hr)

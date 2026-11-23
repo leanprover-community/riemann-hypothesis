@@ -41,7 +41,7 @@ theorem schemeFil_comp_iso (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ide
     (wj : j ≫ X.hom = B₀.hom ≫ spMap π) (w : (σ.left ≫ j) ≫ X.hom = A₀.hom ≫ spMap π) (d : Crys κ (spMap π) A₀) :
     d ∈ schemeFil κ A₀ X (σ.left ≫ j) w ↔ push κ (spMap π) σ d ∈ schemeFil κ B₀ X j wj := by
   haveI : IsMonHom (inv σ) :=
-    { one_hom := by rw [← cancel_mono σ]; simp
+    { one_hom := simp [← cancel_mono σ]
       mul_hom := by
         rw [← cancel_mono σ]
         simp only [Category.assoc, IsMonHom.mul_hom, tensorHom_comp_tensorHom_assoc, IsIso.inv_hom_id] }

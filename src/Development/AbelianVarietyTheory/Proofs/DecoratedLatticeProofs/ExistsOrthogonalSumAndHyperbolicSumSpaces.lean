@@ -71,9 +71,9 @@ theorem col_gram {V W : HSpace E} {k l : ℕ} (X : Matrix (Fin V.rank) (Fin k) E
 def orthSumDec (D : D7) (A L : HSp D) : OrthDec (GlobalTheory.Doubling.hsum A L) A L where
   iA := col 1 0
   iB := col 0 1
-  isoA := by rw [col_gram]; simp
-  isoB := by rw [col_gram]; simp
-  orth := by rw [col_gram]; simp
+  isoA := simp [col_gram]
+  isoB := simp [col_gram]
+  orth := simp [col_gram]
   rank_add := rfl
 
 @[reducible] def posSp (D : D7) (ρ : ℕ) : HSp D where
@@ -119,9 +119,9 @@ def hypSumDec (D : D7) (A : HSp D) (ρ : ℕ) : HypDec (GlobalTheory.Doubling.hs
   e'e := by
     rw [col_gram, col_gram, GlobalTheory.Doubling.gram_hneg, posSp_gram]
     simp [Matrix.smul_eq_diagonal_mul, ← two_mul]
-  iso := by rw [col_gram]; simp
-  i₀e := by rw [col_gram]; simp
-  i₀e' := by rw [col_gram]; simp
+  iso := simp [col_gram]
+  i₀e := simp [col_gram]
+  i₀e' := simp [col_gram]
   rank_add := by show A.rank + 2 * ρ = A.rank + (ρ + ρ); omega
 
 theorem exists_orthSum_hypSum : ∀ (D : D7), (∀ A L : HSp D, A.SigOK → L.SigOK → ∃ (S : HSp D) (_ : OrthDec S A L), S.SigOK ∧ ∀ τ, S.sig τ = A.sig τ + L.sig τ) ∧ ∀ (A : HSp D) (ρ : ℕ), A.SigOK → ∃ (S : HSp D) (_ : HypDec S A ρ), S.SigOK ∧ ∀ τ, S.sig τ = A.sig τ + (ρ, ρ) := by

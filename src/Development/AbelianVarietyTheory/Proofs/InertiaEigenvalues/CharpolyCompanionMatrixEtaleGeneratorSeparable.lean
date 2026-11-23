@@ -53,7 +53,7 @@ theorem charpoly_companion_separable : ∀ (F E : Type) [NontriviallyNormedField
   haveI : CharZero F := hU.charZero
   set P := (companion p).charpoly with hP
   have hmon : P.Monic := Matrix.charpoly_monic _
-  have hdeg : P.natDegree = r := by rw [hP, Matrix.charpoly_natDegree_eq_dim]; simp
+  have hdeg : P.natDegree = r := simp [hP, Matrix.charpoly_natDegree_eq_dim]
   have hroot : Polynomial.aeval τ P = 0 := by
     apply Algebra.leftMulMatrix_injective (bas A hG)
     rw [map_zero, ← Polynomial.aeval_algHom_apply, leftMul_tau A hG]

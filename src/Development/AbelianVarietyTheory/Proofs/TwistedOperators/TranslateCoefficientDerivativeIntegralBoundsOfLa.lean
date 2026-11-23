@@ -249,7 +249,7 @@ theorem mem_inv {m : ℕ} {ε : Fin m → Bool} {g : Mat m} (hg : g ∈ UJset ε
   show (g⁻¹)ᴴ * Jm ε * g⁻¹ = Jm ε
   calc (g⁻¹)ᴴ * Jm ε * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Jm ε * g) * g⁻¹ := by rw [h1]
     _ = ((g⁻¹)ᴴ * gᴴ) * Jm ε * (g * g⁻¹) := by simp only [Matrix.mul_assoc]
-    _ = Jm ε := by rw [← conjTranspose_mul, mul_nonsing_inv _ hd]; simp
+    _ = Jm ε := simp [← conjTranspose_mul, mul_nonsing_inv _ hd]
 
 theorem inner_rep {m : ℕ} {ε : Fin m → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     {π : Mat m → (H →L[ℂ] H)} (hπ : IsURepOn (UJset ε) π) {a : Mat m} (ha : a ∈ UJset ε) (x y : H) :

@@ -163,7 +163,7 @@ theorem kap_mul_cast (A : Matrix (Fin k) (Fin k) ℂ) (u : ℂ) (g : Matrix (Fin
 
 theorem kap_mem_iff (hη : η = 1 ∨ η = -1) (A : Matrix (Fin k) (Fin k) ℂ) {u : ℂ} (hu : ‖u‖ = 1) :
     kap A u ∈ UH (Hd k η) ↔ A ∈ UH (1 : Matrix (Fin k) (Fin k) ℂ) := by
-  have hu' : conj u * u = 1 := by rw [Complex.conj_mul', hu]; simp
+  have hu' : conj u * u = 1 := simp [Complex.conj_mul', hu]
   have e : (kap A u)ᴴ * Hd k η * kap A u = blk (Aᴴ * 1 * A) 0 0 (η : ℂ) := by
     unfold Hd
     refine blk_ext (fun i j => ?_) (fun i => ?_) (fun j => ?_) ?_ <;>
@@ -193,7 +193,7 @@ theorem ph_kap (A : Matrix (Fin k) (Fin k) ℂ) {u : ℂ} (hu : ‖u‖ = 1) (g 
 
 theorem bet_kap (A : Matrix (Fin k) (Fin k) ℂ) {u : ℂ} (hu : ‖u‖ = 1) (g : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) :
     bet (kap A u * g) = bet g := by
-  have hu' : conj u * u = 1 := by rw [Complex.conj_mul', hu]; simp
+  have hu' : conj u * u = 1 := simp [Complex.conj_mul', hu]
   funext j
   simp only [bet, ph_kap A hu, row_kap, map_mul]
   linear_combination (conj (ph g) * row g j) * hu'
@@ -270,7 +270,7 @@ theorem decomp (hη : η = 1 ∨ η = -1) {g : Matrix (Fin (k + 1)) (Fin (k + 1)
   have h3 : ‖g (Fin.last k) (Fin.last k)‖ ≠ 0 := fun e => by rw [e] at h1; linarith
   have h3' : (‖g (Fin.last k) (Fin.last k)‖ : ℂ) ≠ 0 := by exact_mod_cast h3
   have hp : ‖ph g‖ = 1 := by simp only [ph, norm_div, Complex.norm_real, norm_norm]; exact div_self h3
-  have hp' : ph g * conj (ph g) = 1 := by rw [Complex.mul_conj', hp]; simp
+  have hp' : ph g * conj (ph g) = 1 := simp [Complex.mul_conj', hp]
   have hb : nsq (bet g) = nsq (row g) := nsq_mul (by simpa using hp) _
   have hb1 : nsq (bet g) < 1 := hb ▸ h
   have hd : dd η (bet g) = ‖g (Fin.last k) (Fin.last k)‖ := by
@@ -386,7 +386,7 @@ theorem prod_top (hη : η = 1 ∨ η = -1) {μ : Measure (PI.MtM (k + 1))} (hμ
   set ν : Measure (PI.MtM k) := (μ.restrict S).map fun g => Matrix.of.symm (top η (Matrix.of g)) with hν
   have hap : ∀ C, MeasurableSet C → ν C = μ ((fun g => Matrix.of.symm (top η (Matrix.of g))) ⁻¹' C ∩ S) :=
     fun C hC => by rw [hν, Measure.map_apply meas_top hC, Measure.restrict_apply (meas_top hC)]
-  have hu : ν Set.univ = μ S := by rw [hap _ MeasurableSet.univ]; simp
+  have hu : ν Set.univ = μ S := simp [hap _ MeasurableSet.univ]
   rw [← hap A hA, ← hu]
   by_cases h0 : ν = 0
   · simp [h0]

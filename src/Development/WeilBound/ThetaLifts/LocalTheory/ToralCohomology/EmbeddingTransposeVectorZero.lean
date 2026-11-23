@@ -187,7 +187,7 @@ theorem Emb.conj_upq (m : Emb R S R₁ S₁) (hs : ∀ b, sg (m.e b) = sg b) {Y 
   calc _ = m.P * (Yᴴ * Jm R₁ S₁ + Jm R₁ S₁ * Y) * m.Pᵀ := by
         simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, h3]
         rw [← Matrix.mul_assoc (Jm R S), m.JP hs, Matrix.mul_assoc]
-    _ = 0 := by rw [h4]; simp
+    _ = 0 := simp [h4]
 
 theorem single_mulVec' (a b : Ix R S) (v : Ix R S → ℂ) : Matrix.single a b (1 : ℂ) *ᵥ v = v b • Pi.single a 1 := by
   funext c

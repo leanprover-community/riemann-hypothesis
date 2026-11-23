@@ -91,7 +91,7 @@ theorem ss_of_mem {Z : Subalgebra k (Matrix (Fin n) (Fin n) k)} (hZ : CR Z) {z :
       exact ⟨e, Subtype.ext (by simpa using he)⟩
     have := hZ.2.eq_zero _ h1
     simpa using congrArg Subtype.val this
-  have hnn0 : nn = 0 := by rw [← hmn, hm0]; simp
+  have hnn0 : nn = 0 := simp [← hmn, hm0]
   unfold SS
   rw [hsum, hnn0, zero_add]
   exact hsss

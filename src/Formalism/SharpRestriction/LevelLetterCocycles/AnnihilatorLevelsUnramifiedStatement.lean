@@ -331,7 +331,7 @@ variable (φ₀ τ : PowerSeries O →ₐ[O] PowerSeries O) (l : ℕ) (hl : 2 �
 include hl hφ
 
 theorem phi_bs (r : R) : φ₀ (binomialSeries O r) = binomialSeries O ((l : R) * r) := by
-  have h0 : constantCoeff (φ₀ X) = 0 := by rw [hφ]; simp
+  have h0 : constantCoeff (φ₀ X) = 0 := simp [hφ]
   rw [algHom_eq_subst φ₀ h0, hφ, subst_bs l (by omega)]
 
 theorem phi_pow_bs : ∀ (k : ℕ) (m : R),

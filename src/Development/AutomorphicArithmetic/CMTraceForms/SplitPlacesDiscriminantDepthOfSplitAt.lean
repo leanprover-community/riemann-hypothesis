@@ -56,7 +56,7 @@ private theorem exists_inPsi (H : Host E) : ∃ τ : E →+* ℂ, τ (H.rt : E) 
   have hE : (H.rt : E) ^ 2 = -(H.d : E) := by
     have := congrArg (algebraMap (𝓞 E) E) H.rt_sq
     simpa using this
-  have h : τ (H.rt : E) ^ 2 = -(H.d : ℂ) := by rw [← map_pow, hE]; simp
+  have h : τ (H.rt : E) ^ 2 = -(H.d : ℂ) := simp [← map_pow, hE]
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 (h.trans H.sqrt_neg_disc_sq.symm) with h1 | h1
   · exact ⟨τ, h1⟩
   · refine ⟨ComplexEmbedding.conjugate τ, ?_⟩
@@ -131,7 +131,7 @@ theorem UpperTheory.splitPlaces_discriminantDepth_of_splitAt :
       (∀ σ : 𝓞 E →+* O, σ ∈ Emb (O := O) e ↔ σ H.rt = τO τ₀ H.rt) ∧
       (∀ σ : 𝓞 E →+* O, σ ∈ Emb (O := O) (1 - e) ↔ σ H.rt = - τO τ₀ H.rt) := by
     obtain ⟨e, α, he, -, -, hs, hα, hemb⟩ := UpperTheory.exists_splitIdempotent_of_splitAt p E H hsp
-    have hα' : algebraMap ℤ_[p] O α ^ 2 = -(H.d : O) := by rw [← map_pow, hα]; simp
+    have hα' : algebraMap ℤ_[p] O α ^ 2 = -(H.d : O) := simp [← map_pow, hα]
     rcases sq_eq_sq_iff_eq_or_eq_neg.1 ((hsq (τO τ₀)).trans hα'.symm) with h | h
     · refine ⟨e, he, hs, fun σ => ?_, fun σ => ?_⟩
       · rw [h]; exact (hemb O σ).1

@@ -65,7 +65,7 @@ theorem grpA_one : grpA F.O N lam 1 = 1 := Subtype.ext (by simp [grpA, grp])
 
 variable {F lam jK} in
 theorem jK_inv_of_triv (hJ : F.IsJ lam jK) {κ : F.K} (h1 : F.kap κ = 1) (h2 : F.chi κ = 1) : jK κ⁻¹ = 1 := by
-  have : jK κ = jK 1 := by rw [hJ κ, h1, h2, map_one, grpA_one]; simp
+  have : jK κ = jK 1 := simp [hJ κ, h1, h2, map_one, grpA_one]
   rw [jK_inv_congr this, inv_one, map_one]
 
 def heckeFn (i : F.I) (f : F.G → W) : F.G → W := fun g => F.cst i • ∑ s ∈ F.tr i, f (g * s)

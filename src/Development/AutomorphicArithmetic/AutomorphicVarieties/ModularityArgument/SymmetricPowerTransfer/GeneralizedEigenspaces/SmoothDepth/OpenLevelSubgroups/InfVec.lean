@@ -127,7 +127,7 @@ private theorem sq_D (lam : DomWeight 2) {j : ℕ} (hj : lam.w 0 - lam.w 1 = j) 
   have hs : lam.detShift = lam.w 1 := rfl
   have h1 : h.val * (h⁻¹).val = 1 := Units.mul_inv h
   have hadj : h.val.det • (h⁻¹).val = h.val.adjugate := by
-    calc h.val.det • (h⁻¹).val = (h.val.adjugate * h.val) * (h⁻¹).val := by rw [Matrix.adjugate_mul]; simp
+    calc h.val.det • (h⁻¹).val = (h.val.adjugate * h.val) * (h⁻¹).val := simp [Matrix.adjugate_mul]
       _ = h.val.adjugate := by rw [mul_assoc, h1, mul_one]
   have e00 := congrFun (congrFun hadj 0) 0
   have e01 := congrFun (congrFun hadj 0) 1

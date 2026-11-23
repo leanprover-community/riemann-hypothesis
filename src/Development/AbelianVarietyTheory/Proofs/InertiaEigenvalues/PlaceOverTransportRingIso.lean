@@ -144,7 +144,7 @@ theorem smooth_comp (φ : Ω ≃+* Ω') (e : Weil h →* Weil h')
   haveI : Algebra.IsAlgebraic E Ω := IsAlgClosure.isAlgebraic
   obtain ⟨O', hO', hpre⟩ := isOpen_induced_iff.mp hf
   have h1 : (1 : G E' Ω') ∈ O' := by
-    have : (1 : Ine (F := E') A') ∈ Subtype.val ⁻¹' O' := by rw [hpre]; simp
+    have : (1 : Ine (F := E') A') ∈ Subtype.val ⁻¹' O' := simp [hpre]
     exact this
   obtain ⟨U, hU, hU1, hUO⟩ := conj_nhds E Ω E' Ω' φ O' (hO'.mem_nhds h1)
   refine IsSmooth.of_open (U := Subtype.val ⁻¹' U) (hU.preimage continuous_subtype_val) hU1 ?_

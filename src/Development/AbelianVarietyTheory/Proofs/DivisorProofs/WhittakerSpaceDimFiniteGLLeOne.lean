@@ -203,7 +203,7 @@ theorem gelfand [FiniteDimensional ℂ V] (hτ : τ.IsIrreducible) (h1 : χ 1 = 
       rw [hE, avg, Finset.mul_sum, Finset.sum_mul]
       simp
     calc E * τ g * E * τ h * E = E * (τ g * E * τ h) * E := by simp only [mul_assoc]
-      _ = _ := by rw [this, Finset.mul_sum, Finset.sum_mul]; simp
+      _ = _ := simp [this, Finset.mul_sum, Finset.sum_mul]
   have hinv : ∀ u ∈ U, χ ((σ u)⁻¹) = χ u⁻¹ := by
     intro u hu
     have e1 : χ (σ u) * χ (σ u)⁻¹ = 1 := by rw [← hmul _ (σU _ hu) _ (U.inv_mem (σU _ hu))]; simp [h1]
@@ -249,8 +249,8 @@ theorem perm_fixed {n : ℕ} {T : Type} (w : Equiv.Perm (Fin n)) (t : Fin n → 
     have := (h a b (by show a.val < b.val; omega) (by show (w a).val < (w b).val; omega)).1.2 hab
     omega)
   have m2 := mono f.symm (fun a b hab hlt => by
-    have ea : (w (f.symm a)).rev = a := by rw [← hf]; simp
-    have eb : (w (f.symm b)).rev = b := by rw [← hf]; simp
+    have ea : (w (f.symm a)).rev = a := simp [← hf]
+    have eb : (w (f.symm b)).rev = b := simp [← hf]
     have ea' := congrArg Fin.val ea
     have eb' := congrArg Fin.val eb
     have ha := (w (f.symm a)).2

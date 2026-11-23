@@ -87,7 +87,7 @@ theorem norm_L_one_sub_le {χ : DirichletCharacter ℂ N} (hχ : χ.IsPrimitive)
   have hN1 : (1 : ℝ) ≤ N := Nat.one_le_cast.mpr (Nat.one_le_iff_ne_zero.mpr (NeZero.ne N))
   have hs : ∀ n : ℕ, w ≠ -n := by
     intro n hn
-    have : w.re = -(n : ℝ) := by rw [hn]; simp
+    have : w.re = -(n : ℝ) := simp [hn]
     have : (0 : ℝ) ≤ n := Nat.cast_nonneg n
     linarith
   have hs' : (χ : ZMod N → ℂ) 0 = 0 ∨ w ≠ 1 := h

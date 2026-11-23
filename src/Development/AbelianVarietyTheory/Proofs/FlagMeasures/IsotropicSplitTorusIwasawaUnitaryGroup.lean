@@ -634,7 +634,7 @@ theorem exists_iwasawa {ε : Fin n → Bool} {P : Matrix (Fin n) (Fin n) ℂ}
           rw [hb]; simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
       _ = P'ᴴ * (umat g)ᴴ * (Pᴴ * Jm ε * P) * (umat g * P') := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = 0 := by rw [h, hi]; simp
+      _ = 0 := simp [h, hi]
   obtain ⟨k0, hk0u, hk0J, hk0P⟩ :=
     exists_K (Formalism.REAL.Jm_mul_self ε) (Formalism.REAL.Jm_conjTranspose ε) h h' hi hP'h hP'i hiso htr
   have hk0u' : k0 * k0ᴴ = 1 := mul_eq_one_comm.mp hk0u

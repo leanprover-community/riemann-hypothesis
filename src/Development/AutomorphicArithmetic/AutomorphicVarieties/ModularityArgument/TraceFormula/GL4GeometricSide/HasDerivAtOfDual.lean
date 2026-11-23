@@ -104,7 +104,7 @@ private theorem skew_of_curve (X : Matrix (Fin n) (Fin n) ℂ) (γ : ℝ → Un 
   ext i j
   have hc : ∀ a b, HasDerivAt (fun t : ℝ => (γ t).1 a b) (X a b) 0 := fun a b => by
     simpa only [hγ] using exp_entry X a b
-  have h0 : (γ 0).1 = 1 := by rw [hγ]; simp
+  have h0 : (γ 0).1 = 1 := simp [hγ]
   have hs : HasDerivAt (fun t : ℝ => ∑ k, star ((γ t).1 k i) * (γ t).1 k j)
       (∑ k, (star (X k i) * (γ 0).1 k j + star ((γ 0).1 k i) * X k j)) 0 :=
     HasDerivAt.fun_sum fun k _ => (hc k i).star.mul (hc k j)

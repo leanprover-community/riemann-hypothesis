@@ -51,7 +51,7 @@ theorem int_dvd_of_eq_pow_mul {R : Type} [CommRing R] [IsDomain R] {p : ℕ} (hp
         (Irreducible.coprime_iff_not_dvd (Nat.prime_iff_prime_int.mp hp).irreducible).mpr hnd
       obtain ⟨u, v, huv⟩ := hcop
       apply hu
-      have h1 : ((u * p + v * m : ℤ) : R) = 1 := by rw [huv]; simp
+      have h1 : ((u * p + v * m : ℤ) : R) = 1 := simp [huv]
       push_cast at h1
       rw [hm] at h1
       refine isUnit_iff_exists_inv.mpr ⟨u + v * (p : R) ^ r * w, ?_⟩

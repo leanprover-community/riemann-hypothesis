@@ -54,7 +54,7 @@ def IsStageC (W : G.Weil) (i j : Fin D.R.m) (p q : ℕ) {A A' WW : HSp D} (X : T
       (fun _ => G.ch.chi (D.R.m - i) * Lc.eta ^ (rankV D i j % 2)) (fun t => nuH G t i j) (locPl G)
 
 theorem negIdx_of_isStd {V : HSp D} {r : GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.Rig V} (h : r.IsStd) : NegIdx V 0 := fun τ => by
-  have : gramAt D V τ = 1 := by rw [gramAt, h.1]; simp
+  have : gramAt D V τ = 1 := simp [gramAt, h.1]
   rw [this]
   refine ⟨(Equiv.sumEmpty _ _).symm, 1, ?_⟩
   ext (a | a) (b | b)

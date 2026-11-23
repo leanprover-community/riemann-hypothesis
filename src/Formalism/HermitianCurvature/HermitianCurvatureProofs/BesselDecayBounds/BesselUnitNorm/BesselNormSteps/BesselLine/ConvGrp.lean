@@ -76,7 +76,7 @@ theorem uh_inv {a : Mx k r} (ha : a ∈ UH (Hpk k r)) :
   show (a⁻¹)ᴴ * Hpk k r * a⁻¹ = Hpk k r
   calc (a⁻¹)ᴴ * Hpk k r * a⁻¹ = (a⁻¹)ᴴ * (aᴴ * Hpk k r * a) * a⁻¹ := by rw [ha']
     _ = (a * a⁻¹)ᴴ * Hpk k r * (a * a⁻¹) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = Hpk k r := by rw [h2]; simp
+    _ = Hpk k r := simp [h2]
 
 theorem col_eq (g : Mx k r) (j : Fin (2 * r + k + 1)) : g *ᵥ bvec j = fun i => g i j := by
   unfold bvec

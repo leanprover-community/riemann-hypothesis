@@ -66,7 +66,7 @@ theorem flip_of_inG {M : M2 n} (h : InG M) : M * JJ n * Mᴴ = JJ n := by
     exact neg_eq_iff_eq_neg.mp h2
   calc M * JJ n * Mᴴ = -(M * JJ n * (Mᴴ * JJ n) * JJ n) := by
         simp only [mul_assoc, JJ_sq, mul_neg, mul_one, neg_neg]
-    _ = JJ n := by rw [h3]; simp
+    _ = JJ n := simp [h3]
 
 theorem lagr (g : GR n) :
     (mR g).toBlocks₂₁ * ((mR g).toBlocks₂₂)ᴴ = (mR g).toBlocks₂₂ * ((mR g).toBlocks₂₁)ᴴ := by

@@ -648,7 +648,7 @@ theorem crossVanish : Formalism.FourierDecayAlt.A6.CrossVanish := by
     simpa using this
   obtain ⟨su, hsu⟩ := hnat (m + 1) (by omega)
   obtain ⟨θ, hθdef⟩ : ∃ θ : K, θ = ((su⁻¹ : Kˣ) : K) := ⟨_, rfl⟩
-  have hθ : ((m + 1 : ℕ) : K) * θ = 1 := by rw [← hsu, hθdef]; simp
+  have hθ : ((m + 1 : ℕ) : K) * θ = 1 := simp [← hsu, hθdef]
   have hsR : ((m + 1 : ℕ) : K) ∈ R := natCast_mem R _
   obtain ⟨a, ha⟩ := Pk_ex h θ
   obtain ⟨b₁, hb₁⟩ := bounded h hOm.2.1
@@ -792,7 +792,7 @@ theorem crossVanish : Formalism.FourierDecayAlt.A6.CrossVanish := by
     have hciP : ((c⁻¹ : Kˣ) : K) ∈ Pk R ϖ ((v₁ : ℤ) + -((q : ℤ) + b)) := by
       obtain ⟨z₀, hz₀, hz₀c⟩ := hc
       obtain ⟨u₀, hu₀⟩ := hOm.2.2.1 z₀ hz₀
-      have hzz : z₀ * ((u₀⁻¹ : Kˣ) : K) = 1 := by rw [← hu₀]; simp
+      have hzz : z₀ * ((u₀⁻¹ : Kˣ) : K) = 1 := simp [← hu₀]
       have e1 : (z₀ * ((u₀⁻¹ : Kˣ) : K)) ^ (m + 1) = 1 := by rw [hzz, one_pow]
       rw [mul_pow, hz₀c] at e1
       have e2 : ((c⁻¹ : Kˣ) : K) = (-(t : K)) ^ m * ((u₀⁻¹ : Kˣ) : K) ^ (m + 1) := by

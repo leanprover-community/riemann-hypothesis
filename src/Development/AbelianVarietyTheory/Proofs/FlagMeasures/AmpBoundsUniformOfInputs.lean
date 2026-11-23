@@ -69,7 +69,7 @@ theorem ampConst_of_rd_le_b (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu 
     have hM0 : MMv D w w' A μsec = 0 := by
       apply le_antisymm _ (by positivity)
       calc MMv D w w' A μsec ≤ _ := hSch
-        _ = 0 := by rw [h0]; simp
+        _ = 0 := simp [h0]
     rw [hM0, mul_zero]
     positivity
   obtain ⟨hS0, -, -⟩ := hH0

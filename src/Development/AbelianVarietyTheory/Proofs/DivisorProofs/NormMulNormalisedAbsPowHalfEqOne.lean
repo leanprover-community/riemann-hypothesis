@@ -91,7 +91,7 @@ theorem norm_mul_apow_eq_one : ∀ {k : Type} [Field k] [ValuativeRel k] [Topolo
   have hB := GlobalTheory.SmGL.eq_unrChar (k := k) (χ := B) hunr hϖ
   have hx : B x = 1 := by
     rw [hB, hBϖ, GlobalTheory.SmGL.unrChar_apply, _root_.one_zpow]
-  have hx' : ‖(B x : ℂ)‖ = 1 := by rw [hx]; simp
+  have hx' : ‖(B x : ℂ)‖ = 1 := simp [hx]
   rw [normTwist_apply, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_norm] at hx'
   rw [norm_mul]; exact hx'
 

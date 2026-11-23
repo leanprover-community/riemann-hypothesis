@@ -71,7 +71,7 @@ theorem pow_comm (h : IsGrpPullback G' G f φ) (n : ℕ) :
 
 theorem eSec_comm (h : IsGrpPullback G' G f φ) : eSec G' ≫ φ = f ≫ eSec G := by
   have e := congrArg (fun z => z.left) (map_one (pushHom h (𝟙_ (Over S'))))
-  have e₁ : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := simp [Hom.one_def]
   rw [e₁] at e
   refine e.trans ?_
   show (toUnit _ ≫ η[G]).left = _
@@ -84,7 +84,7 @@ theorem comp_pow_left {T : Over S} (x : T ⟶ G) (n : ℕ) (h : x ^ n = 1) :
   simp [eSec]
 
 theorem eSec_pow (n : ℕ) : eSec G ≫ (𝟙 G ^ n).left = eSec G := by
-  have e₁ : (1 : 𝟙_ (Over S) ⟶ G) = η[G] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S) ⟶ G) = η[G] := simp [Hom.one_def]
   have := comp_pow_left (G := G) η[G] n (by rw [← e₁, one_pow])
   exact this.trans (Category.id_comp _)
 

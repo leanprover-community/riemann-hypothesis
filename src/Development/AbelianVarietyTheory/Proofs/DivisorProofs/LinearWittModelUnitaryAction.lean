@@ -57,7 +57,7 @@ theorem GlobalTheory.KSplit.om_linW_split : GlobalTheory.FunPr.Hypotheses₂ →
   obtain ⟨φ'', ⟨hφ'', hA''⟩, -⟩ := hex g hg 1 oneW φ' hφ'
   have hcomp : Acts (evFin F v) (om (g, h)) φ φ'' := by
     intro R hR
-    have e : om (g, h) = om (g, 1) * om (1, h) := by rw [← map_mul]; simp
+    have e : om (g, h) = om (g, 1) * om (1, h) := simp [← map_mul]
     have hR' : Rest (evFin F v) φ' R := ⟨hR.1, by rw [← hA' R hR]; exact hspl.pres (1, h) _ hR.2⟩
     rw [e, Module.End.mul_apply, hA' R hR, hA'' R hR']
   have e1 : φ₁ = φ'' := (hex g hg h hh φ hφ).unique ⟨hφ₁, hA⟩ ⟨hφ'', hcomp⟩

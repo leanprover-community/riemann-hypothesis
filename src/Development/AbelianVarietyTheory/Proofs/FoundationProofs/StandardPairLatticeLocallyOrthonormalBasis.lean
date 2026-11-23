@@ -111,7 +111,7 @@ theorem binary_one_mod : ∀ (p : ℕ) (u v : ℚ), p.Prime → padicNorm p u = 
   haveI : Fact p.Prime := ⟨hp⟩
   have key : ∀ w : ℚ, padicNorm p w = 1 → ∃ n : ℤ, ¬ (p : ℤ) ∣ n ∧ padicNorm p (w - n) < 1 := by
     intro w hw
-    have h1 : ‖(w : ℚ_[p])‖ = 1 := by rw [Padic.eq_padicNorm, hw]; simp
+    have h1 : ‖(w : ℚ_[p])‖ = 1 := simp [Padic.eq_padicNorm, hw]
     obtain ⟨n, hn⟩ := PadicInt.denseRange_intCast.exists_dist_lt (⟨(w : ℚ_[p]), h1.le⟩ : ℤ_[p]) one_pos
     have h2 : padicNorm p (w - n) < 1 := by
       have h3 : ‖((w - n : ℚ) : ℚ_[p])‖ < 1 := by

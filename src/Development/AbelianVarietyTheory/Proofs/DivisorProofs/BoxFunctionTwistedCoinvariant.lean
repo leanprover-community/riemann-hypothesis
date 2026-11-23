@@ -99,7 +99,7 @@ theorem GlobalTheory.RankCoinv.boxFn_mem_lowRank_succ_sup_twistSpan_of_zero_row 
     have hnorm : ‖u‖ = 1 := by
       rw [hu_def, Units.val_inv_eq_inv_val, norm_inv, hν, inv_one]
     rw [hu, Complex.norm_real, Real.norm_of_nonneg (div_nonneg (Nat.cast_nonneg _) hapos.le)] at hnorm
-    have hu1 : u = 1 := by rw [hu, hnorm]; simp
+    have hu1 : u = 1 := simp [hu, hnorm]
     apply hν1
     have : (ν ϖ)⁻¹ = 1 := Units.ext (by simpa [hu_def] using hu1)
     exact inv_eq_one.1 this

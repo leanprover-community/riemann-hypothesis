@@ -72,7 +72,7 @@ theorem exists_congr_diagonal (A : Matrix ι ι ℂ) (hA : (A + Aᴴ).PosDef) :
     rw [this, hBA, star_eq_conjTranspose]
     calc Cᴴ * (Bᴴ * B) * C = (B * C)ᴴ * (B * C) := by
           simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = 1 := by rw [h1]; simp
+      _ = 1 := simp [h1]
   have hK : (I • (A' - A'ᴴ)).IsHermitian := by
     unfold Matrix.IsHermitian
     rw [conjTranspose_smul, conjTranspose_sub, conjTranspose_conjTranspose]

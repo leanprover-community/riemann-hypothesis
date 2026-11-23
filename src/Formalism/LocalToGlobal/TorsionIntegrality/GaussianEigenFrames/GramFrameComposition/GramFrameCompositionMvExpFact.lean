@@ -358,7 +358,7 @@ theorem ShapeLin_proof : ShapeLin := by
     have hdpos : 0 < ‖(d : K)‖ := norm_pos_iff.mpr hd
     calc ‖jet l ph 2‖ * ‖th‖ ≤ ‖(d : K)‖ ^ (-(1 / 2 : ℝ)) * ‖(d : K)‖ ^ (1 / 2 : ℝ) :=
           mul_le_mul hS.1 hth (norm_nonneg _) (Real.rpow_nonneg (norm_nonneg _) _)
-      _ = 1 := by rw [← Real.rpow_add hdpos]; simp
+      _ = 1 := simp [← Real.rpow_add hdpos]
   obtain ⟨sg, hsg, hsgeq⟩ := shapeCong K (Fin 4 × n) (Fin 4 × ((Bool × H) × Fin N0 × Fin N1))
     (jet l ph 2) th (fun _ => (1 : K)) Cm (∑ a : Fin 4, inBlock a (betaPair H N0 N1 u)) (quadForm q)
     h2 hS0th hCm hccbe (cc_quadForm q) hQ hgram' J hJ

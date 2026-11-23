@@ -101,7 +101,7 @@ theorem inv_mem_of_finite {n : ℕ} [Finite F'] (B : Subalgebra F' (Matrix (Fin 
   have : ((δ⁻¹ : GL (Fin n) F') : Matrix (Fin n) (Fin n) F') = b := by
     calc ((δ⁻¹ : GL (Fin n) F') : Matrix (Fin n) (Fin n) F')
         = ((δ⁻¹ : GL (Fin n) F') : Matrix (Fin n) (Fin n) F') * (δ * b) := by rw [hb', mul_one]
-      _ = b := by rw [← mul_assoc]; simp
+      _ = b := simp [← mul_assoc]
   rw [this]; exact b.2
 
 def unitsIn {n : ℕ} [Finite F'] (B : Subalgebra F' (Matrix (Fin n) (Fin n) F')) :

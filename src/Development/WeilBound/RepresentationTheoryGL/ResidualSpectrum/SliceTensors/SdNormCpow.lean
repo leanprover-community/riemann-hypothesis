@@ -72,7 +72,7 @@ theorem step_down (q : ℕ) (hq : 1 < q) (B₀ : Multiset ℂ)
     have e1 : (q : ℝ) ^ (1 - u + x) = q * (q : ℝ) ^ (-u) * (q : ℝ) ^ x := by
       rw [Real.rpow_add hQ0, Real.rpow_sub hQ0, Real.rpow_one, Real.rpow_neg hQ0.le]
       field_simp
-    have hxx : (q : ℝ) ^ (-x) * (q : ℝ) ^ x = 1 := by rw [← Real.rpow_add hQ0]; simp
+    have hxx : (q : ℝ) ^ (-x) * (q : ℝ) ^ x = 1 := simp [← Real.rpow_add hQ0]
     calc ‖β‖ = ‖β‖ * (q : ℝ) ^ (-x) * (q : ℝ) ^ x := by rw [mul_assoc, hxx, mul_one]
       _ = q * (‖α‖ * (q : ℝ) ^ (-u)) * (q : ℝ) ^ x := by rw [en]
       _ = ‖α‖ * (q : ℝ) ^ (1 - u + x) := by rw [e1]; ring

@@ -91,7 +91,7 @@ theorem exists_isLagr_of_local (F : Type) [Field F] [NumberField F] (v : HeightO
       by_cases hij : i = j <;> simp [fromBlocks, one_apply, hij, eq_comm]
   have hdH : H.det = δ ^ (m + m) * J.det := by simp [H, det_smul]
   have hdHyp : Hyp.det = (-1) ^ m := by simp [Hyp, det_submatrix_equiv_self, det_hyp]
-  have hs : ((-1 : L) ^ m) ^ 2 = 1 := by rw [← pow_mul, mul_comm, pow_mul]; simp
+  have hs : ((-1 : L) ^ m) ^ 2 = 1 := simp [← pow_mul, mul_comm, pow_mul]
   obtain ⟨P, hP, hPeq⟩ := (GlobalTheory.HermLocal.congr_iff_adicCompletion F v L σ hσ hH hHyp
     (by rw [hdH]; exact mul_ne_zero (pow_ne_zero _ hδ) hd) (by rw [hdHyp]; simp)).2 ⟨δ ^ m * x, by
       rw [hdH, hdHyp, div_eq_iff (by simp), hx, hσc, map_mul, map_pow, hcδ, neg_pow]

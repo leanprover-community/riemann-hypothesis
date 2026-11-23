@@ -392,7 +392,7 @@ lemma flat_inj [Module.Flat R R'] : Function.Injective (algebraMap R R') := by
   by_contra hr0
   have hreg : IsSMulRegular R' r :=
     Module.Flat.isSMulRegular_of_nonZeroDivisors (mem_nonZeroDivisors_of_ne_zero hr0)
-  have h1 : r • (1 : R') = r • (0 : R') := by rw [Algebra.smul_def, hr]; simp
+  have h1 : r • (1 : R') = r • (0 : R') := simp [Algebra.smul_def, hr]
   exact one_ne_zero (hreg h1)
 
 lemma exists_kappa (hφ : Function.Injective (algebraMap R R')) :

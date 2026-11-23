@@ -100,7 +100,7 @@ theorem exists_imagQuad_integers : ∀ d : ℕ, d.Prime → d % 4 = 3 →
       linear_combination hw2 - this
     have h4ne : (4 : 𝓞 K) ≠ 0 := by
       intro h
-      have : ((4 : 𝓞 K) : K) = 0 := by rw [h]; simp
+      have : ((4 : 𝓞 K) : K) = 0 := simp [h]
       norm_num at this
     have := (mul_eq_zero.mp h4).resolve_left h4ne
     linear_combination this

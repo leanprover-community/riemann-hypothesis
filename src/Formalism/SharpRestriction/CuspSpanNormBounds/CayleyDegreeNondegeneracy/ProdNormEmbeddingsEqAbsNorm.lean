@@ -146,8 +146,8 @@ theorem eq_zero_of_inner_self_eq_zero (hK : IsCMUnram K) (L : Submodule (𝓞 K)
   have hv' : v ∈ Submodule.span K (Set.range e) := by rw [hsp]; trivial
   obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun K).1 hv'
   rw [Fin.sum_univ_two] at hv ⊢
-  have h01 : h (e 0) (e 1) = 0 := by rw [horth]; simp
-  have h10 : h (e 1) (e 0) = 0 := by rw [horth]; simp
+  have h01 : h (e 0) (e 1) = 0 := simp [horth]
+  have h10 : h (e 1) (e 0) = 0 := simp [horth]
   rw [inner_comb_orthogonal_pair h _ _ h01 h10, horth, horth] at hv
   simp only [if_true, mul_one] at hv
   obtain ⟨φ⟩ : Nonempty (K →+* ℂ) := inferInstance

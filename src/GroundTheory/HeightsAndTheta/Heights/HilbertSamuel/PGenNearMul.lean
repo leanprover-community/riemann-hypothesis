@@ -228,8 +228,8 @@ theorem cechD_zero_apply_uniform (I : KH.Cell K ι 1) :
     · by_cases hl : l = k₀
       · subst hl; rw [Function.update_self, hc]; rfl
       · rw [Function.update_of_ne hl, hother l hl]; rfl
-  have hx : x ∈ I.1 k₀ := by rw [hI]; simp
-  have hy : y ∈ I.1 k₀ := by rw [hI]; simp
+  have hx : x ∈ I.1 k₀ := simp [hI]
+  have hy : y ∈ I.1 k₀ := simp [hI]
   have hsign : KH.faceSign I.1 k₀ y = -KH.faceSign I.1 k₀ x := by
     unfold KH.faceSign
     rcases lt_or_gt_of_ne hxy with h | h

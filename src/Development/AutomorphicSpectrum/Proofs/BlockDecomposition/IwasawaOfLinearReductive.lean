@@ -85,7 +85,7 @@ theorem frame {n : ℕ} (𝔤 : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ)) :
   have hHd : U₀ * Matrix.diagonal (fun i => (d i : ℂ)) * U₀ᴴ = H := by
     rw [hdd]
     calc U₀ * (U₀ᴴ * H * U₀) * U₀ᴴ = (U₀ * U₀ᴴ) * H * (U₀ * U₀ᴴ) := by simp only [Matrix.mul_assoc]
-      _ = H := by rw [hU₀']; simp
+      _ = H := simp [hU₀']
   obtain ⟨U, hU, h, hanti, heq, hdiag⟩ := GlobalTheory.T.antitone_diagonal_conjugate U₀ d hU₀
   refine ⟨U, hU, h, hanti, ?_, ?_⟩
   · rw [heq, hHd]; exact hle hHa
@@ -104,10 +104,10 @@ theorem alg {n : ℕ} (𝔤 : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ)) (hs : 
   have h2 : Uᴴ * U = 1 := Matrix.mem_unitaryGroup_iff'.1 hU
   have cj : ∀ Z : Matrix (Fin n) (Fin n) ℂ, U * (Uᴴ * Z * U) * Uᴴ = Z := fun Z => by
     calc U * (Uᴴ * Z * U) * Uᴴ = (U * Uᴴ) * Z * (U * Uᴴ) := by simp only [Matrix.mul_assoc]
-      _ = Z := by rw [h1]; simp
+      _ = Z := simp [h1]
   have cj' : ∀ Z : Matrix (Fin n) (Fin n) ℂ, Uᴴ * (U * Z * Uᴴ) * U = Z := fun Z => by
     calc Uᴴ * (U * Z * Uᴴ) * U = (Uᴴ * U) * Z * (Uᴴ * U) := by simp only [Matrix.mul_assoc]
-      _ = Z := by rw [h2]; simp
+      _ = Z := simp [h2]
   let φ : (Matrix (Fin n) (Fin n) ℂ) →ₗ[ℝ] (Matrix (Fin n) (Fin n) ℂ) :=
     { toFun := fun Z => U * Z * Uᴴ
       map_add' := fun a b => by simp [Matrix.mul_add, Matrix.add_mul]

@@ -213,7 +213,7 @@ theorem rat_padicGe_cast {p : ℕ} (hp : p.Prime) (S : UniformizedDVR p O) [Char
   obtain ⟨u, hu⟩ := isUnit_natCast_of_not_dvd hp S x.den hden
   refine ⟨(k : O) * ((u⁻¹ : Oˣ) : O), ?_⟩
   have hdK : ((x.den : ℕ) : KK O) ≠ 0 := by exact_mod_cast x.den_nz
-  have huK : algebraMap O (KK O) (u : O) = ((x.den : ℕ) : KK O) := by rw [hu]; simp
+  have huK : algebraMap O (KK O) (u : O) = ((x.den : ℕ) : KK O) := simp [hu]
   have hinv : algebraMap O (KK O) ((u⁻¹ : Oˣ) : O) = ((x.den : ℕ) : KK O)⁻¹ := by
     apply eq_inv_of_mul_eq_one_left
     rw [← huK, ← map_mul]; simp

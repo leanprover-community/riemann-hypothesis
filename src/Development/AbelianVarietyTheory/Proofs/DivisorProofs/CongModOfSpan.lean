@@ -285,7 +285,7 @@ theorem GlobalTheory.Poinc.approx_of_fpre : ∀ (O : Type) [CommRing O] [Module.
           obtain ⟨w, hw⟩ := h4 (i, 0)
           obtain ⟨w', hw'⟩ := h3 (a (i, 0))
           refine ⟨w' + t • w, ?_⟩
-          have e1 : g (a₀ i) = μ (i, 0) := by rw [← hg, ha]; simp
+          have e1 : g (a₀ i) = μ (i, 0) := simp [← hg, ha]
           show g (a₀ i) = _
           rw [e1, hw, hkid, LinearMap.id_apply, hw', ht, mul_smul, smul_add]
           simp only [ha, ↓reduceIte]

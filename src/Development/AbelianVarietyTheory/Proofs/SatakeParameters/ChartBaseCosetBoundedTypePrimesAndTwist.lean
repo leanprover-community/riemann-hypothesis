@@ -70,7 +70,7 @@ theorem cplCoset_bound : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a _hP H hi β P y hy
   obtain ⟨⟨c, rfl⟩, -⟩ := ((St (t.m2 + 1) hi).K β).y_bij.2 (Quotient.mk'' 1)
   obtain ⟨y1, hy1, hY⟩ := H.chain.2.1 c
-  have hmem : y1 ∈ A.yb c := by rw [hY]; simp
+  have hmem : y1 ∈ A.yb c := simp [hY]
   have h0 := H.coset c y1 hmem P
   have hy' : SameCoset t.sel (t.tup μ) (t.cst μ) P y (A.y0 ((St _ (cpl_lt t μ).le).chOf c) P) := by
     unfold y0At at hy

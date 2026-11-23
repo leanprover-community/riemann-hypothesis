@@ -323,7 +323,7 @@ theorem inv_iff (b : k⟦X⟧) : Inv l b ↔ ∃ a, emb k l a = b := by
       have hC : act k z (C (constantCoeff b)) = C (constantCoeff b) := (act k z).commutes _
       rw [map_sub, hb z hz, hC]
     obtain ⟨c, hc⟩ := trace_one (k := k) (l := l)
-    have hu : IsUnit (1 + X * c) := by rw [isUnit_iff_constantCoeff]; simp
+    have hu : IsUnit (1 + X * c) := simp [isUnit_iff_constantCoeff]
     have h2 := h1.pow_dvd (X_dvd_iff.2 (by simp))
     rw [← hu.mul_right_dvd, ← hc] at h2
     obtain ⟨b', hb'⟩ := h2
@@ -367,12 +367,12 @@ theorem ga_trace : ∃ κ : k⟦X⟧, constantCoeff κ = 1 ∧
   have hX : ga k l X = X * e := by
     rw [ga, sb_X, pow_add, pow_one, add_pow_char, one_pow, h5, he]; ring
   obtain ⟨s, hs⟩ := dvd_hom_sub (ga k l) l ⟨1 + X, by rw [hX, he, h5]; ring⟩ (1 + X * c)
-  obtain ⟨u, hu⟩ : IsUnit (1 + X * c) := by rw [isUnit_iff_constantCoeff]; simp
+  obtain ⟨u, hu⟩ : IsUnit (1 + X * c) := simp [isUnit_iff_constantCoeff]
   have hS := geom_sum_mul e (l - 1)
   set S := ∑ i ∈ Finset.range (l - 1), e ^ i with hSd
   have hS0 : constantCoeff S = -1 := by
     simp [hSd, he, pred_pos.ne', Nat.cast_pred hl.out.pos]
-  have hui : (1 + X * c) * ((u⁻¹ : (k⟦X⟧)ˣ) : k⟦X⟧) = 1 := by rw [← hu]; simp
+  have hui : (1 + X * c) * ((u⁻¹ : (k⟦X⟧)ˣ) : k⟦X⟧) = 1 := simp [← hu]
   generalize ((u⁻¹ : (k⟦X⟧)ˣ) : k⟦X⟧) = ui at hui
   have hui0 : constantCoeff ui = 1 := by simpa using congrArg constantCoeff hui
   set κ' := -(S * (1 + X) * (1 + X * c + X ^ (l - 1) * X * s) + X * s) * ui ^ 2 with hκ'
@@ -430,7 +430,7 @@ theorem exists_cyclotomic : ∀ (l : ℕ) [Fact l.Prime] (k : Type) [Field k] [C
     congr 1
     apply inj
     rw [emb_fr, hg, hg, emb_fr, fr_ga]
-  · obtain ⟨u, hu⟩ : IsUnit (1 + X * c) := by rw [isUnit_iff_constantCoeff]; simp
+  · obtain ⟨u, hu⟩ : IsUnit (1 + X * c) := simp [isUnit_iff_constantCoeff]
     exact ⟨u, by rw [hv, hc, hu, map_mul, map_pow, ← vv_eq_coe_X, mul_comm]⟩
   · simp only [act_eq, hι]
     exact (inv_iff b).trans (exists_congr fun a => HahnSeries.ofPowerSeries_injective.eq_iff.symm)

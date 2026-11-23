@@ -108,10 +108,10 @@ theorem UpperTheory.V.Z.IntegralApplyAeEq.projLaws :
       rwa [star_mul, a2.star_eq, b2.star_eq, star_zero] at this
     change M.P (Ioi T) * M.P (Ioi T) = _ at a1
     change M.P' (Ioi T') * M.P' (Ioi T') = _ at b1
-    have l1 : M.abelian₂ T T' * M.P (Ioi T) = 0 := by rw [Sc.abelian₂, sub_mul, sub_mul, a1, o2]; simp
-    have l2 : M.P (Ioi T) * M.abelian₂ T T' = 0 := by rw [Sc.abelian₂, mul_sub, mul_sub, a1, o1]; simp
-    have l3 : M.abelian₂ T T' * M.P' (Ioi T') = 0 := by rw [Sc.abelian₂, sub_mul, sub_mul, b1, o1]; simp
-    have l4 : M.P' (Ioi T') * M.abelian₂ T T' = 0 := by rw [Sc.abelian₂, mul_sub, mul_sub, b1, o2]; simp
+    have l1 : M.abelian₂ T T' * M.P (Ioi T) = 0 := simp [Sc.abelian₂, sub_mul, sub_mul, a1, o2]
+    have l2 : M.P (Ioi T) * M.abelian₂ T T' = 0 := simp [Sc.abelian₂, mul_sub, mul_sub, a1, o1]
+    have l3 : M.abelian₂ T T' * M.P' (Ioi T') = 0 := simp [Sc.abelian₂, sub_mul, sub_mul, b1, o1]
+    have l4 : M.P' (Ioi T') * M.abelian₂ T T' = 0 := simp [Sc.abelian₂, mul_sub, mul_sub, b1, o2]
     have l0 : M.abelian₂ T T' * M.abelian₂ T T' = M.abelian₂ T T' := by
       conv_lhs => rw [show M.abelian₂ T T' * M.abelian₂ T T' = M.abelian₂ T T' * (1 - M.P (Ioi T) - M.P' (Ioi T')) from rfl]
       rw [mul_sub, mul_sub, l1, l3]; simp

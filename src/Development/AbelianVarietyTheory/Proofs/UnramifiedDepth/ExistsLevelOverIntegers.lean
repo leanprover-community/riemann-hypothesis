@@ -171,8 +171,8 @@ private theorem levInt_secHom {O C : Type} [CommRing O] [Field C] [Algebra O C]
         (e ≫ x) (e ≫ y) _ (hr x).symm (hr y).symm).1 hW
     obtain ⟨c, hc, -⟩ := GlobalTheory.LevelCompare.weil_existsUnique Q n x y hx hy
     have hc' := (GlobalTheory.LevelCompare.weil_skew_natural Q n (𝟙_ _)).2 _ e x y c hc
-    have hx' : (e ≫ x) ^ n = 1 := by rw [← p2, hx]; simp
-    have hy' : (e ≫ y) ^ n = 1 := by rw [← p2, hy]; simp
+    have hx' : (e ≫ x) ^ n = 1 := simp [← p2, hx]
+    have hy' : (e ≫ y) ^ n = 1 := simp [← p2, hy]
     obtain ⟨c2, -, hu⟩ := GlobalTheory.LevelCompare.weil_existsUnique Q n (e ≫ x) (e ≫ y) hx' hy'
     have h1 := (hu _ hW').trans (hu _ hc').symm
     have key : ∀ a : O, e.left.appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of O)).inv.hom a) =

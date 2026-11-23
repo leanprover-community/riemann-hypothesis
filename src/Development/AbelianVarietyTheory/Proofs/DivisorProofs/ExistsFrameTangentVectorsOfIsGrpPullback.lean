@@ -56,7 +56,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : D
 theorem one_comp (hπ : IsGrpPullback A Xo.univ.t.G x π) :
     η[A].left ≫ π = (1 : Over.mk x ⟶ Xo.univ.t.G).left := by
   have e := congrArg (fun z => z.left) (map_one (pushHom hπ (𝟙_ (Over (Sp K)))))
-  have e₁ : (1 : 𝟙_ (Over (Sp K)) ⟶ A) = η[A] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over (Sp K)) ⟶ A) = η[A] := simp [Hom.one_def]
   rw [e₁] at e
   refine e.trans ?_
   rw [GlobalTheory.ArcQ.NormalForm.one_left_eq, GlobalTheory.ArcQ.NormalForm.one_left_eq]

@@ -582,7 +582,7 @@ theorem genVal_rosati (hL : L.IsLB) (h : u.IsAH Hm χ) (hF : ∀ z, u.ex (F z) =
     (fun w l hl => by simpa [← hB, k₄] using p₂ ⟨l, hl⟩ x w) z 0
   refine ⟨fun x z => sub_eq_zero.1 ((hB x z).symm.trans (k₄ x z)), fun x z => ?_⟩
   rw [← hV, c₁, c₂, hV]
-  have e : (lift (u.ex 0) (u.ex 0)).left = 𝟙 (Sp ℂ) ≫ Out.zero2 A := by rw [ex_zero, Hom.one_def]; simp
+  have e : (lift (u.ex 0) (u.ex 0)).left = 𝟙 (Sp ℂ) ≫ Out.zero2 A := simp [ex_zero, Hom.one_def]
   have hz := isLift_rosati hF hG 0 0
   rw [e] at hz ⊢
   rw [← genVal_pull, ← genVal_one (u := u) hL (𝟙 (Sp ℂ)) PEmpty.elim]

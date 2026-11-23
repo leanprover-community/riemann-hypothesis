@@ -389,7 +389,7 @@ variable {R : Type} [CommRing R] {n : Type} [Fintype n] [DecidableEq n]
 
 def cutM (e : R) (he : e * e = e) : Matrix n n R →* Matrix n n R where
   toFun A := e • A + (1 - e) • (1 : Matrix n n R)
-  map_one' := by rw [← add_smul]; simp
+  map_one' := simp [← add_smul]
   map_mul' A B := by
     have h1 : e * (1 - e) = 0 := by linear_combination - he
     have h2 : (1 - e) * (1 - e) = 1 - e := by linear_combination he

@@ -219,7 +219,7 @@ lemma uh_inv {H g : Mt n} (hu : IsUnit H.det) (hg : g ∈ Formalism.QuantumDeter
   change (g⁻¹)ᴴ * H * g⁻¹ = H
   calc (g⁻¹)ᴴ * H * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * H * g) * g⁻¹ := by rw [h1]
     _ = (g * g⁻¹)ᴴ * H * (g * g⁻¹) := by rw [conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = H := by rw [mul_nonsing_inv _ h2]; simp
+    _ = H := simp [mul_nonsing_inv _ h2]
 
 lemma exp_mem {J X : Mt n} (hJ : IsUnit J.det) (hX : X ∈ lieH J) (t : ℝ) :
     NormedSpace.exp (t • X) ∈ Formalism.QuantumDeterminants.UH J := by

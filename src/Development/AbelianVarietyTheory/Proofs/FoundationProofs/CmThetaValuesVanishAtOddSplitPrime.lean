@@ -110,10 +110,10 @@ theorem idem_mem (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (h
   let ι : ℤ_[p] →+* ℂ_[p] := (algebraMap ℚ_[p] ℂ_[p]).comp PadicInt.Coe.ringHom
   have hι : Continuous ι := (continuous_algebraMap ℚ_[p] ℂ_[p]).comp continuous_subtype_val
   set s := ψ ((b : D.host.K) : D.host.E) with hsdef
-  have hs2 : s ^ 2 = -(D.host.d : ℂ_[p]) := by rw [hsdef, ← map_pow, hb]; simp
+  have hs2 : s ^ 2 = -(D.host.d : ℂ_[p]) := simp [hsdef, ← map_pow, hb]
   obtain ⟨z, hz, hu⟩ : ∃ z : ℤ_[p], ι z = s ∧ IsUnit (2 * z) := by
     obtain ⟨z, hz, hu⟩ := exists_sqrt_padic h2 hs
-    have : ι z ^ 2 = s ^ 2 := by rw [← map_pow, hz, hs2]; simp
+    have : ι z ^ 2 = s ^ 2 := simp [← map_pow, hz, hs2]
     rcases sq_eq_sq_iff_eq_or_eq_neg.1 this with h | h
     · exact ⟨z, h, hu⟩
     · exact ⟨-z, by rw [map_neg, h, neg_neg], by simpa using hu.neg⟩

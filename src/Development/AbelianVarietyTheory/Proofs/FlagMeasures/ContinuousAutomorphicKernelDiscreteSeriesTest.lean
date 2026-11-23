@@ -141,7 +141,7 @@ theorem continuous_kern_phe : ∀ (B : RowsAut) (d : InfinitePlace B.I.F → ℝ
     have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
     have h1 : Real.exp (-(2 * (n : ℝ) ^ 2)) ≤ Real.exp (-1) := Real.exp_le_exp.mpr (by nlinarith)
     have h2 : (1 + 1 : ℝ) ≤ Real.exp 1 := Real.add_one_le_exp 1
-    have h3 : Real.exp (-1) * Real.exp 1 = 1 := by rw [← Real.exp_add]; simp
+    have h3 : Real.exp (-1) * Real.exp 1 = 1 := simp [← Real.exp_add]
     have h4 := Real.exp_pos (-1)
     nlinarith
   have hA : 0 ≤ (3 * Real.sqrt n / (tau1 B.I x0 * tau1 B.I y0)) ^ (2 * n ^ 2 * B.I.f) :=

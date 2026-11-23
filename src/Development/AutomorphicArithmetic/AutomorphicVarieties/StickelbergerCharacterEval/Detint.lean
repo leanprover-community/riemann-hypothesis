@@ -49,8 +49,8 @@ theorem UpperTheory.V.B5.higherStickelberger_det_exists_int_bounded :
     have h0 := NeZero.ne N
     obtain rfl : N = 1 := by omega
     exact hc (by rw [Subsingleton.elim (-1 : (ZMod 1)ˣ) 1, map_one])
-  have hcc : π (-1) * π (-1) = 1 := by rw [← map_mul]; simp
-  have hε : ((-1 : ℤ) ^ k) * (-1) ^ k = 1 := by rw [← mul_pow]; simp
+  have hcc : π (-1) * π (-1) = 1 := simp [← map_mul]
+  have hε : ((-1 : ℤ) ^ k) * (-1) ^ k = 1 := simp [← mul_pow]
   haveI : NeZero (Monoid.exponent Γ : ℂ) := ⟨Nat.cast_ne_zero.2 Monoid.exponent_ne_zero_of_finite⟩
   obtain ⟨z, hz⟩ := exists_int_higherStickelbergerDenom_smul π a ha k (by omega)
   have hX : ((detR (π (-1)) ((-1) ^ k) z : ℤ) : ℚ) =

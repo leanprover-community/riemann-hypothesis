@@ -1055,7 +1055,7 @@ theorem length_quotient_of_nonempty {L : SizeData₂ D} (X : Inst D L) (Y : LatI
   rw [hU]
   by_cases hn0 : n = 0
   · subst hn0
-    have : (l : ℕ∞) * (D.what₂.places.ramIdx w : ℕ∞) = 0 := by rw [key']; simp
+    have : (l : ℕ∞) * (D.what₂.places.ramIdx w : ℕ∞) = 0 := simp [key']
     have h2 : l * D.what₂.places.ramIdx w = 0 := by exact_mod_cast this
     have h3 : l = 0 := (Nat.mul_eq_zero.1 h2).resolve_right hram.ne'
     simp [h3]

@@ -107,7 +107,7 @@ private theorem norm_of_finOrder {Γ : Type} [Group Γ] {φ : Γ →* (Qbar l)ˣ
     ‖(φ s : Qbar l)‖ = 1 := by
   obtain ⟨n, hn, h1⟩ := isOfFinOrder_iff_pow_eq_one.1 h
   have h2 : φ s ^ n = 1 := by rw [← MonoidHom.pow_apply, h1]; rfl
-  have h3 : ‖(φ s : Qbar l)‖ ^ n = 1 := by rw [← norm_pow, ← Units.val_pow_eq_pow_val, h2]; simp
+  have h3 : ‖(φ s : Qbar l)‖ ^ n = 1 := simp [← norm_pow, ← Units.val_pow_eq_pow_val, h2]
   exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hn.ne').1 h3
 
 variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω]

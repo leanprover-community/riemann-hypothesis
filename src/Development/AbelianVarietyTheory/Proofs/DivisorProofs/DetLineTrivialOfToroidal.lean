@@ -68,7 +68,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Geo.Tor.Host E}
 theorem good_or (c : Coeff l) (e : c.F →+* ℂ) :
     Formalism.L2.PjFree.GoodEmb c e ∨ Formalism.L2.PjFree.GoodEmb c ((starRingEnd ℂ).comp e) := by
   set z := (e.comp (IntermediateField.inclusion c.le).toRingHom) (baseKA l).ρ with hz
-  have h1 : z ^ 2 = H.rt0 ^ 2 := by rw [hz, ← map_pow, (baseKA l).ρ_sq, H.sqrt_neg_disc_sq]; simp
+  have h1 : z ^ 2 = H.rt0 ^ 2 := simp [hz, ← map_pow, (baseKA l).ρ_sq, H.sqrt_neg_disc_sq]
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 h1 with h | h
   · exact .inl h
   · refine .inr (show starRingEnd ℂ z = H.rt0 from ?_)

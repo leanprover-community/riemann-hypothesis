@@ -257,7 +257,7 @@ theorem cell_of_quot_cell : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
       rw [e1, e2, hψβ]
       ring
     exact_mod_cast this
-  have hhβ : hh β = 0 := by rw [hhv, hgβ, hKb]; simp
+  have hhβ : hh β = 0 := simp [hhv, hgβ, hKb]
   have hsum := intLin_eq_sum_of_toReal σ d β hh hβσ
   rw [hhβ, Int.cast_zero] at hsum
   have hzero : ∀ j, d j * (hh (σ j) : ℝ) = 0 := by

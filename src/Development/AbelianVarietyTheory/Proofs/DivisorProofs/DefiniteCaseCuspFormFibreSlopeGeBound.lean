@@ -120,7 +120,7 @@ theorem fibreAt_defCase : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
       (size (part Dw a τ) : ℝ) / (Dw.mult τ : ℝ) * detDeg (fun w => P.B w τ) (fun σ => P.X σ τ) -
         Real.log (dim (part Dw a τ)) / 2 = 0 := fun τ hτ => by
     have hm : Dw.mult τ = 0 := by simp [Datum.mult, hτ, hD.q]
-    have hm' : (Dw.mult τ : ℝ) = 0 := by rw [hm]; simp
+    have hm' : (Dw.mult τ : ℝ) = 0 := simp [hm]
     rw [dim_eq_one_of_zero _ (hanti τ) hm, hm', div_zero, zero_mul]
     simp
   have hpsi : ∀ τ : Psi H,

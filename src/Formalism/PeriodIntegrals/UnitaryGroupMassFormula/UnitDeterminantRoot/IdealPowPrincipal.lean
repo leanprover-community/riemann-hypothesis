@@ -79,7 +79,7 @@ lemma ideal_pow_principal (I : Ideal (𝓞 F)) (hI : I ≠ ⊥) :
   obtain ⟨⟨a, ha⟩⟩ := h1
   refine ⟨a, ?_, ha⟩
   rintro rfl
-  have h0 : I ^ hF F = 0 := by rw [ha]; simp
+  have h0 : I ^ hF F = 0 := simp [ha]
   exact zero_notMem_nonZeroDivisors (h0 ▸ hIh)
 
 lemma sub_pow_principal (S : Submodule (𝓞 F) ℂ) (hS : S ≠ ⊥) (t : ℂ) (ht : t ≠ 0)

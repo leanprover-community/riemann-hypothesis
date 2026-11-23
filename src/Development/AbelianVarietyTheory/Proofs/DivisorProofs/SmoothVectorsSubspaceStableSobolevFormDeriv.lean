@@ -116,7 +116,7 @@ theorem lie_conj (hu : IsUnit Hm.det) {X g : Mt n} (hX : X ∈ lieH Hm) (hg : g 
           simp only [conjTranspose_mul, Matrix.mul_assoc]
       _ = gᴴ * (Xᴴ * Hm + Hm * X) * g := by
           rw [A, B]; simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-      _ = 0 := by rw [hL]; simp
+      _ = 0 := simp [hL]
 
 def pr {k : ℕ} (Xs : Fin k → Mt n) (t : Fin k → ℝ) : Mt n := (List.ofFn fun i => NormedSpace.exp (t i • Xs i)).prod
 

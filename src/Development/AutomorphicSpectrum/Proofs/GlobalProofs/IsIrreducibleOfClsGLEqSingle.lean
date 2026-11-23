@@ -286,8 +286,8 @@ theorem len_eq_one (hl : ∀ j : ℤ, |j| ≤ 1 → x ≠ y.nu (j : ℂ)) {m : S
   simp at hle
   have h2 : Δ.len = 2 := by have := Δ.len_pos; omega
   have heq : Δ.ms = {x} + {y} := Multiset.eq_of_le_of_card_le hΔ (by rw [hcard, h2]; simp)
-  have hx : x ∈ Δ.ms := by rw [heq]; simp
-  have hy : y ∈ Δ.ms := by rw [heq]; simp
+  have hx : x ∈ Δ.ms := simp [heq]
+  have hy : y ∈ Δ.ms := simp [heq]
   obtain ⟨a, -, ha⟩ := Multiset.mem_map.mp hx
   obtain ⟨b, -, hb⟩ := Multiset.mem_map.mp hy
   have ha2 : (a : ℕ) < 2 := h2 ▸ a.isLt

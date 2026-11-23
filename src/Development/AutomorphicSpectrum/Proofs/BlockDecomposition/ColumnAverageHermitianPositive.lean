@@ -63,7 +63,7 @@ theorem column_average_hermitian_positive : L0 → L3 → ColumnsMirabolic → F
     have hn : ‖ψ (-t)‖ = 1 := hψ.2.2 (-t)
     calc conj (ψ (-t)) = conj (ψ (-t)) * (ψ (-t) * ψ t) := by rw [hψinv, mul_one]
       _ = (conj (ψ (-t)) * ψ (-t)) * ψ t := by ring
-      _ = ψ t := by rw [Complex.conj_mul', hn]; simp
+      _ = ψ t := simp [Complex.conj_mul', hn]
   have hinv : ∀ (x : Fin (k + 1) → F) (b : V),
       ρ (PositivityTheory.JacquetShalikaLocal.col n k x) (ρ (PositivityTheory.JacquetShalikaLocal.col n k (-x)) b) = b := by
     intro x b

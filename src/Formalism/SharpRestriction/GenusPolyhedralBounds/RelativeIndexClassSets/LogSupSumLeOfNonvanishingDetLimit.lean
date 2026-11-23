@@ -822,7 +822,7 @@ theorem tr_dual_nonempty {N : ℕ} (M : Submodule ℤ (EuclideanSpace ℝ (Fin N
     ∃ v : Fin N → EuclideanSpace ℝ (Fin N), (∀ j, v j ∈ PI.dualZ M) ∧ LinearIndependent ℝ v := by
   have : DiscreteTopology M := hd
   have : IsZLattice ℝ M := ⟨hs⟩
-  have hr : finrank ℤ M = N := by rw [ZLattice.rank ℝ M]; simp
+  have hr : finrank ℤ M = N := simp [ZLattice.rank ℝ M]
   have : Module.Free ℤ M := ZLattice.module_free ℝ M
   have : Module.Finite ℤ M := ZLattice.module_finite ℝ M
   let b : Basis (Fin N) ℤ M := Module.finBasisOfFinrankEq ℤ M hr
@@ -1208,7 +1208,7 @@ theorem trans_of_stages (h1 : TrDualVec) (h2 : TrTraceDual) (h3 : TrScale) [Fini
   let ℓ : Fin (finrank ℝ E) → V →+ ℚ := fun j =>
     { toFun := lf j
       map_zero' := by
-        have : ((lf j 0 : ℚ) : ℝ) = ((0 : ℚ) : ℝ) := by rw [hlf, map_zero, inner_zero_left]; simp
+        have : ((lf j 0 : ℚ) : ℝ) = ((0 : ℚ) : ℝ) := simp [hlf, map_zero, inner_zero_left]
         exact_mod_cast this
       map_add' := fun f g => by
         have : ((lf j (f + g) : ℚ) : ℝ) = ((lf j f + lf j g : ℚ) : ℝ) := by
@@ -1670,7 +1670,7 @@ theorem len_sat_le {R F : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRi
   let bz : Basis (Fin ρ) F U := Basis.span hli
   have hbz : ∀ k, ((bz k : U) : V1) = z k := fun k => congrArg Subtype.val (Basis.span_apply hli k)
   have : FiniteDimensional F U := Module.Finite.of_basis bz
-  have hfr : finrank F U = ρ := by rw [finrank_eq_card_basis bz]; simp
+  have hfr : finrank F U = ρ := simp [finrank_eq_card_basis bz]
   let ι : U →ₗ[R] V1 := U.subtype.restrictScalars R
   have hι : Function.Injective ι := Subtype.val_injective
   let S : Submodule R U := M1.comap ι

@@ -60,7 +60,7 @@ theorem modEq_of_normOneMod (D : D7) {M g : ℕ} (h : NormOneMod D M g) : g ≡ 
   rcases Nat.eq_zero_or_pos M with hM | hM
   · subst hM
     have hg : (g : D.host.E) = 1 := by
-      have h0 : ((g : D.host.E) - 1) = 0 := by rw [ht]; simp
+      have h0 : ((g : D.host.E) - 1) = 0 := simp [ht]
       linear_combination h0
     have hg1 : g = 1 := by exact_mod_cast hg
     subst hg1

@@ -229,7 +229,7 @@ theorem ad_RZ_point {F : Mx k r → (Wq →L[ℂ] Wp)} (hF : F ∈ AdK k r z π 
     calc gᴴ * Hpk k r * g = gᴴ * ((g⁻¹)ᴴ * Hpk k r * g⁻¹) * g := by rw [hH]
       _ = (g⁻¹ * g)ᴴ * Hpk k r * (g⁻¹ * g) := by
         rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = Hpk k r := by rw [hgi]; simp
+      _ = Hpk k r := simp [hgi]
   obtain ⟨⟨h1, h2⟩, hk1, hk2⟩ := ad_unitB_lie (z := z) (g := g) hBs a b
   simp only [RZ, EcRep]
   rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
@@ -267,7 +267,7 @@ theorem left_ad (hz : inWb k r z) (hz' : inWb k r z') (hD : IsDom k r z z' (Fin.
     calc (g⁻¹)ᴴ * Hpk k r * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Hpk k r * g) * g⁻¹ := by rw [hU]
       _ = (g * g⁻¹)ᴴ * Hpk k r * (g * g⁻¹) := by
           rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = Hpk k r := by rw [hgi']; simp
+      _ = Hpk k r := simp [hgi']
   have h1W : (1 : Mx k r) ∈ UWset k r z' := by
     refine ⟨?_, fun a => ⟨?_, ?_⟩, ?_⟩ <;> simp [UH]
   have hJ' : J ∈ AdK k r z π D := by

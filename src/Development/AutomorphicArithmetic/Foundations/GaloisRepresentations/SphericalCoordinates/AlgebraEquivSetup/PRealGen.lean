@@ -106,7 +106,7 @@ theorem UpperTheory.Gal.W2.Seed.pRealGen :
       obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.mpr he
       apply hP.ne_top
       rw [Ideal.eq_top_iff_one]
-      have h3 : ((a * e + b * M : ℤ) : 𝓞 E) = 1 := by rw [hab]; simp
+      have h3 : ((a * e + b * M : ℤ) : 𝓞 E) = 1 := simp [hab]
       rw [← h3]
       push_cast
       exact P.add_mem (P.mul_mem_left _ heP) (P.mul_mem_left _ hMP)

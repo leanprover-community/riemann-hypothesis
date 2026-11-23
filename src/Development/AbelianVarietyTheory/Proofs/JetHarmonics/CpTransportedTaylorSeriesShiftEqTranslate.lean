@@ -131,7 +131,7 @@ lemma exists_quot (h0 : constantCoeff ℓ = 0) (h1 : coeff 1 ℓ ≠ 0) {f D N :
   obtain ⟨h, hc, hid, hcc, -⟩ := TaylorRead.hat_laws q ι ℓ h0
   have hDne : hat ι ℓ D ≠ 0 := by
     intro hz
-    have e : hat ι ℓ D = hat ι ℓ (fun _ => 0) := by rw [hz, hc]; simp
+    have e : hat ι ℓ D = hat ι ℓ (fun _ => 0) := simp [hz, hc]
     have e2 := (h _ _ hD analyticAt_const).2.2.2 h1 e
     obtain ⟨z, hz1, hz2⟩ := (hD0.and (e2.filter_mono nhdsWithin_le_nhds)).exists
     exact hz1 hz2

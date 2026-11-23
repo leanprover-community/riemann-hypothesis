@@ -71,7 +71,7 @@ theorem main : ∀ (K : Type) [Field K] [NumberField K] (d : ℕ) (δ : K) (ι :
   obtain ⟨_, hm₁, _, _⟩ := GlobalTheory.LatOfMult.main K d δ ι 𝔞 Λ₁ hd hδ hL₁
   have hα : ι δ ≠ 0 := fun h => him (by simp [h])
   have hδ0 : δ ≠ 0 := fun h => hα (by simp [h])
-  have hα2 : ι δ ^ 2 = -(d : ℂ) := by rw [← map_pow, hδ]; simp
+  have hα2 : ι δ ^ 2 = -(d : ℂ) := simp [← map_pow, hδ]
   have hN : (Complex.normSq (ι δ) : ℂ) = d := normSq_of_sq_eq_neg d _ hα2
   have hc : ι δ ^ 2 - (Complex.normSq (ι δ) : ℂ) = -(2 * d : ℂ) := by rw [hα2, hN]; ring
   have hc0 : -(2 * d : ℂ) ≠ 0 := by

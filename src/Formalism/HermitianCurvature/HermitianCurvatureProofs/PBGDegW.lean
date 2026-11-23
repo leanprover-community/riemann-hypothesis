@@ -212,7 +212,7 @@ theorem wv_step (hSP : SlicePoly p.T F j hj h hh) (hSP' : SlicePoly p.T F j hj h
             onOld_zero, waveG_zero]
           rfl
         have hD0l' : D0 (Fin.last j) = xM p F j hj w h' hh' ys := by rw [hD0l, if_pos rfl]; rfl
-        have hD1l' : D1 (Fin.last j) = 0 := by rw [hD1l]; simp
+        have hD1l' : D1 (Fin.last j) = 0 := simp [hD1l]
         have dxP : DecV (xP p F j hj w h hh s Mo ys) := by
           have h1 := dA1 (Fin.last j)
           rw [hA1l, zero_add] at h1

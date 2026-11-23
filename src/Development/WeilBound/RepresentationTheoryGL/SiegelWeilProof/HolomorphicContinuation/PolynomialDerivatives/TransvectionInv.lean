@@ -205,7 +205,7 @@ theorem fix_of_exp (δ : Derivation ℂ (MvPolynomial (FinalTheorems m n) ℂ) (
   have h0 : Polynomial.derivative (Φ p) = 0 := by rw [hder, hp, mul_zero, map_zero]
   have hdeg : (Φ p).natDegree = 0 := Polynomial.derivative_eq_zero.mp h0
   calc φ p = Polynomial.eval 1 (Φ p) := (hev1 p).symm
-    _ = Polynomial.eval 0 (Φ p) := by rw [Polynomial.eq_C_of_natDegree_eq_zero hdeg]; simp
+    _ = Polynomial.eval 0 (Φ p) := simp [Polynomial.eq_C_of_natDegree_eq_zero hdeg]
     _ = p := hev0 p
 
 theorem transvection_inv (i j : Fin n) (hij : i ≠ j) (c : ℂ) :

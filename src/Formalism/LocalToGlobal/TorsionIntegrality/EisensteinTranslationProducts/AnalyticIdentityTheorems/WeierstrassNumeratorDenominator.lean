@@ -59,9 +59,9 @@ theorem cW_eq (g2 g3 : K) (k : ℕ) : cW g2 g3 k =
   rw [Nat.strongRecOn_eq]
   split_ifs <;> rfl
 
-theorem cW_one (g2 g3 : K) : cW g2 g3 1 = 0 := by rw [cW_eq]; simp
-theorem cW_two (g2 g3 : K) : cW g2 g3 2 = g2 / 20 := by rw [cW_eq]; simp
-theorem cW_three (g2 g3 : K) : cW g2 g3 3 = g3 / 28 := by rw [cW_eq]; simp
+theorem cW_one (g2 g3 : K) : cW g2 g3 1 = 0 := simp [cW_eq]
+theorem cW_two (g2 g3 : K) : cW g2 g3 2 = g2 / 20 := simp [cW_eq]
+theorem cW_three (g2 g3 : K) : cW g2 g3 3 = g3 / 28 := simp [cW_eq]
 
 theorem cW_rec (g2 g3 : K) (m : ℕ) (hm : 2 ≤ m) : cW g2 g3 (m + 2) =
     3 / ((2 * ((m + 2 : ℕ) : K) + 1) * (((m + 2 : ℕ) : K) - 3)) *

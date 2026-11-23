@@ -199,7 +199,6 @@ noncomputable def Ine.{u_1, u_2} : {F : Type u_1} →
       inv_mem' := @algebra_smulCommClass_complex F Ω inst inst_1 inst_2 inst_3 A }
 
 
-section Grp
 
 variable {R D M : Type} [CommRing R] [Group D] [TopologicalSpace D] [IsTopologicalGroup D]
   [AddCommGroup M] [Module R M] (ρ : Representation R D M)
@@ -338,7 +337,6 @@ private theorem exists_cocycle [Finite M] (hρ : LC ρ) (I : Subgroup D) [hI : I
   · show ψ (g * h) 0 = _
     rw [map_mul, Equiv.Perm.mul_apply, (hall g).2 _ (hall h).1]
 
-end Grp
 
 private theorem count {l : ℕ} {D C : Type} [Group D] [TopologicalSpace D] [IsTopologicalGroup D]
     [Group C] [Finite C] (χ : D →* C) (hl : (Nat.card C).Coprime l)
@@ -413,7 +411,6 @@ private theorem finfield {k K : Type} [Field k] [Finite k] [Field K] [Algebra k 
   rw [Nat.card_eq_fintype_card]
   simpa using h1.symm
 
-section NT
 
 variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω] (A : ValuationSubring Ω)
 
@@ -593,10 +590,8 @@ private theorem root_eq {N : ℕ} (hN : A.valuation (N : Ω) = 1) {x y : Ω} (hx
     simp [Finset.sum_sub_distrib, h2, hN] at h3
   · rw [h2, one_mul]
 
-end NT
 
 
-section Fr
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
   {A : ValuationSubring Ω} {v : HeightOneSpectrum (𝓞 F)}
@@ -795,7 +790,6 @@ private theorem ine_normal : ((Ine (F := F) A).subgroupOf (Dec A)).Normal := by
   rw [map_sub, show g.1 (g.1⁻¹ x) = x from g.1.apply_symm_apply x] at h2
   exact h2
 
-end Fr
 
 theorem unrBare : ∀ (l : ℕ) [Fact (Nat.Prime l)] (F Ω : Type) [inst : Field F]
   [inst_1 : NumberField F] [inst_2 : Field Ω] [inst_3 : Algebra F Ω] [IsAlgClosure F Ω] (A : ValuationSubring Ω)

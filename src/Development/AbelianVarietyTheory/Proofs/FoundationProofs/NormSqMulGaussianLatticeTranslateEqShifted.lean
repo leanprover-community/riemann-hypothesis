@@ -63,7 +63,7 @@ theorem exists_orthonormal_basis_family (Λ : AddSubgroup ℂ) (ω t : ℂ) (G :
   have h1 : (-1 : ℂ) ^ k = Complex.exp (-(Real.pi * Complex.I) * k) := by
     rw [mul_comm, Complex.exp_int_mul, Complex.exp_neg, Complex.exp_pi_mul_I]; norm_num
   have h2 : (k : ℂ) * Complex.I = (ω * (starRingEnd ℂ) t - t * (starRingEnd ℂ) ω) / (area Λ : ℂ) := by
-    have : (k : ℂ) = ((gl3FieldFirst Λ ω (2 * t) : ℝ) : ℂ) := by rw [hk]; simp
+    have : (k : ℂ) = ((gl3FieldFirst Λ ω (2 * t) : ℝ) : ℂ) := simp [hk]
     rw [this, gl3FieldFirst]
     have h3 := Complex.sub_conj (ω * (starRingEnd ℂ) t)
     have h4 : (ω * (starRingEnd ℂ) (2 * t)).im = 2 * (ω * (starRingEnd ℂ) t).im := by

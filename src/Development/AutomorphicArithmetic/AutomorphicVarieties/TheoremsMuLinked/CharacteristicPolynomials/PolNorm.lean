@@ -73,7 +73,7 @@ private theorem pn_ext (R : Representation K G V) (η : G →* ℤˣ) (c : G) (h
   have hY' : ∀ g, η g = 1 → z g = R g (R c Y) - R c Y := fun g hg => by
     have e : g = c * (c * g * c) * c⁻¹ := by
       rw [hi, ← mul_assoc, ← mul_assoc, hc, one_mul, mul_assoc, hc, mul_one]
-    have h1 : η (c * g * c) = 1 := by rw [map_mul, map_mul, hη, hg]; simp
+    have h1 : η (c * g * c) = 1 := simp [map_mul, map_mul, hη, hg]
     have h2 := pn_conj R c hc z hz h0 (c * g * c)
     rw [← e, hY _ h1, map_sub, pn_rmul, pn_rmul, hcc] at h2
     exact h2
@@ -88,7 +88,7 @@ private theorem pn_ext (R : Representation K G V) (η : G →* ℤˣ) (c : G) (h
   refine ⟨(2 : K)⁻¹ • (Y + R c Y), fun g => ?_⟩
   rcases Int.units_eq_one_or (η g) with hg | hg
   · exact hA g hg
-  · have h1 : η (g * c) = 1 := by rw [map_mul, hg, hη]; simp
+  · have h1 : η (g * c) = 1 := simp [map_mul, hg, hη]
     have h2 := hA _ h1
     rw [hz, h0, map_zero, add_zero, pn_rmul] at h2
     rw [h2, map_smul (R c), map_add (R c), hcc, add_comm (R c Y)]

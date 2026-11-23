@@ -157,7 +157,7 @@ theorem not_isUnit_natCast_O {l : ℕ} [Fact l.Prime] (c : Coef l) : ¬ IsUnit (
   rintro ⟨u, hu⟩
   have h1 : ((u : c.O) : Qbar l) * ((u⁻¹ : c.Oˣ) : c.O) = 1 := by
     rw [← Subalgebra.coe_mul, Units.mul_inv, Subalgebra.coe_one]
-  have h2 : ((u : c.O) : Qbar l) = ((l : ℕ) : Qbar l) := by rw [hu]; simp
+  have h2 : ((u : c.O) : Qbar l) = ((l : ℕ) : Qbar l) := simp [hu]
   have hl : ‖((l : ℕ) : Qbar l)‖ < 1 := by
     have e : ((l : ℕ) : Qbar l) = algebraMap ℚ_[l] (PadicAlgCl l) (l : ℚ_[l]) := by rw [map_natCast]
     rw [e, PadicAlgCl.norm_extends l (l : ℚ_[l]), Padic.norm_p]

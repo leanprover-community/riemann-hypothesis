@@ -67,12 +67,12 @@ theorem blockChar_integral (hAut : TieAut N A) (hMu : MuInt N A) (i : N.Loc) (τ
     ring
   obtain ⟨h1, h3⟩ := hAut.2.1 τ
   rcases h1 with h1 | h1
-  · have he : A.infG A.etaTinv τ = {-(1 / 2)} := by rw [h3, h1]; simp
+  · have he : A.infG A.etaTinv τ = {-(1 / 2)} := simp [h3, h1]
     rw [A.infG_tw _ _ _ _ he, Multiset.mem_map] at hz
     obtain ⟨y, hy, rfl⟩ := hz
     obtain ⟨m, rfl⟩ := hMu i τ y hy
     exact ⟨m - c - 1, by rw [hs]; push_cast; ring⟩
-  · have he : A.infG A.etaTinv τ = {1 / 2} := by rw [h3, h1]; simp
+  · have he : A.infG A.etaTinv τ = {1 / 2} := simp [h3, h1]
     rw [A.infG_tw _ _ _ _ he, Multiset.mem_map] at hz
     obtain ⟨y, hy, rfl⟩ := hz
     obtain ⟨m, rfl⟩ := hMu i τ y hy

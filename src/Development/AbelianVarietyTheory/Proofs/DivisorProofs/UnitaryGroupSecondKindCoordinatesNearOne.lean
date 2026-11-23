@@ -111,7 +111,7 @@ theorem eq_of_skew_eq {E : Type} [NormedRing E] [NormedAlgebra ℝ E] {u v u' v'
   have n3 : ‖(1 - u') * w * (1 - v')‖ ≤ 1 / 2 * ‖w‖ * (1 / 2) :=
     (norm_mul_le _ _).trans (mul_le_mul n1 nv (norm_nonneg _) (by positivity))
   have n4 : 2 * ‖w‖ ≤ ‖(1 - u') * w‖ + ‖w * (1 - v')‖ + ‖(1 - u') * w * (1 - v')‖ := by
-    have : ‖(2 : ℝ) • w‖ = 2 * ‖w‖ := by rw [norm_smul]; simp
+    have : ‖(2 : ℝ) • w‖ = 2 * ‖w‖ := simp [norm_smul]
     rw [← this, e3]
     exact (norm_sub_le _ _).trans (add_le_add_left (norm_add_le _ _) _)
   have : ‖w‖ = 0 := by linarith
@@ -148,7 +148,7 @@ theorem exists_skew_coord {E : Type} [NormedRing E] [NormedAlgebra ℝ E] [Finit
       rw [hπ, map_smul, map_sub, hσ, ← smul_neg, neg_sub]
     obtain ⟨y, hy⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp (hsp _ h3)
     rw [← hy, hQT] at h2
-    have h4 : π (u - v) = 0 := by rw [← hy, h2]; simp
+    have h4 : π (u - v) = 0 := simp [← hy, h2]
     rw [hπ, smul_eq_zero] at h4
     rcases h4 with h4 | h4
     · norm_num at h4

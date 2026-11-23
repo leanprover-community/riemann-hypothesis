@@ -487,7 +487,7 @@ theorem xId_iff {o C : Type} [CommRing o] [Field C] [Algebra o C] (RC : Subalgeb
       have : k ≠ i := fun e => by subst e; omega
       simp [Pi.single_eq_of_ne this]
     have h1 := h _ hi
-    have h2 : χ₁ 1 = 1 := by rw [hχ₁]; simp
+    have h2 : χ₁ 1 = 1 := simp [hχ₁]
     simp only [Pi.basisFun_apply, Pi.single_eq_same, h2, mul_one] at h1
     have ht : t ∈ RC := by
       rw [← h1]

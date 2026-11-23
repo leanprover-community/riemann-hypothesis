@@ -211,8 +211,8 @@ theorem res_eq_of_pair {M : Type*} [AddCommGroup M] [Module (MRingOver F ι) M] 
   generalize pairCell c k j hj = I at h hIk hIl ⊢
   have hne : ∀ l, (I.1 l).Nonempty := I.2.1
   have hxy : c k ≠ j := hj.symm
-  have hx : c k ∈ I.1 k := by rw [hIk]; simp
-  have hy : j ∈ I.1 k := by rw [hIk]; simp
+  have hx : c k ∈ I.1 k := simp [hIk]
+  have hy : j ∈ I.1 k := simp [hIk]
   have hcard₀ : (I.1 k).card = 2 := by rw [hIk]; exact Finset.card_pair hxy
   have hother : ∀ l, l ≠ k → (I.1 l).card = 1 := fun l hl => by rw [hIl l hl]; rfl
   have hface : ∀ i ∈ I.1 k, (∀ l, (Function.update I.1 k ((I.1 k).erase i) l).Nonempty) ∧

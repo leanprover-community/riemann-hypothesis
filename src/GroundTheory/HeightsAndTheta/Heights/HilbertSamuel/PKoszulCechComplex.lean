@@ -118,8 +118,8 @@ theorem cechD_pair {M : Type*} [AddCommGroup M] [Module (MRingOver S ι) M] (E :
     · by_cases hl : l = k₀
       · subst hl; rw [Function.update_self, hc]; rfl
       · rw [Function.update_of_ne hl, hother l hl]; rfl
-  have ha : a ∈ E.1 k₀ := by rw [hE]; simp
-  have hb : b ∈ E.1 k₀ := by rw [hE]; simp
+  have ha : a ∈ E.1 k₀ := simp [hE]
+  have hb : b ∈ E.1 k₀ := simp [hE]
   have hsign : KH.faceSign E.1 k₀ a = -KH.faceSign E.1 k₀ b := by
     unfold KH.faceSign
     rcases lt_or_gt_of_ne hab with h | h

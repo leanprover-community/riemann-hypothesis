@@ -62,13 +62,13 @@ lemma cay_mem {P : Mat k r} (hP : IsCayley k r ε P) {g : Mat k r} (hg : g ∈ G
     _ = (P⁻¹)ᴴ * (Pᴴ * Formalism.REAL.Jm ε * P) * P⁻¹ := by rw [hg']
     _ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Formalism.REAL.Jm ε := by rw [h2]; simp
+    _ = Formalism.REAL.Jm ε := simp [h2]
 
 lemma cay_back {P : Mat k r} (hP : IsUnit P) (g : Mat k r) : P⁻¹ * (P * g * P⁻¹) * P = g := by
   have h1 := cay_inv_mul hP
   have h2 := cay_mul_inv hP
   calc P⁻¹ * (P * g * P⁻¹) * P = (P⁻¹ * P) * g * (P⁻¹ * P) := by simp only [Matrix.mul_assoc]
-    _ = g := by rw [h1]; simp
+    _ = g := simp [h1]
 
 end Cayley
 

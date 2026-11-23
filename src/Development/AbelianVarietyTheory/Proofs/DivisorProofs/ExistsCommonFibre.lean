@@ -139,7 +139,7 @@ theorem exists_common_fibre {O Ω R' R'' K : Type} [CommRing O] [IsDomain O] [Is
   refine ⟨P₀, d ≫ c', d ≫ c'', (hd.comp hc').congr (sp_comp rfl) rfl, (hd.comp hc'').congr (sp_comp rfl) rfl,
     lb_comp P₀.isLB B.isLB P'.isLB ld lc', lb_comp P₀.isLB B.isLB P''.isLB ld lc'', ?_, ?_⟩
   · intro t' t'' w ht' ht'' hw e' e''
-    have w₁ : (spMap f' ≫ t') ≫ P'.A.hom = 𝟙 _ ≫ spMap f' := by rw [Category.assoc, ht']; simp
+    have w₁ : (spMap f' ≫ t') ≫ P'.A.hom = 𝟙 _ ≫ spMap f' := simp [Category.assoc, ht']
     have k₁ := hc'.1.lift_fst _ _ w₁
     have k₂ := hc'.1.lift_snd _ _ w₁
     generalize hc'.1.lift _ _ w₁ = t at k₁ k₂
@@ -150,7 +150,7 @@ theorem exists_common_fibre {O Ω R' R'' K : Type} [CommRing O] [IsDomain O] [Is
       (by rw [Category.assoc, hc''.1.w, reassoc_of% k₂, Category.assoc, ht'', Category.comp_id])
       (spMap (algebraMap O Ω))
       (by rw [reassoc_of% a₁, ej'', e'', ← Category.assoc, sp_comp rfl])
-    have w₂ : (spMap v ≫ t) ≫ B.A.hom = 𝟙 _ ≫ spMap v := by rw [Category.assoc, k₂]; simp
+    have w₂ : (spMap v ≫ t) ≫ B.A.hom = 𝟙 _ ≫ spMap v := simp [Category.assoc, k₂]
     refine ⟨hd.1.lift _ _ w₂, hd.1.lift_snd _ _ w₂, ?_, ?_⟩
     · rw [← Category.assoc, hd.1.lift_fst, Category.assoc, k₁, ← Category.assoc, sp_comp rfl]
     · rw [← Category.assoc, hd.1.lift_fst, Category.assoc, a₂, ← Category.assoc, sp_comp rfl]
@@ -242,7 +242,7 @@ theorem exists_generic {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {S S
     have k₁ := hb.1.lift_fst _ _ c₁
     have k₂ := hb.1.lift_snd _ _ c₁
     generalize hb.1.lift _ _ c₁ = w at k₁ k₂
-    have c₂ : (spMap σ ≫ w) ≫ P₀.A.hom = 𝟙 _ ≫ spMap σ := by rw [Category.assoc, k₂]; simp
+    have c₂ : (spMap σ ≫ w) ≫ P₀.A.hom = 𝟙 _ ≫ spMap σ := simp [Category.assoc, k₂]
     have k₃ := ht.1.lift_fst _ _ c₂
     generalize ht.1.lift _ _ c₂ = w' at k₃
     have k₄ : w₁ ≫ κ₁ = w' := by

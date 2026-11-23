@@ -65,7 +65,7 @@ theorem frame_lie {s : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ} {
         rw [hi, hiH]; simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc, Matrix.mul_one, Matrix.one_mul]
     _ = (fr⁻¹)ᴴ * (Xᴴ * Matrix.diagonal (sgn ε) + Matrix.diagonal (sgn ε) * X) * fr⁻¹ := by
         rw [← hJ]; simp only [Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul]
-    _ = 0 := by rw [hX]; simp
+    _ = 0 := simp [hX]
 
 theorem hhT_eq {s : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ} {ε : Fin V.rank → Bool}
     {fr X : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hfr : IsTauFrame V τ s ε fr) (t : ℝ) :

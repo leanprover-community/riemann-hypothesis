@@ -220,7 +220,7 @@ theorem coords_second_kind_unitary : ∀ (m : ℕ) (A : Matrix (Fin m) (Fin m) �
           rw [hZ]
       _ = (NormedSpace.exp Z * NormedSpace.exp (-Z))ᴴ * A * (NormedSpace.exp Z * NormedSpace.exp (-Z)) := by
           rw [conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = A := by rw [hXY]; simp
+      _ = A := simp [hXY]
   let _ := Matrix.linftyOpNormedRing (n := Fin m) (α := ℂ)
   let _ := Matrix.linftyOpNormedAlgebra (R := ℝ) (n := Fin m) (α := ℂ)
   have _ : CompleteSpace (Matrix (Fin m) (Fin m) ℂ) := FiniteDimensional.complete ℝ _

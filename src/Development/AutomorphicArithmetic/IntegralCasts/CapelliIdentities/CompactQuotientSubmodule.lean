@@ -93,7 +93,7 @@ theorem UpperTheory.compact_quotient_submodule :
     obtain ⟨n, hn⟩ := hsmall _ (hopen.mem_nhds (by simpa using hzN))
     obtain ⟨a, ha, w, hw, e⟩ := hiter n z hz
     apply hn w hw
-    have : z - p ^ n • w = a := by rw [e]; simp
+    have : z - p ^ n • w = a := simp [e]
     simpa [this] using ha
   rw [le_antisymm hZN hNZ]
   exact Submodule.fg_span (Set.finite_range v)

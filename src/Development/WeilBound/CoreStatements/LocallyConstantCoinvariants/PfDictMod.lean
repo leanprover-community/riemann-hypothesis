@@ -93,7 +93,7 @@ omit [Invertible (2 : k)] in
 theorem norm_one (hc : Continuous ψ) (x : k) : ‖ψ x‖ = 1 := by
   have h1 := norm_le_one hc x
   have h2 := norm_le_one hc (-x)
-  have h3 : ‖ψ x‖ * ‖ψ (-x)‖ = 1 := by rw [← norm_mul, ← AddChar.map_add_eq_mul, add_neg_cancel]; simp
+  have h3 : ‖ψ x‖ * ‖ψ (-x)‖ = 1 := simp [← norm_mul, ← AddChar.map_add_eq_mul, add_neg_cancel]
   nlinarith [norm_nonneg (ψ x), norm_nonneg (ψ (-x))]
 
 theorem cyc (hc : Continuous ψ) (h1 : ψ ≠ 1) {φ₀ : (κ → k) → ℂ} (h₀ : φ₀ ∈ SB (κ → k)) (hne : φ₀ ≠ 0)

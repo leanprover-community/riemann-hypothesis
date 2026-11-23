@@ -83,7 +83,7 @@ theorem cay_sub {M : ℕ} {y : S} (h0 : y ^ M = 0) :
   have a1 : (1 - y) * G = 1 := by rw [← hG, mul_neg_geom_sum, h0, sub_zero]
   calc (1 + y) * G - 1 - (y + y) = (y + y) * (y * G) + ((1 - y) * G - 1) + (y + y) * ((1 - y) * G - 1) := by
         noncomm_ring
-    _ = _ := by rw [a1]; simp
+    _ = _ := simp [a1]
 
 theorem compact_mod_of_filtration [TopologicalSpace S] [IsTopologicalRing S] (S₀ : Subring S) (h : S) (K : Set S)
     (N : ℕ → AddSubgroup S) (p : ℕ → S →+ S) (m : ℕ) (hcont : Continuous st)

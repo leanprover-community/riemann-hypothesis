@@ -49,7 +49,7 @@ theorem cayley_skew {S : Type} [Ring S] (J P Q Mt Mc : S) (hK : P * J * Q = J) (
       = Mt * (P - 1) * J * ((1 + Q) * Mc) + (Mt * (1 + P)) * J * ((Q - 1) * Mc) := by rw [h1, h2]; noncomm_ring
     _ = Mt * ((P - 1) * J * (1 + Q) + (1 + P) * J * (Q - 1)) * Mc := by noncomm_ring
     _ = Mt * (2 * (P * J * Q) - 2 * J) * Mc := by noncomm_ring
-    _ = 0 := by rw [hK]; simp
+    _ = 0 := simp [hK]
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 

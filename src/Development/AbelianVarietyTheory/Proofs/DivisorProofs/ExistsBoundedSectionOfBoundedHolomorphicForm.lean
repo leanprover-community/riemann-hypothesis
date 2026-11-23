@@ -85,7 +85,7 @@ theorem uh_inv {Hm u : Mt n} (hH : Hm.det ≠ 0) (hu : u ∈ Formalism.QuantumDe
   show (u⁻¹)ᴴ * Hm * u⁻¹ = Hm
   calc (u⁻¹)ᴴ * Hm * u⁻¹ = (u⁻¹)ᴴ * (uᴴ * Hm * u) * u⁻¹ := by rw [h1]
     _ = (u * u⁻¹)ᴴ * Hm * (u * u⁻¹) := by rw [conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Hm := by rw [h3]; simp
+    _ = Hm := simp [h3]
 
 theorem upT_one : UpT (1 : Mt n) := ⟨by simp, fun a c h => Matrix.one_apply_ne (ne_of_gt h)⟩
 

@@ -237,7 +237,7 @@ theorem inG_swap {M : M2 n} (h : InG M) : M * JJ n * Mᴴ = JJ n := by
   have e : M * JJ n * Mᴴ * (JJ n * M) = JJ n * (JJ n * M) := by
     calc M * JJ n * Mᴴ * (JJ n * M) = M * JJ n * (Mᴴ * JJ n * M) := by simp only [Matrix.mul_assoc]
       _ = M * (JJ n * JJ n) := by rw [h, Matrix.mul_assoc]
-      _ = JJ n * (JJ n * M) := by rw [JJ_mul_JJ, ← Matrix.mul_assoc, JJ_mul_JJ]; simp
+      _ = JJ n * (JJ n * M) := simp [JJ_mul_JJ, ← Matrix.mul_assoc, JJ_mul_JJ]
   calc M * JJ n * Mᴴ = M * JJ n * Mᴴ * ((JJ n * M) * (JJ n * M)⁻¹) := by rw [Matrix.mul_nonsing_inv _ hX, Matrix.mul_one]
     _ = JJ n * (JJ n * M) * (JJ n * M)⁻¹ := by rw [← Matrix.mul_assoc, e]
     _ = JJ n := by rw [Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hX, Matrix.mul_one]

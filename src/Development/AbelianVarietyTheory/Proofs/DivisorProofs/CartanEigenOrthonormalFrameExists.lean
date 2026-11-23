@@ -132,7 +132,7 @@ theorem frameEx_holds : FrameEx := by
   have hL : L * A0 = 1 := by
     calc L * A0 = (fromBlocks 1 0 0 (-1) : Matrix (Fin r ⊕ Fin s) (Fin r ⊕ Fin s) ℂ) * (A0ᴴ * G * A0) := by
           rw [hLdef]; simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [hA, fromBlocks_multiply]; simp
+      _ = 1 := simp [hA, fromBlocks_multiply]
   have e : Fin r ⊕ Fin s ≃ Fin n := finSumFinEquiv.trans (finCongr hrs)
   have hR : A0 * L = 1 := (mul_eq_one_comm_of_equiv e).1 hL
   have hLc : Lᴴ * A0ᴴ = 1 := by rw [← conjTranspose_mul, hR, conjTranspose_one]
@@ -142,11 +142,11 @@ theorem frameEx_holds : FrameEx := by
     calc A0ᴴ * Gᴴ * A0 = (A0ᴴ * G * A0)ᴴ := by simp [conjTranspose_mul, Matrix.mul_assoc]
       _ = _ := by rw [hA, hJh]
   have Gherm : Gᴴ = G := by
-    calc Gᴴ = (Lᴴ * A0ᴴ) * Gᴴ * (A0 * L) := by rw [hLc, hR]; simp
+    calc Gᴴ = (Lᴴ * A0ᴴ) * Gᴴ * (A0 * L) := simp [hLc, hR]
       _ = Lᴴ * (A0ᴴ * Gᴴ * A0) * L := by simp only [Matrix.mul_assoc]
       _ = Lᴴ * (A0ᴴ * G * A0) * L := by rw [hA']
       _ = (Lᴴ * A0ᴴ) * G * (A0 * L) := by simp only [Matrix.mul_assoc]
-      _ = G := by rw [hLc, hR]; simp
+      _ = G := simp [hLc, hR]
 
   have hiso' : θᴴ * G * θ = G := by rw [← map_star_trip, hiso]
   have hcomm : θᴴ * G = G * θ := by

@@ -87,7 +87,7 @@ theorem transport {n : ℕ} {k : Type} [Fintype k] [DecidableEq k] (M : Matrix (
         = Qᵀ * (Dᵀ * (Pᵀ * M * P.map star) * D.map star) * Q.map star := by simp only [Matrix.mul_assoc]
       _ = Qᵀ * (Pᵀ * M * P.map star) * Q.map star := by rw [hG, hD2]
       _ = (P * Q)ᵀ * M * (P * Q).map star := by rw [Matrix.transpose_mul, map_star_mul]; simp only [Matrix.mul_assoc]
-      _ = M := by rw [hPQ]; simp
+      _ = M := simp [hPQ]
   · intro x hx
     have hx' : x = P *ᵥ (Q *ᵥ x) := by rw [Matrix.mulVec_mulVec, hPQ, Matrix.one_mulVec]
     have hy : Q *ᵥ x ≠ 0 := by
@@ -220,7 +220,7 @@ theorem cols_ker {n₁ : ℕ} (M : Matrix (Fin (n₁ + 2)) (Fin (n₁ + 2)) ℂ)
     (hι : ∀ u, (ι *ᵥ u) ⬝ᵥ M *ᵥ star X = 0 ∧ (ι *ᵥ u) ⬝ᵥ M *ᵥ star Y = 0) (hinj : Function.Injective ι.mulVec)
     (w : Fin n₁ ⊕ Fin 2 → ℂ) (h : cols X Y ι *ᵥ w = 0) : w = 0 := by
   rw [cols_mulVec] at h
-  have hYX : Y ⬝ᵥ M *ᵥ star X = -Complex.I := by rw [form_symm hM, hXY]; simp
+  have hYX : Y ⬝ᵥ M *ᵥ star X = -Complex.I := simp [form_symm hM, hXY]
   have hX := congrArg (· ⬝ᵥ M *ᵥ star X) h
   have hY := congrArg (· ⬝ᵥ M *ᵥ star Y) h
   simp only [add_dotProduct, smul_dotProduct, zero_dotProduct, (hι _).1, (hι _).2, hXX, hYY, hXY, hYX,

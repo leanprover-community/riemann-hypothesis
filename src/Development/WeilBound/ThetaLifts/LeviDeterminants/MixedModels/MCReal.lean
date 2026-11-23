@@ -156,7 +156,7 @@ theorem implP (R : V × V →ₗ[ℝ] V × V) (hR : Sp R) (h0 : ∀ y, (R (0, y)
     simpa using key).comp (implM A (fun y => (R (0, y)).2) h1)
   convert this using 1
   funext w
-  have e : R w = R (w.1, 0) + R (0, w.2) := by rw [← map_add (f := _)]; simp
+  have e : R w = R (w.1, 0) + R (0, w.2) := simp [← map_add (f := _)]
   refine Prod.ext ?_ ?_
   · rw [e, Prod.fst_add, h0, add_zero]; rfl
   · rw [e, Prod.snd_add, add_comm]; simp [c]

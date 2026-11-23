@@ -133,7 +133,7 @@ theorem mem_iff_at {𝔪 : Ideal (𝓞 E)} (hm : 𝔪 ≠ ⊥) (x : 𝓞 E) :
   refine ⟨fun h _ => h, fun h => ?_⟩
   by_cases hv : v.asIdeal ∣ 𝔪
   · exact h hv
-  · have : exp (-ex 𝔪 v) = 1 := by rw [(ex_eq_zero_iff hm v).2 hv]; simp
+  · have : exp (-ex 𝔪 v) = 1 := simp [(ex_eq_zero_iff hm v).2 hv]
     exact (at'_le_one v x).trans this.ge
 
 theorem at'_sub_one (v : HeightOneSpectrum (𝓞 E)) (x : 𝓞 E) : at' v (x - 1) = at' v x - 1 := by simp [at']

@@ -168,7 +168,7 @@ theorem UpperTheory.V.Br.frobEx :
       calc r s = r g * r (g⁻¹ * s * g) * r g⁻¹ := by
             simp only [map_mul, map_inv]
             group
-        _ = 1 := by rw [ht]; simp
+        _ = 1 := simp [ht]
     · have hc := inv_mul_mem_Ine_of_isFrob hσ0 (conj_frob hσ)
       have he : r (g⁻¹ * σ * g) = r σ0 := by
         have h4 := hI0 _ hc

@@ -100,7 +100,7 @@ theorem wittGram (n : ℕ) (H : Matrix (Fin n) (Fin n) ℂ) (hH : IsUnit H.det) 
       _ = ((cols x)⁻¹)ᴴ * ((cols x)ᴴ * H * cols x) * (cols x)⁻¹ := by rw [gy, gx]
       _ = (cols x * (cols x)⁻¹)ᴴ * H * (cols x * (cols x)⁻¹) := by
           rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = H := by rw [e2]; simp
+      _ = H := simp [e2]
   · intro i
     calc (cols y * (cols x)⁻¹) *ᵥ x i = (cols y * (cols x)⁻¹) *ᵥ (cols x *ᵥ Pi.single i 1) := by
           rw [cols_mulVec_single]

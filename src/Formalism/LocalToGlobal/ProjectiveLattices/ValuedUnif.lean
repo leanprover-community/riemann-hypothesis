@@ -55,7 +55,7 @@ theorem valued_unif (la : HeightOneSpectrum (𝓞 B.KO)) :
   set o : X.Ol la := algebraMap (𝓞 B.KO) (X.Ol la) π with ho
   have ho0 : o ≠ 0 := by
     intro h0
-    have : Valued.v ((o : X.Ol la) : X.Kl la) = 0 := by rw [h0]; simp
+    have : Valued.v ((o : X.Ol la) : X.Kl la) = 0 := simp [h0]
     have h2 : Valued.v (algebraMap (𝓞 B.KO) (X.Kl la) π) = 0 := this
     rw [hπv] at h2
     exact exp_ne_zero h2

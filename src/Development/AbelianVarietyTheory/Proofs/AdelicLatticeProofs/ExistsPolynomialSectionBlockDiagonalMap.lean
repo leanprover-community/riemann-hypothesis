@@ -55,7 +55,7 @@ lemma corner_mul (hE : E * E = E) {x y : A} (hx : E * x * (1 - E) = x) (hy : E *
   have h : (1 - E) * E = 0 := by rw [sub_mul, one_mul, hE, sub_self]
   calc x * y = (E * x * (1 - E)) * (E * y * (1 - E)) := by rw [hx, hy]
     _ = E * x * ((1 - E) * E) * y * (1 - E) := by noncomm_ring
-    _ = 0 := by rw [h]; simp
+    _ = 0 := simp [h]
 
 lemma diag_comm (hE : E * E = E) (g : A) :
     E * (E * g * E + (1 - E) * g * (1 - E)) = (E * g * E + (1 - E) * g * (1 - E)) * E := by
@@ -63,7 +63,7 @@ lemma diag_comm (hE : E * E = E) (g : A) :
   have h' : E * (1 - E) = 0 := by rw [mul_sub, mul_one, hE, sub_self]
   calc E * (E * g * E + (1 - E) * g * (1 - E))
       = (E * E) * g * E + (E * (1 - E)) * g * (1 - E) := by simp only [mul_add, mul_assoc]
-    _ = E * g * (E * E) + (1 - E) * g * ((1 - E) * E) := by rw [hE, h, h']; simp
+    _ = E * g * (E * E) + (1 - E) * g * ((1 - E) * E) := simp [hE, h, h']
     _ = _ := by simp only [add_mul, mul_assoc]
 
 lemma corner_mul_comm {x D : A} (hD : E * D = D * E) (hx : E * x * (1 - E) = x) :
@@ -85,7 +85,7 @@ lemma corner_diag (hE : E * E = E) {x : A} (hx : E * x * (1 - E) = x) :
   calc E * x * E + (1 - E) * x * (1 - E)
       = E * (E * x * (1 - E)) * E + (1 - E) * (E * x * (1 - E)) * (1 - E) := by rw [hx]
     _ = E * E * x * ((1 - E) * E) + ((1 - E) * E) * x * (1 - E) * (1 - E) := by simp only [mul_assoc]
-    _ = 0 := by rw [h]; simp
+    _ = 0 := simp [h]
 
 lemma inv_comm {D D' : A} (hD : E * D = D * E) (h1 : D * D' = 1) (h2 : D' * D = 1) :
     E * D' = D' * E := by

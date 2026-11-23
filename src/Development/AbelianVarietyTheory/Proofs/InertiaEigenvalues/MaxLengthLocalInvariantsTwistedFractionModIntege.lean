@@ -141,7 +141,7 @@ theorem lenUnit_invariants_le (D : D7) (i : D.nd.Loc) (hls : D.nd.l i ∉ D.host
       (Formalism.MainNotions.TruncatedSeriesCountingIdentities.Br.l_not_unit D.nd i) 1 le_rfl (fun h => absurd h hl2) 1 n hn
   have ha0 : a ≠ 0 := by
     intro h
-    have ht : addVal (D.nd.O i) a = ⊤ := by rw [h]; simp
+    have ht : addVal (D.nd.O i) a = ⊤ := simp [h]
     rw [hva] at ht
     obtain ⟨e, he0, he⟩ := Formalism.MainNotions.TruncatedSeriesCountingIdentities.Br.exists_eO D.nd i
     rw [he] at ht

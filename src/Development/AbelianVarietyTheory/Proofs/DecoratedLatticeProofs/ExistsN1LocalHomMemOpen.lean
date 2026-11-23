@@ -56,11 +56,11 @@ theorem autOf_inv_apply (e : A ⊕ Fin c ≃ Fin (M + c')) (g : GL (A ⊕ Fin c)
 theorem lev_symm (e : A ⊕ Fin c ≃ Fin (M + c')) (hcc : c' = c) (he : ∀ i : Fin c, (e (Sum.inr i)).val = M + i.val)
     (l : Fin (M + c')) : lev (n := A) (c := c) 1 (e.symm l) = if l.val < M then 1 else l.val - M + 1 := by
   rcases hm : e.symm l with a | i
-  · have h1 : l = e (Sum.inl a) := by rw [← hm]; simp
+  · have h1 : l = e (Sum.inl a) := simp [← hm]
     have := eX_lt e hcc he a
     rw [← h1] at this
     simp [lev, this]
-  · have h1 : l = e (Sum.inr i) := by rw [← hm]; simp
+  · have h1 : l = e (Sum.inr i) := simp [← hm]
     have := he i
     rw [← h1] at this
     simp [lev, this]

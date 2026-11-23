@@ -91,10 +91,10 @@ theorem starO_upB (D : D7) {N : ℕ} (b1 b2 : ℕ) (A : Matrix (Fin N) (Fin N) (
   intro i j
   obtain ⟨h1, h2, h3⟩ := hA j i
   refine ⟨fun h => ?_, fun h => ?_, fun h => ?_⟩
-  · have e : (Ao i j : D.host.E) = ((0 : 𝓞 D.host.E) : D.host.E) := by rw [hAo, h1 h]; simp
+  · have e : (Ao i j : D.host.E) = ((0 : 𝓞 D.host.E) : D.host.E) := simp [hAo, h1 h]
     exact RingOfIntegers.coe_injective e
   · subst h
-    have e : (Ao i i : D.host.E) = ((1 : 𝓞 D.host.E) : D.host.E) := by rw [hAo, h2 rfl]; simp
+    have e : (Ao i i : D.host.E) = ((1 : 𝓞 D.host.E) : D.host.E) := simp [hAo, h2 rfl]
     exact RingOfIntegers.coe_injective e
   · obtain ⟨o, ho⟩ := h3 h
     obtain ⟨o', ho'⟩ := star_int D o

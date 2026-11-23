@@ -100,7 +100,7 @@ theorem UpperTheory.V.U3.pt_inertia_away :
     show tor _ (D.ΨQ g) = 1
     have h1 : tor _ (D.Ψ g) = 1 := congrArg SemidirectProduct.left (hk0 g (hkill g hg))
     have h2 : D.Ψ g = 1 := by
-      have : (tor _ (D.Ψ g) : Matrix (Fin 3) (Fin 3) c.O) 0 0 = 1 := by rw [h1]; simp
+      have : (tor _ (D.Ψ g) : Matrix (Fin 3) (Fin 3) c.O) 0 0 = 1 := simp [h1]
       rw [tor_val] at this
       apply Units.ext
       simpa [wt1] using this

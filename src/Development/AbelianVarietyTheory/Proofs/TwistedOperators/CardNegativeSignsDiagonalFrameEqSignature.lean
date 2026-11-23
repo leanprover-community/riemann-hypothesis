@@ -73,7 +73,7 @@ theorem neg_card_eq_sig : ∀ {D : D7} (V : HSp D), V.SigOK → ∀ (A : Fr V) (
     rw [← A.fr_gram τ]
     calc (F⁻¹)ᴴ * (Fᴴ * Formalism.REAL.Jm ε * F) * F⁻¹ = (F * F⁻¹)ᴴ * Formalism.REAL.Jm ε * (F * F⁻¹) := by
           rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = _ := by rw [hFi]; simp
+      _ = _ := simp [hFi]
   let Q : Matrix (Fin V.rank) (Fin a ⊕ Fin b) ℂ := (F⁻¹).submatrix id e0.symm
   have hQ : Qᴴ * gramAt D V τ * Q = Formalism.UG.Jpq a b := by
     have h2 : Qᴴ * gramAt D V τ * Q = ((F⁻¹)ᴴ * gramAt D V τ * F⁻¹).submatrix e0.symm e0.symm := by

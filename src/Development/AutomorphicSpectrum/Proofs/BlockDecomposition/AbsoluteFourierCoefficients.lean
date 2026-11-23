@@ -185,7 +185,7 @@ theorem bdd_mul (hd : Dense (M : Set H)) (hs : ∀ x y : M, ⟪(Ω x : H), y⟫_
     have h1 : Z x = ((Ω v - I • v : M) : H) := by simpa using hZ x v hv
     rw [ContinuousLinearMap.mul_apply, h1, hA _ _ hTa, ← hv, ← hvu]
     simp only [map_sub, map_smul, Submodule.coe_sub, Submodule.coe_smul]
-    have : I • I • (u : H) = -(u : H) := by rw [smul_smul]; simp
+    have : I • I • (u : H) = -(u : H) := simp [smul_smul]
     rw [smul_sub, this]
     abel
   · obtain ⟨v, hv, -⟩ := h3 x
@@ -195,7 +195,7 @@ theorem bdd_mul (hd : Dense (M : Set H)) (hs : ∀ x y : M, ⟪(Ω x : H), y⟫_
     have h1 : ContinuousLinearMap.adjoint Z x = ((Ω v + I • v : M) : H) := by simpa using hA x v hv
     rw [ContinuousLinearMap.mul_apply, h1, hZ _ _ hTa, ← hv, ← hvu]
     simp only [map_add (f := _), map_smul, Submodule.coe_add, Submodule.coe_smul]
-    have : I • I • (u : H) = -(u : H) := by rw [smul_smul]; simp
+    have : I • I • (u : H) = -(u : H) := simp [smul_smul]
     rw [smul_add, this]
     abel
   · refine ContinuousLinearMap.coeFn_injective (Continuous.ext_on hd (by fun_prop) (by fun_prop)

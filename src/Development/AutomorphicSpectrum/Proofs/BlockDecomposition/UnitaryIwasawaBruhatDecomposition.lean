@@ -534,7 +534,7 @@ theorem step (hσ : ∀ x, σ (σ x) = x) (hσv : ∀ x, Valued.v (σ x) = Value
     exact hbc.mul_fix r s
   obtain ⟨G, hG⟩ : ∃ G, G = trU g₁ := ⟨_, rfl⟩
   have hGe : ∀ i j, mat G i j = mat g₁ j i := by intro i j; rw [hG]; rfl
-  have hGa : mat G p a = u := by rw [hGe, h1]; simp
+  have hGa : mat G p a = u := simp [hGe, h1]
   obtain ⟨z', hz'⟩ : ∃ z' : Fin n → L, z' = fun c => mat G p c / u := ⟨_, rfl⟩
   have hz'a : z' a = 1 := by rw [hz']; show mat G p a / u = 1; rw [hGa]; exact div_self hxp
   have hz'iso : ∑ c, z' c * σ (z' c.rev) = 0 := by

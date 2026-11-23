@@ -80,8 +80,8 @@ theorem res_eq_of_faces {M : Type} [AddCommGroup M] [Module (MRingOver S ι) M] 
     · by_cases hl : l = k₀
       · subst hl; rw [Function.update_self, hc]; rfl
       · rw [Function.update_of_ne hl, hother l hl]; rfl
-  have ha : a ∈ I.1 k₀ := by rw [hI]; simp
-  have hb : b ∈ I.1 k₀ := by rw [hI]; simp
+  have ha : a ∈ I.1 k₀ := simp [hI]
+  have hb : b ∈ I.1 k₀ := simp [hI]
   obtain rfl : J₁ = ⟨_, hface a ha⟩ := Subtype.ext h₁
   obtain rfl : J₂ = ⟨_, hface b hb⟩ := Subtype.ext h₂
   have hsign : KH.faceSign I.1 k₀ b = -KH.faceSign I.1 k₀ a := by

@@ -59,7 +59,7 @@ theorem split_step_o_alt (D : D7) (hT : SumRepresentations.tie0 D) (h3 : SumRepr
   have he0 : e ≠ 0 := by intro h; rw [h] at hen; simp at hen
   obtain ⟨hbu, hbe⟩ := D.naut.etaTinv_def w
   have hbd : D.naut.lpDim (D.naut.locG D.naut.etaTinv w) = 1 := D.naut.locG_dim _ _
-  have hb : D.naut.frobEig (D.naut.locG D.naut.etaTinv w) = {e⁻¹} := by rw [hbe, he]; simp
+  have hb : D.naut.frobEig (D.naut.locG D.naut.etaTinv w) = {e⁻¹} := simp [hbe, he]
   have hbn : ‖e⁻¹‖ = 1 := by rw [norm_inv, hen, inv_one]
   obtain ⟨m, hm⟩ := frobEig_eq_single D.nd D.naut _ hμ (D.naut.locG_dim _ _)
   have hmn : ‖m‖ = 1 := (D.naut.tempered_unr _ hμ).1 (hAut.2.2.2 i w) m (by rw [hm]; exact Multiset.mem_singleton_self m)

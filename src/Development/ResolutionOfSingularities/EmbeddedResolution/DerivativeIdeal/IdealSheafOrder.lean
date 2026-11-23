@@ -297,7 +297,7 @@ theorem orderAt_eq_one_iff (I : X.IdealSheafData) (x : X) :
   constructor
   · intro h
     constructor
-    · have ha : ((1 : ℕ) : ℕ∞) ≤ orderAt I x := by rw [h]; simp
+    · have ha : ((1 : ℕ) : ℕ∞) ≤ orderAt I x := simp [h]
       simpa using (le_orderAt_iff I x 1).mp ha
     · intro hle
       have h2 := (le_orderAt_iff I x 2).mpr hle

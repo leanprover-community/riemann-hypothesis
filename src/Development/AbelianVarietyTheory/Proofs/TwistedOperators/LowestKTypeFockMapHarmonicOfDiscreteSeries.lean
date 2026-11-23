@@ -182,7 +182,7 @@ theorem gram_eq {G B : Matrix (Fin n) (Fin n) ℂ} (hu : IsUnit B) (hB : Bᴴ * 
   have hd : IsUnit B.det := (Matrix.isUnit_iff_isUnit_det _).1 hu
   calc B⁻¹ᴴ * B⁻¹ = B⁻¹ᴴ * (Bᴴ * G * B) * B⁻¹ := by rw [hB, Matrix.mul_one]
     _ = (B * B⁻¹)ᴴ * G * (B * B⁻¹) := by simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = G := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+    _ = G := simp [Matrix.mul_nonsing_inv _ hd]
 
 theorem adapted_one {G B : Matrix (Fin n) (Fin n) ℂ} (h : IsAdapted G 1 B) : Bᴴ * G * B = 1 := by
   obtain ⟨ε, h1, h2⟩ := h

@@ -152,7 +152,7 @@ theorem exists_unit_small_module {A : Type} [CommRing A] [TopologicalSpace A] [I
     have hpre : h ((fun z : A => ((u⁻¹ : Aˣ) : A) * z) ⁻¹' W) = (md u : ℝ≥0∞) * h W := by
       rw [← Measure.map_apply hg hWm, hmap, Measure.smul_apply, smul_eq_mul]
       congr 1
-      have hm : md u⁻¹ * md u = 1 := by rw [← map_mul]; simp
+      have hm : md u⁻¹ * md u = 1 := simp [← map_mul]
       have : (md u⁻¹ : ℝ≥0∞) * (md u : ℝ≥0∞) = 1 := by exact_mod_cast hm
       exact (ENNReal.eq_inv_of_mul_eq_one_left (by rwa [mul_comm])).symm
     have hsub : (fun z : A => ((u⁻¹ : Aˣ) : A) * z) ⁻¹' W ⊆ O := by

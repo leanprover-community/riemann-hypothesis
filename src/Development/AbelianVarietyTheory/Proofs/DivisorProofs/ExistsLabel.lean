@@ -146,7 +146,7 @@ theorem exists_regular (F : Type) [Field F] [Finite F] (θ : AlgebraicClosure F 
   refine ⟨k, hk, ?_⟩
   obtain ⟨h', hn⟩ := GlobalTheory.T.isCharacter_cuspidal_rootSum_regular F θ hθ d k hd hk
   have hv' := AddSubgroup.subset_closure (k := {χ | IsChar ℂ ℂ χ}) h'
-  have hsq : ((-1 : ℂ) ^ (d - 1)) * (-1) ^ (d - 1) = 1 := by rw [← mul_pow]; simp
+  have hsq : ((-1 : ℂ) ^ (d - 1)) * (-1) ^ (d - 1) = 1 := simp [← mul_pow]
   have hi' := ((GlobalTheory.T.irreducible_of_virtualCharacter_norm_one _ _ hv' (by
     rw [hip] at hn
     rw [← glCard, ← hn]

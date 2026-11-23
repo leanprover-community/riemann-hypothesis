@@ -231,7 +231,7 @@ theorem cay_facts {h : Matrix (Fin m) (Fin m) ℂ} (hh : inUJ ε h) {δ : ℝ} (
           rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
       _ = (B t * Ring.inverse (B t))ᴴ * Jm ε * (B t * Ring.inverse (B t)) := by
           rw [hAB, Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = Jm ε := by rw [hu]; simp
+      _ = Jm ε := simp [hu]
   · intro t ht
     have ht' : t ∈ Set.Ioo (-1 : ℝ) 2 := ⟨by linarith [ht.1], by linarith [ht.2]⟩
     obtain ⟨u, hu⟩ := hBu t ht'

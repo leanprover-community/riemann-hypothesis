@@ -72,7 +72,7 @@ theorem diag_corollary :
     set c := C * mfL D L with hcdef
     have h2 : Real.exp (-(2 * C * mfL D L)) = Real.exp (-c) * Real.exp (-c) := by
       rw [← Real.exp_add]; congr 1; rw [hcdef]; ring
-    have h1 : Real.exp c * Real.exp (-c) = 1 := by rw [← Real.exp_add]; simp
+    have h1 : Real.exp c * Real.exp (-c) = 1 := simp [← Real.exp_add]
     have hle : Real.exp (-c) ≤ 1 := Real.exp_le_one_iff.2 (by linarith)
     have hpos : 0 < Real.exp (-c) := Real.exp_pos _
     have hk := kfk_nonneg D

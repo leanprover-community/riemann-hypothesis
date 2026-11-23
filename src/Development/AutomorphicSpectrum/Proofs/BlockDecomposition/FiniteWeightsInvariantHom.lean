@@ -149,8 +149,8 @@ theorem dual_weight (hG : IsDualFam E G) (μ : Fin n → ℤ) {v : E.V →L[ℂ]
     have h4 := (h3.comp_ofReal).smul_const v
     simpa using h4
   have e := hd.unique h2
-  calc G a a v = (-Complex.I) • (Complex.I • G a a v) := by rw [smul_smul]; simp
-    _ = ((μ a : ℝ) : ℂ) • v := by rw [e, smul_smul, ← mul_assoc]; simp
+  calc G a a v = (-Complex.I) • (Complex.I • G a a v) := simp [smul_smul]
+    _ = ((μ a : ℝ) : ℂ) • v := simp [e, smul_smul, ← mul_assoc]
 
 theorem exists_stable_compl (E : KMod n) (K : Submodule ℂ (E.V →L[ℂ] ℂ)) (hK : ∀ k, ∀ ξ ∈ K, ξ ∘L E.ρ k⁻¹ ∈ K) :
     ∃ N : Submodule ℂ (E.V →L[ℂ] ℂ), (∀ k, ∀ ξ ∈ N, ξ ∘L E.ρ k⁻¹ ∈ N) ∧ (∀ x ∈ K, x ∈ N → x = 0) ∧

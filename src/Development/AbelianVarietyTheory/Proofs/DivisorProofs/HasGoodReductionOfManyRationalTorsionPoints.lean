@@ -73,7 +73,7 @@ theorem card_le_of_fibres {M N : Type} [CommGroup M] [DecidableEq N] (TF : Finse
         · intro a ha
           have ha' : a ∈ TF.filter fun x => F x = F a0 := by simpa using ha
           obtain ⟨haT, haF⟩ := Finset.mem_filter.1 ha'
-          have h1 : (a * a0⁻¹) ^ m = 1 := by rw [mul_pow, inv_pow, hT a haT, hT a0 ha0]; simp
+          have h1 : (a * a0⁻¹) ^ m = 1 := simp [mul_pow, inv_pow, hT a haT, hT a0 ha0]
           have h2 : (a * a0⁻¹) ^ c = 1 := by rw [mul_pow, inv_pow, hF a haT a0 ha0 haF, mul_inv_cancel]
           simpa using pow_gcd_eq_one.2 ⟨h1, h2⟩
         · intro a _ b _ h

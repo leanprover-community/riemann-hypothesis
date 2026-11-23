@@ -54,7 +54,7 @@ theorem dvd_intNorm_sub_one (K E : Type) [Field K] [NumberField K] [Field E] [Nu
         rw [Finset.prod_insert hσ]
         obtain ⟨d, hd⟩ := ih
         refine ⟨r σ a * d + r σ c, ?_⟩
-        have h1 : r σ a = 1 + n * r σ c := by rw [ha]; simp
+        have h1 : r σ a = 1 + n * r σ c := simp [ha]
         have h2 : ∏ σ ∈ s, r σ a = 1 + n * d := by rw [← hd]; ring
         rw [h2, h1]; ring
     exact this _

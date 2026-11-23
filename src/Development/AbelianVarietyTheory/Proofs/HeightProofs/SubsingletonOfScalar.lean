@@ -90,7 +90,7 @@ theorem unit_pull {G : Over S} {G' : Over S'} [GrpObj G] [GrpObj G'] {f : S' ⟶
     (h : IsGrpPullback G' G f F) : η[G'].left ≫ F = f ≫ η[G].left :=
   by
   have e := congrArg (fun z => z.left) (map_one (pushHom h (𝟙_ (Over S'))))
-  have e₁ : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := simp [Hom.one_def]
   rw [e₁] at e
   refine e.trans ?_
   show (toUnit _ ≫ η[G]).left = _

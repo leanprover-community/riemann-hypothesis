@@ -175,7 +175,7 @@ theorem exists_basis_im {d : ℕ} (hp : d.Prime) (hd : d % 4 = 3) {x : K} (hx : 
     ∃ b : Module.Basis (Fin 2) ℤ (𝓞 K),
       (starRingEnd ℂ (φ (b 0 : K)) * φ (b 1 : K)).im ^ 2 = d / 4 := by
   obtain ⟨w, hw, hall⟩ := GlobalTheory.exists_integer_generator_of_sq_eq_neg h2 (Irreducible.squarefree hp) hd hx
-  have hφx : φ x ^ 2 = -(d : ℂ) := by rw [← map_pow, hx]; simp
+  have hφx : φ x ^ 2 = -(d : ℂ) := simp [← map_pow, hx]
   have hφw : φ (w : K) = (1 + φ x) / 2 := by
     have := congrArg φ hw
     simp only [map_mul, map_add (f := _), map_one, map_ofNat] at this

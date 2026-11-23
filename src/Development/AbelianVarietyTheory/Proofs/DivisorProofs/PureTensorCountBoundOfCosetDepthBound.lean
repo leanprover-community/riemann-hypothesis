@@ -182,7 +182,7 @@ private theorem coset_fns {a b : ℕ} (e : AE D) (Λ : AddSubgroup (Mx D a b)) {
   have e2 : IsHalf e (v - v') := by
     have e3 : (v - v').map (e * ·) = v - v' := inj _ _ (by
       ext i j
-      have e4 : (k • (v - v')) i j = x i j - y i j := by rw [e1]; simp
+      have e4 : (k • (v - v')) i j = x i j - y i j := simp [e1]
       rw [e4, ← hx i j, ← hy i j, ← mul_sub, ← e4]
       simp [mul_left_comm])
     exact fun i j => congrFun (congrFun e3 i) j

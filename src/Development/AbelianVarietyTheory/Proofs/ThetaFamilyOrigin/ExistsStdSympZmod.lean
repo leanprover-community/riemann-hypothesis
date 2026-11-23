@@ -138,7 +138,7 @@ theorem exists_isSymplecticFamily {M : ℕ} [NeZero M] {V : Type*} [AddCommGroup
         obtain rfl : y = z := add_left_cancel h
         rfl
       · rintro ⟨x, hx, hx'⟩
-        have k₁ : d • B x f = 0 := by rw [← LinearMap.smul_apply, ← map_nsmul, hx']; simp
+        have k₁ : d • B x f = 0 := simp [← LinearMap.smul_apply, ← map_nsmul, hx']
         have k₂ : d • B e x = 0 := by rw [← map_nsmul, hx', map_zero]
         refine ⟨⟨⟨B x f, k₁⟩, ⟨B e x, k₂⟩, ⟨_, hpr x hx, ?_⟩⟩, Subtype.ext ?_⟩
         · rw [smul_sub, smul_sub, ← smul_assoc, ← smul_assoc, k₁, k₂, hx']

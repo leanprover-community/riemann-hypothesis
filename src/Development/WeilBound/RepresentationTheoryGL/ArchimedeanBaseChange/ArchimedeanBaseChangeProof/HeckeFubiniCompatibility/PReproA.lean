@@ -222,7 +222,7 @@ theorem haar_restrict_eq {X A : Type} [Group X] [TopologicalSpace X] [IsTopologi
   set c' := Measure.haarScalarFactor lam lam0 with hc'
   have hpos : c' ≠ 0 := by
     intro h0
-    have h1 : lam Set.univ = 0 := by rw [heq, h0]; simp
+    have h1 : lam Set.univ = 0 := simp [heq, h0]
     rw [hlam, Measure.map_apply hPm MeasurableSet.univ, Set.preimage_univ, Measure.restrict_apply MeasurableSet.univ,
       Set.univ_inter] at h1
     exact (hU0.measure_ne_zero ν ⟨1, U0.one_mem⟩) h1

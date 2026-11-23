@@ -140,7 +140,7 @@ theorem schur_orthogonality [Nontrivial H] [TopologicalSpace G] [MeasurableMul G
     rw [inner_rep π hπ x⁻¹, inner_rep π hπ x⁻¹, inv_inv, mul_comm]
     simp [inner_conj_symm]
   obtain ⟨u, hu⟩ : ∃ u : H, ‖u‖ = 1 := exists_norm_eq H zero_le_one
-  have huu : ⟪u, u⟫_ℂ = 1 := by rw [inner_self_eq_norm_sq_to_K, hu]; simp
+  have huu : ⟪u, u⟫_ℂ = 1 := simp [inner_self_eq_norm_sq_to_K, hu]
   have hpt : ∀ g, ⟪u, π g u⟫_ℂ * star ⟪u, π g u⟫_ℂ = ((‖⟪u, π g u⟫_ℂ‖ ^ 2 : ℝ) : ℂ) := by
     intro g
     rw [Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq]

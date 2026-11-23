@@ -137,7 +137,7 @@ lemma ioh_inUJ (ε : Fin n → Bool) (H P Q g : Matrix (Fin n) (Fin n) ℂ) (hPQ
   calc (P * g * Q)ᴴ * Jm ε * (P * g * Q) = Qᴴ * (gᴴ * (Pᴴ * Jm ε * P) * g) * Q := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
     _ = Qᴴ * Pᴴ * Jm ε * (P * Q) := by rw [← hH, hg, hH]; simp only [Matrix.mul_assoc]
-    _ = Jm ε := by rw [hc, hPQ]; simp
+    _ = Jm ε := simp [hc, hPQ]
 
 lemma ioh_inUH (ε : Fin n → Bool) (H P Q x : Matrix (Fin n) (Fin n) ℂ) (hPQ : P * Q = 1)
     (hH : H = Pᴴ * Jm ε * P) (hx : inUJ ε x) : inUH H (Q * x * P) := by

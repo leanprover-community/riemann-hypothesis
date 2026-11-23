@@ -130,7 +130,7 @@ theorem kummer_dual_step (A₀ K₀ F E : Type) [CommRing A₀] [IsDomain A₀] 
     rw [hmin, derivative_map, aeval_map_algebraMap]
     apply inv_eq_of_mul_eq_one_right
     change d * _ = 1
-    have h1 : d * aeval x g = (N : E) * x ^ (N - 1) := by rw [← hder]; simp
+    have h1 : d * aeval x g = (N : E) * x ^ (N - 1) := simp [← hder]
     have hv : ((v : A₀)) = (N : A₀) * u := by simp [v]
     calc d * (aeval x g * x * algebraMap A₀ E ↑v⁻¹)
         = (N : E) * (x ^ (N - 1) * x) * algebraMap A₀ E ↑v⁻¹ := by

@@ -198,7 +198,7 @@ theorem badCrit_pairs (be : Vs →ₗ[ℚ_[p]] Vs →ₗ[ℚ_[p]] ℚ_[p]) (L L�
     calc (p : ℝ) ^ (-((E : ℤ) - D)) * ‖be (u a) w‖
         ≤ (p : ℝ) ^ (-((E : ℤ) - D)) * (p : ℝ) ^ ((E : ℤ) - D) := by
           gcongr; exact (hC w hw a).trans hCE
-      _ = 1 := by rw [← zpow_add₀ hp0.ne']; simp
+      _ = 1 := simp [← zpow_add₀ hp0.ne']
   let g : L → Fin m → ℤ_[p] := fun w a => ⟨(p : ℚ_[p]) ^ ((E : ℤ) - D) * be (u a) w, hint w.1 w.2 a⟩
   have hg : ∀ w a, ((g w a : ℤ_[p]) : ℚ_[p]) = (p : ℚ_[p]) ^ ((E : ℤ) - D) * be (u a) w :=
     fun _ _ => rfl

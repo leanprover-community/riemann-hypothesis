@@ -53,7 +53,7 @@ theorem weilEq_act_left {A B : PAT H (Sp (𝓞 K))} {f g : A.t.G ⟶ B.t.G} {r :
     WeilEq B.t.PP.L (A.t.act.act s ≫ f) g A.t.PP.L (A.t.act.act (s * r)) (𝟙 _) t := by
   intro n x y c hn hx hy
   haveI := A.t.act.hom s
-  have hx' : (x ≫ A.t.act.act s) ^ n = 1 := by rw [← pow_comp, hx]; simp
+  have hx' : (x ≫ A.t.act.act s) ^ n = 1 := simp [← pow_comp, hx]
   have := h n (x ≫ A.t.act.act s) y c hn hx' hy
   simpa only [Category.assoc, A.t.act.mul] using this
 end

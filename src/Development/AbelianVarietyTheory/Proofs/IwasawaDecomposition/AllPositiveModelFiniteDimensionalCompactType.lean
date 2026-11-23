@@ -110,7 +110,7 @@ theorem smoothVec_stable {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCo
           simp only [conjTranspose_mul, Matrix.mul_assoc]
       _ = gᴴ * ((Xs i)ᴴ * G + G * Xs i) * g := by
           rw [e1, e2]; simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-      _ = 0 := by rw [hXi]; simp
+      _ = 0 := simp [hXi]
   have hs := hw k (fun i => g⁻¹ * Xs i * g) hY
   have hs2 := ((σ u).restrictScalars ℝ).contDiff.comp hs
   convert hs2 using 1

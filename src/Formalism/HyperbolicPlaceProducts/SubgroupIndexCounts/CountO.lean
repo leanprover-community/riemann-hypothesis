@@ -205,7 +205,7 @@ theorem card_hom_le (P : Ideal R) [P.IsMaximal] [Finite (R ⧸ P)] {X : Type}
   have : Finite (X →ₗ[R] R ⧸ P) := Finite.of_injective F hF
   refine ⟨this, ?_⟩
   calc Nat.card (X →ₗ[R] R ⧸ P) ≤ Nat.card (s → R ⧸ P) := Nat.card_le_card_of_injective F hF
-    _ = Nat.card (R ⧸ P) ^ s.card := by rw [Nat.card_fun]; simp
+    _ = Nat.card (R ⧸ P) ^ s.card := simp [Nat.card_fun]
     _ ≤ Nat.card (R ⧸ P) ^ k := Nat.pow_le_pow_right Nat.card_pos hsk
 
 end DedekindLFunctions

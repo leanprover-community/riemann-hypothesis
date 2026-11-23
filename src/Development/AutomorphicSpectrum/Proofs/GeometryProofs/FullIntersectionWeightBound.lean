@@ -88,7 +88,7 @@ theorem arithmeticVolume_div_le_countingVolume {Ω : Type} [Field Ω] (Pr : ℕ 
   have h2 : ∀ τ, ENNReal.ofReal (x τ / c) ≤ f (r * τ) := by
     intro τ
     rcases Nat.eq_zero_or_pos τ with rfl | hτ
-    · have : x 0 = 0 := by rw [hxdef]; simp
+    · have : x 0 = 0 := simp [hxdef]
       simp [this]
     · have hτR : (0 : ℝ) < τ := by exact_mod_cast hτ
       obtain ⟨W, hW⟩ : ∃ W : ℕ, W = d * (8 * (r * τ)) ^ (D + 1) := ⟨_, rfl⟩

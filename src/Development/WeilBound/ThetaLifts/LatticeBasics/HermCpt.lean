@@ -73,7 +73,7 @@ theorem cpt_sig {n r s : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : HasSig M r s
   obtain ⟨N, hN⟩ : ∃ N : Matrix (Fin n) (Fin r ⊕ Fin s) ℂ, Aᵀ * N = (1 : Matrix (Fin r ⊕ Fin s) (Fin r ⊕ Fin s) ℂ) := ⟨ε • (M * A.map star), by rw [Matrix.mul_smul, ← Matrix.mul_assoc, e2, smul_smul, e1, one_smul]⟩
   have hN' : N * Aᵀ = 1 := (Matrix.mul_eq_one_comm_of_card_eq _ _ _ (by simp [hn])).1 hN
   have h1 : A * Nᵀ = 1 := by simpa using congrArg Matrix.transpose hN'
-  have h2 : A.map star * Nᵀ.map star = 1 := by rw [← map_star_mul', h1]; simp
+  have h2 : A.map star * Nᵀ.map star = 1 := simp [← map_star_mul', h1]
   refine ⟨(fun u : Matrix (Fin r ⊕ Fin s) (Fin r ⊕ Fin s) ℂ => A * u * Nᵀ) '' Set.univ.pi fun _ => Set.univ.pi fun _ => Metric.closedBall 0 1,
     (isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => isCompact_closedBall _ _).image
       ((continuous_const.matrix_mul continuous_id).matrix_mul continuous_const), fun g hg =>

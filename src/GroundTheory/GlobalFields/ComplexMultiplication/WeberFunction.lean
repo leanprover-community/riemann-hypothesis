@@ -149,8 +149,8 @@ theorem weberFunction_variableChangePoint (C : VariableChange F) {W W' : Weierst
     have hΔ : W.Δ ≠ 0 := W.isUnit_Δ.ne_zero
     have ha := variableChange_a₄_of_isShortForm hW hW'
     have hb := variableChange_a₆_of_isShortForm hW hW'
-    have hb0 : (C • W).a₆ = 0 ↔ W.a₆ = 0 := by rw [hb]; simp
-    have ha0 : (C • W).a₄ = 0 ↔ W.a₄ = 0 := by rw [ha]; simp
+    have hb0 : (C • W).a₆ = 0 ↔ W.a₆ = 0 := simp [hb]
+    have ha0 : (C • W).a₄ = 0 ↔ W.a₄ = 0 := simp [ha]
     by_cases h6 : W.a₆ = 0
     · rw [weberValue_of_a₆_eq_zero (hb0.mpr h6), weberValue_of_a₆_eq_zero h6]
       simp only [g₂, ha, variableChange_Δ, hr, sub_zero, Units.val_inv_eq_inv_val]

@@ -52,8 +52,8 @@ variable {n : Type} [Fintype n] [DecidableEq n] {R S : Type*} [CommRing R] [Comm
 def trInv (g : GL n R) : GL n R where
   val := ((g⁻¹ : GL n R) : Matrix n n R)ᵀ
   inv := (g : Matrix n n R)ᵀ
-  val_inv := by rw [← Matrix.transpose_mul]; simp
-  inv_val := by rw [← Matrix.transpose_mul]; simp
+  val_inv := simp [← Matrix.transpose_mul]
+  inv_val := simp [← Matrix.transpose_mul]
 
 @[simp] theorem trInv_val (g : GL n R) :
     (trInv g : Matrix n n R) = ((g⁻¹ : GL n R) : Matrix n n R)ᵀ := rfl

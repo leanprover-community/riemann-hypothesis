@@ -179,7 +179,7 @@ theorem sol_transfer (hs : ∀ y : E, ‖star y‖ = ‖y‖) {n n' : Type} [Fin
     (hd : ‖h.det‖ = 1) (hh : hᴴ * reindex e e G * h = 1) :
     ∃ h : Matrix n n E, (∀ i j, ‖h i j‖ ≤ 1) ∧ ‖h.det‖ = 1 ∧ hᴴ * G * h = 1 := by
   refine ⟨reindex e.symm e.symm h, fun i j => hi _ _, by rw [det_reindex_self]; exact hd, ?_⟩
-  have : reindex e.symm e.symm (hᴴ * reindex e e G * h) = 1 := by rw [hh]; simp
+  have : reindex e.symm e.symm (hᴴ * reindex e e G * h) = 1 := simp [hh]
   rw [← this]
   simp only [reindex_apply, Equiv.symm_symm, conjTranspose_submatrix]
   rw [← submatrix_mul_equiv (hᴴ * _) h e e e, ← submatrix_mul_equiv hᴴ _ e e e]

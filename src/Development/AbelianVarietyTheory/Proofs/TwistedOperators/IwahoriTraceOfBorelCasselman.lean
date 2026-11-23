@@ -236,7 +236,7 @@ theorem measure_mul_eq [SecondCountableTopology G] (μ : Measure G) [SFinite μ]
       ext x
       constructor
       · rintro ⟨s, hs, e⟩
-        have e' : (x : G) = u * (t * s * t⁻¹) := by rw [← e]; simp
+        have e' : (x : G) = u * (t * s * t⁻¹) := simp [← e]
         refine ⟨e' ▸ mul_mem huI (hc _ s.2 hs), ?_⟩
         show ((x : G) * t)⁻¹ * (u * t * i) ∈ I
         convert mul_mem (inv_mem hs) hi using 1

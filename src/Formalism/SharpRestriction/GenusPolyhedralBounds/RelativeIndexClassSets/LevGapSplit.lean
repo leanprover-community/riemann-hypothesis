@@ -86,7 +86,7 @@ theorem norm_congr_one {E : Type*} [Field E] [NumberField E] (c : E ≃ₐ[ℚ] 
     show ((T : 𝓞 E) : E) = (pz : E) * ((c' pz : 𝓞 E) : E)
     rw [this, hpz]; simp
   have hp : pz = 1 + y * M := by rw [hy]; ring
-  have hcp : c' pz = 1 + c' y * M := by rw [hp]; simp
+  have hcp : c' pz = 1 + c' y * M := simp [hp]
   apply int_dvd_of_mem_span (E := E)
   rw [Ideal.mem_span_singleton']
   refine ⟨y + c' y + y * c' y * M, ?_⟩

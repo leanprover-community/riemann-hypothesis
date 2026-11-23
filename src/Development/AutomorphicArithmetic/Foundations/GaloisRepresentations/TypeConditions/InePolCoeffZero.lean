@@ -155,7 +155,7 @@ theorem sep_char (hLP : Formalism.MainNotions.SumRepresentations.At.TieLP N A) {
     (h0 : ∀ s ∈ Ine (F := H.E) (N.plOm.1 w), (A.inePol c s).coeff 0 ≠ 0) (h : Sep N A y) : Sep N A (A.lpChar y c) := by
   obtain ⟨k1, s, hs, k2⟩ := h
   refine ⟨fun σ hσ hw => ?_, s, hs, ?_⟩
-  · have e : A.inePol c σ = X - C 1 := by rw [tc σ hσ hw, hc]; simp
+  · have e : A.inePol c σ = X - C 1 := simp [tc σ hσ hw, hc]
     rw [((hLP w y y c c 0 hc hc).2.2.2.2.2 σ hσ).2 1 e, scaleRoots_one, k1 σ hσ hw, A.lpDim_char _ _ hc]
   · obtain ⟨m1, m2⟩ := inePol_monic hLP c s hs
     rw [hc] at m2

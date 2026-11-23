@@ -177,7 +177,7 @@ theorem isAdapted_model {V : HSp D} {P : D.what₂.Tau → SPar} (M : DSModel V 
     calc (M.fr τ)⁻¹ᴴ * ((M.fr τ)ᴴ * Formalism.REAL.Jm (M.ε τ) * M.fr τ) * (M.fr τ)⁻¹
         = (M.fr τ * (M.fr τ)⁻¹)ᴴ * Formalism.REAL.Jm (M.ε τ) * (M.fr τ * (M.fr τ)⁻¹) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [h1]; simp
+      _ = _ := simp [h1]
   · rw [cart, onb, Matrix.mul_assoc, h1, Matrix.mul_one]
 
 end Weil

@@ -89,10 +89,10 @@ theorem sumFrame_b' {S A L : HSp D} (o : OrthDec S A L) (ζ : Fin L.rank → D.h
   have key : M * α₀.b = 1 := by
     rw [hs, hM, Matrix.fromRows_mul, Matrix.mul_fromCols, Matrix.mul_fromCols, Matrix.fromRows_fromCols_eq_fromBlocks,
       ← Matrix.fromBlocks_one]
-    have eA : o.qA.map ι * o.iA.map ι = 1 := by rw [← Matrix.map_mul, o.qA_iA]; simp
-    have eAB : o.qA.map ι * o.iB.map ι = 0 := by rw [← Matrix.map_mul, o.qA_iB]; simp
-    have eBA : o.qB.map ι * o.iA.map ι = 0 := by rw [← Matrix.map_mul, o.qB_iA]; simp
-    have eB : o.qB.map ι * o.iB.map ι = 1 := by rw [← Matrix.map_mul, o.qB_iB]; simp
+    have eA : o.qA.map ι * o.iA.map ι = 1 := simp [← Matrix.map_mul, o.qA_iA]
+    have eAB : o.qA.map ι * o.iB.map ι = 0 := simp [← Matrix.map_mul, o.qA_iB]
+    have eBA : o.qB.map ι * o.iA.map ι = 0 := simp [← Matrix.map_mul, o.qB_iA]
+    have eB : o.qB.map ι * o.iB.map ι = 1 := simp [← Matrix.map_mul, o.qB_iB]
     have hu : (fun j => p.pr (incA D ((star ζ ᵥ* L.gram) j))) = fun j => ι ((star ζ ᵥ* L.gram) j) := rfl
     have hdot : (fun j => ι ((star ζ ᵥ* L.gram) j)) ⬝ᵥ (fun j => ι (ζ j)) = c := by
       rw [hc, Matrix.dotProduct_mulVec, ← RingHom.comp_apply, ← hι, RingHom.map_dotProduct]; rfl

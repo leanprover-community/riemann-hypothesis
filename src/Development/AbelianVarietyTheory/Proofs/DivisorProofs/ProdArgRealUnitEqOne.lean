@@ -89,7 +89,7 @@ theorem prod_arg_real_unit_eq_one (E : Type) [Field E] [NumberField E] [IsCMFiel
   rcases (abs_eq zero_le_one).mp habs with h | h
   · rw [hre, h, Complex.ofReal_one]
   · exfalso
-    have hPm : P = -1 := by rw [hre, h]; simp
+    have hPm : P = -1 := simp [hre, h]
     have hqC : (q : ℂ) ≠ 0 := by exact_mod_cast hq.ne_zero
     have hs' : s = algebraMap ℚ ℂ (-2 / q) := by
       rw [hPm] at hPs

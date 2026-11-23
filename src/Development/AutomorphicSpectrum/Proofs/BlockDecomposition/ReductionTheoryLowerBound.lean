@@ -371,8 +371,8 @@ theorem simple_bound : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
         rw [mul_assoc, mul_pow]
         exact hmain.trans (mul_le_mul_of_nonneg_right h4 (by positivity))
       exact (pow_le_pow_iff_left₀ hA.le (by positivity) hd0).1 h5
-    have e3 : A * Real.exp (s 0) = 1 := by rw [hAdef, ← Real.exp_add]; simp
-    have e4 : D * Real.exp (s j) = 1 := by rw [hDdef, ← Real.exp_add]; simp
+    have e3 : A * Real.exp (s 0) = 1 := simp [hAdef, ← Real.exp_add]
+    have e4 : D * Real.exp (s j) = 1 := simp [hDdef, ← Real.exp_add]
     calc Real.exp (s j) = Real.exp (s j) * (A * Real.exp (s 0)) := by rw [e3, mul_one]
       _ ≤ Real.exp (s j) * ((K + 1) * N * D * Real.exp (s 0)) :=
           mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right h3 (Real.exp_pos _).le) (Real.exp_pos _).le

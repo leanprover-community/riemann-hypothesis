@@ -70,7 +70,7 @@ private theorem gm_snd {X Y : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k)) {q
 
 private theorem gm_isIso {X Y : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k)) {q : Y ⟶ Spec (CommRingCat.of k)} (u : X ⟶ Y)
     [IsIso u] (hu : u ≫ q = p) : IsIso (geomMap Ω p u hu) := by
-  have hv : inv u ≫ p = q := by rw [← hu]; simp
+  have hv : inv u ≫ p = q := simp [← hu]
   refine ⟨geomMap Ω q (inv u) hv, ?_, ?_⟩
   · apply pullback.hom_ext
     · rw [Category.assoc, gm_fst, reassoc_of% (gm_fst Ω p u hu)]; simp

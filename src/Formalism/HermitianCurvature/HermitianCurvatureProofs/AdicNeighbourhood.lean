@@ -284,7 +284,7 @@ theorem Adic.crit (h : Adic R ϖ) (hn : ∀ n : ℕ, n ≠ 0 → IsUnit (n : K))
   obtain ⟨πi, hπ⟩ : ∃ p : K, p = ∏ i, xi i := ⟨_, rfl⟩
   obtain ⟨π, hπx⟩ : ∃ p : K, p = ∏ i, x i := ⟨_, rfl⟩
   rw [← hπ] at hg
-  have hvv : ((m + 1 : ℕ) : K) * ((v⁻¹ : Kˣ) : K) = 1 := by rw [← hv]; simp
+  have hvv : ((m + 1 : ℕ) : K) * ((v⁻¹ : Kˣ) : K) = 1 := simp [← hv]
   have hϖj : (ϖ : K) ^ (a + b + 1 + e) ∈ R := R.pow_mem h.mem _
   have hck : ∀ k, Near R ((ϖ : K) ^ (a + b + 1 + e)) ((D : K) * (xi k * πi)) := by
     intro k
@@ -546,8 +546,8 @@ theorem nonStationary_main : NonStationary := by
   obtain ⟨ν, hν⟩ : ∃ ν : K, ν = (ϖ : K) ^ a * μ := ⟨_, rfl⟩
   obtain ⟨ti, hti⟩ : ∃ ti : K, ti = ((t⁻¹ : Kˣ) : K) := ⟨_, rfl⟩
   obtain ⟨ϖi, hϖi⟩ : ∃ p : K, p = ((ϖ⁻¹ : Kˣ) : K) := ⟨_, rfl⟩
-  have htt : (t : K) * ti = 1 := by rw [hti]; simp
-  have hϖϖ : (ϖ : K) ^ j * ϖi ^ j = 1 := by rw [hϖi, ← mul_pow]; simp
+  have htt : (t : K) * ti = 1 := simp [hti]
+  have hϖϖ : (ϖ : K) ^ j * ϖi ^ j = 1 := simp [hϖi, ← mul_pow]
   have etν : (t : K) = (ϖ : K) ^ j * ν := by rw [et, hν, hμ, hκ]; ring
   have hμ2 : μ ^ 2 = κ * (t : K) := by rw [etν, hν, hμ]; ring
   have hμI : μ ∈ I R (ϖ : K) :=

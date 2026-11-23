@@ -217,7 +217,7 @@ theorem kFin_le_of_stable : GlobalTheory.Published.HarishChandraModules → ∀ 
         _ = (M.fr τ)ᴴ * (Xᴴ * Jm (M.ε τ) + Jm (M.ε τ) * X) * M.fr τ := by
             rw [h1, Matrix.mul_nonsing_inv _ hd]
             simp only [Matrix.mul_one, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-        _ = 0 := by rw [hXg']; simp
+        _ = 0 := simp [hXg']
     have e : dRep (M.rep τ) ((M.fr τ)⁻¹ * X * M.fr τ) w = dRep (M.σ τ) X w := by
       unfold dRep
       congr 1

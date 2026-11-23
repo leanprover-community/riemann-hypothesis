@@ -504,8 +504,8 @@ theorem cechD_zero_eq_zero {M : Type} [AddCommGroup M] [Module (MRingOver S ι) 
       simp [Finset.filter_insert, Finset.filter_singleton, hlt]
     simp only [KH.faceSign, hsumsign, hI, add_zero, f1, f2]
     norm_num
-  have hi1 : i1 ∈ I.1 k0 := by rw [hI]; simp
-  have hi2 : i2 ∈ I.1 k0 := by rw [hI]; simp
+  have hi1 : i1 ∈ I.1 k0 := simp [hI]
+  have hi2 : i2 ∈ I.1 k0 := simp [hI]
   have e : KH.cellRes S M (Function.update I.1 k0 ((I.1 k0).erase i1)) I.1 (z ⟨_, hface i1 hi1⟩) =
       KH.cellRes S M (Function.update I.1 k0 ((I.1 k0).erase i2)) I.1 (z ⟨_, hface i2 hi2⟩) :=
     hz ⟨_, hface i1 hi1⟩ ⟨_, hface i2 hi2⟩ (hsub i1) (hsub i2)

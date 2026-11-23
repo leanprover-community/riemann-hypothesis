@@ -72,7 +72,7 @@ theorem fdegH_pos {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 
     funext x
     rw [Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq]
   rw [hf, integral_complex_ofReal] at heq
-  have hww : ⟪w, w⟫_ℂ = 1 := by rw [inner_self_eq_norm_sq_to_K, hw]; simp
+  have hww : ⟪w, w⟫_ℂ = 1 := simp [inner_self_eq_norm_sq_to_K, hw]
   rw [hww, one_mul] at heq
   have hI : ∫ x, ‖⟪w, σ (Matrix.of x) w⟫_ℂ‖ ^ 2 ∂μG = 1 / d := by
     have := congrArg Complex.re heq

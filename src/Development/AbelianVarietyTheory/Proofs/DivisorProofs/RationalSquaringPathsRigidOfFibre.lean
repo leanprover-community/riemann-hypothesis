@@ -52,7 +52,7 @@ theorem sqr_comp_of_isGrpPullback {S S' : Scheme.{0}} {G' : Over S'} [GrpObj G']
     {f : S' ⟶ S} {φ : G'.left ⟶ G.left} (h : IsGrpPullback G' G f φ) : sqr G' ≫ φ = φ ≫ sqr G := by
   let x₀ : Over.mk (G'.hom ≫ f) ⟶ G := Over.homMk φ h.1.w
   have e := h.2 G' (𝟙 G') (𝟙 G') x₀ x₀ rfl rfl
-  have e2 : x₀ * x₀ = x₀ ≫ (𝟙 G * 𝟙 G) := by rw [comp_mul]; simp
+  have e2 : x₀ * x₀ = x₀ ≫ (𝟙 G * 𝟙 G) := simp [comp_mul]
   rw [e2] at e
   exact e.symm
 

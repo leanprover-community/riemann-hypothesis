@@ -57,7 +57,7 @@ theorem lieBasis_iff {X : Scheme.{0}} (t : SAB H X) {S : Type} [CommRing S] (x :
   have one : ∀ T : Over (Sp S), (1 : T ⟶ G').left ≫ φ = (1 : Over.mk (T.hom ≫ x) ⟶ t.G).left :=
     fun T => congrArg (fun q => q.left) (map_one (pushHom hp T))
   have e : η[G'].left ≫ φ = (1 : Over.mk x ⟶ t.G).left := by
-    have e₁ : (1 : 𝟙_ (Over (Sp S)) ⟶ G') = η[G'] := by rw [Hom.one_def]; simp
+    have e₁ : (1 : 𝟙_ (Over (Sp S)) ⟶ G') = η[G'] := simp [Hom.one_def]
     rw [← e₁, one]
     exact congrArg (· ≫ (η[t.G]).left) (Category.id_comp x)
   have zs : spMap (TrivSqZeroExt.fstHom S S S).toRingHom ≫ spMap (algebraMap S (DualNumber S)) = 𝟙 _ := by

@@ -93,7 +93,7 @@ theorem smoothVec_apply {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCom
           simp only [conjTranspose_mul, Matrix.mul_assoc]
       _ = gᴴ * ((Xs i)ᴴ * G + G * Xs i) * g := by
           rw [hGg, hGg']; simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-      _ = 0 := by rw [hXi]; simp
+      _ = 0 := simp [hXi]
   have hs := hv m (fun i => g⁻¹ * Xs i * g) hY
   have hmem : ∀ (Ys : Fin m → Matrix (Fin n) (Fin n) ℂ), (∀ i, (Ys i)ᴴ * G + G * Ys i = 0) → ∀ t : Fin m → ℝ,
       P * (List.ofFn fun i => NormedSpace.exp (t i • Ys i)).prod * P⁻¹ ∈ UJset ε := fun Ys hYs t => by

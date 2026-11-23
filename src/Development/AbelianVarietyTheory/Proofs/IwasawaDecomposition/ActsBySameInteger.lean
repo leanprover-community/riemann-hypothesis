@@ -98,7 +98,7 @@ theorem int_dvd_of_mem {R : Type} [CommRing R] {I : Ideal R} (hI : I ≠ ⊤) (h
   obtain ⟨a, b, hab⟩ := ((Nat.prime_iff_prime_int.mp hT).coprime_iff_not_dvd).mpr h
   apply hI
   rw [Ideal.eq_top_iff_one]
-  have h1 : ((a * (T : ℤ) + b * n : ℤ) : R) = 1 := by rw [hab]; simp
+  have h1 : ((a * (T : ℤ) + b * n : ℤ) : R) = 1 := simp [hab]
   rw [← h1]
   push_cast
   exact I.add_mem (I.mul_mem_left _ hTI) (I.mul_mem_left _ hn)

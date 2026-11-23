@@ -119,7 +119,7 @@ theorem theta_zero_two_adic_trace : ThetaZeroTwoTrace := by
   intro L ι W hU hI ha α ω₀ T N hα hT hN hTo hNe hω h1 h2
   have hα0 : α ≠ 0 := by
     rintro rfl
-    have h0 : (T : ℂ) = 0 := by rw [← hT]; simp
+    have h0 : (T : ℂ) = 0 := simp [← hT]
     have hT0 : T = 0 := by exact_mod_cast h0
     obtain ⟨k, hk⟩ := hTo
     omega

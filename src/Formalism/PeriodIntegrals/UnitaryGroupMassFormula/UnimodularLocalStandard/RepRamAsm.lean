@@ -86,7 +86,7 @@ theorem keyStartRam_of_unit (hU : UnitVecRam) : KeyStartRam := by
     simp [hgf, hfT j hj]
   have hg0 : g ≠ 0 := by
     intro h
-    have h' : stdH L m g g = 0 := by rw [h]; simp
+    have h' : stdH L m g g = 0 := simp [h]
     rw [hgf, hHs, hHf] at h'
     have : (M : ℂ) * conj (M : ℂ) * (κ * Q) ≠ 0 := by
       simp only [map_natCast]
@@ -138,7 +138,7 @@ theorem keyStartRam_of_unit (hU : UnitVecRam) : KeyStartRam := by
     have hr0 : r ≠ 0 := by
       rw [hr]; push_cast
       exact mul_ne_zero (mul_ne_zero hp1c hs'c) hMc
-    have hrc : conj r = r := by rw [hr]; simp
+    have hrc : conj r = r := simp [hr]
     have hrf : r • f = γ0 • y1 := by
       have : ((p1 * s' : ℤ) : ℂ) • g = γ0 • y1 := sub_eq_zero.mp (by rw [← hz]; exact hz0)
       rw [hgf, smul_smul] at this

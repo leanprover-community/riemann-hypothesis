@@ -51,7 +51,7 @@ theorem LIdem_of : LateralTheory.E.HensIdemCut.LIdem := by
   set G := g.eval₂ φ b with hGdef
   set H := h.eval₂ φ b with hHdef
   set e := π b with hedef
-  have hG : π G = e ^ N := by rw [key, hg]; simp
+  have hG : π G = e ^ N := simp [key, hg]
   have hH : π H = (e - 1) ^ N := by rw [key, hh]; simp [eval₂_pow, eval₂_sub, eval₂_X, eval₂_one]
   have he : e * e = e := by
     have : π (b * b - b) = 0 := Ideal.Quotient.eq_zero_iff_mem.mpr hb

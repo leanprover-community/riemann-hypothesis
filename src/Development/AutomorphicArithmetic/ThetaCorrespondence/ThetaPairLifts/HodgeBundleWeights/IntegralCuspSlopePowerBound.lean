@@ -123,7 +123,7 @@ theorem _root_.UpperTheory.Lit.Tam.tamagawa_number_formula : _root_.GlobalTheory
     have hint : S = (((∑ τ, ∑ k, |la τ k|) : ℤ) : ℝ) := by rw [hSdef]; push_cast; rfl
     have hz : (0 : ℤ) ≤ ∑ τ, ∑ k, |la τ k| := Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => abs_nonneg _
     rcases hz.eq_or_lt with h0 | h1
-    · have : S = 0 := by rw [hint, ← h0]; simp
+    · have : S = 0 := simp [hint, ← h0]
       rw [hw, this]; simp; linarith
     · have hS1 : 1 ≤ S := by rw [hint]; exact_mod_cast h1
       have hwle : w ≤ 3 * (n * S) := by rw [hw]; nlinarith

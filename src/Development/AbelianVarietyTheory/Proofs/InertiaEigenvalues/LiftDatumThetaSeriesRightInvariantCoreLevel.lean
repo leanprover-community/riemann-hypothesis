@@ -72,7 +72,7 @@ theorem ser_right_inv_levelK : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] 
   have hpb : T.pb = Rl.toRealDat.C.P.pb :=
     GlobalTheory.CoverHalf.primes_eq_of_halfIs T.toCore Rl.toRealDat hT.toLawsM hcore.lev (hpins.2.tuple ()).half
   set k' : GA D (Wc D j) := cast (congrArg (GA D) hV) k with hk'def
-  have hkk : cast (congrArg (GA D) hV.symm) k' = k := by rw [hk'def]; simp
+  have hkk : cast (congrArg (GA D) hV.symm) k' = k := simp [hk'def]
   have hlift : Formalism.IndefR.Lev.IsLevelLift (Wc D j) (Rl.toRealDat.βW j) (Rl.toRealDat.datWp j Rl.toRealDat.triv) 1 k' :=
     (GlobalTheory.T.level_character_embedding_compat T Rl.toRealDat κ v₀ hcore.lev hti hpb j T.σ₀ T.toCore.good_σ₀ hV k').2 (by rw [hkk]; exact hk)
   have hv : Rl.toRealDat.ωP j A3.A.μ0 (1, k') (Rl.toRealDat.vP j A3.A.μ0) = (1 : ℂ) • Rl.toRealDat.vP j A3.A.μ0 := by

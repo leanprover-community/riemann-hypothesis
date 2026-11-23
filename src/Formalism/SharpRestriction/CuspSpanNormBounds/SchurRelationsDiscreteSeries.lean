@@ -174,7 +174,7 @@ theorem schur_general [Nontrivial H] (𝒮 : Set (H →L[ℂ] H))
   have h4 : (2 : ℂ) • A v = ((a : ℂ) - Complex.I * b) • v := by
     have : (2 : ℂ) • A v = (A v + star A v) + (A v - star A v) := by rw [two_smul]; abel
     rw [this, h1, h3, ← add_smul]; ring_nf
-  have h5 : A v = (2 : ℂ)⁻¹ • ((2 : ℂ) • A v) := by rw [smul_smul]; simp
+  have h5 : A v = (2 : ℂ)⁻¹ • ((2 : ℂ) • A v) := simp [smul_smul]
   rw [h5, h4, smul_smul]
   congr 1
   ring
@@ -477,9 +477,9 @@ theorem conj_mem {P a : MatKR k r} (hP : IsCayleyU k r ε P) (ha : a ∈ UH (Hpk
       _ = (P⁻¹)ᴴ * (Pᴴ * Formalism.REAL.Jm ε * P) * P⁻¹ := by rw [hH, ha']
       _ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
           simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = Formalism.REAL.Jm ε := by rw [h2]; simp
+      _ = Formalism.REAL.Jm ε := simp [h2]
   · calc P⁻¹ * (P * a * P⁻¹) * P = (P⁻¹ * P) * a * (P⁻¹ * P) := by simp only [Matrix.mul_assoc]
-      _ = a := by rw [h1]; simp
+      _ = a := simp [h1]
 
 def cjH (P : MatKR k r) (hu : IsUnit P.det) : MatKR k r ≃ₜ MatKR k r where
   toFun x := P⁻¹ * x * P
@@ -487,11 +487,11 @@ def cjH (P : MatKR k r) (hu : IsUnit P.det) : MatKR k r ≃ₜ MatKR k r where
   left_inv x := by
     have h2 : P * P⁻¹ = 1 := Matrix.mul_nonsing_inv _ hu
     calc P * (P⁻¹ * x * P) * P⁻¹ = (P * P⁻¹) * x * (P * P⁻¹) := by simp only [Matrix.mul_assoc]
-      _ = x := by rw [h2]; simp
+      _ = x := simp [h2]
   right_inv y := by
     have h1 : P⁻¹ * P = 1 := Matrix.nonsing_inv_mul _ hu
     calc P⁻¹ * (P * y * P⁻¹) * P = (P⁻¹ * P) * y * (P⁻¹ * P) := by simp only [Matrix.mul_assoc]
-      _ = y := by rw [h1]; simp
+      _ = y := simp [h1]
   continuous_toFun := (continuous_const.matrix_mul continuous_id).matrix_mul continuous_const
   continuous_invFun := (continuous_const.matrix_mul continuous_id).matrix_mul continuous_const
 
@@ -515,7 +515,7 @@ theorem conj_mem_unitaryGroup {P : MatKR k r} (hP : IsCayleyU k r ε P) (g : For
   calc (P⁻¹ * umat g * P)ᴴ * (Pᴴ * Formalism.REAL.Jm ε * P) * (P⁻¹ * umat g * P)
       = Pᴴ * ((umat g)ᴴ * ((P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹)) * umat g) * P := by
         simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = Pᴴ * ((umat g)ᴴ * Formalism.REAL.Jm ε * umat g) * P := by rw [h2]; simp
+    _ = Pᴴ * ((umat g)ᴴ * Formalism.REAL.Jm ε * umat g) * P := simp [h2]
     _ = Pᴴ * Formalism.REAL.Jm ε * P := by rw [hg]
 
 theorem isHaarOn_map_conjCayley {P : MatKR k r} (hP : IsCayleyU k r ε P) :
@@ -546,7 +546,7 @@ theorem isHaarOn_map_conjCayley {P : MatKR k r} (hP : IsCayleyU k r ε P) :
     have hcomp : lmulM s ∘ ioP (ε := ε) P = ioP P ∘ fun g => s' * g := by
       funext g
       show s * (P⁻¹ * umat g * P) = P⁻¹ * (P * s * P⁻¹ * umat g) * P
-      calc s * (P⁻¹ * umat g * P) = (P⁻¹ * P) * s * (P⁻¹ * umat g * P) := by rw [h1]; simp
+      calc s * (P⁻¹ * umat g * P) = (P⁻¹ * P) * s * (P⁻¹ * umat g * P) := simp [h1]
         _ = P⁻¹ * (P * s * P⁻¹ * umat g) * P := by simp only [Matrix.mul_assoc]
     rw [hcomp, ← Measure.map_map hemb.measurable (measurable_const_mul s'), map_mul_left_eq_self]
 

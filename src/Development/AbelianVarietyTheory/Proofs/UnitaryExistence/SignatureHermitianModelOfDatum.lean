@@ -169,7 +169,7 @@ theorem exists_diag_of_complexStructure {r m n : ℕ} (hr : r = m + n)
     congr 4
     rw [← mulVec_transpose]; rfl
   have hI2 : G * Mᵀᴴ = -(Mᵀ * G) := by
-    calc G * Mᵀᴴ = -((Mᵀ * Mᵀ) * G * Mᵀᴴ) := by rw [hMt]; simp
+    calc G * Mᵀᴴ = -((Mᵀ * Mᵀ) * G * Mᵀᴴ) := simp [hMt]
       _ = -(Mᵀ * (Mᵀ * G * Mᵀᴴ)) := by simp only [mul_assoc]
       _ = _ := by rw [hI]
   refine exists_diag_of_involution hr G ((ε * Complex.I : ℂ) • Mᵀ) hG ?_ ?_ ?_
@@ -287,7 +287,7 @@ def hostType (H : Host E) : CMType E where
       simpa using this
     have hd : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
     have h2 : conj (τ (H.rt : E)) = -τ (H.rt : E) := by
-      have h3 : conj (τ (H.rt : E)) ^ 2 = τ (H.rt : E) ^ 2 := by rw [← map_pow, h1]; simp
+      have h3 : conj (τ (H.rt : E)) ^ 2 = τ (H.rt : E) ^ 2 := simp [← map_pow, h1]
       refine (sq_eq_sq_iff_eq_or_eq_neg.1 h3).resolve_left fun h => ?_
       obtain ⟨x, hx⟩ := Complex.conj_eq_iff_real.1 h
       rw [hx] at h1

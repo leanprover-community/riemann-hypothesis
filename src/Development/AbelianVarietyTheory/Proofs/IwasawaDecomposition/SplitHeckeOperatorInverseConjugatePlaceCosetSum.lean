@@ -114,7 +114,7 @@ theorem heckeVec_Tj_inv_conj_eq_sum : ∀ (L : Type) [Field L] [NumberField L] [
     intro g hg
     obtain ⟨-, -, hlift⟩ := GlobalTheory.T.unitaryFiniteAdeles_splitPlace_decomposition L n s
     obtain ⟨x, ⟨hx, hxg⟩, -⟩ := hlift ((invT i n).symm g)
-    have hgx : g = invT i n (s.loc n x) := by rw [hxg]; simp
+    have hgx : g = invT i n (s.loc n x) := simp [hxg]
     have hxT : x ∈ tSet L n s ϖ k := (hK x hx).2 (hgx ▸ hg)
     obtain ⟨γ, ⟨hγ, hγx⟩, huniq⟩ := hR2 x hxT
     have key : ∀ δ ∈ R, (invT i n (s.loc n δ))⁻¹ * g ∈ GlobalTheory.LFun.KGL (GlobalTheory.HeckeFrob.conjSplit s).w n ↔

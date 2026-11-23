@@ -85,7 +85,7 @@ theorem det_conj_strictLower : (∀ (r : ℕ) (B : Matrix (Fin r) (Fin r) ℂ), 
   have hBi : B⁻¹.BlockTriangular id := Matrix.blockTriangular_inv_of_blockTriangular hB
   have hdiag : ∀ a, B a a * B⁻¹ a a = 1 := by
     intro a
-    have h1 : (B * B⁻¹) a a = 1 := by rw [Matrix.mul_nonsing_inv B hu]; simp
+    have h1 : (B * B⁻¹) a a = 1 := simp [Matrix.mul_nonsing_inv B hu]
     rw [Matrix.mul_apply, Finset.sum_eq_single a] at h1
     · exact h1
     · intro c _ hc

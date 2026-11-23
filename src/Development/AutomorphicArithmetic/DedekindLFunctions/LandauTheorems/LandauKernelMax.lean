@@ -48,7 +48,7 @@ theorem landau_kernel_max (k : ℕ) {a u : ℝ} (ha : 0 < a) (hu : 0 ≤ u) :
         rw [mul_pow, neg_mul]; ring
     _ ≤ Real.exp (a * u) * Real.exp (-(a * u)) :=
         mul_le_mul_of_nonneg_right h (Real.exp_pos _).le
-    _ = 1 := by rw [← Real.exp_add]; simp
+    _ = 1 := simp [← Real.exp_add]
 
 end Deduction
 

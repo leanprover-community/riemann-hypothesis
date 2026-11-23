@@ -274,7 +274,7 @@ theorem weight_alConj (χ : DirichletCharacter ℂ N) (h : (N : ℤ) * a * d - l
   have e1 : ((alConj N l a b c d δ 0 0 : ℤ) : ZMod N) = ((δ 1 1 : ℤ) : ZMod N) :=
     ((ZMod.intCast_eq_intCast_iff_dvd_sub _ _ _).2 (alConj_00_N h hN hl δ)).symm
   have e2 : ((δ 0 0 : ℤ) : ZMod N) * ((δ 1 1 : ℤ) : ZMod N) = (m : ZMod N) := by
-    have e3 : ((δ.det : ℤ) : ZMod N) = (m : ZMod N) := by rw [hdet]; simp
+    have e3 : ((δ.det : ℤ) : ZMod N) = (m : ZMod N) := simp [hdet]
     rw [Matrix.det_fin_two] at e3
     push_cast at e3
     rw [(ZMod.intCast_zmod_eq_zero_iff_dvd _ _).2 hN10, mul_zero, sub_zero] at e3

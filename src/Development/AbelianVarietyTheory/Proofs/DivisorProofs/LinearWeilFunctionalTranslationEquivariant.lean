@@ -76,7 +76,7 @@ theorem acts_comp (hT : IsTriple B G X om om') {v : Pl (F := F)} {h₁ h₂ : UA
     Acts (evFin F v) (om (1, h₁ * h₂)) φ φ₃ := by
   intro r hr
   have hr2 : Rest (evFin F v) φ₂ r := ⟨hr.1, by rw [← h2 r hr]; exact pres hT _ hr.2⟩
-  have e : om (1, h₁ * h₂) = om (1, h₁) * om (1, h₂) := by rw [← map_mul]; simp
+  have e : om (1, h₁ * h₂) = om (1, h₁) * om (1, h₂) := simp [← map_mul]
   rw [e, Module.End.mul_apply, h2 r hr, h1 r hr2]
 
 theorem acts_one {v : Pl (F := F)} (φ : (Fin a × Fin (a + a') → Fv F v) → ℂ) :

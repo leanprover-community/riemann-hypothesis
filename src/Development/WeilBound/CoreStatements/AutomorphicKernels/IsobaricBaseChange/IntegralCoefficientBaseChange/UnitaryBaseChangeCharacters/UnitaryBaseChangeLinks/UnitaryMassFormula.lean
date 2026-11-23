@@ -127,7 +127,7 @@ theorem exists_B {K : Type} [Field K] [CharZero K] {n : ℕ} (c : K →+* K) (hc
     (γ : GL (Fin n) K) (hγ : cT c γ.val * γ.val = 1) :
     ∃ (B : GL (Fin n) K) (a b : K), B.val = a • 1 + b • γ.val ∧ B * tau n c B = γ * (PhiU n K * PhiU n K) := by
   set ε : K := (-1) ^ (n + 1) with hε
-  have hε2 : ε * ε = 1 := by rw [hε, ← mul_pow]; simp
+  have hε2 : ε * ε = 1 := simp [hε, ← mul_pow]
   have hcε : c ε = ε := by simp [hε]
   have h0 : ∀ m : ℕ, (m : K) + c s ≠ 0 := fun m h => hs (by
     have h' := congrArg c h

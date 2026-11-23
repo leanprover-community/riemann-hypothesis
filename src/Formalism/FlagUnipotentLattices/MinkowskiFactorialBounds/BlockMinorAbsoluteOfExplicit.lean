@@ -162,7 +162,7 @@ theorem lie_algebra_nilpotent_part_holds : RankTwoSkewInNilradical := by
       apply hxe; intro b hb
       rw [hherm, hfe b]; simp
     simp [rankTwoSkewOperator, hev, hee]
-  · have : h v e = 0 := by rw [hherm, hev]; simp
+  · have : h v e = 0 := simp [hherm, hev]
     simp [rankTwoSkewOperator, this]
 
 theorem majorant_orthogonal_component : MajorantOrthogonalComponent := by

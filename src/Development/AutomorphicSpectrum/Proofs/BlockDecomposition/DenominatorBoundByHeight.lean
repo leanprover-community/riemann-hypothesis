@@ -130,7 +130,7 @@ theorem denominator_le (F : Type) [Field F] [NumberField F] (y : F) :
         exact h2
       rw [map_mul]
       calc _ ≤ WithZero.exp (-(e v : ℤ)) * WithZero.exp (e v : ℤ) := mul_le_mul' h3 (he1 v)
-        _ = 1 := by rw [← WithZero.exp_add]; simp
+        _ = 1 := simp [← WithZero.exp_add]
     obtain ⟨c, hc⟩ := HeightOneSpectrum.mem_integers_of_valuation_le_one F _ key
     rw [← hc]
     exact c.isIntegral_coe

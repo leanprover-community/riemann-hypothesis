@@ -201,7 +201,7 @@ theorem core (n q : ℕ) (y : Fin n → ℂ) (hy : star y ⬝ᵥ (sgnM n q).mulV
   have hρnn : ∀ k, 0 ≤ ρ k := fun k => by rw [hρd]; exact Real.sqrt_nonneg _
   have hρ1 : ∀ k, 1 ≤ ρ k := fun k => by nlinarith [hρsq k, hρnn k, hPnn k, mul_nonneg ht (hPnn k)]
   have hρ0 : ∀ k, ρ k ≠ 0 := fun k => (lt_of_lt_of_le one_pos (hρ1 k)).ne'
-  have h0 : ρ 0 = 1 := by rw [hρd]; simp
+  have h0 : ρ 0 = 1 := simp [hρd]
   have hE : ∀ a, ReciprocityTheory.ChartRestriction.G.FD.sgn q a * ReciprocityTheory.ChartRestriction.G.FD.sgn q a = 1 := fun a => by
     unfold ReciprocityTheory.ChartRestriction.G.FD.sgn; split_ifs <;> norm_num
   have hs : ∀ a, (ρ (a + 1) : ℂ) ^ 2 = (ρ a : ℂ) ^ 2 +

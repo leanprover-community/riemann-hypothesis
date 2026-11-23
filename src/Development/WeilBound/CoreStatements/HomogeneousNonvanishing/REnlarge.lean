@@ -70,7 +70,7 @@ theorem r_enlarge : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] [CompactSpace 
     have h1t : Real.exp 1 ≤ 1 / t := by
       rw [le_div_iff₀ ht]
       calc Real.exp 1 * t ≤ Real.exp 1 * Real.exp (-1) := by gcongr
-        _ = 1 := by rw [← Real.exp_add]; simp
+        _ = 1 := simp [← Real.exp_add]
     have hL1 : 1 ≤ Real.log (1 / t) := by
       have h := Real.log_le_log (Real.exp_pos 1) h1t
       rwa [Real.log_exp] at h

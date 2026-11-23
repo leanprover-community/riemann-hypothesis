@@ -83,7 +83,7 @@ theorem differentiableAt_horVal {K : V → Matrix (m ⊕ n) m ℂ} {C : V → Ma
     rcases i with i | i
     · exact differentiableAt_const _
     · exact hC i j
-  have n1 : (R * K b₀).det ≠ 0 := by rw [hR]; simp
+  have n1 : (R * K b₀).det ≠ 0 := simp [hR]
   have d3 : DifferentiableAt ℂ (fun b => (Matrix.fromRows R (C b)).det * ((R * K b).det)⁻¹) b₀ :=
     d2.fun_mul (d1.fun_inv n1)
   refine d3.congr_of_eventuallyEq ?_

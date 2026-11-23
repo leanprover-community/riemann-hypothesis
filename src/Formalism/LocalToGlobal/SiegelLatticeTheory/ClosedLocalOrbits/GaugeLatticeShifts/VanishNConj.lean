@@ -88,7 +88,7 @@ theorem kappa_Kset {Λ : Submodule (𝓞 D.host.E) (VS D).V} (a : X.B.I.Gf)
       conv_lhs => rw [← hmap]
       constructor
       · rintro ⟨z, hz, hzy⟩
-        have : n.symm y = z := by rw [← hzy]; simp
+        have : n.symm y = z := simp [← hzy]
         rw [this]; exact hz
       · intro h
         exact ⟨n.symm y, h, by simp⟩

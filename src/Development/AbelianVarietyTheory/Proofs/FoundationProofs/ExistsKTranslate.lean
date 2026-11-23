@@ -508,7 +508,7 @@ theorem harmonicMaps_of (hn : 1 ≤ n) (F : FockData T0 T1 T2) (D : DSRep T1) (W
   · rw [hio, hio, hcoef]
   · have e1 : ∀ z : ℂ, z * star z = ((‖z‖ ^ 2 : ℝ) : ℂ) := fun z => by
       rw [Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq]
-    have e2 : inner ℂ (j v) (j v) = 1 := by rw [inner_self_eq_norm_sq_to_K, hv]; simp
+    have e2 : inner ℂ (j v) (j v) = 1 := simp [inner_self_eq_norm_sq_to_K, hv]
     obtain ⟨s1, s2⟩ := D.schur (D.ι e) (D.ι e')
     simp only [hio, hcoef, e2, mul_one, mul_assoc, e1]
     refine ⟨(s1.ofReal (𝕜 := ℂ)).const_mul _, ?_⟩

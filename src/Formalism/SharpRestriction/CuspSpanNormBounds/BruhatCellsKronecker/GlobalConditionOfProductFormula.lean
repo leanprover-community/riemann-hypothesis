@@ -612,7 +612,7 @@ theorem twist_mul (p : PlF D) (s : ℕ) (x y : (D.s.atP p).Ep) : twist p s x * t
   · rw [twist_some p s _ sg h, twist_some p s _ sg h]
     apply sg.e.injective
     rw [map_mul, AlgEquiv.apply_symm_apply, AlgEquiv.apply_symm_apply, map_mul]
-    have hs : ((-1 : (D.s.atP p).Fp) ^ s) * (-1) ^ s = 1 := by rw [← mul_pow]; simp
+    have hs : ((-1 : (D.s.atP p).Fp) ^ s) * (-1) ^ s = 1 := simp [← mul_pow]
     ext
     · simp
     · simp only [Prod.snd_mul]

@@ -65,7 +65,7 @@ theorem decomp_of_congr_one (M q : ℕ) (B : Matrix (Fin 2) (Fin 2) ℤ) (hq : q
     refine ⟨⟨!![p, β * (p - 1); t, α + β * t], by rw [Matrix.det_fin_two_of]; linear_combination h⟩, ?_, rfl, rfl⟩
     have hp : (p : ZMod M) = 1 := by
       rw [show p = 1 + M * x by linarith]; simp
-    have ht : (t : ZMod M) = 0 := by rw [hy]; simp
+    have ht : (t : ZMod M) = 0 := simp [hy]
     have hα : (α : ZMod M) = 1 := by
       have := congrArg (fun z : ℤ => (z : ZMod M)) h
       simpa [hp, ht] using this

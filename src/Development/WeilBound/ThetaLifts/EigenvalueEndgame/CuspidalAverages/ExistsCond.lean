@@ -92,7 +92,7 @@ theorem exists_cond {ϖ : kˣ} (hϖ : IsUnif ϖ) {ψ : AddChar k ℂ} (hc : Cont
     (∀ x, valuation k x ≤ valuation k ((ϖ ^ c : kˣ) : k) → ψ x = 1) ∧
       ∃ x, valuation k x ≤ valuation k ((ϖ ^ (c - 1) : kˣ) : k) ∧ ψ x ≠ 1 := by
   have hl := unif_lt hϖ
-  have h0 : 0 < valuation k (ϖ : k) := by rw [pos_iff_ne_zero]; simp
+  have h0 : 0 < valuation k (ϖ : k) := simp [pos_iff_ne_zero]
   let P : ℤ → Prop := fun c => ∀ x, valuation k x ≤ valuation k ((ϖ ^ c : kˣ) : k) → ψ x = 1
   have ex : ∃ c, P c := by
     have : {x | ‖ψ x - 1‖ < 1 / 2} ∈ 𝓝 (0 : k) := (isOpen_lt (by fun_prop) continuous_const).mem_nhds (by simp)

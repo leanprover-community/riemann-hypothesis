@@ -59,10 +59,10 @@ Removed ~745 lines of dead `section X ... end X` blocks from 244 files. These we
 
 **Title:** "Remove 1.67M lines of dead code from 148K files (imports, open statements, dead sections)"
 
-**Total commits:** 19  
-**Files changed:** 148,157+  
-**Lines deleted:** **1,669,000+**  
-**Lines added:** ~292  
+**Total commits:** 22  
+**Files changed:** 148,137  
+**Lines deleted:** **1,654,367**  
+**Lines added:** 292  
 
 ### Commit breakdown:
 | # | Description | Files | Lines Deleted |

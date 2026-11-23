@@ -146,7 +146,7 @@ theorem covol {K : Type} [Field K] [NumberField K] (ι : K →+* ℂ) (𝔞 : Fr
 
 theorem ratio_rat {K : Type} [Field K] (ι : K →+* ℂ) (d : ℕ) (hd : 0 < d) (δ θ : K) (τ : ℍ) (hδ : δ ^ 2 = -(d : K)) (h : ι θ = τ)
     (a b : ℤ) (hab : δ = a * θ + b) : ∃ q : ℚ, 2 * τ.im / Real.sqrt d = q := by
-  have h2 : (ι δ) ^ 2 = -(d : ℂ) := by rw [← map_pow, hδ]; simp
+  have h2 : (ι δ) ^ 2 = -(d : ℂ) := simp [← map_pow, hδ]
   have hre := congrArg Complex.re h2
   have him := congrArg Complex.im h2
   simp [pow_two] at hre him

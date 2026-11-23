@@ -215,7 +215,7 @@ lemma witt_nd {z z' : Fin (2 * r + k + 1) → ℂ} (hstd : C2.Std k r z z') {g�
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
       _ = L1ᴴ * (W1ᴴ * Hpk k r * W1) * L1 := by rw [hWW]
       _ = (W1 * L1)ᴴ * Hpk k r * (W1 * L1) := by simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = Hpk k r := by rw [hWL]; simp
+      _ = Hpk k r := simp [hWL]
   · have h : (W2 * L1) * W1 = W2 := by rw [Matrix.mul_assoc, hLW, Matrix.mul_one]
     generalize W2 * L1 = s0 at h
     rw [hW1, hW2] at h
@@ -244,7 +244,7 @@ theorem fibre_orbit_description : C2.FibreOrbit := by
     show (g⁻¹)ᴴ * Hpk k r * g⁻¹ = Hpk k r
     calc (g⁻¹)ᴴ * Hpk k r * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Hpk k r * g) * g⁻¹ := by rw [hg']
       _ = (g * g⁻¹)ᴴ * Hpk k r * (g * g⁻¹) := by simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = Hpk k r := by rw [Matrix.mul_nonsing_inv _ (hunit g hg)]; simp
+      _ = Hpk k r := simp [Matrix.mul_nonsing_inv _ (hunit g hg)]
   have hmul : ∀ g ∈ B.GV k r, ∀ h ∈ B.GV k r, g * h ∈ B.GV k r := by
     intro g hg h hh
     have hg' : gᴴ * Hpk k r * g = Hpk k r := hg

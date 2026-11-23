@@ -311,7 +311,7 @@ theorem exists_real_equiv {n m : ℕ} (hn : m = n) (ε : Fin n → Bool) (ε' : 
     rw [← hB]
     calc _ = (B * B')ᴴ * Formalism.REAL.Jm ε * (B * B') := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [h1]; simp
+      _ = _ := simp [h1]
   let w : Formalism.REAL.UJ ε := ⟨⟨S * B', B * Sᴴ, hSB, mul_eq_one_comm.1 hSB⟩, by
     change (S * B')ᴴ * Formalism.REAL.Jm ε * (S * B') = Formalism.REAL.Jm ε
     calc _ = B'ᴴ * (Sᴴ * Formalism.REAL.Jm ε * S) * B' := by

@@ -150,7 +150,7 @@ theorem norm_constTerm_le : ∀ (E : Type) [Field E] [NumberField E] [_root_.Num
     exact hC _ ⟨_, hγ, rfl⟩ y
   have hfin : μ 𝓕 < ⊤ := by rw [h1]; exact ENNReal.one_lt_top
   calc _ ≤ C * height y ^ N * (μ 𝓕).toReal := norm_setIntegral_le_of_norm_le_const hfin (fun x _ => hb x)
-    _ = C * height y ^ N := by rw [h1]; simp
+    _ = C * height y ^ N := simp [h1]
 
 end GlobalTheory.ConstTermGrowth
 

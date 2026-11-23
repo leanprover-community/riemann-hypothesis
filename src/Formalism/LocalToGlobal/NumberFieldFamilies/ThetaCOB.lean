@@ -355,7 +355,7 @@ theorem cpt_bas_ex (V : HSp D) (hV : V.SigOK) (τ : D.what₂.Tau) :
           simp only [R, Matrix.conjTranspose_mul, Matrix.mul_assoc]
       _ = (P⁻¹)ᴴ * (Pᴴ * gramAt D V τ * P) * P⁻¹ := by rw [g]
       _ = (P * P⁻¹)ᴴ * gramAt D V τ * (P * P⁻¹) := by simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [hPi]; simp
+      _ = _ := simp [hPi]
   refine ⟨R.submatrix e id, ?_, fun a i j hi hj => ?_⟩
   · rw [← he, Matrix.conjTranspose_submatrix, Matrix.submatrix_mul_equiv, Matrix.submatrix_mul_equiv, Matrix.submatrix_id_id]
     exact key

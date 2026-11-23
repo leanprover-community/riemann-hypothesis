@@ -103,7 +103,7 @@ theorem pushPt_comp (h : IsGrpPullback B A j φ) {T : Over S'} (x : T ⟶ B) {a 
 
 theorem one_comm (h : IsGrpPullback B A j φ) : eSec B ≫ φ = j ≫ eSec A := by
   have e := congrArg (fun z => z.left) (map_one (pushHom h (𝟙_ (Over S'))))
-  have e₁ : (1 : 𝟙_ (Over S') ⟶ B) = η[B] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S') ⟶ B) = η[B] := simp [Hom.one_def]
   rw [e₁] at e
   refine e.trans ?_
   show (toUnit _ ≫ η[A]).left = _

@@ -426,7 +426,7 @@ private theorem conj (D : Datum p) (r : ℤ) (hr : (p : ℤ) ∣ r ^ 2 - D.tr * 
     · exact Ideal.add_mem _ (Ideal.mul_mem_left _ _ (p_mem_uIdeal D r))
         (Ideal.mul_mem_left _ _ (sub_mem_uIdeal D r))
     · exact Ideal.mul_mem_left _ _ (Ideal.subset_span (by simp))
-    · have h1 : ((u * p + v * (D.tr - 2 * r) : ℤ) : 𝓞 D.F) = 1 := by rw [huv]; simp
+    · have h1 : ((u * p + v * (D.tr - 2 * r) : ℤ) : 𝓞 D.F) = 1 := simp [huv]
       push_cast at h1
       linear_combination h1 + (v : 𝓞 D.F) * D.tr_eq
   · unfold uIdeal

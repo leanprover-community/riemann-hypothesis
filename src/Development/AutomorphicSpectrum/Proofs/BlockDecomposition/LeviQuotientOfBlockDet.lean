@@ -356,7 +356,7 @@ theorem jM_unitary (ε : ℤˣ) (x y : Matrix (↥sᶜ ⊕ ↥sᶜ) (↥sᶜ ⊕
   have e4 : D * Ad.J R ε ι * (p * y * pᵀ) = 0 := by
     calc _ = D * (Ad.J R ε ι * p) * y * pᵀ := by simp only [Matrix.mul_assoc]
       _ = (D * p) * Ad.J R ε ↥sᶜ * y * pᵀ := by rw [h4]; simp only [Matrix.mul_assoc]
-      _ = 0 := by rw [h2]; simp
+      _ = 0 := simp [h2]
   have e5 : D * Ad.J R ε ι * D = Ad.J R ε ι * D := by
     rw [← h6, Matrix.mul_assoc, h3]
   rw [e1, Matrix.add_mul, Matrix.mul_add, Matrix.mul_add, e2, e3, e4, e5, add_zero, zero_add, ← Matrix.mul_add, hc,

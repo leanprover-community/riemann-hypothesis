@@ -83,7 +83,7 @@ theorem exists_approx (y : v.adicCompletion K) (hy : Valued.v y ≤ 1) :
   obtain ⟨t, i, hi, hti⟩ := v.isMaximal.exists_inv hs
   refine ⟨t * a, ?_⟩
   have hxi : x - ((t * a : 𝓞 K) : K) = x * (i : K) := by
-    have h1 : ((t * s + i : 𝓞 K) : K) = 1 := by rw [hti]; simp
+    have h1 : ((t * s + i : 𝓞 K) : K) = 1 := simp [hti]
     push_cast at h1 ⊢
     linear_combination (-x) * h1 + ((t : 𝓞 K) : K) * hsa
   have hlt : v.valuation K (x - ((t * a : 𝓞 K) : K)) < 1 := by

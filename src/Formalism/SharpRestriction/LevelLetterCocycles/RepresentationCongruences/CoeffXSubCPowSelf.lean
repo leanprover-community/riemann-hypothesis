@@ -225,8 +225,8 @@ theorem lift2a [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomain O] [IsDiscreteVa
   set M := A.M PD.p with hM
   set AA := Formalism.MainNotions.LiftingTheory.AI W F (c - 1) with hAA
   have hac : a = c - 1 := by rw [ha, hc', hlen]; push_cast; ring
-  have hca : c - ((1 : ℕ) : ZMod n) = a := by rw [hac]; simp
-  have ha0 : a - ((0 : ℕ) : ZMod n) = c - 1 := by rw [hac]; simp
+  have hca : c - ((1 : ℕ) : ZMod n) = a := simp [hac]
+  have ha0 : a - ((0 : ℕ) : ZMod n) = c - 1 := simp [hac]
   have hup1 : up (c - 1) = true := by
     cases h : up (c - 1) <;> simp_all
   have hty1 : A.ty (c - 1) = Formalism.MainNotions.LocalTheoryWindows.LT.up w' := by rw [hA, arc_letter_type_eq_ite, hup1]; rfl
@@ -238,7 +238,7 @@ theorem lift2a [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomain O] [IsDiscreteVa
   have hj : A.j = 1 := rfl
   obtain ⟨-, -, hcuts, -, hok, -, -, -, halt⟩ := hOK
   have hc'cut : c' ∈ A.cuts := (hcuts c hc).2.2.1
-  have hc'1 : c' + 1 = c - 1 := by rw [← hac, ha]; simp
+  have hc'1 : c' + 1 = c - 1 := simp [← hac, ha]
   have hwG : w' + S ≤ w + S := by
     rcases halt with h | ⟨-, -, h⟩
     · have := h c' hc'cut 1 le_rfl (by simp [hj])

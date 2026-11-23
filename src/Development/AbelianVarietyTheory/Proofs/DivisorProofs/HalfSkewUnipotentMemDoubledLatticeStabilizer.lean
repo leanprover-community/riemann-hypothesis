@@ -68,7 +68,7 @@ theorem mem_unitary_of_skew (f : R →+* R) (J : Matrix β β R) (K : Matrix (β
     calc _ = N * ((xᵀ * J + J * x.map f) * Nt) := by
           rw [Matrix.mul_assoc, Matrix.mul_assoc, e3, ← Matrix.mul_assoc K Δ, e4]
           simp only [Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc]
-      _ = 0 := by rw [hZ]; simp
+      _ = 0 := simp [hZ]
   have expand : ∀ U V : Matrix (β ⊕ β) (β ⊕ β) R, (1 + ⅟(2 : R) • U) * K * (1 + ⅟(2 : R) • V) =
       K + ⅟(2 : R) • (U * K + K * V) + (⅟(2 : R) * ⅟(2 : R)) • (U * K * V) := by
     intro U V
@@ -117,7 +117,7 @@ theorem unip_mem : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberF
     calc u • M = (fromRows (1 : Matrix (Fin d) (Fin d) (AE F E)) 1 : Matrix (Fin d ⊕ Fin d) (Fin d) (AE F E)) * (u • Z) *
         (fromCols (1 : Matrix (Fin d) (Fin d) (AE F E)) (-1) : Matrix (Fin d) (Fin d ⊕ Fin d) (AE F E)) := by
           rw [hMdef]; simp only [Matrix.mul_smul, Matrix.smul_mul]
-      _ = 0 := by rw [hu']; simp
+      _ = 0 := simp [hu']
   have hpK : p ∈ KD σ W v := by
     refine ⟨fun u hu => ?_, fun z hz => ⟨?_, ?_⟩⟩
     · show u • ((1 + ⅟(2 : AE F E) • M) - 1) = 0

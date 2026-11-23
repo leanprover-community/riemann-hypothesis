@@ -61,7 +61,7 @@ theorem p_mul (p : Fin n → Mat C N) (hp : Sys p) (e : Fin n → C) (j : Fin n)
 
 theorem vec_of (p : Fin n → Mat C N) (hp : Sys p) (i : Fin n) (v : Fin N → C)
     (hv : ∀ k, k ≠ i → p k *ᵥ v = 0) : p i *ᵥ v = v := by
-  have h1 : (∑ k, p k) *ᵥ v = v := by rw [hp.1.complete]; simp
+  have h1 : (∑ k, p k) *ᵥ v = v := simp [hp.1.complete]
   rw [Matrix.sum_mulVec, Finset.sum_eq_single i] at h1
   · exact h1
   · intro b _ hb; exact hv b hb

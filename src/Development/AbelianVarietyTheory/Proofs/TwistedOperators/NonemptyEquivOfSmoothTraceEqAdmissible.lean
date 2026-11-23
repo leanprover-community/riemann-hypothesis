@@ -57,7 +57,7 @@ theorem exists_smul_eq_self_and_smul_eq_zero {R M N : Type*} [Ring R] [AddCommGr
           congr($(h1 (LinearMap.snd R M N ∘ₗ φ ∘ₗ LinearMap.inl R M N)) x.1)
         have a2 : (φ (0, x.2)).1 = 0 :=
           congr($(h2 (LinearMap.fst R M N ∘ₗ φ ∘ₗ LinearMap.inr R M N)) x.2)
-        have a3 : φ x = φ (x.1, 0) + φ (0, x.2) := by rw [← map_add (f := _)]; simp
+        have a3 : φ x = φ (x.1, 0) + φ (0, x.2) := simp [← map_add (f := _)]
         simp only [Module.End.smul_def, RingHom.id_apply]
         ext
         · simp [a3, a2]

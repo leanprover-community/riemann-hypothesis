@@ -269,7 +269,7 @@ theorem inS_frame {n r : ℕ} {e : Fin r → Fin n → ℂ} {z : Fin n → ℂ} 
       obtain ⟨l, hl, hx⟩ := (Finsupp.mem_span_image_iff_linearCombination ℂ).mp hm
       refine ⟨fun i => l i, fun i hi => absurd hi (by simp), ?_⟩
       rw [Finsupp.linearCombination_apply] at hx
-      have hx' : ∑ i, l i • e i = (g - 1) *ᵥ z := by rw [← hx, Finsupp.sum_fintype]; simp
+      have hx' : ∑ i, l i • e i = (g - 1) *ᵥ z := simp [← hx, Finsupp.sum_fintype]
       simp only [Formalism.L2.SG.RealObj.fam, Fin.snoc_last]
       rw [hx', Matrix.sub_mulVec, Matrix.one_mulVec]; abel
     · have hm := h.1 j
@@ -283,7 +283,7 @@ theorem inS_frame {n r : ℕ} {e : Fin r → Fin n → ℂ} {z : Fin n → ℂ} 
         simp at hi
         omega
       · rw [Finsupp.linearCombination_apply] at hx
-        have hx' : ∑ i, l i • e i = (g - 1) *ᵥ e j := by rw [← hx, Finsupp.sum_fintype]; simp
+        have hx' : ∑ i, l i • e i = (g - 1) *ᵥ e j := simp [← hx, Finsupp.sum_fintype]
         simp only [Formalism.L2.SG.RealObj.fam, Fin.snoc_castSucc]
         rw [hx', Matrix.sub_mulVec, Matrix.one_mulVec]; abel
   choose y hy0 hyeq using hy

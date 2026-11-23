@@ -206,7 +206,7 @@ theorem ext_mul {R : Type} [CommRing R] {n r : ℕ} (P : Matrix (Fin n) (Fin r) 
   have e4 : (a - 1) + (b - 1) + (a - 1) * (b - 1) = 0 := by
     have : (a - 1) + (b - 1) + (a - 1) * (b - 1) = a * b - 1 := by noncomm_ring
     rw [this, hab, sub_self]
-  have : P * ((a - 1) + (b - 1) + (a - 1) * (b - 1)) * Q = 0 := by rw [e4]; simp
+  have : P * ((a - 1) + (b - 1) + (a - 1) * (b - 1)) * Q = 0 := simp [e4]
   rw [Matrix.mul_add, Matrix.mul_add, Matrix.add_mul, Matrix.add_mul] at this
   rw [Matrix.mul_add, Matrix.mul_one, Matrix.add_mul, Matrix.one_mul, e3, add_assoc, add_eq_left, ← this]
   abel

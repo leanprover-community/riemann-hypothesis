@@ -188,7 +188,7 @@ theorem isLatBasis_act {S : Set (Fin g → ℂ)} {l : Fin r → Fin g → ℂ} (
     ⟨M.mat, Units.inv M, rfl, Units.mul_inv M, Units.inv_mul M⟩
   rw [hM]
   have hr : m.map (Int.cast : ℤ → ℝ) * n.map (Int.cast : ℤ → ℝ) = 1 := by
-    have h : (m * n).map (Int.castRingHom ℝ) = 1 := by rw [h1]; simp
+    have h : (m * n).map (Int.castRingHom ℝ) = 1 := simp [h1]
     rw [Matrix.map_mul] at h
     exact h
   refine ⟨Fintype.linearIndependent_iff.2 fun c hc j => ?_, fun w => ?_⟩

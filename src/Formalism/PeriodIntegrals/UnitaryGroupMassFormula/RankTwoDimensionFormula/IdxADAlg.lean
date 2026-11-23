@@ -142,7 +142,7 @@ theorem parabolic_product_zero (x y x' y' : Fin k → Fin n → A) (hm : Formali
   calc daB x * M * (Formalism.UG.cT σ (daB y) * J) * (daB x' * N * (Formalism.UG.cT σ (daB y') * J))
         = daB x * M * (Formalism.UG.cT σ (daB y) * J * daB x') * N * (Formalism.UG.cT σ (daB y') * J) := by
           simp only [Matrix.mul_assoc]
-    _ = 0 := by rw [hm]; simp
+    _ = 0 := simp [hm]
 
 theorem da_P_add (x y : Fin k → Fin n → A) (M N : Matrix (Fin k) (Fin k) A) :
     daP σ J x y (M + N) = daP σ J x y M + daP σ J x y N := by
@@ -185,7 +185,7 @@ theorem transfer_product_zero (x y x' y' : Fin k → Fin n → A)
   calc J * daB y * M * (Formalism.UG.cT σ (daB x) * J) * (daB x' * N * (Formalism.UG.cT σ (daB y') * J))
         = J * daB y * M * (Formalism.UG.cT σ (daB x) * J * daB x') * N * (Formalism.UG.cT σ (daB y') * J) := by
           simp only [Matrix.mul_assoc]
-    _ = 0 := by rw [hm]; simp
+    _ = 0 := simp [hm]
 
 end DAlg
 

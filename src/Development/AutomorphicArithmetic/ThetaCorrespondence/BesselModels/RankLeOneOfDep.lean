@@ -308,7 +308,7 @@ theorem burGapPos_of_bmu : CompanionTheory.Bmu.BesselMapUniqGap → UpperTheory.
       have hQi : Qiᴴ * Formalism.QuantumDeterminants.Hpk m r * Qi = J := by
         rw [← qg]
         calc Qiᴴ * (Qᴴ * J * Q) * Qi = (Q * Qi)ᴴ * J * (Q * Qi) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-          _ = J := by rw [q1]; simp
+          _ = J := simp [q1]
       have hgh : Q * h' * Qi ∈ Formalism.QuantumDeterminants.UH J := by
         show (Q * h' * Qi)ᴴ * J * (Q * h' * Qi) = J
         have hh2 : h'ᴴ * Formalism.QuantumDeterminants.Hpk m r * h' = Formalism.QuantumDeterminants.Hpk m r := hh'.1

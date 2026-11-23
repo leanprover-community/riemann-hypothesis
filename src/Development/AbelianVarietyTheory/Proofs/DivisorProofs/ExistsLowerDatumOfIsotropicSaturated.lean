@@ -409,7 +409,7 @@ theorem exists_datum (D : Datum H) (Z P L' : Type) [AddCommGroup Z] [Module (�
   have : Module.IsTorsionFree (𝓞 E) L' := by
     refine Module.IsTorsionFree.of_smul_eq_zero fun a z h => or_iff_not_imp_left.2 fun ha => ?_
     obtain ⟨b, n, hn, h1⟩ := Algebra.IsAlgebraic.exists_smul_eq_mul ℤ (1 : 𝓞 E) ha
-    have h2 : (n : 𝓞 E) = b * a := by rw [mul_comm, ← h1]; simp
+    have h2 : (n : 𝓞 E) = b * a := simp [mul_comm, ← h1]
     have h3 : n • z = 0 := by
       rw [← Int.cast_smul_eq_zsmul (𝓞 E), h2, mul_smul, h, smul_zero]
     exact (smul_eq_zero.1 h3).resolve_left hn

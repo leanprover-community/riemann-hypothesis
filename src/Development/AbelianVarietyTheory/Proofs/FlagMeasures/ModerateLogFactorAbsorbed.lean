@@ -111,7 +111,7 @@ theorem moderate_log_factor_absorbed : ∀ Cg : ℝ, ∃ n₀ : ℕ, ∀ (n f q 
       have := Real.add_one_le_exp (1 : ℝ); linarith
     have hp : (2 : ℝ) ^ q ≤ Real.exp q := by
       calc (2 : ℝ) ^ q ≤ (Real.exp 1) ^ q := by gcongr
-        _ = Real.exp q := by rw [← Real.exp_nat_mul]; simp
+        _ = Real.exp q := simp [← Real.exp_nat_mul]
     calc 2 * (2 : ℝ) ^ q * Real.exp (-(3 / 8) * n * f * L)
         ≤ Real.exp 1 * Real.exp q * Real.exp (-(3 / 8) * n * f * L) := by gcongr
       _ = Real.exp (1 + q + -(3 / 8) * n * f * L) := by rw [Real.exp_add, Real.exp_add]

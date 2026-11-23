@@ -60,7 +60,7 @@ theorem one_of_compact {G : Type} [Group G] [TopologicalSpace G] (f : G →* NNR
     exact absurd (hC ⟨_, hy n, map_pow f y n⟩) (not_le.2 hn)
   have h1 := key x fun n => by simpa using hx n
   have h2 := key x⁻¹ fun n => by simpa using hx (-n)
-  have h3 : f x * f x⁻¹ = 1 := by rw [← map_mul]; simp
+  have h3 : f x * f x⁻¹ = 1 := simp [← map_mul]
   refine le_antisymm h1 ?_
   calc (1 : NNReal) = f x * f x⁻¹ := h3.symm
     _ ≤ f x * 1 := by gcongr

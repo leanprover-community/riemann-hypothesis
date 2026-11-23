@@ -95,7 +95,7 @@ theorem exists_lift_ext : Laws → BrGtSt → BrWpSt → AllA fun {_} _ _ _ {_} 
     rfl
   choose q' hq' using fun (n : ℕ) (v : D.La) => ((G' n).1 (qkExt a.bimult f hf (A.I.ev n v))).exists
   refine ⟨{ ρ := f A.ρ
-            ρ_sq := by rw [← map_pow, A.ρ_sq, map_neg]; simp
+            ρ_sq := simp [← map_pow, A.ρ_sq, map_neg]
             det := fun σ => ?_
             I := tateExt f hf a.bimult hL A.I hw, N := N', ν := ν', q := q', hq := hq'
             be := { be := a.be.compl₁₂ ν'.eX.toAddMonoidHom.toIntLinearMap ν'.eX.toAddMonoidHom.toIntLinearMap

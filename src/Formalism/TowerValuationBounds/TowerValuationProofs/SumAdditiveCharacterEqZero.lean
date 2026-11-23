@@ -299,7 +299,7 @@ theorem gauss_sum_ratio : GaussSumTwist := by
     intro x hx
     have : ((x0⁻¹ * x : Rˣ) : R) - 1 = ((x0⁻¹ : Rˣ) : R) * (((x : R) - c) - ((x0 : R) - c)) := by
       rw [Units.val_mul]
-      have : ((x0⁻¹ : Rˣ) : R) * (x0 : R) = 1 := by rw [← Units.val_mul]; simp
+      have : ((x0⁻¹ : Rˣ) : R) * (x0 : R) = 1 := simp [← Units.val_mul]
       linear_combination this
     rw [this]
     exact I.mul_mem_left _ (I.sub_mem hx hx0)
@@ -330,7 +330,7 @@ theorem gauss_sum_ratio : GaussSumTwist := by
         rw [Units.val_mul]
         show (x0 : R) * (1 + (((x0⁻¹ * x : Rˣ) : R) - 1)) = x
         rw [Units.val_mul]
-        have : (x0 : R) * ((x0⁻¹ : Rˣ) : R) = 1 := by rw [← Units.val_mul]; simp
+        have : (x0 : R) * ((x0⁻¹ : Rˣ) : R) = 1 := simp [← Units.val_mul]
         linear_combination (x : R) * this
       · intro y _; rfl
     rw [hbij]
@@ -419,7 +419,7 @@ theorem valuation_ratio_bound : TowerValuationBound := by
     · intro s hs; rw [mem_Icc] at hs
       exact up _ (by omega) (by omega)
   have n3 : ∑ k ∈ Icc 1 p, v (ρ ((e : ℤ) + q - k + 1)) ≤ S + (p : ℝ) * ε := by
-    have hc : ((Icc 1 p).card : ℝ) = (p : ℝ) := by rw [Nat.card_Icc]; simp
+    have hc : ((Icc 1 p).card : ℝ) = (p : ℝ) := simp [Nat.card_Icc]
     rw [← hc]
     apply gen _ (fun k : ℕ => (e : ℤ) + q - k + 1)
     · intro x _ y _ hxy; simp only at hxy; omega
@@ -427,7 +427,7 @@ theorem valuation_ratio_bound : TowerValuationBound := by
     · intro k hk; rw [mem_Icc] at hk
       exact up _ (by omega) (by omega)
   have n4 : ∑ k ∈ Icc 1 q, -v (ρ ((e : ℤ) + k)) ≤ S + (q : ℝ) * N0 := by
-    have hc : ((Icc 1 q).card : ℝ) = (q : ℝ) := by rw [Nat.card_Icc]; simp
+    have hc : ((Icc 1 q).card : ℝ) = (q : ℝ) := simp [Nat.card_Icc]
     rw [← hc]
     apply gen _ (fun k : ℕ => (e : ℤ) + k)
     · intro x _ y _ hxy; simp only at hxy; omega

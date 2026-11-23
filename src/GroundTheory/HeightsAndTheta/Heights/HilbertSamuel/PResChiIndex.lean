@@ -258,7 +258,7 @@ theorem resChi_sub_of_bases (d d' : HSMDatum D Ω κ) (B : Matrix (Ix κ) (Ix κ
             simp only [← hT, Finset.smul_sum, smul_smul, Matrix.vecMul, dotProduct, Finset.sum_smul,
               Matrix.of_apply]
             exact Finset.sum_comm
-        _ = 0 := by rw [hv]; simp
+        _ = 0 := simp [hv]
     funext k
     exact linearIndependent_iff'.1 hli' Finset.univ v hrel k (Finset.mem_univ k)
 

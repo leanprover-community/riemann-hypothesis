@@ -107,7 +107,7 @@ private theorem exists_map_eq_algebraMap_padicInt_of_isDvr {l : ℕ} [Fact l.Pri
     obtain ⟨w', hw'⟩ := Ideal.mem_span_singleton'.mp (PadicInt.appr_spec k t)
     refine ⟨f w - f q ^ k * 𝔞.a c (algebraMap ℤ_[l] c.O w'), ?_⟩
     have hl : ((l : ℕ) : 𝔞.V) = f π * f q := by rw [← map_natCast f, hq, map_mul]
-    have e1 : f μ = f ((t.appr k : ℕ) : A) + f (w * π ^ k) := by rw [hw]; simp
+    have e1 : f μ = f ((t.appr k : ℕ) : A) + f (w * π ^ k) := simp [hw]
     have e2 : 𝔞.a c (algebraMap ℤ_[l] c.O t) = 𝔞.a c (algebraMap ℤ_[l] c.O ((t.appr k : ℕ) : ℤ_[l]))
         + 𝔞.a c (algebraMap ℤ_[l] c.O (w' * (l : ℤ_[l]) ^ k)) := by
       rw [hw', ← map_add (f := _), ← map_add (f := _)]; simp

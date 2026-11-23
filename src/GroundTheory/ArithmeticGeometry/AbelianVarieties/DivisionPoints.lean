@@ -517,7 +517,7 @@ private theorem good_succ (n : ℤ) (hn : 2 ≤ n) (ih : ∀ j, 1 ≤ j → j �
   obtain ⟨yn, hn', hQeq⟩ := exists_eq_some_xOf W hQ
   by_cases hwp : w (n + 1) = 0
   ·
-    have hx : xOf W (n • Point.some x₀ y₀ h₀) = x₀ := by rw [xn, hwp]; simp
+    have hx : xOf W (n • Point.some x₀ y₀ h₀) = x₀ := simp [xn, hwp]
     have := (Point.X_eq_iff (h₁ := hn') (h₂ := h₀)).mp hx
     rw [← hQeq] at this
     rcases this with h | h

@@ -89,7 +89,7 @@ theorem L_mul (c : R →+* R) {r : R} (hr : 2 * r = 1) {J : Matrix ι ι R} (hJu
         (Pm ι R * Matrix.fromBlocks a' 0 0 (sM c J b') * (r • Pm ι R))
       = Pm ι R * (Matrix.fromBlocks a 0 0 (sM c J b) * ((r • Pm ι R) * Pm ι R) *
           Matrix.fromBlocks a' 0 0 (sM c J b')) * (r • Pm ι R) := by simp only [Matrix.mul_assoc]
-    _ = _ := by rw [QP hr, Matrix.mul_one, Matrix.fromBlocks_multiply, sM_mul c hJu]; simp
+    _ = _ := simp [QP hr, Matrix.mul_one, Matrix.fromBlocks_multiply, sM_mul c hJu]
 
 theorem L_one (c : R →+* R) {r : R} (hr : 2 * r = 1) {J : Matrix ι ι R} (hJu : IsUnit J.det) :
     L c r J 1 1 = 1 := by

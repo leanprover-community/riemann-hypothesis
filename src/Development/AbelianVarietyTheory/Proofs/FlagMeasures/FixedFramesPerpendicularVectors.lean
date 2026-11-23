@@ -210,7 +210,7 @@ theorem norm_cof {E : Type} [Field E] [NumberField E] [StarRing E] {S : Formalis
   have h2 : leadMinorE (Zhat F F') r = ((Zhat F F').submatrix Fin.castSucc Fin.castSucc).det := by
     simp only [leadMinorE, dif_pos (Nat.le_succ r)]; rfl
   rw [h1, h2, ← h]
-  have h3 : ((-1 : E) ^ r) * (-1) ^ r = 1 := by rw [← mul_pow]; simp
+  have h3 : ((-1 : E) ^ r) * (-1) ^ r = 1 := simp [← mul_pow]
   simp only [LinearMap.flip_apply, map_smul, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul,
     map_pow, map_neg, map_one]
   rw [← mul_assoc ((-1 : E) ^ r), h3, one_mul]

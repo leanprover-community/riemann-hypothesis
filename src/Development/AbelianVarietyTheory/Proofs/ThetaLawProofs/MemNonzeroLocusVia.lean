@@ -116,7 +116,7 @@ theorem fst_comp_translate (z : 𝟙_ (Over (Sp R)) ⟶ G) (v : epsR R ⟶ G) (h
     rw [← Spec.map_comp, ← CommRingCat.ofHom_comp, ← Spec.map_id]
     congr 1)
   have h1 : r ≫ v = 1 := by
-    have e₁ : (1 : 𝟙_ (Over (Sp R)) ⟶ G) = η[G] := by rw [Hom.one_def]; simp
+    have e₁ : (1 : 𝟙_ (Over (Sp R)) ⟶ G) = η[G] := simp [Hom.one_def]
     rw [e₁]
     exact Over.OverMorphism.ext hv
   have h2 : r ≫ toUnit (epsR R) ≫ z = z := by

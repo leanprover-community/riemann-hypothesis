@@ -73,7 +73,7 @@ theorem exists_kur_of_actSt_fixed (K : FinExt l)
         rw [map_add (f := _), ← hc]; simp)
       have hpb : p = C b - C a * X := by rw [← hb]; ring
       by_cases hc0 : c = 0
-      · have : p = C b := by rw [hpb, ha, hc0]; simp
+      · have : p = C b := simp [hpb, ha, hc0]
         rw [this] at hp ⊢
         exact hC _ hp
       · exfalso

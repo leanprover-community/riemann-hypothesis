@@ -64,7 +64,7 @@ private theorem complexConj_eq_neg_of_sq_eq_neg_natCast (E : Type) [Field E] [Nu
   obtain ⟨φ⟩ := (inferInstance : Nonempty (E →+* ℂ))
   apply φ.injective
   rw [IsCMField.complexEmbedding_complexConj, map_neg]
-  have h2 : (φ x) ^ 2 = -(d : ℂ) := by rw [← map_pow, hx]; simp
+  have h2 : (φ x) ^ 2 = -(d : ℂ) := simp [← map_pow, hx]
   have hre : (φ x).re = 0 := by
     have him := congrArg Complex.im h2
     have hre2 := congrArg Complex.re h2
@@ -112,7 +112,7 @@ private theorem isSquare_neg_padic_of_dvd_sq_add_of_not_dvd (q : ℕ) [Fact q.Pr
   obtain ⟨z, hz, -⟩ := hensels_lemma hnorm
   refine ⟨(z : ℚ_[q]), ?_⟩
   have hz' : z ^ 2 + (d : ℤ_[q]) = 0 := by simpa using hz
-  have hz'' : ((z ^ 2 + (d : ℤ_[q]) : ℤ_[q]) : ℚ_[q]) = 0 := by rw [hz']; simp
+  have hz'' : ((z ^ 2 + (d : ℤ_[q]) : ℤ_[q]) : ℚ_[q]) = 0 := simp [hz']
   push_cast at hz''
   linear_combination -hz''
 

@@ -97,7 +97,7 @@ private theorem inv_mem_UWset_and_inv_mul_eq_one {k r : ℕ} {z : Fin (2 * r + k
         = b⁻¹.conjTranspose * (b.conjTranspose * Hpk k r * b) * b⁻¹ := by rw [hU]
       _ = (b * b⁻¹).conjTranspose * Hpk k r * (b * b⁻¹) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = Hpk k r := by rw [h2]; simp
+      _ = Hpk k r := simp [h2]
   · intro a
     obtain ⟨e1, e2⟩ := hb.2.1 a
     constructor

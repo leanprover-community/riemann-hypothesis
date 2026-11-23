@@ -102,7 +102,7 @@ theorem inv_mem_UH (hG : IsUnit G) {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ 
   show (g⁻¹)ᴴ * G * g⁻¹ = G
   calc (g⁻¹)ᴴ * G * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * G * g) * g⁻¹ := by rw [h]
     _ = (g * g⁻¹)ᴴ * G * (g * g⁻¹) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = G := by rw [mul_nonsing_inv _ hd]; simp
+    _ = G := simp [mul_nonsing_inv _ hd]
 
 theorem conj_mem_lieG (hG : IsUnit G) {g X : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UH G) (hX : X ∈ lieG G) :
     g⁻¹ * X * g ∈ lieG G := by
@@ -119,7 +119,7 @@ theorem conj_mem_lieG (hG : IsUnit G) {g X : Matrix (Fin n) (Fin n) ℂ} (hg : g
   calc (g⁻¹ * X * g)ᴴ * G + G * (g⁻¹ * X * g) = gᴴ * Xᴴ * ((g⁻¹)ᴴ * G) + (G * g⁻¹) * X * g := by
         simp only [conjTranspose_mul, Matrix.mul_assoc]
     _ = gᴴ * (Xᴴ * G + G * X) * g := by rw [h1, h2]; simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-    _ = 0 := by rw [hX']; simp
+    _ = 0 := simp [hX']
 
 theorem rep_mul (hπ : IsURepOn (UH G) π) {g g' : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UH G) (hg' : g' ∈ UH G) (w : H) :
     π (g * g') w = π g (π g' w) := by rw [hπ.1.2 g hg g' hg']; rfl

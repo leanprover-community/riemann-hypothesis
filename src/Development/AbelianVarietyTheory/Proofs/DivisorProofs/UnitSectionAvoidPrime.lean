@@ -50,10 +50,10 @@ theorem one_tmul_mem_locOrder_of_nsmul_mem : ∀ {B : Type} [Ring B] [Algebra �
     Algebra.subset_adjoin ⟨_, hmb, rfl⟩
   have key : (1 : ℚ_[ℓ]) ⊗ₜ[ℚ] b = ((u⁻¹ : ℤ_[ℓ]ˣ) : ℤ_[ℓ]) • ((1 : ℚ_[ℓ]) ⊗ₜ[ℚ] ((m : B) * b)) := by
     rw [TensorProduct.smul_tmul', Algebra.smul_def, mul_one]
-    have : ((m : B) * b) = (m : ℚ) • b := by rw [Algebra.smul_def]; simp
+    have : ((m : B) * b) = (m : ℚ) • b := simp [Algebra.smul_def]
     rw [this, TensorProduct.tmul_smul, TensorProduct.smul_tmul']
     congr 1
-    have h1 : ((u : ℤ_[ℓ]) : ℚ_[ℓ]) = (m : ℚ_[ℓ]) := by rw [hu]; simp
+    have h1 : ((u : ℤ_[ℓ]) : ℚ_[ℓ]) = (m : ℚ_[ℓ]) := simp [hu]
     have h2 : (((u⁻¹ : ℤ_[ℓ]ˣ) : ℤ_[ℓ]) : ℚ_[ℓ]) * ((u : ℤ_[ℓ]) : ℚ_[ℓ]) = 1 := by
       rw [← PadicInt.coe_mul]; simp
     rw [h1] at h2

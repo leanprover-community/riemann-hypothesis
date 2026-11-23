@@ -116,7 +116,7 @@ theorem det_Zt (F : FlagG S r (T : E)) (F' : FlagG S r (T' : E)) (hP : (Pm F F')
       mul_zero, Finset.sum_const_zero, sub_zero]
   rw [Matrix.det_succ_column _ (Fin.last r), Fintype.sum_eq_single (Fin.last r)]
   · rw [hsub, Matrix.of_apply, hlast, Fin.val_last]
-    have hpow : ((-1 : E) ^ (r + r)) = 1 := by rw [← two_mul, pow_mul]; simp
+    have hpow : ((-1 : E) ^ (r + r)) = 1 := simp [← two_mul, pow_mul]
     rw [hpow, one_mul]
   · intro i hi
     obtain ⟨i0, rfl⟩ := Fin.exists_castSucc_eq.2 hi

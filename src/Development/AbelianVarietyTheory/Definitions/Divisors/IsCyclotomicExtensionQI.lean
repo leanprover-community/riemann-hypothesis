@@ -101,7 +101,7 @@ def simGroup (j : A →+* S) (σ : S →+* S) (H : Matrix (Fin n) (Fin n) S) :
             simp only [← Matrix.mul_assoc, e1, Matrix.one_mul]
             rw [Matrix.mul_assoc, e2, Matrix.mul_one]
         _ = _ := by rw [hg, Matrix.mul_smul, Matrix.smul_mul]
-    have hu : j ((c⁻¹ : Aˣ) : A) * j (c : A) = 1 := by rw [← map_mul]; simp
+    have hu : j ((c⁻¹ : Aˣ) : A) * j (c : A) = 1 := simp [← map_mul]
     calc _ = (j ((c⁻¹ : Aˣ) : A) * j (c : A)) • (((g⁻¹ : GL (Fin n) S) : Matrix (Fin n) (Fin n) S)ᵀ * H *
           ((g⁻¹ : GL (Fin n) S) : Matrix (Fin n) (Fin n) S).map σ) := by rw [hu, one_smul]
       _ = _ := by rw [mul_smul, ← key]

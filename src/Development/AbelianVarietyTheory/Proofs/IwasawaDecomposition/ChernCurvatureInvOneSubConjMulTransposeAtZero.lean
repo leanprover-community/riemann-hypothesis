@@ -55,7 +55,7 @@ theorem curv_inv_one_sub_mul {P : E → Matrix m l ℂ} {Q : E → Matrix l m �
     curv (fun x => (1 - P x * Q x)⁻¹) z ξ η = -(mdbar P z η * C)ᵀ := by
   have hK : ∀ x, MContDiffAt 2 (fun x => 1 - P x * Q x) x :=
     fun x => (mContDiffAt_const 1).sub ((hP x).mul (hQ x))
-  have hK0 : (1 - P z * Q z) = 1 := by rw [hP0]; simp
+  have hK0 : (1 - P z * Q z) = 1 := simp [hP0]
   have hd : ∀ x, mdel (fun x => 1 - P x * Q x) x ξ = -(P x * C) := fun x => by
     have h1 := (hP x).of_le one_le_two
     have h2 := (hQ x).of_le one_le_two
@@ -67,7 +67,7 @@ theorem curv_inv_one_sub_mul {P : E → Matrix m l ℂ} {Q : E → Matrix l m �
     simp only [hd]
     rw [mdbar_neg, mdbar_mul ((hP z).of_le one_le_two) (mContDiffAt_const C)]
     simp
-  have hu : IsUnit (1 - P z * Q z)ᵀ.det := by rw [hK0]; simp
+  have hu : IsUnit (1 - P z * Q z)ᵀ.det := simp [hK0]
   have e : (fun x => (1 - P x * Q x)⁻¹) = fun x => dualGram (1 - P x * Q x)ᵀ := by
     funext x; rw [dualGram, transpose_nonsing_inv, transpose_transpose]
   rw [e, curv_dual (hK z).transpose hu, curv_eq (hK z).transpose hu,

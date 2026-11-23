@@ -137,7 +137,7 @@ theorem entry_bound (ρ : ℝ) (p : ℕ) (hp : p ≤ 1) :
                 rw [mul_one, ← ENNReal.ofReal_mul (Real.exp_pos _).le]
             _ ≤ ENNReal.ofReal (2 * Real.exp (-(‖z‖ ^ 2 / 2))) :=
                 ENNReal.ofReal_le_ofReal (exp_mul_pow_le (by positivity) hp)
-            _ = _ := by rw [ENNReal.ofReal_mul (by norm_num)]; simp
+            _ = _ := simp [ENNReal.ofReal_mul (by norm_num)]
       _ = 2 * halfGauss := lintegral_const_mul' _ _ (by simp)
       _ = ENNReal.ofReal (2 * halfGauss.toReal) := by
           rw [ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_toReal hG.ne]; simp

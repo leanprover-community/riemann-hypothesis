@@ -61,7 +61,7 @@ theorem finrank_const_of_isLocalRing (V : Type) [CommRing V] [IsLocalRing V] (Z 
     f.finrank x = f.finrank y := by
   have : IsAffine Z := isAffine_of_isAffineHom f
   obtain ⟨φ, hφ⟩ := Spec.map_surjective (Z.isoSpec.inv ≫ f)
-  have ef : f = Z.isoSpec.hom ≫ Spec.map φ := by rw [hφ]; simp
+  have ef : f = Z.isoSpec.hom ≫ Spec.map φ := simp [hφ]
   have hf1 : IsFinite (Spec.map φ) := by rw [hφ]; infer_instance
   have hf2 : Flat (Spec.map φ) := by rw [hφ]; infer_instance
   have hr1 := hf1

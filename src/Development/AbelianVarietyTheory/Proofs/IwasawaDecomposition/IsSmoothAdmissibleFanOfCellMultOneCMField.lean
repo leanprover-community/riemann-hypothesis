@@ -118,7 +118,7 @@ theorem exists_prim [Module.Finite ℤ O] {β : LinearMap.BilinForm ℤ X} (hβ 
     exact h0 (by ext a b; simpa using hc a b)
   have bound : ∀ (n : ℕ) (u : LinearMap.BilinForm ℤ X), β = (n : ℤ) • u → n ≤ (β a b).natAbs := by
     intro n u hn
-    have e : β a b = n * u a b := by rw [hn]; simp
+    have e : β a b = n * u a b := simp [hn]
     have hu0 : u a b ≠ 0 := by intro h'; apply hab; rw [e, h', mul_zero]
     rw [e, Int.natAbs_mul, Int.natAbs_natCast]
     exact Nat.le_mul_of_pos_right n (Int.natAbs_pos.mpr hu0)

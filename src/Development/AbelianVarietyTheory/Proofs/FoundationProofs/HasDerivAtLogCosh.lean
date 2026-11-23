@@ -361,7 +361,7 @@ theorem conj_mem_upq (T : GrpData p q) (g : T.G) {Y : Mat p q} (hY : Y ∈ upq p
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
     _ = (matG T g⁻¹)ᴴ * (Yᴴ * Jm p q + Jm p q * Y) * matG T g⁻¹ := by
         rw [h2, h3]; simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-    _ = 0 := by rw [h]; simp
+    _ = 0 := simp [h]
 
 theorem expt_conj (T : GrpData p q) (g : T.G) {Y : Mat p q} (hY : Y ∈ upq p q) :
     T.expt (matG T g * Y * matG T g⁻¹) * g = g * T.expt Y := by

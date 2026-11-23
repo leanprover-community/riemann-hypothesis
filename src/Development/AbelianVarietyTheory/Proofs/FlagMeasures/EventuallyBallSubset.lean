@@ -356,7 +356,7 @@ theorem exists_inj_near_one {E : Fin (n ^ 2) → Matrix (Fin n) (Fin n) ℂ} (hG
     refine (norm_mul_le _ _).trans ?_
     rw [Matrix.frobenius_norm_conjTranspose]
     gcongr
-  have h7 : ‖D + D‖ = 2 * ‖D‖ := by rw [← two_smul ℝ D, norm_smul]; simp
+  have h7 : ‖D + D‖ = 2 * ‖D‖ := simp [← two_smul ℝ D, norm_smul]
   have h8 := norm_add_le (J * Dᴴ * J * (g - 1)) (J * (h - 1)ᴴ * J * D)
   rw [← norm_neg, ← h2, h7] at h8
   have h9 : ‖D‖ * (ρ * (‖J‖ * ‖J‖ + 1)) = ‖D‖ * (1 / 2) := by rw [hρ1]

@@ -150,7 +150,7 @@ theorem complementNormIdentity : OmegaNorm := by
   have hxx : h x x = 0 := hx _ fun a => by rw [hh x, hxf, star_zero]
   have hzx : h z x = 0 := by rw [hh x, hxf, star_zero]
   have hzw : h z w = 0 := by rw [hh w, hw, star_zero]
-  have hzz : h z z = -T := by rw [hz, hG]; simp
+  have hzz : h z z = -T := simp [hz, hG]
   have hxz : h x z = 0 := hxf _
   have hwz : h w z = 0 := hw _
   have hTs : star T = T := by

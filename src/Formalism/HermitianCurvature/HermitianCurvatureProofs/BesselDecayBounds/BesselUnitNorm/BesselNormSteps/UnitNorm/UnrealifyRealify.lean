@@ -112,7 +112,7 @@ theorem exp_mem_UH {X : Mx k r} (hX : InLieHpk k r X) (t : ℝ) :
     have h1 : Xᴴ * Hpk k r = -(Hpk k r * X) := eq_neg_of_add_eq_zero_left hX
     calc Xᴴ = Xᴴ * (Hpk k r * Hpk k r) := by rw [hH2, Matrix.mul_one]
       _ = (Xᴴ * Hpk k r) * Hpk k r := by rw [Matrix.mul_assoc]
-      _ = Hpk k r * (-X) * Hpk k r := by rw [h1]; simp
+      _ = Hpk k r * (-X) * Hpk k r := simp [h1]
   show (NormedSpace.exp ((t : ℂ) • X))ᴴ * Hpk k r * NormedSpace.exp ((t : ℂ) • X) = Hpk k r
   rw [← Matrix.exp_conjTranspose, Matrix.conjTranspose_smul, hXs]
   have hst : star (t : ℂ) = (t : ℂ) := Complex.conj_ofReal t

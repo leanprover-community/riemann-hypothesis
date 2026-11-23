@@ -123,7 +123,7 @@ theorem heckePolyOf_dual {n q : ℕ} (hq : (q : K) ≠ 0) {a b : ℕ → K} (h0 
     rw [Nat.add_sub_cancel_left, ← pow_mul]
     have e := congrArg (fun m => (q : K) ^ m) (tri_add i j)
     simp only [pow_add] at e
-    have e2 : ((-1 : K) ^ i) * (-1) ^ i = 1 := by rw [← mul_pow]; simp
+    have e2 : ((-1 : K) ^ i) * (-1) ^ i = 1 := simp [← mul_pow]
     rw [pow_add]
     linear_combination ((-1 : K) ^ j * a (i + j) * b i * ((-1) ^ i * (-1) ^ i)) * e +
       ((-1 : K) ^ j * a (i + j) * b i * ((q : K) ^ (j * (j - 1) / 2) * (q : K) ^ ((i + j - 1) * i))) * e2

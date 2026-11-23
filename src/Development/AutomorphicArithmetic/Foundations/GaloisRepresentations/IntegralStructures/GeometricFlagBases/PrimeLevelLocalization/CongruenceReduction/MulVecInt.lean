@@ -172,8 +172,8 @@ private theorem card_core (F : Frame S) (w : Plc E) (hp : (p : 𝓞 E) ∉ w.asI
       Ideal.absNorm w.asIdeal ^ i := by
   classical
   set c : AfP p ⊗[ℚ] VQ S.D → (Fin n → w.adicCompletion E) := fun v => ((F.a w)⁻¹).val *ᵥ F.vec w v with hc
-  have inv_a : ((F.a w)⁻¹).val * (F.a w).val = 1 := by rw [← Units.val_mul]; simp
-  have a_inv : (F.a w).val * ((F.a w)⁻¹).val = 1 := by rw [← Units.val_mul]; simp
+  have inv_a : ((F.a w)⁻¹).val * (F.a w).val = 1 := simp [← Units.val_mul]
+  have a_inv : (F.a w).val * ((F.a w)⁻¹).val = 1 := simp [← Units.val_mul]
   have c_add : ∀ v v', c (v + v') = c v + c v' := fun v v' => by simp [hc, Matrix.mulVec_add]
   have c_sub : ∀ v v', c (v - v') = c v - c v' := fun v v' => by simp [hc, Matrix.mulVec_sub]
   have c_neg : ∀ v, c (-v) = - c v := fun v => by simp [hc, Matrix.mulVec_neg]

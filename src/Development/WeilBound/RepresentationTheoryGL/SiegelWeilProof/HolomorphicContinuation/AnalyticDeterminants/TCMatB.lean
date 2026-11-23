@@ -70,7 +70,7 @@ theorem inG_inv {g : M2 n} (hg : InG g) : InG g⁻¹ := by
   unfold InG at *
   calc (g⁻¹)ᴴ * JJ n * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * JJ n * g) * g⁻¹ := by rw [hg]
     _ = (g * g⁻¹)ᴴ * JJ n * (g * g⁻¹) := by rw [conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = JJ n := by rw [h1]; simp
+    _ = JJ n := simp [h1]
 
 theorem mul_compl_zero (j : ℕ) (Q S : Matrix (Fin n) (Fin n) ℂ) (hQ : ∀ a b, Q a b ≠ 0 → b ∈ blkA j)
     (hS : ∀ a b, S a b ≠ 0 → a ∈ blkB j) : Q * S = 0 :=

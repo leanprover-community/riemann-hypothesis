@@ -120,13 +120,13 @@ private theorem isUnit_det_of_mem_UH_Hpk (bs : List (Eˣ × ℕ+)) :
   induction bs using List.reverseRecOn with
   | nil =>
     intro n hn
-    have hn' : n = 0 := by rw [← hn]; simp
+    have hn' : n = 0 := simp [← hn]
     subst hn'
     simp
   | append_singleton bs x ih =>
     obtain ⟨t, s⟩ := x
     intro n hn
-    have hn' : n = (bs.map (fun b => (b.2 : ℕ))).sum + s := by rw [← hn]; simp
+    have hn' : n = (bs.map (fun b => (b.2 : ℕ))).sum + s := simp [← hn]
     subst hn'
     have hu := ih _ rfl
     change IsUnit (Pt.snoc (⟨bs, rfl⟩ : Pt E _) t s).mat.det

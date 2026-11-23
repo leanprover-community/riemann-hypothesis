@@ -104,7 +104,7 @@ theorem cmp_ind {ρ : Representation LL G V} (h : Function.Bijective (Crystallin
     {P : V ⊗[Qp] B → Prop} (h0 : P 0) (hadd : ∀ x y, P x → P y → P (x + y))
     (hb : ∀ (b : B) (d : ↥(Dcris PD ρ)), P (mB (LL := LL) b d)) (x : V ⊗[Qp] B) : P x := by
   obtain ⟨u, hu⟩ := h.2 ((TensorProduct.comm Qp B V).symm x)
-  have : x = TensorProduct.comm Qp B V (CrystallineSubrepresentation.comparison PD ρ u) := by rw [hu]; simp
+  have : x = TensorProduct.comm Qp B V (CrystallineSubrepresentation.comparison PD ρ u) := simp [hu]
   subst this
   clear hu
   induction u using TensorProduct.induction_on with

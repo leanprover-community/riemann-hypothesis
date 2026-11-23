@@ -73,7 +73,7 @@ theorem GlobalTheory.ResEtaOfPow.resEta_of_resEtaPow : ∀ (D : D7) (χ : (AE D)
     rw [map_mul, map_mul, Circle.coe_mul, key a, key b, if_neg ha, if_neg hbS, if_neg hn2, hn1] at e
     norm_num at e
   have hηb : (η b : ℂ) = -1 := GlobalTheory.VolHeckeCompare.circle_eq_neg_one (hsq b) hb
-  have e2 : (η a : ℂ) * η b = 1 := by rw [← Circle.coe_mul, ← map_mul, hS _ hab]; simp
+  have e2 : (η a : ℂ) * η b = 1 := simp [← Circle.coe_mul, ← map_mul, hS _ hab]
   rw [hηb] at e2
   have hηa : (η a : ℂ) = -1 := by linear_combination -e2
   rw [hηa]

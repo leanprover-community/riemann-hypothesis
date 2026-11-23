@@ -65,7 +65,7 @@ theorem GlobalTheory.SiegFactor.firstFactor : ∀ (g n : ℕ), 1 ≤ g → 3 ≤
   obtain ⟨E, hE, hrel, hsumE, hcompat⟩ := GlobalTheory.T.exists_matrixUnits_extend_normal_noetherian hO.normal U₀ hdense Zh.G Zh.semi
     ((Over.pullback Zh.u₀).obj ρ.P.A) ρ.P.A Zh.u₀ Zh.φ (pullback.fst _ _) Zh.cart (isGrpPullback_pullback _ _)
     E' hE' hrel' hsum
-  have hidem : E 0 0 ≫ E 0 0 = E 0 0 := by rw [hrel]; simp
+  have hidem : E 0 0 ≫ E 0 0 = E 0 0 := simp [hrel]
   obtain ⟨H, _, i, r, hi, hr, hir, hri, hH⟩ := GlobalTheory.T.semiAbelian_direct_factor_of_idempotent M.Z Zh.G Zh.semi (E 0 0) (hE 0 0) hidem
   haveI : IsCommMonObj H := hH.comm
   have huniv8 := GlobalTheory.T.eighthPower_of_matrixUnits_idempotent_split Zh.G H E hE hrel hsumE i r hi hr hir hri

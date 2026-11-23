@@ -279,13 +279,13 @@ theorem sum_single_mem (W : Submodule ℂ (M2 n)) (Φ : Matrix (Fin n) (Fin n) �
 
 def fb11 (n : ℕ) : Matrix (Fin n) (Fin n) ℂ →ₗ[ℂ] M2 n where
   toFun A := fromBlocks A 0 0 0
-  map_add' A B := by rw [Matrix.fromBlocks_add]; simp
-  map_smul' c A := by rw [Matrix.fromBlocks_smul]; simp
+  map_add' A B := simp [Matrix.fromBlocks_add]
+  map_smul' c A := simp [Matrix.fromBlocks_smul]
 
 def fb22 (n : ℕ) : Matrix (Fin n) (Fin n) ℂ →ₗ[ℂ] M2 n where
   toFun A := fromBlocks 0 0 0 A
-  map_add' A B := by rw [Matrix.fromBlocks_add]; simp
-  map_smul' c A := by rw [Matrix.fromBlocks_smul]; simp
+  map_add' A B := simp [Matrix.fromBlocks_add]
+  map_smul' c A := simp [Matrix.fromBlocks_smul]
 
 theorem mem_span_gen (Y : M2 n) (hY : Y.toBlocks₂₁ = 0) : Y ∈ Submodule.span ℂ (Gen n) := by
   have hE1 : ∀ i j (a : ℂ), (fromBlocks (Matrix.single i j a) 0 0 0 : M2 n) ∈ Submodule.span ℂ (Gen n) := by

@@ -148,7 +148,7 @@ theorem main : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedF
       · rintro ⟨z, hz, rfl⟩
         rw [mem_closedBall_zero_iff, pi_norm_le_iff_of_nonneg hR0.le] at hz
         intro i
-        have : Φ (Φe.symm z) = z := by rw [← hΦe]; simp
+        have : Φ (Φe.symm z) = z := simp [← hΦe]
         rw [this]; exact hz i
     rw [this]
     exact (isCompact_closedBall 0 R).image hΨc

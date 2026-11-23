@@ -132,8 +132,8 @@ theorem subst2_col (g : Matrix (Fin n) (Fin n) ℂ) (P : MvPolynomial (Fin N × 
 theorem fischer_subst2 (h : Matrix (Fin N) (Fin N) ℂ) (g : Matrix (Fin n) (Fin n) ℂ)
     (P Q : MvPolynomial (Fin N × Fin n) ℂ) :
     fischer (subst2 h g P) Q = fischer P (subst2 hᴴ gᴴ Q) := by
-  have h1 : subst2 h g P = subst2 h 1 (subst2 1 g P) := by rw [subst2_mul]; simp
-  have h2 : subst2 hᴴ gᴴ Q = subst2 1 gᴴ (subst2 hᴴ 1 Q) := by rw [subst2_mul]; simp
+  have h1 : subst2 h g P = subst2 h 1 (subst2 1 g P) := simp [subst2_mul]
+  have h2 : subst2 hᴴ gᴴ Q = subst2 1 gᴴ (subst2 hᴴ 1 Q) := simp [subst2_mul]
   rw [h1, h2, subst2_row, fischer_rowSubst, ← subst2_row, ← fischer_swap, subst2_col,
     fischer_rowSubst, ← subst2_col, fischer_swap]
 

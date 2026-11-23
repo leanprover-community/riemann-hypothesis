@@ -82,7 +82,7 @@ theorem UpperTheory.Reformulated.B.Qk16.aux5 :
       = B.conjTranspose * (A.conjTranspose * UpperTheory.Reformulated.B.Qk16.Jm ε * A) * B := by rw [hg]
     _ = (A * B).conjTranspose * UpperTheory.Reformulated.B.Qk16.Jm ε * (A * B) := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = UpperTheory.Reformulated.B.Qk16.Jm ε := by rw [h1]; simp
+    _ = UpperTheory.Reformulated.B.Qk16.Jm ε := simp [h1]
 
 noncomputable def UpperTheory.Reformulated.B.Qk16.UJ :
     {n : ℕ} → (Fin n → Bool) → Subgroup (Matrix (Fin n) (Fin n) ℂ)ˣ :=

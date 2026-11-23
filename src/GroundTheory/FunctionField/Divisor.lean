@@ -224,7 +224,7 @@ theorem finiteDimensional_L_add_single (D : Divisor k K) (v : Place k K)
     rw [← v.valuation_le_one_iff, map_mul, ht]
     calc WithZero.exp (-(D v + 1)) * v.valuation (z : K)
         ≤ WithZero.exp (-(D v + 1)) * WithZero.exp (E v) := mul_le_mul' le_rfl (z.2 v)
-      _ = 1 := by rw [hEv, ← WithZero.exp_add]; simp
+      _ = 1 := simp [hEv, ← WithZero.exp_add]
   let φ : L E →ₗ[k] v.ResidueField :=
     { toFun := fun z => IsLocalRing.residue v.ring ⟨t * z, hmem z⟩
       map_add' := fun a b => by

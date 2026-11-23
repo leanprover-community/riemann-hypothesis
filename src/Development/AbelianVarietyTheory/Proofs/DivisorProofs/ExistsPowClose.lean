@@ -128,7 +128,7 @@ theorem nu_arith : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.Ch
   intro D T L sc G μ₀ hL hC i j x t hx
   have hQ : L.Q μ₀ = ∅ := Finset.eq_empty_of_forall_notMem fun w hw =>
     (hL.Q_ram μ₀ w).2 (Or.inl hw) (by rw [hL.xi_base]; intro x _; rfl)
-  have h0 : locPl G μ₀ = G.pl.W0 := by rw [locPl, hQ]; simp
+  have h0 : locPl G μ₀ = G.pl.W0 := simp [locPl, hQ]
   have hsub : G.pl.W0 ⊆ locPl G t := fun w hw => by unfold locPl; simp [hw]
   have hf : ∀ w, (((locGrid G t w).nu i j (x w) : ℂˣ) : ℂ) =
       ((L.xiH t).loc w (x w) : ℂ) * (((locGrid G μ₀ w).nu i j (x w) : ℂˣ) : ℂ) := fun w => by

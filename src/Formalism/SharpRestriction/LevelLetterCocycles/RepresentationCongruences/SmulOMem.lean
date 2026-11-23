@@ -117,7 +117,7 @@ theorem build [IsDomain O] (W : LocWach PD LL O v n) (hcase : Formalism.MainNoti
   have hBR' : (Bq : ℝ) ≤ ((PD.p : ℝ) - 1) * R₀ := by
     rw [div_le_iff₀ (by linarith)] at hR₀le; linarith
   have hBR : Bq ≤ (PD.p - 1) * R₀ := by
-    have h2 : ((PD.p - 1 : ℕ) : ℝ) = (PD.p : ℝ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
+    have h2 : ((PD.p - 1 : ℕ) : ℝ) = (PD.p : ℝ) - 1 := simp [Nat.cast_sub (by omega)]
     have : (Bq : ℝ) ≤ ((PD.p - 1 : ℕ) : ℝ) * (R₀ : ℝ) := by rw [h2]; exact hBR'
     exact_mod_cast this
   have hR1 : 1 ≤ R₀ := by
@@ -183,7 +183,7 @@ theorem build [IsDomain O] (W : LocWach PD LL O v n) (hcase : Formalism.MainNoti
     have hint : ∀ k', ∃ o' : O, algebraMap O LL o' = (PD.p : LL) ^ (R₀ + (r' - k)) * sol₁ k' (r' + 1) m := by
       intro k'
       apply int_of_bd W hH4 hOv (hBd k' (r' + 1) m)
-      have he : ((PD.p - 1 : ℕ) : ℚ) = (PD.p : ℚ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
+      have he : ((PD.p - 1 : ℕ) : ℚ) = (PD.p : ℚ) - 1 := simp [Nat.cast_sub (by omega)]
       have hkB' : (k : ℚ) + ((PD.p : ℚ) - 1) * (r' + 1) + 1 ≤ Bq := by
         have : (k + (PD.p - 1) * (r' + 1) + 1 : ℕ) ≤ Bq := hkB
         have := (Nat.cast_le (α := ℚ)).2 this

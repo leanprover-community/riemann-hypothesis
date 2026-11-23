@@ -82,7 +82,7 @@ theorem pull_cubeCls_push (h : IsGrpPullback G' G f φ) {T' : Over S'} {T : Over
 theorem cubeCls_one {n : ℕ} (c : Pic G.left) (hc : pull (eSec G) c = 0) :
     cubeCls (fun _ : Fin n => η[G]) c = 0 := by
   refine Finset.sum_eq_zero fun I _ => ?_
-  have e₁ : (1 : 𝟙_ (Over S) ⟶ G) = η[G] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S) ⟶ G) = η[G] := simp [Hom.one_def]
   have e : psum G (fun _ : Fin n => η[G]) I.down = η[G] := by
     have := psum_hom (1 : (𝟙_ (Over S) ⟶ G) →* (𝟙_ (Over S) ⟶ G)) (fun _ : Fin n => η[G]) I.down
     simp only [MonoidHom.one_apply, e₁] at this

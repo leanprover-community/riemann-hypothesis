@@ -604,7 +604,7 @@ theorem eventually_pure_eq (he : ∀ v, e v = 1 ∨ e v = -1) (a : (AF F)ˣ) :
 theorem exp_le_one_sub {x : ℝ} (h0 : 0 ≤ x) (h1 : x ≤ 1 / 2) : Real.exp (-(2 * x)) ≤ 1 - x := by
   have h := Real.add_one_le_exp (2 * x)
   have hp : 0 < Real.exp (-(2 * x)) := Real.exp_pos _
-  have hm : Real.exp (2 * x) * Real.exp (-(2 * x)) = 1 := by rw [← Real.exp_add]; simp
+  have hm : Real.exp (2 * x) * Real.exp (-(2 * x)) = 1 := simp [← Real.exp_add]
   have h2 : 1 ≤ (1 - x) * Real.exp (2 * x) := by nlinarith
   calc Real.exp (-(2 * x)) = 1 * Real.exp (-(2 * x)) := (one_mul _).symm
     _ ≤ ((1 - x) * Real.exp (2 * x)) * Real.exp (-(2 * x)) := mul_le_mul_of_nonneg_right h2 hp.le

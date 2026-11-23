@@ -167,7 +167,7 @@ theorem exists_inv_unr {w : PlE H} (k : A.LP w) (hk : A.lpDim k = 1) (hu : A.unr
   obtain ⟨c, hc⟩ := Multiset.card_eq_one.mp ((A.frobEig_card k hu).trans hk)
   have hc0 : c ≠ 0 := fun h => A.frobEig_ne_zero k hu (by rw [hc, h]; exact Multiset.mem_singleton_self 0)
   obtain ⟨hu', hf', hd'⟩ := A.lpUnr_spec w {c⁻¹} (by simp [hc0, eq_comm])
-  have hd1 : A.lpDim (A.lpUnr w {c⁻¹}) = 1 := by rw [hd']; simp
+  have hd1 : A.lpDim (A.lpUnr w {c⁻¹}) = 1 := simp [hd']
   refine ⟨A.lpUnr w {c⁻¹}, hd1, hu', ?_, ?_⟩
   · rw [A.unr_eq_lpUnr _ (A.unr_char _ _ hd1 hu hu'), A.frobEig_char _ _ c⁻¹ hu hu' hd1 hf', hc]
     simp [hc0]

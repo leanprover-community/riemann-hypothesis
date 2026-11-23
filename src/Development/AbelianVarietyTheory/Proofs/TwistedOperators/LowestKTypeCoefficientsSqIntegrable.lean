@@ -222,7 +222,7 @@ theorem frame_herm (M : DSModel W S) {Fr : Frames W} (hFr : IsFrames W Fr) (ρ :
     _ = ((M.fr ρ)⁻¹)ᴴ * ((M.fr ρ)ᴴ * Formalism.REAL.Jm (M.ε ρ) * M.fr ρ) * (M.fr ρ)⁻¹ := by rw [hFr ρ, M.fr_gram ρ]
     _ = (M.fr ρ * (M.fr ρ)⁻¹)ᴴ * Formalism.REAL.Jm (M.ε ρ) * (M.fr ρ * (M.fr ρ)⁻¹) := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Formalism.REAL.Jm (M.ε ρ) := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+    _ = Formalism.REAL.Jm (M.ε ρ) := simp [Matrix.mul_nonsing_inv _ hd]
 
 theorem rep_realMat (M : DSModel W S) {Fr : Frames W} (hFr : IsFrames W Fr) (ρ : D.what₂.Tau)
     (hn : (W.sig (tauE D ρ)).1 + (W.sig (tauE D ρ)).2 = W.rank) (b : Upq W ρ) :

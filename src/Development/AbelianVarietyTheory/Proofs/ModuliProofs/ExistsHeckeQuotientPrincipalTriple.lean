@@ -125,7 +125,7 @@ theorem exists_heckeQuotient_triple_of_laws : Out.Laws → ∀ (E : Type) [Field
     rw [← lam_pull, hψm, lam_nsmul]
 
   have hpowhom : IsMonHom (𝟙 t.G ^ p ^ 2) := laws.rigidity _ _ _ hA hA _ (by
-    have e₁ : (η[t.G] : 𝟙_ _ ⟶ t.G) = 1 := by rw [Hom.one_def]; simp
+    have e₁ : (η[t.G] : 𝟙_ _ ⟶ t.G) = 1 := simp [Hom.one_def]
     rw [MonObj.comp_pow, Category.comp_id, e₁, one_pow])
   obtain ⟨π, hπ⟩ := fac t.G (𝟙 t.G ^ p ^ 2) fun x hx => by rw [MonObj.comp_pow, Category.comp_id, hpow x hx]
   have hπψ : π ≫ ψ = 𝟙 B ^ p ^ 2 := canc _ _ _ (by

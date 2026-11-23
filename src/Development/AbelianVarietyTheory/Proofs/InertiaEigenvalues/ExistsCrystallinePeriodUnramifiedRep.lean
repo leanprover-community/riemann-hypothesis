@@ -114,7 +114,7 @@ theorem approx_step
     (WittVector.mem_span_p_iff_coeff_zero_eq_zero x).1 (Ideal.mem_span_singleton.2 hx)
   have ccA : ∀ g (Y : Matrix n n (WittVector p R)) i j, ((A g * Y) i j).coeff 0 = (Y i j).coeff 0 := by
     intro g Y i j
-    have e : (A g * Y) i j = Y i j + ((A g - 1) * Y) i j := by rw [sub_mul, one_mul]; simp
+    have e : (A g * Y) i j = Y i j + ((A g - 1) * Y) i j := simp [sub_mul, one_mul]
     have h2 := Dv_mul_right Y (h1 g) i j
     rw [pow_one] at h2
     rw [e, ← WittVector.constantCoeff_apply, map_add (f := _), WittVector.constantCoeff_apply,

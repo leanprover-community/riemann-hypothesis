@@ -47,7 +47,7 @@ theorem corner_mul_corner {A : Type} [Ring A] (E x y : A) (hE : E * E = E)
   have h : (1 - E) * E = 0 := by rw [sub_mul, one_mul, hE, sub_self]
   calc x * y = (E * x * (1 - E)) * (E * y * (1 - E)) := by rw [hx, hy]
     _ = E * x * ((1 - E) * E) * y * (1 - E) := by simp only [mul_assoc]
-    _ = 0 := by rw [h]; simp
+    _ = 0 := simp [h]
 
 theorem exists_linExt_corner_proj : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (Γ : Set (Matrix ι ι ℂ)) (e : Matrix ι ι ℚ), IsQGroup Γ → e * e = e → ∃ c : ι × ι → ι × ι → ℚ, (∀ X : Matrix ι ι ℂ, 1 + linExt c X ∈ Γ ∧ e.map (algebraMap ℚ ℂ) * linExt c X * (1 - e.map (algebraMap ℚ ℂ)) = linExt c X) ∧ ∀ ε : Matrix ι ι ℂ, 1 + ε ∈ Γ → e.map (algebraMap ℚ ℂ) * ε * (1 - e.map (algebraMap ℚ ℂ)) = ε → linExt c ε = ε := by
   intro ι _ _ Γ e hΓ he

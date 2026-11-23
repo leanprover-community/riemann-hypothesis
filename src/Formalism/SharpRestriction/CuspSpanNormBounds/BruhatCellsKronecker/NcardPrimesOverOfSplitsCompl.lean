@@ -190,7 +190,7 @@ theorem disjoint_plOver {g g' : ℕ} (hg : g.Prime) (hg' : g'.Prime) (hne : g �
     Nat.isCoprime_iff_coprime.mpr ((Nat.coprime_primes hg hg').mpr hne)
   apply p.isPrime.ne_top
   rw [Ideal.eq_top_iff_one]
-  have h1 : ((a * g + b * g' : ℤ) : 𝓞 K) = 1 := by rw [hab]; simp
+  have h1 : ((a * g + b * g' : ℤ) : 𝓞 K) = 1 := simp [hab]
   rw [← h1]
   push_cast
   exact Ideal.add_mem _ (Ideal.mul_mem_left _ _ hp) (Ideal.mul_mem_left _ _ hp')

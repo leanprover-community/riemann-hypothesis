@@ -599,7 +599,7 @@ theorem last_block {r : ℕ} (γ : Point ℂ (r + 1)) (t : ℂ) (h : γ.1.getLas
     leadMinor (ptMat γ) (r + 1) le_rfl = leadMinor (ptMat γ) r (Nat.le_succ r) * t ∧
       leadMinor (ptMat γ) r (Nat.le_succ r) ≠ 0 := by
   obtain ⟨ys, hys⟩ := List.getLast?_eq_some_iff.1 h
-  have hlen : (toComp γ).length = ys.length + 1 := by rw [toComp_length, hys]; simp
+  have hlen : (toComp γ).length = ys.length + 1 := simp [toComp_length, hys]
   have hs1 : (toComp γ).sizeUpTo (ys.length + 1) = r + 1 := by rw [← hlen]; exact (toComp γ).sizeUpTo_length
   have hs0 : (toComp γ).sizeUpTo ys.length = r := by
     have e := γ.2.2

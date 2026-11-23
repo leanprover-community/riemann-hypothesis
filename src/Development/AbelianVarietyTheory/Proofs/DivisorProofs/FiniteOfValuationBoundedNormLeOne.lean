@@ -81,7 +81,7 @@ theorem finite_of_valuation_bounded_of_norm_le_one :
         h1.trans (WithZero.exp_le_exp.2 (by omega))
       calc w.intValuation d * w.valuation E a ≤ WithZero.exp (-(N w)) * WithZero.exp (N w) :=
             mul_le_mul' h3 h2
-        _ = 1 := by rw [← WithZero.exp_add]; simp
+        _ = 1 := simp [← WithZero.exp_add]
     · have h2 : ∀ a ∈ X, w.valuation E a ≤ 1 := by
         simpa [Set.Finite.mem_toFinset] using hw
       exact mul_le_one' (w.intValuation_le_one d) (h2 a ha)

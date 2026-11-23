@@ -118,7 +118,7 @@ theorem UpperTheory.Cb.exists_mem_uIdeal_idempotent_mod_prime_pow :
     rw [map_mul, map_intCast]
     have e : (v : 𝓞 D.F) * x + (v : 𝓞 D.F) * D.bar x - 1 = (v : 𝓞 D.F) * (x + D.bar x) - 1 := by ring
     rw [e, hxs]
-    have huv' : ((u * p + v * s : ℤ) : 𝓞 D.F) = 1 := by rw [huv]; simp
+    have huv' : ((u * p + v * s : ℤ) : 𝓞 D.F) = 1 := simp [huv]
     push_cast at huv'
     linear_combination huv'
   have h2 : (p : 𝓞 D.F) ∣ (v : 𝓞 D.F) * x * D.bar ((v : 𝓞 D.F) * x) := by

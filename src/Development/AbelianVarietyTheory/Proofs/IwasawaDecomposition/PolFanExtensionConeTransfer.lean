@@ -373,7 +373,7 @@ theorem isTorsionFree_of_pos {X : Type} [AddCommGroup X] {be : LinearMap.BilinFo
     simp only [map_smul, LinearMap.smul_apply, smul_eq_mul]
     ring
   rw [h1] at h3
-  have h4 : r * r * be (x - y) (x - y) = 0 := by rw [← h3]; simp
+  have h4 : r * r * be (x - y) (x - y) = 0 := simp [← h3]
   rcases mul_eq_zero.1 h4 with h | h
   · exact hr0 (mul_self_eq_zero.1 h)
   · exact (hpos _ hd).ne' h

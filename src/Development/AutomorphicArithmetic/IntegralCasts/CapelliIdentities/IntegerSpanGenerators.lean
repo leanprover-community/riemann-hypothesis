@@ -56,7 +56,6 @@ noncomputable def UpperTheory.Reformulated.B.IntegerSpanGenerators.Zspan
   Submodule.span (LetA O n)
     {z | ∃ w, w ∈ W.N T ∧ InI W T i w ∧ IsTrunc W T i j M X σ w z}
 
-section SlopeTestRemainingChoices
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.CrystallineLiftingInputs Formalism.MainNotions.LiftingTheory
 
@@ -252,7 +251,6 @@ private theorem aux (W : LocWach PD LL O v n) [IsDomain O]
       refine Finset.sum_congr rfl fun y _ => ?_
       rw [mul_smul, hcast, map_smul]
 
-end SlopeTestRemainingChoices
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.MainNotions.CrystallineLiftingInputs
   Formalism.MainNotions.DeltaInvariantLattices Formalism.MainNotions.LiftingTheory Formalism.MainNotions.ArcLiftingSetup in

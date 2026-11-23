@@ -102,7 +102,7 @@ def hostOf (D : D7) (hU : Algebra.Unramified (𝓞 (maximalRealSubfield D.host.E
   bar_eq _ := rfl
   unram := hU
   rt0 := D.host.φ₀ D.host.sqrtMinusD
-  sqrt_neg_disc_sq := by rw [← map_pow, D.host.sqrtMinusD_sq]; simp
+  sqrt_neg_disc_sq := simp [← map_pow, D.host.sqrtMinusD_sq]
 
 theorem barE_eq_conj (D : D7) (a : 𝓞 D.host.E) : ((barE D a : 𝓞 D.host.E) : D.host.E) = D.host.conj (a : D.host.E) := by
   apply D.host.φ₀.injective

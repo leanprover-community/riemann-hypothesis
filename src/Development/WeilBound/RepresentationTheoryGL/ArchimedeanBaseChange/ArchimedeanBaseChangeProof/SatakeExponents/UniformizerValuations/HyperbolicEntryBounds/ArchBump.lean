@@ -159,7 +159,7 @@ theorem bump_one' (ι : Type) [Fintype ι] (c : ι → ℂ) (hc : ∀ i, (c i).i
       have hl' : l ^ m * P = 1 := by
         rw [hl, ← Real.rpow_natCast, ← Real.rpow_mul hP0.le, div_mul_cancel₀ _ hm0, Real.rpow_neg_one,
           inv_mul_cancel₀ hP0.ne']
-      have : ((l ^ m * P : ℝ) : ℂ) = 1 := by rw [hl']; simp
+      have : ((l ^ m * P : ℝ) : ℂ) = 1 := simp [hl']
       rw [← this, hP]
       push_cast
       ring

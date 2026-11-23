@@ -58,7 +58,7 @@ theorem bar_bar (a : 𝓞 E) : H.bar (H.bar a) = a := by
   rw [H.bar_eq, H.bar_eq, IsCMField.complexConj_apply_apply]
 
 theorem conj_of_sq {ρ : ℂ} (hρ : ρ ^ 2 = -(H.d : ℂ)) : starRingEnd ℂ ρ = -ρ := by
-  have h1 : (starRingEnd ℂ ρ) ^ 2 = ρ ^ 2 := by rw [← map_pow, hρ]; simp
+  have h1 : (starRingEnd ℂ ρ) ^ 2 = ρ ^ 2 := simp [← map_pow, hρ]
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 h1 with h | h
   · exfalso
     obtain ⟨x, hx⟩ := Complex.conj_eq_iff_real.1 h

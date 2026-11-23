@@ -189,7 +189,7 @@ private theorem mul_inv_mem_UJset_of_conjTranspose_Jm_eq {P P' G : Matrix (Fin n
     _ = (P⁻¹)ᴴ * (Pᴴ * Formalism.REAL.Jm ε * P) * P⁻¹ := by rw [hG', hG]
     _ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
       rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Formalism.REAL.Jm ε := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+    _ = Formalism.REAL.Jm ε := simp [Matrix.mul_nonsing_inv _ hd]
 
 private theorem mul_mul_mem_lieSet_of_mem_UJset_of_mem_lieSet {Q R X : Matrix (Fin n) (Fin n) ℂ} (hQ : Q ∈ UJset ε) (hR : R ∈ UJset ε)
     (hQR : Q * R = 1) (hRQ : R * Q = 1) (hX : X ∈ lieSet ε) : R * X * Q ∈ lieSet ε := by

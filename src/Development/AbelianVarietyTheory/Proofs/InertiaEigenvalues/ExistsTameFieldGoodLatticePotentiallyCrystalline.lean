@@ -289,7 +289,7 @@ theorem chars_main {G LL : Type} [Group G] [Field LL] (I IK H : Subgroup G) (W :
       · rintro ⟨hk, hq⟩
         exact ⟨hk, (hQ k hk).2 hq⟩
     have hla' : (l : ZMod e) ^ a = 1 := by
-      have : ((l ^ a : ℕ) : ZMod e) = 1 := by rw [← he1]; simp
+      have : ((l ^ a : ℕ) : ZMod e) = 1 := simp [← he1]
       exact_mod_cast this
     unfold Formalism.MainNotions.ElementDenominator.orbLen
     rw [hset]

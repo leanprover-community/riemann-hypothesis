@@ -75,7 +75,7 @@ theorem exists_finite_affine_refinement [CompactSpace X] {M : LB X} (hM : M.IsLB
     ∃ (α : Type) (_ : Fintype α) (W : α → X.Opens) (i : α → M.ι),
       (∀ a, IsAffineOpen (W a)) ∧ (∀ a, W a ≤ M.U (i a)) ∧ ∀ y : X, ∃ a, y ∈ W a := by
   have hcov : ∀ y : X, ∃ k, y ∈ M.U k := fun y => by
-    have hy : y ∈ (⨆ k, M.U k) := by rw [hM.cover]; simp
+    have hy : y ∈ (⨆ k, M.U k) := simp [hM.cover]
     exact Opens.mem_iSup.1 hy
   choose k hk using hcov
   have hV : ∀ y : X, ∃ V : X.Opens, IsAffineOpen V ∧ y ∈ V ∧ V ≤ M.U (k y) := fun y => by

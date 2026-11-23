@@ -173,7 +173,7 @@ theorem sum_over_dyadic_shells :
     have hexpT : Real.exp (-T) ≤ 1 / 2 := by
       have h1 : Real.exp (-T) ≤ Real.exp (-1) := Real.exp_le_exp.mpr (by linarith)
       have h2 : (1 : ℝ) + 1 ≤ Real.exp 1 := Real.add_one_le_exp 1
-      have h3 : Real.exp (-1) * Real.exp 1 = 1 := by rw [← Real.exp_add]; simp
+      have h3 : Real.exp (-1) * Real.exp 1 = 1 := simp [← Real.exp_add]
       have h4 : 0 < Real.exp (-1) := Real.exp_pos _
       nlinarith
     have hbe : ∑ i ∈ range N, W (i + 1) ≤ 2 * Real.exp (-T) := by

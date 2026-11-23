@@ -167,7 +167,7 @@ theorem block_sum (B : ℕ) (hB : B < R.m) :
   rw [Nat.succ_mul] at h1
   have hn : ∀ ρ, ρ < R.t + 1 → R.k - 1 + (B * (R.t + 1) + ρ) < R.N R.m - 1 := by
     intro ρ hρ; unfold Ranks.N; omega
-  have ck : ((R.k - 1 : ℕ) : ℚ) = (R.k : ℚ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
+  have ck : ((R.k - 1 : ℕ) : ℚ) = (R.k : ℚ) - 1 := simp [Nat.cast_sub (by omega)]
   rw [Finset.sum_range_succ']
   have e0 : R.k - 1 + (B * (R.t + 1) + 0) = R.k - 1 + B * (R.t + 1) := by omega
   have e0' : R.k - 1 + (B * (R.t + 1) + 0) + 1 = R.k + B * (R.t + 1) + 0 := by omega
@@ -225,7 +225,7 @@ theorem bottomRank_sum_le_two_mul_totalRank :
   have s0 := ext_sg W u τ hW 0 (by unfold Ranks.N; omega)
   rw [RowPar.sgHC_lo _ (by omega), RowPar.vb_lo _ (by omega)] at s0
   have l1 := ext_lam_lo W u τ (R.k - 1) (by omega)
-  have ck : ((R.k - 1 : ℕ) : ℚ) = (R.k : ℚ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
+  have ck : ((R.k - 1 : ℕ) : ℚ) = (R.k : ℚ) - 1 := simp [Nat.cast_sub (by omega)]
   rw [s0, l1, ck] at hhead'
   unfold RowPar.sh at hhead'
   push_cast at hhead'
@@ -288,9 +288,9 @@ theorem dOne_le_place :
           (ext (W.lamTrue u R.m τ) (R.k + (R.m - 1) * (R.t + 1) + R.t) : ℚ)) := by exact_mod_cast h1
   have hsq : (ext (W.sgTrue τ) (R.k - 2) : ℚ) - (ext (W.lamTrue u R.m τ) (R.k - 1) : ℚ) ≤
       ((Br.d0 (N_m_succ R) (W.lamTrue u R.m τ) (W.sgTrue τ) : ℤ) : ℚ) := by exact_mod_cast hsingle
-  have ck1 : ((R.k - 1 : ℕ) : ℚ) = (R.k : ℚ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
-  have ck2 : ((R.k - 2 : ℕ) : ℚ) = (R.k : ℚ) - 2 := by rw [Nat.cast_sub (by omega)]; simp
-  have cm1 : ((R.m - 1 : ℕ) : ℚ) = (R.m : ℚ) - 1 := by rw [Nat.cast_sub (by omega)]; simp
+  have ck1 : ((R.k - 1 : ℕ) : ℚ) = (R.k : ℚ) - 1 := simp [Nat.cast_sub (by omega)]
+  have ck2 : ((R.k - 2 : ℕ) : ℚ) = (R.k : ℚ) - 2 := simp [Nat.cast_sub (by omega)]
+  have cm1 : ((R.m - 1 : ℕ) : ℚ) = (R.m : ℚ) - 1 := simp [Nat.cast_sub (by omega)]
   rw [l1, lk, lh0, lh1] at h1q
   rw [s2, lk] at hsq
   simp only [ck1, ck2, cm1, Nat.cast_zero, Nat.cast_one] at h1q hsq

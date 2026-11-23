@@ -171,7 +171,7 @@ theorem modF_unit {y : (Af E)ˣ} (h : ∀ w, Valued.v ((y : Af E) w) = 1) : modF
 
 def omega (χ : HChar E) (S : ℂ) : (Af E)ˣ →* ℂ where
   toFun y := (finPart χ y : ℂ) * ((modF y : ℝ) : ℂ) ^ S
-  map_one' := by rw [map_one, modF_unit fun w => by simp [one_coord]]; simp
+  map_one' := simp [map_one, modF_unit fun w => by simp [one_coord]]
   map_mul' y y' := by
     rw [map_mul, IdeleModule.modF_mul, Complex.ofReal_mul,
       Complex.mul_cpow_ofReal_nonneg (IdeleModule.modF_pos y).le (IdeleModule.modF_pos y').le, Units.val_mul]

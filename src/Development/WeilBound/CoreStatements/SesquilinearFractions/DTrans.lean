@@ -150,7 +150,7 @@ theorem exists_transition_matrix_gram : ∀ (E : Type) [Field E] [NumberField E]
       rcases mul_eq_zero.1 hm with h | h
       · exact h
       · exact absurd h (by exact_mod_cast hn.ne')
-    have : (c : 𝓞 E) * v m = 0 := by rw [← hwv, hw0]; simp
+    have : (c : 𝓞 E) * v m = 0 := simp [← hwv, hw0]
     simpa [hc0] using this
 
 end PositivityTheory.Xgf

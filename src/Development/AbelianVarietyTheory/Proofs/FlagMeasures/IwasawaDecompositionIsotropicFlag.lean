@@ -163,7 +163,7 @@ theorem UH_inv {n : ℕ} {H a : Matrix (Fin n) (Fin n) ℂ} (hH : H * H = 1) (ha
   show a⁻¹ᴴ * H * a⁻¹ = H
   calc a⁻¹ᴴ * H * a⁻¹ = a⁻¹ᴴ * (aᴴ * H * a) * a⁻¹ := by rw [ha']
     _ = (a * a⁻¹)ᴴ * H * (a * a⁻¹) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = H := by rw [Matrix.mul_nonsing_inv _ hu]; simp
+    _ = H := simp [Matrix.mul_nonsing_inv _ hu]
 
 theorem Hb_sq : Hb k * Hb k = 1 := by
   unfold Hb; rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]

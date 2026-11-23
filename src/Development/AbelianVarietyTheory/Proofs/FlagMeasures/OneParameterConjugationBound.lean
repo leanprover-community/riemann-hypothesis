@@ -426,7 +426,7 @@ lemma conj_facts {k : UJ ε} (hk : umat k ∈ Kset ε) {X : Matrix (Fin n) (Fin 
           simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Matrix.mul_add,
             Matrix.add_mul, Matrix.mul_assoc]
           rw [hkJ, ← Matrix.mul_assoc (Jm ε) Kᴴ, hJk, Matrix.mul_assoc]
-      _ = 0 := by rw [hX]; simp
+      _ = 0 := simp [hX]
   · simp only [Matrix.star_eq_conjTranspose]
     have hu : K * Kᴴ = 1 := by simpa [Matrix.star_eq_conjTranspose] using Matrix.mem_unitaryGroup_iff.1 hku
     have : Kᴴ * X * K * (Kᴴ * X * K)ᴴ = Kᴴ * (X * Xᴴ) * K := by

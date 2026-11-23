@@ -75,7 +75,7 @@ theorem gram_frame {T' : E} (F : LFlag S r T') (a b : Fin (r + 1)) :
   refine Fin.lastCases ?_ (fun i => ?_) a <;> refine Fin.lastCases ?_ (fun j => ?_) b
   · simpa [frame, FlagG.fvec] using F.fl.z_norm
   · have h := F.fl.z_orth j
-    have : S.hT F.fl.z (F.fl.e j) = 0 := by rw [← herm_star, h]; simp
+    have : S.hT F.fl.z (F.fl.e j) = 0 := simp [← herm_star, h]
     simpa [frame, FlagG.fvec, Fin.castSucc_ne_last] using this
   · simpa [frame, FlagG.fvec, Fin.castSucc_ne_last] using F.fl.z_orth i
   · simpa [frame, FlagG.fvec, Fin.castSucc_ne_last] using F.fl.e_iso i j

@@ -103,7 +103,7 @@ theorem cancel_one (a : Γ → V →ₗ[K] V) (b : Γ → W →ₗ[K] W) (c : Γ
     ∃ f : V ≃ₗ[K] W, ∀ g v, f (a g v) = b g (f v) := by
   by_cases hd : (e ((0 : V), (1 : K))).2 = 0
   · rcases hq : e.symm ((0 : W), (1 : K)) with ⟨v₁, d'⟩
-    have hq' : e (v₁, d') = ((0 : W), (1 : K)) := by rw [← hq]; simp
+    have hq' : e (v₁, d') = ((0 : W), (1 : K)) := simp [← hq]
     have hv1 : ∀ g, a g v₁ = c g • v₁ := by
       intro g
       have h1 := h g v₁ d'

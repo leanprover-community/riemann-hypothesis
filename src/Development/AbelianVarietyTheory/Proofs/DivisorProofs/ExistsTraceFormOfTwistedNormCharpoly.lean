@@ -136,7 +136,7 @@ theorem exists_trace_form : ∀ (K : GlobalTheory.UnitLemma.UQ) (B : GlobalTheor
   set S := G.map f with hS
   set N' := N.map f with hN'
   set ε : K.E := (-1) ^ (a - 1) with hε
-  have hεε : ε * ε = 1 := by rw [hε, ← mul_pow]; simp
+  have hεε : ε * ε = 1 := simp [hε, ← mul_pow]
   have hkey : Sᵀ * N' = ε • S.map K.c := by
     have h0 := congrArg f.mapMatrix (gram_norm a L c δ)
     rw [map_mul] at h0

@@ -110,7 +110,7 @@ theorem isONeg_x0Mat : IsONeg V q (x0Mat M) := by
     rw [← M.fr_gram τ]; unfold onb
     calc _ = (M.fr τ * (M.fr τ)⁻¹)ᴴ * Formalism.REAL.Jm (M.ε τ) * (M.fr τ * (M.fr τ)⁻¹) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [h1]; simp
+      _ = _ := simp [h1]
   have h3 : (x0Mat M τ)ᴴ * gramAt D V τ * x0Mat M τ =
       ((onb M τ)ᴴ * gramAt D V τ * onb M τ).submatrix (arr (nNeg (M.ε τ))) (arr (nNeg (M.ε τ))) := rfl
   rw [h3, h2, negM_eq M hpq hε τ, Formalism.REAL.Jm, Matrix.submatrix_diagonal _ _ (arr_injective (nNeg_le _))]

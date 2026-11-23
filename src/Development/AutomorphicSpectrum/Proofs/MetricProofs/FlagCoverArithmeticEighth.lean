@@ -438,7 +438,7 @@ theorem lift_inverse : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fint
     by_cases h : ∃ p, M'.blk p = some k'
     · obtain ⟨p, hp'⟩ := h
       have hk : ∃ k, M.blk p = some k := by
-        have h1 : M'.blk p ≠ none := by rw [hp']; simp
+        have h1 : M'.blk p ≠ none := simp [hp']
         have h2 : IsProperStep N j p.2 := by_contra fun e => h1 ((M'.blk_none p).2 e)
         exact Option.ne_none_iff_exists'.1 fun e => ((M.blk_none p).1 e) h2
       obtain ⟨k, hp⟩ := hk

@@ -146,7 +146,7 @@ theorem Gen.det (h : Gen C m) (hC : Cᵀ * Y.J * C.map σ = 0) : (mat m).det = 1
     rw [incM_sub, incM_one, incM_mul, Matrix.sub_mul, Matrix.mul_assoc, Matrix.mul_sub (incM F R), rm]; simp
   have pc : incM F (1 - S * R) * incM F C = incM F C := by
     rw [← incM_mul, Matrix.sub_mul, Matrix.mul_assoc, rC]; simp
-  have e : (mat m - 1) * incM F (1 - S * R) = incM F C * X := by rw [Matrix.sub_mul, hX]; simp
+  have e : (mat m - 1) * incM F (1 - S * R) = incM F C * X := simp [Matrix.sub_mul, hX]
   rw [← add_sub_cancel 1 (mat m), ← pm, det_one_add_mul_comm, e]
   refine det_one (Q := incM F (C * T)) (by rw [← Matrix.mul_assoc, ← incM_mul, hT]) ?_
   rw [incM_mul, ← Matrix.mul_assoc, ← e, Matrix.mul_assoc _ _ (incM F C), pc, Matrix.sub_mul, h.fix]; simp
@@ -190,7 +190,7 @@ variable {γ x : G2 σ Y} {A B : Matrix (Fin n) (Fin n) (AE F E)}
 
 theorem inj (h : mat2 γ⁻¹ * dC n (AE F E) = fromRows A B) {Z : Matrix (Fin n) (Fin n) (AE F E)} (a : A * Z = 0) (b : B * Z = 0) :
     Z = 0 := by
-  have : mat2 γ * (fromRows A B * Z) = 0 := by rw [fromRows_mul, a, b]; simp
+  have : mat2 γ * (fromRows A B * Z) = 0 := simp [fromRows_mul, a, b]
   rw [← h, ← Matrix.mul_assoc, ← Matrix.mul_assoc, show mat2 γ * mat2 γ⁻¹ = 1 from γ.1.mul_inv, Matrix.one_mul, dC, diagCols,
     fromRows_mul] at this
   exact ext fun i j => by simpa using congrFun (congrFun this (.inl i)) j
@@ -212,7 +212,7 @@ theorem offOpen : OffOpen := by
   obtain ⟨A, B, hL, iso⟩ := frame (inv_mem hγ)
   obtain ⟨S, hS⟩ := exists_gi A
   set K := 1 - S * A with hK
-  have aK : A * K = 0 := by rw [hK, Matrix.mul_sub, ← Matrix.mul_assoc, hS]; simp
+  have aK : A * K = 0 := simp [hK, Matrix.mul_sub, ← Matrix.mul_assoc, hS]
   have kK : ∀ Z : Matrix (Fin n) (Fin n) E, A * Z = 0 → K * Z = Z := fun Z h => by rw [hK, Matrix.sub_mul, Matrix.mul_assoc, h]; simp
   have bC : Bᵀ * Y.J * (B * K).map σ = 0 := by
     rw [mm, ← Matrix.mul_assoc, ← iso, Matrix.mul_assoc, ← mm, aK, Matrix.map_zero _ (map_zero _), Matrix.mul_zero]

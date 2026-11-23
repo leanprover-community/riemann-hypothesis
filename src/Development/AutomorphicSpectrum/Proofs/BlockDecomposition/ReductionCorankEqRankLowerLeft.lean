@@ -100,7 +100,7 @@ theorem rank_add_rank_eq {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuati
 
 theorem low_rows {R : Type} [CommRing R] {n : ℕ} (g : GL (Ix n) R) :
     lowerLeftBlock g * (g⁻¹).1.toBlocks₁₂ + dBlk g * (g⁻¹).1.toBlocks₂₂ = 1 := by
-  have h : g.1 * (g⁻¹).1 = 1 := by rw [← Units.val_mul]; simp
+  have h : g.1 * (g⁻¹).1 = 1 := simp [← Units.val_mul]
   have e : fromBlocks g.1.toBlocks₁₁ g.1.toBlocks₁₂ g.1.toBlocks₂₁ g.1.toBlocks₂₂ *
       fromBlocks (g⁻¹).1.toBlocks₁₁ (g⁻¹).1.toBlocks₁₂ (g⁻¹).1.toBlocks₂₁ (g⁻¹).1.toBlocks₂₂ = 1 := by
     rw [fromBlocks_toBlocks, fromBlocks_toBlocks]; exact h

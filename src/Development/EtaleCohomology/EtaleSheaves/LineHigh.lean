@@ -260,7 +260,7 @@ theorem tower (H : Hyp) (hD : Desc) (hC : Cover) (h0 : HZero) (hA : AICAcyc) (l0
     obtain ⟨T, c', k', hT, hd, hk', e⟩ := hSt ((h ≫ v) ≫ c) hZ
     have hl : IL c' := IL.cancel hk' (e ▸ hc.pre (h ≫ v) inferInstance)
     obtain ⟨_, _⟩ := hl.qc
-    have e' : h ≫ v ≫ c ≫ k = c' ≫ k' ≫ k := by rw [← Category.assoc c', e]; simp
+    have e' : h ≫ v ≫ c ≫ k = c' ≫ k' ≫ k := simp [← Category.assoc c', e]
     rw [e']
     exact (hF H q i A hq c' (k' ≫ k) hZ hT fun B _ _ hB hqB t =>
       line H hD hC h0 hA l0 l1 l2 q i B hB hqB _ (hl.bc (IsPullback.of_hasPullback c' t))).2 (ih k' hk')

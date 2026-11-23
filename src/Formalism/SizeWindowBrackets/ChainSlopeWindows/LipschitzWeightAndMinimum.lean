@@ -57,7 +57,7 @@ lemma rp {x : ℝ} (hx0 : 0 < x) (u v : ℝ) : x ^ (u + v) = x ^ u * x ^ v := Re
 lemma nT_bound {x ε : ℝ} {n nT : ℝ} (hx0 : 0 < x) (hnT : x ^ (-(ε / 8)) * n / 2 ≤ nT) :
     n ≤ 2 * nT * x ^ (ε / 8) := by
   have h8 : 0 < x ^ (ε / 8) := Real.rpow_pos_of_pos hx0 _
-  have hinv : x ^ (-(ε / 8)) * x ^ (ε / 8) = 1 := by rw [← rp hx0]; simp
+  have hinv : x ^ (-(ε / 8)) * x ^ (ε / 8) = 1 := simp [← rp hx0]
   have := mul_le_mul_of_nonneg_right hnT h8.le
   have e : x ^ (-(ε / 8)) * n / 2 * x ^ (ε / 8) = n / 2 := by
     calc x ^ (-(ε / 8)) * n / 2 * x ^ (ε / 8) = (x ^ (-(ε / 8)) * x ^ (ε / 8)) * n / 2 := by ring
@@ -117,7 +117,7 @@ lemma T4 {x ε Y m n nT nT2 b k : ℝ} (hx0 : 0 < x) (hx1 : 1 ≤ x) (hm0 : 0 �
   have pe := Real.rpow_pos_of_pos hx0 ε
   have pne := Real.rpow_pos_of_pos hx0 (-ε)
   have p8 := Real.rpow_pos_of_pos hx0 (ε / 8)
-  have hneg : x ^ (-ε) * x ^ ε = 1 := by rw [← rp hx0]; simp
+  have hneg : x ^ (-ε) * x ^ ε = 1 := simp [← rp hx0]
   have he : m * (nT2 * k * b * x ^ ε / (n * (n * x ^ (-ε))))
       = (m * b) * (nT2 * k * (x ^ ε * x ^ ε) / n ^ 2) := by
     have h2 : x ^ ε = 1 / x ^ (-ε) := by rw [eq_div_iff pne.ne', mul_comm, hneg]
@@ -318,7 +318,7 @@ theorem proposition_size_bound : GrowthSizeBound := by
   have hδ0 : 0 < δ := lt_of_lt_of_le (pos _) hd2
   have hxδ : 1 ≤ x ^ ε * δ := by
     have := mul_le_mul_of_nonneg_left hd2 (pos ε).le
-    have e : x ^ ε * x ^ (-ε) = 1 := by rw [← SZ.rp hx0]; simp
+    have e : x ^ ε * x ^ (-ε) = 1 := simp [← SZ.rp hx0]
     linarith
   have h2x : 2 / x ≤ 1 := by rw [div_le_one hx0]; linarith
   have hPY : 1 ≤ P * Y := by nlinarith

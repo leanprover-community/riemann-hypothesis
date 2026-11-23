@@ -143,7 +143,7 @@ theorem bijective_of_iso (hL₁ : L₁.IsLB) (hL₂ : L₂.IsLB) (f₁ : Y ⟶ X
         rw [inv_mul_eq_iff_eq_mul, ← _root_.mul_assoc, ← mul_pow, e, mul_pow, mul_inv_cancel_right]) σ
     obtain ⟨t, ht⟩ := exists_pull (p ≫ inv f₁) f₁ p (by simp) k s
     refine ⟨t, (hRel _ _).2 fun Z rA y e z J₁ J₂ h₁ h₂ => ?_, fun t' H' => ?_⟩
-    · have e' : rA ≫ p ≫ inv f₁ = y := by rw [← Category.assoc, e]; simp
+    · have e' : rA ≫ p ≫ inv f₁ = y := simp [← Category.assoc, e]
       rw [ht Z rA z J₁ h₁, e', hs Z y z J₂ J₁ h₂ h₁, map_inv, map_pow, ← Units.val_pow_eq_pow_val]
       exact Units.mul_inv_cancel_left _ _
     · refine sec_ext (sec_ext_val hL₁ fun y J₁ h₁ => ?_)
@@ -160,7 +160,7 @@ theorem bijective_of_iso (hL₁ : L₁.IsLB) (hL₂ : L₂.IsLB) (f₁ : Y ⟶ X
         rw [map_pow, map_pow, zpow_natCast, zpow_natCast, ← mul_pow, ← mul_pow]
         exact congrArg (· ^ k) e) s
     refine ⟨σ, (hRel _ _).2 fun Z rA y e z J₁ J₂ h₁ h₂ => ?_, fun σ' H' => ?_⟩
-    · have e' : y ≫ f₁ ≫ inv p = rA := by rw [← Category.assoc, ← e]; simp
+    · have e' : y ≫ f₁ ≫ inv p = rA := simp [← Category.assoc, ← e]
       rw [hσ Z y z J₁ J₂ h₁ h₂, hs Z y z J₁ h₁, e', map_pow, Units.val_pow_eq_pow_val]
       rfl
     · refine sec_ext (sec_ext_val hL₂ fun y J₂ h₂ => ?_)

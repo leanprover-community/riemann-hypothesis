@@ -196,7 +196,7 @@ theorem shift {l : ℕ} (hl : ∀ x : R, (l : R) * x = 0 → x = 0) (hc : IsAdic
       Ys = fun j => ∑ i ∈ Finset.range j, (l : R) ^ i • Z i := ⟨_, rfl⟩
   have hYs : ∀ j, Ys (j + 1) - Ys j = (l : R) ^ j • Z j := fun j => by
     rw [hYsd]; simp only [Finset.sum_range_succ]; abel
-  have hYs0 : Ys 0 = 0 := by rw [hYsd]; simp
+  have hYs0 : Ys 0 = 0 := simp [hYsd]
   obtain ⟨L, hL⟩ := lim hc Ys (fun j => ⟨Z j, hYs j⟩)
   refine ⟨T n₀ + u • L, fun j => T n₀ + u • Ys j, ?_, fun j => ?_, ⟨L, by simp [hYs0]⟩⟩
   · intro j

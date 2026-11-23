@@ -178,7 +178,7 @@ theorem rep_mul (M : DSModel V S) (τ : D.what₂.Tau) : ∀ g ∈ Formalism.Qua
           simp only [Matrix.conjTranspose_mul, mul_assoc]
       _ = (M.fr τ * (M.fr τ)⁻¹)ᴴ * Formalism.REAL.Jm (M.ε τ) * (M.fr τ * (M.fr τ)⁻¹) := by
           rw [hg']; simp only [Matrix.conjTranspose_mul, mul_assoc]
-      _ = _ := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+      _ = _ := simp [Matrix.mul_nonsing_inv _ hd]
   intro g hg g' hg' w
   have h := (M.ds τ).2.2.1.1.2 _ (key g hg) _ (key g' hg')
   have e : M.fr τ * (g * g') * (M.fr τ)⁻¹ = (M.fr τ * g * (M.fr τ)⁻¹) * (M.fr τ * g' * (M.fr τ)⁻¹) := by

@@ -57,7 +57,7 @@ theorem exists_shell_of_le_one {t : ℝ} (h0 : 0 < t) (h1 : t ≤ 1) :
 theorem le_two_mul_one_sub_exp_neg {ε : ℝ} (h0 : 0 < ε) (h1 : ε ≤ 1) :
     ε ≤ 2 * (1 - Real.exp (-ε)) := by
   have h2 : ε + 1 ≤ Real.exp ε := Real.add_one_le_exp ε
-  have h3 : Real.exp (-ε) * Real.exp ε = 1 := by rw [← Real.exp_add]; simp
+  have h3 : Real.exp (-ε) * Real.exp ε = 1 := simp [← Real.exp_add]
   have h4 : 0 < Real.exp (-ε) := Real.exp_pos _
   have h5 : Real.exp (-ε) * (ε + 1) ≤ 1 := by nlinarith
   by_contra hc

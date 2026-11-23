@@ -50,7 +50,7 @@ theorem conj_expand_units {n : ℕ} (Q Y : Matrix (Fin n) (Fin n) ℂ) (hQ : IsU
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
     rw [← Matrix.smul_mul, ← Matrix.mul_smul, Matrix.smul_single, smul_eq_mul, mul_one]
   rw [h2, ← Matrix.matrix_eq_sum_single]
-  calc Y = (Q⁻¹ * Q) * Y * (Q⁻¹ * Q) := by rw [h1]; simp
+  calc Y = (Q⁻¹ * Q) * Y * (Q⁻¹ * Q) := simp [h1]
     _ = _ := by simp only [Matrix.mul_assoc]
 
 theorem conj_units_mul {n : ℕ} (Q : Matrix (Fin n) (Fin n) ℂ) (hQ : IsUnit Q) (a b c d : Fin n) :

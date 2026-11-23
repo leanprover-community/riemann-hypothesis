@@ -148,7 +148,7 @@ theorem first_column_polynomials_characterize : FirstColumnPolynomialsSpan := by
   constructor
   · refine cw_span_le _ P _ ?_ F
     intro k sz hsz I hs
-    have h0 : shapeDeg sz (0 : Fin (m + 1)) = P := by rw [hs]; simp
+    have h0 : shapeDeg sz (0 : Fin (m + 1)) = P := simp [hs]
     have h1 : shapeDeg sz (⟨1, by omega⟩ : Fin (m + 1)) = 0 := by rw [hs]; simp [Fin.ext_iff]
     have hle : ∀ j, sz j ≤ 1 := cw_le_of_shape sz _ h1
     have := cw_prod_aeval
@@ -246,7 +246,7 @@ theorem signed_minor_polynomials_characterize : SignedMinorPolynomialsSpan := by
       have : (⟨m - 1, by omega⟩ : Fin (m + 1)) ≠ Fin.last m := by
         intro h; have := congrArg Fin.val h; simp at this; omega
       simp [this]
-    have h2 : shapeDeg sz (Fin.last m) = 0 := by rw [hs]; simp
+    have h2 : shapeDeg sz (Fin.last m) = 0 := simp [hs]
     have hle : ∀ j, sz j ≤ m := cw_le_of_shape sz _ h2
     have hsub : Finset.univ.filter (fun j => m - 1 < sz j) ⊆ Finset.univ.filter (fun j => 0 < sz j) := by
       intro j hj

@@ -73,7 +73,7 @@ theorem ev_unique {O : Type} [CommRing O] (φ ev : O⟦X⟧ →ₐ[O] O) (x : O)
 
 theorem dvd_ev_sub {O : Type} [CommRing O] (φ : O⟦X⟧ →ₐ[O] O) (f : O⟦X⟧) :
     φ X ∣ φ f - constantCoeff f := by
-  have h : (X : O⟦X⟧) ∣ f - C (constantCoeff f) := by rw [X_dvd_iff]; simp
+  have h : (X : O⟦X⟧) ∣ f - C (constantCoeff f) := simp [X_dvd_iff]
   have := map_dvd φ h
   rwa [map_sub, ev_C] at this
 

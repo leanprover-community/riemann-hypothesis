@@ -143,10 +143,10 @@ theorem blockM_mul (a : ℕ) (h : 2 * (a + 2) ≤ n) (X Y X' Y' : Matrix (Fin 2)
       _ = _ := by rw [h2]; simp only [Matrix.mul_assoc, Matrix.mul_one]
   have e3 : ∀ P Q : Matrix (Fin 2) (Fin 2) L, (C * P * Cᵀ) * (D * Q * Dᵀ) = 0 := fun P Q => by
     calc _ = C * P * (Cᵀ * D) * Q * Dᵀ := by simp only [Matrix.mul_assoc]
-      _ = _ := by rw [h3]; simp
+      _ = _ := simp [h3]
   have e4 : ∀ P Q : Matrix (Fin 2) (Fin 2) L, (D * P * Dᵀ) * (C * Q * Cᵀ) = 0 := fun P Q => by
     calc _ = D * P * (Dᵀ * C) * Q * Cᵀ := by simp only [Matrix.mul_assoc]
-      _ = _ := by rw [h4]; simp
+      _ = _ := simp [h4]
   have f : ∀ (E : Matrix (Fin n) (Fin 2) L) (P Q : Matrix (Fin 2) (Fin 2) L), E * (P * Q - 1) * Eᵀ =
       E * (P - 1) * Eᵀ + E * (Q - 1) * Eᵀ + E * ((P - 1) * (Q - 1)) * Eᵀ := fun E P Q => by
     rw [← Matrix.add_mul, ← Matrix.add_mul, ← Matrix.mul_add, ← Matrix.mul_add]
@@ -236,7 +236,7 @@ theorem blockM_unitary (σ : L →+* L) (a : ℕ) (h : 2 * (a + 2) ≤ n) (X Y :
       rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, hJD, Matrix.mul_assoc C]
     have t3 : (C * P * Dᵀ) * (C * U * Cᵀ) = 0 := by
       calc _ = C * P * (Dᵀ * C) * U * Cᵀ := by simp only [Matrix.mul_assoc]
-        _ = _ := by rw [hDC]; simp
+        _ = _ := simp [hDC]
     have t4 : (C * P * Dᵀ) * (D * W * Dᵀ) = C * (P * W) * Dᵀ := by
       calc _ = C * P * (Dᵀ * D) * W * Dᵀ := by simp only [Matrix.mul_assoc]
         _ = _ := by rw [hDD]; simp only [Matrix.mul_assoc, Matrix.mul_one]
@@ -245,7 +245,7 @@ theorem blockM_unitary (σ : L →+* L) (a : ℕ) (h : 2 * (a + 2) ≤ n) (X Y :
         _ = _ := by rw [hCC]; simp only [Matrix.mul_assoc, Matrix.mul_one]
     have t6 : (D * Q * Cᵀ) * (D * W * Dᵀ) = 0 := by
       calc _ = D * Q * (Cᵀ * D) * W * Dᵀ := by simp only [Matrix.mul_assoc]
-        _ = _ := by rw [hCD]; simp
+        _ = _ := simp [hCD]
     simp only [Matrix.add_mul, Matrix.mul_add, Matrix.mul_one, t1, t2, t3, t4, t5, t6]
     abel
   rw [s1, s2]

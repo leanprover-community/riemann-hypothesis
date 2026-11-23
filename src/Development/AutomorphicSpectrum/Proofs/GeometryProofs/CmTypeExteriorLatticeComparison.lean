@@ -418,7 +418,7 @@ theorem mem_genFibre {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Spec (CommRin
     have e := (map_intCast (Scheme.stalkClosedPointTo z).hom o).symm.trans h0
     exact ho (by exact_mod_cast e)
   obtain ⟨x, hxo⟩ := CxVal.isUnit _ hx
-  have e : genMap ξ ⟨centre z, hc⟩ x.val = algebraMap ℤ Ω o := by rw [hxo, map_intCast]; simp
+  have e : genMap ξ ⟨centre z, hc⟩ x.val = algebraMap ℤ Ω o := simp [hxo, map_intCast]
   have hu : IsUnit (algebraMap ℤ Ω o) := e ▸ (x.isUnit.map (genMap ξ ⟨centre z, hc⟩))
   refine ⟨hu.ne_zero, ⟨x.val, e⟩, ⟨x⁻¹.val, ?_⟩⟩
   rw [← e, ← map_units_inv]

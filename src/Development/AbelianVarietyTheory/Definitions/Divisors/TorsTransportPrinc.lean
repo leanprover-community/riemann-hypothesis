@@ -62,7 +62,7 @@ theorem exists_isLatOf (d : ℕ) (δ : K) (ι : K →+* ℂ) (h2 : Module.finran
     refine ⟨B.repr x 0, B.repr x 1, ?_⟩
     conv_lhs => rw [← B.sum_repr x]
     simp [Fin.sum_univ_two, Rat.smul_def]
-  have hδ' : ι δ ^ 2 = -(d : ℂ) := by rw [← map_pow, hδ]; simp
+  have hδ' : ι δ ^ 2 = -(d : ℂ) := simp [← map_pow, hδ]
   have hind : LinearIndependent ℝ ![ι (B 0), ι (B 1)] := by
     rw [LinearIndependent.pair_iff]
     intro s t h

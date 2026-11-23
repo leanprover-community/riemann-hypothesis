@@ -395,7 +395,7 @@ private theorem th_equiv (g : G.Γ) (m : D0.M.X) :
     exact o0.actc m
   rcases Int.units_eq_one_or (G.η g) with e | e
   · exact h1 ⟨g, e⟩ m
-  · have e1 : g * G.c ∈ G.η.ker := by rw [MonoidHom.mem_ker, map_mul, e, G.η_c]; simp
+  · have e1 : g * G.c ∈ G.η.ker := simp [MonoidHom.mem_ker, map_mul, e, G.η_c]
     have e2 : g = g * G.c * G.c := by rw [mul_assoc, G.c_sq, mul_one]
     rw [e2, map_mul h.p, map_mul D0.M.ρ, map_mul D.M.ρ, Module.End.mul_apply, Module.End.mul_apply, ← h2]
     exact h1 ⟨_, e1⟩ _

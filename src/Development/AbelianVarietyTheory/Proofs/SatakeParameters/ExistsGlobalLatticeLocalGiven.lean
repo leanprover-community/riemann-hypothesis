@@ -54,7 +54,7 @@ theorem exists_pow_smul {π : R} (hπ : Irreducible π) {k : ℕ} (g : Matrix (F
   choose y hy using hd
   refine ⟨a, Matrix.of fun i j => (u⁻¹ : Rˣ) * y (i, j), ?_⟩
   ext i j
-  have h1 : π ^ a = (u⁻¹ : Rˣ) * (d : R) := by rw [hu]; simp
+  have h1 : π ^ a = (u⁻¹ : Rˣ) * (d : R) := simp [hu]
   rw [Matrix.smul_apply, Matrix.map_apply, Matrix.of_apply, map_mul, hy, ← map_pow, h1, map_mul, smul_eq_mul,
     Algebra.smul_def, mul_assoc]
 

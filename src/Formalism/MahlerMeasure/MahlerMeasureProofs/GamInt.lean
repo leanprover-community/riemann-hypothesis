@@ -1088,7 +1088,7 @@ theorem vW_ge (δ : Fin (N + 1 + 1) × Fin r →₀ ℕ) {T B : ℕ} (hB : Nat.l
     simpa [δv] using this
   calc ∑ i, padicValNat p (δv δ i).factorial ≤ ∑ i : Fin (N + 1 + 1), (∑ c : Fin r, padicValNat p (δ (i, c)).factorial + r * B) :=
         sum_le_sum (fun i _ => this i)
-    _ = _ := by rw [sum_add_distrib]; simp
+    _ = _ := simp [sum_add_distrib]
 
 end grp
 

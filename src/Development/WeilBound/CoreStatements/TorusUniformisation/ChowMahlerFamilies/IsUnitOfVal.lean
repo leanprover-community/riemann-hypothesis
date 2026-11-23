@@ -97,7 +97,7 @@ theorem chi_cong {E : Type} [Field E] [NumberField E] (p : ℕ) [Fact p.Prime] {
     obtain ⟨o, ho1, ho2⟩ := hσ a
     rintro ⟨u, hu⟩
     apply (hχ x o ho2).2 (((u⁻¹ : RCˣ) : RC) : C) ((u⁻¹ : RCˣ) : RC).2
-    have h3 : ((u⁻¹ : RCˣ) : RC) * d = 1 := by rw [← hu]; simp
+    have h3 : ((u⁻¹ : RCˣ) : RC) * d = 1 := simp [← hu]
     have h4 := congrArg (fun r : RC => (r : C)) h3
     simp only [hd, hc0, Subalgebra.coe_mul, Subalgebra.coe_sub, Subalgebra.coe_one] at h4
     rw [ho1]

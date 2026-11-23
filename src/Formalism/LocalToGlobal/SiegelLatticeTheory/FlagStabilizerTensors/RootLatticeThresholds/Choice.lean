@@ -107,7 +107,7 @@ theorem uw_inv_mem {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k
   show (h⁻¹)ᴴ * Hpk k r * h⁻¹ = Hpk k r
   calc (h⁻¹)ᴴ * Hpk k r * h⁻¹ = (h⁻¹)ᴴ * (hᴴ * Hpk k r * h) * h⁻¹ := by rw [hH]
     _ = (h * h⁻¹)ᴴ * Hpk k r * (h * h⁻¹) := by simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Hpk k r := by rw [hi']; simp
+    _ = Hpk k r := simp [hi']
 
 theorem uw_inv_mul {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hh : h ∈ UWset k r z) : h⁻¹ * h = 1 := by
@@ -438,7 +438,7 @@ theorem qiHqi {n : ℕ} (ε : Fin n → Bool) {Q : Matrix (Fin n) (Fin (2 * r + 
   rw [← hg]
   calc Qiᴴ * (Qᴴ * Formalism.REAL.Jm ε * Q) * Qi = (Q * Qi)ᴴ * Formalism.REAL.Jm ε * (Q * Qi) := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Formalism.REAL.Jm ε := by rw [h2]; simp
+    _ = Formalism.REAL.Jm ε := simp [h2]
 
 theorem y_exists {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (ε' : Fin (2 * r + k + 1) → Bool)
     (hε : ∀ i, ε' i = ε (Fin.cast hn.symm i)) (lam : Fin n → ℝ) (lam' : Fin (2 * r + k + 1) → ℝ)
@@ -561,7 +561,7 @@ theorem transpC_exists (u0 : D.what₂.Word) (τ : D.what₂.Tau) :
       rw [inv_pow, Real.sq_sqrt hT.le, inv_mul_cancel₀ hT.ne']
     have h2 : star c = c := Complex.conj_ofReal _
     rw [h2, hc]
-    have h3 : ((((Real.sqrt T)⁻¹) ^ 2 * T : ℝ) : ℂ) = 1 := by rw [h1]; simp
+    have h3 : ((((Real.sqrt T)⁻¹) ^ 2 * T : ℝ) : ℂ) = 1 := simp [h1]
     push_cast at h3 ⊢
     linear_combination (-1 : ℂ) * h3
   obtain ⟨Q, Qi, h1, h2, hg, hcol⟩ := transp_exists (n_eq' X) (X.B.I.ε v) (frS D) (frS_ne D)
@@ -902,7 +902,7 @@ theorem colsTypeTr_of {v : InfinitePlace X.B.I.F} {lam : ℂ} (hlam : lam ≠ 0)
       rw [inv_pow, Real.sq_sqrt hT.le, inv_mul_cancel₀ hT.ne']
     have h2 : star c = c := Complex.conj_ofReal _
     rw [h2, hc]
-    have h3 : ((((Real.sqrt T)⁻¹) ^ 2 * T : ℝ) : ℂ) = 1 := by rw [h1]; simp
+    have h3 : ((((Real.sqrt T)⁻¹) ^ 2 * T : ℝ) : ℂ) = 1 := simp [h1]
     push_cast at h3 ⊢
     linear_combination (-1 : ℂ) * h3
   obtain ⟨h1, h2, hg, hcol⟩ := hQ
@@ -1170,7 +1170,7 @@ theorem cay_facts {ε : Fin (2 * r + k + 1) → Bool} {Q Qi P : Matrix (Fin (2 *
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
       _ = (P * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * P⁻¹) := by
           rw [hg, ← hPg]; simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = Formalism.REAL.Jm ε := by rw [hPi]; simp
+      _ = Formalism.REAL.Jm ε := simp [hPi]
   · unfold Formalism.REAL.inUJ
     calc (P * Qi)ᴴ * Formalism.REAL.Jm ε * (P * Qi) = Qiᴴ * (Pᴴ * Formalism.REAL.Jm ε * P) * Qi := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]

@@ -202,7 +202,7 @@ theorem sinh_bound (t : ℝ) (ht : 0 < t) (h1 : t ≤ 1) :
     have h0 := Real.exp_pos (-t)
     have hq : 0 < 1 - Real.exp (-t) ^ 2 := by nlinarith
     have hp : 0 < Real.sinh t := Real.sinh_pos_iff.2 ht
-    have e : Real.exp t * Real.exp (-t) = 1 := by rw [← Real.exp_add]; simp
+    have e : Real.exp t * Real.exp (-t) = 1 := simp [← Real.exp_add]
     rw [div_eq_div_iff hq.ne' hp.ne', Real.sinh_eq]; nlinarith
   have hl : t ≤ Real.sinh t := Real.self_le_sinh_iff.2 ht.le
   have hu : Real.sinh t ≤ t + t ^ 3 := by

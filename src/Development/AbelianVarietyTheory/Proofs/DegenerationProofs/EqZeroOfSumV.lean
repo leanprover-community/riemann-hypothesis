@@ -87,12 +87,12 @@ theorem unit_value : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → T
   have b0 : ∀ χ, QForm.bOf D.toPre Q 0 χ = 0 := fun χ => by
     rw [QForm.bOf, zero_add, q0]; ring
   have hv₁ : GenV hϖ hv w₁ 0 := by
-    have e0 : ((Q (qkMk hB 0 g₂ z).y : ℚ) / (k : ℚ) ^ 2) = 0 := by rw [qkMk_y, q0]; simp
+    have e0 : ((Q (qkMk hB 0 g₂ z).y : ℚ) / (k : ℚ) ^ 2) = 0 := simp [qkMk_y, q0]
     rwa [e0] at hv₁
   have hl : GtV hϖ hv g₂ fun _ => 0 := by
     intro χ
     have a := hl χ
-    have e0 : ((QForm.bOf D.toPre Q (qkMk hB 0 g₂ z).y χ : ℚ) / (k : ℚ)) = 0 := by rw [qkMk_y, b0]; simp
+    have e0 : ((QForm.bOf D.toPre Q (qkMk hB 0 g₂ z).y χ : ℚ) / (k : ℚ)) = 0 := simp [qkMk_y, b0]
     simp only [e0] at a
     exact a
   refine eq_zero_of_sumV hS one_pos 0 ?_ fun χ hχ => ?_

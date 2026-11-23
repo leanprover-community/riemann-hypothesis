@@ -56,7 +56,7 @@ theorem isUnit_aeval_of_forall_isUnit_sub {A : Type*} [Ring A] [Algebra ℂ A] (
   by_cases hd : 0 < q.degree
   · have h1 := spectrum.map_polynomial_aeval_of_degree_pos T q hd
     rw [hs, Set.image_empty] at h1
-    have h0 : (0 : ℂ) ∉ spectrum ℂ (aeval T q) := by rw [h1]; simp
+    have h0 : (0 : ℂ) ∉ spectrum ℂ (aeval T q) := simp [h1]
     exact (spectrum.zero_notMem_iff ℂ).1 h0
   · have h2 : q = C (q.coeff 0) := eq_C_of_degree_le_zero (not_lt.1 hd)
     have h3 : q.coeff 0 ≠ 0 := fun h => hq (by rw [h2, h, C_0])

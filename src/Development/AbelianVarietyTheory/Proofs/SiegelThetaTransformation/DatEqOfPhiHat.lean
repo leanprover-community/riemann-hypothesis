@@ -129,7 +129,7 @@ private theorem exists_EF_eq_one' {E : Type} [Field E] [NumberField E] [IsCMFiel
     right
     apply Dw.unimod.1
     ext y
-    have h' : Dw.EF (r • m) y = 0 := by rw [h]; simp
+    have h' : Dw.EF (r • m) y = 0 := simp [h]
     rw [map_zsmul, LinearMap.smul_apply, smul_eq_mul] at h'
     rw [map_zero, LinearMap.zero_apply]
     rcases mul_eq_zero.1 h' with h'' | h''

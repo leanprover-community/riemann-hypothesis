@@ -142,8 +142,8 @@ theorem moore_core (φ : B →+* B) (S : B → Prop)
       intro m
       have E := hvall m
       simp only [v, hu, hw, Fin.val_last, pow_add] at E
-      have hs : ((-1 : B) ^ (m : ℕ)) ^ 2 = 1 := by rw [← pow_mul, mul_comm, pow_mul]; simp
-      have he : ((-1 : B) ^ (n + 1)) ^ 2 = 1 := by rw [← pow_mul, mul_comm, pow_mul]; simp
+      have hs : ((-1 : B) ^ (m : ℕ)) ^ 2 = 1 := simp [← pow_mul, mul_comm, pow_mul]
+      have he : ((-1 : B) ^ (n + 1)) ^ 2 = 1 := simp [← pow_mul, mul_comm, pow_mul]
       linear_combination ((-1 : B) ^ (m : ℕ)) * E
         - (φ (ω m) * ω (Fin.last _) - ω m * φ (ω (Fin.last _))) * hs
         - (φ (ω m) * ω (Fin.last _) - ω m * φ (ω (Fin.last _))) * ((-1 : B) ^ (m : ℕ)) ^ 2 * he

@@ -68,7 +68,7 @@ theorem GlobalTheory.GSep.twistSum_translate : ∀ (I : Type) (X₁ : GlobalTheo
     exact key zt h hzt hh wt hwt
   · beta_reduce at hh
     rw [dite_eq_right hW] at hh
-    have hh' : X₁.M.stalkHom z₁ h = X₁.S.th (lab c + τ) / X₁.S.th x₀ := by rw [hh]; simp
+    have hh' : X₁.M.stalkHom z₁ h = X₁.S.th (lab c + τ) / X₁.S.th x₀ := simp [hh]
     have hev : ev h = 0 := by
       by_contra hne
       exact hW ⟨e₂, V, inferInstance, inferInstance, inferInstance, ev, X, inferInstance, t, δ, 𝔪, C, lab, hlab, T, hT, c,

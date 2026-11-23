@@ -103,8 +103,8 @@ theorem shLift_cusp_kills_of_not_dvd : ∀ (F F' : Type) [Field F] [Field F'] [A
     exact h1.trans (congrFun h2 g)
   obtain ⟨X0, hX0, hX0a, hX0b⟩ := GlobalTheory.T.exists_virtualCharacter_shintani_psi_lift F F' s hl hs ι θ hθ k n
   set c : ℂ := (-1) ^ (n - 1) with hc_def
-  have hc2 : c * c = 1 := by rw [hc_def, ← mul_pow]; simp
-  have hcstar : star c = c := by rw [hc_def]; simp
+  have hc2 : c * c = 1 := simp [hc_def, ← mul_pow]
+  have hcstar : star c = c := simp [hc_def]
   set X : GHat F F' n → ℂ := fun x => c * X0 x with hX_def
   have hX : X ∈ Virt ℂ ℂ (GHat F F' n) := by
     have e : X = ((-1 : ℤ) ^ (n - 1)) • X0 := by

@@ -55,7 +55,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 omit [TopologicalSpace G] [Algebra Qp LL] [TopologicalSpace LL] in
 theorem exists_c (hk : (PD.p : k) = 0) (u : Oˣ) (hu : (u : O) = 1 + (PD.p : O)) :
     ∃ c : ℤ → O, WachUse.IsC PD LL c ∧ ∀ a, algebraMap O k (c a) = -(a : k) := by
-  have hU : algebraMap O LL (u : O) = 1 + (PD.p : LL) := by rw [hu]; simp
+  have hU : algebraMap O LL (u : O) = 1 + (PD.p : LL) := simp [hu]
   have hne : (1 + (PD.p : LL)) ≠ 0 := by rw [← hU]; exact (u.isUnit.map _).ne_zero
   have hinv : algebraMap O LL ((u⁻¹ : Oˣ) : O) = (1 + (PD.p : LL))⁻¹ := by
     rw [← hU]
@@ -63,7 +63,7 @@ theorem exists_c (hk : (PD.p : k) = 0) (u : Oˣ) (hu : (u : O) = 1 + (PD.p : O))
     rw [← map_mul]; simp
   have hk1 : algebraMap O k (u : O) = 1 := by rw [hu]; simp [hk]
   have hk2 : algebraMap O k ((u⁻¹ : Oˣ) : O) = 1 := by
-    have : algebraMap O k ((u⁻¹ : Oˣ) : O) * algebraMap O k (u : O) = 1 := by rw [← map_mul]; simp
+    have : algebraMap O k ((u⁻¹ : Oˣ) : O) * algebraMap O k (u : O) = 1 := simp [← map_mul]
     rwa [hk1, mul_one] at this
   have key : ∀ a : ℤ, ∃ x : O, (PD.p : LL) * algebraMap O LL x = 1 - (1 + (PD.p : LL)) ^ a ∧
       algebraMap O k x = -(a : k) := by

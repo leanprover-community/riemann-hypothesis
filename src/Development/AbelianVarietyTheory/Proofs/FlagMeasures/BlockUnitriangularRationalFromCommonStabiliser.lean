@@ -217,7 +217,7 @@ theorem exists_upper {K : Type} [Field K] {n : ℕ} (Z u : Matrix (Fin n) (Fin n
     · simp
   haveI : Invertible M := Matrix.invertibleOfIsUnitDet M (by rw [hdet]; exact isUnit_one)
   refine ⟨M⁻¹, ⟨fun i j hij => Matrix.blockTriangular_inv_of_blockTriangular hMup hij, fun i => ?_⟩, ?_⟩
-  · have h1 : (M⁻¹ * M) i i = 1 := by rw [Matrix.inv_mul_of_invertible]; simp
+  · have h1 : (M⁻¹ * M) i i = 1 := simp [Matrix.inv_mul_of_invertible]
     rw [Matrix.mul_apply, Finset.sum_eq_single i] at h1
     · rwa [hMd, mul_one] at h1
     · intro c _ hc

@@ -312,8 +312,8 @@ theorem step {g : Fin (r + 1) → S.V} {gs : Fin r → S.V}
     have := hiso' (gs m) (g j.castSucc)
     rw [hfixle j hj] at this
     rw [hy]; exact this
-  have hgsm : hf L S.Hm (gs m) (g m.castSucc) = 1 := by rw [gsg S H1]; simp
-  have hgm : hf L S.Hm (g m.castSucc) (gs m) = 1 := by rw [H1]; simp
+  have hgsm : hf L S.Hm (gs m) (g m.castSucc) = 1 := simp [gsg S H1]
+  have hgm : hf L S.Hm (g m.castSucc) (gs m) = 1 := simp [H1]
   have hyx : hf L S.Hm y (g m.castSucc) = 1 := by rw [hyg m le_rfl, hgsm]
   have hys : ∀ j : Fin r, j < m → hf L S.Hm y (gs j) = 0 := by
     intro j hj

@@ -52,7 +52,7 @@ theorem integral_value_at_torsion : LL → TwistBCSpanStatement → TWM.VRatioGt
   obtain ⟨w₁, hw₁, hv₁, hsum⟩ :=
     GlobalTheory.T.section_value_at_torsionPoint_eq_sum_terms hL hT hVR hTW hUU V hcpl ϖ hϖ D Q hQ F v hv A G hG U w₀ ρ hN n hn p x hx e he
   have hv₁ : GenV hϖ hv w₁ 0 := by
-    have e0 : ((Q p.y : ℚ) / (n : ℚ) ^ 2) = 0 := by rw [hy, QForm.Q_zero hϖ D hQ]; simp
+    have e0 : ((Q p.y : ℚ) / (n : ℚ) ^ 2) = 0 := simp [hy, QForm.Q_zero hϖ D hQ]
     rwa [e0] at hv₁
   obtain ⟨w, hw, hwv⟩ := WeightValue.exists_pow k (WeightValue.line_exp k) w₁ hw₁
   have hw0 : GenV hϖ hv w 0 := WeightValue.genV_pow k (WeightValue.line_exp k) hv₁ fun z J _ => hwv _ _ z J

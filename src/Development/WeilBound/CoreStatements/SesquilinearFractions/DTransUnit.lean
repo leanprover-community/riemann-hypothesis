@@ -76,7 +76,7 @@ theorem transition_matrix_unique {I : Type} [Fintype I] [DecidableEq I] (e : I �
     rw [(GlobalTheory.T.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.2.1 z y, h1, map_zero, neg_zero]
   have hzz : z = 0 := (GlobalTheory.T.sesq_unimodular_dual E H D).1 z hz0
   have hu0 := (Fintype.linearIndependent_iff.1 he) u (by rw [← hz]; exact hzz)
-  have : (c : 𝓞 E) * C m k = 0 := by rw [← huv, hu0 k]; simp
+  have : (c : 𝓞 E) * C m k = 0 := simp [← huv, hu0 k]
   simpa [hc0] using this
 
 theorem isTransition_of_coefficients {I : Type} [Fintype I] (x e : I → D.La) (m : ℕ) (hm : 0 < m) (S : Matrix I I (𝓞 E))

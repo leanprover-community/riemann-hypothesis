@@ -147,7 +147,7 @@ theorem UpperTheory.V.AlgebraTools.simpleQuad :
   have hx0 : x 0 = 1 := by
     ext1
     rw [hx1]
-    have : r 0 = 0 := by rw [hr, ← map_zero (IsLocalRing.residue 𝒪[k])]; simp
+    have : r 0 = 0 := simp [hr, ← map_zero (IsLocalRing.residue 𝒪[k])]
     simp [this]
   have hT : ∀ v : fixd ρ (iwC k n C), (hk ρ (iwC k n C) s v : M) = ∑ c, ρ (x c * s) v := by
     intro v

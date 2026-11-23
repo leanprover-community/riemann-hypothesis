@@ -385,7 +385,7 @@ theorem abel_ineq (r : ℕ) (δ t : ℕ → ℤ) (hD : ∀ k ≤ r, 0 ≤ ∑ c 
     (hT : ∑ c ∈ range r, δ c = 0) (ht : ∀ c, c + 1 < r → 2 ≤ t c - t (c + 1)) :
     0 ≤ ∑ c ∈ range r, t c * δ c ∧ (∑ c ∈ range r, t c * δ c = 0 → ∀ c < r, δ c = 0) := by
   obtain ⟨D, hDdef⟩ : ∃ D : ℕ → ℤ, ∀ k, D k = ∑ i ∈ range k, δ i := ⟨_, fun k => rfl⟩
-  have hD0 : D 0 = 0 := by rw [hDdef]; simp
+  have hD0 : D 0 = 0 := simp [hDdef]
   have hDs : ∀ k, D (k + 1) = D k + δ k := fun k => by rw [hDdef, hDdef, Finset.sum_range_succ]
   have hDnn : ∀ k ≤ r, 0 ≤ D k := fun k hk => by rw [hDdef]; exact hD k hk
   have hDr : D r = 0 := by rw [hDdef]; exact hT

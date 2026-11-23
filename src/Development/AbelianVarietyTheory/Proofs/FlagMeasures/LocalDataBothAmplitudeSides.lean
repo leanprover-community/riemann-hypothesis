@@ -55,10 +55,10 @@ theorem urep_irred_of_ds {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerPro
   have mem : ∀ g, g ∈ GG k r ↔ P * g * P⁻¹ ∈ UJset ε := uHConj _ ε _ P hd hH
   have back : ∀ g : Mat k r, P⁻¹ * (P * g * P⁻¹) * P = g := fun g => by
     calc P⁻¹ * (P * g * P⁻¹) * P = (P⁻¹ * P) * g * (P⁻¹ * P) := by simp only [Matrix.mul_assoc]
-      _ = g := by rw [hiP]; simp
+      _ = g := simp [hiP]
   have forth : ∀ g : Mat k r, P * (P⁻¹ * g * P) * P⁻¹ = g := fun g => by
     calc P * (P⁻¹ * g * P) * P⁻¹ = (P * P⁻¹) * g * (P * P⁻¹) := by simp only [Matrix.mul_assoc]
-      _ = g := by rw [hPi]; simp
+      _ = g := simp [hPi]
   refine ⟨⟨⟨?_, ?_⟩, ?_, ?_⟩, ?_⟩
   · simpa [hiP] using h1
   · intro a ha b hb

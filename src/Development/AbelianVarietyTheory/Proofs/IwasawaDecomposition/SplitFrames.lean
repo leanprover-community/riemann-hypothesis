@@ -85,7 +85,7 @@ theorem cA_idem (v : Pl D) : cA D (idem D v) = idem D v := by
 def cutGL {R : Type} [CommRing R] {n : ℕ} {e : R} (he : e * e = e) : GL (Fin n) R →* GL (Fin n) R :=
   let f : Matrix (Fin n) (Fin n) R →* Matrix (Fin n) (Fin n) R :=
     { toFun := fun g => e • g + (1 - e) • (1 : Matrix (Fin n) (Fin n) R)
-      map_one' := by rw [← add_smul]; simp
+      map_one' := simp [← add_smul]
       map_mul' := fun g h => by
         have h1 : e * (1 - e) = 0 := by rw [mul_sub, he, mul_one, sub_self]
         have h2 : (1 - e) * (1 - e) = 1 - e := by rw [sub_mul, one_mul, h1, sub_zero]

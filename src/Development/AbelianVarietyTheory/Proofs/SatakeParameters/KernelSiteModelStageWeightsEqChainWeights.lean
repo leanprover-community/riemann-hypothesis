@@ -116,7 +116,7 @@ theorem wtOK_sites : AllSites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X}
   · intro τ i
     generalize hvs : pos.symm τ = vs
     obtain ⟨v, s⟩ := vs
-    have hτ : τ = pos ⟨v, s⟩ := by rw [← hvs]; simp
+    have hτ : τ = pos ⟨v, s⟩ := simp [← hvs]
     subst hτ
     have hS := Formalism.L2.KerInert.SecondKernelSharpWeights.sharp_weight_formula D ex.tw u μ j hj (pos ⟨v, s⟩) i
     have hL := (ex.tw.fm u μ).lam_eq j hj.le (pos ⟨v, s⟩) i

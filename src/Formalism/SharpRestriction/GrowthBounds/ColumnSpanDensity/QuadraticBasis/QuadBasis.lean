@@ -59,7 +59,7 @@ theorem qb_I {p : ℕ} (j : W →+* O) (w θ : O) (hpW : Irreducible (p : W)) (h
     apply hθ (-(↑u⁻¹ * a))
     have h0 := Dvd.dvd.mul_left h (j ↑u⁻¹)
     have e : j ↑u⁻¹ * (j a + j ↑u * θ) = θ - j (-(↑u⁻¹ * a)) := by
-      have h1 : j ↑u⁻¹ * j ↑u = 1 := by rw [← map_mul]; simp
+      have h1 : j ↑u⁻¹ * j ↑u = 1 := simp [← map_mul]
       rw [map_neg, map_mul]
       linear_combination θ * h1
     rwa [e] at h0

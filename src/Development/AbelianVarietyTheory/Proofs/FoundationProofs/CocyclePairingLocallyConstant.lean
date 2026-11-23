@@ -229,7 +229,7 @@ theorem GlobalTheory.Ord2.cup_product_two_cocycle : ∀ (l : ℕ) [Fact l.Prime]
     have hAsa : mat W (s * a) = mat W s := by rw [mat_mul, hAa, mul_one]
     have hesa : eps l (s * a) = eps l s := by rw [eps_mul, hea, mul_one]
     have hψsa : ψ (s * a) = ψ s := by rw [map_mul, hψa, mul_one]
-    have hztb : z (t * b) = z t := by rw [zrec, (hyz0 b hb).2.1]; simp
+    have hztb : z (t * b) = z t := simp [zrec, (hyz0 b hb).2.1]
     show ‖_ - _‖ ≤ B
     simp only [cup, matD W hdt, hAsa, hesa, hψsa, hztb]
     have hE : ∀ i, ‖(d (s * a) - d s) i‖ ≤ B := by

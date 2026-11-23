@@ -122,7 +122,7 @@ theorem levπ01 (c : ZMod n) (ζ : LL) (hζ : IsPrimitiveRoot ζ PD.p) :
     simp only [zero_add, Nat.cast_zero, mul_one, coeff_zero_eq_constantCoeff_apply, hE0] at h1
     simpa using h1
   obtain ⟨u, hu, -⟩ := framepf_lev_q_simple W c ζ hζ
-  have hq0 : constantCoeff (W.lev c ζ W.q) = 0 := by rw [hu]; simp
+  have hq0 : constantCoeff (W.lev c ζ W.q) = 0 := simp [hu]
   refine ⟨h0, ?_, ?_, hq0⟩
   · have h := congrArg (coeff 1) hE
     rw [map_add (f := _), coeff_C_mul, hE1, mul_one, coeff_one, if_neg one_ne_zero, zero_add] at h

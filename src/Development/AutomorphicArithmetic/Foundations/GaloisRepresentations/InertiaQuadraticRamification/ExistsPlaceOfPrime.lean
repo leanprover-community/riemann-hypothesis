@@ -130,14 +130,14 @@ theorem UpperTheory.Gal.UnramifiedFromSplittingCriterion.quad0Ex :
   obtain ⟨x, hx⟩ := IsAlgClosed.exists_pow_nat_eq ((q : ℕ) : Ω) two_pos
   have hx0 : x ≠ 0 := by
     rintro rfl
-    have : ((q : ℕ) : Ω) = 0 := by rw [← hx]; simp
+    have : ((q : ℕ) : Ω) = 0 := simp [← hx]
     exact hq.ne_zero (Nat.cast_eq_zero.1 this)
   have hneg : -x ≠ x := fun h => hx0 (by
     have : (2 : Ω) * x = 0 := by linear_combination -h
     simpa using this)
   obtain ⟨u', A', _, _, σ', hσ', hσ'x⟩ := exists_moves (K := E') hq h4 (hB2 q hq h2) hx
   obtain ⟨u, A, huq, hA, τ, hτ, hτx⟩ := exists_moves (K := E) hq h4 (hB1 q hq h1) hx
-  have hxZ : x ^ 2 = (((q : ℕ) : ℤ) : Ω) := by rw [hx]; simp
+  have hxZ : x ^ 2 = (((q : ℕ) : ℤ) : Ω) := simp [hx]
   obtain ⟨Q, hxQ, hspan, hfix⟩ := hM E Ω x (q : ℤ) hxZ ⟨τ, by rw [hτx]; exact hneg⟩
   have hfixT : ∀ (F : Type) [Field F] [NumberField F] [Algebra F Ω], ∀ t ∈ T, ∀ A : ValuationSubring Ω,
       IsPlaceOver A t → ∀ g ∈ Dec (F := F) A, g x = x := by

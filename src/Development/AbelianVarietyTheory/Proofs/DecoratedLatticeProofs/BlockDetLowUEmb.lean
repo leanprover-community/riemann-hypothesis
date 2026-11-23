@@ -52,8 +52,8 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 def lowU (ν : Matrix D A k) : GL (A ⊕ D) k where
   val := fromBlocks 1 0 ν 1
   inv := fromBlocks 1 0 (-ν) 1
-  val_inv := by rw [fromBlocks_multiply]; simp
-  inv_val := by rw [fromBlocks_multiply]; simp
+  val_inv := simp [fromBlocks_multiply]
+  inv_val := simp [fromBlocks_multiply]
 
 theorem val_lowU (ν : Matrix D A k) : (lowU ν).1 = fromBlocks 1 0 ν 1 := rfl
 

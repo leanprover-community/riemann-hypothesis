@@ -213,7 +213,7 @@ variable (κ : Type) [CommRing κ]
 def blkOneHom (N c : ℕ) : Matrix (Fin N) (Fin N) κ →* Matrix (Fin N ⊕ Fin c) (Fin N ⊕ Fin c) κ where
   toFun A := Matrix.fromBlocks A 0 0 1
   map_one' := Matrix.fromBlocks_one
-  map_mul' A B := by rw [Matrix.fromBlocks_multiply]; simp
+  map_mul' A B := simp [Matrix.fromBlocks_multiply]
 
 def insGL (N c k N' : ℕ) (hk : k ≤ N) (hN : N' = N + c) : GL (Fin N) κ →* GL (Fin N') κ :=
   Units.map (((Matrix.reindexAlgEquiv κ κ (insEquiv N c k N' hk hN).symm).toAlgHom.toRingHom.toMonoidHom).comp (blkOneHom κ N c))

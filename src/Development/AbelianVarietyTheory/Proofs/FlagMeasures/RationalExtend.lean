@@ -172,7 +172,7 @@ theorem _root_.GlobalTheory.HL.RatExt.rational_extend : ∀ {F E : Type} [Field 
           simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, hbc, Finset.mul_sum,
             Finset.sum_mul, mul_assoc]
           exact Finset.sum_comm
-        _ = 0 := by rw [hc]; simp
+        _ = 0 := simp [hc]
     · intro hv
       rw [Fintype.linearIndependent_iff] at hv ⊢
       intro c hc a

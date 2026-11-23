@@ -265,10 +265,10 @@ theorem card_isoSet {n : ℕ} (Z : Matrix (Fin n) (Fin n) K)
     Nat.card (isoSet R Z C e lam) = Nat.card (autSet R C e lam) := by
   refine Nat.card_congr ⟨fun φ => ⟨φ0.symm.trans φ.1, ?_⟩, fun σ => ⟨φ0.trans σ.1, ?_⟩, ?_, ?_⟩
   · refine ⟨?_, fun c => ?_⟩
-    · have : φ0.symm e = eZ R Z := by rw [← hφ0.1]; simp
+    · have : φ0.symm e = eZ R Z := simp [← hφ0.1]
       simp [this, φ.2.1]
     · obtain ⟨v, hv⟩ := Submodule.Quotient.mk_surjective _ (φ0.symm c)
-      have h3 : φ0 (Submodule.Quotient.mk v) = c := by rw [hv]; simp
+      have h3 : φ0 (Submodule.Quotient.mk v) = c := simp [hv]
       simp only [LinearEquiv.trans_apply]
       rw [← hv, φ.2.2 v, ← hφ0.2 v, h3]
   · refine ⟨?_, fun v => ?_⟩
@@ -292,10 +292,10 @@ theorem card_isoZZ {n n' : ℕ} (Z : Matrix (Fin n) (Fin n) K)
         rw [← hv]; simp
       rw [← ρ.2.2 v', ← h4, hφ0.2]
   · refine ⟨?_, fun v' => ?_⟩
-    · have : φ.1.symm (eZ R Z') = eZ R Z := by rw [← φ.2.1]; simp
+    · have : φ.1.symm (eZ R Z') = eZ R Z := simp [← φ.2.1]
       simp [this, hφ0.1]
     · obtain ⟨v, hv⟩ := Submodule.Quotient.mk_surjective _ (φ.1.symm (Submodule.Quotient.mk v'))
-      have h3 : φ.1 (Submodule.Quotient.mk v) = Submodule.Quotient.mk v' := by rw [hv]; simp
+      have h3 : φ.1 (Submodule.Quotient.mk v) = Submodule.Quotient.mk v' := simp [hv]
       simp only [LinearEquiv.trans_apply]
       rw [← hv, hφ0.2 v, φ.2.2 v v' h3]
   · intro ρ; ext x; simp
@@ -314,11 +314,11 @@ theorem isoCount {n n' : ℕ} (Z : Matrix (Fin n) (Fin n) K)
   have hzero : ∀ b, b ≠ a0 → IsEmpty (isoSet R Z (C b) (e b) (lam b)) := by
     intro b hb
     refine ⟨fun ⟨φ1, h1⟩ => hne b a0 hb ⟨φ1.symm.trans φ0, ?_, ?_⟩⟩
-    · have : φ1.symm (e b) = eZ R Z := by rw [← h1.1]; simp
+    · have : φ1.symm (e b) = eZ R Z := simp [← h1.1]
       simp [this, hφ0.1]
     · intro c
       obtain ⟨v, hv⟩ := Submodule.Quotient.mk_surjective _ (φ1.symm c)
-      have h3 : φ1 (Submodule.Quotient.mk v) = c := by rw [hv]; simp
+      have h3 : φ1 (Submodule.Quotient.mk v) = c := simp [hv]
       simp only [LinearEquiv.trans_apply]
       rw [← hv, hφ0.2 v, ← h1.2 v, h3]
   rw [Finset.sum_eq_single a0 (fun b _ hb => by have := hzero b hb; simp) (by simp)]
@@ -406,7 +406,7 @@ theorem isoZZ_refl {n : ℕ} (Z : Matrix (Fin n) (Fin n) K) :
 theorem isoZZ_symm {n n' : ℕ} {Z : Matrix (Fin n) (Fin n) K} {Z' : Matrix (Fin n') (Fin n') K}
     {φ : coker R Z ≃ₗ[R] coker R Z'} (h : φ ∈ isoZZ R Z Z') : φ.symm ∈ isoZZ R Z' Z := by
   refine ⟨by rw [← h.1]; simp, fun v' v hv => ?_⟩
-  have : φ (Submodule.Quotient.mk v) = Submodule.Quotient.mk v' := by rw [← hv]; simp
+  have : φ (Submodule.Quotient.mk v) = Submodule.Quotient.mk v' := simp [← hv]
   exact (h.2 v v' this).symm
 
 theorem isoZZ_trans {n n' n'' : ℕ} {Z : Matrix (Fin n) (Fin n) K}

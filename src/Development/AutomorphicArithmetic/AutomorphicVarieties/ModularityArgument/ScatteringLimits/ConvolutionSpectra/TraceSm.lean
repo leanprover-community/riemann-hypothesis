@@ -64,7 +64,7 @@ theorem UpperTheory.V.Z.IntegralApplyAeEq.traceSm :
   have n1 : ∫ x, ‖(ψ x : ℂ)‖ = 1 := by
     simp only [Complex.norm_real, Real.norm_of_nonneg (hψ.nonneg _)]; exact hψ.total
   have n2 : ∫ x, ‖(ψ (-x) : ℂ)‖ = 1 := (integral_neg_eq_self (fun x => ‖(ψ x : ℂ)‖) _).trans n1
-  have n3 : ∫ x, (ψ x : ℂ) = 1 := by rw [integral_complex_ofReal, hψ.total]; simp
+  have n3 : ∫ x, (ψ x : ℂ) = 1 := simp [integral_complex_ofReal, hψ.total]
   have K0 : 0 ≤ K := by simpa using (norm_nonneg _).trans (hb 0 (by simp))
   have Q0 : 0 ≤ K / √3 := by positivity
   have w1 := planch κ K hk fun y => by simpa using hb (1 + y * Complex.I) (by simp)

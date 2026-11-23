@@ -74,7 +74,7 @@ theorem exists_conj_integral {O K Γ : Type} [CommRing O] [IsDomain O] [IsDiscre
       · rw [Submodule.span_le]
         rintro _ ⟨⟨g, j⟩, rfl⟩
         obtain ⟨h, hh⟩ := QuotientGroup.mk_out_eq_mul U g
-        have hg : g = (QuotientGroup.mk g : Γ ⧸ U).out * (h⁻¹ : U) := by rw [hh]; simp
+        have hg : g = (QuotientGroup.mk g : Γ ⧸ U).out * (h⁻¹ : U) := simp [hh]
         choose c hc using hU _ (h⁻¹).2
         have : col g j = ∑ k, c k j • col (QuotientGroup.mk g : Γ ⧸ U).out k := by
           conv_lhs => rw [hg, hcol]
@@ -190,7 +190,7 @@ omit [IsDomain O] [IsDiscreteValuationRing O] in
 theorem norm_unit (u : Oˣ) : ‖φ u‖ = 1 := by
   have h1 := norm_le_one φ hφ u
   have h2 := norm_le_one φ hφ ↑u⁻¹
-  have h3 : ‖φ u‖ * ‖φ ↑u⁻¹‖ = 1 := by rw [← norm_mul, ← map_mul]; simp
+  have h3 : ‖φ u‖ * ‖φ ↑u⁻¹‖ = 1 := simp [← norm_mul, ← map_mul]
   nlinarith [norm_nonneg (φ u), norm_nonneg (φ ↑u⁻¹)]
 
 theorem norm_lt_one {ϖ : O} (hϖ : Irreducible ϖ) : ‖φ ϖ‖ < 1 := by
@@ -302,7 +302,7 @@ theorem isSSRep_of_prod {Γ k : Type} [Group Γ] [Field k] {n a b : ℕ} {ρ : �
   · rw [Submodule.disjoint_def]
     intro v hv hv'
     have h2 : (e v).2 = 0 := Submodule.disjoint_def.1 hc₂.disjoint _ ⟨v, hv, rfl⟩ hv'.2
-    have h3 : e.symm ((e v).1, 0) = v := by rw [← h2]; simp
+    have h3 : e.symm ((e v).1, 0) = v := simp [← h2]
     have h1 : (e v).1 = 0 := Submodule.disjoint_def.1 hc₁.disjoint _
       (show e.symm ((e v).1, 0) ∈ W by rwa [h3]) hv'.1
     rw [← h3, h1]

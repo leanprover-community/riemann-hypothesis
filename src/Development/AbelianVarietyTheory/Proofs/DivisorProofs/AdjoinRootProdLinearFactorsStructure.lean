@@ -99,7 +99,7 @@ theorem eq_smul_cofac_of_lin_mul_eq_zero [IsDomain O] (a : S → O) (τ : S) (r 
         rw [← hh]
     _ = algebraMap O (RS a) (ev a τ (AdjoinRoot.mk _ g)) * cofac a τ
         + (lin a τ * cofac a τ) * h := by ring
-    _ = _ := by rw [hc]; simp
+    _ = _ := simp [hc]
 
 theorem ring_facts : ∀ (O : Type) [CommRing O] [IsDomain O] (S : Type) [Fintype S] [DecidableEq S]
     (a : S → O) (τ : S), Module.Free O (RS a) ∧ Module.Finite O (RS a) ∧

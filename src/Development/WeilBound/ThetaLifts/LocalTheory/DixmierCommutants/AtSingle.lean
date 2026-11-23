@@ -269,7 +269,7 @@ theorem is_levi (h : IsSec σ t sec) {C} (hC : Fr σ t W W₁ H e C) {g : UA σ 
   have i1 : piW t (z⁻¹).val = (x⁻¹ : (Fv F v)ˣ) := by
     rw [Units.val_inv_eq_inv_val, ← z1]; exact eq_inv_of_mul_eq_one_left (by rw [← map_mul]; simp)
   have i2 : piW (t.comp σ) (z⁻¹).val = y := by
-    have : piW (t.comp σ) (z⁻¹).val * piW (t.comp σ) z = 1 := by rw [← map_mul]; simp
+    have : piW (t.comp σ) (z⁻¹).val * piW (t.comp σ) z = 1 := simp [← map_mul]
     rw [z2] at this
     simpa using eq_inv_of_mul_eq_one_left this
   have sg : ∀ (c : Fin d) (a : AE F E), At (evFin F v) (a - 1) →

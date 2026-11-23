@@ -336,7 +336,7 @@ theorem green_series : GlobalTheory.Published.GreenCuspidal → GlobalTheory.Pub
     exact (UniqueFactorizationMonoid.squarefree_iff_nodup_normalizedFactors
       (GlobalTheory.BadShare.mem_sqSet.1 hf).1.ne_zero).1 (GlobalTheory.BadShare.mem_sqSet.1 hf).2.2.1
   have ψne : (ZMod.stdAddChar (N := g)) ≠ 1 := fun h1 => by
-    have h2 : (ZMod.stdAddChar (N := g)) 1 = ZMod.stdAddChar (N := g) 0 := by rw [h1]; simp
+    have h2 : (ZMod.stdAddChar (N := g)) 1 = ZMod.stdAddChar (N := g) 0 := simp [h1]
     exact one_ne_zero (ZMod.injective_stdAddChar h2)
   refine ⟨fun f hf f' hf' he => ?_, fun f hf => ?_⟩
   · have hc : ∀ p ∈ Q f ++ Q f', IsCusp p.2.2 := fun p hp => by

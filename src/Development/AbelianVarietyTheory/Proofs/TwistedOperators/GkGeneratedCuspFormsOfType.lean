@@ -111,7 +111,7 @@ theorem isTypeAt_rTr_same (hθ : IsInfFam θ) {τ : D.what₂.Tau} {S : SPar} {�
     show (k⁻¹)ᴴ * gramAt D V τ * k⁻¹ = gramAt D V τ
     calc (k⁻¹)ᴴ * gramAt D V τ * k⁻¹ = (k⁻¹)ᴴ * (kᴴ * gramAt D V τ * k) * k⁻¹ := by rw [hk']
       _ = (k * k⁻¹)ᴴ * gramAt D V τ * (k * k⁻¹) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [a1]; simp
+      _ = _ := simp [a1]
   have hm := GlobalTheory.TypeAtCompare.conj_mem hP hJ hk
   have t0 : HasTypeAll (lieOf (gramAt D V τ)) (Formalism.QuantumDeterminants.UH (gramAt D V τ)) (fun g => σ (P * g * P⁻¹))
       fun g => φ (x * atTau θ V τ k * atTau θ V τ g) := hasTypeAll_iff.2 (h (x * atTau θ V τ k))

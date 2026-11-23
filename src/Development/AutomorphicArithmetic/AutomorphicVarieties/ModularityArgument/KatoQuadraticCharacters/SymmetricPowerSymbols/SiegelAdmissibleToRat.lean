@@ -63,7 +63,7 @@ private theorem siegel_admissible_periodic {c : ℕ} {x x' : Fin 2 → ℚ}
 private theorem near {M : ℕ} (hM : 0 < M) (a : ℤ) (y : ZMod M) (h : (a : ZMod M) = y) :
     ∃ j : ℤ, (a : ℚ) / M = (y.val : ℚ) / M + j := by
   haveI : NeZero M := ⟨hM.ne'⟩
-  have h1 : ((y.val : ℤ) : ZMod M) = (a : ZMod M) := by rw [h]; simp
+  have h1 : ((y.val : ℤ) : ZMod M) = (a : ZMod M) := simp [h]
   obtain ⟨j, hj⟩ := (ZMod.intCast_eq_intCast_iff_dvd_sub _ _ _).1 h1
   refine ⟨j, ?_⟩
   have hM' : (M : ℚ) ≠ 0 := by exact_mod_cast hM.ne'

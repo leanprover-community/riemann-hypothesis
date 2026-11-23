@@ -73,7 +73,7 @@ theorem exists_frames (D : D7) (V : HSp D) (hV : V.SigOK) : ∃ A : Frames V, Is
       calc _ = ((Q : Matrix _ _ ℂ) * ((Q⁻¹ : GL _ ℂ) : Matrix _ _ ℂ))ᴴ *
             ((HSpace.gram V).map (tauE D ρ)).reindex e e * ((Q : Matrix _ _ ℂ) * ((Q⁻¹ : GL _ ℂ) : Matrix _ _ ℂ)) := by
             simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-        _ = _ := by rw [Units.mul_inv]; simp
+        _ = _ := simp [Units.mul_inv]
     let Pm : Matrix (Fin (V.sig (tauE D ρ)).1 ⊕ Fin (V.sig (tauE D ρ)).2)
         (Fin (V.sig (tauE D ρ)).1 ⊕ Fin (V.sig (tauE D ρ)).2) ℂ := ((Q⁻¹ : GL _ ℂ) : Matrix _ _ ℂ)
     let a : Matrix (Fin (V.sig (tauE D ρ)).1 ⊕ Fin (V.sig (tauE D ρ)).2) (Fin V.rank) ℂ := Pm.submatrix id e

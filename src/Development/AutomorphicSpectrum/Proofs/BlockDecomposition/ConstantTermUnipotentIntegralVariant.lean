@@ -76,7 +76,7 @@ theorem eventually_chart_eq {φ : Sm E a} (hφ : LO φ) (g : GA E a) (x₀ : Blo
       chart φ.1 (finGL E a (finPart g x₀)) ∘ lmul (toL (infPart g x).val) := by
   have hc : Continuous (fun x : BlockIx a r → Ad E => (finPart g x₀)⁻¹ * finPart g x) :=
     continuous_const.mul (continuous_finPart g)
-  have h1 : finRep E a ((finPart g x₀)⁻¹ * finPart g x₀) φ = φ := by rw [inv_mul_cancel]; simp
+  have h1 : finRep E a ((finPart g x₀)⁻¹ * finPart g x₀) φ = φ := simp [inv_mul_cancel]
   filter_upwards [hc.continuousAt.preimage_mem_nhds (hφ.2.mem_nhds h1)] with x hx
   have hx' : finRep E a ((finPart g x₀)⁻¹ * finPart g x) φ = φ := hx
   rw [unip_mul_eq, ← mul_inv_cancel_left (finPart g x₀) (finPart g x), map_mul, mul_assoc, ← infGL_comm,

@@ -109,8 +109,8 @@ theorem image_comp_perm (σ : Equiv.Perm (T × Fin N)) (τ : T) {a b a' b' : Fin
     IsCompact ((fun y => y ∘ ⇑σ) '' K) ∧ (fun y => y ∘ ⇑σ) '' K ⊆ diagHyperplane T N τ a b ∧
       ∃ O : Set (T × Fin N → ℝ), IsOpen O ∧ (O ∩ diagHyperplane T N τ a b).Nonempty ∧
         O ∩ diagHyperplane T N τ a b ⊆ (fun y => y ∘ ⇑σ) '' K := by
-  have hinv_a : σ⁻¹ (τ, a') = (τ, a) := by rw [← hσa]; simp
-  have hinv_b : σ⁻¹ (τ, b') = (τ, b) := by rw [← hσb]; simp
+  have hinv_a : σ⁻¹ (τ, a') = (τ, a) := simp [← hσa]
+  have hinv_b : σ⁻¹ (τ, b') = (τ, b) := simp [← hσb]
   refine ⟨hKc.image (continuous_pi fun p => continuous_apply _), ?_, ?_⟩
   · rintro _ ⟨y, hy, rfl⟩
     show y (σ (τ, a)) = y (σ (τ, b))

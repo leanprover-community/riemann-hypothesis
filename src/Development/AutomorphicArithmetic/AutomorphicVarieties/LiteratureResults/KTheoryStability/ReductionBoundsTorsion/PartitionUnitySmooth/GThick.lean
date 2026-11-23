@@ -165,7 +165,7 @@ private theorem exists_injective_linearMap_gram_of_det_ne_zero {L : Type} [Field
     calc mat k w = (Pᴴ)⁻¹ * (Pᴴ * mat k w * P) * P⁻¹ := by
           rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hdetH, Matrix.one_mul,
             Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hdet, Matrix.mul_one]
-      _ = 0 := by rw [h0]; simp
+      _ = 0 := simp [h0]
   apply Subtype.ext
   funext w i j
   have := congrFun (congrFun (hw w) i) j

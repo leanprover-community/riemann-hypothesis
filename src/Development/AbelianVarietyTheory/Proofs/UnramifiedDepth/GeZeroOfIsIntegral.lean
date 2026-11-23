@@ -55,7 +55,7 @@ theorem ge_zero_of_isIntegral {C : Type} [Field C] (V : VF C) {x : C} (hx : IsIn
           obtain ⟨h1, h2⟩ := hc
           have h1' : V.v z < 0 := lt_of_not_ge h1
           have h2' : V.v z⁻¹ < 0 := lt_of_not_ge h2
-          have h3 : V.v (z * z⁻¹) = 0 := by rw [mul_inv_cancel₀ hz]; simp
+          have h3 : V.v (z * z⁻¹) = 0 := simp [mul_inv_cancel₀ hz]
           rw [V.v.map_mul] at h3
           have h4 : V.v z + V.v z⁻¹ ≤ V.v z + 0 := add_le_add le_rfl h2'.le
           rw [h3, add_zero] at h4

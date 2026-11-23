@@ -101,7 +101,7 @@ theorem isUnit_intCast_of_not_dvd {p n : ℕ} [hp : Fact p.Prime] {c : ℤ}
   have h1 : IsCoprime (p : ℤ) c :=
     (Nat.prime_iff_prime_int.mp hp.out).irreducible.coprime_iff_not_dvd.mpr hc
   obtain ⟨a, b, hab⟩ := (h1.pow_left (m := n))
-  have h2 : ((a * (p : ℤ) ^ n + b * c : ℤ) : ZMod (p ^ n)) = 1 := by rw [hab]; simp
+  have h2 : ((a * (p : ℤ) ^ n + b * c : ℤ) : ZMod (p ^ n)) = 1 := simp [hab]
   have h3 : ((p : ZMod (p ^ n))) ^ n = 0 := by
     rw [← Nat.cast_pow]; exact ZMod.natCast_self _
   push_cast at h2

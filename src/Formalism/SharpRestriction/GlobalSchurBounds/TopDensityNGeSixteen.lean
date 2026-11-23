@@ -762,7 +762,7 @@ theorem matRealF_of {eps : ℝ} (Fm : FamP eps) (CH : ℝ) (hCH : 0 ≤ CH) (h :
   have hkey : E * (x ^ CH * x) ≤ 1 := by
     have h1 : x ^ (CH + 1) = x ^ CH * x := by rw [Real.rpow_add hx0, Real.rpow_one]
     rw [h1] at hp
-    have h2 : E * Real.exp (x ^ (eps / 8)) = 1 := by rw [hE, ← Real.exp_add]; simp
+    have h2 : E * Real.exp (x ^ (eps / 8)) = 1 := simp [hE, ← Real.exp_add]
     calc E * (x ^ CH * x) ≤ E * Real.exp (x ^ (eps / 8)) := mul_le_mul_of_nonneg_left hp hE0.le
       _ = 1 := h2
   have hEx : E * x ^ CH ≤ 1 / 18 := by

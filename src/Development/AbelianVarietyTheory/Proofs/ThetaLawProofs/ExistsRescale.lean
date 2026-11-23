@@ -126,7 +126,7 @@ theorem value_spAct {g c N : ℕ} {ka : ∀ (K : Type) [Field K] [CharZero K], K
   subst h
   have hx' : NormalAt x τ 1 (fun i => (n i : ℂ) / 2) (fun i => (n' i : ℂ) / 2) 1 := hx
   obtain ⟨M', c', hc', e, hN⟩ := GlobalTheory.SpMove.normalAt_spAct x τ 1 1 sp n n' k k' hsp hL one_ne_zero hx'
-  have e' : M'.det ^ 4 / c' ^ 8 = 1 := by rw [e]; simp
+  have e' : M'.det ^ 4 / c' ^ 8 = 1 := simp [e]
   have hM' : M'.det ≠ 0 := fun h0 => by rw [h0] at e'; simp at e'
   have h1 : (ka ℂ x : ℂ) = U τ := hU x rfl τ hx'
   have h2 : (ka ℂ x : ℂ) = V (Key.Chi.spAct sp τ) * (M'.det ^ 4 / c' ^ 8) ^ c :=

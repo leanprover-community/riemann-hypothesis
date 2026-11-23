@@ -136,7 +136,7 @@ private theorem exists_nonzero_lower_entry_of_irreducible {Γ : Type} [Group Γ]
     rw [hW] at hv ⊢
     simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two, hno x, hv]
   rcases hmin W le_top hinv with h0 | h1
-  · have : (Pi.single 0 1 : Fin 2 → k) ∈ W := by rw [hW]; simp
+  · have : (Pi.single 0 1 : Fin 2 → k) ∈ W := simp [hW]
     rw [h0, Submodule.mem_bot] at this
     simpa using congrFun this 0
   · have : (Pi.single 1 1 : Fin 2 → k) ∈ W := by rw [h1]; trivial
@@ -155,7 +155,7 @@ private theorem exists_nonzero_upper_entry_of_irreducible {Γ : Type} [Group Γ]
     rw [hW] at hv ⊢
     simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two, hno x, hv]
   rcases hmin W le_top hinv with h0 | h1
-  · have : (Pi.single 1 1 : Fin 2 → k) ∈ W := by rw [hW]; simp
+  · have : (Pi.single 1 1 : Fin 2 → k) ∈ W := simp [hW]
     rw [h0, Submodule.mem_bot] at this
     simpa using congrFun this 1
   · have : (Pi.single 0 1 : Fin 2 → k) ∈ W := by rw [h1]; trivial

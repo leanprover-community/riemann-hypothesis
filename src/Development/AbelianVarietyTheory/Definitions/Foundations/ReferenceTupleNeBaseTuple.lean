@@ -138,7 +138,7 @@ theorem inf_eq_one_of_order {L : Type} [Field L] [NumberField L] [_root_.NumberF
     intro w y
     let e := InfinitePlace.Completion.ringEquivComplexOfIsComplex (IsTotallyComplex.isComplex w)
     obtain ⟨z, hz⟩ := IsAlgClosed.exists_pow_nat_eq (e (y : w.Completion)) hn
-    have hz' : (e.symm z) ^ n = y := by rw [← map_pow, hz]; simp
+    have hz' : (e.symm z) ^ n = y := simp [← map_pow, hz]
     have hz0 : e.symm z ≠ 0 := by
       intro h0; rw [h0, zero_pow hn.ne'] at hz'; exact y.ne_zero hz'.symm
     have : y = (Units.mk0 _ hz0) ^ n := Units.ext (by simp [hz'])

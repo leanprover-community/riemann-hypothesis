@@ -1168,7 +1168,7 @@ theorem lat_L'_mem {δ : ∀ p : PlF D, (D.s.atP p).Fp} {M : ∀ p : PlF D, Loc.
             ((D.s.atP p).ιE (sgn D (m + s)) * Formalism.MainNotions.BridgeLemma.tModInv δ p ν s 1)
           = ((D.s.atP p).ιE (sgn D (m + s)) * (D.s.atP p).ιE (sgn D (m + s))) *
             (PI.SupportDatumW.hF D δ p (m + 1) s * Formalism.MainNotions.BridgeLemma.tModInv δ p ν s 1) := by ring
-        _ = 1 := by rw [hmi, ← map_mul, sgn, ← pow_add, ← two_mul, pow_mul]; simp
+        _ = 1 := simp [hmi, ← map_mul, sgn, ← pow_add, ← two_mul, pow_mul]
     rw [uU_inv hδ _ _ hinv] at h1
     have htmi : Formalism.MainNotions.BridgeLemma.tModInv δ p ν s x =
         Formalism.MainNotions.BridgeLemma.tModInv δ p ν s 1 * (D.s.atP p).ιE x := by

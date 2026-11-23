@@ -228,7 +228,7 @@ theorem isCompl_perp (R : Submodule ℂ (ι → ℂ)) : IsCompl R (perp R) := by
     let e := WithLp.linearEquiv 2 ℂ (ι → ℂ)
     let K : Submodule ℂ (EuclideanSpace ℂ ι) := R.comap e.toLinearMap
     obtain ⟨y, hy, w, hw, h⟩ := Submodule.exists_add_mem_mem_orthogonal (K := K) (e.symm f)
-    have hf : f = e y + e w := by rw [← map_add (f := _), ← h]; simp
+    have hf : f = e y + e w := simp [← map_add (f := _), ← h]
     rw [hf]
     refine Submodule.add_mem_sup hy ?_
     intro r hr

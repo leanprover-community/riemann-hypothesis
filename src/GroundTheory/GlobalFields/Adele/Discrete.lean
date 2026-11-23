@@ -117,7 +117,7 @@ theorem existsUnique_sub_mem_fundamentalSet (x : 𝔸[K]) :
       abel
     have hu0 : u = 0 := by simpa using h1
     rw [hu0] at hu
-    have : k - (k₁ + z) = 0 := by rw [← hu]; simp
+    have : k - (k₁ + z) = 0 := simp [← hu]
     exact sub_eq_zero.mp this
 
 theorem exists_isCompact_forall_exists_sub_mem :

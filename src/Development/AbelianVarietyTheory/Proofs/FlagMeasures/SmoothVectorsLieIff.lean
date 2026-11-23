@@ -89,7 +89,7 @@ theorem inv_mem_UH {G : Matrix (Fin n) (Fin n) ℂ} (hG : IsUnit G) {g : Matrix 
   show (g⁻¹)ᴴ * G * g⁻¹ = G
   calc (g⁻¹)ᴴ * G * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * G * g) * g⁻¹ := by rw [h]
     _ = (g * g⁻¹)ᴴ * G * (g * g⁻¹) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = G := by rw [mul_nonsing_inv _ hd]; simp
+    _ = G := simp [mul_nonsing_inv _ hd]
 
 theorem exp_mem {G X : Matrix (Fin n) (Fin n) ℂ} (hG : IsUnit G) (hX : X ∈ lieOf G) (t : ℝ) :
     NormedSpace.exp (t • X) ∈ Formalism.QuantumDeterminants.UH G := by

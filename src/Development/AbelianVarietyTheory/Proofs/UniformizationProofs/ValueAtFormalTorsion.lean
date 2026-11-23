@@ -128,7 +128,7 @@ theorem value_at_formal_torsion : LL → TwistBCSpanStatement → TWM.VRatioGtSt
   intro hL hT hVR hTW hUU V _ _ _ _ hcpl ϖ hϖ D Q hQ F _ _ _ v hv A G _ _ hG U w₀ ρ hN n k hn hk p x hy hx e he
   obtain ⟨w₁, hw₁, hv₁, hsum⟩ := GlobalTheory.T.section_value_at_torsionPoint_eq_sum_terms hL hT hVR hTW hUU V hcpl ϖ hϖ D Q hQ F v hv A G hG U w₀ ρ hN n hn p x hx e he
   have hv₁ : GenV hϖ hv w₁ 0 := by
-    have e0 : ((Q p.y : ℚ) / (n : ℚ) ^ 2) = 0 := by rw [hy, QForm.Q_zero hϖ D hQ]; simp
+    have e0 : ((Q p.y : ℚ) / (n : ℚ) ^ 2) = 0 := simp [hy, QForm.Q_zero hϖ D hQ]
     rwa [e0] at hv₁
   obtain ⟨-, huniq, hone, -, hqk, -, hterm⟩ := GlobalTheory.UT.CoefVal.main hL hT hVR hTW hUU V hcpl ϖ hϖ D Q hQ F v hv p.g
   obtain ⟨w, hw, hwv⟩ := exists_pow k (line_exp k) w₁ hw₁

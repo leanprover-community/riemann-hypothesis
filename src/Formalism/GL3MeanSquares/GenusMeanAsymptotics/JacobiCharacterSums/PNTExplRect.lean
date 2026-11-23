@@ -164,7 +164,7 @@ theorem ex_rect_logDeriv (f : ℂ → ℂ) (hf : Differentiable ℂ f) (hf1 : f 
     exact (differentiableOn_const _).mul (((differentiableOn_dslope (hU.mem_nhds (hZU ρ hρ))).2 hφU).sub
       ((differentiableOn_dslope (hU.mem_nhds h1U)).2 hφU))
   have hφw : ∀ z, φ z = (y : ℂ) ^ z / z := fun z => by rw [hφdef]
-  have hφ1 : φ 1 = y := by rw [hφw]; simp
+  have hφ1 : φ 1 = y := simp [hφw]
   have hkey : ∀ w ∈ U, w ∉ insert 1 Z →
       -(deriv f w / f w) * exKer y w - ∑ p ∈ insert 1 Z, b p / (w - p) = G₀ w := by
     intro w hw hwP

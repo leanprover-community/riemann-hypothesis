@@ -267,7 +267,7 @@ def levOfChar (ψ : AddChar (ZMod g) ℂ) (hψ : ψ ≠ 1) (N : ℕ) (b : Bool) 
 
 def levStandard (g : ℕ) [Fact g.Prime] (N : ℕ) (b : Bool) (s k : ℕ) (h : s + k < N) : Lev g N :=
   levOfChar ZMod.stdAddChar (fun h1 => by
-    have h2 : (ZMod.stdAddChar (N := g)) 1 = ZMod.stdAddChar (N := g) 0 := by rw [h1]; simp
+    have h2 : (ZMod.stdAddChar (N := g)) 1 = ZMod.stdAddChar (N := g) 0 := simp [h1]
     exact one_ne_zero (ZMod.injective_stdAddChar h2)) N b s k h
 
 section Alg

@@ -113,7 +113,7 @@ theorem mem_of_dvd (hm : m ≠ 0) (hmI : (m : R) ∈ I) (hss : ∀ a, s (s a) = 
     (h : ∀ y ∈ I • (⊤ : Submodule R P), (m : ℤ) ∣ B x y) : x ∈ I • (⊤ : Submodule R P) := by
   obtain ⟨z, hz⟩ := exists_nsmul hB hm (x := s c • x) fun y => by
     rw [aB, hss]; exact h _ (Submodule.smul_mem_smul hc trivial)
-  have : x = m • z - s (c - 1) • x := by rw [map_sub, map_one, sub_smul, one_smul, hz]; simp
+  have : x = m • z - s (c - 1) • x := simp [map_sub, map_one, sub_smul, one_smul, hz]
   rw [this]
   exact sub_mem (nsmul_mem hmI z) (Submodule.smul_mem_smul (hs' _ hc1) trivial)
 
@@ -127,7 +127,7 @@ theorem exists_inv [Module.Projective R P] (hIJ : J * I ≤ Ideal.span {(m : R)}
   have hi : ∀ a, mk a ∈ J • (⊤ : Submodule R P) → a ∈ J • (⊤ : Submodule R A) := fun a ha => by
     obtain ⟨b, hb⟩ := inj (c • a) (Submodule.smul_mem_smul hc trivial) (by
       rw [map_smul]; exact smul_eq_nsmul hIJ' hc ha)
-    have : a = m • b - (c - 1) • a := by rw [sub_smul, one_smul, hb]; simp
+    have : a = m • b - (c - 1) • a := simp [sub_smul, one_smul, hb]
     rw [this]
     exact sub_mem (nsmul_mem hmJ b) (Submodule.smul_mem_smul hc1 trivial)
   have hq : Function.Surjective (q ∘ₗ (J • (⊤ : Submodule R A)).mkQ) := by
@@ -256,7 +256,7 @@ theorem exists_form (H : Host E) (hL : SelfD X L) : ∃ B : LinearMap.BilinForm 
     rw [Int.cast_neg, ← hB, ← hB, TensLat.EF_swap]
 
 theorem ef_inv_smul (m : ℕ) (u v : Fin r → E) : EF X u ((m : E)⁻¹ • v) = (m : ℚ)⁻¹ * EF X u v := by
-  have : (m : E)⁻¹ • v = (m : ℚ)⁻¹ • v := by rw [← Rat.cast_smul_eq_qsmul E]; simp
+  have : (m : E)⁻¹ • v = (m : ℚ)⁻¹ • v := simp [← Rat.cast_smul_eq_qsmul E]
   rw [this, TensLat.EF_eq_bilin, TensLat.EF_eq_bilin, map_smul, smul_eq_mul]
 
 theorem prod_le (l : Geo.Tor.Level H) : l.Mb * Mfr l ≤ Ideal.span {(l.M : 𝓞 E)} := l.prod.le

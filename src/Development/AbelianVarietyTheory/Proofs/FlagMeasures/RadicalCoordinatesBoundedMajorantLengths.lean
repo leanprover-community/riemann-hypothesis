@@ -171,7 +171,7 @@ theorem inv_bound {r : ℕ} (N : Matrix (Fin r) (Fin r) ℂ) (a : Fin r → ℝ)
     have hrest : ∏ i ∈ Finset.univ.erase c, (a (id i))⁻¹ ≤ R ^ n := by
       calc ∏ i ∈ Finset.univ.erase c, (a (id i))⁻¹ ≤ ∏ _i ∈ Finset.univ.erase c, R :=
             Finset.prod_le_prod₀ (fun _ _ => hainv0 _) (fun _ _ => hal _)
-        _ = R ^ n := by rw [Finset.prod_const, Finset.card_erase_of_mem (Finset.mem_univ _)]; simp
+        _ = R ^ n := simp [Finset.prod_const, Finset.card_erase_of_mem (Finset.mem_univ _)]
     have hrest0 : 0 ≤ ∏ i ∈ Finset.univ.erase c, (a (id i))⁻¹ :=
       Finset.prod_nonneg fun _ _ => hainv0 _
     have h2 : ‖N.det‖ ≤ R ^ (n + 1) * ((a c)⁻¹ * R ^ n) :=

@@ -91,7 +91,7 @@ theorem UpperTheory.Reformulated.B.Ygb8.main :
   have hex : ∃ n, P n := by
     refine ⟨Module.finrank ℂ (⊤ : Submodule ℂ E), ⊤, ?_, fun i x _ => Submodule.mem_top, rfl⟩
     intro h
-    have : Module.finrank ℂ (⊤ : Submodule ℂ E) = 0 := by rw [h]; simp
+    have : Module.finrank ℂ (⊤ : Submodule ℂ E) = 0 := simp [h]
     rw [finrank_top] at this
     omega
   obtain ⟨W, hW, hinv, hWr⟩ := Nat.find_spec hex

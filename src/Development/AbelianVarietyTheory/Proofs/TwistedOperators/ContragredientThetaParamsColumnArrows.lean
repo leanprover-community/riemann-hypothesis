@@ -78,7 +78,7 @@ theorem low_bound (hN : G.NearMid) (hs : 1 ≤ G.s) {j : ℕ} (hj : j ≤ G.m) {
     simp only [GridData.vHalf]
     linarith
   · have hb := abs_sub_le_of_mem_block (c := (G.cen l : ℚ)) (t := G.s - 1) hx
-    have hcast : ((G.s - 1 : ℕ) : ℚ) = G.s - 1 := by rw [Nat.cast_sub hs]; simp
+    have hcast : ((G.s - 1 : ℕ) : ℚ) = G.s - 1 := simp [Nat.cast_sub hs]
     rw [hcast] at hb
     have hn := hN l (mem_Icc.2 ⟨by omega, h2⟩)
     rw [G.mid_eq (by omega)] at hn
@@ -303,7 +303,7 @@ theorem parPi_pairPar : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.Cusp
     exact_mod_cast (by omega : 2 * bigN D ^ 3 < gap D)
   have hsγ : ((grid D τ).s : ℚ) ≤ (grid D τ).ga := by linarith
   have hs0 : (0 : ℚ) ≤ (grid D τ).s := by positivity
-  have hcastT : ((sLen D - 1 : ℕ) : ℚ) = (sLen D : ℚ) - 1 := by rw [Nat.cast_sub (show 1 ≤ sLen D by omega)]; simp
+  have hcastT : ((sLen D - 1 : ℕ) : ℚ) = (sLen D : ℚ) - 1 := simp [Nat.cast_sub (show 1 ≤ sLen D by omega)]
   have hsq : ((grid D τ).s : ℚ) = (sLen D : ℚ) := rfl
   have hpart : partner (sLen D - 1) false (cen D τ (D.R.m - i) : ℚ) (cen D τ (D.R.m - i) : ℚ) (parP D i τ) =
       flip (parP D (i + 1) τ) := partner_parPi (grid D τ) hN hs1 hγq hi

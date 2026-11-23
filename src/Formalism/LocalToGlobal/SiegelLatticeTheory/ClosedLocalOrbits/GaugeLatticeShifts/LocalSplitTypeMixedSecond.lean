@@ -524,7 +524,7 @@ theorem xi_up (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.host.E} (F : L
   exact isUp_map (algebraMap (𝓞 D.host.E) D.host.E) ⟨h1, fun a b hab => h0 b a hab⟩
 
 theorem sgn_sq' {R : Type*} [CommRing R] (r : ℕ) (a : Fin (r + 1)) :
-    (-1 : R) ^ (r - a.val) * (-1) ^ (r - a.val) = 1 := by rw [← mul_pow]; simp
+    (-1 : R) ^ (r - a.val) * (-1) ^ (r - a.val) = 1 := simp [← mul_pow]
 
 theorem glob_fact (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T)
     (F' : LFlag (D.sp.Y 0) D.R.rS T') (w : Point D.host.E (D.R.rS + 1)) (hcell : IsInCell (ZhatOM (ZhatL F F')) w) :
@@ -663,8 +663,8 @@ end Split
 theorem sign_rel {R : Type*} [CommRing R] (x y s : ℕ) (h : Odd (x + y + s)) :
     (-1 : R) ^ s = -((-1) ^ x * (-1) ^ y) := by
   have h1 : (-1 : R) ^ x * (-1) ^ y * (-1) ^ s = -1 := by rw [← pow_add, ← pow_add]; exact h.neg_one_pow
-  have hx : (-1 : R) ^ x * (-1) ^ x = 1 := by rw [← mul_pow]; simp
-  have hy : (-1 : R) ^ y * (-1) ^ y = 1 := by rw [← mul_pow]; simp
+  have hx : (-1 : R) ^ x * (-1) ^ x = 1 := simp [← mul_pow]
+  have hy : (-1 : R) ^ y * (-1) ^ y = 1 := simp [← mul_pow]
   linear_combination ((-1 : R) ^ x * (-1) ^ y) * h1 - (-1 : R) ^ s * (-1) ^ y * (-1) ^ y * hx - (-1 : R) ^ s * hy
 
 section Gen2

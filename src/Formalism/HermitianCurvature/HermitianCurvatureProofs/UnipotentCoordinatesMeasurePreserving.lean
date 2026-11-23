@@ -1098,10 +1098,10 @@ theorem herm_symm' (u w : Fin (2 * r + k + 1) → ℂ) : herm (Hpk k r) w u = st
     herm (Hpk k r) w (es k r a) = 0 := by rw [herm_es, wb_eI hw]
 
 @[simp] theorem h_ee_w {w : Fin (2 * r + k + 1) → ℂ} (hw : inWb k r w) (a : Fin r) :
-    herm (Hpk k r) (ee k r a) w = 0 := by rw [herm_symm', h_w_ee hw]; simp
+    herm (Hpk k r) (ee k r a) w = 0 := simp [herm_symm', h_w_ee hw]
 
 @[simp] theorem h_es_w {w : Fin (2 * r + k + 1) → ℂ} (hw : inWb k r w) (a : Fin r) :
-    herm (Hpk k r) (es k r a) w = 0 := by rw [herm_symm', h_w_es hw]; simp
+    herm (Hpk k r) (es k r a) w = 0 := simp [herm_symm', h_w_es hw]
 
 theorem herm_self_alt {z : Fin (2 * r + k + 1) → ℂ} : herm (Hpk k r) z z = -((Tz k r z : ℝ) : ℂ) := by
   have h := B2x4.herm_symm _ (B2x4.Hpk_herm k r) z z
@@ -2291,7 +2291,7 @@ theorem skewOf_TX (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) : U.skewOf (TX x1 x
       apply Complex.ext <;> simp [skew_diag_re]
   · have hs := congrFun (congrFun (Ux2.skewOf_ct (TX x1 x).2) a) b
     simp only [Matrix.conjTranspose_apply, Matrix.neg_apply] at hs
-    have h1 : U.skewOf (TX x1 x).2 a b = -star (U.skewOf (TX x1 x).2 b a) := by rw [hs]; simp
+    have h1 : U.skewOf (TX x1 x).2 a b = -star (U.skewOf (TX x1 x).2 b a) := simp [hs]
     rw [h1, Ux2.skewOf_lt _ h]
     show -star (Sm x1 x b a) = Sm x1 x a b
     cases a using Fin.lastCases with
@@ -6209,7 +6209,7 @@ theorem shearE_mp : MeasurePreserving (shearE (n := n) σ) volume volume := by
     intro x
     have hN : Complex.normSq (((U.lowW σ x.1)⁻¹ * (U.wP σ)⁻¹)).det = 1 := by
       rw [Matrix.det_mul, det_inv_low, one_mul, Ux2.permutationMatrix_inv, normSq_det_wP]
-    have hM : Complex.normSq ((G.upper x.2)⁻¹).det = 1 := by rw [det_inv_up]; simp
+    have hM : Complex.normSq ((G.upper x.2)⁻¹).det = 1 := simp [det_inv_up]
     exact (fa_mp _ hN).prod (fb_mp _ hM)
   have s1 : SFinite (volume : Measure ((U.LW σ → ℂ) × (G.UT ph → ℂ))) := by
     rw [Measure.volume_eq_prod]; infer_instance

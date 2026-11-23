@@ -50,11 +50,11 @@ lemma conj_jj {Y : M2 n} (hU : IsUnit Y) (hG : Yᴴ * JJ n * Y = JJ n) : Y * JJ 
   have h1 : (Y * JJ n * Yᴴ * JJ n) * Y = (-1) * Y := by
     calc (Y * JJ n * Yᴴ * JJ n) * Y = Y * JJ n * (Yᴴ * JJ n * Y) := by simp only [Matrix.mul_assoc]
       _ = Y * (JJ n * JJ n) := by rw [hG, Matrix.mul_assoc]
-      _ = (-1) * Y := by rw [jj_mul_jj]; simp
+      _ = (-1) * Y := simp [jj_mul_jj]
   have h2 : Y * JJ n * Yᴴ * JJ n = -1 := hU.mul_left_inj.mp h1
   calc Y * JJ n * Yᴴ = (Y * JJ n * Yᴴ * JJ n) * (-JJ n) := by
         simp only [Matrix.mul_assoc, Matrix.mul_neg, jj_mul_jj, neg_neg, Matrix.mul_one]
-    _ = JJ n := by rw [h2]; simp
+    _ = JJ n := simp [h2]
 
 lemma rows_rel {A B C Dm : Matrix (Fin n) (Fin n) ℂ}
     (h : fromBlocks A B C Dm * JJ n * (fromBlocks A B C Dm)ᴴ = JJ n) :

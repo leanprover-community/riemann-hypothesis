@@ -214,7 +214,7 @@ theorem exists_skew (H : HermSpace K V) {J : Type} [Fintype J] (e f : J → V)
   · ext v; simp [h0 _ (hpN v)]
   · ext v; simp [h0 _ (hpN v)]
   · intro x y
-    have e1 : H.B (N x) (N y) = 0 := by rw [hB, hpN]; simp
+    have e1 : H.B (N x) (N y) = 0 := simp [hB, hpN]
     have e2 : H.B x (N y) = - H.B (N x) y := by
       rw [← H.herm, hB, hB]; simp [H.herm]
     simp [e1, e2]

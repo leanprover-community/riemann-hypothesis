@@ -126,7 +126,7 @@ theorem isCosocle_of_contra [T2Space G]
   let l : π.IntertwiningMap (ofChar χ) := ⟨(Φ (f 1)).1, fun g => LinearMap.ext fun v => by
     have h1 := congrArg (fun y => (Φ y).1 v) (f.isIntertwining _ _ g⁻¹ 1)
     have h2 := congrArg (fun y => y.1 v) (Φ.toIntertwiningMap.isIntertwining _ _ g⁻¹ (f 1))
-    have h3 : ofChar χ⁻¹ (g⁻¹ : G) 1 = (χ g : ℂ) • (1 : ℂ) := by rw [ofChar_apply]; simp
+    have h3 : ofChar χ⁻¹ (g⁻¹ : G) 1 = (χ g : ℂ) • (1 : ℂ) := simp [ofChar_apply]
     simp only [h3, map_smul] at h1
     rw [contra_apply, inv_inv] at h2
     exact h2.symm.trans h1.symm⟩

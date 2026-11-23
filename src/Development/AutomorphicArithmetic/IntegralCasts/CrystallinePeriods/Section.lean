@@ -47,7 +47,6 @@ variable (p : ℕ) [Fact p.Prime]
 variable {R : Type u} [CommRing R] [Fact ¬IsUnit (p : R)]
 variable {S : Type v} [CommRing S] [Fact ¬IsUnit (p : S)]
 
-section Witt
 
 variable {k : Type w} [CommRing k] [CharP k p] [PerfectRing k p]
 
@@ -62,9 +61,7 @@ variable {k : Type w} [CommRing k] [CharP k p] [PerfectRing k p]
 
 
 
-end Witt
 
-section FracWitt
 
 variable {k : Type w} [Field k] [CharP k p] [PerfectRing k p]
 
@@ -72,7 +69,6 @@ variable {k : Type w} [Field k] [CharP k p] [PerfectRing k p]
 
 
 
-end FracWitt
 
 variable [IsAdicComplete (span {(p : R)}) R]
 

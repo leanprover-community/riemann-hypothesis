@@ -179,7 +179,7 @@ theorem isB_onb {S T : HSp D} (C : Ctx S T) {Sp : D.what₂.Tau → SPar} (M : D
     rw [← M.fr_gram τ, ← hJ τ]; unfold onb
     calc _ = (M.fr τ * (M.fr τ)⁻¹)ᴴ * Formalism.REAL.Jm (M.ε τ) * (M.fr τ * (M.fr τ)⁻¹) := by
           simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [h1]; simp
+      _ = _ := simp [h1]
   · unfold Ctx.sB cart onb
     rw [Matrix.nonsing_inv_nonsing_inv _ (hu τ), hJ]
 

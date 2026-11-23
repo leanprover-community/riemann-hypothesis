@@ -142,7 +142,7 @@ theorem uh_inv {n : ℕ} {H A B : Matrix (Fin n) (Fin n) ℂ} (hA : A ∈ Formal
   simp only [Set.mem_setOf_eq] at *
   calc Bᴴ * H * B = Bᴴ * (Aᴴ * H * A) * B := by rw [hA]
     _ = (A * B)ᴴ * H * (A * B) := by rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = H := by rw [hAB]; simp
+    _ = H := simp [hAB]
 
 theorem mat_ext_of {V : Type} {n : ℕ} (Φ : V → Fin n → ℂ) (hsp : Submodule.span ℂ (Set.range Φ) = ⊤)
     (A B : Matrix (Fin n) (Fin n) ℂ) (h : ∀ y, A *ᵥ Φ y = B *ᵥ Φ y) : A = B := by

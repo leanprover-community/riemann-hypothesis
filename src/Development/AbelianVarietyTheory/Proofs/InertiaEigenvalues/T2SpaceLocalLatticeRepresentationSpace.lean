@@ -144,7 +144,7 @@ theorem exists_pair (a : G → M →ₗ[O] M) (hmul : ∀ g h x, a (g * h) x = a
     by_cases hne : Δ.Nonempty
     · obtain ⟨δ, hδ⟩ := hne
       exact hz g (by rw [hg, ← mul_inv_cancel δ]; exact hΔm _ hδ _ (hΔi _ hδ))
-    · have h4 : m = 0 := by rw [hm, Finset.not_nonempty_iff_eq_empty.1 hne]; simp
+    · have h4 : m = 0 := simp [hm, Finset.not_nonempty_iff_eq_empty.1 hne]
       rw [h4, map_zero, add_zero]; exact h₁ g hg
   generalize b₁ + j m = b at hz hb₂ hker
   generalize y₁ + (φD m - m) = y at hb₂

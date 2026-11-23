@@ -68,13 +68,13 @@ theorem exists_homogenised (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fint
     · have h1 : ((a.den : ℤ) : Ω) * algebraMap ℚ Ω a = (a.num : Ω) := by
         calc ((a.den : ℤ) : Ω) * algebraMap ℚ Ω a = algebraMap ℚ Ω ((a.den : ℚ) * a) := by
               rw [map_mul]; simp
-          _ = _ := by rw [Rat.den_mul_eq_num]; simp
+          _ = _ := simp [Rat.den_mul_eq_num]
       simp only [aeval_C, map_one, mul_one, h1]
       simp [mConeMap]
     · have h1 : ((a.den : ℤ) : ℂ) * algebraMap ℚ ℂ a = (a.num : ℂ) := by
         calc ((a.den : ℤ) : ℂ) * algebraMap ℚ ℂ a = algebraMap ℚ ℂ ((a.den : ℚ) * a) := by
               rw [map_mul]; simp
-          _ = _ := by rw [Rat.den_mul_eq_num]; simp
+          _ = _ := simp [Rat.den_mul_eq_num]
       have : map (Int.castRingHom ℂ) (MvPolynomial.C a.num : MRing ι) -
           MvPolynomial.C ((a.den : ℤ) : ℂ) * map (algebraMap ℚ ℂ) (MvPolynomial.C a) = 0 := by
         rw [map_C, map_C, ← map_mul, h1]

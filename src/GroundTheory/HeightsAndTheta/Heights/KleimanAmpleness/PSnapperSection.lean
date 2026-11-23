@@ -109,7 +109,7 @@ theorem prod_update_pow {M : Type*} [CommMonoid M] {t : ℕ} (a : Fin t → M) (
           · subst h
             simp [pow_succ]
           · simp [h]
-    _ = (∏ i, a i ^ n i) * a j := by rw [Finset.prod_mul_distrib, Finset.prod_ite_eq']; simp
+    _ = (∏ i, a i ^ n i) * a j := simp [Finset.prod_mul_distrib, Finset.prod_ite_eq']
 
 theorem mul_le_mul_sub {I : Chart x} {P Q P' Q' : Submodule (chartRing k x I) Ω} (h₁ : P ≤ P') (h₂ : Q ≤ Q') :
     P * Q ≤ P' * Q' :=

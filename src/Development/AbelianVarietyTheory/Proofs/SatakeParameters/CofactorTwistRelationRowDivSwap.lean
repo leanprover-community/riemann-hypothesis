@@ -118,7 +118,7 @@ theorem cofRel_rowDiv (R : Type) [CommRing R] (m : ℕ) (ν : Fin (m + 1) → �
   simp only [map_mul, map_pow, rowGen_det_genM R _ a b hab, rowGen_cofAct R _ a b hab,
     Polynomial.comp_C_mul_X_coeff, Polynomial.coeff_map] at h1
   rw [← map_pow, Polynomial.coeff_C_mul] at h1
-  have h2 : ((-1 : MP R (m + 1)) ^ k) * (-1) ^ k = 1 := by rw [← mul_pow]; simp
+  have h2 : ((-1 : MP R (m + 1)) ^ k) * (-1) ^ k = 1 := simp [← mul_pow]
   unfold rowDiv
   rw [zsmul_eq_mul, mul_left_comm, h1]
   push_cast

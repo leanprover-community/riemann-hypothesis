@@ -335,7 +335,7 @@ theorem cmType_nonempty {E : Type} [Field E] [NumberField E] [IsCMField E] (H : 
   have h0 : ((H.rt : E)) ^ 2 = -(H.d : E) := by
     have := congrArg (algebraMap (𝓞 E) E) H.rt_sq
     simpa using this
-  have h1 : τ (H.rt : E) ^ 2 = -(H.d : ℂ) := by rw [← map_pow, h0]; simp
+  have h1 : τ (H.rt : E) ^ 2 = -(H.d : ℂ) := simp [← map_pow, h0]
   have hd : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
   have hre : (τ (H.rt : E)).re = 0 := by
     have a := congrArg Complex.re h1

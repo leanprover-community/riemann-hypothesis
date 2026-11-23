@@ -672,8 +672,8 @@ theorem exists_dbl_emb : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
     exact ⟨extM_mulVec_of _ h1, extM_mulVec_of _ h2, extM_mul_self hQd _⟩
   ·
     rintro g₁ m ⟨hmx, hmy, hmι⟩ gd₁ hgd
-    have hmx' : mat m *ᵥ incV F H.x = incV F H.x := by rw [hmx]; simp
-    have hmy' : mat m *ᵥ incV F H.y = incV F H.y := by rw [hmy]; simp
+    have hmx' : mat m *ᵥ incV F H.x = incV F H.x := simp [hmx]
+    have hmy' : mat m *ᵥ incV F H.y = incV F H.y := simp [hmy]
     have hIdA : incM F H.ι * incM F Q + vecMulVec (incV F H.x) (incV F (pairVec σ X.J H.y)) +
         vecMulVec (incV F H.y) (incV F (pairVec σ X.J H.x)) = 1 := by
       rw [← incM_mul', ← incM_vecMulVec', ← incM_vecMulVec', ← incM_add', ← incM_add', hId, incM_one']

@@ -52,7 +52,7 @@ theorem isWt_comp_swap : ∀ (n : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι]
   refine ⟨Φ p *ᵥ w, ?_, ?_⟩
   · intro h
     apply hw0
-    have : Φ p *ᵥ (Φ p *ᵥ w) = 0 := by rw [h]; simp
+    have : Φ p *ᵥ (Φ p *ᵥ w) = 0 := simp [h]
     rwa [mulVec_mulVec, ← hΦ.mul, hpp, hΦ.one, one_mulVec] at this
   · intro D hD
     have hent : ∀ a b, (p * D * p).val a b = D.val (σ a) (σ b) := by

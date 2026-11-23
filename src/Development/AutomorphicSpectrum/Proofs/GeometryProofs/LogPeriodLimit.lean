@@ -379,7 +379,7 @@ theorem at_point {n a g : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogPeriod
   have hker_each : ∀ v : Fin g → ℝ, Bs.map (fun x : ℤ => (x : ℝ)) *ᵥ v = 0 →
       ∀ j, z (cj j) = 0 → (B j).map (fun x : ℤ => (x : ℝ)) *ᵥ v = 0 := by
     intro v hv j hj
-    have h0 : v ⬝ᵥ (Bs.map (fun x : ℤ => (x : ℝ)) *ᵥ v) = 0 := by rw [hv]; simp
+    have h0 : v ⬝ᵥ (Bs.map (fun x : ℤ => (x : ℝ)) *ᵥ v) = 0 := simp [hv]
     rw [hBsR, Matrix.sum_mulVec, dotProduct_sum] at h0
     have hnn : ∀ i ∈ Finset.univ, 0 ≤ v ⬝ᵥ ((if z (cj i) = 0 then
         (B i).map (fun x : ℤ => (x : ℝ)) else 0) *ᵥ v) := by

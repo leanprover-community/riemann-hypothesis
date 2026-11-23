@@ -80,7 +80,7 @@ theorem exists_beta (P : HeightOneSpectrum (𝓞 E)) :
   obtain ⟨o', ho'⟩ := hPO i hi
   refine (FractionalIdeal.mem_one_iff _).mpr ⟨y * o + o', ?_⟩
   have : β = (y : E) * ((s : E) * β) + β * (i : E) := by
-    have h1 : ((y * s + i : 𝓞 E) : E) = 1 := by rw [hyi]; simp
+    have h1 : ((y * s + i : 𝓞 E) : E) = 1 := simp [hyi]
     push_cast at h1
     linear_combination (-β) * h1
   rw [this, ho, ho']

@@ -85,10 +85,10 @@ lemma integral_comp_blocks {F n J : Type} [Fintype F] [Fintype n] [DecidableEq n
     obtain ⟨y, rfl⟩ := σ.surjective x
     rw [Matrix.mulVec, dotProduct, ← σ.sum_comp]
     rcases y with ⟨r, j⟩ | y
-    · have : σ.symm (ι (r, j)) = Sum.inl (r, j) := by rw [← σl]; simp
+    · have : σ.symm (ι (r, j)) = Sum.inl (r, j) := simp [← σl]
       simp [G, this, σl, σr, h1, Fintype.sum_sum_type, Fintype.sum_prod_type, blockDiagonal_apply]
     · rw [σr, h2 _ _ y.2]
-      have : σ.symm y.1 = Sum.inr y := by rw [← σr]; simp
+      have : σ.symm y.1 = Sum.inr y := simp [← σr]
       simp [G, this, Fintype.sum_sum_type, Matrix.one_apply, σr]
   have key := (GlobalTheory.SplitWeil.linear_change_of_variables k F F ν).1 (Matrix.GeneralLinearGroup.mkOfDetNeZero G hG0) f
   have hd : Matrix.GeneralLinearGroup.det (Matrix.GeneralLinearGroup.mkOfDetNeZero G hG0)

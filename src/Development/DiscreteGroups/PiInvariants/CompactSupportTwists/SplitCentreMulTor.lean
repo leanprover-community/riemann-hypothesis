@@ -308,7 +308,7 @@ theorem cp_decay_wt (ψ : Sm E n) (hψ : IsCuspForm ψ) (hA : ∀ t g, ψ.1 (spl
           (mul_nonneg (le_max_right _ _) (Real.exp_pos _).le)
     _ = max C 0 * (M.factorial * Real.exp a) := by
         rw [Real.exp_add]
-        have : Real.exp (-redSize x.1) * Real.exp (redSize x.1) = 1 := by rw [← Real.exp_add]; simp
+        have : Real.exp (-redSize x.1) * Real.exp (redSize x.1) = 1 := simp [← Real.exp_add]
         calc max C 0 * Real.exp (-redSize x.1) * (↑M.factorial * (Real.exp a * Real.exp (redSize x.1)))
             = max C 0 * (↑M.factorial * Real.exp a) * (Real.exp (-redSize x.1) * Real.exp (redSize x.1)) := by ring
           _ = _ := by rw [this, mul_one]

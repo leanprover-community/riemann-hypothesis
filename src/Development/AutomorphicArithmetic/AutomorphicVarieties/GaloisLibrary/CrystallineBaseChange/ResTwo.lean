@@ -101,7 +101,7 @@ private theorem part_two {Γ Γ' k : Type} [Group Γ] [Group Γ'] [Field k] [IsA
   have hneg : ∀ s, δ s = -1 → r' s = g * (u * r s) * g⁻¹ := by
     intro s hs
     have e1 := hH (t⁻¹ * s) (by simp [hs, ht'])
-    have e2 : r' s = r' t * r' (t⁻¹ * s) := by rw [← map_mul]; simp
+    have e2 : r' s = r' t * r' (t⁻¹ * s) := simp [← map_mul]
     rw [e2, e1, hrt, ← hcen (r t), map_mul, map_inv]; group
   have hu2 : u = 1 ∨ u = -1 := by
     have e := congrArg Units.val huu

@@ -75,7 +75,7 @@ variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} {K LL : FinExt l} {n : ℕ}
 theorem wach_φ₀_X : W.φ₀ X = (1 + X) ^ l - 1 := by rw [W.φ₀_X, W.q₀_def, P.PD_p K]
 
 theorem wach_φ₀_eq (a : (↥(OL LL))⟦X⟧) : W.φ₀ a = phi l ↥(OL LL) a := by
-  have hc : constantCoeff (W.φ₀ X) = 0 := by rw [wach_φ₀_X]; simp
+  have hc : constantCoeff (W.φ₀ X) = 0 := simp [wach_φ₀_X]
   rw [algHom_eq_subst W.φ₀ hc a, wach_φ₀_X]; rfl
 
 theorem wach_q₀_eq : W.q₀ = q l ↥(OL LL) := by

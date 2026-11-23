@@ -116,7 +116,7 @@ theorem meanSquare_evenTheta_twelfthRoot_invariant {Λ : AddSubgroup ℂ} (h : T
       nrm1Sq Λ (GL3Theta.th0 Λ t) := by
   have h0 : ζ ≠ 0 := by rintro rfl; simp at hζ
   have hn := norm_eq_one_of_pow hζ
-  have h' : TaylorLogMetric.discr (Λ.map (AddMonoidHom.mulLeft ζ)) = 1 := by rw [Model.discr_map _ _ h0, hζ, h]; simp
+  have h' : TaylorLogMetric.discr (Λ.map (AddMonoidHom.mulLeft ζ)) = 1 := simp [Model.discr_map _ _ h0, hζ, h]
   have ha := area_map_unit Λ hn
   have hc : ζ * (starRingEnd ℂ) ζ = 1 := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hn]; simp

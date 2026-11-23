@@ -91,7 +91,7 @@ theorem aux5 : ∀ {n : ℕ} (ε : Fin n → Bool)
       = (g⁻¹).val.conjTranspose * (g.val.conjTranspose * Jm ε * g.val) * (g⁻¹).val := by rw [hg']
     _ = (g.val * (g⁻¹).val).conjTranspose * Jm ε * (g.val * (g⁻¹).val) := by
         simp only [Matrix.conjTranspose_mul, mul_assoc]
-    _ = Jm ε := by rw [Units.mul_inv]; simp
+    _ = Jm ε := simp [Units.mul_inv]
 
 noncomputable def UJ : {n : ℕ} → (Fin n → Bool) → Subgroup (Matrix (Fin n) (Fin n) ℂ)ˣ :=
   fun {n} ε =>

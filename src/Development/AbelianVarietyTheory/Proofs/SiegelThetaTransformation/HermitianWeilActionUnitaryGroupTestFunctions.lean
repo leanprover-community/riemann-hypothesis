@@ -117,7 +117,7 @@ theorem ip_smul {K κ ι : Type} [Field K] [NumberField K] [Fintype κ] [Fintype
   unfold ip
   congr 1
   funext x
-  have : c * conj c = 1 := by rw [Complex.mul_conj', hc]; simp
+  have : c * conj c = 1 := simp [Complex.mul_conj', hc]
   simp only [Pi.smul_apply, smul_eq_mul, map_mul]
   linear_combination (φ x * conj (ψ x)) * this
 

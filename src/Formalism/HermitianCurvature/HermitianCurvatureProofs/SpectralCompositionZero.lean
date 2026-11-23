@@ -293,7 +293,7 @@ theorem niceAll_ap (D : B.RealPlaceData k r Wp Wq) {a : B.Mat k r → ((Wq →L[
                 rw [← Real.rpow_add hp]; congr 2; ring)
       have hlen : (BetaSesquilinearity.wL u ++ BetaSesquilinearity.wR v).length ≤ m' := by rw [BetaSesquilinearity.len_LR]; exact hl
       have e3 : (2 : ℝ) ^ (BetaSesquilinearity.wL u ++ BetaSesquilinearity.wR v).length ≤ 2 ^ m' := pow_le_pow_right₀ (by norm_num) hlen
-      have e4 : B.gN g ^ A' * B.gN g ^ (-A') = 1 := by rw [← Real.rpow_add hp]; simp
+      have e4 : B.gN g ^ A' * B.gN g ^ (-A') = 1 := simp [← Real.rpow_add hp]
       calc B.gN g ^ A' * ‖BetaSesquilinearity.Dw (BetaSesquilinearity.wL u ++ BetaSesquilinearity.wR v) (BetaSesquilinearity.ap a F) g‖
           ≤ B.gN g ^ A' * (2 ^ (BetaSesquilinearity.wL u ++ BetaSesquilinearity.wR v).length * (max C 0 * max cF 0 * B.gN g ^ (-A'))) :=
             mul_le_mul_of_nonneg_left hb (Real.rpow_nonneg hp.le _)

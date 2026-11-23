@@ -480,7 +480,7 @@ theorem decomp_typeI : ∀ (l : ℕ), l.Prime → l ∣ H.QS * H.q →
   rcases Int.units_eq_one_or ((H.gal σ).1.2) with hε | hε
   · exact hε
   exfalso
-  have hσX : σ H.sqd = -H.sqd := by rw [H.gal_sqd σ, hε]; simp
+  have hσX : σ H.sqd = -H.sqd := simp [H.gal_sqd σ, hε]
   have hM0 : H.QS * H.q ≠ 0 := Nat.mul_ne_zero H.QS_pos.ne' H.hyp.1.ne_zero
   have hd8 : (H.d : ℤ) % 8 = 7 := by have := H.hyp.2.2.2.1; omega
   obtain ⟨s, hs⟩ := sq_mod hd8 (H.QS * H.q) hM0 (split_QSq H)

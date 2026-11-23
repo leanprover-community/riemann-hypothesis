@@ -200,7 +200,7 @@ private theorem rel_span (hs : Submodule.span K (Set.range r) = ⊤) (i j : Fin 
   simp at this
 
 private theorem rel_ex (g : G) (i : Fin 4) : ∃ j, r g i j ≠ 0 ∧ r g⁻¹ j i ≠ 0 := by
-  have h1 : (r g * r g⁻¹) i i ≠ 0 := by rw [← map_mul]; simp
+  have h1 : (r g * r g⁻¹) i i ≠ 0 := simp [← map_mul]
   rw [Matrix.mul_apply] at h1
   obtain ⟨j, -, hj⟩ := Finset.exists_ne_zero_of_sum_ne_zero h1
   exact ⟨j, left_ne_zero_of_mul hj, right_ne_zero_of_mul hj⟩
@@ -291,14 +291,14 @@ end
 
 private theorem det_ne {K G : Type} [Field K] [Group G] (r : G →* Matrix (Fin 4) (Fin 4) K) (g : G) :
     (r g).det ≠ 0 := by
-  have h : (r g).det * (r g⁻¹).det = 1 := by rw [← Matrix.det_mul, ← map_mul]; simp
+  have h : (r g).det * (r g⁻¹).det = 1 := simp [← Matrix.det_mul, ← map_mul]
   exact left_ne_zero_of_mul_eq_one h
 
 private theorem adj_eq {K G : Type} [Field K] [Group G] (r : G →* Matrix (Fin 4) (Fin 4) K) (g : G) :
     (r g).adjugate = (r g).det • r g⁻¹ := by
-  have h : r g * r g⁻¹ = 1 := by rw [← map_mul]; simp
+  have h : r g * r g⁻¹ = 1 := simp [← map_mul]
   calc (r g).adjugate = (r g).adjugate * (r g * r g⁻¹) := by rw [h, Matrix.mul_one]
-    _ = (r g).det • r g⁻¹ := by rw [← Matrix.mul_assoc, Matrix.adjugate_mul]; simp
+    _ = (r g).det • r g⁻¹ := simp [← Matrix.mul_assoc, Matrix.adjugate_mul]
 
 private theorem eval_adj {K : Type} [Field K] (x : Matrix (Fin 4) (Fin 4) K) (i : Fin 4) :
     MvPolynomial.eval (fun p : Fin 4 × Fin 4 => x p.1 p.2)
@@ -400,7 +400,7 @@ theorem UpperTheory.V.AlgebraTools.regCosetFour :
   have hback : ∀ x : Matrix (Fin 4) (Fin 4) K, P * (Q * x * P) * Q = x := by
     intro x
     calc P * (Q * x * P) * Q = (P * Q) * x * (P * Q) := by simp only [Matrix.mul_assoc]
-      _ = x := by rw [hPQ]; simp
+      _ = x := simp [hPQ]
   let r' : G →* Matrix (Fin 4) (Fin 4) K :=
     { toFun := fun g => Q * r g * P
       map_one' := by simp [hQP]

@@ -51,7 +51,7 @@ private theorem ratios {G : Type*} [CommGroup G] (a p : G) (h1 : p ≠ 1) (h2 : 
   · exact h3 (eq_inv_of_mul_eq_one_left e.symm)
   · exact h1 e.symm
   · exact h2 (inv_mul_eq_one.mp e.symm)
-  · have e' : a ^ 2 * p = 1 := by rw [pow_two, mul_assoc, ← e]; simp
+  · have e' : a ^ 2 * p = 1 := simp [pow_two, mul_assoc, ← e]
     exact h5 (eq_inv_of_mul_eq_one_left e')
   · exact h3 (by simpa using congrArg (·⁻¹) e)
   · exact h1 e

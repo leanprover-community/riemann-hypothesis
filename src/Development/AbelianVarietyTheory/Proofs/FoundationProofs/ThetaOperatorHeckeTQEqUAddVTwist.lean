@@ -280,7 +280,7 @@ theorem conj_mem_Gamma1 {M : ℕ} {τ γ : SL(2, ℤ)} (hτ : τ ∈ CongruenceS
   obtain ⟨g1, g2, g3⟩ := hγ
   have dt := τ.det_coe
   rw [Matrix.det_fin_two] at dt
-  have dt' : ((τ 0 0 * τ 1 1 - τ 0 1 * τ 1 0 : ℤ) : ZMod M) = 1 := by rw [dt]; simp
+  have dt' : ((τ 0 0 * τ 1 1 - τ 0 1 * τ 1 0 : ℤ) : ZMod M) = 1 := simp [dt]
   push_cast at dt'
   simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
     Matrix.mul_apply, Fin.sum_univ_two, Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_one,

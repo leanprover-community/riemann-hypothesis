@@ -139,7 +139,7 @@ theorem uu_add {R : Type} [Ring R] (A B x : R) (hAB : A * B = 0) (hx : x * B = B
   have h2 : A * x * (B * x) = 0 := by
     calc A * x * (B * x) = A * (x * B) * x := by simp only [mul_assoc]
       _ = (A * B) * x * x := by rw [hx]; simp only [mul_assoc]
-      _ = 0 := by rw [hAB]; simp
+      _ = 0 := simp [hAB]
   rw [mul_add, add_mul, add_mul, h2]
   noncomm_ring
 

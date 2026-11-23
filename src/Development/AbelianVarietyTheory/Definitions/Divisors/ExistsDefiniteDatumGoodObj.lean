@@ -174,7 +174,7 @@ theorem conj_mem_type_iff (H : Host E) (τ : E →+* ℂ) :
     ((starRingEnd ℂ).comp τ) (H.rt : E) = H.rt0 ↔ ¬ τ (H.rt : E) = H.rt0 := by
   have hd : (H.d : ℂ) ≠ 0 := by exact_mod_cast H.d_prime.ne_zero
   have h0 : H.rt0 ≠ 0 := fun h1 => hd (by have h2 := H.sqrt_neg_disc_sq; rw [h1] at h2; linear_combination h2)
-  have hsq : τ (H.rt : E) ^ 2 = H.rt0 ^ 2 := by rw [← map_pow, HostModel.coe_rt_sq, H.sqrt_neg_disc_sq]; simp
+  have hsq : τ (H.rt : E) ^ 2 = H.rt0 ^ 2 := simp [← map_pow, HostModel.coe_rt_sq, H.sqrt_neg_disc_sq]
   rw [RingHom.comp_apply, HostModel.conj_embedding_rt]
   constructor
   · intro h h'

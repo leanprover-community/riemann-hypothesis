@@ -137,7 +137,7 @@ theorem dsig_map (hP : Intertw ε' e π σ P) {X : Matrix (Fin n) (Fin n) ℂ} (
   have h2 : (fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) • X)) (P η)) =
       (P.restrictScalars ℝ) ∘ fun t : ℝ => π (NormedSpace.exp ((t : ℂ) • blk e (X, 0))) η := by
     funext t
-    have e1 : (t : ℂ) • blk e (X, 0) = blk e ((t : ℂ) • X, 0) := by rw [← map_smul]; simp
+    have e1 : (t : ℂ) • blk e (X, 0) = blk e ((t : ℂ) • X, 0) := simp [← map_smul]
     show _ = P (π (NormedSpace.exp ((t : ℂ) • blk e (X, 0))) η)
     rw [e1, exp_blk]
     exact (intertw_mat hP (ex_mem_of_lie hX t) η).symm

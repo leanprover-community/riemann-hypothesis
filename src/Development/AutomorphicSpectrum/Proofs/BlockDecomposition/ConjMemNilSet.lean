@@ -236,7 +236,7 @@ theorem conj_mem_nilSet {W₁ W₂ : Submodule ℂ (Fin n → ℂ)} (g : G n)
   have e : ∀ v, ((g * u * g⁻¹).val - 1) *ᵥ v = g.val *ᵥ ((u.val - 1) *ᵥ ((g⁻¹).val *ᵥ v)) := fun v => by
     rw [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec]
     congr 1
-    have : g.val * (g⁻¹).val = 1 := by rw [← Units.val_mul]; simp
+    have : g.val * (g⁻¹).val = 1 := simp [← Units.val_mul]
     simp only [Units.val_mul, mul_sub, sub_mul, mul_one, this, mul_assoc]
   refine ⟨fun v => ?_, fun v hv => ?_, fun v hv => ?_⟩
   · rw [e]

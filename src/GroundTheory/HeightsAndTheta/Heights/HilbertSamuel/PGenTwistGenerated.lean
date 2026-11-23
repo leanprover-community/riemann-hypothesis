@@ -196,8 +196,8 @@ theorem cechD_zero_apply {M : Type*} [AddCommGroup M] [Module (MRingOver S ι) M
     · by_cases hl : l = k₀
       · subst hl; rw [Function.update_self, hc]; rfl
       · rw [Function.update_of_ne hl, hother l hl]; rfl
-  have hx : x ∈ I.1 k₀ := by rw [hI]; simp
-  have hy : y ∈ I.1 k₀ := by rw [hI]; simp
+  have hx : x ∈ I.1 k₀ := simp [hI]
+  have hy : y ∈ I.1 k₀ := simp [hI]
   have hsub : ∀ i, ∀ l, Function.update I.1 k₀ ((I.1 k₀).erase i) l ⊆ I.1 l := by
     intro i l
     by_cases hl : l = k₀

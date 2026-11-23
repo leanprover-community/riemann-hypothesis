@@ -95,7 +95,7 @@ theorem exists_orthogonal_basis_cons_of_ker {V : Type*} [AddCommGroup V] [Module
       (by
         intro t y hy hc
         have hy' : B y x = 0 := by simpa using hy
-        have h3 : B (t • x + y) x = 0 := by rw [hc]; simp
+        have h3 : B (t • x + y) x = 0 := simp [hc]
         rw [LinearMap.map_add (f := _), LinearMap.add_apply, hy', add_zero, LinearMap.map_smul,
           LinearMap.smul_apply, smul_eq_mul] at h3
         exact (mul_eq_zero.1 h3).resolve_right hx)

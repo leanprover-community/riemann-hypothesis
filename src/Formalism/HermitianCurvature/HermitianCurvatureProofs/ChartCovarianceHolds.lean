@@ -117,7 +117,7 @@ theorem vr_onto {d : ℕ} {O : Set (Fin d → ℝ)} {U : Set (B.Mat k r)} {κ : 
   · have e1 : (g⁻¹)ᴴ * Hpk k r = Hpk k r * g := by
       calc (g⁻¹)ᴴ * Hpk k r = (g⁻¹)ᴴ * (gᴴ * Hpk k r * g) := by rw [hg]
         _ = (g * g⁻¹)ᴴ * Hpk k r * g := by rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-        _ = Hpk k r * g := by rw [Matrix.mul_nonsing_inv g hdet]; simp
+        _ = Hpk k r * g := simp [Matrix.mul_nonsing_inv g hdet]
     have e2 : Hpk k r * g⁻¹ = gᴴ * Hpk k r := by
       calc Hpk k r * g⁻¹ = gᴴ * Hpk k r * g * g⁻¹ := by rw [hg]
         _ = gᴴ * Hpk k r := by rw [Matrix.mul_assoc, Matrix.mul_nonsing_inv g hdet, Matrix.mul_one]

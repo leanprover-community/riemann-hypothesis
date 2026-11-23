@@ -96,7 +96,7 @@ theorem eval_logPoly_mul (c : ℕ → B) (hc : ∀ k : ℕ, c k * ((k : B) + 1) 
     rw [this, h0]
     simp
   have hderiv : derivative G = 0 := by
-    have hda : derivative a = C x := by rw [ha]; simp
+    have hda : derivative a = C x := simp [ha]
     have hdZ : derivative Z = C x * (1 + C y) := by
       rw [hZ]; simp [hda]
     have hD : derivative G = C x * (1 + C y) * (∑ k ∈ Finset.range s, (-Z) ^ k)

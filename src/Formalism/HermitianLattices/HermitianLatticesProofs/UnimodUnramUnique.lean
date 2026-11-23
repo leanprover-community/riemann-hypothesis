@@ -106,7 +106,7 @@ theorem unimodUnramUnique_quad [Finite (ResidueField S)] (T N d : S)
     obtain ⟨r₀, rfl⟩ := residue_surjective ρ
     set g : S[X] := X ^ 2 + C T * X + C N with hgdef
     have hg : g.Monic := by rw [hgdef]; monicity!
-    have he : g.eval r₀ = r₀ ^ 2 + T * r₀ + N := by rw [hgdef]; simp
+    have he : g.eval r₀ = r₀ ^ 2 + T * r₀ + N := simp [hgdef]
     have hd1 : g.derivative.eval r₀ = 2 * r₀ + T := by rw [hgdef]; simp; ring
     have hsq : (2 * r₀ + T) ^ 2 = (T ^ 2 - 4 * N) + 4 * (r₀ ^ 2 + T * r₀ + N) := by ring
     have h0 : g.eval r₀ ∈ maximalIdeal S := by

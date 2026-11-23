@@ -145,7 +145,7 @@ theorem exists_form {a b : S} (ha : a ∈ maximalIdeal S) (hb : b ∈ maximalIde
       rw [e]
       exact sub_mem (sub_mem ha (Submodule.smul_of_tower_mem _ r hb)) hz'
     apply h r
-    have e : a - r • b = z := by rw [← hyz, hl]; simp
+    have e : a - r • b = z := simp [← hyz, hl]
     rw [e]; exact hz2
   obtain ⟨g, hga, hgP⟩ := Submodule.exists_dual_map_eq_bot_of_notMem haP (by infer_instance)
   have hg0 : ∀ y ∈ P, g y = 0 := fun y hy => by

@@ -147,7 +147,7 @@ theorem denseIn_of_residue {K : Type} [Field K] (T : CDVR) (io : K →+* T.Fr) (
   obtain ⟨m, u', rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hd hπ
   obtain ⟨k, h, e⟩ := h2 (m + n) (v * ↑u⁻¹)
   have hp0 : io p ≠ 0 := hp ▸ (map_ne_zero_iff _ (IsFractionRing.injective T.V T.Fr)).2 hπ.ne_zero
-  have hu : algebraMap T.V T.Fr u * algebraMap T.V T.Fr ↑u⁻¹ = 1 := by rw [← map_mul]; simp
+  have hu : algebraMap T.V T.Fr u * algebraMap T.V T.Fr ↑u⁻¹ = 1 := simp [← map_mul]
   have hu0 : algebraMap T.V T.Fr u ≠ 0 := left_ne_zero_of_mul_eq_one hu
   refine ⟨k / p ^ n, ↑u'⁻¹ * h, ?_⟩
   have e2 : (u' : T.V) * π ^ m * (↑u'⁻¹ * h) = π ^ m * h := by

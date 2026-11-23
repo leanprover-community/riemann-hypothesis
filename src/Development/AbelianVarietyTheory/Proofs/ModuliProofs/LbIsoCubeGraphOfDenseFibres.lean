@@ -46,7 +46,7 @@ namespace GlobalTheory.PrimDense
 
 theorem exists_gen_cube_eSec {S : Scheme.{0}} {A : Over S} [GrpObj A] [IsCommMonObj A] {L : LB A.left} (hL : L.IsLB)
     (u : A ⟶ A) [IsMonHom u] : ∃ c : ((cubeLB A ![𝟙 A, u] L).pull (eSec A)).Gen, c.IsGen := by
-  have e₁ : (1 : 𝟙_ (Over S) ⟶ A) = η[A] := by rw [Hom.one_def]; simp
+  have e₁ : (1 : 𝟙_ (Over S) ⟶ A) = η[A] := simp [Hom.one_def]
   have key : ∀ I, η[A] ≫ psum A ![𝟙 A, u] I = η[A] := fun I => by
     refine (psum_hom (preHom (G := A) η[A]) _ I).trans ?_
     have : (fun i => preHom (G := A) η[A] (![𝟙 A, u] i)) = fun i => (1 : (A ⟶ A) →* (𝟙_ (Over S) ⟶ A)) (![𝟙 A, u] i) := by

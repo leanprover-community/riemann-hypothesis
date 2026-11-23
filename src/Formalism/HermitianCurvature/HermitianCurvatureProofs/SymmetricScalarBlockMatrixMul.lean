@@ -714,7 +714,7 @@ theorem bigCell_exists (g : B.Mat k (j + ρ)) (hg : g ∈ B.GV k (j + ρ)) (hD :
   have hS' : S'ᴴ = -S' := by
     apply eq_neg_of_add_eq_zero_right
     have h0 : G.wMat j * (Ci * ((G33 * G.wMat j * G31ᴴ + ContDiffOnLocalExtension * Hpk k ρ * ContDiffOnLocalExtensionᴴ + G31 * G.wMat j * G33ᴴ) *
-        (Ciᴴ * G.wMat j))) = 0 := by rw [f33]; simp
+        (Ciᴴ * G.wMat j))) = 0 := simp [f33]
     rw [← h0, hS'_def, hb', hc', ha']
     simp only [Matrix.conjTranspose_add, Matrix.conjTranspose_smul, Matrix.conjTranspose_mul, Matrix.conjTranspose_neg, Matrix.conjTranspose_conjTranspose, wMat_conjTranspose, hpk_herm, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, neg_neg, Matrix.smul_mul, Matrix.mul_smul, wMat_mul_wMat_mul, hpk_mul_hpk_mul, wMat_mul_self, hpk_sq, Matrix.mul_one, Matrix.one_mul, hCi, hCiH]
     have h2 : star (1 / 2 : ℂ) = 1 / 2 := by simp

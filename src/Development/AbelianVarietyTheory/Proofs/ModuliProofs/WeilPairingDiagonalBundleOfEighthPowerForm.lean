@@ -197,10 +197,10 @@ theorem weilIs_diag : Out.GlobalFnsSt → ∀ (h k : ℕ) (W : Matrix (Fin 8) (F
   have hmon : IsMonHom ψ := by
     constructor
     · refine ext _ _ fun u => ?_
-      have e₁ : (η[A] : 𝟙_ _ ⟶ A) = 1 := by rw [Hom.one_def]; simp
+      have e₁ : (η[A] : 𝟙_ _ ⟶ A) = 1 := simp [Hom.one_def]
       rw [hc, IsMonHom.one_hom, e₁, one_zpow]
     · refine ext _ _ fun u => ?_
-      have e₁ : μ[A] = fst A A * snd A A := by rw [Hom.mul_def]; simp
+      have e₁ : μ[A] = fst A A * snd A A := simp [Hom.mul_def]
       have e₂ : (ψ ⊗ₘ ψ) ≫ μ[G] = (fst A A ≫ ψ) * (snd A A ≫ ψ) := by rw [Hom.mul_def]; congr 1
       rw [hc, e₁, e₂, MonObj.mul_comp, hc, hc, mul_zpow]
   have hd : ((qf W v).toNat : ℤ) = qf W v := Int.toNat_of_nonneg (qf_nonneg hW v)

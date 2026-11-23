@@ -306,7 +306,7 @@ theorem exists_det {V : HSp D} (hV : V.gram = 1) (i₀ : Fin V.rank) (g : GA D V
   have hx1 : cA D x * x = 1 := hx ▸ Formalism.L2.Theta.det_conj_mul V g
   obtain ⟨M, hM⟩ : ∃ M : Matrix (Fin V.rank) (Fin V.rank) (AE D),
       M = Matrix.diagonal fun i => if i = i₀ then x else 1 := ⟨_, rfl⟩
-  have hdet : M.det = x := by rw [hM, Matrix.det_diagonal]; simp
+  have hdet : M.det = x := simp [hM, Matrix.det_diagonal]
   have hU : (M.map (cA D))ᵀ * V.gram.map (incA D) * M = V.gram.map (incA D) := by
     rw [gramA_one hV, Matrix.mul_one, hM, Matrix.diagonal_map (map_zero _), Matrix.diagonal_transpose,
       Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]

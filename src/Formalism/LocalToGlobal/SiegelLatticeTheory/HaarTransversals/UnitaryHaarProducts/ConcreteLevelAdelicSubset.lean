@@ -1049,10 +1049,10 @@ theorem nlam_mul {a b : S.V ≃ₗ[E] S.V} (ha : a ∈ NLam Λ F) (hb : b ∈ NL
 
 theorem nlam_inv {a : S.V ≃ₗ[E] S.V} (ha : a ∈ NLam Λ F) : a⁻¹ ∈ NLam Λ F := by
   refine ⟨⟨(Formalism.HermitianLatticesTheory.isom S.hT).inv_mem ha.1.1, gmap_inv ha.1.2⟩, fun j x hx => ?_, fun x hx => ?_⟩
-  · have e : a⁻¹ x - x = -(a.symm (a x - x)) := by rw [le_inv_app, map_sub]; simp
+  · have e : a⁻¹ x - x = -(a.symm (a x - x)) := simp [le_inv_app, map_sub]
     rw [e]
     exact neg_mem (equiv_symm_pres a _ (nlam_pres ha j) _ (ha.2.1 j x hx))
-  · have e : a⁻¹ x - x = -(a.symm (a x - x)) := by rw [le_inv_app, map_sub]; simp
+  · have e : a⁻¹ x - x = -(a.symm (a x - x)) := simp [le_inv_app, map_sub]
     rw [e]
     exact neg_mem (equiv_symm_pres a _ (nlam_presX ha) _ (ha.2.2 x hx))
 

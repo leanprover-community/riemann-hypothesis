@@ -69,7 +69,7 @@ theorem eq_of_commute_pow {O : Type} [CommRing O] [IsDomain O] (l : ℕ) (hl0 : 
     f PowerSeries.X = g PowerSeries.X := by
   set F := f PowerSeries.X with hF
   set G := g PowerSeries.X with hG
-  have hφ0 : PowerSeries.constantCoeff (φ PowerSeries.X) = 0 := by rw [hφ]; simp
+  have hφ0 : PowerSeries.constantCoeff (φ PowerSeries.X) = 0 := simp [hφ]
   have hp : φ PowerSeries.X = PowerSeries.X *
       ∑ i ∈ Finset.range l, (1 + PowerSeries.X : PowerSeries O) ^ i := by
     rw [hφ, ← geom_sum_mul]; ring

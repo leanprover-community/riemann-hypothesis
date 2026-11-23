@@ -92,7 +92,7 @@ def extU (σ : B →+* B) (σ' : A →+* A) (j : B →ₙ+* A) (h : ∀ x, σ' (
     intro g
     have hg : cT σ ((g : GL n B) : Matrix n n B) * J * ((g : GL n B) : Matrix n n B) = J := g.2
     show cT σ' (glue j 1 ((g : GL n B) : Matrix n n B)) * J' * glue j 1 ((g : GL n B) : Matrix n n B) = J'
-    have e1 : J' = glue j J' J := by rw [glue, hJ, ← add_smul]; simp
+    have e1 : J' = glue j J' J := simp [glue, hJ, ← add_smul]
     have e2 : cT σ' (glue j 1 ((g : GL n B) : Matrix n n B)) =
         glue j 1 (cT σ ((g : GL n B) : Matrix n n B)) := by
       ext r s

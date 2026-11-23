@@ -159,8 +159,8 @@ theorem fd_B (N : ℕ) (lam : DomWeight N) : FiniteDimensional ℂ (nablaSq ℂ 
 def gStarB {N : ℕ} (g : GL (Fin N) ℂ) : GL (Fin N) ℂ where
   val := Matrix.conjTranspose (g : Matrix (Fin N) (Fin N) ℂ)
   inv := Matrix.conjTranspose ((g⁻¹ : GL (Fin N) ℂ) : Matrix (Fin N) (Fin N) ℂ)
-  val_inv := by rw [← Matrix.conjTranspose_mul]; simp
-  inv_val := by rw [← Matrix.conjTranspose_mul]; simp
+  val_inv := simp [← Matrix.conjTranspose_mul]
+  inv_val := simp [← Matrix.conjTranspose_mul]
 
 theorem gStarB_val {N : ℕ} (g : GL (Fin N) ℂ) :
     ((gStarB g : GL (Fin N) ℂ) : Matrix (Fin N) (Fin N) ℂ) = Matrix.conjTranspose (g : Matrix (Fin N) (Fin N) ℂ) := rfl

@@ -63,7 +63,7 @@ theorem mulLat_eq_iff (u v : Aˣ) (L : Submodule O A) :
   rw [mem_stabLat_iff]
   constructor
   · intro h y
-    calc y ∈ L ↔ (v : A) * y ∈ mulLat O (v : A) L := by rw [mem_mulLat_unit]; simp
+    calc y ∈ L ↔ (v : A) * y ∈ mulLat O (v : A) L := simp [mem_mulLat_unit]
       _ ↔ (v : A) * y ∈ mulLat O (u : A) L := by rw [h]
       _ ↔ ((u⁻¹ * v : Aˣ) : A) * y ∈ L := by rw [mem_mulLat_unit, Units.val_mul, mul_assoc]
   · intro h

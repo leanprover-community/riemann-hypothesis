@@ -80,7 +80,7 @@ theorem dim_pos_of_lieMult {S : Scheme.{0}} {O k : Type} [CommRing O] [Field k] 
 
 theorem exists_char (hs : Splits E K) {ρ : 𝓞 K} (hρ : ρ ^ 2 = -(H.d : 𝓞 K)) : ∃ τ : 𝓞 E →+* 𝓞 K, τ H.rt = ρ := by
   obtain ⟨τ⟩ : Nonempty (𝓞 E →+* 𝓞 K) := (Nat.card_pos_iff.1 (hs ▸ Module.finrank_pos)).1
-  have e : τ H.rt ^ 2 = ρ ^ 2 := by rw [← map_pow, H.rt_sq, hρ]; simp
+  have e : τ H.rt ^ 2 = ρ ^ 2 := simp [← map_pow, H.rt_sq, hρ]
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 e with e | e
   · exact ⟨τ, e⟩
   · exact ⟨τ.comp H.bar.toRingHom, by

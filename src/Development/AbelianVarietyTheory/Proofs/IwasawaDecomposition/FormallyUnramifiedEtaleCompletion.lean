@@ -171,7 +171,7 @@ theorem lieMult_unif_loc {E : Type} [Field E] [NumberField E] [IsCMField E] (H :
   exact ⟨inferInstance, rfl⟩
 
 theorem bar_rt_neg {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) : H.bar H.rt = -H.rt := by
-  have h1 : (H.bar H.rt) ^ 2 = H.rt ^ 2 := by rw [← map_pow, H.rt_sq]; simp
+  have h1 : (H.bar H.rt) ^ 2 = H.rt ^ 2 := simp [← map_pow, H.rt_sq]
   refine (sq_eq_sq_iff_eq_or_eq_neg.mp h1).resolve_left fun h => ?_
   obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
   have h2 : starRingEnd ℂ (φ (H.rt : E)) = φ (H.rt : E) := by

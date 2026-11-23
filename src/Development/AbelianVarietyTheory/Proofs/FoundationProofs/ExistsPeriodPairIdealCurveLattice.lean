@@ -133,7 +133,7 @@ theorem exists_periodPair_one (D : D7) {cc : Ideal (𝓞 D.host.K)} (hc : cc ≠
   have him : (σ (((⟨s, hint⟩ : 𝓞 D.host.K) : 𝓞 D.host.K) : D.host.K)).im ≠ 0 := by
     intro h0
     change (σ s).im = 0 at h0
-    have e : σ s ^ 2 = -(D.host.d : ℂ) := by rw [← map_pow, hs]; simp
+    have e : σ s ^ 2 = -(D.host.d : ℂ) := simp [← map_pow, hs]
     have e' := congrArg Complex.re e
     simp only [pow_two, Complex.mul_re, h0, Complex.neg_re, Complex.natCast_re] at e'
     have : (0 : ℝ) < D.host.d := by exact_mod_cast hd

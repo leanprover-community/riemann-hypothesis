@@ -53,8 +53,8 @@ theorem gramX_star (ε : Fin m → Bool) (x : Fin m → Fin n → ℂ) (i j : Fi
 
 theorem herm_hinv (T : Matrix (Fin n) (Fin n) ℂ) (hT : ∀ i j, star (T i j) = T j i) : herm (hinv T) = T := by
   ext i j
-  have h1 : (T j i).re = (T i j).re := by rw [← hT i j]; simp
-  have h2 : (T j i).im = -(T i j).im := by rw [← hT i j]; simp
+  have h1 : (T j i).re = (T i j).re := simp [← hT i j]
+  have h2 : (T j i).im = -(T i j).im := simp [← hT i j]
   apply Complex.ext
   · simp [herm, hinv, h1, h2]
     try ring
@@ -87,7 +87,7 @@ theorem trace_herm_mul (y y' : E n) : (herm y * herm y').trace = ((ip y y' : ℝ
     _ = ((∑ i, ∑ j, (y i j * y' i j + y j i * y' j i) / 2 : ℝ) : ℂ) +
           Complex.I * ((∑ i, ∑ j, (y i j * y' j i - y j i * y' i j) / 2 : ℝ) : ℂ) := by
         simp only [herm_mul_apply, Finset.sum_add_distrib, Complex.ofReal_sum, Finset.mul_sum]
-    _ = ((ip y y' : ℝ) : ℂ) := by rw [h1, h2]; simp
+    _ = ((ip y y' : ℝ) : ℂ) := simp [h1, h2]
 
 theorem evX_detQ (ε : Fin m → Bool) (x : Fin m → Fin n → ℂ) : evX (detQ ε) x = (gramX ε x).det := by
   rw [evX, detQ, RingHom.map_det]

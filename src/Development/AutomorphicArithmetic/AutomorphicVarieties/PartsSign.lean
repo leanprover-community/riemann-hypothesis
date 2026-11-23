@@ -105,7 +105,7 @@ private theorem mem_eig (D : LData E Ω l) (e : ℕ) {σ : Ω ≃+* Ω} (h : IsC
     (Submodule.Quotient.mk z : H1 (qzTw D (e : ℤ))) ∈ (cAct D e).eigenspace ((-1) ^ e * s) ↔
       ∃ m, ∀ g, z.1 (conjGS D h.isLift g) - s • z.1 g = qzTw D e g m - m := by
   obtain ⟨z₁, e₁, f₁⟩ := exists_cocycle_h1TwistConjByLift_mk_eq_mk D e h.isLift z
-  have hs : (-1 : ℤ_[l]) ^ e * (-1) ^ e = 1 := by rw [← mul_pow]; simp
+  have hs : (-1 : ℤ_[l]) ^ e * (-1) ^ e = 1 := simp [← mul_pow]
   rw [Module.End.mem_eigenspace_iff, cAct, galois_action_cohomology_eq_conj D e h.isLift, e₁, ← Submodule.Quotient.mk_smul]
   refine (mk_eq_mk_iff _ _ _).trans ?_
   have key : ∀ g, z₁.1 g - (((-1 : ℤ_[l]) ^ e * s) • z).1 g =

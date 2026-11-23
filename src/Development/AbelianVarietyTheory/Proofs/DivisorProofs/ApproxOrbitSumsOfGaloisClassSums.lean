@@ -216,7 +216,7 @@ theorem norm_eq_one (𝔷 : Ideal B) (hz : 𝔷.IsMaximal) (φ : B →+* K) (hφ
   obtain ⟨y, i, hi, h⟩ := hz.exists_inv hs
   by_contra hne
   have hlt : ‖φ s‖ < 1 := lt_of_le_of_ne (hφ s) hne
-  have h1 : ‖φ (y * s + i)‖ = 1 := by rw [h]; simp
+  have h1 : ‖φ (y * s + i)‖ = 1 := simp [h]
   rw [map_add (f := _), map_mul] at h1
   have h2 := IsUltrametricDist.norm_add_le_max (φ y * φ s) (φ i)
   have h3 : ‖φ y * φ s‖ < 1 := by

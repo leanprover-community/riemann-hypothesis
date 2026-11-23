@@ -141,7 +141,7 @@ theorem natDegree_eq_finsum_count_of_relNorm_eq {I : Ideal W.toAffine.Coordinate
       ⟨_, (Submodule.IsPrincipal.span_singleton_generator _).symm⟩
     have hg0 : g ≠ 0 := by
       rintro rfl
-      have hb : Ideal.relNorm F[X] a = ⊥ := by rw [hg]; simp
+      have hb : Ideal.relNorm F[X] a = ⊥ := simp [hg]
       exact ha (Ideal.relNorm_eq_bot_iff.mp hb)
     rw [map_mul, relNorm_XYIdeal W h, hg, Ideal.span_singleton_mul_span_singleton,
       Ideal.span_singleton_eq_span_singleton] at hp

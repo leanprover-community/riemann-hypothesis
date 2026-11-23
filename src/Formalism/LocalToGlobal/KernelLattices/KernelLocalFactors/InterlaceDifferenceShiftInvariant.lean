@@ -3648,14 +3648,14 @@ theorem nm_cs_real {σ : Type} (f g : MvPolynomial σ ℂ) (r : ℝ) (h : fockF 
     r ^ 2 ≤ (fockF f f).re * (fockF g g).re := by
   by_cases hg : g = 0
   · subst hg
-    have : fockF f (0 : MvPolynomial σ ℂ) = 0 := by rw [fischerInner_eq_star, nm_fockF_zero_left]; simp
+    have : fockF f (0 : MvPolynomial σ ℂ) = 0 := simp [fischerInner_eq_star, nm_fockF_zero_left]
     rw [this] at h
     have hr : r = 0 := by exact_mod_cast h.symm
     rw [hr, nm_fockF_zero_left]; simp
   · have hG := (fockPos σ g hg).1
     set G := (fockF g g).re with hGdef
     set Fv := (fockF f f).re with hFdef
-    have h' : fockF g f = (r : ℂ) := by rw [fischerInner_eq_star, h]; simp
+    have h' : fockF g f = (r : ℂ) := simp [fischerInner_eq_star, h]
     have key := nm_fockF_nonneg (f + ((-(r / G) : ℝ) : ℂ) • g)
     rw [fischerInner_add_left, fischerInner_add_right, fischerInner_add_right, bs_fock_smul_left, bs_fock_smul_right, bs_fock_smul_left,
       bs_fock_smul_right, h, h', nm_fockF_self f, nm_fockF_self g, ← hGdef, ← hFdef] at key

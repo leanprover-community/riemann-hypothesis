@@ -86,7 +86,7 @@ theorem cellRel_iff (hD : Data W S N' K π) (k₁ k₂ : K) :
             rw [hx]
             group
         _ = ((k₁ : G)⁻¹ * cell π ((k₁ : G) * g)) • W := by rw [← e2, inv_smul_smul]
-        _ = g • W := by rw [mul_smul, e1, ← mul_smul]; simp
+        _ = g • W := simp [mul_smul, e1, ← mul_smul]
     · ext
       push_cast
       group

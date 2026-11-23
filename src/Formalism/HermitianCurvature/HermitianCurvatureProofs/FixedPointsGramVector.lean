@@ -294,7 +294,7 @@ theorem gram_independent_signature' : C2.GramIndependentSignature := by
     have ht0 : Complex.normSq t * (herm H v v).re ≤ 0 := mul_nonpos_of_nonneg_of_nonpos (Complex.normSq_nonneg _) hneg'
     have hc0 : c = 0 := eq_zero_of_sum_normSq_nonpos c (by linarith)
     have hxz : x = 0 := eq_zero_of_sum_normSq_nonpos x (by
-      have : ∑ j, Complex.normSq (c j) = 0 := by rw [hc0]; simp
+      have : ∑ j, Complex.normSq (c j) = 0 := simp [hc0]
       linarith)
     have hct : ct = 0 := by rw [hctd, hc0]; funext y; cases y <;> rfl
     rw [hxd, hct, Matrix.mulVec_zero, zero_add] at hxz

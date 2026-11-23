@@ -85,7 +85,7 @@ theorem spectral_parts_of_diag {n : Type} [Fintype n] [DecidableEq n] (Y J U : M
   set K := Uᴴ * J * U with hK
   have hJK : J = U * K * Uᴴ := by
     rw [hK]
-    calc J = (U * Uᴴ) * J * (U * Uᴴ) := by rw [h2]; simp
+    calc J = (U * Uᴴ) * J * (U * Uᴴ) := simp [h2]
       _ = _ := by simp only [Matrix.mul_assoc]
   have hKD : K * diagonal (fun j => (μ j : ℂ)) = -(diagonal (fun j => (μ j : ℂ)) * K) := by
     have e := congrArg (fun M => Uᴴ * M * U) hJ

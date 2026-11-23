@@ -61,7 +61,7 @@ theorem symmCocycle_swap {A B : Type} [AddCommGroup A] [AddCommGroup B] (γ : A 
         - (γ b c - γ (a + b) c + γ a (b + c) - γ a b))
         - ((γ b e - γ (a + b + c) e + γ (a + c) (b + e) - γ (a + c) b)
         - (γ b c - γ (a + c) b + γ a (b + c) - γ a c)) := by abel
-    _ = 0 := by rw [h1, h2, h3, h4]; simp
+    _ = 0 := simp [h1, h2, h3, h4]
 
 theorem symmCocycle_sum : ∀ (A B : Type) [AddCommGroup A] [AddCommGroup B] (γ : A → A → B), (∀ x y, γ x y = γ y x) → (∀ x y z, γ y z - γ (x + y) z + γ x (y + z) - γ x y = 0) → γ 0 0 = 0 → ∀ (d : ℕ) (x y : Fin d → A), γ (∑ m, x m) (∑ m, y m) = ∑ m, γ (x m) (y m) + ((∑ m, γ (∑ j ∈ Finset.univ.filter (· < m), (x j + y j)) (x m + y m)) - (∑ m, γ (∑ j ∈ Finset.univ.filter (· < m), x j) (x m)) - ∑ m, γ (∑ j ∈ Finset.univ.filter (· < m), y j) (y m)) := by
   intro A B _ _ γ hs hc h0 d

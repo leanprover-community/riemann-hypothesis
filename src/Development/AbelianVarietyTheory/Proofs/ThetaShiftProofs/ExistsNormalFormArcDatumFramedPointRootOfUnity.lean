@@ -271,7 +271,7 @@ include hF in
 theorem isTangent_baseChange {w : epsR A ⟶ G₀} {w' : epsR S ⟶ G}
     (hw : w'.left ≫ F = spMap (dualMap f) ≫ w.left) (h : IsTangent w) : IsTangent w' := by
   rw [isTangent_iff] at h ⊢
-  have h1 : IsLieComb (n := 0) Fin.elim0 Fin.elim0 (sc 0 ≫ w) := by rw [isLieComb_iff, h]; simp
+  have h1 : IsLieComb (n := 0) Fin.elim0 Fin.elim0 (sc 0 ≫ w) := simp [isLieComb_iff, h]
   have h2 := isLieComb_baseChange hF (u := Fin.elim0) (w' := sc 0 ≫ w') (fun i => i.elim0) (by
     show (spMap (epsScaleR (0 : S)) ≫ w'.left) ≫ F = spMap (dualMap f) ≫ spMap (epsScaleR 0) ≫ w.left
     rw [Category.assoc, hw, ← Category.assoc, ← Category.assoc, dual_scale, map_zero]) h1

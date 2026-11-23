@@ -96,7 +96,7 @@ theorem exists_conj_over (hx : IsGenLab ρ ρ' lab φ P₀ a a' x) (σ : Ω' →
     LBIso.trans P₀.isLB (pull_isLB ρ.P.isLB _) (pull_isLB P₀.isLB _) l₁ lt.symm, hg⟩
   · obtain ⟨w, e₀, e₁, e₂⟩ := hw b
     obtain ⟨w', -, e₁', e₂'⟩ := hw (g b)
-    have c : (spMap σ ≫ w) ≫ P₀.A.hom = 𝟙 _ ≫ spMap σ := by rw [Category.assoc, e₀]; simp
+    have c : (spMap σ ≫ w) ≫ P₀.A.hom = 𝟙 _ ≫ spMap σ := simp [Category.assoc, e₀]
     have k := ht.1.lift_fst _ _ c
     obtain rfl : w' = ht.1.lift _ _ c := (cancel_mono a').1 (e₂'.trans (hg b w _ e₂ k).symm)
     rw [← e₁', ← ht₁, reassoc_of% k, e₁]

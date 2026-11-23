@@ -346,7 +346,7 @@ theorem place_data {R : Ranks} (p : HCParam R) (x Δ a B h0 b1 : ℝ) (hx : 1 �
     have := hbj ⟨0, by omega⟩
     linarith
   · rw [seqOf_lt _ (by omega : R.m - 1 < R.m), (hb _).2, (hb _).1]
-    have : ((R.m - 1 : ℕ) : ℝ) = R.m - 1 := by rw [Nat.cast_sub (by omega)]; simp
+    have : ((R.m - 1 : ℕ) : ℝ) = R.m - 1 := simp [Nat.cast_sub (by omega)]
     simp only [this]
     nlinarith
   · intro j hj

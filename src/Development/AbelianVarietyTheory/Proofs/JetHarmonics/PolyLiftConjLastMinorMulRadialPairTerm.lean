@@ -839,7 +839,7 @@ theorem db_pow_rh (X : Q.ActualOps P.k P.r Bs.z Bs.z' Bs.π Bs.π') (μ : Measur
   have hb := b_top L st hA y (by rw [hq, hq, ez, smul_mul_assoc, z00, smul_add, mul_smul_comm])
     (by rw [hq, hq, ez, smul_mul_assoc, z01, smul_add, mul_smul_comm])
     (by rw [hq, ez]; exact z10.smul_left _) (by rw [hq, ez]; exact z11.smul_left _)
-  have hs : M.sgn P l0 * M.sgn P l0 = 1 := by rw [M.sgn, ← mul_pow]; simp
+  have hs : M.sgn P l0 * M.sgn P l0 = 1 := simp [M.sgn, ← mul_pow]
   have h1 : L.Db * bP L st y = M.sgn P l0 • rh d y := by
     rw [LevelData.Db, bP, mul_assoc, ← mul_assoc L.ζb, L.ζb_ζbi, one_mul, nP, hq, hq, rh, smul_mul_assoc, smul_mul_assoc,
       ← smul_add, mul_smul_comm]
@@ -873,7 +873,7 @@ theorem polyLift_rh : ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSp
   refine ⟨Θ, fun T hT => ⟨(hΘ T hT).1.trans (by omega), (hΘ T hT).2⟩, fun F hF Φ hΦ x hx => ?_⟩
   obtain ⟨ε, hε, hn⟩ := nice_of_cpt hF
   have hL := hD.2.2.1
-  have hs : M.sgn P l0 * M.sgn P l0 = 1 := by rw [M.sgn, ← mul_pow]; simp
+  have hs : M.sgn P l0 * M.sgn P l0 = 1 := simp [M.sgn, ← mul_pow]
   have R := (radOp_sum (ε := ε) Finset.univ fun (s : Fin (P.r + 2)) _ =>
     (((radOp_db_pow X L hL (P.r + 1 - (s : ℕ))).mul (radOp_cap hε X μ L st l0 hD y)).mul
       (radOp_db_pow X L hL s)).smul ((F7.lagCo (fun j : Fin (P.r + 2) => ((j : ℕ) : ℝ)) s : ℝ) : ℂ)).smul

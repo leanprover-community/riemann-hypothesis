@@ -153,7 +153,7 @@ theorem _root_.Formalism.FourierDecayAlt.R.LevelData.inv_hR_bar (Y : ℂ) :
   have hS : Dr' * Drb' * GG' * (z' * Drbi') * (z' * Drbi') * Drb' = Dr' * GG' * (z' * z') := by
     calc
       _ = Dr' * GG' * (z' * z') * ((Drb' * Drbi') * (Drb' * Drbi')) := by ring
-      _ = _ := by rw [h1]; simp
+      _ = _ := simp [h1]
   have hA := congrArg Subtype.val hS
   simp only [LevelData.G, LevelData.Dbi, LevelData.Ahatv]
   calc L.Dr * L.Drb * L.GG * (L.ζbi * L.Drbi) * (L.ζbi * L.Drbi) * (L.Drb * L.Avr Y)
@@ -176,7 +176,7 @@ theorem _root_.Formalism.FourierDecayAlt.R.LevelData.inv_hR_hol (Y : ℂ) :
   have hS : Dr' * Drb' * GG' * (z' * Dri') * (z' * Dri') * Dr' = Drb' * GG' * (z' * z') := by
     calc
       _ = Drb' * GG' * (z' * z') * ((Dr' * Dri') * (Dr' * Dri')) := by ring
-      _ = _ := by rw [h1]; simp
+      _ = _ := simp [h1]
   have hA := congrArg Subtype.val hS
   simp only [LevelData.G, LevelData.Di, LevelData.Ahat]
   calc L.Dr * L.Drb * L.GG * (L.ζi * L.Dri) * (L.ζi * L.Dri) * (L.Dr * L.Ar Y)

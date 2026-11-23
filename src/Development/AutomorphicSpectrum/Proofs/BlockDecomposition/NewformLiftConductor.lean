@@ -424,7 +424,7 @@ theorem sign_eq (h : Om N χ ω) (k : ℕ) (hk : χ (-1) = (-1) ^ k) (S : Finset
     rw [hprod, hΦ]
     have h2 : χ (((-1 : ℤ)) : ZMod N) = (-1) ^ k := by simpa using hk
     rw [h2] at hval
-    have h3 : ((-1 : ℂ) ^ k) * (-1) ^ k = 1 := by rw [← mul_pow]; simp
+    have h3 : ((-1 : ℂ) ^ k) * (-1) ^ k = 1 := simp [← mul_pow]
     calc (ω.toIdele (ofFinite d) : ℂ)
         = (ω.toIdele (ofFinite d) : ℂ) * (((-1 : ℂ) ^ k) * (-1) ^ k) := by rw [h3, mul_one]
       _ = (-1) ^ k := by rw [← mul_assoc, hval, one_mul]

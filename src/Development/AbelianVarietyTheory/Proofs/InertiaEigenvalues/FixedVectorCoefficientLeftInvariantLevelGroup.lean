@@ -181,7 +181,7 @@ theorem coef_lev_mul : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Ty
   by_cases h0 : thetaIP μ 𝓕 (R.vP i t) (R.vP i t) = 0
   · rw [h0, div_zero, div_zero]
   congr 1
-  have e : R.ωP i t (1, k * g) = R.ωP i t (1, k) * R.ωP i t (1, g) := by rw [← map_mul]; simp
+  have e : R.ωP i t (1, k * g) = R.ωP i t (1, k) * R.ωP i t (1, g) := simp [← map_mul]
   rw [e, Module.End.mul_apply]
   have hv2 := thetaIP₂ h0
   have huθ := hW.om_pres (1, g) _ hvθ

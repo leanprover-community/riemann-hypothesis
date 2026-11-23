@@ -245,7 +245,7 @@ theorem transLaws_of {F : Face D A} (hL : Laws R F) (hLP : LevProd R i) : TransL
       (fun δ hδ g => by simp only [mul_assoc, linv (hW x) v0 hδ, linv (hW y) v0 hδ]) k
     simp only [mul_inv_cancel_right, rinv hLP (hW x) v0 (inv_mem hk)] at hs
     rw [hs]
-  have hcs : (starRingEnd ℂ) cst = cst := by rw [hcst, map_prod]; simp
+  have hcs : (starRingEnd ℂ) cst = cst := simp [hcst, map_prod]
   have hPs : (starRingEnd ℂ) P = P := by
     rw [hP, map_prod]; exact Finset.prod_congr rfl fun τ _ => inner_conj_symm _ _
   have hsym : ∀ γ ∈ GfC (Wc D i), ∀ x y, trPair R i γ⁻¹ x y = star (trPair R i γ y x) := by

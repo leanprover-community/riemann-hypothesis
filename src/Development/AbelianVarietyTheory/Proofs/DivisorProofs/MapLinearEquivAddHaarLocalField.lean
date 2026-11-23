@@ -93,7 +93,7 @@ theorem map_linearEquiv_haar : ∀ (F : Type) [Field F] [CharZero F] [ValuativeR
   have hmv : Measurable M.mulVec := (continuous_const.matrix_mulVec continuous_id).measurable
   have hXM : X.map M.mulVec = ((d⁻¹ : ℝ≥0) : ℝ≥0∞) • X := by
     rw [hXP, Measure.map_smul _ hmv.aemeasurable, hPM, smul_comm]
-  have hμ : μ = X.map Em.symm := by rw [hX, Measure.map_map Em.symm.measurable Em.measurable]; simp
+  have hμ : μ = X.map Em.symm := simp [hX, Measure.map_map Em.symm.measurable Em.measurable]
   have hcomp : (T : V → V) ∘ Em.symm = Em.symm ∘ M.mulVec := by
     funext x
     show T (e.symm x) = e.symm (M.mulVec x)

@@ -74,8 +74,8 @@ theorem smoothTransition_deriv_bound :
       b.trans ((le_max_right _ _).trans (le_max_left _ _))⟩
   · obtain ⟨c, hc⟩ := smoothTransition_eventually_const hx
     have hd := hc.deriv
-    have e1 : deriv Real.smoothTransition x = 0 := by rw [hd.eq_of_nhds]; simp
-    have e2 : deriv (deriv Real.smoothTransition) x = 0 := by rw [hd.deriv_eq]; simp
+    have e1 : deriv Real.smoothTransition x = 0 := simp [hd.eq_of_nhds]
+    have e2 : deriv (deriv Real.smoothTransition) x = 0 := simp [hd.deriv_eq]
     rw [e1, e2, abs_zero]
     exact ⟨le_max_right _ _, le_max_right _ _⟩
 

@@ -127,7 +127,7 @@ theorem exists_skew_unit (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (h
   have hd0 : d ≠ 0 := by
     intro h0
     apply hn𝔭
-    have : algebraMap (𝓞 F) (𝓞 K) n = algebraMap (𝓞 F) (𝓞 K) 0 := by rw [hn, h0]; simp
+    have : algebraMap (𝓞 F) (𝓞 K) n = algebraMap (𝓞 F) (𝓞 K) 0 := simp [hn, h0]
     rw [RingOfIntegers.algebraMap.injective F K this]
     exact 𝔭.zero_mem
   have hdK : ((d : 𝓞 K) : K) ≠ 0 := by

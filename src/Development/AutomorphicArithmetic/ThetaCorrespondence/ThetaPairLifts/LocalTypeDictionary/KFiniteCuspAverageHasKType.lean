@@ -89,7 +89,7 @@ theorem kFinite_average_isTypeAt : _root_.GlobalTheory.FunPr.ThetaLocalInputs �
     rw [← hfJ]
     calc (fr⁻¹)ᴴ * (frᴴ * Jm (N.M.ε τ) * fr) * fr⁻¹ = (fr * fr⁻¹)ᴴ * Jm (N.M.ε τ) * (fr * fr⁻¹) := by
           simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [Matrix.mul_nonsing_inv _ hdf]; simp
+      _ = _ := simp [Matrix.mul_nonsing_inv _ hdf]
   have h5 := hasTypeAll_transport _ H H σ (fun g => σ (fr * g * fr⁻¹)) (Jm (N.M.ε τ)) (gramAt D N.V τ) fr⁻¹
     (isUnit_Jm _) hfi hfiJ (LinearIsometryEquiv.refl ℂ H) (fun g _ w => by
       show σ g w = σ (fr * (fr⁻¹ * g * fr⁻¹⁻¹) * fr⁻¹) w

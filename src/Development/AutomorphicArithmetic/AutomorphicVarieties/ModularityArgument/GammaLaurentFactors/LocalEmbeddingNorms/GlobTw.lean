@@ -55,7 +55,7 @@ private theorem exists_retr : ∃ r : kˣ →* kˣ, (∀ x : kˣ, valuation k (x
   obtain ⟨p, -, hp⟩ := exists_unit_pow k 1
   let r : kˣ →* kˣ :=
     { toFun := fun x => x * p ^ (-ord k x)
-      map_one' := by rw [ord_eq_zero (by simp)]; simp
+      map_one' := simp [ord_eq_zero (by simp)]
       map_mul' := fun x y => by rw [ord_mul, neg_add, zpow_add, mul_mul_mul_comm] }
   have hr : ∀ x : kˣ, valuation k (x : k) = 1 → r x = x := fun x hx => by
     change x * p ^ (-ord k x) = x

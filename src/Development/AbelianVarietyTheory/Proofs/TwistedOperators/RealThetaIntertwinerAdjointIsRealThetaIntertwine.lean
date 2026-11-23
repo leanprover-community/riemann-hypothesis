@@ -283,7 +283,7 @@ theorem uh_inv (τ : D.what₂.Tau) {g : Matrix (Fin V.rank) (Fin V.rank) ℂ} (
   show (g⁻¹)ᴴ * gramAt D V τ * g⁻¹ = gramAt D V τ
   calc (g⁻¹)ᴴ * gramAt D V τ * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * gramAt D V τ * g) * g⁻¹ := by rw [hg']
     _ = (g * g⁻¹)ᴴ * gramAt D V τ * (g * g⁻¹) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-    _ = gramAt D V τ := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+    _ = gramAt D V τ := simp [Matrix.mul_nonsing_inv _ hd]
 
 theorem smooth_facts (τ : D.what₂.Tau) {Y : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hY : Y ∈ lieAt V τ) {a : M.H τ}
     (ha : a ∈ M.sm τ) : dRep (M.rep τ) Y a ∈ M.sm τ ∧

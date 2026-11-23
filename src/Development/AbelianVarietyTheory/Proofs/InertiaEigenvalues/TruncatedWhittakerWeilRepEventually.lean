@@ -131,7 +131,7 @@ theorem lam_weil_eventually : ∀ (F E : Type) [NontriviallyNormedField F] [Nont
     rw [← hDset, ← hMset]
     subst hay
     rw [GlobalTheory.T.truncatedIntegral_eq_vol_mul_orbitalIntegral F E A (GlobalTheory.T.finiteEtaleHermitianPair_norm_properties F E A) (GlobalTheory.T.absK_multiplicative_unitOne_haarScaling F E A) ψ hψ m x y hy D hDo hDc φ hφ ?_]
-    · have : (m.μK M).toReal * (m.μK D).toReal = 1 := by rw [← ENNReal.toReal_mul, hMD]; simp
+    · have : (m.μK M).toReal * (m.μK D).toReal = 1 := simp [← ENNReal.toReal_mul, hMD]
       have : ((m.μK M).toReal : ℂ) * ((m.μK D).toReal : ℂ) = 1 := by exact_mod_cast this
       linear_combination (γ * A.orbL m.ν φ y) * this
     · intro b hb

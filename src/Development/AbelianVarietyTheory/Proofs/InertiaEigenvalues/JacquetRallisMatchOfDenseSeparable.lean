@@ -89,7 +89,7 @@ theorem charpoly_companion {k : Type} [CommRing k] :
           simp [charmatrix_apply, companion, Fin.ext_iff]
         rw [e1, e2, Fin.sum_univ_succ (n := n + 1)]
         simp only [Fin.val_last, Fin.val_zero, Fin.val_succ, pow_zero, mul_one]
-        have : ((-1 : k[X]) ^ (n + 1)) * (-1) ^ (n + 1) = 1 := by rw [← mul_pow]; simp
+        have : ((-1 : k[X]) ^ (n + 1)) * (-1) ^ (n + 1) = 1 := simp [← mul_pow]
         have e3 : ∑ x : Fin (n + 1), C (p x.succ) * X ^ ((x : ℕ) + 1)
             = X * ∑ i : Fin (n + 1), C (p i.succ) * X ^ (i : ℕ) := by
           rw [Finset.mul_sum]; exact Finset.sum_congr rfl (fun _ _ => by ring)

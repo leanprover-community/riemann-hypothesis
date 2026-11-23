@@ -159,7 +159,7 @@ theorem exists_c {O k : Type} [CommRing O] [CommRing k] (f : O →+* k) (p : O) 
   | pred i ih =>
     obtain ⟨c, h1, h2⟩ := ih
     refine ⟨c + ((u ^ (-(i : ℤ) - 1) : Oˣ) : O), ?_, ?_⟩
-    · have : u ^ (-(i : ℤ)) = u ^ (-(i : ℤ) - 1) * u := by rw [← zpow_add_one]; simp
+    · have : u ^ (-(i : ℤ)) = u ^ (-(i : ℤ) - 1) * u := simp [← zpow_add_one]
       rw [this, Units.val_mul, hu] at h1
       rw [mul_add, h1]; ring
     · rw [map_add (f := _), h2, hf]; push_cast; ring

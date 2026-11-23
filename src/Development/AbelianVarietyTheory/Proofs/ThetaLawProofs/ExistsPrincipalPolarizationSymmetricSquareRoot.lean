@@ -95,7 +95,7 @@ theorem exists_polAV_sqOf : Out.Laws → ∀ (h k : ℕ) (o : Type) [CommRing o]
     rw [e₀, pull_lam, lift_fst, lift_snd, lam_diag hL hΘ s₁, e]
   have hr : Out.Rigidified c.A M := by
     refine (cls_eq_zero_iff (pull_isLB hM _)).1 ((cls_pull hM _ _).trans ?_)
-    have e₄ : (η[c.A] : 𝟙_ _ ⟶ c.A) = 1 := by rw [Hom.one_def]; simp
+    have e₄ : (η[c.A] : 𝟙_ _ ⟶ c.A) = 1 := simp [Hom.one_def]
     have := pull_rigCls (cls L hL) η[c.A]
     rw [← e₄, sub_self, ← e] at this
     exact this

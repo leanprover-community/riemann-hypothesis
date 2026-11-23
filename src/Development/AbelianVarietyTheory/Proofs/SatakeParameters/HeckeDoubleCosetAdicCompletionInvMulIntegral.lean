@@ -138,7 +138,7 @@ theorem inv_mul_int_of_left_congr {n : ℕ} (ϖ : K) (k : ℕ)
       have h3 := le_exp_neg_one_of_lt (hN i j)
       calc _ ≤ WithZero.exp (1 : ℤ) * WithZero.exp (-1 : ℤ) * 1 :=
             mul_le_mul' (mul_le_mul' h1 h3) h2
-        _ = 1 := by rw [mul_one, ← WithZero.exp_add]; simp
+        _ = 1 := simp [mul_one, ← WithZero.exp_add]
   rw [Units.val_mul, hinv, hg', key]
   exact int_mul (int_mul hbi hX) hb'
 

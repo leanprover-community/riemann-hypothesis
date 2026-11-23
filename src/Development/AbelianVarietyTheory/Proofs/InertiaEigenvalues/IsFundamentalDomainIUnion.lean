@@ -171,8 +171,8 @@ theorem exists_vecMul_eq {v ξ : Fin a → E} (hv : v ≠ 0) (hξ : ξ ≠ 0) :
     LinearEquiv.toSpanNonzeroSingleton_one] at h1
   set A := LinearMap.toMatrix' g.toLinearMap
   set B := LinearMap.toMatrix' g.symm.toLinearMap
-  have hAB : A * B = 1 := by rw [← LinearMap.toMatrix'_comp]; simp
-  have hBA : B * A = 1 := by rw [← LinearMap.toMatrix'_comp]; simp
+  have hAB : A * B = 1 := simp [← LinearMap.toMatrix'_comp]
+  have hBA : B * A = 1 := simp [← LinearMap.toMatrix'_comp]
   refine ⟨⟨Aᵀ, Bᵀ, by rw [← Matrix.transpose_mul, hBA, Matrix.transpose_one],
     by rw [← Matrix.transpose_mul, hAB, Matrix.transpose_one]⟩, ?_⟩
   change v ᵥ* Aᵀ = ξ

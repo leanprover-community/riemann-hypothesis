@@ -173,7 +173,7 @@ theorem isLocalRing_of_integers {C : Type} [Field C] (v : Valuation C NNReal) (O
   have h2 : v (algebraMap O C (1 - a)) < 1 :=
     lt_of_le_of_ne (hv.map_le_one _) (fun e => h.2 (hv.isUnit_of_one' e))
   have h3 := v.map_add (algebraMap O C a) (algebraMap O C (1 - a))
-  have h4 : algebraMap O C a + algebraMap O C (1 - a) = 1 := by rw [← map_add (f := _)]; simp
+  have h4 : algebraMap O C a + algebraMap O C (1 - a) = 1 := simp [← map_add (f := _)]
   rw [h4, v.map_one] at h3
   exact lt_irrefl _ (lt_of_le_of_lt h3 (max_lt h1 h2))
 

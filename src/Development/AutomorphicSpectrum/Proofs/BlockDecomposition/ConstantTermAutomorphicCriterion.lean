@@ -50,7 +50,7 @@ theorem continuous_unip_mul {r : ℕ} {φ : Sm E a} (hφ : IsOpen {k | finRep E 
   set f₀ := JointCont.finPart g x₀
   have hc : Continuous (fun x : BlockIx a r → Ad E => f₀⁻¹ * JointCont.finPart g x) :=
     continuous_const.mul (JointCont.continuous_finPart g)
-  have h1 : finRep E a (f₀⁻¹ * f₀) φ = φ := by rw [inv_mul_cancel]; simp
+  have h1 : finRep E a (f₀⁻¹ * f₀) φ = φ := simp [inv_mul_cancel]
   have hev : ∀ᶠ x in 𝓝 x₀, chart φ.1 (finGL E a f₀) (toL (JointCont.infPart g x).val) = φ.1 (unip x * g) := by
     filter_upwards [hc.continuousAt.preimage_mem_nhds (hφ.mem_nhds h1)] with x hx
     have hx' : finRep E a (f₀⁻¹ * JointCont.finPart g x) φ = φ := hx

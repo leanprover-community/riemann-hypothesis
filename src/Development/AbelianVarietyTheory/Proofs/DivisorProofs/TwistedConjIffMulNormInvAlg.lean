@@ -131,8 +131,8 @@ theorem dlt_twConj_iff : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E],
   intro E _ _ _ _ w hw K e he _ _ B m b u hu β₀ hβ₀ hG x x' hx hx'
   obtain ⟨ε, hε⟩ : ∃ ε : B.A, ε = (-1) ^ (m - 1) := ⟨_, rfl⟩
   rw [← hε] at hβ₀
-  have hε2 : ε * ε = 1 := by rw [hε, ← mul_pow]; simp
-  have hεa : ε = algebraMap K.E B.A ((-1) ^ (m - 1)) := by rw [hε]; simp
+  have hε2 : ε * ε = 1 := simp [hε, ← mul_pow]
+  have hεa : ε = algebraMap K.E B.A ((-1) ^ (m - 1)) := simp [hε]
 
   have hasym : ∀ t : B.A, B.σ t = t → ∀ y z, K.c (B.herm ((β₀ : B.A) * t) y z) =
       B.herm ((β₀ : B.A) * t) (ε * u * z) y := by

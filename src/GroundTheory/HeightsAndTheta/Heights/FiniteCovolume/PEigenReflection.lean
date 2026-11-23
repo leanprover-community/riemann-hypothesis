@@ -68,7 +68,7 @@ theorem EigenReflection.proof (ι : Type*) [Fintype ι] [DecidableEq ι] :
   have hqstar : star q = q := Complex.conj_eq_iff_im.mpr (Complex.pos_iff.mp hqpos).2.symm
   have hεstar : star ε = ε := by rcases hε with rfl | rfl <;> simp
   set c : ℂ := 2 / q with hc
-  have hcstar : star c = c := by rw [hc, star_div₀, hqstar]; simp
+  have hcstar : star c = c := simp [hc, star_div₀, hqstar]
   have hcq : c * q = 2 := by rw [hc]; field_simp
 
   have hwy : star v ᵥ* P = star y := by rw [hy, star_mulVec, hPh]

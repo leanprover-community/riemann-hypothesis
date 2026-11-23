@@ -148,7 +148,7 @@ theorem main : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField
     exact hy
   · intro hq q hqe
     set b : 𝓞 E := ((Ideal.absNorm P.asIdeal : ℕ) : 𝓞 E) with hbdef
-    have hqb : (q : E) = (b : E) := by rw [hqe, hbdef]; simp
+    have hqb : (q : E) = (b : E) := simp [hqe, hbdef]
     obtain ⟨y, y₀, a1, a2, a3, a4⟩ := GlobalTheory.SuppIdele.exists_supported_idele F E P (P.under (𝓞 F)) b rfl
     have hy : σ ((μ y : Kˣ) : K) = ((ξ.locK P q : ℂˣ) : ℂ) := value_of_congr2 h ht a1 hq hqb a3 a4
     have hex : ∃ k, IsQValC μ P k := by

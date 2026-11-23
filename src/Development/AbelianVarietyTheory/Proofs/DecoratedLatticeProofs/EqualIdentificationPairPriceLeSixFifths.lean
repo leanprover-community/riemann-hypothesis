@@ -44,7 +44,7 @@ namespace GlobalTheory.Core.Deg
 theorem exp_le_inv_one_sub_pg (x : ℝ) (hx1 : x < 1) : Real.exp x * (1 - x) ≤ 1 := by
   have h := Real.add_one_le_exp (-x)
   have hp := Real.exp_pos x
-  have : Real.exp x * Real.exp (-x) = 1 := by rw [← Real.exp_add]; simp
+  have : Real.exp x * Real.exp (-x) = 1 := simp [← Real.exp_add]
   nlinarith
 
 theorem one_factor_sharp (k b g : ℝ) (f : ℕ) (hk : 1 ≤ k) (hb : 2 ≤ b) (hg : (k * b) ^ 8 ≤ g) (hf : (f : ℝ) ≤ k) :

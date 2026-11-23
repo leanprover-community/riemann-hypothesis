@@ -217,7 +217,7 @@ private theorem swapMat_mem_UWset_of_isFrameOf {k r : ℕ} {z : Fin (2 * r + k +
         simp only [conjTranspose_add, conjTranspose_one, conjTranspose_mul, conjTranspose_conjTranspose, hH,
           conjTranspose_sub, Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.mul_one, Matrix.mul_assoc, hG]
         abel
-    _ = H := by rw [hQ]; simp
+    _ = H := simp [hQ]
 
 
 theorem _root_.GlobalTheory.frame_exists_and_vector_eq_smul_translate :

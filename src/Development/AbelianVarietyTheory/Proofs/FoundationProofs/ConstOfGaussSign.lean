@@ -249,7 +249,7 @@ theorem gauss_sign (D : D7) (hG : GaussSign D) {V : Type} [AddCommGroup V] [Modu
       have := him y (a y)
       rw [hw', hC]; simp [ha, him0]; linarith
     have e4 : (H w (a y)).im = (H y (a y)).im := by rw [hw']; simp [him0]
-    have e5 : (H x w).im = (H x y).im - (H x (a y)).im := by rw [hw']; simp
+    have e5 : (H x w).im = (H x y).im - (H x (a y)).im := simp [hw']
     have e7 := e6 x w
     have e8 := hCim x w
     obtain ⟨k4, h4⟩ := hint x x.2 _ hay

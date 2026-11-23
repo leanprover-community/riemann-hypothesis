@@ -73,7 +73,7 @@ theorem locSplit : CrystallineSemistableComparison.E.LocSplit := by
     rw [hq] at h1
     subst h1
     refine ⟨y, ?_⟩
-    have h2 : sigmaMk 𝒰.X ⟨i, y⟩ = s (g v) := by rw [← hq]; simp
+    have h2 : sigmaMk 𝒰.X ⟨i, y⟩ = s (g v) := simp [← hq]
     rw [sigmaMk_mk] at h2
     rw [h2, Scheme.Hom.comp_apply]
   obtain ⟨l, hl⟩ : ∃ l, l ≫ Limits.Sigma.ι 𝒰.X a = g ≫ s :=

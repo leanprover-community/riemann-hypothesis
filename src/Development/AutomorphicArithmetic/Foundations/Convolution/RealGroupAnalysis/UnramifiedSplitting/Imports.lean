@@ -86,7 +86,7 @@ theorem UpperTheory.ConvolutionTheory.R2.H.avg :
     intro k k' h
     have h2 : ρ (k⁻¹ * k') x = x := QuotientGroup.eq.mp h
     calc ρ k x = ρ k (ρ (k⁻¹ * k') x) := by rw [h2]
-      _ = ρ k' x := by rw [← hmul]; simp
+      _ = ρ k' x := simp [← hmul]
   refine ⟨Finset.univ.image (fun q : H ⧸ S => (Quotient.out q : H)),
     ⟨_, Finset.mem_image_of_mem _ (Finset.mem_univ ((1 : H) : H ⧸ S))⟩, ?_⟩
   intro h

@@ -104,7 +104,7 @@ theorem frame_K {R S : ℕ} {H : Matrix β β ℂ} {C : Matrix β (Ix R S) ℂ} 
   have e : H.map star = C'ᴴ * Jm R S * C' := by
     rw [← Jm_map_star, ← h.1, map_star_mul, map_star_mul, show Cᵀ.map star = Cᴴ from rfl,
       show (C.map star).map star = C by ext; simp]
-    calc _ = (C * C')ᴴ * H.map star * (C * C') := by rw [h1]; simp
+    calc _ = (C * C')ᴴ * H.map star * (C * C') := simp [h1]
       _ = _ := by simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
   rw [e]
   refine ⟨by simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Jm_conjTranspose, Matrix.mul_assoc],

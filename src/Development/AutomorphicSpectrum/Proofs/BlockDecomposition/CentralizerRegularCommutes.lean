@@ -76,7 +76,7 @@ theorem commute_of_dominated_diag {n : ℕ} (U H A Y : Matrix (Fin n) (Fin n) �
     intro P
     calc U * (Uᴴ * P * U) * Uᴴ = (U * Uᴴ) * P * (U * Uᴴ) := by
           simp only [Matrix.mul_assoc]
-      _ = P := by rw [h2]; simp
+      _ = P := simp [h2]
   have hcomm : (Uᴴ * H * U) * (Uᴴ * Y * U) = (Uᴴ * Y * U) * (Uᴴ * H * U) := by
     rw [conj_mul, conj_mul, hHY]
   have hdH : Matrix.diagonal (fun i => (Uᴴ * H * U) i i) = Uᴴ * H * U := hH.diagonal_diag

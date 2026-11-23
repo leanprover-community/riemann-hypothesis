@@ -79,7 +79,7 @@ theorem placeDecomposition_gkMap_rankOne_values : ∀ (D : D7) (θ : InfFam D), 
       rw [← hJ]
       calc _ = (N.M.fr τ * (N.M.fr τ)⁻¹)ᴴ * Jm (N.M.ε τ) * (N.M.fr τ * (N.M.fr τ)⁻¹) := by
             simp only [conjTranspose_mul, Matrix.mul_assoc]
-        _ = _ := by rw [Matrix.mul_nonsing_inv _ hd]; simp
+        _ = _ := simp [Matrix.mul_nonsing_inv _ hd]
     have e : (w : N.M.H τ) = dRep (N.M.σ τ) (N.M.fr τ * X * (N.M.fr τ)⁻¹) u := by
       rw [hw]
       unfold dRep

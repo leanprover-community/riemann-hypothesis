@@ -62,7 +62,7 @@ theorem inG_conj {ε : Fin n → Bool} {g X : Matrix (Fin n) (Fin n) ℂ} (hg : 
     _ = g * (Xᴴ * Jm ε + Jm ε * X) * gᴴ := by
         rw [h2, ← hg.2]
         simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-    _ = 0 := by rw [hX]; simp
+    _ = 0 := simp [hX]
 
 theorem exp_conj_mul {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ Matrix.unitaryGroup (Fin n) ℂ)
     (X : Matrix (Fin n) (Fin n) ℂ) (t : ℂ) :

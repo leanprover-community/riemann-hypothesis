@@ -838,7 +838,7 @@ theorem quad_of_diag {K : Type} [Field K] {n : ℕ} (P : GL (Fin n) K) (M M' : M
       ((M' - 1) * (M - c • (1 : Matrix (Fin n) (Fin n) K))) * (P : Matrix (Fin n) (Fin n) K)) *
         ((P⁻¹ : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) := by
         rw [← mul_assoc, ← mul_assoc, e1, one_mul, mul_assoc, e1, mul_one]
-    _ = 0 := by rw [hAB]; simp
+    _ = 0 := simp [hAB]
 
 end Quad
 

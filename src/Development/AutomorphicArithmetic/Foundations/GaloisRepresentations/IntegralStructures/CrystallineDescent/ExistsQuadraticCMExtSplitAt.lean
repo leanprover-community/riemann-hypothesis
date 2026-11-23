@@ -143,7 +143,7 @@ theorem UpperTheory.Gal.Int.Core.exists_quadratic_CM_ext_split_at : UpperTheory.
     have hv2 : A₀.valuation ((2 * (-(p₂ : ℤ)) : ℤ) : Ω) = 1 := by
       obtain ⟨s, t, hst⟩ := hcop
       refine le_antisymm ((A₀.valuation_le_one_iff _).2 (intCast_mem A₀ _)) (not_lt.1 fun hlt1 => ?_)
-      have h3 : ((s * (p₁ : ℤ) + t * (2 * (-(p₂ : ℤ))) : ℤ) : Ω) = 1 := by rw [hst]; simp
+      have h3 : ((s * (p₁ : ℤ) + t * (2 * (-(p₂ : ℤ))) : ℤ) : Ω) = 1 := simp [hst]
       have hs1 : A₀.valuation ((s : ℤ) : Ω) ≤ 1 := (A₀.valuation_le_one_iff _).2 (intCast_mem A₀ _)
       have ht1 : A₀.valuation ((t : ℤ) : Ω) ≤ 1 := (A₀.valuation_le_one_iff _).2 (intCast_mem A₀ _)
       have h4 : A₀.valuation (((s * (p₁ : ℤ) + t * (2 * (-(p₂ : ℤ))) : ℤ)) : Ω) < 1 := by

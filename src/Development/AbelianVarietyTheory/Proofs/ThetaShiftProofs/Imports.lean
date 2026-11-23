@@ -74,7 +74,7 @@ theorem _root_.GlobalTheory.ComplementTypes.types (E : Type) [Field E] [NumberFi
     congr 1
   have hd : (2 : ℝ) ≤ H.d := by exact_mod_cast H.d_prime.two_le
   have hconj : conj H.rt0 = -H.rt0 := by
-    have hsq : conj H.rt0 ^ 2 = H.rt0 ^ 2 := by rw [← map_pow, H.sqrt_neg_disc_sq]; simp
+    have hsq : conj H.rt0 ^ 2 = H.rt0 ^ 2 := simp [← map_pow, H.sqrt_neg_disc_sq]
     rcases sq_eq_sq_iff_eq_or_eq_neg.1 hsq with h' | h'
     · exfalso
       have hre := Complex.conj_eq_iff_re.1 h'

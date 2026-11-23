@@ -178,7 +178,7 @@ theorem weight_numbers_bound : WeightNumbersBound := by
   have hMpos : 0 < ((min q₁ d : ℕ) : ℝ) := lt_of_lt_of_le (Real.exp_pos _) hM
   have hA3 : 1 / (4 * ((min q₁ d : ℕ) : ℝ)) ≤ eu := by
     rw [div_le_iff₀ (by positivity)]
-    have h1 : Real.exp (-u) * Real.exp u = 1 := by rw [← Real.exp_add]; simp
+    have h1 : Real.exp (-u) * Real.exp u = 1 := simp [← Real.exp_add]
     have h2 : Real.exp (-u) * Real.exp u ≤ Real.exp (-u) * ((min q₁ d : ℕ) : ℝ) :=
       mul_le_mul_of_nonneg_left hM heu0.le
     have h3 : Real.exp (-u) * (4 * ((min q₁ d : ℕ) : ℝ)) = 4 * (Real.exp (-u) * ((min q₁ d : ℕ) : ℝ)) := by ring

@@ -238,7 +238,7 @@ theorem Sm.bd (hϖ : (ϖ : K) ∈ R) {k : ℕ} {x : K} (hx : Sm R ϖ k x) (l : �
   Bd.of_mem hϖ (hx.mem hϖ) l
 
 theorem bd_iff_sm_mul {k : ℕ} {x : K} : Bd R ϖ k x ↔ ∃ r ∈ R, x = ((ϖ⁻¹ : Kˣ) : K) ^ k * r := by
-  have h1 : ((ϖ⁻¹ : Kˣ) : K) ^ k * (ϖ : K) ^ k = 1 := by rw [← mul_pow]; simp
+  have h1 : ((ϖ⁻¹ : Kˣ) : K) ^ k * (ϖ : K) ^ k = 1 := simp [← mul_pow]
   constructor
   · intro h
     exact ⟨_, h, by rw [← mul_assoc, h1, one_mul]⟩
@@ -273,7 +273,7 @@ theorem ringInverse_eq {x y : K} (h : x * y = 1) : Ring.inverse x = y := by
   obtain ⟨u, rfl⟩ := hu
   rw [Ring.inverse_unit]
   calc ((u⁻¹ : Kˣ) : K) = ((u⁻¹ : Kˣ) : K) * ((u : K) * y) := by rw [h, mul_one]
-    _ = y := by rw [← mul_assoc]; simp
+    _ = y := simp [← mul_assoc]
 
 theorem psi_R {ψ : AddChar K ℂ} (hD : LocalDatum K R ψ) {r : K} (hr : r ∈ R) : ψ r = 1 := by
   have := (hD.selfDual r).2 hr 1 R.one_mem
@@ -2516,7 +2516,7 @@ variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] {R :
 
 theorem pw_psi_ne (ψ : AddChar K ℂ) (x : K) : ψ x ≠ 0 := by
   intro h
-  have h1 : ψ x * ψ (-x) = 1 := by rw [← AddChar.map_add_eq_mul]; simp
+  have h1 : ψ x * ψ (-x) = 1 := simp [← AddChar.map_add_eq_mul]
   rw [h, zero_mul] at h1
   exact zero_ne_one h1
 

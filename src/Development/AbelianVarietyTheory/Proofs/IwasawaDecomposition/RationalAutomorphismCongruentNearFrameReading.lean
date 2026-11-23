@@ -95,7 +95,7 @@ theorem val_entry (P : HeightOneSpectrum (𝓞 E)) (hq : P.valuation E ((qOf P :
   have hE : (exp (-1 : ℤ) ^ c)⁻¹ = exp (c : ℤ) := by
     rw [← WithZero.exp_nsmul, ← WithZero.exp_neg]; congr 1; simp
   rw [hE] at h1
-  have hm : exp (-(c : ℤ)) * exp (c : ℤ) = 1 := by rw [← exp_add]; simp
+  have hm : exp (-(c : ℤ)) * exp (c : ℤ) = 1 := simp [← exp_add]
   calc y = (exp (-(c : ℤ)) * exp (c : ℤ)) * y := by rw [hm, one_mul]
     _ = exp (-(c : ℤ)) * (exp (c : ℤ) * y) := mul_assoc _ _ _
     _ ≤ exp (-(c : ℤ)) * 1 := mul_le_mul' le_rfl h1

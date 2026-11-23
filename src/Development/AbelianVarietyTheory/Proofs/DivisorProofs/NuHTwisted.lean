@@ -50,7 +50,7 @@ theorem xiH_twisted (w : HeightOneSpectrum (𝓞 D.what₂.LL)) (hw : p.R.mu w �
       p.R.C.delAt (D.what₂.places.resChar (D.plEq.symm w)) * p.Tp.psi (D.plEq.symm w) := by
   have h0 : p.tupT D.what₂.mu0 = p.P.A3.A.μ0 := by
     rw [← p.P.div.tup.mu0]; exact p.tupT_tup _
-  have e1 : p.R.mu w = p.tupT (D.what₂.muAt (D.plEq.symm w)) := by rw [p.tupAt]; simp
+  have e1 : p.R.mu w = p.tupT (D.what₂.muAt (D.plEq.symm w)) := simp [p.tupAt]
   have htw : D.what₂.muAt (D.plEq.symm w) ≠ D.what₂.mu0 := fun e => hw (by rw [e1, e, h0])
   have hmt : D.what₂.muAt (D.plEq.symm w) = D.what₂.muTw (D.plEq.symm w) := (D.what₂.muAt_or _).resolve_left htw
   refine ⟨htw, ?_⟩
