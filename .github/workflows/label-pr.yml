@@ -44,8 +44,39 @@ jobs:
           HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           git init -q pr
-          git -C pr fetch -q --no-tags --filter=blob:none "https://github.com/$GITHUB_REPOSITORY" "$BASE" "$HEAD"
-          git -C pr diff -z --name-only --no-renames "$BASE...$HEAD" > changed
+          # Fetch BASE from upstream; HEAD may be a fork-only commit, so fall back to API.
+          # For huge PRs (10K+ files) the GitHub API can't diff either — size label still
+          # works because it uses additions/deletions from the PR metadata, not a diff.
+          set +e
+          fetch_ok=false
+          if git -C pr fetch -q --no-tags --filter=blob:none \
+              "https://github.com/$GITHUB_REPOSITORY" "$BASE" "$HEAD"; then
+            fetch_ok=true
+          fi
+          set -e
+          
+          if [[ "$fetch_ok" == "true" ]]; then
+            git -C pr diff -z --name-only --no-renames "$BASE...$HEAD" > changed
+          else
+            echo "Could not fetch HEAD from upstream; falling back to GitHub API for paths."
+            # Try API — if that also fails, create empty file so path-labels get skipped
+            # gracefully while size-labels still compute from PR metadata above.
+            set +e
+            gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/files" \
+              --jq '.[].filename' | tr '\n' '\0' > changed || true
+            set -e
+            if [[ -s changed ]]; then
+              # Grab any remaining pages (API caps at 30 per page; pagination gives us rest).
+              while read -r url; do
+                set +e
+                gh api "$url" --jq '.[].filename' | tr '\n' '\0' >> changed
+                set -e
+              done < <(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/files" \
+                --jq '.[]._links.next // empty' 2>/dev/null)
+            else
+              touch changed
+            fi
+          fi
 
           lake='' challenge='' ci='' docs=''
           while IFS= read -r -d '' path; do
