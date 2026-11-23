@@ -492,7 +492,6 @@ theorem _root_.GlobalTheory.invariants_eq_of_periodic_solution :
     refine Polynomial.funext fun X => ?_
     simp only [eval_mul, eval_pow, eval_add, eval_sub, eval_C, eval_X, eval_zero]
     exact (hAB X).2
-  open Polynomial in
   have hcub : (C 4 * X ^ 3 - C L.g₂ * X - C L.g₃ : ℂ[X]) ≠ 0 := by
     intro h
     have := congrArg (fun p : Polynomial ℂ => p.coeff 3) h

@@ -100,11 +100,9 @@ end GlobalTheory.CoefBase
 
 namespace GlobalTheory.CoefBase
 
-section Core
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} [DecidableEq D.what₂.Tau]
 
-end Core
 
 section Core2
 

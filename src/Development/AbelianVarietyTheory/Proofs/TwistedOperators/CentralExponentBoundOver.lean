@@ -51,11 +51,9 @@ open scoped TensorProduct
 
 namespace GlobalTheory.CentralExponent
 
-section Abstract
 
 variable {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V]
 
-end Abstract
 
 section Local
 

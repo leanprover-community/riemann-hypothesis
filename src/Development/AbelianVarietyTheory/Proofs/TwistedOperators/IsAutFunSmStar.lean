@@ -83,7 +83,6 @@ def MAlg (n : ℕ) : Type := Matrix (Fin n) (Fin n) ℂ
 
 def LieM (J : Matrix (Fin n) (Fin n) ℂ) : Type := (lieU J).toSubmodule
 
-section Inst1
 
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
 
@@ -93,9 +92,7 @@ instance : NormedAlgebra ℝ (MAlg n) := inferInstanceAs (NormedAlgebra ℝ (Mat
 
 instance : FiniteDimensional ℝ (MAlg n) := inferInstanceAs (FiniteDimensional ℝ (Matrix (Fin n) (Fin n) ℂ))
 
-end Inst1
 
-section Inst2
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -105,7 +102,6 @@ instance (J : Matrix (Fin n) (Fin n) ℂ) : NormedAddCommGroup (LieM J) :=
 instance (J : Matrix (Fin n) (Fin n) ℂ) : NormedSpace ℝ (LieM J) :=
   inferInstanceAs (NormedSpace ℝ (lieU J).toSubmodule)
 
-end Inst2
 
 def MAlg.mat (X : MAlg n) : Matrix (Fin n) (Fin n) ℂ := X
 

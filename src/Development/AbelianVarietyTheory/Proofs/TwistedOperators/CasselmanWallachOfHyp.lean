@@ -44,12 +44,10 @@ namespace GlobalTheory.CWGeneral
 
 variable {n : ℕ} {ε : Fin n → Bool}
 
-section Sub
 
 variable {E : Type} [AddCommGroup E] [Module ℂ E] [TopologicalSpace E] [IsTopologicalAddGroup E]
 
 
-end Sub
 
 section KFin
 
