@@ -146,6 +146,30 @@ revisionEndpoint = "https://example.invalid/revisions"
         assert client.find_record(root, identity, fetcher=fetch) == record
         assert f"ci/revisions/{mode_change}.json" not in requests
 
+        # A receipt found before an unreadable old tree is still usable.
+        tree = record["candidate_tree"]
+        tree_object = root / ".git/objects" / tree[:2] / tree[2:]
+        saved_tree = tree_object.read_bytes()
+        head_now = run(root, "git", "rev-parse", "HEAD")
+        docs_head = run(root, "git", "rev-parse", "HEAD~2")
+        receipts = {
+            revision: {**record, "candidate_head": revision,
+                       "candidate_tree": run(root, "git", "rev-parse", f"{revision}^{{tree}}")}
+            for revision in (head_now, docs_head)
+        }
+        tree_object.unlink()
+        try:
+            for revision, receipt in receipts.items():
+                key = f"ci/revisions/{revision}.json"
+                requests.clear()
+                objects[key] = client.canonical(receipt)
+                assert client.find_record(root, identity, fetcher=fetch) == receipt
+                assert requests[0] == index and requests[-1] == key
+                assert f"ci/revisions/{head}.json" not in requests
+                objects.pop(key)
+        finally:
+            tree_object.write_bytes(saved_tree)
+
         failed = {**record, "build_exit_code": 1}
         assert client.matching_record(client.canonical(failed), identity) is None
         stale = {**record, "lakefile_sha256": "0" * 64}

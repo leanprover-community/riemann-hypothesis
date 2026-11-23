@@ -150,33 +150,54 @@ def matching_record(data, identity):
     return record
 
 
-def equivalent_revisions(root, ancestor_limit):
-    revisions = git(root, "rev-list", f"--max-count={ancestor_limit}", "HEAD").splitlines()
-    if BOOTSTRAP in revisions:
-        revisions = revisions[:revisions.index(BOOTSTRAP) + 1]
-    if not revisions:
-        return []
-
+def unchanged_batch(root, head, revisions):
     # Compare each commit directly to HEAD, including merge commits. All inputs
     # are top-level paths, so comparing the src tree ID covers its whole subtree.
-    head = revisions[0]
     comparisons = "".join(f"{revision} {head}\n" for revision in revisions)
-    output = subprocess.check_output(
+    result = subprocess.run(
         ["git", "-C", str(root), "diff-tree", "--stdin", "--always", "--format=%H", "--name-only",
          "--no-ext-diff", "--no-textconv", "--no-renames", "--", *BUILD_INPUT_PATHS],
-        input=comparisons, text=True,
+        input=comparisons, text=True, capture_output=True,
+        env={**os.environ, "GIT_NO_LAZY_FETCH": "1"},
     )
     seen, changed = [], set()
-    for line in output.splitlines():
+    for line in result.stdout.splitlines():
         if not line:
             continue
         if line in BUILD_INPUT_PATHS and seen:
             changed.add(seen[-1])
         else:
             seen.append(line)
-    if seen != revisions:
-        raise ValueError("could not compare ancestor build inputs")
-    return [revision for revision in revisions if revision not in changed]
+    if result.returncode == 0 and seen == revisions:
+        yield from (revision for revision in revisions if revision not in changed)
+        return
+
+    # A missing tree in this batch may be older than the first usable receipt.
+    # Compare lazily in history order, fetching objects only when needed.
+    for revision in revisions:
+        code = subprocess.run(
+            ["git", "-C", str(root), "diff", "--no-ext-diff", "--quiet", head, revision,
+             "--", *BUILD_INPUT_PATHS],
+        ).returncode
+        if code == 0:
+            yield revision
+        elif code != 1:
+            raise ValueError("could not compare ancestor build inputs")
+
+
+def equivalent_revisions(root, ancestor_limit):
+    if ancestor_limit == 0:
+        return
+    head = git(root, "rev-parse", "HEAD").strip()
+    yield head
+    if ancestor_limit == 1 or head == BOOTSTRAP:
+        return
+
+    revisions = git(root, "rev-list", f"--max-count={ancestor_limit}", head).splitlines()[1:]
+    if BOOTSTRAP in revisions:
+        revisions = revisions[:revisions.index(BOOTSTRAP) + 1]
+    for start in range(0, len(revisions), 32):
+        yield from unchanged_batch(root, head, revisions[start:start + 32])
 
 
 def find_record(root, identity, ancestor_limit=100, fetcher=fetch):
