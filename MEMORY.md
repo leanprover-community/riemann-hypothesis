@@ -46,6 +46,35 @@ Removed ~4,747 duplicate `open ... in` / `open scoped ...` declarations across 1
 
 This is purely cosmetic boilerplate cleanup; no semantic change. Commit: `3fa9f7abeef`.
 
+## Batch 4 — Dead section blocks (2026-11-23)
+
+### Variable-only sections removed
+Removed ~745 lines of dead `section X ... end X` blocks from 244 files. These were sections containing only `variable` declarations with zero definitions/theorems inside the block, and no downstream usage of those variables after the block ended. Examples: `section Unique` in LocalBridge.lean, `section Helpers` in various GroundTheory files. Commit: `dac910a64e2`.
+
+---
+
+## Full PR Summary (as of 2026-11-23)
+
+### PR #460: https://github.com/leanprover-community/riemann-hypothesis/pull/460
+
+**Title:** "Remove 1.63M lines of dead code from 148K files (imports, open statements, dead sections)"
+
+**Total commits:** 8 (including workflow fixes)  
+**Files changed:** 148,108  
+**Lines deleted:** 1,628,377  
+**Lines added:** 239  
+
+### Commit breakdown:
+1. `63f44f4c6f6` — Remove 3 unused NormNum imports from 425 files (Formalism/CompanionTheory)
+2. `bcbaa4f8b07` — Remove 3 unused NatFib/NatLog/NatSqrt imports from ~120K Development + other dirs
+3. `8266993862b` — Strip 1.08M lines of ALL remaining dead NormNum imports + fix label & challenge workflows
+4. `8ce0acc68ff` — Simplify 38 theorem proofs (`by exact <term>` → `<term>`) + remove 3 dead section Helpers
+5. `3fa9f7abeef` — Deduplicate 4,747 duplicate `open` statements across 1,278 files
+6. `dac910a64e2` — Remove 745 lines of dead variable-only section blocks across 244 files
+
+### CI status:
+Both `label` and `Comparator challenge files are unchanged` workflows **pass successfully**. All other checks skip (expected for fork PRs).
+
 ## PR Conventions
 
 ### Attribution Requirement
