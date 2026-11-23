@@ -37,11 +37,9 @@ open NumberField Matrix Formalism.BasicNotions GlobalTheory.IndefiniteRowSideFul
 
 namespace GlobalTheory.CuspCharLattice
 
-section General
 
 variable {K : Type} [Field K] [NumberField K]
 
-end General
 
 variable {R : Ranks} {H : Host R} {n : ℕ}
 

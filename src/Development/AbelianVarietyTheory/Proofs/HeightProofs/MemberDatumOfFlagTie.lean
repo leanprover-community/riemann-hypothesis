@@ -369,12 +369,10 @@ theorem exists_rep (B : HSp D) (l : B.V →ₗ[D.host.E] D.host.E) : ∃ v, ∀ 
   rw [← Finset.sum_mul, map_smul, smul_eq_mul, ← this, mul_comm]
   simp [co]
 
-section Ties
 
 variable {X : ThetaX D} {T : ThetaTied D X} {Wl : WeilTied D X T}
   {piT : D.what₂.Word → 𝓞 D.host.E} {piG : Fin 2 → 𝓞 D.host.E}
 
-end Ties
 
 theorem isAniso_iff (A : HSp D) : IsAniso A ↔ ∀ v : A.V, A.hD v v = 0 → v = 0 := by
   constructor

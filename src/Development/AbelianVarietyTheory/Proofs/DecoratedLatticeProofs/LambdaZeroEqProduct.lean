@@ -47,15 +47,11 @@ open GlobalTheory.FinPl (MxAt idAt)
 
 variable {D : D7} {u : D.what₂.Word} {d : Dat D u} {τ : ∀ j h, Matrix (Fin (d.bes j 0 h).L.rank) (Fin d.Lz.rank) D.host.E}
 
-section Red
 variable {PP : Formalism.L2.DIV.Pl D.host.E} (G : GAt d τ PP)
 
-end Red
 
-section Grp
 variable (G : ∀ PP : d.c.Pg, GAt d τ PP.1)
 
-end Grp
 
 end GlobalTheory.LevelComb
 

@@ -95,16 +95,13 @@ theorem exists_char (hu : q.UnitAA) {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsSt
 
 end Place
 
-section Rat
 variable {D : D7}
 
 variable {n : Type} [Fintype n] [DecidableEq n]
 
-end Rat
 
 variable {D : D7}
 
-section Loc
 open GlobalTheory.Fam Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.MainNotions
 
 variable {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : Formalism.L2.DIV.FamIn D.what₂.LL Γ Pl0 T D.R.m} {Ks : Type} [Field Ks]
@@ -113,7 +110,6 @@ variable {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : Formalism.L2.DI
   {PP : Formalism.L2.DIV.Pl D.host.E} (l : LocX a R.βX PP)
 
 
-end Loc
 
 end GlobalTheory.QTw.GeoInhab
 end

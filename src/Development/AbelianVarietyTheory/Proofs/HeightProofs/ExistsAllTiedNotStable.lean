@@ -97,7 +97,6 @@ theorem conj_mem {n : ℕ} {ε : Fin n → Bool} {P G : Matrix (Fin n) (Fin n) �
         rw [h, hg', ← h]; simp only [conjTranspose_mul, Matrix.mul_assoc]
     _ = _ := simp [Matrix.mul_nonsing_inv _ hd]
 
-section Pred
 
 variable {D : D7} (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (V : HSp D) (τ : D.what₂.Tau)
 
@@ -105,7 +104,6 @@ variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {S : SPar}
   {σ : Matrix (Fin V.rank) (Fin V.rank) ℂ → (H →L[ℂ] H)} {lam : Fin V.rank → ℝ} {ε : Fin V.rank → Bool}
   {P : Matrix (Fin V.rank) (Fin V.rank) ℂ}
 
-end Pred
 
 variable {D : D7} {X : ThetaX D}
 

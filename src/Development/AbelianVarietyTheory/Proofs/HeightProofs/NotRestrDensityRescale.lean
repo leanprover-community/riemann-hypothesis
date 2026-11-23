@@ -118,17 +118,13 @@ theorem eq_wsmul_iff (h : LawsCore T) {j : ℕ} (ka wL : WeightFamilies.Wt D j) 
       push_cast
       rfl
 
-section Density
 
 variable (h : LawsCore T) (j : ℕ) (hG : GenFrEx (T.Q.Xo j) T.Q.c) (fn : FrameNorms T j) (yP : GenericFrames T j)
   (ka : WeightFamilies.Wt D j)
 
-end Density
 
-section Separate
 
 variable {j : ℕ}
 
-end Separate
 
 end GlobalTheory.LowerBoundCompare

@@ -51,21 +51,17 @@ open GlobalTheory.IndefiniteRowSideFullHecke.CurveFormSign
 
 namespace GlobalTheory.CMPointCompare
 
-section Dictionary
 
 variable {S X Y : Scheme.{0}} {C : Over S} {G : Over X} {B G' : Over Y} [GrpObj C] [GrpObj G] [GrpObj B] [GrpObj G']
   {f : Y ⟶ S} {x : Y ⟶ X} {β : B.left ⟶ C.left} {π : G'.left ⟶ G.left}
 
 variable (hβ : IsGrpPullback B C f β) (hπ : IsGrpPullback G' G x π)
 
-end Dictionary
 
-section Intertwine
 
 variable {S X Y : Scheme.{0}} {C : Over S} {G : Over X} [GrpObj C] [GrpObj G] {f : Y ⟶ S} {x : Y ⟶ X}
   {Φ : MapOver C G f x}
 
-end Intertwine
 
 section General
 
@@ -86,12 +82,10 @@ theorem hom_ext_of_complexPoints {R : Type} [CommRing R] (σ : R →+* ℂ) (hσ
 
 end General
 
-section Linear
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
 variable {D : Datum H} {g : ℕ} {ty : Fin g → (E →+* ℂ)} {P : D.La →+ (Fin g → ℂ)} (hP : IsPeriod D ty P)
 
-end Linear
 
 end GlobalTheory.CMPointCompare

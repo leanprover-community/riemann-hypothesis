@@ -44,19 +44,15 @@ open GlobalTheory.CM GlobalTheory.IndefiniteRowSideFullHecke
 noncomputable section
 namespace GlobalTheory.CMSharedCompare
 
-section Comb
 
 variable {R : Type} [CommRing R]
 
-end Comb
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {K : Type} [Field K] [NumberField K]
 
-section Vec
 
 variable {t : SAB H (Sp (𝓞 K))} (G : EigenLatticeFibres.GenFib t)
 
-end Vec
 
 structure Partner {T : PAT H (Sp (𝓞 K))} (F : GenFib T.pol) where
 
@@ -76,11 +72,9 @@ variable {F : GenFib T.pol} {F' : GenFib T'.pol} (Q : Partner F) (Q' : Partner F
 
 end Partner
 
-section Metric
 
 variable {T : PAT H (Sp (𝓞 K))} {F : GenFib T.pol} (Q : Partner F)
 
-end Metric
 
 section Embeddings
 

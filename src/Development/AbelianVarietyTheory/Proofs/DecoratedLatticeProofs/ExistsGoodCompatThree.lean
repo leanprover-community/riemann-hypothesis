@@ -42,13 +42,10 @@ namespace GlobalTheory.RegSch.StdPos
 open Formalism.UG (cT bc cT_mul cT_one)
 open Matrix
 
-section Pure
 
 variable {R : Type} [CommRing R] (s : R →+* R) {n r m : ℕ} (J : Matrix (Fin n) (Fin n) R)
 
-end Pure
 
-section Lattice
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) {n r m : ℕ}
   (J : Matrix (Fin n) (Fin n) E)
@@ -59,7 +56,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 
 
-end Lattice
 
 end GlobalTheory.RegSch.StdPos
 

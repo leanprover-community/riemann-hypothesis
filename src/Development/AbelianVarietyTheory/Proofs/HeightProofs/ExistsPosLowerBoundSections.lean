@@ -61,13 +61,10 @@ theorem bdd_of_mem_holSub (X : κ → Data E r) (la : ∀ c, Wt (X c).Ψ r) {P :
 
 end Model
 
-section Weights
 
 variable {D : D7} {j : ℕ}
 
-end Weights
 
-section Record
 
 variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ} (X : PJ D B P j)
 
@@ -75,9 +72,7 @@ variable {ι : Type} (Ω : ι → Type) [∀ Z, Field (Ω Z)] [∀ Z, Algebra B.
   (hinj : ∀ (u : WeightFamilies.Wt D j) (F : B.Cusp j u), (∀ Z, gF Z (X.inc u F) = 0) → F = 0)
 
 
-end Record
 
-section Inst
 
 variable {D : D7} {T : Formalism.L2.Pj.Top D} (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c)
   {ka wL wF : WeightFamilies.Wt D j}
@@ -87,6 +82,5 @@ variable {D : D7} {T : Formalism.L2.Pj.Top D} (h : LawsP T) (j : ℕ) (hj : InR 
 
 
 
-end Inst
 
 end GlobalTheory.BignessCompare

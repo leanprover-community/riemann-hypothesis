@@ -84,7 +84,6 @@ theorem exp_algInf (V : HSp D) (X : AlgInf V) (τ : D.what₂.Tau) :
 
 end Inst1
 
-section Inst2
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -94,7 +93,6 @@ instance (V : HSp D) : NormedAddCommGroup (LieN V) :=
 instance (V : HSp D) : NormedSpace ℝ (LieN V) :=
   inferInstanceAs (NormedSpace ℝ (∀ τ : D.what₂.Tau, (lieU (gramAt D V τ)).toSubmodule))
 
-end Inst2
 
 def sigInf (V : HSp D) : AlgInf V →ₗ[ℝ] AlgInf V where
   toFun X := fun τ => (gramAt D V τ)⁻¹ * (X τ)ᴴ * gramAt D V τ

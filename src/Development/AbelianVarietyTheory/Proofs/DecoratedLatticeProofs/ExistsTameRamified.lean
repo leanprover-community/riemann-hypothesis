@@ -76,11 +76,9 @@ variable (p : SplitPt D k)
 
 variable {p} {N : ℕ}
 
-section Line
 
 variable {S : HSp D} [Subsingleton (Fin S.rank)] (i : Fin S.rank)
 
 
-end Line
 
 end GlobalTheory.RamLine

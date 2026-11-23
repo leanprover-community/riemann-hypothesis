@@ -398,7 +398,6 @@ theorem kronOne_exp (Y : Mat p q) :
     refine continuous_pi fun a => continuous_pi fun b => ?_
     simp only [kronOne_apply, Matrix.reindex_apply, Matrix.submatrix_apply, Matrix.kroneckerMap_apply]
     fun_prop
-  open scoped Matrix.Norms.Operator in
   exact NormedSpace.map_exp (kronOne p q r s) hc Y
 
 def sgnIx : Ix p q → ℂ := Sum.elim (fun _ => 1) (fun _ => -1)

@@ -159,19 +159,15 @@ theorem isDS_const_iff (s : Bool) (lam : Fin n → ℝ) (σ : Matrix (Fin n) (Fi
 
 end Iso
 
-section Adelic
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-end Adelic
 
-section Degree
 
 variable {D : D7}
 
-end Degree
 
 section Low
 

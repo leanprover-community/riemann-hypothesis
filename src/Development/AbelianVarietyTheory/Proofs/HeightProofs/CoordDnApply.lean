@@ -39,10 +39,8 @@ namespace GlobalTheory.DualPairCompare
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
-section Gen
 variable {R : Type} [CommRing R] {a b : ℕ}
 
-end Gen
 
 open GlobalTheory.IndefiniteRowSideFullHecke
 
