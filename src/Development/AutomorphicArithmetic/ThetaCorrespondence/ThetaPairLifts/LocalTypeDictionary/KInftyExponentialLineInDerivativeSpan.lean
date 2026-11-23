@@ -37,9 +37,7 @@ section
 open NumberField IsDedekindDomain
 noncomputable section
 namespace GlobalTheory.KExpLine
-section Abstract
 variable {Y : Type} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
-end Abstract
 end GlobalTheory.KExpLine
 namespace GlobalTheory.KExpLine
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels

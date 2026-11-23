@@ -95,13 +95,11 @@ open Filter
 set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CompProport
-section Flag
 open GlobalTheory.VarFlag
 open GlobalTheory.ShFam (EigFrame FlagCpt FlagTor)
 open GlobalTheory.Toroidal (gen genι genStr genBd genBdIdeal HasToricChart)
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
-end Flag
 section Good
 open Formalism.BasicNotions Formalism.L2.Theta GlobalTheory.CovTop GlobalTheory.HSApp GlobalTheory.DegCmp
 open GlobalTheory.Toroidal (genBd HasToricChart)

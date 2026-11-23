@@ -38,10 +38,8 @@ open GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 noncomputable section
 namespace GlobalTheory.FirstRowEndLaw
-section Local
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k]
   [BorelSpace k] {Γ : Grid k}
-end Local
 end GlobalTheory.FirstRowEndLaw
 namespace GlobalTheory.FirstRowEndLaw
 open GlobalTheory.FunObj.GivenAdm

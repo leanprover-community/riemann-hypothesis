@@ -60,27 +60,21 @@ open GlobalTheory.ThickeningDetermines (secIdeal)
 open scoped TensorProduct
 open Limits
 namespace GlobalTheory.JetRank
-section Nef
 variable {k : Type} [Field k] {X : Scheme.{0}} [Algebra k Γ(X, ⊤)]
-end Nef
 section
 open NumberField Formalism.L2.Pj Formalism.BasicNotions GlobalTheory.Vanishing GlobalTheory.Adelic GlobalTheory.CompHS GlobalTheory.HSApp
 open GlobalTheory.AllWt (wtOf cuspOn)
 open GlobalTheory.FlagMod (FlagCover)
 open GlobalTheory.FlagTan (dimFlag)
-section Moving
 open GlobalTheory.Vanishing.H0 GlobalTheory.LB GlobalTheory.TangentOrigin
 open GlobalTheory.AllWt (secZ exOf)
 open GlobalTheory.CompHt (genVal)
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} {X : FlagCover Y} {Z : Comp Xo c} {r : ℕ}
   {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r}
-end Moving
-section Comp
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} {X : FlagCover Y} {Z : Comp Xo c} {r : ℕ}
   {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r}
-end Comp
 end
 section
 open CategoryTheory AlgebraicGeometry NumberField

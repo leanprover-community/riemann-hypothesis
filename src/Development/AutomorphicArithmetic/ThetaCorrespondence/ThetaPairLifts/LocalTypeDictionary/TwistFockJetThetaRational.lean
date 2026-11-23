@@ -68,7 +68,6 @@ open GlobalTheory.MovedDict Formalism.L2.Ker GlobalTheory.SignedHC
 open GlobalTheory.RatMoveJets
 noncomputable section
 namespace GlobalTheory.RatMoveFock
-section SlopeTestRemainingChoices
 open Matrix
 variable {D : D7}
 private theorem mem_globLat_mul {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
@@ -190,7 +189,6 @@ private theorem norm_det_padic {N q : ℕ} [Fact q.Prime] (U : Matrix.unitaryGro
   have h := congrArg (fun a => ‖φ a‖) (det_mul_star U)
   simp only [map_mul, norm_mul, map_one, norm_one] at h
   nlinarith [norm_nonneg (φ U.1.det), norm_nonneg (φ (star U.1).det)]
-end SlopeTestRemainingChoices
 open Matrix GlobalTheory.AdForm.RatMove
 open scoped ComplexOrder
 variable {D : D7}

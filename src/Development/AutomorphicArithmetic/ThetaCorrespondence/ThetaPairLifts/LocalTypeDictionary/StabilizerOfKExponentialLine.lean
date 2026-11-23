@@ -36,14 +36,10 @@ section
 open NumberField IsDedekindDomain
 noncomputable section
 namespace GlobalTheory.KExpLineW
-section Abstract
 variable {α : Type}
-end Abstract
 end GlobalTheory.KExpLineW
 namespace GlobalTheory.KExpLineW
-section Orbit
 variable {α : Type}
-end Orbit
 end GlobalTheory.KExpLineW
 namespace GlobalTheory.KExpLineW
 open MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK

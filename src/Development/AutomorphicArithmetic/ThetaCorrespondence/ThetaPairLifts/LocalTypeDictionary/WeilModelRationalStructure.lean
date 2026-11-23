@@ -45,15 +45,11 @@ open scoped ComplexConjugate
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 noncomputable section
 namespace GlobalTheory.RealDict.CompactCoinv
-section Oriented
 variable {D : D7} {V W : HSp D} {θ : InfFam D} {ψ : AddChar (AF D.host.F) ℂ} {χS χT : (AE D)ˣ →* Circle}
   {ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)}
-end Oriented
 section Theta
 end Theta
-section Reading
 variable {D : D7}
-end Reading
 end GlobalTheory.RealDict.CompactCoinv
 namespace GlobalTheory.RealDict
 open GlobalTheory.RealDict.CompactCoinv

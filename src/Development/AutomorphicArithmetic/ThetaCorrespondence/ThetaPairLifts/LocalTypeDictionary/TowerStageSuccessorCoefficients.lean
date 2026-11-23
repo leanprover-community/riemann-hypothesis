@@ -52,13 +52,9 @@ namespace GlobalTheory.HermitianSkewAdaptation
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.PlaneSkew
 open GlobalTheory.AdelicU (IsSplitBasis)
 open scoped Matrix
-section Planes
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
-end Planes
-section Transport
 open GlobalTheory.SqStepK GlobalTheory.SqStepBig
 variable {D : D7}
-end Transport
 section Cast
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 theorem const_pair_alt (hP : _root_.GlobalTheory.FunPr.ThetaLocalInputs) (hK : ThetaIntegralsAgree) (hM : LocalMatching) {B : Base F E} (hB : B.IsGood σ)

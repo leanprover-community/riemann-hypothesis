@@ -58,7 +58,6 @@ variable {D : D7}
 end GlobalTheory.RealRatAct
 namespace GlobalTheory.RealRatAct
 variable {D : D7}
-section Act
 variable {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D} {χS χT : (AE D)ˣ →* Circle}
   {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)}
 variable (hW : IsWeilDatumO ψ S T χS χT om) (hθ : IsInfFam θ) (hgS : ∀ τ, gramAt D S τ = -1)
@@ -66,11 +65,9 @@ variable (hW : IsWeilDatumO ψ S T χS χT om) (hθ : IsInfFam θ) (hgS : ∀ τ
   (hv : ∀ ρ, IsFockVacAt (heisO ψ S T) θ ρ (cplxO (-1) 1) f) {K : IntermediateField ℚ ℂ}
   (hK : ∀ z ∈ K, starRingEnd ℂ z ∈ K)
 include hW hθ hgS hgT hf hv
-end Act
 end GlobalTheory.RealRatAct
 namespace GlobalTheory.RealRatAct
 variable {D : D7}
-section Act
 variable {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D} {χS χT : (AE D)ˣ →* Circle}
   {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)}
   (hW : IsWeilDatumO ψ S T χS χT om) (hθ : IsInfFam θ) (hgS : ∀ τ, gramAt D S τ = -1)
@@ -78,7 +75,6 @@ variable {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D} {χS χT
   (hv : ∀ ρ, IsFockVacAt (heisO ψ S T) θ ρ (cplxO (-1) 1) f) {K : IntermediateField ℚ ℂ}
   (hK : ∀ z ∈ K, starRingEnd ℂ z ∈ K)
 include hW hθ hgS hgT hf hv hK
-end Act
 end GlobalTheory.RealRatAct
 namespace GlobalTheory.RealRatAct
 theorem rationalAction_real_translate : ∀ {D : D7} {T : Type} [Finite T] {L : LevCh D T} {μ₀ : T} {sc : Consts} {G : GridData L sc} {W : G.Weil}

@@ -46,9 +46,7 @@ open GlobalTheory.RatMoveJets
 noncomputable section
 namespace GlobalTheory.RatMoveIop
 open Formalism.L2.KerInert Formalism.L2.KerInert.PullbackComparison GlobalTheory.ThLoc.AllPlaces
-section Arith
 variable {F : Type} [NormedField F] {lam : Qbar →+* F}
-end Arith
 variable {D : D7} {N N' : ℕ}
 variable (A : Matrix.unitaryGroup (Fin N) D.host.E) (A' : Matrix.unitaryGroup (Fin N') D.host.E)
 variable (cc : Ideal (𝓞 D.host.K)) (δ : ℂ)

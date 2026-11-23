@@ -131,7 +131,6 @@ section MatrixPart
 open scoped Matrix
 open Formalism.BasicNotions.TH GlobalTheory.RealLift GlobalTheory.RealLift.OneParam
 end MatrixPart
-section Reading
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
@@ -141,7 +140,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 variable {D : D7}
-end Reading
 section Main
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped Classical

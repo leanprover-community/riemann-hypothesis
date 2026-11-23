@@ -107,7 +107,6 @@ theorem exists_highest (hE : GlRel E) (hU : KUnit ε E) {Q : Submodule ℂ V} [F
 
 end Alg
 
-section Rep
 
 open CompanionTheory.D.DSIC (IsSmMod hStabLink hWtLink hLowSpan hHWofType hSmMod)
 open PI.UpqRep (IsKTypeOf IsKStableOn IsURepOn UJset)
@@ -116,7 +115,6 @@ variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {Sm : Submodule ℂ H}
   {E : Fin n → Fin n → Module.End ℂ Sm}
 
-end Rep
 
 
 end UpperTheory.Lit.Bur.KShift
