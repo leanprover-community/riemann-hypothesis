@@ -37,12 +37,17 @@ theorem LeafColHens_of (hS : LeafStage) (hI : LeafInv) (hR : LeafRoot) : LeafCol
     obtain ⟨S, _, φ, hφ, hu⟩ := hI (Δ.D.obj j) (I.map (Δ.s j)) x hx'
     obtain ⟨π, hπ⟩ := push j S φ hφ
     have h := hu.map π
-    rw [← RingHom.comp_apply, hπ, map_add (f := _), map_one, hx, add_comm] at h
+    change IsUnit ((π.comp φ) (1 + x)) at h
+    rw [hπ, (Δ.leg c j).map_add, (Δ.leg c j).map_one, hx, add_comm] at h
     exact h
   · intro f hf a₀ ha₀ hu
+    let q := Ideal.Quotient.mk (I.map η)
     obtain ⟨u, hu'⟩ := Ideal.Quotient.mk_surjective (↑hu.unit⁻¹ : c.pt ⧸ I.map η)
-    have hdu : f.derivative.eval a₀ * u - 1 ∈ I.map η := by
-      rw [← Ideal.Quotient.eq_zero_iff_mem, map_sub, map_mul, hu', map_one, IsUnit.mul_val_inv, sub_self]
+    change q u = _ at hu'
+    have hdu : f.derivative.eval a₀ * u - 1 ∈ I.map η :=
+      Ideal.Quotient.eq.1 (show q (f.derivative.eval a₀ * u) = q 1 by
+        rw [q.map_mul, q.map_one, hu']
+        exact IsUnit.mul_val_inv hu)
     let T : Finset c.pt := insert a₀ (insert u (f.support.image f.coeff))
     obtain ⟨j, hj⟩ := st.1 T
     obtain ⟨a, ha⟩ := hj a₀ (Finset.mem_insert_self _ _)
@@ -55,7 +60,9 @@ theorem LeafColHens_of (hS : LeafStage) (hI : LeafInv) (hR : LeafRoot) : LeafCol
     obtain ⟨g, hg, -, hgm⟩ := lifts_and_natDegree_eq_and_monic ((lifts_iff_coeff_lifts f).2 hco) hf
     have h1 : g.eval a ∈ I.map (Δ.s j) := st.2 j _ (by rw [← evalMapHom, hg, ha]; exact ha₀)
     have h2 : g.derivative.eval a * v - 1 ∈ I.map (Δ.s j) := st.2 j _ (by
-      rw [map_sub, map_mul, map_one, ← evalMapHom, ← derivative_map, hg, ha, hv]; exact hdu)
+      rw [(Δ.leg c j).map_sub, (Δ.leg c j).map_mul, (Δ.leg c j).map_one,
+        ← evalMapHom, ← derivative_map, hg, ha, hv]
+      exact hdu)
     have h3 : IsUnit (Ideal.Quotient.mk (I.map (Δ.s j)) (g.derivative.eval a)) :=
       IsUnit.of_mul_eq_one (Ideal.Quotient.mk _ v)
         (by rw [← map_mul, ← map_one (Ideal.Quotient.mk (I.map (Δ.s j)))]; exact Ideal.Quotient.eq.2 h2)
