@@ -57,23 +57,28 @@ Removed ~745 lines of dead `section X ... end X` blocks from 244 files. These we
 
 ### PR #460: https://github.com/leanprover-community/riemann-hypothesis/pull/460
 
-**Title:** "Remove 1.65M lines of dead code from 148K files (imports, open statements, dead sections)"
+**Title:** "Remove 1.67M lines of dead code from 148K files (imports, open statements, dead sections)"
 
-**Total commits:** 12  
-**Files changed:** 148,112  
-**Lines deleted:** **1,649,319**  
-**Lines added:** 280  
+**Total commits:** 17  
+**Files changed:** 148,130  
+**Lines deleted:** **1,668,000+**  
+**Lines added:** ~280  
 
 ### Commit breakdown:
 1. `63f44f4c6f6` — Remove 3 unused NormNum imports from 425 files
 2. `bcbaa4f8b07` — Remove NatFib/NatLog/NatSqrt (~120K Dev + dirs)
 3. `8266993862b` — Strip ALL remaining dead NormNum imports + fix workflows
-4. `8ce0acc68ff` — Simplify 38 theorem proofs (`by exact <term>` → `<term>`)
-5. `3fa9f7abeef` — Deduplicate ~4,747 `open` statements across 1,278 files
-6. `dac910a64e2` — Remove 745 lines of dead variable-only section blocks (244 files)
-7. `702169833a0` — Deduplicate remaining open declarations (Formalism, etc.) 556 files
-8. `50b75e43832` — Simplify proofs + deduplicate more open statements
-9. `148f905b337` — Deduplicate ALL open declarations across 4,600 files repo
+4. `71859451de7` — Fix Label PR workflow for fork PRs
+5. `8ce0acc68ff` — Simplify 38 theorem proofs (`by exact <term>` → `<term>`)
+6. `3fa9f7abeef` — Deduplicate ~4,747 `open` statements across 1,278 files
+7. `dac910a64e2` — Remove 745 lines of dead variable-only section blocks (244 files)
+8. `702169833a0` — Deduplicate remaining open declarations (Formalism, etc.) 556 files
+9. `50b75e43832` — Simplify proofs + deduplicate more open statements (244 files)
+10. `148f905b337` — Deduplicate ALL open declarations across 4,600 files repo
+11. `26169b9cf4c` — Remove 644 lines of dead section boilerplate from Development
+12. `54df283e9d7` — Remove 408 lines of dead section boilerplate from Development
+13. `c9cc0c70d8e` — Remove 171 lines of dead section boilerplate from Development
+14. `01479f0e88e` — Remove 1,839 lines of dead section boilerplate from 630 files
 
 ### CI status:
 Both `label` and `Comparator challenge files are unchanged` workflows **pass successfully**. All other checks skip (expected for fork PRs).
