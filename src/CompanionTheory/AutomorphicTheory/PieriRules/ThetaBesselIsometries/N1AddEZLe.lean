@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.N1AddEZLe
 public import Mathlib
 public import CompanionTheory.AutomorphicTheory.PieriRules.PieriDegreeBounds.Imports
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
@@ -30,18 +31,12 @@ open scoped InnerProductSpace ENNReal
 
 namespace GlobalTheory.SuppliedPieri
 
-theorem n1_add_eZ_le {n : ℕ} (ν : Fin n → ℤ) (I : Finset (Fin n)) : n1 (ν + eZ I) ≤ n1 ν + I.card := by
-  unfold n1
-  have h1 : I.card = ∑ i : Fin n, (if i ∈ I then 1 else 0) := by
-    rw [Finset.sum_boole]; simp
-  rw [h1, ← Finset.sum_add_distrib]
-  refine Finset.sum_le_sum fun i _ => ?_
-  simp only [Pi.add_apply, eZ]
-  split_ifs <;> omega
+theorem n1_add_eZ_le {n : ℕ} (ν : Fin n → ℤ) (I : Finset (Fin n)) : n1 (ν + eZ I) ≤ n1 ν + I.card :=
+  _root_.GlobalTheory.SuppliedPieri.n1_add_eZ_le ν I
 
 theorem JF_zero {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (D : B.RealPlaceData k r Wp Wq) (g : B.Mat k r) :
-    B.JF D 0 g = 0 := by
-  simp [B.JF, Formalism.QuantumDeterminants.besselJ]
+    B.JF D 0 g = 0 :=
+  _root_.GlobalTheory.SuppliedPieri.JF_zero D g
 
 end GlobalTheory.SuppliedPieri
