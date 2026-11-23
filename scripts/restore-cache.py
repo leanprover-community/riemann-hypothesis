@@ -66,6 +66,11 @@ def manifest_rows(contents):
     return rows
 
 
+def reject_symlink(path):
+    if path.is_symlink():
+        raise ValueError(f"symlink in source/output path: {path}")
+
+
 def local_path(root, relative, checked):
     """Reject symlinks in source/output paths, including existing output files.
 
@@ -81,29 +86,35 @@ def local_path(root, relative, checked):
         pending.append(current)
         current = current.parent
     for current in reversed(pending):
-        if current.is_symlink():
-            raise ValueError(f"symlink in source/output path: {current}")
+        reject_symlink(current)
         checked.add(current)
     return path
 
 
 def restore_jobs(root, cache, rows):
-    jobs, checked = [], set()
+    jobs, checked, directories = [], set(), {}
     for name, dep_hash, artifact, digest in rows:
-        module = Path(*name.split("."))
-        source = local_path(root, Path("src") / module.with_suffix(".lean"), checked)
+        if not MODULE.fullmatch(name):
+            raise ValueError("unsafe module path")
+        namespace, _, stem = name.rpartition(".")
+        # Sibling modules share their validated directories. Check each leaf
+        # individually without retaining its path for the rest of the restore.
+        if namespace not in directories:
+            parent = Path(*namespace.split("."))
+            directories[namespace] = tuple(local_path(root, Path(base) / parent, checked)
+                                           for base in ("src", ".lake/build/lib/lean", ".lake/build/ir"))
+        src, lib, ir = directories[namespace]
+        source = src / (stem + ".lean")
+        reject_symlink(source)
         if not source.is_file():
             raise ValueError(f"missing source for {name}")
         archive = cache / "artifacts" / artifact
         if archive.is_symlink() or not archive.is_file() or sha256(archive) != digest:
             raise ValueError(f"missing or corrupt cached archive: {archive}; remove any corrupt copy and rerun lake cache get")
-        bases = []
-        for directory, suffixes in (("lib/lean", (".trace", ".olean", ".ilean")), ("ir", (".c",))):
-            relative = Path(".lake/build") / directory / module
-            for suffix in suffixes:
-                local_path(root, relative.with_suffix(suffix), checked)
-            bases.append(str(root / relative.parent))
-        jobs.append({"file": str(archive), "hash": dep_hash, "base": bases})
+        for suffix in (".trace", ".olean", ".ilean"):
+            reject_symlink(lib / (stem + suffix))
+        reject_symlink(ir / (stem + ".c"))
+        jobs.append({"file": str(archive), "hash": dep_hash, "base": [str(lib), str(ir)]})
     return jobs
 
 

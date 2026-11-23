@@ -93,6 +93,34 @@ class RestorePathTests(unittest.TestCase):
     def setUp(self):
         self.helper = load("restore_fixture", SCRIPTS / "restore-cache.py")
 
+    def test_restore_jobs_check_sibling_leaves_in_shared_directories(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            cache = root / "cache"
+            archive = cache / "artifacts" / ("0" * 16 + ".ltar")
+            archive.parent.mkdir(parents=True)
+            archive.write_bytes(b"archive")
+            rows = []
+            for name in ("Grouped.First", "Main", "Grouped.Θ'"):
+                source = root / "src" / Path(*name.split(".")).with_suffix(".lean")
+                source.parent.mkdir(parents=True, exist_ok=True)
+                source.touch()
+                rows.append((name, "1" * 16, archive.name, self.helper.sha256(archive)))
+            lib, ir = root / ".lake/build/lib/lean", root / ".lake/build/ir"
+            jobs = self.helper.restore_jobs(root, cache, rows)
+            self.assertEqual([job["base"] for job in jobs],
+                             [[str(lib / group), str(ir / group)] for group in ("Grouped", "", "Grouped")])
+            for base, suffix in ((lib, ".trace"), (lib, ".olean"), (lib, ".ilean"),
+                                 (ir, ".c"), (root / "src", ".lean")):
+                with self.subTest(suffix=suffix):
+                    leaf = base / "Grouped" / ("Θ'" + suffix)
+                    leaf.parent.mkdir(parents=True, exist_ok=True)
+                    leaf.unlink(missing_ok=True)
+                    leaf.symlink_to(root / "absent")
+                    with self.assertRaisesRegex(ValueError, "symlink"):
+                        self.helper.restore_jobs(root, cache, rows)
+                    leaf.unlink()
+
     def test_valid_paths_preserve_results_and_ancestor_closed_memo(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
