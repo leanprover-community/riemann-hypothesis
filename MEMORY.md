@@ -59,14 +59,19 @@ Removed ~745 lines of dead `section X ... end X` blocks from 244 files. These we
 
 **Title:** "Remove 1.67M lines of dead code from 148K files (imports, open statements, dead sections)"
 
-**Total commits:** 22  
-**Files changed:** 148,137  
-**Lines deleted:** **1,654,367**  
-**Lines added:** 292  
+**Total commits:** 34  
+**Files changed:** 148,160+  
+**Lines deleted:** **1,659,000+**  
+**Lines added:** ~2,600  
 
 ### Commit breakdown:
-| # | Description | Files | Lines Deleted |
-|---|-------------|-------|---------------|
+| # | Category | Key Changes |
+|---|----------|-------------|
+| 1-3 | Dead imports | Removed ALL unused NormNum imports (NatFib, NatLog, NatSqrt, etc.) from 148K files |
+| 4-5 | CI fixes | Fixed label-pr.yml and challenge-files.yml for fork PRs |
+| 6-8 | Proof simplifications | `by exact <term>` → `<term>`, `rw [h]; simp` → `simp [h]`, `exact_mod_cast (by omega)` → `exact_mod_cast (omega)` |
+| 9-12 | Open dedup | Removed ~22K duplicate `open` statements across all directories |
+| 13+ | Dead sections | Removed variable-only section blocks from ~1,500+ files |
 | 1 | Remove 3 unused NormNum imports (NatFib/NatLog/NatSqrt) from 425 files | 425 | ~500 |
 | 2 | Remove NatFib/NatLog/NatSqrt (~120K Dev + other dirs) | ~120K | ~900K |
 | 3 | Strip ALL remaining dead NormNum imports + fix CI workflows | 148K+ | ~180K |
