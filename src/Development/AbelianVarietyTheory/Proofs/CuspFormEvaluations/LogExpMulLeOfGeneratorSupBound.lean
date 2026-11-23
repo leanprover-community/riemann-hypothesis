@@ -118,11 +118,11 @@ theorem log_exp_mul_le_of_generator_sup_bound : ∀ (f r n d : ℕ) (L ℓ a rd 
     rw [hX, Real.log_div (by positivity) (by positivity), Real.log_mul (by positivity) (by positivity),
       Real.log_mul (by norm_num) (by positivity), e1, e2, e3, e5]
     rw [e4] at hlamL
-    nlinarith
+    linarith only [hfL, hn, hrdL, hlamL, hlr, hlogpi]
   have hC : Real.log (1 + X) ≤ 55 * L := by
     have := log_one_add_le_log_two_add_of_log_le X (3.5 * Real.log 2 + 49 * L) hX0
-      (by nlinarith) hlogX
-    nlinarith
+      (by linarith only [hlog2', hL]) hlogX
+    linarith only [this, hlog2, hL]
   have hRHS0 : 0 ≤ ℓ + 10 * L * a + 200 * f * r * n * L := by
     nlinarith [mul_nonneg (by linarith : (0:ℝ) ≤ L) ha0,
       mul_nonneg (by linarith : (0:ℝ) ≤ (f:ℝ) * r * n) (by linarith : (0:ℝ) ≤ L)]
@@ -184,6 +184,6 @@ theorem log_exp_mul_le_of_generator_sup_bound : ∀ (f r n d : ℕ) (L ℓ a rd 
   have hKL : 2 ≤ ((f:ℝ) * r * n) * L := by nlinarith
   rw [Real.log_mul (Real.exp_pos _).ne' hSpos.ne', Real.log_exp]
   rw [hprod] at hlv
-  nlinarith
+  linarith only [hlS, hlv, hlc, hlp, hEb, hKC, hKL, hlog2]
 
 end GlobalTheory
