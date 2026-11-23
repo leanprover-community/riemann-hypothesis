@@ -99,8 +99,8 @@ section Real
 theorem realA (L w' Bq hh lg wS : ℝ) (hL : 11 ≤ L) (hw' : 0 ≤ w') (hBq : 0 ≤ Bq) (hhh : 0 ≤ hh)
     (hlg : 0 ≤ lg) (hwS : w' / L ≤ wS) :
     (L / (L - 1)) * max 0 (w' - Bq + hh + 2 + lg) ≤ max 0 (w' - Bq + 16 / 5 * (hh + wS + lg + 1)) := by
-  have hL0 : (0 : ℝ) < L := by linarith
-  have hL1 : (0 : ℝ) < L - 1 := by linarith
+  have hL0 : (0 : ℝ) < L := lt_of_lt_of_le (by norm_num) hL
+  have hL1 : (0 : ℝ) < L - 1 := sub_pos.mpr (lt_of_lt_of_le (by norm_num) hL)
   have hw : w' ≤ wS * L := by rwa [div_le_iff₀ hL0] at hwS
   have hS : 0 ≤ wS := le_trans (div_nonneg hw' hL0.le) hwS
   rcases le_total (w' - Bq + hh + 2 + lg) 0 with hx | hx
@@ -109,8 +109,10 @@ theorem realA (L w' Bq hh lg wS : ℝ) (hL : 11 ≤ L) (hw' : 0 ≤ w') (hBq : 0
   · rw [max_eq_right hx]
     apply le_max_of_le_right
     rw [div_mul_eq_mul_div, div_le_iff₀ hL1]
-    nlinarith [mul_nonneg (show (0 : ℝ) ≤ L - 11 by linarith) hS, mul_nonneg (show (0 : ℝ) ≤ L - 11 by linarith) hhh,
-      mul_nonneg (show (0 : ℝ) ≤ L - 11 by linarith) hlg, mul_nonneg (show (0 : ℝ) ≤ L - 11 by linarith) hBq]
+    have hcoeff : 0 ≤ 16 / 5 * (L - 1) - L := by linarith only [hL]
+    have hconst : 0 ≤ 16 / 5 * (L - 1) - 2 * L := by linarith only [hL]
+    have hprod := mul_nonneg hcoeff (add_nonneg (add_nonneg hhh hlg) hS)
+    linear_combination hw + hBq + hprod + hconst
 
 
 
@@ -124,9 +126,9 @@ theorem exists_s1_bound_choice (l b w S η b₀ b₁ w' : ℕ) (hl : 11 ≤ l) (
       ¬ ((s₁ : ℝ) ≤ max 0 ((w' : ℝ) - ((b₁ + S - ((b₀ + l - 1) / l + s₁ - 1) : ℕ) : ℝ) / l + 2 +
         Real.logb l w')) := by
   have hL : (11 : ℝ) ≤ l := by exact_mod_cast hl
-  have hL0 : (0 : ℝ) < l := by linarith
-  have hL1 : (0 : ℝ) < (l : ℝ) - 1 := by linarith
-  have hl1 : (1 : ℝ) < l := by linarith
+  have hL0 : (0 : ℝ) < l := lt_of_lt_of_le (by norm_num) hL
+  have hl1 : (1 : ℝ) < l := lt_of_lt_of_le (by norm_num) hL
+  have hL1 : (0 : ℝ) < (l : ℝ) - 1 := sub_pos.mpr hl1
   have hw'1r : (1 : ℝ) ≤ w' := by exact_mod_cast hw'1
   have hw'wr : (w' : ℝ) ≤ w := by exact_mod_cast hw'w
   have h20wr : 20 * (w : ℝ) ≤ b := by exact_mod_cast h20w
@@ -135,8 +137,8 @@ theorem exists_s1_bound_choice (l b w S η b₀ b₁ w' : ℕ) (hl : 11 ≤ l) (
   have hb₀r : (b₀ : ℝ) ≤ b + η := by exact_mod_cast hb₀
   have hS0 : (0 : ℝ) ≤ S := Nat.cast_nonneg S
   have hη0 : (0 : ℝ) ≤ η := Nat.cast_nonneg η
-  have hb20 : (20 : ℝ) ≤ b := by linarith
-  have hN : ((b + η + S : ℕ) : ℝ) = b + η + S := by push_cast; ring
+  have hb20 : (20 : ℝ) ≤ b := by linarith only [hw'1r, hw'wr, h20wr]
+  have hN : ((b + η + S : ℕ) : ℝ) = b + η + S := by simp only [Nat.cast_add]
   obtain ⟨c, hc⟩ : ∃ c, c = (b₀ + l - 1) / l := ⟨_, rfl⟩
   rw [← hc]
   have hcl' : c * l + 1 ≤ b₀ + l := by
@@ -153,21 +155,21 @@ theorem exists_s1_bound_choice (l b w S η b₀ b₁ w' : ℕ) (hl : 11 ≤ l) (
     have h27 : Real.log ((3 : ℝ) ^ 3) ≤ Real.log 40 := Real.log_le_log (by norm_num) (by norm_num)
     rw [Real.log_pow] at h27
     push_cast at h27
-    linarith
+    linarith only [h3, h27]
   have hlogl : 0 < Real.log l := Real.log_pos hl1
-  have hloglt : Real.log l < l := by
-    have := Real.log_le_sub_one_of_pos hL0
-    linarith
+  have hloglt : Real.log l < l :=
+    (Real.log_le_sub_one_of_pos hL0).trans_lt (sub_lt_self _ zero_lt_one)
   have hslack : lg + 1 / l ≤ Real.logb l (2 * ((b + η + S : ℕ) : ℝ)) := by
     rw [hN, hlg]
-    have h40 : 40 * (w' : ℝ) ≤ 2 * ((b : ℝ) + η + S) := by linarith
+    have h40 : 40 * (w' : ℝ) ≤ 2 * ((b : ℝ) + η + S) := by
+      linarith only [hw'wr, h20wr, hη0, hS0]
     have hmono : Real.logb l (40 * w') ≤ Real.logb l (2 * ((b : ℝ) + η + S)) :=
       Real.logb_le_logb_of_le hl1 (by positivity) h40
     rw [Real.logb_mul (by norm_num) (by positivity)] at hmono
     have h1 : 1 / (l : ℝ) ≤ Real.logb l 40 := by
-      rw [Real.logb, div_le_div_iff₀ hL0 hlogl]
-      nlinarith [mul_pos (sub_pos.mpr hlog40) hL0]
-    linarith
+      rw [Real.logb, div_le_div_iff₀ hL0 hlogl, one_mul]
+      exact hloglt.le.trans (le_mul_of_one_le_left hL0.le hlog40.le)
+    linarith only [hmono, h1]
   obtain ⟨Q, hQ⟩ : ∃ Q, Q = (w' : ℝ) - ((b₁ : ℝ) + S - c + 1) / l + 2 + lg := ⟨_, rfl⟩
   obtain ⟨s₁, hs₁⟩ : ∃ s, s = ⌊max 0 (Q * l / (l - 1))⌋₊ + 1 := ⟨_, rfl⟩
   have hs1 : 1 ≤ s₁ := by rw [hs₁]; exact Nat.le_add_left 1 _
@@ -179,47 +181,53 @@ theorem exists_s1_bound_choice (l b w S η b₀ b₁ w' : ℕ) (hl : 11 ≤ l) (
   have hsle : (s₁ : ℝ) ≤ max 0 (Q * l / (l - 1)) + 1 := by
     rw [hs₁]
     push_cast
-    linarith [Nat.floor_le (le_max_left 0 (Q * l / (l - 1)))]
+    exact add_le_add (Nat.floor_le (le_max_left 0 (Q * l / (l - 1)))) le_rfl
   have hA := realA (l : ℝ) w' (((b₁ : ℝ) + S) / l) ((c : ℝ) / l) lg (((w : ℝ) + S + η) / l) hL
-    (by linarith) (by positivity) (by positivity) hlg0
-    (div_le_div_of_nonneg_right (by linarith) hL0.le)
+    (zero_le_one.trans hw'1r) (by positivity) (by positivity) hlg0
+    (div_le_div_of_nonneg_right (by linarith only [hw'wr, hS0, hη0]) hL0.le)
   have hQle : Q ≤ (w' : ℝ) - ((b₁ : ℝ) + S) / l + (c : ℝ) / l + 2 + lg := by
-    have e : ((b₁ : ℝ) + S - c + 1) / l = ((b₁ : ℝ) + S) / l - c / l + 1 / l := by ring
-    have : 0 < 1 / (l : ℝ) := by positivity
+    have e : ((b₁ : ℝ) + S - c + 1) / l = ((b₁ : ℝ) + S) / l - c / l + 1 / l := by
+      rw [add_div, sub_div]
     rw [hQ, e]
-    linarith
+    linarith only [one_div_pos.mpr hL0]
   have hfrac : 0 < (l : ℝ) / (l - 1) := div_pos hL0 hL1
   have hX : max 0 (Q * l / (l - 1)) ≤
       ((l : ℝ) / (l - 1)) * max 0 ((w' : ℝ) - ((b₁ : ℝ) + S) / l + (c : ℝ) / l + 2 + lg) := by
     apply max_le (mul_nonneg hfrac.le (le_max_left _ _))
-    have e : Q * l / (l - 1) = ((l : ℝ) / (l - 1)) * Q := by ring
+    have e : Q * l / (l - 1) = ((l : ℝ) / (l - 1)) * Q := by
+      rw [div_mul_eq_mul_div, mul_comm Q]
     rw [e]
     exact mul_le_mul_of_nonneg_left (le_trans hQle (le_max_right _ _)) hfrac.le
-  have hc1 : (c : ℝ) * l ≤ ((b : ℝ) + η + S) + l := by linarith
+  have hc1 : (c : ℝ) * l ≤ ((b : ℝ) + η + S) + l := by linarith only [hclr, hb₀r, hS0]
   have hcL : (c : ℝ) / l ≤ ((b + η + S : ℕ) : ℝ) / (l : ℝ) ^ 2 + 1 / l := by
-    rw [hN, div_add_div _ _ (by positivity) (by positivity), div_le_div_iff₀ hL0 (by positivity)]
-    nlinarith [mul_le_mul_of_nonneg_left hc1 (sq_nonneg (l : ℝ))]
+    have hscale (r : ℝ) : r / l = (r * l) / (l : ℝ) ^ 2 := by
+      rw [pow_two, mul_div_mul_right _ _ hL0.ne']
+    rw [hscale (c : ℝ), hscale 1, one_mul, hN, ← add_div]
+    exact div_le_div_of_nonneg_right hc1 (sq_nonneg (l : ℝ))
   have hR : (w' : ℝ) - ((b₁ : ℝ) + S) / l + 16 / 5 * ((c : ℝ) / l + ((w : ℝ) + S + η) / l + lg + 1) ≤
       (w' : ℝ) - ((b₁ : ℝ) + S) / l + 16 / 5 * Sg := by
     rw [hSg]
-    linarith
+    linarith only [hcL, hslack]
   have hupper : (s₁ : ℝ) ≤ max 1 ((w' : ℝ) - ((b₁ : ℝ) + S) / l + 16 / 5 * Sg) + 1 := by
     have h2 := max_le_max (show (0 : ℝ) ≤ 1 by norm_num) hR
-    linarith [le_trans hX hA]
-  have hSgb : Sg ≤ (b : ℝ) / 160 := by linarith
+    exact hsle.trans (add_le_add ((hX.trans hA).trans h2) le_rfl)
+  have hSgb : Sg ≤ (b : ℝ) / 160 := by linarith only [hsm]
   have hBq : 0 ≤ ((b₁ : ℝ) + S) / l := by positivity
   have hupper' : (s₁ : ℝ) ≤ 2 + (b : ℝ) / 20 + (b : ℝ) / 50 := by
     have : max 1 ((w' : ℝ) - ((b₁ : ℝ) + S) / l + 16 / 5 * Sg) ≤ 1 + (b : ℝ) / 20 + (b : ℝ) / 50 :=
-      max_le (by linarith) (by linarith)
-    linarith
+      max_le (by linarith only [Nat.cast_nonneg (α := ℝ) b])
+        (by linarith only [hw'wr, h20wr, hSgb, hBq])
+    linarith only [hupper, this]
   have hcb : (c : ℝ) ≤ ((b : ℝ) + η) / 11 + 1 := by
-    have h' : ((c : ℝ) - 1) * l ≤ (b : ℝ) + η := by linarith
+    have h' : ((c : ℝ) - 1) * l ≤ (b : ℝ) + η := by linarith only [hclr, hb₀r]
     rcases le_or_gt (c : ℝ) 1 with h | h
     · have : 0 ≤ ((b : ℝ) + η) / 11 := by positivity
-      linarith
-    · have : ((c : ℝ) - 1) * 11 ≤ ((c : ℝ) - 1) * l := mul_le_mul_of_nonneg_left hL (by linarith)
-      linarith
-  have hsum : (c : ℝ) + s₁ ≤ b₁ + S := by linarith
+      linarith only [h, this]
+    · have : ((c : ℝ) - 1) * 11 ≤ ((c : ℝ) - 1) * l :=
+        mul_le_mul_of_nonneg_left hL (sub_nonneg.mpr h.le)
+      linarith only [h', this]
+  have hsum : (c : ℝ) + s₁ ≤ b₁ + S := by
+    linarith only [hcb, hupper', h20ηr, hb20, hbb₁r, hS0]
   have hnat : c + s₁ ≤ b₁ + S := by exact_mod_cast hsum
   refine ⟨s₁, hs1, hupper, hnat, ?_⟩
   intro hle
@@ -230,18 +238,18 @@ theorem exists_s1_bound_choice (l b w S η b₀ b₁ w' : ℕ) (hl : 11 ≤ l) (
   rw [hcast] at hle
   have hpos : (0 : ℝ) < s₁ := by exact_mod_cast hs1
   rcases le_max_iff.mp hle with h | h
-  · linarith
+  · exact (not_le_of_gt hpos) h
   · have e : (w' : ℝ) - ((b₁ : ℝ) + S - c - s₁ + 1) / l + 2 + lg = Q + s₁ / l := by
       rw [hQ]
       ring
     rw [e] at h
     have h' := mul_le_mul_of_nonneg_right h hL0.le
-    have e2 : (s₁ : ℝ) / l * l = s₁ := by field_simp
+    have e2 : (s₁ : ℝ) / l * l = s₁ := div_mul_cancel₀ _ hL0.ne'
     rw [add_mul, e2] at h'
     have h3 : (s₁ : ℝ) ≤ Q * l / (l - 1) := by
       rw [le_div_iff₀ hL1]
-      linarith
-    linarith
+      linarith only [h']
+    exact (not_le_of_gt hsgt) h3
 
 end Real
 
