@@ -77,7 +77,7 @@ class PreparationTests(unittest.TestCase):
                 cache.mkdir()
                 with patch.object(prep, "get", side_effect=get), patch.object(prep, "downloads"), \
                         redirect_stdout(io.StringIO()):
-                    selected = prep.restore_previous_cache(root, request, cache)
+                    selected = prep.restore_previous_cache(root, request, cache, root / "selected.jsonl")
                 self.assertEqual(selected.read_bytes(), expected)
                 self.assertNotIn(prep.BASE + "/" + record["map_key"], calls)
                 self.assertNotIn(prep.BASE + "/" + record["module_manifest_key"], calls)
@@ -146,9 +146,49 @@ class PreparationTests(unittest.TestCase):
                 cache.mkdir()
                 with patch.object(prep, "get", side_effect=lambda url, **kwargs: responses.get(url)), \
                         patch.object(prep, "downloads") as downloads, redirect_stdout(io.StringIO()):
-                    selected = prep.restore_previous_cache(root, request, cache)
+                    selected = prep.restore_previous_cache(root, request, cache, root / "selected.jsonl")
                 self.assertEqual(selected.read_bytes(), expected)
                 self.assertEqual(downloads.call_args.args[1], prep.mapping(expected))
+
+    def test_prepared_jobs_keep_their_own_selected_map(self):
+        with self.cache_history() as (root, first_request, commits):
+            responses, first_map = self.published_cache(commits["head"], "Branch", "1")
+            main_responses, second_map = self.published_cache(commits["main"], "Main", "2")
+            responses.update(main_responses)
+            main_record = json.loads(responses[f"{prep.BASE}/ci/revisions/{commits['main']}.json"])
+            manifest = responses[f"{prep.BASE}/{main_record['module_manifest_key']}"]
+            responses[f"{prep.BASE}/revisions/{prep.REPO}/tc/{prep.settings.TOOLCHAIN_DIR}/{prep.REVISION}.jsonl"] = second_map
+            responses[f"{prep.BASE}/bootstrap/{prep.REVISION}/modules.jsonl.gz"] = manifest
+
+            real_run = subprocess.run
+
+            def run(command, **kwargs):
+                if command[0] in ("elan", "lake"):
+                    return subprocess.CompletedProcess(command, 0)
+                return real_run(command, **kwargs)
+
+            def prepare_job(name, request):
+                request_file, output = root / f"{name}-request.json", root / f"{name}-paths.json"
+                request_file.write_text(json.dumps(request))
+                args = SimpleNamespace(trusted=Path(prep.__file__).resolve().parents[1],
+                                       state=root / "shared", candidate=root,
+                                       request=request_file, output=output)
+                with patch.object(prep.settings, "require_baseline"), \
+                        patch.object(prep, "MAP_SHA", prep.digest(second_map)), \
+                        patch.object(prep, "MANIFEST_SHA", prep.digest(manifest)), \
+                        patch.object(prep, "get", side_effect=lambda url, **kwargs: responses.get(url)), \
+                        patch.object(prep, "downloads"), patch.object(prep.subprocess, "run", side_effect=run), \
+                        patch.object(prep.resource, "setrlimit"), redirect_stdout(io.StringIO()):
+                    prep.prepare(args)
+                return Path(json.loads(output.read_text())["latest_map"])
+
+            first = prepare_job("first", first_request)
+            self.assertEqual(first.read_bytes(), first_map)
+            main = commits["main"]
+            subprocess.run(["git", "-C", str(root), "checkout", "-q", "--detach", main], check=True)
+            second = prepare_job("second", {"pr_head": main, "expected": {"candidate_head": main}})
+            self.assertEqual(second.read_bytes(), second_map)
+            self.assertEqual(first.read_bytes(), first_map)
 
     def test_invalid_preferred_partial_fails_closed_before_download_or_fallback(self):
         with self.cache_history() as (root, request, commits):
@@ -161,7 +201,7 @@ class PreparationTests(unittest.TestCase):
             with patch.object(prep, "get", side_effect=lambda url, **kwargs: responses.get(url)), \
                     patch.object(prep, "downloads") as downloads:
                 with self.assertRaisesRegex(ValueError, "integrity mismatch"):
-                    prep.restore_previous_cache(root, request, root / "cache")
+                    prep.restore_previous_cache(root, request, root / "cache", root / "selected.jsonl")
                 downloads.assert_not_called()
 
     def test_direct_commit_operator_request_keeps_ancestry_discovery_and_checks_checkout(self):
@@ -176,7 +216,7 @@ class PreparationTests(unittest.TestCase):
             cache.mkdir()
             with patch.object(prep, "get", side_effect=lambda url, **kwargs: responses.get(url)), \
                     patch.object(prep, "downloads"), redirect_stdout(io.StringIO()):
-                selected = prep.restore_previous_cache(root, request, cache)
+                selected = prep.restore_previous_cache(root, request, cache, root / "selected.jsonl")
             self.assertEqual(selected.read_bytes(), expected)
 
     def test_identity_uses_git_blobs_and_ignores_documentation_tree(self):

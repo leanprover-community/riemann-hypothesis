@@ -234,7 +234,7 @@ def previous_cache_revisions(candidate, request):
     return list(dict.fromkeys([head, *branch, *fallback]))
 
 
-def restore_previous_cache(candidate, request, cache):
+def restore_previous_cache(candidate, request, cache, selected):
     for revision in previous_cache_revisions(candidate, request):
         record_data = get(f"{BASE}/ci/revisions/{revision}.json", missing=True, maximum=2_000_000)
         if record_data is None:
@@ -251,7 +251,6 @@ def restore_previous_cache(candidate, request, cache):
         latest = mapping(data)
         extra_hashes = manifest_hashes(module_data, latest, data, record)
         downloads(cache, latest, extra_hashes)
-        selected = cache / "latest.jsonl"
         selected.write_bytes(data)
         print(f"Reusing previous CI cache {revision}", flush=True)
         return selected
@@ -266,6 +265,7 @@ def preparation_state(directory):
 
 def prepare(args):
     trusted = Path(args.trusted).resolve()
+    output = Path(args.output).absolute()
     settings.require_baseline()
     state = preparation_state(args.state)
     state.mkdir(parents=True, exist_ok=True)
@@ -306,11 +306,15 @@ def prepare(args):
             entries = select_module_entries(manifest, entries, names)
         downloads(cache, entries, hashes)
         request = json.loads(Path(args.request).read_text())
-        selected = None if quick_plan else restore_previous_cache(args.candidate, request, cache)
+        selected = None
+        if not quick_plan:
+            # A later preparation may share the archives but choose a different map.
+            local_map = output.with_name(output.name + ".cache-map.jsonl")
+            selected = restore_previous_cache(args.candidate, request, cache, local_map)
         paths = {"packages": str(deps / ".lake/packages"), "baseline_cache": str(cache),
                  "baseline_manifest": str(cache / "modules.jsonl.gz"), "baseline_map": str(cache / "outputs.jsonl"),
                  "latest_map": str(selected) if selected else ""}
-        Path(args.output).write_text(json.dumps(paths, indent=2) + "\n")
+        output.write_text(json.dumps(paths, indent=2) + "\n")
 
 
 def expected(args):
