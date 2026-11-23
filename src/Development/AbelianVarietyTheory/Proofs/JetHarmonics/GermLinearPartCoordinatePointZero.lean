@@ -152,31 +152,23 @@ theorem additive_eq_lin (F : Fin d → PS k 2 d) (hF : ∀ i, constantCoeff (F i
 
 end Log
 
-section Predicates
 
 variable {C : Type} [NormedField C] [IsUltrametricDist C] {d : ℕ}
 
-end Predicates
 
-section Predicates2
 
 variable {R : Type} [CommRing R] {d : ℕ} (k : Type) [CommRing k] [Algebra ℚ k] [Algebra R k]
   {O : Type} [CommRing O] [StarRing O]
 
-end Predicates2
 
-section Letters
 
 variable {C : Type} [NormedField C] [IsUltrametricDist C] [CharZero C]
   {E : Type} [Field E] [NumberField E] [IsCMField E] [StarRing (𝓞 E)] {d : ℕ}
 
-end Letters
 
-section Frame
 
 variable {C : Type} [NormedField C] [IsUltrametricDist C] [CharZero C]
   {E : Type} [Field E] [NumberField E] [IsCMField E] [StarRing (𝓞 E)] {d : ℕ}
 
-end Frame
 
 end GlobalTheory.GermDerivativeLinearMaps

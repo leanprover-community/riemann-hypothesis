@@ -150,12 +150,10 @@ theorem bound_all_iff_bound_prod (C : IntegralChartA3 Xo c T io y) (e k : ℕ) {
 
 end Values
 
-section Lifts
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable {Xo : Moduli Dw l} {c : Coeff l} [StarRing (𝓞 E)]
 variable {T : CDVR} {io : c.F →+* T.Fr} {y : IntFr Xo c T io}
 
-end Lifts
 
 end GlobalTheory.RamChartCmp

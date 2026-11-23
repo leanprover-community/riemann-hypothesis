@@ -341,7 +341,6 @@ theorem dividedContraction_succ_X_inl_mul (γ : ι → κ → R) (n : ℕ) (i : 
 
 end Contraction
 
-section Integrality
 
 variable {R : Type*} [CommSemiring R] {ι κ : Type*}
 
@@ -349,17 +348,13 @@ variable [Fintype ι] [Fintype κ]
 
 variable {A : Type*} [CommSemiring A] [Algebra A R]
 
-end Integrality
 
-section Fractional
 
 open scoped nonZeroDivisors
 
 variable {A K : Type*} [CommRing A] [CommRing K] [Algebra A K] {ι κ : Type*} [Fintype ι] [Fintype κ]
 
-end Fractional
 
-section Formula
 
 variable {k A M : Type*} [CommRing k] [Ring A] [Algebra k A] [AddCommGroup M] [Module A M]
   {ι κ : Type*}
@@ -368,6 +363,5 @@ variable [Fintype κ]
 
 variable [Fintype ι] {a b : ι → A} {a' b' : κ → A} {γ : ι → κ → k} {v : M}
 
-end Formula
 
 end GlobalTheory.Wick

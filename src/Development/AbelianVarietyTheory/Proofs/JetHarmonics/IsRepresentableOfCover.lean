@@ -45,11 +45,9 @@ open ReciprocityTheory.ChartRestriction.G.Semi
 
 variable {X Y Z : Scheme.{0}}
 
-section Cover
 
 variable {J : Type*} {T : J → Scheme.{0}} (a : ∀ i, T i ⟶ X) [∀ i, IsOpenImmersion (a i)]
 
-end Cover
 
 theorem isRepresentable_of_cover (F : Scheme.{0}ᵒᵖ ⥤ Type)
     (hF : Presieve.IsSheaf Scheme.zariskiTopology F) (p : F ⟶ yoneda.obj X)

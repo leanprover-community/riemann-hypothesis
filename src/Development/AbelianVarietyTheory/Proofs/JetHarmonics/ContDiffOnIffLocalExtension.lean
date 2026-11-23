@@ -58,11 +58,9 @@ variable {n : ℕ}
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-section Calculus
 
 variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] {s : Set X}
 
-end Calculus
 
 def cay (X : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ := (1 - X) * (1 + X)⁻¹
 

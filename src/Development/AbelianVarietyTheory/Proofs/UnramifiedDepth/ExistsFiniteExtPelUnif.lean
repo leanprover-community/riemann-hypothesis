@@ -99,10 +99,8 @@ open ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRes
 
 open Formalism.IncomingBounds Formalism.L2.FormalSeriesBounds GlobalTheory.RowLaw
 
-section Map
 
 variable {O C : Type} [CommRing O] [CommRing C] (φ : O →+* C) {dd : ℕ}
 
-end Map
 
 end GlobalTheory.ChartCharacters

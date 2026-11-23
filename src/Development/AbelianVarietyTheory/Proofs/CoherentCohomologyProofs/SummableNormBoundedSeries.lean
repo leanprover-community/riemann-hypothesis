@@ -80,7 +80,6 @@ theorem tsum_coeff_C (c t : K) : ∑' n, coeff n (C c : K⟦X⟧) * t ^ n = c :=
 
 end General
 
-section Integral
 
 variable {O : Type*} [Semiring O] {K : Type*} [NormedField K] [CompleteSpace K]
 
@@ -105,7 +104,6 @@ noncomputable def evalDisc (i : O →+* K) (hi : ∀ a, ‖i a‖ ≤ 1) (t : K)
 
 variable (i : O →+* K) (hi : ∀ a, ‖i a‖ ≤ 1) (t : K) (ht : ‖t‖ < 1)
 
-end Integral
 
 section Bounded
 

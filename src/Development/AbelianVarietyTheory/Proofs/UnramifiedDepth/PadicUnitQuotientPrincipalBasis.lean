@@ -50,7 +50,6 @@ noncomputable section
 
 namespace GlobalTheory.PlaceMono
 
-section SlopeTestRemainingChoices
 
 open scoped TensorProduct
 open GlobalTheory.IndefiniteRowSideFullHecke.SplitUnramifiedPlaces
@@ -213,7 +212,6 @@ private theorem exists_basis [IsDedekindDomain R] [CharZero R] [Module.Free ℤ 
     cutEquiv_symm]
   rfl
 
-end SlopeTestRemainingChoices
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry TensorProduct Matrix
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs

@@ -95,11 +95,9 @@ theorem alternating_smul_add_mem (ω : M [⋀^ι]→ₗ[R] N) (P : Submodule R N
 
 end Alternating
 
-section TwoInIdeal
 
 variable (R : Type*) {A : Type*} [CommRing R] [CommRing A] [Algebra R A] {p : ℕ}
 
-end TwoInIdeal
 
 section RegForms
 
@@ -443,12 +441,10 @@ section Main
 
 end Main
 
-section Example
 
 open Polynomial
 
 variable (K : Type*) [Field K]
 
-end Example
 
 end GlobalTheory

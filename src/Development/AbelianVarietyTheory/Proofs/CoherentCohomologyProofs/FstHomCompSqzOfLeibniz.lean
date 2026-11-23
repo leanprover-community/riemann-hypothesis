@@ -40,11 +40,9 @@ namespace GlobalTheory.SquareZeroLeibnizPoint
 
 open TrivSqZeroExt
 
-section PointsOfDual
 
 variable {O C : Type*} [CommRing O] [CommRing C] {ι : Type*} [Fintype ι]
 
-end PointsOfDual
 
 section Leibniz
 

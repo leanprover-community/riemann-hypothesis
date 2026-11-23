@@ -49,7 +49,6 @@ noncomputable section
 
 namespace GlobalTheory.BiextOfCube
 
-section SlopeTestRemainingChoices
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -304,7 +303,6 @@ private theorem bx_exist (hG : Out.GlobalFnsSt) (hA : IsAbelianScheme A) {P : LB
         (bx_val l₁ e₄ (c₄ _) (c₄ _) (c₄ _) hJ))).symm)
       rw [v y J hJ]
 
-end SlopeTestRemainingChoices
 
 end GlobalTheory.BiextOfCube
 

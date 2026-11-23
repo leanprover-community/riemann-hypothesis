@@ -48,7 +48,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 
-section Transfer
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G
 
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {P : LB (G ⊗ G).left} (β : IsBiext G P)
@@ -159,7 +158,6 @@ private theorem pfTie_local (R : Type) [CommRing R] [IsLocalRing R] (a : Γ(Spec
       (e.trans (map_one _)))
   exact (Scheme.ΓSpecIso (CommRingCat.of R)).commRingCatIsoToRingEquiv.injective (e'.trans (map_one _).symm)
 
-end Transfer
 
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor in

@@ -65,7 +65,6 @@ theorem muS_ne_zero {k r : ℕ} {μW μN : Measure (Mt k r)} [SFinite μN] (hW :
     Measure.prod_prod]
   exact mul_ne_zero hW hN
 
-section Side
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {Vp : Type} [NormedAddCommGroup Vp] [InnerProductSpace ℂ Vp]
@@ -73,12 +72,9 @@ variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   (σ : Mat k r → (H →L[ℂ] H)) (w₀ : H) (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) (u : Fin k → ℝ)
   (π : Mat k r → (Vp →L[ℂ] Vp)) (μW μN μG ν : Measure (Mt k r))
 
-end Side
 
-section Decay
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
-end Decay
 
 end GlobalTheory.SideCompare

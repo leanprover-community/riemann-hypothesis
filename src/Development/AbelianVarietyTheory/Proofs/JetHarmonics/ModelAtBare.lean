@@ -38,13 +38,11 @@ open IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 
-section General
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 
 variable (Xo : Moduli Dw l) (c : Coeff l)
 
-end General
 
 section Instance
 
@@ -60,10 +58,8 @@ theorem one_le_rank (h : LawsP T) {j : ℕ} (hj : InR D j) : 1 ≤ (T.Q.Dw j).p 
 
 end Instance
 
-section Full
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 
-end Full
 
 end GlobalTheory.Proof.ModelAtPrimeToLevel

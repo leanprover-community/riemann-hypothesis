@@ -41,14 +41,12 @@ open ReciprocityTheory.PGsh MvPolynomial
 
 namespace GlobalTheory.DetPowPairing
 
-section General
 
 variable {C : Type} [CommRing C] {κ : Type}
 
 noncomputable def pairing (F : MvPolynomial κ C) : MvPolynomial κ C →ₗ[C] C :=
   ∑ A ∈ F.support, (AddMonoidAlgebra.coeff F A * (A.prod fun _ e => (e.factorial : C))) • lcoeff C A
 
-end General
 
 variable {C : Type} [CommRing C] {n : ℕ}
 

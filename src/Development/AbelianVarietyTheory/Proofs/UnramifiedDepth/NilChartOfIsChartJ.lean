@@ -44,7 +44,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.ChF
 
-section Jets
 open ReciprocityTheory.ChartRestriction.G.Chart GlobalTheory.ChartBaseChange GlobalTheory.ChartUniv
 
 variable {R : Type} [CommRing R] {G : Over (Spec (CommRingCat.of R))} {κ : Type}
@@ -124,7 +123,6 @@ private theorem jetPt_inj (ψ ψ' : JetR R κ m →ₐ[R] A) (hψ : ∀ j, q (ψ
       exact AlgHom.ext fun s => Subtype.ext (Prod.ext rfl (AlgHom.congr_fun e1 s))
   exact AlgHom.ext fun s => congrArg (fibSnd q) (AlgHom.congr_fun e2 s)
 
-end Jets
 
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs
 open ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.Be2 GlobalTheory.ChF

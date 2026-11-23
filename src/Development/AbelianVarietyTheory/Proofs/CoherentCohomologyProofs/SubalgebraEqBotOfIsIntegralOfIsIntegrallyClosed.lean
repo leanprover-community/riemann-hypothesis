@@ -51,20 +51,16 @@ theorem _root_.GlobalTheory.integralClosure_restrictScalars_of_isIntegral (A A' 
   simp only [Subalgebra.mem_restrictScalars, mem_integralClosure_iff]
   exact ⟨fun h => isIntegral_trans x h, fun h => h.tower_top⟩
 
-section Contraction
 
 variable {A : Type*} [CommRing A] (M : Submonoid A) {S : Type*} [CommRing S] [Algebra A S]
   [IsLocalization M S]
 
-end Contraction
 
-section PowerSeries
 
 open PowerSeries IsLocalRing
 
 variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
-section Away
 
 variable {ϖ : O} (hϖ : Irreducible ϖ) (S : Type*) [CommRing S] [Algebra O⟦X⟧ S]
   [IsLocalization.Away (C ϖ : O⟦X⟧) S]
@@ -76,7 +72,6 @@ variable (𝔭 : Ideal S) [𝔭.IsPrime] (h𝔭 : 𝔭 = Ideal.span {algebraMap 
 
 include h𝔭
 
-end Away
 
 end PowerSeries
 

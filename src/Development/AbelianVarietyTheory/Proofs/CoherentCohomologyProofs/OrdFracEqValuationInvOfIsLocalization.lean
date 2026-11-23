@@ -116,19 +116,15 @@ theorem ker_liftBaseChange_eq_of_finrank_le [Fintype ι] [DecidableEq ι] (c : V
 
 end Kernel
 
-section Scale
 
 variable {R K V ι : Type*} [CommRing R] [Field K] [Algebra R K] [AddCommGroup V] [Module K V]
   [Module R V] [IsScalarTower R K V]
 
-end Scale
 
-section Free
 
 variable (R S : Type*) [CommRing R] [Nontrivial R] [AddCommGroup S] [Module R S]
   [Module.Free R S] [Module.Finite R S] (Q : Type*) [AddCommGroup Q] [Module R Q]
 
-end Free
 
 section Valuation
 

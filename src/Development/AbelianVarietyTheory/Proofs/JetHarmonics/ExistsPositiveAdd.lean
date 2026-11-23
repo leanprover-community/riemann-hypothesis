@@ -123,12 +123,10 @@ def IntegralAreSums (S : Submodule ℝ (Bil Y)) : Prop :=
 
 end Comparison₂
 
-section AtLattice
 variable (E : Type) [Field E] [NumberField E] {Y : Type} [AddCommGroup Y] [Module (𝓞 E) Y]
 
 variable [IsCMField E]
 
-end AtLattice
 
 section Families
 

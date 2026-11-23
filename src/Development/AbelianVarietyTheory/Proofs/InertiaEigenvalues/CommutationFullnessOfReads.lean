@@ -69,11 +69,9 @@ theorem hkFR_act (i : D.ntw.Tw) (j : ℕ) (b : Bool) (hL : ℕ → PlE D.host �
   congr 1
 end Act
 
-section Real
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.IndefR.Cx Formalism.L2.Pj
 variable {D : D7} (X : RealSide D) {S : RatDat D.ntw} (YS : NExpRealS X.R X.cG S) (H : NExpRealH X.R X.cG S YS)
 
-end Real
 
 section Iso
 

@@ -579,7 +579,6 @@ theorem cubeFaceSequence_δ (A : Cube.{v} ι R) (p : ℕ) :
 
 end Cone
 
-section FiveLemma
 
 open ComposableArrows Abelian HomologySequence
 
@@ -589,7 +588,6 @@ variable {C ι : Type*} [Category* C] [Abelian C] {c : ComplexShape ι}
 
 include hS₁ hS₂
 
-end FiveLemma
 
 section Corollaries
 

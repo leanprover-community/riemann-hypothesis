@@ -47,7 +47,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 
-section GroupIdentities
 variable {M : Type} [CommGroup M]
 
 private lemma mul_rearrange_five {u u' u'' a b c d : M} (h : b * a = d * c) :
@@ -77,7 +76,6 @@ private lemma fs_zero_nat {a b c : M} (h : a * b = b * b * c) : a⁻¹ * b = c�
     rw [h]; ac_rfl
   rw [h', mul_inv, mul_right_comm, inv_mul_cancel, _root_.one_mul]
 
-end GroupIdentities
 
 private lemma fs_sigma_eq {A U : Type} {x x' y y' : A} {u u' : U} :
     (⟨x, y, u⟩ : Σ _ : A, Σ _ : A, U) = ⟨x', y', u'⟩ ↔ x = x' ∧ y = y' ∧ u = u' := by

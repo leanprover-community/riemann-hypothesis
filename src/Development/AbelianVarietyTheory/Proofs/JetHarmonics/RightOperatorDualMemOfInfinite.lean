@@ -46,17 +46,13 @@ inductive IsPol {V : Type} [AddCommGroup V] [Module ℂ V] : (ℂ → V) → Pro
   | add {f g : ℂ → V} : IsPol f → IsPol g → IsPol fun y => f y + g y
   | xsmul {f : ℂ → V} : IsPol f → IsPol fun y => y • f y
 
-section module
 
 variable {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
 
-end module
 
-section alg
 
 variable {A : Type} [Ring A] [Algebra ℂ A]
 
-end alg
 
 open MeasureTheory in
 variable {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] in

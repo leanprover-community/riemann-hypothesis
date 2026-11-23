@@ -52,7 +52,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.ChF
 
-section Local
 variable {O S : Type} [CommRing O] [CommRing S] [Algebra O S]
 
 private theorem unit_of_nil {y x : S} (h : IsNilpotent (y - x)) (hx : IsUnit x) : IsUnit y := by
@@ -124,9 +123,7 @@ private theorem kills_iff (p : ℕ) : (∃ k, Kills (Ideal.span {(p : O)}) k S) 
     obtain ⟨c, rfl⟩ := ht
     simp [pow_succ, hk]
 
-end Local
 
-section Pair
 variable {R₀ : Type} [CommRing R₀] {B : BX R₀} {O : LAlg R₀} {p : ℕ} {τ : ℕ → B.G O}
 
 private theorem pair_up (h1 : ∀ n, (p ^ (n + 1)) • τ n = 0) (h2 : ∀ n, τ n = p • τ (n + 1)) {R : LAlg R₀}
@@ -191,7 +188,6 @@ private theorem lhom_ext {R R' : LAlg R₀} {f f' : LHom R R'} (h : ∀ r, f.1 r
 private def mkS (O : LAlg R₀) (S : Type) [CommRing S] [Algebra (O : Type) S] (h : LocO O S) : LHom O (mkL O S h) :=
   mkH O (mkL O S h) (algebraMap (O : Type) S) (fun _ => rfl) h.2
 
-end Pair
 
 theorem exists_character_pairSer : ∀ (R₀ : Type) [CommRing R₀] (B : BX R₀) (O : LAlg R₀) (g : ℕ) (F : FGLaw (O : Type) g) (Y : ∀ R : LAlg R₀, LHom O R → (Fin g → (R : Type)) → B.G R), BXChart B O F.F Y → ∀ (p : ℕ), ¬ IsUnit (p : (O : Type)) → IsAdicComplete (Ideal.span {(p : (O : Type))}) (O : Type) → ∀ τ : ℕ → B.G O, (∀ n, (p ^ (n + 1)) • τ n = 0) → (∀ n, τ n = p • τ (n + 1)) → ∃ u : PS (O : Type) 1 g, IsCh F.F u ∧ PairSer B O Y p τ u := by
   intro R₀ _ B O g F Y hY p hp hc τ h1 h2

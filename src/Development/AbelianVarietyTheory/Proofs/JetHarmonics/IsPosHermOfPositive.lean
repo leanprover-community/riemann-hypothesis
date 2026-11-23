@@ -56,12 +56,10 @@ open NumberField IsLocalRing ReciprocityTheory.ChartRestriction.G.Out Reciprocit
 open GlobalTheory.IndefiniteRowSideFullHecke.PairingFromOuterAgreement
 open GlobalTheory.IndefiniteRowSideFullHecke.BalancedHermitianSpace (Bil leastExponent IsIntegralFn IsPositiveFn IsBalancedSpace evalSum)
 
-section Lattice
 
 variable (E : Type) [Field E] {X : Type} [AddCommGroup X] [Module (𝓞 E) X]
 
 
-end Lattice
 
 section Phi
 
@@ -223,13 +221,11 @@ abbrev FormValues (S : FormSpaces) : Type 1 :=
   ∀ (E : Type) [Field E] [NumberField E] (cj : E → E) (Y : Type) [AddCommGroup Y] [Module (𝓞 E) Y],
     S E cj Y → ℝ
 
-section Clauses
 
 variable {S : FormSpaces} {φ : FormValues S}
 
 variable {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] {ϖ : V} (hϖ : Irreducible ϖ)
   (D : DegData V (maximalIdeal V)) {Q : D.toPre.X → ℤ} (hQ : QForm.IsQ D.toPre ϖ Q)
 
-end Clauses
 
 end GlobalTheory.PointStepCompare

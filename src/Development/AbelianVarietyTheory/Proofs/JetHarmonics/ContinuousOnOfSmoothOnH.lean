@@ -74,7 +74,6 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 end Smooth
 
-section Tensor
 
 variable {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
 
@@ -82,7 +81,6 @@ variable {ρ : Mx k r → Matrix ι ι ℂ} {Γ : Matrix ι ι ℂ} {R : HRep k 
   {io : ∀ I, (Rs I).H → ι → R.H} {pr : ∀ I, ι → R.H → (Rs I).H} {p : ∀ I, (ι → R.H) → (Rs I).H} {ep : κ → ℝ}
 
 
-end Tensor
 
 end GlobalTheory.TensCompare
 

@@ -78,7 +78,6 @@ end General
 
 variable {R : Type} [CommRing R] [IsDomain R]
 
-section Points
 
 variable (D : DegPre R) (T : Over (Spec (CommRingCat.of R)))
 
@@ -86,7 +85,6 @@ variable {D T}
 
 variable {F : Type} [Field F] [Algebra (FractionRing R) F]
 
-end Points
 
 section OnOpen
 

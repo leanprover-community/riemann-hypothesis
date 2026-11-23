@@ -125,11 +125,9 @@ theorem length_quotient_span_eq_addVal_det (b : Basis ι R M) (v : ι → M) :
 
 end Cokernel
 
-section Relative
 
 variable {V : Type*} [AddCommGroup V] [Module R V] {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-end Relative
 
 section Lattice
 

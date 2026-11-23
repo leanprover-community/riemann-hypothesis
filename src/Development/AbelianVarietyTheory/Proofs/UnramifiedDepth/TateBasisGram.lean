@@ -46,7 +46,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 
-section SlopeTestRemainingChoices
 
 variable {R₀ : Type} [CommRing R₀] (B : BX R₀) {R : LAlg R₀}
 
@@ -80,7 +79,6 @@ private lemma gram_sum {κ : Type} (s : Finset κ) (N : ℕ) (x : κ → B.G R) 
     rw [Finset.sum_insert ha, Finset.prod_insert ha]
     exact B.isPairingValue_add_left N _ _ y _ _ (h a) ih
 
-end SlopeTestRemainingChoices
 
 private lemma gram_limit {p : ℕ} [Fact p.Prime] (k : ℕ → ℕ)
     (hk : ∀ n, k n ≡ k (n + 1) [MOD p ^ (n + 1)]) :

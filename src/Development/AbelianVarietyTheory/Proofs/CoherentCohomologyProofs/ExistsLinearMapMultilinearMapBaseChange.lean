@@ -45,12 +45,10 @@ universe v
 
 namespace GlobalTheory
 
-section BaseChange
 
 variable {R : Type*} (K : Type*) {G N : Type*} [CommRing R] [CommRing K] [Algebra R K]
   [AddCommGroup G] [Module R G] [AddCommGroup N] [Module R N] [Module K N] [IsScalarTower R K N]
 
-end BaseChange
 
 section Diff
 
@@ -287,11 +285,9 @@ theorem exists_polynomial_chi_twistZ (hM : M.IsLB) :
 
 end Poly
 
-section Ext
 
 variable [CommRing K]
 
-end Ext
 
 end DiffVanish
 

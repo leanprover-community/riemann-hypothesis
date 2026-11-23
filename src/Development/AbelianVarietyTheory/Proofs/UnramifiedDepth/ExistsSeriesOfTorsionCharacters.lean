@@ -46,13 +46,10 @@ namespace GlobalTheory
 
 namespace CharGerm
 
-section Series
 
 variable {R₀ κ : Type} [CommRing R₀]
 
-end Series
 
-section Torsion
 
 variable {R₀ : Type} [CommRing R₀] {G : Over (Spec (CommRingCat.of R₀))} [GrpObj G] {g : ℕ}
   {x : ∀ (S : Type) [CommRing S] [Algebra R₀ S], (Fin g → S) → (sp (R₀ := R₀) S ⟶ G)}
@@ -71,7 +68,6 @@ variable {R₀ : Type} [CommRing R₀] {G : Over (Spec (CommRingCat.of R₀))} [
 
 
 
-end Torsion
 
 section Value
 
