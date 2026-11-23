@@ -10,6 +10,7 @@ there is always complete. Objects are content-addressed and write-once (If-None-
 --sha256 names a JSON object {"<hash16>.ltar": "<sha256>"} (e.g. from a CI module manifest):
 those downloads are verified before they are moved into the cache, and a mismatch is discarded
 and downloaded again. Up to three passes; exit 1 if anything is still missing.
+Requires curl 7.83 or newer to remove incomplete outputs after transfer errors.
 """
 import hashlib, json, os, resource, subprocess, sys, tempfile
 from concurrent.futures import ThreadPoolExecutor
@@ -47,7 +48,7 @@ def main():
         with tempfile.TemporaryDirectory(prefix="fetch-", dir=cache.parent) as t:
             conf = Path(t) / "curl.conf"
             conf.write_text("".join(f'url = "{PUBLIC}{n[:-5]}.art"\noutput = "{t}/{n}"\n' for n in missing))
-            r = subprocess.run(["curl", "--disable", "--fail", "--silent", "--show-error", "--location",
+            r = subprocess.run(["curl", "--disable", "--fail", "--remove-on-error", "--silent", "--show-error", "--location",
                                 "--user-agent", "rh-buildq/1", "--retry", "5", "--retry-all-errors",
                                 "--connect-timeout", "30", "--max-time", "600",
                                 "--parallel", "--parallel-max", str(PARALLEL), "--config", str(conf)])
