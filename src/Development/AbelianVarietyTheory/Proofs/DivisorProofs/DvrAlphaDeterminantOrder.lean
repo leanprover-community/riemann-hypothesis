@@ -126,11 +126,9 @@ end GlobalTheory.FrameModel
 
 namespace GlobalTheory.FrameModel
 
-section Small
 
 variable {C : Type} [Field C] (v : Valuation C NNReal) {O : Type} [CommRing O] [Algebra O C]
 
-end Small
 
 end GlobalTheory.FrameModel
 

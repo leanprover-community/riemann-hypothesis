@@ -216,7 +216,6 @@ namespace GlobalTheory.EtaConjType
 
 open Formalism.L2.Host Formalism.L2.JoinChr
 
-section General
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -226,7 +225,6 @@ variable {L : Type} [Field L] (ι σ : L →+* ℂ) {χ χ' : HChar E} (hu : ∀
 
 include hu hu' hy hy'
 
-end General
 
 theorem resEta_hasInfExp_of_isEtaConj_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Core5 R F → ∀ (i : Fin D.R.m), ∀ (σ : D.what₂.LL →+* ℂ), OverK σ → ∀ η', IsEtaConj σ R.eta η' → ResEta D η' 1 ∧ ∀ ρ, HasInfExp D η' ρ (1 / 2) := by
   intro D G _ _ Pl0 T0 A Ks _ _ _ R F hR _ σ hσ η' hη
@@ -388,13 +386,11 @@ namespace GlobalTheory.OneMapRef.FactsLat
 
 variable {D : D7}
 
-section Model
 
 variable {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) {p q : ℕ} (hpq : p + q = V.rank)
   (hε : ∀ τ a, M.ε τ a = decide ((a : ℕ) < p))
 include hpq hε
 
-end Model
 
 theorem facts_lat_ofFive : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec), GlobalTheory.Core5 R F → Nonempty (FWTie T R κ v₀) → ∀ (i : Fin D.R.m) (Tp : Type) (tup : Tp → T0) (O : OMDat T.toCore R i Tp tup), O.Pins (κ i) (v₀ i (sg0 D A)) (iotaW T i) (T.x₀ ((i : ℕ) + 1) O.s0) → sg0 D A = D.what₂.embLL ∧ (Vc D i).gram = 1 ∧ Even (Vc D i).rank ∧ (κ i).n = (Vc D i).rank ∧ R.ΛV i = stdL D.host.E (Vc D i).rank ∧ IsSelfDualC (Vc D i) (R.ΛV i) ∧ IsSelfDualC (Wc D i) (R.ΛW i) ∧ IsONeg (Wc D i) (T.Q.Dw ((i : ℕ) + 1)).q (baseZ R i) ∧ cart (R.MW i (sg0 D A)) = cartZ (Wc D i) (T.Q.Dw ((i : ℕ) + 1)).q (baseZ R i) ∧ (∀ ρ, T.x₀ ((i : ℕ) + 1) O.s0 (tauE D ρ) = Matrix.reindex (finCongr (rank_Wc i)) (finCongr (rank_Wc i)) (baseZ R i ρ)) ∧ MuVal (Wc D i) (R.mu0 ((i : ℕ) + 1)) O.mu ∧ (T.Q.Dw ((i : ℕ) + 1)).p ≠ (T.Q.Dw ((i : ℕ) + 1)).q ∧ 1 ≤ D.R.r ∧ LatEmb (Wc D i) (iotaW T i) ∧ ∀ h : GA D (Wc D i), ∃ LT : Lt D.host.E (Wc D i).rank, IsSelfDualC (Wc D i) LT ∧ GlobalTheory.Ker.IsAA (latG (Wc D i) h) LT ∧ GlobalTheory.Ker.IsMov (GlobalTheory.Ker.fmt (Wc D i) h) (R.ΛW i) LT ∧ ∀ u : WO (Vc D i) (Wc D i), u ∈ (latO (Vc D i) (Wc D i) (R.ΛV i : Set _) (LT : Set _) fun _ => True) ↔ ∃ u₀ ∈ (latO (Vc D i) (Wc D i) (R.ΛV i : Set _) (R.ΛW i : Set _) fun _ => True), u = actO (Vc D i) (Wc D i) 1 h u₀ := by
   rintro D G _ _ Pl0 T0 A T _ R F κ v₀ hR ⟨tie⟩ i Tp tup O hP
@@ -760,7 +756,6 @@ open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
 
 end General
 
-section Letters
 
 open NumberField Matrix Complex
 open GlobalTheory.AdTh.PhaseMap
@@ -771,7 +766,6 @@ variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.
 
 variable {lt : LtN Dw n → FVar D m n}
 
-end Letters
 
 end GlobalTheory.GalOne.PhaseAt
 
@@ -966,13 +960,11 @@ noncomputable section
 
 namespace GlobalTheory.GalOne.IoCmp
 
-section Letters
 
 open NumberField Matrix
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-end Letters
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.OneMapRef.IoCmp
@@ -1451,15 +1443,12 @@ noncomputable section
 
 namespace GlobalTheory.DatumFourier
 
-section Fourier
 
 open NumberField Complex ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.AdTh GlobalTheory.LevelPairing
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} (l : Geo.Tor.Level H)
 
-end Fourier
 
-section General
 
   IsDedekindDomain NumberField Matrix GlobalTheory.LatVac GlobalTheory.AdelicLatMove GlobalTheory.PlaceVec
 open scoped TensorProduct Classical
@@ -1468,7 +1457,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {S T : HSp D} {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)}
   {ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)}
 
-end General
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -1938,7 +1926,6 @@ section
 
 namespace GlobalTheory.ClassScalarValue
 
-section Local
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR Formalism.IndefR.Links
   Formalism.L2.JoinChr Formalism.L2.Host Formalism.L2.Pj GlobalTheory.IdemSupport
@@ -1947,7 +1934,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-end Local
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -2047,13 +2033,11 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.GalOne.ClassConj
 
-section Local
 
 open Formalism.L2.JoinChr Formalism.L2.Host
 
 variable {D : D7}
 
-end Local
 
 
 
@@ -2256,11 +2240,9 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.GalOne
 
-section Gen
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Level H}
 
-end Gen
 
 
 
@@ -2302,11 +2284,9 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.GalCentral
 
-section Res
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-end Res
 
 variable {D : D7}
 

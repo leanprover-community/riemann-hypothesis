@@ -171,12 +171,10 @@ theorem below_bijective (k : Fin 2) : Function.Bijective (below (D := D) k) := b
 def sqEquiv (D : D7) : (Σ k : Fin 2, D.nd.PlG k) ≃ LevelCuspCharacters.Sq D.host :=
   Equiv.sigmaCongrRight fun k => Equiv.ofBijective _ (below_bijective k)
 
-section Match
 
 variable {Pg : Finset (Pl D.host.E)} (h : LinearCoefficientData.IsRecPlaces D Pg)
 
 
-end Match
 
 def pull (x : LevelCuspCharacters.LevelGroup D.host) : G0g D.nd := fun kv => x ⟨kv.1, below kv.1 kv.2⟩
 
@@ -186,19 +184,15 @@ theorem pull_bijective : Function.Bijective (pull (D := D)) :=
 def IdemTie (D : D7) (om : ∀ i : Fin 2, (ZMod (D.host.g i))ˣ →* ℂˣ) : Prop :=
   ∀ x, D.ntypes.e0.coeff (pull x) = (LevelCuspCharacters.goodIdem (H := D.host) om).coeff x
 
-section Idem
 
 variable {Pg : Finset (Pl D.host.E)} (h : LinearCoefficientData.IsRecPlaces D Pg) {b : Pg ≃ LevelCuspCharacters.Sq D.host} (hb : BadPlacesGoodCoefficients.IsBelow b)
   (φ : ∀ PP : Pg, ZMod (D.host.g (b PP).1) ≃+* kP PP.1)
 
-end Idem
 
-section Parts
 
 variable {Pg : Finset (Pl D.host.E)} (h : LinearCoefficientData.IsRecPlaces D Pg) (θ : LinearCoefficientData.InfFam D) (P : LevelP Pg D.R.r ℂ)
   (c : LinearCoefficientData.Eig D)
 
-end Parts
 
 section Level
 
@@ -368,7 +362,6 @@ theorem TameTie.idemTie (hG : Green) {om : ∀ i : Fin 2, (ZMod (D.host.g i))ˣ 
 
 end Comparison₂
 
-section Move
 
 open Formalism.IndefR.Lev Formalism.L2.DIV
 
@@ -377,7 +370,6 @@ variable {Pg Pg' : Finset (Pl D.host.E)} (pl : LevelCuspCharacters.Sq D.host ≃
   (φ₁ : ∀ PP : ↥Pg, ZMod (D.host.g (pl.symm PP).1) ≃+* kP PP.1) (b : ↥Pg' ≃ LevelCuspCharacters.Sq D.host)
   (φ : ∀ PP : ↥Pg', ZMod (D.host.g (b PP).1) ≃+* kP PP.1) (S : Set (LevelCuspCharacters.Sq D.host))
 
-end Move
 
 theorem tameTie_of_typesTrue {P : Formalism.L2.Host.PiBar D.host} {W : Formalism.L2.Host.Omg D.host}
     (h : GlobalTheory.Mem.Top.TypesTrue D.ntypes P W) :

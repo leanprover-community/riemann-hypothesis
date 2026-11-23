@@ -126,7 +126,6 @@ theorem dichRelLift {X₀ : Type} [AddCommGroup X₀] [Module.Free ℤ X₀] [Mo
     simp only [map_zsmul, Module.Basis.constr_basis]
     exact h0.symm
 
-section Help
 variable {X : Type} [AddCommGroup X] {N : ℕ}
 
 private theorem cm_refl (x : X) : CongMod N x x := ⟨0, by simp⟩
@@ -163,7 +162,6 @@ private theorem quad_nsmul (β : LinearMap.BilinForm ℤ X) (w : X) :
     β (N • w) (N • w) = (N : ℤ) * ((N : ℤ) * β w w) := by
   simp [map_nsmul, LinearMap.smul_apply, nsmul_eq_mul]
 
-end Help
 
 private def dD0 {ι : Type} [Fintype ι] (c : ι → ℤ) : ℤ := (Fintype.card ι : ℤ) * ∑ i, c i ^ 2
 

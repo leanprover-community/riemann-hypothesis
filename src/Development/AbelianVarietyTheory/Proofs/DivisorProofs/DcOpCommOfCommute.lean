@@ -106,11 +106,9 @@ theorem dcOp_comm_of_commute {A B : Finset G} (h : ∀ a ∈ A, ∀ b ∈ B, Com
 
 end Grp
 
-section Normal
 
 variable {E I : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] [FiniteDimensional ℂ E]
 
-end Normal
 
 end GlobalTheory.HeckeParts
 

@@ -45,7 +45,6 @@ namespace GlobalTheory.LiftSys.Taylor
 
 def Tw (R : Type) {B B₀ : Type} [CommRing B] [CommRing B₀] (_p : B →+* B₀) (M : Type) : Type := M
 
-section Tw
 
 variable {R B B₀ M : Type} [CommRing R] [CommRing B] [Algebra R B] [CommRing B₀] (p : B →+* B₀)
   [AddCommGroup M] [Module B₀ M]
@@ -68,7 +67,6 @@ instance : IsScalarTower R Bᵐᵒᵖ (Tw R p M) := ⟨fun r b m ↦ by
   change p (r • b.unop) • (show M from m) = p (algebraMap R B r) • p b.unop • (show M from m)
   rw [Algebra.smul_def, map_mul, mul_smul]⟩
 
-end Tw
 
 section Ext
 

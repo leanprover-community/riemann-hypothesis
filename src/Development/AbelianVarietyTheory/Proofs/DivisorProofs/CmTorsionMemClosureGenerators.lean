@@ -54,7 +54,6 @@ noncomputable section
 
 namespace GlobalTheory.FlatCM.CplxGen
 
-section Points
 
 open scoped CategoryTheory.Obj
 
@@ -154,7 +153,6 @@ private theorem exists_unif_points (P Q : Out.PolAV S) :
       ((Over.pullback f).map φ) inferInstance
     exact ⟨M, fun z => by beta_reduce; rw [hM, pt_map]⟩
 
-end Points
 
 private theorem lattice_mem_closure (E : Type) [Field E] [NumberField E] (gA gB p : ℕ)
     (ΛA : Submodule ℤ (Fin gA → ℂ)) (ΛB : Submodule ℤ (Fin gB → ℂ)) (αA : 𝓞 E →+* Module.End ℂ (Fin gA → ℂ))
@@ -218,7 +216,6 @@ private theorem lattice_mem_closure (E : Type) [Field E] [NumberField E] (gA gB 
   obtain rfl : u = 1 := mul_right_cancel₀ hc (hu.trans (_root_.one_mul c).symm)
   simpa using h
 
-section Unif
 
 variable {P : Type} [CommGroup P] {g : ℕ} {e : (Fin g → ℂ) → P} {Λ : Submodule ℤ (Fin g → ℂ)}
 
@@ -262,7 +259,6 @@ private theorem rigid (hadd : ∀ z w, e (z + w) = e z * e w) (hker : ∀ z, e z
     rwa [map_smul, map_smul, ← smul_sub] at this
   exact sub_eq_zero.1 this
 
-end Unif
 
 private theorem comp_prod' {S : Scheme.{0}} {T A B : Over S} [MonObj B] [IsCommMonObj B] {Idx : Type} (s : Finset Idx)
     (x : T ⟶ A) (f : Idx → (A ⟶ B)) : x ≫ s.prod f = s.prod (fun i => x ≫ f i) := by
