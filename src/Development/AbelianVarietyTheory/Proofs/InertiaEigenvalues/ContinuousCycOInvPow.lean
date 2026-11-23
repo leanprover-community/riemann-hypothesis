@@ -37,13 +37,10 @@ namespace GlobalTheory.AdmLoc.CycWitness
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Module TensorProduct
 
-section Line
 
 variable {G Qp LL R : Type} [Group G] [Field Qp] [Field LL] [Algebra Qp LL] [CommRing R] [Algebra Qp R]
 
-end Line
 
-section Per
 
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -58,7 +55,6 @@ variable (hK : Function.Surjective (algebraMap Qp K)) (a : ℕ) (θ : G →* LL�
 
 include hK hθ
 
-end Per
 
 variable {l : ℕ} [Fact l.Prime]
 

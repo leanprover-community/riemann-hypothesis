@@ -69,11 +69,9 @@ variable {H S d}
 
 end Family
 
-section Record
 
 variable {H : X.Tw → ℕ → Subgroup (GE N)} {S : X.Tw → ℕ → Finset (PlE D.host)} {d : ∀ i M, Fam X i M}
 
-end Record
 
 theorem delUTie_of_isUnivChar (Y : NExp D.R D.host D.what₂ D.LL0 N X) : K1 X → IsUnivChar Y → DelUTie Y :=
   fun hK hY => GalChar.delUTie_of_exists Y hY hK

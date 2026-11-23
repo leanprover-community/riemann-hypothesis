@@ -169,11 +169,9 @@ theorem unram_of_cm (D : D7) (hc : @CMData D.host.F D.host.E _ _ _ _ D.host.cmSt
       rwa [this]
   exact Algebra.unramified_iff_forall.1 hU ⟨w.asIdeal, w.isPrime⟩
 
-section Concl
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
 
-end Concl
 
 end GlobalTheory.BaseChangeExistsCompare
 

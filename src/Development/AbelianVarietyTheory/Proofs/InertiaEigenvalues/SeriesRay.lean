@@ -74,15 +74,12 @@ variable {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.L
 
 
 
-section Data
 
 variable {T}
 
 variable {R i}
 
-end Data
 
-section First
 
 variable {T R i κ}
 
@@ -90,6 +87,5 @@ variable {hV : T.V ((i : ℕ) + 1) T.σ₀ = Wc D i} {v₀ : (R.MW i (sg0 D A)).
   {c0 : VsV D i ℂ →ₗ[ℂ] (R.cV i).W} {ka : ℂ} {J : VsV D i ℂ →ₗ[ℂ] PolF D (Wc D i).rank (Vc D i).rank}
 
 
-end First
 
 end GlobalTheory.Cmp.SeriesRay

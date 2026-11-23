@@ -216,7 +216,6 @@ theorem SameGeo.chrEq (h : SameGeo D D') {c : (AE D)ˣ →* Circle} {c' : (AE D'
   subst hc; subst hχ
   exact g
 
-section Setup
 
 variable {N : NData D.R D.host D.what₂} {N' : NData D'.R D'.host D'.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} {X' : NTw D'.R D'.host D'.what₂ D'.LL0 N'}
@@ -236,7 +235,6 @@ structure SetupRel (ρ : Setup X) (ρ' : Setup X') : Prop where
   β : HEq ρ.β ρ'.β
   eG : ∀ i i', HEq i i' → ∀ (j : Fin D.R.m) (j' : Fin D'.R.m), (j : ℕ) = j' → ∀ b, HEq (ρ.eG i j b) (ρ'.eG i' j' b)
 
-end Setup
 
 theorem TwistRel.eq {A : Type} [CommGroup A] {t t' : Twist D A} (r : TwistRel t t') : t = t' := by
   obtain ⟨Q, chi, res⟩ := t

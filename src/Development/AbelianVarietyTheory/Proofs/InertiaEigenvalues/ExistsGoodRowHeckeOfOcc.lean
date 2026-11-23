@@ -46,11 +46,9 @@ noncomputable section
 
 namespace GlobalTheory.EigRows
 
-section Abstract
 
 variable {K V ι κ : Type*} [Field K] [AddCommGroup V] [Module K V]
 
-end Abstract
 
 section Record
 
@@ -120,7 +118,6 @@ theorem exists_readW (Y : Read (A3 := A3) R F X0) (i : Fin D.R.m) {x : Formalism
 
 end Real
 
-section RealMain
 
   Formalism.IndefR.RecTie GlobalTheory.Mem.R3
 
@@ -130,7 +127,6 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
   {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
   {R : RealDat D A3.A Ks} {F : Face D A3.A} {X0 : BaseLevelRowSide D}
 
-end RealMain
 
 section Spherical
 

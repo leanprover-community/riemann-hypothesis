@@ -77,10 +77,8 @@ theorem under_eq {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L
   rw [← h' (algebraMap (𝓞 K) (𝓞 L) x), IsScalarTower.algebraMap_apply K L Ω]
   rfl
 
-section Res
 
 variable {L : Type} [Field L] [NumberField L] [Algebra L Ω] {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 L)}
 
-end Res
 
 end GlobalTheory.DelEps.WeilRes

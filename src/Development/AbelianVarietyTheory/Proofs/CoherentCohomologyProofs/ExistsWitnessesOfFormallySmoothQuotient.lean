@@ -47,7 +47,6 @@ theorem exists_sum_mul_of_mem_span_range_sq {S : Type} [CommRing S] {r : ℕ} (g
         Set.range fun p : Fin r × Fin r => g p.1 * g p.2 := by
       ext y
       simp [Set.mem_mul]
-    open Pointwise in
     rwa [Ideal.span_mul_span', hset] at hx
   obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun S).1 hx'
   refine ⟨fun k l => c (k, l), ?_⟩

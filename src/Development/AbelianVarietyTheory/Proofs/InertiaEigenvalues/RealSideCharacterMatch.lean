@@ -337,7 +337,6 @@ def actTieNew : ActTie ι P Q ch (actNew P hχ hρ red hsurj hJ hker ch hch hchK
 
 end Main
 
-section Hecke
 
 variable {G Γ : Type} [Group G] [Group Γ] {ι : Γ →* G}
 variable {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
@@ -353,7 +352,6 @@ variable (P : ClassPres ι S σ ρ J χ) (hχ : ∀ k, ∃ b : K, σ b = (χ k :
 
 
 
-end Hecke
 
 end GlobalTheory.CharChange
 

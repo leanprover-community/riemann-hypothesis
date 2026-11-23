@@ -40,7 +40,6 @@ open Module Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formali
 
 variable {l : ℕ} [Fact l.Prime] (P : LocPrime l)
 
-section Generic
 
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -52,7 +51,6 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
 
 variable [TopologicalSpace G] [TopologicalSpace LL]
 
-section Whole
 
 variable {V V' : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
   [AddCommGroup V'] [Module LL V'] [Module Qp V'] [IsScalarTower Qp LL V']
@@ -60,15 +58,12 @@ variable {V V' : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTow
 
 omit [TopologicalSpace G] [TopologicalSpace LL]
 
-end Whole
 
 end Generic
 
-section At
 
 variable (K LL : FinExt l)
 
-end At
 
 open Module TensorProduct in
 variable {l : ℕ} [Fact l.Prime] (P : _root_.Formalism.BasicNotions.LocPrime l) in

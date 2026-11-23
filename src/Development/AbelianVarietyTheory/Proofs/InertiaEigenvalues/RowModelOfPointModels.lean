@@ -40,17 +40,13 @@ namespace GlobalTheory.RowModelRoad
 open GlobalTheory.TypeLeaf Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
 open GlobalTheory.BlockComplement GlobalTheory.IndefiniteRowSideFullHecke.BlockRepresentationsSemisimple
 
-section Twist
 
 variable {Γ O : Type} [Group Γ] [CommRing O] {n : ℕ}
 
-end Twist
 
-section Lift
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (A : NAut N) (i : N.Loc)
 
-end Lift
 
 section Eig
 

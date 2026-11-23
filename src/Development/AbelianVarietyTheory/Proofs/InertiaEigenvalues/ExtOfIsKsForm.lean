@@ -146,7 +146,6 @@ theorem record_heq {D D' : D7} {N : NData D.R D.host D.what₂} {N' : NData D'.R
   · subst hP
     exact ⟨Iff.rfl, fun σ hσ => ⟨σ, hσ, fun _ => HEq.rfl⟩⟩
 
-section Ext
 
 variable {LL LL' Ks Ks' WL WL' G G' : Type} [Field LL] [Field LL'] [NumberField LL']
   [Field Ks] [NumberField Ks] [Algebra Ks LL] [Field Ks'] [NumberField Ks'] [Algebra Ks' LL']
@@ -158,7 +157,6 @@ variable {LL LL' Ks Ks' WL WL' G G' : Type} [Field LL] [Field LL'] [NumberField 
   [Group G] [Group G']
   {ι : LL →+* LL'} {eK : Ks ≃+* Ks'} {γ : G ≃* G'} {A : Arith.FormsL LL Ks WL W G} {A' : Arith.FormsL LL' Ks' WL' W' G'}
 
-end Ext
 
 end GlobalTheory.TwInputs.Move.Forms
 

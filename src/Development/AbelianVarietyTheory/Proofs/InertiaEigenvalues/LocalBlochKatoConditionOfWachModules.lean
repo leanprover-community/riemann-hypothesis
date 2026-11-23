@@ -92,10 +92,8 @@ theorem len_le_torsion (L : Lattice (O := O) ρ) (c : O) :
 
 end Len
 
-section Fields
 variable {l : ℕ} [Fact l.Prime]
 
-end Fields
 end GlobalTheory.TBLocal
 
 namespace GlobalTheory.TBLocal

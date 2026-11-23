@@ -142,12 +142,10 @@ theorem matW_mul_inv (s : X.Sig i) (g : GalE D) : matW s g * matW s g⁻¹ = 1 :
 
 variable {C : CharFrame D} {art : Ideles D.host.E →* Gab D.host.E D.nd.Om} {s : X.Sig i}
 
-section With
 
 variable {σ : D.what₂.FT} {π : D.naut.CG D.R.r} {r : GalE D →* GL (Fin D.R.r) (Qbar (X.l i))} {ν : GalE D →* (X.O0 i)ˣ}
   {w : D.what₂.places.Pl} {red : Zbar (X.l i) →+* FbAt D w}
 
-end With
 
 theorem notMem_of_mem_pD {v : PlE D.host} (hv : v ∈ X.pD i) :
     v ∉ placesOver D.host.E (X.l i) ∧ ∀ k, v ∉ placesOver D.host.E (D.host.g k) := by

@@ -41,7 +41,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 namespace GlobalTheory.DualSide
 
-section Anti
 
 variable {R : Type*} [CommRing R] {G : Type*} [Group G] [TopologicalSpace G]
   {M : Type*} [AddCommGroup M] [Module R M] [TopologicalSpace M]
@@ -51,7 +50,6 @@ variable {R : Type*} [CommRing R] {G : Type*} [Group G] [TopologicalSpace G]
   {P : Type*} [AddCommGroup P] [Module R P] [TopologicalSpace P]
   [IsTopologicalAddGroup P] [ContinuousConstSMul R P]
 
-end Anti
 
 section Dual
 

@@ -325,7 +325,6 @@ theorem isSSRep_of_prod {Γ k : Type} [Group Γ] [Field k] {n a b : ℕ} {ρ : �
       · simp only [map_add (f := _), e.apply_symm_apply, Prod.snd_add]
         rw [add_zero, h2']
 
-section Construction
 
 variable (D : D7)
 
@@ -333,7 +332,6 @@ variable (i : D.nd.Loc)
 
 variable {D i}
 
-end Construction
 
 end GlobalTheory.Proof.SemisimpleRepresentationIntegralConjugate
 

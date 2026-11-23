@@ -45,13 +45,11 @@ namespace GlobalTheory.Cmp.WachMonoidal
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct Module
 open GlobalTheory.IndefiniteRowSideFullHecke
 
-section Ext
 
 variable {O : Type} [CommRing O] (R : Type) [CommRing R] [Algebra O R]
   {M M' M'' : Type} [AddCommGroup M] [AddCommGroup M'] [AddCommGroup M'']
   [Module O M] [Module O M'] [Module O M'']
 
-end Ext
 
 section Crys
 

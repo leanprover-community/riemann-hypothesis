@@ -61,7 +61,6 @@ private theorem wild_mem_Ine {E Ω : Type} [Field E] [NumberField E] [Field Ω] 
     rw [e, map_mul]
     exact lt_of_le_of_lt (mul_le_of_le_one_right' hx) (hσ x hx0)
 
-section General
 
 variable {Γ R : Type} [Group Γ] [CommRing R]
 
@@ -81,9 +80,7 @@ private theorem isOpen_ker_char [TopologicalSpace Γ] [TopologicalSpace R] [IsTo
   rw [this]
   exact hJ.preimage (hχ.sub continuous_const)
 
-end General
 
-section Wild
 
 variable {E Ω R : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [TopologicalSpace R] [IsTopologicalRing R]
@@ -106,7 +103,6 @@ private theorem char_eq_one_of_wild (hR : IsAdic (IsLocalRing.maximalIdeal R)) (
   rw [mem_ker_char_iff, map_pow, h1]
   simp
 
-end Wild
 
 theorem firstLocalChar_wild_eq_one_away_from_l (D : D7) (i : D.nd.Loc) (v : HeightOneSpectrum (𝓞 D.host.E))
     (hvl : v ∉ placesOver D.host.E (D.nd.l i)) (σ : GE D.nd) (hσ : σ ∈ wildSet D.nd (D.nd.plOm.1 v)) :
