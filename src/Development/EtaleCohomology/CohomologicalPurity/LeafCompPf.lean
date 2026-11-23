@@ -11,14 +11,14 @@ namespace LateralTheory.CohomologicalPurity.Hz
 
 theorem good_iso (A S : Type) [CommRing A] [CommRing S] (e : A ≃+* S) (I : Ideal A) : Good (e : A →+* S) I := by
   refine ⟨RingHom.Etale.of_bijective e.bijective, ⟨(Ideal.Quotient.mk I).comp (e.symm : S →+* A), ?_⟩, fun s => ⟨e.symm s, ?_⟩, ?_⟩
-  · ext a; simp
+  · rw [RingHom.comp_assoc, e.symm_comp, RingHom.comp_id]
   · simp
   · intro B _ J _ ψ _
     refine ⟨ψ.comp (e.symm : S →+* A), ?_, fun χ hχ => ?_⟩
-    · ext a; simp
-    · ext s
-      have := congrArg (fun f : A →+* B => f (e.symm s)) hχ
-      simpa using this
+    · change (ψ.comp (e.symm : S →+* A)).comp (e : A →+* S) = ψ
+      rw [RingHom.comp_assoc, e.symm_comp, RingHom.comp_id]
+    · change χ.comp (e : A →+* S) = ψ at hχ
+      rw [← hχ, RingHom.comp_assoc, e.comp_symm, RingHom.comp_id]
 
 theorem good_comp (A S T : Type) [CommRing A] [CommRing S] [CommRing T] (φ : A →+* S) (ψ : S →+* T) (I : Ideal A)
     (h1 : Good φ I) (h2 : Good ψ (I.map φ)) : Good (ψ.comp φ) I := by
@@ -32,10 +32,8 @@ theorem good_comp (A S T : Type) [CommRing A] [CommRing S] [CommRing T] (φ : A 
     exact Ideal.Quotient.eq_zero_iff_mem.2 ha
   refine ⟨RingHom.Etale.stableUnderComposition φ ψ h1.etale h2.etale,
     ⟨(Ideal.Quotient.lift (I.map φ) r1 (fun a ha => hk ha)).comp r2, ?_⟩, fun t => ?_, ?_⟩
-  · ext a
-    have e2 : r2 (ψ (φ a)) = Ideal.Quotient.mk (I.map φ) (φ a) := congrArg (fun f : S →+* S ⧸ I.map φ => f (φ a)) hr2
-    simp only [RingHom.comp_apply, e2, Ideal.Quotient.lift_mk]
-    exact congrArg (fun f : A →+* A ⧸ I => f a) hr1
+  · rw [RingHom.comp_assoc, ← RingHom.comp_assoc φ ψ r2, hr2,
+      ← RingHom.comp_assoc, Ideal.Quotient.lift_comp_mk _ r1 (fun a ha => hk ha), hr1]
   · obtain ⟨s, hs⟩ := h2.surj t
     obtain ⟨a, ha⟩ := h1.surj s
     refine ⟨a, ?_⟩
