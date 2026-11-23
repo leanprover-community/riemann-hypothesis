@@ -38,11 +38,9 @@ attribute [local instance] Over.cartesianMonoidalCategory
 noncomputable section
 namespace GlobalTheory.IndefiniteRowSideFullHecke.ThetaTowerRecognition
 
-section Series
 variable {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {C : Type} [NormedField C] [Algebra (FractionRing R) C]
   {N : NumD C}
 
-end Series
 
 structure TowerIso {C : Type} [Field C] (N N' : NumD C) (n : ℕ) where
 

@@ -37,7 +37,6 @@ open scoped ComplexConjugate Classical InnerProductSpace
 
 namespace UpperTheory.TypeLine
 
-section Avg
 
 variable {G X : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup X] [Module ℂ X]
 
@@ -119,9 +118,7 @@ private theorem exists_avg (ρ : Representation ℂ G X) (hs : ∀ x, IsOpen {g 
         rw [chi_conj hχ hj, one_smul]
     _ = χ j • ∑ c, F c := by rw [← Finset.smul_sum, ← hsum]
 
-end Avg
 
-section Dense
 
 variable {G H X : Type*} [Group G] [TopologicalSpace G] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   [CompleteSpace H] [AddCommGroup X] [Module ℂ X]
@@ -165,9 +162,7 @@ private theorem inter_gen {G' : Type*} [Group G'] (τ : Representation ℂ G' X)
   show B (f (τ g x)) = A g (B (f x))
   rw [hf, hB]
 
-end Dense
 
-section Main
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
@@ -245,7 +240,6 @@ private theorem ker_of_all {V : Submodule ℂ (LL μ)} (hV : IsSummand μ V) {w 
   rw [e2]
   exact h2
 
-end Main
 
 end UpperTheory.TypeLine
 

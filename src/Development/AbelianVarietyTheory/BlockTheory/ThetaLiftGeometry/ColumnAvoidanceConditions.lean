@@ -59,7 +59,6 @@ def seamOf (D : D7) : Seam D (fieldsOf D) where
   iT := Equiv.refl _
   σ₀ := D.what₂.embLL
 
-section Ties
 
 variable (D : D7) (Dx : DivX D) (EX : ErrX D) (Ch : Chars (fieldsOf D) (primesOf D EX) D.R.m)
   (m0 : Fin D.R.m → Formalism.L2.Host.HChar D.host.E)
@@ -67,7 +66,6 @@ variable (D : D7) (Dx : DivX D) (EX : ErrX D) (Ch : Chars (fieldsOf D) (primesOf
 
 variable {S : Set ℕ} (ξ : Tup (fieldsOf D).F (fieldsOf D).E (fieldsOf D).K S)
 
-end Ties
 
 def Bound (D : D7) (L : SizeData₂ D) (EX : ErrX D) (C1 : ℝ) (i : Fin 2) (w : LiftErrorLocal.Pl D) (u : D.what₂.Word) (μ : D.what₂.Tup) : Prop :=
   ∀ φ ∈ DV.MramL D u, ∀ F ∈ (D.what₂.Mtilde μ).carrier,

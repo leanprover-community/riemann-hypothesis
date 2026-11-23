@@ -161,10 +161,8 @@ def UnifBaseChange : Prop :=
       (hL : U'.LG = L') (P : UnifPull hI pD pG U U'),
       U'.gen = gen' ∧ (hL ▸ P.bundle : RigPull pG U.LG L') = pL
 
-section Basic₂
 
 variable {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R']
 
-end Basic₂
 
 end GlobalTheory.IndefiniteRowSideFullHecke.UniformizationBaseChange

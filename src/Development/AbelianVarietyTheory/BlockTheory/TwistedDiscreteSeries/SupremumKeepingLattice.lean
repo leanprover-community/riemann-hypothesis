@@ -39,7 +39,6 @@ open scoped TensorProduct
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Arith Formalism.IndefR.Mult
   Formalism.IndefR.FWT Formalism.L2.Pj GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalLatticeThetaValues
 
-section Forms
 
 variable {LL Ks : Type} [Field LL] [NumberField LL] [Field Ks] [NumberField Ks] [Algebra Ks LL]
   {WL : Type} [AddCommGroup WL] [Module LL WL] [Module Ks WL] [IsScalarTower Ks LL WL]
@@ -48,7 +47,6 @@ variable {LL Ks : Type} [Field LL] [NumberField LL] [Field Ks] [NumberField Ks] 
 
 
 
-end Forms
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

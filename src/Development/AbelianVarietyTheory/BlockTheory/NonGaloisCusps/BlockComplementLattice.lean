@@ -89,7 +89,6 @@ theorem blockRep_apply {a : ℕ} (ρ : Γ →* GL (Fin a) O) (χ : ℕ → (Γ �
 
 end General
 
-section Record
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (i : N.Loc)
 
@@ -102,7 +101,6 @@ structure IsComplement (r₀ : G H.E N.Om →* GL (Fin R.nV) (N.O i))
 
   cont : LatticeContinuous ρ
 
-end Record
 
 def Complement_at (D : D7) : Prop :=
   ∀ (i : D.nd.Loc), ∀ π ∈ D.nd.Z i,

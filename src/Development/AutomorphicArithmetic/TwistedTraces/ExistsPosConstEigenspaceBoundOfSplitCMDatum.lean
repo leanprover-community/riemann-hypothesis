@@ -57,7 +57,6 @@ private theorem ops_key {M : Type*} [Monoid M] (b₁ b₂ P Q O : M) (habs : b�
   subst hO
   rw [← mul_assoc b₂, hc, mul_assoc P, ← mul_assoc b₁, ← habs, mul_assoc]
 
-section Hil
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
 private theorem prj_mem {V : Submodule ℂ H} (hV : IsClosed (V : Set H)) (v : H) : prj V v ∈ V := by
@@ -104,9 +103,7 @@ private theorem prj_commute {V : Submodule ℂ H} (hV : IsClosed (V : Set H)) (T
   rw [← map_sub, ← ContinuousLinearMap.adjoint_inner_right]
   exact prj_inner hV v _ (h2 w hw)
 
-end Hil
 
-section Alg
 variable {M : Type*} [Monoid M]
 
 private theorem ofFn_absorb : ∀ (r : ℕ) (T P : Fin r → M), (∀ i j, i ≠ j → Commute (T i) (P j)) → (∀ i, T i * P i = T i) →
@@ -129,9 +126,7 @@ private theorem ofFn_absorb : ∀ (r : ℕ) (T P : Fin r → M), (∀ i j, i ≠
       _ = _ := by
           rw [mul_assoc, mul_assoc, ← mul_assoc (P 0), ← h4.eq, mul_assoc]
 
-end Alg
 
-section Loc
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 private theorem rhoL_mul (w : Pl K) (g h : Gw n w) : rhoL μ w (g * h) = rhoL μ w g ∘L rhoL μ w h := by
@@ -200,7 +195,6 @@ private theorem list_prj (hco : ∀ w, CO (J w) ∧ IsChr (J w) (χ w)) (L : Lis
     rw [List.map_cons, List.prod_cons, hs, hG, ← prj_comp_of_commute hcl (GA_closed μ hco _) hc, ← h1]
     rfl
 
-end Loc
 
 section Haar
 
@@ -240,7 +234,6 @@ private theorem haar_right {G : Type} [Group G] [TopologicalSpace G] [IsTopologi
 
 end Haar
 
-section BernoulliSumsFrobeniusOrbits
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 private theorem oloc_commute {w v : Pl K} (h : v ≠ w) [MeasurableSpace (Gw n w)] (m : Measure (Gw n w)) (φ : Gw n w → ℂ)
@@ -295,7 +288,6 @@ private theorem oloc_absorb (v : Pl K) [MeasurableSpace (Gw n v)] [BorelSpace (G
   rw [integral_indicator_const _ hJm]
   simp [Measure.real, hm]
 
-end BernoulliSumsFrobeniusOrbits
 
 private noncomputable def glue {ι : Type} {R : ι → Type} [∀ i, CommRing (R i)] {n : ℕ} (g : ∀ i, GL (Fin n) (R i)) :
     GL (Fin n) (∀ i, R i) where
@@ -344,7 +336,6 @@ private theorem finprod_split {A M : Type*} [CommMonoid M] {r : ℕ} (wi : Fin r
   refine finprod_congr fun u => ?_
   simp only [Set.mem_diff, Set.mem_univ, true_and]
 
-section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -501,7 +492,6 @@ private theorem phi_eq (T : Ty σ n q w₀) (L : GM.Loc σ n q w₀) (ψ : ∀ v
     have hu := T.off u.1 (by rw [under_eq]; exact hS) (by rw [under_eq]; exact hvq)
     rw [hother u hS, dflt_of_triv T u.1 hu.2, hu.1]
 
-end Main
 
 end UpperTheory.EigenspaceProjectionTraces
 

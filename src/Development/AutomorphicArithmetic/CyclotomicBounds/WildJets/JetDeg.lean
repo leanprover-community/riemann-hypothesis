@@ -54,7 +54,6 @@ open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunOb
 open Formalism.DivisionValues (vw lw)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section SlopeTestRemainingChoices
 
 open MvPolynomial Formalism.L2.Ker GlobalTheory.JetDeg
 
@@ -148,7 +147,6 @@ private theorem jetMap_congr_deg (lam : ι → DomWeight a) (lam' : ι → DomWe
       exact hτ (IsWeightedHomogeneous.inj_right hne h2 h1)
     rw [hz J, hz J']
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.WildA.jetDeg :
     ∀ {K : Type} [Field K] [CharZero K] {ι : Type} [Fintype ι] [DecidableEq ι] {a b : ℕ} (lam : ι → DomWeight a) (lam' : ι → DomWeight b) (n : ι → ℕ),

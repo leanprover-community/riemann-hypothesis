@@ -133,7 +133,6 @@ structure IsFormRep (k r : ℕ) (ρ : Mx k r → Matrix ι ι ℂ) (A : Matrix �
 
 end Tensor
 
-section Checks
 
 variable {ι : Type} [Fintype ι]
 
@@ -141,7 +140,6 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-end Checks
 
 end GlobalTheory.IndefiniteRowSideFullHecke.SmoothDecompositionForms
 

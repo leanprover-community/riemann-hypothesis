@@ -76,13 +76,11 @@ def unip (M M' : AddSubgroup (Fin n → A)) : Subgroup (GL (Fin n) A) where
 
 end Unip
 
-section Groups
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E]
 variable (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {n r : ℕ}
   (J : Matrix (Fin n) (Fin n) E)
 
-end Groups
 
 section Lattices
 
@@ -97,7 +95,6 @@ def gammaOne (SG : Finset (HeightOneSpectrum (𝓞 E))) (k : ℕ) : ℝ≥0∞ :
 
 end Lattices
 
-section Levels
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable (σ : E →ₐ[F] E) {n r k : ℕ} (J : Matrix (Fin n) (Fin n) E)
@@ -107,6 +104,5 @@ variable (P : Matrix (Fin n) (Fin (r + 1)) E) (f : Matrix (Fin n) (Fin r) E)
   (L : Submodule (𝓞 E) (Fin n → E)) (SG : Finset (HeightOneSpectrum (𝓞 E)))
   (ε : HeightOneSpectrum (𝓞 E) → Fin k → Fin n → E)
 
-end Levels
 
 end GlobalTheory.IndefiniteRowSideFullHecke.FlagUnipotentStabilizers

@@ -119,7 +119,6 @@ def zPhiAll (lam : ι → DomWeight (n + 1)) (sg : ι → DomWeight n) :
 
 end Tensors
 
-section Maps
 
 variable (K : Type) [Field K] {n : ℕ} {ι : Type} [Fintype ι]
 
@@ -129,7 +128,6 @@ variable [CharZero K]
 
 variable {K}
 
-end Maps
 
 section Statement
 

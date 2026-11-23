@@ -60,16 +60,13 @@ def ideleNorm (K : Type) [Field K] [NumberField K] : Idele K →* Afˣ :=
 def NormUnitCond {K : Type} [Field K] [NumberField K] (s : Idele K) (q : ℚ) : Prop :=
   ∃ u ∈ zHatUnits, (u : Af) = (((ideleNorm K s)⁻¹ : Afˣ) : Af) * algebraMap ℚ Af q
 
-section Herm
 
 variable {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
   {W : Type} [AddCommGroup W] [Module ℚ W] [Module E W]
 
 
 
-end Herm
 
-section Groups
 
 variable {E : Type} [Field E] [NumberField E]
   {W : Type} [AddCommGroup W] [Module ℚ W] [Module E W] [IsScalarTower ℚ E W]
@@ -79,6 +76,5 @@ variable [Module (𝓞 E) W]
 
 
 
-end Groups
 
 end GlobalTheory.IndefiniteRowSideFullHecke.AdelicScalarMultiplier

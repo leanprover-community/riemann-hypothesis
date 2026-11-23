@@ -72,7 +72,6 @@ def LiftsSmooth (K : GA D B.V → GA D A.V → ℂ) : Prop :=
 
 end Arrow
 
-section Grid
 
 variable {G₀ : Type} [Group G₀] [Fintype G₀] {Pl0 T : Type} {A : FamIn D.what₂.LL G₀ Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks)
@@ -132,7 +131,6 @@ structure CuspAlongSmooth : Prop where
   col : ∀ t j, j < D.R.m → ∀ Φ, IsThetaFunO R.ψ (G.Xp j).V (G.Xp (j + 1)).V Φ →
     LiftsSmooth R.θ (A := G.Xp j) (B := G.Xp (j + 1)) (G.measX j) fun h g => thetaKO (G.col t j).ω g h Φ
 
-end Grid
 
 def LiftsCuspidalAt (D : D7) : Prop :=
   Sizes D → ∀ (G₀ : Type) [Group G₀] [Fintype G₀] (Pl0 T : Type) (A : FamIn D.what₂.LL G₀ Pl0 T D.R.m)

@@ -45,11 +45,9 @@ def HasRationalTest (σ : K →+* ℂ) (S : Set E) : Prop :=
 
 end Abstract
 
-section Interface
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : DefBase K} {A : DefAmb Bs}
 
-end Interface
 
 section Concrete
 

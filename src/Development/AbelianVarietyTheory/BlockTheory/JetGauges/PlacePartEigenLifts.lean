@@ -41,12 +41,10 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.PlacePartEigenLifts
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.TB
 
-section Types
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H}
 variable (c : Coeff l) (la : HeightOneSpectrum (𝓞 c.F))
 
-end Types
 
 section Parts
 

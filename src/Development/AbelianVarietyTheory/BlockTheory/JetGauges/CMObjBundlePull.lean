@@ -64,11 +64,9 @@ abbrev genPt (K : Type) [Field K] [NumberField K] : Sp K ⟶ Sp (𝓞 K) := spMa
 
 end Line
 
-section Pol
 
 variable {K : Type} [Field K] [NumberField K]
 
-end Pol
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H}
 

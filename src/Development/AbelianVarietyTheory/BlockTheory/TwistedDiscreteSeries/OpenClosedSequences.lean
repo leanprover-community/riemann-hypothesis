@@ -164,10 +164,8 @@ def filt (μ : kˣ →* ℂˣ) (s : Set ℕ) (κ : ℕ) : Subrepresentation (ome
 
 end Model
 
-section Statement
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-end Statement
 
 end GlobalTheory.IndefiniteRowSideFullHecke.OpenClosedSequences

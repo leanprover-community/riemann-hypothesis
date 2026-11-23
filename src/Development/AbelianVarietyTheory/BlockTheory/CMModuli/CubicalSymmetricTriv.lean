@@ -80,12 +80,10 @@ variable {G}
 
 end Sym
 
-section Iso
 
 variable {S S' : Scheme.{0}} {G' : Over S'} {G : Over S} [GrpObj G'] [IsCommMonObj G']
   [GrpObj G] [IsCommMonObj G]
 
-end Iso
 
 section Triv
 
@@ -131,12 +129,10 @@ variable {B : Over S} [GrpObj B] [IsCommMonObj B]
 
 end Triv
 
-section Pairing
 
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {L : RigLB G}
   (c : CubicalStr G L)
 
-end Pairing
 
 section Torus
 

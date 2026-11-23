@@ -50,7 +50,6 @@ noncomputable section
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section Hil
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
 private theorem prj_mem {V : Submodule ℂ H} (hV : IsClosed (V : Set H)) (v : H) : prj V v ∈ V := by
@@ -97,7 +96,6 @@ private theorem prj_commute {V : Submodule ℂ H} (hV : IsClosed (V : Set H)) (T
   rw [← map_sub, ← ContinuousLinearMap.adjoint_inner_right]
   exact prj_inner hV v _ (h2 w hw)
 
-end Hil
 
 private theorem ofFn_smul {A : Type*} [Semiring A] [Algebra ℂ A] : ∀ (r : ℕ) (a : Fin r → ℂ) (X : Fin r → A),
     (List.ofFn fun i => a i • X i).prod = (∏ i, a i) • (List.ofFn X).prod := by
@@ -124,7 +122,6 @@ private theorem dep_extend {ι α : Type*} {β : α → Type*} (w : ι → α) (
     rfl
   · exact dif_neg hv
 
-section Loc
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 private theorem rhoL_adj (w : Pl K) (g : Gw n w) : ContinuousLinearMap.adjoint (rhoL μ w g) = rhoL μ w g⁻¹ := by
@@ -189,9 +186,7 @@ private theorem list_prj (hco : ∀ w, CO (J w) ∧ IsChr (J w) (χ w)) (L : Lis
     rw [List.map_cons, List.prod_cons, hs, hG, ← prj_comp_of_commute hcl (GA_closed μ hco _) hc, ← h1]
     rfl
 
-end Loc
 
-section BernoulliSumsFrobeniusOrbits
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 private theorem oloc_scale (v : Pl K) [MeasurableSpace (Gw n v)] [BorelSpace (Gw n v)] (m m₂ : Measure (Gw n v))
@@ -205,9 +200,7 @@ private theorem oloc_scale (v : Pl K) [MeasurableSpace (Gw n v)] [BorelSpace (Gw
   rw [ha, ContinuousLinearMap.smul_apply, inner_smul_right, hT, integral_smul_nnreal_measure]
   rfl
 
-end BernoulliSumsFrobeniusOrbits
 
-section SlopeTestRemainingChoices
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 private theorem finAt_eq (h : AdelicGLn.FiniteAdelicGL K n) (v : Pl K) :
@@ -278,7 +271,6 @@ private theorem finprod_split {ι α : Type*} [Fintype ι] (w : ι → α) (hw :
   refine finprod_congr fun u => ?_
   simp [Set.mem_diff]
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.L1
 

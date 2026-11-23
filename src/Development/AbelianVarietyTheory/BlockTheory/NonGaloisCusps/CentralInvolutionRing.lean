@@ -48,12 +48,10 @@ def UnitOff (N : ℕ) (u : ℂ) : Prop :=
 
 def normQ (Q : Finset (Pl D.host.E)) : ℕ := ∏ PP ∈ Q, Nat.card (kP PP)
 
-section Series
 
 variable {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (i : Fin D.R.m)
 
 
-end Series
 
 section Pinned
 
@@ -66,11 +64,9 @@ def Pinned : Prop :=
 
 end Pinned
 
-section Checks
 
 variable {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (i : Fin D.R.m)
 
-end Checks
 
 end GlobalTheory.IndefiniteRowSideFullHecke.CentralInvolutionRing
 

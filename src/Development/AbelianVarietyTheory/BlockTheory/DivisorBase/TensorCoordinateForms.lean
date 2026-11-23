@@ -57,21 +57,17 @@ def lineForm (a : ℝ) (D D' : ℂ) : ℂ := 2 * (a : ℂ) * (D * conj D')
 
 def omega (a : ℝ) (D : ℂ) : ℝ := 1 / (π * (lineForm a D D).re)
 
-section OnePlace
 
 variable {X X' : Type} [NormedAddCommGroup X] [InnerProductSpace ℂ X] [FiniteDimensional ℂ X]
   [NormedAddCommGroup X'] [InnerProductSpace ℂ X'] [FiniteDimensional ℂ X'] {n₀ n₁ : ℕ}
 
-end OnePlace
 
-section Places
 
 variable {Pl : Type} [Fintype Pl] [DecidableEq Pl] {X X' : Pl → Type}
   [∀ τ, NormedAddCommGroup (X τ)] [∀ τ, InnerProductSpace ℂ (X τ)] [∀ τ, FiniteDimensional ℂ (X τ)]
   [∀ τ, NormedAddCommGroup (X' τ)] [∀ τ, InnerProductSpace ℂ (X' τ)] [∀ τ, FiniteDimensional ℂ (X' τ)]
   {n₀ n₁ : ℕ}
 
-end Places
 
 def coordVec {κ : Type} [DecidableEq κ] (p : κ) : κ → ℂ := Pi.single p 1
 

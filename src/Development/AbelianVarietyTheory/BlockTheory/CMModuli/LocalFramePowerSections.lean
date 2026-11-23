@@ -44,19 +44,15 @@ def IsTrait {R₁ W : Type} [CommRing R₁] [IsDomain R₁] [CommRing W] [IsDoma
     (κ : FractionRing R₁ →+* FractionRing W) : Prop :=
   GlobalTheory.UU.CDVR W ∧ κ.comp (algebraMap R₁ (FractionRing R₁)) = (algebraMap W (FractionRing W)).comp ρ
 
-section Frames
 
 variable {S : Scheme.{0}} (G : Over S) [GrpObj G] [IsCommMonObj G] (L : RigLB G)
 
 
-end Frames
 
-section Data
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   (Xo : Moduli D l) {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
 
-end Data
 
 end GlobalTheory.IndefiniteRowSideFullHecke.LocalFramePowerSections
 end

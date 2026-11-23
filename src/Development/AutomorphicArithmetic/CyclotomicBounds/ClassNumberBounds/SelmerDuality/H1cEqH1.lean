@@ -89,11 +89,9 @@ abbrev FracMod (O K : Type*) [CommRing O] [Field K] [Algebra O K] : Type _ :=
 
 end Special
 
-section Koszul
 
 variable {R : Type*} [CommRing R] {M : Type*} [AddCommGroup M] [Module R M]
 
-end Koszul
 
 section Lagrangian
 

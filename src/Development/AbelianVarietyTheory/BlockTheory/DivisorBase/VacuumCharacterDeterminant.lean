@@ -86,12 +86,10 @@ def frameFn (sT : Fam D T.rank T.rank) (om : GA D S × GA D T →* Module.End �
 
 end Moved
 
-section Canon
 
 variable (S T : HSp D) (s : Fam D T.rank T.rank) (BS : Fam D S.rank S.rank) (BT : Fam D T.rank T.rank)
   (Γ : Set (Matrix (Fin T.rank) (Fin S.rank) D.host.E))
 
-end Canon
 
 section Chars
 

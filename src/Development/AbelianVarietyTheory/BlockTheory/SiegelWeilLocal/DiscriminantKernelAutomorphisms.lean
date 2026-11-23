@@ -42,12 +42,10 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section AnyLat
 
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-end AnyLat
 
 section Row
 

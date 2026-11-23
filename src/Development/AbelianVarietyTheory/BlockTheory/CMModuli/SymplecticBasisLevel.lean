@@ -53,12 +53,10 @@ abbrev univG : Over Xo.X := Xo.univ.t.G
 
 end Fibre
 
-section Component
 
 variable {D : Datum H} {l : Level H} (Xo : Moduli D l) (σ : KA l →+* ℂ) {g : ℕ} (ty : Fin g → (E →+* ℂ))
   (D' : Datum H) (u : (D'.La →+ (Fin g → ℂ)) → (Sp ℂ ⟶ Xo.X))
   (ex : ∀ P : D'.La →+ (Fin g → ℂ), (Fin g → ℂ) → (Over.mk (u P) ⟶ univG Xo))
 
-end Component
 
 end GlobalTheory.IndefiniteRowSideFullHecke.SymplecticBasisLevel

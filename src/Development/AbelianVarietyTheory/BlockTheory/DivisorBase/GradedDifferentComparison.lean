@@ -123,7 +123,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.GradedDifferentComparison
 
 end Valuations
 
-section AtAPoint
 
 variable {p : ℕ} [Fact p.Prime] {C : Type} [Field C] {v : Valuation C ℝ≥0} {O : Type} [CommRing O]
   [Algebra O C] [Algebra ℤ_[p] C] [Algebra ℤ_[p] O] [IsScalarTower ℤ_[p] O C] [IsAlgClosed C]
@@ -132,7 +131,6 @@ variable {p : ℕ} [Fact p.Prime] {C : Type} [Field C] {v : Valuation C ℝ≥0}
 
 variable {P} {Ψ : Finset (E →+* C)} {N j : ℕ}
 
-end AtAPoint
 
 section PadicComplex
 

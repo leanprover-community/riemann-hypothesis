@@ -46,15 +46,11 @@ abbrev Sp (R : Type) [CommRing R] : Scheme.{0} := Spec (CommRingCat.of R)
 def Conv (g n k : ℕ) : Prop :=
   n.Prime ∧ Odd n ∧ 2 ≤ k ∧ 1 + 2 * (g : ℝ) * (2 : ℝ) ^ ((g : ℝ) / 2) < (((n ^ k) ^ 2 : ℕ) : ℝ)
 
-section General
 variable {S : Scheme.{0}}
 
-end General
 
-section Forms
 variable {R : Type} [CommRing R] {P : PolAV (Sp R)} {I : Type} {e : ℤ}
 
-end Forms
 
 section Norm
 variable {K : Type} [Field K] (P : PolAV (Sp K))

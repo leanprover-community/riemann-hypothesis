@@ -68,12 +68,10 @@ def IsTameLabel (ω : Fbar g →*₀ ℂ) (η : (ZMod g)ˣ → ℂ) (c : (ZMod g
 
 end OnePrime
 
-section BothPrimes
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {gp : Fin 2 → ℕ} {pb : Fin 2 → 𝓞 E}
 
 variable [∀ i, Fact (gp i).Prime] {K : Type} [Field K]
 
-end BothPrimes
 
 end GlobalTheory.IndefiniteRowSideFullHecke.CuspValueComparison

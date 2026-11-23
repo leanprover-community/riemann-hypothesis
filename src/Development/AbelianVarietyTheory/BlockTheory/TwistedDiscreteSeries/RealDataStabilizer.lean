@@ -76,21 +76,16 @@ end Pair
 
 def fp (V : HSp D) (g : GA D V) : GfC V := ⟨GlobalTheory.LevelNbhd.finPartG V g, GlobalTheory.LevelNbhd.finPartG_mem_GfC V g⟩
 
-section Global
 
 variable (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) {S T : HSp D} (BS : Bas S) (BT : Bas T)
 
 variable {π : CoefA S} {π' : CoefA T}
 
-end Global
 
-section Last
 
 variable {V A L : HSp D} (o : OrthDec V A L) (π : CoefA V) (δ : CoefA A)
 
-end Last
 
-section Chain
 
 variable (P : TPar D) (θ : InfFam D) (X : ℕ → HSp D) {X' L : HSp D} (o : OrthDec (X D.R.m) X' L) (B : ∀ j, Bas (X j))
 
@@ -102,7 +97,6 @@ variable (μ : ∀ j, Measure (GA D (X j))) (𝓕 : ∀ j, Set (GA D (X j)))
 
 
 
-end Chain
 
 end GlobalTheory.IndefiniteRowSideFullHecke.BasisPolynomialParabolics
 

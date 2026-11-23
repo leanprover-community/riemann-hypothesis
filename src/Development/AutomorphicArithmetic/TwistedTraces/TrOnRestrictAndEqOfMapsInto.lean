@@ -37,7 +37,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 open MeasureTheory NumberField IsDedekindDomain Filter GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
 open GroundTheory.Automorphic.CuspidalSpectrum GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets GlobalTheory.PRep Formalism.BasicNotions GlobalTheory.CuspRep GlobalTheory.SmGL UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.C.Sf
 
-section SlopeTestRemainingChoices
 
 open scoped InnerProductSpace
 
@@ -80,7 +79,6 @@ private theorem trOn_of_restrict (E : Submodule ℂ H) [FiniteDimensional ℂ E]
   ext v
   rw [cprs_coe, ← hb, Submodule.starProjection_eq_self_iff.2 (b v).2]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.trOn_restrict_and_eq_of_maps_into :
     ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (X Y : Submodule ℂ H) [FiniteDimensional ℂ X] [FiniteDimensional ℂ Y] (B : H →L[ℂ] H), (∀ b : Module.End ℂ X, (∀ v : X, ((b v : X) : H) = B v) → trOn X B = LinearMap.trace ℂ X b) ∧ (X ≤ Y → (∀ v ∈ Y, B v ∈ X) → trOn Y B = trOn X B) := by

@@ -97,7 +97,6 @@ private theorem dim_lt {R : Type*} [CommRing R] {p q : Ideal R} [p.IsPrime] [q.I
       have h6 : a ≤ m := by omega
       exact_mod_cast h6
 
-section Tensor
 
 variable {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [Algebra S Ω] {N : ℕ}
   {x : Fin (N + 1) → Ω}
@@ -186,9 +185,7 @@ private theorem tensorSub_line {n : ℕ} (L : Fin n → LineBundle S x) (T : Fin
     ∃ Q : LineBundle S x, Q.toSubSystem = tensorSub (fun i => (L i).toSubSystem) T :=
   foldl_line L _ (twistBundle S x 0)
 
-end Tensor
 
-section Form
 
 variable {k : Type u} [Field k] {Ω : Type w} [Field Ω] [Algebra k Ω] {N : ℕ}
   {x : Fin (N + 1) → Ω}
@@ -328,9 +325,7 @@ private theorem exists_form (Lc : LineBundle k x) (s : Ω) (pp : Ideal (Poly k N
     rw [hfv, map_pow, aeval_X]
     field_simp
 
-end Form
 
-section Mixed
 
 variable {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [Algebra S Ω] {N : ℕ}
   {x : Fin (N + 1) → Ω}
@@ -413,9 +408,7 @@ private theorem interSum_snoc (pp : Ideal (Poly S N)) {n : ℕ} (L : Fin n → S
     pow_succ]
   ring
 
-end Mixed
 
-section Final
 
 variable {k : Type u} [Field k] {Ω : Type w} [Field Ω] [Algebra k Ω] {N : ℕ}
 
@@ -543,7 +536,6 @@ private theorem main : CycleSplit.Filt.Statement.{u, w} → CutRestrLenExact.Sta
   rw [interNum, (tendsto_const_nhds.congr' hev.symm).limUnder_eq]
   exact sum_eq_finsum x n _ _ m P hcard hmin
 
-end Final
 
 end
 

@@ -58,14 +58,12 @@ structure PowerDatum (j : ℕ) (G' G : Over S) [GrpObj G'] [GrpObj G] where
 
 attribute [instance] PowerDatum.isMonHom
 
-section Power
 
 variable (G : Over S)
 
 variable [GrpObj G]
 
 
-end Power
 
 section Symm
 

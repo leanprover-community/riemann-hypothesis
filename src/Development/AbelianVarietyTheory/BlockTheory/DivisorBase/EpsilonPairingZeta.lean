@@ -138,7 +138,6 @@ def HodgeTateSandwichAt [IsDomain O] {ε : PreTilt O p} (hε : IsPrimitiveSystem
       (fil : G.dual.omega ≃ₗ[O] D.Fil) (lie : ((Fin G.height → O) ⧸ D.Fil) ≃ₗ[O] G.Lie),
       Realizes hε u₁ u₂ G ρ D e fil lie
 
-section Inhabitant
 
 variable [IsDomain O] {ε : PreTilt O p} (hε : IsPrimitiveSystem ε)
 
@@ -147,13 +146,10 @@ variable [IsDomain O] {ε : PreTilt O p} (hε : IsPrimitiveSystem ε)
 
 
 
-end Inhabitant
 
-section Guards
 
 variable {p : ℕ} [Fact p.Prime] {C : Type} [NormedField C] [NormedAlgebra ℚ_[p] C]
   {O : Type} [CommRing O] [Algebra O C]
 
-end Guards
 
 end GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta

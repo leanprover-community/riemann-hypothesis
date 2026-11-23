@@ -81,7 +81,6 @@ def ambE (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (χ : TaylorLogMetric.IdE D →
 
 end Global
 
-section Chain
 
 variable {D : D7} {X : Fields} (s : Seam D X) {Pr : Primes X} (Ch : Chars X Pr D.R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
@@ -91,6 +90,5 @@ variable {D : D7} {X : Fields} (s : Seam D X) {Pr : Primes X} (Ch : Chars X Pr D
   (rep : ∀ i, C.cls i → Pt sel mu L v i)
   (frm : ∀ i, C.Y i → D.what₂.Tau → Matrix (Fin (D.R.N i)) (Fin (D.R.N i)) ℂ)
 
-end Chain
 
 end GlobalTheory.IndefiniteRowSideFullHecke.AmbientLatticeAvoidance

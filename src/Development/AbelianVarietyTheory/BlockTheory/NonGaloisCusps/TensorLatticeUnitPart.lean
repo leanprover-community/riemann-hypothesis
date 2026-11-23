@@ -37,13 +37,11 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.TensorLatticeUnitPart
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct
 
-section Bilinear
 
 variable {O : Type} [CommRing O] (R : Type) [CommRing R] [Algebra O R]
   {M M' M'' : Type} [AddCommGroup M] [AddCommGroup M'] [AddCommGroup M'']
   [Module O M] [Module O M'] [Module O M'']
 
-end Bilinear
 
 section Generic
 

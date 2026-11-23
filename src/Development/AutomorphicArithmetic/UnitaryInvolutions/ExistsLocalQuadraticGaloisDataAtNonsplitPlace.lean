@@ -43,7 +43,6 @@ open scoped Classical TensorProduct
 
 namespace UpperTheory.G3.FixRing
 
-section Abstract
 
 variable {O : Type} [CommRing O]
 
@@ -86,9 +85,7 @@ private theorem isLocal_S [Nontrivial O] (c : O →+* O) (h : ∀ x : O, IsUnit 
   · exact Or.inl (isUnit_S c a h)
   · exact Or.inr (isUnit_S c (1 - a) (by simpa using h))
 
-end Abstract
 
-section Val
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 
@@ -186,7 +183,6 @@ private theorem valuation_lt_one_le_uniformiser {a : WithZero (Multiplicative �
     show Multiplicative.toAdd b ≤ -1
     omega
 
-end Val
 
 section Main
 

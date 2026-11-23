@@ -37,11 +37,9 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.SelmerSumLargePrime
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N
 
-section Exceptional
 
 variable {D : D7} (L : SizeData₂ D)
 
-end Exceptional
 
 section Terms
 

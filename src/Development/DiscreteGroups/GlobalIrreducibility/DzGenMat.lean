@@ -43,11 +43,9 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.Whittaker GlobalTheory.Spl
 
 namespace DiscreteGroups.sglob.DzType
 
-section Ring
 
 variable {R : Type} [CommRing R] {m : ℕ}
 
-end Ring
 
 section Local
 

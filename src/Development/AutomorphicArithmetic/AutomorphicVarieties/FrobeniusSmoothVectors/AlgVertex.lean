@@ -78,7 +78,6 @@ theorem UpperTheory.V.Fr.alg_vertex :
         (by rw [List.map_append, List.sum_append, h1, h2]; ring) ⟨s, List.mem_append_left _ hs, hne⟩
       refine Submodule.mem_map.2 ⟨c, hc, ?_⟩
       rw [Algebra.linearMap_apply, hc', List.map_append, List.prod_append]
-    open Pointwise in
     have hxy : x * y ∈ Submodule.span C (ρ.mon j * ρ.mon (-j)) := by
       rw [← Submodule.span_mul_span]
       exact Submodule.mul_mem_mul hx hy

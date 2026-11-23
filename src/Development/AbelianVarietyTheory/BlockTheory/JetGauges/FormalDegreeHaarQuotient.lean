@@ -70,18 +70,14 @@ def leviW (k r : ℕ) (s : Mat k r) : Mat k r := fun i j =>
   if (r ≤ i.val ∧ i.val ≤ r + k) ∧ (r ≤ j.val ∧ j.val ≤ r + k) then s i j
   else if i = j then 1 else 0
 
-section Twist
 
 variable {Wp : Type*} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
 
-end Twist
 
-section Period
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 variable {Wp : Type*} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
 
-end Period
 
 theorem col_of_fix {h : Mat k r} {j : Fin (2 * r + k + 1)}
     (hj : h *ᵥ Formalism.QuantumDeterminants.bvec j = Formalism.QuantumDeterminants.bvec j) (i : Fin (2 * r + k + 1)) :

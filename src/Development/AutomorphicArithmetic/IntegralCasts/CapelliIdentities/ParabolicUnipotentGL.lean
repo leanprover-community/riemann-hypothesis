@@ -58,7 +58,6 @@ noncomputable def UpperTheory.Reformulated.B.ParabolicUnipotentGL.U :
 
 namespace UpperTheory.Reformulated.B.ParabolicUnipotentGL
 
-section helpers
 
 variable {n : ℕ} {V : Type} [AddCommGroup V] [_root_.Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V)
 
@@ -138,7 +137,6 @@ private theorem monomial_commutator_mem_filtration (hE : IsGlRep E) (l : List (F
     · exact U_mono E (by simp only [List.length_cons]; omega)
         (mul_mem_U E (gen_comm_P E hE _ _ (q :: m)) (monomial_mem_filtration_of_length_le E t le_rfl))
 
-end helpers
 
 end UpperTheory.Reformulated.B.ParabolicUnipotentGL
 

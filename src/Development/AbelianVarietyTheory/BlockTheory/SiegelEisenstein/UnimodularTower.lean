@@ -80,11 +80,9 @@ structure ColStep {X X' : HSp D} {j : ℕ} (A : ColOn c u X j) (A' : ColOn c u X
   f : WO X X' → ℂ
   it : PolF D X'.rank X.rank →ₗ[ℂ] SmT A.M →ₗ[ℂ] SmT A'.M
 
-section ColStep
 
 variable {X X' : HSp D} {j : ℕ} {A : ColOn c u X j} {A' : ColOn c u X' (j + 1)}
 
-end ColStep
 
 structure Node (c : Com D) (u : D.what₂.Word) (ρ j : ℕ) where
   B : BesLev D ρ
@@ -107,11 +105,9 @@ structure Dbl {σ j : ℕ} (N : Node c u (σ + 1) j) (N' : Node c u σ (j + 1 + 
   k₂ : ColStep col N'.col
   ε : Eps D u
 
-section Dbl
 
 variable {σ j : ℕ} {N : Node c u (σ + 1) j} {N' : Node c u σ (j + 1 + 1)}
 
-end Dbl
 
 structure Fin2 {j : ℕ} (N : Node c u 0 j) {T : HSp D} (top : RowOn T) where
   t : Last c.ψ T N.B
@@ -129,11 +125,9 @@ structure Fin2 {j : ℕ} (N : Node c u 0 j) {T : HSp D} (top : RowOn T) where
   ι : (D.mem u).P.Mt ≃ₗ[ℂ] top.st.CC c
   br : SmT col₂.M →ₗ[ℂ] SmT top.M →ₗ[ℂ] ℂ
 
-section Fin2
 
 variable {j : ℕ} {N : Node c u 0 j} {T : HSp D} {top : RowOn T}
 
-end Fin2
 
 end GlobalTheory.IndefiniteRowSideFullHecke.UnimodularTower
 

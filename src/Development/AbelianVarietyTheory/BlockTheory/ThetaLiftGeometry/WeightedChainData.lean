@@ -37,11 +37,9 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.WeightedChainData
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker
 
-section Frames
 
 variable (D : D7) {N : ℕ} {Y : Type} (frm : Y → D.what₂.Tau → Matrix (Fin N) (Fin N) ℂ)
 
-end Frames
 
 structure ChainData (D : D7) (u : D.what₂.Word) (μ : D.what₂.Tup) where
   X : Fields

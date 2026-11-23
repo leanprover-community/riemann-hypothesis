@@ -62,14 +62,12 @@ def PrimeToHost : Prop :=
 
 end Adelic
 
-section Geometric
 
 variable {C : Core D} [Algebra C.Q.c.F D.what₂.LL] {R : RealDat D A C.Q.c.F} {i : Fin D.R.m}
   (O : OMDat C R i Unit (fun _ => A.μ0)) (κ : WeightFamilies.Wt D ((i : ℕ) + 1))
 
 variable (cc : (C.U ((i : ℕ) + 1) O.s0).Comp → ℂ)
 
-end Geometric
 
 end GlobalTheory.IndefiniteRowSideFullHecke.AdelicScalarSectionLift
 

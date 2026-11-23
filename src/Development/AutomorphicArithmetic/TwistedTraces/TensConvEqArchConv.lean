@@ -40,7 +40,6 @@ open MeasureTheory NumberField GroundTheory.Automorphic GroundTheory.Automorphic
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum PositivityTheory.Rg.Tf.Core UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C
 open scoped ContDiff
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -102,7 +101,6 @@ private theorem tens_conv (hn : 0 < n) (ν : Measure (archGroup K n)) [ν.IsHaar
   refine integral_congr_ae (Filter.Eventually.of_forall fun a => ?_)
   simp only [mul_assoc]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.tens_conv_eq_archConv :
     ∀ (K : Type) [Field K] [NumberField K] (n : ℕ), 0 < n →

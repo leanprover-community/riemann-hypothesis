@@ -82,11 +82,9 @@ structure OUnif (t : SAB H (Spec (CommRingCat.of R))) (Δ : OData H I) where
   cub_eq : HEq U.cubG t.cub
   lin : letI := hostStar H; U.toUnifPre.OLinear (𝓞 E) Δ.ac actA (ringActOf t.act)
 
-section Points
 
 variable {F : Type} [Field F] [Algebra (FractionRing R) F]
 
-end Points
 
 namespace OUnif
 

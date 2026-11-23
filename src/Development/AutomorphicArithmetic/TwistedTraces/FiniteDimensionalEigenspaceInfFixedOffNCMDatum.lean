@@ -38,7 +38,6 @@ open MeasureTheory NumberField IsDedekindDomain Filter GroundTheory.Automorphic 
 open GroundTheory.Automorphic.CuspidalSpectrum GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets GlobalTheory.PRep Formalism.BasicNotions GlobalTheory.CuspRep GlobalTheory.SmGL PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo GroundTheory.Global GroundTheory.Global.SemiLocal UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.L1 UpperTheory.ConvolutionTheory.C
 open scoped ComplexConjugate Classical InnerProductSpace
 
-section One
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 private theorem mem_eigL' (w : Pl K) (J : Subgroup (Gw n w)) (χ : Gw n w → ℂ) (v : LL μ) :
@@ -57,7 +56,6 @@ private theorem rhoL_comm {w w' : Pl K} (hne : w' ≠ w) (g : Gw n w) (x : Gw n 
   simp only [rhoL, rhoF]
   rw [← UnitaryRep.map_mul_apply, ← UnitaryRep.map_mul_apply, ← map_mul, ← map_mul, h]
 
-end One
 
 private theorem kerChr_co {G : Type} [Group G] [TopologicalSpace G] {J : Subgroup G} {χ : G → ℂ} (hJ : CO J) (h : IsChr J χ) :
     CO (kerChr J χ h) := by
@@ -78,7 +76,6 @@ private theorem exists_ext {A ι : Type*} {B : A → Type*} (f : ι → A) (hf :
   simp only [dif_pos h]
   exact key i _ _
 
-section Two
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable {σ : E ≃ₐ[F] E} {n : ℕ} {q : Pl F} {w₀ : PlacesOver E q}
 variable (μ : Measure (normOneGL (K := E) (n := n))) [μ.IsHaarMeasure]
@@ -109,7 +106,6 @@ private theorem Zv_closed (T : Ty σ n q w₀) (V : Submodule ℂ (LL μ)) (hV :
   exact isClosed_iInter fun w => isClosed_iInter fun _ =>
     (UpperTheory.ConvolutionTheory.L1.eigBasic E n μ w (T.J w) (T.χ w) (T.co w) (T.chr w)).1
 
-end Two
 
 theorem UpperTheory.finiteDimensional_eigenspace_inf_fixed_offN_CMDatum :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E ≃ₐ[F] E) (n : ℕ), 0 < n → ∀ (μ : Measure (normOneGL (K := E) (n := n))) [μ.IsHaarMeasure]

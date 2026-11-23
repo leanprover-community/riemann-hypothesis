@@ -100,11 +100,9 @@ theorem wordDeriv_perm (dir : Λ → W) {F : W → ℂ} {p : W} (hF : AnalyticAt
 
 end Operator
 
-section Columns
 
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
-end Columns
 
 def gDim (f r : ℕ) : ℕ := f * r
 

@@ -81,14 +81,12 @@ def HidaSetting : Prop :=
 
 end HidaSetting
 
-section Enlarge
 
 variable (N : NData R H what₂) (i : N.Loc) (N₁ : NData R H what₂) (i₁ : N₁.Loc)
   (σ : N.Om ≃ₐ[H.E] N₁.Om) (φ : N.O i →+* N₁.O i₁) (β : N.X i ≃ N₁.X i₁)
 
 variable {N i N₁ i₁}
 
-end Enlarge
 
 end GlobalTheory.IndefiniteRowSideFullHecke.CharPolyRootsConstruction
 

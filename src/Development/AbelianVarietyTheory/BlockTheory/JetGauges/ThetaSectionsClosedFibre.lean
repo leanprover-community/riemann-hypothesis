@@ -56,12 +56,10 @@ def Generates (s : LB.Sec N) : Prop :=
 
 end General
 
-section Theta
 
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegData R I}
   {A : PolAV (Spec (CommRingCat.of (FractionRing R)))}
   {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]
 
-end Theta
 
 end GlobalTheory.IndefiniteRowSideFullHecke.ThetaSectionsClosedFibre

@@ -40,11 +40,9 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.CuspidalSupportClasses
 
-section Finite
 
 variable {F : Type} [Field F] {n : ℕ} {Y : Type} [AddCommGroup Y] [Module ℂ Y]
 
-end Finite
 
 section Local
 
@@ -75,14 +73,12 @@ def IsDatum (σ : Representation ℂ (GL (Fin r) k) V) (χW χV : kˣ →* ℂˣ
 
 end Local
 
-section Places
 
 variable {ι : Type} [Fintype ι] (k : ι → Type) [∀ v, Field (k v)] [∀ v, ValuativeRel (k v)]
   [∀ v, TopologicalSpace (k v)] [∀ v, IsNonarchimedeanLocalField (k v)] (r : ℕ)
 
 variable {k r}
 
-end Places
 
 section Examples
 

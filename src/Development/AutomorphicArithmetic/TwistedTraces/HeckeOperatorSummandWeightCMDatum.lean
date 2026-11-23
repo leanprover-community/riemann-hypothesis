@@ -40,7 +40,6 @@ open scoped ComplexConjugate Classical InnerProductSpace
 
 namespace UpperTheory.EigenLatticeOffDiagonal
 
-section Ops
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 private theorem rhoL_mul (w : Pl K) (g h : Gw n w) : rhoL μ w (g * h) = rhoL μ w g ∘L rhoL μ w h := by
@@ -99,9 +98,7 @@ private theorem comm_prj {V : Submodule ℂ (LL μ)} (hV : IsClosed (V : Set (LL
   rw [← h]
   exact hV.submodule_topologicalClosure_eq.le (Submodule.starProjection_apply_mem V.topologicalClosure (R v))
 
-end Ops
 
-section Ty
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E ≃ₐ[F] E} {n : ℕ} {q : Pl F} {w₀ : PlacesOver E q} (μ : Measure (normOneGL (K := E) (n := n))) [μ.IsHaarMeasure]
 
@@ -125,7 +122,6 @@ private theorem off_step (T : Ty σ n q w₀) (Bo : LL μ →L[ℂ] LL μ) (w₁
     simp only [ContinuousLinearMap.mul_apply] at this
     rw [← this, hv w hw x hx, map_smul]
 
-end Ty
 
 end UpperTheory.EigenLatticeOffDiagonal
 

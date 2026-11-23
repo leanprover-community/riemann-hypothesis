@@ -48,7 +48,6 @@ open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunOb
 open Formalism.DivisionValues (vw lw)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section SlopeTestRemainingChoices
 
 variable {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K] {ι : Type} [Fintype ι] {n : ℕ}
 
@@ -213,7 +212,6 @@ private theorem lcb_smul_loc {Z : Type} [AddCommGroup Z] [Module K Z] [Module (�
   rw [Formalism.EigenvalueLevelCeiling.ThreeFormsAlt.mem_localization_iff_mem_span] at hx ⊢
   exact Submodule.smul_mem _ (⟨a, h⟩ : Formalism.EigenvalueLevelCeiling.ThreeFormsAlt.OO w) hx
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.WildA.latCoordB :
     ∀ (D : D7) {n : ℕ} (lam : D.what₂.Tau → DomWeight n) (w : PlL D) (l : ℕ), l.Prime → (l : 𝓞 D.what₂.LL) ∈ w.asIdeal →

@@ -86,11 +86,9 @@ theorem colFn_indicator (P : HeightOneSpectrum (𝓞 E)) {n : ℕ} (y₀ : Sp E 
 
 end Notions
 
-section Padic
 
 variable {g : ℕ} [Fact g.Prime] {n : ℕ}
 
-end Padic
 
 section Chain
 

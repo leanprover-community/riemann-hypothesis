@@ -45,11 +45,9 @@ abbrev Ad : Type := FiniteAdeleRing (𝓞 H.E) H.E
 
 end Adelic
 
-section abelian₂
 
 variable {l : ℕ} [Fact l.Prime] (lam : (algebraicClosure ℚ ℂ) →+* ℂ_[l])
 
-end abelian₂
 
 abbrev Reps (D : D7) (u : D.what₂.Word) (μ : D.what₂.Tup) : Type :=
   ∀ i, (D.chTw u μ).cls i → GL (Fin (D.R.N i)) (Ad D.host)

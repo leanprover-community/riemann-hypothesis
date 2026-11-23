@@ -43,7 +43,6 @@ open scoped ComplexConjugate Classical InnerProductSpace
 
 namespace UpperTheory.RedH
 
-section Hil
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
 private theorem prj_mem_cl {V : Submodule ℂ H} (hV : IsClosed (V : Set H)) (v : H) : v ∈ V.topologicalClosure ↔ v ∈ V := by
@@ -185,7 +184,6 @@ private theorem alg {R : Type} [Ring R] [Algebra ℂ R] (PX P PY A Oa U S Θ : R
   rw [e1, smul_mul_assoc, mul_smul_comm, ← mul_assoc PX (A * _), ← mul_assoc PX A, h3, smul_mul_assoc,
     smul_mul_assoc, smul_smul, e2, mul_assoc PY]
 
-end Hil
 
 end UpperTheory.RedH
 

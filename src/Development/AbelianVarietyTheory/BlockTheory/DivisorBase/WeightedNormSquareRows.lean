@@ -43,11 +43,9 @@ open Formalism.BasicNotions Formalism.L2.Col Formalism.L2.DIV
 def normSqAt {K : Type} [Field K] [NumberField K] [StarRing K] (S : GSD K) (h : S.Ok) (s : K →+* ℂ) (φ : S.D → S.V) : ℝ :=
   (S.ipAt h (InfinitePlace.mk s) φ φ).re
 
-section Comparison₂
 
 variable {X : Fields} {Word : Type} (Nd : NumDatum) (W : Wts X Word Nd.R)
 
-end Comparison₂
 
 section Ev
 

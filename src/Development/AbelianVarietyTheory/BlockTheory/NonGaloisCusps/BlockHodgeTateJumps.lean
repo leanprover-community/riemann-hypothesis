@@ -36,7 +36,6 @@ open NumberField IsDedekindDomain Formalism Formalism.WeaklyAdmissibleFiltration
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.BlockHodgeTateJumps
 
-section Jumps
 
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -48,7 +47,6 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
     (σ : Representation LL G V)
 
-end Jumps
 
 def blockJumps (t : ℕ) : Multiset ℤ := (Finset.Ico (0 : ℤ) (t : ℤ)).val
 

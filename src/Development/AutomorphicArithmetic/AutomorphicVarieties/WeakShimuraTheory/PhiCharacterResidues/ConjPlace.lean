@@ -79,7 +79,6 @@ theorem UpperTheory.V.Ws.phiKer :
     unfold GS
     infer_instance
   refine ⟨hsurj, (hcont.isClosedMap).isQuotientMap hcont hsurj, fun U hU hI g hg => ?_⟩
-  open scoped Pointwise in
   have hsm : ∀ (g : G L Ω) (B : ValuationSubring Ω), W.resP L Ω g • B = g • B := by
     intro g B
     ext x
@@ -110,7 +109,6 @@ theorem UpperTheory.V.Ws.phiKer :
     refine ⟨?_, fun x hx => ?_⟩
     · open scoped Pointwise in
       rw [ValuationSubring.decompositionSubgroup, MulAction.mem_stabilizer_iff] at hd ⊢
-      open scoped Pointwise in
       rwa [← hsm]
     · have := hi x hx
       rwa [hres] at this

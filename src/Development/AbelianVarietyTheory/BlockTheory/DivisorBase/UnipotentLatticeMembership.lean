@@ -39,7 +39,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.UnipotentLatticeMembership
 
 open NumberField IsDedekindDomain Formalism.IndefR.Arith
 
-section Clause
 
 variable {LL Ks : Type} [Field LL] [NumberField LL] [Field Ks] [NumberField Ks] [Algebra Ks LL]
 variable {WL : Type} [AddCommGroup WL] [Module LL WL] [Module Ks WL] [IsScalarTower Ks LL WL]
@@ -50,7 +49,6 @@ variable (A : FormsL LL Ks WL W G0) (J0 : Subgroup G0) (lam0 : J0 →* LLˣ) (eC
 
 variable {A J0 lam0 eC}
 
-end Clause
 
 section Level
 
@@ -66,12 +64,10 @@ instance finiteLevelGroupFintype : Fintype (G0g D.nd) :=
 
 end Level
 
-section Rec
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.MainNotions.DIV.Cons
 
 variable {D : D7}
 
-end Rec
 
 end GlobalTheory.IndefiniteRowSideFullHecke.UnipotentLatticeMembership

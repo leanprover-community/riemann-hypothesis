@@ -68,7 +68,6 @@ theorem UpperTheory.V.Ws.ncard_placesDividing_le_of_orbitBound :
   have fix : ∀ σ ∈ V, ∀ y : 𝓞 F, σ (algebraMap F Ω (y : F)) = algebraMap F Ω (y : F) := by
     intro σ hσ y
     exact (IntermediateField.mem_fixingSubgroup_iff F σ).1 (hV hσ) _ (by simp)
-  open scoped Pointwise in
   have hup : ∀ w ∈ plDvd F p, ∃ B ∈ T, ∃ σ ∈ V, σ • B = placeOf Ω w := by
     intro w hw
     apply hTA

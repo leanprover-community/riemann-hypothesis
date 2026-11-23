@@ -80,11 +80,9 @@ theorem eq_nuStar_of_forall {p : R} {U : Set R} {tr : ℕ} (m : ℕ∞)
 
 end Def
 
-section Domain
 
 variable {R : Type*} [CommRing R] [IsDomain R]
 
-end Domain
 
 section Int
 
