@@ -192,7 +192,7 @@ variable {D : Formalism.BasicNotions.D7} {M : ∀ p : PlF D, Loc.Model (D.s.atP 
 theorem cf_mul_cfi (Zd : LocDat D) (p : PlF D) (a b : Fin (D.R.rS + 1)) (h : a.val = b.val + 1) :
     cf Zd p a * cfi Zd p b = yP Zd p := by
   unfold cf cfi
-  have hb : D.R.rS - b.val = (D.R.rS - a.val) + 1 := by have := a.2; omega
+  have hb : D.R.rS - b.val = (D.R.rS - a.val) + 1 := omega
   rw [hb, pow_succ, inv_pow, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero _ (yP_ne Zd p)), one_mul]
 
 theorem phaseLoc_L (hA : ∀ p, Agree δ M p) {γ : TermDef.Term D u u' F0 what₂} {w : Point D.host.E (D.R.rS + 1)}

@@ -609,7 +609,7 @@ namespace Formalism.FourierDecayAlt.P.Sz4
 
 
 lemma u_last (c : Cfg) (de : ℕ → ℝ) (hc : c.Ok) : c.u de c.k = c.ulast := by
-  have : c.k ≠ 1 := by have := hc.hk; omega
+  have : c.k ≠ 1 := omega
   simp [Cfg.u, this]
 
 lemma a_sub_ulast_pos (c : Cfg) (hc : c.Ok) : 0 < c.a - c.ulast := by

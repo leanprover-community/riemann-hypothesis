@@ -3384,7 +3384,7 @@ theorem pairing_order_of_planes_and_rows (D : Formalism.BasicNotions.D7) (h1 : R
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV Q hQ g hg s hs b hb
   have hn : Even n' := hH.2.2.2.2
   have hrk : r ≤ k := hH.2.2.1
-  have hp : 2 ≤ p := by have := hH.1; omega
+  have hp : 2 ≤ p := omega
   have hA : RowsEvenTopsBefore Fr (s.val : ℤ) := h2 n' r Fr L₁ N₁ hV hn (by have := hH.2.1; omega) (s.val : ℤ)
   have hQ1 : 1 ≤ 2 * Q := by
     have h3 : 1 ≤ Qj Fr p 0 := Nat.one_le_pow _ _ (by omega)
@@ -4446,7 +4446,7 @@ theorem bc_claim_of_tail (D : Formalism.BasicNotions.D7) (hL : Conclusion2 D) (h
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV Q hQ g hg c' o mu la τ hτ hτT hlev hmu hla
   have hn : Even n' := hH.2.2.2.2
   have hrk : r ≤ k := hH.2.2.1
-  have hr1 : 1 ≤ r := by have := hH.2.1; omega
+  have hr1 : 1 ≤ r := omega
   have hDl : ∀ j : ℕ, bc_IT Fr (subst p n' O S.w n' r g (Del p n' O Fr g (j : ℤ))) :=
     fun j => bc_IT_Del S.w Fr hV hn hrk hg j
   have hDt : ∀ s : ℤ, bc_IT Fr (subst p n' O S.w n' r g (Dtop p n' O Fr hrk g s)) :=

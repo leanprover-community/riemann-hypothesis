@@ -60,7 +60,7 @@ theorem place_chart (hrep : IsPtRep X u u' w γ) :
   have hT : ∀ u0 : D.what₂.Word, 0 < Tr D u0 := fun u0 => by
     unfold Tr
     exact Nat.cast_pos.2 (D.mem u0).A.T_prime.pos
-  have hk : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 1 ≤ D.R.k := omega
   have hg0 : Formalism.L2.SG.RealFrameCoordinates.g0 C γ τ ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk D.R.k D.R.rS) :=
     Formalism.L2.SG.Pf.LTL.trG_mem _ _ _ (C.isT τ).2.1 (C.isT τ).2.2.1 _
   exact locChart D.R.k D.R.rS hk _ _ hzW (by rw [hTz]; exact hT u) hzW' (by rw [hTz']; exact hT u') (ptLoc D τ w) _

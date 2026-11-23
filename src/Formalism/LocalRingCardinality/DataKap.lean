@@ -85,7 +85,7 @@ theorem sigPar_int (D : D7) (τ : D.what₂.Tau) (i : ℕ) : ∃ z : ℤ, sigPar
   · exact ⟨0, by simp⟩
 
 theorem nV_cast (R : Ranks) : (R.nV : ℚ) = (R.k : ℚ) + R.m - 1 + R.t := by
-  have h : 1 ≤ R.k + R.m := by have := R.two_le_m; omega
+  have h : 1 ≤ R.k + R.m := omega
   unfold Ranks.nV Ranks.r
   push_cast [Nat.cast_sub h]
   ring

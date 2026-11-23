@@ -69,7 +69,7 @@ abbrev runOf (T : ParamsT D L P) (S : SizesAt L) (hZ : 10 ^ 60 ≤ zBase L) : Ru
   nW := T.nWn
   nP := T.nP
   Q0 := q0N T
-  T_pos := by have := T.TO_40; omega
+  T_pos := omega
   nW_even := T.nW_even
   even_nP₂ := T.even_nP₂
   split := T.split

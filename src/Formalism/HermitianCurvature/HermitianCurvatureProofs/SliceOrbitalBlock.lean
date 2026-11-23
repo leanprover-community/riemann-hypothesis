@@ -170,7 +170,7 @@ theorem sliceOmBlock : SliceOmBlock := by
       ((Fub.sigQ (D.ptPerm h) (Om.σB (n + 1))) (Fin.cast hP a)).val =
         (D.ptPerm (h ++ [(n + 1, t), (1, c)]) a).val := by
     intro a
-    have ha : a.val < ph + (n + 1 + 1) := by have := a.isLt; omega
+    have ha : a.val < ph + (n + 1 + 1) := omega
     rw [hspec a, partner_two h n t c a.val ha]
     by_cases h1 : a.val < ph
     · rw [if_pos h1]
@@ -196,7 +196,7 @@ theorem sliceOmBlock : SliceOmBlock := by
       Fub.dQ (D.ptDiag h) (Fub.dQ (fun _ : Fin (n + 1) => t) (fun _ : Fin 1 => c)) (Fin.cast hP a) =
         D.ptDiag (h ++ [(n + 1, t), (1, c)]) a := by
     intro a
-    have ha : a.val < ph + (n + 1 + 1) := by have := a.isLt; omega
+    have ha : a.val < ph + (n + 1 + 1) := omega
     simp only [D.ptDiag]
     rw [scal_two h n t c a.val ha]
     by_cases h1 : a.val < ph

@@ -410,7 +410,7 @@ theorem rdE_pos (D : D7) : 0 < D.host.rdE := by
 
 theorem vand_ratio_of (D : D7) (C1 : ℝ) (h : LocalBesselAndTopKernel.MassRatio₂ D C1) (u u' : D.what₂.Word) (τ : D.what₂.Tau) :
     vand (uS D u' τ) ≤ C1 ^ D.R.k * vand (uS D u τ) := by
-  have hk : D.R.k ≠ 0 := by have := D.R.m_add_three_le_k; omega
+  have hk : D.R.k ≠ 0 := omega
   have hrd := rdE_pos D
   have hka : 0 < D.host.ka := by
     unfold Formalism.BasicNotions.Host.ka Formalism.BasicNotions.Host.v

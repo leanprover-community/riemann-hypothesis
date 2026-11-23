@@ -112,7 +112,7 @@ theorem rev_N (hF : IsFrameJ ε e f wf z0) {zB z : Fin (2 * r + k + 1) → ℂ} 
     · by_cases hi2 : i.val ≤ r + k
       · rw [hcolW i j (by omega) hi2 hj, zero_mul]
       ·
-        have hi3 : 2 * r + k - i.val < r := by have := i.isLt; omega
+        have hi3 : 2 * r + k - i.val < r := omega
         have : i = esI k r ⟨2 * r + k - i.val, hi3⟩ := Fin.ext (by rw [esI_val]; simp only; have := i.isLt; omega)
         rw [this, Qi_mulVec, sgn_esI, sig_esI_eq, colQ_eI, hy, mul_zero, mul_zero]
 

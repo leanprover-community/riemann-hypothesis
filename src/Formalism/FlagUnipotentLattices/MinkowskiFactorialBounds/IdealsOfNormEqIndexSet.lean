@@ -248,7 +248,7 @@ theorem finite_order_congruence : FiniteOrderCongruence := by
       have hp := Nat.minFac_prime (show H ≠ 1 by omega)
       have hp2 : H.minFac ≠ 2 := by
         intro h; rw [h] at hpH; exact hHodd hpH
-      have hp3 : 3 ≤ H.minFac := by have := hp.two_le; omega
+      have hp3 : 3 ≤ H.minFac := omega
       exact ⟨H.minFac, 1, hp, le_rfl, by omega, by simpa using hpH.trans hH⟩
   obtain ⟨p, s0, hp, hs0, hps, hdvd⟩ := key
   obtain ⟨G', hG'⟩ := hdvd

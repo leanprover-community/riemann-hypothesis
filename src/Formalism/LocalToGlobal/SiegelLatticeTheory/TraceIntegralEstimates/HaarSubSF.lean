@@ -79,7 +79,7 @@ theorem folner_of_haar {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) 
     IsFolner (X.SinfU u) (Formalism.L2.SG.RealObj.muS X u) := by
   have hn : X.B.I.n = 2 * D.R.rS + D.R.k + 1 := X.n_eq.trans (dimS_eq D.R).symm
   have hT : 0 < Tw (D := D) u := ProductExactness.Tw_pos u
-  have hk : 0 < D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 0 < D.R.k := omega
   refine isFolner_Sinf_gen hn (fun v a => rv X.B.I v (X.eR a)) (fun v a => rv X.B.I v (X.fR a))
     (fun v => X.wfr u v) (fun v => rv X.B.I v (X.zR u)) (fun _ => Tw u) (fun _ => hT) ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
     (Formalism.L2.SG.RealObj.muS X u) hμ

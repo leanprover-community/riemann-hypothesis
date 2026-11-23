@@ -105,8 +105,8 @@ theorem gcd_prime_lt {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p < q) :
 theorem jacobi_prime_in {m₀ p q q' : ℕ} (h8 : 8 ∣ m₀) (hp : p.Prime) (hpm : p ∣ m₀) (hq : q.Prime) (hq' : q'.Prime)
     (hqq : q % m₀ = q' % m₀) (hpq : p < q) (hpq' : p < q') :
     jacobiSym (p : ℤ) q = jacobiSym (p : ℤ) q' := by
-  have hq2 : q ≠ 2 := by have := hp.two_le; omega
-  have hq'2 : q' ≠ 2 := by have := hp.two_le; omega
+  have hq2 : q ≠ 2 := omega
+  have hq'2 : q' ≠ 2 := omega
   have hqo := hq.odd_of_ne_two hq2
   have hq'o := hq'.odd_of_ne_two hq'2
   rcases hp.eq_two_or_odd' with rfl | hpo
@@ -124,8 +124,8 @@ theorem jacobi_prime_out {m₀ p q q' : ℕ} (h8 : 8 ∣ m₀) (hp : p.Prime) (h
     (hq' : q'.Prime) (hqq : q % m₀ = q' % m₀) (hpq : p < q) (hpq' : p < q') :
     jacobiSym (p : ℤ) q * jacobiSym (q : ℤ) p = jacobiSym (p : ℤ) q' * jacobiSym (q' : ℤ) p := by
   have hp2 : p ≠ 2 := fun h => hpm (h ▸ dvd_trans (by norm_num) h8)
-  have hq2 : q ≠ 2 := by have := hp.two_le; omega
-  have hq'2 : q' ≠ 2 := by have := hp.two_le; omega
+  have hq2 : q ≠ 2 := omega
+  have hq'2 : q' ≠ 2 := omega
   have hpo := hp.odd_of_ne_two hp2
   have hqo := hq.odd_of_ne_two hq2
   have hq'o := hq'.odd_of_ne_two hq'2

@@ -187,7 +187,7 @@ theorem inN_iff (z : Fin X.B.I.n → ℂ) (hz : Formalism.QuantumDeterminants.in
         rw [Matrix.sub_apply, e, this, Matrix.one_apply, sub_self, zero_mul]
       · by_cases hj2 : j.val ≤ D.R.rS + D.R.k
         · rw [Matrix.sub_apply, hcw i j (by omega) hj2 hi, Matrix.one_apply, sub_self, zero_mul]
-        · have hjr : 2 * D.R.rS + D.R.k - j.val < D.R.rS := by have := j.isLt; omega
+        · have hjr : 2 * D.R.rS + D.R.k - j.val < D.R.rS := omega
           have e : j = Formalism.QuantumDeterminants.esI D.R.k D.R.rS ⟨2 * D.R.rS + D.R.k - j.val, hjr⟩ := by
             ext; simp only [Formalism.QuantumDeterminants.esI]; have := j.isLt; omega
           rw [e, hx, mul_zero]

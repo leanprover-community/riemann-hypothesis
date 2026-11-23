@@ -502,7 +502,7 @@ theorem bt_frFac_step (hD : LocDiffC D Z) (c b : Fin (D.R.rS + 1)) (h : c ≤ b)
   refine ⟨btT Z p ^ (b.val - c.val), ?_, by rw [bt_frFac_ratio Z p c b h, mul_comm]⟩
   rcases Nat.eq_zero_or_pos (b.val - c.val) with h0 | h0
   · rw [h0, pow_zero]; exact Subring.one_mem _
-  · have hr : 1 ≤ D.R.rS := by have := b.isLt; omega
+  · have hr : 1 ≤ D.R.rS := omega
     exact Subring.pow_mem _ (bt_T_mem Z p hD hr) _
 
 theorem bt_span_frame (hD : LocDiffC D Z) {T : D.host.E} (F : FlagG (VS D) D.R.rS T)

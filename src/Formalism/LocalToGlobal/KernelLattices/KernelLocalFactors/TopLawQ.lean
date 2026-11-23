@@ -404,8 +404,8 @@ theorem lamQB_eq (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) {kj r n c d : ℕ} (hk
   have hm : (Matrix.of fun s t : Fin d => Loc.atN (rr.toLinearMap (Loc.eN E (kj + d + c) (kj + t.1))) (kj + s.1)) =
       Matrix.of fun s t : Fin d => g.toLinearMap (Pi.single (brI rfl t) 1) (brI rfl s) := by
     ext s t
-    have ht : kj + t.1 < kj + d := by have := t.2; omega
-    have hs : kj + s.1 < kj + d := by have := s.2; omega
+    have ht : kj + t.1 < kj + d := omega
+    have hs : kj + s.1 < kj + d := omega
     show Loc.atN (rr (Loc.eN E (kj + d + c) (kj + t.1))) (kj + s.1) = _
     rw [ciEN ht, hrg, ciAtN_inX hs]
     rfl

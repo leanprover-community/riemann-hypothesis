@@ -180,7 +180,7 @@ theorem lawLog {l : ℕ} (hl : 2 ≤ l) {F : MvPowerSeries (Fin 2) K} (hF : IsLa
 
 theorem endInt {l : ℕ} {σ : K →+* K} (hU : UnrOK K l σ) {α : K} (hα : ‖α‖ ≤ 1)
     (hs : σ (σ α) = α) : C.EndInt (Formalism.G.unitBall K) (lgF K l) (expF K l) α := by
-  have hl : 2 ≤ l := by have := hU.2.1; omega
+  have hl : 2 ≤ l := omega
   obtain ⟨hLP0, -, hLP2, -, hLP4⟩ := logPair (K := K) hl
   have hgc : MvPowerSeries.constantCoeff (PowerSeries.C α * lgF K l) = 0 := by
     change PowerSeries.constantCoeff _ = 0
@@ -235,7 +235,7 @@ theorem all {l : ℕ} {σ : K →+* K} (hU : UnrOK K l σ) {F : MvPowerSeries (F
     ∀ α : K, ‖α‖ ≤ 1 → σ (σ α) = α →
       C.PhNormAt (Formalism.G.unitBall K) (lgF K l) (expF K l) ph α (σ α) ∧
       C.AdjAt (Formalism.G.unitBall K) (lgF K l) (expF K l) ph α (σ α) := by
-  have hl : 2 ≤ l := by have := hU.2.1; omega
+  have hl : 2 ≤ l := omega
   have hLP := logPair (K := K) hl
   have hLL := lawLog hl hF
   obtain ⟨hFeq, hFG, hF1C⟩ := Formalism.L2.Th1.C.first_level_from_universal_holds K F (lgF K l) (expF K l) ph hLP hLL hph hF1.2.1
@@ -320,7 +320,7 @@ theorem second_level_of_norm_holds : SecondLevelOfNorm := by
 
 theorem norm_units_alt : NormUnits := by
   intro K _ _ _ l σ hU ph hph S hS α hα
-  have hl : 2 ≤ l := by have := hU.2.1; omega
+  have hl : 2 ≤ l := omega
   obtain ⟨hL0, -, hE0, -, -⟩ := BrC.logPair (K := K) hl
   have hσc : Continuous σ := (AddMonoidHomClass.isometry_of_norm σ (sigma_isometry K l σ hU)).continuous
   have hC := Formalism.L2.Th1.C.phNormClosed K (Formalism.G.unitBall K) (Formalism.L2.Th1.C.unit_ball_closed K)

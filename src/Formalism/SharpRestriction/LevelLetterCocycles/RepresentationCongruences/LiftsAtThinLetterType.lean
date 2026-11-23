@@ -86,7 +86,7 @@ theorem arc_length_two_reduction [NeZero n] [Fintype (K →ₐ[Qp] LL)] (W : Loc
     rw [hA, arc_letter_type_eq_ite, hup]; rfl
   have hty1 : A.ty (c - 1) = Formalism.MainNotions.LocalTheoryWindows.LT.up (size (c - 1)) := by
     rw [hA, arc_letter_type_eq_ite, hup1]; rfl
-  have hl5 : 5 ≤ PD.p := by have := hB.1; omega
+  have hl5 : 5 ≤ PD.p := omega
   have hcase : Formalism.MainNotions.LiftingTheory.CaseA W := hB.2.1.1
   have hthick : ∀ s < A.len c, (A.ty (c - (s : ZMod n))).thick := by
     intro s _

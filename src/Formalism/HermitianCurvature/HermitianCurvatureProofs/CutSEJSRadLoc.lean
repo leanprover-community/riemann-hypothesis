@@ -63,7 +63,7 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem jSRadLoc_of (hU : FamCCUnif) : JSRadLoc := by
   intro Wp Wq _ _ _ _ _ _ P z z' π π' X μ L st l0 D hD hl1 hl2 hz hz' hπ hπ' l hl ε hε G hN hGc Φ hlc hΦ c hc js hjs t0 ht0
-  have hr0 : 0 < P.r := by have := l.isLt; omega
+  have hr0 : 0 < P.r := omega
   obtain rfl : l = ⟨0, hr0⟩ := Fin.ext hl
   obtain ⟨Tw, hNw, e1, e2, e3, e4, Di, Xi, μi, Li, sti, κ, hDiEq, hκ, hDi, hall⟩ :=
     Formalism.FourierDecayAlt.P.level_transport_unitary Wp Wq P z z' π π' X μ L st l0 D hD hz hz' hπ hπ' ⟨1, by omega⟩

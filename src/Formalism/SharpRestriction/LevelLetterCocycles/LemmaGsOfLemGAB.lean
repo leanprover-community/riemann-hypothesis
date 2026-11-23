@@ -103,7 +103,7 @@ theorem lemmaGs_of_lemGAB [NeZero n] (W : LocWach PD LL O v n) (hA : LemGA W) (h
   obtain ⟨y1, hy1N, hy1D, hmap⟩ := hEx x la hP
   have hp0 : (PD.p : LL) ≠ 0 := by
     obtain ⟨ζ, hζ⟩ := hset.2.2.2.2.1
-    haveI : NeZero PD.p := ⟨by have := hset.2.1; omega⟩
+    haveI : NeZero PD.p := ⟨omega⟩
     exact hζ.neZero'.out
   have hnat : ((PD.p : ℕ) : O) ^ E • x = (PD.p ^ E : ℕ) • x := by
     rw [← Nat.cast_pow, Nat.cast_smul_eq_nsmul]

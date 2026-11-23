@@ -48,7 +48,7 @@ theorem sum_one_add_val (l : ℕ) [Fact l.Prime] (n : ℕ) :
 
 theorem two_mul_val_factorial_le (l : ℕ) [hl : Fact l.Prime] (h2 : l ≠ 2) (n : ℕ) :
     2 * padicValNat l n.factorial ≤ n := by
-  have h3 : 3 ≤ l := by have := hl.out.two_le; omega
+  have h3 : 3 ≤ l := omega
   have key : (l - 1) * padicValNat l n.factorial = n - (l.digits n).sum := by
     simpa only [Nat.padicValNat_def] using (hl.out.sub_one_mul_multiplicity_factorial (n := n))
   have hle : (l - 1) * padicValNat l n.factorial ≤ n := by rw [key]; exact Nat.sub_le _ _

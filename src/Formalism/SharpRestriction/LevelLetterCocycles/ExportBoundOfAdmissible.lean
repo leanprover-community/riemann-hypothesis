@@ -198,7 +198,7 @@ theorem ranks_le_U : (D.R.n : ℝ) ≤ Ub L C ∧ (D.R.k : ℝ) ≤ Ub L C ∧ (
   have hkU : (D.R.k : ℝ) ≤ Ub L C := le_trans hk hU
   have hnU : (D.R.n : ℝ) ≤ Ub L C := le_trans hn hU
   have htU : (D.R.t : ℝ) ≤ Ub L C := le_trans ht hU
-  have hmk : D.R.m ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hmk : D.R.m ≤ D.R.k := omega
   have hmU : (D.R.m : ℝ) ≤ Ub L C := le_trans (by exact_mod_cast hmk) hkU
   have hrk : D.R.r ≤ 2 * D.R.k := by show D.R.k + D.R.m - 1 ≤ 2 * D.R.k; omega
   have hrU : (D.R.r : ℝ) ≤ 2 * Ub L C := by

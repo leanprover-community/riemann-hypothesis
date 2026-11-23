@@ -47,7 +47,7 @@ theorem aH_le_eWA (ℓ : ℕ) [Fact ℓ.Prime] (hℓ : ℓ ≠ 2) (H : ℕ) :
     (H + (ℓ - 2)) / (ℓ - 1) + padicValNat ℓ ((H + (ℓ - 2)) / (ℓ - 1)).factorial ≤ eWA ℓ H := by
   set a := (H + (ℓ - 2)) / (ℓ - 1) with ha
   have hp := (Fact.out : ℓ.Prime)
-  have hℓ3 : 3 ≤ ℓ := by have := hp.two_le; omega
+  have hℓ3 : 3 ≤ ℓ := omega
   have hv : (ℓ - 1) * padicValNat ℓ a.factorial ≤ a := by
     rw [Nat.padicValNat_def, hp.sub_one_mul_multiplicity_factorial]
     exact Nat.sub_le _ _

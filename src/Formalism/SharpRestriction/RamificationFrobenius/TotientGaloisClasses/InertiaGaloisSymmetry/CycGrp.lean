@@ -240,7 +240,7 @@ theorem ps_d : ∀ u : (ZMod H.condN)ˣ, (u : ZMod H.condN).val ≡ H.d [MOD H.Q
   intro u hu
   have hM0 : H.QS * H.q ≠ 0 := Nat.mul_ne_zero H.QS_pos.ne' H.hyp.1.ne_zero
   haveI : NeZero (H.QS * H.q) := ⟨hM0⟩
-  have hd8 : (H.d : ℤ) % 8 = 7 := by have := H.hyp.2.2.2.1; omega
+  have hd8 : (H.d : ℤ) % 8 = 7 := omega
   obtain ⟨s, hs⟩ := sq_mod hd8 (H.QS * H.q) hM0 (split_QSq H)
   have hs' : ((s : ZMod (H.QS * H.q))) ^ 2 = -((H.d : ℕ) : ZMod (H.QS * H.q)) := by
     have h0 := (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr hs
@@ -292,7 +292,7 @@ private theorem jac_lemma {p d : ℕ} (hp : p % 2 = 1) (hd : d % 4 = 3) :
 private theorem art_snd_lemma (u : (ZMod H.condN)ˣ) :
     (((H.art u).1.2 : ℤˣ) : ℤ) = jacobiSym (((u : ZMod H.condN).val : ℕ) : ℤ) H.d := by
   haveI : Fact H.d.Prime := ⟨H.hyp.2.1⟩
-  have hd4 : H.d % 4 = 3 := by have := H.hyp.2.2.2.1; omega
+  have hd4 : H.d % 4 = 3 := omega
   have hz := Cond.z_spec H.condN
   have hx : IsPrimitiveRoot (Cond.z H.condN ^ (H.QS * H.q)) H.d :=
     hz.pow (Nat.pos_of_ne_zero (NeZero.ne H.condN)) rfl
@@ -339,7 +339,7 @@ theorem frob : ∀ (p : ℕ) [Fact p.Prime], ¬ p ∣ H.condN →
       ∀ σ : H.E ≃ₐ[ℚ] H.E, (∀ x : 𝓞 H.E, σ • x - x ∈ P) ↔ σ = 1 := by
   intro p _ hpN P _ _
   have hp : p.Prime := Fact.out
-  have hd4 : H.d % 4 = 3 := by have := H.hyp.2.2.2.1; omega
+  have hd4 : H.d % 4 = 3 := omega
   have hcop : Nat.Coprime p H.condN := (Nat.Prime.coprime_iff_not_dvd hp).mpr hpN
   have hfact : ordCompl[p] H.condN = H.condN := by
     rw [Nat.factorization_eq_zero_of_not_dvd hpN, pow_zero, Nat.div_one]
@@ -414,7 +414,7 @@ theorem frob : ∀ (p : ℕ) [Fact p.Prime], ¬ p ∣ H.condN →
 
 theorem exists_art_iod : ∃ u : (ZMod H.condN)ˣ, (u : ZMod H.condN).val ≡ 1 [MOD H.QS * H.q] ∧ H.art u = φ.iod := by
   haveI : Fact H.d.Prime := ⟨H.hyp.2.1⟩
-  have hd4 : H.d % 4 = 3 := by have := H.hyp.2.2.2.1; omega
+  have hd4 : H.d % 4 = 3 := omega
   have hd1 : 1 ≤ H.d := H.hyp.2.1.one_lt.le
   have hcop : Nat.Coprime (H.d - 1) H.d :=
     ((Nat.Prime.coprime_iff_not_dvd H.hyp.2.1).mpr
@@ -475,14 +475,14 @@ theorem decomp_typeI : ∀ (l : ℕ), l.Prime → l ∣ H.QS * H.q →
     ∀ (P : Ideal (𝓞 H.E)) [P.IsPrime] [P.LiesOver (span {(l : ℤ)})] (σ : H.E ≃ₐ[ℚ] H.E),
       σ ∈ MulAction.stabilizer _ P → H.gal σ ∈ φ.Psi := by
   intro l hl hlN P _ _ σ hσ
-  have hd4 : H.d % 4 = 3 := by have := H.hyp.2.2.2.1; omega
+  have hd4 : H.d % 4 = 3 := omega
   show (H.gal σ).1.2 = 1
   rcases Int.units_eq_one_or ((H.gal σ).1.2) with hε | hε
   · exact hε
   exfalso
   have hσX : σ H.sqd = -H.sqd := simp [H.gal_sqd σ, hε]
   have hM0 : H.QS * H.q ≠ 0 := Nat.mul_ne_zero H.QS_pos.ne' H.hyp.1.ne_zero
-  have hd8 : (H.d : ℤ) % 8 = 7 := by have := H.hyp.2.2.2.1; omega
+  have hd8 : (H.d : ℤ) % 8 = 7 := omega
   obtain ⟨s, hs⟩ := sq_mod hd8 (H.QS * H.q) hM0 (split_QSq H)
   have h16 : 2 ^ 4 ∣ H.QS * H.q :=
     ((pow_dvd_pow 2 (by have := H.two_le_e; omega)).trans H.tower_dvd).trans (dvd_mul_right _ _)
@@ -664,7 +664,7 @@ theorem unramEF : ∀ (P : Ideal (𝓞 H.E)), P.IsPrime → P ≠ ⊥ → ¬ ∀
     · have h4 := congrArg (fun g : φ.GG => ((g.1.1 : ℤˣ) : ℤ)) h3
       simp [Frame.cc, Frame.iod, c0] at h4
   · haveI := hpl
-    have hd4 : H.d % 4 = 3 := by have := H.hyp.2.2.2.1; omega
+    have hd4 : H.d % 4 = 3 := omega
     exact Formalism.FrobeniusOrbits.Inertia.sqrt_fixed H.hyp.2.1 hd4 hp hpd P H.conj H.sqd_sq hcs h
 
 end Formalism.HC.Der

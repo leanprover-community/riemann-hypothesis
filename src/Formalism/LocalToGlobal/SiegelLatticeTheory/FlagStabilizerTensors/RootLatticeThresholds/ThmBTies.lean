@@ -360,7 +360,7 @@ theorem gpart (T T' : ℕ) (v : D.what₂.Tau) (w : Point D.host.E (D.R.rS + 1))
 
 theorem nPt_eq (T T' : ℕ) (w : Point D.host.E (D.R.rS + 1)) (hG : ∀ v, 0 < Gpt (T : ℝ) (T' : ℝ) (ptLoc D v w)) :
     nPt D.host.rdE D.R.k (T * T') (toPts w) = ptWeightG D (rhoReal D) T T' w.1 := by
-  have hk : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 1 ≤ D.R.k := omega
   rw [ptWeightG_eq_prod]
   unfold nPt
   symm

@@ -104,7 +104,7 @@ lemma spr_le_bidet (R : Type*) [CommRing R] {n K : ℕ} (sz : Fin K → ℕ) (hs
     (m : Fin n × Fin n →₀ ℕ) (hm : m ∈ (bideterminant R sz hsz I).support) (a : Fin n) : lo ≤ rowDeg m a := by
   classical
   rw [spr_rowDeg_bidet R sz hsz I m hm a]
-  have hn : n - 1 < n := by have := a.isLt; omega
+  have hn : n - 1 < n := omega
   refine (hlo ⟨n - 1, hn⟩).trans ?_
   unfold shapeDeg
   rw [Finset.card_filter]

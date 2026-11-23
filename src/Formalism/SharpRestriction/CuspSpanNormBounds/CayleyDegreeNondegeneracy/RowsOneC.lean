@@ -117,7 +117,7 @@ def IsSmallTerm (t : D.s.Term u u') : Prop :=
 
 variable {C' Cl Cg cb Cu cT CT C0 A c Cpr Ca C2 Ch δ δm : ℝ} {q : ℕ}
 
-theorem one_le_rank_k (D : D7) : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+theorem one_le_rank_k (D : D7) : 1 ≤ D.R.k := omega
 
 theorem term_weight_pos (hH0 : Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0) (h7 : VanishingOnXAndXPlus.adm7 D large₂ C' Cl Cg cb Cu cT CT C0)
     (τ : D.what₂.Tau) : 0 < tvPr D τ u' := by

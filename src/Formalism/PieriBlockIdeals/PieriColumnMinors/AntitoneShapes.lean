@@ -52,12 +52,12 @@ theorem lcb_transp {K R P M : Type*} [CommRing K] [AddCommGroup M] [Module K M] 
   induction d with
   | zero =>
     intro a b ha hb hbp
-    have hj : a.val + 1 < n := by have := b.isLt; omega
+    have hj : a.val + 1 < n := omega
     have hb' : b = ⟨a.val + 1, hj⟩ := Fin.ext (by simpa using hb)
     rw [hb']; exact h a hj ha (by omega)
   | succ d ih =>
     intro a b ha hb hbp
-    have hc : a.val + d + 1 < n := by have := b.isLt; omega
+    have hc : a.val + d + 1 < n := omega
     have hcb : (⟨a.val + d + 1, hc⟩ : Fin n).val + 1 < n := by have := b.isLt; simp only; omega
     have hb' : b = ⟨(⟨a.val + d + 1, hc⟩ : Fin n).val + 1, hcb⟩ := Fin.ext (by simp only; omega)
     have h1 : permY K (Equiv.swap a ⟨a.val + d + 1, hc⟩) u = - u := ih a ⟨a.val + d + 1, hc⟩ ha rfl (by simp only; omega)
@@ -143,7 +143,7 @@ theorem lcb_mono {n : ℕ} (col : Fin n → ℕ) (h : ∀ (j : Fin n) (hj : j.va
   | zero => intro a b hb; have : a = b := Fin.ext (by omega); rw [this]
   | succ d ih =>
     intro a b hb
-    have hc : a.val + d < n := by have := b.isLt; omega
+    have hc : a.val + d < n := omega
     have hc' : (⟨a.val + d, hc⟩ : Fin n).val + 1 < n := by have := b.isLt; simp only; omega
     have hb' : b = ⟨(⟨a.val + d, hc⟩ : Fin n).val + 1, hc'⟩ := Fin.ext (by simp only; omega)
     calc col a ≤ col ⟨a.val + d, hc⟩ := ih a _ rfl

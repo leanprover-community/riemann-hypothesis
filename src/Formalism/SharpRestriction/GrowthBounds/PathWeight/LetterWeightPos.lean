@@ -325,7 +325,7 @@ theorem key_column_leading_bound (D : Formalism.BasicNotions.D7) (hB2 : admB2 D)
     bc_KP Cx.S.w Cx.Fr Cx.Q Cx.g (keyLeadingPart Cx j Pth.mu c J) (oc (omL Cx.Fr j p) Pth.mu c) := by
   have : NeZero (Mj Cx.Fr j) := ⟨(segment_letter_count_pos Cx j).ne'⟩
   have hn : Even n' := Cx.hH.2.2.2.2
-  have hp5 : 5 ≤ p := by have := Cx.hH.1; omega
+  have hp5 : 5 ≤ p := omega
   have hn1 : 1 ≤ n' := NeZero.one_le
   obtain ⟨hA, _, hord, htail, hle⟩ := hC1 p n' O Cx.S hp5 hn1 Cx.hO.1 (Mj Cx.Fr j) r K (LLs Cx.Fr j) B
     (Cx.Fr.fr j (r - 1)) (segment_count_add_rank_le Cx j) (letter_enum_strictMono Cx.Fr j).monotone (letter_enum_upper_bound Cx.Fr j) Pth Cx.g Cx.hg c

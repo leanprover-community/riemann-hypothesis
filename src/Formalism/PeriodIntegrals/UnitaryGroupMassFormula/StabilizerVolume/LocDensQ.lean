@@ -86,7 +86,7 @@ theorem sum_cnt (n : ℕ) : ∑ k ∈ Finset.Icc 1 n, cnt K k =
           intro y
           rcases y with z | z
           · simp only [dif_pos z.2]
-          · have hz : ¬ Ideal.absNorm z.1 ≤ n := by have := z.2; omega
+          · have hz : ¬ Ideal.absNorm z.1 ≤ n := omega
             simp only [dif_neg hz] }
     rw [Nat.card_congr e, Nat.card_sum]
     unfold cnt

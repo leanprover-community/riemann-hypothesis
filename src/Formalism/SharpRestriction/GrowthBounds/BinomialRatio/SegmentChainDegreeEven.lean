@@ -93,7 +93,7 @@ theorem lev_deg (p : ℕ) (S : SegData s) (aTop : Fin s → ℕ) (aPlus : ℕ) (
 
 theorem segment_chain_degree_even (p : ℕ) (S : SegData s) (aTop : Fin s → ℕ) (b : SegBlock s r) (x : Fin (2 * s + 1)) (i : Fin s)
     (hx : x.val = 2 * i.val) : (segChain p S aTop b).deg x = if i.val < S.sigma then b.w i else b.o i := by
-  have h1 : (x : ℕ) ≠ 2 * s := by have := i.2; omega
+  have h1 : (x : ℕ) ≠ 2 * s := omega
   have h2 : (x : ℕ) % 2 = 0 := by omega
   have h3 : topOf x h1 = i := Fin.ext (by show (x : ℕ) / 2 = i.val; omega)
   unfold segChain
@@ -103,7 +103,7 @@ theorem segment_chain_degree_even (p : ℕ) (S : SegData s) (aTop : Fin s → �
 theorem chain_deg_E (p : ℕ) (S : SegData s) (aTop : Fin s → ℕ) (b : SegBlock s r) (x : Fin (2 * s + 1)) (i : Fin s)
     (hx : x.val = 2 * i.val + 1) : (segChain p S aTop b).deg x =
       if i.val < S.sigma then coarseC p S aTop b i - b.sg i else coarseC p S aTop b i := by
-  have h1 : (x : ℕ) ≠ 2 * s := by have := i.2; omega
+  have h1 : (x : ℕ) ≠ 2 * s := omega
   have h2 : ¬ ((x : ℕ) % 2 = 0) := by omega
   have h3 : topOf x h1 = i := Fin.ext (by show (x : ℕ) / 2 = i.val; omega)
   unfold segChain

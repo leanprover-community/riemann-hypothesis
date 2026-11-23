@@ -112,7 +112,7 @@ theorem lastGL_eq (a : ℂˣ) : ((Formalism.MainNotions.PrimeDegreeVariant.lastG
   rw [Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply, Equiv.symm_apply_apply]
   show Matrix.diagonal _ _ _ = _
   rcases p with i | i <;> rcases q with j | j
-  · have hi' : ¬ ((i : ℕ) + 1 = D.R.N D.R.m) := by have := i.isLt; omega
+  · have hi' : ¬ ((i : ℕ) + 1 = D.R.N D.R.m) := omega
     by_cases hij : i = j
     · subst hij; simp [Matrix.diagonal_apply, hi']
     · have hne : (eN D) (Sum.inl i) ≠ (eN D) (Sum.inl j) := fun h => hij (Sum.inl_injective ((eN D).injective h))

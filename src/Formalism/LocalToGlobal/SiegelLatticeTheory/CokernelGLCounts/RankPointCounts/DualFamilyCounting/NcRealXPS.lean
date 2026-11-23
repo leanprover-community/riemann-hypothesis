@@ -215,7 +215,7 @@ theorem placeSplit_of (hJG : JacGauge) (hC : CovolRef) : PlaceSplit := by
   classical
   intro D X hb FdN FdN' u u' ψ hHyp _ _ hGd
   obtain ⟨v0⟩ : Nonempty (InfinitePlace X.B.I.F) := inferInstance
-  have hk : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 1 ≤ D.R.k := omega
 
   obtain ⟨κN, hκN0, hκNT, hN⟩ := ProductExactness.muN_eq X u
   obtain ⟨κN', hκN'0, hκN'T, hN'⟩ := ProductExactness.muN_eq X u'

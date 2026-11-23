@@ -156,7 +156,7 @@ theorem depth_exists_last_block (p q w : ℕ) (lam2 : Fin q → ℕ) (ha : Antit
 
 theorem peelBoundLast : PeelBoundLast := by
   intro hD l q w M lam2 ξ hl ha hb hξ i' eL heL μ hμ
-  have hl1 : 0 < l - 1 := by have := hl.two_le; omega
+  have hl1 : 0 < l - 1 := omega
   refine exp_le_of_nonzero_weight_vectors l _ _ μ _ hl fun x hx hne => ?_
   obtain ⟨i, hd, _⟩ := depth_exists_last_block 1 q w lam2 ha (fun b => (hb b).1) μ x hx hne
   have h1 := hD l q w M lam2 ξ hl ha hb hξ i' eL heL i μ hd hμ

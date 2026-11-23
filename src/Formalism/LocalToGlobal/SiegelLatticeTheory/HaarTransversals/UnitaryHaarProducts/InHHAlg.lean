@@ -332,7 +332,7 @@ theorem nfin_ca_mul {n n' : X.B.I.Gf} (hn : n ∈ X.NfinU u) (hn' : n' ∈ X.Nfi
     unfold Formalism.L2.SG.HidaSetting.nxt
     split_ifs with h
     · exact hn'.1 ⟨a.1 + 1, h⟩
-    · have hr : a.1 + 1 = D.R.rS := by have := a.2; omega
+    · have hr : a.1 + 1 = D.R.rS := omega
       rw [hr, ← usp_range]
       exact hn'.2.1
   have hv0 : hA X.B.I (incl X.B.I (X.fR a)) (incl X.B.I (nxt X.eR (X.zR u) a)) = 0 := by

@@ -141,7 +141,7 @@ private theorem colH_le_le_add_one_of_HStrip {n : ℕ} {a b : Fin n → ℤ} {m 
         (fun x => ⟨x.val - 1, lt_of_le_of_lt (Nat.sub_le _ _) x.isLt⟩) ?_ ?_
       · intro x hx
         simp only [Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
-        have hlt : x.val - 1 + 1 < n := by have := x.isLt; omega
+        have hlt : x.val - 1 + 1 < n := omega
         have hb := h2 ⟨x.val - 1, lt_of_le_of_lt (Nat.sub_le _ _) x.isLt⟩ hlt
         have e : (⟨x.val - 1 + 1, hlt⟩ : Fin n) = x := Fin.ext (by simp only; omega)
         rw [e] at hb

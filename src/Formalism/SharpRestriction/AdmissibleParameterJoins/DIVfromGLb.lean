@@ -85,7 +85,7 @@ theorem sum_tops (D : D7) (g : D.what₂.Tau → ℝ) (h : D.host.TT → ℝ)
 
 theorem lamCol_top (D : D7) (L : SizeData₂ D) (u : D.what₂.Word) (τ : D.what₂.Tau) (t : D.host.TT)
     (h : (D.eTau τ : D.R.GG) = D.R.tau1 t) : flipTwoThree.aT D u τ = (L.aT t : ℝ) := by
-  have hk : 0 < D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 0 < D.R.k := omega
   obtain ⟨h1, -⟩ := L.top_u τ t hk h
   have e1 := D.hcW_first u τ hk
   have e2 : flipTwoThree.aT D u τ = (((D.hcW u τ).u ⟨0, hk⟩ : ℚ) : ℝ) - (((D.R.k : ℝ) - 1) / 2) := by
@@ -125,7 +125,7 @@ theorem orderBound_of_fifth_sixth (D : D7) (L : SizeData₂ D) (Cn C5 C6 cL : �
       ∑ t : D.host.TT, ((L.aT t : ℝ) / D.R.k) * Real.log ((D.mem u).A.T : ℝ) :=
     sum_tops D _ _ (fun τ t h => by rw [lamCol_top D L u τ t h])
   rw [hS] at h5'
-  have hk : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 1 ≤ D.R.k := omega
   have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast hk
   have hlk : 0 ≤ Real.log (D.R.k : ℝ) := Real.log_nonneg hk1
   have hlT : 0 ≤ Real.log ((D.mem u).A.T : ℝ) := Real.log_natCast_nonneg _

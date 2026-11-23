@@ -143,7 +143,7 @@ theorem ktl_le_Sc {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) : 20 *
   nlinarith
 
 theorem w''_le_wj_one {D : D7} (L : SizeData₂ D) (τ : D.what₂.Tau) : L.sc.w'' D.R.n ≤ wj D 1 τ := by
-  have hm : 1 ≤ D.R.m := by have := D.R.two_le_m; omega
+  have hm : 1 ≤ D.R.m := omega
   have hle := Formalism.MainNotions.Inhab.scale_w''_le L.sc D.R.n (Formalism.MainNotions.Inhab.ranks_one_le_n D.R)
   by_cases htop : (D.eTau τ : D.R.GG) ∈ D.host.topPlaces
   · obtain ⟨t, ht, hte⟩ := Finset.mem_image.1 htop
@@ -197,7 +197,7 @@ theorem cloudBound {D : D7} (L : SizeData₂ D) (P : ParameterChoice' D L) (u : 
       exact_mod_cast h2
     · by_cases h1 : i.val < D.R.k - 1
       · exact hmid g i (Nat.pos_of_ne_zero h0) h1
-      · have hi1 : i.val = D.R.k - 1 := by have := i.2; omega
+      · have hi1 : i.val = D.R.k - 1 := omega
         have hi : i.1 < D.R.k := by omega
         have h := lamRec_real D u g i hi
         have e : (⟨i.1, hi⟩ : Fin D.R.k) = ⟨D.R.k - 1, by omega⟩ := Fin.ext hi1

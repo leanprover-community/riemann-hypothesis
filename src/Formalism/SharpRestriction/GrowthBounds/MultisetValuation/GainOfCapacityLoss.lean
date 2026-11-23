@@ -55,7 +55,7 @@ theorem ea_eS_posAdd (s : Fin n') (k : ℕ) : ea_eS hn (posAdd s k) = ea_eS hn s
 
 theorem ea_eS_sub_val (s s' : Fin n') : (ea_eS hn s' - ea_eS hn s).val = (s'.val + n' - s.val) % n' := by
   subst hn
-  have hle : s.val ≤ s'.val + 2 * ν := by have := s.isLt; omega
+  have hle : s.val ≤ s'.val + 2 * ν := omega
   show (((s'.val : ℕ) : ZMod (2 * ν)) - ((s.val : ℕ) : ZMod (2 * ν))).val = _
   rw [← ZMod.val_natCast (n := 2 * ν) (s'.val + 2 * ν - s.val)]
   congr 1

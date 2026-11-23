@@ -40,7 +40,7 @@ open NumberField Formalism.BasicNotions Formalism.L2.Ker
 
 theorem exists_inert_prime (d : ℕ) (hd : d.Prime) (hd4 : d % 4 = 3) (n : ℕ) :
     ∃ p, n < p ∧ p.Prime ∧ jacobiSym (-(d : ℤ)) p = -1 := by
-  have : NeZero (4 * d) := ⟨by have := hd.pos; omega⟩
+  have : NeZero (4 * d) := ⟨omega⟩
   have hu : IsUnit (-1 : ZMod (4 * d)) := isUnit_one.neg
   obtain ⟨p, hpn, hp, hpa⟩ := Nat.forall_exists_prime_gt_and_eq_mod hu n
   refine ⟨p, hpn, hp, ?_⟩

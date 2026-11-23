@@ -1363,7 +1363,7 @@ theorem pe_th : 0 ≤ 1 / ((D.R.k : ℝ) * L.sc.x ^ (Scale.A / 2)) ∧
     1 / ((D.R.k : ℝ) * L.sc.x ^ (Scale.A / 2)) ≤ L.sc.x⁻¹ := by
   have hx := scale_pos_alt L.sc
   have hk : (1 : ℝ) ≤ D.R.k := by
-    have : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+    have : 1 ≤ D.R.k := omega
     exact_mod_cast this
   have hA : L.sc.x ≤ L.sc.x ^ (Scale.A / 2) := by
     have : L.sc.x ^ (1 : ℝ) ≤ L.sc.x ^ (Scale.A / 2) := Lnk.rpow_mono' _ (by unfold Scale.A; norm_num)

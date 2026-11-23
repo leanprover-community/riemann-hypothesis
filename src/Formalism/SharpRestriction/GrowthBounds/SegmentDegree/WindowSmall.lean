@@ -98,7 +98,7 @@ theorem path_le_beA (H : HypT N n0 r K LL B od bb a La p) {dd : Fin N → ℕ} (
       · have := hP.head ⟨s, hsN⟩ m (by simp only; omega) (by omega)
         exact le_of_eq this
       · have h := step_vec P ⟨s, hsN⟩ hv
-        have hm1 : (m.val - 1) + 1 < r + K := by have := m.2; omega
+        have hm1 : (m.val - 1) + 1 < r + K := omega
         have h2 := h.2.1 ⟨m.val - 1, by have := m.2; omega⟩ hm1
         have hme : (⟨(m.val - 1) + 1, hm1⟩ : Fin (r + K)) = m := Fin.ext (by simp only; omega)
         rw [hme] at h2
@@ -175,11 +175,11 @@ theorem path_count_finite : PathCountFinite := by
           have e3 := h1.2.1 (by omega)
           have e4 := h2.2.1 (by omega)
           omega
-        · have hidx : m.val - (r + K - 2 * N) < 2 * N := by have := m.2; omega
+        · have hidx : m.val - (r + K - 2 * N) < 2 * N := omega
           have hcv := congrFun hc (i, ⟨m.val - (r + K - 2 * N), hidx⟩)
           unfold code at hcv
           have hn1 : ¬ ((m.val - (r + K - 2 * N)) < N ∧ (m.val - (r + K - 2 * N)) < r + K) := by omega
-          have hn2 : r + K - 2 * N + (m.val - (r + K - 2 * N)) < r + K := by have := m.2; omega
+          have hn2 : r + K - 2 * N + (m.val - (r + K - 2 * N)) < r + K := omega
           rw [dite_eq_right hn1, dite_eq_right hn1, dite_eq_left hn2, dite_eq_left hn2] at hcv
           have hme : (⟨r + K - 2 * N + (m.val - (r + K - 2 * N)), hn2⟩ : Fin (r + K)) = m :=
             Fin.ext (by simp only; omega)

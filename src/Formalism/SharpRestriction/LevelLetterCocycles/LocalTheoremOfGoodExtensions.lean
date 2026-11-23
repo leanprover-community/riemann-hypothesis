@@ -43,7 +43,7 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 theorem leg (l n : ℕ) (hp : l.Prime) (hl : l ≠ 2) :
     ((n + padicValNat l n.factorial : ℕ) : ℝ) ≤ 3 / 2 * n := by
   have : Fact l.Prime := ⟨hp⟩
-  have h3 : 3 ≤ l := by have := hp.two_le; omega
+  have h3 : 3 ≤ l := omega
   have h1 := Nat.Prime.sub_one_mul_multiplicity_factorial (n := n) hp
   rw [← Nat.padicValNat_def] at h1
   have h2 : 2 * padicValNat l n.factorial ≤ (l - 1) * padicValNat l n.factorial :=
@@ -75,7 +75,7 @@ theorem logA (l h h' S : ℕ) (h3 : 3 ≤ l) (h1 : 1 ≤ h') (h2 : h' ≤ h + S 
 
 theorem Ynum : ∀ (l e s h h' S η : ℕ), l.Prime → l ≠ 2 → e * s = l - 1 → 1 ≤ h' → h' ≤ h + S + 1 → (((2 * (2 * ⌈(2 * e * h' : ℝ) / ((l : ℝ) - 1)⌉₊ - 1 + padicValNat l (2 * ⌈(2 * e * h' : ℝ) / ((l : ℝ) - 1)⌉₊ - 1).factorial) + 4 * (⌈(4 * h' : ℝ) / (s : ℝ)⌉₊ - 1 + padicValNat l (⌈(4 * h' : ℝ) / (s : ℝ)⌉₊ - 1).factorial) + e * (S + padicValNat l S.factorial + Nat.log l h') + max (2 * (⌈(4 * h' : ℝ) / (s : ℝ)⌉₊ - 1 + padicValNat l (⌈(4 * h' : ℝ) / (s : ℝ)⌉₊ - 1).factorial)) ⌈(η : ℝ) + 1 / 2 + Real.logb l h'⌉₊ : ℕ) : ℝ)) ≤ 80 * ((e : ℝ) * h / l + (e : ℝ) * S + (e : ℝ) * Real.logb l h + 1 + η) := by
   intro l e s h h' S η hp hl hes hh1 hh2
-  have hl3 : 3 ≤ l := by have := hp.two_le; omega
+  have hl3 : 3 ≤ l := omega
   have he : 1 ≤ e := by
     rcases Nat.eq_zero_or_pos e with rfl | h0
     · omega

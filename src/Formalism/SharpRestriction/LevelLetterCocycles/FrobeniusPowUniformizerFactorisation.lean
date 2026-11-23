@@ -442,7 +442,7 @@ theorem gamma_uniformizer_eq_mul_unit' (W : LocWach PD LL O v n) (h9 : P9π₀ W
     ∃ t ∈ W.AΔ, W.γA W.gam W.π₀ = W.π₀ * (algebraMap O (LetA O n) (u₁ W) + W.π₀ * t) := by
   obtain ⟨hπΔ, hsub, ⟨w, hw⟩, -, -, -, ⟨w', hw'⟩, -⟩ := h9
   rw [eisenstein_at_uniformizer] at hw'
-  have hk : PD.p - 1 ≠ 0 := by have := PD.hp.two_le; omega
+  have hk : PD.p - 1 ≠ 0 := omega
   have hreg : ∀ a b : LetA O n, W.π₀ * a = W.π₀ * b → a = b := fun a b hab => by
     rw [hw] at hab
     exact unit_mul_pi_pow_left_cancel w _ a b hab
@@ -925,7 +925,7 @@ theorem idempotent_mem_invariants (W : LocWach PD LL O v n) (i : ZMod n) : (letE
 theorem uniformizer_constantCoeff_zero (W : LocWach PD LL O v n) (h9 : P9π₀ W) (i : ZMod n) :
     PowerSeries.constantCoeff (W.π₀ i) = 0 := by
   obtain ⟨-, -, ⟨w, hw⟩, -⟩ := h9
-  have hk : PD.p - 1 ≠ 0 := by have := PD.hp.two_le; omega
+  have hk : PD.p - 1 ≠ 0 := omega
   have : W.π₀ i = (w : LetA O n) i * PowerSeries.X ^ (PD.p - 1) := by
     conv_lhs => rw [hw]
     rfl
@@ -1373,7 +1373,7 @@ theorem gamma_uniformizer_eq_mul_unit (W : LocWach PD LL O v n) (E : ZMod n → 
     (h9 : Formalism.MainNotions.DeltaInvariantLattices.wachRingRelations W 1 (PD.p - 1) W.π₀ E) :
     ∃ t ∈ W.AΔ, W.γA W.gam W.π₀ = W.π₀ * (algebraMap O (LetA O n) (u₁ W) + W.π₀ * t) := by
   obtain ⟨hπ, hsub, ⟨w', hw'⟩, _, _, _, ⟨w, hw⟩, _⟩ := h9
-  have hp1 : 1 ≤ PD.p - 1 := by have := PD.hp.two_le; omega
+  have hp1 : 1 ≤ PD.p - 1 := omega
   have hπΔ : ∀ δ ∈ W.DelF, W.γA δ W.π₀ = W.π₀ := hπ
   set g : LetA O n := 1 + (w : LetA O n) * Formalism.MainNotions.DeltaInvariantLattices.Eat E W.π₀ with hgd
   have hg : W.γA W.gam W.π₀ = W.π₀ * g := by
@@ -1531,7 +1531,7 @@ theorem frameε_π₀ (W : LocWach PD LL O v n)
     (hw : ∃ w : (LetA O n)ˣ, W.π₀ = (w : LetA O n) * letπ ^ (PD.p - 1)) (i : ZMod n) :
     frameε O n i W.π₀ = 0 := by
   obtain ⟨w, hw⟩ := hw
-  have hp1 : PD.p - 1 ≠ 0 := by have := PD.hp.two_le; omega
+  have hp1 : PD.p - 1 ≠ 0 := omega
   rw [hw]
   simp [frameε, letπ, hp1]
 
@@ -2317,7 +2317,7 @@ theorem tr_p_ne (W : LocWach PD LL O v n) : ((PD.p : ℕ) : O) ≠ 0 := by
 theorem tr_π₀_const (W : LocWach PD LL O v n) (h9 : UniformizerRingClause W) (i : ZMod n) :
     PowerSeries.constantCoeff (W.π₀ i) = 0 := by
   obtain ⟨w, hw⟩ := h9.2.2.1
-  have hp : 1 ≤ PD.p - 1 := by have := PD.hp.two_le; omega
+  have hp : 1 ≤ PD.p - 1 := omega
   rw [hw]
   obtain ⟨k, hk⟩ : ∃ k, PD.p - 1 = k + 1 := ⟨PD.p - 2, by omega⟩
   simp [letπ, hk, pow_succ]
@@ -2471,7 +2471,7 @@ theorem tr_trunc_int [IsDomain O] (W : LocWach PD LL O v n) (h9 : UniformizerRin
       ((PD.p : ℕ) : LetA O n) ^ Formalism.NOK.sigNOK PD.p y M' j * ((W.φA ^ j) W.π₀) ^ r =
         a * ((PD.p : ℕ) : LetA O n) ^ ⌈(r : ℝ) * PD.p / ((PD.p : ℝ) - 1)⌉₊ + b * JJ W j y M' := by
   have : Fact PD.p.Prime := ⟨PD.hp⟩
-  have h3 : 3 ≤ PD.p := by have := PD.hp.two_le; omega
+  have h3 : 3 ≤ PD.p := omega
   obtain ⟨X, p, hX, hp, hI, hJ⟩ := tr_base_spec W h9
   obtain ⟨u, u', -, hj'⟩ := hJ j
   have h := Formalism.NOK.scaledPowMemSpanCeil ↥W.AΔ PD.p h3 X u p y M' j hj (hI (j - 1)) r
@@ -2610,7 +2610,7 @@ theorem valuation_decomposition_eventually [IsDomain O] (W : LocWach PD LL O v n
   have h1 : M' ≤ r := le_trans (le_max_left _ _) hr
   have h2 : y ≤ (PD.p - 1) * r := by
     have h3 : y ≤ r := le_trans (le_max_right _ _) hr
-    have h4 : 1 ≤ PD.p - 1 := by have := PD.hp.two_le; omega
+    have h4 : 1 ≤ PD.p - 1 := omega
     calc y ≤ 1 * r := by omega
       _ ≤ (PD.p - 1) * r := Nat.mul_le_mul_right _ h4
   obtain ⟨b, hb, hbr⟩ := tr_vanish_int W h9 j y M' r h1 h2

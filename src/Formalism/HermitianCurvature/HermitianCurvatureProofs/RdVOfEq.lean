@@ -69,7 +69,7 @@ theorem rdV_of_eq {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] (z' : Fi
 theorem _root_.Formalism.FourierDecayAlt.P.rule_of_eq : LevelPointCoordinates.RuleOfEq := by
   intro E _ _ k r z' Φ g hz hΦ p q hpq
   obtain ⟨l, hl⟩ := exists_pat p q hpq
-  have hr : 1 ≤ r := by have := l.isLt; omega
+  have hr : 1 ≤ r := omega
   set Z : B.Mat k r := Matrix.single p q (1 : ℂ) with hZ
   have h1 := rdV_of_eq z' hz Φ g hΦ l _ (Formalism.FourierDecayAlt.Q.QRR.pat_hpart1 hl) (Formalism.FourierDecayAlt.Q.QRR.skew_hpart1 Z)
   have h2 := rdV_of_eq z' hz Φ g hΦ l _ (Formalism.FourierDecayAlt.Q.QRR.pat_hpart2 hl) (Formalism.FourierDecayAlt.Q.QRR.skew_hpart2 Z)

@@ -291,7 +291,7 @@ lemma parts_of_eq {N p k m : ℕ} (hp : p.Prime) (hN : N = p ^ k * m) (hm : ¬ p
   exact ⟨Nat.eq_of_mul_eq_mul_right (Nat.pos_of_ne_zero hm0) h1, h2⟩
 
 lemma jac_two_d {q d : ℕ} (h : HostHyp q d) : jacobiSym ((2 : ℕ) : ℤ) d = 1 := by
-  have h8 : d % 8 = 7 := by have := h.2.2.2.1; omega
+  have h8 : d % 8 = 7 := omega
   have hodd : Odd d := Nat.odd_iff.2 (by omega)
   rw [Nat.cast_ofNat, jacobiSym.at_two hodd, ZMod.χ₈_nat_mod_eight, h8]
   rfl

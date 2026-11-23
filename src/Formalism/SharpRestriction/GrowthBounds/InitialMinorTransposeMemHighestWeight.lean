@@ -2105,7 +2105,7 @@ theorem interlaced_up_mem {r : ℕ} {ν : Fin (r + 1) → ℕ} {μ : Fin r → �
       rw [h1]; omega
   refine ⟨?_, hcol⟩
   intro l j hj a
-  have hl : l.val < r := by have := j.isLt; omega
+  have hl : l.val < r := omega
   obtain ⟨l', rfl⟩ : ∃ l' : Fin r, l = l'.castSucc := ⟨⟨l.val, hl⟩, by ext; rfl⟩
   show (∑ b : Fin (r + 1) with b ≤ a, k5aUp ν μ m' (b, j)) ≤
     0 + ∑ b : Fin (r + 1) with b < a, k5aUp ν μ m' (b, l'.castSucc)

@@ -70,7 +70,7 @@ theorem tailW (c : Fin r → ℂ) (hc : ∀ a, c a ≠ 0) (b : Fin r) : ∀ n : 
     exact ⟨1, by simp, glev_one _, fun v _ => by simp⟩
   | succ n ih =>
     intro i hi
-    have hl : b.val + 1 + n < r := by have := i.isLt; omega
+    have hl : b.val + 1 + n < r := omega
     set l : Fin r := ⟨b.val + 1 + n, hl⟩ with hldef
     have hil : i = l.succ := Fin.ext (by simp [l, hi]; omega)
     subst hil

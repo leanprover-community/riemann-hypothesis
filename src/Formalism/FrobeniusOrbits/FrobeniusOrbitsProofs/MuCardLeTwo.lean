@@ -206,7 +206,7 @@ theorem mu_no_odd (hq : HostHyp q d) (hq3 : q ≠ 3) (h : IsLayer (e + 2) q d ζ
   have h1 := mu_mem_pow p Q η hη
   have h2 := mu_le_ram p Q (p - 1) h1
   have h3 := mu_ram_bound hq.toHypOdd h p hp2 Q
-  have hp3 : 3 ≤ p := by have := hp.two_le; omega
+  have hp3 : 3 ≤ p := omega
   have h31 := h3.1
   have hle : p ≤ 3 := by omega
   have hpq : p ≠ q := by omega

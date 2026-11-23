@@ -231,7 +231,7 @@ theorem lift2a [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomain O] [IsDiscreteVa
     cases h : up (c - 1) <;> simp_all
   have hty1 : A.ty (c - 1) = Formalism.MainNotions.LocalTheoryWindows.LT.up w' := by rw [hA, arc_letter_type_eq_ite, hup1]; rfl
   have htya : A.ty (a - ((0 : ℕ) : ZMod n)) = Formalism.MainNotions.LocalTheoryWindows.LT.up w' := by rw [ha0, hty1]
-  have hl5 : 5 ≤ PD.p := by have := hB.1; omega
+  have hl5 : 5 ≤ PD.p := omega
   have hcase : Formalism.MainNotions.LiftingTheory.CaseA W := hB.2.1.1
   have hsur : Formalism.MainNotions.LiftingTheory.Sur W F := hB.2.1.2.1
   have hJL : Formalism.MainNotions.LiftingTheory.JumpsLet W T₁ Mi hi := hB.2.1.2.2.2.2.2.2

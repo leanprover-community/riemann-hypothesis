@@ -297,7 +297,7 @@ theorem shape_a_real_holds : ShapeAReal := by
   have hr := rank_fits_block_and_t_ge_six P hP W hW τ
   have hx := upper_translation_le_floor_height P hP W hW τ hτ
   have hw := hW.window τ
-  have hS : 0 ≤ W.xp τ - W.xm τ := by have := hw.2.1; omega
+  have hS : 0 ≤ W.xp τ - W.xm τ := omega
   have hE : 0 ≤ W.U P τ (kc P) - W.U P τ (P.Nr - 1) := by
     have := weights_antitone_le P W hW τ (kc P) (P.Nr - 1) (by omega) (by omega)
     omega
@@ -453,7 +453,7 @@ theorem top_inputs_of_shape_w (hSW : ShapeWReal) : TopInputsReal := by
     have h3 : (0 : ℝ) ≤ (P.Nr : ℝ) := Nat.cast_nonneg _
     have h4 : (h0 P : ℝ) < (l : ℝ) ^ 2 := by linarith
     exact_mod_cast h4
-  have ht : 1 ≤ P.t := by have := hH.t_ge; omega
+  have ht : 1 ≤ P.t := omega
   refine ⟨hl, RealLocalDeltaNabla.units_of_local_holds X.O l hl hu, hfin, hϖ, hsq, ht,
     fun τ hτ => hSW P hH hL ι W hW τ hτ, ?_, ?_, hA.1, hA.2, hT.1, hT.2, hS.1, hS.2, hI⟩
   · intro τ _ μ

@@ -72,8 +72,8 @@ theorem phiFun_tr {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (R j ρ
 
 theorem ptMatN_one (ζ : ℂ) : D.ptMatN [(1, ζ)] (0 + 1) = Matrix.of fun _ _ => ζ := by
   ext a b
-  have ha : a.val = 0 := by have := a.isLt; omega
-  have hb : b.val = 0 := by have := b.isLt; omega
+  have ha : a.val = 0 := omega
+  have hb : b.val = 0 := omega
   simp [D.ptMatN, D.ptEntry, ha, hb]
 
 theorem ptMatN_append_head (h : C.LPt) (ζ : ℂ) (R : ℕ) (hR : D.ptSize h = R) :

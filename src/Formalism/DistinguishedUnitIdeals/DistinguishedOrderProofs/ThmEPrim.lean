@@ -421,7 +421,7 @@ theorem unit_phiFree {ϖ : O} (hϖ : Irreducible ϖ) {e : ℕ} (hB : PrimBase B 
     (hU : PrimUnit L₀ e₀) (i : ZMod n) (k : ℕ) : L₀.PhiFree i k := by
   haveI := hB.complete
   have hl := ell_nonunit hϖ hB.one_le_e hB.assoc
-  have h1 : 1 ≤ B.ℓ := by have := hB.three_le; omega
+  have h1 : 1 ≤ B.ℓ := omega
   obtain ⟨hspan, hfree⟩ := basePhiFree hl hB.e3 h1 k
   refine ⟨B.ℓ ^ k, fun t => X ^ (t : ℕ), hspan, ?_⟩
   intro m hm hsum t
@@ -474,7 +474,7 @@ theorem arcHyp {ϖ : O} (hϖ : Irreducible ϖ) {e : ℕ} (hB : PrimBase B ϖ e)
     (hA : PrimArc h c ell H g sig rr (parA sig rr g ellmax) kap ϖ) :
     ArcHyp h c ell (Formalism.ExponentWindows.abelian₂ B.p H ell) g sig rr (parA sig rr g ellmax) kap ϖ := by
   obtain ⟨r₁, r₂, S₁, S₂, m, b, kind, U₁, U₂, PP, PP', hP⟩ := hA
-  have hℓ : 2 ≤ B.ℓ := by have := hB.three_le; omega
+  have hℓ : 2 ≤ B.ℓ := omega
   have hsh : B.PShape ell := pshape' hϖ hB ell
   have hMS : LevelModelSetting ϖ B.ℓ ell B.p H b kind U₁ U₂ :=
     ⟨hℓ, constant_model_setting hB.one_le_e hB.assoc hB.e3 hℓ hsh, hP.sat₁, hP.sat₂, hP.b_le_H⟩

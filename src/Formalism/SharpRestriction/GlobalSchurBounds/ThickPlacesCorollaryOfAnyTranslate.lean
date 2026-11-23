@@ -672,7 +672,7 @@ theorem column_param_apply (D : D7) (u : D.what₂.Word) (ρ : D.what₂.Tau) (i
 theorem column_param_strictAnti (D : D7) (u : D.what₂.Word) (ρ : D.what₂.Tau) : StrictAnti (uColR D u ρ) := by
   apply strictAnti_of_succ_lt_alt
   intro i j hij
-  have hi : i.val < D.R.k - 1 := by have := j.2; omega
+  have hi : i.val < D.R.k - 1 := omega
   have h1 := (D.hcW u ρ).u_gt_v ⟨i.val, hi⟩
   have h2 := (D.hcW u ρ).v_gt_u ⟨i.val, hi⟩
   have e : (⟨(⟨i.val, hi⟩ : Fin (D.R.k - 1)).1 + 1, by simp; omega⟩ : Fin D.R.k) = j := by ext; simp [hij]

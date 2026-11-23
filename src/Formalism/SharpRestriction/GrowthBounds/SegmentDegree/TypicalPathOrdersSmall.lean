@@ -87,7 +87,7 @@ theorem dplus_le_geom {LL : Letters (Fin N)} {B : Fin N → ℕ} {n0 p : ℕ} (h
     rw [this]; push_cast; positivity
   | succ m ih =>
     intro l hl hml hln
-    have hmN : m < N := by have := l.2; omega
+    have hmN : m < N := omega
     have hd : dplus LL B (m + 1) = dplus LL B m + if LL.vec ⟨m, hmN⟩ = true then B ⟨m, hmN⟩ else 0 :=
       dsum_succ (fun l => LL.vec l = true) B m hmN
     rw [hd]

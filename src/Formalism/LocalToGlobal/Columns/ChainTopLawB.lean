@@ -238,7 +238,7 @@ theorem topLawG_sym (hlaw : CtlPhiLaw) (hX : X.Ok) (hPr : Pr.Ok) {m2 : ℕ} (hm 
   have hj : m2 + 1 + 1 = R.m := by omega
   have hrn' : R.r ≤ R.N (m2 + 1) := r_le_N_of_le (by omega)
   have hrN : R.r ≤ R.N (m2 + 1 + 1) := r_le_N_of_le (by omega)
-  have ht : 0 < R.t := by have := R.three_m_lt_t; omega
+  have ht : 0 < R.t := omega
   have hH : h.1 ∈ HJsym (𝓞 X.E ⧸ w.1.asIdeal) (R.N (m2 + 1)) R.k R.r R.t (m2 + 1 + 1 - 1) R.rS hrn' := by
     have h2 := h.2
     change h.1 ∈ (colLevSym Ch (m2 + 1) ⟨w.1, hw⟩).H at h2

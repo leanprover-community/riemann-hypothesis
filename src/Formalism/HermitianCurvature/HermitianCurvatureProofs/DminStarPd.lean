@@ -75,7 +75,7 @@ lemma ubl_monoM (D : RealPlaceData k r Wp Wq) (L : Finset (Fin (r + 2))) (a b : 
         S n 0 (2 * r + 2) := by
     intro l _
     by_cases hl : l ∈ L ∨ l = Fin.last (r + 1)
-    · have hl' : l.val ≤ 2 * r + 2 := by have := l.isLt; omega
+    · have hl' : l.val ≤ 2 * r + 2 := omega
       have h1 : UBL (fun g => (Dmin k r D.z D.z' g l)⁻¹ ^ a l) S n 0 (2 * r + 2) :=
         ubl_mono hSG (ubl_invpow (minor_polynomial_property k r D.z D.z' l) hSG hc₀
           (fun g hg => hSD g hg l hl) (a l) n) le_rfl hl'

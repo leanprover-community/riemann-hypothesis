@@ -629,7 +629,7 @@ theorem enum_pos {r : ℕ} [NeZero r] (ρ : Fin r) (hr : 2 ≤ r) (hρ : (ρ : �
       rw [← sum_erase_last ρ hρ (fun j => ∑ a ∈ range j, (((bN a : ℕ) : ℤ) + 1) * ((bN j : ℕ) : ℤ)),
         Finset.sum_comm]
       refine Finset.sum_congr rfl fun b _ => ?_
-      have hb : (b : ℕ) ≤ r - 1 := by have := b.isLt; omega
+      have hb : (b : ℕ) ≤ r - 1 := omega
       have e1 : ∑ a ∈ range (b : ℕ), (((bN a : ℕ) : ℤ) + 1) * ((bN (b : ℕ) : ℕ) : ℤ) =
           ∑ a ∈ range (r - 1), (if a < (b : ℕ) then (((bN a : ℕ) : ℤ) + 1) * ((bN (b : ℕ) : ℕ) : ℤ) else 0) := by
         rw [← Finset.sum_filter]

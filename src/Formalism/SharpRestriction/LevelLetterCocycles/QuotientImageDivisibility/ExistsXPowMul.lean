@@ -155,7 +155,7 @@ theorem expRing_of (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP W) : Fo
 
   obtain ⟨w', hw'⟩ := hR.2.2.2.2.2.1
   rw [eat_qp] at hw'
-  have hp1 : 1 ≤ PD.p - 1 := by have := PD.hp.two_le; omega
+  have hp1 : 1 ≤ PD.p - 1 := omega
   have hcφ : PowerSeries.constantCoeff (W.lev i ζ (W.φA W.π₀)) = 0 := by
     rw [hw', map_mul, map_mul, map_pow, map_mul, map_mul, map_pow, hcq,
       zero_pow (by omega), mul_zero]

@@ -155,7 +155,7 @@ theorem sm_ge {n : ℕ} {τ : Fin n → Fin n} (h : StrictMono τ) : ∀ m (j : 
   | zero => intro j _; omega
   | succ m ih =>
     intro j hj
-    have hm : m < n := by have := j.isLt; omega
+    have hm : m < n := omega
     have h1 := ih ⟨m, hm⟩ rfl
     have h2 : τ ⟨m, hm⟩ < τ j := h (by rw [Fin.lt_def]; simp only; omega)
     rw [Fin.lt_def] at h2

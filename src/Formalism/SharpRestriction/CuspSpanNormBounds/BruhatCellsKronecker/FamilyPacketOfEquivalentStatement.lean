@@ -481,7 +481,7 @@ theorem d_nProduct {C' Cl Cg cb Cu cT CT C0 : ℝ} (hH : Cnt.Hyp0 D large₂ C' 
       LatticeSumBounds.nTot D.R.k D.R.f D.host.v ((∏ τ, Gz D (Tu D u) (Tu D u') Z τ) * ((gS D : ℝ)⁻¹) ^ (D.R.m * D.R.f)) (NT D u) := by
   obtain ⟨_, _, _, _, _, _, _, _, _, _, _, h12, _, h14, _, _, _, _, h19, _⟩ := hH.1
   have h19' : 1 ≤ D.host.v := h19
-  have hk1 : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk1 : 1 ≤ D.R.k := omega
   have hT : (0 : ℝ) < ((Tu D u : ℕ) : ℝ) := by exact_mod_cast (D.mem u).A.T_prime.pos
   have hg : (0 : ℝ) < (gS D : ℝ) := by
     have h0 : 0 < D.host.g 0 := by

@@ -249,7 +249,7 @@ theorem locEntry_iff_G (hQ : QLocG D) (a b : MatR D) (i j : Fin (D.R.rS + 1)) (h
         (g.e ((D.s.atP p).ιE (bt D b j i))).2) = (g.q : (D.s.atP p).Fp) * t) ∧
       (∃ t ∈ 𝒪[(D.s.atP p).Fp], γp δ p ^ (i.val - j.val) * ((g.e ((D.s.atP p).ιE (a i j))).2 -
         (g.e ((D.s.atP p).ιE (bt D b j i))).1) = (g.q : (D.s.atP p).Fp) * t)) := by
-  have hk : i.val - j.val ≤ D.R.rS := by have := i.isLt; omega
+  have hk : i.val - j.val ≤ D.R.rS := omega
   rw [locMem_iff δ M hA p hk, locMem_iff δ M hA p hk, hQ δ M hA p g hs _ hk]
   have hq : ∀ w : (D.s.atP p).Ep, (∃ o ∈ (D.s.atP p).O,
       w = algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (g.q : (D.s.atP p).Fp) * o) ↔ _ := mem_qO δ M hA p g

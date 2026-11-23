@@ -83,7 +83,7 @@ theorem twChrOne_main : PI.TwChrOne.TwChrOne := by
       congr 1
       apply Mb_mul_of P (fun i hi1 hi2 j hj => red_DA P hJ i hi1 hi2 j hj) (hI_of P hJ) (hI_of P hJ')
       intro t
-      have ht : kj + t.1 < N := by have := t.isLt; omega
+      have ht : kj + t.1 < N := omega
       have := hx (Loc.eN E N (kj + t.1))
       rwa [inX_eN ht] at this
     have hu := unit_of r hJ

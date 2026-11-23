@@ -371,7 +371,7 @@ theorem lamVQ_eq_hc (S : RowPar R) {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ R.m) (i 
 theorem hcV_step {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ R.m) {n : ℕ} (hn : n + 1 < R.nV) :
     (of P).hcV j (n + 1) + 1 ≤ (of P).hcV j n := by
   have hk3 := R.m_add_three_le_k
-  have ht1 : 1 ≤ R.t := by have := R.rank_add_five_le; omega
+  have ht1 : 1 ≤ R.t := omega
   have hp : pOf R j = R.k + j - 1 := rfl
   have hnV : R.nV = R.k + R.m - 1 + R.t := rfl
   rw [hnV] at hn

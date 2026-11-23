@@ -87,7 +87,7 @@ theorem teich (c : ℤ_[l]) (hc : ‖c‖ = 1) : ∃ ω : ℤ_[l], ω ^ (l - 1) 
 theorem pow_approx (hl2 : l ≠ 2) (u : ℤ_[l]) (hu : ‖u - 1‖ = (l : ℝ)⁻¹) (c : ℤ_[l]) (hc : ‖c - 1‖ < 1)
     (n : ℕ) : ∃ k : ℕ, ‖u ^ k - c‖ ≤ (l : ℝ) ^ (-((n + 1 : ℕ) : ℤ)) := by
   have hp := hl.out
-  have h3 : 3 ≤ l := by have := hp.two_le; omega
+  have h3 : 3 ≤ l := omega
 
   have hu1 : u - 1 ∈ Ideal.span {(l : ℤ_[l]) ^ 1} := by
     rw [← PadicInt.norm_le_pow_iff_mem_span_pow, hu]; simp

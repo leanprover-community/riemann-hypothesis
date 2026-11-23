@@ -71,7 +71,7 @@ theorem coef_step_of (hcase : Formalism.MainNotions.LiftingTheory.CaseA W) (hP9 
   obtain ⟨-, -, h9c⟩ := hP9 T hT hs1 hp2
   obtain ⟨⟨hπΔ', -, ⟨wπ, hwπ⟩, -⟩, -⟩ := h9c hfin
   have hπ : W.π₀ ∈ W.AΔ := hπΔ'
-  have hp1 : PD.p - 1 ≠ 0 := by have := PD.hp.two_le; omega
+  have hp1 : PD.p - 1 ≠ 0 := omega
   have hO : ∀ c : O, ((PD.p : ℕ) : O) * c = 0 → c = 0 := p_nzd_O W hinj
   have hQe : qA W = W.π₀ + ((PD.p : ℕ) : LetA O n) := rfl
   have hQΔ : qA W ∈ W.AΔ := by rw [hQe]; exact add_mem hπ (natCast_mem _ _)

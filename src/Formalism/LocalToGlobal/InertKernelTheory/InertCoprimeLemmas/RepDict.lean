@@ -410,7 +410,7 @@ theorem rdictMain : Formalism.L2.KerInert.Rep.CurveDict := by
   obtain ⟨ι, hι⟩ := Formalism.L2.KerInert.lamExt l g.lam
   have hdp : D.host.d.Prime := D.host.hyp.2.1
   have hsqf : Squarefree D.host.d := hdp.squarefree
-  have hd4 : D.host.d % 4 = 3 := by have := D.host.hyp.2.2.2.1; omega
+  have hd4 : D.host.d % 4 = 3 := omega
   have hns : ¬ IsSquare ((-(D.host.d : ℤ) : ℤ) : ZMod l) := ZMod.nonsquare_of_jacobiSym_eq_neg_one hIn
   have hsq' : ¬ ∃ a : ZMod l, a ^ 2 = -(D.host.d : ZMod l) := by
     rintro ⟨a, ha⟩; apply hns; exact ⟨a, by push_cast; rw [← ha]; ring⟩

@@ -47,7 +47,7 @@ namespace Formalism.RepresentationBoundsCohomology.N2
 theorem unit_lemma_prime_extension_holds : StatWPrimeExt := by
   intro ℓ _ hℓ A _ _ G n _ D _ _ _ _ Λ s H π₀ v hG hπ hL3 hs
   have hprime : ℓ.Prime := Fact.out
-  have h3 : 3 ≤ ℓ := by have := hprime.two_le; omega
+  have h3 : 3 ≤ ℓ := omega
   have hℓr : (3 : ℝ) ≤ (ℓ : ℝ) := by exact_mod_cast h3
   have hsH : ∀ i, s i ≤ H := fun i => (hs i).2 H (hL3 i)
   have hK : ∀ i, (Λ.pair i).Kills (π₀ ^ ((s i + (ℓ - 2)) / (ℓ - 1))) := by

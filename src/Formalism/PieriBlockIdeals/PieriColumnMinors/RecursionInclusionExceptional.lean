@@ -132,8 +132,8 @@ def Ev7E : Prop :=
 theorem res_anti_shift {N a : ℕ} {lam : ℕ → ℕ} (h : Antitone (res N lam)) :
     Antitone (res (N - a) (fun i => lam (a + i))) := by
   intro i j hij
-  have hi : a + i.val < N := by have := i.isLt; omega
-  have hj : a + j.val < N := by have := j.isLt; omega
+  have hi : a + i.val < N := omega
+  have hj : a + j.val < N := omega
   have hle : (⟨a + i.val, hi⟩ : Fin N) ≤ ⟨a + j.val, hj⟩ := by
     rw [Fin.mk_le_mk]
     have := Fin.le_iff_val_le_val.mp hij

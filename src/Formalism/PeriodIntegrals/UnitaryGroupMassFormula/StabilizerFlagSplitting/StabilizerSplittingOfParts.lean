@@ -268,7 +268,7 @@ theorem stabilizer_splitting_of_parts (hFS : FixSub) (hSF : SubFlag) (hUN : Unip
     Alg.comm P ρ κ (fixU ρ hρ.2) (fixM κ (mul_eq_of_cols k r κ Y hκ.2)) (HM ρ hρ.1) (HU κ (hKH hκ))
 
   have he : ∀ ρ ∈ Rst k r z z' γ, (ρ - 1) ^ (2 * r + k + 1) = 0 := fun ρ hρ => by
-    have e : r + 2 ≤ 2 * r + k + 1 := by have := hs.1; omega
+    have e : r + 2 ≤ 2 * r + k + 1 := omega
     exact pow_eq_zero_of_le e (Rnil ρ hρ)
   exact ⟨hKH, hR, hc, hd, he⟩
 

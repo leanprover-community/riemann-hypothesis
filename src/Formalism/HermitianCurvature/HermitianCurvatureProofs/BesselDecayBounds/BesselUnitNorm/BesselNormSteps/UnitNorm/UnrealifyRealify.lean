@@ -150,7 +150,7 @@ theorem InA.mul {X Y : Mx k r} (hX : InA k r X) (hY : InA k r Y) : InA k r (X * 
     intro l _
     by_cases hl : a.val ≤ l.val
     · rw [hY.1 a l hl, mul_zero]
-    · have hl' : l.val < r := by have := a.2; omega
+    · have hl' : l.val < r := omega
       have : l = eI k r ⟨l.val, hl'⟩ := rfl
       rw [this, hX.1 ⟨l.val, hl'⟩ i (by simp only; omega), zero_mul]
   · intro i j h1 h2 h3

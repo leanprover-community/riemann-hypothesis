@@ -295,7 +295,7 @@ theorem ordersSumY_of (hI : OrdersIff) : OrdersSumY := by
     intro l hl
     obtain ⟨hp, h2, hlY, hl', hord⟩ := hs l hl
     have hodd : l % 2 = 1 := hp.eq_two_or_odd.resolve_left h2
-    have h3 : 3 ≤ l := by have := hp.two_le; omega
+    have h3 : 3 ≤ l := omega
     exact ⟨h3, Nat.le_floor hlY, pm_resid hI e J l hl' hodd hord⟩
   have hsum := pm_y_sum _ ⌊Y⌋₊ hM2 Y hY (Nat.floor_le hY0) s hs'
     (fun l hl => (hs l hl).2.2.1)

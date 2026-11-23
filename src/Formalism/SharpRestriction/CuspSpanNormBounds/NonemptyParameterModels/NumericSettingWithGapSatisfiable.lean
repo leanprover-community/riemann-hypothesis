@@ -204,7 +204,7 @@ lemma obj_card_fin (n : ℕ) (p : ℕ → Prop) [DecidablePred p] :
 
 theorem obj_epsSH_card (R : Formalism.BasicNotions.Ranks) :
     (Finset.univ.filter fun i => epsSH R i = true).card = R.k + R.rS := by
-  have hk : 1 ≤ R.k := by have := R.m_add_three_le_k; omega
+  have hk : 1 ≤ R.k := omega
   rw [← obj_count R.k R.rS hk, ← obj_card_fin]
   congr 1
   ext i

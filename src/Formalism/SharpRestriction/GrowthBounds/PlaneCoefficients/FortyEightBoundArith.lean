@@ -97,7 +97,7 @@ theorem arithCondition_of_one_le (C CLa : ℝ) (hC : 1 ≤ C) : RestArithStep C 
   have ha0 : (0 : ℝ) ≤ a := by linarith [hB.two_le_a]
   refine ⟨?_, ?_⟩
   · by_contra hc
-    have hJ1 : F.J = 1 := by have := hV.1; omega
+    have hJ1 : F.J = 1 := omega
     have e := hV.2.1 0 (r - 1)
     rw [hJ1] at e
     simp only [Nat.cast_one, zero_add] at e

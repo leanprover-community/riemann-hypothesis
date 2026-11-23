@@ -151,7 +151,7 @@ theorem abs_norm_TG (n : ℕ) (g : D.host.E) :
       have h4 := congrArg Complex.re h1
       simp only [pow_two, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero,
         Complex.neg_re, Complex.natCast_re] at h4
-      have hq0 : 0 < D.host.q := by have := D.host.qd_big.1; omega
+      have hq0 : 0 < D.host.q := omega
       have hq : (0 : ℝ) < D.host.q := by exact_mod_cast hq0
       nlinarith [mul_self_nonneg (w.embedding D.host.sqq).re]
     simp [InfinitePlace.mult, hnr]

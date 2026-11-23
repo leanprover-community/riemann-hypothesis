@@ -1005,7 +1005,7 @@ theorem rootCoord_tr {v : InfinitePlace X.B.I.F} {lam : ℂ} (hlam : lam ≠ 0)
     have hQiQ : ∀ y, Qi *ᵥ (Q *ᵥ y) = y := fun y => by rw [Matrix.mulVec_mulVec, h1, Matrix.one_mulVec]
     conv_lhs => rw [hz]
     rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hQiQ, hJ_QQ _ Q _ hg, hHe]
-    have hexp : D.R.rS - (a : ℕ) = 1 := by have := a.isLt; omega
+    have hexp : D.R.rS - (a : ℕ) = 1 := omega
     rw [hexp, pow_one]
 
 theorem rootSum_tr {v : InfinitePlace X.B.I.F} {lam : ℂ} (hlam : lam ≠ 0)

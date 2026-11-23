@@ -157,7 +157,7 @@ theorem restLabG : RestLabG := by
   intro p _ n' r K _ _ _ O _ _ _ _S Fr TT L₁ L₂ N₁ G' deg d Y cP hMFH J _ Dt dPl dNo ka rho No Go hMH
   obtain ⟨hJ, hnL, -⟩ := hMH.1.1
   have hV : Fr.Valid L₁ N₁ := hMFH.frames.2.1
-  have hr : 1 ≤ r := by have := hMFH.two_le_r; omega
+  have hr : 1 ≤ r := omega
   have hinj := posTL_inj Fr hV hr hJ hnL
   have hB := hMH.2.1
   unfold LabAt

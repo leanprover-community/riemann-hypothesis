@@ -111,7 +111,7 @@ theorem restCloudX_of_Y (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg CLa' CD
       φ hφ K hk hrk F hF E' hE' nb B hB hli hc e he htgt hm g hhm hg hbasis FsB hFsB
   have hBs := hyps_basic (C := C) (le_trans (le_max_right _ _) hC) H
   have hW : tableLineDegreeFive.WeightHyp TT aT bT cpp c0 a lam0 := H.2.2.2.2.1
-  have hm2 : 2 ≤ m := by have := hBs.m_ge; omega
+  have hm2 : 2 ≤ m := omega
   refine ⟨Θ, hΘ, n2, r * TT.card * c0 + 2 * r * n' * cpp, tT, D1, sh, ?_, a2, a3, fun i => ⟨a4 i, ?_⟩, a5, a6⟩
   · unfold om
     push_cast

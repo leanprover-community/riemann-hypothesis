@@ -113,7 +113,7 @@ theorem polarization_of_constant {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N)
       rowGen ℤ (eRow h a) (eRow h b) (initMinor ℤ (rowsZ h i) hs) = Polynomial.C (initMinor ℤ (rowsZ h i) hs) := by
     intro i hi hs
     refine rowGen_gmin_inv _ _ hab' (rowsZ h i) (Fin.castLE hs) (Or.inr fun p hp => ?_)
-    have hp0 : p.1 = i.1 := by have := p.2; omega
+    have hp0 : p.1 = i.1 := omega
     apply eRow_ne_last h b
     rw [← hp]
     simp [rowsZ, hp0]

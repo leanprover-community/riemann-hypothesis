@@ -2103,7 +2103,7 @@ theorem pw_units (hC : Cst R ϖ L₀ Λ₀ Q a b) (m : ℕ) :
     (fun j _ => hC.L0 _ (hx j)))).mul hDi).mul_mem hv
   rw [Finset.card_erase_of_mem (Finset.mem_univ k), Finset.card_univ, Fintype.card_fin] at hb
   refine Bd.mono hϖ (le_of_eq ?_) hb
-  have h1 : (m - 1) + 1 = m := by have := k.2; omega
+  have h1 : (m - 1) + 1 = m := omega
   calc a + (m - 1) * a + a = ((m - 1) + 1 + 1) * a := by ring
     _ = (m + 1) * a := by rw [h1]
 

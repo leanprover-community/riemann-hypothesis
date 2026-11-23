@@ -163,7 +163,7 @@ theorem threshold_letter_eq_Xi (H : HypT N n0 r K LL B od bb a La p) (i : Fin N)
     have : (13 : ℝ) ≤ (p : ℝ) := by exact_mod_cast H.p13
     linarith
   have hk0 : (0 : ℝ) < ((r + K : ℕ) : ℝ) := by
-    have : 0 < r + K := by have := H.r1; omega
+    have : 0 < r + K := omega
     exact_mod_cast this
   unfold BranchingDimensions.Letters.XT toB Xi
   rw [dite_eq_left ⟨by omega, by have := i.2; omega⟩]

@@ -296,8 +296,8 @@ theorem levPos_inj (k r' : ℕ) : Function.Injective (levPos k 1 r') := by
 
 theorem lev_mm (k r' : ℕ) (g : Mat k r') (s t : Fin (2 * r' + k + 1)) :
     ιLev k 1 r' g (levPos k 1 r' s) (levPos k 1 r' t) = g s t := by
-  have hs : s.val ≤ 2 * r' + k := by have := s.isLt; omega
-  have ht : t.val ≤ 2 * r' + k := by have := t.isLt; omega
+  have hs : s.val ≤ 2 * r' + k := omega
+  have ht : t.val ≤ 2 * r' + k := omega
   simp only [ιLev, levPos]
   try split_ifs
   all_goals first | omega | simp [hs, ht]

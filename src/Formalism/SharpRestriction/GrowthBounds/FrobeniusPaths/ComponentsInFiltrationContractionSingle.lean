@@ -1076,7 +1076,7 @@ theorem tau_sum_over_columns (mu : Fin (N + 1) → Fin n → ℤ) (q : Fin (N + 
 
 theorem word_valuation_bounds : WordValuationBounds := by
   intro N n _ LL B P I i
-  have hj0 : i.val + 1 < N + 1 := by have := i.2; omega
+  have hj0 : i.val + 1 < N + 1 := omega
   have hq : (⟨i.val + 1, hj0⟩ : Fin (N + 1)) = i.succ := rfl
   have hS : ∀ l : Fin N, l.val < i.val + 1 → l ∈ {j : Fin N | j ≤ i} := fun l hl => by
     show l ≤ i
@@ -1084,7 +1084,7 @@ theorem word_valuation_bounds : WordValuationBounds := by
   have hout : ∀ l : Fin N, i.val + 1 ≤ l.val → l ∉ {j : Fin N | j ≤ i} := fun l hl h => by
     have h' : l ≤ i := h
     rw [Fin.le_def] at h'; omega
-  have hN : i.val + 1 ≤ N := by have := i.2; omega
+  have hN : i.val + 1 ≤ N := omega
   constructor
   · rw [flt_le_valS]
     unfold Psi

@@ -369,7 +369,6 @@ structure Nums (p : PkB B C G) (W₀ : RowsRest B C) : Type where
   jw : C.Tup → ℕ → B.places.Pl → ℤ
 
 
-open Classical in
 def perOf (p : PkB B C G) (e : PerD p) (W₀ : RowsRest B C) (u : B.Word) (μ : C.Tup) (φ : W₀.Mu u) (F : (p.sA true μ).A.T) : ℂ :=
   if h : μ = C.mu0 then
     (C.mem u).P.PtilCol ((W₀.eMu u φ : (C.mem u).A.Mram) : (C.mem u).C.cls 0 → (C.mem u).C.Y 0 → ℂ)

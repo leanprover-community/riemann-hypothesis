@@ -112,7 +112,7 @@ theorem coarse_threshold_ratio_consecutive {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (h
   have hdd : (segDists X.TT j).get l + 2 ≤ (segDists X.TT j).get l' := by omega
   set P := X.p ^ (segG X.TT j - (segDists X.TT j).get l) with hP
   set P' := X.p ^ (segG X.TT j - (segDists X.TT j).get l') with hP'
-  have hp1 : 1 ≤ X.p := by have := hs.p5; omega
+  have hp1 : 1 ≤ X.p := omega
   have hPP : X.p ^ 2 * P' ≤ P := by
     rw [hP, hP', ← pow_add]
     exact Nat.pow_le_pow_right hp1 (by omega)
@@ -212,7 +212,7 @@ theorem nUp_of_std {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
     have h3 : (2 * (X.N1 : ℝ) + 3 : ℝ) ≤ (X.m : ℝ) + 1 := h2
     have : 2 * X.N1 + 3 ≤ X.m + 1 := by exact_mod_cast h3
     omega
-  have hr1 : 1 ≤ X.m := by have := i.2; omega
+  have hr1 : 1 ≤ X.m := omega
   have h1 := nu_le_last hP hroom i.val i.2
   have h2 := last_ge_mass hP hr1 i.val i.2
   have h3 := coarse_threshold_prefix_sum hs le_rfl j rz ry hd i

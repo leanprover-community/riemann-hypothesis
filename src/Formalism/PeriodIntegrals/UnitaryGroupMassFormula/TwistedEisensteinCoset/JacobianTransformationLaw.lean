@@ -277,8 +277,8 @@ theorem val_comp (hp : (Ideal.absNorm P.asIdeal).Prime) {g : Sp E (n + c) ≃ₗ
   subst hqq
   obtain ⟨hyA, hyB⟩ := hy
   ext s t
-  have hs : s.1 < n + c := by have := s.isLt; omega
-  have ht : t.1 < n' + c' := by have := t.isLt; omega
+  have hs : s.1 < n + c := omega
+  have ht : t.1 < n' + c' := omega
   simp only [Matrix.map_apply, Matrix.mul_apply, AYm, GA, Matrix.of_apply]
   rw [ent_comp rfl h1 h2 h3 h4 h5 g y s.1 t.1 hs,
     reduction_sum' _ _ (fun p'' hp'' => ia_mul (P := P) (gm_int rfl h1 h2 h3 h4 h5 hg s.1 p'' hs)

@@ -149,7 +149,7 @@ theorem twNormLat_main : PI.TwNormLat.TwNormLat := by
       · have hz : Loc.atN v N = 0 := by simp [Loc.atN, hN]
         rw [hz, zero_smul]
         refine Finset.sum_eq_zero fun l _ => ?_
-        have : l.1 ≠ N := by have := l.2; omega
+        have : l.1 ≠ N := omega
         simp [this]
     rw [Finset.sum_congr rfl (fun l _ => e1 l), Finset.sum_sub_distrib, e2, hx1ζ, Finset.smul_sum,
       ← Finset.sum_sub_distrib]

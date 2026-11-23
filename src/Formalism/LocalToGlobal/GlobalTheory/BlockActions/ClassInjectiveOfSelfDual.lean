@@ -60,8 +60,8 @@ theorem T_sub_one_ge (D : D7) (u : D.what₂.Word) :
     show _ = (M : D.host.E) * ((α : D.host.E) + cj (α : D.host.E) + (M : D.host.E) * (α : D.host.E) * cj (α : D.host.E))
     ring
   have hMpos : 0 < M := by
-    have hq : 0 < D.host.q := by have := D.host.qd_big.1; omega
-    have hd : 0 < D.host.d := by have := D.host.qd_big.2; omega
+    have hq : 0 < D.host.q := omega
+    have hd : 0 < D.host.d := omega
     have hg0 := (D.host.g_prime 0).pos
     have hg1 := (D.host.g_prime 1).pos
     have hn : 0 < D.host.QS := D.host.QS_pos
@@ -91,8 +91,8 @@ theorem T_sub_one_ge (D : D7) (u : D.what₂.Word) :
 theorem finrank_host_lt_T_sub_one (D : D7) (u : D.what₂.Word) : Module.finrank ℚ D.host.E < (D.mem u).A.T - 1 := by
   have hf : Module.finrank ℚ D.host.E = 4 * D.R.ord := D.host.finrank_cmField
   have h := T_sub_one_ge D u
-  have hq : 2 ≤ D.host.q := by have := D.host.qd_big.1; omega
-  have hd : 2 ≤ D.host.d := by have := D.host.qd_big.2; omega
+  have hq : 2 ≤ D.host.q := omega
+  have hd : 2 ≤ D.host.d := omega
   have hg0 := (D.host.g_prime 0).two_le
   have hg1 := (D.host.g_prime 1).two_le
   have hgg : 4 ≤ D.host.g 0 * D.host.g 1 := by nlinarith

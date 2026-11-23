@@ -381,7 +381,7 @@ theorem nuRows_split (δ : Code N) (j : ℕ) (z : RPl N.R) :
       (Multiset.range (N.R.N j - N.R.k)).map (fun c => N.nuN δ (j + 1) z (N.R.k + c)) := by
   unfold nuRows
   rw [univ_map_fin (N.R.k - 2 + 2) (N.nuN δ (j + 1) z)]
-  have hk : N.R.k - 2 + 2 = N.R.k := by have := N.k_two; omega
+  have hk : N.R.k - 2 + 2 = N.R.k := omega
   rw [hk]
   have hN : N.R.N (j + 1 - 1) = N.R.k + (N.R.N j - N.R.k) := by
     rw [Nat.add_sub_cancel]
@@ -395,7 +395,7 @@ theorem apRows_split (j : ℕ) (z : RPl N.R) :
       (Multiset.range (j + 1)).map (fun c => N.apN (j + 1) z (N.R.k - 1 + c)) := by
   unfold apRows
   rw [univ_map_fin (N.R.k - 2 + 1) (N.apN (j + 1) z)]
-  have hk : N.R.k - 2 + 1 = N.R.k - 1 := by have := N.k_two; omega
+  have hk : N.R.k - 2 + 1 = N.R.k - 1 := omega
   rw [hk]
   have hs : (N.R.sigW (j + 1)).1 = N.R.k - 1 + (j + 1) := by
     first

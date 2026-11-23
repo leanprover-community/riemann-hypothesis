@@ -66,7 +66,7 @@ theorem hω_holds (hcard : W.DelF.card = PD.p - 1) (hinj : Function.Injective (a
     ∀ ω : DeltaT PD.p, ∃ g ∈ W.DelF, algebraMap O LL (W.χΓ g : O) = algebraMap O LL (ιZ ω.1) := by
   classical
   intro ω
-  have hpos : 0 < PD.p - 1 := by have := PD.hp.two_le; omega
+  have hpos : 0 < PD.p - 1 := omega
   set f : W.Gam → LL := fun g => algebraMap O LL (W.χΓ g : O) with hf
   have hAcard : (W.DelF.image f).card = PD.p - 1 := by
     rw [Finset.card_image_of_injOn, hcard]

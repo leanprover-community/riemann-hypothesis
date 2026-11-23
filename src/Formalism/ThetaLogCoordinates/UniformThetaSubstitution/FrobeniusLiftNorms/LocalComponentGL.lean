@@ -340,7 +340,7 @@ theorem norm_fact_bound (hp : p.Prime) (hnp : ‖(p : K)‖ = (p : ℝ)⁻¹) (k
   have hv : padicValNat p (k + 1).factorial ≤ k := by
     have h := sub_one_mul_padicValNat_factorial_lt_of_ne_zero (p := p) (n := k + 1) (by omega)
     rw [← Nat.padicValNat_def] at h
-    have h2 : 1 ≤ p - 1 := by have := hp.two_le; omega
+    have h2 : 1 ≤ p - 1 := omega
     have h3 : 1 * padicValNat p (k + 1).factorial ≤ (p - 1) * padicValNat p (k + 1).factorial :=
       Nat.mul_le_mul_right _ h2
     omega

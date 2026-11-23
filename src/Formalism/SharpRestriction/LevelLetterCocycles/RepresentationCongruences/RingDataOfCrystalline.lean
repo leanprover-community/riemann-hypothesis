@@ -324,7 +324,7 @@ theorem φpow_π₀_dvd (hR : GS.RD W) : ∀ s : ℕ, ∀ k < s, ∃ h ∈ W.AΔ
     · obtain ⟨h, hh, he⟩ := ih k hk
       exact ⟨(W.φA ^ s) w * h * ps W s ^ (PD.p - 1),
         W.AΔ.mul_mem (W.AΔ.mul_mem hwm hh) (W.AΔ.pow_mem (GS.ps_mem W s) _), by rw [e, he]; ring⟩
-    · have hp2 : PD.p - 1 = (PD.p - 2) + 1 := by have := PD.hp.two_le; omega
+    · have hp2 : PD.p - 1 = (PD.p - 2) + 1 := omega
       exact ⟨(W.φA ^ k) w * (W.φA ^ k) W.π₀ * ps W k ^ (PD.p - 2),
         W.AΔ.mul_mem (W.AΔ.mul_mem hwm hπm) (W.AΔ.pow_mem (GS.ps_mem W k) _),
         by rw [e, hp2, pow_succ]; ring⟩

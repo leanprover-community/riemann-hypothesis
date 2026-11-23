@@ -327,8 +327,8 @@ theorem jq_scal {q : ℕ} (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hq0 : (q : 
     have hm : (Matrix.of fun s t : Fin (n - kj) => Loc.atN (g.toLinearMap (Loc.eN E (n + c) (kj + t.1))) (kj + s.1)) =
         Matrix.of fun s t : Fin (n - kj) => g.toLinearMap (Pi.single (fE k₀ c n h (brI hN t)) 1) (fE k₀ c n h (brI hN s)) := by
       ext s t
-      have ht : kj + t.1 < n + c := by have := t.2; omega
-      have hs : kj + s.1 < n + c := by have := s.2; omega
+      have ht : kj + t.1 < n + c := omega
+      have hs : kj + s.1 < n + c := omega
       have et : fE k₀ c n h (brI hN t) = ⟨kj + t.1, ht⟩ := by
         apply Fin.ext
         rw [fE_val]
@@ -390,7 +390,7 @@ theorem det_first_parabolic_eq_det_block {n c : ℕ} {r : Sp E (n + c) ≃ₗ[E]
       show ¬ (n + s.1 < n + t.1)
       omega)
     rw [Pi.sub_apply, sub_eq_zero] at h1
-    have ht : n + t.1 < n + c := by have := t.2; omega
+    have ht : n + t.1 < n + c := omega
     rw [Matrix.submatrix_apply, hM]
     have e : (Pi.single (Fin.natAdd n t) 1 : Sp E (n + c)) = Loc.eN E (n + c) (n + t.1) := (eN_inB _ _ ht).symm
     rw [e]

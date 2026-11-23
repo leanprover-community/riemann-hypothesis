@@ -184,7 +184,7 @@ theorem top_level_germ_leading : TopCore1 := by
   intro Wp Wq _ _ _ _ _ _ P p F' hF' N b s hb hs hbs h hh K hK hK0
   obtain ⟨m, rfl⟩ : ∃ m, s = m + 2 := ⟨s - 2, by omega⟩
   have hszH : D.ptSize h = b - 1 := hh.2
-  have hk : 1 ≤ P.k := by have := p.hl.2.2; omega
+  have hk : 1 ≤ P.k := omega
   have hTT : 0 < TBB.TTp p := mul_pos p.T.base.T_pos p.T.base.T'_pos
   obtain ⟨ε0, hε0, hεG⟩ := hF'.2.2
   have hsmall : ∀ q : C.LPt, p.V F' q ≠ 0 → ε0 ≤ D.ptG (TBB.TTp p) P.r q := by

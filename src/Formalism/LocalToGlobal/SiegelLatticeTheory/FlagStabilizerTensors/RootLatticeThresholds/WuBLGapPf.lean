@@ -85,8 +85,8 @@ theorem gap_lt (R : Ranks) (P : HCParam R)
   unfold epsSH epsS at he
   unfold lamSH lamS
   simp only [Fin.coe_cast] at he ⊢
-  have ha : a.val < R.r := by have := a.isLt; omega
-  have hb : b.val < R.r := by have := b.isLt; omega
+  have ha : a.val < R.r := omega
+  have hb : b.val < R.r := omega
   have hab' : a.val < b.val := hab
   by_cases hak : a.val < R.k - 1 <;> by_cases hbk : b.val < R.k - 1
   · rw [if_pos hak, if_pos hbk] at he

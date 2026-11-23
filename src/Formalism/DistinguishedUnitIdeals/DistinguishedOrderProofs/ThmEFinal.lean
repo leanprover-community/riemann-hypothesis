@@ -309,7 +309,7 @@ theorem primArc {ϖ : O} (hϖ : Irreducible ϖ) {eO : ℕ} {u x : Oˣ} (hB : Fin
     PrimArc h c (Cu.ell c) (HArc g G₀ Sz η kd bb c) g sig rr (parA sig rr g ellmax) kap ϖ := by
   obtain ⟨A, hP⟩ := hA
   have hpB := hB.prim
-  have hℓ2 : 2 ≤ B.ℓ := by have := hpB.three_le; omega
+  have hℓ2 : 2 ≤ B.ℓ := omega
   have hdvd : ϖ ∣ (B.ℓ : O) := Prim.dvd_ell hpB.one_le_e hpB.assoc
   have hnu : ¬ IsUnit (B.ℓ : O) := Prim.ell_nonunit hϖ hpB.one_le_e hpB.assoc
   have hV : FactVval u B.ℓ := factorial_valuation_holds O B.ℓ u x hpB.prime hpB.three_le hnu hB.u_eq

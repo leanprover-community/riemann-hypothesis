@@ -662,7 +662,7 @@ theorem muMax_line' (hS : HidaSetting D u) (W : FreeT D u) : (D.fm u).ramLat.muM
       omega
     have hN := D.R.N_pos D.R.m
     have h2 : 0 < 2 * D.R.f * D.R.N D.R.m := Nat.mul_pos (Nat.mul_pos two_pos hf) hN
-    have hT : 0 < (D.mem u).A.T - 1 - 1 := by have := hS.1; omega
+    have hT : 0 < (D.mem u).A.T - 1 - 1 := omega
     by_contra h0
     have h0' : (D.mem u).A.du = 0 := by omega
     rw [h0', zero_mul] at h

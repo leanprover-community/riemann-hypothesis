@@ -86,7 +86,7 @@ theorem intl_zero {K N : ℕ} (f : Fin K → Fin N → ℕ) (hf : Intl f) :
   | zero => intro t _ a ha; exact absurd ha (Nat.not_lt_zero _)
   | succ m ih =>
     intro t ht a ha
-    have hm : m < N := by have := t.isLt; omega
+    have hm : m < N := omega
     have key := hf ⟨m, hm⟩ t (by exact ht) a
     have h0 : (∑ b : Fin K with b < a, f b ⟨m, hm⟩) = 0 := by
       apply Finset.sum_eq_zero
@@ -192,7 +192,7 @@ theorem ext_sum {k : ℕ} (μ : Fin (k + 1) → ℤ) (hμ : 0 ≤ μ (Fin.last k
 
 theorem ext_intl {k : ℕ} (μ : Fin (k + 1) → ℤ) (hμ : 0 ≤ μ (Fin.last k)) (g : UU k μ) : Intl (ext μ g.1) := by
   intro l j hlj a
-  have hl : l.val < k := by have := j.isLt; omega
+  have hl : l.val < k := omega
   obtain ⟨l', rfl⟩ : ∃ l' : Fin k, l'.castSucc = l := ⟨⟨l.val, hl⟩, rfl⟩
   induction a using Fin.lastCases with
   | last =>

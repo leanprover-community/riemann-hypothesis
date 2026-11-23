@@ -291,7 +291,7 @@ theorem phiS_succ (C0 CE1 CE2 : ℝ) (a : Fin (2 * segS X.TT j + 1)) (b : Fin X.
     unfold symVar
     simp only [Fin.val_castSucc]
     rw [dif_neg h]
-    have : (a : ℕ) = 2 * segS X.TT j := by have := a.2; omega
+    have : (a : ℕ) = 2 * segS X.TT j := omega
     simp [this]
 
 theorem phiS_zero [NeZero X.m] : phiS X j (0, Fin.castAdd X.m 0) = ((topStart X j, true), 0) := by

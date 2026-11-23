@@ -107,7 +107,7 @@ theorem lift_exists_first_case : StatLiftA := by
   intro ℓ _ hℓ A _ _ B M u H jumps c hp hPhi hγX hv hc D₀ D₁ D₂ _ _ _ _ _ _ _ _ _ _ _ _ W₀ W₁ W₂ S δ
     H₁ H₂ _ _ _ _ cl₁ cl₂ Hf₁ Hf₂ g I _ hδ hQI hφI hRL hNT hXK hSemi hNat hC1 hC2 hInj hE1 hE2 hRO
   have hprime : ℓ.Prime := Fact.out
-  have h3 : 3 ≤ ℓ := by have := hprime.two_le; omega
+  have h3 : 3 ≤ ℓ := omega
   set eW := eWA ℓ H with heW
   set u₁ : ℤ_[ℓ]ˣ := u ^ (ℓ - 1) with hu₁
   have hu₁c : (u₁ : ℤ_[ℓ]) = (u : ℤ_[ℓ]) ^ (ℓ - 1) := by rw [hu₁, Units.val_pow_eq_pow_val]

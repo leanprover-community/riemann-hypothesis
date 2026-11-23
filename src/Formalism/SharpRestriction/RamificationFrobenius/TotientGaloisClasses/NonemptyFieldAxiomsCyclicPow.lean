@@ -88,8 +88,8 @@ theorem frob_art (p : ℕ) [Fact p.Prime] (hp : ¬ p ∣ 2 ^ (e + 2) * q * d)
   have hpd : p ≠ d := by
     rintro rfl
     exact hp (dvd_mul_left _ _)
-  have hq4 : q % 4 = 3 := by have := hH.2.2.1; omega
-  have hd4 : d % 4 = 3 := by have := hH.2.2.2.1; omega
+  have hq4 : q % 4 = 3 := omega
+  have hd4 : d % 4 = 3 := omega
   have hpodd : Odd p := hpp.odd_of_ne_two hp2
   have recip : ∀ r : ℕ, r % 4 = 3 → jacobiSym (-(r : ℤ)) p = jacobiSym (p : ℤ) r := by
     intro r hr

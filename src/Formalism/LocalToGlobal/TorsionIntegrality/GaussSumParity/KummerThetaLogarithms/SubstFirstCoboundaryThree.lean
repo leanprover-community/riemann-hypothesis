@@ -324,7 +324,7 @@ theorem PairRules_of (hE : ExpSpec) (hIP : IPLemma) : PairRules := by
   intro K _ _ _ l σ hU F hF be0 hF1 τ _
   obtain ⟨hF0, -, hFc⟩ := hF
   obtain ⟨-, hd, hds⟩ := hF1
-  have hl : 2 ≤ l := by have := hU.2.1; omega
+  have hl : 2 ≤ l := omega
   have lift : ∀ G : MvPowerSeries τ K, IP l σ G → ∃ g : MvPowerSeries τ K, constantCoeff g = 0 ∧
       Integral g ∧ PowerSeries.subst g (lgF K l) = G := fun G hG => hIP K l σ hU τ G hG
   have tr : ∀ g h : MvPowerSeries τ K, constantCoeff g = 0 → constantCoeff h = 0 →

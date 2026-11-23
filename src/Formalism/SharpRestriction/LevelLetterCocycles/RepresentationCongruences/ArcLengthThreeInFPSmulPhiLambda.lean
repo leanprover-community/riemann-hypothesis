@@ -92,7 +92,7 @@ theorem arc_length_three_inFP_smul_phi_lambda [NeZero n] [Fintype (K →ₐ[Qp] 
         (lA W ^ κ'' • g • (lA W ^ (κ₀ + κ) • (f₂ • W.φD T₂ lam) - lA W ^ ((arcOf b w S η up size).σ PD.p) • X₀ • ((W.φD T₂) ^ 3) Hh)) := by
   classical
   set A := arcOf b w S η up size with hA
-  have hl5 : 5 ≤ PD.p := by have := hB.1; omega
+  have hl5 : 5 ≤ PD.p := omega
   have hc2 : IsCrys PD T₂.ρ := hW₂.1
   obtain ⟨-, hqU, -⟩ := lemG_units W hcase hP9 hc2 hO hOv hinj
   have hp1U : IsUnit (algebraMap (LetA O n) W.EE (ps W 1)) := by

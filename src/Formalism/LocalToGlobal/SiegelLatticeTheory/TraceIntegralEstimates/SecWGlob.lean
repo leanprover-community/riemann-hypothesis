@@ -45,7 +45,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem stepSection_holds : Formalism.L2.SG.RealObj.EnergyInst.StepSection := by
   intro D X u u' sc hsc
-  have hk : 0 < D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 0 < D.R.k := omega
   let i0 : Fin D.R.k := ⟨0, hk⟩
   choose w Fw using fun v => Formalism.L2.S.Pv.HaarSubS.frm_at X u v
   choose w' Fw' using fun v => Formalism.L2.S.Pv.HaarSubS.frm_at X u' v

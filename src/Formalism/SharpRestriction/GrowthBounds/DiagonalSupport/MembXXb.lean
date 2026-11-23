@@ -103,7 +103,7 @@ theorem cond_at {TT : Finset (Fin n')} {L₁ L₂ : ℕ} {d : Fin n' → ℕ}
     geR (valS LZ {y | y < pU p O Fr Dt j u} A)
       (Bo p Fr deg (segZ j) (pU p O Fr Dt j u) / 2 - sl p Fr deg Y (r + K) (segZ j) (pU p O Fr Dt j u)) := by
   have hV := hM.frames.2.1
-  have hr1 : 1 ≤ r := by have := hM.two_le_r; omega
+  have hr1 : 1 ≤ r := omega
   have hc0 : (0 : ℝ) ≤ (cP : ℝ) := Nat.cast_nonneg _
   have hs : 128 * (cP : ℝ) ≤ slU Fr p deg Y (r + K) Dt.nL j u := hM.margin (segZ j) _ hx hW
   refine ⟨fun he => ?_, fun he => ?_, ?_⟩
@@ -139,7 +139,7 @@ open XXb in
 theorem restXXG_b : RestXXG := by
   intro p _ n' r K _ _ _ O _ _ _ S Fr TT L₁ L₂ N₁ G' deg d Y cP hM J _ Dt dPl dNo ka hT δ j A B hPl hNo
   have hV := hM.frames.2.1
-  have hr1 : 1 ≤ r := by have := hM.two_le_r; omega
+  have hr1 : 1 ≤ r := omega
   have hnL := hT.1.2.1
   have hdeg : ∀ mm ∈ (plEmb O r K A * nmEmb O r K B).support, ∀ x,
       ∑ c : Fin (r + K), mm (x, c) = δ (j, x) + dNoOf p O Fr Dt dNo (j, x) ∧

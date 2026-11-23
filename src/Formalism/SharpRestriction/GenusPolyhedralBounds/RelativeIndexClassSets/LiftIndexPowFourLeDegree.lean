@@ -97,7 +97,7 @@ theorem sixteen_le_rdE_of_parA {large₂ : SizeData₂ D} {CA : ℝ} (h : ParA l
   have hr : 2 * (D.R.f : ℝ) * D.R.m ≤ D.host.rdE := h.2.2.2.2.2.2.2.2.2
   have hf' : (8 : ℝ) ≤ (D.R.f : ℝ) := by exact_mod_cast D.eight_le_f
   have hm' : (1 : ℝ) ≤ (D.R.m : ℝ) := by
-    have : 1 ≤ D.R.m := by have := D.R.two_le_m; omega
+    have : 1 ≤ D.R.m := omega
     exact_mod_cast this
   nlinarith
 
@@ -120,7 +120,7 @@ theorem g0fm3_le_of_dom {large₂ : SizeData₂ D} {K : KAdm} {H : KHyp} {Ch Ah 
     unfold zBase
     exact le_mul_of_one_le_right (by positivity) hL
   have hm1 : (1 : ℝ) ≤ (D.R.m : ℝ) := by
-    have : 1 ≤ D.R.m := by have := D.R.two_le_m; omega
+    have : 1 ≤ D.R.m := omega
     exact_mod_cast this
   have hr1 : (1 : ℝ) ≤ (D.R.r : ℝ) := by
     have : 1 ≤ D.R.r := by unfold Ranks.r; have := D.R.two_le_m; omega

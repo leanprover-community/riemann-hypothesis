@@ -61,8 +61,8 @@ theorem qth_lamQB_one {P : HeightOneSpectrum (𝓞 X.E)} (hq : ((qOf P : ℕ) : 
     Loc.atN ((y : Sp X.E (R.N j + cOf R j) →ₗ[X.E] Sp X.E (R.N j + cOf R j)) (Loc.eN X.E (R.N j + cOf R j) (R.k + j + t.1))) (R.k + j + s.1) with hD
   have hent : ∀ s t : Fin (R.N j - (R.k + j)), IntAt P (D s t) ∧ redP P (D s t) = (1 : Matrix _ _ (𝓞 X.E ⧸ P.asIdeal)) s t := by
     intro s t
-    have hs : R.k + j + s.1 < R.N j + cOf R j := by have := s.2; omega
-    have ht : R.k + j + t.1 < R.N j + cOf R j := by have := t.2; omega
+    have hs : R.k + j + s.1 < R.N j + cOf R j := omega
+    have ht : R.k + j + t.1 < R.N j + cOf R j := omega
     have e1 : Loc.eN X.E (R.N j + cOf R j) (R.k + j + t.1) = Pi.single ⟨R.k + j + t.1, ht⟩ 1 := by
       funext l
       unfold Loc.eN

@@ -97,7 +97,7 @@ theorem ell_tor {μ : ℂ} (hμ : μ ≠ 0) {z : Fin (2 * r + k + 1) → ℂ} (h
   · have hv : (torS μ k r * m * torS μ⁻¹ k r) *ᵥ z = torS μ k r *ᵥ (m *ᵥ z) := by
       rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, tor_mulVec_wb μ⁻¹ hz]
     rw [hv, torS_eq, Matrix.mulVec_diagonal, tE_eI]
-    have e : r - (a : ℕ) = 1 := by have := a.isLt; omega
+    have e : r - (a : ℕ) = 1 := omega
     rw [e, pow_one]
 
 theorem psi_tor {μ : ℂ} (hμ : μ ≠ 0) {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (c : ℂ)

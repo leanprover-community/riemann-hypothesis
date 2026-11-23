@@ -159,7 +159,7 @@ theorem main (ψ : Mat k r → ℝ) (h : ℝ → ℝ) (cost : Mat k r → ℕ) (
         rintro w₁ w₂ ⟨s1, s2, hp⟩
         have hA1 : admitted n w₁ := Adm_sub (s1.trans (List.sublist_append_left _ _)) hw
         have hA2 : admitted n (w₂ ++ [x]) := Adm_sub (s2.append (List.Sublist.refl _)) hw
-        have hl1 : w₁.length ≤ m := by have := s1.length_le; omega
+        have hl1 : w₁.length ≤ m := omega
         have e1 := h₂ w₁ hA1 hl1 g hg
         have e2 := H (w₂ ++ [x]) hA2 (by simp) g hg
         rw [Dw_append_singleton] at e2

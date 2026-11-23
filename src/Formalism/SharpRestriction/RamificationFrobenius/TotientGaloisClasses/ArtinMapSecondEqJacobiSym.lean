@@ -195,8 +195,8 @@ theorem sgnN_neg_one {p N : ℕ} (hp : p.Prime) (hp4 : p % 4 = 3) (h : p ∣ N) 
   rfl
 
 theorem artinMap_neg_one : art0 e hH (-1) = cc e := by
-  have hq4 : q % 4 = 3 := by have := hH.2.2.1; omega
-  have hd4 : d % 4 = 3 := by have := hH.2.2.2.1; omega
+  have hq4 : q % 4 = 3 := omega
+  have hd4 : d % 4 = 3 := omega
   refine Prod.ext (Prod.ext (sgnN_neg_one hH.1 hq4 _) (sgnN_neg_one hH.2.1 hd4 _)) ?_
   have h1 : ZMod.unitsMap (two_dvd e q d) (-1) = -1 := unitsMap_neg_one _
   show hcl e (ZMod.unitsMap (two_dvd e q d) (-1)) = 1
@@ -220,8 +220,8 @@ theorem algEquiv_apply_eq_tau_of_galE_eq_art0 (ι : L →ₐ[ℚ] Cond.Cyc (2 ^ 
     ι ((σ x : hostE ζ a b) : L) = τ (ι (x : L)) := by
   have := neZeroN e hH
   have hqd := hH.toHypOdd
-  have hq4 : q % 4 = 3 := by have := hH.2.2.1; omega
-  have hd4 : d % 4 = 3 := by have := hH.2.2.2.1; omega
+  have hq4 : q % 4 = 3 := omega
+  have hd4 : d % 4 = 3 := omega
   have key : (ι.comp (hostE ζ a b).val).comp (σ : hostE ζ a b →ₐ[ℚ] hostE ζ a b) =
       (τ : _ →ₐ[ℚ] _).comp (ι.comp (hostE ζ a b).val) := by
     refine algHom_ext_of_eq_adjoin ℚ (S := hostE ζ a b) (s := {ζ + ζ⁻¹, a, b})

@@ -6773,7 +6773,7 @@ theorem theorem_A_of_inequalities (D : D7) (h : ThmAIneq D) : VanishingOnXAndXPl
   intro u T' Λ F F' F'' β hF hPr hT' hT'' hP hs
   have h0 : 0 < Tu D u := lt_of_lt_of_le (by norm_num) hPr.2.1
   have h0' : 0 < T' := lt_of_lt_of_le (by norm_num) hPr.2.2.2.1
-  have hk : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 1 ≤ D.R.k := omega
   obtain ⟨i1, i2⟩ := h u T' Λ F F' F'' β hF hPr hT' hT'' hP hs
   refine ⟨i1, fun hnd => ?_⟩
   obtain ⟨r1, r2⟩ := c_thmA_ranks hP (a_HU Λ (a_full Λ hF.1 hF.2.1) F F' hF.2.2.1.2 hT'.1.2) (a_HNd F F' hT'.2.2)
@@ -9171,7 +9171,7 @@ theorem k_thmA_deg (D : D7) (u : D.what₂.Word) (T' : ℕ) (Λ : VanishingOnXAn
   have h0 : 0 < Tu D u := lt_of_lt_of_le (by norm_num) hPr.2.1
   have h0' : 0 < T' := lt_of_lt_of_le (by norm_num) hPr.2.2.2.1
   have hg : 0 < gS D := z_gS_pos D
-  have hk : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 1 ≤ D.R.k := omega
   have hc := p_starConj D
   have hΛ := (a_full Λ hF.1 hF.2.1)
   have hz := hF.2.2.1

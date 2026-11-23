@@ -187,7 +187,7 @@ theorem two_frameExp (l : ℕ) (hl : l ≤ D.R.rS + 1) : 2 * frameExp D.R.rS l =
   have h3 : (frameExp D.R.rS l : ℝ) = ((∑ i : Fin l, (D.R.rS - (i : ℕ)) : ℕ) : ℝ) := by
     rw [h]; push_cast
     refine Finset.sum_congr rfl fun i _ => ?_
-    have : (i : ℕ) ≤ D.R.rS := by have := i.isLt; omega
+    have : (i : ℕ) ≤ D.R.rS := omega
     rw [Nat.cast_sub this]
   have h4 : frameExp D.R.rS l = ∑ i : Fin l, (D.R.rS - (i : ℕ)) := by exact_mod_cast h3
   rw [h4, h2]

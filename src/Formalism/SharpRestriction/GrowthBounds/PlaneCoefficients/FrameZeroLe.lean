@@ -73,7 +73,7 @@ theorem seg' (hV : Fr.Valid L₁ N₁) {J : ℕ} [NeZero J] {nL : ZMod J → ℕ
   obtain ⟨j, l | m⟩ := x
   · have h := (mem_LLset Fr _ _).1 (llPos_mem Fr (segZ j) l.val (by rw [← hnL]; exact l.isLt))
     exact ⟨h.1.1, le_trans (le_of_lt h.1.2) (frame_zero_le hV (segZ j))⟩
-  · have hr : 1 ≤ r := by have := m.isLt; omega
+  · have hr : 1 ≤ r := omega
     have h := posTL_seg Fr hV hr hnL (⟨j, Sum.inr m⟩ : TL J nL r)
     exact ⟨h.1, h.2.1⟩
 

@@ -144,7 +144,7 @@ lemma dg_step (k r : ℕ) (t : ℝ) (ht : t ≠ 0) (a : Fin r) (h : a.val + 1 < 
 
 lemma dg_last (k r : ℕ) (t : ℝ) (a : Fin r) (h : ¬ a.val + 1 < r) :
     dg k r t (eI k r a) = (t : ℂ) := by
-  have e : r - a.val = 1 := by have := a.isLt; omega
+  have e : r - a.val = 1 := omega
   simp only [dg, eI, Fin.is_lt, ↓reduceIte, e, pow_one]
 
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]

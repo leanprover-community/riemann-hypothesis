@@ -137,7 +137,7 @@ def Ctx.DlM (j : ℤ) : Matrix (Fin r) (Fin r) AA :=
 
 def Ctx.DlO (j : ℤ) : AA := (X.DlM j).det
 
-theorem ph_hr (Z : Ctx p n' r K O) : 1 ≤ r := by have := Z.hH.2.1; omega
+theorem ph_hr (Z : Ctx p n' r K O) : 1 ≤ r := omega
 
 theorem ph_T_mem (s : ℤ) (l i : Fin r) : topPairingMatrix p O X.Fr X.hH.2.2.1 s l i ∈ X.SS := by
   have hA := window_holds_even_tops n' r X.Fr X.L₁ X.N₁ X.hV X.hH.2.2.2.2 (ph_hr X) s

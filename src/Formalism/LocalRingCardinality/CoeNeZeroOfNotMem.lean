@@ -183,7 +183,7 @@ theorem nuRow_anti (D : D7) (u : D.what₂.Word) (i : ℕ) (hi : i < D.R.m) (τ 
 
 theorem nuRow_last_pos (D : D7) (u : D.what₂.Word) (i : ℕ) (hi : i < D.R.m) (τ : D.what₂.Tau) :
     0 < DV.nuRow D u (i + 1) τ (D.R.N i - 1) := by
-  have hkpos : 0 < D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hkpos : 0 < D.R.k := omega
   rcases Nat.eq_zero_or_pos i with h | h
   · subst h
     have hN : D.R.N 0 - 1 = D.R.k - 1 := by unfold Ranks.N; omega
@@ -296,7 +296,7 @@ theorem log_rdE_le_scL {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) :
   have hq : (2 : ℝ) ≤ D.host.q := by exact_mod_cast D.host.hyp.1.two_le
   have hd : (2 : ℝ) ≤ D.host.d := by exact_mod_cast D.host.hyp.2.1.two_le
   have ht1 : (1 : ℝ) ≤ D.R.t := by
-    have : 1 ≤ D.R.t := by have := D.R.rank_add_five_le; omega
+    have : 1 ≤ D.R.t := omega
     exact_mod_cast this
   have hb1 : 1 ≤ L.sc.b := by unfold Scale.b; exact Real.one_le_exp hL0.le
   have hqd : (1 : ℝ) ≤ (D.host.q : ℝ) * D.host.d := by nlinarith

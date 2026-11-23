@@ -101,7 +101,7 @@ theorem constantCoeff_pi0_eq_zero_of_p9ring
     (hp9 : Formalism.MainNotions.DeltaInvariantLattices.wachRingRelations W 1 (PD.p - 1) W.π₀ (fun _ => Polynomial.X + Polynomial.C ((PD.p : ℕ) : O)))
     (j : ZMod n) : PowerSeries.constantCoeff (W.π₀ j) = 0 := by
   obtain ⟨w, hw⟩ := hp9.2.2.1
-  have hp1 : PD.p - 1 ≠ 0 := by have := PD.hp.two_le; omega
+  have hp1 : PD.p - 1 ≠ 0 := omega
   rw [hw]
   simp [letπ, zero_pow hp1]
 

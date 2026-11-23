@@ -79,7 +79,7 @@ theorem pre_count (D : Formalism.BasicNotions.D7) (h3 : admB3 D) (h4 : ColumnFam
     ∀ (u s : ℕ) (hsu : s + u = n0) (μ0 : Fin (N + 1) → Fin (r + K) → ℤ), VP LL n0 B s μ0 →
       (Af hfin s μ0).card = stCount (r + K) (μ0 ⟨s, by have := H.hN; omega⟩) * prodFrom r K n0 B s := by
   have hN := H.hN
-  have hn : 0 < r + K := by have := H.r1; omega
+  have hn : 0 < r + K := omega
   intro u
   induction u with
   | zero =>

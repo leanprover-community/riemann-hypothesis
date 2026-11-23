@@ -91,7 +91,7 @@ theorem nc_excl (s : Fin ((D.gat u w hg).P.n' (Y.vOf u w hg t0))) (e : ℕ)
   unfold dSet at he
   obtain ⟨s', hs', hd⟩ := Finset.mem_image.1 he
   rw [Finset.mem_filter] at hs'
-  have hpos : 0 < (D.gat u w hg).P.n' (Y.vOf u w hg t0) := by have := s.isLt; omega
+  have hpos : 0 < (D.gat u w hg).P.n' (Y.vOf u w hg t0) := omega
   have hlt : 2 * e + 1 < (D.gat u w hg).P.n' (Y.vOf u w hg t0) := by rw [← hd]; exact Nat.mod_lt _ hpos
   have hne : s' ≠ s := fun h => hs'.2 (by rw [h])
   refine ⟨⟨e, rfl⟩, nc_iota Y u w hg t0 s', ((hloc s').2.1).1 hs'.1, fun h => hne (hinj h), ?_⟩

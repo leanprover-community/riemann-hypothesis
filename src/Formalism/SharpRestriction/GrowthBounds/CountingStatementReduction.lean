@@ -1529,7 +1529,7 @@ theorem posAdd_cdist {n' : ℕ} (x s : Fin n') : posAdd x (cdist x s) = s := by
   unfold posAdd cdist
   simp only
   rw [Nat.add_mod_mod]
-  have h1 : x.val + (s.val + n' - x.val) = s.val + n' := by have := x.2; omega
+  have h1 : x.val + (s.val + n' - x.val) = s.val + n' := omega
   rw [h1, Nat.add_mod_right, Nat.mod_eq_of_lt s.2]
 
 theorem segPos_mem {n' : ℕ} (TT : Finset (Fin n')) (j : Fin (numSeg TT)) (i : Fin (segS TT j)) :

@@ -2145,7 +2145,7 @@ theorem Ffull_hw [NeZero r] (ρ : Fin r) (hρ : (ρ : ℕ) = r - 1) (n : Fin T.t
       · subst hb
         have := (Formalism.GM.extendMapsTo p (T.pos i + 1) r LLK b (n i) hS f hP).2.1
         exact this a (ne_of_lt hab)
-      · have hbr : (b : ℕ) ≤ r - 1 := by have := b.isLt; omega
+      · have hbr : (b : ℕ) ≤ r - 1 := omega
         have ha : a ≠ ρ := by
           intro h; subst h
           have : (a : ℕ) < b := hab

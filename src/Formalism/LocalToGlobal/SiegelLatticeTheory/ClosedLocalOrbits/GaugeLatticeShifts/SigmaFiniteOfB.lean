@@ -158,7 +158,7 @@ theorem psiP_mul {r k : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {P : Matrix (Fi
 
 theorem rightInvS_of (hSC : SetCorr) (hHC : HaarCorr) : RightInvS := by
   intro n r k ε e z z' T T' hF μ hμ s hs
-  have hn : n = 2 * r + k + 1 := by have := hF.dim; omega
+  have hn : n = 2 * r + k + 1 := omega
   subst hn
   obtain ⟨d, hGP⟩ := goodPos_shift hF
   have hF'' := frameLoc_shift hF d

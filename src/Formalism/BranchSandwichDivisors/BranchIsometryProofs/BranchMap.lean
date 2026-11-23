@@ -1052,7 +1052,7 @@ theorem bmC_tri {r n : ℕ} (m : Fin r × Fin n →₀ ℕ) (hm : Interlaced m) 
   | zero => intro j _ a ha; exact absurd ha (Nat.not_lt_zero _)
   | succ k ih =>
     intro j hj a ha
-    have hk : k < n := by have := j.isLt; omega
+    have hk : k < n := omega
     have h1 := hm ⟨k, hk⟩ j (by simpa using hj) ⟨k, by omega⟩
     have h0 : (∑ b : Fin r with b < (⟨k, by omega⟩ : Fin r), m (b, (⟨k, hk⟩ : Fin n))) = 0 := by
       apply Finset.sum_eq_zero
@@ -2108,7 +2108,7 @@ theorem bmG_base (R : Type*) [CommRing R] (n : ℕ) (lam : Fin n → ℕ) (h : �
     have h1 := bmLift_pow (bmLift_minor1 R n (Fin.elim0 : Fin 0 → Fin n) hs) (lam ⟨0, hn⟩)
     have hz : ∀ t : Fin n, t.val ≠ 0 → lam t = 0 := by
       intro t ht
-      have hlt : t.val - 1 < n := by have := t.isLt; omega
+      have hlt : t.val - 1 < n := omega
       rw [← bmG_nuNext_of_succ lam ⟨t.val - 1, hlt⟩ t (by simp; omega)]
       exact h _
     refine ⟨_, bmG_cast h1 ?_ ?_ ?_ rfl⟩

@@ -170,7 +170,7 @@ theorem pcEnc_inj {K s : ℕ} {v v' : Fin K → ℤ} (hz : ∀ i : Fin K, s + 1 
       by_cases hi : i.val < s + 1
       · exact ⟨⟨i.val, by omega⟩, by simp [pcPosition, hi]⟩
       · refine ⟨⟨2 * s + 1 - (K - i.val), by have := i.2; omega⟩, ?_⟩
-        have h1 : ¬ (2 * s + 1 - (K - i.val) < s + 1) := by have := i.2; omega
+        have h1 : ¬ (2 * s + 1 - (K - i.val) < s + 1) := omega
         simp only [pcPosition, h1, if_false]
         have := i.2
         omega
@@ -194,7 +194,7 @@ theorem pc_count {s r : ℕ} {A : ℕ} {Ai Ci : Fin s → ℕ} {M : ℕ} (hA : �
   have hbd : ∀ {mu : Fin (2 * s + 1 + 1) → Fin (r + 1) → ℤ}, IsChain (kLetters A Ai Ci) mu → ∀ n idx, |mu n idx| ≤ T := by
     intro mu h n idx
     refine (pc_shape hA hC h n idx).2.2.trans ?_
-    have hn : (n.val : ℤ) ≤ 2 * (s : ℤ) + 1 := by have := n.2; omega
+    have hn : (n.val : ℤ) ≤ 2 * (s : ℤ) + 1 := omega
     have hM : (0 : ℤ) ≤ (M : ℤ) := Int.natCast_nonneg _
     have hA0 : (0 : ℤ) ≤ (A : ℤ) := Int.natCast_nonneg _
     have := mul_le_mul_of_nonneg_right hn hM

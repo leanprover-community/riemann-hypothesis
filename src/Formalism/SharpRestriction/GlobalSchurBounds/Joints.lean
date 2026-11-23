@@ -108,7 +108,7 @@ theorem jnt_chDir_eq_chiK (D : D7) (a : ℕ) (ha : a.Coprime D.host.d) :
 theorem jnt_chiK_ne_one (D : D7) : chiK D ≠ 1 := by
   have : Fact D.host.d.Prime := ⟨D.host.hyp.2.1⟩
   intro h
-  have hd2 : D.host.d ≠ 2 := by have := D.host.hyp.2.2.2.1; omega
+  have hd2 : D.host.d ≠ 2 := omega
   obtain ⟨a, ha⟩ := quadraticChar_exists_neg_one (F := ZMod D.host.d)
     (by rw [ZMod.ringChar_zmod_n]; exact hd2)
   have ha0 : a ≠ 0 := by rintro rfl; simp at ha

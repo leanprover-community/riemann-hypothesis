@@ -187,8 +187,8 @@ theorem point_level_zero_eq_embedding (P : M.Par) (hj : 0 + 1 ≤ P.r) (Z : Matr
   have hz : LevelPointCoordinates.zfull Z τ = Matrix.of fun _ _ => τ := by
     ext i l
     rw [LevelPointCoordinates.zfull_apply]
-    have hi : i.val = 0 := by have := i.isLt; omega
-    have hl : l.val = 0 := by have := l.isLt; omega
+    have hi : i.val = 0 := omega
+    have hl : l.val = 0 := omega
     simp [hi]
   unfold LevelPointCoordinates.x0 LevelPointCoordinates.mLev
   rw [hz]

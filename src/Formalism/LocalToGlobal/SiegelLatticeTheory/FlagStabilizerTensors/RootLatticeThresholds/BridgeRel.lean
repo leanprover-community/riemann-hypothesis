@@ -81,7 +81,7 @@ theorem rootCoord_Q (hT : TrHyp F Qm Qim c) {κ : ℂ} (hc : ∀ a : Fin r, c a 
     rw [he, pow_succ]
     field_simp
   · rw [dite_eq_right h, dite_eq_right h, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hJ_fd_Q hT, hc]
-    have he : r - a.val = 1 := by have := a.2; omega
+    have he : r - a.val = 1 := omega
     rw [he, pow_one]
 
 theorem sum_rootCoord (hT : TrHyp F Qm Qim c) {κ : ℂ} (hc : ∀ a : Fin r, c a = κ ^ (r - a.val)) (hκ0 : κ ≠ 0)

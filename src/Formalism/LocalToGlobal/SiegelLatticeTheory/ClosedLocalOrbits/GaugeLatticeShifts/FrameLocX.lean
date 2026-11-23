@@ -54,7 +54,7 @@ theorem frameLoc_X (u u' : D.what₂.Word) (v : InfinitePlace X.B.I.F) :
       (Tw u) (Tw u') := by
   refine
     { dim := (Formalism.L2.SG.Pf.card_frame X).symm
-      k_pos := by have := D.R.m_add_three_le_k; omega
+      k_pos := omega
       sig := Formalism.L2.SG.PoincareInHH.Cut.card_eps_false X v
       e_li := ?_
       ee := fun a b => (hJ_X X v _ _).trans (by rw [X.ee]; simp)

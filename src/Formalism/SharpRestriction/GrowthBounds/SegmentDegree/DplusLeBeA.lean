@@ -184,7 +184,7 @@ theorem vp_le {s : ℕ} {μ : Fin (N + 1) → Fin (r + K) → ℤ} (h : VP LL n0
       obtain ⟨⟨d, hst⟩, hhead⟩ := (h.2.2 ⟨t, htN⟩ (by simp only; omega)).2 (by simp only; omega)
       by_cases hm : m.val = 0
       · exact le_of_eq (hhead m (by omega))
-      · have hm1 : (m.val - 1) + 1 < r + K := by have := m.2; omega
+      · have hm1 : (m.val - 1) + 1 < r + K := omega
         have h2 := hst.2.1 ⟨m.val - 1, by have := m.2; omega⟩ hm1
         have hme : (⟨(m.val - 1) + 1, hm1⟩ : Fin (r + K)) = m := Fin.ext (by simp only; omega)
         rw [hme] at h2

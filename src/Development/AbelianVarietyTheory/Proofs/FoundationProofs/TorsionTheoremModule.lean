@@ -83,7 +83,6 @@ theorem crys_iff (Y : Lat K LL) :
 
 end Hyp
 
-section Final
 
 
 variable {l : ℕ} [Fact l.Prime]
@@ -93,6 +92,5 @@ variable (LT : LocTheory) (HW : HWOf LT) (AI : LocAinf l (LT l)) {K : FinExt l}
 
 variable (D : Formalism.BasicNotions.D7) (H : HWOf D.loc) (F : FonOf D.loc D.locA H)
 
-end Final
 
 end GlobalTheory.TorsionBoundCompare

@@ -60,7 +60,7 @@ theorem nat_mem (n : ℕ) [n.AtLeastTwo] : (OfNat.ofNat n : ℂ) ∈ Formalism.M
 
 theorem d_sq (D : D7) : Squarefree D.host.d := (D.host.hyp.2.1 : D.host.d.Prime).squarefree
 
-theorem host_imagQuadratic_discriminant_mod_four (D : D7) : D.host.d % 4 = 3 := by have := D.host.hyp.2.2.2.1; omega
+theorem host_imagQuadratic_discriminant_mod_four (D : D7) : D.host.d % 4 = 3 := omega
 
 theorem hasCMBy_curve (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (hcc : Formalism.MainNotions.TaylorLogMetric.IsCurveIdeal D cc)
     (hδ : Formalism.MainNotions.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (L : PeriodPair)

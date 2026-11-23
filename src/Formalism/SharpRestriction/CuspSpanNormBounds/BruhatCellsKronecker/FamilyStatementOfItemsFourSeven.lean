@@ -392,7 +392,7 @@ theorem weightStatement_of_section (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg
     unfold Tr; exact_mod_cast hTT.1.pos
   have hT' : 0 < Tr D w' := by
     unfold Tr; exact_mod_cast hTT.2.1.pos
-  have hk1 : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk1 : 1 ≤ D.R.k := omega
   have hm1 : 2 ≤ D.R.m := D.R.two_le_m
   obtain ⟨μsec, hμ⟩ := hS D.R.k D.R.rS W.z W.z' hk1 hz hz' (by rw [hTz]; exact hT) (by rw [hTz']; exact hT')
   have hl : l1dist (lamD D τ) (lamD D τ) ≤ Cn * D.R.k * (D.R.m : ℝ) ^ 3 := by
@@ -670,7 +670,7 @@ theorem cell_weight_lemma (D : D7) : CellWeightBound D := by
   have hGd : Gf D.R.k D.R.rS z z' γ = ‖DminN z z' γ (D.R.rS + 1)‖ ^ 2 -
       Tz D.R.k D.R.rS z * Tz D.R.k D.R.rS z' * ‖DminN z z' γ D.R.rS‖ ^ 2 := by
     rw [a1, a2, ← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]; rfl
-  have hk : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 1 ≤ D.R.k := omega
   have hm : 2 * (D.R.rS + 1) + 4 ≤ D.R.m + 4 := by
     obtain ⟨t, ht⟩ := D.R.m_even
     have h2 := D.R.two_le_m
@@ -1812,7 +1812,7 @@ theorem L2_decay_pointwise_estimate (D : D7) (large₂ : SizeData₂ D) (C' Cl C
     unfold Tr; exact_mod_cast hTT.1.pos
   have hT' : 0 < Tr D w' := by
     unfold Tr; exact_mod_cast hTT.2.1.pos
-  have hk1 : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk1 : 1 ≤ D.R.k := omega
   have hm1 : 2 ≤ D.R.m := D.R.two_le_m
   obtain ⟨μsec, hμ⟩ := Formalism.FourierDecayAlt.P.SettingConstruction.sectionExists D.R.k D.R.rS W.z W.z' hk1 hz hz' (by rw [hTz]; exact hT)
     (by rw [hTz']; exact hT')
@@ -2346,7 +2346,7 @@ theorem abs_decay_of_all_parameters (D : D7) (large₂ : SizeData₂ D) (C' Cl C
     unfold Tr; exact_mod_cast hTT.1.pos
   have hT' : 0 < Tr D w' := by
     unfold Tr; exact_mod_cast hTT.2.1.pos
-  have hk1 : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk1 : 1 ≤ D.R.k := omega
   obtain ⟨μsec, hμ⟩ := Formalism.FourierDecayAlt.P.SettingConstruction.sectionExists D.R.k D.R.rS W.z W.z' hk1 hz hz' (by rw [hTz]; exact hT)
     (by rw [hTz']; exact hT')
   obtain ⟨K, hK0, hKe⟩ := hA9 hH0 τ w w' hTT θ hθ W hGW μsec hμ

@@ -674,7 +674,7 @@ theorem lifta_interA (W : LocWach PD LL O v n) (h9 : P9π₀ W) (a : LetA O n) (
     (hπ : ∃ c, a = letπ * c) : ∃ b ∈ W.AΔ, a = W.π₀ * b := by
   obtain ⟨hπΔ, hsub, ⟨w, hw⟩, -⟩ := h9
   obtain ⟨c, hc⟩ := hπ
-  have hk : PD.p - 1 ≠ 0 := by have := PD.hp.two_le; omega
+  have hk : PD.p - 1 ≠ 0 := omega
   have hreg : ∀ a b : LetA O n, W.π₀ * a = W.π₀ * b → a = b := fun a b hab => by
     rw [hw] at hab
     exact unit_mul_pi_pow_left_cancel w _ a b hab
@@ -877,7 +877,7 @@ theorem lifta_core (ℓ : ℕ) [Fact ℓ.Prime] (hℓ : ℓ ≠ 2) (A : Type) [C
     (hSemi : Formalism.RepresentationBoundsCohomology.N2.SemiA W₀ δ c jumps) (eW : ℕ) (hCK : CokerKilled S eW) (hRS : RatSurj S) :
     Lifts S ((ℓ : ℤ_[ℓ]) ^ (eW + Formalism.RepresentationBoundsCohomology.N2.eUA ℓ M (Formalism.RepresentationBoundsCohomology.N2.JSet jumps M))) := by
   have hprime : ℓ.Prime := Fact.out
-  have h3 : 3 ≤ ℓ := by have := hprime.two_le; omega
+  have h3 : 3 ≤ ℓ := omega
   set u₁ : ℤ_[ℓ]ˣ := u ^ (ℓ - 1) with hu₁
   have hu₁c : (u₁ : ℤ_[ℓ]) = (u : ℤ_[ℓ]) ^ (ℓ - 1) := by rw [hu₁, Units.val_pow_eq_pow_val]
   have hγX₁ : B.GammaX (u₁ : ℤ_[ℓ]) := by rw [hu₁c]; exact hγX
@@ -1148,7 +1148,7 @@ theorem lifta_good_of (W : LocWach PD LL O v n) (R : lifta_Ring W) (hs : W.s = 1
   · intro y hy
     obtain ⟨t, htΔ, hw⟩ := R.γq
     obtain ⟨wπ, hwπ⟩ := R.ππ
-    have hp1 : PD.p - 1 = (PD.p - 2) + 1 := by have := PD.hp.two_le; omega
+    have hp1 : PD.p - 1 = (PD.p - 2) + 1 := omega
     have hvΔ : 1 + W.π₀ * t ∈ W.AΔ := W.AΔ.add_mem W.AΔ.one_mem (W.AΔ.mul_mem R.πΔ htΔ)
     have hwU : IsUnit (1 + W.π₀ * t) := by
       have : 1 + W.π₀ * t = 1 + W.X * ((wπ : LetA O n) * letπ ^ (PD.p - 2) * t) := by
@@ -1198,7 +1198,7 @@ theorem lifta_good_of (W : LocWach PD LL O v n) (R : lifta_Ring W) (hs : W.s = 1
 theorem lifta_π₀_X (W : LocWach PD LL O v n) (R : lifta_Ring W) (hs : W.s = 1)
     (T : LocLat G Qp LL O) (m : W.DD T) (hm : m ∈ W.N T) : ∃ m' ∈ W.N T, W.X • m' = W.π₀ • m := by
   obtain ⟨wπ, hwπ⟩ := R.ππ
-  have hp1 : PD.p - 1 = (PD.p - 2) + 1 := by have := PD.hp.two_le; omega
+  have hp1 : PD.p - 1 = (PD.p - 2) + 1 := omega
   refine ⟨((wπ : LetA O n) * letπ ^ (PD.p - 2)) • m, (W.N T).smul_mem _ hm, ?_⟩
   rw [lifta_X_eq W hs, smul_smul]
   congr 1
@@ -3073,7 +3073,7 @@ theorem hstra_cc (W : LocWach PD LL O v n) (h9 : P9π₀ W) :
     PowerSeries.constantCoeff W.π₀₁ = 0 := by
   obtain ⟨w, hw⟩ := h9.2.2.1
   have h0 := congrFun hw (0 : ZMod n)
-  have hk : PD.p - 1 ≠ 0 := by have := PD.hp.two_le; omega
+  have hk : PD.p - 1 ≠ 0 := omega
   have h1 : W.π₀₁ = (w : LetA O n) 0 * PowerSeries.X ^ (PD.p - 1) := h0
   rw [h1, map_mul, map_pow, PowerSeries.constantCoeff_X, zero_pow hk, mul_zero]
 

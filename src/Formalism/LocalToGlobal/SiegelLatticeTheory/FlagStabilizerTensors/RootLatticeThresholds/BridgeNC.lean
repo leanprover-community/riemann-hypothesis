@@ -334,7 +334,7 @@ theorem cS_lam {κ : ℂ} (hc : ∀ a : Fin r, c a = κ ^ (r - a.val)) {sc : ℝ
       ring
     · rw [star_mul', hs, mul_inv_cancel_right₀ hp]
   · rw [dite_eq_right h]
-    have hj : j.val = r := by have := j.isLt; omega
+    have hj : j.val = r := omega
     simp [hj]
 
 end PlaceNC

@@ -175,7 +175,7 @@ theorem tbLen_w (cB : ℕ) (hTB : TrivialBoundAtRows i dc r π cB) (hTie : Trunc
   unfold TrivialBoundAtRows at hTB
   unfold TruncatedSeriesCountingIdentities.LocalCoefficientCompatibility at hTie
   obtain ⟨Cd, hL⟩ := lenMap_Qcore (hd := hd) (hw := hw) (hwrow := hwrow) (c := c) (hc := hc)
-  have het : (c : ℕ) - 1 < D.R.t := by have := c.isLt; omega
+  have het : (c : ℕ) - 1 < D.R.t := omega
   have hdeg := (hTie w hw).2.2
   unfold Br.DegW at hdeg
 

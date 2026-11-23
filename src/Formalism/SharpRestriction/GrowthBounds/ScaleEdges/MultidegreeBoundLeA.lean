@@ -90,7 +90,7 @@ theorem spdeg {C : ℝ} (hC : 30 ≤ C) {p n' m r : ℕ} [Fact p.Prime] [NeZero 
   have hB := hyps_basic (C := C) (by linarith) H
   obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12⟩ := H
   have hTT := hF.1
-  have hGn : goodG' r de h x ≤ n' := by have := h3.2.2.2; omega
+  have hGn : goodG' r de h x ≤ n' := omega
   have hI : Formalism.G0.CondIntervals n' (F.TT.map Fin.valEmbedding) (goodG' r de h x) (orbitWindowCount r de h x) := by
     rw [hTT]
     exact h3.1.2.2

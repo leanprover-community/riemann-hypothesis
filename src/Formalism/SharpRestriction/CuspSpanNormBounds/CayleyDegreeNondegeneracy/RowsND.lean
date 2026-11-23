@@ -239,7 +239,7 @@ theorem rows_nd_prod (h : rows_Hyps Y C' Cl Cg cb Cu cT CT C0 A c Cpr Ca C2 Ch �
   have hv1 : 1 ≤ D.host.v := by
     obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, h19, _⟩ := h.hH.1.1
     exact h19
-  have hk1 : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk1 : 1 ≤ D.R.k := omega
   have hτ0 : 0 ≤ (1 + δ) * rDD D u' := mul_nonneg (by linarith [h.hδ]) (rows_rDD_nonneg D u')
   have hGam0 : 0 < GamS D large₂ := by unfold GamS; exact Real.exp_pos _
   have hx1 := rows_one_le_HHZ D large₂ hc x

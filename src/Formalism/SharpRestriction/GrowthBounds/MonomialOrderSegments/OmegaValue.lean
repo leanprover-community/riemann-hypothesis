@@ -78,7 +78,7 @@ theorem omega_value (hD : DVRHyp v p) (h1 : 1 ≤ C0) (D : TwistData K) (hV : D.
     conv_lhs => rw [Z.as_sum]
     refine Finset.sum_congr rfl fun ζ _ => ?_
     rw [MvPolynomial.smul_monomial, smul_eq_mul, mul_one]
-  have hp2 : 2 ≤ p := by have := hD.five_le; omega
+  have hp2 : 2 ≤ p := omega
   have hr1 : 1 ≤ D.r := hV.1
   have hkap : 0 ≤ D.kapD p := by
     unfold TwistData.kapD kap

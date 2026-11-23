@@ -139,7 +139,7 @@ theorem aBddOf (u u' : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ)
   obtain ⟨hlo, b, hb, hW, hE⟩ := hS
   push_cast
   rcases lt_trichotomy j i with hji | rfl | hij
-  · have hk : i.val - j.val ≤ D.R.rS := by have := i.isLt; omega
+  · have hk : i.val - j.val ≤ D.R.rS := omega
     rw [show ((Ideal.absNorm (ddI D) : ℕ) : D.host.E) ^ D.R.rS =
         ((Ideal.absNorm (ddI D) : ℕ) : D.host.E) ^ (D.R.rS - (i.val - j.val)) *
           ((Ideal.absNorm (ddI D) : ℕ) : D.host.E) ^ (i.val - j.val) by

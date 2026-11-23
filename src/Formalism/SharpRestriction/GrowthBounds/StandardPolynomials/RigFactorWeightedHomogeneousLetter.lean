@@ -76,7 +76,7 @@ variable (S : UniformizedDVR X.p O) (hS : S.SqP) (hD : D1num X) (h2 : 2 ≤ numS
 include hS hD h2 hG0 hStd stdEq in
 theorem order_sum_eq_order_family : (∑ j, L.jp j) + ((∑ j, ∑ a, (Cs j).oC a) + ((∑ j, ∑ i, L.lv j i * l2P C0 CE1 CE2 mu X β j i) +
       ∑ a, multMk X β a * oMk C0 CE1 CE2 X a)) = ordFam C0 CE1 CE2 X β := by
-  have hp : 0 < X.p := by have := hD.2.1; omega
+  have hp : 0 < X.p := omega
   have h := wh_total (wN X) (rig_factor_weighted_homogeneous_total (O := O) L (fun j => (Cs j).a0) j0)
     (sC := fun j a => l2sC Cs j a) (dC := fun j a => (Cs j).oC a)
     (fun j a => ndHom_iff.1 (fun m hm => (Cs j).homC a m hm))
@@ -89,7 +89,7 @@ include hS hD h2 hβ hG0 hStd stdEq in
 theorem multidegree_sum_eq_target_degrees (l : X.TT × Bool) : ((∑ j, L.jp j * dgH (topEnd X j) l) + multideg (rig L (fun j => (Cs j).a0) j0) l) +
       ((∑ j, ∑ a, (Cs j).dgC a l) + ((∑ j, ∑ i, L.lv j i * (l2P C0 CE1 CE2 mu X β j i * dgH (l2x C0 CE1 CE2 mu X β j i) l)) +
       ∑ a, multMk X β a * dgMk C0 CE1 CE2 X a l)) = hhDegs X.TT X.aT X.bT l := by
-  have hp : 0 < X.p := by have := hD.2.1; omega
+  have hp : 0 < X.p := omega
   have h := wh_total (wL X l) (rig_factor_weighted_homogeneous_letter (O := O) L (fun j => (Cs j).a0) j0 l)
     (sC := fun j a => l2sC Cs j a) (dC := fun j a => (Cs j).dgC a l)
     (fun j a => mem_Pol_iff.1 ((Cs j).polC a) l)

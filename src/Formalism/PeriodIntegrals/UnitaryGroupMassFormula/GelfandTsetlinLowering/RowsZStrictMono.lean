@@ -147,7 +147,7 @@ theorem rowAct_xi {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeigh
         by_contra hlt
         push Not at hlt
         exact hb (hG.1 _ _ (by simpa [Fin.lt_def] using hlt))
-      have hpi : p.1 < i.1 := by have := p.2; omega
+      have hpi : p.1 < i.1 := omega
       refine ⟨⟨b.1, by omega⟩, ?_⟩
       have : b.1 ≠ i.1 := by omega
       simp only [rowsZ, this, if_false]

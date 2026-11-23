@@ -199,7 +199,7 @@ theorem rowN_big (j : ℕ) (hj : n ≤ j) : (rowN R j : (Fin n → K) →ₗ[R] 
   unfold rowN
   apply Finset.sum_eq_zero
   intro a _
-  have : a.val ≠ j := by have := a.2; omega
+  have : a.val ≠ j := omega
   simp [this]
 
 theorem lamTil_fin (Z : Matrix (Fin n) (Fin n) K) (a : Fin n) (v : Fin n → R) :

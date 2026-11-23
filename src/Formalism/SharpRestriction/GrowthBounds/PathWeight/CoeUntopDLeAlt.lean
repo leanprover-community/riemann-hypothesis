@@ -166,7 +166,7 @@ theorem span_mul_image_mem_span {O : Type} [CommRing O] {σ τ υ : Type} (f : M
 theorem generator_pair_conditions_of_admitted (D : Formalism.BasicNotions.D7) (hA3 : Formalism.MainNotions.SourceCleaning.StandardMonomialSpanBis D) (hB1 : Formalism.MainNotions.SourceCleaning.PathPairCorrespondence D) : GeneratorSpanInclusion := by
   intro p n' r K _ _ _ _ O _ _ _ _ X j P hP
   obtain ⟨d', d'', A, G, Mx, hA, hG, hW, hC, rfl⟩ := hP
-  have hr : 1 ≤ r := by have := X.hH.2.1; omega
+  have hr : 1 ≤ r := omega
   have hMK : Mj X.Fr j + r ≤ K := by
     have h1 : Mj X.Fr j ≤ X.N₁ := X.hV.2.2.2.2.2.2.2.1 j
     have h2 := X.hK
@@ -194,7 +194,7 @@ theorem generator_pair_conditions_of_admitted (D : Formalism.BasicNotions.D7) (h
     have h0 : i.val ≠ 0 := fun h => hi (first_letter_is_lower X.Fr X.hV hr j i h)
     refine ⟨⟨i.val - 1, by omega⟩, ?_, ?_, ?_⟩
     · ext; simp; omega
-    · have h3 : i.val - 1 + 1 < Mj X.Fr j := by have := i.2; omega
+    · have h3 : i.val - 1 + 1 < Mj X.Fr j := omega
       show (if h : i.val - 1 + 1 < Mj X.Fr j then (⟨i.val - 1 + 1, h⟩ : Fin (Mj X.Fr j)) else _) = i
       rw [dite_eq_left h3]
       ext; simp; omega

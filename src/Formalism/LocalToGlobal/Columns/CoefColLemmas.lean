@@ -392,7 +392,7 @@ variable {X : Fields} {Word : Type} {R : Ranks} (W : Wts X Word R)
 theorem lamTrue_sgTrue_detShift (hW : W.Ok) (u : Word) (τ : X.Tau) :
     (W.lamTrue u R.m τ).detShift = (W.sgTrue τ).detShift := by
   have hm := R.two_le_m
-  have hk : 1 ≤ R.k := by have := R.m_add_three_le_k; omega
+  have hk : 1 ≤ R.k := omega
   have ht : 1 ≤ R.t := R.t_odd.pos
   have hmul : R.m * (R.t + 1) = (R.m - 1) * (R.t + 1) + (R.t + 1) := by
     rw [← Nat.succ_mul]; congr 1; omega

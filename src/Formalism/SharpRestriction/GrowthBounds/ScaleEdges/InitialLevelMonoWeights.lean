@@ -82,7 +82,7 @@ theorem edgeStep_of (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) (hA 
   have c6 : CD1 ≤ C := le_trans (le_max_right _ _) hC4
   intro p W Qq O Kf _ _ _ _ _ _ _ _ _ _ ι σ j w n' m r TT L₁ L₂ de h x lam0 aT bT a Y cpp c0 Dp cStar hSet H e he htgt
   have : Fact p.Prime := ⟨hSet.1.prime⟩
-  have : NeZero n' := ⟨by have := hSet.1.two_le; omega⟩
+  have : NeZero n' := ⟨omega⟩
   have hB := hyps_basic (C := C) (by linarith) H
   have hr2 : 2 ≤ r := H.2.1
   have hkr : orbitWindowCount r de h x + 2 * r ≤ (m + 1) - r := H.2.2.2.2.2.2.2.1
@@ -188,7 +188,7 @@ theorem edgeStep_of (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) (hA 
     linarith
   · have hK : m + 1 - r = K := by omega
     have hp0 : (0 : ℝ) < p := by
-      have : 0 < p := by have := H.1; omega
+      have : 0 < p := omega
       exact_mod_cast this
     have hY : 0 < Y := by linarith [hB.two_le_Y]
     have hu : 0 ≤ (1 - ((m + 1 : ℕ) : ℝ) * c0 / a) ^ F.TT.card :=

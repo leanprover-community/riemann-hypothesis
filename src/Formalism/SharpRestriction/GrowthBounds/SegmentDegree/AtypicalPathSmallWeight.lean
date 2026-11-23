@@ -210,7 +210,7 @@ theorem lemT_of (ha : PathWeightEqRank) (hb : PathCountFinite) (hc : AtypicalPat
       _ = (hPfin.toFinset.card : ℝ) * cR := by rw [Finset.sum_const, nsmul_eq_mul]
 
   have hk0 : (0 : ℝ) < ((r + K : ℕ) : ℝ) := by
-    have : 0 < r + K := by have := H.r1; omega
+    have : 0 < r + K := omega
     exact_mod_cast this
   have hmin : min La ((r + K : ℕ) : ℝ) / 32 ≤
       min (La * ((K : ℝ) - 2 * N) / (16 * ((r + K : ℕ) : ℝ))) (((K : ℝ) - 2 * N) / 12) := by

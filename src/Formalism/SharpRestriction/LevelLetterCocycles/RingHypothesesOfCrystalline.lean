@@ -348,7 +348,7 @@ theorem ring_hypotheses_of_crystalline (hA : CaseA W) (h9 : Formalism.MainNotion
   obtain ⟨-, -, h9'⟩ := h9 T hT hA.2.1 hA.2.2
   obtain ⟨hring, hmod⟩ := h9' hfin1
   obtain ⟨hπΔ, hsub, ⟨w, hw⟩, -, ⟨wq, hwq⟩, ⟨wφ, hwφ⟩, -⟩ := hring
-  have hs' : 1 ≤ PD.p - 1 := by have := PD.hp.two_le; omega
+  have hs' : 1 ≤ PD.p - 1 := omega
   have hz : PowerSeries.constantCoeff W.π₀₁ = 0 := by
     have h1 := congrFun hw 0
     simp only [LocWach.π₀, Pi.mul_apply, Pi.pow_apply, letπ] at h1

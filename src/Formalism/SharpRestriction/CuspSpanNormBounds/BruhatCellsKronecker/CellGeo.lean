@@ -202,7 +202,7 @@ theorem geo_W_mem (F : FlagG S r T) (A : Matrix (Fin j) (Fin j) E) (hA : StrictU
   · rw [hA b a hba, zero_smul]
     exact Submodule.zero_mem _
   · have hba' : b.val < a.val := Fin.lt_def.1 (not_le.1 hba)
-    have hbr : b.val < r := by have := a.isLt; omega
+    have hbr : b.val < r := omega
     rw [geo_castLE_eq hj b hbr, geo_fvec_cast]
     exact Submodule.smul_mem _ _ (geo_e_mem_Xa F ⟨b.val, hbr⟩ a.val hba')
 
@@ -210,7 +210,7 @@ theorem geo_W_split (F : FlagG S r T) (A : Matrix (Fin j) (Fin j) E) (hA : Stric
     (hi : a.val = i.val + 1) :
     ∃ y ∈ F.Xa i.val, ∑ b, A b a • F.fvec (Fin.castLE hj b) =
       A ⟨i.val, by have := a.isLt; omega⟩ a • F.e i + y := by
-  have hi0 : i.val < j := by have := a.isLt; omega
+  have hi0 : i.val < j := omega
   refine ⟨∑ b ∈ Finset.univ.erase (⟨i.val, hi0⟩ : Fin j), A b a • F.fvec (Fin.castLE hj b), ?_, ?_⟩
   · refine sum_mem fun b hb => ?_
     have hne : b ≠ ⟨i.val, hi0⟩ := Finset.ne_of_mem_erase hb
@@ -220,7 +220,7 @@ theorem geo_W_split (F : FlagG S r T) (A : Matrix (Fin j) (Fin j) E) (hA : Stric
     · have hba' : b.val < a.val := Fin.lt_def.1 (not_le.1 hba)
       have hbv : b.val ≠ i.val := fun h => hne (Fin.ext h)
       have hbi : b.val < i.val := by omega
-      have hbr : b.val < r := by have := i.isLt; omega
+      have hbr : b.val < r := omega
       rw [geo_castLE_eq hj b hbr, geo_fvec_cast]
       exact Submodule.smul_mem _ _ (geo_e_mem_Xa F ⟨b.val, hbr⟩ i.val hbi)
   · rw [← Finset.add_sum_erase _ _ (Finset.mem_univ (⟨i.val, hi0⟩ : Fin j)),
@@ -261,7 +261,7 @@ theorem geo_side (F : FlagG S r T) (A : Matrix (Fin j) (Fin j) E) (hA : StrictUp
       · have hperp : F.e i ∈ perpS S F.X := by
           rw [← geo_fvec_cast F i]
           exact geo_fvec_perp F _
-        have hjr : j ≤ r := by have := i.isLt; omega
+        have hjr : j ≤ r := omega
         have hle : j - 1 ≤ a - 1 := by omega
         exact geo_Xa_mono F hle ((H3 _ hperp).2 hjr)
     exact hsub hx
@@ -275,7 +275,7 @@ theorem geo_side (F : FlagG S r T) (A : Matrix (Fin j) (Fin j) E) (hA : StrictUp
         rw [hsucc, H2, hyeq]
         exact geo_coefX F i _ y hy
       · simp only [G, dif_neg h]
-        have hjr : j ≤ r := by have := i.isLt; omega
+        have hjr : j ≤ r := omega
         have hle : j - 1 ≤ i.val := by omega
         have hmem : Y (F.fvec i.succ) ∈ F.Xa i.val :=
           geo_Xa_mono F hle ((H3 _ (geo_fvec_perp F _)).2 hjr)
@@ -347,7 +347,7 @@ theorem geometric_decomposition_maps_perp_into_flag (F : FlagG S r T) (F' : Flag
   rcases hcase with ⟨hjr, hdet⟩ | ⟨hjr, han⟩
   · have hFX : ∀ a : Fin j, F.fvec (Fin.castLE hj a) ∈ F.X := by
       intro a
-      have ha : a.val < r := by have := a.isLt; omega
+      have ha : a.val < r := omega
       rw [geo_castLE_eq hj a ha, geo_fvec_cast]
       exact Submodule.subset_span ⟨_, rfl⟩
     have hβ : β = 0 := by
@@ -365,7 +365,7 @@ theorem geometric_decomposition_maps_perp_into_flag (F : FlagG S r T) (F' : Flag
     have hmem : Y x ∈ F.Xa (j - 1) := by
       rw [hYx]
       refine sum_mem fun a _ => Submodule.smul_mem _ _ ?_
-      have ha : a.val ≤ j - 1 := by have := a.isLt; omega
+      have ha : a.val ≤ j - 1 := omega
       exact geo_Xa_mono F ha (geo_img_mem F hj A hA a)
     exact ⟨geo_Xa_le_X F _ hmem, fun _ => hmem⟩
   · refine ⟨?_, fun h => absurd h (by omega)⟩
@@ -390,7 +390,7 @@ theorem geometric_decomposition_maps_perp_into_flag (F : FlagG S r T) (F' : Flag
     set Q := ∑ a, β a • geoImg F' hj A' a with hQdef
     apply han
     · intro p
-      have hp : p.val < j := by have := p.isLt; omega
+      have hp : p.val < j := omega
       have hpe : F.fvec p = F.fvec (Fin.castLE hj ⟨p.val, hp⟩) := rfl
       have h1 := H1' (F.fvec p) x
       rw [hpe, H2, hx' _ (geo_Xa_le_X F _ (geo_img_mem F hj A hA _)), zero_add] at h1
@@ -501,12 +501,12 @@ theorem geo_gram_unit (F : FlagG S r T) (F' : FlagG S r T') (hj : j ≤ r + 1)
   · have hdet := geo_Z_det F F' hj hD
     have hFX : ∀ a : Fin j, F.fvec (Fin.castLE hj a) ∈ F.X := by
       intro a
-      have ha : a.val < r := by have := a.isLt; omega
+      have ha : a.val < r := omega
       rw [geo_castLE_eq hj a ha, geo_fvec_cast]
       exact Submodule.subset_span ⟨_, rfl⟩
     have hF'X : ∀ a : Fin j, F'.fvec (Fin.castLE hj a) ∈ F'.X := by
       intro a
-      have ha : a.val < r := by have := a.isLt; omega
+      have ha : a.val < r := omega
       rw [geo_castLE_eq hj a ha, geo_fvec_cast]
       exact Submodule.subset_span ⟨_, rfl⟩
     apply hw_of

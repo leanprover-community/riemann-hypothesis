@@ -232,7 +232,7 @@ theorem stepP_of [CharZero K] (v : AddValuation K (WithTop ℚ)) (p : ℕ) (C0 :
   obtain ⟨hr, hJ, hc, hch, hnest, hthl, hga⟩ := hV
   haveI : NeZero D.r := ⟨hr.ne'⟩
   have hp0 : 0 < p := hD.prime.pos
-  have hp2 : 2 ≤ p := by have := hD.five_le; omega
+  have hp2 : 2 ≤ p := omega
 
   let Sx : (Σ j : Fin D.J, Fin (D.nch j)) → Finset D.ML := fun x => D.chainSet x.1 x.2
   let thx : (Σ j : Fin D.J, Fin (D.nch j)) → ℤ := fun x => ⌈D.th x.1 x.2 - D.sl x.1 x.2⌉

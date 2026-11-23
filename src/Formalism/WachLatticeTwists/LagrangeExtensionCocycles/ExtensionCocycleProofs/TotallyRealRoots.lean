@@ -83,7 +83,7 @@ theorem cost_formula_holds : StatCostFormula := by
 theorem cost_bound : StatCostBound := by
   intro ℓ _ hℓ j s H hjs hsH
   have hprime : ℓ.Prime := Fact.out
-  have h3 : 3 ≤ ℓ := by have := hprime.two_le; omega
+  have h3 : 3 ≤ ℓ := omega
   have hform := cost_formula_holds ℓ hℓ j s hjs
   obtain ⟨L, rfl⟩ : ∃ L, ℓ = L + 1 := ⟨ℓ - 1, by omega⟩
   simp only [Nat.add_sub_cancel] at hform

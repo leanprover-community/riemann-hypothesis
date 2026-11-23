@@ -88,7 +88,7 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
       LiftsAt W (arcOf b w S η up size) F c bb sol k₀ f e₁ := by
   classical
   set A := arcOf b w S η up size with hA
-  have hl5 : 5 ≤ PD.p := by have := hB.1; omega
+  have hl5 : 5 ≤ PD.p := omega
   set L := A.len c with hL
   have hcc : c - ((L : ℕ) : ZMod n) + ((L : ℕ) : ZMod n) = c := sub_add_cancel _ _
   set b₀ := size c with hb₀

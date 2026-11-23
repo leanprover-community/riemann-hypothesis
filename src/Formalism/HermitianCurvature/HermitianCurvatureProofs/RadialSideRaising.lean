@@ -121,7 +121,7 @@ theorem mono_ge {n : ℕ} {C : Fin r → Fin n} (hC : StrictMono C) : ∀ l : Fi
     | zero => intro l _; exact Nat.zero_le _
     | succ m ih =>
       intro l hl
-      have hm : m < r := by have := l.isLt; omega
+      have hm : m < r := omega
       have h1 := ih ⟨m, hm⟩ rfl
       have h2 : C ⟨m, hm⟩ < C l := hC (by rw [Fin.lt_def]; simp; omega)
       rw [Fin.lt_def] at h2

@@ -400,7 +400,7 @@ theorem first_operator_norm_bound : Formalism.HermitianLatticeCounting.Expansion
     linarith
   have F2 : ∀ (i : Fin k) (a : Fin (k + M)), (a : ℕ) + 1 = (i : ℕ) → u i + 1 / 2 ≤ lam a := by
     intro i a h
-    have ha : (a : ℕ) < k := by have := i.isLt; omega
+    have ha : (a : ℕ) < k := omega
     have e : a = Fin.castAdd M ⟨(a : ℕ), ha⟩ := Fin.ext rfl
     obtain ⟨z, hz⟩ := hluZ a i
     have h1 : u i < lam a := by rw [e]; exact hlu2 ⟨(a : ℕ), ha⟩ i h

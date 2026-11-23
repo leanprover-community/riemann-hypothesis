@@ -191,7 +191,7 @@ theorem summable_qk (hk2 : 2 ≤ D.R.k) :
   rw [hq, inv_pow]
 
 theorem AlConvC_holds : AlConvC X u u' := by
-  have hk2 : 2 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk2 : 2 ≤ D.R.k := omega
   have hk1 : 1 ≤ D.R.k := by omega
   have hpos : ∀ v, 0 < alX X u u' v := fun v => lt_of_lt_of_le (Real.exp_pos _) (alX_bounds X u u' hk1 v).1
   have hlog : Summable fun v : PlX X => Real.log (alX X u u' v) := by

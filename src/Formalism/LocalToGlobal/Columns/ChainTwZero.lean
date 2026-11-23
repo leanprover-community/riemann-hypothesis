@@ -107,7 +107,7 @@ theorem twZrPr_eN (i : ℕ) (hi : n ≤ i) : twZrPr (c := c) (Loc.eN k (n + c) i
   funext l
   show Loc.eN k (n + c) i (Fin.castAdd c l) = 0
   unfold Loc.eN
-  have : ¬ (l : ℕ) = i := by have := l.2; omega
+  have : ¬ (l : ℕ) = i := omega
   simp [this]
 
 theorem twZrMap_R1cond (g : (Fin n → k) →ₗ[k] (Fin n → k)) (r : (Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k))

@@ -359,8 +359,8 @@ open Inertia
 theorem hostInertia : HostInertia := by
   intro e q d hH L _ _ ζ a b h σ
   have hqd := hH.toHypOdd
-  have hq4 : q % 4 = 3 := by have := hH.2.2.1; omega
-  have hd4 : d % 4 = 3 := by have := hH.2.2.2.1; omega
+  have hq4 : q % 4 = 3 := omega
+  have hd4 : d % 4 = 3 := omega
   have hQD : HypQD q d := ⟨hH.1, hH.2.1, hH.2.2.1, by have := hH.2.2.2.1; omega⟩
   have hspec := hostGalSpec e q d hqd L ζ a b h σ
   have hsa := hspec.1
@@ -443,8 +443,8 @@ theorem hostInertia : HostInertia := by
 theorem hostUnramEF : HostUnramEF := by
   intro e q d hH L _ _ ζ a b h P hP hP0 σ hσ hall
   have hqd := hH.toHypOdd
-  have hq4 : q % 4 = 3 := by have := hH.2.2.1; omega
-  have hd4 : d % 4 = 3 := by have := hH.2.2.2.1; omega
+  have hq4 : q % 4 = 3 := omega
+  have hd4 : d % 4 = 3 := omega
   have hspec := hostGalSpec e q d hqd L ζ a b h σ
   have hI0 : P.under ℤ ≠ ⊥ := fun h0 => hP0 (Ideal.eq_bot_of_comap_eq_bot h0)
   haveI : (P.under ℤ).IsPrime := by haveI := hP; exact Ideal.comap_isPrime _ _

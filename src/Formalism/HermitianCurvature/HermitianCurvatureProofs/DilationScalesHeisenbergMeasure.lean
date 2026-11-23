@@ -367,7 +367,7 @@ lemma aDil_zero (k : ℕ) (t : ℝ) : aDil k 0 t = 1 := by
   rw [aDil_eq, ← Matrix.diagonal_one]
   congr 1
   funext i
-  have h : i.val ≤ 0 + k := by have := i.isLt; omega
+  have h : i.val ≤ 0 + k := omega
   unfold dgR
   rw [if_neg (Nat.not_lt_zero _), if_pos h, Complex.ofReal_one]
 

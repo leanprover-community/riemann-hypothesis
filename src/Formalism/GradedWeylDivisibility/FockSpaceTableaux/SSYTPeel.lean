@@ -112,7 +112,7 @@ theorem semistandardPeel : SSYTPeel := by
       exact ht
     | succ d ih =>
       intro t t' htt ht
-      have hs : t'.val + d < n := by have := t.isLt; omega
+      have hs : t'.val + d < n := omega
       exact ih ⟨t'.val + d, hs⟩ t' rfl
         (hstep ⟨t'.val + d, hs⟩ t (by show t.val = t'.val + d + 1; omega) ht)
   have hmono : ∀ t t' : Fin n, t' ≤ t → 0 < ν t → 0 < ν t' := by
@@ -193,7 +193,7 @@ theorem semistandardPeel : SSYTPeel := by
       exact hcstep' p q (by omega)
     | succ d ih =>
       intro p q hpq
-      have hs : p.val + d + 1 < h := by have := q.isLt; omega
+      have hs : p.val + d + 1 < h := omega
       exact lt_trans (ih p ⟨p.val + d + 1, hs⟩ rfl)
         (hcstep' ⟨p.val + d + 1, hs⟩ q (by show q.val = p.val + d + 1 + 1; omega))
   have hcmono : StrictMono c := by

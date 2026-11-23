@@ -1020,7 +1020,7 @@ theorem numN_at {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) (hS : Si
     nlinarith
   refine ⟨hw1, le_trans hw1 hwb, by linarith, fun t => ?_⟩
   have hk : (0 : ℝ) < D.R.k := by
-    have : 0 < D.R.k := by have := D.R.m_add_three_le_k; omega
+    have : 0 < D.R.k := omega
     exact_mod_cast this
   have hLa : 0 < L.LaG := lt_of_lt_of_le (Real.rpow_pos_of_pos hx _) sLa.1
   have hlog : 0 ≤ Real.log L.sc.x := Real.log_nonneg (by linarith)
@@ -1180,7 +1180,7 @@ theorem winM (P : ParameterChoice' D L) : (D.R.k : ℝ) ≤ (D.R.n : ℝ) ^ 2 * 
 
 theorem kx_ge_one (L : SizeData₂ D) : 1 ≤ (D.R.k : ℝ) * L.sc.x ^ (Scale.A / 2) := by
   have hk : (1 : ℝ) ≤ D.R.k := by
-    have : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+    have : 1 ≤ D.R.k := omega
     exact_mod_cast this
   have hx1 : 1 ≤ L.sc.x ^ (Scale.A / 2) :=
     Real.one_le_rpow L.sc.one_lt_alt.le (by unfold Scale.A; norm_num)
@@ -1197,7 +1197,7 @@ theorem winO (L : SizeData₂ D) (t : D.host.TT) : |(L.aT t : ℝ) / L.sc.b - L.
   have h := L.aT_win t
   have hab : L.sc.a / L.sc.b = L.sc.x := by unfold Scale.a; field_simp
   have hk : (1 : ℝ) ≤ D.R.k := by
-    have : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+    have : 1 ≤ D.R.k := omega
     exact_mod_cast this
   have hxA : L.sc.x ≤ L.sc.x ^ (Scale.A / 2) := by
     have := rpow_mono' L.sc (a := 1) (b := Scale.A / 2) (by unfold Scale.A; norm_num)
@@ -1220,7 +1220,7 @@ theorem winI (P : ParameterChoice' D L) :
     Real.log (Fintype.card D.what₂.Word : ℝ) ≤ ((D.R.k : ℝ) - 3) * Real.log 2 := by
   have hc : 0 < Fintype.card D.what₂.Word := Fintype.card_pos
   have h := P.words_le
-  have hk : 3 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 3 ≤ D.R.k := omega
   have h1 : (Fintype.card D.what₂.Word : ℝ) ≤ (2 : ℝ) ^ (D.R.k - 3) := by exact_mod_cast h
   have h2 := Real.log_le_log (by exact_mod_cast hc) h1
   rw [Real.log_pow, Nat.cast_sub hk] at h2

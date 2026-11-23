@@ -156,7 +156,7 @@ theorem exists_phiBridge [IsAdicComplete (IsLocalRing.maximalIdeal O) O] (W : Lo
     Nonempty (PhiBridge W) := by
   classical
   have hp1 : PD.p - 1 + 1 = PD.p := Nat.sub_add_cancel PD.hp.one_lt.le
-  have hpos : PD.p - 1 ≠ 0 := by have := PD.hp.two_le; omega
+  have hpos : PD.p - 1 ≠ 0 := omega
 
   have hlO0 : ((PD.p : ℕ) : O) ≠ 0 := by
     intro h

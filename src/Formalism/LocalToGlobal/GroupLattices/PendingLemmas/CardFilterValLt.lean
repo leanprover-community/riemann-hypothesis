@@ -466,7 +466,7 @@ theorem initMinor_cat {n m : ℕ} (hm : m ≤ n) (I : Fin m → Fin n) :
       simp only [Matrix.of_apply, Matrix.submatrix_apply, id, catM, this, if_true, hπ]
     · intro a t ht
       have h1 : ¬ t.val < n - (n - m) := by omega
-      have h2 : m + (t.val - (n - (n - m))) < n := by have := t.isLt; omega
+      have h2 : m + (t.val - (n - (n - m))) < n := omega
       simp only [Matrix.submatrix_apply, id, catM, h1, if_false, dif_pos h2, EmbeddingLike.apply_eq_iff_eq]
       congr 1
       apply propext

@@ -174,7 +174,7 @@ theorem P_ne (hOk : c.Ok) (hb1 : 40 * (c.m : ℝ) * c.k * c.Del ≤ c.b 1) {l : 
   · have hlam : c.lam s = -c.b (s + 1 - c.k) := by simp [Formalism.FourierDecayAlt.Sz.Cfg.lam, hsk]
     rw [hlam]
     have hj1 : 1 ≤ s + 1 - c.k := by omega
-    have hjm : s + 1 - c.k ≤ c.m := by have := hOk.hm; omega
+    have hjm : s + 1 - c.k ≤ c.m := omega
     have hbj := b_one_le c hOk _ hj1 hjm
     apply ne_of_lt; linarith
 

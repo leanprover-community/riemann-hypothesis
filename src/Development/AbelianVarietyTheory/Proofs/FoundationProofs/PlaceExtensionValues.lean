@@ -38,20 +38,16 @@ namespace GlobalTheory.Proof.PlaceExtensionValues
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Coef
 
 variable {K K' : Type} [Field K] [Field K'] {σ : K →+* ℂ} {σ' : K' →+* ℂ} {ι : K →+* K'}
   {I : Type} [Fintype I] {n : ℕ} {lam : I → DomWeight n} {W : Type} [AddCommGroup W] [Module ℂ W]
   {c₀ : VV K lam →ₛₗ[σ] W} {c' : VV K' lam →ₛₗ[σ'] W}
 
-end Coef
 
-section Reps
 
 variable {Gp Γ : Type} [Group Gp] [Group Γ] {ι : Γ →* Gp} {J : Subgroup Gp}
 
 
-end Reps
 
 section Row
 

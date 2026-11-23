@@ -148,7 +148,7 @@ open SiteC in
 theorem site_operators_preserve_orbital : SiteOpsWaveJC := by
   intro Wp Wq _ _ _ _ _ _ S _ _ P z z' π π' X μ L st l0 D _ _ _ hz hz' hπ hπ' l hl j hj Φ hΦ
   subst hz hz' hπ hπ'
-  have hr : 0 < P.r := by have := l.2; omega
+  have hr : 0 < P.r := omega
   have hl' : l = ⟨0, hr⟩ := Fin.ext hl
   have key : ∀ Ψ, IsWaveJ P D.z D.z' D.π D.π' D l Ψ → IsWaveJ P D.z D.z' D.π D.π' D l (X.op l j Ψ) := by
     rintro Ψ ⟨hlc, s, ε, G, hε, hG, hΨ⟩

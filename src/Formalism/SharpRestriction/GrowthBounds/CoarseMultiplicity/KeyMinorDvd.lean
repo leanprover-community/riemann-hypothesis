@@ -101,7 +101,7 @@ theorem kS_ord (X : Loc) [Fact X.p.Prime] (O : Type) [CommRing O] [IsDomain O] [
     InWjRg X.p X.n' O S.w 1 (hhLetters X.TT) g (kSkey O X j i) 1 := by
   classical
   have hp : X.p.Prime := hD.1
-  have hf : 1 ≤ X.n' := by have := hD.2.2.1; omega
+  have hf : 1 ≤ X.n' := omega
   set d := (segDists X.TT j).get i with hd
   set s0 : ℤ := ((topStart X j : X.TT).val.val : ℤ) with hs0
   set s1 : ℤ := ((topOdd X j i : X.TT).val.val : ℤ) with hs1
@@ -200,7 +200,7 @@ theorem kW_ord (X : Loc) [Fact X.p.Prime] (O : Type) [CommRing O] [IsDomain O] [
     InWjRg X.p X.n' O S.w 1 (hhLetters X.TT) g (kWkey O X j i c) 1 := by
   classical
   have hp : X.p.Prime := hD.1
-  have hf : 1 ≤ X.n' := by have := hD.2.2.1; omega
+  have hf : 1 ≤ X.n' := omega
   set d := (segDists X.TT j).get i with hd
   set s0 : ℤ := ((topStart X j : X.TT).val.val : ℤ) with hs0
   set s1 : ℤ := ((topOdd X j i : X.TT).val.val : ℤ) with hs1

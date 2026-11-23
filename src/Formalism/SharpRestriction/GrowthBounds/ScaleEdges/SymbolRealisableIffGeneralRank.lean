@@ -139,7 +139,7 @@ theorem sources_realisable_holds (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cde
   rw [symbol_realisable_iff_general_rank]
   have hB := hyps_basic (C := C) (by linarith) H
   have hTT := hF.1
-  have hGn : goodG' r de h x ≤ n' := by have := H.2.2.1.2.2.2; omega
+  have hGn : goodG' r de h x ≤ n' := omega
   have hkr : orbitWindowCount r de h x + 2 * r ≤ (m + 1) - r := H.2.2.2.2.2.2.2.1
   have hH : CommonHypotheses p n' r (m + 1) := ⟨H.1, H.2.1, hrk, hSet.1.two_le, hSet.1.even⟩
   have eE : E0 p r (r + K) (orbitWindowCount r de h x) (goodG' r de h x) (cPrime n' r TT.card c0 cpp cStar) =

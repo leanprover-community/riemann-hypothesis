@@ -136,7 +136,7 @@ local notation "PP" => MvPolynomial (TV n' (r + K)) (KK O)
 
 theorem fixed_symbol_factor_integral (c' : ℕ) : bc_IT X.Fr (X.fixedSymbolFactor c') := by
   have hn := X.hH.2.2.2.2
-  have hr : 1 ≤ r := by have := X.hH.2.1; omega
+  have hr : 1 ≤ r := omega
   unfold Ctx.fixedSymbolFactor Ctx.sb
   refine bc_IT_mul (bc_IT_mul (bc_IT_pow ?_ _) (bc_IT_prod _ _ fun j _ =>
     bc_IT_pow (bc_IT_Del X.S.w X.Fr X.hV hn X.hH.2.2.1 X.hg j) _)) ?_

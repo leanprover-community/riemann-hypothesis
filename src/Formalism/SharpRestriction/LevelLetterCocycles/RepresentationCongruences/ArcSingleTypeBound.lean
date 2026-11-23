@@ -109,7 +109,7 @@ theorem arc_single_type_bound [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomain O
   have hbas := arcBasic W F hB
   dsimp only at hbas
   obtain ⟨hOK, -, -, -, hσ⟩ := hbas
-  have hl : 5 ≤ PD.p := by have := hB.1; omega
+  have hl : 5 ≤ PD.p := omega
   have hsur : Formalism.MainNotions.LiftingTheory.Sur W F := hB.2.1.2.1
   have hthick : ∀ s < (arcOf b w S η up size).len c,
       ((arcOf b w S η up size).ty (c - (s : ZMod n))).thick := by

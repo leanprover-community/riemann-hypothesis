@@ -113,7 +113,7 @@ lemma SgW_supported (LL : LiftLetters (Fin N)) (mu : Fin (N + 1) → Fin (r + K)
     intro J
     have mono : supported ℤ {v : Fin N × Fin (r + K) | v.1.val < j ∧ IsUsed mu c v.1} ≤
         supported ℤ {v : Fin N × Fin (r + K) | v.1.val < j + 1 ∧ IsUsed mu c v.1} :=
-      supported_mono fun v hv => ⟨by have := hv.1; omega, hv.2⟩
+      supported_mono fun v hv => ⟨omega, hv.2⟩
     simp only [SgW]
     split_ifs with h
     · by_cases hu : colH (mu ⟨j, by omega⟩) c = colH (mu ⟨j + 1, by omega⟩) c

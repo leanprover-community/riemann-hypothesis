@@ -108,8 +108,8 @@ theorem hostEFGTwo_of (hI : HostInertia) (hD : HostDecomp) : HostEFGTwo := by
   have heE : (span {(2 : ℤ)}).ramificationIdxIn (𝓞 (hostE ζ a b)) = 2 ^ e := by
     rw [← card_inertia_eq_ramificationIdxIn (G := Gal(hostE ζ a b/ℚ)) (span {(2 : ℤ)}) P, hIn]
 
-  have hq2 : q ≠ 2 := by have := hh.2.2.1; omega
-  have hd2 : d ≠ 2 := by have := hh.2.2.2.1; omega
+  have hq2 : q ≠ 2 := omega
+  have hd2 : d ≠ 2 := omega
   have hDec := fun σ => hD e q d hh L ζ a b h
     (ZMod.unitOfCoprime q (coprime_two_pow hh.1 hq2 e))
     (ZMod.unitOfCoprime d (coprime_two_pow hh.2.1 hd2 e))

@@ -213,7 +213,7 @@ theorem kr_rule (Bs : B.RealPlaceData k r Wp Wq) (F : B.Mat k r → (Wq →L[ℂ
     (p q : Fin (2 * r + k + 1)) (hpq : C3.InNp k r p q) :
     EabH (Hpk k r) p q (Kr Bs F) x = C3.dpsiP k r Bs.z' p q • Kr Bs F x := by
   obtain ⟨l, hl⟩ := exists_pat p q hpq
-  have hr : 1 ≤ r := by have := l.isLt; omega
+  have hr : 1 ≤ r := omega
   set Z : B.Mat k r := Matrix.single p q (1 : ℂ) with hZ
   have h1 := rdV_kr Bs F x l _ (Formalism.FourierDecayAlt.Q.QRR.pat_hpart1 hl) (Formalism.FourierDecayAlt.Q.QRR.skew_hpart1 Z)
   have h2 := rdV_kr Bs F x l _ (Formalism.FourierDecayAlt.Q.QRR.pat_hpart2 hl) (Formalism.FourierDecayAlt.Q.QRR.skew_hpart2 Z)

@@ -264,7 +264,7 @@ theorem ontoCZ_holds : Formalism.L2.SG.Pf.ZsVolAct.OntoCZ M δ u u' F0 what₂ :
           rw [this]; simp only [Matrix.mul_assoc]
       _ = ZhatL (lf D F0) F' * Formalism.L2.SG.Pf.AtPt.Sg D.host.E D.R.rS := by rw [hZ1]
   · intro i j hji
-    have hk : ((i : ℕ) - (j : ℕ)) ≤ D.R.rS := by have := i.2; omega
+    have hk : ((i : ℕ) - (j : ℕ)) ≤ D.R.rS := omega
     have h1 := Formalism.L2.SG.Pf.ZsVolLat.frame_entry (lf D F0) γ.lam hXF hLift.1 n⁻¹ hνΛ uu huu hu j i hji
     have h2 := Formalism.L2.SG.Pf.ZsVolLat.frame_entry F' γ.lam hFOK.2 hLift'.1 m hmΛ uu' huu' hu' j i hji
     have h3 := cong_glob_pair (lf D F0) F' γ.lam hConv hFOK.1 hXF hFOK.2 hLift.1 hLift'.1 hadm n⁻¹ m hνΛ hmΛ F''

@@ -83,7 +83,7 @@ theorem loc4Res_of (hP : ResPowAt) (hT : ResTelAt) (hL : ResLineAt) : LocalResid
 
 theorem resPowAt : ResPowAt := by
   intro X _ O _ _ _ _ S hS hD g a
-  have hf : 1 ≤ X.n' := by have := hD.2.2.1; omega
+  have hf : 1 ≤ X.n' := omega
   have hF := frobCong (p := X.p) (f := X.n') hf
   have hp0 : Ideal.Quotient.mk (Ideal.span {S.w}) (X.p : O) = 0 := by
     rw [Ideal.Quotient.eq_zero_iff_mem, ← (show S.w ^ 2 = (X.p : O) from hS), pow_two]
@@ -112,7 +112,7 @@ theorem resPowAt : ResPowAt := by
 
 theorem resTelAt : ResTelAt := by
   intro X K _ y hD h2 hy hq
-  have hn : 0 < X.n' := by have := hD.2.2.1; omega
+  have hn : 0 < X.n' := omega
   have hper : ∀ s, y ^ (X.p ^ (s + X.n')) = y ^ (X.p ^ s) := by
     intro s
     rw [pow_add, pow_mul, ← pow_mul, mul_comm, pow_mul, hq]

@@ -88,7 +88,7 @@ theorem rMeas_exact (D : D7) (W : LocW D.R.k D.R.rS) (hz : inWb D.R.k D.R.rS W.z
     (hG : Formalism.MainNotions.S.IsHaarOn (UH (Hpk D.R.k D.R.rS)) W.μG) (p : Point ℂ (D.R.rS + 1)) (g₀ : MatKR D.R.k D.R.rS)
     (hg : g₀ ∈ UH (Hpk D.R.k D.R.rS)) (hZ : Formalism.MainNotions.S.ZhatO D.R.k D.R.rS W.z W.z' g₀ = ptMat p) :
     ∃ ν, RMeas D W g₀ 1 ν := by
-  have hk : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 1 ≤ D.R.k := omega
   obtain ⟨μ₀', c, hH, hc0, hc1, hmap⟩ :=
     Formalism.L2.SG.Pf.RootHaarLoc.locRootHaar D.R.k D.R.rS hk W.z W.z' hz hT hz' hT' p g₀ hg hZ
   set K : ℝ≥0∞ := ENNReal.ofReal ((2 * D.host.ka / gg D / (2 * Real.pi)) ^ (rootPat p).card) with hK

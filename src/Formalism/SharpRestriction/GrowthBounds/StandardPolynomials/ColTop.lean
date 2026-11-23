@@ -51,7 +51,7 @@ theorem col_lamS_vec {C0 CE1 CE2 mu : ℝ} {X : Loc} [NeZero X.m] {β : GlobalTh
   by_cases h : (a : ℕ) < 2 * segS X.TT j
   · rw [lamS_succ_lt X j a h]
   · rw [lamS_succ_ge X j a h]
-    have : (a : ℕ) = 2 * segS X.TT j := by have := a.2; omega
+    have : (a : ℕ) = 2 * segS X.TT j := omega
     simp [this]
 
 theorem column_kappa_nonneg (X : Loc) : 0 ≤ ka1 X := by
@@ -67,7 +67,7 @@ theorem colsAt_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hNum : ColumnNumericsA
   have hs : segS X.TT j ≤ X.N1 := (hH.1.2.2.2.2.1 j).2
   have hN : 2 * X.N1 + 2 ≤ X.m := hH.1.2.2.2.2.2.2.1
   have hm : 2 * segS X.TT j + 1 < X.m := by omega
-  have hn' : 1 ≤ X.n' := by have := hD.2.2.1; omega
+  have hn' : 1 ≤ X.n' := omega
   have hp : 0 < X.p := hD.1.pos
   have h := ph_seg L j y hy (hβ j) hnum1 hnum2 hm
   have hvec := col_lamS_vec L j

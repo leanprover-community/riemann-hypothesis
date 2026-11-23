@@ -718,7 +718,7 @@ theorem local_uniqueness_reduction : LocUniqStep := by
   intro hB hCW hWl hBW hM1 D hG X u μS νl C hQW v W hWc hWe hWr hL0 hLt
   obtain ⟨-, -, hloc, -⟩ := hQW
   obtain ⟨hSv, hQv⟩ := hloc v
-  have hk : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 1 ≤ D.R.k := omega
   have hN1801 : 1801 ≤ 2 * D.R.rS + D.R.k + 1 := by rw [dimS D]; exact hG.1
   have hT : (0 : ℝ) < ((D.mem u).A.T : ℝ) := by exact_mod_cast (D.mem u).A.T_prime.pos
   have hgg : 0 < X.B.g := by

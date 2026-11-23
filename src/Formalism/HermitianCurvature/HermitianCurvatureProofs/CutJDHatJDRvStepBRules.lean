@@ -75,7 +75,7 @@ theorem exists_wCell_eq_wCell_succ_mul_tail_factor (c : Fin r → ℂ) (hc : ∀
     omega
   | succ n ih =>
     intro i hi
-    have hl : b.val + 1 + n < r := by have := i.isLt; omega
+    have hl : b.val + 1 + n < r := omega
     set l : Fin r := ⟨b.val + 1 + n, hl⟩ with hldef
     have hil : i = l.succ := Fin.ext (by simp [l, hi]; omega)
     rw [hil]

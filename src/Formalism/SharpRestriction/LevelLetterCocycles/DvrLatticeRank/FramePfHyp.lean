@@ -116,7 +116,7 @@ theorem frame_uniformiser_unit_multiple (D : D7) (HW : HWOf D.loc) (F : FonOf D.
 theorem ramification_quotient_pos (l : ℕ) [hpf : Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l) (hG : Good K 1 LL) :
     1 ≤ sK l K := by
   have hd : eK K ∣ l - 1 := Formalism.MainNotions.N.Ln34.DvdPf.dvdCondition l hl K LL hG
-  have hl1 : 0 < l - 1 := by have := hpf.out.two_le; omega
+  have hl1 : 0 < l - 1 := omega
   have he0 : 0 < eK K := Nat.pos_of_dvd_of_pos hd hl1
   exact (Nat.one_le_div_iff he0).mpr (Nat.le_of_dvd hl1 hd)
 

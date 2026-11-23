@@ -280,7 +280,7 @@ theorem rows_deg_prod (h : rows_Hyps Y C' Cl Cg cb Cu cT CT C0 A c Cpr Ca C2 Ch 
   have hv1 : 1 ≤ D.host.v := by
     obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, h19, _⟩ := h.hH.1.1
     exact h19
-  have hk1 : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk1 : 1 ≤ D.R.k := omega
   have hx1 := rows_one_le_HHZ D large₂ hc x
   have hy1 := rows_one_le_HHZ D large₂ hc y
   have sx1 := rows_one_le_sizeZ (D := D) large₂.sc.b Ch x

@@ -134,7 +134,7 @@ theorem restSum_of (hF : ∀ (p n' r K : ℕ) [NeZero n'] [NeZero r] [NeZero K] 
   intro p n' r K _ _ _ X hX hLa hk G hG0 hGdep hGsum
   obtain ⟨F, hNs⟩ := hF p n' r K X hX hLa hk
   have hp : 0 < p := hX.prime.pos
-  have hr : 0 < r := by have := hX.r2; omega
+  have hr : 0 < r := omega
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp
   have hRHS0 : 0 ≤ ∑ la ∈ X.LA p K, ∑ e ∈ X.EE p K la, ∏ j : Fin X.F.J,
       G (j.val : ℤ) (X.bfam p K la e (j.val : ℤ)) :=

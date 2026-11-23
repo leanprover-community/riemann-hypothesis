@@ -281,7 +281,7 @@ theorem fFSplit_holds : FFSplit := by
   congr 1
   refine Finset.prod_congr rfl (fun i _ => ?_)
   have h1 : 1 ≤ Nat.card k := Nat.card_pos
-  have hi : (i : ℕ) ≤ M := by have := i.isLt; omega
+  have hi : (i : ℕ) ≤ M := omega
   rw [Nat.cast_sub (Nat.pow_le_pow_right h1 hi), Nat.cast_pow, Nat.cast_pow]
 
 end PI.VolStabS

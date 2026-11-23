@@ -216,7 +216,7 @@ theorem lf_S_col (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (s : Matrix (Fin 
     by_cases hat : a.val ≤ t.val
     · rw [hm.2.1 a t hat, if_neg ht, mul_zero]
     · push_neg at hat
-      have htr : t.val < r := by have := a.isLt; omega
+      have htr : t.val < r := omega
       have ht' : t = eI k r ⟨t.val, htr⟩ := Fin.ext (lf_eI_val k r ⟨t.val, htr⟩).symm
       rw [ht', lf_UW_col k r z hh ⟨t.val, htr⟩ i, if_neg, zero_mul]
       intro hie

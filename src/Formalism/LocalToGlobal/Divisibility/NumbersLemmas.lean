@@ -505,7 +505,7 @@ theorem ofRecord_uW (hDel : D.s.Del = (Del : ℚ)) (u : D.what₂.Word) (z : Boo
     rw [hi] at key
     rw [key, D.hcW_v, hDel]
   · rw [dite_eq_right (show ¬ (1 ≤ i.1 ∧ i.1 + 1 < (ofRecord D L Del h0).R.k) from h)]
-    have hi : i.1 = 0 ∨ i.1 = D.R.k - 1 := by have := i.2; omega
+    have hi : i.1 = 0 ∨ i.1 = D.R.k - 1 := omega
     rcases hi with hi | hi
     · have e : i = ⟨0, by omega⟩ := Fin.ext hi
       rw [e]
@@ -534,7 +534,7 @@ theorem ofRecord_nu (hDel : D.s.Del = (Del : ℚ)) (u : D.what₂.Word) (j : ℕ
   rfl
 
 theorem ofRecord_aT (t : D.host.TT) : (((ofRecord D L Del h0).aT t.1 : ℚ) : ℝ) = (L.aT t : ℝ) := by
-  have hk : 0 < D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 0 < D.R.k := omega
   have h := (L.top_u (tauPl D (false, (t : D.R.A))) t hk
     (by unfold tauPl; rw [Equiv.apply_symm_apply]; rfl)).1
   have h' : ((((ofRecord D L Del h0).hc (false, (t : D.R.A))).u ⟨0, hk⟩ : ℚ) : ℝ) =

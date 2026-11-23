@@ -88,7 +88,7 @@ theorem pi0_eq_cst_X_sub_C_prime : W.π₀ = Br.cst (X - C ((PD.p : ℕ) : O)) :
 theorem phi_sq_pi0_pow_power_series (h G : ℕ) :
     ∃ N : ℕ, ∃ w ∈ W.AΔ, ((W.φA ^ 2) W.π₀) ^ N = W.π₀ * (Br.cst (X ^ h * Br.P.p 1 ^ G)) ^ 2 * w := by
   have hpF : Fact PD.p.Prime := ⟨PD.hp⟩
-  have hl1 : 1 ≤ PD.p - 1 := by have := PD.hp.two_le; omega
+  have hl1 : 1 ≤ PD.p - 1 := omega
   set N := 2 * h + 2 * G + 1 with hN
   have hφ2 : (W.φA ^ 2) W.π₀ = Br.cst (Br.P.φ (Br.P.φ (X - C ((PD.p : ℕ) : O)))) := by
     rw [pow_two, AlgHom.mul_apply, pi0_eq_cst_X_sub_C_prime Br, Br.φA_cst, Br.φA_cst]

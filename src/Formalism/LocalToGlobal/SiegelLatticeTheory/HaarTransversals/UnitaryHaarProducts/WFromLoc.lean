@@ -110,7 +110,7 @@ theorem wblk_core (hQK : QuotProdK) (hHN : LocHNProps) (hNU : NUnimodLoc) (hTens
     · rw [hfV, hzV]; simp only; rw [hJc, (L.zu_orth u a).2]; simp
     · rw [hzV]; simp only; rw [hJc, L.zu_norm]; simp [hTV]
 
-  have hk : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 1 ≤ D.R.k := omega
   have hke : Even D.R.k := D.R.k_even
   have hg : 0 < gD D := Nat.mul_pos (D.host.g_prime 0).pos (D.host.g_prime 1).pos
   have hε : ∀ v, ε v = eps48 D.R.k D.R.rS := fun v => funext fun i =>

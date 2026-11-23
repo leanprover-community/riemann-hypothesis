@@ -98,7 +98,7 @@ theorem Q_iff {n' n c : ℕ} (xj : (Fin n' → k) →ₗ[k] (Fin n → k)) (x : 
         have hc : 0 < c := by omega
         have k2 := congrFun (h2 hc) l
         simpa [eN] using k2
-      · have hjlt : j < c := by have := s.2; omega
+      · have hjlt : j < c := omega
         obtain ⟨hl1, hl2⟩ := hj2 (by omega)
         have hl : ¬ l.1 < n + j := by omega
         have k4 := (mem_Ufl_iff' _).1 (h3 j (by omega) hjlt) l hl

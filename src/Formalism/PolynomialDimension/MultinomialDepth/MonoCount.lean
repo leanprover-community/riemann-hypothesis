@@ -1657,7 +1657,7 @@ theorem deg_compat (n : Fin T.t → ℕ) (a : Fin (T.pos i + 1 + 1)) :
     rw [e, setTies_deg_eta LL T hadm i n]
   | cast a =>
     rw [Formalism.GM.M.FB.snoc_deg_castSucc]
-    have ha : (a : ℕ) < N := by have := a.isLt; omega
+    have ha : (a : ℕ) < N := omega
     have e : ιF N (T.pos i + 1) (Fin.castSucc a) = ⟨a, ha⟩ := by
       apply Fin.ext; rw [ιF_val hK]; simp
     rw [e]

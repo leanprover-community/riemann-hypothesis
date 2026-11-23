@@ -773,7 +773,7 @@ theorem lx_il (hI : Interlace hN lam sg) (hS : SameShift lam sg) : Formalism.Bra
   intro i
   have hi := hI i
   unfold aBr bBr at hi
-  have hn : 0 < n := by have := i.2; omega
+  have hn : 0 < n := omega
   have hd : sg.detShift = lam.detShift := hS
   have e1 := lx_detShift_N hN lam
   have e2 := lx_detShift_n (N := N) sg hn
@@ -795,7 +795,7 @@ theorem lx_expA (hI : Interlace hN lam sg) (hS : SameShift lam sg) (i : Fin n) :
     (aBr hN lam sg i).toNat = sg.natW i - Formalism.GradedWeylDivisibility.nuNext (lamN hN lam) i := by
   have hi := hI i
   unfold aBr bBr at hi
-  have hn : 0 < n := by have := i.2; omega
+  have hn : 0 < n := omega
   have hd : sg.detShift = lam.detShift := hS
   have e1 := lx_detShift_N hN lam
   have e2 := lx_detShift_n (N := N) sg hn
@@ -818,7 +818,7 @@ theorem lx_expB (hI : Interlace hN lam sg) (hS : SameShift lam sg) (i : Fin n) :
     (bBr hN lam sg i).toNat = lamN hN lam i - sg.natW i := by
   have hi := hI i
   unfold aBr bBr at hi
-  have hn : 0 < n := by have := i.2; omega
+  have hn : 0 < n := omega
   have hd : sg.detShift = lam.detShift := hS
   have e1 := lx_detShift_N hN lam
   have e2 := lx_detShift_n (N := N) sg hn
@@ -3240,7 +3240,7 @@ lemma inC_cBr (hS : SameShift l s) :
       have e3 : Fin.cast hN.symm a = iL hN := Fin.ext (by simp [iL]; omega)
       rw [e3, e1, sub_self]
   · funext i
-    have hn : 0 < n := by have := i.2; omega
+    have hn : 0 < n := omega
     have e2 := lx_detShift_n (N := N) s hn
     have hd : s.detShift = l.detShift := hS
     have hlast : s.w ⟨n - 1, by omega⟩ ≤ s.w i := s.anti (Fin.le_def.2 (by show i.val ≤ n - 1; omega))

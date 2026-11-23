@@ -213,7 +213,7 @@ theorem expansion_low_coeffs_integral {ζ : LL} (hζ : IsPrimitiveRoot ζ PD.p) 
       coeff 1 (W.lev c ζ a) = algebraMap O LL o₁ := by
   have hx : (z - 1) ^ (PD.p - 1) ∈ Ideal.span {((PD.p : ℕ) : O)} :=
     Ideal.mem_span_singleton.2 (z_dvd hinj hζ hz)
-  have hk : 0 < PD.p - 1 := by have := PD.hp.one_lt; omega
+  have hk : 0 < PD.p - 1 := omega
   obtain ⟨o₀, g₁, h₁⟩ := ps_div _ (z - 1) _ hk hx (a c)
   obtain ⟨o₁, g₂, h₂⟩ := ps_div _ (z - 1) _ hk hx g₁
   obtain ⟨h0, h1, -, -⟩ := levπ01 W c ζ hζ

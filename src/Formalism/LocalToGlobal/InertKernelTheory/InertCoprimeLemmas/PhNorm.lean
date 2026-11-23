@@ -432,7 +432,7 @@ theorem phNormOKInert_of : Formalism.L2.KerInert.PhNormOKInert := by
   set a3 : Qbar := ⟨L.g₃, hg3⟩ with ha3
   set s0 : Qbar := ⟨Formalism.L2.Th1.F.s2 L, hs2⟩ with hs0
   obtain ⟨e2, e3⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.g2_g3_eq_periodPair _ L (congrArg (fun A : AddSubgroup ℂ => (A : Set ℂ)) hLg.symm)
-  have hd4 : D.host.d % 4 = 3 := by have := D.host.hyp.2.2.2.1; omega
+  have hd4 : D.host.d % 4 = 3 := omega
   have hcmby := Formalism.L2.KerInert.Sigma.ChartWirtingerDerivatives.hasCMBy_curve D cc δ hcurve hδ12 L hL
   have hdisc := Formalism.L2.KerInert.Sigma.ChartWirtingerDerivatives.disc_curve D cc δ hcurve hδ12 L hL
   obtain ⟨ι, hι⟩ := Formalism.L2.KerInert.lamExt p g.lam

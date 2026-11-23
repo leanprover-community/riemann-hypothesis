@@ -472,7 +472,7 @@ theorem nums_alg (N m l b' cL Cc Cn T G : ℝ) (hN : 1 ≤ N) (hm : 1 ≤ m) (hl
 
 theorem two_le_rdE {R : Ranks} (H : Host R) : 2 ≤ H.rdE := by
   refine le_trans ?_ (factRd R H).1
-  have hd : 7 ≤ H.d := by have := H.hyp.2.2.2.1; omega
+  have hd : 7 ≤ H.d := omega
   have hd' : (7 : ℝ) ≤ H.d := by exact_mod_cast hd
   have h1 : (2 : ℝ) ≤ Real.sqrt (H.d : ℝ) := by
     apply Real.le_sqrt_of_sq_le

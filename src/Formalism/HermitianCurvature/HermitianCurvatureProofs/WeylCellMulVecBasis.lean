@@ -116,7 +116,7 @@ theorem head_comm (c : Fin r → ℂ) (hc : ∀ a, c a ≠ 0) : ∀ n : ℕ, ∀
     exact ⟨glev_one _, fun _ _ x _ => by simp⟩
   | succ n ih =>
     intro i hi
-    have hl : n < r := by have := i.isLt; omega
+    have hl : n < r := omega
     set l : Fin r := ⟨n, hl⟩ with hldef
     have hil : i = l.succ := Fin.ext (by simp [l, hi])
     subst hil
@@ -146,7 +146,7 @@ theorem tail (c : Fin r → ℂ) (hc : ∀ a, c a ≠ 0) (b : Fin r) : ∀ n : �
     simp
   | succ n ih =>
     intro i hi
-    have hl : b.val + 1 + n < r := by have := i.isLt; omega
+    have hl : b.val + 1 + n < r := omega
     set l : Fin r := ⟨b.val + 1 + n, hl⟩ with hldef
     have hil : i = l.succ := Fin.ext (by simp [l, hi]; omega)
     subst hil
@@ -186,7 +186,7 @@ theorem cd_wCell : ∀ n : ℕ, ∀ i : Fin (r + 1), i.val = n →
     simp only [Formalism.FourierDecayAlt.P.Qx6.wCell_zero]
     exact contDiffOn_const
   | n + 1, i, hi => by
-    have hl : n < r := by have := i.isLt; omega
+    have hl : n < r := omega
     set l : Fin r := ⟨n, hl⟩ with hldef
     have hil : i = l.succ := Fin.ext (by simp [l, hi])
     subst hil

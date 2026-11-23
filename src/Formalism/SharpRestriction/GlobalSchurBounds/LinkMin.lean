@@ -208,7 +208,7 @@ theorem upper_weight_bound_eventually (D : D7) (sc : Scale) (C0 CY : ℝ)
   have hx0 : 0 < sc.x := lt_trans one_pos sc.one_lt_alt
   have hpi : Real.pi ≤ D.host.v := hB.1
   have hv0 : 0 < D.host.v := lt_of_lt_of_le Real.pi_pos hpi
-  have er : D.R.r = D.R.k + (D.R.m - 1) := by have := D.R.r_eq; omega
+  have er : D.R.r = D.R.k + (D.R.m - 1) := omega
   have hF : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (degree_pos_alt D)
   have hM : (44 : ℝ) ≤ D.R.m := by exact_mod_cast r3
   have hMK : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast r4

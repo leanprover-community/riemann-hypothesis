@@ -141,7 +141,7 @@ theorem paramTieG_of {D : D7} {large₂ : SizeData₂ D} {C' Cl Cg cb Cu cT CT :
   have hmf : D.R.m ^ 4 ≤ D.R.f := hH.2.2.1
   have hfk : D.R.f ≤ D.R.k := hH.2.2.2.1
   have hCl : 0 < Cl := hH.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2
-  have hk3 : 3 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk3 : 3 ≤ D.R.k := omega
   have hm2 : 2 ≤ D.R.m := D.R.two_le_m
   have hrk : D.R.k + 1 ≤ D.R.r := by
     show D.R.k + 1 ≤ D.R.k + D.R.m - 1

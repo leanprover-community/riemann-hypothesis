@@ -182,7 +182,7 @@ theorem invCutPf_teich (x : (ZMod (l ^ 1))ˣ) : ∃ d : DeltaT l, redU l 0 d.1 =
   rw [hder] at hza
   have hz1 : z ^ (l - 1) = 1 := by
     simpa [sub_eq_zero] using hz
-  have hl1 : l - 1 ≠ 0 := by have := hl.two_le; omega
+  have hl1 : l - 1 ≠ 0 := omega
   have hzu : IsUnit z := IsUnit.of_pow_eq_one hz1 hl1
   refine ⟨⟨hzu.unit, Units.ext (by simpa using hz1)⟩, Units.ext ?_⟩
   show PadicInt.toZModPow 1 z = (x : ZMod (l ^ 1))
@@ -273,7 +273,7 @@ theorem invCutPf_card_ker (s : ℕ) : Nat.card (invCutPf_rho (l := l) s).ker = l
     Nat.card_eq_fintype_card (α := (ZMod (l ^ (0 + 1)))ˣ),
     ZMod.card_units_eq_totient, ZMod.card_units_eq_totient, Nat.totient_prime_pow_succ hl,
     Nat.totient_prime_pow_succ hl, pow_zero, one_mul] at e1
-  have hpos : 0 < l - 1 := by have := hl.two_le; omega
+  have hpos : 0 < l - 1 := omega
   exact Nat.eq_of_mul_eq_mul_left hpos (e1.symm.trans (mul_comm _ _))
 
 theorem invCutPf_ker_eq (hl2 : l ≠ 2) (s : ℕ) (u : ℤ_[l]ˣ)

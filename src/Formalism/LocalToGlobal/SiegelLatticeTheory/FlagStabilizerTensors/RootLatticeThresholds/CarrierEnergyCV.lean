@@ -107,7 +107,7 @@ theorem bc_prod (k : ℕ) (hk : 1 ≤ k) (lam : Fin r → ℝ) (hlam : ∀ a, 0 
       (∏ a : Fin r, lam a ^ (2 * (Formalism.QuantumDeterminants.Mdim k r a - 2))) *
         (((∏ i ∈ Finset.range r, xN c i) ^ 2) ^ (k - 1) * ∏ i ∈ Finset.range r, (xN c i ^ 4) ^ (r - i)) := by
   have h1 : ∀ a : Fin r, ‖(phiC lam c).1 a‖ = lam a * xN c a := fun a => by
-    have ha : (a : ℕ) < r + 1 := by have := a.2; omega
+    have ha : (a : ℕ) < r + 1 := omega
     simp only [phiC, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hlam a), xN, dif_pos ha]
   simp only [h1, mul_pow, Finset.prod_mul_distrib]
   congr 1
@@ -360,7 +360,7 @@ theorem cv_inst {D : D7} (u u' : D.what₂.Word) (m : ℕ) (hm : m = D.R.rS) (la
       ENNReal.ofReal (2 ^ (m + 1) * ∏ a : Fin m, (lam a ^ (2 * (Formalism.QuantumDeterminants.Mdim D.R.k m a - 1)))⁻¹) *
         ∫⁻ q, ENNReal.ofReal (Formalism.QuantumDeterminants.bcWeight D.R.k m (Tw (D := D) u) (Tw (D := D) u') q * F q) := by
   subst hm
-  have hk1 : 1 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk1 : 1 ≤ D.R.k := omega
   have h := cv_core D.R.k hk1 (Tw (D := D) u) (Tw (D := D) u') lam hlam F
   exact h
 

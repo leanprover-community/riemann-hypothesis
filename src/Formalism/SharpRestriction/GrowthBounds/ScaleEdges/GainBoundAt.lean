@@ -344,7 +344,7 @@ theorem symbol_space_at (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) 
   obtain ⟨hp, hr, hOrb, hNsq, hW, hrY, hLa, hNm, hL1, hDp, hcS, ha⟩ := H
   obtain ⟨_, _, _, h3G⟩ := hOrb
   obtain ⟨hTT, hV, hGap, _⟩ := hF
-  have hm2 : 2 ≤ m := by have := hB.m_ge; omega
+  have hm2 : 2 ≤ m := omega
   have hGn : goodG' r de h x ≤ n' := by omega
   have hG1 : 1 ≤ goodG' r de h x := le_trans hB.one_le_depth_alt hB.depth_le_good_exponent
   have ha2 : (2 : ℝ) ≤ a := hB.two_le_a
@@ -486,7 +486,7 @@ theorem hypII_at (CLa' CD Csz : ℝ) :
   have hB := hyps_basic hC1 H
   obtain ⟨hp, hr, hOrb, hNsq, hW, hrY, hLa, hNm, hL1, hDp, hcS, ha⟩ := H
   obtain ⟨hTT, hV, hGap, _⟩ := hF
-  have hm2 : 2 ≤ m := by have := hB.m_ge; omega
+  have hm2 : 2 ≤ m := omega
   have ha2 : (2 : ℝ) ≤ a := hB.two_le_a
   have hY0 : (0 : ℝ) ≤ Y := le_trans (by norm_num) hB.two_le_Y
   have hca1 : a ≤ (⌈a⌉₊ : ℝ) := Nat.le_ceil a

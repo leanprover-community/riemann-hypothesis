@@ -57,7 +57,7 @@ theorem lowerTri_of_interlaced {r n : ℕ} {m : Fin r × Fin n →₀ ℕ} (h : 
     omega
   | succ k ih =>
     intro s hs a ha
-    have hk : k < n := by have := s.isLt; omega
+    have hk : k < n := omega
     have h1 := h ⟨k, hk⟩ s (by simpa using hs) a
     have h2 : (∑ b : Fin r with b < a, m (b, (⟨k, hk⟩ : Fin n))) = 0 := by
       apply Finset.sum_eq_zero

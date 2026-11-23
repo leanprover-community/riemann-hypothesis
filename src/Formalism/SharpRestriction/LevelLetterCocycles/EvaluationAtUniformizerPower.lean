@@ -83,7 +83,7 @@ theorem cc_π₀₁ (hR : Ring9 W) : constantCoeff W.π₀₁ = 0 := by
   obtain ⟨w, hw⟩ := hR.2.2.1
   have h1 := congrFun hw 0
   change W.π₀₁ = _ at h1
-  have hp : PD.p - 1 ≠ 0 := by have := PD.hp.two_le; omega
+  have hp : PD.p - 1 ≠ 0 := omega
   rw [h1]
   simp [letπ, Pi.mul_apply, Pi.pow_apply, hp]
 

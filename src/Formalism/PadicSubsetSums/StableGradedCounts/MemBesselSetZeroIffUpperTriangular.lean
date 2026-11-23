@@ -368,7 +368,7 @@ theorem desc_run (τ : Equiv.Perm (Fin N))
     exact absurd hlt (lt_irrefl _)
   | succ d ih =>
     intro i j hj hlt m him hmj
-    have hi' : (i : ℕ) + 1 < N := by have := j.2; omega
+    have hi' : (i : ℕ) + 1 < N := omega
     set i' : Fin N := ⟨i + 1, hi'⟩ with hi'def
     have hi'v : (i' : ℕ) = i + 1 := rfl
     have hne : τ i' ≠ τ i := by
@@ -399,7 +399,7 @@ theorem desc_run (τ : Equiv.Perm (Fin N))
       have h4 : τ j < τ i' := lt_trans hlt h1
       have hall := ih i' j (by omega) h4
       have hjj := hall j (by show (i' : ℕ) ≤ j; omega) le_rfl
-      have hm0 : (i' : ℕ) + ((τ i' : ℕ) - τ i) < N := by have := j.2; omega
+      have hm0 : (i' : ℕ) + ((τ i' : ℕ) - τ i) < N := omega
       set m0 : Fin N := ⟨i' + ((τ i' : ℕ) - τ i), hm0⟩ with hm0def
       have hm0v : (m0 : ℕ) = i' + ((τ i' : ℕ) - τ i) := rfl
       have := hall m0 (by show (i' : ℕ) ≤ m0; omega) (by show (m0 : ℕ) ≤ j; omega)
@@ -501,7 +501,7 @@ theorem desc_const {α : Type} (τ : Equiv.Perm (Fin N))
       | succ d ih =>
         intro m hm hle
         have hle' : (m : ℕ) ≤ τ i := hle
-        have hm1 : (i : ℕ) + d < N := by have := m.2; omega
+        have hm1 : (i : ℕ) + d < N := omega
         set m1 : Fin N := ⟨i + d, hm1⟩ with hm1def
         have hm1v : (m1 : ℕ) = i + d := rfl
         have e1 := hr m1 (by show (i : ℕ) ≤ m1; omega) (by show (m1 : ℕ) ≤ τ i; omega)

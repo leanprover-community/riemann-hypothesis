@@ -155,7 +155,7 @@ theorem tT_mulVec_fvec {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb 
   split_ifs with h
   · rw [tT_mulVec_bvec, dT_eI]
   · rw [tT_mulVec_Wb hz]
-    have : a.val = r := by have := a.isLt; omega
+    have : a.val = r := omega
     rw [this]
 
 theorem Hpk_tTi {k r : ℕ} : Hpk k r * tTi k r = (tT k r)ᴴ * Hpk k r := by

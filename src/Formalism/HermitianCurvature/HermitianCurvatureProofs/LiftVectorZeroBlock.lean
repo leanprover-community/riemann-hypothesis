@@ -101,8 +101,8 @@ theorem lift_vector_zero_block {z : Fin (2 * ρ + k + 1) → ℂ} (hz : inWb k �
 theorem ιLev_inj {g g' : Mx k ρ} (h : ιLev k 1 ρ g = ιLev k 1 ρ g') : g = g' := by
   ext a b
   have h1 := congrFun (congrFun h ⟨a.val + 1, by omega⟩) ⟨b.val + 1, by omega⟩
-  have ha : a.val ≤ 2 * ρ + k := by have := a.isLt; omega
-  have hb : b.val ≤ 2 * ρ + k := by have := b.isLt; omega
+  have ha : a.val ≤ 2 * ρ + k := omega
+  have hb : b.val ≤ 2 * ρ + k := omega
   simpa [ιLev, ha, hb] using h1
 
 theorem glev_image_last (r : ℕ) : Glev k r (Fin.last r) = ιLev k r 0 '' UH (Hpk k 0) :=

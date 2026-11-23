@@ -108,7 +108,7 @@ def JacExGoodN : Prop :=
 
 theorem jacExGood_of_N (H : JacExGoodN) : JacExGood := by
   intro n r k ε e z z' T T' sc hF hG hsc
-  have hn : n = 2 * r + k + 1 := by have := hF.dim; omega
+  have hn : n = 2 * r + k + 1 := omega
   subst hn
   exact H r k ε e z z' T T' sc hF hG hsc
 

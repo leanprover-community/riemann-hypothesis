@@ -98,7 +98,7 @@ theorem linkRing
       (ζ' : LL) = (ζ : LL) ^ (PadicInt.toZModPow (s + 1) (om j)).val → (R.lev s).τ j f ζ = f ζ') :
     R.K1b ∧ R.HasU u ∧ (∀ s < ell, (R.lev s).FiniteOrderFixed B.ℓ s ∧ (R.lev s).PhiGammaCommute) ∧ R.UnitsAt ∧ R.Compl ϖ := by
   have hp : B.ℓ.Prime := hℓ.out
-  have hl1 : 0 < B.ℓ - 1 := by have := hp.two_le; omega
+  have hl1 : 0 < B.ℓ - 1 := omega
   have hpos : ∀ s, 0 < B.ℓ ^ (s + 1) := fun s => pow_pos hp.pos _
   have hprim : ∀ s (ζ : ↥(primitiveRoots (B.ℓ ^ (s + 1)) LL)),
       IsPrimitiveRoot (ζ : LL) (B.ℓ ^ (s + 1)) :=

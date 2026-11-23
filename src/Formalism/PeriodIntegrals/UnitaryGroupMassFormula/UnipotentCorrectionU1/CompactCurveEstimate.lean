@@ -139,7 +139,7 @@ theorem faa (n : ℕ) (cost : B.Mat k r → ℕ) (ψ : B.Mat k r → ℂ) (hψ :
             intro w₁ w₂ s1 s2 hp
             have hG1 : Good k r n w₁ := hw.sub (s1.trans (List.sublist_append_left _ _))
             have hG2 : Good k r n (w₂ ++ [x]) := hw.sub (s2.append (List.Sublist.refl _))
-            have hl1 : w₁.length ≤ m := by have := s1.length_le; omega
+            have hl1 : w₁.length ≤ m := omega
             have e1 := hv w₁ hG1 hl1
             have e2 := H (w₂ ++ [x]) hG2 (by simp) g hg hgK
             rw [Dw_snoc] at e2

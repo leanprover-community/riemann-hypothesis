@@ -254,7 +254,7 @@ theorem locShapeL : LocShapeL D := by
   rw [intLow_iff_L δ M hA p hs ha hb, intUp_iff_L δ M hA p hs ha hb]
   constructor
   · rintro ⟨h1, h2⟩ i j hji
-    have hk : i.val - j.val ≤ D.R.rS := by have := i.isLt; omega
+    have hk : i.val - j.val ≤ D.R.rS := omega
     have m1 := (locMem_iff δ M hA p hk (a i j)).2 (h1 i j hji)
     have m2 := (locMem_iff δ M hA p hk (bt D b j i)).2 (h2 i j hji)
     exact ⟨m1, m2, locMem_qd_of δ M hA p hs _ (locMem_sub δ M hA p _ m1 (locMem_conj δ M hA p hk m2))⟩

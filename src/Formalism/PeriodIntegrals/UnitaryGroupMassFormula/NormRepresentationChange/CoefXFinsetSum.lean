@@ -123,7 +123,7 @@ theorem loc_entry (D : D7) (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.h
     rw [coefX_sum _ hd'X]; abel
   have hM'zero : ∀ c : Fin D.R.rS, a.val < c.val → G₁.fl.coefX (m (frame G₁ b) - frame G₁ b) c = 0 := by
     intro c hac
-    have hr : a.val + 1 < D.R.rS := by have := c.isLt; omega
+    have hr : a.val + 1 < D.R.rS := omega
     have hbi : b = (⟨a.val + 1, hr⟩ : Fin D.R.rS).castSucc := Fin.ext rfl
     rw [hbi, frame_castSucc]
     exact coefX_eq_zero _ ((nlam_frame_mem G₁ hm).1 _) c (by simp; omega)

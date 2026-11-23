@@ -185,7 +185,7 @@ theorem norm_diagonal_entry_dilation_generator_le_one (k r : ℕ) (i : Fin (2 * 
     linarith
   · simp
   · rw [Complex.norm_real, Real.norm_eq_abs, abs_neg, abs_of_nonneg (by positivity), div_le_one hr]
-    have h3 : i.val - (r + k) ≤ r := by have := i.isLt; omega
+    have h3 : i.val - (r + k) ≤ r := omega
     have : ((i.val - (r + k) : ℕ) : ℝ) ≤ (r : ℝ) := by exact_mod_cast h3
     linarith
 

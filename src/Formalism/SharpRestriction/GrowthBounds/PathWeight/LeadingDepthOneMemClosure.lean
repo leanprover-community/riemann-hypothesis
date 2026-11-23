@@ -93,7 +93,7 @@ local notation "PP" => MvPolynomial (TV n' (r + K)) (KK O)
 
 theorem mn_label_le (mon : Fin n' × Fin (r + K) →₀ ℕ) (hmon : IsLabel p X.Fr mon) (s : Fin n') (hs : s ∈ X.Fr.TT)
     (c : Fin (r + K)) : mon (s, c) ≤ X.Q := by
-  have hr : 1 ≤ r := by have := X.hH.2.1; omega
+  have hr : 1 ≤ r := omega
   obtain ⟨j, hx, hW⟩ := mn_cover X.Fr X.L₁ X.N₁ X.hV hr (s.val : ℤ) (by rw [posOf_natCast_self]; exact hs)
   have h1 := hmon j (s.val : ℤ) hx hW c
   rw [posOf_natCast_self] at h1
@@ -111,7 +111,7 @@ theorem mn_label_le (mon : Fin n' × Fin (r + K) →₀ ℕ) (hmon : IsLabel p X
 def Ctx.Ds (s : Fin n') : PP := X.sb (Dtop p n' O X.Fr X.hH.2.2.1 X.g (s.val : ℤ))
 
 theorem mn_Ds_IT (s : Fin n') : bc_IT X.Fr (X.Ds s) := by
-  have hr : 1 ≤ r := by have := X.hH.2.1; omega
+  have hr : 1 ≤ r := omega
   exact bc_IT_Dtop X.S.w X.Fr X.hV X.hH.2.2.2.2 hr X.hH.2.2.1 X.hg _
 
 theorem leading_depth_one_mem_closure (D : Formalism.BasicNotions.D7) (v : TV n' (r + K)) (hN : IsNormal r v) (hs : v.1 ∈ X.Fr.TT) :

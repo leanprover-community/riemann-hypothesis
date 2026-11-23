@@ -174,7 +174,7 @@ open GramDeterminantPositive
 theorem GramBasic_of (hG : GramTransfer) (hI : IotaOK) : GramBasic := by
   intro a b c d ha hd lam hlam hcm n _ _ h Λ g hg p _ ι hp J _ v hv B' B hB' hB
   obtain ⟨D, q0, hD, hq0, hDg, hDD⟩ := hG a b c d ha hd lam hlam hcm n h Λ g hg p ι hp J v hv
-  have hd4 : d % 4 = 3 := by have := hcm.2.2.1; omega
+  have hd4 : d % 4 = 3 := omega
   have hθ : ‖ι (Complex.I * ((Real.sqrt d : ℝ) : ℂ))‖ ≤ 1 := by
     rw [(hI d hd4 p ι).1]
     exact Real.rpow_le_one (norm_nonneg _) (IsUltrametricDist.norm_natCast_le_one _ _) (by norm_num)

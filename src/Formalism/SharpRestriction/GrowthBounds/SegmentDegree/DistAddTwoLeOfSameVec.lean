@@ -216,7 +216,7 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
       (fun i => X.a / (p : ℝ) ^ (X.F.dist j (segE X.F j i) + X.Rj p K j)) X.a X.La p := by
     refine
       { hN := by omega
-        r1 := by have := hX.r2; omega
+        r1 := omega
         a3 := by linarith
         p13 := hX.p13
         H1 := ?_
@@ -224,7 +224,7 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
         vec_true_of_early := fun i hi => (comb_vec X.F j i).2 (comb_W_even X.F j hV _ (segE_mem X.F j i) ((dict_w hV i).2 hi))
         vec_true_of_late := fun i hi => (comb_vec X.F j i).2 (dict_lateV hV i hi)
         two_r_le_n0 := h2r
-        N_add_r_le_K := by have := hX.NsK; omega
+        N_add_r_le_K := omega
         H4 := ?_
         N_le_a := ?_
         od_lt := fun i hi => (hod i hi).2.1
@@ -301,7 +301,7 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
     constructor
     · intro h
       refine ⟨h.path, fun i hi => h.degs i ((dict_early hV i).2 hi), fun i m hi hm => ?_⟩
-      have hlt : i.val - (segN X.F j - r) < r := by have := i.2; omega
+      have hlt : i.val - (segN X.F j - r) < r := omega
       have := h.head i ⟨i.val - (segN X.F j - r), hlt⟩
         ((dict_tau hV i ⟨i.val - (segN X.F j - r), hlt⟩).2 (by simp only; omega)) m hm
       rw [this, beS_eq hV]

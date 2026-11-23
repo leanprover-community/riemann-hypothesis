@@ -605,7 +605,7 @@ theorem diamond_free_on_classes (Tf : FormsTied D u) (hS : Formalism.MainNotions
     have h1 := (Tf.atT.res_v v _).mp (Tf.atT.eV v).2
     rw [map_natCast, map_natCast] at h1
     exact h1
-  have hN0 : 0 < (D.mem u).A.T - 1 := by have := hTp.two_le; omega
+  have hN0 : 0 < (D.mem u).A.T - 1 := omega
   have hkpow : ∀ v, ((D.mem u).A.T : ℤ) ∣ k v ^ ((D.mem u).A.T - 1) - 1 := by
     intro v
     have hnd : ¬ ((D.mem u).A.T : ℤ) ∣ k v := by

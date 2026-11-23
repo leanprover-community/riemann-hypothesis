@@ -61,7 +61,7 @@ theorem lastRow_colLevSym (Ch : Chars X Pr R.m) {m2 : ℕ} (hm : R.m = m2 + 2) :
     rw [this, Matrix.one_apply_eq]
   · rw [if_neg hl]
     refine mem_btG.1 hbt _ l ?_
-    have hl2 : l.1 < R.r + R.m * R.t := by have := l.2; omega
+    have hl2 : l.1 < R.r + R.m * R.t := omega
     show coarse R.r (List.replicate R.m R.t) l.1 < coarse R.r (List.replicate R.m R.t) (R.N (m2 + 1 + 1) - 1)
     rw [hN]
     have e1 : coarse R.r (List.replicate R.m R.t) (R.r + R.m * R.t) = R.m + 1 := by

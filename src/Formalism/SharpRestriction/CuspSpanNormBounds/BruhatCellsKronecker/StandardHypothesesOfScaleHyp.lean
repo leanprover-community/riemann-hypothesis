@@ -80,7 +80,7 @@ theorem std_lamD_node (D : D7) (τ : D.what₂.Tau) (s : Fin (2 * D.R.rS + D.R.k
     lamD D τ s = -bOne D τ (s.val - (D.R.k - 1) + 1) := by
   have hm := std_two_rS D
   have hk := D.R.m_add_three_le_k
-  have h3 : s.val - (D.R.k - 1) < D.R.m := by have := s.isLt; omega
+  have h3 : s.val - (D.R.k - 1) < D.R.m := omega
   have h2 : 1 ≤ s.val - (D.R.k - 1) + 1 ∧ s.val - (D.R.k - 1) + 1 ≤ D.R.m := ⟨by omega, by omega⟩
   unfold lamD lamSH lamS bOne
   rw [dite_eq_left h2]
@@ -146,7 +146,7 @@ theorem std_isHC (H : Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0) (τ : D.what�
   · rw [std_lamD_node D τ a h]
     have hm := std_two_rS D
     have hk := D.R.m_add_three_le_k
-    have h3 : a.val - (D.R.k - 1) < D.R.m := by have := a.isLt; omega
+    have h3 : a.val - (D.R.k - 1) < D.R.m := omega
     unfold bOne
     rw [dite_eq_left ⟨by omega, by omega⟩]
     obtain ⟨z, hz⟩ := (D.hc τ).b_int ⟨a.val - (D.R.k - 1) + 1 - 1, by omega⟩

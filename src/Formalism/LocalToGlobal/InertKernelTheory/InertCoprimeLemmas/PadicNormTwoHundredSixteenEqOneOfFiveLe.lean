@@ -302,7 +302,7 @@ theorem sigmaCurveInert_of (hInv : InvAlg) (hS2 : SecondEisensteinAlgebraic) : F
     obtain ⟨ι, hι⟩ := Formalism.L2.KerInert.lamExt p g.lam
     have hp : p.Prime := Fact.out
     have hdp : D.host.d.Prime := D.host.hyp.2.1
-    have hd4 : D.host.d % 4 = 3 := by have := D.host.hyp.2.2.2.1; omega
+    have hd4 : D.host.d % 4 = 3 := omega
     have hns : ¬ IsSquare ((-(D.host.d : ℤ) : ℤ) : ZMod p) := ZMod.nonsquare_of_jacobiSym_eq_neg_one hIn
     have hsq' : ¬ ∃ a : ZMod p, a ^ 2 = -(D.host.d : ZMod p) := by
       rintro ⟨a, ha⟩; apply hns; exact ⟨a, by push_cast; rw [← ha]; ring⟩

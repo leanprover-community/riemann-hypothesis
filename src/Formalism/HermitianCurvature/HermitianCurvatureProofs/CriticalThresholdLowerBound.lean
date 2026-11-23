@@ -781,7 +781,7 @@ lemma key_top (hTp : VandTop) (c : Cfg) (bb : ℝ) (de : ℕ → ℝ) (h : c.Ok)
 theorem tcritLower_of (hBr : BracketBound) (hNT : VandNonTop) (hTp : VandTop) (hEF : EdgeFactors)
     (hVW : VandWords) : TcritLower := by
   intro c r bb de ka rd g VV h hm hs hw hrd hka hg hFD
-  have hk1 : 1 ≤ c.k := by have := h.hk; omega
+  have hk1 : 1 ≤ c.k := omega
   obtain ⟨hVu0, -, -⟩ := hVW c de de h hs.hvth hw hw
   have hkey : 0 ≤ cOne c bb * c.prodb / c.aeff ∧
       (cOne c bb * c.prodb / c.aeff) ^ c.k * Vand c.k (c.u de) ≤

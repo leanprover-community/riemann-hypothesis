@@ -357,7 +357,7 @@ theorem congruence_annihilates_rho_part (hG : GoodCongruenceObjects N r ρ π S)
   obtain ⟨hψρ, hψχ⟩ := psi_E N r ρ π S hG
   obtain ⟨hsρ, hsχ⟩ := psi_sum N r ρ π S hG m t γ ht
   rw [← hE] at hsρ hsχ
-  have h0 : 0 < R.t := by have := R.rank_add_five_le; omega
+  have h0 : 0 < R.t := omega
   have hsumρ : ∑ k, t k S.π' • rhoO N i ρ π (γ k) = 0 := by rw [← hsρ, hψρ]
   have hsumχ : ∑ k, t k S.π' * ((chiU N i 1 (γ k) : (N.O i)ˣ) : N.O i) = del51 N S S.π' := by
     have := hsχ ⟨0, h0⟩
@@ -416,7 +416,7 @@ theorem congruence_annihilates_character_part (hG : GoodCongruenceObjects N r ρ
   obtain ⟨-, hψχ⟩ := psi_E N r ρ π S hG
   obtain ⟨-, hsχ⟩ := psi_sum N r ρ π S hG m t γ ht
   rw [← hE] at hsχ
-  have h0 : 0 < R.t := by have := R.rank_add_five_le; omega
+  have h0 : 0 < R.t := omega
   have hsumc : ∑ k, t k S.π' * ((chiU N i ((c : ℕ) + 1) (γ k) : (N.O i)ˣ) : N.O i) = 0 := by
     rw [← hsχ c, hψχ c, if_neg hc]
   have hsum1 : ∑ k, t k S.π' * ((chiU N i 1 (γ k) : (N.O i)ˣ) : N.O i) = del51 N S S.π' := by

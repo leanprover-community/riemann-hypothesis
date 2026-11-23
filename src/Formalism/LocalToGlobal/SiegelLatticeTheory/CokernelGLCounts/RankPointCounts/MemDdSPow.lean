@@ -85,7 +85,7 @@ theorem dict_holds (Zd : LocDat D) : Formalism.L2.SG.Pf.TupGlob.Dict Zd := by
       rw [FractionalIdeal.coeIdeal_span_singleton, FractionalIdeal.mem_singleton_mul] at hq
       obtain ⟨z, hz, hzy⟩ := hq
       obtain ⟨t, ht, htP⟩ := diff_avoid P hP
-      have hk : b.val - c.val ≤ D.R.rS := by have := b.isLt; omega
+      have hk : b.val - c.val ≤ D.R.rS := omega
       have hz' := ddPow_conj Zd hk hz
       have hprod := FractionalIdeal.mul_mem_mul (mem_ddS_pow t ht (b.val - c.val)) hz'
       unfold Formalism.L2.SG.Pf.StabIntSh.ddPow at hprod

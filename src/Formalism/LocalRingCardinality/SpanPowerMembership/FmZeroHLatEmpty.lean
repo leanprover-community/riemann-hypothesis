@@ -108,7 +108,7 @@ theorem wtN_step (n : ℕ) (hn : n + 1 < R.N R.m) : wtN P (n + 1) ≤ wtN P n :=
       push_cast
       linarith
     · have hk : n + 1 = R.k := by omega
-      have hm0 : 0 < R.m := by have := R.two_le_m; omega
+      have hm0 : 0 < R.m := omega
       have hb : blkN R (n + 1) < R.m := by
         unfold blkN
         rw [show n + 1 - R.k = 0 by omega, Nat.zero_div]

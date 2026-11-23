@@ -211,8 +211,8 @@ theorem spStep (C : ℝ) : SPStep C := by
   letI : Algebra (WF p n') O := algOfIdent j φ
   intro c' Q
   have hn : Even n' := hSet.1.even
-  have hr : 1 ≤ r := by have := H.2.1; omega
-  have hG : goodG' r de h x ≤ n' := by have := H.2.2.1.2.2.2; omega
+  have hr : 1 ≤ r := omega
+  have hG : goodG' r de h x ≤ n' := omega
   refine ⟨SPR O p F hrk c' Q, subst_SPtrue w F hF.2.1 hn hr hrk hg c' Q, ?_⟩
   rw [SPR_map]
   exact SPR_ne _ p (Fact.out : p.Prime).ne_zero hF hn hG hrk c' Q

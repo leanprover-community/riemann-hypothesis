@@ -447,7 +447,7 @@ theorem cond_iff (w : Point K (r + 1)) (a : Fin (r + 1)) :
   constructor
   · rintro ⟨c1, c2⟩
     obtain ⟨h1, h2, h3, h4⟩ := blk w a
-    have ha : a.val = r := by have := a.2; omega
+    have ha : a.val = r := omega
     have ha' : a = Fin.last r := Fin.ext ha
     subst ha'
     refine ⟨rfl, Fin.ext ?_⟩

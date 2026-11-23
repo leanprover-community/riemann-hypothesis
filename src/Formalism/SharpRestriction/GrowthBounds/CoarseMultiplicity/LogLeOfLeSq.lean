@@ -110,7 +110,7 @@ theorem log_le_of_le_sq {p a d : ℕ} (hp : 1 < p) (ha : 1 ≤ a) (hd : d ≤ a 
 
 theorem numAt (C0 Cde CE1 CE2 : ℝ) : NumAt C0 Cde CE1 CE2 := by
   intro X St
-  have hp1 : 1 < X.p := by have := St.p5; omega
+  have hp1 : 1 < X.p := omega
   have hk : (1 : ℝ) ≤ X.k := by unfold Loc.k; have : (0 : ℝ) ≤ (X.m : ℝ) := Nat.cast_nonneg _; linarith
 
   have ha0 : 0 < (X.a : ℝ) := by

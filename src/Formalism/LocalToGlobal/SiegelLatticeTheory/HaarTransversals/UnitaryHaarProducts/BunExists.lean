@@ -362,8 +362,8 @@ theorem u_anti (R : Ranks) (P : HCParam R) : ∀ (d : ℕ) (i : Fin R.k) (hi : i
     linarith
 
 theorem v_gt (R : Ranks) (P : HCParam R) (i : Fin (R.k - 1)) : -P.b ⟨0, by have := R.two_le_m; omega⟩ < P.v i := by
-  have hk : 0 < R.k := by have := i.2; omega
-  have hm : 0 < R.m := by have := R.two_le_m; omega
+  have hk : 0 < R.k := omega
+  have hm : 0 < R.m := omega
   have h1 : -P.b ⟨0, hm⟩ < P.u ⟨R.k - 1, by omega⟩ := P.u_last_gt hk hm
   have h2 : P.u ⟨i.1 + 1, by omega⟩ < P.v i := P.v_gt_u i
   have h3 : P.u ⟨i.1 + 1 + (R.k - 1 - (i.1 + 1)), by omega⟩ ≤ P.u ⟨i.1 + 1, by omega⟩ :=
@@ -404,14 +404,14 @@ theorem gap_lamS (R : Ranks) (P : HCParam R) {h : ℚ} (hh : 0 ≤ h)
   unfold lamS
   by_cases ha : a.1 < R.k - 1 <;> by_cases hb' : b.1 < R.k - 1
   · simp [ha, hb'] at hab
-  · have hbm : b.1 - (R.k - 1) < R.m := by have := b.isLt; omega
+  · have hbm : b.1 - (R.k - 1) < R.m := omega
     simp only [ha, hb', if_true, if_false, dif_pos, dif_neg, not_false_eq_true, hbm] at hab ⊢
     have hodd : 0 < b.1 - (R.k - 1) := by
       by_contra h0
       have : b.1 - (R.k - 1) = 0 := by omega
       simp [this] at hab
     exact mixed ⟨a.1, ha⟩ ⟨b.1 - (R.k - 1), hbm⟩ hodd
-  · have ham : a.1 - (R.k - 1) < R.m := by have := a.isLt; omega
+  · have ham : a.1 - (R.k - 1) < R.m := omega
     simp only [ha, hb', if_true, if_false, dif_pos, dif_neg, not_false_eq_true, ham] at hab ⊢
     have hodd : 0 < a.1 - (R.k - 1) := by
       by_contra h0
@@ -419,8 +419,8 @@ theorem gap_lamS (R : Ranks) (P : HCParam R) {h : ℚ} (hh : 0 ≤ h)
       simp [this] at hab
     rw [abs_sub_comm]
     exact mixed ⟨b.1, hb'⟩ ⟨a.1 - (R.k - 1), ham⟩ hodd
-  · have ham : a.1 - (R.k - 1) < R.m := by have := a.isLt; omega
-    have hbm : b.1 - (R.k - 1) < R.m := by have := b.isLt; omega
+  · have ham : a.1 - (R.k - 1) < R.m := omega
+    have hbm : b.1 - (R.k - 1) < R.m := omega
     simp only [ha, hb', if_false, dif_neg, not_false_eq_true, ham, hbm] at hab ⊢
     refine bb _ _ fun e => hab ?_
     have := congrArg Fin.val e

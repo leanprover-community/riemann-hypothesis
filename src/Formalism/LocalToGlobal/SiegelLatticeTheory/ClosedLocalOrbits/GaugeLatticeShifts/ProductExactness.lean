@@ -242,7 +242,7 @@ theorem Tw_pos (u : D.what₂.Word) : 0 < Tw (D := D) u := by
 
 theorem stepReal_of_witt (W : WittGram) : StepReal := by
   intro D X u u' sc hsc c hc
-  have hk : 0 < D.R.k := by have := D.R.m_add_three_le_k; omega
+  have hk : 0 < D.R.k := omega
   simp only [Good, Set.mem_ofPred_eq] at hc
   have key : ∀ v, ∃ g : Formalism.REAL.UJ (X.B.I.ε v),
       Zhat (X.B.I.ε v) (frm X u sc v) (frm X u' sc v) (uMat g) = Matrix.diagonal (c v) := by

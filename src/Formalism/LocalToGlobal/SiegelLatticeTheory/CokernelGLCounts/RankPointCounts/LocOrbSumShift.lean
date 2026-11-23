@@ -112,7 +112,7 @@ theorem last_big (w : Point D.host.E (D.R.rS + 1)) (h0 : Dmin w D.R.rS = 0) :
     simpa using this
   refine ⟨l0, t, s, hb, hsum, ?_⟩
   by_contra hlt
-  have hs1 : s = 1 := by have := hmem.2; omega
+  have hs1 : s = 1 := omega
   subst hs1
   have := Formalism.L2.SG.Pf.dmin_snoc w l0 t hb (by omega)
   rw [h0, zero_mul] at this

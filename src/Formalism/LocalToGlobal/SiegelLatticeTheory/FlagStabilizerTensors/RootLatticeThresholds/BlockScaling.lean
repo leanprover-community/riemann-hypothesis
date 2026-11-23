@@ -434,7 +434,7 @@ theorem measPinAt_of (sc : ℝ) (hsc : 0 < sc) (i0 i0' : ∀ _ : InfinitePlace X
       rw [← ENNReal.ofReal_mul (by rw [hk, hgX]; positivity)]
       congr 1
       simp only [hsP, map_div₀, map_pow, hnc, hF, hkap, hk, hgX]
-      have e : D.R.rS - q.1.val = (q.2.val - q.1.val) + (D.R.rS - q.2.val) := by have := q.2.isLt; omega
+      have e : D.R.rS - q.1.val = (q.2.val - q.1.val) + (D.R.rS - q.2.val) := omega
       rw [e, pow_add, _root_.inv_zpow', neg_sub, zpow_sub₀ hy0.ne', zpow_one, show (2 * ((q.2.val - q.1.val : ℕ) : ℤ)) =
         ((2 * (q.2.val - q.1.val) : ℕ) : ℤ) by push_cast; ring, zpow_natCast, pow_mul, hy]
       have h1 : (D.host.rdE * ((PP).S.g : ℝ) / (2 * Real.pi)) ≠ 0 := hy0.ne'

@@ -184,7 +184,7 @@ theorem unfolding_affine_space_invariant : XXP := by
   rw [xxw_entry]
   by_cases hf : IsFree n' n c l.1 s.1
   · rw [dif_pos hf]
-    have hs : ¬ s.1 < n' := by have := hf.1; omega
+    have hs : ¬ s.1 < n' := omega
     rw [xx1_single_eq_of_not_lt xj t s hs]
     show _ = (ρ.toLinearMap ∘ₗ xx1 (0 : (Fin n' → E) →ₗ[E] (Fin n → E)) t) (eN E (n' + c') s.1) l
     rw [xxw_eN_eq]

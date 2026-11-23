@@ -744,7 +744,7 @@ theorem coarse_degree_ratio_consecutive {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (hs :
   have hdd : (segDists X.TT j).get l + 2 ≤ (segDists X.TT j).get l' := by omega
   set P := X.p ^ (segG X.TT j - (segDists X.TT j).get l) with hP
   set P' := X.p ^ (segG X.TT j - (segDists X.TT j).get l') with hP'
-  have hp1 : 1 ≤ X.p := by have := hs.p5; omega
+  have hp1 : 1 ≤ X.p := omega
   have hPP : X.p ^ 2 * P' ≤ P := by
     rw [hP, hP', ← pow_add]
     exact Nat.pow_le_pow_right hp1 (by omega)
