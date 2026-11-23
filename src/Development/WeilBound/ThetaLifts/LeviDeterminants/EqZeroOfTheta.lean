@@ -183,13 +183,11 @@ theorem schr_box {κ' : Type} [Fintype κ'] (a b : κ → AF F) (a' b' : κ' →
   simp only [schr, boxFun, e1, e2, e3, AddChar.map_add_eq_mul]
   ring
 
-section Dbl
 
 variable {E : Type} [CommRing E] [Algebra (AF F) E] {c : E →ₐ[AF F] E} {α β : Type} [Fintype α] [DecidableEq α] [Fintype β]
   [DecidableEq β] {ξ : E} {JA : Matrix α α E} {JB : Matrix β β E} {d d₁ : Darboux (symp c ξ JA JB) κ}
   {dd dd₁ : Darboux (symp c ξ JA (dbl JB)) (κ ⊕ κ)}
 
-end Dbl
 
 end PositivityTheory.ThKF0
 

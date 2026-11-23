@@ -194,7 +194,6 @@ theorem cmpb_cHess_add_const (g : V n → ℂ) (c : ℂ) (x : V n) :
   ext j k
   simp only [cHess, Matrix.of_apply, h]
 
-section Atlas
 
 variable {Y : Type u} [TopologicalSpace Y] [T2Space Y] [SecondCountableTopology Y]
   [MeasurableSpace Y] [BorelSpace Y] {ι : Type*} {La : Type*} [AddCommGroup La]
@@ -203,7 +202,6 @@ namespace WeightedAtlas
 
 end WeightedAtlas
 
-end Atlas
 
 end
 

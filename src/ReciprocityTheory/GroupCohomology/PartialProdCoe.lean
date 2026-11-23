@@ -295,11 +295,9 @@ theorem inclCx_spec (A : Cx R) (eA : ∀ n, A.X n ≃ₗ[R] hcoch (M.resSub U) G
 
 end Incl
 
-section Conj
 
 variable {R : Type u} [CommRing R] {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
-end Conj
 end
 
 end CohomologyFunctoriality₂

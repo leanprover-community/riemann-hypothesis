@@ -96,7 +96,6 @@ def IsLamPrime {N : ℕ} (lam : DomWeight N) (j : ℕ) (τ : D.what₂.Tau) : Pr
     ∀ i : Fin N, (lam.w i : ℚ) = W.lamPrime (i + 1)
 
 def lamLdef (n j : ℕ) (τ : D.what₂.Tau) : DomWeight n :=
-  open Classical in
   if h : ∃ lam : DomWeight n, IsLamPrime lam j τ then h.choose else ⟨0, antitone_const⟩
 
 def LamLForced (D : Formalism.BasicNotions.D7) : Prop :=

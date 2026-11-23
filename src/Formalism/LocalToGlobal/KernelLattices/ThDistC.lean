@@ -158,7 +158,6 @@ def thDistC (Sall SB : Finset (HeightOneSpectrum (𝓞 X.E))) (D : ℕ) (sel : H
     (lam : X.Tau → DomWeight a) (lam' : X.Tau → DomWeight b) (n : X.Tau → ℕ) :
     ThDist X.E X.K a b SB (DIV.VV X.K lam) (DIV.VV X.K lam') :=
   fun N fr N' fr' c x =>
-    open Classical in
     if c ∣ D ∧ x ∈ divLat D (homAt Sall N N') then
       (muInvDet sel SB mU mI N fr * (muInvDet sel SB mU mI N' fr')⁻¹) • jetOp lam lam' (A.jetK Sall N N' c x) n
     else 0

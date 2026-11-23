@@ -39,7 +39,6 @@ open ReciprocityTheory.Gal
 
 universe u
 
-section AdmAux
 
 variable {R : Type u} [CommRing R] {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
@@ -50,7 +49,6 @@ private theorem pair_hom_f_coe_of_id {M M' : TRep R G} (P : Pair M M') (h : P.φ
   rw [h]
   rfl
 
-end AdmAux
 
 theorem admissibility_holds : AdmStatement.{u} := by
   intro R _ G _ _ _ A B C i p h
@@ -119,10 +117,8 @@ theorem limRep_holds : LimRepStatement.{u} := by
       exact continuous_pi fun m => by exact (y m).2
     exact ⟨⟨x, hxc⟩, fun m => Subtype.ext ((cπ m n _).trans (funext fun g => hx g m))⟩
 
-section ColimAux
 
 variable {R : Type u} [CommRing R] {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
-end ColimAux
 
 end ReciprocityTheory.Coh

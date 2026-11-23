@@ -257,7 +257,6 @@ theorem prismOp_equiv {G : Type u} [SMul G X] [SMul G Y] (a b : X → Y)
 
 end Top
 
-section Main
 
 variable {R : Type u} [CommRing R] {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
@@ -269,7 +268,6 @@ noncomputable def pullH (M : TRep R G) {X Y : Type u} [TopologicalSpace X] [MulA
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
-end Main
 
 open Cx in
 theorem prism_holds : PrismStatement.{u} := by

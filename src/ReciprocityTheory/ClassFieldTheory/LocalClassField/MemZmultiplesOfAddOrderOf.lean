@@ -43,11 +43,9 @@ open scoped Nat
 
 variable {A : Type} [AddCommGroup A]
 
-section Chain
 
 variable {C : Type} [AddCommGroup C]
 
-end Chain
 
 theorem qz_torsion (x : QZ) : ∃ k : ℕ, 0 < k ∧ k • x = 0 := by
   obtain ⟨q, rfl⟩ := QuotientAddGroup.mk_surjective x

@@ -208,12 +208,10 @@ theorem nonempty_cyclic_odd (M : TRep R C) (g : C) (hg : ∀ x, x ∈ Subgroup.z
 
 end Cyclic
 
-section Low
 
 variable {G G' : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [Group G'] [TopologicalSpace G'] [IsTopologicalGroup G']
 
-end Low
 
 end
 

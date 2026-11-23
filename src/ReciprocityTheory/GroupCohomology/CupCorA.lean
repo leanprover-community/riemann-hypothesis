@@ -44,11 +44,9 @@ noncomputable section
 
 universe u
 
-section HomLemmas
 
 variable {R : Type u} [CommRing R] {A B C : Cx R}
 
-end HomLemmas
 
 section Retr
 

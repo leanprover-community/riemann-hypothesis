@@ -116,10 +116,8 @@ theorem HermFam.form_expand (h : HermFam K V) (σ : K →+* ℂ) {n : ℕ} (c : 
 
 end Form
 
-section Places
 
 variable {K : Type*} [Field K] [NumberField K]
 
-end Places
 
 end ReciprocityTheory.GeometryOfNumbersTheory
